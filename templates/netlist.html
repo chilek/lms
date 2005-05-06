@@ -63,15 +63,9 @@
 	{/section}
 	<TR bgcolor="#DFD5BD">
 		<TD width="99%" colspan="2" class="fleftu" align="right"> 
-			<B>{t}All addresses:{/t}<BR>
-			{t}Bound:{/t}<BR>
-			{t}Online:{/t}</B>
+			<B>{t}Total:{/t} {$listdata.size|default:"0"}/{$listdata.assigned|default:"0"}/{$listdata.online|default:"0"}</B>
 		</TD>
-		<TD width="1%" colspan="4" class="frightu">
-			<B>{$listdata.size}<BR>
-			{$listdata.assigned}<BR>
-			{$listdata.online}</B>
-		</TD>
+		<TD width="1%" colspan="4" class="frightu"></TD>
 	</TR>
 </table>
 {include file="footer.html"}
