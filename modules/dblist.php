@@ -44,7 +44,7 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 					$name = substr(basename($file,'.sql'),4,25);
 					if($pos = strpos($name,'-'))
 					{
-						$dblist['dbv'][]  = substr($name, $pos, 0) ;
+						$dblist['dbv'][]  = substr($name, $pos+1);
 						$dblist['time'][] = substr($name, 0, $pos);
 					} 
 					else
@@ -52,6 +52,7 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 						$dblist['dbv'][]  = '';
 						$dblist['time'][] = (int) $name;
 					}
+					
 					$dblist['name'][] = $name;
 					$dblist['size'][] = filesize($LMS->CONFIG['directories']['backup_dir'].'/'.$file);
 					$dblist['type'][] = 'plain';
