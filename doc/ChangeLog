@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.0rc1 Thor (??/??/????):
 
   - lmsd/ethers: fixed output file format (alec)
   - fixed bug (made in last release) in chooseip module (alec)
