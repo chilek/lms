@@ -732,6 +732,27 @@ database = /usr/local/lms/lms.db</screen>
 		</simplelist>
 		</para>
 	</sect2>
+	<sect2 id="install-rights-user">
+      		<title>Regu³y dostêpu definiowane przez u¿ytkownika</title>
+		<para>Zaawansowani u¿ytkownicy maj± mo¿liwo¶æ zdefiniowania dodatkowych
+		dowolnych regu³ dostêpu lub przedefiniowania istniej±cych. W tym celu
+		nale¿y utworzyæ skrypt PHP na wzór <filename>lib/accesstable.php</filename>
+		i umie¶ciæ go w katalogu <filename>lib</filename> LMS-a. Nazwê pliku
+		podajemy w opcji <filename>custom_accesstable</filename> sekcji [phpui].</para>
+		<para>W ten sposób mo¿na zdefiniowaæ w³asne regu³y zezwalaj±ce lub
+		zabraniaj±ce dostêpu do dowolnych modu³ów. Modu³ to nazwa pliku PHP
+		z katalogu <filename>modules</filename>, któr± w regu³ach dostêpu podajemy
+		bez rozszerzenia. Dla przyk³adu, mo¿na zdefiniowaæ uprawnienie do
+		odczytu faktur (np. na potrzeby skryptu lms-sendinvoices) w nastêpuj±cy
+		sposób:
+<screen>
+<?php
+$access['table'][100]['name']      = 'odczyt faktur';
+$access['table'][100]['allow_reg'] = '^invoice$';
+?>
+</screen>
+		</para>
+	</sect2>
     </sect1>
     <sect1 id="install-upgrade">
       <title>Upgrade</title>
