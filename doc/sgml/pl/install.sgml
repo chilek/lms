@@ -756,10 +756,10 @@ database = /usr/local/lms/lms.db</screen>
 		odczytu faktur (np. na potrzeby skryptu lms-sendinvoices) w nastêpuj±cy
 		sposób:
 <screen>
-<?php
+&lt;?php
 $access['table'][100]['name']      = 'odczyt faktur';
 $access['table'][100]['allow_reg'] = '^invoice$';
-?>
+?&gt;
 </screen>
 		</para>
 	</sect2>
