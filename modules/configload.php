@@ -160,6 +160,10 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 			$desc = trans('Length of (auto-generated) node password. Max.32. Default: 16.');
 		break;					
 		
+		case 'custom_accesstable':
+			$desc = trans('PHP file with user-defined access rules in "lib" directory. Default: empty.');
+		break;					
+		
 		default:
 			$desc = trans('Unknown option. No description.');
 		break;
