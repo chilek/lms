@@ -441,9 +441,10 @@ sub instance($)
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin, $customerq FROM nodes LEFT JOIN users ON nodes.ownerid = users.id");
+		$dbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr, inet_ntoa(ipaddr_pub) AS ipaddr_pub, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin, $customerq FROM nodes LEFT JOIN users ON nodes.ownerid = users.id");
 		$dbq->execute();
 
+		my %pubiplist;
 		my %maclist;
 		my %accesslist;
 		my %warninglist;
@@ -458,7 +459,7 @@ sub instance($)
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
-			$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'}); 
+			$pubiplist{$row->{'ipaddr'}} = $row->{'ipaddr_pub'};
 			$maclist{$row->{'ipaddr'}} = $row->{'mac'};
 			$passlist{$row->{'ipaddr'}} = $row->{'passwd'};
 			$accesslist{$row->{'ipaddr'}} = $row->{'access'};
@@ -600,6 +601,7 @@ sub instance($)
 			my $NAME = $ucnamelist{$ipaddr} || '';
 			my $name = $namelist{$ipaddr} || '';
 			my $mac = $maclist{$ipaddr} || '';
+			my $pubip = $pubiplist{$ipaddr} || '';
 			my $owner = $ownerlist{$ipaddr} || '';
 			my $uprate = $uprates{$owner} || '';
 			my $downrate = $downrates{$owner} || '';
@@ -635,6 +637,7 @@ sub instance($)
 			$rule =~ s/\%CLIMIT/$climit/g;
 			$rule =~ s/\%PLIMIT/$plimit/g;
 			$rule =~ s/\%ID/$id/g;
+			$rule =~ s/\%PUBIP/$pubip/g;
 			$rule =~ s/\%IP/$ipaddr/g;
 			$rule =~ s/\%INFO/$info/g;
 			$rule =~ s/\%NAME/$NAME/g;

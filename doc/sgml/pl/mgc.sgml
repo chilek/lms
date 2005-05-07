@@ -272,6 +272,9 @@
      <para>%IP - adres IP komputera</para>
     </listitem>
     <listitem>
+     <para>%PUBIP - drugi (publiczny) adres IP komputera</para>
+    </listitem>
+    <listitem>
      <para>%PIN - pin klienta posiadaj±cego dany komputer</para>
     </listitem>
     <listitem>
