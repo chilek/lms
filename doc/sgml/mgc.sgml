@@ -255,6 +255,9 @@ include all networks.</para>
      <para>%IP - IP address</para>
     </listitem>
     <listitem>
+     <para>%PUBIP - second (public) IP address</para>
+    </listitem>
+    <listitem>
      <para>%PIN - PIN of customer who owns node</para>
     </listitem>
     <listitem>
