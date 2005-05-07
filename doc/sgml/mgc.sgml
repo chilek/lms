@@ -62,7 +62,7 @@
     <listitem>
      <para>instances</para>
      <para>List of instances (separated by spaces).</para>
-     <para>Example:	<prompt>instaces = dhcp firewall squid</prompt></para>
+     <para>Example:	<prompt>instances = dhcp firewall squid</prompt></para>
     </listitem>
    </itemizedlist>
    <note><para>You can also place <filename>instances</filename> variable in any derivative instance section. See below.</para></note>

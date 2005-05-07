@@ -68,7 +68,7 @@
     <listitem>
      <para>instances</para>
      <para>Lista "instancji" oddzielona spacjami.</para>
-     <para>Przyk³ad:	<prompt>instaces = dhcp firewall squid</prompt></para>
+     <para>Przyk³ad:	<prompt>instances = dhcp firewall squid</prompt></para>
     </listitem>
    </itemizedlist>
    <note><para>Zmienn± <filename>instances</filename> mo¿na tak¿e umie¶ciæ w
