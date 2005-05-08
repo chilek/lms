@@ -174,20 +174,18 @@ foreach my $ip (@iplist)
         if($found > $threshold)
         {
 		$ip =~ s/\n//g;
-		print STDERR "IP: $ip probably infected. Found $found packet(s).\n" unless $quiet;
+		print STDERR "IP: $ip probably infected. Found $found packets.\n" unless $quiet;
          
-		my $dbq;
-         
-		if($logmessage) 
+		if($logmessage)
     		{ 
-        		$dbq = $dbase->prepare("UPDATE nodes SET warning=1, info='$logmessage' WHERE ipaddr = inet_aton('$ip')"); 
-    		}
-    		else 
-    		{
-	    		$dbq = $dbase->prepare("UPDATE nodes SET warning=1 WHERE ipaddr = inet_aton('$ip')");
-    		}
-         
-    		$dbq->execute() || die $dbq->errstr;
+        		$dbase->do("UPDATE nodes SET warning = 1 WHERE ipaddr = inet_aton('$ip')");
+			my $dbq = $dbase->prepare("SELECT ownerid FROM nodes WHERE ownerid != 0 AND ipaddr = inet_aton('$ip')");
+			$dbq->execute();
+			if(my $row = $dbq->fetchrow_hashref())
+			{
+				$dbase->do("UPDATE users SET message = '$logmessage' WHERE id = $row->{'ownerid'}"); 
+			}
+		}
         }
 }
 
