@@ -2695,7 +2695,7 @@ Chapter 5. Configuration file generator (lms-mgc)
    parameter:
      * instances
        List of instances (separated by spaces).
-       Example: instaces = dhcp firewall squid
+       Example: instances = dhcp firewall squid
 
    Note
 
@@ -2871,6 +2871,7 @@ Chapter 5. Configuration file generator (lms-mgc)
 
    Computer templates:
      * %IP - IP address
+     * %PUBIP - second (public) IP address
      * %PIN - PIN of customer who owns node
      * %ID - ID of computer
      * %MAC - MAC address
