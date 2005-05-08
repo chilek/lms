@@ -1,0 +1,149 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.5-cvs
+#
+#  (C) 2001-2005 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $help $version);
+use POSIX qw(strftime);
+
+my $_version = '1.5-cvs';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version,
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-debtors, version $_version
+(C) 2001-2005 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-debtors, version $_version
+(C) 2001-2005 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $dbase;
+my $utsfmt;
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "UNIX_TIMESTAMP()";
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+}
+elsif($dbtype eq "sqlite")
+{
+	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "strftime('%s','now')";
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+my $percent = 0;
+my $lastid = 0;
+
+# get all debtors
+my $dbq = $dbase->prepare("SELECT users.id AS userid,
+    UPPER(lastname) || ' '|| users.name AS owner,
+    inet_ntoa(ipaddr) AS ip, 
+    round(COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) 
+    WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END),2) AS balance
+FROM nodes LEFT JOIN users ON (ownerid = users.id)
+LEFT JOIN cash ON (cash.userid = users.id)
+GROUP BY nodes.id, ipaddr, users.id, users.lastname, users.name
+HAVING SUM((type * -2 + 7) * value) < 0
+ORDER BY owner");
+$dbq->execute();
+
+while(my $row = $dbq->fetchrow_hashref())
+{
+	my $cid = $row->{'userid'};
+	my $customer = sprintf("%04d",$cid);
+	
+	if($cid != $lastid)
+	{
+		my $dbqi = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto >= $utsfmt OR dateto = 0) AND userid = $cid GROUP BY userid HAVING SUM(value) > 0");
+		$dbqi->execute();
+		if(my $rowi = $dbqi->fetchrow_hashref())
+		{
+			$percent = sprintf("%0.2f", $row->{'balance'}*-1/$rowi->{'value'});
+		}
+		else
+		{
+			$percent = "";
+		}
+	}
+		
+	print "$row->{'owner'} ($customer)|$row->{'ip'}|$row->{'balance'}|$percent\n";
+	$lastid = $cid;
+}	
+
+$dbase->disconnect();
