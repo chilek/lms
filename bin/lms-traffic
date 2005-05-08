@@ -81,6 +81,12 @@ if(! -r $logfile)
 	exit 1;
 }
 
+sub u32todotquad($)
+{
+    my $p = shift @_;
+    return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff,($p>>8)&0xff,$p&0xff;
+}
+
 my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
@@ -107,27 +113,22 @@ elsif($dbtype eq "sqlite")
 {
 	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "strftime('%s','now')";	
+	$dbase->func('inet_ntoa',1,'u32todotquad','create_function');
 }
 else
 {
 	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
 	exit 1;
 }
-sub u32todotquad($)
-{
-    my $p = shift @_;
-    return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff,($p>>8)&0xff,$p&0xff;
-}
-####################################################################
-# get node-id table
-my $dbq = $dbase->prepare("SELECT id, ipaddr FROM nodes");
+
+
+# get nodes IDs table
+my $dbq = $dbase->prepare("SELECT id, inet_ntoa(ipaddr) AS ipaddr FROM nodes");
 $dbq->execute();
 my %table;      
 while (my $row = $dbq->fetchrow_hashref())
 {    
-    # poprawka: dla wersji LMS'a przed 1.1.3 zamieniæ poni¿sze linie
-    $table{u32todotquad($row->{'ipaddr'})} = $row->{'id'};
-    # $table{$row->{'ipaddr'}} = $row->{'id'};    
+    $table{$row->{'ipaddr'}} = $row->{'id'};
 }
 
 # read log file
