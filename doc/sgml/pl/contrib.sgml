@@ -1,122 +1,190 @@
 <!-- $Id$ -->
 <chapter id="contrib">
 <title>Dodatki</title>
-	<para>W niniejszym rozdziale zostan± opisane dodatkowe modu³y i rozwi±zania
-	zwiêkszaj±ce funkcjonalno¶æ LMS'a znajduj±ce siê w katalogu 
-	<filename>contrib</filename>. Czê¶æ z nich nale¿y dostosowaæ do w³asnych 
-	potrzeb, a niektóre integruj± siê z interfejsem <emphasis>LMS-UI</emphasis>.</para>
-	<sect1 id="contrib-customer">
-    	<title>Moje konto</title>
-		<sect2 id="customer-intro">
-		<title>Wstêp</title>
-		<para>W katalogu <filename>contrib/customer</filename> znajduje siê
-		przyk³ad rozwi±zania, dziêki któremu ka¿dy klient twojej sieci
-		mo¿e sprawdziæ w³asny bilans finansowy.</para>
-		<para>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
-		bilans i informacje o kliencie, który jest w³a¶cicielem komputera
-		o tym adresie.</para>
-		<para>Dla osób korzystaj±cych z proxy, nie korzystaj±cych
-		z sieci tylko w domu, albo którzy nie chc± aby dzieci/ma³¿onkowie/pracownicy 
-		mieli wgl±d w dane finansowe dotycz±ce ich dostêpu do sieci/innych 
-		us³ug przeznaczone jest "Moje konto 2".</para>
-		</sect2>
-		<sect2 id="customer-install">
-		<title>Instalacja</title>
-		<para>Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
-		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
-		ustawiæ poprawn± ¶cie¿kê do <filename>lms.ini</filename> w pliku 
-		<filename>index.php</filename>.</para>	
-		</sect2>
-	</sect1>
-	<sect1 id="contrib-customer2">
-    	<title>Moje konto 2</title>
-		<sect2 id="customer2-intro">
-		<title>Wstêp</title>
-		<para>W katalogu <filename>contrib/customer_otherip</filename> znajduje siê
-		odpowiednik <filename>contrib/customer</filename>, który nie rozpoznaje
-		klienta po adresie IP, ale wymaga logowania. Uwierzytelnianie odbywa siê na 
-		podstawie numeru PIN oraz telefonu klienta, ale mo¿liwe jest tak¿e
-		wykorzystanie ID lub numeru umowy (dodatkowe pole w bazie) - patrz 
-		pliki balanceview.php i authentication.inc).</para>
-		<para>Skrypt wy¶wietla bilans i informacje o kliencie, a tak¿e w po³±czeniu
-		z <filename>contrib/formularz_przelewu_wplaty</filename> umo¿liwia klientowi
-		wydrukowanie druku wp³aty na kwotê zaleg³o¶ci.</para>
-		</sect2>
-		<sect2 id="customer2-install">
-		<title>Instalacja</title>
-		<para>Instalacja sprowadza siê do ustawienia opcji <filename>sys_dir</filename>
-		w sekcji <emphasis>[directories]</emphasis> pliku lms.ini oraz zlinkowania 
-		katalogu <filename>img</filename> z lms'owymi ikonkami.</para>	
-		</sect2>
-	</sect1>
-	<sect1 id="contrib-sqlpanel">
-    	<title>Panel SQL</title>
-		<sect2 id="sqlpanel-intro">
-		<title>Wstêp</title>
-		<para>W katalogu <filename>contrib/sqlpanel</filename> znajdziesz
-		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
-		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
-		w formie tabeli. Ponadto podawany jest czas wykonania zapytania. 
-		Mo¿liwe jest tak¿e drukowanie wyników zapytania.</para>
-		<para>Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
-		domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<prompt>sqlpanel_pagelimit</prompt>'
-		w sekcji <emphasis>[phpui]</emphasis> pliku konfiguracyjnego <filename>lms.ini</filename>.</para>
-		</sect2>
-		<sect2 id="sqlpanel-install">
-		<title>Instalacja</title>
-		<para>Instalacja polega na skopiowaniu plików w odpowiednie miejsca
-		w drzewie katalogów lms'a. Plik <filename>sql.php, sqllang.php</filename> skopiuj
-		do katalogu <filename>modules</filename>, a pliki <filename>sql.html, sqlprint.html
-		</filename> do katalogu <filename>templates</filename>.
-		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy przez wywo³anie
-		http://lms.adres.pl/?m=sql.</para>
-		</sect2>
-	</sect1>
-	<sect1 id="contrib-squid">
-    	<title>Ostrze¿enia + squid</title>
-		<sect2 id="squid-redirector-intro">
-		<title>Wstêp</title>
-		<para>Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki sposób 
-		wy¶wietlaæ wiadomo¶ci administracyjne oraz w razie potrzeby blokowaæ dostêp
-		do w3cache. Oczywi¶cie aby to dzia³a³o w 100%, wszyscy klienci musz± 
-		korzystaæ ze squida.</para>
-		<para>Kluczowym elementem jest redirector. Odpowiada on za to, 
-		aby w momencie ustawienia dla danego komputera flagi warn, 
-		przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
-		ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
-		adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
-		Je¶li komputer ma ustawion± flagê warn, to po przekierowaniu u¿ytkownik ma 
-		mo¿liwo¶æ oznaczenia wiadomo¶ci jako przeczytanej, po czym skrypt automatycznie 
-		kieruje przegl±darkê na pierwotnie wywo³ywany URL. W przypadku oznaczeniu danego 
-		komputera jako wy³±czony, u¿ytkownik bêdzie zawsze przekierowywany na adres 
-		winetki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
-		Wiêcej informacji znajdziesz w pliku
-		<filename>README</filename>.</para>
-		</sect2>
-		<sect2 id="squid-redirector-install">
-		<title>Instalacja</title>
-		<para>Zaczynamy od konfiguracji squida (<filename>squid.conf</filename>):
+     <para>W niniejszym rozdziale zostan± opisane dodatkowe modu³y i rozwi±zania
+     zwiêkszaj±ce funkcjonalno¶æ LMS'a znajduj±ce siê w katalogu 
+     <filename>contrib</filename>. Czê¶æ z nich nale¿y dostosowaæ do w³asnych 
+     potrzeb, a niektóre integruj± siê z interfejsem <emphasis>LMS-UI</emphasis>.</para>
+     <sect1 id="contrib-customer">
+         <title>Moje konto</title>
+          <sect2 id="customer-intro">
+          <title>Wstêp</title>
+          <para>W katalogu <filename>contrib/customer</filename> znajduje siê
+          przyk³ad rozwi±zania, dziêki któremu ka¿dy klient twojej sieci
+          mo¿e sprawdziæ w³asny bilans finansowy.</para>
+          <para>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
+          bilans i informacje o kliencie, który jest w³a¶cicielem komputera
+          o tym adresie.</para>
+          <para>Dla osób korzystaj±cych z proxy, nie korzystaj±cych
+          z sieci tylko w domu, albo którzy nie chc± aby dzieci/ma³¿onkowie/pracownicy 
+          mieli wgl±d w dane finansowe dotycz±ce ich dostêpu do sieci/innych 
+          us³ug przeznaczone jest "Moje konto 2".</para>
+          </sect2>
+          <sect2 id="customer-install">
+          <title>Instalacja</title>
+          <para>Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
+          pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
+          ustawiæ poprawn± ¶cie¿kê do <filename>lms.ini</filename> w pliku 
+          <filename>index.php</filename>.</para>     
+          </sect2>
+     </sect1>
+     <sect1 id="contrib-customer2">
+         <title>Moje konto 2</title>
+          <sect2 id="customer2-intro">
+          <title>Wstêp</title>
+          <para>W katalogu <filename>contrib/customer_otherip</filename> znajduje siê
+          odpowiednik <filename>contrib/customer</filename>, który nie rozpoznaje
+          klienta po adresie IP, ale wymaga logowania. Uwierzytelnianie odbywa siê na 
+          podstawie numeru PIN oraz telefonu klienta, ale mo¿liwe jest tak¿e
+          wykorzystanie ID lub numeru umowy (dodatkowe pole w bazie) - patrz 
+          pliki balanceview.php i authentication.inc).</para>
+          <para>Skrypt wy¶wietla bilans i informacje o kliencie, a tak¿e w po³±czeniu
+          z <filename>contrib/formularz_przelewu_wplaty</filename> umo¿liwia klientowi
+          wydrukowanie druku wp³aty na kwotê zaleg³o¶ci.</para>
+          </sect2>
+          <sect2 id="customer2-install">
+          <title>Instalacja</title>
+          <para>Instalacja sprowadza siê do ustawienia opcji <filename>sys_dir</filename>
+          w sekcji <emphasis>[directories]</emphasis> pliku lms.ini oraz zlinkowania 
+          katalogu <filename>img</filename> z lms'owymi ikonkami.</para>     
+          </sect2>
+     </sect1>
+     <sect1 id="contrib-sqlpanel">
+         <title>Panel SQL</title>
+          <sect2 id="sqlpanel-intro">
+          <title>Wstêp</title>
+          <para>W katalogu <filename>contrib/sqlpanel</filename> znajdziesz
+          modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
+          do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
+          w formie tabeli. Ponadto podawany jest czas wykonania zapytania. 
+          Mo¿liwe jest tak¿e drukowanie wyników zapytania.</para>
+          <para>Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
+          domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<prompt>sqlpanel_pagelimit</prompt>'
+          w sekcji <emphasis>[phpui]</emphasis> pliku konfiguracyjnego <filename>lms.ini</filename>.</para>
+          </sect2>
+          <sect2 id="sqlpanel-install">
+          <title>Instalacja</title>
+          <para>Instalacja polega na skopiowaniu plików w odpowiednie miejsca
+          w drzewie katalogów lms'a. Plik <filename>sql.php, sqllang.php</filename> skopiuj
+          do katalogu <filename>modules</filename>, a pliki <filename>sql.html, sqlprint.html
+          </filename> do katalogu <filename>templates</filename>.
+          Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy przez wywo³anie
+          http://lms.adres.pl/?m=sql.</para>
+          </sect2>
+     </sect1>
+     <sect1 id="contrib-squid">
+         <title>Ostrze¿enia + squid</title>
+          <sect2 id="squid-redirector-intro">
+          <title>Wstêp</title>
+          <para>Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki sposób 
+          wy¶wietlaæ wiadomo¶ci administracyjne oraz w razie potrzeby blokowaæ dostêp
+          do w3cache. Oczywi¶cie aby to dzia³a³o w 100%, wszyscy klienci musz± 
+          korzystaæ ze squida.</para>
+          <para>Kluczowym elementem jest redirector. Odpowiada on za to, 
+          aby w momencie ustawienia dla danego komputera flagi warn, 
+          przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
+          ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
+          adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
+          Je¶li komputer ma ustawion± flagê warn, to po przekierowaniu u¿ytkownik ma 
+          mo¿liwo¶æ oznaczenia wiadomo¶ci jako przeczytanej, po czym skrypt automatycznie 
+          kieruje przegl±darkê na pierwotnie wywo³ywany URL. W przypadku oznaczeniu danego 
+          komputera jako wy³±czony, u¿ytkownik bêdzie zawsze przekierowywany na adres 
+          winetki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
+          Wiêcej informacji znajdziesz w pliku
+          <filename>README</filename>.</para>
+          </sect2>
+          <sect2 id="squid-redirector-install">
+          <title>Instalacja</title>
+          <para>Zaczynamy od konfiguracji squida (<filename>squid.conf</filename>):
 <screen>
 redirector_bypass on
 redirect_program /sciezka/do/lms-squid
 </screen>
-		które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego 
-		redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy 
-		w naszym ulubionym edytorze plik lms-squid i praktycznie
-		wszystko co mo¿na w nim ustawiæ to:
+          które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego 
+          redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy 
+          w naszym ulubionym edytorze plik lms-squid i praktycznie
+          wszystko co mo¿na w nim ustawiæ to:
 <screen>
 my $configfile = '/etc/lms/lms.ini';
 </screen>
-		Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
-		ustawiana jest w <filename>lms.ini</filename>, gdzie dopisujemy sekcjê 
-		<filename>[redirector]</filename> i definiujemy adres winetki:
+          Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
+          ustawiana jest w <filename>lms.ini</filename>, gdzie dopisujemy sekcjê 
+          <filename>[redirector]</filename> i definiujemy adres winetki:
 <screen>
 [redirector]
 redirect        = http://net-komp.net.pl
 </screen>
-		Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
-		<filename>index.php, message.html</filename> i zawarto¶æ katalogu 
-		<filename>img</filename>.</para>
-		</sect2>
-	</sect1>
+          Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
+          <filename>index.php, message.html</filename> i zawarto¶æ katalogu 
+          <filename>img</filename>.</para>
+          </sect2>
+     </sect1>
+     <sect1 id="contrib-antyvir">
+          <title>Antywirus</title>
+          <sect2 id="contrib-antyvir-intro">
+               <title>Wstêp</title>
+               <para>Wiêkszo¶æ z nas mia³a problemy z zawirusowanymi komputerami.
+               Ró¿ni ludzie maj± ró¿ne podej¶cie do problemu. Skrypt lms-antyvir
+               wykrywa wirusy zagra¿ajace stabilno¶ci sieci. Jest oparty na programie
+               tcpdump, przy pomocy którego mo¿emy spróbowaæ wykryæ wirusy/trojany
+               same siê rozprzestrzeniaj±ce jak Mydoom itp. Cech± wspóln± prawie wszystkich 
+               tego typu programów jest skanowanie sieci na portach 135 i 445 oraz 
+               dodatkowych w zale¿no¶ci od odmiany wirusa. Oczywi¶cie MS Windows te¿ korzysta 
+               z tych portów, ale nie w takim stopniu. Po wykryciu nadmiernego ruchu
+               wy¶wietlana jest informacja na standardowe wyj¶cie lub w³±czane jest 
+               ostrze¿enie ze zdefiniowanym komunikatem.</para>
+          </sect2>
+          <sect2 id="contrib-antyvir-config">
+               <title>Konfiguracja</title>
+               <para>Konfiguracjê lms-antyvir dokonuje siê w sekcji <emphasis>[antyvir]</emphasis> pliku
+               <filename>lms.ini</filename>, a masz do dyspozycji nastêpuj±ce opcje:</para>
+               <itemizedlist>
+                    <listitem>
+                         <para>logfile</para>
+                         <para>Lokalizacja tymczasowych pliku(ów) z logami tcpdumpa.
+                         Domy¶lnie: /tmp/antyvir</para>
+                         <para>Przyk³ad:     <prompt>logfile = /var/log/antyvir</prompt></para>
+                    </listitem>
+                    <listitem>
+                         <para>interfaces</para>
+                         <para>Lista oddzielonych spacj± nazw interfejsów, z których tcpdump ma 
+                         zbieraæ dane. Domy¶lnie: eth0</para>
+                         <para>Przyk³ad:     <prompt>interfaces = eth0 eth1</prompt></para>
+                    </listitem>
+                    <listitem>
+                         <para>ports</para>
+                         <para>Lista oddzielonych spacj± portów, z których tcpdump ma zbieraæ dane.
+                         Dla ka¿dego tworzony jest osobny proces, wiêc nie przesadzaæ. Domy¶lnie: 135 445</para>
+                         <para>Przyk³ad:     <prompt>ports = 445</prompt></para>
+                    </listitem>
+                    <listitem>
+                         <para>packets</para>
+                         <para>Okre¶la liczbê pakietów po odebraniu której tcpdump koñczy pracê.
+                         Domy¶lnie: 1000</para>
+                         <para>Przyk³ad:     <prompt>packets = 500</prompt></para>
+                    </listitem>
+                    <listitem>
+                         <para>threshold</para>
+                         <para>Okre¶la liczbê pakietów, po przekroczeniu której program uznaje
+                         ruch w sieci za podejrzany. Domy¶lnie: 50</para>
+                         <para>Przyk³ad:     <prompt>threshold = 100</prompt></para>
+                    </listitem>
+                    <listitem>
+                         <para>field</para>
+                         <para>Ma to zwi±zek z tcpdumpem i jego ró¿nymi wersjami. W starszych
+                         wersjach powinno byæ tu 6. Jak to sprawdziæ? tcpdump -i eth1 -enp -c 1
+                         otrzymujemy 00:03:38.613761 0:40:f4:b3:1c:67 0:30:84:b3:bb:8d 0800 1414:
+                         10.100.0.52.4314 > 172.181.172.35.4662: .... interesuje nas pole w tym
+                         wypadku 6 czyli adres IP nadawcy. Domy¶lnie: 11</para>
+                         <para>Przyk³ad:     <prompt>field = 6</prompt></para>
+                    </listitem>
+                    <listitem>
+                         <para>message</para>
+                         <para>Tre¶æ ostrze¿enia, w którym mo¿na zastosowaæ zmienn± %DATE dla bie¿±cej daty
+                         i godziny. Je¶li pusta, ostrze¿enie nie zostanie w³±czone. Domy¶lnie: pusta</para>
+                         <para>Przyk³ad:     <prompt>message = Wykryto wirusa w dniu %DATE</prompt></para>
+                    </listitem>
+               </itemizedlist>
+          </sect2>
+     </sect1>
 </chapter>

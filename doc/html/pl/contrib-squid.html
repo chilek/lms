@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="Panel SQL"
 HREF="contrib-sqlpanel.html"><LINK
 REL="NEXT"
-TITLE="FAQ"
-HREF="faq.html"><LINK
+TITLE="Antywirus"
+HREF="contrib-antyvir.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="faq.html"
+HREF="contrib-antyvir.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -88,22 +88,22 @@ NAME="SQUID-REDIRECTOR-INTRO"
 ></H2
 ><P
 >Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki sposób 
-		wy¶wietlaæ wiadomo¶ci administracyjne oraz w razie potrzeby blokowaæ dostêp
-		do w3cache. Oczywi¶cie aby to dzia³a³o w 100%, wszyscy klienci musz± 
-		korzystaæ ze squida.</P
+          wy¶wietlaæ wiadomo¶ci administracyjne oraz w razie potrzeby blokowaæ dostêp
+          do w3cache. Oczywi¶cie aby to dzia³a³o w 100%, wszyscy klienci musz± 
+          korzystaæ ze squida.</P
 ><P
 >Kluczowym elementem jest redirector. Odpowiada on za to, 
-		aby w momencie ustawienia dla danego komputera flagi warn, 
-		przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
-		ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
-		adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
-		Je¶li komputer ma ustawion± flagê warn, to po przekierowaniu u¿ytkownik ma 
-		mo¿liwo¶æ oznaczenia wiadomo¶ci jako przeczytanej, po czym skrypt automatycznie 
-		kieruje przegl±darkê na pierwotnie wywo³ywany URL. W przypadku oznaczeniu danego 
-		komputera jako wy³±czony, u¿ytkownik bêdzie zawsze przekierowywany na adres 
-		winetki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
-		Wiêcej informacji znajdziesz w pliku
-		<TT
+          aby w momencie ustawienia dla danego komputera flagi warn, 
+          przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
+          ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
+          adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
+          Je¶li komputer ma ustawion± flagê warn, to po przekierowaniu u¿ytkownik ma 
+          mo¿liwo¶æ oznaczenia wiadomo¶ci jako przeczytanej, po czym skrypt automatycznie 
+          kieruje przegl±darkê na pierwotnie wywo³ywany URL. W przypadku oznaczeniu danego 
+          komputera jako wy³±czony, u¿ytkownik bêdzie zawsze przekierowywany na adres 
+          winetki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
+          Wiêcej informacji znajdziesz w pliku
+          <TT
 CLASS="FILENAME"
 >README</TT
 >.</P
@@ -126,20 +126,20 @@ CLASS="SCREEN"
 >redirector_bypass on
 redirect_program /sciezka/do/lms-squid</PRE
 >
-		które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego 
-		redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy 
-		w naszym ulubionym edytorze plik lms-squid i praktycznie
-		wszystko co mo¿na w nim ustawiæ to:
+          które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego 
+          redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy 
+          w naszym ulubionym edytorze plik lms-squid i praktycznie
+          wszystko co mo¿na w nim ustawiæ to:
 <PRE
 CLASS="SCREEN"
 >my $configfile = '/etc/lms/lms.ini';</PRE
 >
-		Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
-		ustawiana jest w <TT
+          Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
+          ustawiana jest w <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >, gdzie dopisujemy sekcjê 
-		<TT
+          <TT
 CLASS="FILENAME"
 >[redirector]</TT
 > i definiujemy adres winetki:
@@ -148,12 +148,12 @@ CLASS="SCREEN"
 >[redirector]
 redirect        = http://net-komp.net.pl</PRE
 >
-		Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
-		<TT
+          Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
+          <TT
 CLASS="FILENAME"
 >index.php, message.html</TT
 > i zawarto¶æ katalogu 
-		<TT
+          <TT
 CLASS="FILENAME"
 >img</TT
 >.</P
@@ -193,7 +193,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="faq.html"
+HREF="contrib-antyvir.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -217,7 +217,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->FAQ</TD
+>Antywirus</TD
 ></TR
 ></TABLE
 ></DIV

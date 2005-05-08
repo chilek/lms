@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Antywirus</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Dodatki"
+HREF="contrib.html"><LINK
+REL="PREVIOUS"
+TITLE="Ostrze¿enia + squid"
+HREF="contrib-squid.html"><LINK
+REL="NEXT"
+TITLE="FAQ"
+HREF="faq.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="contrib-squid.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 8. Dodatki</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONTRIB-ANTYVIR"
+>8.5. Antywirus</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONTRIB-ANTYVIR-INTRO"
+>8.5.1. Wstêp</A
+></H2
+><P
+>Wiêkszo¶æ z nas mia³a problemy z zawirusowanymi komputerami.
+               Ró¿ni ludzie maj± ró¿ne podej¶cie do problemu. Skrypt lms-antyvir
+               wykrywa wirusy zagra¿ajace stabilno¶ci sieci. Jest oparty na programie
+               tcpdump, przy pomocy którego mo¿emy spróbowaæ wykryæ wirusy/trojany
+               same siê rozprzestrzeniaj±ce jak Mydoom itp. Cech± wspóln± prawie wszystkich 
+               tego typu programów jest skanowanie sieci na portach 135 i 445 oraz 
+               dodatkowych w zale¿no¶ci od odmiany wirusa. Oczywi¶cie MS Windows te¿ korzysta 
+               z tych portów, ale nie w takim stopniu. Po wykryciu nadmiernego ruchu
+               wy¶wietlana jest informacja na standardowe wyj¶cie lub w³±czane jest 
+               ostrze¿enie ze zdefiniowanym komunikatem.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONTRIB-ANTYVIR-CONFIG"
+>8.5.2. Konfiguracja</A
+></H2
+><P
+>Konfiguracjê lms-antyvir dokonuje siê w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[antyvir]</I
+></SPAN
+> pliku
+               <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>, a masz do dyspozycji nastêpuj±ce opcje:</P
+><UL
+><LI
+><P
+>logfile</P
+><P
+>Lokalizacja tymczasowych pliku(ów) z logami tcpdumpa.
+                         Domy¶lnie: /tmp/antyvir</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>logfile = /var/log/antyvir</SAMP
+></P
+></LI
+><LI
+><P
+>interfaces</P
+><P
+>Lista oddzielonych spacj± nazw interfejsów, z których tcpdump ma 
+                         zbieraæ dane. Domy¶lnie: eth0</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>interfaces = eth0 eth1</SAMP
+></P
+></LI
+><LI
+><P
+>ports</P
+><P
+>Lista oddzielonych spacj± portów, z których tcpdump ma zbieraæ dane.
+                         Dla ka¿dego tworzony jest osobny proces, wiêc nie przesadzaæ. Domy¶lnie: 135 445</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>ports = 445</SAMP
+></P
+></LI
+><LI
+><P
+>packets</P
+><P
+>Okre¶la liczbê pakietów po odebraniu której tcpdump koñczy pracê.
+                         Domy¶lnie: 1000</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>packets = 500</SAMP
+></P
+></LI
+><LI
+><P
+>threshold</P
+><P
+>Okre¶la liczbê pakietów, po przekroczeniu której program uznaje
+                         ruch w sieci za podejrzany. Domy¶lnie: 50</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>threshold = 100</SAMP
+></P
+></LI
+><LI
+><P
+>field</P
+><P
+>Ma to zwi±zek z tcpdumpem i jego ró¿nymi wersjami. W starszych
+                         wersjach powinno byæ tu 6. Jak to sprawdziæ? tcpdump -i eth1 -enp -c 1
+                         otrzymujemy 00:03:38.613761 0:40:f4:b3:1c:67 0:30:84:b3:bb:8d 0800 1414:
+                         10.100.0.52.4314 &#62; 172.181.172.35.4662: .... interesuje nas pole w tym
+                         wypadku 6 czyli adres IP nadawcy. Domy¶lnie: 11</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>field = 6</SAMP
+></P
+></LI
+><LI
+><P
+>message</P
+><P
+>Tre¶æ ostrze¿enia, w którym mo¿na zastosowaæ zmienn± %DATE dla bie¿±cej daty
+                         i godziny. Je¶li pusta, ostrze¿enie nie zostanie w³±czone. Domy¶lnie: pusta</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>message = Wykryto wirusa w dniu %DATE</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="contrib-squid.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Ostrze¿enia + squid</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="contrib.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FAQ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
