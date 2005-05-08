@@ -32,6 +32,7 @@ version 1.6.0rc1 Thor (??/??/????):
     status is getting from all connected nodes lastonline value (alec)
   - BTS#0000340: option [Account] on customer list accounts all customer's 
     covenants including invoices (alec)
+  - added contrib/bin/lms-antyvir (alec/wojtek_sw)
     
 version 1.5.6 Baal (24/04/2005):
 
