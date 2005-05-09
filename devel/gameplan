@@ -18,6 +18,9 @@ $Id$
 * pomyle¶leæ nad jakim¶ sposobem archiwizacji starych danych finansowych
   - o ile baza danych sobie poradzi z danymi z kilku lat, nawet w du¿ej sieci,
   to w UI mo¿e nie byæ ju¿ za ciekawie
+* Ujednolici¶ "Skrypty Perlowe" co¶ na kszta³t lmsdb i lms.class.php, jeden 
+  wspólny "connect do bazy" i funkcje typu "we¼ userów + assigmenty" [je¶li 
+  bêdzie to mia³o jaki¶ sens i siê powiela³o w wiêcej ni¿ 1-2 skryptach]
 
   
 1.7 (deadline dla 1.5 to koniec kwietnia/pocz±tek maja)
