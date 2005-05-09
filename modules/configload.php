@@ -172,6 +172,10 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 			$desc = trans('How often to check for LMS updates (in seconds). Default: 86400.');
 		break;					
 
+		case 'map_type':
+			$desc = trans('Network map type. Use "flash" if you have Ming library or "gd" if your PHP supports gdlib. By default LMS will try to generate flash map, when this fails generate image with GD.');
+		break;					
+
 		case 'smtp_port':
 		case 'smtp_host':
 		case 'smtp_username':

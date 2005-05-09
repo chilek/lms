@@ -1,25 +1,22 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if !$gderror && !$emptydb && $ming}
+{if $emptydb}
+    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
+	<BR><BR><B><FONT COLOR="RED">{t}No such devices in database!{/t}</FONT></B>
+    </TD></TR></TABLE>
+{elseif !$ming && $type == 'flash'}
+    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
+	<BR><BR><B><FONT COLOR="RED">{t}Your PHP does not support Ming library required for map generation!{/t}</FONT></B>
+    </TD></TR></TABLE>
+{elseif $ming && (!$type || $type=='flash')}
 <P ALIGN="CENTER">
 <OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" WIDTH="100%" HEIGHT="400" id="intro" ALIGN="">
 <PARAM NAME=movie VALUE="?m=netdevmap&graph=flash&start={$start}"> <PARAM NAME=loop VALUE=false> <PARAM NAME=quality VALUE=high> <PARAM NAME=bgcolor VALUE=#EBE4D6> <EMBED src="?m=netdevmap&graph=flash&start={$start}" loop=false quality=high bgcolor=#EBE4D6 WIDTH="100%" HEIGHT="400" NAME="map" ALIGN=""
   TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED>
 </OBJECT>
 </P>
-<FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
-	<P ALIGN="CENTER">{t}Begin map from:{/t}
-	<INPUT TYPE="hidden" NAME="m" VALUE="netdevmap">
-	<SELECT SIZE="1" NAME="start" onChange="document.x.submit();">
-		{section name=a loop=$deviceslist}
-		<OPTION VALUE="{$deviceslist[a].id}"{if $deviceslist[a].id eq $start} SELECTED{/if}>{$deviceslist[a].name}</OPTION>
-		{/section}
-	</SELECT>
-	<INPUT TYPE="SUBMIT" VALUE="{t}Generate{/t}">
-	</P>
-</FORM>
-{elseif !$gderror && !$emptydb}
+{elseif $gd} {* default if $type is not set or not 'flash' *}
 <P ALIGN="CENTER">
 <IMG SRC="?m=netdevmap&graph=true&start={$start}" ALT="" USEMAP="#devices" BORDER="0">
 <MAP NAME="devices">
@@ -31,8 +28,14 @@
 {/section}
 </MAP>
 </P>
-<FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
-	<P ALIGN="CENTER">{t}Begin map from:{/t}
+{else}
+    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
+	<BR><BR><B><FONT COLOR="RED">{t}Your PHP does not support GD library required for map generation!{/t}</FONT></B>
+    </TD></TR></TABLE>
+{/if}
+{if !$emptydb}
+<P ALIGN="CENTER"><FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
+	{t}Begin map from:{/t}
 	<INPUT TYPE="hidden" NAME="m" VALUE="netdevmap">
 	<SELECT SIZE="1" NAME="start" onChange="document.x.submit();">
 		{section name=a loop=$deviceslist}
@@ -40,15 +43,6 @@
 		{/section}
 	</SELECT>
 	<INPUT TYPE="SUBMIT" VALUE="{t}Generate{/t}">
-	</P>
-</FORM>
-{elseif $gderror}
-    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><B><FONT COLOR="RED">{t}Your PHP do not support Graphic Library required for map generation!{/t}</FONT></B>
-    </TD></TR></TABLE>
-{elseif $emptydb}
-    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><B><FONT COLOR="RED">{t}No such devices in database!{/t}</FONT></B>
-    </TD></TR></TABLE>
+</FORM></P>
 {/if}
 {include file="footer.html"}

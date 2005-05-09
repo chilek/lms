@@ -264,10 +264,15 @@ are optional.</para>
 	    <sect2 id="menu-netdevices-map">
 	    <title>Map</title>
 		<para>Selection of 'Map' option draws graphical map of entire
-network. You can define root device, which will appear on top of the map and all
-other devices will be drawn relative to it.
-		<note><para>You need GD library compiled in PHP (and gd module
-enabled) to be able to use graphical map.</para></note>
+		network. You can define root device, which will appear on top of the map and all
+		other devices will be drawn relative to it.
+		<note><para>You need GD or Ming library compiled in PHP 
+		to be able to use graphical map.</para></note>
+		To specify type of map use option <filename>'map_type'</filename>
+		in section <emphasis>[phpui]</emphasis>. Set it to "flash" if you've
+		got Ming library or "gd" for graphic images. By default (option
+		not set) LMS will try to generate flash map, and when this fails, 
+		will try GD.
 		</para>
 		<para>Device status is shown on the map - computers in black are
 offline. Question mark on device icon means that its status is unknown (device 
