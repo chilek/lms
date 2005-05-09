@@ -237,9 +237,10 @@ if($graph == '')
 	$SMARTY->assign('devicemap', $devicemap);
 	$SMARTY->assign('nodemap', $nodemap);
 	$SMARTY->assign('deviceslist', $deviceslist);
-	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
-	$SMARTY->assign('gderror', ! function_exists('imagepng'));
 	$SMARTY->assign('start', $start);
+	$SMARTY->assign('type', strtolower($_CONFIG['phpui']['map_type']));
+	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
+	$SMARTY->assign('gd', function_exists('imagepng'));
 	$SMARTY->assign('ming', function_exists('ming_useswfversion'));
 	$SMARTY->display('netdevmap.html');
 } 
