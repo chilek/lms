@@ -35,6 +35,7 @@ version 1.6.0rc1 Thor (??/??/????):
   - added contrib/bin/lms-antyvir (alec/wojtek_sw)
   - added contrib/bin/lms-debtors (alec)
   - added option [phpui] map_type (alec)
+  - lmsd/hostfile: added variables %wins, %dns, %dns2, %addr, %mask, %id (alec)
 
 version 1.5.6 Baal (24/04/2005):
 

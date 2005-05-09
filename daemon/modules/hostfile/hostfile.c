@@ -31,6 +31,7 @@
 #include "hostfile.h"
 
 unsigned long inet_addr(char *);
+unsigned char * inet_ntoa(unsigned long);
 
 void reload(GLOBAL *g, struct hostfile_module *hm)
 {
@@ -53,7 +54,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 		if( strlen(netname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway, dns, dns2, wins FROM networks WHERE UPPER(name)=UPPER('?')",netname);
 
 			if( g->db_nrows(res) )
 			{
@@ -62,6 +63,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				nets[nc].domain = strdup(g->db_get_data(res,0,"domain"));
 				nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
 				nets[nc].gateway = strdup(g->db_get_data(res,0,"gateway"));
+				nets[nc].dns = strdup(g->db_get_data(res,0,"dns"));
+				nets[nc].dns2 = strdup(g->db_get_data(res,0,"dns2"));
+				nets[nc].wins = strdup(g->db_get_data(res,0,"wins"));
 				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
 				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
 				nc++;
@@ -73,7 +77,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	if(!nc)
 	{
-		res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks");
+		res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway, dns, dns2, wins FROM networks");
 
 		for(nc=0; nc<g->db_nrows(res); nc++)
 		{
@@ -82,6 +86,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			nets[nc].domain = strdup(g->db_get_data(res,nc,"domain"));
 			nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
 			nets[nc].gateway = strdup(g->db_get_data(res,0,"gateway"));
+			nets[nc].dns = strdup(g->db_get_data(res,0,"dns"));
+			nets[nc].dns2 = strdup(g->db_get_data(res,0,"dns2"));
+			nets[nc].wins = strdup(g->db_get_data(res,0,"wins"));
 			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
 			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
 		}
@@ -127,16 +134,17 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		fprintf(fh, "%s", hm->prefix);
 		
 		if(hm->skip_dev_ips)
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, passwd, ownerid, access, info FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
+			query = strdup("SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, passwd, ownerid, access, info FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
 		else
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, passwd, ownerid, access, info FROM nodes ORDER BY ipaddr");
+			query = strdup("SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, passwd, ownerid, access, info FROM nodes ORDER BY ipaddr");
 			
 		res = g->db_query(g->conn, query);
 		
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			unsigned char *mac, *ip, *ip_pub, *access, *name, *info, *passwd;
+			unsigned char *id, *mac, *ip, *ip_pub, *access, *name, *info, *passwd;
 	
+			id  = g->db_get_data(res,i,"id");
 			mac 	= g->db_get_data(res,i,"mac");
 			ip  	= g->db_get_data(res,i,"ip");
 			ip_pub 	= g->db_get_data(res,i,"ip_pub");
@@ -186,8 +194,14 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					g->str_replace(&s, "%net", nets[j].name);
 					g->str_replace(&s, "%if", nets[j].interface);
 					g->str_replace(&s, "%gw", nets[j].gateway);
+					g->str_replace(&s, "%dns2", nets[j].dns2);
+					g->str_replace(&s, "%dns", nets[j].dns);
+					g->str_replace(&s, "%wins", nets[j].wins);
+					g->str_replace(&s, "%mask", inet_ntoa(nets[j].mask));
+					g->str_replace(&s, "%addr", inet_ntoa(nets[j].address));
 					g->str_replace(&s, "%info", info);
 					g->str_replace(&s, "%ipub", ip_pub);
+					g->str_replace(&s, "%id", id);
 					g->str_replace(&s, "%i", ip);
 					g->str_replace(&s, "%m", mac);
 					g->str_replace(&s, "%n", name);
@@ -219,6 +233,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		free(nets[i].domain);	
 		free(nets[i].interface);
 		free(nets[i].gateway);
+		free(nets[i].dns);
+		free(nets[i].dns2);
+		free(nets[i].wins);
 	}
 	free(nets);
 	

@@ -4,6 +4,9 @@ struct net
 	unsigned char *domain;
 	unsigned char *interface;
 	unsigned char *gateway;
+	unsigned char *dns;
+	unsigned char *dns2;
+	unsigned char *wins;
 	unsigned long address;
 	unsigned long mask;
 };
