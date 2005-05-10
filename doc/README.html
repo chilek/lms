@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2317"
+HREF="#AEN2319"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -1741,7 +1741,7 @@ NAME="INSTALL-SQLITE-SERVER"
                SQLite directory and type in commands step by step (for example):
                <PRE
 CLASS="SCREEN"
->$ ./configure
+>$ ./configure --enable-utf8
 $ make
 $ make install
 $ ldconfig
@@ -3802,8 +3802,8 @@ NAME="MENU-NETDEVICES-MAP"
 ></H3
 ><P
 >Selection of 'Map' option draws graphical map of entire
-network. You can define root device, which will appear on top of the map and all
-other devices will be drawn relative to it.
+		network. You can define root device, which will appear on top of the map and all
+		other devices will be drawn relative to it.
 		<DIV
 CLASS="NOTE"
 ><TABLE
@@ -3823,13 +3823,27 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->You need GD library compiled in PHP (and gd module
-enabled) to be able to use graphical map.</P
+>You need GD or Ming library compiled in PHP 
+		to be able to use graphical map.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 >
+		To specify type of map use option <TT
+CLASS="FILENAME"
+>'map_type'</TT
+>
+		in section <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>. Set it to "flash" if you've
+		got Ming library or "gd" for graphic images. By default (option
+		not set) LMS will try to generate flash map, and when this fails, 
+		will try GD.
 		</P
 ><P
 >Device status is shown on the map - computers in black are
@@ -8435,7 +8449,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2317"
+NAME="AEN2319"
 ></A
 ><P
 ><B
@@ -9258,10 +9272,73 @@ NAME="HOSTFILE-CONFIG"
 ></H4
 ><P
 >The following templates might be used for 'grantedhost', 'deniedhost', 'public_grantedhost'
-	      and 'public_deniedhost' options replaced with actual data from database: '%i' - IP address, 
-	      '%ipub' - public IP address, '%m' - MAC address, '%n' - host name, '%p' - node (computer) password, 
-	      '%info' - node description, '%domain' - domain, '%net' - net name, '%gw' - gateway address of network 
-	      that given node belongs to.
+	      and 'public_deniedhost' options replaced with actual data from database: 
+	      <TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>%i - IP address,</TD
+></TR
+><TR
+><TD
+>%ipub - public IP address,</TD
+></TR
+><TR
+><TD
+>%id - node ID,</TD
+></TR
+><TR
+><TD
+>%m - MAC address,</TD
+></TR
+><TR
+><TD
+>%n - host name,</TD
+></TR
+><TR
+><TD
+>%p - node (computer) password,</TD
+></TR
+><TR
+><TD
+>%info - node description,</TD
+></TR
+><TR
+><TD
+>%domain - domain,</TD
+></TR
+><TR
+><TD
+>%net - network name,</TD
+></TR
+><TR
+><TD
+>%gw - gateway address of network,</TD
+></TR
+><TR
+><TD
+>%if - network's interface,</TD
+></TR
+><TR
+><TD
+>%mask - network mask,</TD
+></TR
+><TR
+><TD
+>%addr - network's address,</TD
+></TR
+><TR
+><TD
+>%dns, %dns2 - DNS server addresses,</TD
+></TR
+><TR
+><TD
+>%wins - WINS server address,</TD
+></TR
+></TBODY
+></TABLE
+>
               This module has following options:</P
 ><UL
 ><LI

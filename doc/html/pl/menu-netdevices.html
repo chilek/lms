@@ -143,12 +143,27 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Do wygenerowania mapy potrzebna jest wbudowana w PHP obs³uga 
-		biblioteki graficznej GD.</P
+		biblioteki graficznej GD lub Ming.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 >
+		Aby wybraæ typ mapy musisz skorzystaæ z opcji <TT
+CLASS="FILENAME"
+>map_type</TT
+>
+		z sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>. Ustaw "flash" je¶li u¿ywasz biblioteki
+		Ming lub "gd" je¶li chcesz generowaæ obrazki przy pomocy gdlib. Domy¶lnie
+		(opcja nieustawiona) LMS spróbuje wykryæ jak± bibliotekê masz dostêpn± w systemie, przy czym
+		w pierwszej kolejno¶ci szuka mo¿liwo¶ci wygenerowania mapy we flashu, a jak
+		siê to nie uda, to u¿yje GD.
 		</P
 ><P
 >Na mapie hosty wy³±czone oznaczone s± kolorem czarnym. Ikona z pytajnikiem
