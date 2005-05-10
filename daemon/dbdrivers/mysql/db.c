@@ -186,7 +186,7 @@ QueryHandle * db_pquery(ConnHandle *c, unsigned char *q, ... )
 	    } else {
         	    temp = va_arg(ap, unsigned char*);
 		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
-		    mysql_real_escape_string(c, escstr, temp, strlen(temp));
+		    mysql_real_escape_string(&c->conn, escstr, temp, strlen(temp));
 		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
 		    snprintf(s, i, "%s%s", result, escstr);
@@ -252,7 +252,7 @@ int db_pexec(ConnHandle *c, unsigned char *q, ... )
 	    } else {
 	    	    temp = va_arg(ap, unsigned char*);
 		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
-		    mysql_real_escape_string(c, escstr, temp, strlen(temp));
+		    mysql_real_escape_string(&c->conn, escstr, temp, strlen(temp));
 		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
 		    snprintf(s, i, "%s%s", result, escstr);
