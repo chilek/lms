@@ -6,6 +6,11 @@ incdir="/usr/include"
 libdir="/usr/lib"
 with_mysql=yes
 
+# Create config.status file
+echo "#!/bin/sh" > config.status
+echo "" >> config.status
+echo "./configure \\" >> config.status
+
 # Parse options *****************************************************************
 ac_prev=
 for ac_option
@@ -94,7 +99,11 @@ EOF
 		{ echo "configure error: '$ac_option' invalid option; use --help to show usage" 1>&2; exit 1; }
     	;;
   esac
+  
+  echo "\"$ac_option\" \\" >> config.status
 done
+
+chmod a+x config.status
 #***************************************************************************************************
 
 LIBS=
