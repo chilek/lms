@@ -40,6 +40,7 @@ version 1.6.0rc1 Thor (??/??/????):
   - added 'qualification operator' for Customer Search (alec)
   - lmsd: fixed problems with unescaped chars in SQL queries - added strings
     escaping for parameters of db_pexec() and db_pquery() functions (alec)
+  - lmsd: configure create config.status script (alec)
 
 version 1.5.6 Baal (24/04/2005):
 
