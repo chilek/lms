@@ -111,7 +111,7 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 void reload(GLOBAL *g, struct payments_module *p)
 {
 	QueryHandle *res, *result, *sres;
-	unsigned char *query, *insert;
+	unsigned char *insert;
 	unsigned char *w_period, *m_period, *q_period, *y_period, *value, *taxvalue;
 	unsigned char *description;
 	int i, invoiceid=0, last_userid=0, number=0, exec=0, suspended=0, itemid=0;
@@ -230,7 +230,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			value = ftoa(val);
 			taxvalue = g->db_get_data(res,i,"taxvalue");
 			// prepare insert to 'cash' table
-			insert = strdup("INSERT INTO cash (time, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (%NOW%, 4, %value, %taxvalue, %userid, '%comment', %invoiceid, %itemid)");
+			insert = strdup("INSERT INTO cash (time, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (%NOW%, 4, %value, %taxvalue, %userid, '?', %invoiceid, %itemid)");
 			g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
 			g->str_replace(&insert, "%value", value);
 			description = strdup(p->comment);
@@ -242,7 +242,6 @@ void reload(GLOBAL *g, struct payments_module *p)
 				case 3: g->str_replace(&description, "%period", y_period); break;
 			}
 			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"tariff"));
-			g->str_replace(&insert, "%comment", description);
 			if( strlen(taxvalue) )
 				g->str_replace(&insert, "%taxvalue", taxvalue);
 			else
@@ -276,47 +275,48 @@ void reload(GLOBAL *g, struct payments_module *p)
 				}
 				
 				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND invoiceid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description);
-				
+
 				if( g->db_nrows(result) ) 
 				{
-					query = strdup("UPDATE invoicecontents SET count=count+1 WHERE tariffid = %tariffid AND invoiceid = %invoiceid AND description = '%desc'");
-					g->str_replace(&query, "%invoiceid", itoa(invoiceid));
-					g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
-					g->str_replace(&query, "%desc", description);
-					g->db_exec(g->conn, query);
+					g->db_pexec(g->conn, "UPDATE invoicecontents SET count=count+1 WHERE tariffid = ? AND invoiceid = ? AND description = '?'",
+						g->db_get_data(res,i,"tariffid"),
+						itoa(invoiceid),
+						description
+						);
 					
 					exec = g->db_pexec(g->conn, "UPDATE cash SET value=value+? WHERE invoiceid=? AND itemid=?",value, itoa(invoiceid), g->db_get_data(result,0,"itemid"));
 				}
 				else 
 				{
-					itemid++;
-					
-					query = strdup("INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (%invoiceid, %itemid, %value, %taxvalue, '%pkwiu', 'szt.', 1, '%desc', %tariffid)");
-					g->str_replace(&query, "%invoiceid", itoa(invoiceid));
-					g->str_replace(&query, "%itemid", itoa(itemid));
-					g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
-					g->str_replace(&query, "%value", value);
-					g->str_replace(&query, "%pkwiu", g->db_get_data(res,i,"pkwiu"));
-					g->str_replace(&query, "%desc", description);
-						if( strlen(taxvalue) )
-						g->str_replace(&query, "%taxvalue", taxvalue);
+					char * tmp_tax; 
+					if( strlen(taxvalue) )
+						tmp_tax = taxvalue;
 					else
-						g->str_replace(&query, "%taxvalue", "NULL");
+						tmp_tax = "NULL";
 					
-					g->db_exec(g->conn, query);
+					itemid++;
+
+					g->db_pexec(g->conn,"INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
+						itoa(invoiceid),
+						itoa(itemid),
+						value,
+						tmp_tax,
+						g->db_get_data(res,i,"pkwiu"),
+						description,
+						g->db_get_data(res,i,"tariffid")
+						);
 					
 					g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
 					g->str_replace(&insert, "%itemid", itoa(itemid));
-					exec = g->db_exec(g->conn, insert);
+					exec = g->db_pexec(g->conn, insert, description);
 				}
 				g->db_free(&result);
-				free(query);
 			} 
 			else 
 			{
 				g->str_replace(&insert, "%invoiceid", "0");
 				g->str_replace(&insert, "%itemid", "0");
-				exec = g->db_exec(g->conn, insert) ? 1 : exec;
+				exec = g->db_pexec(g->conn, insert, description) ? 1 : exec;
 			}
 
 			last_userid = uid;

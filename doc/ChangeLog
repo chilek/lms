@@ -38,6 +38,8 @@ version 1.6.0rc1 Thor (??/??/????):
   - lmsd/hostfile: added variables %wins, %dns, %dns2, %addr, %mask, %id (alec)
   - BTS#0000298: improved customers quick searching (alec)
   - added 'qualification operator' for Customer Search (alec)
+  - lmsd: fixed problems with unescaped chars in SQL queries - added strings
+    escaping for parameters of db_pexec() and db_pquery() functions (alec)
 
 version 1.5.6 Baal (24/04/2005):
 

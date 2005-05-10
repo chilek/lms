@@ -281,7 +281,7 @@ password = password_entered_with_lms_user_creation</screen>
                PHP installation (PHP 5.0 has SQLite built in). After you unpack the sources go to
                SQLite directory and type in commands step by step (for example):
                <screen>
-$ ./configure
+$ ./configure --enable-utf8
 $ make
 $ make install
 $ ldconfig

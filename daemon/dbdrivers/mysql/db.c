@@ -171,8 +171,8 @@ QueryHandle * db_pquery(ConnHandle *c, unsigned char *q, ... )
     QueryHandle *query;
     va_list ap;
     int i;
-    unsigned char *p, *s, *result, *temp;
-    
+    unsigned char *p, *s, *result, *temp, *escstr;
+
     result = (unsigned char*) strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
     
@@ -185,9 +185,12 @@ QueryHandle * db_pquery(ConnHandle *c, unsigned char *q, ... )
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
         	    temp = va_arg(ap, unsigned char*);
-		    i = strlen(temp)+strlen(result)+1;
+		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
+		    mysql_real_escape_string(c, escstr, temp, strlen(temp));
+		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
-		    snprintf(s, i, "%s%s", result, temp);
+		    snprintf(s, i, "%s%s", result, escstr);
+		    free(escstr);
 	    }
 	    free(result);
 	    result = (unsigned char *) strdup(s);
@@ -235,7 +238,7 @@ int db_pexec(ConnHandle *c, unsigned char *q, ... )
     va_list ap;
     int i, res;
     unsigned char *p, *s, *result, *temp;
-    
+
     result = (unsigned char*) strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
     
@@ -247,10 +250,13 @@ int db_pexec(ConnHandle *c, unsigned char *q, ... )
 		    s = (unsigned char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-        	    temp = va_arg(ap, unsigned char*);
-		    i = strlen(temp)+strlen(result)+1;
+	    	    temp = va_arg(ap, unsigned char*);
+		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
+		    mysql_real_escape_string(c, escstr, temp, strlen(temp));
+		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
-		    snprintf(s, i, "%s%s", result, temp);
+		    snprintf(s, i, "%s%s", result, escstr);
+		    free(escstr);
 	    }
 	    free(result);
 	    result = (unsigned char *) strdup(s);
@@ -264,7 +270,6 @@ int db_pexec(ConnHandle *c, unsigned char *q, ... )
 
     return res;
 }
-
 
 /* Starts transaction */
 int db_begin(ConnHandle *c)
