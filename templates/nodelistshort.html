@@ -23,7 +23,7 @@
 	{if $usernodes.total > 0}
 	{section name=usernodes loop=$usernodes}
 	{if $usernodes[usernodes].id}
-	<tr bgcolor="{cycle}" {cycle print=false} {if ! $usernodes[usernodes].access} class="blend"{/if}>
+	<tr bgcolor="{cycle}" {if ! $usernodes[usernodes].access} class="blend"{/if}>
 		<TD WIDTH="1%">
 			<IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" border="0" align="absmiddle">
 			<IMG src="img/warning{if ! $usernodes[usernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]" border="0" align="absmiddle">
