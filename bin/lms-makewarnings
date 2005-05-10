@@ -262,7 +262,7 @@ while (my $row = $dbq->fetchrow_hashref())
 		{
 			$srow->{'value'} = 0;
 		}
-		if((!$plimit && $balance < $limit) || ($plimit && $balance < ($limit * -$srow->{'value'}) / 100))
+		if((!$plimit && $balance <= $limit) || ($plimit && $balance <= ($limit * -$srow->{'value'}) / 100))
 		{
 			$sdbq = $dbase->prepare("SELECT ipaddr, name FROM nodes WHERE ownerid='$row->{'id'}'");
 			$sdbq->execute();
