@@ -36,6 +36,8 @@ version 1.6.0rc1 Thor (??/??/????):
   - added contrib/bin/lms-debtors (alec)
   - added option [phpui] map_type (alec)
   - lmsd/hostfile: added variables %wins, %dns, %dns2, %addr, %mask, %id (alec)
+  - BTS#0000298: improved customers quick searching (alec)
+  - added 'qualification operator' for Customer Search (alec)
 
 version 1.5.6 Baal (24/04/2005):
 
