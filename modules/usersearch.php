@@ -65,10 +65,16 @@ else
 	$g = $_POST['g'];
 $SESSION->save('uslg', $g);
 
+if(!isset($_POST['k']))
+	$SESSION->restore('uslk', $k);
+else
+	$k = $_POST['k'];
+$SESSION->save('uslk', $k);
+
 if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');
-	$userlist = $LMS->GetUserList($o, $s, $n, $g, $search);
+	$userlist = $LMS->GetUserList($o, $s, $n, $g, $search, NULL, $k);
 	
 	$listdata['total'] = $userlist['total'];
 	$listdata['direction'] = $userlist['direction'];
@@ -103,6 +109,7 @@ else
 	$layout['pagetitle'] = trans('Customer Search');
 	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
+	$SMARTY->assign('k', $k);
 	$SMARTY->display('usersearch.html');
 }
 

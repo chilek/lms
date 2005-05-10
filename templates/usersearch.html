@@ -87,6 +87,15 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}Qualification operator:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT style="border-style: none; background: #DFD5BD" type="radio" value="AND" name="k"{if $k!='OR'} CHECKED{/if}> {t}AND{/t}
+			<INPUT style="border-style: none; background: #DFD5BD" type="radio" value="OR" name="k"{if $k=='OR'} CHECKED{/if}> {t}OR{/t}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<IMG src="img/network.gif" align="absmiddle" border="0" alt=""> <B>{t}Network:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">

@@ -29,12 +29,23 @@ $search = trim($_GET['what']);
 switch($_GET['mode'])
 {
 	case 'user':
-		if(($userid = $DB->GetOne('SELECT id FROM users WHERE id = '.intval($search))) ||
-		   ($userid = $DB->GetOne('SELECT id FROM users WHERE deleted=0 AND lastname ?LIKE? ? OR address ?LIKE? ? OR phone1 = ? OR phone2 = ? OR phone3 = ? OR email = ? LIMIT 1', array('%'.$search.'%', '%'.$search.'%', $search, $search, $search, $search)))
-		   )
-			$target = '?m=userinfo&id='.$userid;
-		else
-			$target = '?m=userlist';
+		if(is_numeric($search)) // maybe it's customer ID
+		{
+			if($userid = $DB->GetOne('SELECT id FROM users WHERE id = '.$search))
+			{
+				$target = '?m=userinfo&id='.$userid;
+				break;
+			}
+		}
+
+		// use usersearch module to find all customers
+		$s['username'] = $search;
+		$s['address'] = $search;
+		$s['phone'] = $search;
+		$s['email'] = $search;
+		$SESSION->save('usersearch', $s);
+		$SESSION->save('uslk', 'OR');
+		$target = '?m=usersearch&search=1';
 	break;
 
 	case 'node':
