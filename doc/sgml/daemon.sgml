@@ -532,10 +532,24 @@
               <sect3 id="hostfile-config">
               <title>Configuration</title>
               <para>The following templates might be used for 'grantedhost', 'deniedhost', 'public_grantedhost'
-	      and 'public_deniedhost' options replaced with actual data from database: '%i' - IP address, 
-	      '%ipub' - public IP address, '%m' - MAC address, '%n' - host name, '%p' - node (computer) password, 
-	      '%info' - node description, '%domain' - domain, '%net' - net name, '%gw' - gateway address of network 
-	      that given node belongs to.
+	      and 'public_deniedhost' options replaced with actual data from database: 
+	      <simplelist>
+	        <member>%i - IP address,</member>
+	        <member>%ipub - public IP address,</member>
+		<member>%id - node ID,</member>
+		<member>%m - MAC address,</member>
+		<member>%n - host name,</member>
+		<member>%p - node (computer) password,</member>
+	        <member>%info - node description,</member>
+		<member>%domain - domain,</member>
+		<member>%net - network name,</member>
+		<member>%gw - gateway address of network,</member>
+		<member>%if - network's interface,</member>
+		<member>%mask - network mask,</member>
+		<member>%addr - network's address,</member>
+		<member>%dns, %dns2 - DNS server addresses,</member>
+		<member>%wins - WINS server address,</member>
+	      </simplelist>
               This module has following options:</para>
               <itemizedlist>
                <listitem>
