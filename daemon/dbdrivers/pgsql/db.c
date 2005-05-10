@@ -180,8 +180,8 @@ QueryHandle * db_pquery(ConnHandle *conn, unsigned char *q, ... )
     QueryHandle *query;
     va_list ap;
     int i;
-    unsigned char *p, *s, *result, *temp;
-    
+    unsigned char *p, *s, *result, *temp, *escstr;
+
     result = strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
     
@@ -194,9 +194,12 @@ QueryHandle * db_pquery(ConnHandle *conn, unsigned char *q, ... )
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
         	    temp = va_arg(ap, unsigned char*);
-		    i = strlen(temp)+strlen(result)+1;
+		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
+		    PQescapeString(escstr, temp, strlen(temp));
+		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
-		    snprintf(s, i, "%s%s", result, temp);
+		    snprintf(s, i, "%s%s", result, escstr);
+		    free(escstr);
 	    }
 	    free(result);
 	    result = (unsigned char *) strdup(s);
@@ -247,11 +250,11 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
 {
     va_list ap;
     int i, res;
-    unsigned char *p, *s, *result, *temp;
+    unsigned char *p, *s, *result, *temp, *escstr;
 
     result = strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
-    
+
     // find '?' and replace with arg value
     va_start(ap, q);
     for(p=q; *p; p++) {
@@ -261,15 +264,18 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
         	    temp = va_arg(ap, unsigned char*);
-		    i = strlen(temp)+strlen(result)+1;
+		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
+		    PQescapeString(escstr, temp, strlen(temp));
+		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
-		    snprintf(s, i, "%s%s", result, temp);
+		    snprintf(s, i, "%s%s", result, escstr);
+		    free(escstr);
 	    }
 	    free(result);
 	    result = (unsigned char *) strdup(s);
     } 
     va_end(ap);
-    
+
     // execute prepared query
     res = db_exec(conn, result);
     // free temporary vars

@@ -303,7 +303,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 			obs³ugê SQLite). Po rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite 
 			i wydaj kolejno polecenia (¶cie¿ki przyk³adowe):
 			<screen>
-$ ./configure
+$ ./configure --enable-utf8
 $ make
 $ make install
 $ ldconfig
