@@ -25,6 +25,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #include "lmsd.h"
 #include "pinger.h"
