@@ -87,8 +87,8 @@ Options: [defaults in brackets after descriptions]
   --with-mysql		enables use of MySQL database (enabled)
   --with-sqlite		enables use of SQLite database (disabled)
   --prefix=PREFIX	sets program and modules install location
-			(/usr/local), modules goes to PREFIX/lib and main
-			program to PREFIX/bin
+			(/usr/local), modules goes to PREFIX/lms/lib and main
+			program to PREFIX/lms/bin
   --libdir=DIR		sets location of database library (/usr/lib)
   --incdir=DIR		sets location of database include files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration
@@ -170,8 +170,8 @@ else
 	echo " no"
 fi
 
-# Set install directory
-echo -n "Install directory..."
+# Set install directories
+echo -n "Daemon install directory..."
 start=`pwd`
 cd $prefix
 if [ $? -eq 1 ] # exit if directory not exists 
@@ -180,18 +180,30 @@ then
 fi
 prefix=`pwd`
 cd $start
-INSTALLDIR="$prefix"
-echo " $prefix"
+LMS_BIN_DIR="$prefix/lms/bin"
+echo " $LMS_BIN_DIR"
+
+echo -n "Modules install directory..."
+start=`pwd`
+cd $prefix
+if [ $? -eq 1 ] # exit if directory not exists 
+then 
+    exit 0 
+fi
+prefix=`pwd`
+cd $start
+LMS_LIB_DIR="$prefix/lms/lib"
+echo " $LMS_LIB_DIR"
 
 # Create makefiles
 echo -n "Create Makefile for main program..."
 echo "
+INSTALLDIR = $LMS_BIN_DIR
+MODULESDIR = $LMS_LIB_DIR
 LIBS = $LIBS
 LDFLAGS = $LDFLAGS
-CFLAGS = $CFLAGS $FLAGS -Wall -O2
+CFLAGS = $CFLAGS $FLAGS -Wall -O2 -DLMS_LIB_DIR=\\\"\$(MODULESDIR)\\\"
 DBDRIVER = $DBDRIVER
-INSTALLDIR = $INSTALLDIR/bin
-MODULESDIR = $INSTALLDIR/lib
 " > Makefile \
 && cat Makefile.in >> Makefile
 echo " done"
@@ -207,11 +219,10 @@ do
 	then
 	    echo -n "Create Makefile for mod_${x}..."
 	    echo "
+MODULESDIR = $LMS_LIB_DIR
 LIBS = $LIBS 
 CFLAGS = $CFLAGS $FLAGS -I../.. -Wall -O2
 LDFLAGS = $LDFLAGS
-INSTALLDIR = $INSTALLDIR/bin
-MODULESDIR = $INSTALLDIR/lib
 " > ./${x}/Makefile && cat ./${x}/Makefile.in >> ./${x}/Makefile
 	    echo " done"
 	fi

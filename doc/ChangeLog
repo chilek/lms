@@ -20,8 +20,6 @@ version 1.6.0rc1 Thor (??/??/????):
   - most of icons resized to 16x16 (alec)
   - fixed nodes and warnings enabling/disabling on Customer Search Results
     list (alec)
-  - lmsd: changed default value of configure option --prefix to /usr/local,
-    "make install" installs modules to PREFIX/lib, and lmsd to PREFIX/bin (alec)
   - added "realname" field to account record (alec)
   - lms-mgc: added %CUSTOMER variable for node record (alec)
   - node's public IP (alec/kuba)
@@ -41,6 +39,9 @@ version 1.6.0rc1 Thor (??/??/????):
   - lmsd: fixed problems with unescaped chars in SQL queries - added strings
     escaping for parameters of db_pexec() and db_pquery() functions (alec)
   - lmsd: configure create config.status script (alec)
+  - lmsd: `make install` moves modules to PREFIX/lms/lib and program to
+    PREFIX/lms/bin, in configuration modules can be set without path or 
+    extension (alec)
 
 version 1.5.6 Baal (24/04/2005):
 
