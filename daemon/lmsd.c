@@ -290,13 +290,26 @@ int main(int argc, char *argv[])
 				{
 					MODULE *mod = (MODULE*) malloc(sizeof(MODULE));
 					MODULE * (*init)(GLOBAL *, MODULE *);
-					
+
+					static char path[sizeof(LMS_LIB_DIR) + sizeof(instances[i].module) + 4];
+
 					// get instance configuration and members
 					mod->ini = config_load(g->conn, dhost, instances[i].name);
-					mod->file = strdup(instances[i].module);
 					mod->instance = strdup(instances[i].name);
+					
+					// set path to module if not specified
+					// be sure that it has .so extension
+					str_replace(&instances[i].module, ".so", "");
+					
+					if( instances[i].module[0] == '/' )
+						sprintf(path, "%s.so", instances[i].module);
+					else
+						sprintf(path, LMS_LIB_DIR "/%s.so", instances[i].module);
+					
+					mod->file = strdup(path);
+					
+					// try to load module
 					mod->dlh = dlopen(mod->file, RTLD_NOW);
-
 					if( !mod->dlh ) 
 					{
 						syslog(LOG_ERR, "Unable to load module '%s': %s", mod->file, dlerror());

@@ -62,8 +62,8 @@
 </screen>
 			Skompilowane modu³y (pliki z rozszerzeniem <filename>.so</filename>),
 			znajduj±ce siê w katalogu <filename>modules/nazwa_modu³u</filename> zostaj± 
-			umieszczone w katalogu PREFIX/lib, a g³ówny program (lmsd) w katalogu
-			PREFIX/bin.
+			umieszczone w katalogu PREFIX/lms/lib, a g³ówny program (lmsd) w katalogu
+			PREFIX/lms/bin.
 			</para>
 		</sect2>
 		<sect2 id="daemon-config">
@@ -113,7 +113,9 @@
 			    </listitem>
 			    <listitem>
 				<para>Modu³</para>
-				<para>Nazwa i ¶cie¿ka do pliku modu³u. Modu³y po instalacji demona znajduj± siê w katalogu daemon/modules/.</para>
+				<para>Nazwa pliku modu³u (z rozszerzeniem lub bez). Jesli nie podano
+				¶cie¿ki demon bêdzie szuka³ modu³u w katalogu PREFIX/lms/lib, do
+				którego trafiaj± modu³y podczas "make install".</para>
 				<para>Przyk³ad: /usr/lib/system.so</para>
 			    </listitem>
 			    <listitem>

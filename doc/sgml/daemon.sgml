@@ -66,7 +66,7 @@
 </screen>
                Compiled modules (files with <filename>.so</filename> extension), found in
                directory <filename>modules/module_name</filename> will be moved to directory
-	       PREFIX/lib. Main program goes to PREFIX/bin.
+	       PREFIX/lms/lib. Main program goes to PREFIX/lms/bin.
                </para>
           </sect2>
           <sect2 id="daemon-config">
@@ -110,7 +110,9 @@
 		    </listitem>
 	    	    <listitem>
 			<para>Module</para>
-			<para>Module name with path. After daemon installation modules are placed in daemon/modules/ directory.</para>
+			<para>Module name (with or without extension). If path is not specified
+			daemon will search module in PREFIX/lms/lib directory, where modules goes
+			after "make install".</para>
 			<para>Example: /usr/lib/system.so</para>
 		    </listitem>
 	    	    <listitem>
