@@ -42,6 +42,7 @@ version 1.6.0rc1 Thor (??/??/????):
   - lmsd: `make install` moves modules to PREFIX/lms/lib and program to
     PREFIX/lms/bin, in configuration modules can be set without path or 
     extension (alec)
+  - force logout after timeout /http-equiv=refresh/ (alec)
 
 version 1.5.6 Baal (24/04/2005):
 
