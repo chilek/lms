@@ -12,7 +12,7 @@ xmodules:
 	make -C modules
 
 $(OUT): ${OBJECTS}
-	gcc $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS) -DLMS_LIB_DIR=\"$(MODULESDIR)\"
+	gcc $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS)
 	strip $(OUT)
 
 install: 
