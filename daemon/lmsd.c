@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
 					MODULE *mod = (MODULE*) malloc(sizeof(MODULE));
 					MODULE * (*init)(GLOBAL *, MODULE *);
 
-					static char path[sizeof(LMS_LIB_DIR) + sizeof(instances[i].module) + 4];
+					unsigned char *path = (unsigned char *) malloc (strlen(LMS_LIB_DIR) + strlen(instances[i].module) + 4);
 
 					// get instance configuration and members
 					mod->ini = config_load(g->conn, dhost, instances[i].name);
@@ -307,6 +307,7 @@ int main(int argc, char *argv[])
 						sprintf(path, LMS_LIB_DIR "/%s.so", instances[i].module);
 					
 					mod->file = strdup(path);
+					free(path);
 					
 					// try to load module
 					mod->dlh = dlopen(mod->file, RTLD_NOW);
