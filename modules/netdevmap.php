@@ -44,7 +44,7 @@ function drawtext($x, $y, $text, $r, $g, $b)
 		$text = str_replace($from, $to, $text);
 	}
 	
-	$t = new SWFTextField(SWFTEXTFIELD_NOEDIT | SWFTEXTFIELD_NOSELECT | SWFTEXTFIELD_USEFONT);
+	$t = new SWFTextField(SWFTEXTFIELD_NOEDIT | SWFTEXTFIELD_NOSELECT);
 	$t->setFont($font);
 	$t->setHeight(8);
 	$t->setColor($r, $g, $b);
