@@ -38,6 +38,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	FILE *fh;
 	QueryHandle *res, *res1;
 	int i, j, m, k=2, gc=0, nc=0, nh=0, n=2;
+	char lastif[MAXIFN] = "";
 	struct hostcache
 	{
 		unsigned char *name;
@@ -137,15 +138,17 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 		
 		fprintf(fh, "%s\n", dhcp->prefix);
 		
-		res = g->db_query(g->conn, "SELECT inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks");
+		res = g->db_query(g->conn, "SELECT inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend, interface FROM networks ORDER BY interface");
 
 		for(i=0; i<g->db_nrows(res); i++)
 		{
 			unsigned char *s, *d, *d2, *e;
 			unsigned long netmask, network;
+			char iface[MAXIFN] = "";
 			
 			e = g->db_get_data(res,i,"address");
 			d = g->db_get_data(res,i,"mask");
+			
 			network = inet_addr(e);
 			netmask = inet_addr(d);
 			
@@ -158,7 +161,21 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				if( j==nc )
 					continue;
 			}
-							
+			
+			// shared (interface) network ?
+			sscanf(g->db_get_data(res,i,"interface"), "%[a-zA-Z0-9]", iface);
+			
+			if( strlen(lastif) && strlen(iface) && strcmp(iface, lastif)!=0 )
+			{
+				fprintf(fh, "}\n\n");
+			}
+			else if( strlen(iface) && strcmp(iface, lastif)!=0 )
+			{
+				fprintf(fh, "\nshared-network LMS-%s {\n", iface);
+				strcpy(lastif, iface);
+			}
+
+			// start subnet record				
 			s = strdup(dhcp->subnetstart);
 			g->str_replace(&s, "%m", d);
 			g->str_replace(&s, "%a", e);
@@ -299,8 +316,8 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 	
 	dhcp->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 
-	dhcp->prefix = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "begin", "shared-network LMS {"));
-	dhcp->append = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "end", "}"));
+	dhcp->prefix = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "begin", ""));
+	dhcp->append = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "end", ""));
 	dhcp->subnetstart = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_start", "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;"));
 	dhcp->subnetend = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_end", "}"));
 	dhcp->gateline = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_gateway", "option routers %i;"));
