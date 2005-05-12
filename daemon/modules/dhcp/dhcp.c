@@ -167,9 +167,10 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			
 			if( strlen(lastif) && strlen(iface) && strcmp(iface, lastif)!=0 )
 			{
-				fprintf(fh, "}\n\n");
+				fprintf(fh, "}\n");
 			}
-			else if( strlen(iface) && strcmp(iface, lastif)!=0 )
+			
+			if( strlen(iface) && strcmp(iface, lastif)!=0 )
 			{
 				fprintf(fh, "\nshared-network LMS-%s {\n", iface);
 				strcpy(lastif, iface);
@@ -257,6 +258,9 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			
 			fprintf(fh, "%s\n", dhcp->subnetend);
 		}
+		
+		if( strlen(lastif) )
+			fprintf(fh, "}\n");
 		
 		fprintf(fh, "%s", dhcp->append);
 		
