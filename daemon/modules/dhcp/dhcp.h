@@ -30,3 +30,5 @@ struct group
 	unsigned char *name;
 	int id;
 };
+
+#define MAXIFN 16
