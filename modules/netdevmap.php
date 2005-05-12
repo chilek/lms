@@ -26,11 +26,25 @@
 
 function drawtext($x, $y, $text, $r, $g, $b)
 {
-	global $m, $font;
+	global $m, $font, $_CONFIG;
 
 	if(!$text) return;
+
+	if($_CONFIG['phpui']['gd_translate_to'])
+		$text = iconv('UTF-8', $_CONFIG['phpui']['gd_translate_to'], $text);
+
+	// remove special characters because we haven't got proper font
+	// or something else. I don't know what, but we have a problem with 
+	// that characters on flash map.
+	if(strtoupper($_CONFIG['phpui']['gd_translate_to'])=='ISO-8859-2')
+	{
+		// for Polish diacritical chars
+		$from = array('±','¶','ê','¿','¼','æ','ñ','ó','³','¡','¦','Ê','¯','¬','Æ','Ñ','Ó','£');
+		$to   = array('a','s','e','z','z','c','n','o','l','A','S','E','Z','Z','C','N','O','L');
+		$text = str_replace($from, $to, $text);
+	}
 	
-	$t = new SWFTextField(SWFTEXTFIELD_NOEDIT | SWFTEXTFIELD_NOSELECT);
+	$t = new SWFTextField(SWFTEXTFIELD_NOEDIT | SWFTEXTFIELD_NOSELECT | SWFTEXTFIELD_USEFONT);
 	$t->setFont($font);
 	$t->setHeight(8);
 	$t->setColor($r, $g, $b);
