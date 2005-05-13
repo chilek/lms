@@ -433,10 +433,13 @@ Administrator (LMS user) is also able to change account passwords.</para>
 	<sect2 id="accounts-new">
 	    <title>New Account</title>
 	    <para>To create new account you have to provide its login, password,
-choose at least one account type and assign customer to it. Domain name is
-optional and you'll need it only if you want to support email accounts.
-Expiration date is also optional, leave it empty to make new account valid
-forever.</para>
+	    choose at least one account type and assign customer to it. Domain name is
+	    optional and you'll need it only if you want to support email accounts.
+	    Expiration date is also optional, leave it empty to make new account valid
+	    forever.</para>
+	    <para>You can define any home directory for account. Option
+	    <filename>homedir_prefix</filename> from section <emphasis>[phpui]</emphasis>
+	    consists default prefix "/home/".</para>
 	</sect2>
 	<sect2 id="accounts-aliases">
 	    <title>Aliases</title>

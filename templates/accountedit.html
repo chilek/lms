@@ -1,6 +1,17 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
+{literal}
+<SCRIPT>
+<!--
+	function update_homedir()
+	{
+		var prefix = "{/literal}{$_config.phpui.homedir_prefix}{literal}";
+		document.forms['account'].elements['account[home]'].value = prefix + document.forms['account'].elements['account[login]'].value;
+	}
+{/literal}
+//-->
+</SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P>
 <FORM method="POST" action="?m=accountedit&id={$account.id}" name="account">
@@ -13,7 +24,7 @@
 			<B>{t}Login:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<input name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"}>
+			<input name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
 		</TD>
 	</TR>
 	<TR class="light">
@@ -63,6 +74,17 @@
 				    </TD>
 				    <TD width="98%">
 					<input type="text" size="30" name="account[realname]" value="{$account.realname}" {tip text="Enter optional account name" trigger="realname"}>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/home.gif" border="0" align="absmiddle" ALT="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Homedir:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" size="30" name="account[home]" value="{$account.home}" {tip text="Enter home directory" trigger="home"}>
 				    </TD>
 				</TR>
 				<TR>
