@@ -635,6 +635,12 @@ database = /usr/local/lms/lms.db</screen>
          <para>Example:     <prompt>smtp_host = mail.domain.pl</prompt></para>
      </listitem>
      <listitem>
+         <para>smtp_auth_type</para>
+         <para>Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
+	 will use the best supported method. Default: none.</para>
+         <para>Example:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
+     </listitem>
+     <listitem>
          <para>gd_translate_to</para>
          <para>Charset of data that GD library expects (usefull if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</para>
          <para>Example:     <prompt>gd_translate_to = </prompt></para>

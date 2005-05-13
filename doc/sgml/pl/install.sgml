@@ -36,7 +36,8 @@
 		W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
 		w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
 		zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i jeden z
-		mysql, pgsql, sqlite (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail.</para>
+		mysql, pgsql, sqlite (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
+		wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</para>
 	    </sect2>
 	    <sect2 id="install-req-db">
 	      <title>Serwer baz danych</title>
@@ -657,10 +658,16 @@ database = /usr/local/lms/lms.db</screen>
 	</listitem>
 	<listitem>
 	    <para>smtp_host, smtp_port, smtp_username, smtp_password</para>
-	    <para>Parametry po³±czenia smtp. LMS umo¿liwia korzystanie ze
+	    <para>Parametry po³±czenia SMTP. LMS umo¿liwia korzystanie ze
 	    zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
 	    PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</para>
 	    <para>Przyk³ad:	<prompt>smtp_host = poczta.domena.pl</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>smtp_auth_type</para>
+	    <para>Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domy¶lnych
+	    zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</para>
+	    <para>Przyk³ad:	<prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
 	</listitem>
 	<listitem>
     	    <para>gd_translate_to</para>
