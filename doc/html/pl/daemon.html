@@ -311,8 +311,8 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >modules/nazwa_modu³u</TT
 > zostaj± 
-			umieszczone w katalogu PREFIX/lib, a g³ówny program (lmsd) w katalogu
-			PREFIX/bin.
+			umieszczone w katalogu PREFIX/lms/lib, a g³ówny program (lmsd) w katalogu
+			PREFIX/lms/bin.
 			</P
 ></DIV
 ><DIV
@@ -410,7 +410,9 @@ VALIGN="TOP"
 ><P
 >Modu³</P
 ><P
->Nazwa i ¶cie¿ka do pliku modu³u. Modu³y po instalacji demona znajduj± siê w katalogu daemon/modules/.</P
+>Nazwa pliku modu³u (z rozszerzeniem lub bez). Jesli nie podano
+				¶cie¿ki demon bêdzie szuka³ modu³u w katalogu PREFIX/lms/lib, do
+				którego trafiaj± modu³y podczas "make install".</P
 ><P
 >Przyk³ad: /usr/lib/system.so</P
 ></LI
