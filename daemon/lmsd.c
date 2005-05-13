@@ -77,6 +77,8 @@ int main(int argc, char *argv[])
 	g->api_version = APIVERSION;
 	g->conn = NULL;
 	
+	g->db_connect = &db_connect;
+	g->db_disconnect = &db_disconnect;
    	g->db_query = &db_query;
 	g->db_pquery = &db_pquery;
     	g->db_exec = &db_exec;
@@ -88,10 +90,12 @@ int main(int argc, char *argv[])
     	g->db_get_data = &db_get_data;
 	g->db_nrows = &db_nrows;
 	g->db_ncols = &db_ncols;
-    
+
     	g->str_replace = &str_replace;
     	g->str_save = &str_save;
     	g->str_concat = &str_concat;
+	g->str_lwc = &str_lwc;
+	g->str_upc = &str_upc;
 
     	g->config_getstring = &config_getstring;
 	g->config_getint = &config_getint;
