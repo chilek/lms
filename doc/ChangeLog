@@ -1,6 +1,6 @@
 $Id$
 
-version 1.6.0rc1 Thor (??/??/????):
+version 1.7.0 Klorel (13/05/2005):
 
   - lmsd/ethers: fixed output file format (alec)
   - fixed bug (made in last release) in chooseip module (alec)
