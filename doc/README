@@ -294,7 +294,8 @@ Chapter 2. Installation and configuration
    (look for "extension" in php.ini or in output of phpinfo function):
    pcre, posix (for systems info), zlib (for compressed backups), gd or
    ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
-   support). For mailing is used PEAR::Mail.
+   support). For mailing is used PEAR::Mail (which require Net_SMTP and
+   Net_Sockets from PEAR package).
      _________________________________________________________________
 
 2.2.3. Database Server
@@ -822,6 +823,10 @@ database = /usr/local/lms/lms.db
        Parameters of smtp authorization in mailing. Default:
        127.0.0.1:25.
        Example: smtp_host = mail.domain.pl
+     * smtp_auth_type
+       Smtp authorization method in mailing. By default LMS (exactly
+       PEAR::Net_SMTP) will use the best supported method. Default: none.
+       Example: smtp_auth_type = DIGEST-MD5
      * gd_translate_to
        Charset of data that GD library expects (usefull if GD need
        ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default:
@@ -1507,6 +1512,9 @@ Chapter 3. User Interface (LMS-UI)
    optional and you'll need it only if you want to support email
    accounts. Expiration date is also optional, leave it empty to make new
    account valid forever.
+
+   You can define any home directory for account. Option homedir_prefix
+   from section [phpui] consists default prefix "/home/".
      _________________________________________________________________
 
 3.8.3. Aliases
@@ -3016,8 +3024,8 @@ Chapter 6. LMS Daemon
 # make && make install
 
    Compiled modules (files with .so extension), found in directory
-   modules/module_name will be moved to directory PREFIX/lib. Main
-   program goes to PREFIX/bin.
+   modules/module_name will be moved to directory PREFIX/lms/lib. Main
+   program goes to PREFIX/lms/bin.
      _________________________________________________________________
 
 6.1.3. Configuration
@@ -3059,8 +3067,9 @@ Chapter 6. LMS Daemon
        Priority number, that define instances reload sequence.
        Example: 10
      * Module
-       Module name with path. After daemon installation modules are
-       placed in daemon/modules/ directory.
+       Module name (with or without extension). If path is not specified
+       daemon will search module in PREFIX/lms/lib directory, where
+       modules goes after "make install".
        Example: /usr/lib/system.so
      * Crontab
        Module execution time specified in crontab style. All data must be
@@ -3304,11 +3313,11 @@ Chapter 6. LMS Daemon
        'killall dhcpd; /usr/sbin/dhcpd'.
        Example: command = '/etc/rc.d/rc.dhcpd restart'
      * begin
-       File header. Default: "shared-network LMS {".
-       Example: begin = "shared-network LMS {"
+       File header. Default: empty.
+       Example: begin = "authoritative;"
      * end
-       File footer. Default: "}".
-       Example: end = "\n}"
+       File footer. Default: empty.
+       Example: end = ""
      * subnet_start
        Subnet header. '%a' - name, '%m' - mask. Default: "subnet %a
        netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".

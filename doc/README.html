@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2319"
+HREF="#AEN2327"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -1159,7 +1159,8 @@ TARGET="_top"
            At least following PHP modules needs to be installed (look for "extension" in
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
            compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
-           support). For mailing is used PEAR::Mail.</P
+           support). For mailing is used PEAR::Mail (which require Net_SMTP and Net_Sockets from 
+	   PEAR package).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2554,6 +2555,18 @@ CLASS="PROMPT"
 >Example:     <SAMP
 CLASS="PROMPT"
 >smtp_host = mail.domain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth_type</P
+><P
+>Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
+	 will use the best supported method. Default: none.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smtp_auth_type = DIGEST-MD5</SAMP
 ></P
 ></LI
 ><LI
@@ -4226,10 +4239,23 @@ NAME="ACCOUNTS-NEW"
 ></H3
 ><P
 >To create new account you have to provide its login, password,
-choose at least one account type and assign customer to it. Domain name is
-optional and you'll need it only if you want to support email accounts.
-Expiration date is also optional, leave it empty to make new account valid
-forever.</P
+	    choose at least one account type and assign customer to it. Domain name is
+	    optional and you'll need it only if you want to support email accounts.
+	    Expiration date is also optional, leave it empty to make new account valid
+	    forever.</P
+><P
+>You can define any home directory for account. Option
+	    <TT
+CLASS="FILENAME"
+>homedir_prefix</TT
+> from section <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>
+	    consists default prefix "/home/".</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -8285,7 +8311,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >modules/module_name</TT
 > will be moved to directory
-	       PREFIX/lib. Main program goes to PREFIX/bin.
+	       PREFIX/lms/lib. Main program goes to PREFIX/lms/bin.
                </P
 ></DIV
 ><DIV
@@ -8377,7 +8403,9 @@ VALIGN="TOP"
 ><P
 >Module</P
 ><P
->Module name with path. After daemon installation modules are placed in daemon/modules/ directory.</P
+>Module name (with or without extension). If path is not specified
+			daemon will search module in PREFIX/lms/lib directory, where modules goes
+			after "make install".</P
 ><P
 >Example: /usr/lib/system.so</P
 ></LI
@@ -8449,7 +8477,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2319"
+NAME="AEN2327"
 ></A
 ><P
 ><B
@@ -9105,22 +9133,22 @@ CLASS="PROMPT"
 ><P
 >begin</P
 ><P
->File header. Default: "shared-network LMS {".</P
+>File header. Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->begin = "shared-network LMS {"</SAMP
+>begin = "authoritative;"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >end</P
 ><P
->File footer. Default: "}".</P
+>File footer. Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->end = "\n}"</SAMP
+>end = ""</SAMP
 ></P
 ></LI
 ><LI

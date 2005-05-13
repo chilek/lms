@@ -789,13 +789,25 @@ CLASS="PROMPT"
 ><P
 >smtp_host, smtp_port, smtp_username, smtp_password</P
 ><P
->Parametry po³±czenia smtp. LMS umo¿liwia korzystanie ze
+>Parametry po³±czenia SMTP. LMS umo¿liwia korzystanie ze
 	    zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
 	    PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >smtp_host = poczta.domena.pl</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth_type</P
+><P
+>Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domy¶lnych
+	    zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_auth_type = DIGEST-MD5</SAMP
 ></P
 ></LI
 ><LI

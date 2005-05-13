@@ -312,7 +312,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >modules/module_name</TT
 > will be moved to directory
-	       PREFIX/lib. Main program goes to PREFIX/bin.
+	       PREFIX/lms/lib. Main program goes to PREFIX/lms/bin.
                </P
 ></DIV
 ><DIV
@@ -404,7 +404,9 @@ VALIGN="TOP"
 ><P
 >Module</P
 ><P
->Module name with path. After daemon installation modules are placed in daemon/modules/ directory.</P
+>Module name (with or without extension). If path is not specified
+			daemon will search module in PREFIX/lms/lib directory, where modules goes
+			after "make install".</P
 ><P
 >Example: /usr/lib/system.so</P
 ></LI
