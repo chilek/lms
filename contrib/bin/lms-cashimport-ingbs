@@ -1,6 +1,6 @@
 #!/usr/bin/perl -Tw
 #
-# LMS version 1.5-cvs
+# LMS version 1.7-cvs
 #
 #  (C) 2001-2005 LMS Developers
 #
@@ -45,7 +45,7 @@ my $konto = 'numer_twojego_konta';
 
 # Poni¿ej nic nie zmieniaj je¶li nie wiesz co robisz
 
-my $_version = '1.5-cvs';
+my $_version = '1.7-cvs';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,

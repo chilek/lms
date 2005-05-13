@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.5-cvs
+ * LMS version 1.7-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -36,7 +36,7 @@ class example
 	// wersja modu³u. mo¿e byæ cokolwiek, byle by z sensem.
 	// dla modu³ów LMS'a wersja to werjsa ogólna LMS'a.
 	
-	var $_version = '1.5-cvs';
+	var $_version = '1.7-cvs';
 
 	// autor modu³u. dla modu³ów standardowych 'LMS Developers'.
 	

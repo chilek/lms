@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.5-cvs
+ * LMS version 1.7-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -30,7 +30,7 @@
 
 Class LMSDB_common
 {
-	var $_version = '1.5-cvs';
+	var $_version = '1.7-cvs';
 	var $_revision = '$Revision$';
 	
 	// Driver powinien nadpisaæ t± zmienn± warto¶ci± TRUE, ¿eby

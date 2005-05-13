@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.5-cvs
+ * LMS version 1.7-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -192,7 +192,7 @@ $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
-$layout['lmsv'] = '1.5-cvs';
+$layout['lmsv'] = '1.7-cvs';
 $layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['dberrors'] =& $DB->errors;
 
