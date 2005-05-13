@@ -102,6 +102,7 @@ my $local_ports = $ini->val('traffic-logiptables','local_ports') || '';
 my $cuid = $ini->val('traffic-logiptables', 'script_owneruid') || '0';
 my $cgid = $ini->val('traffic-logiptables', 'script_ownergid') || '0';
 my $cperm = $ini->val('traffic-logiptables', 'script_permission') || '700';
+
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
@@ -182,8 +183,8 @@ $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
 	$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'});
-	print OUTFILE "$iptables_binary -t mangle -A STAT -s $row->{'ipaddr'}\n";
-	print OUTFILE "$iptables_binary -t mangle -A STAT -d $row->{'ipaddr'}\n";
+	print OUTFILE "$iptables_binary -t mangle -A STAT -s $row->{'ipaddr'} -j RETURN\n";
+	print OUTFILE "$iptables_binary -t mangle -A STAT -d $row->{'ipaddr'} -j RETURN\n";
 }
 
 close(OUTFILE);
