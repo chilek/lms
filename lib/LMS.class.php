@@ -994,7 +994,7 @@ class LMS
 			return FALSE;
 	}
 
-	function GetNodeList($order='name,asc')
+	function GetNodeList($order='name,asc', $search=NULL, $sqlskey='AND')
 	{
 		if($order=='')
 			$order='name,asc';
@@ -1028,67 +1028,15 @@ class LMS
 			break;
 		}
 
-		$totalon = 0; $totaloff = 0;
-		
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, lastonline, nodes.info AS info FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
-		{
-			foreach($nodelist as $idx => $row)
-			{
-				($row['access']) ? $totalon++ : $totaloff++;
-			}
-		}
-
-		$nodelist['total'] = sizeof($nodelist);
-		$nodelist['order'] = $order;
-		$nodelist['direction'] = $direction;
-		$nodelist['totalon'] = $totalon;
-		$nodelist['totaloff'] = $totaloff;
-
-		return $nodelist;
-	}
-
-	function SearchNodeList($args, $order='name,asc')
-	{
-		if($order=='')
-			$order='name,asc';
-		
-		list($order,$direction) = sscanf($order, '%[^,],%s');
-		
-		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
-		
-		switch($order)
-		{
-			case 'name':
-				$sqlord = ' ORDER BY nodes.name';
-			break;
-			case 'id':
-				$sqlord = ' ORDER BY nodes.id';
-			break;
-			case 'mac':
-				$sqlord = ' ORDER BY mac';
-			break;
-			case 'ip':		
-				$sqlord = ' ORDER BY ipaddr';
-			break;
-			case 'ip_pub':
-				$sqlord = ' ORDER BY ipaddr-pub';
-			break;
-			case 'ownerid':
-				$sqlord = ' ORDER BY ownerid';
-			break;
-			case 'owner':
-				$sqlord = ' ORDER BY owner';
-			break;
-		}
-		
-		foreach($args as $idx => $value)
+		if(sizeof($search))
+		foreach($search as $idx => $value)
 		{
 			if($value!='')	
 			{
 				switch($idx)
 				{
 					case 'ipaddr' :
-						$searchargs[] = "inet_ntoa(ipaddr) ?LIKE? '%".trim($value)."%'"." OR "."inet_ntoa(ipaddr_pub) ?LIKE? '%".trim($value)."%'";
+						$searchargs[] = "(inet_ntoa(ipaddr) ?LIKE? '%".trim($value)."%'"." OR "."inet_ntoa(ipaddr_pub) ?LIKE? '%".trim($value)."%')";
 					break;
 					case 'name' :
 						$searchargs[] = "nodes.name ?LIKE? '%".$value."%'";
@@ -1103,20 +1051,20 @@ class LMS
 		}
 		
 		if($searchargs)
-			$searchargs = ' WHERE '.implode(' AND ',$searchargs);
-		
+			$searchargs = ' WHERE '.implode(' '.$sqlskey.' ',$searchargs);
+
 		$totalon = 0; $totaloff = 0;
 		
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, nodes.info AS info, lastonline, '
-						.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
-						FROM users LEFT JOIN nodes ON ownerid = users.id'
-						.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, netdev, lastonline, nodes.info AS info, '
+					.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
+					FROM users LEFT JOIN nodes ON ownerid = users.id '
+					.$searchargs
+					.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
 				($row['access']) ? $totalon++ : $totaloff++;
 			}
-
 		}
 
 		$nodelist['total'] = sizeof($nodelist);
@@ -1124,7 +1072,7 @@ class LMS
 		$nodelist['direction'] = $direction;
 		$nodelist['totalon'] = $totalon;
 		$nodelist['totaloff'] = $totaloff;
-		
+
 		return $nodelist;
 	}
 

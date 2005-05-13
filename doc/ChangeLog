@@ -46,6 +46,9 @@ version 1.6.0rc1 Thor (??/??/????):
   - fixed access denied window in dynamic popups (alec)
   - lmsd/dhcp: fixed shared-network option support (alec)
   - added 'homedir_prefix' option, accounts can have different homedirs (alec)
+  - improved nodes searching (and quicksearch), finds all matching nodes,
+    added qualification operator, removed function SearchNodeList(), added
+    images in Nodes Search interface (alec)
 
 version 1.5.6 Baal (24/04/2005):
 

@@ -49,12 +49,22 @@ switch($_GET['mode'])
 	break;
 
 	case 'node':
-		if(($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE id = '.(ip2long($search)!==FALSE ? ip2long($search) : -1))) ||
-		   ($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE (ipaddr = ? OR ipaddr_pub = ? ) OR name = UPPER(?) OR mac = UPPER(?) LIMIT 1', array(ip_long($search), ip_long($search), $search, $search)))
-		   )
-			$target = '?m=nodeinfo&id='.$nodeid;
-		else
-			$target = '?m=nodelist';
+		if(is_numeric($search) && !strstr($search, '.')) // maybe it's node ID
+		{
+			if($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE id = '.$search))
+			{
+				$target = '?m=nodeinfo&id='.$nodeid;
+				break;
+			}
+		}
+
+		// use nodesearch module to find all matching nodes
+		$s['name'] = $search;
+		$s['mac'] = $search;
+		$s['ipaddr'] = $search;
+		$SESSION->save('nodesearch', $s);
+		$SESSION->save('nslk', 'OR');
+		$target = '?m=nodesearch&search=1';
 	break;
 	
 	case 'ticket':

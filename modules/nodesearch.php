@@ -26,25 +26,30 @@
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$search = isset($_POST['search']) ? $_POST['search'] : FALSE;
+if(isset($_POST['search']))
+	$search = $_POST['search'];
 
 if(!isset($search))
-	$SESSION->restore('usersearch', $search);
+	$SESSION->restore('nodesearch', $search);
 else
-	$SESSION->save('usersearch', $search);
+	$SESSION->save('nodesearch', $search);
+if(!isset($_GET['o']))
+	$SESSION->restore('nslo', $o);
+else
+	$o = $_GET['o'];
+$SESSION->save('nslo', $o);
+
+if(!isset($_POST['k']))
+	$SESSION->restore('nslk', $k);
+else
+	$k = $_POST['k'];
+$SESSION->save('nslk', $k);
 
 if(isset($_GET['search'])) 
 {
 	$layout['pagetitle'] = trans('Nodes Search Results');
 
-	if(!isset($_GET['o']))
-		$SESSION->restore('snlo', $o);
-	else
-		$o = $_GET['o'];
-
-	$SESSION->save('snlo', $o);
-			
-	$nodelist = $LMS->SearchNodeList($search,$o);
+	$nodelist = $LMS->GetNodeList($o, $search, $k);
 
 	$listdata['total'] = $nodelist['total'];
 	$listdata['order'] = $nodelist['order'];
@@ -75,12 +80,16 @@ if(isset($_GET['search']))
 	
 	if(isset($_GET['print']))
 		$SMARTY->display('printnodelist.html');
+	elseif($listdata['total']==1)
+		$SESSION->redirect('?m=nodeinfo&id='.$nodelist[0]['id']);
 	else
 		$SMARTY->display('nodesearchresults.html');
 }
-else 
+else
 {
 	$layout['pagetitle'] = trans('Nodes Search');
+
+	$SMARTY->assign('k',$k);
 	$SMARTY->display('nodesearch.html');
 }
 
