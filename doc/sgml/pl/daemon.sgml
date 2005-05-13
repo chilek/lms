@@ -468,13 +468,13 @@
 			</listitem>
 			<listitem>
 			    <para>begin</para>
-			    <para>Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".</para>
-			    <para>Przyk³ad: <prompt>begin = "shared-network LMS {"</prompt></para>
+			    <para>Nag³ówek pliku. Domy¶lnie: pusty.</para>
+			    <para>Przyk³ad: <prompt>begin = "authoritative;"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>end</para>
-			    <para>Stopka pliku. Domy¶lnie: "}".</para>
-			    <para>Przyk³ad: <prompt>end = "\n}"</prompt></para>
+			    <para>Stopka pliku. Domy¶lnie: pusty.</para>
+			    <para>Przyk³ad: <prompt>end = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_start</para>

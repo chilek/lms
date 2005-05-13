@@ -457,13 +457,13 @@
                </listitem>
                <listitem>
                    <para>begin</para>
-                   <para>File header. Default: "shared-network LMS {".</para>
-                   <para>Example: <prompt>begin = "shared-network LMS {"</prompt></para>
+                   <para>File header. Default: empty.</para>
+                   <para>Example: <prompt>begin = "authoritative;"</prompt></para>
                </listitem>
                <listitem>
                    <para>end</para>
-                   <para>File footer. Default: "}".</para>
-                   <para>Example: <prompt>end = "\n}"</prompt></para>
+                   <para>File footer. Default: empty.</para>
+                   <para>Example: <prompt>end = ""</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_start</para>
