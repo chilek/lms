@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <syslog.h>
+#include <ctype.h>
 
 #include "util.h"
 
@@ -81,8 +82,41 @@ unsigned char * str_concat(const unsigned char *s1, const unsigned char *s2)
 	unsigned char *ret = (unsigned char*) malloc(l);
 	
 	snprintf(ret, l, "%s%s", s1, s2);
-	//free(s1);
-	//free(s2);
 	return(ret);
 }
 
+/* Convert string to lower case */
+unsigned char * str_lwc(const unsigned char *s)
+{
+    static unsigned char l[ASCIILINESZ+1];
+    int i;
+
+    if( s==NULL ) return NULL;
+    memset(l, 0, ASCIILINESZ+1);
+    i = 0;
+    while( s[i] && i<ASCIILINESZ )
+    {
+        l[i] = (unsigned char) tolower((int)s[i]);
+        i++;
+    }
+    l[ASCIILINESZ] = (char) 0;
+    return l;
+}
+
+/* Convert string to upper case */
+unsigned char * str_upc(const unsigned char *s)
+{
+    static unsigned char l[ASCIILINESZ+1];
+    int i;
+
+    if( s==NULL ) return NULL;
+    memset(l, 0, ASCIILINESZ+1);
+    i = 0;
+    while( s[i] && i<ASCIILINESZ )
+    {
+        l[i] = (unsigned char) toupper((int)s[i]);
+        i++;
+    }
+    l[ASCIILINESZ] = (char) 0;
+    return l;
+}

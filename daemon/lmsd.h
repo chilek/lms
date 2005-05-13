@@ -24,6 +24,9 @@ struct global
 	ConnHandle *conn;
 	
 	// db functions
+	ConnHandle * (*db_connect)(const unsigned char *, const unsigned char *, 
+				const unsigned char *, const unsigned char *, int);
+	int (*db_disconnect)(ConnHandle *);
 	QueryHandle * (*db_query)(ConnHandle *, unsigned char *);
 	QueryHandle * (*db_pquery)(ConnHandle *, unsigned char *, ...);
 	void (*db_free)(QueryHandle **);
@@ -46,6 +49,8 @@ struct global
 	int (*str_replace)(unsigned char **, const unsigned char *, const unsigned char *);
 	unsigned char * (*str_save)(unsigned char *, const unsigned char *);
 	unsigned char * (*str_concat)(const unsigned char *, const unsigned char *);
+	unsigned char * (*str_upc)(const unsigned char *);
+	unsigned char * (*str_lwc)(const unsigned char *);
 };
 
 struct module
