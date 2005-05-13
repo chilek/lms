@@ -73,14 +73,14 @@ if(isset($_POST['account']))
 
 	if(!$account['domainid'] && (($account['type'] & 2) == 2))
 		$error['domainid'] = trans('E-mail account must have domain!');
-	
+
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type, realname, quota_sh, quota_mail, quota_www, quota_ftp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-				array(	$account['ownerid'], 
-					$account['login'], 
-					crypt($account['passwd1']), 
-					'/home/'.$account['login'],
+		$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type, realname, quota_sh, quota_mail, quota_www, quota_ftp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				array(	$account['ownerid'],
+					$account['login'],
+					crypt($account['passwd1']),
+					$account['home'],
 					$account['expdate'],
 					$account['domainid'],
 					$account['type'],
@@ -92,12 +92,14 @@ if(isset($_POST['account']))
 					));
 		$LMS->DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($account['login']));
 		$LMS->SetTS('passwd');
+		
 		if(!isset($account['reuse']))
 		{
 			$SESSION->redirect('?m=accountlist');
 		}
 		
 		unset($account['login']);
+		unset($account['home']);
 		unset($account['realname']);
 		unset($account['passwd1']);
 		unset($account['passwd2']);

@@ -45,6 +45,7 @@ version 1.6.0rc1 Thor (??/??/????):
   - force logout after timeout /http-equiv=refresh/ (alec)
   - fixed access denied window in dynamic popups (alec)
   - lmsd/dhcp: fixed shared-network option support (alec)
+  - added 'homedir_prefix' option, accounts can have different homedirs (alec)
 
 version 1.5.6 Baal (24/04/2005):
 
