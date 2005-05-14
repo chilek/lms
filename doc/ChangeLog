@@ -1,5 +1,9 @@
 $Id$
 
+version 1.7.1 ? (??/??/????):
+
+  - changed upgrade scripts for 1.2 version, deleted for 1.0 (alec)
+
 version 1.7.0 Klorel (13/05/2005):
 
   - lmsd/ethers: fixed output file format (alec)

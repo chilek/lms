@@ -1,6 +1,6 @@
 #
 # **********************************************************
-# ****** Upgrade bazy danych LMS z wersji 1.2 do 1.5 *******
+# ****** Upgrade bazy danych LMS z wersji 1.2 do 1.7 *******
 # **********************************************************
 # Zaleca siê wcze¶niejszy backup bazy:
 # 	$ mysqldump -u lms lms > db.out
@@ -9,7 +9,7 @@
 #	mysql> grant select,insert,update,delete,create,alter on lms.* to lms@localhost identified by 'has³o';
 #	mysql> flush privileges;
 #	mysql> use lms;
-#	mysql> source doc/UPGRADE-1.2-1.5.mysql;
+#	mysql> source doc/UPGRADE-1.2-1.7.mysql;
 # **********************************************************
 
 # Informacje o bazie
