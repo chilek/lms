@@ -39,6 +39,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
+	{if $userinfo.balance < 0}
 		<TD WIDTH="1%" CLASS="FLEFT">
 		{t}Print<BR>Payment<BR>Form{/t}<BR>
 		</TD>
@@ -46,10 +47,12 @@
 			<A HREF="../formularz_przelewu_wplaty/druk.php?ILE={if $userinfo.balance<0}{$userinfo.balance*-1}{else}{$userinfo.balance}{/if}&UID={$userinfo.id}&OD={$userinfo.name} {$userinfo.lastname} {$userinfo.zip} {$userinfo.city} {$userinfo.address}" target="_BLANK">
 			<IMG SRC="img/ico_przelew.png" ALT="{t}Form Printout{/t}">
 			</A>
-		</TD>
+			</TD>
+	{/if}			
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="2" CLASS="FBOTTOMU" ALIGN="RIGHT">
 		</TD>
-	</TR>
+		</TR>
+			
 </TABLE>
 </P>
