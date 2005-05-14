@@ -303,10 +303,11 @@
 				<member>id - serial number</member>
 				<member>ownerid - customer serial number (0 - "system" account)</member>
 				<member>login - login name</member>
-				<member>password - md5 encrypted password</member>
+				<member>password - password encrypted with crypt()</member>
+				<member>realname - additional name</member>
 				<member>lastlogin - last login date</member>
 				<member>uid - account system UID (usually ownerid+200)</member>
-				<member>home - account home directory (/home/[login])</member>
+				<member>home - account home directory</member>
 				<member>type - account type (binary sum: 1-shell, 2-email, 4-www, 8-ftp)</member>
 				<member>expdate - account expire date</member>
 				<member>domainid - domain serial number</member>
