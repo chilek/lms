@@ -308,9 +308,10 @@
 				<member>ownerid - identyfikator klienta (0 - konto "systemowe")</member>
 				<member>login - nazwa konta</member>
 				<member>password - has³o zaszyfrowane funkcj± crypt()</member>
+				<member>realname - dodatkowa nazwa konta/u¿ytkownika</member>
 				<member>lastlogin - data ostatniego logowania</member>
 				<member>uid - identyfikator systemowy konta</member>
-				<member>home - katalog domowy (/home/[login])</member>
+				<member>home - katalog domowy</member>
 				<member>type - typ konta (suma: 1-shell, 2-poczta, 4-www, 8-ftp)</member>
 				<member>expdate - data wa¿no¶ci konta</member>
 				<member>domainid - identyfikator domeny z tabeli 'domains'</member>
