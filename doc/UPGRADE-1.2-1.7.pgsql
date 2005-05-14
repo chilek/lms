@@ -1,11 +1,11 @@
 /*
 *************************************************************
-******* Upgrade bazy danych LMS z wersji 1.2 do 1.5 *********
+******* Upgrade bazy danych LMS z wersji 1.2 do 1.7 *********
 *************************************************************
 Zaleca siê wcze¶niejszy backup bazy:
 	$ pg_dump lms > db.out
 Sposób u¿ycia:
-	$ psql -U lms -d lms -f UPGRADE-1.2-1.5.pgsql
+	$ psql -U lms -d lms -f UPGRADE-1.2-1.7.pgsql
 *************************************************************
 */
 

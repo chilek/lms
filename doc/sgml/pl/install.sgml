@@ -791,10 +791,8 @@ AddDefaultCharset UTF-8
 </screen></para>
       <para>Kolejnym krokiem jest dokonanie zmian w bazie. Dla u³atwienia migracji 
       struktury bazy danych w katalogu <filename>/doc</filename>
-      przygotowano pliki <filename>UPGRADE-1.0-1.5.mysql</filename> i 
-      <filename>UPGRADE-1.0-1.5.pgsql</filename> dla przej¶cia od wersji 1.0 do wersji 1.5
-      oraz <filename>UPGRADE-1.2-1.5.mysql</filename> i <filename>UPGRADE-1.2-1.5.pgsql
-      </filename> przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
+      przygotowano pliki <filename>UPGRADE-1.2-1.7.mysql</filename> i <filename>UPGRADE-1.2-1.7.pgsql
+      </filename> dla migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
       opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
       Je¶li przeprowadzasz upgrade z wersji nowszej od 1.3.0 aktualizacja struktury bazy danych 
       nast±pi automatycznie podczas pierwszego logowania.</para>
