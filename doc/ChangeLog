@@ -6,6 +6,7 @@ version 1.7.1 ? (??/??/????):
   - bugfix: ipaddr_pub support in NetworkShift() (alec)
   - lmsd/pinger: activate online status for addresses matching interfaces
     where runs daemon, speedup - dropped ORDER BY from query (alec)
+  - Customer Search Results paging (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 

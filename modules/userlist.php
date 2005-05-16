@@ -53,7 +53,7 @@ else
 $SESSION->save('ulg', $g);
 
 if (! isset($_GET['page']))
-	$SESSION->restore('page', $_GET['page']);
+	$SESSION->restore('ulp', $_GET['page']);
 	    
 $userlist = $LMS->GetUserList($o, $s, $n, $g);
 $listdata['total'] = $userlist['total'];
