@@ -89,6 +89,8 @@ else
 {
 	$layout['pagetitle'] = trans('Nodes Search');
 
+	$SESSION->remove('nslp');
+
 	$SMARTY->assign('k',$k);
 	$SMARTY->display('nodesearch.html');
 }
