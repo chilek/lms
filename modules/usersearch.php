@@ -34,24 +34,17 @@ if(!isset($search))
 else
 	$SESSION->save('usersearch', $search);
 
-if(!isset($_POST['n']))
-	$SESSION->restore('usln', $n);
-else
-	$n = $_POST['n'];
-
-$s = $_POST['s'];
-
-if(!isset($_POST['s']) && !$s)
-	$SESSION->restore('usls', $s);	
-else if(isset($_GET['s']))
-	$s = $_GET['s'];
-$SESSION->save('usls', $s);
-
 if(!isset($_GET['o']))
 	$SESSION->restore('uslo', $o);
 else
 	$o = $_GET['o'];
 $SESSION->save('uslo', $o);
+
+if(!isset($_POST['s']))
+	$SESSION->restore('usls', $s);
+else
+	$s = $_POST['s'];
+$SESSION->save('usls', $s);
 
 if(!isset($_POST['n']))
 	$SESSION->restore('usln', $n);
@@ -89,9 +82,21 @@ if(isset($_GET['search']))
 	unset($userlist['order']);
 	unset($userlist['below']);
 	unset($userlist['over']);
+
+	if (! isset($_GET['page']))
+		$SESSION->restore('uslp', $_GET['page']);
+
+	$page = (! $_GET['page'] ? 1 : $_GET['page']); 
+	$pagelimit = (!isset($LMS->CONFIG['phpui']['customerlist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['customerlist_pagelimit']);
+	$start = ($page - 1) * $pagelimit;
+
+	$SESSION->save('uslp', $page);
 		
 	$SMARTY->assign('userlist',$userlist);
 	$SMARTY->assign('listdata',$listdata);
+	$SMARTY->assign('pagelimit',$pagelimit);
+	$SMARTY->assign('page',$page);
+	$SMARTY->assign('start',$start);
 	
 	if(isset($_GET['print']))
 	{
@@ -107,6 +112,9 @@ if(isset($_GET['search']))
 else
 {
 	$layout['pagetitle'] = trans('Customer Search');
+	
+	$SESSION->remove('uslp');
+	
 	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
 	$SMARTY->assign('k', $k);
@@ -114,3 +122,5 @@ else
 }
 
 ?>
+
+

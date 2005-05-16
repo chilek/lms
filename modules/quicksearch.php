@@ -45,6 +45,12 @@ switch($_GET['mode'])
 		$s['email'] = $search;
 		$SESSION->save('usersearch', $s);
 		$SESSION->save('uslk', 'OR');
+		
+		$SESSION->remove('uslp');
+		$SESSION->remove('usln');
+		$SESSION->remove('uslg');
+		$SESSION->remove('usls');
+		
 		$target = '?m=usersearch&search=1';
 	break;
 
@@ -64,6 +70,9 @@ switch($_GET['mode'])
 		$s['ipaddr'] = $search;
 		$SESSION->save('nodesearch', $s);
 		$SESSION->save('nslk', 'OR');
+
+		$SESSION->remove('nslp');
+
 		$target = '?m=nodesearch&search=1';
 	break;
 	
