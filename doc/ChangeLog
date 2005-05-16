@@ -5,6 +5,7 @@ version ? (??/??/????):
   - updated upgrade scripts for 1.2 version, deleted not supported upgrade
     scripts for 1.0 version of LMS (alec)
   - bugfix: ipaddr_pub in NetworkShift() function (alec)
+  - lms/pinger: added online status activation of host where runs daemon (alec)
 
 version 1.6.0rc1 Thor (13/05/2005):
 

@@ -34,7 +34,7 @@ struct host *hosts = NULL;
 int nh = 0;
 
 sig_atomic_t sigint = 0;
-struct if_desc descs[8];
+struct if_desc descs[MAXIFN];
 int descs_count = 0;
 
 void sig_int(int a) {  sigint = 1;  }
@@ -104,8 +104,10 @@ void get_ifaces(void)
 		exit(1);
 	}
 	
-	for(j=0; j < ifc.ifc_len/sizeof(struct ifreq); j++) {
+	for(j=0; j < ifc.ifc_len/sizeof(struct ifreq); j++)
+	{
 		get_iface_desc(ifr[j].ifr_name, &descs[descs_count]);
+	
 		for (i = 0; i < descs_count; i++)
 			if (descs[i].network == descs[descs_count].network)
 				break;
@@ -315,11 +317,11 @@ void reload(GLOBAL *g, struct pinger_module *p)
 		g->db_free(&res);
 	}
 
-	res = g->db_pquery(g->conn, "SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes ORDER BY ipaddr");
+	res = g->db_pquery(g->conn, "SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes");
 
 	for(i=0; i<g->db_nrows(res); i++) 
 	{
-			unsigned long ip = inet_addr(g->db_get_data(res,i,"ip"));
+		unsigned long ip = inet_addr(g->db_get_data(res,i,"ip"));
 			
 		for(j=0; j<nc; j++)
 			if((ip & nets[j].mask) == nets[j].address)
@@ -339,6 +341,17 @@ void reload(GLOBAL *g, struct pinger_module *p)
 	/***********************************************************/
 	get_ifaces();
 
+	// activate nodes with interface's IPs because module can't recive
+	// "ping" response when source IP == destination IP
+	for(j=0; j<descs_count; j++)
+		for(i=0; i<nh; i++)
+			if( hosts[i].ipaddr == descs[j].ip)
+			{
+				hosts[i].active = 1;
+				break;
+			}
+
+	// run "pinger"
 	switch (fork()) {
 		case -1:
 			syslog(LOG_CRIT,"[%s/pinger] Fork: %s", p->base.instance, strerror(errno));
