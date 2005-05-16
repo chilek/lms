@@ -2171,7 +2171,8 @@ class LMS
 	function NetworkShift($network='0.0.0.0',$mask='0.0.0.0',$shift=0)
 	{
 		$this->SetTS('nodes');
-		return $this->DB->Execute('UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask)));
+		return ($this->DB->Execute('UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask)))
+			+ $this->DB->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ? WHERE ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask))));
 	}
 
 	function NetworkUpdate($networkdata)
