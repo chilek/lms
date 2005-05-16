@@ -4,6 +4,8 @@ version 1.7.1 ? (??/??/????):
 
   - changed upgrade scripts for 1.2 version, deleted for 1.0 (alec)
   - bugfix: ipaddr_pub support in NetworkShift() (alec)
+  - lmsd/pinger: activate online status for addresses matching interfaces
+    where runs daemon, speedup - dropped ORDER BY from query (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
