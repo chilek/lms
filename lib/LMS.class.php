@@ -1051,13 +1051,13 @@ class LMS
 		}
 		
 		if($searchargs)
-			$searchargs = ' WHERE '.implode(' '.$sqlskey.' ',$searchargs);
+			$searchargs = ' AND '.implode(' '.$sqlskey.' ',$searchargs);
 
 		$totalon = 0; $totaloff = 0;
 		
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, netdev, lastonline, nodes.info AS info, '
 					.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
-					FROM users LEFT JOIN nodes ON ownerid = users.id '
+					FROM nodes LEFT JOIN users ON ownerid = users.id WHERE ownerid > 0'
 					.$searchargs
 					.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{

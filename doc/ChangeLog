@@ -9,6 +9,7 @@ version ? (??/??/????):
   - Customer Search Results paging (alec)
   - fixed smtp_auth_type default behaviour - use best method (alec)
   - function SendMail() returns warnings from PEAR (alec)
+  - bugfix: dummy nodes on Nodes Search Results list (alec)
 
 version 1.6.0rc1 Thor (13/05/2005):
 
