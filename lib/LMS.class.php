@@ -3159,18 +3159,21 @@ class LMS
 
 	function SendMail($recipients, $headers, $body, $files=NULL)
 	{
-		include_once('Mail.php');
-
+		@include_once('Mail.php');
+		if(!class_exists('Mail'))
+			return trans('Can\'t send messages. PEAR::Mail not found!');
+		
 		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
 		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
+		
 		if ($this->CONFIG['phpui']['smtp_username'])
 		{
-			$params['auth'] = $this->CONFIG['phpui']['smtp_auth_type'];
+			$params['auth'] = ($this->CONFIG['phpui']['smtp_auth_type'] ? $this->CONFIG['phpui']['smtp_auth_type'] : true);
 			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
 			$params['password'] = $this->CONFIG['phpui']['smtp_password'];
 		}
 		else
-			$params['auth'] = 'none';
+			$params['auth'] = false;
 
 		$headers['X-Mailer'] = 'LMS-'.$this->_version;
 		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
@@ -3202,10 +3205,15 @@ class LMS
 			$buf = $body;
 		}
 
-		$mail_object =& Mail::factory('smtp', $params);
-		$mail_object->send($recipients, $headers, $buf);
-
-		return TRUE;
+		$error = $mail_object =& Mail::factory('smtp', $params);
+		if(PEAR::isError($error))
+			return $error->getMessage();
+			
+		$error = $mail_object->send($recipients, $headers, $buf);
+		if(PEAR::isError($error))
+			return $error->getMessage();
+		else
+			return "";
 	}
 }
 ?>

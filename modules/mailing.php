@@ -129,9 +129,8 @@ if(isset($_POST['mailing']))
 				
 				$headers['To'] = '<'.$row['email'].'>';
 				
-				$LMS->SendMail($row['email'], $headers, $mailing['body']);
-					
-				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['username'], $row['email'])."<BR>\n";
+				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['username'], $row['email']);
+				echo '<font color="red"> '.$LMS->SendMail($row['email'], $headers, $mailing['body'])."</font><BR>\n";
 			}
 		}
 		
