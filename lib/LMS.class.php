@@ -3161,7 +3161,7 @@ class LMS
 	{
 		@include_once('Mail.php');
 		if(!class_exists('Mail'))
-			return trans('Can\'t send messages. PEAR::Mail not found!');
+			return trans('Can\'t send message. PEAR::Mail not found!');
 		
 		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
 		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
