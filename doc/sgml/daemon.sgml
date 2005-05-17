@@ -221,19 +221,25 @@
               <sect3 id="system-desc">
               <title>Description</title>
               <para>This module does only one thing: it runs given 
-	      Linux shell command. It can be useful if you want to execute some command
-	      or run external script while configuration is being reload, eg. one of those 
-              in LMS <filename>/bin</filename> directory.</para>
+	      Linux shell command or/and SQL query. It can be useful if you want to 
+	      execute some command or run external script while configuration is 
+	      being reload, eg. one of those in LMS <filename>/bin</filename> 
+	      directory. SQL command is executed first.</para>
               </sect3>
               <sect3 id="system-config">
               <title>Configuration</title>
-              <para>For above reason you can define only command string. Module will pass list of
-              commands to shell, separated by semicolons:</para>
+              <para>For above reason you can define only command strings. Module will 
+	      pass list of commands to shell, separated by semicolons:</para>
               <itemizedlist>
                <listitem>
+                   <para>sql</para>
+                   <para>SQL command. Default: empty.</para>
+                   <para>Example: <prompt>command = 'DELETE FROM stats WHERE dt < %NOW% - 365*86400'</prompt></para>
+               </listitem>
+               <listitem>
                    <para>command</para>
-                   <para>Shell command. Default: empty.</para>
-                   <para>Example: <prompt>command = 'echo "hello"'</prompt></para>
+                   <para>Shell command(s). Default: empty.</para>
+                   <para>Example: <prompt>command = 'echo -n "hello "; echo "world"'</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>

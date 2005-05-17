@@ -10,6 +10,7 @@ version ? (??/??/????):
   - fixed smtp_auth_type default behaviour - use best method (alec)
   - function SendMail() returns warnings from PEAR (alec)
   - bugfix: dummy nodes on Nodes Search Results list (alec)
+  - lmsd/system: added option 'sql', run shell comand if is non-empty (alec)
 
 version 1.6.0rc1 Thor (13/05/2005):
 

@@ -32,11 +32,20 @@
 
 void reload(GLOBAL *g, struct system_module *s)
 {
-	system(s->command);
+	if(*s->sql)
+	{
+		g->db_exec(g->conn, s->sql);
+	}
+
+	if(*s->command)
+	{
+		system(s->command);
+	}
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/system] reloaded", s->base.instance);
 #endif
 	free(s->command);
+	free(s->sql);
 }
 
 struct system_module * init(GLOBAL *g, MODULE *m)
@@ -53,6 +62,7 @@ struct system_module * init(GLOBAL *g, MODULE *m)
 	s->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 
 	s->command = strdup(g->config_getstring(s->base.ini, s->base.instance, "command", ""));
+	s->sql = strdup(g->config_getstring(s->base.ini, s->base.instance, "sql", ""));
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/system] initialized", s->base.instance);
 #endif	
