@@ -7,6 +7,8 @@ version 1.7.1 ? (??/??/????):
   - lmsd/pinger: activate online status for addresses matching interfaces
     where runs daemon, speedup - dropped ORDER BY from query (alec)
   - Customer Search Results paging (alec)
+  - fixed smtp_auth_type default behaviour - use best method (alec)
+  - added warning about lack of PEAR::Mail in SendMail() function (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
