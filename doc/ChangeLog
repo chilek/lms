@@ -10,6 +10,7 @@ version 1.7.1 ? (??/??/????):
   - fixed smtp_auth_type default behaviour - use best method (alec)
   - added warning about lack of PEAR::Mail in SendMail() function (alec)
   - fixed nodes searching results list - nodes with ID=0 (alec)
+  - lmsd/system: added option 'sql' (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
