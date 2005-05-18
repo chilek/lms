@@ -544,7 +544,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 		<para>Each system has its restrictions. Some of ours are inherited from SQL engine being used. Some from assumptions (nearly) knowingly made by developers. Those are current restrictions:</para>
 		<sect2 id="devel-limits-lms">
 			<title>LMS project related</title>
-			<para>Number of cash (in 'cash' table) is stored (since lms-1.1) as 32 integer value, so if you have 5000 users you might have problems in 8 years or so.</para>
+			<para>Amount of money (in 'cash' table) was stored (as of lms-1.1) as 32 integer value, so if you had 5000 users you might had problems in 8 years or so. Nowadays (since lms-1.1.7 Hathor) we use more appriopriate type [ decimal (9.2), 2 significan places after dot and 9 numers for whole sum] and the maximum is 9'999'999.99 (sum of all in/out cash operations). Procedures converting numbers to words are aware of figures as big as 10^18.</para>
 		</sect2>
 		<sect2 id="devel-limits-db">
 			<title>SQL engine related</title>
