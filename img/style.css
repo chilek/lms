@@ -21,8 +21,14 @@ TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 
 TD.red		{ color: #FF0000; }
 TD.blend	{ color: #888888; }
 TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 2pt; border-style: solid; }
+TD.highlight	{ background-color: #CCFFCC; }
 TR.dark		{ background-color: #CEBD9B; }
+TR.medium	{ background-color: #EBE4D6; }
 TR.light	{ background-color: #DFD5BD; }
+TR.darkblend	{ background-color: #CEBD9B; color: #888888; }
+TR.lightblend	{ background-color: #DFD5BD; color: #888888; }
+TR.mediumblend	{ background-color: #EBE4D6; color: #888888; }
+TR.highlight	{ background-color: #CCFFCC; }
 TR.blend	{ color: #888888; }
 FONT.blend	{ color: #888888; }
 FONT.alert	{ color: #FF0000; font-weight: bold; }
