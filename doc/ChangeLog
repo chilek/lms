@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.0rc2 Thor (18/05/2005):
 
   - updated upgrade scripts for 1.2 version, deleted not supported upgrade
     scripts for 1.0 version of LMS (alec)
