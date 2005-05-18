@@ -593,12 +593,12 @@ class LMS
 				$userlist[$idx]['account'] = $access[$row['id']]['account'];
 				$userlist[$idx]['warncount'] = $warning[$row['id']]['warncount'];
 
-				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
-					$userlist[$idx]['nodeac'] = 1;
+				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'] && $userlist[$idx]['account'])
+					$userlist[$idx]['nodeac'] = 1; // connected all nodes
 				elseif($access[$row['id']]['acsum'] == 0)
-					$userlist[$idx]['nodeac'] = 0;
+					$userlist[$idx]['nodeac'] = 0; // disconected all nodes
 				else
-					$userlist[$idx]['nodeac'] = 2;
+					$userlist[$idx]['nodeac'] = 2; // some nodes disconneted
 				if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
 					$userlist[$idx]['nodewarn'] = 1;
 				elseif($warning[$row['id']]['warnsum'] == 0)
