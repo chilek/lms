@@ -289,10 +289,10 @@ CLASS="SCREEN"
 >
                It's required to choose one database which you will use (--with-mysql or --with-pgsql
                or --with-sqlite) and location of libraries supplied with database (--incdir,
-               --libdir). You can use only one database. If you will change database, you have to
+               --libdir). You can use only one database. If you change database, you have to
                recompile your daemon. It's also possible to force daemon to use
-	       configuration files instead of database. He can't use
-	       both of them in the same time, you'll need to choose that before
+	       configuration files instead of database. It can't use
+	       both files and db at the same time, you'll need to choose either before
 	       compilation.
 <PRE
 CLASS="SCREEN"
@@ -324,8 +324,8 @@ NAME="DAEMON-CONFIG"
 >6.1.3. Configuration</A
 ></H2
 ><P
->For daemon and modules configuration is destined menu Reload -&#62; Configuration
-	       in <SPAN
+>Configuration for daemon and modules configuration can be edited through Reload -&#62; Configuration
+	       menu in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -336,20 +336,20 @@ CLASS="EMPHASIS"
 	       database should be specified as command line options, according to following listing:
 <PRE
 CLASS="SCREEN"
->-h host           host where is instaled database (default: localhost)
+>-h host           host database is available (default: localhost)
 -d db_name        database name (default: lms)
--u user           database user name (default: lms)
+-u user           database username (default: lms)
 -p password       database password (default: empty)
--H hostname       name of host where daemon runs. By default is assumed name returned by
-                  hostname command, but it can be overwrited. That name must according
-                  with name specified in hosts configuration
-- c command       shell command to run before every database connection (default: empty)
--i "instance[ ...]" list of instances for reload. Other instances will be ignored
+-H hostname       host name where daemon runs; name returned by hostname command is taken
+                  as default but it can be overwritten; that name must correspond to the
+                  one specified in hosts configuration in UI
+- c command       shell command to execute before every database connection (default: empty)
+-i "instance[ ...]" list of instances to reload; other instances will be ignored
 -q                do reload and exit
 -f                run in foreground (don't fork)
 -v                prints version and copyright info</PRE
 >
-		Database connection options are readed also from shell variables:
+		Database connection options can be also read from enviroment variables:
 		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
                <DIV
 CLASS="NOTE"
@@ -370,7 +370,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->List of instances contains instances names separated with spaces.</P
+>List of instances should contain instance names separated with spaces.</P
 ></TD
 ></TR
 ></TABLE
@@ -378,17 +378,17 @@ VALIGN="TOP"
 > 
 	       </P
 ><P
->Daemon configuration is composed of hosts (that makes possible to configure
-	       and reload of daemons installed on different hosts/routers) and configuration sections
-	       called as instances.</P
+>Daemon configuration is divided into hosts (which makes possible to configure
+	       and reload several different daemons installed on numerous hosts/routers) and 
+               configuration sections called as instances.</P
 ><P
->Instance, beside config modules params, must contain primary options as:
+>Instance configuration, besides config modules params, have to contain the following primary options:
 	       <UL
 ><LI
 ><P
 >Name</P
 ><P
->Instance name unique within each host.</P
+>Instance name, unique for each daemon (host where daemon is running).</P
 ><P
 >Example: system</P
 ></LI
@@ -396,7 +396,7 @@ VALIGN="TOP"
 ><P
 >Priority</P
 ><P
->Priority number, that define instances reload sequence.</P
+>Priority number, which defines instances reload sequence.</P
 ><P
 >Example: 10</P
 ></LI
@@ -404,9 +404,9 @@ VALIGN="TOP"
 ><P
 >Module</P
 ><P
->Module name (with or without extension). If path is not specified
-			daemon will search module in PREFIX/lms/lib directory, where modules goes
-			after "make install".</P
+>Module name (with or without .so extension). If path is not specified
+			daemon will search module in PREFIX/lms/lib directory, where modules are being
+			placed after "make install".</P
 ><P
 >Example: /usr/lib/system.so</P
 ></LI
@@ -415,8 +415,8 @@ VALIGN="TOP"
 >Crontab</P
 ><P
 >Module execution time specified in crontab style. All data must be numeric.
-			Following example cause instance execution at 5 minutes interval between 8 and 18 
-			hour every day. If crontab is empty instance will be reloaded only while reload. 
+			Following example executes instance each 5 minutes between 8 and 18 
+			hour every day. If crontab is empty, instance will be reloaded only with UI reload. 
 			Default: empty.</P
 ><P
 >Example: */5 8-18 * * *</P
@@ -425,7 +425,7 @@ VALIGN="TOP"
 >
                </P
 ><P
->Any configuration change do not require daemon restart.</P
+>Configuration changes does not require restarting daemon.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -436,7 +436,7 @@ NAME="DAEMON-RUN"
 >6.1.4. Starting</A
 ></H2
 ><P
->By default program runs in daemon mode. In that mode
+>By default program runs in daemon mode. In this mode
                configuration and services reload is performed on demand using 'Reload'
                menu in <SPAN
 CLASS="emphasis"
@@ -444,14 +444,14 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->. Reload order checking and configuration
-	       reading (especially instances list and configuration of them) is done on each minute. 
+>. Reload order and configuration
+	       checks (especially instances list and configuration of them) is done each minute. 
 	       When daemon detects reload order, it runs all enabled instances. Instances with 
-	       specified crontab will be executed it's matching with current time.</P
+	       crontab specified will be executed at scheduled time.</P
 ><P
->Other way to run daemon is disposable reload with use of '-q' option.
-	       This way is useful for tests, and in conjunction with '-i' option allows to
-	       run selected instances regardless of crontab of the rest of instances.</P
+>Other way to run daemon is disposable reload using '-q' command line option.
+	       This is useful for tests, and in conjunction with '-i' option allows to
+	       run selected instances regardless of crontab entries for the rest of instances.</P
 ></DIV
 ></DIV
 ></DIV

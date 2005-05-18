@@ -233,7 +233,7 @@ Following parameters are valid:</P
 ><UL
 ><LI
 ><P
->limit (optional)</P
+>limit</P
 ><P
 >Lets you setup limit of customer debt. Email will be sent below that value. Default: limit = 0</P
 ><P
@@ -246,7 +246,7 @@ CLASS="PROMPT"
 ><P
 >mailsubject (mandatory)</P
 ><P
->Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: not set.</P
+>Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: none.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -257,7 +257,7 @@ CLASS="PROMPT"
 ><P
 >mailtemplate (mandatory)</P
 ><P
->Lets you setup mail template which will be sent. Default: not set.</P
+>Lets you setup mail template which will be sent. Default: none.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -266,9 +266,9 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfrom</P
+>mailfrom (mandatory)</P
 ><P
->Lets you setup email of the sender. Default: not set.</P
+>Lets you setup email of the sender. Default: none.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -277,13 +277,24 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfname</P
+>mailfname (mandatory)</P
 ><P
->Sender name</P
+>Sender name. Default: none</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
 >mailfname = Administrators</SAMP
+></P
+></LI
+><LI
+><P
+>mailcharset</P
+><P
+>Message character set (Content-Type). Default: UTF-8</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mailcharset = ISO-8859-2</SAMP
 ></P
 ></LI
 ><LI
@@ -343,7 +354,7 @@ Following parameters are valid:</P
 ><UL
 ><LI
 ><P
->limit (optional)</P
+>limit</P
 ><P
 >Lets you setup limit of customer debt. SMS will be sent below that value. Default: 0</P
 ><P
@@ -406,8 +417,8 @@ CLASS="PROMPT"
 ><P
 >message (optional)</P
 ><P
->If not empty, that message will be writed in warning message field in customer record 
-	   after cutting him off.  You can specify in message variable %now, that will be replaced by current date.
+>If not empty, that message will be written to warning message field in customer record 
+	   after cutting him off.  You can use %now variable, and it will be replaced by current date.
 	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
 ><P
 >Example:	<SAMP
@@ -484,15 +495,15 @@ CLASS="PROMPT"
 ><P
 >Description on invoice attached to every periodical assigment</P
 ><P
->Default: 'Tariff %tariff subscription for period %period'</P
+>Default: '%tariff subscription for period %period'</P
 ><P
 >Some keywords are substitiuted:</P
 ><P
->%tariff - tariff name</P
+>%tariff - subscription name</P
 ><P
->%period - period (counted from current day to the last in cycle, in form YYYY/MM/DD)</P
+>%period - period (counted from current day to the last in cycle, in YYYY/MM/DD form)</P
 ><P
->%%current_month - period form 1st of current month to the end of it</P
+>%%current_month - period form 1st day of current month to the last day</P
 ><P
 >%desc - tariff description</P
 ><P
@@ -1261,7 +1272,7 @@ CLASS="PROMPT"
 ><P
 >mail_subject</P
 ><P
->Email subject. Can use %invoice variable replaced by invoice number. 
+>Email subject. %invoice variable will be replaced by invoice number. 
 		    Default: 'Invoice No. %invoice'.</P
 ><P
 >Example:	<SAMP
@@ -1273,7 +1284,7 @@ CLASS="PROMPT"
 ><P
 >mail_body</P
 ><P
->Email body. Can use %invoice variable replaced by invoice number. 
+>Email body. %invoice variable will be replaced by invoice number. 
 		    Default: 'Attached file with Invoice No. %invoice'.</P
 ><P
 >Example:	<SAMP
@@ -2101,7 +2112,7 @@ CLASS="PROMPT"
 ><P
 >autoreply_subject</P
 ><P
->Confirmation subject. Here you can use replacement variables %tid - 
+>Confirmation subject. You can use replacement variables here: %tid - 
 		    ticket id and %subject - request subject.
 		    Default: "[RT#%tid] Receipt of request '%subject'".</P
 ><P
@@ -2114,9 +2125,9 @@ CLASS="PROMPT"
 ><P
 >autoreply_body</P
 ><P
->Confirmation body. Here you can use replacement variables %tid - 
+>Confirmation body. You can use replacement variables here; %tid - 
 		    ticket id and %subject - request subject.
-		    Default: 'Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n.'</P
+		    Default: 'Your request was registered in our system.\nTicket identifier RT#%tid has been assigned to this request.\nPlease, place string [RT#%tid] in subject field of any\nfurther mail relating to this request.\n.'</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -2192,8 +2203,8 @@ CLASS="PROMPT"
 ><P
 >lms_url</P
 ><P
->In notification about new ticket is appended link to this ticket
-		    in UI. Default: http://localhost/lms/.</P
+>This link, pointing to corresponding ticket page in UI is appended 
+		    to the notification about new ticket. Default: http://localhost/lms/.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"

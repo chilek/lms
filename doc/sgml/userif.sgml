@@ -95,8 +95,8 @@
             have higher priority than those in configuration file. With options setup in UI,
             the configuration will be still imported from file but values will be then
             overwritten by those found in DB.</para></note></para>
-	    <para><note><para>Daemon read some non-daemon options only from
-	    database, so is prefered to store configuration in database.</para></note></para>
+	    <para><note><para>Daemon read some options other than its configuration from
+	    database only, so it's prefered to store configuration in database.</para></note></para>
 	    <para>In order to manually add new option click 'Add option' on the
             bottom of the list. To edit option value, click on its record. You'll be given
             with edit form, where you are also able to remove this option. Changing option
@@ -268,11 +268,11 @@ are optional.</para>
 		other devices will be drawn relative to it.
 		<note><para>You need GD or Ming library compiled in PHP 
 		to be able to use graphical map.</para></note>
-		To specify type of map use option <filename>'map_type'</filename>
-		in section <emphasis>[phpui]</emphasis>. Set it to "flash" if you've
+		Use <filename>'map_type'</filename> option in section <emphasis>[phpui]</emphasis> 
+		section to specify type of map. Set it to "flash" if you've
 		got Ming library or "gd" for graphic images. By default (option
 		not set) LMS will try to generate flash map, and when this fails, 
-		will try GD.
+		t will fallback to GD.
 		</para>
 		<para>Device status is shown on the map - computers in black are
 offline. Question mark on device icon means that its status is unknown (device 
@@ -366,7 +366,7 @@ you to print invoice for corresponding record.</para>
 possible to account the same operation for multiple customers at the same
 time.</para>
 	    <para><note><para>It's best to use lms-payments Perl script or
-<emphasis>almsd</emphasis> daemon to automate periodical operations, such as
+<emphasis>lmsd</emphasis> daemon to automate periodical operations, such as
 subscription fees. Those modules are also able to write out appropriate
 invoices.</para></note></para>
 	</sect2>
@@ -693,8 +693,9 @@ users access to this queue, which overrides those set in 'Administration', which
 means, that the user who has 'full access' permissions won't be able to see
 queue and tickets placed in it until he's given access to that queue.
 Enabling 'write' (tickets and comments edit ability) to user automatically gives
-him 'read' access. 'Notices' privilege is used for notification users about new tickets.
-If option 'newticket_notify' is enabled all users with that right will get notifications by email.</para>
+him 'read' access. 'Notices' privilege is used to notify users about new tickets.
+If 'newticket_notify' option is enabled all users with this privilege will get 
+notifications by email.</para>
 	</sect2>
 	<sect2 id="menu-helpdesk-search">
 	<title>Searching</title>
