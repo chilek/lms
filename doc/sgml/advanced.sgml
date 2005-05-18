@@ -78,7 +78,7 @@
 				<member>name - first and last name</member>
 				<member>email - user's email address</member>
 				<member>rights - binary access rights</member>
-				<member>hosts - list of hosts allowed for logon</member>
+				<member>hosts - list of hosts allowed to login</member>
 				<member>passwd - password to login</member>
 				<member>lastlogindate - date of last login</member>
 				<member>lastloginip - IP of last login</member>
@@ -155,7 +155,7 @@
 				<member>name - device name</member>
 				<member>mac - MAC address</member>
 				<member>ipaddr - IP address</member>
-				<member>passwd - password</member>
+				<member>passwd - computer password for radius/pppoe login</member>
 				<member>ownerid - serial number of the owner ('0' if network device)</member>
 				<member>creationdate - creation timestamp</member>
 				<member>moddate - last modification timestamp</member>
@@ -312,10 +312,10 @@
 				<member>expdate - account expire date</member>
 				<member>domainid - domain serial number</member>
 				<member>createtime - account creation date</member>
-				<member>quota_sh - limits</member>
-				<member>quota_mail - limits</member>
-				<member>quota_www - limits</member>
-				<member>quota_ftp - limits</member>
+				<member>quota_sh - shell space limits</member>
+				<member>quota_mail - email space limits</member>
+				<member>quota_www - www space limits</member>
+				<member>quota_ftp - ftp space limits</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="domains">
@@ -426,7 +426,7 @@
 				<member>note - note</member>
 				<member>date - event date</member>
 				<member>begintime - beginning of event</member>
-				<member>endtime - ending of event</member>
+				<member>endtime - end of event</member>
 				<member>adminid - event creator ID</member>
 				<member>userid - customer ID</member>
 				<member>private - status (private/public)</member>
@@ -544,7 +544,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 		<para>Each system has its restrictions. Some of ours are inherited from SQL engine being used. Some from assumptions (nearly) knowingly made by developers. Those are current restrictions:</para>
 		<sect2 id="devel-limits-lms">
 			<title>LMS project related</title>
-			<para>Number of cash (in 'cash' table) is stored (since lms-1.1) as 32 integer value, so if you have 5000 users you might have problems in 8 years or so.</para>
+			<para>Amount of money (in 'cash' table) was stored (as of lms-1.1) as 32 integer value, so if you had 5000 users you might had problems in 8 years or so. Nowadays (since lms-1.1.7 Hathor) we use more appropriate type [ decimal (9.2), with 2 significant places after dot and 9 numers for whole sum] and the maximum is 9'999'999.99 (sum of all in/out cash operations). Procedures converting numbers to words are able to process numbers as big as 10^18.</para>
 		</sect2>
 		<sect2 id="devel-limits-db">
 			<title>SQL engine related</title>

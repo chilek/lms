@@ -89,7 +89,7 @@ NAME="DEVEL-LIMITS-LMS"
 >7.6.1. LMS project related</A
 ></H2
 ><P
->Number of cash (in 'cash' table) is stored (since lms-1.1) as 32 integer value, so if you have 5000 users you might have problems in 8 years or so.</P
+>Amount of money (in 'cash' table) was stored (as of lms-1.1) as 32 integer value, so if you had 5000 users you might had problems in 8 years or so. Nowadays (since lms-1.1.7 Hathor) we use more appropriate type [ decimal (9.2), with 2 significant places after dot and 9 numers for whole sum] and the maximum is 9'999'999.99 (sum of all in/out cash operations). Procedures converting numbers to words are able to process numbers as big as 10^18.</P
 ></DIV
 ><DIV
 CLASS="SECT2"

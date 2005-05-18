@@ -294,8 +294,8 @@ Chapter 2. Installation and configuration
    (look for "extension" in php.ini or in output of phpinfo function):
    pcre, posix (for systems info), zlib (for compressed backups), gd or
    ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
-   support). For mailing is used PEAR::Mail (which require Net_SMTP and
-   Net_Sockets from PEAR package).
+   support). PEAR::Mail is being used for mailing (which require Net_SMTP
+   and Net_Sockets from PEAR package).
      _________________________________________________________________
 
 2.2.3. Database Server
@@ -379,9 +379,9 @@ $ mv Smarty-2.6.0/libs Smarty
 2.4. Localization
 
    Default language of user interface is English, and national characters
-   are encoded in UTF-8. For proper displaying of national chars in other
-   languages you must have appropriate locales. E.g. for polish language
-   it'll be following command:
+   are encoded in UTF-8. For proper display of national characters in
+   other languages you must define appropriate locales. E.g. for polish
+   language it's achieved by running the following command:
 # localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8
 
    Instructions about database encoding settings in follow-up of this
@@ -820,7 +820,7 @@ database = /usr/local/lms/lms.db
        Length of (auto-generated) node password. Max.32. Default: 16.
        Example: nodepassword_length = 8
      * smtp_host, smtp_port, smtp_username, smtp_password
-       Parameters of smtp authorization in mailing. Default:
+       Parameters for smtp authorization in mailing. Default:
        127.0.0.1:25.
        Example: smtp_host = mail.domain.pl
      * smtp_auth_type
@@ -903,18 +903,18 @@ database = /usr/local/lms/lms.db
 
 2.7.3. User-defined access rules
 
-   Advanced users can define additional any access rules or redefine
+   Advanced users can define any additional access rules or redefine
    existing ones. In order to do that you must make PHP script based on
-   file lib/accesstable.php place them in LMS's lib directory. Then set
+   file lib/accesstable.php and place it in LMS's lib directory. Then set
    option custom_accesstable in [phpui] section to created file name.
 
-   In that way is possible to define your own rules to allow or deny
-   access for any modules. Module it's a name of PHP file in modules
-   directory, which in access rules is given without extension. For
-   example, is possible to define rule for invoices displaying (e.g. for
-   script lms-sendinvoices) in following way:
+   In that way it's possible to define your own rules to allow or deny
+   access for any modules. Module is a name of PHP file in modules
+   directory, given without extension in access rules. For example, it's
+   possible to define rule for invoices display (e.g. for
+   lms-sendinvoices script) in the following way:
 <?php
-$access['table'][100]['name']      = 'invoices displaying';
+$access['table'][100]['name']      = 'invoices display';
 $access['table'][100]['allow_reg'] = '^invoice$';
 ?>
      _________________________________________________________________
@@ -1942,24 +1942,27 @@ http://www.bigpro.com/
 
    Configuration of lms-notify should be set in lms.ini file, [notify]
    section. Following parameters are valid:
-     * limit (optional)
+     * limit
        Lets you setup limit of customer debt. Email will be sent below
        that value. Default: limit = 0
        Example: limit = -20
      * mailsubject (mandatory)
        Lets you setup subject of email sent. You can use following
        templates, with meanings identical to those set in email template:
-       %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: not set.
+       %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: none.
        Example: mailsubject = Debt information
      * mailtemplate (mandatory)
-       Lets you setup mail template which will be sent. Default: not set.
+       Lets you setup mail template which will be sent. Default: none.
        Example: mailtemplate = /etc/lms/notifytemplate.txt
-     * mailfrom
-       Lets you setup email of the sender. Default: not set.
+     * mailfrom (mandatory)
+       Lets you setup email of the sender. Default: none.
        Example: mailfrom = staff@bigpro.com
-     * mailfname
-       Sender name
+     * mailfname (mandatory)
+       Sender name. Default: none
        Example: mailfname = Administrators
+     * mailcharset
+       Message character set (Content-Type). Default: UTF-8
+       Example: mailcharset = ISO-8859-2
      * smtp_server
        SMTP server to be used when sending emails. Default: 127.0.0.1
        Example: smtp_server = smtp.bigpro.com
@@ -1977,7 +1980,7 @@ http://www.bigpro.com/
 
    Configuration of lms-notify-sms should be set in lms.ini file,
    [notify-sms] section. Following parameters are valid:
-     * limit (optional)
+     * limit
        Lets you setup limit of customer debt. SMS will be sent below that
        value. Default: 0
        Example: limit = -20
@@ -1999,11 +2002,11 @@ http://www.bigpro.com/
        disconnected below that value. Default: 0
        Example: limit = -20
      * message (optional)
-       If not empty, that message will be writed in warning message field
-       in customer record after cutting him off. You can specify in
-       message variable %now, that will be replaced by current date.
-       Default: 'Automatic cutoff caused by exceeding of liabilities
-       limit on %now'
+       If not empty, that message will be written to warning message
+       field in customer record after cutting him off. You can use %now
+       variable, and it will be replaced by current date. Default:
+       'Automatic cutoff caused by exceeding of liabilities limit on
+       %now'
        Example: message = ''
      _________________________________________________________________
 
@@ -2028,13 +2031,13 @@ http://www.bigpro.com/
        Example: paytype = '(suspension)'
      * comment (optional)
        Description on invoice attached to every periodical assigment
-       Default: 'Tariff %tariff subscription for period %period'
+       Default: '%tariff subscription for period %period'
        Some keywords are substitiuted:
-       %tariff - tariff name
+       %tariff - subscription name
        %period - period (counted from current day to the last in cycle,
-       in form YYYY/MM/DD)
-       %%current_month - period form 1st of current month to the end of
-       it
+       in YYYY/MM/DD form)
+       %%current_month - period form 1st day of current month to the last
+       day
        %desc - tariff description
        Example: paytype = 'Subscription for %current_month'
 
@@ -2293,11 +2296,11 @@ wins    = 213.25.209.10
        Email sender address. Default: undefined.
        Example: sender_email = admin@mynet.pl
      * mail_subject
-       Email subject. Can use %invoice variable replaced by invoice
+       Email subject. %invoice variable will be replaced by invoice
        number. Default: 'Invoice No. %invoice'.
        Example: mail_subject = 'New invoice'
      * mail_body
-       Email body. Can use %invoice variable replaced by invoice number.
+       Email body. %invoice variable will be replaced by invoice number.
        Default: 'Attached file with Invoice No. %invoice'.
        Example: mail_body = ''
 
@@ -2598,16 +2601,16 @@ endif
        Sender name for confirmations. Default: undefined.
        Example: mail_from_name = 'BOK SuperLAN'
      * autoreply_subject
-       Confirmation subject. Here you can use replacement variables %tid
+       Confirmation subject. You can use replacement variables here: %tid
        - ticket id and %subject - request subject. Default: "[RT#%tid]
        Receipt of request '%subject'".
        Example: autoreply_subject = '[RT#%tid] Helpdesk confirmation'
      * autoreply_body
-       Confirmation body. Here you can use replacement variables %tid -
+       Confirmation body. You can use replacement variables here; %tid -
        ticket id and %subject - request subject. Default: 'Your request
-       was registered in our system.\nTo this request was assigned ticket
-       identifier RT#%tid.\nPlease, place string [RT#%tid] in subject
-       field of any\nmail relating to this request.\n.'
+       was registered in our system.\nTicket identifier RT#%tid has been
+       assigned to this request.\nPlease, place string [RT#%tid] in
+       subject field of any\nfurther mail relating to this request.\n.'
        Example: autoreply_body = ''
      * smtp_server
        SMTP server to be used for sending emails. Default: localhost.
@@ -2631,8 +2634,9 @@ endif
        users with rights for current queue. Default: Off.
        Example: newticket_notify = 1
      * lms_url
-       In notification about new ticket is appended link to this ticket
-       in UI. Default: http://localhost/lms/.
+       This link, pointing to corresponding ticket page in UI is appended
+       to the notification about new ticket. Default:
+       http://localhost/lms/.
        Example: lms_url = https://lms.domain.pl/
      _________________________________________________________________
 
@@ -3013,10 +3017,10 @@ Chapter 6. LMS Daemon
    It's required to choose one database which you will use (--with-mysql
    or --with-pgsql or --with-sqlite) and location of libraries supplied
    with database (--incdir, --libdir). You can use only one database. If
-   you will change database, you have to recompile your daemon. It's also
+   you change database, you have to recompile your daemon. It's also
    possible to force daemon to use configuration files instead of
-   database. He can't use both of them in the same time, you'll need to
-   choose that before compilation.
+   database. It can't use both files and db at the same time, you'll need
+   to choose either before compilation.
 # ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
 
    After that you can compile and install (put daemon in directory given
@@ -3030,70 +3034,71 @@ Chapter 6. LMS Daemon
 
 6.1.3. Configuration
 
-   For daemon and modules configuration is destined menu Reload ->
-   Configuration in LMS-UI. Modules configuration is described later, in
-   separate chapters concerning each module. Basic daemon parameters and
-   data for connection to database should be specified as command line
-   options, according to following listing:
--h host           host where is instaled database (default: localhost)
+   Configuration for daemon and modules configuration can be edited
+   through Reload -> Configuration menu in LMS-UI. Modules configuration
+   is described later, in separate chapters concerning each module. Basic
+   daemon parameters and data for connection to database should be
+   specified as command line options, according to following listing:
+-h host           host database is available (default: localhost)
 -d db_name        database name (default: lms)
--u user           database user name (default: lms)
+-u user           database username (default: lms)
 -p password       database password (default: empty)
--H hostname       name of host where daemon runs. By default is assumed name returned by
-                  hostname command, but it can be overwrited. That name must according
-                  with name specified in hosts configuration
-- c command       shell command to run before every database connection (default: empty)
--i "instance[ ...]" list of instances for reload. Other instances will be ignored
+-H hostname       host name where daemon runs; name returned by hostname command is taken
+                  as default but it can be overwritten; that name must correspond to the
+                  one specified in hosts configuration in UI
+- c command       shell command to execute before every database connection (default: empty)
+-i "instance[ ...]" list of instances to reload; other instances will be ignored
 -q                do reload and exit
 -f                run in foreground (don't fork)
 -v                prints version and copyright info
 
-   Database connection options are readed also from shell variables:
-   LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
+   Database connection options can be also read from enviroment
+   variables: LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
    Note
 
-   List of instances contains instances names separated with spaces.
+   List of instances should contain instance names separated with spaces.
 
-   Daemon configuration is composed of hosts (that makes possible to
-   configure and reload of daemons installed on different hosts/routers)
-   and configuration sections called as instances.
+   Daemon configuration is divided into hosts (which makes possible to
+   configure and reload several different daemons installed on numerous
+   hosts/routers) and configuration sections called as instances.
 
-   Instance, beside config modules params, must contain primary options
-   as:
+   Instance configuration, besides config modules params, have to contain
+   the following primary options:
      * Name
-       Instance name unique within each host.
+       Instance name, unique for each daemon (host where daemon is
+       running).
        Example: system
      * Priority
-       Priority number, that define instances reload sequence.
+       Priority number, which defines instances reload sequence.
        Example: 10
      * Module
-       Module name (with or without extension). If path is not specified
-       daemon will search module in PREFIX/lms/lib directory, where
-       modules goes after "make install".
+       Module name (with or without .so extension). If path is not
+       specified daemon will search module in PREFIX/lms/lib directory,
+       where modules are being placed after "make install".
        Example: /usr/lib/system.so
      * Crontab
        Module execution time specified in crontab style. All data must be
-       numeric. Following example cause instance execution at 5 minutes
-       interval between 8 and 18 hour every day. If crontab is empty
-       instance will be reloaded only while reload. Default: empty.
+       numeric. Following example executes instance each 5 minutes
+       between 8 and 18 hour every day. If crontab is empty, instance
+       will be reloaded only with UI reload. Default: empty.
        Example: */5 8-18 * * *
 
-   Any configuration change do not require daemon restart.
+   Configuration changes does not require restarting daemon.
      _________________________________________________________________
 
 6.1.4. Starting
 
-   By default program runs in daemon mode. In that mode configuration and
+   By default program runs in daemon mode. In this mode configuration and
    services reload is performed on demand using 'Reload' menu in LMS-UI.
-   Reload order checking and configuration reading (especially instances
-   list and configuration of them) is done on each minute. When daemon
-   detects reload order, it runs all enabled instances. Instances with
-   specified crontab will be executed it's matching with current time.
+   Reload order and configuration checks (especially instances list and
+   configuration of them) is done each minute. When daemon detects reload
+   order, it runs all enabled instances. Instances with crontab specified
+   will be executed at scheduled time.
 
-   Other way to run daemon is disposable reload with use of '-q' option.
-   This way is useful for tests, and in conjunction with '-i' option
-   allows to run selected instances regardless of crontab of the rest of
-   instances.
+   Other way to run daemon is disposable reload using '-q' command line
+   option. This is useful for tests, and in conjunction with '-i' option
+   allows to run selected instances regardless of crontab entries for the
+   rest of instances.
      _________________________________________________________________
 
 6.2. Modules
@@ -3131,13 +3136,13 @@ Chapter 6. LMS Daemon
    This module does only one thing: it runs given Linux shell command
    or/and SQL query. It can be useful if you want to execute some command
    or run external script while configuration is being reload, eg. one of
-   those in LMS /bin directory. SQL command is executed first.
+   scripts in LMS /bin directory. SQL command is executed first.
      _________________________________________________________________
 
 6.2.2.2. Configuration
 
-   For above reason you can define only command strings. Module will pass
-   list of commands to shell, separated by semicolons:
+   You can define command strings or SQL queries. Commands will be
+   executed via shell, separated by semicolons:
      * sql
        SQL command. Default: empty.
        Example: command = 'DELETE FROM stats WHERE dt < %NOW% -
@@ -3846,7 +3851,7 @@ Chapter 7. For curious
    name - first and last name
    email - user's email address
    rights - binary access rights
-   hosts - list of hosts allowed for logon
+   hosts - list of hosts allowed to login
    passwd - password to login
    lastlogindate - date of last login
    lastloginip - IP of last login
@@ -3918,7 +3923,7 @@ Chapter 7. For curious
    name - device name
    mac - MAC address
    ipaddr - IP address
-   passwd - password
+   passwd - computer password for radius/pppoe login
    ownerid - serial number of the owner ('0' if network device)
    creationdate - creation timestamp
    moddate - last modification timestamp
@@ -4067,10 +4072,10 @@ Chapter 7. For curious
    expdate - account expire date
    domainid - domain serial number
    createtime - account creation date
-   quota_sh - limits
-   quota_mail - limits
-   quota_www - limits
-   quota_ftp - limits
+   quota_sh - shell space limits
+   quota_mail - email space limits
+   quota_www - www space limits
+   quota_ftp - ftp space limits
      _________________________________________________________________
 
 7.2.17. Domains ('domains')
@@ -4170,7 +4175,7 @@ Chapter 7. For curious
    note - note
    date - event date
    begintime - beginning of event
-   endtime - ending of event
+   endtime - end of event
    adminid - event creator ID
    userid - customer ID
    private - status (private/public)
@@ -4330,9 +4335,13 @@ key = "A.L.E.C's LMS Daemon is the best"
 
 7.6.1. LMS project related
 
-   Number of cash (in 'cash' table) is stored (since lms-1.1) as 32
-   integer value, so if you have 5000 users you might have problems in 8
-   years or so.
+   Amount of money (in 'cash' table) was stored (as of lms-1.1) as 32
+   integer value, so if you had 5000 users you might had problems in 8
+   years or so. Nowadays (since lms-1.1.7 Hathor) we use more appropriate
+   type [ decimal (9.2), with 2 significant places after dot and 9 numers
+   for whole sum] and the maximum is 9'999'999.99 (sum of all in/out cash
+   operations). Procedures converting numbers to words are able to
+   process numbers as big as 10^18.
      _________________________________________________________________
 
 7.6.2. SQL engine related
