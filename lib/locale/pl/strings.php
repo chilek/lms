@@ -203,6 +203,7 @@ $_LANG['Bug Tracking System'] = 'System śledzenia błędów';
 $_LANG['But it\'s also doesn\'t give you any benefits ;-)'] = 'Ale nie daje Ci to żadnych korzyści ;-)';
 $_LANG['bytes'] = 'bajtów';
 $_LANG['Cancel'] = 'Anuluj';
+$_LANG['Can\'t send message. PEAR::Mail not found!'] = 'Nie można wysłać wiadomości. Nie znaleziono PEAR::Mail!';
 $_LANG['CASH'] = 'GOTÓWKA';
 $_LANG['Cash Operations Import'] = 'Import operacji kasowych';
 $_LANG['Cautions:'] = 'Uwagi:';
