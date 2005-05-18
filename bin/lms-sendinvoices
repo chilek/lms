@@ -208,12 +208,7 @@ while(my $row = $dbq->fetchrow_hashref())
 		my $response = $ua->get($lms_url.'/?m=invoice&fetchsingle=1&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
 		if ($response->is_success)
 		{
-			my $custemail = $row->{'email'};
-			
-			if($debug_email)
-			{
-				$custemail = $debug_email;
-			}
+			my $custemail = $debug_email || $row->{'email'};
 			
 			if(!$quiet)
 			{
