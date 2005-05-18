@@ -13,6 +13,7 @@ version 1.7.1 ? (??/??/????):
   - lmsd/system: added option 'sql' (alec)
   - in nodes and customers searching added workaround for postgresql's ILIKE 
     problem with national characters (alec)
+  - lmsd/dns: networks can share the same domain name (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
