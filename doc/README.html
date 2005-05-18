@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2327"
+HREF="#AEN2332"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -1159,7 +1159,7 @@ TARGET="_top"
            At least following PHP modules needs to be installed (look for "extension" in
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
            compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
-           support). For mailing is used PEAR::Mail (which require Net_SMTP and Net_Sockets from 
+           support). PEAR::Mail is being used for mailing (which require Net_SMTP and Net_Sockets from 
 	   PEAR package).</P
 ></DIV
 ><DIV
@@ -1431,9 +1431,9 @@ NAME="INSTALL-LOCALE"
 ></H2
 ><P
 >Default language of user interface is English, and national characters
-	are encoded in UTF-8. For proper displaying of national chars in other languages
-	you must have appropriate locales. E.g. for polish language it'll be
-	following command:
+	are encoded in UTF-8. For proper display of national characters in other languages
+	you must define appropriate locales. E.g. for polish language it's achieved by running
+	the following command:
 <PRE
 CLASS="SCREEN"
 ># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
@@ -2550,7 +2550,7 @@ CLASS="PROMPT"
 ><P
 >smtp_host, smtp_port, smtp_username, smtp_password</P
 ><P
->Parameters of smtp authorization in mailing. Default: 127.0.0.1:25.</P
+>Parameters for smtp authorization in mailing. Default: 127.0.0.1:25.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -2791,13 +2791,13 @@ NAME="INSTALL-RIGHTS-USER"
 >2.7.3. User-defined access rules</A
 ></H3
 ><P
->Advanced users can define additional any access rules
+>Advanced users can define any additional access rules
 		or redefine existing ones.  In order to do that you must make
 		PHP script based on file <TT
 CLASS="FILENAME"
 >lib/accesstable.php</TT
 >
-		place them in LMS's <TT
+		and place it in LMS's <TT
 CLASS="FILENAME"
 >lib</TT
 > directory. Then 
@@ -2807,19 +2807,19 @@ CLASS="FILENAME"
 > in [phpui]
 		section to created file name.</P
 ><P
->In that way is possible to define your own rules to allow
-		or deny access for any modules. Module it's a name of PHP file
+>In that way it's possible to define your own rules to allow
+		or deny access for any modules. Module is a name of PHP file
 		in <TT
 CLASS="FILENAME"
 >modules</TT
-> directory, which in access rules
-		is given without extension. For example, is possible to define
-		rule for invoices displaying (e.g. for script lms-sendinvoices) 
-		in following way:
+> directory, given without extension 
+		in access rules. For example, it's possible to define
+		rule for invoices display (e.g. for lms-sendinvoices script) 
+		in the following way:
 <PRE
 CLASS="SCREEN"
 >&lt;?php
-$access['table'][100]['name']      = 'invoices displaying';
+$access['table'][100]['name']      = 'invoices display';
 $access['table'][100]['allow_reg'] = '^invoice$';
 ?&gt;</PRE
 >
@@ -3397,8 +3397,8 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Daemon read some non-daemon options only from
-	    database, so is prefered to store configuration in database.</P
+>Daemon read some options other than its configuration from
+	    database only, so it's prefered to store configuration in database.</P
 ></TD
 ></TR
 ></TABLE
@@ -3843,20 +3843,20 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 >
-		To specify type of map use option <TT
+		Use <TT
 CLASS="FILENAME"
 >'map_type'</TT
->
-		in section <SPAN
+> option in section <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[phpui]</I
 ></SPAN
->. Set it to "flash" if you've
+> 
+		section to specify type of map. Set it to "flash" if you've
 		got Ming library or "gd" for graphic images. By default (option
 		not set) LMS will try to generate flash map, and when this fails, 
-		will try GD.
+		t will fallback to GD.
 		</P
 ><P
 >Device status is shown on the map - computers in black are
@@ -4085,7 +4085,7 @@ VALIGN="TOP"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->almsd</I
+>lmsd</I
 ></SPAN
 > daemon to automate periodical operations, such as
 subscription fees. Those modules are also able to write out appropriate
@@ -4759,8 +4759,9 @@ users access to this queue, which overrides those set in 'Administration', which
 means, that the user who has 'full access' permissions won't be able to see
 queue and tickets placed in it until he's given access to that queue.
 Enabling 'write' (tickets and comments edit ability) to user automatically gives
-him 'read' access. 'Notices' privilege is used for notification users about new tickets.
-If option 'newticket_notify' is enabled all users with that right will get notifications by email.</P
+him 'read' access. 'Notices' privilege is used to notify users about new tickets.
+If 'newticket_notify' option is enabled all users with this privilege will get 
+notifications by email.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -5211,7 +5212,7 @@ Following parameters are valid:</P
 ><UL
 ><LI
 ><P
->limit (optional)</P
+>limit</P
 ><P
 >Lets you setup limit of customer debt. Email will be sent below that value. Default: limit = 0</P
 ><P
@@ -5224,7 +5225,7 @@ CLASS="PROMPT"
 ><P
 >mailsubject (mandatory)</P
 ><P
->Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: not set.</P
+>Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: none.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -5235,7 +5236,7 @@ CLASS="PROMPT"
 ><P
 >mailtemplate (mandatory)</P
 ><P
->Lets you setup mail template which will be sent. Default: not set.</P
+>Lets you setup mail template which will be sent. Default: none.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -5244,9 +5245,9 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfrom</P
+>mailfrom (mandatory)</P
 ><P
->Lets you setup email of the sender. Default: not set.</P
+>Lets you setup email of the sender. Default: none.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -5255,13 +5256,24 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfname</P
+>mailfname (mandatory)</P
 ><P
->Sender name</P
+>Sender name. Default: none</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
 >mailfname = Administrators</SAMP
+></P
+></LI
+><LI
+><P
+>mailcharset</P
+><P
+>Message character set (Content-Type). Default: UTF-8</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mailcharset = ISO-8859-2</SAMP
 ></P
 ></LI
 ><LI
@@ -5321,7 +5333,7 @@ Following parameters are valid:</P
 ><UL
 ><LI
 ><P
->limit (optional)</P
+>limit</P
 ><P
 >Lets you setup limit of customer debt. SMS will be sent below that value. Default: 0</P
 ><P
@@ -5384,8 +5396,8 @@ CLASS="PROMPT"
 ><P
 >message (optional)</P
 ><P
->If not empty, that message will be writed in warning message field in customer record 
-	   after cutting him off.  You can specify in message variable %now, that will be replaced by current date.
+>If not empty, that message will be written to warning message field in customer record 
+	   after cutting him off.  You can use %now variable, and it will be replaced by current date.
 	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
 ><P
 >Example:	<SAMP
@@ -5462,15 +5474,15 @@ CLASS="PROMPT"
 ><P
 >Description on invoice attached to every periodical assigment</P
 ><P
->Default: 'Tariff %tariff subscription for period %period'</P
+>Default: '%tariff subscription for period %period'</P
 ><P
 >Some keywords are substitiuted:</P
 ><P
->%tariff - tariff name</P
+>%tariff - subscription name</P
 ><P
->%period - period (counted from current day to the last in cycle, in form YYYY/MM/DD)</P
+>%period - period (counted from current day to the last in cycle, in YYYY/MM/DD form)</P
 ><P
->%%current_month - period form 1st of current month to the end of it</P
+>%%current_month - period form 1st day of current month to the last day</P
 ><P
 >%desc - tariff description</P
 ><P
@@ -6239,7 +6251,7 @@ CLASS="PROMPT"
 ><P
 >mail_subject</P
 ><P
->Email subject. Can use %invoice variable replaced by invoice number. 
+>Email subject. %invoice variable will be replaced by invoice number. 
 		    Default: 'Invoice No. %invoice'.</P
 ><P
 >Example:	<SAMP
@@ -6251,7 +6263,7 @@ CLASS="PROMPT"
 ><P
 >mail_body</P
 ><P
->Email body. Can use %invoice variable replaced by invoice number. 
+>Email body. %invoice variable will be replaced by invoice number. 
 		    Default: 'Attached file with Invoice No. %invoice'.</P
 ><P
 >Example:	<SAMP
@@ -7079,7 +7091,7 @@ CLASS="PROMPT"
 ><P
 >autoreply_subject</P
 ><P
->Confirmation subject. Here you can use replacement variables %tid - 
+>Confirmation subject. You can use replacement variables here: %tid - 
 		    ticket id and %subject - request subject.
 		    Default: "[RT#%tid] Receipt of request '%subject'".</P
 ><P
@@ -7092,9 +7104,9 @@ CLASS="PROMPT"
 ><P
 >autoreply_body</P
 ><P
->Confirmation body. Here you can use replacement variables %tid - 
+>Confirmation body. You can use replacement variables here; %tid - 
 		    ticket id and %subject - request subject.
-		    Default: 'Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n.'</P
+		    Default: 'Your request was registered in our system.\nTicket identifier RT#%tid has been assigned to this request.\nPlease, place string [RT#%tid] in subject field of any\nfurther mail relating to this request.\n.'</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -7170,8 +7182,8 @@ CLASS="PROMPT"
 ><P
 >lms_url</P
 ><P
->In notification about new ticket is appended link to this ticket
-		    in UI. Default: http://localhost/lms/.</P
+>This link, pointing to corresponding ticket page in UI is appended 
+		    to the notification about new ticket. Default: http://localhost/lms/.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -8288,10 +8300,10 @@ CLASS="SCREEN"
 >
                It's required to choose one database which you will use (--with-mysql or --with-pgsql
                or --with-sqlite) and location of libraries supplied with database (--incdir,
-               --libdir). You can use only one database. If you will change database, you have to
+               --libdir). You can use only one database. If you change database, you have to
                recompile your daemon. It's also possible to force daemon to use
-	       configuration files instead of database. He can't use
-	       both of them in the same time, you'll need to choose that before
+	       configuration files instead of database. It can't use
+	       both files and db at the same time, you'll need to choose either before
 	       compilation.
 <PRE
 CLASS="SCREEN"
@@ -8323,8 +8335,8 @@ NAME="DAEMON-CONFIG"
 >6.1.3. Configuration</A
 ></H3
 ><P
->For daemon and modules configuration is destined menu Reload -&#62; Configuration
-	       in <SPAN
+>Configuration for daemon and modules configuration can be edited through Reload -&#62; Configuration
+	       menu in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -8335,20 +8347,20 @@ CLASS="EMPHASIS"
 	       database should be specified as command line options, according to following listing:
 <PRE
 CLASS="SCREEN"
->-h host           host where is instaled database (default: localhost)
+>-h host           host database is available (default: localhost)
 -d db_name        database name (default: lms)
--u user           database user name (default: lms)
+-u user           database username (default: lms)
 -p password       database password (default: empty)
--H hostname       name of host where daemon runs. By default is assumed name returned by
-                  hostname command, but it can be overwrited. That name must according
-                  with name specified in hosts configuration
-- c command       shell command to run before every database connection (default: empty)
--i "instance[ ...]" list of instances for reload. Other instances will be ignored
+-H hostname       host name where daemon runs; name returned by hostname command is taken
+                  as default but it can be overwritten; that name must correspond to the
+                  one specified in hosts configuration in UI
+- c command       shell command to execute before every database connection (default: empty)
+-i "instance[ ...]" list of instances to reload; other instances will be ignored
 -q                do reload and exit
 -f                run in foreground (don't fork)
 -v                prints version and copyright info</PRE
 >
-		Database connection options are readed also from shell variables:
+		Database connection options can be also read from enviroment variables:
 		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
                <DIV
 CLASS="NOTE"
@@ -8369,7 +8381,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->List of instances contains instances names separated with spaces.</P
+>List of instances should contain instance names separated with spaces.</P
 ></TD
 ></TR
 ></TABLE
@@ -8377,17 +8389,17 @@ VALIGN="TOP"
 > 
 	       </P
 ><P
->Daemon configuration is composed of hosts (that makes possible to configure
-	       and reload of daemons installed on different hosts/routers) and configuration sections
-	       called as instances.</P
+>Daemon configuration is divided into hosts (which makes possible to configure
+	       and reload several different daemons installed on numerous hosts/routers) and 
+               configuration sections called as instances.</P
 ><P
->Instance, beside config modules params, must contain primary options as:
+>Instance configuration, besides config modules params, have to contain the following primary options:
 	       <UL
 ><LI
 ><P
 >Name</P
 ><P
->Instance name unique within each host.</P
+>Instance name, unique for each daemon (host where daemon is running).</P
 ><P
 >Example: system</P
 ></LI
@@ -8395,7 +8407,7 @@ VALIGN="TOP"
 ><P
 >Priority</P
 ><P
->Priority number, that define instances reload sequence.</P
+>Priority number, which defines instances reload sequence.</P
 ><P
 >Example: 10</P
 ></LI
@@ -8403,9 +8415,9 @@ VALIGN="TOP"
 ><P
 >Module</P
 ><P
->Module name (with or without extension). If path is not specified
-			daemon will search module in PREFIX/lms/lib directory, where modules goes
-			after "make install".</P
+>Module name (with or without .so extension). If path is not specified
+			daemon will search module in PREFIX/lms/lib directory, where modules are being
+			placed after "make install".</P
 ><P
 >Example: /usr/lib/system.so</P
 ></LI
@@ -8414,8 +8426,8 @@ VALIGN="TOP"
 >Crontab</P
 ><P
 >Module execution time specified in crontab style. All data must be numeric.
-			Following example cause instance execution at 5 minutes interval between 8 and 18 
-			hour every day. If crontab is empty instance will be reloaded only while reload. 
+			Following example executes instance each 5 minutes between 8 and 18 
+			hour every day. If crontab is empty, instance will be reloaded only with UI reload. 
 			Default: empty.</P
 ><P
 >Example: */5 8-18 * * *</P
@@ -8424,7 +8436,7 @@ VALIGN="TOP"
 >
                </P
 ><P
->Any configuration change do not require daemon restart.</P
+>Configuration changes does not require restarting daemon.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -8435,7 +8447,7 @@ NAME="DAEMON-RUN"
 >6.1.4. Starting</A
 ></H3
 ><P
->By default program runs in daemon mode. In that mode
+>By default program runs in daemon mode. In this mode
                configuration and services reload is performed on demand using 'Reload'
                menu in <SPAN
 CLASS="emphasis"
@@ -8443,14 +8455,14 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->. Reload order checking and configuration
-	       reading (especially instances list and configuration of them) is done on each minute. 
+>. Reload order and configuration
+	       checks (especially instances list and configuration of them) is done each minute. 
 	       When daemon detects reload order, it runs all enabled instances. Instances with 
-	       specified crontab will be executed it's matching with current time.</P
+	       crontab specified will be executed at scheduled time.</P
 ><P
->Other way to run daemon is disposable reload with use of '-q' option.
-	       This way is useful for tests, and in conjunction with '-i' option allows to
-	       run selected instances regardless of crontab of the rest of instances.</P
+>Other way to run daemon is disposable reload using '-q' command line option.
+	       This is useful for tests, and in conjunction with '-i' option allows to
+	       run selected instances regardless of crontab entries for the rest of instances.</P
 ></DIV
 ></DIV
 ><DIV
@@ -8477,7 +8489,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2327"
+NAME="AEN2332"
 ></A
 ><P
 ><B
@@ -8638,12 +8650,13 @@ NAME="SYSTEM-DESC"
 ></H4
 ><P
 >This module does only one thing: it runs given 
-	      Linux shell command. It can be useful if you want to execute some command
-	      or run external script while configuration is being reload, eg. one of those 
-              in LMS <TT
+	      Linux shell command or/and SQL query. It can be useful if you want to 
+	      execute some command or run external script while configuration is 
+	      being reload, eg. one of scripts in LMS <TT
 CLASS="FILENAME"
 >/bin</TT
-> directory.</P
+> 
+	      directory. SQL command is executed first.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -8654,18 +8667,29 @@ NAME="SYSTEM-CONFIG"
 >6.2.2.2. Configuration</A
 ></H4
 ><P
->For above reason you can define only command string. Module will pass list of
-              commands to shell, separated by semicolons:</P
+>You can define command strings or SQL queries. Commands will be executed via
+              shell, separated by semicolons:</P
 ><UL
+><LI
+><P
+>sql</P
+><P
+>SQL command. Default: empty.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>command = 'DELETE FROM stats WHERE dt &#60; %NOW% - 365*86400'</SAMP
+></P
+></LI
 ><LI
 ><P
 >command</P
 ><P
->Shell command. Default: empty.</P
+>Shell command(s). Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->command = 'echo "hello"'</SAMP
+>command = 'echo -n "hello "; echo "world"'</SAMP
 ></P
 ></LI
 ></UL
@@ -10525,7 +10549,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->hosts - list of hosts allowed for logon</TD
+>hosts - list of hosts allowed to login</TD
 ></TR
 ><TR
 ><TD
@@ -10803,7 +10827,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->passwd - password</TD
+>passwd - computer password for radius/pppoe login</TD
 ></TR
 ><TR
 ><TD
@@ -11335,7 +11359,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->password - md5 encrypted password</TD
+>password - password encrypted with crypt()</TD
+></TR
+><TR
+><TD
+>realname - additional name</TD
 ></TR
 ><TR
 ><TD
@@ -11347,7 +11375,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->home - account home directory (/home/[login])</TD
+>home - account home directory</TD
 ></TR
 ><TR
 ><TD
@@ -11367,19 +11395,19 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->quota_sh - limits</TD
+>quota_sh - shell space limits</TD
 ></TR
 ><TR
 ><TD
->quota_mail - limits</TD
+>quota_mail - email space limits</TD
 ></TR
 ><TR
 ><TD
->quota_www - limits</TD
+>quota_www - www space limits</TD
 ></TR
 ><TR
 ><TD
->quota_ftp - limits</TD
+>quota_ftp - ftp space limits</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -11757,7 +11785,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->endtime - ending of event</TD
+>endtime - end of event</TD
 ></TR
 ><TR
 ><TD
@@ -12168,7 +12196,7 @@ NAME="DEVEL-LIMITS-LMS"
 >7.6.1. LMS project related</A
 ></H3
 ><P
->Number of cash (in 'cash' table) is stored (since lms-1.1) as 32 integer value, so if you have 5000 users you might have problems in 8 years or so.</P
+>Amount of money (in 'cash' table) was stored (as of lms-1.1) as 32 integer value, so if you had 5000 users you might had problems in 8 years or so. Nowadays (since lms-1.1.7 Hathor) we use more appropriate type [ decimal (9.2), with 2 significant places after dot and 9 numers for whole sum] and the maximum is 9'999'999.99 (sum of all in/out cash operations). Procedures converting numbers to words are able to process numbers as big as 10^18.</P
 ></DIV
 ><DIV
 CLASS="SECT2"

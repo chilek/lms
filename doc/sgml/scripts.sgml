@@ -243,7 +243,7 @@ Following parameters are valid:</para>
             </listitem>
             <listitem>
 	     <para>mailcharset</para>
-	     <para>Message character set. Default: UTF-8</para>
+	     <para>Message character set (Content-Type). Default: UTF-8</para>
 	     <para>Example:	<prompt>mailcharset = ISO-8859-2</prompt></para>
 	    </listitem>
             <listitem>
@@ -297,8 +297,8 @@ Following parameters are valid:</para>
 	  </listitem>
 	  <listitem>
 	   <para>message (optional)</para>
-	   <para>If not empty, that message will be writed in warning message field in customer record 
-	   after cutting him off.  You can specify in message variable %now, that will be replaced by current date.
+	   <para>If not empty, that message will be written to warning message field in customer record 
+	   after cutting him off.  You can use %now variable, and it will be replaced by current date.
 	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</para>
 	   <para>Example:	<prompt>message = ''</prompt></para>
 	  </listitem>
@@ -333,11 +333,11 @@ invoices in <emphasis>[payments]</emphasis> section of
 	  <listitem>
 	   <para>comment (optional)</para>
 	   <para>Description on invoice attached to every periodical assigment</para>
-	   <para>Default: 'Tariff %tariff subscription for period %period'</para>
+	   <para>Default: '%tariff subscription for period %period'</para>
 	   <para>Some keywords are substitiuted:</para>
-	   <para>%tariff - tariff name</para>
-	   <para>%period - period (counted from current day to the last in cycle, in form YYYY/MM/DD)</para>
-	   <para>%%current_month - period form 1st of current month to the end of it</para>
+	   <para>%tariff - subscription name</para>
+	   <para>%period - period (counted from current day to the last in cycle, in YYYY/MM/DD form)</para>
+	   <para>%%current_month - period form 1st day of current month to the last day</para>
 	   <para>%desc - tariff description</para>
 	   <para>Example:	<prompt>paytype = 'Subscription for %current_month'</prompt></para>
 	  </listitem>
@@ -672,13 +672,13 @@ Following parameters are valid:</para>
 		</listitem>
            	<listitem>
 		    <para>mail_subject</para>
-		    <para>Email subject. Can use %invoice variable replaced by invoice number. 
+		    <para>Email subject. %invoice variable will be replaced by invoice number. 
 		    Default: 'Invoice No. %invoice'.</para>
 		    <para>Example:	<prompt>mail_subject = 'New invoice'</prompt></para>
 		</listitem>
            	<listitem>
 		    <para>mail_body</para>
-		    <para>Email body. Can use %invoice variable replaced by invoice number. 
+		    <para>Email body. %invoice variable will be replaced by invoice number. 
 		    Default: 'Attached file with Invoice No. %invoice'.</para>
 		    <para>Example:	<prompt>mail_body = ''</prompt></para>
 		</listitem>
@@ -1072,16 +1072,16 @@ Following parameters are valid:</para>
 		</listitem>
 		<listitem>
 		    <para>autoreply_subject</para>
-		    <para>Confirmation subject. Here you can use replacement variables %tid - 
+		    <para>Confirmation subject. You can use replacement variables here: %tid - 
 		    ticket id and %subject - request subject.
 		    Default: "[RT#%tid] Receipt of request '%subject'".</para>
 		    <para>Example:	<prompt>autoreply_subject = '[RT#%tid] Helpdesk confirmation'</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>autoreply_body</para>
-		    <para>Confirmation body. Here you can use replacement variables %tid - 
+		    <para>Confirmation body. You can use replacement variables here; %tid - 
 		    ticket id and %subject - request subject.
-		    Default: 'Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n.'</para>
+		    Default: 'Your request was registered in our system.\nTicket identifier RT#%tid has been assigned to this request.\nPlease, place string [RT#%tid] in subject field of any\nfurther mail relating to this request.\n.'</para>
 		    <para>Example:	<prompt>autoreply_body = ''</prompt></para>
 		</listitem>
 		<listitem>
@@ -1118,8 +1118,8 @@ Following parameters are valid:</para>
 		</listitem>
 		<listitem>
 		    <para>lms_url</para>
-		    <para>In notification about new ticket is appended link to this ticket
-		    in UI. Default: http://localhost/lms/.</para>
+		    <para>This link, pointing to corresponding ticket page in UI is appended 
+		    to the notification about new ticket. Default: http://localhost/lms/.</para>
 		    <para>Example:	<prompt>lms_url = https://lms.domain.pl/</prompt></para>
 		</listitem>
 	    </itemizedlist>

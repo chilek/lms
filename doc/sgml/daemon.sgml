@@ -51,10 +51,10 @@
 </screen>
                It's required to choose one database which you will use (--with-mysql or --with-pgsql
                or --with-sqlite) and location of libraries supplied with database (--incdir,
-               --libdir). You can use only one database. If you will change database, you have to
+               --libdir). You can use only one database. If you change database, you have to
                recompile your daemon. It's also possible to force daemon to use
-	       configuration files instead of database. He can't use
-	       both of them in the same time, you'll need to choose that before
+	       configuration files instead of database. It can't use
+	       both files and db at the same time, you'll need to choose either before
 	       compilation.
 <screen>
 # ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
@@ -71,73 +71,73 @@
           </sect2>
           <sect2 id="daemon-config">
           <title>Configuration</title>
-               <para>For daemon and modules configuration is destined menu Reload -> Configuration
-	       in <emphasis>LMS-UI</emphasis>. Modules configuration is described later, in separate
+               <para>Configuration for daemon and modules configuration can be edited through Reload -> Configuration
+	       menu in <emphasis>LMS-UI</emphasis>. Modules configuration is described later, in separate
                chapters concerning each module. Basic daemon parameters and data for connection to
 	       database should be specified as command line options, according to following listing:
 <screen>
--h host           host where is instaled database (default: localhost)
+-h host           host database is available (default: localhost)
 -d db_name        database name (default: lms)
--u user           database user name (default: lms)
+-u user           database username (default: lms)
 -p password       database password (default: empty)
--H hostname       name of host where daemon runs. By default is assumed name returned by
-                  hostname command, but it can be overwrited. That name must according
-                  with name specified in hosts configuration
-- c command       shell command to run before every database connection (default: empty)
--i "instance[ ...]" list of instances for reload. Other instances will be ignored
+-H hostname       host name where daemon runs; name returned by hostname command is taken
+                  as default but it can be overwritten; that name must correspond to the
+                  one specified in hosts configuration in UI
+- c command       shell command to execute before every database connection (default: empty)
+-i "instance[ ...]" list of instances to reload; other instances will be ignored
 -q                do reload and exit
 -f                run in foreground (don't fork)
 -v                prints version and copyright info
 </screen>
-		Database connection options are readed also from shell variables:
+		Database connection options can be also read from enviroment variables:
 		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
-               <note><para>List of instances contains instances names separated with spaces.</para></note> 
+               <note><para>List of instances should contain instance names separated with spaces.</para></note> 
 	       </para>
-               <para>Daemon configuration is composed of hosts (that makes possible to configure
-	       and reload of daemons installed on different hosts/routers) and configuration sections
-	       called as instances.</para>
-	       <para>Instance, beside config modules params, must contain primary options as:
+               <para>Daemon configuration is divided into hosts (which makes possible to configure
+	       and reload several different daemons installed on numerous hosts/routers) and 
+               configuration sections called as instances.</para>
+	       <para>Instance configuration, besides config modules params, have to contain the following primary options:
 	       <itemizedlist>
 	    	    <listitem>
 			<para>Name</para>
-			<para>Instance name unique within each host.</para>
+			<para>Instance name, unique for each daemon (host where daemon is running).</para>
 			<para>Example: system</para>
 		    </listitem>
 	    	    <listitem>
 			<para>Priority</para>
-			<para>Priority number, that define instances reload sequence.</para>
+			<para>Priority number, which defines instances reload sequence.</para>
 			<para>Example: 10</para>
 		    </listitem>
 	    	    <listitem>
 			<para>Module</para>
-			<para>Module name (with or without extension). If path is not specified
-			daemon will search module in PREFIX/lms/lib directory, where modules goes
-			after "make install".</para>
+			<para>Module name (with or without .so extension). If path is not specified
+			daemon will search module in PREFIX/lms/lib directory, where modules are being
+			placed after "make install".</para>
 			<para>Example: /usr/lib/system.so</para>
 		    </listitem>
 	    	    <listitem>
 			<para>Crontab</para>
 			<para>Module execution time specified in crontab style. All data must be numeric.
-			Following example cause instance execution at 5 minutes interval between 8 and 18 
-			hour every day. If crontab is empty instance will be reloaded only while reload. 
+			Following example executes instance each 5 minutes between 8 and 18 
+			hour every day. If crontab is empty, instance will be reloaded only with UI reload. 
 			Default: empty.</para>
 			<para>Example: */5 8-18 * * *</para>
 		    </listitem>
 	       </itemizedlist>
                </para>
-               <para>Any configuration change do not require daemon restart.</para>
+               <para>Configuration changes does not require restarting daemon.</para>
           </sect2>
           <sect2 id="daemon-run">
           <title>Starting</title>
-               <para>By default program runs in daemon mode. In that mode
+               <para>By default program runs in daemon mode. In this mode
                configuration and services reload is performed on demand using 'Reload'
-               menu in <emphasis>LMS-UI</emphasis>. Reload order checking and configuration
-	       reading (especially instances list and configuration of them) is done on each minute. 
+               menu in <emphasis>LMS-UI</emphasis>. Reload order and configuration
+	       checks (especially instances list and configuration of them) is done each minute. 
 	       When daemon detects reload order, it runs all enabled instances. Instances with 
-	       specified crontab will be executed it's matching with current time.</para>
-               <para>Other way to run daemon is disposable reload with use of '-q' option.
-	       This way is useful for tests, and in conjunction with '-i' option allows to
-	       run selected instances regardless of crontab of the rest of instances.</para>
+	       crontab specified will be executed at scheduled time.</para>
+               <para>Other way to run daemon is disposable reload using '-q' command line option.
+	       This is useful for tests, and in conjunction with '-i' option allows to
+	       run selected instances regardless of crontab entries for the rest of instances.</para>
           </sect2>
      </sect1>
      <sect1 id="daemon-modules">
@@ -223,13 +223,13 @@
               <para>This module does only one thing: it runs given 
 	      Linux shell command or/and SQL query. It can be useful if you want to 
 	      execute some command or run external script while configuration is 
-	      being reload, eg. one of those in LMS <filename>/bin</filename> 
+	      being reload, eg. one of scripts in LMS <filename>/bin</filename> 
 	      directory. SQL command is executed first.</para>
               </sect3>
               <sect3 id="system-config">
               <title>Configuration</title>
-              <para>For above reason you can define only command strings. Module will 
-	      pass list of commands to shell, separated by semicolons:</para>
+              <para>You can define command strings or SQL queries. Commands will be executed via
+              shell, separated by semicolons:</para>
               <itemizedlist>
                <listitem>
                    <para>sql</para>
