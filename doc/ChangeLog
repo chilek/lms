@@ -11,6 +11,8 @@ version 1.7.1 ? (??/??/????):
   - added warning about lack of PEAR::Mail in SendMail() function (alec)
   - fixed nodes searching results list - nodes with ID=0 (alec)
   - lmsd/system: added option 'sql' (alec)
+  - in nodes and customers searching added workaround for postgresql's ILIKE 
+    problem with national characters (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
