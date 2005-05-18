@@ -11,6 +11,8 @@ version ? (??/??/????):
   - function SendMail() returns warnings from PEAR (alec)
   - bugfix: dummy nodes on Nodes Search Results list (alec)
   - lmsd/system: added option 'sql', run shell comand if is non-empty (alec)
+  - in nodes and customers searching functions added workaround for
+    postgresql ILIKE problem with national characters in UTF-8 (alec)
 
 version 1.6.0rc1 Thor (13/05/2005):
 

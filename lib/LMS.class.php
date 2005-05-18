@@ -540,10 +540,12 @@ class LMS
 						case 'zip':
 						case 'city':
 						case 'address':
-							$searchargs[] = "($key ?LIKE? $value OR serviceaddr ?LIKE? $value)";
+							// UPPER here is a workaround for postgresql ILIKE bug
+							$searchargs[] = "(UPPER($key) ?LIKE? UPPER($value) OR UPPER(serviceaddr) ?LIKE? UPPER($value))";
 						break;
 						case 'username':
-							$searchargs[] = $this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' ?LIKE? '.$value;
+							// UPPER here is a workaround for postgresql ILIKE bug
+							$searchargs[] = $this->DB->Concat('UPPER(users.lastname)',"' '",'UPPER(users.name)')." ?LIKE? UPPER($value)";
 						break;
 						default:
 							$searchargs[] = "$key ?LIKE? $value";
@@ -1042,7 +1044,8 @@ class LMS
 						$searchargs[] = "nodes.name ?LIKE? '%".$value."%'";
 					break;
 					case 'info' :
-						$searchargs[] = "nodes.info ?LIKE? '%".$value."%'";
+						// UPPER here is a postgresql ILIKE bug workaround
+						$searchargs[] = "UPPER(nodes.info) ?LIKE? UPPER('%".$value."%')";
 					break;
 					default :
 						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
