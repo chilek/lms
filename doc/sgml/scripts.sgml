@@ -217,30 +217,35 @@ http://www.bigpro.com/</screen></example>
 Following parameters are valid:</para>
 	   <itemizedlist>
             <listitem>
-	     <para>limit (optional)</para>
+	     <para>limit</para>
 	     <para>Lets you setup limit of customer debt. Email will be sent below that value. Default: limit = 0</para>
 	     <para>Example:	<prompt>limit = -20</prompt></para>
 	    </listitem>
             <listitem>
 	     <para>mailsubject (mandatory)</para>
-	     <para>Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: not set.</para>
+	     <para>Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: none.</para>
 	     <para>Example:	<prompt>mailsubject = Debt information</prompt></para>
 	    </listitem>
 	    <listitem>
 	     <para>mailtemplate (mandatory)</para>
-	     <para>Lets you setup mail template which will be sent. Default: not set.</para>
+	     <para>Lets you setup mail template which will be sent. Default: none.</para>
 	     <para>Example:	<prompt>mailtemplate = /etc/lms/notifytemplate.txt</prompt></para>
             </listitem>
             <listitem>
-             <para>mailfrom</para>
-             <para>Lets you setup email of the sender. Default: not set.</para>
+             <para>mailfrom (mandatory)</para>
+             <para>Lets you setup email of the sender. Default: none.</para>
              <para>Example:	<prompt>mailfrom = staff@bigpro.com</prompt></para>
             </listitem>
             <listitem>
-             <para>mailfname</para>
-             <para>Sender name</para>
+             <para>mailfname (mandatory)</para>
+             <para>Sender name. Default: none</para>
              <para>Example:	<prompt>mailfname = Administrators</prompt></para>
             </listitem>
+            <listitem>
+	     <para>mailcharset</para>
+	     <para>Message character set. Default: UTF-8</para>
+	     <para>Example:	<prompt>mailcharset = ISO-8859-2</prompt></para>
+	    </listitem>
             <listitem>
              <para>smtp_server</para>
              <para>SMTP server to be used when sending emails. Default: 127.0.0.1</para>
@@ -265,7 +270,7 @@ work.</para>
 Following parameters are valid:</para>
 	  <itemizedlist>
             <listitem>
-	     <para>limit (optional)</para>
+	     <para>limit</para>
 	     <para>Lets you setup limit of customer debt. SMS will be sent below that value. Default: 0</para>
 	     <para>Example:	<prompt>limit = -20</prompt></para>
 	    </listitem>

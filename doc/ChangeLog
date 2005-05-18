@@ -1,5 +1,12 @@
 $Id$
 
+version ? (??/??/????):
+
+  - lms-notify: added option 'mailcharset' with default value 'UTF-8' (alec)
+  - lms-notify: don't sends mail to deleted customers (alec)
+  - lms-notify: don't stops on unknown/wrong recipient address (alec)
+  - file sample/mailtemplate.txt converted to UTF-8 (alec)
+
 version 1.6.0rc2 Thor (18/05/2005):
 
   - updated upgrade scripts for 1.2 version, deleted not supported upgrade
