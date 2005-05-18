@@ -101,6 +101,7 @@ my $mtfile = $my_template || $ini->val('notify', 'mailtemplate');
 my $mailfrom = $ini->val('notify', 'mailfrom') || '';
 my $mailfname = $ini->val('notify', 'mailfname') || '';
 my $mailsubject = $ini->val('notify', 'mailsubject') || '';
+my $mailcharset = $ini->val('notify', 'mailcharset') || 'UTF-8';
 my $smtpserver = $ini->val('notify', 'smtp_server') || '127.0.0.1';
 my $debugemail = $ini->val('notify', 'debug_email') || '';
 
@@ -162,7 +163,7 @@ open(MTFILE, "$mtfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT users.id AS id, pin, UPPER(lastname) AS lastname, name, email, phone1, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, pin, lastname, name, email, phone1 HAVING SUM((type * -2 + 7) * cash.value) < $limit");
+my $dbq = $dbase->prepare("SELECT users.id AS id, pin, UPPER(lastname) AS lastname, name, email, phone1, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid WHERE deleted = 0 GROUP BY users.id, pin, lastname, name, email, phone1 HAVING SUM((type * -2 + 7) * cash.value) < $limit");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -187,25 +188,28 @@ while (my $row = $dbq->fetchrow_hashref())
 			my $amount = -$balance; $subject =~ s/\%b/$amount/g;
 		} 
 		
+		my $recipient = $debugemail || $row->{'email'};
+		
 		my $smtp = Net::SMTP->new("$smtpserver");
 		$smtp->mail("$mailfrom");
-		if($debugemail)
+		
+		if( !$smtp->to($recipient) )
 		{
-			$smtp->to($debugemail);
+			print STDERR "Unable to send message to <$recipient>. Recipient skipped.\n";
+			$smtp->reset();
+			next;
 		}
-		else
-		{
-			$smtp->to($row->{'email'});
-		}
+
 		$smtp->data();
 		$smtp->datasend("From: $mailfname <$mailfrom>\n");
-		$smtp->datasend("To: $row->{'name'} $row->{'lastname'} <$row->{'email'}>\n");
+		$smtp->datasend("To: $row->{'name'} $row->{'lastname'} <$recipient>\n");
 		$smtp->datasend("Subject: $subject\n");
 		$smtp->datasend("User-Agent: lms\-notify v. $_version\n");
-		$smtp->datasend("Content-type: text/plain; charset=ISO-8859-2\n");
+		$smtp->datasend("Content-type: text/plain; charset=$mailcharset\n");
 		$smtp->datasend("Mime-Version: 1.0\n");
 		$smtp->datasend("Content-transfer-encoding: 8bit\n");
 		$smtp->datasend("\n");
+
 		foreach my $line (@desttempl)
 		{
 			$line =~ s/\%B/$balance/g;

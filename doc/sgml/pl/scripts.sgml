@@ -223,30 +223,35 @@ http://www.naszasiec.pl/</screen></example>
 	   Mo¿esz tam ustawiæ nastêpuj±ce parametry:</para>
 	   <itemizedlist>
             <listitem>
-	     <para>limit (opcjonalny)</para>
+	     <para>limit</para>
 	     <para>Pozwala na ustalenie limitu bilansu, poni¿ej którego do klienta zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</para>
 	     <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
 	    </listitem>
             <listitem>
-	     <para>mailsubject (wymagany)</para>
-	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.</para>
+	     <para>mailsubject (wymagana)</para>
+	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: pusta.</para>
 	     <para>Przyk³ad:	<prompt>mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</prompt></para>
 	    </listitem>
 	    <listitem>
-	     <para>mailtemplate (wymagany)</para>
-	     <para>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do klienta. Wiêcej o szablonach tutaj. Domy¶lnie: nie ustawione.</para>
+	     <para>mailtemplate (wymagana)</para>
+	     <para>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do klienta. Wiêcej o szablonach tutaj. Domy¶lnie: pusta.</para>
 	     <para>Przyk³ad:	<prompt>mailtemplate = /etc/lms/notifytemplate.txt</prompt></para>
             </listitem>
             <listitem>
-             <para>mailfrom</para>
-             <para>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie nieustawione</para>
+             <para>mailfrom (wymagana)</para>
+             <para>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie: pusta.</para>
              <para>Przyk³ad:	<prompt>mailfrom = staff@domain.pl</prompt></para>
             </listitem>
             <listitem>
-             <para>mailfname</para>
-             <para>Nazwa nadawcy maila</para>
+             <para>mailfname (wymagana)</para>
+             <para>Nazwa nadawcy maila. Domy¶lnie: pusta.</para>
              <para>Przyk³ad:	<prompt>mailfname = Administratorzy</prompt></para>
             </listitem>
+            <listitem>
+	     <para>mailcharset</para>
+	     <para>Strona kodowa wiadomo¶ci. Domy¶lnie: UTF-8.</para>
+	     <para>Przyk³ad:	<prompt>mailcharset = ISO-8859-2</prompt></para>
+	    </listitem>
             <listitem>
              <para>smtp_server</para>
              <para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</para>
