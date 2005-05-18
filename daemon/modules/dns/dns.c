@@ -95,13 +95,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	unsigned char *configfile = 0;
 	unsigned char *configentries = strdup("");
 	QueryHandle *res, *res1;
-	int i, j, m, k=2, gc=0, nc=0, nh=0, n=2;
+	int i, j, m, k=2, gc=0, nc=0, nh=0, dc=0, n=2;
 	struct hostcache
 	{
 		unsigned char *name;
-		unsigned char *mac;
 		unsigned long ipaddr;
 	} *hosts = NULL;
+
+	unsigned char **domains = (unsigned char **) malloc(sizeof(char*));
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(dns->networks);	
@@ -117,7 +118,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 
 		if( strlen(netname) )
 		{
-		        res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask  FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+		        res = g->db_pquery(g->conn, "SELECT name, address FROM networks WHERE UPPER(name)=UPPER('?')",netname);
 			if( g->db_nrows(res) )
 			{
 				nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
@@ -150,16 +151,16 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	}
 	free(groupname); free(groupnames);
 
-	res = g->db_query(g->conn, "SELECT name, mac, ipaddr, ownerid FROM nodes ORDER BY ipaddr");
+	res = g->db_query(g->conn, "SELECT LOWER(name) AS name, ipaddr, ipaddr_pub, ownerid FROM nodes ORDER BY ipaddr");
 
 	for(i=0; i<g->db_nrows(res); i++)
 	{
 		int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
 		unsigned char *name = g->db_get_data(res,i,"name");
-		char *mac = g->db_get_data(res,i,"mac");
 		char *ipaddr = g->db_get_data(res,i,"ipaddr");
+		char *ipaddr_pub = g->db_get_data(res,i,"ipaddr_pub");
 		
-		if(name && mac && ipaddr)
+		if(name && ipaddr)
 		{
 			// groups test
 			if(gc)
@@ -183,9 +184,16 @@ void reload(GLOBAL *g, struct dns_module *dns)
 		
 			hosts = (struct hostcache*) realloc(hosts, sizeof(struct hostcache) * (nh + 1));
 			hosts[nh].name = strdup(name);
-			hosts[nh].mac = strdup(mac);
 			hosts[nh].ipaddr = inet_addr(ipaddr);
 			nh++;
+			
+			if(ipaddr_pub)
+			{
+				hosts = (struct hostcache*) realloc(hosts, sizeof(struct hostcache) * (nh + 1));
+				hosts[nh].name = strdup(name);
+				hosts[nh].ipaddr = inet_addr(ipaddr_pub);
+				nh++;
+			}
 		}
 	}
 	g->db_free(&res);
@@ -198,16 +206,15 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	
 		for (i=0; i<g->db_nrows(res); i++)
 		{
-			unsigned char *d, *e, *name, *dnsserv;
-			unsigned long netmask, network;
+			int domainmatch = 0;	
 		
-			e = g->db_get_data(res,i,"address");
-			d = g->db_get_data(res,i,"mask");
-			name = g->db_get_data(res,i,"domain");
-			dnsserv = g->db_get_data(res,i,"dns");
+			unsigned char *e = g->db_get_data(res,i,"address");
+			unsigned char *d = g->db_get_data(res,i,"mask");
+			unsigned char *name = g->db_get_data(res,i,"domain");
+			unsigned char *dnsserv = g->db_get_data(res,i,"dns");
 
-			network = inet_addr(e);
-			netmask = inet_addr(d);
+			unsigned long network = inet_addr(e);
+			unsigned long netmask = inet_addr(d);
 				
 			// networks test
 			if(nc) {
@@ -220,198 +227,229 @@ void reload(GLOBAL *g, struct dns_module *dns)
 
 			if ( d && e && name )
 			{
-				int prefixlen; // in bytes! 
+				int prefixlen = 1; // in bytes! 
 				unsigned char *finfile, *ftmpfile;
 				unsigned char *rinfile, *rtmpfile;
-			
 				unsigned char *forwardzone;
 				unsigned char *reversezone;
+				unsigned char *forwardhosts = strdup("");
+				unsigned char *reversehosts = strdup("");
 			
-				if( strlen(d) && strlen(e) && strlen(name) )
-				{
-					unsigned long host_netmask;
-					unsigned char *forwardhosts = strdup("");
-					unsigned char *reversehosts = strdup("");
-				
-					host_netmask = ntohl(netmask);
-					prefixlen = 1; // in bytes! 
-					if(host_netmask & 0x0001ffff) prefixlen = 2;
-					if(host_netmask & 0x000001ff) prefixlen = 3;
+				unsigned long host_netmask = ntohl(netmask);
 
-					finfile = dns->fpatterns;//strdup
-					rinfile = dns->rpatterns;//strdup
-
-					if(finfile[strlen(finfile) - 1] != '/')
-						ftmpfile = g->str_concat(finfile, "/");
-					else
-						ftmpfile = strdup(finfile);
-					
-					if(rinfile[strlen(rinfile) - 1] != '/')
-						rtmpfile = g->str_concat(rinfile, "/");
-					else 
-						rtmpfile = rinfile;
+				if(host_netmask & 0x0001ffff) prefixlen = 2;
+				if(host_netmask & 0x000001ff) prefixlen = 3;
 				
-					finfile = g->str_concat(ftmpfile, name);
-					rinfile = g->str_concat(rtmpfile, inet_ntoa(network));
-									
-					forwardzone = load_file(finfile);
-					reversezone = load_file(rinfile);
-				
-					free(finfile);
-					free(rinfile);
-					free(rtmpfile);
-					free(ftmpfile);
-				
-					if(!forwardzone) forwardzone = load_file(dns->fgeneric);
-					if(!reversezone) reversezone = load_file(dns->rgeneric);
-				
-					if(forwardzone && reversezone)
+				// check if domain was processed yet
+				for(j=0; j<dc; j++)
+					if( strcmp(name, domains[j])==0 )
 					{
-						unsigned char serial[12];
-						unsigned char netpart[30];
-						unsigned long ip;
-												
-						for(j = 0; j<nh; j++)
+						domainmatch = 1;
+						break;
+					}
+				
+				if( !domainmatch )
+				{ 
+					// add domain to table
+					domains[dc++] = strdup(name);
+					
+					finfile = dns->fpatterns;//strdup
+				}
+				else
+				{
+					finfile = dns->fzones;//strdup
+				}
+
+				rinfile = dns->rpatterns;//strdup
+				
+				if(finfile[strlen(finfile) - 1] != '/')
+					ftmpfile = g->str_concat(finfile, "/");
+				else
+					ftmpfile = strdup(finfile);
+				
+				if(rinfile[strlen(rinfile) - 1] != '/')
+					rtmpfile = g->str_concat(rinfile, "/");
+				else 
+					rtmpfile = rinfile;
+				
+				finfile = g->str_concat(ftmpfile, name);
+				rinfile = g->str_concat(rtmpfile, inet_ntoa(network));
+
+				forwardzone = load_file(finfile);
+				reversezone = load_file(rinfile);
+					
+				if(!forwardzone) forwardzone = load_file(dns->fgeneric);
+				if(!reversezone) reversezone = load_file(dns->rgeneric);
+
+				free(finfile);
+				free(rinfile);
+				free(ftmpfile);
+				free(rtmpfile);
+
+				if(forwardzone && reversezone)
+				{
+					unsigned char serial[12];
+					unsigned char netpart[30];
+					unsigned long ip;
+				
+					for(j=0; j<nh; j++)
+					{
+						if( (hosts[j].ipaddr & netmask) == network)
 						{
-							unsigned char *forwardhost;
-							unsigned char *reversehost;
 							unsigned char hostpart[30];
 							unsigned char *tmphosts;
 						
-							if( (hosts[j].ipaddr & netmask) == network)
+							unsigned char *forwardhost = strdup(dns->forward);
+							unsigned char *reversehost = strdup(dns->reverse);
+				
+							g->str_replace(&forwardhost, "%n", hosts[j].name);
+							g->str_replace(&reversehost, "%n", hosts[j].name);
+							g->str_replace(&forwardhost, "%i", inet_ntoa(hosts[j].ipaddr));
+							g->str_replace(&reversehost, "%i", inet_ntoa(hosts[j].ipaddr));
+							g->str_replace(&forwardhost, "%d", name);
+							g->str_replace(&reversehost, "%d", name);
+				
+							ip = ntohl(hosts[j].ipaddr);
+				
+							switch(prefixlen)
 							{
-								forwardhost = strdup(dns->forward);
-								reversehost = strdup(dns->reverse);
-					
-								g->str_replace(&forwardhost, "%n", hosts[j].name);
-								g->str_replace(&reversehost, "%n", hosts[j].name);
-								g->str_replace(&forwardhost, "%i", inet_ntoa(hosts[j].ipaddr));
-								g->str_replace(&reversehost, "%i", inet_ntoa(hosts[j].ipaddr));
-								g->str_replace(&forwardhost, "%d", name);
-								g->str_replace(&reversehost, "%d", name);
-					
-								ip = ntohl(hosts[j].ipaddr);
-					
-								switch(prefixlen)
-								{
-									case 1:
+								case 1:
 									snprintf(hostpart, 30, "%d.%d.%d", (int)(ip & 0xff),(int)((ip >> 8) & 0xff),(int)((ip >> 24) & 0xff));
 									break;
-									case 2:
+								case 2:
 									snprintf(hostpart, 30, "%d.%d", (int)(ip & 0xff),(int)((ip >> 8) & 0xff));
 									break;					
-									case 3:
-									default:
+								case 3:
+								default:
 									snprintf(hostpart, 30, "%d", (int)(ip & 0xff));
 									break;
-								}
-						
-								g->str_replace(&forwardhost, "%c", hostpart);
-								g->str_replace(&reversehost, "%c", hostpart);
-							
-								tmphosts = strdup(forwardhosts); free(forwardhosts);
-								forwardhosts = g->str_concat(tmphosts, forwardhost);
-								free(tmphosts);
-								
-								tmphosts = strdup(reversehosts); free(reversehosts);
-								reversehosts = g->str_concat(tmphosts, reversehost);
-								free(tmphosts);
-								
-								free(forwardhost);
-								free(reversehost);
 							}
-						}
-			
-						g->str_replace(&forwardzone, "%h", forwardhosts);
-						g->str_replace(&reversezone, "%h", reversehosts);
-						free(forwardhosts);
-						free(reversehosts);
-						g->str_replace(&forwardzone, "%d", name);
-						g->str_replace(&reversezone, "%d", name);
 					
-						snprintf(serial, 12, "%d", (int) time(NULL));
+							g->str_replace(&forwardhost, "%c", hostpart);
+							g->str_replace(&reversehost, "%c", hostpart);
 						
-						g->str_replace(&forwardzone, "%s", serial);
-						g->str_replace(&reversezone, "%s", serial);
-
-						ip = ntohl(network);
-	
-						switch(prefixlen)
-						{
-							case 1:
-							snprintf(netpart, 30, "%d", (int)((ip >> 24) & 0xff));
-							break;
-							case 2:
-							snprintf(netpart, 30, "%d.%d", (int)((ip >> 16) & 0xff),(int)((ip >> 24) & 0xff));
-							break;
-							case 3:
-							default:
-							snprintf(netpart, 30, "%d.%d.%d", (int)((ip >> 8) & 0xff),(int)((ip >> 16) & 0xff),(int)((ip >> 24) & 0xff));
-							break;
-						}
-
-						g->str_replace(&forwardzone, "%c", netpart);
-						g->str_replace(&reversezone, "%c", netpart);
-					
-						g->str_replace(&forwardzone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
-						g->str_replace(&reversezone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
-				
-						finfile = dns->fzones;//strdup
-						rinfile = dns->rzones;//strdup
-		
-						if(finfile[strlen(finfile) - 1] != '/')
-							ftmpfile = g->str_concat(finfile, "/");
-						else
-							ftmpfile = finfile;
+							tmphosts = strdup(forwardhosts); 
+							free(forwardhosts);
+							forwardhosts = g->str_concat(tmphosts, forwardhost);
+							free(tmphosts);
 							
-						if(rinfile[strlen(rinfile) - 1] != '/')
-							rtmpfile = g->str_concat(rinfile, "/");
-						else
-							rtmpfile = rinfile;
-						
-						finfile = g->str_concat(ftmpfile, name);
-						rinfile = g->str_concat(rtmpfile, inet_ntoa(network));
-				
-						if(write_file(finfile, forwardzone) < 0)
-							syslog(LOG_WARNING, "[%s/dns] Unable to open output forward zone file '%s' for domain '%s', skipping forward zone for this domain.", dns->base.instance, finfile, name);
-						else {
-							unsigned char *zone, *tmpconf;
-							zone = strdup(dns->confforward);
-							g->str_replace(&zone, "%n", name);
-							g->str_replace(&zone, "%c", netpart);
-							g->str_replace(&zone, "%i", inet_ntoa(network));
-							tmpconf = strdup(configentries);
-							free(configentries);
-							configentries = g->str_concat(tmpconf, zone);
-							free(tmpconf);
-							free(zone);
+							tmphosts = strdup(reversehosts); 
+							free(reversehosts);
+							reversehosts = g->str_concat(tmphosts, reversehost);
+							free(tmphosts);
+							
+							free(forwardhost);
+							free(reversehost);
 						}
+					}
 
-						if(write_file(rinfile, reversezone) < 0)
-							syslog(LOG_WARNING, "[%s/dns] Unable to open output reverse zone file '%s' for domain '%s', skipping reverse zone for this domain.", dns->base.instance, rinfile, name);
-						else {
-							unsigned char *zone, *tmpconf;
-							zone = strdup(dns->confreverse);
-							g->str_replace(&zone, "%n", name);
-							g->str_replace(&zone, "%c", netpart);
-							g->str_replace(&zone, "%i", inet_ntoa(network));
-							tmpconf = strdup(configentries);
-							free(configentries);
-							configentries = g->str_concat(tmpconf, zone);
-							free(tmpconf);
-							free(zone);
-						}	
-						
-						free(rtmpfile);
-						free(ftmpfile);
-						free(finfile);
-						free(rinfile);
+					if( domainmatch )
+					{
+						unsigned char *tmphosts = strdup(forwardzone);
+						g->str_replace(&tmphosts, "%h", "");
 						free(forwardzone);
-						free(reversezone);
+						forwardzone = g->str_concat(tmphosts, forwardhosts);
+						free(tmphosts);
+						g->str_replace(&reversezone, "%h", reversehosts);
 					}
 					else
-						syslog(LOG_WARNING, "[%s/dns] Unable to open one of the templates for domain '%s', skipping this domain. Set at least 'generic-forward' and 'generic-reverse' properly.", dns->base.instance, name);
+					{
+						g->str_replace(&forwardzone, "%h", forwardhosts);
+						g->str_replace(&reversezone, "%h", reversehosts);
+					}
+					
+					free(forwardhosts);
+					free(reversehosts);
+
+					g->str_replace(&forwardzone, "%d", name);
+					g->str_replace(&reversezone, "%d", name);
+				
+					snprintf(serial, 12, "%d", (int) time(NULL));
+					
+					g->str_replace(&forwardzone, "%s", serial);
+					g->str_replace(&reversezone, "%s", serial);
+					ip = ntohl(network);
+
+					switch(prefixlen)
+					{
+						case 1:
+							snprintf(netpart, 30, "%d", (int)((ip >> 24) & 0xff));
+							break;
+						case 2:
+							snprintf(netpart, 30, "%d.%d", (int)((ip >> 16) & 0xff),(int)((ip >> 24) & 0xff));
+							break;
+						case 3:
+						default:
+							snprintf(netpart, 30, "%d.%d.%d", (int)((ip >> 8) & 0xff),(int)((ip >> 16) & 0xff),(int)((ip >> 24) & 0xff));
+							break;
+					}
+					
+					g->str_replace(&forwardzone, "%c", netpart);
+					g->str_replace(&reversezone, "%c", netpart);
+
+					g->str_replace(&forwardzone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
+					g->str_replace(&reversezone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
+		
+					finfile = dns->fzones;//strdup
+					rinfile = dns->rzones;//strdup
+						
+					if(finfile[strlen(finfile) - 1] != '/')
+						ftmpfile = g->str_concat(finfile, "/");
+					else
+						ftmpfile = finfile;
+						
+					if(rinfile[strlen(rinfile) - 1] != '/')
+						rtmpfile = g->str_concat(rinfile, "/");
+					else
+						rtmpfile = rinfile;
+					
+					finfile = g->str_concat(ftmpfile, name);
+					rinfile = g->str_concat(rtmpfile, inet_ntoa(network));
+					
+					if(write_file(finfile, forwardzone) < 0)
+					{
+						syslog(LOG_WARNING, "[%s/dns] Unable to open output forward zone file '%s' for domain '%s', skipping forward zone for this domain.", dns->base.instance, finfile, name);
+					}
+					else if( !domainmatch )
+					{
+						unsigned char *zone, *tmpconf;
+						zone = strdup(dns->confforward);
+						g->str_replace(&zone, "%n", name);
+						g->str_replace(&zone, "%c", netpart);
+						g->str_replace(&zone, "%i", inet_ntoa(network));
+						tmpconf = strdup(configentries);
+						free(configentries);
+						configentries = g->str_concat(tmpconf, zone);
+						free(tmpconf);
+						free(zone);
+					}
+
+					if(write_file(rinfile, reversezone) < 0)
+					{
+						syslog(LOG_WARNING, "[%s/dns] Unable to open output reverse zone file '%s' for domain '%s', skipping reverse zone for this domain.", dns->base.instance, rinfile, name);
+					}
+					else {
+						unsigned char *zone, *tmpconf;
+						zone = strdup(dns->confreverse);
+						g->str_replace(&zone, "%n", name);
+						g->str_replace(&zone, "%c", netpart);
+						g->str_replace(&zone, "%i", inet_ntoa(network));
+						tmpconf = strdup(configentries);
+						free(configentries);
+						configentries = g->str_concat(tmpconf, zone);
+						free(tmpconf);
+						free(zone);
+					}	
+					
+					free(rtmpfile);
+					free(ftmpfile);
+					free(finfile);
+					free(rinfile);
+					free(forwardzone);
+					free(reversezone);
 				}
+				else
+					syslog(LOG_WARNING, "[%s/dns] Unable to open one of the templates for domain '%s', skipping this domain. Set at least 'generic-forward' and 'generic-reverse' properly.", dns->base.instance, name);
 			}	
 		}
 	
@@ -433,17 +471,19 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	g->db_free(&res);
 
 	//cleanup	
-	for(i = 0; i<nh; i++) {
+	for(i = 0; i<nh; i++)
 		free(hosts[i].name);
-		free(hosts[i].mac);
-	}
 	free(hosts);
 
-	for(i=0;i<nc;i++)
+	for(i = 0; i<dc; i++)
+		free(domains[i]);
+	free(domains);
+
+	for(i=0; i<nc; i++)
 		free(nets[i].name);
 	free(nets);
 	
-	for(i=0;i<gc;i++)
+	for(i=0; i<gc; i++)
 		free(ugps[i].name);
 	free(ugps);
 
