@@ -19,6 +19,12 @@ function confirmForm(formField, message, okValue)
 	return is_confirmed;
 }
 
+function setClassName(theRow, theClass)
+{
+	theRow.className = theClass;
+	// TODO: element can have more than one class, don't lose them
+}
+
 function setPointer(theRow, thePointerColor)
 {
 	if (thePointerColor == '' || typeof(theRow.style) == 'undefined') {
