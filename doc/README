@@ -3128,19 +3128,23 @@ Chapter 6. LMS Daemon
 
 6.2.2.1. Description
 
-   This module does only one thing: it runs given Linux shell command. It
-   can be useful if you want to execute some command or run external
-   script while configuration is being reload, eg. one of those in LMS
-   /bin directory.
+   This module does only one thing: it runs given Linux shell command
+   or/and SQL query. It can be useful if you want to execute some command
+   or run external script while configuration is being reload, eg. one of
+   those in LMS /bin directory. SQL command is executed first.
      _________________________________________________________________
 
 6.2.2.2. Configuration
 
-   For above reason you can define only command string. Module will pass
+   For above reason you can define only command strings. Module will pass
    list of commands to shell, separated by semicolons:
+     * sql
+       SQL command. Default: empty.
+       Example: command = 'DELETE FROM stats WHERE dt < %NOW% -
+       365*86400'
      * command
-       Shell command. Default: empty.
-       Example: command = 'echo "hello"'
+       Shell command(s). Default: empty.
+       Example: command = 'echo -n "hello "; echo "world"'
      _________________________________________________________________
 
 6.2.3. Payments
@@ -4054,10 +4058,11 @@ Chapter 7. For curious
    id - serial number
    ownerid - customer serial number (0 - "system" account)
    login - login name
-   password - md5 encrypted password
+   password - password encrypted with crypt()
+   realname - additional name
    lastlogin - last login date
    uid - account system UID (usually ownerid+200)
-   home - account home directory (/home/[login])
+   home - account home directory
    type - account type (binary sum: 1-shell, 2-email, 4-www, 8-ftp)
    expdate - account expire date
    domainid - domain serial number

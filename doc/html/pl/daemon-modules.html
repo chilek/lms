@@ -255,12 +255,13 @@ NAME="SYSTEM-DESC"
 ></H3
 ><P
 >Jedyne co robi ten modu³ to wykonanie zadanego polecenia (listy poleceñ)
-		    pow³oki. Mo¿e siê przydaæ gdy chcesz podczas prze³adowania konfiguracji 
+		    pow³oki i/lub komendy SQL. Mo¿e siê przydaæ gdy chcesz podczas prze³adowania konfiguracji 
 		    wykonaæ jak±¶ komendê lub uruchomiæ zewnêtrzny skrypt, na przyk³ad jeden 
 		    z tych, które mo¿esz znale¼æ w katalogu <TT
 CLASS="FILENAME"
 >/bin</TT
->.</P
+>.
+		    W pierwszej kolejno¶ci jest wykonywane polecenie SQL.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -271,9 +272,21 @@ NAME="SYSTEM-CONFIG"
 >6.2.2.2. Konfiguracja</A
 ></H3
 ><P
->W zwi±zku z powy¿szym mo¿esz zdefiniowaæ jedynie tre¶æ polecenia.
-		    Pow³oka powinna sobie tak¿e poradziæ z list± poleceñ oddzielonych ¶rednikami:</P
+>W zwi±zku z powy¿szym mo¿esz zdefiniowaæ jedynie tre¶æ polecenia SQL lub
+		    shella. Pow³oka powinna sobie tak¿e poradziæ z list± poleceñ oddzielonych 
+		    ¶rednikami:</P
 ><UL
+><LI
+><P
+>sql</P
+><P
+>Polecenie SQL. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>sql = 'DELETE FROM stats WHERE dt &#60; %NOW% - 365*86400'</SAMP
+></P
+></LI
 ><LI
 ><P
 >command</P
@@ -282,7 +295,7 @@ NAME="SYSTEM-CONFIG"
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = 'echo "tu modu³ system"'</SAMP
+>command = 'echo -n "tu modu³ "; echo "system"'</SAMP
 ></P
 ></LI
 ></UL

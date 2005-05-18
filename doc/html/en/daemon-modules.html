@@ -255,12 +255,13 @@ NAME="SYSTEM-DESC"
 ></H3
 ><P
 >This module does only one thing: it runs given 
-	      Linux shell command. It can be useful if you want to execute some command
-	      or run external script while configuration is being reload, eg. one of those 
-              in LMS <TT
+	      Linux shell command or/and SQL query. It can be useful if you want to 
+	      execute some command or run external script while configuration is 
+	      being reload, eg. one of those in LMS <TT
 CLASS="FILENAME"
 >/bin</TT
-> directory.</P
+> 
+	      directory. SQL command is executed first.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -271,18 +272,29 @@ NAME="SYSTEM-CONFIG"
 >6.2.2.2. Configuration</A
 ></H3
 ><P
->For above reason you can define only command string. Module will pass list of
-              commands to shell, separated by semicolons:</P
+>For above reason you can define only command strings. Module will 
+	      pass list of commands to shell, separated by semicolons:</P
 ><UL
+><LI
+><P
+>sql</P
+><P
+>SQL command. Default: empty.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>command = 'DELETE FROM stats WHERE dt &#60; %NOW% - 365*86400'</SAMP
+></P
+></LI
 ><LI
 ><P
 >command</P
 ><P
->Shell command. Default: empty.</P
+>Shell command(s). Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->command = 'echo "hello"'</SAMP
+>command = 'echo -n "hello "; echo "world"'</SAMP
 ></P
 ></LI
 ></UL
