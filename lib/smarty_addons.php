@@ -34,7 +34,8 @@ function _smarty_function_sum($args, &$SMARTY)
 	$default = (isset($args['default']) ? $args['default'] : 0);
 	if($array)
 		foreach($array as $row)
-			$result += $row[$column];
+			if(is_array($row))
+				$result += $row[$column];
 	return sprintf($format,(isset($result) ? $result : $default));
 }
 
