@@ -18,6 +18,8 @@ version 1.7.1 ? (??/??/????):
   - lms-notify: don't send messages to deleted customers (alec)
   - lms-notify: don't stop on unknown/wrong recipient address (alec)
   - file sample/mailtemplate.txt converted to UTF-8 (alec)
+  - fixed tickets searching by requestor name (also added workaround for
+    postgresql's ILIKE bug) (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
