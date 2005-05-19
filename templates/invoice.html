@@ -13,7 +13,7 @@
 			{t}Payment type:{/t}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
-			{$invoice.cdate|date_format:"%Y/%m/%d"} {if $_config.invoices.cplace neq ""}, {$_config.invoices.cplace}{/if}<BR>
+			{$invoice.cdate|date_format:"%Y/%m/%d"}{if $_config.invoices.cplace neq ""}, {$_config.invoices.cplace}{/if}<BR>
 			{$invoice.cdate|date_format:"%Y/%m/%d"}<BR>
 			{$invoice.pdate|date_format:"%Y/%m/%d"}<BR>
 			{$invoice.paytype}
