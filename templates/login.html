@@ -1,90 +1,77 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--// $Id$ //-->
-<html><head>
+<html>
+<head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
 <title>::: {t}Welcome to LMS{/t} {$layout.lmsv} :::</title>
-{literal}
-<STYLE type="text/css"><!--
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-TABLE		{ border-collapse: collapse; }
-A		{ text-decoration: none; }
-A:hover		{ text-decoration: underline; color: #336600; }
-P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: center; }
-INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; font-weight: bold; background-color: #EBE4D6; }
-//-->
-</STYLE>
-{/literal}
+<link href="img/style.css" rel="stylesheet" type="text/css">
 </head>
-<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
-	<TABLE WIDTH="100%" HEIGHT="100%">
-		<TR>
-			<TD VALIGN="MIDDLE" ALIGN="CENTER">
-				<DIV ALIGN="CENTER">
-					<CENTER>
-						<TABLE CELLPADDING="20">
-							<TR>
-								<TD>
-									<IMG SRC="img/logo.png">
-								</TD>
-								<TD ALIGN="CENTER" STYLE="border-width: 1pt; border-style: solid; background-color: #DFD5BD; border-color: #888888" WIDTH="300">
-									<DIV ALIGN="CENTER">
-										<CENTER>
-											<B>{t}LMS version{/t} {$layout.lmsv} ({$layout.lmsvr})<BR><BR>
-											&copy; 2001-2005 LMS Developers</B><BR><BR><BR>
-											 {if $error}<FONT COLOR="red"><B>{$error}</B></FONT>{else}&nbsp;{/if}<BR>
-											 <BR>
-											<FORM METHOD="POST" NAME="loginform" ACTION="{$target}">
-												<TABLE>
-													<TR>
-														<TD align="right">
-															<B>{t}Login:{/t}&nbsp;</B>
-														</TD>
-														<TD>
-															<INPUT TYPE="TEXT" NAME="loginform[login]" SIZE="10" ACCESSKEY="l">
-														</TD>
-													</TR>
-													<TR>
-														<TD align="right">
-															<B>{t}Password:{/t}&nbsp;</B>
-														</TD>
-														<TD>
-															<INPUT TYPE="PASSWORD" NAME="loginform[pwd]" SIZE="10"><BR>
-														</TD>
-													</TR>
-													<TR>
-														<TD COLSPAN="2">
-															&nbsp;
-														</TD>
-													</TR>
-													<TR>
-														<TD COLSPAN="2" align="CENTER">
-															<INPUT TYPE="SUBMIT" NAME="loginform[submit]" VALUE="{t}Login{/t}">
-														</TD>
-													</TR>
-												</TABLE>
-											</FORM>
-											<BR>
-											<BR>
-											<BR>
-											<A HREF="doc/html/{$_language}/"><FONT COLOR="#888888">{t}Documentation{/t}</FONT></A><BR>
-											<A HREF="http://lms.rulez.pl/"><FONT COLOR="#888888">{t}LMS Project Homepage{/t}</FONT></A>
-										</CENTER>
-									</DIV>								
-								</TD>
-							</TR>
-						</TABLE>
-					</CENTER>
-				</DIV>
-			</TD>
-		</TR>
-	</TABLE>
-<SCRIPT language="JavaScript">
+<body>
+	<table width="100%" height="100%">
+		<tr>
+			<td valign="middle" align="center">
+				<div align="center">
+					<table align="center" cellpadding="20">
+						<tr>
+							<td>
+								<img src="img/logo.png" alt="">
+							</td>
+							<td align="center" style="border-width: 1pt; border-style: solid; background-color: #DFD5BD; border-color: #888888" width="300">
+								<div align="center">
+									<b>{t}LMS version{/t} {$layout.lmsv} ({$layout.lmsvr})<br><br>
+									&copy; 2001-2005 LMS Developers</b><br><br><br>
+									{if $error}<font class="alert">{$error}</font>{else}&nbsp;{/if}<br>
+									<br>
+									<form method="post" name="loginform" action="{$target}">
+										<table>
+											<tr>
+												<td align="right">
+													<b>{t}Login:{/t}&nbsp;</b>
+												</td>
+												<td>
+													<input class="bold" type="TEXT" NAME="loginform[login]" SIZE="10" ACCESSKEY="l">
+												</td>
+											</tr>
+											<tr>
+												<td align="right">
+													<b>{t}Password:{/t}&nbsp;</b>
+												</td>
+												<td>
+													<input class="bold" type="PASSWORD" NAME="loginform[pwd]" SIZE="10"><br>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2">
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2" align="center">
+													<input class="bold" type="SUBMIT" NAME="loginform[submit]" VALUE="{t}Login{/t}">
+												</td>
+											</tr>
+										</table>
+									</form>
+									<br>
+									<br>
+									<br>
+									<A HREF="doc/html/{$_language}/"><font class="blend">{t}Documentation{/t}</font></A><br>
+									<A HREF="http://lms.rulez.pl/"><font class="blend">{t}LMS Project Homepage{/t}</font></A>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
+<script language="JavaScript">
 <!--
 document.forms['loginform'].elements['loginform[login]'].focus();
 -->
-</SCRIPT>
+</script>
 {include file="lang_debug.html"}
-</BODY></HTML>
+</body>
+</html>
