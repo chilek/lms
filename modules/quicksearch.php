@@ -81,15 +81,12 @@ switch($_GET['mode'])
 			$target = '?m=rtticketview&id='.$search;
 		else
 		{
-			$SESSION->save('rtsearch.username', $search);
+			$SESSION->save('rtsearch', array('name' => $search));
 			$target = '?m=rtsearch&search=1';
 		}
 	break;
 }
 
-if($target == '')
-	$target = '?m=welcome';
-
-header('Location: '.$target);
+$SESSION->redirect($target ? $target : '?m=welcome');
 
 ?>
