@@ -11,7 +11,7 @@
 			<B>{t}Domain:{/t}
 		</TD>
 		<TD width="98%" class="frightu" NOWRAP>
-			<INPUT type="text" name="domainadd[name]" value="{$domainadd.name}" {tip text="Enter domain's name" trigger="name"} size="20">
+			<INPUT type="text" name="domainadd[name]" value="{$domainadd.name}" {tip text="Enter domain name" trigger="name"} size="20">
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -29,7 +29,7 @@
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
 			<A href="javascript: document.domainadd.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" border="0" ALT="" align="absmiddle"></A>
 			<A href="?m=domainlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" border="0" ALT="" align="absmiddle"></A><BR>
-			<INPUT type="checkbox" name="domainadd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $domainadd.reuse}checked{/if}> {t}Display this form after addition of domain again{/t}
+			<INPUT type="checkbox" name="domainadd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $domainadd.reuse}checked{/if}> {t}Display this form again, when this domain is saved{/t}
 		</TD>
 	</TR>
 </TABLE>

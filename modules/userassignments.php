@@ -82,7 +82,7 @@ if($_GET['action'] == 'add' && isset($a))
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['at'] = trans('Incorrect date format (DD/MM)');
+				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
@@ -100,7 +100,7 @@ if($_GET['action'] == 'add' && isset($a))
 				if($d>30 || $d<1 || ($d>28 && $m==2))
 					$error['at'] = trans('This month doesn\'t contain specified number of days');
 				if($m>3 || $m<1)
-					$error['at'] = trans('Incorrect month number (max.3)');
+					$error['at'] = trans('Incorrect month number (max.3)!');
 
 				$at = ($m-1) * 100 + $d;
 			}
@@ -109,7 +109,7 @@ if($_GET['action'] == 'add' && isset($a))
 		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['at'] = trans('Incorrect date format (DD/MM)');
+				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
@@ -165,7 +165,7 @@ if($_GET['action'] == 'add' && isset($a))
 		$error['dateto'] = trans('Incorrect date range!');
 
 	if($a['tariffid']=='')
-		$error['tariffid'] = trans('Tariff not selected!');
+		$error['tariffid'] = trans('Subscription not selected!');
 
 	$a['discount'] = str_replace(',','.',$a['discount']);
 	if($a['discount']=='')

@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE CELLPADDING="3" width="100%">
-	<TR CLASS="dark" {tip text="Click on column's name to change sorting order"}>
+	<TR CLASS="dark" {tip text="Click on column name to change sorting order"}>
 		<TD CLASS="fleftu" width="97%">
 			<IMG src="img/netdev.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<IMG src="img/producer.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">{t}Manufacturer:{/t}</A> {if $listdata.order eq "producer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} / 
@@ -66,7 +66,7 @@
 		<TD colspan="4" CLASS="fall" align="center">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>{t}There aren't any devices in your database.{/t}</b></p>
+			<p><B>{t}There are no devices in your database.{/t}</b></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>

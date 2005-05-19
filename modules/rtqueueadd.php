@@ -34,7 +34,7 @@ if(isset($queue))
 	}
 
 	if($queue['name'] == '')
-		$error['name'] = trans('Queue must have its name!');
+		$error['name'] = trans('Queue name must be defined!');
 
 	if($queue['name'] != '' && $LMS->GetQueueIdByName($queue['name']))
 		$error['name'] = trans('Queue with specified name already exists!');

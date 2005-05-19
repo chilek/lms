@@ -752,7 +752,7 @@ class LMS
 		$result['total'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE deleted=0');
 		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=3 AND deleted=0');
 		$result['awaiting'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=2 AND deleted=0');
-		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=1 AND deleted=0');
+		$result['interested '] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=1 AND deleted=0');
 		$result['debt'] = 0;
 		$result['debtvalue'] = 0;
 		if($balances = $this->DB->GetCol('SELECT SUM((type * -2 + 7)*value) FROM cash LEFT JOIN users ON userid = users.id WHERE deleted = 0 GROUP BY userid HAVING SUM((type * -2 + 7)*value) < 0'))
@@ -1161,9 +1161,9 @@ class LMS
 	function NodeStats()
 	{
 		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=1 AND ownerid>0');
-		$result['disconnected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=0 AND ownerid>0');
+		$result['disconnected '] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=0 AND ownerid>0');
 		$result['online'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE ?NOW?-lastonline < ? AND ownerid>0', array($this->CONFIG['phpui']['lastonline_limit']));
-		$result['total'] = $result['connected'] + $result['disconnected'];
+		$result['total'] = $result['connected'] + $result['disconnected '];
 		return $result;
 	}
 

@@ -46,7 +46,7 @@ $menu = array(
 				array(
 					'name' => trans('New User'),
 					'link' =>'?m=adminadd',
-					'tip' => trans('New user'),
+					'tip' => trans('New User'),
 				),
 				array(
 					'name' => trans('Backups'),
@@ -70,7 +70,7 @@ $menu = array(
 			'name' => trans('Customers'),
 			'img' =>'user.gif',
 			'link' =>'?m=userlist',
-			'tip' => trans('Customers: list, searching, adding, groups'),
+			'tip' => trans('Customers: list, add, search, groups'),
 			'accesskey' =>'u',
 			'prio' =>'5',
 			'submenu' => array(
@@ -148,7 +148,7 @@ $menu = array(
 				array(
 					'name' => trans('Printing'),
 					'link' => '?m=print&menu=nodes',
-					'tip' => trans('Allows you to print nodes list'),
+					'tip' => trans('Allows you to print node list'),
 				),
 			),
 		),
@@ -174,7 +174,7 @@ $menu = array(
 				array(
 					'name' => trans('Map'),
 					'link' => '?m=netdevmap',
-					'tip' => trans('Displays network map'),
+					'tip' => trans('Network map display'),
 				),
 			),				
 		),
@@ -204,17 +204,17 @@ $menu = array(
 			'name' => trans('Finances'),
 			'img' =>'money.gif',
 			'link' =>'?m=tarifflist',
-			'tip' => trans('Tariffs and Network Finances Management'),
+			'tip' => trans('Subscriptions and Network Finances Management'),
 			'accesskey' =>'f',
 			'prio' =>'25',
 			'submenu' => array(
 				array(
-					'name' => trans('Tariffs List'),
+					'name' => trans('Subscriptions List'),
 					'link' => '?m=tarifflist',
 					'tip' => trans('List of subscription fees'),
 				),
 				array(
-					'name' => trans('New Tariff'),
+					'name' => trans('New Subscription'),
 					'link' => '?m=tariffadd',
 					'tip' => trans('Add new subscription fee'),
 				),
@@ -343,7 +343,7 @@ $menu = array(
 			'name' => trans('Stats'),
 			'img' =>'traffic.gif',
 			'link' =>'?m=traffic',
-			'tip' => trans('Statistics of Internet Link Usage'),
+			'tip' => trans('Statistics on Internet Link Usage'),
 			'accesskey' =>'x',
 			'prio' =>'45',
 			'submenu' => array(
@@ -375,7 +375,7 @@ $menu = array(
 				array(
 					'name' => trans('Compacting'),
 					'link' => '?m=trafficdbcompact',
-					'tip' => trans('Database compacting'),
+					'tip' => trans('Compacting Database'),
 				),
 			),
 		),
@@ -427,7 +427,7 @@ $menu = array(
 				array(
 					'name' => trans('New Event'),
 					'link' => '?m=eventadd',
-					'tip' => trans('Addition of New Event'),
+					'tip' => trans('New Event Addition'),
 				),
 				array(
 					'name' => trans('Search'),

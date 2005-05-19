@@ -39,16 +39,16 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape}" {tip text="Enter name/surname of customer" trigger="username" bold=1}>
+						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="username" bold=1}>
 					</TD>
 				</TR>
 				<TR>
 					<TD>
-						<B>{t}Forename:{/t}</B>
+						<B>{t}First name:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name|escape}" {tip text="Enter forename of customer (optional)" trigger="username" bold=1}>
+						<INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="username" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -64,7 +64,7 @@
 			<SELECT SIZE="1" NAME="userdata[status]" {tip text="Select customer state" trigger="status"}>
 				<OPTION VALUE="3"{if $userinfo.status eq "3"} SELECTED{/if}>{t}connected{/t}</OPTION>
 				<OPTION VALUE="2"{if $userinfo.status eq "2"} SELECTED{/if}>{t}waiting{/t}</OPTION>
-				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>{t}interested{/t}</OPTION>
+				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>{t}interested {/t}</OPTION>
 				</SELECT>
 		</TD>
 	</TR>
@@ -90,7 +90,7 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>{t}Zip:{/t}</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="10" {tip text="Enter post code" trigger="zip"}><BR>
+			<B>{t}Zip:{/t}</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="10" {tip text="Enter zip code" trigger="zip"}><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

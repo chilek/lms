@@ -59,7 +59,7 @@
 		</TD>
 		<TD COLSPAN="3" CLASS="FRIGHT" WIDTH="99%">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Enter interface to which network is connected (optional)" trigger="interface"}>
+			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
 			{else}
 			{$network.interface}
 			{/if}

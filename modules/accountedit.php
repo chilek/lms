@@ -59,7 +59,7 @@ switch ($option)
 	$account['passwd2'] = $_POST['passwd']['confirm'];
 	
 	if($account['passwd1'] != $account['passwd2'])
-	    $error['passwd'] = trans('Passwords do not match!'); 
+	    $error['passwd'] = trans('Passwords does not match!'); 
 	
 	if($account['passwd1'] == '') 
 	    $error['passwd'] = trans('Empty passwords are not allowed!');
@@ -94,7 +94,7 @@ switch ($option)
 	    
 		if($account['login'] != $oldlogin)
 			if($LMS->GetAccountIdByLogin($account['login']))
-				$error['login'] = trans('Account with specified login exists!'); 
+				$error['login'] = trans('Account with that login name exists!'); 
 	
 		if($account['expdate'] == '')
 			$account['expdate'] = 0;
@@ -102,7 +102,7 @@ switch ($option)
 		{
 			$date = explode('/',$account['expdate']);
 			if(!checkdate($date[1],$date[2],$date[0]))
-				$error['expdate'] = trans('Incorrect date format! Enter date in format YYYY/MM/DD!');
+				$error['expdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 			elseif(!$error)
 				$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
 		}
@@ -110,7 +110,7 @@ switch ($option)
 		$account['type'] = array_sum($account['type']);
 
 		if(!$account['domainid'] && (($account['type'] & 2) == 2))
-			$error['domainid'] = trans('E-mail account must have domain!');
+			$error['domainid'] = trans('E-mail account must contain domain part!');
 			
 		if(!$error)
 		{

@@ -47,7 +47,7 @@ if($admininfo)
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
 
 	if($admininfo['name'] == '')
-		$error['name'] = trans('You must enter name and surname!');
+		$error['name'] = trans('You have to enter first and lastname!');
 
 	if($admininfo['email']!='' && !check_email($admininfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');

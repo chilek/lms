@@ -3,9 +3,9 @@
 <H1>{$layout.pagetitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR bgcolor="#CEBD9B" {tip text="Click on column's name to change sorting order"}>
+	<TR bgcolor="#CEBD9B" {tip text="Click on column name to change sorting order"}>
 		<TD width="97%" class="fleftu">
-			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Name/Surname and Forename:{/t}</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}First/last or Company name:{/t}</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" VALIGN="top" NOWRAP>
@@ -127,7 +127,7 @@
 		<TD colspan="4" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>{t}No such customers matching filter conditions or list is empty.{/t}</B></p>
+			<p><B>{t}No such customers matching search criteria or list is empty.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>

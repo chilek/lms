@@ -3,7 +3,7 @@
 <H1>{$layout.pagetitle}</H1>
 {if $emptydb}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><B><FONT COLOR="RED">{t}No such devices in database!{/t}</FONT></B>
+	<BR><BR><B><FONT COLOR="RED">{t}No such devices in database.{/t}</FONT></B>
     </TD></TR></TABLE>
 {elseif !$ming && $type == 'flash'}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
@@ -35,7 +35,7 @@
 {/if}
 {if !$emptydb}
 <P ALIGN="CENTER"><FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
-	{t}Begin map from:{/t}
+	{t}Start map from:{/t}
 	<INPUT TYPE="hidden" NAME="m" VALUE="netdevmap">
 	<SELECT SIZE="1" NAME="start" onChange="document.x.submit();">
 		{section name=a loop=$deviceslist}

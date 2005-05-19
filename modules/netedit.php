@@ -129,7 +129,7 @@ if(isset($_POST['networkdata']))
 		if(($networkdata['dhcpstart']!='' && $networkdata['dhcpend']=='')||($networkdata['dhcpstart']=='' && $networkdata['dhcpend']!=''))
 			$error['dhcp'] = trans('Both IP addresses for DHCP range are required!');
 		if($networkdata['dhcpstart']!="" && $networkdata['dhcpend']!="" && !(ip_long($networkdata['dhcpend']) > ip_long($networkdata['dhcpstart'])))
-			$error['dhcp'] = trans('End of DHCP range must be greater than start!');
+			$error['dhcp'] = trans('End of DHCP range has to be greater than start!');
 	}
 	
 	if(!$error)

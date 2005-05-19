@@ -21,7 +21,7 @@
 			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-                       <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid});" {tip text="Click to select IP from a list"}>&raquo;&raquo;&raquo;</A>
+                       <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -29,7 +29,7 @@
 			<IMG SRC="img/mac.gif" BORDER="0" ALT="{t}MAC address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Click to select MAC from a list"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -47,7 +47,7 @@
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="ipadd[access]" {tip text="Select address status"}>
 				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected {/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>

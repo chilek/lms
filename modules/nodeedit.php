@@ -87,7 +87,7 @@ if(isset($_POST['nodeedit']))
 				$error['ipaddr'] = trans('Specified IP address is network gateway!');
 		}
 		else
-			$error['ipaddr'] = trans('Specified IP address does not overlap with any network!');
+			$error['ipaddr'] = trans('Specified IP address doesn\'t overlap with any network!');
 	}
 	else
 		$error['ipaddr'] = trans('Incorrect IP address!');
@@ -105,7 +105,7 @@ if(isset($_POST['nodeedit']))
         	                        $error['ipaddr_pub'] = trans('Specified IP address is network gateway!');
         	        }
         	        else
-        	                $error['ipaddr_pub'] = trans('Specified IP address does not overlap with any network!');
+        	                $error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
         	}
         	else
         	        $error['ipaddr_pub'] = trans('Incorrect IP address!');
@@ -145,7 +145,7 @@ if(isset($_POST['nodeedit']))
 	{
 		$netdev = $LMS->GetNetDev($nodeedit['netdev']); 
 		if($netdev['ports'] <= $netdev['takenports'])
-		    $error['netdev'] = trans('It scants free ports in selected device!');
+		    $error['netdev'] = trans('It scans for free ports in selected device!');
 		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
 	

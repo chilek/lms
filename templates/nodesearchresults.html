@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P><table cellpadding="3" width="100%">
-	<TR class="dark" {tip text="Click on column's name to change sorting order"}>
+	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" width="97%">
 			<img src="img/node.gif" border="0" ALT="" align="absmiddle"> <A href="?m=nodesearch&search&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<img src="img/user.gif" border="0" ALT="" align="absmiddle"> <A href="?m=nodesearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
@@ -78,7 +78,7 @@
 	<TR>
 		<TD colspan="4" class="fall" align="center">
 			<P>&nbsp;</P>
-			<P><B>{t}No such nodes complying searching conditions.{/t}</B></P>
+			<P><B>{t}No such nodes matching search criteria.{/t}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

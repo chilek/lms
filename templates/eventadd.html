@@ -15,7 +15,7 @@
 		end = document.forms['event'].elements['event[endtime]'];
 		if(Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
 		{
-			alert('{/literal}{t}End time must be older than begin time!{/t}{literal}');
+			alert('{/literal}{t}End time must not precede start time!{/t}{literal}');
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
@@ -49,7 +49,7 @@
 		</TD>
 		<TD width="98%" class="fright">
 {*			<INPUT type="hidden" name="event[date]" value="{$event.date}">
-*}			<INPUT name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in format YYYY/MM/DD (empty field means today) or click to choose it from calendar" trigger="date"}>
+*}			<INPUT name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
 			{t}Begin:{/t} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
@@ -119,7 +119,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
 			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
-			<INPUT type="checkbox" name="event[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $event.reuse}checked{/if}> {t}Display this form after addition of event again{/t}
+			<INPUT type="checkbox" name="event[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $event.reuse}checked{/if}> {t}Display this form again, when this event is saved{/t}
 		</TD>
 	</TR>
 {*</TABLE>

@@ -88,7 +88,7 @@ if(isset($_POST['mailing']))
 	if($mailing['sender']=='')
 		$error['sender'] = trans('Sender e-mail is required!');
 	elseif(!check_email($mailing['sender']))
-		$error['sender'] = trans('Specified e-mail isn\'t correct!');
+		$error['sender'] = trans('Specified e-mail is not correct!');
 
 	if($mailing['from']=='')
 		$error['from'] = trans('Sender name is required!');
