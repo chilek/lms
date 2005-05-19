@@ -20,6 +20,7 @@ version 1.7.1 ? (??/??/????):
   - file sample/mailtemplate.txt converted to UTF-8 (alec)
   - fixed tickets searching by requestor name (also added workaround for
     postgresql's ILIKE bug) (alec)
+  - fixed _smarty_function_sum() - each row must be an array (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
