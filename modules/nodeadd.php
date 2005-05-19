@@ -100,6 +100,8 @@ if(isset($nodedata))
 		if($netdev['ports'] <= $netdev['takenports']) 
 			$error['netdev'] = trans('Device has not free ports!');
 	}
+	else
+		$nodedata['netdev'] = 0;
 
 	if(!$error)
 	{
