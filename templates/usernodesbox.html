@@ -8,11 +8,11 @@
 			<B>{t 0=$usernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,medium" print=false}
 	{if $usernodes.total > 0}
 	{section name=usernodes loop=$usernodes}
 	{if $usernodes[usernodes].id}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if ! $usernodes[usernodes].access} class="blend"{/if}>
+	<TR class="{cycle}{if ! $usernodes[usernodes].access}blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" border="0" align="absmiddle"></A>
 			<a href="?m=nodewarn&id={$usernodes[usernodes].id}"><IMG src="img/warning{if ! $usernodes[usernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]" border="0" align="absmiddle"></A>
