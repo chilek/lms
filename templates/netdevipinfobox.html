@@ -37,7 +37,7 @@
 			<A HREF="?m=nodeset&id={$nodeipdata.id}"><IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" BORDER="0" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>{if $nodeipdata.access}{t}connected{/t}{else}{t}disconnected {/t}{/if}</B>
+			<B>{if $nodeipdata.access}{t}connected<!singular>{/t}{else}{t}disconnected<!singular>{/t}{/if}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

@@ -46,8 +46,8 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="ipadd[access]" {tip text="Select address status"}>
-				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected {/t}</OPTION>
+				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>

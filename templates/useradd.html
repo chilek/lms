@@ -53,9 +53,9 @@
 					</tD>
 					<TD width="99%">
 						<SELECT size="1" name="useradd[status]" {tip text="Select customer state" trigger="status"}>
-							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>{t}connected{/t}</B></OPTION>
+							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>{t}connected<!singular>{/t}</B></OPTION>
 							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>{t}waiting{/t}</B></option>
-							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>{t}interested {/t}</B></OPTION>
+							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>{t}interested<!singular>{/t}</B></OPTION>
 						</SELECT>
 					</TD>
 				</tr>
