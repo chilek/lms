@@ -7,6 +7,8 @@ version ? (??/??/????):
   - lms-notify: don't stops on unknown/wrong recipient address (alec)
   - file sample/mailtemplate.txt converted to UTF-8 (alec)
   - language fixes in documentation (kondi)
+  - bugfix: tickets searching by requestor name (alec)
+  - bugfix: in quicksearch header() replaced by $SESSION->redirect() (alec)
 
 version 1.6.0rc2 Thor (18/05/2005):
 

@@ -66,7 +66,7 @@ function RTSearch($search, $order='createtime,desc')
 	$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
 	
 	if($search['name'])
-		$where .= 'AND (requestor ?LIKE? \'%'.$search['name'].'%\' OR '.$LMS->DB->Concat('users.lastname',"' '",'users.name').' ?LIKE? \'%'.$search['name'].'%\') ';
+		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'UPPER(users.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
 
 	if($result = $LMS->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 			FROM rttickets 
