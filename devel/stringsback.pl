@@ -52,17 +52,19 @@ foreach $dir (@dirs) {
 				my $do=$wy[$max];
 				$od=~s/\\//g if $file=~/\.(html|tmpl)$/;
 				$do=~s/\\//g if $file=~/\.(html|tmpl)$/;
-				$od=~s/\$/\\\$/g;
 				$od=~s/\\/\\\\/g;
+				$od=~s/\$/\\\$/g;
 				$od=~s/\(/\\\(/g;
 				$od=~s/\)/\\\)/g;
 				$od=~s/\[/\\\[/g;
 				$od=~s/\]/\\\]/g;
 				chomp;
-				if (/('|"|{t})$od('|"|{\/t})/) {
+				# print "$dir/$file: '$_' <=> '$od' => '$do'"; #D
+				if ((/['"]$od['"]/) or (/\{t\}$od\{\/t\}/)) {
 					$modified++;
 					s/$od/$do/;
 				}	
+				# print " ==> '$_'\n"; #D
 			}
 			print RITEFILE $_."\n";
 		}
