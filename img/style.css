@@ -1,6 +1,4 @@
-<!-- // $Id: style.css,v 1.8 2003/04/14 23:09:24 lukasz Exp $ // -->
-<STYLE type="text/css"><!--
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0px; active: #336600; }
 TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 TD.fleft	{ border-left-width: 1pt; border-left-style: solid; }
@@ -33,6 +31,9 @@ TR.blend	{ color: #888888; }
 FONT.blend	{ color: #888888; }
 FONT.alert	{ color: #FF0000; font-weight: bold; }
 A		{ text-decoration: none; }
+A:link		{ color: #800000; }
+A:active	{ color: #336600; }
+A:visited	{ color: #800000; }
 A:hover		{ text-decoration: underline; color: #336600; }
 P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -72,5 +73,3 @@ BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; borde
 .click-menu .section .active,
 .click-menu .section .active:hover { color: yellow; }
 .tip		{ width: 150px; } 
-//-->
-</STYLE>
