@@ -50,16 +50,16 @@ foreach $dir (@dirs) {
 				next if $we[$max] eq '';
 				my $od=$we[$max];
 				my $do=$wy[$max];
+				$od=~s/\\//g if $file=~/\.(html|tmpl)$/;
+				$do=~s/\\//g if $file=~/\.(html|tmpl)$/;
 				$od=~s/\$/\\\$/g;
 				$od=~s/\\/\\\\/g;
 				$od=~s/\(/\\\(/g;
 				$od=~s/\)/\\\)/g;
 				$od=~s/\[/\\\[/g;
 				$od=~s/\]/\\\]/g;
-				# $do=~s/\$/\\\$/g;
 				chomp;
-				# print "$dir/$file: '$_' <=> '$od' => '$do'\n";
-				if (/['"]$od['"]/) {
+				if (/('|"|{t})$od('|"|{\/t})/) {
 					$modified++;
 					s/$od/$do/;
 				}	
