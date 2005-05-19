@@ -1281,7 +1281,7 @@ class LMS
 				if ($row['discount'] == 0)
 					$assignments[$idx]['discounted_value'] = $row['value'];
 				else
-					$assignments[$idx]['discounted_value'] = $row['value'] * $row['discount'] / 100;
+					$assignments[$idx]['discounted_value'] = ((100 - $row['discount']) * $row['value'] / 100);
 				if ($row['suspended'] == 1)
 					$assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * $this->CONFIG['finances']['suspension_percentage'] / 100;
 				$assignments[$idx]['discounted_value'] = round($assignments[$idx]['discounted_value'], 2);

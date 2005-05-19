@@ -12,6 +12,7 @@ version ? (??/??/????):
   - bugfix: error with null netdev value while adding new node (alec)
   - BTS#0000353: in _smarty_function_sum() added checking if each iterated 
     row is an array (alec)
+  - fixed discount displaying in customer assignments box (chilek)
 
 version 1.6.0rc2 Thor (18/05/2005):
 
