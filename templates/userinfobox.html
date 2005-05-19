@@ -128,7 +128,7 @@
 			<B>{t}Balance:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|money_format}</B></FONT>{else}{$userinfo.balance|default:"0"|money_format}{/if}
+			{if $userinfo.balance < 0}<FONT class="error">{$userinfo.balance|money_format}</FONT>{else}{$userinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -152,7 +152,7 @@
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
+					<TD CLASS="fall superlight">
 						{$userinfo.info|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
@@ -168,7 +168,7 @@
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
+					<TD CLASS="fall superlight">
 						{$userinfo.message|replace:"\n":"<BR>"}
 					</TD>
 				</TR>

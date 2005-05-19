@@ -1,4 +1,4 @@
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0px; active: #336600; }
+BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; active: #336600; }
 TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 TD.fleft	{ border-left-width: 1pt; border-left-style: solid; }
@@ -20,14 +20,14 @@ TD.red		{ color: #FF0000; }
 TD.blend	{ color: #888888; }
 TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 2pt; border-style: solid; }
 TD.highlight	{ background-color: #CCFFCC; }
+TD.dark		{ background-color: #CEBD9B; }
 TR.dark		{ background-color: #CEBD9B; }
 TR.medium	{ background-color: #EBE4D6; }
 TR.light	{ background-color: #DFD5BD; }
 TR.darkblend	{ background-color: #CEBD9B; color: #888888; }
-TR.lightblend	{ background-color: #DFD5BD; color: #888888; }
 TR.mediumblend	{ background-color: #EBE4D6; color: #888888; }
+TR.lightblend	{ background-color: #DFD5BD; color: #888888; }
 TR.highlight	{ background-color: #CCFFCC; }
-TR.blend	{ color: #888888; }
 FONT.blend	{ color: #888888; }
 FONT.alert	{ color: #FF0000; font-weight: bold; }
 A		{ text-decoration: none; }
@@ -60,6 +60,7 @@ SELECT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; borde
 SELECT.alert	{ background-color: #FF9B9B; }
 BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 0pt; background-color: #DFD5BD; }
 .hdf		{ font-size: 12pt; }
+
 .click-menu     { width: 150px; padding: 0px 0px; margin-top: 0; margin-bottom: 0; }
 .click-menu .box1       { background-color: #CEBD9B; color: #000000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
 .click-menu .box1-hover { background-color: #CCFFCC; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
@@ -72,4 +73,7 @@ BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; borde
 .click-menu .box2-hover { background-color: #CCFFCC; padding: 0px 21px; }
 .click-menu .section .active,
 .click-menu .section .active:hover { color: yellow; }
-.tip		{ width: 150px; } 
+.tip		{ width: 150px; }
+
+.superlight	{ background-color: #F4F0EC; }
+.blend	{ color: #888888; }

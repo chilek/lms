@@ -2,12 +2,12 @@
 {if $layout.dberrors}
 <P>
 <TABLE WIDTH="100%" CELLPADDING="10">
-	<TR BGCOLOR="#F4F0EC">
+	<TR class="superlight">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/warning.png" ALT="[ {t}Error!{/t} ]">
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu">
-			<B><FONT COLOR="RED">{t}Database errors occurred!{/t}</FONT></B><BR>
+			<FONT style="error">{t}Database errors occurred!{/t}</FONT><BR>
 			{foreach from=$layout.dberrors item=dberror}
 			<B>{t}Query:{/t}</B> {$dberror.query}<BR>
 			<B>{t}Error:{/t}</B> {$dberror.error}<BR>
