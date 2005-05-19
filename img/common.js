@@ -19,10 +19,16 @@ function confirmForm(formField, message, okValue)
 	return is_confirmed;
 }
 
-function setClassName(theRow, theClass)
+function addClass(theElem, theClass)
 {
-	theRow.className = theClass;
-	// TODO: element can have more than one class, don't lose them
+	theElem.className += " " + theClass;
+}
+
+function removeClass(theElem, theClass)
+{
+	regexp = eval("/" + theClass + "/i");
+	str = theElem.className;
+	theElem.className = str.replace(regexp, "");
 }
 
 function setPointer(theRow, thePointerColor)
