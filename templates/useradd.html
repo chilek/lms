@@ -27,12 +27,12 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="useradd[lastname]" VALUE="{$useradd.lastname}" {tip text="Enter customer surname or company name" trigger="username" bold=1}>
+						<INPUT TYPE="TEXT" NAME="useradd[lastname]" VALUE="{$useradd.lastname}" {tip text="Enter customer last name or company name" trigger="username" bold=1}>
 					</TD>
 				</TR>
 				<TR>
 					<TD>
-						<B>{t}Forename:{/t}</B>
+						<B>{t}First name:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -55,7 +55,7 @@
 						<SELECT size="1" name="useradd[status]" {tip text="Select customer state" trigger="status"}>
 							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>{t}connected{/t}</B></OPTION>
 							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>{t}waiting{/t}</B></option>
-							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>{t}interested{/t}</B></OPTION>
+							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>{t}interested {/t}</B></OPTION>
 						</SELECT>
 					</TD>
 				</tr>
@@ -76,7 +76,7 @@
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {tip text="Enter customer address" trigger="address"}><BR>
-						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="10" VALUE="{$useradd.zip}" NAME="useradd[zip]" {tip text="Enter address code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]" {tip text="Enter customer city" trigger="city"}>
+						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="10" VALUE="{$useradd.zip}" NAME="useradd[zip]" {tip text="Enter zip code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]" {tip text="Enter customer city" trigger="city"}>
 					</TD>
 				</TR>
 				<TR>
@@ -123,7 +123,7 @@
 		</TD>
 		<TD width="50%" bgcolor="#DFD5BD" class="fright" ALIGN="LEFT">
 			<P><NOBR><IMG src="img/post.gif" ALT="" align="absmiddle" border="0">
-			    <TEXTAREA rows="4" cols="60" name="useradd[serviceaddr]" {tip text="Enter delivery address (optional)"}>
+			    <TEXTAREA rows="4" cols="60" name="useradd[serviceaddr]" {tip text="Enter correspondence address (optional)"}>
 				{$useradd.serviceaddr}
 			    </TEXTAREA></NOBR>
 			<P><NOBR><IMG src="img/info1.gif" ALT="" align="absmiddle" border="0">
@@ -140,7 +140,7 @@
 		<TD width="100%" colspan="2" class="fbottomu" align="right">
 			<A href="javascript:document.useradd.submit();" ACCESSKEY="S">{t}Submit{/t} <img src="img/save.gif" ALT="" align="absmiddle" border="0"></A>
 			<A href="?m=userlist">{t}Cancel{/t} <img src="img/cancel.gif" ALT="" align="absmiddle" border="0"></A><BR>
-			<INPUT type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $useradd.reuse}checked{/if}> {t}Display this form after addition of customer again{/t}
+			<INPUT type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $useradd.reuse}checked{/if}> {t}Display this form again, when this customer is saved{/t}
 		</TD>
 	</TR>
 </TABLE>

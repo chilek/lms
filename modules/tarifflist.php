@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Tariff List');
+$layout['pagetitle'] = trans('Subscription List');
 
 $tarifflist = $LMS->GetTariffList();
 

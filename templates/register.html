@@ -24,7 +24,7 @@
 	</tr>
 	<tr class="light">
 		<td class="fleft" width="50%" align="right">
-			<b>{t}Your/company name or whatever you wish to type here:{/t}</b>
+			<b>{t}Your/company name or whatever you want to put here:{/t}</b>
 		</td>
 		<TD CLASS="FRIGHT" WIDTH="50%">
 			<input type="text" name="name" value="{$regdata.name}" size="32">
@@ -33,7 +33,7 @@
 	<tr class="light">
 		<td class="fleft" width="50%" align="right">
 			<b>{t}URL of your homepage:{/t}</b><br>
-			{t}(please note: it MUST begins with http://, otherwise, it will be invalid){/t}
+			{t}(please note: it HAVE TO start with http://, otherwise, it will be considered invalid){/t}
 		</td>
 		<td class="fright" width="50%">
 			<input type="text" name="url" value="{$regdata.url}" size="32">
@@ -41,7 +41,7 @@
 	</tr>
 	<tr class="light">
 		<td class="fleft" width="50%" align="right">
-			<b>{t}Check this checkbox if you wish hide your name and URL from LMS homepage:{/t}</b>
+			<b>{t}Check this box if you don't like to be visible on LMS homepage:{/t}</b>
 		</td>
 		<td class="fright" width="50%">
 			<input type="checkbox" name="hidden" value="1"{if $regdata.hidden} checked{/if}>

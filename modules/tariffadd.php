@@ -39,7 +39,7 @@ if(isset($tariffadd))
 	$tariffadd['value'] = str_replace(',','.',$tariffadd['value']);
 
 	if(!(ereg('^[-]?[0-9.,]+$',$tariffadd['value'])))
-		$error['value'] = trans('Incorrect tariff value!');
+		$error['value'] = trans('Incorrect subscription value!');
 
 	if($tariffadd['taxvalue']!='')
 		if(!(ereg('^[0-9.,]+$',$tariffadd['taxvalue'])) || $tariffadd['taxvalue'] < 0 || $tariffadd['taxvalue'] > 100)
@@ -75,10 +75,10 @@ if(isset($tariffadd))
 		$error['downceil'] = trans('This field must contain number greater than 8 and greater than download rate');
 
 	if($tariffadd['name'] == '')
-		$error['name'] = trans('Tariff name required!');
+		$error['name'] = trans('Subscription name required!');
 	else
 		if($LMS->GetTariffIDByName($tariffadd['name']))
-			$error['name'] = trans('Tariff $0 already exists!',$tariffadd['name']);
+			$error['name'] = trans('Subscription $0 already exists!',$tariffadd['name']);
 
 	if(!$error)
 	{
@@ -87,7 +87,7 @@ if(isset($tariffadd))
 	
 }
 
-$layout['pagetitle'] = trans('New Tariff');
+$layout['pagetitle'] = trans('New Subscription');
 
 $SMARTY->assign('error',$error);
 $SMARTY->assign('tariffadd',$tariffadd);

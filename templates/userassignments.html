@@ -10,7 +10,7 @@
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Tariff:{/t}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Subscription:{/t}</B></TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Value:{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt">{t}Accounting day:{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Downrate (ceil):{/t}</TD>
@@ -50,7 +50,7 @@
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="9">
 						<P>&nbsp;</P>
-						<P><B>{t}That customer hasn't got any attributed tariffs.{/t}</B></P>
+						<P><B>{t}That customer hasn't got any assigned subscriptions.{/t}</B></P>
 						<P>&nbsp;</P>
 					</TD>
 				</TR>
@@ -73,9 +73,9 @@
 								    <B>{t}Add:{/t}</B>
 								</TD>
 								<TD>
-								    <SELECT size="1" name="assignment[tariffid]" {tip text="Select tariff to attribute to customer or suspend accounting of all liabilities in choosen time" trigger="tariffid"}>
-									<OPTION value="" SELECTED>{t}... select tariff ...{/t}</OPTION>
-									<OPTION value="0">{t}- all liabilities suspending -{/t}</OPTION>
+								    <SELECT size="1" name="assignment[tariffid]" {tip text="Select subscription to assign to customer or suspend accounting of all liabilities in choosen time" trigger="tariffid"}>
+									<OPTION value="" SELECTED>{t}... select subscription ...{/t}</OPTION>
+									<OPTION value="0">{t}- all liabilities suspended -{/t}</OPTION>
 									{section name=t loop=$tariffs}
 									    <OPTION VALUE="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
 									    {$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
@@ -95,16 +95,16 @@
 				    					<OPTION VALUE="2" {if $assignment.period==2}SELECTED{/if}>{t}quarterly{/t}</OPTION>
 									<OPTION VALUE="3" {if $assignment.period==3}SELECTED{/if}>{t}yearly{/t}</OPTION>
 								    </SELECT>
-								    <B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignment[at]" value="{$assignment.at}" {tip text="Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means 15 September), and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
-								    {t}from:{/t} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Enter date in format YYYY/MM/DD when to start accounting. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
-								    {t}to:{/t} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Enter date in format YYYY/MM/DD when to stop accounting. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+								    <B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignment[at]" value="{$assignment.at}" {tip text="Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
+								    {t}from:{/t} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
+								    {t}to:{/t} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
 								    <B>{t}Discount:{/t} <INPUT type="TEXT" name="assignment[discount]" value="{if $assignment.discount!=0}{$assignment.discount}{/if}" size="3" {tip text="Enter discount percentage" trigger="discount"}>
 								</TD>
 							</TR>
 						</TABLE>
 					</TD>
 					<TD ALIGN="RIGHT" VALIGN="bottom" NOWRAP>
-						<A HREF="javascript:document.assignment.submit()" {tip text="Attribute tariff to customer"}>{t}Add{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+						<A HREF="javascript:document.assignment.submit()" {tip text="Assign subscription to customer"}>{t}Add{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
 				</FORM>

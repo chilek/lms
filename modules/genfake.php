@@ -1866,7 +1866,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
 	}
 
-	echo '<B>'.trans('Creating tariffs...').'</B><BR>';
+	echo '<B>'.trans('Creating subscriptions...').'</B><BR>';
 	$tariffdata = array( 'name' => 'Lite', 'description' => 'Lite Tariff', 'value' => '30', 'taxvalue' => '7', 'pkwiu' => '', 'uprate' => '64', 'upceil' => '64', 'downrate' => '128', 'downceil' => '128', 'climit' => '0', 'plimit' => '0');
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 'value' => '60', 'taxvalue' => '7', 'pkwiu' => '', 'uprate' => '128', 'upceil' => '128', 'downrate' => '256', 'downceil' => '256', 'climit' => '0', 'plimit' => '0');
@@ -1981,7 +1981,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$LMS->NetDevLink($i,$i-1);
 	}	
 
-	echo '<P><B><A HREF="javascript:window.close();">'.trans('Now you can close this window.').'</A></B></BLOCKQUOTE>';
+	echo '<P><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
 	$SMARTY->display('footer.html');
 }
 else

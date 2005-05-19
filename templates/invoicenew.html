@@ -49,7 +49,7 @@
 	{if $customer}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>{t}Name/Surname and forename:{/t}<BR>
+			<B>{t}First/last or Company name:{/t}<BR>
 			{t}Address:{/t}<BR>
 			<BR>
 			{if $customer.nip}{t}TEN:{/t}<BR>{elseif $customer.pesel}{t}SSN:{/t}<BR>{/if}
@@ -69,7 +69,7 @@
 			<B>{t}Settlement date:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in format YYYY/MM/DD or click to select it from calendar. Empty field means current date" trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
 			{if $invoice.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
 			{/if}
@@ -88,7 +88,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>{t}Payment type (cash/transfer/etc.):{/t}</B>
+			<B>{t}Payment type (cash/transfer/etc):{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}" SIZE="10" {tip text="Enter payment type"}>

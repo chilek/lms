@@ -21,6 +21,7 @@ version 1.7.1 ? (??/??/????):
   - fixed tickets searching by requestor name (also added workaround for
     postgresql's ILIKE bug) (alec)
   - fixed _smarty_function_sum() - each row must be an array (alec)
+  - better english UI messages (kondi)
 
 version 1.7.0 Klorel (13/05/2005):
 

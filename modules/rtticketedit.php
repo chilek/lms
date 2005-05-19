@@ -48,13 +48,13 @@ if(isset($ticketedit))
 {
 	$ticketedit['ticketid'] = $ticket['ticketid'];
 	if($LMS->GetAdminRightsRT($AUTH->id, $ticketedit['queueid']) < 2)
-		$error['queue'] = trans('You have no privilleges to this queue!');
+		$error['queue'] = trans('You have no privileges to this queue!');
 	
 	if($ticketedit['subject'] == '')
 		$error['subject'] = trans('Ticket must have its title!');
 
 	if($ticketedit['state']>0 && !$ticketedit['owner'])
-		$error['owner'] = trans('Only \'new\' ticket can have no owner!');
+		$error['owner'] = trans('Only \'new\' ticket can be owned by no one!');
 
 	if($ticketedit['state']==0 && $ticketedit['owner'])
 		$ticketedit['state'] = 1;

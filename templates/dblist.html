@@ -29,7 +29,7 @@
 	<TD class="fright" width="1%" align="right" nowrap> 
 		<nobr>
 		{if $dblist.dbv[dblist] == $layout.dbschversion}
-		<a href="?m=dbrecover&db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}" onClick="return confirmLink(this, '{t}Are you sure, you want to restore this database backup?{/t}\n{t}WARNING! It will cause automatic creation of backup of present database{/t}')"><IMG src="img/recover.gif" align="absmiddle" border="0" ALT="[ {t}Restore{/t} ]"></A>
+		<a href="?m=dbrecover&db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}" onClick="return confirmLink(this, '{t}Are you sure, you want to restore this database backup?{/t}\n{t}WARNING! It will backup current database content automatically{/t}')"><IMG src="img/recover.gif" align="absmiddle" border="0" ALT="[ {t}Restore{/t} ]"></A>
 		{/if}
 		<a href="?m=dbdel&db={$dblist.name[dblist]}" onClick="return confirmLink(this, '{t}Are you sure, you want to delete this database backup?{/t}')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A>
 		<a href="?m=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/view.gif" ALT="[ {t}View{/t} ]" border="0" align="absmiddle"></A>

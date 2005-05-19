@@ -17,13 +17,13 @@
 		
 		if(i==group.length) 
 		{
-			alert('{/literal}{t}You must select type of operation!{/t}{literal}');
+			alert('{/literal}{t}You have to select type of operation!{/t}{literal}');
 			return;
 		}
 
 		if((type==3 || type==4) && document.forms['addbalance'].elements['selectededit'].value==0)
 		{
-			alert('{/literal}{t}You must select customer(s)!{/t}{literal}');
+			alert('{/literal}{t}You have to select customer(s)!{/t}{literal}');
 			return;
 		}
 		
@@ -127,7 +127,7 @@
 						<B>{t}Date:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" class="fright">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{$time}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in format 'yyyy/mm/dd hh:mm' (empty field means current date) or click to choose date from calendar"}>
+						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{$time}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">

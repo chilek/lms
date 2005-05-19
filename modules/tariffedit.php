@@ -46,9 +46,9 @@ if(isset($tariff))
 	if($tariff['plimit'] == '') $tariff['plimit'] = 0;
 
 	if($tariff['name'] == '')
-		$error['name'] = trans('Tariff name required!');
+		$error['name'] = trans('Subscription name required!');
 	elseif($LMS->GetTariffIDByName($tariff['name']) && $tariff['name'] != $LMS->GetTariffName($_GET['id']))
-		$error['name'] = trans('Tariff with specified name already exists!');
+		$error['name'] = trans('Subscription with specified name already exists!');
 
 	if($tariff['value'] == '')
 		$error['value'] = trans('Value required!');
@@ -93,7 +93,7 @@ if(isset($tariff))
 }else
 	$tariff = $LMS->GetTariff($_GET['id']);
 	
-$layout['pagetitle'] = trans('Tariff Edit: $0',$tariff['name']);
+$layout['pagetitle'] = trans('Subscription Edit: $0',$tariff['name']);
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('error',$error);
 $SMARTY->display('tariffedit.html');

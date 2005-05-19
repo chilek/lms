@@ -31,85 +31,85 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 	switch($key)
 	{
 		case 'allow_from':
-			$desc = trans('List of networks and IP addresses, which have access to LMS. If empty, every IP address has access to LMS. When you write here list of addresses or address classes, LMS dismiss every unwanted user with HTTP 403 error.');
+			$desc = trans('List of networks and IP addresses, with access to LMS. If empty, every IP address has access to LMS. When you write list of addresses or address classes here, LMS will dismiss every unwanted user with HTTP 403 error.');
 		break;
 		
 		case 'lang':
-			$desc = trans('User interface language symbol. When is not set, language will be based on html browser settings. Default: en.');
+			$desc = trans('User interface language code. If not set, language will be determined on browser settings. Default: en.');
 		break;
 		
 		case 'timeout':
-			$desc = trans('Timeout of www session. After that time (in seconds) user will be logged out if not take some action. Default: 600.');
+			$desc = trans('WWW session timeout. After that time (in seconds) user will be logged out if action has been made. Default: 600.');
 		break;
 		
 		case 'customerlist_pagelimit':
-			$desc = trans('Limit of displayed records on page on customers list. Default: no limit.');
+			$desc = trans('Limit of records displayed on one page in customers list. Default: no limit.');
 		break;
 		
 		case 'nodelist_pagelimit':
-			$desc = trans('Limit of displayed records on page on nodes list. Default: no limit.');
+			$desc = trans('Limit of records displayed on one page in nodes list. Default: no limit.');
 		break;
 		
 		case 'balancelist_pagelimit':
-			$desc = trans('Limit of displayed records on page on user\'s balance. Default: 100.');
+			$desc = trans('Limit of records displayed on one page in user\'s balance. Default: 100.');
 		break;
 		
 		case 'configlist_pagelimit':
-			$desc = trans('Limit of displayed records on page on UI config options list. Default: 100.');
+			$desc = trans('Limit of records displayed on one page in UI config options list. Default: 100.');
 		break;
 		
 		case 'invoicelist_pagelimit':
-			$desc = trans('Limit of displayed records on page on invoices list. Default: 100.');
+			$desc = trans('Limit of records displayed on one page in invoices list. Default: 100.');
 		break;
 		
 		case 'ticketlist_pagelimit':
-			$desc = trans('Limit of displayed records on page on tickets (requests) list. Default: 100.');
+			$desc = trans('Limit of records displayed on one page in tickets (requests) list. Default: 100.');
 		break;
 		
 		case 'accountlist_pagelimit':
-			$desc = trans('Limit of displayed records on page on accounts list. Default: 100.');
+			$desc = trans('Limit of records displayed on one page in accounts list. Default: 100.');
 		break;
 		
 		case 'domainlist_pagelimit':
-			$desc = trans('Limit of displayed records on page on domains list. Default: 100.');
+			$desc = trans('Limit of records displayed on one page in domains list. Default: 100.');
 		break;
 		
 		case 'aliaslist_pagelimit':
-			$desc = trans('Limit of displayed records on page on aliases list. Default: 100.');
+			$desc = trans('Limit of records displayed on one page in aliases list. Default: 100.');
 		break;
 		
 		case 'networkhosts_pagelimit':
-			$desc = trans('Limit of displayed nodes on one page in Network Information. Default: 256. With 0, this informations are ommited (page is displaying faster).');
+			$desc = trans('Limit of nodes displayed on one page in Network Information. Default: 256. With 0, this information is omitted (page is displaying faster).');
 		break;
 		
 		case 'force_ssl':
-			$desc = trans('SSL Enforcing. Setting this option to 1 will make that LMS will enforce SSL connection doing redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access without SSL. Default: 0 (off).');
+			$desc = trans('SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off).');
 		break;
 		
 		case 'reload_type':
-			$desc = trans('Reload type. Allowed values: exec - calling of some command (most often with sudo, some script or something else, configurable below); sql - writes don in SQL (concrete sql query can also be set).');
+			$desc = trans('Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).');
 		break;
 		
 		case 'reload_execcmd':
-			$desc = trans('Command to run during reload, if reload_type is set to \'exec\'. By default /bin/true. That string is sent to command system(), so I propose consideration what you do and how :) Altogether, semicolons should be parsed by bash, but LMS splits that string and execute commands singly.');
+			$desc = trans('Command to run during reload, if reload_type is set to \'exec\'. By default /bin/true. That string is sent to command system(), so I propose you to think what you do and how :) Altogether, semicolons should be parsed by bash, but LMS splits that string and execute commands separately.');
 		break;
 		
 		case 'reload_sqlquery':
-			$desc = trans('SQL query executed while reload, if reload_type = sql. By default, query inserts into table \'timestamps\' value \'_force\'. In query can be used \'%TIME%\' as replacement to current unix timestamp. WARNING! Semicolon is handled by a queries separator, that means you can enter couple of SQL queries separate them by semicolon sign.');
+			$desc = trans('SQL query executed while reload, if reload_type = sql. By default, query inserts into table \'timestamps\' value \'_force\'. You can use \'%TIME%\' as replacement to current unix timestamp. WARNING! Semicolon is handled as query separator, which means that you can enter couple of SQL queries separated by semicolon sign.');
 		break;
 		
 		case 'allow_mac_sharing':
-			$desc = trans('Permission for addition of nodes with duplicated MAC address (not checking that some computer have that MAC yet). Default: 0 (off).');
+			$desc = trans('Allow nodes addition with duplicated MAC address (not checking that some computer have that MAC yet). Default: 0 (off).');
 		break;
 		
 		case 'default_zip':
 		case 'default_city':
 		case 'default_address':
-			$desc = trans('Default zip code, city, street, used while inserting a new user. Useful when we have many users on the same street.');
+			$desc = trans('Default zip code, city, street, used while inserting new user. Useful if you add majority of users with the same street.');
 		break;
 		
 		case 'lastonline_limit':
-			$desc = trans('Specify time (in seconds), after which node will be treated as inactive. It should match with frequency of running script inspecting nodes activity (i.e. lms-fping). Default: 600.');
+			$desc = trans('Specify time (in seconds), after which node will be marked offline. It should match with frequency of running nodes activity script (i.e. lms-fping). Default: 600.');
 		break;
 
 		case 'use_current_payday':
@@ -121,15 +121,15 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		break;
 		
 		case 'debug_email':
-			$desc = trans('E-mail address for debugging - messages from madule \'Mailing\' will be sent at this address, instead of real users.');
+			$desc = trans('E-mail address for debugging - messages from \'Mailing\' module will be sent at this address, instead to real users.');
 		break;
 		
 		case 'arpd_servers':
-			$desc = trans('List of arpd servers for reading of MAC addresses from remote networks. That list should include items IP[:port] separated with spaces. Default: empty.');
+			$desc = trans('List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.');
 		break;
 		
 		case 'helpdesk_backend_mode':
-			$desc = trans('When enabled, all messages in helpdesk system (except sent to requestor) will be sent to mail server at address of right queue. Script lms-rtparser should be running on server. Messages to database will be written by script. Default: disabled.');
+			$desc = trans('When enabled, all messages in helpdesk system (except those sent to requester) will be sent to mail server corresponding queue address. lms-rtparser script should be running on server. Messages won\'t be written directly to database, but on solely responsibility of rtparser script. Default: disabled.');
 		break;
 
 		case 'helpdesk_sender_name':
@@ -137,7 +137,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		break;
 
 		case 'newticket_notify':
-			$desc = trans('When enabled, system will sent notification after addition of new ticket to all users with rights for current queue. Default: disabled.');
+			$desc = trans('When enabled, system will sent notification to all users with rights for current queue after new ticket creation. Default: disabled.');
 		break;
 		
 		case 'contract_template':
@@ -157,7 +157,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		break;
 
 		case 'gd_translate_to':
-			$desc = trans('Charset of data that gd library expects (usefull fe. if gd library need ISO-8859-2 instead of UTF-8 to feed imagetext() function.');
+			$desc = trans('Charset of data gd library expects (useful if gd library needs ISO-8859-2 instead of UTF-8 to feed imagetext() function).');
 		break;					
 
 		case 'nodepassword_length':
@@ -173,7 +173,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		break;					
 
 		case 'map_type':
-			$desc = trans('Network map type. Use "flash" if you have Ming library or "gd" if your PHP supports gdlib. By default LMS will try to generate flash map, when this fails generate image with GD.');
+			$desc = trans('Network map type. Use "flash" if you have Ming library or "gd" if your PHP supports gdlib. By default LMS will try to generate flash map, with fallback to GD if it fails.');
 		break;					
 
 		case 'homedir_prefix':
@@ -244,19 +244,19 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
 	switch($key)
 	{
 		case 'header':
-			$desc = trans('It is a seller data. A new line replacement is "\n" sign, e.g. header = SuperNet ISP\n00-950 Warsaw\nWiosenna 52\n0 49 3883838\n\nksiegowosc@supernet.pl\n\nNIP: 123-123-12-23');
+			$desc = trans('This is a seller data. A new line replacement is "\n" sign, e.g. header = SuperNet ISP\n00-950 Warsaw\nWiosenna 52\n0 49 3883838\n\naccounting@supernet.pl\n\nNIP: 123-123-12-23');
 		break;
 		
 		case 'footer':
-			$desc = trans('Small font footer will be at the bottom of page, e.g. footer = Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123');
+			$desc = trans('Small font footer will appear at the bottom of page, e.g. footer = Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123');
 		break;
 		
 		case 'default_author':
-			$desc = trans('Default person making invoice');
+			$desc = trans('Default invoice issuer');
 		break;
 		
 		case 'number_template':
-			$desc = trans('Invoice number template. Default: number/LMS/year, i.e. %N/LMS/%Y. Allowed variables: %N - successive number in year, %M - drow-up month, %Y - drow-up year.');
+			$desc = trans('Invoice number template. Default: number/LMS/year, ie. %N/LMS/%Y. Allowed variables: %N - successive number in year, %M - drow-up month, %Y - drow-up year.');
 		break;
 		
 		case 'cplace':
@@ -276,7 +276,7 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
 		break;
 		
 		case 'monthly_numbering':
-			$desc = trans('Enabling this option will reset numbering of invoices on start of every month.');
+			$desc = trans('Enabling this option will reset numbering of invoices at beginning of every month.');
 		break;
 		
 		default:
