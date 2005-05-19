@@ -128,7 +128,7 @@
 			<B>{t}Balance:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT class="error">{$userinfo.balance|money_format}</FONT>{else}{$userinfo.balance|default:"0"|money_format}{/if}
+			{if $userinfo.balance < 0}<FONT class="alert">{$userinfo.balance|money_format}</FONT>{else}{$userinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
