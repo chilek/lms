@@ -24,11 +24,11 @@
 						<B>{t}State:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select customer's group"}>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="3" CHECKED>{t}connected {/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="5">{t}disconnected {/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="3" CHECKED>{t}connected<!plural>{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="5">{t}disconnected<!plural>{/t}</NOBR><BR>
 						<NOBR><INPUT class="box" type="radio" name="filter" value="6">{t}in debt{/t}</NOBR><BR>
 						<NOBR><INPUT class="box" type="radio" name="filter" value="2">{t}waiting{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="1">{t}interested {/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="1">{t}interested<!plural>{/t}</NOBR><BR>
 						<NOBR><INPUT class="box" type="radio" name="filter" value="-1">{t}without nodes{/t}</NOBR><BR>
 						<NOBR><INPUT class="box" type="radio" name="filter" value="0">{t}all{/t}</NOBR>
 					</TD>
@@ -501,8 +501,8 @@ cal11.time_comp = false;
 					</TD>
 					<TD width="1%" {tip text="Select nodes group"}>
 						<NOBR><INPUT class="box" type="radio" name="filter" value="0" CHECKED>{t}all{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="1">{t} disconnected {/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="2">{t} connected {/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="1">{t}disconnected<!plural:item>{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="2">{t}connected<!plural:item>{/t}</NOBR><BR>
 						<NOBR><INPUT class="box" type="radio" name="filter" value="3">{t}indebted owner{/t}</NOBR>
 					</TD>
 					<TD width="1%">

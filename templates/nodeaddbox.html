@@ -64,8 +64,8 @@
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]" {tip text="Select node status"}>
-				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected {/t}</OPTION>
+				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>

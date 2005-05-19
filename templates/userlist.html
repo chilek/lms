@@ -28,11 +28,11 @@
 				<B>{t}Filter:{/t}</B> {t}Customers:{/t}
 				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
-					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}connected {/t}</OPTION>
+					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}connected<!plural>{/t}</OPTION>
 					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{t}awaiting{/t}</OPTION>
-					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{t}interested {/t}</OPTION>
-					<OPTION VALUE="4"{if $listdata.state eq 4} SELECTED{/if}>{t}deleted {/t}</OPTION>
-					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>{t}disconnected {/t}</OPTION>
+					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{t}interested<!plural>{/t}</OPTION>
+					<OPTION VALUE="4"{if $listdata.state eq 4} SELECTED{/if}>{t}deleted<!plural>{/t}</OPTION>
+					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>{t}disconnected<!plural>{/t}</OPTION>
 					<OPTION VALUE="6"{if $listdata.state eq 6} SELECTED{/if}>{t}in debt{/t}</OPTION>
 					<OPTION VALUE="7"{if $listdata.state eq 7} SELECTED{/if}>{t}online{/t}</OPTION>
 				</SELECT>&nbsp;

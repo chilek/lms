@@ -181,7 +181,7 @@ switch($type)
 				$SMARTY->assign('nodelist', $LMS->GetNodeList($_POST['order'].','.$_POST['direction']));
 			break;
 			case 1:
-				$layout['pagetitle'] = trans('List of Disconnected Nodes ');
+				$layout['pagetitle'] = trans('List of Disconnected Nodes');
 				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
 				{
 				unset($nodelist['total']);
