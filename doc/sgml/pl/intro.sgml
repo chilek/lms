@@ -222,10 +222,26 @@ cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
 		</sect2>
 		<sect2 id="comercial-support">
 			<title>Wsparcie komercyjne</title>
-			<para>Wielokrotnie na li¶cie dyskusyjnej pojawiaj± siê pytania typu "kiedy dana funkcjonalno¶æ zostanie dodana, czy te¿ jaka kwota przyspieszy³aby wykonanie pewnych konkretnych prac."
-			Aby nie za¶miecaæ g³ównej listy dyskusyjnej powsta³a lista lms-support. Aby siê na ni± zapisaæ nale¿y wysy³aæ email o tre¶ci: "subscribe lms-support" na adres ecartis (at) lists.rulez.pl, a konkretne maile siê wysy³a na adres lms-support (at) lists.rulez.pl. 
-			Osoby poszukuj±ce p³atnego wsparcia w instalacji/konfiguracji lub potrzebuj±ce nowych funkcjonalno¶ci powinny w³a¶nie skorzystaæ z listy lms-support. Tam rozmawiamy o pieni±dzach. Zlecaj±c prace czy te¿ pytaj±c siê o cenê nale¿y pamiêtaæ ¿e LMS jest projektem Open Source, Nie jest on produktem jakiej¶ firmy a wiêc ka¿d± poprawkê nale¿y uzgadniaæ bezpo¶rednio z developerem który ma j± wykonaæ, osoby potrzebuj±ce dokumentu potwierdzaj±cego wykonanie us³ugi (faktury VAT, rachunku uproszczonego, umowy zlecenia b±d¼ o dzie³o) powinny to od razu zaznaczyæ - najprawdopodobniej uzyskanie takiego dokumentu podniesie koszty ca³ej us³ugi. 
-			Najbardziej do¶wiadczonym w za³atwianiu tego typu spraw jest Alec. Prowadzi on stronê www gdzie mo¿na dokonywaæ wp³at maj±cych na celu rozwój projektu. Szczegó³y znajduj± siê na stronie:   <ulink url="http://lms.alec.pl/">http://lms.alec.pl</ulink></para>   
+			<para>Wielokrotnie na li¶cie dyskusyjnej pojawiaj± siê pytania typu "kiedy dana 
+			funkcjonalno¶æ zostanie dodana, czy te¿ jaka kwota przyspieszy³aby wykonanie 
+			pewnych konkretnych prac."
+			Aby nie za¶miecaæ g³ównej listy mailingowej powsta³a lista lms-support. 
+			Aby siê na ni± zapisaæ nale¿y wysy³aæ email o tre¶ci: "subscribe lms-support" 
+			na adres ecartis (at) lists.rulez.pl, a konkretne maile wysy³a siê na adres 
+			lms-support (at) lists.rulez.pl.</para>
+			<para>Osoby poszukuj±ce p³atnego wsparcia w instalacji/konfiguracji lub 
+			potrzebuj±ce nowych funkcjonalno¶ci powinny w³a¶nie skorzystaæ z listy 
+			lms-support. Tam rozmawiamy o pieni±dzach. Zlecaj±c prace czy te¿ pytaj±c 
+			siê o cenê nale¿y pamiêtaæ ¿e LMS jest projektem Open Source. Nie jest on 
+			produktem jakiej¶ firmy, a wiêc ka¿d± poprawkê nale¿y uzgadniaæ bezpo¶rednio 
+			z developerem który ma j± wykonaæ. Osoby potrzebuj±ce dokumentu potwierdzaj±cego 
+			wykonanie us³ugi (faktury VAT, rachunku uproszczonego, umowy zlecenia b±d¼ 
+			o dzie³o) powinny to od razu zaznaczyæ - najprawdopodobniej uzyskanie takiego 
+			dokumentu podniesie koszty ca³ej us³ugi.</para>
+			<para>Najbardziej do¶wiadczonym w za³atwianiu tego typu spraw jest Alec. 
+			Prowadzi on stronê www gdzie mo¿na dokonywaæ wp³at maj±cych na celu 
+			rozwój projektu. Szczegó³y znajduj± siê na stronie:  <ulink url="http://lms.alec.pl/">http://lms.alec.pl</ulink>.
+			</para>   
 	</sect2>
 	</sect1>
 </chapter>

@@ -255,12 +255,13 @@ NAME="SYSTEM-DESC"
 ></H3
 ><P
 >Jedyne co robi ten modu³ to wykonanie zadanego polecenia (listy poleceñ)
-		    pow³oki. Mo¿e siê przydaæ gdy chcesz podczas prze³adowania konfiguracji 
+		    pow³oki i/lub komendy SQL. Mo¿e siê przydaæ gdy chcesz podczas prze³adowania konfiguracji 
 		    wykonaæ jak±¶ komendê lub uruchomiæ zewnêtrzny skrypt, na przyk³ad jeden 
 		    z tych, które mo¿esz znale¼æ w katalogu <TT
 CLASS="FILENAME"
 >/bin</TT
->.</P
+>.
+		    W pierwszej kolejno¶ci jest wykonywane polecenie SQL.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -271,9 +272,21 @@ NAME="SYSTEM-CONFIG"
 >6.2.2.2. Konfiguracja</A
 ></H3
 ><P
->W zwi±zku z powy¿szym mo¿esz zdefiniowaæ jedynie tre¶æ polecenia.
-		    Pow³oka powinna sobie tak¿e poradziæ z list± poleceñ oddzielonych ¶rednikami:</P
+>W zwi±zku z powy¿szym mo¿esz zdefiniowaæ jedynie tre¶æ polecenia SQL lub
+		    shella. Pow³oka powinna sobie tak¿e poradziæ z list± poleceñ oddzielonych 
+		    ¶rednikami:</P
 ><UL
+><LI
+><P
+>sql</P
+><P
+>Polecenie SQL. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>sql = 'DELETE FROM stats WHERE dt &#60; %NOW% - 365*86400'</SAMP
+></P
+></LI
 ><LI
 ><P
 >command</P
@@ -282,7 +295,7 @@ NAME="SYSTEM-CONFIG"
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = 'echo "tu modu³ system"'</SAMP
+>command = 'echo -n "tu modu³ "; echo "system"'</SAMP
 ></P
 ></LI
 ></UL
@@ -1294,7 +1307,7 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xff
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
-# server -&#62; LAN
+# serwer -&#62; LAN
 $TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
 
 # outgoing traffic
@@ -1309,7 +1322,7 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 22 0xff
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 53 0xffff flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 2:10
-# server -&#62; Internet
+# serwer -&#62; Internet
 $TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
@@ -1380,7 +1393,7 @@ CLASS="PROMPT"
 ><P
 >host_mark_down</P
 ><P
->Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+>Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
 ># %n
@@ -1397,7 +1410,7 @@ CLASS="PROMPT"
 ><P
 >host_mark_up</P
 ><P
->Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+>Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
 >$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x</PRE
@@ -1413,7 +1426,7 @@ CLASS="PROMPT"
 ><P
 >host_htb_down</P
 ><P
->Zestaw regu³ dla ka¿dego komutera, wykonywanych
+>Zestaw regu³ dla ka¿dego komputera, wykonywanych
 			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
@@ -1432,7 +1445,7 @@ CLASS="PROMPT"
 ><P
 >host_htb_up</P
 ><P
->Zestaw regu³ dla ka¿dego komutera, wykonywanych
+>Zestaw regu³ dla ka¿dego komputera, wykonywanych
 			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
@@ -1621,7 +1634,7 @@ CLASS="PROMPT"
 ><P
 >host-reverse</P
 ><P
->Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+>Linia w pliku strefy odwr. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
 			    Domy¶lnie: "%n IN A %i\n".</P
 ><P
 >Przyk³ad: <SAMP
@@ -1681,7 +1694,7 @@ CLASS="PROMPT"
 ><P
 >conf-reverse-entry</P
 ><P
->Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+>Wpis dla ka¿dej strefy odwr. w g³ównym pliku konfiguracyjnym.
 			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</P
 ><P
 >Przyk³ad: <SAMP
