@@ -4,7 +4,7 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG src="img/settings.gif" ALT="" BORDER="0" ALIGN="absmiddle"><B>{t}Name:{/t}</B>
+			<IMG src="img/settings.gif" alt=""><B>{t}Name:{/t}</B>
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
 			{t}Priority:{/t}
@@ -17,7 +17,7 @@
 			{t}Description:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
+			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -33,11 +33,11 @@
 			</FORM></P>
 		</TD>
 	</TR>		
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{foreach from=$instancelist item=instance}
-	<TR {if $instance.disabled}CLASS="BLEND" {/if}bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}{if $instance.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD CLASS="fleft" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
-			<IMG src="img/settings.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG src="img/settings.gif" alt="">
 			<B>{$instance.name}</B>
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
@@ -50,10 +50,10 @@
 			{$instance.description}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" ALT="[ {if $instance.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse Configuration{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t 0=$instance.name}Are you sure, you want to remove instance \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" ALT="[ {if $instance.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
+			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse Configuration{/t} ]"></A>
+			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t 0=$instance.name}Are you sure, you want to remove instance \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -69,7 +69,7 @@
 	{/foreach}
 	<TR CLASS="dark">
 		<TD colspan="5" class="fall" align="right">
-			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
+			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE></P>
