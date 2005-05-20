@@ -4,46 +4,44 @@
 <TABLE width="100%" cellpadding="3">
 <TR CLASS="dark">
 	<TD class="fleftu" width="98%">
-		<IMG src="img/time.gif" align="absmiddle" ALT="" border="0"> <B>{t}Creation time:{/t}</B>
+		<IMG src="img/time.gif" alt=""> <B>{t}Creation time:{/t}</B>
 	</TD>
 	<TD class="fbt" width="1%" nowrap>
-		<IMG src="img/plain.gif" align="absmiddle" ALT="" border="0"> {t}Size:{/t}
+		<IMG src="img/plain.gif" alt=""> {t}Size:{/t}
 	</TD>
 	<TD class="frightu" width="1%" align="right" nowrap>
-		<IMG src="img/empty.gif" align="absmiddle" ALT="" border="0" height="16" width="1"><B> {t 0=$dblist.total}Total: $0{/t}</B>&nbsp;
+		<IMG src="img/empty.gif" alt="" height="16" width="1"><B> {t 0=$dblist.total}Total: $0{/t}</B>&nbsp;
 	</TD>
 </TR>
-{cycle values="#DFD5BD,#EBE4D6" print=false}
+{cycle values="light,lucid" print=false}
 {section name=dblist loop=$dblist.time}
-<TR {if $dblist.dbv[dblist] != $layout.dbschversion}CLASS="BLEND" {/if}bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+<TR class="{cycle}{if $dblist.dbv[dblist] != $layout.dbschversion} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 	<TD class="fleft" width="98%" onClick="return self.location.href='?m=dbview&db={$dblist.time[dblist]}';">
-		<IMG src="img/time.gif" align="absmiddle" ALT="" border="0"> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
+		<IMG src="img/time.gif" alt=""> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
 	</TD>
 	<TD width="1%" align="right" onClick="return self.location.href='?m=dbview&db={$dblist.time[dblist]}';" nowrap>
 		{if $dblist.type[dblist]=="gz"}
-			<IMG src="img/zipped.gif" align="absmiddle" ALT="" border="0">
+			<IMG src="img/zipped.gif" alt="">
 		{else}
-			<IMG src="img/plain.gif" align="absmiddle" ALT="" border="0">
+			<IMG src="img/plain.gif" alt="">
 		{/if} {$dblist.size[dblist]} {t}bytes{/t}
 	</TD>
 	<TD class="fright" width="1%" align="right" nowrap> 
 		<nobr>
 		{if $dblist.dbv[dblist] == $layout.dbschversion}
-		<a href="?m=dbrecover&db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}" onClick="return confirmLink(this, '{t}Are you sure, you want to restore this database backup?{/t}\n{t}WARNING! It will backup current database content automatically{/t}')"><IMG src="img/recover.gif" align="absmiddle" border="0" ALT="[ {t}Restore{/t} ]"></A>
+		<a href="?m=dbrecover&db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}" onClick="return confirmLink(this, '{t}Are you sure, you want to restore this database backup?{/t}\n{t}WARNING! It will backup current database content automatically{/t}')"><IMG src="img/recover.gif" alt="[ {t}Restore{/t} ]"></A>
 		{/if}
-		<a href="?m=dbdel&db={$dblist.name[dblist]}" onClick="return confirmLink(this, '{t}Are you sure, you want to delete this database backup?{/t}')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A>
-		<a href="?m=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/view.gif" ALT="[ {t}View{/t} ]" border="0" align="absmiddle"></A>
-		<A href="?m=dbview&db={$dblist.name[dblist]}&rawmode=true&save=true&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/save.gif" ALT="[ {t}Save{/t} ]" border="0" align="absmiddle"></A>
+		<a href="?m=dbdel&db={$dblist.name[dblist]}" onClick="return confirmLink(this, '{t}Are you sure, you want to delete this database backup?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+		<a href="?m=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/view.gif" alt="[ {t}View{/t} ]"></A>
+		<A href="?m=dbview&db={$dblist.name[dblist]}&rawmode=true&save=true&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/save.gif" alt="[ {t}Save{/t} ]"></A>
 		</nobr>
 	</TD>
 </TR>	
 {sectionelse}
-<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+<TR class="light">
 	<TD colspan="3" class="flr" width="100%" align="center">
 		<p>&nbsp;</p>
-		<p>
-		<B>{t}Database backups currently not found.{/t}</B>
-		</p>
+		<p><B>{t}Database backups currently not found.{/t}</B></p>
 		<p>&nbsp;</p>
 	</TD>
 </TR>
@@ -51,9 +49,8 @@
 <TR class="light">
 	<TD colspan="3" width="100%" align="right" class="fall">
 		{t}Create new{/t}
-		<a href="?m=dbnew">{t}uncompressed{/t} <img src="img/dbnew.gif" border="0" ALT="" align="absmiddle"></A> / 
-		<a href="?m=dbnew&gz=1">{t}compressed{/t} <img src="img/zipped.gif" border="0" ALT="" align="absmiddle"></A>
+		<a href="?m=dbnew">{t}uncompressed{/t} <img src="img/dbnew.gif" alt=""></A> / 
+		<a href="?m=dbnew&gz=1">{t}compressed{/t} <img src="img/zipped.gif" alt=""></A>
 	</TD>
 </TABLE>
 {include file="footer.html}
-

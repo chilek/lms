@@ -4,7 +4,7 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG src="img/host.gif" ALT="" BORDER="0" ALIGN="absmiddle"><B>{t}Name:{/t}</B>
+			<img src="img/host.gif" alt=""><B>{t}Name:{/t}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
 			{t}ID:{/t}
@@ -16,14 +16,14 @@
 			{t}Description:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=daemonhostadd">{t}Add host{/t} <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
+			<A href="?m=daemonhostadd">{t}Add host{/t} <img src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{foreach from=$hostlist item=host}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR style="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD CLASS="fleft" onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';" nowrap>
-			<IMG src="img/host.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG src="img/host.gif" alt="">
 			<B>{$host.name}</B>
 		</TD>
 		<TD onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';">
@@ -36,9 +36,9 @@
 			{$host.description}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemonhostedit&id={$host.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=daemoninstancelist&id={$host.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=daemonhostdel&id={$host.id}" OnClick="return confirmLink(this, '{t 0=$host.name}Are you sure, you want to remove host \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=daemonhostedit&id={$host.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=daemoninstancelist&id={$host.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]"></A>
+			<A HREF="?m=daemonhostdel&id={$host.id}" OnClick="return confirmLink(this, '{t 0=$host.name}Are you sure, you want to remove host \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -54,7 +54,7 @@
 	{/foreach}
 	<TR CLASS="dark">
 		<TD colspan="5" class="fall" align="right">
-			<A href="?m=daemonhostadd">{t}Add host{/t} <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
+			<A href="?m=daemonhostadd">{t}Add host{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE></P>

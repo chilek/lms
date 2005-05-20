@@ -4,13 +4,13 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="20%" class="fleftu" NOWRAP>
-			<IMG src="img/network.gif" alt="" align="absmiddle"> <A href="?m=domainlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<IMG src="img/network.gif" alt=""> <A href="?m=domainlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="center" NOWRAP>
-			<IMG src="img/empty.gif" alt="" align="absmiddle" height="16"><A href="?m=domainlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=domainlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="78%" class="fbt" NOWRAP>
-			<IMG src="img/info.gif" alt="" align="absmiddle"> <A href="?m=domainlist&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{t}Description:{/t}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<IMG src="img/info.gif" alt=""> <A href="?m=domainlist&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{t}Description:{/t}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 			<B>{t 0=$listdata.total}Total: $0{/t}</B>
@@ -34,21 +34,21 @@
 		</TD>
 	</TR>
 	{/if}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=domainlist loop=$domainlist start=$start max=$pagelimit}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" NOWRAP>
-			<IMG src="img/network.gif" ALT="" align="absmiddle" border="0"><B> {$domainlist[domainlist].name}</B>
+			<IMG src="img/network.gif" alt=""><B> {$domainlist[domainlist].name}</B>
 		</TD>
 		<TD align="right" NOWRAP valign="top">
 			({$domainlist[domainlist].id|string_format:"%04d"})
 		</TD>
 		<TD align="left">
-			<IMG src="img/info.gif" alt="" align="absmiddle"> {$domainlist[domainlist].description}
+			<IMG src="img/info.gif" alt=""> {$domainlist[domainlist].description}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=domainedit&id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]" align="absmiddle" border="0"></A>
-			<A href="?m=domaindel&id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t 0=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$0\' and all accounts in that domain?{/t}')"><IMG src="img/delete.gif" ALT="[ {t}Delete{/t} ]" align="absmiddle" border="0"></A>
+			<A href="?m=domainedit&id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A href="?m=domaindel&id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t 0=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$0\' and all accounts in that domain?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
