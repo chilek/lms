@@ -780,8 +780,6 @@ $access['table'][100]['allow_reg'] = '^invoice$';
       <para>Uaktualnienie LMS'a przebiega w kilku etapach. Najpierw utwórz
       katalog z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
       nowymi) oraz usuñ zawarto¶æ katalogu <filename>templates_c</filename>.</para>
-      <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
-      mo¿na skasowaæ odpowiedni katalog z katalogu <filename>/lib</filename></para></note></para>
       <para>Nastêpnie, je¶li nie masz jeszcze w systemie locali pl_PL.UTF-8, nale¿y
       je utworzyæ komend±:
       <screen>
