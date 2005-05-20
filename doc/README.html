@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2332"
+HREF="#AEN2336"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -1045,6 +1045,25 @@ HREF="../../ChangeLog"
 TARGET="_top"
 >Changelog</A
 >.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="COMERCIAL-SUPPORT"
+>1.4.5. Commercial Support</A
+></H3
+><P
+>				There are questions appearing periodically on lms mailing lists about adding some funtions to LMS.
+				Matter of payment for support is very difficult. Note, that there is no company behind LMS,
+				so any commercial adoption or support should be discussed directly between You and involved developer.  
+				You are reading english version of documentation, it's likely that you are not from Poland, which makes even simple things like issuing invoice or money transfer complex.
+			 The most experienced developer in that matter is Alec. You can see details on support on his page: <A
+HREF="http://lms.alec.pl/index.php?lang=en"
+TARGET="_top"
+>http://lms.alec.pl/index.php?lang=en</A
+></P
 ></DIV
 ></DIV
 ></DIV
@@ -3397,8 +3416,8 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Daemon read some non-daemon options only from
-	    database, so is prefered to store configuration in database.</P
+>Daemon read some options other than its configuration from
+	    database only, so it's prefered to store configuration in database.</P
 ></TD
 ></TR
 ></TABLE
@@ -3843,20 +3862,20 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 >
-		To specify type of map use option <TT
+		Use <TT
 CLASS="FILENAME"
 >'map_type'</TT
->
-		in section <SPAN
+> option in section <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[phpui]</I
 ></SPAN
->. Set it to "flash" if you've
+> 
+		section to specify type of map. Set it to "flash" if you've
 		got Ming library or "gd" for graphic images. By default (option
 		not set) LMS will try to generate flash map, and when this fails, 
-		will try GD.
+		t will fallback to GD.
 		</P
 ><P
 >Device status is shown on the map - computers in black are
@@ -4085,7 +4104,7 @@ VALIGN="TOP"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->almsd</I
+>lmsd</I
 ></SPAN
 > daemon to automate periodical operations, such as
 subscription fees. Those modules are also able to write out appropriate
@@ -4759,8 +4778,9 @@ users access to this queue, which overrides those set in 'Administration', which
 means, that the user who has 'full access' permissions won't be able to see
 queue and tickets placed in it until he's given access to that queue.
 Enabling 'write' (tickets and comments edit ability) to user automatically gives
-him 'read' access. 'Notices' privilege is used for notification users about new tickets.
-If option 'newticket_notify' is enabled all users with that right will get notifications by email.</P
+him 'read' access. 'Notices' privilege is used to notify users about new tickets.
+If 'newticket_notify' option is enabled all users with this privilege will get 
+notifications by email.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -8488,7 +8508,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2332"
+NAME="AEN2336"
 ></A
 ><P
 ><B

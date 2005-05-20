@@ -123,11 +123,16 @@ CLASS="SCREEN"
 ># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
 >
 	Je¶li w interfejsie u¿ytkownika znaki narodowe nie bêd± wy¶wietlane poprawnie
-	mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku konfiguracyjnego serwera www (httpd.conf)
-	wpis:
+	mo¿liwe, ¿e trzeba bêdzie w pliku konfiguracyjnym serwera www (httpd.conf)
+	ustawiæ:
 	<PRE
 CLASS="SCREEN"
->AddDefaultCharset UTF-8</PRE
+>AddDefaultCharset Off</PRE
+>
+	oraz w konfiguracji PHP (php.ini) wy³±czyæ/zakomentowaæ domy¶lne kodowanie:
+	<PRE
+CLASS="SCREEN"
+>;default_charset = "iso-8859-1"</PRE
 ></P
 ><P
 >Kolejnym krokiem jest dokonanie zmian w bazie. Dla u³atwienia migracji 
@@ -138,12 +143,11 @@ CLASS="FILENAME"
       przygotowano pliki <TT
 CLASS="FILENAME"
 >UPGRADE-1.2-1.6.mysql</TT
-> i 
-      <TT
+> i <TT
 CLASS="FILENAME"
->UPGRADE-1.2-1.6.pgsql</TT
-> dla migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. 
-      W nich znajdziesz krótki
+>UPGRADE-1.2-1.6.pgsql
+      </TT
+> dla migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
       opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
       Je¶li przeprowadzasz upgrade z wersji nowszej od 1.3.0 aktualizacja struktury bazy danych 
       nast±pi automatycznie podczas pierwszego logowania.</P
@@ -159,7 +163,7 @@ CLASS="FILENAME"
 CLASS="SCREEN"
 ># iconv --from-code=ISO-8859-2 --to-code=UTF-8 &#60; plik_backupu &#62; nowy_plik</PRE
 >
-	Po czym zmieniamy nazwê nowopowsta³ego pliku na lms-xxxxxxx.sql, aby
+	Po czym zmieniamy nazwê nowo powsta³ego pliku na lms-xxxxxxx.sql, aby
 	plik ten by³ widoczny z poziomu <SPAN
 CLASS="emphasis"
 ><I

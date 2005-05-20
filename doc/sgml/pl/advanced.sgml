@@ -57,7 +57,7 @@
 				</row>
 				<row>
 				<entry>templates</entry>
-				<entry>Temlejty Smarty dla Interfejsu U¿ytkownika</entry>
+				<entry>Szablony Smarty dla Interfejsu U¿ytkownika</entry>
 				</row>
 				<row>
 				<entry>templates_c</entry>
@@ -117,7 +117,7 @@
 				<member>creatorid - identyfikator u¿ytkownika tworz±cego wpis</member>
 				<member>modid - identyfikator u¿ytkownika dokonuj±cego zmian danych</member>
 				<member>deleted - usuniêty z bazy (0/1)</member>
-				<member>message - komunikat do wy¶wietlenia przy w³aczonych ostrze¿eniach</member>
+				<member>message - komunikat do wy¶wietlenia przy w³±czonych ostrze¿eniach</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="usergroups">
@@ -555,7 +555,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 		u¿ytkowników ma zostaæ stworzonych i nacisn±æ ENTER. To wszystko. Ewentualne b³êdy
 		bazy danych, spowodowane ograniczeniami unikalno¶ci niektórych danych, mo¿na zignorowaæ.
 		<note><para>Dla prawid³owego wygenerowania zale¿no¶ci, modu³ 'genfake'
-		nale¿y uruchamiaæ na pustej, nowoutworzonej bazie.</para></note>
+		nale¿y uruchamiaæ na pustej, nowo utworzonej bazie.</para></note>
 		<warning><para>Wszystkie dane (oprócz danych u¿ytkowników) zostan±
 		usuniête z bazy.</para></warning>
 		</para>
@@ -586,9 +586,12 @@ key = "A.L.E.C's LMS Daemon is the best"
 		takowe posiada:</para>
 		<sect2 id="devel-limits-lms">
 			<title>Wynikaj±ce z naszego projektu</title>
-			<para>Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy jako
-			32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat bêdziecie nas nie lubiæ
-			posiadaj±c oko³o 5000 u¿ytkowników.</para>
+			<para>Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowywali¶my jako
+			32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat mogli¶cie nas nie lubiæ 
+			posiadaj±c oko³o 5000 u¿ytkowników.  Aktualnie (od lms-1.1.7 Hathor) u¿ywamy 
+			bardziej odpowiedniego typu danych [decimal (9.2), 2 miejsca znacz±ce po przecinku,
+			a w sumie 9 miejsc na ca³± liczbê]. Maksymalna warto¶æ to 9'999'999.99 (dotyczy sumy			 wszystkich operacji finansowych!). Procedury konwertuj±ce liczby na s³owa s± 
+			przygotowane na kwoty tak du¿e jak 10^18.</para>
 		</sect2>
 		<sect2 id="devel-limits-db">
 			<title>Wynikaj±ce z u¿ywanego DBMS</title>

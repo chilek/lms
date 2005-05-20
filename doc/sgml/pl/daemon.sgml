@@ -113,7 +113,7 @@
 			    </listitem>
 			    <listitem>
 				<para>Modu³</para>
-				<para>Nazwa pliku modu³u (z rozszerzeniem lub bez). Jesli nie podano
+				<para>Nazwa pliku modu³u (z rozszerzeniem lub bez). Je¶li nie podano
 				¶cie¿ki demon bêdzie szuka³ modu³u w katalogu PREFIX/lms/lib, do
 				którego trafiaj± modu³y podczas "make install".</para>
 				<para>Przyk³ad: /usr/lib/system.so</para>
@@ -740,7 +740,7 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xff
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
-# server -> LAN
+# serwer -> LAN
 $TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
 
 # outgoing traffic
@@ -755,7 +755,7 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 22 0xff
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 53 0xffff flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 2:10
-# server -> Internet
+# serwer -> Internet
 $TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
@@ -807,7 +807,7 @@ esac
 			</listitem>
 			<listitem>
 			    <para>host_mark_down</para>
-			    <para>Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+			    <para>Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
 <screen>
 # %n
 $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
@@ -817,7 +817,7 @@ $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
 			</listitem>
 			<listitem>
 			    <para>host_mark_up</para>
-			    <para>Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+			    <para>Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
 <screen>
 $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
 </screen>
@@ -826,7 +826,7 @@ $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
 			</listitem>
 			<listitem>
 			    <para>host_htb_down</para>
-			    <para>Zestaw regu³ dla ka¿dego komutera, wykonywanych
+			    <para>Zestaw regu³ dla ka¿dego komputera, wykonywanych
 			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
 <screen>
 $TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
@@ -838,7 +838,7 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x
 			</listitem>
 			<listitem>
 			    <para>host_htb_up</para>
-			    <para>Zestaw regu³ dla ka¿dego komutera, wykonywanych
+			    <para>Zestaw regu³ dla ka¿dego komputera, wykonywanych
 			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
 <screen>
 $TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
@@ -935,7 +935,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			</listitem>
 			<listitem>
 			    <para>host-reverse</para>
-			    <para>Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+			    <para>Linia w pliku strefy odwr. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
 			    Domy¶lnie: "%n IN A %i\n".</para>
 			    <para>Przyk³ad: <prompt>host-reverse = "\t %n IN A %i\n"</prompt></para>
 			</listitem>
@@ -965,7 +965,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			</listitem>
 			<listitem>
 			    <para>conf-reverse-entry</para>
-			    <para>Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+			    <para>Wpis dla ka¿dej strefy odwr. w g³ównym pliku konfiguracyjnym.
 			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</para>
 			    <para>Przyk³ad: <prompt>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</prompt></para>
 			</listitem>

@@ -37,7 +37,7 @@
 	    	<para><emphasis role="bold">Co oznacza b³±d <prompt>Can't locate Config/IniFiles.pm in @INC ...</prompt>?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Prawdopodobnie nie masz zainstalowanych wymaganych modu³ow 
+	        <para>Prawdopodobnie nie masz zainstalowanych wymaganych modu³ów 
 		Perla, w tym wypadku chodzi o <filename>Config::IniFiles</filename>.
 		Najwygodniejszym sposobem instalacji modu³ów jest skorzystanie z CPANu
 		w nastêpuj±cy sposób: 
@@ -46,7 +46,7 @@
 	</qandaentry>
 	<qandaentry>
 	    <question id="q5">
-	    	<para><emphasis role="bold">Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?</emphasis></para>
+	    	<para><emphasis role="bold">Zrobi³em parê poprawek. Jak mogê dodaæ je do LMSa?</emphasis></para>
 	    </question>
 	    <answer>
 	        <para>Poprawki najlepiej zg³aszaæ na listê mailingow±. Do wiadomo¶ci,
@@ -101,7 +101,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 		mo¿e mieæ pod³±czonych 24 innych urz±dzeñ. Z tym, ¿e w przypadku
 		urz±dzeñ, w pewnych warunkach (czêsto) liczba ta mo¿e siê zmniejszyæ (w
 		zale¿no¶ci od rozmieszczenia urz±dzeñ na siatce mapy). Po przekroczeniu
-		tej liczby mog± wystêpowaæ b³êdne po³±czenia wybiegaj±ce poza mapê, ¿adziej
+		tej liczby mog± wystêpowaæ b³êdne po³±czenia wybiegaj±ce poza mapê, rzadziej
 		problemy z wygenerowaniem mapy.
 		</para>
 	    </answer>
@@ -114,8 +114,8 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 	        <para>Powo³any b³±d pojawia siê podczas uruchamiania skryptów
 		perlowych korzystaj±cych z zewnêtrznych programów na niektórych 
 		systemach. Opis problemu i sposoby jego rozwi±zania podane s± w manualu
-		perla (man perlsec) w dziale "Cleaning Up Your Path". Naprostszym rozwi±zaniem jest
-		usuniêcie przy³±cznika -T (który odpowiada za to zamieszanie) z pierwszej 
+		perla (man perlsec) w dziale "Cleaning Up Your Path". Najprostszym rozwi±zaniem jest
+		usuniêcie prze³±cznika -T (który odpowiada za to zamieszanie) z pierwszej 
 		linii skryptu.
 		</para>
 	    </answer>

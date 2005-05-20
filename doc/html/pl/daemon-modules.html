@@ -1307,7 +1307,7 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xff
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
-# server -&#62; LAN
+# serwer -&#62; LAN
 $TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
 
 # outgoing traffic
@@ -1322,7 +1322,7 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 22 0xff
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 53 0xffff flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 2:10
-# server -&#62; Internet
+# serwer -&#62; Internet
 $TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
@@ -1393,7 +1393,7 @@ CLASS="PROMPT"
 ><P
 >host_mark_down</P
 ><P
->Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+>Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
 ># %n
@@ -1410,7 +1410,7 @@ CLASS="PROMPT"
 ><P
 >host_mark_up</P
 ><P
->Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+>Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
 >$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x</PRE
@@ -1426,7 +1426,7 @@ CLASS="PROMPT"
 ><P
 >host_htb_down</P
 ><P
->Zestaw regu³ dla ka¿dego komutera, wykonywanych
+>Zestaw regu³ dla ka¿dego komputera, wykonywanych
 			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
@@ -1445,7 +1445,7 @@ CLASS="PROMPT"
 ><P
 >host_htb_up</P
 ><P
->Zestaw regu³ dla ka¿dego komutera, wykonywanych
+>Zestaw regu³ dla ka¿dego komputera, wykonywanych
 			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
@@ -1634,7 +1634,7 @@ CLASS="PROMPT"
 ><P
 >host-reverse</P
 ><P
->Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+>Linia w pliku strefy odwr. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
 			    Domy¶lnie: "%n IN A %i\n".</P
 ><P
 >Przyk³ad: <SAMP
@@ -1694,7 +1694,7 @@ CLASS="PROMPT"
 ><P
 >conf-reverse-entry</P
 ><P
->Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+>Wpis dla ka¿dej strefy odwr. w g³ównym pliku konfiguracyjnym.
 			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</P
 ><P
 >Przyk³ad: <SAMP

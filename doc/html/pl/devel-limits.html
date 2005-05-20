@@ -91,9 +91,12 @@ NAME="DEVEL-LIMITS-LMS"
 >7.6.1. Wynikaj±ce z naszego projektu</A
 ></H2
 ><P
->Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy jako
-			32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat bêdziecie nas nie lubiæ
-			posiadaj±c oko³o 5000 u¿ytkowników.</P
+>Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowywali¶my jako
+			32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat mogli¶cie nas nie lubiæ 
+			posiadaj±c oko³o 5000 u¿ytkowników.  Aktualnie (od lms-1.1.7 Hathor) u¿ywamy 
+			bardziej odpowiedniego typu danych [decimal (9.2), 2 miejsca znacz±ce po przecinku,
+			a w sumie 9 miejsc na ca³± liczbê]. Maksymalna warto¶æ to 9'999'999.99 (dotyczy sumy			 wszystkich operacji finansowych!). Procedury konwertuj±ce liczby na s³owa s± 
+			przygotowane na kwoty tak du¿e jak 10^18.</P
 ></DIV
 ><DIV
 CLASS="SECT2"

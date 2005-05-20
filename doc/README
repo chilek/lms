@@ -254,6 +254,19 @@ cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
    Changelog.
      _________________________________________________________________
 
+1.4.5. Commercial Support
+
+   There are questions appearing periodically on lms mailing lists about
+   adding some funtions to LMS. Matter of payment for support is very
+   difficult. Note, that there is no company behind LMS, so any
+   commercial adoption or support should be discussed directly between
+   You and involved developer. You are reading english version of
+   documentation, it's likely that you are not from Poland, which makes
+   even simple things like issuing invoice or money transfer complex. The
+   most experienced developer in that matter is Alec. You can see details
+   on support on his page: http://lms.alec.pl/index.php?lang=en
+     _________________________________________________________________
+
 Chapter 2. Installation and configuration
 
 2.1. Intro
@@ -1143,8 +1156,8 @@ Chapter 3. User Interface (LMS-UI)
 
    Note
 
-   Daemon read some non-daemon options only from database, so is prefered
-   to store configuration in database.
+   Daemon read some options other than its configuration from database
+   only, so it's prefered to store configuration in database.
 
    In order to manually add new option click 'Add option' on the bottom
    of the list. To edit option value, click on its record. You'll be
@@ -1339,10 +1352,10 @@ Chapter 3. User Interface (LMS-UI)
 
    You need GD or Ming library compiled in PHP to be able to use
    graphical map.
-   To specify type of map use option 'map_type' in section [phpui]. Set
-   it to "flash" if you've got Ming library or "gd" for graphic images.
-   By default (option not set) LMS will try to generate flash map, and
-   when this fails, will try GD.
+   Use 'map_type' option in section [phpui] section to specify type of
+   map. Set it to "flash" if you've got Ming library or "gd" for graphic
+   images. By default (option not set) LMS will try to generate flash
+   map, and when this fails, t will fallback to GD.
 
    Device status is shown on the map - computers in black are offline.
    Question mark on device icon means that its status is unknown (device
@@ -1451,7 +1464,7 @@ Chapter 3. User Interface (LMS-UI)
 
    Note
 
-   It's best to use lms-payments Perl script or almsd daemon to automate
+   It's best to use lms-payments Perl script or lmsd daemon to automate
    periodical operations, such as subscription fees. Those modules are
    also able to write out appropriate invoices.
      _________________________________________________________________
@@ -1788,9 +1801,9 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    permissions won't be able to see queue and tickets placed in it until
    he's given access to that queue. Enabling 'write' (tickets and
    comments edit ability) to user automatically gives him 'read' access.
-   'Notices' privilege is used for notification users about new tickets.
-   If option 'newticket_notify' is enabled all users with that right will
-   get notifications by email.
+   'Notices' privilege is used to notify users about new tickets. If
+   'newticket_notify' option is enabled all users with this privilege
+   will get notifications by email.
      _________________________________________________________________
 
 3.12.3. Searching

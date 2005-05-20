@@ -208,7 +208,7 @@ telefon: 0-606666666
 e-mail: gwidonm@naszasiec.pl
 
 ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
-system bilingowy na Pañstwa koncie:
+system billingowy na Pañstwa koncie:
 
 Data       | Opis                                                 | Warto¶æ
 %last_10_in_a_table
@@ -299,7 +299,7 @@ http://www.naszasiec.pl/</screen></example>
 	  </listitem>
 	  <listitem>
 	   <para>message (optional)</para>
-	   <para>Je¶li nie jest pusta, wiadomo¶æ ta po od³aczeniu u¿ytkownika zostanie 
+	   <para>Je¶li nie jest pusta, wiadomo¶æ ta po do³±czeniu u¿ytkownika zostanie 
 	   zapisana do jego rekordu w polu wiadomo¶ci administracyjnej. W tre¶ci wiadomo¶ci
 	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê.
 	   Domy¶lnie: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</para>
@@ -536,7 +536,7 @@ wins    = 213.25.209.10</screen>
 		</listitem>
            	<listitem>
 		    <para>script_file</para>
-		    <para>Plik, do którego zapisujemy regu³y firwalla. Domy¶lnie: /etc/rc.d/rc.masq</para>
+		    <para>Plik, do którego zapisujemy regu³y firewalla. Domy¶lnie: /etc/rc.d/rc.masq</para>
 		    <para>Przyk³ad:	<prompt>script_file = /etc/rc.d/rc.firewall</prompt></para>
 		</listitem>		
            	<listitem>
@@ -630,7 +630,7 @@ wins    = 213.25.209.10</screen>
 	<para>Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
 	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
 	dlatego wymagane jest podanie klienta i has³a do interfejsu www lms-ui.</para>
-	<para>W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów perla:
+	<para>W odró¿nieniu od pozosta³ych skryptów ten wymaga dodatkowych modu³ów perla:
 	LWP::UserAgent, MIME::Entity.</para>
 	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[sendinvoices]</emphasis>:
 	    <itemizedlist>
@@ -737,7 +737,7 @@ wins    = 213.25.209.10</screen>
 		</listitem>
 	    	<listitem>
 		    <para>chain</para>
-		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</para>
+		    <para>£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</para>
 		    <para>Przyk³ad:	<prompt>chain = TESTY_MACOW</prompt></para>
 		</listitem>
 	    	<listitem>
@@ -847,7 +847,7 @@ wins    = 213.25.209.10</screen>
 		</listitem>
 	    	<listitem>
 		    <para>chain</para>
-		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</para>
+		    <para>£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</para>
 		    <para>Przyk³ad:	<prompt>chain = OSTRZEZENIA</prompt></para>
 		</listitem>
 	    	<listitem>
@@ -910,7 +910,7 @@ wins    = 213.25.209.10</screen>
 		</listitem>
 	    	<listitem>
 		    <para>chain</para>
-		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</para>
+		    <para>£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</para>
 		    <para>Przyk³ad:	<prompt>chain = WIADOMOSCI</prompt></para>
 		</listitem>
 	    	<listitem>
@@ -990,7 +990,7 @@ wins    = 213.25.209.10</screen>
     </sect2>
     <sect2 id="lms-rtparser" xreflabel="lms-rtparser">
 	<title>lms-rtparser</title>
-	    <para>Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
+	    <para>Jest to tzw. backend dla systemu Helpdesk, czyli skrypt który wspó³pracuj±c
 	    z serwerem pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
 	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
 	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
@@ -1079,14 +1079,14 @@ endif
 		</listitem>
 		<listitem>
 		    <para>autoreply_subject</para>
-		    <para>Temat potwierdzenia. Tu mo¿na korzystaæ ze zmiannych %tid - 
+		    <para>Temat potwierdzenia. Tu mo¿na korzystaæ ze zmiennych %tid - 
 		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
 		    Domy¶lnie: "[RT#%tid] Receipt of request '%subject'".</para>
 		    <para>Przyk³ad:	<prompt>autoreply_subject = "[RT#%tid] Potwierdzenie odbioru zg³oszenia o temacie '%subject'"</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>autoreply_body</para>
-		    <para>Tre¶æ potwierdzenia. Tu mo¿na korzystaæ ze zmiannych: %tid - 
+		    <para>Tre¶æ potwierdzenia. Tu mo¿na korzystaæ ze zmiennych: %tid - 
 		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
 		    Domy¶lnie: "Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n."</para>
 		    <para>Example:	<prompt>autoreply_body = "Pañstwa zg³oszenie zosta³o zarejestrowane w naszym systemie.\nZg³oszeniu zosta³ nadany numer: RT#%tid.\nW korespondencji zwi±zanej z tym zg³oszeniem prosimy podawaæ w temacie ci±g znaków [RT#%tid].\n"</prompt></para>
