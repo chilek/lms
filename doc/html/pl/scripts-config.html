@@ -202,7 +202,7 @@ telefon: 0-606666666
 e-mail: gwidonm@naszasiec.pl
 
 ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
-system bilingowy na Pañstwa koncie:
+system billingowy na Pañstwa koncie:
 
 Data       | Opis                                                 | Warto¶æ
 %last_10_in_a_table
@@ -235,7 +235,7 @@ CLASS="EMPHASIS"
 ><UL
 ><LI
 ><P
->limit (opcjonalny)</P
+>limit</P
 ><P
 >Pozwala na ustalenie limitu bilansu, poni¿ej którego do klienta zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</P
 ><P
@@ -246,9 +246,9 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailsubject (wymagany)</P
+>mailsubject (wymagana)</P
 ><P
->Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.</P
+>Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: pusta.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -257,9 +257,9 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailtemplate (wymagany)</P
+>mailtemplate (wymagana)</P
 ><P
->Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do klienta. Wiêcej o szablonach tutaj. Domy¶lnie: nie ustawione.</P
+>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do klienta. Wiêcej o szablonach tutaj. Domy¶lnie: pusta.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -268,9 +268,9 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfrom</P
+>mailfrom (wymagana)</P
 ><P
->Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie nieustawione</P
+>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie: pusta.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -279,13 +279,24 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfname</P
+>mailfname (wymagana)</P
 ><P
->Nazwa nadawcy maila</P
+>Nazwa nadawcy maila. Domy¶lnie: pusta.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >mailfname = Administratorzy</SAMP
+></P
+></LI
+><LI
+><P
+>mailcharset</P
+><P
+>Strona kodowa wiadomo¶ci. Domy¶lnie: UTF-8.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mailcharset = ISO-8859-2</SAMP
 ></P
 ></LI
 ><LI
@@ -405,7 +416,7 @@ CLASS="PROMPT"
 ><P
 >message (optional)</P
 ><P
->Je¶li nie jest pusta, wiadomo¶æ ta po od³aczeniu u¿ytkownika zostanie 
+>Je¶li nie jest pusta, wiadomo¶æ ta po do³±czeniu u¿ytkownika zostanie 
 	   zapisana do jego rekordu w polu wiadomo¶ci administracyjnej. W tre¶ci wiadomo¶ci
 	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê.
 	   Domy¶lnie: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
@@ -957,7 +968,7 @@ CLASS="PROMPT"
 ><P
 >script_file</P
 ><P
->Plik, do którego zapisujemy regu³y firwalla. Domy¶lnie: /etc/rc.d/rc.masq</P
+>Plik, do którego zapisujemy regu³y firewalla. Domy¶lnie: /etc/rc.d/rc.masq</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1164,7 +1175,7 @@ NAME="LMS-SENDINVOICES"
 	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
 	dlatego wymagane jest podanie klienta i has³a do interfejsu www lms-ui.</P
 ><P
->W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów perla:
+>W odró¿nieniu od pozosta³ych skryptów ten wymaga dodatkowych modu³ów perla:
 	LWP::UserAgent, MIME::Entity.</P
 ><P
 >Konfiguracjê nale¿y umie¶ciæ w sekcji <SPAN
@@ -1397,7 +1408,7 @@ CLASS="PROMPT"
 ><P
 >chain</P
 ><P
->£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</P
+>£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1643,7 +1654,7 @@ CLASS="PROMPT"
 ><P
 >chain</P
 ><P
->£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</P
+>£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1783,7 +1794,7 @@ CLASS="PROMPT"
 ><P
 >chain</P
 ><P
->£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</P
+>£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1962,7 +1973,7 @@ NAME="LMS-RTPARSER"
 >4.3.17. lms-rtparser</A
 ></H2
 ><P
->Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
+>Jest to tzw. backend dla systemu Helpdesk, czyli skrypt który wspó³pracuj±c
 	    z serwerem pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
 	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
 	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
@@ -2142,7 +2153,7 @@ CLASS="PROMPT"
 ><P
 >autoreply_subject</P
 ><P
->Temat potwierdzenia. Tu mo¿na korzystaæ ze zmiannych %tid - 
+>Temat potwierdzenia. Tu mo¿na korzystaæ ze zmiennych %tid - 
 		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
 		    Domy¶lnie: "[RT#%tid] Receipt of request '%subject'".</P
 ><P
@@ -2155,7 +2166,7 @@ CLASS="PROMPT"
 ><P
 >autoreply_body</P
 ><P
->Tre¶æ potwierdzenia. Tu mo¿na korzystaæ ze zmiannych: %tid - 
+>Tre¶æ potwierdzenia. Tu mo¿na korzystaæ ze zmiennych: %tid - 
 		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
 		    Domy¶lnie: "Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n."</P
 ><P

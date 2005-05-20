@@ -137,7 +137,11 @@ $ mv Smarty-2.6.6/libs Smarty
 		wy¶wietlane poprawnie mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku 
 		konfiguracyjnego serwera www (httpd.conf) wpis:
 	<screen>
-AddDefaultCharset UTF-8
+AddDefaultCharset Off
+</screen>
+		oraz w konfiguracji PHP (php.ini) zakomentowaæ wpis:
+	<screen>
+;default_charset = "iso-8859-1"
 </screen>
 		Informacje na temat konfiguracji kodowania bazy danych w dalszej
 		czê¶ci rozdzia³u.</para>
@@ -784,10 +788,14 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 # localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8
 </screen>
 	Je¶li w interfejsie u¿ytkownika znaki narodowe nie bêd± wy¶wietlane poprawnie
-	mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku konfiguracyjnego serwera www (httpd.conf)
-	wpis:
+	mo¿liwe, ¿e trzeba bêdzie w pliku konfiguracyjnym serwera www (httpd.conf)
+	ustawiæ:
 	<screen>
-AddDefaultCharset UTF-8
+AddDefaultCharset Off
+</screen>
+	oraz w konfiguracji PHP (php.ini) wy³±czyæ/zakomentowaæ domy¶lne kodowanie:
+	<screen>
+;default_charset = "iso-8859-1"
 </screen></para>
       <para>Kolejnym krokiem jest dokonanie zmian w bazie. Dla u³atwienia migracji 
       struktury bazy danych w katalogu <filename>/doc</filename>
