@@ -54,6 +54,8 @@ SELECT.alert	{ background-color: #FF9B9B; }
 
 BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 0pt; background-color: #DFD5BD; }
 
+IMG		{ vertical-align: middle; border: 0; }
+
 .click-menu     { width: 150px; padding: 0px 0px; margin-top: 0; margin-bottom: 0; }
 .click-menu .box1       { background-color: #CEBD9B; color: #000000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
 .click-menu .box1-hover { background-color: #CCFFCC; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }

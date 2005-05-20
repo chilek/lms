@@ -4,22 +4,22 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="DARK">
 		<TD width="95%" class="fleftu">
-			<IMG src="img/alias.gif" alt="" align="absmiddle" border="0"> <A href="?m=aliaslist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<IMG src="img/user.gif" alt="" align="absmiddle" border="0"> <A href="?m=aliaslist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<IMG src="img/alias.gif" alt=""> <A href="?m=aliaslist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/user.gif" alt=""> <A href="?m=aliaslist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt" align="center" valign="top">
-			<A href="?m=aliaslist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=aliaslist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
-			<A href="?m=aliaslist&o=account{if $listdata.direction eq "asc" && $listdata.order eq "account"},desc{/if}"><B>{t}Account:{/t}</B></A> {if $listdata.order eq "account"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
-			<IMG src="img/account.gif" alt="" align="absmiddle" border="0">
+			<A href="?m=aliaslist&o=account{if $listdata.direction eq "asc" && $listdata.order eq "account"},desc{/if}"><B>{t}Account:{/t}</B></A> {if $listdata.order eq "account"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/account.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP valign="top">
-			<IMG src="img/network.gif" alt="" align="absmiddle" border="0">
-			<A href="?m=aliaslist&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}"><B>{t}Domain:{/t}</B></A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<IMG src="img/network.gif" alt="">
+			<A href="?m=aliaslist&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}"><B>{t}Domain:{/t}</B></A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
-			<A href="?m=aliaslist&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A> {if $listdata.order eq "expdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<A href="?m=aliaslist&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A> {if $listdata.order eq "expdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 			 <B>{t 0=$listdata.total}Total: $0{/t}</B>
@@ -76,10 +76,10 @@
 	{section name=aliaslist loop=$aliaslist start=$start max=$pagelimit}
 	<TR class="{cycle}{if $aliaslist[aliaslist].expdate != 0 && $aliaslist[aliaslist].expdate < $smarty.now} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft">
-			<IMG src="img/alias.gif" ALT="" align="absmiddle" border="0"><B> {$aliaslist[aliaslist].login}</B>
+			<IMG src="img/alias.gif" ALT="" ><B> {$aliaslist[aliaslist].login}</B>
 			{if $aliaslist[aliaslist].username}
 			<BR><A href="?m=userinfo&id={$aliaslist[aliaslist].ownerid}">
-			<IMG src="img/user.gif" alt="" align="absmiddle" border="0"> {$aliaslist[aliaslist].username|truncate:50:"..."}
+			<IMG src="img/user.gif" alt="" > {$aliaslist[aliaslist].username|truncate:50:"..."}
 			</A>
 			{/if}
 		</TD>
@@ -87,16 +87,16 @@
 			({$aliaslist[aliaslist].id|string_format:"%04d"})
 		</TD>
 		<TD align="right" NOWRAP valign="top">
-			<B>{$aliaslist[aliaslist].account}</B> <IMG src="img/account.gif" alt="" align="absmiddle" border="0">
+			<B>{$aliaslist[aliaslist].account}</B> <IMG src="img/account.gif" alt="">
 		</TD>
 		<TD NOWRAP valign="top">
-			<IMG src="img/network.gif" alt="" align="absmiddle" border="0"> <B>{$aliaslist[aliaslist].domain}</B>
+			<IMG src="img/network.gif" alt="" > <B>{$aliaslist[aliaslist].domain}</B>
 		</TD>
 		<TD align="right" valign="top">
 			{if $aliaslist[aliaslist].expdate}{$aliaslist[aliaslist].expdate|date_format:"%Y/%m/%d"}{/if}</nobr>
 		</TD>
 		<TD class="fright" align="right">
-			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t 0=$aliaslist[aliaslist].login}Are you sure, you want to delete alias: \'$0\'?{/t}')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A>
+			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t 0=$aliaslist[aliaslist].login}Are you sure, you want to delete alias: \'$0\'?{/t}')"><IMG src="img/delete.gif"  ALT="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}

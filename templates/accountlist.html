@@ -4,20 +4,20 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="96%" class="fleftu" NOWRAP>
-			<IMG src="img/account.gif" alt="" align="absmiddle"> <A href="?m=accountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<IMG src="img/user.gif" ALT="" align="absmiddle" border="0"> <A href="?m=accountlist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<IMG src="img/account.gif" alt=""> <A href="?m=accountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/user.gif" ALT=""> <A href="?m=accountlist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
 			{t}Type (sh/mail/www/ftp):{/t}<BR>
 			{t}Quotas (sh/mail/www/ftp):{/t}
 		</TD>
 		<TD width="1%" valign="top" class="fbt" NOWRAP>
-			<A href="?m=accountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<A href="?m=accountlist&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}">{t}Domain:{/t}</A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=accountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=accountlist&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}">{t}Domain:{/t}</A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP valign="top" align="right">
-			<A href="?m=accountlist&o=lastlogin{if $listdata.direction eq "asc" && $listdata.order eq "lastlogin"},desc{/if}">{t}Last login:{/t}</A> {if $listdata.order eq "lastlogin"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<A href="?m=accountlist&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A> {if $listdata.order eq "expdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=accountlist&o=lastlogin{if $listdata.direction eq "asc" && $listdata.order eq "lastlogin"},desc{/if}">{t}Last login:{/t}</A> {if $listdata.order eq "lastlogin"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=accountlist&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A> {if $listdata.order eq "expdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 			 <B>{t 0=$listdata.total}Total: $0{/t}</B>
@@ -83,9 +83,9 @@
 	{section name=accountlist loop=$accountlist start=$start max=$pagelimit}
 	<TR class="{cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" OnClick="return self.location.href='?m=accountedit&id={$accountlist[accountlist].id}';">
-			<nobr><IMG src="img/account.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].login}</B></nobr><BR>
+			<nobr><IMG src="img/account.gif" alt=""><B> {$accountlist[accountlist].login}</B></nobr><BR>
 			{if $accountlist[accountlist].ownerid}
-			<IMG src="img/user.gif" ALT="" align="absmiddle" border="0">
+			<IMG src="img/user.gif" alt="">
 			<A href="?m=userinfo&id={$accountlist[accountlist].ownerid}">
 			{$accountlist[accountlist].username|truncate:50:"..."} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
 			</A>
@@ -105,10 +105,10 @@
 		</TD>
 		<TD class="fright" align="right">
 			<NOBR>
-			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t 0=$accountlist[accountlist].login}Are you sure, you want to delete account \'$0\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A> 
-			<A href="?m=accountedit&id={$accountlist[accountlist].id}"><IMG src="img/edit.gif" align="absmiddle" border="0" ALT="[ {t}Edit{/t} ]"></A> 
-			<A href="?m=accountedit&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" border="0" align="absmiddle" ALT="[ {t}Change password{/t} ]"></A> 
-			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" border="0" align="absmiddle" ALT="[ {t}Create alias{/t} ]"></A> 
+			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t 0=$accountlist[accountlist].login}Are you sure, you want to delete account \'$0\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=accountedit&id={$accountlist[accountlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A> 
+			<A href="?m=accountedit&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" ALT="[ {t}Change password{/t} ]"></A> 
+			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" ALT="[ {t}Create alias{/t} ]"></A> 
 			</NOBR>
 		</TD>
 	</TR>
@@ -143,7 +143,7 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="4" class="fleftu" align="right" valign="top">
-			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>{t 0=$listdata.total}Total: $0{/t}</B>	
+			<IMG SRC="img/info2.gif" alt=""> <B>{t 0=$listdata.total}Total: $0{/t}</B>	
 		</TD>
 		<TD class="frightu">
 			&nbsp;

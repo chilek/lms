@@ -8,7 +8,7 @@
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
 </HEAD>
-<BODY bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<BODY style="margin: 5px;">
 {literal}
 <SCRIPT language=JavaScript>
 	<!--
@@ -42,7 +42,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fall">
-			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
+			<IMG src="img/money.gif" border="0" ALT="">
 			<B><A name="balance">{t}Customer Unpaid Covenants:{/t}</A></B>
 		</TD>
 	</TR>
@@ -57,9 +57,9 @@
 					<TD width="95%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{cycle values="light,lucid" print=false}
 				{section name=covenantlist loop=$covenantlist}
-				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD><nobr>{$covenantlist[covenantlist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
 					<TD align="right">{$covenantlist[covenantlist].invoice}</TD>
 					<TD align="right"><nobr>{$covenantlist[covenantlist].value|money_format}</nobr></TD>
@@ -72,7 +72,7 @@
 					<TD>{$covenantlist[covenantlist].comment}</TD>
 					<TD align="right">
 						{cycle print=false}
-						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].id}"{if $covenantlist[covenantlist].selected} CHECKED{/if}>
+						<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].id}"{if $covenantlist[covenantlist].selected} CHECKED{/if}>
 					</TD>
 				</TR>
 				{sectionelse}
@@ -86,14 +86,14 @@
 					</TD>
 				</TR>
 				{/section}
-				<TR bgcolor="#DFD5BD">
+				<TR class="light">
 					<TD CLASS="ftop" colspan="2"nowrap>
-						<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+						<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
 						<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
 					</TD>
 					<TD CLASS="ftop"></TD>
 					<TD CLASS="ftop" ALIGN="right" colspan="3" nowrap>
-						<A href="javascript:CloseWindow();">{t}Submit{/t} <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+						<A href="javascript:CloseWindow();">{t}Submit{/t} <IMG src="img/save.gif" border="0" ALT=""></A>
 					</TD>
 				</TR>
 			</TABLE>

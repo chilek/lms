@@ -9,9 +9,9 @@
 			<B>{t}Total:{/t} {size of=$templateslist}</B>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=file loop=$templateslist}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="99%" CLASS="FLEFT" onClick="return self.location.href='?m=confgen&tpl={$templateslist[file]}&action=view';">
 			{$templateslist[file]}
 		</TD>
