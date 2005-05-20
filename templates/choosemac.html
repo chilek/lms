@@ -20,28 +20,28 @@
 </frameset>
 {/if}
 {if $part eq "main"}
-<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<body>
 	<table width="100%" cellpadding="1">
 	{section name=maclist loop=$maclist.mac}
-	<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#EBE4D6')"{if $maclist.nodename[maclist] eq ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
+	<TR onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if $maclist.nodename[maclist] eq ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
 		<TD align="center">
 			{if $maclist.nodename[maclist] eq ""}
 			<a href="javascript: void(0);" onclick="sendvalue(targetfield,'{$maclist.mac[maclist]}');">
 				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}<font color="red"><B>{/if}{$maclist.mac[maclist]}{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}</B></font>{/if}
 			</A>
 			{else}
-			<font color="#666666">{$maclist.mac[maclist]}</font>
+			<font class="blend">{$maclist.mac[maclist]}</font>
 			{/if}
 		</td>
 		<TD align="center">
 			{if $maclist.nodename[maclist] eq ""}
 			<a href="javascript: void(0);" onclick="sendvalue(targetfield,'{$maclist.mac[maclist]}');">
-				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}<font color="red"><B>{/if}
+				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}<font class="alert">{/if}
 						{$maclist.ip[maclist]}
-				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}</B></font>{/if}
+				{if $smarty.server.REMOTE_ADDR eq $maclist.ip[maclist]}</font>{/if}
 			</A>
 			{else}
-			<font color="#666666">{$maclist.nodename[maclist]}</font>
+			<font class="blend">{$maclist.nodename[maclist]}</font>
 			{/if}
 	</TR>
 	{sectionelse}
@@ -49,7 +49,7 @@
 	<table width="100%" height="100%">
 		<TR title="{t}Click to close window{/t}" onclick="parent.window.close();">
 			<TD align="center">
-				<B><FONT COLOR="RED">{t}That server hasn't seen any MAC addresses!{/t}</FONT></B>
+				<FONT class="alert">{t}That server hasn't seen any MAC addresses!{/t}</FONT>
 				<BR><BR>
 				{t}Or, most likely, can't get MAC addresses table on that host.{/t}
 			</TD>
@@ -59,10 +59,10 @@
 </body>
 {/if}
 {if $part eq "top"}
-<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<body>
 <table cellpadding="5" width="100%">
 	<tr>
-		<td bgcolor="#CEBD9B" class="fall" align="center">
+		<td class="fall dark" align="center">
 			<B>{t}Select MAC address:{/t}</B>
 		</td>
 	</tr>

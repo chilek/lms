@@ -21,13 +21,13 @@
 </frameset>
 {/if}
 {if $part eq "main"}
-<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<body>
 	<table width="100%" cellpadding="1">
 	{section name=iplist loop=$network.nodes.address}
 	{if $smarty.section.iplist.index is even}<TR>{/if}
-		<TD width="50%" align="center" onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '#EBE4D6')"{if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}>
+		<TD width="50%" align="center" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}>
 			{if $network.nodes.name[iplist] neq ""}
-				<FONT COLOR="#666666">{$network.nodes.name[iplist]}</FONT>
+				<FONT class="blend">{$network.nodes.name[iplist]}</FONT>
 			{else}
 			<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.address[iplist]}</A>
 			{/if}
@@ -46,16 +46,16 @@
 </body>
 {/if}
 {if $part eq "top"}
-<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<body>
 <table cellpadding="5" width="100%">
 	<tr>
-		<td bgcolor="#CEBD9B" class="fall" align="center">
+		<td class="fall dark" align="center">
 			<B>{t}Select IP address:{/t}</B>
 		</td>
 	</tr>
 	<form target="m" name="selectnet" method="post" action="?m=chooseip&p=main">
 	<tr>
-		<td bgcolor="#DFD5BD" class="fall" align="center">
+		<td class="fall light" align="center">
 			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip&netid='+document.selectnet.elements['netid'].value" NAME="netid">
 				{section name=networks loop=$networks}
 				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id eq $netid} SELECTED {/if}>{$networks[networks].name}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
@@ -70,10 +70,10 @@
 </body>
 {/if}
 {if $part eq "down"}
-<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<body>
 <table cellpadding="5" width="100%">
 	<tr>
-		<td bgcolor="#CEBD9B" class="fall" align="center">
+		<td class="fall light" align="center">
 			<B>{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
 			{t 0=$network.page 1=$network.pages}Page $0 of $1{/t}
 			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;<FONT>{/if}</B>

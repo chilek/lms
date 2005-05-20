@@ -55,9 +55,9 @@
 			<B>{t}Total:{/t} {$listdata.total}</B>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=importlist loop=$importlist}
-	<TR bgcolor="{cycle}">
+	<TR class="{cycle}">
 		<TD CLASS="fleft">
 			{$importlist[importlist].id|string_format:"%04d"}
 		</TD>
@@ -81,7 +81,7 @@
 				{/section}
 			</SELECT>&nbsp;
 			{cycle print=false}
-			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$importlist[importlist].id}]" VALUE="{$importlist[importlist].id}">
+			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$importlist[importlist].id}]" VALUE="{$importlist[importlist].id}">
 		</TD>
 	</TR>
 	{sectionelse}
@@ -95,12 +95,12 @@
 	{/section}
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" COLSPAN="4">
-			<INPUT STYLE="border-style: none; background-color: #CEBD9B;" TYPE="checkbox" NAME="allbox" onClick="CheckAll2();" VALUE="Check All">
+			<INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll2();" VALUE="Check All">
 			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
 		</TD>
 		<TD CLASS="frightu" COLSPAN="3" align="right" nowrap>
-			<A HREF="javascript:Delete();">{t}Delete{/t} <IMG ALIGN="absmiddle" SRC="img/delete.gif" ALT="" BORDER="0"></A>
-			<A HREF="javascript:document.cashimport.submit();">{t}Submit{/t} <IMG ALIGN="absmiddle" SRC="img/save.gif" ALT="" BORDER="0"></A>
+			<A HREF="javascript:Delete();">{t}Delete{/t} <IMG src="img/delete.gif" ALT=""></A>
+			<A HREF="javascript:document.cashimport.submit();">{t}Submit{/t} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -114,11 +114,11 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbl" width="99%" NOWRAP>
-		<IMG src="img/attach.gif" alt="" border="0" align="absmiddle">
+		<IMG src="img/attach.gif" alt="">
 			<B>{t}Import file:{/t} </B><INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 		<TD class="fbr" width="1%" align="right" nowrap>
-			<A href="javascript: document.parser.submit();">{t}Submit{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="javascript: document.parser.submit();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
