@@ -1,4 +1,4 @@
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; active: #336600; }
+BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; active: #336600; vertical-align: middle; }
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -17,10 +17,9 @@ TD.fbr		{ border-bottom-width: 1pt; border-bottom-style: solid; border-right-wid
 TD.ftl		{ border-top-width: 1pt; border-top-style: solid; border-left-width: 1pt; border-left-style: solid; }
 TD.ftr		{ border-top-width: 1pt; border-top-style: solid; border-right-width: 1pt; border-right-style: solid; }
 TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
-TD.red		{ color: #FF0000; }
-TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 2pt; border-style: solid; }
 
 FONT.alert	{ color: #FF0000; font-weight: bold; }
+FONT.white	{ color: #FFFFFF; }
 
 A		{ text-decoration: none; }
 A:link		{ color: #800000; }
@@ -43,9 +42,8 @@ INPUT.bold	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; bo
 INPUT.red	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; color: #800000; }
 INPUT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; font-color: #800000;}
 INPUT.alertb	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; font-weight: bold; color: #800000; } 
-INPUT.box  	{ border-style : none; } 
-
-OPTION.red	{ color: #FF0000; }
+INPUT.box  	{ border-style : none; vertical-align: middle; } 
+INPUT.radio  	{ border-style : none; vertical-align: middle; } 
 
 TEXTAREA	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; }
 TEXTAREA.pre	{ font-size:  8pt; font-family: Courier, Courier New; }
@@ -70,12 +68,11 @@ BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; borde
 .click-menu .section .active:hover { color: yellow; }
 .tip		{ width: 150px; }
 
-.h1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-.h2		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-.h3		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 .dark		{ background-color: #CEBD9B; }
-.lucid		{ background-color: #EBE4D6; }
 .light		{ background-color: #DFD5BD; }
+.lucid		{ background-color: #EBE4D6; }
 .superlight	{ background-color: #F4F0EC; }
 .highlight	{ background-color: #CCFFCC; }
+.blendbg	{ background-color: #888888; }
 .blend		{ color: #888888; }
+.red		{ color: #800000; }

@@ -66,7 +66,7 @@
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
-						{t}Selected:{/t} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" STYLE="border:0; background-color: #DFD5BD;" readonly></INPUT>
+						{t}Selected:{/t} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" style="border: 0" class="light" readonly></INPUT>
 					</TD>
 				</TR>
 			</TABLE>
@@ -80,10 +80,10 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL" COLSPAN="3">
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="1" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 1}checked{/if}> <B><A href="javascript:CheckCharge(0);">{t}income{/t}</A></B><BR>{t}money earned by network, e.g. in result of sale network devices to customers{/t}</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="2" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 2}checked{/if}> <B><A href="javascript:CheckCharge(1);">{t}expense{/t}</A></B><BR>{t}money spent by network, e.g. to acquire physical assets, ISP payments, etc.{/t}</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="3" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 3}checked{/if}> <B><A href="javascript:CheckCharge(2);">{t}customer payment{/t}</A></B><BR>{t}money that payed customer for subscription{/t}</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="4" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 4}checked{/if}> <B><A href="javascript:CheckCharge(3);">{t}customer covenant{/t}</A></B><BR>{t}customer account covenants, e.g. extra service charge{/t}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="1" class="radio light" {if $operation == 1}checked{/if}> <B><A href="javascript:CheckCharge(0);">{t}income{/t}</A></B><BR>{t}money earned by network, e.g. in result of sale network devices to customers{/t}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="2" class="radio light" {if $operation == 2}checked{/if}> <B><A href="javascript:CheckCharge(1);">{t}expense{/t}</A></B><BR>{t}money spent by network, e.g. to acquire physical assets, ISP payments, etc.{/t}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="3" class="radio light" {if $operation == 3}checked{/if}> <B><A href="javascript:CheckCharge(2);">{t}customer payment{/t}</A></B><BR>{t}money that payed customer for subscription{/t}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="4" class="radio light" {if $operation == 4}checked{/if}> <B><A href="javascript:CheckCharge(3);">{t}customer covenant{/t}</A></B><BR>{t}customer account covenants, e.g. extra service charge{/t}</P>
 					</TD>
 				</TR>
 				<TR><TD>&nbsp;</TD></TR>

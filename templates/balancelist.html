@@ -106,9 +106,9 @@
 		</TD>
 	</TR>
 	{/if}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD width="1%" class="fleft" valign="top" nowrap>
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
@@ -148,7 +148,7 @@
 			<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
 			{/if}
 			{cycle print=false}
-			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
+			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
 		</TD>
 	</TR>
 	{sectionelse}
@@ -173,7 +173,7 @@
 						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 					</TD>
 					<TD ALIGN="right">
-						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT STYLE="border:0; background-color:#CEBD9B;" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>
