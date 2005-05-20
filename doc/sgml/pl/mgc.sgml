@@ -34,7 +34,7 @@
    <itemizedlist>
     <listitem>
      <para>type</para>
-     <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</para>
+     <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak na razie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</para>
      <para>Przyk³ad:	<prompt>type = mysql</prompt></para>
     </listitem>
     <listitem>
@@ -162,7 +162,7 @@
    </itemizedlist>
    <para>Teraz MGC rozpocznie przetwarzanie regu³ek dla kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
    Tzn. oblicza kolejny adres IP i sprawdza czy zdefiniowano regu³ê dla hosta i wykonuje pierwsz±.
-   Sprawdzanie jest wykonywane w nastepuj±cej kolejno¶ci:</para>
+   Sprawdzanie jest wykonywane w nastêpuj±cej kolejno¶ci:</para>
     <itemizedlist>
     <listitem>
      <para>ignore</para>
