@@ -36,7 +36,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="FLEFT">
+		<TD CLASS="FLEFT" NOWRAP>
 			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{t}Repeat password:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
@@ -65,7 +65,7 @@
 	<TR CLASS="LIGHT">
 		<TD CLASS="FALL" COLSPAN="2">
 			{section name=acl loop=$accesslist}
-			<INPUT CLASS="box" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" class="clean"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			<INPUT CLASS="box light" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" class="clean"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
 			{/section}
 		</TD>
 	</TR>

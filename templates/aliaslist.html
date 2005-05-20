@@ -72,9 +72,9 @@
 		</TD>
 	</TR>
 	{/if}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=aliaslist loop=$aliaslist start=$start max=$pagelimit}
-	<TR {if $aliaslist[aliaslist].expdate != 0 && $aliaslist[aliaslist].expdate < $smarty.now}class="BLEND"{/if} bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}{if $aliaslist[aliaslist].expdate != 0 && $aliaslist[aliaslist].expdate < $smarty.now} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft">
 			<IMG src="img/alias.gif" ALT="" align="absmiddle" border="0"><B> {$aliaslist[aliaslist].login}</B>
 			{if $aliaslist[aliaslist].username}

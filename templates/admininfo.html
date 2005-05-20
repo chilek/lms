@@ -92,7 +92,7 @@
 		<TD CLASS="FALL" COLSPAN="3">
 			{if $unlockedit}
 			{section name=acl loop=$accesslist}
-			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="clean"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="box light"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
 			{/section}
 			{else}
 			{section name=acl loop=$accesslist}
