@@ -16,9 +16,9 @@
 			<NOBR><B>{t}Total:{/t} {$adminslist.total}</B></NOBR>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=adminslist loop=$adminslist}{if $adminslist[adminslist].id}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" width="1%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
 			<NOBR><IMG SRC="img/admins.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>{$adminslist[adminslist].login}</B></NOBR>
 		</TD>

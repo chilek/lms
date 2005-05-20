@@ -79,9 +79,9 @@
 		</TD>
 	</TR>
 	{/if}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=accountlist loop=$accountlist start=$start max=$pagelimit}
-	<TR {if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now}class="BLEND"{/if} bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" OnClick="return self.location.href='?m=accountedit&id={$accountlist[accountlist].id}';">
 			<nobr><IMG src="img/account.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].login}</B></nobr><BR>
 			{if $accountlist[accountlist].ownerid}
@@ -141,7 +141,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR bgColor="#DFD5BD">
+	<TR class="light">
 		<TD colspan="4" class="fleftu" align="right" valign="top">
 			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>{t 0=$listdata.total}Total: $0{/t}</B>	
 		</TD>
