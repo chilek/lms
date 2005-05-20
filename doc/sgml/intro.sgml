@@ -219,5 +219,13 @@ cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
                <para>Informations about changes and version history of LMS is included in 
                <ulink url="../../ChangeLog">Changelog</ulink>.</para>
           </sect2>
+		<sect2 id="comercial-support">
+			<title>Comercial Support</title>
+			<para>
+				Many times on lms mailng lists there are questions about adding some funtions to LMS.
+				Subject of paying for support is very difficult. Note that there is no company behind LMS,
+				every commercial correction or support is between You and developer.  
+				You are reading english version of documentation, so in most cases you are not from Poland, that makes even simple Invoice or money transfer very delicate subject.
+			 The most experienced in that mater developer is Alec. On his page you can see detail.<ulink url="http://lms.alec.pl/index.php?lang=en">http://lms.alec.pl/index.php?lang=en<ulink></para>
      </sect1>
 </chapter>
