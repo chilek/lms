@@ -184,7 +184,7 @@ mysql> use lms;
 mysql> source doc/lms.mysql;</screen>
 		</para>
 		<para><note><para>Z uwagi na to, ¿e MySQL nawet w wersji 4.1 ma pewne 
-		problemy z kodowaniem utf baza danych LMS mo¿e mieæ inne kodowanie.
+		problemy z kodowaniem UTF baza danych LMS mo¿e mieæ inne kodowanie.
 		W takim wypadku nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
 		z opcji konfiguracyjnej <filename>server_encoding</filename> w sekcji 
 		<filename>[database]</filename> pliku <filename>lms.ini</filename>.
@@ -409,7 +409,7 @@ database = /usr/local/lms/lms.db</screen>
           <listitem>
 	   <para>sys_dir</para>
 	   <para>Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, 
-	   templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale 
+	   szablony i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale 
 	   lepiej by by³o gdyby mu powiedzieæ gdzie jest:</para>
 	   <para>Przyk³ad:	<prompt>sys_dir = /var/www/htdocs/lms/</prompt></para>
 	  </listitem>
@@ -439,13 +439,13 @@ database = /usr/local/lms/lms.db</screen>
 	  </listitem>
           <listitem>
 	   <para>smarty_compile_dir</para>
-	   <para>Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to 
+	   <para>Katalog kompilacji Smarty-ego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to 
 	   <filename>templates_c</filename> w katalogu sysdir.</para>
 	   <para>Przyk³ad: 	<prompt>smarty_compile_dir = /var/smarty/compile/lms</prompt></para>
 	  </listitem>
           <listitem>
 	   <para>smarty_templates_dir</para>
-	   <para>Katalog z szablonami którymi Smartiego. Domy¶lnie to podkatalog templates z sys_dir'a.</para>
+	   <para>Katalog z szablonami którymi Smarty-ego. Domy¶lnie to podkatalog templates z sys_dir'a.</para>
 	   <para>Przyk³ad:	<prompt>smarty_templates_dir = /usr/share/lms/templates</prompt></para>
 	  </listitem>
          </itemizedlist>
@@ -457,7 +457,7 @@ database = /usr/local/lms/lms.db</screen>
 	<listitem>
     	    <para>lang</para>
     	    <para>Ustawia jêzyk interfejsu u¿ytkownika. Je¶li nie podano, jêzyk
-	    zostanie ustawiony na podstawie ustawieñ przegl±darki. Domylnie: en.</para>
+	    zostanie ustawiony na podstawie ustawieñ przegl±darki. Domy¶lnie: en.</para>
     	    <para>Przyk³ad:		<prompt>lang = pl</prompt></para>
 	</listitem>
    	<listitem>
@@ -566,8 +566,8 @@ database = /usr/local/lms/lms.db</screen>
 	</listitem>
 	<listitem>
 	    <para>smarty_debug</para>
-	    <para>W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
-	    do Smartyego. Domy¶lnie wy³±czone.</para>
+	    <para>W³±czenie konsoli debugowej Smarty-ego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
+	    do Smarty-ego. Domy¶lnie wy³±czone.</para>
 	    <para>Przyk³ad:	<prompt>smarty_debug = 1</prompt></para>
 	</listitem>
 	<listitem>
@@ -609,7 +609,7 @@ database = /usr/local/lms/lms.db</screen>
 	</listitem>
 	<listitem>
 	    <para>arpd_servers</para>
-	    <para>Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
+	    <para>Lista serwerów arpd do sczytywania MAC'adresów z odleg³ych sieci.
 	    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
 	    spacjami. Domy¶lnie pusta.</para>
 	    <para>Przyk³ad:	<prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
@@ -805,7 +805,7 @@ AddDefaultCharset UTF-8
       <screen>
 # iconv --from-code=ISO-8859-2 --to-code=UTF-8 < plik_backupu > nowy_plik
 </screen>
-	Po czym zmieniamy nazwê nowopowsta³ego pliku na lms-xxxxxxx.sql, aby
+	Po czym zmieniamy nazwê nowo powsta³ego pliku na lms-xxxxxxx.sql, aby
 	plik ten by³ widoczny z poziomu <emphasis>LMS-UI</emphasis>. Teraz
 	nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
 	Po czym uruchamiamy <emphasis>LMS-UI</emphasis> i odtwarzamy dane z 
@@ -879,7 +879,7 @@ AddDefaultCharset UTF-8
 			<para>content_type</para>
 			<para>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
 			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
-			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
+			Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
 			Domy¶lnie: 'text/html'</para>
 			<para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
 		</listitem>	

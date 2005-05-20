@@ -84,12 +84,12 @@
           aby w momencie ustawienia dla danego komputera flagi warn, 
           przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
           ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
-          adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
+          adres naszej winietki, tak aby umo¿liwiæ za³adowanie siê obrazków.
           Je¶li komputer ma ustawion± flagê warn, to po przekierowaniu u¿ytkownik ma 
           mo¿liwo¶æ oznaczenia wiadomo¶ci jako przeczytanej, po czym skrypt automatycznie 
           kieruje przegl±darkê na pierwotnie wywo³ywany URL. W przypadku oznaczeniu danego 
           komputera jako wy³±czony, u¿ytkownik bêdzie zawsze przekierowywany na adres 
-          winetki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
+          winietki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
           Wiêcej informacji znajdziesz w pliku
           <filename>README</filename>.</para>
           </sect2>
@@ -109,12 +109,12 @@ my $configfile = '/etc/lms/lms.ini';
 </screen>
           Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
           ustawiana jest w <filename>lms.ini</filename>, gdzie dopisujemy sekcjê 
-          <filename>[redirector]</filename> i definiujemy adres winetki:
+          <filename>[redirector]</filename> i definiujemy adres winietki:
 <screen>
 [redirector]
 redirect        = http://net-komp.net.pl
 </screen>
-          Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
+          Do katalogu gdzie ma byæ widoczna winietka kopiujemy pliki
           <filename>index.php, message.html</filename> i zawarto¶æ katalogu 
           <filename>img</filename>.</para>
           </sect2>
@@ -125,7 +125,7 @@ redirect        = http://net-komp.net.pl
                <title>Wstêp</title>
                <para>Wiêkszo¶æ z nas mia³a problemy z zawirusowanymi komputerami.
                Ró¿ni ludzie maj± ró¿ne podej¶cie do problemu. Skrypt lms-antyvir
-               wykrywa wirusy zagra¿ajace stabilno¶ci sieci. Jest oparty na programie
+               wykrywa wirusy zagra¿aj±ce stabilno¶ci sieci. Jest oparty na programie
                tcpdump, przy pomocy którego mo¿emy spróbowaæ wykryæ wirusy/trojany
                same siê rozprzestrzeniaj±ce jak Mydoom itp. Cech± wspóln± prawie wszystkich 
                tego typu programów jest skanowanie sieci na portach 135 i 445 oraz 

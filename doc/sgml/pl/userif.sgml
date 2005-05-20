@@ -27,11 +27,11 @@
 	systemem LMS. Tutaj znajdziesz niezbêdne informacje o systemie. Bêdziesz
 	móg³ zarz±dzaæ u¿ytkownikami i tworzyæ/odtwarzaæ kopie bazy danych.</para>
 	<para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o klientu i komputerze.
+	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o kliencie i komputerze.
 	W polach szybkiego wyszukiwania, oprócz id klienta lub komputera, mo¿esz 
 	podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
 	W przypadku gdy w bazie znajduje siê wiêcej klientów pasuj±cych do szukanych
-	danych zostan± wy¶wietlone informacje tylko o jednym klientcie lub komputerze.</para>
+	danych zostan± wy¶wietlone informacje tylko o jednym kliencie lub komputerze.</para>
 	<sect2 id="administration-info">
 	    <title>Informacje</title>
 	    <para>To panel, na którym znajduj± siê podstawowe informacje na temat naszego 
@@ -121,7 +121,7 @@
 	    wykrzyknika.</para>
 	    <para>U klientów z saldem ujemnym pojawia siê link "Rozlicz", pozwalaj±cy na
 	    zaksiêgowanie jednym klikniêciem wp³aty równowa¿±cej ujemne saldo.</para>
-	    <para>Klikniêcie na wybranym klientcie spowoduje przej¶cie do panelu
+	    <para>Klikniêcie na wybranym kliencie spowoduje przej¶cie do panelu
 	    z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
 	    operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane klienta, definiowaæ
 	    op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</para>
@@ -218,7 +218,7 @@
 	    <title>Wiadomo¶ci</title>
 		<para>Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych dla klientów oraz
 		w³±cza lub wy³±cza komputerom ostrze¿enia. Po lewej stronie znajduje siê lista, na
-		której komputery z w³±czonym ostrze¿eniem zaznaczone s± kolorem czerwonym. Jesli chcesz
+		której komputery z w³±czonym ostrze¿eniem zaznaczone s± kolorem czerwonym. Je¶li chcesz
 		tylko zmieniæ/przypisaæ klientom tre¶æ wiadomo¶ci administracyjnej, zaznacz odpowiednie
 		komputery na li¶cie i pozostaw puste pola 'W³±cz ostrze¿enia' oraz 'Wy³±cz ostrze¿enia'.</para>
 	</sect2>	
@@ -231,8 +231,8 @@
  <sect1 id="menu-netdevices">
 	<title>Osprzêt sieciowy</title>
 	<para>W panelu przeznaczonym do ewidencji sprzêtu zarz±dzamy struktur± 
-	sieci, urz±dzeniami typu swich, hub, router, serwer i po³±czeniami miêdzy
-	nimi, a tak¿e przy³±czonymi do nich komputerami. Ka¿demu urzêdzeniu mo¿na przypisaæ 
+	sieci, urz±dzeniami typu switch, hub, router, serwer i po³±czeniami miêdzy
+	nimi, a tak¿e przy³±czonymi do nich komputerami. Ka¿demu urz±dzeniu mo¿na przypisaæ 
 	co najmniej jeden adres sieciowy.</para>
 	    <sect2 id="menu-netdevices-list">
 	    <title>Lista</title>
@@ -655,7 +655,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
  <sect1 id="menu-stats">
 	<title>Statystyki</title>
 	<para>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
-	dostêpny w menu 'Statystyki'. Dane statystyk zawieraj± lo¶æ danych wysy³anych i pobieranych 
+	dostêpny w menu 'Statystyki'. Dane statystyk zawieraj± ilo¶æ danych wysy³anych i pobieranych 
 	z Internetu (na danym interfejsie) dla ka¿dego komputera. Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej 
 	godziny, ostatniego dnia, ostatnich 30 dni lub ostatniego roku.</para>
 	<para> 
