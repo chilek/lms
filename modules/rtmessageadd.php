@@ -69,7 +69,7 @@ if(isset($_POST['message']))
 	$message = $_POST['message'];
 	
 	if($message['subject'] == '')
-		$error['subject'] = trans('Message title not specified!');
+		$error['subject'] = trans('Message subject not specified!');
 	
 	if($message['body'] == '')
 		$error['body'] = trans('Message body not specified!');
@@ -98,7 +98,7 @@ if(isset($_POST['message']))
 			{
 				case 1: 			
 				case 2: $error['file'] = trans('File is too large.'); break;
-				case 3: $error['file'] = trans('File has been uploaded partly.'); break;
+				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
 				case 4: $error['file'] = trans('Path to file was not specified.'); break;
 				default: $error['file'] = trans('Problem during file upload.'); break;
 			}

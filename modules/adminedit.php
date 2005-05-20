@@ -44,10 +44,10 @@ if($admininfo)
 	elseif(!eregi('^[a-z0-9.-_]+$',$admininfo['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
 	elseif($LMS->GetAdminIDByLogin($admininfo['login']) && $LMS->GetAdminIDByLogin($admininfo['login']) != $_GET['id'])
-		$error['login'] = trans('User with specified login exists or that login was used in the past!');
+		$error['login'] = trans('User with specified login exists or this login was used in the past!');
 
 	if($admininfo['name'] == '')
-		$error['name'] = trans('You must enter name and surname!');
+		$error['name'] = trans('You have to enter first and lastname!');
 
 	if($admininfo['email']!='' && !check_email($admininfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');

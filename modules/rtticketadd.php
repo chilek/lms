@@ -37,7 +37,7 @@ if(isset($ticket))
 	}
 
 	if($LMS->GetAdminRightsRT($AUTH->id, $queue) < 2)
-		$error['queue'] = trans('You have no privilleges to this queue!');
+		$error['queue'] = trans('You have no privileges to this queue!');
 
 	if($ticket['subject'] == '')
 		$error['subject'] = trans('Ticket must have its title!');
@@ -52,7 +52,7 @@ if(isset($ticket))
 		$error['custid'] = trans('Specified ID is not proper or does not exist!');
 
 	if($ticket['surname']=='' && $ticket['userid']==0)
-		$error['surname'] = trans('Requestor name required!');
+		$error['surname'] = trans('Requester name required!');
 
 	$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
 	$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');	    

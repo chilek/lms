@@ -58,7 +58,7 @@ if(isset($nodedata))
 	elseif(!check_ip($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Incorrect node IP address!');
 	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
-		$error['ipaddr'] = trans('Specified IP address does not overlap with any network!');
+		$error['ipaddr'] = trans('Specified IP address doesn\'t overlap with any network!');
 	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Specified IP address is in use!');
 	elseif($LMS->IsIPGateway($nodedata['ipaddr']))
@@ -69,7 +69,7 @@ if(isset($nodedata))
 		if(!check_ip($nodedata['ipaddr_pub']))
                 	$error['ipaddr_pub'] = trans('Incorrect node IP address!');
         	elseif(!$LMS->IsIPValid($nodedata['ipaddr_pub']))
-                	$error['ipaddr_pub'] = trans('Specified IP address does not overlap with any network!');
+                	$error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
 		elseif(!$LMS->IsIPFree($nodedata['ipaddr_pub']))
 			$error['ipaddr_pub'] = trans('Specified IP address is in use!');
 		elseif($LMS->IsIPGateway($nodedata['ipaddr_pub']))
@@ -90,7 +90,7 @@ if(isset($nodedata))
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
 
 	if(! $LMS->UserExists($nodedata['ownerid']))
-		$error['user'] = trans('You must select owner!');
+		$error['user'] = trans('You have to select owner!');
 	elseif($LMS->GetUserStatus($nodedata['ownerid']) != 3)
 		$error['user'] = trans('Selected customer is not connected!');
 
@@ -98,7 +98,7 @@ if(isset($nodedata))
 	{
 		$netdev = $LMS->GetNetDev($nodedata['netdev']); 
 		if($netdev['ports'] <= $netdev['takenports']) 
-			$error['netdev'] = trans('Device has not free ports!');
+			$error['netdev'] = trans('No free ports on device!');
 	}
 	else
 		$nodedata['netdev'] = 0;

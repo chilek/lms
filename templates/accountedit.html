@@ -70,7 +70,7 @@
 					<img src="img/name.gif" border="0" align="absmiddle" ALT="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>{t}Name/Surname and forename:{/t}</B>
+					<B>{t}First/last or Company name:{/t}</B>
 				    </TD>
 				    <TD width="98%">
 					<input type="text" size="30" name="account[realname]" value="{$account.realname}" {tip text="Enter optional account name" trigger="realname"}>
@@ -95,7 +95,7 @@
 					<B>{t}Expiration date:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiration date for account in format YYYY/MM/DD (Empty field means account never expires)" trigger="expdate"}>
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
 				    </TD>
 			    	</TR>
 			    </TR>			    

@@ -51,7 +51,7 @@ if($instance = $_POST['instance'])
 	if($instance['priority'] == '')
 		$instance['priority'] = 0;
 	elseif(!is_numeric($instance['priority']))
-		$error['priority'] = trans('Priority must be type of integer!');
+		$error['priority'] = trans('Priority must be integer!');
 	
 	if(!$error)
 	{

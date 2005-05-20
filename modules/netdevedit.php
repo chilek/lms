@@ -39,12 +39,12 @@ case 'replace':
 	$dev2 = $LMS->GetNetDev($_GET['netdev']);
 	if ($dev1['ports'] < $dev2['takenports']) 
 	{
-	    $error['replace'] = trans('It scants ports in source device!');
+	    $error['replace'] = trans('It scans for ports in source device!');
 	    $edit = FALSE;
 	} 
 	elseif ($dev2['ports'] < $dev1['takenports']) 
 	{
-	    $error['replace'] = trans('It scants ports in destination device!');
+	    $error['replace'] = trans('It scans for ports in destination device!');
 	    $edit = FALSE;
 	} 
 	else 
@@ -68,7 +68,7 @@ case 'connect':
 	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id'], $linktype) )
 	{
 		$edit = FALSE;
-		$error['link'] = trans('Device has not free ports!');
+		$error['link'] = trans('No free ports on device!');
 	} else
 		header('Location: ?m=netdevinfo&id='.$_GET['id']);
 	break;
@@ -78,7 +78,7 @@ case 'connectnode':
 	$SESSION->save('nodelinktype', $linktype);
 	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id'], $linktype) )
 	{
-		$error['linknode'] = trans('Device has not free ports!');
+		$error['linknode'] = trans('No free ports on device!');
 		$edit = FALSE;
 	} else
 		header('Location: ?m=netdevinfo&id='.$_GET['id']);
@@ -119,7 +119,7 @@ case 'formaddip':
         }
 	
 	if($nodeipdata['name']=='')
-		$error['ipname'] = trans('Address name is required!');
+		$error['ipname'] = trans('Address field is required!');
 	elseif(strlen($nodeipdata['name']) > 16)
 		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','16');
 	elseif($LMS->GetNodeIDByName($nodeipdata['name']))
@@ -172,7 +172,7 @@ case 'formeditip':
         }
 	
 	if($nodeipdata['name']=='')
-		$error['ipname'] = trans('Address name is required!');
+		$error['ipname'] = trans('Address field is required!');
 	elseif(strlen($nodeipdata['name']) > 16)
 		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','16');
 	elseif(
@@ -230,7 +230,7 @@ if(isset($_POST['netdev']))
 		$error['name'] =  trans('Specified name is too long (max.$0 characters)!','32');
 
 	if($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
-		$error['ports'] = trans('Number of connected devices surpasses number of ports!');
+		$error['ports'] = trans('Connected devices number exceeds number of ports!');
 	
 	if(!$error)
 	{

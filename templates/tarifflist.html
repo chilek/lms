@@ -72,7 +72,7 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('{t}Tariff with assigned customers cannot be deleted!{/t}');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that tariff?{/t}');">{/if}<IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0"></A>
+			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('{t}Subscription with assigned customers cannot be deleted!{/t}');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that tariff?{/t}');">{/if}<IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0"></A>
 				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0"></A>
 				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" BORDER="0"></A>
 			</NOBR>
@@ -83,7 +83,7 @@
 		<TD COLSPAN="8" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>{t}No such tariffs in database.{/t}</B></p>
+			<p><B>{t}No such subscriptions in database.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>

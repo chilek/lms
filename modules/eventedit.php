@@ -65,12 +65,12 @@ if(isset($_POST['event']))
     		$error['title'] = trans('Event title is required!');
 	
 	if($event['date'] == '')
-		$error['date'] = trans('You must specify event day!');
+		$error['date'] = trans('You have to specify event day!');
 	else
 	{
 		list($year,$month, $day) = explode('/',$event['date']);
 		if(!checkdate($month,$day,$year))
-			$error['date'] = trans('Incorrect date format! Enter date in format YYYY/MM/DD!');
+			$error['date'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
 
 	if(!$error)

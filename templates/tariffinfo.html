@@ -155,7 +155,7 @@
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="fall" COLSPAN="2">
-			<B>{t}Customers in Tariff:{/t}</B>
+			<B>{t}Customers in Subscription:{/t}</B>
 		</TD>
 	</TR>
 	<TR>
@@ -173,7 +173,7 @@
 					<TD WIDTH="100%" ALIGN="CENTER">
 						<BR>
 						<BR>
-						<B>{t}No such customers with that tariff.{/t}</B><BR>
+						<B>{t}No customers with such subscription.{/t}</B><BR>
 						<BR>
 						<BR>
 					</TD>
@@ -189,7 +189,7 @@
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
 				<input type="hidden" name="is_sure">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{t}Are you sure, you want to move customers to tariff '+getText(document.tmove.to.value)+'?{/t}','1');">{t}Move customers to tariff:{/t}</A> </B>
+				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{t}Are you sure, you want to move customers to tariff '+getText(document.tmove.to.value)+'?{/t}','1');">{t}Move customers to subscription:{/t}</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs}
 					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}

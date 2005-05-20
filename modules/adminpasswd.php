@@ -38,7 +38,7 @@ if($LMS->AdminExists($id))
 			$error['password'] = trans('Empty passwords are not allowed!').'<BR>';
 		
 		if($passwd['passwd'] != $passwd['confirm'])
-			$error['password'] = trans('Passwords do not match!');
+			$error['password'] = trans('Passwords does not match!');
 		
 		if(!$error)
 		{

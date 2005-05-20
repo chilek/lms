@@ -3,7 +3,7 @@
 <H1><B>{$layout.pagetitle}</B></H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark" {tip text="Click on column's name to change sorting order"}>
+	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&search=1&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{t}ID:{/t}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&search=1&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{else},asc{/if}">{t}Create time:{/t}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
@@ -99,7 +99,7 @@
 		<TD COLSPAN="5" class="flr" ALIGN="center">
 			<BR>
 			<BR>
-			<B>{t}No such tickets meeting search conditions.{/t}</B><BR>
+			<B>{t}No tickets matching search criteria.{/t}</B><BR>
 			<BR>
 			<BR>
 		</TD>

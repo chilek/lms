@@ -73,7 +73,7 @@ if($a = $_POST['assignmentedit'])
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['editat'] = trans('Incorrect date format (DD/MM)');
+				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
@@ -91,7 +91,7 @@ if($a = $_POST['assignmentedit'])
 				if($d>30 || $d<1 || ($d>28 && $m==2))
 					$error['editat'] = trans('This month doesn\'t contain specified number of days');
 				if($m>3 || $m<1)
-					$error['editat'] = trans('Incorrect month number (max.3)');
+					$error['editat'] = trans('Incorrect month number (max.3)!');
 
 				$at = ($m-1) * 100 + $d;
 			}
@@ -100,7 +100,7 @@ if($a = $_POST['assignmentedit'])
 		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['editat'] = trans('Incorrect date format (DD/MM)');
+				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{

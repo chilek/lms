@@ -131,7 +131,7 @@ class Auth {
 			if(isset($this->login))
 				$this->error = trans('Wrong password or login.');
 			else
-				$this->error = trans('Login yourself, please.');
+				$this->error = trans('Please login.');
 			return FALSE;
 		}
 	}

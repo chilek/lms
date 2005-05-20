@@ -15,7 +15,7 @@
 		end = document.forms['event'].elements['event[endtime]'];
 		if(Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
 		{
-			alert('{/literal}{t}End time must be older than begin time!{/t}{literal}');
+			alert('{/literal}{t}End time must not precede start time!{/t}{literal}');
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
@@ -44,7 +44,7 @@
 			<B>{t}Time:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in format YYYY/MM/DD (empty field means today) or click to choose it from calendar" trigger="date"}>
+			<INPUT name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
 			{t}Begin:{/t} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>

@@ -16,7 +16,7 @@
 			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-                       <INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr,{$nodeinfo.netid});" {tip text="Click to select IP from a list"}>&raquo;&raquo;&raquo;</A>
+                       <INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr,{$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -24,7 +24,7 @@
 			<IMG SRC="img/ip_pub.gif" BORDER="0" ALT="{t}Pub. IP address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-                       <INPUT TYPE="TEXT" NAME="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}VALUE="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddrpub,{$nodeinfo.netid});" {tip text="Click to select IP from a list"}>&raquo;&raquo;&raquo;</A>
+                       <INPUT TYPE="TEXT" NAME="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}VALUE="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddrpub,{$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -32,7 +32,7 @@
 			<IMG SRC="img/mac.gif" BORDER="0" ALT="{t}MAC address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" {tip text="Click to select MAC from a list"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -70,8 +70,8 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]" {tip text="Select node status"}>
-				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{t}connected{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{t}disconnected{/t}</OPTION>
+				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>

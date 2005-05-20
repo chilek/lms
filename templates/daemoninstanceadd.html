@@ -60,7 +60,7 @@
 			<B>{t}Priority:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT size="10" name="instance[priority]" value="{$instance.priority}" {tip text="Enter instance's reload priority" trigger="priority"}>
+			<INPUT size="10" name="instance[priority]" value="{$instance.priority}" {tip text="Enter instance reload priority" trigger="priority"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -78,7 +78,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.instance.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
 			<A href="?m=daemoninstancelist&id={$instance.hostid}">{t}Cancel{/t} <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
-			<INPUT type="checkbox" name="instance[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $instance.reuse}checked{/if}> {t}Show this form again after adding an instance{/t}
+			<INPUT type="checkbox" name="instance[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $instance.reuse}checked{/if}> {t}Display this form again, when this instance is saved{/t}
 		</TD>
 	</TR>
 </TABLE>

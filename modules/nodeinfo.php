@@ -45,7 +45,7 @@ elseif($LMS->GetNodeOwner($_GET['id']) == 0)
 
 if(isset($_GET['devid']))
 {
-	$error['netdev'] = trans('It scants free ports in selected device!');
+	$error['netdev'] = trans('It scans for free ports in selected device!');
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('netdevice', $_GET['devid']);
 }

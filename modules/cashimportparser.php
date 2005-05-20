@@ -95,7 +95,7 @@ else // upload errors
 	{
 		case 1: 			
 		case 2: $error['file'] = trans('File is too large.'); break;
-		case 3: $error['file'] = trans('File has been uploaded partly.'); break;
+		case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
 		case 4: $error['file'] = trans('Path to file was not specified.'); break;
 		default: $error['file'] = trans('Problem during file upload.'); break;
 	}	

@@ -49,15 +49,15 @@ switch($type)
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, NULL, NULL, $date));
 			break;
 			case 2:
-				$layout['pagetitle'] = trans('Awaiting Customers List');
+				$layout['pagetitle'] = trans('List of awaiting customers');
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, NULL, NULL, $date));
 			break;
 			case 3:
-				$layout['pagetitle'] = trans('Connected Customers List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : '')); 
+				$layout['pagetitle'] = trans('List of Connected Customers $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : '')); 
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup'], NULL, $date));
 			break;
 			case 5:
-				$layout['pagetitle'] = trans('Disconnected Customers List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
+				$layout['pagetitle'] = trans('List of Disconnected Customers $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup'], NULL, $date));
 			break;
 			case 6:
@@ -181,7 +181,7 @@ switch($type)
 				$SMARTY->assign('nodelist', $LMS->GetNodeList($_POST['order'].','.$_POST['direction']));
 			break;
 			case 1:
-				$layout['pagetitle'] = trans('Disconnected Nodes List');
+				$layout['pagetitle'] = trans('List of Disconnected Nodes');
 				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
 				{
 				unset($nodelist['total']);
@@ -197,7 +197,7 @@ switch($type)
 				$SMARTY->assign('nodelist', $nnodelist);
 			break;
 			case 2:
-				$layout['pagetitle'] = trans('Connected Nodes List');
+				$layout['pagetitle'] = trans('List of Connected Nodes');
 				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
 				{
 				unset($nodelist['total']);
@@ -213,7 +213,7 @@ switch($type)
 				$SMARTY->assign('nodelist', $nnodelist);
 			break;
 			case 3:
-				$layout['pagetitle'] = trans('In Debt Customer\'s Nodes List');
+				$layout['pagetitle'] = trans('Nodes List for Customers In Debt');
 
 				$order=$_POST['order'].','.$_POST['direction'];
 				if($order=='')

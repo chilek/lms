@@ -54,7 +54,7 @@ if(sizeof($aliasadd))
 	}
 	
 	if($aliasadd['login'] == '')
-		$error['login'] = trans('You must specify alias name!');
+		$error['login'] = trans('You have to specify alias name!');
 	elseif(!eregi("^[a-z0-9._-]+$", $aliasadd['login']))
     	    $error['login'] = trans('Login contains forbidden characters!');
 	elseif($aliasadd['accountid'])
@@ -66,14 +66,14 @@ if(sizeof($aliasadd))
 			$domain = $LMS->DB->GetOne('SELECT domainid FROM passwd WHERE id = ?', array($aliasadd['accountid']));
 			
 			if($aliasadd['accountid'] && AliasExistsInDomain($aliasadd['login'], $domain))
-				$error['login'] = trans('Alias with specified login already exists in that domain!');
+				$error['login'] = trans('Alias with that login name already exists in domain!');
 			elseif($aliasadd['accountid'] && AccountExistsInDomain($aliasadd['login'], $domain))
-				$error['login'] = trans('Account with specified login already exists in that domain!');
+				$error['login'] = trans('Account with that login name already exists in domain!');
 		}
 	}
 		
 	if(!$aliasadd['accountid'])
-		$error['accountid'] = trans('You must select account for alias!');
+		$error['accountid'] = trans('You have to select account for alias!');
 	
 	if(!$error)
 	{

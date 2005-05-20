@@ -38,7 +38,7 @@ if(isset($_POST['useradd']))
 	}
 
 	if($useradd['lastname'] == '')
-		$error['username'] = trans('\'Surname/Name\' and \'First Name\' fields cannot be empty!');
+		$error['username'] = trans('\'Last/Company Name\' and \'First Name\' fields cannot be empty!');
 	
 	if($useradd['address'] == '')
 		$error['address'] = trans('Address required!');

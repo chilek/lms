@@ -16,7 +16,7 @@ P		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align
 </head>
 <body>
 <h1>{t}INTERNET SERVICES CONTRACT{/t}</h1>
-<h2>{t}Warning! It's an example template of contract. You can edit file contract.html in templates directory or create your own and set option contract_template in section [phpui] of lms.ini file.{/t}</h2>
+<h2>{t}Warning! This is example template of contract. You can edit contract.html file in templates directory or create your own and set contract_template option in [phpui] section of lms.ini file.{/t}</h2>
 <p>Zawarta w dniu {$smarty.now|date_format:"%Y-%m-%d"} w <s>Miasto</s> pomiędzy 
 <s>Naszą firmą</s> z siedzibą w <s>Siedziba</s> wpisanym do rejestru KRS pod 
 numerem <s>Numer</s>, NIP <s>Nip</s> zwanym dalej Usługodawcą reprezentowanym 
@@ -128,7 +128,7 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
     <TR>
 	<TD>{t}Name:{/t}</TD>
 	<TD>{t}IP Address:{/t}</TD>
-	<TD>{t}MAC Address:{/t}</TD>
+	<TD>{t}MAC address:{/t}</TD>
     </TR>
     {section name=usernodes loop=$usernodes}
     {if $usernodes[usernodes].name}

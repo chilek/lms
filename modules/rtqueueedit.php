@@ -36,7 +36,7 @@ if(isset($queue))
 	$queue['id'] = $_GET['id'];
 	
 	if($queue['name'] == '')
-		$error['name'] = trans('Queue must have its name!');
+		$error['name'] = trans('Queue name must be defined!');
 
 	if($queue['email']!='' && !check_email($queue['email']))
 		$error['email'] = trans('Incorrect email!');

@@ -52,7 +52,7 @@ elseif(isset($_POST['userdata']))
 		$userdata[$key] = trim($value);
 
 	if($userdata['lastname']=='')
-		$error['username'] = trans('\'Surname/Name\' and \'First Name\' fields cannot be empty!');
+		$error['username'] = trans('\'Last/Company Name\' and \'First Name\' fields cannot be empty!');
 	
 	if($userdata['address']=='')
 		$error['address'] = trans('Address required!');
@@ -82,7 +82,7 @@ elseif(isset($_POST['userdata']))
 		$error['pin'] = trans('Incorrect PIN code!');
 
 	if($userdata['status']!=3&&$LMS->GetUserNodesNo($userdata['id'])) 
-		$error['status'] = trans('Only customer with status \'connected\' can own computers!');
+		$error['status'] = trans('Only customer with \'connected\' status can own computers!');
 		
 	if (!$error)
 	{

@@ -25,9 +25,9 @@
 			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}			
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{if $userinfo.status eq "3"}<B>{t}connected{/t}</B>{/if}
+			{if $userinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
 			{if $userinfo.status eq "2"}<B>{t}waiting{/t}</B>{/if}
-			{if $userinfo.status eq "1"}<B>{t}interested{/t}</B>{/if}
+			{if $userinfo.status eq "1"}<B>{t}interested<!singular>{/t}</B>{/if}
 		</TD>
 	</TR>
 	<TR >

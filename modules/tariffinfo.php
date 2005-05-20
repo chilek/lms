@@ -31,7 +31,7 @@ if(!$LMS->TariffExists($_GET['id']))
 
 $tariff = $LMS->GetTariff($_GET['id']);
 
-$layout['pagetitle'] = trans('Tariff Info: $0',$tariff['name']);
+$layout['pagetitle'] = trans('Subscription Info: $0',$tariff['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

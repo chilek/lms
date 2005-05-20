@@ -44,18 +44,18 @@ if(sizeof($adminadd))
 	elseif(!eregi('^[a-z0-9.-_]+$', $adminadd['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
 	elseif($LMS->GetAdminIDByLogin($adminadd['login']))
-		$error['login'] = trans('User with specified login exists or that login was used in the past!');
+		$error['login'] = trans('User with specified login exists or this login was used in the past!');
 	
 	if($adminadd['email']!='' && !check_email($adminadd['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
 	if($adminadd['name']=='')
-		$error['name'] = trans('You must enter name and surname!');
+		$error['name'] = trans('You have to enter first and lastname!');
 
 	if($adminadd['password']=='')
 		$error['password'] = trans('Empty passwords are not allowed!');
 	elseif($adminadd['password']!=$adminadd['confirm'])
-		$error['password'] = trans('Passwords do not match!');
+		$error['password'] = trans('Passwords does not match!');
 
 	// zróbmy maskê ACL...
 

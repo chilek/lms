@@ -53,7 +53,7 @@
 			{if $netdevinfo.ports eq $netdevinfo.takenports}
 			<B>{t}All ports in that device are in use.{/t}</B>
 			{elseif !$restnetdevlist}
-			<B>{t}No such devices for connection.{/t}</B>
+			<B>{t}No devices for connection.{/t}</B>
 			{else}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">

@@ -36,8 +36,8 @@ if (!isset($_POST['level']) && !isset($_POST['delete']) && !isset($_POST['remove
 $layout['nomenu'] =  TRUE;
 $SMARTY->display('header.html');
 
-echo '<BR><BLOCKQUOTE><H1>'.trans('Database compacting').'</H1><PRE>';
-echo trans('$0 records before compaction.<BR>',$LMS->DB->GetOne('SELECT COUNT(*) FROM stats'));
+echo '<BR><BLOCKQUOTE><H1>'.trans('Compacting Database').'</H1><PRE>';
+echo trans('$0 records before compacting.<BR>',$LMS->DB->GetOne('SELECT COUNT(*) FROM stats'));
 
 if(isset($_POST['delete']))
 {
@@ -54,7 +54,7 @@ if(isset($_POST['removedeleted']))
 	{
 	    if(!in_array($node,$nodes))
 		if($LMS->DB->Execute('DELETE FROM stats WHERE nodeid = '.$node))
-		    echo trans('Computer $0 statistics have been removed<BR>',$node);
+		    echo trans('Statistics for computer $0 has been removed<BR>',$node);
 	}
     }
 }
@@ -93,8 +93,8 @@ if(isset($_POST['level']))
 	}
     }
 }
-echo trans('$0 records after compaction.<BR>',$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
-echo '<P><BR><B><A HREF="javascript:window.close();">'.trans('Now you can close this window.').'</A></B></BLOCKQUOTE>';
+echo trans('$0 records after compacting.<BR>',$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
+echo '<P><BR><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
 
 $SMARTY->display('footer.html');
 

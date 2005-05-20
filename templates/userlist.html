@@ -3,9 +3,9 @@
 <H1>{$layout.pagetitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR bgcolor="#CEBD9B" {tip text="Click on column's name to change sorting order"}>
+	<TR bgcolor="#CEBD9B" {tip text="Click on column name to change sorting order"}>
 		<TD width="97%" class="fleftu">
-			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Name/Surname and Forename:{/t}</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}First/last or Company name:{/t}</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" VALIGN="top" NOWRAP>
@@ -28,11 +28,11 @@
 				<B>{t}Filter:{/t}</B> {t}Customers:{/t}
 				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
-					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}connected {/t}</OPTION>
+					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}connected<!plural>{/t}</OPTION>
 					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{t}awaiting{/t}</OPTION>
-					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{t}interested {/t}</OPTION>
-					<OPTION VALUE="4"{if $listdata.state eq 4} SELECTED{/if}>{t}deleted {/t}</OPTION>
-					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>{t}disconnected {/t}</OPTION>
+					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{t}interested<!plural>{/t}</OPTION>
+					<OPTION VALUE="4"{if $listdata.state eq 4} SELECTED{/if}>{t}deleted<!plural>{/t}</OPTION>
+					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>{t}disconnected<!plural>{/t}</OPTION>
 					<OPTION VALUE="6"{if $listdata.state eq 6} SELECTED{/if}>{t}in debt{/t}</OPTION>
 					<OPTION VALUE="7"{if $listdata.state eq 7} SELECTED{/if}>{t}online{/t}</OPTION>
 				</SELECT>&nbsp;
@@ -127,7 +127,7 @@
 		<TD colspan="4" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>{t}No such customers matching filter conditions or list is empty.{/t}</B></p>
+			<p><B>{t}No customers matching search criteria or list is empty.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>

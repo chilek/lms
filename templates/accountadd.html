@@ -92,7 +92,7 @@
 					<img src="img/name.gif" border="0" align="absmiddle" ALT="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>{t}Name/Surname and forename:{/t}</B>
+					<B>{t}First/last or Company name:{/t}</B>
 				    </TD>
 				    <TD width="98%">
 					<input type="text" name="account[realname]" value="{$account.realname}" {tip text="Enter optional account name" trigger="realname"}>
@@ -117,7 +117,7 @@
 					<B>{t}Expiration date:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiration date for account in format YYYY/MM/DD (Empty field means account never expires)" trigger="expdate"}>
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
 				    </TD>
 				</TR>
 			    </TABLE>
@@ -162,7 +162,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.account.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
 			<A href="?m=accountlist">{t}Cancel{/t} <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
-			<INPUT type="checkbox" name="account[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $account.reuse}checked{/if}> {t}Display this form after addition of account again{/t}
+			<INPUT type="checkbox" name="account[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $account.reuse}checked{/if}> {t}Display this form again, when this account is saved{/t}
 		</TD>
 	</TR>
 </TABLE>
