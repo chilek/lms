@@ -152,7 +152,7 @@
 						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
-				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
+				<TR bgcolor="#DFD5BD">
 					<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
 					<TD class="ftop">
 						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
@@ -182,7 +182,7 @@
 						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
-				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
+				<TR bgcolor="#DFD5BD">
 					<TD colspan="3">
 						<A href="?m=prepayments&id={$balancelist.userid}">{t}Prepayments{/t} <IMG src="img/edit.gif" border="0" ALT="" align="absmiddle"></A>
 						{if $userinfo.balance < 0}
