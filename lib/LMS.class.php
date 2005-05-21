@@ -461,6 +461,11 @@ class LMS
 		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users WHERE status=3 AND deleted = 0 ORDER BY username');
 	}
 
+	function GetAllUserNames()
+	{
+		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users WHERE deleted = 0 ORDER BY username');
+	}
+
 	function GetUserNodesAC($id)
 	{
 		if($acl = $this->DB->GetALL('SELECT access FROM nodes WHERE ownerid=?', array($id)))
