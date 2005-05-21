@@ -5,7 +5,7 @@
 <TABLE width="100%" cellpadding="3" border="0">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			<IMG src="img/calendar.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
 			<B>{t}Title:{/t}</B>
@@ -16,7 +16,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/time.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Time:{/t}</B>
@@ -32,7 +32,7 @@
 {if $event.description}
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Description:{/t}</B>
@@ -40,7 +40,7 @@
 		<TD width="98%" class="fright">
 			<TABLE WIDTH="95%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
+					<TD CLASS="fall superlight">
 						{$event.description|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
@@ -50,7 +50,7 @@
 {/if}
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/access.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Status:{/t}</B>
@@ -61,7 +61,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/admins.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/admins.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Users:{/t}</B>
@@ -74,7 +74,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/user.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/user.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Customer:{/t}</B>
@@ -86,7 +86,7 @@
 {if $event.note}
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Note:{/t}</B>
@@ -105,7 +105,7 @@
 {*
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/admins.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/admins.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Creator:{/t}</B>
@@ -117,13 +117,13 @@
 *}
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="?m=eventedit&id={$event.id}">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=eventedit&id={$event.id}">{t}Edit{/t} <IMG src="img/edit.gif" alt=""></A>
 			{if !$event.closed}
-			<A href="?m=eventedit&id={$event.id}&action=close">{t}Close{/t} <IMG src="img/dead.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=eventedit&id={$event.id}&action=close">{t}Close{/t} <IMG src="img/dead.gif" alt=""></A>
 			{else}
-			<A href="?m=eventedit&id={$event.id}&action=open">{t}Open{/t} <IMG src="img/open.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=eventedit&id={$event.id}&action=open">{t}Open{/t} <IMG src="img/open.gif" alt=""></A>
 			{/if}
-			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
+			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
 		</TD>
 	</TR>
 </TABLE>

@@ -4,7 +4,7 @@
 <P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/group.gif" ALT="" ALIGN="ABSMIDDLE">
+			<IMG SRC="img/group.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu" COLSPAN="2" NOWRAP>
 			<B>{$usergroup.name} ({$usergroup.id|string_format:"%04d"})</B>
@@ -12,7 +12,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/users.gif" BORDER="0" ALT="" ALIGN="absmiddle">
+			<IMG SRC="img/users.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP><B>{t}Members Count:{/t}</B>
 		</TD>
@@ -23,11 +23,11 @@
 	{if $usergroup.description}
 	<TR CLASS="light">	
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="98%" CLASS="fright" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="3"> 
-			    <TR><TD CLASS="fall" BGCOLOR="#F4F0EC">
+			    <TR><TD CLASS="fall superlight">
 				    {$usergroup.description|replace:"\n":"<BR>"}
 			    </TD></TR>
 			</TABLE>
@@ -36,7 +36,7 @@
 	{/if}
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
-			    <A HREF="?m=usergroupedit&id={$usergroup.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $usergroup.count eq 0} <A HREF="?m=usergroupdelete&id={$usergroup.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
+			    <A HREF="?m=usergroupedit&id={$usergroup.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $usergroup.count eq 0} <A HREF="?m=usergroupdelete&id={$usergroup.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
 		</TD>
 	</TR>
 </TABLE></P>

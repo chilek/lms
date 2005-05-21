@@ -20,7 +20,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="">
+			<IMG SRC="img/user.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
 			<B>{$userinfo.username|escape} ({$userinfo.id|string_format:"%04d"}){if $userinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
@@ -28,9 +28,9 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			{if $userinfo.status eq "3"}<IMG SRC="img/user.gif" ALT="" border="0">{/if}
-			{if $userinfo.status eq "2"}<IMG SRC="img/wait.gif" ALT="" border="0">{/if}
-			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}			
+			{if $userinfo.status eq "3"}<IMG src="img/user.gif" alt="">{/if}
+			{if $userinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
+			{if $userinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}			
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{if $userinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
@@ -40,7 +40,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/phone.gif" BORDER="0" ALT="">
+			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$userinfo.phone1}{if $userinfo.phone2 neq ""}<BR>
@@ -50,7 +50,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/home.gif" BORDER="0" ALT="">
+			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$userinfo.address}<BR>
@@ -60,7 +60,7 @@
 {if $userinfo.serviceaddr neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/post.gif" BORDER="0" ALT="">
+			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$userinfo.serviceaddr|replace:"\n":"<BR>"}
@@ -70,7 +70,7 @@
 {if $userinfo.email neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mail.gif" BORDER="0" ALT="">
+			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>
@@ -80,7 +80,7 @@
 {if $userinfo.gguin neq "" && $userinfo.gguin neq 0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$userinfo.gguin}&styl=1" BORDER="0" ALT="">
+			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$userinfo.gguin}&styl=1" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<A HREF="gg:{$userinfo.gguin}">{$userinfo.gguin}</A>
@@ -110,7 +110,7 @@
 {if $userinfo.pin neq 0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/pin.gif" BORDER="0" ALT="">
+			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			{t}PIN:{/t}
@@ -122,7 +122,7 @@
 {/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/money.gif" BORDER="0" ALT="">
+			<IMG SRC="img/money.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Balance:{/t}</B>
@@ -133,7 +133,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
+			<IMG SRC="img/admins.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Created:{/t}<BR>
@@ -147,7 +147,7 @@
 	{if $userinfo.info}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/info1.gif" BORDER="0" ALT="">
+			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
@@ -163,7 +163,7 @@
 	{if $userinfo.message}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/warningon.gif" BORDER="0" ALT="">
+			<IMG SRC="img/warningon.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
@@ -187,7 +187,7 @@
 			<INPUT type="hidden" name="rtsearch[state]" value=""></INPUT>
 			<INPUT type="hidden" name="rtsearch[uptime]" value=""></INPUT>
 			{if $userinfo.deleted}
-				<A HREF="?m=useredit&id={$userinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" border="0" align="absmiddle" ALT="[ {t}Restore{/t} ]"></A>
+				<A HREF="?m=useredit&id={$userinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" ALT="[ {t}Restore{/t} ]"></A>
 			{else}
 				{if $contractcount > 1}
 					<SELECT name="templ">
@@ -195,15 +195,15 @@
 						<OPTION value="{$contract.file}">{if $contract.name}{$contract.name|truncate:30:"..."}{else}{$contract.file}{/if}</OPTION>
 					{/foreach}
 					</SELECT>
-					<A href="javascript:Contract();">{t}Print{/t} <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ {t}Contract{/t} ]"></A>
+					<A href="javascript:Contract();">{t}Print{/t} <IMG src="img/print.gif" alt="[ {t}Contract{/t} ]"></A>
 				{else}
-					<A href="?m=contract&id={$userinfo.id}" target="_blank">{t}Print contract{/t} <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ {t}Contract{/t} ]"></A>
+					<A href="?m=contract&id={$userinfo.id}" target="_blank">{t}Print contract{/t} <IMG src="img/print.gif" alt="[ {t}Contract{/t} ]"></A>
 				{/if}
 				<NOBR>
-				<A HREF="javascript: SearchTickets();">{t}Tickets{/t}</A> <IMG src="img/ticket.gif" border="0" align="absmiddle" ALT="[ {t}Tickets{/t} ]"></A>
-				<A href="?m=accountlist&u={$userinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" border="0" align="absmiddle" ALT="[ {t}Accounts{/t} ]"></A>
-				<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>
-				<A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove that customer from database?\n\nIf that customer have any computers, they will be automatically removed from database too, and informations about them irreversible losed!{/t}')">{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+				<A HREF="javascript: SearchTickets();">{t}Tickets{/t}</A> <IMG src="img/ticket.gif" alt="[ {t}Tickets{/t} ]"></A>
+				<A href="?m=accountlist&u={$userinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" alt="[ {t}Accounts{/t} ]"></A>
+				<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>
+				<A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove that customer from database?\n\nIf that customer have any computers, they will be automatically removed from database too, and informations about them irreversible losed!{/t}')">{t}Delete{/t} <img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
 				</NOBR>
 			{/if}
 		</TD>

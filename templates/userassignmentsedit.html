@@ -7,7 +7,7 @@
 <TABLE width="100%" cellpadding="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
-			<IMG src="img/money.gif" border="0" alt="" align="absmiddle">
+			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="fbt" width="1%">
 			<B>{t}Subscription:{/t}</B>
@@ -25,7 +25,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fleft" width="1%">
-			<IMG src="img/calendar.gif" border="0" alt="" align="absmiddle">
+			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
 			<B>{t}Accounting day:{/t}</B>
@@ -57,13 +57,13 @@
 			<B>{t}Invoice:{/t}</B>
 		</TD>
 		<TD class="fright" width="98%">
-		        <INPUT class="box" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> {t}with invoice{/t}
+		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> {t}with invoice{/t}
 		</TD>
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" align="RIGHT" colspan="3">
-			<A href="javascript:document.assignmentedit.submit()">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" alt="" align="ABSMIDDLE"></A>&nbsp;
-			<A href="?m=userinfo&id={$assignmentedit.userid}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" alt="" align="ABSMIDDLE"></A>
+			<A href="javascript:document.assignmentedit.submit()">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>&nbsp;
+			<A href="?m=userinfo&id={$assignmentedit.userid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

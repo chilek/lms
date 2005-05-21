@@ -4,18 +4,18 @@
 <TABLE CELLPADDING="3" width="100%">
 	<TR CLASS="dark" {tip text="Click on column name to change sorting order"}>
 		<TD CLASS="fleftu" width="97%">
-			<IMG src="img/netdev.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">{t}Manufacturer:{/t}</A> {if $listdata.order eq "producer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} / 
-			<A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">{t}Model:{/t}</A> {if $listdata.order eq "model"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} /
-			<A href="?m=netdevlist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{t}Location:{/t}</A> {if $listdata.order eq "location"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<IMG src="img/netdev.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/producer.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">{t}Manufacturer:{/t}</A> {if $listdata.order eq "producer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
+			<A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">{t}Model:{/t}</A> {if $listdata.order eq "model"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+			<A href="?m=netdevlist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{t}Location:{/t}</A> {if $listdata.order eq "location"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" align="right" valign="top">
-			<A href="?m=netdevlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<A href="?m=netdevlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<IMG src="img/port.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=ports{if $listdata.direction eq "asc" && $listdata.order eq "ports"},desc{/if}">{t}Number of ports:{/t}</A> {if $listdata.order eq "ports"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
-			(<A href="?m=netdevlist&o=takenports{if $listdata.direction eq "asc" && $listdata.order eq "takenports"},desc{/if}">{t}Ports used:{/t}</A>{if $listdata.order eq "takenports"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if})<BR>
-			<IMG src="img/serialnumber.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=serialnumber{if $listdata.direction eq "asc" && $listdata.order eq "serialnumber"},desc{/if}">{t}Serial number:{/t}</A> {if $listdata.order eq "serialnumber"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<IMG src="img/port.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=ports{if $listdata.direction eq "asc" && $listdata.order eq "ports"},desc{/if}">{t}Number of ports:{/t}</A> {if $listdata.order eq "ports"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			(<A href="?m=netdevlist&o=takenports{if $listdata.direction eq "asc" && $listdata.order eq "takenports"},desc{/if}">{t}Ports used:{/t}</A>{if $listdata.order eq "takenports"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})<BR>
+			<IMG src="img/serialnumber.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=serialnumber{if $listdata.direction eq "asc" && $listdata.order eq "serialnumber"},desc{/if}">{t}Serial number:{/t}</A> {if $listdata.order eq "serialnumber"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right" nowrap>
 			<B>{t}Total:{/t} {$listdata.total|default:"0"}</B>

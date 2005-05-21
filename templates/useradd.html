@@ -18,8 +18,8 @@
 <P>
 <FORM name="useradd" method="POST" action="?m=useradd">		
 <TABLE cellpadding="4" cellspacing="0" width="100%">
-	<TR>
-		<TD class="fall" width="100%" bgcolor="#CEBD9B" colspan="2">
+	<TR class="dark">
+		<TD class="fall" width="100%" colspan="2">
 			<TABLE>
 				<TR>
 					<TD>
@@ -42,14 +42,14 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR>
-		<TD width="50%" bgcolor="#DFD5BD" class="fleft" valign="top">
-			<TABLE border="0" cellpadding="2" cellspacing="0" WIDTH="100%">
+	<TR class="light">
+		<TD width="50%" class="fleft" valign="top">
+			<TABLE cellpadding="2" cellspacing="0" WIDTH="100%">
 				<TR>
 					<TD width="1%" valign="top">
-						{if $useradd.status eq "3"}<IMG SRC="img/user.gif" ALT="" border="0">{/if}
-						{if $useradd.status eq "2"}<IMG SRC="img/wait.gif" ALT="" border="0">{/if}
-						{if $useradd.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}
+						{if $useradd.status eq "3"}<img src="img/user.gif" alt="">{/if}
+						{if $useradd.status eq "2"}<img src="img/wait.gif" alt="">{/if}
+						{if $useradd.status eq "1"}<img src="img/unk.gif" alt="">{/if}
 					</tD>
 					<TD width="99%">
 						<SELECT size="1" name="useradd[status]" {tip text="Select customer state" trigger="status"}>
@@ -61,7 +61,7 @@
 				</tr>
 				<TR>
 					<TD width="1%" valign="top">
-						<IMG src="img/phone.gif" ALT="" border="0" width="16" width="16" height="16"><BR>
+						<IMG src="img/phone.gif" alt="">
 					</TD>
 					<TD width="99%" {tip text="Enter contact phones"}>
 						<INPUT TYPE="text" size="40" value="{$useradd.phone1}" name="useradd[phone1]"><BR>
@@ -72,7 +72,7 @@
 				</TR>
 				<TR>
 					<TD width="1%" valign="top">
-						<IMG src="img/home.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
+						<IMG src="img/home.gif" alt="">
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {tip text="Enter customer address" trigger="address"}><BR>
@@ -81,7 +81,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<IMG src="img/mail.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
+						<IMG src="img/mail.gif" alt="">
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
@@ -89,7 +89,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<IMG src="img/gg.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
+						<IMG src="img/gg.gif" alt="">
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{if $useradd.gguin}{$useradd.gguin}{/if}" name="useradd[gguin]" {tip text="Enter customer Internet Messenger ID (optional)" trigger="gguin"}>
@@ -121,16 +121,16 @@
 				</TR>
 			</TABLE>
 		</TD>
-		<TD width="50%" bgcolor="#DFD5BD" class="fright" ALIGN="LEFT">
-			<P><NOBR><IMG src="img/post.gif" ALT="" align="absmiddle" border="0">
+		<TD width="50%" class="fright" ALIGN="LEFT">
+			<P><NOBR><IMG src="img/post.gif" alt="">
 			    <TEXTAREA rows="4" cols="60" name="useradd[serviceaddr]" {tip text="Enter correspondence address (optional)"}>
 				{$useradd.serviceaddr}
 			    </TEXTAREA></NOBR>
-			<P><NOBR><IMG src="img/info1.gif" ALT="" align="absmiddle" border="0">
+			<P><NOBR><IMG src="img/info1.gif" alt="">
 			    <TEXTAREA rows="4" cols="60" name="useradd[info]" {tip text="Enter additional informations (optional)"}>
 				{$useradd.info}
 			    </TEXTAREA></NOBR>
-			<P><NOBR><IMG src="img/mail.gif" ALT="" align="absmiddle" border="0">
+			<P><NOBR><IMG src="img/mail.gif" alt="">
 			    <TEXTAREA rows="4" cols="60" name="useradd[message]" {tip text="Enter message to customer (optional)"}>
 				{$useradd.message}
 			    </TEXTAREA></NOBR>
@@ -138,9 +138,9 @@
 	</TR>
 	<TR class="light">
 		<TD width="100%" colspan="2" class="fbottomu" align="right">
-			<A href="javascript:document.useradd.submit();" ACCESSKEY="S">{t}Submit{/t} <img src="img/save.gif" ALT="" align="absmiddle" border="0"></A>
-			<A href="?m=userlist">{t}Cancel{/t} <img src="img/cancel.gif" ALT="" align="absmiddle" border="0"></A><BR>
-			<INPUT type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $useradd.reuse}checked{/if}> {t}Display this form again, when this customer is saved{/t}
+			<A href="javascript:document.useradd.submit();" ACCESSKEY="S">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
+			<A href="?m=userlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="useradd[reuse]" value="ON" class="box light" {if $useradd.reuse}checked{/if}> {t}Display this form again, when this customer is saved{/t}
 		</TD>
 	</TR>
 </TABLE>

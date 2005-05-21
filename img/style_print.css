@@ -1,0 +1,32 @@
+BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; }
+
+TABLE		{ border-collapse: collapse; border-color: #000000 }
+TD		{ font-size: 8pt; }
+TD.fleft	{ border-left-width: 1pt; border-left-style: solid; }
+TD.fright	{ border-right-width: 1pt; border-right-style: solid; }
+TD.ftop		{ border-top-width: 1pt; border-top-style: solid; }
+TD.fbottom	{ border-bottom-width: 1pt; border-bottom-style: solid; }
+TD.fleftu	{ border-top-width: 1pt; border-top-style: solid; border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; }
+TD.frightu	{ border-top-width: 1pt; border-top-style: solid; border-bottom-width: 1pt; border-bottom-style: solid; border-right-width: 1pt; border-right-style: solid; }
+TD.ftopu	{ border-top-width: 1pt; border-top-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+TD.fbottomu	{ border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+TD.fall		{ border-width: 1pt; border-style: solid; }
+TD.fbt		{ border-bottom-width: 1pt; border-bottom-style: solid; border-top-width: 1pt; border-top-style: solid; }
+TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 2pt; border-style: solid; }
+
+A		{ text-decoration: none; }
+
+P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+P.txt		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: justify }
+P.separated	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
+
+H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+
+.hdf		{ font-size: 14pt; }
+.sdr		{ font-size: 10pt; }
+.blend		{ color: #888888; }
+.blendbg	{ background-color: #888888; }
+.white		{ background-color: #FFFFFF; }
+.grey		{ background-color: #EEEEEE; }

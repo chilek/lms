@@ -8,11 +8,11 @@
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/autoiframe.js"></SCRIPT>
 </head>
-<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<body>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="">
+			<IMG SRC="img/user.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<B>{$userinfo.username|escape} ({$userinfo.id|string_format:"%04d"}){if $userinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
@@ -20,9 +20,9 @@
 	</TR>
 	<TR >
 		<TD WIDTH="1%">
-			{if $userinfo.status eq "3"}<IMG SRC="img/user.gif" ALT="" border="0">{/if}
-			{if $userinfo.status eq "2"}<IMG SRC="img/wait.gif" ALT="" border="0">{/if}
-			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}			
+			{if $userinfo.status eq "3"}<IMG src="img/user.gif" alt="">{/if}
+			{if $userinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
+			{if $userinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}			
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{if $userinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
@@ -32,7 +32,7 @@
 	</TR>
 	<TR >
 		<TD WIDTH="1%">
-			<IMG SRC="img/phone.gif" BORDER="0" ALT="">
+			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{$userinfo.phone1}{if $userinfo.phone2 neq ""}<BR>
@@ -42,7 +42,7 @@
 	</TR>
 	<TR >
 		<TD WIDTH="1%" >
-			<IMG SRC="img/home.gif" BORDER="0" ALT="">
+			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%"  COLSPAN="2">
 			{$userinfo.address}<BR>
@@ -52,7 +52,7 @@
 {if $userinfo.serviceaddr neq ""}
 	<TR >
 		<TD WIDTH="1%" >
-			<IMG SRC="img/post.gif" BORDER="0" ALT="">
+			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{$userinfo.serviceaddr|replace:"\n":"<BR>"}
@@ -62,7 +62,7 @@
 {if $userinfo.email neq ""}
 	<TR >
 		<TD WIDTH="1%" >
-			<IMG SRC="img/mail.gif" BORDER="0" ALT="">
+			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>
@@ -72,7 +72,7 @@
 {if $userinfo.gguin neq "" && $userinfo.gguin neq 0}
 	<TR >
 		<TD WIDTH="1%" >
-			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$userinfo.gguin}&styl=1" BORDER="0" ALT="">
+			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$userinfo.gguin}&styl=1" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<A HREF="gg:{$userinfo.gguin}">{$userinfo.gguin}</A>
@@ -102,7 +102,7 @@
 {if $usergroups}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/group.gif" BORDER="0" ALT="">
+			<IMG SRC="img/group.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{foreach from=$usergroups item=usergroup name=usergroup}
@@ -113,13 +113,13 @@
 {/if}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" BORDER="0" ALT="">
+			<IMG SRC="img/money.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Balance:{/t}</B>
 		</TD>
 		<TD WIDTH="98%">
-			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|money_format}</B></FONT>{else}{$userinfo.balance|default:"0"|money_format}{/if}
+			{if $userinfo.balance < 0}<FONT class="alert">{$userinfo.balance|money_format}</FONT>{else}{$userinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 </TABLE>

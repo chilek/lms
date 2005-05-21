@@ -28,9 +28,9 @@
 			{t}Customer{/t}
 		</TD>
 	</TR>
-	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{cycle values="white,grey" print=false}
 	{foreach item=event from=$eventlist}
-	<TR BGCOLOR="{cycle}">
+	<TR class="{cycle}">
 		<TD WIDTH="1%" VALIGN="TOP" ALIGN="LEFT">
 			<NOBR>
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}

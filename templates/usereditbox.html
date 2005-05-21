@@ -20,7 +20,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="">
+			<IMG SRC="img/user.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
 			<TABLE>
@@ -56,9 +56,9 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			{if $userinfo.status eq "3"}<IMG SRC="img/user.gif" ALT="" border="0">{/if}
-			{if $userinfo.status eq "2"}<IMG SRC="img/wait.gif" ALT="" border="0">{/if}
-			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}
+			{if $userinfo.status eq "3"}<IMG SRC="img/user.gif" ALT="">{/if}
+			{if $userinfo.status eq "2"}<IMG SRC="img/wait.gif" ALT="">{/if}
+			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="">{/if}
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="userdata[status]" {tip text="Select customer state" trigger="status"}>
@@ -70,7 +70,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/phone.gif" BORDER="0" ALT="">
+			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2" {tip text="Enter phone number(s)"}>
 			<INPUT TYPE="TEXT" NAME="userdata[phone1]" VALUE="{$userinfo.phone1}"><BR>
@@ -80,7 +80,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/home.gif" BORDER="0" ALT="">
+			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30" {tip text="Enter address" trigger="address"}>
@@ -102,7 +102,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mail.gif" BORDER="0" ALT="">
+			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="userdata[email]" VALUE="{$userinfo.email}" SIZE="30" {tip text="Enter e-mail address (optional)" trigger="email" }><BR>
@@ -110,7 +110,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/gg.gif" BORDER="0" ALT="">
+			<IMG SRC="img/gg.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{if $userinfo.gguin}{$userinfo.gguin}{/if}" SIZE="30" {tip text="Enter Internet Messenger UID (optional)" trigger="gguin"}>
@@ -134,7 +134,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/pin.gif" BORDER="0" ALT="">
+			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}PIN:{/t}</B>
@@ -147,7 +147,7 @@
 	
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/money.gif" BORDER="0" ALT="">
+			<IMG SRC="img/money.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Balance:{/t}</B>
@@ -158,7 +158,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
+			<IMG SRC="img/admins.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Created:{/t}<BR>
@@ -171,12 +171,12 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/post.gif" BORDER="0" ALT="">
+			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Enter service address (optional)"}>
+					<TD CLASS="fall superlight" {tip text="Enter service address (optional)"}>
 						<TEXTAREA NAME="userdata[serviceaddr]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$userinfo.serviceaddr}</TEXTAREA>
 					</TD>
 				</TR>
@@ -185,12 +185,12 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/info1.gif" BORDER="0" ALT="">
+			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Enter additional informations (optional)"}>
+					<TD CLASS="fall superlight" {tip text="Enter additional informations (optional)"}>
 						<TEXTAREA NAME="userdata[info]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$userinfo.info}</TEXTAREA>
 					</TD>
 				</TR>
@@ -199,12 +199,12 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/warningon.gif" BORDER="0" ALT="">
+			<IMG SRC="img/warningon.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Enter warning message contents (optional)"}>
+					<TD CLASS="fall superlight" {tip text="Enter warning message contents (optional)"}>
 						<TEXTAREA NAME="userdata[message]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$userinfo.message}</TEXTAREA>
 					</TD>
 				</TR>
@@ -213,8 +213,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=userinfo&id={$userinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=userinfo&id={$userinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
