@@ -167,7 +167,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('adminlist', $LMS->GetAdminNames());
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('userlist', $LMS->GetAllUserNames());
 $SMARTY->assign('search', $SESSION->get('rtsearch'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtsearch.html');

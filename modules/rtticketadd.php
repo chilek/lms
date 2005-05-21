@@ -117,7 +117,7 @@ $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('user', $user);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('userlist', $LMS->GetAllUserNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketadd.html');
 
