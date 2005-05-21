@@ -31,10 +31,10 @@
 			<TABLE width="100%" cellpadding="3">
 				<TR CLASS="DARK">
 					<TD CLASS="fleftu" WIDTH="1%">
-						<IMG SRC="img/user.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>{t}Customers:{/t}</B>
+						<IMG SRC="img/user.gif" alt="">&nbsp;<B>{t}Customers:{/t}</B>
 					</TD>
 					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
-						<IMG SRC="img/mail.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>{t}Warning message:{/t}</B>
+						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{t}Warning message:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -47,8 +47,8 @@
 					</TD>
 					<TD CLASS="fright" COLSPAN="2">
 						<TABLE CELLPADDING="3">
-							<TD CLASS="FALL" COLSPAN="3" BGCOLOR="#F4F0EC" {tip text="Customer warning content"}>
-								<TEXTAREA NAME="setwarnings[message]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" ROWS="19" COLS="75">{$warnmessage}</TEXTAREA>
+							<TD COLSPAN="3" {tip text="Customer warning content"}>
+								<TEXTAREA NAME="setwarnings[message]" ROWS="20" COLS="75">{$warnmessage}</TEXTAREA>
 							</TD>
 						</TABLE>
 					</TD>
@@ -58,11 +58,11 @@
 						<INPUT TYPE="checkbox" NAME="users" CLASS="box" OnClick="javascript:SelectAllUsers()">{t}Select All{/t}</INPUT>
 					</TD>
 					<TD CLASS="fbottom" ALIGN="left">
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}>{t}Enable warnings{/t}</INPUT></NOBR>
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}>{t}Disable warnings{/t}</INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}>{t}Enable warnings{/t}</INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}>{t}Disable warnings{/t}</INPUT></NOBR>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT">
-						<A HREF="javascript:document.setwarnings.submit()" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+						<A HREF="javascript:document.setwarnings.submit()" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				<TR>
 			</TABLE>

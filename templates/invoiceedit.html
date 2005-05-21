@@ -100,7 +100,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript:document.setcustomer.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="javascript:document.setcustomer.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -137,9 +137,9 @@
 		</TD>
 	</TR>
 	{*{counter print=false}*}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>
@@ -167,17 +167,15 @@
 			{$item.s_valuebrutto|money_format}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
-			<A HREF="?m=invoiceedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"} BORDER="0"></A>
+			<A HREF="?m=invoiceedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>			
 	</TR>
 	{foreachelse}
 	<TR>
 		<TD COLSPAN="8" ALIGN="CENTER" CLASS="flr">
-			<BR>
-			<BR>
-			<B>{t}Invoice have no items. Use form below for items addition.{/t}</B><BR>
-			<BR>
-			<BR>
+			<p>&nbsp;</p>
+			<p><B>{t}Invoice have no items. Use form below for items addition.{/t}</B></p>
+			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/foreach}
@@ -236,12 +234,12 @@
 			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6">
 		</TD>
 		<TD CLASS="ftr">
-			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" BORDER="0" {tip text="Add item"}></A>
+			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
-			<A HREF="?m=invoiceedit&action=clear">{t}Clear Contents{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> 
+			<A HREF="?m=invoiceedit&action=clear">{t}Clear Contents{/t} <IMG src="img/delete.gif"></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
 			{elseif !$contents}
@@ -249,7 +247,7 @@
 			{else}
 			<A HREF="?m=invoiceedit&action=save" target="_BLANK">
 			{/if}
-			{t}Save & Print{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/save.gif" ALT="Dodaj" BORDER="0"></A>
+			{t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	</FORM>

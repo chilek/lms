@@ -16,11 +16,11 @@
 	<TR class="dark">
 		{if !$unlockedit}
 		<TD width="100%" class="fall" colspan="4">
-			<IMG SRC="img/network.gif" border="0" align="absmiddle" ALT=""> <B>{$network.name|upper} ({$network.id|string_format:"%04d"})</B>
+			<IMG SRC="img/network.gif" alt=""> <B>{$network.name|upper} ({$network.id|string_format:"%04d"})</B>
 		</TD>
 		{else}
 		<TD width="1%" class="fleftu" nowarp>
-			<IMG SRC="img/network.gif" border="0" align="absmiddle" ALT=""> <B>{t}Name:{/t}</B>
+			<IMG SRC="img/network.gif" alt=""> <B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="99%" class="frightu" colspan="3">
 			 <INPUT TYPE="text" NAME="networkdata[name]" VALUE="{$network.name|upper}" {tip trigger="name" bold=1}> <B>({$network.id|string_format:"%04d"})</B>
@@ -29,13 +29,13 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<nobr><IMG SRC="img/ip.gif" border="0" align="absmiddle" ALT=""> <B>{t}Address/prefix:{/t}</B></nobr>
+			<nobr><IMG SRC="img/ip.gif" alt=""> <B>{t}Address/prefix:{/t}</B></nobr>
 		</TD>
 		<TD width="48%">
 			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}" {tip text="Write down network address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}</NOBR>
 		</TD>
 		<TD width="2%" rowspan="2">
-			<NOBR><IMG src="img/dhcp.gif" border="0" align="absmiddle" ALT=""> <B>{t}DHCP range:{/t}</B></NOBR>	
+			<NOBR><IMG src="img/dhcp.gif" alt=""> <B>{t}DHCP range:{/t}</B></NOBR>	
 		</TD>
 		<TD width="48%" class="fright" rowspan="2">
 			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}" {tip text="Enter first address of DHCP range (optional)" trigger="dhcpstart"}><BR>
@@ -47,7 +47,7 @@
 	</TR>
 	<TR class="light">
 		<td width="1%" class="fleft">
-			<nobr><img src="img/cmp.gif" border="0" align="absmiddle" ALT=""> <B>{t}Network size:{/t}</B>
+			<nobr><img src="img/cmp.gif" alt=""> <B>{t}Network size:{/t}</B>
 		</TD>
 		<TD width="49%">
 			{t 0=$network.size}$0 addresses{/t}
@@ -67,7 +67,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="2%" class="fleft">
-			<nobr><img src="img/gateway.gif" border="0" align="absmiddle" ALT=""> <B>{t}Gateway:{/t}</B></nobr>
+			<nobr><img src="img/gateway.gif" alt=""> <B>{t}Gateway:{/t}</B></nobr>
 		</TD>		
 		<TD width="48%">
 			{if $unlockedit}
@@ -77,7 +77,7 @@
 			{/if}
 		</TD>
 		<TD width="2%">
-			<nobr><img src="img/dns.gif" border="0" align="absmiddle" ALT=""> <B>{t}DNS servers:{/t}</B></NOBR>
+			<nobr><img src="img/dns.gif" alt=""> <B>{t}DNS servers:{/t}</B></NOBR>
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
@@ -91,7 +91,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="2%" class="fleft">
-			<nobr><img src="img/wins.gif" border="0" align="absmiddle" ALT=""> <B>{t}WINS server:{/t}</B></NOBR>
+			<nobr><img src="img/wins.gif" alt=""> <B>{t}WINS server:{/t}</B></NOBR>
 		</TD>
 		<TD width="48%">
 			{if $unlockedit}
@@ -101,7 +101,7 @@
 			{/if}
 		</TD>
 		<TD width="2%">
-			<nobr><img src="img/node.gif" border="0" align="absmiddle" ALT=""> <B>{t}Domain:{/t}</B></NOBR>
+			<nobr><img src="img/node.gif" alt=""> <B>{t}Domain:{/t}</B></NOBR>
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}

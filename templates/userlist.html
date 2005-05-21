@@ -5,16 +5,16 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD width="97%" class="fleftu">
-			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}First/last or Company name:{/t}</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/user.gif" ALT="">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}First/last or Company name:{/t}</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/home.gif" ALT="">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" VALIGN="top" NOWRAP>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			{t}Services:{/t}
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP" NOWRAP>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<a href="?m={$layout.module}&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m={$layout.module}&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" align="right" class="frightu">
 			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
@@ -26,7 +26,7 @@
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="userlist">
 				<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">
 				<B>{t}Filter:{/t}</B> {t}Customers:{/t}
-				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
+				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
 					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}connected<!plural>{/t}</OPTION>
 					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{t}awaiting{/t}</OPTION>
@@ -37,14 +37,14 @@
 					<OPTION VALUE="7"{if $listdata.state eq 7} SELECTED{/if}>{t}online{/t}</OPTION>
 				</SELECT>&nbsp;
 				{t}Network:{/t}
-				<SELECT SIZE="1" CLASS="bold" NAME="n" ONCHANGE="document.choosefilter.submit();">
+				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
 					{section name=networks loop=$networks}
 					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}Group:{/t}
-				<SELECT SIZE="1" CLASS="bold" NAME="g" ONCHANGE="document.choosefilter.submit();">
+				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$listdata.usergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 					{section name=usergroups loop=$usergroups}
 					<OPTION value="{$usergroups[usergroups].id}" {if $listdata.usergroup eq $usergroups[usergroups].id} SELECTED {/if}>{$usergroups[usergroups].name|truncate:50:"..."}</OPTION>
@@ -75,31 +75,31 @@
 	{section name=userlist loop=$userlist start=$start max=$pagelimit}
 	<TR class="{cycle}{if $userlist[userlist].nodeac eq 0} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" class="fleft" valign="top">
-			<IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" ALT="" align="absmiddle" border="0">{if $userlist[userlist].info}&nbsp;<img src="img/info1.gif" ALT="" align="absmiddle" {tip text=$userlist[userlist].info}>{/if}<A name="{$userlist[userlist].id}" {tip 0=$userlist[userlist].id dynpopup='?m=userinfoshort&id=$0'}>&nbsp;<B>{$userlist[userlist].username|escape}</B></A><BR>
-			<IMG src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}
+			<IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" alt="">{if $userlist[userlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$userlist[userlist].info}>{/if}<A name="{$userlist[userlist].id}" {tip 0=$userlist[userlist].id dynpopup='?m=userinfoshort&id=$0'}>&nbsp;<B>{$userlist[userlist].username|escape}</B></A><BR>
+			<IMG src="img/home.gif" alt="">&nbsp;{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}
 		</TD>
 		<TD valign="top" align="right">
 			({$userlist[userlist].id|string_format:"%04d"})<BR>
 			{if $userlist[userlist].account}
-				<IMG SRC="img/node{if !$userlist[userlist].online}_off{/if}.gif" align="absmiddle" ALT="" border="0" {tip 0=$userlist[userlist].id dynpopup='?m=nodelistshort&id=$0'}></A>
+				<IMG SRC="img/node{if !$userlist[userlist].online}_off{/if}.gif" ALT="" {tip 0=$userlist[userlist].id dynpopup='?m=nodelistshort&id=$0'}></A>
 			{/if}
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font class="alert">{/if}{$userlist[userlist].balance|money_format}{if $userlist[userlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|money_format}</FONT></NOBR>
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{if $userlist[userlist].balance < 0}<font class="alert">{/if}{$userlist[userlist].balance|money_format}{if $userlist[userlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALT=""><FONT CLASS="blend">{$userlist[userlist].tariffvalue|money_format}</FONT></NOBR>
 		</TD>		
 		<TD align="right" class="fright">
 			<NOBR>
 			{if $userlist[userlist].balance < 0}
-				<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/invoice_pay.gif" border="0" align="absmiddle" ALT="[ {t}Account{/t} ]"></A>
+				<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/invoice_pay.gif" ALT="[ {t}Account{/t} ]"></A>
 			{/if}
 			{if $userlist[userlist].account}
 				{if $userlist[userlist].status eq 3}
 					{if $userlist[userlist].nodeac eq 1}
-						<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}"><IMG SRC="img/access.gif" align="absmiddle" ALT="[ {t}Disconnect All{/t} ]" border="0"></A>
+						<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}"><IMG SRC="img/access.gif" ALT="[ {t}Disconnect All{/t} ]"></A>
 					{else}
 						{if $userlist[userlist].nodeac eq 2}
-							<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}"><IMG SRC="img/mixaccess.gif" align="absmiddle" ALT="[ {t}Disconnect All{/t} ]" border="0"></A>
-						{else}<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}&access=1"><IMG SRC="img/noaccess.gif" align="absmiddle" ALT="[ {t}Connect All{/t} ]" border="0"></A>
+							<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}"><IMG SRC="img/mixaccess.gif" ALT="[ {t}Disconnect All{/t} ]"></A>
+						{else}<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}&access=1"><IMG SRC="img/noaccess.gif" ALT="[ {t}Connect All{/t} ]"></A>
 						{/if}
 					{/if}
 				{/if}
@@ -107,18 +107,18 @@
 			{if $userlist[userlist].warncount}
 				{if $userlist[userlist].status eq 3}
 					{if $userlist[userlist].nodewarn eq 1}
-						<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}" {if $userlist[userlist].message}{tip text=$userlist[userlist].message}{/if}><IMG SRC="img/warningon.gif" align="absmiddle" ALT="[ {t}Disable Warnings for All{/t} ]" border="0"></A>
+						<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}" {if $userlist[userlist].message}{tip text=$userlist[userlist].message}{/if}><IMG SRC="img/warningon.gif" ALT="[ {t}Disable Warnings for All{/t} ]"></A>
 					{else}
 						{if $userlist[userlist].nodewarn eq 2}
-							<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}" {if $userlist[userlist].message}{tip text=$userlist[userlist].message}{/if}><IMG SRC="img/warningmix.gif" align="absmiddle" ALT="[ {t}Disable Warnings for All{/t} ]" border="0"></A>
-						{else}<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}&warning=1" {if $userlist[userlist].message}{tip text=$userlist[userlist].message}{/if}><IMG SRC="img/warningoff.gif" align="absmiddle" ALT="[ {t}Enable Warnings for All{/t} ]" border="0"></A>
+							<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}" {if $userlist[userlist].message}{tip text=$userlist[userlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable Warnings for All{/t} ]"></A>
+						{else}<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}&warning=1" {if $userlist[userlist].message}{tip text=$userlist[userlist].message}{/if}><IMG SRC="img/warningoff.gif" ALT="[ {t}Enable Warnings for All{/t} ]"></A>
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			<A href="?m=userdel&id={$userlist[userlist].id}" OnCLick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A> 
-			<A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A> 
-			<A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" ALT="[ {t}Info{/t} ]"></A>
+			<A href="?m=userdel&id={$userlist[userlist].id}" OnCLick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A> 
+			<A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
 			</NOBR>
 		</TD>
 	</TR>
@@ -126,9 +126,7 @@
 	<TR>
 		<TD colspan="4" align="center" class="flr">
 			<p>&nbsp;</p>
-			<p>&nbsp;</p>
 			<p><B>{t}No such customers matching search criteria or list is empty.{/t}</B></p>
-			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>

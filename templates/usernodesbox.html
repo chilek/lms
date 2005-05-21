@@ -2,20 +2,20 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/node.gif" BORDER="0">
+			<IMG SRC="img/node.gif" alt="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="3">
 			<B>{t 0=$usernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
 		</TD>
 	</TR>
-	{cycle values="light,medium" print=false}
+	{cycle values="light,lucid" print=false}
 	{if $usernodes.total > 0}
 	{section name=usernodes loop=$usernodes}
 	{if $usernodes[usernodes].id}
-	<TR class="{cycle}{if ! $usernodes[usernodes].access}blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="{cycle}{if ! $usernodes[usernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" border="0" align="absmiddle"></A>
-			<a href="?m=nodewarn&id={$usernodes[usernodes].id}"><IMG src="img/warning{if ! $usernodes[usernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]" border="0" align="absmiddle"></A>
+			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></A>
+			<a href="?m=nodewarn&id={$usernodes[usernodes].id}"><IMG src="img/warning{if ! $usernodes[usernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]"></A>
 		</TD>
 		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$usernodes[usernodes].id}';">
 			<B>{$usernodes[usernodes].name}</B><BR>
@@ -26,33 +26,31 @@
 			({$usernodes[usernodes].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
-			<A HREF="?m=nodedel&id={$usernodes[usernodes].id}" onClick="return confirmLink(this, '{t 0=$usernodes[usernodes].name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" BORDER="0" ALT="[ {t}Delete{/t} ]" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=nodeedit&id={$usernodes[usernodes].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="[ {t}Edit{/t} ]" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=nodeinfo&id={$usernodes[usernodes].id}"><IMG SRC="img/info.gif" BORDER="0" ALT="[ {t}Info{/t} ]" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodedel&id={$usernodes[usernodes].id}" onClick="return confirmLink(this, '{t 0=$usernodes[usernodes].name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=nodeedit&id={$usernodes[usernodes].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=nodeinfo&id={$usernodes[usernodes].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
 		</TD>
 	</TR>
 	{/if}
 	{/section}
 	{else}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="4" CLASS="FALL">
+		<TD WIDTH="100%" COLSPAN="4" CLASS="FALL" align="center">
 			<P>&nbsp;</P>
-			<P>&nbsp;</P>
-			<P ALIGN="CENTER"><B>{if $userinfo.deleted}<FONT COLOR="RED">{t}That customer has been deleted.{/t}</FONT>{else}{t}That customer hasn't got any node.{/t}{/if}</B></P>
-			<P>&nbsp;</P>
+			<P><B>{if $userinfo.deleted}<FONT class="red">{t}That customer has been deleted.{/t}</FONT>{else}{t}That customer hasn't got any node.{/t}{/if}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="99%" COLSPAN="3" CLASS="FLEFTU">
-			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}&access=1"><IMG SRC="img/access.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Connect All{/t}</A><BR>
-			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}"><IMG SRC="img/noaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disconnect All{/t}</A><BR>
-			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}&warning=1"><IMG SRC="img/warningon.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Enable Warnings for All{/t}</A><BR>
-			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}"><IMG SRC="img/warningoff.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disable Warnings for All{/t}</A><BR>
+			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}&access=1"><IMG SRC="img/access.gif"> {t}Connect All{/t}</A><BR>
+			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}"><IMG SRC="img/noaccess.gif"> {t}Disconnect All{/t}</A><BR>
+			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}&warning=1"><IMG SRC="img/warningon.gif"> {t}Enable Warnings for All{/t}</A><BR>
+			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}"><IMG SRC="img/warningoff.gif"> {t}Disable Warnings for All{/t}</A><BR>
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP VALIGN="BOTTOM" ALIGN="RIGHT">
-			{if $userinfo.status eq "3" and ! $userinfo.deleted}<A HREF="?m=nodeadd&ownerid={$usernodes.ownerid}">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>{else}<FONT CLASS="BLEND">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE">{/if}
+			{if $userinfo.status eq "3" and ! $userinfo.deleted}<A HREF="?m=nodeadd&ownerid={$usernodes.ownerid}">{t}New{/t} <IMG SRC="img/edit.gif" alt=""></A>{else}<FONT CLASS="BLEND">{t}New{/t} <IMG SRC="img/edit.gif" alt="">{/if}
 		</TD>
 	</TR>
 </TABLE>

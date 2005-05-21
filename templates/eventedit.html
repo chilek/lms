@@ -27,7 +27,7 @@
 <TABLE width="100%" cellpadding="3" border="0">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			<IMG src="img/calendar.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
 			<B>{t}Title:{/t}</B>
@@ -38,7 +38,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/time.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Time:{/t}</B>
@@ -59,7 +59,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Description:{/t}</B>
@@ -70,18 +70,18 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/access.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[private]" value="1" style="border-style: none; background-color: #DFD5BD" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {t}private{/t}
+			<INPUT type="checkbox" name="event[private]" value="1" class="box light" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {t}private{/t}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/user.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/user.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Customer:{/t}</B>
@@ -97,7 +97,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Note:{/t}</B>
@@ -108,7 +108,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft" valign="top">
-			<IMG src="img/admins.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/admins.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
 			<B>{t}Users:{/t}</B>
@@ -127,13 +127,13 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 			{if !$event.closed}
-			<A href="?m=eventedit&id={$event.id}&action=close">{t}Close{/t} <IMG src="img/dead.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=eventedit&id={$event.id}&action=close">{t}Close{/t} <IMG src="img/dead.gif" alt=""></A>
 			{else}
-			<A href="?m=eventedit&id={$event.id}&action=open">{t}Open{/t} <IMG src="img/open.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=eventedit&id={$event.id}&action=open">{t}Open{/t} <IMG src="img/open.gif" alt=""></A>
 			{/if}
-			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

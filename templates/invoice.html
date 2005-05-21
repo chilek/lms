@@ -95,10 +95,10 @@
 		<B>{t}Gross Value:{/t}</B>
 	</TD>
 </TR>
-{cycle values="#EEEEEE,#FFFFFF" print=false}
+{cycle values="grey,white" print=false}
 {counter start=0 print=false}
 {foreach from=$invoice.content item=item}
-<TR BGCOLOR="{cycle}">
+<TR class="{cycle}">
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
 	<TD WIDTH="91%" CLASS="FLR">
 		{$item.description}

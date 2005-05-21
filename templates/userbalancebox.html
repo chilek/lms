@@ -76,7 +76,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fleftu" {if $limit}OnCLick="showOrHide('userbalance');"{/if}>
-			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
+			<IMG src="img/money.gif" alt="">
 			<B>{t}Customer Account:{/t}</B> 
 			{if $limit}
 				{math equation="x * -1" x=$limit assign=n}
@@ -84,7 +84,7 @@
 			{/if}
 		</TD>
 		<TD class="frightu" align="right">
-			<A href="?m=invoicenew&action=init&userid={$balancelist.userid}">{t}New Invoice{/t} &raquo;</A>&nbsp;    
+			<A href="?m=invoicenew&action=init&userid={$balancelist.userid}">{t}New Invoice{/t} &raquo;</A>&nbsp;
 			{if $limit}<A href="?m=userbalance&id={$balancelist.userid}">{t}See all transactions{/t} &raquo;</A>{/if}
 		</TD>
 	</TR>
@@ -102,9 +102,9 @@
 					<TD width="92%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{cycle values="light,lucid" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
-				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
@@ -120,39 +120,37 @@
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}
 							{if $balancelist.invoicepaid[balancelist] == 0}
-							<A href="javascript:invoicepay({$balancelist.invoiceid[balancelist]})"><IMG SRC="img/invoice_pay.gif" ALT="[ {t}Account{/t} ]" BORDER="0"></A>
+							<A href="javascript:invoicepay({$balancelist.invoiceid[balancelist]})"><IMG SRC="img/invoice_pay.gif" ALT="[ {t}Account{/t} ]"></A>
 							{/if}
-						<A href="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
+						<A href="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"}></A>
 						{/if}
 						{cycle print=false}
-						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
+						<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
 						</nobr>
 					</TD>
 					</TR>
 				{sectionelse}
 				<TR>
 					<TD align="center" width="100%" colspan="9">
-						<BR>
-						<BR>
-						<B>{t}That customer hasn't got any transactions.{/t}</B><BR>
-						<BR>
-						<BR>
+						<p>&nbsp;</p>
+						<p><B>{t}That customer hasn't got any transactions.{/t}</B></p>
+						<p>&nbsp;</p>
 					</TD>
 				</TR>
 				{/section}
-				<TR bgcolor="#DFD5BD">
+				<TR class="light">
 					<TD CLASS="ftop" ALIGN="left" colspan="7">
-						<NOBR><A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="{t}Delete{/t}" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:prints();">{t}Print{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:prints_org();">{t}Print originals{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:prints_cpy();">{t}Print copies{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
 
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
-						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
-				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
+				<TR class="light">
 					<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
 					<TD class="ftop">
 						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
@@ -182,17 +180,16 @@
 						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
-				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
+				<TR class="light">
 					<TD colspan="3">
-						<A href="?m=prepayments&id={$balancelist.userid}">{t}Prepayments{/t} <IMG src="img/edit.gif" border="0" ALT="" align="absmiddle"></A>
+						<A href="?m=prepayments&id={$balancelist.userid}">{t}Prepayments{/t} <IMG src="img/edit.gif" alt=""></A>
 						{if $userinfo.balance < 0}
-						<A href="?m=userbalanceok&id={$userinfo.id}" OnClick="return confirmLink(this, '{t 0=$userinfo.username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" border="0" ALT="" align="absmiddle"></A>
+						<A href="?m=userbalanceok&id={$userinfo.id}" OnClick="return confirmLink(this, '{t 0=$userinfo.username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" alt=""></A>
 						{/if}
-
 					</TD>
 					<TD align="right" colspan="6">
-						<A href="javascript:unpaidchoosewin();">{t}Select unpaid covenants{/t} <IMG src="img/search.gif" border="0" ALT="" align="absmiddle"></A>&nbsp;
-						<A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+						<A href="javascript:unpaidchoosewin();">{t}Select unpaid covenants{/t} <IMG src="img/search.gif" alt=""></A>&nbsp;
+						<A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 					</TD>
 			</TABLE>
 		</TD>

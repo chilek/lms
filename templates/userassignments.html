@@ -2,7 +2,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK" onClick="showOrHide('userassignments');">
 		<TD class="fall">
-			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
+			<IMG src="img/money.gif" border="0" alt="">
 			<B><A name="balance">{t}Customer Liabilities:{/t}</A></B>
 		</TD>
 	</TR>
@@ -20,9 +20,9 @@
 					<TD WIDTH="92%" NOWRAP class="fbt">{t}Period:{/t}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{cycle values="light,lucid" print=false}
 				{foreach from=$assignments item=a}
-				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')" {if ($a.dateto < $smarty.now && $a.dateto) || ($a.datefrom > $smarty.now && $a.datefrom) || $a.suspended}CLASS="blend"{/if}>
+				<TR class="{cycle}{if ($a.dateto < $smarty.now && $a.dateto) || ($a.datefrom > $smarty.now && $a.datefrom) || $a.suspended} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" >
 					{if !$a.tariffid}
 					<TD WIDTH="7%" COLSPAN="7"><B>{t}Suspending of all liabilities{/t}</B></TD>
 					{else}
@@ -40,10 +40,10 @@
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 						{if $a.tariffid}
-						<A href="?m=userassignments&action=suspend&id={$balancelist.userid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
+						<A href="?m=userassignments&action=suspend&id={$balancelist.userid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
 						{/if}
-						<A HREF="?m=userassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
-						<A onClick="return confirmLink(this, '{t}Are you sure, you want to delete this liability?{/t}')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
+						<A HREF="?m=userassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+						<A onClick="return confirmLink(this, '{t}Are you sure, you want to delete this liability?{/t}')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 					</TD>
 				</TR>
 				{foreachelse}
@@ -55,7 +55,7 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<TR bgcolor="#DFD5BD">
+				<TR class="light">
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format=$LANGDEFS.$_language.money_format}</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="LEFT">({sum array=$assignments column="discounted_value" string_format=$LANGDEFS.$_language.money_format})</TD>
@@ -65,7 +65,7 @@
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>
 				<FORM METHOD="POST" NAME="assignment" ACTION="?m=userassignments&action=add&id={$balancelist.userid}">
-				<TR bgcolor="#DFD5BD">
+				<TR class="light"">
 					<TD COLSPAN="8">
 						<TABLE>
 							<TR>
@@ -82,7 +82,7 @@
 									    </OPTION>
 									{/section}
 								    </SELECT>
-								    <INPUT CLASS="box" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> {t}with invoice{/t}
+								    <INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> {t}with invoice{/t}
 								</TD>
 							</TR>
 							<TR>
@@ -104,7 +104,7 @@
 						</TABLE>
 					</TD>
 					<TD ALIGN="RIGHT" VALIGN="bottom" NOWRAP>
-						<A HREF="javascript:document.assignment.submit()" {tip text="Assign subscription to customer"}>{t}Add{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+						<A HREF="javascript:document.assignment.submit()" {tip text="Assign subscription to customer"}>{t}Add{/t} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				</TR>
 				</FORM>

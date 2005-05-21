@@ -23,11 +23,11 @@
 	{if $smarty.foreach.authors.iteration is odd}<TR>{/if}
 		<TD WIDTH="50%" VALIGN="TOP">
 			<TABLE WIDTH="100%" CELLPADDING="5">
-				<TR>
-					<TD BGCOLOR="#F4F0EC" CLASS="fleftu" WIDTH="1%">
+				<TR class="superlight">
+					<TD CLASS="fleftu" WIDTH="1%">
 						<IMG SRC="img/{$nick|lower}.icon.gif" BORDER="1">
 					</TD>
-					<TD BGCOLOR="#F4F0EC" CLASS="frightu" WIDTH="99%">
+					<TD CLASS="frightu" WIDTH="99%">
 						<B>{$nick}</B><BR>
 						{$author.realname}<BR>
 						{if $author.www}<A HREF="http://{$author.www}" TARGET="_BLANK">{$author.www}</A>{/if}&nbsp;<BR>
@@ -41,14 +41,14 @@
 	{if $smarty.foreach.authors.iteration is odd}</TR>{/if}
 </TABLE>
 <P align="center"><B>{t}The rest of group:{/t}</B></P>
-<CENTER>
+<P align="center">
 {foreach from=$others item=other name=others key=nick}
 	{if $other.www}<A href="http://{$other.www}" target="_BLANK">{/if}
 	{$other.realname} [{$nick}]
 	{if $other.www}</A>{/if}
 	- {$other.info}<BR>
 {/foreach}
-</CENTER>
+</P>
 <P align="center"><a href="http://smarty.php.net/"><B>{t}LMS uses Smarty Template Engine - http://smarty.php.net/{/t}</B></A></P>
-<P align="center"><a href="http://smarty.php.net/"><img src="img/smarty_icon.gif" border="0" ALT="Smarty"></A></p>
+<P align="center"><a href="http://smarty.php.net/"><img src="img/smarty_icon.gif" alt="Smarty"></A></p>
 {include file="footer.html"}

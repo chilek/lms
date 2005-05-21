@@ -2,7 +2,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK" onclick="showOrHide('groupspanel');">
 		<TD class="fall">
-			<IMG src="img/group.gif" border="0" ALT="" align="absmiddle">
+			<IMG src="img/group.gif" alt="">
 			<B><A name="groups">{t}Groups Membership:{/t}</A></B> 
 		</TD>
 	</TR>
@@ -15,9 +15,9 @@
 					<TD WIDTH="97%" NOWRAP class="fbt">{t}ID:{/t}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{cycle values="light,lucid" print=false}
 				{foreach from=$usergroups item=usergroup}
-				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=usergroupinfo&id={$usergroup.id}">{$usergroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$usergroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$usergroup.id|string_format:"%04d"})</TD>
@@ -25,14 +25,15 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="5"><p>&nbsp;</p>
+					<TD align="center" WIDTH="100%" colspan="5">
+						<p>&nbsp;</p>
 						<p><B>{t}That customer is not a member of any group.{/t}</B></p>
 						<p>&nbsp;</p>
 					</TD>
 				</TR>
 				{/foreach}
 				<FORM METHOD="POST" NAME="usergroupassignment" ACTION="?m=useredit&action=usergroupadd&id={$userinfo.id}">
-				<TR bgcolor="#DFD5BD">
+				<TR class="light">
 					<TD COLSPAN="4" CLASS="ftop">
 						<B>{t}Add:{/t}</B>
 						<SELECT SIZE="1" NAME="usergroupid" {tip text="Select group to attribute to customer"}>
@@ -44,7 +45,7 @@
 						<NOBR>
 					</TD>
 					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
-						<A HREF="javascript:document.usergroupassignment.submit()" {tip text="Add customer to group"}>{t}Add{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+						<A HREF="javascript:document.usergroupassignment.submit()" {tip text="Add customer to group"}>{t}Add{/t} <IMG SRC="img/save.gif" alt=""></A>
 					</TD>
 				</TR>
 				</FORM>

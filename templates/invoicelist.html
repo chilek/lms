@@ -84,22 +84,22 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<A href="?m=invoicelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=invoicelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=invoicelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=invoicelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=invoicelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{t}Number:{/t}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=invoicelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{t}Number:{/t}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=invoicelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Value:{/t}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=invoicelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Value:{/t}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=invoicelist&o=items{if $listdata.direction eq "asc" && $listdata.order eq "items"},desc{/if}">{t}Items:{/t}</A> {if $listdata.order eq "items"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=invoicelist&o=items{if $listdata.direction eq "asc" && $listdata.order eq "items"},desc{/if}">{t}Items:{/t}</A> {if $listdata.order eq "items"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="94%" CLASS="fbt" nowrap>
-			<A href="?m=invoicelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{t}For:{/t}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=invoicelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{t}For:{/t}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu">
 			&nbsp;
@@ -126,7 +126,7 @@
 					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"..."}</OPTION>
 					{/section}
 				</SELECT>
-				<INPUT type="checkbox" name="groupexclude" style="border-style: none; background-color: #CEBD9B;"{if $listdata.groupexclude} CHECKED{/if}> {t}exclude group{/t}
+				<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}> {t}exclude group{/t}
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>		
@@ -142,11 +142,11 @@
 		</TD>
 	</TR>
 	{/if}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
 	{assign var=invoiceid value=$invoice.id}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="fleft">
 			{$invoice.id|string_format:"%04d"}
 		</TD>
@@ -168,24 +168,22 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{if !$invoice.paid}
 				<A HREF="javascript:invoicepay({$invoice.id})">
-				<IMG ALIGN="absmiddle" SRC="img/invoice_pay.gif" ALT="[ {t}Account{/t} ]" BORDER="0" TARGET="_BLANK"></A>
+				<IMG src="img/invoice_pay.gif" alt="[ {t}Account{/t} ]"></A>
 			{else}
-				<IMG ALIGN="absmiddle" SRC="img/empty.gif" ALT="" WIDTH="16" BORDER="0">
+				<IMG src="img/empty.gif" alt="" WIDTH="16">
 			{/if}
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ {t}Print{/t} ]" BORDER="0" TARGET="_BLANK"></A>
-			<A {if $invoice.paid}onClick="return confirmLink(this, '{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Invoice \'$0\' has been paid. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG ALIGN="absmiddle" SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0" TARGET="_BLANK"></A>
-			<A onClick="return confirmLink(this, '{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoiceedit&id={$invoice.id}&action=invoicedel"><IMG ALIGN="absmiddle" SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0" TARGET="_BLANK"></A>
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
+			<A {if $invoice.paid}onClick="return confirmLink(this, '{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Invoice \'$0\' has been paid. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A onClick="return confirmLink(this, '{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoiceedit&id={$invoice.id}&action=invoicedel"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 			{cycle print=false}
-			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
+			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
 			<P>&nbsp;</P>
-			<P>&nbsp;</P>
 			<P><B>{t}No such invoices in database.{/t}</B></P>
-			<P>&nbsp;</P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>	
@@ -207,14 +205,14 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left">
-						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/invoice_pay.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Enter accounting date in 'YYYY/MM/DD' format (empty field means current date)"}>&nbsp;<IMG SRC="img/calendar.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></NOBR>
+						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" ALT=""></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" ALT=""></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/invoice_pay.gif" ALT=""></A></NOBR>&nbsp;
+						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Enter accounting date in 'YYYY/MM/DD' format (empty field means current date)"}>&nbsp;<IMG SRC="img/calendar.gif" ALT=""></NOBR>
 					</TD>
 					<TD ALIGN="right">	
-						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT STYLE="border:0; background-color:#CEBD9B;" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>

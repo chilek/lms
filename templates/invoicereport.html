@@ -44,9 +44,9 @@
 			{t}Total Tax{/t}
 		</TD>
 	</TR>
-	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{cycle values="white,grey" print=false}
 	{foreach item=invoice from=$invoicelist}
-	<TR BGCOLOR="{cycle}">
+	<TR class="{cycle}">
 		<TD WIDTH="1%" ALIGN="RIGHT">
 			{counter}
 		</TD>

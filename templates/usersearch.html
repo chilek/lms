@@ -29,7 +29,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/user.gif" align="absmiddle" border="0" alt=""> <B>{t}First/last or Company name:{/t}</B>
+			<IMG src="img/user.gif" alt=""> <B>{t}First/last or Company name:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[username]" VALUE="{$search.username}">
@@ -37,7 +37,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/home.gif" align="absmiddle" border="0" alt=""> <B>{t}Address:{/t}</B>
+			<IMG src="img/home.gif" alt=""> <B>{t}Address:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" nowrap>
 			<INPUT TYPE="text" NAME="search[address]" VALUE="{$search.address}">
@@ -47,7 +47,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/phone.gif" align="absmiddle" border="0" alt=""> <B>{t}Phone:{/t}</B>
+			<IMG src="img/phone.gif" alt=""> <B>{t}Phone:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[phone]" VALUE="{$search.phone}">
@@ -55,7 +55,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/mail.gif" align="absmiddle" border="0" alt=""> <B>{t}E-mail:{/t}</B>
+			<IMG src="img/mail.gif" alt=""> <B>{t}E-mail:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[email]" VALUE="{$search.email}">
@@ -63,7 +63,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/gg.gif" align="absmiddle" border="0" alt=""> <B>{t}IM:{/t}</B>
+			<IMG src="img/gg.gif" alt=""> <B>{t}IM:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[gguin]" VALUE="{$search.gguin}">
@@ -71,7 +71,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}TEN:{/t}</B>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}TEN:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[nip]" VALUE="{$search.nip}">
@@ -79,7 +79,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}SSN:{/t}</B>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}SSN:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[pesel]" VALUE="{$search.pesel}">
@@ -87,16 +87,16 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}Qualification operator:{/t}</B>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Qualification operator:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
-			<INPUT style="border-style: none; background: #DFD5BD" type="radio" value="AND" name="k"{if $k!='OR'} CHECKED{/if}> {t}AND{/t}
-			<INPUT style="border-style: none; background: #DFD5BD" type="radio" value="OR" name="k"{if $k=='OR'} CHECKED{/if}> {t}OR{/t}
+			<INPUT class="radio light" type="radio" value="AND" name="k"{if $k!='OR'} CHECKED{/if}> {t}AND{/t}
+			<INPUT class="radio light" type="radio" value="OR" name="k"{if $k=='OR'} CHECKED{/if}> {t}OR{/t}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/network.gif" align="absmiddle" border="0" alt=""> <B>{t}Network:{/t}</B>
+			<IMG src="img/network.gif" alt=""> <B>{t}Network:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<SELECT SIZE="1" NAME="n">
@@ -109,7 +109,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/group.gif" align="absmiddle" border="0" alt=""> <B>{t}Group:{/t}</B>
+			<IMG src="img/group.gif" alt=""> <B>{t}Group:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<SELECT SIZE="1" NAME="g">
@@ -122,7 +122,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/access.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}State:{/t}</B>
+			<IMG src="img/access.gif" width="16" alt=""> <B>{t}State:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<SELECT SIZE="1" NAME="s">
@@ -139,8 +139,8 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A ACCESSKEY="S" href="javascript:Search();">{t}Submit{/t} <IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>&nbsp;
-			<A href="javascript:PrintList();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+			<A ACCESSKEY="S" href="javascript:Search();">{t}Submit{/t} <IMG SRC="img/search.gif" alt=""></A>&nbsp;
+			<A href="javascript:PrintList();">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
 		</TD>	
 	</TR>
 </TABLE>

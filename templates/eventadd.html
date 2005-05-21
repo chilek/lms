@@ -23,15 +23,11 @@
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
-{*<TABLE width="100%" cellpadding="0" border="0">
-	<TR>
-	    <TD>
-*}
 <FORM method="POST" action="?m=eventadd" name="event">
 <TABLE width="100%" cellpadding="3" border="0">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			<IMG src="img/calendar.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%" class="fbt">
 			<B>{t}Title:{/t}</B>
@@ -42,7 +38,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/time.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Time:{/t}</B>
@@ -64,7 +60,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Description:{/t}</B>
@@ -75,18 +71,18 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/access.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/access.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[status]" value="1" style="border-style: none; background-color: #DFD5BD" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> {t}private{/t}
+			<INPUT type="checkbox" name="event[status]" value="1" class="box light" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> {t}private{/t}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/user.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/user.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Customer:{/t}</B>
@@ -102,7 +98,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/admins.gif" border="0" align="absmiddle" ALT="">
+			<IMG src="img/admins.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Users:{/t}</B>
@@ -117,19 +113,11 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
-			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
-			<INPUT type="checkbox" name="event[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $event.reuse}checked{/if}> {t}Display this form again, when this event is saved{/t}
+			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="event[reuse]" value="ON" class="box light" {if $event.reuse}checked{/if}> {t}Display this form again, when this event is saved{/t}
 		</TD>
 	</TR>
-{*</TABLE>
-		</TD>
-		<TD></TD>
-		<TD>
-			{include file="eventcalendar.html"}
-		</TD>
-	</TR>
-*}
 </TABLE>
 </P>
 <SCRIPT>
