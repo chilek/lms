@@ -121,7 +121,13 @@
 			<IMG SRC="img/info1.gif" BORDER="0" ALT="{t}Description:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			{$nodeinfo.info}
+			<TABLE width="100%" cellpadding="5">
+			    <TR>
+				<TD class="fall" bgcolor="#F4F0EC">
+				    {$nodeinfo.info|replace:"\n":"<BR>"}
+				</TD>
+			    </TR>
+			</TABLE>	
 		</TD>
 	</TR>
 {/if}
