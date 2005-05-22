@@ -38,14 +38,15 @@
 					<TD width="1%" class="fbt" align="right" nowrap>{t}Last Reload:{/t}</TD>
 					<TD width="1%" class="frightu"></TD>
 				</TR>
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{cycle values="light,lucid" print=false}
 				{section name=hosts loop=$hosts}
-				<TR bgcolor="{cycle}" {cycle print=false}>
+				<TR class="{cycle}">
 					<TD nowrap><IMG src="img/host.gif" ALT=""> <B>{$hosts[hosts].name}</B></TD>
 					<TD>{$hosts[hosts].description}</TD>
 					<TD align="right" nowrap>{if $hosts[hosts].lastreload}{$hosts[hosts].lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</TD>
 					<TD>
-						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="hosts[]" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
+						{cycle print=false}
+						<INPUT class="box {cycle}" TYPE="checkbox" NAME="hosts[]" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
 					</TD>
 				</TR>
 				{sectionelse}
@@ -57,9 +58,9 @@
 					</TD>
 				</TR>
 				{/section}
-				<TR bgcolor="#DFD5BD">
+				<TR class="light">
 					<TD CLASS="ftop" colspan="2"nowrap>
-						<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+						<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
 						<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>

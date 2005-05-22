@@ -33,9 +33,9 @@
 			{t}Tax-free{/t}
 		</TD>
 	</TR>
-	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{cycle values="white,grey" print=false}
 	{section name=incomelist loop=$incomelist}
-	<TR BGCOLOR="{cycle}">
+	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}
 		</TD>
@@ -64,9 +64,8 @@
 		</TD>
 	</TR>
 	{/section}
-	<TR>
-		<TD ALIGN="CENTER">
-		</TD>
+	<TR class="grey">
+		<TD ALIGN="CENTER"></TD>
 		<TD ALIGN="CENTER" NOWRAP>
 			{t}Total:{/t}
 		</TD>

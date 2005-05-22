@@ -39,9 +39,9 @@
 			{t}Description{/t}
 		</TD>		
 	</TR>
-	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{cycle values="white,grey" print=false}
 	{section name=balancelist loop=$balancelist}
-	<TR BGCOLOR="{cycle}">
+	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}
 		</TD>
@@ -78,19 +78,19 @@
 		</TD>
 	</TR>
 	{/section}
-	<TR>
-		<TD ALIGN="RIGHT" BGCOLOR="#EEEEEE" COLSPAN="5">
+	<TR class="grey">
+		<TD ALIGN="RIGHT" COLSPAN="5">
 			<B>{t}Customers covenants:{/t}</B><BR>
 			<B>{t}Income:{/t}</B><BR>
 			<B>{t}Expenditure:{/t}</B><BR>
 			<B>{t}Total:{/t}</B>
 		</TD>
-		<TD ALIGN="RIGHT" BGCOLOR="#EEEEEE">
+		<TD ALIGN="RIGHT">
 			{$listdata.incomeu|money_format}<BR>
 			{$listdata.income|money_format}<BR>
 			{$listdata.expense|money_format}<BR>
 			<NOBR><B>{$listdata.total|money_format}</B><NOBR>
 		</TD>
-		<TD COLSPAN="2" BGCOLOR="#EEEEEE"></TD>
+		<TD COLSPAN="2"></TD>
 	</TR>
 </TABLE>

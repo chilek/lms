@@ -24,9 +24,9 @@
 			<B>{t 0=$listdata.total}Total: $0{/t}</B>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=payments loop=$paymentlist}
-	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="fleft" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="fleft">
 			<IMG SRC="img/payment.gif" ALT=""><BR>
 			<IMG SRC="img/creditor.gif" ALT="">
@@ -67,9 +67,7 @@
 	<TR>
 		<TD COLSPAN="6" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
-			<p>&nbsp;</p>
 			<p><B>{t}No such standing payments in database.{/t}</B></p>
-			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>

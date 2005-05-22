@@ -65,7 +65,7 @@
 	<TR CLASS="LIGHT">
 		<TD CLASS="FALL" COLSPAN="2">
 			{section name=acl loop=$accesslist}
-			<INPUT CLASS="box light" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" class="clean"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			<INPUT CLASS="box light" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
 			{/section}
 		</TD>
 	</TR>

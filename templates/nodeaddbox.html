@@ -63,7 +63,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]" {tip text="Select node status"}>
+			<SELECT SIZE="1" NAME="nodedata[access]" {tip text="Select node status"}>
 				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
@@ -77,7 +77,7 @@
 			<B>{t}Message:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[warning]" {tip text="Set message for node"}>
+			<SELECT SIZE="1" NAME="nodedata[warning]" {tip text="Set message for node"}>
 				<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
 			</SELECT>
@@ -132,7 +132,7 @@
 			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">{t}Scan{/t} <IMG SRC="img/search.gif" alt=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="nodedata[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $nodedata.reuse}checked{/if}> {t}Display this form again, when this node is saved{/t}
+			<INPUT type="checkbox" name="nodedata[reuse]" value="ON" class="box light"" {if $nodedata.reuse}checked{/if}> {t}Display this form again, when this node is saved{/t}
 		</TD>
 	</TR>	
 </TABLE></FORM>

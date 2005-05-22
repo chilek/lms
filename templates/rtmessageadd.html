@@ -22,8 +22,8 @@
 			<B>{t}Submitter:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT style="border-style: none; background: #DFD5BD" type="radio" name="message[sender]" value="admin" CHECKED>{t}user{/t}</INPUT>
-			<INPUT style="border-style: none; background: #DFD5BD" type="radio" name="message[sender]" value="user" {if $message.sender eq 'user'}CHECKED{/if}>{t}customer{/t}</INPUT>
+			<INPUT class="radio light" type="radio" name="message[sender]" value="admin" CHECKED>{t}user{/t}</INPUT>
+			<INPUT class="radio light" type="radio" name="message[sender]" value="user" {if $message.sender eq 'user'}CHECKED{/if}>{t}customer{/t}</INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">

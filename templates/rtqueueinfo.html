@@ -26,7 +26,7 @@
 	    <TD width="98%" class="fright">
 		<TABLE width="100%" cellpadding="5">
 		    <TR>
-			<TD class="fall" bgcolor="#F4F0EC">
+			<TD class="fall superlight">
 			    {$queue.description|replace:"\n":"<BR>"}
 			</TD>
 		    </TR>
@@ -48,10 +48,10 @@
 			    <TD width="1%" class="fbt" align="center" nowrap><B>{t}Write (+R){/t}</B></TD>
 			    <TD width="1%" class="frightu" align="center" nowrap><B>{t}Notices (+RW){/t}</B></TD>
 			</TR>
-			{cycle values="#DFD5BD,#EBE4D6" print=false}
+			{cycle values="light,lucid" print=false}
 			{foreach from=$queue.rights item=right}
 			{if $right.rights}
-			<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 			    <TD width="97%" class="fleft">
 				<A href="?m=admininfo&id={$right.id}">{$right.name}</A>
 				<INPUT type="hidden" name="queue[adminnames][{$right.id}]" value="{$right.name}">

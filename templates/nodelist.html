@@ -37,8 +37,9 @@
 		</TD>
 	</TR>
 	{/if}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if ! $nodelist[nodelist].access} class="blend"{/if}>
+	{cycle values="light,lucid" print=false}
+	{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
+	<TR class="{cycle}{if ! $nodelist[nodelist].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD width="95%" class="fleft" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
@@ -79,9 +80,7 @@
 	<TR>
 		<TD colspan="4" class="fall" align="center">
 			<p>&nbsp;</p>
-			<p>&nbsp;</p>
 			<p><B>{t}No such nodes in database.{/t}</b></p>
-			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>

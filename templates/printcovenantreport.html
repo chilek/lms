@@ -27,9 +27,9 @@
 			{t}Difference{/t}
 		</TD>
 	</TR>
-	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{cycle values="white,grey" print=false}
 	{foreach from=$monthlist item=month}
-	<TR BGCOLOR="{cycle}">
+	<TR class="{cycle}">
 		<TD ALIGN="LEFT">
 			{$monthnames.$month}
 		</TD>
@@ -44,7 +44,7 @@
 		</TD>
 	</TR>
 	{/foreach}
-	<TR>
+	<TR class="grey">
 		<TD ALIGN="RIGHT">
 			<B>{t}Total:{/t}</B>
 		</TD>

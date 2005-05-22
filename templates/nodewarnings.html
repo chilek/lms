@@ -46,20 +46,16 @@
 						</SELECT>
 					</TD>
 					<TD CLASS="fright" COLSPAN="2">
-						<TABLE CELLPADDING="3">
-							<TD CLASS="FALL" COLSPAN="3" BGCOLOR="#F4F0EC" {tip text="Enter system message to customers"}>
-								<TEXTAREA NAME="setwarnings[message]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" ROWS="19" COLS="75">{$warnmessage}</TEXTAREA>
-							</TD>
-						</TABLE>
+						<TEXTAREA NAME="setwarnings[message]" ROWS="20" COLS="75" {tip text="Enter system message to customers"}>{$warnmessage}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbl" WIDTH="1%" nowrap>
-						<INPUT TYPE="checkbox" NAME="nodes" CLASS="box" OnClick="javascript:SelectAllNodes()">{t}Select All{/t}</INPUT>
+						<INPUT TYPE="checkbox" NAME="nodes" CLASS="box light" OnClick="javascript:SelectAllNodes()">{t}Select All{/t}</INPUT>
 					</TD>
 					<TD CLASS="fbottom" ALIGN="left">
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}>{t}Enable message{/t}</INPUT></NOBR>
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}>{t}Disable message{/t}</INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}>{t}Enable message{/t}</INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}>{t}Disable message{/t}</INPUT></NOBR>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT">
 						<A HREF="javascript:document.setwarnings.submit()">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>

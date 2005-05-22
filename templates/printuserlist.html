@@ -34,9 +34,9 @@
 			{t}Balance{/t}
 		</TD>
 	</TR>
-	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{cycle values="white,grey" print=false}
 	{section name=userlist loop=$userlist}{if $userlist[userlist].id}
-	<TR BGCOLOR="{cycle}">
+	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}
 		</TD>
@@ -58,7 +58,7 @@
 		</TD>
 	</TR>
 	{/if}{/section}
-	<TR BGCOLOR="#EEEEEE">
+	<TR class="grey">
 		<TD COLSPAN="3" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
 		<TD ALIGN="RIGHT"><B>{sum array=$userlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 		<TD ALIGN="RIGHT"><B>{sum array=$userlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
