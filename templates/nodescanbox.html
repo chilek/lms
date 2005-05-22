@@ -2,13 +2,13 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="3">
-			<IMG SRC="img/node.gif" ALT="" ALIGN="ABSMIDDLE"> <B>{t}Computers found:{/t}</B>
+			<IMG SRC="img/node.gif" ALT=""> <B>{t}Computers found:{/t}</B>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=n loop=$nodes}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD WIDTH="99%" CLASS="FLEFT" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac|upper}&prename={$nodes[n].name|upper}{if $userinfo}&ownerid={$userinfo.id}{/if}';">
-			<IMG SRC="img/node.gif" ALT="" ALIGN="ABSMIDDLE"> <B>{$nodes[n].name}</B>
+			<IMG SRC="img/node.gif" ALT=""> <B>{$nodes[n].name}</B>
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac|upper}&prename={$nodes[n].name|upper}{if $userinfo}&ownerid={$userinfo.id}{/if}';">
 			{$nodes[n].ipaddr}

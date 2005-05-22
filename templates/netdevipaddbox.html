@@ -3,7 +3,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="">
+			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>{t}Name:{/t}</B>
@@ -14,7 +14,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
+			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}IP address:{/t}</B>
@@ -25,7 +25,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
+			<IMG SRC="img/mac.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}MAC address:{/t}</B>
@@ -36,13 +36,13 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" BORDER="0" ALT="">
+			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="ipadd[access]" {tip text="Select address status"}>
+			<SELECT SIZE="1" NAME="ipadd[access]" {tip text="Select address status"}>
 				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
@@ -50,7 +50,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/info.gif" BORDER="0" ALT="Opis:">
+			<IMG SRC="img/info.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Description:{/t}</B>

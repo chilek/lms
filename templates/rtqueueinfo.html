@@ -4,14 +4,14 @@
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 	    <TD width="1%" class="fleftu">
-		<IMG src="img/queue.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		<IMG src="img/queue.gif" ALT="">
 	    </TD>
 	    <TD width="99%" colspan="2" class="frightu"><B>{$queue.name} ({$queue.id|string_format:"%04d"})</B></TD>
 	</TR>
 	{if $queue.email}
 	<TR class="LIGHT">
 	    <TD width="1%" class="fleft">
-		<IMG src="img/mail.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		<IMG src="img/mail.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{t}E-mail:{/t}</B></TD>
 	    <TD width="98%" class="fright">{$queue.email}</TD>
@@ -20,7 +20,7 @@
 	{if $queue.description}
 	<TR class="LIGHT">
 	    <TD width="1%" class="fleft">
-		<IMG src="img/info1.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		<IMG src="img/info1.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{t}Description:{/t}</B></TD>
 	    <TD width="98%" class="fright">
@@ -36,7 +36,7 @@
 	{/if}
 	<TR class="LIGHT">
 	    <TD width="1%" class="fleft">
-		<IMG src="img/admins.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		<IMG src="img/admins.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{t}Privileges:{/t}</B></TD>
 	    <TD width="98%" class="fright">
@@ -57,13 +57,13 @@
 				<INPUT type="hidden" name="queue[adminnames][{$right.id}]" value="{$right.name}">
 			    </TD>
 			    <TD width="1%" align="center">
-				{if $right.rights > 0}<IMG src="img/pass.gif" border="0" alt="">{/if}
+				{if $right.rights > 0}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			    <TD width="1%" align="center">
-				{if $right.rights > 1}<IMG src="img/pass.gif" border="0" alt="">{/if}
+				{if $right.rights > 1}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			    <TD width="1%" align="center" class="fright">
-				{if $right.rights > 2}<IMG src="img/pass.gif" border="0" alt="">{/if}
+				{if $right.rights > 2}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			</TR>
 			{/if}

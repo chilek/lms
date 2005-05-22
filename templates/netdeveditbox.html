@@ -3,7 +3,7 @@
 	<FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/netdev.gif" BORDER="0" ALT="">
+			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>{t}Name:{/t}</B>
@@ -13,7 +13,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/producer.gif" BORDER="0" ALT="">
+			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Producer:{/t}</B>
@@ -24,7 +24,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev_model.gif" BORDER="0" ALT="">
+			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Model:{/t}</B>
@@ -35,7 +35,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/serialnumber.gif" BORDER="0" ALT="">
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Serial number:{/t}</B>
@@ -46,7 +46,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/port.gif" BORDER="0" ALT="">
+			<IMG SRC="img/port.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Ports number:{/t}</B>
@@ -57,7 +57,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/home.gif" BORDER="0" ALT="">
+			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Location:{/t}</B>
@@ -68,23 +68,15 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev_description.gif" BORDER="0" ALT="">
+			<IMG SRC="img/netdev_description.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Description:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<TABLE WIDTH="1%" CELLPADDING="5">
-				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
-						<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5" {tip text="Enter additional informations (optional)"}>{$netdevinfo.description}</TEXTAREA>
-					</TD>
-				</TR>
-			</TABLE>
+			<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" COLS="40" ROWS="5" {tip text="Enter additional informations (optional)"}>{$netdevinfo.description}</TEXTAREA>
 		</TD>
 	</TR>
-
-
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="4" ALIGN="RIGHT">
 			<A HREF="javascript:document.netdevedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
@@ -116,4 +108,3 @@
 	</TR>
 	{/if}
 </TABLE>
-

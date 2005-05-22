@@ -2,40 +2,41 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" CLASS="fall" COLSPAN="3">
-			<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="absmiddle">
+			<IMG SRC="img/node.gif" ALT="">
 			<B>{t}Connected Nodes:{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="98%" nowrap>
-			<img src="img/node.gif" ALT="" align="absmiddle"> <B>{t}Name:{/t}</B><BR>
-			<img src="img/user.gif" ALT="" align="absmiddle"> {t}Owner:{/t}
+			<img src="img/node.gif" ALT=""> <B>{t}Name:{/t}</B><BR>
+			<img src="img/user.gif" ALT=""> {t}Owner:{/t}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> {t}ID:{/t}<BR>
-			<img src="img/ip.gif" ALT="" align="absmiddle"> {t}IP address:{/t}
+			<img src="img/empty.gif" WIDTH="16" HEIGHT="16"> {t}ID:{/t}<BR>
+			<img src="img/ip.gif" ALT=""> {t}IP address:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;	
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netcomplist loop=$netcomplist start=$start}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	{cycle values="light,lucid" print=false}
+	{section name=netcomplist loop=$netcomplist start=$start}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD width="98%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
-			<IMG SRC="img/node.gif" ALT="" ALIGN="ABSMIDDLE"> <B>{$netcomplist[netcomplist].name}</B><BR>
-			<IMG SRC="img/user.gif" ALT="" ALIGN="absmiddle"> <A href="?m=userinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=userinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
+			<IMG SRC="img/node.gif" ALT=""> <B>{$netcomplist[netcomplist].name}</B><BR>
+			<IMG SRC="img/user.gif" ALT=""> <A href="?m=userinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=userinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 			{if $netcomplist[netcomplist].linktype}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A>
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]"></A>
 			{else}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A>
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]"></A>
 			{/if}
 			({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
-			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE"> {$netcomplist[netcomplist].ip}
+			<IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].ip}
 		</TD>
 		<TD CLASS="fright" WIDTH="1%">
-			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" ALIGN="absmiddle" ALT="" BORDER="0" {tip text="Delete connection"}></A>
+			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -64,7 +65,7 @@
 				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 				{/section}
 			</SELECT>
-			<INPUT style="border:0; background-color=#CEBD9B;" type="checkbox" name="linktype" value="1" {if $nodelinktype}CHECKED{/if}>&nbsp;{t}wireless{/t}
+			<INPUT class="box dark" type="checkbox" name="linktype" value="1" {if $nodelinktype}CHECKED{/if}>&nbsp;{t}wireless{/t}
 			</FORM></P>
 			{/if}
 		</TD>

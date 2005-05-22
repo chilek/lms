@@ -78,7 +78,7 @@
 					<TD>{$covenantlist[covenantlist].comment}</TD>
 					<TD align="right">
 						{cycle print=false}
-						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="cmarks[]" VALUE="{$covenantlist[covenantlist].id}"{if $covenantlist[covenantlist].selected} CHECKED{/if}>
+						<INPUT class="box {cycle}" TYPE="checkbox" NAME="cmarks[]" VALUE="{$covenantlist[covenantlist].id}"{if $covenantlist[covenantlist].selected} CHECKED{/if}>
 					</TD>
 				</TR>
 				{sectionelse}
@@ -111,7 +111,7 @@
 <P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fall">
-			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
+			<IMG src="img/money.gif" ALT="">
 			<B><A name="balance">{t}Customer Prepayments:{/t}</A></B>
 		</TD>
 	</TR>
@@ -163,8 +163,8 @@
 					<TD CLASS="ftop" ALIGN="right" colspan="3" valign="top" nowrap>
 						<A HREF="javascript:CheckAllPrepayments2();">{t}Check All{/t}</A>
 						<INPUT CLASS="box" TYPE="checkbox" NAME="allboxp" onClick="CheckAllPrepayments();" VALUE="Check All Prepayments"><BR>
-						<A href="javascript: document.prepayments.submit();">{t}Bind Prepayments with Covenants{/t} <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
-						<A href="?m=userinfo&id={$userid}">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" ALT="" align="absmiddle"></A>
+						<A href="javascript: document.prepayments.submit();">{t}Bind Prepayments with Covenants{/t} <IMG src="img/save.gif" ALT=""></A>
+						<A href="?m=userinfo&id={$userid}">{t}Cancel{/t} <IMG src="img/cancel.gif" ALT=""></A>
 					</TD>
 				</TR>
 			</TABLE>

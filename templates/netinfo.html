@@ -55,7 +55,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALIGN="asbmiddle" ALT=""> <B>{t}Interface:{/t}</B>
+			<IMG SRC="img/mac.gif" ALT=""> <B>{t}Interface:{/t}</B>
 		</TD>
 		<TD COLSPAN="3" CLASS="FRIGHT" WIDTH="99%">
 			{if $unlockedit}
@@ -116,7 +116,7 @@
 		<TD width="100%" class="fbottomu" colspan="4" align="right">
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
-				<A href="?m=netcmp&id={$network.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!{/t}');">{t}Put in order{/t} <img src="img/cmp.gif" align="absmiddle" ALT="[ {t}Put in order{/t} ]" border="0"></A><BR>
+				<A href="?m=netcmp&id={$network.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!{/t}');">{t}Put in order{/t} <img src="img/cmp.gif" ALT="[ {t}Put in order{/t} ]"></A><BR>
 				<input type="hidden" name="is_sure" value="1">
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
@@ -129,21 +129,21 @@
 						{/if}
 						{/section}
 					</select>
-				<img src="img/remap.gif" border="0" ALT="" align="absmiddle"><BR>
+				<img src="img/remap.gif" ALT=""><BR>
 				{/if}
-				<A href="javascript:document.netedit.submit()" ACCESSKEY="S">{t}Submit{/t} <IMG src="img/save.gif" ALT="[ {t}Submit{/t} ]" align="absmiddle" border="0"></a>
-				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name|upper}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" align="absmiddle" ALT="[ {t}Remove{/t} ]" border="0"></A>
-				<A href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" align="absmiddle" ALT="[ {t}Cancel{/t} ]" border="0"></A></TD></form>
+				<A href="javascript:document.netedit.submit()" ACCESSKEY="S">{t}Submit{/t} <IMG src="img/save.gif" ALT="[ {t}Submit{/t} ]"></a>
+				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name|upper}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
+				<A href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" ALT="[ {t}Cancel{/t} ]"></A></TD></form>
 			{else}
-			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{t}Edit{/t} <img src="img/edit.gif" align="absmiddle" ALT="[ {t}Edit{/t} ]" border="0"></A>
-			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name|upper}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" align="absmiddle" ALT="[ {t}Remove{/t} ]" border="0"></A>
+			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{t}Edit{/t} <img src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name|upper}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
 		</TD>
 			{/if}
 	</TR>
 	{if $network.page}
 	<TR class="dark">
 		<TD width="50%" class="fleftu" colspan="2">
-			<img src="img/ip.gif" align="absmiddle" ALT="" border="0"> <B>{t}IP addresses status:{/t}</B>
+			<img src="img/ip.gif" ALT=""> <B>{t}IP addresses status:{/t}</B>
 		</TD>
 		<TD WIDTH="50%" CLASS="frightu" COLSPAN="2" ALIGN="RIGHT">
 			<B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
@@ -153,17 +153,26 @@
 	<TR>
 		<TD width="100%" class="fall" colspan="4">
 			<table width="100%" cellpadding="3">
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{cycle values="light,lucid" print=false}
 				{section name=network loop=$network.nodes.id max=$network.rows}
-				<TR>
+				<TR class="{cycle}">
 					{section name=subnetwork loop=$network.nodes.address start=$smarty.section.network.index step=$network.rows}
-					<TD bgcolor="{cycle}" {cycle print=false}align="center" width="25%" onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false}valign="middle"{if $network.nodes.id[networkip]} class="blend"{/if}{if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]} onclick="return self.location.href='?m=netdevinfo&id={$network.nodes.netdev[subnetwork]}'"}{else}{if $network.nodes.id[subnetwork]} onclick="return self.location.href='?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}'"{else}{if !$network.nodes.name[subnetwork]} onclick="return self.location.href='?m=nodeadd&preip={$network.nodes.address[subnetwork]}'"{/if}{/if}{/if}>
-					<img src="img/{if !$network.nodes.ownerid[subnetwork] && $network.nodes.name[subnetwork]}netdev{else}node{/if}.gif" align="left" ALT="" border="0">
-					{if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]}<a href="?m=netdevinfo&id={$network.nodes.netdev[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>{else}{if $network.nodes.id[subnetwork]}<a href="?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>{else}{if $network.nodes.name[subnetwork]}<FONT CLASS="blend">{$network.nodes.name[subnetwork]}</FONT>{else}<a href="?m=nodeadd&preip={$network.nodes.address[subnetwork]}">{$network.nodes.address[subnetwork]}</A>{/if}{/if}{/if}
-					
+					<TD align="center" width="25%" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" {if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]} onclick="return self.location.href='?m=netdevinfo&id={$network.nodes.netdev[subnetwork]}'"}{else}{if $network.nodes.id[subnetwork]} onclick="return self.location.href='?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}'"{else}{if !$network.nodes.name[subnetwork]} onclick="return self.location.href='?m=nodeadd&preip={$network.nodes.address[subnetwork]}'"{/if}{/if}{/if}>
+					<img src="img/{if !$network.nodes.ownerid[subnetwork] && $network.nodes.name[subnetwork]}netdev{else}node{/if}.gif" align="left" ALT="">
+					{if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]}
+						<a href="?m=netdevinfo&id={$network.nodes.netdev[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
+					{else}
+						{if $network.nodes.id[subnetwork]}
+							<a href="?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
+						{else}
+							{if $network.nodes.name[subnetwork]}<FONT CLASS="blend">{$network.nodes.name[subnetwork]}</FONT>
+							{else}
+								<a href="?m=nodeadd&preip={$network.nodes.address[subnetwork]}">{$network.nodes.address[subnetwork]}</A>
+							{/if}
+						{/if}
+					{/if}
 					</TD>
 					{/section}
-					{cycle print=false}
 				</TR>
 				{/section}
 				<TR class="light">

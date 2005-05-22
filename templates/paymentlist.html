@@ -4,8 +4,8 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR class="dark">
 		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/payment.gif" ALT="" BORDER="0" ALIGN="absmiddle"><BR>
-			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG SRC="img/payment.gif" ALT=""><BR>
+			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
 		<TD WIDTH="95%" CLASS="fbt" ALIGN="left">
 			<B>{t}Name:{/t}</B><BR>
@@ -28,8 +28,8 @@
 	{section name=payments loop=$paymentlist}
 	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD WIDTH="1%" CLASS="fleft" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="fleft">
-			<IMG SRC="img/payment.gif" ALT="" BORDER="0" ALIGN="absmiddle"><BR>
-			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG SRC="img/payment.gif" ALT=""><BR>
+			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
 		<TD WIDTH="95%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
 			<B>{$paymentlist[payments].name}</B><BR>
@@ -55,10 +55,10 @@
 				<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$paymentlist[payments].value}">
 				<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
 				<NOBR>
-				<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that payment?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0"></A>
-				<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0"></A>
-				<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" BORDER="0"></A>&nbsp;
-				<A HREF="javascript:document.addbalance.submit();"><IMG SRC="img/save.gif" ALT="[ {t}Account payment{/t} ]" BORDER="0"></A>
+				<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that payment?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+				<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+				<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>&nbsp;
+				<A HREF="javascript:document.addbalance.submit();"><IMG SRC="img/save.gif" ALT="[ {t}Account payment{/t} ]"></A>
 				</NOBR>
 			</FORM></P>
 		</TD>
@@ -79,7 +79,7 @@
 			&nbsp;
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{t}Total:{/t}</B>
+			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t}Total:{/t}</B>
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" ALIGN="left">
 			<B>{$listdata.total}</B>

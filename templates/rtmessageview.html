@@ -5,7 +5,7 @@
 <TABLE width="100%" cellpadding="3">
         <TR class="dark">
 		<TD class="fleftu" width="1%">
-		        <IMG src="img/open.gif" alt="" border="0" align="absmiddle">
+		        <IMG src="img/open.gif" alt="">
 		</TD>
 		<TD class="fbt" width="1%">
 			<B>{t}Subject:{/t}</B>
@@ -16,7 +16,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/time.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/time.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Date:{/t}</B>
@@ -28,9 +28,9 @@
 	<TR class="light">
 		<TD width="1%" class="fleft" NOWRAP>
 		        {if $message.adminid}
-				<IMG src="img/admins.gif" alt="" border="0" align="absmiddle">
+				<IMG src="img/admins.gif" alt="">
 			{else}
-				<IMG src="img/user.gif" alt="" border="0" align="absmiddle">
+				<IMG src="img/user.gif" alt="">
 			{/if}
 		</TD>
 		<TD width="1%">
@@ -51,7 +51,7 @@
 	{if $message.headers}
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
-			<IMG src="img/mail.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Headers:{/t}</B>
@@ -64,7 +64,7 @@
 	{if $message.messageid}
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
-			<IMG src="img/mail.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%" NOWRAP>
 			<B>Message-Id:</B>
@@ -77,7 +77,7 @@
 	{if $message.replyto}
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
-			<IMG src="img/mail.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>Reply-To:</B>
@@ -90,7 +90,7 @@
 	{if $message.inreplyto}
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
-			<IMG src="img/mail.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD width="1%" NOWRAP>
 			<B>In-Reply-To:</B>
@@ -102,7 +102,7 @@
 	{/if}
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
-			<IMG src="img/edit.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/edit.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Message:{/t}</B>
@@ -114,7 +114,7 @@
 	{if $message.attachments}
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
-			<IMG src="img/attach.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/attach.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Attachments:{/t}</B>
@@ -128,8 +128,8 @@
 	{/if}
 	<TR class="LIGHT">
 		<TD colspan="3" width="100%" class="fbottomu" align="right" NOWRAP>
-			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{t}Reply{/t} <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketview&id={$message.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{t}Reply{/t} <IMG src="img/edit.gif" alt=""></A>
+			<A href="?m=rtticketview&id={$message.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

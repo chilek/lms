@@ -6,7 +6,7 @@
 	<TR CLASS="DARK">
 		{if $unlockedit}
 		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
-			<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE">
+			<IMG SRC="img/pass.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
 			<B>{t}Login:{/t}</B>
@@ -16,14 +16,14 @@
 		</TD>
 		{else}
 		<TD CLASS="fall" COLSPAN="3" NOWRAP>
-			<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE">
+			<IMG SRC="img/pass.gif" ALT="">
 			<B>{$admininfo.login} ({$admininfo.id|string_format:"%04d"})</B>
 		</TD>
 		{/if}
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/admins.gif" ALT="" ALIGN="ABSMIDDLE">
+			<IMG SRC="img/admins.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}First/last name:{/t}</B>
@@ -38,7 +38,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG SRC="img/mail.gif" ALT="" ALIGN="ABSMIDDLE">
+			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%"><B>{t}E-mail:{/t}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
@@ -48,7 +48,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE">
+			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Allowed hosts:{/t}</B>
@@ -77,9 +77,9 @@
 	<TR CLASS="light">
 		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
 			{if $unlockedit}
-			<A HREF="javascript:document.adminedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
+			<A HREF="javascript:document.adminedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT="">
 			{else}
-			<A HREF="?m=adminedit&id={$admininfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>{/if} <a href="?m=admindel&id={$admininfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" alt=""></A> <A HREF="?m=adminpasswd&id={$admininfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> {if $unlockedit}<A HREF="?m=admininfo&id={$admininfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=adminedit&id={$admininfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>{/if} <a href="?m=admindel&id={$admininfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" alt=""></A> <A HREF="?m=adminpasswd&id={$admininfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" ALT=""> {if $unlockedit}<A HREF="?m=admininfo&id={$admininfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
 			{/if}
 		</TD>
 	</TR>

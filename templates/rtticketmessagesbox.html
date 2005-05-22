@@ -2,11 +2,11 @@
 <P><TABLE width="100%" cellpadding="3">
     <TR class="dark">
 	<TD class="fleftu" width="1%" NOWRAP>
-	    <IMG src="img/open.gif" alt="" border="0" align="absmiddle"> <B>{t}Ticket History{/t}</B>
+	    <IMG src="img/open.gif" alt=""> <B>{t}Ticket History{/t}</B>
 	</TD>
 	<TD class="frightu" width="99%" align="right" NOWRAP>
 	    {if $ticket.state != 2}
-	    <A href="?m=rtmessageadd&ticketid={$ticket.ticketid}">{t}New Message{/t} <IMG src="img/mail.gif" alt="" border="0" align="absmiddle"></A>
+	    <A href="?m=rtmessageadd&ticketid={$ticket.ticketid}">{t}New Message{/t} <IMG src="img/mail.gif" alt=""></A>
 	    {/if}
 	</TD>
     </TR>
@@ -39,12 +39,12 @@
 			    {$message.subject|escape}
 			</TD>
 			<TD width="97%" class="fbt" align="right" nowrap>
-			    <A href="?m=rtmessageview&id={$message.id}">{t}Details{/t} <IMG src="img/view.gif" alt="" border="0" align="absmiddle"></A>
+			    <A href="?m=rtmessageview&id={$message.id}">{t}Details{/t} <IMG src="img/view.gif" alt=""></A>
 			    {if $ticket.state != 2}
-			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">{t}Answer{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">{t}Answer{/t} <IMG src="img/save.gif" alt=""></A>
 			    {/if}
 			    {if $msgidx > 0}
-			    <A href="?m=rtticketview&id={$ticket.ticketid}&delmsgid={$message.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that message?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt="" border="0" align="absmiddle"></A>
+			    <A href="?m=rtticketview&id={$ticket.ticketid}&delmsgid={$message.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that message?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
 			    {/if}
 			</TD>
 		    </TR>

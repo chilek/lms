@@ -14,7 +14,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/money.gif" ALT="" ALIGN="ABSMIDDLE">
+			<IMG SRC="img/money.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu" NOWRAP>
 			<B>{$tariff.name} ({$tariff.id|string_format:"%04d"})</B>
@@ -28,7 +28,7 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 			    <TR CLASS="LIGHT">
 				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+				    <IMG SRC="img/value.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%"><B>{t}Value:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -37,7 +37,7 @@
 			    </TR>
 			    <TR class="LIGHT">
 				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/tax.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+				    <IMG SRC="img/tax.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%"><B>{t}Tax:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -48,7 +48,7 @@
 			    </TR>
 			    <TR class="LIGHT">
 				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/class.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+				    <IMG SRC="img/class.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%"><B>{t}Product ID:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -57,7 +57,7 @@
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
-				    <IMG SRC="img/users.gif" BORDER="0" ALT="" ALIGN="absmiddle">
+				    <IMG SRC="img/users.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Number of customers:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -66,7 +66,7 @@
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/values.gif" BORDER="0" ALT="" ALIGN="absmiddle">
+				    <IMG SRC="img/values.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Avg. monthly income:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -79,7 +79,7 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 			    <TR CLASS="LIGHT">
 				<TD WIDTH="1%">
-				    <IMG SRC="img/uprate.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+				    <IMG SRC="img/uprate.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Upload rate:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -96,7 +96,7 @@
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
-				    <IMG SRC="img/downrate.gif" BORDER="0" ALT="" ALIGN="absmiddle">
+				    <IMG SRC="img/downrate.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Download rate:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -113,7 +113,7 @@
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
-				    <IMG SRC="img/online.gif" ALT="" ALIGN="ABSMIDDLE">
+				    <IMG SRC="img/online.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -137,7 +137,7 @@
 	{if $tariff.description}
 	<TR CLASS="light">	
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/info1.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
 			<TABLE WIDTH="100%" CELLPADDING="5"> 
@@ -150,7 +150,7 @@
 	{/if}
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="2">
-			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
+			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
@@ -165,7 +165,7 @@
 				{section name=l1 loop=$tariff.users max=$tariff.rows}
 				<TR>
 					{section name=l2 loop=$tariff.users start=$smarty.section.l1.index step=$tariff.rows}
-					<TD WIDTH="33%" bgcolor="{cycle}" {cycle print=false} onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false} onclick="return self.location.href='?m=userinfo&id={$tariff.users[l2].id}'"><IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> <A HREF="?m=userinfo&id={$tariff.users[l2].id}">({$tariff.users[l2].id|string_format:"%04d"}) {$tariff.users[l2].username|truncate:50:" ..."} {if $tariff.users[l2].cnt > 1}({$tariff.users[l2].cnt}){/if}</A></TD>
+					<TD WIDTH="33%" bgcolor="{cycle}" {cycle print=false} onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false} onclick="return self.location.href='?m=userinfo&id={$tariff.users[l2].id}'"><IMG SRC="img/user.gif" ALT=""> <A HREF="?m=userinfo&id={$tariff.users[l2].id}">({$tariff.users[l2].id|string_format:"%04d"}) {$tariff.users[l2].username|truncate:50:" ..."} {if $tariff.users[l2].cnt > 1}({$tariff.users[l2].cnt}){/if}</A></TD>
 					{/section}{cycle print=false}
 				</TR>
 				{sectionelse}

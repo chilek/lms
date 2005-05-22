@@ -14,12 +14,12 @@
 <body{if $warning} onLoad="javascript:alert('{t}Warning! This version of LMS is under development! Remember that it might work unstable and certainly has still many bugs! If you need stability try 1.6 version!{/t}')"{/if}>
 {popup_init src="img/overlib.js"}
 {if $layout.nomenu neq TRUE && !$layout.popup}
-<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%"><tr><td width="1%" class="fall dark" valign="top">
+<table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr><td width="1%" class="fall dark" valign="top">
 	<table width="100%">
 		<tr>
 			<td align="center" style="border-bottom-style: dashed; border-bottom-width: 1px;">
 				<br>
-				<img border="0" src="img/logo-40.png" align="absmiddle" ALT="LMS {$layout.lmsv}"><br>
+				<img src="img/logo-40.png" ALT="LMS {$layout.lmsv}"><br>
 				<B>LMS {$layout.lmsv}</B><br>
 				&nbsp;<br>
 			</td>
@@ -30,7 +30,7 @@
 		<tr>
 			<td class="click-menu">
 				<div class="tip"{if $menuitem.tip} {tip text="<B>\$0</B>" 0=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="return self.location.href='{$menuitem.link}';"{/if}>
-					<div class="box1"><img src="img/{$menuitem.img}" alt="*" border="0" style="position: absolute"><font style="margin-left: 21px">{$menuitem.name}</font></div>
+					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><font style="margin-left: 21px">{$menuitem.name}</font></div>
 				</div>
 				<div class="section">
 				{if $menuitem.submenu}
@@ -47,7 +47,7 @@
 		<tr>
 			<td class="click-menu" style="border-bottom-style: dashed; border-bottom-width: 1pt;">
 				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{t}Are you sure that you want to logout?{/t}')){literal}{ return self.location.href='?m=logout&is_sure=1';}{/literal} ">
-					<div class="box1"><img src="img/logout.gif" alt="*" border="0" style="position: absolute"><NOBR><font style="margin-left: 21px">{t}Logout{/t} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
+					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><NOBR><font style="margin-left: 21px">{t}Logout{/t} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
 				</div>
 			</td>
 		</tr>
@@ -55,7 +55,7 @@
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter customer ID, first/lastname, telephone or part of customer email address and press Enter</B>"}>
-					<br>&nbsp;&nbsp;<img src="img/user.gif" alt="*" border="0" align="absmiddle">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="user">
+					<br>&nbsp;&nbsp;<img src="img/user.gif" alt="*">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="user">
 				</div>
 			</td>
 		</tr>
@@ -64,7 +64,7 @@
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter node ID, name, IP address or MAC address and press Enter</B>"}>
-					&nbsp;&nbsp;<img src="img/node.gif" alt="*" border="0" align="absmiddle">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="node">
+					&nbsp;&nbsp;<img src="img/node.gif" alt="*">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="node">
 				</div>
 			</td>
 		</tr>
@@ -73,7 +73,7 @@
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter request tracker ID or customer name and press Enter</B>"}>
-					&nbsp;&nbsp;<img src="img/ticket.gif" alt="*" border="0" align="absmiddle">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="ticket">
+					&nbsp;&nbsp;<img src="img/ticket.gif" alt="*">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="ticket">
 				</div>
 			</td>
 		</tr>

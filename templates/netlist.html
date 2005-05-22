@@ -4,64 +4,64 @@
 <table cellpadding="3" width="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD class="fleftu" width="96%">
-			<NOBR><IMG src="img/network.gif" border="0" ALT="" align="absmiddle"> <B>{t}Name:{/t}</B><BR><IMG src="img/ip.gif" border="0" ALT="" align="absmiddle"> {t}Network/prefix (interface):{/t}</NOBR>
+			<NOBR><IMG src="img/network.gif" ALT=""> <B>{t}Name:{/t}</B><BR><IMG src="img/ip.gif" ALT=""> {t}Network/prefix (interface):{/t}</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" align="right" width="1%">
-			<NOBR><IMG src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">{t}ID:{/t}</NOBR><BR>
-			<NOBR><IMG src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">{t}Addresses (total/busy/online):{/t}</NOBR>
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{t}ID:{/t}</NOBR><BR>
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{t}Addresses (total/busy/online):{/t}</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/dns.gif" border="0" ALT="" align="absmiddle"> {t}DNS servers:{/t}<BR><IMG src="img/domain.gif" border="0" ALT="" align="absmiddle"> {t}Domain:{/t}</NOBR>
+			<NOBR><IMG src="img/dns.gif" ALT=""> {t}DNS servers:{/t}<BR>
+			<IMG src="img/domain.gif" ALT=""> {t}Domain:{/t}</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/gateway.gif" border="0" ALT="" align="absmiddle"> {t}Gateway:{/t}<BR>	<IMG src="img/wins.gif" border="0" ALT="" align="absmiddle"> {t}WINS server:{/t}</NOBR>
+			<NOBR><IMG src="img/gateway.gif" ALT=""> {t}Gateway:{/t}<BR>
+			<IMG src="img/wins.gif" ALT=""> {t}WINS server:{/t}</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" width="1%">
-			<NOBR><IMG src="img/dhcp.gif" align="absmiddle" ALT="" border="0"> {t}DHCP range:{/t}</NOBR>
+			<NOBR><IMG src="img/dhcp.gif" ALT=""> {t}DHCP range:{/t}</NOBR>
 		</TD>
 		<TD class="frightu" width="1%" align="right">
 			<NOBR><B>{t 0=$listdata.total}Total: $0{/t} </B></NOBR>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=netlist loop=$netlist}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr><IMG src="img/network.gif" border="0" ALT="" align="absmiddle"> <B>{$netlist[netlist].name}</B><BR><IMG src="img/ip.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
+			<nobr><IMG src="img/network.gif" ALT=""> <B>{$netlist[netlist].name}</B><BR><IMG src="img/ip.gif" ALT=""> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
 		</TD>
 		<TD valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';" width="1%">
-			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">{$netlist[netlist].size}/{$netlist[netlist].assigned|string_format:"%01d"}/{$netlist[netlist].online|string_format:"%01d"}</nobr>
+			<nobr><img src="img/empty.gif" width="1" height="16" ALT="">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" width="1" height="16" ALT="">{$netlist[netlist].size}/{$netlist[netlist].assigned|string_format:"%01d"}/{$netlist[netlist].online|string_format:"%01d"}</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].dns neq ""}<IMG src="img/dns.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].dns}{if $netlist[netlist].dns2 neq ""}, {$netlist[netlist].dns2}{/if}{/if}<BR>
-			{if $netlist[netlist].domain neq ""}<IMG src="img/domain.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].domain}{/if}&nbsp;</nobr>
+			<nobr>{if $netlist[netlist].dns neq ""}<IMG src="img/dns.gif" ALT=""> {$netlist[netlist].dns}{if $netlist[netlist].dns2 neq ""}, {$netlist[netlist].dns2}{/if}{/if}<BR>
+			{if $netlist[netlist].domain neq ""}<IMG src="img/domain.gif" ALT=""> {$netlist[netlist].domain}{/if}&nbsp;</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].gateway neq ""}<IMG src="img/gateway.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].gateway}{/if}<BR>
-			{if $netlist[netlist].wins neq ""}<IMG src="img/wins.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].wins}{/if}&nbsp;</nobr>
+			<nobr>{if $netlist[netlist].gateway neq ""}<IMG src="img/gateway.gif" ALT=""> {$netlist[netlist].gateway}{/if}<BR>
+			{if $netlist[netlist].wins neq ""}<IMG src="img/wins.gif" ALT=""> {$netlist[netlist].wins}{/if}&nbsp;</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].dhcpstart}<IMG src="img/dhcpstart.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].dhcpstart}<BR><IMG src="img/dhcpend.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].dhcpend}{/if}</nobr>
+			<nobr>{if $netlist[netlist].dhcpstart}<IMG src="img/dhcpstart.gif" ALT=""> {$netlist[netlist].dhcpstart}<BR><IMG src="img/dhcpend.gif" ALT=""> {$netlist[netlist].dhcpend}{/if}</nobr>
 		</TD>
 		<TD class="fright">
 			<nobr>
-			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t 0=$netlist[netlist].name|upper}Are you sure, you want to remove network \'$0\'?{/t}')"><IMG src="img/delete.gif" border="0" ALT="[ {t}Remove{/t} ]"></A>
-			<a href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
-			<a href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A></nobr>
+			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t 0=$netlist[netlist].name|upper}Are you sure, you want to remove network \'$0\'?{/t}')"><IMG src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
+			<a href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<a href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" ALT="[ {t}Info{/t} ]"></A></nobr>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="6" class="flr" align="center" width="1%">
 			<p>&nbsp;</p>
-			<p>&nbsp;</p>
 			<p><B>{t}You have no address pools. Use menu above to add new networks.{/t}</B></p>
-			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
-	<TR bgcolor="#DFD5BD">
+	<TR class="dark">
 		<TD width="99%" colspan="2" class="fleftu" align="right"> 
 			<B>{t}Total:{/t} {$listdata.size|default:"0"}/{$listdata.assigned|default:"0"}/{$listdata.online|default:"0"}</B>
 		</TD>

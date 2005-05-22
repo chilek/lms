@@ -24,7 +24,7 @@
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
 <FORM method="POST" action="?m=eventedit&id={$event.id}" name="event">
-<TABLE width="100%" cellpadding="3" border="0">
+<TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
 			<IMG src="img/calendar.gif" alt="">
@@ -121,7 +121,7 @@
 				{/section}
 			</SELECT><BR>
 			{foreach item=admin from=$event.adminlist}	
-				<NOBR><A href="?m=admininfo&id={$admin.id}">{$admin.name}</A>&nbsp;<A href="?m=eventedit&action=dropadmin&eid={$event.id}&aid={$admin.id}"><IMG src="img/delete.gif" border="0" align="absmiddle" ALT="[ {t}Delete{/t} ]" OnClick="return confirm('{t 0=$admin.name}Are you sure, you want to drop user $0 from that event?{/t}')"></A></NOBR><BR>
+				<NOBR><A href="?m=admininfo&id={$admin.id}">{$admin.name}</A>&nbsp;<A href="?m=eventedit&action=dropadmin&eid={$event.id}&aid={$admin.id}"><IMG src="img/delete.gif" ALT="[ {t}Delete{/t} ]" OnClick="return confirm('{t 0=$admin.name}Are you sure, you want to drop user $0 from that event?{/t}')"></A></NOBR><BR>
 			{/foreach}
 		</TD>
 	</TR>
