@@ -39,9 +39,9 @@
 			{t}Description{/t}
 		</TD>
 	</TR>
-	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{cycle values="white,grey" print=false}
 	{section name=nodelist loop=$nodelist}{if $nodelist[nodelist].id}
-	<TR BGCOLOR="{cycle}">
+	<TR class="{cycle}">
 		<TD WIDTH="1%" ALIGN=CENTER>
 			{counter}
 		</TD>

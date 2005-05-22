@@ -25,9 +25,9 @@
 			&nbsp;
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>
@@ -80,7 +80,5 @@
 			&nbsp;
 		</TD>
 	</TR>
-
-			
 </TABLE>
 {include file="footer.html"}

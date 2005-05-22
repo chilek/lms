@@ -1,7 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<link href="img/style.css" rel="stylesheet" type="text/css">
 {literal}
 <SCRIPT language=JavaScript>
 	<!--
@@ -49,7 +48,7 @@
 	<TR CLASS="DARK">
 		<TD class="fall">
 			<IMG src="img/money.gif" alt="">
-			<B><A name="balance">{t}Customer Unpaid Covenants:{/t}</A></B>
+			<B>{t}Customer Unpaid Covenants:{/t}</B>
 		</TD>
 	</TR>
 	<TR>
@@ -63,9 +62,9 @@
 					<TD width="95%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{cycle values="light,lucid" print=false}
 				{section name=covenantlist loop=$covenantlist}
-				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD><nobr>{$covenantlist[covenantlist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
 					<TD align="right">{$covenantlist[covenantlist].invoice}</TD>
 					<TD align="right"><nobr>{$covenantlist[covenantlist].value|money_format}</nobr></TD>
@@ -84,15 +83,13 @@
 				{sectionelse}
 				<TR>
 					<TD align="center" colspan="6">
-						<BR>
-						<BR>
-						<B>{t}That customer hasn't got any unpaid covenants.{/t}</B><BR>
-						<BR>
-						<BR>
+						<P>&nbsp;</P>
+						<P><B>{t}That customer hasn't got any unpaid covenants.{/t}</B></P>
+						<P>&nbsp;</P>
 					</TD>
 				</TR>
 				{/section}
-				<TR bgcolor="#DFD5BD">
+				<TR class="light">
 					<TD CLASS="ftop" ALIGN="right" colspan="2">
 						<B>{t}Total:{/t}</B>
 					</TD>
@@ -101,7 +98,7 @@
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" colspan="3" nowrap>
 						<A HREF="javascript:CheckAllCovenants2();">{t}Check All{/t}</A>
-						<INPUT CLASS="box" TYPE="checkbox" NAME="allboxc" onClick="CheckAllCovenants();" VALUE="Check All Covenants">
+						<INPUT CLASS="box light" TYPE="checkbox" NAME="allboxc" onClick="CheckAllCovenants();" VALUE="Check All Covenants">
 					</TD>
 				</TR>
 			</TABLE>
@@ -112,7 +109,7 @@
 	<TR CLASS="DARK">
 		<TD class="fall">
 			<IMG src="img/money.gif" ALT="">
-			<B><A name="balance">{t}Customer Prepayments:{/t}</A></B>
+			<B>{t}Customer Prepayments:{/t}</B>
 		</TD>
 	</TR>
 	<TR>
@@ -125,9 +122,9 @@
 					<TD width="96%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{cycle values="light,lucid" print=false}
 				{section name=prepaymentlist loop=$prepaymentlist}
-				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD><nobr>{$prepaymentlist[prepaymentlist].time|date_format:"%Y/%m/%d"}</nobr></TD>
 					<TD align="right"><nobr>{$prepaymentlist[prepaymentlist].value|money_format}</nobr></TD>
 					<TD align="right"><nobr>
@@ -139,21 +136,19 @@
 					<TD>{$prepaymentlist[prepaymentlist].comment}</TD>
 					<TD align="right">
 						{cycle print=false}
-						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="pmarks[]" VALUE="{$prepaymentlist[prepaymentlist].id}"{if $prepaymentlist[prepaymentlist].selected} CHECKED{/if}>
+						<INPUT class="box {cycle}" TYPE="checkbox" NAME="pmarks[]" VALUE="{$prepaymentlist[prepaymentlist].id}"{if $prepaymentlist[prepaymentlist].selected} CHECKED{/if}>
 					</TD>
 				</TR>
 				{sectionelse}
 				<TR>
 					<TD align="center" colspan="5">
-						<BR>
-						<BR>
-						<B>{t}That customer hasn't got any prepayments.{/t}</B><BR>
-						<BR>
-						<BR>
+						<P>&nbsp;</P>
+						<P><B>{t}That customer hasn't got any prepayments.{/t}</B></P>
+						<P>&nbsp;</P>
 					</TD>
 				</TR>
 				{/section}
-				<TR bgcolor="#DFD5BD">
+				<TR class="light">
 					<TD CLASS="ftop" nowrap align="right" valign="top">
 						<B>{t}Total:{/t}
 					</TD>
@@ -162,7 +157,7 @@
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" colspan="3" valign="top" nowrap>
 						<A HREF="javascript:CheckAllPrepayments2();">{t}Check All{/t}</A>
-						<INPUT CLASS="box" TYPE="checkbox" NAME="allboxp" onClick="CheckAllPrepayments();" VALUE="Check All Prepayments"><BR>
+						<INPUT CLASS="box light" TYPE="checkbox" NAME="allboxp" onClick="CheckAllPrepayments();" VALUE="Check All Prepayments"><BR>
 						<A href="javascript: document.prepayments.submit();">{t}Bind Prepayments with Covenants{/t} <IMG src="img/save.gif" ALT=""></A>
 						<A href="?m=userinfo&id={$userid}">{t}Cancel{/t} <IMG src="img/cancel.gif" ALT=""></A>
 					</TD>

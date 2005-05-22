@@ -24,13 +24,13 @@
 						<B>{t}State:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select customer's group"}>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="3" CHECKED>{t}connected<!plural>{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="5">{t}disconnected<!plural>{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="6">{t}in debt{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="2">{t}waiting{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="1">{t}interested<!plural>{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="-1">{t}without nodes{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="0">{t}all{/t}</NOBR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="3" CHECKED>{t}connected<!plural>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="5">{t}disconnected<!plural>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="6">{t}in debt{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{t}waiting{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{t}interested<!plural>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="-1">{t}without nodes{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0">{t}all{/t}</NOBR>
 					</TD>
 					<TD width="1%">
 						<NOBR><IMG src="img/network.gif" alt=""> <B>{t}Network:{/t}</B></NOBR><BR><BR>
@@ -455,8 +455,8 @@ cal4.time_comp = false;
 						<IMG src="img/info.gif" alt="">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" CLASS="box" NAME="invoiceorg" CHECKED>&nbsp;{t}Original{/t}&nbsp;
-						<INPUT TYPE="checkbox" CLASS="box" NAME="invoicecopy" CHECKED>&nbsp;{t}Copy{/t}
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoiceorg" CHECKED>&nbsp;{t}Original{/t}&nbsp;
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicecopy" CHECKED>&nbsp;{t}Copy{/t}
 					</TD>
 				</TR>
 			</TABLE>
@@ -500,10 +500,10 @@ cal11.time_comp = false;
 						<B>{t}Group:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select nodes group"}>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="0" CHECKED>{t}all{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="1">{t}disconnected<!plural:item>{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="2">{t}connected<!plural:item>{/t}</NOBR><BR>
-						<NOBR><INPUT class="box" type="radio" name="filter" value="3">{t}indebted owner{/t}</NOBR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0" CHECKED>{t}all{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{t}disconnected<!plural:item>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{t}connected<!plural:item>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="3">{t}indebted owner{/t}</NOBR>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/view.gif" alt="">
@@ -537,5 +537,4 @@ cal11.time_comp = false;
 </TABLE>
 </FORM>
 {/if}
-
 {include file="footer.html"}

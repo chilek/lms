@@ -56,7 +56,7 @@
 			<IMG SRC="img/netdev.gif" ALT="{t}Net devices:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[netdev]"  {tip text="Select net device from list" trigger="netdev"}>
+			<SELECT SIZE="1" NAME="nodeedit[netdev]" {tip text="Select net device from list" trigger="netdev"}>
 				<OPTION VALUE="0" {if ! $nodeinfo.netdev}SELECTED{/if}>{t}--- No device ---{/t}</OPTION>
 				{section name="netdev" loop=$netdevices}
 				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</OPTION>
@@ -69,7 +69,7 @@
 			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]" {tip text="Select node status"}>
+			<SELECT SIZE="1" NAME="nodeedit[access]" {tip text="Select node status"}>
 				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
@@ -80,7 +80,7 @@
 			<IMG SRC="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[warning]" {tip text="Select node message"}>
+			<SELECT SIZE="1" NAME="nodeedit[warning]" {tip text="Select node message"}>
 				<OPTION VALUE="1"{if $nodeinfo.warning} SELECTED{/if}>{t}warning on{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodeinfo.warning} SELECTED{/if}>{t}warning off{/t}</OPTION>
 			</SELECT>
