@@ -9,7 +9,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="">
+			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name|upper}" MAXLENGTH="16" {tip text="Enter address name" trigger="ipname" bold=1}>
@@ -18,7 +18,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address:{/t}">
+			<IMG SRC="img/ip.gif" ALT="{t}IP address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
                        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
@@ -26,7 +26,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="{t}MAC address:{/t}">
+			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
@@ -34,7 +34,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/network.gif" BORDER="0" ALT="{t}Network:{/t}">
+			<IMG SRC="img/network.gif" ALT="{t}Network:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<B><A HREF="?m=netinfo&id={$netdevinfo.netid}">{$nodeipdata.netname}</A></B>
@@ -42,10 +42,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" BORDER="0" ALT="">
+			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="ipadd[access]" {tip text="Select address status"}>
+			<SELECT SIZE="1" NAME="ipadd[access]" {tip text="Select address status"}>
 				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
@@ -53,7 +53,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/info.gif" BORDER="0" ALT="Opis:">
+			<IMG SRC="img/info.gif" ALT="{t}Description:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Enter additional informations (optional)"}>{$nodeipdata.info}</TEXTAREA>
@@ -61,7 +61,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
+			<IMG SRC="img/admins.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Created:{/t}<BR>

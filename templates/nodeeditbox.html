@@ -4,7 +4,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/node.gif" BORDER="0" ALT="">
+			<IMG SRC="img/node.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name|upper}" MAXLENGTH="16" {tip text="Enter node name" trigger="name" bold=1}>
@@ -13,7 +13,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address:{/t}">
+			<IMG SRC="img/ip.gif" ALT="{t}IP address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
                        <INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr,{$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
@@ -21,7 +21,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip_pub.gif" BORDER="0" ALT="{t}Pub. IP address:{/t}">
+			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
                        <INPUT TYPE="TEXT" NAME="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}VALUE="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddrpub,{$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
@@ -29,7 +29,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="{t}MAC address:{/t}">
+			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
@@ -37,7 +37,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/passwd.gif" BORDER="0" ALT="{t}Password:{/t}">
+			<IMG SRC="img/passwd.gif" ALT="{t}Password:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodeedit[passwd]" VALUE="{$nodeinfo.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="[ Generate random password ]"}>&raquo;&raquo;&raquo;</A>
@@ -45,7 +45,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/network.gif" BORDER="0" ALT="{t}Network:{/t}">
+			<IMG SRC="img/network.gif" ALT="{t}Network:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<B><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></B>
@@ -53,7 +53,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev.gif" BORDER="0" ALT="{t}Net devices:{/t}">
+			<IMG SRC="img/netdev.gif" ALT="{t}Net devices:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodeedit[netdev]"  {tip text="Select net device from list" trigger="netdev"}>
@@ -66,7 +66,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" BORDER="0" ALT="">
+			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]" {tip text="Select node status"}>
@@ -77,7 +77,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" BORDER="0" ALT="">
+			<IMG SRC="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[warning]" {tip text="Select node message"}>
@@ -88,7 +88,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="{t}Customer:{/t}">
+			<IMG SRC="img/user.gif" ALT="{t}Customer:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodeedit[ownerid]" {tip text="Assign node to customer"}>
@@ -100,7 +100,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/info1.gif" BORDER="0" ALT="{t}Description:{/t}">
+			<IMG SRC="img/info1.gif" ALT="{t}Description:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
                        <TEXTAREA NAME="nodeedit[info]" COLS="50" ROWS="5" {tip text="Enter additional informations (optional)"}>{$nodeinfo.info}</TEXTAREA>
@@ -108,7 +108,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
+			<IMG SRC="img/admins.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Created:{/t}<BR>

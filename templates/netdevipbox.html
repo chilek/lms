@@ -2,18 +2,18 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="">
+			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="3">
 			<B>{t}IP addresses of device:{/t}</B>
 		</TD>
 	</TR>
 	{if $netdevips}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if ! $netdevips[list].access} class="blend"{/if}>
+	<TR class="{cycle}{if ! $netdevips[list].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<a href="?m=nodeset&id={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if} border="0" align="absmiddle"></A>
+			<a href="?m=nodeset&id={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
 		</TD>
 		<TD WIDTH="97%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			<B>{$netdevips[list].name}</B><BR>	
@@ -24,8 +24,8 @@
 			({$netdevips[list].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
-			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, '{t 0=$netdevips[list].name|upper}Are you sure, you want to delete address \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" BORDER="0" ALT="" {tip text="Delete"} ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="" {tip text="Edit"} ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, '{t 0=$netdevips[list].name|upper}Are you sure, you want to delete address \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
+			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
 		</TD>
 	</TR>
 	{/section}
@@ -40,12 +40,10 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="50%" COLSPAN="2" CLASS="FLEFTU">
-			<A HREF="?m=nodeset&netdev={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&access=1"><IMG SRC="img/access.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Connect All{/t}</A><BR>
-			<A HREF="?m=nodeset&netdev={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}"><IMG SRC="img/noaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disconnect All{/t}</A><BR>
+			<A HREF="?m=nodeset&netdev={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&access=1"><IMG SRC="img/access.gif" alt=""> {t}Connect All{/t}</A><BR>
+			<A HREF="?m=nodeset&netdev={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}"><IMG SRC="img/noaccess.gif" alt=""> {t}Disconnect All{/t}</A><BR>
 		</TD>
-		<TD WIDTH="50%" COLSPAN="2" CLASS="FRIGHTU">
-			<p align=right>
-			<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>
-			</p>
+		<TD WIDTH="50%" COLSPAN="2" CLASS="FRIGHTU" align="right">
+			<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{t}New{/t} <IMG SRC="img/edit.gif" alt=""></A>
 		</TD>
 </TABLE>

@@ -8,35 +8,35 @@
 	</TR>
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="98%">
-			<IMG src="img/netdev.gif" ALT="" align="absmiddle"> <B>{t}Name / Producer:{/t}</B><BR>
-			<IMG src="img/home.gif" ALT="" align="absmiddle"> {t}Location:{/t}
+			<IMG src="img/netdev.gif" ALT=""> <B>{t}Name / Producer:{/t}</B><BR>
+			<IMG src="img/home.gif" ALT=""> {t}Location:{/t}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<IMG src="img/empty.gif" ALT="" HEIGHT="16" WIDTH="16" align="absmiddle"> {t}ID:{/t}<BR>
-			<IMG src="img/port.gif" ALT="" align="absmiddle"> {t}Ports (used):{/t}
+			<IMG src="img/empty.gif" ALT="" HEIGHT="16" WIDTH="16"> {t}ID:{/t}<BR>
+			<IMG src="img/port.gif" ALT=""> {t}Ports (used):{/t}
 		</TD>
 		<TD CLASS="frightu" width="1%">
 			&nbsp;
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=netdevlist loop=$netdevlist start=$start}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" VALIGN="TOP" NOWRAP>
-			<IMG SRC="img/netdev.gif" ALT="" ALIGN="ABSMIDDLE"> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</B></A><BR>
-			<IMG src="img/home.gif" ALT="" align="absmiddle"> {$netdevlist[netdevlist].location}
+			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</B></A><BR>
+			<IMG src="img/home.gif" ALT=""> {$netdevlist[netdevlist].location}
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
 			{if $netdevlist[netdevlist].linktype}
-				<A href="?m=netdevedit&action=switchlinktype&linktype=0&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/wireless.gif" ALT="[ {t}Change connection type{/t} ]" ALIGN="ABSMIDDLE" BORDER="0"></A> 
+				<A href="?m=netdevedit&action=switchlinktype&linktype=0&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/wireless.gif" ALT="[ {t}Change connection type{/t} ]"></A> 
 			{else}
-				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" ALT="[ {t}Change connection type{/t} ]" ALIGN="ABSMIDDLE" BORDER="0"></A> 
+				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" ALT="[ {t}Change connection type{/t} ]"></A> 
 			{/if}
 			({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
-			<IMG SRC="img/port.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
+			<IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 		</TD>
 		<TD WIDTH="1%" CLASS="fright">
-			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0" {tip text="Delete connection"}></A>
+			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -64,7 +64,7 @@
 				{section name=restnetdevlist loop=$restnetdevlist}
 				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} {if $restnetdevlist[restnetdevlist].producer}/ {$restnetdevlist[restnetdevlist].producer}{/if} {if $restnetdevlist[restnetdevlist].location}({$restnetdevlist[restnetdevlist].location}){/if}</OPTION>
 				{/section}
-			</SELECT><INPUT style="border:0; background-color=#CEBD9B;" type="checkbox" name="linktype" value="1" {if $devlinktype}CHECKED{/if}>&nbsp;wireless 
+			</SELECT><INPUT class="box dark" type="checkbox" name="linktype" value="1" {if $devlinktype}CHECKED{/if}>&nbsp;wireless 
 			</FORM></P>
 			{/if}
 		</TD>

@@ -4,8 +4,8 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="1%" class="fleftu" NOWRAP>
-			<IMG src="img/settings.gif" alt="" align="absmiddle"><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>{t}Name:{/t}</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/empty.gif" alt="" align="absmiddle" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {t}Section:{/t}</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/settings.gif" alt=""><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>{t}Name:{/t}</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/empty.gif" alt="" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {t}Section:{/t}</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="center">
 			{t}Value:{/t}
@@ -14,7 +14,7 @@
 			{t}Comment:{/t}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -39,8 +39,8 @@
 	{section name=configlist loop=$configlist start=$start max=$pagelimit}
 	<TR {if $configlist[configlist].disabled}class="BLEND"{/if} bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft" valign="top" NOWRAP OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
-			<IMG src="img/settings.gif" alt="" align="absmiddle"><B> {$configlist[configlist].var}</B><BR>
-			<IMG src="img/empty.gif" alt="" align="absmiddle" width="16" height="16"> [{$configlist[configlist].section}]
+			<IMG src="img/settings.gif" alt=""><B> {$configlist[configlist].var}</B><BR>
+			<IMG src="img/empty.gif" alt="" width="16" height="16"> [{$configlist[configlist].section}]
 		</TD>
 		<TD align="right" valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].value}
@@ -49,9 +49,9 @@
 			{$configlist[configlist].description|truncate:400:"..."}
 		</TD>
 		<TD class="fright" align="right" nowrap>
-			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" border="0" align="absmiddle"></A>&nbsp;
-			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" border="0" align="absmiddle"></A>
-			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t 0=$configlist[configlist].var}Are you sure, you want to delete option \'$0\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" border="0" align="absmiddle"></A>
+			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>&nbsp;
+			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>
+			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t 0=$configlist[configlist].var}Are you sure, you want to delete option \'$0\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -83,7 +83,7 @@
 	{/if}
 	<TR CLASS="DARK">
 		<TD colspan="4" class="FALL" align="right">
-			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 

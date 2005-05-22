@@ -17,7 +17,7 @@
 						<B><A HREF="?m=nodeinfo&id={$download.nodeid[download]}">{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:32:"..."}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" ALIGN="ABSMIDDLE"> {$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%.2f"}&nbsp;KB/s) 
+						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT=""> {$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%.2f"}&nbsp;KB/s) 
 					</TD>
 				</TR>
 				{/section}
@@ -41,7 +41,7 @@
 						<B><A HREF="?m=nodeinfo&id={$upload.nodeid[upload]}">{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:32:"..."}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" ALIGN="ABSMIDDLE"> {$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%.2f"}&nbsp;KB/s) 
+						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT=""> {$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%.2f"}&nbsp;KB/s) 
 					</TD>
 				</TR>
 				{/section}
@@ -64,7 +64,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Limit results to selected period"}>
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG src="img/calendar.gif" align="absmiddle" border="0">
+			<IMG src="img/calendar.gif">
 		</TD>
 		<TD WIDTH="1%" nowrap>
 			<B>{t}From (day/month/year hh:mm):{/t}</B>
@@ -77,7 +77,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Limit results to selected period"}>
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG src="img/calendar.gif" align="absmiddle" border="0">
+			<IMG src="img/calendar.gif">
 		</TD>
 		<TD nowrap>
 			<B>{t}To (day/month/year hh:mm):{/t}</B>
@@ -90,7 +90,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Limit results to selected network"}>
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG src="img/network.gif" align="absmiddle" border="0">
+			<IMG src="img/network.gif">
 		</TD>
 		<TD nowrap>
 			<B>{t}Network:{/t}</B>
@@ -106,7 +106,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Select results sorting order"}>
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG src="img/view.gif" align="absmiddle" border="0">
+			<IMG src="img/view.gif">
 		</TD>
 		<TD nowrap>
 			<B>{t}Sorting:{/t}</B>

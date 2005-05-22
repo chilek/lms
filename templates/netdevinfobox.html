@@ -2,7 +2,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/netdev.gif" BORDER="0" ALT="">
+			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
 			<B>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</B>
@@ -11,7 +11,7 @@
         {if $netdevinfo.producer}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/producer.gif" ALT="" border="0">
+			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 		        <B>{t}Producer:{/t}</B>
@@ -24,7 +24,7 @@
 	{if $netdevinfo.model}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev_model.gif" ALT="" border="0">
+			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 		        <B>{t}Model:{/t}</B>
@@ -37,7 +37,7 @@
 	{if $netdevinfo.serialnumber}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/serialnumber.gif" ALT="" border="0">
+			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Serial number:{/t}</B>
@@ -49,7 +49,7 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/port.gif" ALT="" border="0">
+			<IMG SRC="img/port.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Number of ports:{/t}</B>
@@ -60,7 +60,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev_takenports.gif" ALT="" border="0">
+			<IMG SRC="img/netdev_takenports.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Ports used:{/t}</B>
@@ -72,7 +72,7 @@
 	{if $netdevinfo.location}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/home.gif" ALT="" border="0">
+			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Location:{/t}</B>
@@ -85,12 +85,12 @@
         {if $netdevinfo.description}
         <TR CLASS="LIGHT">
                 <TD WIDTH="1%" CLASS="FLEFT">
-                        <IMG SRC="img/netdev_description.gif" BORDER="0" ALT="">
+                        <IMG SRC="img/netdev_description.gif" ALT="">
                 </TD>
                 <TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
                         <TABLE WIDTH="100%" CELLPADDING="5">
                                 <TR>
-                                        <TD CLASS="FALL" BGCOLOR="#F4F0EC">
+                                        <TD class="fall superlight">
 						{$netdevinfo.description|replace:"\n":"<BR>"}
                                         </TD>
                                 </TR>
@@ -100,7 +100,7 @@
         {/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t 0=$netdevinfo.name}Are you sure, you want to remove device \'$0\' from database?{/t}');">{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT=""></A>
+			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t 0=$netdevinfo.name}Are you sure, you want to remove device \'$0\' from database?{/t}');">{t}Delete{/t} <img src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
 	{if $netdevinfo.id}

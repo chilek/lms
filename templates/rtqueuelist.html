@@ -4,9 +4,9 @@
 <TABLE cellpadding="5" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="95%">
-			<IMG src="img/queue.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG src="img/queue.gif" ALT="">
 			<B>{t}Queue{/t}:</B><BR>
-			<IMG src="img/info1.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG src="img/info1.gif" ALT="">
 			{t}Description{/t}:
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" align="right" NOWRAP>
@@ -29,10 +29,10 @@
 	{foreach from=$queues item=queue}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
-			<IMG src="img/queue.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>
 			{if $queue.description}
-				<IMG src="img/info1.gif" ALT="" BORDER="0" ALIGN="absmiddle"> {$queue.description}
+				<IMG src="img/info1.gif" ALT=""> {$queue.description}
 			{/if}
 		</TD>
 		<TD  align="right">
@@ -48,10 +48,10 @@
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP>
-			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t 0=$queue.name}Are you sure, you want to remove queue \'$0\' and all assigned tickets and messages?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
+			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]"></A>
+			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t 0=$queue.name}Are you sure, you want to remove queue \'$0\' and all assigned tickets and messages?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -67,7 +67,7 @@
 	{/foreach}
 	<TR CLASS="light">
 		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
-			<IMG src="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG src="img/info2.gif" ALT="">
 			<B>{t}Summary{/t}:</B>
 		</TD>
 		<TD ALIGN="CENTER" CLASS="fbt">

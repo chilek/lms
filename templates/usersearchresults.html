@@ -42,7 +42,7 @@
 	{section name=userlist loop=$userlist start=$start max=$pagelimit}
 	<TR class="{cycle}{if $userlist[userlist].nodeac eq 0} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" class="fleft" valign="top">
-			<IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" alt="">{if $userlist[userlist].info} <img src="img/info1.gif" ALT="" align="absmiddle" {tip text=$userlist[userlist].info}>{/if} <A name="{$userlist[userlist].id}" {tip 0=$userlist[userlist].id dynpopup='?m=userinfoshort&id=$0'}><B>{$userlist[userlist].username}</B>{if $userlist[userlist].deleted} (<FONT class="red">{t}deleted customer{/t}</FONT>){/if}</A><BR>
+			<IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" alt="">{if $userlist[userlist].info} <img src="img/info1.gif" ALT="" {tip text=$userlist[userlist].info}>{/if} <A name="{$userlist[userlist].id}" {tip 0=$userlist[userlist].id dynpopup='?m=userinfoshort&id=$0'}><B>{$userlist[userlist].username}</B>{if $userlist[userlist].deleted} (<FONT class="red">{t}deleted customer{/t}</FONT>){/if}</A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>

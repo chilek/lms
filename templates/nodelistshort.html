@@ -13,7 +13,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%">
-			<IMG SRC="img/node.gif" BORDER="0">
+			<IMG SRC="img/node.gif">
 		</TD>
 		<TD WIDTH="99%">
 			<B>{t 0=$usernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
@@ -25,8 +25,8 @@
 	{if $usernodes[usernodes].id}
 	<tr bgcolor="{cycle}" {if ! $usernodes[usernodes].access} class="blend"{/if}>
 		<TD WIDTH="1%">
-			<IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" border="0" align="absmiddle">
-			<IMG src="img/warning{if ! $usernodes[usernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]" border="0" align="absmiddle">
+			<IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]">
+			<IMG src="img/warning{if ! $usernodes[usernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]">
 		</TD>
 		<TD WIDTH="97%">
 			<B>{$usernodes[usernodes].name}</B><BR>

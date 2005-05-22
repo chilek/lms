@@ -145,7 +145,7 @@
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>
 			{if $balancelist[balancelist].invoiceid}
-			<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
+			<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"}></A>
 			{/if}
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">

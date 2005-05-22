@@ -2,7 +2,7 @@
 <P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD width="100%" CLASS="fall">
-			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/ticket.gif" alt="">
 			<B>{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}</B>
 		</TD>
 	</TR>
@@ -14,7 +14,7 @@
 	    <TABLE>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/ticket.gif" alt="">
 			<B>{t}Subject:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
@@ -23,7 +23,7 @@
 		</TR>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/user.gif" alt="" border="0" align="absmiddle">
+		    	<IMG src="img/user.gif" alt="">
 			<B>{t}Submitter:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
@@ -39,7 +39,7 @@
 		</TR>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">
+		    	<IMG src="img/calendar.gif" alt="">
 			<B>{t}Create time:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
@@ -48,7 +48,7 @@
 		</TR>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/time.gif" alt="" border="0" align="absmiddle">
+		    	<IMG src="img/time.gif" alt="">
 			<B>{t}Uptime:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
@@ -61,7 +61,7 @@
 	    <TABLE>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
-			<IMG src="img/admins.gif" alt="" border="0" align="absmiddle">
+			<IMG src="img/admins.gif" alt="">
 			<B>{t}Owner:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
@@ -70,7 +70,7 @@
 		</TR>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/queue.gif" alt="" border="0" align="absmiddle">
+		    	<IMG src="img/queue.gif" alt="">
 			<B>{t}Queue:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
@@ -79,7 +79,7 @@
 		</TR>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/dead.gif" alt="" border="0" align="absmiddle">
+		    	<IMG src="img/dead.gif" alt="">
 			<B>{t}Status:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
@@ -95,12 +95,12 @@
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" ALIGN="RIGHT">
 			{if $ticket.state < 2}
-			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{t}Resolve{/t} <IMG src="img/resolved.gif" alt="" border="0" align="absmiddle"></A>&nbsp;
+			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{t}Resolve{/t} <IMG src="img/resolved.gif" alt=""></A>&nbsp;
 			{/if}
-			<A href="?m=rtqueueview&id={$ticket.queueid}&delticketid={$ticket.ticketid}" onClick="return confirmLink(this, '{t 0=$ticket.ticketid}Are you sure, you want to remove ticket $0?{/t}')">{t}Delete{/t} <IMG src="img/delete.gif" alt="" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketedit&id={$ticket.ticketid}">{t}Edit{/t} <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt="" border="0" align="absmiddle"></A>
-			<A href="?m=rtqueueview&id={$ticket.queueid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtqueueview&id={$ticket.queueid}&delticketid={$ticket.ticketid}" onClick="return confirmLink(this, '{t 0=$ticket.ticketid}Are you sure, you want to remove ticket $0?{/t}')">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
+			<A href="?m=rtticketedit&id={$ticket.ticketid}">{t}Edit{/t} <IMG src="img/edit.gif" alt=""></A>
+			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
+			<A href="?m=rtqueueview&id={$ticket.queueid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>

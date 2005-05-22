@@ -98,16 +98,16 @@ function set_datetime(n_datetime, b_close) {
 </script>
 </head>
 <body class="calendar">
-<table cellspacing="0" border="0" width="100%">
+<table cellspacing="0" width="100%">
 <tr><td class="blendbg">
-<table cellspacing="1" cellpadding="3" border="0" width="100%">
-<tr><td colspan="7"><table cellspacing="0" cellpadding="0" border="0" width="100%">
+<table cellspacing="1" cellpadding="3" width="100%">
+<tr><td colspan="7"><table cellspacing="0" cellpadding="0" width="100%">
 <tr>
 <script language="JavaScript">
 document.write(
-'<td>'+(obj_caller&&obj_caller.year_scroll?'<a href="javascript:set_datetime('+dt_prev_year.valueOf()+')"><img src="'+STR_ICONPATH+'prev_year.gif" width="16" height="16" border="0" alt=""></a>&nbsp;':'')+'<a href="javascript:set_datetime('+dt_prev_month.valueOf()+')"><img src="'+STR_ICONPATH+'prev.gif" width="16" height="16" border="0" alt=""></a></td>'+
+'<td>'+(obj_caller&&obj_caller.year_scroll?'<a href="javascript:set_datetime('+dt_prev_year.valueOf()+')"><img src="'+STR_ICONPATH+'prev_year.gif" width="16" height="16" alt=""></a>&nbsp;':'')+'<a href="javascript:set_datetime('+dt_prev_month.valueOf()+')"><img src="'+STR_ICONPATH+'prev.gif" width="16" height="16" alt=""></a></td>'+
 '<td align="center" width="100%"><font class="white">'+ARR_MONTHS[dt_current.getMonth()]+' '+dt_current.getFullYear() + '</font></td>'+
-'<td><a href="javascript:set_datetime('+dt_next_month.valueOf()+')"><img src="'+STR_ICONPATH+'next.gif" width="16" height="16" border="0" alt=""></a>'+(obj_caller && obj_caller.year_scroll?'&nbsp;<a href="javascript:set_datetime('+dt_next_year.valueOf()+')"><img src="'+STR_ICONPATH+'next_year.gif" width="16" height="16" border="0" alt=""></a>':'')+'</td>'
+'<td><a href="javascript:set_datetime('+dt_next_month.valueOf()+')"><img src="'+STR_ICONPATH+'next.gif" width="16" height="16" alt=""></a>'+(obj_caller && obj_caller.year_scroll?'&nbsp;<a href="javascript:set_datetime('+dt_next_year.valueOf()+')"><img src="'+STR_ICONPATH+'next_year.gif" width="16" height="16" alt=""></a>':'')+'</td>'
 );
 </script>
 </tr>
