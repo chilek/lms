@@ -24,6 +24,7 @@ version 1.7.1 ? (??/??/????):
   - better english UI messages (kondi)
   - we can add and search tickets with all customer statuses (chilek)
   - all UI colors moved to style.css (alec)
+  - lms-makeiptables: added public IP (SNAT) support (alec/daro)
 
 version 1.7.0 Klorel (13/05/2005):
 
