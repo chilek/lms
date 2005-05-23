@@ -27,12 +27,12 @@
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(isset($_POST['search']))
-	$search = $_POST['search'];
+	$nodesearch = $_POST['search'];
 
-if(!isset($search))
-	$SESSION->restore('nodesearch', $search);
+if(!isset($nodesearch))
+	$SESSION->restore('nodesearch', $nodesearch);
 else
-	$SESSION->save('nodesearch', $search);
+	$SESSION->save('nodesearch', $nodesearch);
 if(!isset($_GET['o']))
 	$SESSION->restore('nslo', $o);
 else
@@ -49,7 +49,7 @@ if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Nodes Search Results');
 
-	$nodelist = $LMS->GetNodeList($o, $search, $k);
+	$nodelist = $LMS->GetNodeList($o, $nodesearch, $k);
 
 	$listdata['total'] = $nodelist['total'];
 	$listdata['order'] = $nodelist['order'];
