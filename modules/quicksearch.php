@@ -131,7 +131,7 @@ switch($_GET['mode'])
 	case 'ticket':
 		if($_GET['ajax']==1) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT id, subject FROM rttickets WHERE id ?LIKE? \''.$search.'%\' OR lower(subject) ?LIKE? lower(\'%'.$search.'%\') ORDER BY subject, id LIMIT 15');
+			$candidates = $DB->GetAll('SELECT rttickets.id, rttickets.subject, rttickets.requestor, users.name, users.lastname FROM rttickets LEFT JOIN users on rttickets.customerid=users.id WHERE rttickets.id ?LIKE? \''.$search.'%\' OR lower(rttickets.subject) ?LIKE? lower(\'%'.$search.'%\') OR lower(rttickets.requestor) ?LIKE? lower(\'%'.$search.'%\') OR lower(users.name) ?LIKE? lower(\''.$search.'%\') OR lower(users.lastname) ?LIKE? lower(\''.$search.'%\') ORDER BY rttickets.subject, rttickets.id, users.lastname, users.name, rttickets.requestor LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
@@ -139,6 +139,9 @@ switch($_GET['mode'])
 				$eglible[$row['id']]=$row['subject'];
 				if (preg_match("/$search/i",$row['id'])) $descriptions[$row['id']]=trans('Id').': '.$row['id'];
 				if (preg_match("/$search/i",$row['subject'])) $descriptions[$row['id']]=trans('Subject:').' '.$row['subject'];
+				if (preg_match("/$search/i",$row['requestor'])) $descriptions[$row['id']]=trans('First/last name').': '.preg_replace('/ <.*/','',$row['requestor']);
+				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']]=trans('First/last name').': '.$row['name'];
+				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']]=trans('First/last name').': '.$row['lastname'];
 			}
 			header('Content-type: text/plain');
 			if ($eglible) {
