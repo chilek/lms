@@ -14,6 +14,7 @@ version ? (??/??/????):
     row is an array (alec)
   - fixed discount displaying in customer assignments box (chilek)
   - language fixes in UI (kondi)
+  - lms-makeiptables: added public IP (SNAT) support (daro/alec)
 
 version 1.6.0rc2 Thor (18/05/2005):
 

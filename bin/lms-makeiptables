@@ -227,8 +227,9 @@ foreach my $key (@networks)
 {
 	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = UPPER('$key')");
 	$dbq->execute();
-	while (my $row = $dbq->fetchrow_hashref()) {
-		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ip FROM nodes WHERE access = 1 ORDER BY ipaddr");
+	while (my $row = $dbq->fetchrow_hashref())
+	{
+		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS pubip FROM nodes WHERE access = 1 ORDER BY ipaddr");
 		$sdbq->execute();
 		while(my $srow = $sdbq->fetchrow_hashref())
 		{
@@ -244,9 +245,13 @@ foreach my $key (@networks)
 					{
 						print IPTABLESSCRIPT "-j SNAT --to $snataddr\n";
 					}
-					else
+					elsif($srow->{'pubip'} eq '0.0.0.0')
 					{
 						print IPTABLESSCRIPT "-j MASQUERADE\n";
+					}
+					else
+					{
+						print IPTABLESSCRIPT "-j SNAT --to $srow->{'pubip'}\n";
 					}
 				}
 			}
