@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
-	<TR bgcolor="#CEBD9B">
+	<TR class="dark"">
 		<TD width="96%" class="fleftu" NOWRAP>
 			<IMG src="img/account.gif" alt=""> <A href="?m=accountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/user.gif" ALT=""> <A href="?m=accountlist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}

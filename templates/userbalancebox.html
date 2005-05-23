@@ -115,7 +115,7 @@
 							{else}{t}tax-free{/t}{/if}
 						</nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
-					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT class="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}

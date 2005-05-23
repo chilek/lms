@@ -55,7 +55,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<B>{$nodelist[nodelist].name}</B></A><BR>
-			<img src="img/user.gif" ALT="">&nbsp;<A href="?m=userinfo&id={$nodelist[nodelist].ownerid}" {tip 0=$nodelist[nodelist].ownerid dynpopup='?m=userinfoshort&id=$0'}>{if ! $nodelist[nodelist].access}<font color="#888888">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
+			<img src="img/user.gif" ALT="">&nbsp;<A href="?m=userinfo&id={$nodelist[nodelist].ownerid}" {tip 0=$nodelist[nodelist].ownerid dynpopup='?m=userinfoshort&id=$0'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
 		</TD>
 		<TD align="right" width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>

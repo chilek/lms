@@ -23,6 +23,7 @@ version 1.7.1 ? (??/??/????):
   - fixed _smarty_function_sum() - each row must be an array (alec)
   - better english UI messages (kondi)
   - we can add and search tickets with all customer statuses (chilek)
+  - all UI colors moved to style.css (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
