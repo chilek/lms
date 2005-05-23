@@ -10,6 +10,7 @@
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
 <script language="JavaScript" type="text/JavaScript" src="img/ClickShowHideMenu.js"> </script>
+<script language="Javascript" type="text/JavaScript" src="img/autosuggest.js"> </script>
 </head>
 <body{if $warning} onLoad="javascript:alert('{t}Warning! This version of LMS is under development! Remember that it might work unstable and certainly has still many bugs! If you need stability try 1.6 version!{/t}')"{/if}>
 {popup_init src="img/overlib.js"}
@@ -51,29 +52,39 @@
 				</div>
 			</td>
 		</tr>
-		<form method="get" action="?m=quicksearch">
+		<div id="autosuggest"><ul></ul></div>
+		<form method="get" action="?m=quicksearch" id="userform" name="userform">
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter customer ID, first/lastname, telephone or part of customer email address and press Enter</B>"}>
-					<br>&nbsp;&nbsp;<img src="img/user.gif" alt="*">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="user">
+					<br>&nbsp;&nbsp;<img src="img/user.gif" alt="*">&nbsp;<input type="text" id="userinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="user">
+				<script language="Javascript">
+					new AutoSuggest(document.getElementById('userform'),document.getElementById('userinput'),'/?m=quicksearch&ajax=1&mode=user&what=');
+				</script>
 				</div>
 			</td>
 		</tr>
 		</form>
-		<form method="get" action="?m=quicksearch">
+		<form method="get" action="?m=quicksearch" id="nodeform" name="nodeform">
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter node ID, name, IP address or MAC address and press Enter</B>"}>
-					&nbsp;&nbsp;<img src="img/node.gif" alt="*">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="node">
+					&nbsp;&nbsp;<img src="img/node.gif" alt="*">&nbsp;<input type="text" id="nodeinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="node">
+				<script language="Javascript">
+					new AutoSuggest(document.getElementById('nodeform'),document.getElementById('nodeinput'),'/?m=quicksearch&ajax=1&mode=node&what=');
+				</script>
 				</div>
 			</td>
 		</tr>
 		</form>
-		<form method="get" action="?m=quicksearch">
+		<form method="get" action="?m=quicksearch" id="rtform" name="rtform">
 		<tr>
 			<td>
 				<div class="tip" {tip text="<B>Enter request tracker ID or customer name and press Enter</B>"}>
-					&nbsp;&nbsp;<img src="img/ticket.gif" alt="*">&nbsp;<input type="text" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="ticket">
+					&nbsp;&nbsp;<img src="img/ticket.gif" alt="*">&nbsp;<input type="text" id="rtinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="ticket">
+				<script language="Javascript">
+					new AutoSuggest(document.getElementById('rtform'),document.getElementById('rtinput'),'/?m=quicksearch&ajax=1&mode=ticket&what=');
+				</script>
 				</div>
 			</td>
 		</tr>

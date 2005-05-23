@@ -77,3 +77,11 @@ IMG		{ vertical-align: middle; border: 0; }
 .bold		{ font-weight: bold; }
 
 .pre		{ font-size:  8pt; font-family: Courier, Courier New; }
+
+.suggestion_list { background: white; border: 1px solid; padding: 0px; width: 320px; }
+.suggestion_list ul { padding: 0; margin: 0; list-style-type: none; } 
+.suggestion_list span { position: absolute; right: 0; font-size: 9.5px; margin-right: 2px; color: navy; }
+.suggestion_list a { text-decoration: none; padding-left: 2px; color: black; }
+.suggestion_list .selected { background: brown; color: white; } 
+.suggestion_list .selected a { color: white; }
+#autosuggest { display: none; }
