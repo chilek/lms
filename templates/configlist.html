@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
-	<TR bgcolor="#CEBD9B">
+	<TR class="dark">
 		<TD width="1%" class="fleftu" NOWRAP>
 			<IMG src="img/settings.gif" alt=""><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>{t}Name:{/t}</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/empty.gif" alt="" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {t}Section:{/t}</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -35,9 +35,9 @@
 		</TD>
 	</TR>
 	{/if}
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=configlist loop=$configlist start=$start max=$pagelimit}
-	<TR {if $configlist[configlist].disabled}class="BLEND"{/if} bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}{if $configlist[configlist].disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" valign="top" NOWRAP OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			<IMG src="img/settings.gif" alt=""><B> {$configlist[configlist].var}</B><BR>
 			<IMG src="img/empty.gif" alt="" width="16" height="16"> [{$configlist[configlist].section}]

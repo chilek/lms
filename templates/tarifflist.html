@@ -35,9 +35,9 @@
 			</NOBR>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{cycle values="light,lucid" print=false}
 	{section name=tariffs loop=$tarifflist}
-	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="93%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
 			{if $tarifflist[tariffs].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tarifflist[tariffs].description}{/if}
@@ -82,9 +82,7 @@
 	<TR>
 		<TD COLSPAN="8" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
-			<p>&nbsp;</p>
 			<p><B>{t}No such subscriptions in database.{/t}</B></p>
-			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>

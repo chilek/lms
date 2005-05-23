@@ -40,7 +40,6 @@ INPUT.box  	{ border-style : none; }
 INPUT.radio  	{ border-style : none; } 
 
 TEXTAREA	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
-TEXTAREA.pre	{ font-size:  8pt; font-family: Courier, Courier New; }
 TEXTAREA.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
 
 SELECT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
@@ -76,3 +75,5 @@ IMG		{ vertical-align: middle; border: 0; }
 .white		{ color: #FFFFFF; }
 .alert		{ color: #FF0000; font-weight: bold; }
 .bold		{ font-weight: bold; }
+
+.pre		{ font-size:  8pt; font-family: Courier, Courier New; }

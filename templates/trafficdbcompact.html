@@ -13,9 +13,9 @@
 			<B>{t}Data precision level:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<B><INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="1" {tip text="Data older than one day will be combined into one day"}>{t}Low{/t}</INPUT><BR>
-			   <INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="2" {tip text="Data older than one month will be combined into one day"}>{t}Medium{/t}</INPUT><BR>
-			   <INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="3" {tip text="Data older than one month will be combined into one hour"}>{t}High{/t}</INPUT>
+			<B><INPUT class="radio light" TYPE="radio" NAME="level" VALUE="1" {tip text="Data older than one day will be combined into one day"}>{t}Low{/t}</INPUT><BR>
+			   <INPUT class="radio light" TYPE="radio" NAME="level" VALUE="2" {tip text="Data older than one month will be combined into one day"}>{t}Medium{/t}</INPUT><BR>
+			   <INPUT class="radio light" TYPE="radio" NAME="level" VALUE="3" {tip text="Data older than one month will be combined into one hour"}>{t}High{/t}</INPUT>
 			</B>
 		</TD>
 	</TR>
@@ -23,14 +23,14 @@
 		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option to remove records older than one year"}>
-		    <INPUT CLASS="box" TYPE="checkbox" NAME="delete" VALUE="1"><B>&nbsp;{t}Delete data older than one year{/t}</B></INPUT>
+		    <INPUT CLASS="box light" TYPE="checkbox" NAME="delete" VALUE="1"><B>&nbsp;{t}Delete data older than one year{/t}</B></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option to remove stats of deleted nodes"} NOWRAP>
-		    <INPUT CLASS="box" TYPE="checkbox" NAME="removedeleted" VALUE="1"><B>&nbsp;{t}Delete stats of non-existing (deleted) nodes{/t}</B></INPUT>
+		    <INPUT CLASS="box light" TYPE="checkbox" NAME="removedeleted" VALUE="1"><B>&nbsp;{t}Delete stats of non-existing (deleted) nodes{/t}</B></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">

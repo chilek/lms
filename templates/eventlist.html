@@ -23,7 +23,7 @@
 			{$date|date_format:"%B %Y"}:
 			<A href="?m=eventlist&day=1&month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
 			{section name=days loop=$days.day}
-				{if !$days.dow[days]}<FONT style="background-color: #DFD5BD;">{/if}<A href="?m=eventlist&day={$days.day[days]}&month={$month}&year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} <A>{if !$days.dow[days]}</FONT>{/if}
+				{if !$days.dow[days]}<FONT class="light">{/if}<A href="?m=eventlist&day={$days.day[days]}&month={$month}&year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} <A>{if !$days.dow[days]}</FONT>{/if}
 			{/section}
 			<A href="?m=eventlist&day=1&month={if $month==12}1{else}{math equation="x+1" x=$month}{/if}&year={if $month==12}{math equation="x+1" x=$year}{else}{$year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
 		</TD>
