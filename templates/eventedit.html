@@ -87,10 +87,10 @@
 			<B>{t}Customer:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<SELECT name="event[userid]" {tip text="Select customer (optional)"}>
-				<OPTION value="0"{if !$event.userid} SELECTED{/if}>{t}- select customer -{/t}</OPTION>
+			<SELECT name="event[customerid]" {tip text="Select customer (optional)"}>
+				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{t}- select customer -{/t}</OPTION>
 				{section name=userlist loop=$userlist}	
-				<OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id == $event.userid} SELECTED{/if}>{$userlist[userlist].username}</OPTION>
+				<OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id == $event.customerid} SELECTED{/if}>{$userlist[userlist].customername}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>

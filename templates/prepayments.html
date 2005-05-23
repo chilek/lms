@@ -43,7 +43,7 @@
 	//-->
 </SCRIPT>
 {/literal}
-<P><FORM name="prepayments" method="POST" action="?m=prepayments&id={$userid}">
+<P><FORM name="prepayments" method="POST" action="?m=prepayments&id={$customerid}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fall">
@@ -159,7 +159,7 @@
 						<A HREF="javascript:CheckAllPrepayments2();">{t}Check All{/t}</A>
 						<INPUT CLASS="box light" TYPE="checkbox" NAME="allboxp" onClick="CheckAllPrepayments();" VALUE="Check All Prepayments"><BR>
 						<A href="javascript: document.prepayments.submit();">{t}Bind Prepayments with Covenants{/t} <IMG src="img/save.gif" ALT=""></A>
-						<A href="?m=userinfo&id={$userid}">{t}Cancel{/t} <IMG src="img/cancel.gif" ALT=""></A>
+						<A href="?m=userinfo&id={$customerid}">{t}Cancel{/t} <IMG src="img/cancel.gif" ALT=""></A>
 					</TD>
 				</TR>
 			</TABLE>

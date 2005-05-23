@@ -40,10 +40,10 @@
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 						{if $a.tariffid}
-						<A href="?m=userassignments&action=suspend&id={$balancelist.userid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
+						<A href="?m=userassignments&action=suspend&id={$balancelist.customerid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
 						{/if}
 						<A HREF="?m=userassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-						<A onClick="return confirmLink(this, '{t}Are you sure, you want to delete this liability?{/t}')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+						<A onClick="return confirmLink(this, '{t}Are you sure, you want to delete this liability?{/t}')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.customerid}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 					</TD>
 				</TR>
 				{foreachelse}
@@ -64,7 +64,7 @@
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>
-				<FORM METHOD="POST" NAME="assignment" ACTION="?m=userassignments&action=add&id={$balancelist.userid}">
+				<FORM METHOD="POST" NAME="assignment" ACTION="?m=userassignments&action=add&id={$balancelist.customerid}">
 				<TR class="light"">
 					<TD COLSPAN="8">
 						<TABLE>

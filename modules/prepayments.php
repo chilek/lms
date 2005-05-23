@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$userid = $_GET['id'];
+$customerid = $_GET['id'];
 
-if(!$userid || $LMS->UserExists($userid)!=TRUE)
+if(!$customerid || $LMS->UserExists($customerid)!=TRUE)
 {
 	$SESSION->redirect('?m='.$SESSION->get('backto'));
 }
@@ -38,7 +38,7 @@ if(sizeof($pmarks) && sizeof($cmarks))
 {
 	foreach($pmarks as $mark)
 	{
-		$mark = $LMS->DB->GetRow('SELECT id, value, comment, adminid, time, type, userid, taxvalue
+		$mark = $LMS->DB->GetRow('SELECT id, value, comment, adminid, time, type, customerid, taxvalue
 					FROM cash WHERE id = ?', array($mark));
 
 		while($mark['value'] > 0 && !$finish)
@@ -71,8 +71,8 @@ if(sizeof($pmarks) && sizeof($cmarks))
 					$mark['value'] -= $value;
 					$LMS->AddBalance($mark);
 					
-					$mark['id'] = $LMS->DB->GetOne('SELECT id FROM cash WHERE userid = ? AND invoiceid = 0 AND value = ? AND time = ? AND type = 3 AND comment = ?',
-								    array($mark['userid'], $mark['value'], $mark['time'], $mark['comment']));
+					$mark['id'] = $LMS->DB->GetOne('SELECT id FROM cash WHERE customerid = ? AND invoiceid = 0 AND value = ? AND time = ? AND type = 3 AND comment = ?',
+								    array($mark['customerid'], $mark['value'], $mark['time'], $mark['comment']));
 					
 					if(sizeof($cmarks)>1) 
 						unset($cmarks[$idx]);
@@ -87,10 +87,10 @@ if(sizeof($pmarks) && sizeof($cmarks))
 if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate, 
 			SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
 			FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
-			WHERE userid = ? AND invoiceid > 0 AND itemid > 0
+			WHERE customerid = ? AND invoiceid > 0 AND itemid > 0
 			GROUP BY invoiceid, itemid
 			HAVING SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 > 0
-			ORDER BY cdate', array($userid)))
+			ORDER BY cdate', array($customerid)))
 {
 	foreach($covenantlist as $idx => $row)
 	{
@@ -104,7 +104,7 @@ if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cda
 		$record['invoice'] = str_replace('%Y', date('Y', $row['cdate']), $record['invoice']);
 		$record['invoice'] = str_replace('%N', $record['number'], $record['invoice']);
 
-		if(in_array($record['id'], (array) $SESSION->get('unpaid.'.$userid)))
+		if(in_array($record['id'], (array) $SESSION->get('unpaid.'.$customerid)))
 			$record['selected'] = TRUE;
 		
 		$covenantlist[$idx] = array_merge($record, $covenantlist[$idx]);
@@ -112,14 +112,14 @@ if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cda
 }
 
 $prepaymentlist = $LMS->DB->GetAll('SELECT id, time, value, taxvalue, comment
-			FROM cash WHERE userid = ? AND invoiceid = 0 AND type = 3
-			ORDER BY time', array($userid));
+			FROM cash WHERE customerid = ? AND invoiceid = 0 AND type = 3
+			ORDER BY time', array($customerid));
 
-$layout['pagetitle'] = trans('Prepayments of Customer: $0', '<A href="?m=userinfo&id='.$userid.'">'.$LMS->GetUserName($userid).'</A>');
+$layout['pagetitle'] = trans('Prepayments of Customer: $0', '<A href="?m=userinfo&id='.$customerid.'">'.$LMS->GetUserName($customerid).'</A>');
 
 $SMARTY->assign('covenantlist',$covenantlist);
 $SMARTY->assign('prepaymentlist',$prepaymentlist);
-$SMARTY->assign('userid', $userid);
+$SMARTY->assign('customerid', $customerid);
 $SMARTY->display('prepayments.html');
 
 ?>

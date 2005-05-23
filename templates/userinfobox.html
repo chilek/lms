@@ -23,7 +23,7 @@
 			<IMG SRC="img/user.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<B>{$userinfo.username|escape} ({$userinfo.id|string_format:"%04d"}){if $userinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
+			<B>{$userinfo.customername|escape} ({$userinfo.id|string_format:"%04d"}){if $userinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -179,7 +179,7 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
 			<INPUT type="hidden" name="rtsearch[subject]" value=""></INPUT>
-			<INPUT type="hidden" name="rtsearch[userid]" value="{$userinfo.id}"></INPUT>
+			<INPUT type="hidden" name="rtsearch[customerid]" value="{$userinfo.id}"></INPUT>
 			<INPUT type="hidden" name="rtsearch[name]" value=""></INPUT>
 			<INPUT type="hidden" name="rtsearch[email]" value=""></INPUT>
 			<INPUT type="hidden" name="rtsearch[owner]" value="0"></INPUT>

@@ -60,7 +60,7 @@
 					</TD>
 					<TD width="93%" {tip text="Select sorting direction and criteria"}>
 						<SELECT SIZE="1" name="order">
-							<OPTION value="username" SELECTED>{t}First/last or Company name{/t}</OPTION>
+							<OPTION value="customername" SELECTED>{t}First/last or Company name{/t}</OPTION>
 							<OPTION value="id">{t}Id{/t}</OPTION> 
 							<OPTION value="balance">{t}Balance{/t}</OPTION> 
 							<OPTION value="tariff">{t}Subscription{/t}</OPTION> 
@@ -214,7 +214,7 @@ cal6.time_comp = false;
 						<SELECT size="1" name="user" {tip text="Select customer"}>
 							<OPTION value="0" SELECTED>{t}- all customers -{/t}</OPTION>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -233,7 +233,7 @@ cal6.time_comp = false;
 					</TD>
 					<TD width="93%" {tip text="Select sorting direction and criteria"}>
 						<SELECT SIZE="1" name="order">
-							<OPTION value="username" SELECTED>{t}First/last or Company name{/t}</OPTION>
+							<OPTION value="customername" SELECTED>{t}First/last or Company name{/t}</OPTION>
 							<OPTION value="brutto">{t}Gross value{/t}</OPTION> 
 						</SELECT><BR><BR>
 						<SELECT SIZE="1" name="direction">
@@ -330,7 +330,7 @@ cal9.time_comp = false;
 					<TD width="1%">
 						<SELECT size="1" name="user" {tip text="Select customer"}>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -387,7 +387,7 @@ cal4.time_comp = false;
 						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -439,7 +439,7 @@ cal4.time_comp = false;
 						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

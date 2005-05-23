@@ -168,10 +168,10 @@ header('X-Powered-By: LMS/'.$layout[lmsv]);
 
 $_SERVER[REMOTE_ADDR] = str_replace('::ffff:','',$_SERVER[REMOTE_ADDR]);
 
-if($userid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER[REMOTE_ADDR])))
+if($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER[REMOTE_ADDR])))
 {
-	$balance = $LMS->GetUserBalanceList($userid);
-	$userinfo = $LMS->GetUser($userid);
+	$balance = $LMS->GetUserBalanceList($customerid);
+	$userinfo = $LMS->GetUser($customerid);
 }
 
 $SMARTY->assign('userinfo', $userinfo);

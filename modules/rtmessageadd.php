@@ -34,7 +34,7 @@ function MessageAdd($msg, $headers, $file=NULL)
 		foreach($headers as $idx => $header)
 			$head .= $idx.": ".$header."\n";
 	
-	$LMS->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto, messageid, replyto, headers)
+	$LMS->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, customerid, mailfrom, inreplyto, messageid, replyto, headers)
 			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 			    array(
 				$msg['ticketid'],
@@ -42,7 +42,7 @@ function MessageAdd($msg, $headers, $file=NULL)
 				$msg['subject'],
 				$msg['body'],
 				$msg['adminid'],
-				$msg['userid'],
+				$msg['customerid'],
 				$msg['mailfrom'],
 				$msg['inreplyto'],
 				$msg['messageid'],
@@ -52,7 +52,7 @@ function MessageAdd($msg, $headers, $file=NULL)
 
 	if(isset($file['name']))
 	{
-		$id = $LMS->DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND userid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['userid'], $time));
+		$id = $LMS->DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND customerid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['customerid'], $time));
 		$dir = $LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
 		@mkdir($LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
@@ -114,12 +114,12 @@ if(isset($_POST['message']))
 		if($message['sender']=='admin')
 		{
 			$message['adminid'] = $AUTH->id;
-			$message['userid'] = 0;
+			$message['customerid'] = 0;
 		}
 		else
 		{
 			$message['adminid'] = 0;
-			if(!$message['userid']) 
+			if(!$message['customerid']) 
 			{
 				$req = $LMS->DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']));
 				$message['mailfrom'] = ereg_replace('^.* <(.+@.+)>','\1', $req);
@@ -172,7 +172,7 @@ if(isset($_POST['message']))
 			else 
 			{
 				$message['messageid'] = '';
-				if($message['userid'] || $message['adminid'])
+				if($message['customerid'] || $message['adminid'])
 					$message['mailfrom'] = '';
 				$message['headers'] = '';
 			    	$message['replyto'] = '';
@@ -195,8 +195,8 @@ if(isset($_POST['message']))
 			if($message['adminid'] && !$addmsg)
 				$message['mailfrom'] = $admin['email'] ? $admin['email'] : $queue['email'];
 			
-			if($message['userid'])
-				$message['mailfrom'] = $LMS->GetUserEmail($message['userid']);
+			if($message['customerid'])
+				$message['mailfrom'] = $LMS->GetUserEmail($message['customerid']);
 
 			$headers['Date'] = date('D, d F Y H:i:s T');
 			$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
@@ -242,7 +242,7 @@ else
 	$admin = $LMS->GetAdminInfo($AUTH->id);
 	
 	$message['ticketid'] = $_GET['ticketid'];
-	$message['userid'] = $LMS->DB->GetOne('SELECT userid FROM rttickets WHERE id = ?', array($message['ticketid']));
+	$message['customerid'] = $LMS->DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));
 	
 	if($_GET['id'])
 	{
@@ -254,7 +254,7 @@ else
 			$message['destination'] = ereg_replace('^.* <(.+@.+)>','\1',$reply['mailfrom']);
 
 		if(!$message['destination'] && !$reply['adminid'])
-			$message['destination'] = $LMS->GetUserEmail($message['userid']);
+			$message['destination'] = $LMS->GetUserEmail($message['customerid']);
 	
 		$message['subject'] = 'Re: '.$reply['subject'];
 			

@@ -426,17 +426,17 @@ sub instance($)
 		my %climits;
 		my %plimits;
 		
-		$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil, SUM(climit) AS climit, SUM(plimit) AS plimit FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY userid");
+		$dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil, SUM(climit) AS climit, SUM(plimit) AS plimit FROM assignments, users, tariffs WHERE users.id = customerid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY customerid");
 		$dbq->execute();
 
 		while(my $row = $dbq->fetchrow_hashref())
 		{
-			$uprates{$row->{'userid'}} = $row->{'uprate'};
-			$downrates{$row->{'userid'}} = $row->{'downrate'};
-			$upceils{$row->{'userid'}} = $row->{'upceil'};
-			$downceils{$row->{'userid'}} = $row->{'downceil'};
-			$climits{$row->{'userid'}} = $row->{'climit'};
-			$plimits{$row->{'userid'}} = $row->{'plimit'};
+			$uprates{$row->{'customerid'}} = $row->{'uprate'};
+			$downrates{$row->{'customerid'}} = $row->{'downrate'};
+			$upceils{$row->{'customerid'}} = $row->{'upceil'};
+			$downceils{$row->{'customerid'}} = $row->{'downceil'};
+			$climits{$row->{'customerid'}} = $row->{'climit'};
+			$plimits{$row->{'customerid'}} = $row->{'plimit'};
 		}
 		
 		# BUILD NODELIST

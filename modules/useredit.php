@@ -36,13 +36,13 @@ elseif(! $LMS->UserExists($_GET['id']))
 }
 elseif($action == 'usergroupdelete')
 {
-	$LMS->UserassignmentDelete(array('userid' => $_GET['id'], 'usergroupid' => $_GET['usergroupid']));
+	$LMS->UserassignmentDelete(array('customerid' => $_GET['id'], 'usergroupid' => $_GET['usergroupid']));
 	$SESSION->redirect('?m=userinfo&id='.$_GET['id']);
 }
 elseif($action == 'usergroupadd')
 {
 	if ($LMS->UsergroupExists($_POST['usergroupid']))
-		$LMS->UserassignmentAdd(array('userid' => $_GET['id'], 'usergroupid' => $_POST['usergroupid']));
+		$LMS->UserassignmentAdd(array('customerid' => $_GET['id'], 'usergroupid' => $_POST['usergroupid']));
 	$SESSION->redirect('?m=userinfo&id='.$_GET['id']);
 }
 elseif(isset($_POST['userdata']))
@@ -52,7 +52,7 @@ elseif(isset($_POST['userdata']))
 		$userdata[$key] = trim($value);
 
 	if($userdata['lastname']=='')
-		$error['username'] = trans('\'Last/Company Name\' and \'First Name\' fields cannot be empty!');
+		$error['customername'] = trans('\'Last/Company Name\' and \'First Name\' fields cannot be empty!');
 	
 	if($userdata['address']=='')
 		$error['address'] = trans('Address required!');
@@ -97,7 +97,7 @@ elseif(isset($_POST['userdata']))
 		$userinfo['modifiedby']=$olddata['modifiedby'];
 		$userinfo['creationdateh']=$olddata['creationdateh'];
 		$userinfo['moddateh']=$olddata['moddateh'];
-		$userinfo['username']=$olddata['username'];
+		$userinfo['customername']=$olddata['customername'];
 		$userinfo['balance']=$olddata['balance'];
 		if($olddata['status']==3)
 			$userinfo['shownodes'] = TRUE;
@@ -110,7 +110,7 @@ elseif(isset($_POST['userdata']))
 		$userinfo['shownodes'] = TRUE;
 }
 
-$layout['pagetitle'] = trans('Customer Edit: $0',$userinfo['username']);
+$layout['pagetitle'] = trans('Customer Edit: $0',$userinfo['customername']);
 
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));

@@ -29,13 +29,13 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if(!$LMS->UserExists($_GET['id']))
 	header("Location: ?m=userlist");
 
-$username=$LMS->GetUserName($_GET['id']);
+$customername=$LMS->GetUserName($_GET['id']);
 $id = $_GET['id'];
 
-$layout['pagetitle'] = trans('Customer Balance: <A HREF="?m=userinfo&id=$0">$1</A>', $_GET['id'], $username);
+$layout['pagetitle'] = trans('Customer Balance: <A HREF="?m=userinfo&id=$0">$1</A>', $_GET['id'], $customername);
 
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($_GET['id']));
-$SMARTY->assign('username',$username);
+$SMARTY->assign('customername',$customername);
 $SMARTY->assign('id',$id);
 $SMARTY->display('userbalance.html');
 

@@ -77,7 +77,7 @@
 			<SELECT NAME="customer[{$importlist[importlist].id}]" {tip text="Select customer" trigger=$importlist[importlist].id}>
 				<OPTION VALUE="0">{t}- select customer -{/t}</OPTION>
 				{section name=userlist loop=$userlist}
-				<OPTION VALUE="{$userlist[userlist].id}" {if $userlist[userlist].id == $importlist[importlist].customerid}SELECTED{/if}>{$userlist[userlist].username|truncate:50:" ..."} ({$userlist[userlist].id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$userlist[userlist].id}" {if $userlist[userlist].id == $importlist[importlist].customerid}SELECTED{/if}>{$userlist[userlist].customername|truncate:50:" ..."} ({$userlist[userlist].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>&nbsp;
 			{cycle print=false}

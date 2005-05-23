@@ -106,7 +106,7 @@ switch($type)
 		
 		$id = $_POST['user'];
 
-		if($tslist = $LMS->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
+		if($tslist = $LMS->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -167,7 +167,7 @@ switch($type)
 				$list['before'][$key] = $value;
 		}
 
-		$list['userid'] = $id;
+		$list['customerid'] = $id;
 		
 		$SMARTY->assign('balancelist', $list);
 		$SMARTY->display('printuserbalance.html');
@@ -250,7 +250,7 @@ switch($type)
 					    COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
 					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
 					    FROM nodes LEFT JOIN users ON (ownerid = users.id)
-					    LEFT JOIN cash ON (cash.userid = users.id)
+					    LEFT JOIN cash ON (cash.customerid = users.id)
 					    GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, users.lastname, users.name
 					    HAVING SUM((type * -2 + 7) * value) < 0'
 					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
@@ -286,12 +286,12 @@ switch($type)
 		else
 			$layout['pagetitle'] = trans('Balance Sheet ($0 to $1)', ($from ? $from : ''), $to);
 			
-		$userslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users','id');
+		$userslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM users','id');
 		
 		if($date['from'])
 			$lastafter = $DB->GetOne('SELECT SUM(CASE type WHEN 2 THEN value*-1 WHEN 4 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
 		
-		if($balancelist = $DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, userid, comment 
+		if($balancelist = $DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, customerid, comment 
 			    FROM cash WHERE time>=? AND time<=? ORDER BY time ASC', array($date['from'], $date['to'])))
 		{
 			$x = 0;
@@ -313,7 +313,7 @@ switch($type)
 				$list[$x]['taxvalue'] = $row['taxvalue'];
 				$list[$x]['time'] = $row['time'];
 				$list[$x]['comment'] = $row['comment'];
-				$list[$x]['username'] = $userslist[$row['userid']]['username'];
+				$list[$x]['customername'] = $userslist[$row['customerid']]['customername'];
 
 				switch($row['type'])
 				{
@@ -401,7 +401,7 @@ switch($type)
 		if(!$_POST['invoiceorg'] && $_POST['invoicecopy']) $witch = trans('COPY');
 		
 		$layout['pagetitle'] = trans('Invoices');
-		header('Location: ?m=invoice&fetchallinvoices=1&which='.$witch.'&userid='.$_POST['user'].'&from='.$date['from'].'&to='.$date['to']);
+		header('Location: ?m=invoice&fetchallinvoices=1&which='.$witch.'&customerid='.$_POST['user'].'&from='.$date['from'].'&to='.$date['to']);
 	break;	
 
 	case 'liabilityreport': /********************************************/
@@ -416,7 +416,7 @@ switch($type)
 		$layout['pagetitle'] = trans('Liability Report on $0',date('Y/m/d', $reportday));
 
 		$order = (isset($_POST['order']) ? $_POST['order'] : 'brutto').','.(isset($_POST['direction']) ? $_POST['direction'] : 'asc');
-		$userid = (isset($_POST['user']) ? $_POST['user'] : 0);
+		$customerid = (isset($_POST['user']) ? $_POST['user'] : 0);
 
 		$yearday = date('z', $reportday);
 		$month = date('n', $reportday);
@@ -442,15 +442,15 @@ switch($type)
 
 		switch($order)
 		{
-			case 'username':
-				$sqlord = 'ORDER BY username';
+			case 'customername':
+				$sqlord = 'ORDER BY customername';
 			break;
 			default:
 				$sqlord = 'ORDER BY brutto';
 			break;
 		}
 		
-		if($reportlist =  $LMS->DB->GetAll('SELECT userid, '.$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, '
+		if($reportlist =  $LMS->DB->GetAll('SELECT customerid, '.$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS customername, '
 			    .$LMS->DB->Concat('city',"' '",'address').' AS address, nip, 
 			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
 			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
@@ -458,11 +458,11 @@ switch($type)
 			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree,
 			    SUM(value) AS brutto  
 			    FROM assignments, tariffs, users  
-			    WHERE userid = users.id AND tariffid = tariffs.id 
+			    WHERE customerid = users.id AND tariffid = tariffs.id 
 			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
 			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
-			    .($userid ? 'AND userid='.$userid : ''). 
-			    ' GROUP BY userid, lastname, users.name, city, address, nip '
+			    .($customerid ? 'AND customerid='.$customerid : ''). 
+			    ' GROUP BY customerid, lastname, users.name, city, address, nip '
 			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
 			    array($reportday, $reportday, $weekday, $monthday, $quarterday, $yearday))
 		)
@@ -492,13 +492,13 @@ switch($type)
 		$payments = $LMS->DB->GetAllByKey('SELECT SUM(value) AS value, invoiceid AS id
 					FROM cash
 					WHERE invoiceid > 0 AND type = 3 AND time >= ?'
-					.($_POST['user'] ? ' AND userid = '.$_POST['user'] : '')
+					.($_POST['user'] ? ' AND customerid = '.$_POST['user'] : '')
 					.' GROUP BY invoiceid', 'id', array($from));
 					
 		if($invoices = $LMS->DB->GetAll('SELECT SUM(value) AS value, MIN(time) AS time, invoiceid AS id
 					FROM cash
 					WHERE invoiceid > 0 AND type = 4 AND time >= ? AND time < ?'
-					.($_POST['user'] ? ' AND userid = '.$_POST['user'] : '')
+					.($_POST['user'] ? ' AND customerid = '.$_POST['user'] : '')
 					.' GROUP BY invoiceid', array($from, $to)))
 
 			foreach($invoices as $row)

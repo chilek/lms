@@ -59,7 +59,7 @@ function RTSearch($search, $order='createtime,desc')
 
 	$where  = ($search['queue']     ? 'AND queueid='.$search['queue'].' '          : '');
 	$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            : '');
-	$where .= ($search['userid']    ? 'AND rttickets.userid='.$search['userid'].' '   : '');
+	$where .= ($search['customerid']    ? 'AND rttickets.customerid='.$search['customerid'].' '   : '');
 	$where .= ($search['subject']   ? 'AND rttickets.subject ?LIKE?\'%'.$search['subject'].'%\' '       : '');
 	$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
 	$where .= ($search['email']!='' ? 'AND requestor ?LIKE? \'%'.$search['email'].'%\' ' : '');
@@ -68,19 +68,19 @@ function RTSearch($search, $order='createtime,desc')
 	if($search['name'])
 		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'UPPER(users.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
 
-	if($result = $LMS->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+	if($result = $LMS->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 			FROM rttickets 
 			LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
 			LEFT JOIN admins ON (owner = admins.id) 
-			LEFT JOIN users ON (rttickets.userid = users.id)
+			LEFT JOIN users ON (rttickets.customerid = users.id)
 			WHERE 1=1 '
 			.$where 
-			.'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
+			.'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.customerid, users.lastname, users.name '
 			.($sqlord !='' ? $sqlord.' '.$direction:'')))
 	{
 		foreach($result as $idx => $ticket)
 		{
-			if(!$ticket['userid'])
+			if(!$ticket['customerid'])
 				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 			else
 				list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
@@ -106,7 +106,7 @@ if(isset($_GET['state']))
 	$search = array(
 		'state' => $_GET['state'],
 		'subject' => '',
-		'userid' => '0',
+		'customerid' => '0',
 		'name' => '',
 		'email' => '',
 		'owner' => '0',

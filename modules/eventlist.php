@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $userid=0, $adminid=0)
+function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $adminid=0)
 {
 	global $LMS, $AUTH;
 
@@ -36,11 +36,11 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $userid=0,
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
 
 	$list = $LMS->DB->GetAll(
-	        'SELECT events.id AS id, title, description, date, begintime, endtime, userid, closed, '
-		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username 
-		 FROM events LEFT JOIN users ON (userid = users.id)
+	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
+		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername 
+		 FROM events LEFT JOIN users ON (customerid = users.id)
 		 WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
-		.($userid ? 'AND userid = '.$userid : '')
+		.($customerid ? 'AND customerid = '.$customerid : '')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $AUTH->id));
 	
@@ -95,7 +95,7 @@ $year = ($year ? $year : date('Y',time()));
 $layout['pagetitle'] = trans('Timetable');
 
 $eventlist = GetEventList($year, $month, $day, $LMS->CONFIG['phpui']['timetable_days_forward'], $u, $a);
-$SESSION->restore('elu', $listdata['userid']);
+$SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['adminid']);
 
 // create calendars

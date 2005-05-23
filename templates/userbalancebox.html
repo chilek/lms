@@ -66,13 +66,13 @@
 
 	function unpaidchoosewin()
 	{
-		pop = window.open('?m=choosecovenants&id={/literal}{$balancelist.userid}{literal}', 'choosecash','toolbar=no,location=no,directories=no,status=no,menubar=no,width=500,height=300,scrollbars=yes,resizable=no');
+		pop = window.open('?m=choosecovenants&id={/literal}{$balancelist.customerid}{literal}', 'choosecash','toolbar=no,location=no,directories=no,status=no,menubar=no,width=500,height=300,scrollbars=yes,resizable=no');
     	}
 
 	//-->
 </SCRIPT>
 {/literal}
-<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
+<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fleftu" {if $limit}OnCLick="showOrHide('userbalance');"{/if}>
@@ -84,8 +84,8 @@
 			{/if}
 		</TD>
 		<TD class="frightu" align="right">
-			<A href="?m=invoicenew&action=init&userid={$balancelist.userid}">{t}New Invoice{/t} &raquo;</A>&nbsp;
-			{if $limit}<A href="?m=userbalance&id={$balancelist.userid}">{t}See all transactions{/t} &raquo;</A>{/if}
+			<A href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{t}New Invoice{/t} &raquo;</A>&nbsp;
+			{if $limit}<A href="?m=userbalance&id={$balancelist.customerid}">{t}See all transactions{/t} &raquo;</A>{/if}
 		</TD>
 	</TR>
 	<TR id="userbalance">
@@ -151,7 +151,7 @@
 					</TD>
 				</TR>
 				<TR class="light">
-					<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
+					<INPUT TYPE="hidden" NAME="addbalance[customerid]" VALUE="{$balancelist.customerid}">
 					<TD class="ftop">
 						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
 					</TD>
@@ -182,9 +182,9 @@
 				</TR>
 				<TR class="light">
 					<TD colspan="3">
-						<A href="?m=prepayments&id={$balancelist.userid}">{t}Prepayments{/t} <IMG src="img/edit.gif" alt=""></A>
+						<A href="?m=prepayments&id={$balancelist.customerid}">{t}Prepayments{/t} <IMG src="img/edit.gif" alt=""></A>
 						{if $userinfo.balance < 0}
-						<A href="?m=userbalanceok&id={$userinfo.id}" OnClick="return confirmLink(this, '{t 0=$userinfo.username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" alt=""></A>
+						<A href="?m=userbalanceok&id={$userinfo.id}" OnClick="return confirmLink(this, '{t 0=$userinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" alt=""></A>
 						{/if}
 					</TD>
 					<TD align="right" colspan="6">

@@ -44,7 +44,7 @@ elseif($marks = $_POST['marks'])
 			$balance['time'] = $import['date'];
 			$balance['type'] = 3;
 			$balance['value'] = $import['value'];
-			$balance['userid'] = $customers[$id];
+			$balance['customerid'] = $customers[$id];
 			$balance['comment'] = $import['description'];
 			$LMS->AddBalance($balance);
 		}

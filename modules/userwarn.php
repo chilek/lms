@@ -26,13 +26,13 @@
 
 $setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
 
-if(isset($setwarnings['muserid']))
+if(isset($setwarnings['mcustomerid']))
 {
 	$warnon = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
 	$message = isset($setwarnings['message']) ? $setwarnings['message'] : '';
 	
-	foreach($setwarnings['muserid'] as $uid)
+	foreach($setwarnings['mcustomerid'] as $uid)
 	{
 		if($warnon)
 			$LMS->NodeSetWarnU($uid, TRUE);
@@ -59,9 +59,9 @@ $layout['pagetitle'] = trans('Warnings');
 
 $userlist = $LMS->DB->GetAll(
 		    'SELECT users.id AS id, MAX(warning) AS warning, '.
-		    $LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username 
+		    $LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS customername 
 		    FROM users LEFT JOIN nodes ON users.id = ownerid WHERE deleted = 0 
-		    GROUP BY users.id, lastname, users.name ORDER BY username ASC');
+		    GROUP BY users.id, lastname, users.name ORDER BY customername ASC');
 
 $SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
 $SMARTY->assign('warnon', $SESSION->get('warnon'));

@@ -38,7 +38,7 @@ $userinfo = $LMS->GetUser($_GET['id']);
 $assignments = $LMS->GetUserAssignments($_GET['id']);
 $usernodes = $LMS->GetUserNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
-$userinfo['username'] = ucwords(strtolower($userinfo['username']));
+$userinfo['customername'] = ucwords(strtolower($userinfo['customername']));
 $usernodes['ownerid'] = $_GET['id'];
 
 $SMARTY->assign(

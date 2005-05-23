@@ -114,7 +114,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	unsigned char *insert;
 	unsigned char *w_period, *m_period, *q_period, *y_period, *value, *taxvalue;
 	unsigned char *description;
-	int i, invoiceid=0, last_userid=0, number=0, exec=0, suspended=0, itemid=0;
+	int i, invoiceid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
@@ -180,7 +180,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (%NOW%, 2, ?, 0, '? / ?', 0)",
+			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, customerid, comment, invoiceid) VALUES (%NOW%, 2, ?, 0, '? / ?', 0)",
 					g->db_get_data(res,i,"value"),
 					g->db_get_data(res,i,"name"),
 					g->db_get_data(res,i,"creditor")
@@ -202,18 +202,18 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_free(&res);
 
 		// payments accounting and invoices writing
-		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, userid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxvalue, suspended, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY userid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
+		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, customerid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxvalue, suspended, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND customerid = users.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
 		
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			int uid = atoi(g->db_get_data(res,i,"userid"));
+			int uid = atoi(g->db_get_data(res,i,"customerid"));
 			int s_state = atoi(g->db_get_data(res,i,"suspended"));
 			double val = atof(g->db_get_data(res,i,"value"));
 			
 			// assignments suspending check
 			if( suspended != uid )
 			{
-				sres = g->db_pquery(g->conn, "SELECT 1 FROM assignments, users WHERE userid = users.id AND tariffid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND userid = ?", g->db_get_data(res,i,"userid"));
+				sres = g->db_pquery(g->conn, "SELECT 1 FROM assignments, users WHERE customerid = users.id AND tariffid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ?", g->db_get_data(res,i,"customerid"));
 				if( g->db_nrows(sres) ) 
 				{
 					suspended = uid;
@@ -230,8 +230,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 			value = ftoa(val);
 			taxvalue = g->db_get_data(res,i,"taxvalue");
 			// prepare insert to 'cash' table
-			insert = strdup("INSERT INTO cash (time, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (%NOW%, 4, %value, %taxvalue, %userid, '?', %invoiceid, %itemid)");
-			g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
+			insert = strdup("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (%NOW%, 4, %value, %taxvalue, %customerid, '?', %invoiceid, %itemid)");
+			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
 			g->str_replace(&insert, "%value", value);
 			description = strdup(p->comment);
 			switch( atoi(g->db_get_data(res,i,"period")) ) 
@@ -249,12 +249,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 			
 			if( atoi(g->db_get_data(res,i,"invoice")) ) 
 			{
-				if( last_userid != uid ) 
+				if( last_customerid != uid ) 
 				{
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES (?, ?, '? ?', '?', '?', '?', '?', '?', '?', %NOW%, ?, '?', 1 )",
 						itoa(++number),
-						g->db_get_data(res,i,"userid"),
+						g->db_get_data(res,i,"customerid"),
 						g->db_get_data(res,i,"lastname"),
 						g->db_get_data(res,i,"name"),
 						g->db_get_data(res,i,"address"),
@@ -319,7 +319,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				exec = g->db_pexec(g->conn, insert, description) ? 1 : exec;
 			}
 
-			last_userid = uid;
+			last_customerid = uid;
 			free(insert);
 			free(description);
 		}

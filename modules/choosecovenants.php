@@ -26,11 +26,11 @@
 
 $layout['pagetitle'] = trans('Select Unpaid Covenants');
 
-$userid = $_GET['id'];
+$customerid = $_GET['id'];
 
 if(isset($_POST['marks']))
 {
-	$SESSION->save('unpaid.'.$userid, $_POST['marks']);
+	$SESSION->save('unpaid.'.$customerid, $_POST['marks']);
 	$SESSION->close();
 	die;
 }
@@ -38,10 +38,10 @@ if(isset($_POST['marks']))
 if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate, 
 			SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
 			FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
-			WHERE userid = ? AND invoiceid > 0 AND itemid > 0
+			WHERE customerid = ? AND invoiceid > 0 AND itemid > 0
 			GROUP BY invoiceid, itemid
 			HAVING SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 > 0
-			ORDER BY cdate', array($userid)))
+			ORDER BY cdate', array($customerid)))
 {
 	foreach($covenantlist as $idx => $row)
 	{
@@ -55,17 +55,17 @@ if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cda
 		$record['invoice'] = str_replace('%Y', date('Y', $row['cdate']), $record['invoice']);
 		$record['invoice'] = str_replace('%N', $record['number'], $record['invoice']);
 
-		if(in_array($record['id'], (array) $SESSION->get('unpaid.'.$userid)))
+		if(in_array($record['id'], (array) $SESSION->get('unpaid.'.$customerid)))
 			$record['selected'] = TRUE;
 		
 		$covenantlist[$idx] = array_merge($record, $covenantlist[$idx]);
 	}
 }
 
-$SESSION->remove('unpaid.'.$userid);
+$SESSION->remove('unpaid.'.$customerid);
 
 $SMARTY->assign('covenantlist',$covenantlist);
-$SMARTY->assign('userid', $userid);
+$SMARTY->assign('customerid', $customerid);
 $SMARTY->display('choosecovenants.html');
 
 ?>

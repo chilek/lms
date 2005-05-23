@@ -41,9 +41,9 @@
 				</SELECT>&nbsp;
 				{t}Customer:{/t}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
-					<OPTION value="0"{if $listdata.userid eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
+					<OPTION value="0"{if $listdata.customerid eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
 					{section name=userlist loop=$userlist}
-					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.userid} SELECTED{/if}>{$userlist[userlist].username|truncate:40:"..."}</OPTION>
+					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.customerid} SELECTED{/if}>{$userlist[userlist].customername|truncate:40:"..."}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM></P>
@@ -63,7 +63,7 @@
 			<B>({$daylist[daylist]|date_format:"%x"})</B>
 		</TD>
 		<TD width="3%" colspan="3" class="frightu" align="right" nowrap>
-			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.userid}&a={$listdata.adminid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
+			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.adminid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
 			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{t}Add Event{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
@@ -90,8 +90,8 @@
 			{/foreach}
 		</TD>
 		<TD width="1%" align="right" valign="top">
-			{if $eventlist[eventlist].username}
-				<A href="?m=userinfo&id={$eventlist[eventlist].userid}">{$eventlist[eventlist].username|truncate:"40":"..."}</A>
+			{if $eventlist[eventlist].customername}
+				<A href="?m=userinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"..."}</A>
 			{/if}
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>

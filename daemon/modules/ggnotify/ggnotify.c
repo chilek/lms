@@ -101,7 +101,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 		syslog(LOG_INFO, "DEBUG: [%s/ggnotify] Connected to Gadu-Gadu server.",n->base.instance);
 #endif
 	
-		res = g->db_query(g->conn, "SELECT users.id AS id, gguin, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, gguin, name, lastname");
+		res = g->db_query(g->conn, "SELECT users.id AS id, gguin, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, gguin, name, lastname");
 
 		if( g->db_nrows(res) )
 		{
@@ -123,7 +123,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 								
 								last_ten = strdup("");
 								
-								result = g->db_pquery(g->conn, "SELECT CASE WHEN type=4 THEN value*-1 ELSE value END AS value, comment, time FROM cash WHERE userid = ? ORDER BY time DESC LIMIT 10", g->db_get_data(res,i,"id"));
+								result = g->db_pquery(g->conn, "SELECT CASE WHEN type=4 THEN value*-1 ELSE value END AS value, comment, time FROM cash WHERE customerid = ? ORDER BY time DESC LIMIT 10", g->db_get_data(res,i,"id"));
 							
 								for(j=0; j<g->db_nrows(result); j++)
 								{

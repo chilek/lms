@@ -1920,7 +1920,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$useradd['message'] = '';
 		$useradd['pin'] = rand(10000,99999);
 		$id = $LMS->UserAdd($useradd);
-		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
+		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'customerid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{

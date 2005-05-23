@@ -54,8 +54,8 @@ $message = $LMS->GetMessage($_GET['id']);
 if($message['adminid'])
 	$message['adminname'] = $LMS->GetAdminName($message['adminid']);
 
-if($message['userid'])
-	$message['username'] = $LMS->GetUserName($message['userid']);
+if($message['customerid'])
+	$message['customername'] = $LMS->GetUserName($message['customerid']);
 	
 if(sizeof($message['attachments']))
 	foreach($message['attachments'] as $key => $val) 
@@ -70,7 +70,7 @@ if($message['inreplyto'])
 	$message['inreplytoid'] = $reply['subject'];
 }
 
-if(!$message['userid'] && !$message['adminid'] && !$message['mailfrom'])
+if(!$message['customerid'] && !$message['adminid'] && !$message['mailfrom'])
 {
 	$message['requestor'] = $LMS->DB->GetOne('SELECT requestor FROM rttickets WHERE id=?', array($message['ticketid']));
 }

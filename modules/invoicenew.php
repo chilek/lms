@@ -48,8 +48,8 @@ switch($_GET['action'])
 		$invoice['year']  = date("Y");
 		$invoice['cdate'] = time();
 		$invoice['paytime'] = 14;
-		if($_GET['userid'] != '' && $LMS->UserExists($_GET['userid']))
-			$customer = $LMS->GetUser($_GET['userid']);
+		if($_GET['customerid'] != '' && $LMS->UserExists($_GET['customerid']))
+			$customer = $LMS->GetUser($_GET['customerid']);
 	break;
 
 	case 'additem':
@@ -107,7 +107,7 @@ switch($_GET['action'])
 		if($invoice['paytime'] < 0)
 			$invoice['paytime'] = 14;
 
-		$invoice['userid'] = $_POST['userid'];
+		$invoice['customerid'] = $_POST['customerid'];
 		
 		if($invoice['cdate'])
 		{
@@ -158,8 +158,8 @@ switch($_GET['action'])
 		}
 		
 		if(!$error)
-			if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user'])))
-				$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user']));
+			if($LMS->UserExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['user'])))
+				$customer = $LMS->GetUser(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['user']));
 
 	break;
 

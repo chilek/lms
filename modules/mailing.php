@@ -45,17 +45,17 @@ function GetEmails($group, $network=NULL, $usergroup=NULL)
 	if($network) 
 		$net = $LMS->GetNetworkParams($network);
 	
-	if($emails = $LMS->DB->GetAll('SELECT users.id AS id, email, '.$LMS->DB->Concat('lastname', "' '", 'users.name').' AS username, '
+	if($emails = $LMS->DB->GetAll('SELECT users.id AS id, email, '.$LMS->DB->Concat('lastname', "' '", 'users.name').' AS customername, '
 		.'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance '
-		.'FROM users LEFT JOIN cash ON (users.id=cash.userid AND (type=3 OR type=4)) '
+		.'FROM users LEFT JOIN cash ON (users.id=cash.customerid AND (type=3 OR type=4)) '
 		.($network ? 'LEFT JOIN nodes ON (user.id=ownerid) ' : '')
-		.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.userid) ' : '')
+		.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.customerid) ' : '')
 		.' WHERE deleted = '.$deleted
 		.' AND email != \'\''
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 		.($usergroup ? ' AND usergroupid='.$usergroup : '')
-		.' GROUP BY email, lastname, users.name, users.id ORDER BY username'))
+		.' GROUP BY email, lastname, users.name, users.id ORDER BY customername'))
 	{
 		if($disabled)
 			$access = $LMS->DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
@@ -129,7 +129,7 @@ if(isset($_POST['mailing']))
 				
 				$headers['To'] = '<'.$row['email'].'>';
 				
-				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['username'], $row['email']);
+				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['customername'], $row['email']);
 				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $mailing['body'])."</font><BR>\n";
 			}
 		}

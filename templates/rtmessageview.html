@@ -37,8 +37,8 @@
 			<B>{t}Submitter:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			{if $message.userid}
-				<A href="?m=userinfo&id={$message.userid}">{$message.username} ({$message.userid|escape|string_format:"%04d"})</A>
+			{if $message.customerid}
+				<A href="?m=userinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
 			{elseif $message.adminid}
 				<A href="?m=admininfo&id={$message.adminid}">{$message.adminname}</A>
 			{elseif $message.mailfrom}

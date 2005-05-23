@@ -158,14 +158,14 @@ if (isset($_SERVER[HTTP_X_FORWARDED_FOR])) {
 } else {
     $nodeid = $LMS->GetNodeIDByIP(str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]));    
 }
-$userid = $LMS->GetNodeOwner($nodeid);    
+$customerid = $LMS->GetNodeOwner($nodeid);    
 $nodeinfo = $LMS->GetNode($nodeid);    
 
 if (isset($_GET['readed'])) {
     $LMS->DB->Execute('UPDATE nodes SET warning = 0 WHERE id = ?',array($nodeid));
     header('Location: '.$_GET['oldurl']);
 } else {
-    $userinfo = $LMS->GetUser($userid);
+    $userinfo = $LMS->GetUser($customerid);
     $layout['oldurl']=$_GET['oldurl'];
     $SMARTY->assign("userinfo",$userinfo);
     $SMARTY->assign("nodeinfo",$nodeinfo);

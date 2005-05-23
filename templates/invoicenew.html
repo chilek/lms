@@ -56,7 +56,7 @@
 			{if $customer.phone1}{t}Phone:{/t}{/if}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			{$customer.username}<BR>
+			{$customer.customername}<BR>
 			{$customer.address}<BR>
 			{$customer.zip} {$customer.city}<BR>
 			{if $customer.nip}{$customer.nip}<BR>{elseif $customer.pesel}{$customer.pesel}<BR>{/if}
@@ -97,14 +97,14 @@
 	<TR CLASS="light">
 		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
 			{t}Customer:{/t}
-			<SELECT SIZE="1" NAME="user" onChange="document.setcustomer.userid.value=document.setcustomer.user.value">
+			<SELECT SIZE="1" NAME="user" onChange="document.setcustomer.customerid.value=document.setcustomer.user.value">
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$users item=user}
-				<OPTION VALUE="{$user.id}"{if $customer.id eq $user.id || $invoice.userid eq $user.id} SELECTED{/if}>{$user.username} ({$user.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$user.id}"{if $customer.id eq $user.id || $invoice.customerid eq $user.id} SELECTED{/if}>{$user.customername} ({$user.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 			{t}or Customer ID:{/t}
-			<INPUT TYPE="TEXT" NAME="userid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.userid}{/if}" SIZE="5" onChange="document.setcustomer.user.value=document.setcustomer.userid.value">
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5" onChange="document.setcustomer.user.value=document.setcustomer.customerid.value">
 		</TD>
 	</TR>
 	<TR CLASS="light">

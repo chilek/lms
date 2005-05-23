@@ -128,7 +128,7 @@
 			<simplelist>
 				<member>id - serial number</member>
 				<member>usergroupid - group serial number</member>
-				<member>userid - customer serial number</member>
+				<member>customerid - customer serial number</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="networks">
@@ -200,7 +200,7 @@
 				<member>type - type of operation (income, expenditure, payment, debt)</member>
 				<member>value - amount in dollars</member>
 				<member>taxvalue - tax rate in percent</member>
-				<member>userid - customer's serial number ('0' - does not apply)</member>
+				<member>customerid - customer's serial number ('0' - does not apply)</member>
 				<member>invoiceid - serial number for invoice related to this operation</member>
 				<member>itemid - invoice item identifier</member>
 				<member>comment - description of operation</member>
@@ -254,7 +254,7 @@
    			<simplelist>
 				<member>id - serial number</member>
 				<member>tariffid - subscription serial number</member>
-				<member>userid - customer serial number</member>
+				<member>customerid - customer serial number</member>
 				<member>period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</member>
 				<member>at - pay day</member>
 				<member>datefrom - start date for assignment</member>
@@ -365,7 +365,7 @@
 				<member>id - serial number</member>
 				<member>queueid - queue serial number</member>
 				<member>requestor - reporter name and email</member>
-				<member>userid - customer serial number (if reported by customer)</member>
+				<member>customerid - customer serial number (if reported by customer)</member>
 				<member>subject - ticket name)</member>
 				<member>state - status (0-new, 1-open, 2-resolved, 3-dead)</member>
 				<member>owner - LMS user serial number (ticket owner)</member>
@@ -378,7 +378,7 @@
 				<member>id - serial number</member>
 				<member>ticketid - ticket serial number</member>
 				<member>adminid - LMS user serial number (if ticket sender)</member>
-				<member>userid - customer serial number (if ticket sender)</member>
+				<member>customerid - customer serial number (if ticket sender)</member>
 				<member>mailfrom - sender email</member>
 				<member>subject - message subject</member>
 				<member>messageid - Message-ID message header</member>
@@ -428,7 +428,7 @@
 				<member>begintime - beginning of event</member>
 				<member>endtime - end of event</member>
 				<member>adminid - event creator ID</member>
-				<member>userid - customer ID</member>
+				<member>customerid - customer ID</member>
 				<member>private - status (private/public)</member>
 				<member>closed - is event closed? (1-yes/0-no)</member>
 			</simplelist>

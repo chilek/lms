@@ -151,7 +151,7 @@ if ($res->content =~ /Przepraszamy/ ) {
 
 my $post = POST 'https://ssl.bsk.com.pl/bskonl/j_security_check', [
     acttype	=> 'goBack',
-    j_username 	=> $login,
+    j_customername 	=> $login,
     passwd0	=> substr($passwd,0,1),
     passwd1	=> substr($passwd,1,1),
     passwd2	=> substr($passwd,2,1),
