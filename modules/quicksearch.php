@@ -45,7 +45,6 @@ switch($_GET['mode'])
 				if (preg_match("/^$search/i",$row['phone3'])) $descriptions[$row['id']]=trans('Phone').': '.$row['phone3'];
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
-			header('Content-type: text/plain');
 			if ($eglible) {
 				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
@@ -93,7 +92,6 @@ switch($_GET['mode'])
 				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']]=trans('MAC address').': '.$row['mac'];
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
-			header('Content-type: text/plain');
 			if ($eglible) {
 				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
@@ -135,7 +133,6 @@ switch($_GET['mode'])
 				if (preg_match("/$search/i",$row['id'])) $descriptions[$row['id']]=trans('Id').': '.$row['id'];
 				if (preg_match("/$search/i",$row['subject'])) $descriptions[$row['id']]=trans('Subject:').' '.$row['subject'];
 			}
-			header('Content-type: text/plain');
 			if ($eglible) {
 				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
