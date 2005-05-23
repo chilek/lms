@@ -51,7 +51,7 @@ switch($_GET['mode'])
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
 				print preg_replace('/$/',"\");\n","this.actions = new Array(\"".implode('","',$actions));
 			} else {
-				print "return true;\n";
+				print "false;\n";
 			}
 		}
 
@@ -99,7 +99,7 @@ switch($_GET['mode'])
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
 				print preg_replace('/$/',"\");\n","this.actions = new Array(\"".implode('","',$actions));
 			} else {
-				print "return true;\n";
+				print "false;\n";
 			}
 		}
 
@@ -141,7 +141,7 @@ switch($_GET['mode'])
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
 				print preg_replace('/$/',"\");\n","this.actions = new Array(\"".implode('","',$actions));
 			} else {
-				print "return true;\n";
+				print "false;\n";
 			}
 		}
 

@@ -110,12 +110,7 @@ function AutoSuggest(form,elem,uri) {
 		default:
 
 			if (this.value != me.inputText && this.value.length > 0) {
-				//me.inputText = this.value;
 				me.HTTPpreload();
-				//me.getEligible();
-				//me.createDiv();
-				//me.positionDiv();
-				//me.showDiv();
 			} else {
 				me.hideDiv();
 			}
@@ -126,9 +121,13 @@ function AutoSuggest(form,elem,uri) {
 		if (xmlhttp.readyState == 4) {
 			me.inputText = this.value;
 			me.getEligible();
-			me.createDiv();
-			me.positionDiv();
-			me.showDiv();
+			if (me.eligible.length>0) {
+				me.createDiv();
+				me.positionDiv();
+				me.showDiv();
+			} else {
+				me.hideDiv();
+			}
 		}
 	}
 
@@ -261,18 +260,6 @@ function AutoSuggest(form,elem,uri) {
 			me.changeHighlight();
 		};
 
-		/********************************************************
-		click handler for the dropdown ul
-		insert the clicked suggestion into the input
-		********************************************************/
-//We want to go directly to search results, so skip this event handler.
-//		ul.onclick = function(ev) {
-//			me.useSuggestion();
-//			me.hideDiv();
-//			me.cancelEvent(ev);
-//			return false;
-//		};
-	
 		this.div.className="suggestion_list";
 		this.div.style.position = 'absolute';
 
