@@ -33,6 +33,7 @@ switch($_GET['mode'])
 		{
 			$candidates = $DB->GetAll('SELECT id, lastname, name, email, phone1, phone2, phone3 FROM users WHERE id ?LIKE? \''.$search.'%\' OR lower(lastname) ?LIKE? lower(\''.$search.'%\') OR lower(name) ?LIKE? lower(\''.$search.'%\') OR lower(email) ?LIKE? lower(\'%'.$search.'%\') OR phone1 ?LIKE? \''.$search.'%\' OR phone2 ?LIKE? \''.$search.'%\' OR phone3 ?LIKE? \''.$search.'%\' ORDER by lastname, name, email, phone1 LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
+			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']]='?m=userinfo&id='.$row['id'];
 				$eglible[$row['id']]=$row['name'].' '.$row['lastname'];
@@ -45,6 +46,7 @@ switch($_GET['mode'])
 				if (preg_match("/^$search/i",$row['phone3'])) $descriptions[$row['id']]=trans('Phone').': '.$row['phone3'];
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
+			header('Content-type: text/plain');
 			if ($eglible) {
 				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
@@ -52,6 +54,7 @@ switch($_GET['mode'])
 			} else {
 				print "false;\n";
 			}
+			exit;
 		}
 
 		if(is_numeric($search)) // maybe it's customer ID
@@ -84,6 +87,7 @@ switch($_GET['mode'])
 		{
 			$candidates = $DB->GetAll('SELECT id, name, inet_ntoa(ipaddr) as ipaddr, lower(mac) as mac FROM nodes WHERE id ?LIKE? \''.$search.'%\' OR lower(name) ?LIKE? lower(\''.$search.'%\') OR inet_ntoa(ipaddr) ?LIKE? \'%'.$search.'%\' OR lower(mac) ?LIKE? lower(\'%'.$search.'%\') ORDER BY name, ipaddr, mac LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
+			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']]='?m=nodeinfo&id='.$row['id'];
 				$eglible[$row['id']]=$row['name'].' '.$row['lastname'];
@@ -92,6 +96,7 @@ switch($_GET['mode'])
 				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']]=trans('MAC address').': '.$row['mac'];
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
+			header('Content-type: text/plain');
 			if ($eglible) {
 				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
@@ -99,6 +104,7 @@ switch($_GET['mode'])
 			} else {
 				print "false;\n";
 			}
+			exit;
 		}
 
 		if(is_numeric($search) && !strstr($search, '.')) // maybe it's node ID
@@ -127,12 +133,14 @@ switch($_GET['mode'])
 		{
 			$candidates = $DB->GetAll('SELECT id, subject FROM rttickets WHERE id ?LIKE? \''.$search.'%\' OR lower(subject) ?LIKE? lower(\'%'.$search.'%\') ORDER BY subject, id LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
+			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']]='?m=rtticketview&id='.$row['id'];
 				$eglible[$row['id']]=$row['subject'];
 				if (preg_match("/$search/i",$row['id'])) $descriptions[$row['id']]=trans('Id').': '.$row['id'];
 				if (preg_match("/$search/i",$row['subject'])) $descriptions[$row['id']]=trans('Subject:').' '.$row['subject'];
 			}
+			header('Content-type: text/plain');
 			if ($eglible) {
 				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
 				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
@@ -140,6 +148,7 @@ switch($_GET['mode'])
 			} else {
 				print "false;\n";
 			}
+			exit;
 		}
 
 		if(intval($search))
