@@ -27,12 +27,12 @@
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(isset($_POST['search']))
-	$search = $_POST['search'];
+	$usersearch = $_POST['search'];
 
-if(!isset($search))
-	$SESSION->restore('usersearch', $search);
+if(!isset($usersearch))
+	$SESSION->restore('usersearch', $usersearch);
 else
-	$SESSION->save('usersearch', $search);
+	$SESSION->save('usersearch', $usersearch);
 
 if(!isset($_GET['o']))
 	$SESSION->restore('uslo', $o);
@@ -67,7 +67,7 @@ $SESSION->save('uslk', $k);
 if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');
-	$userlist = $LMS->GetUserList($o, $s, $n, $g, $search, NULL, $k);
+	$userlist = $LMS->GetUserList($o, $s, $n, $g, $usersearch, NULL, $k);
 	
 	$listdata['total'] = $userlist['total'];
 	$listdata['direction'] = $userlist['direction'];

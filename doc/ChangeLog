@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.0rc3 Thor (23/05/2005):
 
   - lms-notify: added option 'mailcharset' with default value 'UTF-8' (alec)
   - lms-notify: don't sends mail to deleted customers (alec)
@@ -15,6 +15,7 @@ version ? (??/??/????):
   - fixed discount displaying in customer assignments box (chilek)
   - language fixes in UI (kondi)
   - lms-makeiptables: added public IP (SNAT) support (daro/alec)
+  - bugfix: nodes and customers searching while register_globals = On (alec)
 
 version 1.6.0rc2 Thor (18/05/2005):
 
