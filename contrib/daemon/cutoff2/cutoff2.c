@@ -73,17 +73,17 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	
 	if(c->deadline > 28) c->deadline = 28;
 
-	res = g->db_query(g->conn, "SELECT users.id AS id, SUM((type * -2 + 7) * cash.value)*-1 AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < 0");
+	res = g->db_query(g->conn, "SELECT users.id AS id, SUM((type * -2 + 7) * cash.value)*-1 AS balance FROM users LEFT JOIN cash ON users.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < 0");
 	if( g->db_nrows(res) )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			char *userid = g->db_get_data(res,i,"id");
+			char *customerid = g->db_get_data(res,i,"id");
 			float balance = atof(g->db_get_data(res,i,"balance"));
 			int at = 0;
 			float value = 0;
 			
-			if( (result = g->db_pquery(g->conn, "SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND userid = ? GROUP BY userid HAVING SUM(value) > 0", userid))!=NULL)
+			if( (result = g->db_pquery(g->conn, "SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ? GROUP BY customerid HAVING SUM(value) > 0", customerid))!=NULL)
 			{
 				if( g->db_nrows(result) )
 				{
@@ -107,18 +107,18 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 				if(!is_deadline(at, c->deadline, t))
 					continue;
 			
-			//printf("UserID: %s\tPayDay: %d\tValue: %.2f\tBalance: %.2f\n",userid, at, value, balance);
+			//printf("UserID: %s\tPayDay: %d\tValue: %.2f\tBalance: %.2f\n",customerid, at, value, balance);
 			
     			if(!c->warn_only)
-				n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), userid);
+				n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
 			else 
-				n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", userid);
+				n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
 
 			execn = n ? 1 : execn;
 			
 			if(*c->warning && n)
 			{
-				u = g->db_pexec(g->conn, "UPDATE users SET message = '?' WHERE id = ?", c->warning, userid);
+				u = g->db_pexec(g->conn, "UPDATE users SET message = '?' WHERE id = ?", c->warning, customerid);
 				execu = u ? 1 : execu;
 			}
 		}	

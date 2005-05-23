@@ -181,14 +181,14 @@ if($_GET['action'] == 'add' && isset($a))
 
 	if(!$error) 
 	{
-		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to, 'discount' => $a['discount'] ));
+		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'customerid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to, 'discount' => $a['discount'] ));
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 }
 
 $userinfo = $LMS->GetUser($_GET['id']);
 
-$layout['pagetitle'] = trans('Customer Information: $0',$userinfo['username']);
+$layout['pagetitle'] = trans('Customer Information: $0',$userinfo['customername']);
 
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));

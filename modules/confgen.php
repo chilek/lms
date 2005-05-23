@@ -46,17 +46,17 @@ function GetTemplateArrays()
 	$result['tariffs'] = $LMS->DB->GetAllByKey('SELECT * FROM tariffs','id');
 	$result['networks'] = $LMS->DB->GetAllByKey('SELECT *, address AS addresslong, inet_ntoa(address) AS address FROM networks','id');
 		
-	$temp['balance'] = $LMS->DB->GetAllByKey('SELECT users.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id','id');
-	$temp['finances'] = $LMS->DB->GetAllByKey('SELECT userid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY userid','userid');
+	$temp['balance'] = $LMS->DB->GetAllByKey('SELECT users.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.customerid GROUP BY users.id','id');
+	$temp['finances'] = $LMS->DB->GetAllByKey('SELECT customerid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customerid','customerid');
 
 	foreach($temp['balance'] as $balance)
 		$result['users'][$balance['id']]['balance'] = $balance['balance'];
 		
-	foreach($temp['finances'] as $userid => $financesrecord)
+	foreach($temp['finances'] as $customerid => $financesrecord)
 	{
-		$result['users'][$userid]['uprate'] = $financesrecord['uprate'];
-		$result['users'][$userid]['downrate'] = $financesrecord['downrate'];
-		$result['users'][$userid]['value'] = $financesrecord['value'];
+		$result['users'][$customerid]['uprate'] = $financesrecord['uprate'];
+		$result['users'][$customerid]['downrate'] = $financesrecord['downrate'];
+		$result['users'][$customerid]['value'] = $financesrecord['value'];
 	}
 
 	foreach($result['nodes'] as $nodeid => $noderecord)

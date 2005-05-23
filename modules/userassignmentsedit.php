@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$userid = $LMS->DB->GetOne('SELECT userid FROM assignments WHERE id=?', array($_GET['id']));
+$customerid = $LMS->DB->GetOne('SELECT customerid FROM assignments WHERE id=?', array($_GET['id']));
 
-if(!$userid)
+if(!$customerid)
 {
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
@@ -37,7 +37,7 @@ if($a = $_POST['assignmentedit'])
 		$a[$key] = trim($val);
 	
 	$a['id'] = $_GET['id'];
-	$a['userid'] = $userid;
+	$a['customerid'] = $customerid;
 
 	$period = sprintf('%d',$a['period']);
 
@@ -169,9 +169,9 @@ if($a = $_POST['assignmentedit'])
 
 	if(!$error) 
 	{
-		$LMS->DB->Execute('UPDATE assignments SET tariffid=?, userid=?, period=?, at=?, invoice=?, datefrom=?, dateto=?, discount=? WHERE id=?',
+		$LMS->DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, datefrom=?, dateto=?, discount=? WHERE id=?',
 			    array(  $a['tariffid'], 
-				    $userid, 
+				    $customerid, 
 				    $period, 
 				    $at, 
 				    sprintf('%d',$a['invoice']), 
@@ -185,7 +185,7 @@ if($a = $_POST['assignmentedit'])
 }
 else
 {
-	$a = $LMS->DB->GetRow('SELECT assignments.id AS id, userid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice, discount
+	$a = $LMS->DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice, discount
 				FROM assignments LEFT JOIN tariffs 
 				ON (tariffs.id = tariffid)
 				WHERE assignments.id = ?',array($_GET['id']));
@@ -206,15 +206,15 @@ else
 	}
 }
 
-$layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetUserName($userid));
+$layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetUserName($customerid));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('assignmentedit', $a);
-$SMARTY->assign('assignments', $LMS->GetUserAssignments($userid));
-$balancelist['userid'] = $userid;
+$SMARTY->assign('assignments', $LMS->GetUserAssignments($customerid));
+$balancelist['customerid'] = $customerid;
 $SMARTY->assign('balancelist', $balancelist);
 $SMARTY->display('userassignmentsedit.html');
 

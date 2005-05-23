@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$userid = $_GET['id'];
+$customerid = $_GET['id'];
 
-if(!$LMS->UserExists($userid))
+if(!$LMS->UserExists($customerid))
 {
-	$layout['pagetitle'] = trans('Accounts Clear With Customer ID: $0',sprintf("%04d", $userid));
+	$layout['pagetitle'] = trans('Accounts Clear With Customer ID: $0',sprintf("%04d", $customerid));
 	$body = '<H1>'.$layout['pagetitle'].'</H1><P>'.trans('Incorrect Customer ID.').'</P>';
 	
 	$SMARTY->assign('body',$body);
-	$SMARTY->assign('userid',$userid);
+	$SMARTY->assign('customerid',$customerid);
 	$SMARTY->display('header.html');
 	$SMARTY->display('dialog.html');
 	$SMARTY->display('footer.html');
@@ -41,19 +41,19 @@ if(!$LMS->UserExists($userid))
 if($covenantlist = $DB->GetAll('SELECT invoiceid, itemid, taxvalue,
 			SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
 			FROM cash 
-			WHERE userid = ? 
+			WHERE customerid = ? 
 			GROUP BY invoiceid, itemid, taxvalue
 			HAVING SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 > 0
-			ORDER BY invoiceid', array($userid)))
+			ORDER BY invoiceid', array($customerid)))
 {
 	foreach($covenantlist as $row)
 	{
-		$DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid)
+		$DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid)
 				VALUES (?NOW?, ?, 3, ?, ?, ?, ?, ?, ?)', 
 				array($AUTH->id, 
 					$row['value'],
 					$row['taxvalue'],
-					$userid, 
+					$customerid, 
 					trans('Accounted'), 
 					$row['invoiceid'], 
 					$row['itemid']));

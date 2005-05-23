@@ -55,7 +55,7 @@ if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$ownerid);
 							
 $userinfo = $LMS->GetUser($ownerid);
-$layout['pagetitle'] = trans('Customer Info: $0 - Node Edit: $1',$userinfo['username'], $LMS->GetNodeName($_GET['id']));
+$layout['pagetitle'] = trans('Customer Info: $0 - Node Edit: $1',$userinfo['customername'], $LMS->GetNodeName($_GET['id']));
 
 $usernodes = $LMS->GetUserNodes($ownerid);
 $nodeinfo = $LMS->GetNode($_GET['id']);

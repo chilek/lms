@@ -54,7 +54,7 @@ if ($invoiceid == 'multi')
 			if (!$LMS->IsInvoicePaid($invoiceid))
 			{
 				$custid = $LMS->DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
-				$items = $LMS->DB->GetAll('SELECT itemid AS id, taxvalue, userid, comment FROM cash WHERE invoiceid=? GROUP BY itemid, taxvalue, userid, comment ORDER BY itemid', array($invoiceid));
+				$items = $LMS->DB->GetAll('SELECT itemid AS id, taxvalue, customerid, comment FROM cash WHERE invoiceid=? GROUP BY itemid, taxvalue, customerid, comment ORDER BY itemid', array($invoiceid));
 								
 				foreach($items as $item)
 				{
@@ -62,7 +62,7 @@ if ($invoiceid == 'multi')
 					$addbalance['time'] = $invoicepaydate;
 					$addbalance['type'] = 3;
 					$addbalance['taxvalue'] = $item['taxvalue'];
-					$addbalance['userid'] = $custid;
+					$addbalance['customerid'] = $custid;
 					$addbalance['comment'] = $item['comment'];
 					$addbalance['itemid'] = $item['id'];
 					$addbalance['invoiceid'] = $invoiceid;
@@ -74,9 +74,9 @@ if ($invoiceid == 'multi')
 elseif (!$LMS->IsInvoicePaid($invoiceid))
 {
 	$custid = $LMS->DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
-	$items = $LMS->DB->GetAll('SELECT itemid AS id, taxvalue, userid, comment 
+	$items = $LMS->DB->GetAll('SELECT itemid AS id, taxvalue, customerid, comment 
 				FROM cash WHERE invoiceid=? 
-				GROUP BY itemid, taxvalue, userid, comment 
+				GROUP BY itemid, taxvalue, customerid, comment 
 				ORDER BY itemid', array($invoiceid));
 							
 	foreach($items as $item)
@@ -85,7 +85,7 @@ elseif (!$LMS->IsInvoicePaid($invoiceid))
 		$addbalance['time'] = $invoicepaydate;
 		$addbalance['type'] = 3;
 		$addbalance['taxvalue'] = $item['taxvalue'];
-		$addbalance['userid'] = $custid;
+		$addbalance['customerid'] = $custid;
 		$addbalance['comment'] = $item['comment'];
 		$addbalance['itemid'] = $item['id'];
 		$addbalance['invoiceid'] = $invoiceid;

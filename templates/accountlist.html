@@ -5,7 +5,7 @@
 	<TR class="dark"">
 		<TD width="96%" class="fleftu" NOWRAP>
 			<IMG src="img/account.gif" alt=""> <A href="?m=accountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/user.gif" ALT=""> <A href="?m=accountlist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/user.gif" ALT=""> <A href="?m=accountlist&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "customername"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
 			{t}Type (sh/mail/www/ftp):{/t}<BR>
@@ -33,7 +33,7 @@
 					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
 					<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
 					{section name=userlist loop=$userlist}
-					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.user} SELECTED{/if}>{$userlist[userlist].username|truncate:40:"..."}</OPTION>
+					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.user} SELECTED{/if}>{$userlist[userlist].customername|truncate:40:"..."}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}Type:{/t}
@@ -87,7 +87,7 @@
 			{if $accountlist[accountlist].ownerid}
 			<IMG src="img/user.gif" alt="">
 			<A href="?m=userinfo&id={$accountlist[accountlist].ownerid}">
-			{$accountlist[accountlist].username|truncate:50:"..."} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
+			{$accountlist[accountlist].customername|truncate:50:"..."} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
 			</A>
 			{/if}
 		</TD>

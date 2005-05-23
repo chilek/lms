@@ -24,17 +24,17 @@
  *  $Id$
  */
 
-function GetEvents($date=NULL, $adminid=0, $userid=0)
+function GetEvents($date=NULL, $adminid=0, $customerid=0)
 {
 	global $LMS, $AUTH;
 
 	$list = $LMS->DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, '
-		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name'). ' AS username, 
+		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name'). ' AS customername, 
 		 users.address AS useraddr, users.phone1 AS userphone 
-		 FROM events LEFT JOIN users ON (userid = users.id)
+		 FROM events LEFT JOIN users ON (customerid = users.id)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
-		 .($userid ? 'AND userid = '.$userid : '')
+		 .($customerid ? 'AND customerid = '.$customerid : '')
 		 .' ORDER BY begintime',
 		 array($date, $AUTH->id));
 

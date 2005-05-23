@@ -182,7 +182,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 
 		case 'smtp_port':
 		case 'smtp_host':
-		case 'smtp_username':
+		case 'smtp_customername':
 		case 'smtp_password':
 		case 'smtp_auth_type':
 			$desc = trans('SMTP settings.');

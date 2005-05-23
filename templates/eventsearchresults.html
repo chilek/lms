@@ -33,7 +33,7 @@
 			<B>({$daylist[daylist]|date_format:"%x"})</B>
 		</TD>
 		<TD width="3%" colspan="3" class="frightu" align="right">
-			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.userid}&a={$listdata.adminid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
+			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.adminid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
 			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{t}Add Event{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
@@ -60,8 +60,8 @@
 			{/foreach}
 		</TD>
 		<TD width="1%" align="right" valign="top">
-			{if $eventlist[eventlist].username}
-				<A href="?m=userinfo&id={$eventlist[eventlist].userid}">{$eventlist[eventlist].username|truncate:"40":"..."}</A>
+			{if $eventlist[eventlist].customername}
+				<A href="?m=userinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"..."}</A>
 			{/if}
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>

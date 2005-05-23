@@ -69,12 +69,12 @@
 				<FONT class="red">
 			{/if}
 			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
-			{if $queue[ticket].userid}
-				{$queue[ticket].username|escape|truncate:"60":"..."}
+			{if $queue[ticket].customerid}
+				{$queue[ticket].customername|escape|truncate:"60":"..."}
 			{else}
 				{$queue[ticket].requestor|escape} 
 			{/if}
-			{if $queue[ticket].requestoremail && !$queue[ticket].userid}
+			{if $queue[ticket].requestoremail && !$queue[ticket].customerid}
 				&lt;{$queue[ticket].requestoremail}&gt;
 			{/if}
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}

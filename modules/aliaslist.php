@@ -37,8 +37,8 @@ function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
 		case 'id':
 			$sqlord = " ORDER BY aliases.id $direction";
 		break;
-		case 'username':
-			$sqlord = " ORDER BY username $direction, aliases.login";
+		case 'customername':
+			$sqlord = " ORDER BY customername $direction, aliases.login";
 		break;
 		case 'domain':
 			$sqlord = " ORDER BY domain $direction, aliases.login";
@@ -57,7 +57,7 @@ function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
 	$list = $LMS->DB->GetAll(
 	        'SELECT aliases.id AS id, passwd.id AS aid, ownerid, aliases.login AS login, passwd.login AS account, expdate, domains.name AS domain, domainid, '
 		.$LMS->DB->Concat('users.lastname', "' '",'users.name').
-		' AS username FROM aliases 
+		' AS customername FROM aliases 
 		LEFT JOIN passwd ON accountid = passwd.id
 		LEFT JOIN users ON users.id = ownerid 
 		LEFT JOIN domains ON domains.id = domainid 

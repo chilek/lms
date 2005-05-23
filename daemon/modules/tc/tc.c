@@ -103,7 +103,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		// get (htb) data for any user with connected nodes and active assignments
 		// we need user ID and average data values for nodes
 		ures = g->db_query(g->conn, "\
-			SELECT userid AS id, \
+			SELECT customerid AS id, \
 				SUM(uprate)/COUNT(DISTINCT nodes.id) AS uprate, \
 				SUM(downrate)/COUNT(DISTINCT nodes.id) AS downrate, \
 				SUM(upceil)/COUNT(DISTINCT nodes.id) AS upceil, \
@@ -112,10 +112,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				SUM(plimit)/COUNT(DISTINCT nodes.id) AS plimit \
 			FROM assignments \
 				LEFT JOIN tariffs ON (tariffid = tariffs.id) \
-				LEFT JOIN nodes ON (userid = ownerid) \
+				LEFT JOIN nodes ON (customerid = ownerid) \
 			WHERE access = 1 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
-			GROUP BY userid \
-			ORDER BY userid");
+			GROUP BY customerid \
+			ORDER BY customerid");
 		
 		if( g->db_nrows(ures) )
 		{
@@ -126,7 +126,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				// test user's membership in usergroups
 				if(gc)
 				{
-					res = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(ures,i,"id"));
+					res = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
 					for(k=0; k<g->db_nrows(res); k++) 
 					{
 						int groupid = atoi(g->db_get_data(res, k, "usergroupid"));

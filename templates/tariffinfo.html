@@ -166,7 +166,7 @@
 				<TR>
 					{section name=l2 loop=$tariff.users start=$smarty.section.l1.index step=$tariff.rows}
 					<TD WIDTH="33%" class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" {cycle print=false} onclick="return self.location.href='?m=userinfo&id={$tariff.users[l2].id}'">
-					<IMG SRC="img/user.gif" ALT=""> <A HREF="?m=userinfo&id={$tariff.users[l2].id}">({$tariff.users[l2].id|string_format:"%04d"}) {$tariff.users[l2].username|truncate:50:" ..."} {if $tariff.users[l2].cnt > 1}({$tariff.users[l2].cnt}){/if}</A></TD>
+					<IMG SRC="img/user.gif" ALT=""> <A HREF="?m=userinfo&id={$tariff.users[l2].id}">({$tariff.users[l2].id|string_format:"%04d"}) {$tariff.users[l2].customername|truncate:50:" ..."} {if $tariff.users[l2].cnt > 1}({$tariff.users[l2].cnt}){/if}</A></TD>
 					{/section}{cycle print=false}
 				</TR>
 				{sectionelse}

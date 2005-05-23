@@ -232,7 +232,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $usergroupscount = 0;
 	foreach my $key2 (@usergroups)
 	{
-		my $sdbq = $dbase->prepare("SELECT count(userid) AS total FROM userassignments WHERE userid=$row->{'ownerid'} AND usergroupid=".$usergrouplist{$key2});
+		my $sdbq = $dbase->prepare("SELECT count(customerid) AS total FROM userassignments WHERE customerid=$row->{'ownerid'} AND usergroupid=".$usergrouplist{$key2});
 		$sdbq->execute();
 		my $srow = $sdbq->fetchrow_hashref();
 		if ($srow->{'total'} eq 1)

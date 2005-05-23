@@ -44,9 +44,9 @@ elseif($_GET['action'] == 'dropadmin')
 }
 
 $event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, 
-			date, begintime, endtime, userid, private, closed, ' 
-			.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username
-			FROM events LEFT JOIN users ON (users.id = userid)
+			date, begintime, endtime, customerid, private, closed, ' 
+			.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername
+			FROM events LEFT JOIN users ON (users.id = customerid)
 			WHERE events.id = ?', array($_GET['id']));
 
 $event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
@@ -78,8 +78,8 @@ if(isset($_POST['event']))
 		$date = mktime(0, 0, 0, $month, $day, $year);
 		$event['private'] = $event['private'] ? 1 : 0;
 
-		$LMS->DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, endtime=?, private=?, note=?, userid=? WHERE id=?',
-				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $event['private'], $event['note'], $event['userid'], $event['id']));
+		$LMS->DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, endtime=?, private=?, note=?, customerid=? WHERE id=?',
+				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['id']));
 				
 		$LMS->SetTS('events');
 

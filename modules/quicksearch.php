@@ -31,15 +31,15 @@ switch($_GET['mode'])
 	case 'user':
 		if(is_numeric($search)) // maybe it's customer ID
 		{
-			if($userid = $DB->GetOne('SELECT id FROM users WHERE id = '.$search))
+			if($customerid = $DB->GetOne('SELECT id FROM users WHERE id = '.$search))
 			{
-				$target = '?m=userinfo&id='.$userid;
+				$target = '?m=userinfo&id='.$customerid;
 				break;
 			}
 		}
 
 		// use usersearch module to find all customers
-		$s['username'] = $search;
+		$s['customername'] = $search;
 		$s['address'] = $search;
 		$s['phone'] = $search;
 		$s['email'] = $search;

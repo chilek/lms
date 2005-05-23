@@ -61,9 +61,9 @@
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL">
 						{t}Select customers which has to concern new operation. If operation isn't customer payment or covenant, system will ignore list of customers.{/t}<BR><BR>
-						<SELECT size="20" name="addbalance[muserid][]" onChange="javascript:CountSelectedUsers();" multiple>
+						<SELECT size="20" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedUsers();" multiple>
 							{section name=users loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 						{t}Selected:{/t} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" style="border: 0" class="light" readonly></INPUT>

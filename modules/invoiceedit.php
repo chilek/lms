@@ -70,7 +70,7 @@ $ntempl = str_replace('%Y', date('Y',$invoice['oldcdate']), $ntempl);
 
 $layout['pagetitle'] = trans('Invoice Edit: $0', $ntempl);
 
-if($_GET['userid'] != '' && $LMS->UserExists($_GET['userid']))
+if($_GET['customerid'] != '' && $LMS->UserExists($_GET['customerid']))
 	$_GET['action'] = 'setcustomer';
 
 switch($_GET['action'])
@@ -158,11 +158,11 @@ switch($_GET['action'])
 				$error['cdate'] = trans('Incorrect date format!');
 		}
 		
-		$invoice['userid'] = $_POST['userid'];
+		$invoice['customerid'] = $_POST['customerid'];
 		
 		if(!$error)
-			if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user'])))
-				$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user']));
+			if($LMS->UserExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['user'])))
+				$customer = $LMS->GetUser(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['user']));
 	break;
 
 	case 'save':

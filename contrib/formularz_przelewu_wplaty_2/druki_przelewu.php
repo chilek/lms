@@ -56,7 +56,7 @@ function main_fill($x,$y,$scale)	{
     $pdf->addtext(15*$scale+$x,617*$scale+$y,30*$scale,$_ADDRESS." ".$_ZIP." ".$_CITY);
     $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale,$_ACCOUNT);
     $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format(-$userinfo['balance'],2,',',''));
-    $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
+    $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']));
     $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']." ".$userinfo['zip']." ".$userinfo['city']));
     $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale,$_SERVICE." mc. ".iconv('UTF-8','ISO-8859-2',strftime("%B"))." ID:".sprintf("%04d",$userinfo['id']));
 }
@@ -80,12 +80,12 @@ function simple_fill_mip($x,$y,$scale)	{
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr($_ACCOUNT,0,17));
     $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr($_ACCOUNT,18,200));
     $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,"**".number_format(-$userinfo['balance'],2,',','')."**");
-    //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
+    //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']));
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']))>135)
+    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']))>135)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
+    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']));
     $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']));
     $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['zip']." ".$userinfo['city']));
 
@@ -100,9 +100,9 @@ function address_box($x,$y,$scale)	{
     global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$userinfo,$_SERVICE,$_SHORT_NAME;
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']))>240)
+    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']))>240)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
+    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']));
     $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']));
     $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['zip']." ".$userinfo['city']));
 }

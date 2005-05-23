@@ -29,12 +29,12 @@
 			<B>{t}Submitter:{/t}</B>
 	        </TD>
 	        <TD width="99%" NOWRAP>
-			{if $ticket.userid}
-				{$ticket.username|escape}
+			{if $ticket.customerid}
+				{$ticket.customername|escape}
 			{else}
 				{$ticket.requestor|escape} 
 			{/if}
-			{if $ticket.requestoremail && !$ticket.userid}
+			{if $ticket.requestoremail && !$ticket.customerid}
 				{$ticket.requestoremail}
 			{/if}
 		</TD>

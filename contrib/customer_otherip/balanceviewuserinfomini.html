@@ -5,7 +5,7 @@
 			<IMG SRC="img/user.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<B>{$userinfo.username}</B>
+			<B>{$userinfo.customername}</B>
 <!-- ({$userinfo.id|string_format:"%04d"})</B>-->
 		</TD>
 	</TR>
@@ -123,7 +123,7 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-<!--			<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userinfo.username|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')">Usuñ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>-->
+<!--			<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userinfo.customername|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')">Usuñ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>-->
 		</TD>
 	</TR>
 </TABLE>

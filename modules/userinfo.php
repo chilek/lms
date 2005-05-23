@@ -45,7 +45,7 @@ $contractlist = $LMS->GetContractList();
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Customer Info: $0',$userinfo['username']);
+$layout['pagetitle'] = trans('Customer Info: $0',$userinfo['customername']);
 
 $usernodes['ownerid'] = $_GET['id'];
 $SMARTY->assign(

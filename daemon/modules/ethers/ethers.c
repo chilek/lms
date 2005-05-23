@@ -119,7 +119,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 			m = gc;
 			if(gc && ownerid)
 			{
-				res1 = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"));
+				res1 = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
 				for(k=0; k<g->db_nrows(res1); k++)
 				{
 					int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));

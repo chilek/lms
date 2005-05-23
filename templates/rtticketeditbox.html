@@ -28,12 +28,12 @@
 			<B>{t}Submitter:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
-			{if $ticket.userid}
-				<A href="?m=userinfo&id={$ticket.userid}">{$ticket.username|escape}</A>
+			{if $ticket.customerid}
+				<A href="?m=userinfo&id={$ticket.customerid}">{$ticket.customername|escape}</A>
 			{else}
 				{$ticket.requestor|escape} 
 			{/if}
-			{if $ticket.requestoremail && !$ticket.userid}
+			{if $ticket.requestoremail && !$ticket.customerid}
 				&lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
 			{/if}
 		    </TD>

@@ -34,7 +34,7 @@ foreach($users as $idx => $row)
 {
 	echo $row['lastname']." ".$row['name'].": ";
 	echo "taryfa: '".$tariffs[$row['tariff']]['name']."'... ";
-	$LMS->DB->Execute('INSERT INTO assignments (tariffid, at, userid, period) VALUES (?,?,?,1)', array($row['tariff'], $row['payday'], $row['id']));
+	$LMS->DB->Execute('INSERT INTO assignments (tariffid, at, customerid, period) VALUES (?,?,?,1)', array($row['tariff'], $row['payday'], $row['id']));
 	echo "ok.\n";
 }
 

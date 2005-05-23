@@ -51,20 +51,20 @@ if($addbalance['time']) {
 
 if($addbalance['type']=='3' || $addbalance['type']=='4')
 {
-	if(isset($addbalance['muserid']))
+	if(isset($addbalance['mcustomerid']))
 	{
-		foreach($addbalance['muserid'] as $value)
+		foreach($addbalance['mcustomerid'] as $value)
 			if($LMS->UserExists($value))
 			{
-				$addbalance['userid'] = $value;
+				$addbalance['customerid'] = $value;
 				$LMS->AddBalance($addbalance);
 			}
 	}
 	else
 	{
-		if($LMS->UserExists($addbalance['userid']))
+		if($LMS->UserExists($addbalance['customerid']))
 		{
-			if($unpaid = $SESSION->get('unpaid.'.$addbalance['userid']))
+			if($unpaid = $SESSION->get('unpaid.'.$addbalance['customerid']))
 			{
 				foreach($unpaid as $cashid)
 				{
@@ -79,7 +79,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 					$balance['taxvalue'] = $row['taxvalue'];
 					$balance['comment'] = $addbalance['comment'] ? $addbalance['comment'] : $row['comment'];
 					$balance['type'] = 3;
-					$balance['userid'] = $addbalance['userid'];
+					$balance['customerid'] = $addbalance['customerid'];
 					
 					$oldvalue = $addbalance['value'];
 					if($oldvalue >= $value)
@@ -92,7 +92,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 					$addbalance['value'] = $oldvalue - $balance['value'];
 				}
 				
-				$SESSION->remove('unpaid.'.$addbalance['userid']);
+				$SESSION->remove('unpaid.'.$addbalance['customerid']);
 			}
 			
 			if($addbalance['value'] != 0)
@@ -103,7 +103,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 
 if($addbalance['type']=='2' || $addbalance['type']=='1')
 {
-	$addbalance['userid'] = '0';
+	$addbalance['customerid'] = '0';
 	$LMS->AddBalance($addbalance);
 }
 

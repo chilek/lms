@@ -39,9 +39,9 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fleft">
-						<SELECT size="20" name="setwarnings[muserid][]" multiple {tip text="Select customers"}>
+						<SELECT size="20" name="setwarnings[mcustomerid][]" multiple {tip text="Select customers"}>
 							{section name=userlist loop=$userlist}
-							<OPTION value="{$userlist[userlist].id}" {if $userlist[userlist].warning}CLASS="red"{/if}>{$userlist[userlist].username|truncate:50:" ..."} ({$userlist[userlist].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$userlist[userlist].id}" {if $userlist[userlist].warning}CLASS="red"{/if}>{$userlist[userlist].customername|truncate:50:" ..."} ({$userlist[userlist].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

@@ -111,13 +111,13 @@ my $percent = 0;
 my $lastid = 0;
 
 # get all debtors
-my $dbq = $dbase->prepare("SELECT users.id AS userid,
+my $dbq = $dbase->prepare("SELECT users.id AS customerid,
     UPPER(lastname) || ' '|| users.name AS owner,
     inet_ntoa(ipaddr) AS ip, 
     round(COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) 
     WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END),2) AS balance
 FROM nodes LEFT JOIN users ON (ownerid = users.id)
-LEFT JOIN cash ON (cash.userid = users.id)
+LEFT JOIN cash ON (cash.customerid = users.id)
 GROUP BY nodes.id, ipaddr, users.id, users.lastname, users.name
 HAVING SUM((type * -2 + 7) * value) < 0
 ORDER BY owner");
@@ -125,12 +125,12 @@ $dbq->execute();
 
 while(my $row = $dbq->fetchrow_hashref())
 {
-	my $cid = $row->{'userid'};
+	my $cid = $row->{'customerid'};
 	my $customer = sprintf("%04d",$cid);
 	
 	if($cid != $lastid)
 	{
-		my $dbqi = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto >= $utsfmt OR dateto = 0) AND userid = $cid GROUP BY userid HAVING SUM(value) > 0");
+		my $dbqi = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto >= $utsfmt OR dateto = 0) AND customerid = $cid GROUP BY customerid HAVING SUM(value) > 0");
 		$dbqi->execute();
 		if(my $rowi = $dbqi->fetchrow_hashref())
 		{

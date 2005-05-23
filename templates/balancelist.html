@@ -138,7 +138,7 @@
 			<NOBR>{$balancelist[balancelist].after|money_format}</NOBR>
 		</TD>
 		<TD width="1%" nowrap valign="top">
-			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
+			{if $balancelist[balancelist].customerid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"..."}</A></NOBR>{else} - {/if}
 		</TD>
 		<TD width="91%">
 			{$balancelist[balancelist].comment}

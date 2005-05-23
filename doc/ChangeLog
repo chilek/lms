@@ -25,6 +25,7 @@ version 1.7.1 ? (??/??/????):
   - we can add and search tickets with all customer statuses (chilek)
   - all UI colors moved to style.css (alec)
   - lms-makeiptables: added public IP (SNAT) support (alec/daro)
+  - partly changed naming convention: user -> customer (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 

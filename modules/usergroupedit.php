@@ -34,23 +34,23 @@ if(isset($_POST['userassignments']))
 	$oper = $_POST['oper'];
 	$userassignments = $_POST['userassignments'];
 	
-	if(isset($userassignments['gmuserid']) && $oper=='0')
+	if(isset($userassignments['gmcustomerid']) && $oper=='0')
 	{
 		$assignment['usergroupid'] = $_GET['id'];
-		foreach($userassignments['gmuserid'] as $value)
+		foreach($userassignments['gmcustomerid'] as $value)
 		{
-			$assignment['userid'] = $value;
+			$assignment['customerid'] = $value;
 			$LMS->UserassignmentDelete($assignment);
 		}
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
-	if (isset($userassignments['muserid']) && $oper=='1')
+	if (isset($userassignments['mcustomerid']) && $oper=='1')
 	{
 		$assignment['usergroupid'] = $_GET['id'];
-		foreach($userassignments['muserid'] as $value)
+		foreach($userassignments['mcustomerid'] as $value)
 		{
-			$assignment['userid'] = $value;
+			$assignment['customerid'] = $value;
 			if(! $LMS->UserassignmentExist($assignment['usergroupid'],$value))
 				$LMS->UserassignmentAdd($assignment);
 		}

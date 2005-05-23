@@ -332,7 +332,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 		exit 1;
 	}
 
-	# find userid
+	# find customerid
 	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail'");
 	$dbq->execute();
 	if(my $row = $dbq->fetchrow_hashref())
@@ -340,7 +340,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 		$reqcustid = $row->{'id'};
 	}
 
-	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, userid, subject, createtime) VALUES ($queue, '$mh_from', $reqcustid, '$mh_subject', $timestamp)");
+	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, customerid, subject, createtime) VALUES ($queue, '$mh_from', $reqcustid, '$mh_subject', $timestamp)");
 	$dbq->execute();
 
 	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = $timestamp");
@@ -348,7 +348,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$row = $dbq->fetchrow_hashref();
 	$ticket_id = $row->{'id'};
 
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, replyto, userid, subject, messageid, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_replyto', $reqcustid, '$mh_subject', '$mh_msgid', '$mailheaders', '$mailbody', $timestamp)");	
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, replyto, customerid, subject, messageid, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_replyto', $reqcustid, '$mh_subject', '$mh_msgid', '$mailheaders', '$mailbody', $timestamp)");	
 	$dbq->execute();
 
 	# i think that this expr should be enought to fetch id of previously inserted message
@@ -439,7 +439,7 @@ else
 		$reqadminid = $row->{'id'};
 	}
 
-	# find userid
+	# find customerid
 	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail' AND email!=''");
 	$dbq->execute();
 	if(my $row = $dbq->fetchrow_hashref())
@@ -447,7 +447,7 @@ else
 		$reqcustid = $row->{'id'};
 	}
 
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, userid, adminid, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', $reqcustid, $reqadminid, '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, customerid, adminid, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', $reqcustid, $reqadminid, '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
 	$dbq->execute();
 	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $prev_tid AND messageid = '$mh_msgid' AND createtime = $timestamp");
 	$dbq->execute();

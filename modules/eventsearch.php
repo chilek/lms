@@ -29,13 +29,13 @@ function EventSearch($search)
 	global $LMS, $AUTH;
 
 	$list = $LMS->DB->GetAll(
-	        'SELECT events.id AS id, title, description, date, begintime, endtime, userid, closed, '
-		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username 
-		 FROM events LEFT JOIN users ON (userid = users.id)
+	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
+		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername 
+		 FROM events LEFT JOIN users ON (customerid = users.id)
 		 WHERE (private = 0 OR (private = 1 AND adminid = ?)) '
 		.($search['datefrom'] ? ' AND date >= '.$search['datefrom'] : '')
 		.($search['dateto'] ? ' AND date <= '.$search['dateto'] : '')
-		.($search['userid'] ? ' AND userid = '.$search['userid'] : '')
+		.($search['customerid'] ? ' AND customerid = '.$search['customerid'] : '')
 		.($search['title'] ? ' AND title ?LIKE? \'%'.$search['title'].'%\'' : '')
 		.($search['description'] ? ' AND description ?LIKE? \'%'.$search['description'].'%\'' : '')
 		.($search['note'] ? ' AND note ?LIKE? \'%'.$search['note'].'%\'' : '')

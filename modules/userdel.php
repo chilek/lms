@@ -25,7 +25,7 @@
  */
 
 $layout['pagetitle'] = trans('Customer Remove: $0',sprintf("%04d",$_GET['id']));
-$SMARTY->assign('userid',$_GET['id']);
+$SMARTY->assign('customerid',$_GET['id']);
 
 if (!$LMS->UserExists($_GET['id']))
 {

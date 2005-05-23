@@ -48,22 +48,22 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(*c->warning)
 		g->str_replace(&c->warning, "%time", time_fmt);
 
-	if( (res = g->db_pquery(g->conn, "SELECT users.id AS id FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < ?", c->limit))!=NULL )
+	if( (res = g->db_pquery(g->conn, "SELECT users.id AS id FROM users LEFT JOIN cash ON users.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < ?", c->limit))!=NULL )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			char *userid = g->db_get_data(res,i,"id");
+			char *customerid = g->db_get_data(res,i,"id");
 			
     			if(!c->warn_only)
-				n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), userid);
+				n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
 			else 
-				n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", userid);
+				n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
 
 			execn = n ? 1 : execn;
 			
 			if(*c->warning && n)
 			{
-				u = g->db_pexec(g->conn, "UPDATE users SET message = '?' WHERE id = ?", c->warning, userid);
+				u = g->db_pexec(g->conn, "UPDATE users SET message = '?' WHERE id = ?", c->warning, customerid);
 				execu = u ? 1 : execu;
 			}
 		}	
