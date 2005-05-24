@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$search = trim($_GET['what']);
+$search = urldecode(trim($_GET['what']));
 
 switch($_GET['mode'])
 {
