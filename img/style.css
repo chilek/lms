@@ -82,6 +82,6 @@ IMG		{ vertical-align: middle; border: 0; }
 .suggestion_list ul { padding: 0; margin: 0; list-style-type: none; } 
 .suggestion_list span { position: absolute; right: 0; font-size: 9px; margin-right: 2px; color: brown; }
 .suggestion_list a { text-decoration: none; padding-left: 2px; color: black; }
-.suggestion_list .selected { background-color: #DFD5BD; } 
+.suggestion_list .selected { background-color: #CCFFCC; } 
 .suggestion_list .selected a { color: black; }
 #autosuggest { display: none; }
