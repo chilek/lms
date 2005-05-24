@@ -36,7 +36,7 @@ switch($_GET['mode'])
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']]='?m=userinfo&id='.$row['id'];
-				$eglible[$row['id']]=$row['name'].' '.$row['lastname'];
+				$eglible[$row['id']]=$row['lastname'].' '.$row['name'];
 				if (preg_match("/^$search/i",$row['id'])) $descriptions[$row['id']]=trans('Id').': '.$row['id'];
 				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']]=trans('First/last name').': '.$row['lastname'];
 				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']]=trans('First/last name').': '.$row['name'];
