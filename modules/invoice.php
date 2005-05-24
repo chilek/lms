@@ -98,7 +98,7 @@ elseif($_GET['fetchallinvoices'])
 
 	foreach($ids as $idx => $invoiceid)
 	{
-		echo '<PRE>';
+//		echo '<PRE>';
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)

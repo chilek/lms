@@ -38,7 +38,7 @@ if(isset($_POST['marks']))
 if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate, 
 			SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
 			FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
-			WHERE customerid = ? AND invoiceid > 0 AND itemid > 0
+			WHERE invoices.customerid = ? AND invoiceid > 0 AND itemid > 0
 			GROUP BY invoiceid, itemid
 			HAVING SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 > 0
 			ORDER BY cdate', array($customerid)))
