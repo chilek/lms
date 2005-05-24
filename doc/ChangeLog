@@ -1,5 +1,9 @@
 $Id$
 
+version ? (??/??/????):
+
+  - bugfix: don't hide compressed backups on backups list (alec)
+
 version 1.6.0rc3 Thor (23/05/2005):
 
   - lms-notify: added option 'mailcharset' with default value 'UTF-8' (alec)
