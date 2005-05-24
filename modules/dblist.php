@@ -65,7 +65,7 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 					$name = substr(basename($file,'.sql.gz'),4,25);
 					if($pos = strpos($name,'-'))
 					{
-						$dblist['dbv'][]  = substr($name, $pos, 0) ;
+						$dblist['dbv'][]  = substr($name, $pos+1);
 						$dblist['time'][] = substr($name, 0, $pos);
 					} 
 					else

@@ -28,6 +28,7 @@ version 1.7.1 ? (??/??/????):
   - partly changed naming convention: user -> customer (alec)
   - fixed customers and nodes searching when register_globals is on (alec)
   - quick search made quick (kondi)
+  - bugfix: compressed backup restoring is possible again (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
