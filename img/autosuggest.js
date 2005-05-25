@@ -224,7 +224,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 			if ((dest)&&(this.autosubmit)) {
 				a.href = dest;
 				a.innerHTML = word; 
-				li.onclick = function() { location.href = dest; }
+				li.onclick = function() { me.useSuggestion(); }
 				li.appendChild(a); 
 			} else {
 				li.innerHTML = word;
