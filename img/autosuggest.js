@@ -8,7 +8,7 @@ Licensed under GNU Lesser General Public License (LGPL).
 Modified by kondi for LMS project (mailto:lms@kondi.net).
 *******************************************************/
 
-function AutoSuggest(form,elem,uri) {
+function AutoSuggest(form,elem,uri,autosubmit) {
 
 	//The 'me' variable allow you to access the AutoSuggest object
 	//from the elem's event handlers defined below.
@@ -18,6 +18,7 @@ function AutoSuggest(form,elem,uri) {
 	this.elem = elem;
 	this.form = form;
 	this.uri = uri;
+	this.autosubmit = autosubmit;
 
 	//Arrow to store a subset of eligible suggestions that match the user's input
 	this.eligible = new Array();
@@ -118,7 +119,7 @@ function AutoSuggest(form,elem,uri) {
 	};
 
 	this.HTTPloaded = function () {
-		if (xmlhttp.readyState == 4) {
+		if ((xmlhttp)&&(xmlhttp.readyState == 4)) {
 			me.inputText = this.value;
 			me.getEligible();
 			if (me.eligible.length>0) {
@@ -148,7 +149,7 @@ function AutoSuggest(form,elem,uri) {
 			this.form.onsubmit = function () { return false; };
 			setTimeout("document.getElementById('" + this.form.id + "').onsubmit = function () { return true; }",10);
 			//Go to search results.
-			location.href = gotothisuri;
+			if (this.autosubmit == 1) location.href = gotothisuri;
 		}
 	};
 
@@ -214,17 +215,22 @@ function AutoSuggest(form,elem,uri) {
 		//Create an array of LI's for the words.
 		for (i in this.eligible) {
 			var word = this.eligible[i];
-			var desc = this.descriptions[i];
-			var dest = this.actions[i];
+			var desc = (this.descriptions[i])?this.descriptions[i]:'';
+			var dest = (this.actions[i])?this.actions[i]:'';
 	
 			var ds = document.createElement('span');
 			var li = document.createElement('li');
 			var a = document.createElement('a');
-			a.href = dest;
-			a.innerHTML = word; 
+			if (dest) {
+				a.href = dest;
+				a.innerHTML = word; 
+				li.onclick = function() { location.href = dest; }
+				li.appendChild(a); 
+			} else {
+				li.innerHTML = word;
+			}
 			ds.innerHTML = desc;
-			li.appendChild(a);
-			a.appendChild(ds);
+			li.appendChild(ds); 
 	
 			if (me.highlighted == i) {
 				li.className = "selected";
