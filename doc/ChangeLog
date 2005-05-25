@@ -3,6 +3,7 @@ $Id$
 version ? (??/??/????):
 
   - bugfix: don't hide compressed backups on backups list (alec)
+  - bugfix: debtors counting in UserStats() for MySQL (alec)
 
 version 1.6.0rc3 Thor (23/05/2005):
 
