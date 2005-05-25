@@ -763,8 +763,11 @@ class LMS
 		if($balances = $this->DB->GetCol('SELECT SUM((type * -2 + 7)*value) FROM cash LEFT JOIN users ON customerid = users.id WHERE deleted = 0 GROUP BY customerid HAVING SUM((type * -2 + 7)*value) < 0'))
 		{
 			foreach($balances as $idx)
-				$result['debtvalue'] -= $idx;
-			$result['debt'] = sizeof($balances);
+				if($idx < 0)
+				{
+					$result['debtvalue'] -= $idx;
+					$result['debt']++;
+				}
 		}	
 		return $result;
 	}
