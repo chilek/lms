@@ -57,7 +57,7 @@
 		<TD class="fright" align="right">
 			<NOBR>
 			{if $userlist[userlist].balance < 0}
-				<A href="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/invoice_pay.gif" ALT="[ {t}Account{/t} ]"></A>
+				<A href="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/pay.gif" ALT="[ {t}Account{/t} ]"></A>
 			{/if}
 			{if $userlist[userlist].account}
 				{if $userlist[userlist].status eq 3}

@@ -168,7 +168,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{if !$invoice.paid}
 				<A HREF="javascript:invoicepay({$invoice.id})">
-				<IMG src="img/invoice_pay.gif" alt="[ {t}Account{/t} ]"></A>
+				<IMG src="img/pay.gif" alt="[ {t}Account{/t} ]"></A>
 			{else}
 				<IMG src="img/empty.gif" alt="" WIDTH="16">
 			{/if}
@@ -208,7 +208,7 @@
 						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" ALT=""></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/invoice_pay.gif" ALT=""></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Enter accounting date in 'YYYY/MM/DD' format (empty field means current date)"}>&nbsp;<IMG SRC="img/calendar.gif" ALT=""></NOBR>
 					</TD>
 					<TD ALIGN="right">	
