@@ -221,13 +221,14 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 			var ds = document.createElement('span');
 			var li = document.createElement('li');
 			var a = document.createElement('a');
-			if (dest) {
+			if ((dest)&&(this.autosubmit)) {
 				a.href = dest;
 				a.innerHTML = word; 
 				li.onclick = function() { location.href = dest; }
 				li.appendChild(a); 
 			} else {
 				li.innerHTML = word;
+				li.onclick = function() { me.useSuggestion(); }
 			}
 			ds.innerHTML = desc;
 			li.appendChild(ds); 
