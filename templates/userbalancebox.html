@@ -120,7 +120,7 @@
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}
 							{if $balancelist.invoicepaid[balancelist] == 0}
-							<A href="javascript:invoicepay({$balancelist.invoiceid[balancelist]})"><IMG SRC="img/invoice_pay.gif" ALT="[ {t}Account{/t} ]" BORDER="0"></A>
+							<A href="javascript:invoicepay({$balancelist.invoiceid[balancelist]})"><IMG SRC="img/pay.gif" ALT="[ {t}Account{/t} ]" BORDER="0"></A>
 							{/if}
 						<A href="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
 						{/if}

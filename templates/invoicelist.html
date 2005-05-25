@@ -168,7 +168,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{if !$invoice.paid}
 				<A HREF="javascript:invoicepay({$invoice.id})">
-				<IMG ALIGN="absmiddle" SRC="img/invoice_pay.gif" ALT="[ {t}Account{/t} ]" BORDER="0" TARGET="_BLANK"></A>
+				<IMG ALIGN="absmiddle" SRC="img/pay.gif" ALT="[ {t}Account{/t} ]" BORDER="0" TARGET="_BLANK"></A>
 			{else}
 				<IMG ALIGN="absmiddle" SRC="img/empty.gif" ALT="" WIDTH="16" BORDER="0">
 			{/if}
@@ -210,7 +210,7 @@
 						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/invoice_pay.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/pay.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Enter accounting date in 'YYYY/MM/DD' format (empty field means current date)"}>&nbsp;<IMG SRC="img/calendar.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></NOBR>
 					</TD>
 					<TD ALIGN="right">	

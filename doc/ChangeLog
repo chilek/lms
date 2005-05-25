@@ -4,6 +4,8 @@ version ? (??/??/????):
 
   - bugfix: don't hide compressed backups on backups list (alec)
   - bugfix: debtors counting in UserStats() for MySQL (alec)
+  - icon invoice_pay.gif renamed to pay.gif (alec)
+  - changed icon for standing payments accounting (alec)
 
 version 1.6.0rc3 Thor (23/05/2005):
 

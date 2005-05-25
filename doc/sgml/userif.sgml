@@ -342,17 +342,17 @@ and tax rate.</para>
 	<sect2 id="menu-payments-list">
 	    <title>Payments list</title>
     	    <para>This is a list of your company payments. Among standard fields
-you'll find 'Account this payment' icon (which for some mysterious reasons looks
-like 'Save' option), where you're able to charge your account. Periodical charges
-might be done with 'lms-payments' Perl script, or appropriate module of almsd
-daemon. Select and click on chosen payment to view 'Payment Info' module, where
-you're able to edit its parameters or account given payment to financial
-database.</para>
+	    you'll find 'Account this payment' icon,
+	    where you're able to charge your account. Periodical charges
+	    might be done with 'lms-payments' Perl script, or appropriate module of almsd
+	    daemon. Select and click on chosen payment to view 'Payment Info' module, where
+	    you're able to edit its parameters or account given payment to financial
+	    database.</para>
 	</sect2>
 	<sect2 id="menu-payments-new">
 	    <title>New payment</title>
 	    <para>You have to assign unique name, amount and pay date for each
-new payment you setup.</para>
+	    new payment you setup.</para>
 	</sect2>
 	<sect2 id="menu-balance">
 	    <title>Balance sheet</title>
