@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+function escape_js($string)
+{
+        // escape quotes and backslashes, newlines, etc.
+        return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
+}
+
 $search = urldecode(trim($_GET['what']));
 
 switch($_GET['mode'])
@@ -35,15 +41,15 @@ switch($_GET['mode'])
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
-				$actions[$row['id']]='?m=userinfo&id='.$row['id'];
-				$eglible[$row['id']]=$row['lastname'].' '.$row['name'];
-				if (preg_match("/^$search/i",$row['id'])) $descriptions[$row['id']]=trans('Id').': '.$row['id'];
-				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']]=trans('First/last name').': '.$row['lastname'];
-				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']]=trans('First/last name').': '.$row['name'];
-				if (preg_match("/$search/i",$row['email'])) $descriptions[$row['id']]=trans('E-mail').': '.$row['email'];
-				if (preg_match("/^$search/i",$row['phone1'])) $descriptions[$row['id']]=trans('Phone').': '.$row['phone1'];
-				if (preg_match("/^$search/i",$row['phone2'])) $descriptions[$row['id']]=trans('Phone').': '.$row['phone2'];
-				if (preg_match("/^$search/i",$row['phone3'])) $descriptions[$row['id']]=trans('Phone').': '.$row['phone3'];
+				$actions[$row['id']] = '?m=userinfo&id='.$row['id'];
+				$eglible[$row['id']] = escape_js($row['lastname'].' '.$row['name']);
+				if (preg_match("/^$search/i",$row['id'])) $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']);
+				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['lastname']);
+				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['name']);
+				if (preg_match("/$search/i",$row['email'])) $descriptions[$row['id']] = escape_js(trans('E-mail').': '.$row['email']);
+				if (preg_match("/^$search/i",$row['phone1'])) $descriptions[$row['id']] = escape_js(trans('Phone').': '.$row['phone1']);
+				if (preg_match("/^$search/i",$row['phone2'])) $descriptions[$row['id']] = escape_js(trans('Phone').': '.$row['phone2']);
+				if (preg_match("/^$search/i",$row['phone3'])) $descriptions[$row['id']] = escape_js(trans('Phone').': '.$row['phone3']);
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
 			header('Content-type: text/plain');
@@ -89,11 +95,11 @@ switch($_GET['mode'])
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
-				$actions[$row['id']]='?m=nodeinfo&id='.$row['id'];
-				$eglible[$row['id']]=$row['name'].' '.$row['lastname'];
-				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']]=trans('Name').': '.$row['name'];
-				if (preg_match("/$search/i",$row['ipaddr'])) $descriptions[$row['id']]=trans('IP').': '.$row['ipaddr'];
-				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']]=trans('MAC address').': '.$row['mac'];
+				$actions[$row['id']] = '?m=nodeinfo&id='.$row['id'];
+				$eglible[$row['id']] = escape_js($row['name'].' '.$row['lastname']);
+				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
+				if (preg_match("/$search/i",$row['ipaddr'])) $descriptions[$row['id']] = trans('IP').': '.$row['ipaddr'];
+				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']] = trans('MAC address').': '.$row['mac'];
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
 			header('Content-type: text/plain');
@@ -135,13 +141,13 @@ switch($_GET['mode'])
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
-				$actions[$row['id']]='?m=rtticketview&id='.$row['id'];
-				$eglible[$row['id']]=$row['subject'];
-				if (preg_match("/$search/i",$row['id'])) $descriptions[$row['id']]=trans('Id').': '.$row['id'];
-				if (preg_match("/$search/i",$row['subject'])) $descriptions[$row['id']]=trans('Subject:').' '.$row['subject'];
-				if (preg_match("/$search/i",$row['requestor'])) $descriptions[$row['id']]=trans('First/last name').': '.preg_replace('/ <.*/','',$row['requestor']);
-				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']]=trans('First/last name').': '.$row['name'];
-				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']]=trans('First/last name').': '.$row['lastname'];
+				$actions[$row['id']] = '?m=rtticketview&id='.$row['id'];
+				$eglible[$row['id']] = escape_js($row['subject']);
+				if (preg_match("/$search/i",$row['id'])) $descriptions[$row['id']] = trans('Id').': '.$row['id'];
+				if (preg_match("/$search/i",$row['subject'])) $descriptions[$row['id']] = escape_js(trans('Subject:').' '.$row['subject']);
+				if (preg_match("/$search/i",$row['requestor'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.preg_replace('/ <.*/','',$row['requestor']));
+				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['name']);
+				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['lastname']);
 			}
 			header('Content-type: text/plain');
 			if ($eglible) {
