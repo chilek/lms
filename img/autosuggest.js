@@ -291,7 +291,11 @@ function AutoSuggest(form,elem,uri) {
 
 	this.getEligible = function() {
 		this.eligible = Array();
-		eval(xmlhttp.responseText);
+		this.descriptions = Array();
+		this.actions = Array();
+
+		try { eval(xmlhttp.responseText); }
+		  catch(x) { this.eligible = Array(); }
 
 		for (i in this.suggestions) {
 			var suggestion = this.suggestions[i];
