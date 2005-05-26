@@ -32,7 +32,7 @@ if(!$_SESSION['uid'] || !$_GET['id'])
 	die;
 }
 
-if($_SESSION['uid'] != $LMS->DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($_GET['id'])))
+if($_SESSION['uid'] != $DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($_GET['id'])))
 {
 	die;
 }
@@ -54,7 +54,7 @@ $ntempl = str_replace('%N',$invoice['number'],$ntempl);
 $ntempl = str_replace('%M',$invoice['month'],$ntempl);
 $ntempl = str_replace('%Y',$invoice['year'],$ntempl);
 $layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
-$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
+$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 $invoice['last'] = TRUE;
 $SMARTY->assign('invoice',$invoice);
 $SMARTY->display($_SMARTY_TEMPLATES_DIR.'/clearheader.html');

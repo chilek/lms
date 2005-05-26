@@ -10,7 +10,7 @@ Spis rzeczy:
 
 1) co to
 
-Jest to mini panel dla u¿ytkowników którzy:
+Jest to mini panel dla klientów którzy:
 
 a) korzystaj± z proxy
 b) nie korzystaj± z sieci tylko w domu
@@ -19,7 +19,7 @@ dotycz±ce ich dostêpu do sieci/innych us³ug sprzedawanych przez LMS.
 	
 2) lms-notify
 	
-Dobrze jest te¿ powiadomiæ u¿ytkowników w co rocznym/miesiêcznym/tygodniowym 
+Dobrze jest te¿ powiadomiæ klientów w co rocznym/miesiêcznym/tygodniowym 
 mailu rozrachunkowo-newsletterowym:
 
 
@@ -27,7 +27,7 @@ mailu rozrachunkowo-newsletterowym:
 Jednocze¶nie informujemy o wprowadzeniu mo¿liwo¶ci sprawdzenia stanu
 swojego konta w ka¿dej chwili:
 
-http://www.TwójUrl.pl/lms/contrib/clients/
+http://www.TwójUrl.pl/lms/contrib/customers/
 
 Pañstwa PIN to: %pin
 "
@@ -50,10 +50,10 @@ SOA#1
 
 #v+
 customer authorization ways
-//$id = GetUserIDByPhone1AndPIN($login, $pin);
-//$id = GetUserIDByContractAndPIN($login, $pin);
-$id = GetUserIDByIDAndPIN($login, $pin);
+//$id = GetCustomerIDByPhone1AndPIN($login, $pin);
+//$id = GetCustomerIDByContractAndPIN($login, $pin);
+$id = GetCustomerIDByIDAndPIN($login, $pin);
 #v-
 
-Oznacza to ni mniej ni wiêcej ale ¿e mo¿na u¿ytkownika identyfikowaæ po:
-Telefonie ALBO ID ALBO Nr umowy. Wybór nale¿y do Was.
+Oznacza to ni mniej ni wiêcej ale ¿e mo¿na klienta identyfikowaæ po:
+Telefonie albo ID albo Nr umowy. Wybór nale¿y do Was.

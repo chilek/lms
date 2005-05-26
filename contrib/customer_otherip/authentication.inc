@@ -24,24 +24,24 @@
  *  $Id$
  */
 
-function GetUserIDByPhone1AndPIN($phone1, $pin)
+function GetCustomerIDByPhone1AndPIN($phone1, $pin)
 {
-	global $LMS;
-	return $LMS->DB->GetOne('SELECT id from users WHERE pin=? AND phone1=?', array($pin, $phone1));
+	global $DB;
+	return $DB->GetOne('SELECT id from customers WHERE pin=? AND phone1=?', array($pin, $phone1));
 }
 
-function GetUserIDByIDAndPIN($id, $pin)
+function GetCustomerIDByIDAndPIN($id, $pin)
 {
-	global $LMS;
-	return $LMS->DB->GetOne('SELECT id from users WHERE pin=? AND id=?', array($pin, $id));
+	global $DB;
+	return $DB->GetOne('SELECT id from customers WHERE pin=? AND id=?', array($pin, $id));
 }
 
 
 // It requires "contract" field.
-function GetUserIDByContractAndPIN($contract, $pin)
+function GetCustomerIDByContractAndPIN($contract, $pin)
 {
-	global $LMS;
-	return $LMS->DB->GetOne('SELECT id FROM users WHERE pin=? AND contract=?', array($pin, $contract));
+	global $DB;
+	return $DB->GetOne('SELECT id FROM customers WHERE pin=? AND contract=?', array($pin, $contract));
 }
 
 ?>
