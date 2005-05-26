@@ -120,7 +120,7 @@ else
 	exit 1;
 }
 
-my $dbq = $dbase->prepare("SELECT users.id AS id, UPPER(lastname) AS lastname, name, SUM((cash.type*-2+7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, lastname, name HAVING SUM((cash.type*-2+7) * cash.value) >= $limit ORDER BY lastname, name");
+my $dbq = $dbase->prepare("SELECT customers.id AS id, UPPER(lastname) AS lastname, name, SUM((cash.type*-2+7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id, lastname, name HAVING SUM((cash.type*-2+7) * cash.value) >= $limit ORDER BY lastname, name");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -133,7 +133,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	
 	if($message && $rows > 0)
 	{
-		$dbase->do("UPDATE users SET message='$message' WHERE id='$row->{'id'}'");
+		$dbase->do("UPDATE customers SET message='$message' WHERE id='$row->{'id'}'");
 	}
 }
 

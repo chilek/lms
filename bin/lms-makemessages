@@ -141,7 +141,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('messages', 'networks') || '';
-my $usergroups_list = $ini->val('messages', 'usergroups') || '';
+my $customergroups_list = $ini->val('messages', 'customergroups') || '';
 my $cfile = $ini->val('messages', 'config_file') || '/etc/rc.d/rc.warnings';
 my $cuid = $ini->val('messages', 'config_owneruid') || '0';
 my $cgid = $ini->val('messages', 'config_ownergid') || '0';
@@ -198,30 +198,30 @@ if(!$networks_list)
 
 my @networks = split ' ',$networks_list;
 
-my $iniusergroups = $usergroups_list;
+my $inicustomergroups = $customergroups_list;
 
-if(!$usergroups_list)
+if(!$customergroups_list)
 {
-	$dbq = $dbase->prepare("SELECT name FROM usergroups");
+	$dbq = $dbase->prepare("SELECT name FROM customergroups");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
-		$usergroups_list = "$usergroups_list $row->{'name'}";
+		$customergroups_list = "$customergroups_list $row->{'name'}";
 	}
 }
 
-my @usergroups = split ' ',$usergroups_list;
+my @customergroups = split ' ',$customergroups_list;
 
 #
 # Buil nodes list
 #
 
-$dbq = $dbase->prepare("SELECT id, name FROM usergroups");
+$dbq = $dbase->prepare("SELECT id, name FROM customergroups");
 $dbq->execute();
-my %usergrouplist;
+my %customergrouplist;
 
 while (my $row = $dbq->fetchrow_hashref())
 {
-	$usergrouplist{$row->{'name'}} = $row->{'id'};
+	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
 $dbq = $dbase->prepare("SELECT ipaddr, name, warning AS message, ownerid FROM nodes WHERE warning=1");
@@ -229,18 +229,18 @@ $dbq->execute();
 
 while (my $row = $dbq->fetchrow_hashref())
 {
-	my $usergroupscount = 0;
-	foreach my $key2 (@usergroups)
+	my $customergroupscount = 0;
+	foreach my $key2 (@customergroups)
 	{
-		my $sdbq = $dbase->prepare("SELECT count(userid) AS total FROM userassignments WHERE userid=$row->{'ownerid'} AND usergroupid=".$usergrouplist{$key2});
+		my $sdbq = $dbase->prepare("SELECT count(customerid) AS total FROM customerassignments WHERE customerid=$row->{'ownerid'} AND customergroupid=".$customergrouplist{$key2});
 		$sdbq->execute();
 		my $srow = $sdbq->fetchrow_hashref();
 		if ($srow->{'total'} eq 1)
 		{
-			$usergroupscount++;
+			$customergroupscount++;
 		}
 	}
-	if($usergroupscount || !$iniusergroups)
+	if($customergroupscount || !$inicustomergroups)
 	{
 	        my $tmpname = lc($row->{'name'});
 		my $ipaddr = u32todotquad($row->{'ipaddr'});
