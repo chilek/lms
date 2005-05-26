@@ -42,7 +42,7 @@ if(isset($setwarnings['mcustomerid']))
 		if($message)
 		{
 			$LMS->SetTS('customers');
-			$LMS->DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message, $uid));
+			$DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message, $uid));
 		}
 	}
 
@@ -57,9 +57,9 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Warnings');
 
-$customerlist = $LMS->DB->GetAll(
+$customerlist = $DB->GetAll(
 		    'SELECT customers.id AS id, MAX(warning) AS warning, '.
-		    $LMS->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername 
+		    $DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername 
 		    FROM customers LEFT JOIN nodes ON customers.id = ownerid WHERE deleted = 0 
 		    GROUP BY customers.id, lastname, customers.name ORDER BY customername ASC');
 

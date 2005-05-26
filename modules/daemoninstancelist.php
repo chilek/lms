@@ -27,7 +27,7 @@
 function GetInstanceList($hostid)
 {
 	global $LMS;
-	$list = $LMS->DB->GetAll('SELECT id, name, description, module, crontab, priority, disabled FROM daemoninstances WHERE hostid=? ORDER BY priority, name', array($hostid));
+	$list = $DB->GetAll('SELECT id, name, description, module, crontab, priority, disabled FROM daemoninstances WHERE hostid=? ORDER BY priority, name', array($hostid));
 	return $list;
 }
 
@@ -41,7 +41,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('instancelist', $instancelist);
 $SMARTY->assign('hostid', $hostid);
-$SMARTY->assign('hosts', $LMS->DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
+$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
 $SMARTY->display('daemoninstancelist.html');
 
 ?>

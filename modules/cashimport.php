@@ -30,7 +30,7 @@ if($_GET['action']=='delete')
 {
 	if($marks = $_POST['marks'])
 		foreach($marks as $id)
-			$LMS->DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
+			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
 }
 elseif($marks = $_POST['marks'])
 {
@@ -39,8 +39,8 @@ elseif($marks = $_POST['marks'])
 	{
 		if($customers[$id])
 		{
-			$import = $LMS->DB->GetRow('SELECT * FROM cashimport WHERE id = ?', array($id));
-			$LMS->DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
+			$import = $DB->GetRow('SELECT * FROM cashimport WHERE id = ?', array($id));
+			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
 			$balance['time'] = $import['date'];
 			$balance['type'] = 3;
 			$balance['value'] = $import['value'];
@@ -53,7 +53,7 @@ elseif($marks = $_POST['marks'])
 	}
 }
 
-$importlist = $LMS->DB->GetAll('SELECT * FROM cashimport WHERE closed = 0 AND value > 0');
+$importlist = $DB->GetAll('SELECT * FROM cashimport WHERE closed = 0 AND value > 0');
 $listdata['total'] = sizeof($importlist);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

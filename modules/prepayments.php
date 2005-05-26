@@ -38,23 +38,23 @@ if(sizeof($pmarks) && sizeof($cmarks))
 {
 	foreach($pmarks as $mark)
 	{
-		$mark = $LMS->DB->GetRow('SELECT id, value, comment, adminid, time, type, customerid, taxvalue
+		$mark = $DB->GetRow('SELECT id, value, comment, adminid, time, type, customerid, taxvalue
 					FROM cash WHERE id = ?', array($mark));
 
 		while($mark['value'] > 0 && !$finish)
 		{
 			foreach($cmarks as $idx => $item)
 			{
-				$row = $LMS->DB->GetRow('SELECT itemid, invoiceid, taxvalue FROM cash WHERE id = ?', array($item));
+				$row = $DB->GetRow('SELECT itemid, invoiceid, taxvalue FROM cash WHERE id = ?', array($item));
 				$value = $LMS->GetItemUnpaidValue($row['invoiceid'], $row['itemid']);
 
 				if($value>=$mark['value'])
 				{
 					if($row['taxvalue']=='')
-						$LMS->DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, taxvalue = NULL
+						$DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, taxvalue = NULL
 							WHERE id = ?', array($row['itemid'], $row['invoiceid'], $mark['id']));
 					else
-						$LMS->DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, taxvalue = ?
+						$DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, taxvalue = ?
 							WHERE id = ?', array($row['itemid'], $row['invoiceid'], $row['taxvalue'], $mark['id']));
 					$mark['value'] = 0;	
 					break;
@@ -62,16 +62,16 @@ if(sizeof($pmarks) && sizeof($cmarks))
 				else
 				{
 					if($row['taxvalue']=='')
-						$LMS->DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, value = ?, taxvalue = NULL
+						$DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, value = ?, taxvalue = NULL
 							    WHERE id = ?', array($row['itemid'], $row['invoiceid'], $value, $mark['id']));
 					else
-						$LMS->DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, value = ?, taxvalue = ?
+						$DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, value = ?, taxvalue = ?
 							    WHERE id = ?', array($row['itemid'], $row['invoiceid'], $value, $row['taxvalue'], $mark['id']));
 					
 					$mark['value'] -= $value;
 					$LMS->AddBalance($mark);
 					
-					$mark['id'] = $LMS->DB->GetOne('SELECT id FROM cash WHERE customerid = ? AND invoiceid = 0 AND value = ? AND time = ? AND type = 3 AND comment = ?',
+					$mark['id'] = $DB->GetOne('SELECT id FROM cash WHERE customerid = ? AND invoiceid = 0 AND value = ? AND time = ? AND type = 3 AND comment = ?',
 								    array($mark['customerid'], $mark['value'], $mark['time'], $mark['comment']));
 					
 					if(sizeof($cmarks)>1) 
@@ -84,7 +84,7 @@ if(sizeof($pmarks) && sizeof($cmarks))
 	}
 }
 
-if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate, 
+if($covenantlist = $DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate, 
 			SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
 			FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
 			WHERE invoices.customerid = ? AND invoiceid > 0 AND itemid > 0
@@ -94,7 +94,7 @@ if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cda
 {
 	foreach($covenantlist as $idx => $row)
 	{
-		$record = $LMS->DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
+		$record = $DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
 					    FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
 					    WHERE invoiceid = ? AND itemid = ? AND type = 4',
 					    array($row['invoiceid'], $row['itemid']));
@@ -111,7 +111,7 @@ if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cda
 	}
 }
 
-$prepaymentlist = $LMS->DB->GetAll('SELECT id, time, value, taxvalue, comment
+$prepaymentlist = $DB->GetAll('SELECT id, time, value, taxvalue, comment
 			FROM cash WHERE customerid = ? AND invoiceid = 0 AND type = 3
 			ORDER BY time', array($customerid));
 

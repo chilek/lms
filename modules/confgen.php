@@ -41,13 +41,13 @@ function GetTemplateArrays()
 {
 	global $LMS;
 
-	$result['customers'] = $LMS->DB->GetAllByKey('SELECT * FROM customers','id');
-	$result['nodes'] = $LMS->DB->GetAllByKey('SELECT * FROM nodes ORDER BY ipaddr ASC','id');
-	$result['tariffs'] = $LMS->DB->GetAllByKey('SELECT * FROM tariffs','id');
-	$result['networks'] = $LMS->DB->GetAllByKey('SELECT *, address AS addresslong, inet_ntoa(address) AS address FROM networks','id');
+	$result['customers'] = $DB->GetAllByKey('SELECT * FROM customers','id');
+	$result['nodes'] = $DB->GetAllByKey('SELECT * FROM nodes ORDER BY ipaddr ASC','id');
+	$result['tariffs'] = $DB->GetAllByKey('SELECT * FROM tariffs','id');
+	$result['networks'] = $DB->GetAllByKey('SELECT *, address AS addresslong, inet_ntoa(address) AS address FROM networks','id');
 		
-	$temp['balance'] = $LMS->DB->GetAllByKey('SELECT customers.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id','id');
-	$temp['finances'] = $LMS->DB->GetAllByKey('SELECT customerid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customerid','customerid');
+	$temp['balance'] = $DB->GetAllByKey('SELECT customers.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id','id');
+	$temp['finances'] = $DB->GetAllByKey('SELECT customerid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customerid','customerid');
 
 	foreach($temp['balance'] as $balance)
 		$result['customers'][$balance['id']]['balance'] = $balance['balance'];
@@ -72,7 +72,7 @@ function GetTemplateArrays()
 		$result['networks'][$networkid]['addresslong'] = $networkrecord['addresslong'];
 		$result['networks'][$networkid]['endaddresslong'] = ip_long(getbraddr($networkrecord['address'],$networkrecord['mask']));
 		$result['networks'][$networkid]['prefix'] = mask2prefix($networkrecord['mask']);
-		if($networknodes = $LMS->DB->GetCol('SELECT id FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?', array($result['networks'][$networkid]['addresslong'],$result['networks'][$networkid]['endaddresslong'])))
+		if($networknodes = $DB->GetCol('SELECT id FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?', array($result['networks'][$networkid]['addresslong'],$result['networks'][$networkid]['endaddresslong'])))
 			foreach($networknodes as $nodeid)
 			{
 				$result['networks'][$networkid]['nodes'][$nodeid] = &$result['nodes'][$nodeid];

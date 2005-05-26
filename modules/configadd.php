@@ -59,7 +59,7 @@ if(sizeof($config))
 
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled) VALUES (?, ?, ?, ?, ?)', 
+		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled) VALUES (?, ?, ?, ?, ?)', 
 				array(	$config['section'], 
 					$config['name'], 
 					$config['value'],

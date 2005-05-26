@@ -106,7 +106,7 @@ switch($type)
 		
 		$id = $_POST['customer'];
 
-		if($tslist = $LMS->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE customerid=? ORDER BY time', array($id)))
+		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -245,10 +245,10 @@ switch($type)
 					break;
 				}
 
-				$nodelist = $LMS->DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
+				$nodelist = $DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
 					    nodes.name AS name, nodes.info AS info, 
 					    COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
-					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
+					    .$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
 					    FROM nodes LEFT JOIN customers ON (ownerid = customers.id)
 					    LEFT JOIN cash ON (cash.customerid = customers.id)
 					    GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, customers.lastname, customers.name
@@ -450,8 +450,8 @@ switch($type)
 			break;
 		}
 		
-		if($reportlist =  $LMS->DB->GetAll('SELECT customerid, '.$LMS->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
-			    .$LMS->DB->Concat('city',"' '",'address').' AS address, nip, 
+		if($reportlist =  $DB->GetAll('SELECT customerid, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
+			    .$DB->Concat('city',"' '",'address').' AS address, nip, 
 			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
 			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
 			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
@@ -489,13 +489,13 @@ switch($type)
 		$from = mktime(0,0,0,1,1,$_POST['year']);
 		$to = mktime(0,0,0,1,1,$_POST['year']+1);
 
-		$payments = $LMS->DB->GetAllByKey('SELECT SUM(value) AS value, invoiceid AS id
+		$payments = $DB->GetAllByKey('SELECT SUM(value) AS value, invoiceid AS id
 					FROM cash
 					WHERE invoiceid > 0 AND type = 3 AND time >= ?'
 					.($_POST['customer'] ? ' AND customerid = '.$_POST['customer'] : '')
 					.' GROUP BY invoiceid', 'id', array($from));
 					
-		if($invoices = $LMS->DB->GetAll('SELECT SUM(value) AS value, MIN(time) AS time, invoiceid AS id
+		if($invoices = $DB->GetAll('SELECT SUM(value) AS value, MIN(time) AS time, invoiceid AS id
 					FROM cash
 					WHERE invoiceid > 0 AND type = 4 AND time >= ? AND time < ?'
 					.($_POST['customer'] ? ' AND customerid = '.$_POST['customer'] : '')
@@ -524,8 +524,8 @@ switch($type)
 	
 		$layout['pagetitle'] = trans('Printing');
 		
-		$yearstart = date('Y',$LMS->DB->GetOne('SELECT MIN(time) FROM cash'));
-		$yearend = date('Y',$LMS->DB->GetOne('SELECT MAX(time) FROM cash'));
+		$yearstart = date('Y',$DB->GetOne('SELECT MIN(time) FROM cash'));
+		$yearend = date('Y',$DB->GetOne('SELECT MAX(time) FROM cash'));
 		for($i=$yearstart; $i<$yearend+1; $i++)
 			$cashyears[] = $i;
 		

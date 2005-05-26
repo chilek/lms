@@ -35,9 +35,9 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	$startdate = mktime(0,0,0, $month, $day, $year);
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
 
-	$list = $LMS->DB->GetAll(
+	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
-		.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername 
+		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername 
 		 FROM events LEFT JOIN customers ON (customerid = customers.id)
 		 WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
 		.($customerid ? 'AND customerid = '.$customerid : '')
@@ -47,7 +47,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	if($list)
 		foreach($list as $idx => $row)
 		{
-			$list[$idx]['adminlist'] = $LMS->DB->GetAll('SELECT adminid AS id, admins.name
+			$list[$idx]['adminlist'] = $DB->GetAll('SELECT adminid AS id, admins.name
 								    FROM eventassignments, admins
 								    WHERE adminid = admins.id AND eventid = ? ',
 								    array($row['id']));

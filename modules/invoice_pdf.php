@@ -436,7 +436,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	if($_GET['cash'])
 	{
 		foreach($ids as $cashid)
-			if($invoiceid = $LMS->DB->GetOne('SELECT invoiceid FROM cash WHERE id = ?', array($cashid)))
+			if($invoiceid = $DB->GetOne('SELECT invoiceid FROM cash WHERE id = ?', array($cashid)))
 				$idsx[] = $invoiceid;
 		$ids = array_unique($idsx);
 	}
@@ -464,7 +464,7 @@ elseif($_GET['fetchallinvoices'])
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoices'));
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
-	$ids = $LMS->DB->GetCol('SELECT id FROM invoices 
+	$ids = $DB->GetCol('SELECT id FROM invoices 
 				WHERE cdate > ? AND cdate < ?'
 				.($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
 				.' ORDER BY cdate',

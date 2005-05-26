@@ -34,7 +34,7 @@ function MessageAdd($msg, $headers, $file=NULL)
 		foreach($headers as $idx => $header)
 			$head .= $idx.": ".$header."\n";
 	
-	$LMS->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, customerid, mailfrom, inreplyto, messageid, replyto, headers)
+	$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, customerid, mailfrom, inreplyto, messageid, replyto, headers)
 			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 			    array(
 				$msg['ticketid'],
@@ -52,13 +52,13 @@ function MessageAdd($msg, $headers, $file=NULL)
 
 	if(isset($file['name']))
 	{
-		$id = $LMS->DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND customerid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['customerid'], $time));
+		$id = $DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND customerid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['customerid'], $time));
 		$dir = $LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
 		@mkdir($LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
 		$newfile = $dir.'/'.$file['name'];
 		if(@rename($file['tmp_name'], $newfile))
-			if($LMS->DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
+			if($DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
 						VALUES (?,?,?)', array($id, $file['name'], $file['type'])))
 				$LMS->SetTS('rtattachments');
 	}		    
@@ -121,7 +121,7 @@ if(isset($_POST['message']))
 			$message['adminid'] = 0;
 			if(!$message['customerid']) 
 			{
-				$req = $LMS->DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']));
+				$req = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']));
 				$message['mailfrom'] = ereg_replace('^.* <(.+@.+)>','\1', $req);
 				if(!check_email($message['mailfrom']))
 					$message['mailfrom'] = '';
@@ -242,7 +242,7 @@ else
 	$admin = $LMS->GetAdminInfo($AUTH->id);
 	
 	$message['ticketid'] = $_GET['ticketid'];
-	$message['customerid'] = $LMS->DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));
+	$message['customerid'] = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));
 	
 	if($_GET['id'])
 	{

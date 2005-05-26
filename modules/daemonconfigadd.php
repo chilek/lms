@@ -38,14 +38,14 @@ if($config = $_POST['config'])
 	
 	if($config['var'] == '')
 		$error['var'] = trans('Option name is required!');
-	elseif($LMS->DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid'])))
+	elseif($DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid'])))
 		$error['var'] = trans('Option with specified name exists in that instance!');
 	
 	if(!$error)
 	{
 		$config['value'] = str_replace("\r\n","\n",$config['value']);
 		
-		$LMS->DB->Execute('INSERT INTO daemonconfig (var, instanceid, description, value) VALUES (?,?,?,?)',
+		$DB->Execute('INSERT INTO daemonconfig (var, instanceid, description, value) VALUES (?,?,?,?)',
 				    array($config['var'], 
 					    $config['instanceid'], 
 					    $config['description'],
@@ -63,7 +63,7 @@ if($config = $_POST['config'])
 	}
 }	
 
-$instance = $LMS->DB->GetRow('SELECT daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
+$instance = $DB->GetRow('SELECT daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
 
 $layout['pagetitle'] = trans('New Option for Instance: $0/$1', $instance['name'], $instance['hostname']);
 

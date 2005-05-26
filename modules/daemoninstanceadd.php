@@ -36,7 +36,7 @@ if($instance = $_POST['instance'])
 	
 	if($instance['name'] == '')
 		$error['name'] = trans('Instance name is required!');
-	elseif($LMS->DB->GetOne('SELECT id FROM daemoninstances WHERE name=? AND hostid=?', array($instance['name'], $instance['hostid'])))
+	elseif($DB->GetOne('SELECT id FROM daemoninstances WHERE name=? AND hostid=?', array($instance['name'], $instance['hostid'])))
 		$error['name'] = trans('Instance with specified name exists on that host!');
 	
 	if($instance['module'] == '')
@@ -55,7 +55,7 @@ if($instance = $_POST['instance'])
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO daemoninstances (name, hostid, description, module, crontab, priority) VALUES (?,?,?,?,?,?)',
+		$DB->Execute('INSERT INTO daemoninstances (name, hostid, description, module, crontab, priority) VALUES (?,?,?,?,?,?)',
 				    array($instance['name'], 
 					    $instance['hostid'], 
 					    $instance['description'],
@@ -85,7 +85,7 @@ $instance['hostid'] = $instance['hostid'] ? $instance['hostid'] : $_GET['hostid'
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', $instance);
-$SMARTY->assign('hosts', $LMS->DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
+$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
 $SMARTY->assign('layout', $layout);
 $SMARTY->display('daemoninstanceadd.html');
 

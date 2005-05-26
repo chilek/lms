@@ -42,7 +42,7 @@ if(isset($setwarnings['mnodeid']))
 		if($message)
 		{
 			$LMS->SetTS('customers');
-			$LMS->DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message,$LMS->GetNodeOwner($value)));
+			$DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message,$LMS->GetNodeOwner($value)));
 		}
 	}
 	$SESSION->save('warnmessage', $message);

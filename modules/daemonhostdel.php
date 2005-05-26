@@ -28,14 +28,14 @@ $id = $_GET['id'];
 
 if($id && $_GET['is_sure']=='1')
 {
-	if($LMS->DB->Execute('DELETE FROM daemonhosts WHERE id = ?', array($id)))
+	if($DB->Execute('DELETE FROM daemonhosts WHERE id = ?', array($id)))
 	{
-		if($instances = $LMS->DB->GetCol('SELECT id FROM daemoninstances WHERE hostid = ?', array($id)))
+		if($instances = $DB->GetCol('SELECT id FROM daemoninstances WHERE hostid = ?', array($id)))
 		{
 			foreach($instances as $instance)
 			{
-				$LMS->DB->Execute('DELETE FROM daemoninstances WHERE id = ?', array($instance));
-				$LMS->DB->Execute('DELETE FROM daemonconfig WHERE instanceid = ?', array($instance));
+				$DB->Execute('DELETE FROM daemoninstances WHERE id = ?', array($instance));
+				$DB->Execute('DELETE FROM daemonconfig WHERE instanceid = ?', array($instance));
 			}
 			$LMS->SetTS('daemoninstances');
 			$LMS->SetTS('daemonconfig');

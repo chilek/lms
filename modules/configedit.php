@@ -27,7 +27,7 @@
 function ConfigOptionExists($id) 
 {
 	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id)) ? TRUE : FALSE);
+	return ($DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id)) ? TRUE : FALSE);
 }
 
 $id = $_GET['id'];
@@ -39,11 +39,11 @@ if($id && !ConfigOptionExists($id))
 
 if(isset($_GET['statuschange']))
 {
-	$LMS->DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
+	$DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
 	$SESSION->redirect('?m=configlist');
 }
 
-$config = $LMS->DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
+$config = $DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
 $option = $config['var'];
 
 if(isset($_POST['config']))
@@ -78,7 +78,7 @@ if(isset($_POST['config']))
 
 	if(!$error)
 	{
-		$LMS->DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ? WHERE id = ?', 
+		$DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ? WHERE id = ?', 
 				array(	$cfg['section'], 
 					$cfg['var'], 
 					$cfg['value'],

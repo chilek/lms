@@ -53,8 +53,8 @@ if ($invoiceid == 'multi')
 		foreach($ids as $idx => $invoiceid)
 			if (!$LMS->IsInvoicePaid($invoiceid))
 			{
-				$custid = $LMS->DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
-				$items = $LMS->DB->GetAll('SELECT itemid AS id, taxvalue, customerid, comment FROM cash WHERE invoiceid=? GROUP BY itemid, taxvalue, customerid, comment ORDER BY itemid', array($invoiceid));
+				$custid = $DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
+				$items = $DB->GetAll('SELECT itemid AS id, taxvalue, customerid, comment FROM cash WHERE invoiceid=? GROUP BY itemid, taxvalue, customerid, comment ORDER BY itemid', array($invoiceid));
 								
 				foreach($items as $item)
 				{
@@ -73,8 +73,8 @@ if ($invoiceid == 'multi')
 }
 elseif (!$LMS->IsInvoicePaid($invoiceid))
 {
-	$custid = $LMS->DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
-	$items = $LMS->DB->GetAll('SELECT itemid AS id, taxvalue, customerid, comment 
+	$custid = $DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
+	$items = $DB->GetAll('SELECT itemid AS id, taxvalue, customerid, comment 
 				FROM cash WHERE invoiceid=? 
 				GROUP BY itemid, taxvalue, customerid, comment 
 				ORDER BY itemid', array($invoiceid));

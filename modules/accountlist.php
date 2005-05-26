@@ -26,7 +26,7 @@
 
 function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NULL, $domain='')
 {
-	global $LMS;
+	global $DB;
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -54,9 +54,9 @@ function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NU
 		break;
 	}
 
-	$list = $LMS->DB->GetAll(
+	$list = $DB->GetAll(
 	        'SELECT passwd.id AS id, ownerid, login, lastlogin, expdate, domains.name AS domain, type, quota_www, quota_sh, quota_mail, quota_ftp, '
-		.$LMS->DB->Concat('customers.lastname', "' '",'customers.name').
+		.$DB->Concat('customers.lastname', "' '",'customers.name').
 		' AS customername FROM passwd LEFT JOIN customers ON customers.id = ownerid 
 		LEFT JOIN domains ON domains.id = domainid WHERE 1=1'
 		.($customer != '' ? ' AND ownerid = '.$customer : '')
@@ -143,7 +143,7 @@ $SMARTY->assign('start', $start);
 $SMARTY->assign('accountlist',$accountlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
-$SMARTY->assign('domainlist',$LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign('domainlist',$DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('accountlist.html');
 

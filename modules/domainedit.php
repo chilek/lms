@@ -27,13 +27,13 @@
 function GetDomainIdByName($name)
 {
 	global $LMS;
-	return $LMS->DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
+	return $DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
 }
 
 function DomainExists($id)
 {
 	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM domains WHERE id = ?', array($id)) ? TRUE : FALSE);
+	return ($DB->GetOne('SELECT id FROM domains WHERE id = ?', array($id)) ? TRUE : FALSE);
 }
 
 $id = $_GET['id'];
@@ -43,7 +43,7 @@ if($id && !DomainExists($id))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$domain = $LMS->DB->GetRow('SELECT id, name, description FROM domains WHERE id = ?', array($id));
+$domain = $DB->GetRow('SELECT id, name, description FROM domains WHERE id = ?', array($id));
 
 $layout['pagetitle'] = trans('Domain Edit: $0', $domain['name']);
 
@@ -67,7 +67,7 @@ if(isset($_POST['domain']))
 
 	if(!$error)
 	{
-		$LMS->DB->Execute('UPDATE domains SET name = ?, description = ? WHERE id = ?', 
+		$DB->Execute('UPDATE domains SET name = ?, description = ? WHERE id = ?', 
 			array(	$domain['name'],
 				$domain['description'],
 				$domain['id']

@@ -35,7 +35,7 @@ if(isset($_POST['marks']))
 	die;
 }
 
-if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate, 
+if($covenantlist = $DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate, 
 			SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
 			FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
 			WHERE invoices.customerid = ? AND invoiceid > 0 AND itemid > 0
@@ -45,7 +45,7 @@ if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cda
 {
 	foreach($covenantlist as $idx => $row)
 	{
-		$record = $LMS->DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
+		$record = $DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
 					    FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
 					    WHERE invoiceid = ? AND itemid = ? AND type = 4',
 					    array($row['invoiceid'], $row['itemid']));

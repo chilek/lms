@@ -60,21 +60,21 @@ switch($_RELOAD_TYPE)
 				$query = str_replace('%TIME%','?NOW?',$query);
 				echo '<P><B>'.trans('Running:').'</B></P>';
 				echo '<PRE>'.$query.'</PRE>';
-				$LMS->DB->Execute($query);
+				$DB->Execute($query);
 			}
 			echo '</TD></TR></TABLE>';
 		}
 		else
 		{
-			$hosts = $LMS->DB->GetAll('SELECT id, name, lastreload, reload, description FROM daemonhosts ORDER BY name');
+			$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM daemonhosts ORDER BY name');
 			
 			if(isset($_GET['setreloads']))
 			{
 				foreach($hosts as $host)
 					if(in_array($host['id'], (array) $_POST['hosts']))
-						$LMS->DB->Execute('UPDATE daemonhosts SET reload=1 WHERE id=?', array($host['id']));
+						$DB->Execute('UPDATE daemonhosts SET reload=1 WHERE id=?', array($host['id']));
 					else
-						$LMS->DB->Execute('UPDATE daemonhosts SET reload=0 WHERE id=?', array($host['id']));
+						$DB->Execute('UPDATE daemonhosts SET reload=0 WHERE id=?', array($host['id']));
 				
 				$LMS->SetTS('daemonhosts');
 			}

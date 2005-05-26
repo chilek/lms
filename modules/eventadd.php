@@ -48,18 +48,18 @@ if($event = $_POST['event'])
 		$date = mktime(0, 0, 0, $month, $day, $year);
 		$event['status'] = $event['status'] ? 1 : 0;
 
-		$LMS->DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, adminid, private, customerid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, adminid, private, customerid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $AUTH->id, $event['status'], $event['customerid']));
 		
 		$LMS->SetTS('events');
 		
 		if($event['adminlist'])
 		{
-			$id = $LMS->DB->GetOne('SELECT id FROM events WHERE title=? AND date=? AND begintime=? AND endtime=? AND adminid=?',
+			$id = $DB->GetOne('SELECT id FROM events WHERE title=? AND date=? AND begintime=? AND endtime=? AND adminid=?',
 				array($event['title'], $date, $event['begintime'], $event['endtime'], $AUTH->id));
 
 			foreach($event['adminlist'] as $adminid)
-				$LMS->DB->Execute('INSERT INTO eventassignments (eventid, adminid) 
+				$DB->Execute('INSERT INTO eventassignments (eventid, adminid) 
 					VALUES (?, ?)', array($id, $adminid));
 
 			$LMS->SetTS('eventassignments');

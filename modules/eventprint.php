@@ -28,9 +28,9 @@ function GetEvents($date=NULL, $adminid=0, $customerid=0)
 {
 	global $LMS, $AUTH;
 
-	$list = $LMS->DB->GetAll(
+	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, '
-		.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
+		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
 		 customers.address AS customeraddr, customers.phone1 AS customerphone 
 		 FROM events LEFT JOIN customers ON (customerid = customers.id)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
@@ -41,7 +41,7 @@ function GetEvents($date=NULL, $adminid=0, $customerid=0)
 	if($list)
 		foreach($list as $idx => $row)
 		{
-			$list[$idx]['adminlist'] = $LMS->DB->GetAll('SELECT adminid AS id, admins.name
+			$list[$idx]['adminlist'] = $DB->GetAll('SELECT adminid AS id, admins.name
 								    FROM eventassignments, admins
 								    WHERE adminid = admins.id AND eventid = ? ',
 								    array($row['id']));

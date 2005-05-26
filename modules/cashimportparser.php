@@ -91,8 +91,8 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		$hash = md5($time.$value.$customer.$comment);
 
 		if(is_numeric($value))
-			if(!$LMS->DB->GetOne('SELECT id FROM cashimport WHERE hash=?', array($hash)))
-				$LMS->DB->Execute('INSERT INTO cashimport(date, value, customer, customerid, description, hash) VALUES(?,?,?,?,?,?)',
+			if(!$DB->GetOne('SELECT id FROM cashimport WHERE hash=?', array($hash)))
+				$DB->Execute('INSERT INTO cashimport(date, value, customer, customerid, description, hash) VALUES(?,?,?,?,?,?)',
 					array($time, $value, $customer, $id, $comment, $hash));
 		
 	}

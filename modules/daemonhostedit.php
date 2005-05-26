@@ -27,10 +27,10 @@
 function GetHostIdByName($name)
 {
 	global $LMS;
-	return $LMS->DB->GetOne('SELECT id FROM daemonhosts WHERE name = ?', array($name));
+	return $DB->GetOne('SELECT id FROM daemonhosts WHERE name = ?', array($name));
 }
 
-$host = $LMS->DB->GetRow('SELECT id, name, description FROM daemonhosts WHERE id=?', array($_GET['id']));
+$host = $DB->GetRow('SELECT id, name, description FROM daemonhosts WHERE id=?', array($_GET['id']));
 
 $layout['pagetitle'] = trans('Host Edit: $0', $host['name']);
 
@@ -48,7 +48,7 @@ if(isset($_POST['hostedit']))
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('UPDATE daemonhosts SET name=?, description=? WHERE id=?',
+		$DB->Execute('UPDATE daemonhosts SET name=?, description=? WHERE id=?',
 				    array($hostedit['name'], $hostedit['description'], $_GET['id']));
 		$LMS->SetTS('daemonhosts');
 		

@@ -26,8 +26,8 @@
 
 function AccountExists($id) 
 {
-	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM passwd WHERE id = ?', array($id)) ? TRUE : FALSE);
+	global $DB;
+	return ($DB->GetOne('SELECT id FROM passwd WHERE id = ?', array($id)) ? TRUE : FALSE);
 }
 
 $id = $_GET['id'];
@@ -40,7 +40,7 @@ if($id && !AccountExists($id))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, realname, lastlogin, domainid, expdate, type, home, quota_sh, quota_mail, quota_www, quota_ftp, '.$LMS->DB->Concat('customers.lastname', "' '", 'customers.name').' AS customername FROM passwd LEFT JOIN customers ON customers.id = ownerid WHERE passwd.id = ?', array($id));
+$account = $DB->GetRow('SELECT passwd.id AS id, ownerid, login, realname, lastlogin, domainid, expdate, type, home, quota_sh, quota_mail, quota_www, quota_ftp, '.$DB->Concat('customers.lastname', "' '", 'customers.name').' AS customername FROM passwd LEFT JOIN customers ON customers.id = ownerid WHERE passwd.id = ?', array($id));
 
 foreach(array('sh', 'mail', 'www', 'ftp') as $type)
 	$quota[$type] = $account['quota_'.$type];
@@ -66,7 +66,7 @@ switch ($option)
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', array(crypt($account['passwd1']), $id));
+		$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', array(crypt($account['passwd1']), $id));
 		$LMS->SetTS('passwd');
 		$SESSION->redirect('?m=accountlist');
 	}
@@ -114,7 +114,7 @@ switch ($option)
 			
 		if(!$error)
 		{
-			$LMS->DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, home = ?, expdate = ?, domainid = ?, type = ?, quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ? WHERE id = ?', 
+			$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, home = ?, expdate = ?, domainid = ?, type = ?, quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ? WHERE id = ?', 
 				array(	$account['ownerid'], 
 					$account['login'],
 					$account['realname'],
@@ -141,7 +141,7 @@ $SMARTY->assign('quota', $quota);
 $SMARTY->assign('account', $account);
 $SMARTY->assign('layout', $layout);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
-$SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->display($template);
 
 ?>

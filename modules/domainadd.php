@@ -27,7 +27,7 @@
 function GetDomainIdByName($name)
 {
 	global $LMS;
-	return $LMS->DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
+	return $DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
 }
 
 if(isset($_POST['domainadd']))
@@ -49,7 +49,7 @@ if(isset($_POST['domainadd']))
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO domains (name, description) VALUES (?,?)',
+		$DB->Execute('INSERT INTO domains (name, description) VALUES (?,?)',
 				    array($domainadd['name'], $domainadd['description']));
 		$LMS->SetTS('domains');
 		

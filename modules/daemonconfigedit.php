@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$config = $LMS->DB->GetRow('SELECT id, var, value, description, disabled, instanceid FROM daemonconfig WHERE id=?', array($_GET['id']));
+$config = $DB->GetRow('SELECT id, var, value, description, disabled, instanceid FROM daemonconfig WHERE id=?', array($_GET['id']));
 
 if(isset($_POST['config'])) 
 {
@@ -36,7 +36,7 @@ if(isset($_POST['config']))
 	if($configedit['var'] == '')
 		$error['var'] = trans('Option name is required!');
 	elseif($config['var']!=$configedit['var'])
-		if($LMS->DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($configedit['var'], $config['instanceid'])))
+		if($DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($configedit['var'], $config['instanceid'])))
 			$error['var'] = trans('Option with specified name exists in that instance!');
 	
 	if(!isset($configedit['disabled']))
@@ -46,7 +46,7 @@ if(isset($_POST['config']))
 	{
 		$configedit['value'] = str_replace("\r\n","\n", $configedit['value']);
 		
-		$LMS->DB->Execute('UPDATE daemonconfig SET var=?, description=?, value=?, disabled=? WHERE id=?',
+		$DB->Execute('UPDATE daemonconfig SET var=?, description=?, value=?, disabled=? WHERE id=?',
 				    array($configedit['var'], 
 					    $configedit['description'],
 					    $configedit['value'],
@@ -60,15 +60,15 @@ if(isset($_POST['config']))
 elseif(isset($_GET['statuschange']))
 {
 	if($config['disabled'])
-		$LMS->DB->Execute('UPDATE daemonconfig SET disabled=0 WHERE id=?', array($config['id']));
+		$DB->Execute('UPDATE daemonconfig SET disabled=0 WHERE id=?', array($config['id']));
 	else
-		$LMS->DB->Execute('UPDATE daemonconfig SET disabled=1 WHERE id=?', array($config['id']));
+		$DB->Execute('UPDATE daemonconfig SET disabled=1 WHERE id=?', array($config['id']));
 	
 	$LMS->SetTS('daemonconfig');
 	$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
 }	
 
-$instance = $LMS->DB->GetRow('SELECT daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($config['instanceid']));
+$instance = $DB->GetRow('SELECT daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($config['instanceid']));
 
 $layout['pagetitle'] = trans('Option Edit: $0/$1/$2', $config['var'], $instance['name'], $instance['hostname']);
 
