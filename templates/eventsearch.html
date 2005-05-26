@@ -86,11 +86,11 @@
 			<IMG src="img/admins.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
-			<B>{t}Customer:{/t}</B>
+			<B>{t}User:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[adminid]">
-				<OPTION value="" SELECTED>{t}- select customer -{/t}</OPTION>
+				<OPTION value="" SELECTED>{t}- select user -{/t}</OPTION>
 				{section name=adminlist loop=$adminlist}	
 				<OPTION value="{$adminlist[adminlist].id}">{$adminlist[adminlist].name}</OPTION>
 				{/section}
