@@ -101,10 +101,10 @@
 			<IMG src="img/admins.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Customers:{/t}</B>
+			<B>{t}Users:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<SELECT size="{if $adminlistsize > 5}5{else}{size of=$adminlist}{/if}" name="event[adminlist][]" {tip text="Select customer(s) (optional)"} multiple>
+			<SELECT size="{if $adminlistsize > 5}5{else}{size of=$adminlist}{/if}" name="event[adminlist][]" {tip text="Select user(s) (optional)"} multiple>
 				{section name=adminlist loop=$adminlist}	
 				<OPTION value="{$adminlist[adminlist].id}">{$adminlist[adminlist].name}</OPTION>
 				{/section}

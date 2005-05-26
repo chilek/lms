@@ -98,7 +98,7 @@ switch($_GET['mode'])
 				$actions[$row['id']] = '?m=nodeinfo&id='.$row['id'];
 				$eglible[$row['id']] = escape_js($row['name'].' '.$row['lastname']);
 				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
-				if (preg_match("/$search/i",$row['ipaddr'])) $descriptions[$row['id']] = trans('IP').': '.$row['ipaddr'];
+				if (preg_match("/$search/i",$row['ipaddr'])) $descriptions[$row['id']] = trans('IP address').': '.$row['ipaddr'];
 				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']] = trans('MAC address').': '.$row['mac'];
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}

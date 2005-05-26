@@ -75,7 +75,7 @@ $access['table'][14]['allow_reg']   	= '^(event(list|edit|add|del|info|print|sea
 $access['table'][15]['name']        	= trans('daemon management and configuration');
 $access['table'][15]['allow_reg']   	= '^((daemonhost|daemoninstance|daemonconfig)(list|edit|add|del|view))$';
 
-$access['table'][253]['name']		= trans('customers edition and addition forbidden');
+$access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(admin(add|del|edit|passwd))$';
 
 $access['table'][255]['name']		= trans('no access');
