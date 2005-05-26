@@ -6,15 +6,14 @@ LMS potrafi du¿o, a wraz z tym modu³em bêdzie potrafi³ zaparzyæ kawê.
 
 1. Instalacja.
 
-Plik coffee.php kopiujemy do katalogu modules lmsa.
-Plik adminheader.html kopiujemy do katalogu templates lmsa i nadpisujemy
-starsz± wersjê.
+Plik coffee.php kopiujemy do katalogu modules lmsa. Po tym zabiegu mo¿emy
+z LMS-UI wywo³aæ go przy pomocy http://adres/?m=coffee.
 
 Domy¶lnie coffee.php próboje wykonaæ plik /sbin/coffee który powinien 
 uruchomiæ ekspres do kawy. Je¶li nie posiadasz w/w pliku, mo¿esz siê
 pos³u¿yæ przyk³adowym coffee.c, opartym na Coffee HOWTO. Coffee.c uruchamia
 ekspres do kawy przy³±czony do pierwszego portu równoleg³ego (/dev/lp0) za 
-pomoc± jednego z interfaców zamieszczonych w w/w howto, odczekuje jedn± minutê,
+pomoc± jednego z interface'ów zamieszczonych w w/w howto, odczekuje jedn± minutê,
 po czym wy³±cza ekspres. Po tym czasie powiniene¶ mieæ smaczn± kawê. Pamiêtaj
 ¿e coffee.c po kompilacji powinien otrzymaæ uprawnienia suid root, bo inaczej
 ¿aden u¿ytkownik nie bêdzie w stanie uruchomiæ ekspresu (w tym coffee.php).
@@ -22,5 +21,5 @@ po czym wy³±cza ekspres. Po tym czasie powiniene¶ mieæ smaczn± kawê. Pamiêtaj
 2. W dzia³aniu.
 
 Powinno dzia³aæ. Serio :) A tak powa¿nie, w/w przyk³ad demonstruje mo¿liwo¶æ
-sterowania portem lpt za pomoc± lmsa. Ot, taki prosty a mo¿e siê np. przydaæ
+sterowania portem lpt za pomoc± LMS-a. Ot, taki prosty a mo¿e siê np. przydaæ
 do zdalnego resetowania urz±dzeñ z poziomu UI.

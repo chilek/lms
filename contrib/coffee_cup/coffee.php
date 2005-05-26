@@ -26,7 +26,6 @@
 
 
 $SMARTY->display('header.html');
-$SMARTY->display('adminheader.html');
 echo '<H1>'.trans('Making coffee...').'</H1>';
 
 echo '<pre>';
