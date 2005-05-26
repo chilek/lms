@@ -34,17 +34,17 @@ $login = ($loginform['login'] ? $loginform['login'] : 0);
 $pin = ($loginform['pwd'] ? $loginform['pwd'] : 0);
 
 // customer authorization ways
-//$id = GetUserIDByPhone1AndPIN($login, $pin);
-//$id = GetUserIDByContractAndPIN($login, $pin);
-$id = GetUserIDByIDAndPIN($login, $pin);
+//$id = GetCustomerIDByPhone1AndPIN($login, $pin);
+//$id = GetCustomerIDByContractAndPIN($login, $pin);
+$id = GetCustomerIDByIDAndPIN($login, $pin);
 
 if($id)
 {
 	session_start();
 	$_SESSION['uid'] = $id;
 
-	$SMARTY->assign('userinfo',$LMS->GetUser($id));
-	$SMARTY->assign('balancelist',$LMS->GetUserBalanceList($id));
+	$SMARTY->assign('customerinfo',$LMS->GetCustomer($id));
+	$SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($id));
 	$SMARTY->assign('limit',15);
 	$SMARTY->display('balanceview.html');
 }

@@ -9,7 +9,7 @@ Contents:
 
 1) what is it ?
 
-It's a simple panel for users which:
+It's a simple panel for customers which:
 
 a) use some kind of a proxy
 b) don't use The Internet only from home/LAN
@@ -24,9 +24,9 @@ You could put info like the following:
 We are pleased to say that you could yor account for yourself, any time 
 you want:
 
-http://www.TwójUrl.pl/lms/contrib/clients/
+http://www.TwójUrl.pl/lms/contrib/customers/
 
-Pleas use your client (telephone, contract) number and PIN CODE, it's: %pin
+Pleas use your customer (telephone, contract) number and PIN CODE, it's: %pin
 "
 
 3) icons
@@ -42,16 +42,15 @@ httpd config.
 
 panel requires to set sys_dir in lms.ini file (section [directories]).
 
-
 5) In balanceview.php one could find:
 
 #v+
 customer authorization ways
-//$id = GetUserIDByPhone1AndPIN($login, $pin);
-//$id = GetUserIDByContractAndPIN($login, $pin);
-$id = GetUserIDByIDAndPIN($login, $pin);
+//$id = GetCustomerIDByPhone1AndPIN($login, $pin);
+//$id = GetCustomerIDByContractAndPIN($login, $pin);
+$id = GetCustomerIDByIDAndPIN($login, $pin);
 #v-
 
-It meand you could use any one of following: Phone, Contrac, ID.
+It meand you could use any one of following: Phone, Contract, ID.
 
 BTW: SOA#1
