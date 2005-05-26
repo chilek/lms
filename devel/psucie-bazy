@@ -50,6 +50,12 @@ potwierdzili¶my sobie salda z klientem i nie potrzeba trzymaæ szczegó³ów
 typu kiedy obci±¿yli¶my/kiedy zap³aci³, wiemy ¿e ¶cigamy go o te 100 z³ 
 ró¿nicy i tyle)
 
+alec> a mi siê to w³a¶nie podoba, z tym, ¿e wszystkie skompresowane dane 
+przewalamy do tabelki cash_archive i dajemy mo¿liwo¶æ jej przegl±dania w
+formie filtrowanej listy tak jak bilans sieci, nawet jak uzbieraj± siê tam 
+dane z kilku lat, to tabelka ta nie bêdzie czêsto u¿ywana i nie musi to
+dzia³aæ szybko.
+
 InvoiceContents:
 
 Itemid |   Comment  |  Netto  | Tax | 
