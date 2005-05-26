@@ -41,7 +41,7 @@ $pdf->setLineStyle(2);
 $id=$pdf->getFirstPageId();
 
 function main_fill($x,$y,$scale)	{
-    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$userinfo,$_SERVICE,$control_lines;
+    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$customerinfo,$_SERVICE,$control_lines;
     if ($control_lines) {
 	$pdf->line(7*$scale+$x,115*$scale+$y,7*$scale+$x,145*$scale+$y);
         $pdf->line(7*$scale+$x,115*$scale+$y,37*$scale+$x,115*$scale+$y);
@@ -55,14 +55,14 @@ function main_fill($x,$y,$scale)	{
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale,$_NAME);
     $pdf->addtext(15*$scale+$x,617*$scale+$y,30*$scale,$_ADDRESS." ".$_ZIP." ".$_CITY);
     $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale,$_ACCOUNT);
-    $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format(-$userinfo['balance'],2,',',''));
-    $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']));
-    $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']." ".$userinfo['zip']." ".$userinfo['city']));
-    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale,$_SERVICE." mc. ".iconv('UTF-8','ISO-8859-2',strftime("%B"))." ID:".sprintf("%04d",$userinfo['id']));
+    $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format(-$customerinfo['balance'],2,',',''));
+    $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['customername']));
+    $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['address']." ".$customerinfo['zip']." ".$customerinfo['city']));
+    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale,$_SERVICE." mc. ".iconv('UTF-8','ISO-8859-2',strftime("%B"))." ID:".sprintf("%04d",$customerinfo['id']));
 }
 
 function simple_fill_mip($x,$y,$scale)	{
-    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$userinfo,$_SERVICE,$_SHORT_NAME,$control_lines;
+    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$customerinfo,$_SERVICE,$_SHORT_NAME,$control_lines;
 
     if ($control_lines) {
         $pdf->line(7*$scale+$x,180*$scale+$y,7*$scale+$x,210*$scale+$y);
@@ -79,15 +79,15 @@ function simple_fill_mip($x,$y,$scale)	{
     $pdf->addtext(15*$scale+$x,490*$scale+$y,30*$scale, $_ZIP." ".$_CITY);
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr($_ACCOUNT,0,17));
     $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr($_ACCOUNT,18,200));
-    $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,"**".number_format(-$userinfo['balance'],2,',','')."**");
-    //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']));
+    $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,"**".number_format(-$customerinfo['balance'],2,',','')."**");
+    //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['customername']));
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']))>135)
+    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['customername']))>135)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']));
-    $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']));
-    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['zip']." ".$userinfo['city']));
+    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['customername']));
+    $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['address']));
+    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['zip']." ".$customerinfo['city']));
 
     $font_size=30;
     while ($pdf->getTextWidth($font_size*$scale,$_SERVICE." mc. ".iconv('UTF-8','ISO-8859-2',strftime("%B")))>135)
@@ -97,14 +97,14 @@ function simple_fill_mip($x,$y,$scale)	{
 }
 
 function address_box($x,$y,$scale)	{
-    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$userinfo,$_SERVICE,$_SHORT_NAME;
+    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$customerinfo,$_SERVICE,$_SHORT_NAME;
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']))>240)
+    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['customername']))>240)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['customername']));
-    $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']));
-    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['zip']." ".$userinfo['city']));
+    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['customername']));
+    $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['address']));
+    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$customerinfo['zip']." ".$customerinfo['city']));
 }
 
 // Dobra, czytamy z lms.ini
@@ -118,22 +118,22 @@ $_ACCOUNT = (! $_CONFIG[finances]['account'] ? "123456789012345678901234567" : $
 
 $control_lines = 0;
 
-$userlist = $LMS->GetUserList($o, 6, $n, $g);
-$total = $userlist['total'];
-unset($userlist['total']);
-unset($userlist['state']);
-unset($userlist['network']);
-unset($userlist['usergroup']);
-unset($userlist['order']);
-unset($userlist['below']);
-unset($userlist['over']);
-unset($userlist['direction']);
+$customerlist = $LMS->GetCustomerList($o, 6, $n, $g);
+$total = $customerlist['total'];
+unset($customerlist['total']);
+unset($customerlist['state']);
+unset($customerlist['network']);
+unset($customerlist['customergroup']);
+unset($customerlist['order']);
+unset($customerlist['below']);
+unset($customerlist['over']);
+unset($customerlist['direction']);
 
 $i=0;
-if($total) foreach ($userlist as $user) 
+if($total) foreach ($customerlist as $customer) 
 {
     $i++;
-    $userinfo = $LMS->GetUser($user['id']);
+    $customerinfo = $LMS->GetCustomer($customer['id']);
     main_fill(177,12,0.395);
     main_fill(177,313,0.396);
     simple_fill_mip(5,12,0.395);
