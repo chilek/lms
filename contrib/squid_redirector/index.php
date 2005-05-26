@@ -152,25 +152,32 @@ include('lang.php');
 
 $SMARTY->assign_by_ref('layout', $layout);
 
-if (isset($_SERVER[HTTP_X_FORWARDED_FOR])) {
-    $forwarded_ip = explode(",",$_SERVER[HTTP_X_FORWARDED_FOR]);
-    $nodeid = $LMS->GetNodeIDByIP($forwarded_ip['0']);    
-} else {
-    $nodeid = $LMS->GetNodeIDByIP(str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]));    
+if (isset($_SERVER[HTTP_X_FORWARDED_FOR]))
+{
+	$forwarded_ip = explode(',', $_SERVER[HTTP_X_FORWARDED_FOR]);
+	$nodeid = $LMS->GetNodeIDByIP($forwarded_ip['0']);    
+} 
+else 
+{
+	$nodeid = $LMS->GetNodeIDByIP(str_replace('::ffff:', '', $_SERVER[REMOTE_ADDR]));
 }
+
 $customerid = $LMS->GetNodeOwner($nodeid);    
 $nodeinfo = $LMS->GetNode($nodeid);    
 
-if (isset($_GET['readed'])) {
-    $LMS->DB->Execute('UPDATE nodes SET warning = 0 WHERE id = ?',array($nodeid));
-    header('Location: '.$_GET['oldurl']);
-} else {
-    $userinfo = $LMS->GetUser($customerid);
-    $layout['oldurl']=$_GET['oldurl'];
-    $SMARTY->assign("userinfo",$userinfo);
-    $SMARTY->assign("nodeinfo",$nodeinfo);
-    $SMARTY->assign("layout",$layout);
-    $SMARTY->display("message.html");
+if (isset($_GET['readed']))
+{
+	$DB->Execute('UPDATE nodes SET warning = 0 WHERE id = ?', array($nodeid));
+	header('Location: '.$_GET['oldurl']);
+} 
+else 
+{
+	$customerinfo = $LMS->GetCustomer($customerid);
+	$layout['oldurl'] = $_GET['oldurl'];
+	$SMARTY->assign('customerinfo', $customerinfo);
+        $SMARTY->assign('nodeinfo', $nodeinfo);
+	$SMARTY->assign('layout', $layout);
+	$SMARTY->display('message.html');
 }
 
 ?>

@@ -23,6 +23,6 @@ struct shaper_module
 	unsigned char *end;
 	unsigned char *host_htb;
 	unsigned char *networks;
-	unsigned char *usergroups;
+	unsigned char *customergroups;
 	int one_class_per_host;
 };

@@ -50,7 +50,7 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 	char *netname = strdup(netnames);
 
 	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(shaper->usergroups);	
+	char *groupnames = strdup(shaper->customergroups);	
 	char *groupname = strdup(groupnames);
 
 	// get table of networks
@@ -76,14 +76,14 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 	}
 	free(netname); free(netnames);
 
-	// get table of usergroups
+	// get table of customergroups
 	while( k>1 ) 
 	{
 		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')", groupname);
+			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')", groupname);
 			if( g->db_nrows(res) ) 
 			{
 				ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
@@ -100,8 +100,8 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 	fh = fopen(shaper->file, "w");
 	if(fh) 
 	{
-		// get (htb) data for any user with connected nodes and active assignments
-		// we need user ID and average data values for nodes
+		// get (htb) data for any customer with connected nodes and active assignments
+		// we need customer ID and average data values for nodes
 		if( (ures = g->db_query(g->conn, "\
 			SELECT customerid AS id, \
 				SUM(uprate)/COUNT(DISTINCT nodes.id) AS uprate, \
@@ -120,14 +120,14 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 		
 			for(i=0; i<g->db_nrows(ures); i++) 
 			{	
-				// test user's membership in usergroups
+				// test customer's membership in customergroups
 				m = 0;
 				if(gc)
 				{
-					res = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
+					res = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
 					for(k=0; k<g->db_nrows(res); k++) 
 					{
-						int groupid = atoi(g->db_get_data(res, k, "usergroupid"));
+						int groupid = atoi(g->db_get_data(res, k, "customergroupid"));
 						for(m=0; m<gc; m++) 
 							if(ugps[m].id==groupid) 
 								break;
@@ -278,7 +278,7 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 	free(shaper->end);	
 	free(shaper->host_htb);
 	free(shaper->networks);
-	free(shaper->usergroups);
+	free(shaper->customergroups);
 }
 
 struct shaper_module * init(GLOBAL *g, MODULE *m)
@@ -300,7 +300,7 @@ struct shaper_module * init(GLOBAL *g, MODULE *m)
 	shaper->end = strdup(g->config_getstring(shaper->base.ini, shaper->base.instance, "end", "\n# koniec listy\n"));
 	shaper->host_htb = strdup(g->config_getstring(shaper->base.ini, shaper->base.instance, "host_htb", "%i=eth1 eth0 %downrate %downceil %uprate %upceil \"\" \"\"\n"));
 	shaper->networks = strdup(g->config_getstring(shaper->base.ini, shaper->base.instance, "networks", ""));
-	shaper->usergroups = strdup(g->config_getstring(shaper->base.ini, shaper->base.instance, "usergroups", ""));
+	shaper->customergroups = strdup(g->config_getstring(shaper->base.ini, shaper->base.instance, "customergroups", ""));
 	shaper->one_class_per_host = g->config_getbool(shaper->base.ini, shaper->base.instance, "one_class_per_host", 0);
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/shaper] initialized", shaper->base.instance);

@@ -33,7 +33,7 @@ powstanie plik z regu³ami markuj±cymi pakiety na potrzeby cbq.
 
 	regu³a markuj±ca dla ka¿dego komputera (warto¶æ domy¶lna w cbq-init.c).
 
-* networks, usergroups
+* networks, customergroups
 
 	jak w innych modu³ach, ograniczenie generowanych plików do wybranych
 	sieci i grup u¿ytkowników (domy¶lnie wszyscy u¿ytkownicy).

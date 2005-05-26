@@ -25,5 +25,5 @@ struct cbq_module
 	unsigned char *mark_file_begin;
 	unsigned char *mark_file_end;
 	unsigned char *networks;
-	unsigned char *usergroups;
+	unsigned char *customergroups;
 };

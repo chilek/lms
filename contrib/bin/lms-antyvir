@@ -183,7 +183,7 @@ foreach my $ip (@iplist)
 			$dbq->execute();
 			if(my $row = $dbq->fetchrow_hashref())
 			{
-				$dbase->do("UPDATE users SET message = '$logmessage' WHERE id = $row->{'ownerid'}"); 
+				$dbase->do("UPDATE customers SET message = '$logmessage' WHERE id = $row->{'ownerid'}"); 
 			}
 		}
         }

@@ -1,6 +1,6 @@
 1. Wstêp.
 
-PATCH pozwala na dopisywanie w obrêbie jednego u¿ytkownika wielu
+PATCH pozwala na dopisywanie w obrêbie jednego klienta wielu
 komputerów o tym samym adresie IP, ale o ró¿nych mac'ach. Zmiany dotycz±
 tylko i wy³±cznie bazy danych oraz interfejsu www.
 
