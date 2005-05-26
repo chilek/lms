@@ -26,28 +26,15 @@ ID| type | value |      Comment         | invoiceid | invoiceitemid |
 1 |  4   | 70.00 | Abonament za co¶tam  |     1     |       1       |
 2 |  4   | 36.60 | karta sieciowa       |     1     |       2       |
 
-Tutaj pracowicie cash import wykazuje siê tak:
+Mo¿e te¿ byæ tak:                                 |finacial_date|
 
-3 |  3   | 106.60| Wp³ata za F/V/1/LMS  |    NULL   |      NULL     | 
-
-Kto¶ potem zmienia tak:
-
-3 |  3   | 106.60| Wp³ata za F/V/1/LMS  |    *1*    |      NULL     | 
-
-Albo rozbia: 
-
-4 |  3   | 70.00 | Abonament            |     1     |      *1*      | 
-5 |  3   | 36.60 | Wp³ata za NIC        |     1     |      *2*      |
-
-Mo¿e te¿ byæ tak:
-
-3 |  3   | 110.00| Wp³ata za styczeñ    |    NULL   |      NULL     | 
+3 |  3   | 110.00| Wp³ata za styczeñ| NULL | NULL | 2005/03/03 
 
 Zmieniona na:
 
-4 |  3   | 70.00 | Abonament            |     1     |      *1*      | 
-5 |  3   | 36.60 | Wp³ata za NIC        |     1     |      *2*      |
-6 |  3   |  3.40 | Nadp³ata styczeñ     |   *NULL*  |     *NULL*    |
+4 |  3   | 70.00 | Abonament        |  1   | *1*  | 2005/03/03
+5 |  3   | 36.60 | Wp³ata za NIC    |  1   | *2*  | 2005/03/03
+6 |  3   |  3.40 | Nadp³ata styczeñ |*NULL*|*NULL*| 2005/03/03
 
 Tutaj jest jeszcze co¶.
 
@@ -60,9 +47,9 @@ ksiêgow± co do dnia i timestamp fizyczny kiedy to robili¶my).
 
 Idea jest te¿ taka ¿e _mo¿na_ cash potem skompresowaæ np:
 
-ID | type | value   |      Comment           | invoiceid | invoiceitemid |
-31 |  4   | 9970.00 | Obci±¿enia za rok 2003 |     
-32 |  3   | 9870.00 | Wp³aty za rok 2003     | 
+ID | type | value   |      Comment           | finacial_date | 
+31 |  4   | 9970.00 | Obci±¿enia za rok 2003 | 2003/01/01    |    
+32 |  3   | 9870.00 | Wp³aty za rok 2003     | 2003/12/31    |
 
 (Co nie jest ani zbyt piêkne, ani m±dre ale funkcjonalne) 
 
@@ -71,7 +58,6 @@ przewalamy do tabelki cash_archive i dajemy mo¿liwo¶æ jej przegl±dania w
 formie filtrowanej listy tak jak bilans sieci, nawet jak uzbieraj± siê tam 
 dane z kilku lat, to tabelka ta nie bêdzie czêsto u¿ywana i nie musi to
 dzia³aæ szybko.
-
 
 InvoiceContents:
 
