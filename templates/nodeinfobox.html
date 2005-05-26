@@ -133,7 +133,7 @@
 {/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="?m=userinfo&id={$nodeinfo.ownerid}">{t}All nodes{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			<A HREF="?m=customerinfo&id={$nodeinfo.ownerid}">{t}All nodes{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
 			<A HREF="?m=nodedel&id={$nodeinfo.id}" onClick="return confirmLink(this, '{t 0=$nodeinfo.name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
 			<A HREF="?m=nodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
 		</TD>

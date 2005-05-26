@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
+function GetAliasList($order='login,asc', $customer=NULL, $kind=NULL, $domain='')
 {
 	global $LMS;
 
@@ -56,13 +56,13 @@ function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
 
 	$list = $LMS->DB->GetAll(
 	        'SELECT aliases.id AS id, passwd.id AS aid, ownerid, aliases.login AS login, passwd.login AS account, expdate, domains.name AS domain, domainid, '
-		.$LMS->DB->Concat('users.lastname', "' '",'users.name').
+		.$LMS->DB->Concat('customers.lastname', "' '",'customers.name').
 		' AS customername FROM aliases 
 		LEFT JOIN passwd ON accountid = passwd.id
-		LEFT JOIN users ON users.id = ownerid 
+		LEFT JOIN customers ON customers.id = ownerid 
 		LEFT JOIN domains ON domains.id = domainid 
 		WHERE 1=1'
-		.($user != '' ? ' AND ownerid = '.$user : '')
+		.($customer != '' ? ' AND ownerid = '.$customer : '')
 		.($kind == 1 ? ' AND expdate!= 0 AND expdate < ?NOW?' : '')
 		.($kind == 2 ? ' AND (expdate=0 OR expdate > ?NOW?)' : '')
 		.($domain != '' ? ' AND domainid = '.$domain : '')
@@ -72,7 +72,7 @@ function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
 	$list['kind'] = $kind;
-	$list['user'] = $user;
+	$list['customer'] = $customer;
 	$list['domain'] = $domain;
 	$list['direction'] = $direction;
 
@@ -119,12 +119,12 @@ $listdata['total'] = $aliaslist['total'];
 $listdata['order'] = $aliaslist['order'];
 $listdata['direction'] = $aliaslist['direction'];
 $listdata['kind'] = $aliaslist['kind'];
-$listdata['user'] = $aliaslist['user'];
+$listdata['customer'] = $aliaslist['customer'];
 $listdata['domain'] = $aliaslist['domain'];
 unset($aliaslist['total']);
 unset($aliaslist['order']);
 unset($aliaslist['kind']);
-unset($aliaslist['user']);
+unset($aliaslist['customer']);
 unset($aliaslist['domain']);
 unset($aliaslist['direction']);
 
@@ -135,7 +135,7 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('aliaslist', $aliaslist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('accountlist', $LMS->DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
 $SMARTY->assign('layout',$layout);

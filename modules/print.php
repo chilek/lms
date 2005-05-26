@@ -28,7 +28,7 @@ $type = isset($_GET['type']) ? $_GET['type'] : '';
 
 switch($type)
 {
-	case 'userlist':
+	case 'customerlist':
 
 		$date = 0;
 		
@@ -41,51 +41,51 @@ switch($type)
 		switch($_POST['filter'])
 		{
 			case 0:
-				$layout['pagetitle'] = trans('Customers List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup'], NULL, $date));
+				$layout['pagetitle'] = trans('Customers List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $0)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], NULL, $date));
 			break;
 			case 1:
 				$layout['pagetitle'] = trans('Interested Customers List');
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, NULL, NULL, $date));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, NULL, NULL, $date));
 			break;
 			case 2:
 				$layout['pagetitle'] = trans('List of awaiting customers');
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, NULL, NULL, $date));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, NULL, NULL, $date));
 			break;
 			case 3:
-				$layout['pagetitle'] = trans('List of Connected Customers $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : '')); 
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup'], NULL, $date));
+				$layout['pagetitle'] = trans('List of Connected Customers $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $0)',$LMS->CustomergroupGetName($_POST['customergroup'])) : '')); 
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], NULL, $date));
 			break;
 			case 5:
-				$layout['pagetitle'] = trans('List of Disconnected Customers $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup'], NULL, $date));
+				$layout['pagetitle'] = trans('List of Disconnected Customers $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $0)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], NULL, $date));
 			break;
 			case 6:
-				$layout['pagetitle'] = trans('Indebted Customers List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup'], NULL, $date));
+				$layout['pagetitle'] = trans('Indebted Customers List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $0)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], NULL, $date));
 			break;
 			case -1:
-				$layout['pagetitle'] = trans('Customers Without Nodes List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
-				if($userlist = $LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['usergroup'], NULL, $date))
+				$layout['pagetitle'] = trans('Customers Without Nodes List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $0)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				if($customerlist = $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['customergroup'], NULL, $date))
 				{
-				unset($userlist['total']);
-				unset($userlist['state']);
-				unset($userlist['order']);
-				unset($userlist['below']);
-				unset($userlist['over']);
-				unset($userlist['direction']);
+				unset($customerlist['total']);
+				unset($customerlist['state']);
+				unset($customerlist['order']);
+				unset($customerlist['below']);
+				unset($customerlist['over']);
+				unset($customerlist['direction']);
 
-				foreach($userlist as $idx => $row)
+				foreach($customerlist as $idx => $row)
 					if(! $row['account'])
-						$nuserlist[] = $userlist[$idx];
+						$ncustomerlist[] = $customerlist[$idx];
 				}
-				$SMARTY->assign('userlist', $nuserlist);
+				$SMARTY->assign('customerlist', $ncustomerlist);
 			break;	
 		}		
-		$SMARTY->display('printuserlist.html');
+		$SMARTY->display('printcustomerlist.html');
 	break;
 
-	case 'userbalance': /********************************************/
+	case 'customerbalance': /********************************************/
 	
 		$from = $_POST['from'];
 		$to = $_POST['to'];
@@ -102,9 +102,9 @@ switch($type)
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
-		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetUserName($_POST['user']), ($from ? $from : ''), $to);
+		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetCustomerName($_POST['customer']), ($from ? $from : ''), $to);
 		
-		$id = $_POST['user'];
+		$id = $_POST['customer'];
 
 		if($tslist = $LMS->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
@@ -170,7 +170,7 @@ switch($type)
 		$list['customerid'] = $id;
 		
 		$SMARTY->assign('balancelist', $list);
-		$SMARTY->display('printuserbalance.html');
+		$SMARTY->display('printcustomerbalance.html');
 	break;	
 	
 	case 'nodelist': /***********************************************/
@@ -248,10 +248,10 @@ switch($type)
 				$nodelist = $LMS->DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
 					    nodes.name AS name, nodes.info AS info, 
 					    COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
-					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
-					    FROM nodes LEFT JOIN users ON (ownerid = users.id)
-					    LEFT JOIN cash ON (cash.customerid = users.id)
-					    GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, users.lastname, users.name
+					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
+					    FROM nodes LEFT JOIN customers ON (ownerid = customers.id)
+					    LEFT JOIN cash ON (cash.customerid = customers.id)
+					    GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, customers.lastname, customers.name
 					    HAVING SUM((type * -2 + 7) * value) < 0'
 					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
 				
@@ -286,7 +286,7 @@ switch($type)
 		else
 			$layout['pagetitle'] = trans('Balance Sheet ($0 to $1)', ($from ? $from : ''), $to);
 			
-		$userslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM users','id');
+		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		
 		if($date['from'])
 			$lastafter = $DB->GetOne('SELECT SUM(CASE type WHEN 2 THEN value*-1 WHEN 4 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
@@ -313,7 +313,7 @@ switch($type)
 				$list[$x]['taxvalue'] = $row['taxvalue'];
 				$list[$x]['time'] = $row['time'];
 				$list[$x]['comment'] = $row['comment'];
-				$list[$x]['customername'] = $userslist[$row['customerid']]['customername'];
+				$list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
 
 				switch($row['type'])
 				{
@@ -401,7 +401,7 @@ switch($type)
 		if(!$_POST['invoiceorg'] && $_POST['invoicecopy']) $witch = trans('COPY');
 		
 		$layout['pagetitle'] = trans('Invoices');
-		header('Location: ?m=invoice&fetchallinvoices=1&which='.$witch.'&customerid='.$_POST['user'].'&from='.$date['from'].'&to='.$date['to']);
+		header('Location: ?m=invoice&fetchallinvoices=1&which='.$witch.'&customerid='.$_POST['customer'].'&from='.$date['from'].'&to='.$date['to']);
 	break;	
 
 	case 'liabilityreport': /********************************************/
@@ -416,7 +416,7 @@ switch($type)
 		$layout['pagetitle'] = trans('Liability Report on $0',date('Y/m/d', $reportday));
 
 		$order = (isset($_POST['order']) ? $_POST['order'] : 'brutto').','.(isset($_POST['direction']) ? $_POST['direction'] : 'asc');
-		$customerid = (isset($_POST['user']) ? $_POST['user'] : 0);
+		$customerid = (isset($_POST['customer']) ? $_POST['customer'] : 0);
 
 		$yearday = date('z', $reportday);
 		$month = date('n', $reportday);
@@ -450,19 +450,19 @@ switch($type)
 			break;
 		}
 		
-		if($reportlist =  $LMS->DB->GetAll('SELECT customerid, '.$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS customername, '
+		if($reportlist =  $LMS->DB->GetAll('SELECT customerid, '.$LMS->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
 			    .$LMS->DB->Concat('city',"' '",'address').' AS address, nip, 
 			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
 			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
 			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
 			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree,
 			    SUM(value) AS brutto  
-			    FROM assignments, tariffs, users  
-			    WHERE customerid = users.id AND tariffid = tariffs.id 
+			    FROM assignments, tariffs, customers  
+			    WHERE customerid = customers.id AND tariffid = tariffs.id 
 			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
 			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
 			    .($customerid ? 'AND customerid='.$customerid : ''). 
-			    ' GROUP BY customerid, lastname, users.name, city, address, nip '
+			    ' GROUP BY customerid, lastname, customers.name, city, address, nip '
 			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
 			    array($reportday, $reportday, $weekday, $monthday, $quarterday, $yearday))
 		)
@@ -483,8 +483,8 @@ switch($type)
 	
 		$layout['pagetitle'] = trans('Covenants Realization Report - $0', $_POST['year']);
 		
-		if($_POST['user'])
-			$layout['pagetitle'] .= '<BR>'.$LMS->GetUserName($_POST['user']);
+		if($_POST['customer'])
+			$layout['pagetitle'] .= '<BR>'.$LMS->GetCustomerName($_POST['customer']);
 	
 		$from = mktime(0,0,0,1,1,$_POST['year']);
 		$to = mktime(0,0,0,1,1,$_POST['year']+1);
@@ -492,13 +492,13 @@ switch($type)
 		$payments = $LMS->DB->GetAllByKey('SELECT SUM(value) AS value, invoiceid AS id
 					FROM cash
 					WHERE invoiceid > 0 AND type = 3 AND time >= ?'
-					.($_POST['user'] ? ' AND customerid = '.$_POST['user'] : '')
+					.($_POST['customer'] ? ' AND customerid = '.$_POST['customer'] : '')
 					.' GROUP BY invoiceid', 'id', array($from));
 					
 		if($invoices = $LMS->DB->GetAll('SELECT SUM(value) AS value, MIN(time) AS time, invoiceid AS id
 					FROM cash
 					WHERE invoiceid > 0 AND type = 4 AND time >= ? AND time < ?'
-					.($_POST['user'] ? ' AND customerid = '.$_POST['user'] : '')
+					.($_POST['customer'] ? ' AND customerid = '.$_POST['customer'] : '')
 					.' GROUP BY invoiceid', array($from, $to)))
 
 			foreach($invoices as $row)
@@ -530,10 +530,10 @@ switch($type)
 			$cashyears[] = $i;
 		
 		$SMARTY->assign('cashyears', $cashyears);
-		$SMARTY->assign('users', $LMS->GetUserNames());
+		$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		$SMARTY->assign('admins', $LMS->GetAdminNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
-		$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
+		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('printmenu', isset($_GET['menu']) ? $_GET['menu'] : '');
 		$SMARTY->display('printindex.html');
 	break;

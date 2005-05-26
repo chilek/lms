@@ -103,7 +103,7 @@ void reload(GLOBAL *g, struct notify_module *n)
 	unsigned char *command;
 	int i, j, balance;
 
-	res = g->db_query(g->conn, "SELECT users.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 AND email!='' GROUP BY users.id, name, lastname, email");
+	res = g->db_query(g->conn, "SELECT customers.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 AND email!='' GROUP BY customers.id, name, lastname, email");
 	
 	if( g->db_nrows(res) )
 	{

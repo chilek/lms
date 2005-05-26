@@ -2,12 +2,12 @@
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
-{if $printmenu=="users" || !$printmenu}
-<P><FORM method="POST" name="printuserlist" id="printuserlist" action="?m=print&type=userlist" target="_blank">	
+{if $printmenu=="customers" || !$printmenu}
+<P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=print&type=customerlist" target="_blank">	
 <TABLE width="100%" cellpadding="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
-			<IMG src="img/user.gif" alt="">
+			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD class="frightu" width="99%">
 			<B>{t}Customers List:{/t}</B>
@@ -18,7 +18,7 @@
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
-						<IMG src="img/user.gif" alt="">
+						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{t}State:{/t}</B>
@@ -44,10 +44,10 @@
 							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
 							{/section}
 						</SELECT><BR><BR>
-						<SELECT size="1" name="usergroup" {tip text="Select group"}>
+						<SELECT size="1" name="customergroup" {tip text="Select group"}>
 							<OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
-							{section name="usergroups" loop=$usergroups}
-							<OPTION value="{$usergroups[usergroups].id}">{$usergroups[usergroups].name|truncate:50:" ..."}</OPTION>
+							{section name="customergroups" loop=$customergroups}
+							<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:50:" ..."}</OPTION>
 							{/section}
 						</SELECT><BR><BR>
 						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
@@ -77,14 +77,14 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printuserlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printcustomerlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
 <SCRIPT>
 <!--
-var cal12 = new calendar(document.printuserlist.elements['day']);
+var cal12 = new calendar(document.printcustomerlist.elements['day']);
 cal12.time_comp = false;
 //-->
 </SCRIPT>
@@ -189,7 +189,7 @@ cal6.time_comp = false;
 //-->
 </SCRIPT>
 {/if}
-{if $printmenu=="users" || $printmenu=="finances" || !$printmenu}
+{if $printmenu=="customers" || $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
@@ -205,16 +205,16 @@ cal6.time_comp = false;
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
-						<IMG src="img/user.gif" alt="">
+						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="user" {tip text="Select customer"}>
+						<SELECT size="1" name="customer" {tip text="Select customer"}>
 							<OPTION value="0" SELECTED>{t}- all customers -{/t}</OPTION>
-							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -306,8 +306,8 @@ cal9.time_comp = false;
 //-->
 </SCRIPT>
 {/if}
-{if $printmenu=="users" || $printmenu=="finances" || !$printmenu}
-<P><FORM method="post" name="printuserbalance" id="printuserbalance" action="?m=print&type=userbalance" target="_blank">
+{if $printmenu=="customers" || $printmenu=="finances" || !$printmenu}
+<P><FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -322,15 +322,15 @@ cal9.time_comp = false;
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
-						<IMG src="img/user.gif" alt="">
+						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="user" {tip text="Select customer"}>
-							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+						<SELECT size="1" name="customer" {tip text="Select customer"}>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -348,16 +348,16 @@ cal9.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printuserbalance.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.printcustomerbalance.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
 <SCRIPT>
 <!--
-var cal3 = new calendar(document.printuserbalance.elements['from']);
+var cal3 = new calendar(document.printcustomerbalance.elements['from']);
 cal3.time_comp = false;
-var cal4 = new calendar(document.printuserbalance.elements['to']);
+var cal4 = new calendar(document.printcustomerbalance.elements['to']);
 cal4.time_comp = false;
 //-->
 </SCRIPT>
@@ -378,16 +378,16 @@ cal4.time_comp = false;
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
-						<IMG src="img/user.gif" alt="">
+						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
+						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
-							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -430,16 +430,16 @@ cal4.time_comp = false;
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
-						<IMG src="img/user.gif" alt="">
+						<IMG src="img/customer.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
+						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
-							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

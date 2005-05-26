@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if(!$LMS->GetUsersWithTariff($_GET['id'])&&$_GET['is_sure']="1")
+if(!$LMS->GetCustomersWithTariff($_GET['id'])&&$_GET['is_sure']="1")
 	$LMS->TariffDelete($_GET['id']);	
 
 $SESSION->redirect('?m=tarifflist');

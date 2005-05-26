@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetEmails($group, $network=NULL, $usergroup=NULL)
+function GetEmails($group, $network=NULL, $customergroup=NULL)
 {
 	global $LMS;
 	
@@ -32,7 +32,7 @@ function GetEmails($group, $network=NULL, $usergroup=NULL)
 	{
 		$deleted = 1;
 		$network = NULL;
-		$usergroup = NULL;
+		$customergroup = NULL;
 	}
 	else
 		$deleted = 0;
@@ -45,17 +45,17 @@ function GetEmails($group, $network=NULL, $usergroup=NULL)
 	if($network) 
 		$net = $LMS->GetNetworkParams($network);
 	
-	if($emails = $LMS->DB->GetAll('SELECT users.id AS id, email, '.$LMS->DB->Concat('lastname', "' '", 'users.name').' AS customername, '
+	if($emails = $LMS->DB->GetAll('SELECT customers.id AS id, email, '.$LMS->DB->Concat('lastname', "' '", 'customers.name').' AS customername, '
 		.'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance '
-		.'FROM users LEFT JOIN cash ON (users.id=cash.customerid AND (type=3 OR type=4)) '
-		.($network ? 'LEFT JOIN nodes ON (user.id=ownerid) ' : '')
-		.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.customerid) ' : '')
+		.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type=3 OR type=4)) '
+		.($network ? 'LEFT JOIN nodes ON (customer.id=ownerid) ' : '')
+		.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 		.' WHERE deleted = '.$deleted
 		.' AND email != \'\''
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
-		.($usergroup ? ' AND usergroupid='.$usergroup : '')
-		.' GROUP BY email, lastname, users.name, users.id ORDER BY customername'))
+		.($customergroup ? ' AND customergroupid='.$customergroup : '')
+		.' GROUP BY email, lastname, customers.name, customers.id ORDER BY customername'))
 	{
 		if($disabled)
 			$access = $LMS->DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
@@ -107,7 +107,7 @@ if(isset($_POST['mailing']))
 		$SMARTY->assign('mailing', $mailing);
 		$SMARTY->display('header.html');
 		
-		$emails = GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']);
+		$emails = GetEmails($mailing['group'], $mailing['network'], $mailing['customergroup']);
 		
 		$SMARTY->assign('recipcount', sizeof($emails));
 		$SMARTY->display('mailingsend.html');
@@ -144,7 +144,7 @@ if(isset($_POST['mailing']))
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
+$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('admininfo', $LMS->GetAdminInfo($AUTH->id));
 $SMARTY->display('mailing.html');
 

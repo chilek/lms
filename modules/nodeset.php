@@ -27,13 +27,13 @@
 $ownerid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
 $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
-if($LMS->UserExists($ownerid))
+if($LMS->CustomerExists($ownerid))
 {
 	$LMS->NodeSetU($ownerid, $_GET['access']);
 
 	$backid = $ownerid;
 	$redir = $SESSION->get('backto');
-	if($SESSION->get('lastmodule')=='usersearch')
+	if($SESSION->get('lastmodule')=='customersearch')
 		$redir .= '&search=1';
 
 	$SESSION->redirect('?'.$redir.'#'.$backid);

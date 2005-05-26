@@ -24,12 +24,12 @@
 		</TR>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
-		    	<IMG src="img/user.gif" alt="">
+		    	<IMG src="img/customer.gif" alt="">
 			<B>{t}Submitter:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
 			{if $ticket.customerid}
-				<A href="?m=userinfo&id={$ticket.customerid}">{$ticket.customername|escape}</A>
+				<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|escape}</A>
 			{else}
 				{$ticket.requestor|escape} 
 			{/if}
@@ -66,9 +66,9 @@
 			<B>{t}Owner:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
-			<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
+			<SELECT size="1" name="ticket[owner]" {tip text="Select customer" trigger="owner"}>
 			{if $ticket.owner==0}
-				<OPTION value="0" SELECTED>- {t}select user{/t} -</OPTION>
+				<OPTION value="0" SELECTED>- {t}select customer{/t} -</OPTION>
 			{/if}
 			{foreach from=$adminlist item=adminlist}
 				<OPTION value="{$adminlist.id}" {if $adminlist.id == $ticket.owner}SELECTED{/if}>{$adminlist.name}</OPTION>

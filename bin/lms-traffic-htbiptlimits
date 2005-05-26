@@ -271,7 +271,7 @@ foreach my $key (keys %iftable)
 	
 }
 
-$dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil FROM assignments, users, tariffs WHERE users.id = customerid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY customerid");
+$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY userid");
 $dbq->execute();
 
 my $iptid = 0;
@@ -279,11 +279,11 @@ my %htbid;
 
 while (my $row = $dbq->fetchrow_hashref())
 {
-	if($nodetable{$row->{'customerid'}} && $row->{'downrate'})
+	if($nodetable{$row->{'userid'}} && $row->{'downrate'})
 	{
 		my %ifaces;
 		$iptid ++;
-		foreach my $ippair (split(' ',$nodetable{$row->{'customerid'}}))
+		foreach my $ippair (split(' ',$nodetable{$row->{'userid'}}))
 		{
 			my ($ipaddr, $if) = split(':',$ippair);
 			$ifaces{$if} = 1;
@@ -297,10 +297,10 @@ while (my $row = $dbq->fetchrow_hashref())
 			print OUTFILE "$tc_binary filter add dev $key protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$key}."\n";
 		}
 	}
-	if($nodetable{$row->{'customerid'}} && $row->{'uprate'})
+	if($nodetable{$row->{'userid'}} && $row->{'uprate'})
 	{
 		$iptid ++;
-		foreach my $ippair (split(' ',$nodetable{$row->{'customerid'}}))
+		foreach my $ippair (split(' ',$nodetable{$row->{'userid'}}))
 		{
 			my ($ipaddr, $if) = split(':',$ippair);
 			print OUTFILE "$iptables_binary -t mangle -A LIMITS -s $ipaddr -j MARK --set-mark $iptid\n";

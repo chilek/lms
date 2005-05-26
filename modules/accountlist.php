@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAccountList($order='login,asc', $user=NULL, $type=NULL, $kind=NULL, $domain='')
+function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NULL, $domain='')
 {
 	global $LMS;
 
@@ -56,10 +56,10 @@ function GetAccountList($order='login,asc', $user=NULL, $type=NULL, $kind=NULL, 
 
 	$list = $LMS->DB->GetAll(
 	        'SELECT passwd.id AS id, ownerid, login, lastlogin, expdate, domains.name AS domain, type, quota_www, quota_sh, quota_mail, quota_ftp, '
-		.$LMS->DB->Concat('users.lastname', "' '",'users.name').
-		' AS customername FROM passwd LEFT JOIN users ON users.id = ownerid 
+		.$LMS->DB->Concat('customers.lastname', "' '",'customers.name').
+		' AS customername FROM passwd LEFT JOIN customers ON customers.id = ownerid 
 		LEFT JOIN domains ON domains.id = domainid WHERE 1=1'
-		.($user != '' ? ' AND ownerid = '.$user : '')
+		.($customer != '' ? ' AND ownerid = '.$customer : '')
 		.($type ? ' AND type & '.$type.' = '.$type : '')
 		.($kind == 1 ? ' AND expdate!= 0 AND expdate < ?NOW?' : '')
 		.($kind == 2 ? ' AND (expdate=0 OR expdate > ?NOW?)' : '')
@@ -71,7 +71,7 @@ function GetAccountList($order='login,asc', $user=NULL, $type=NULL, $kind=NULL, 
 	$list['order'] = $order;
 	$list['type'] = $type;
 	$list['kind'] = $kind;
-	$list['user'] = $user;
+	$list['customer'] = $customer;
 	$list['domain'] = $domain;
 	$list['direction'] = $direction;
 
@@ -125,13 +125,13 @@ $listdata['order'] = $accountlist['order'];
 $listdata['direction'] = $accountlist['direction'];
 $listdata['type'] = $accountlist['type'];
 $listdata['kind'] = $accountlist['kind'];
-$listdata['user'] = $accountlist['user'];
+$listdata['customer'] = $accountlist['customer'];
 $listdata['domain'] = $accountlist['domain'];
 unset($accountlist['total']);
 unset($accountlist['order']);
 unset($accountlist['type']);
 unset($accountlist['kind']);
-unset($accountlist['user']);
+unset($accountlist['customer']);
 unset($accountlist['domain']);
 unset($accountlist['direction']);
 
@@ -142,7 +142,7 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('accountlist',$accountlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('userlist',$LMS->GetUserNames());
+$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->assign('domainlist',$LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('accountlist.html');

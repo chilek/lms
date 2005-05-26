@@ -24,7 +24,7 @@
 			</TD>
 			<TD width="1%" class="fbt" NOWRAP>
 			    {if $message.customerid}
-				    <A href="?m=userinfo&id={$message.customerid}">{$message.customername}</A>
+				    <A href="?m=customerinfo&id={$message.customerid}">{$message.customername}</A>
 			    {elseif $message.adminid}
 				    <A href="?m=admininfo&id={$message.adminid}">{$message.adminname}</A>
 			    {elseif $message.mailfrom}

@@ -40,7 +40,7 @@ if($id && !AccountExists($id))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, realname, lastlogin, domainid, expdate, type, home, quota_sh, quota_mail, quota_www, quota_ftp, '.$LMS->DB->Concat('users.lastname', "' '", 'users.name').' AS customername FROM passwd LEFT JOIN users ON users.id = ownerid WHERE passwd.id = ?', array($id));
+$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, realname, lastlogin, domainid, expdate, type, home, quota_sh, quota_mail, quota_www, quota_ftp, '.$LMS->DB->Concat('customers.lastname', "' '", 'customers.name').' AS customername FROM passwd LEFT JOIN customers ON customers.id = ownerid WHERE passwd.id = ?', array($id));
 
 foreach(array('sh', 'mail', 'www', 'ftp') as $type)
 	$quota[$type] = $account['quota_'.$type];
@@ -140,7 +140,7 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('quota', $quota);
 $SMARTY->assign('account', $account);
 $SMARTY->assign('layout', $layout);
-$SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->display($template);
 

@@ -19,7 +19,7 @@ struct dns_module
 	unsigned char * confreverse;
 	
 	unsigned char * networks;
-	unsigned char * usergroups;
+	unsigned char * customergroups;
 };
 
 struct net

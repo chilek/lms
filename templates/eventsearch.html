@@ -67,7 +67,7 @@
 	</TR>
 *}	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/user.gif" alt="">
+			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Customer:{/t}</B>
@@ -75,8 +75,8 @@
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[customerid]">
 				<OPTION value="0" SELECTED>{t}- select customer -{/t}</OPTION>
-				{section name=userlist loop=$userlist}	
-				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].customername}</OPTION>
+				{section name=customerlist loop=$customerlist}	
+				<OPTION value="{$customerlist[customerlist].id}">{$customerlist[customerlist].customername}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
@@ -86,11 +86,11 @@
 			<IMG src="img/admins.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
-			<B>{t}User:{/t}</B>
+			<B>{t}Customer:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[adminid]">
-				<OPTION value="" SELECTED>{t}- select user -{/t}</OPTION>
+				<OPTION value="" SELECTED>{t}- select customer -{/t}</OPTION>
 				{section name=adminlist loop=$adminlist}	
 				<OPTION value="{$adminlist[adminlist].id}">{$adminlist[adminlist].name}</OPTION>
 				{/section}

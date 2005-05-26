@@ -57,10 +57,10 @@
 				{/section}
 			</SELECT>&nbsp;
 			{t}Group:{/t}
-			<SELECT NAME="mailing[usergroup]" {tip trigger="usergroup" text="Select customers group"}>
+			<SELECT NAME="mailing[customergroup]" {tip trigger="customergroup" text="Select customers group"}>
 				<option value="0">{t}- all groups -{/t}</option>
-				{section name="usergroups" loop=$usergroups}
-				<option value="{$usergroups[usergroups].id}"{if $mailing.usergroup == $usergroups[usergroups].id} SELECTED{/if}>{$usergroups[usergroups].name}</option>
+				{section name="customergroups" loop=$customergroups}
+				<option value="{$customergroups[customergroups].id}"{if $mailing.customergroup == $customergroups[customergroups].id} SELECTED{/if}>{$customergroups[customergroups].name}</option>
 				{/section}
 			</SELECT>
 		</TD>

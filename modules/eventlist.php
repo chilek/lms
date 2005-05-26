@@ -37,8 +37,8 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 
 	$list = $LMS->DB->GetAll(
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
-		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername 
-		 FROM events LEFT JOIN users ON (customerid = users.id)
+		.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername 
+		 FROM events LEFT JOIN customers ON (customerid = customers.id)
 		 WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
 		.($customerid ? 'AND customerid = '.$customerid : '')
 		.' ORDER BY date, begintime',
@@ -127,7 +127,7 @@ $SMARTY->assign('month',$month);
 $SMARTY->assign('year',$year);
 $SMARTY->assign('date',$date);
 $SMARTY->assign('adminlist',$LMS->GetAdminNames());
-$SMARTY->assign('userlist',$LMS->GetUserNames());
+$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('eventlist.html');
 

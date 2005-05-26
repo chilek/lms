@@ -109,7 +109,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	char *netname = strdup(netnames);
     
 	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(dns->usergroups);	
+	char *groupnames = strdup(dns->customergroups);	
 	char *groupname = strdup(groupnames);
 
 	while( n>1 )
@@ -137,7 +137,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname);
+			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
 
 			if( g->db_nrows(res) )
 			{
@@ -168,10 +168,10 @@ void reload(GLOBAL *g, struct dns_module *dns)
 				if( ownerid==0 )
 					continue;
 				m = gc;
-				res1 = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
+				res1 = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
 				for(k=0; k<g->db_nrows(res1); k++)
 				{
-					int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
+					int groupid = atoi(g->db_get_data(res1, k, "customergroupid"));
 					for(m=0; m<gc; m++) 
 						if(ugps[m].id==groupid) 
 							break;
@@ -502,7 +502,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	free(dns->confforward);
 	free(dns->confreverse);
 	free(dns->networks);
-	free(dns->usergroups);
+	free(dns->customergroups);
 }
 
 struct dns_module * init(GLOBAL *g, MODULE *m)
@@ -532,7 +532,7 @@ struct dns_module * init(GLOBAL *g, MODULE *m)
 	dns->confforward = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-forward-entry", "zone \"%n\" {\ntype master;\nfile \"forward/%n\";\nnotify yes;\n};\n"));
 	dns->confreverse = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-reverse-entry", "zone \"%c.in-addr.arpa\" {\ntype master;\nfile \"reverse/%i\";\nnotify yes;\n};\n"));
 	dns->networks = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "networks", ""));
-	dns->usergroups = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "usergroups", ""));
+	dns->customergroups = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "customergroups", ""));
 
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/dns] Initialized",dns->base.instance);		

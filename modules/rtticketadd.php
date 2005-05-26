@@ -72,7 +72,7 @@ if(isset($ticket))
 			if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
 			{
 				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
-				if($mailfname == 'user') $mailfname = $admin['name'];
+				if($mailfname == 'customer') $mailfname = $admin['name'];
 				$mailfname = '"'.$mailfname.'"';
 			}
 
@@ -116,8 +116,8 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('user', $user);
-$SMARTY->assign('userlist', $LMS->GetAllUserNames());
+$SMARTY->assign('customer', $customer);
+$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketadd.html');
 

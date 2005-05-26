@@ -1,0 +1,44 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/group.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="frightu" COLSPAN="2" NOWRAP>
+			<B>{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/customers.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP><B>{t}Members Count:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$customergroup.customerscount}
+		</TD>
+	</TR>
+	{if $customergroup.description}
+	<TR CLASS="light">	
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/info1.gif" ALT="">
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" COLSPAN="2">
+			<TABLE WIDTH="100%" CELLPADDING="3"> 
+			    <TR><TD CLASS="fall superlight">
+				    {$customergroup.description|replace:"\n":"<BR>"}
+			    </TD></TR>
+			</TABLE>
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
+	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
+			    <A HREF="?m=customergroupedit&id={$customergroup.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>{if $customergroup.count eq 0} <A HREF="?m=customergroupdelete&id={$customergroup.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
+		</TD>
+	</TR>
+</TABLE></P>
+{include file="customergroupassignments.html"}
+{include file="footer.html"}

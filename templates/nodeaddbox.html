@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<FORM NAME="nodeadd" METHOD="POST" ACTION="?m=nodeadd{if $userinfo.id}&ownerid={$userinfo.id}{/if}">
+<FORM NAME="nodeadd" METHOD="POST" ACTION="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -85,15 +85,15 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/user.gif" ALT="{t}Customer:{/t}">
+			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Customer:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="user"}>
-				{section name=users loop=$users}
-				<OPTION VALUE="{$users[users].id}"{if $nodedata.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="customer"}>
+				{section name=customers loop=$customers}
+				<OPTION VALUE="{$customers[customers].id}"{if $nodedata.ownerid eq $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
@@ -129,9 +129,9 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">{t}Scan{/t} <IMG SRC="img/search.gif" alt=""></A>
+			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{t}Scan{/t} <IMG SRC="img/search.gif" alt=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="nodedata[reuse]" value="ON" class="box light"" {if $nodedata.reuse}checked{/if}> {t}Display this form again, when this node is saved{/t}
 		</TD>
 	</TR>	

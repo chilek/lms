@@ -159,7 +159,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
 my $utsfmt;
-my $customerq;
+my $userq;
 
 sub instance($);
 
@@ -426,22 +426,22 @@ sub instance($)
 		my %climits;
 		my %plimits;
 		
-		$dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil, SUM(climit) AS climit, SUM(plimit) AS plimit FROM assignments, users, tariffs WHERE users.id = customerid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY customerid");
+		$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil, SUM(climit) AS climit, SUM(plimit) AS plimit FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY userid");
 		$dbq->execute();
 
 		while(my $row = $dbq->fetchrow_hashref())
 		{
-			$uprates{$row->{'customerid'}} = $row->{'uprate'};
-			$downrates{$row->{'customerid'}} = $row->{'downrate'};
-			$upceils{$row->{'customerid'}} = $row->{'upceil'};
-			$downceils{$row->{'customerid'}} = $row->{'downceil'};
-			$climits{$row->{'customerid'}} = $row->{'climit'};
-			$plimits{$row->{'customerid'}} = $row->{'plimit'};
+			$uprates{$row->{'userid'}} = $row->{'uprate'};
+			$downrates{$row->{'userid'}} = $row->{'downrate'};
+			$upceils{$row->{'userid'}} = $row->{'upceil'};
+			$downceils{$row->{'userid'}} = $row->{'downceil'};
+			$climits{$row->{'userid'}} = $row->{'climit'};
+			$plimits{$row->{'userid'}} = $row->{'plimit'};
 		}
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr, inet_ntoa(ipaddr_pub) AS ipaddr_pub, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin, $customerq FROM nodes LEFT JOIN users ON nodes.ownerid = users.id");
+		$dbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr, inet_ntoa(ipaddr_pub) AS ipaddr_pub, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin, $userq FROM nodes LEFT JOIN users ON nodes.ownerid = users.id");
 		$dbq->execute();
 
 		my %pubiplist;
@@ -455,7 +455,7 @@ sub instance($)
 		my %infolist;
 		my %pinlist;
 		my %passlist;
-		my %customerlist;
+		my %userlist;
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
@@ -470,7 +470,7 @@ sub instance($)
 			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
 			$infolist{$row->{'ipaddr'}} = $row->{'info'};
 			$pinlist{$row->{'ipaddr'}} = $row->{'pin'};
-			$customerlist{$row->{'ipaddr'}} = $row->{'customer'};
+			$userlist{$row->{'ipaddr'}} = $row->{'user'};
 		}
 
 		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
@@ -612,7 +612,7 @@ sub instance($)
 			my $info = $infolist{$ipaddr} || '';
 			my $pin = $pinlist{$ipaddr} || '';
 			my $passwd = $passlist{$ipaddr} || '';
-			my $customer = $customerlist{$ipaddr} || '';
+			my $user = $userlist{$ipaddr} || '';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
@@ -651,7 +651,7 @@ sub instance($)
 			$rule =~ s/\%DATE/$date/g;
 			$rule =~ s/\%PIN/$pin/g;
 			$rule =~ s/\%PASSWD/$passwd/g;
-			$rule =~ s/\%CUSTOMER/$customer/g;
+			$rule =~ s/\%CUSTOMER/$user/g;
 			$rule =~ s/\%1/$q1/g;
 			$rule =~ s/\%2/$q2/g;
 			$rule =~ s/\%3/$q3/g;
@@ -744,13 +744,13 @@ if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "UNIX_TIMESTAMP()";
-	$customerq = "CONCAT(UPPER(users.lastname), ' ', users.name) AS customer";
+	$userq = "CONCAT(UPPER(users.lastname), ' ', users.name) AS user";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
-	$customerq = "UPPER(users.lastname) || ' ' || users.name AS customer";
+	$userq = "UPPER(users.lastname) || ' ' || users.name AS user";
 }
 elsif($dbtype eq "sqlite")
 {
@@ -758,7 +758,7 @@ elsif($dbtype eq "sqlite")
 	$dbase->func('inet_ntoa',1,'u32todotquad','create_function');
 	$dbase->func('inet_aton',1,'dotquad2u32','create_function');
 	$utsfmt = "strftime('%s','now')";
-	$customerq = "UPPER(users.lastname) || ' ' || users.name AS customer";
+	$userq = "UPPER(users.lastname) || ' ' || users.name AS user";
 }
 else
 {

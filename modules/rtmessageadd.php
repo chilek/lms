@@ -77,7 +77,7 @@ if(isset($_POST['message']))
 	if($message['destination']!='' && !check_email($message['destination']))
 		$error['destination'] = trans('Incorrect email!');
 
-	if($message['destination']!='' && $message['sender']=='user')
+	if($message['destination']!='' && $message['sender']=='customer')
 		$error['destination'] = trans('Customer cannot send message!');
 
 	if($filename = $_FILES['file']['name'])
@@ -131,7 +131,7 @@ if(isset($_POST['message']))
 		if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
-			if($mailfname == 'user') $mailfname = $admin['name'];
+			if($mailfname == 'customer') $mailfname = $admin['name'];
 			$mailfname = '"'.$mailfname.'"';
 		}
 	
@@ -196,7 +196,7 @@ if(isset($_POST['message']))
 				$message['mailfrom'] = $admin['email'] ? $admin['email'] : $queue['email'];
 			
 			if($message['customerid'])
-				$message['mailfrom'] = $LMS->GetUserEmail($message['customerid']);
+				$message['mailfrom'] = $LMS->GetCustomerEmail($message['customerid']);
 
 			$headers['Date'] = date('D, d F Y H:i:s T');
 			$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
@@ -221,7 +221,7 @@ if(isset($_POST['message']))
 			}
 			$LMS->SendMail($recipients, $headers, $body);
 
-			// message to user is written to database
+			// message to customer is written to database
 			if($message['adminid'] && $addmsg) 
 				MessageAdd($message, $headers, $_FILES['file']);
 		}
@@ -254,7 +254,7 @@ else
 			$message['destination'] = ereg_replace('^.* <(.+@.+)>','\1',$reply['mailfrom']);
 
 		if(!$message['destination'] && !$reply['adminid'])
-			$message['destination'] = $LMS->GetUserEmail($message['customerid']);
+			$message['destination'] = $LMS->GetCustomerEmail($message['customerid']);
 	
 		$message['subject'] = 'Re: '.$reply['subject'];
 			

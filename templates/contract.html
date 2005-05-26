@@ -24,15 +24,15 @@ przez: {$layout.logname} a: </p>
 <TABLE BORDER="0">
     <TR>
 	<TD>Nazwa/Nazwisko, imię:</TD>
-	<TD>{$userinfo.customername}</TD>
+	<TD>{$customerinfo.customername}</TD>
     </TR>
     <TR>
 	<TD VALIGN="TOP">Adres:</TD> 
-	<TD>{$userinfo.address}<br>{$userinfo.zip} {$userinfo.city}</TD>
+	<TD>{$customerinfo.address}<br>{$customerinfo.zip} {$customerinfo.city}</TD>
     </TR>
     <TR>
 	<TD>PESEL:</TD>
-	<TD>{$userinfo.pesel}</TD>
+	<TD>{$customerinfo.pesel}</TD>
     </TR>
 </TABLE>
 
@@ -43,7 +43,7 @@ przez: {$layout.logname} a: </p>
 	<TD VALIGN="top">&sect;1.</TD>
 	<TD VALIGN="top">Na mocy niniejszej umowy Usługodawca zobowiązuje się do świadczenia 
 	    usług zgodnych ze specyfikacją &sect;8 w następującej lokalizacji:
-	    {$userinfo.address} {$userinfo.zip} {$userinfo.city}
+	    {$customerinfo.address} {$customerinfo.zip} {$customerinfo.city}
 	</TD>
     </TR>
     <TR>
@@ -130,12 +130,12 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	<TD>{t}IP Address:{/t}</TD>
 	<TD>{t}MAC address:{/t}</TD>
     </TR>
-    {section name=usernodes loop=$usernodes}
-    {if $usernodes[usernodes].name}
+    {section name=customernodes loop=$customernodes}
+    {if $customernodes[customernodes].name}
     <TR>
-	<TD>{$usernodes[usernodes].name}</TD>
-	<TD>{$usernodes[usernodes].ip}</TD>
-	<TD>{$usernodes[usernodes].mac}</TD>
+	<TD>{$customernodes[customernodes].name}</TD>
+	<TD>{$customernodes[customernodes].ip}</TD>
+	<TD>{$customernodes[customernodes].mac}</TD>
     </TR>
     {/if}
     {/section}
@@ -146,8 +146,8 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
     <TR>
 	<TD VALIGN="top">&sect;10.</TD>
 	<TD VALIGN="top">W kontaktach z Biurem Obsługi Klienta Usługobiorca 
-	    zobowiązany jest do podawania Identyfikatora Użytkownika: {$userinfo.id|string_format:"%04d"}
-	    oraz numeru PIN: {$userinfo.pin}
+	    zobowiązany jest do podawania Identyfikatora Użytkownika: {$customerinfo.id|string_format:"%04d"}
+	    oraz numeru PIN: {$customerinfo.pin}
 	</TD>
     </TR>
 	

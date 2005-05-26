@@ -38,7 +38,7 @@ $SMARTY->assign('updates', $LMS->CheckUpdates());
 $SMARTY->assign('regdata', $LMS->GetRegisterData());
 $SMARTY->assign('rtstats', $LMS->RTStats());
 $SMARTY->assign('sysinfo',$SI->get_sysinfo());
-$SMARTY->assign('userstats',$LMS->UserStats());
+$SMARTY->assign('customerstats',$LMS->CustomerStats());
 $SMARTY->assign('nodestats',$LMS->NodeStats());
 $SMARTY->display('welcome.html');
 

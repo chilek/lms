@@ -61,7 +61,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('importlist', $importlist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->display('cashimport.html');
 
 ?>

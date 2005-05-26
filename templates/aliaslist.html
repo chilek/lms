@@ -5,7 +5,7 @@
 	<TR class="DARK">
 		<TD width="95%" class="fleftu">
 			<IMG src="img/alias.gif" alt=""> <A href="?m=aliaslist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/user.gif" alt=""> <A href="?m=aliaslist&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "customername"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/customer.gif" alt=""> <A href="?m=aliaslist&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "customername"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt" align="center" valign="top">
 			<A href="?m=aliaslist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -32,10 +32,10 @@
 				<INPUT type="HIDDEN" name="page" value="1">
 				<B>{t}Filter:{/t} </B> {t}Owner:{/t}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
-					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
-					<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
-					{section name=userlist loop=$userlist}
-					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.user} SELECTED{/if}>{$userlist[userlist].customername|truncate:40:"..."}</OPTION>
+					<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
+					<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
+					{section name=customerlist loop=$customerlist}
+					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}State:{/t}
@@ -78,8 +78,8 @@
 		<TD class="fleft">
 			<IMG src="img/alias.gif" ALT="" ><B> {$aliaslist[aliaslist].login}</B>
 			{if $aliaslist[aliaslist].customername}
-			<BR><A href="?m=userinfo&id={$aliaslist[aliaslist].ownerid}">
-			<IMG src="img/user.gif" alt="" > {$aliaslist[aliaslist].customername|truncate:50:"..."}
+			<BR><A href="?m=customerinfo&id={$aliaslist[aliaslist].ownerid}">
+			<IMG src="img/customer.gif" alt="" > {$aliaslist[aliaslist].customername|truncate:50:"..."}
 			</A>
 			{/if}
 		</TD>

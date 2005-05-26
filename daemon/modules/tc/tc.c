@@ -50,7 +50,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	char *netname = strdup(netnames);
 
 	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(tc->usergroups);	
+	char *groupnames = strdup(tc->customergroups);	
 	char *groupname = strdup(groupnames);
 
 	// get table of networks
@@ -76,14 +76,14 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	}
 	free(netname); free(netnames);
 
-	// get table of usergroups
+	// get table of customergroups
 	while( k>1 ) 
 	{
 		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname);
+			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
 			if( g->db_nrows(res) ) 
 			{
 				ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
@@ -100,8 +100,8 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	fh = fopen(tc->file, "w");
 	if(fh) 
 	{
-		// get (htb) data for any user with connected nodes and active assignments
-		// we need user ID and average data values for nodes
+		// get (htb) data for any customer with connected nodes and active assignments
+		// we need customer ID and average data values for nodes
 		ures = g->db_query(g->conn, "\
 			SELECT customerid AS id, \
 				SUM(uprate)/COUNT(DISTINCT nodes.id) AS uprate, \
@@ -123,13 +123,13 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		
 			for(i=0; i<g->db_nrows(ures); i++) 
 			{	
-				// test user's membership in usergroups
+				// test customer's membership in customergroups
 				if(gc)
 				{
-					res = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
+					res = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
 					for(k=0; k<g->db_nrows(res); k++) 
 					{
-						int groupid = atoi(g->db_get_data(res, k, "usergroupid"));
+						int groupid = atoi(g->db_get_data(res, k, "customergroupid"));
 						for(m=0; m<gc; m++) 
 							if(ugps[m].id==groupid) 
 								break;
@@ -324,7 +324,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	free(tc->host_climit);
 	free(tc->host_plimit);
 	free(tc->networks);
-	free(tc->usergroups);
+	free(tc->customergroups);
 }
 
 struct tc_module * init(GLOBAL *g, MODULE *m)
@@ -452,7 +452,7 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x\n
 $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT\n"));
 	
 	tc->networks = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "networks", ""));
-	tc->usergroups = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "usergroups", ""));
+	tc->customergroups = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "customergroups", ""));
 	tc->one_class_per_host = g->config_getbool(tc->base.ini, tc->base.instance, "one_class_per_host", 0);
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/tc] initialized", tc->base.instance);

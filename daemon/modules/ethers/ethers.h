@@ -5,7 +5,7 @@ struct ethers_module
 	unsigned char *file;
 	unsigned char *command;
 	unsigned char *networks;
-	unsigned char *usergroups;
+	unsigned char *customergroups;
 
 	int dummy_macs;
 };

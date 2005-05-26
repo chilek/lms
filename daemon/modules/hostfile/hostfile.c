@@ -45,7 +45,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *netname = strdup(netnames);
 	
 	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(hm->usergroups);	
+	char *groupnames = strdup(hm->customergroups);	
 	char *groupname = strdup(groupnames);
 
 	while( n>1 )
@@ -101,7 +101,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname);
+			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
 
 			if( g->db_nrows(res) )
 			{
@@ -117,7 +117,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	if(!gc)
 	{
-		res = g->db_query(g->conn, "SELECT name, id FROM usergroups ORDER BY name");
+		res = g->db_query(g->conn, "SELECT name, id FROM customergroups ORDER BY name");
 
 		for(gc=0; gc<g->db_nrows(res); gc++)
 		{
@@ -166,12 +166,12 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 								
 				// groups test
 				m = gc;
-				if( strlen(hm->usergroups)>0 && ownerid )
+				if( strlen(hm->customergroups)>0 && ownerid )
 				{
-					res1 = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
+					res1 = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
 					for(k=0; k<g->db_nrows(res1); k++)
 					{
-						int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
+						int groupid = atoi(g->db_get_data(res1, k, "customergroupid"));
 						for(m=0; m<gc; m++) 
 							if( ugps[m].id==groupid ) 
 								break;
@@ -180,7 +180,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					g->db_free(&res1);
 				}
 				
-				if( j!=nc && (strlen(hm->usergroups)==0 || m!=gc) )
+				if( j!=nc && (strlen(hm->customergroups)==0 || m!=gc) )
 				{
 					unsigned char *pattern, *s;
 
@@ -252,7 +252,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	free(hm->file);
 	free(hm->command);
 	free(hm->networks);
-	free(hm->usergroups);
+	free(hm->customergroups);
 }
 
 struct hostfile_module * init(GLOBAL *g, MODULE *m)
@@ -278,7 +278,7 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->file = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "file", "/tmp/hostfile"));
 	hm->command = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "command", ""));
 	hm->networks = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "networks", ""));
-	hm->usergroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "usergroups", ""));
+	hm->customergroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "customergroups", ""));
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/hostfile] initialized", hm->base.instance);
 #endif

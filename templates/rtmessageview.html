@@ -30,7 +30,7 @@
 		        {if $message.adminid}
 				<IMG src="img/admins.gif" alt="">
 			{else}
-				<IMG src="img/user.gif" alt="">
+				<IMG src="img/customer.gif" alt="">
 			{/if}
 		</TD>
 		<TD width="1%">
@@ -38,7 +38,7 @@
 		</TD>
 		<TD width="98%" class="fright">
 			{if $message.customerid}
-				<A href="?m=userinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
+				<A href="?m=customerinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
 			{elseif $message.adminid}
 				<A href="?m=admininfo&id={$message.adminid}">{$message.adminname}</A>
 			{elseif $message.mailfrom}

@@ -28,6 +28,6 @@ struct tc_module
 	unsigned char *host_plimit;
 	unsigned char *host_climit;
 	unsigned char *networks;
-	unsigned char *usergroups;
+	unsigned char *customergroups;
 	int one_class_per_host;
 };

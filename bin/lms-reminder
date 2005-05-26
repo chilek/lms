@@ -149,9 +149,9 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $contents = '';
 	
 	my $dbqi = $dbase->prepare("SELECT DISTINCT title, description, begintime, endtime,
-			customerid, UPPER(lastname) AS lastname, users.name AS name, phone1, address, city, zip 
+			userid, UPPER(lastname) AS lastname, users.name AS name, phone1, address, city, zip 
 			FROM events 
-			LEFT JOIN users ON (users.id = customerid)
+			LEFT JOIN users ON (users.id = userid)
 			LEFT JOIN eventassignments ON (events.id = eventid)
 			WHERE date=$date AND
 			((private=1 AND events.adminid=$row->{'id'}) OR
@@ -174,7 +174,7 @@ while (my $row = $dbq->fetchrow_hashref())
 
 		$contents .= "Desc.:\t$rowi->{'description'}\n";
 
-		if($rowi->{'customerid'})
+		if($rowi->{'userid'})
 		{
 			$contents .= "Cust.:\t$rowi->{'lastname'} $rowi->{'name'}, $rowi->{'zip'} $rowi->{'city'}, $rowi->{'address'}, $rowi->{'phone1'}\n";
 		}

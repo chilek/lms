@@ -51,7 +51,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	char *netname = strdup(netnames);
     
 	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(dhcp->usergroups);	
+	char *groupnames = strdup(dhcp->customergroups);	
 	char *groupname = strdup(groupnames);
 
 	while( n>1 )
@@ -79,7 +79,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname);
+			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
 			if( g->db_nrows(res) )
 			{
 		    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
@@ -113,10 +113,10 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 					if( ownerid==0 ) continue;
 					m = gc;
 					
-					res1 = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
+					res1 = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
 					for(k=0; k<g->db_nrows(res1); k++)
 					{
-						int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
+						int groupid = atoi(g->db_get_data(res1, k, "customergroupid"));
 						for(m=0; m<gc; m++) 
 							if(ugps[m].id==groupid) 
 								break;
@@ -292,7 +292,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	free(ugps);
 	
 	free(dhcp->networks);
-	free(dhcp->usergroups);
+	free(dhcp->customergroups);
 	free(dhcp->prefix);
 	free(dhcp->append);
 	free(dhcp->subnetstart);
@@ -333,7 +333,7 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 	dhcp->file = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "file", "/etc/dhcpd.conf"));
 	dhcp->command = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "command", "killall dhcpd; /usr/sbin/dhcpd"));
 	dhcp->networks = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "networks", ""));
-	dhcp->usergroups = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "usergroups", ""));
+	dhcp->customergroups = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "customergroups", ""));
 	
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/dhcp] initialized", dhcp->base.instance);

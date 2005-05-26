@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('New Invoice');
 
-$users = $LMS->GetUserNames();
+$customers = $LMS->GetCustomerNames();
 $tariffs = $LMS->GetTariffs();
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoicecustomer', $customer);
@@ -48,8 +48,8 @@ switch($_GET['action'])
 		$invoice['year']  = date("Y");
 		$invoice['cdate'] = time();
 		$invoice['paytime'] = 14;
-		if($_GET['customerid'] != '' && $LMS->UserExists($_GET['customerid']))
-			$customer = $LMS->GetUser($_GET['customerid']);
+		if($_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
+			$customer = $LMS->GetCustomer($_GET['customerid']);
 	break;
 
 	case 'additem':
@@ -158,8 +158,8 @@ switch($_GET['action'])
 		}
 		
 		if(!$error)
-			if($LMS->UserExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['user'])))
-				$customer = $LMS->GetUser(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['user']));
+			if($LMS->CustomerExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'])))
+				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer']));
 
 	break;
 
@@ -197,7 +197,7 @@ $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $tariffs);
-$SMARTY->assign('users', $users);
+$SMARTY->assign('customers', $customers);
 $SMARTY->display('invoicenew.html');
 
 ?>

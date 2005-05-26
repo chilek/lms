@@ -11,10 +11,10 @@
 			<IMG src="img/info1.gif" alt=""> {t}Description:{/t}
 		</TD>
 		<TD width="1%" valign="top" class="fbt" NOWRAP>
-			<IMG src="img/admins.gif" alt=""> {t}User:{/t}
+			<IMG src="img/admins.gif" alt=""> {t}Customer:{/t}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP valign="top" align="right">
-			<IMG src="img/user.gif" alt=""> {t}Customer:{/t}
+			<IMG src="img/customer.gif" alt=""> {t}Customer:{/t}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP></TD>
 	</TR>
@@ -32,9 +32,9 @@
 		<TD class="fall" colspan="5">
 			<P><FORM method="GET" action="?m=eventlist" name="filter">
 				<INPUT type="HIDDEN" name="m" value="eventlist">
-				<B>{t}Filter:{/t} </B> {t}User:{/t}
+				<B>{t}Filter:{/t} </B> {t}Customer:{/t}
 				<SELECT size="1" name="a" OnChange="document.filter.submit();">
-					<OPTION value="0"{if $listdata.adminid eq ""} SELECTED{/if}>{t}- all users -{/t}</OPTION>
+					<OPTION value="0"{if $listdata.adminid eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
 					{section name=adminlist loop=$adminlist}
 					    <OPTION value="{$adminlist[adminlist].id}"{if $adminlist[adminlist].id eq $listdata.adminid} SELECTED{/if}>{$adminlist[adminlist].name|truncate:40:"..."}</OPTION>
 					{/section}
@@ -42,8 +42,8 @@
 				{t}Customer:{/t}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
 					<OPTION value="0"{if $listdata.customerid eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
-					{section name=userlist loop=$userlist}
-					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.customerid} SELECTED{/if}>{$userlist[userlist].customername|truncate:40:"..."}</OPTION>
+					{section name=customerlist loop=$customerlist}
+					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM></P>
@@ -91,7 +91,7 @@
 		</TD>
 		<TD width="1%" align="right" valign="top">
 			{if $eventlist[eventlist].customername}
-				<A href="?m=userinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"..."}</A>
+				<A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"..."}</A>
 			{/if}
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>

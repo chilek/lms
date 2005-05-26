@@ -32,7 +32,7 @@ if(!eregi('^[0-9]+$',$_GET['id']))
 if(!$LMS->NodeExists($_GET['id']))
 	if(isset($_GET['ownerid']))
 	{
-		$SESSION->redirect('?m=userinfo&id='.$_GET['ownerid']);
+		$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
 	}
 	else
 	{
@@ -53,12 +53,12 @@ if(isset($_GET['devid']))
 $nodeid = $_GET['id'];
 $ownerid = $LMS->GetNodeOwner($nodeid);
 $tariffs = $LMS->GetTariffs();
-$userinfo = $LMS->GetUser($ownerid);
+$customerinfo = $LMS->GetCustomer($ownerid);
 $nodeinfo = $LMS->GetNode($nodeid);
-$balancelist = $LMS->GetUserBalanceList($ownerid);
-$assignments = $LMS->GetUserAssignments($ownerid);
-$usergroups = $LMS->UsergroupGetForUser($ownerid);
-$otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
+$balancelist = $LMS->GetCustomerBalanceList($ownerid);
+$assignments = $LMS->GetCustomerAssignments($ownerid);
+$customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
+$othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 $contractlist = $LMS->GetContractList();
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -75,11 +75,11 @@ $layout['pagetitle'] = trans('Node Info: $0',$nodeinfo['name']);
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
-$SMARTY->assign('userinfo',$userinfo);
+$SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->assign('assignments',$assignments);
-$SMARTY->assign('usergroups',$usergroups);
-$SMARTY->assign('otherusergroups',$otherusergroups);
+$SMARTY->assign('customergroups',$customergroups);
+$SMARTY->assign('othercustomergroups',$othercustomergroups);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('contractlist',$contractlist);
 $SMARTY->assign('contractcount',sizeof($contractlist));

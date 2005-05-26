@@ -39,7 +39,7 @@ if(isset($nodedata))
 	if($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='')
 		if($_GET['ownerid'])
 		{
-			$SESSION->redirect('?m=userinfo&id='.$_GET['ownerid']);
+			$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
 		}else{
 			$SESSION->redirect('?m=nodelist');
 		}
@@ -89,10 +89,10 @@ if(isset($nodedata))
 	if(strlen($nodedata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
 
-	if(! $LMS->UserExists($nodedata['ownerid']))
-		$error['user'] = trans('You have to select owner!');
-	elseif($LMS->GetUserStatus($nodedata['ownerid']) != 3)
-		$error['user'] = trans('Selected customer is not connected!');
+	if(! $LMS->CustomerExists($nodedata['ownerid']))
+		$error['customer'] = trans('You have to select owner!');
+	elseif($LMS->GetCustomerStatus($nodedata['ownerid']) != 3)
+		$error['customer'] = trans('Selected customer is not connected!');
 
 	if($nodedata['netdev'])
 	{
@@ -118,17 +118,17 @@ if(isset($nodedata))
 		$nodedata['ipaddr_pub'] = '';
 }
 
-if($LMS->UserExists($_GET['ownerid']) < 0)
+if($LMS->CustomerExists($_GET['ownerid']) < 0)
 {
-	$SESSION->redirect('?m=userinfo&id='.$_GET['ownerid']);
+	$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
 }
 
 $nodedata['access'] = 1;
 
-if($_GET['ownerid'] && $LMS->UserExists($_GET['ownerid']) > 0)
+if($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid']) > 0)
 {
 	$nodedata['ownerid'] = $_GET['ownerid'];
-	$userinfo = $LMS->GetUser($_GET['ownerid']);
+	$customerinfo = $LMS->GetCustomer($_GET['ownerid']);
 }
 
 if(isset($_GET['preip']) && $nodedata['ipaddr']=='')
@@ -144,21 +144,21 @@ if(isset($_GET['prename']) && $nodedata['name']=='')
 $layout['pagetitle'] = trans('New Node');
 
 $tariffs = $LMS->GetTariffs();
-$users = $LMS->GetUserNames();
+$customers = $LMS->GetCustomerNames();
 
 if($nodedata['ownerid'])
 {
-	$SMARTY->assign('balancelist', $LMS->GetUserBalanceList($nodedata['ownerid']));
-	$SMARTY->assign('assignments', $LMS->GetUserAssignments($nodedata['ownerid']));
-	$SMARTY->assign('usergroups', $LMS->UsergroupGetForUser($nodedata['ownerid']));
-	$SMARTY->assign('otherusergroups', $LMS->GetGroupNamesWithoutUser($nodedata['ownerid']));
+	$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($nodedata['ownerid']));
+	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($nodedata['ownerid']));
+	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($nodedata['ownerid']));
+	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($nodedata['ownerid']));
 }
 
 $SMARTY->assign('netdevices',$LMS->GetNetDevNames());
 $SMARTY->assign('tariffs',$tariffs);
-$SMARTY->assign('users',$users);
+$SMARTY->assign('customers',$customers);
 $SMARTY->assign('error',$error);
-$SMARTY->assign('userinfo',$userinfo);
+$SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('nodedata',$nodedata);
 $SMARTY->display('nodeadd.html');
 

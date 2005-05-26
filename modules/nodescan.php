@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-if($_GET['ownerid'] && $LMS->UserExists($_GET['ownerid']))
+if($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid']))
 {
 	$contractlist = $LMS->GetContractList();
 
-	$SMARTY->assign('assignments', $LMS->GetUserAssignments($_GET['ownerid']));
-	$SMARTY->assign('usergroups', $LMS->UsergroupGetForUser($_GET['ownerid']));
-	$SMARTY->assign('otherusergroups', $LMS->GetGroupNamesWithoutUser($_GET['ownerid']));
+	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($_GET['ownerid']));
+	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($_GET['ownerid']));
+	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($_GET['ownerid']));
 	$SMARTY->assign('tariffs', $LMS->GetTariffs());
-	$SMARTY->assign('userinfo', $LMS->GetUser($_GET['ownerid']));
-	$SMARTY->assign('balancelist', $LMS->GetUserBalanceList($_GET['ownerid']));
+	$SMARTY->assign('customerinfo', $LMS->GetCustomer($_GET['ownerid']));
+	$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['ownerid']));
 	$SMARTY->assign('contractlist',$contractlist);
 	$SMARTY->assign('contractcount',sizeof($contractlist));
 }

@@ -49,13 +49,13 @@ if ((isset($_GET['id'])) && ($_GET['action']=='edit'))
 	$invoicecontents[] = $nitem;
 	$SESSION->save('invoicecontents', $invoicecontents);
     }
-    $SESSION->save('invoicecustomer', $LMS->GetUser($invoice['customerid']));
+    $SESSION->save('invoicecustomer', $LMS->GetCustomer($invoice['customerid']));
     $invoice['oldcdate'] = $invoice['cdate'];
     $SESSION->save('invoice', $invoice);
     $SESSION->save('invoiceid', $invoice['id']);
 }
 
-$users = $LMS->GetUserNames();
+$customers = $LMS->GetCustomerNames();
 $tariffs = $LMS->GetTariffs();
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoicecustomer', $customer);
@@ -70,7 +70,7 @@ $ntempl = str_replace('%Y', date('Y',$invoice['oldcdate']), $ntempl);
 
 $layout['pagetitle'] = trans('Invoice Edit: $0', $ntempl);
 
-if($_GET['customerid'] != '' && $LMS->UserExists($_GET['customerid']))
+if($_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 	$_GET['action'] = 'setcustomer';
 
 switch($_GET['action'])
@@ -161,8 +161,8 @@ switch($_GET['action'])
 		$invoice['customerid'] = $_POST['customerid'];
 		
 		if(!$error)
-			if($LMS->UserExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['user'])))
-				$customer = $LMS->GetUser(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['user']));
+			if($LMS->CustomerExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'])))
+				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer']));
 	break;
 
 	case 'save':
@@ -199,6 +199,6 @@ $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $tariffs);
-$SMARTY->assign('users', $users);
+$SMARTY->assign('customers', $customers);
 $SMARTY->display('invoiceedit.html');
 ?>

@@ -26,7 +26,7 @@
 
 if(!$LMS->NodeExists($_GET['id']))
 	if(isset($_GET['ownerid']))
-		header('Location: ?m=userinfo&id='.$_GET['ownerid']);
+		header('Location: ?m=customerinfo&id='.$_GET['ownerid']);
 	else
 		header('Location: ?m=nodelist');
 
@@ -54,10 +54,10 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$ownerid);
 							
-$userinfo = $LMS->GetUser($ownerid);
-$layout['pagetitle'] = trans('Customer Info: $0 - Node Edit: $1',$userinfo['customername'], $LMS->GetNodeName($_GET['id']));
+$customerinfo = $LMS->GetCustomer($ownerid);
+$layout['pagetitle'] = trans('Customer Info: $0 - Node Edit: $1',$customerinfo['customername'], $LMS->GetNodeName($_GET['id']));
 
-$usernodes = $LMS->GetUserNodes($ownerid);
+$customernodes = $LMS->GetCustomerNodes($ownerid);
 $nodeinfo = $LMS->GetNode($_GET['id']);
 
 if(isset($_POST['nodeedit']))
@@ -167,26 +167,26 @@ if(isset($_POST['nodeedit']))
 		$nodeinfo['ipaddr_pub'] = '';
 }
 
-if($userinfo['status']==3) $userinfo['shownodes'] = TRUE;
-$users = $LMS->GetUserNames();
+if($customerinfo['status']==3) $customerinfo['shownodes'] = TRUE;
+$customers = $LMS->GetCustomerNames();
 $tariffs = $LMS->GetTariffs();
-$assignments = $LMS->GetUserAssignments($ownerid);
-$balancelist = $LMS->GetUserBalanceList($ownerid);
-$usergroups = $LMS->UsergroupGetForUser($ownerid);
-$otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
+$assignments = $LMS->GetCustomerAssignments($ownerid);
+$balancelist = $LMS->GetCustomerBalanceList($ownerid);
+$customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
+$othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 $contractlist = $LMS->GetContractList();
 $netdevices = $LMS->GetNetDevNames();
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('assignments',$assignments);
-$SMARTY->assign('usergroups',$usergroups);
-$SMARTY->assign('otherusergroups',$otherusergroups);
+$SMARTY->assign('customergroups',$customergroups);
+$SMARTY->assign('othercustomergroups',$othercustomergroups);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('error',$error);
-$SMARTY->assign('userinfo',$userinfo);
+$SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('nodeinfo',$nodeinfo);
-$SMARTY->assign('users',$users);
+$SMARTY->assign('customers',$customers);
 $SMARTY->assign('contractlist',$contractlist);
 $SMARTY->assign('contractcount',sizeof($contractlist));
 $SMARTY->display('nodeedit.html');

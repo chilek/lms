@@ -14,7 +14,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/user.gif" alt="">
+			<IMG src="img/customer.gif" alt="">
 			<B>{t}Submitter:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
@@ -23,8 +23,8 @@
 			    	<TD width="100%" colspan="2">
 				    <SELECT size="1" name="ticket[customerid]" {if !$ticket.customerid}{tip trigger="requestor"}{/if} {tip text="Select customer from list or enter his data if is not a customer"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
 					<OPTION value="0">- {t}select customer{/t} -</OPTION>
-					{foreach from=$userlist item=userlist}
-					    <OPTION value="{$userlist.id}" {if $userlist.id == $user}SELECTED{/if}>{$userlist.customername} ({$userlist.id|string_format:"%04d"})</OPTION>
+					{foreach from=$customerlist item=customerlist}
+					    <OPTION value="{$customerlist.id}" {if $customerlist.id == $customer}SELECTED{/if}>{$customerlist.customername} ({$customerlist.id|string_format:"%04d"})</OPTION>
 					{/foreach}
 				    </SELECT>
 				    <NOBR>{t}or Customer ID:{/t}

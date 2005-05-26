@@ -45,8 +45,8 @@ elseif($_GET['action'] == 'dropadmin')
 
 $event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, 
 			date, begintime, endtime, customerid, private, closed, ' 
-			.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername
-			FROM events LEFT JOIN users ON (users.id = customerid)
+			.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
+			FROM events LEFT JOIN customers ON (customers.id = customerid)
 			WHERE events.id = ?', array($_GET['id']));
 
 $event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
@@ -104,7 +104,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $adminlist = $LMS->GetAdminNames();
 
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('adminlist', $adminlist);
 $SMARTY->assign('adminlistsize', sizeof($adminlist));
 $SMARTY->assign('error', $error);
