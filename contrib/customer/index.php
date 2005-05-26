@@ -170,11 +170,11 @@ $_SERVER[REMOTE_ADDR] = str_replace('::ffff:','',$_SERVER[REMOTE_ADDR]);
 
 if($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER[REMOTE_ADDR])))
 {
-	$balance = $LMS->GetUserBalanceList($customerid);
-	$userinfo = $LMS->GetUser($customerid);
+	$balance = $LMS->GetCustomerBalanceList($customerid);
+	$customerinfo = $LMS->GetCustomer($customerid);
 }
 
-$SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('customerinfo', $customerinfo);
 $SMARTY->assign('balance', $balance);
 $SMARTY->display('customer.html');
 
