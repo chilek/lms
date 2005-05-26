@@ -37,7 +37,7 @@ define('ACCOUNT_WWW', 4);
 define('ACCOUNT_FTP', 8);
 
 // LMS Class - contains internal LMS database functions used
-// to fetch data like customernames, searching for mac's by ID, etc..
+// to fetch data like customer names, searching for mac's by ID, etc..
 
 class LMS
 {
@@ -196,7 +196,7 @@ class LMS
 	}
 
 	/*
-	 *  Customers (Administrators)
+	 *  Users (Administrators)
 	 */
 
 	function SetAdminPassword($id,$passwd) // ustawia has³o admina o id równym $id na $passwd
@@ -346,7 +346,7 @@ class LMS
 	}
 
 	/*
-	 *  Customers (formerly Customers) functions
+	 *  Customers functions
 	 */
 
 	function GetCustomerName($id)
