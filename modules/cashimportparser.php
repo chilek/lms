@@ -33,7 +33,7 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 	{
 		$id = 0;
 		preg_match($pattern, $line, $matches);
-//print_r($matches);
+
 		$name = trim($matches[$pname]);
 		$lastname = trim($matches[$plastname]);
 		$comment = trim($matches[$pcomment]);
@@ -42,10 +42,9 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 
 		if($encoding != 'UTF-8')
 		{
-			echo $customer;
-			$customer = iconv($encoding, 'UTF-8', $customer);
+			$name = iconv($encoding, 'UTF-8', $name);
+			$lastname = iconv($encoding, 'UTF-8', $lastname);
 			$comment = iconv($encoding, 'UTF-8', $comment);
-			echo "*".$comment.$customer;
 		}
 		
 		if(!$pid)
