@@ -73,7 +73,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	
 	if(c->deadline > 28) c->deadline = 28;
 
-	res = g->db_query(g->conn, "SELECT users.id AS id, SUM((type * -2 + 7) * cash.value)*-1 AS balance FROM users LEFT JOIN cash ON users.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < 0");
+	res = g->db_query(g->conn, "SELECT customers.id AS id, SUM((type * -2 + 7) * cash.value)*-1 AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id HAVING SUM((type * -2 + 7) * cash.value) < 0");
 	if( g->db_nrows(res) )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
@@ -118,7 +118,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			
 			if(*c->warning && n)
 			{
-				u = g->db_pexec(g->conn, "UPDATE users SET message = '?' WHERE id = ?", c->warning, customerid);
+				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
 				execu = u ? 1 : execu;
 			}
 		}	
@@ -127,8 +127,8 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		// set timestamps
 		if(execu)
 		{
-			g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'users'");
-			g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('users',%NOW%)");
+			g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'customers'");
+			g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('customers',%NOW%)");
 		}
 		if(execn)
 		{
@@ -146,7 +146,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 #endif
 	} 
 	else 
-		syslog(LOG_ERR, "[%s/cutoff] Unable to read 'users' table", c->base.instance);
+		syslog(LOG_ERR, "[%s/cutoff] Unable to read 'customers' table", c->base.instance);
 
 	free(c->warning);
 	free(c->command);

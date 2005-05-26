@@ -33,11 +33,11 @@ znaczenia. Domy¶lnie: pusta (wszystkie sieci).
 
 Przyk³ad: networks = "lan1 lan2"
 
-* usergroups
+* customergroups
 
 Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. 
 Wielko¶æ liter nie ma znaczenia. Domy¶lnie: pusta (wszystkie grupy).
 
-Przyk³ad: usergroups = "grupa1 grupa2"
+Przyk³ad: customergroups = "grupa1 grupa2"
 
 

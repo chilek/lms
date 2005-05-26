@@ -44,14 +44,14 @@ IMG		{ border: 0; }
     <tr>
 	<td>
 	    <div style="text-align:center;">
-		{if $userinfo.id}
+		{if $customerinfo.id}
 		    {if $nodeinfo.access}
-			{$userinfo.message}
+			{$customerinfo.message}
 			<br/><br/>
 			<a href="index.php?readed=1&oldurl={$layout.oldurl}">{t}Click here to mark this message as readed.{/t}</a>
 		    {else}
 			{t}Access to network on this computer is locked.{/t}<br/><br/>
-			{$userinfo.message}
+			{$customerinfo.message}
 		    {/if}
 		{else}
 		    {t}Access to network on this computer is locked. Possible causes: unknown network device or unknown computer.{/t}<br/><br/>

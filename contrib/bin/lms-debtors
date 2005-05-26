@@ -111,14 +111,14 @@ my $percent = 0;
 my $lastid = 0;
 
 # get all debtors
-my $dbq = $dbase->prepare("SELECT users.id AS customerid,
-    UPPER(lastname) || ' '|| users.name AS owner,
+my $dbq = $dbase->prepare("SELECT customers.id AS customerid,
+    UPPER(lastname) || ' '|| customers.name AS owner,
     inet_ntoa(ipaddr) AS ip, 
     round(COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) 
     WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END),2) AS balance
-FROM nodes LEFT JOIN users ON (ownerid = users.id)
-LEFT JOIN cash ON (cash.customerid = users.id)
-GROUP BY nodes.id, ipaddr, users.id, users.lastname, users.name
+FROM nodes LEFT JOIN customers ON (ownerid = customers.id)
+LEFT JOIN cash ON (cash.customerid = customers.id)
+GROUP BY nodes.id, ipaddr, customers.id, customers.lastname, customers.name
 HAVING SUM((type * -2 + 7) * value) < 0
 ORDER BY owner");
 $dbq->execute();

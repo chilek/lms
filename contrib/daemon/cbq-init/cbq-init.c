@@ -51,7 +51,7 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 	char *netname = strdup(netnames);
 
 	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(cbq->usergroups);	
+	char *groupnames = strdup(cbq->customergroups);	
 	char *groupname = strdup(groupnames);
 
 	// get table of networks
@@ -90,14 +90,14 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 		g->db_free(&res);
 	}
 
-	// get table of usergroups
+	// get table of customergroups
 	while( k>1 ) 
 	{
 		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname);
+			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
 			if( g->db_nrows(res) ) 
 			{
 				ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
@@ -128,14 +128,14 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 		
 			for(i=0; i<g->db_nrows(ures); i++) 
 			{	
-				// test user's membership in usergroups
+				// test customer's membership in customergroups
 				m = 0;
 				if(gc)
 				{
-					res = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
+					res = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(ures,i,"id"));
 					for(k=0; k<g->db_nrows(res); k++) 
 					{
-						int groupid = atoi(g->db_get_data(res, k, "usergroupid"));
+						int groupid = atoi(g->db_get_data(res, k, "customergroupid"));
 						for(m=0; m<gc; m++) 
 							if(ugps[m].id==groupid) 
 								break;
@@ -294,7 +294,7 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 	free(cbq->mark_file_begin);
 	free(cbq->mark_file_end);
 	free(cbq->networks);
-	free(cbq->usergroups);
+	free(cbq->customergroups);
 }
 
 struct cbq_module * init(GLOBAL *g, MODULE *m)
@@ -341,7 +341,7 @@ $IPT -t mangle -I FORWARD -i $WAN -j LIMITS\n\
 $IPT -t mangle -I FORWARD -o $WAN -j LIMITS\n\n"));
 	cbq->mark_file_end = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "mark_file_end", ""));
 	cbq->networks = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "networks", ""));
-	cbq->usergroups = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "usergroups", ""));
+	cbq->customergroups = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "customergroups", ""));
 	
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/cbq-init] initialized", cbq->base.instance);
