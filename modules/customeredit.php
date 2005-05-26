@@ -36,13 +36,13 @@ elseif(! $LMS->CustomerExists($_GET['id']))
 }
 elseif($action == 'customergroupdelete')
 {
-	$LMS->CustomerassignmentDelete(array('customerid' => $_GET['id'], 'customergroupid' => $_GET['customergroupid']));
+	$LMS->CustomerAssignmentDelete(array('customerid' => $_GET['id'], 'customergroupid' => $_GET['customergroupid']));
 	$SESSION->redirect('?m=customerinfo&id='.$_GET['id']);
 }
 elseif($action == 'customergroupadd')
 {
-	if ($LMS->CustomergroupExists($_POST['customergroupid']))
-		$LMS->CustomerassignmentAdd(array('customerid' => $_GET['id'], 'customergroupid' => $_POST['customergroupid']));
+	if ($LMS->CustomerGroupExists($_POST['customergroupid']))
+		$LMS->CustomerAssignmentAdd(array('customerid' => $_GET['id'], 'customergroupid' => $_POST['customergroupid']));
 	$SESSION->redirect('?m=customerinfo&id='.$_GET['id']);
 }
 elseif(isset($_POST['customerdata']))

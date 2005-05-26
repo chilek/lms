@@ -35,7 +35,7 @@
 			{if $customergrouplist[customergroups].customers}
 				<A HREF="javascript:alert('{t}Group with members cannot be deleted!{/t}');">
 			{else}
-				<A HREF="?m=customergroupdelete&id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');">
+				<A HREF="?m=customergroupdel&id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');">
 			{/if}<IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 				<A HREF="?m=customergroupedit&id={$customergrouplist[customergroups].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 				<A HREF="?m=customergroupinfo&id={$customergrouplist[customergroups].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
