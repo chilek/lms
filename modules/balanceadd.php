@@ -54,7 +54,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 	if(isset($addbalance['mcustomerid']))
 	{
 		foreach($addbalance['mcustomerid'] as $value)
-			if($LMS->UserExists($value))
+			if($LMS->CustomerExists($value))
 			{
 				$addbalance['customerid'] = $value;
 				$LMS->AddBalance($addbalance);
@@ -62,7 +62,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 	}
 	else
 	{
-		if($LMS->UserExists($addbalance['customerid']))
+		if($LMS->CustomerExists($addbalance['customerid']))
 		{
 			if($unpaid = $SESSION->get('unpaid.'.$addbalance['customerid']))
 			{

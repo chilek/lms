@@ -1,0 +1,66 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="50%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="50%" ALIGN="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Prepared by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD ALIGN="CENTER" CLASS="HEAD">
+			{t}No.{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}ID{/t}
+		</TD>
+		<TD CLASS="HEAD">
+			<B>{t}First/last name{/t}</B><BR>
+			{t}Address{/t}<BR>
+			{t}Phone{/t}
+		</TD>
+		<TD CLASS="HEAD" VALIGN="TOP" ALIGN="RIGHT">
+			{t}Subscription{/t}<BR>
+			{t}E-mail{/t}<BR>
+			{t}TEN/SSN{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="RIGHT">
+			{t}Balance{/t}
+		</TD>
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=customerlist loop=$customerlist}{if $customerlist[customerlist].id}
+	<TR class="{cycle}">
+		<TD ALIGN="CENTER">
+			{counter}
+		</TD>
+		<TD ALIGN="CENTER">
+			{$customerlist[customerlist].id|string_format:"%04d"}
+		</TD>
+		<TD>
+			<B>{$customerlist[customerlist].customername}</B><BR>
+			{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}<BR>
+			{$customerlist[customerlist].phone1}
+		</TD>
+		<TD ALIGN="RIGHT">
+			{$customerlist[customerlist].tariffvalue|money_format}<BR>
+			{$customerlist[customerlist].email}<BR>
+			{if $customerlist[customerlist].nip}{$customerlist[customerlist].nip}{else}{$customerlist[customerlist].pesel}{/if}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$customerlist[customerlist].balance|money_format} 
+		</TD>
+	</TR>
+	{/if}{/section}
+	<TR class="grey">
+		<TD COLSPAN="3" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
+		<TD ALIGN="RIGHT"><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD ALIGN="RIGHT"><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+	</TR>
+</TABLE>

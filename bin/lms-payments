@@ -213,24 +213,24 @@ my $itemid;
 
 # let's go, query fetch *ALL* assignments in given day
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, description, invoice,
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, suspended, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, description, invoice,
 	CASE suspended WHEN 0 THEN ROUND(CASE discount WHEN 0 THEN value ELSE ((100-discount)*value)/100 END, 2) ELSE
 	ROUND(ROUND(CASE discount WHEN 0 THEN value ELSE ((100-discount)*value)/100 END, 2) * $suspension_percentage/100, 2) END AS value
 	FROM assignments, tariffs, users
-	WHERE tariffs.id = tariffid AND customerid = users.id
+	WHERE tariffs.id = tariffid AND userid = users.id
 	AND status = 3 AND deleted = 0 AND value > 0
 	AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0)
-	ORDER BY customerid, invoice, value DESC");
+	ORDER BY userid, invoice, value DESC");
 $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
-	my $uid = $assign->{'customerid'};
+	my $uid = $assign->{'userid'};
 	
-	# check, if all customer liabilities are suspended
+	# check, if all user liabilities are suspended
 	if($suspended != $uid)
 	{
-		my $xdbq = $dbase->prepare("SELECT 1 FROM assignments, users WHERE customerid = users.id AND tariffid = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) AND customerid = $uid");
+		my $xdbq = $dbase->prepare("SELECT 1 FROM assignments, users WHERE userid = users.id AND tariffid = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) AND userid = $uid");
 		$xdbq->execute();
 		if(my $xrow = $xdbq->fetchrow_hashref())
 		{
@@ -270,9 +270,9 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $udbq = $dbase->prepare("SELECT * FROM users WHERE id=$uid");
 				$udbq->execute();
 				my $urow = $udbq->fetchrow_hashref();
-				my $idbq = $dbase->prepare("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES ($number, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'phone1'}', '$urow->{'nip'}', '$urow->{'pesel'}', $currtime, $deadline, '$paytype', 1)");
+				my $idbq = $dbase->prepare("INSERT INTO invoices (number, userid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES ($number, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'phone1'}', '$urow->{'nip'}', '$urow->{'pesel'}', $currtime, $deadline, '$paytype', 1)");
 				$idbq->execute();
-				$idbq = $dbase->prepare("SELECT id FROM invoices WHERE number=$number AND cdate=$currtime AND finished=1 AND customerid=$uid");
+				$idbq = $dbase->prepare("SELECT id FROM invoices WHERE number=$number AND cdate=$currtime AND finished=1 AND userid=$uid");
 				$idbq->execute();
 				my $irow = $idbq->fetchrow_hashref();
 				$gotinv{$uid} = $irow->{'id'};
@@ -306,11 +306,11 @@ while(my $assign = $dbq->fetchrow_hashref())
 				
 				if ($assign->{'taxvalue'})
 				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc', $gotinv{$uid}, $itemid)");
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc', $gotinv{$uid}, $itemid)");
 				}
 				else
 				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$desc', $gotinv{$uid}, $itemid)");
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$desc', $gotinv{$uid}, $itemid)");
 				}
 			}
 			
@@ -319,11 +319,11 @@ while(my $assign = $dbq->fetchrow_hashref())
 		{
 			if ($assign->{'taxvalue'})
 			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc')");
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc')");
 			}
 			else
 			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$desc')");
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$desc')");
 			}
 		}
 
@@ -338,7 +338,7 @@ $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, customerid, comment, invoiceid) VALUES ($currtime, 0, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($currtime, 0, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
 	$sdbq->execute();
 	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }

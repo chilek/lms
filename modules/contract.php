@@ -26,26 +26,26 @@
 
 if(!eregi('^[0-9]+$',$_GET['id']))
 {
-	$SESSION->redirect('?m=userlist');
+	$SESSION->redirect('?m=customerlist');
 }
 
-if($LMS->UserExists($_GET['id']) == 0)
+if($LMS->CustomerExists($_GET['id']) == 0)
 {
-	$SESSION->redirect('?m=userlist');
+	$SESSION->redirect('?m=customerlist');
 }
 
-$userinfo = $LMS->GetUser($_GET['id']);
-$assignments = $LMS->GetUserAssignments($_GET['id']);
-$usernodes = $LMS->GetUserNodes($_GET['id']);
+$customerinfo = $LMS->GetCustomer($_GET['id']);
+$assignments = $LMS->GetCustomerAssignments($_GET['id']);
+$customernodes = $LMS->GetCustomerNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
-$userinfo['customername'] = ucwords(strtolower($userinfo['customername']));
-$usernodes['ownerid'] = $_GET['id'];
+$customerinfo['customername'] = ucwords(strtolower($customerinfo['customername']));
+$customernodes['ownerid'] = $_GET['id'];
 
 $SMARTY->assign(
 		array(
-			'usernodes' => $usernodes,
+			'customernodes' => $customernodes,
 			'assignments' => $assignments,
-			'userinfo' => $userinfo,
+			'customerinfo' => $customerinfo,
 			'tariffs' => $tariffs
 		     )
 		);

@@ -11,10 +11,10 @@
 			<IMG src="img/info1.gif" alt=""> {t}Description:{/t}
 		</TD>
 		<TD width="1%" valign="top" class="fbt" NOWRAP>
-			<IMG src="img/admins.gif" alt=""> {t}User:{/t}
+			<IMG src="img/admins.gif" alt=""> {t}Customer:{/t}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP valign="top" align="right">
-			<IMG src="img/user.gif" alt=""> {t}Customer:{/t}
+			<IMG src="img/customer.gif" alt=""> {t}Customer:{/t}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 		</TD>
@@ -61,7 +61,7 @@
 		</TD>
 		<TD width="1%" align="right" valign="top">
 			{if $eventlist[eventlist].customername}
-				<A href="?m=userinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"..."}</A>
+				<A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"..."}</A>
 			{/if}
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>

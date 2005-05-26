@@ -9,7 +9,7 @@
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="98%" nowrap>
 			<img src="img/node.gif" ALT=""> <B>{t}Name:{/t}</B><BR>
-			<img src="img/user.gif" ALT=""> {t}Owner:{/t}
+			<img src="img/customer.gif" ALT=""> {t}Owner:{/t}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
 			<img src="img/empty.gif" WIDTH="16" HEIGHT="16"> {t}ID:{/t}<BR>
@@ -24,7 +24,7 @@
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD width="98%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 			<IMG SRC="img/node.gif" ALT=""> <B>{$netcomplist[netcomplist].name}</B><BR>
-			<IMG SRC="img/user.gif" ALT=""> <A href="?m=userinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=userinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
+			<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 			{if $netcomplist[netcomplist].linktype}

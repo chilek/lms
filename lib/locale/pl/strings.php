@@ -117,7 +117,7 @@ $_LANG['Allows you to send message to customers'] = 'Wysyłanie wiadomości do k
 $_LANG['Allows you to send message to nodes'] = 'Wysyłanie wiadomości do komputerów';
 $_LANG['All ports in that device are in use.'] = 'Wszystkie porty w tym urządzeniu są już zajęte.';
 $_LANG['All tickets and messages in queue will be lost.'] = 'Wszystkie zgłoszenia i wiadomości w tej kolejce zostaną utracone.';
-$_LANG['All user data and computers bound to this customer will be lost!'] = 'Wszystkie dane użytkownika i komputery przypisane do tego klienta zostaną utracone!';
+$_LANG['All customer data and computers bound to this customer will be lost!'] = 'Wszystkie dane klienta i komputery przypisane do tego klienta zostaną utracone!';
 $_LANG['- all users -'] = '- wszyscy -';
 $_LANG['amount'] = 'na kwotę';
 $_LANG['Amount:'] = 'Ilość:';
@@ -286,7 +286,7 @@ $_LANG['Customer $0 Balance Sheet ($1 to $2)'] = 'Bilans finansowy klienta $0 ($
 $_LANG['Customer $0 has been removed.'] = 'Klient $0 został usunięty.';
 $_LANG['Customer Account:'] = 'Konto klienta:';
 $_LANG['customer account covenants, e.g. extra service charge'] = 'zobowiązania klienta, np. opłaty za usługi';
-$_LANG['Customer Balance: <A HREF="?m=userinfo&id=$0">$1</A>'] = 'Rachunek klienta: <A HREF="?m=userinfo&id=$0">$1</A>';
+$_LANG['Customer Balance: <A HREF="?m=customerinfo&id=$0">$1</A>'] = 'Rachunek klienta: <A HREF="?m=customerinfo&id=$0">$1</A>';
 $_LANG['Customer Balance Sheet'] = 'Bilans klienta';
 $_LANG['Customer cannot send message!'] = 'Klient nie może wysłać wiadomości!';
 $_LANG['Customer Charging Edit: $0'] = 'Edycja zobowiązań klienta: $0';
@@ -343,7 +343,7 @@ $_LANG['dead'] = 'martwy';
 $_LANG['Dead:'] = 'Martwe:';
 $_LANG['Deadline:'] = 'Termin płatności:';
 $_LANG['Default invoice issuer'] = 'Domyślna osoba tworząca fakturę';
-$_LANG['Default zip code, city, street, used while inserting new user. Useful if you add majority of users with the same street.'] = 'Domyślny kod pocztowy, miasto, ulica pod czas dodawania nowego klienta. Przydatne kiedy mamy wielu klientów na tej samej ulicy.';
+$_LANG['Default zip code, city, street, used while inserting new customer. Useful if you add majority of customers with the same street.'] = 'Domyślny kod pocztowy, miasto, ulica pod czas dodawania nowego klienta. Przydatne kiedy mamy wielu klientów na tej samej ulicy.';
 $_LANG['Delete'] = 'Usuń';
 $_LANG['Delete connection'] = 'Usuń połączenie';
 $_LANG['Delete customer\'s liability'] = 'Usuń zobowiązanie klienta';
@@ -788,7 +788,7 @@ $_LANG['Limit of records displayed on one page in invoices list. Default: 100.']
 $_LANG['Limit of records displayed on one page in nodes list. Default: no limit.'] = 'Limit wyświetlanych rekordów na jednej stronie listy komputerów. Domyślnie: brak limitu.';
 $_LANG['Limit of records displayed on one page in tickets (requests) list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy zgłoszeń. Domyślnie: 100.';
 $_LANG['Limit of records displayed on one page in UI config options list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy opcji konfiguracyjnych. Domyślnie: 100.';
-$_LANG['Limit of records displayed on one page in user\'s balance. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie bilansu użytkownika. Domyślnie: 100.';
+$_LANG['Limit of records displayed on one page in customer\'s balance. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie bilansu klienta. Domyślnie: 100.';
 $_LANG['Limit results to n computers'] = 'Ogranicz wyniki do n komputerów';
 $_LANG['Limit results to selected network'] = 'Ogranicz wyniki do wybranej sieci';
 $_LANG['Limit results to selected period'] = 'Ogranicz wyniki do wybranego okresu';

@@ -43,7 +43,7 @@ if (!$LMS->NodeExists($_GET['id']))
 		if($SESSION->is_set('backto'))
 			header('Location: ?'.$SESSION->get('backto'));
 		else
-			header('Location: ?m=userinfo&id='.$owner);
+			header('Location: ?m=customerinfo&id='.$owner);
 		$body = '<H1>'.$layout['pagetitle'].'</H1>';
 		$body .= '<P>'.trans('Node $0 was deleted',$LMS->GetNodeName($_GET['id'])).'</P>';
 	}

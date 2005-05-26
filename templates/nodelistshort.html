@@ -16,22 +16,22 @@
 			<IMG SRC="img/node.gif" alt="">
 		</TD>
 		<TD WIDTH="99%">
-			<B>{t 0=$usernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
+			<B>{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
-	{if $usernodes.total > 0}
-	{section name=usernodes loop=$usernodes}
-	{if $usernodes[usernodes].id}
-	<tr class="{cycle}{if ! $usernodes[usernodes].access} blend{/if}">
+	{if $customernodes.total > 0}
+	{section name=customernodes loop=$customernodes}
+	{if $customernodes[customernodes].id}
+	<tr class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}">
 		<TD WIDTH="1%">
-			<IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]">
-			<IMG src="img/warning{if ! $usernodes[usernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]">
+			<IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]">
+			<IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]">
 		</TD>
 		<TD WIDTH="97%">
-			<B>{$usernodes[usernodes].name}</B><BR>
-			<NOBR>{$usernodes[usernodes].ip} {if $usernodes[usernodes].ip_pub!="0.0.0.0"} ({$usernodes[usernodes].ip_pub}) {/if} / {$usernodes[usernodes].mac}</NOBR><BR>
-			<NOBR>{$usernodes[usernodes].info|truncate:45:"..."}</NOBR>
+			<B>{$customernodes[customernodes].name}</B><BR>
+			<NOBR>{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub!="0.0.0.0"} ({$customernodes[customernodes].ip_pub}) {/if} / {$customernodes[customernodes].mac}</NOBR><BR>
+			<NOBR>{$customernodes[customernodes].info|truncate:45:"..."}</NOBR>
 		</TD>
 	</TR>
 	{/if}
@@ -40,7 +40,7 @@
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2" align="center">
 			<P>&nbsp;</P>
-			<P>{if $userinfo.deleted}<FONT class="alert">{t}That customer has been deleted.{/t}</FONT>{else}<B>{t}That customer hasn't got any node.{/t}{/if}</B></P>
+			<P>{if $customerinfo.deleted}<FONT class="alert">{t}That customer has been deleted.{/t}</FONT>{else}<B>{t}That customer hasn't got any node.{/t}{/if}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>

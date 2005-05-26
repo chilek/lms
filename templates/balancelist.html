@@ -61,7 +61,7 @@
 			<B>{t}Date:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>{t}User:{/t}</B>
+			<B>{t}Customer:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt">
 			<B>{t}Type:{/t}</B>
@@ -138,7 +138,7 @@
 			<NOBR>{$balancelist[balancelist].after|money_format}</NOBR>
 		</TD>
 		<TD width="1%" nowrap valign="top">
-			{if $balancelist[balancelist].customerid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"..."}</A></NOBR>{else} - {/if}
+			{if $balancelist[balancelist].customerid}<NOBR><A HREF="?m=customerbalance&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"..."}</A></NOBR>{else} - {/if}
 		</TD>
 		<TD width="91%">
 			{$balancelist[balancelist].comment}

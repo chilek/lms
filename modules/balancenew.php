@@ -32,7 +32,7 @@ $SMARTY->assign('comment', $SESSION->get('addbc'));
 $SMARTY->assign('taxvalue', $SESSION->get('addbtax'));
 $SMARTY->assign('time', $SESSION->get('addbt'));
 $SMARTY->assign('value', $SESSION->get('addbv'));
-$SMARTY->assign('users',$LMS->GetUserNames());
+$SMARTY->assign('customers',$LMS->GetCustomerNames());
 $SMARTY->display('balancenew.html');
 
 ?>

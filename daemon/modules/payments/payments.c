@@ -193,7 +193,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	} else 
 		syslog(LOG_ERR, "[%s/payments] Unable to read 'payments' table",p->base.instance);
 		
-	/****** user payments *******/
+	/****** customer payments *******/
 	// first get max invoiceid for present year
 	if( (res = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM invoices WHERE cdate >= ? AND cdate < ?", start, end))!= NULL ) 
 	{
@@ -202,7 +202,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_free(&res);
 
 		// payments accounting and invoices writing
-		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, customerid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxvalue, suspended, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND customerid = users.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
+		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, customerid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxvalue, suspended, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, customers.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, customers WHERE tariffs.id = tariffid AND customerid = customers.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
 		
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
@@ -213,7 +213,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			// assignments suspending check
 			if( suspended != uid )
 			{
-				sres = g->db_pquery(g->conn, "SELECT 1 FROM assignments, users WHERE customerid = users.id AND tariffid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ?", g->db_get_data(res,i,"customerid"));
+				sres = g->db_pquery(g->conn, "SELECT 1 FROM assignments, customers WHERE customerid = customers.id AND tariffid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ?", g->db_get_data(res,i,"customerid"));
 				if( g->db_nrows(sres) ) 
 				{
 					suspended = uid;
@@ -330,7 +330,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		free(m_period);
 		free(w_period);
 #ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/payments] user payments reloaded", p->base.instance);
+		syslog(LOG_INFO, "DEBUG: [%s/payments] customer payments reloaded", p->base.instance);
 #endif
 	}
 	else 

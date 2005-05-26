@@ -30,9 +30,9 @@ function GetEvents($date=NULL, $adminid=0, $customerid=0)
 
 	$list = $LMS->DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, '
-		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name'). ' AS customername, 
-		 users.address AS useraddr, users.phone1 AS userphone 
-		 FROM events LEFT JOIN users ON (customerid = users.id)
+		.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
+		 customers.address AS customeraddr, customers.phone1 AS customerphone 
+		 FROM events LEFT JOIN customers ON (customerid = customers.id)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
 		 .($customerid ? 'AND customerid = '.$customerid : '')
 		 .' ORDER BY begintime',

@@ -30,9 +30,9 @@ if(!$_GET['id'])
 }
 
 $event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, adminid, customerid, begintime, endtime, date, private, closed, '
-			    .$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername,
+			    .$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
 			    admins.name AS adminname
-			    FROM events LEFT JOIN users ON (users.id = customerid)
+			    FROM events LEFT JOIN customers ON (customers.id = customerid)
 			    LEFT JOIN admins ON (admins.id = adminid)
 			    WHERE events.id = ?', array($_GET['id']));
 

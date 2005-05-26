@@ -192,7 +192,7 @@ my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
 
-$dbq = $dbase->prepare('SELECT invoices.id AS id, number, cdate, email, invoices.name AS name, customerid FROM invoices LEFT JOIN users ON users.id = customerid WHERE deleted = 0 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
+$dbq = $dbase->prepare('SELECT invoices.id AS id, number, cdate, email, invoices.name AS name, userid FROM invoices LEFT JOIN users ON users.id = userid WHERE deleted = 0 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
@@ -223,7 +223,7 @@ while(my $row = $dbq->fetchrow_hashref())
 			$mail->head->add('From', '"'.$sender_name.'"'.' <'.$sender_email.'>');
 			$mail->head->add('Reply-To', '"'.$sender_name.'"'.' <'.$sender_email.'>');
 			$mail->head->add('Subject', $mail_subject);
-			$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
+			$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'userid'}.'@lms>');
 			$mail->head->add('Return-path', '<'.$sender_email.'>');
 			$mail->attach(
 				Type => 'text/plain',

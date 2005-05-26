@@ -51,7 +51,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		break;
 		
 		case 'balancelist_pagelimit':
-			$desc = trans('Limit of records displayed on one page in user\'s balance. Default: 100.');
+			$desc = trans('Limit of records displayed on one page in customer\'s balance. Default: 100.');
 		break;
 		
 		case 'configlist_pagelimit':
@@ -105,7 +105,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		case 'default_zip':
 		case 'default_city':
 		case 'default_address':
-			$desc = trans('Default zip code, city, street, used while inserting new user. Useful if you add majority of users with the same street.');
+			$desc = trans('Default zip code, city, street, used while inserting new customer. Useful if you add majority of customers with the same street.');
 		break;
 		
 		case 'lastonline_limit':
@@ -182,7 +182,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 
 		case 'smtp_port':
 		case 'smtp_host':
-		case 'smtp_customername':
+		case 'smtp_username':
 		case 'smtp_password':
 		case 'smtp_auth_type':
 			$desc = trans('SMTP settings.');

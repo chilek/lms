@@ -28,9 +28,9 @@ $SMARTY->display('header.html');
 ?><PRE><B>Upgrade bazy danych: zmiana formatu finansów:</B>
 <?
 
-$users = $DB->GetAll('SELECT * FROM users');
+$customers = $DB->GetAll('SELECT * FROM customers');
 $tariffs = $DB->GetAllByKey('SELECT * FROM tariffs','id');
-foreach($users as $idx => $row)
+foreach($customers as $idx => $row)
 {
 	echo $row['lastname']." ".$row['name'].": ";
 	echo "taryfa: '".$tariffs[$row['tariff']]['name']."'... ";

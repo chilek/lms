@@ -112,7 +112,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if(!isset($account['type'])) $account['type'] = 32767;
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('account', $account);
 $SMARTY->assign('layout', $layout);

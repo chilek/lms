@@ -174,7 +174,7 @@ switch($bar)
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
-	case 'user':
+	case 'customer':
 		$traffic = Traffic($_POST['from'], $_POST['to'], $_POST['net'], $_POST['order'], $_POST['limit']);
 	break;
 

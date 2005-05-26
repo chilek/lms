@@ -86,7 +86,7 @@ sub configure_hook
 	
 	my $bind = "*";
 	my $port = 1029;
-	my $user = "nobody";
+	my $customer = "nobody";
 	my $group = "nobody";
 	my $pidfile = "/var/run/lms-arpd.pid";
 	my $debug;
@@ -96,7 +96,7 @@ sub configure_hook
 		"--version|v"           =>      \$version,
 		"--host|H=s"		=>	\$bind,
 		"--port|p=i"		=>	\$port,
-		"--user|u=s"		=>	\$user,
+		"--customer|u=s"		=>	\$customer,
 		"--group|g=s"		=>	\$group,
 		"--debug|d"		=>	\$debug,
 		"--pidfile|i=s"		=>	\$pidfile
@@ -115,7 +115,7 @@ lms-arpd, version $_version
 -v, --version		print version info and exit;
 -H, --host		set listen IP (default: ANY);
 -p, --port		set listen port (default: 1029);
--u, --user		set user (default: nobody);
+-u, --customer		set customer (default: nobody);
 -g, --group		set group (default: nobody);
 -d, --debug		don't fork and write some useless shit on stderr;
 -i, --pidfile		pid filename (default: /var/run/lms-arpd.pid);
@@ -134,7 +134,7 @@ EOF
 	}
 	
 	$self->{server}->{port} = [$bind.':'.$port];
-	$self->{server}->{user} = $user;
+	$self->{server}->{customer} = $customer;
 	$self->{server}->{group} = $group;
 	$self->{server}->{pid_file} = $pidfile;
 }

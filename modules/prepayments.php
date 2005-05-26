@@ -26,7 +26,7 @@
 
 $customerid = $_GET['id'];
 
-if(!$customerid || $LMS->UserExists($customerid)!=TRUE)
+if(!$customerid || $LMS->CustomerExists($customerid)!=TRUE)
 {
 	$SESSION->redirect('?m='.$SESSION->get('backto'));
 }
@@ -115,7 +115,7 @@ $prepaymentlist = $LMS->DB->GetAll('SELECT id, time, value, taxvalue, comment
 			FROM cash WHERE customerid = ? AND invoiceid = 0 AND type = 3
 			ORDER BY time', array($customerid));
 
-$layout['pagetitle'] = trans('Prepayments of Customer: $0', '<A href="?m=userinfo&id='.$customerid.'">'.$LMS->GetUserName($customerid).'</A>');
+$layout['pagetitle'] = trans('Prepayments of Customer: $0', '<A href="?m=customerinfo&id='.$customerid.'">'.$LMS->GetCustomerName($customerid).'</A>');
 
 $SMARTY->assign('covenantlist',$covenantlist);
 $SMARTY->assign('prepaymentlist',$prepaymentlist);

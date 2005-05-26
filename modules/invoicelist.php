@@ -90,7 +90,7 @@ $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('marked',$marked);
-$SMARTY->assign('grouplist',$LMS->UsergroupGetAll());
+$SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
 $SMARTY->assign('invoicelist',$invoicelist);
 $SMARTY->display('invoicelist.html');
 

@@ -55,7 +55,7 @@ if($message['adminid'])
 	$message['adminname'] = $LMS->GetAdminName($message['adminid']);
 
 if($message['customerid'])
-	$message['customername'] = $LMS->GetUserName($message['customerid']);
+	$message['customername'] = $LMS->GetCustomerName($message['customerid']);
 	
 if(sizeof($message['attachments']))
 	foreach($message['attachments'] as $key => $val) 

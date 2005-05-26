@@ -196,7 +196,7 @@ class LMS
 	}
 
 	/*
-	 *  Users (Administrators)
+	 *  Customers (Administrators)
 	 */
 
 	function SetAdminPassword($id,$passwd) // ustawia has³o admina o id równym $id na $passwd
@@ -346,27 +346,27 @@ class LMS
 	}
 
 	/*
-	 *  Customers (formerly Users) functions
+	 *  Customers (formerly Customers) functions
 	 */
 
-	function GetUserName($id)
+	function GetCustomerName($id)
 	{
-		return $this->DB->GetOne('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' FROM users WHERE id=?', array($id));
+		return $this->DB->GetOne('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' FROM customers WHERE id=?', array($id));
 	}
 
-	function GetUserEmail($id)
+	function GetCustomerEmail($id)
 	{
-		return $this->DB->GetOne('SELECT email FROM users WHERE id=?', array($id));
+		return $this->DB->GetOne('SELECT email FROM customers WHERE id=?', array($id));
 	}
 
-	function GetUserServiceAddress($id)
+	function GetCustomerServiceAddress($id)
 	{
-		return $this->DB->GetOne('SELECT serviceaddr FROM users WHERE id=?', array($id));
+		return $this->DB->GetOne('SELECT serviceaddr FROM customers WHERE id=?', array($id));
 	}
 
-	function UserExists($id)
+	function CustomerExists($id)
 	{
-		switch($this->DB->GetOne('SELECT deleted FROM users WHERE id=?', array($id)))
+		switch($this->DB->GetOne('SELECT deleted FROM customers WHERE id=?', array($id)))
 		{
 			case '0':
 				return TRUE;
@@ -381,52 +381,52 @@ class LMS
 		}
 	}
 
-	function RecoverUser($id)
+	function RecoverCustomer($id)
 	{
-		$this->SetTS('users');
-		return $this->DB->Execute('UPDATE users SET deleted=0 WHERE id=?', array($id));
+		$this->SetTS('customers');
+		return $this->DB->Execute('UPDATE customers SET deleted=0 WHERE id=?', array($id));
 	}
 
-	// confusing function name, gets number of tariff assignments, not number of users with this tariff
-	function GetUsersWithTariff($id)
+	// confusing function name, gets number of tariff assignments, not number of customers with this tariff
+	function GetCustomersWithTariff($id)
 	{
 		return $this->DB->GetOne('SELECT COUNT(customerid) FROM assignments WHERE tariffid = ?', array($id));
 	}
 
-	function UserAdd($useradd)
+	function CustomerAdd($customeradd)
 	{
-		if($this->DB->Execute('INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($useradd['name']),  $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->AUTH->id, $useradd['info'], $useradd['serviceaddr'], $useradd['message'], $useradd['pin']))) {
-			$this->SetTS('users');
-			return $this->DB->GetOne('SELECT MAX(id) FROM users');
+		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($customeradd['name']),  $customeradd['lastname'], $customeradd['phone1'], $customeradd['phone2'], $customeradd['phone3'], $customeradd['gguin'], $customeradd['address'], $customeradd['zip'], $customeradd['city'], $customeradd['email'], $customeradd['nip'], $customeradd['pesel'], $customeradd['status'], $this->AUTH->id, $customeradd['info'], $customeradd['serviceaddr'], $customeradd['message'], $customeradd['pin']))) {
+			$this->SetTS('customers');
+			return $this->DB->GetOne('SELECT MAX(id) FROM customers');
 		} else
 			return FALSE;
 	}
 
-	function DeleteUser($id)
+	function DeleteCustomer($id)
 	{
-		$this->SetTS('users');
+		$this->SetTS('customers');
 		$this->SetTS('nodes');
-		$this->SetTS('userassignments');
+		$this->SetTS('customerassignments');
 		$this->SetTS('assignments');
 		$res1=$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
-		$res2=$this->DB->Execute('DELETE FROM userassignments WHERE customerid=?', array($id));
-		$res3=$this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
+		$res2=$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
+		$res3=$this->DB->Execute('UPDATE customers SET deleted=1 WHERE id=?', array($id));
 		$res4=$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		return $res1 || $res2 || $res3 || $res4;
 	}
 
-	function UserUpdate($userdata)
+	function CustomerUpdate($customerdata)
 	{
-		$this->SetTS('users');
-		return $this->DB->Execute('UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->AUTH->id, $userdata['info'], $userdata['serviceaddr'], $userdata['lastname'], ucwords($userdata['name']), $userdata['message'], $userdata['pin'], $userdata['id'] ) );
+		$this->SetTS('customers');
+		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $customerdata['status'], $customerdata['phone1'], $customerdata['phone2'], $customerdata['phone3'], $customerdata['address'], $customerdata['zip'], $customerdata['city'], $customerdata['email'], $customerdata['gguin'], $customerdata['nip'], $customerdata['pesel'], $this->AUTH->id, $customerdata['info'], $customerdata['serviceaddr'], $customerdata['lastname'], ucwords($customerdata['name']), $customerdata['message'], $customerdata['pin'], $customerdata['id'] ) );
 	}
 
-	function GetUserNodesNo($id)
+	function GetCustomerNodesNo($id)
 	{
 		return $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id));
 	}
 
-	function GetUserIDByIP($ipaddr)
+	function GetCustomerIDByIP($ipaddr)
 	{
 		return $this->DB->GetOne('SELECT ownerid FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
 	}
@@ -436,37 +436,37 @@ class LMS
 		return $this->DB->GetRow('SELECT time, adminid, type, value, taxvalue, customerid, comment FROM cash WHERE id=?', array($id));
 	}
 
-	function GetUserStatus($id)
+	function GetCustomerStatus($id)
 	{
-		return $this->DB->GetOne('SELECT status FROM users WHERE id=?', array($id));
+		return $this->DB->GetOne('SELECT status FROM customers WHERE id=?', array($id));
 	}
 
-	function GetUser($id)
+	function GetCustomer($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin FROM users WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin FROM customers WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
-			$result['balance'] = $this->GetUserBalance($result['id']);
-			$result['tariffsvalue'] = $this->GetUserTariffsValue($result['id']);
+			$result['balance'] = $this->GetCustomerBalance($result['id']);
+			$result['tariffsvalue'] = $this->GetCustomerTariffsValue($result['id']);
 			return $result;
 		}else
 			return FALSE;
 	}
 
-	function GetUserNames()
+	function GetCustomerNames()
 	{
-		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM users WHERE status=3 AND deleted = 0 ORDER BY customername');
+		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers WHERE status=3 AND deleted = 0 ORDER BY customername');
 	}
 
-	function GetAllUserNames()
+	function GetAllCustomerNames()
 	{
-		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM users WHERE deleted = 0 ORDER BY customername');
+		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers WHERE deleted = 0 ORDER BY customername');
 	}
 
-	function GetUserNodesAC($id)
+	function GetCustomerNodesAC($id)
 	{
 		if($acl = $this->DB->GetALL('SELECT access FROM nodes WHERE ownerid=?', array($id)))
 		{
@@ -485,7 +485,7 @@ class LMS
 			return FALSE;
 	}
 
-	function GetUserList($order='customername,asc', $state=NULL, $network=NULL, $usergroup=NULL, $search=NULL, $time=NULL, $sqlskey='AND')
+	function GetCustomerList($order='customername,asc', $state=NULL, $network=NULL, $customergroup=NULL, $search=NULL, $time=NULL, $sqlskey='AND')
 	{
 		list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -494,7 +494,7 @@ class LMS
 		switch($order)
 		{
 			case 'id':
-				$sqlord = 'ORDER BY users.id';
+				$sqlord = 'ORDER BY customers.id';
 			break;
 			case 'address':
 				$sqlord = 'ORDER BY address';
@@ -509,11 +509,11 @@ class LMS
 		
 		if($state == 4) {
 			$deleted = 1;
-			// don't use usergroup and network filtering
-			// when user is deleted because we drop group assignments and nodes
-			// in DeleteUser()
+			// don't use customergroup and network filtering
+			// when customer is deleted because we drop group assignments and nodes
+			// in DeleteCustomer()
 			$network=NULL;
-			$usergroup=NULL;
+			$customergroup=NULL;
 		}
 		else
 			$deleted = 0;
@@ -550,7 +550,7 @@ class LMS
 						break;
 						case 'customername':
 							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = $this->DB->Concat('UPPER(users.lastname)',"' '",'UPPER(users.name)')." ?LIKE? UPPER($value)";
+							$searchargs[] = $this->DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)')." ?LIKE? UPPER($value)";
 						break;
 						default:
 							$searchargs[] = "$key ?LIKE? $value";
@@ -563,80 +563,80 @@ class LMS
 		
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 		
-		if($userlist = $this->DB->GetAll( 
-				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS customername, status, users.address, zip, city, users.info AS info, message, '
+		if($customerlist = $this->DB->GetAll( 
+				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, status, customers.address, zip, city, customers.info AS info, message, '
 				.($network ? 'COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance ')
-				.'FROM users LEFT JOIN cash ON (users.id=cash.customerid AND (type = 3 OR type = 4)) '
-				.($network ? 'LEFT JOIN nodes ON (users.id=ownerid) ' : '')
-				.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.customerid) ' : '')
+				.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type = 3 OR type = 4)) '
+				.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
+				.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
 				.($state !=0 ? ' AND status = '.$state :'') 
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
-				.($usergroup ? ' AND usergroupid='.$usergroup : '')
+				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($time ? ' AND time < '.$time : '')
 				.($sqlsarg !='' ? ' AND ('.$sqlsarg.')' :'')
-				.' GROUP BY users.id, lastname, users.name, status, users.address, zip, city, users.info, message '
+				.' GROUP BY customers.id, lastname, customers.name, status, customers.address, zip, city, customers.info, message '
 		// ten fragment nie chcial dzialac na mysqlu		
 		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
-			$week = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value FROM assignments, tariffs, users WHERE customerid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
-			$month = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END) AS value FROM assignments, tariffs, users WHERE customerid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
-			$quarter = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)/3 AS value FROM assignments, tariffs, users WHERE customerid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
-			$year = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)/12 AS value FROM assignments, tariffs, users WHERE customerid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
+			$week = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$month = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END) AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$quarter = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)/3 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$year = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)/12 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
 
 			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
 			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
 			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
 			
-			$userlist2 = NULL;
+			$customerlist2 = NULL;
 			
-			foreach($userlist as $idx => $row)
+			foreach($customerlist as $idx => $row)
 			{
-				$userlist[$idx]['tariffvalue'] = round($week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'], 2);
-				$userlist[$idx]['account'] = $access[$row['id']]['account'];
-				$userlist[$idx]['warncount'] = $warning[$row['id']]['warncount'];
+				$customerlist[$idx]['tariffvalue'] = round($week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'], 2);
+				$customerlist[$idx]['account'] = $access[$row['id']]['account'];
+				$customerlist[$idx]['warncount'] = $warning[$row['id']]['warncount'];
 
-				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'] && $userlist[$idx]['account'])
-					$userlist[$idx]['nodeac'] = 1; // connected all nodes
+				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'] && $customerlist[$idx]['account'])
+					$customerlist[$idx]['nodeac'] = 1; // connected all nodes
 				elseif($access[$row['id']]['acsum'] == 0)
-					$userlist[$idx]['nodeac'] = 0; // disconected all nodes
+					$customerlist[$idx]['nodeac'] = 0; // disconected all nodes
 				else
-					$userlist[$idx]['nodeac'] = 2; // some nodes disconneted
+					$customerlist[$idx]['nodeac'] = 2; // some nodes disconneted
 				if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
-					$userlist[$idx]['nodewarn'] = 1;
+					$customerlist[$idx]['nodewarn'] = 1;
 				elseif($warning[$row['id']]['warnsum'] == 0)
-					$userlist[$idx]['nodewarn'] = 0;
+					$customerlist[$idx]['nodewarn'] = 0;
 				else
-					$userlist[$idx]['nodewarn'] = 2;
+					$customerlist[$idx]['nodewarn'] = 2;
 					
-				if (($disabled && $userlist[$idx]['nodeac'] != 1) || !$disabled)
-					if($userlist[$idx]['balance'] > 0)
-						$over += $userlist[$idx]['balance'];
-					elseif($userlist[$idx]['balance'] < 0)
-						$below += $userlist[$idx]['balance'];
-				if ($disabled && $userlist[$idx]['nodeac'] != 1)
-					$userlist2[] = $userlist[$idx];
+				if (($disabled && $customerlist[$idx]['nodeac'] != 1) || !$disabled)
+					if($customerlist[$idx]['balance'] > 0)
+						$over += $customerlist[$idx]['balance'];
+					elseif($customerlist[$idx]['balance'] < 0)
+						$below += $customerlist[$idx]['balance'];
+				if ($disabled && $customerlist[$idx]['nodeac'] != 1)
+					$customerlist2[] = $customerlist[$idx];
 					
 				if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
-					$userlist[$idx]['online'] = 1;
+					$customerlist[$idx]['online'] = 1;
 				
-				if($online && $userlist[$idx]['online'])
-					$userlist2[] = $userlist[$idx];
+				if($online && $customerlist[$idx]['online'])
+					$customerlist2[] = $customerlist[$idx];
 				
 				if($indebted)
-					if($userlist[$idx]['balance'] < 0)
-						$userlist2[] = $userlist[$idx];
+					if($customerlist[$idx]['balance'] < 0)
+						$customerlist2[] = $customerlist[$idx];
 			}
 			if ($disabled || $online || $indebted)
-				$userlist = $userlist2;
+				$customerlist = $customerlist2;
 		}
 
 		switch($order)
 		{
 			case 'tariff':
-				foreach($userlist as $idx => $row)
+				foreach($customerlist as $idx => $row)
 				{
 					$tarifftable['idx'][] = $idx;
 					$tarifftable['tariffvalue'][] = $row['tariffvalue'];
@@ -645,24 +645,24 @@ class LMS
 				{
 					array_multisort($tarifftable['tariffvalue'],($direction == "desc" ? SORT_DESC : SORT_ASC),$tarifftable['idx']);
 					foreach($tarifftable['idx'] as $idx)
-						$nuserelist[] = $userlist[$idx];
+						$ncustomerelist[] = $customerlist[$idx];
 				}
-				$userlist = $nuserelist;
+				$customerlist = $ncustomerelist;
 			break;
 		}
-		$userlist['total'] = sizeof($userlist);
-		$userlist['state'] = $state;
-		$userlist['network'] = $network;
-		$userlist['usergroup'] = $usergroup;
-		$userlist['order'] = $order;
-		$userlist['direction'] = $direction;
-		$userlist['below']= $below;
-		$userlist['over']= $over;
+		$customerlist['total'] = sizeof($customerlist);
+		$customerlist['state'] = $state;
+		$customerlist['network'] = $network;
+		$customerlist['customergroup'] = $customergroup;
+		$customerlist['order'] = $order;
+		$customerlist['direction'] = $direction;
+		$customerlist['below']= $below;
+		$customerlist['over']= $over;
 		
-		return $userlist;
+		return $customerlist;
 	}
 
-	function GetUserNodes($id)
+	function GetCustomerNodes($id)
 	{
 		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, warning, info, ownerid FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
 		{
@@ -671,7 +671,7 @@ class LMS
 		return $result;
 	}
 
-	function GetUserBalance($id, $taxvalue='-1')
+	function GetCustomerBalance($id, $taxvalue='-1')
 	{
 		if ($taxvalue == '-1')
 		{
@@ -692,7 +692,7 @@ class LMS
 		return round($bin-$bou,2);
 	}
 
-	function GetUserBalanceList($id)
+	function GetCustomerBalanceList($id)
 	{
 		$saldolist = array();
 		// wrapper do starego formatu
@@ -752,15 +752,15 @@ class LMS
 		return $saldolist;
 	}
 	
-	function UserStats()
+	function CustomerStats()
 	{
-		$result['total'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE deleted=0');
-		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=3 AND deleted=0');
-		$result['awaiting'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=2 AND deleted=0');
-		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=1 AND deleted=0');
+		$result['total'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE deleted=0');
+		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE status=3 AND deleted=0');
+		$result['awaiting'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE status=2 AND deleted=0');
+		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE status=1 AND deleted=0');
 		$result['debt'] = 0;
 		$result['debtvalue'] = 0;
-		if($balances = $this->DB->GetCol('SELECT SUM((type * -2 + 7)*value) FROM cash LEFT JOIN users ON customerid = users.id WHERE deleted = 0 GROUP BY customerid HAVING SUM((type * -2 + 7)*value) < 0'))
+		if($balances = $this->DB->GetCol('SELECT SUM((type * -2 + 7)*value) FROM cash LEFT JOIN customers ON customerid = customers.id WHERE deleted = 0 GROUP BY customerid HAVING SUM((type * -2 + 7)*value) < 0'))
 		{
 			foreach($balances as $idx)
 				if($idx < 0)
@@ -776,138 +776,138 @@ class LMS
 	 * Customer groups
 	*/
 	 
-	function UsergroupWithUserGet($id)
+	function CustomergroupWithCustomerGet($id)
 	{
-		return $this->DB->GetOne('SELECT COUNT(customerid) FROM userassignments, users WHERE users.id = customerid AND usergroupid = ?', array($id));
+		return $this->DB->GetOne('SELECT COUNT(customerid) FROM customerassignments, customers WHERE customers.id = customerid AND customergroupid = ?', array($id));
 	}
 
-	function UsergroupAdd($usergroupdata)
+	function CustomergroupAdd($customergroupdata)
 	{
-		$this->SetTS('usergroups');
-		if($this->DB->Execute('INSERT INTO usergroups (name, description) VALUES (?, ?)', array($usergroupdata['name'], $usergroupdata['description'])))
-			return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($usergroupdata['name']));
+		$this->SetTS('customergroups');
+		if($this->DB->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description'])))
+			return $this->DB->GetOne('SELECT id FROM customergroups WHERE name=?', array($customergroupdata['name']));
 		else
 			return FALSE;
 	}
 
-	function UsergroupUpdate($usergroupdata)
+	function CustomergroupUpdate($customergroupdata)
 	{
-		$this->SetTS('usergroups');
-		return $this->DB->Execute('UPDATE usergroups SET name=?, description=? WHERE id=?', array($usergroupdata['name'], $usergroupdata['description'], $usergroupdata['id']));
+		$this->SetTS('customergroups');
+		return $this->DB->Execute('UPDATE customergroups SET name=?, description=? WHERE id=?', array($customergroupdata['name'], $customergroupdata['description'], $customergroupdata['id']));
 	}
 
-	function UsergroupDelete($id)
+	function CustomergroupDelete($id)
 	{
-		 if (!$this->UsergroupWithUserGet($id))
+		 if (!$this->CustomergroupWithCustomerGet($id))
 		 {
-			$this->SetTS('usergroups');
-			return $this->DB->Execute('DELETE FROM usergroups WHERE id=?', array($id));
+			$this->SetTS('customergroups');
+			return $this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
 		 } else
 			return FALSE;
 	}
 
-	function UsergroupExists($id)
+	function CustomergroupExists($id)
 	{
-		return ($this->DB->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? TRUE : FALSE);
+		return ($this->DB->GetOne('SELECT id FROM customergroups WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function UsergroupMove($from, $to)
+	function CustomergroupMove($from, $to)
 	{
-		if ($ids = $this->DB->GetCol('SELECT userassignments.id AS id FROM userassignments, users WHERE customerid = users.id AND usergroupid = ?', array($from))) 
+		if ($ids = $this->DB->GetCol('SELECT customerassignments.id AS id FROM customerassignments, customers WHERE customerid = customers.id AND customergroupid = ?', array($from))) 
 		{	
-			$this->SetTS('userassignments');
+			$this->SetTS('customerassignments');
 			foreach($ids as $id)
-				$this->DB->Execute('UPDATE userassignments SET usergroupid=? WHERE id=? AND usergroupid=?', array($to, $id, $from));
+				$this->DB->Execute('UPDATE customerassignments SET customergroupid=? WHERE id=? AND customergroupid=?', array($to, $id, $from));
 		}
 	}
 
-	function UsergroupGetId($name)
+	function CustomergroupGetId($name)
 	{
-		return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($name));
+		return $this->DB->GetOne('SELECT id FROM customergroups WHERE name=?', array($name));
 	}
 
-	function UsergroupGetName($id)
+	function CustomergroupGetName($id)
 	{
-		return $this->DB->GetOne('SELECT name FROM usergroups WHERE id=?', array($id));
+		return $this->DB->GetOne('SELECT name FROM customergroups WHERE id=?', array($id));
 	}
 
-	function UsergroupGetAll()
+	function CustomergroupGetAll()
 	{
-		return $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC');
+		return $this->DB->GetAll('SELECT id, name, description FROM customergroups ORDER BY name ASC');
 	}
 
-	function UsergroupGet($id)
+	function CustomergroupGet($id)
 	{
-		$result = $this->DB->GetRow('SELECT id, name, description FROM usergroups WHERE id=?', array($id));
-		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM userassignments, users WHERE users.id = customerid AND usergroupid = ? GROUP BY users.id, customername ORDER BY customername', array($id));
-		$result['userscount'] = sizeof($result['users']);
-		$result['count'] = $this->UsergroupWithUserGet($id);
+		$result = $this->DB->GetRow('SELECT id, name, description FROM customergroups WHERE id=?', array($id));
+		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customerassignments, customers WHERE customers.id = customerid AND customergroupid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
+		$result['customerscount'] = sizeof($result['customers']);
+		$result['count'] = $this->CustomergroupWithCustomerGet($id);
 		return $result;
 	}
 
-	function UsergroupGetList()
+	function CustomergroupGetList()
 	{
-		if($usergrouplist = $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC'))
+		if($customergrouplist = $this->DB->GetAll('SELECT id, name, description FROM customergroups ORDER BY name ASC'))
 		{
-			$totalusers = 0;
+			$totalcustomers = 0;
 			$totalcount = 0;
 			
-			foreach($usergrouplist as $idx => $row)
+			foreach($customergrouplist as $idx => $row)
 			{
-				$usergrouplist[$idx]['users'] = $this->UsergroupWithUserGet($row['id']);
-				$usergrouplist[$idx]['userscount'] = sizeof($this->DB->GetCol('SELECT customerid FROM userassignments, users WHERE users.id = customerid AND usergroupid = ? GROUP BY customerid', array($row['id'])));
-				$totalusers += $usergrouplist[$idx]['users'];
-				$totalcount += $usergrouplist[$idx]['userscount'];
+				$customergrouplist[$idx]['customers'] = $this->CustomergroupWithCustomerGet($row['id']);
+				$customergrouplist[$idx]['customerscount'] = sizeof($this->DB->GetCol('SELECT customerid FROM customerassignments, customers WHERE customers.id = customerid AND customergroupid = ? GROUP BY customerid', array($row['id'])));
+				$totalcustomers += $customergrouplist[$idx]['customers'];
+				$totalcount += $customergrouplist[$idx]['customerscount'];
 			}
 			
-			$usergrouplist['total'] = sizeof($usergrouplist);
-			$usergrouplist['totalusers'] = $totalusers;
-			$usergrouplist['totalcount'] = $totalcount;
+			$customergrouplist['total'] = sizeof($customergrouplist);
+			$customergrouplist['totalcustomers'] = $totalcustomers;
+			$customergrouplist['totalcount'] = $totalcount;
 		}
 		
-		return $usergrouplist;
+		return $customergrouplist;
 	}
 
-	function UsergroupGetForUser($id)
+	function CustomergroupGetForCustomer($id)
 	{
-		return $this->DB->GetAll('SELECT usergroups.id AS id, name, description FROM usergroups, userassignments WHERE usergroups.id=usergroupid AND customerid=? ORDER BY name ASC', array($id));
+		return $this->DB->GetAll('SELECT customergroups.id AS id, name, description FROM customergroups, customerassignments WHERE customergroups.id=customergroupid AND customerid=? ORDER BY name ASC', array($id));
 	}
 
-	function GetGroupNamesWithoutUser($customerid)
+	function GetGroupNamesWithoutCustomer($customerid)
 	{
-		return $this->DB->GetAll('SELECT usergroups.id AS id, name, customerid
-			FROM usergroups LEFT JOIN userassignments ON (usergroups.id=usergroupid AND customerid = ?) 
-			GROUP BY usergroups.id, name, customerid HAVING customerid IS NULL ORDER BY name', array($customerid));
+		return $this->DB->GetAll('SELECT customergroups.id AS id, name, customerid
+			FROM customergroups LEFT JOIN customerassignments ON (customergroups.id=customergroupid AND customerid = ?) 
+			GROUP BY customergroups.id, name, customerid HAVING customerid IS NULL ORDER BY name', array($customerid));
 	}
 
-	function UserassignmentGetForUser($id)
+	function CustomerassignmentGetForCustomer($id)
 	{
-		return $this->DB->GetAll('SELECT userassignments.id AS id, usergroupid, customerid FROM userassignments, usergroups WHERE customerid=? AND usergroups.id = usergroupid ORDER BY usergroupid ASC', array($id));
+		return $this->DB->GetAll('SELECT customerassignments.id AS id, customergroupid, customerid FROM customerassignments, customergroups WHERE customerid=? AND customergroups.id = customergroupid ORDER BY customergroupid ASC', array($id));
 	}
 
-	function UserassignmentDelete($userassignmentdata)
+	function CustomerassignmentDelete($customerassignmentdata)
 	{
-		$this->SetTS('userassignments');
-		return $this->DB->Execute('DELETE FROM userassignments WHERE usergroupid=? AND customerid=?', array($userassignmentdata['usergroupid'], $userassignmentdata['customerid']));
+		$this->SetTS('customerassignments');
+		return $this->DB->Execute('DELETE FROM customerassignments WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'], $customerassignmentdata['customerid']));
 	}
 
-	function UserassignmentAdd($userassignmentdata)
+	function CustomerassignmentAdd($customerassignmentdata)
 	{
-		$this->SetTS('userassignments');
-		return $this->DB->Execute('INSERT INTO userassignments (usergroupid, customerid) VALUES (?, ?)',
-			array($userassignmentdata['usergroupid'], $userassignmentdata['customerid']));
+		$this->SetTS('customerassignments');
+		return $this->DB->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)',
+			array($customerassignmentdata['customergroupid'], $customerassignmentdata['customerid']));
 	}
 
-	function UserassignmentExist($groupid, $customerid)
+	function CustomerassignmentExist($groupid, $customerid)
 	{
-		return $this->DB->GetOne('SELECT 1 FROM userassignments WHERE usergroupid=? AND customerid=?', array($groupid, $customerid)); 
+		return $this->DB->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid)); 
 	}
 
-	function GetUserWithoutGroupNames($groupid)
+	function GetCustomerWithoutGroupNames($groupid)
 	{
-		return $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, customerid
-			FROM users LEFT JOIN userassignments ON (users.id = customerid AND userassignments.usergroupid = ?) WHERE deleted = 0 
-			GROUP BY users.id, customerid, lastname, name 
+		return $this->DB->GetAll('SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, customerid
+			FROM customers LEFT JOIN customerassignments ON (customers.id = customerid AND customerassignments.customergroupid = ?) WHERE deleted = 0 
+			GROUP BY customers.id, customerid, lastname, name 
 			HAVING customerid IS NULL ORDER BY customername', array($groupid));
 	}
 
@@ -995,7 +995,7 @@ class LMS
 			else
 				$result['lastonlinedate'] = trans('online');
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
-			$result['owner'] = $this->GetUserName($result['ownerid']);
+			$result['owner'] = $this->GetCustomerName($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
 			$result['netname'] = $this->GetNetworkName($result['netid']);
 			$result['producer'] = get_producer($result['mac']);
@@ -1067,8 +1067,8 @@ class LMS
 		$totalon = 0; $totaloff = 0;
 		
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, netdev, lastonline, nodes.info AS info, '
-					.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
-					FROM nodes LEFT JOIN users ON ownerid = users.id WHERE ownerid > 0'
+					.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
+					FROM nodes LEFT JOIN customers ON ownerid = customers.id WHERE ownerid > 0'
 					.$searchargs
 					.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
@@ -1177,7 +1177,7 @@ class LMS
 
 	function GetNetDevLinkedNodes($id)
 	{
-		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, inet_ntoa(ipaddr) AS ip,ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, ownerid FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
+		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, inet_ntoa(ipaddr) AS ip,ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner, ownerid FROM nodes, customers WHERE ownerid = customers.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
 	}
 
 	function NetDevLinkNode($id, $netid, $type=NULL)
@@ -1252,12 +1252,12 @@ class LMS
 		return ($this->DB->GetOne('SELECT number FROM invoices WHERE cdate >= ? AND cdate < ? AND number = ?', array($start, $end, $number)) ? TRUE : FALSE);
 	}
 	
-	function GetUserTariffsValue($id)
+	function GetCustomerTariffsValue($id)
 	{
 		return $this->DB->GetOne('SELECT sum(value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND customerid=? AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
 	}
 
-	function GetUserAssignments($id)
+	function GetCustomerAssignments($id)
 	{
 		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, value, uprate, upceil, downceil, downrate, name, invoice, datefrom, dateto, discount FROM assignments LEFT JOIN tariffs ON (tariffid=tariffs.id) WHERE customerid=? ORDER BY datefrom ASC', array($id)))
 		{
@@ -1530,7 +1530,7 @@ class LMS
 			$inv_paid = $this->DB->GetAllByKey('SELECT invoiceid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE invoiceid!=0 GROUP BY invoiceid','id');
 			
 			if($group['group'])
-				$users = $this->DB->GetAllByKey('SELECT customerid AS id FROM userassignments WHERE usergroupid=?', 'id', array($group['group']));
+				$customers = $this->DB->GetAllByKey('SELECT customerid AS id FROM customerassignments WHERE customergroupid=?', 'id', array($group['group']));
 
 			foreach($result as $idx => $row)
 			{
@@ -1539,9 +1539,9 @@ class LMS
 				$result[$idx]['paid'] = ( $inv_paid[$row['id']]['sum'] >=0 ? TRUE : FALSE );
 				
 				if($group['group'])
-					if(!$group['exclude'] && $users[$result[$idx]['customerid']])
+					if(!$group['exclude'] && $customers[$result[$idx]['customerid']])
 						$result1[] = $result[$idx]; 
-					elseif($group['exclude'] && !$users[$result[$idx]['customerid']])
+					elseif($group['exclude'] && !$customers[$result[$idx]['customerid']])
 						$result1[] = $result[$idx];
 			}
 			
@@ -1592,9 +1592,9 @@ class LMS
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
 			$result['paid'] = $this->IsInvoicePaid($invoiceid);
-			$user_info=$this->GetUser($result['customerid']);
-			$result['userpin'] = $user_info['pin'];
-			$result['userbalancelist'] = $this->GetUserBalanceList($result['customerid']);
+			$customer_info=$this->GetCustomer($result['customerid']);
+			$result['customerpin'] = $customer_info['pin'];
+			$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
 			return $result;
 		}
 		else
@@ -1618,21 +1618,21 @@ class LMS
 						WHERE a.customerid = b.customerid AND a.tariffid = ? AND b.tariffid = 0 AND a.suspended = 0
 						AND (b.datefrom <= ?NOW? OR b.datefrom = 0) AND (b.dateto > ?NOW? OR b.dateto = 0)', array($row['id']));
 			
-				$tarifflist[$idx]['users'] = $this->GetUsersWithTariff($row['id']);
-				$tarifflist[$idx]['userscount'] = $this->DB->GetOne("SELECT COUNT(DISTINCT customerid) FROM assignments WHERE tariffid = ?", array($row['id']));
+				$tarifflist[$idx]['customers'] = $this->GetCustomersWithTariff($row['id']);
+				$tarifflist[$idx]['customerscount'] = $this->DB->GetOne("SELECT COUNT(DISTINCT customerid) FROM assignments WHERE tariffid = ?", array($row['id']));
 				// count of 'active' assignments
 				$tarifflist[$idx]['assignmentcount'] =  $assigned[$row['id']]['count'] - $suspended['count'];
 				// avg monthly income
 				$tarifflist[$idx]['income'] = $assigned[$row['id']]['value'] - $suspended['value'];
 				$totalincome += $tarifflist[$idx]['income'];
-				$totalusers += $tarifflist[$idx]['users'];
-				$totalcount += $tarifflist[$idx]['userscount'];
+				$totalcustomers += $tarifflist[$idx]['customers'];
+				$totalcount += $tarifflist[$idx]['customerscount'];
 				$totalassignmentcount += $tarifflist[$idx]['assignmentcount'];
 			}
 		}
 		$tarifflist['total'] = sizeof($tarifflist);
 		$tarifflist['totalincome'] = $totalincome;
-		$tarifflist['totalusers'] = $totalusers;
+		$tarifflist['totalcustomers'] = $totalcustomers;
 		$tarifflist['totalcount'] = $totalcount;
 		$tarifflist['totalassignmentcount'] = $totalassignmentcount;
 		
@@ -1642,7 +1642,7 @@ class LMS
 	function TariffMove($from, $to)
 	{
 		$this->SetTS('assignments');
-		$ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, users WHERE customerid = users.id AND deleted = 0 AND tariffid = ?', array($from));
+		$ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, customers WHERE customerid = customers.id AND deleted = 0 AND tariffid = ?', array($from));
 		foreach($ids as $id)
 			$this->DB->Execute('UPDATE assignments SET tariffid=? WHERE id=? AND tariffid=?', array($to, $id, $from));
 	}
@@ -1705,7 +1705,7 @@ class LMS
 
 	function TariffDelete($id)
 	{
-		 if (!$this->GetUsersWithTariff($id))
+		 if (!$this->GetCustomersWithTariff($id))
 		 {
 			$this->SetTS('tariffs');
 			return $this->DB->Execute('DELETE FROM tariffs WHERE id=?', array($id));
@@ -1726,7 +1726,7 @@ class LMS
 	function GetTariff($id)
 	{
 		$result = $this->DB->GetRow('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate, upceil, downceil, climit, plimit FROM tariffs WHERE id=?', array($id));
-		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS customername FROM assignments, users WHERE users.id = customerid AND deleted = 0 AND tariffid = ? GROUP BY users.id, customername ORDER BY customername', array($id));
+		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS customername FROM assignments, customers WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
 		
 		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value 
 						FROM assignments, tariffs 
@@ -1738,16 +1738,16 @@ class LMS
 						WHERE a.customerid = b.customerid AND a.tariffid = ? AND b.tariffid = 0 AND a.suspended = 0
 						AND (b.datefrom <= ?NOW? OR b.datefrom = 0) AND (b.dateto > ?NOW? OR b.dateto = 0)', array($id));
 		
-		// count of all users with that tariff
-		$result['userscount'] = sizeof($result['users']);
+		// count of all customers with that tariff
+		$result['customerscount'] = sizeof($result['customers']);
 		// count of all assignments
-		$result['count'] = $this->GetUsersWithTariff($id);
+		$result['count'] = $this->GetCustomersWithTariff($id);
 		// count of 'active' assignments
 		$result['assignmentcount'] =  $assigned['count'] - $suspended['count'];
 		// avg monthly income (without unactive assignments)
 		$result['totalval'] = $assigned['value'] - $suspended['value'];
 
-		$result['rows'] = ceil($result['userscount']/2);
+		$result['rows'] = ceil($result['customerscount']/2);
 		return $result;
 	}
 
@@ -1800,7 +1800,7 @@ class LMS
 	function GetBalanceList()
 	{
 		$adminlist = $this->DB->GetAllByKey('SELECT id, name FROM admins','id');
-		$userslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM users','id');
+		$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		if($balancelist = $this->DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, customerid, comment, invoiceid FROM cash ORDER BY time, id'))
 		{
 			foreach($balancelist as $idx => $row)
@@ -1808,7 +1808,7 @@ class LMS
 				$balancelist[$idx]['admin'] = $adminlist[$row['adminid']]['name'];
 				$balancelist[$idx]['value'] = $row['value'];
 				$balancelist[$idx]['taxvalue'] = $row['taxvalue'];
-				$balancelist[$idx]['customername'] = $userslist[$row['customerid']]['customername'];
+				$balancelist[$idx]['customername'] = $customerslist[$row['customerid']]['customername'];
 				$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
 
 				switch($row['type'])
@@ -2758,12 +2758,12 @@ class LMS
 				break;
 		}
 
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 		    FROM rttickets LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
 		    LEFT JOIN admins ON (owner = admins.id) 
-		    LEFT JOIN users ON (rttickets.customerid = users.id)
+		    LEFT JOIN customers ON (rttickets.customerid = customers.id)
 		    WHERE queueid = ? '.$statefilter 
-		    .' GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.customerid, users.lastname, users.name '
+		    .' GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.customerid, customers.lastname, customers.name '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
 			foreach($result as $idx => $ticket)
@@ -2862,16 +2862,16 @@ class LMS
 	function GetTicketContents($id)
 	{
 		$ticket = $this->DB->GetRow('
-			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, customerid, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername, admins.name AS ownername, createtime, resolvetime, subject 
+			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, admins.name AS ownername, createtime, resolvetime, subject 
 			FROM rttickets 
 			LEFT JOIN rtqueues ON (queueid = rtqueues.id) 
 			LEFT JOIN admins ON (owner = admins.id)
-			LEFT JOIN users ON (users.id = customerid)
+			LEFT JOIN customers ON (customers.id = customerid)
 			WHERE rttickets.id = ?', array($id));
 		$ticket['messages'] = $this->DB->GetAll('
-			SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, customerid, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername, adminid, admins.name AS adminname
+			SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, adminid, admins.name AS adminname
 			FROM rtmessages 
-			LEFT JOIN users ON (users.id = customerid)
+			LEFT JOIN customers ON (customers.id = customerid)
 			LEFT JOIN admins ON (admins.id = adminid)
 			WHERE ticketid = ? ORDER BY createtime ASC', array($id));
 		if(!$ticket['customerid'])

@@ -115,41 +115,41 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/user.gif"> <B>{t}Customers:{/t}</B>
+						<IMG SRC="img/customer.gif"> <B>{t}Customers:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=3">{t}Connected:{/t}</A></B>
+						<B><A HREF="?m=customerlist&s=3">{t}Connected:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
-						{$userstats.connected}
+						{$customerstats.connected}
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=2">{t}Waiting:{/t}</A></B>
+						<B><A HREF="?m=customerlist&s=2">{t}Waiting:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
-						{$userstats.awaiting}
+						{$customerstats.awaiting}
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=1">{t}Interested:{/t}</A></B>
+						<B><A HREF="?m=customerlist&s=1">{t}Interested:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
-						{$userstats.interested}
+						{$customerstats.interested}
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=userlist&s=0">{t}Total:{/t}</A><BR>
-						<A HREF="?m=userlist&s=6">{t}Total Dues:{/t}</A></B>
+						<B><A HREF="?m=customerlist&s=0">{t}Total:{/t}</A><BR>
+						<A HREF="?m=customerlist&s=6">{t}Total Dues:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
-						{$userstats.total}<BR>
-						{$userstats.debt} ({t}amount{/t} {$userstats.debtvalue|money_format})
+						{$customerstats.total}<BR>
+						{$customerstats.debt} ({t}amount{/t} {$customerstats.debtvalue|money_format})
 					</TD>
 				</TR>
 			</TABLE>

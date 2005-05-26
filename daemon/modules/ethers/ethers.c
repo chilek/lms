@@ -43,7 +43,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 	char *netname = strdup(netnames);
     
 	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(fm->usergroups);	
+	char *groupnames = strdup(fm->customergroups);	
 	char *groupname = strdup(groupnames);
 
 	while( n>1 )
@@ -86,7 +86,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 
 		if( strlen(groupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')", groupname);
+			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')", groupname);
 
 			if( g->db_nrows(res) )
 			{
@@ -119,10 +119,10 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 			m = gc;
 			if(gc && ownerid)
 			{
-				res1 = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
+				res1 = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
 				for(k=0; k<g->db_nrows(res1); k++)
 				{
-					int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
+					int groupid = atoi(g->db_get_data(res1, k, "customergroupid"));
 					for(m=0; m<gc; m++) 
 						if(ugps[m].id==groupid) 
 							break;
@@ -160,7 +160,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 	free(ugps);
 	
 	free(fm->networks);
-	free(fm->usergroups);
+	free(fm->customergroups);
 	free(fm->file);
 	free(fm->command);
 }
@@ -182,7 +182,7 @@ struct ethers_module * init(GLOBAL *g, MODULE *m)
 	fm->command = strdup(g->config_getstring(fm->base.ini, fm->base.instance, "command", "arp -f /etc/ethers"));
 	fm->dummy_macs = g->config_getbool(fm->base.ini, fm->base.instance, "dummy_macs", 0);
 	fm->networks = strdup(g->config_getstring(fm->base.ini, fm->base.instance, "networks", ""));
-	fm->usergroups = strdup(g->config_getstring(fm->base.ini, fm->base.instance, "usergroups", ""));
+	fm->customergroups = strdup(g->config_getstring(fm->base.ini, fm->base.instance, "customergroups", ""));
 
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/ethers] initialized", fm->base.instance);

@@ -1,0 +1,154 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<SCRIPT language="javaScript">
+{literal}
+<!-- 
+	function PrintList()
+	{
+		document.customersearch.action = "?m=customersearch&search=1&print=1";
+		document.customersearch.target = "_BLANK";
+		document.customersearch.submit();
+	}
+
+	function Search()
+	{
+		document.customersearch.action = "?m=customersearch&search=1";
+		document.customersearch.target = "";
+		document.customersearch.submit();
+	}
+//-->	
+{/literal}
+</SCRIPT>
+<H1>{$layout.pagetitle}</H1>
+<P><FORM METHOD="POST" ACTION="?m=customersearch&search=1" NAME="customersearch">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FALL" COLSPAN="2">
+			<B>{t}Display customers matching the following criteria:{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/customer.gif" alt=""> <B>{t}First/last or Company name:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[customername]" VALUE="{$search.customername}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/home.gif" alt=""> <B>{t}Address:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" nowrap>
+			<INPUT TYPE="text" NAME="search[address]" VALUE="{$search.address}">
+			<B>{t}City:{/t}</B> <INPUT TYPE="text" NAME="search[city]" VALUE="{$search.city}">
+			<B>{t}Postcode:{/t}</B> <INPUT TYPE="text" NAME="search[zip]" VALUE="{$search.zip}" SIZE="10">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/phone.gif" alt=""> <B>{t}Phone:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[phone]" VALUE="{$search.phone}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/mail.gif" alt=""> <B>{t}E-mail:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[email]" VALUE="{$search.email}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/gg.gif" alt=""> <B>{t}IM:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[gguin]" VALUE="{$search.gguin}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}TEN:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[nip]" VALUE="{$search.nip}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}SSN:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[pesel]" VALUE="{$search.pesel}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Qualification operator:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT class="radio light" type="radio" value="AND" name="k"{if $k!='OR'} CHECKED{/if}> {t}AND{/t}
+			<INPUT class="radio light" type="radio" value="OR" name="k"{if $k=='OR'} CHECKED{/if}> {t}OR{/t}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/network.gif" alt=""> <B>{t}Network:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="n">
+				<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
+				{section name=networks loop=$networks}
+				<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/group.gif" alt=""> <B>{t}Group:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="g">
+				<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
+				{section name=customergroups loop=$customergroups}
+				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"..."}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/access.gif" width="16" alt=""> <B>{t}State:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="s">
+				<OPTION VALUE="0">{t}- all -{/t}</OPTION>
+				<OPTION VALUE="3">{t}connected<!plural>{/t}</OPTION>
+				<OPTION VALUE="2">{t}waiting{/t}</OPTION>
+				<OPTION VALUE="1">{t}interested<!plural>{/t}</OPTION>
+				<OPTION VALUE="4">{t}deleted<!plural>{/t}</OPTION>
+				<OPTION VALUE="5">{t}disconnected<!plural>{/t}</OPTION>
+				<OPTION VALUE="6">{t}in debt{/t}</OPTION>
+				<OPTION VALUE="7">{t}online{/t}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
+			<A ACCESSKEY="S" href="javascript:Search();">{t}Submit{/t} <IMG SRC="img/search.gif" alt=""></A>&nbsp;
+			<A href="javascript:PrintList();">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
+		</TD>	
+	</TR>
+</TABLE>
+</FORM>
+</P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['customersearch'].elements['search[customername]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}			

@@ -73,7 +73,7 @@
 				</TR>
 			    	<TR>
 				    <TD width="1%">
-					<img src="img/user.gif" alt="">
+					<img src="img/customer.gif" alt="">
 				    </TD>
 				    <TD width="1%">
 					<B>{t}Owner:{/t}</B>
@@ -81,8 +81,8 @@
 				    <TD width="98%">
 					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer"}>
     					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
-					    {section name=users loop=$users}
-					    <OPTION VALUE="{$users[users].id}"{if $account.ownerid == $users[users].id} SELECTED{/if}>{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+					    {section name=customers loop=$customers}
+					    <OPTION VALUE="{$customers[customers].id}"{if $account.ownerid == $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 					    {/section}
 					</SELECT>
 				    </TD>

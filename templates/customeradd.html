@@ -1,0 +1,154 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{literal}
+<SCRIPT language="JavaScript">
+<!--
+	function randomize()
+	{
+		var r = 0;
+		do
+			r = Math.floor(Math.random()*1000000-1);
+		while (r<1000);	
+		document.customeradd.elements['customeradd[pin]'].value = r;
+	}
+//-->
+</SCRIPT>
+{/literal}
+<P>
+<FORM name="customeradd" method="POST" action="?m=customeradd">		
+<TABLE cellpadding="4" cellspacing="0" width="100%">
+	<TR class="dark">
+		<TD class="fall" width="100%" colspan="2">
+			<TABLE>
+				<TR>
+					<TD>
+						<B>{t}Name/Surname:{/t}</B>
+					</TD>
+					<TD>&nbsp;</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="customeradd[lastname]" VALUE="{$customeradd.lastname}" {tip text="Enter customer last name or company name" trigger="customername" bold=1}>
+					</TD>
+				</TR>
+				<TR>
+					<TD>
+						<B>{t}First name:{/t}</B>
+					</TD>
+					<TD>&nbsp;</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="customeradd[name]" VALUE="{$customeradd.name}" {tip text="Enter customer name" trigger="customername" bold=1}>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="50%" class="fleft" valign="top">
+			<TABLE cellpadding="2" cellspacing="0" WIDTH="100%">
+				<TR>
+					<TD width="1%" valign="top">
+						{if $customeradd.status eq "3"}<img src="img/customer.gif" alt="">{/if}
+						{if $customeradd.status eq "2"}<img src="img/wait.gif" alt="">{/if}
+						{if $customeradd.status eq "1"}<img src="img/unk.gif" alt="">{/if}
+					</tD>
+					<TD width="99%">
+						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
+							<OPTION VALUE="3"{if $customeradd.status eq "3"} SELECTED{/if}><B>{t}connected<!singular>{/t}</B></OPTION>
+							<OPTION VALUE="2"{if $customeradd.status eq "2"} SELECTED{/if}><B>{t}waiting{/t}</B></option>
+							<OPTION VALUE="1"{if $customeradd.status eq "1"} SELECTED{/if}><B>{t}interested<!singular>{/t}</B></OPTION>
+						</SELECT>
+					</TD>
+				</tr>
+				<TR>
+					<TD width="1%" valign="top">
+						<IMG src="img/phone.gif" alt="">
+					</TD>
+					<TD width="99%" {tip text="Enter contact phones"}>
+						<INPUT TYPE="text" size="40" value="{$customeradd.phone1}" name="customeradd[phone1]"><BR>
+						<INPUT TYPE="text" size="40" value="{$customeradd.phone2}" name="customeradd[phone2]"><BR>
+						<INPUT TYPE="text" size="40" value="{$customeradd.phone3}" name="customeradd[phone3]">
+					</TD>
+				
+				</TR>
+				<TR>
+					<TD width="1%" valign="top">
+						<IMG src="img/home.gif" alt="">
+					</TD>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$customeradd.address}" name="customeradd[address]" {tip text="Enter customer address" trigger="address"}><BR>
+						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="10" VALUE="{$customeradd.zip}" NAME="customeradd[zip]" {tip text="Enter zip code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$customeradd.city}" NAME="customeradd[city]" {tip text="Enter customer city" trigger="city"}>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<IMG src="img/mail.gif" alt="">
+					</TD>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$customeradd.email}" name="customeradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<IMG src="img/gg.gif" alt="">
+					</TD>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{if $customeradd.gguin}{$customeradd.gguin}{/if}" name="customeradd[gguin]" {tip text="Enter customer Internet Messenger ID (optional)" trigger="gguin"}>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<B>{t}TEN{/t}</B>
+					</TD>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$customeradd.nip}" name="customeradd[nip]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="nip"}>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<B>{t}SSN{/t}</B>
+					</TD>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$customeradd.pesel}" name="customeradd[pesel]" {tip text="Enter customer Social Security Number (optional)" trigger="pesel"}>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<B>{t}PIN{/t}</B>
+					</TD>
+					<TD width="99%">
+						<INPUT TYPE="text" size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD width="50%" class="fright" ALIGN="LEFT">
+			<P><NOBR><IMG src="img/post.gif" alt="">
+			    <TEXTAREA rows="4" cols="60" name="customeradd[serviceaddr]" {tip text="Enter correspondence address (optional)"}>
+				{$customeradd.serviceaddr}
+			    </TEXTAREA></NOBR>
+			<P><NOBR><IMG src="img/info1.gif" alt="">
+			    <TEXTAREA rows="4" cols="60" name="customeradd[info]" {tip text="Enter additional informations (optional)"}>
+				{$customeradd.info}
+			    </TEXTAREA></NOBR>
+			<P><NOBR><IMG src="img/mail.gif" alt="">
+			    <TEXTAREA rows="4" cols="60" name="customeradd[message]" {tip text="Enter message to customer (optional)"}>
+				{$customeradd.message}
+			    </TEXTAREA></NOBR>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="100%" colspan="2" class="fbottomu" align="right">
+			<A href="javascript:document.customeradd.submit();" ACCESSKEY="S">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
+			<A href="?m=customerlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="customeradd[reuse]" value="ON" class="box light" {if $customeradd.reuse}checked{/if}> {t}Display this form again, when this customer is saved{/t}
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['customeradd'].elements['customeradd[lastname]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

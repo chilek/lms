@@ -68,45 +68,45 @@ $menu = array(
 
 		array(
 			'name' => trans('Customers'),
-			'img' =>'user.gif',
-			'link' =>'?m=userlist',
+			'img' =>'customer.gif',
+			'link' =>'?m=customerlist',
 			'tip' => trans('Customers: list, add, search, groups'),
 			'accesskey' =>'u',
 			'prio' =>'5',
 			'submenu' => array(
 				array(
 					'name' => trans('List'),
-					'link' =>'?m=userlist',
+					'link' =>'?m=customerlist',
 					'tip' => trans('List of Customers'),
 				),
 				array(
 					'name' => trans('New Customer'),
-					'link' =>'?m=useradd',
+					'link' =>'?m=customeradd',
 					'tip' => trans('Allows you to add new customer'),
 				),
 				array(
 					'name' => trans('Search'),
-					'link' =>'?m=usersearch',
+					'link' =>'?m=customersearch',
 					'tip' => trans('Allows you to find customer'),
 				),
 				array(
 					'name' => trans('Groups'),
-					'link' =>'?m=usergrouplist',
+					'link' =>'?m=customergrouplist',
 					'tip' => trans('List of Customers Groups'),
 				),
 				array(
 					'name' => trans('New Group'),
-					'link' =>'?m=usergroupadd',
+					'link' =>'?m=customergroupadd',
 					'tip' => trans('Allows you to add new group'),
 				),
 				array(
 					'name' => trans('Messages'),
-					'link' =>'?m=userwarn',
+					'link' =>'?m=customerwarn',
 					'tip' => trans('Allows you to send message to customers'),
 				),
 				array(
 					'name' => trans('Printing'),
-					'link' =>'?m=print&menu=users',
+					'link' =>'?m=print&menu=customers',
 					'tip' => trans('Printing'),
 				),
 			),		 

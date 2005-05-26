@@ -30,8 +30,8 @@ function EventSearch($search)
 
 	$list = $LMS->DB->GetAll(
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
-		.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername 
-		 FROM events LEFT JOIN users ON (customerid = users.id)
+		.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername 
+		 FROM events LEFT JOIN customers ON (customerid = customers.id)
 		 WHERE (private = 0 OR (private = 1 AND adminid = ?)) '
 		.($search['datefrom'] ? ' AND date >= '.$search['datefrom'] : '')
 		.($search['dateto'] ? ' AND date <= '.$search['dateto'] : '')
@@ -97,7 +97,7 @@ if($event = $_POST['event'])
 }
 
 $SMARTY->assign('adminlist',$LMS->GetAdminNames());
-$SMARTY->assign('userlist',$LMS->GetUserNames());
+$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('eventsearch.html');
 

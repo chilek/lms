@@ -233,14 +233,14 @@
 	</TR>
 </TABLE>
 
-<!-- The Other Page of Invoice userbalancelist + userpin -->
+<!-- The Other Page of Invoice customerbalancelist + customerpin -->
 <!-- insert page break here and buy auto-duplex printer :p -->
 
-PIN: <CODE>{$invoice.userpin}</CODE>
+PIN: <CODE>{$invoice.customerpin}</CODE>
 <TABLE cellpadding="5" cellspacing="0" width="100%">
 	<TR>
 		<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-		<TD width="1%" class="fbt">{t}User:{/t}</TD>
+		<TD width="1%" class="fbt">{t}Customer:{/t}</TD>
 		<TD width="1%" class="fbt">{t}Type:{/t}</TD>
 		<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
 		<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
@@ -248,24 +248,24 @@ PIN: <CODE>{$invoice.userpin}</CODE>
 		<TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
 		<TD width="93%" class="frightu">{t}Description:{/t}</TD>
 	</TR>
-	{section name=balancelist loop=$invoice.userbalancelist.id start=-20}
+	{section name=balancelist loop=$invoice.customerbalancelist.id start=-20}
 	<TR>
-		<TD width="1%"><nobr>{$invoice.userbalancelist.date[balancelist]}</nobr></TD>
-		<TD width="1%">{$invoice.userbalancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
-		<TD width="1%" NOWRAP>{$invoice.userbalancelist.name[balancelist]}</TD>
-		<TD width="1%" align="right"><nobr>{$invoice.userbalancelist.value[balancelist]|money_format}</nobr></TD>
+		<TD width="1%"><nobr>{$invoice.customerbalancelist.date[balancelist]}</nobr></TD>
+		<TD width="1%">{$invoice.customerbalancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
+		<TD width="1%" NOWRAP>{$invoice.customerbalancelist.name[balancelist]}</TD>
+		<TD width="1%" align="right"><nobr>{$invoice.customerbalancelist.value[balancelist]|money_format}</nobr></TD>
 		<TD width="1%" align="right"><nobr>
-                        {if $invoice.userbalancelist.taxvalue[balancelist]}
-                            {$invoice.userbalancelist.taxvalue[balancelist]|string_format:"%01.2f"} %
+                        {if $invoice.customerbalancelist.taxvalue[balancelist]}
+                            {$invoice.customerbalancelist.taxvalue[balancelist]|string_format:"%01.2f"} %
                         {else}{t}tax-free{/t}{/if}</nobr>
 		</TD>
 		<TD width="1%" align="center">&raquo;</TD>
 		<TD width="1%" align="right"><nobr>
-			{if $invoice.userbalancelist.after[balancelist] > 0}<STRONG>{/if}
-			    {$invoice.userbalancelist.after[balancelist]|money_format}
-			{if $invoice.userbalancelist.after[balancelist] > 0}</STRONG>{/if}</nobr>
+			{if $invoice.customerbalancelist.after[balancelist] > 0}<STRONG>{/if}
+			    {$invoice.customerbalancelist.after[balancelist]|money_format}
+			{if $invoice.customerbalancelist.after[balancelist] > 0}</STRONG>{/if}</nobr>
 		</TD>
-		<TD width="93%">{$invoice.userbalancelist.comment[balancelist]}</TD>
+		<TD width="93%">{$invoice.customerbalancelist.comment[balancelist]}</TD>
         </TR>
 	{/section}
 </TABLE>						  

@@ -35,7 +35,7 @@
 		document.forms['addbalance'].elements['addbalance[type]'][i].checked = true;
 	}
 
-	function CountSelectedUsers()
+	function CountSelectedCustomers()
 	{
 		var j = 0;
 		for (var i = 0; i < document.forms['addbalance'].elements[0].length; i++) {
@@ -55,15 +55,15 @@
 			<TABLE width="100%" cellpadding="3">
 				<TR CLASS="DARK">
 					<TD CLASS="FALL">
-						<IMG SRC="img/user.gif" ALT="">&nbsp;<B>{t}Customers:{/t}</B>
+						<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{t}Customers:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL">
 						{t}Select customers which has to concern new operation. If operation isn't customer payment or covenant, system will ignore list of customers.{/t}<BR><BR>
-						<SELECT size="20" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedUsers();" multiple>
-							{section name=users loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].customername|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+						<SELECT size="20" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
+							{section name=customers loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 						{t}Selected:{/t} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" style="border: 0" class="light" readonly></INPUT>

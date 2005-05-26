@@ -88,7 +88,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $adminlist = $LMS->GetAdminNames();
 
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('adminlist', $adminlist);
 $SMARTY->assign('adminlistsize', sizeof($adminlist));
 $SMARTY->assign('error', $error);

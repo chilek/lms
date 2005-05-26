@@ -1,0 +1,81 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+{include file="calendar_js.html"}
+<H1>{$layout.pagetitle}</H1>
+<P>
+<FORM method="POST" name="assignmentedit" action="?m=customerassignmentsedit&id={$assignmentedit.id}">
+<TABLE width="100%" cellpadding="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="fbt" width="1%">
+			<B>{t}Subscription:{/t}</B>
+		</TD>
+		<TD class="frightu" width="98%">
+			<SELECT size="1" name="assignmentedit[tariffid]" {tip text="Select subscription" trigger="edittariffid"}>
+				<OPTION value="0"{if !$assignmentedit.tariffid} SELECTED{/if}>{t}- all liabilities suspended -{/t}</OPTION>
+				{section name=t loop=$tariffs}
+				<OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignmentedit.tariffid}SELECTED{/if}>
+				{$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
+				</OPTION>
+			{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fleft" width="1%">
+			<IMG src="img/calendar.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Accounting day:{/t}</B>
+		</TD>
+		<TD class="fright" width="98%">
+			<SELECT size="1" name="assignmentedit[period]" {tip text="Select time period to account liability"}>
+				<OPTION value="0" {if $assignmentedit.period==0}SELECTED{/if}>{t}weekly{/t}</OPTION>
+				<OPTION value="1" {if $assignmentedit.period==1 || $assignmentedit.period==''}SELECTED{/if}>{t}monthly{/t}</OPTION>
+				<OPTION value="2" {if $assignmentedit.period==2}SELECTED{/if}>{t}quarterly{/t}</OPTION>
+				<OPTION value="3" {if $assignmentedit.period==3}SELECTED{/if}>{t}yearly{/t}</OPTION>
+			</SELECT>
+			<B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignmentedit[at]" value="{$assignmentedit.at}" {tip text="Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), and for quarterly DD/MM (MM <= 3)" trigger="editat"} SIZE="5">
+			<B>{t}from:{/t}</B> <INPUT type="TEXT" name="assignmentedit[datefrom]" value="{if $assignmentedit.datefrom}{$assignmentedit.datefrom}{/if}" OnClick="cal3.popup();" {tip text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="editdatefrom"} SIZE="10"> 
+			<B>{t}to:{/t}</B> <INPUT type="TEXT" name="assignmentedit[dateto]" value="{if $assignmentedit.dateto}{$assignmentedit.dateto}{/if}" OnClick="cal4.popup();" {tip text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="editdateto"} SIZE="10">
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fleft" width="1%"></TD>
+		<TD width="1%">
+			<B>{t}Discount:{/t}</B>
+		</TD>
+		<TD class="fright" width="98%">
+		        <INPUT type="text" size="3" name="assignmentedit[discount]" value="{if $assignmentedit.discount!=0}{$assignmentedit.discount}{/if}" {tip text="Enter discount percentage" trigger="editdiscount"}>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fleft" width="1%"></TD>
+		<TD width="1%">
+			<B>{t}Invoice:{/t}</B>
+		</TD>
+		<TD class="fright" width="98%">
+		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> {t}with invoice{/t}
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" align="RIGHT" colspan="3">
+			<A href="javascript:document.assignmentedit.submit()">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>&nbsp;
+			<A href="?m=customerinfo&id={$assignmentedit.customerid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>
+{include file="customerassignments.html"}
+<SCRIPT>
+<!--
+var cal3 = new calendar(document.forms['assignmentedit'].elements['assignmentedit[datefrom]']);
+cal3.time_comp = false;
+var cal4 = new calendar(document.forms['assignmentedit'].elements['assignmentedit[dateto]']);
+cal4.time_comp = false;
+//-->
+</SCRIPT>
+{include file="footer.html"}

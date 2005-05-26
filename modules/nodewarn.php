@@ -41,8 +41,8 @@ if(isset($setwarnings['mnodeid']))
 		
 		if($message)
 		{
-			$LMS->SetTS('users');
-			$LMS->DB->Execute('UPDATE users SET message=? WHERE id=?', array($message,$LMS->GetNodeOwner($value)));
+			$LMS->SetTS('customers');
+			$LMS->DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message,$LMS->GetNodeOwner($value)));
 		}
 	}
 	$SESSION->save('warnmessage', $message);
@@ -56,12 +56,12 @@ $backid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
 
 if($backid)
 {
-	if($LMS->UserExists($backid))
+	if($LMS->CustomerExists($backid))
 	{
 		$LMS->NodeSetWarnU($backid, $_GET['warning']);
 		
 		$redir = $SESSION->get('backto');
-		if($SESSION->get('lastmodule')=='usersearch')
+		if($SESSION->get('lastmodule')=='customersearch')
 			$redir .= '&search=1';
 			
 		$SESSION->redirect('?'.$redir.'#'.$backid);

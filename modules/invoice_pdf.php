@@ -450,7 +450,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
-		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
+		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
 		{
 			$i++;
@@ -481,7 +481,7 @@ elseif($_GET['fetchallinvoices'])
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
-		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
+		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
 		{
 			$i++;
@@ -495,14 +495,14 @@ elseif($_GET['fetchsingle'])
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0', $ntempl));
 	$invoice['last'] = TRUE;
-	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
+	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	invoice_body();
 
 }
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0', $ntempl));
-	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
+	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$type = trans('ORIGINAL');
 	invoice_body();
 	$type = trans('COPY');

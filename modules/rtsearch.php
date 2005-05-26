@@ -66,16 +66,16 @@ function RTSearch($search, $order='createtime,desc')
 	$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
 	
 	if($search['name'])
-		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'UPPER(users.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
+		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
 
-	if($result = $LMS->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+	if($result = $LMS->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 			FROM rttickets 
 			LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
 			LEFT JOIN admins ON (owner = admins.id) 
-			LEFT JOIN users ON (rttickets.customerid = users.id)
+			LEFT JOIN customers ON (rttickets.customerid = customers.id)
 			WHERE 1=1 '
 			.$where 
-			.'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.customerid, users.lastname, users.name '
+			.'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.customerid, customers.lastname, customers.name '
 			.($sqlord !='' ? $sqlord.' '.$direction:'')))
 	{
 		foreach($result as $idx => $ticket)
@@ -168,7 +168,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('adminlist', $LMS->GetAdminNames());
-$SMARTY->assign('userlist', $LMS->GetAllUserNames());
+$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('search', $SESSION->get('rtsearch'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtsearch.html');

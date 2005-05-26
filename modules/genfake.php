@@ -1837,7 +1837,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 
 	echo '<B>'.trans('Clearing database...').'</B><BR>';
 	$DB->Execute('DELETE FROM nodes');
-	$DB->Execute('DELETE FROM users');
+	$DB->Execute('DELETE FROM customers');
 	$DB->Execute('DELETE FROM cash');
 	$DB->Execute('DELETE FROM assignments');
 	$DB->Execute('DELETE FROM networks');
@@ -1849,7 +1849,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	if($LMS->CONFIG['database']['type']=='postgres')
 	{
 		$DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
-		$DB->Execute('DROP SEQUENCE "users_id_seq"; CREATE SEQUENCE "users_id_seq"');
+		$DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
 		$DB->Execute('DROP SEQUENCE "cash_id_seq";  CREATE SEQUENCE "cash_id_seq"');
 		$DB->Execute('DROP SEQUENCE "assignments_id_seq";CREATE SEQUENCE "assignments_id_seq"');
 		$DB->Execute('DROP SEQUENCE "networks_id_seq";   CREATE SEQUENCE "networks_id_seq"');
@@ -1860,7 +1860,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	
 	if($LMS->CONFIG['database']['type']=='mysql')
 	{
-		$DB->Execute('ALTER TABLE users auto_increment=0');
+		$DB->Execute('ALTER TABLE customers auto_increment=0');
 		$DB->Execute('ALTER TABLE nodes auto_increment=0');
 		$DB->Execute('ALTER TABLE netdevices auto_increment=0');
 		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
@@ -1897,30 +1897,30 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$esize = sizeof($emaildomains);
 	for($i = 0; $i < sprintf('%d',$_GET['l']); $i++)
 	{
-		$useradd['lastname'] = $lastnames[mt_rand(0,$lnsize-1)];
-		$useradd['name'] = $names[mt_rand(0,$nsize-1)];
-		$useradd['phone1'] = $phoneprefix[mt_rand(0,$ppsize-1)];
+		$customeradd['lastname'] = $lastnames[mt_rand(0,$lnsize-1)];
+		$customeradd['name'] = $names[mt_rand(0,$nsize-1)];
+		$customeradd['phone1'] = $phoneprefix[mt_rand(0,$ppsize-1)];
 		for($j = 0; $j < 6; $j++)
-			$useradd['phone1'] .= mt_rand(0,9);
+			$customeradd['phone1'] .= mt_rand(0,9);
 		$street = mt_rand(0,$ssize-1);
-		$useradd['address'] = $streets[$street].' '.mt_rand(1,50).'/'.mt_rand(1,300);
-		$useradd['zip'] = '03-7'.sprintf('%02d',$street);
-		$useradd['city'] = 'Mahagonny';
-		$useradd['email'] = strtolower($useradd['name']).'.'.strtolower($useradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)];
-		$useradd['status'] = 3;
-		$useradd['tariff'] = mt_rand(1,3);
-		$useradd['payday'] = mt_rand(1,28);
-		$useradd['gguin'] = 0;
-		$useradd['phone2'] = '';
-		$useradd['phone3'] = '';
-		$useradd['nip'] = '';
-		$useradd['pesel'] = '';
-		$useradd['serviceaddr'] = '';
-		$useradd['info'] = '';
-		$useradd['message'] = '';
-		$useradd['pin'] = rand(10000,99999);
-		$id = $LMS->UserAdd($useradd);
-		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'customerid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
+		$customeradd['address'] = $streets[$street].' '.mt_rand(1,50).'/'.mt_rand(1,300);
+		$customeradd['zip'] = '03-7'.sprintf('%02d',$street);
+		$customeradd['city'] = 'Mahagonny';
+		$customeradd['email'] = strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)];
+		$customeradd['status'] = 3;
+		$customeradd['tariff'] = mt_rand(1,3);
+		$customeradd['payday'] = mt_rand(1,28);
+		$customeradd['gguin'] = 0;
+		$customeradd['phone2'] = '';
+		$customeradd['phone3'] = '';
+		$customeradd['nip'] = '';
+		$customeradd['pesel'] = '';
+		$customeradd['serviceaddr'] = '';
+		$customeradd['info'] = '';
+		$customeradd['message'] = '';
+		$customeradd['pin'] = rand(10000,99999);
+		$id = $LMS->CustomerAdd($customeradd);
+		$LMS->AddAssignMent(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => 1, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{

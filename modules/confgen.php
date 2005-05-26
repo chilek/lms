@@ -41,28 +41,28 @@ function GetTemplateArrays()
 {
 	global $LMS;
 
-	$result['users'] = $LMS->DB->GetAllByKey('SELECT * FROM users','id');
+	$result['customers'] = $LMS->DB->GetAllByKey('SELECT * FROM customers','id');
 	$result['nodes'] = $LMS->DB->GetAllByKey('SELECT * FROM nodes ORDER BY ipaddr ASC','id');
 	$result['tariffs'] = $LMS->DB->GetAllByKey('SELECT * FROM tariffs','id');
 	$result['networks'] = $LMS->DB->GetAllByKey('SELECT *, address AS addresslong, inet_ntoa(address) AS address FROM networks','id');
 		
-	$temp['balance'] = $LMS->DB->GetAllByKey('SELECT users.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.customerid GROUP BY users.id','id');
+	$temp['balance'] = $LMS->DB->GetAllByKey('SELECT customers.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id','id');
 	$temp['finances'] = $LMS->DB->GetAllByKey('SELECT customerid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customerid','customerid');
 
 	foreach($temp['balance'] as $balance)
-		$result['users'][$balance['id']]['balance'] = $balance['balance'];
+		$result['customers'][$balance['id']]['balance'] = $balance['balance'];
 		
 	foreach($temp['finances'] as $customerid => $financesrecord)
 	{
-		$result['users'][$customerid]['uprate'] = $financesrecord['uprate'];
-		$result['users'][$customerid]['downrate'] = $financesrecord['downrate'];
-		$result['users'][$customerid]['value'] = $financesrecord['value'];
+		$result['customers'][$customerid]['uprate'] = $financesrecord['uprate'];
+		$result['customers'][$customerid]['downrate'] = $financesrecord['downrate'];
+		$result['customers'][$customerid]['value'] = $financesrecord['value'];
 	}
 
 	foreach($result['nodes'] as $nodeid => $noderecord)
 	{
-		$result['users'][$noderecord['ownerid']]['nodes'][$nodeid] = &$result['nodes'][$nodeid];
-		$result['nodes'][$nodeid]['owner'] = &$result['users'][$noderecord['ownerid']];
+		$result['customers'][$noderecord['ownerid']]['nodes'][$nodeid] = &$result['nodes'][$nodeid];
+		$result['nodes'][$nodeid]['owner'] = &$result['customers'][$noderecord['ownerid']];
 		$result['nodes'][$nodeid]['iplong'] = $noderecord['ipaddr'];
 		$result['nodes'][$nodeid]['ipaddr'] = long2ip($noderecord['ipaddr']);
 	}

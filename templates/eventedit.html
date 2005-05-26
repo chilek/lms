@@ -81,7 +81,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/user.gif" alt="">
+			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Customer:{/t}</B>
@@ -89,8 +89,8 @@
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[customerid]" {tip text="Select customer (optional)"}>
 				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{t}- select customer -{/t}</OPTION>
-				{section name=userlist loop=$userlist}	
-				<OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id == $event.customerid} SELECTED{/if}>{$userlist[userlist].customername}</OPTION>
+				{section name=customerlist loop=$customerlist}	
+				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id == $event.customerid} SELECTED{/if}>{$customerlist[customerlist].customername}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
@@ -111,11 +111,11 @@
 			<IMG src="img/admins.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
-			<B>{t}Users:{/t}</B>
+			<B>{t}Customers:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<SELECT name="event[admin]" {tip text="Select user (optional)"}>
-				<OPTION value=""{if !$event.admin} SELECTED{/if}>{t}- select user -{/t}</OPTION>
+			<SELECT name="event[admin]" {tip text="Select customer (optional)"}>
+				<OPTION value=""{if !$event.admin} SELECTED{/if}>{t}- select customer -{/t}</OPTION>
 				{section name=adminlist loop=$adminlist}	
 				<OPTION value="{$adminlist[adminlist].id}"{if $event.admin == $adminlist[adminlist].id} SELECTED{/if}>{$adminlist[adminlist].name}</OPTION>
 				{/section}

@@ -34,14 +34,14 @@ $search = urldecode(trim($_GET['what']));
 
 switch($_GET['mode'])
 {
-	case 'user':
+	case 'customer':
 		if($_GET['ajax']==1) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT id, lastname, name, email, phone1, phone2, phone3 FROM users WHERE id ?LIKE? \''.$search.'%\' OR lower(lastname) ?LIKE? lower(\''.$search.'%\') OR lower(name) ?LIKE? lower(\''.$search.'%\') OR lower(email) ?LIKE? lower(\'%'.$search.'%\') OR phone1 ?LIKE? \''.$search.'%\' OR phone2 ?LIKE? \''.$search.'%\' OR phone3 ?LIKE? \''.$search.'%\' ORDER by lastname, name, email, phone1 LIMIT 15');
+			$candidates = $DB->GetAll('SELECT id, lastname, name, email, phone1, phone2, phone3 FROM customers WHERE id ?LIKE? \''.$search.'%\' OR lower(lastname) ?LIKE? lower(\''.$search.'%\') OR lower(name) ?LIKE? lower(\''.$search.'%\') OR lower(email) ?LIKE? lower(\'%'.$search.'%\') OR phone1 ?LIKE? \''.$search.'%\' OR phone2 ?LIKE? \''.$search.'%\' OR phone3 ?LIKE? \''.$search.'%\' ORDER by lastname, name, email, phone1 LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
-				$actions[$row['id']] = '?m=userinfo&id='.$row['id'];
+				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
 				$eglible[$row['id']] = escape_js($row['lastname'].' '.$row['name']);
 				if (preg_match("/^$search/i",$row['id'])) $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']);
 				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['lastname']);
@@ -65,19 +65,19 @@ switch($_GET['mode'])
 
 		if(is_numeric($search)) // maybe it's customer ID
 		{
-			if($customerid = $DB->GetOne('SELECT id FROM users WHERE id = '.$search))
+			if($customerid = $DB->GetOne('SELECT id FROM customers WHERE id = '.$search))
 			{
-				$target = '?m=userinfo&id='.$customerid;
+				$target = '?m=customerinfo&id='.$customerid;
 				break;
 			}
 		}
 
-		// use usersearch module to find all customers
+		// use customersearch module to find all customers
 		$s['customername'] = $search;
 		$s['address'] = $search;
 		$s['phone'] = $search;
 		$s['email'] = $search;
-		$SESSION->save('usersearch', $s);
+		$SESSION->save('customersearch', $s);
 		$SESSION->save('uslk', 'OR');
 		
 		$SESSION->remove('uslp');
@@ -85,7 +85,7 @@ switch($_GET['mode'])
 		$SESSION->remove('uslg');
 		$SESSION->remove('usls');
 		
-		$target = '?m=usersearch&search=1';
+		$target = '?m=customersearch&search=1';
 	break;
 
 	case 'node':
@@ -137,7 +137,7 @@ switch($_GET['mode'])
 	case 'ticket':
 		if($_GET['ajax']==1) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT rttickets.id, rttickets.subject, rttickets.requestor, users.name, users.lastname FROM rttickets LEFT JOIN users on rttickets.customerid=users.id WHERE rttickets.id ?LIKE? \''.$search.'%\' OR lower(rttickets.subject) ?LIKE? lower(\'%'.$search.'%\') OR lower(rttickets.requestor) ?LIKE? lower(\'%'.$search.'%\') OR lower(users.name) ?LIKE? lower(\''.$search.'%\') OR lower(users.lastname) ?LIKE? lower(\''.$search.'%\') ORDER BY rttickets.subject, rttickets.id, users.lastname, users.name, rttickets.requestor LIMIT 15');
+			$candidates = $DB->GetAll('SELECT rttickets.id, rttickets.subject, rttickets.requestor, customers.name, customers.lastname FROM rttickets LEFT JOIN customers on rttickets.customerid=customers.id WHERE rttickets.id ?LIKE? \''.$search.'%\' OR lower(rttickets.subject) ?LIKE? lower(\'%'.$search.'%\') OR lower(rttickets.requestor) ?LIKE? lower(\'%'.$search.'%\') OR lower(customers.name) ?LIKE? lower(\''.$search.'%\') OR lower(customers.lastname) ?LIKE? lower(\''.$search.'%\') ORDER BY rttickets.subject, rttickets.id, customers.lastname, customers.name, rttickets.requestor LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
