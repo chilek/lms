@@ -143,7 +143,7 @@ open(MTFILE, "$smsfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT users.id AS id, pin, lastname, name, phone1, phone2, phone3, SUM((type * -2 + 7) * value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, pin, lastname, name, phone1, phone2, phone3 HAVING SUM((type * -2 + 7) * value) < 0"); 
+my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, lastname, name, phone1, phone2, phone3, SUM((type * -2 + 7) * value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, pin, lastname, name, phone1, phone2, phone3 HAVING SUM((type * -2 + 7) * value) < 0"); 
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -222,7 +222,7 @@ while (my $row = $dbq->fetchrow_hashref())
 				}
 
 				if ($line =~ /\%abonament/) {
-					my $saldo_dbq = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND userid = $row->{'id'}");
+					my $saldo_dbq = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND customerid = $row->{'id'}");
 					$saldo_dbq->execute();
 					my $ow_s = $saldo_dbq->fetchrow_hashref();
 					$line =~ s/\%abonament/$ow_s->{'value'}/;
@@ -238,7 +238,7 @@ while (my $row = $dbq->fetchrow_hashref())
 		}
 		elsif(!$quiet) 
 		{
-				print STDOUT "This user don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
+				print STDOUT "This customer don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
 		}
 	}
 }

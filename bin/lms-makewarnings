@@ -143,7 +143,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('warnings', 'networks') || '';
-my $usergroups_list = $ini->val('warnings', 'usergroups') || '';
+my $customergroups_list = $ini->val('warnings', 'customergroups') || '';
 my $cfile = $ini->val('warnings', 'config_file') || '/etc/rc.d/rc.warnings';
 my $cuid = $ini->val('warnings', 'config_owneruid') || '0';
 my $cgid = $ini->val('warnings', 'config_ownergid') || '0';
@@ -200,19 +200,19 @@ if(!$networks_list)
 
 my @networks = split ' ',$networks_list;
 
-my $iniusergroups = $usergroups_list;
+my $inicustomergroups = $customergroups_list;
 
-if(!$usergroups_list)
+if(!$customergroups_list)
 {
-	$dbq = $dbase->prepare("SELECT name FROM usergroups");
+	$dbq = $dbase->prepare("SELECT name FROM customergroups");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) 
 	{
-		$usergroups_list = "$usergroups_list $row->{'name'}";
+		$customergroups_list = "$customergroups_list $row->{'name'}";
 	}
 }
 
-my @usergroups = split ' ',$usergroups_list;
+my @customergroups = split ' ',$customergroups_list;
 
 my $currtime = strftime("%s",localtime());
 my $plimit = 0;
@@ -226,35 +226,35 @@ if (substr($limit, length($limit) - 1, 1) eq "%")
 # Build nodes list
 #
 
-$dbq = $dbase->prepare("SELECT id, name FROM usergroups");
+$dbq = $dbase->prepare("SELECT id, name FROM customergroups");
 $dbq->execute();
-my %usergrouplist;
+my %customergrouplist;
 
 while (my $row = $dbq->fetchrow_hashref())
 {
-	$usergrouplist{$row->{'name'}} = $row->{'id'};
+	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
-$dbq = $dbase->prepare("SELECT users.id AS id, lastname, name, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, lastname, name HAVING SUM((type * -2 + 7) * cash.value) < 0");
+$dbq = $dbase->prepare("SELECT customers.id AS id, lastname, name, SUM((type * -2 + 7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, lastname, name HAVING SUM((type * -2 + 7) * cash.value) < 0");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	my $usergroupscount = 0;
-	foreach my $key2 (@usergroups)
+	my $customergroupscount = 0;
+	foreach my $key2 (@customergroups)
 	{
-		my $sdbq = $dbase->prepare("SELECT count(userid) AS total FROM userassignments WHERE userid=$row->{'id'} AND usergroupid=".$usergrouplist{$key2});
+		my $sdbq = $dbase->prepare("SELECT count(customerid) AS total FROM customerassignments WHERE customerid=$row->{'id'} AND customergroupid=".$customergrouplist{$key2});
 		$sdbq->execute();
 		my $srow = $sdbq->fetchrow_hashref();
 		if ($srow->{'total'} eq 1)
 		{
-			$usergroupscount++;
+			$customergroupscount++;
 		}
 	}
 	my $srow;
-	if($usergroupscount || !$iniusergroups)
+	if($customergroupscount || !$inicustomergroups)
 	{
 		my $balance = $row->{'balance'};
-		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND userid = '$row->{'id'}' GROUP BY userid HAVING SUM(value) > 0");
+		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND customerid = $row->{'id'} GROUP BY customerid HAVING SUM(value) > 0");
 		$sdbq->execute();
 		$srow = $sdbq->fetchrow_hashref();
 

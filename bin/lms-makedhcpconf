@@ -128,7 +128,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('dhcp', 'networks') || '';
-my $usergroups_list = $ini->val('dhcp', 'usergroups') || '';
+my $customergroups_list = $ini->val('dhcp', 'customergroups') || '';
 my $deflease = $ini->val('dhcp', 'default_lease_time') || '86400';
 my $maxlease = $ini->val('dhcp', 'max_lease_time') || '86400';
 my $cfile = $ini->val('dhcp', 'config_file') || '/etc/dhcpd.conf';
@@ -178,27 +178,27 @@ if($logfacility)
 	print DHCPDCONF "log-facility ".$logfacility.";\n";
 }
 
-my $iniusergroups = $usergroups_list;
+my $inicustomergroups = $customergroups_list;
 
-if(!$usergroups_list)
+if(!$customergroups_list)
 {
-	my $dbq = $dbase->prepare("SELECT name FROM usergroups");
+	my $dbq = $dbase->prepare("SELECT name FROM customergroups");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
-		$usergroups_list = "$usergroups_list $row->{'name'}";
+		$customergroups_list = "$customergroups_list $row->{'name'}";
 	}
 }
 
-my @usergroups = split ' ',$usergroups_list;
+my @customergroups = split ' ',$customergroups_list;
 
-my $dbq = $dbase->prepare("SELECT id, name FROM usergroups");
+my $dbq = $dbase->prepare("SELECT id, name FROM customergroups");
 $dbq->execute();
 
-my %usergrouplist;
+my %customergrouplist;
 
 while (my $row = $dbq->fetchrow_hashref())
 {
-	$usergrouplist{$row->{'name'}} = $row->{'id'};
+	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
 my @used_ifaces;
@@ -301,18 +301,18 @@ while (my $row = $dbq->fetchrow_hashref())
 		$row2->{'ipaddr'} = u32todotquad($row2->{'ipaddr'});
 		if(matchip($row2->{'ipaddr'},$row->{'address'},$row->{'mask'}))
 		{
-			my $usergroupscount;
-			foreach my $key2 (@usergroups)
+			my $customergroupscount;
+			foreach my $key2 (@customergroups)
 			{
-				my $dbq3 = $dbase->prepare("SELECT count(userid) as total FROM userassignments WHERE userid=$row2->{'ownerid'} AND usergroupid=".$usergrouplist{$key2});
+				my $dbq3 = $dbase->prepare("SELECT count(customerid) as total FROM customerassignments WHERE customerid=$row2->{'ownerid'} AND customergroupid=".$customergrouplist{$key2});
 				$dbq3->execute();
 				my $srow = $dbq3->fetchrow_hashref();
 				if ($srow->{'total'} eq 1)
 				{
-					$usergroupscount++;
+					$customergroupscount++;
 				}
 			}
-			if ($usergroupscount || !$iniusergroups)
+			if ($customergroupscount || !$inicustomergroups)
 			{
 				my $ipaddr = $row2->{'ipaddr'};
 				my $ndomain = $ini->val("dhcp:$ipaddr",'domain') || '';
