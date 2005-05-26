@@ -27,19 +27,19 @@
 function AliasExists($login, $account)
 {
 	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM aliases WHERE login = ? AND accountid = ?', array($login, $account)) ? TRUE : FALSE);
+	return ($DB->GetOne('SELECT id FROM aliases WHERE login = ? AND accountid = ?', array($login, $account)) ? TRUE : FALSE);
 }
 
 function AccountExistsInDomain($login, $domain)
 {
 	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
+	return ($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
 }
 
 function AliasExistsInDomain($login, $domain)
 {
 	global $LMS;
-	return ($LMS->DB->GetOne('SELECT 1 FROM aliases, passwd WHERE accountid = passwd.id AND aliases.login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
+	return ($DB->GetOne('SELECT 1 FROM aliases, passwd WHERE accountid = passwd.id AND aliases.login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
 }
 
 $aliasadd = isset($_POST['aliasadd']) ? $_POST['aliasadd'] : NULL;
@@ -63,7 +63,7 @@ if(sizeof($aliasadd))
 			$error['login'] = trans('This account has alias with specified name!');
 		else
 		{
-			$domain = $LMS->DB->GetOne('SELECT domainid FROM passwd WHERE id = ?', array($aliasadd['accountid']));
+			$domain = $DB->GetOne('SELECT domainid FROM passwd WHERE id = ?', array($aliasadd['accountid']));
 			
 			if($aliasadd['accountid'] && AliasExistsInDomain($aliasadd['login'], $domain))
 				$error['login'] = trans('Alias with that login name already exists in that domain!');
@@ -77,7 +77,7 @@ if(sizeof($aliasadd))
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO aliases (login, accountid) VALUES (?,?)',
+		$DB->Execute('INSERT INTO aliases (login, accountid) VALUES (?,?)',
 				    array($aliasadd['login'], $aliasadd['accountid']));
 		$LMS->SetTS('aliases');
 		
@@ -98,8 +98,8 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('aliasadd', $aliasadd);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->assign('accountlist', $LMS->DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
+$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign('accountlist', $DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('aliasadd.html');
 

@@ -27,11 +27,11 @@
 function GetOptionList($instanceid)
 {
 	global $LMS;
-	$list = $LMS->DB->GetAll('SELECT id, var, value, description, disabled FROM daemonconfig WHERE instanceid=? ORDER BY var', array($instanceid));
+	$list = $DB->GetAll('SELECT id, var, value, description, disabled FROM daemonconfig WHERE instanceid=? ORDER BY var', array($instanceid));
 	return $list;
 }
 
-$instance = $LMS->DB->GetRow('SELECT daemoninstances.id AS id, daemonhosts.id AS hostid, daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
+$instance = $DB->GetRow('SELECT daemoninstances.id AS id, daemonhosts.id AS hostid, daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
 
 $layout['pagetitle'] = trans('Configuration of Instance: $0/$1', $instance['name'], '<A href="?m=daemoninstancelist&id='.$instance['hostid'].'">'.$instance['hostname'].'</A>');
 

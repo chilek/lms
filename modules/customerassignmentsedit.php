@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$customerid = $LMS->DB->GetOne('SELECT customerid FROM assignments WHERE id=?', array($_GET['id']));
+$customerid = $DB->GetOne('SELECT customerid FROM assignments WHERE id=?', array($_GET['id']));
 
 if(!$customerid)
 {
@@ -169,7 +169,7 @@ if($a = $_POST['assignmentedit'])
 
 	if(!$error) 
 	{
-		$LMS->DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, datefrom=?, dateto=?, discount=? WHERE id=?',
+		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, datefrom=?, dateto=?, discount=? WHERE id=?',
 			    array(  $a['tariffid'], 
 				    $customerid, 
 				    $period, 
@@ -185,7 +185,7 @@ if($a = $_POST['assignmentedit'])
 }
 else
 {
-	$a = $LMS->DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice, discount
+	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice, discount
 				FROM assignments LEFT JOIN tariffs 
 				ON (tariffs.id = tariffid)
 				WHERE assignments.id = ?',array($_GET['id']));

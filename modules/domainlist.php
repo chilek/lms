@@ -45,7 +45,7 @@ function GetDomainList($order='name,asc')
 		break;
 	}
 
-	$list = $LMS->DB->GetAll('SELECT id, name, description FROM domains'.($sqlord != '' ? $sqlord : ''));
+	$list = $DB->GetAll('SELECT id, name, description FROM domains'.($sqlord != '' ? $sqlord : ''));
 	
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;

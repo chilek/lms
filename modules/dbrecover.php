@@ -38,17 +38,17 @@ function DBLoad($filename=NULL)
 	else
 		$file = fopen($filename,'r');
 
-	$LMS->DB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
+	$DB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 	while(!feof($file))
 	{
 		$line = fgets($file,4096);
 		if($line!='')
 		{
 			$line=str_replace(';\n','',$line);
-			$LMS->DB->Execute($line);
+			$DB->Execute($line);
 		}
 	}
-	$LMS->DB->CommitTrans();
+	$DB->CommitTrans();
 
 	if ((extension_loaded('zlib'))&&($ext=='gz'))
 		gzclose($file);
@@ -63,7 +63,7 @@ function DBLoad($filename=NULL)
 	{
 		case 'postgres':
 			// actualize postgres sequences ...
-			foreach($LMS->DB->ListTables() as $tablename)
+			foreach($DB->ListTables() as $tablename)
 				// ... where we have *_id_seq
 				if(!in_array($tablename, array(
 							'rtattachments',
@@ -73,7 +73,7 @@ function DBLoad($filename=NULL)
 							'timestamps',
 							'eventassignments',
 							'sessions')))
-					$LMS->DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
+					$DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
 		break;
 	}
 }

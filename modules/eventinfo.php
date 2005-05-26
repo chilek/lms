@@ -29,14 +29,14 @@ if(!$_GET['id'])
 	$SESSION->redirect('?m=eventlist');
 }
 
-$event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, adminid, customerid, begintime, endtime, date, private, closed, '
-			    .$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
+$event = $DB->GetRow('SELECT events.id AS id, title, description, note, adminid, customerid, begintime, endtime, date, private, closed, '
+			    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
 			    admins.name AS adminname
 			    FROM events LEFT JOIN customers ON (customers.id = customerid)
 			    LEFT JOIN admins ON (admins.id = adminid)
 			    WHERE events.id = ?', array($_GET['id']));
 
-$event['adminlist'] = $LMS->DB->GetAll('SELECT adminid AS id, admins.name
+$event['adminlist'] = $DB->GetAll('SELECT adminid AS id, admins.name
 					FROM admins, eventassignments
 					WHERE admins.id = adminid
 					AND eventid = ?', array($event['id']));

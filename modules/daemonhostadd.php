@@ -27,7 +27,7 @@
 function GetHostIdByName($name)
 {
 	global $LMS;
-	return $LMS->DB->GetOne('SELECT id FROM daemonhosts WHERE name = ?', array($name));
+	return $DB->GetOne('SELECT id FROM daemonhosts WHERE name = ?', array($name));
 }
 
 if($hostadd = $_POST['hostadd']) 
@@ -47,7 +47,7 @@ if($hostadd = $_POST['hostadd'])
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO daemonhosts (name, description) VALUES (?,?)',
+		$DB->Execute('INSERT INTO daemonhosts (name, description) VALUES (?,?)',
 				    array($hostadd['name'], $hostadd['description']));
 		$LMS->SetTS('daemonhosts');
 		

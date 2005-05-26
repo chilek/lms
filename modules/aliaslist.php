@@ -54,9 +54,9 @@ function GetAliasList($order='login,asc', $customer=NULL, $kind=NULL, $domain=''
 		break;
 	}
 
-	$list = $LMS->DB->GetAll(
+	$list = $DB->GetAll(
 	        'SELECT aliases.id AS id, passwd.id AS aid, ownerid, aliases.login AS login, passwd.login AS account, expdate, domains.name AS domain, domainid, '
-		.$LMS->DB->Concat('customers.lastname', "' '",'customers.name').
+		.$DB->Concat('customers.lastname', "' '",'customers.name').
 		' AS customername FROM aliases 
 		LEFT JOIN passwd ON accountid = passwd.id
 		LEFT JOIN customers ON customers.id = ownerid 
@@ -136,8 +136,8 @@ $SMARTY->assign('start', $start);
 $SMARTY->assign('aliaslist', $aliaslist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-$SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->assign('accountlist', $LMS->DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
+$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign('accountlist', $DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('aliaslist.html');
 

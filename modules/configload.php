@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$LMS->DB->BeginTrans();
+$DB->BeginTrans();
 
 foreach($LMS->CONFIG['phpui'] as $key => $val)
 {
@@ -290,7 +290,7 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
 			);
 }
 
-$LMS->DB->CommitTrans();
+$DB->CommitTrans();
 
 header('Location: ?m=configlist');
 

@@ -28,9 +28,9 @@ $id = $_GET['id'];
 
 if($id && $_GET['is_sure']=='1')
 {
-	if($LMS->DB->Execute('DELETE FROM events WHERE id = ?', array($id)))
+	if($DB->Execute('DELETE FROM events WHERE id = ?', array($id)))
 	{	
-		if($LMS->DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($id)))
+		if($DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($id)))
 		{
 			$LMS->SetTS('eventassignments');
 		}

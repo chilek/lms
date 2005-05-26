@@ -28,11 +28,11 @@ $id = $_GET['id'];
 
 if($id && $_GET['is_sure']=='1')
 {
-	if($LMS->DB->Execute('DELETE FROM daemoninstances WHERE id = ?', array($id)))
+	if($DB->Execute('DELETE FROM daemoninstances WHERE id = ?', array($id)))
 	{
 		$LMS->SetTS('daemoninstances');
 	}
-	if($LMS->DB->Execute('DELETE FROM daemonconfig WHERE instanceid = ?', array($id)))
+	if($DB->Execute('DELETE FROM daemonconfig WHERE instanceid = ?', array($id)))
 	{
 		$LMS->SetTS('daemonconfig');
 	}

@@ -66,9 +66,9 @@ function RTSearch($search, $order='createtime,desc')
 	$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
 	
 	if($search['name'])
-		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
+		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
 
-	if($result = $LMS->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+	if($result = $DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 			FROM rttickets 
 			LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
 			LEFT JOIN admins ON (owner = admins.id) 

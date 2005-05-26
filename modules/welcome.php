@@ -31,7 +31,7 @@ $SI = new Sysinfo;
 
 $layout['pagetitle'] = 'LAN Management System';
 
-$layout['dbversion'] = $LMS->DB->GetDBVersion();
+$layout['dbversion'] = $DB->GetDBVersion();
 $layout['dbtype'] = $LMS->CONFIG['database']['type'];
 
 $SMARTY->assign('updates', $LMS->CheckUpdates());

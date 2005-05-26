@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$instance = $LMS->DB->GetRow('SELECT id, name, hostid, description, module, crontab, priority, disabled FROM daemoninstances WHERE id=?', array($_GET['id']));
+$instance = $DB->GetRow('SELECT id, name, hostid, description, module, crontab, priority, disabled FROM daemoninstances WHERE id=?', array($_GET['id']));
 
 $layout['pagetitle'] = trans('Instance Edit: $0', $instance['name']);
 
@@ -39,7 +39,7 @@ if(isset($_POST['instance']))
 	if($instedit['name'] == '')
 		$error['name'] = trans('Instance name is required!');
 	elseif($instedit['name']!=$instance['name'])
-		if($LMS->DB->GetOne('SELECT id FROM daemoninstances WHERE name=? AND hostid=?', array($instedit['name'], $instedit['hostid'])))
+		if($DB->GetOne('SELECT id FROM daemoninstances WHERE name=? AND hostid=?', array($instedit['name'], $instedit['hostid'])))
 			$error['name'] = trans('Instance with specified name exists on that host!');
 	
 	if($instedit['module'] == '')
@@ -60,7 +60,7 @@ if(isset($_POST['instance']))
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('UPDATE daemoninstances SET name=?, hostid=?, description=?, module=?, crontab=?, priority=?, disabled=? WHERE id=?',
+		$DB->Execute('UPDATE daemoninstances SET name=?, hostid=?, description=?, module=?, crontab=?, priority=?, disabled=? WHERE id=?',
 				    array($instedit['name'], 
 					    $instedit['hostid'], 
 					    $instedit['description'],
@@ -77,9 +77,9 @@ if(isset($_POST['instance']))
 elseif(isset($_GET['statuschange']))
 {
 	if($instance['disabled'])
-		$LMS->DB->Execute('UPDATE daemoninstances SET disabled=0 WHERE id=?', array($_GET['id']));
+		$DB->Execute('UPDATE daemoninstances SET disabled=0 WHERE id=?', array($_GET['id']));
 	else
-		$LMS->DB->Execute('UPDATE daemoninstances SET disabled=1 WHERE id=?', array($_GET['id']));
+		$DB->Execute('UPDATE daemoninstances SET disabled=1 WHERE id=?', array($_GET['id']));
 	$SESSION->redirect('?m=daemoninstancelist&id='.$instance['hostid']);
 }
 
@@ -87,7 +87,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', isset($instedit) ? $instedit : $instance);
-$SMARTY->assign('hosts', $LMS->DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
+$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
 $SMARTY->assign('layout', $layout);
 $SMARTY->display('daemoninstanceedit.html');
 

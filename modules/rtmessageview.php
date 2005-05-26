@@ -72,7 +72,7 @@ if($message['inreplyto'])
 
 if(!$message['customerid'] && !$message['adminid'] && !$message['mailfrom'])
 {
-	$message['requestor'] = $LMS->DB->GetOne('SELECT requestor FROM rttickets WHERE id=?', array($message['ticketid']));
+	$message['requestor'] = $DB->GetOne('SELECT requestor FROM rttickets WHERE id=?', array($message['ticketid']));
 }
 
 $layout['pagetitle'] = trans('Ticket Review');

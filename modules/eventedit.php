@@ -26,32 +26,32 @@
 
 if($_GET['action'] == 'open')
 {
-	$LMS->DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
+	$DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
 	$LMS->SetTS('events');
 	$SESSION->redirect('?m=eventlist');
 }
 elseif($_GET['action'] == 'close')
 {
-	$LMS->DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
+	$DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
 	$LMS->SetTS('events');
 	$SESSION->redirect('?m=eventlist');
 }
 elseif($_GET['action'] == 'dropadmin')
 {
-	$LMS->DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND adminid = ?',array($_GET['eid'], $_GET['aid']));
+	$DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND adminid = ?',array($_GET['eid'], $_GET['aid']));
 	$LMS->SetTS('eventassignments');
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, 
+$event = $DB->GetRow('SELECT events.id AS id, title, description, note, 
 			date, begintime, endtime, customerid, private, closed, ' 
-			.$LMS->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
+			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
 			FROM events LEFT JOIN customers ON (customers.id = customerid)
 			WHERE events.id = ?', array($_GET['id']));
 
 $event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
 
-$eventadminlist = $LMS->DB->GetAll('SELECT adminid AS id, admins.name
+$eventadminlist = $DB->GetAll('SELECT adminid AS id, admins.name
 					FROM admins, eventassignments
 					WHERE admins.id = adminid
 					AND eventid = ?', array($event['id']));
@@ -78,16 +78,16 @@ if(isset($_POST['event']))
 		$date = mktime(0, 0, 0, $month, $day, $year);
 		$event['private'] = $event['private'] ? 1 : 0;
 
-		$LMS->DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, endtime=?, private=?, note=?, customerid=? WHERE id=?',
+		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, endtime=?, private=?, note=?, customerid=? WHERE id=?',
 				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['id']));
 				
 		$LMS->SetTS('events');
 
 		if($event['admin'])
 		{
-			if(!$LMS->DB->GetOne('SELECT 1 FROM eventassignments WHERE eventid = ? AND adminid = ?',array($event['id'], $event['admin'])))
+			if(!$DB->GetOne('SELECT 1 FROM eventassignments WHERE eventid = ? AND adminid = ?',array($event['id'], $event['admin'])))
 			{
-				$LMS->DB->Execute('INSERT INTO eventassignments (eventid, adminid) VALUES(?,?)',array($event['id'], $event['admin']));
+				$DB->Execute('INSERT INTO eventassignments (eventid, adminid) VALUES(?,?)',array($event['id'], $event['admin']));
 				$LMS->SetTS('eventassignments');
 			}
 		}

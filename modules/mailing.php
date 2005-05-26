@@ -45,7 +45,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 	if($network) 
 		$net = $LMS->GetNetworkParams($network);
 	
-	if($emails = $LMS->DB->GetAll('SELECT customers.id AS id, email, '.$LMS->DB->Concat('lastname', "' '", 'customers.name').' AS customername, '
+	if($emails = $DB->GetAll('SELECT customers.id AS id, email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, '
 		.'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance '
 		.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type=3 OR type=4)) '
 		.($network ? 'LEFT JOIN nodes ON (customer.id=ownerid) ' : '')
@@ -58,7 +58,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 		.' GROUP BY email, lastname, customers.name, customers.id ORDER BY customername'))
 	{
 		if($disabled)
-			$access = $LMS->DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
+			$access = $DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
 			
 		foreach($emails as $idx => $row)
 		{

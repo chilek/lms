@@ -92,7 +92,7 @@ if(isset($ticket))
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$id;
 
-			if($recipients = $LMS->DB->GetCol('SELECT email FROM admins, rtrights WHERE admins.id=adminid AND queueid=? AND email!=\'\' AND rtrights.rights>2',array($queue)))
+			if($recipients = $DB->GetCol('SELECT email FROM admins, rtrights WHERE admins.id=adminid AND queueid=? AND email!=\'\' AND rtrights.rights>2',array($queue)))
 				foreach($recipients as $email)
 				{
 					if($LMS->CONFIG['phpui']['debug_email'])
