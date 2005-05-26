@@ -6,7 +6,7 @@
 #
 
 WORKDIR=`pwd`
-NOTDISTRIB="devel .project"
+NOTDISTRIB="devel .project config_templates modules/confgen.php templates/confgen.html"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
