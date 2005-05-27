@@ -24,6 +24,47 @@
  *  $Id$
  */
 
+if(isset($_GET['ajax'])) 
+{
+	header('Content-type: text/plain');
+	function escape_js($string)
+	{
+        	// escape quotes and backslashes, newlines, etc.
+        	return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
+	}
+	if (trim($_GET['what'] == '')) { print 'false;'; exit; }
+	$search = urldecode(trim($_GET['what']));
+	switch($_GET['mode'])
+	{
+		        case 'address':
+				$what='address';
+				if ($LMS->CONFIG['database']['type'] == 'mysql') $what='substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
+				if ($LMS->CONFIG['database']['type'] == 'postgres') $what='substring(address from \'^.* \')';
+				break;
+		        case 'zip':
+				$what='zip';
+				break;
+		        case 'city':
+				$what='city';
+				break;
+	}
+	$candidates = $DB->GetAll('SELECT '.$what.' as item, count(id) as entries FROM customers WHERE '.$what.' != \'\' AND lower('.$what.') ?LIKE? lower(\'%'.$search.'%\') GROUP BY item ORDER BY entries desc, item asc');
+	$eglible=array(); $descriptions=array();
+	if ($candidates)
+	foreach($candidates as $idx => $row) {
+		$eglible[$row['item']] = escape_js($row['item']);
+		$descriptions[$row['item']] = escape_js($row['entries'].' '.trans('entries'));
+	}
+	header('Content-type: text/plain');
+	if ($eglible) {
+		print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
+		print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
+	} else {
+		print "false;\n";
+	}
+	exit;
+}
+
 if(isset($_POST['customeradd']))
 {
 	$customeradd = $_POST['customeradd'];
