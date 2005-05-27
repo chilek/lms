@@ -97,9 +97,10 @@ function RTSearch($search, $order='createtime,desc')
 
 $layout['pagetitle'] = trans('Ticket Search');
 
-$search = $_POST['search'];
 if(isset($_POST['rtsearch']))
 	$search = $_POST['rtsearch'];
+else
+	$search = $_POST['search'];
 
 if(isset($_GET['state']))
 {
@@ -157,6 +158,7 @@ if(isset($search) || $_GET['search'])
 		$SMARTY->assign('pagelimit',$pagelimit);
 		$SMARTY->assign('page',$page);
 		$SMARTY->assign('start',$start);
+		$SMARTY->assign('search', $search);
 		$SMARTY->display('rtsearchresults.html');
 		$SESSION->close();
 		die;
