@@ -1,0 +1,113 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{if $unlockedit}<FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}">{/if}
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		{if $unlockedit}
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/pass.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
+			<B>{t}Login:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="frightu" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="userinfo[login]" VALUE="{$userinfo.login}" {tip trigger="login" bold=1}> <B>({$userinfo.id|string_format:"%04d"})</B>
+		</TD>
+		{else}
+		<TD CLASS="fall" COLSPAN="3" NOWRAP>
+			<IMG SRC="img/pass.gif" ALT="">
+			<B>{$userinfo.login} ({$userinfo.id|string_format:"%04d"})</B>
+		</TD>
+		{/if}
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}First/last name:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{if $unlockedit}
+			 <INPUT TYPE="TEXT" NAME="userinfo[name]" VALUE="{$userinfo.name}" {tip trigger="name"}>
+			{else}
+			<B>{$userinfo.name}</B>
+			{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/mail.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%"><B>{t}E-mail:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{if $unlockedit}<INPUT TYPE="TEXT" NAME="userinfo[email]" VALUE="{$userinfo.email}" CLASS="RED">{else}
+			{if $userinfo.email}<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>{else}-{/if}{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/ip.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Allowed hosts:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" NOWRAP>
+			{if $unlockedit} <INPUT TYPE="TEXT" SIZE="40" NAME="userinfo[hosts]" VALUE="{$userinfo.hosts}" {tip text="Enter coma separated list of hosts or networks" trigger="hosts"}> {else}
+			{if $userinfo.hosts}{$userinfo.hosts}{else}{t}all{/t}{/if} {/if}
+		</TD>
+	</TR>
+	{if ! $unlockedit}
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft"></TD>
+		<TD WIDTH="1%" NOWRAP><B>{t}Last login:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip neq $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft"></TD>
+		<TD WIDTH="1%" NOWRAP><B>{t}Last failed login:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip neq $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
+		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
+			{if $unlockedit}
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT="">
+			{else}
+			<A HREF="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>{/if} <a href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" alt=""></A> <A HREF="?m=userpasswd&id={$userinfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" ALT=""> {if $unlockedit}<A HREF="?m=userinfo&id={$userinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			{/if}
+		</TD>
+	</TR>
+	<TR CLASS="DARK">
+		<TD CLASS="fbottomu" COLSPAN="3">
+			<B>{t}Access rights:{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FALL" COLSPAN="3">
+			{if $unlockedit}
+			{section name=acl loop=$accesslist}
+			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="box light"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			{/section}
+			{else}
+			{section name=acl loop=$accesslist}
+			<li type="square">{$accesslist[acl]}</li>
+			{/section}
+			{/if}
+		</TD>
+	</TR>
+</TABLE>
+{if $unlockedit}
+</FORM>
+<SCRIPT>
+<!--
+document.forms['useredit'].elements['userinfo[login]'].focus();
+//-->
+</SCRIPT>
+{/if}
+{include file="footer.html"}
