@@ -30,7 +30,7 @@ $layout['pagetitle'] = trans('SQL');
 
 if($query = $_POST['query'])
 {
-	$pagelimit = ( $CONFIG['phpui']['sqlpanel_pagelimit'] ? $CONFIG['lmsui']['sqlpanel_pagelimit'] : 50 );
+	$pagelimit = ( $CONFIG['phpui']['sqlpanel_pagelimit'] ? $CONFIG['phpui']['sqlpanel_pagelimit'] : 50 );
 	$page = (! $_GET['page'] ? 1 : $_GET['page']); 
 	$start = ($page - 1) * $pagelimit;
 	$words = array('SELECT','EXPLAIN','SHOW','DESCRIBE','ANALYZE','CHECK','OPTIMIZE','REPAIR','VACUUM');
