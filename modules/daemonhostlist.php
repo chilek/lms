@@ -26,7 +26,7 @@
 
 function GetHostList()
 {
-	global $LMS;
+	global $DB;
 	$list = $DB->GetAll("SELECT id, name, description, lastreload FROM daemonhosts ORDER BY name");
 	return $list;
 }

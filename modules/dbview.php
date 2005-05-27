@@ -26,7 +26,7 @@
 
 function DatabaseFetchContent($db,$save=FALSE)
 {
-	global $LMS;
+	global $DB;
 	
 	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
 	{		

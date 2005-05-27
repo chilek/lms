@@ -26,7 +26,7 @@
 
 function GetEvents($date=NULL, $userid=0, $customerid=0)
 {
-	global $LMS, $AUTH;
+	global $DB, $AUTH;
 
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, '

@@ -26,7 +26,7 @@
 
 function EventSearch($search)
 {
-	global $LMS, $AUTH;
+	global $DB, $AUTH;
 
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '

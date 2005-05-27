@@ -26,7 +26,7 @@
 
 function GetTemplatesList()
 {
-	global $LMS;
+	global $DB;
 	if($handle = @opendir($LMS->CONFIG['directories']['config_templates_dir']))
 	{
 		while(FALSE !== ($file = readdir($handle)))
@@ -39,7 +39,7 @@ function GetTemplatesList()
 
 function GetTemplateArrays()
 {
-	global $LMS;
+	global $DB;
 
 	$result['customers'] = $DB->GetAllByKey('SELECT * FROM customers','id');
 	$result['nodes'] = $DB->GetAllByKey('SELECT * FROM nodes ORDER BY ipaddr ASC','id');

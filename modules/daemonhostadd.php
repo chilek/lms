@@ -26,7 +26,7 @@
 
 function GetHostIdByName($name)
 {
-	global $LMS;
+	global $DB;
 	return $DB->GetOne('SELECT id FROM daemonhosts WHERE name = ?', array($name));
 }
 

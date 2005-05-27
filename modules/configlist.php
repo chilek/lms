@@ -26,7 +26,7 @@
 
 function GetConfigList($order='var,asc')
 {
-	global $LMS;
+	global $DB;
 
 	list($order, $direction) = sscanf($order, '%[^,],%s');
 	

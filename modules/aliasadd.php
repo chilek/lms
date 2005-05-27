@@ -26,19 +26,19 @@
 
 function AliasExists($login, $account)
 {
-	global $LMS;
+	global $DB;
 	return ($DB->GetOne('SELECT id FROM aliases WHERE login = ? AND accountid = ?', array($login, $account)) ? TRUE : FALSE);
 }
 
 function AccountExistsInDomain($login, $domain)
 {
-	global $LMS;
+	global $DB;
 	return ($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
 }
 
 function AliasExistsInDomain($login, $domain)
 {
-	global $LMS;
+	global $DB;
 	return ($DB->GetOne('SELECT 1 FROM aliases, passwd WHERE accountid = passwd.id AND aliases.login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
 }
 
