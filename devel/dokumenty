@@ -1,0 +1,29 @@
+$Id$
+
+Wiêc tak:
+
+Przyda³o by siê miejsce z którego mo¿na by odnale¼æ czy przegl±daæ wszystkie
+dokumenty przy zadanych przez nas kryteriach (umowy, faktury itp).
+
+Dodajemy tabelkê docs gdzie mamy:
+
+id | number | data_od | data_do | data_wystawienia | id_uzytkownika | 
+id_klienta | value (dla dokumentów finansowych) | type (mo¿e z mask± binarn±) |
+path (dla dokumentów trzymanych na dysku - skanów czy innych takich) |
+title | generatorid (id tego co wygenerowa³o dokument)
+
+Do faktur i kp trzeba by dodac kolumnê docsid, dodatkowo nowo tworzona faktura
+powinna dodaæ informacje o sobie do docs.
+
+Dodajemy silnik do generowania dokumentów ró¿norakich, sk³adaj±cy siê z modu³ów
+generuj±cyh rózne dokumenty. Ka¿dy taki modu³ to jeden plik php zawieraj±cy
+kreator, i szablon wygl±du. Zmienne przekazywane przez poszczególne etapy 
+kreatora w sesji, na koncu generowany gotowy dokument, zapisywany na dysku, i
+w tabelce odnotowywane po³o¿enie dokumentu.
+
+No, i dodajemy mo¿liwo¶æ importu skanów, czyli prosty formularz w którym 
+podajemy podstawowe informacje i po³o¿enie skanu. Reszta jak wy¿ej.
+
+Otrzymujemy do¶æ fajne narzêdzie gdzie mo¿emy sprawdziæ wszystkie dokumenty 
+zwi±zane z danym klientem, sprawdziæ kiedy zosta³a podpisana umowa, czy nie
+wygas³a, wygenerowaæ prosto aneks, czy cokolwiek innego.
