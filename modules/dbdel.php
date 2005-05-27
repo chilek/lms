@@ -28,13 +28,13 @@ if(isset($_GET['is_sure']))
 {
 	$basename = 'lms-'.$_GET['db'];
 	
-	if(@file_exists($LMS->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql'))
+	if(@file_exists($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql'))
 	{
-		@unlink($LMS->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql');
+		@unlink($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql');
 	}
-	elseif((extension_loaded('zlib'))&&((@file_exists($LMS->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz'))))
+	elseif((extension_loaded('zlib'))&&((@file_exists($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz'))))
 	{
-		@unlink($LMS->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz');
+		@unlink($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz');
 	}
 
 	$SESSION->redirect('?m=dblist');

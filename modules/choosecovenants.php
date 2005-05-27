@@ -50,7 +50,7 @@ if($covenantlist = $DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate,
 					    WHERE invoiceid = ? AND itemid = ? AND type = 4',
 					    array($row['invoiceid'], $row['itemid']));
 		
-		$record['invoice'] = $_CONFIG['invoices']['number_template'];
+		$record['invoice'] = $CONFIG['invoices']['number_template'];
 		$record['invoice'] = str_replace('%M', date('m', $row['cdate']), $record['invoice']);
 		$record['invoice'] = str_replace('%Y', date('Y', $row['cdate']), $record['invoice']);
 		$record['invoice'] = str_replace('%N', $record['number'], $record['invoice']);

@@ -26,7 +26,7 @@
 
 function DBLoad($filename=NULL)
 {
-	global $DB;
+	global $DB, $CONFIG;
 
 	if(!$filename)
 		return FALSE;
@@ -59,7 +59,7 @@ function DBLoad($filename=NULL)
 	// Postgres sux ! (warden)
 	// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
 
-	switch($LMS->CONFIG['database']['type'])
+	switch($CONFIG['database']['type'])
 	{
 		case 'postgres':
 			// actualize postgres sequences ...
@@ -87,13 +87,13 @@ if(isset($_GET['is_sure']))
 
 	$db = $_GET['db'];
 
-	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
+	if(file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
 	{
-		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
+		DBLoad($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
 	}
-	elseif ((extension_loaded('zlib'))&&(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz')))
+	elseif ((extension_loaded('zlib'))&&(file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz')))
 	{
-		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
+		DBLoad($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
 	}
 	
 	$SESSION->redirect('?m='.$SESSION->get('lastmodule'));
