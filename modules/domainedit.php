@@ -26,13 +26,13 @@
 
 function GetDomainIdByName($name)
 {
-	global $LMS;
+	global $DB;
 	return $DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
 }
 
 function DomainExists($id)
 {
-	global $LMS;
+	global $DB;
 	return ($DB->GetOne('SELECT id FROM domains WHERE id = ?', array($id)) ? TRUE : FALSE);
 }
 

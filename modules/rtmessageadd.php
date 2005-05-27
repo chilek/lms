@@ -26,7 +26,7 @@
 
 function MessageAdd($msg, $headers, $file=NULL)
 {
-	global $LMS;
+	global $DB;
 	$time = time();
 	
 	$head = '';

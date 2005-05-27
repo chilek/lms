@@ -26,7 +26,7 @@
 
 function GetDomainIdByName($name)
 {
-	global $LMS;
+	global $DB;
 	return $DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
 }
 

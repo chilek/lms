@@ -26,7 +26,7 @@
 
 function GetInstanceList($hostid)
 {
-	global $LMS;
+	global $DB;
 	$list = $DB->GetAll('SELECT id, name, description, module, crontab, priority, disabled FROM daemoninstances WHERE hostid=? ORDER BY priority, name', array($hostid));
 	return $list;
 }

@@ -26,7 +26,7 @@
 
 function GetAliasList($order='login,asc', $customer=NULL, $kind=NULL, $domain='')
 {
-	global $LMS;
+	global $DB;
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 

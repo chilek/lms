@@ -26,7 +26,7 @@
 
 function GetOptionList($instanceid)
 {
-	global $LMS;
+	global $DB;
 	$list = $DB->GetAll('SELECT id, var, value, description, disabled FROM daemonconfig WHERE instanceid=? ORDER BY var', array($instanceid));
 	return $list;
 }

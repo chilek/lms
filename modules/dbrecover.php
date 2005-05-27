@@ -26,7 +26,7 @@
 
 function DBLoad($filename=NULL)
 {
-	global $LMS;
+	global $DB;
 
 	if(!$filename)
 		return FALSE;

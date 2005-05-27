@@ -26,7 +26,7 @@
 
 function GetEmails($group, $network=NULL, $customergroup=NULL)
 {
-	global $LMS;
+	global $DB;
 	
 	if($group == 4)
 	{

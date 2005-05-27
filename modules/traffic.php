@@ -25,7 +25,7 @@
 
 function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 {
-	global $LMS;
+	global $DB;
 	
 	// period
 	if (is_array($from))

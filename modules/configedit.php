@@ -26,7 +26,7 @@
 
 function ConfigOptionExists($id) 
 {
-	global $LMS;
+	global $DB;
 	return ($DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id)) ? TRUE : FALSE);
 }
 
