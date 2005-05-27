@@ -528,11 +528,6 @@ function r_trim($array)
 	return $array;
 }
 
-function sql_random()
-{
-	return ( rand()/getrandmax() );
-}
-
 // config value testers
 function isboolean($value)
 {
