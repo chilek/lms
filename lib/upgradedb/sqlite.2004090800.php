@@ -53,9 +53,14 @@ $DB->Execute("CREATE TABLE users (
 	pin integer		DEFAULT 0 NOT NULL
 )");
 
+function sql_random()
+{
+	return rand()/getrandmax();
+}
+
 $DB->Execute("INSERT INTO users(id, lastname, name, status, email, phone1, phone2, phone3, gguin, address, zip, city, nip, pesel, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin)
 		SELECT id, lastname, name, status, email, phone1, phone2, phone3, gguin, address, zip, city, nip, pesel, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
-		floor(random()*10 + random()*100 + random()*1000 + random()*10000 + random()*100000-1) AS pin
+		floor(php('sql_random')*10 + php('sql_random')*100 + php('sql_random')*1000 + php('sql_random')*10000 + php('sql_random')*100000-1) AS pin
 		FROM users_t");
 $DB->Execute("DROP TABLE users_t");
 $DB->Execute("UPDATE dbinfo SET keyvalue = '2004090800' WHERE keytype = 'dbversion'");

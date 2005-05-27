@@ -133,7 +133,7 @@ class LMSDB_driver_sqlite extends LMSDB_common
 	{
 		return $this->Execute('COMMIT');
 	}
-	
+
 	function _driver_udf_functions()
 	{
 		sqlite_create_function($this->_dblink, 'inet_ntoa','long2ip',1);
@@ -141,7 +141,6 @@ class LMSDB_driver_sqlite extends LMSDB_common
 		sqlite_create_function($this->_dblink, 'upper','strtoupper',1);
 		sqlite_create_function($this->_dblink, 'lower','strtolower',1);
 		sqlite_create_function($this->_dblink, 'floor','floor',1);
-		sqlite_create_function($this->_dblink, 'random','sql_random');
 	}
 }
 
