@@ -36,9 +36,9 @@ elseif($_GET['action'] == 'close')
 	$LMS->SetTS('events');
 	$SESSION->redirect('?m=eventlist');
 }
-elseif($_GET['action'] == 'dropadmin')
+elseif($_GET['action'] == 'dropuser')
 {
-	$DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND adminid = ?',array($_GET['eid'], $_GET['aid']));
+	$DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?',array($_GET['eid'], $_GET['aid']));
 	$LMS->SetTS('eventassignments');
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
@@ -51,9 +51,9 @@ $event = $DB->GetRow('SELECT events.id AS id, title, description, note,
 
 $event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
 
-$eventadminlist = $DB->GetAll('SELECT adminid AS id, admins.name
-					FROM admins, eventassignments
-					WHERE admins.id = adminid
+$eventuserlist = $DB->GetAll('SELECT userid AS id, users.name
+					FROM users, eventassignments
+					WHERE users.id = userid
 					AND eventid = ?', array($event['id']));
 
 if(isset($_POST['event']))
@@ -83,11 +83,11 @@ if(isset($_POST['event']))
 				
 		$LMS->SetTS('events');
 
-		if($event['admin'])
+		if($event['user'])
 		{
-			if(!$DB->GetOne('SELECT 1 FROM eventassignments WHERE eventid = ? AND adminid = ?',array($event['id'], $event['admin'])))
+			if(!$DB->GetOne('SELECT 1 FROM eventassignments WHERE eventid = ? AND userid = ?',array($event['id'], $event['user'])))
 			{
-				$DB->Execute('INSERT INTO eventassignments (eventid, adminid) VALUES(?,?)',array($event['id'], $event['admin']));
+				$DB->Execute('INSERT INTO eventassignments (eventid, userid) VALUES(?,?)',array($event['id'], $event['user']));
 				$LMS->SetTS('eventassignments');
 			}
 		}
@@ -96,17 +96,17 @@ if(isset($_POST['event']))
 	}
 }
 
-$event['adminlist'] = $eventadminlist;
+$event['userlist'] = $eventuserlist;
 
 $layout['pagetitle'] = trans('Event Edit');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$adminlist = $LMS->GetAdminNames();
+$userlist = $LMS->GetUserNames();
 
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-$SMARTY->assign('adminlist', $adminlist);
-$SMARTY->assign('adminlistsize', sizeof($adminlist));
+$SMARTY->assign('userlist', $userlist);
+$SMARTY->assign('userlistsize', sizeof($userlist));
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
 $SMARTY->assign('layout', $layout);

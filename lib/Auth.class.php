@@ -60,12 +60,12 @@ class Auth {
 			$this->SESSION->save('session_timestamp', time());
 			writesyslog('Login attempt by '.$this->login, LOG_INFO);
 		}
-		elseif($this->DB->GetOne('SELECT COUNT(id) FROM admins') == 0)
+		elseif($this->DB->GetOne('SELECT COUNT(id) FROM users') == 0)
 		{
 			$this->islogged = TRUE;
 			$this->passwd = 'EMPTY';
 			$this->logname = '';
-			$_GET['m'] = 'adminadd';
+			$_GET['m'] = 'useradd';
 			return TRUE;
 		}
 		else
@@ -74,17 +74,17 @@ class Auth {
 			$this->SESSION->restore('session_passwd', $this->passwd);
 		}
 		
-		if($this->VerifyAdmin())
+		if($this->VerifyUser())
 		{
 			$this->SESSION->restore('session_last', $this->last);
 			$this->SESSION->restore('session_lastip', $this->lastip);
 			if(isset($loginform))
 			{
-				$admindata = $this->DB->GetRow('SELECT lastlogindate, lastloginip FROM admins WHERE id=?',array($this->id));
-				$this->last = $admindata['lastlogindate'];
-				$this->lastip = $admindata['lastloginip'];
+				$userdata = $this->DB->GetRow('SELECT lastlogindate, lastloginip FROM users WHERE id=?',array($this->id));
+				$this->last = $userdata['lastlogindate'];
+				$this->lastip = $userdata['lastloginip'];
 				
-				$this->DB->Execute('UPDATE admins SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
+				$this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
 				writesyslog('User '.$this->login.' logged in.', LOG_INFO);
 			}
 			$this->SESSION->save('session_login', $this->login);
@@ -102,7 +102,7 @@ class Auth {
 				if(!$this->passverified)
 					writesyslog('Bad password for '.$this->login, LOG_WARNING);
 				
-				$this->DB->Execute('UPDATE admins SET failedlogindate=?, failedloginip=? WHERE login=?',array(time(),$_SERVER['REMOTE_ADDR'],$this->login));
+				$this->DB->Execute('UPDATE users SET failedlogindate=?, failedloginip=? WHERE login=?',array(time(),$_SERVER['REMOTE_ADDR'],$this->login));
 			}
 			$this->LogOut();
 		}
@@ -169,14 +169,14 @@ class Auth {
 		}
 	}
 	
-	function VerifyAdmin()
+	function VerifyUser()
 	{
-		$admin = $this->DB->GetRow('SELECT id, name, passwd, hosts FROM admins WHERE login=? AND deleted=0', array($this->login));
+		$user = $this->DB->GetRow('SELECT id, name, passwd, hosts FROM users WHERE login=? AND deleted=0', array($this->login));
 		
-		$this->passverified = $this->VerifyPassword($admin['passwd']);
-		$this->hostverified = $this->VerifyHost($admin['hosts']);
-		$this->logname = $admin['name'];
-		$this->id = $admin['id'];
+		$this->passverified = $this->VerifyPassword($user['passwd']);
+		$this->hostverified = $this->VerifyHost($user['hosts']);
+		$this->logname = $user['name'];
+		$this->id = $user['id'];
 		$this->islogged = ($this->passverified && $this->hostverified);
 		
 		return $this->islogged;

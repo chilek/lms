@@ -27,8 +27,8 @@
 	</TR>	
 	<TR class="light">
 		<TD width="1%" class="fleft" NOWRAP>
-		        {if $message.adminid}
-				<IMG src="img/admins.gif" alt="">
+		        {if $message.userid}
+				<IMG src="img/users.gif" alt="">
 			{else}
 				<IMG src="img/customer.gif" alt="">
 			{/if}
@@ -39,8 +39,8 @@
 		<TD width="98%" class="fright">
 			{if $message.customerid}
 				<A href="?m=customerinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
-			{elseif $message.adminid}
-				<A href="?m=admininfo&id={$message.adminid}">{$message.adminname}</A>
+			{elseif $message.userid}
+				<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
 			{elseif $message.mailfrom}
 				<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
 			{else}

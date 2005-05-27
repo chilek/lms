@@ -11,7 +11,7 @@
 			<IMG src="img/info1.gif" alt=""> {t}Description:{/t}
 		</TD>
 		<TD width="1%" valign="top" class="fbt" NOWRAP>
-			<IMG src="img/admins.gif" alt=""> {t}User:{/t}
+			<IMG src="img/users.gif" alt=""> {t}User:{/t}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP valign="top" align="right">
 			<IMG src="img/customer.gif" alt=""> {t}Customer:{/t}
@@ -33,7 +33,7 @@
 			<B>({$daylist[daylist]|date_format:"%x"})</B>
 		</TD>
 		<TD width="3%" colspan="3" class="frightu" align="right">
-			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.adminid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
+			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
 			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{t}Add Event{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
@@ -55,8 +55,8 @@
 			<IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}
 		</TD>
 		<TD width="1%" valign="top">
-			{foreach item=admin from=$eventlist[eventlist].adminlist}
-				<NOBR><A href="?m=admininfo&id={$admin.id}">{$admin.name|truncate:"25":"..."}</A></NOBR><BR>
+			{foreach item=user from=$eventlist[eventlist].userlist}
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name|truncate:"25":"..."}</A></NOBR><BR>
 			{/foreach}
 		</TD>
 		<TD width="1%" align="right" valign="top">

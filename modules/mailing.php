@@ -145,7 +145,7 @@ if(isset($_POST['mailing']))
 $SMARTY->assign('error', $error);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('admininfo', $LMS->GetAdminInfo($AUTH->id));
+$SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
 $SMARTY->display('mailing.html');
 
 ?>

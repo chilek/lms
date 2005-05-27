@@ -41,9 +41,9 @@ if(isset($queue))
 	if($queue['email']!='' && !check_email($queue['email']))
 		$error['email'] = trans('Incorrect email!');
 
-	if(isset($queue['admins']))
-		foreach($queue['admins'] as $key => $value)
-			$queue['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $queue['adminnames'][$key]);
+	if(isset($queue['users']))
+		foreach($queue['users'] as $key => $value)
+			$queue['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $queue['usernames'][$key]);
 
 	if(!$error)
 	{

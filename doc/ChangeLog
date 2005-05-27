@@ -25,7 +25,14 @@ version 1.7.1 ? (??/??/????):
   - we can add and search tickets with all customer statuses (chilek)
   - all UI colors moved to style.css (alec)
   - lms-makeiptables: added public IP (SNAT) support (alec/daro)
-  - !!!!!! changed naming convention: user -> customer !!!!!! (alec)
+  - changed naming convention: user -> customer, admin -> user (alec)
+    ********************************************************************
+    *       WARNING!   WARNING!   WARNING!   WARNING!   WARNING!       *
+    ********************************************************************
+    *       Changed database structure: table 'users' replaced by      *
+    *       'customers', table 'admins' replaced by 'users', also      *
+    *                changed column names in other tables              *
+    ********************************************************************
   - fixed customers and nodes searching when register_globals is on (alec)
   - quick search made quick (kondi)
   - bugfix: compressed backup restoring is possible again (alec)

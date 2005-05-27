@@ -31,7 +31,7 @@ if(! $LMS->QueueExists($_GET['id']))
 
 $queuedata['id'] = $_GET['id'];
 
-if(! $LMS->GetAdminRightsRT($AUTH->id, $queuedata['id']))
+if(! $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']))
 {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();

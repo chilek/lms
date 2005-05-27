@@ -29,16 +29,16 @@ if(!$_GET['id'])
 	$SESSION->redirect('?m=eventlist');
 }
 
-$event = $DB->GetRow('SELECT events.id AS id, title, description, note, adminid, customerid, begintime, endtime, date, private, closed, '
+$event = $DB->GetRow('SELECT events.id AS id, title, description, note, userid, customerid, begintime, endtime, date, private, closed, '
 			    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
-			    admins.name AS adminname
+			    users.name AS username
 			    FROM events LEFT JOIN customers ON (customers.id = customerid)
-			    LEFT JOIN admins ON (admins.id = adminid)
+			    LEFT JOIN users ON (users.id = userid)
 			    WHERE events.id = ?', array($_GET['id']));
 
-$event['adminlist'] = $DB->GetAll('SELECT adminid AS id, admins.name
-					FROM admins, eventassignments
-					WHERE admins.id = adminid
+$event['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
+					FROM users, eventassignments
+					WHERE users.id = userid
 					AND eventid = ?', array($event['id']));
 
 $layout['pagetitle'] = trans('Event Info');

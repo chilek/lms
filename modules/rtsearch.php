@@ -68,14 +68,14 @@ function RTSearch($search, $order='createtime,desc')
 	if($search['name'])
 		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
 
-	if($result = $DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+	if($result = $DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 			FROM rttickets 
 			LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
-			LEFT JOIN admins ON (owner = admins.id) 
+			LEFT JOIN users ON (owner = users.id) 
 			LEFT JOIN customers ON (rttickets.customerid = customers.id)
 			WHERE 1=1 '
 			.$where 
-			.'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.customerid, customers.lastname, customers.name '
+			.'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, users.name, rttickets.customerid, customers.lastname, customers.name '
 			.($sqlord !='' ? $sqlord.' '.$direction:'')))
 	{
 		foreach($result as $idx => $ticket)
@@ -134,7 +134,7 @@ $SESSION->save('rtp', $page);
 
 if(isset($search) || $_GET['search'])
 {
-	if($search['queue'] && !$LMS->GetAdminRightsRT($AUTH->id, $search['queue']))
+	if($search['queue'] && !$LMS->GetUserRightsRT($AUTH->id, $search['queue']))
 		$error['queue'] = trans('You have no privileges to review this queue!');
 
 	$search = $search ? $search : $SESSION->get('rtsearch');
@@ -168,7 +168,7 @@ if(isset($search) || $_GET['search'])
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('adminlist', $LMS->GetAdminNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('search', $SESSION->get('rtsearch'));
 $SMARTY->assign('error', $error);

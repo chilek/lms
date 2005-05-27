@@ -45,8 +45,8 @@
 			{$event.note}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
-			{foreach item=admin from=$event.adminlist}
-				<NOBR>{$admin.name|truncate:"25":"..."}</NOBR><BR>
+			{foreach item=user from=$event.userlist}
+				<NOBR>{$user.name|truncate:"25":"..."}</NOBR><BR>
 			{/foreach}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">

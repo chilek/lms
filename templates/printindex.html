@@ -105,16 +105,16 @@ cal12.time_comp = false;
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
-						<IMG src="img/admins.gif" alt="">
+						<IMG src="img/users.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{t}User:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="admin" {tip text="You can select user to limit results"}>
+						<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
 							<OPTION value="">{t}- all users -{/t}</OPTION>
-							{section name="admins" loop=$admins}
-							<OPTION value="{$admins[admins].id}">{$admins[admins].name|truncate:50:" ..."}</OPTION>
+							{section name="users" loop=$users}
+							<OPTION value="{$users[users].id}">{$users[users].name|truncate:50:" ..."}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

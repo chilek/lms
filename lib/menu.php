@@ -40,12 +40,12 @@ $menu = array(
 				),
 				array(
 					'name' => trans('Users'),
-					'link' =>'?m=adminlist',
+					'link' =>'?m=userlist',
 					'tip' => trans('User list'),
 				),
 				array(
 					'name' => trans('New User'),
-					'link' =>'?m=adminadd',
+					'link' =>'?m=useradd',
 					'tip' => trans('New User'),
 				),
 				array(

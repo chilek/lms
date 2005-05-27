@@ -48,7 +48,7 @@ if($covenantlist = $DB->GetAll('SELECT invoiceid, itemid, taxvalue,
 {
 	foreach($covenantlist as $row)
 	{
-		$DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid)
+		$DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid)
 				VALUES (?NOW?, ?, 3, ?, ?, ?, ?, ?, ?)', 
 				array($AUTH->id, 
 					$row['value'],

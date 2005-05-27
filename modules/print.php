@@ -106,7 +106,7 @@ switch($type)
 		
 		$id = $_POST['customer'];
 
-		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE customerid=? ORDER BY time', array($id)))
+		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS username FROM cash LEFT JOIN users ON users.id=userid WHERE customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -146,7 +146,7 @@ switch($type)
 						case '4': $list['summary'] -= $saldolist['value'][$i]; break;
 					}	
 					$list['date'][] = date('Y/m/d H:i',$saldolist['time'][$i]);
-					$list['adminname'][] = $saldolist['adminname'][$i];
+					$list['username'][] = $saldolist['username'][$i];
 					(strlen($saldolist['comment'][$i])<3) ? $list['comment'][] = $saldolist['name'][$i] : $list['comment'][] = $saldolist['comment'][$i];
 				}
 			}
@@ -281,8 +281,8 @@ switch($type)
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
-		if($admin = $_POST['admin'])
-			$layout['pagetitle'] = trans('Balance Sheet of User: $0 ($1 to $2)', $LMS->GetAdminName($admin), ($from ? $from : ''), $to);
+		if($user = $_POST['user'])
+			$layout['pagetitle'] = trans('Balance Sheet of User: $0 ($1 to $2)', $LMS->GetUserName($user), ($from ? $from : ''), $to);
 		else
 			$layout['pagetitle'] = trans('Balance Sheet ($0 to $1)', ($from ? $from : ''), $to);
 			
@@ -291,14 +291,14 @@ switch($type)
 		if($date['from'])
 			$lastafter = $DB->GetOne('SELECT SUM(CASE type WHEN 2 THEN value*-1 WHEN 4 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
 		
-		if($balancelist = $DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, customerid, comment 
+		if($balancelist = $DB->GetAll('SELECT id, time, userid, type, value, taxvalue, customerid, comment 
 			    FROM cash WHERE time>=? AND time<=? ORDER BY time ASC', array($date['from'], $date['to'])))
 		{
 			$x = 0;
 			foreach($balancelist as $idx => $row)
 			{
-				if($admin)
-					if($row['adminid']!=$admin)
+				if($user)
+					if($row['userid']!=$user)
 					{
 						if($row['type']==1 || $row['type']==3)
 							$lastafter += $row['value'];
@@ -531,7 +531,7 @@ switch($type)
 		
 		$SMARTY->assign('cashyears', $cashyears);
 		$SMARTY->assign('customers', $LMS->GetCustomerNames());
-		$SMARTY->assign('admins', $LMS->GetAdminNames());
+		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('printmenu', isset($_GET['menu']) ? $_GET['menu'] : '');

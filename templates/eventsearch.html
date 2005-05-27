@@ -83,16 +83,16 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft" valign="top">
-			<IMG src="img/admins.gif" alt="">
+			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
 			<B>{t}User:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<SELECT name="event[adminid]">
+			<SELECT name="event[userid]">
 				<OPTION value="" SELECTED>{t}- select user -{/t}</OPTION>
-				{section name=adminlist loop=$adminlist}	
-				<OPTION value="{$adminlist[adminlist].id}">{$adminlist[adminlist].name}</OPTION>
+				{section name=userlist loop=$userlist}	
+				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>

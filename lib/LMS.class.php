@@ -110,7 +110,7 @@ class LMS
 	{
 		if( $loglevel <= $this->CONFIG['phpui']['loglevel'] && $message )
 		{
-			$this->DB->Execute('INSERT INTO syslog (time, adminid, level, message)
+			$this->DB->Execute('INSERT INTO syslog (time, userid, level, message)
 					    VALUES (?NOW?, ?, ?, ?)', array($this->AUTH->id, $loglevel, $message));
 			//I think, we can ommit SetTS('syslog')
 		}
@@ -196,81 +196,81 @@ class LMS
 	}
 
 	/*
-	 *  Users (Administrators)
+	 *  Users (Useristrators)
 	 */
 
-	function SetAdminPassword($id,$passwd) // ustawia has³o admina o id równym $id na $passwd
+	function SetUserPassword($id,$passwd) // ustawia has³o usera o id równym $id na $passwd
 	{
-		$this->SetTS('admins');
-		$this->DB->Execute('UPDATE admins SET passwd=? WHERE id=?', array(crypt($passwd),$id));
+		$this->SetTS('users');
+		$this->DB->Execute('UPDATE users SET passwd=? WHERE id=?', array(crypt($passwd),$id));
 	}
 
-	function GetAdminName($id) // zwraca imiê admina
+	function GetUserName($id) // zwraca imiê usera
 	{
-		return $this->DB->GetOne('SELECT name FROM admins WHERE id=?', array($id));
+		return $this->DB->GetOne('SELECT name FROM users WHERE id=?', array($id));
 	}
 
-	function GetAdminNames() // zwraca skrócon± listê adminów
+	function GetUserNames() // zwraca skrócon± listê userów
 	{
-		return $this->DB->GetAll('SELECT id, name FROM admins WHERE deleted=0 ORDER BY login ASC');
+		return $this->DB->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY login ASC');
 	}
 
-	function GetAdminList() // zwraca listê administratorów
+	function GetUserList() // zwraca listê useristratorów
 	{
-		if($adminslist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip FROM admins WHERE deleted=0 ORDER BY login ASC'))
+		if($userslist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip FROM users WHERE deleted=0 ORDER BY login ASC'))
 		{
-			foreach($adminslist as $idx => $row)
+			foreach($userslist as $idx => $row)
 			{
 				if($row['id']==$this->AUTH->id)
 				{
 					$row['lastlogindate'] = $this->AUTH->last;
-					$adminslist[$idx]['lastlogindate'] = $this->AUTH->last;
+					$userslist[$idx]['lastlogindate'] = $this->AUTH->last;
 					$row['lastloginip'] = $this->AUTH->lastip;
-					$adminslist[$idx]['lastloginip'] = $this->AUTH->lastip;
+					$userslist[$idx]['lastloginip'] = $this->AUTH->lastip;
 				}
 				
 				if($row['lastlogindate'])
-					$adminslist[$idx]['lastlogin'] = date('Y/m/d H:i',$row['lastlogindate']);
+					$userslist[$idx]['lastlogin'] = date('Y/m/d H:i',$row['lastlogindate']);
 				else
-					$adminslist[$idx]['lastlogin'] = '-';
+					$userslist[$idx]['lastlogin'] = '-';
 
 				if(check_ip($row['lastloginip']))
-					$adminslist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
+					$userslist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
 				else
 				{
-					$adminslist[$idx]['lastloginhost'] = '-';
-					$adminslist[$idx]['lastloginip'] = '-';
+					$userslist[$idx]['lastloginhost'] = '-';
+					$userslist[$idx]['lastloginip'] = '-';
 				}
 			}
 		}
 
-		$adminslist['total'] = sizeof($adminslist);
-		return $adminslist;
+		$userslist['total'] = sizeof($userslist);
+		return $userslist;
 	}
 
-	function GetAdminIDByLogin($login) // zwraca id admina na podstawie loginu
+	function GetUserIDByLogin($login) // zwraca id usera na podstawie loginu
 	{
-		return $this->DB->GetOne('SELECT id FROM admins WHERE login=?', array($login));
+		return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($login));
 	}
 
-	function AdminAdd($adminadd) // dodaje admina. wymaga tablicy zawieraj±cej dane admina
+	function UserAdd($useradd) // dodaje usera. wymaga tablicy zawieraj±cej dane usera
 	{
-		$this->SetTS('admins');
-		if($this->DB->Execute('INSERT INTO admins (login, name, email, passwd, rights, hosts) VALUES (?, ?, ?, ?, ?, ?)', array($adminadd['login'], $adminadd['name'], $adminadd['email'], crypt($adminadd['password']),$adminadd['rights'], $adminadd['hosts'])))
-			return $this->DB->GetOne('SELECT id FROM admins WHERE login=?', array($adminadd['login']));
+		$this->SetTS('users');
+		if($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights, hosts) VALUES (?, ?, ?, ?, ?, ?)', array($useradd['login'], $useradd['name'], $useradd['email'], crypt($useradd['password']),$useradd['rights'], $useradd['hosts'])))
+			return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($useradd['login']));
 		else
 			return FALSE;
 	}
 
-	function AdminDelete($id) // usuwa admina o podanym id
+	function UserDelete($id) // usuwa usera o podanym id
 	{
-		$this->SetTS('admins');
-		return $this->DB->Execute('UPDATE admins SET deleted=1 WHERE id=?', array($id));
+		$this->SetTS('users');
+		return $this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
 	}
 
-	function AdminExists($id) // zwraca TRUE/FALSE zale¿nie od tego czy admin istnieje czy nie
+	function UserExists($id) // zwraca TRUE/FALSE zale¿nie od tego czy user istnieje czy nie
 	{
-		switch($this->DB->GetOne('SELECT deleted FROM admins WHERE id=?', array($id)))
+		switch($this->DB->GetOne('SELECT deleted FROM users WHERE id=?', array($id)))
 		{
 			case '0':
 				return TRUE;
@@ -285,54 +285,54 @@ class LMS
 		}
 	}
 
-	function GetAdminInfo($id) // zwraca pe³ne info o podanym adminie
+	function GetUserInfo($id) // zwraca pe³ne info o podanym userie
 	{
-		if($admininfo = $this->DB->GetRow('SELECT id, login, name, email, hosts, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted FROM admins WHERE id=?', array($id)))
+		if($userinfo = $this->DB->GetRow('SELECT id, login, name, email, hosts, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted FROM users WHERE id=?', array($id)))
 		{
-			if($admininfo['id']==$this->AUTH->id)
+			if($userinfo['id']==$this->AUTH->id)
 			{
-				$admininfo['lastlogindate'] = $this->AUTH->last;
-				$admininfo['lastloginip'] = $this->AUTH->lastip;
+				$userinfo['lastlogindate'] = $this->AUTH->last;
+				$userinfo['lastloginip'] = $this->AUTH->lastip;
 			}
 
-			if($admininfo['lastlogindate'])
-				$admininfo['lastlogin'] = date('Y/m/d H:i',$admininfo['lastlogindate']);
+			if($userinfo['lastlogindate'])
+				$userinfo['lastlogin'] = date('Y/m/d H:i',$userinfo['lastlogindate']);
 			else
-				$admininfo['lastlogin'] = '-';
+				$userinfo['lastlogin'] = '-';
 
-			if($admininfo['failedlogindate'])
-				$admininfo['faillogin'] = date('Y/m/d H:i',$admininfo['failedlogindate']);
+			if($userinfo['failedlogindate'])
+				$userinfo['faillogin'] = date('Y/m/d H:i',$userinfo['failedlogindate']);
 			else
-				$admininfo['faillogin'] = '-';
+				$userinfo['faillogin'] = '-';
 
-			if(check_ip($admininfo['lastloginip']))
-				$admininfo['lastloginhost'] = gethostbyaddr($admininfo['lastloginip']);
+			if(check_ip($userinfo['lastloginip']))
+				$userinfo['lastloginhost'] = gethostbyaddr($userinfo['lastloginip']);
 			else
 			{
-				$admininfo['lastloginhost'] = '-';
-				$admininfo['lastloginip'] = '-';
+				$userinfo['lastloginhost'] = '-';
+				$userinfo['lastloginip'] = '-';
 			}
 
-			if(check_ip($admininfo['failedloginip']))
-				$admininfo['failedloginhost'] = gethostbyaddr($admininfo['failedloginip']);
+			if(check_ip($userinfo['failedloginip']))
+				$userinfo['failedloginhost'] = gethostbyaddr($userinfo['failedloginip']);
 			else
 			{
-				$admininfo['failedloginhost'] = '-';
-				$admininfo['failedloginip'] = '-';
+				$userinfo['failedloginhost'] = '-';
+				$userinfo['failedloginip'] = '-';
 			}
 		}
-		return $admininfo;
+		return $userinfo;
 	}
 
-	function AdminUpdate($admininfo) // uaktualnia rekord admina.
+	function UserUpdate($userinfo) // uaktualnia rekord usera.
 	{
-		$this->SetTS('admins');
-		return $this->DB->Execute('UPDATE admins SET login=?, name=?, email=?, rights=?, hosts=? WHERE id=?', array($admininfo['login'],$admininfo['name'],$admininfo['email'],$admininfo['rights'],$admininfo['hosts'],$admininfo['id']));
+		$this->SetTS('users');
+		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?, hosts=? WHERE id=?', array($userinfo['login'],$userinfo['name'],$userinfo['email'],$userinfo['rights'],$userinfo['hosts'],$userinfo['id']));
 	}
 
-	function GetAdminRights($id)
+	function GetUserRights($id)
 	{
-		$mask = $this->DB->GetOne('SELECT rights FROM admins WHERE id=?', array($id));
+		$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id=?', array($id));
 		if($mask == '')
 			$mask = '1';
 		$len = strlen($mask);
@@ -433,7 +433,7 @@ class LMS
 
 	function GetCashByID($id)
 	{
-		return $this->DB->GetRow('SELECT time, adminid, type, value, taxvalue, customerid, comment FROM cash WHERE id=?', array($id));
+		return $this->DB->GetRow('SELECT time, userid, type, value, taxvalue, customerid, comment FROM cash WHERE id=?', array($id));
 	}
 
 	function GetCustomerStatus($id)
@@ -445,8 +445,8 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin FROM customers WHERE id=?', array($id)))
 		{
-			$result['createdby'] = $this->GetAdminName($result['creatorid']);
-			$result['modifiedby'] = $this->GetAdminName($result['modid']);
+			$result['createdby'] = $this->GetUserName($result['creatorid']);
+			$result['modifiedby'] = $this->GetUserName($result['modid']);
 			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
@@ -696,7 +696,7 @@ class LMS
 	{
 		$saldolist = array();
 		// wrapper do starego formatu
-		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE customerid=? ORDER BY time', array($id)))
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS username FROM cash LEFT JOIN users ON users.id=userid WHERE customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -707,7 +707,7 @@ class LMS
 			{
 				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
 
-//				$saldolist['adminname'][$i] = $adminslist[$saldolist['adminid'][$i]];
+//				$saldolist['username'][$i] = $userslist[$saldolist['userid'][$i]];
 				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
 				$saldolist['invoicepaid'][$i] = 1;
 
@@ -981,8 +981,8 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline, info FROM nodes WHERE id=?', array($id)))
 		{
-			$result['createdby'] = $this->GetAdminName($result['creatorid']);
-			$result['modifiedby'] = $this->GetAdminName($result['modid']);
+			$result['createdby'] = $this->GetUserName($result['creatorid']);
+			$result['modifiedby'] = $this->GetUserName($result['modid']);
 			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
 			$delta = time()-$result['lastonline'];
 			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
@@ -1775,14 +1775,14 @@ class LMS
 		$addbalance['taxvalue'] = $addbalance['taxvalue']!='' ? str_replace(',','.',round($addbalance['taxvalue'],2)) : '';
 		if($addbalance['time'])
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 		else
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
 	}
 
 	function DelBalance($id)
@@ -1799,13 +1799,13 @@ class LMS
 	
 	function GetBalanceList()
 	{
-		$adminlist = $this->DB->GetAllByKey('SELECT id, name FROM admins','id');
+		$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
 		$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
-		if($balancelist = $this->DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, customerid, comment, invoiceid FROM cash ORDER BY time, id'))
+		if($balancelist = $this->DB->GetAll('SELECT id, time, userid, type, value, taxvalue, customerid, comment, invoiceid FROM cash ORDER BY time, id'))
 		{
 			foreach($balancelist as $idx => $row)
 			{
-				$balancelist[$idx]['admin'] = $adminlist[$row['adminid']]['name'];
+				$balancelist[$idx]['user'] = $userlist[$row['userid']]['name'];
 				$balancelist[$idx]['value'] = $row['value'];
 				$balancelist[$idx]['taxvalue'] = $row['taxvalue'];
 				$balancelist[$idx]['customername'] = $customerslist[$row['customerid']]['customername'];
@@ -2604,11 +2604,11 @@ class LMS
 	{
 		if($queue = $this->DB->GetRow('SELECT * FROM rtqueues WHERE id=?', array($id)))
 		{
-		    $admins = $this->DB->GetAll('SELECT id, name FROM admins WHERE deleted=0');
-		    foreach($admins as $admin)
+		    $users = $this->DB->GetAll('SELECT id, name FROM users WHERE deleted=0');
+		    foreach($users as $user)
 		    {
-			    $admin['rights'] = $this->GetAdminRightsRT($admin['id'],$id);
-			    $queue['rights'][] = $admin; 
+			    $user['rights'] = $this->GetUserRightsRT($user['id'],$id);
+			    $queue['rights'][] = $user; 
 		    }
 		    return $queue;
 		}
@@ -2616,12 +2616,12 @@ class LMS
 		    return NULL;
 	}
 	
-	function GetAdminRightsRT($admin, $queue, $ticket=NULL)
+	function GetUserRightsRT($user, $queue, $ticket=NULL)
 	{
 		if($queue==0)
 			$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
 
-		$rights = $this->DB->GetOne('SELECT rights FROM rtrights WHERE adminid=? AND queueid=?', array($admin, $queue));
+		$rights = $this->DB->GetOne('SELECT rights FROM rtrights WHERE userid=? AND queueid=?', array($user, $queue));
 		return ($rights ? $rights : 0);
 	}
 
@@ -2686,9 +2686,9 @@ class LMS
 		}
 	}
 
-	function RightsRTAdd($queueid, $adminid, $rights)
+	function RightsRTAdd($queueid, $userid, $rights)
 	{
-		$this->DB->Execute('INSERT INTO rtrights(queueid, adminid, rights) VALUES(?, ?, ?)', array($queueid, $adminid, $rights));
+		$this->DB->Execute('INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)', array($queueid, $userid, $rights));
 		$this->SetTS('rtrights');
 	}
 
@@ -2758,12 +2758,12 @@ class LMS
 				break;
 		}
 
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 		    FROM rttickets LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
-		    LEFT JOIN admins ON (owner = admins.id) 
+		    LEFT JOIN users ON (owner = users.id) 
 		    LEFT JOIN customers ON (rttickets.customerid = customers.id)
 		    WHERE queueid = ? '.$statefilter 
-		    .' GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.customerid, customers.lastname, customers.name '
+		    .' GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, users.name, rttickets.customerid, customers.lastname, customers.name '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
 			foreach($result as $idx => $ticket)
@@ -2862,17 +2862,17 @@ class LMS
 	function GetTicketContents($id)
 	{
 		$ticket = $this->DB->GetRow('
-			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, admins.name AS ownername, createtime, resolvetime, subject 
+			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, users.name AS ownername, createtime, resolvetime, subject 
 			FROM rttickets 
 			LEFT JOIN rtqueues ON (queueid = rtqueues.id) 
-			LEFT JOIN admins ON (owner = admins.id)
+			LEFT JOIN users ON (owner = users.id)
 			LEFT JOIN customers ON (customers.id = customerid)
 			WHERE rttickets.id = ?', array($id));
 		$ticket['messages'] = $this->DB->GetAll('
-			SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, adminid, admins.name AS adminname
+			SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, userid, users.name AS username
 			FROM rtmessages 
 			LEFT JOIN customers ON (customers.id = customerid)
-			LEFT JOIN admins ON (admins.id = adminid)
+			LEFT JOIN users ON (users.id = userid)
 			WHERE ticketid = ? ORDER BY createtime ASC', array($id));
 		if(!$ticket['customerid'])
 			list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
@@ -2895,11 +2895,11 @@ class LMS
 		return $this->DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($id));
 	}
 
-	function SetTicketOwner($ticket, $admin=NULL)
+	function SetTicketOwner($ticket, $user=NULL)
 	{
-		if(!$admin) $admin = $this->AUTH->id;
+		if(!$user) $user = $this->AUTH->id;
 		$this->SetTS('rttickets');
-		return $this->DB->Execute('UPDATE rttickets SET owner=? WHERE id = ?', array($admin, $ticket));
+		return $this->DB->Execute('UPDATE rttickets SET owner=? WHERE id = ?', array($user, $ticket));
 	}
 
 	function SetTicketState($ticket, $state)

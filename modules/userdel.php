@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Users List');
+if($_GET['is_sure']=='1')
+{
+	$LMS->UserDelete($_GET['id']);
+}
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('adminslist',$LMS->GetAdminList());
-$SMARTY->display('adminlist.html');
+header('Location: ?m='.$SESSION->get('lastmodule'));
 
 ?>

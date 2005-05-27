@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetEvents($date=NULL, $adminid=0, $customerid=0)
+function GetEvents($date=NULL, $userid=0, $customerid=0)
 {
 	global $LMS, $AUTH;
 
@@ -33,7 +33,7 @@ function GetEvents($date=NULL, $adminid=0, $customerid=0)
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
 		 customers.address AS customeraddr, customers.phone1 AS customerphone 
 		 FROM events LEFT JOIN customers ON (customerid = customers.id)
-		 WHERE date = ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
+		 WHERE date = ? AND (private = 0 OR (private = 1 AND userid = ?)) '
 		 .($customerid ? 'AND customerid = '.$customerid : '')
 		 .' ORDER BY begintime',
 		 array($date, $AUTH->id));
@@ -41,21 +41,21 @@ function GetEvents($date=NULL, $adminid=0, $customerid=0)
 	if($list)
 		foreach($list as $idx => $row)
 		{
-			$list[$idx]['adminlist'] = $DB->GetAll('SELECT adminid AS id, admins.name
-								    FROM eventassignments, admins
-								    WHERE adminid = admins.id AND eventid = ? ',
+			$list[$idx]['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
+								    FROM eventassignments, users
+								    WHERE userid = users.id AND eventid = ? ',
 								    array($row['id']));
 
-			if($adminid && sizeof($list[$idx]['adminlist']))
-				foreach($list[$idx]['adminlist'] as $admin)
-					if($admin['id'] == $adminid)
+			if($userid && sizeof($list[$idx]['userlist']))
+				foreach($list[$idx]['userlist'] as $user)
+					if($user['id'] == $userid)
 					{
 						$list2[] = $list[$idx];
 						break;
 					}
 		}
 
-	if($adminid)
+	if($userid)
 		return $list2;	
 	else	
 		return $list;

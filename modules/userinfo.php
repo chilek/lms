@@ -24,11 +24,23 @@
  *  $Id$
  */
 
-if($_GET['is_sure']=='1')
+if(!$LMS->UserExists($_GET['id']))
 {
-	$LMS->AdminDelete($_GET['id']);
+	$SESSION->redirect('?m=userlist');
 }
 
-header('Location: ?m='.$SESSION->get('lastmodule'));
+$userinfo = $LMS->GetUserInfo($_GET['id']);
+$layout['pagetitle'] = trans('User Info: $0', $userinfo['login']);
+
+$rights = $LMS->GetUserRights($_GET['id']);
+foreach($rights as $right)
+	if($access['table'][$right]['name'])
+		$accesslist[] = $access['table'][$right]['name'];
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('accesslist', $accesslist);
+$SMARTY->display('userinfo.html');
 
 ?>

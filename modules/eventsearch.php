@@ -32,7 +32,7 @@ function EventSearch($search)
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername 
 		 FROM events LEFT JOIN customers ON (customerid = customers.id)
-		 WHERE (private = 0 OR (private = 1 AND adminid = ?)) '
+		 WHERE (private = 0 OR (private = 1 AND userid = ?)) '
 		.($search['datefrom'] ? ' AND date >= '.$search['datefrom'] : '')
 		.($search['dateto'] ? ' AND date <= '.$search['dateto'] : '')
 		.($search['customerid'] ? ' AND customerid = '.$search['customerid'] : '')
@@ -44,21 +44,21 @@ function EventSearch($search)
 	if($list)
 		foreach($list as $idx => $row)
 		{
-			$list[$idx]['adminlist'] = $DB->GetAll('SELECT adminid AS id, admins.name
-								    FROM eventassignments, admins
-								    WHERE adminid = admins.id AND eventid = ? ',
+			$list[$idx]['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
+								    FROM eventassignments, users
+								    WHERE userid = users.id AND eventid = ? ',
 								    array($row['id']));
 
-			if($search['adminid'] && sizeof($list[$idx]['adminlist']))
-				foreach($list[$idx]['adminlist'] as $admin)
-					if($admin['id'] == $search['adminid'])
+			if($search['userid'] && sizeof($list[$idx]['userlist']))
+				foreach($list[$idx]['userlist'] as $user)
+					if($user['id'] == $search['userid'])
 					{
 						$list2[] = $list[$idx];
 						break;
 					}
 		}
 	
-	if($adminid)
+	if($userid)
 		return $list2;	
 	else	
 		return $list;
@@ -96,7 +96,7 @@ if($event = $_POST['event'])
 	die;
 }
 
-$SMARTY->assign('adminlist',$LMS->GetAdminNames());
+$SMARTY->assign('userlist',$LMS->GetUserNames());
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('eventsearch.html');
