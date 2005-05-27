@@ -35,8 +35,8 @@ function text_autosize($x,$y,$size,$text,$width)
 
 function invoice_simple_form_fill($x,$y,$scale)  
 {
-    global $pdf,$invoice,$_CONFIG;
-    $finances = $_CONFIG['finances'];
+    global $pdf,$invoice,$CONFIG;
+    $finances = $CONFIG['finances'];
     $pdf->setlinestyle(1);
 
     $pdf->line(7*$scale+$x,724*$scale+$y,7*$scale+$x,694*$scale+$y);
@@ -61,7 +61,7 @@ function invoice_simple_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,356*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['address']),350*$scale);
     text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city']),350*$scale);
 
-    $tmp = $_CONFIG['invoices'];
+    $tmp = $CONFIG['invoices'];
     $tmp = iconv("UTF-8","ISO-8859-2",$tmp['number_template']);
     $tmp = str_replace("%N",$invoice['number'],$tmp);
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
@@ -73,8 +73,8 @@ function invoice_simple_form_fill($x,$y,$scale)
 
 function invoice_main_form_fill($x,$y,$scale)	
 {
-    global $pdf,$invoice,$_CONFIG;
-    $finances = $_CONFIG['finances'];
+    global $pdf,$invoice,$CONFIG;
+    $finances = $CONFIG['finances'];
     $pdf->setlinestyle(1);
 
     $pdf->line(7*$scale+$x,724*$scale+$y,7*$scale+$x,694*$scale+$y);
@@ -92,7 +92,7 @@ function invoice_main_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
     text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['name']),950*$scale);
     text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['address']." ".$invoice['zip']." ".$invoice['city']),950*$scale);
-    $tmp = $_CONFIG['invoices'];
+    $tmp = $CONFIG['invoices'];
     $tmp = iconv("UTF-8","ISO-8859-2",$tmp['number_template']);
     $tmp = str_replace("%N",$invoice['number'],$tmp);
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
@@ -158,10 +158,10 @@ function invoice_buyer($x,$y)
 
 function invoice_seller($x,$y) 
 {
-    global $pdf,$_CONFIG;
+    global $pdf,$CONFIG;
     $font_size=10;
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Seller:')).'</b>');
-    $tmp = iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['header']);
+    $tmp = iconv("UTF-8","ISO-8859-2",$CONFIG['invoices']['header']);
     $tmp = str_replace('\n',"\n",$tmp);
     $tmp = explode("\n",$tmp);
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,$line);
@@ -171,9 +171,9 @@ function invoice_seller($x,$y)
 
 function invoice_title($x,$y) 
 {
-    global $invoice,$pdf,$_CONFIG,$type;
+    global $invoice,$pdf,$CONFIG,$type;
     $font_size=16;
-    $tmp = $_CONFIG['invoices']['number_template'];
+    $tmp = $CONFIG['invoices']['number_template'];
     $tmp = str_replace("%N",$invoice['number'],$tmp);
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
     $tmp = str_replace("%M",$invoice['month'],$tmp);
@@ -338,18 +338,18 @@ function invoice_to_pay($x,$y)
 
 function invoice_expositor ($x,$y) 
 {
-    global $pdf, $_CONFIG;
-    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['default_author']));
+    global $pdf, $CONFIG;
+    $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2",$CONFIG['invoices']['default_author']));
     return $y;
 }
 
 function invoice_footnote($x, $y, $width, $font_size) 
 {
-    global $pdf, $_CONFIG;
-    if ($_CONFIG['invoices']['footer']) {
+    global $pdf, $CONFIG;
+    if ($CONFIG['invoices']['footer']) {
 	$y = $y - $pdf->getFontHeight($font_size);
 	$y = $y - text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Notes:')).'</b>');
-	$tmp = iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['footer']);
+	$tmp = iconv("UTF-8","ISO-8859-2",$CONFIG['invoices']['footer']);
         $tmp = explode("\n",$tmp);
 	foreach ($tmp as $line) $y = text_wrap($x,$y,$width,$font_size,$line,"full");
     }
@@ -357,8 +357,8 @@ function invoice_footnote($x, $y, $width, $font_size)
 
 function invoice_body() 
 {
-    global $invoice,$pdf,$id,$_CONFIG,$_MODULES_DIR;
-    switch ($_CONFIG['invoices']['template_file']) {
+    global $invoice,$pdf,$id,$CONFIG,$_MODULES_DIR;
+    switch ($CONFIG['invoices']['template_file']) {
 	case "standard":
 	    $top=800;
 	    invoice_dates(500,800);    
@@ -395,7 +395,7 @@ function invoice_body()
 	    invoice_simple_form_fill(14,3,0.4);
 	    break;
 	default:
-	    require($_MODULES_DIR.'/'.$_CONFIG['invoices']['template_file']);
+	    require($_MODULES_DIR.'/'.$CONFIG['invoices']['template_file']);
     }
     if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }

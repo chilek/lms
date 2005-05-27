@@ -76,48 +76,48 @@ function lms_parse_ini_file($filename, $process_sections = false)
 }
 
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
-	$_CONFIG[$key] = $val;
+	$CONFIG[$key] = $val;
 
 // Check for configuration vars and set default values
-$_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
-$_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['sys_dir'] = (! $CONFIG['directories']['sys_dir'] ? getcwd() : $CONFIG['directories']['sys_dir']);
+$CONFIG['directories']['lib_dir'] = (! $CONFIG['directories']['lib_dir'] ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
 
-foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
+foreach(lms_parse_ini_file($CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
 	foreach($values as $key => $val)
-		if(! isset($_CONFIG[$section][$key]))
-			$_CONFIG[$section][$key] = $val;
+		if(! isset($CONFIG[$section][$key]))
+			$CONFIG[$section][$key] = $val;
 
-$_DBTYPE = $_CONFIG['database']['type'];
-$_DBHOST = $_CONFIG['database']['host'];
-$_DBUSER = $_CONFIG['database']['user'];
-$_DBPASS = $_CONFIG['database']['password'];
-$_DBNAME = $_CONFIG['database']['database'];
+$_DBTYPE = $CONFIG['database']['type'];
+$_DBHOST = $CONFIG['database']['host'];
+$_DBUSER = $CONFIG['database']['user'];
+$_DBPASS = $CONFIG['database']['password'];
+$_DBNAME = $CONFIG['database']['database'];
 
 // Init database 
 
-require_once($_CONFIG['directories']['lib_dir'].'/LMSDB.php');
+require_once($CONFIG['directories']['lib_dir'].'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 // Enable data encoding conversion if needed 
 
-require_once($_CONFIG['directories']['lib_dir'].'/dbencoding.php');
+require_once($CONFIG['directories']['lib_dir'].'/dbencoding.php');
 
 // Read configuration of LMS-UI from database
 
 if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
 	foreach($cfg as $row)
-		$_CONFIG[$row['section']][$row['var']] = $row['value'];
+		$CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Include required files (including sequence is important)
 
-require_once($_CONFIG['directories']['lib_dir'].'/language.php');
-require_once($_CONFIG['directories']['lib_dir'].'/common.php');
-require_once($_CONFIG['directories']['lib_dir'].'/LMS.class.php');
+require_once($CONFIG['directories']['lib_dir'].'/language.php');
+require_once($CONFIG['directories']['lib_dir'].'/common.php');
+require_once($CONFIG['directories']['lib_dir'].'/LMS.class.php');
 
 $_SESSION = NULL;
 
-$LMS = new LMS($DB, $_SESSION, $_CONFIG);
+$LMS = new LMS($DB, $_SESSION, $CONFIG);
 $LMS->lang = $_language;
 
 ?>
