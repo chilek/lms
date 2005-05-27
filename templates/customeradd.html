@@ -16,7 +16,7 @@
 </SCRIPT>
 {/literal}
 <P>
-<FORM name="customeradd" method="POST" action="?m=customeradd">		
+<FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">		
 <TABLE cellpadding="4" cellspacing="0" width="100%">
 	<TR class="dark">
 		<TD class="fall" width="100%" colspan="2">
@@ -75,8 +75,13 @@
 						<IMG src="img/home.gif" alt="">
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$customeradd.address}" name="customeradd[address]" {tip text="Enter customer address" trigger="address"}><BR>
-						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="10" VALUE="{$customeradd.zip}" NAME="customeradd[zip]" {tip text="Enter zip code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$customeradd.city}" NAME="customeradd[city]" {tip text="Enter customer city" trigger="city"}>
+						<INPUT TYPE="text" size="40" value="{$customeradd.address}" name="customeradd[address]" id="address" {tip text="Enter customer address" trigger="address"}><BR>
+						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="10" VALUE="{$customeradd.zip}" NAME="customeradd[zip]" id="zip" {tip text="Enter zip code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$customeradd.city}" NAME="customeradd[city]" id="city" {tip text="Enter customer city" trigger="city"}>
+						<script language="Javascript">
+							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
+							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
+							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+						</script>
 					</TD>
 				</TR>
 				<TR>
