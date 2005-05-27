@@ -259,7 +259,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $t_data[10] = '<b>'.iconv("UTF-8","ISO-8859-2",trans('Gross Value:')).'</b>';
     for ($i = 1; $i <= 10; $i++) $t_justify[$i]="left";
     for ($i = 1; $i <= 10; $i++) $t_width[$i]=$pdf->getTextWidth($font_size,$t_data[$i])+2*$margin+1;
-    // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pu¼niej
+    // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pó¼niej
     if ($invoice['content']) foreach ($invoice['content'] as $item) {
 	$tt_width[2] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",$item['description']));
 	$tt_width[3] = $pdf->getTextWidth($font_size,$item['pkwiu']);
@@ -496,6 +496,7 @@ elseif($_GET['fetchsingle'])
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0', $ntempl));
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
+	$type = trans('ORIGINAL');
 	invoice_body();
 
 }
