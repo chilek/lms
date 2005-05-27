@@ -32,23 +32,30 @@ if(isset($_GET['ajax']))
         	// escape quotes and backslashes, newlines, etc.
         	return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
 	}
-	if (trim($_GET['what'] == '')) { print 'false;'; exit; }
 	$search = urldecode(trim($_GET['what']));
 	switch($_GET['mode'])
 	{
 		        case 'address':
-				$what='address';
-				if ($LMS->CONFIG['database']['type'] == 'mysql') $what='substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-				if ($LMS->CONFIG['database']['type'] == 'postgres') $what='substring(address from \'^.* \')';
+				$mode='address';
+				if ($LMS->CONFIG['database']['type'] == 'mysql') $mode='substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
+				if ($LMS->CONFIG['database']['type'] == 'postgres') $mode='substring(address from \'^.* \')';
+				if ($LMS->CONFIG['database']['type'] == 'sqlite') {
+					function grepaddr ($input) {
+						preg_match('/^(.*) /',$input,$matches);
+						return $matches[1];
+					}
+					$mode='php('\grepaddr\', address)';
+				}
 				break;
 		        case 'zip':
-				$what='zip';
+				$mode='zip';
 				break;
 		        case 'city':
-				$what='city';
+				$mode='city';
 				break;
 	}
-	$candidates = $DB->GetAll('SELECT '.$what.' as item, count(id) as entries FROM customers WHERE '.$what.' != \'\' AND lower('.$what.') ?LIKE? lower(\'%'.$search.'%\') GROUP BY item ORDER BY entries desc, item asc');
+	if (!isset($mode)) { print 'false;'; exit; }
+	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries FROM customers WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(\'%'.$search.'%\') GROUP BY item ORDER BY entries desc, item asc');
 	$eglible=array(); $descriptions=array();
 	if ($candidates)
 	foreach($candidates as $idx => $row) {
