@@ -108,13 +108,13 @@ function address_box($x,$y,$scale)	{
 }
 
 // Dobra, czytamy z lms.ini
-$_NAME = (! $_CONFIG[finances]['name'] ? "Nazwa nieustawiona" : $_CONFIG[finances]['name']);
-$_SHORT_NAME = (! $_CONFIG[finances]['shortname'] ? "Nazwa nieustawiona" : $_CONFIG[finances]['shortname']);
-$_ADDRESS = (! $_CONFIG[finances]['address'] ? "Adres nieustawiony" : $_CONFIG[finances]['address']);
-$_ZIP = (! $_CONFIG[finances]['zip'] ? "00-000" : $_CONFIG[finances]['zip']);
-$_CITY = (! $_CONFIG[finances]['city'] ? "Miasto nieustawione" : $_CONFIG[finances]['city']);
-$_SERVICE = (! $_CONFIG[finances]['service'] ? "Nazwa uslugi nieustawiona" : $_CONFIG[finances]['service']);
-$_ACCOUNT = (! $_CONFIG[finances]['account'] ? "123456789012345678901234567" : $_CONFIG[finances]['account']);
+$_NAME = (! $CONFIG[finances]['name'] ? "Nazwa nieustawiona" : $CONFIG[finances]['name']);
+$_SHORT_NAME = (! $CONFIG[finances]['shortname'] ? "Nazwa nieustawiona" : $CONFIG[finances]['shortname']);
+$_ADDRESS = (! $CONFIG[finances]['address'] ? "Adres nieustawiony" : $CONFIG[finances]['address']);
+$_ZIP = (! $CONFIG[finances]['zip'] ? "00-000" : $CONFIG[finances]['zip']);
+$_CITY = (! $CONFIG[finances]['city'] ? "Miasto nieustawione" : $CONFIG[finances]['city']);
+$_SERVICE = (! $CONFIG[finances]['service'] ? "Nazwa uslugi nieustawiona" : $CONFIG[finances]['service']);
+$_ACCOUNT = (! $CONFIG[finances]['account'] ? "123456789012345678901234567" : $CONFIG[finances]['account']);
 
 $control_lines = 0;
 

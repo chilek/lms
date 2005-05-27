@@ -37,7 +37,7 @@ if($_SESSION['uid'] != $DB->GetOne('SELECT customerid FROM invoices WHERE id=?',
 	die;
 }
 
-if (strtolower($_CONFIG['invoices']['type']) == 'pdf')
+if (strtolower($CONFIG['invoices']['type']) == 'pdf')
 {
     include('invoice_pdf.php');
     die;
