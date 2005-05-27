@@ -37,6 +37,7 @@ version 1.7.1 ? (??/??/????):
   - quick search made quick (kondi)
   - bugfix: compressed backup restoring is possible again (alec)
   - BTS#0000360: tickets adding in customer context (alec)
+  - bugfix: going to backup view by clicking on record on backup list (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
