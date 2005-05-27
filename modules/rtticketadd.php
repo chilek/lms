@@ -31,7 +31,7 @@ if(isset($ticket))
 {
 	$queue = $ticket['queue'];
 
-	if($ticket['subject']=='' && $ticket['message']['body']=='')
+	if($ticket['subject']=='' && $ticket['body']=='')
 	{
 		$SESSION->redirect('?m=rtticketadd&id='.$queue);
 	}
@@ -116,7 +116,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('customer', $customer);
+$SMARTY->assign('customerid', isset($ticket['customerid']) ? $ticket['customerid'] : $_GET['customerid']);
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketadd.html');

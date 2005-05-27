@@ -29,6 +29,7 @@ version 1.7.1 ? (??/??/????):
   - fixed customers and nodes searching when register_globals is on (alec)
   - quick search made quick (kondi)
   - bugfix: compressed backup restoring is possible again (alec)
+  - BTS#0000360: tickets adding in customer context (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 
