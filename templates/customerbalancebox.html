@@ -106,7 +106,7 @@
 				{section name=balancelist loop=$balancelist.id start=$limit}
 				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
-					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
+					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
 					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|money_format}</nobr></TD>
 					<TD width="1%" align="right"><nobr>

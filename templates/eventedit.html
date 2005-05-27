@@ -108,20 +108,20 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft" valign="top">
-			<IMG src="img/admins.gif" alt="">
+			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%" valign="top">
 			<B>{t}Users:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<SELECT name="event[admin]" {tip text="Select user (optional)"}>
-				<OPTION value=""{if !$event.admin} SELECTED{/if}>{t}- select user -{/t}</OPTION>
-				{section name=adminlist loop=$adminlist}	
-				<OPTION value="{$adminlist[adminlist].id}"{if $event.admin == $adminlist[adminlist].id} SELECTED{/if}>{$adminlist[adminlist].name}</OPTION>
+			<SELECT name="event[user]" {tip text="Select user (optional)"}>
+				<OPTION value=""{if !$event.user} SELECTED{/if}>{t}- select user -{/t}</OPTION>
+				{section name=userlist loop=$userlist}	
+				<OPTION value="{$userlist[userlist].id}"{if $event.user == $userlist[userlist].id} SELECTED{/if}>{$userlist[userlist].name}</OPTION>
 				{/section}
 			</SELECT><BR>
-			{foreach item=admin from=$event.adminlist}	
-				<NOBR><A href="?m=admininfo&id={$admin.id}">{$admin.name}</A>&nbsp;<A href="?m=eventedit&action=dropadmin&eid={$event.id}&aid={$admin.id}"><IMG src="img/delete.gif" ALT="[ {t}Delete{/t} ]" OnClick="return confirm('{t 0=$admin.name}Are you sure, you want to drop user $0 from that event?{/t}')"></A></NOBR><BR>
+			{foreach item=user from=$event.userlist}	
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A>&nbsp;<A href="?m=eventedit&action=dropuser&eid={$event.id}&aid={$user.id}"><IMG src="img/delete.gif" ALT="[ {t}Delete{/t} ]" OnClick="return confirm('{t 0=$user.name}Are you sure, you want to drop user $0 from that event?{/t}')"></A></NOBR><BR>
 			{/foreach}
 		</TD>
 	</TR>

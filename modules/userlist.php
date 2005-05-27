@@ -24,23 +24,11 @@
  *  $Id$
  */
 
-if(!$LMS->AdminExists($_GET['id']))
-{
-	$SESSION->redirect('?m=adminlist');
-}
-
-$admininfo = $LMS->GetAdminInfo($_GET['id']);
-$layout['pagetitle'] = trans('User Info: $0', $admininfo['login']);
-
-$rights = $LMS->GetAdminRights($_GET['id']);
-foreach($rights as $right)
-	if($access['table'][$right]['name'])
-		$accesslist[] = $access['table'][$right]['name'];
+$layout['pagetitle'] = trans('Users List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('admininfo', $admininfo);
-$SMARTY->assign('accesslist', $accesslist);
-$SMARTY->display('admininfo.html');
+$SMARTY->assign('userslist',$LMS->GetUserList());
+$SMARTY->display('userlist.html');
 
 ?>

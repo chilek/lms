@@ -1376,7 +1376,6 @@ $_LANG['URL:'] = 'Adres URL:';
 $_LANG['URL of your homepage:'] = 'Adres twojej strony domowej:';
 $_LANG['Use carriage return for indentation only. LMS will reformat paragraphs and break long lines.'] = 'Używaj klawisza Enter tylko w celu zamknięcia akapitu. LMS sformatuje wiadomość i połamie linie';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
-$_LANG['user'] = 'użytkownik';
 $_LANG['User'] = 'Użytkownik';
 $_LANG['User:'] = 'Użytkownik:';
 $_LANG['User-defined stats'] = 'Statystyki zdefiniowane przez użytkownika';

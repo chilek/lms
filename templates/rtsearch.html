@@ -50,14 +50,14 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/admins.gif" alt="">
+			<IMG src="img/users.gif" alt="">
 			<B>{t}Owner:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
 			<SELECT size="1" name="search[owner]" {tip text="Select user/owner of the ticket"}>
 				<OPTION value="0">{t}- all owners -{/t}</OPTION>
-				{foreach from=$adminlist item=adminlist}
-			        <OPTION value="{$adminlist.id}" {if $adminlist.id == $search.owner}SELECTED{/if}>{$adminlist.name}</OPTION>
+				{foreach from=$userlist item=userlist}
+			        <OPTION value="{$userlist.id}" {if $userlist.id == $search.owner}SELECTED{/if}>{$userlist.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

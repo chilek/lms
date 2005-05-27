@@ -48,19 +48,19 @@ if($event = $_POST['event'])
 		$date = mktime(0, 0, 0, $month, $day, $year);
 		$event['status'] = $event['status'] ? 1 : 0;
 
-		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, adminid, private, customerid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, userid, private, customerid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $AUTH->id, $event['status'], $event['customerid']));
 		
 		$LMS->SetTS('events');
 		
-		if($event['adminlist'])
+		if($event['userlist'])
 		{
-			$id = $DB->GetOne('SELECT id FROM events WHERE title=? AND date=? AND begintime=? AND endtime=? AND adminid=?',
+			$id = $DB->GetOne('SELECT id FROM events WHERE title=? AND date=? AND begintime=? AND endtime=? AND userid=?',
 				array($event['title'], $date, $event['begintime'], $event['endtime'], $AUTH->id));
 
-			foreach($event['adminlist'] as $adminid)
-				$DB->Execute('INSERT INTO eventassignments (eventid, adminid) 
-					VALUES (?, ?)', array($id, $adminid));
+			foreach($event['userlist'] as $userid)
+				$DB->Execute('INSERT INTO eventassignments (eventid, userid) 
+					VALUES (?, ?)', array($id, $userid));
 
 			$LMS->SetTS('eventassignments');
 		}
@@ -86,11 +86,11 @@ $layout['pagetitle'] = trans('New Event');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$adminlist = $LMS->GetAdminNames();
+$userlist = $LMS->GetUserNames();
 
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-$SMARTY->assign('adminlist', $adminlist);
-$SMARTY->assign('adminlistsize', sizeof($adminlist));
+$SMARTY->assign('userlist', $userlist);
+$SMARTY->assign('userlistsize', sizeof($userlist));
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
 $SMARTY->assign('layout', $layout);

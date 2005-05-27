@@ -73,18 +73,18 @@
 			<B>{t}Sender E-mail:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[sender]" SIZE="40" value="{if $mailing.sender}{$mailing.sender}{elseif $admininfo.email}{$admininfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
+			<INPUT type="text" NAME="mailing[sender]" SIZE="40" value="{if $mailing.sender}{$mailing.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" WIDTH="1%">
-			<IMG SRC="img/admins.gif" ALT=""> 
+			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Sender:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[from]" SIZE="40"  VALUE="{if $mailing.from}{$mailing.from}{elseif $admininfo.name}{$admininfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
+			<INPUT type="text" NAME="mailing[from]" SIZE="40"  VALUE="{if $mailing.from}{$mailing.from}{elseif $userinfo.name}{$userinfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

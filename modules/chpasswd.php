@@ -26,7 +26,7 @@
 
 $id = $AUTH->id;
 
-if($LMS->AdminExists($id))
+if($LMS->UserExists($id))
 {
 	if(isset($_POST['passwd']))
 	{
@@ -40,7 +40,7 @@ if($LMS->AdminExists($id))
 		
 		if(!$error)
 		{
-			$LMS->SetAdminPassword($id,$passwd['passwd']);
+			$LMS->SetUserPassword($id,$passwd['passwd']);
 			header('Location: ?'.$SESSION->get('backto'));
 		}
 	}
@@ -50,7 +50,7 @@ if($LMS->AdminExists($id))
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);
 	$SMARTY->assign('target', '?m=chpasswd');
-	$SMARTY->display('adminpasswd.html');
+	$SMARTY->display('userpasswd.html');
 
 }
 else

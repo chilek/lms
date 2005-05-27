@@ -221,7 +221,7 @@ if($AUTH->islogged)
 		if(eregi($access['allow'], $module))
 			$allow = TRUE;
 		else{
-			$rights = $LMS->GetAdminRights($AUTH->id);
+			$rights = $LMS->GetUserRights($AUTH->id);
 			if($rights)
 				foreach($rights as $level)
 					if(isset($access['table'][$level]['deny_reg']) && eregi($access['table'][$level]['deny_reg'], $module))

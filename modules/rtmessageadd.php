@@ -34,14 +34,14 @@ function MessageAdd($msg, $headers, $file=NULL)
 		foreach($headers as $idx => $header)
 			$head .= $idx.": ".$header."\n";
 	
-	$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, customerid, mailfrom, inreplyto, messageid, replyto, headers)
+	$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom, inreplyto, messageid, replyto, headers)
 			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 			    array(
 				$msg['ticketid'],
 				$time,
 				$msg['subject'],
 				$msg['body'],
-				$msg['adminid'],
+				$msg['userid'],
 				$msg['customerid'],
 				$msg['mailfrom'],
 				$msg['inreplyto'],
@@ -52,7 +52,7 @@ function MessageAdd($msg, $headers, $file=NULL)
 
 	if(isset($file['name']))
 	{
-		$id = $DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND customerid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['customerid'], $time));
+		$id = $DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND userid=? AND customerid=? AND createtime=?', array($msg['ticketid'], $msg['userid'], $msg['customerid'], $time));
 		$dir = $LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
 		@mkdir($LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
@@ -107,18 +107,18 @@ if(isset($_POST['message']))
 	if(!$error)
 	{
 		$queue = $LMS->GetQueueByTicketId($message['ticketid']);
-		$admin = $LMS->GetAdminInfo($AUTH->id);
+		$user = $LMS->GetUserInfo($AUTH->id);
 		
 		$message['messageid'] = '<msg.'.$message['ticketid'].'.'.$queue['id'].'.'.time().'@rtsystem.'.gethostbyaddr(gethostbyname($_SERVER['SERVER_NAME'])).'>';
 
-		if($message['sender']=='admin')
+		if($message['sender']=='user')
 		{
-			$message['adminid'] = $AUTH->id;
+			$message['userid'] = $AUTH->id;
 			$message['customerid'] = 0;
 		}
 		else
 		{
-			$message['adminid'] = 0;
+			$message['userid'] = 0;
 			if(!$message['customerid']) 
 			{
 				$req = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']));
@@ -131,7 +131,7 @@ if(isset($_POST['message']))
 		if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
-			if($mailfname == 'customer') $mailfname = $admin['name'];
+			if($mailfname == 'customer') $mailfname = $user['name'];
 			$mailfname = '"'.$mailfname.'"';
 		}
 	
@@ -139,12 +139,12 @@ if(isset($_POST['message']))
 		{
 			if($message['destination'] == '')
 				$message['destination'] = $queue['email'];
-			if($message['destination'] && $message['adminid'])
+			if($message['destination'] && $message['userid'])
 			{
 				if($LMS->CONFIG['phpui']['debug_email'])
 					$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
 				$recipients = $message['destination'];
-				$message['mailfrom'] = $admin['email'] ? $admin['email'] : $queue['email'];
+				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
 
 				$headers['Date'] = date('D, d F Y H:i:s T');
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
@@ -156,7 +156,7 @@ if(isset($_POST['message']))
 				$headers['Reply-To'] = $headers['From'];
 
 				$body = $message['body'];
-				if ($message['destination'] == $queue['email'] || $message['destination'] == $admin['email'])
+				if ($message['destination'] == $queue['email'] || $message['destination'] == $user['email'])
 					$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 						.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 						.'?m=rtticketview&id='.$message['ticketid'];
@@ -172,7 +172,7 @@ if(isset($_POST['message']))
 			else 
 			{
 				$message['messageid'] = '';
-				if($message['customerid'] || $message['adminid'])
+				if($message['customerid'] || $message['userid'])
 					$message['mailfrom'] = '';
 				$message['headers'] = '';
 			    	$message['replyto'] = '';
@@ -190,10 +190,10 @@ if(isset($_POST['message']))
 				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];
 
-			if($message['adminid'] && $addmsg)
-				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $admin['email'];
-			if($message['adminid'] && !$addmsg)
-				$message['mailfrom'] = $admin['email'] ? $admin['email'] : $queue['email'];
+			if($message['userid'] && $addmsg)
+				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $user['email'];
+			if($message['userid'] && !$addmsg)
+				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
 			
 			if($message['customerid'])
 				$message['mailfrom'] = $LMS->GetCustomerEmail($message['customerid']);
@@ -208,7 +208,7 @@ if(isset($_POST['message']))
 			$headers['Reply-To'] = $headers['From'];
 			
 			$body = $message['body'];
-			if ($message['destination'] == $queue['email'] || $message['destination'] == $admin['email'])
+			if ($message['destination'] == $queue['email'] || $message['destination'] == $user['email'])
 				$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 					.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 					.'?m=rtticketview&id='.$message['ticketid'];
@@ -222,7 +222,7 @@ if(isset($_POST['message']))
 			$LMS->SendMail($recipients, $headers, $body);
 
 			// message to customer is written to database
-			if($message['adminid'] && $addmsg) 
+			if($message['userid'] && $addmsg) 
 				MessageAdd($message, $headers, $_FILES['file']);
 		}
 		
@@ -239,7 +239,7 @@ else
 {
 	if($_GET['ticketid'])
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
-	$admin = $LMS->GetAdminInfo($AUTH->id);
+	$user = $LMS->GetUserInfo($AUTH->id);
 	
 	$message['ticketid'] = $_GET['ticketid'];
 	$message['customerid'] = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));
@@ -253,7 +253,7 @@ else
 		else 
 			$message['destination'] = ereg_replace('^.* <(.+@.+)>','\1',$reply['mailfrom']);
 
-		if(!$message['destination'] && !$reply['adminid'])
+		if(!$message['destination'] && !$reply['userid'])
 			$message['destination'] = $LMS->GetCustomerEmail($message['customerid']);
 	
 		$message['subject'] = 'Re: '.$reply['subject'];

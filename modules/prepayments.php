@@ -38,7 +38,7 @@ if(sizeof($pmarks) && sizeof($cmarks))
 {
 	foreach($pmarks as $mark)
 	{
-		$mark = $DB->GetRow('SELECT id, value, comment, adminid, time, type, customerid, taxvalue
+		$mark = $DB->GetRow('SELECT id, value, comment, userid, time, type, customerid, taxvalue
 					FROM cash WHERE id = ?', array($mark));
 
 		while($mark['value'] > 0 && !$finish)

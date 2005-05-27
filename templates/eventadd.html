@@ -98,15 +98,15 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/admins.gif" alt="">
+			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Users:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<SELECT size="{if $adminlistsize > 5}5{else}{size of=$adminlist}{/if}" name="event[adminlist][]" {tip text="Select user(s) (optional)"} multiple>
-				{section name=adminlist loop=$adminlist}	
-				<OPTION value="{$adminlist[adminlist].id}">{$adminlist[adminlist].name}</OPTION>
+			<SELECT size="{if $userlistsize > 5}5{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
+				{section name=userlist loop=$userlist}	
+				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>

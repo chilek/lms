@@ -28,7 +28,7 @@ $ticketedit = $_POST['ticket'];
 
 if(($id = $_GET['id']) && !isset($ticketedit))
 {
-	if($LMS->GetAdminRightsRT($AUTH->id, 0, $id) < 2)
+	if($LMS->GetUserRightsRT($AUTH->id, 0, $id) < 2)
 	{
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
@@ -47,7 +47,7 @@ $ticket = $LMS->GetTicketContents($id);
 if(isset($ticketedit))
 {
 	$ticketedit['ticketid'] = $ticket['ticketid'];
-	if($LMS->GetAdminRightsRT($AUTH->id, $ticketedit['queueid']) < 2)
+	if($LMS->GetUserRightsRT($AUTH->id, $ticketedit['queueid']) < 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 	
 	if($ticketedit['subject'] == '')
@@ -78,7 +78,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('adminlist', $LMS->GetAdminNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketedit.html');
 

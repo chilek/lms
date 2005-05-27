@@ -51,8 +51,8 @@ if(!isset($_GET['id']))
 
 
 $message = $LMS->GetMessage($_GET['id']); 
-if($message['adminid'])
-	$message['adminname'] = $LMS->GetAdminName($message['adminid']);
+if($message['userid'])
+	$message['username'] = $LMS->GetUserName($message['userid']);
 
 if($message['customerid'])
 	$message['customername'] = $LMS->GetCustomerName($message['customerid']);
@@ -70,7 +70,7 @@ if($message['inreplyto'])
 	$message['inreplytoid'] = $reply['subject'];
 }
 
-if(!$message['customerid'] && !$message['adminid'] && !$message['mailfrom'])
+if(!$message['customerid'] && !$message['userid'] && !$message['mailfrom'])
 {
 	$message['requestor'] = $DB->GetOne('SELECT requestor FROM rttickets WHERE id=?', array($message['ticketid']));
 }

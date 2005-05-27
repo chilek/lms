@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $adminid=0)
+function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0)
 {
-	global $LMS, $AUTH;
+	global $DB, $AUTH;
 
 	if(!$year) $year = date('Y',time());
 	if(!$month) $month = date('n',time());
@@ -39,7 +39,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername 
 		 FROM events LEFT JOIN customers ON (customerid = customers.id)
-		 WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
+		 WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND userid = ?)) '
 		.($customerid ? 'AND customerid = '.$customerid : '')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $AUTH->id));
@@ -47,21 +47,21 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	if($list)
 		foreach($list as $idx => $row)
 		{
-			$list[$idx]['adminlist'] = $DB->GetAll('SELECT adminid AS id, admins.name
-								    FROM eventassignments, admins
-								    WHERE adminid = admins.id AND eventid = ? ',
+			$list[$idx]['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
+								    FROM eventassignments, users
+								    WHERE userid = users.id AND eventid = ? ',
 								    array($row['id']));
 
-			if($adminid && sizeof($list[$idx]['adminlist']))
-				foreach($list[$idx]['adminlist'] as $admin)
-					if($admin['id'] == $adminid)
+			if($userid && sizeof($list[$idx]['userlist']))
+				foreach($list[$idx]['userlist'] as $user)
+					if($user['id'] == $userid)
 					{
 						$list2[] = $list[$idx];
 						break;
 					}
 		}
 	
-	if($adminid)
+	if($userid)
 		return $list2;	
 	else	
 		return $list;
@@ -96,7 +96,7 @@ $layout['pagetitle'] = trans('Timetable');
 
 $eventlist = GetEventList($year, $month, $day, $LMS->CONFIG['phpui']['timetable_days_forward'], $u, $a);
 $SESSION->restore('elu', $listdata['customerid']);
-$SESSION->restore('ela', $listdata['adminid']);
+$SESSION->restore('ela', $listdata['userid']);
 
 // create calendars
 for($i=0; $i<$LMS->CONFIG['phpui']['timetable_days_forward']; $i++)
@@ -126,7 +126,7 @@ $SMARTY->assign('daylist',$daylist);
 $SMARTY->assign('month',$month);
 $SMARTY->assign('year',$year);
 $SMARTY->assign('date',$date);
-$SMARTY->assign('adminlist',$LMS->GetAdminNames());
+$SMARTY->assign('userlist',$LMS->GetUserNames());
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('eventlist.html');

@@ -36,7 +36,7 @@ if(isset($ticket))
 		$SESSION->redirect('?m=rtticketadd&id='.$queue);
 	}
 
-	if($LMS->GetAdminRightsRT($AUTH->id, $queue) < 2)
+	if($LMS->GetUserRightsRT($AUTH->id, $queue) < 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 
 	if($ticket['subject'] == '')
@@ -67,17 +67,17 @@ if(isset($ticket))
 		
 		if($LMS->CONFIG['phpui']['newticket_notify'])
 		{
-			$admin = $LMS->GetAdminInfo($AUTH->id);
+			$user = $LMS->GetUserInfo($AUTH->id);
 
 			if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
 			{
 				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
-				if($mailfname == 'customer') $mailfname = $admin['name'];
+				if($mailfname == 'customer') $mailfname = $user['name'];
 				$mailfname = '"'.$mailfname.'"';
 			}
 
-			if ($admin['email'])
-				$mailfrom = $admin['email'];
+			if ($user['email'])
+				$mailfrom = $user['email'];
 			elseif ($qemail = $LMS->GetQueueEmail($queue))
 				$mailfrom = $qemail;
 			else
@@ -92,7 +92,7 @@ if(isset($ticket))
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$id;
 
-			if($recipients = $DB->GetCol('SELECT email FROM admins, rtrights WHERE admins.id=adminid AND queueid=? AND email!=\'\' AND rtrights.rights>2',array($queue)))
+			if($recipients = $DB->GetCol('SELECT email FROM users, rtrights WHERE users.id=userid AND queueid=? AND email!=\'\' AND rtrights.rights>2',array($queue)))
 				foreach($recipients as $email)
 				{
 					if($LMS->CONFIG['phpui']['debug_email'])

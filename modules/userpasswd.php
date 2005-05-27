@@ -26,7 +26,7 @@
 
 $id = (isset($_GET['id'])) ? $_GET['id'] : $AUTH->id;
 
-if($LMS->AdminExists($id))
+if($LMS->UserExists($id))
 {
 	$error = FALSE;
 
@@ -42,17 +42,17 @@ if($LMS->AdminExists($id))
 		
 		if(!$error)
 		{
-			$LMS->SetAdminPassword($id, $passwd['passwd']);
+			$LMS->SetUserPassword($id, $passwd['passwd']);
 			header('Location: ?'. $SESSION->get('backto'));
 		}
 	}
 
-	$passwd['realname'] = $LMS->GetAdminName($id);
+	$passwd['realname'] = $LMS->GetUserName($id);
 	$passwd['id'] = $id;
 	$layout['pagetitle'] = trans('Password Change for User $0',$passwd['realname']);
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);
-	$SMARTY->display('adminpasswd.html');
+	$SMARTY->display('userpasswd.html');
 
 }
 else

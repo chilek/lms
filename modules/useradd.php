@@ -25,36 +25,36 @@
  */
 
 $acl = isset($_POST['acl']) ? $_POST['acl'] : array();
-$adminadd = isset($_POST['adminadd']) ? $_POST['adminadd'] : array();
+$useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
-if(sizeof($adminadd))
+if(sizeof($useradd))
 {
 	
 	
-	foreach($adminadd as $key => $value)
-		$adminadd[$key] = trim($value);
+	foreach($useradd as $key => $value)
+		$useradd[$key] = trim($value);
 	
-	if($adminadd['login']=='' && $adminadd['name']=='' && $adminadd['password']=='' && $adminadd['confirm']=='')
+	if($useradd['login']=='' && $useradd['name']=='' && $useradd['password']=='' && $useradd['confirm']=='')
 	{
-		$SESSION->redirect('?m=adminadd');
+		$SESSION->redirect('?m=useradd');
 	}
 	
-	if($adminadd['login']=='')
+	if($useradd['login']=='')
 		$error['login'] = trans('Login can\'t be empty!');
-	elseif(!eregi('^[a-z0-9.-_]+$', $adminadd['login']))
+	elseif(!eregi('^[a-z0-9.-_]+$', $useradd['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
-	elseif($LMS->GetAdminIDByLogin($adminadd['login']))
+	elseif($LMS->GetUserIDByLogin($useradd['login']))
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
 	
-	if($adminadd['email']!='' && !check_email($adminadd['email']))
+	if($useradd['email']!='' && !check_email($useradd['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
-	if($adminadd['name']=='')
+	if($useradd['name']=='')
 		$error['name'] = trans('You have to enter first and lastname!');
 
-	if($adminadd['password']=='')
+	if($useradd['password']=='')
 		$error['password'] = trans('Empty passwords are not allowed!');
-	elseif($adminadd['password']!=$adminadd['confirm'])
+	elseif($useradd['password']!=$useradd['confirm'])
 		$error['password'] = trans('Passwords does not match!');
 
 	// zróbmy maskê ACL...
@@ -73,11 +73,11 @@ if(sizeof($adminadd))
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
-	$adminadd['rights'] = ereg_replace('^[0]*(.*)$','\1',$outmask);
+	$useradd['rights'] = ereg_replace('^[0]*(.*)$','\1',$outmask);
 
 	if(!$error)
 	{
-		$SESSION->redirect('?m=admininfo&id='.$LMS->AdminAdd($adminadd));
+		$SESSION->redirect('?m=userinfo&id='.$LMS->UserAdd($useradd));
 	}
 }
 
@@ -91,9 +91,9 @@ foreach($access['table'] as $idx => $row)
 }
 
 $layout['pagetitle'] = trans('New User');
-$SMARTY->assign('adminadd', $adminadd);
+$SMARTY->assign('useradd', $useradd);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('accesslist', $accesslist);
-$SMARTY->display('adminadd.html');
+$SMARTY->display('useradd.html');
 
 ?>

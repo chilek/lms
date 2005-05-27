@@ -61,14 +61,14 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/admins.gif" alt="">
+			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Users:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			{foreach item=admin from=$event.adminlist}	
-				<NOBR><A href="?m=admininfo&id={$admin.id}">{$admin.name}</A></NOBR><BR>
+			{foreach item=user from=$event.userlist}	
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A></NOBR><BR>
 			{/foreach}
 		</TD>
 	</TR>
@@ -105,13 +105,13 @@
 {*
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/admins.gif" alt="">
+			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{t}Creator:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<A href="?m=admininfo&id={$event.adminid}">{$event.adminname}</A>
+			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
 		</TD>
 	</TR>
 *}

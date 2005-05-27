@@ -24,32 +24,32 @@
  *  $Id$
  */
 
-if(!$LMS->AdminExists($_GET['id']))
+if(!$LMS->UserExists($_GET['id']))
 {
-	$SESSION->redirect('?m=adminlist');
+	$SESSION->redirect('?m=userlist');
 }
 
-$admininfo = isset($_POST['admininfo']) ? $_POST['admininfo'] : FALSE;
+$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : FALSE;
 
-if($admininfo)
+if($userinfo)
 {
 	$acl = $_POST['acl'];
-	$admininfo['id'] = $_GET['id'];
+	$userinfo['id'] = $_GET['id'];
 	
-	foreach($admininfo as $key => $value)
-		$admininfo[$key] = trim($value);
+	foreach($userinfo as $key => $value)
+		$userinfo[$key] = trim($value);
 
-	if($admininfo['login'] == '')
+	if($userinfo['login'] == '')
 		$error['login'] = trans('Login can\'t be empty!');
-	elseif(!eregi('^[a-z0-9.-_]+$',$admininfo['login']))
+	elseif(!eregi('^[a-z0-9.-_]+$',$userinfo['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
-	elseif($LMS->GetAdminIDByLogin($admininfo['login']) && $LMS->GetAdminIDByLogin($admininfo['login']) != $_GET['id'])
+	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $_GET['id'])
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
 
-	if($admininfo['name'] == '')
+	if($userinfo['name'] == '')
 		$error['name'] = trans('You have to enter first and lastname!');
 
-	if($admininfo['email']!='' && !check_email($admininfo['email']))
+	if($userinfo['email']!='' && !check_email($userinfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 				
 	// zróbmy maskê ACL...
@@ -67,23 +67,23 @@ if($admininfo)
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
-	$admininfo['rights'] = ereg_replace('^[0]*(.*)$','\1',$outmask);
+	$userinfo['rights'] = ereg_replace('^[0]*(.*)$','\1',$outmask);
 
 	if(!$error)
 	{
-		$LMS->AdminUpdate($admininfo);
-		$SESSION->redirect('?m=admininfo&id='.$admininfo['id']);
+		$LMS->UserUpdate($userinfo);
+		$SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
 	}
 
 }
 
-foreach($LMS->GetAdminInfo($_GET['id']) as $key => $value)
-	if(!isset($admininfo[$key]))
-		$admininfo[$key] = $value;
+foreach($LMS->GetUserInfo($_GET['id']) as $key => $value)
+	if(!isset($userinfo[$key]))
+		$userinfo[$key] = $value;
 
-$layout['pagetitle'] = trans('User Edit: $0', $admininfo['login']);
+$layout['pagetitle'] = trans('User Edit: $0', $userinfo['login']);
 
-$rights = $LMS->GetAdminRights($_GET['id']);
+$rights = $LMS->GetUserRights($_GET['id']);
 
 foreach($access['table'] as $idx => $row)
 {
@@ -97,9 +97,9 @@ foreach($access['table'] as $idx => $row)
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('accesslist',$accesslist);
-$SMARTY->assign('admininfo',$admininfo);
+$SMARTY->assign('userinfo',$userinfo);
 $SMARTY->assign('unlockedit',TRUE);
 $SMARTY->assign('error',$error);
-$SMARTY->display('admininfo.html');
+$SMARTY->display('userinfo.html');
 
 ?>
