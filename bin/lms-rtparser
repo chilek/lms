@@ -210,17 +210,17 @@ my $utsfmt;
 
 if($dbtype eq "mysql")
 {
-	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbcustomer","$dbpasswd", { RaiseError => 1 });
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "UNIX_TIMESTAMP()";
 }
 elsif($dbtype eq "postgres")
 {
-	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbcustomer","$dbpasswd", { RaiseError => 1 });
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
 }
 elsif($dbtype eq "sqlite")
 {
-	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbcustomer","$dbpasswd", { RaiseError => 1 });
+	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "strftime('%s','now')";	
 }
 else
@@ -301,7 +301,7 @@ if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 my $ticket_id;
 my $rt_msgid;
 my $reqcustid = 0;
-my $reqadminid = 0;
+my $requserid = 0;
 my $replytoname = $mh_replyto;
 $replytoname =~ s/^(.*)<.+\@.+>$/\1/g;
 my $replytoemail = $mh_replyto;
@@ -405,8 +405,8 @@ if(! $prev_tid) # generate new ticket if previous not found
 	
 	if($notify)
 	{
-		# find admins emails
-		$dbq = $dbase->prepare("SELECT name, email FROM admins, rtrights WHERE admins.id=adminid AND queueid = '$queue' AND email!='' AND rtrights.rights>2");
+		# find users emails
+		$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights WHERE users.id=userid AND queueid = '$queue' AND email!='' AND rtrights.rights>2");
 		$dbq->execute();
 		while(my $row = $dbq->fetchrow_hashref())
 		{
@@ -431,12 +431,12 @@ if(! $prev_tid) # generate new ticket if previous not found
 }
 else
 {
-	# find adminid
-	$dbq = $dbase->prepare("SELECT id FROM admins WHERE email = '$fromemail' AND email!=''");
+	# find userid
+	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail' AND email!=''");
 	$dbq->execute();
 	if(my $row = $dbq->fetchrow_hashref())
 	{
-		$reqadminid = $row->{'id'};
+		$requserid = $row->{'id'};
 	}
 
 	# find customerid
@@ -447,7 +447,7 @@ else
 		$reqcustid = $row->{'id'};
 	}
 
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, customerid, adminid, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', $reqcustid, $reqadminid, '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, customerid, userid, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', $reqcustid, $requserid, '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
 	$dbq->execute();
 	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $prev_tid AND messageid = '$mh_msgid' AND createtime = $timestamp");
 	$dbq->execute();

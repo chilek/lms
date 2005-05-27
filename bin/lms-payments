@@ -306,11 +306,11 @@ while(my $assign = $dbq->fetchrow_hashref())
 				
 				if ($assign->{'taxvalue'})
 				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc', $gotinv{$uid}, $itemid)");
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc', $gotinv{$uid}, $itemid)");
 				}
 				else
 				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$desc', $gotinv{$uid}, $itemid)");
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES ($currtime, 4, $assign->{'value'}, NULL, $uid, '$desc', $gotinv{$uid}, $itemid)");
 				}
 			}
 			
@@ -319,11 +319,11 @@ while(my $assign = $dbq->fetchrow_hashref())
 		{
 			if ($assign->{'taxvalue'})
 			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc')");
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc')");
 			}
 			else
 			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, customerid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$desc')");
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment) VALUES ($currtime, 4, $assign->{'value'}, NULL, $uid, '$desc')");
 			}
 		}
 
@@ -338,7 +338,7 @@ $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, customerid, comment, invoiceid) VALUES ($currtime, 0, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, customerid, comment, invoiceid) VALUES ($currtime, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
 	$sdbq->execute();
 	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
