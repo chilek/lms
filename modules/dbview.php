@@ -26,24 +26,24 @@
 
 function DatabaseFetchContent($db,$save=FALSE)
 {
-	global $DB;
+	global $DB, $CONFIG;
 	
-	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
+	if(file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
 	{		
 		$database['content'] = '';
-		if($content = file($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
+		if($content = file($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
 			foreach($content as $value)
 				$database['content'] .= $value;
-		$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
+		$database['size'] = filesize($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
 		$database['name'] = $db;
 		list($database['time']) = explode('-',$db);
 		return $database;
 	}
-	elseif((extension_loaded('zlib'))&&(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz')))
+	elseif((extension_loaded('zlib'))&&(file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz')))
 	{
 		if($save==TRUE)
 		{
-			$file=fopen($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz',"r"); //tutaj przepisuje plik binarny 
+			$file=fopen($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz',"r"); //tutaj przepisuje plik binarny 
 			$database = '';
 			while($part = fread($file,8192))
                             	$database .= $part; 
@@ -51,10 +51,10 @@ function DatabaseFetchContent($db,$save=FALSE)
 		else
 		{
 			$database['content'] = '';
-			if($content = gzfile($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz'))
+			if($content = gzfile($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz'))
 				foreach($content as $value)
                         		$database['content'] .= $value;
-                	$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
+                	$database['size'] = filesize($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
                 	$database['name'] = $db;
 			list($database['time']) = explode('-',$db);
 		}

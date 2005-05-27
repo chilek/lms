@@ -26,17 +26,17 @@
 
 function drawtext($x, $y, $text, $r, $g, $b)
 {
-	global $m, $font, $_CONFIG;
+	global $m, $font, $CONFIG;
 
 	if(!$text) return;
 
-	if($_CONFIG['phpui']['gd_translate_to'])
-		$text = iconv('UTF-8', $_CONFIG['phpui']['gd_translate_to'], $text);
+	if($CONFIG['phpui']['gd_translate_to'])
+		$text = iconv('UTF-8', $CONFIG['phpui']['gd_translate_to'], $text);
 
 	// remove special characters because we haven't got proper font
 	// or something else. I don't know what, but we have a problem with 
 	// that characters on flash map.
-	if(strtoupper($_CONFIG['phpui']['gd_translate_to'])=='ISO-8859-2')
+	if(strtoupper($CONFIG['phpui']['gd_translate_to'])=='ISO-8859-2')
 	{
 		// for Polish diacritical chars
 		$from = array('±','¶','ê','¿','¼','æ','ñ','ó','³','¡','¦','Ê','¯','¬','Æ','Ñ','Ó','£');
@@ -55,9 +55,9 @@ function drawtext($x, $y, $text, $r, $g, $b)
 
 function pngdrawtext($image, $font, $x, $y, $text, $color, $bgcolor)
 {
-	global $_CONFIG;
-	if($_CONFIG['phpui']['gd_translate_to'])
-		$text = iconv('UTF-8', $_CONFIG['phpui']['gd_translate_to'], $text);
+	global $CONFIG;
+	if($CONFIG['phpui']['gd_translate_to'])
+		$text = iconv('UTF-8', $CONFIG['phpui']['gd_translate_to'], $text);
 	imagestring($image, $font, $x + 1, $y + 1, $text, $bgcolor);
 	imagestring($image, $font, $x + 1, $y - 1, $text, $bgcolor);
 	imagestring($image, $font, $x - 1, $y + 1, $text, $bgcolor);
@@ -252,7 +252,7 @@ if($graph == '')
 	$SMARTY->assign('nodemap', $nodemap);
 	$SMARTY->assign('deviceslist', $deviceslist);
 	$SMARTY->assign('start', $start);
-	$SMARTY->assign('type', strtolower($_CONFIG['phpui']['map_type']));
+	$SMARTY->assign('type', strtolower($CONFIG['phpui']['map_type']));
 	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
 	$SMARTY->assign('gd', function_exists('imagepng'));
 	$SMARTY->assign('ming', function_exists('ming_useswfversion'));
