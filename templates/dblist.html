@@ -16,10 +16,10 @@
 {cycle values="#DFD5BD,#EBE4D6" print=false}
 {section name=dblist loop=$dblist.time}
 <TR {if $dblist.dbv[dblist] != $layout.dbschversion}CLASS="BLEND" {/if}bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-	<TD class="fleft" width="98%" onClick="return self.location.href='?m=dbview&db={$dblist.time[dblist]}';">
+	<TD class="fleft" width="98%" onClick="return self.location.href='?m=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
 		<IMG src="img/time.gif" align="absmiddle" ALT="" border="0"> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
 	</TD>
-	<TD width="1%" align="right" onClick="return self.location.href='?m=dbview&db={$dblist.time[dblist]}';" nowrap>
+	<TD width="1%" align="right" onClick="return self.location.href='?m=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';" nowrap>
 		{if $dblist.type[dblist]=="gz"}
 			<IMG src="img/zipped.gif" align="absmiddle" ALT="" border="0">
 		{else}
