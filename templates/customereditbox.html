@@ -16,7 +16,7 @@
 //-->
 </SCRIPT>
 {/literal}
-<FORM NAME="customeredit" METHOD="POST" ACTION="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="customerdata[id]" VALUE="{$customerinfo.id}">
+<FORM NAME="customeredit" id="customeredit" METHOD="POST" ACTION="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="customerdata[id]" VALUE="{$customerinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -83,23 +83,28 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="customerdata[address]" VALUE="{$customerinfo.address}" SIZE="30" {tip text="Enter address" trigger="address"}>
+			<INPUT TYPE="TEXT" NAME="customerdata[address]" id="address" VALUE="{$customerinfo.address}" SIZE="30" {tip text="Enter address" trigger="address"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>{t}Zip:{/t}</B><BR><INPUT TYPE="TEXT" NAME="customerdata[zip]" VALUE="{$customerinfo.zip}" SIZE="10" {tip text="Enter zip code" trigger="zip"}><BR>
+			<B>{t}Zip:{/t}</B><BR><INPUT TYPE="TEXT" NAME="customerdata[zip]" id="zip" VALUE="{$customerinfo.zip}" SIZE="10" {tip text="Enter zip code" trigger="zip"}><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>{t}City:{/t}</B><BR><INPUT TYPE="TEXT" NAME="customerdata[city]" VALUE="{$customerinfo.city}" SIZE="30" {tip text="Enter city"}>
+			<B>{t}City:{/t}</B><BR><INPUT TYPE="TEXT" NAME="customerdata[city]" id="city" VALUE="{$customerinfo.city}" SIZE="30" {tip text="Enter city"}>
 		</TD>
 	</TR>
+	<script language="Javascript">
+		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
+		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
+		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+	</script>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/mail.gif" ALT="">
