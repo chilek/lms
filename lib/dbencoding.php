@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-if(strtolower($_CONFIG['database']['server_encoding']) != 'unicode')
+if(strtolower($CONFIG['database']['server_encoding']) != 'unicode')
 {
-	switch($_CONFIG['database']['type'])
+	switch($CONFIG['database']['type'])
 	{
 		case 'postgres':
 			$DB->Execute("SET CLIENT_ENCODING TO 'UNICODE'");
 		break;
 		
 		case 'mysql':
-			$DB->iconv = $_CONFIG['database']['server_encoding'];
+			$DB->iconv = $CONFIG['database']['server_encoding'];
 			if(!function_exists('iconv'))
 				die('Iconv support is required by \'server_encoding\' option!');
 			if(!iconv($DB->iconv, $DB->iconv, 'test'))
