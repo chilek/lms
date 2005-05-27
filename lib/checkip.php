@@ -26,13 +26,13 @@
 
 // Checking if connection is from allowed IP
 
-if(isset($_CONFIG['phpui']['allow_from']))
+if(isset($CONFIG['phpui']['allow_from']))
 {
 	// usuñmy prefix ipv6 jak jest
 	
 	$ipaddr = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
 
-	$allowedlist = explode(',',$_CONFIG['phpui']['allow_from']);
+	$allowedlist = explode(',',$CONFIG['phpui']['allow_from']);
 
 	foreach($allowedlist as $value)
 	{
