@@ -32,6 +32,7 @@ if(strtolower($CONFIG['database']['server_encoding']) != 'unicode')
 			$DB->Execute("SET CLIENT_ENCODING TO 'UNICODE'");
 		break;
 		
+		case 'sqlite':
 		case 'mysql':
 			$DB->iconv = $CONFIG['database']['server_encoding'];
 			if(!function_exists('iconv'))
