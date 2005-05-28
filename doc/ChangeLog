@@ -38,6 +38,9 @@ version 1.7.1 ? (??/??/????):
   - bugfix: compressed backup restoring is possible again (alec)
   - BTS#0000360: tickets adding in customer context (alec)
   - bugfix: going to backup view by clicking on record on backup list (alec)
+  - SQLite support: fixed upgradedb scripts, added iconv support, added
+    sample/sqlite_createdb.php script for database creation without any 
+    of sqlite client applications (alec)
 
 version 1.7.0 Klorel (13/05/2005):
 

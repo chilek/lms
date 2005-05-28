@@ -28,6 +28,7 @@ class LMSDB_driver_sqlite extends LMSDB_common
 {
 	var $_loaded = TRUE;
 	var $_dbtype = 'sqlite';
+	var $iconv = NULL;
 
 	function LMSDB_driver_sqlite($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
@@ -71,6 +72,9 @@ class LMSDB_driver_sqlite extends LMSDB_common
 	{
 		$this->_query = $query;
 
+		if($this->iconv)
+			$query = iconv('UTF-8', $this->iconv, $query);
+
 		if($this->_result = sqlite_query($this->_dblink,$query))
 			$this->_error = FALSE;
 		else
@@ -82,7 +86,19 @@ class LMSDB_driver_sqlite extends LMSDB_common
 	function _driver_fetchrow_assoc()
 	{
 		if(! $this->_error)
-			return sqlite_fetch_array($this->_result,SQLITE_ASSOC);
+		{
+			$result = sqlite_fetch_array($this->_result,SQLITE_ASSOC);
+		
+			if(!$this->iconv)
+				return $result;
+			else
+			{
+				if($result)
+					foreach($result as $idx => $val)
+						$result[$idx] = iconv($this->iconv, 'UTF-8', $val);
+				return $result;
+			}
+		}
 		else
 			return FALSE;
 	}
@@ -90,7 +106,19 @@ class LMSDB_driver_sqlite extends LMSDB_common
 	function _driver_fetchrow_num()
 	{
 		if(! $this->_error)
-			return sqlite_fetch_array($this->_result,SQLITE_NUM);
+		{
+			$result = sqlite_fetch_array($this->_result,SQLITE_NUM);
+		
+			if(!$this->iconv)
+				return $result;
+			else
+			{
+				if($result)
+					foreach($result as $idx => $val)
+						$result[$idx] = iconv($this->iconv, 'UTF-8', $val);
+				return $result;
+			}
+		}
 		else
 			return FALSE;
 	}
