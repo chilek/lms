@@ -1,13 +1,13 @@
 /* $Id$ */ 
 
 /* -------------------------------------------------------- 
-  Structure of table "admins" 
+  Structure of table "users" 
 -------------------------------------------------------- */
-DROP SEQUENCE "admins_id_seq";
-CREATE SEQUENCE "admins_id_seq";
-DROP TABLE admins;
-CREATE TABLE admins (
-	id integer DEFAULT nextval('admins_id_seq'::text) NOT NULL,
+DROP SEQUENCE "users_id_seq";
+CREATE SEQUENCE "users_id_seq";
+DROP TABLE users;
+CREATE TABLE users (
+	id integer DEFAULT nextval('users_id_seq'::text) NOT NULL,
 	login varchar(32) 	DEFAULT '' NOT NULL,
 	name varchar(64) 	DEFAULT '' NOT NULL,
 	email varchar(255) 	DEFAULT '' NOT NULL,
@@ -32,7 +32,7 @@ DROP TABLE assignments;
 CREATE TABLE assignments (
 	id integer default nextval('assignments_id_seq'::text) NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL,
-	userid integer 		DEFAULT 0 NOT NULL,
+	customerid integer 		DEFAULT 0 NOT NULL,
 	period integer 		DEFAULT 0 NOT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
@@ -53,17 +53,17 @@ DROP TABLE cash;
 CREATE TABLE cash (
 	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
 	time integer 		DEFAULT 0 NOT NULL,
-	adminid integer 	DEFAULT 0 NOT NULL,
+	userid integer 	DEFAULT 0 NOT NULL,
 	type smallint 		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxvalue numeric(9,2)	DEFAULT 0,
-	userid integer 		DEFAULT 0 NOT NULL,
+	customerid integer 		DEFAULT 0 NOT NULL,
 	comment varchar(255) 	DEFAULT '' NOT NULL,
 	invoiceid integer 	DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
-CREATE INDEX cash_userid_idx ON cash(userid);
+CREATE INDEX cash_customerid_idx ON cash(customerid);
 CREATE INDEX cash_invoiceid_idx ON cash(invoiceid);
 CREATE INDEX cash_time_idx ON cash(time);
 
@@ -214,13 +214,13 @@ CREATE TABLE timestamps (
 );
 
 /* -------------------------------------------------------- 
-  Structure of table "users" (customers)
+  Structure of table "customers" (customers)
 -------------------------------------------------------- */
-DROP SEQUENCE "users_id_seq";
-CREATE SEQUENCE "users_id_seq";
-DROP TABLE users;
-CREATE TABLE users (
-	id integer DEFAULT nextval('users_id_seq'::text) NOT NULL,
+DROP SEQUENCE "customers_id_seq";
+CREATE SEQUENCE "customers_id_seq";
+DROP TABLE customers;
+CREATE TABLE customers (
+	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
 	lastname varchar(255)	DEFAULT '' NOT NULL,
 	name varchar(255)	DEFAULT '' NOT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
@@ -247,13 +247,13 @@ CREATE TABLE users (
 );
 
 /* -------------------------------------------------------- 
-  Structure of table "usergroups" 
+  Structure of table "customergroups" 
 -------------------------------------------------------- */
-DROP SEQUENCE "usergroups_id_seq";
-CREATE SEQUENCE "usergroups_id_seq";
-DROP TABLE usergroups;
-CREATE TABLE usergroups (
-	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL, 
+DROP SEQUENCE "customergroups_id_seq";
+CREATE SEQUENCE "customergroups_id_seq";
+DROP TABLE customergroups;
+CREATE TABLE customergroups (
+	id integer DEFAULT nextval('customergroups_id_seq'::text) NOT NULL, 
 	name varchar(255) DEFAULT '' NOT NULL, 
 	description text DEFAULT '' NOT NULL, 
 	PRIMARY KEY (id), 
@@ -261,17 +261,17 @@ CREATE TABLE usergroups (
 );
 
 /* -------------------------------------------------------- 
-  Structure of table "userassignments" 
+  Structure of table "customerassignments" 
 -------------------------------------------------------- */
-DROP SEQUENCE "userassignments_id_seq";
-CREATE SEQUENCE "userassignments_id_seq";
-DROP TABLE userassignments;
-CREATE TABLE userassignments (
-	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL, 
-	usergroupid integer DEFAULT 0 NOT NULL, 
-	userid integer DEFAULT 0 NOT NULL, 
+DROP SEQUENCE "customerassignments_id_seq";
+CREATE SEQUENCE "customerassignments_id_seq";
+DROP TABLE customerassignments;
+CREATE TABLE customerassignments (
+	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL, 
+	customergroupid integer DEFAULT 0 NOT NULL, 
+	customerid integer DEFAULT 0 NOT NULL, 
 	PRIMARY KEY (id),
-	UNIQUE (usergroupid, userid)
+	UNIQUE (customergroupid, customerid)
 );
 
 /* -------------------------------------------------------- 
@@ -374,7 +374,7 @@ CREATE TABLE rttickets (
   subject varchar(255) 	DEFAULT '' NOT NULL,
   state smallint 	DEFAULT 0 NOT NULL,
   owner integer 	DEFAULT 0 NOT NULL,
-  userid integer 	DEFAULT 0 NOT NULL,
+  customerid integer 	DEFAULT 0 NOT NULL,
   createtime integer 	DEFAULT 0 NOT NULL,
   resolvetime integer 	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
@@ -387,8 +387,8 @@ DROP TABLE rtmessages;
 CREATE TABLE rtmessages (
   id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
   ticketid integer 	DEFAULT 0 NOT NULL,
-  adminid integer 	DEFAULT 0 NOT NULL,
   userid integer 	DEFAULT 0 NOT NULL,
+  customerid integer 	DEFAULT 0 NOT NULL,
   mailfrom varchar(255) DEFAULT '' NOT NULL,
   subject varchar(255) 	DEFAULT '' NOT NULL,
   messageid varchar(255) DEFAULT '' NOT NULL,
@@ -405,11 +405,11 @@ CREATE SEQUENCE "rtrights_id_seq";
 DROP TABLE rtrights;
 CREATE TABLE rtrights (
     id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL, 
-    adminid integer DEFAULT 0 NOT NULL,
+    userid integer DEFAULT 0 NOT NULL,
     queueid integer DEFAULT 0 NOT NULL,
     rights integer DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (adminid, queueid)
+    UNIQUE (userid, queueid)
 );
 
 /* ---------------------------------------------------
@@ -503,8 +503,8 @@ CREATE TABLE events (
 	date integer DEFAULT 0 NOT NULL,
 	begintime smallint DEFAULT 0 NOT NULL,
 	endtime smallint DEFAULT 0 NOT NULL,
-	adminid integer DEFAULT 0 NOT NULL,
 	userid integer DEFAULT 0 NOT NULL,
+	customerid integer DEFAULT 0 NOT NULL,
 	private smallint DEFAULT 0 NOT NULL,
 	closed smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
@@ -518,8 +518,8 @@ CREATE INDEX events_date_idx ON events(date);
 DROP TABLE eventassignments;
 CREATE TABLE eventassignments (
 	eventid integer DEFAULT 0 NOT NULL,
-	adminid integer DEFAULT 0 NOT NULL,
-	UNIQUE (eventid, adminid)
+	userid integer DEFAULT 0 NOT NULL,
+	UNIQUE (eventid, userid)
 );
 
 /* ---------------------------------------------------
@@ -622,4 +622,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005042400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005052700');
