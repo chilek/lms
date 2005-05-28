@@ -34,16 +34,16 @@ $DB_STRUCTURE_FILE = 'doc/lms.sqlite';
 // *******************************************************************
 
 if(!file_exists($CONFIG_FILE))
-	die('Set path to "lms.ini" file!');
+	die("Set path to 'lms.ini' file!\n");
 
 if(!file_exists($DB_STRUCTURE_FILE))
-	die('Set path to "lms.sqlite" file!');
+	die("Set path to 'lms.sqlite' file!\n");
 
 if(!function_exists('sqlite_open'))
-	die('Your PHP does not supports SQLite!');
+	die("Your PHP does not supports SQLite!\n");
 
 if(!function_exists('file_get_contents'))
-	die('Required at least PHP 4.3.0!');
+	die("Required at least PHP 4.3.0!\n");
 
 // Parse configuration file
 
@@ -101,7 +101,7 @@ $_DBNAME = $CONFIG['database']['database'];
 $dblink = sqlite_open($_DBNAME);
 
 if(!$dblink)
-	die('Unable to open/create database!');
+	die("Unable to open/create database!\n");
 
 $file = file_get_contents($DB_STRUCTURE_FILE);
 
