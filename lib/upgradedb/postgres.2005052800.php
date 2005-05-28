@@ -46,7 +46,9 @@ $DB->Execute("
 	PRIMARY KEY (id),
 	UNIQUE (login)
 	);
-	INSERT INTO users SELECT * FROM users_t;
+	INSERT INTO users (id, login, name, email, rights, hosts, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted)
+	    SELECT id, login, name, email, rights, hosts, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted 
+	    FROM users_t;
 	DROP TABLE users_t; 
 
 	CREATE TEMP TABLE customers_t AS SELECT * FROM customers;
@@ -76,7 +78,9 @@ $DB->Execute("
 	message text		DEFAULT '' NOT NULL,
 	pin integer		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id));
-	INSERT INTO customers SELECT * FROM customers_t;
+	INSERT INTO customers (id, lastname, name, status, email, phone1, phone2, phone3, gguin, address, zip, city, nip, pesel, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin)
+	    SELECT id, lastname, name, status, email, phone1, phone2, phone3, gguin, address, zip, city, nip, pesel, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin
+	    FROM customers_t;
 	DROP TABLE customers_t; 
 
 	CREATE TEMP TABLE groups_t AS SELECT * FROM customergroups;
@@ -87,7 +91,9 @@ $DB->Execute("
 	description text DEFAULT '' NOT NULL, 
 	PRIMARY KEY (id), 
 	UNIQUE (name));
-	INSERT INTO customergroups SELECT * FROM groups_t;
+	INSERT INTO customergroups (id, name, description) 
+	    SELECT id, name, description 
+	    FROM groups_t;
 	DROP TABLE groups_t; 
 
 	CREATE TEMP TABLE a_t AS SELECT * FROM customerassignments;
@@ -98,7 +104,9 @@ $DB->Execute("
 	customerid integer DEFAULT 0 NOT NULL, 
 	PRIMARY KEY (id),
 	UNIQUE (customergroupid, customerid));
-	INSERT INTO customerassignments SELECT * FROM a_t;
+	INSERT INTO customerassignments (id, customergroupid, customerid)
+	    SELECT id, customergroupid, customerid 
+	    FROM a_t;
 	DROP TABLE a_t; 
 	
 ");
