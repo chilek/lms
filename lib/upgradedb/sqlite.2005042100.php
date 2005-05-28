@@ -41,7 +41,7 @@ $DB->Execute("CREATE TABLE admins (
 	failedlogindate integer DEFAULT 0  NOT NULL,
 	failedloginip varchar(16) DEFAULT '' NOT NULL,
 	deleted smallint	DEFAULT 0 NOT NULL,
-	UNIQUE (login)
+	UNIQUE (login))
 ");
 $DB->Execute("INSERT INTO admins (id, login, name, email, rights, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted)
 		SELECT id, login, name, email, rights, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted

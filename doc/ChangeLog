@@ -9,6 +9,9 @@ version ? (??/??/????):
   - BTS#0000360: ticket adding in customer context (alec)
   - bugfix: error handling while ticket addition (alec) 
   - bugfix: going to backup view by clicking on record on backups list (alec)
+  - SQLite: fixed bugs in upgradedb files, added iconv() support (alec) 
+  - SQLite: added sample/sqlite_createdb.php for creating database without
+    need of any sqlite client applications (alec)
 
 version 1.6.0rc3 Thor (23/05/2005):
 

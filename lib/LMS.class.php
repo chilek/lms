@@ -559,7 +559,7 @@ class LMS
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 		
 		if($userlist = $this->DB->GetAll( 
-				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, users.address, zip, city, users.info AS info, message, '
+				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, users.address AS address, zip, city, users.info AS info, message, '
 				.($network ? 'COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance ')
 				.'FROM users LEFT JOIN cash ON (users.id=cash.userid AND (type = 3 OR type = 4)) '
 				.($network ? 'LEFT JOIN nodes ON (users.id=ownerid) ' : '')

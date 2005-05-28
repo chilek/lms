@@ -84,7 +84,7 @@ $DB->Execute("INSERT INTO nodes(id, name, mac, ipaddr, ownerid, netdev, linktype
 			FROM nodes_t");
 $DB->Execute("DROP TABLE nodes_t");
 
-$DB->Execute("UPDATE dbinfo SET kayvalue='2005031000' WHERE keytype='dbversion'");
+$DB->Execute("UPDATE dbinfo SET keyvalue='2005031000' WHERE keytype='dbversion'");
 
 $DB->CommitTrans();
 

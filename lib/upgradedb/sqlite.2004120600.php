@@ -58,8 +58,8 @@ $DB->Execute("CREATE TABLE passwd (
     UNIQUE (login)
     )
 ");
-$DB->Execute("INSERT INTO passwd(id, ownerid, login, password, lastlogin, uid, home, type, expdate, domain, domainid) 
-		SELECT id, ownerid, login, password, lastlogin, uid, home, type, expdate, domain, 0
+$DB->Execute("INSERT INTO passwd(id, ownerid, login, password, lastlogin, uid, home, type, expdate, domainid) 
+		SELECT id, ownerid, login, password, lastlogin, uid, home, type, expdate, 0
 		FROM passwd_t");
 $DB->Execute("DROP TABLE passwd_t");
 

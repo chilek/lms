@@ -26,6 +26,8 @@
 
 // upgrade 2005012600 - 2005021500
 
+$DB->BeginTrans();
+
 $DB->Execute("
     CREATE TABLE events (
 	id integer PRIMARY KEY,
@@ -142,6 +144,8 @@ $DB->Execute("DROP TABLE invoicecontents_t");
 
 $DB->Execute("CREATE INDEX cash_invoiceid_idx ON cash(invoiceid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005021500', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = '2005021500' WHERE keytype = 'dbversion'");
+
+$DB->CommitTrans();
 
 ?>
