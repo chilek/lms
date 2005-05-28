@@ -1265,7 +1265,6 @@ $_LANG['Submit/Send'] = 'Wyślij';
 $_LANG['Submitter:'] = 'Zgłaszający:';
 $_LANG['Subscription'] = 'Abonament';
 $_LANG['Subscription:'] = 'Abonament:';
-$_LANG['Summary'] = 'Łączni';
 $_LANG['\'Last/Company Name\' and \'First Name\' fields cannot be empty!'] = '\'Nazwa/Nazwisko\' i \'Imię\' nie mogą być puste!';
 $_LANG['Suspend'] = 'Zawieś';
 $_LANG['Suspending of all liabilities'] = 'Zawieszenie wszystkich zobowiązań';
