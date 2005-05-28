@@ -26,9 +26,8 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-$CONFIG_FILE = 'lms.ini';
-//$DB_STRUCTURE_FILE = 'doc/lms.sqlite';
-$DB_STRUCTURE_FILE = '/home/alec/lms1.4/doc/lms.sqlite';
+$CONFIG_FILE = '/etc/lms/lms.ini';
+$DB_STRUCTURE_FILE = 'doc/lms.sqlite';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
