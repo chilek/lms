@@ -3,11 +3,11 @@
 # --------------------------------------------------------
 
 #
-# Structure of table  admins
+# Structure of table  users
 #
 
-DROP TABLE IF EXISTS admins;
-CREATE TABLE admins (
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
   id int(11) NOT NULL auto_increment,
   login varchar(32) NOT NULL default '',
   name varchar(64) NOT NULL default '',
@@ -32,7 +32,7 @@ DROP TABLE IF EXISTS assignments;
 CREATE TABLE assignments (
   id int(11) NOT NULL auto_increment,
   tariffid int(11) NOT NULL default '0',
-  userid int(11) NOT NULL default '0',
+  customerid int(11) NOT NULL default '0',
   period int(11) NOT NULL default '0',
   at int(11) NOT NULL default '0',
   datefrom int(11) NOT NULL default '0',
@@ -52,16 +52,16 @@ DROP TABLE IF EXISTS cash;
 CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
   time int(11) NOT NULL default '0',
-  adminid int(11) NOT NULL default '0',
+  userid int(11) NOT NULL default '0',
   type int(11) NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
   taxvalue decimal(9,2) default '0.00',
-  userid int(11) NOT NULL default '0',
+  customerid int(11) NOT NULL default '0',
   comment varchar(255) NOT NULL default '',
   invoiceid int(11) NOT NULL default '0',
   itemid smallint NOT NULL default '0',
   PRIMARY KEY  (id),
-  INDEX userid (userid),
+  INDEX customerid (customerid),
   INDEX invoiceid (invoiceid),
   INDEX time (time)
 ) TYPE=MyISAM;
@@ -237,8 +237,8 @@ DROP TABLE IF EXISTS rtmessages;
 CREATE TABLE rtmessages (
   id int(11) NOT NULL auto_increment,
   ticketid int(11) NOT NULL default '0',
-  adminid int(11) NOT NULL default '0',
   userid int(11) NOT NULL default '0',
+  customerid int(11) NOT NULL default '0',
   mailfrom varchar(255) NOT NULL default '',
   subject varchar(255) NOT NULL default '',
   messageid varchar(255) NOT NULL default '',
@@ -276,7 +276,7 @@ CREATE TABLE rttickets (
   subject varchar(255) NOT NULL default '',
   state tinyint(4) NOT NULL default '0',
   owner int(11) NOT NULL default '0',
-  userid int(11) NOT NULL default '0',
+  customerid int(11) NOT NULL default '0',
   createtime int(11) NOT NULL default '0',
   resolvetime int(11) NOT NULL default '0',
   PRIMARY KEY  (id),
@@ -290,11 +290,11 @@ CREATE TABLE rttickets (
 DROP TABLE IF EXISTS rtrights;
 CREATE TABLE rtrights (
     id INT(11) NOT NULL auto_increment, 
-    adminid INT(11) default 0 NOT NULL,
+    userid INT(11) default 0 NOT NULL,
     queueid INT(11) default 0 NOT NULL,
     rights INT(11) default 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY (adminid, queueid)
+    UNIQUE KEY (userid, queueid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -345,10 +345,10 @@ CREATE TABLE timestamps (
 
 # --------------------------------------------------------
 #
-# Structure of table users (customers)
+# Structure of table customers (customers)
 #
-DROP TABLE IF EXISTS users;
-CREATE TABLE users (
+DROP TABLE IF EXISTS customers;
+CREATE TABLE customers (
   id int(11) NOT NULL auto_increment,
   lastname varchar(255) NOT NULL default '',
   name varchar(255) NOT NULL default '',
@@ -377,10 +377,10 @@ CREATE TABLE users (
 
 # --------------------------------------------------------
 #
-# Structure of table usergroups
+# Structure of table customergroups
 #
-DROP TABLE IF EXISTS usergroups;
-CREATE TABLE usergroups (
+DROP TABLE IF EXISTS customergroups;
+CREATE TABLE customergroups (
   id int(11) NOT NULL auto_increment, 
   name varchar(255) NOT NULL default '', 
   description text NOT NULL, 
@@ -390,15 +390,15 @@ CREATE TABLE usergroups (
 
 # --------------------------------------------------------
 #
-# Structure of table userassignments
+# Structure of table customerassignments
 #
-DROP TABLE IF EXISTS userassignments;
-CREATE TABLE userassignments (
+DROP TABLE IF EXISTS customerassignments;
+CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment, 
-  usergroupid int(11) NOT NULL default '0', 
-  userid int(11) NOT NULL default '0', 
+  customergroupid int(11) NOT NULL default '0', 
+  customerid int(11) NOT NULL default '0', 
   PRIMARY KEY (id),
-  UNIQUE KEY userassignment (usergroupid, userid)
+  UNIQUE KEY customerassignment (customergroupid, customerid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -482,8 +482,8 @@ CREATE TABLE events (
     date int(11) NOT NULL default '0',
     begintime smallint(4) NOT NULL default '0',
     endtime smallint(4) NOT NULL default '0',
-    adminid int(11) NOT NULL default '0',
     userid int(11) NOT NULL default '0',
+    customerid int(11) NOT NULL default '0',
     private tinyint(1) NOT NULL default '0',
     closed tinyint(1) NOT NULL default '0',
     PRIMARY KEY (id),
@@ -497,8 +497,8 @@ CREATE TABLE events (
 DROP TABLE IF EXISTS eventassignments;
 CREATE TABLE eventassignments (
     eventid int(11) NOT NULL default '0',
-    adminid int(11) NOT NULL default '0',
-    UNIQUE (eventid, adminid)
+    userid int(11) NOT NULL default '0',
+    UNIQUE (eventid, userid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -583,4 +583,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005042400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005052700');
