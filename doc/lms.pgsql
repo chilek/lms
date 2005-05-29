@@ -622,4 +622,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005052700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005052800');

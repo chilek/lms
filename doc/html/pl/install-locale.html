@@ -80,27 +80,27 @@ NAME="INSTALL-LOCALE"
 ></H1
 ><P
 >Domy¶lnym jêzykiem interfejsu u¿ytkownika jest angielski,
-		a znaki s± kodowane w UTF-8. Aby znaki narodowe innych jêzyków
-		by³y poprawnie wy¶wietlane nale¿y mieæ w systemie odpowiednie
-		locale. Np. dla jêzyka polskiego bêdzie to komenda:
+          a znaki s± kodowane w UTF-8. Aby znaki narodowe innych jêzyków
+          by³y poprawnie wy¶wietlane nale¿y mieæ w systemie odpowiednie
+          locale. Np. dla jêzyka polskiego bêdzie to komenda:
       <PRE
 CLASS="SCREEN"
 ># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
 >
-		Je¶li w interfejsie u¿ytkownika znaki narodowe w dalszym ci±gu nie bêd± 
-		wy¶wietlane poprawnie mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku 
-		konfiguracyjnego serwera www (httpd.conf) wpis:
-	<PRE
+          Je¶li w interfejsie u¿ytkownika znaki narodowe w dalszym ci±gu nie bêd± 
+          wy¶wietlane poprawnie mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku 
+          konfiguracyjnego serwera www (httpd.conf) wpis:
+     <PRE
 CLASS="SCREEN"
 >AddDefaultCharset Off</PRE
 >
-		oraz w konfiguracji PHP (php.ini) zakomentowaæ wpis:
-	<PRE
+          oraz w konfiguracji PHP (php.ini) zakomentowaæ wpis:
+     <PRE
 CLASS="SCREEN"
 >;default_charset = "iso-8859-1"</PRE
 >
-		Informacje na temat konfiguracji kodowania bazy danych w dalszej
-		czê¶ci rozdzia³u.</P
+          Informacje na temat konfiguracji kodowania bazy danych w dalszej
+          czê¶ci rozdzia³u.</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

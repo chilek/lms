@@ -318,7 +318,7 @@ Chapter 2. Installation and configuration
 
    PostgreSQL in version 7.3.x or higher is supported.
 
-   SQLite database is also usable, but we only tested version 2.8.11.
+   SQLite database is also usable, but we only tested version 2.8.x.
      _________________________________________________________________
 
 2.2.4. Smarty Library
@@ -333,19 +333,25 @@ Chapter 2. Installation and configuration
 
    LMS-MGC and the rest of Perl scripts requires also Perl interpreter
    and some modules:
-     * Perl and its basic modules (POSIX, GetOpt::Long);
-     * Net::SMTP;
-     * Config::IniFiles;
-     * DBI;
-     * DBD-mysql (if you use MySQL);
-     * DBD-Pg (if you use Postgres);
-     * DBD-SQLite (if you use SQLite);
+     * Perl and its basic modules (POSIX, GetOpt::Long),
+     * Config::IniFiles,
+     * DBI,
+     * DBD-mysql (if you use MySQL),
+     * DBD-Pg (if you use Postgres),
+     * DBD-SQLite (if you use SQLite).
      _________________________________________________________________
 
 2.2.6. C Compiler
 
    If you intend to run LMS Daemon you will need working C compiler,
    because daemon will be provided in source code form only.
+     _________________________________________________________________
+
+2.2.7. Web Browser
+
+   LMS has web user interface, so you'll need web browser with javascript
+   and cookies enabled. Our exparience says that Mozilla Firefox 1.x will
+   be a good choice.
      _________________________________________________________________
 
 2.3. LMS Installation
@@ -550,8 +556,8 @@ $ ./configure --enable-utf8
 $ make
 $ make install
 $ ldconfig
-$ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
-$ pear install SQLite-1.0.2.tgz
+$ pear download http://pecl.php.net/get/SQLite-1.0.3.tgz
+$ pear install SQLite-1.0.3.tgz
 
    Next in php.ini set:
 extension=sqlite.so
@@ -564,9 +570,15 @@ extension=sqlite.so
    You will need to create your database and fill it with initial schema
    before using LMS for the first time. Go to your LMS directory and run
    SQLite shell:
-$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
+# sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
 sqlite> .exit
-$ chown 99.98 /usr/local/lms/lms.db
+# chown 99.98 /usr/local/lms/lms.db
+
+   Second method of database creation (if you haven't got any SQLite
+   client application) is use of LMS module named sqlite_createdb.php
+   from sample directory. First configure LMS (see below), then go to LMS
+   source tree, and run:
+# php sample/sqlite_createdb.php
      _________________________________________________________________
 
 2.5.3.4. LMS Configuration (lms.ini)
@@ -1436,12 +1448,11 @@ Chapter 3. User Interface (LMS-UI)
 3.7.3. Payments list
 
    This is a list of your company payments. Among standard fields you'll
-   find 'Account this payment' icon (which for some mysterious reasons
-   looks like 'Save' option), where you're able to charge your account.
-   Periodical charges might be done with 'lms-payments' Perl script, or
-   appropriate module of almsd daemon. Select and click on chosen payment
-   to view 'Payment Info' module, where you're able to edit its
-   parameters or account given payment to financial database.
+   find 'Account this payment' icon, where you're able to charge your
+   account. Periodical charges might be done with 'lms-payments' Perl
+   script, or appropriate module of almsd daemon. Select and click on
+   chosen payment to view 'Payment Info' module, where you're able to
+   edit its parameters or account given payment to financial database.
      _________________________________________________________________
 
 3.7.4. New payment
@@ -3857,7 +3868,7 @@ Chapter 7. For curious
    lms.mysql, lms.pgsql and lms.sqlite in doc/ directory.
      _________________________________________________________________
 
-7.2.1. LMS users ('admins')
+7.2.1. LMS users ('users')
 
    id - serial number
    login - login
@@ -3873,7 +3884,7 @@ Chapter 7. For curious
    deleted - if is deleted boolean (0/1)
      _________________________________________________________________
 
-7.2.2. Customers ('users')
+7.2.2. Customers ('customers')
 
    id - serial number
    lastname - last/company name
@@ -3900,18 +3911,18 @@ Chapter 7. For curious
    message - message to be displayed if warnings enabled
      _________________________________________________________________
 
-7.2.3. Customer groups ('usergroups')
+7.2.3. Customer groups ('customergroups')
 
    id - serial number
    name - group name
    description - group description
      _________________________________________________________________
 
-7.2.4. Customer groups - continued... ('userassignments')
+7.2.4. Customer groups - continued... ('customerassignments')
 
    id - serial number
-   usergroupid - group serial number
-   userid - customer serial number
+   customergroupid - group serial number
+   customerid - customer serial number
      _________________________________________________________________
 
 7.2.5. Networks ('networks')
@@ -3974,11 +3985,11 @@ Chapter 7. For curious
 
    id - serial number
    time - timestamp of operation
-   adminid - LMS user id
+   userid - LMS user id
    type - type of operation (income, expenditure, payment, debt)
    value - amount in dollars
    taxvalue - tax rate in percent
-   userid - customer's serial number ('0' - does not apply)
+   customerid - customer's serial number ('0' - does not apply)
    invoiceid - serial number for invoice related to this operation
    itemid - invoice item identifier
    comment - description of operation
@@ -4029,7 +4040,7 @@ Chapter 7. For curious
 
    id - serial number
    tariffid - subscription serial number
-   userid - customer serial number
+   customerid - customer serial number
    period - interval of operation: weekly/monthly/quarterly/annually
    (0/1/2/3)
    at - pay day
@@ -4132,7 +4143,7 @@ Chapter 7. For curious
    id - serial number
    queueid - queue serial number
    requestor - reporter name and email
-   userid - customer serial number (if reported by customer)
+   customerid - customer serial number (if reported by customer)
    subject - ticket name)
    state - status (0-new, 1-open, 2-resolved, 3-dead)
    owner - LMS user serial number (ticket owner)
@@ -4143,8 +4154,8 @@ Chapter 7. For curious
 
    id - serial number
    ticketid - ticket serial number
-   adminid - LMS user serial number (if ticket sender)
-   userid - customer serial number (if ticket sender)
+   userid - LMS user serial number (if ticket sender)
+   customerid - customer serial number (if ticket sender)
    mailfrom - sender email
    subject - message subject
    messageid - Message-ID message header
@@ -4166,7 +4177,7 @@ Chapter 7. For curious
 
    id - serial number
    queueid - queue serial number
-   adminid - LMS user serial number
+   userid - LMS user serial number
    rights - permissions (1-read, 2-write)
      _________________________________________________________________
 
@@ -4189,8 +4200,8 @@ Chapter 7. For curious
    date - event date
    begintime - beginning of event
    endtime - end of event
-   adminid - event creator ID
-   userid - customer ID
+   userid - event creator ID
+   customerid - customer ID
    private - status (private/public)
    closed - is event closed? (1-yes/0-no)
      _________________________________________________________________
@@ -4198,7 +4209,7 @@ Chapter 7. For curious
 7.2.28. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
-   adminid - user identifier
+   userid - user identifier
      _________________________________________________________________
 
 7.2.29. Sessions ('sessions')
@@ -4252,7 +4263,7 @@ Chapter 7. For curious
 
    Configuration file default location is /etc/lms/lms.ini. It's intended
    to be central configuration for all LMS components and you can setup
-   your LMS-UI, almsd daemon and Perl scripts (including LMS_MGC)
+   your LMS-UI, lmsd daemon and Perl scripts (including LMS_MGC)
    parameters here. However variable format for Perl scripts is more
    restricted.
      _________________________________________________________________
@@ -4284,8 +4295,8 @@ key =  value
 variable1 = "some text"
 para_meter = 'i am "para_meter" variable in apostrophes'
 
-[section_1]                             # you can comment here
-key = "text with specials: \t and ;"    ; you can comment here either
+[section_1]                    # you can comment here
+key = "text with specials: \t and ;"     ; you can comment here either
 ; and this is comment all line long
 key = "A.L.E.C's LMS Daemon is the best"
 # option = disabled

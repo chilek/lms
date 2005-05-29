@@ -86,51 +86,21 @@ CLASS="FILENAME"
 >templates_c</TT
 >.</P
 ><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
-      mo¿na skasowaæ odpowiedni katalog z katalogu <TT
-CLASS="FILENAME"
->/lib</TT
-></P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-><P
 >Nastêpnie, je¶li nie masz jeszcze w systemie locali pl_PL.UTF-8, nale¿y
       je utworzyæ komend±:
       <PRE
 CLASS="SCREEN"
 ># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
 >
-	Je¶li w interfejsie u¿ytkownika znaki narodowe nie bêd± wy¶wietlane poprawnie
-	mo¿liwe, ¿e trzeba bêdzie w pliku konfiguracyjnym serwera www (httpd.conf)
-	ustawiæ:
-	<PRE
+     Je¶li w interfejsie u¿ytkownika znaki narodowe nie bêd± wy¶wietlane poprawnie
+     mo¿liwe, ¿e trzeba bêdzie w pliku konfiguracyjnym serwera www (httpd.conf)
+     ustawiæ:
+     <PRE
 CLASS="SCREEN"
 >AddDefaultCharset Off</PRE
 >
-	oraz w konfiguracji PHP (php.ini) wy³±czyæ/zakomentowaæ domy¶lne kodowanie:
-	<PRE
+     oraz w konfiguracji PHP (php.ini) wy³±czyæ/zakomentowaæ domy¶lne kodowanie:
+     <PRE
 CLASS="SCREEN"
 >;default_charset = "iso-8859-1"</PRE
 ></P
@@ -163,23 +133,23 @@ CLASS="FILENAME"
 CLASS="SCREEN"
 ># iconv --from-code=ISO-8859-2 --to-code=UTF-8 &#60; plik_backupu &#62; nowy_plik</PRE
 >
-	Po czym zmieniamy nazwê nowo powsta³ego pliku na lms-xxxxxxx.sql, aby
-	plik ten by³ widoczny z poziomu <SPAN
+     Po czym zmieniamy nazwê nowo powsta³ego pliku na lms-xxxxxxx.sql, aby
+     plik ten by³ widoczny z poziomu <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 >. Teraz
-	nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
-	Po czym uruchamiamy <SPAN
+     nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
+     Po czym uruchamiamy <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 > i odtwarzamy dane z 
-	przekonwertowanego backupu.</P
+     przekonwertowanego backupu.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -201,17 +171,17 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Mo¿liwa jest praca
-	z baz± danych z kodowaniem innym ni¿ UNICODE. W takim wypadku rezygnujemy
-	z ostatniego, opisanego wy¿ej, etapu i ustawiamy odpowiednio opcjê
-	konfiguracyjn± <TT
+     z baz± danych z kodowaniem innym ni¿ UNICODE. W takim wypadku rezygnujemy
+     z ostatniego, opisanego wy¿ej, etapu i ustawiamy odpowiednio opcjê
+     konfiguracyjn± <TT
 CLASS="FILENAME"
 >server_encoding</TT
 > w sekcji 
-	<TT
+     <TT
 CLASS="FILENAME"
 >[database]</TT
 >. Rozwi±zanie to bêdzie mia³o z³y wp³yw
-	na wydajno¶æ ze wzglêdu na przeprowadzan± konwersjê kodowania danych.</P
+     na wydajno¶æ ze wzglêdu na przeprowadzan± konwersjê kodowania danych.</P
 ></TD
 ></TR
 ></TABLE

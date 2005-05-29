@@ -583,4 +583,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005052700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005052800');

@@ -34,14 +34,14 @@
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
            compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
            support). PEAR::Mail is being used for mailing (which require Net_SMTP and Net_Sockets from 
-	   PEAR package).</para>
+        PEAR package).</para>
          </sect2>
          <sect2 id="install-req-db">
            <title>Database Server</title>
            <para>MySQL server in version 3.23.xx and higher is supported. LMS won't work correctly
            with older versions.</para>
            <para>PostgreSQL in version 7.3.x or higher is supported.</para>
-           <para>SQLite database is also usable, but we only tested version 2.8.11.</para>
+           <para>SQLite database is also usable, but we only tested version 2.8.x.</para>
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Smarty Library</title>
@@ -57,25 +57,22 @@
           also Perl interpreter and some modules:
        <itemizedlist>
          <listitem>
-            <para>Perl and its basic modules (POSIX, GetOpt::Long);</para>
+            <para>Perl and its basic modules (POSIX, GetOpt::Long),</para>
          </listitem>
          <listitem>
-            <para>Net::SMTP;</para>
+            <para>Config::IniFiles,</para>
          </listitem>
          <listitem>
-            <para>Config::IniFiles;</para>
+            <para>DBI,</para>
          </listitem>
          <listitem>
-            <para>DBI;</para>
+            <para>DBD-mysql (if you use MySQL),</para>
          </listitem>
          <listitem>
-            <para>DBD-mysql (if you use MySQL);</para>
+            <para>DBD-Pg (if you use Postgres),</para>
          </listitem>
          <listitem>
-            <para>DBD-Pg (if you use Postgres);</para>
-         </listitem>
-         <listitem>
-            <para>DBD-SQLite (if you use SQLite);</para>
+            <para>DBD-SQLite (if you use SQLite).</para>
          </listitem>
        </itemizedlist></para>
        </sect2>
@@ -84,6 +81,12 @@
        <para>If you intend to run <emphasis>LMS Daemon</emphasis> you will need
        working C compiler, because daemon will be provided in source code form only.</para>
        </sect2>
+       <sect2 id="install-req-browser">
+           <title>Web Browser</title>
+           <para>LMS has web user interface, so you'll need web browser with javascript and
+           cookies enabled. Our exparience says that Mozilla Firefox 1.x will be a good 
+           choice.</para>
+         </sect2>
      </sect1>
      <sect1 id="install-install">
      <title>LMS Installation</title>
@@ -125,16 +128,16 @@ $ mv Smarty-2.6.0/libs Smarty
           password!).</para></warning></para>
      </sect1>
      <sect1 id="install-locale">
-	<title>Localization</title>
-	<para>Default language of user interface is English, and national characters
-	are encoded in UTF-8. For proper display of national characters in other languages
-	you must define appropriate locales. E.g. for polish language it's achieved by running
-	the following command:
+     <title>Localization</title>
+     <para>Default language of user interface is English, and national characters
+     are encoded in UTF-8. For proper display of national characters in other languages
+     you must define appropriate locales. E.g. for polish language it's achieved by running
+     the following command:
 <screen>
 # localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8
 </screen>
-	Instructions about database encoding settings in follow-up of this chapter.
-	</para>
+     Instructions about database encoding settings in follow-up of this chapter.
+     </para>
     </sect1>
      <sect1 id="install-db">
      <title>Database Server Installation</title>
@@ -258,12 +261,11 @@ password = password_entered_with_lms_user_creation</screen>
                you'll be prompted with form to add username and some personal data. When you enter
                correct admin personal details LMS will move you to login page, where you can use
                newly created account.</para>
-
                <para>Let's stop here and add some stuff to cron, for peace of mind:
                <screen>
 12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
             --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</screen>
-	    </para>
+         </para>
           </sect3>
           </sect2>
           <sect2 id="install-sqlite">
@@ -274,7 +276,7 @@ password = password_entered_with_lms_user_creation</screen>
                might be 2-3 times faster than MySQL, and with proper configuration it's possible
                to load the whole data into RAM, which has high positive impact on performance.
                Below is short description of installation. Sources can be downloaded from: <ulink
-               url="http://www.sqlite.org"> www.sqlite.org</ulink>.</para>
+               url="http://www.sqlite.org">www.sqlite.org</ulink>.</para>
           </sect3>
           <sect3 id="install-sqlite-server">
           <title>Installation</title>
@@ -286,8 +288,8 @@ $ ./configure --enable-utf8
 $ make
 $ make install
 $ ldconfig
-$ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
-$ pear install SQLite-1.0.2.tgz</screen>
+$ pear download http://pecl.php.net/get/SQLite-1.0.3.tgz
+$ pear install SQLite-1.0.3.tgz</screen>
                Next in php.ini set:
                <screen>
 extension=sqlite.so</screen>
@@ -299,9 +301,15 @@ extension=sqlite.so</screen>
                <para>You will need to create your database and fill it with initial schema before
                using LMS for the first time. Go to your LMS directory and run SQLite shell:
                <screen>
-$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
+# sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
 sqlite> .exit
-$ chown 99.98 /usr/local/lms/lms.db</screen>
+# chown 99.98 /usr/local/lms/lms.db</screen>
+               </para>
+               <para>Second method of database creation (if you haven't got any SQLite client application) 
+               is use of LMS module named <filename>sqlite_createdb.php</filename> from <filename>sample</filename> 
+               directory. First configure LMS (see below), then go to LMS source tree, and run:
+               <screen>
+# php sample/sqlite_createdb.php</screen>
                </para>
           </sect3>
           <sect3 id="install-sqlite-lms">
@@ -603,7 +611,7 @@ database = /usr/local/lms/lms.db</screen>
      <listitem>
          <para>helpdesk_sender_name</para>
          <para>Name of message sender or predefined values: 'queue' - ticket's queue name,
-	 'user' - name of logged user (sender). Default: empty.</para>
+      'user' - name of logged user (sender). Default: empty.</para>
          <para>Example:     <prompt>helpdesk_sender_name = Helpdesk</prompt></para>
      </listitem>
      <listitem>
@@ -638,7 +646,7 @@ database = /usr/local/lms/lms.db</screen>
      <listitem>
          <para>smtp_auth_type</para>
          <para>Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
-	 will use the best supported method. Default: none.</para>
+      will use the best supported method. Default: none.</para>
          <para>Example:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
      </listitem>
      <listitem>
@@ -652,20 +660,20 @@ database = /usr/local/lms/lms.db</screen>
          <para>Example:     <prompt>check_for_updates_period = 604800</prompt></para>
      </listitem>
      </itemizedlist>
-	</sect2> 
+     </sect2> 
         <sect2 id="install-config-finances">
-	<title>Section [finances] - Finances Settings</title>
-	<para>This section consist options for financial system and for payment
-	forms. You can read more about that in Invoices chapter.
-    	    <itemizedlist>
-		<listitem>
-		<para>suspension_percentage (optional)</para>
-		<para>Percentage for suspended liabilities. Default: '0'</para>
-		<para>Example:	<prompt>suspension_percentage = '50'</prompt></para>
-		</listitem>
-       	    </itemizedlist>
-	</para>
-	</sect2>
+     <title>Section [finances] - Finances Settings</title>
+     <para>This section consist options for financial system and for payment
+     forms. You can read more about that in Invoices chapter.
+             <itemizedlist>
+          <listitem>
+          <para>suspension_percentage (optional)</para>
+          <para>Percentage for suspended liabilities. Default: '0'</para>
+          <para>Example:     <prompt>suspension_percentage = '50'</prompt></para>
+          </listitem>
+                </itemizedlist>
+     </para>
+     </sect2>
     </sect1>
     <sect1 id="install-rights">
       <title>Access rights</title>
@@ -691,7 +699,7 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>UI configuration</para></listitem>
         <listitem><para>networks and devices management</para></listitem>
         <listitem><para>timetable management</para></listitem>
-	<listitem><para>daemon management and configuration</para></listitem>
+     <listitem><para>daemon management and configuration</para></listitem>
         <listitem><para>users edition and addition forbidden</para></listitem>
         <listitem><para>no access</para></listitem>
        </itemizedlist>
@@ -713,31 +721,31 @@ database = /usr/local/lms/lms.db</screen>
           to "add computer" module, then he won't able to access module.
           If module  matches level that permits access to module, then LMS will grant access to module, 
           but if module does not match at any level then no-access-message also will be printed.</member>
-	  </simplelist>
+       </simplelist>
           </para>
-	</sect2>
-	<sect2 id="install-rights-user">
-      		<title>User-defined access rules</title>
-		<para>Advanced users can define any additional access rules
-		or redefine existing ones.  In order to do that you must make
-		PHP script based on file <filename>lib/accesstable.php</filename>
-		and place it in LMS's <filename>lib</filename> directory. Then 
-		set option <filename>custom_accesstable</filename> in [phpui]
-		section to created file name.</para>
-		<para>In that way it's possible to define your own rules to allow
-		or deny access for any modules. Module is a name of PHP file
-		in <filename>modules</filename> directory, given without extension 
-		in access rules. For example, it's possible to define
-		rule for invoices display (e.g. for lms-sendinvoices script) 
-		in the following way:
+     </sect2>
+     <sect2 id="install-rights-user">
+                <title>User-defined access rules</title>
+          <para>Advanced users can define any additional access rules
+          or redefine existing ones.  In order to do that you must make
+          PHP script based on file <filename>lib/accesstable.php</filename>
+          and place it in LMS's <filename>lib</filename> directory. Then 
+          set option <filename>custom_accesstable</filename> in [phpui]
+          section to created file name.</para>
+          <para>In that way it's possible to define your own rules to allow
+          or deny access for any modules. Module is a name of PHP file
+          in <filename>modules</filename> directory, given without extension 
+          in access rules. For example, it's possible to define
+          rule for invoices display (e.g. for lms-sendinvoices script) 
+          in the following way:
 <screen>
 &lt;?php
 $access['table'][100]['name']      = 'invoices display';
 $access['table'][100]['allow_reg'] = '^invoice$';
 ?&gt;
 </screen>
-		</para>
-	</sect2>
+          </para>
+     </sect2>
     </sect1>
     <sect1 id="install-upgrade">
       <title>Upgrade</title>
@@ -749,7 +757,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
       the UI.</para>
     </sect1>
     <sect1 id="install-invoices">
-	<title>Invoices</title>
+     <title>Invoices</title>
                 <para>It's possible to issue invoices in either automatic or manual way. Manual
                 invoices creation is possible in 'New Invoice' module from 'Finances' menu.
                 Automatic issue might be helpful while you have legal contracts with your users.
@@ -757,86 +765,86 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                 <emphasis>almsd</emphasis> daemon.</para>
                 <para>For proper work of printouts you need to setup custom options in
                 <emphasis>[invoices]</emphasis> section of <filename>lms.ini</filename>:
-		<itemizedlist>
-		<listitem>
-			<para>number_template</para>
+          <itemizedlist>
+          <listitem>
+               <para>number_template</para>
                  <para>Invoice numbering pattern. Available variables: '%N' - successive number in year/month
                  format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</para>
-			<para>Example: <prompt>number_template = %N/%Y</prompt></para>
-		</listitem>
-		<listitem>
-			<para>monthly_numbering</para>
-			<para>Enable this option when you need to reset invoice numbering on start of every month.
-			Default: disabled</para>
-			<para>Example: <prompt>monthly_numbering = 1</prompt></para>
-		</listitem>
-		<listitem>
-			<para>header</para>
-			<para>Seller. Can use string "\n" for lines separation. Default: empty.</para>
-			<para>Example: <prompt>header = "SuperNet ISP\nNew Street 15\n12-000 City\n"</prompt></para>
-		</listitem>
-		<listitem>
-			<para>footer</para>
+               <para>Example: <prompt>number_template = %N/%Y</prompt></para>
+          </listitem>
+          <listitem>
+               <para>monthly_numbering</para>
+               <para>Enable this option when you need to reset invoice numbering on start of every month.
+               Default: disabled</para>
+               <para>Example: <prompt>monthly_numbering = 1</prompt></para>
+          </listitem>
+          <listitem>
+               <para>header</para>
+               <para>Seller. Can use string "\n" for lines separation. Default: empty.</para>
+               <para>Example: <prompt>header = "SuperNet ISP\nNew Street 15\n12-000 City\n"</prompt></para>
+          </listitem>
+          <listitem>
+               <para>footer</para>
                         <para>Invoice footer - e.g. contact information about seller. Footer will be placed at bottom
                         of an invoice, using small font. Like in header option use "\n" to separate lines. Default:
                         empty</para>
-			<para>Example: <prompt>footer = "Internet Service Provider K-27, phone 555-23-23, etc."</prompt></para>
-		</listitem>
-		<listitem>
-			<para>default_author</para>
-			<para>Invoice issuer name. Default: empty</para>
-			<para>Example: <prompt>default_author = "invoicing expert"</prompt></para>
-		</listitem>
-		<listitem>
-			<para>cplace</para>
-			<para>Invoice issue location (city). Default: empty.</para>
-			<para>Example: <prompt>cplace = Warsaw</prompt></para>
-		</listitem>
-		</itemizedlist>
-		Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
-		or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
-		filter invoices for printing.</para>
-	    <sect2 id="install-invoices-html">
-		<title>HTML</title>
-		<para>Invoices are printed in html format by default
-		using provided template. In <emphasis>[invoices]</emphasis> section
-		you can also configure:
-		<itemizedlist>
-		<listitem>
-			<para>template_file</para>
-			<para>Invoice template, which should be placed in 
-			<filename>templates</filename> directory. Default: invoice.html.</para>
-			<para>Example: <prompt>template_file = invoice-mynet.html</prompt></para>
-		</listitem>		
-		<listitem>
-			<para>content_type</para>
-			<para>Invoice content-type. If you enter here 'application/octet-stream'
-			then browser will ask to save file on disk, instead of displaying it.
-			It's useful if you use your own template which generate eg. rtf or xls file.
-			Default: 'text/html'</para>
-			<para>Example: <prompt>content_type = application/octet-stream</prompt></para>
-		</listitem>	
-		<listitem>
-			<para>attachment_name</para>
-			<para>File name for saving finished invoice printout. WARNING: Setting attachment_name 
-			with default content_type will (in case of MSIE) print invoice + prompt for save on 
-			disk + bonus browser crash (6.0SP1 on WInXP).
-			Default: empty.</para>
-			<para>Example: <prompt>attachment_name = invoice.xls</prompt></para>
-		</listitem>
-		</itemizedlist>
-		Generated invoice in HTML format consist of originals and copies, which are separated
-		by CSS page-break markups, so every modern browser that supports CSS 
-		should print many-page invoices correctly. This behavior was tested on
-		Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.</para>
-		<para>
-			<note><para>Almost every internet browser has printing 
-			configuration, where functions like header and footer or URL 
-			printing can be disabled.</para></note>
-		</para>
-	    </sect2>	
-	    <sect2 id="install-invoices-pdf">
-		<title>PDF</title>
+               <para>Example: <prompt>footer = "Internet Service Provider K-27, phone 555-23-23, etc."</prompt></para>
+          </listitem>
+          <listitem>
+               <para>default_author</para>
+               <para>Invoice issuer name. Default: empty</para>
+               <para>Example: <prompt>default_author = "invoicing expert"</prompt></para>
+          </listitem>
+          <listitem>
+               <para>cplace</para>
+               <para>Invoice issue location (city). Default: empty.</para>
+               <para>Example: <prompt>cplace = Warsaw</prompt></para>
+          </listitem>
+          </itemizedlist>
+          Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
+          or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
+          filter invoices for printing.</para>
+         <sect2 id="install-invoices-html">
+          <title>HTML</title>
+          <para>Invoices are printed in html format by default
+          using provided template. In <emphasis>[invoices]</emphasis> section
+          you can also configure:
+          <itemizedlist>
+          <listitem>
+               <para>template_file</para>
+               <para>Invoice template, which should be placed in 
+               <filename>templates</filename> directory. Default: invoice.html.</para>
+               <para>Example: <prompt>template_file = invoice-mynet.html</prompt></para>
+          </listitem>          
+          <listitem>
+               <para>content_type</para>
+               <para>Invoice content-type. If you enter here 'application/octet-stream'
+               then browser will ask to save file on disk, instead of displaying it.
+               It's useful if you use your own template which generate eg. rtf or xls file.
+               Default: 'text/html'</para>
+               <para>Example: <prompt>content_type = application/octet-stream</prompt></para>
+          </listitem>     
+          <listitem>
+               <para>attachment_name</para>
+               <para>File name for saving finished invoice printout. WARNING: Setting attachment_name 
+               with default content_type will (in case of MSIE) print invoice + prompt for save on 
+               disk + bonus browser crash (6.0SP1 on WInXP).
+               Default: empty.</para>
+               <para>Example: <prompt>attachment_name = invoice.xls</prompt></para>
+          </listitem>
+          </itemizedlist>
+          Generated invoice in HTML format consist of originals and copies, which are separated
+          by CSS page-break markups, so every modern browser that supports CSS 
+          should print many-page invoices correctly. This behavior was tested on
+          Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.</para>
+          <para>
+               <note><para>Almost every internet browser has printing 
+               configuration, where functions like header and footer or URL 
+               printing can be disabled.</para></note>
+          </para>
+         </sect2>     
+         <sect2 id="install-invoices-pdf">
+          <title>PDF</title>
                  <para>It's possible to create invoices as PDF files. Setting option <filename>type</filename> in
                  <emphasis>[invoices]</emphasis> section to 'pdf' will force invoice being created in PDF instead
                  of html. Option <filename>template_file</filename> has the same meaning, with one difference,
@@ -845,17 +853,17 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                  <filename>template_file</filename> option for php file name, but this feature is meant for
                  advanced users as it requires you to create more complicated php file than the one used with html
                  invoices Smarty template.</para>
-		<para>Data for payment form printouts is stored in <emphasis>[finances]</emphasis>
-		section of <filename>lms.ini</filename> file. That is:
-		<simplelist>
-		    <member>name - seller name</member>
-		    <member>shortname - short seller name</member>
-		    <member>address - seller address</member>
-		    <member>zip - seller postal code</member>
-		    <member>city - seller city</member>
-		    <member>account - banking account number</member>		
-		</simplelist>
-		</para>
-	    </sect2>
+          <para>Data for payment form printouts is stored in <emphasis>[finances]</emphasis>
+          section of <filename>lms.ini</filename> file. That is:
+          <simplelist>
+              <member>name - seller name</member>
+              <member>shortname - short seller name</member>
+              <member>address - seller address</member>
+              <member>zip - seller postal code</member>
+              <member>city - seller city</member>
+              <member>account - banking account number</member>          
+          </simplelist>
+          </para>
+         </sect2>
     </sect1>
   </chapter>

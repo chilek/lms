@@ -80,8 +80,8 @@ NAME="DEVEL-LIMITS"
 ></H1
 ><P
 >Ka¿dy system ma ograniczenia. Pewne wynikaj± z u¿ytego silnika SQL (DBMS)
-		inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system
-		takowe posiada:</P
+          inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system
+          takowe posiada:</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -92,11 +92,11 @@ NAME="DEVEL-LIMITS-LMS"
 ></H2
 ><P
 >Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowywali¶my jako
-			32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat mogli¶cie nas nie lubiæ 
-			posiadaj±c oko³o 5000 u¿ytkowników.  Aktualnie (od lms-1.1.7 Hathor) u¿ywamy 
-			bardziej odpowiedniego typu danych [decimal (9.2), 2 miejsca znacz±ce po przecinku,
-			a w sumie 9 miejsc na ca³± liczbê]. Maksymalna warto¶æ to 9'999'999.99 (dotyczy sumy			 wszystkich operacji finansowych!). Procedury konwertuj±ce liczby na s³owa s± 
-			przygotowane na kwoty tak du¿e jak 10^18.</P
+               32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat mogli¶cie nas nie lubiæ 
+               posiadaj±c oko³o 5000 u¿ytkowników.  Aktualnie (od lms-1.1.7 Hathor) u¿ywamy 
+               bardziej odpowiedniego typu danych [decimal (9.2), 2 miejsca znacz±ce po przecinku,
+               a w sumie 9 miejsc na ca³± liczbê]. Maksymalna warto¶æ to 9'999'999.99 (dotyczy sumy                wszystkich operacji finansowych!). Procedury konwertuj±ce liczby na s³owa s± 
+               przygotowane na kwoty tak du¿e jak 10^18.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -116,17 +116,17 @@ NAME="DEVEL-LIMITS-DB"
 >Rozmiar bazy danych:</P
 ><P
 >Jak mówi dokumentacja do MySQL'a (rozdzia³: Table size, paragraf "How Big Can
-			MySQL Tables Be?"), MySQL wersja 3.22 by³ ograniczony do 4 GB na tabelkê.
-			W wersji za¶ 3.23 zosta³o to podniesione do 8 milionów terabajtów (czyli
-			2^63 bajtów). Jednak warto zauwa¿yæ ¿e ró¿ne systemy operacyjne maj±
-			limity nak³adane przez systemy plików, najczê¶ciej jest to 2 lub 4 GB.</P
+               MySQL Tables Be?"), MySQL wersja 3.22 by³ ograniczony do 4 GB na tabelkê.
+               W wersji za¶ 3.23 zosta³o to podniesione do 8 milionów terabajtów (czyli
+               2^63 bajtów). Jednak warto zauwa¿yæ ¿e ró¿ne systemy operacyjne maj±
+               limity nak³adane przez systemy plików, najczê¶ciej jest to 2 lub 4 GB.</P
 ></LI
 ><LI
 ><P
 >Ilo¶æ rekordów:</P
 ><P
 >Prawdziwe informacje na temat limitów uzyskamy dopiero po wydaniu polecenia:
-			(w interpreterze poleceñ mysql)</P
+               (w interpreterze poleceñ mysql)</P
 ><PRE
 CLASS="SCREEN"
 >mysql&gt; show table status;
@@ -135,8 +135,8 @@ CLASS="SCREEN"
 ...|             44 |       24136 |      4294967295 |        19456 |</PRE
 ><P
 >Zauwa¿ymy ¿e miejsca wystarczy na oko³o 175 000 razy tyle ile mamy
-			aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spokojnie, chyba ¿e
-			planujesz posiadanie ponad 100000 u¿ytkowników :-)</P
+               aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spokojnie, chyba ¿e
+               planujesz posiadanie ponad 100000 u¿ytkowników :-)</P
 ></LI
 ></UL
 ></LI
@@ -149,18 +149,18 @@ CLASS="SCREEN"
 >Rozmiar bazy danych:</P
 ><P
 >PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych bloków jest
-			ograniczona do 32-bitowej liczby ca³kowitej ze znakiem, daj±c maksymaln±
-			wielko¶æ tabeli wynosz±c± 16 terabajtów. Z uwagi na ograniczenia systemów
-			operacyjnych dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.</P
+               ograniczona do 32-bitowej liczby ca³kowitej ze znakiem, daj±c maksymaln±
+               wielko¶æ tabeli wynosz±c± 16 terabajtów. Z uwagi na ograniczenia systemów
+               operacyjnych dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.</P
 ></LI
 ><LI
 ><P
 >Ilo¶æ rekordów:</P
 ><P
 >PostgreSQL nie narzuca ograniczenia na liczbê wierszy w dowolnej tabeli.
-			Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a zatem dla tabel
-			zawieraj±cych ponad dwa miliardy wierszy wynik tej funkcji bêdzie
-			nieprawid³owy. (Informacja dot. PostgreSQL 7.1)</P
+               Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a zatem dla tabel
+               zawieraj±cych ponad dwa miliardy wierszy wynik tej funkcji bêdzie
+               nieprawid³owy. (Informacja dot. PostgreSQL 7.1)</P
 ></LI
 ></UL
 ></LI
@@ -173,16 +173,16 @@ CLASS="SCREEN"
 >Rozmiar bazy danych:</P
 ><P
 >Od wersji 2.7.4 SQLite mo¿e obs³ugiwaæ bazy o rozmiarze do 2 terabajtów. 
-			Dodatkowym ograniczeniem jest objêto¶æ danych zapisanych w jednym rekordzie.
-			Wielko¶æ ta, ograniczona do 1 MB mo¿e zostaæ zwiêkszona do 16 MB podczas 
-			kompilacji.</P
+               Dodatkowym ograniczeniem jest objêto¶æ danych zapisanych w jednym rekordzie.
+               Wielko¶æ ta, ograniczona do 1 MB mo¿e zostaæ zwiêkszona do 16 MB podczas 
+               kompilacji.</P
 ></LI
 ><LI
 ><P
 >Ilo¶æ rekordów:</P
 ><P
 >Maksymalna ilo¶æ rekordów dla tej bazy to 2^32, ale nikt nie testowa³ nigdy takiej 
-			ilo¶ci.</P
+               ilo¶ci.</P
 ></LI
 ></UL
 ></LI
