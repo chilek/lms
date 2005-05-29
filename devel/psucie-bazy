@@ -80,6 +80,8 @@ Itemid |   Comment  |  Netto  | Tax |
   1    |  Abonament |   70.00 |  1  | 
   2    |     NIC    |   30.00 |  4  | 
 
+alec> ja bym wola³ przechowywaæ w bazie kwoty ju¿ wyliczone, czyli brutto
+      tak jak teraz - odpada z³±czenie z tabel± "Taxes".
 
 Taxes:
 
