@@ -85,66 +85,6 @@ function execute_program ($program, $args = '')
 	}
 }
 
-function uptime()
-{
-	// Uptime function. Taken afair from PHPSysinfo.
-
-	switch (PHP_OS)
-	{
-		case 'Linux':
-			$fd = fopen('/proc/uptime', 'r');
-			$ar_buf = split(' ', fgets($fd, 4096));
-			fclose($fd);
-			$sys_ticks = trim($ar_buf[0]);
-			$result = uptimef($sys_ticks);
-		break;
-		case 'FreeBSD':
-			$s = explode(' ', bsd_grab_key('kern.boottime'));
-			$a = ereg_replace('{ ', '', $s[3]);
-			$sys_ticks = time() - $a;
-			$result = uptimef($sys_ticks);
-		break;
-		case 'NetBSD':
-			$a = bsd_grab_key('kern.boottime');
-			$sys_ticks = time() - $a;
-			$result = uptimef($sys_ticks);
-		break;
-		case 'OpenBSD':
-			$a = bsd_grab_key('kern.boottime');
-			$sys_ticks = time() - $a;
-			$result = uptimef($sys_ticks);
-		break;
-		case 'WINNT':
-//			dl("php_w32api.dll");
-			if(function_exists('w32api_register_function'))
-			{
-				w32api_register_function('kernel32.dll','GetTickCount','long');
-				$ticks = GetTickCount();
-				$secs  = floor($ticks / 1000);
-				$mins  = floor($secs / 60);
-				$hours = floor($mins / 60);
-				$str = sprintf('You have been using your computer for: %d Milliseconds, or %d Seconds or %d mins or %d hours %d mins.',	$ticks,	$secs, $mins, $hours, $mins - ($hours*60));
-			}else{
-				$result = trans('unknown (no w32api)');
-			}
-		break;
-		default:
-			$result = trans('unknown OS ($0)', PHP_OS);
-		break;
-	}
-
-	return $result;
-}
-
-function redir($url)
-{
-	if($url)
-	{
-		header('Location: '.$url);
-		die;
-	}
-}
-
 function hostname()
 {
 	switch(PHP_OS)

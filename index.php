@@ -189,7 +189,6 @@ $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
 $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
-$layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.7-cvs';
 $layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
