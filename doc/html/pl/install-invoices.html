@@ -80,9 +80,9 @@ NAME="INSTALL-INVOICES"
 ></H1
 ><P
 >LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
-		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
-		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
-		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <SPAN
+          faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
+          wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
+          zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -91,7 +91,7 @@ CLASS="EMPHASIS"
 ></P
 ><P
 >Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
-		opcji w sekcji <SPAN
+          opcji w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -101,13 +101,13 @@ CLASS="EMPHASIS"
 CLASS="FILENAME"
 >lms.ini</TT
 >:
-		<UL
+          <UL
 ><LI
 ><P
 >number_template</P
 ><P
 >Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
-			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
+               '%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -119,7 +119,7 @@ CLASS="PROMPT"
 >monthly_numbering</P
 ><P
 >W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
-			Domy¶lnie: wy³±czona</P
+               Domy¶lnie: wy³±czona</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -172,10 +172,10 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-		Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
-		na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
-		poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
-		tak¿e filtrowanie faktur do wydruku.</P
+          Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
+          na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
+          poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
+          tak¿e filtrowanie faktur do wydruku.</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -186,15 +186,15 @@ NAME="INSTALL-INVOICES-HTML"
 ></H2
 ><P
 >Przy domy¶lnych ustawieniach faktury wy¶wietlane s± w
-		formacie html wg domy¶lnego szablonu. W sekcji [invoices] masz
-		do dyspozycji jeszcze nastêpuj±ce opcje:
-		<UL
+          formacie html wg domy¶lnego szablonu. W sekcji [invoices] masz
+          do dyspozycji jeszcze nastêpuj±ce opcje:
+          <UL
 ><LI
 ><P
 >template_file</P
 ><P
 >Szablon faktury, który powinien znajdowaæ siê w
-			katalogu <TT
+               katalogu <TT
 CLASS="FILENAME"
 >templates</TT
 >. Domy¶lnie: invoice.html.</P
@@ -209,9 +209,9 @@ CLASS="PROMPT"
 >content_type</P
 ><P
 >Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
-			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
-			Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
-			Domy¶lnie: 'text/html'</P
+               to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+               Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
+               Domy¶lnie: 'text/html'</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -223,7 +223,7 @@ CLASS="PROMPT"
 >attachment_name</P
 ><P
 >Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
-			wydruk. Domy¶lnie: pusta.</P
+               wydruk. Domy¶lnie: pusta.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -232,13 +232,13 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-		Wynikowy dokument HTML zawiera orygina³y 
-		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
-		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
-		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
-		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
+          Wynikowy dokument HTML zawiera orygina³y 
+          i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
+          Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
+          faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+          Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
 ><P
->			<DIV
+>               <DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -258,14 +258,14 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
-			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie
-			stopki i nag³ówka, czy te¿ adresu na wydruku.</P
+               konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie
+               stopki i nag³ówka, czy te¿ adresu na wydruku.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 >
-		</P
+          </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -277,7 +277,7 @@ NAME="INSTALL-INVOICES-PDF"
 ></H2
 ><P
 >Mo¿liwe jest tak¿e tworzenie faktur jako pliki pdf. Przypisanie
-		opcji <TT
+          opcji <TT
 CLASS="FILENAME"
 >type</TT
 > z sekcji <SPAN
@@ -287,20 +287,20 @@ CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
 > 
-		warto¶ci 'pdf' spowoduje, ¿e faktury zamiast w html'u bêd± tworzone jako pliki 
-		"portable data format". Opcja <TT
+          warto¶ci 'pdf' spowoduje, ¿e faktury zamiast w html'u bêd± tworzone jako pliki 
+          "portable data format". Opcja <TT
 CLASS="FILENAME"
 >template_file</TT
 > spe³nia podobn± rolê jak dla faktur html'owych,
-		z tym, ¿e posiada predefiniowane warto¶ci: 'standard' - faktura podstawowa 
-		(odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
-		na drukach FT-0100 zawieraj±cych druk polecenia przelewu. W opcji <TT
+          z tym, ¿e posiada predefiniowane warto¶ci: 'standard' - faktura podstawowa 
+          (odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
+          na drukach FT-0100 zawieraj±cych druk polecenia przelewu. W opcji <TT
 CLASS="FILENAME"
 >template_file</TT
 >
-		mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
-		zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
-		przypadku faktur html'owych szablonu Smarty.</P
+          mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
+          zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
+          przypadku faktur html'owych szablonu Smarty.</P
 ><P
 >Dane do druku polecenia przelewu s± brane z sekcji <SPAN
 CLASS="emphasis"
@@ -309,11 +309,11 @@ CLASS="EMPHASIS"
 >[finances]</I
 ></SPAN
 >
-		pliku <TT
+          pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >. A oto dostêpne opcje:
-		<TABLE
+          <TABLE
 BORDER="0"
 ><TBODY
 ><TR
@@ -343,7 +343,7 @@ BORDER="0"
 ></TBODY
 ></TABLE
 >
-		</P
+          </P
 ></DIV
 ></DIV
 ><DIV

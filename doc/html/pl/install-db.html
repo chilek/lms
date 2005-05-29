@@ -96,11 +96,11 @@ NAME="INSTALL-MYSQL-INTRO"
 ></H3
 ><P
 >Ta  bardzo  popularna  baza  jest  dostêpna  z wiêkszo¶ci± dystrybucji
-			Linuksa.  Je¿eli  jednak bêdziesz musia³ j± zainstalowaæ samodzielnie,
-			zacznij od ¶ci±gniêcia ¼róde³ z <A
+               Linuksa.  Je¿eli  jednak bêdziesz musia³ j± zainstalowaæ samodzielnie,
+               zacznij od ¶ci±gniêcia ¼róde³ z <A
 HREF="http://www.mysql.com"
 TARGET="_top"
->			www.mysql.com</A
+>               www.mysql.com</A
 >.</P
 ></DIV
 ><DIV
@@ -113,8 +113,8 @@ NAME="INSTALL-MYSQL-SERVER"
 ></H3
 ><P
 >Po rozpakowaniu, wejd¼ do katalogu z naszym MySQL i wydaj kolejno
-			polecenia:
-			<PRE
+               polecenia:
+               <PRE
 CLASS="SCREEN"
 >$ ./configure --prefix=/usr/local/mysql
 $ make
@@ -124,7 +124,7 @@ $ chown mysql -R /usr/local/mysql/var
 $ /usr/local/mysql/bin/safe_mysqld &#38;
 $ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</PRE
 >
-		</P
+          </P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -136,10 +136,10 @@ NAME="INSTALL-MYSQL-DBCREATE"
 ></H3
 ><P
 >Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. Je¿eli
-			uaktualniasz LMS z poprzedniej wersji, odpowiednie adnotacje co nale¿y zrobiæ z baz± danych
-			s± w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu w którym masz LMS'a
-			i uruchom shell mysql'a:
-			<PRE
+               uaktualniasz LMS z poprzedniej wersji, odpowiednie adnotacje co nale¿y zrobiæ z baz± danych
+               s± w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu w którym masz LMS'a
+               i uruchom shell mysql'a:
+               <PRE
 CLASS="SCREEN"
 >mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
@@ -150,7 +150,7 @@ mysql&#62; flush privileges;
 mysql&#62; use lms;
 mysql&#62; source doc/lms.mysql;</PRE
 >
-		</P
+          </P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -172,20 +172,20 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Z uwagi na to, ¿e MySQL nawet w wersji 4.1 ma pewne 
-		problemy z kodowaniem UTF baza danych LMS mo¿e mieæ inne kodowanie.
-		W takim wypadku nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
-		z opcji konfiguracyjnej <TT
+          problemy z kodowaniem UTF baza danych LMS mo¿e mieæ inne kodowanie.
+          W takim wypadku nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
+          z opcji konfiguracyjnej <TT
 CLASS="FILENAME"
 >server_encoding</TT
 > w sekcji 
-		<TT
+          <TT
 CLASS="FILENAME"
 >[database]</TT
 > pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >.
-		</P
+          </P
 ></TD
 ></TR
 ></TABLE
@@ -202,33 +202,33 @@ NAME="INSTALL-MYSQL-LMS"
 ></H3
 ><P
 >Poniewa¿  MySQL  jest  domy¶ln± baz± dla LMS'u, konfiguracja ogranicza
-			siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
-			<PRE
+               siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
+               <PRE
 CLASS="SCREEN"
 >user     = lms
 password = has³o_z_pkt.3
 server_encoding = latin2 ; je¶li baza nie jest w unicodzie</PRE
 >
-		    </P
+              </P
 ><P
 >Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
-			danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
-			bazie  danych  nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
-			zobaczysz bêdzie  formularz  dodania  u¿ytkownika.  Je¿eli
-			podasz  prawid³owe  dane  u¿ytkownika, LMS przeniesie Ciê na stronê
-			logowania gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
-			</P
+               danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
+               bazie  danych  nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
+               zobaczysz bêdzie  formularz  dodania  u¿ytkownika.  Je¿eli
+               podasz  prawid³owe  dane  u¿ytkownika, LMS przeniesie Ciê na stronê
+               logowania gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
+               </P
 ><P
 >Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
-			<PRE
+               <PRE
 CLASS="SCREEN"
 >12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
-		    --add-drop-table --add-locks lms &#62; backups/lms-auto-"$(date +%s)".sql</PRE
+              --add-drop-table --add-locks lms &#62; backups/lms-auto-"$(date +%s)".sql</PRE
 >
-			</P
+               </P
 ><P
 >Spowoduje to wykonywanie o 4:12 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
-			miesi±ca automagicznie zrzutu danych z mysqla.</P
+               miesi±ca automagicznie zrzutu danych z mysqla.</P
 ></DIV
 ></DIV
 ><DIV
@@ -249,13 +249,13 @@ NAME="INSTALL-PGSQL-INTRO"
 ></H3
 ><P
 >LMS jest testowany na PostgreSQL 7.3.4 i nowszych, ale poniewa¿ ¿adne
-			skomplikowane w³a¶ciwo¶ci tej bazy nie s± wykorzystywane, nie powinno
-			byæ problemów z innymi wersjami. Je¿eli nie masz zainstalowanego serwera
-			PostgreSQL, najlepszym rozwi±zaniem bêdzie w³asnorêczna kompilacja
-			ze ¼róde³ dostêpnych na stronie <A
+               skomplikowane w³a¶ciwo¶ci tej bazy nie s± wykorzystywane, nie powinno
+               byæ problemów z innymi wersjami. Je¿eli nie masz zainstalowanego serwera
+               PostgreSQL, najlepszym rozwi±zaniem bêdzie w³asnorêczna kompilacja
+               ze ¼róde³ dostêpnych na stronie <A
 HREF="http://www.postgresql.org"
 TARGET="_top"
->			www.postgresql.org</A
+>               www.postgresql.org</A
 >.</P
 ></DIV
 ><DIV
@@ -268,9 +268,9 @@ NAME="INSTALL-PGSQL-SERVER"
 ></H3
 ><P
 >Jest to wersja skrócona instalacji, wiêcej informacji znajdziesz
-			w dokumentacji postgresa. Po ¶ci±gniêciu i rozpakowaniu wejd¼
-			do katalogu g³ównego i wpisz kolejno poni¿sze polecenia.
-			<PRE
+               w dokumentacji postgresa. Po ¶ci±gniêciu i rozpakowaniu wejd¼
+               do katalogu g³ównego i wpisz kolejno poni¿sze polecenia.
+               <PRE
 CLASS="SCREEN"
 >$ ./configure --enable-locale
 $ gmake
@@ -283,7 +283,7 @@ $ su - postgres
 $ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data --locale=pl_PL.UTF-8
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data &#62;logfile 2&#62;&#38;1 &#38;</PRE
 >
-			</P
+               </P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -295,14 +295,14 @@ NAME="INSTALL-PGSQL-DBCREATE"
 ></H3
 ><P
 >Maj±c uruchomiony serwer mo¿esz przyst±piæ do tworzenia bazy o nazwie 'lms',
-			której w³a¶cicielem bêdzie u¿ytkownik z loginem 'lms'. 
-			<PRE
+               której w³a¶cicielem bêdzie u¿ytkownik z loginem 'lms'. 
+               <PRE
 CLASS="SCREEN"
 >$ /usr/local/pgsql/bin/createuser -d -A -P lms
 $ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
 >
-		</P
+          </P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -324,20 +324,20 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Kodowanie UNICODE jest prawid³owo obs³ugiwane
-		dla znaków spoza zakresu ASCII dopiero od wersji 8.0 PostgreSQLa.
-		Na wcze¶niejszych wersjach nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
-		z opcji konfiguracyjnej <TT
+          dla znaków spoza zakresu ASCII dopiero od wersji 8.0 PostgreSQLa.
+          Na wcze¶niejszych wersjach nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
+          z opcji konfiguracyjnej <TT
 CLASS="FILENAME"
 >server_encoding</TT
 > w sekcji 
-		<TT
+          <TT
 CLASS="FILENAME"
 >[database]</TT
 > pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >.
-		</P
+          </P
 ></TD
 ></TR
 ></TABLE
@@ -354,14 +354,14 @@ NAME="INSTALL-PGSQL-LMS"
 ></H3
 ><P
 >Dla systemu LMS domy¶lnym serwerem baz danych jest MySQL, dlatego w sekcji
-			[database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:
-   			<PRE
+               [database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:
+                  <PRE
 CLASS="SCREEN"
 >type     = postgres
 user     = lms
 password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</PRE
 >
-		    </P
+              </P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -383,11 +383,11 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji
-       			u¿ytkowników postgresa w <TT
+                      u¿ytkowników postgresa w <TT
 CLASS="FILENAME"
 >/usr/local/pgsql/data/pg_hba.conf</TT
 >. 
-       			Domy¶lnie has³o nie jest wymagane.</P
+                      Domy¶lnie has³o nie jest wymagane.</P
 ></TD
 ></TR
 ></TABLE
@@ -395,17 +395,17 @@ CLASS="FILENAME"
 ></P
 ><P
 >Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
-			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
-			nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak± zobaczysz
-			bêdzie formularz dodania u¿ytkownika.</P
+               mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
+               nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak± zobaczysz
+               bêdzie formularz dodania u¿ytkownika.</P
 ><P
 >Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
-			<PRE
+               <PRE
 CLASS="SCREEN"
 >12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
-		    --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</PRE
+              --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</PRE
 >
-			</P
+               </P
 ></DIV
 ></DIV
 ><DIV
@@ -426,13 +426,13 @@ NAME="INSTALL-SQLITE-INTRO"
 ></H3
 ><P
 >Ta jednoplikowa baza jest chwalona za swoj± szybko¶æ, wg autorów
-			okre¶lan± na 2-3 krotnie szybsz± od MySQL. Poza tym przy odpowiedniej 
-			konfiguracji umo¿liwia wczytanie ca³ej bazy do pamiêci RAM przez co osi±gany jest
-			znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki opis instalacji.
-			¬ród³a mo¿na pobraæ z <A
+               okre¶lan± na 2-3 krotnie szybsz± od MySQL. Poza tym przy odpowiedniej 
+               konfiguracji umo¿liwia wczytanie ca³ej bazy do pamiêci RAM przez co osi±gany jest
+               znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki opis instalacji.
+               ¬ród³a mo¿na pobraæ z <A
 HREF="http://www.sqlite.org"
 TARGET="_top"
->			www.sqlite.org</A
+>               www.sqlite.org</A
 >.</P
 ></DIV
 ><DIV
@@ -445,10 +445,10 @@ NAME="INSTALL-SQLITE-SERVER"
 ></H3
 ><P
 >Opisano tutaj sposób instalacji bibliotek SQLite oraz 
-			dodanie obs³ugi tej bazy do PHP (PHP w wersji 5.0 ma wbudowan±
-			obs³ugê SQLite). Po rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite 
-			i wydaj kolejno polecenia (¶cie¿ki przyk³adowe):
-			<PRE
+               dodanie obs³ugi tej bazy do PHP (PHP w wersji 5.0 ma wbudowan±
+               obs³ugê SQLite). Po rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite 
+               i wydaj kolejno polecenia (¶cie¿ki przyk³adowe):
+               <PRE
 CLASS="SCREEN"
 >$ ./configure --enable-utf8
 $ make
@@ -457,17 +457,17 @@ $ ldconfig
 $ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
 $ pear install SQLite-1.0.2.tgz</PRE
 >
-			Nastêpnie w pliku php.ini ustaw:
-			<PRE
+               Nastêpnie w pliku php.ini ustaw:
+               <PRE
 CLASS="SCREEN"
 >extension=sqlite.so</PRE
 >
-			Istnieje równie¿ mo¿liwo¶æ wkompilowania obs³ugi SQLite
-			w PHP przy pomocy opcji <SAMP
+               Istnieje równie¿ mo¿liwo¶æ wkompilowania obs³ugi SQLite
+               w PHP przy pomocy opcji <SAMP
 CLASS="PROMPT"
 >--with-sqlite</SAMP
 >.
-			</P
+               </P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -479,14 +479,30 @@ NAME="INSTALL-SQLITE-DBCREATE"
 ></H3
 ><P
 >Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. 
-			Tak wiêc, wejd¼ do katalogu w którym masz LMS'a	i uruchom shell sqlite'a:
-			<PRE
+               Tak wiêc, wejd¼ do katalogu w którym masz LMS'a i uruchom shell sqlite'a:
+               <PRE
 CLASS="SCREEN"
->$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
+># sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
 sqlite&#62; .exit
-$ chown 99.98 /usr/local/lms/lms</PRE
+# chown 99.98 /usr/local/lms/lms</PRE
 >
-			</P
+               </P
+><P
+>Innym sposobem (np. gdy nie posiadasz, ¿adnej aplikacji klienckiej SQLite)
+               jest u¿ycie skryptu <TT
+CLASS="FILENAME"
+>sqlite_createdb.php</TT
+> z katalogu
+               <TT
+CLASS="FILENAME"
+>sample</TT
+> LMS-a. Skonfiguruj LMS-a do u¿ycia sqlite (patrz ni¿ej),
+               a nastêpnie wejd¼ do g³ównego drzewa ¼róde³ LMS-a i wykonaj polecenie:
+                <PRE
+CLASS="SCREEN"
+># php sample/sqlite_createdb.php</PRE
+>
+               </P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -498,26 +514,26 @@ NAME="INSTALL-SQLITE-LMS"
 ></H3
 ><P
 >Jednym z ograniczeñ SQLite jest brak autentykacji u¿ytkowników, dlatego
-			konfiguracja ogranicza siê do podania typu oraz ¶cie¿ki do pliku bazy. W sekcji
-			[database] pliku /etc/lms/lms.ini podajemy:
-			<PRE
+               konfiguracja ogranicza siê do podania typu oraz ¶cie¿ki do pliku bazy. W sekcji
+               [database] pliku /etc/lms/lms.ini podajemy:
+               <PRE
 CLASS="SCREEN"
 >type     = sqlite
 database = /usr/local/lms/lms.db</PRE
 >
-		    </P
+              </P
 ><P
 >Po  takim  zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
-			bazie danych nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
-			zobaczysz bêdzie formularz dodania u¿ytkownika.  
-			</P
+               bazie danych nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
+               zobaczysz bêdzie formularz dodania u¿ytkownika.  
+               </P
 ><P
 >Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
-			<PRE
+               <PRE
 CLASS="SCREEN"
->12 4 3,10,17,21,28 * * /bin/cp /usr/local/lms/lms.db  backups/lms-auto-"$(date +%s)"-sqllite.db</PRE
+>12 4 3,10,17,21,28 * * /bin/cp /usr/local/lms/lms.db  backups/lms-auto-"$(date +%s)"-sqlite.db</PRE
 >
-			</P
+               </P
 ></DIV
 ></DIV
 ></DIV

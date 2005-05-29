@@ -83,18 +83,18 @@ NAME="INSTALL-CONFIG"
 CLASS="FILENAME"
 >lms.ini</TT
 >,
-	    który nale¿y umie¶ciæ w katalogu <TT
+         który nale¿y umie¶ciæ w katalogu <TT
 CLASS="FILENAME"
 >/etc/lms</TT
 > lub w katalogu
-	    g³ównym LMS'a. Zawiera on zmienne konfiguracyjne <SPAN
+         g³ównym LMS'a. Zawiera on zmienne konfiguracyjne <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 > 
-	    oraz wszystkich skryptów wykonywalnych z wyj±tkiem <SPAN
+         oraz wszystkich skryptów wykonywalnych z wyj±tkiem <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -122,7 +122,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Pamiêtaj o usuniêciu ¶redników na pocz±tku linii z ustawianym 
-	    parametrem konfiguracyjnym.</P
+         parametrem konfiguracyjnym.</P
 ></TD
 ></TR
 ></TABLE
@@ -137,13 +137,13 @@ NAME="INSTALL-CONFIG-DB"
 >2.6.1. Sekcja [database] - ustawienia bazy danych</A
 ></H2
 ><P
->	    <UL
+>         <UL
 ><LI
 ><P
 >type</P
 ><P
 >Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak na razie nie 
-	   widaæ wiêkszych problemów z 'postgres' i 'sqlite'. Domy¶lnie: mysql</P
+        widaæ wiêkszych problemów z 'postgres' i 'sqlite'. Domy¶lnie: mysql</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -155,10 +155,10 @@ CLASS="PROMPT"
 >host</P
 ><P
 >Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj 
-	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie '/path/to/socket'). 
-	   Domy¶lnie: localhost</P
+        wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie '/path/to/socket'). 
+        Domy¶lnie: localhost</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >host = localhost</SAMP
 ></P
@@ -168,11 +168,11 @@ CLASS="PROMPT"
 >user</P
 ><P
 >U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze 
-	   wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, 
-	   prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
-	   'postgres' (PostgreSQL). Domy¶lnie: mysql</P
+        wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, 
+        prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
+        'postgres' (PostgreSQL). Domy¶lnie: mysql</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >user = lms</SAMP
 ></P
@@ -183,7 +183,7 @@ CLASS="PROMPT"
 ><P
 >Has³o do bazy danych. Domy¶lnie puste.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >password = password</SAMP
 ></P
@@ -194,7 +194,7 @@ CLASS="PROMPT"
 ><P
 >Nazwa bazy danych (a w przypadku SQLite ¶cie¿ka do pliku bazy), domy¶lnie lms.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >database = lms</SAMP
 ></P
@@ -204,18 +204,18 @@ CLASS="PROMPT"
 >server_encoding</P
 ><P
 >Kodowanie bazy danych. Je¶li kodowanie to jest inne od UNICODE nale¿y ustawiæ 
-	   tê opcjê na odpowiedni± warto¶æ. Postgres zajmie siê konwersj± sam, ale w przypadku
-	   mysqla u¿ywana jest PHP-owa funkcja iconv() w LMS-owych driverach do bazy danych. 
-	   Domy¶lnie: UNICODE</P
+        tê opcjê na odpowiedni± warto¶æ. Postgres zajmie siê konwersj± sam, ale w przypadku
+        mysqla u¿ywana jest PHP-owa funkcja iconv() w LMS-owych driverach do bazy danych. 
+        Domy¶lnie: UNICODE</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >server_encoding = LATIN2</SAMP
 ></P
 ></LI
 ></UL
 >
-	</P
+     </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -227,16 +227,16 @@ NAME="INSTALL-CONFIG-DIR"
 ></H2
 ><P
 >        
-	<UL
+     <UL
 ><LI
 ><P
 >sys_dir</P
 ><P
 >Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, 
-	   szablony i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale 
-	   lepiej by by³o gdyby mu powiedzieæ gdzie jest:</P
+        szablony i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale 
+        lepiej by by³o gdyby mu powiedzieæ gdzie jest:</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >sys_dir = /var/www/htdocs/lms/</SAMP
 ></P
@@ -246,9 +246,9 @@ CLASS="PROMPT"
 >modules_dir</P
 ><P
 >Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules. Domy¶lnie jest to podkatalog 
-	   modules w sys_dir.</P
+        modules w sys_dir.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >modules_dir = /usr/share/lms/modules/</SAMP
 ></P
@@ -259,7 +259,7 @@ CLASS="PROMPT"
 ><P
 >Katalog z "bibliotekami" LMS'a. Czyli zawarto¶æ katalogu lib. Domy¶lnie to podkatalog lib w sys_dir.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >lib_dir = /usr/share/lms/lib/</SAMP
 ></P
@@ -269,9 +269,9 @@ CLASS="PROMPT"
 >backup_dir</P
 ><P
 >Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. 
-	   Domy¶lnie jest to podkatalog 'backups'.</P
+        Domy¶lnie jest to podkatalog 'backups'.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >backup_dir = /var/backup/lms/</SAMP
 ></P
@@ -296,7 +296,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy 
-	   bez autoryzacji bêdzie mia³ do nich dostêp.</P
+        bez autoryzacji bêdzie mia³ do nich dostêp.</P
 ></TD
 ></TR
 ></TABLE
@@ -309,7 +309,7 @@ VALIGN="TOP"
 ><P
 >Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >smarty_dir = /usr/lib/php/Smarty</SAMP
 ></P
@@ -319,12 +319,12 @@ CLASS="PROMPT"
 >smarty_compile_dir</P
 ><P
 >Katalog kompilacji Smarty-ego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to 
-	   <TT
+        <TT
 CLASS="FILENAME"
 >templates_c</TT
 > w katalogu sysdir.</P
 ><P
->Przyk³ad: 	<SAMP
+>Przyk³ad:      <SAMP
 CLASS="PROMPT"
 >smarty_compile_dir = /var/smarty/compile/lms</SAMP
 ></P
@@ -335,14 +335,14 @@ CLASS="PROMPT"
 ><P
 >Katalog z szablonami którymi Smarty-ego. Domy¶lnie to podkatalog templates z sys_dir'a.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >smarty_templates_dir = /usr/share/lms/templates</SAMP
 ></P
 ></LI
 ></UL
 >
-	</P
+     </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -358,9 +358,9 @@ NAME="INSTALL-CONFIG-UI"
 >lang</P
 ><P
 >Ustawia jêzyk interfejsu u¿ytkownika. Je¶li nie podano, jêzyk
-	    zostanie ustawiony na podstawie ustawieñ przegl±darki. Domy¶lnie: en.</P
+         zostanie ustawiony na podstawie ustawieñ przegl±darki. Domy¶lnie: en.</P
 ><P
->Przyk³ad:		<SAMP
+>Przyk³ad:          <SAMP
 CLASS="PROMPT"
 >lang = pl</SAMP
 ></P
@@ -370,10 +370,10 @@ CLASS="PROMPT"
 >allow_from</P
 ><P
 >Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, 
-	    je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
-	    niechcianego u¿ytkownika.</P
+         je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
+         niechcianego u¿ytkownika.</P
 ><P
->Przyk³ad:		<SAMP
+>Przyk³ad:          <SAMP
 CLASS="PROMPT"
 >allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</SAMP
 ></P
@@ -383,9 +383,9 @@ CLASS="PROMPT"
 >timeout</P
 ><P
 >Timeout sesji www. Po tym czasie (w sekundach) u¿ytkownik zostanie wylogowany je¿eli nie 
-	    podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</P
+         podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >timeout = 900</SAMP
 ></P
@@ -410,7 +410,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
-	    bêdziesz móg³ korzystaæ z LMS!</P
+         bêdziesz móg³ korzystaæ z LMS!</P
 ></TD
 ></TR
 ></TABLE
@@ -423,7 +423,7 @@ VALIGN="TOP"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie klientów. Domy¶lnie brak limitu.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >customerlist_pagelimit = 10</SAMP
 ></P
@@ -434,7 +434,7 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie brak limitu.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >nodelist_pagelimit = 10</SAMP
 ></P
@@ -445,7 +445,7 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie na rachunku klienta. Domy¶lnie: 100.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >balancelist_pagelimit = 50</SAMP
 ></P
@@ -456,7 +456,7 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie faktur. Domy¶lnie: 100</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >invoicelist_pagelimit = 50</SAMP
 ></P
@@ -467,7 +467,7 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie zg³oszeñ. Domy¶lnie: 100</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >ticketlist_pagelimit = 50</SAMP
 ></P
@@ -477,9 +477,9 @@ CLASS="PROMPT"
 >networkhosts_pagelimit</P
 ><P
 >Ilo¶æ komputerów wy¶wietlanych na jednej stronie w informacjach 
-	    o sieci. Domy¶lnie: 256.</P
+         o sieci. Domy¶lnie: 256.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >networkhosts_pagelimit = 1024</SAMP
 ></P
@@ -490,7 +490,7 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie kont. Domy¶lnie: 100.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >accountlist_pagelimit = 25</SAMP
 ></P
@@ -501,7 +501,7 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie domen. Domy¶lnie: 100.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >domainlist_pagelimit = 25</SAMP
 ></P
@@ -512,7 +512,7 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie aliasów. Domy¶lnie: 100.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >aliaslist_pagelimit = 25</SAMP
 ></P
@@ -523,7 +523,7 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie opcji konfiguracyjnych. Domy¶lnie: 100.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >configlist_pagelimit = 50</SAMP
 ></P
@@ -535,13 +535,13 @@ CLASS="PROMPT"
 >Typ reloadu. Dozwolone warto¶ci:</P
 ><P
 >exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
-	     poni¿ej)</P
+          poni¿ej)</P
 ><P
 >sql  - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query SQL'a)</P
 ><P
 >Domy¶lna warto¶æ to 'sql'.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >reload_type = exec</SAMP
 ></P
@@ -551,14 +551,14 @@ CLASS="PROMPT"
 >reload_execcmd</P
 ><P
 >Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie
-	    <TT
+         <TT
 CLASS="FILENAME"
 >/bin/true</TT
 >. String ten puszczany do komendy system() wiêc proponujê rozwagê 
-	    i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
-	    wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</P
+         i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
+         wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >reload_execcmd = "sudo /usr/bin/reload_lms.sh"</SAMP
 ></P
@@ -571,11 +571,11 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >reload_type = sql</SAMP
 >.  
-	    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
-	    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
-	    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</P
+         Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
+         '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
+         traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</SAMP
 ></P
@@ -585,10 +585,10 @@ CLASS="PROMPT"
 >force_ssl</P
 ><P
 >Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
-	    SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
-	    próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</P
+         SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
+         próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >force_ssl = 0</SAMP
 ></P
@@ -598,11 +598,11 @@ CLASS="PROMPT"
 >allow_mac_sharing</P
 ><P
 >Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza 
-	    czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</P
+         czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
->allow_mac_sharing	= 1</SAMP
+>allow_mac_sharing     = 1</SAMP
 ></P
 ></LI
 ><LI
@@ -610,9 +610,9 @@ CLASS="PROMPT"
 >smarty_debug</P
 ><P
 >W³±czenie konsoli debugowej Smarty-ego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
-	    do Smarty-ego. Domy¶lnie wy³±czone.</P
+         do Smarty-ego. Domy¶lnie wy³±czone.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >smarty_debug = 1</SAMP
 ></P
@@ -622,9 +622,9 @@ CLASS="PROMPT"
 >lang_debug</P
 ><P
 >W³±czenie translatorskiej konsoli debugowej LMS, przydatne do ¶ledzenia brakuj±cych t³umaczeñ.
-	    Domy¶lnie wy³±czone.</P
+         Domy¶lnie wy³±czone.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >lang_debug = 1</SAMP
 ></P
@@ -634,9 +634,9 @@ CLASS="PROMPT"
 >debug_email</P
 ><P
 >Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
-	    zamiast do w³a¶ciwych klientów.</P
+         zamiast do w³a¶ciwych klientów.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >debug_email = root@localhost</SAMP
 ></P
@@ -646,9 +646,9 @@ CLASS="PROMPT"
 >default_zip, default_city, default_address</P
 ><P
 >Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
-	    klienta. Przydatne gdy mamy do wpisania wielu klientów z tej samej ulicy.</P
+         klienta. Przydatne gdy mamy do wpisania wielu klientów z tej samej ulicy.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >default_zip = 39-300</SAMP
 ></P
@@ -658,9 +658,9 @@ CLASS="PROMPT"
 >use_current_payday</P
 ><P
 >Okre¶la, czy ma byæ u¿yta aktualna data jako dzieñ zap³aty podczas
-	    przypisywania zobowi±zañ klientom. Domy¶lnie wy³±czone.</P
+         przypisywania zobowi±zañ klientom. Domy¶lnie wy³±czone.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >use_current_payday = 1</SAMP
 ></P
@@ -670,10 +670,10 @@ CLASS="PROMPT"
 >lastonline_limit</P
 ><P
 >Okre¶la czas (w sekundach), po którym komputer zostaje uznany za
-	    nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu
-	    badaj±cego aktywno¶æ komputerów (np.lms-fping). Domy¶lnie: 600.</P
+         nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu
+         badaj±cego aktywno¶æ komputerów (np.lms-fping). Domy¶lnie: 600.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >lastonline_limit = 300</SAMP
 ></P
@@ -683,9 +683,9 @@ CLASS="PROMPT"
 >timetable_days_forward</P
 ><P
 >Okre¶la ilo¶æ dni (³±cznie z bie¿±cym) jaka ma byæ wy¶wietlana 
-	    w terminarzu. Domy¶lnie: 7.</P
+         w terminarzu. Domy¶lnie: 7.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >timetable_days_forward = 2</SAMP
 ></P
@@ -695,10 +695,10 @@ CLASS="PROMPT"
 >arpd_servers</P
 ><P
 >Lista serwerów arpd do sczytywania MAC'adresów z odleg³ych sieci.
-	    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
-	    spacjami. Domy¶lnie pusta.</P
+         Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
+         spacjami. Domy¶lnie pusta.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >arpd_servers = 192.168.1.1 192.168.2.1</SAMP
 ></P
@@ -708,12 +708,12 @@ CLASS="PROMPT"
 >helpdesk_backend_mode</P
 ><P
 >W³±czenie tej opcji spowoduje, ¿e wszystkie wiadomo¶ci w systemie 
-	    helpdesk (oprócz tych skierowanych do zg³aszaj±cego) 
-	    bêd± wysy³ane do serwera pocztowego na adres odpowiedniej kolejki.
-	    Na serwerze tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie
-	    siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</P
+         helpdesk (oprócz tych skierowanych do zg³aszaj±cego) 
+         bêd± wysy³ane do serwera pocztowego na adres odpowiedniej kolejki.
+         Na serwerze tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie
+         siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >helpdesk_backend_mode = 1</SAMP
 ></P
@@ -723,10 +723,10 @@ CLASS="PROMPT"
 >helpdesk_sender_name</P
 ><P
 >Nazwa nadawcy wiadomo¶ci albo predefiniowane warto¶ci: 'queue'
-	    - nazwa kolejki do której nale¿y zg³oszenie, 'user' - nazwa zalogowanego
-	    u¿ytkownika (nadawcy). Domy¶lnie: pusta.</P
+         - nazwa kolejki do której nale¿y zg³oszenie, 'user' - nazwa zalogowanego
+         u¿ytkownika (nadawcy). Domy¶lnie: pusta.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >helpdesk_sender_name = Helpdesk</SAMP
 ></P
@@ -736,10 +736,10 @@ CLASS="PROMPT"
 >newticket_notify</P
 ><P
 >W³±czenie tej opcji spowoduje, ¿e wszyscy u¿ytkownicy z prawami
-	    do kolejki dostan± powiadomienie mailem o dodaniu do niej nowego
-	    zg³oszenia. Domy¶lnie: wy³±czona.</P
+         do kolejki dostan± powiadomienie mailem o dodaniu do niej nowego
+         zg³oszenia. Domy¶lnie: wy³±czona.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >newticket_notify = 1</SAMP
 ></P
@@ -749,14 +749,14 @@ CLASS="PROMPT"
 >contract_template</P
 ><P
 >W³asny szablon umowy z klientem. Mo¿e zawieraæ listê umów oddzielonych 
-	    przecinkami. Domy¶lnie: contract.html.</P
+         przecinkami. Domy¶lnie: contract.html.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >contract_template = "../my_templates/contract.html"</SAMP
 ></P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >contract_template = "contract.html:Umowa Podstawowa, umowa.html:Umowa Rozbudowana"</SAMP
 ></P
@@ -766,9 +766,9 @@ CLASS="PROMPT"
 >to_words_short_format</P
 ><P
 >Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
-	    rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</P
+         rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >to_words_short_format = 1</SAMP
 ></P
@@ -778,9 +778,9 @@ CLASS="PROMPT"
 >nodepassword_length</P
 ><P
 >Domy¶lna d³ugo¶æ has³a (generowanego automatycznie) dla komputera. 
-	    Maksymalnie 32. Domy¶lnie: 16.</P
+         Maksymalnie 32. Domy¶lnie: 16.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >nodepassword_length = 8</SAMP
 ></P
@@ -790,10 +790,10 @@ CLASS="PROMPT"
 >smtp_host, smtp_port, smtp_username, smtp_password</P
 ><P
 >Parametry po³±czenia SMTP. LMS umo¿liwia korzystanie ze
-	    zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
-	    PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</P
+         zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
+         PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >smtp_host = poczta.domena.pl</SAMP
 ></P
@@ -803,9 +803,9 @@ CLASS="PROMPT"
 >smtp_auth_type</P
 ><P
 >Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domy¶lnych
-	    zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</P
+         zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >smtp_auth_type = DIGEST-MD5</SAMP
 ></P
@@ -844,23 +844,23 @@ NAME="INSTALL-CONFIG-FINANCES"
 ></H2
 ><P
 >Sekcja ta zawiera opcje dotycz±ce naliczania op³at, a tak¿e
-	dane do druków przelewu, których opis znajdziesz w rozdziale o fakturach.
-    	<UL
+     dane do druków przelewu, których opis znajdziesz w rozdziale o fakturach.
+         <UL
 ><LI
 ><P
 >suspension_percentage (opcjonalny)</P
 ><P
 >Warto¶æ procentowa obci±¿enia generowana dla obci±¿eñ zawieszonych.
-	   Domy¶lnie: '0'</P
+        Domy¶lnie: '0'</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >suspension_percentage = 50</SAMP
 ></P
 ></LI
 ></UL
 >
-	  </P
+       </P
 ></DIV
 ></DIV
 ><DIV

@@ -80,8 +80,8 @@ NAME="DEVEL-DB"
 ></H1
 ><P
 >Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej szczegó³owe
-		informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domy¶lne
-		zawarte s± w plikach <A
+          informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domy¶lne
+          zawarte s± w plikach <A
 HREF="../lms.mysql"
 TARGET="_top"
 ><TT
@@ -89,7 +89,7 @@ CLASS="FILENAME"
 >lms.mysql</TT
 ></A
 >,
-		<A
+          <A
 HREF="../lms.pgsql"
 TARGET="_top"
 ><TT
@@ -97,7 +97,7 @@ CLASS="FILENAME"
 >lms.pgsql</TT
 ></A
 > i 
-		<A
+          <A
 HREF="../lms.sqlite"
 TARGET="_top"
 ><TT
@@ -105,7 +105,7 @@ CLASS="FILENAME"
 >lms.sqlite</TT
 ></A
 > w katalogu
-		<TT
+          <TT
 CLASS="FILENAME"
 >/doc</TT
 >.</P
@@ -114,8 +114,8 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="ADMINS"
->7.2.1. U¿ytkownicy ('admins')</A
+NAME="USERS"
+>7.2.1. U¿ytkownicy ('users')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -176,8 +176,8 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="USERS"
->7.2.2. Klienci ('users')</A
+NAME="CUSTOMERS"
+>7.2.2. Klienci ('customers')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -282,8 +282,8 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="USERGROUPS"
->7.2.3. Grupy klientów ('usergroups')</A
+NAME="CUSTOMERGROUPS"
+>7.2.3. Grupy klientów ('customergroups')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -308,8 +308,8 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="USERASSIGNMENTS"
->7.2.4. Grupy klientów - c.d. ('userassignments')</A
+NAME="CUSTOMERASSIGNMENTS"
+>7.2.4. Grupy klientów - c.d. ('customerassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -320,11 +320,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->usergroupid - identyfikator grupy</TD
+>customergroupid - identyfikator grupy</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta</TD
+>customerid - identyfikator klienta</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -566,7 +566,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika dokonuj±cego operacji</TD
+>userid - identyfikator u¿ytkownika dokonuj±cego operacji</TD
 ></TR
 ><TR
 ><TD
@@ -582,7 +582,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta ('0' - je¶li nie dotyczy)</TD
+>customerid - identyfikator klienta ('0' - je¶li nie dotyczy)</TD
 ></TR
 ><TR
 ><TD
@@ -770,7 +770,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta</TD
+>customerid - identyfikator klienta</TD
 ></TR
 ><TR
 ><TD
@@ -1160,7 +1160,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta</TD
+>customerid - identyfikator klienta</TD
 ></TR
 ><TR
 ><TD
@@ -1202,11 +1202,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika-nadawcy</TD
+>userid - identyfikator u¿ytkownika-nadawcy</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta-nadawcy</TD
+>customerid - identyfikator klienta-nadawcy</TD
 ></TR
 ><TR
 ><TD
@@ -1290,7 +1290,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika</TD
+>userid - identyfikator u¿ytkownika</TD
 ></TR
 ><TR
 ><TD
@@ -1378,11 +1378,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika tworz±cego wpis w terminarzu</TD
+>userid - identyfikator u¿ytkownika tworz±cego wpis w terminarzu</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta</TD
+>customerid - identyfikator klienta</TD
 ></TR
 ><TR
 ><TD
@@ -1412,7 +1412,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika</TD
+>userid - identyfikator u¿ytkownika</TD
 ></TR
 ></TBODY
 ></TABLE

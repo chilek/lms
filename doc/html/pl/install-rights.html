@@ -206,34 +206,34 @@ NAME="INSTALL-RIGHTS-HOW"
 ></H2
 ><P
 >Decyzja  czy  u¿ytkownik  ma prawo dostêpu do modu³u czy nie przebiega nastêpuj±co:
-		<TABLE
+          <TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
 >-  najpierw  sprawdzana  jest  lista  modu³ów, do których zawsze ma siê
-		dostêp,</TD
+          dostêp,</TD
 ></TR
 ><TR
 ><TD
 >-  potem  nastêpuje sprawdzenie czy modu³ pasuje do regu³ w poszczególnych
-		poziomach, do których u¿ytkownik ma dostêp,</TD
+          poziomach, do których u¿ytkownik ma dostêp,</TD
 ></TR
 ><TR
 ><TD
 >-  na  koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
-		do  modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który zabrania dostêpu,
-		dostêp  zostanie  zabroniony  nawet  je¿eli u¿ytkownik ma ustawiony poziom, który pozwala
-		na dostêp do modu³u (np.  kto¶  ma  pe³ny  dostêp oraz brak dostêpu do modu³u dodawania
-		komputerów,  nie  bêdzie  on  móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do
-		poziomu, który pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê.
-		Je¿eli natomiast modu³ siê nie "za³apa³" na ¿aden poziom równie¿ zostanie mu wy¶wietlony
-		komunikat o braku dostêpu.</TD
+          do  modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który zabrania dostêpu,
+          dostêp  zostanie  zabroniony  nawet  je¿eli u¿ytkownik ma ustawiony poziom, który pozwala
+          na dostêp do modu³u (np.  kto¶  ma  pe³ny  dostêp oraz brak dostêpu do modu³u dodawania
+          komputerów,  nie  bêdzie  on  móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do
+          poziomu, który pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê.
+          Je¿eli natomiast modu³ siê nie "za³apa³" na ¿aden poziom równie¿ zostanie mu wy¶wietlony
+          komunikat o braku dostêpu.</TD
 ></TR
 ></TBODY
 ></TABLE
 >
-		</P
+          </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -245,29 +245,29 @@ NAME="INSTALL-RIGHTS-USER"
 ></H2
 ><P
 >Zaawansowani u¿ytkownicy maj± mo¿liwo¶æ zdefiniowania dodatkowych
-		dowolnych regu³ dostêpu lub przedefiniowania istniej±cych. W tym celu
-		nale¿y utworzyæ skrypt PHP na wzór <TT
+          dowolnych regu³ dostêpu lub przedefiniowania istniej±cych. W tym celu
+          nale¿y utworzyæ skrypt PHP na wzór <TT
 CLASS="FILENAME"
 >lib/accesstable.php</TT
 >
-		i umie¶ciæ go w katalogu <TT
+          i umie¶ciæ go w katalogu <TT
 CLASS="FILENAME"
 >lib</TT
 > LMS-a. Nazwê pliku
-		podajemy w opcji <TT
+          podajemy w opcji <TT
 CLASS="FILENAME"
 >custom_accesstable</TT
 > sekcji [phpui].</P
 ><P
 >W ten sposób mo¿na zdefiniowaæ w³asne regu³y zezwalaj±ce lub
-		zabraniaj±ce dostêpu do dowolnych modu³ów. Modu³ to nazwa pliku PHP
-		z katalogu <TT
+          zabraniaj±ce dostêpu do dowolnych modu³ów. Modu³ to nazwa pliku PHP
+          z katalogu <TT
 CLASS="FILENAME"
 >modules</TT
 >, któr± w regu³ach dostêpu podajemy
-		bez rozszerzenia. Dla przyk³adu, mo¿na zdefiniowaæ uprawnienie do
-		odczytu faktur (np. na potrzeby skryptu lms-sendinvoices) w nastêpuj±cy
-		sposób:
+          bez rozszerzenia. Dla przyk³adu, mo¿na zdefiniowaæ uprawnienie do
+          odczytu faktur (np. na potrzeby skryptu lms-sendinvoices) w nastêpuj±cy
+          sposób:
 <PRE
 CLASS="SCREEN"
 >&lt;?php
@@ -275,7 +275,7 @@ $access['table'][100]['name']      = 'odczyt faktur';
 $access['table'][100]['allow_reg'] = '^invoice$';
 ?&gt;</PRE
 >
-		</P
+          </P
 ></DIV
 ></DIV
 ><DIV

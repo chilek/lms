@@ -94,8 +94,8 @@ CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 > jest napisane w PHP, niezbêdny jest serwer WWW z interpreterem 
-		tego jêzyka. Preferowanym serwerem jest Apache 
-		(<A
+          tego jêzyka. Preferowanym serwerem jest Apache 
+          (<A
 HREF="http://www.apache.org"
 TARGET="_top"
 >www.apache.org</A
@@ -111,18 +111,18 @@ NAME="INSTALL-REQ-PHP"
 ></H2
 ><P
 >Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ 
-		poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie mo¿na 
-		zagwarantowaæ poprawnej pracy na starszych wersjach (unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
-		strony <A
+          poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie mo¿na 
+          zagwarantowaæ poprawnej pracy na starszych wersjach (unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
+          strony <A
 HREF="http://www.php.net"
 TARGET="_top"
 >www.php.net</A
 >.
-		W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
-		w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
-		zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i jeden z
-		mysql, pgsql, sqlite (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
-		wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</P
+          W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
+          w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
+          zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i jeden z
+          mysql, pgsql, sqlite (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
+          wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -138,7 +138,7 @@ NAME="INSTALL-REQ-DB"
 >LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</P
 ><P
 >Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
-	      problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.11.</P
+           problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.x.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -160,7 +160,7 @@ HREF="http://smarty.php.net"
 TARGET="_top"
 >http://smarty.php.net</A
 >)
-		 w wersji 2.6.0 lub wy¿szej (unikaæ wersji 2.6.4).</P
+           w wersji 2.6.0 lub wy¿szej (unikaæ wersji 2.6.4).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -178,47 +178,43 @@ CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 > wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy 
-		<SPAN
+          <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
 > i resztê skryptów potrzebujemy 
-		tak¿e Perla i modu³y do niego, które mo¿na pobraæ z <A
+          tak¿e Perla i modu³y do niego, które mo¿na pobraæ z <A
 HREF="http://www.cpan.org"
 TARGET="_top"
 >www.cpan.org</A
 >,
-		czyli:
-	  <UL
+          czyli:
+       <UL
 ><LI
 ><P
->perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);</P
+>perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long),</P
 ></LI
 ><LI
 ><P
->Net::SMTP;</P
+>Config::IniFiles,</P
 ></LI
 ><LI
 ><P
->Config::IniFiles;</P
+>DBI,</P
 ></LI
 ><LI
 ><P
->DBI;</P
+>DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a),</P
 ></LI
 ><LI
 ><P
->DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a);</P
+>DBD-Pg (Je¶li masz zamiar u¿ywaæ postgres'a),</P
 ></LI
 ><LI
 ><P
->DBD-Pg (Je¶li masz zamiar u¿ywaæ postgres'a);</P
-></LI
-><LI
-><P
->DBD-SQLite (Je¶li masz zamiar u¿ywaæ bazê SQLite);</P
+>DBD-SQLite (Je¶li masz zamiar u¿ywaæ bazê SQLite).</P
 ></LI
 ></UL
 ></P
@@ -239,8 +235,21 @@ CLASS="EMPHASIS"
 >LMS Daemon</I
 ></SPAN
 > bêdziesz potrzebowa³
-	  dzia³aj±cy kompilator jêzyka C, gdy¿ jest on dostarczany wy³±cznie w postaci
-	  kodu ¼ród³owego.</P
+       dzia³aj±cy kompilator jêzyka C, gdy¿ jest on dostarczany wy³±cznie w postaci
+       kodu ¼ród³owego.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-BROWSER"
+>2.2.7. Przegl±darka www</A
+></H2
+><P
+>LMS posiada webowy interfejs, dlatego wymagana jest przegl±darka, która
+             obs³uguje javascript i ma w³±czone cookies. Z naszego do¶wiadczenia wynika, ¿e
+             najlepszym wyborem bêdzie Mozilla Firefox 1.x.</P
 ></DIV
 ></DIV
 ><DIV
