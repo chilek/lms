@@ -75,13 +75,15 @@ dzia³aæ szybko.
 
 InvoiceContents:
 
-Itemid |   Comment  |  Netto  | Tax | 
--------+------------+---------+-----|
-  1    |  Abonament |   70.00 |  1  | 
-  2    |     NIC    |   30.00 |  4  | 
+Itemid |   Comment  |  Netto  | Tax_id | Brutto |
+-------+------------+---------+--------+--------+
+  1    |  Abonament |   70.00 |  1     |        |
+  2    |     NIC    |   30.00 |  4     | 36.60  |
 
 alec> ja bym wola³ przechowywaæ w bazie kwoty ju¿ wyliczone, czyli brutto
       tak jak teraz - odpada z³±czenie z tabel± "Taxes".
+
+hunter> Hm. Wiesz mi to siê nie widzi, to jak przechowywanie w invoices sumy dokumentu, trochê to nie zgodne z regu³ami sztuki, zobacz posiadanie TAX_ID u³atwia zrobienie tabelki z podsumowaniem podatków. Brutto to pole wyliczane (jak i warto¶æ podatku) i powinno byæ liczone a nie hm przechowywane. Je¶li ju¿ to zarówno TAX_ID jak i TAX, a brutto niech siê liczy jako sum. (wiesz potem sobie ³atwo strzeliæ w stopê i mieæ [brutto - netto] ¿eby liczyæ TAX).
 
 Taxes:
 
