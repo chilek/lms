@@ -558,6 +558,18 @@ key = "A.L.E.C's LMS Daemon is the best"
                <title>LMS project related</title>
                <para>Amount of money (in 'cash' table) was stored (as of lms-1.1) as 32 integer value, so if you had 5000 users you might had problems in 8 years or so. Nowadays (since lms-1.1.7 Hathor) we use more appropriate type [ decimal (9.2), with 2 significant places after dot and 9 numers for whole sum] and the maximum is 9'999'999.99 (sum of all in/out cash operations). Procedures converting numbers to words are able to process numbers as big as 10^18.</para>
           </sect2>
+			<sect2 id="devel-limits-unicode">
+			<title>Unicode-related problems</title>
+			<para>
+			We are switching to Unicode in UI and databases. Right now there are known problems. When you have to use SQL with poor Unicode support, you should use UI converting capabilities. (PHP only? watch out for perl scripts!). In following example (file lms.ini) we have database in LATIN2 (aka ISO-8859-2) format. 
+			</para>
+			<screen>
+			[database]
+			user     = lms
+			password = lms12354
+			server_encoding = latin2 ; if DB is not encoded in Unicode 
+			<screen>
+			</sect2>
           <sect2 id="devel-limits-db">
                <title>SQL engine related</title>
                <itemizedlist>
