@@ -1087,6 +1087,12 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		    odpowiadanie na pingi. Po skanowaniu, wszystkim w³±czonym komputerom jest
 		    ustawiany w bazie danych czas skanowania, wykorzystywany do obrazowania
 		    aktywno¶ci komputerów np. na mapie sieci.</para>
+		    <para><note><para>Pinger rozpoznaje interfejsy sieciowe na podstawie
+		    nazwy, dlatego (np. gdy do zak³adania interfejsów wirtualnych/aliasów 
+		    wykorzystujesz program <filename>ip</filename>) musisz nadawaæ interfejsom etykiety 
+		    (ip addr add ... label ...). Pamiêtaj tak¿e, ¿eby nie u¿ywaæ w nazwach
+		    kropek, ani my¶lników (mimo, ¿e <filename>ip</filename> na to pozwala), gdy¿ pinger
+		    nie rozpozna poprawnie takiego interfejsu.</para></note></para>
 		    </sect3>
 		    <sect3 id="pinger-config">
 		    <title>Konfiguracja</title>
