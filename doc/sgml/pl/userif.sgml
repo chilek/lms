@@ -378,7 +378,10 @@
 		(ID klienta, kwota, itd.). Po wczytaniu pliku zostanie wy¶wietlona lista
 		p³atno¶ci do zatwierdzenia i/lub korekty.</para>
 		<para>Aby skrypt potrafi³ odczytaæ dane z plików w dowolnym formacie nale¿y
-		zdefiniowaæ odpowiednio wyra¿enia regularne w pliku modules/cashimportcfg.php. 
+		zdefiniowaæ odpowiednio wyra¿enia regularne w skrypcie PHP, którego lokalizacjê
+		podajemy w opcji <filename>import_config</filename> sekcji <emphasis>[phpui]</emphasis>.
+		Przyk³adowe warto¶ci wraz z obja¶nieniem dostêpnych parametrów znajduj± siê w pliku 
+		<filename>modules/cashimportcfg.php</filename>. 
 		Domy¶lna konfiguracja zak³ada, ¿e dane bêd± mia³y postaæ nastêpuj±c±:
 <screen>
 23.02.2004	Machniak Aleksander	123,45	Op³ata za Internet 04/2004 ID:0013

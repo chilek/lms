@@ -397,9 +397,12 @@ invoices.</para>
 		regular expressions to get needed data types (ie. customer id,
 		amount, etc). After file is loaded, you will be presented with
 		the same corrections/acceptance screen as above.</para>
-		<para>You should modify <filename>modules/cashimportcfg.php</filename> 
-		file to setup regular expressions, which suit to your input
-		files. Default configuration assumes that input data will be in 
+		<para>To setup regular expressions, which suit to your input
+		files you should create PHP script which location you must set in
+		<filename>import_config</filename> option in <emphasis>[phpui]</emphasis>
+		section. Example values and parameters descriptions are placed in
+		<filename>modules/cashimportcfg.php</filename>.
+		Default configuration assumes that input data will be in 
 		the following format (tab separated):
 <screen>
 23.02.2004	Machniak Aleksander	123,45	Internet subscription - 04/2004 ID:0013
