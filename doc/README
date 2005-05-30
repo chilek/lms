@@ -318,7 +318,7 @@ Chapter 2. Installation and configuration
 
    PostgreSQL in version 7.3.x or higher is supported.
 
-   SQLite database is also usable, but we only tested version 2.8.11.
+   SQLite database is also usable, but we only tested version 2.8.x.
      _________________________________________________________________
 
 2.2.4. Smarty Library
@@ -332,20 +332,27 @@ Chapter 2. Installation and configuration
 2.2.5. Perl
 
    LMS-MGC and the rest of Perl scripts requires also Perl interpreter
-   and some modules:
-     * Perl and its basic modules (POSIX, GetOpt::Long);
-     * Net::SMTP;
-     * Config::IniFiles;
-     * DBI;
-     * DBD-mysql (if you use MySQL);
-     * DBD-Pg (if you use Postgres);
-     * DBD-SQLite (if you use SQLite);
+   and some modules (this is the list of basic modules, some scripts
+   requires more modules):
+     * Perl and its basic modules (POSIX, GetOpt::Long),
+     * Config::IniFiles,
+     * DBI,
+     * DBD-mysql (if you use MySQL),
+     * DBD-Pg (if you use Postgres),
+     * DBD-SQLite (if you use SQLite).
      _________________________________________________________________
 
 2.2.6. C Compiler
 
    If you intend to run LMS Daemon you will need working C compiler,
    because daemon will be provided in source code form only.
+     _________________________________________________________________
+
+2.2.7. Web Browser
+
+   LMS has web user interface, so you'll need web browser with javascript
+   cookies enabled. Our exparience says that Mozilla Firefox 1.x will be
+   the best choice.
      _________________________________________________________________
 
 2.3. LMS Installation
@@ -567,6 +574,12 @@ extension=sqlite.so
 $ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
 sqlite> .exit
 $ chown 99.98 /usr/local/lms/lms.db
+
+   Second method of database creation (if you haven't got any SQLite
+   client application) is use of LMS module named sqlite_createdb.php
+   from sample directory. First configure LMS (see below), then go to LMS
+   source tree and run:
+# php sample/sqlite_createdb.php
      _________________________________________________________________
 
 2.5.3.4. LMS Configuration (lms.ini)
@@ -1436,12 +1449,11 @@ Chapter 3. User Interface (LMS-UI)
 3.7.3. Payments list
 
    This is a list of your company payments. Among standard fields you'll
-   find 'Account this payment' icon (which for some mysterious reasons
-   looks like 'Save' option), where you're able to charge your account.
-   Periodical charges might be done with 'lms-payments' Perl script, or
-   appropriate module of almsd daemon. Select and click on chosen payment
-   to view 'Payment Info' module, where you're able to edit its
-   parameters or account given payment to financial database.
+   find 'Account this payment' icon, where you're able to charge your
+   account. Periodical charges might be done with 'lms-payments' Perl
+   script, or appropriate module of almsd daemon. Select and click on
+   chosen payment to view 'Payment Info' module, where you're able to
+   edit its parameters or account given payment to financial database.
      _________________________________________________________________
 
 3.7.4. New payment
@@ -3820,6 +3832,13 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
    problems with hosts with ping response disabled or firewalled. After
    scanning, last-seen time is set for all online hosts in database used
    to illustrate hosts activity on nodes list and network map.
+
+   Note
+
+   Pinger for work use interface names, so (e.g. if you are using ip
+   command) you'll need to label interfaces in your system (ip addr add
+   ... label ...). Also remember, don't use a dots or dashes in interface
+   names (ip allows that, but such a name is not usable for pinger.
      _________________________________________________________________
 
 6.2.14.2. Configuration
@@ -4252,7 +4271,7 @@ Chapter 7. For curious
 
    Configuration file default location is /etc/lms/lms.ini. It's intended
    to be central configuration for all LMS components and you can setup
-   your LMS-UI, almsd daemon and Perl scripts (including LMS_MGC)
+   your LMS-UI, lmsd daemon and Perl scripts (including LMS_MGC)
    parameters here. However variable format for Perl scripts is more
    restricted.
      _________________________________________________________________
@@ -4284,8 +4303,8 @@ key =  value
 variable1 = "some text"
 para_meter = 'i am "para_meter" variable in apostrophes'
 
-[section_1]                             # you can comment here
-key = "text with specials: \t and ;"    ; you can comment here either
+[section_1]                    # you can comment here
+key = "text with specials: \t and ;"     ; you can comment here either
 ; and this is comment all line long
 key = "A.L.E.C's LMS Daemon is the best"
 # option = disabled

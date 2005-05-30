@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Generowanie danych losowych</TITLE
+>Filling DB with random data</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Dla dociekliwych"
+TITLE="For curious"
 HREF="devel.html"><LINK
 REL="PREVIOUS"
-TITLE="Format pliku konfiguracyjnego"
+TITLE="Configuration file format"
 HREF="devel-ini.html"><LINK
 REL="NEXT"
-TITLE="Poziomy dostêpu"
+TITLE="Access levels"
 HREF="devel-rights.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 7. Dla dociekliwych</TD
+>Rozdzia&#322; 7. For curious</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,19 +76,16 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-GENFAKE"
->7.4. Generowanie danych losowych</A
+>7.4. Filling DB with random data</A
 ></H1
 ><P
->Dla osób chc±cych szybko sprawdziæ jak dzia³a LMS przygotowali¶my
-		modu³ 'genfake', s³u¿±cy do tworzenia bazy zawieraj±cej przyk³adowe dane. </P
+>If you want to test your LMS installation instantly you can fill it with some random data using 'genfake' module.</P
 ><P
->Aby wygenerowaæ dane nale¿y, po zalogowaniu siê w LMS'ie wywo³aæ adres <TT
+>To generate data you should, once logged in, open in your Web browser URL <TT
 CLASS="FILENAME"
->		http://twoj.serwer.net/lms/?m=genfake</TT
->, okre¶liæ ilu
-		u¿ytkowników ma zostaæ stworzonych i nacisn±æ ENTER. To wszystko. Ewentualne b³êdy
-		bazy danych, spowodowane ograniczeniami unikalno¶ci niektórych danych, mo¿na zignorowaæ.
-		<DIV
+>http://ourserver.org/lms/?m=genfake</TT
+> and write how many user records should be created in the text box. After you hit enter, the whole content of database will be erased and populated with some random data. You might get some database errors while generating data, as this algorithm is not truly random.
+          <DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -107,14 +104,13 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Dla prawid³owego wygenerowania zale¿no¶ci, modu³ 'genfake'
-		nale¿y uruchamiaæ na pustej, nowo utworzonej bazie.</P
+>For proper creation of dependences you should only run this module on empty database.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 >
-		<DIV
+          <DIV
 CLASS="WARNING"
 ><TABLE
 CLASS="WARNING"
@@ -133,14 +129,13 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Wszystkie dane (oprócz danych u¿ytkowników) zostan±
-		usuniête z bazy.</P
+>All data will be erased from database, except LMS users (Administrators) records.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 >
-		</P
+          </P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -186,7 +181,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Format pliku konfiguracyjnego</TD
+>Configuration file format</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -200,7 +195,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Poziomy dostêpu</TD
+>Access levels</TD
 ></TR
 ></TABLE
 ></DIV

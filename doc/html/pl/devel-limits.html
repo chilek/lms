@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Ograniczenia</TITLE
+>Restrictions</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,10 +10,10 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Dla dociekliwych"
+TITLE="For curious"
 HREF="devel.html"><LINK
 REL="PREVIOUS"
-TITLE="Poziomy dostêpu"
+TITLE="Access levels"
 HREF="devel-rights.html"><LINK
 REL="NEXT"
 TITLE="Dodatki"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 7. Dla dociekliwych</TD
+>Rozdzia&#322; 7. For curious</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,27 +76,20 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-LIMITS"
->7.6. Ograniczenia</A
+>7.6. Restrictions</A
 ></H1
 ><P
->Ka¿dy system ma ograniczenia. Pewne wynikaj± z u¿ytego silnika SQL (DBMS)
-		inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system
-		takowe posiada:</P
+>Each system has its restrictions. Some of ours are inherited from SQL engine being used. Some from assumptions (nearly) knowingly made by developers. Those are current restrictions:</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="DEVEL-LIMITS-LMS"
->7.6.1. Wynikaj±ce z naszego projektu</A
+>7.6.1. LMS project related</A
 ></H2
 ><P
->Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowywali¶my jako
-			32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat mogli¶cie nas nie lubiæ 
-			posiadaj±c oko³o 5000 u¿ytkowników.  Aktualnie (od lms-1.1.7 Hathor) u¿ywamy 
-			bardziej odpowiedniego typu danych [decimal (9.2), 2 miejsca znacz±ce po przecinku,
-			a w sumie 9 miejsc na ca³± liczbê]. Maksymalna warto¶æ to 9'999'999.99 (dotyczy sumy			 wszystkich operacji finansowych!). Procedury konwertuj±ce liczby na s³owa s± 
-			przygotowane na kwoty tak du¿e jak 10^18.</P
+>Amount of money (in 'cash' table) was stored (as of lms-1.1) as 32 integer value, so if you had 5000 users you might had problems in 8 years or so. Nowadays (since lms-1.1.7 Hathor) we use more appropriate type [ decimal (9.2), with 2 significant places after dot and 9 numers for whole sum] and the maximum is 9'999'999.99 (sum of all in/out cash operations). Procedures converting numbers to words are able to process numbers as big as 10^18.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -104,7 +97,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DEVEL-LIMITS-DB"
->7.6.2. Wynikaj±ce z u¿ywanego DBMS</A
+>7.6.2. SQL engine related</A
 ></H2
 ><UL
 ><LI
@@ -113,20 +106,15 @@ NAME="DEVEL-LIMITS-DB"
 ><UL
 ><LI
 ><P
->Rozmiar bazy danych:</P
+>Database size:</P
 ><P
->Jak mówi dokumentacja do MySQL'a (rozdzia³: Table size, paragraf "How Big Can
-			MySQL Tables Be?"), MySQL wersja 3.22 by³ ograniczony do 4 GB na tabelkê.
-			W wersji za¶ 3.23 zosta³o to podniesione do 8 milionów terabajtów (czyli
-			2^63 bajtów). Jednak warto zauwa¿yæ ¿e ró¿ne systemy operacyjne maj±
-			limity nak³adane przez systemy plików, najczê¶ciej jest to 2 lub 4 GB.</P
+>Following MySQL documentation ("How Big Can MySQL Tables Be?" in chapter "Table size"), MySQL 3.22 is restricted 4GB per table. Since 3.23 restriction is 8 million terabytes (2^63 bytes). It's worth to mention, however, that some systems have filesystem level, usually at 2 or 4 GB.</P
 ></LI
 ><LI
 ><P
->Ilo¶æ rekordów:</P
+>Number of records:</P
 ><P
->Prawdziwe informacje na temat limitów uzyskamy dopiero po wydaniu polecenia:
-			(w interpreterze poleceñ mysql)</P
+>True informations can be obtained, by issuing (in mysql shell):</P
 ><PRE
 CLASS="SCREEN"
 >mysql&gt; show table status;
@@ -134,9 +122,7 @@ CLASS="SCREEN"
 ...| Avg_row_length | Data_length | Max_data_length | Index_length |
 ...|             44 |       24136 |      4294967295 |        19456 |</PRE
 ><P
->Zauwa¿ymy ¿e miejsca wystarczy na oko³o 175 000 razy tyle ile mamy
-			aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spokojnie, chyba ¿e
-			planujesz posiadanie ponad 100000 u¿ytkowników :-)</P
+>See that free space is about 175 000 time more than currently used, so until you plan to have 100000 users, you're pretty safe in this matter :-)</P
 ></LI
 ></UL
 ></LI
@@ -146,21 +132,15 @@ CLASS="SCREEN"
 ><UL
 ><LI
 ><P
->Rozmiar bazy danych:</P
+>Database size:</P
 ><P
->PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych bloków jest
-			ograniczona do 32-bitowej liczby ca³kowitej ze znakiem, daj±c maksymaln±
-			wielko¶æ tabeli wynosz±c± 16 terabajtów. Z uwagi na ograniczenia systemów
-			operacyjnych dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.</P
+>PostgreSQL stores data in 8kB blocks. Number of blocks in bound to 32-bit number with sign, which gives maximum table size of 16 terabytes. Filesystem restrictions are avoided by keeping data in slices, 1GB each.</P
 ></LI
 ><LI
 ><P
->Ilo¶æ rekordów:</P
+>Number of records:</P
 ><P
->PostgreSQL nie narzuca ograniczenia na liczbê wierszy w dowolnej tabeli.
-			Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a zatem dla tabel
-			zawieraj±cych ponad dwa miliardy wierszy wynik tej funkcji bêdzie
-			nieprawid³owy. (Informacja dot. PostgreSQL 7.1)</P
+>PostgreSQL does not have row number limit for tables, however COUNT returns 32-bit number, so for tables longer that 2 billions of records this function will return wrong value (at least in version 7.1).</P
 ></LI
 ></UL
 ></LI
@@ -170,19 +150,15 @@ CLASS="SCREEN"
 ><UL
 ><LI
 ><P
->Rozmiar bazy danych:</P
+>Database size:</P
 ><P
->Od wersji 2.7.4 SQLite mo¿e obs³ugiwaæ bazy o rozmiarze do 2 terabajtów. 
-			Dodatkowym ograniczeniem jest objêto¶æ danych zapisanych w jednym rekordzie.
-			Wielko¶æ ta, ograniczona do 1 MB mo¿e zostaæ zwiêkszona do 16 MB podczas 
-			kompilacji.</P
+>Since 2.7.4 SQLite can support 2 terabytes big databases. Additionally it can store up to 1MB (or 16MB - defined at compilation time) in one record.</P
 ></LI
 ><LI
 ><P
->Ilo¶æ rekordów:</P
+>Number of records:</P
 ><P
->Maksymalna ilo¶æ rekordów dla tej bazy to 2^32, ale nikt nie testowa³ nigdy takiej 
-			ilo¶ci.</P
+>Maximum number of records is 2^32, although it has been never tested.</P
 ></LI
 ></UL
 ></LI
@@ -233,7 +209,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Poziomy dostêpu</TD
+>Access levels</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

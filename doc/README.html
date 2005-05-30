@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2336"
+HREF="#AEN2341"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -1179,7 +1179,7 @@ TARGET="_top"
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
            compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
            support). PEAR::Mail is being used for mailing (which require Net_SMTP and Net_Sockets from 
-	   PEAR package).</P
+        PEAR package).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -1195,7 +1195,7 @@ NAME="INSTALL-REQ-DB"
 ><P
 >PostgreSQL in version 7.3.x or higher is supported.</P
 ><P
->SQLite database is also usable, but we only tested version 2.8.11.</P
+>SQLite database is also usable, but we only tested version 2.8.x.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -1240,35 +1240,32 @@ CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
 > and the rest of Perl scripts requires 
-          also Perl interpreter and some modules:
+          also Perl interpreter and some modules (this is the list of basic modules, 
+          some scripts requires more modules): 
        <UL
 ><LI
 ><P
->Perl and its basic modules (POSIX, GetOpt::Long);</P
+>Perl and its basic modules (POSIX, GetOpt::Long),</P
 ></LI
 ><LI
 ><P
->Net::SMTP;</P
+>Config::IniFiles,</P
 ></LI
 ><LI
 ><P
->Config::IniFiles;</P
+>DBI,</P
 ></LI
 ><LI
 ><P
->DBI;</P
+>DBD-mysql (if you use MySQL),</P
 ></LI
 ><LI
 ><P
->DBD-mysql (if you use MySQL);</P
+>DBD-Pg (if you use Postgres),</P
 ></LI
 ><LI
 ><P
->DBD-Pg (if you use Postgres);</P
-></LI
-><LI
-><P
->DBD-SQLite (if you use SQLite);</P
+>DBD-SQLite (if you use SQLite).</P
 ></LI
 ></UL
 ></P
@@ -1290,6 +1287,19 @@ CLASS="EMPHASIS"
 ></SPAN
 > you will need
        working C compiler, because daemon will be provided in source code form only.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-BROWSER"
+>2.2.7. Web Browser</A
+></H3
+><P
+>LMS has web user interface, so you'll need web browser with javascript
+           cookies enabled. Our exparience says that Mozilla Firefox 1.x will be the best
+           choice.</P
 ></DIV
 ></DIV
 ><DIV
@@ -1450,15 +1460,15 @@ NAME="INSTALL-LOCALE"
 ></H2
 ><P
 >Default language of user interface is English, and national characters
-	are encoded in UTF-8. For proper display of national characters in other languages
-	you must define appropriate locales. E.g. for polish language it's achieved by running
-	the following command:
+     are encoded in UTF-8. For proper display of national characters in other languages
+     you must define appropriate locales. E.g. for polish language it's achieved by running
+     the following command:
 <PRE
 CLASS="SCREEN"
 ># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
 >
-	Instructions about database encoding settings in follow-up of this chapter.
-	</P
+     Instructions about database encoding settings in follow-up of this chapter.
+     </P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -1718,7 +1728,7 @@ CLASS="SCREEN"
 >12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
             --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</PRE
 >
-	    </P
+         </P
 ></DIV
 ></DIV
 ><DIV
@@ -1795,6 +1805,21 @@ CLASS="SCREEN"
 >$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
 sqlite&#62; .exit
 $ chown 99.98 /usr/local/lms/lms.db</PRE
+>
+               </P
+><P
+>Second method of database creation (if you haven't got any SQLite client application)
+               is use of LMS module named <TT
+CLASS="FILENAME"
+>sqlite_createdb.php</TT
+> from <TT
+CLASS="FILENAME"
+>sample</TT
+>
+               directory. First configure LMS (see below), then go to LMS source tree and run:
+               <PRE
+CLASS="SCREEN"
+># php sample/sqlite_createdb.php</PRE
 >
                </P
 ></DIV
@@ -2506,7 +2531,7 @@ CLASS="PROMPT"
 >helpdesk_sender_name</P
 ><P
 >Name of message sender or predefined values: 'queue' - ticket's queue name,
-	 'user' - name of logged user (sender). Default: empty.</P
+      'user' - name of logged user (sender). Default: empty.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -2581,7 +2606,7 @@ CLASS="PROMPT"
 >smtp_auth_type</P
 ><P
 >Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
-	 will use the best supported method. Default: none.</P
+      will use the best supported method. Default: none.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -2622,22 +2647,22 @@ NAME="INSTALL-CONFIG-FINANCES"
 ></H3
 ><P
 >This section consist options for financial system and for payment
-	forms. You can read more about that in Invoices chapter.
-    	    <UL
+     forms. You can read more about that in Invoices chapter.
+             <UL
 ><LI
 ><P
 >suspension_percentage (optional)</P
 ><P
 >Percentage for suspended liabilities. Default: '0'</P
 ><P
->Example:	<SAMP
+>Example:     <SAMP
 CLASS="PROMPT"
 >suspension_percentage = '50'</SAMP
 ></P
 ></LI
 ></UL
 >
-	</P
+     </P
 ></DIV
 ></DIV
 ><DIV
@@ -2811,30 +2836,30 @@ NAME="INSTALL-RIGHTS-USER"
 ></H3
 ><P
 >Advanced users can define any additional access rules
-		or redefine existing ones.  In order to do that you must make
-		PHP script based on file <TT
+          or redefine existing ones.  In order to do that you must make
+          PHP script based on file <TT
 CLASS="FILENAME"
 >lib/accesstable.php</TT
 >
-		and place it in LMS's <TT
+          and place it in LMS's <TT
 CLASS="FILENAME"
 >lib</TT
 > directory. Then 
-		set option <TT
+          set option <TT
 CLASS="FILENAME"
 >custom_accesstable</TT
 > in [phpui]
-		section to created file name.</P
+          section to created file name.</P
 ><P
 >In that way it's possible to define your own rules to allow
-		or deny access for any modules. Module is a name of PHP file
-		in <TT
+          or deny access for any modules. Module is a name of PHP file
+          in <TT
 CLASS="FILENAME"
 >modules</TT
 > directory, given without extension 
-		in access rules. For example, it's possible to define
-		rule for invoices display (e.g. for lms-sendinvoices script) 
-		in the following way:
+          in access rules. For example, it's possible to define
+          rule for invoices display (e.g. for lms-sendinvoices script) 
+          in the following way:
 <PRE
 CLASS="SCREEN"
 >&lt;?php
@@ -2842,7 +2867,7 @@ $access['table'][100]['name']      = 'invoices display';
 $access['table'][100]['allow_reg'] = '^invoice$';
 ?&gt;</PRE
 >
-		</P
+          </P
 ></DIV
 ></DIV
 ><DIV
@@ -2899,7 +2924,7 @@ CLASS="EMPHASIS"
 CLASS="FILENAME"
 >lms.ini</TT
 >:
-		<UL
+          <UL
 ><LI
 ><P
 >number_template</P
@@ -2917,7 +2942,7 @@ CLASS="PROMPT"
 >monthly_numbering</P
 ><P
 >Enable this option when you need to reset invoice numbering on start of every month.
-			Default: disabled</P
+               Default: disabled</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -2972,9 +2997,9 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-		Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
-		or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
-		filter invoices for printing.</P
+          Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
+          or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
+          filter invoices for printing.</P
 ><DIV
 CLASS="SECT2"
 ><HR><H3
@@ -2985,21 +3010,21 @@ NAME="INSTALL-INVOICES-HTML"
 ></H3
 ><P
 >Invoices are printed in html format by default
-		using provided template. In <SPAN
+          using provided template. In <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
 > section
-		you can also configure:
-		<UL
+          you can also configure:
+          <UL
 ><LI
 ><P
 >template_file</P
 ><P
 >Invoice template, which should be placed in 
-			<TT
+               <TT
 CLASS="FILENAME"
 >templates</TT
 > directory. Default: invoice.html.</P
@@ -3014,9 +3039,9 @@ CLASS="PROMPT"
 >content_type</P
 ><P
 >Invoice content-type. If you enter here 'application/octet-stream'
-			then browser will ask to save file on disk, instead of displaying it.
-			It's useful if you use your own template which generate eg. rtf or xls file.
-			Default: 'text/html'</P
+               then browser will ask to save file on disk, instead of displaying it.
+               It's useful if you use your own template which generate eg. rtf or xls file.
+               Default: 'text/html'</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3028,9 +3053,9 @@ CLASS="PROMPT"
 >attachment_name</P
 ><P
 >File name for saving finished invoice printout. WARNING: Setting attachment_name 
-			with default content_type will (in case of MSIE) print invoice + prompt for save on 
-			disk + bonus browser crash (6.0SP1 on WInXP).
-			Default: empty.</P
+               with default content_type will (in case of MSIE) print invoice + prompt for save on 
+               disk + bonus browser crash (6.0SP1 on WInXP).
+               Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3039,12 +3064,12 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-		Generated invoice in HTML format consist of originals and copies, which are separated
-		by CSS page-break markups, so every modern browser that supports CSS 
-		should print many-page invoices correctly. This behavior was tested on
-		Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.</P
+          Generated invoice in HTML format consist of originals and copies, which are separated
+          by CSS page-break markups, so every modern browser that supports CSS 
+          should print many-page invoices correctly. This behavior was tested on
+          Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.</P
 ><P
->			<DIV
+>               <DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -3064,14 +3089,14 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Almost every internet browser has printing 
-			configuration, where functions like header and footer or URL 
-			printing can be disabled.</P
+               configuration, where functions like header and footer or URL 
+               printing can be disabled.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 >
-		</P
+          </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -3113,11 +3138,11 @@ CLASS="EMPHASIS"
 >[finances]</I
 ></SPAN
 >
-		section of <TT
+          section of <TT
 CLASS="FILENAME"
 >lms.ini</TT
 > file. That is:
-		<TABLE
+          <TABLE
 BORDER="0"
 ><TBODY
 ><TR
@@ -3147,7 +3172,7 @@ BORDER="0"
 ></TBODY
 ></TABLE
 >
-		</P
+          </P
 ></DIV
 ></DIV
 ></DIV
@@ -3506,10 +3531,10 @@ NAME="MENU-CUSTOMERS-NEW"
 ><P
 >This option will let you enter data for new customer record.
             You can enter his last and first name here, or if your customer is
-also legal company, enter company name in "Name" and company representative in
-"Forename" field. You should also fill customers phone (up to 3) and address (you
-can enter additional address for correspondence) and his status (connected,
-waiting in queue, prospect).
+	    also legal company, enter company name in "Name" and company representative in
+	    "Forename" field. You should also fill customers phone (up to 3) and address (you
+	    can enter additional address for correspondence) and his status (connected,
+	    waiting in queue, prospect).
 	    <DIV
 CLASS="NOTE"
 ><TABLE
@@ -3530,8 +3555,8 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Wrong capitalization (uppercase) of customer's last name is
-one of most frequent bug reports. Uppercase is implemented via SQL functions and
-thus you should seek for solution in your DB engine configuration.</P
+	    one of most frequent bug reports. Uppercase is implemented via SQL functions and
+	    thus you should seek for solution in your DB engine configuration.</P
 ></TD
 ></TR
 ></TABLE
@@ -4035,12 +4060,12 @@ NAME="MENU-PAYMENTS-LIST"
 ></H3
 ><P
 >This is a list of your company payments. Among standard fields
-you'll find 'Account this payment' icon (which for some mysterious reasons looks
-like 'Save' option), where you're able to charge your account. Periodical charges
-might be done with 'lms-payments' Perl script, or appropriate module of almsd
-daemon. Select and click on chosen payment to view 'Payment Info' module, where
-you're able to edit its parameters or account given payment to financial
-database.</P
+	    you'll find 'Account this payment' icon,
+	    where you're able to charge your account. Periodical charges
+	    might be done with 'lms-payments' Perl script, or appropriate module of almsd
+	    daemon. Select and click on chosen payment to view 'Payment Info' module, where
+	    you're able to edit its parameters or account given payment to financial
+	    database.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -4052,7 +4077,7 @@ NAME="MENU-PAYMENTS-NEW"
 ></H3
 ><P
 >You have to assign unique name, amount and pay date for each
-new payment you setup.</P
+	    new payment you setup.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -8508,7 +8533,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2336"
+NAME="AEN2341"
 ></A
 ><P
 ><B
@@ -10357,6 +10382,41 @@ NAME="PINGER-DESC"
               Also there are no problems with hosts with ping response disabled or firewalled. After
               scanning, last-seen time is set for all online hosts in database used to illustrate hosts
               activity on nodes list and network map.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Pinger for work use interface names, so (e.g. if you are
+	      using <TT
+CLASS="FILENAME"
+>ip</TT
+> command) you'll need to label interfaces in your system (ip addr add ... label ...). 
+	      Also remember, don't use a dots or dashes in interface names (<TT
+CLASS="FILENAME"
+>ip</TT
+> allows that, but
+	      such a name is not usable for pinger.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -12038,7 +12098,9 @@ NAME="DEVEL-INI"
 >Configuration file default location is <TT
 CLASS="FILENAME"
 >/etc/lms/lms.ini</TT
->. It's intended to be central configuration for all LMS components and you can setup your <SPAN
+>. 
+          It's intended to be central configuration for all LMS components and you 
+          can setup your <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -12048,15 +12110,17 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->almsd</I
+>lmsd</I
 ></SPAN
-> daemon and Perl scripts (including <SPAN
+> daemon 
+          and Perl scripts (including <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS_MGC</I
 ></SPAN
->) parameters here. However variable format for Perl scripts is more restricted.</P
+>) parameters here. 
+          However variable format for Perl scripts is more restricted.</P
 ><DIV
 CLASS="SECT2"
 ><HR><H3
@@ -12066,7 +12130,9 @@ NAME="COMMENTS"
 >7.3.1. Comments</A
 ></H3
 ><P
->Configuration file parsers skip all lines that begin with '#' or ';' sign. You can also append comments to the end of the lines containing valid variables and sections , followed by that signs. </P
+>Configuration file parsers skip all lines that begin with '#' 
+               or ';' sign. You can also append comments to the end of the lines 
+               containing valid variables and sections , followed by that signs. </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -12096,8 +12162,8 @@ key =  value
 variable1 = "some text"
 para_meter = 'i am "para_meter" variable in apostrophes'
 
-[section_1]				# you can comment here
-key = "text with specials: \t and ;"	; you can comment here either
+[section_1]                    # you can comment here
+key = "text with specials: \t and ;"     ; you can comment here either
 ; and this is comment all line long
 key = "A.L.E.C's LMS Daemon is the best"
 # option = disabled</PRE
@@ -12130,7 +12196,7 @@ NAME="DEVEL-GENFAKE"
 CLASS="FILENAME"
 >http://ourserver.org/lms/?m=genfake</TT
 > and write how many user records should be created in the text box. After you hit enter, the whole content of database will be erased and populated with some random data. You might get some database errors while generating data, as this algorithm is not truly random.
-		<DIV
+          <DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -12155,7 +12221,7 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 >
-		<DIV
+          <DIV
 CLASS="WARNING"
 ><TABLE
 CLASS="WARNING"
@@ -12180,7 +12246,7 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 >
-		</P
+          </P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -12194,7 +12260,7 @@ NAME="DEVEL-RIGHTS"
 >This description intended audience are LMS developers. :)</P
 ><P
 >Originally access levels were supposed to be defined by various letters. It was assumption made at LMS-0.4, but it never actually took place. Due to it's presence in 1.0, I've racked my brain bout using 64-character string. So, in 64-character long field, there is just 256-bit hexadecimal number. Each character might describe maximum of 4 bits (4*64 = 256, which is a number of valid combinations). Turning some level on effects in turning some bit on. Then, if "full access" has index 0 in lib/accesstable.php, 0 bit will be set to 1, so the number will be 1. Levels may have numbers (indices) from 0 to 255. This is not final boundary, because using more letters and chars you can expand to 6 bytes per char easily, which gives you 384 combinations.
-		</P
+          </P
 ></DIV
 ><DIV
 CLASS="SECT1"

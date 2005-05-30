@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Instalacja i konfiguracja</TITLE
+>Installation and configuration</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -13,7 +13,7 @@ REL="PREVIOUS"
 TITLE="Informacje dodatkowe"
 HREF="moreinfo.html"><LINK
 REL="NEXT"
-TITLE="Wymagania"
+TITLE="Requirements"
 HREF="install-requirements.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -73,7 +73,7 @@ CLASS="CHAPTER"
 ><A
 NAME="INSTALL"
 ></A
->Rozdzia&#322; 2. Instalacja i konfiguracja</H1
+>Rozdzia&#322; 2. Installation and configuration</H1
 ><DIV
 CLASS="TOC"
 ><DL
@@ -84,34 +84,34 @@ CLASS="TOC"
 ><DT
 >2.1. <A
 HREF="install.html#INSTALL-INTRO"
->Wstêp</A
+>Intro</A
 ></DT
 ><DT
 >2.2. <A
 HREF="install-requirements.html"
->Wymagania</A
+>Requirements</A
 ></DT
 ><DD
 ><DL
 ><DT
 >2.2.1. <A
 HREF="install-requirements.html#INSTALL-REQ-WWW"
->Serwer WWW</A
+>Web Server</A
 ></DT
 ><DT
 >2.2.2. <A
 HREF="install-requirements.html#INSTALL-REQ-PHP"
->Interpreter PHP</A
+>PHP Interpreter</A
 ></DT
 ><DT
 >2.2.3. <A
 HREF="install-requirements.html#INSTALL-REQ-DB"
->Serwer baz danych</A
+>Database Server</A
 ></DT
 ><DT
 >2.2.4. <A
 HREF="install-requirements.html#INSTALL-REQ-SMARTY"
->Biblioteka Smarty</A
+>Smarty Library</A
 ></DT
 ><DT
 >2.2.5. <A
@@ -121,24 +121,29 @@ HREF="install-requirements.html#INSTALL-REQ-PERL"
 ><DT
 >2.2.6. <A
 HREF="install-requirements.html#INSTALL-REQ-C"
->Kompilator jêzyka C</A
+>C Compiler</A
+></DT
+><DT
+>2.2.7. <A
+HREF="install-requirements.html#INSTALL-REQ-BROWSER"
+>Web Browser</A
 ></DT
 ></DL
 ></DD
 ><DT
 >2.3. <A
 HREF="install-install.html"
->Instalacja LMS</A
+>LMS Installation</A
 ></DT
 ><DT
 >2.4. <A
 HREF="install-locale.html"
->Lokalizacja</A
+>Localization</A
 ></DT
 ><DT
 >2.5. <A
 HREF="install-db.html"
->Instalacja serwera baz danych</A
+>Database Server Installation</A
 ></DT
 ><DD
 ><DL
@@ -162,36 +167,36 @@ HREF="install-db.html#INSTALL-SQLITE"
 ><DT
 >2.6. <A
 HREF="install-config.html"
->Konfiguracja podstawowa</A
+>Basic Configuration</A
 ></DT
 ><DD
 ><DL
 ><DT
 >2.6.1. <A
 HREF="install-config.html#INSTALL-CONFIG-DB"
->Sekcja [database] - ustawienia bazy danych</A
+>Section [database] - Database Settings</A
 ></DT
 ><DT
 >2.6.2. <A
 HREF="install-config.html#INSTALL-CONFIG-DIR"
->Sekcja [directories] - ustawienia katalogów</A
+>Section [directories] - Directories Settings</A
 ></DT
 ><DT
 >2.6.3. <A
 HREF="install-config.html#INSTALL-CONFIG-UI"
->Sekcja [phpui] - ustawienia interfejsu</A
+>Section [phpui] - Interface Setting</A
 ></DT
 ><DT
 >2.6.4. <A
 HREF="install-config.html#INSTALL-CONFIG-FINANCES"
->Sekcja [finances] - konfiguracja finansów</A
+>Section [finances] - Finances Settings</A
 ></DT
 ></DL
 ></DD
 ><DT
 >2.7. <A
 HREF="install-rights.html"
->Prawa dostêpu</A
+>Access rights</A
 ></DT
 ><DD
 ><DL
@@ -203,12 +208,12 @@ HREF="install-rights.html#INSTALL-RIGHTS-IDEA"
 ><DT
 >2.7.2. <A
 HREF="install-rights.html#INSTALL-RIGHTS-HOW"
->Jak to dzia³a?</A
+>How does it work?</A
 ></DT
 ><DT
 >2.7.3. <A
 HREF="install-rights.html#INSTALL-RIGHTS-USER"
->Regu³y dostêpu definiowane przez u¿ytkownika</A
+>User-defined access rules</A
 ></DT
 ></DL
 ></DD
@@ -220,7 +225,7 @@ HREF="install-upgrade.html"
 ><DT
 >2.9. <A
 HREF="install-invoices.html"
->Faktury</A
+>Invoices</A
 ></DT
 ><DD
 ><DL
@@ -244,56 +249,54 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-INTRO"
->2.1. Wstêp</A
+>2.1. Intro</A
 ></H1
 ><P
->LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <SPAN
+>LMS consist a few modules. <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> 
-	(interfejs u¿ytkownika). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych 
-	(w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
-> wykonujemy wszystkie 
-	czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS.</P
+> is user interface, which is
+     responsible for all interactions with user, entirely written in PHP and it uses SQL database to
+     store all data, thus PHP script interpreter and SQL engine of your choice (MySQL, Postgresql,
+     SQLite) are required.</P
 ><P
->LMS to tak¿e zestaw skryptów w jêzyku Perl, i to w³a¶nie te skrypty wymagaj± 
-	aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
-	musisz mieæ Perl'a. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
-	b±d¼ wysy³anie upomnieñ. Najwiêkszy z nich - <SPAN
+>LMS also contains a set of Perl scripts, responsible for various operations, ie.
+     periodically applying subscription fees or sending reminders to users who are in debt. It
+     also contains <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
-> jest skryptem, ale na tyle 
-	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
-	us³ugê na twoim serwerze.</P
+>, which may be configured to generate virtually
+     any configuration file or script and manage your server. Note that some of the scripts might
+     need additional Perl modules to function.</P
 ><P
->Jest jeszcze <SPAN
+>At the end there is also <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS Daemon</I
 ></SPAN
->, napisany w jêzyku C. Jest on przeznaczony 
-	(a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. 
-	Mo¿na go stosowaæ jako zamiennik lub uzupe³nienie skryptów perlowych.
-	Odpowiada on za to, aby to co zosta³o zmienione w <SPAN
+>, written in C, which is
+     being used (its plugins in fact) as a drop-in replacement for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+> - to
+     configure and manage (ie. restart) your services. It's main advantage is that it responds for
+     all <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> zosta³o zmienione tak¿e 
-	w rzeczywisto¶ci.</P
+> changes in realtime.</P
 ></DIV
 ></DIV
 ><DIV
@@ -350,7 +353,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Wymagania</TD
+>Requirements</TD
 ></TR
 ></TABLE
 ></DIV

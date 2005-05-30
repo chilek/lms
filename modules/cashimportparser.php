@@ -39,6 +39,13 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		$comment = trim($matches[$pcomment]);
 		$time = trim($matches[$pdate]);
 		$value = str_replace(',','.',trim($matches[$pvalue]));
+
+		if($encoding != 'UTF-8')
+		{
+			$name = iconv($encoding, 'UTF-8', $name);
+			$lastname = iconv($encoding, 'UTF-8', $lastname);
+			$comment = iconv($encoding, 'UTF-8', $comment);
+		}
 		
 		if(!$pid)
 		{
@@ -66,7 +73,7 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 */		
 		if(!$id && $name && $lastname)
 		{
-			$uids = $DB->GetCol('SELECT id FROM users WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)', array($lastname, $name));
+			$uids = $DB->GetCol('SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)', array($lastname, $name));
 			if(sizeof($uids)==1)
 				$id = $uids[0];
 		}
@@ -82,9 +89,10 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		$customer = trim($lastname.' '.$name);
 		$hash = md5($time.$value.$customer.$comment);
 
-		if(!$LMS->DB->GetOne('SELECT id FROM cashimport WHERE hash=?', array($hash)))
-			$LMS->DB->Execute('INSERT INTO cashimport(date, value, customer, customerid, description, hash) VALUES(?,?,?,?,?,?)',
-				    array($time, $value, $customer, $id, $comment, $hash));
+		if(is_numeric($value))
+			if(!$DB->GetOne('SELECT id FROM cashimport WHERE hash=?', array($hash)))
+				$DB->Execute('INSERT INTO cashimport(date, value, customer, customerid, description, hash) VALUES(?,?,?,?,?,?)',
+					array($time, $value, $customer, $id, $comment, $hash));
 		
 	}
 	

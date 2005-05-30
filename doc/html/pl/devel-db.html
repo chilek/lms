@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Struktura bazy danych</TITLE
+>Database structure</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Dla dociekliwych"
+TITLE="For curious"
 HREF="devel.html"><LINK
 REL="PREVIOUS"
-TITLE="Dla dociekliwych"
+TITLE="For curious"
 HREF="devel.html"><LINK
 REL="NEXT"
-TITLE="Format pliku konfiguracyjnego"
+TITLE="Configuration file format"
 HREF="devel-ini.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 7. Dla dociekliwych</TD
+>Rozdzia&#322; 7. For curious</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,53 +76,48 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-DB"
->7.2. Struktura bazy danych</A
+>7.2. Database structure</A
 ></H1
 ><P
->Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej szczegó³owe
-		informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domy¶lne
-		zawarte s± w plikach <A
+>Simple database layout is provided below. For more details (data types, fields restrictions and default values) please refer to <A
 HREF="../lms.mysql"
 TARGET="_top"
 ><TT
 CLASS="FILENAME"
 >lms.mysql</TT
 ></A
->,
-		<A
+>, <A
 HREF="../lms.pgsql"
 TARGET="_top"
 ><TT
 CLASS="FILENAME"
 >lms.pgsql</TT
 ></A
-> i 
-		<A
+> and <A
 HREF="../lms.sqlite"
 TARGET="_top"
 ><TT
 CLASS="FILENAME"
 >lms.sqlite</TT
 ></A
-> w katalogu
-		<TT
+> in <TT
 CLASS="FILENAME"
->/doc</TT
->.</P
+>doc/</TT
+> directory.</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="ADMINS"
->7.2.1. U¿ytkownicy ('admins')</A
+>7.2.1. LMS users ('admins')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
@@ -130,43 +125,43 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->name - nazwa (nazwisko i imiê)</TD
+>name - first and last name</TD
 ></TR
 ><TR
 ><TD
->email - adres admina</TD
+>email - user's email address</TD
 ></TR
 ><TR
 ><TD
->rights - prawa dostêpu</TD
+>rights - binary access rights</TD
 ></TR
 ><TR
 ><TD
->hosts - lista hostów z prawem do logowania</TD
+>hosts - list of hosts allowed to login</TD
 ></TR
 ><TR
 ><TD
->passwd - has³o logowania</TD
+>passwd - password to login</TD
 ></TR
 ><TR
 ><TD
->lastlogindate - data ostatniego logowania</TD
+>lastlogindate - date of last login</TD
 ></TR
 ><TR
 ><TD
->lastloginip - adres IP, z którego nast±pi³o ostatnie logowanie</TD
+>lastloginip - IP of last login</TD
 ></TR
 ><TR
 ><TD
->failedlogindate - data ostatniej nieudanej próby logowania</TD
+>failedlogindate - date of last failed login attempt</TD
 ></TR
 ><TR
 ><TD
->failedloginip - adres IP, z którego próbowano siê zalogowaæ</TD
+>failedloginip - IP of last failed login attempt</TD
 ></TR
 ><TR
 ><TD
->deleted - czy usuniêty (0/1)</TD
+>deleted - if is deleted boolean (0/1)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -177,102 +172,102 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USERS"
->7.2.2. Klienci ('users')</A
+>7.2.2. Customers ('users')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->lastname - nazwa/nazwisko</TD
+>lastname - last/company name</TD
 ></TR
 ><TR
 ><TD
->name - imiê</TD
+>name - first name</TD
 ></TR
 ><TR
 ><TD
->status - status (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</TD
+>status - customer status (3-connected, 2-awaiting, 1-prospect)</TD
 ></TR
 ><TR
 ><TD
->email - adres poczty internetowej</TD
+>email - email address</TD
 ></TR
 ><TR
 ><TD
->phone1 - telefon</TD
+>phone1 - phone</TD
 ></TR
 ><TR
 ><TD
->phone2 - telefon</TD
+>phone2 - phone</TD
 ></TR
 ><TR
 ><TD
->phone3 - telefon</TD
+>phone3 - phone</TD
 ></TR
 ><TR
 ><TD
->gguin - identyfikator gadu-gadu</TD
+>gguin - internet (gadu-gadu) messenger serial number</TD
 ></TR
 ><TR
 ><TD
->pin - numer pin (uwierzytelnianie)</TD
+>pin - pin number (for authentication)</TD
 ></TR
 ><TR
 ><TD
->address - adres (ulica, nr domu, nr lokalu)</TD
+>address - street address (street, apartment, flat, etc)</TD
 ></TR
 ><TR
 ><TD
->zip - kod pocztowy</TD
+>zip - zip code</TD
 ></TR
 ><TR
 ><TD
->city - nazwa miasta</TD
+>city - location (city)</TD
 ></TR
 ><TR
 ><TD
->nip - numer identyfikacji podatkowej NIP</TD
+>nip - tax exempt number</TD
 ></TR
 ><TR
 ><TD
->pesel - numer PESEL</TD
+>pesel - social security number</TD
 ></TR
 ><TR
 ><TD
->info - dodatkowe informacje</TD
+>info - additional informations</TD
 ></TR
 ><TR
 ><TD
->serviceaddr - adres do dorêczeñ (np. na faktury)</TD
+>serviceaddr - correspondence address</TD
 ></TR
 ><TR
 ><TD
->creationdate - czas utworzenia wpisu</TD
+>creationdate - record creation date</TD
 ></TR
 ><TR
 ><TD
->moddate - czas modyfikacji</TD
+>moddate - record modification date</TD
 ></TR
 ><TR
 ><TD
->creatorid - identyfikator u¿ytkownika tworz±cego wpis</TD
+>creatorid - serial of LMS user who created this record</TD
 ></TR
 ><TR
 ><TD
->modid - identyfikator u¿ytkownika dokonuj±cego zmian danych</TD
+>modid - serial of LMS user last modification this record</TD
 ></TR
 ><TR
 ><TD
->deleted - usuniêty z bazy (0/1)</TD
+>deleted - if is deleted from database boolean (0/1)</TD
 ></TR
 ><TR
 ><TD
->message - komunikat do wy¶wietlenia przy w³±czonych ostrze¿eniach</TD
+>message - message to be displayed if warnings enabled</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -283,22 +278,22 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USERGROUPS"
->7.2.3. Grupy klientów ('usergroups')</A
+>7.2.3. Customer groups ('usergroups')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa</TD
+>name - group name</TD
 ></TR
 ><TR
 ><TD
->description - opis</TD
+>description - group description</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -309,22 +304,22 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USERASSIGNMENTS"
->7.2.4. Grupy klientów - c.d. ('userassignments')</A
+>7.2.4. Customer groups - continued... ('userassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->usergroupid - identyfikator grupy</TD
+>usergroupid - group serial number</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta</TD
+>userid - customer serial number</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -335,58 +330,58 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETWORKS"
->7.2.5. Sieci ('networks')</A
+>7.2.5. Networks ('networks')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa sieci</TD
+>name - network name</TD
 ></TR
 ><TR
 ><TD
->address - adres IP</TD
+>address - IP address</TD
 ></TR
 ><TR
 ><TD
->mask - maska</TD
+>mask - network mask</TD
 ></TR
 ><TR
 ><TD
->interface - interfejs (np. eth1)</TD
+>interface - network interface (eg. eth1)</TD
 ></TR
 ><TR
 ><TD
->gateway - adres IP bramy</TD
+>gateway - gateway IP address</TD
 ></TR
 ><TR
 ><TD
->dns - adres IP serwera nazw</TD
+>dns - IP address of dns server</TD
 ></TR
 ><TR
 ><TD
->dns2 - adres IP zapasowego serwera nazw</TD
+>dns2 - IP address of secondary dns server</TD
 ></TR
 ><TR
 ><TD
->domain - domena</TD
+>domain - domain of the network</TD
 ></TR
 ><TR
 ><TD
->wins - adres serwera WINS</TD
+>wins - WINS server address</TD
 ></TR
 ><TR
 ><TD
->dhcpstart - pocz±tek zakresu DHCP</TD
+>dhcpstart - first address of dynamic DHCP range</TD
 ></TR
 ><TR
 ><TD
->dhcpend - koniec zakresu DHCP</TD
+>dhcpend - last address of dynamic DHCP range</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -397,74 +392,74 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NODES"
->7.2.6. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
+>7.2.6. Computers and network devices ('nodes')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa</TD
+>name - device name</TD
 ></TR
 ><TR
 ><TD
->mac - adres MAC</TD
+>mac - MAC address</TD
 ></TR
 ><TR
 ><TD
->ipaddr - adres IP</TD
+>ipaddr - IP address</TD
 ></TR
 ><TR
 ><TD
->passwd - has³o np. pppoe</TD
+>passwd - computer password for radius/pppoe login</TD
 ></TR
 ><TR
 ><TD
->ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</TD
+>ownerid - serial number of the owner ('0' if network device)</TD
 ></TR
 ><TR
 ><TD
->creationdate - znacznik czasu utworzenia wpisu</TD
+>creationdate - creation timestamp</TD
 ></TR
 ><TR
 ><TD
->moddate - znacznik czasu ostatniej modyfikacji</TD
+>moddate - last modification timestamp</TD
 ></TR
 ><TR
 ><TD
->creatorid - identyfikator u¿ytkownika tworz±cego wpis</TD
+>creatorid - creator's serial number</TD
 ></TR
 ><TR
 ><TD
->modid - identyfikator u¿ytkownika ostatnio modyfikuj±cego wpis</TD
+>modid - modifier's serial number</TD
 ></TR
 ><TR
 ><TD
->netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</TD
+>netdev - serial number of connected network device</TD
 ></TR
 ><TR
 ><TD
->linktype - typ po³±czenia sieciowego (0-kabel, 1-radio)</TD
+>linktype - type of connection (0-cable, 1-wireless)</TD
 ></TR
 ><TR
 ><TD
->access - pod³±czony/od³±czony (1/0)</TD
+>access - connected/disconnected (cutoff) (1/0)</TD
 ></TR
 ><TR
 ><TD
->warning - ostrzegaj/nie ostrzegaj (1/0)</TD
+>warning - should be warned with administration message? (1/0)</TD
 ></TR
 ><TR
 ><TD
->lastonline - znacznik czasu ostatniej obecno¶ci w sieci</TD
+>lastonline - last network activity timestamp</TD
 ></TR
 ><TR
 ><TD
->info - informacje dodatkowe</TD
+>info - additional information</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -475,42 +470,42 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETDEVICES"
->7.2.7. Sprzêt sieciowy ('netdevices')</A
+>7.2.7. Network devices - continued... ('netdevices')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa</TD
+>name - name</TD
 ></TR
 ><TR
 ><TD
->location - lokalizacja</TD
+>location - physical location</TD
 ></TR
 ><TR
 ><TD
->description - opis</TD
+>description - device summary</TD
 ></TR
 ><TR
 ><TD
->producer - producent</TD
+>producer - manufacturer's name</TD
 ></TR
 ><TR
 ><TD
->model - model</TD
+>model - model number</TD
 ></TR
 ><TR
 ><TD
->serialnumber - numer seryjny</TD
+>serialnumber - products serial number (not DB identifier)</TD
 ></TR
 ><TR
 ><TD
->ports - ilo¶æ portów</TD
+>ports - number of connections available</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -521,26 +516,26 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETLINKS"
->7.2.8. Po³±czenia sieciowe ('netlinks')</A
+>7.2.8. Network connections ('netlinks')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->src - jeden koniec</TD
+>src - connection's beginning</TD
 ></TR
 ><TR
 ><TD
->dst- drugi koniec</TD
+>dst- connection's end</TD
 ></TR
 ><TR
 ><TD
->type - typ po³±czenia (0-kabel, 1-radio)</TD
+>type - type of connection (0-cable, 1-wireless)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -551,50 +546,50 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASH"
->7.2.9. Operacje finansowe ('cash')</A
+>7.2.9. Financial operations ('cash')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->time - znacznik czasu zaksiêgowania operacji</TD
+>time - timestamp of operation</TD
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika dokonuj±cego operacji</TD
+>adminid - LMS user id</TD
 ></TR
 ><TR
 ><TD
->type - typ operacji (przychód, rozchód, wp³ata, obci±¿enie)</TD
+>type - type of operation (income, expenditure, payment, debt)</TD
 ></TR
 ><TR
 ><TD
->value - warto¶æ w z³otych</TD
+>value - amount in dollars</TD
 ></TR
 ><TR
 ><TD
->taxvalue - procent podatku</TD
+>taxvalue - tax rate in percent</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta ('0' - je¶li nie dotyczy)</TD
+>userid - customer's serial number ('0' - does not apply)</TD
 ></TR
 ><TR
 ><TD
->invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</TD
+>invoiceid - serial number for invoice related to this operation</TD
 ></TR
 ><TR
 ><TD
->itemid - nr pozycji na fakturze</TD
+>itemid - invoice item identifier</TD
 ></TR
 ><TR
 ><TD
->comment - opis operacji</TD
+>comment - description of operation</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -605,42 +600,46 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHIMPORT"
->7.2.10. Import operacji finansowych ('cashimport')</A
+>7.2.10. Import of financial operations ('cashimport')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->date - znacznik czasu operacji</TD
+>date - timestamp of operation</TD
 ></TR
 ><TR
 ><TD
->value - kwota operacji</TD
+>customer - customer data</TD
 ></TR
 ><TR
 ><TD
->customer - dane wp³acaj±cego</TD
+>value - amount</TD
 ></TR
 ><TR
 ><TD
->description - opis operacji</TD
+>taxvalue - tax rate in percent</TD
 ></TR
 ><TR
 ><TD
->customerid - identyfikator klienta</TD
+>customerid - customer's serial number</TD
 ></TR
 ><TR
 ><TD
->hash - unikalny skrót danych operacji</TD
+>description - operation description</TD
 ></TR
 ><TR
 ><TD
->closed - status operacji</TD
+>hash - unique operation identifier</TD
+></TR
+><TR
+><TD
+>closed - yes (1), if operation was moved to cash table</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -651,58 +650,58 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TARIFFS"
->7.2.11. Taryfy ('tariffs')</A
+>7.2.11. Subscription fees ('tariffs')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa</TD
+>name - subscription name</TD
 ></TR
 ><TR
 ><TD
->value - kwota</TD
+>value - amount</TD
 ></TR
 ><TR
 ><TD
->taxvalue - wysoko¶æ podatku w procentach</TD
+>taxvalue - tax rate in percent</TD
 ></TR
 ><TR
 ><TD
->pkwiu - numer PKWiU</TD
+>pkwiu - product/service classification number</TD
 ></TR
 ><TR
 ><TD
->uprate - gwarantowany upload</TD
+>uprate - upload warranty</TD
 ></TR
 ><TR
 ><TD
->upceil - maksymalny upload</TD
+>upceil - upload boundary</TD
 ></TR
 ><TR
 ><TD
->downrate - gwarantowany download</TD
+>downrate - download warranty</TD
 ></TR
 ><TR
 ><TD
->downceil - maksymalny download</TD
+>downceil - download boundary</TD
 ></TR
 ><TR
 ><TD
->climit - limit po³±czeñ</TD
+>climit - limit of concurrent connections</TD
 ></TR
 ><TR
 ><TD
->plimit - limit pakietów</TD
+>plimit - limit of packets per second</TD
 ></TR
 ><TR
 ><TD
->description - opis</TD
+>description - description for subscription</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -713,38 +712,38 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PAYMENTS"
->7.2.12. Op³aty sta³e ('payments')</A
+>7.2.12. Solid payments ('payments')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa</TD
+>name - name</TD
 ></TR
 ><TR
 ><TD
->value - kwota</TD
+>value - amount</TD
 ></TR
 ><TR
 ><TD
->creditor - nazwa wierzyciela</TD
+>creditor - creditor name</TD
 ></TR
 ><TR
 ><TD
->period - typ okresu naliczania: co tydzieñ/co miesi±c/co kwarta³/co rok (0/1/2/3)</TD
+>period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</TD
 ></TR
 ><TR
 ><TD
->at - dzieñ naliczenia</TD
+>at - pay day</TD
 ></TR
 ><TR
 ><TD
->description - opis</TD
+>description - description for payment</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -755,50 +754,50 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ASSIGNMENTS"
->7.2.13. Powi±zania ('assignments')</A
+>7.2.13. Financial assignments ('assignments')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->tariffid - identyfikator taryfy</TD
+>tariffid - subscription serial number</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta</TD
+>userid - customer serial number</TD
 ></TR
 ><TR
 ><TD
->period - typ okresu </TD
+>period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</TD
 ></TR
 ><TR
 ><TD
->at - dzieñ naliczania</TD
+>at - pay day</TD
 ></TR
 ><TR
 ><TD
->datefrom - data obowi±zywania zobowi±zania</TD
+>datefrom - start date for assignment</TD
 ></TR
 ><TR
 ><TD
->dateto - data obowi±zywania zobowi±zania</TD
+>dateto - end date for assignment</TD
 ></TR
 ><TR
 ><TD
->invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</TD
+>invoice - invoice writeout? (1 - yes, 0 - no)</TD
 ></TR
 ><TR
 ><TD
->discount - warto¶æ procentowa rabatu</TD
+>discount - discount percentage</TD
 ></TR
 ><TR
 ><TD
->suspended - zawieszenie p³atno¶ci (1 - tak, 0 - nie)</TD
+>suspended - is this payment suspended? (1 - yes, 0 - no)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -809,66 +808,66 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICES"
->7.2.14. Faktury ('invoices')</A
+>7.2.14. Invoices ('invoices')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->number - numer w roku</TD
+>number - number in year</TD
 ></TR
 ><TR
 ><TD
->cdate - data wystawienia</TD
+>cdate - date of write out</TD
 ></TR
 ><TR
 ><TD
->paytime - termin p³atno¶ci (ilo¶æ dni)</TD
+>paytime - deadline in days</TD
 ></TR
 ><TR
 ><TD
->paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)</TD
+>paytype - payment method (cash/transfer/etc.)</TD
 ></TR
 ><TR
 ><TD
->customerid - identyfikator klienta-nabywcy</TD
+>customerid - customer (buyer) serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa (nazwisko i imiê) nabywcy</TD
+>name - name of buyer</TD
 ></TR
 ><TR
 ><TD
->address - adres nabywcy</TD
+>address - address of buyer</TD
 ></TR
 ><TR
 ><TD
->nip - nip nabywcy</TD
+>nip - SSN of buyer</TD
 ></TR
 ><TR
 ><TD
->pesel - PESEL nabywcy</TD
+>pesel - ID (passport number) of buyer</TD
 ></TR
 ><TR
 ><TD
->zip - kod pocztowy nabywcy</TD
+>zip - zip code of buyer</TD
 ></TR
 ><TR
 ><TD
->phone - telefon nabywcy</TD
+>phone - phone of buyer</TD
 ></TR
 ><TR
 ><TD
->city - miasto nabywcy</TD
+>city - location of buyer</TD
 ></TR
 ><TR
 ><TD
->finished - pole okre¶laj±ce zamkniêcie faktury (0/1)</TD
+>finished - is this invoice complete? (0/1)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -879,46 +878,46 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.15. Faktury - cd. ('invoicecontents')</A
+>7.2.15. Invoices - continued... ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->invoiceid - identyfikator faktury</TD
+>invoiceid - invoice serial number</TD
 ></TR
 ><TR
 ><TD
->itemid - nr pozycji</TD
+>itemid - invoice item identifier</TD
 ></TR
 ><TR
 ><TD
->value - kwota pozycji</TD
+>value - amount</TD
 ></TR
 ><TR
 ><TD
->taxvalue - wysoko¶æ podatku w procentach</TD
+>taxvalue - tax rate in percent</TD
 ></TR
 ><TR
 ><TD
->pkwiu - numer PKWiU</TD
+>pkwiu - product/service classification number</TD
 ></TR
 ><TR
 ><TD
->content - u¿yta jednostka (najczê¶ciej 'szt.')</TD
+>content - used unit (usually 'pc.')</TD
 ></TR
 ><TR
 ><TD
->count - ilo¶æ</TD
+>count - unit count</TD
 ></TR
 ><TR
 ><TD
->description - opis</TD
+>description - description for invoice</TD
 ></TR
 ><TR
 ><TD
->tariffid - identyfikator taryfy</TD
+>tariffid - subscription serial number</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -929,74 +928,74 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.16. Konta ('passwd')</A
+>7.2.16. Accounts ('passwd')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator rekordu</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->ownerid - identyfikator klienta (0 - konto "systemowe")</TD
+>ownerid - customer serial number (0 - "system" account)</TD
 ></TR
 ><TR
 ><TD
->login - nazwa konta</TD
+>login - login name</TD
 ></TR
 ><TR
 ><TD
->password - has³o zaszyfrowane funkcj± crypt()</TD
+>password - password encrypted with crypt()</TD
 ></TR
 ><TR
 ><TD
->realname - dodatkowa nazwa konta/u¿ytkownika</TD
+>realname - additional name</TD
 ></TR
 ><TR
 ><TD
->lastlogin - data ostatniego logowania</TD
+>lastlogin - last login date</TD
 ></TR
 ><TR
 ><TD
->uid - identyfikator systemowy konta</TD
+>uid - account system UID (usually ownerid+200)</TD
 ></TR
 ><TR
 ><TD
->home - katalog domowy</TD
+>home - account home directory</TD
 ></TR
 ><TR
 ><TD
->type - typ konta (suma: 1-shell, 2-poczta, 4-www, 8-ftp)</TD
+>type - account type (binary sum: 1-shell, 2-email, 4-www, 8-ftp)</TD
 ></TR
 ><TR
 ><TD
->expdate - data wa¿no¶ci konta</TD
+>expdate - account expire date</TD
 ></TR
 ><TR
 ><TD
->domainid - identyfikator domeny z tabeli 'domains'</TD
+>domainid - domain serial number</TD
 ></TR
 ><TR
 ><TD
->createtime - data utworzenia konta</TD
+>createtime - account creation date</TD
 ></TR
 ><TR
 ><TD
->quota_sh - limit</TD
+>quota_sh - shell space limits</TD
 ></TR
 ><TR
 ><TD
->quota_mail - limit</TD
+>quota_mail - email space limits</TD
 ></TR
 ><TR
 ><TD
->quota_www - limit</TD
+>quota_www - www space limits</TD
 ></TR
 ><TR
 ><TD
->quota_ftp - limit</TD
+>quota_ftp - ftp space limits</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1007,22 +1006,22 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.17. Domeny ('domains')</A
+>7.2.17. Domains ('domains')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator rekordu</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa domeny</TD
+>name - domain name</TD
 ></TR
 ><TR
 ><TD
->description - opis</TD
+>description - comments</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1033,22 +1032,22 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.18. Aliasy ('aliases')</A
+>7.2.18. Aliases ('aliases')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator rekordu</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->login - nazwa konta (bez domeny)</TD
+>login - account name (without domain)</TD
 ></TR
 ><TR
 ><TD
->accountid - identyfikator konta</TD
+>accountid - account serial number</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1059,18 +1058,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.19. Historia ('timestamps')</A
+>7.2.19. History ('timestamps')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->time - czas ostatniej modyfikacji</TD
+>time - last modified timestamp</TD
 ></TR
 ><TR
 ><TD
->tablename - nazwa tabeli</TD
+>tablename - name of modified table</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1081,26 +1080,26 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.20. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.20. Bandwidth consumption statistics ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->nodeid - numer komputera</TD
+>nodeid - node serial number</TD
 ></TR
 ><TR
 ><TD
->dt - znacznik czasu</TD
+>dt - timestamp</TD
 ></TR
 ><TR
 ><TD
->upload - ilo¶æ danych wys³anych, w bajtach</TD
+>upload - number of bytes sent</TD
 ></TR
 ><TR
 ><TD
->download - ilo¶æ danych odebranych, w bajtach</TD
+>download - number of bytes received</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1111,26 +1110,26 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.21. Helpdesk - kolejki ('rtqueues')</A
+>7.2.21. Helpdesk - Request Tracking ('rtqueues')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->name - nazwa</TD
+>name - queue name</TD
 ></TR
 ><TR
 ><TD
->email - adres konta pocztowego</TD
+>email - email account for the queue</TD
 ></TR
 ><TR
 ><TD
->description - opis dodatkowy</TD
+>description - main description for the queue</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1141,42 +1140,42 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.22. Helpdesk - zg³oszenia ('rttickets')</A
+>7.2.22. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->queueid - identyfikator kolejki</TD
+>queueid - queue serial number</TD
 ></TR
 ><TR
 ><TD
->requestor - dane zg³aszaj±cego-klienta (w tym e-mail)</TD
+>requestor - reporter name and email</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta</TD
+>userid - customer serial number (if reported by customer)</TD
 ></TR
 ><TR
 ><TD
->subject - temat zg³oszenia</TD
+>subject - ticket name)</TD
 ></TR
 ><TR
 ><TD
->state - status (0-nowy, 1-otwarty, 2-rozwi±zany, 3-martwy)</TD
+>state - status (0-new, 1-open, 2-resolved, 3-dead)</TD
 ></TR
 ><TR
 ><TD
->owner - identyfikator w³a¶ciciela-u¿ytkownika</TD
+>owner - LMS user serial number (ticket owner)</TD
 ></TR
 ><TR
 ><TD
->createtime - data zg³oszenia</TD
+>createtime - timestamp of report</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1187,58 +1186,58 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.23. Helpdesk - wiadomo¶ci ('rtmessages')</A
+>7.2.23. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->ticketid - identyfikator zg³oszenia</TD
+>ticketid - ticket serial number</TD
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika-nadawcy</TD
+>adminid - LMS user serial number (if ticket sender)</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta-nadawcy</TD
+>userid - customer serial number (if ticket sender)</TD
 ></TR
 ><TR
 ><TD
->mailfrom - e-mail nadawcy</TD
+>mailfrom - sender email</TD
 ></TR
 ><TR
 ><TD
->subject - temat wiadomo¶ci</TD
+>subject - message subject</TD
 ></TR
 ><TR
 ><TD
->messageid - pocztowy identyfikator wiadomo¶ci</TD
+>messageid - Message-ID message header</TD
 ></TR
 ><TR
 ><TD
->inreplyto - identyfikator poprzedniej wiadomo¶ci</TD
+>inreplyto - thread serial number (if threaded)</TD
 ></TR
 ><TR
 ><TD
->replyto - nag³ówek wiadomo¶ci</TD
+>replyto - Reply-To message header</TD
 ></TR
 ><TR
 ><TD
->headers - wszystkie nag³ówki pocztowe wiadomo¶ci</TD
+>headers - all message headers</TD
 ></TR
 ><TR
 ><TD
->body - tre¶æ wiadomo¶ci</TD
+>body - content of message body</TD
 ></TR
 ><TR
 ><TD
->createtime - data utworzenia/wys³ania/odebrania </TD
+>createtime - date of creation/send/delivery </TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1249,22 +1248,22 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.24. Helpdesk - za³±czniki ('rtattachments')</A
+>7.2.24. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->messageid - identyfikator wiadomo¶ci</TD
+>messageid - message serial number</TD
 ></TR
 ><TR
 ><TD
->filename - nazwa pliku</TD
+>filename - name of file attachment</TD
 ></TR
 ><TR
 ><TD
->contenttype - typ pliku</TD
+>contenttype - type of file</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1275,26 +1274,26 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.25. Helpdesk - uprawnienia ('rtrights')</A
+>7.2.25. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->queueid - identyfikator kolejki</TD
+>queueid - queue serial number </TD
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika</TD
+>adminid - LMS user serial number</TD
 ></TR
 ><TR
 ><TD
->rights - (1-odczyt, 2-zapis)</TD
+>rights - permissions (1-read, 2-write)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1305,34 +1304,34 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.26. Konfiguracja LMS-UI ('uiconfig')</A
+>7.2.26. LMS-UI Online Configuration ('uiconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - serial number</TD
 ></TR
 ><TR
 ><TD
->section - nazwa sekcji</TD
+>section - config section name</TD
 ></TR
 ><TR
 ><TD
->var - nazwa opcji konfiguracyjnej</TD
+>var - config variable name</TD
 ></TR
 ><TR
 ><TD
->value - warto¶æ</TD
+>value - config variable value</TD
 ></TR
 ><TR
 ><TD
->description - opis/komentarz</TD
+>description - option description or comment</TD
 ></TR
 ><TR
 ><TD
->disabled - wy³±czenie opcji (0-w³., 1-wy³.)</TD
+>disabled - is option disabled? (0-active, 1-disabled/default)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1343,54 +1342,54 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.27. Terminarz - zdarzenia ('events')</A
+>7.2.27. Timetable - events ('events')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - identifier</TD
 ></TR
 ><TR
 ><TD
->title - tytu³</TD
+>title - title</TD
 ></TR
 ><TR
 ><TD
->description - opis</TD
+>description - info</TD
 ></TR
 ><TR
 ><TD
->note - notatka</TD
+>note - note</TD
 ></TR
 ><TR
 ><TD
->date - data zdarzenia</TD
+>date - event date</TD
 ></TR
 ><TR
 ><TD
->begintime - pocz±tek zdarzenia</TD
+>begintime - beginning of event</TD
 ></TR
 ><TR
 ><TD
->endtime - koniec zdarzenia</TD
+>endtime - end of event</TD
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika tworz±cego wpis w terminarzu</TD
+>adminid - event creator ID</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator klienta</TD
+>userid - customer ID</TD
 ></TR
 ><TR
 ><TD
->private - prywatny/publiczny</TD
+>private - status (private/public)</TD
 ></TR
 ><TR
 ><TD
->closed - status zamkniêcia</TD
+>closed - is event closed? (1-yes/0-no)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1401,136 +1400,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.28. Terminarz - powi±zania ('eventassignments')</A
+>7.2.28. Timetable - assignments ('eventassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->eventid - identyfikator zdarzenia</TD
+>eventid - event identifier</TD
 ></TR
 ><TR
 ><TD
->adminid - identyfikator u¿ytkownika</TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="DAEMONHOSTS"
->7.2.29. Konfiguracja demona - hosty ('daemonhosts')</A
-></H2
-><TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
->id - identyfikator</TD
-></TR
-><TR
-><TD
->name - nazwa hosta</TD
-></TR
-><TR
-><TD
->description - opis</TD
-></TR
-><TR
-><TD
->lastreload - data ostatniego prze³adowania</TD
-></TR
-><TR
-><TD
->reload - ¿±danie prze³adowania</TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="DAEMONINSTANCES"
->7.2.30. Konfiguracja demona - instancje ('daemoninstances')</A
-></H2
-><TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
->id - identyfikator</TD
-></TR
-><TR
-><TD
->name - nazwa instancji</TD
-></TR
-><TR
-><TD
->hostid - identyfikator hosta</TD
-></TR
-><TR
-><TD
->module - nazwa i ¶cie¿ka do modu³u</TD
-></TR
-><TR
-><TD
->crontab - czas wykonania</TD
-></TR
-><TR
-><TD
->priority - priorytet prze³adowania</TD
-></TR
-><TR
-><TD
->description - opis</TD
-></TR
-><TR
-><TD
->disabled - status (w³±czona/wy³±czona)</TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="DAEMONCONFIG"
->7.2.31. Konfiguracja demona - opcje ('daemonconfig')</A
-></H2
-><TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
->id - identyfikator</TD
-></TR
-><TR
-><TD
->instanceid - identyfikator instancji</TD
-></TR
-><TR
-><TD
->var - nazwa opcji</TD
-></TR
-><TR
-><TD
->value - warto¶æ opcji</TD
-></TR
-><TR
-><TD
->description - opis</TD
-></TR
-><TR
-><TD
->disabled - status (w³±czona/wy³±czona)</TD
+>adminid - user identifier</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1541,34 +1422,152 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.32. Sesje ('sessions')</A
+>7.2.29. Sessions ('sessions')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator sesji</TD
+>id - session identifier</TD
 ></TR
 ><TR
 ><TD
->ctime - czas utworzenia</TD
+>ctime - create time</TD
 ></TR
 ><TR
 ><TD
->mtime - czas modyfikacji</TD
+>mtime - last modification time</TD
 ></TR
 ><TR
 ><TD
->atime - czas ost. dostêpu</TD
+>atime - last access time</TD
 ></TR
 ><TR
 ><TD
->vdata - dane weryfikuj±ce</TD
+>vdata - verification data</TD
 ></TR
 ><TR
 ><TD
->content - dane</TD
+>content - data</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMONHOSTS"
+>7.2.30. Daemon configuration - hosts ('daemonhosts')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>name - host name</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>lastreload - last reload date</TD
+></TR
+><TR
+><TD
+>reload - reload order</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMONINSTANCES"
+>7.2.31. Daemon configuration - instances ('daemoninstances')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>name - instance name</TD
+></TR
+><TR
+><TD
+>hostid - host identifier</TD
+></TR
+><TR
+><TD
+>module - module file path and name</TD
+></TR
+><TR
+><TD
+>crontab - time of reload</TD
+></TR
+><TR
+><TD
+>priority - reload priority</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>disabled - status (enabled/disabled)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMONCONFIG"
+>7.2.32. Daemon configuration - options ('daemonconfig')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>instanceid - instance identifier</TD
+></TR
+><TR
+><TD
+>var - option name</TD
+></TR
+><TR
+><TD
+>value - option value</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>disabled - status (enabled/disabled)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1579,18 +1578,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.33. Informacje o bazie danych ('dbinfo')</A
+>7.2.33. Database information ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->keytype - typ</TD
+>keytype - type</TD
 ></TR
 ><TR
 ><TD
->keyvalue - warto¶æ</TD
+>keyvalue - value</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1640,7 +1639,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Dla dociekliwych</TD
+>For curious</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -1654,7 +1653,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Format pliku konfiguracyjnego</TD
+>Configuration file format</TD
 ></TR
 ></TABLE
 ></DIV

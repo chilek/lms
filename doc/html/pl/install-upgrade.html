@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Instalacja i konfiguracja"
+TITLE="Installation and configuration"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Prawa dostêpu"
+TITLE="Access rights"
 HREF="install-rights.html"><LINK
 REL="NEXT"
-TITLE="Faktury"
+TITLE="Invoices"
 HREF="install-invoices.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 2. Instalacja i konfiguracja</TD
+>Rozdzia&#322; 2. Installation and configuration</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -79,144 +79,15 @@ NAME="INSTALL-UPGRADE"
 >2.8. Upgrade</A
 ></H1
 ><P
->Uaktualnienie LMS'a przebiega w kilku etapach. Najpierw utwórz
-      katalog z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
-      nowymi) oraz usuñ zawarto¶æ katalogu <TT
+>Since version 1.5.4 LMS was released in polish language only. If you are upgrading
+      read polish documentation for upgrade description. In newest versions upgrade is very easy.
+      That process has two stages. First, overwrite old files with new ones and remove contents of
+      <TT
 CLASS="FILENAME"
 >templates_c</TT
->.</P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
-      mo¿na skasowaæ odpowiedni katalog z katalogu <TT
-CLASS="FILENAME"
->/lib</TT
-></P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-><P
->Nastêpnie, je¶li nie masz jeszcze w systemie locali pl_PL.UTF-8, nale¿y
-      je utworzyæ komend±:
-      <PRE
-CLASS="SCREEN"
-># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
->
-	Je¶li w interfejsie u¿ytkownika znaki narodowe nie bêd± wy¶wietlane poprawnie
-	mo¿liwe, ¿e trzeba bêdzie w pliku konfiguracyjnym serwera www (httpd.conf)
-	ustawiæ:
-	<PRE
-CLASS="SCREEN"
->AddDefaultCharset Off</PRE
->
-	oraz w konfiguracji PHP (php.ini) wy³±czyæ/zakomentowaæ domy¶lne kodowanie:
-	<PRE
-CLASS="SCREEN"
->;default_charset = "iso-8859-1"</PRE
-></P
-><P
->Kolejnym krokiem jest dokonanie zmian w bazie. Dla u³atwienia migracji 
-      struktury bazy danych w katalogu <TT
-CLASS="FILENAME"
->/doc</TT
->
-      przygotowano pliki <TT
-CLASS="FILENAME"
->UPGRADE-1.2-1.6.mysql</TT
-> i <TT
-CLASS="FILENAME"
->UPGRADE-1.2-1.6.pgsql
-      </TT
-> dla migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
-      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
-      Je¶li przeprowadzasz upgrade z wersji nowszej od 1.3.0 aktualizacja struktury bazy danych 
-      nast±pi automatycznie podczas pierwszego logowania.</P
-><P
->Ostatni etap - konwersja danych do unicodu.
-      Pocz±wszy od wersji 1.5.4 zaleca siê przechowywanie danych zakodowanych w 
-      utf-8 (UNICODE), poni¿ej zostanie przedstawiony przyk³ad migracji z kodowania ISO-8859-2
-      do UNICODE na bazie danych PostgreSQL.</P
-><P
->Zaczynamy od utworzenia backupu danych w LMSie. Nastêpnie przechodzimy do
-      katalogu z backupami i wykonujemy konwersjê pliku backupu.
-      <PRE
-CLASS="SCREEN"
-># iconv --from-code=ISO-8859-2 --to-code=UTF-8 &#60; plik_backupu &#62; nowy_plik</PRE
->
-	Po czym zmieniamy nazwê nowo powsta³ego pliku na lms-xxxxxxx.sql, aby
-	plik ten by³ widoczny z poziomu <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
->. Teraz
-	nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
-	Po czym uruchamiamy <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
-> i odtwarzamy dane z 
-	przekonwertowanego backupu.</P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Mo¿liwa jest praca
-	z baz± danych z kodowaniem innym ni¿ UNICODE. W takim wypadku rezygnujemy
-	z ostatniego, opisanego wy¿ej, etapu i ustawiamy odpowiednio opcjê
-	konfiguracyjn± <TT
-CLASS="FILENAME"
->server_encoding</TT
-> w sekcji 
-	<TT
-CLASS="FILENAME"
->[database]</TT
->. Rozwi±zanie to bêdzie mia³o z³y wp³yw
-	na wydajno¶æ ze wzglêdu na przeprowadzan± konwersjê kodowania danych.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
+> directory (or better create new LMS directory tree). Second
+      stage is a database structure change - it's self-executing process acting upon first login to
+      the UI.</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -262,7 +133,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Prawa dostêpu</TD
+>Access rights</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -276,7 +147,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Faktury</TD
+>Invoices</TD
 ></TR
 ></TABLE
 ></DIV

@@ -328,7 +328,7 @@ CLASS="SCREEN"
 >12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
             --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</PRE
 >
-	    </P
+         </P
 ></DIV
 ></DIV
 ><DIV
@@ -405,6 +405,21 @@ CLASS="SCREEN"
 >$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
 sqlite&#62; .exit
 $ chown 99.98 /usr/local/lms/lms.db</PRE
+>
+               </P
+><P
+>Second method of database creation (if you haven't got any SQLite client application)
+               is use of LMS module named <TT
+CLASS="FILENAME"
+>sqlite_createdb.php</TT
+> from <TT
+CLASS="FILENAME"
+>sample</TT
+>
+               directory. First configure LMS (see below), then go to LMS source tree and run:
+               <PRE
+CLASS="SCREEN"
+># php sample/sqlite_createdb.php</PRE
 >
                </P
 ></DIV

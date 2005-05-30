@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Lokalizacja</TITLE
+>Localization</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Instalacja i konfiguracja"
+TITLE="Installation and configuration"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Instalacja LMS"
+TITLE="LMS Installation"
 HREF="install-install.html"><LINK
 REL="NEXT"
-TITLE="Instalacja serwera baz danych"
+TITLE="Database Server Installation"
 HREF="install-db.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 2. Instalacja i konfiguracja</TD
+>Rozdzia&#322; 2. Installation and configuration</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,31 +76,19 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-LOCALE"
->2.4. Lokalizacja</A
+>2.4. Localization</A
 ></H1
 ><P
->Domy¶lnym jêzykiem interfejsu u¿ytkownika jest angielski,
-		a znaki s± kodowane w UTF-8. Aby znaki narodowe innych jêzyków
-		by³y poprawnie wy¶wietlane nale¿y mieæ w systemie odpowiednie
-		locale. Np. dla jêzyka polskiego bêdzie to komenda:
-      <PRE
+>Default language of user interface is English, and national characters
+     are encoded in UTF-8. For proper display of national characters in other languages
+     you must define appropriate locales. E.g. for polish language it's achieved by running
+     the following command:
+<PRE
 CLASS="SCREEN"
 ># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
 >
-		Je¶li w interfejsie u¿ytkownika znaki narodowe w dalszym ci±gu nie bêd± 
-		wy¶wietlane poprawnie mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku 
-		konfiguracyjnego serwera www (httpd.conf) wpis:
-	<PRE
-CLASS="SCREEN"
->AddDefaultCharset Off</PRE
->
-		oraz w konfiguracji PHP (php.ini) zakomentowaæ wpis:
-	<PRE
-CLASS="SCREEN"
->;default_charset = "iso-8859-1"</PRE
->
-		Informacje na temat konfiguracji kodowania bazy danych w dalszej
-		czê¶ci rozdzia³u.</P
+     Instructions about database encoding settings in follow-up of this chapter.
+     </P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -146,7 +134,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Instalacja LMS</TD
+>LMS Installation</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -160,7 +148,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Instalacja serwera baz danych</TD
+>Database Server Installation</TD
 ></TR
 ></TABLE
 ></DIV

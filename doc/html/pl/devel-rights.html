@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Poziomy dostêpu</TITLE
+>Access levels</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Dla dociekliwych"
+TITLE="For curious"
 HREF="devel.html"><LINK
 REL="PREVIOUS"
-TITLE="Generowanie danych losowych"
+TITLE="Filling DB with random data"
 HREF="devel-genfake.html"><LINK
 REL="NEXT"
-TITLE="Ograniczenia"
+TITLE="Restrictions"
 HREF="devel-limits.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 7. Dla dociekliwych</TD
+>Rozdzia&#322; 7. For curious</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,26 +76,13 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-RIGHTS"
->7.5. Poziomy dostêpu</A
+>7.5. Access levels</A
 ></H1
 ><P
->W  sumie  tutaj  to  wyt³umaczê  bardziej  dla developerów, gdy¿ osoby
-		korzystaj±ce z LMS raczej nie bêd± zainteresowane.</P
+>This description intended audience are LMS developers. :)</P
 ><P
->Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne litery.
-		By³o to  za³o¿enie  z  czasów LMS-0.4, lecz nigdy nie wykorzystane. Z
-		racji  tego,  ¿e  wesz³o  to  do 1.0, d³ugo siê g³owi³em jak wykorzystaæ
-		64-znakowego  stringa. Otó¿ w kolumnie rights jest po prostu 64-znakowa
-		(256-bitowa)  liczba  heksadecymalna.  Ka¿dy jej znak mo¿e opisaæ
-		maksymalnie  cztery bity kombinacji (4*64 = 256 - st±d ilo¶æ mo¿liwych
-		poziomów).  Tak  wiêc  w³±czenie  jakiego¶  poziomu  dostêpu  powoduje
-		ustawienie  w  tej  liczbie  odpowiedniego  bitu.  I tak je¿eli "pe³en
-		dostêp"  ma pozycjê 0 w lib/accesstable.php, zostanie ustawiony bit 0,
-		czyli  bêdzie  to liczba 1. Wiêc poziomy mog± mieæ numery od 0 do 255.
-		Nie jest to finalne ograniczenie. Stosuj±c wiêcej liter i znaków mo¿na
-		rozszerzyæ ilo¶æ mo¿liwych kombinacji do przynajmniej 6 bitów na znak,
-		co da nam 384 kombinacje.
-		</P
+>Originally access levels were supposed to be defined by various letters. It was assumption made at LMS-0.4, but it never actually took place. Due to it's presence in 1.0, I've racked my brain bout using 64-character string. So, in 64-character long field, there is just 256-bit hexadecimal number. Each character might describe maximum of 4 bits (4*64 = 256, which is a number of valid combinations). Turning some level on effects in turning some bit on. Then, if "full access" has index 0 in lib/accesstable.php, 0 bit will be set to 1, so the number will be 1. Levels may have numbers (indices) from 0 to 255. This is not final boundary, because using more letters and chars you can expand to 6 bytes per char easily, which gives you 384 combinations.
+          </P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -141,7 +128,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Generowanie danych losowych</TD
+>Filling DB with random data</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -155,7 +142,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Ograniczenia</TD
+>Restrictions</TD
 ></TR
 ></TABLE
 ></DIV

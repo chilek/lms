@@ -82,7 +82,9 @@ NAME="DEVEL-INI"
 >Configuration file default location is <TT
 CLASS="FILENAME"
 >/etc/lms/lms.ini</TT
->. It's intended to be central configuration for all LMS components and you can setup your <SPAN
+>. 
+          It's intended to be central configuration for all LMS components and you 
+          can setup your <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -92,15 +94,17 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->almsd</I
+>lmsd</I
 ></SPAN
-> daemon and Perl scripts (including <SPAN
+> daemon 
+          and Perl scripts (including <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS_MGC</I
 ></SPAN
->) parameters here. However variable format for Perl scripts is more restricted.</P
+>) parameters here. 
+          However variable format for Perl scripts is more restricted.</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -110,7 +114,9 @@ NAME="COMMENTS"
 >7.3.1. Comments</A
 ></H2
 ><P
->Configuration file parsers skip all lines that begin with '#' or ';' sign. You can also append comments to the end of the lines containing valid variables and sections , followed by that signs. </P
+>Configuration file parsers skip all lines that begin with '#' 
+               or ';' sign. You can also append comments to the end of the lines 
+               containing valid variables and sections , followed by that signs. </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -140,8 +146,8 @@ key =  value
 variable1 = "some text"
 para_meter = 'i am "para_meter" variable in apostrophes'
 
-[section_1]				# you can comment here
-key = "text with specials: \t and ;"	; you can comment here either
+[section_1]                    # you can comment here
+key = "text with specials: \t and ;"     ; you can comment here either
 ; and this is comment all line long
 key = "A.L.E.C's LMS Daemon is the best"
 # option = disabled</PRE

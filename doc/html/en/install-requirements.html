@@ -120,7 +120,7 @@ TARGET="_top"
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
            compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
            support). PEAR::Mail is being used for mailing (which require Net_SMTP and Net_Sockets from 
-	   PEAR package).</P
+        PEAR package).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -136,7 +136,7 @@ NAME="INSTALL-REQ-DB"
 ><P
 >PostgreSQL in version 7.3.x or higher is supported.</P
 ><P
->SQLite database is also usable, but we only tested version 2.8.11.</P
+>SQLite database is also usable, but we only tested version 2.8.x.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -181,35 +181,32 @@ CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
 > and the rest of Perl scripts requires 
-          also Perl interpreter and some modules:
+          also Perl interpreter and some modules (this is the list of basic modules, 
+          some scripts requires more modules): 
        <UL
 ><LI
 ><P
->Perl and its basic modules (POSIX, GetOpt::Long);</P
+>Perl and its basic modules (POSIX, GetOpt::Long),</P
 ></LI
 ><LI
 ><P
->Net::SMTP;</P
+>Config::IniFiles,</P
 ></LI
 ><LI
 ><P
->Config::IniFiles;</P
+>DBI,</P
 ></LI
 ><LI
 ><P
->DBI;</P
+>DBD-mysql (if you use MySQL),</P
 ></LI
 ><LI
 ><P
->DBD-mysql (if you use MySQL);</P
+>DBD-Pg (if you use Postgres),</P
 ></LI
 ><LI
 ><P
->DBD-Pg (if you use Postgres);</P
-></LI
-><LI
-><P
->DBD-SQLite (if you use SQLite);</P
+>DBD-SQLite (if you use SQLite).</P
 ></LI
 ></UL
 ></P
@@ -231,6 +228,19 @@ CLASS="EMPHASIS"
 ></SPAN
 > you will need
        working C compiler, because daemon will be provided in source code form only.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-BROWSER"
+>2.2.7. Web Browser</A
+></H2
+><P
+>LMS has web user interface, so you'll need web browser with javascript
+           cookies enabled. Our exparience says that Mozilla Firefox 1.x will be the best
+           choice.</P
 ></DIV
 ></DIV
 ><DIV

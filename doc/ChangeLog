@@ -12,6 +12,8 @@ version ? (??/??/????):
   - SQLite: fixed bugs in upgradedb files, added iconv() support (alec) 
   - SQLite: added sample/sqlite_createdb.php for creating database without
     need of any sqlite client applications (alec)
+  - cashimportparser: added checking if value is numeric and character
+    set conversion before import to temp table (alec)
 
 version 1.6.0rc3 Thor (23/05/2005):
 
