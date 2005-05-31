@@ -148,7 +148,7 @@
      Module configuration parameters MUST be placed in appropriate instance section.</para>
           <sect2 id="daemon-moduleslist">
           <title>Modules list</title>
-               <table>
+               <table id="modules-list">
                <title>List of all lmsd modules</title>
                <tgroup cols="2">
                <colspec ALIGN="center" COLWIDTH="200">
