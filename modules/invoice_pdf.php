@@ -186,7 +186,11 @@ function invoice_address_box($x,$y)
 {
     global $invoice,$pdf;
     $font_size=12;
-    $y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['name'])."</b>");
+    $invoice_name = $invoice['name'];
+        if (strlen($invoice_name)>25)
+		        $invoice_name = preg_replace('/(.{25})/',"$1<i>&gt;</i>\n",$invoice_name);
+	    $tmp = explode("\n",iconv("UTF-8","ISO-8859-2",$invoice_name));
+	    foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
     if ($invoice['serviceaddr']) {
 	$tmp = explode("\n",iconv("UTF-8","ISO-8859-2",$invoice['serviceaddr']));
 	foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
