@@ -44,7 +44,7 @@ if(isset($_GET['ajax']))
 						preg_match('/^(.*) /',$input,$matches);
 						return $matches[1];
 					}
-					$mode='php('\grepaddr\', address)';
+					$mode='php(\'grepaddr\', address)';
 				}
 				break;
 		        case 'zip':
