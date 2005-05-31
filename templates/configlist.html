@@ -47,6 +47,7 @@
 		</TD>
 		<TD valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].description|truncate:400:"..."}
+			{if $configlist[configlist].usercomment != ''}<BR><B>{t}Comment:{/t}</B> {$configlist[configlist].usercomment|truncate:400:"..."}{/if}
 		</TD>
 		<TD class="fright" align="right" nowrap>
 			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>&nbsp;
