@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Requirements</TITLE
+>Wymagania</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Installation and configuration"
+TITLE="Instalacja i konfiguracja"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Installation and configuration"
+TITLE="Instalacja i konfiguracja"
 HREF="install.html"><LINK
 REL="NEXT"
-TITLE="LMS Installation"
+TITLE="Instalacja LMS"
 HREF="install-install.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 2. Installation and configuration</TD
+>Rozdzia&#322; 2. Instalacja i konfiguracja</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,7 +76,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-REQUIREMENTS"
->2.2. Requirements</A
+>2.2. Wymagania</A
 ></H1
 ><DIV
 CLASS="SECT2"
@@ -84,17 +84,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-REQ-WWW"
->2.2.1. Web Server</A
+>2.2.1. Serwer WWW</A
 ></H2
 ><P
->Because <SPAN
+>Poniewa¿ <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> is written in PHP,
-            it needs Web server to work. Apache is preferred (<A
+> jest napisane w PHP, niezbêdny jest serwer WWW z interpreterem 
+		tego jêzyka. Preferowanym serwerem jest Apache 
+		(<A
 HREF="http://www.apache.org"
 TARGET="_top"
 >www.apache.org</A
@@ -106,21 +107,22 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-REQ-PHP"
->2.2.2. PHP Interpreter</A
+>2.2.2. Interpreter PHP</A
 ></H2
 ><P
->Interpreter version should be 4.2.x or higher, but it also works fine with 4.1.x
-           (but due that developers use 4.2.3 or higher, we can't guarantee correct work with older
-           versions. PHP can be downloaded from <A
+>Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ 
+		poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie mo¿na 
+		zagwarantowaæ poprawnej pracy na starszych wersjach (unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
+		strony <A
 HREF="http://www.php.net"
 TARGET="_top"
 >www.php.net</A
 >.
-           At least following PHP modules needs to be installed (look for "extension" in
-           php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
-           compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
-           support). PEAR::Mail is being used for mailing (which require Net_SMTP and Net_Sockets from 
-        PEAR package).</P
+		W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
+		w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
+		zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i jeden z
+		mysql, pgsql, sqlite (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
+		wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -128,15 +130,15 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-REQ-DB"
->2.2.3. Database Server</A
+>2.2.3. Serwer baz danych</A
 ></H2
 ><P
->MySQL server in version 3.23.xx and higher is supported. LMS won't work correctly
-           with older versions.</P
+>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx.</P
 ><P
->PostgreSQL in version 7.3.x or higher is supported.</P
+>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</P
 ><P
->SQLite database is also usable, but we only tested version 2.8.x.</P
+>Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
+	      problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.x.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -144,7 +146,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-REQ-SMARTY"
->2.2.4. Smarty Library</A
+>2.2.4. Biblioteka Smarty</A
 ></H2
 ><P
 ><SPAN
@@ -153,17 +155,12 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> requires Smarty library (<A
+> do pracy wymaga jeszcze biblioteki Smarty (<A
 HREF="http://smarty.php.net"
 TARGET="_top"
 >http://smarty.php.net</A
->) in version 2.6.0
-            or higher (don't use 2.6.4 version). Newer versions of Smarty requires that
-            you have not enabled "magic_quotes_runtime" (set to Off) option in <A
-HREF="http://www.php.net/manual/en/configuration.php"
-TARGET="_top"
->PHP configuration</A
->.</P
+>)
+		 w wersji 2.6.0 lub wy¿szej (unikaæ wersji 2.6.4).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -174,19 +171,30 @@ NAME="INSTALL-REQ-PERL"
 >2.2.5. Perl</A
 ></H2
 ><P
-><SPAN
+>O ile dla <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy 
+		<SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
-> and the rest of Perl scripts requires 
-          also Perl interpreter and some modules (this is the list of basic modules, 
-          some scripts requires more modules): 
-       <UL
+> i resztê skryptów potrzebujemy 
+		tak¿e Perla i modu³y do niego, które mo¿na pobraæ z <A
+HREF="http://www.cpan.org"
+TARGET="_top"
+>www.cpan.org</A
+>,
+		czyli:
+	  <UL
 ><LI
 ><P
->Perl and its basic modules (POSIX, GetOpt::Long),</P
+>perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long),</P
 ></LI
 ><LI
 ><P
@@ -198,15 +206,15 @@ CLASS="EMPHASIS"
 ></LI
 ><LI
 ><P
->DBD-mysql (if you use MySQL),</P
+>DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a),</P
 ></LI
 ><LI
 ><P
->DBD-Pg (if you use Postgres),</P
+>DBD-Pg (Je¶li masz zamiar u¿ywaæ postgres'a),</P
 ></LI
 ><LI
 ><P
->DBD-SQLite (if you use SQLite).</P
+>DBD-SQLite (Je¶li masz zamiar u¿ywaæ bazê SQLite),</P
 ></LI
 ></UL
 ></P
@@ -217,17 +225,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-REQ-C"
->2.2.6. C Compiler</A
+>2.2.6. Kompilator jêzyka C</A
 ></H2
 ><P
->If you intend to run <SPAN
+>Je¶li chcesz uruchomiæ <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS Daemon</I
 ></SPAN
-> you will need
-       working C compiler, because daemon will be provided in source code form only.</P
+> bêdziesz potrzebowa³
+	  dzia³aj±cy kompilator jêzyka C, gdy¿ jest on dostarczany wy³±cznie w postaci
+	  kodu ¼ród³owego.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -235,12 +244,12 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-REQ-BROWSER"
->2.2.7. Web Browser</A
+>2.2.7. Przegl±darka www</A
 ></H2
 ><P
->LMS has web user interface, so you'll need web browser with javascript
-           cookies enabled. Our exparience says that Mozilla Firefox 1.x will be the best
-           choice.</P
+>LMS posiada webowy interfejs, dlatego wymagana jest przegl±darka, która
+             obs³uguje javascript i ma w³±czone cookies. Z naszego do¶wiadczenia wynika, ¿e
+             najlepszym wyborem bêdzie Mozilla Firefox 1.x.</P
 ></DIV
 ></DIV
 ><DIV
@@ -287,7 +296,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Installation and configuration</TD
+>Instalacja i konfiguracja</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -301,7 +310,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->LMS Installation</TD
+>Instalacja LMS</TD
 ></TR
 ></TABLE
 ></DIV

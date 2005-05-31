@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Access rights</TITLE
+>Prawa dostêpu</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,10 +10,10 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Installation and configuration"
+TITLE="Instalacja i konfiguracja"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Basic Configuration"
+TITLE="Konfiguracja podstawowa"
 HREF="install-config.html"><LINK
 REL="NEXT"
 TITLE="Upgrade"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 2. Installation and configuration</TD
+>Rozdzia&#322; 2. Instalacja i konfiguracja</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,7 +76,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-RIGHTS"
->2.7. Access rights</A
+>2.7. Prawa dostêpu</A
 ></H1
 ><DIV
 CLASS="SECT2"
@@ -87,89 +87,89 @@ NAME="INSTALL-RIGHTS-IDEA"
 >2.7.1. Idea</A
 ></H2
 ><P
->In LMS you may define up to 256 rules to access the system. 
-      Each can permit or deny access to defined modules. 
-      Each user can have any combination of access rules assigned to his account.</P
+>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e
+      zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu u¿ytkownikowi mo¿na
+      przydzieliæ dowoln± kombinacjê regu³ dostêpu.</P
 ><P
->By default following access rules list is defined:
+>Domy¶lnie zdefiniowana jest nastêpuj±ca lista regu³ dostêpu:
        <UL
 ><LI
 ><P
->full access</P
+>pe³en dostêp</P
 ></LI
 ><LI
 ><P
->read only (excluding Helpdesk)</P
+>odczyt wszystkich danych (z wyj±tkiem Helpdesku)</P
 ></LI
 ><LI
 ><P
->nodes connection/disconnection</P
+>pod³±czanie i od³±czanie komputerów</P
 ></LI
 ><LI
 ><P
->finances management</P
+>manipulowanie finansami</P
 ></LI
 ><LI
 ><P
->configuration reload</P
+>prze³adowywanie konfiguracji</P
 ></LI
 ><LI
 ><P
->customers management</P
+>manipulowanie danymi klientów</P
 ></LI
 ><LI
 ><P
->nodes management</P
+>manipulowanie danymi komputerów</P
 ></LI
 ><LI
 ><P
->stats access</P
+>dostêp do statystyk</P
 ></LI
 ><LI
 ><P
->mailing access</P
+>dostêp do korespondencji seryjnej</P
 ></LI
 ><LI
 ><P
->Helpdesk (RT) administration</P
+>zarz±dzanie Helpdeskiem (RT)</P
 ></LI
 ><LI
 ><P
->Helpdesk (RT) operation</P
+>obs³uga Helpdesku (RT)</P
 ></LI
 ><LI
 ><P
->accounts management</P
+>zarz±dzanie kontami</P
 ></LI
 ><LI
 ><P
->UI configuration</P
+>konfiguracja UI</P
 ></LI
 ><LI
 ><P
->networks and devices management</P
+>zarz±dzanie sieciami i urz±dzeniami sieciowymi</P
 ></LI
 ><LI
 ><P
->timetable management</P
+>dostêp do terminarza</P
 ></LI
 ><LI
 ><P
->daemon management and configuration</P
+>zarz±dzanie i konfiguracja demona</P
 ></LI
 ><LI
 ><P
->users edition and addition forbidden</P
+>brak dostêpu do modyfikacji i zak³adania kont u¿ytkowników</P
 ></LI
 ><LI
 ><P
->no access</P
+>brak dostêpu</P
 ></LI
 ></UL
 >
-      Most of them grant access to modules and two denies. Modules that user
-      has always access are: welcome, copyrights, logout, chpasswd 
-      (chpasswd can change only own password), access to all others is defined by rules.</P
+      Niektóre z nich zezwalaj± na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
+      u¿ytkownik ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
+      chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.</P
 ><DIV
 CLASS="NOTE"
 ><TABLE
@@ -189,8 +189,8 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->If you don't define any access rule for user, then LMS defines
-      0 rule for him, which mean: full access.</P
+>Je¶li nie ustawimy u¿ytkownikowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
+      przydzieli mu regu³kê 0, czyli pe³en dostêp.</P
 ></TD
 ></TR
 ></TABLE
@@ -202,34 +202,38 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-RIGHTS-HOW"
->2.7.2. How does it work?</A
+>2.7.2. Jak to dzia³a?</A
 ></H2
 ><P
-> Algorithm that decides whether user has access to given module or not is as following:
-          <TABLE
+>Decyzja  czy  u¿ytkownik  ma prawo dostêpu do modu³u czy nie przebiega nastêpuj±co:
+		<TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->-  First of all: checking list of modules that user always has access.</TD
+>-  najpierw  sprawdzana  jest  lista  modu³ów, do których zawsze ma siê
+		dostêp,</TD
 ></TR
 ><TR
 ><TD
->-  Next: checking if module match rules in each levels user has access to.</TD
+>-  potem  nastêpuje sprawdzenie czy modu³ pasuje do regu³ w poszczególnych
+		poziomach, do których u¿ytkownik ma dostêp,</TD
 ></TR
 ><TR
 ><TD
->-  Finally: Decision if user is permitted to access modules. If module 
-          match to any level that denies access then access will be forbidden even if user has
-          level that permits access to module. For example, if someone has full access and no access 
-          to "add computer" module, then he won't able to access module.
-          If module  matches level that permits access to module, then LMS will grant access to module, 
-          but if module does not match at any level then no-access-message also will be printed.</TD
+>-  na  koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
+		do  modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który zabrania dostêpu,
+		dostêp  zostanie  zabroniony  nawet  je¿eli u¿ytkownik ma ustawiony poziom, który pozwala
+		na dostêp do modu³u (np.  kto¶  ma  pe³ny  dostêp oraz brak dostêpu do modu³u dodawania
+		komputerów,  nie  bêdzie  on  móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do
+		poziomu, który pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê.
+		Je¿eli natomiast modu³ siê nie "za³apa³" na ¿aden poziom równie¿ zostanie mu wy¶wietlony
+		komunikat o braku dostêpu.</TD
 ></TR
 ></TBODY
 ></TABLE
 >
-          </P
+		</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -237,42 +241,41 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-RIGHTS-USER"
->2.7.3. User-defined access rules</A
+>2.7.3. Regu³y dostêpu definiowane przez u¿ytkownika</A
 ></H2
 ><P
->Advanced users can define any additional access rules
-          or redefine existing ones.  In order to do that you must make
-          PHP script based on file <TT
+>Zaawansowani u¿ytkownicy maj± mo¿liwo¶æ zdefiniowania dodatkowych
+		dowolnych regu³ dostêpu lub przedefiniowania istniej±cych. W tym celu
+		nale¿y utworzyæ skrypt PHP na wzór <TT
 CLASS="FILENAME"
 >lib/accesstable.php</TT
 >
-          and place it in LMS's <TT
+		i umie¶ciæ go w katalogu <TT
 CLASS="FILENAME"
 >lib</TT
-> directory. Then 
-          set option <TT
+> LMS-a. Nazwê pliku
+		podajemy w opcji <TT
 CLASS="FILENAME"
 >custom_accesstable</TT
-> in [phpui]
-          section to created file name.</P
+> sekcji [phpui].</P
 ><P
->In that way it's possible to define your own rules to allow
-          or deny access for any modules. Module is a name of PHP file
-          in <TT
+>W ten sposób mo¿na zdefiniowaæ w³asne regu³y zezwalaj±ce lub
+		zabraniaj±ce dostêpu do dowolnych modu³ów. Modu³ to nazwa pliku PHP
+		z katalogu <TT
 CLASS="FILENAME"
 >modules</TT
-> directory, given without extension 
-          in access rules. For example, it's possible to define
-          rule for invoices display (e.g. for lms-sendinvoices script) 
-          in the following way:
+>, któr± w regu³ach dostêpu podajemy
+		bez rozszerzenia. Dla przyk³adu, mo¿na zdefiniowaæ uprawnienie do
+		odczytu faktur (np. na potrzeby skryptu lms-sendinvoices) w nastêpuj±cy
+		sposób:
 <PRE
 CLASS="SCREEN"
 >&lt;?php
-$access['table'][100]['name']      = 'invoices display';
+$access['table'][100]['name']      = 'odczyt faktur';
 $access['table'][100]['allow_reg'] = '^invoice$';
 ?&gt;</PRE
 >
-          </P
+		</P
 ></DIV
 ></DIV
 ><DIV
@@ -319,7 +322,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Basic Configuration</TD
+>Konfiguracja podstawowa</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

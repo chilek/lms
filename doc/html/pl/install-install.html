@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->LMS Installation</TITLE
+>Instalacja LMS</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Installation and configuration"
+TITLE="Instalacja i konfiguracja"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Requirements"
+TITLE="Wymagania"
 HREF="install-requirements.html"><LINK
 REL="NEXT"
-TITLE="Localization"
+TITLE="Lokalizacja"
 HREF="install-locale.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 2. Installation and configuration</TD
+>Rozdzia&#322; 2. Instalacja i konfiguracja</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,46 +76,46 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-INSTALL"
->2.3. LMS Installation</A
+>2.3. Instalacja LMS</A
 ></H1
 ><P
->LMS in tarball (.tar.gz) archive can be downloaded from project 
-          home page (<A
-HREF="http://lms.rulez.pl"
+>LMS w postaci archiwum tar.gz mo¿na pobraæ ze strony 
+		domowej projektu (<A
+HREF="http://www.lms.rulez.pl"
 TARGET="_top"
->lms.rulez.pl</A
+>www.lms.rulez.pl</A
 >),
-          which should be extracted and placed in chosen directory (i.e. <TT
+		a nastêpnie rozpakowaæ i umie¶ciæ w wybranym katalogu (np. <TT
 CLASS="FILENAME"
->/var/www/lms</TT
->) 
-          and made available for Web Server (ie. with Alias /lms/ /var/www/lms):
+>/var/www/lms
+		</TT
+>) dostêpnym dla serwera www:
 <PRE
 CLASS="SCREEN"
 >$ cd /var/www
 $ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz</PRE
 >
-          </P
+		</P
 ><P
->Two kind of LMS packets are available - the one with Smarty library included
-          (<TT
+>Dostêpne s± dwa rodzaje paczek z LMS - zawieraj±ce bibliotekê
+		Smarty (<TT
 CLASS="FILENAME"
 >lms-x.x.x+libs.tar.gz</TT
->) and without this library. If you have
-          installed version without library you have to get Smarty yourself (eg. using PEAR) and
-          place it in <TT
+>) i bez niej. 
+		Je¿eli nie skorzysta³e¶ z wersji archiwum zawieraj±cej biblioteki,	
+		pobierz j± i umie¶æ w katalogu <TT
 CLASS="FILENAME"
 >lib</TT
-> subdirectory.
+>.
 <PRE
 CLASS="SCREEN"
 >$ cd /var/www/lms/lib
-$ wget http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz
-$ tar zxf Smarty-2.6.0.tar.gz
-$ mv Smarty-2.6.0/libs Smarty</PRE
+$ wget http://smarty.php.net/distributions/Smarty-2.6.8.tar.gz
+$ tar zxf Smarty-2.6.8.tar.gz
+$ mv Smarty-2.6.8/libs Smarty</PRE
 >
-          </P
+		</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -136,46 +136,44 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Location of all directories can be set in
-          <SPAN
+>Po³o¿enie wszystkich katalogów mo¿esz zmieniæ w sekcji
+		<SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[directories]</I
 ></SPAN
-> section in <TT
+> pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> configuration
-          file.</P
+>.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
 ><P
->Configuration files (<TT
+>Pliki z konfiguracj± (<TT
 CLASS="FILENAME"
 >sample/lms.ini</TT
->
-          and <TT
+> i <TT
 CLASS="FILENAME"
-> sample/lms-mgc.ini</TT
->) should be placed in
-          <TT
+>		sample/lms-mgc.ini</TT
+>) umie¶æ w katalogu <TT
 CLASS="FILENAME"
 >/etc/lms</TT
-> directory. </P
+>.
+		</P
 ><P
->Scripts from <TT
+>Skrypty wykonywalne z katalogu <TT
 CLASS="FILENAME"
 >bin</TT
-> directory should be moved to
-          <TT
+> 
+		najlepiej przenie¶æ do katalogu <TT
 CLASS="FILENAME"
 >/usr/sbin</TT
-> directory, so you can execute it directly without giving
-          path. </P
+>.
+		</P
 ><P
 ><DIV
 CLASS="WARNING"
@@ -196,22 +194,16 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Web Server must have read permission on <TT
+>Serwer www musi mieæ prawo odczytu pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >
-          file and write permission on <TT
+		oraz prawa odczytu i zapisu do katalogu <TT
 CLASS="FILENAME"
 >backup</TT
-> directory. Please
-          consider security implications: you might want to protect backup directory with
-          <TT
-CLASS="FILENAME"
->.htaccess</TT
-> and place your lms.ini outside Web Server's DocumentRoot
-          (LMS allows you to place it in its home directory, but then it's possible to read it
-          with http://yourserver/lms.ini, and it contains valuable information such as database
-          password!).</P
+>. 
+		Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
+		</P
 ></TD
 ></TR
 ></TABLE
@@ -262,7 +254,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Requirements</TD
+>Wymagania</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -276,7 +268,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Localization</TD
+>Lokalizacja</TD
 ></TR
 ></TABLE
 ></DIV

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Invoices</TITLE
+>Faktury</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,7 +10,7 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Installation and configuration"
+TITLE="Instalacja i konfiguracja"
 HREF="install.html"><LINK
 REL="PREVIOUS"
 TITLE="Upgrade"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 2. Installation and configuration</TD
+>Rozdzia&#322; 2. Instalacja i konfiguracja</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,44 +76,40 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-INVOICES"
->2.9. Invoices</A
+>2.9. Faktury</A
 ></H1
 ><P
->It's possible to issue invoices in either automatic or manual way. Manual
-                invoices creation is possible in 'New Invoice' module from 'Finances' menu.
-                Automatic issue might be helpful while you have legal contracts with your users.
-                In this case invoices are created by <TT
-CLASS="FILENAME"
->lms-payments</TT
-> script or
-                <SPAN
+>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
+		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
+		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
+		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >almsd</I
 ></SPAN
-> daemon.</P
+></P
 ><P
->For proper work of printouts you need to setup custom options in
-                <SPAN
+>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
+		opcji w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
-> section of <TT
+> <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >:
-          <UL
+		<UL
 ><LI
 ><P
 >number_template</P
 ><P
->Invoice numbering pattern. Available variables: '%N' - successive number in year/month
-                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</P
+>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
+			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
 >number_template = %N/%Y</SAMP
 ></P
@@ -122,10 +118,10 @@ CLASS="PROMPT"
 ><P
 >monthly_numbering</P
 ><P
->Enable this option when you need to reset invoice numbering on start of every month.
-               Default: disabled</P
+>W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
+			Domy¶lnie: wy³±czona</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
 >monthly_numbering = 1</SAMP
 ></P
@@ -134,53 +130,52 @@ CLASS="PROMPT"
 ><P
 >header</P
 ><P
->Seller. Can use string "\n" for lines separation. Default: empty.</P
+>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->header = "SuperNet ISP\nNew Street 15\n12-000 City\n"</SAMP
+>header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >footer</P
 ><P
->Invoice footer - e.g. contact information about seller. Footer will be placed at bottom
-                        of an invoice, using small font. Like in header option use "\n" to separate lines. Default:
-                        empty</P
+>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->footer = "Internet Service Provider K-27, phone 555-23-23, etc."</SAMP
+>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >default_author</P
 ><P
->Invoice issuer name. Default: empty</P
+>Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->default_author = "invoicing expert"</SAMP
+>default_author = "specjalista d/s fakturowania"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >cplace</P
 ><P
->Invoice issue location (city). Default: empty.</P
+>Miejsce wystawienia faktury. Domy¶lnie: puste.</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->cplace = Warsaw</SAMP
+>cplace = Warszawa</SAMP
 ></P
 ></LI
 ></UL
 >
-          Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
-          or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
-          filter invoices for printing.</P
+		Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
+		na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
+		poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
+		tak¿e filtrowanie faktur do wydruku.</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -190,27 +185,21 @@ NAME="INSTALL-INVOICES-HTML"
 >2.9.1. HTML</A
 ></H2
 ><P
->Invoices are printed in html format by default
-          using provided template. In <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[invoices]</I
-></SPAN
-> section
-          you can also configure:
-          <UL
+>Przy domy¶lnych ustawieniach faktury wy¶wietlane s± w
+		formacie html wg domy¶lnego szablonu. W sekcji [invoices] masz
+		do dyspozycji jeszcze nastêpuj±ce opcje:
+		<UL
 ><LI
 ><P
 >template_file</P
 ><P
->Invoice template, which should be placed in 
-               <TT
+>Szablon faktury, który powinien znajdowaæ siê w
+			katalogu <TT
 CLASS="FILENAME"
 >templates</TT
-> directory. Default: invoice.html.</P
+>. Domy¶lnie: invoice.html.</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
 >template_file = invoice-mynet.html</SAMP
 ></P
@@ -219,12 +208,12 @@ CLASS="PROMPT"
 ><P
 >content_type</P
 ><P
->Invoice content-type. If you enter here 'application/octet-stream'
-               then browser will ask to save file on disk, instead of displaying it.
-               It's useful if you use your own template which generate eg. rtf or xls file.
-               Default: 'text/html'</P
+>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
+			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+			Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
+			Domy¶lnie: 'text/html'</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
 >content_type = application/octet-stream</SAMP
 ></P
@@ -233,24 +222,23 @@ CLASS="PROMPT"
 ><P
 >attachment_name</P
 ><P
->File name for saving finished invoice printout. WARNING: Setting attachment_name 
-               with default content_type will (in case of MSIE) print invoice + prompt for save on 
-               disk + bonus browser crash (6.0SP1 on WInXP).
-               Default: empty.</P
+>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+			wydruk. Domy¶lnie: pusta.</P
 ><P
->Example: <SAMP
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->attachment_name = invoice.xls</SAMP
+>attachment_name = faktura.xls</SAMP
 ></P
 ></LI
 ></UL
 >
-          Generated invoice in HTML format consist of originals and copies, which are separated
-          by CSS page-break markups, so every modern browser that supports CSS 
-          should print many-page invoices correctly. This behavior was tested on
-          Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.</P
+		Wynikowy dokument HTML zawiera orygina³y 
+		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
+		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
+		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
 ><P
->               <DIV
+>			<DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -269,15 +257,15 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Almost every internet browser has printing 
-               configuration, where functions like header and footer or URL 
-               printing can be disabled.</P
+>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
+			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie
+			stopki i nag³ówka, czy te¿ adresu na wydruku.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 >
-          </P
+		</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -288,72 +276,74 @@ NAME="INSTALL-INVOICES-PDF"
 >2.9.2. PDF</A
 ></H2
 ><P
->It's possible to create invoices as PDF files. Setting option <TT
+>Mo¿liwe jest tak¿e tworzenie faktur jako pliki pdf. Przypisanie
+		opcji <TT
 CLASS="FILENAME"
 >type</TT
-> in
-                 <SPAN
+> z sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
-> section to 'pdf' will force invoice being created in PDF instead
-                 of html. Option <TT
+> 
+		warto¶ci 'pdf' spowoduje, ¿e faktury zamiast w html'u bêd± tworzone jako pliki 
+		"portable data format". Opcja <TT
 CLASS="FILENAME"
 >template_file</TT
-> has the same meaning, with one difference,
-                 that it might take predefined values: 'standard' - basic invoice (invoice.html equivalent) and
-                 'FT-0100' - invoice adjusted for printing on FT-0100 paper including payment form. You can set
-                 <TT
+> spe³nia podobn± rolê jak dla faktur html'owych,
+		z tym, ¿e posiada predefiniowane warto¶ci: 'standard' - faktura podstawowa 
+		(odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
+		na drukach FT-0100 zawieraj±cych druk polecenia przelewu. W opcji <TT
 CLASS="FILENAME"
 >template_file</TT
-> option for php file name, but this feature is meant for
-                 advanced users as it requires you to create more complicated php file than the one used with html
-                 invoices Smarty template.</P
+>
+		mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
+		zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
+		przypadku faktur html'owych szablonu Smarty.</P
 ><P
->Data for payment form printouts is stored in <SPAN
+>Dane do druku polecenia przelewu s± brane z sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[finances]</I
 ></SPAN
 >
-          section of <TT
+		pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> file. That is:
-          <TABLE
+>. A oto dostêpne opcje:
+		<TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->name - seller name</TD
+>name - nazwa firmy</TD
 ></TR
 ><TR
 ><TD
->shortname - short seller name</TD
+>shortname - skrócona nazwa firmy</TD
 ></TR
 ><TR
 ><TD
->address - seller address</TD
+>address - adres firmy</TD
 ></TR
 ><TR
 ><TD
->zip - seller postal code</TD
+>zip - kod pocztowy</TD
 ></TR
 ><TR
 ><TD
->city - seller city</TD
+>city - miasto</TD
 ></TR
 ><TR
 ><TD
->account - banking account number</TD
+>account - numer konta bankowego</TD
 ></TR
 ></TBODY
 ></TABLE
 >
-          </P
+		</P
 ></DIV
 ></DIV
 ><DIV

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Configuration file format</TITLE
+>Format pliku konfiguracyjnego</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,13 +10,13 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="For curious"
+TITLE="Dla dociekliwych"
 HREF="devel.html"><LINK
 REL="PREVIOUS"
-TITLE="Database structure"
+TITLE="Struktura bazy danych"
 HREF="devel-db.html"><LINK
 REL="NEXT"
-TITLE="Filling DB with random data"
+TITLE="Generowanie danych losowych"
 HREF="devel-genfake.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 7. For curious</TD
+>Rozdzia&#322; 7. Dla dociekliwych</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -76,47 +76,46 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-INI"
->7.3. Configuration file format</A
+>7.3. Format pliku konfiguracyjnego</A
 ></H1
 ><P
->Configuration file default location is <TT
+>W pliku konfiguracyjnym LMS'a (standardowo <TT
 CLASS="FILENAME"
 >/etc/lms/lms.ini</TT
->. 
-          It's intended to be central configuration for all LMS components and you 
-          can setup your <SPAN
+>)
+		mo¿na ustawiaæ parametry <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->, <SPAN
+>, daemona <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->lmsd</I
+>almsd</I
 ></SPAN
-> daemon 
-          and Perl scripts (including <SPAN
+>
+		oraz skryptów perlowych (<SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS_MGC</I
 ></SPAN
->) parameters here. 
-          However variable format for Perl scripts is more restricted.</P
+>). Przy czym format
+		warto¶ci parametrów dla skryptów perlowych podlega wiêkszym restrykcjom.</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="COMMENTS"
->7.3.1. Comments</A
+>7.3.1. Komentarze</A
 ></H2
 ><P
->Configuration file parsers skip all lines that begin with '#' 
-               or ';' sign. You can also append comments to the end of the lines 
-               containing valid variables and sections , followed by that signs. </P
+>Programy parsuj±ce plik konfiguracyjny pomijaj± wszystkie linie
+			zaczynaj±ce siê znakiem '#' lub ';'. Komentarze poprzedzone jednym z tych
+			znaków mo¿na tak¿e wstawiaæ w tej samej linii co sekcje i opcje.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -124,12 +123,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PARAMS"
->7.3.2. Sections, variables, values</A
+>7.3.2. Sekcje, klucze, warto¶ci</A
 ></H2
 ><P
->Configuration options are grouped in sections. Name of the section, which is build with alphanumerical signs must be enclosed in square brackets. Their name should be unique in the span of configuration file.</P
+>Opcje konfiguracyjne pogrupowane s± w sekcje. Nazwê sekcji, sk³adaj±c±
+			siê z liter i/lub cyfr nale¿y zamkn±æ w nawiasy kwadratowe. Ich nazwy
+			powinny byæ unikalne.</P
 ><P
->Sections and parameters should be placed one per line. Parameter consists of key (variable name) and value (variable content). Key is name of configuration parameter, built from alphanumerical signs. Value should be placed in the same line, after equality sign. If it contains any special characters it should be placed into quotes or apostrophes.</P
+>Sekcje i parametry umieszcza siê w osobnych liniach. Parametry
+			sk³adaj± siê z klucza i warto¶ci. Klucz to nazwa parametru konfiguracyjnego
+			sk³adaj±ca siê z liter i/lub cyfr. W tej samej linii co klucz, po znaku
+			równo¶ci, umieszcza siê warto¶æ parametru. Je¶li warto¶æ zawiera znaki specjalne
+			nale¿y j± obj±æ w apostrofy lub cudzys³ów.</P
 ><DIV
 CLASS="EXAMPLE"
 ><A
@@ -137,20 +142,20 @@ NAME="CONFIG-FORMAT"
 ></A
 ><P
 ><B
->Przyk&#322;ad 7-1. Format of configuration options</B
+>Przyk&#322;ad 7-1. Format opcji konfiguracyjnych</B
 ></P
 ><PRE
 CLASS="SCREEN"
->[section]
-key =  value
-variable1 = "some text"
-para_meter = 'i am "para_meter" variable in apostrophes'
+>[sekcja]
+klucz = warto¶æ 
+zmienna1 = "jaki¶ tekst"
+para_metr = 'zmienna "para_metr" w apostrofach'
 
-[section_1]                    # you can comment here
-key = "text with specials: \t and ;"     ; you can comment here either
-; and this is comment all line long
+[sekcja_1]				#tu mo¿na komentowaæ
+klucz = "tekst ze znakami \t i ;"	; tu te¿ mo¿na komentowaæ
+; a to jest komentarz na ca³± liniê
 key = "A.L.E.C's LMS Daemon is the best"
-# option = disabled</PRE
+# opcja = wy³±czona</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -159,10 +164,16 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PERL"
->7.3.3. Perl scripts variables</A
+>7.3.3. Zmienne dla skryptów perlowych</A
 ></H2
 ><P
->Configuration for use by Perl scripts is someway restricted, due to restrictions of Config::IniFiles module which parses configuration file. Comments must be placed in new lines only. Values shouldn't be enclosed into apostrophes or quotes and are being read from equality sign since the end of line. </P
+>Konfiguracja skryptów perlowych, z uwagi na zastosowanie
+			modu³u Config::IniFiles, ma pewne ograniczenia. Komentarze mog±
+			byæ wstawiane tylko i wy³±cznie w nowej linii. Warto¶ci
+			zmiennych nie obejmuje siê w apostrofy lub cudzys³ów, a s±
+			one czytane od znaku równo¶ci do koñca wiersza. Dlatego w³a¶nie 
+			nie mo¿na umieszczaæ komentarzy w jednej linii z parametrami.
+			</P
 ></DIV
 ></DIV
 ><DIV
@@ -209,7 +220,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Database structure</TD
+>Struktura bazy danych</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -223,7 +234,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Filling DB with random data</TD
+>Generowanie danych losowych</TD
 ></TR
 ></TABLE
 ></DIV
