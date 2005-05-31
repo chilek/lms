@@ -160,6 +160,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $dbase;
 my $utsfmt;
 my $userq;
+my $customerq;
 
 sub instance($);
 
@@ -431,7 +432,7 @@ sub instance($)
 
 		while(my $row = $dbq->fetchrow_hashref())
 		{
-			$uprates{$row->{'userid'}} = $row->{'uprate'};
+			$uprates{$row->{'customerid'}} = $row->{'uprate'};
 			$downrates{$row->{'customerid'}} = $row->{'downrate'};
 			$upceils{$row->{'customerid'}} = $row->{'upceil'};
 			$downceils{$row->{'customerid'}} = $row->{'downceil'};
