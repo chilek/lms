@@ -1,6 +1,10 @@
 $Id$
 
-version 1.6.0rc4 (31/05/2005):
+version ? Thor (??/??/????):
+
+  - updated lib/ethercodes.txt file (alec)
+
+version 1.6.0rc4 Thor (31/05/2005):
 
   - bugfix: don't hide compressed backups on backups list (alec)
   - bugfix: debtors counting in UserStats() for MySQL (alec)
