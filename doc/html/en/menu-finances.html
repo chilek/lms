@@ -233,8 +233,60 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="MENU-IMPORT"
+>3.7.9. Import</A
+></H2
+><P
+>If you use homebanking, and you're able to get a list of
+		financial operations (ie. from bank www or email that they send
+		you), Import module can be used to (semi)automatically load it
+		into LMS accounting database and assign to respective customers.
+		You should write (or use, if it's already in distribution) a
+		parser script, which loads data to the cashimport table. Please,
+		check example script lms-cashimport-ingbs to see how this is
+		being done. After you run it, you should get a list of pending
+		financial operations, in Import module, where you can correct
+		them and accept into LMS accounting database.</P
+><P
+>You can also load previously prepared text file using this
+		module. It will be read line by line and parsed using setup
+		regular expressions to get needed data types (ie. customer id,
+		amount, etc). After file is loaded, you will be presented with
+		the same corrections/acceptance screen as above.</P
+><P
+>To setup regular expressions, which suit to your input
+		files you should create PHP script which location you must set in
+		<TT
+CLASS="FILENAME"
+>import_config</TT
+> option in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>
+		section. Example values and parameters descriptions are placed in
+		<TT
+CLASS="FILENAME"
+>modules/cashimportcfg.php</TT
+>.
+		Default configuration assumes that input data will be in 
+		the following format (tab separated):
+<PRE
+CLASS="SCREEN"
+>23.02.2004	Machniak Aleksander	123,45	Internet subscription - 04/2004 ID:0013
+15.02.2004	Pain Joseph	123,45	Invoice paid - LMS/34/2004</PRE
+>
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="MENU-FINANCES-PRINT"
->3.7.9. Printing</A
+>3.7.10. Printing</A
 ></H2
 ><P
 >There are several options for balance sheet printouts:
