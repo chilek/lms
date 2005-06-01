@@ -35,10 +35,12 @@ header('Content-Type: '.$LMS->CONFIG['invoices']['content_type']);
 if($LMS->CONFIG['invoices']['attachment_name'] != '')
 	header('Content-Disposition: attachment; filename='.$LMS->CONFIG['invoices']['attachment_name']);
 
+$SMARTY->assign('css', file('img/style_print.css')); 
+
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
 	$layout['pagetitle'] = trans('Invoices');
-	$SMARTY->display('clearheader.html');
+	$SMARTY->display('invoiceheader.html');
 	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
@@ -79,7 +81,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 elseif($_GET['fetchallinvoices'])
 {
 	$layout['pagetitle'] = trans('Invoices');
-	$SMARTY->display('clearheader.html');
+	$SMARTY->display('invoiceheader.html');
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
 	$ids = $DB->GetCol('SELECT id FROM invoices 
@@ -123,7 +125,7 @@ elseif($_GET['fetchsingle'])
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
-	$SMARTY->display('clearheader.html');
+	$SMARTY->display('invoiceheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
 	$SMARTY->display('clearfooter.html');
@@ -137,7 +139,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
-	$SMARTY->display('clearheader.html');
+	$SMARTY->display('invoiceheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
 	$SMARTY->assign('type',trans('COPY'));
