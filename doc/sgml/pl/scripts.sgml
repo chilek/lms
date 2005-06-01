@@ -332,9 +332,9 @@ http://www.naszasiec.pl/</screen></example>
           <para>Niektóre ze s³ów kluczowych s± zastêpowane:</para>
           <para>%tariff - nazwa taryfy</para>
           <para>%period - okres (liczony od dzi¶ do ostatniego dnia cyklu rozliczeniowego, w formacie YYYY/MM/DD)</para>
-          <para>%%current_month - okres od pierwszego dnia bie¿±cego miesi±ca do jego koñca</para>
+          <para>%current_month - okres od pierwszego dnia bie¿±cego miesi±ca do jego koñca</para>
 	  <para>%desc - opis taryfy</para>
-          <para>Przyk³ad:       <prompt>paytype = 'Abonament za %current_month w/g taryfy %tariff'</prompt></para>
+          <para>Przyk³ad:       <prompt>comment = 'Abonament za %current_month w/g taryfy %tariff'</prompt></para>
 	  </listitem>
           <listitem>
 	   <para>suspension_description (opcjonalny)</para>
