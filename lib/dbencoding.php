@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-if(strtolower($CONFIG['database']['server_encoding']) != 'unicode')
+if(strtolower($_CONFIG['database']['server_encoding']) != 'unicode')
 {
-	switch($CONFIG['database']['type'])
+	switch($_CONFIG['database']['type'])
 	{
 		case 'postgres':
 			$DB->Execute("SET CLIENT_ENCODING TO 'UNICODE'");
@@ -34,7 +34,7 @@ if(strtolower($CONFIG['database']['server_encoding']) != 'unicode')
 		
 		case 'sqlite':
 		case 'mysql':
-			$DB->iconv = $CONFIG['database']['server_encoding'];
+			$DB->iconv = $_CONFIG['database']['server_encoding'];
 			if(!function_exists('iconv'))
 				die('Iconv support is required by \'server_encoding\' option!');
 			if(!iconv($DB->iconv, $DB->iconv, 'test'))

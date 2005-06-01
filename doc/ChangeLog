@@ -1,9 +1,10 @@
 $Id$
 
-version ? Thor (??/??/????):
+version 1.6.0rc5 Thor (01/06/2005):
 
   - updated lib/ethercodes.txt file (alec)
   - Polish documentation last-version fix (alec)
+  - server_encoding option last-version fix (alec)
 
 version 1.6.0rc4 Thor (31/05/2005):
 
