@@ -337,9 +337,9 @@ invoices in <emphasis>[payments]</emphasis> section of
 	   <para>Some keywords are substitiuted:</para>
 	   <para>%tariff - subscription name</para>
 	   <para>%period - period (counted from current day to the last in cycle, in YYYY/MM/DD form)</para>
-	   <para>%%current_month - period form 1st day of current month to the last day</para>
+	   <para>%current_month - period form 1st day of current month to the last day</para>
 	   <para>%desc - tariff description</para>
-	   <para>Example:	<prompt>paytype = 'Subscription for %current_month'</prompt></para>
+	   <para>Example:	<prompt>comment = 'Subscription for %current_month'</prompt></para>
 	  </listitem>
 	 </itemizedlist>
          <para>Script has also one useful command line parameter: <prompt>--fakedate</prompt>
