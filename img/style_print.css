@@ -13,7 +13,8 @@ TD.fbottomu	{ border-bottom-width: 1pt; border-bottom-style: solid; border-left-
 TD.fall		{ border-width: 1pt; border-style: solid; }
 TD.fbt		{ border-bottom-width: 1pt; border-bottom-style: solid; border-top-width: 1pt; border-top-style: solid; }
 TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
-TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 2pt; border-style: solid; }
+TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 1pt; border-style: solid; }
+TD.headgrey	{ color: black; background-color: darkgrey; font-weight: bold; border-width: 1pt; border-style: solid; }
 
 A		{ text-decoration: none; }
 
@@ -24,6 +25,7 @@ P.separated	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; m
 
 H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 
+.shdf		{ font-size: 20pt; font-weight: bold; }
 .hdf		{ font-size: 14pt; }
 .sdr		{ font-size: 10pt; }
 .blend		{ color: #888888; }
