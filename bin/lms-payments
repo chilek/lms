@@ -218,7 +218,7 @@ $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, customerid, perio
 	ROUND(ROUND(CASE discount WHEN 0 THEN value ELSE ((100-discount)*value)/100 END, 2) * $suspension_percentage/100, 2) END AS value
 	FROM assignments, tariffs, customers
 	WHERE tariffs.id = tariffid AND customerid = customers.id
-	AND status = 3 AND deleted = 0 AND value > 0
+	AND status = 3 AND deleted = 0 AND value != 0
 	AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0)
 	ORDER BY customerid, invoice, value DESC");
 $dbq->execute();
@@ -226,7 +226,7 @@ $dbq->execute();
 while(my $assign = $dbq->fetchrow_hashref())
 {
 	my $uid = $assign->{'customerid'};
-	
+
 	# check, if all customer liabilities are suspended
 	if($suspended != $uid)
 	{
