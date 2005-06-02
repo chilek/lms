@@ -218,7 +218,7 @@ $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, a
 	ROUND(ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) * $suspension_percentage/100, 2) END AS value
 	FROM assignments, tariffs, users
 	WHERE tariffs.id = tariffid AND userid = users.id
-	AND status = 3 AND deleted = 0 AND value > 0
+	AND status = 3 AND deleted = 0 AND value != 0
 	AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0)
 	ORDER BY userid, invoice, value DESC");
 $dbq->execute();
