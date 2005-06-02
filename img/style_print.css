@@ -14,7 +14,7 @@ TD.fall		{ border-width: 1pt; border-style: solid; }
 TD.fbt		{ border-bottom-width: 1pt; border-bottom-style: solid; border-top-width: 1pt; border-top-style: solid; }
 TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
 TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 1pt; border-style: solid; }
-TD.headgrey	{ color: black; background-color: darkgrey; font-weight: bold; border-width: 1pt; border-style: solid; }
+TD.headgrey	{ color: black; background-color: #A9A9A9; font-weight: bold; border-width: 1pt; border-style: solid; }
 
 A		{ text-decoration: none; }
 
