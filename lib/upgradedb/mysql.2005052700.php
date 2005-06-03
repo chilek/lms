@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-
 $DB->Execute("ALTER TABLE cash CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
 $DB->Execute("ALTER TABLE rtmessages CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
 $DB->Execute("ALTER TABLE events CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
@@ -35,7 +34,7 @@ $DB->Execute("ALTER TABLE rtrights ADD UNIQUE (userid, queueid)");
 
 $DB->Execute("ALTER TABLE eventassignments DROP INDEX eventid");
 $DB->Execute("ALTER TABLE eventassignments CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE eventassignments ADD UNIQUE (eventid, adminid)");
+$DB->Execute("ALTER TABLE eventassignments ADD UNIQUE (eventid, userid)");
 
 $DB->Execute("RENAME TABLE admins TO users");
 
