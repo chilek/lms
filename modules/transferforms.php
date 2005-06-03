@@ -32,7 +32,7 @@ $diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogo
 //$pdf =& new Cezpdf('A4','landscape');
 $pdf =& new Cezpdf('A4','portrait');
 $pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title',trans('Form of Cash Transfer');
+$pdf->addInfo('Title',trans('Form of Cash Transfer'));
 $pdf->addInfo('Creator','LMS '.$layout['lmsv']);
 $pdf->setPreferences('FitWindow','1');
 $pdf->ezSetMargins(0,0,0,0);
