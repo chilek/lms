@@ -79,23 +79,23 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.nip neq ""}
+{if $customerinfo.ten neq ""}
 	<TR>
 		<TD WIDTH="1%" ALIGN="CENTER">
 			<B>{t}TEN:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.nip}
+			{$customerinfo.ten}
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.pesel neq ""}
+{if $customerinfo.ssn neq ""}
 	<TR">
 		<TD WIDTH="1%" ALIGN="CENTER">
 			<B>{t}SSN:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.pesel}
+			{$customerinfo.ssn}
 		</TD>
 	</TR>
 {/if}

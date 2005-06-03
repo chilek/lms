@@ -52,15 +52,13 @@
 			<B>{t}First/last or Company name:{/t}<BR>
 			{t}Address:{/t}<BR>
 			<BR>
-			{if $customer.nip}{t}TEN:{/t}<BR>{elseif $customer.pesel}{t}SSN:{/t}<BR>{/if}
-			{if $customer.phone1}{t}Phone:{/t}{/if}</B>
+			{if $customer.ten}{t}TEN:{/t}<BR>{elseif $customer.ssn}{t}SSN:{/t}<BR>{/if}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			{$customer.customername}<BR>
 			{$customer.address}<BR>
 			{$customer.zip} {$customer.city}<BR>
-			{if $customer.nip}{$customer.nip}<BR>{elseif $customer.pesel}{$customer.pesel}<BR>{/if}
-			{if $customer.phone1}{$customer.phone1}{/if}
+			{if $customer.ten}{$customer.ten}<BR>{elseif $customer.ssn}{$customer.ssn}<BR>{/if}
 		</TD>
 	</TR>
 	{/if}

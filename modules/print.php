@@ -471,7 +471,7 @@ switch($type)
 		}
 		
 		if($reportlist =  $DB->GetAll('SELECT customerid, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
-			    .$DB->Concat('city',"' '",'address').' AS address, nip, 
+			    .$DB->Concat('city',"' '",'address').' AS address, ten, 
 			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
 			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
 			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
@@ -482,7 +482,7 @@ switch($type)
 			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
 			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
 			    .($customerid ? 'AND customerid='.$customerid : ''). 
-			    ' GROUP BY customerid, lastname, customers.name, city, address, nip '
+			    ' GROUP BY customerid, lastname, customers.name, city, address, ten '
 			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
 			    array($reportday, $reportday, $weekday, $monthday, $quarterday, $yearday))
 		)

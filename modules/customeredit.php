@@ -57,11 +57,11 @@ elseif(isset($_POST['customerdata']))
 	if($customerdata['address']=='')
 		$error['address'] = trans('Address required!');
 
-	if($customerdata['nip'] !='' && !check_ten($customerdata['nip']))
-		$error['nip'] = trans('Incorrect Tax Exempt Number!');
+	if($customerdata['ten'] !='' && !check_ten($customerdata['ten']))
+		$error['ten'] = trans('Incorrect Tax Exempt Number!');
 
-	if(!check_ssn($customerdata['pesel']) && $customerdata['pesel'] != '')
-		$error['pesel'] = trans('Incorrect Social Security Number!');
+	if(!check_ssn($customerdata['ssn']) && $customerdata['ssn'] != '')
+		$error['ssn'] = trans('Incorrect Social Security Number!');
 
 	if($customerdata['zip'] !='' && !check_zip($customerdata['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');

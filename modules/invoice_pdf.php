@@ -147,11 +147,10 @@ function invoice_buyer($x,$y)
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['name']));
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['address']));
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city']));
-    if ($invoice['phone']) $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Phone:').' '.$invoice['phone']));
-    if ($invoice['nip']) 
-	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('TEN:')).' '.$invoice['nip']);
-    else if ($invoice['pesel']) 
-	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('SSN:')).' '.$invoice['pesel']);
+    if ($invoice['ten']) 
+	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('TEN:')).' '.$invoice['ten']);
+    else if ($invoice['ssn']) 
+	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('SSN:')).' '.$invoice['ssn']);
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Customer No.: $0',sprintf('%04d',$invoice['customerid']))).'</b>');
     return $y;
 }

@@ -37,8 +37,7 @@
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
-			{if $invoice.phone neq ""}{t}Phone:{/t} {$invoice.phone}<BR>{/if}
-			{if $invoice.nip neq ""}{t}TEN:{/t} {$invoice.nip}<BR>{elseif $invoice.pesel neq ""}{t}SSN:{/t} {$invoice.pesel}<BR>{/if}
+			{if $invoice.ten neq ""}{t}TEN:{/t} {$invoice.ten}<BR>{elseif $invoice.ssn neq ""}{t}SSN:{/t} {$invoice.ssn}<BR>{/if}
 			<BR>
 			<B>{t}Customer ID:{/t} {$invoice.customerid|string_format:"%04d"}</B>
 		</TD>

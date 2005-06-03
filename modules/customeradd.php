@@ -91,11 +91,11 @@ if(isset($_POST['customeradd']))
 	if($customeradd['address'] == '')
 		$error['address'] = trans('Address required!');
 	
-	if($customeradd['nip'] !='' && !check_ten($customeradd['nip']))
-		$error['nip'] = trans('Incorrect Tax Exempt Number!');
+	if($customeradd['ten'] !='' && !check_ten($customeradd['ten']))
+		$error['ten'] = trans('Incorrect Tax Exempt Number!');
 
-	if($customeradd['pesel'] != '' && !check_ssn($customeradd['pesel']))
-		$error['pesel'] = trans('Incorrect Social Security Number!');
+	if($customeradd['ssn'] != '' && !check_ssn($customeradd['ssn']))
+		$error['ssn'] = trans('Incorrect Social Security Number!');
 		
 	if($customeradd['zip'] !='' && !check_zip($customeradd['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
