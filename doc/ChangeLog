@@ -44,6 +44,8 @@ version 1.7.1 Swarog (??/??/????):
   - lms-payments: again tariff value can be less than zero (alec)
   - fixed customer name capitalization on contract (alec)
   - lmsd: added 'parser' module (alec)
+  - formularz_przelewu_wplaty_2 (cash transfer forms) is now integrated
+    with LMS (lexx)
 
 version 1.7.0 Klorel (13/05/2005):
 
