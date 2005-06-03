@@ -70,6 +70,11 @@ unsigned char * parse(unsigned char *string)
 		    }
 		}
 	    }
+	    if(c=='\n') { // backlash at end of line - do nothing (for parser module)
+		out[k++] = '\\'; out[k++] = c; i++;
+		continue; 
+	    } 
+
 	    out[k++] = c; i++; // just an escaped character
 	}
 	else
