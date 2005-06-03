@@ -416,6 +416,22 @@ cal4.time_comp = false;
 {/if}
 {if $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
+{literal}
+<SCRIPT language=JavaScript>
+    <!--
+    function print()
+    {
+        document.printinvoices.action="?m=print&type=invoices";
+	document.printinvoices.submit();
+    }
+    function print_forms()
+    {
+        document.printinvoices.action="?m=print&type=transferforms";
+	document.printinvoices.submit();
+    }
+    //-->
+</SCRIPT>
+{/literal}					    
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -464,7 +480,8 @@ cal4.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printinvoices.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:print_forms();">{t}Print form of cash transfer{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:print();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>

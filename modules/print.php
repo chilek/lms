@@ -404,6 +404,26 @@ switch($type)
 		header('Location: ?m=invoice&fetchallinvoices=1&which='.$witch.'&customerid='.$_POST['customer'].'&from='.$date['from'].'&to='.$date['to']);
 	break;	
 
+	case 'transferforms': /********************************************/
+	
+		$from = $_POST['invoicefrom'];
+		$to = $_POST['invoiceto'];
+
+		// date format 'yyyy/mm/dd'	
+		list($year, $month, $day) = split('/',$from);
+		$date['from'] = mktime(0,0,0,$month,$day,$year);
+
+		if($to) {
+			list($year, $month, $day) = split('/',$to);
+			$date['to'] = mktime(23,59,59,$month,$day,$year);
+		} else { 
+			$to = date('Y/m/d',time());
+			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		}
+		
+		header('Location: ?m=transferforms&customerid='.$_POST['customer'].'&from='.$date['from'].'&to='.$date['to']);
+	break;	
+
 	case 'liabilityreport': /********************************************/
 	
 		if(isset($_POST['day']) && $_POST['day']) 
