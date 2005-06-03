@@ -1,0 +1,25 @@
+LDFLAGS += -lfl
+SOURCES = parser.c lib/tscript.a extensions/tscript_extensions.a
+OBJECTS = ${SOURCES:.c=.o}
+
+OUT = parser.so
+
+all: libs ext $(OUT)
+
+libs:
+	make -C lib
+
+ext:
+	make -C extensions
+
+$(OUT): ${OBJECTS}
+	gcc -shared $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS) 
+	rm -rf $(OBJECTS)
+
+clean:
+	rm -rf $(OUT)
+	make -C lib clean
+	make -C extensions clean
+
+install:
+	install -c -m 755 $(OUT) $(MODULESDIR)

@@ -228,5 +228,17 @@ LDFLAGS = $LDFLAGS
 	fi
     fi
 done 
+
+cd parser/extensions
+if [ -e ./Makefile.in ]
+then
+    echo -n "Create Makefile for mod_parser extensions..."
+    echo "
+DBDRIVER = $DBDRIVER
+CFLAGS = $CFLAGS $FLAGS -I../.. -Wall -O2
+" > ./Makefile && cat ./Makefile.in >> ./Makefile
+    echo " done"
+fi
+
 echo "***************************************************************"
 echo "Configuration finished. Now You can type 'make && make install'"
