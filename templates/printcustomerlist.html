@@ -51,7 +51,7 @@
 		<TD ALIGN="RIGHT">
 			{$customerlist[customerlist].tariffvalue|money_format}<BR>
 			{$customerlist[customerlist].email}<BR>
-			{if $customerlist[customerlist].nip}{$customerlist[customerlist].nip}{else}{$customerlist[customerlist].pesel}{/if}
+			{if $customerlist[customerlist].ten}{$customerlist[customerlist].ten}{else}{$customerlist[customerlist].ssn}{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$customerlist[customerlist].balance|money_format} 

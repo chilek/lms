@@ -395,7 +395,7 @@ class LMS
 
 	function CustomerAdd($customeradd)
 	{
-		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($customeradd['name']),  $customeradd['lastname'], $customeradd['phone1'], $customeradd['phone2'], $customeradd['phone3'], $customeradd['gguin'], $customeradd['address'], $customeradd['zip'], $customeradd['city'], $customeradd['email'], $customeradd['nip'], $customeradd['pesel'], $customeradd['status'], $this->AUTH->id, $customeradd['info'], $customeradd['serviceaddr'], $customeradd['message'], $customeradd['pin']))) 
+		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, ten, ssn, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($customeradd['name']),  $customeradd['lastname'], $customeradd['phone1'], $customeradd['phone2'], $customeradd['phone3'], $customeradd['gguin'], $customeradd['address'], $customeradd['zip'], $customeradd['city'], $customeradd['email'], $customeradd['ten'], $customeradd['ssn'], $customeradd['status'], $this->AUTH->id, $customeradd['info'], $customeradd['serviceaddr'], $customeradd['message'], $customeradd['pin']))) 
 		{
 			$this->SetTS('customers');
 			return $this->DB->GetOne('SELECT MAX(id) FROM customers');
@@ -419,7 +419,7 @@ class LMS
 	function CustomerUpdate($customerdata)
 	{
 		$this->SetTS('customers');
-		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $customerdata['status'], $customerdata['phone1'], $customerdata['phone2'], $customerdata['phone3'], $customerdata['address'], $customerdata['zip'], $customerdata['city'], $customerdata['email'], $customerdata['gguin'], $customerdata['nip'], $customerdata['pesel'], $this->AUTH->id, $customerdata['info'], $customerdata['serviceaddr'], $customerdata['lastname'], ucwords($customerdata['name']), $customerdata['message'], $customerdata['pin'], $customerdata['id'] ) );
+		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, ten=?, ssn=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $customerdata['status'], $customerdata['phone1'], $customerdata['phone2'], $customerdata['phone3'], $customerdata['address'], $customerdata['zip'], $customerdata['city'], $customerdata['email'], $customerdata['gguin'], $customerdata['ten'], $customerdata['ssn'], $this->AUTH->id, $customerdata['info'], $customerdata['serviceaddr'], $customerdata['lastname'], ucwords($customerdata['name']), $customerdata['message'], $customerdata['pin'], $customerdata['id'] ) );
 	}
 
 	function GetCustomerNodesNo($id)
@@ -444,7 +444,7 @@ class LMS
 
 	function GetCustomer($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin FROM customers WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, ten, ssn, city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin FROM customers WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
@@ -697,7 +697,7 @@ class LMS
 	{
 		$saldolist = array();
 		// wrapper do starego formatu
-		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS username FROM cash LEFT JOIN users ON users.id=userid WHERE customerid=? ORDER BY time', array($id)))
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, docid, name AS username FROM cash LEFT JOIN users ON users.id=userid WHERE customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -722,8 +722,8 @@ class LMS
 					case '4':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
 						$saldolist['name'][$i] = trans('covenant');
-						if ($saldolist['invoiceid'][$i])
-							$saldolist['invoicepaid'][$i] = $this->IsInvoicePaid($saldolist['invoiceid'][$i]);
+						if ($saldolist['docid'][$i])
+							$saldolist['invoicepaid'][$i] = $this->IsInvoicePaid($saldolist['docid'][$i]);
 					break;
 				}
 
@@ -1228,7 +1228,7 @@ class LMS
 			$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
 		}
 
-		$number = $this->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
+		$number = $this->DB->GetOne('SELECT MAX(number) FROM documents WHERE cdate >= ? AND cdate < ? AND type = 1', array($start, $end));
 		$number = $number ? ++$number : 1;
 		
 		return $number;
@@ -1250,7 +1250,7 @@ class LMS
 			$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
 		}
 
-		return ($this->DB->GetOne('SELECT number FROM invoices WHERE cdate >= ? AND cdate < ? AND number = ?', array($start, $end, $number)) ? TRUE : FALSE);
+		return ($this->DB->GetOne('SELECT number FROM documents WHERE cdate >= ? AND cdate < ? AND number = ? AND type = 1', array($start, $end, $number)) ? TRUE : FALSE);
 	}
 	
 	function GetCustomerTariffsValue($id)
@@ -1337,8 +1337,8 @@ class LMS
 		}
 		
 		$number = $invoice['invoice']['number'];
-		$this->DB->Execute('INSERT INTO invoices (number, cdate, paytime, paytype, customerid, name, address, nip, pesel, zip, city, phone, finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1']));
-		$iid = $this->DB->GetOne('SELECT id FROM invoices WHERE number = ? AND cdate = ?', array($number,$cdate));
+		$this->DB->Execute('INSERT INTO documents (number, type, cdate, paytime, paytype, customerid, name, address, ten, ssn, zip, city) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city']));
+		$iid = $this->DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = 1', array($number,$cdate));
 		
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
@@ -1348,7 +1348,7 @@ class LMS
 			$item['count'] = str_replace(',','.',$item['count']);
 
 			if($item['taxvalue'] || $item['taxvalue'] == '0')
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
+				$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
 					$iid, 
 					$itemid, 
 					$item['valuebrutto'], 
@@ -1360,7 +1360,7 @@ class LMS
 					$item['tariffid']));
 				
 			else
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+				$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
 				array(
 					$iid,
 					$itemid ,
@@ -1370,10 +1370,10 @@ class LMS
 					$item['count'], 
 					$item['name'], 
 					$item['tariffid']));
-			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid, 'itemid'=>$itemid));
+			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
 		
-		$this->SetTS('invoices');
+		$this->SetTS('documents');
 		$this->SetTS('invoicecontents');
 
 		return $iid;
@@ -1385,11 +1385,11 @@ class LMS
 		
 		$iid = $invoice['invoice']['id'];
 
-		$this->DB->Execute('UPDATE invoices SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, nip = ?, pesel = ?, zip = ?, city = ?, phone = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1'], $iid));
-		$this->DB->Execute('DELETE FROM invoicecontents WHERE invoiceid = ?', array($iid));
-		$this->DB->Execute('DELETE FROM cash WHERE invoiceid = ? AND type = 4', array($iid));
+		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city'], $iid));
+		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
+		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($iid));
 		//if invoice was paid (then you need to manual bind orphant payments with covenants)
-		$this->DB->Execute('UPDATE cash SET invoiceid = 0, itemid = 0, customerid = ? WHERE invoiceid = ?', array($invoice['customer']['id'], $iid));
+		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0, customerid = ? WHERE docid = ?', array($invoice['customer']['id'], $iid));
 		
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
@@ -1397,7 +1397,7 @@ class LMS
 			$itemid++;
 			
 			if($item['taxvalue'] || $item['taxvalue'] == '0')
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array(
 					$iid, 
 					$itemid, 
@@ -1409,7 +1409,7 @@ class LMS
 					$item['name'], 
 					$item['tariffid']));
 			else
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+				$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
 				array(
 					$iid,
 					$itemid,
@@ -1419,20 +1419,20 @@ class LMS
 					$item['count'], 
 					$item['name'], 
 					$item['tariffid']));
-			$this->AddBalance(array('type' => 4, 'time' => $cdate, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid, 'itemid'=>$itemid));
+			$this->AddBalance(array('type' => 4, 'time' => $cdate, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
 		
-		$this->SetTS('invoices');
+		$this->SetTS('documents');
 		$this->SetTS('invoicecontents');
 	}
 
 	function InvoiceDelete($invoiceid)
 	{
-		$this->DB->Execute('DELETE FROM invoices WHERE id = ?', array($invoiceid));
-		$this->DB->Execute('DELETE FROM invoicecontents WHERE invoiceid = ?', array($invoiceid));
-		$this->DB->Execute('DELETE FROM cash WHERE invoiceid = ? AND type = 4', array($invoiceid));
-		$this->DB->Execute('UPDATE cash SET invoiceid = 0, itemid = 0 WHERE invoiceid = ?', array($invoiceid));
-		$this->SetTS('invoices');
+		$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
+		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
+		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($invoiceid));
+		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0 WHERE docid = ?', array($invoiceid));
+		$this->SetTS('documents');
 		$this->SetTS('invoicecontents');
 	}
 
@@ -1440,16 +1440,16 @@ class LMS
 	{
 		if($itemid)
 		{
-			$this->DB->Execute('DELETE FROM invoicecontents WHERE invoiceid=? AND itemid=?', array($invoiceid, $itemid));
+			$this->DB->Execute('DELETE FROM invoicecontents WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
 			
-			if(!$this->DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE invoiceid=?', array($invoiceid)))
+			if(!$this->DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE docid=?', array($invoiceid)))
 			{
 				// if that was the last item of invoice contents
-				$this->DB->Execute('DELETE FROM invoices WHERE id = ?', array($invoiceid));
+				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 			}
-			$this->DB->Execute('DELETE FROM cash WHERE invoiceid = ? AND itemid = ? AND type = 4', array($invoiceid, $itemid));
-			$this->DB->Execute('UPDATE cash SET invoiceid=0, itemid=0 WHERE invoiceid=? AND itemid=?', array($invoiceid, $itemid));
-			$this->SetTS('invoices');
+			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ? AND type = 4', array($invoiceid, $itemid));
+			$this->DB->Execute('UPDATE cash SET docid=0, itemid=0 WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
+			$this->SetTS('documents');
 			$this->SetTS('invoicecontents');
 		}
 		else
@@ -1458,7 +1458,7 @@ class LMS
 
 	function IsInvoicePaid($invoiceid)
 	{
-		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid=?', array($invoiceid)) >= 0 ? TRUE : FALSE;
+		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE docid=?', array($invoiceid)) >= 0 ? TRUE : FALSE;
 	}
 
 	function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
@@ -1473,10 +1473,10 @@ class LMS
 		switch($order)
 		{
 			case 'id':
-				$sqlord = ' ORDER BY invoices.id';
+				$sqlord = ' ORDER BY documents.id';
 			break;
 			case 'cdate':
-				$sqlord = ' ORDER BY invoices.cdate';
+				$sqlord = ' ORDER BY documents.cdate';
 			break;
 			case 'number':
 				$sqlord = ' ORDER BY number';
@@ -1505,8 +1505,8 @@ class LMS
 				case 'cdate':
 					$where = ' AND cdate >= '.$search.' AND cdate < '.($search+86400);
 					break;
-				case 'nip':
-					$where = ' AND nip = \''.$search.'\'';
+				case 'ten':
+					$where = ' AND ten = \''.$search.'\'';
 					break;
 				case 'customerid':
 					$where = ' AND customerid = '.intval($search);
@@ -1520,15 +1520,15 @@ class LMS
 			}
 		}
 
-		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, 
-						SUM(value*count) AS value, COUNT(invoiceid) AS count 
-						FROM invoices, invoicecontents 
-						WHERE invoiceid = id AND finished = 1 '
+		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city,
+						SUM(value*count) AS value, COUNT(docid) AS count 
+						FROM documents, invoicecontents 
+						WHERE docid = documents.id AND type = 1'
 						.$where
-						.' GROUP BY id, number, cdate, customerid, name, address, zip, city, finished '
+						.' GROUP BY id, number, cdate, customerid, name, address, zip, city '
 						.$sqlord.' '.$direction))
 		{
-			$inv_paid = $this->DB->GetAllByKey('SELECT invoiceid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE invoiceid!=0 GROUP BY invoiceid','id');
+			$inv_paid = $this->DB->GetAllByKey('SELECT docid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE docid!=0 GROUP BY docid','id');
 			
 			if($group['group'])
 				$customers = $this->DB->GetAllByKey('SELECT customerid AS id FROM customerassignments WHERE customergroupid=?', 'id', array($group['group']));
@@ -1557,7 +1557,7 @@ class LMS
 
 	function GetUnfishedInvoices()
 	{
-		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 0 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
+		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, SUM(value) AS value, COUNT(docid) AS count FROM documents LEFT JOIN invoicecontents ON docid = documents.id WHERE GROUP BY id, number, cdate, customerid, name, address, zip, city ORDER BY cdate ASC'))
 		{
 			foreach($result as $idx => $row)
 			{
@@ -1571,9 +1571,9 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished FROM invoices WHERE id=?', array($invoiceid)))
+		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
 		{
-			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid, itemid FROM invoicecontents WHERE invoiceid=?', array($invoiceid)))
+			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid, itemid FROM invoicecontents WHERE docid=?', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
 					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
@@ -1776,22 +1776,22 @@ class LMS
 		$addbalance['taxvalue'] = $addbalance['taxvalue']!='' ? str_replace(',','.',round($addbalance['taxvalue'],2)) : '';
 		if($addbalance['time'])
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 		else
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
 	}
 
 	function DelBalance($id)
 	{
-		$row = $this->DB->GetRow('SELECT invoiceid, itemid, type FROM cash WHERE id=?', array($id));
+		$row = $this->DB->GetRow('SELECT docid, itemid, type FROM cash WHERE id=?', array($id));
 		
-		if($row['type']=='4' && $row['invoiceid'] && $row['itemid'])
-			$this->InvoiceContentDelete($row['invoiceid'], $row['itemid']);
+		if($row['type']=='4' && $row['docid'] && $row['itemid'])
+			$this->InvoiceContentDelete($row['docid'], $row['itemid']);
 		else
 			$this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
 		
@@ -1802,7 +1802,7 @@ class LMS
 	{
 		$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
 		$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
-		if($balancelist = $this->DB->GetAll('SELECT id, time, userid, type, value, taxvalue, customerid, comment, invoiceid FROM cash ORDER BY time, id'))
+		if($balancelist = $this->DB->GetAll('SELECT id, time, userid, type, value, taxvalue, customerid, comment, docid FROM cash ORDER BY time, id'))
 		{
 			foreach($balancelist as $idx => $row)
 			{
@@ -1853,7 +1853,7 @@ class LMS
 			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS tax7,
 			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS tax0,
 			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
-			FROM cash WHERE (type=1 OR type=3) AND time>=? AND time<=? AND invoiceid=0
+			FROM cash WHERE (type=1 OR type=3) AND time>=? AND time<=? AND docid=0
 			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));
 	}
@@ -1865,13 +1865,13 @@ class LMS
 			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS totaltax7,
 			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS totaltax0,
 			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS totaltaxfree FROM cash
-			WHERE (type=1 OR type=3) AND time>=? AND time<=? AND invoiceid=0',
+			WHERE (type=1 OR type=3) AND time>=? AND time<=? AND docid=0',
 			array($date['from'], $date['to']));
 	}
 
 	function GetItemUnpaidValue($invoiceid, $itemid)
 	{
-		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 FROM cash WHERE invoiceid=? AND itemid=?', array($invoiceid, $itemid));
+		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 FROM cash WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
 	}
 
 	/*

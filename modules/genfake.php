@@ -1913,8 +1913,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['gguin'] = 0;
 		$customeradd['phone2'] = '';
 		$customeradd['phone3'] = '';
-		$customeradd['nip'] = '';
-		$customeradd['pesel'] = '';
+		$customeradd['ten'] = '';
+		$customeradd['ssn'] = '';
 		$customeradd['serviceaddr'] = '';
 		$customeradd['info'] = '';
 		$customeradd['message'] = '';

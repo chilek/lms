@@ -48,7 +48,7 @@ $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 $listdata = array();
 $invoicelist = array();
 
-if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, nip, pesel, taxvalue, SUM(value*count) AS value FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 AND (cdate BETWEEN ? AND ?) GROUP BY id, number, taxvalue, cdate, customerid, name, address, zip, city, nip, pesel, finished ORDER BY cdate ASC', array($unixfrom, $unixto)))
+if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxvalue, SUM(value*count) AS value FROM documents LEFT JOIN invoicecontents ON invoiceid = id WHERE type = 1 AND (cdate BETWEEN ? AND ?) GROUP BY id, number, taxvalue, cdate, customerid, name, address, zip, city, ten, ssn ORDER BY cdate ASC', array($unixfrom, $unixto)))
 {
 	foreach($result as $idx => $row)
 	{
@@ -56,7 +56,7 @@ if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, z
 		$value = round($row['value'], 2);
 		$invoicelist[$id]['custname'] = $row['name'];
 		$invoicelist[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
-		$invoicelist[$id]['nip'] = ($row['nip'] ? trans('TEN').' '.$row['nip'] : ($row['pesel'] ? trans('SSN').' '.$row['pesel'] : ''));
+		$invoicelist[$id]['ten'] = ($row['ten'] ? trans('TEN').' '.$row['ten'] : ($row['ssn'] ? trans('SSN').' '.$row['ssn'] : ''));
 		$invoicelist[$id]['number'] = $row['number'];
 		$invoicelist[$id]['cdate'] = $row['cdate'];
 		$invoicelist[$id]['customerid'] = $row['customerid'];
