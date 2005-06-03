@@ -32,7 +32,7 @@ $diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogo
 //$pdf =& new Cezpdf('A4','landscape');
 $pdf =& new Cezpdf('A4','portrait');
 $pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title','Druki przelewu/wplaty');
+$pdf->addInfo('Title',trans('Form of Cash Transfer');
 $pdf->addInfo('Creator','LMS '.$layout['lmsv']);
 $pdf->setPreferences('FitWindow','1');
 $pdf->ezSetMargins(0,0,0,0);
@@ -111,12 +111,12 @@ function address_box($x,$y,$scale)	{
 }
 
 // Dobra, czytamy z lms.ini
-$_NAME = (! $_CONFIG[finances]['name'] ? trans("Not set") : $_CONFIG[finances]['name']);
-$_SHORT_NAME = (! $_CONFIG[finances]['shortname'] ? trans("Not set") : $_CONFIG[finances]['shortname']);
-$_ADDRESS = (! $_CONFIG[finances]['address'] ? trans("Not set") : $_CONFIG[finances]['address']);
-$_ZIP = (! $_CONFIG[finances]['zip'] ? trans("Not set") : $_CONFIG[finances]['zip']);
-$_CITY = (! $_CONFIG[finances]['city'] ? trans("Not set") : $_CONFIG[finances]['city']);
-$_ACCOUNT = (! $_CONFIG[finances]['account'] ? trans("Not set") : $_CONFIG[finances]['account']);
+$_NAME = (! $CONFIG[finances]['name'] ? trans("Not set") : $CONFIG[finances]['name']);
+$_SHORT_NAME = (! $CONFIG[finances]['shortname'] ? trans("Not set") : $CONFIG[finances]['shortname']);
+$_ADDRESS = (! $CONFIG[finances]['address'] ? trans("Not set") : $CONFIG[finances]['address']);
+$_ZIP = (! $CONFIG[finances]['zip'] ? trans("Not set") : $CONFIG[finances]['zip']);
+$_CITY = (! $CONFIG[finances]['city'] ? trans("Not set") : $CONFIG[finances]['city']);
+$_ACCOUNT = (! $CONFIG[finances]['account'] ? trans("Not set") : $CONFIG[finances]['account']);
 
 $control_lines = 0;
 
@@ -141,7 +141,7 @@ $i=0;
 foreach($ids as $idx => $invoiceid)
 {
     $invoice = $LMS->GetInvoiceContent($invoiceid);
-    $ntempl = $LMS->CONFIG['invoices']['number_template'];
+    $ntempl = $CONFIG['invoices']['number_template'];
     $ntempl = str_replace('%N',$invoice['number'],$ntempl);
     $ntempl = str_replace('%M',$invoice['month'],$ntempl);
     $ntempl = str_replace('%Y',$invoice['year'],$ntempl);
