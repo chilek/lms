@@ -97,8 +97,8 @@
 			{t}Customer:{/t}
 			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
-				{foreach from=$customers item=customer}
-				<OPTION VALUE="{$customer.id}"{if $customer.id eq $customer.id || $invoice.customerid eq $customer.id} SELECTED{/if}>{$customer.customername} ({$customer.id|string_format:"%04d"})</OPTION>
+				{foreach from=$customers item=c}
+				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} SELECTED{/if}>{$c.customername} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 			{t}or Customer ID:{/t}
