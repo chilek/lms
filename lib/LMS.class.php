@@ -1337,9 +1337,11 @@ class LMS
 		}
 		
 		$number = $invoice['invoice']['number'];
-		$this->DB->Execute('INSERT INTO documents (number, type, cdate, paytime, paytype, customerid, name, address, ten, ssn, zip, city) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city']));
+		$this->DB->Execute('INSERT INTO documents (number, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city) 
+				    VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				    array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $this->AUTH->id, $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city']));
 		$iid = $this->DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = 1', array($number,$cdate));
-		
+
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
 		{
@@ -1571,7 +1573,7 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
+		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
 		{
 			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid, itemid FROM invoicecontents WHERE docid=?', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
@@ -1776,14 +1778,14 @@ class LMS
 		$addbalance['taxvalue'] = $addbalance['taxvalue']!='' ? str_replace(',','.',round($addbalance['taxvalue'],2)) : '';
 		if($addbalance['time'])
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 		else
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
 	}
 
 	function DelBalance($id)
