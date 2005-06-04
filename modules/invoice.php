@@ -49,7 +49,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	{
 		foreach($ids as $cashid)
 		{
-			if($invoiceid = $DB->GetOne('SELECT invoiceid FROM cash WHERE id = ?', array($cashid)))
+			if($invoiceid = $DB->GetOne('SELECT docid FROM cash WHERE id = ?', array($cashid)))
 				$idsx[] = $invoiceid;
 		}
 		$ids = array_unique($idsx);
@@ -84,8 +84,8 @@ elseif($_GET['fetchallinvoices'])
 	$SMARTY->display('invoiceheader.html');
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
-	$ids = $DB->GetCol('SELECT id FROM invoices 
-				WHERE cdate > ? AND cdate < ?'
+	$ids = $DB->GetCol('SELECT id FROM documents 
+				WHERE cdate > ? AND cdate < ? AND type = 1'
 				.($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
 				.' ORDER BY cdate',
 				array($_GET['from'], $_GET['to']));

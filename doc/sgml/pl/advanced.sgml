@@ -108,8 +108,8 @@
                     <member>address - adres (ulica, nr domu, nr lokalu)</member>
                     <member>zip - kod pocztowy</member>
                     <member>city - nazwa miasta</member>
-                    <member>nip - numer identyfikacji podatkowej NIP</member>
-                    <member>pesel - numer PESEL</member>
+                    <member>ten - numer identyfikacji podatkowej NIP</member>
+                    <member>ssn - numer PESEL</member>
                     <member>info - dodatkowe informacje</member>
                     <member>serviceaddr - adres do dorêczeñ (np. na faktury)</member>
                     <member>creationdate - czas utworzenia wpisu</member>
@@ -206,7 +206,7 @@
                     <member>value - warto¶æ w z³otych</member>
                     <member>taxvalue - procent podatku</member>
                     <member>customerid - identyfikator klienta ('0' - je¶li nie dotyczy)</member>
-                    <member>invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</member>
+                    <member>docid - identyfikator dokumentu (np. faktury) obejmuj±cego dan± operacjê</member>
                     <member>itemid - nr pozycji na fakturze</member>
                     <member>comment - opis operacji</member>
                </simplelist>
@@ -268,29 +268,29 @@
                     <member>suspended - zawieszenie p³atno¶ci (1 - tak, 0 - nie)</member>
                </simplelist>
           </sect2>
-          <sect2 id="invoices">
-               <title>Faktury ('invoices')</title>
+          <sect2 id="documents">
+               <title>Dokumenty: faktury, KP, umowy, etc. ('documents')</title>
                   <simplelist>
                     <member>id - identyfikator</member>
                     <member>number - numer w roku</member>
+		    <member>type - typ dokumentu (1-faktura, 2-KP)</member>
                     <member>cdate - data wystawienia</member>
                     <member>paytime - termin p³atno¶ci (ilo¶æ dni)</member>
                     <member>paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)</member>
                     <member>customerid - identyfikator klienta-nabywcy</member>
-                    <member>name - nazwa (nazwisko i imiê) nabywcy</member>
-                    <member>address - adres nabywcy</member>
-                    <member>nip - nip nabywcy</member>
-                    <member>pesel - PESEL nabywcy</member>
-                    <member>zip - kod pocztowy nabywcy</member>
-                    <member>phone - telefon nabywcy</member>
-                    <member>city - miasto nabywcy</member>
-                    <member>finished - pole okre¶laj±ce zamkniêcie faktury (0/1)</member>
+		    <member>userid - identyfikator u¿ytkownika wystawiaj±cego dokument</member>
+                    <member>name - nazwa (nazwisko i imiê) klienta</member>
+                    <member>address - adres klienta</member>
+                    <member>ten - nip klienta</member>
+                    <member>ssn - PESEL klienta</member>
+                    <member>zip - kod pocztowy klienta</member>
+                    <member>city - miasto klienta</member>
                </simplelist>
           </sect2>
           <sect2 id="invoicecontents">
-               <title>Faktury - cd. ('invoicecontents')</title>
+               <title>Faktury ('invoicecontents')</title>
                   <simplelist>
-                    <member>invoiceid - identyfikator faktury</member>
+                    <member>docid - identyfikator faktury</member>
                     <member>itemid - nr pozycji</member>
                     <member>value - kwota pozycji</member>
                     <member>taxvalue - wysoko¶æ podatku w procentach</member>
@@ -299,6 +299,15 @@
                     <member>count - ilo¶æ</member>
                     <member>description - opis</member>
                     <member>tariffid - identyfikator taryfy</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="receiptcontents">
+               <title>Potwierdzenia wp³aty - KP ('receiptcontents')</title>
+                  <simplelist>
+                    <member>docid - identyfikator faktury</member>
+                    <member>itemid - nr pozycji</member>
+                    <member>value - kwota pozycji</member>
+                    <member>description - opis pozycji</member>
                </simplelist>
           </sect2>
           <sect2 id="passwd">

@@ -48,7 +48,7 @@ $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 $listdata = array();
 $invoicelist = array();
 
-if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxvalue, SUM(value*count) AS value FROM documents LEFT JOIN invoicecontents ON invoiceid = id WHERE type = 1 AND (cdate BETWEEN ? AND ?) GROUP BY id, number, taxvalue, cdate, customerid, name, address, zip, city, ten, ssn ORDER BY cdate ASC', array($unixfrom, $unixto)))
+if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxvalue, SUM(value*count) AS value FROM documents LEFT JOIN invoicecontents ON docid = documents.id WHERE type = 1 AND (cdate BETWEEN ? AND ?) GROUP BY documents.id, number, taxvalue, cdate, customerid, name, address, zip, city, ten, ssn ORDER BY cdate ASC', array($unixfrom, $unixto)))
 {
 	foreach($result as $idx => $row)
 	{

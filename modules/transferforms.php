@@ -121,8 +121,8 @@ $_ACCOUNT = (! $CONFIG[finances]['account'] ? trans("Not set") : $CONFIG[finance
 $control_lines = 0;
 
 
-$ids = $LMS->DB->GetCol('SELECT id FROM invoices
-        WHERE cdate > ? AND cdate < ?'
+$ids = $LMS->DB->GetCol('SELECT id FROM documents
+        WHERE cdate > ? AND cdate < ? AND type = 1'
         .($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
         .' ORDER BY cdate',
         array($_GET['from'], $_GET['to']));
@@ -133,7 +133,7 @@ if(!$ids)
     die;
 }
 
-@setlocale("lc_numeric","C");																						
+@setlocale('LC_NUMERIC','C');																						
 
 $count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
 $i=0;
@@ -157,4 +157,3 @@ foreach($ids as $idx => $invoiceid)
 $pdf->ezStream();
 
 ?>
-							    

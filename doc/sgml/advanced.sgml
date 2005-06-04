@@ -103,8 +103,8 @@
                     <member>address - street address (street, apartment, flat, etc)</member>
                     <member>zip - zip code</member>
                     <member>city - location (city)</member>
-                    <member>nip - tax exempt number</member>
-                    <member>pesel - social security number</member>
+                    <member>ten - tax exempt number</member>
+                    <member>ssn - social security number</member>
                     <member>info - additional informations</member>
                     <member>serviceaddr - correspondence address</member>
                     <member>creationdate - record creation date</member>
@@ -201,8 +201,8 @@
                     <member>value - amount in dollars</member>
                     <member>taxvalue - tax rate in percent</member>
                     <member>customerid - customer's serial number ('0' - does not apply)</member>
-                    <member>invoiceid - serial number for invoice related to this operation</member>
-                    <member>itemid - invoice item identifier</member>
+                    <member>docid - serial number for document (e.g. invoice) related to this operation</member>
+                    <member>itemid - document item identifier</member>
                     <member>comment - description of operation</member>
                </simplelist>
           </sect2>
@@ -264,29 +264,29 @@
                     <member>suspended - is this payment suspended? (1 - yes, 0 - no)</member>
                </simplelist>
           </sect2>
-          <sect2 id="invoices">
-               <title>Invoices ('invoices')</title>
+          <sect2 id="documents">
+               <title>Documents: invoices, receipts, contracts, etc. ('documents')</title>
                   <simplelist>
                     <member>id - serial number</member>
                     <member>number - number in year</member>
+		    <member>type - document type (1 - invoice, 2 - cash receipt)</member>
                     <member>cdate - date of write out</member>
                     <member>paytime - deadline in days</member>
                     <member>paytype - payment method (cash/transfer/etc.)</member>
                     <member>customerid - customer (buyer) serial number</member>
-                    <member>name - name of buyer</member>
-                    <member>address - address of buyer</member>
-                    <member>nip - SSN of buyer</member>
-                    <member>pesel - ID (passport number) of buyer</member>
-                    <member>zip - zip code of buyer</member>
-                    <member>phone - phone of buyer</member>
-                    <member>city - location of buyer</member>
-                    <member>finished - is this invoice complete? (0/1)</member>
+		    <member>userid - user serial number</member>
+                    <member>name - name of customer</member>
+                    <member>address - address of customer</member>
+                    <member>ssn - SSN of customer</member>
+                    <member>ten - Tax Exempt Number of customer</member>
+                    <member>zip - zip code of customer</member>
+                    <member>city - location of customer</member>
                </simplelist>
           </sect2>
           <sect2 id="invoicecontents">
-               <title>Invoices - continued... ('invoicecontents')</title>
+               <title>Invoices ('invoicecontents')</title>
                   <simplelist>
-                    <member>invoiceid - invoice serial number</member>
+                    <member>docid - invoice serial number</member>
                     <member>itemid - invoice item identifier</member>
                     <member>value - amount</member>
                     <member>taxvalue - tax rate in percent</member>
@@ -295,6 +295,15 @@
                     <member>count - unit count</member>
                     <member>description - description for invoice</member>
                     <member>tariffid - subscription serial number</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="receiptcontents">
+               <title>Cash Receipts ('receiptcontents')</title>
+                  <simplelist>
+                    <member>docid - receipt serial number</member>
+                    <member>itemid - receipt item identifier</member>
+                    <member>value - amount</member>
+                    <member>description - description for receipt item</member>
                </simplelist>
           </sect2>
           <sect2 id="passwd">

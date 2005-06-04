@@ -106,7 +106,7 @@ switch($type)
 		
 		$id = $_POST['customer'];
 
-		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, invoiceid, name AS username FROM cash LEFT JOIN users ON users.id=userid WHERE customerid=? ORDER BY time', array($id)))
+		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, name AS username FROM cash LEFT JOIN users ON users.id=userid WHERE customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -509,17 +509,17 @@ switch($type)
 		$from = mktime(0,0,0,1,1,$_POST['year']);
 		$to = mktime(0,0,0,1,1,$_POST['year']+1);
 
-		$payments = $DB->GetAllByKey('SELECT SUM(value) AS value, invoiceid AS id
+		$payments = $DB->GetAllByKey('SELECT SUM(value) AS value, docid AS id
 					FROM cash
-					WHERE invoiceid > 0 AND type = 3 AND time >= ?'
+					WHERE docid > 0 AND type = 3 AND time >= ?'
 					.($_POST['customer'] ? ' AND customerid = '.$_POST['customer'] : '')
-					.' GROUP BY invoiceid', 'id', array($from));
+					.' GROUP BY docid', 'id', array($from));
 					
-		if($invoices = $DB->GetAll('SELECT SUM(value) AS value, MIN(time) AS time, invoiceid AS id
+		if($invoices = $DB->GetAll('SELECT SUM(value) AS value, MIN(time) AS time, docid AS id
 					FROM cash
-					WHERE invoiceid > 0 AND type = 4 AND time >= ? AND time < ?'
+					WHERE docid > 0 AND type = 4 AND time >= ? AND time < ?'
 					.($_POST['customer'] ? ' AND customerid = '.$_POST['customer'] : '')
-					.' GROUP BY invoiceid', array($from, $to)))
+					.' GROUP BY docid', array($from, $to)))
 
 			foreach($invoices as $row)
 			{

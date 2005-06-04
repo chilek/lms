@@ -46,6 +46,15 @@ version 1.7.1 Swarog (??/??/????):
   - lmsd: added 'parser' module (alec)
   - formularz_przelewu_wplaty_2 (cash transfer forms) is now integrated
     with LMS (lexx)
+  - changed finances database structure (alec)
+  - changed naming convention (pesel, nip) in database (alec)
+    ********************************************************************
+    *       WARNING!   WARNING!   WARNING!   WARNING!   WARNING!       *
+    ********************************************************************
+    *     Changed database structure: table 'invoices' replaced by     *
+    *       'documents', dropped 'phone' and 'finished' columns,       *
+    *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' in customers table  *
+    ********************************************************************
 
 version 1.7.0 Klorel (13/05/2005):
 
