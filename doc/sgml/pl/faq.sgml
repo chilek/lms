@@ -64,7 +64,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 	</qandaentry>
 	<qandaentry>
 	    <question id="q6">
-	    	<para><emphasis role="bold">Która wersja LMSa jest najnowsza?</emphasis></para>
+	    	<para><emphasis role="bold">Która wersja LMSa jest najnowsza, a która najlepsza dla mnie?</emphasis></para>
 	    </question>
 	    <answer>
 	        <para>Wersje LMSa s± numerowane analogicznie do j±dra Linuksa. 
@@ -77,6 +77,11 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 		mo¿e byæ niestabilna/nie dzia³aj±ca prawid³owo.</para>
 		<para>Archiwum wszystkich wersji LMS znajduje siê pod adresem
 		<ulink url="http://lms.rulez.pl/download/">lms.rulez.pl/download</ulink></para>
+			<para>Warto zauwa¿yæ ¿e wersje stabilne najpierw wydawane s± jako -RC 
+		(kandydaci do wydania, ang. release candidate). Pamiêtaj ¿e gdy np dostêpna 
+		jest wersja 1.4.4 oraz 1.6.0rc3 to powiniene¶ stosowaæ wersjê 1.4.4, do czasu 
+		gdy ga³±¼ 1.6 bêdzie stabilna. 
+			</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
