@@ -118,11 +118,13 @@
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT class="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
-						{if $balancelist.invoiceid[balancelist]}
-							{if $balancelist.invoicepaid[balancelist] == 0}
-							<A href="javascript:invoicepay({$balancelist.invoiceid[balancelist]})"><IMG SRC="img/pay.gif" ALT="[ {t}Account{/t} ]"></A>
+						{if $balancelist.docid[balancelist]}
+							{if $balancelist.doctype[balancelist] == 1}
+								{if $balancelist.invoicepaid[balancelist] == 0}
+								<A href="javascript:invoicepay({$balancelist.docid[balancelist]})"><IMG SRC="img/pay.gif" ALT="[ {t}Account{/t} ]"></A>
+								{/if}
+								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"}></A>
 							{/if}
-						<A href="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"}></A>
 						{/if}
 						{cycle print=false}
 						<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">

@@ -373,8 +373,27 @@ switch($type)
 		
 		$layout['pagetitle'] = trans('Total Invoiceless Income ($0 to $1)',($from ? $from : ''), $to);
 
-		$incomelist = $LMS->GetIncomeList($date);
-		$totalincomelist = $LMS->GetTotalIncomeList($date);
+		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date,
+			SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS tax22,
+			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS tax7,
+			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS tax0,
+			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
+			FROM cash LEFT JOIN documents ON (docid = documents.id)
+			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=? 
+			AND (docid=0 OR documents.type != 1)
+			GROUP BY date ORDER BY date ASC',
+			array($date['from'], $date['to']));
+
+		$totalincomelist = $DB->GetRow('SELECT
+			SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS totaltax22,
+			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS totaltax7,
+			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS totaltax0,
+			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS totaltaxfree 
+			FROM cash LEFT JOIN documents ON (docid = documents.id)
+			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=? 
+			AND (docid=0 OR documents.type != 1)',
+			array($date['from'], $date['to']));
+		
 		$SMARTY->assign('incomelist', $incomelist);
 		$SMARTY->assign('totalincomelist', $totalincomelist);
 		$SMARTY->display('printincomereport.html');

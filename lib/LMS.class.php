@@ -697,7 +697,12 @@ class LMS
 	{
 		$saldolist = array();
 		// wrapper do starego formatu
-		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, docid, name AS username FROM cash LEFT JOIN users ON users.id=userid WHERE customerid=? ORDER BY time', array($id)))
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, value, taxvalue, cash.customerid AS customerid, comment, docid, users.name AS username,
+					documents.type AS doctype 
+					FROM cash 
+					LEFT JOIN users ON users.id = userid 
+					LEFT JOIN documents ON documents.id = docid 
+					WHERE cash.customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -722,7 +727,7 @@ class LMS
 					case '4':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
 						$saldolist['name'][$i] = trans('covenant');
-						if ($saldolist['docid'][$i])
+						if ($saldolist['docid'][$i] && $saldolist['doctype']==1)
 							$saldolist['invoicepaid'][$i] = $this->IsInvoicePaid($saldolist['docid'][$i]);
 					break;
 				}
@@ -1460,7 +1465,8 @@ class LMS
 
 	function IsInvoicePaid($invoiceid)
 	{
-		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE docid=?', array($invoiceid)) >= 0 ? TRUE : FALSE;
+		$i = $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE docid=?', array($invoiceid));
+		return $i >= 0 ? TRUE : FALSE;
 	}
 
 	function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
@@ -1804,7 +1810,10 @@ class LMS
 	{
 		$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
 		$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
-		if($balancelist = $this->DB->GetAll('SELECT id, time, userid, type, value, taxvalue, customerid, comment, docid FROM cash ORDER BY time, id'))
+		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.type AS type, value, taxvalue, cash.customerid AS customerid, comment, docid, 
+						    documents.type AS doctype
+						    FROM cash LEFT JOIN documents ON (documents.id = docid)
+						    ORDER BY time, cash.id'))
 		{
 			foreach($balancelist as $idx => $row)
 			{
@@ -1846,29 +1855,6 @@ class LMS
 		}
 
 		return $balancelist;
-	}
-
-	function GetIncomeList($date)
-	{
-		return $this->DB->GetAll('SELECT floor(time/86400)*86400 AS date,
-			SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS tax22,
-			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS tax7,
-			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS tax0,
-			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
-			FROM cash WHERE (type=1 OR type=3) AND time>=? AND time<=? AND docid=0
-			GROUP BY date ORDER BY date ASC',
-			array($date['from'], $date['to']));
-	}
-
-	function GetTotalIncomeList($date)
-	{
-		return $this->DB->GetRow('SELECT
-			SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS totaltax22,
-			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS totaltax7,
-			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS totaltax0,
-			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS totaltaxfree FROM cash
-			WHERE (type=1 OR type=3) AND time>=? AND time<=? AND docid=0',
-			array($date['from'], $date['to']));
 	}
 
 	function GetItemUnpaidValue($invoiceid, $itemid)
