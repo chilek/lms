@@ -1465,7 +1465,11 @@ class LMS
 
 	function IsInvoicePaid($invoiceid)
 	{
-		$i = $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE docid=?', array($invoiceid));
+		$i = $this->DB->GetOne('SELECT SUM(CASE a.type WHEN 3 THEN a.value ELSE -a.value END) 
+					+ SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END) 
+					FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
+					WHERE a.docid = ?', 
+					array($invoiceid));
 		return $i >= 0 ? TRUE : FALSE;
 	}
 
