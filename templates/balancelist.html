@@ -144,8 +144,10 @@
 			{$balancelist[balancelist].comment}
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>
-			{if $balancelist[balancelist].invoiceid}
-			<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"}></A>
+			{if $balancelist[balancelist].docid}
+				{if $balancelist[balancelist].doctype==1}
+				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"}></A>
+				{/if}
 			{/if}
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
