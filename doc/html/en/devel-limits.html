@@ -96,8 +96,30 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="DEVEL-LIMITS-UNICODE"
+>7.6.2. Unicode-related problems</A
+></H2
+><P
+>We are switching to Unicode in UI and databases. 
+		Right now there are known problems. When you have to use SQL 
+		with poor Unicode support, you should use UI converting capabilities. 
+		(PHP only? watch out for perl scripts!). In following example (file 
+		lms.ini) we have database in LATIN2 (aka ISO-8859-2) format. 
+		<PRE
+CLASS="SCREEN"
+>[database]
+user     = lms
+password = lms12354
+server_encoding = latin2 ; if DB is not encoded in Unicode </PRE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DEVEL-LIMITS-DB"
->7.6.2. SQL engine related</A
+>7.6.3. SQL engine related</A
 ></H2
 ><UL
 ><LI

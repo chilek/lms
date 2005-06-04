@@ -209,6 +209,7 @@
                     <member>docid - identyfikator dokumentu (np. faktury) obejmuj±cego dan± operacjê</member>
                     <member>itemid - nr pozycji na fakturze</member>
                     <member>comment - opis operacji</member>
+		    <member>reference - powi±zanie z inn± operacj± (dokumentem) w tej tabeli</member>
                </simplelist>
           </sect2>
           <sect2 id="cashimport">
@@ -602,16 +603,15 @@ key = "A.L.E.C's LMS Daemon is the best"
                a w sumie 9 miejsc na ca³± liczbê]. Maksymalna warto¶æ to 9'999'999.99 (dotyczy sumy                wszystkich operacji finansowych!). Procedury konwertuj±ce liczby na s³owa s± 
                przygotowane na kwoty tak du¿e jak 10^18.</para>
           </sect2>
-		<sect2 id="devel-limits-unicode">		  
-			<title>Wynikaj±ce z u¿ycia Unicode</title>
-			<para>Przechodzimy na kodowanie Unicode w UI oraz bazach danych. Aktualnie znane s± nam problemy z tym zwi±zane. Je¶li musisz u¿ywaæ bazy SQL z kiepskim wsparciem dla Unicode powiniene¶ u¿ywaæ mo¿liwo¶ci konwertowania zawartych w UI. W poni¿szym przyk³adzie mamy bazê w formacie LATIN2 (znanym równie¿ jako ISO-8859-2).   
-            </para>
-            <screen>
-            [database]
-            user     = lms
-            password = lms12354
-            server_encoding = latin2 ; je¿eli baza nie jest kodowana w Unicode
-            <screen>
+	<sect2 id="devel-limits-unicode">		  
+		<title>Wynikaj±ce z u¿ycia Unicode</title>
+		<para>Przechodzimy na kodowanie Unicode w UI oraz bazach danych. Aktualnie znane s± nam problemy z tym zwi±zane. Je¶li musisz u¿ywaæ bazy SQL z kiepskim wsparciem dla Unicode powiniene¶ u¿ywaæ mo¿liwo¶ci konwertowania zawartych w UI. W poni¿szym przyk³adzie mamy bazê w formacie LATIN2 (znanym równie¿ jako ISO-8859-2).   
+        	<screen>
+[database]
+user     = lms
+password = lms12354
+server_encoding = latin2 ; je¿eli baza nie jest kodowana w Unicode
+</screen></para>
             </sect2>
           <sect2 id="devel-limits-db">
                <title>Wynikaj±ce z u¿ywanego DBMS</title>
