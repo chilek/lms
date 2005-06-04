@@ -32,7 +32,7 @@ if(!$_SESSION['uid'] || !$_GET['id'])
 	die;
 }
 
-if($_SESSION['uid'] != $DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($_GET['id'])))
+if($_SESSION['uid'] != $DB->GetOne('SELECT customerid FROM documents WHERE id=?', array($_GET['id'])))
 {
 	die;
 }
