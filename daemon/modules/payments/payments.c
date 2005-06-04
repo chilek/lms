@@ -180,7 +180,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, customerid, comment, invoiceid) VALUES (%NOW%, 2, ?, 0, '? / ?', 0)",
+			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, customerid, comment, docid) VALUES (%NOW%, 2, ?, 0, '? / ?', 0)",
 					g->db_get_data(res,i,"value"),
 					g->db_get_data(res,i,"name"),
 					g->db_get_data(res,i,"creditor")
@@ -195,14 +195,14 @@ void reload(GLOBAL *g, struct payments_module *p)
 		
 	/****** customer payments *******/
 	// first get max invoiceid for present year
-	if( (res = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM invoices WHERE cdate >= ? AND cdate < ?", start, end))!= NULL ) 
+	if( (res = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents WHERE cdate >= ? AND cdate < ? AND type = 1", start, end))!= NULL ) 
 	{
   		if( g->db_nrows(res) )
 			number = atoi(g->db_get_data(res,0,"number"));
 		g->db_free(&res);
 
 		// payments accounting and invoices writing
-		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, customerid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxvalue, suspended, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, customers.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, customers WHERE tariffs.id = tariffid AND customerid = customers.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
+		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, customerid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxvalue, suspended, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, customers.name AS name, address, zip, city, ten, ssn FROM assignments, tariffs, customers WHERE tariffs.id = tariffid AND customerid = customers.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
 		
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
@@ -230,7 +230,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			value = ftoa(val);
 			taxvalue = g->db_get_data(res,i,"taxvalue");
 			// prepare insert to 'cash' table
-			insert = strdup("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES (%NOW%, 4, %value, %taxvalue, %customerid, '?', %invoiceid, %itemid)");
+			insert = strdup("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (%NOW%, 4, %value, %taxvalue, %customerid, '?', %invoiceid, %itemid)");
 			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
 			g->str_replace(&insert, "%value", value);
 			description = strdup(p->comment);
@@ -252,7 +252,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				if( last_customerid != uid ) 
 				{
 					// prepare insert to 'invoices' table
-					g->db_pexec(g->conn, "INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES (?, ?, '? ?', '?', '?', '?', '?', '?', '?', %NOW%, ?, '?', 1 )",
+					g->db_pexec(g->conn, "INSERT INTO documents (number, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, 1, ?, '? ?', '?', '?', '?', '?', '?', '?', %NOW%, ?, '?')",
 						itoa(++number),
 						g->db_get_data(res,i,"customerid"),
 						g->db_get_data(res,i,"lastname"),
@@ -260,31 +260,30 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(res,i,"address"),
 						g->db_get_data(res,i,"zip"),
 						g->db_get_data(res,i,"city"),
-						g->db_get_data(res,i,"phone"),
-						g->db_get_data(res,i,"nip"),
-						g->db_get_data(res,i,"pesel"),
+						g->db_get_data(res,i,"ten"),
+						g->db_get_data(res,i,"ssn"),
 						p->deadline,
 						p->paytype
 					);
 		
 					// ma³e uproszczenie w stosunku do lms-payments
-					result = g->db_query(g->conn, "SELECT MAX(id) AS id FROM invoices");
+					result = g->db_query(g->conn, "SELECT MAX(id) AS id FROM documents WHERE type = 1");
 					invoiceid = (g->db_nrows(result) ? atoi(g->db_get_data(result,0,"id")) : 0);
 					g->db_free(&result);
 					itemid = 0;
 				}
 				
-				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND invoiceid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description);
+				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND docid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description);
 
 				if( g->db_nrows(result) ) 
 				{
-					g->db_pexec(g->conn, "UPDATE invoicecontents SET count=count+1 WHERE tariffid = ? AND invoiceid = ? AND description = '?'",
+					g->db_pexec(g->conn, "UPDATE invoicecontents SET count=count+1 WHERE tariffid = ? AND docid = ? AND description = '?'",
 						g->db_get_data(res,i,"tariffid"),
 						itoa(invoiceid),
 						description
 						);
 					
-					exec = g->db_pexec(g->conn, "UPDATE cash SET value=value+? WHERE invoiceid=? AND itemid=?",value, itoa(invoiceid), g->db_get_data(result,0,"itemid"));
+					exec = g->db_pexec(g->conn, "UPDATE cash SET value=value+? WHERE docid=? AND itemid=?",value, itoa(invoiceid), g->db_get_data(result,0,"itemid"));
 				}
 				else 
 				{
@@ -296,7 +295,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					
 					itemid++;
 
-					g->db_pexec(g->conn,"INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
+					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
 						itoa(invoiceid),
 						itoa(itemid),
 						value,

@@ -192,7 +192,7 @@ my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
 
-$dbq = $dbase->prepare('SELECT invoices.id AS id, number, cdate, email, invoices.name AS name, customerid FROM invoices LEFT JOIN customers ON customers.id = customerid WHERE deleted = 0 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
+$dbq = $dbase->prepare('SELECT documents.id AS id, number, cdate, email, invoices.name AS name, customerid FROM documents LEFT JOIN customers ON customers.id = customerid WHERE deleted = 0 AND type = 1 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {

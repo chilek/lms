@@ -201,7 +201,7 @@ else
 	$end = strftime("%s", 0, 0, 0, 1, 0, $year+1 - 1900);
 }
 
-$dbq = $dbase->prepare("SELECT MAX(number) AS number FROM invoices WHERE cdate >= $start AND cdate < $end");
+$dbq = $dbase->prepare("SELECT MAX(number) AS number FROM documents WHERE cdate >= $start AND cdate < $end AND type = 1");
 $dbq->execute();
 my $row = $dbq->fetchrow_hashref();
 my $number = $row->{'number'} || 0;
@@ -213,7 +213,7 @@ my $itemid;
 
 # let's go, query fetch *ALL* assignments in given day
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, description, invoice,
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, taxvalue, pkwiu, tariffs.name AS name, description, invoice,
 	CASE suspended WHEN 0 THEN ROUND(CASE discount WHEN 0 THEN value ELSE ((100-discount)*value)/100 END, 2) ELSE
 	ROUND(ROUND(CASE discount WHEN 0 THEN value ELSE ((100-discount)*value)/100 END, 2) * $suspension_percentage/100, 2) END AS value
 	FROM assignments, tariffs, customers
@@ -267,28 +267,28 @@ while(my $assign = $dbq->fetchrow_hashref())
 			{
 				$itemid = 0;
 				$number++;
-				my $udbq = $dbase->prepare("SELECT * FROM customers WHERE id=$uid");
+				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten FROM customers WHERE id=$uid");
 				$udbq->execute();
 				my $urow = $udbq->fetchrow_hashref();
-				my $idbq = $dbase->prepare("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES ($number, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'phone1'}', '$urow->{'nip'}', '$urow->{'pesel'}', $currtime, $deadline, '$paytype', 1)");
+				my $idbq = $dbase->prepare("INSERT INTO documents (number, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES ($number, 1, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'ten'}', '$urow->{'ssn'}', $currtime, $deadline, '$paytype')");
 				$idbq->execute();
-				$idbq = $dbase->prepare("SELECT id FROM invoices WHERE number=$number AND cdate=$currtime AND finished=1 AND customerid=$uid");
+				$idbq = $dbase->prepare("SELECT id FROM documents WHERE number=$number AND cdate=$currtime AND type = 1 AND customerid=$uid");
 				$idbq->execute();
 				my $irow = $idbq->fetchrow_hashref();
 				$gotinv{$uid} = $irow->{'id'};
 			}
 			
-			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$desc'");
+			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description='$desc'");
 			$icdbq->execute();
 			
 			if(my $icrow = $icdbq->fetchrow_hashref())
 			{
 				$itemid = $icrow->{'itemid'};
 				
-				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$desc'");
+				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description='$desc'");
 				$icdbq->execute();
 
-				$cdbq = $dbase->prepare("UPDATE cash SET value = value+$assign->{'value'} WHERE invoiceid = $gotinv{$uid} AND itemid = $itemid AND type = 4");
+				$cdbq = $dbase->prepare("UPDATE cash SET value = value+$assign->{'value'} WHERE docid = $gotinv{$uid} AND itemid = $itemid AND type = 4");
 			}
 			else
 			{
@@ -296,21 +296,21 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 				if ($assign->{'taxvalue'})
 				{
-					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'pkwiu'}', 'szt', 1, '$desc', $assign->{'tariffid'}, $itemid)");
+					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'pkwiu'}', 'szt', 1, '$desc', $assign->{'tariffid'}, $itemid)");
 				}
 				else
 				{
-					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, NULL, '$assign->{'pkwiu'}', 'szt', 1, '$desc', $assign->{'tariffid'}, $itemid)");
+					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, NULL, '$assign->{'pkwiu'}', 'szt', 1, '$desc', $assign->{'tariffid'}, $itemid)");
 				}
 				$icdbq->execute();
 				
 				if ($assign->{'taxvalue'})
 				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc', $gotinv{$uid}, $itemid)");
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, docid, itemid) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc', $gotinv{$uid}, $itemid)");
 				}
 				else
 				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, invoiceid, itemid) VALUES ($currtime, 4, $assign->{'value'}, NULL, $uid, '$desc', $gotinv{$uid}, $itemid)");
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, docid, itemid) VALUES ($currtime, 4, $assign->{'value'}, NULL, $uid, '$desc', $gotinv{$uid}, $itemid)");
 				}
 			}
 			
@@ -338,7 +338,7 @@ $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, customerid, comment, invoiceid) VALUES ($currtime, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, customerid, comment) VALUES ($currtime, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}')");
 	$sdbq->execute();
 	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
