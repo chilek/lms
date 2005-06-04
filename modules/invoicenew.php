@@ -139,7 +139,7 @@ switch($_GET['action'])
 
 		if($invoice['cdate'] && !$invoice['cdatewarning'])
 		{
-			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM invoices');
+			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = 1');
 			if($invoice['cdate'] < $maxdate)
 			{
 				$error['cdate'] = trans('Last date of invoice settlement is $0. If sure, you want to write invoice with date of $1, then click "Submit" again.',date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $invoice['cdate']));
