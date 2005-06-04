@@ -1492,7 +1492,35 @@ Chapter 3. User Interface (LMS-UI)
    Allows you to issue an invoice for selected customer manually.
      _________________________________________________________________
 
-3.7.9. Printing
+3.7.9. Import
+
+   If you use homebanking, and you're able to get a list of financial
+   operations (ie. from bank www or email that they send you), Import
+   module can be used to (semi)automatically load it into LMS accounting
+   database and assign to respective customers. You should write (or use,
+   if it's already in distribution) a parser script, which loads data to
+   the cashimport table. Please, check example script
+   lms-cashimport-ingbs to see how this is being done. After you run it,
+   you should get a list of pending financial operations, in Import
+   module, where you can correct them and accept into LMS accounting
+   database.
+
+   You can also load previously prepared text file using this module. It
+   will be read line by line and parsed using setup regular expressions
+   to get needed data types (ie. customer id, amount, etc). After file is
+   loaded, you will be presented with the same corrections/acceptance
+   screen as above.
+
+   To setup regular expressions, which suit to your input files you
+   should create PHP script which location you must set in import_config
+   option in [phpui] section. Example values and parameters descriptions
+   are placed in modules/cashimportcfg.php. Default configuration assumes
+   that input data will be in the following format (tab separated):
+23.02.2004      Machniak Aleksander     123,45  Internet subscription - 04/2004 ID:0013
+15.02.2004      Pain Joseph     123,45  Invoice paid - LMS/34/2004
+     _________________________________________________________________
+
+3.7.10. Printing
 
    There are several options for balance sheet printouts:
      * Balance sheet for your network including financial operations for
@@ -2060,10 +2088,10 @@ http://www.bigpro.com/
        %tariff - subscription name
        %period - period (counted from current day to the last in cycle,
        in YYYY/MM/DD form)
-       %%current_month - period form 1st day of current month to the last
+       %current_month - period form 1st day of current month to the last
        day
        %desc - tariff description
-       Example: paytype = 'Subscription for %current_month'
+       Example: comment = 'Subscription for %current_month'
 
    Script has also one useful command line parameter: --fakedate (-f).
    With this option you can make that script will execute with system
@@ -3831,6 +3859,13 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
    problems with hosts with ping response disabled or firewalled. After
    scanning, last-seen time is set for all online hosts in database used
    to illustrate hosts activity on nodes list and network map.
+
+   Note
+
+   Pinger for work use interface names, so (e.g. if you are using ip
+   command) you'll need to label interfaces in your system (ip addr add
+   ... label ...). Also remember, don't use a dots or dashes in interface
+   names (ip allows that, but such a name is not usable for pinger.
      _________________________________________________________________
 
 6.2.14.2. Configuration
@@ -3899,8 +3934,8 @@ Chapter 7. For curious
    address - street address (street, apartment, flat, etc)
    zip - zip code
    city - location (city)
-   nip - tax exempt number
-   pesel - social security number
+   ten - tax exempt number
+   ssn - social security number
    info - additional informations
    serviceaddr - correspondence address
    creationdate - record creation date
@@ -3990,9 +4025,11 @@ Chapter 7. For curious
    value - amount in dollars
    taxvalue - tax rate in percent
    customerid - customer's serial number ('0' - does not apply)
-   invoiceid - serial number for invoice related to this operation
-   itemid - invoice item identifier
+   docid - serial number for document (e.g. invoice) related to this
+   operation
+   itemid - document item identifier
    comment - description of operation
+   reference - identifier of refered record
      _________________________________________________________________
 
 7.2.10. Import of financial operations ('cashimport')
@@ -4051,27 +4088,27 @@ Chapter 7. For curious
    suspended - is this payment suspended? (1 - yes, 0 - no)
      _________________________________________________________________
 
-7.2.14. Invoices ('invoices')
+7.2.14. Documents: invoices, receipts, contracts, etc. ('documents')
 
    id - serial number
    number - number in year
+   type - document type (1 - invoice, 2 - cash receipt)
    cdate - date of write out
    paytime - deadline in days
    paytype - payment method (cash/transfer/etc.)
    customerid - customer (buyer) serial number
-   name - name of buyer
-   address - address of buyer
-   nip - SSN of buyer
-   pesel - ID (passport number) of buyer
-   zip - zip code of buyer
-   phone - phone of buyer
-   city - location of buyer
-   finished - is this invoice complete? (0/1)
+   userid - user serial number
+   name - name of customer
+   address - address of customer
+   ssn - SSN of customer
+   ten - Tax Exempt Number of customer
+   zip - zip code of customer
+   city - location of customer
      _________________________________________________________________
 
-7.2.15. Invoices - continued... ('invoicecontents')
+7.2.15. Invoices ('invoicecontents')
 
-   invoiceid - invoice serial number
+   docid - invoice serial number
    itemid - invoice item identifier
    value - amount
    taxvalue - tax rate in percent
@@ -4082,7 +4119,15 @@ Chapter 7. For curious
    tariffid - subscription serial number
      _________________________________________________________________
 
-7.2.16. Accounts ('passwd')
+7.2.16. Cash Receipts ('receiptcontents')
+
+   docid - receipt serial number
+   itemid - receipt item identifier
+   value - amount
+   description - description for receipt item
+     _________________________________________________________________
+
+7.2.17. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -4102,27 +4147,27 @@ Chapter 7. For curious
    quota_ftp - ftp space limits
      _________________________________________________________________
 
-7.2.17. Domains ('domains')
+7.2.18. Domains ('domains')
 
    id - serial number
    name - domain name
    description - comments
      _________________________________________________________________
 
-7.2.18. Aliases ('aliases')
+7.2.19. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    accountid - account serial number
      _________________________________________________________________
 
-7.2.19. History ('timestamps')
+7.2.20. History ('timestamps')
 
    time - last modified timestamp
    tablename - name of modified table
      _________________________________________________________________
 
-7.2.20. Bandwidth consumption statistics ('stats')
+7.2.21. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -4130,7 +4175,7 @@ Chapter 7. For curious
    download - number of bytes received
      _________________________________________________________________
 
-7.2.21. Helpdesk - Request Tracking ('rtqueues')
+7.2.22. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -4138,7 +4183,7 @@ Chapter 7. For curious
    description - main description for the queue
      _________________________________________________________________
 
-7.2.22. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.23. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -4150,7 +4195,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      _________________________________________________________________
 
-7.2.23. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.24. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -4166,14 +4211,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      _________________________________________________________________
 
-7.2.24. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.25. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      _________________________________________________________________
 
-7.2.25. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.26. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -4181,7 +4226,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      _________________________________________________________________
 
-7.2.26. LMS-UI Online Configuration ('uiconfig')
+7.2.27. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -4191,7 +4236,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      _________________________________________________________________
 
-7.2.27. Timetable - events ('events')
+7.2.28. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -4206,13 +4251,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      _________________________________________________________________
 
-7.2.28. Timetable - assignments ('eventassignments')
+7.2.29. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      _________________________________________________________________
 
-7.2.29. Sessions ('sessions')
+7.2.30. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -4222,7 +4267,7 @@ Chapter 7. For curious
    content - data
      _________________________________________________________________
 
-7.2.30. Daemon configuration - hosts ('daemonhosts')
+7.2.31. Daemon configuration - hosts ('daemonhosts')
 
    id - identifier
    name - host name
@@ -4231,7 +4276,7 @@ Chapter 7. For curious
    reload - reload order
      _________________________________________________________________
 
-7.2.31. Daemon configuration - instances ('daemoninstances')
+7.2.32. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -4243,7 +4288,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.32. Daemon configuration - options ('daemonconfig')
+7.2.33. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -4253,7 +4298,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.33. Database information ('dbinfo')
+7.2.34. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value
@@ -4368,7 +4413,20 @@ key = "A.L.E.C's LMS Daemon is the best"
    process numbers as big as 10^18.
      _________________________________________________________________
 
-7.6.2. SQL engine related
+7.6.2. Unicode-related problems
+
+   We are switching to Unicode in UI and databases. Right now there are
+   known problems. When you have to use SQL with poor Unicode support,
+   you should use UI converting capabilities. (PHP only? watch out for
+   perl scripts!). In following example (file lms.ini) we have database
+   in LATIN2 (aka ISO-8859-2) format.
+[database]
+user     = lms
+password = lms12354
+server_encoding = latin2 ; if DB is not encoded in Unicode
+     _________________________________________________________________
+
+7.6.3. SQL engine related
 
      * MySQL
           + Database size:
@@ -4535,7 +4593,7 @@ Chapter 9. FAQ
           ...What should I do?
 
    9.5. I make few corrections. Do you accept any patches?
-   9.6. What is current version of LMS?
+   9.6. What is current version of LMS, which one i should use?
    9.7. How to unsubscribe from the mailing list?
    9.8. What is a limit of network devices on the map?
    9.9. Insecure $ENV{BASH_ENV} while running -T switch...
@@ -4577,7 +4635,7 @@ $ cvs -z7 diff -u > /tmp/my_patch.patch
    stay on the list for a while, that may prove your skills, before
    asking us for cvs account.
 
-   9.6. What is current version of LMS?
+   9.6. What is current version of LMS, which one i should use?
 
    LMS adopts versioning from Linux kernel. Thus, in LMS-x.y.z we have: x
    - major version number, y - stable if number is even, unstable if odd,
@@ -4587,6 +4645,10 @@ $ cvs -z7 diff -u > /tmp/my_patch.patch
    not function well, or might be unstable.
 
    Archive of all LMS versions can be found here: lms.rulez.pl/download
+
+   You should be aware that -RC version (release canditate) are not as
+   stable as one could expect. i.e. vestion 1.4.3 should be prefered over
+   1.6-rc3. "-RC" are not to be used in production areas.
 
    9.7. How to unsubscribe from the mailing list?
 

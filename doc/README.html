@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2341"
+HREF="#MODULES-LIST"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -4168,8 +4168,60 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="MENU-IMPORT"
+>3.7.9. Import</A
+></H3
+><P
+>If you use homebanking, and you're able to get a list of
+		financial operations (ie. from bank www or email that they send
+		you), Import module can be used to (semi)automatically load it
+		into LMS accounting database and assign to respective customers.
+		You should write (or use, if it's already in distribution) a
+		parser script, which loads data to the cashimport table. Please,
+		check example script lms-cashimport-ingbs to see how this is
+		being done. After you run it, you should get a list of pending
+		financial operations, in Import module, where you can correct
+		them and accept into LMS accounting database.</P
+><P
+>You can also load previously prepared text file using this
+		module. It will be read line by line and parsed using setup
+		regular expressions to get needed data types (ie. customer id,
+		amount, etc). After file is loaded, you will be presented with
+		the same corrections/acceptance screen as above.</P
+><P
+>To setup regular expressions, which suit to your input
+		files you should create PHP script which location you must set in
+		<TT
+CLASS="FILENAME"
+>import_config</TT
+> option in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>
+		section. Example values and parameters descriptions are placed in
+		<TT
+CLASS="FILENAME"
+>modules/cashimportcfg.php</TT
+>.
+		Default configuration assumes that input data will be in 
+		the following format (tab separated):
+<PRE
+CLASS="SCREEN"
+>23.02.2004	Machniak Aleksander	123,45	Internet subscription - 04/2004 ID:0013
+15.02.2004	Pain Joseph	123,45	Invoice paid - LMS/34/2004</PRE
+>
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="MENU-FINANCES-PRINT"
->3.7.9. Printing</A
+>3.7.10. Printing</A
 ></H3
 ><P
 >There are several options for balance sheet printouts:
@@ -5525,13 +5577,13 @@ CLASS="PROMPT"
 ><P
 >%period - period (counted from current day to the last in cycle, in YYYY/MM/DD form)</P
 ><P
->%%current_month - period form 1st day of current month to the last day</P
+>%current_month - period form 1st day of current month to the last day</P
 ><P
 >%desc - tariff description</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->paytype = 'Subscription for %current_month'</SAMP
+>comment = 'Subscription for %current_month'</SAMP
 ></P
 ></LI
 ></UL
@@ -8532,7 +8584,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2341"
+NAME="MODULES-LIST"
 ></A
 ><P
 ><B
@@ -10381,6 +10433,41 @@ NAME="PINGER-DESC"
               Also there are no problems with hosts with ping response disabled or firewalled. After
               scanning, last-seen time is set for all online hosts in database used to illustrate hosts
               activity on nodes list and network map.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Pinger for work use interface names, so (e.g. if you are
+	      using <TT
+CLASS="FILENAME"
+>ip</TT
+> command) you'll need to label interfaces in your system (ip addr add ... label ...). 
+	      Also remember, don't use a dots or dashes in interface names (<TT
+CLASS="FILENAME"
+>ip</TT
+> allows that, but
+	      such a name is not usable for pinger.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -10686,11 +10773,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->nip - tax exempt number</TD
+>ten - tax exempt number</TD
 ></TR
 ><TR
 ><TD
->pesel - social security number</TD
+>ssn - social security number</TD
 ></TR
 ><TR
 ><TD
@@ -11036,15 +11123,19 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->invoiceid - serial number for invoice related to this operation</TD
+>docid - serial number for document (e.g. invoice) related to this operation</TD
 ></TR
 ><TR
 ><TD
->itemid - invoice item identifier</TD
+>itemid - document item identifier</TD
 ></TR
 ><TR
 ><TD
 >comment - description of operation</TD
+></TR
+><TR
+><TD
+>reference - identifier of refered record</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -11262,8 +11353,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="INVOICES"
->7.2.14. Invoices ('invoices')</A
+NAME="DOCUMENTS"
+>7.2.14. Documents: invoices, receipts, contracts, etc. ('documents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11275,6 +11366,10 @@ BORDER="0"
 ><TR
 ><TD
 >number - number in year</TD
+></TR
+><TR
+><TD
+>type - document type (1 - invoice, 2 - cash receipt)</TD
 ></TR
 ><TR
 ><TD
@@ -11294,35 +11389,31 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->name - name of buyer</TD
+>userid - user serial number</TD
 ></TR
 ><TR
 ><TD
->address - address of buyer</TD
+>name - name of customer</TD
 ></TR
 ><TR
 ><TD
->nip - SSN of buyer</TD
+>address - address of customer</TD
 ></TR
 ><TR
 ><TD
->pesel - ID (passport number) of buyer</TD
+>ssn - SSN of customer</TD
 ></TR
 ><TR
 ><TD
->zip - zip code of buyer</TD
+>ten - Tax Exempt Number of customer</TD
 ></TR
 ><TR
 ><TD
->phone - phone of buyer</TD
+>zip - zip code of customer</TD
 ></TR
 ><TR
 ><TD
->city - location of buyer</TD
-></TR
-><TR
-><TD
->finished - is this invoice complete? (0/1)</TD
+>city - location of customer</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -11333,14 +11424,14 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.15. Invoices - continued... ('invoicecontents')</A
+>7.2.15. Invoices ('invoicecontents')</A
 ></H3
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->invoiceid - invoice serial number</TD
+>docid - invoice serial number</TD
 ></TR
 ><TR
 ><TD
@@ -11382,8 +11473,38 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="RECEIPTCONTENTS"
+>7.2.16. Cash Receipts ('receiptcontents')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>docid - receipt serial number</TD
+></TR
+><TR
+><TD
+>itemid - receipt item identifier</TD
+></TR
+><TR
+><TD
+>value - amount</TD
+></TR
+><TR
+><TD
+>description - description for receipt item</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="PASSWD"
->7.2.16. Accounts ('passwd')</A
+>7.2.17. Accounts ('passwd')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11461,7 +11582,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.17. Domains ('domains')</A
+>7.2.18. Domains ('domains')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11487,7 +11608,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.18. Aliases ('aliases')</A
+>7.2.19. Aliases ('aliases')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11513,7 +11634,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.19. History ('timestamps')</A
+>7.2.20. History ('timestamps')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11535,7 +11656,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.20. Bandwidth consumption statistics ('stats')</A
+>7.2.21. Bandwidth consumption statistics ('stats')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11565,7 +11686,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.21. Helpdesk - Request Tracking ('rtqueues')</A
+>7.2.22. Helpdesk - Request Tracking ('rtqueues')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11595,7 +11716,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.22. Helpdesk - Request Tracking - continued... ('rttickets')</A
+>7.2.23. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11641,7 +11762,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.23. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+>7.2.24. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11703,7 +11824,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.24. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+>7.2.25. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11729,7 +11850,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.25. Helpdesk - Request Tracking - continued... ('rtrights')</A
+>7.2.26. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11759,7 +11880,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.26. LMS-UI Online Configuration ('uiconfig')</A
+>7.2.27. LMS-UI Online Configuration ('uiconfig')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11797,7 +11918,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.27. Timetable - events ('events')</A
+>7.2.28. Timetable - events ('events')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11855,7 +11976,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.28. Timetable - assignments ('eventassignments')</A
+>7.2.29. Timetable - assignments ('eventassignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11877,7 +11998,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.29. Sessions ('sessions')</A
+>7.2.30. Sessions ('sessions')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11915,7 +12036,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONHOSTS"
->7.2.30. Daemon configuration - hosts ('daemonhosts')</A
+>7.2.31. Daemon configuration - hosts ('daemonhosts')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11949,7 +12070,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.31. Daemon configuration - instances ('daemoninstances')</A
+>7.2.32. Daemon configuration - instances ('daemoninstances')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11995,7 +12116,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.32. Daemon configuration - options ('daemonconfig')</A
+>7.2.33. Daemon configuration - options ('daemonconfig')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -12033,7 +12154,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.33. Database information ('dbinfo')</A
+>7.2.34. Database information ('dbinfo')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -12258,8 +12379,30 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="DEVEL-LIMITS-UNICODE"
+>7.6.2. Unicode-related problems</A
+></H3
+><P
+>We are switching to Unicode in UI and databases. 
+		Right now there are known problems. When you have to use SQL 
+		with poor Unicode support, you should use UI converting capabilities. 
+		(PHP only? watch out for perl scripts!). In following example (file 
+		lms.ini) we have database in LATIN2 (aka ISO-8859-2) format. 
+		<PRE
+CLASS="SCREEN"
+>[database]
+user     = lms
+password = lms12354
+server_encoding = latin2 ; if DB is not encoded in Unicode </PRE
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="DEVEL-LIMITS-DB"
->7.6.2. SQL engine related</A
+>7.6.3. SQL engine related</A
 ></H3
 ><UL
 ><LI
@@ -12646,7 +12789,7 @@ HREF="#Q6"
 CLASS="bold"
 ><B
 CLASS="EMPHASIS"
->What is current version of LMS?</B
+>What is current version of LMS, which one i should use?</B
 ></SPAN
 ></A
 ></DT
@@ -12859,7 +13002,7 @@ NAME="Q6"
 CLASS="bold"
 ><B
 CLASS="EMPHASIS"
->What is current version of LMS?</B
+>What is current version of LMS, which one i should use?</B
 ></SPAN
 ></P
 ></DIV
@@ -12876,6 +13019,10 @@ HREF="http://lms.rulez.pl/download/"
 TARGET="_top"
 >lms.rulez.pl/download</A
 ></P
+><P
+>You should be aware that -RC version (release canditate) are 
+		not as stable as one could expect. i.e. vestion 1.4.3 should be prefered 
+		over 1.6-rc3. "-RC" are not to be used in production areas.</P
 ></DIV
 ></DIV
 ><DIV

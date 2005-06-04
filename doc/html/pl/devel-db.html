@@ -236,11 +236,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->nip - numer identyfikacji podatkowej NIP</TD
+>ten - numer identyfikacji podatkowej NIP</TD
 ></TR
 ><TR
 ><TD
->pesel - numer PESEL</TD
+>ssn - numer PESEL</TD
 ></TR
 ><TR
 ><TD
@@ -586,7 +586,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</TD
+>docid - identyfikator dokumentu (np. faktury) obejmuj±cego dan± operacjê</TD
 ></TR
 ><TR
 ><TD
@@ -595,6 +595,10 @@ BORDER="0"
 ><TR
 ><TD
 >comment - opis operacji</TD
+></TR
+><TR
+><TD
+>reference - powi±zanie z inn± operacj± (dokumentem) w tej tabeli</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -808,8 +812,8 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="INVOICES"
->7.2.14. Faktury ('invoices')</A
+NAME="DOCUMENTS"
+>7.2.14. Dokumenty: faktury, KP, umowy, etc. ('documents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -821,6 +825,10 @@ BORDER="0"
 ><TR
 ><TD
 >number - numer w roku</TD
+></TR
+><TR
+><TD
+>type - typ dokumentu (1-faktura, 2-KP)</TD
 ></TR
 ><TR
 ><TD
@@ -840,35 +848,31 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->name - nazwa (nazwisko i imiê) nabywcy</TD
+>userid - identyfikator u¿ytkownika wystawiaj±cego dokument</TD
 ></TR
 ><TR
 ><TD
->address - adres nabywcy</TD
+>name - nazwa (nazwisko i imiê) klienta</TD
 ></TR
 ><TR
 ><TD
->nip - nip nabywcy</TD
+>address - adres klienta</TD
 ></TR
 ><TR
 ><TD
->pesel - PESEL nabywcy</TD
+>ten - nip klienta</TD
 ></TR
 ><TR
 ><TD
->zip - kod pocztowy nabywcy</TD
+>ssn - PESEL klienta</TD
 ></TR
 ><TR
 ><TD
->phone - telefon nabywcy</TD
+>zip - kod pocztowy klienta</TD
 ></TR
 ><TR
 ><TD
->city - miasto nabywcy</TD
-></TR
-><TR
-><TD
->finished - pole okre¶laj±ce zamkniêcie faktury (0/1)</TD
+>city - miasto klienta</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -879,14 +883,14 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.15. Faktury - cd. ('invoicecontents')</A
+>7.2.15. Faktury ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->invoiceid - identyfikator faktury</TD
+>docid - identyfikator faktury</TD
 ></TR
 ><TR
 ><TD
@@ -928,8 +932,38 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="RECEIPTCONTENTS"
+>7.2.16. Potwierdzenia wp³aty - KP ('receiptcontents')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>docid - identyfikator faktury</TD
+></TR
+><TR
+><TD
+>itemid - nr pozycji</TD
+></TR
+><TR
+><TD
+>value - kwota pozycji</TD
+></TR
+><TR
+><TD
+>description - opis pozycji</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="PASSWD"
->7.2.16. Konta ('passwd')</A
+>7.2.17. Konta ('passwd')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1007,7 +1041,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.17. Domeny ('domains')</A
+>7.2.18. Domeny ('domains')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1033,7 +1067,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.18. Aliasy ('aliases')</A
+>7.2.19. Aliasy ('aliases')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1059,7 +1093,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.19. Historia ('timestamps')</A
+>7.2.20. Historia ('timestamps')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1081,7 +1115,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.20. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.21. Statystyki wykorzystania ³±cza ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1111,7 +1145,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.21. Helpdesk - kolejki ('rtqueues')</A
+>7.2.22. Helpdesk - kolejki ('rtqueues')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1141,7 +1175,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.22. Helpdesk - zg³oszenia ('rttickets')</A
+>7.2.23. Helpdesk - zg³oszenia ('rttickets')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1187,7 +1221,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.23. Helpdesk - wiadomo¶ci ('rtmessages')</A
+>7.2.24. Helpdesk - wiadomo¶ci ('rtmessages')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1249,7 +1283,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.24. Helpdesk - za³±czniki ('rtattachments')</A
+>7.2.25. Helpdesk - za³±czniki ('rtattachments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1275,7 +1309,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.25. Helpdesk - uprawnienia ('rtrights')</A
+>7.2.26. Helpdesk - uprawnienia ('rtrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1305,7 +1339,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.26. Konfiguracja LMS-UI ('uiconfig')</A
+>7.2.27. Konfiguracja LMS-UI ('uiconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1343,7 +1377,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.27. Terminarz - zdarzenia ('events')</A
+>7.2.28. Terminarz - zdarzenia ('events')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1401,7 +1435,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.28. Terminarz - powi±zania ('eventassignments')</A
+>7.2.29. Terminarz - powi±zania ('eventassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1423,7 +1457,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONHOSTS"
->7.2.29. Konfiguracja demona - hosty ('daemonhosts')</A
+>7.2.30. Konfiguracja demona - hosty ('daemonhosts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1457,7 +1491,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.30. Konfiguracja demona - instancje ('daemoninstances')</A
+>7.2.31. Konfiguracja demona - instancje ('daemoninstances')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1503,7 +1537,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.31. Konfiguracja demona - opcje ('daemonconfig')</A
+>7.2.32. Konfiguracja demona - opcje ('daemonconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1541,7 +1575,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.32. Sesje ('sessions')</A
+>7.2.33. Sesje ('sessions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1579,7 +1613,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.33. Informacje o bazie danych ('dbinfo')</A
+>7.2.34. Informacje o bazie danych ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"
