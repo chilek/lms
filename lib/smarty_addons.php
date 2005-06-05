@@ -29,14 +29,19 @@
 function _smarty_function_sum($args, &$SMARTY)
 {
 	$array = $args['array'];
-	$column = $args['column'];
 	$format = (isset($args['string_format']) ? $args['string_format'] : '%d');
 	$default = (isset($args['default']) ? $args['default'] : 0);
 	if($array)
 		foreach($array as $row)
 			if(is_array($row))
-				$result += $row[$column];
-	return sprintf($format,(isset($result) ? $result : $default));
+				$result += $row[$args['column']];
+
+	$result = isset($result) ? $result : $default;
+
+	if(isset($args['assign']))
+		$SMARTY->assign($args['assign'], $result);
+	else
+		return sprintf($format, $result);
 }
 
 function _smarty_function_sizeof($args, &$SMARTY)
