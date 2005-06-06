@@ -69,6 +69,7 @@ function DBLoad($filename=NULL)
 							'rtattachments',
 							'dbinfo',
 							'invoicecontents',
+							'receiptcontents',
 							'stats',
 							'timestamps',
 							'eventassignments',
