@@ -706,40 +706,38 @@ class LMS
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
-		
+
 		if(sizeof($saldolist) > 0)
 		{
 			foreach($saldolist['id'] as $i => $v)
 			{
 				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
 
-//				$saldolist['username'][$i] = $userslist[$saldolist['userid'][$i]];
 				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
 				$saldolist['invoicepaid'][$i] = 1;
 
-				switch ($saldolist['type'][$i]){
-
+				switch ($saldolist['type'][$i])
+				{
 					case '3':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
 						$saldolist['name'][$i] = trans('payment');
 					break;
-
 					case '4':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
 						$saldolist['name'][$i] = trans('covenant');
-						if ($saldolist['docid'][$i] && $saldolist['doctype']==1)
+						if ($saldolist['docid'][$i] && $saldolist['doctype'][$i]==1)
 							$saldolist['invoicepaid'][$i] = $this->IsInvoicePaid($saldolist['docid'][$i]);
 					break;
 				}
 
 				$saldolist['date'][$i] = date('Y/m/d H:i',$saldolist['time'][$i]);
-
-				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] = $saldolist['comment'][$i];
+				$saldolist['comment'][$i] = strlen($saldolist['comment'][$i])<3 ? $saldolist['name'][$i] : $saldolist['comment'][$i];
 			}
 
 			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
 			$saldolist['total'] = sizeof($saldolist['id']);
-		} else {
+		} 
+		else {
 			$saldolist['balance'] = 0;
 			$saldolist['total'] = 0;
 		}
@@ -1466,7 +1464,7 @@ class LMS
 	function IsInvoicePaid($invoiceid)
 	{
 		$i = $this->DB->GetOne('SELECT SUM(CASE a.type WHEN 3 THEN a.value ELSE -a.value END) 
-					+ SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END) 
+					+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END),0) 
 					FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
 					WHERE a.docid = ?', 
 					array($invoiceid));
