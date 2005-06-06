@@ -1845,6 +1845,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM payments');	
 	$DB->Execute('DELETE FROM netdevices');
 	$DB->Execute('DELETE FROM netlinks');
+	$DB->Execute('DELETE FROM documents');
+	$DB->Execute('DELETE FROM invoicecontents');
+	$DB->Execute('DELETE FROM receiptcontents');
 	
 	if($LMS->CONFIG['database']['type']=='postgres')
 	{
@@ -1856,6 +1859,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "tariffs_id_seq";    CREATE SEQUENCE "tariffs_id_seq"');
 		$DB->Execute('DROP SEQUENCE "netdevices_id_seq"; CREATE SEQUENCE "netdevices_id_seq"');
 		$DB->Execute('DROP SEQUENCE "netlinks_id_seq";   CREATE SEQUENCE "netlinks_id_seq"');
+		$DB->Execute('DROP SEQUENCE "documents_id_seq";  CREATE SEQUENCE "documents_id_seq"');
 	}
 	
 	if($LMS->CONFIG['database']['type']=='mysql')
