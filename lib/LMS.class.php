@@ -1786,14 +1786,22 @@ class LMS
 		$addbalance['taxvalue'] = $addbalance['taxvalue']!='' ? str_replace(',','.',round($addbalance['taxvalue'],2)) : '';
 		if($addbalance['time'])
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid, reference) 
+							VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+							array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid, reference) 
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+							array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0) ));
 		else
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid, reference) 
+							VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+							array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
+				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid, reference) 
+							VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+							array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0)  ));
 	}
 
 	function DelBalance($id)
@@ -1861,7 +1869,10 @@ class LMS
 
 	function GetItemUnpaidValue($invoiceid, $itemid)
 	{
-		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 FROM cash WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
+		return $this->DB->GetOne('SELECT SUM(CASE a.type WHEN 3 THEN a.value*-1 ELSE a.value END)
+				+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value*-1 ELSE b.value END), 0)
+				FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
+				WHERE a.docid=? AND a.itemid=?', array($invoiceid, $itemid));
 	}
 
 	/*
