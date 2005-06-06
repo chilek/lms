@@ -24,6 +24,7 @@ version 1.7.1 Swarog (??/??/????):
   - better english UI messages (kondi)
   - we can add and search tickets with all customer statuses (chilek)
   - all UI colors moved to style.css (alec)
+  - added workarround for page margin in Opera browsers (lukasz)
   - lms-makeiptables: added public IP (SNAT) support (alec/daro)
   - changed naming convention: user -> customer, admin -> user (alec)
     ********************************************************************
