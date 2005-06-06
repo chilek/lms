@@ -53,8 +53,10 @@ if ($invoiceid == 'multi')
 		foreach($ids as $idx => $invoiceid)
 			if (!$LMS->IsInvoicePaid($invoiceid))
 			{
-				$custid = $DB->GetOne('SELECT customerid FROM documents WHERE id=?', array($invoiceid));
-				$items = $DB->GetAll('SELECT itemid AS id, taxvalue, customerid, comment FROM cash WHERE docid=? GROUP BY itemid, taxvalue, customerid, comment ORDER BY itemid', array($invoiceid));
+				$items = $DB->GetAll('SELECT itemid AS id, id AS cashid, taxvalue, customerid, comment 
+						    FROM cash WHERE docid=? 
+						    GROUP BY itemid, id, taxvalue, customerid, comment 
+						    ORDER BY itemid', array($invoiceid));
 								
 				foreach($items as $item)
 				{
@@ -62,10 +64,11 @@ if ($invoiceid == 'multi')
 					$addbalance['time'] = $invoicepaydate;
 					$addbalance['type'] = 3;
 					$addbalance['taxvalue'] = $item['taxvalue'];
-					$addbalance['customerid'] = $custid;
+					$addbalance['customerid'] = $item['customerid'];
 					$addbalance['comment'] = $item['comment'];
 					$addbalance['itemid'] = $item['id'];
-					$addbalance['invoiceid'] = $invoiceid;
+					$addbalance['reference'] = $item['cashid'];
+					$addbalance['docid'] = $invoiceid;
 					$LMS->AddBalance($addbalance);
 				}
 			}
@@ -73,10 +76,9 @@ if ($invoiceid == 'multi')
 }
 elseif (!$LMS->IsInvoicePaid($invoiceid))
 {
-	$custid = $DB->GetOne('SELECT customerid FROM documents WHERE id=?', array($invoiceid));
-	$items = $DB->GetAll('SELECT itemid AS id, taxvalue, customerid, comment 
+	$items = $DB->GetAll('SELECT itemid AS id, id AS cashid, taxvalue, customerid, comment 
 				FROM cash WHERE docid=? 
-				GROUP BY itemid, taxvalue, customerid, comment 
+				GROUP BY itemid, id, taxvalue, customerid, comment 
 				ORDER BY itemid', array($invoiceid));
 							
 	foreach($items as $item)
@@ -85,10 +87,11 @@ elseif (!$LMS->IsInvoicePaid($invoiceid))
 		$addbalance['time'] = $invoicepaydate;
 		$addbalance['type'] = 3;
 		$addbalance['taxvalue'] = $item['taxvalue'];
-		$addbalance['customerid'] = $custid;
+		$addbalance['customerid'] = $item['customerid'];
 		$addbalance['comment'] = $item['comment'];
 		$addbalance['itemid'] = $item['id'];
-		$addbalance['invoiceid'] = $invoiceid;
+		$addbalance['reference'] = $item['cashid'];
+		$addbalance['docid'] = $invoiceid;
 		$LMS->AddBalance($addbalance);
 	}
 }
