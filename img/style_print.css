@@ -28,6 +28,7 @@ H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 .shdf		{ font-size: 20pt; font-weight: bold; }
 .hdf		{ font-size: 14pt; }
 .sdr		{ font-size: 10pt; }
+.small		{ font-size: 6pt; }
 .blend		{ color: #888888; }
 .blendbg	{ background-color: #888888; }
 .white		{ background-color: #FFFFFF; }
