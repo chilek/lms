@@ -700,7 +700,7 @@ class LMS
 		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, value, taxvalue, cash.customerid AS customerid, comment, docid, users.name AS username,
 					documents.type AS doctype 
 					FROM cash 
-					LEFT JOIN users ON users.id = userid 
+					LEFT JOIN users ON users.id = cash.userid
 					LEFT JOIN documents ON documents.id = docid 
 					WHERE cash.customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
