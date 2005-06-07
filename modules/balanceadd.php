@@ -72,14 +72,15 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 						break;
 				
 					$row = $DB->GetRow('SELECT docid, itemid, comment, taxvalue FROM cash WHERE id = ?', array($cashid));
-					$value = $LMS->GetItemUnpaidValue($row['invoiceid'], $row['itemid']);
+					$value = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
 					
-					$balance['itemid'] = $row['itemid'];
-					$balance['docid'] = $row['docid'];
+					//$balance['itemid'] = $row['itemid'];
+					//$balance['docid'] = $row['docid'];
 					$balance['taxvalue'] = $row['taxvalue'];
 					$balance['comment'] = $addbalance['comment'] ? $addbalance['comment'] : $row['comment'];
 					$balance['type'] = 3;
 					$balance['customerid'] = $addbalance['customerid'];
+					$balance['reference'] = $cashid;
 					
 					$oldvalue = $addbalance['value'];
 					if($oldvalue >= $value)
