@@ -24,6 +24,13 @@
  *  $Id$
  */
 
+function bankaccount($id)
+{
+	global $CONFIG;
+	$account = (! $CONFIG[finances]['account'] ? trans("Not set") : $CONFIG[finances]['account']);
+	return $account;
+}
+
 function uptimef($ts)
 {
 	if($ts==0)

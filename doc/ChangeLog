@@ -56,7 +56,9 @@ version 1.7.1 Swarog (??/??/????):
     *       'documents', dropped 'phone' and 'finished' columns,       *
     *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' in customers table  *
     ********************************************************************
-
+  - automatic generation of bank account number (iban format) to use with 
+    automatic identyfication of massive payments (lexx)
+    
 version 1.7.0 Klorel (13/05/2005):
 
   - lmsd/ethers: fixed output file format (alec)

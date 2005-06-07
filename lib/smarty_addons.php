@@ -140,9 +140,15 @@ function _smarty_block_translate($args, $content, &$SMARTY)
     return trim($content);
 }
 
+function _smarty_bankaccount($args, &$SMARTY)
+{
+	return bankaccount($args['id']);
+}
+
 $SMARTY->register_function('sum','_smarty_function_sum');
 $SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_function('tip','_smarty_function_tip');
+$SMARTY->register_function('bankaccount','_smarty_bankaccount');
 $SMARTY->register_modifier('to_words','to_words');
 $SMARTY->register_modifier('money_format','moneyf');
 $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');

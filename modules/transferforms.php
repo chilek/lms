@@ -41,7 +41,7 @@ $pdf->setLineStyle(2);
 $id=$pdf->getFirstPageId();
 
 function main_fill($x,$y,$scale)	{
-    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$control_lines,$invoice;
+    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$control_lines,$invoice;
     if ($control_lines) {
 	$pdf->line(7*$scale+$x,115*$scale+$y,7*$scale+$x,145*$scale+$y);
         $pdf->line(7*$scale+$x,115*$scale+$y,37*$scale+$x,115*$scale+$y);
@@ -54,7 +54,7 @@ function main_fill($x,$y,$scale)	{
     }
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale,$_NAME);
     $pdf->addtext(15*$scale+$x,617*$scale+$y,30*$scale, $_ADDRESS." ".$_ZIP." ".$_CITY);
-    $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale, $_ACCOUNT);
+    $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale, bankaccount($invoice['customerid']));
     $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format($invoice['total'],2,',',''));
     $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale,$invoice['name']);
     $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale,$invoice['address']."; ".$invoice['zip']." ".$invoice['city']);
@@ -62,7 +62,7 @@ function main_fill($x,$y,$scale)	{
 }
 
 function simple_fill_mip($x,$y,$scale)	{
-    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$_SHORT_NAME,$control_lines,$invoice;
+    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_SHORT_NAME,$control_lines,$invoice;
 
     if ($control_lines) {
         $pdf->line(7*$scale+$x,180*$scale+$y,7*$scale+$x,210*$scale+$y);
@@ -77,8 +77,8 @@ function simple_fill_mip($x,$y,$scale)	{
     $pdf->addtext(15*$scale+$x,560*$scale+$y,30*$scale,$_SHORT_NAME);
     $pdf->addtext(15*$scale+$x,525*$scale+$y,30*$scale, $_ADDRESS);
     $pdf->addtext(15*$scale+$x,490*$scale+$y,30*$scale, $_ZIP." ".$_CITY);
-    $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr($_ACCOUNT,0,17));
-    $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr($_ACCOUNT,18,200));
+    $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid']),0,17));
+    $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid']),18,200));
     $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,"**".number_format($invoice['total'],2,',','')."**");
     //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,$invoice['name']);
 
@@ -100,7 +100,7 @@ function simple_fill_mip($x,$y,$scale)	{
 }
 
 function address_box($x,$y,$scale)	{
-    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$_SERVICE,$_SHORT_NAME,$invoice;
+    global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_SERVICE,$_SHORT_NAME,$invoice;
 
     $font_size=30;
     while ($pdf->getTextWidth($font_size*$scale,$invoice['name'])>240)
@@ -116,7 +116,6 @@ $_SHORT_NAME = (! $CONFIG[finances]['shortname'] ? trans("Not set") : $CONFIG[fi
 $_ADDRESS = (! $CONFIG[finances]['address'] ? trans("Not set") : $CONFIG[finances]['address']);
 $_ZIP = (! $CONFIG[finances]['zip'] ? trans("Not set") : $CONFIG[finances]['zip']);
 $_CITY = (! $CONFIG[finances]['city'] ? trans("Not set") : $CONFIG[finances]['city']);
-$_ACCOUNT = (! $CONFIG[finances]['account'] ? trans("Not set") : $CONFIG[finances]['account']);
 
 $control_lines = 0;
 
