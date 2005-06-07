@@ -49,12 +49,12 @@ tar -xzf lms.tar.gz
 chmod 777 lms/{templates_c,backups}
 cd lms
 rm -Rf $NOTDISTRIB
-grep -ir '1\.6-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.6-cvs/$LMSVER $CODENAME/g"
+grep -air '1\.6-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.6-cvs/$LMSVER $CODENAME/g"
 chmod 777 templates_c backups
 cd ..
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd lms/lib
-wget http://smarty.php.net/distributions/Smarty-2.6.8.tar.gz
+wget http://smarty.php.net/distributions/Smarty-2.6.9.tar.gz
 tar -xzf Smarty-2.6.8.tar.gz
 mv Smarty-2.6.8/libs Smarty
 rm -Rf Smarty-2.6.8 Smarty-2.6.8.tar.gz
