@@ -296,7 +296,6 @@ function GetConfigList($order='var,asc')
 			break;
 
 			default:
-				echo $item['section']."_".$item['var'];
 				$config[$idx]['description'] = trans('Unknown option. No description.');
 			break;
 		} //end: section
