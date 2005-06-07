@@ -63,8 +63,6 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	
 	foreach($ids as $idx => $invoiceid)
 	{
-		echo '<PRE>';
-		
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
@@ -100,7 +98,6 @@ elseif($_GET['fetchallinvoices'])
 
 	foreach($ids as $idx => $invoiceid)
 	{
-//		echo '<PRE>';
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
