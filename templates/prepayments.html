@@ -62,9 +62,9 @@
 					<TD width="95%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="light,lucid" print=false}
+				{cycle name="covcycle" values="light,lucid" print=false}
 				{section name=covenantlist loop=$covenantlist}
-				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="{cycle name="covcycle"}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD><nobr>{$covenantlist[covenantlist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
 					<TD align="right">{$covenantlist[covenantlist].invoice}</TD>
 					<TD align="right"><nobr>{$covenantlist[covenantlist].value|money_format}</nobr></TD>
@@ -76,8 +76,8 @@
 					</TD>
 					<TD>{$covenantlist[covenantlist].comment}</TD>
 					<TD align="right">
-						{cycle print=false}
-						<INPUT class="box {cycle}" TYPE="checkbox" NAME="cmarks[]" VALUE="{$covenantlist[covenantlist].id}"{if $covenantlist[covenantlist].selected} CHECKED{/if}>
+						{cycle name="covcycle" print=false}
+						<INPUT class="box {cycle name="covcycle"}" TYPE="checkbox" NAME="cmarks[]" VALUE="{$covenantlist[covenantlist].id}"{if $covenantlist[covenantlist].selected} CHECKED{/if}>
 					</TD>
 				</TR>
 				{sectionelse}
@@ -122,9 +122,9 @@
 					<TD width="96%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="light,lucid" print=false}
+				{cycle name="precycle" values="light,lucid" print=false}
 				{section name=prepaymentlist loop=$prepaymentlist}
-				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="{cycle name="precycle"}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD><nobr>{$prepaymentlist[prepaymentlist].time|date_format:"%Y/%m/%d"}</nobr></TD>
 					<TD align="right"><nobr>{$prepaymentlist[prepaymentlist].value|money_format}</nobr></TD>
 					<TD align="right"><nobr>
@@ -135,8 +135,8 @@
 					</TD>
 					<TD>{$prepaymentlist[prepaymentlist].comment}</TD>
 					<TD align="right">
-						{cycle print=false}
-						<INPUT class="box {cycle}" TYPE="checkbox" NAME="pmarks[]" VALUE="{$prepaymentlist[prepaymentlist].id}"{if $prepaymentlist[prepaymentlist].selected} CHECKED{/if}>
+						{cycle name="precycle" print=false}
+						<INPUT class="box {cycle name="precycle"}" TYPE="checkbox" NAME="pmarks[]" VALUE="{$prepaymentlist[prepaymentlist].id}"{if $prepaymentlist[prepaymentlist].selected} CHECKED{/if}>
 					</TD>
 				</TR>
 				{sectionelse}
