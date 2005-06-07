@@ -45,28 +45,28 @@ if(sizeof($pmarks) && sizeof($cmarks))
 		{
 			foreach($cmarks as $idx => $item)
 			{
-				$row = $DB->GetRow('SELECT itemid, docid AS invoiceid, taxvalue FROM cash WHERE id = ?', array($item));
-				$value = $LMS->GetItemUnpaidValue($row['invoiceid'], $row['itemid']);
+				$row = $DB->GetRow('SELECT itemid, docid, taxvalue FROM cash WHERE id = ?', array($item));
+				$value = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
 
 				if($value>=$mark['value'])
 				{
 					if($row['taxvalue']=='')
-						$DB->Execute('UPDATE cash SET itemid = ?, docid = ?, taxvalue = NULL
-							WHERE id = ?', array($row['itemid'], $row['invoiceid'], $mark['id']));
+						$DB->Execute('UPDATE cash SET reference = ?, taxvalue = NULL
+							WHERE id = ?', array($item, $mark['id']));
 					else
-						$DB->Execute('UPDATE cash SET itemid = ?, docid = ?, taxvalue = ?
-							WHERE id = ?', array($row['itemid'], $row['invoiceid'], $row['taxvalue'], $mark['id']));
+						$DB->Execute('UPDATE cash SET reference = ?, taxvalue = ?
+							WHERE id = ?', array($item, $row['taxvalue'], $mark['id']));
 					$mark['value'] = 0;	
 					break;
 				}
 				else
 				{
 					if($row['taxvalue']=='')
-						$DB->Execute('UPDATE cash SET itemid = ?, docid = ?, value = ?, taxvalue = NULL
-							    WHERE id = ?', array($row['itemid'], $row['invoiceid'], $value, $mark['id']));
+						$DB->Execute('UPDATE cash SET reference = ?, value = ?, taxvalue = NULL
+							    WHERE id = ?', array($item, $value, $mark['id']));
 					else
-						$DB->Execute('UPDATE cash SET itemid = ?, docid = ?, value = ?, taxvalue = ?
-							    WHERE id = ?', array($row['itemid'], $row['invoiceid'], $value, $row['taxvalue'], $mark['id']));
+						$DB->Execute('UPDATE cash SET reference = ?, value = ?, taxvalue = ?
+							    WHERE id = ?', array($item, $value, $row['taxvalue'], $mark['id']));
 					
 					$mark['value'] -= $value;
 					$LMS->AddBalance($mark);
@@ -84,12 +84,17 @@ if(sizeof($pmarks) && sizeof($cmarks))
 	}
 }
 
-if($covenantlist = $DB->GetAll('SELECT docid AS invoiceid, itemid, MIN(cdate) AS cdate, 
-			SUM(CASE cash.type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
-			FROM cash LEFT JOIN documents ON (docid = documents.id)
-			WHERE documents.customerid = ? AND docid > 0 AND itemid > 0
-			GROUP BY docid, itemid
-			HAVING SUM(CASE cash.type WHEN 3 THEN value ELSE value*-1 END)*-1 > 0
+if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN(cdate) AS cdate, 
+			ROUND(SUM(CASE a.type WHEN 3 THEN a.value*-1 ELSE a.value END)/(CASE COUNT(b.id) WHEN 0 THEN 1 ELSE COUNT(b.id) END),2)
+			+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value*-1 ELSE b.value END),0) AS value
+			FROM cash a 
+			LEFT JOIN documents d ON (a.docid = d.id)
+			LEFT JOIN cash b ON (a.id = b.reference)
+			WHERE d.customerid = ? AND d.type = 1 
+			AND a.docid > 0 AND a.itemid > 0
+			GROUP BY a.docid, a.itemid
+			HAVING ROUND(SUM(CASE a.type WHEN 3 THEN a.value*-1 ELSE a.value END)/(CASE COUNT(b.id) WHEN 0 THEN 1 ELSE COUNT(b.id) END),2)
+			+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value*-1 ELSE b.value END),0) > 0
 			ORDER BY cdate', array($customerid)))
 {
 	foreach($covenantlist as $idx => $row)
@@ -97,7 +102,7 @@ if($covenantlist = $DB->GetAll('SELECT docid AS invoiceid, itemid, MIN(cdate) AS
 		$record = $DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
 					    FROM cash LEFT JOIN documents ON (docid = documents.id)
 					    WHERE docid = ? AND itemid = ? AND cash.type = 4',
-					    array($row['invoiceid'], $row['itemid']));
+					    array($row['docid'], $row['itemid']));
 		
 		$record['invoice'] = $CONFIG['invoices']['number_template'];
 		$record['invoice'] = str_replace('%M', date('m', $row['cdate']), $record['invoice']);
@@ -111,8 +116,9 @@ if($covenantlist = $DB->GetAll('SELECT docid AS invoiceid, itemid, MIN(cdate) AS
 	}
 }
 
-$prepaymentlist = $DB->GetAll('SELECT id, time, value, taxvalue, comment
-			FROM cash WHERE customerid = ? AND docid = 0 AND type = 3
+$prepaymentlist = $DB->GetAll('SELECT cash.id AS id, time, value, taxvalue, comment
+			FROM cash LEFT JOIN documents ON (docid = documents.id)
+			WHERE cash.customerid = ? AND reference = 0 AND cash.type = 3
 			ORDER BY time', array($customerid));
 
 $layout['pagetitle'] = trans('Prepayments of Customer: $0', '<A href="?m=customerinfo&id='.$customerid.'">'.$LMS->GetCustomerName($customerid).'</A>');

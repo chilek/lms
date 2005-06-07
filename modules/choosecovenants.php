@@ -35,20 +35,25 @@ if(isset($_POST['marks']))
 	die;
 }
 
-if($covenantlist = $DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cdate, 
-			SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
-			FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
-			WHERE invoices.customerid = ? AND invoiceid > 0 AND itemid > 0
-			GROUP BY invoiceid, itemid
-			HAVING SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 > 0
+if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN(cdate) AS cdate, 
+			ROUND(SUM(CASE a.type WHEN 3 THEN a.value*-1 ELSE a.value END)/(CASE COUNT(b.id) WHEN 0 THEN 1 ELSE COUNT(b.id) END),2)
+			+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value*-1 ELSE b.value END),0) AS value
+			FROM cash a 
+			LEFT JOIN documents d ON (a.docid = d.id)
+			LEFT JOIN cash b ON (a.id = b.reference)
+			WHERE d.customerid = ? AND d.type = 1 
+			AND a.docid > 0 AND a.itemid > 0
+			GROUP BY a.docid, a.itemid
+			HAVING ROUND(SUM(CASE a.type WHEN 3 THEN a.value*-1 ELSE a.value END)/(CASE COUNT(b.id) WHEN 0 THEN 1 ELSE COUNT(b.id) END),2)
+			+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value*-1 ELSE b.value END),0) > 0
 			ORDER BY cdate', array($customerid)))
 {
 	foreach($covenantlist as $idx => $row)
 	{
 		$record = $DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
-					    FROM cash LEFT JOIN invoices ON (invoiceid = invoices.id)
-					    WHERE invoiceid = ? AND itemid = ? AND type = 4',
-					    array($row['invoiceid'], $row['itemid']));
+					    FROM cash LEFT JOIN documents ON (docid = documents.id)
+					    WHERE docid = ? AND itemid = ? AND cash.type = 4',
+					    array($row['docid'], $row['itemid']));
 		
 		$record['invoice'] = $CONFIG['invoices']['number_template'];
 		$record['invoice'] = str_replace('%M', date('m', $row['cdate']), $record['invoice']);

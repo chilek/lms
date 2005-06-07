@@ -66,9 +66,9 @@ if ($invoiceid == 'multi')
 					$addbalance['taxvalue'] = $item['taxvalue'];
 					$addbalance['customerid'] = $item['customerid'];
 					$addbalance['comment'] = $item['comment'];
-					$addbalance['itemid'] = $item['id'];
+					//$addbalance['itemid'] = $item['id'];
 					$addbalance['reference'] = $item['cashid'];
-					$addbalance['docid'] = $invoiceid;
+					//$addbalance['docid'] = $invoiceid;
 					$LMS->AddBalance($addbalance);
 				}
 			}
@@ -89,9 +89,9 @@ elseif (!$LMS->IsInvoicePaid($invoiceid))
 		$addbalance['taxvalue'] = $item['taxvalue'];
 		$addbalance['customerid'] = $item['customerid'];
 		$addbalance['comment'] = $item['comment'];
-		$addbalance['itemid'] = $item['id'];
+		//$addbalance['itemid'] = $item['id'];
 		$addbalance['reference'] = $item['cashid'];
-		$addbalance['docid'] = $invoiceid;
+		//$addbalance['docid'] = $invoiceid;
 		$LMS->AddBalance($addbalance);
 	}
 }
