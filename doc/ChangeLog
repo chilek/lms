@@ -5,6 +5,8 @@ version ? Thor (??/??/????):
   - lms-payments: again tariff value can be less than zero (alec)
   - fixed customer name capitalization on contract (alec)
   - contrib/formularz_przelewu_wplaty_2: fixed problem with locale (alec)
+  - BTS#0000375: removed errors when trying to print invoices by selecting
+    on balance list operations that haven't got invoices (alec)
 
 version 1.6.0rc5 Thor (01/06/2005):
 

@@ -37,8 +37,6 @@ if($LMS->CONFIG['invoices']['attachment_name'] != '')
 
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
-	$layout['pagetitle'] = trans('Invoices');
-	$SMARTY->display('clearheader.html');
 	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
@@ -46,12 +44,16 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	if($_GET['cash'])
 	{
 		foreach($ids as $cashid)
-		{
 			if($invoiceid = $LMS->DB->GetOne('SELECT invoiceid FROM cash WHERE id = ?', array($cashid)))
 				$idsx[] = $invoiceid;
-		}
+		if(!$idsx)
+			$SESSION->redirect('?m=invoicelist');
+		
 		$ids = array_unique($idsx);
 	}
+
+	$layout['pagetitle'] = trans('Invoices');
+	$SMARTY->display('clearheader.html');
 	
 	sort($ids);
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));

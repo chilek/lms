@@ -442,6 +442,9 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 		foreach($ids as $cashid)
 			if($invoiceid = $LMS->DB->GetOne('SELECT invoiceid FROM cash WHERE id = ?', array($cashid)))
 				$idsx[] = $invoiceid;
+		if(!$idsx)
+			$SESSION->redirect('?m=invoicelist');
+		
 		$ids = array_unique($idsx);
 	}
 
