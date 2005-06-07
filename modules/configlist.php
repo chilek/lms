@@ -44,10 +44,6 @@ function GetConfigList($order='var,asc')
 
 	$config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled FROM uiconfig'.$sqlord);
 
-	$config['total'] = sizeof($config);
-	$config['order'] = $order;
-	$config['direction'] = $direction;
-
 	foreach ($config as $idx => $item) 
 	{
 		switch($item['section'])
@@ -300,10 +296,15 @@ function GetConfigList($order='var,asc')
 			break;
 
 			default:
+				echo $item['section']."_".$item['var'];
 				$config[$idx]['description'] = trans('Unknown option. No description.');
 			break;
 		} //end: section
 	} //end: foreach
+
+	$config['total'] = sizeof($config);
+	$config['order'] = $order;
+	$config['direction'] = $direction;
 
 	return $config;
 }
