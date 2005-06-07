@@ -7,6 +7,7 @@
 
 WORKDIR=`pwd`
 NOTDISTRIB="devel .project config_templates modules/confgen.php templates/confgen.html"
+SMARTYVERSION=2.6.9
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
@@ -54,10 +55,10 @@ chmod 777 templates_c backups
 cd ..
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd lms/lib
-wget http://smarty.php.net/distributions/Smarty-2.6.9.tar.gz
-tar -xzf Smarty-2.6.8.tar.gz
-mv Smarty-2.6.8/libs Smarty
-rm -Rf Smarty-2.6.8 Smarty-2.6.8.tar.gz
+wget http://smarty.php.net/distributions/Smarty-$SMARTYVERSION.tar.gz
+tar -xzf Smarty-$SMARTYVERSION.tar.gz
+mv Smarty-$SMARTYVERSION/libs Smarty
+rm -Rf Smarty-$SMARTYVERSION Smarty-$SMARTYVERSION.tar.gz
 cd ../
 rm -Rf $NOTDISTRIB
 cd ../
