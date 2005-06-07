@@ -1463,11 +1463,11 @@ class LMS
 
 	function IsInvoicePaid($invoiceid)
 	{
-		$i = $this->DB->GetOne('SELECT SUM(CASE a.type WHEN 3 THEN a.value ELSE -a.value END) 
-					+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END),0) 
+		$i = $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) 
+					FROM cash WHERE docid = ?', array($invoiceid))
+		    + $this->DB->GetOne('SELECT SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END)
 					FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
-					WHERE a.docid = ?', 
-					array($invoiceid));
+					WHERE a.docid = ?', array($invoiceid));
 		return $i >= 0 ? TRUE : FALSE;
 	}
 
@@ -1867,12 +1867,13 @@ class LMS
 		return $balancelist;
 	}
 
-	function GetItemUnpaidValue($invoiceid, $itemid)
+	function GetItemUnpaidValue($docid, $itemid)
 	{
-		return $this->DB->GetOne('SELECT SUM(CASE a.type WHEN 3 THEN a.value*-1 ELSE a.value END)
-				+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value*-1 ELSE b.value END), 0)
+		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN -value ELSE value END)
+				FROM cash WHERE docid=? AND itemid=?', array($docid, $itemid))
+			+ $this->DB->GetOne('SELECT SUM(CASE b.type WHEN 3 THEN -b.value ELSE b.value END)
 				FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
-				WHERE a.docid=? AND a.itemid=?', array($invoiceid, $itemid));
+				WHERE a.docid=? AND a.itemid=?', array($docid, $itemid));
 	}
 
 	/*
