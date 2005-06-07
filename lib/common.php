@@ -483,4 +483,21 @@ function moneyf($value)
 	return sprintf($LANGDEFS[$_language]['money_format'],$value);
 }
 
+if (!function_exists('bcmod'))
+{
+    function bcmod( $x, $y )
+    {
+	// how many numbers to take at once? carefull not to exceed (int)
+        $take = 5;   
+	$mod = '';
+        do
+	{
+	    $a = (int)$mod.substr( $x, 0, $take );
+	    $x = substr( $x, $take );
+	    $mod = $a % $y;   
+	}
+	while ( strlen($x) );
+	    return (int)$mod;
+    }
+}					     
 ?>
