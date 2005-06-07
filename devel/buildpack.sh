@@ -49,7 +49,7 @@ tar -xzf lms.tar.gz
 chmod 777 lms/{templates_c,backups}
 cd lms
 rm -Rf $NOTDISTRIB
-grep -ir '1\.7-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.7-cvs/$LMSVER $CODENAME/g"
+grep -air '1\.7-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.7-cvs/$LMSVER $CODENAME/g"
 chmod 777 templates_c backups
 cd ..
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
