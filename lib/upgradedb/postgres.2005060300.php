@@ -77,6 +77,7 @@ $DB->Execute("
 	INSERT INTO documents (id, type, number, cdate, paytime, paytype, customerid, userid, name, address, zip, city, ten, ssn)
 		SELECT invoices.id, 1, number, cdate, paytime, paytype, invoices.customerid, cash.userid, name, address, zip, city, nip, pesel
 		FROM invoices LEFT JOIN cash ON (invoices.id = cash.docid)
+		WHERE cash.type = 3
 		GROUP BY invoices.id, number, cdate, paytime, paytype, invoices.customerid, cash.userid, name, address, zip, city, nip, pesel;
 	DROP TABLE invoices;
 	DROP SEQUENCE invoices_id_seq;
