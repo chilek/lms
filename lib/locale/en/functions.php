@@ -26,8 +26,15 @@
 
 function bankaccount($id)
 {
+	// This function is for demonstration only, coz US don't support IBAN
 	global $CONFIG;
-	$account = (! $CONFIG[finances]['account'] ? trans("Not set") : $CONFIG[finances]['account']);
+	if ($CONFIG[finances]['iban']) 
+	{
+	        $cc = "3028";	// Country code - US
+		$account = "US".sprintf("%02d",98-bcmod($CONFIG[finances]['account'].sprintf("%012d",$id).$cc."00",97)).$CONFIG[finances]['account'].sprintf("%012d",$id);
+	} 
+	else
+		$account = (! $CONFIG[finances]['account'] ? trans("Not set") : $CONFIG[finances]['account']);
 	return $account;
 }
 
