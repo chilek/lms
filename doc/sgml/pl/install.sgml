@@ -940,5 +940,39 @@ AddDefaultCharset Off
           </simplelist>
           </para>
          </sect2>
+         <sect2 id="install-invoices-iban">
+          <title>Automatyczne generowanie numeru konta bankowego</title>
+          <para>LMS umo¿liwia automatyczne generowanie numeru konta bankowego w standardzie IBAN
+	  zawieraj±cego ID klienta. Funkcja ta mo¿e byæ u¿ywana do masowej identyfikacji p³atno¶ci
+	  która jako us³uga znajduje siê w ofercie wiêkszo¶ci banków. Aby masowa identyfikacja by³a
+	  mo¿liwa, nale¿y podpisaæ umowê z bankiem z której potrzebne nam bêd±:
+	  <itemizedlist>
+		<listitem>
+		    <para>Numer rozliczeniowy banku</para>
+		    <para>zawsze sta³y dla ka¿dego banku, z³o¿ony z 8 cyfr</para>
+		</listitem>
+		<listitem>
+		    <para>Identyfikator rachunku</para>
+		    <para>identyfikator naszego wirtualnego rachunku, z³o¿ony z 4 cyfr</para>
+		</listitem>
+	  </itemizedlist>
+	  Gdy mamy potrzebne dane, mo¿emy przej¶æ do konfiguracji LMSa.</para>
+	  <para>W sekcji <emphasis>[finances]</emphasis> ustawiamy:
+	  <itemizedlist>
+		<listitem>
+		    <para>iban</para>
+		    <para>okre¶la czy numer konta na fakturach ma byæ zwyk³y czy generowany automatycznie (0|1)</para>
+		</listitem>
+		<listitem>
+		    <para>account</para>
+		    <para>skrócony numer konta bankowego powsta³y przez po³±czenie numeru rozliczeniowego banku 
+		    z identyfikatorem rachunku, numer ten musi siê sk³adaæ z 12 cyfr bez spacji i innych znaków.</para>
+		</listitem>
+	  </itemizedlist>
+	  Od tej pory je¶li u¿ywamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wp³aty z
+	  menu Finanse -> Wydruki -> Faktury -> Drukuj polecenia przelewu/wp³aty, ka¿dy wydruk bêdzie zawiera³
+	  unikalny numer konta z zawartym ID naszego klienta.
+          </para>
+         </sect2>
     </sect1>
   </chapter>

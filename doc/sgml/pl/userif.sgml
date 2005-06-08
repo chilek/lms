@@ -414,7 +414,9 @@
 		    <para><emphasis>Raport z wykonania zobowi±zañ</emphasis>.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Faktury</emphasis> - wydruk wszystkich lub wybranego klienta za dany okres (z wyborem orygina³/kopia).</para>
+		    <para><emphasis>Faktury</emphasis> - wydruk wszystkich lub wybranego klienta za dany okres 
+		    (z wyborem orygina³/kopia) lub wygenerowanie PDFa z danymi potrzebnymi do zadruku standardowych 
+		    dwuodcinkowych formularzy przelewu/wp³aty z potwierdzeniem.</para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
