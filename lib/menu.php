@@ -249,6 +249,16 @@ $menu = array(
 						'tip' => trans('Generate invoice'),
 				),
 				array(
+						'name' => trans('Cash Receipts List'),
+						'link' => '?m=receiptlist',
+						'tip' => trans('List of cash receipts'),
+				),
+				array(
+						'name' => trans('New Receipt'),
+						'link' => '?m=receiptadd&action=init',
+						'tip' => trans('Generate receipt'),
+				),
+				array(
 						'name' => trans('Import'),
 						'link' => '?m=cashimport',
 						'tip' => trans('Import cash operations'),

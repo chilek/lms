@@ -41,9 +41,9 @@
 		<td align="center" class="fall" nowrap>{t}Value{/t}</td>
 		<td align="center" class="fall" nowrap>{t}Number{/t}</td>
 	</tr>
-	{cycle values="white,grey" print=false} {cycle print=false}
+	{cycle values="grey,white" print=false name=one}
 	{foreach item="row" from=$receipt.contents}
-	<tr class="{cycle}">
+	<tr class="{cycle name=one}">
 		<td class="flr sdr" colspan="4" valign="top"><b>{counter}.</b> {$row.description|replace:"\n":"<BR>"}</td>
 		<td class="flr sdr" align="right" valign="top" nowrap>{$row.value|money_format}</td>
 		<td class="flr"></td>
@@ -156,9 +156,9 @@
 		<td align="center" class="fall" nowrap>{t}Value{/t}</td>
 		<td align="center" class="fall" nowrap>{t}Number{/t}</td>
 	</tr>
-	{cycle values="white,grey" print=false} {cycle print=false}
+	{cycle values="grey,white" print=false name=two}
 	{foreach item="row" from=$receipt.contents}
-	<tr class="{cycle}">
+	<tr class="{cycle name=two}">
 		<td class="flr sdr" colspan="4" valign="top"><b>{counter}.</b> {$row.description|replace:"\n":"<BR>"}</td>
 		<td class="flr sdr" align="right" valign="top" nowrap>{$row.value|money_format}</td>
 		<td class="flr"></td>

@@ -1,0 +1,153 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+{include file="calendar_js.html"}
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd&action=setcustomer">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
+			<B>{t}Customer data:{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>{t}Receipt number:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{$receipt.number}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}>
+			({$_config.receipts.number_template|replace:"%N":$receipt.number|replace:"%Y":$receipt.year|replace:"%M":$receipt.month})
+		</TD>
+	</TR>
+	{if $customer}
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>
+			{t}First/last or Company name:{/t}<BR>
+			{t}Address:{/t}
+			</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			{$customer.customername}<BR>
+			{$customer.address} {$customer.zip} {$customer.city}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>{t}Settlement date:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			{if $receipt.cdatewarning}
+			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
+			{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
+			{t}Customer:{/t}
+			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
+				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
+				{foreach from=$customerlist item=c}
+				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:50:"..."} ({$c.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>
+			{t}or Customer ID:{/t}
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5" onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value">
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
+			<A HREF="javascript:document.setcustomer.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<P>	
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fleftu" WIDTH="1%">
+			<B>{t}No.{/t}</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="97%" NOWRAP>
+			{t}Name of product, commodity or service:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{t}Value:{/t}
+		</TD>
+		<TD WIDTH="1%" NOWRAP CLASS="frightu"></TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$contents item=item}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD CLASS="fleft" WIDTH="1%">
+			<B>{counter}.</B>
+		</TD>
+		<TD WIDTH="93%">
+			{$item.description}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$item.value|money_format}<BR>
+		</TD>
+		<TD WIDTH="1%" NOWRAP CLASS="fright">
+			<A HREF="?m=receiptadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+		</TD>			
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD COLSPAN="4" ALIGN="CENTER" CLASS="flr">
+			<P>&nbsp;</P>
+			<P><B>{t}Receipt have no items. Use form below for items addition.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/foreach}
+	{if $contents}
+	<TR CLASS="light">
+		<TD COLSPAN="2" WIDTH="98%" ALIGN="RIGHT" CLASS="fleftu">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
+			{sum array=$contents column=value string_format=$LANGDEFS.$_language.money_format}
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu"></TD>
+	</TR>
+	{/if}
+	<FORM METHOD="POST" ACTION="?m=receiptadd&action=additem" NAME="additem">
+	<TR CLASS="light">
+		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
+			<B>{counter}.</B>
+		</TD>
+		<TD CLASS="ftop" WIDTH="94%">
+			<INPUT TYPE="text" NAME="description" SIZE="100" {tip text="Enter item description"}>
+		</TD>
+		<TD CLASS="ftop">
+			<INPUT TYPE="text" NAME="value" SIZE="10" {tip text="Enter item value"}>
+		</TD>
+		<TD CLASS="ftr">
+			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD COLSPAN="4" CLASS="fbottomu" ALIGN="RIGHT">
+			<A HREF="?m=receiptadd&action=init">{t}Clear Contents{/t} <IMG SRC="img/delete.gif" alt=""></A> 
+			{if !$customer}
+			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
+			{elseif !$contents}
+			<A HREF="javascript:alert('{t}Receipt have no items!{/t}');">
+			{else}
+			<A HREF="?m=receiptadd&action=save" target="_BLANK">
+			{/if}
+			{t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+	</FORM>
+</TABLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var cal1 = new calendar(document.forms['setcustomer'].elements['receipt[cdate]']);
+cal1.time_comp = false;
+document.forms['setcustomer'].elements['receipt[cdate]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}
