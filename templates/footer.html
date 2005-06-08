@@ -1,24 +1,9 @@
 <!--// $Id$ //-->
 {if $layout.dberrors}
-<P>
-<TABLE WIDTH="100%" CELLPADDING="10">
-	<TR class="superlight">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/warning.png" ALT="[ {t}Error!{/t} ]">
-		</TD>
-		<TD WIDTH="99%" CLASS="frightu">
-			<FONT class="alert">{t}Database errors occurred!{/t}</FONT><BR>
-			{foreach from=$layout.dberrors item=dberror}
-			<B>{t}Query:{/t}</B> {$dberror.query}<BR>
-			<B>{t}Error:{/t}</B> {$dberror.error}<BR>
-			{/foreach}
-		</TD>
-	</TR>
-</TABLE>
-</P>
+	{include file="dberrors.html"}
 {/if}
 {if !$layout.nomenu}
-			</TD>
+		</TD>
 	</TR>
 </TABLE>
 {/if}
