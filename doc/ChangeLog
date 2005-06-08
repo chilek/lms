@@ -57,7 +57,8 @@ version 1.7.1 Swarog (??/??/????):
     *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' in customers table  *
     ********************************************************************
   - automatic generation of bank account number (iban format) to use with 
-    automatic identyfication of massive payments (lexx)
+    automatic identification of massive payments (lexx)
+  - added 'assign' argument for _smarty_function_sum() (alec)
     
 version 1.7.0 Klorel (13/05/2005):
 
