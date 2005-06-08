@@ -26,7 +26,7 @@
 
 function GetReceipt($id)
 {
-	global $LMS, $DB;
+	global $CONFIG, $DB;
 	
 	if($receipt = $DB->GetRow('SELECT * FROM documents 
 				WHERE type = 2 AND id = ?', array($id)))
@@ -36,7 +36,7 @@ function GetReceipt($id)
 		foreach($receipt['contents'] as $row)
 			$receipt['total'] += $row['value'];
 		$receipt['totalg'] = ($receipt['total']*100 - ((int) $receipt['total'])*100);
-		$ntempl = $LMS->CONFIG['receipts']['number_template'];
+		$ntempl = $CONFIG['receipts']['number_template'];
 		$ntempl = str_replace('%N',$receipt['number'],$ntempl);
 		$ntempl = str_replace('%M',date('m',$receipt['cdate']),$ntempl);
 		$ntempl = str_replace('%Y',date('Y',$receipt['cdate']),$ntempl);
@@ -53,9 +53,9 @@ if (strtolower($CONFIG['receipts']['type']) == 'pdf')
     die;
 }
 
-header('Content-Type: '.$LMS->CONFIG['receipts']['content_type']);
+header('Content-Type: '.$CONFIG['receipts']['content_type']);
 if($LMS->CONFIG['receipts']['attachment_name'] != '')
-	header('Content-Disposition: attachment; filename='.$LMS->CONFIG['receipts']['attachment_name']);
+	header('Content-Disposition: attachment; filename='.$CONFIG['receipts']['attachment_name']);
 
 
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
@@ -70,14 +70,14 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	{
 		$receipt = GetReceipt($receiptid);
 		$SMARTY->assign('receipt',$receipt);
-		$SMARTY->display($LMS->CONFIG['receipts']['template_file']);
+		$SMARTY->display($CONFIG['receipts']['template_file']);
 	}
 }
 elseif($receipt = GetReceipt($_GET['id']))
 {
 	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
 	$SMARTY->assign('receipt',$receipt);
-	$SMARTY->display($LMS->CONFIG['receipts']['template_file']);
+	$SMARTY->display($CONFIG['receipts']['template_file']);
 }
 else
 {
