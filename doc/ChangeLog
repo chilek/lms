@@ -59,6 +59,7 @@ version 1.7.1 Swarog (??/??/????):
   - automatic generation of bank account number (iban format) to use with 
     automatic identification of massive payments (lexx)
   - added 'assign' argument for _smarty_function_sum() (alec)
+  - added dberrors displaying on login form (alec)
     
 version 1.7.0 Klorel (13/05/2005):
 
