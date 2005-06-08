@@ -26,7 +26,7 @@
 
 function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 {
-	global $DB, $LMS;
+	global $CONFIG, $DB;
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -76,7 +76,7 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 		}
 	}
 
-	$ntempl = $LMS->CONFIG['receipts']['number_template'];
+	$ntempl = $CONFIG['receipts']['number_template'];
 
 	if($list = $DB->GetAll(
 	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, documents.name AS customername, address, zip, city 
@@ -146,7 +146,7 @@ unset($receiptlist['direction']);
 
 $listdata['totalpos'] = sizeof($receiptlist);
 
-$pagelimit = $LMS->CONFIG['phpui']['receiptlist_pagelimit'];
+$pagelimit = $CONFIG['phpui']['receiptlist_pagelimit'];
 $page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
