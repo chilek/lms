@@ -27,7 +27,7 @@
 function GetCustomerCovenants($id)
 {
 	global $CONFIG, $DB;
-	
+
 	if(!$id) return NULL;
 	
 	if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN(cdate) AS cdate, 
@@ -137,6 +137,20 @@ switch($_GET['action'])
 	
 		if($itemdata['value'] && $itemdata['description'])
 			$contents[] = $itemdata;
+	break;
+	case 'additemlist':
+	
+		if($marks = $_POST['marks'])
+			foreach($marks as $id)
+			{
+				$row = $DB->GetRow('SELECT docid, itemid, comment FROM cash WHERE id = ?', array($id));
+				$itemdata['value'] = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
+				//$itemdata['value'] = round((float) str_replace(',','.',$itemdata['value']),2);
+				$itemdata['description'] = $row['comment'];
+				$itemdata['reference'] = $id;
+				$itemdata['posuid'] = (string) getmicrotime();
+				$contents[] = $itemdata;
+			}
 	break;
 	case 'deletepos':
 
@@ -267,8 +281,23 @@ if($_GET['action'] != '')
 	$SESSION->redirect('?m=receiptadd');
 }
 
-$SMARTY->assign('covenantlist',GetCustomerCovenants($_GET['cid']));
+if($list = GetCustomerCovenants($customer['id'] ? $customer['id'] : $_GET['cid']))
+	if($contents)
+		foreach($list as $row)
+		{
+			$i = 0;
+			foreach($contents as $item)
+				if($row['id'] == $item['reference'])
+					$i = 1;
+			if(!$i)
+				$covenantlist[] = $row;
+		}
+	else
+		$covenantlist = $list;
+
+
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+$SMARTY->assign('covenantlist', $covenantlist);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('receipt', $receipt);
