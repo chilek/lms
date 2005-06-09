@@ -3,6 +3,7 @@ $Id$
 version 1.6.0 Thor (??/??/????):
 
   - BTS#0000370,376: changed default tax rate on Finances -> New Op. (alec)
+  - lms-sendinvoices: fixed invoice number in mail subject and body (alec)
 
 version 1.6.0rc6 Thor (07/06/2005):
 
