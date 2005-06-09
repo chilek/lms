@@ -1409,7 +1409,6 @@ $_LANG['Warning message:'] = 'Treść ostrzeżenia:';
 $_LANG['warning off'] = 'ostrzeżenie wyłączone';
 $_LANG['warning on'] = 'ostrzeżenie włączone';
 $_LANG['Warnings'] = 'Ostrzeżenia';
-$_LANG['Warning! This version of LMS is under development! Remember, it might work unstable and certainly has still many bugs! If you need stability try 1.6 version!'] = 'Ostrzeżenie! Ta wersja LMSa jest w trakcie rozbudowy! Pamiętaj, że może być niestabilna i na pewno posiada jakieś błędy! Jeśli potrzebujesz stabilności wypróbuj wersję z linii 1.4!';
 $_LANG['WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!'] = 'UWAGA! TO USUNIE WSZELKIE DANE Z BAZY!!!';
 $_LANG['weekly'] = 'tygodniowo';
 $_LANG['weekly ($0)'] = 'tygodniowo ($0)';

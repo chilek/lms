@@ -241,7 +241,6 @@ if($AUTH->islogged)
 	elseif($module == '')
 	{
 		$layout['module'] = 'welcome';
-		$SMARTY->assign('warning',!chkconfig($_CONFIG['phpui']['disable_devel_warning']));
 		include($_MODULES_DIR.'/welcome.php');
 	}
 	else
