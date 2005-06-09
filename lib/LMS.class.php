@@ -1538,8 +1538,11 @@ class LMS
 						.' GROUP BY id, number, cdate, customerid, name, address, zip, city '
 						.$sqlord.' '.$direction))
 		{
-			$inv_paid = $this->DB->GetAllByKey('SELECT docid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE docid!=0 GROUP BY docid','id');
-			
+			$inv_paid_main = $this->DB->GetAllByKey('SELECT docid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum 
+					FROM cash WHERE docid != 0 GROUP BY docid', 'id');
+			$inv_paid_ref = $this->DB->GetAllByKey('SELECT a.docid AS id, SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END) AS sum
+					FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
+					WHERE a.docid != 0 GROUP BY a.docid', 'id');
 			if($group['group'])
 				$customers = $this->DB->GetAllByKey('SELECT customerid AS id FROM customerassignments WHERE customergroupid=?', 'id', array($group['group']));
 
@@ -1547,7 +1550,7 @@ class LMS
 			{
 				$result[$idx]['year'] = date('Y',$row['cdate']);
 				$result[$idx]['month'] = date('m',$row['cdate']);
-				$result[$idx]['paid'] = ( $inv_paid[$row['id']]['sum'] >=0 ? TRUE : FALSE );
+				$result[$idx]['paid'] = ( $inv_paid_main[$row['id']]['sum'] + $inv_paid_ref[$row['id']]['sum'] >=0 ? TRUE : FALSE );
 				
 				if($group['group'])
 					if(!$group['exclude'] && $customers[$result[$idx]['customerid']])
