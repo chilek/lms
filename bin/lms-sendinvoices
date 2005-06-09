@@ -201,7 +201,7 @@ while(my $row = $dbq->fetchrow_hashref())
 	my $response = $ua->get($lms_url.'/?m=invoice&fetchsingle=1&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
 	if ($response->is_success)
 	{
-		my $custemail = $row->{'email'};
+		my $custemail = $debug_email || $row->{'email'};
 	    	my $invoice_number = $invoice_ntemplate;
 		my $body = $mail_body;
 		my $subject = $mail_subject;
@@ -212,11 +212,6 @@ while(my $row = $dbq->fetchrow_hashref())
 		$body =~ s/%invoice/$invoice_number/g;
 		$subject =~ s/%invoice/$invoice_number/g;
 
-		if($debug_email)
-		{
-			$custemail = $debug_email;
-		}
-		
 		if(!$quiet)
 		{
 			print "Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
