@@ -380,7 +380,7 @@ switch($type)
 			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
 			FROM cash LEFT JOIN documents ON (docid = documents.id)
 			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=? 
-			AND (docid=0 OR documents.type != 1)
+			AND (docid=0 OR documents.type != 1) AND reference=0
 			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));
 
@@ -391,7 +391,7 @@ switch($type)
 			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS totaltaxfree 
 			FROM cash LEFT JOIN documents ON (docid = documents.id)
 			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=? 
-			AND (docid=0 OR documents.type != 1)',
+			AND (docid=0 OR documents.type != 1) AND reference=0',
 			array($date['from'], $date['to']));
 		
 		$SMARTY->assign('incomelist', $incomelist);
