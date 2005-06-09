@@ -192,60 +192,59 @@ my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
 
-$dbq = $dbase->prepare('SELECT documents.id AS id, number, cdate, email, invoices.name AS name, customerid FROM documents LEFT JOIN customers ON customers.id = customerid WHERE deleted = 0 AND type = 1 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
+$dbq = $dbase->prepare('SELECT documents.id AS id, number, cdate, email, documents.name AS name, customerid FROM documents LEFT JOIN customers ON customers.id = customerid WHERE deleted = 0 AND type = 1 AND email != \'\' AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
-	my $invoice_number = $invoice_ntemplate;
-	$invoice_number =~ s/\%N/$row->{'number'}/g;
-	$invoice_number =~ s/\%Y/$year/g;
-	$invoice_number =~ s/\%M/$month/g;
-
-	if($row->{'email'})
+	my $ua = LWP::UserAgent->new;
+	$ua->timeout(10);
+	my $response = $ua->get($lms_url.'/?m=invoice&fetchsingle=1&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
+	if ($response->is_success)
 	{
-		my $ua = LWP::UserAgent->new;
-		$ua->timeout(10);
-		my $response = $ua->get($lms_url.'/?m=invoice&fetchsingle=1&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
-		if ($response->is_success)
+		my $custemail = $debug_email || $row->{'email'};
+		my $invoice_number = $invoice_ntemplate;
+		my $body = $mail_body;
+		my $subject = $mail_subject;
+		
+		$invoice_number =~ s/\%N/$row->{'number'}/g;
+		$invoice_number =~ s/\%Y/$year/g;
+		$invoice_number =~ s/\%M/$month/g;
+		$body =~ s/%invoice/$invoice_number/g;
+		$subject =~ s/%invoice/$invoice_number/g;
+		
+		if(!$quiet)
 		{
-			my $custemail = $debug_email || $row->{'email'};
-			
-			if(!$quiet)
-			{
-				print "Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
-			}
-			
-			$mail_body =~ s/%invoice/$invoice_number/g;
-			$mail_subject =~ s/%invoice/$invoice_number/g;
-			
-			my $mail = build MIME::Entity Type=>"multipart/mixed";
-			$mail->head->add('To', '"'.$row->{'name'}.'"'.' <'.$custemail.'>');
-			$mail->head->add('From', '"'.$sender_name.'"'.' <'.$sender_email.'>');
-			$mail->head->add('Reply-To', '"'.$sender_name.'"'.' <'.$sender_email.'>');
-			$mail->head->add('Subject', $mail_subject);
-			$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
-			$mail->head->add('Return-path', '<'.$sender_email.'>');
-			$mail->attach(
-				Type => 'text/plain',
-				Charset => 'UTF-8',
-				Encoding => 'quoted-printable',
-				Data => [ "$mail_body\n" ],
-			);
-			$mail->attach(
-				Type => $ftype,
-				Charset => 'UTF-8',
-				Encoding => $fencoding,
-				Filename => 'invoice_'.$row->{'id'}.'.'.$fext,
-				Data => [ $response->content ],
-			);
-			$mail->smtpsend('MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email);
-			
+			print "Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
 		}
-		else
-		{
-			die $response->status_line;
-		}
+
+		my $mail = build MIME::Entity Type=>"multipart/mixed";
+		$mail->head->add('To', '"'.$row->{'name'}.'"'.' <'.$custemail.'>');
+		$mail->head->add('From', '"'.$sender_name.'"'.' <'.$sender_email.'>');
+		$mail->head->add('Reply-To', '"'.$sender_name.'"'.' <'.$sender_email.'>');
+		$mail->head->add('Subject', $subject);
+		$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
+		$mail->head->add('Return-path', '<'.$sender_email.'>');
+		$mail->attach(
+			Type => 'text/plain',
+			Charset => 'UTF-8',
+			Encoding => 'quoted-printable',
+			Data => [ "$body\n" ],
+		);
+		$mail->attach(
+			Type => $ftype,
+			Charset => 'UTF-8',
+			Encoding => $fencoding,
+			Filename => 'invoice_'.$row->{'id'}.'.'.$fext,
+			Data => [ $response->content ],
+		);
+		$mail->smtpsend('MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email);
+		
+	}
+	else
+	{
+		die $response->status_line;
 	}
 }
+
 $dbq->finish();
 $dbase->disconnect();
