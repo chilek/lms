@@ -281,7 +281,7 @@ if($_GET['action'] != '')
 	$SESSION->redirect('?m=receiptadd');
 }
 
-if($list = GetCustomerCovenants($customer['id'] ? $customer['id'] : $_GET['cid']))
+if($list = GetCustomerCovenants($customer['id'])
 	if($contents)
 		foreach($list as $row)
 		{
