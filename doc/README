@@ -2089,10 +2089,10 @@ http://www.bigpro.com/
        %tariff - subscription name
        %period - period (counted from current day to the last in cycle,
        in YYYY/MM/DD form)
-       %%current_month - period form 1st day of current month to the last
+       %current_month - period form 1st day of current month to the last
        day
        %desc - tariff description
-       Example: paytype = 'Subscription for %current_month'
+       Example: comment = 'Subscription for %current_month'
 
    Script has also one useful command line parameter: --fakedate (-f).
    With this option you can make that script will execute with system
