@@ -270,23 +270,23 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $udbq = $dbase->prepare("SELECT * FROM users WHERE id=$uid");
 				$udbq->execute();
 				my $urow = $udbq->fetchrow_hashref();
-				my $idbq = $dbase->prepare("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES ($number, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'phone1'}', '$urow->{'nip'}', '$urow->{'pesel'}', $currtime, $deadline, '$paytype', 1)");
-				$idbq->execute();
+				my $idbq = $dbase->prepare("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
+				$idbq->execute($number, $uid, $urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'}, $urow->{'city'}, $urow->{'phone1'}, $urow->{'nip'}, $urow->{'pesel'}, $currtime, $deadline, $paytype);
 				$idbq = $dbase->prepare("SELECT id FROM invoices WHERE number=$number AND cdate=$currtime AND finished=1 AND customerid=$uid");
 				$idbq->execute();
 				my $irow = $idbq->fetchrow_hashref();
 				$gotinv{$uid} = $irow->{'id'};
 			}
 			
-			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$desc'");
-			$icdbq->execute();
+			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description=?");
+			$icdbq->execute($desc);
 			
 			if(my $icrow = $icdbq->fetchrow_hashref())
 			{
 				$itemid = $icrow->{'itemid'};
 				
-				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$desc'");
-				$icdbq->execute();
+				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description=?");
+				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("UPDATE cash SET value = value+$assign->{'value'} WHERE invoiceid = $gotinv{$uid} AND itemid = $itemid AND type = 4");
 			}
@@ -296,21 +296,21 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 				if ($assign->{'taxvalue'})
 				{
-					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'pkwiu'}', 'szt', 1, '$desc', $assign->{'tariffid'}, $itemid)");
+					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'pkwiu'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
 				}
 				else
 				{
-					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, NULL, '$assign->{'pkwiu'}', 'szt', 1, '$desc', $assign->{'tariffid'}, $itemid)");
+					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, NULL, '$assign->{'pkwiu'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
 				}
-				$icdbq->execute();
+				$icdbq->execute($desc);
 				
 				if ($assign->{'taxvalue'})
 				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc', $gotinv{$uid}, $itemid)");
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, ?, $gotinv{$uid}, $itemid)");
 				}
 				else
 				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$desc', $gotinv{$uid}, $itemid)");
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, ?, $gotinv{$uid}, $itemid)");
 				}
 			}
 			
@@ -319,15 +319,15 @@ while(my $assign = $dbq->fetchrow_hashref())
 		{
 			if ($assign->{'taxvalue'})
 			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$desc')");
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, ?)");
 			}
 			else
 			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$desc')");
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, ?)");
 			}
 		}
 
-		$cdbq->execute();
+		$cdbq->execute($desc);
 		print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
 	}
 }	
@@ -338,8 +338,8 @@ $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($currtime, 0, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
-	$sdbq->execute();
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($currtime, 0, 2, $assign->{'value'}, 0, ?, 0)");
+	$sdbq->execute($assign->{'name'}.'/'.$assign->{'creditor'});
 	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
 

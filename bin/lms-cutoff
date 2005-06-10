@@ -138,8 +138,8 @@ while (my $row = $dbq->fetchrow_hashref())
 	if($message)
 	{
 		
-		$sdbq = $dbase->prepare("UPDATE users SET message='$message' WHERE id ='$row->{'id'}'");
-		$sdbq->execute();
+		$sdbq = $dbase->prepare("UPDATE users SET message = ? WHERE id = ?");
+		$sdbq->execute($message, $row->{'id'});
 	}
 }
 
