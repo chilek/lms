@@ -182,6 +182,12 @@ chomp $mailheaders;
 chomp $mh_replyto;
 chomp $mh_references;
 
+if($mh_subject eq '')
+{
+	$mh_subject = '(no subject)';
+}
+
+my $mail_mh_subject = $mh_subject;
 my $orig_mailbody = $mailbody;
 $mailbody =~ s/\\/\\\\/g;
 $mailbody =~ s/\'/\\\'/g;
@@ -199,11 +205,6 @@ $mh_replyto =~ s/\\/\\\\/g;
 $mh_replyto =~ s/\'/\\\'/g;
 $mh_references =~ s/\\/\\\\/g;
 $mh_references =~ s/\'/\\\'/g;
-
-if($mh_subject eq '')
-{
-	$mh_subject = '(no subject)';
-}
 
 my $dbase;
 my $utsfmt;
@@ -294,6 +295,7 @@ if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 		$mh_subject = $converter->convert($mh_subject);
 		$mh_from = $converter->convert($mh_from);
 		$mh_replyto = $converter->convert($mh_replyto);
+		$mail_mh_subject = $converter->convert($mail_mh_subject);
 	}
 }
 
@@ -370,9 +372,9 @@ if(! $prev_tid) # generate new ticket if previous not found
 	
 	my $ticketid = sprintf("%06d", $ticket_id);
 	$autoreply_subject =~ s/\%tid/$ticketid/g;
-	$autoreply_subject =~ s/\%subject/$mh_subject/g;
+	$autoreply_subject =~ s/\%subject/$mail_mh_subject/g;
 	$autoreply_body =~ s/\%tid/$ticketid/g;
-	$autoreply_body =~ s/\%subject/$mh_subject/g;
+	$autoreply_body =~ s/\%subject/$mail_mh_subject/g;
 
 	# encode confirmation headers
 	my $c_subject = encode_mimeword($autoreply_subject,'q','UTF-8');
@@ -418,7 +420,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 			$smtp->datasend("Mime-Version: 1.0\n");
 			$smtp->datasend("Content-type: text/plain; charset=UTF-8\n");
 			$smtp->datasend("Content-transfer-encoding: 8bit\n");
-			$smtp->datasend("Subject: [RT#$ticketid] $mh_subject\n");
+			$smtp->datasend("Subject: [RT#$ticketid] $mail_mh_subject\n");
 			$smtp->datasend("X-Mailer: LMS/RT v.$_version\n");
 			$smtp->datasend("\n");
 			$smtp->datasend("$lms_url/?m=rtticketview&id=$ticket_id\n\n");
