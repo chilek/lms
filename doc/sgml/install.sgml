@@ -849,7 +849,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                  <emphasis>[invoices]</emphasis> section to 'pdf' will force invoice being created in PDF instead
                  of html. Option <filename>template_file</filename> has the same meaning, with one difference,
                  that it might take predefined values: 'standard' - basic invoice (invoice.html equivalent) and
-                 'FT-0100' - invoice adjusted for printing on FT-0100 paper including payment form. You can set
+                 'FT-0100' - invoice adjusted for printing on <ulink url="http://www.polarnet.org/produkty/ft-0100/">FT-0100</ulink> paper including payment form. You can set
                  <filename>template_file</filename> option for php file name, but this feature is meant for
                  advanced users as it requires you to create more complicated php file than the one used with html
                  invoices Smarty template.</para>
