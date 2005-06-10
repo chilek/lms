@@ -62,6 +62,7 @@ version 1.7.1 Swarog (??/??/????):
   - added dberrors displaying on login form (alec)
   - Cash Receipts (in Poland known as "druki KP") (alec)
   - lms-sendinvoices: fixed invoice number in mail subject and body (alec)
+  - BTS#0000369: preparing statements for strings quoting in perl scripts (alec)
     
 version 1.7.0 Klorel (13/05/2005):
 
