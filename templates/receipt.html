@@ -28,7 +28,7 @@
 		<td width="34%" colspan="4" class="fall">
 			<table width="100%">
 			    <tr>
-				<td width="1%" nowrap>{t}From who:{/t}</td>
+				<td width="1%" valign="top" nowrap>{t}From who:{/t}</td>
 				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
 			    </tr>
 			</table>
@@ -44,7 +44,7 @@
 	{cycle values="grey,white" print=false name=one}
 	{foreach item="row" from=$receipt.contents}
 	<tr class="{cycle name=one}">
-		<td class="flr sdr" colspan="4" valign="top"><b>{counter}.</b> {$row.description|replace:"\n":"<BR>"}</td>
+		<td class="flr sdr" colspan="4" valign="top"><b>{counter name=one}.</b> {$row.description|replace:"\n":"<BR>"}</td>
 		<td class="flr sdr" align="right" valign="top" nowrap>{$row.value|money_format}</td>
 		<td class="flr"></td>
 	</tr>
@@ -59,7 +59,7 @@
 		<td class="fall" colspan="5">
 			<table width="100%">
 			    <tr>
-				<td width="1%" nowrap>{t}In words:{/t}</td>
+				<td width="1%" valign="top" nowrap>{t}In words:{/t}</td>
 				<td width="99%" class="sdr"><b>
 					{if $_config.phpui.to_words_short_version}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
@@ -143,7 +143,7 @@
 		<td width="34%" colspan="4" class="fall">
 			<table width="100%">
 			    <tr>
-				<td width="1%" nowrap>{t}From who:{/t}</td>
+				<td width="1%" valign="top" nowrap>{t}From who:{/t}</td>
 				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
 			    </tr>
 			</table>
@@ -159,7 +159,7 @@
 	{cycle values="grey,white" print=false name=two}
 	{foreach item="row" from=$receipt.contents}
 	<tr class="{cycle name=two}">
-		<td class="flr sdr" colspan="4" valign="top"><b>{counter}.</b> {$row.description|replace:"\n":"<BR>"}</td>
+		<td class="flr sdr" colspan="4" valign="top"><b>{counter name=two}.</b> {$row.description|replace:"\n":"<BR>"}</td>
 		<td class="flr sdr" align="right" valign="top" nowrap>{$row.value|money_format}</td>
 		<td class="flr"></td>
 	</tr>
@@ -174,7 +174,7 @@
 		<td class="fall" colspan="5">
 			<table width="100%">
 			    <tr>
-				<td width="1%" nowrap>{t}In words:{/t}</td>
+				<td width="1%" valign="top" nowrap>{t}In words:{/t}</td>
 				<td width="99%" class="sdr"><b>
 					{if $_config.phpui.to_words_short_version}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
