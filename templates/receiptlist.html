@@ -120,8 +120,8 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
-			<A {if $receipt.paid}onClick="return confirmLink(this, '{t 0=$_config.receipts.number_template|replace:"%N":$receipt.number|replace:"%Y":$receipt.year|replace:"%M":$receipt.month}Invoice \'$0\' has been paid. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=receiptedit&id={$receipt.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A onClick="return confirmLink(this, '{t 0=$_config.receipts.number_template|replace:"%N":$receipt.number|replace:"%Y":$receipt.year|replace:"%M":$receipt.month}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptedit&id={$receipt.id}&action=receiptdel"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=receiptedit&id={$receipt.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A onClick="return confirmLink(this, '{t 0=$receipt.number}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
 		</TD>
