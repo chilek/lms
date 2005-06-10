@@ -3,7 +3,7 @@
 LMSD=/usr/local/lms/bin/lmsd
 
 # comment these lines if you want to use defaults
-export LMSDBHOST=`hostname`
+export LMSDBHOST=localhost
 export LMSDBPORT=5432 # PostgreSQL
 export LMSDBPASS=password
 export LMSDBNAME=lms
