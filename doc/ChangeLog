@@ -5,6 +5,7 @@ version 1.6.0 Thor (??/??/????):
   - BTS#0000370,376: changed default tax rate on Finances -> New Op. (alec)
   - lms-sendinvoices: fixed invoice number in mail subject and body (alec)
   - BTS#0000369: prepared statements for proper strings quoting (alec)
+  - added sample/rc.lmsd script (alec)
 
 version 1.6.0rc6 Thor (07/06/2005):
 
