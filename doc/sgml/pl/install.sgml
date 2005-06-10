@@ -924,7 +924,8 @@ AddDefaultCharset Off
           "portable data format". Opcja <filename>template_file</filename> spe³nia podobn± rolê jak dla faktur html'owych,
           z tym, ¿e posiada predefiniowane warto¶ci: 'standard' - faktura podstawowa 
           (odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
-          na drukach FT-0100 zawieraj±cych druk polecenia przelewu. W opcji <filename>template_file</filename>
+          na drukach <ulink url="http://www.polarnet.org/produkty/ft-0100/">FT-0100</ulink> 
+	  zawieraj±cych druk polecenia przelewu. W opcji <filename>template_file</filename>
           mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
           zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
           przypadku faktur html'owych szablonu Smarty.</para>
