@@ -287,7 +287,6 @@ if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 	}
 	if($charset ne $dbencoding)
 	{
-
 		my $converter = Text::Iconv->new($charset, $dbencoding);
 		$mailbody = $converter->convert($mailbody);
 		$orig_mailbody = $converter->convert($orig_mailbody);
@@ -343,12 +342,12 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, customerid, subject, createtime) VALUES ($queue, '$mh_from', $reqcustid, '$mh_subject', $timestamp)");
 	$dbq->execute();
 
-	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = $timestamp");
+	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = $queue AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = $timestamp");
 	$dbq->execute();
 	$row = $dbq->fetchrow_hashref();
 	$ticket_id = $row->{'id'};
 
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, replyto, customerid, subject, messageid, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_replyto', $reqcustid, '$mh_subject', '$mh_msgid', '$mailheaders', '$mailbody', $timestamp)");	
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, replyto, customerid, subject, messageid, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_replyto', $reqcustid, '$mh_subject', '$mh_msgid', '$mailheaders', '$mailbody', $timestamp)");
 	$dbq->execute();
 
 	# i think that this expr should be enought to fetch id of previously inserted message
@@ -360,7 +359,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	# get sender e-mail if not specified
 	if(!$autoreply_from)
 	{
-		$dbq = $dbase->prepare("SELECT email, name FROM rtqueues WHERE id = '$queue'");
+		$dbq = $dbase->prepare("SELECT email, name FROM rtqueues WHERE id = $queue");
 		$dbq->execute();
 		if(my $row = $dbq->fetchrow_hashref())
 		{
@@ -406,7 +405,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	if($notify)
 	{
 		# find users emails
-		$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights WHERE users.id=userid AND queueid = '$queue' AND email!='' AND rtrights.rights>2");
+		$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights WHERE users.id=userid AND queueid = $queue AND email!='' AND rtrights.rights>2");
 		$dbq->execute();
 		while(my $row = $dbq->fetchrow_hashref())
 		{

@@ -133,7 +133,8 @@ while (my $row = $dbq->fetchrow_hashref())
 	
 	if($message && $rows > 0)
 	{
-		$dbase->do("UPDATE customers SET message='$message' WHERE id='$row->{'id'}'");
+		my $dbqu = $dbase->prepare("UPDATE customers SET message=? WHERE id=?");
+		$dbqu->execute($message, $row->{'id'});
 	}
 }
 
