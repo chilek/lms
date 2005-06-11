@@ -289,7 +289,11 @@ int main(int argc, char *argv[])
 					else 
 						exit(1);
 				}
-
+				
+				// write reload timestamp and disable reload order
+				if( reload )
+					db_pexec(g->conn, "UPDATE daemonhosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
+				
 				for(i=0; i<i_no; i++)
 				{
 					MODULE *mod = (MODULE*) malloc(sizeof(MODULE));
@@ -344,10 +348,6 @@ int main(int argc, char *argv[])
 					dlclose(mod->dlh);
 					free_module(mod);
 				}
-				
-				// write reload timestamp
-				if( reload )
-					db_pexec(g->conn, "UPDATE daemonhosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
 				
 				db_disconnect(g->conn);
 	
