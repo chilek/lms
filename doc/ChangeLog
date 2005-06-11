@@ -6,6 +6,9 @@ version 1.6.0 Thor (??/??/????):
   - lms-sendinvoices: fixed invoice number in mail subject and body (alec)
   - BTS#0000369: prepared statements for proper strings quoting (alec)
   - added sample/rc.lmsd script (alec)
+  - lmsd: fixed problem with long (above 60 sec.) reload (alec)
+  - lmsd/pinger: using more glibc instead of kernel headers because of 
+    compilation errors on some linux distributions (e.g. PLD) (alec)
 
 version 1.6.0rc6 Thor (07/06/2005):
 
