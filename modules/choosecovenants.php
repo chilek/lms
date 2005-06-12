@@ -50,8 +50,10 @@ if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN
 {
 	foreach($covenantlist as $idx => $row)
 	{
-		$record = $DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
-					    FROM cash LEFT JOIN documents ON (docid = documents.id)
+		$record = $DB->GetRow('SELECT cash.id AS id, number, taxes.label AS tax, comment
+					    FROM cash 
+					    LEFT JOIN documents ON (docid = documents.id)
+					    LEFT JOIN taxes ON (taxid = taxes.id)
 					    WHERE docid = ? AND itemid = ? AND cash.type = 4',
 					    array($row['docid'], $row['itemid']));
 		
