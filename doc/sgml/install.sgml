@@ -6,8 +6,7 @@
      <para>LMS consist a few modules. <emphasis>LMS-UI</emphasis> is user interface, which is
      responsible for all interactions with user, entirely written in PHP and it uses SQL database to
      store all data, thus PHP script interpreter and SQL engine of your choice (MySQL, Postgresql,
-     SQLite) are required. UI uses WWW-browser capabilites like JavaScript and CSS, so any recent 
-	 graphical browser should be fine. We tested: IE, Opera, FireFox. </para>
+     SQLite) are required.</para>
      <para>LMS also contains a set of Perl scripts, responsible for various operations, ie.
      periodically applying subscription fees or sending reminders to users who are in debt. It
      also contains <emphasis>LMS-MGC</emphasis>, which may be configured to generate virtually

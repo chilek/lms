@@ -6,9 +6,7 @@
      <para>LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <emphasis>LMS-UI</emphasis> 
      (interfejs u¿ytkownika). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych 
      (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w <emphasis>LMS-UI</emphasis> wykonujemy wszystkie 
-     czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS. UI u¿ywa mo¿liwo¶ci
-	 przegl±darek takich jak JavaScript i CSS, a wiêc dowolna wspó³czesna przegl±darka WWW bêdzie dobra
-	 Testowali¶my nastêpuj±ce: IE, Opera, Firefox.</para>
+     czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS.</para>
      <para>LMS to tak¿e zestaw skryptów w jêzyku Perl, i to w³a¶nie te skrypty wymagaj± 
      aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
      musisz mieæ Perl'a. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
