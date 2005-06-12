@@ -55,10 +55,6 @@ if(isset($tariff))
 	elseif(!(ereg('^[-]?[0-9.,]+$', $tariff['value'])))
 		$error['value'] = trans('Incorrect value!');
 	
-	if($tariff['taxvalue'] != '')
-	  	if(!(ereg('^[0-9.,]+$', $tariff['taxvalue'])) || $tariff['taxvalue'] < 0 || $tariff['taxvalue'] > 100)
-			$error['taxvalue'] = trans('Incorrect tax rate!');
-
 	if(!(ereg("^[0-9]+$", $tariff['uprate'])))
 		$error['uprate'] = trans('Integer value expected!');
 	if(!ereg('^[0-9]+$', $tariff['downrate']))
@@ -94,7 +90,9 @@ if(isset($tariff))
 	$tariff = $LMS->GetTariff($_GET['id']);
 	
 $layout['pagetitle'] = trans('Subscription Edit: $0',$tariff['name']);
+
 $SMARTY->assign('tariff',$tariff);
+$SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('error',$error);
 $SMARTY->display('tariffedit.html');
 

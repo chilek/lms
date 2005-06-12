@@ -51,7 +51,7 @@ function GetConfigList($order='var,asc')
 			case 'phpui':
 				switch($item['var'])
 				{
-					case 'allow_from':
+				case 'allow_from':
 					$config[$idx]['description'] = trans('List of networks and IP addresses, with access to LMS. If empty, every IP address has access to LMS. When you write list of addresses or address classes here, LMS will dismiss every unwanted user with HTTP 403 error.');
 				break;
 				

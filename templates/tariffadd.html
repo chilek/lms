@@ -34,11 +34,10 @@
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{t}Tax:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<SELECT SIZE="1" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Enter Tax rate" trigger="taxvalue"}>
-					    <OPTION VALUE="22">22%</OPTION>
-					    <OPTION VALUE="7">7%</OPTION>
-					    <OPTION VALUE="0">0%</OPTION>
-					    <OPTION VALUE="">{t}tax-free{/t}</OPTION>
+					<SELECT SIZE="1" NAME="tariffadd[taxid]" {tip text="Enter Tax rate" trigger="taxvalue"}>
+					{foreach item=tax from=$taxeslist}
+					    <OPTION VALUE="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate || $tax.id == $tariffadd.taxid} selected{/if}>{$tax.label}</OPTION>
+					{/foreach}
 					</SELECT>
 				    </TD>
 				</TR>												

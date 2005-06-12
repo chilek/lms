@@ -60,8 +60,7 @@
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
 			{$tarifflist[tariffs].value|money_format} <BR>
-			{if $tarifflist[tariffs].taxvalue}{$tarifflist[tariffs].taxvalue}%
-			{else}{t}tax-free{/t}{/if}
+			{$tarifflist[tariffs].tax}
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
