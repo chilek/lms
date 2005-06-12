@@ -1,11 +1,11 @@
-Dzieñ Dobry,     
+DzieÅ„ Dobry,     
 
 Abonament za %date-m %date-y za Internet.
 
-Aktualnie korzystaj± Pañstwo z abonamentu:	%abonament
-Aktualne saldo na Pañstwa koncie to:	%saldo
+Aktualnie korzystajÄ… PaÅ„stwo z abonamentu:	%abonament
+Aktualne saldo na PaÅ„stwa koncie to:	%saldo
 
-Wszystkie nale¿no¶ci prosimy wp³acaæ na konto:   
+Wszystkie naleÅ¼noÅ›ci prosimy wpÅ‚acaÄ‡ na konto:   
 
 SuperISPTwojaNazwaNet sp z o. o.
 Bank: Mbank
@@ -13,10 +13,10 @@ Nr rachunku bankowego: 3141592-1024768-27182818284
 z dopiskiem numeru umowy: %phone_1
 
 
-Z powa¿aniem,
+Z powaÅ¼aniem,
 SuperISPTwojaNazwaNet.
 
-ps. w trosce o Pañstwa wygodê za³±czamy 10 ostatnich operacji ksiêgowych 
-na Pañstwa koncie finansowym.
+ps. w trosce o PaÅ„stwa wygodÄ™ zaÅ‚Ä…czamy 10 ostatnich operacji ksiÄ™gowych 
+na PaÅ„stwa koncie finansowym.
 
 %last_10_in_a_table
