@@ -1598,7 +1598,7 @@ class LMS
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, tax.value AS taxvalue, pkwiu, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
+		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, taxes.label AS tax, taxes.value AS taxvalue, pkwiu, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
 				FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY name ASC'))
 		{
 			$assigned = $this->DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value 
@@ -1701,8 +1701,8 @@ class LMS
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.value AS taxvalue, pkwiu, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
-					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE id=?', array($id));
+		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax, taxes.value AS taxvalue, pkwiu, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
+					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE tariffs.id=?', array($id));
 		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS customername FROM assignments, customers WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
 		
 		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value 
@@ -1730,7 +1730,7 @@ class LMS
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, pkwiu 
+		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, taxes.label AS tax, pkwiu 
 					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY value DESC');
 	}
 

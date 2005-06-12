@@ -40,11 +40,7 @@
 				    <IMG SRC="img/tax.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%"><B>{t}Tax:{/t}</B></TD>
-				<TD WIDTH="98%">
-				    {if $tariff.taxvalue}
-					{$tariff.taxvalue} %
-				    {else}{t}tax-free{/t}{/if}
-				</TD>
+				<TD WIDTH="98%">{$tariff.tax}</TD>
 			    </TR>
 			    <TR class="LIGHT">
 				<TD WIDTH="1%" NOWRAP>

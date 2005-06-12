@@ -41,10 +41,6 @@ if(isset($tariffadd))
 	if(!(ereg('^[-]?[0-9.,]+$',$tariffadd['value'])))
 		$error['value'] = trans('Incorrect subscription value!');
 
-	if($tariffadd['taxvalue']!='')
-		if(!(ereg('^[0-9.,]+$',$tariffadd['taxvalue'])) || $tariffadd['taxvalue'] < 0 || $tariffadd['taxvalue'] > 100)
-			$error['taxvalue'] = trans('Incorrect tax rate!');
-
 	if($tariffadd['uprate']=='') $tariffadd['uprate'] = 0;
 	if($tariffadd['downrate']=='') $tariffadd['downrate'] = 0;
 	if($tariffadd['upceil']=='') $tariffadd['upceil'] = 0;
@@ -91,6 +87,7 @@ $layout['pagetitle'] = trans('New Subscription');
 
 $SMARTY->assign('error',$error);
 $SMARTY->assign('tariffadd',$tariffadd);
+$SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->display('tariffadd.html');
 
 ?>
