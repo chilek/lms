@@ -30,12 +30,9 @@ $SESSION->save('addtype', $addbalance['type']);
 $SESSION->save('addbc', $addbalance['comment']);
 $SESSION->save('addbt', $addbalance['time']);
 $SESSION->save('addbv', $addbalance['value']);
-if($addbalance['taxvalue'] == 'tax-free') //don't translate 'tax-free' here!
-	$addbalance['taxvalue'] = '';
-$SESSION->save('addbtax', $addbalance['taxvalue']);
+$SESSION->save('addbtax', $addbalance['taxid']);
 
 $addbalance['value'] = str_replace(',','.',$addbalance['value']);
-$addbalance['taxvalue'] = str_replace(',','.',$addbalance['taxvalue']);
 
 if($addbalance['time']) {
 
@@ -71,12 +68,12 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 					if($addbalance['value'] == 0)
 						break;
 				
-					$row = $DB->GetRow('SELECT docid, itemid, comment, taxvalue FROM cash WHERE id = ?', array($cashid));
+					$row = $DB->GetRow('SELECT docid, itemid, comment, taxid FROM cash WHERE id = ?', array($cashid));
 					$value = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
 					
 					//$balance['itemid'] = $row['itemid'];
 					//$balance['docid'] = $row['docid'];
-					$balance['taxvalue'] = $row['taxvalue'];
+					$balance['taxid'] = $row['taxid'];
 					$balance['comment'] = $addbalance['comment'] ? $addbalance['comment'] : $row['comment'];
 					$balance['type'] = 3;
 					$balance['customerid'] = $addbalance['customerid'];

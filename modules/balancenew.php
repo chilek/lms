@@ -29,9 +29,10 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $layout['pagetitle'] = trans('New Balance');
 $SMARTY->assign('operation',$SESSION->get('addtype'));
 $SMARTY->assign('comment', $SESSION->get('addbc'));
-$SMARTY->assign('taxvalue', $SESSION->get('addbtax'));
+$SMARTY->assign('taxid', $SESSION->get('addbtax'));
 $SMARTY->assign('time', $SESSION->get('addbt'));
 $SMARTY->assign('value', $SESSION->get('addbv'));
+$SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('customers',$LMS->GetCustomerNames());
 $SMARTY->display('balancenew.html');
 

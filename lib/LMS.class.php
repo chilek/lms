@@ -434,7 +434,7 @@ class LMS
 
 	function GetCashByID($id)
 	{
-		return $this->DB->GetRow('SELECT time, userid, type, value, taxvalue, customerid, comment FROM cash WHERE id=?', array($id));
+		return $this->DB->GetRow('SELECT time, userid, type, value, taxid, customerid, comment FROM cash WHERE id=?', array($id));
 	}
 
 	function GetCustomerStatus($id)
@@ -697,11 +697,12 @@ class LMS
 	{
 		$saldolist = array();
 		// wrapper do starego formatu
-		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, value, taxvalue, cash.customerid AS customerid, comment, docid, users.name AS username,
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid, users.name AS username,
 					documents.type AS doctype 
 					FROM cash 
 					LEFT JOIN users ON users.id = cash.userid
 					LEFT JOIN documents ON documents.id = docid 
+					LEFT JOIN taxes ON cash.taxid = taxes.id
 					WHERE cash.customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
@@ -1352,30 +1353,18 @@ class LMS
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
 
-			if($item['taxvalue'] || $item['taxvalue'] == '0')
-				$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
 					$iid, 
 					$itemid, 
 					$item['valuebrutto'], 
-					$item['taxvalue'], 
+					$item['taxid'], 
 					$item['pkwiu'],
 					$item['jm'], 
 					$item['count'], 
 					$item['name'], 
 					$item['tariffid']));
 				
-			else
-				$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
-				array(
-					$iid,
-					$itemid ,
-					$item['valuebrutto'], 
-					$item['pkwiu'], 
-					$item['jm'], 
-					$item['count'], 
-					$item['name'], 
-					$item['tariffid']));
-			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
+			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
 		
 		$this->SetTS('documents');
@@ -1401,30 +1390,18 @@ class LMS
 		{
 			$itemid++;
 			
-			if($item['taxvalue'] || $item['taxvalue'] == '0')
-				$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array(
 					$iid, 
 					$itemid, 
 					$item['valuebrutto'], 
-					$item['taxvalue'], 
+					$item['taxid'], 
 					$item['pkwiu'],
 					$item['jm'], 
 					$item['count'], 
 					$item['name'], 
 					$item['tariffid']));
-			else
-				$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
-				array(
-					$iid,
-					$itemid,
-					$item['valuebrutto'], 
-					$item['pkwiu'], 
-					$item['jm'], 
-					$item['count'], 
-					$item['name'], 
-					$item['tariffid']));
-			$this->AddBalance(array('type' => 4, 'time' => $cdate, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
+			$this->AddBalance(array('type' => 4, 'time' => $cdate, 'value' => $item['valuebrutto']*$item['count'], 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
 		
 		$this->SetTS('documents');
@@ -1586,7 +1563,8 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
 		{
-			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid, itemid FROM invoicecontents WHERE docid=?', array($invoiceid)))
+			if($result['content'] = $this->DB->GetAll('SELECT value, taxid, taxes.value AS taxvalue, pkwiu, content, count, invoicecontents.description AS description, tariffid, itemid 
+					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=?', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
 					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
@@ -1617,7 +1595,8 @@ class LMS
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate, upceil, downceil, climit, plimit FROM tariffs ORDER BY name ASC'))
+		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, tax.value AS taxvalue, pkwiu, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
+				FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY name ASC'))
 		{
 			$assigned = $this->DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value 
 						FROM assignments, tariffs 
@@ -1669,30 +1648,13 @@ class LMS
 	function TariffAdd($tariffdata)
 	{
 		$this->SetTS('tariffs');
-		if($tariffdata['taxvalue'] == '')
-			$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate, upceil, downceil, climit, plimit)
-				VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?)',
-				array(
-					$tariffdata['name'],
-					$tariffdata['description'],
-					$tariffdata['value'],
-					$tariffdata['pkwiu'],
-					$tariffdata['uprate'],
-					$tariffdata['downrate'],
-					$tariffdata['upceil'],
-					$tariffdata['downceil'],
-					$tariffdata['climit'],
-					$tariffdata['plimit']
-				)
-			);
-		else
-			$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate, upceil, downceil, climit, plimit)
+		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxid, pkwiu, uprate, downrate, upceil, downceil, climit, plimit)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
 					$tariffdata['name'],
 					$tariffdata['description'],
 					$tariffdata['value'],
-					$tariffdata['taxvalue'],
+					$tariffdata['taxid'],
 					$tariffdata['pkwiu'],
 					$tariffdata['uprate'],
 					$tariffdata['downrate'],
@@ -1711,10 +1673,7 @@ class LMS
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS('tariffs');
-		if ($tariff['taxvalue'] == '')
-			return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxvalue=NULL, pkwiu=?, uprate=?, downrate=?, upceil=?, downceil=?, climit=?, plimit=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['upceil'], $tariff['downceil'], $tariff['climit'], $tariff['plimit'], $tariff['id']));
-		else
-			return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=?, upceil=?, downceil=?, climit=?, plimit=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['upceil'], $tariff['downceil'], $tariff['climit'], $tariff['plimit'], $tariff['id']));
+		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxid=?, pkwiu=?, uprate=?, downrate=?, upceil=?, downceil=?, climit=?, plimit=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxid'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['upceil'], $tariff['downceil'], $tariff['climit'], $tariff['plimit'], $tariff['id']));
 	}
 
 	function TariffDelete($id)
@@ -1739,7 +1698,8 @@ class LMS
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate, upceil, downceil, climit, plimit FROM tariffs WHERE id=?', array($id));
+		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.value AS taxvalue, pkwiu, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
+					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE id=?', array($id));
 		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS customername FROM assignments, customers WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
 		
 		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value 
@@ -1767,7 +1727,8 @@ class LMS
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll('SELECT id, name, value, uprate, downrate, upceil, downceil, climit, plimit, taxvalue, pkwiu FROM tariffs ORDER BY value DESC');
+		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, pkwiu 
+					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY value DESC');
 	}
 
 	function TariffExists($id)
@@ -1780,31 +1741,14 @@ class LMS
 		$this->SetTS('cash');
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
 
-		// Payment is without any TAX !!!
-		// Some changes should wait until 1.6.x is released. 
-		//
-		// if ($addbalance['type']==3)
-		// 	$addbalance['taxvalue'] = NULL;	
-
-		$addbalance['taxvalue'] = $addbalance['taxvalue']!='' ? str_replace(',','.',round($addbalance['taxvalue'],2)) : '';
 		if($addbalance['time'])
-			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid, reference) 
-							VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
-							array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0) ));
-			else
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid, reference) 
-							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-							array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0) ));
+			return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid, reference) 
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+						array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxid'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0) ));
 		else
-			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid, reference) 
-							VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
-							array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0) ));
-			else
-				return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxvalue, customerid, comment, docid, itemid, reference) 
-							VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-							array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0)  ));
+			return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid, reference) 
+						VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+						array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxid'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0)  ));
 	}
 
 	function DelBalance($id)
@@ -1823,16 +1767,18 @@ class LMS
 	{
 		$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
 		$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
-		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.type AS type, value, taxvalue, cash.customerid AS customerid, comment, docid, 
+		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid, 
 						    documents.type AS doctype
-						    FROM cash LEFT JOIN documents ON (documents.id = docid)
+						    FROM cash 
+						    LEFT JOIN documents ON (documents.id = docid)
+						    LEFT JOIN taxes ON (taxid = taxes.id)
 						    ORDER BY time, cash.id'))
 		{
 			foreach($balancelist as $idx => $row)
 			{
 				$balancelist[$idx]['user'] = $userlist[$row['userid']]['name'];
 				$balancelist[$idx]['value'] = $row['value'];
-				$balancelist[$idx]['taxvalue'] = $row['taxvalue'];
+				$balancelist[$idx]['tax'] = $row['tax'];
 				$balancelist[$idx]['customername'] = $customerslist[$row['customerid']]['customername'];
 				$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
 
@@ -3231,6 +3177,11 @@ class LMS
 			return $error->getMessage();
 		else
 			return "";
+	}
+	
+	function GetTaxes()
+	{
+		return $this->DB->GetAll('SELECT id, value, label FROM taxes WHERE (validfrom = 0 OR validfrom < ?NOW?) AND (validto = 0 OR validto > ?NOW?) ORDER BY value');
 	}
 }
 

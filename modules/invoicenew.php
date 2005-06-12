@@ -28,6 +28,7 @@ $layout['pagetitle'] = trans('New Invoice');
 
 $customers = $LMS->GetCustomerNames();
 $tariffs = $LMS->GetTariffs();
+$taxeslist = $LMS->GetTaxes();
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
@@ -198,6 +199,7 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('customers', $customers);
+$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoicenew.html');
 
 ?>
