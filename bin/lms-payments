@@ -213,7 +213,7 @@ my $itemid;
 
 # let's go, query fetch *ALL* assignments in given day
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, taxvalue, pkwiu, tariffs.name AS name, description, invoice,
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, taxid, pkwiu, tariffs.name AS name, description, invoice,
 	CASE suspended WHEN 0 THEN ROUND(CASE discount WHEN 0 THEN value ELSE ((100-discount)*value)/100 END, 2) ELSE
 	ROUND(ROUND(CASE discount WHEN 0 THEN value ELSE ((100-discount)*value)/100 END, 2) * $suspension_percentage/100, 2) END AS value
 	FROM assignments, tariffs, customers
@@ -294,37 +294,16 @@ while(my $assign = $dbq->fetchrow_hashref())
 			{
 				$itemid++;
 
-				if ($assign->{'taxvalue'})
-				{
-					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'pkwiu'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
-				}
-				else
-				{
-					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, NULL, '$assign->{'pkwiu'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
-				}
+				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'pkwiu'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
 				$icdbq->execute($desc);
 				
-				if ($assign->{'taxvalue'})
-				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, docid, itemid) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, ?, $gotinv{$uid}, $itemid)");
-				}
-				else
-				{
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment, docid, itemid) VALUES ($currtime, 4, $assign->{'value'}, NULL, $uid, ?, $gotinv{$uid}, $itemid)");
-				}
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxid, customerid, comment, docid, itemid) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
 			}
 			
 		}
 		else
 		{
-			if ($assign->{'taxvalue'})
-			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, ?)");
-			}
-			else
-			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxvalue, customerid, comment) VALUES ($currtime, 4, $assign->{'value'}, NULL, $uid, ?)");
-			}
+			$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxid, customerid, comment) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxid'}, $uid, ?)");
 		}
 
 		$cdbq->execute($desc);

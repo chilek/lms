@@ -55,6 +55,7 @@ version 1.7.1 Swarog (??/??/????):
     *     Changed database structure: table 'invoices' replaced by     *
     *       'documents', dropped 'phone' and 'finished' columns,       *
     *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' in customers table  *
+    *               Tax rates moved to table 'taxes'                   *
     ********************************************************************
   - automatic generation of bank account number (iban format) to use with 
     automatic identification of massive payments (lexx)
