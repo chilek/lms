@@ -9,18 +9,7 @@
 		if(index=={$tariff.id})
 		{literal}{{/literal}
 			document.additem.name.value = '{$tariff.name}';
-			document.additem.taxvalue.value = '{$tariff.taxvalue}';
-			var i = '{$tariff.taxvalue}';
-			if (i == '22.00')
-				document.additem.taxvalue.selectedIndex = 0;
-			else
-				if (i == '7.00')
-					document.additem.taxvalue.selectedIndex = 1;
-				else
-					if (i == '0.00')
-						document.additem.taxvalue.selectedIndex = 2;
-					else
-						document.additem.taxvalue.selectedIndex = 3;
+			document.additem.taxid.value = '{$tariff.taxid}';
 			document.additem.valuebrutto.value = '{$tariff.value}';
 			document.additem.pkwiu.value = '{$tariff.pkwiu}';
 			document.additem.tariffid.value = '{$tariff.id}';
@@ -165,11 +154,7 @@
 			{$item.s_valuenetto|money_format}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{if $item.taxvalue || $item.taxvalue=="0"}
-				{$item.taxvalue|string_format:"%01.2f"}%
-			{else}
-				{t}tax-free{/t}
-			{/if}
+			{$item.taxlabel}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.valuebrutto|money_format}<BR>
@@ -232,11 +217,10 @@
 			<INPUT TYPE="text" NAME="valuenetto" SIZE="6">
 		</TD>
 		<TD CLASS="ftop" NOWRAP>
-			<SELECT size="1" name="taxvalue" value="22" {tip text="Select Tax rate"}>
-				<OPTION value="22">22%</OPTION>
-				<OPTION value="7">7%</OPTION>
-				<OPTION value="0">0%</OPTION>
-				<OPTION value="">{t}tax-free{/t}</OPTION>
+			<SELECT size="1" name="taxid" {tip text="Select Tax rate"}>
+			{foreach item=tax from=$taxeslist}
+				<OPTION value="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
+			{/foreach}
 			</SELECT>
 		</TD>
 		<TD CLASS="ftop" NOWRAP>

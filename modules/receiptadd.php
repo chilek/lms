@@ -45,8 +45,10 @@ function GetCustomerCovenants($id)
 	{
 		foreach($covenantlist as $idx => $row)
 		{
-			$record = $DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
-					    FROM cash LEFT JOIN documents ON (docid = documents.id)
+			$record = $DB->GetRow('SELECT cash.id AS id, number, taxes.label AS tax, comment
+					    FROM cash 
+					    LEFT JOIN documents ON (docid = documents.id)
+					    LEFT JOIN taxes ON (taxid = taxes.id)
 					    WHERE docid = ? AND itemid = ? AND cash.type = 4',
 					    array($row['docid'], $row['itemid']));
 		
@@ -250,8 +252,8 @@ switch($_GET['action'])
 				$item['reference'] = $item['reference'] ? $item['reference'] : 0;
 				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description)
 					    VALUES(?,?,?,?)', array($rid, $iid, $item['value'], $item['description']));
-				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, reference, value, taxvalue, comment, userid, customerid)
-					    VALUES(?, 3, ?, ?, ?, ?, NULL, ?, ?, ?)', 
+				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, reference, value, comment, userid, customerid)
+					    VALUES(?, 3, ?, ?, ?, ?, ?, ?, ?)', 
 					    array($receipt['cdate'],
 						$rid, 
 						$iid, 
@@ -281,7 +283,7 @@ if($_GET['action'] != '')
 	$SESSION->redirect('?m=receiptadd');
 }
 
-if($list = GetCustomerCovenants($customer['id'])
+if($list = GetCustomerCovenants($customer['id']))
 	if($contents)
 		foreach($list as $row)
 		{
