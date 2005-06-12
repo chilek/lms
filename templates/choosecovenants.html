@@ -63,12 +63,7 @@
 					<TD><nobr>{$covenantlist[covenantlist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
 					<TD align="right">{$covenantlist[covenantlist].invoice}</TD>
 					<TD align="right"><nobr>{$covenantlist[covenantlist].value|money_format}</nobr></TD>
-					<TD align="right"><nobr>
-						{if $covenantlist[covenantlist].taxvalue}
-							{$covenantlist[covenantlist].taxvalue|string_format:"%01.2f"} %
-						{else}{t}tax-free{/t}
-						{/if}</nobr>
-					</TD>
+					<TD align="right"><nobr>{$covenantlist[covenantlist].tax}</nobr>	</TD>
 					<TD>{$covenantlist[covenantlist].comment}</TD>
 					<TD align="right">
 						{cycle print=false}
