@@ -42,6 +42,7 @@ $balancelist = $LMS->GetCustomerBalanceList($_GET['id']);
 $customernodes = $LMS->GetCustomerNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
 $contractlist = $LMS->GetContractList();
+$taxeslist = $LMS->GetTaxes();
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -58,7 +59,8 @@ $SMARTY->assign(
 			'customerinfo' => $customerinfo,
 			'tariffs' => $tariffs,
 			'contractlist' => $contractlist,
-			'contractcount' => sizeof($contractlist)
+			'contractcount' => sizeof($contractlist),
+			'taxeslist' => $taxeslist
 		     )
 		);
 $SMARTY->display('customerinfo.html');

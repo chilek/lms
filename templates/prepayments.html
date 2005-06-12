@@ -68,11 +68,7 @@
 					<TD><nobr>{$covenantlist[covenantlist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
 					<TD align="right">{$covenantlist[covenantlist].invoice}</TD>
 					<TD align="right"><nobr>{$covenantlist[covenantlist].value|money_format}</nobr></TD>
-					<TD align="right"><nobr>
-						{if $covenantlist[covenantlist].taxvalue}
-							{$covenantlist[covenantlist].taxvalue|string_format:"%01.2f"} %
-						{else}{t}tax-free{/t}
-						{/if}</nobr>
+					<TD align="right"><nobr>{$covenantlist[covenantlist].tax}</nobr>
 					</TD>
 					<TD>{$covenantlist[covenantlist].comment}</TD>
 					<TD align="right">
@@ -118,7 +114,6 @@
 				<TR class="dark">
 					<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
 					<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
-					<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
 					<TD width="96%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
@@ -127,12 +122,6 @@
 				<TR class="{cycle name="precycle"}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD><nobr>{$prepaymentlist[prepaymentlist].time|date_format:"%Y/%m/%d"}</nobr></TD>
 					<TD align="right"><nobr>{$prepaymentlist[prepaymentlist].value|money_format}</nobr></TD>
-					<TD align="right"><nobr>
-						{if $prepaymentlist[prepaymentlist].taxvalue}
-							{$prepaymentlist[prepaymentlist].taxvalue|string_format:"%01.2f"} %
-						{else}{t}tax-free{/t}
-						{/if}</nobr>
-					</TD>
 					<TD>{$prepaymentlist[prepaymentlist].comment}</TD>
 					<TD align="right">
 						{cycle name="precycle" print=false}
@@ -141,7 +130,7 @@
 				</TR>
 				{sectionelse}
 				<TR>
-					<TD align="center" colspan="5">
+					<TD align="center" colspan="4">
 						<P>&nbsp;</P>
 						<P><B>{t}That customer hasn't got any prepayments.{/t}</B></P>
 						<P>&nbsp;</P>
@@ -155,7 +144,7 @@
 					<TD CLASS="ftop" align="right" valign="top" nowrap>
 						<B>{sum array=$prepaymentlist column="value" string_format=$LANGDEFS.$_language.money_format}</B>
 					</TD>
-					<TD CLASS="ftop" ALIGN="right" colspan="3" valign="top" nowrap>
+					<TD CLASS="ftop" ALIGN="right" colspan="2" valign="top" nowrap>
 						<A HREF="javascript:CheckAllPrepayments2();">{t}Check All{/t}</A>
 						<INPUT CLASS="box light" TYPE="checkbox" NAME="allboxp" onClick="CheckAllPrepayments();" VALUE="Check All Prepayments"><BR>
 						<A href="javascript: document.prepayments.submit();">{t}Bind Prepayments with Covenants{/t} <IMG src="img/save.gif" ALT=""></A>

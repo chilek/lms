@@ -119,6 +119,7 @@ $SMARTY->assign('assignments',$LMS->GetCustomerAssignments($_GET['id']));
 $SMARTY->assign('customergroups',$LMS->CustomergroupGetForCustomer($_GET['id']));
 $SMARTY->assign('othercustomergroups',$LMS->GetGroupNamesWithoutCustomer($_GET['id']));
 $SMARTY->assign('customerinfo',$customerinfo);
+$SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
 $SMARTY->display('customeredit.html');
 

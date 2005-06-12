@@ -38,35 +38,25 @@ if(sizeof($pmarks) && sizeof($cmarks))
 {
 	foreach($pmarks as $mark)
 	{
-		$mark = $DB->GetRow('SELECT id, value, comment, userid, time, type, customerid, taxvalue
+		$mark = $DB->GetRow('SELECT id, value, comment, userid, time, type, customerid
 					FROM cash WHERE id = ?', array($mark));
 
 		while($mark['value'] > 0 && !$finish)
 		{
 			foreach($cmarks as $idx => $item)
 			{
-				$row = $DB->GetRow('SELECT itemid, docid, taxvalue FROM cash WHERE id = ?', array($item));
+				$row = $DB->GetRow('SELECT itemid, docid FROM cash WHERE id = ?', array($item));
 				$value = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
 
 				if($value>=$mark['value'])
 				{
-					if($row['taxvalue']=='')
-						$DB->Execute('UPDATE cash SET reference = ?, taxvalue = NULL
-							WHERE id = ?', array($item, $mark['id']));
-					else
-						$DB->Execute('UPDATE cash SET reference = ?, taxvalue = ?
-							WHERE id = ?', array($item, $row['taxvalue'], $mark['id']));
+					$DB->Execute('UPDATE cash SET reference = ? WHERE id = ?', array($item, $mark['id']));
 					$mark['value'] = 0;	
 					break;
 				}
 				else
 				{
-					if($row['taxvalue']=='')
-						$DB->Execute('UPDATE cash SET reference = ?, value = ?, taxvalue = NULL
-							    WHERE id = ?', array($item, $value, $mark['id']));
-					else
-						$DB->Execute('UPDATE cash SET reference = ?, value = ?, taxvalue = ?
-							    WHERE id = ?', array($item, $value, $row['taxvalue'], $mark['id']));
+					$DB->Execute('UPDATE cash SET reference = ?, value = ? WHERE id = ?', array($item, $value, $mark['id']));
 					
 					$mark['value'] -= $value;
 					$LMS->AddBalance($mark);
@@ -99,8 +89,9 @@ if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN
 {
 	foreach($covenantlist as $idx => $row)
 	{
-		$record = $DB->GetRow('SELECT cash.id AS id, number, taxvalue, comment
+		$record = $DB->GetRow('SELECT cash.id AS id, number, taxes.label AS tax, comment
 					    FROM cash LEFT JOIN documents ON (docid = documents.id)
+					    LEFT JOIN taxes ON (taxid = taxes.id)
 					    WHERE docid = ? AND itemid = ? AND cash.type = 4',
 					    array($row['docid'], $row['itemid']));
 		
@@ -116,7 +107,7 @@ if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN
 	}
 }
 
-$prepaymentlist = $DB->GetAll('SELECT cash.id AS id, time, value, taxvalue, comment
+$prepaymentlist = $DB->GetAll('SELECT cash.id AS id, time, value, comment
 			FROM cash LEFT JOIN documents ON (docid = documents.id)
 			WHERE cash.customerid = ? AND reference = 0 AND cash.type = 3
 			ORDER BY time', array($customerid));

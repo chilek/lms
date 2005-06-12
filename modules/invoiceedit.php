@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+$customers = $LMS->GetCustomerNames();
+$tariffs = $LMS->GetTariffs();
+$taxeslist = $LMS->GetTaxes();
+
 if ((isset($_GET['id'])) && ($_GET['action']=='edit'))
 {
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
@@ -39,10 +43,11 @@ if ((isset($_GET['id'])) && ($_GET['action']=='edit'))
         $nitem['count']		= str_replace(',','.',$item['count']);
 	$nitem['jm']		= str_replace(',','.',$item['content']);
         $nitem['valuenetto']	= str_replace(',','.',$item['basevalue']);
-	$nitem['taxvalue']	= str_replace(',','.',$item['taxvalue']);
         $nitem['valuebrutto']	= str_replace(',','.',$item['value']);
 	$nitem['s_valuenetto']	= str_replace(',','.',$item['totalbase']);
         $nitem['s_valuebrutto']	= str_replace(',','.',$item['total']);
+	$nitem['tax']		= $taxeslist[$item['taxid']]['label'];
+	$nitem['taxid']		= $item['taxid'];
 	$nitem['posuid']	= $i;
 	$SESSION->restore('invoicecontents', $invoicecontents);
 	$invoicecontents[] = $nitem;
@@ -54,8 +59,6 @@ if ((isset($_GET['id'])) && ($_GET['action']=='edit'))
     $SESSION->save('invoiceid', $invoice['id']);
 }
 
-$customers = $LMS->GetCustomerNames();
-$tariffs = $LMS->GetTariffs();
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
@@ -78,15 +81,9 @@ switch($_GET['action'])
 		$itemdata = r_trim($_POST);
 		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = round((float) str_replace(',','.',$itemdata[$key]),2);
-		if ($itemdata['taxvalue'] != '')
-			$itemdata['taxvalue'] = round((float) str_replace(',','.',$itemdata['taxvalue']),2);
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
-			$taxvalue = $itemdata['taxvalue'];
-			if ($taxvalue == '')
-				$taxvalue = 0;
-			if($taxvalue < 0 || $taxvalue > 100)
-				$error['taxvalue'] = trans('Incorrect tax value!');
+			$taxvalue = $taxeslist[$itemdata['taxid']]['value'];
 			if($itemdata['valuenetto'] != 0)
 				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
 			elseif($itemdata['valuebrutto'] != 0)
@@ -97,8 +94,8 @@ switch($_GET['action'])
 			$itemdata['s_valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto'] * $itemdata['count']);
 			$itemdata['valuenetto'] = str_replace(',','.',$itemdata['valuenetto']);
 			$itemdata['valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto']);
-			$itemdata['taxvalue'] = str_replace(',','.',$itemdata['taxvalue']);
 			$itemdata['count'] = str_replace(',','.',$itemdata['count']);
+			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
 		}
@@ -199,5 +196,6 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('customers', $customers);
+$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoiceedit.html');
 ?>

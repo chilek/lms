@@ -267,7 +267,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$tt_width[5] = $pdf->getTextWidth($font_size,$item['count']);
 	$tt_width[6] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue'])));
 	$tt_width[7] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",moneyf($item['totalbase'])));
-	$tt_width[8] = $pdf->getTextWidth($font_size,$item['taxvalue']." %");
+	$tt_width[8] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",$item['taxlabel']));
 	$tt_width[9] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",moneyf($item['totaltax'])));
 	$tt_width[10] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",moneyf($item['total'])));
 	for ($i = 2; $i <= 5; $i++) if (($tt_width[$i]+2*margin+2)>$t_width[$i]) $t_width[$i]=$tt_width[$i]+2*margin+2;
@@ -285,10 +285,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$t_data[5] = $item['count'];
 	$t_data[6] = iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue']));
 	$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['totalbase']));
-	if ($item['taxvalue']) 
-	    $t_data[8] = $item['taxvalue']." %";
-	else
-	    $t_data[8] = iconv("UTF-8","ISO-8859-2",trans('Tax-free'));
+	$t_data[8] = iconv("UTF-8","ISO-8859-2",$item['taxlabel']);
 	$t_data[9] = iconv("UTF-8","ISO-8859-2",moneyf($item['totaltax']));
 	$t_data[10] = iconv("UTF-8","ISO-8859-2",moneyf($item['total']));
 	
@@ -319,7 +316,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     if ($invoice['taxest']) foreach ($invoice['taxest'] as $item) 
     {
 	$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['base']));
-	$t_data[8] = $item['taxvalue']." %";
+	$t_data[8] = iconv("UTF-8","ISO-8859-2",$item['taxlabel']);
 	$t_data[9] = iconv("UTF-8","ISO-8859-2",moneyf($item['tax']));
 	$t_data[10] = iconv("UTF-8","ISO-8859-2",moneyf($item['total']));
 	$y = invoice_short_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
