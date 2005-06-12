@@ -1,0 +1,40 @@
+diff -Naur lms.org/lib/LMS.class.php lms/lib/LMS.class.php
+--- lms.org/lib/LMS.class.php	2005-05-13 22:21:17.000000000 +0200
++++ lms/lib/LMS.class.php	2005-06-13 00:25:34.000000000 +0200
+@@ -2011,9 +2011,10 @@
+ 		return ($this->DB->GetOne('SELECT * FROM networks WHERE id=?', array($id)) ? TRUE : FALSE);
+ 	}
+ 
+-	function IsIPFree($ip)
++	function IsIPFree($ip,$ownerid=false)
+ 	{
+-		return !($this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
++		return !($this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?)'  . ( is_numeric( $ownerid ) ? 'AND
++		ownerid!=?' : '') . 'OR ipaddr_pub=inet_aton(?)', array($ip, ( is_numeric( $ownerid ) ? $ownerid : FALSE), $ip)) ? TRUE : FALSE);
+ 	}
+ 
+ 	function IsIPGateway($ip)
+diff -Naur lms.org/modules/nodeadd.php lms/modules/nodeadd.php
+--- lms.org/modules/nodeadd.php	2005-05-13 22:21:17.000000000 +0200
++++ lms/modules/nodeadd.php	2005-05-29 13:37:31.000000000 +0200
+@@ -59,7 +59,7 @@
+ 		$error['ipaddr'] = trans('Incorrect node IP address!');
+ 	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
+ 		$error['ipaddr'] = trans('Specified IP address does not overlap with any network!');
+-	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
++	elseif(!$LMS->IsIPFree($nodedata['ipaddr'], $nodedata['ownerid']))
+ 		$error['ipaddr'] = trans('Specified IP address is in use!');
+ 	elseif($LMS->IsIPGateway($nodedata['ipaddr']))
+ 		$error['ipaddr'] = trans('Specified IP address is network gateway!');
+diff -Naur lms.org/modules/nodeedit.php lms/modules/nodeedit.php
+--- lms.org/modules/nodeedit.php	2005-05-13 22:21:17.000000000 +0200
++++ lms/modules/nodeedit.php	2005-05-29 13:41:51.000000000 +0200
+@@ -81,7 +81,7 @@
+ 		if($LMS->IsIPValid($nodeedit['ipaddr'])) 
+ 		{
+ 			$ip = $LMS->GetNodeIPByID($nodeedit['id']);
+-			if($ip!=$nodeedit['ipaddr'] && !$LMS->IsIPFree($nodeedit['ipaddr']))
++			if($ip!=$nodeedit['ipaddr'] && !$LMS->IsIPFree($nodeedit['ipaddr'], $nodeedit['ownerid']))
+ 				$error['ipaddr'] = trans('Specified IP address is in use!');
+ 			elseif($ip!=$nodeedit['ipaddr'] && $LMS->IsIPGateway($nodeedit['ipaddr']))
+ 				$error['ipaddr'] = trans('Specified IP address is network gateway!');
