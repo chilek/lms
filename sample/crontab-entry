@@ -1,12 +1,14 @@
 # $Id$
 # to jest przyk³adowy wpis dla programu crontab (man 5 crontab)
+# 
+# this is a simple crontab entry for LMS
 
 
-# backup:
+# make backup 
 13 1 * * * /home/services/lan-managment-system/bin/rc.backup
-# naliczenie:
+# accounting (naliczenie)
 15 2 * * * /home/services/lan-managment-system/bin/lms-payments
-# przypomnienia:
+# reminders (przypomnienia)
 18 4 1 * * /home/services/lan-managment-system/bin/rc.reminder_1st
 18 4 11 * * /home/services/lan-managment-system/bin/rc.reminder_2nd
 18 4 24 * * /home/services/lan-managment-system/bin/rc.reminder_3rd

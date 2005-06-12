@@ -1,13 +1,17 @@
 #!/bin/sh
 
 # $Id$
+# 
 # simle reminder, send 1st info, i.e. today payings are accounded.
+# you could use may scripts, we advise at least two, one simply saying 
+# 'you have another invoice' and another one (after 7-10 days) IF 
+# someone still owes you money :-\ 
 
 LMS_HOME=/home/services/lan-managment-system/
 
 cd $LMS_HOME
 
-echo "$(date) LMS przypomina o nale¿nosciach" >> log/rc-scripts
+echo "$(date) LMS informs about liabilities (reminder_1st)" >> log/rc-scripts
 
 LANG=pl
 LC_ALL=pl
