@@ -1,0 +1,295 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.3-cvs
+#
+#  (C) 2001-2005 LMS Developers
+#  based on $Id: lms-ipfw,v 0.9 2004/04/02 18:06:30 pit/alec Exp 
+#  (C) 2004 'pit' ?? 
+#  based on http://www.bsd.edu.pl/lms.tar and
+#  http://www.bsdguru.org/dyskusja/viewtopic.php?t=3313&highlight=lms
+#  for LMS version 1.3-cvs
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $help $version $my_network);
+
+sub mask2prefix($)
+{
+	my $mask = shift @_;
+	my @tmp = split('\.',$mask,4);
+	my $q = sprintf("%b%b%b%b",$tmp[0],$tmp[1],$tmp[2],$tmp[3]);
+	$q =~ s/0*$//;
+	if ($q =~ /0/) {
+		print " You idiot. error in mask\n";
+	}
+	my $len = length($q) ;
+	return $len;
+}
+
+sub prefix2mask
+{
+	my $host_bits = 32-$_[0];
+	my $net_mask = (~0 << $host_bits) & 0xffffffff;
+	my @bytes = unpack "CCCC", pack "N", $net_mask;
+	my $dec_rep = sprintf "%d.%d.%d.%d", @bytes;
+	return $dec_rep;
+}					
+
+sub matchip($$$)
+{
+	my ($ip,$net,$mask) = @_;
+	my $prefix = mask2prefix($mask);
+	my $bmask = 2**32 <<(32-$prefix);
+	my @net = split('\.',$net,4);
+	my $bnet = dotquad2u32($net);
+	if(($bnet & $bmask)!= $bnet) {
+		print "EEediot net &mask != net\n"; return 1==0
+	}
+	my $bip = dotquad2u32($ip);
+	return (($bip&$bmask) == $bnet);
+}
+
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
+sub dotquad2u32($)
+{
+	my $dq = shift||'0.0.0.0';
+	my @dq = split('\.',$dq,4);
+	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
+}
+
+sub isprivate($)
+{
+	my ($ip) = @_;
+	return matchip($ip,"192.168.0.0","255.255.0.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
+}
+
+my $_version = '1.3-cvs';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version,
+	"--network|N=s"		=>	\$my_network
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-ipfw, version $_version
+(C) 2001-2004 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-ipfw, version $_version
+(C) 2001-2004 LMS Developers
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-ipfw, version $_version\n";
+	print STDOUT "(C) 2001-2004 LMS Developers\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $networks_list = $ini->val('freebsd_ipfw', 'networks') || $my_network;
+my $cfile = $ini->val('freebsd_ipfw', 'rules_file') || '/usr/local/sbin/ipfw_rules.sh';
+my $cfile1 = $ini->val('freebsd_ipfw', 'rules_del_file') || '/usr/local/sbin/ipfw_del_rules.sh';
+my $cfile2 = '/usr/local/sbin/dhcp_rules';
+my $cperm = '744';
+my $fwcmd = $ini->val('freebsd_ipfw', 'fwcmd') || '/sbin/ipfw -q';
+my $oif = $ini->val('freebsd_ipfw', 'oif') || 'vr0';
+my $rules_start = $ini->val('freebsd_ipfw', 'rules_start') || '10000';
+my $offset = $ini->val('freebsd_ipfw', 'offset') || '10';
+my $squid_redir = $ini->val('freebsd_squid_redired', 'suqid_redired') || '80,8080,3128';
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $dbase;
+my $utsfmt;
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "UNIX_TIMESTAMP()";
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+}
+elsif($dbtype eq "sqlite")
+{
+	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$dbase->func('inet_ntoa',1,'u32todotquad','create_function');
+	$dbase->func('inet_aton',1,'dotquad2u32','create_function');	
+	$utsfmt = "strftime('%s','now')";
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+open(RULESFILE, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
+open(RULESDELFILE, ">$cfile1") or die("Fatal error: Unable to write $cfile1, exiting.\n");
+
+my $allnetworks = "";
+
+my $dbq = $dbase->prepare("SELECT name FROM networks");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref()) {
+	$allnetworks = "$allnetworks $row->{'name'}";
+}
+
+if(!$networks_list)
+{
+	$networks_list = $allnetworks;
+}
+
+my @networks = split ' ',$networks_list;
+
+# network limits:
+$dbq = $dbase->prepare("SELECT	customerid, 
+		SUM(uprate) AS uprate, SUM(downrate) AS downrate,	
+		SUM(upceil) AS upceil, SUM(downceil) AS downceil 
+		FROM assignments, customers, tariffs 
+		WHERE 
+		customers.id = customerid AND 
+		deleted = 0 AND 
+		tariffid = tariffs.id AND 
+		(datefrom <= $utsfmt OR datefrom = 0) AND 
+		(dateto > $utsfmt OR dateto = 0) 
+		GROUP BY customerid");
+$dbq->execute();
+
+my %limittable;
+
+while (my $srow = $dbq->fetchrow_hashref())
+{
+	$limittable{$srow->{'customerid'}}=$srow;
+}
+
+# Build nodes table:
+
+$dbq = $dbase->prepare("SELECT ownerid, ipaddr, mac, access FROM nodes WHERE access = '1'");
+$dbq->execute();
+my %maclist;
+my %accesslist;
+my %limits;
+
+while (my $row = $dbq->fetchrow_hashref())
+{
+	$maclist{u32todotquad($row->{'ipaddr'})} = $row->{'mac'};
+	$accesslist{u32todotquad($row->{'ipaddr'})} = $row->{'access'};
+ 	$limits{$row->{'ipaddr'}} = $limittable{$row->{'ownerid'}};
+}
+
+my $counter = '0';
+
+foreach my $key (@networks)
+{
+	my $dbq = $dbase->prepare("SELECT address, mask, dhcpstart, dhcpend, interface FROM networks WHERE name = UPPER('$key')");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) 
+	{
+		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
+		my $dhcpstart = dotquad2u32($row->{'dhcpstart'}) || '0';
+		my $longip = $row->{'address'};
+		my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+		my $count = '0';
+
+		for(my $i=$longip;$i<$longip+$netsize;$i++)
+		{
+			my $ipaddr = u32todotquad($i);
+			if($maclist{$ipaddr})
+			{
+	my $count = '0';
+	my $rule_num = $rules_start + $counter * $offset + $count++ * $offset;
+
+	my $upload = $limits{$i}->{'uprate'} || 64; 
+	my $download = $limits{$i}->{'downrate'} || 256;  
+
+	print RULESFILE $fwcmd." pipe $rule_num config bw ${upload}KBit/s queue 12 gred 0.02/3/8/0.1\n";
+	print RULESFILE $fwcmd." add $rule_num pipe $rule_num ip from ". $ipaddr." to any via ".$row->{'interface'}." in\n";
+	print RULESDELFILE $fwcmd." delete $rule_num \n";
+
+	$rule_num = $rules_start + $counter * $offset + $count++ * $offset ;
+	print RULESFILE $fwcmd." pipe $rule_num config bw ${download}KBit/s queue 25 gred 0.02/6/18/0.1\n";
+	print RULESFILE $fwcmd." add $rule_num pipe $rule_num ip from any to ". $ipaddr." via ".$row->{'interface'}." out\n";
+
+	print RULESDELFILE $fwcmd." delete $rule_num \n";
+	$counter++;
+			}
+		}               
+
+		$count++; 
+		my $rule_num = $rules_start + $counter * $offset + $count++ * $offset ;
+
+		# use webcache: 
+		my $squided_lan=u32todotquad($longip)."/".mask2prefix($row->{'mask'});
+ 		print RULESFILE $fwcmd." add  $rule_num fwd 127.0.0.1,8080 tcp from  $squided_lan to not  $squided_lan dst-port $squid_redir via $oif\n";
+		print RULESDELFILE $fwcmd." delete $rule_num \n";
+	}
+}
+
+
+$dbase->disconnect();
+close(RULESFILE);
+close(RULESDELFILE);
