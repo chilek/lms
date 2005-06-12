@@ -1563,7 +1563,7 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
 		{
-			if($result['content'] = $this->DB->GetAll('SELECT value, taxid, taxes.value AS taxvalue, pkwiu, content, count, invoicecontents.description AS description, tariffid, itemid 
+			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, pkwiu, content, count, invoicecontents.description AS description, tariffid, itemid 
 					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=?', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
@@ -1571,13 +1571,16 @@ class LMS
 					$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
 					$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
 					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
-					$result['totalbase'] += $result['content'][$idx]['totalbase'];
-					$result['totaltax'] += $result['content'][$idx]['totaltax'];
 					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
 					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
-					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+					$result['taxest'][$row['taxvalue']]['taxlabel'] = $row['taxlabel'];
+					// for backward compatybility
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
+					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+
 					$result['total'] += $result['content'][$idx]['total'];
+					$result['totalbase'] += $result['content'][$idx]['totalbase'];
+					$result['totaltax'] += $result['content'][$idx]['totaltax'];
 				}
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 			$result['totalg'] = round( ($result['total'] - floor($result['total'])) * 100);
@@ -1741,14 +1744,19 @@ class LMS
 		$this->SetTS('cash');
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
 
-		if($addbalance['time'])
-			return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid, reference) 
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-						array($addbalance['time'], ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxid'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0) ));
-		else
-			return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid, reference) 
-						VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-						array( ($addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxid'], $addbalance['customerid'], $addbalance['comment'], ($addbalance['docid'] ? $addbalance['docid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0), ($addbalance['reference'] ? $addbalance['reference'] : 0)  ));
+		return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid, reference) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+					array($addbalance['time'] ? $addbalance['time'] : time(),
+					    $addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id,
+					    $addbalance['type'],
+					    $addbalance['value'],
+					    $addbalance['taxid'] ? $addbalance['taxid'] : 0,
+					    $addbalance['customerid'],
+					    $addbalance['comment'],
+					    $addbalance['docid'] ? $addbalance['docid'] : 0,
+					    $addbalance['itemid'] ? $addbalance['itemid'] : 0,
+					    $addbalance['reference'] ? $addbalance['reference'] : 0
+					    ));
 	}
 
 	function DelBalance($id)
@@ -3181,7 +3189,7 @@ class LMS
 	
 	function GetTaxes()
 	{
-		return $this->DB->GetAll('SELECT id, value, label FROM taxes WHERE (validfrom = 0 OR validfrom < ?NOW?) AND (validto = 0 OR validto > ?NOW?) ORDER BY value');
+		return $this->DB->GetAllByKey('SELECT id, value, label FROM taxes WHERE (validfrom = 0 OR validfrom < ?NOW?) AND (validto = 0 OR validto > ?NOW?) ORDER BY value', 'id');
 	}
 }
 

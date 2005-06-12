@@ -171,11 +171,10 @@
 						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>
 					</TD>
 					<TD class="ftop" colspan="2">
-						<SELECT SIZE="1" name="addbalance[taxvalue]" {tip text="Select Tax value"}>
-							<OPTION value="22" SELECTED>22%</OPTION>
-							<OPTION value="7">7%</OPTION>
-							<OPTION value="0">0%</OPTION>
-							<OPTION value="tax-free">{t}tax-free{/t}</OPTION>
+						<SELECT SIZE="1" name="addbalance[taxid]" {tip text="Select Tax value"}>
+						{foreach item=tax from=$taxeslist}
+							<OPTION value="{$tax.id}"{if $tax.value==$_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
+						{/foreach}
 						</SELECT>
 					</TD>
 					<TD class="ftop"></TD>

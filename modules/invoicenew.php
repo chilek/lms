@@ -57,16 +57,10 @@ switch($_GET['action'])
 		$itemdata = r_trim($_POST);
 		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = round((float) str_replace(',','.',$itemdata[$key]),2);
-		if ($itemdata['taxvalue'] != '')
-			$itemdata['taxvalue'] = round((float) str_replace(',','.',$itemdata['taxvalue']),2);
 		
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
-			$taxvalue = $itemdata['taxvalue'];
-			if ($taxvalue == '')
-				$taxvalue = 0;
-			if($taxvalue < 0 || $taxvalue > 100)
-				$error['taxvalue'] = trans('Incorrect tax value!');
+			$taxvalue = $taxeslist[$itemdata['taxid']]['value'];
 			if($itemdata['valuenetto'] != 0)
 				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
 			elseif($itemdata['valuebrutto'] != 0)
@@ -75,10 +69,10 @@ switch($_GET['action'])
 			// str_replace here is needed because of bug in some PHP versions
 			$itemdata['s_valuenetto'] = str_replace(',','.',$itemdata['valuenetto'] * $itemdata['count']);
 			$itemdata['s_valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto'] * $itemdata['count']);
-			$itemdata['taxvalue'] = str_replace(',','.',$itemdata['taxvalue']);
 			$itemdata['valuenetto'] = str_replace(',','.',$itemdata['valuenetto']);
 			$itemdata['valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto']);
 			$itemdata['count'] = str_replace(',','.',$itemdata['count']);
+			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
 		}

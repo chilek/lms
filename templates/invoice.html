@@ -118,9 +118,7 @@
 		{$item.totalbase|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
-		{if $item.taxvalue}
-			{$item.taxvalue}%
-		{else}{t}tax-free{/t}{/if}
+		{$item.taxlabel}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
 		{$item.totaltax|money_format}
@@ -164,9 +162,7 @@
 		{$item.base|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
-		{if $item.taxvalue}
-			{$item.taxvalue}%
-		{else}{t}tax-free{/t}{/if}
+		{$item.taxlabel}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$item.tax|money_format}
@@ -253,10 +249,10 @@ PIN: <CODE>{$invoice.customerpin}</CODE>
 		<TD width="1%">{$invoice.customerbalancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 		<TD width="1%" NOWRAP>{$invoice.customerbalancelist.name[balancelist]}</TD>
 		<TD width="1%" align="right"><nobr>{$invoice.customerbalancelist.value[balancelist]|money_format}</nobr></TD>
-		<TD width="1%" align="right"><nobr>
-                        {if $invoice.customerbalancelist.taxvalue[balancelist]}
-                            {$invoice.customerbalancelist.taxvalue[balancelist]|string_format:"%01.2f"} %
-                        {else}{t}tax-free{/t}{/if}</nobr>
+		<TD width="1%" align="right">
+                        {if $invoice.customerbalancelist.type[balancelist]!=3}
+                            <nobr>{$invoice.customerbalancelist.tax[balancelist]}</nobr>
+			{/if}
 		</TD>
 		<TD width="1%" align="center">&raquo;</TD>
 		<TD width="1%" align="right"><nobr>
