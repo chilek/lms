@@ -52,13 +52,20 @@ if($taxes = $DB->GetCol("SELECT taxvalue FROM temp_union GROUP BY taxvalue"))
 	foreach($taxes as $tax)
 	{    
 		$i++;
-		$tax = $tax=='' ? 0 : $tax;
-		$label = $tax=='' ? 'tax-free' : $tax.' %';
-		$taxed = $tax=='' ? 0 : 1;
-		$DB->Execute("INSERT INTO taxes (value, taxed, label) VALUES(?,?,?)", array($tax, $taxed, $label));
-		$DB->Execute("UPDATE cash SET taxid=? WHERE taxvalue=?", array($i, $tax));
-		$DB->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue=?", array($i, $tax));
-		$DB->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue=?", array($i, $tax));
+		if( $tax=='' ) //tax-free
+		{
+			$DB->Execute("INSERT INTO taxes (value, taxed, label) VALUES(0,0,'tax-free')");
+			$DB->Execute("UPDATE cash SET taxid=? WHERE taxvalue IS NULL", array($i));
+			$DB->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue IS NULL", array($i));
+			$DB->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue IS NULL", array($i));
+		}
+		else
+		{
+			$DB->Execute("INSERT INTO taxes (value, taxed, label) VALUES(?,1,?)", array($tax, $tax.' %'));
+			$DB->Execute("UPDATE cash SET taxid=? WHERE taxvalue=?", array($i, $tax));
+			$DB->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue=?", array($i, $tax));
+			$DB->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue=?", array($i, $tax));
+		}
 	}
 
 $DB->Execute("DROP TABLE temp_union");	
