@@ -9,6 +9,7 @@ version 1.6.0 Thor (??/??/????):
   - lmsd: fixed problem with long (above 60 sec.) reload (alec)
   - lmsd/pinger: using more glibc instead of kernel headers because of 
     compilation errors on some linux distributions (e.g. PLD) (alec)
+  - updated contrib/multiip-patch (siradams)
 
 version 1.6.0rc6 Thor (07/06/2005):
 
