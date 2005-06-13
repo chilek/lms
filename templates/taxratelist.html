@@ -16,7 +16,7 @@
 		<TD width="1%" class="fbt" NOWRAP>{t}Binds from date:{/t}</TD>
 		<TD width="1%" class="fbt" NOWRAP>{t}Binds to date:{/t}</TD>
 		<TD width="1%" class="frightu" NOWRAP>
-			<B>{t 0=$listdata.total}Total: $0{/t}</B>
+			<a href="?m=taxrateadd">{t}Add tax rate{/t} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -39,7 +39,7 @@
 	{/if}
 	{cycle values="light,lucid" print=false}
 	{section name=taxratelist loop=$taxratelist start=$start max=$pagelimit}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="{cycle}{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
 			<IMG src="img/tax.gif" alt=""><B> {$taxratelist[taxratelist].label}</B>
 		</TD>
@@ -60,7 +60,7 @@
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
 			<A href="?m=taxrateedit&id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A href="?m=taxratedel&id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t 0=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate: \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+			<A href="?m=taxratedel&id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t 0=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -90,5 +90,10 @@
 		</TD>
 	</TR>
 	{/if}
+	<TR class="light">
+		<TD colspan="7" class="fall" align="right">
+			<a href="?m=taxrateadd">{t}Add tax rate{/t} <img src="img/save.gif" alt=""></a>
+		</TD>
+	</TR>
 </TABLE></P>
 {include file="footer.html"}
