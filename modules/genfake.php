@@ -1846,6 +1846,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM netdevices');
 	$DB->Execute('DELETE FROM netlinks');
 	$DB->Execute('DELETE FROM documents');
+	$DB->Execute('DELETE FROM taxes');
 	$DB->Execute('DELETE FROM invoicecontents');
 	$DB->Execute('DELETE FROM receiptcontents');
 	
@@ -1860,6 +1861,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "netdevices_id_seq"; CREATE SEQUENCE "netdevices_id_seq"');
 		$DB->Execute('DROP SEQUENCE "netlinks_id_seq";   CREATE SEQUENCE "netlinks_id_seq"');
 		$DB->Execute('DROP SEQUENCE "documents_id_seq";  CREATE SEQUENCE "documents_id_seq"');
+		$DB->Execute('DROP SEQUENCE "taxes_id_seq";  CREATE SEQUENCE "taxes_id_seq"');
 	}
 	
 	if($LMS->CONFIG['database']['type']=='mysql')
@@ -1868,14 +1870,19 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('ALTER TABLE nodes auto_increment=0');
 		$DB->Execute('ALTER TABLE netdevices auto_increment=0');
 		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
+		$DB->Execute('ALTER TABLE taxes auto_increment=0');
 	}
 
-	echo '<B>'.trans('Creating subscriptions...').'</B><BR>';
-	$tariffdata = array( 'name' => 'Lite', 'description' => 'Lite Tariff', 'value' => '30', 'taxvalue' => '7', 'pkwiu' => '', 'uprate' => '64', 'upceil' => '64', 'downrate' => '128', 'downceil' => '128', 'climit' => '0', 'plimit' => '0');
+	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('tax-free', 0, 0));
+	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('7%', 7, 1));
+	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('22%', 22, 1));
+
+	echo '<B>'.trans('Generating subscriptions...').'</B><BR>';
+	$tariffdata = array( 'name' => 'Lite', 'description' => 'Lite Tariff', 'value' => '30', 'taxid' => '1', 'pkwiu' => '', 'uprate' => '64', 'upceil' => '64', 'downrate' => '128', 'downceil' => '128', 'climit' => '0', 'plimit' => '0');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 'value' => '60', 'taxvalue' => '7', 'pkwiu' => '', 'uprate' => '128', 'upceil' => '128', 'downrate' => '256', 'downceil' => '256', 'climit' => '0', 'plimit' => '0');
+	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 'value' => '60', 'taxid' => '2', 'pkwiu' => '', 'uprate' => '128', 'upceil' => '128', 'downrate' => '256', 'downceil' => '256', 'climit' => '0', 'plimit' => '0');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff', 'value' => '120', 'taxvalue' => '7', 'pkwiu' => '', 'uprate' => '256', 'upceil' => '256', 'downrate' => '512', 'downceil' => '512', 'climit' => '0', 'plimit' => '0');
+	$tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff', 'value' => '120', 'taxid' => '3', 'pkwiu' => '', 'uprate' => '256', 'upceil' => '256', 'downrate' => '512', 'downceil' => '512', 'climit' => '0', 'plimit' => '0');
 	$LMS->TariffAdd($tariffdata);
 
 	echo '<B>'.trans('Generating payments...').'</B><BR>';
