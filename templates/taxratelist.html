@@ -47,7 +47,7 @@
 			({$taxratelist[taxratelist].id|string_format:"%04d"})
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
-			{$taxratelist[taxratelist].value} %
+			{$taxratelist[taxratelist].value|string_format:"%.2f"} %
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
 			{if $taxratelist[taxratelist].taxed}+{/if}
