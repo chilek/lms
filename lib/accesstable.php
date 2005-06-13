@@ -31,13 +31,13 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|account|alias|domain|config|event)(list|info|view|search|balance|infoshort)|netdevmap|print|eventprint|nodelistshort)$';
+$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|account|alias|domain|config|event|taxrate)(list|info|view|search|balance|infoshort)|netdevmap|print|eventprint|nodelistshort)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
 
 $access['table'][3]['name']		= trans('finances management');
-$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(invoice|invoice(list|new|edit|report|paid))|prepayments|choosecovenants)$';
+$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(taxrate)(list|add|edit|del))|(receipt|receipt(list|add|edit|del))|(invoice|invoice(list|new|edit|report|paid))|prepayments|choosecovenants)$';
 
 $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';
