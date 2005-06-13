@@ -1,0 +1,94 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR class="dark">
+		<TD width="94%" class="fleftu" NOWRAP>
+			<IMG src="img/tax.gif" alt=""> <A href="?m=taxratelist&o=label{if $listdata.direction eq "asc" && $listdata.order eq "label"},desc{/if}"><B>{t}Label:{/t}</B></A> {if $listdata.order eq "label"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="fbt" align="center" NOWRAP>
+			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=taxratelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="fbt" NOWRAP>
+			<IMG src="img/empty.gif" alt=""> <A href="?m=taxratelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Value:{/t}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="fbt" NOWRAP>{t}Taxed:{/t}</TD>
+		<TD width="1%" class="fbt" NOWRAP>{t}Binds from date:{/t}</TD>
+		<TD width="1%" class="fbt" NOWRAP>{t}Binds to date:{/t}</TD>
+		<TD width="1%" class="frightu" NOWRAP>
+			<B>{t 0=$listdata.total}Total: $0{/t}</B>
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="7" CLASS="FALL">
+			<B>{t}Page:{/t}
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$taxratelist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=taxratelist loop=$taxratelist start=$start max=$pagelimit}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
+			<IMG src="img/tax.gif" alt=""><B> {$taxratelist[taxratelist].label}</B>
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
+			({$taxratelist[taxratelist].id|string_format:"%04d"})
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
+			{$taxratelist[taxratelist].value} %
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
+			{if $taxratelist[taxratelist].taxed}+{/if}
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
+			{if $taxratelist[taxratelist].validfrom}{$taxratelist[taxratelist].validfrom|date_format:"%x"}{/if}
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
+			{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"%x"}{/if}
+		</TD>
+		<TD class="fright" align="right" NOWRAP>
+			<A href="?m=taxrateedit&id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A href="?m=taxratedel&id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t 0=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate: \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="7" align="center" class="fall">
+			<p>&nbsp;</p>
+			<p><B>{t}No such tax rates in database.{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="7" CLASS="FALL">
+			<B>{t}Page:{/t}
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$taxratelist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+</TABLE></P>
+{include file="footer.html"}
