@@ -15,8 +15,9 @@
 			<B>{t}Section:{/t}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
 			    <OPTION value="phpui" {if $config.section eq "phpui"}SELECTED{/if}>phpui</OPTION>
-			    <OPTION value="invoices" {if $config.section eq "invoices"}SELECTED{/if}>invoices</OPTION>
 			    <OPTION value="finances" {if $config.section eq "finances"}SELECTED{/if}>finances</OPTION>
+			    <OPTION value="invoices" {if $config.section eq "invoices"}SELECTED{/if}>invoices</OPTION>
+			    <OPTION value="receipts" {if $config.section eq "receipts"}SELECTED{/if}>receipts</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
