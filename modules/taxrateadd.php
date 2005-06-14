@@ -38,7 +38,7 @@ if(sizeof($taxrateadd))
 	
 	if($taxrateadd['label'] == '')
 		$error['label'] = trans('Tax rate label is required!');
-	elseif(strlen($taxrateadd['label']>16))
+	elseif(strlen($taxrateadd['label'])>16)
 		$error['label'] = trans('Label is too long (max.16)!');
 
 	$taxrateadd['value'] = str_replace(',','.', $taxrateadd['value']);

@@ -53,7 +53,7 @@ if(sizeof($taxrateedit))
 
 	if($taxrateedit['label'] == '')
 		$error['label'] = trans('Tax rate label is required!');
-	elseif(strlen($taxrateedit['label']>16))
+	elseif(strlen($taxrateedit['label'])>16)
 		$error['label'] = trans('Label is too long (max.16)!');
 
 	$taxrateedit['value'] = str_replace(',','.', $taxrateedit['value']);
@@ -61,6 +61,12 @@ if(sizeof($taxrateedit))
 		$error['value'] = trans('Tax rate value is not numeric!');
 	elseif($taxrateedit['value']<0 || $taxrateedit['value']>100)
 		$error['value'] = trans('Incorrect tax rate percentage value (0-100)!');
+	elseif($taxrateedit['value'] != $taxrate['value'] )
+	{
+		if( $DB->GetOne('SELECT COUNT(*) FROM cash WHERE taxid=?',array($taxrateedit['id'])) +
+		    $DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE taxid=?',array($taxrateedit['id'])) > 0 )
+			$error['value'] = trans('Can\'t change value of tax rate which was used in the past!');
+	}
 
 	if(!$taxrateedit['taxed'])
 		$taxrateedit['taxed'] = 0;
@@ -86,6 +92,8 @@ if(sizeof($taxrateedit))
 		else
 			$validto = mktime(23, 59, 59, $tmonth, $tday, $tyear);
 	}
+
+	
 	
 	if(!$error)
 	{
