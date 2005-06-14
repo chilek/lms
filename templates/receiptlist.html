@@ -119,7 +119,7 @@
 			<A HREF="?m=customerinfo&id={$receipt.customerid}">{$receipt.customer}, {$receipt.address}, {$receipt.zip} {$receipt.city}</A>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
-			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
+			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]"></A>
 			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 			<A onClick="return confirmLink(this, '{t 0=$receipt.number}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 			{cycle print=false}
@@ -152,7 +152,7 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left">
-						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>
+						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/printr.gif" ALT="" ></A></NOBR>
 					</TD>
 					<TD ALIGN="right">	
 						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
