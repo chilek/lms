@@ -57,6 +57,7 @@ version 1.7.1 Swarog (??/??/????):
     *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' in customers table  *
     *               Tax rates moved to table 'taxes'                   *
     ********************************************************************
+  - Finances -> Tax Rates - user-defined tax rates (alec)    
   - automatic generation of bank account number (iban format) to use with 
     automatic identification of massive payments (lexx)
   - added 'assign' argument for _smarty_function_sum() (alec)

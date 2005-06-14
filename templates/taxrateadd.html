@@ -23,7 +23,7 @@
 			<B>{t}Value:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="taxrateadd[value]" value="{$taxrateadd.value}" size="10" {tip text="Enter percentage value of tax rate" trigger="value"}>
+			<INPUT name="taxrateadd[value]" value="{$taxrateadd.value|string_format:"%.2f"}" size="10" {tip text="Enter percentage value of tax rate" trigger="value"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -67,7 +67,6 @@
 		</TD>
 	</TR>
 </TABLE>
-</P>
 <SCRIPT>
 <!--
 var cal1 = new calendar(document.forms['taxrateadd'].elements['taxrateadd[validfrom]']);
