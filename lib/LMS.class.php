@@ -1412,8 +1412,11 @@ class LMS
 	{
 		$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
-		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($invoiceid));
+		if($refs = $this->DB->GetOne('SELECT id FROM cash WHERE docid = ? AND type = 4', array($invoiceid)))
+			foreach($refs as $reference)
+				$this->DB->Execute('UPDATE cash SET reference=0 WHERE reference=?', array($reference));
 		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0 WHERE docid = ?', array($invoiceid));
+		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($invoiceid));
 		$this->SetTS('documents');
 		$this->SetTS('invoicecontents');
 	}
@@ -1429,8 +1432,10 @@ class LMS
 				// if that was the last item of invoice contents
 				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 			}
+			$reference = $this->DB->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ? AND type = 4', array($invoiceid, $itemid));
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ? AND type = 4', array($invoiceid, $itemid));
 			$this->DB->Execute('UPDATE cash SET docid=0, itemid=0 WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
+			$this->DB->Execute('UPDATE cash SET reference=0 WHERE reference=?', array($reference));
 			$this->SetTS('documents');
 			$this->SetTS('invoicecontents');
 		}
@@ -1725,6 +1730,27 @@ class LMS
 		return ($this->DB->GetOne('SELECT id FROM tariffs WHERE id=?', array($id))?TRUE:FALSE);
 	}
 
+	function ReceiptContentDelete($docid, $itemid=0)
+	{
+		if($itemid)
+		{
+			$this->DB->Execute('DELETE FROM receiptcontents WHERE docid=? AND itemid=?', array($docid, $itemid));
+			
+			if(!$this->DB->GetOne('SELECT COUNT(*) FROM receiptcontents WHERE docid=?', array($docid)))
+			{
+				// if that was the last item of invoice contents
+				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+			}
+			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
+		}
+		else
+		{
+			$this->DB->Execute('DELETE FROM receiptcontents WHERE docid=? AND itemid=?', array($docid, $itemid));
+			$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
+		}
+	}
+
 	function AddBalance($addbalance)
 	{
 		$this->SetTS('cash');
@@ -1747,10 +1773,15 @@ class LMS
 
 	function DelBalance($id)
 	{
-		$row = $this->DB->GetRow('SELECT docid, itemid, type FROM cash WHERE id=?', array($id));
+		$row = $this->DB->GetRow('SELECT docid, itemid, documents.type AS doctype, cash.type AS cashtype 
+					FROM cash 
+					LEFT JOIN documents ON (docid = documents.id)
+					WHERE cash.id=?', array($id));
 		
-		if($row['type']=='4' && $row['docid'] && $row['itemid'])
+		if($row['doctype']=='1' && $row['cashtype'] = '4' && $row['docid'] && $row['itemid'])
 			$this->InvoiceContentDelete($row['docid'], $row['itemid']);
+		elseif($row['doctype']=='2' && $row['docid'] && $row['itemid'])
+			$this->ReceiptContentDelete($row['docid'], $row['itemid']);
 		else
 			$this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
 		
