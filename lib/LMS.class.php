@@ -672,25 +672,9 @@ class LMS
 		return $result;
 	}
 
-	function GetCustomerBalance($id, $taxvalue='-1')
+	function GetCustomerBalance($id)
 	{
-		if ($taxvalue == '-1')
-		{
-			$bin = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=? AND type=3', array($id));
-			$bou = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=? AND type=4', array($id));
-		}
-		else
-			if ($taxvalue == trans('tax-free'))
-			{
-				$bin = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=? AND taxvalue IS NULL AND type=3', array($id, $taxvalue));
-				$bou = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=? AND taxvalue IS NULL AND type=4', array($id, $taxvalue));
-			}
-			else
-			{
-				$bin = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=? AND taxvalue=? AND type=3', array($id, $taxvalue));
-				$bou = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=? AND taxvalue=? AND type=4', array($id, $taxvalue));
-			}
-		return round($bin-$bou,2);
+		return round($this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE customerid=?', array($id)),2);
 	}
 
 	function GetCustomerBalanceList($id)
