@@ -66,18 +66,35 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 		if($junk)
 			$ids[] = $markid;
 
+	if($_GET['cash'])
+	{
+		foreach($ids as $cashid)
+			if($rid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND documents.type = 2 AND cash.id = ?', array($cashid)))
+				$idsx[] = $rid;
+		$ids = array_unique((array)$idsx);
+	}
+
+	sort($ids);
+
+	$SMARTY->display('clearheader.html');
+	
 	foreach($ids as $idx => $receiptid)
 	{
-		$receipt = GetReceipt($receiptid);
-		$SMARTY->assign('receipt',$receipt);
-		$SMARTY->display($CONFIG['receipts']['template_file']);
+		if($receipt = GetReceipt($receiptid))
+		{
+			$SMARTY->assign('receipt',$receipt);
+			$SMARTY->display($CONFIG['receipts']['template_file']);
+		}
 	}
+	$SMARTY->display('clearfooter.html');
 }
 elseif($receipt = GetReceipt($_GET['id']))
 {
 	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
 	$SMARTY->assign('receipt',$receipt);
+	$SMARTY->display('clearheader.html');
 	$SMARTY->display($CONFIG['receipts']['template_file']);
+	$SMARTY->display('clearfooter.html');
 }
 else
 {

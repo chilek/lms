@@ -49,10 +49,11 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	{
 		foreach($ids as $cashid)
 		{
-			if($invoiceid = $DB->GetOne('SELECT docid FROM cash WHERE id = ?', array($cashid)))
+			// we need to check if that document is an invoice
+			if($invoiceid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND documents.type=1 AND cash.id = ?', array($cashid)))
 				$idsx[] = $invoiceid;
 		}
-		$ids = array_unique($idsx);
+		$ids = array_unique((array)$idsx);
 	}
 	
 	sort($ids);
@@ -60,7 +61,6 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	
 	$count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
 	$i=0;
-	
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);

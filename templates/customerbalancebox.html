@@ -43,21 +43,28 @@
 		document.addbalance.submit();
 	}
 
-	function prints()
+	function printr()
+	{
+		document.addbalance.action="?m=receipt&print=cached&cash=1";
+		document.addbalance.target="_blank";
+		document.addbalance.submit();
+	}
+
+	function printi()
 	{
 		document.addbalance.action="?m=invoice&print=cached&cash=1";
 		document.addbalance.target="_blank";
 		document.addbalance.submit();
 	}
 	
-	function prints_org()
+	function printi_org()
 	{
 		document.addbalance.action="?m=invoice&print=cached&cash=1&which={/literal}{t}ORIGINAL{/t}{literal}";
 		document.addbalance.target="_blank";
 		document.addbalance.submit();
 	}
 	
-	function prints_cpy()
+	function printi_cpy()
 	{
 		document.addbalance.action="?m=invoice&print=cached&cash=1&which={/literal}{t}COPY{/t}{literal}";
 		document.addbalance.target="_blank";
@@ -126,6 +133,9 @@
 								{/if}
 								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"}></A>
 							{/if}
+							{if $balancelist.doctype[balancelist] == 2}
+								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="" {tip text="Cash receipt"}></A>
+							{/if}
 						{/if}
 						{cycle print=false}
 						<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
@@ -144,9 +154,10 @@
 				<TR class="light">
 					<TD CLASS="ftop" ALIGN="left" colspan="7">
 						<NOBR><A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:prints();">{t}Print{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:prints_org();">{t}Print originals{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:prints_cpy();">{t}Print copies{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:printi_org();">{t}Print originals{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:printi_cpy();">{t}Print copies{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A></NOBR>&nbsp;
 
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
