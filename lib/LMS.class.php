@@ -1545,20 +1545,6 @@ class LMS
 		return $result;
 	}
 
-	function GetUnfishedInvoices()
-	{
-		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, SUM(value) AS value, COUNT(docid) AS count FROM documents LEFT JOIN invoicecontents ON docid = documents.id WHERE GROUP BY id, number, cdate, customerid, name, address, zip, city ORDER BY cdate ASC'))
-		{
-			foreach($result as $idx => $row)
-			{
-				$result[$idx]['year'] = date('Y',$row['cdate']);
-				$result[$idx]['month'] = date('m',$row['cdate']);
-				$result[$idx]['paid'] = FALSE;
-			}
-		}
-		return $result;
-	}
-
 	function GetInvoiceContent($invoiceid)
 	{
 		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
