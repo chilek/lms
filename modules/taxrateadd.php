@@ -49,6 +49,8 @@ if(sizeof($taxrateadd))
 
 	if(!$taxrateadd['taxed'])
 		$taxrateadd['taxed'] = 0;
+		elseif ($taxrateadd['value']!=0)
+			$error['value'] = trans('Incorrect tax rate percentage value (not 0!) and not taxed option ');
 
 	if($taxrateadd['validfrom'] == '')
 		$validfrom = 0;
