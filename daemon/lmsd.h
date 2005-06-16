@@ -17,6 +17,7 @@
 #endif
 
 #define APIVERSION 5
+#define PROGNAME "lmsd"
 
 struct global 
 {

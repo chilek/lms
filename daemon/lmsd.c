@@ -25,10 +25,12 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <signal.h>		
 #include <syslog.h>
 #include <stdio.h>     
 #include <string.h>
+#include <stdarg.h>
 #include <dlfcn.h>  
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -42,13 +44,19 @@ unsigned char *command = NULL;
 unsigned char *iopt = NULL;
 struct sigaction sa, orig;
 
+static char **Argv = NULL;
+static char *LastArgv = NULL;
+extern char **environ;
+
 static void parse_command_line(int argc, char **argv);
 static void free_module(MODULE *module);
+static void init_set_proc_title(int argc, char **argv, char **envp);
+static void set_proc_title(const char *fmt, ...);
 static int crontab_match(time_t tt, char *crontab);
 void sig_child(int signum);
 void termination_handler(int signum);
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char **envp)
 {
 	QueryHandle *res;
 	time_t tt;
@@ -59,6 +67,7 @@ int main(int argc, char *argv[])
 #ifdef CONFIGFILE
 	Config *ini;
 #endif
+	openlog(PROGNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
     	syslog(LOG_INFO, "LMS Daemon started.");
 
     	// check environment	
@@ -71,6 +80,10 @@ int main(int argc, char *argv[])
 
     	// read command line args
 	parse_command_line(argc, argv);
+
+	// change proces name (hide command line args)
+	init_set_proc_title(argc, argv, envp);
+	set_proc_title(PROGNAME);
 
 	// initialize global structure
 	g = (GLOBAL *) realloc(NULL, sizeof(GLOBAL));
@@ -275,6 +288,8 @@ int main(int argc, char *argv[])
 			}
 			else if( fval == 0 ) // child or "quit mode"
 			{
+				set_proc_title(PROGNAME": reload");
+
 				// restore old handler so we can wait for childs executed by modules
 				if( ! quit )
 					sigaction(SIGCHLD, &orig, NULL);
@@ -370,7 +385,7 @@ int main(int argc, char *argv[])
 				free(instances[i].crontab);
 			}
 		}
-		
+
 		if( quit ) termination_handler(0);
 		
 		free(instances);
@@ -382,12 +397,26 @@ int main(int argc, char *argv[])
 /* command line options parsing */
 static void parse_command_line(int argc, char **argv)
 {
-	int opt;
+	int opt, option_index = 0;
 	char revision[10];
+      
+	static struct option options[] = {
+    	    { "dbhost", 1, 0, 'h' },
+	    { "dbname", 1, 0, 'd' },
+            { "dbuser", 1, 0, 'u' },
+    	    { "dbpass", 1, 0, 'p' },
+	    { "hostname", 1, 0, 'H' },
+    	    { "command", 2, 0, 'c' },
+    	    { "reload", 0, 0, 'q' },
+	    { "foreground", 0, 0, 'f' },
+            { "instance", 2, 0, 'i' },
+    	    { "version", 0, 0, 'v' },
+    	    { 0, 0, 0, 0 }
+	};
 	
 	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
 	
-	while ( (opt = getopt(argc, argv, "qfvi:h:p:d:u:H:c:")) != -1 ) 
+	while ( (opt = getopt_long(argc, argv, "qfvi:h:p:d:u:H:c:", options, &option_index)) != -1 )
 	{
 		switch (opt) 
 		{
@@ -401,39 +430,40 @@ static void parse_command_line(int argc, char **argv)
     			dontfork = 1;
             		break;
 		case 'i':
-        		iopt = optarg;
+        		iopt = strdup(optarg);
                 	break;
 		case 'h':
 			sscanf(optarg, "%[^:]:%d", host, &port);
 			break;
 		case 'p':
-			passwd = optarg;
+			passwd = strdup(optarg);
 			break;
 		case 'd':
-			db = optarg;
+			db = strdup(optarg);
 			break;
 		case 'u':
-			user = optarg;
+			user = strdup(optarg);
 			break;
 		case 'H':
 			strcpy(dhost, optarg);
 			break;
 		case 'c':
-			command = optarg;
+			command = strdup(optarg);
 			break;
         	default:
 			printf("LMS Daemon version 1.7-cvs (%s). Command line options:\n", revision);
-			printf(" -h host[:port]\t\tdatabase host (default: 'localhost')\n");
-			printf(" -d db_name\t\tdatabase name (default: 'lms')\n");
-			printf(" -u db_user\t\tdatabase user (default: 'lms')\n");
-			printf(" -p password\t\tdatabase password (default: '')\n");
-			printf(" -H daemon_host\t\thost name where runs daemon (default: `hostname`)\n");
-			printf(" -c command\t\tshell command to run before database connecting\n\t\t\t(default: empty)\n");
-                	printf(" -q \t\t\tdo a reload and quit\n");
-			printf(" -f \t\t\trun in foreground (don't fork)\n");
-			printf(" -i \"instance[ ...]\"\tlist of instances to reload\n");
-			printf(" -v \t\t\tprint version and copyright info\n");
-                	exit(1);
+        		printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
+        		printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
+        		printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");
+        		printf(" --dbpass -p password\t\tdatabase password (default: '')\n");
+        		printf(" --hostname -H daemon_host\thost name where runs daemon (default: `hostname`)\n");
+        		printf(" --command -c command\t\tshell command to run before database connecting\n\t\t\t\t(default: empty)\n");
+        		printf(" --reload -q \t\t\tdo a reload and quit\n");
+        		printf(" --foreground -f \t\trun in foreground (don't fork)\n");
+        		printf(" --instance -i \"instance[ ...]\"\tlist of instances to reload\n");
+        		printf(" --version -v \t\t\tprint version and copyright info\n");
+        		printf(" --help -h \t\t\tprint this text\n");
+            		exit(1);
 		}
     	}
 }
@@ -478,4 +508,61 @@ void termination_handler(int signum)
 		syslog(LOG_INFO, "LMS Daemon exited.");
 		
 	exit(signum);
+}
+
+/* Initialize environement before setting process name */
+static void init_set_proc_title(int argc, char **argv, char **envp)
+{
+    register int i, envpsize;
+    char **p;
+
+    /* Move the environment so setproctitle can use the space. */
+    for (i = envpsize = 0; envp[i] != NULL; i++)
+	    envpsize += strlen(envp[i]) + 1;
+
+    if ((p = (char **)malloc((i + 1) * sizeof(char *))) != NULL)
+    {
+	environ = p;
+
+	for (i = 0; envp[i] != NULL; i++)
+    	    if ((environ[i] = malloc(strlen(envp[i]) + 1)) != NULL)
+    		strcpy(environ[i], envp[i]);
+
+	environ[i] = NULL;
+    }
+
+    Argv = argv;
+
+
+    for (i = 0; i < argc; i++)
+        if (!i || (LastArgv + 1 == argv[i]))
+    	    LastArgv = argv[i] + strlen(argv[i]);
+
+    for (i = 0; envp[i] != NULL; i++)
+	if ((LastArgv + 1) == envp[i])
+    	    LastArgv = envp[i] + strlen(envp[i]);
+}
+
+/* Set daemon processes names (hide command line arguments) */
+static void set_proc_title(const char *fmt, ...)
+{
+    va_list msg;
+    static char statbuf[BUFSIZ];
+    char *p;
+    int i, maxlen = (LastArgv - Argv[0]) - 2;
+
+    va_start(msg,fmt);
+
+    memset(statbuf, 0, sizeof(statbuf));
+    vsnprintf(statbuf, sizeof(statbuf), fmt, msg);
+
+    va_end(msg);
+
+    i = strlen(statbuf);
+    snprintf(Argv[0], maxlen, "%s", statbuf);
+    p = &Argv[0][i];
+
+    while(p < LastArgv)
+	*p++ = '\0';
+    Argv[1] = NULL;
 }
