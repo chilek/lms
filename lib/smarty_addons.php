@@ -87,7 +87,7 @@ function _smarty_function_tip($args, &$SMARTY)
 		    $result = ' onMouseOver="return overlib(\'<B><FONT COLOR=RED>'.$error.'</FONT></B>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();" ';
 	    elseif($args['text'] != '')
 		    $result = 'onMouseOver="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();"';
-	    $result .= ($SMARTY->_tpl_vars['error'][$args['trigger']] ? ($args['bold'] ? ' CLASS="ALERTB" ' : ' CLASS="ALERT" ') : ($args['bold'] ? ' CLASS="BOLD" ' : ''));
+	    $result .= ($SMARTY->_tpl_vars['error'][$args['trigger']] ? ($args['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ') : ($args['bold'] ? ' CLASS="bold" ' : ''));
 		    return $result;
 	}
 }
