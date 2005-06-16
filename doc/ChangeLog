@@ -67,6 +67,8 @@ version 1.7.1 Swarog (??/??/????):
   - BTS#0000369: preparing statements for strings quoting in perl scripts (alec)
   - lmsd/pinger: using more glibc instead of kernel headers (alec)
   - lmsd: fixed long (above 60 sec.) reload problem (alec)
+  - lmsd: long names of command line options (alec/Jerzy Kolosowski)
+  - lmsd: hiding command line arguments on processes list (alec)
     
 version 1.7.0 Klorel (13/05/2005):
 
