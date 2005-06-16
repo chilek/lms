@@ -66,7 +66,7 @@ $LANGDEFS = array(
 
 $_language = 'en'; // default language
 
-$langs = explode(',', ($_CONFIG['phpui']['lang'] ? $_CONFIG['phpui']['lang'] : $_SERVER['HTTP_ACCEPT_LANGUAGE']));
+$langs = explode(',', (isset($_CONFIG['phpui']['lang']) ? $_CONFIG['phpui']['lang'] : $_SERVER['HTTP_ACCEPT_LANGUAGE']));
 
 foreach ($langs as $val) 
 {
