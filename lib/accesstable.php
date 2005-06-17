@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+unset($access);
 // modules with access for everyone
 $access['allow'] = '^(welcome|copyrights|logout|chpasswd|quicksearch|calendar)$';
 
