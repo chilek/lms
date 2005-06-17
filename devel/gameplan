@@ -26,10 +26,11 @@ $Id$
 1.7 (deadline dla 1.5 to koniec kwietnia/pocz±tek maja)
 
 * silnik modu³ów
-* KR -? KP ju¿ mamy, chodzi³o o RaportKasowy?
+* Faktury Korygujace
+* rozbudowa i testowanie modulu 'parser' demona
 
 
-1.9 (deadline dla 1.7 to powiedzmy koniec czerwca - do negocjacji w przypadku,
+1.9 (deadline dla 1.7 to powiedzmy koniec wakacji - do negocjacji w przypadku,
      gdyby co¶ wiêcej tam do zrobienia by³o) [xx]
 
 ! j.w. ale dla wersji 1.2 i 1.3
@@ -54,8 +55,3 @@ xxx] pcap i mini daemon?
 
 +] przesun±æ odpowiednio nisko, jak siê komu¶ bêdzie chcia³o to mo¿na robiæ, 
 ale to jest "the way".
-
-=] móg³by¶ co¶ wiêcej? 
-ja widzê konieczny porz±dek z tax i jego stawkami (co¶ bardziej w kierunku 
-rachunkowo¶ci czyli liczymy te 22.00% dok³adnie raz, potem dodajemy a nie 
-trzymamy 22.000%).
