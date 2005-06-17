@@ -682,17 +682,23 @@ database = /usr/local/lms/lms.db</screen>
          zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</para>
          <para>Przyk³ad:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
      </listitem>
-     <listitem>
-             <para>gd_translate_to</para>
+	<listitem>
+            <para>gd_translate_to</para>
             <para>Kodowanie danych dla biblioteki GD (przydatne je¶li GD wymaga ISO-8859-2 zamiast UTF-8 dla funkcji imagetext). Domy¶lnie: ISO-8859-2.</para>
             <para>Przyk³ad:     <prompt>gd_translate_to = </prompt></para>
-        </listitem>
-        <listitem>
-             <para>check_for_updates_period</para>
-            <para>Jak czêsto sprawdzaæ czy s± dostêpne poprawki LMS-a (w sekundach). Domy¶lnie: 86400.</para>
-            <para>Przyk³ad:     <prompt>check_for_updates_period = 604800</prompt></para>
-        </listitem>
-     </itemizedlist>
+	</listitem>
+	<listitem>
+    	    <para>check_for_updates_period</para>
+    	    <para>Jak czêsto sprawdzaæ czy s± dostêpne poprawki LMS-a (w sekundach). Domy¶lnie: 86400.</para>
+    	    <para>Przyk³ad:     <prompt>check_for_updates_period = 604800</prompt></para>
+	</listitem>
+	<listitem>
+    	    <para>default_taxrate</para>
+    	    <para>Okre¶la warto¶æ (nie etykietê) stawki podatkowej, która
+	    bêdzie domy¶lnie zaznaczona na listach wyboru. Domy¶lnie: 22</para>
+    	    <para>Przyk³ad:     <prompt>default_taxrate = 7</prompt></para>
+	</listitem>
+    </itemizedlist>
       </sect2>
      <sect2 id="install-config-finances">
      <title>Sekcja [finances] - konfiguracja finansów</title>
@@ -837,7 +843,7 @@ AddDefaultCharset Off
           <para>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
           faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
           wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
-          zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>almsd</emphasis></para>
+          zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>lmsd</emphasis></para>
           <para>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
           opcji w sekcji <emphasis>[invoices]</emphasis> <filename>lms.ini</filename>:
           <itemizedlist>
@@ -976,4 +982,70 @@ AddDefaultCharset Off
           </para>
          </sect2>
     </sect1>
-  </chapter>
+    <sect1 id="install-receipts">
+     <title>Dowody wp³aty (KP)</title>
+          <para>Dowody wp³aty, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
+	  opcje konfiguracyjne jak faktury. W konfiguracji dowodów wp³aty
+	  mo¿na zdecydowaæ o sposobie numeracji ustawiaj±c w sekcji 
+	  <emphasis>[receipts]</emphasis> nastepuj±ce opcje:
+          <itemizedlist>
+          <listitem>
+               <para>number_template</para>
+               <para>Wzorzec numeru. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
+               '%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</para>
+               <para>Przyk³ad: <prompt>number_template = %N/%Y</prompt></para>
+          </listitem>
+          <listitem>
+               <para>monthly_numbering</para>
+               <para>W³±czenie tej opcji spowoduje zerowanie numeracji na pocz±tku ka¿dego miesi±ca.
+               Domy¶lnie: wy³±czona</para>
+               <para>Przyk³ad: <prompt>monthly_numbering = 1</prompt></para>
+          </listitem>
+          </itemizedlist>
+	  </para>
+         <sect2 id="install-receipts-html">
+          <title>HTML</title>
+          <para>Przy domy¶lnych ustawieniach dowody wp³aty wy¶wietlane s± w
+          formacie html wg domy¶lnego szablonu. W sekcji <emphasis>[receipts]</emphasis>
+	  masz do dyspozycji jeszcze nastêpuj±ce opcje:
+          <itemizedlist>
+          <listitem>
+               <para>template_file</para>
+               <para>Szablon dowodu wp³aty, który powinien znajdowaæ siê w
+               katalogu <filename>templates</filename>. Domy¶lnie: receipt.html.</para>
+               <para>Przyk³ad: <prompt>template_file = mytempl/receipt.html</prompt></para>
+          </listitem>          
+          <listitem>
+               <para>content_type</para>
+               <para>Content-type dla druku. Je¿eli wpiszesz tutaj 'application/octet-stream'
+               to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+               Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
+               Domy¶lnie: 'text/html'</para>
+               <para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
+          </listitem>     
+          <listitem>
+               <para>attachment_name</para>
+               <para>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+               wydruk. Domy¶lnie: pusta.</para>
+               <para>Przyk³ad: <prompt>attachment_name = receipt.xls</prompt></para>
+          </listitem>
+          </itemizedlist>
+	  </para>
+         </sect2>
+	 <!-- jak kto¶ napisze to bêd± pdfowe ;)
+         <sect2 id="install-receipts-pdf">
+          <title>PDF</title>
+          <para>Mo¿liwe jest tak¿e tworzenie dowodów wp³aty jako plików pdf. Przypisanie
+          opcji <filename>type</filename> z sekcji <emphasis>[receipts]</emphasis> 
+          warto¶ci 'pdf' spowoduje, ¿e dowody zamiast w html'u bêd± tworzone jako pliki 
+          "portable data format". Opcja <filename>template_file</filename> spe³nia podobn± 
+	  rolê jak dla wydruków html'owych z tym, ¿e posiada predefiniowan± warto¶æ: 
+	  'standard' - wydruk podstawowy (odpowiednik receipt.html).
+	  W opcji <filename>template_file</filename> mo¿na tak¿e wstawiæ nazwê pliku php, 
+	  jednak ta mo¿liwo¶æ jest przeznaczona dla zaawansowanych u¿ytkowników, gdy¿ 
+	  wymaga utworzenia pliku php, a nie tak jak w przypadku html'a szablonu Smarty.</para>
+          </para>
+         </sect2>
+	 -->
+    </sect1>
+</chapter>

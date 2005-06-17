@@ -204,7 +204,7 @@
                     <member>userid - identyfikator u¿ytkownika dokonuj±cego operacji</member>
                     <member>type - typ operacji (przychód, rozchód, wp³ata, obci±¿enie)</member>
                     <member>value - warto¶æ w z³otych</member>
-                    <member>taxvalue - procent podatku</member>
+                    <member>taxid - identyfikator stawki podatkowej</member>
                     <member>customerid - identyfikator klienta ('0' - je¶li nie dotyczy)</member>
                     <member>docid - identyfikator dokumentu (np. faktury) obejmuj±cego dan± operacjê</member>
                     <member>itemid - nr pozycji na fakturze</member>
@@ -225,13 +225,24 @@
                     <member>closed - status operacji</member>
                </simplelist>
           </sect2>
+          <sect2 id="taxes">
+               <title>Stawki podatkowe ('taxes')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>value - warto¶æ procentowa stawki</member>
+                    <member>label - etykieta stawki</member>
+                    <member>validfrom - pocz±tek okresu obowi±zywania</member>
+                    <member>validto - koniec okresu obowi±zywania</member>
+                    <member>taxed - status opodatkowania (1-tak, 0-nie)</member>
+               </simplelist>
+          </sect2>
           <sect2 id="tariffs">
                <title>Taryfy ('tariffs')</title>
                <simplelist>
                     <member>id - identyfikator</member>
                     <member>name - nazwa</member>
                     <member>value - kwota</member>
-                    <member>taxvalue - wysoko¶æ podatku w procentach</member>
+                    <member>taxid - identyfikator stawki podatkowej</member>
                     <member>pkwiu - numer PKWiU</member>
                     <member>uprate - gwarantowany upload</member>
                     <member>upceil - maksymalny upload</member>
@@ -294,7 +305,7 @@
                     <member>docid - identyfikator faktury</member>
                     <member>itemid - nr pozycji</member>
                     <member>value - kwota pozycji</member>
-                    <member>taxvalue - wysoko¶æ podatku w procentach</member>
+                    <member>taxid - identyfikator stawki podatkowej</member>
                     <member>pkwiu - numer PKWiU</member>
                     <member>content - u¿yta jednostka (najczê¶ciej 'szt.')</member>
                     <member>count - ilo¶æ</member>
