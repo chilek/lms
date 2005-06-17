@@ -284,7 +284,7 @@ configuration (Default: 600 seconds). This parameter can be set with
 Above feature applies both to computers and devices, but in case of devices all
 its ports (IPs) must be up for device to appear online. Computers status is also
 available on nodes list in 'Nodes' panel. 
-		<note><para>You can use lms-fping Perl script or almsd daemon to
+		<note><para>You can use lms-fping Perl script or lmsd daemon to
 probe hosts availability.</para></note>
 		</para>
 	    </sect2>
@@ -344,7 +344,7 @@ and tax rate.</para>
     	    <para>This is a list of your company payments. Among standard fields
 	    you'll find 'Account this payment' icon,
 	    where you're able to charge your account. Periodical charges
-	    might be done with 'lms-payments' Perl script, or appropriate module of almsd
+	    might be done with 'lms-payments' Perl script, or appropriate module of lmsd
 	    daemon. Select and click on chosen payment to view 'Payment Info' module, where
 	    you're able to edit its parameters or account given payment to financial
 	    database.</para>
@@ -642,14 +642,14 @@ smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</para>
 	<para><note><para>Your server has to support PEAR::Mail for this to
 work.</para></note>
 	<note><para>It's best to use lms-notify Perl script or notify
-module of <emphasis>almsd</emphasis> daemon to send emails
+module of <emphasis>lmsd</emphasis> daemon to send emails
 automatically whenever customer is in debt.</para></note></para>
  </sect1>
  <sect1 id="menu-reload">
 	<title>Reload</title>
 	<para>Click on 'Reload' and reload request or command should execute.
 What services and how they're updated is configured in
-<emphasis>LMS-MGC</emphasis> or <emphasis>almsd</emphasis> daemon. You'll find
+<emphasis>LMS-MGC</emphasis> or <emphasis>lmsd</emphasis> daemon. You'll find
 needed information about configuration in appropriate chapters of this
 documentation.</para>
  </sect1>
@@ -661,7 +661,7 @@ received bytes for given interface for each node. Using drop down menu you can
 quickly generate statistics for given time periods: last hour, day, 30 days or
 year.
 	    <note><para>You need working lms-traffic Perl script or
-<emphasis>almsd</emphasis> daemon running to collect statistics.</para></note>
+<emphasis>lmsd</emphasis> daemon running to collect statistics.</para></note>
 	</para>
 	<sect2 id="menu-stats-filter">
 	<title>Filter</title>

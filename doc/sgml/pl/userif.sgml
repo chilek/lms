@@ -272,7 +272,7 @@
 		Powy¿sze odnosi siê równie¿ do urz±dzeñ z tym, ¿e status urz±dzenia okre¶la
 		siê na podstawie statusu wszystkich jego adresów.
 		Status komputerów jest tak¿e widoczny na li¶cie komputerów.
-		<note><para>Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping lub demona almsd.</para></note>
+		<note><para>Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping lub demona lmsd.</para></note>
 		</para>
 	    </sect2>
  </sect1>
@@ -324,7 +324,7 @@
 	    <title>Lista p³atno¶ci</title>
     	    <para>Lista op³at sta³ych ¶wiadczonych na rzecz innych podmiotów, oprócz elementów standardowych
 	    zawiera ikonê [Nalicz], przy pomocy której mo¿na obci±¿yæ rachunek sieci. Automatycznym naliczaniem
-	    op³at zajmuje siê skrypt 'lms-payments' lub odpowiedni modu³ demona almsd. Klikaj±c wybran± 
+	    op³at zajmuje siê skrypt 'lms-payments' lub odpowiedni modu³ demona lmsd. Klikaj±c wybran± 
 	    op³atê na li¶cie zostaniesz przeniesiony do modu³u 'Informacje o op³acie', gdzie mo¿esz 
 	    edytowaæ jej parametry lub zaksiêgowaæ dan± op³atê w bazie operacji finansowych.</para>
 	</sect2>
@@ -344,7 +344,7 @@
 	    <para>Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
 	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu klientom równocze¶nie.</para>
 	    <para><note><para>Do naliczania sta³ych op³at abonamentowych najlepiej wykorzystywaæ
-	    skrypt lms-payments lub demona <emphasis>almsd</emphasis>, które potrafi± ponadto
+	    skrypt lms-payments lub demona <emphasis>lmsd</emphasis>, które potrafi± ponadto
 	    wystawiaæ faktury.</para></note></para>
 	</sect2>
 	<sect2 id="menu-invoices-list">
@@ -621,7 +621,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	smtp_username, smtp_password w sekcji [phpui].</para>
 	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia PEAR::Mail.</para></note>
 	<note><para>Do automatycznego wysy³ania upomnieñ do klientów zalegaj±cych z op³atami mo¿na
-	wykorzystaæ skrypt lms-notify lub modu³ notify demona <emphasis>almsd</emphasis>.</para></note></para>
+	wykorzystaæ skrypt lms-notify lub modu³ notify demona <emphasis>lmsd</emphasis>.</para></note></para>
  </sect1>
  <sect1 id="menu-reload">
 	<title>Prze³adowanie</title>
@@ -634,7 +634,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	    <para>Je¿eli korzystasz z <emphasis>LMS-MGC</emphasis> klikniêcie na menu 
 	    'Prze³adowanie' spowoduje uruchomienie generatora plików konfiguracyjnych 
 	    <emphasis>LMS-MGC</emphasis>, który wygeneruje zdefiniowan± konfiguracjê i prze³aduje us³ugi. 
-	    W przypadku demona <emphasis>almsd</emphasis> mo¿esz wybraæ z listy
+	    W przypadku demona <emphasis>lmsd</emphasis> mo¿esz wybraæ z listy
 	    zdefiniowane hosty na których chcesz dokonaæ prze³adowania. Zachowanie
 	    menu 'Prze³adowanie' jest zale¿ne od ustawienia opcji 'reload_type'. Je¶li
 	    zdefiniowa³e¶ zapytanie SQL w opcji 'reload_sqlquery' zostanie ono wykonane.</para>
@@ -662,7 +662,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	z Internetu (na danym interfejsie) dla ka¿dego komputera. Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej 
 	godziny, ostatniego dnia, ostatnich 30 dni lub ostatniego roku.</para>
 	<para> 
-	    <note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <emphasis>almsd</emphasis>.</para></note>
+	    <note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <emphasis>lmsd</emphasis>.</para></note>
 	</para>
 	<sect2 id="menu-stats-filter">
 	<title>Filtr</title>

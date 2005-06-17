@@ -837,7 +837,7 @@ AddDefaultCharset Off
 		<para>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
 		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
 		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
-		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>almsd</emphasis></para>
+		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>lmsd</emphasis></para>
 		<para>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
 		opcji w sekcji <emphasis>[invoices]</emphasis> <filename>lms.ini</filename>:
 		<itemizedlist>

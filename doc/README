@@ -962,7 +962,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    Manual invoices creation is possible in 'New Invoice' module from
    'Finances' menu. Automatic issue might be helpful while you have legal
    contracts with your users. In this case invoices are created by
-   lms-payments script or almsd daemon.
+   lms-payments script or lmsd daemon.
 
    For proper work of printouts you need to setup custom options in
    [invoices] section of lms.ini:
@@ -1383,7 +1383,7 @@ Chapter 3. User Interface (LMS-UI)
    list in 'Nodes' panel.
    Note
 
-   You can use lms-fping Perl script or almsd daemon to probe hosts
+   You can use lms-fping Perl script or lmsd daemon to probe hosts
    availability.
      _________________________________________________________________
 
@@ -1451,7 +1451,7 @@ Chapter 3. User Interface (LMS-UI)
    This is a list of your company payments. Among standard fields you'll
    find 'Account this payment' icon, where you're able to charge your
    account. Periodical charges might be done with 'lms-payments' Perl
-   script, or appropriate module of almsd daemon. Select and click on
+   script, or appropriate module of lmsd daemon. Select and click on
    chosen payment to view 'Payment Info' module, where you're able to
    edit its parameters or account given payment to financial database.
      _________________________________________________________________
@@ -1745,14 +1745,14 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    Your server has to support PEAR::Mail for this to work.
    Note
 
-   It's best to use lms-notify Perl script or notify module of almsd
+   It's best to use lms-notify Perl script or notify module of lmsd
    daemon to send emails automatically whenever customer is in debt.
      _________________________________________________________________
 
 3.10. Reload
 
    Click on 'Reload' and reload request or command should execute. What
-   services and how they're updated is configured in LMS-MGC or almsd
+   services and how they're updated is configured in LMS-MGC or lmsd
    daemon. You'll find needed information about configuration in
    appropriate chapters of this documentation.
      _________________________________________________________________
@@ -1766,7 +1766,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    day, 30 days or year.
    Note
 
-   You need working lms-traffic Perl script or almsd daemon running to
+   You need working lms-traffic Perl script or lmsd daemon running to
    collect statistics.
      _________________________________________________________________
 

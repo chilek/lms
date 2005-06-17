@@ -764,7 +764,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                 invoices creation is possible in 'New Invoice' module from 'Finances' menu.
                 Automatic issue might be helpful while you have legal contracts with your users.
                 In this case invoices are created by <filename>lms-payments</filename> script or
-                <emphasis>almsd</emphasis> daemon.</para>
+                <emphasis>lmsd</emphasis> daemon.</para>
                 <para>For proper work of printouts you need to setup custom options in
                 <emphasis>[invoices]</emphasis> section of <filename>lms.ini</filename>:
           <itemizedlist>
