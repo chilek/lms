@@ -43,8 +43,11 @@ int tscript_has_extension(char* keyword)
 
 tscript_value tscript_run_extension(char* keyword, tscript_value arg)
 {
-	if (!tscript_extension_map_contains(&tscript_extensions, keyword))
+	tscript_extension_func *f;
+
+	if(tscript_extension_map_contains(&tscript_extensions, keyword)==0)
 		tscript_internal_error("Cannot find extension\n");
-	tscript_extension_func* f = *tscript_extension_map_ref(&tscript_extensions, keyword, NULL);
+
+	f = *tscript_extension_map_ref(&tscript_extensions, keyword, NULL);
 	return f(arg);
 }
