@@ -109,7 +109,6 @@ tscript_value tscript_ext_sql_select(tscript_value arg)
 	tscript_value *res_row;
 	int r, c;
 	char *query, *colname, *value;
-	free(query);
 	QueryHandle *q = NULL;
 	
 	tscript_debug("Executing SQL Extension: SELECT\n");
