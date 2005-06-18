@@ -11,10 +11,10 @@
 	hostów, naliczanie op³at, powiadamianie o zaleg³o¶ciach.</para>
 		<sect2 id="daemon-requirements">
 		<title>Wymagania</title>
-			<para><emphasis>LMS Daemon</emphasis> potrzebuje:
+			<para>Oto lista rzeczy, które <emphasis>lmsd</emphasis> potrzebuje ju¿ na etapie kompilacji:
       			<itemizedlist>
 			<listitem>
-				<para>instalacji interfejsu u¿ytkownika <emphasis>LMS-UI</emphasis></para>
+				<para>interfejs u¿ytkownika <emphasis>LMS-UI</emphasis></para>
 			</listitem>
 			<listitem>
 				<para><filename>libmysqlclient</filename> (tj. pe³nej instalacji MySQL'a lub odpowiedniego 
@@ -24,7 +24,15 @@
 				<para><filename>libdl</filename> (to w ka¿dej dzisiejszej dystrybucji jest)</para>
 			</listitem>
 			<listitem>
-				<para>kompilatora jêzyka C </para>
+				<para>kompilator jêzyka C (testowany na gcc-2.95.x i nowszych)</para>
+			</listitem>
+			<listitem>
+				<para>modu³ <filename>ggnotify</filename> wymaga biblioteki <filename>libgadu</filename>
+				i jej plików nag³ówkowych</para>
+			</listitem>
+			<listitem>
+				<para>modu³ <filename>parser</filename> wymaga pakietu bison w wersji 1.875 lub nowszej 
+				oraz pakietu flex</para>
 			</listitem>
 			</itemizedlist>
       			</para>
@@ -74,20 +82,20 @@
 			Podstawowe parametry pracy demona i dane do po³±czenia z baz± danych
 			podaje siê jako opcje linii komend, zgodnie z poni¿szym listingiem:
 <screen>
--h host[:port]    host na którym zainstalowana jest baza danych (domy¶lnie: 'localhost')
--d nazwa_bazy     nazwa bazy danych (domy¶lnie: 'lms')
--u u¿ytkownik     nazwa u¿ytkownika bazy danych (domy¶lnie: 'lms')
--p has³o          has³o do bazy danych (domy¶lnie: puste)
--H nazwa_hosta    host, na którym dzia³a demon. Domy¶lnie przyjmowana jest nazwa
-                  zwracana przez komendê hostname, ale mo¿na j± nadpisaæ. Nazwa
-                  ta musi zgadzaæ siê z nazw± hosta podan± w konfiguracji hostów
--c polecenie      polecenie pow³oki do wykonania przed ka¿dym po³±czeniem z baz± 
-                  tzn. co minutê (domy¶lnie: puste)
--i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 
-                  zostan± pominiête
--q                wykonuje prze³adowanie i koñczy pracê
--f                dzia³a na pierwszym planie (nie forkuje siê) 
--v                wy¶wietla wersjê i prawa licencyjne
+--dbhost -h host[:port]    host na którym zainstalowana jest baza danych (domy¶lnie: 'localhost')
+--dbname -d nazwa_bazy     nazwa bazy danych (domy¶lnie: 'lms')
+--dbuser -u u¿ytkownik     nazwa u¿ytkownika bazy danych (domy¶lnie: 'lms')
+--dbpass -p has³o          has³o do bazy danych (domy¶lnie: puste)
+--hostname -H nazwa_hosta  host, na którym dzia³a demon. Domy¶lnie przyjmowana jest nazwa
+                           zwracana przez komendê hostname, ale mo¿na j± nadpisaæ. Nazwa
+                           ta musi zgadzaæ siê z nazw± hosta podan± w konfiguracji hostów
+--command -c polecenie     polecenie pow³oki do wykonania przed ka¿dym po³±czeniem z baz± 
+                           tzn. co minutê (domy¶lnie: puste)
+--instance -i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 
+                           zostan± pominiête
+--reload -q                wykonuje prze³adowanie i koñczy pracê
+--foreground -f            dzia³a na pierwszym planie (nie forkuje siê) 
+--version -v               wy¶wietla wersjê i prawa licencyjne
 </screen>
 			Opcje dostêpu do bazy s± tak¿e odczytywane ze zmiennych pow³oki:
 			LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
@@ -1106,5 +1114,205 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-	</sect1>
+    </sect1>
+    <sect1 id="daemon-parser">
+    <title>Parser</title>
+	<sect2 id="daemon-parser-intro">
+	<title>Wstêp</title>
+	    <para>Modu³ parser jest oparty na skryptowym jêzyku
+	    <ulink url="http://silvercoders.com/wiki/index.php?title=T-Script">T-Script</ulink>,
+	    którego g³ównym zadaniem jest generowanie plików tekstowych. Mo¿e byæ
+	    u¿ywany do przetwarzania szablonów z danymi pobieranymi z ró¿nych
+	    ¼róde³ np. baz SQL lub plików tekstowych. W naszym przypadku tre¶æ
+	    skryptu (szablon) jest przechowywany w bazie danych, dlatego istnieje
+	    mo¿liwo¶æ jego edycji poprzez <emphasis>LMS-UI</emphasis>.
+	    W przysz³o¶ci modu³ parser mo¿e zast±piæ wiêkszo¶æ modu³ów demona.</para>
+	    <para>Przed kompilacj± modu³u upewnij siê, ¿e posiadasz w systemie
+	    pakiety <filename>bison</filename> (co najmniej w wersji 1.875) oraz 
+	    <filename>flex</filename>.
+	    </para>
+	</sect2>
+	<sect2 id="daemon-parser-config">
+	<title>Konfiguracja</title>
+	    <para>Parser posiada nastêpuj±ce opcje:</para>
+            <itemizedlist>
+        	<listitem>
+            	    <para>script</para>
+                    <para>Zawarto¶æ skryptu (szablonu). Domy¶lnie: pusta.</para>
+                    <para>Przyk³ad: <prompt>script = '{var=1}zmienna var={var}'</prompt></para>
+                </listitem>
+		<listitem>
+                   <para>file</para>
+                   <para>Lokalizacja pliku wynikowego. Domy¶lnie: pusta</para>
+                   <para>Przyk³ad: <prompt>file = /tmp/parser.out</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie pow³oki do wykonania po kompilacji skryptu. Domy¶lnie: pusta</para>
+                   <para>Przyk³ad: <prompt>command = "sh /tmp/parser.out"</prompt></para>
+               </listitem>
+            </itemizedlist>
+	</sect2>
+	<sect2 id="daemon-parser-syntax">
+	<title>Syntax</title>
+	    <para>Sk³adnia jêzyka T-Script jest podobna do sk³adni innych popularnych
+	    jêzyków takich jak C czy JavaScript, ale dokonano pewnych zmian
+	    maj±cych na celu u³atwienie tworzenia szablonów. 
+	    Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.</para>
+	    <para>Wyra¿enia:
+	    <itemizedlist>
+		<listitem>
+		    <para>Ci±g znaków</para>
+		    <para><screen>"some literal"</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Liczba</para>
+		    <para><screen>1234</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Warto¶æ zmiannej "var"</para>
+		    <para><screen>var</screen></para>
+		</listitem>
+		<listitem>
+		    <para>N-ty element tablicy "var"</para>
+		    <para><screen>var[n]</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Podzmienna "n" zmiennej "var"</para>
+		    <para><screen>var.n</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Warto¶æ wyra¿enia w nawiasach</para>
+		    <para><screen>( &lt;wyra¿enie&gt; )</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku 0</para>
+		    <para><screen>! &lt;wyra¿enie&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± wyra¿enie2 
+		    lub 0 gdy s± ró¿ne</para>
+		    <para><screen>&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same</para>
+		    <para><screen>&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2</para>
+		    <para><screen>&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2</para>
+		    <para><screen>&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;</screen></para>
+		</listitem> 
+		<listitem>
+		    <para>Zwraca 1 gdy jedno z wyra¿eñ jest prawd±</para>
+		    <para><screen>&lt;wyra¿enie1&gt; || &lt;wyra¿enie2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe</para>
+		    <para><screen>&lt;wyra¿enie1&gt; && &lt;wyra¿enie2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Gdy oba wyra¿enia s± liczbami zwraca wynik operacji
+		    arytmetycznej. W innym przypadku traktuje wyra¿enia jako ci±gi
+		    znaków i dokonuje ich po³±czenia</para>
+		    <para><screen>&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach</para>
+		    <para>
+<screen>
+&lt;wyra¿enie1&gt; - &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; * &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	    <para>Podstawowe polecenia:
+	    <itemizedlist>
+		<listitem>
+		    <para>Przypisuje warto¶æ wyra¿enia do podanej zmiennej</para>
+		    <para>
+		    <screen>&lt;variable_name&gt; = &lt;wyra¿enie&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Wykonuje polecenie tylko wtedy gry wyra¿enie jest prawd±. 
+		    Druga forma wykonuje polecenie1 gdy wyra¿enie jest prawd± lub polecenie2
+		    gdy jest fa³szem</para> 
+		    <para>
+<screen>if ( &lt;wyra¿enie&gt; ) &lt;polecenia&gt; /if
+if ( &lt;wyra¿enie&gt; ) &lt;polecenie1&gt; else &lt;polecenie2&gt; /if</screen></para>
+		    <para>Tekst miêdzy blokami jest traktowany jako polecenia
+		    dlatego nastêpuj±cy przyk³±d jest prawid³owy:
+<screen>Jaki¶ tekst
+{if (a==1)} 
+a równe jest 1
+{else} 
+a nie jest równe 1
+{/if} 
+</screen>
+Mo¿na wstawiæ backslash (\) pomiêdzy poleceniem a koñcem wiersza aby
+pozbyæ siê znaku koñca linii i zachowaæ normalny (bez za³amania linii w tym miejscu)
+przep³yw tekstu. Na przyk³ad: 
+<screen>
+Jaki¶ tekst
+{if (a==1)}\ 
+a równa siê 1 
+{else}\ 
+a nie równa siê 1 
+{/if}\
+</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Wykonuje polecenie1 jako polecenie inicjalizuj±ce pêtlê. Nastêpnie
+		    wykonuje polecenia i polecenie2 dopóki wyra¿enie jest prawdziwe</para>
+		    <para><screen>for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; ) &lt;polecenia&gt; /for</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	    <para>Podstawowe funkcje:
+	    <itemizedlist>
+		<listitem>
+		    <para>Zamienia warto¶æ liczbow± na ci±g znaków</para>
+		    <para><screen>string(&lt;zmienna&gt;)</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Zamienia ci±g znaków na liczbê</para>
+		    <para><screen>number(&lt;zmienna&gt;)</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	    <para>Rozszerzenia:
+	    <itemizedlist>
+		<listitem>
+		    <para>Polecenia SQL (pisane tylko ma³ymi lub tylko du¿ymi literami)</para>
+		    <para>
+<screen>
+SELECT &lt;dalszy_ci±g_zapytania&gt;
+INSERT &lt;dalszy_ci±g_zapytania&gt;
+DELETE &lt;dalszy_ci±g_zapytania&gt;
+UPDATE &lt;dalszy_ci±g_zapytania&gt;
+CREATE &lt;dalszy_ci±g_zapytania&gt;
+DROP &lt;dalszy_ci±g_zapytania&gt;
+</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Liczba wierszy, których dotyczy zapytanie (ma³e lub du¿e litery)</para>
+		    <para><screen>ROWS &lt;zapytanie_sql&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Wykonywanie poleceñ pow³oki</para>
+		    <para><screen>exec &lt;polecenie&gt;</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	</sect2>
+	<sect2 id="daemon-parser-examples">
+	<title>Przyk³adowe skrypty</title>
+	    <para></para>
+	</sect2>
+    </sect1>
 </chapter>

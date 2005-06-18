@@ -27,7 +27,13 @@
                     distribution)</para>
                </listitem>
                <listitem>
-                    <para>C compiler (gcc)</para>
+                    <para>C compiler (gcc-2.95.x or higher)</para>
+               </listitem>
+	       <listitem>
+                    <para>ggnotify module needs <filename>libgadu</filename> library and header files</para>
+               </listitem>
+	       <listitem>
+                    <para>parser module needs <filename>flex</filename> and <filename>bison</filename> (version 1.875 or newer).</para>
                </listitem>
                </itemizedlist>
                      </para>
@@ -76,18 +82,18 @@
                chapters concerning each module. Basic daemon parameters and data for connection to
 	       database should be specified as command line options, according to following listing:
 <screen>
--h host           host database is available (default: localhost)
--d db_name        database name (default: lms)
--u user           database username (default: lms)
--p password       database password (default: empty)
--H hostname       host name where daemon runs; name returned by hostname command is taken
-                  as default but it can be overwritten; that name must correspond to the
-                  one specified in hosts configuration in UI
-- c command       shell command to execute before every database connection (default: empty)
--i "instance[ ...]" list of instances to reload; other instances will be ignored
--q                do reload and exit
--f                run in foreground (don't fork)
--v                prints version and copyright info
+--dbhost -h host           host database is available (default: localhost)
+--dbname -d db_name        database name (default: lms)
+--dbuser -u user           database username (default: lms)
+--dbpass -p password       database password (default: empty)
+--hostname -H hostname     host name where daemon runs; name returned by hostname command is taken
+                           as default but it can be overwritten; that name must correspond to the
+                           one specified in hosts configuration in UI
+--command -c command       shell command to execute before every database connection (default: empty)
+--instance -i "instance[ ...]" list of instances to reload; other instances will be ignored
+--reload -q                do reload and exit
+--foreground -f            run in foreground (don't fork)
+--version -v               prints version and copyright info
 </screen>
 		Database connection options can be also read from enviroment variables:
 		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
@@ -1085,6 +1091,205 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                </listitem>
               </itemizedlist>
               </sect3>
-          </sect2>
-     </sect1>
+        </sect2>
+    </sect1>
+    <sect1 id="daemon-parser">
+    <title>Parser</title>
+	<sect2 id="daemon-parser-intro">
+	<title>Introduction</title>
+	    <para>Parser module is based on a scripting language
+	    <ulink url="http://silvercoders.com/wiki/index.php?title=T-Script">T-Script</ulink> which 
+	    primary purpose is to generate text files. It can be useful for processing
+	    templates with some additional data retrieved from data sources 
+	    like SQL databases or text files. In lmsd's module contents of scripts
+	    are stored in database, so they can be edited via <emphasis>LMS-UI</emphasis>.
+	    In the future parser should replace almost all lmsd modules.</para>
+	    <para>Before compilation ensure that you have in your system packages
+	    <filename>bison</filename> (at least 1.875 version) and <filename>flex</filename>.
+	    </para>
+	</sect2>
+	<sect2 id="daemon-parser-config">
+	<title>Configuration</title>
+	    <para>Parser has following options:</para>
+            <itemizedlist>
+        	<listitem>
+            	    <para>script</para>
+                    <para>Contents of script. Default: empty.</para>
+                    <para>Example: <prompt>script = '{var=1}variable var={var}'</prompt></para>
+                </listitem>
+		<listitem>
+                   <para>file</para>
+                   <para>Location of output file. Default: empty.</para>
+                   <para>Example: <prompt>file = /tmp/parser.out</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Shell command to execute after script compilation. Default: empty</para>
+                   <para>Example: <prompt>command = "sh /tmp/parser.out"</prompt></para>
+               </listitem>
+            </itemizedlist>
+	</sect2>
+	<sect2 id="daemon-parser-syntax">
+	<title>Syntax</title>
+	    <para>T-Script language syntax is based on other popular languages like C 
+	    or JavaScript with little changes made to make writting templates simpler. 
+	    Additional commands should be written inside { } parenthesis.</para>
+	    <para>Supported expressions:
+	    <itemizedlist>
+		<listitem>
+		    <para>Literal inside quotes</para>
+		    <para><screen>"some literal"</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Number</para>
+		    <para><screen>1234</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Value of variable "var"</para>
+		    <para><screen>var</screen></para>
+		</listitem>
+		<listitem>
+		    <para>N-th element of array "var"</para>
+		    <para><screen>var[n]</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Subvariable "n" of variable "var"</para>
+		    <para><screen>var.n</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Value of expression inside parenthesis</para>
+		    <para><screen>( &lt;expression&gt; )</screen></para>
+		</listitem>
+		<listitem>
+		    <para>1 if value of expression is false, otherwise 0</para>
+		    <para><screen>! &lt;expression&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value equals expression2 
+		    value or 0 if not</para>
+		    <para><screen>&lt;expression1&gt; == &lt;expression2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value doesn't equal 
+		    expression2 value or 0 if it does</para>
+		    <para><screen>&lt;expression1&gt; != &lt;expression2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value is less than 
+		    expression2 value</para>
+		    <para><screen>&lt;expression1&gt; &lt; &lt;expression2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value is greater than 
+		    expression2 value</para>
+		    <para><screen>&lt;expression1&gt; &gt; &lt;expression2&gt;</screen></para>
+		</listitem> 
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value or expression2 value 
+		    are true</para>
+		    <para><screen>&lt;expression1&gt; || &lt;expression2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value and expression2 value 
+		    are true</para>
+		    <para><screen>&lt;expression1&gt; && &lt;expression2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>When both expression values have numeric type evaluates 
+		    to result of arithmetic operation. In other situation treats 
+		    expressions as strings and performs string concatenation</para>
+		    <para><screen>&lt;expression1&gt; + &lt;expression2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to result of arithmetic operation on two expression values</para>
+		    <para>
+<screen>
+&lt;expression1&gt; - &lt;expression2&gt;
+&lt;expression1&gt; * &lt;expression2&gt;
+&lt;expression1&gt; / &lt;expression2&gt;
+&lt;expression1&gt; % &lt;expression2&gt;</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	    <para>Basic commands:
+	    <itemizedlist>
+		<listitem>
+		    <para>Assigns expression value to specified variable</para>
+		    <para>
+		    <screen>&lt;variable_name&gt; = &lt;expression&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Executes command only if expression is true. Second form executes 
+		    command1 if expression is true or command2 if expression is false</para>
+		    <para>
+<screen>if ( &lt;expression&gt; ) &lt;commands&gt; /if
+if ( &lt;expression&gt; ) &lt;commands1&gt; else &lt;commands2&gt; /if</screen></para>
+		    <para>Text between command blocks is treated as a command so the following example is correct:
+<screen>Some text 
+{if (a==1)} 
+a equals 1 
+{else} 
+a doesn't equal 1 
+{/if} 
+</screen>
+You can put backslash between command block and end of line to eat \n 
+symbol and keep normal text flow. For example: 
+<screen>
+Some text 
+{if (a==1)}\ 
+a equals 1 
+{else}\ 
+a doesn't equal 1 
+{/if}\
+</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Executes first command1 as loop initialization command. Then executes 
+		    commands and command2 while expression is true</para>
+		    <para><screen>for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt; /for</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	    <para>Basic functions:
+	    <itemizedlist>
+		<listitem>
+		    <para>Converts numeric variable to string value</para>
+		    <para><screen>string(&lt;variable_name&gt;)</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Converts string variable to numeric value</para>
+		    <para><screen>number(&lt;variable_name&gt;)</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	    <para>Extensions:
+	    <itemizedlist>
+		<listitem>
+		    <para>SQL commands (case insensitive)</para>
+		    <para>
+<screen>
+SELECT &lt;the_rest_of_query&gt;
+INSERT &lt;the_rest_of_query&gt;
+DELETE &lt;the_rest_of_query&gt;
+UPDATE &lt;the_rest_of_query&gt;
+CREATE &lt;the_rest_of_query&gt;
+DROP &lt;the_rest_of_query&gt;
+</screen></para>
+		</listitem>
+		<listitem>
+		    <para>SQL result rows count (case insensitive)</para>
+		    <para><screen>ROWS &lt;sql_query&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Shell command executing</para>
+		    <para><screen>exec &lt;command&gt;</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	</sect2>
+	<sect2 id="daemon-parser-examples">
+	<title>Example Scripts</title>
+	    <para></para>
+	</sect2>
+    </sect1>
 </chapter>
