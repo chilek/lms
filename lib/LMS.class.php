@@ -2977,7 +2977,7 @@ class LMS
 				$result['mac'][] = $hwaddr;
 				$result['ip'][] = $ip;
 				$result['longip'][] = ip_long($ip);
-				$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+				$result['nodename'][] = $this->GetNodeNameByMAC($hwaddr);
 			}
 		}
 		return $result;
@@ -3002,9 +3002,10 @@ class LMS
 						$result['mac'][] = $hwaddr;
 						$result['ip'][] = $ip;
 						$result['longip'][] = ip_long($ip);
-						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+						$result['nodename'][] = $this->GetNodeNameByMAC($hwaddr);
 					}
 				}
+				fclose($file);
 				break;
 
 			default:
