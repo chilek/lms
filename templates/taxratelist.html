@@ -44,7 +44,7 @@
 			<IMG src="img/tax.gif" alt=""><B> {$taxratelist[taxratelist].label}</B>
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
-			({$taxratelist[taxratelist].id|string_format:"%04d"})
+			({$taxratelist[taxratelist].id|string_format:"%02d"})
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&id={$taxratelist[taxratelist].id}';">
 			{$taxratelist[taxratelist].value|string_format:"%.2f"} %
