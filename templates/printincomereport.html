@@ -2,10 +2,10 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%">
 	<TR>
-		<TD WIDTH="50%" VALIGN="TOP">
+		<TD WIDTH="99%" VALIGN="TOP">
 			<H1>{$layout.pagetitle}</H1>
 		</TD>
-		<TD WIDTH="50%" ALIGN="RIGHT">
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %x"}<BR>
 			{t 0=$layout.logname}Created by: $0{/t}
@@ -14,23 +14,14 @@
 </TABLE>
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
 			{t}No.{/t}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
 			{t}Date{/t}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}22% Tax{/t}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}7% Tax{/t}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}0% Tax{/t}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Tax-free{/t}
+		<TD WIDTH="98%" CLASS="HEAD" ALIGN="CENTER">
+			{t}Value{/t}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
@@ -43,21 +34,12 @@
 			{$incomelist[incomelist].date|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].tax22|string_format:"%01.2f"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].tax7|string_format:"%01.2f"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].tax0|string_format:"%01.2f"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].taxfree|string_format:"%01.2f"}
+			{$incomelist[incomelist].value|money_format}
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="6">
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="3">
 			<P>&nbsp;</P>
 			<P><B>{t}No such cash operations.{/t}</B></P>
 			<P>&nbsp;</P>
@@ -70,16 +52,7 @@
 			{t}Total:{/t}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$totalincomelist.totaltax22|string_format:"%01.2f"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{$totalincomelist.totaltax7|string_format:"%01.2f"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{$totalincomelist.totaltax0|string_format:"%01.2f"}
-		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
-			{$totalincomelist.totaltaxfree|string_format:"%01.2f"}
+			{sum column=value array=$incomelist string_format=$LANGDEFS.$_language.money_format}
 		</TD>
 	</TR>
 </TABLE>
