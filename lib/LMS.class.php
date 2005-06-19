@@ -3189,9 +3189,16 @@ class LMS
 			return "";
 	}
 	
-	function GetTaxes()
+	function GetTaxes($from=NULL, $to=NULL)
 	{
-		return $this->DB->GetAllByKey('SELECT id, value, label FROM taxes WHERE (validfrom = 0 OR validfrom < ?NOW?) AND (validto = 0 OR validto > ?NOW?) ORDER BY value', 'id');
+		$now = time();
+		$from = $from ? $from : mktime(0,0,0,date('n',$now),date('j',$now),date('Y',$now));
+		$to = $to ? $to : mktime(23,59,59,date('n',$now),date('j',$now),date('Y',$now));
+		
+		return $this->DB->GetAllByKey('SELECT id, value, label FROM taxes 
+			WHERE (validfrom = 0 OR validfrom <= ?) 
+			    AND (validto = 0 OR validto >= ?) 
+			ORDER BY value', 'id', array($from, $to));
 	}
 }
 
