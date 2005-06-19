@@ -12,7 +12,7 @@
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
 			{t}No.{/t}
@@ -49,10 +49,10 @@
 	<TR class="grey">
 		<TD ALIGN="CENTER"></TD>
 		<TD ALIGN="CENTER" NOWRAP>
-			{t}Total:{/t}
+			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{sum column=value array=$incomelist string_format=$LANGDEFS.$_language.money_format}
+			<B>{sum column=value array=$incomelist string_format=$LANGDEFS.$_language.money_format}</B>
 		</TD>
 	</TR>
 </TABLE>

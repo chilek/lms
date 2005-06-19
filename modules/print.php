@@ -531,11 +531,11 @@ switch($type)
 		$from = mktime(0,0,0,1,1,$_POST['year']);
 		$to = mktime(0,0,0,1,1,$_POST['year']+1);
 
-		$payments = $DB->GetAllByKey('SELECT SUM(value) AS value, docid AS id
-					FROM cash
-					WHERE docid > 0 AND type = 3 AND time >= ?'
-					.($_POST['customer'] ? ' AND customerid = '.$_POST['customer'] : '')
-					.' GROUP BY docid', 'id', array($from));
+		$payments = $DB->GetAllByKey('SELECT SUM(a.value) AS value, b.docid AS id
+					FROM cash a, cash b WHERE a.reference = b.id
+					AND a.type = 3 AND b.time >= ? AND b.time < ?'
+					.($_POST['customer'] ? ' AND a.customerid = '.$_POST['customer'] : '')
+					.' GROUP BY b.docid', 'id', array($from, $to));
 					
 		if($invoices = $DB->GetAll('SELECT SUM(value) AS value, MIN(time) AS time, docid AS id
 					FROM cash
