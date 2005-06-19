@@ -106,7 +106,12 @@ switch($type)
 		
 		$id = $_POST['customer'];
 
-		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, customerid, comment, name AS username FROM cash LEFT JOIN users ON users.id=userid WHERE customerid=? ORDER BY time', array($id)))
+		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, cash.value AS value, taxes.label AS taxlabel, customerid, comment, name AS username 
+				    FROM cash 
+				    LEFT JOIN taxes ON (taxid = taxes.id)
+				    LEFT JOIN users ON users.id=userid 
+				    WHERE customerid=? ORDER BY time', array($id))
+		)
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -138,7 +143,7 @@ switch($type)
 					$list['after'][] = $saldolist['after'][$i];
 					$list['before'][] = $saldolist['before'][$i];
 					$list['value'][] = $saldolist['value'][$i];
-					$list['taxvalue'][] = $saldolist['taxvalue'][$i];
+					$list['taxlabel'][] = $saldolist['taxlabel'][$i];
 					$list['name'][] = $saldolist['name'][$i];
 					switch($saldolist['type'][$i])
 					{ 
@@ -475,32 +480,44 @@ switch($type)
 			break;
 		}
 		
-		if($reportlist =  $DB->GetAll('SELECT customerid, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
-			    .$DB->Concat('city',"' '",'address').' AS address, ten, 
-			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
-			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
-			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
-			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree,
-			    SUM(value) AS brutto  
-			    FROM assignments, tariffs, customers  
-			    WHERE customerid = customers.id AND tariffid = tariffs.id 
-			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
-			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
-			    .($customerid ? 'AND customerid='.$customerid : ''). 
-			    ' GROUP BY customerid, lastname, customers.name, city, address, ten '
-			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
-			    array($reportday, $reportday, $weekday, $monthday, $quarterday, $yearday))
-		)
-			foreach($reportlist as $idx => $row)
+		if($taxes = $LMS->GetTaxes($reportday, $reportday))
+			foreach($taxes as $tax)
 			{
-				$reportlist[$idx]['tax7'] = round($row['val7']-$row['val7']/1.07, 2);
-				$reportlist[$idx]['tax22'] = round($row['val22']-$row['val22']/1.22,2);
-				$reportlist[$idx]['netto7'] = $row['val7'] - $reportlist[$idx]['tax7'];
-				$reportlist[$idx]['netto22'] = $row['val22'] - $reportlist[$idx]['tax22'];
-				$reportlist[$idx]['taxsum'] = $reportlist[$idx]['tax22'] + $reportlist[$idx]['tax7'];
+				$list =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
+					.$DB->Concat('city',"' '",'address').' AS address, ten, SUM(tariffs.value) AS value  
+					FROM assignments, tariffs, customers
+					WHERE customerid = customers.id AND tariffid = tariffs.id AND taxid=?
+					AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
+					AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
+					.($customerid ? 'AND customerid='.$customerid : ''). 
+					' GROUP BY customerid, lastname, customers.name, city, address, ten '
+					.($sqlord != '' ? $sqlord.' '.$direction : ''), 'id',
+					array($tax['id'],$reportday, $reportday, $weekday, $monthday, $quarterday, $yearday));
+				if($list)
+				{
+					foreach($list as $idx => $row)
+					{
+						if(!isset($reportlist[$idx]))
+						{ 
+							$reportlist[$idx]['id'] = $row['id'];
+							$reportlist[$idx]['customername'] = $row['customername'];
+							$reportlist[$idx]['address'] = $row['address'];
+							$reportlist[$idx]['ten'] = $row['ten'];
+						}
+						$reportlist[$idx]['value'] += $row['value'];
+						$reportlist[$idx][$tax['id']]['netto'] = round($row['value']-$row['value']*$tax['value']/100, 2);
+						$reportlist[$idx][$tax['id']]['tax'] = $row['value'] - $reportlist[$idx][$tax['id']]['netto'];
+						$reportlist[$idx]['taxsum'] += $reportlist[$idx][$tax['id']]['tax'];
+						$total['netto'][$tax['id']] += $reportlist[$idx][$tax['id']]['netto'];
+						$total['tax'][$tax['id']] += $reportlist[$idx][$tax['id']]['tax'];
+					}
+				}
 			}
 
 		$SMARTY->assign('reportlist', $reportlist);
+		$SMARTY->assign('total',$total);
+		$SMARTY->assign('taxes', $taxes);
+		$SMARTY->assign('taxescount', sizeof($taxes));
 		$SMARTY->display('printliabilityreport.html');
 	break;
 
