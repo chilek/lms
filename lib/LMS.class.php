@@ -3191,9 +3191,8 @@ class LMS
 	
 	function GetTaxes($from=NULL, $to=NULL)
 	{
-		$now = time();
-		$from = $from ? $from : mktime(0,0,0,date('n',$now),date('j',$now),date('Y',$now));
-		$to = $to ? $to : mktime(23,59,59,date('n',$now),date('j',$now),date('Y',$now));
+		$from = $from ? $from : mktime(0,0,0);
+		$to = $to ? $to : mktime(23,59,59);
 		
 		return $this->DB->GetAllByKey('SELECT id, value, label FROM taxes 
 			WHERE (validfrom = 0 OR validfrom <= ?) 
