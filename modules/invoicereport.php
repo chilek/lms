@@ -48,12 +48,27 @@ $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 $listdata = array();
 $invoicelist = array();
 
-if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxid, SUM(value*count) AS value FROM documents LEFT JOIN invoicecontents ON docid = documents.id WHERE type = 1 AND (cdate BETWEEN ? AND ?) GROUP BY documents.id, number, taxid, cdate, customerid, name, address, zip, city, ten, ssn ORDER BY cdate ASC', array($unixfrom, $unixto)))
+$taxes = $DB->GetAllByKey('SELECT taxid AS id, label, taxes.value AS value
+	    FROM documents 
+	    LEFT JOIN invoicecontents ON (documents.id = docid)
+	    LEFT JOIN taxes ON (taxid = taxes.id)
+	    WHERE type = 1 AND (cdate BETWEEN ? AND ?) 
+	    GROUP BY taxid, label, taxes.value 
+	    ORDER BY value ASC', 'id', array($unixfrom, $unixto));
+
+if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxid, SUM(value*count) AS value 
+	    FROM documents 
+	    LEFT JOIN invoicecontents ON docid = documents.id 
+	    WHERE type = 1 AND (cdate BETWEEN ? AND ?) 
+	    GROUP BY documents.id, number, taxid, cdate, customerid, name, address, zip, city, ten, ssn 
+	    ORDER BY cdate ASC', array($unixfrom, $unixto)))
 {
 	foreach($result as $idx => $row)
 	{
 		$id = $row['id'];
+		$taxid = $row['taxid'];
 		$value = round($row['value'], 2);
+		
 		$invoicelist[$id]['custname'] = $row['name'];
 		$invoicelist[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
 		$invoicelist[$id]['ten'] = ($row['ten'] ? trans('TEN').' '.$row['ten'] : ($row['ssn'] ? trans('SSN').' '.$row['ssn'] : ''));
@@ -62,43 +77,22 @@ if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, z
 		$invoicelist[$id]['customerid'] = $row['customerid'];
 		$invoicelist[$id]['year'] = date('Y',$row['cdate']);
 		$invoicelist[$id]['month'] = date('m',$row['cdate']);
-		$invoicelist[$id]['brutto'] += $value;
 
+		$invoicelist[$id][$taxid]['tax'] += round($value*$taxes[$taxid]['value']/100, 2);
+		$invoicelist[$id][$taxid]['val'] += $value - $invoicelist[$id][$taxid]['tax'];
+		$invoicelist[$id]['tax'] += $invoicelist[$id][$taxid]['tax'];
+		$invoicelist[$id]['brutto'] += $value;
+		
+		$listdata[$taxid]['tax'] += $invoicelist[$id][$taxid]['tax'];
+		$listdata[$taxid]['val'] += $invoicelist[$id][$taxid]['val'];
+		$listdata['tax'] += $invoicelist[$id][$taxid]['tax'];
 		$listdata['brutto'] += $value;
-		if ($row['taxvalue'] == '')
-		{
-			$invoicelist[$id]['valfree'] += $value;
-			$listdata['valfree'] += $value;
-		}
-		else
-			switch(round($row['taxvalue'],1))
-			{
-			    case '0.0':
-				    $invoicelist[$id]['val0'] += $value;
-				    $listdata['val0'] += $value;
-			    break;
-			    case '7.0':
-				     $invoicelist[$id]['tax7'] += round($value - ($value/1.07), 2);
-				     $invoicelist[$id]['val7'] += $value - $invoicelist[$id]['tax7'];
-			    	     $invoicelist[$id]['tax']   += $invoicelist[$id]['tax7'];
-				     $listdata['tax7'] += $invoicelist[$id]['tax7'];
-				     $listdata['val7'] += $invoicelist[$id]['val7'];
-				     $listdata['tax']  += $invoicelist[$id]['tax7'];
-			    break;
-			    case '22.0':
-				     $invoicelist[$id]['tax22'] += round($value - ($value/1.22), 2);
-				     $invoicelist[$id]['val22'] += $value - $invoicelist[$id]['tax22'];
-			    	     $invoicelist[$id]['tax']   += $invoicelist[$id]['tax22'];
-				     $listdata['tax22'] += $invoicelist[$id]['tax22'];
-				     $listdata['val22'] += $invoicelist[$id]['val22'];
-				     $listdata['tax']   += $invoicelist[$id]['tax22'];
-			    break;
-		    }
 	}
-	
 }
 
 $SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('taxes', $taxes);
+$SMARTY->assign('taxescount', sizeof($taxes));
 $SMARTY->assign('layout', $layout);
 $SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->display('invoicereport.html');

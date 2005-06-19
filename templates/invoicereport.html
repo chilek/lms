@@ -12,7 +12,7 @@
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}No.{/t}
@@ -21,101 +21,81 @@
 			{t}Invoice No.{/t}<BR>
 			{t}Draw-up date{/t}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+		<TD WIDTH="{math equation="96-x*2" x=$taxescount}%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Contractor{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Gross value{/t}
 		</TD>
+		{foreach item=tax from=$taxes}
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Net value{/t}<BR>22%
+			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Tax value{/t}<BR>22%
+			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Net value{/t}<BR>7%
-		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Tax value{/t}<BR>7%
-		</TD>	
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Net value{/t}<BR>0%
-		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			{t}Tax-free{/t}<BR>
-		</TD>
+		{/foreach}
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}Total Tax{/t}
 		</TD>
 	</TR>
-	{cycle values="white,grey" print=false}
+	{cycle values="grey,white" print=false}
 	{foreach item=invoice from=$invoicelist}
 	<TR class="{cycle}">
-		<TD WIDTH="1%" ALIGN="RIGHT">
+		<TD ALIGN="RIGHT">
 			{counter}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
+		<TD ALIGN="RIGHT">
 			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}<BR>
 			{$invoice.cdate|date_format:"%Y/%m/%d"}
 		</TD>
-		<TD WIDTH="91%">
+		<TD>
 			{$invoice.custname} ({$invoice.customerid|string_format:"%04d"})<BR>
 			{$invoice.custaddress}<BR>
 			{$invoice.ten}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
+		<TD ALIGN="RIGHT">
 			{$invoice.brutto|string_format:"%01.2f"}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
-			{$invoice.val22|string_format:"%01.2f"}
+		{foreach item=tax from=$taxes}
+		{assign var=taxid value=$tax.id}
+		<TD ALIGN="RIGHT">
+			{$invoice.$taxid.val|string_format:"%01.2f"}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
-			{$invoice.tax22|string_format:"%01.2f"}		
+		<TD ALIGN="RIGHT">
+			{$invoice.$taxid.tax|string_format:"%01.2f"}		
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
-			{$invoice.val7|string_format:"%01.2f"}
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
-			{$invoice.tax7|string_format:"%01.2f"}		
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
-			{$invoice.val0|string_format:"%01.2f"}
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
-			{$invoice.valfree|string_format:"%01.2f"}
-		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
+		{/foreach}
+		<TD ALIGN="RIGHT">
 			{$invoice.tax|string_format:"%01.2f"}
 		</TD>
 	</TR>
-	{/foreach}
+	{foreachelse}
 	<TR>
-		<TD COLSPAN="3" ALIGN="RIGHT" VALIGN="TOP">
+		<TD ALIGN="center" COLSPAN="{math equation="4+x*2" x=$taxescount}">
+			<P>&nbsp;</P>
+			<P><B>{t}No such invoices in selected time period.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/foreach}
+	<TR class="grey">
+		<TD COLSPAN="3" ALIGN="RIGHT">
 			<B>{t}Total:{/t}</B>
 		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
+		<TD ALIGN="RIGHT">
 			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
 		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$listdata.val22|string_format:"%01.2f"}</B>
+		{foreach item=tax from=$taxes}
+		{assign var=taxid value=$tax.id}
+		<TD ALIGN="RIGHT">
+			<B>{$listdata.$taxid.val|string_format:"%01.2f"}</B>
 		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$listdata.tax22|string_format:"%01.2f"}</B>
+		<TD ALIGN="RIGHT">
+			<B>{$listdata.$taxid.tax|string_format:"%01.2f"}</B>
 		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$listdata.val7|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$listdata.tax7|string_format:"%01.2f"}</B>
-		</TD>	
-		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$listdata.val0|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$listdata.valfree|string_format:"%01.2f"}</B>
-		</TD>
-		<TD ALIGN="RIGHT" VALIGN="TOP">
+		{/foreach}
+		<TD ALIGN="RIGHT">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>
 		</TD>
 	</TR>
