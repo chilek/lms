@@ -291,8 +291,9 @@ switch($type)
 		if($date['from'])
 			$lastafter = $DB->GetOne('SELECT SUM(CASE type WHEN 2 THEN value*-1 WHEN 4 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
 		
-		if($balancelist = $DB->GetAll('SELECT id, time, userid, type, value, taxvalue, customerid, comment 
-			    FROM cash WHERE time>=? AND time<=? ORDER BY time ASC', array($date['from'], $date['to'])))
+		if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, userid, type, cash.value AS value, taxes.label AS taxlabel, customerid, comment 
+			    FROM cash LEFT JOIN taxes ON (taxid = taxes.id)
+			    WHERE time>=? AND time<=? ORDER BY time ASC', array($date['from'], $date['to'])))
 		{
 			$x = 0;
 			foreach($balancelist as $idx => $row)
@@ -310,7 +311,7 @@ switch($type)
 					}
 
 				$list[$x]['value'] = $row['value'];
-				$list[$x]['taxvalue'] = $row['taxvalue'];
+				$list[$x]['taxlabel'] = $row['taxlabel'];
 				$list[$x]['time'] = $row['time'];
 				$list[$x]['comment'] = $row['comment'];
 				$list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
@@ -368,34 +369,19 @@ switch($type)
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else {
 			$to = date("Y/m/d",time());
-			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+			$date['to'] = mktime(23,59,59); // end of today
 		}
 		
 		$layout['pagetitle'] = trans('Total Invoiceless Income ($0 to $1)',($from ? $from : ''), $to);
-
-		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date,
-			SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS tax22,
-			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS tax7,
-			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS tax0,
-			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
+		
+		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
 			FROM cash LEFT JOIN documents ON (docid = documents.id)
-			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=? 
+			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=?
 			AND (docid=0 OR documents.type != 1) AND reference=0
 			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));
 
-		$totalincomelist = $DB->GetRow('SELECT
-			SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS totaltax22,
-			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS totaltax7,
-			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS totaltax0,
-			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS totaltaxfree 
-			FROM cash LEFT JOIN documents ON (docid = documents.id)
-			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=? 
-			AND (docid=0 OR documents.type != 1) AND reference=0',
-			array($date['from'], $date['to']));
-		
 		$SMARTY->assign('incomelist', $incomelist);
-		$SMARTY->assign('totalincomelist', $totalincomelist);
 		$SMARTY->display('printincomereport.html');
 	break;
 

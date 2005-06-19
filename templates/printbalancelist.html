@@ -55,9 +55,7 @@
 			{$balancelist[balancelist].value|money_format} 
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist[balancelist].taxvalue}
-				{$balancelist[balancelist].taxvalue|string_format:"%01.2f"} %
-			{else}{t}tax-free{/t}{/if}
+			{$balancelist[balancelist].taxlabel}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$balancelist[balancelist].after|money_format} 
