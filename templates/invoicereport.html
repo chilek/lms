@@ -2,8 +2,13 @@
 {include file="clearheader.html"}
 <TABLE WIDTH="100%">
 	<TR>
-		<TD WIDTH="100%" ALIGN="CENTER" NOWRAP>
+		<TD WIDTH="99%" ALIGN="LEFT">
 			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
 		</TD>
 	</TR>
 </TABLE>
@@ -112,15 +117,6 @@
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>
-		</TD>
-	</TR>
-</TABLE>
-<TABLE WIDTH="100%" CELLPADDING="1">
-	<TR>
-		<TD WIDTH="100%" ALIGN="LEFT">
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
-			{t 0=$layout.logname}Created by: $0{/t}
 		</TD>
 	</TR>
 </TABLE>
