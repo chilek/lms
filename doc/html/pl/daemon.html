@@ -189,6 +189,35 @@ HREF="daemon-modules.html#DAEMON-PINGER"
 ></DT
 ></DL
 ></DD
+><DT
+>6.3. <A
+HREF="daemon-parser.html"
+>Parser</A
+></DT
+><DD
+><DL
+><DT
+>6.3.1. <A
+HREF="daemon-parser.html#DAEMON-PARSER-INTRO"
+>Wstêp</A
+></DT
+><DT
+>6.3.2. <A
+HREF="daemon-parser.html#DAEMON-PARSER-CONFIG"
+>Konfiguracja</A
+></DT
+><DT
+>6.3.3. <A
+HREF="daemon-parser.html#DAEMON-PARSER-SYNTAX"
+>Syntax</A
+></DT
+><DT
+>6.3.4. <A
+HREF="daemon-parser.html#DAEMON-PARSER-EXAMPLES"
+>Przyk³adowe skrypty</A
+></DT
+></DL
+></DD
 ></DL
 ></DIV
 ><DIV
@@ -215,17 +244,17 @@ NAME="DAEMON-REQUIREMENTS"
 >6.1.1. Wymagania</A
 ></H2
 ><P
-><SPAN
+>Oto lista rzeczy, które <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->LMS Daemon</I
+>lmsd</I
 ></SPAN
-> potrzebuje:
+> potrzebuje ju¿ na etapie kompilacji:
       			<UL
 ><LI
 ><P
->instalacji interfejsu u¿ytkownika <SPAN
+>interfejs u¿ytkownika <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -253,7 +282,26 @@ CLASS="FILENAME"
 ></LI
 ><LI
 ><P
->kompilatora jêzyka C </P
+>kompilator jêzyka C (testowany na gcc-2.95.x i nowszych)</P
+></LI
+><LI
+><P
+>modu³ <TT
+CLASS="FILENAME"
+>ggnotify</TT
+> wymaga biblioteki <TT
+CLASS="FILENAME"
+>libgadu</TT
+>
+				i jej plików nag³ówkowych</P
+></LI
+><LI
+><P
+>modu³ <TT
+CLASS="FILENAME"
+>parser</TT
+> wymaga pakietu bison w wersji 1.875 lub nowszej 
+				oraz pakietu flex</P
 ></LI
 ></UL
 >
@@ -337,20 +385,20 @@ CLASS="EMPHASIS"
 			podaje siê jako opcje linii komend, zgodnie z poni¿szym listingiem:
 <PRE
 CLASS="SCREEN"
->-h host[:port]    host na którym zainstalowana jest baza danych (domy¶lnie: 'localhost')
--d nazwa_bazy     nazwa bazy danych (domy¶lnie: 'lms')
--u u¿ytkownik     nazwa u¿ytkownika bazy danych (domy¶lnie: 'lms')
--p has³o          has³o do bazy danych (domy¶lnie: puste)
--H nazwa_hosta    host, na którym dzia³a demon. Domy¶lnie przyjmowana jest nazwa
-                  zwracana przez komendê hostname, ale mo¿na j± nadpisaæ. Nazwa
-                  ta musi zgadzaæ siê z nazw± hosta podan± w konfiguracji hostów
--c polecenie      polecenie pow³oki do wykonania przed ka¿dym po³±czeniem z baz± 
-                  tzn. co minutê (domy¶lnie: puste)
--i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 
-                  zostan± pominiête
--q                wykonuje prze³adowanie i koñczy pracê
--f                dzia³a na pierwszym planie (nie forkuje siê) 
--v                wy¶wietla wersjê i prawa licencyjne</PRE
+>--dbhost -h host[:port]    host na którym zainstalowana jest baza danych (domy¶lnie: 'localhost')
+--dbname -d nazwa_bazy     nazwa bazy danych (domy¶lnie: 'lms')
+--dbuser -u u¿ytkownik     nazwa u¿ytkownika bazy danych (domy¶lnie: 'lms')
+--dbpass -p has³o          has³o do bazy danych (domy¶lnie: puste)
+--hostname -H nazwa_hosta  host, na którym dzia³a demon. Domy¶lnie przyjmowana jest nazwa
+                           zwracana przez komendê hostname, ale mo¿na j± nadpisaæ. Nazwa
+                           ta musi zgadzaæ siê z nazw± hosta podan± w konfiguracji hostów
+--command -c polecenie     polecenie pow³oki do wykonania przed ka¿dym po³±czeniem z baz± 
+                           tzn. co minutê (domy¶lnie: puste)
+--instance -i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 
+                           zostan± pominiête
+--reload -q                wykonuje prze³adowanie i koñczy pracê
+--foreground -f            dzia³a na pierwszym planie (nie forkuje siê) 
+--version -v               wy¶wietla wersjê i prawa licencyjne</PRE
 >
 			Opcje dostêpu do bazy s± tak¿e odczytywane ze zmiennych pow³oki:
 			LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.

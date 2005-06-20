@@ -189,6 +189,35 @@ HREF="daemon-modules.html#DAEMON-PINGER"
 ></DT
 ></DL
 ></DD
+><DT
+>6.3. <A
+HREF="daemon-parser.html"
+>Parser</A
+></DT
+><DD
+><DL
+><DT
+>6.3.1. <A
+HREF="daemon-parser.html#DAEMON-PARSER-INTRO"
+>Introduction</A
+></DT
+><DT
+>6.3.2. <A
+HREF="daemon-parser.html#DAEMON-PARSER-CONFIG"
+>Configuration</A
+></DT
+><DT
+>6.3.3. <A
+HREF="daemon-parser.html#DAEMON-PARSER-SYNTAX"
+>Syntax</A
+></DT
+><DT
+>6.3.4. <A
+HREF="daemon-parser.html#DAEMON-PARSER-EXAMPLES"
+>Example Scripts</A
+></DT
+></DL
+></DD
 ></DL
 ></DIV
 ><DIV
@@ -253,7 +282,24 @@ CLASS="FILENAME"
 ></LI
 ><LI
 ><P
->C compiler (gcc)</P
+>C compiler (gcc-2.95.x or higher)</P
+></LI
+><LI
+><P
+>ggnotify module needs <TT
+CLASS="FILENAME"
+>libgadu</TT
+> library and header files</P
+></LI
+><LI
+><P
+>parser module needs <TT
+CLASS="FILENAME"
+>flex</TT
+> and <TT
+CLASS="FILENAME"
+>bison</TT
+> (version 1.875 or newer).</P
 ></LI
 ></UL
 >
@@ -336,18 +382,18 @@ CLASS="EMPHASIS"
 	       database should be specified as command line options, according to following listing:
 <PRE
 CLASS="SCREEN"
->-h host           host database is available (default: localhost)
--d db_name        database name (default: lms)
--u user           database username (default: lms)
--p password       database password (default: empty)
--H hostname       host name where daemon runs; name returned by hostname command is taken
-                  as default but it can be overwritten; that name must correspond to the
-                  one specified in hosts configuration in UI
-- c command       shell command to execute before every database connection (default: empty)
--i "instance[ ...]" list of instances to reload; other instances will be ignored
--q                do reload and exit
--f                run in foreground (don't fork)
--v                prints version and copyright info</PRE
+>--dbhost -h host           host database is available (default: localhost)
+--dbname -d db_name        database name (default: lms)
+--dbuser -u user           database username (default: lms)
+--dbpass -p password       database password (default: empty)
+--hostname -H hostname     host name where daemon runs; name returned by hostname command is taken
+                           as default but it can be overwritten; that name must correspond to the
+                           one specified in hosts configuration in UI
+--command -c command       shell command to execute before every database connection (default: empty)
+--instance -i "instance[ ...]" list of instances to reload; other instances will be ignored
+--reload -q                do reload and exit
+--foreground -f            run in foreground (don't fork)
+--version -v               prints version and copyright info</PRE
 >
 		Database connection options can be also read from enviroment variables:
 		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.

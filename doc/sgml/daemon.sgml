@@ -1289,13 +1289,14 @@ DROP &lt;the_rest_of_query&gt;
 	</sect2>
 	<sect2 id="daemon-parser-examples">
 	<title>Example Scripts</title>
-	    <para>
+	    <para>Let's begin from simple script creating file <filename>/etc/hosts</filename>
+	    with list of computers (and devices) IPs and names list. 
 	    <example id="parser-e1">
 		<title>Parser: Creating /etc/hosts file</title>
 <screen>
 {result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
 127.0.0.1	localhost
-{for (r=0; r<number(result); r++)}\
+{for (r=0; r&lt;number(result); r++)}\
 {result[r].name}\t{result[r].ip}
 {/for}\
 </screen>

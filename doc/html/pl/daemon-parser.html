@@ -1,0 +1,546 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Parser</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.7-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="LMS Daemon"
+HREF="daemon.html"><LINK
+REL="PREVIOUS"
+TITLE="Modu³y"
+HREF="daemon-modules.html"><LINK
+REL="NEXT"
+TITLE="Dla dociekliwych"
+HREF="devel.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.7-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="daemon-modules.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 6. LMS Daemon</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devel.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DAEMON-PARSER"
+>6.3. Parser</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER-INTRO"
+>6.3.1. Wstêp</A
+></H2
+><P
+>Modu³ parser jest oparty na skryptowym jêzyku
+	    <A
+HREF="http://silvercoders.com/wiki/index.php?title=T-Script"
+TARGET="_top"
+>T-Script</A
+>,
+	    którego g³ównym zadaniem jest generowanie plików tekstowych. Mo¿e byæ
+	    u¿ywany do przetwarzania szablonów z danymi pobieranymi z ró¿nych
+	    ¼róde³ np. baz SQL lub plików tekstowych. W naszym przypadku tre¶æ
+	    skryptu (szablon) jest przechowywany w bazie danych, dlatego istnieje
+	    mo¿liwo¶æ jego edycji poprzez <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>.
+	    W przysz³o¶ci modu³ parser mo¿e zast±piæ wiêkszo¶æ modu³ów demona.</P
+><P
+>Przed kompilacj± modu³u upewnij siê, ¿e posiadasz w systemie
+	    pakiety <TT
+CLASS="FILENAME"
+>bison</TT
+> (co najmniej w wersji 1.875) oraz 
+	    <TT
+CLASS="FILENAME"
+>flex</TT
+>.
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER-CONFIG"
+>6.3.2. Konfiguracja</A
+></H2
+><P
+>Parser posiada nastêpuj±ce opcje:</P
+><UL
+><LI
+><P
+>script</P
+><P
+>Zawarto¶æ skryptu (szablonu). Domy¶lnie: pusta.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>script = '{var=1}zmienna var={var}'</SAMP
+></P
+></LI
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku wynikowego. Domy¶lnie: pusta</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /tmp/parser.out</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki do wykonania po kompilacji skryptu. Domy¶lnie: pusta</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = "sh /tmp/parser.out"</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER-SYNTAX"
+>6.3.3. Syntax</A
+></H2
+><P
+>Sk³adnia jêzyka T-Script jest podobna do sk³adni innych popularnych
+	    jêzyków takich jak C czy JavaScript, ale dokonano pewnych zmian
+	    maj±cych na celu u³atwienie tworzenia szablonów. 
+	    Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.</P
+><P
+>Wyra¿enia:
+	    <UL
+><LI
+><P
+>Ci±g znaków</P
+><P
+><PRE
+CLASS="SCREEN"
+>"some literal"</PRE
+></P
+></LI
+><LI
+><P
+>Liczba</P
+><P
+><PRE
+CLASS="SCREEN"
+>1234</PRE
+></P
+></LI
+><LI
+><P
+>Warto¶æ zmiannej "var"</P
+><P
+><PRE
+CLASS="SCREEN"
+>var</PRE
+></P
+></LI
+><LI
+><P
+>N-ty element tablicy "var"</P
+><P
+><PRE
+CLASS="SCREEN"
+>var[n]</PRE
+></P
+></LI
+><LI
+><P
+>Podzmienna "n" zmiennej "var"</P
+><P
+><PRE
+CLASS="SCREEN"
+>var.n</PRE
+></P
+></LI
+><LI
+><P
+>Warto¶æ wyra¿enia w nawiasach</P
+><P
+><PRE
+CLASS="SCREEN"
+>( &lt;wyra¿enie&gt; )</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku 0</P
+><P
+><PRE
+CLASS="SCREEN"
+>! &lt;wyra¿enie&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± wyra¿enie2 
+		    lub 0 gdy s± ró¿ne</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca 1 gdy jedno z wyra¿eñ jest prawd±</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; || &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; &#38;&#38; &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Gdy oba wyra¿enia s± liczbami zwraca wynik operacji
+		    arytmetycznej. W innym przypadku traktuje wyra¿enia jako ci±gi
+		    znaków i dokonuje ich po³±czenia</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; - &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; * &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+></UL
+>
+	    </P
+><P
+>Podstawowe polecenia:
+	    <UL
+><LI
+><P
+>Przypisuje warto¶æ wyra¿enia do podanej zmiennej</P
+><P
+>		    <PRE
+CLASS="SCREEN"
+>&lt;variable_name&gt; = &lt;wyra¿enie&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Wykonuje polecenie tylko wtedy gry wyra¿enie jest prawd±. 
+		    Druga forma wykonuje polecenie1 gdy wyra¿enie jest prawd± lub polecenie2
+		    gdy jest fa³szem</P
+><P
+><PRE
+CLASS="SCREEN"
+>if ( &lt;wyra¿enie&gt; ) &lt;polecenia&gt; /if
+if ( &lt;wyra¿enie&gt; ) &lt;polecenie1&gt; else &lt;polecenie2&gt; /if</PRE
+></P
+><P
+>Tekst miêdzy blokami jest traktowany jako polecenia
+		    dlatego nastêpuj±cy przyk³±d jest prawid³owy:
+<PRE
+CLASS="SCREEN"
+>Jaki¶ tekst
+{if (a==1)} 
+a równe jest 1
+{else} 
+a nie jest równe 1
+{/if} </PRE
+>
+Mo¿na wstawiæ backslash (\) pomiêdzy poleceniem a koñcem wiersza aby
+pozbyæ siê znaku koñca linii i zachowaæ normalny (bez za³amania linii w tym miejscu)
+przep³yw tekstu. Na przyk³ad: 
+<PRE
+CLASS="SCREEN"
+>Jaki¶ tekst
+{if (a==1)}\ 
+a równa siê 1 
+{else}\ 
+a nie równa siê 1 
+{/if}\</PRE
+></P
+></LI
+><LI
+><P
+>Wykonuje polecenie1 jako polecenie inicjalizuj±ce pêtlê. Nastêpnie
+		    wykonuje polecenia i polecenie2 dopóki wyra¿enie jest prawdziwe</P
+><P
+><PRE
+CLASS="SCREEN"
+>for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; ) &lt;polecenia&gt; /for</PRE
+></P
+></LI
+></UL
+>
+	    </P
+><P
+>Podstawowe funkcje:
+	    <UL
+><LI
+><P
+>Zamienia warto¶æ liczbow± na ci±g znaków</P
+><P
+><PRE
+CLASS="SCREEN"
+>string(&lt;zmienna&gt;)</PRE
+></P
+></LI
+><LI
+><P
+>Zamienia ci±g znaków na liczbê</P
+><P
+><PRE
+CLASS="SCREEN"
+>number(&lt;zmienna&gt;)</PRE
+></P
+></LI
+></UL
+>
+	    </P
+><P
+>Rozszerzenia:
+	    <UL
+><LI
+><P
+>Polecenia SQL (pisane tylko ma³ymi lub tylko du¿ymi literami)</P
+><P
+><PRE
+CLASS="SCREEN"
+>SELECT &lt;dalszy_ci±g_zapytania&gt;
+INSERT &lt;dalszy_ci±g_zapytania&gt;
+DELETE &lt;dalszy_ci±g_zapytania&gt;
+UPDATE &lt;dalszy_ci±g_zapytania&gt;
+CREATE &lt;dalszy_ci±g_zapytania&gt;
+DROP &lt;dalszy_ci±g_zapytania&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Liczba wierszy, których dotyczy zapytanie (ma³e lub du¿e litery)</P
+><P
+><PRE
+CLASS="SCREEN"
+>ROWS &lt;zapytanie_sql&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Wykonywanie poleceñ pow³oki</P
+><P
+><PRE
+CLASS="SCREEN"
+>exec &lt;polecenie&gt;</PRE
+></P
+></LI
+></UL
+>
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER-EXAMPLES"
+>6.3.4. Przyk³adowe skrypty</A
+></H2
+><P
+>Zacznijmy od bardzo prostego skryptu, który tworzy plik
+	    /etc/hosts z list± adresów i nazw komputerów (oraz urz±dzeñ).
+	    <DIV
+CLASS="EXAMPLE"
+><A
+NAME="PARSER-E1"
+></A
+><P
+><B
+>Przyk&#322;ad 6-1. Parser: Tworzenie pliku /etc/hosts</B
+></P
+><PRE
+CLASS="SCREEN"
+>{result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
+127.0.0.1    localhost
+{for (r=0; r&lt;number(result); r++)}\
+{result[r].name}\t{result[r].ip}
+{/for}\</PRE
+></DIV
+>    
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="daemon-modules.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devel.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Modu³y</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="daemon.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dla dociekliwych</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
