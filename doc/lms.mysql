@@ -46,6 +46,21 @@ CREATE TABLE assignments (
 
 # --------------------------------------------------------
 #
+# Structure of table taxes
+#
+DROP TABLE IF EXISTS taxes;
+CREATE TABLE taxes (
+    id int(11) NOT NULL auto_increment,
+    value decimal(4,2) NOT NULL DEFAULT '0',
+    taxed tinyint NOT NULL DEFAULT '0',
+    label varchar(16) NOT NULL DEFAULT '',
+    validfrom int(11) NOT NULL DEFAULT '0',
+    validto int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY (id)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
 # Structure of table  cash
 #
 DROP TABLE IF EXISTS cash;
@@ -55,14 +70,16 @@ CREATE TABLE cash (
   userid int(11) NOT NULL default '0',
   type int(11) NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
-  taxvalue decimal(9,2) default '0.00',
+  taxid int(11) NOT NULL default '0',
   customerid int(11) NOT NULL default '0',
   comment varchar(255) NOT NULL default '',
-  invoiceid int(11) NOT NULL default '0',
+  docid int(11) NOT NULL default '0',
   itemid smallint NOT NULL default '0',
+  reference int(11) NOT NULL default '0',
   PRIMARY KEY  (id),
   INDEX customerid (customerid),
-  INDEX invoiceid (invoiceid),
+  INDEX reference (reference),
+  INDEX docid (docid),
   INDEX time (time)
 ) TYPE=MyISAM;
 
@@ -83,40 +100,53 @@ CREATE TABLE dbinfo (
 #
 DROP TABLE IF EXISTS invoicecontents;
 CREATE TABLE invoicecontents (
-  invoiceid int(11) NOT NULL default '0',
+  docid int(11) NOT NULL default '0',
   itemid smallint NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
-  taxvalue decimal(9,2) default '0.00',
+  taxid int(11) NOT NULL default '0',
   pkwiu varchar(255) NOT NULL default '',
   content varchar(16) NOT NULL default '',
   count decimal(9,2) NOT NULL default '0.00',
   description varchar(255) NOT NULL default '',
   tariffid int(11) NOT NULL default '0',
-  INDEX invoiceid (invoiceid)
+  INDEX docid (docid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
 #
-# Structure of table  invoices
+# Structure of table documents
 #
-DROP TABLE IF EXISTS invoices;
-CREATE TABLE invoices (
-  id int(11) NOT NULL auto_increment,
-  number int(11) NOT NULL default '0',
-  cdate int(11) NOT NULL default '0',
-  paytime tinyint(8) NOT NULL default '0',
-  paytype varchar(255) NOT NULL default '',
-  customerid int(11) NOT NULL default '0',
-  name varchar(255) NOT NULL default '',
-  address varchar(255) NOT NULL default '',
-  nip varchar(16) NOT NULL default '',
-  pesel varchar(11) NOT NULL default '',
-  zip varchar(10) NOT NULL default '',
-  city varchar(32) NOT NULL default '',
-  phone varchar(255) NOT NULL default '',
-  finished tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (id),
-  INDEX cdate (cdate)
+DROP TABLE IF EXISTS documents;
+CREATE TABLE documents (
+	id int(11) NOT NULL auto_increment,
+	type tinyint NOT NULL DEFAULT '0',
+	number int(11) NOT NULL DEFAULT '0',
+	cdate int(11) NOT NULL DEFAULT '0',
+        customerid int(11) NOT NULL DEFAULT '0',
+	userid int(11) NOT NULL DEFAULT '0',
+	name varchar(255) NOT NULL DEFAULT '',
+	address varchar(255) NOT NULL DEFAULT '',
+	zip varchar(10) NOT NULL DEFAULT '',
+	city varchar(32) NOT NULL DEFAULT '',
+	ten varchar(16) NOT NULL DEFAULT '',
+	ssn varchar(11) NOT NULL DEFAULT '',
+	paytime tinyint NOT NULL DEFAULT '0',
+	paytype varchar(255) NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	INDEX cdate (cdate)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table receiptcontents
+#
+DROP TABLE IF EXISTS receiptcontents;
+CREATE TABLE receiptcontents (
+	docid INT(11) NOT NULL DEFAULT '0',
+	itemid TINYINT NOT NULL DEFAULT '0',
+	value decimal(9,2) NOT NULL DEFAULT '0',
+	description varchar(255) NOT NULL DEFAULT '',
+	INDEX docid (docid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -319,7 +349,7 @@ CREATE TABLE tariffs (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL default '',
   value decimal(9,2) NOT NULL default '0.00',
-  taxvalue decimal(9,2) default '0.00',
+  taxid int(11) NOT NULL default '0',
   pkwiu varchar(255) NOT NULL default '',
   uprate int(11) NOT NULL default '0',
   upceil int(11) NOT NULL default '0',
@@ -361,8 +391,8 @@ CREATE TABLE customers (
   address varchar(255) NOT NULL default '',
   zip varchar(10) NOT NULL default '',
   city varchar(32) NOT NULL default '',
-  nip varchar(16) NOT NULL default '',
-  pesel varchar(11) NOT NULL default '',
+  ten varchar(16) NOT NULL default '',
+  ssn varchar(11) NOT NULL default '',
   info text NOT NULL,
   serviceaddr text NOT NULL default '',
   creationdate int(11) NOT NULL default '0',
@@ -583,4 +613,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005052800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005061200');
