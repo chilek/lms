@@ -139,7 +139,7 @@ LDFLAGS="-L$libdir"
 echo " $libdir"
 
 echo -n "Includes location..."
-CFLAGS="-I$incdir"
+CFLAGS="-I$incdir -fPIC -Wall -O2"
 echo " $incdir"
 
 # Set up debug level
@@ -202,7 +202,7 @@ INSTALLDIR = $LMS_BIN_DIR
 MODULESDIR = $LMS_LIB_DIR
 LIBS = $LIBS
 LDFLAGS = $LDFLAGS
-CFLAGS = $CFLAGS $FLAGS -Wall -O2 -DLMS_LIB_DIR=\\\"\$(MODULESDIR)\\\"
+CFLAGS = $CFLAGS $FLAGS -DLMS_LIB_DIR=\\\"\$(MODULESDIR)\\\"
 DBDRIVER = $DBDRIVER
 " > Makefile \
 && cat Makefile.in >> Makefile
@@ -221,7 +221,7 @@ do
 	    echo "
 MODULESDIR = $LMS_LIB_DIR
 LIBS = $LIBS 
-CFLAGS = $CFLAGS $FLAGS -I../.. -Wall -O2
+CFLAGS = $CFLAGS $FLAGS -I../..
 LDFLAGS = $LDFLAGS
 " > ./${x}/Makefile && cat ./${x}/Makefile.in >> ./${x}/Makefile
 	    echo " done"
@@ -235,7 +235,7 @@ then
     echo -n "Create Makefile for mod_parser extensions..."
     echo "
 DBDRIVER = $DBDRIVER
-CFLAGS = $CFLAGS $FLAGS -I../.. -Wall -O2
+CFLAGS = $CFLAGS $FLAGS -I../..
 " > ./Makefile && cat ./Makefile.in >> ./Makefile
     echo " done"
 fi
