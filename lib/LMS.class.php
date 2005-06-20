@@ -1706,7 +1706,7 @@ class LMS
 	function GetTariffs()
 	{
 		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, taxes.label AS tax, pkwiu 
-					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY value DESC');
+					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY tariffs.value DESC');
 	}
 
 	function TariffExists($id)
