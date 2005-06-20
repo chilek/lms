@@ -29,6 +29,10 @@
                <listitem>
                     <para>C compiler (gcc)</para>
                </listitem>
+               <listitem>
+                    <para><filename>ggnotify</filename> module needs <filename>libgadu</filename>
+		    library and headers (included in <filename>ekg</filename> package)</para>
+               </listitem>
                </itemizedlist>
                      </para>
           </sect2>

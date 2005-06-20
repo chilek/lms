@@ -26,6 +26,11 @@
 			<listitem>
 				<para>kompilatora jêzyka C </para>
 			</listitem>
+			<listitem>
+				<para>modu³ <filename>ggnotify</filename> wymaga biblioteki 
+				<filename>libgadu</filename> oraz jej plików nag³ówkowych (zawartych w pakiecie
+				<filename>ekg</filename>).</para>
+			</listitem>
 			</itemizedlist>
       			</para>
 		</sect2>
