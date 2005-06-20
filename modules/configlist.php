@@ -98,6 +98,10 @@ function GetConfigList($order='var,asc')
 				case 'aliaslist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in aliases list. Default: 100.');
 				break;
+
+				case 'receiptlist_pagelimit':
+					$config[$idx]['description'] = trans('Limit of records displayed on one page in cash receipts list. Default: 100.');
+				break;
 				
 				case 'networkhosts_pagelimit':
 					$config[$idx]['description'] = trans('Limit of nodes displayed on one page in Network Information. Default: 256. With 0, this information is omitted (page is displaying faster).');
@@ -208,6 +212,10 @@ function GetConfigList($order='var,asc')
 				case 'smtp_auth_type':
 					$config[$idx]['description'] = trans('SMTP settings.');
 				break;					
+
+				case 'default_taxrate':
+					$config[$idx]['description'] = trans('Value of tax rate which will be selected by default on tax rates lists. Default: 22.0');
+				break;					
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
@@ -249,6 +257,18 @@ function GetConfigList($order='var,asc')
     }    
 	break;
 */
+			case 'finances':
+				switch($item['var'])
+				{
+					case 'suspension_percentage':
+						$config[$idx]['description'] = trans('Percentage of suspended liabilities. Default: 0');
+					break;
+				
+					default:
+						$config[$idx]['description'] = trans('Unknown option. No description.');
+					break;
+				} //end: var
+			break;
 
 			case 'invoices':
 				switch($item['var'])
@@ -266,7 +286,7 @@ function GetConfigList($order='var,asc')
 					break;
 					
 					case 'number_template':
-						$config[$idx]['description'] = trans('Invoice number template. Default: number/LMS/year, ie. %N/LMS/%Y. Allowed variables: %N - successive number in year, %M - drow-up month, %Y - drow-up year.');
+						$config[$idx]['description'] = trans('Document number template. Default: number/LMS/year, ie. %N/LMS/%Y. Allowed variables: %N - successive number in year, %M - drow-up month, %Y - drow-up year.');
 					break;
 					
 					case 'cplace':
@@ -278,15 +298,44 @@ function GetConfigList($order='var,asc')
 					break;
 					
 					case 'content_type':
-						$config[$idx]['description'] = trans('Content-type for invoice. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
+						$config[$idx]['description'] = trans('Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
 					break;
 						
 					case 'attachment_name':
-						$config[$idx]['description'] = trans('File name for saving finished invoice printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print invoice, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
+						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
 					break;
 					
 					case 'monthly_numbering':
-						$config[$idx]['description'] = trans('Enabling this option will reset numbering of invoices at beginning of every month.');
+						$config[$idx]['description'] = trans('Enabling this option will reset numbering of documents at beginning of every month.');
+					break;
+					
+					default:
+						$config[$idx]['description'] = trans('Unknown option. No description.');
+					break;
+				} //end: var
+			break;
+
+			case 'receipts':
+				switch($item['var'])
+				{
+					case 'number_template':
+						$config[$idx]['description'] = trans('Document number template. Default: number/LMS/year, ie. %N/LMS/%Y. Allowed variables: %N - successive number in year, %M - drow-up month, %Y - drow-up year.');
+					break;
+					
+					case 'template_file':
+						$config[$idx]['description'] = trans('Cash receipt template file. Default: "receipt.html". Should be placed in templates directory.');
+					break;
+					
+					case 'content_type':
+						$config[$idx]['description'] = trans('Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
+					break;
+						
+					case 'attachment_name':
+						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
+					break;
+					
+					case 'monthly_numbering':
+						$config[$idx]['description'] = trans('Enabling this option will reset numbering of documents at beginning of every month.');
 					break;
 					
 					default:
