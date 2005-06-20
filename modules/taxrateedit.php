@@ -70,6 +70,9 @@ if(sizeof($taxrateedit))
 
 	if(!$taxrateedit['taxed'])
 		$taxrateedit['taxed'] = 0;
+		
+	if(!$taxrateedit['taxed'] && $taxrateedit['value']!=0)
+		$error['value'] = trans('Incorrect tax rate percentage value (non-zero value and taxing not checked)!');
 
 	if($taxrateedit['validfrom'] == '')
 		$validfrom = 0;
@@ -93,8 +96,6 @@ if(sizeof($taxrateedit))
 			$validto = mktime(23, 59, 59, $tmonth, $tday, $tyear);
 	}
 
-	
-	
 	if(!$error)
 	{
 		$DB->Execute('UPDATE taxes SET label=?, value=?, taxed=?,validfrom=?,validto=? WHERE id=?',
@@ -123,3 +124,4 @@ $SMARTY->assign('layout',$layout);
 $SMARTY->display('taxrateedit.html');
 
 ?>
+<?php
