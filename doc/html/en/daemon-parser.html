@@ -1,0 +1,548 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Parser</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.7-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="LMS Daemon"
+HREF="daemon.html"><LINK
+REL="PREVIOUS"
+TITLE="Modules"
+HREF="daemon-modules.html"><LINK
+REL="NEXT"
+TITLE="For curious"
+HREF="devel.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.7-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="daemon-modules.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. LMS Daemon</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devel.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DAEMON-PARSER"
+>6.3. Parser</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER-INTRO"
+>6.3.1. Introduction</A
+></H2
+><P
+>Parser module is based on a scripting language
+	    <A
+HREF="http://silvercoders.com/wiki/index.php?title=T-Script"
+TARGET="_top"
+>T-Script</A
+> which 
+	    primary purpose is to generate text files. It can be useful for processing
+	    templates with some additional data retrieved from data sources 
+	    like SQL databases or text files. In lmsd's module contents of scripts
+	    are stored in database, so they can be edited via <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>.
+	    In the future parser should replace almost all lmsd modules.</P
+><P
+>Before compilation ensure that you have in your system packages
+	    <TT
+CLASS="FILENAME"
+>bison</TT
+> (at least 1.875 version) and <TT
+CLASS="FILENAME"
+>flex</TT
+>.
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER-CONFIG"
+>6.3.2. Configuration</A
+></H2
+><P
+>Parser has following options:</P
+><UL
+><LI
+><P
+>script</P
+><P
+>Contents of script. Default: empty.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>script = '{var=1}variable var={var}'</SAMP
+></P
+></LI
+><LI
+><P
+>file</P
+><P
+>Location of output file. Default: empty.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>file = /tmp/parser.out</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Shell command to execute after script compilation. Default: empty</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>command = "sh /tmp/parser.out"</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER-SYNTAX"
+>6.3.3. Syntax</A
+></H2
+><P
+>T-Script language syntax is based on other popular languages like C 
+	    or JavaScript with little changes made to make writting templates simpler. 
+	    Additional commands should be written inside { } parenthesis.</P
+><P
+>Supported expressions:
+	    <UL
+><LI
+><P
+>Literal inside quotes</P
+><P
+><PRE
+CLASS="SCREEN"
+>"some literal"</PRE
+></P
+></LI
+><LI
+><P
+>Number</P
+><P
+><PRE
+CLASS="SCREEN"
+>1234</PRE
+></P
+></LI
+><LI
+><P
+>Value of variable "var"</P
+><P
+><PRE
+CLASS="SCREEN"
+>var</PRE
+></P
+></LI
+><LI
+><P
+>N-th element of array "var"</P
+><P
+><PRE
+CLASS="SCREEN"
+>var[n]</PRE
+></P
+></LI
+><LI
+><P
+>Subvariable "n" of variable "var"</P
+><P
+><PRE
+CLASS="SCREEN"
+>var.n</PRE
+></P
+></LI
+><LI
+><P
+>Value of expression inside parenthesis</P
+><P
+><PRE
+CLASS="SCREEN"
+>( &lt;expression&gt; )</PRE
+></P
+></LI
+><LI
+><P
+>1 if value of expression is false, otherwise 0</P
+><P
+><PRE
+CLASS="SCREEN"
+>! &lt;expression&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Evaluates to 1 if expression1 value equals expression2 
+		    value or 0 if not</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; == &lt;expression2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Evaluates to 1 if expression1 value doesn't equal 
+		    expression2 value or 0 if it does</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; != &lt;expression2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Evaluates to 1 if expression1 value is less than 
+		    expression2 value</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; &lt; &lt;expression2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Evaluates to 1 if expression1 value is greater than 
+		    expression2 value</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; &gt; &lt;expression2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Evaluates to 1 if expression1 value or expression2 value 
+		    are true</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; || &lt;expression2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Evaluates to 1 if expression1 value and expression2 value 
+		    are true</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; &#38;&#38; &lt;expression2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>When both expression values have numeric type evaluates 
+		    to result of arithmetic operation. In other situation treats 
+		    expressions as strings and performs string concatenation</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; + &lt;expression2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Evaluates to result of arithmetic operation on two expression values</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; - &lt;expression2&gt;
+&lt;expression1&gt; * &lt;expression2&gt;
+&lt;expression1&gt; / &lt;expression2&gt;
+&lt;expression1&gt; % &lt;expression2&gt;</PRE
+></P
+></LI
+></UL
+>
+	    </P
+><P
+>Basic commands:
+	    <UL
+><LI
+><P
+>Assigns expression value to specified variable</P
+><P
+>		    <PRE
+CLASS="SCREEN"
+>&lt;variable_name&gt; = &lt;expression&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Executes command only if expression is true. Second form executes 
+		    command1 if expression is true or command2 if expression is false</P
+><P
+><PRE
+CLASS="SCREEN"
+>if ( &lt;expression&gt; ) &lt;commands&gt; /if
+if ( &lt;expression&gt; ) &lt;commands1&gt; else &lt;commands2&gt; /if</PRE
+></P
+><P
+>Text between command blocks is treated as a command so the following example is correct:
+<PRE
+CLASS="SCREEN"
+>Some text 
+{if (a==1)} 
+a equals 1 
+{else} 
+a doesn't equal 1 
+{/if} </PRE
+>
+You can put backslash between command block and end of line to eat \n 
+symbol and keep normal text flow. For example: 
+<PRE
+CLASS="SCREEN"
+>Some text 
+{if (a==1)}\ 
+a equals 1 
+{else}\ 
+a doesn't equal 1 
+{/if}\</PRE
+></P
+></LI
+><LI
+><P
+>Executes first command1 as loop initialization command. Then executes 
+		    commands and command2 while expression is true</P
+><P
+><PRE
+CLASS="SCREEN"
+>for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt; /for</PRE
+></P
+></LI
+></UL
+>
+	    </P
+><P
+>Basic functions:
+	    <UL
+><LI
+><P
+>Converts numeric variable to string value</P
+><P
+><PRE
+CLASS="SCREEN"
+>string(&lt;variable_name&gt;)</PRE
+></P
+></LI
+><LI
+><P
+>Converts string variable to numeric value</P
+><P
+><PRE
+CLASS="SCREEN"
+>number(&lt;variable_name&gt;)</PRE
+></P
+></LI
+></UL
+>
+	    </P
+><P
+>Extensions:
+	    <UL
+><LI
+><P
+>SQL commands (case insensitive)</P
+><P
+><PRE
+CLASS="SCREEN"
+>SELECT &lt;the_rest_of_query&gt;
+INSERT &lt;the_rest_of_query&gt;
+DELETE &lt;the_rest_of_query&gt;
+UPDATE &lt;the_rest_of_query&gt;
+CREATE &lt;the_rest_of_query&gt;
+DROP &lt;the_rest_of_query&gt;</PRE
+></P
+></LI
+><LI
+><P
+>SQL result rows count (case insensitive)</P
+><P
+><PRE
+CLASS="SCREEN"
+>ROWS &lt;sql_query&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Shell command executing</P
+><P
+><PRE
+CLASS="SCREEN"
+>exec &lt;command&gt;</PRE
+></P
+></LI
+></UL
+>
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER-EXAMPLES"
+>6.3.4. Example Scripts</A
+></H2
+><P
+>Let's begin from simple script creating file <TT
+CLASS="FILENAME"
+>/etc/hosts</TT
+>
+	    with list of computers (and devices) IPs and names list. 
+	    <DIV
+CLASS="EXAMPLE"
+><A
+NAME="PARSER-E1"
+></A
+><P
+><B
+>Example 6-1. Parser: Creating /etc/hosts file</B
+></P
+><PRE
+CLASS="SCREEN"
+>{result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
+127.0.0.1	localhost
+{for (r=0; r&lt;number(result); r++)}\
+{result[r].name}\t{result[r].ip}
+{/for}\</PRE
+></DIV
+>    
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="daemon-modules.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devel.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Modules</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="daemon.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>For curious</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

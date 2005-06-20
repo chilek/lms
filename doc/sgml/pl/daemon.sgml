@@ -1312,13 +1312,15 @@ DROP &lt;dalszy_ci±g_zapytania&gt;
 	</sect2>
 	<sect2 id="daemon-parser-examples">
 	<title>Przyk³adowe skrypty</title>
-	    <para>
+	    <para>Zacznijmy od bardzo prostego skryptu, który tworzy plik
+	    <filename>/etc/hosts</filename> z list± adresów i nazw komputerów 
+	    (oraz urz±dzeñ).
 	    <example id="parser-e1">
 		<title>Parser: Tworzenie pliku /etc/hosts</title>
 <screen>
 {result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
-127.0.0.1	localhost
-{for (r=0; r<number(result); r++)}\
+127.0.0.1    localhost
+{for (r=0; r&lt;number(result); r++)}\
 {result[r].name}\t{result[r].ip}
 {/for}\
 </screen>

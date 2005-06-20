@@ -225,6 +225,83 @@ NAME="MENU-INVOICES-NEW"
 		'Wybierz/Zmieñ klienta'. Nastêpnie mo¿emy dodawaæ pozycje do faktury. 
 		'Zapisz i drukuj' koñczy edycjê nowej faktury, zapisuje j± w systemie
 		i wy¶wietla wydruk faktury w nowym oknie.</P
+><P
+>Konfiguracjê wydruków faktur opisano w rozdziale p.t. 
+		Instalacja i Konfiguracja.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-RECEIPTS-LIST"
+>3.7.9. Lista dowodów wp³aty</A
+></H2
+><P
+>Dowody wp³aty "KP", to po¶wiadczenie przyjêcia wp³aty gotówkowej
+		od klienta. Lista KP mo¿e byæ dowolnie sortowana oraz filtrowana
+		podobnie jak lista faktur. Masz tak¿e mo¿liwo¶æ wydrukowania wybranych
+		dowodów.</P
+><P
+>Z listy mo¿na przej¶æ do edycji dowodu wp³aty. Dokonuj±c zmian 
+		w wystawionych po¶wiadczeniach nale¿y zachowaæ szczególn± ostro¿no¶æ, gdy¿
+		zapisanie zmian powoduje usuniêcie starego po¶wiadczenia i zwi±zanych z nim
+		operacji oraz wstawienie nowych.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-RECEIPTS-NEW"
+>3.7.10. Nowy dowód wp³aty</A
+></H2
+><P
+>Podczas wystawiania dowodu wp³aty w pierwszej kolejno¶ci
+		wybieramy klienta z listy, ustawiamy datê i numer (najlepiej pozostawiæ 
+		warto¶ci zaproponowane przez system). Nastêpnie klikamy 'Zapisz' aby
+		zatwierdziæ wybór. Po tym mo¿emy dodawaæ dowoln± ilo¶æ pozycji zawieraj±cych
+		opis i kwotê lub wybraæ je z listy niezap³aconych zobowi±zañ klienta
+		znajduj±cej siê poni¿ej. 'Zapisz i drukuj' koñczy edycjê, zapisuje po¶wiadczenie
+		w oraz wp³aty systemie i wy¶wietla wydruk KP w nowym oknie.</P
+><P
+>Konfiguracjê wydruków dowodów wp³aty opisano w rozdziale p.t. 
+		Instalacja i Konfiguracja.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-TAXES"
+>3.7.11. Stawki podatkowe</A
+></H2
+><P
+>Przed rozpoczêciem pracy z systemem finansowym nale¿y zdefiniowaæ
+		stawki podatkowe jakich bêdziemy u¿ywaæ. Na li¶cie znajduj± siê wszystkie
+		dane stawek. Mo¿liwa jest edycja stawki podatkowej, przy czym nale¿y pamiêtaæ,
+		¿e system nie pozwoli na zmianê warto¶ci stawki, je¿eli zosta³a ona
+		u¿yta w przesz³o¶ci. Nie mo¿liwe jest tak¿e usuniêcie takiej stawki.</P
+><P
+>Link 'Dodaj stawkê' przenosi do formularza definiowania nowej stawki
+		procentowej. Etykieta stawki jest wy¶wietlana na listach wyboru oraz
+		w szablonie faktury. Warto¶æ stawki to liczba od 0 do 100 z dok³adno¶ci±
+		do dwóch miejsc po przecinku. Status opodatkowania jest wykorzystywany
+		do wyró¿nienia stawki zwolnionej z podatku, czyli wszystkie pozosta³e
+		stawki powinny mieæ w³±czone 'opodatkowanie'.</P
+><P
+>Stawkê, która bêdzie domy¶lnie zaznaczona na listach wyboru
+		mo¿na zdefiniowaæ przy pomocy opcji <TT
+CLASS="FILENAME"
+>default_taxrate</TT
+>
+		w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+></P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -232,7 +309,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-IMPORT"
->3.7.9. Import</A
+>3.7.12. Import</A
 ></H2
 ><P
 >Import s³u¿y do zapisywania operacji finansowych z zewnêtrznych
@@ -281,7 +358,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-FINANCES-PRINT"
->3.7.10. Wydruki</A
+>3.7.13. Wydruki</A
 ></H2
 ><P
 >Wydruki zestawieñ finansowych obejmuj±:
@@ -356,7 +433,9 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >Faktury</I
 ></SPAN
-> - wydruk wszystkich lub wybranego klienta za dany okres (z wyborem orygina³/kopia).</P
+> - wydruk wszystkich lub wybranego klienta za dany okres 
+		    (z wyborem orygina³/kopia) lub wygenerowanie PDFa z danymi potrzebnymi do zadruku standardowych 
+		    dwuodcinkowych formularzy przelewu/wp³aty z potwierdzeniem.</P
 ></LI
 ></UL
 >

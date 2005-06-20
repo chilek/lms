@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="Upgrade"
 HREF="install-upgrade.html"><LINK
 REL="NEXT"
-TITLE="Interfejs U¿ytkownika (LMS-UI)"
-HREF="user.html"><LINK
+TITLE="Dowody wp³aty (KP)"
+HREF="install-receipts.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="user.html"
+HREF="install-receipts.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -86,7 +86,7 @@ NAME="INSTALL-INVOICES"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->almsd</I
+>lmsd</I
 ></SPAN
 ></P
 ><P
@@ -294,7 +294,12 @@ CLASS="FILENAME"
 > spe³nia podobn± rolê jak dla faktur html'owych,
           z tym, ¿e posiada predefiniowane warto¶ci: 'standard' - faktura podstawowa 
           (odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
-          na drukach FT-0100 zawieraj±cych druk polecenia przelewu. W opcji <TT
+          na drukach <A
+HREF="http://www.polarnet.org/produkty/ft-0100/"
+TARGET="_top"
+>FT-0100</A
+> 
+	  zawieraj±cych druk polecenia przelewu. W opcji <TT
 CLASS="FILENAME"
 >template_file</TT
 >
@@ -345,6 +350,64 @@ BORDER="0"
 >
           </P
 ></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-INVOICES-IBAN"
+>2.9.3. Automatyczne generowanie numeru konta bankowego</A
+></H2
+><P
+>LMS umo¿liwia automatyczne generowanie numeru konta bankowego w standardzie IBAN
+	  zawieraj±cego ID klienta. Funkcja ta mo¿e byæ u¿ywana do masowej identyfikacji p³atno¶ci
+	  która jako us³uga znajduje siê w ofercie wiêkszo¶ci banków. Aby masowa identyfikacja by³a
+	  mo¿liwa, nale¿y podpisaæ umowê z bankiem z której potrzebne nam bêd±:
+	  <UL
+><LI
+><P
+>Numer rozliczeniowy banku</P
+><P
+>zawsze sta³y dla ka¿dego banku, z³o¿ony z 8 cyfr</P
+></LI
+><LI
+><P
+>Identyfikator rachunku</P
+><P
+>identyfikator naszego wirtualnego rachunku, z³o¿ony z 4 cyfr</P
+></LI
+></UL
+>
+	  Gdy mamy potrzebne dane, mo¿emy przej¶æ do konfiguracji LMSa.</P
+><P
+>W sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[finances]</I
+></SPAN
+> ustawiamy:
+	  <UL
+><LI
+><P
+>iban</P
+><P
+>okre¶la czy numer konta na fakturach ma byæ zwyk³y czy generowany automatycznie (0|1)</P
+></LI
+><LI
+><P
+>account</P
+><P
+>skrócony numer konta bankowego powsta³y przez po³±czenie numeru rozliczeniowego banku 
+		    z identyfikatorem rachunku, numer ten musi siê sk³adaæ z 12 cyfr bez spacji i innych znaków.</P
+></LI
+></UL
+>
+	  Od tej pory je¶li u¿ywamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wp³aty z
+	  menu Finanse -&#62; Wydruki -&#62; Faktury -&#62; Drukuj polecenia przelewu/wp³aty, ka¿dy wydruk bêdzie zawiera³
+	  unikalny numer konta z zawartym ID naszego klienta.
+          </P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -380,7 +443,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="user.html"
+HREF="install-receipts.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -404,7 +467,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Interfejs U¿ytkownika (LMS-UI)</TD
+>Dowody wp³aty (KP)</TD
 ></TR
 ></TABLE
 ></DIV
