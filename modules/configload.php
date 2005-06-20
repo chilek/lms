@@ -57,6 +57,13 @@ foreach($LMS->CONFIG['receipts'] as $key => $val)
 			);
 }
 
+foreach($LMS->CONFIG['finances'] as $key => $val)
+{
+	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+			array('finances', $key, $val)
+			);
+}
+
 $DB->CommitTrans();
 
 header('Location: ?m=configlist');
