@@ -53,18 +53,20 @@ DROP TABLE cash;
 CREATE TABLE cash (
 	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
 	time integer 		DEFAULT 0 NOT NULL,
-	userid integer 	DEFAULT 0 NOT NULL,
+	userid integer 		DEFAULT 0 NOT NULL,
 	type smallint 		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-	taxvalue numeric(9,2)	DEFAULT 0,
-	customerid integer 		DEFAULT 0 NOT NULL,
+	taxid integer		DEFAULT 0 NOT NULL,
+	customerid integer 	DEFAULT 0 NOT NULL,
 	comment varchar(255) 	DEFAULT '' NOT NULL,
-	invoiceid integer 	DEFAULT 0 NOT NULL,
+	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
+	reference integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX cash_customerid_idx ON cash(customerid);
-CREATE INDEX cash_invoiceid_idx ON cash(invoiceid);
+CREATE INDEX cash_docid_idx ON cash(docid);
+CREATE INDEX cash_reference_idx ON cash(reference);
 CREATE INDEX cash_time_idx ON cash(time);
 
 /* -------------------------------------------------------- 
@@ -131,7 +133,7 @@ CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-	taxvalue numeric(9,2) 	DEFAULT 0,
+	taxid integer 		DEFAULT 0 NOT NULL,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	upceil integer		DEFAULT 0 NOT NULL,
@@ -162,46 +164,74 @@ CREATE TABLE payments (
 );
 
 /* -------------------------------------------------------- 
-  Structure of table "invoices" 
+  Structure of table "taxes" 
 -------------------------------------------------------- */
-DROP SEQUENCE "invoices_id_seq";
-CREATE SEQUENCE "invoices_id_seq";
-DROP TABLE invoices;
-CREATE TABLE invoices (
-	id integer DEFAULT nextval('invoices_id_seq'::text) NOT NULL,
-        number integer 		DEFAULT 0 NOT NULL,
-        cdate integer 		DEFAULT 0 NOT NULL,
-        paytime smallint 	DEFAULT 0 NOT NULL,
+DROP SEQUENCE "taxes_id_seq";
+CREATE SEQUENCE "taxes_id_seq";
+DROP TABLE taxes;
+CREATE TABLE taxes (
+    id	integer DEFAULT nextval('taxes_id_seq'::text) NOT NULL,
+    value numeric(4,2) DEFAULT 0 NOT NULL,
+    taxed smallint DEFAULT 0 NOT NULL,
+    label varchar(16) DEFAULT '' NOT NULL,
+    validfrom integer DEFAULT 0 NOT NULL,
+    validto integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+
+/* -------------------------------------------------------- 
+  Structure of table "documents" 
+-------------------------------------------------------- */
+DROP SEQUENCE "documents_id_seq";
+CREATE SEQUENCE "documents_id_seq";
+DROP TABLE documents;
+CREATE TABLE documents (
+	id integer DEFAULT nextval('documents_id_seq'::text) NOT NULL,
+	type smallint		DEFAULT 0 NOT NULL,
+	number integer 		DEFAULT 0 NOT NULL,
+	cdate integer 		DEFAULT 0 NOT NULL,
+	customerid integer 	DEFAULT 0 NOT NULL,
+	userid integer		DEFAULT 0 NOT NULL,		
+    	name varchar(255) 	DEFAULT '' NOT NULL,
+    	address varchar(255) 	DEFAULT '' NOT NULL,
+	zip varchar(10)		DEFAULT '' NOT NULL,
+    	city varchar(32) 	DEFAULT '' NOT NULL,
+	ten varchar(16) 	DEFAULT '' NOT NULL,
+	ssn varchar(11) 	DEFAULT '' NOT NULL,
+    	paytime smallint 	DEFAULT 0 NOT NULL,
 	paytype varchar(255) 	DEFAULT '' NOT NULL,
-        customerid integer 	DEFAULT 0 NOT NULL,
-        name varchar(255) 	DEFAULT '' NOT NULL,
-        address varchar(255) 	DEFAULT '' NOT NULL,
-        nip varchar(16) 	DEFAULT '' NOT NULL,
-	pesel varchar(11) 	DEFAULT '' NOT NULL,
-        zip varchar(10)		DEFAULT '' NOT NULL,
-        city varchar(32) 	DEFAULT '' NOT NULL,
-        phone varchar(255) 	DEFAULT '' NOT NULL,
-        finished smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
-CREATE INDEX invoices_cdate_idx ON invoices(cdate);
+CREATE INDEX documents_cdate_idx ON documents(cdate);
+
+/* -------------------------------------------------------- 
+  Structure of table "receiptcontents" 
+-------------------------------------------------------- */
+DROP TABLE receiptcontents;
+CREATE TABLE receiptcontents (
+	docid integer		DEFAULT 0 NOT NULL,
+	itemid smallint		DEFAULT 0 NOT NULL,
+	value numeric(9,2)	DEFAULT 0 NOT NULL,
+	description varchar(255) DEFAULT '' NOT NULL
+);
+CREATE INDEX receiptcontents_docid_idx ON receiptcontents(docid);
 
 /* -------------------------------------------------------- 
   Structure of table "invoicecontents" 
 -------------------------------------------------------- */
 DROP TABLE invoicecontents;
 CREATE TABLE invoicecontents (
-	invoiceid integer 	DEFAULT 0 NOT NULL,
+	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-	taxvalue numeric(9,2) 	DEFAULT 0,
+	taxid integer 		DEFAULT 0 NOT NULL,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,2) 	DEFAULT 0 NOT NULL,
 	description varchar(255) DEFAULT '' NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL
 );	 
-CREATE INDEX invoicecontents_invoiceid_idx ON invoicecontents (invoiceid);
+CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
 
 /* -------------------------------------------------------- 
   Structure of table "timestamps" 
@@ -232,8 +262,8 @@ CREATE TABLE customers (
 	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
-	nip varchar(16) 	DEFAULT '' NOT NULL,
-	pesel varchar(11) 	DEFAULT '' NOT NULL,
+	ten varchar(16) 	DEFAULT '' NOT NULL,
+	ssn varchar(11) 	DEFAULT '' NOT NULL,
 	info text		DEFAULT '' NOT NULL,
 	serviceaddr text	DEFAULT '' NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
@@ -622,4 +652,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005052800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005061200');
