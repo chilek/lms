@@ -53,7 +53,7 @@ CREATE TABLE cash (
 	comment varchar(255) 	DEFAULT '' NOT NULL,
 	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
-	regerence integer	DEFAULT 0 NOT NULL
+	reference integer	DEFAULT 0 NOT NULL
 );
 CREATE INDEX cash_customerid_idx ON cash(customerid);
 CREATE INDEX cash_reference_idx ON cash(reference);
