@@ -1312,7 +1312,18 @@ DROP &lt;dalszy_ci±g_zapytania&gt;
 	</sect2>
 	<sect2 id="daemon-parser-examples">
 	<title>Przyk³adowe skrypty</title>
-	    <para></para>
+	    <para>
+	    <example id="parser-e1">
+		<title>Parser: Tworzenie pliku /etc/hosts</title>
+<screen>
+{result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
+127.0.0.1	localhost
+{for (r=0; r<number(result); r++)}\
+{result[r].name}\t{result[r].ip}
+{/for}\
+</screen>
+	    </example>    
+	    </para>
 	</sect2>
     </sect1>
 </chapter>
