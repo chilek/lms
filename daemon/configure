@@ -202,7 +202,7 @@ INSTALLDIR = $LMS_BIN_DIR
 MODULESDIR = $LMS_LIB_DIR
 LIBS = $LIBS
 LDFLAGS = $LDFLAGS
-CFLAGS = $CFLAGS $FLAGS -Wall -O2 -DLMS_LIB_DIR=\\\"\$(MODULESDIR)\\\"
+CFLAGS = $CFLAGS $FLAGS -Wall -O2 -fPIC -DLMS_LIB_DIR=\\\"\$(MODULESDIR)\\\"
 DBDRIVER = $DBDRIVER
 " > Makefile \
 && cat Makefile.in >> Makefile
@@ -221,7 +221,7 @@ do
 	    echo "
 MODULESDIR = $LMS_LIB_DIR
 LIBS = $LIBS 
-CFLAGS = $CFLAGS $FLAGS -I../.. -Wall -O2
+CFLAGS = $CFLAGS $FLAGS -I../.. -Wall -O2 -fPIC
 LDFLAGS = $LDFLAGS
 " > ./${x}/Makefile && cat ./${x}/Makefile.in >> ./${x}/Makefile
 	    echo " done"
