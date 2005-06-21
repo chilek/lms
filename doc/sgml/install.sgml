@@ -460,14 +460,12 @@ database = /usr/local/lms/lms.db</screen>
      </listitem>
      <listitem>
          <para>customerlist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of customers list. Default: no
-         limit</para>
+         <para>Limit of records that can be displayed on one page of customers list. Default: 100</para>
          <para>Example:     <prompt>customerlist_pagelimit = 10</prompt></para>
      </listitem>
      <listitem>
          <para>nodelist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of nodes list. Default: no
-         limit</para>
+         <para>Limit of records that can be displayed on one page of nodes list. Default: 100</para>
          <para>Example:     <prompt>nodelist_pagelimit = 10</prompt></para>
      </listitem>
      <listitem>

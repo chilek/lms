@@ -71,6 +71,8 @@ version 1.7.1 Swarog <A.L.E.C's Nightmare> (????/??/??):
   - lmsd: hiding command line arguments on processes list (alec)
   - when taxrate is above 0.00 it can't be "nottaxed" (hunter)
   - lmsd: added -fPIC flag for x86-64 arch. compat. (alec)
+  - changed defaults of customerlist_pagelimit and nodelist_pagelimit
+    to '100' (alec)
     
 version 1.7.0 Klorel (2005-05-13):
 
