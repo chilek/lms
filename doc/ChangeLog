@@ -5,6 +5,8 @@ version 1.6.1 ? (??/??/????):
   - BTS#0000387: fixed problem with register_globals=on in accesstable.php
     (alec/chris)
   - lmsd: added -fPIC flag for x86-64 architecture (alec)
+  - contrib/customer_otherip: fixed problem with non-numeric input data
+    on login form (alec)
 
 version 1.6.0 Thor (13/06/2005):
 
