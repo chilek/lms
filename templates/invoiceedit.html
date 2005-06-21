@@ -11,7 +11,7 @@
 			document.additem.name.value = '{$tariff.name}';
 			document.additem.taxid.value = '{$tariff.taxid}';
 			document.additem.valuebrutto.value = '{$tariff.value}';
-			document.additem.pkwiu.value = '{$tariff.pkwiu}';
+			document.additem.prodid.value = '{$tariff.prodid}';
 			document.additem.tariffid.value = '{$tariff.id}';
 		{literal}}{/literal}
 		{/foreach}
@@ -134,7 +134,7 @@
 			{$item.name}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			{$item.pkwiu}
+			{$item.prodid}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.count}<BR>
@@ -198,7 +198,7 @@
 			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">{t}Select{/t}</A>
 		</TD>
 		<TD CLASS="ftop">
-			<INPUT TYPE="text" NAME="pkwiu" SIZE="6">
+			<INPUT TYPE="text" NAME="prodid" SIZE="6">
 		</TD>
 		<TD CLASS="ftop">
 			<INPUT TYPE="text" NAME="count" SIZE="1" VALUE="1">

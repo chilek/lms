@@ -48,13 +48,14 @@ version 1.7.1 Swarog <A.L.E.C's Nightmare> (????/??/??):
   - formularz_przelewu_wplaty_2 (cash transfer forms) is now integrated
     with LMS (lexx)
   - changed finances database structure (alec)
-  - changed naming convention (pesel, nip) in database (alec)
+  - changed naming convention (pesel, nip, pkwiu) in database (alec)
     ********************************************************************
     *       WARNING!   WARNING!   WARNING!   WARNING!   WARNING!       *
     ********************************************************************
     *     Changed database structure: table 'invoices' replaced by     *
     *       'documents', dropped 'phone' and 'finished' columns,       *
     *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' in customers table  *
+    *  Changed 'pkwiu' to 'prodid' in 'tariffs' and 'invoicecontents'  *
     *               Tax rates moved to table 'taxes'                   *
     ********************************************************************
   - Finances -> Tax Rates - user-defined tax rates (alec)    

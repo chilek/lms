@@ -1337,12 +1337,12 @@ class LMS
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
 
-			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
 					$iid, 
 					$itemid, 
 					$item['valuebrutto'], 
 					$item['taxid'], 
-					$item['pkwiu'],
+					$item['prodid'],
 					$item['jm'], 
 					$item['count'], 
 					$item['name'], 
@@ -1374,13 +1374,13 @@ class LMS
 		{
 			$itemid++;
 			
-			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array(
 					$iid, 
 					$itemid, 
 					$item['valuebrutto'], 
 					$item['taxid'], 
-					$item['pkwiu'],
+					$item['prodid'],
 					$item['jm'], 
 					$item['count'], 
 					$item['name'], 
@@ -1538,7 +1538,7 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
 		{
-			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, pkwiu, content, count, invoicecontents.description AS description, tariffid, itemid 
+			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid 
 					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=?', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
@@ -1546,16 +1546,19 @@ class LMS
 					$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
 					$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
 					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
+					
 					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
 					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
 					$result['taxest'][$row['taxvalue']]['taxlabel'] = $row['taxlabel'];
-					// for backward compatybility
-					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
-					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
-
+					
 					$result['total'] += $result['content'][$idx]['total'];
 					$result['totalbase'] += $result['content'][$idx]['totalbase'];
 					$result['totaltax'] += $result['content'][$idx]['totaltax'];
+					
+					// for backward compatybility
+					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
+					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+					$result['content'][$idx]['pkwiu'] = $row['prodid'];
 				}
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 			$result['totalg'] = round( ($result['total'] - floor($result['total'])) * 100);
@@ -1573,7 +1576,7 @@ class LMS
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, taxes.label AS tax, taxes.value AS taxvalue, pkwiu, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
+		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
 				FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY name ASC'))
 		{
 			$assigned = $this->DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value 
@@ -1626,14 +1629,14 @@ class LMS
 	function TariffAdd($tariffdata)
 	{
 		$this->SetTS('tariffs');
-		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxid, pkwiu, uprate, downrate, upceil, downceil, climit, plimit)
+		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxid, prodid, uprate, downrate, upceil, downceil, climit, plimit)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
 					$tariffdata['name'],
 					$tariffdata['description'],
 					$tariffdata['value'],
 					$tariffdata['taxid'],
-					$tariffdata['pkwiu'],
+					$tariffdata['prodid'],
 					$tariffdata['uprate'],
 					$tariffdata['downrate'],
 					$tariffdata['upceil'],
@@ -1651,7 +1654,7 @@ class LMS
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS('tariffs');
-		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxid=?, pkwiu=?, uprate=?, downrate=?, upceil=?, downceil=?, climit=?, plimit=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxid'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['upceil'], $tariff['downceil'], $tariff['climit'], $tariff['plimit'], $tariff['id']));
+		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?, climit=?, plimit=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxid'], $tariff['prodid'], $tariff['uprate'], $tariff['downrate'], $tariff['upceil'], $tariff['downceil'], $tariff['climit'], $tariff['plimit'], $tariff['id']));
 	}
 
 	function TariffDelete($id)
@@ -1676,7 +1679,7 @@ class LMS
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax, taxes.value AS taxvalue, pkwiu, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
+		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
 					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE tariffs.id=?', array($id));
 		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS customername FROM assignments, customers WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
 		
@@ -1705,7 +1708,7 @@ class LMS
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, taxes.label AS tax, pkwiu 
+		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, taxes.label AS tax, prodid 
 					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY tariffs.value DESC');
 	}
 

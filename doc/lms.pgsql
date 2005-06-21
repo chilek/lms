@@ -134,7 +134,7 @@ CREATE TABLE tariffs (
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
-	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
+	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	upceil integer		DEFAULT 0 NOT NULL,
 	downrate integer	DEFAULT 0 NOT NULL,
@@ -225,7 +225,7 @@ CREATE TABLE invoicecontents (
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
-	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
+	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,2) 	DEFAULT 0 NOT NULL,
 	description varchar(255) DEFAULT '' NOT NULL,
@@ -652,4 +652,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005061200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005062100');

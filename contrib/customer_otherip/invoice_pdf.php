@@ -262,7 +262,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pu¼niej
     if ($invoice['content']) foreach ($invoice['content'] as $item) {
 	$tt_width[2] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",$item['description']));
-	$tt_width[3] = $pdf->getTextWidth($font_size,$item['pkwiu']);
+	$tt_width[3] = $pdf->getTextWidth($font_size,$item['prodid']);
 	$tt_width[4] = $pdf->getTextWidth($font_size,$item['content']);
 	$tt_width[5] = $pdf->getTextWidth($font_size,$item['count']);
 	$tt_width[6] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue'])));
@@ -280,7 +280,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     if ($invoice['content']) foreach ($invoice['content'] as $item) {
 	$t_data[1] = $lp;
 	$t_data[2] = iconv("UTF-8","ISO-8859-2",$item['description']);
-	$t_data[3] = $item['pkwiu'];
+	$t_data[3] = $item['prodid'];
 	$t_data[4] = $item['content'];
 	$t_data[5] = $item['count'];
 	$t_data[6] = iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue']));
