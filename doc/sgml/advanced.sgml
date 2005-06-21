@@ -228,7 +228,7 @@
                     <member>name - subscription name</member>
                     <member>value - amount</member>
                     <member>taxvalue - tax rate in percent</member>
-                    <member>pkwiu - product/service classification number</member>
+                    <member>prodid - product/service classification number</member>
                     <member>uprate - upload warranty</member>
                     <member>upceil - upload boundary</member>
                     <member>downrate - download warranty</member>
@@ -291,7 +291,7 @@
                     <member>itemid - invoice item identifier</member>
                     <member>value - amount</member>
                     <member>taxvalue - tax rate in percent</member>
-                    <member>pkwiu - product/service classification number</member>
+                    <member>prodid - product/service classification number</member>
                     <member>content - used unit (usually 'pc.')</member>
                     <member>count - unit count</member>
                     <member>description - description for invoice</member>
