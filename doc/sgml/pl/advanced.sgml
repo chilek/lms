@@ -243,7 +243,7 @@
                     <member>name - nazwa</member>
                     <member>value - kwota</member>
                     <member>taxid - identyfikator stawki podatkowej</member>
-                    <member>pkwiu - numer PKWiU</member>
+                    <member>prodid - numer PKWiU</member>
                     <member>uprate - gwarantowany upload</member>
                     <member>upceil - maksymalny upload</member>
                     <member>downrate - gwarantowany download</member>
@@ -306,7 +306,7 @@
                     <member>itemid - nr pozycji</member>
                     <member>value - kwota pozycji</member>
                     <member>taxid - identyfikator stawki podatkowej</member>
-                    <member>pkwiu - numer PKWiU</member>
+                    <member>prodid - numer PKWiU</member>
                     <member>content - u¿yta jednostka (najczê¶ciej 'szt.')</member>
                     <member>count - ilo¶æ</member>
                     <member>description - opis</member>
