@@ -202,7 +202,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_free(&res);
 
 		// payments accounting and invoices writing
-		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, customerid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxid, suspended, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, customers.name AS name, address, zip, city, ten, ssn FROM assignments, tariffs, customers WHERE tariffs.id = tariffid AND customerid = customers.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
+		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, customerid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxid, suspended, prodid, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, customers.name AS name, address, zip, city, ten, ssn FROM assignments, tariffs, customers WHERE tariffs.id = tariffid AND customerid = customers.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
 		
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
@@ -286,12 +286,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 				{
 					itemid++;
 
-					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
+					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
 						itoa(invoiceid),
 						itoa(itemid),
 						value,
 						taxid,
-						g->db_get_data(res,i,"pkwiu"),
+						g->db_get_data(res,i,"prodid"),
 						description,
 						g->db_get_data(res,i,"tariffid")
 						);

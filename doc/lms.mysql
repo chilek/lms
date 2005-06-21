@@ -104,7 +104,7 @@ CREATE TABLE invoicecontents (
   itemid smallint NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
   taxid int(11) NOT NULL default '0',
-  pkwiu varchar(255) NOT NULL default '',
+  prodid varchar(255) NOT NULL default '',
   content varchar(16) NOT NULL default '',
   count decimal(9,2) NOT NULL default '0.00',
   description varchar(255) NOT NULL default '',
@@ -350,7 +350,7 @@ CREATE TABLE tariffs (
   name varchar(255) NOT NULL default '',
   value decimal(9,2) NOT NULL default '0.00',
   taxid int(11) NOT NULL default '0',
-  pkwiu varchar(255) NOT NULL default '',
+  prodid varchar(255) NOT NULL default '',
   uprate int(11) NOT NULL default '0',
   upceil int(11) NOT NULL default '0',
   downrate int(11) NOT NULL default '0',
@@ -613,4 +613,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005061200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005062100');

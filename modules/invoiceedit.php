@@ -39,7 +39,7 @@ if ((isset($_GET['id'])) && ($_GET['action']=='edit'))
 	$i++;
         $nitem['tariffid']	= $item['tariffid'];
 	$nitem['name']		= $item['description'];
-	$nitem['pkwiu']		= $item['pkwiu'];
+	$nitem['prodid']		= $item['prodid'];
         $nitem['count']		= str_replace(',','.',$item['count']);
 	$nitem['jm']		= str_replace(',','.',$item['content']);
         $nitem['valuenetto']	= str_replace(',','.',$item['basevalue']);
