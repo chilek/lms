@@ -27,20 +27,25 @@
 function GetCustomerIDByPhone1AndPIN($phone1, $pin)
 {
 	global $DB;
+	if(!ereg('^[0-9]+$', $pin))
+		return NULL;
 	return $DB->GetOne('SELECT id from customers WHERE pin=? AND phone1=?', array($pin, $phone1));
 }
 
 function GetCustomerIDByIDAndPIN($id, $pin)
 {
 	global $DB;
+	if(!ereg('^[0-9]+$', $pin) || !ereg('^[0-9]+$', $id))
+		return NULL;
 	return $DB->GetOne('SELECT id from customers WHERE pin=? AND id=?', array($pin, $id));
 }
-
 
 // It requires "contract" field.
 function GetCustomerIDByContractAndPIN($contract, $pin)
 {
 	global $DB;
+	if(!ereg('^[0-9]+$', $pin))
+		return NULL;
 	return $DB->GetOne('SELECT id FROM customers WHERE pin=? AND contract=?', array($pin, $contract));
 }
 

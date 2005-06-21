@@ -30,8 +30,8 @@ include_once('authentication.inc');
 $layout['pagetitle'] = trans('Customer Logon');
 
 $loginform = $_POST['loginform'];
-$login = ($loginform['login'] ? $loginform['login'] : 0);
-$pin = ($loginform['pwd'] ? $loginform['pwd'] : 0);
+$login = (trim($loginform['login']) ? trim($loginform['login']) : 0);
+$pin = (trim($loginform['pwd']) ? trim($loginform['pwd']) : 0);
 
 // customer authorization ways
 //$id = GetCustomerIDByPhone1AndPIN($login, $pin);
