@@ -5282,6 +5282,55 @@
 00-14-C8:Contemporary Research Corp
 00-14-C9:Silverback Systems, Inc.
 00-14-CA:Key Radio Systems Limited
+00-14-CB:GMP|Wireless Medicine,Inc.
+00-14-CC:Zetec, Inc.
+00-14-CD:DigitalZone Co., Ltd.
+00-14-CE:NF CORPORATION
+00-14-CF:Nextlink.to A/S
+00-14-D0:BTI Photonics
+00-14-D1:TRENDware International, Inc.
+00-14-D2:KYUKI CORPORATION
+00-14-D3:SEPSA
+00-14-D4:K Technology Corporation
+00-14-D5:Datang Telecom Technology CO. , LCD,Optical Communication Br
+00-14-D6:Jeongmin Electronics Co.,Ltd.
+00-14-D7:DataStor Technology Inc.
+00-14-D8:bio-logic SA
+00-14-D9:IP Fabrics, Inc.
+00-14-DA:Sonicaid
+00-14-DB:Elma Trenew Electronic GmbH
+00-14-DC:Communication System Design & Manufacturing (CSDM)
+00-14-DD:Covergence Inc.
+00-14-DE:Sage Instruments Inc.
+00-14-DF:HI-P Tech Corporation
+00-14-E0:LET'S Corporation
+00-14-E1:Data Display AG
+00-14-E2:datacom systems inc.
+00-14-E3:mm-lab GmbH
+00-14-E4:Integral Technologies
+00-14-E5:Alticast
+00-14-E6:AIM Infrarotmodule GmbH
+00-14-E7:Stolinx,. Inc
+00-14-E8:Motorola CHS
+00-14-E9:Nortech International
+00-14-EA:S Digm Inc. (Safe Paradigm Inc.)
+00-14-EB:AwarePoint Corporation
+00-14-EC:Acro Telecom
+00-14-ED:Airak, Inc.
+00-14-EE:Western Digital Technologies, Inc.
+00-14-EF:TZero Technologies, Inc.
+00-14-F0:Business Security OL AB
+00-14-F1:Cisco Systems
+00-14-F2:Cisco Systems
+00-14-F3:ViXS Systems Inc
+00-14-F4:DekTec Digital Video B.V.
+00-14-F5:OSI Security Devices
+00-14-F6:Juniper Networks, Inc.
+00-14-F7:Crevis
+00-14-F8:Scientific Atlanta
+00-14-F9:Vantage Controls
+00-14-FA:AsGa S.A.
+00-14-FB:Technical Solutions Inc.
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -7234,7 +7283,7 @@
 00-A0-A6:M.I. SYSTEMS, K.K.
 00-A0-A7:VORAX CORPORATION
 00-A0-A8:RENEX CORPORATION
-00-A0-A9:GN NETTEST (CANADA) NAVTEL DIVISION
+00-A0-A9:NAVTEL COMMUNICATIONS INC.
 00-A0-AA:SPACELABS MEDICAL
 00-A0-AB:NETCS INFORMATIONSTECHNIK GMBH
 00-A0-AC:GILAT SATELLITE NETWORKS, LTD.
@@ -7445,7 +7494,7 @@
 00-C0-50:TOYO DENKI SEIZO K.K.
 00-C0-51:ADVANCED INTEGRATION RESEARCH
 00-C0-52:BURR-BROWN
-00-C0-53:DAVOX CORPORATION
+00-C0-53:Concerto Software
 00-C0-54:NETWORK PERIPHERALS, LTD.
 00-C0-55:MODULAR COMPUTING TECHNOLOGIES
 00-C0-56:SOMELEC
