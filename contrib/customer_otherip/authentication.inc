@@ -27,7 +27,7 @@
 function GetUserIDByPhone1AndPIN($phone1, $pin)
 {
 	global $LMS;
-	if(!eregi('[^0-9]',$pin))
+	if(!ereg('^[0-9]+$',$pin))
 		return NULL;
 	return $LMS->DB->GetOne('SELECT id from users WHERE pin=? AND phone1=?', array($pin, $phone1));
 }
@@ -35,7 +35,7 @@ function GetUserIDByPhone1AndPIN($phone1, $pin)
 function GetUserIDByIDAndPIN($id, $pin)
 {
 	global $LMS;
-	if(!eregi('[^0-9]',$id) || !eregi('[^0-9]',$pin))
+	if(!eregi('^[0-9]+$',$id) || !eregi('^[0-9]+$',$pin))
 		return NULL;
 	return $LMS->DB->GetOne('SELECT id from users WHERE pin=? AND id=?', array($pin, $id));
 }
@@ -44,7 +44,7 @@ function GetUserIDByIDAndPIN($id, $pin)
 function GetUserIDByContractAndPIN($contract, $pin)
 {
 	global $LMS;
-	if(!eregi('[^0-9]',$pin))
+	if(!eregi('^[0-9]+$',$pin))
 		return NULL;
 	return $LMS->DB->GetOne('SELECT id FROM users WHERE pin=? AND contract=?', array($pin, $contract));
 }
