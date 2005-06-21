@@ -490,12 +490,12 @@ database = /usr/local/lms/lms.db</screen>
      </listitem>
      <listitem>
          <para>customerlist_pagelimit</para>
-         <para>Limit wy¶wietlanych pozycji na stronie w li¶cie klientów. Domy¶lnie brak limitu.</para>
+         <para>Limit wy¶wietlanych pozycji na stronie w li¶cie klientów. Domy¶lnie: 100.</para>
          <para>Przyk³ad:     <prompt>customerlist_pagelimit = 10</prompt></para>
      </listitem>
      <listitem>
          <para>nodelist_pagelimit</para>
-         <para>Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie brak limitu.</para>
+         <para>Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie: 100.</para>
          <para>Przyk³ad:     <prompt>nodelist_pagelimit = 10</prompt></para>
      </listitem>
      <listitem>

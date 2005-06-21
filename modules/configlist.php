@@ -64,11 +64,11 @@ function GetConfigList($order='var,asc')
 				break;
 				
 				case 'customerlist_pagelimit':
-					$config[$idx]['description'] = trans('Limit of records displayed on one page in customers list. Default: no limit.');
+					$config[$idx]['description'] = trans('Limit of records displayed on one page in customers list. Default: 100.');
 				break;
 				
 				case 'nodelist_pagelimit':
-					$config[$idx]['description'] = trans('Limit of records displayed on one page in nodes list. Default: no limit.');
+					$config[$idx]['description'] = trans('Limit of records displayed on one page in nodes list. Default: 100.');
 				break;
 				
 				case 'balancelist_pagelimit':
