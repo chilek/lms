@@ -110,9 +110,9 @@
 					<TD width="92%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
-				{cycle values="light,lucid" print=false}
+				{cycle name=bal values="light,lucid" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
-				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
@@ -137,8 +137,8 @@
 								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="" {tip text="Cash receipt"}></A>
 							{/if}
 						{/if}
-						{cycle print=false}
-						<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
+						{cycle name=bal print=false}
+						<INPUT class="box {cycle name=bal}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
 						</nobr>
 					</TD>
 					</TR>
@@ -152,12 +152,12 @@
 				</TR>
 				{/section}
 				<TR class="light">
-					<TD CLASS="ftop" ALIGN="left" colspan="7">
-						<NOBR><A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:printi_org();">{t}Print originals{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:printi_cpy();">{t}Print copies{/t} <IMG src="img/print.gif" alt=""></A></NOBR>&nbsp;
-						<NOBR><A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A></NOBR>&nbsp;
+					<TD CLASS="ftop" ALIGN="left" colspan="7" nowrap>
+						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
+						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
+						<A href="javascript:printi_org();">{t}Print originals{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
+						<A href="javascript:printi_cpy();">{t}Print copies{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
+						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
 
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
