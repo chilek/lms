@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+{if !$type || $type == "original"}
 <div>
 <table width="100%">
 	<tr><td>
@@ -113,8 +114,10 @@
 	<tr><td style="border-top-width: 1pt; border-top-style: dashed;"></td></tr>
 </table>
 </div>
-<br><br>
-<div style="page-break-before: auto">
+{if !$type || $type == "copy"}<br><br>{/if}
+{/if}
+{if !$type || $type == "copy"}
+<div style="page-break-after: auto;">
 <table width="100%">
 	<tr><td>
 <table align="center" width="580" cellpadding="3">
@@ -228,3 +231,4 @@
 	<tr><td style="border-top-width: 1pt; border-top-style: dashed;"></td></tr>
 </table>
 </div>
+{/if}
