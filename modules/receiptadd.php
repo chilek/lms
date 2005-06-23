@@ -268,7 +268,7 @@ switch($_GET['action'])
 			$SESSION->remove('receiptcustomer');
 			$SESSION->remove('receipt');
 			$SESSION->remove('receiptadderror');
-			$SESSION->redirect('?m=receipt&id='.$rid);
+			$SESSION->redirect('?m=receipt&id='.$rid.'&which='.$_GET['which']);
 		}
 	break;
 }
