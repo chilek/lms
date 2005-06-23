@@ -23,14 +23,22 @@
 		document.page.allbox.checked = !document.page.allbox.checked;
 		CheckAll();
 	}
-	
+
 	function prints()
 	{
-		document.page.action="?m=receipt&print=cached";
-		document.page.target="_blank";
+		var add = "";
+		if(document.page.original.checked && document.page.copy.checked)
+			add = "";
+		else if(document.page.original.checked && !document.page.copy.checked)
+			add = "&which=original";
+		else if(!document.page.original.checked && document.page.copy.checked)
+			add = "&which=copy";
+		
+		document.page.action = "?m=receipt&print=cached" + add;
+		document.page.target = "_blank";
 		document.page.submit();
 	}
-	
+
 	function page_change(page)
 	{
 		document.page.action="?m=receiptlist&page="+page;
@@ -151,8 +159,10 @@
 		<TD CLASS="fall" COLSPAN="6">
 			<TABLE WIDTH="100%">
 				<TR>
-					<TD ALIGN="left">
-						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/printr.gif" ALT="" ></A></NOBR>
+					<TD ALIGN="left" nowrap>
+						<A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/printr.gif" ALT="" ></A>&nbsp;
+						<INPUT type="checkbox" class="box dark" name="original"> {t}original{/t}&nbsp;
+						<INPUT type="checkbox" class="box dark" name="copy"> {t}copy{/t}
 					</TD>
 					<TD ALIGN="right">	
 						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>

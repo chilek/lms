@@ -45,21 +45,15 @@
 
 	function prints()
 	{
-		document.page.action="?m=invoice&print=cached";
-		document.page.target="_blank";
-		document.page.submit();
-	}
-	
-	function prints_org()
-	{
-		document.page.action="?m=invoice&print=cached&which={/literal}{t}ORIGINAL{/t}{literal}";
-		document.page.target="_blank";
-		document.page.submit();
-	}
-	
-	function prints_cpy()
-	{
-		document.page.action="?m=invoice&print=cached&which={/literal}{t}COPY{/t}{literal}";
+		var add = "";
+		if(document.page.original.checked && document.page.copy.checked)
+			add = "";
+		else if(document.page.original.checked && !document.page.copy.checked)
+			add = "&which={/literal}{t}ORIGINAL{/t}{literal}";
+		else if(!document.page.original.checked && document.page.copy.checked)
+			add = "&which={/literal}{t}COPY{/t}{literal}";
+
+		document.page.action="?m=invoice&print=cached" + add;
 		document.page.target="_blank";
 		document.page.submit();
 	}
@@ -206,8 +200,8 @@
 				<TR>
 					<TD ALIGN="left">
 						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" ALT=""></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" ALT=""></A></NOBR>&nbsp;
+						<INPUT type="checkbox" class="box dark" name="original"> {t}original{/t}&nbsp;
+						<INPUT type="checkbox" class="box dark" name="copy"> {t}copy{/t}&nbsp;
 						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Enter accounting date in 'YYYY/MM/DD' format (empty field means current date)"}>&nbsp;<IMG SRC="img/calendar.gif" ALT=""></NOBR>
 					</TD>

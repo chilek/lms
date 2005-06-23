@@ -77,6 +77,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	sort($ids);
 
 	$SMARTY->display('clearheader.html');
+	$SMARTY->assign('type', $_GET['which']);
 	
 	foreach($ids as $idx => $receiptid)
 	{
@@ -91,6 +92,8 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 elseif($receipt = GetReceipt($_GET['id']))
 {
 	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
+	
+	$SMARTY->assign('type', $_GET['which']);
 	$SMARTY->assign('receipt',$receipt);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->display($CONFIG['receipts']['template_file']);

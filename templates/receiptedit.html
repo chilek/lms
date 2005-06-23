@@ -18,6 +18,29 @@
 		document.additemlist.allbox.checked = !document.additemlist.allbox.checked;
 		CheckAll();
 	}
+	
+	function savereceipt()
+	{	
+		var add = "";
+		if(document.additem.original.checked && document.additem.copy.checked)
+			add = "";
+		else if(document.additem.original.checked && !document.additem.copy.checked)
+			add = "&which=original";
+		else if(!document.additem.original.checked && document.additem.copy.checked)
+			add = "&which=copy";
+
+		document.additem.action = "?m=receiptedit&action=save" + add;
+		document.additem.target = "_blank";
+		document.additem.submit();
+	}
+	
+	function additem()
+	{
+		document.additem.action = "?m=receiptedit&action=additem";
+		document.additem.target = "";
+		document.additem.submit();
+	}
+
 //--></SCRIPT>
 {/literal}
 <H1>{$layout.pagetitle}</H1>
@@ -132,7 +155,7 @@
 		<TD WIDTH="1%" CLASS="ftr"></TD>
 	</TR>
 	{/if}
-	<FORM METHOD="POST" ACTION="?m=receiptedit&action=additem" NAME="additem">
+	<FORM METHOD="POST" {*ACTION="?m=receiptedit&action=additem"*} NAME="additem">
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
@@ -147,20 +170,22 @@
 			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
-	</FORM>
 	<TR CLASS="light">
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
+			<INPUT type="checkbox" class ="box light" name="original"> {t}original{/t}&nbsp;
+			<INPUT type="checkbox" class ="box light" name="copy"> {t}copy{/t}&nbsp;
 			<A HREF="?m=receiptedit&action=init">{t}Clear Contents{/t} <IMG SRC="img/delete.gif" alt=""></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
 			{elseif !$contents}
 			<A HREF="javascript:alert('{t}Receipt have no items!{/t}');">
 			{else}
-			<A HREF="?m=receiptedit&action=save" target="_BLANK">
+			<A HREF="javascript:savereceipt();">
 			{/if}
 			{t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
+	</FORM>
 	{if $covenantlist}
 	<FORM name="additemlist" method="POST" action="?m=receiptedit&action=additemlist">
 	<TR class="light">

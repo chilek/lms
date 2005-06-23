@@ -45,32 +45,34 @@
 
 	function printr()
 	{
-		document.addbalance.action="?m=receipt&print=cached&cash=1";
-		document.addbalance.target="_blank";
+		var add = "";
+		if(document.addbalance.original.checked && document.addbalance.copy.checked)
+			add = "";
+		else if(document.addbalance.original.checked && !document.addbalance.copy.checked)
+			add = "&which=original";
+		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
+			add = "&which=copy";
+		
+		document.addbalance.action = "?m=receipt&print=cached&cash=1" + add;
+		document.addbalance.target = "_blank";
 		document.addbalance.submit();
 	}
 
 	function printi()
 	{
-		document.addbalance.action="?m=invoice&print=cached&cash=1";
-		document.addbalance.target="_blank";
-		document.addbalance.submit();
-	}
-	
-	function printi_org()
-	{
-		document.addbalance.action="?m=invoice&print=cached&cash=1&which={/literal}{t}ORIGINAL{/t}{literal}";
-		document.addbalance.target="_blank";
-		document.addbalance.submit();
-	}
-	
-	function printi_cpy()
-	{
-		document.addbalance.action="?m=invoice&print=cached&cash=1&which={/literal}{t}COPY{/t}{literal}";
-		document.addbalance.target="_blank";
-		document.addbalance.submit();
-	}
+		var add = "";
+		if(document.addbalance.original.checked && document.addbalance.copy.checked)
+			add = "";
+		else if(document.addbalance.original.checked && !document.addbalance.copy.checked)
+			add = "&which={/literal}{t}ORIGINAL{/t}{literal}";
+		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
+			add = "&which={/literal}{t}COPY{/t}{literal}";
 
+		document.addbalance.action="?m=invoice&print=cached&cash=1" + add;
+		document.addbalance.target="_blank";
+		document.addbalance.submit();
+	}
+	
 	function unpaidchoosewin()
 	{
 		pop = window.open('?m=choosecovenants&id={/literal}{$balancelist.customerid}{literal}', 'choosecash','toolbar=no,location=no,directories=no,status=no,menubar=no,width=500,height=300,scrollbars=yes,resizable=no');
@@ -155,10 +157,9 @@
 					<TD CLASS="ftop" ALIGN="left" colspan="7" nowrap>
 						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
-						<A href="javascript:printi_org();">{t}Print originals{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
-						<A href="javascript:printi_cpy();">{t}Print copies{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
 						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
-
+						<INPUT type="checkbox" class="box light" name="original"> {t}original{/t}&nbsp;
+						<INPUT type="checkbox" class="box light" name="copy"> {t}copy{/t}
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
 						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
