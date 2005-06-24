@@ -42,8 +42,7 @@ function GetConfigList($order='var,asc')
 		break;
 	}
 
-	$config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled FROM uiconfig'.$sqlord);
-
+	if($config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled FROM uiconfig'.$sqlord))
 	foreach ($config as $idx => $item) 
 	{
 		switch($item['section'])
