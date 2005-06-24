@@ -5,7 +5,7 @@ $Id$
 * nie-tylko-linux, silny porting demona i skryptów dla ipfw/ipf/pf [+]
 * wsparcie zdalnego konfigu dla mini-distro (co¶ a'la freesco/m0n0wall) [+]  
 * konta o ile nie zostan± przepisane ³adniej to w najbli¿szej wersji stable
-  nie powinny siê znale¼æ
+  nie powinny siê znale¼æ [ale siê znalaz³y :P]
 * ka¿dy konkretny modu³ móg³by mieæ ikonkê pomocy, która by kopa³a pacjenta
   do odpowiedniego rozdzia³u w dokumentacji (a mo¿e w podmenu od doców)
 * feedback - co¶ co generowa³oby dumpa z wersj± bazy, pliku, a mo¿e even md5
@@ -27,6 +27,7 @@ $Id$
 
 * silnik modu³ów
 * Faktury Korygujace
+* Kilka linni fakturowania (je¶li czasu/chêci/funduszy wystarczy)
 * rozbudowa i testowanie modulu 'parser' demona
 
 
