@@ -126,8 +126,8 @@ HREF="#INSTALL-UPGRADE"
 ></DT
 ><DT
 >2.9. <A
-HREF="#INSTALL-INVOICES"
->Invoices</A
+HREF="#INSTALL-DOCUMENTS"
+>Documents</A
 ></DT
 ></DL
 ></DD
@@ -2236,8 +2236,7 @@ VALIGN="TOP"
 ><P
 >customerlist_pagelimit</P
 ><P
->Limit of records that can be displayed on one page of customers list. Default: no
-         limit</P
+>Limit of records that can be displayed on one page of customers list. Default: 100</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -2248,8 +2247,7 @@ CLASS="PROMPT"
 ><P
 >nodelist_pagelimit</P
 ><P
->Limit of records that can be displayed on one page of nodes list. Default: no
-         limit</P
+>Limit of records that can be displayed on one page of nodes list. Default: 100</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -2903,9 +2901,17 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
-NAME="INSTALL-INVOICES"
->2.9. Invoices</A
+NAME="INSTALL-DOCUMENTS"
+>2.9. Documents</A
 ></H2
+><DIV
+CLASS="SECT2"
+><H3
+CLASS="SECT2"
+><A
+NAME="INSTALL-INVOICES"
+>2.9.1. Invoices</A
+></H3
 ><P
 >It's possible to issue invoices in either automatic or manual way. Manual
                 invoices creation is possible in 'New Invoice' module from 'Finances' menu.
@@ -3010,13 +3016,13 @@ CLASS="PROMPT"
           or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
           filter invoices for printing.</P
 ><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-HTML"
->2.9.1. HTML</A
-></H3
+>2.9.1.1. HTML</A
+></H4
 ><P
 >Invoices are printed in html format by default
           using provided template. In <SPAN
@@ -3108,13 +3114,13 @@ VALIGN="TOP"
           </P
 ></DIV
 ><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-PDF"
->2.9.2. PDF</A
-></H3
+>2.9.1.2. PDF</A
+></H4
 ><P
 >It's possible to create invoices as PDF files. Setting option <TT
 CLASS="FILENAME"
@@ -3186,6 +3192,121 @@ BORDER="0"
 ></TABLE
 >
           </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INSTALL-RECEIPTS"
+>2.9.2. Cash Receipts</A
+></H3
+><P
+>Cash Receipts have configuration options similiar with invoices.
+		In receipts configuration is possible to decide which numbering method
+		use by setting in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[receipts]</I
+></SPAN
+> section following
+		options:
+          <UL
+><LI
+><P
+>number_template</P
+><P
+>Number pattern. Available variables: '%N' - successive number in year/month
+                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>number_template = %N/%Y</SAMP
+></P
+></LI
+><LI
+><P
+>monthly_numbering</P
+><P
+>Enable this option when you need to reset receipt numbering on start of every month.
+               Default: disabled</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>monthly_numbering = 1</SAMP
+></P
+></LI
+></UL
+>
+	  </P
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="INSTALL-RECEIPTS-HTML"
+>2.9.2.1. HTML</A
+></H4
+><P
+>Receipts are printed in html format by default
+          using provided template. In <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[receipts]</I
+></SPAN
+> section
+          you can also configure:
+          <UL
+><LI
+><P
+>template_file</P
+><P
+>Cash receipt template, which should be placed in 
+               <TT
+CLASS="FILENAME"
+>templates</TT
+> directory. Default: receipt.html.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>template_file = /mytemplates/receipt.html</SAMP
+></P
+></LI
+><LI
+><P
+>content_type</P
+><P
+>Printout content-type. If you enter here 'application/octet-stream'
+               then browser will ask to save file on disk, instead of displaying it.
+               It's useful if you use your own template which generate eg. rtf or xls file.
+               Default: 'text/html'</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>content_type = application/octet-stream</SAMP
+></P
+></LI
+><LI
+><P
+>attachment_name</P
+><P
+>File name for saving receipt printout. WARNING: Setting attachment_name 
+               with default content_type will (in case of MSIE) print document + prompt for save on 
+               disk + bonus browser crash (6.0SP1 on WinXP).
+               Default: empty.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>attachment_name = receipt.xls</SAMP
+></P
+></LI
+></UL
+>
+          </P
+></DIV
 ></DIV
 ></DIV
 ></DIV
@@ -4182,8 +4303,77 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="MENU-RECEIPTS-LIST"
+>3.7.9. Cash Receipts List</A
+></H3
+><P
+>Cash receipt it's a proof of customer payment in cash.
+		Receipts list can be sorted in any order and filtered like the
+		invoices list. You've got also print selected receipts.</P
+><P
+>From list you can go to receipt edition. Making changes in
+		created documents needs special care, because submitting changes
+		will delete old receipt and linked operations and insert 
+		new ones.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-RECEIPTS-NEW"
+>3.7.10. New Receipt</A
+></H3
+><P
+>To create new proof of payment in first place you must to
+		select customer from list, set date and number (better to leave
+		values proposed by system) Then click 'Submit' to affirm choice.
+		After that you can add any number of positions with value and
+		description or select them from list of unpaid customer covenants
+		placed at bottom. 'Save and Print' will finish and save receipt
+		and payments in system and display receipt's printout in new window.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-TAXES"
+>3.7.11. Tax Rates</A
+></H3
+><P
+>Before you have to begin with financial system you will need
+		to define tax rates which you will use. On the list are place all 
+		rates data. It's possible to edit tax rate, but system will not
+		allow to change value of rate that was used in the past. Also isn't
+		possible to delete that rate.</P
+><P
+>Link 'Add tax rate' moves you to the form, where you can define 
+		a new rate. Tax rate label is displayed on select lists and invoice
+		printout. Value of tax rate is a number from 0 to 100 with two 
+		decimal places precision. Taxing status is used for tax-free rate, that 
+		means the rest of defined tax rates shold have taxing enabled.</P
+><P
+>Tax rate which will be selected by default on lists is defined
+		by <TT
+CLASS="FILENAME"
+>default_taxrate</TT
+> option in section 
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="MENU-IMPORT"
->3.7.9. Import</A
+>3.7.12. Import</A
 ></H3
 ><P
 >If you use homebanking, and you're able to get a list of
@@ -4235,7 +4425,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-FINANCES-PRINT"
->3.7.10. Printing</A
+>3.7.13. Printing</A
 ></H3
 ><P
 >There are several options for balance sheet printouts:
@@ -11661,7 +11851,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->pkwiu - product/service classification number</TD
+>prodid - product/service classification number</TD
 ></TR
 ><TR
 ><TD
@@ -11889,7 +12079,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->pkwiu - product/service classification number</TD
+>prodid - product/service classification number</TD
 ></TR
 ><TR
 ><TD

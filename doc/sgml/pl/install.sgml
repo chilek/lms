@@ -838,7 +838,9 @@ AddDefaultCharset Off
      <filename>[database]</filename>. Rozwi±zanie to bêdzie mia³o z³y wp³yw
      na wydajno¶æ ze wzglêdu na przeprowadzan± konwersjê kodowania danych.</para></note></para>
     </sect1>
-    <sect1 id="install-invoices">
+    <sect1 id="install-documents">
+	<title>Dokumenty</title>
+    <sect2 id="install-invoices">
      <title>Faktury</title>
           <para>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
           faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
@@ -884,7 +886,7 @@ AddDefaultCharset Off
           na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
           poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
           tak¿e filtrowanie faktur do wydruku.</para>
-         <sect2 id="install-invoices-html">
+         <sect3 id="install-invoices-html">
           <title>HTML</title>
           <para>Przy domy¶lnych ustawieniach faktury wy¶wietlane s± w
           formacie html wg domy¶lnego szablonu. W sekcji [invoices] masz
@@ -921,8 +923,8 @@ AddDefaultCharset Off
                konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie
                stopki i nag³ówka, czy te¿ adresu na wydruku.</para></note>
           </para>
-         </sect2>     
-         <sect2 id="install-invoices-pdf">
+         </sect3>     
+         <sect3 id="install-invoices-pdf">
           <title>PDF</title>
           <para>Mo¿liwe jest tak¿e tworzenie faktur jako pliki pdf. Przypisanie
           opcji <filename>type</filename> z sekcji <emphasis>[invoices]</emphasis> 
@@ -946,8 +948,8 @@ AddDefaultCharset Off
               <member>account - numer konta bankowego</member>          
           </simplelist>
           </para>
-         </sect2>
-         <sect2 id="install-invoices-iban">
+         </sect3>
+         <sect3 id="install-invoices-iban">
           <title>Automatyczne generowanie numeru konta bankowego</title>
           <para>LMS umo¿liwia automatyczne generowanie numeru konta bankowego w standardzie IBAN
 	  zawieraj±cego ID klienta. Funkcja ta mo¿e byæ u¿ywana do masowej identyfikacji p³atno¶ci
@@ -980,9 +982,9 @@ AddDefaultCharset Off
 	  menu Finanse -> Wydruki -> Faktury -> Drukuj polecenia przelewu/wp³aty, ka¿dy wydruk bêdzie zawiera³
 	  unikalny numer konta z zawartym ID naszego klienta.
           </para>
-         </sect2>
-    </sect1>
-    <sect1 id="install-receipts">
+         </sect3>
+    </sect2>
+    <sect2 id="install-receipts">
      <title>Dowody wp³aty (KP)</title>
           <para>Dowody wp³aty, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
 	  opcje konfiguracyjne jak faktury. W konfiguracji dowodów wp³aty
@@ -1003,7 +1005,7 @@ AddDefaultCharset Off
           </listitem>
           </itemizedlist>
 	  </para>
-         <sect2 id="install-receipts-html">
+         <sect3 id="install-receipts-html">
           <title>HTML</title>
           <para>Przy domy¶lnych ustawieniach dowody wp³aty wy¶wietlane s± w
           formacie html wg domy¶lnego szablonu. W sekcji <emphasis>[receipts]</emphasis>
@@ -1031,9 +1033,9 @@ AddDefaultCharset Off
           </listitem>
           </itemizedlist>
 	  </para>
-         </sect2>
+         </sect3>
 	 <!-- jak kto¶ napisze to bêd± pdfowe ;)
-         <sect2 id="install-receipts-pdf">
+         <sect3 id="install-receipts-pdf">
           <title>PDF</title>
           <para>Mo¿liwe jest tak¿e tworzenie dowodów wp³aty jako plików pdf. Przypisanie
           opcji <filename>type</filename> z sekcji <emphasis>[receipts]</emphasis> 
@@ -1045,7 +1047,8 @@ AddDefaultCharset Off
 	  jednak ta mo¿liwo¶æ jest przeznaczona dla zaawansowanych u¿ytkowników, gdy¿ 
 	  wymaga utworzenia pliku php, a nie tak jak w przypadku html'a szablonu Smarty.</para>
           </para>
-         </sect2>
+         </sect3>
 	 -->
+    </sect2>
     </sect1>
 </chapter>
