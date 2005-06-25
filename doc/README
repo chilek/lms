@@ -25,7 +25,7 @@ LMS Developers
         2.6. Basic Configuration
         2.7. Access rights
         2.8. Upgrade
-        2.9. Invoices
+        2.9. Documents
 
    3. User Interface (LMS-UI)
 
@@ -709,11 +709,11 @@ database = /usr/local/lms/lms.db
    zero, you won't be able to use LMS at all!
      * customerlist_pagelimit
        Limit of records that can be displayed on one page of customers
-       list. Default: no limit
+       list. Default: 100
        Example: customerlist_pagelimit = 10
      * nodelist_pagelimit
        Limit of records that can be displayed on one page of nodes list.
-       Default: no limit
+       Default: 100
        Example: nodelist_pagelimit = 10
      * balancelist_pagelimit
        Limit of records that can be displayed on one page of customer
@@ -957,7 +957,9 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    process acting upon first login to the UI.
      _________________________________________________________________
 
-2.9. Invoices
+2.9. Documents
+
+2.9.1. Invoices
 
    It's possible to issue invoices in either automatic or manual way.
    Manual invoices creation is possible in 'New Invoice' module from
@@ -998,7 +1000,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    for printing.
      _________________________________________________________________
 
-2.9.1. HTML
+2.9.1.1. HTML
 
    Invoices are printed in html format by default using provided
    template. In [invoices] section you can also configure:
@@ -1031,7 +1033,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    functions like header and footer or URL printing can be disabled.
      _________________________________________________________________
 
-2.9.2. PDF
+2.9.1.2. PDF
 
    It's possible to create invoices as PDF files. Setting option type in
    [invoices] section to 'pdf' will force invoice being created in PDF
@@ -1051,6 +1053,44 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    zip - seller postal code
    city - seller city
    account - banking account number
+     _________________________________________________________________
+
+2.9.2. Cash Receipts
+
+   Cash Receipts have configuration options similiar with invoices. In
+   receipts configuration is possible to decide which numbering method
+   use by setting in [receipts] section following options:
+     * number_template
+       Number pattern. Available variables: '%N' - successive number in
+       year/month format, '%M' - month number, '%Y' - year number (four
+       digits). Default: %N/LMS/%Y
+       Example: number_template = %N/%Y
+     * monthly_numbering
+       Enable this option when you need to reset receipt numbering on
+       start of every month. Default: disabled
+       Example: monthly_numbering = 1
+     _________________________________________________________________
+
+2.9.2.1. HTML
+
+   Receipts are printed in html format by default using provided
+   template. In [receipts] section you can also configure:
+     * template_file
+       Cash receipt template, which should be placed in templates
+       directory. Default: receipt.html.
+       Example: template_file = /mytemplates/receipt.html
+     * content_type
+       Printout content-type. If you enter here
+       'application/octet-stream' then browser will ask to save file on
+       disk, instead of displaying it. It's useful if you use your own
+       template which generate eg. rtf or xls file. Default: 'text/html'
+       Example: content_type = application/octet-stream
+     * attachment_name
+       File name for saving receipt printout. WARNING: Setting
+       attachment_name with default content_type will (in case of MSIE)
+       print document + prompt for save on disk + bonus browser crash
+       (6.0SP1 on WinXP). Default: empty.
+       Example: attachment_name = receipt.xls
      _________________________________________________________________
 
 Chapter 3. User Interface (LMS-UI)
@@ -1494,7 +1534,47 @@ Chapter 3. User Interface (LMS-UI)
    Allows you to issue an invoice for selected customer manually.
      _________________________________________________________________
 
-3.7.9. Import
+3.7.9. Cash Receipts List
+
+   Cash receipt it's a proof of customer payment in cash. Receipts list
+   can be sorted in any order and filtered like the invoices list. You've
+   got also print selected receipts.
+
+   From list you can go to receipt edition. Making changes in created
+   documents needs special care, because submitting changes will delete
+   old receipt and linked operations and insert new ones.
+     _________________________________________________________________
+
+3.7.10. New Receipt
+
+   To create new proof of payment in first place you must to select
+   customer from list, set date and number (better to leave values
+   proposed by system) Then click 'Submit' to affirm choice. After that
+   you can add any number of positions with value and description or
+   select them from list of unpaid customer covenants placed at bottom.
+   'Save and Print' will finish and save receipt and payments in system
+   and display receipt's printout in new window.
+     _________________________________________________________________
+
+3.7.11. Tax Rates
+
+   Before you have to begin with financial system you will need to define
+   tax rates which you will use. On the list are place all rates data.
+   It's possible to edit tax rate, but system will not allow to change
+   value of rate that was used in the past. Also isn't possible to delete
+   that rate.
+
+   Link 'Add tax rate' moves you to the form, where you can define a new
+   rate. Tax rate label is displayed on select lists and invoice
+   printout. Value of tax rate is a number from 0 to 100 with two decimal
+   places precision. Taxing status is used for tax-free rate, that means
+   the rest of defined tax rates shold have taxing enabled.
+
+   Tax rate which will be selected by default on lists is defined by
+   default_taxrate option in section [phpui].
+     _________________________________________________________________
+
+3.7.12. Import
 
    If you use homebanking, and you're able to get a list of financial
    operations (ie. from bank www or email that they send you), Import
@@ -1522,7 +1602,7 @@ Chapter 3. User Interface (LMS-UI)
 15.02.2004      Pain Joseph     123,45  Invoice paid - LMS/34/2004
      _________________________________________________________________
 
-3.7.10. Printing
+3.7.13. Printing
 
    There are several options for balance sheet printouts:
      * Balance sheet for your network including financial operations for
@@ -4191,7 +4271,7 @@ Chapter 7. For curious
    name - subscription name
    value - amount
    taxvalue - tax rate in percent
-   pkwiu - product/service classification number
+   prodid - product/service classification number
    uprate - upload warranty
    upceil - upload boundary
    downrate - download warranty
@@ -4252,7 +4332,7 @@ Chapter 7. For curious
    itemid - invoice item identifier
    value - amount
    taxvalue - tax rate in percent
-   pkwiu - product/service classification number
+   prodid - product/service classification number
    content - used unit (usually 'pc.')
    count - unit count
    description - description for invoice

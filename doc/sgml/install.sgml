@@ -754,7 +754,9 @@ $access['table'][100]['allow_reg'] = '^invoice$';
       stage is a database structure change - it's self-executing process acting upon first login to
       the UI.</para>
     </sect1>
-    <sect1 id="install-invoices">
+    <sect1 id="install-documents">
+	<title>Documents</title>
+    <sect2 id="install-invoices">
      <title>Invoices</title>
                 <para>It's possible to issue invoices in either automatic or manual way. Manual
                 invoices creation is possible in 'New Invoice' module from 'Finances' menu.
@@ -802,7 +804,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
           Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
           or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
           filter invoices for printing.</para>
-         <sect2 id="install-invoices-html">
+         <sect3 id="install-invoices-html">
           <title>HTML</title>
           <para>Invoices are printed in html format by default
           using provided template. In <emphasis>[invoices]</emphasis> section
@@ -840,8 +842,8 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                configuration, where functions like header and footer or URL 
                printing can be disabled.</para></note>
           </para>
-         </sect2>     
-         <sect2 id="install-invoices-pdf">
+         </sect3>     
+         <sect3 id="install-invoices-pdf">
           <title>PDF</title>
                  <para>It's possible to create invoices as PDF files. Setting option <filename>type</filename> in
                  <emphasis>[invoices]</emphasis> section to 'pdf' will force invoice being created in PDF instead
@@ -862,6 +864,73 @@ $access['table'][100]['allow_reg'] = '^invoice$';
               <member>account - banking account number</member>          
           </simplelist>
           </para>
-         </sect2>
+         </sect3>
+    </sect2>
+    <sect2 id="install-receipts">
+     <title>Cash Receipts</title>
+                <para>Cash Receipts have configuration options similiar with invoices.
+		In receipts configuration is possible to decide which numbering method
+		use by setting in <emphasis>[receipts]</emphasis> section following
+		options:
+          <itemizedlist>
+          <listitem>
+               <para>number_template</para>
+                 <para>Number pattern. Available variables: '%N' - successive number in year/month
+                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</para>
+               <para>Example: <prompt>number_template = %N/%Y</prompt></para>
+          </listitem>
+          <listitem>
+               <para>monthly_numbering</para>
+               <para>Enable this option when you need to reset receipt numbering on start of every month.
+               Default: disabled</para>
+               <para>Example: <prompt>monthly_numbering = 1</prompt></para>
+          </listitem>
+          </itemizedlist>
+	  </para>
+         <sect3 id="install-receipts-html">
+          <title>HTML</title>
+          <para>Receipts are printed in html format by default
+          using provided template. In <emphasis>[receipts]</emphasis> section
+          you can also configure:
+          <itemizedlist>
+          <listitem>
+               <para>template_file</para>
+               <para>Cash receipt template, which should be placed in 
+               <filename>templates</filename> directory. Default: receipt.html.</para>
+               <para>Example: <prompt>template_file = /mytemplates/receipt.html</prompt></para>
+          </listitem>          
+          <listitem>
+               <para>content_type</para>
+               <para>Printout content-type. If you enter here 'application/octet-stream'
+               then browser will ask to save file on disk, instead of displaying it.
+               It's useful if you use your own template which generate eg. rtf or xls file.
+               Default: 'text/html'</para>
+               <para>Example: <prompt>content_type = application/octet-stream</prompt></para>
+          </listitem>     
+          <listitem>
+               <para>attachment_name</para>
+               <para>File name for saving receipt printout. WARNING: Setting attachment_name 
+               with default content_type will (in case of MSIE) print document + prompt for save on 
+               disk + bonus browser crash (6.0SP1 on WinXP).
+               Default: empty.</para>
+               <para>Example: <prompt>attachment_name = receipt.xls</prompt></para>
+          </listitem>
+          </itemizedlist>
+          </para>
+         </sect3>     
+	 <!--
+         <sect3 id="install-receipts-pdf">
+          <title>PDF</title>
+                 <para>It's possible to create receipts as PDF files. Setting option <filename>type</filename> in
+                 <emphasis>[receipts]</emphasis> section to 'pdf' will force document being created in PDF instead
+                 of html. Option <filename>template_file</filename> has the same meaning, with one difference,
+                 that it might take predefined value: 'standard' - basic receipt (receipt.html equivalent).
+                 <filename>template_file</filename> option can be set to PHP file name, but this feature is meant for
+                 advanced users as it requires you to create more complicated PHP script than the one used with html
+                 receipts Smarty template.</para>
+          </para>
+         </sect3>
+	 -->
+    </sect2>
     </sect1>
-  </chapter>
+</chapter>

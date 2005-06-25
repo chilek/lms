@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Invoices</TITLE
+>Documents</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -75,9 +75,17 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="INSTALL-INVOICES"
->2.9. Invoices</A
+NAME="INSTALL-DOCUMENTS"
+>2.9. Documents</A
 ></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-INVOICES"
+>2.9.1. Invoices</A
+></H2
 ><P
 >It's possible to issue invoices in either automatic or manual way. Manual
                 invoices creation is possible in 'New Invoice' module from 'Finances' menu.
@@ -182,13 +190,13 @@ CLASS="PROMPT"
           or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
           filter invoices for printing.</P
 ><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-HTML"
->2.9.1. HTML</A
-></H2
+>2.9.1.1. HTML</A
+></H3
 ><P
 >Invoices are printed in html format by default
           using provided template. In <SPAN
@@ -280,13 +288,13 @@ VALIGN="TOP"
           </P
 ></DIV
 ><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-PDF"
->2.9.2. PDF</A
-></H2
+>2.9.1.2. PDF</A
+></H3
 ><P
 >It's possible to create invoices as PDF files. Setting option <TT
 CLASS="FILENAME"
@@ -358,6 +366,121 @@ BORDER="0"
 ></TABLE
 >
           </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-RECEIPTS"
+>2.9.2. Cash Receipts</A
+></H2
+><P
+>Cash Receipts have configuration options similiar with invoices.
+		In receipts configuration is possible to decide which numbering method
+		use by setting in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[receipts]</I
+></SPAN
+> section following
+		options:
+          <UL
+><LI
+><P
+>number_template</P
+><P
+>Number pattern. Available variables: '%N' - successive number in year/month
+                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>number_template = %N/%Y</SAMP
+></P
+></LI
+><LI
+><P
+>monthly_numbering</P
+><P
+>Enable this option when you need to reset receipt numbering on start of every month.
+               Default: disabled</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>monthly_numbering = 1</SAMP
+></P
+></LI
+></UL
+>
+	  </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-RECEIPTS-HTML"
+>2.9.2.1. HTML</A
+></H3
+><P
+>Receipts are printed in html format by default
+          using provided template. In <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[receipts]</I
+></SPAN
+> section
+          you can also configure:
+          <UL
+><LI
+><P
+>template_file</P
+><P
+>Cash receipt template, which should be placed in 
+               <TT
+CLASS="FILENAME"
+>templates</TT
+> directory. Default: receipt.html.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>template_file = /mytemplates/receipt.html</SAMP
+></P
+></LI
+><LI
+><P
+>content_type</P
+><P
+>Printout content-type. If you enter here 'application/octet-stream'
+               then browser will ask to save file on disk, instead of displaying it.
+               It's useful if you use your own template which generate eg. rtf or xls file.
+               Default: 'text/html'</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>content_type = application/octet-stream</SAMP
+></P
+></LI
+><LI
+><P
+>attachment_name</P
+><P
+>File name for saving receipt printout. WARNING: Setting attachment_name 
+               with default content_type will (in case of MSIE) print document + prompt for save on 
+               disk + bonus browser crash (6.0SP1 on WinXP).
+               Default: empty.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>attachment_name = receipt.xls</SAMP
+></P
+></LI
+></UL
+>
+          </P
+></DIV
 ></DIV
 ></DIV
 ><DIV

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Faktury</TITLE
+>Dokumenty</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="Upgrade"
 HREF="install-upgrade.html"><LINK
 REL="NEXT"
-TITLE="Dowody wp³aty (KP)"
-HREF="install-receipts.html"><LINK
+TITLE="Interfejs U¿ytkownika (LMS-UI)"
+HREF="user.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="install-receipts.html"
+HREF="user.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -75,9 +75,17 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="INSTALL-INVOICES"
->2.9. Faktury</A
+NAME="INSTALL-DOCUMENTS"
+>2.9. Dokumenty</A
 ></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-INVOICES"
+>2.9.1. Faktury</A
+></H2
 ><P
 >LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
           faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
@@ -177,13 +185,13 @@ CLASS="PROMPT"
           poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
           tak¿e filtrowanie faktur do wydruku.</P
 ><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-HTML"
->2.9.1. HTML</A
-></H2
+>2.9.1.1. HTML</A
+></H3
 ><P
 >Przy domy¶lnych ustawieniach faktury wy¶wietlane s± w
           formacie html wg domy¶lnego szablonu. W sekcji [invoices] masz
@@ -268,13 +276,13 @@ VALIGN="TOP"
           </P
 ></DIV
 ><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-PDF"
->2.9.2. PDF</A
-></H2
+>2.9.1.2. PDF</A
+></H3
 ><P
 >Mo¿liwe jest tak¿e tworzenie faktur jako pliki pdf. Przypisanie
           opcji <TT
@@ -351,13 +359,13 @@ BORDER="0"
           </P
 ></DIV
 ><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-IBAN"
->2.9.3. Automatyczne generowanie numeru konta bankowego</A
-></H2
+>2.9.1.3. Automatyczne generowanie numeru konta bankowego</A
+></H3
 ><P
 >LMS umo¿liwia automatyczne generowanie numeru konta bankowego w standardzie IBAN
 	  zawieraj±cego ID klienta. Funkcja ta mo¿e byæ u¿ywana do masowej identyfikacji p³atno¶ci
@@ -410,6 +418,119 @@ CLASS="EMPHASIS"
 ></DIV
 ></DIV
 ><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-RECEIPTS"
+>2.9.2. Dowody wp³aty (KP)</A
+></H2
+><P
+>Dowody wp³aty, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
+	  opcje konfiguracyjne jak faktury. W konfiguracji dowodów wp³aty
+	  mo¿na zdecydowaæ o sposobie numeracji ustawiaj±c w sekcji 
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[receipts]</I
+></SPAN
+> nastepuj±ce opcje:
+          <UL
+><LI
+><P
+>number_template</P
+><P
+>Wzorzec numeru. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
+               '%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>number_template = %N/%Y</SAMP
+></P
+></LI
+><LI
+><P
+>monthly_numbering</P
+><P
+>W³±czenie tej opcji spowoduje zerowanie numeracji na pocz±tku ka¿dego miesi±ca.
+               Domy¶lnie: wy³±czona</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>monthly_numbering = 1</SAMP
+></P
+></LI
+></UL
+>
+	  </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-RECEIPTS-HTML"
+>2.9.2.1. HTML</A
+></H3
+><P
+>Przy domy¶lnych ustawieniach dowody wp³aty wy¶wietlane s± w
+          formacie html wg domy¶lnego szablonu. W sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[receipts]</I
+></SPAN
+>
+	  masz do dyspozycji jeszcze nastêpuj±ce opcje:
+          <UL
+><LI
+><P
+>template_file</P
+><P
+>Szablon dowodu wp³aty, który powinien znajdowaæ siê w
+               katalogu <TT
+CLASS="FILENAME"
+>templates</TT
+>. Domy¶lnie: receipt.html.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>template_file = mytempl/receipt.html</SAMP
+></P
+></LI
+><LI
+><P
+>content_type</P
+><P
+>Content-type dla druku. Je¿eli wpiszesz tutaj 'application/octet-stream'
+               to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+               Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
+               Domy¶lnie: 'text/html'</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>content_type = application/octet-stream</SAMP
+></P
+></LI
+><LI
+><P
+>attachment_name</P
+><P
+>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+               wydruk. Domy¶lnie: pusta.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>attachment_name = receipt.xls</SAMP
+></P
+></LI
+></UL
+>
+	  </P
+></DIV
+></DIV
+></DIV
+><DIV
 CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
@@ -443,7 +564,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="install-receipts.html"
+HREF="user.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -467,7 +588,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Dowody wp³aty (KP)</TD
+>Interfejs U¿ytkownika (LMS-UI)</TD
 ></TR
 ></TABLE
 ></DIV
