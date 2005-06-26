@@ -94,6 +94,11 @@ function check_zip($zip)
 	return eregi('^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$', $zip);
 }
 
+function check_im($im)
+{
+	return eregi('^[0-9]+$', $im);
+}
+
 function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
 	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>

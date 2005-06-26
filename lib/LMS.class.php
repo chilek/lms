@@ -395,7 +395,7 @@ class LMS
 
 	function CustomerAdd($customeradd)
 	{
-		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, ten, ssn, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($customeradd['name']),  $customeradd['lastname'], $customeradd['phone1'], $customeradd['phone2'], $customeradd['phone3'], $customeradd['gguin'], $customeradd['address'], $customeradd['zip'], $customeradd['city'], $customeradd['email'], $customeradd['ten'], $customeradd['ssn'], $customeradd['status'], $this->AUTH->id, $customeradd['info'], $customeradd['serviceaddr'], $customeradd['message'], $customeradd['pin']))) 
+		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, im, address, zip, city, email, ten, ssn, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($customeradd['name']),  $customeradd['lastname'], $customeradd['phone1'], $customeradd['phone2'], $customeradd['phone3'], $customeradd['im'], $customeradd['address'], $customeradd['zip'], $customeradd['city'], $customeradd['email'], $customeradd['ten'], $customeradd['ssn'], $customeradd['status'], $this->AUTH->id, $customeradd['info'], $customeradd['serviceaddr'], $customeradd['message'], $customeradd['pin']))) 
 		{
 			$this->SetTS('customers');
 			return $this->DB->GetOne('SELECT MAX(id) FROM customers');
@@ -419,7 +419,7 @@ class LMS
 	function CustomerUpdate($customerdata)
 	{
 		$this->SetTS('customers');
-		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, ten=?, ssn=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $customerdata['status'], $customerdata['phone1'], $customerdata['phone2'], $customerdata['phone3'], $customerdata['address'], $customerdata['zip'], $customerdata['city'], $customerdata['email'], $customerdata['gguin'], $customerdata['ten'], $customerdata['ssn'], $this->AUTH->id, $customerdata['info'], $customerdata['serviceaddr'], $customerdata['lastname'], ucwords($customerdata['name']), $customerdata['message'], $customerdata['pin'], $customerdata['id'] ) );
+		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, im=?, ten=?, ssn=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $customerdata['status'], $customerdata['phone1'], $customerdata['phone2'], $customerdata['phone3'], $customerdata['address'], $customerdata['zip'], $customerdata['city'], $customerdata['email'], $customerdata['im'], $customerdata['ten'], $customerdata['ssn'], $this->AUTH->id, $customerdata['info'], $customerdata['serviceaddr'], $customerdata['lastname'], ucwords($customerdata['name']), $customerdata['message'], $customerdata['pin'], $customerdata['id'] ) );
 	}
 
 	function GetCustomerNodesNo($id)
@@ -444,7 +444,7 @@ class LMS
 
 	function GetCustomer($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, ten, ssn, city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin FROM customers WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, lastname, name, status, email, im, phone1, phone2, phone3, address, zip, ten, ssn, city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin FROM customers WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);

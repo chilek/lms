@@ -387,7 +387,7 @@ CREATE TABLE customers (
   phone1 varchar(255) NOT NULL default '',
   phone2 varchar(255) NOT NULL default '',
   phone3 varchar(255) NOT NULL default '',
-  gguin int(11) NOT NULL default '0',
+  im int(11) NOT NULL default '0',
   address varchar(255) NOT NULL default '',
   zip varchar(10) NOT NULL default '',
   city varchar(32) NOT NULL default '',
@@ -613,4 +613,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005062100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005062600');

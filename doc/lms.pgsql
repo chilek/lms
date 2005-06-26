@@ -258,7 +258,7 @@ CREATE TABLE customers (
 	phone1 varchar(255) 	DEFAULT '' NOT NULL,
 	phone2 varchar(255) 	DEFAULT '' NOT NULL,
 	phone3 varchar(255) 	DEFAULT '' NOT NULL,
-	gguin integer 		DEFAULT 0 NOT NULL,
+	im integer 		DEFAULT 0 NOT NULL,
 	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
@@ -652,4 +652,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005062100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005062600');

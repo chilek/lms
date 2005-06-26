@@ -73,7 +73,7 @@ IMG		{ vertical-align: middle; border: 0; }
 .red		{ color: #FF0000; }
 .brown		{ color: #A52A2A; }
 .white		{ color: #FFFFFF; }
-.alert		{ color: #FF0000; font-weight: bold; }
+.alert		{ color: #FF0000; }
 .bold		{ font-weight: bold; }
 
 .pre		{ font-size:  8pt; font-family: Courier, Courier New; }

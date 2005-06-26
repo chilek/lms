@@ -77,13 +77,13 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.gguin neq "" && $customerinfo.gguin neq 0}
+{if $customerinfo.im neq "" && $customerinfo.im neq 0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="http://www.gadu-gadu.pl/customers/status.asp?id={$customerinfo.gguin}&styl=1" ALT="">
+			<IMG SRC="http://www.gadu-gadu.pl/customers/status.asp?id={$customerinfo.im}&styl=1" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<A HREF="gg:{$customerinfo.gguin}">{$customerinfo.gguin}</A>
+			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
 		</TD>
 	</TR>
 {/if}

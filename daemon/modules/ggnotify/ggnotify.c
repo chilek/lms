@@ -101,13 +101,13 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 		syslog(LOG_INFO, "DEBUG: [%s/ggnotify] Connected to Gadu-Gadu server.",n->base.instance);
 #endif
 	
-		res = g->db_query(g->conn, "SELECT customers.id AS id, gguin, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id, gguin, name, lastname");
+		res = g->db_query(g->conn, "SELECT customers.id AS id, im, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id, im, name, lastname");
 
 		if( g->db_nrows(res) )
 		{
 			for(i=0; i<g->db_nrows(res); i++)
 			{
-				if( atoi(g->db_get_data(res,i,"gguin")) )
+				if( atoi(g->db_get_data(res,i,"im")) )
 				{
 					balance = atoi(g->db_get_data(res,i,"balance"));
 			
@@ -169,7 +169,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 									gg_free_session(sess);
 								}
 							} else {
-								if (gg_send_message(sess, GG_CLASS_MSG, atoi(g->db_get_data(res,i,"gguin")), message) == -1)
+								if (gg_send_message(sess, GG_CLASS_MSG, atoi(g->db_get_data(res,i,"im")), message) == -1)
 								{
 									syslog(LOG_INFO, "DEBUG: [%s/ggnotify] Connection broken..",n->base.instance);								
 									gg_free_session(sess);
