@@ -69,14 +69,14 @@ elseif(isset($_POST['customerdata']))
 	if($customerdata['email']!='' && !check_email($customerdata['email']))
 		$error['email'] = trans('Incorrect email!');
 
-	if($customerdata['gguin'] == '')
-		$customerdata['gguin'] = 0;
+	if($customerdata['im']!='' && !check_im($customerdata['im']))
+		$error['im'] = trans('Incorrect IM uin!');
+
+	if($customerdata['im'] == '')
+		$customerdata['im'] = 0;
 
 	if($customerdata['pin'] == '')
 		$customerdata['pin'] = 0;
-
-	if($customerdata['gguin']!=0 && !eregi('^[0-9]{4,}$',$customerdata['gguin']))
-		$error['gguin'] = trans('Incorrect IM uin!');
 
 	if($customerdata['pin']!=0 && !eregi('^[0-9]{4,6}$',$customerdata['pin']))
 		$error['pin'] = trans('Incorrect PIN code!');

@@ -54,7 +54,7 @@ version 1.7.1 Swarog <A.L.E.C's Nightmare> (????/??/??):
     ********************************************************************
     *     Changed database structure: table 'invoices' replaced by     *
     *       'documents', dropped 'phone' and 'finished' columns,       *
-    *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' in customers table  *
+    *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' and 'gguin' to 'im' *
     *  Changed 'pkwiu' to 'prodid' in 'tariffs' and 'invoicecontents'  *
     *               Tax rates moved to table 'taxes'                   *
     ********************************************************************

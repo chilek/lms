@@ -62,13 +62,13 @@
 			{if $customerinfo.email}<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>{/if}
 		</TD>
 	</TR>
-	{if $customerinfo.gguin neq "" && $customerinfo.gguin !=0}
+	{if $customerinfo.im neq "" && $customerinfo.im !=0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="http://www.gadu-gadu.pl/customers/status.asp?id={$customerinfo.gguin}&styl=1" BORDER="0" ALT="">
+			<IMG SRC="http://www.gadu-gadu.pl/customers/status.asp?id={$customerinfo.im}&styl=1" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<A HREF="gg:{$customerinfo.gguin}">{$customerinfo.gguin}</A>
+			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
 		</TD>
 	</TR>
 	{/if}

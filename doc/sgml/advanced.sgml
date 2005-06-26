@@ -98,7 +98,7 @@
                     <member>phone1 - phone</member>
                     <member>phone2 - phone</member>
                     <member>phone3 - phone</member>
-                    <member>gguin - internet (gadu-gadu) messenger serial number</member>
+                    <member>im - internet messenger (gadu-gadu) serial number</member>
                     <member>pin - pin number (for authentication)</member>
                     <member>address - street address (street, apartment, flat, etc)</member>
                     <member>zip - zip code</member>

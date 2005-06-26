@@ -125,6 +125,11 @@ function check_zip($zip)
 	return eregi('^[0-9]{2}-[0-9]{3}$', $zip);
 }
 
+function check_im($im)
+{
+	return eregi('^[0-9]{4,}$', $im);  // gadu-gadu ID check
+}
+
 function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
 	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>

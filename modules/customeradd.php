@@ -37,9 +37,9 @@ if(isset($_GET['ajax']))
 	{
 		        case 'address':
 				$mode='address';
-				if ($LMS->CONFIG['database']['type'] == 'mysql') $mode='substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-				if ($LMS->CONFIG['database']['type'] == 'postgres') $mode='substring(address from \'^.* \')';
-				if ($LMS->CONFIG['database']['type'] == 'sqlite') {
+				if ($CONFIG['database']['type'] == 'mysql') $mode='substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
+				if ($CONFIG['database']['type'] == 'postgres') $mode='substring(address from \'^.* \')';
+				if ($CONFIG['database']['type'] == 'sqlite') {
 					function grepaddr ($input) {
 						preg_match('/^(.*) /',$input,$matches);
 						return $matches[1];
@@ -100,14 +100,14 @@ if(isset($_POST['customeradd']))
 	if($customeradd['zip'] !='' && !check_zip($customeradd['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
 
-	if($customeradd['gguin'] == '')
-		$customeradd['gguin'] = 0;
+	if($customeradd['im'] !='' && !check_im($customeradd['im']))
+		$error['im'] = trans('Incorrect IM uin!');
+
+	if($customeradd['im'] == '')
+		$customeradd['im'] = 0;
 	
 	if($customeradd['pin'] == '')
 		$customeradd['pin'] = 0;
-
-	if($customeradd['gguin'] !=0 && !eregi('^[0-9]{4,}$',$customeradd['gguin']))
-		$error['gguin'] = trans('Incorrect IM uin!');
 
         if($customeradd['pin']!=0 && !eregi('^[0-9]{4,6}$',$customeradd['pin']))
 	        $error['pin'] = trans('Incorrect PIN code!');
@@ -129,12 +129,12 @@ if(isset($_POST['customeradd']))
 	}
 }
 
-if(!isset($customeradd['zip']) && isset($LMS->CONFIG['phpui']['default_zip']))
-	$customeradd['zip'] = $LMS->CONFIG['phpui']['default_zip'];
-if(!isset($customeradd['city']) && isset($LMS->CONFIG['phpui']['default_city']))
-	$customeradd['city'] = $LMS->CONFIG['phpui']['default_city'];
-if(!isset($customeradd['address']) && isset($LMS->CONFIG['phpui']['default_address']))
-	$customeradd['address'] = $LMS->CONFIG['phpui']['default_address'];
+if(!isset($customeradd['zip']) && isset($CONFIG['phpui']['default_zip']))
+	$customeradd['zip'] = $CONFIG['phpui']['default_zip'];
+if(!isset($customeradd['city']) && isset($CONFIG['phpui']['default_city']))
+	$customeradd['city'] = $CONFIG['phpui']['default_city'];
+if(!isset($customeradd['address']) && isset($CONFIG['phpui']['default_address']))
+	$customeradd['address'] = $CONFIG['phpui']['default_address'];
 
 $layout['pagetitle'] = trans('New Customer');
 
