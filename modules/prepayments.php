@@ -106,10 +106,11 @@ if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN
 		$covenantlist[$idx] = array_merge($record, $covenantlist[$idx]);
 	}
 }
-
+// join with documents here is for backward compatybility
+// before revolution we've bind payments with invoices by docid (not reference)
 $prepaymentlist = $DB->GetAll('SELECT cash.id AS id, time, value, comment
-			FROM cash LEFT JOIN documents ON (docid = documents.id)
-			WHERE cash.customerid = ? AND reference = 0 AND cash.type = 3
+			FROM cash LEFT JOIN documents ON (docid = documents.id AND documents.type=1)
+			WHERE cash.customerid = ? AND reference = 0 AND cash.type = 3 AND documents.type IS NULL
 			ORDER BY time', array($customerid));
 
 $layout['pagetitle'] = trans('Prepayments of Customer: $0', '<A href="?m=customerinfo&id='.$customerid.'">'.$LMS->GetCustomerName($customerid).'</A>');
