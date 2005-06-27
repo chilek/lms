@@ -86,6 +86,51 @@ NAME="MENU-MAILING"
 	pocztowego na zdalnym ho¶cie bêdziesz musia³ ustawiæ opcje smtp_host, smtp_port,
 	smtp_username, smtp_password w sekcji [phpui].</P
 ><P
+>W tre¶ci wiadomo¶ci mo¿na u¿ywaæ zmiennych, w miejsce których zostan±
+	podstawione dane w³a¶ciwe dla ka¿dego z klientów:
+	<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%customer</SAMP
+> - nazwisko/nazwa i imiê klienta</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%balance</SAMP
+> - kwota bilansu (ze znakiem)</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%cid</SAMP
+> - ID klienta</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%pin</SAMP
+> - PIN klienta</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%last_10_in_a_table</SAMP
+> - lista ostatnich 10 operacji na koncie klienta</TD
+></TR
+></TBODY
+></TABLE
+>
+	</P
+><P
 ><DIV
 CLASS="NOTE"
 ><TABLE
@@ -135,7 +180,7 @@ VALIGN="TOP"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->almsd</I
+>lmsd</I
 ></SPAN
 >.</P
 ></TD

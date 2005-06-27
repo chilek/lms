@@ -670,11 +670,21 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
  <sect1 id="menu-mailing">
 	<title>Mailing</title>
 	<para>Mailing is component where you can spam groups of your customers
-if you have to communicate something to them. Obviously you need to specify
-sender name and address, write your message in text box and select appropriate
-group of recipients. Your attendance can be grouped by status, network or customer
-groups. If you use mail server on remote host, you will need to set options
-smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</para>
+	if you have to communicate something to them. Obviously you need to specify
+	sender name and address, write your message in text box and select appropriate
+	group of recipients. Your attendance can be grouped by status, network or customer
+	groups. If you use mail server on remote host, you will need to set options
+	smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</para>
+	<para>In message body you can use variables, which will be replaced by
+	customer data:
+	<simplelist>
+	    <member><prompt>%customer</prompt> - name/lastname and forename</member>
+	    <member><prompt>%balance</prompt> - balance value (with sign)</member>
+	    <member><prompt>%cid</prompt> - customer ID</member>
+	    <member><prompt>%pin</prompt> - customer PIN</member>
+	    <member><prompt>%last_10_in_a_table</prompt> - last 10 operations on customer account</member>
+	</simplelist>
+	</para>
 	<para><note><para>Your server has to support PEAR::Mail for this to
 work.</para></note>
 	<note><para>It's best to use lms-notify Perl script or notify

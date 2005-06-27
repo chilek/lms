@@ -1821,6 +1821,14 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    remote host, you will need to set options smtp_host, smtp_port,
    smtp_username, smtp_password in [phpui] section.
 
+   In message body you can use variables, which will be replaced by
+   customer data:
+   %customer - name/lastname and forename
+   %balance - balance value (with sign)
+   %cid - customer ID
+   %pin - customer PIN
+   %last_10_in_a_table - last 10 operations on customer account
+
    Note
 
    Your server has to support PEAR::Mail for this to work.
