@@ -45,7 +45,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 	if($network) 
 		$net = $LMS->GetNetworkParams($network);
 	
-	if($emails = $DB->GetAll('SELECT customers.id AS id, email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, '
+	if($emails = $DB->GetAll('SELECT customers.id AS id, email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, pin, '
 		.'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance '
 		.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type=3 OR type=4)) '
 		.($network ? 'LEFT JOIN nodes ON (customer.id=ownerid) ' : '')
@@ -55,7 +55,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 		.($customergroup ? ' AND customergroupid='.$customergroup : '')
-		.' GROUP BY email, lastname, customers.name, customers.id ORDER BY customername'))
+		.' GROUP BY email, lastname, customers.name, customers.id, pin ORDER BY customername'))
 	{
 		if($disabled)
 			$access = $DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
@@ -127,10 +127,32 @@ if(isset($_POST['mailing']))
 				if(isset($LMS->CONFIG['phpui']['debug_email']))
 					$row['email'] = $LMS->CONFIG['phpui']['debug_email'];
 				
+				$body = $mailing['body'];
+				
+				$body = str_replace('%customer', $row['customername'], $body);
+				$body = str_replace('%balance', $row['balance'], $body);
+				$body = str_replace('%cid', $row['id'], $body);
+				$body = str_replace('%pin', $row['pin'], $body);
+
+				if(!(strpos($body,'%last_10_in_a_table') === FALSE))
+				{
+					$last10 = '';
+					if($last10_array = $DB->GetAll('SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value 
+						FROM cash WHERE customerid = ?
+						ORDER BY time DESC LIMIT 10', array($row['id'])))
+						foreach($last10_array as $r)
+						{
+							$last10 .= date("Y/m/d | ", $r['time']);
+							$last10 .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->lang][money_format],$r['value']));
+							$last10 .= $r['comment']."\n";
+						}
+					$body = str_replace('%last_10_in_a_table', $last10, $body);
+				}
+				
 				$headers['To'] = '<'.$row['email'].'>';
 				
 				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['customername'], $row['email']);
-				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $mailing['body'])."</font><BR>\n";
+				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body)."</font><BR>\n";
 			}
 		}
 		
