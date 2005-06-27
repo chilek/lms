@@ -4765,11 +4765,56 @@ NAME="MENU-MAILING"
 ></H2
 ><P
 >Mailing is component where you can spam groups of your customers
-if you have to communicate something to them. Obviously you need to specify
-sender name and address, write your message in text box and select appropriate
-group of recipients. Your attendance can be grouped by status, network or customer
-groups. If you use mail server on remote host, you will need to set options
-smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</P
+	if you have to communicate something to them. Obviously you need to specify
+	sender name and address, write your message in text box and select appropriate
+	group of recipients. Your attendance can be grouped by status, network or customer
+	groups. If you use mail server on remote host, you will need to set options
+	smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</P
+><P
+>In message body you can use variables, which will be replaced by
+	customer data:
+	<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%customer</SAMP
+> - name/lastname and forename</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%balance</SAMP
+> - balance value (with sign)</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%cid</SAMP
+> - customer ID</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%pin</SAMP
+> - customer PIN</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%last_10_in_a_table</SAMP
+> - last 10 operations on customer account</TD
+></TR
+></TBODY
+></TABLE
+>
+	</P
 ><P
 ><DIV
 CLASS="NOTE"
