@@ -5,6 +5,8 @@ version ? (????-??-??):
   - in Mailing added replacement variables (alec)
   - in Nodes List added network and status filtering (alec)
   - in Nodes -> Print added network filter (alec)
+  - in Balance Sheet and Customer Balance added dynamic popups with invoice 
+    and receipt numbers (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
