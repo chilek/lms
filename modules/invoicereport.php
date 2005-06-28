@@ -78,7 +78,7 @@ if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, z
 		$invoicelist[$id]['year'] = date('Y',$row['cdate']);
 		$invoicelist[$id]['month'] = date('m',$row['cdate']);
 
-		$invoicelist[$id][$taxid]['tax'] += round($value*$taxes[$taxid]['value']/100, 2);
+		$invoicelist[$id][$taxid]['tax'] += round($value / ($taxes[$taxid]['value']+100) * 100, 2);
 		$invoicelist[$id][$taxid]['val'] += $value - $invoicelist[$id][$taxid]['tax'];
 		$invoicelist[$id]['tax'] += $invoicelist[$id][$taxid]['tax'];
 		$invoicelist[$id]['brutto'] += $value;
