@@ -19,6 +19,27 @@
 			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
 		</TD>
 	</TR>
+	<TR CLASS="DARK">
+		<TD CLASS="fall" colspan="4">
+			<P><FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
+				<INPUT TYPE="HIDDEN" NAME="m" VALUE="nodelist">
+				<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">
+				<B>{t}Filter:{/t}</B> {t}Status:{/t}
+				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
+					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{t}connected<!plural:item>{/t}</OPTION>
+					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{t}disconnected<!plural:item>{/t}</OPTION>
+				</SELECT>&nbsp;
+				{t}Network:{/t}
+				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
+					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
+					{section name=networks loop=$networks}
+					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
+					{/section}
+				</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>		
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4">

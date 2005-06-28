@@ -993,7 +993,7 @@ class LMS
 			return FALSE;
 	}
 
-	function GetNodeList($order='name,asc', $search=NULL, $sqlskey='AND')
+	function GetNodeList($order='name,asc', $search=NULL, $sqlskey='AND', $network=NULL, $status=NULL)
 	{
 		if($order=='')
 			$order='name,asc';
@@ -1055,9 +1055,15 @@ class LMS
 
 		$totalon = 0; $totaloff = 0;
 		
+		if($network)
+			$net = $this->GetNetworkParams($network);	
+		
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, netdev, lastonline, nodes.info AS info, '
 					.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
 					FROM nodes LEFT JOIN customers ON ownerid = customers.id WHERE ownerid > 0'
+					.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '') 
+					.($status==1 ? ' AND access = 1' : '') //connected
+					.($status==2 ? ' AND access = 0' : '') //disconnected
 					.$searchargs
 					.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{

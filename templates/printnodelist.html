@@ -37,7 +37,7 @@
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
-	{section name=nodelist loop=$nodelist}{if $nodelist[nodelist].id}
+	{section name=nodelist loop=$nodelist}
 	<TR class="{cycle}">
 		<TD WIDTH="1%" ALIGN=CENTER>
 			{counter}
@@ -61,5 +61,13 @@
 			{$nodelist[nodelist].info}
 		</TD>
 	</TR>
-	{/if}{/section}
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" COLSPAN="7">
+			<P>&nbsp;</P>
+			<P><B>{t}No such nodes in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
 </TABLE>

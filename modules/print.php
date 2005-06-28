@@ -183,39 +183,15 @@ switch($type)
 		{
 			case 0:
 				$layout['pagetitle'] = trans('Nodes List');
-				$SMARTY->assign('nodelist', $LMS->GetNodeList($_POST['order'].','.$_POST['direction']));
+				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network']);
 			break;
 			case 1:
 				$layout['pagetitle'] = trans('List of Disconnected Nodes');
-				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
-				{
-				unset($nodelist['total']);
-				unset($nodelist['totalon']);
-				unset($nodelist['totaloff']);
-				unset($nodelist['order']);
-				unset($nodelist['direction']);
-				
-				foreach($nodelist as $idx => $row)
-					if(!$row['access'])
-						$nnodelist[] = $nodelist[$idx];
-				}
-				$SMARTY->assign('nodelist', $nnodelist);
+				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network'], 1);
 			break;
 			case 2:
 				$layout['pagetitle'] = trans('List of Connected Nodes');
-				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
-				{
-				unset($nodelist['total']);
-				unset($nodelist['totalon']);
-				unset($nodelist['totaloff']);
-				unset($nodelist['order']);
-				unset($nodelist['direction']);
-				
-				foreach($nodelist as $idx => $row)
-					if($row['access'])
-						$nnodelist[] = $nodelist[$idx];
-				}
-				$SMARTY->assign('nodelist', $nnodelist);
+				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL,  $_POST['network'], 2);
 			break;
 			case 3:
 				$layout['pagetitle'] = trans('Nodes List for Customers In Debt');
@@ -250,13 +226,17 @@ switch($type)
 					break;
 				}
 
+				if($_POST['network'])
+					$net = $LMS->GetNetworkParams($_POST['network']);
+
 				$nodelist = $DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
 					    nodes.name AS name, nodes.info AS info, 
 					    COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
 					    .$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
 					    FROM nodes LEFT JOIN customers ON (ownerid = customers.id)
-					    LEFT JOIN cash ON (cash.customerid = customers.id)
-					    GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, customers.lastname, customers.name
+					    LEFT JOIN cash ON (cash.customerid = customers.id)'
+					    .($net ? ' WHERE ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+					    .'GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, customers.lastname, customers.name
 					    HAVING SUM((type * -2 + 7) * value) < 0'
 					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
 				
@@ -266,6 +246,14 @@ switch($type)
 				die;
 			break;
 		}	
+
+		unset($nodelist['total']);
+		unset($nodelist['order']);
+		unset($nodelist['direction']);
+		unset($nodelist['totalon']);
+		unset($nodelist['totaloff']);
+		
+		$SMARTY->assign('nodelist', $nodelist);
 		$SMARTY->display('printnodelist.html');
 	break;
 

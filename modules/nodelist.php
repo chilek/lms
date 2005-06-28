@@ -34,12 +34,26 @@ else
 	$o = $_GET['o'];
 $SESSION->save('nlo', $o);
 
-$nodelist = $LMS->GetNodeList($o);
+if(!isset($_GET['s']))
+	$SESSION->restore('nls', $s);
+else
+	$s = $_GET['s'];
+$SESSION->save('nls', $s);
+
+if(!isset($_GET['n']))
+	$SESSION->restore('nln', $n);
+else
+	$n = $_GET['n'];
+$SESSION->save('nln', $n);
+
+$nodelist = $LMS->GetNodeList($o, NULL, NULL, $n, $s);
 $listdata['total'] = $nodelist['total'];
 $listdata['order'] = $nodelist['order'];
 $listdata['direction'] = $nodelist['direction'];
 $listdata['totalon'] = $nodelist['totalon'];
 $listdata['totaloff'] = $nodelist['totaloff'];
+$listdata['network'] = $n;
+$listdata['state'] = $s;
 
 unset($nodelist['total']);
 unset($nodelist['order']);
@@ -61,6 +75,7 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('nodelist',$nodelist);
 $SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('networks',$LMS->GetNetworks());
 $SMARTY->display('nodelist.html');
 
 ?>
