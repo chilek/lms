@@ -7,6 +7,8 @@ version 1.6.1 ? (??/??/????):
   - lmsd: added -fPIC flag for x86-64 architecture (alec)
   - contrib/customer_otherip: fixed problem with non-numeric input data
     on login form (alec)
+  - lms-payments: fixed problem with DBD execute() and binding not needed 
+    variables (alec)
 
 version 1.6.0 Thor (13/06/2005):
 
