@@ -89,7 +89,7 @@ class LMS
 		foreach($this->modules as $module)
 			if(! ($this->$module != NULL ? $this->$module->_postinit() : TRUE))
 				trigger_error('Wyst±pi³y problemy z inicjalizacj± modu³u '.$module.'.');
-*/	
+*/
 	}
 
 	function _postinit()
@@ -100,7 +100,7 @@ class LMS
 	/*
 	 *  Logging
 	 *	0 - disabled
-	 *	1 - system log in and modules calls without access privileges 
+	 *	1 - system log in and modules calls without access privileges
 	 *	2 - as above, addition and deletion
 	 *	3 - as above, and changes
 	 *	4 - as above, and all modules calls (paranoid)
@@ -115,7 +115,7 @@ class LMS
 			//I think, we can ommit SetTS('syslog')
 		}
 	}
-*/	
+*/
 	/*
 	 *  Database functions (backups, timestamps)
 	 */
@@ -148,7 +148,7 @@ class LMS
 		if(! $filename)
 			return FALSE;
 		if (($gzipped)&&(extension_loaded('zlib')))
-			$dumpfile = gzopen($filename,'w'); 
+			$dumpfile = gzopen($filename,'w');
 		else
 			$dumpfile = fopen($filename,'w');
 
@@ -178,9 +178,9 @@ class LMS
 				}
 			}
 			if (($gzipped)&&(extension_loaded('zlib')))
-				gzclose($dumpfile); 
+				gzclose($dumpfile);
 			else
-				fclose($dumpfile); 
+				fclose($dumpfile);
 		}
 		else
 			return FALSE;
@@ -228,7 +228,7 @@ class LMS
 					$row['lastloginip'] = $this->AUTH->lastip;
 					$userslist[$idx]['lastloginip'] = $this->AUTH->lastip;
 				}
-				
+
 				if($row['lastlogindate'])
 					$userslist[$idx]['lastlogin'] = date('Y/m/d H:i',$row['lastlogindate']);
 				else
@@ -395,7 +395,7 @@ class LMS
 
 	function CustomerAdd($customeradd)
 	{
-		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, im, address, zip, city, email, ten, ssn, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($customeradd['name']),  $customeradd['lastname'], $customeradd['phone1'], $customeradd['phone2'], $customeradd['phone3'], $customeradd['im'], $customeradd['address'], $customeradd['zip'], $customeradd['city'], $customeradd['email'], $customeradd['ten'], $customeradd['ssn'], $customeradd['status'], $this->AUTH->id, $customeradd['info'], $customeradd['serviceaddr'], $customeradd['message'], $customeradd['pin']))) 
+		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, im, address, zip, city, email, ten, ssn, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($customeradd['name']),  $customeradd['lastname'], $customeradd['phone1'], $customeradd['phone2'], $customeradd['phone3'], $customeradd['im'], $customeradd['address'], $customeradd['zip'], $customeradd['city'], $customeradd['email'], $customeradd['ten'], $customeradd['ssn'], $customeradd['status'], $this->AUTH->id, $customeradd['info'], $customeradd['serviceaddr'], $customeradd['message'], $customeradd['pin'])))
 		{
 			$this->SetTS('customers');
 			return $this->DB->GetOne('SELECT MAX(id) FROM customers');
@@ -507,7 +507,7 @@ class LMS
 				$sqlord = 'ORDER BY customername';
 			break;
 		}
-		
+
 		if($state == 4) {
 			$deleted = 1;
 			// don't use customergroup and network filtering
@@ -518,19 +518,19 @@ class LMS
 		}
 		else
 			$deleted = 0;
-			
+
 		$disabled = ($state == 5) ? 1 : 0;
 		$indebted = ($state == 6) ? 1 : 0;
 		$online = ($state == 7) ? 1 : 0;
-		
+
 		if($state>3)
 			$state = 0;
 
-		if($network) 
+		if($network)
 			$net = $this->GetNetworkParams($network);
-		
+
 		$over = 0; $below = 0;
-		
+
 		if(sizeof($search))
 			foreach($search as $key => $value)
 			{
@@ -538,7 +538,7 @@ class LMS
 				if($value!='')
 				{
 					$value = "'%".$value."%'";
-					switch($key) 
+					switch($key)
 					{
 						case 'phone':
 							$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
@@ -561,23 +561,23 @@ class LMS
 
 		if($searchargs)
 			$sqlsarg = implode(' '.$sqlskey.' ',$searchargs);
-		
+
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
-		
-		if($customerlist = $this->DB->GetAll( 
+
+		if($customerlist = $this->DB->GetAll(
 				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, status, address, zip, city, customers.info AS info, message, '
 				.($network ? 'COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance ')
 				.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type = 3 OR type = 4)) '
 				.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
 				.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
-				.($state !=0 ? ' AND status = '.$state :'') 
+				.($state !=0 ? ' AND status = '.$state :'')
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($time ? ' AND time < '.$time : '')
 				.($sqlsarg !='' ? ' AND ('.$sqlsarg.')' :'')
 				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, customers.info, message '
-		// ten fragment nie chcial dzialac na mysqlu		
+		// ten fragment nie chcial dzialac na mysqlu
 		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
@@ -590,9 +590,9 @@ class LMS
 			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
 			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
 			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
-			
+
 			$customerlist2 = NULL;
-			
+
 			foreach($customerlist as $idx => $row)
 			{
 				$customerlist[$idx]['tariffvalue'] = round($week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'], 2);
@@ -611,7 +611,7 @@ class LMS
 					$customerlist[$idx]['nodewarn'] = 0;
 				else
 					$customerlist[$idx]['nodewarn'] = 2;
-					
+
 				if (($disabled && $customerlist[$idx]['nodeac'] != 1) || !$disabled)
 					if($customerlist[$idx]['balance'] > 0)
 						$over += $customerlist[$idx]['balance'];
@@ -619,13 +619,13 @@ class LMS
 						$below += $customerlist[$idx]['balance'];
 				if ($disabled && $customerlist[$idx]['nodeac'] != 1)
 					$customerlist2[] = $customerlist[$idx];
-					
+
 				if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
 					$customerlist[$idx]['online'] = 1;
-				
+
 				if($online && $customerlist[$idx]['online'])
 					$customerlist2[] = $customerlist[$idx];
-				
+
 				if($indebted)
 					if($customerlist[$idx]['balance'] < 0)
 						$customerlist2[] = $customerlist[$idx];
@@ -659,7 +659,7 @@ class LMS
 		$customerlist['direction'] = $direction;
 		$customerlist['below']= $below;
 		$customerlist['over']= $over;
-		
+
 		return $customerlist;
 	}
 
@@ -682,10 +682,10 @@ class LMS
 		$saldolist = array();
 		// wrapper do starego formatu
 		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid, users.name AS username,
-					documents.type AS doctype 
-					FROM cash 
+					documents.type AS doctype
+					FROM cash
 					LEFT JOIN users ON users.id = cash.userid
-					LEFT JOIN documents ON documents.id = docid 
+					LEFT JOIN documents ON documents.id = docid
 					LEFT JOIN taxes ON cash.taxid = taxes.id
 					WHERE cash.customerid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
@@ -721,7 +721,7 @@ class LMS
 
 			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
 			$saldolist['total'] = sizeof($saldolist['id']);
-		} 
+		}
 		else {
 			$saldolist['balance'] = 0;
 			$saldolist['total'] = 0;
@@ -740,7 +740,7 @@ class LMS
 		$saldolist['customerid'] = $id;
 		return $saldolist;
 	}
-	
+
 	function CustomerStats()
 	{
 		$result['total'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE deleted=0');
@@ -757,14 +757,14 @@ class LMS
 					$result['debtvalue'] -= $idx;
 					$result['debt']++;
 				}
-		}	
+		}
 		return $result;
 	}
 
 	/*
 	 * Customer groups
 	*/
-	 
+
 	function CustomergroupWithCustomerGet($id)
 	{
 		return $this->DB->GetOne('SELECT COUNT(customerid) FROM customerassignments, customers WHERE customers.id = customerid AND customergroupid = ?', array($id));
@@ -802,8 +802,8 @@ class LMS
 
 	function CustomergroupMove($from, $to)
 	{
-		if ($ids = $this->DB->GetCol('SELECT customerassignments.id AS id FROM customerassignments, customers WHERE customerid = customers.id AND customergroupid = ?', array($from))) 
-		{	
+		if ($ids = $this->DB->GetCol('SELECT customerassignments.id AS id FROM customerassignments, customers WHERE customerid = customers.id AND customergroupid = ?', array($from)))
+		{
 			$this->SetTS('customerassignments');
 			foreach($ids as $id)
 				$this->DB->Execute('UPDATE customerassignments SET customergroupid=? WHERE id=? AND customergroupid=?', array($to, $id, $from));
@@ -840,7 +840,7 @@ class LMS
 		{
 			$totalcustomers = 0;
 			$totalcount = 0;
-			
+
 			foreach($customergrouplist as $idx => $row)
 			{
 				$customergrouplist[$idx]['customers'] = $this->CustomergroupWithCustomerGet($row['id']);
@@ -848,12 +848,12 @@ class LMS
 				$totalcustomers += $customergrouplist[$idx]['customers'];
 				$totalcount += $customergrouplist[$idx]['customerscount'];
 			}
-			
+
 			$customergrouplist['total'] = sizeof($customergrouplist);
 			$customergrouplist['totalcustomers'] = $totalcustomers;
 			$customergrouplist['totalcount'] = $totalcount;
 		}
-		
+
 		return $customergrouplist;
 	}
 
@@ -865,7 +865,7 @@ class LMS
 	function GetGroupNamesWithoutCustomer($customerid)
 	{
 		return $this->DB->GetAll('SELECT customergroups.id AS id, name, customerid
-			FROM customergroups LEFT JOIN customerassignments ON (customergroups.id=customergroupid AND customerid = ?) 
+			FROM customergroups LEFT JOIN customerassignments ON (customergroups.id=customergroupid AND customerid = ?)
 			GROUP BY customergroups.id, name, customerid HAVING customerid IS NULL ORDER BY name', array($customerid));
 	}
 
@@ -889,14 +889,14 @@ class LMS
 
 	function CustomerassignmentExist($groupid, $customerid)
 	{
-		return $this->DB->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid)); 
+		return $this->DB->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
 	}
 
 	function GetCustomerWithoutGroupNames($groupid)
 	{
 		return $this->DB->GetAll('SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, customerid
-			FROM customers LEFT JOIN customerassignments ON (customers.id = customerid AND customerassignments.customergroupid = ?) WHERE deleted = 0 
-			GROUP BY customers.id, customerid, lastname, name 
+			FROM customers LEFT JOIN customerassignments ON (customers.id = customerid AND customerassignments.customergroupid = ?) WHERE deleted = 0
+			GROUP BY customers.id, customerid, lastname, name
 			HAVING customerid IS NULL ORDER BY customername', array($groupid));
 	}
 
@@ -1030,7 +1030,7 @@ class LMS
 		if(sizeof($search))
 		foreach($search as $idx => $value)
 		{
-			if($value!='')	
+			if($value!='')
 			{
 				switch($idx)
 				{
@@ -1049,19 +1049,19 @@ class LMS
 				}
 			}
 		}
-		
+
 		if($searchargs)
 			$searchargs = ' AND '.implode(' '.$sqlskey.' ',$searchargs);
 
 		$totalon = 0; $totaloff = 0;
-		
+
 		if($network)
-			$net = $this->GetNetworkParams($network);	
-		
+			$net = $this->GetNetworkParams($network);
+
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, netdev, lastonline, nodes.info AS info, '
 					.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
 					FROM nodes LEFT JOIN customers ON ownerid = customers.id WHERE ownerid > 0'
-					.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '') 
+					.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 					.($status==1 ? ' AND access = 1' : '') //connected
 					.($status==2 ? ' AND access = 0' : '') //disconnected
 					.$searchargs
@@ -1098,7 +1098,7 @@ class LMS
 			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE ownerid=?', array($id));
 		else
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE ownerid=?', array($id));
-	}		
+	}
 
 	function NodeSetWarn($id,$warning=FALSE)
 	{
@@ -1125,7 +1125,7 @@ class LMS
 			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE ownerid=?', array($id));
 		else
 			return $this->DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid=?', array($id));
-	}		
+	}
 
 	function IPSetU($netdev, $access=FALSE)
 	{
@@ -1135,20 +1135,20 @@ class LMS
 		else
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE netdev=? AND ownerid=0', array($netdev));
 	}
-	
+
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS('nodes');
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, creationdate, access, warning, info, netdev) VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?)', 
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, creationdate, access, warning, info, netdev) VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?)',
 				array(strtoupper($nodedata['name']),
 				    strtoupper($nodedata['mac']),
 				    $nodedata['ipaddr'],
 				    $nodedata['ipaddr_pub'],
 				    $nodedata['ownerid'],
 				    $nodedata['passwd'],
-				    $this->AUTH->id, 
-				    $nodedata['access'], 
-				    $nodedata['warning'], 
+				    $this->AUTH->id,
+				    $nodedata['access'],
+				    $nodedata['warning'],
 				    $nodedata['info'],
 				    $nodedata['netdev'])))
 			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
@@ -1203,14 +1203,14 @@ class LMS
 		$this->SetTS('nodes');
 		return $this->DB->Execute('UPDATE nodes SET linktype=? WHERE id=?', array($type, $node));
 	}
-	
+
 	/*
 	 *  Tarrifs and finances
 	*/
 
 	function GetNewInvoiceNumber($cdate=NULL)
 	{
-		$cdate = $cdate ? $cdate : time();	    
+		$cdate = $cdate ? $cdate : time();
 		if($this->CONFIG['invoices']['monthly_numbering'])
 		{
 			$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
@@ -1224,15 +1224,15 @@ class LMS
 
 		$number = $this->DB->GetOne('SELECT MAX(number) FROM documents WHERE cdate >= ? AND cdate < ? AND type = 1', array($start, $end));
 		$number = $number ? ++$number : 1;
-		
+
 		return $number;
 	}
 
 	function InvoiceExists($number, $cdate=NULL)
 	{
 		if(!$number) return FALSE;
-		
-		$cdate = $cdate ? $cdate : time();	    
+
+		$cdate = $cdate ? $cdate : time();
 		if($this->CONFIG['invoices']['monthly_numbering'])
 		{
 			$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
@@ -1246,7 +1246,7 @@ class LMS
 
 		return ($this->DB->GetOne('SELECT number FROM documents WHERE cdate >= ? AND cdate < ? AND number = ? AND type = 1', array($start, $end, $number)) ? TRUE : FALSE);
 	}
-	
+
 	function GetCustomerTariffsValue($id)
 	{
 		return $this->DB->GetOne('SELECT sum(value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND customerid=? AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
@@ -1264,16 +1264,16 @@ class LMS
 						$row['period'] = trans('weekly');
 						$row['at'] = strftime("%a",mktime(0,0,0,0,$row['at']+5,0));
 					break;
-					
+
 					case 1:
 						$row['period'] = trans('monthly');
 					break;
-					
+
 					case 2:
 						$row['period'] = trans('quarterly');
 						$row['at'] = sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1);
 					break;
-					
+
 					case 3:
 						$row['period'] = trans('yearly');
 						$row['at'] = date('d/m',($row['at']-1)*86400);
@@ -1318,7 +1318,7 @@ class LMS
 	function AddInvoice($invoice)
 	{
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
-		
+
 		if($this->CONFIG['invoices']['monthly_numbering'])
 		{
 			$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
@@ -1329,10 +1329,10 @@ class LMS
 			$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
 			$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
 		}
-		
+
 		$number = $invoice['invoice']['number'];
-		$this->DB->Execute('INSERT INTO documents (number, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city) 
-				    VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+		$this->DB->Execute('INSERT INTO documents (number, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city)
+				    VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				    array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $this->AUTH->id, $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city']));
 		$iid = $this->DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = 1', array($number,$cdate));
 
@@ -1344,19 +1344,19 @@ class LMS
 			$item['count'] = str_replace(',','.',$item['count']);
 
 			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
-					$iid, 
-					$itemid, 
-					$item['valuebrutto'], 
-					$item['taxid'], 
+					$iid,
+					$itemid,
+					$item['valuebrutto'],
+					$item['taxid'],
 					$item['prodid'],
-					$item['jm'], 
-					$item['count'], 
-					$item['name'], 
+					$item['jm'],
+					$item['count'],
+					$item['name'],
 					$item['tariffid']));
-				
+
 			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
-		
+
 		$this->SetTS('documents');
 		$this->SetTS('invoicecontents');
 
@@ -1366,7 +1366,7 @@ class LMS
 	function InvoiceUpdate($invoice)
 	{
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
-		
+
 		$iid = $invoice['invoice']['id'];
 
 		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city'], $iid));
@@ -1374,26 +1374,26 @@ class LMS
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($iid));
 		//if invoice was paid (then you need to manual bind orphant payments with covenants)
 		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0, customerid = ? WHERE docid = ?', array($invoice['customer']['id'], $iid));
-		
+
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
 		{
 			$itemid++;
-			
-			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
-					$iid, 
-					$itemid, 
-					$item['valuebrutto'], 
-					$item['taxid'], 
+					$iid,
+					$itemid,
+					$item['valuebrutto'],
+					$item['taxid'],
 					$item['prodid'],
-					$item['jm'], 
-					$item['count'], 
-					$item['name'], 
+					$item['jm'],
+					$item['count'],
+					$item['name'],
 					$item['tariffid']));
 			$this->AddBalance(array('type' => 4, 'time' => $cdate, 'value' => $item['valuebrutto']*$item['count'], 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
-		
+
 		$this->SetTS('documents');
 		$this->SetTS('invoicecontents');
 	}
@@ -1416,7 +1416,7 @@ class LMS
 		if($itemid)
 		{
 			$this->DB->Execute('DELETE FROM invoicecontents WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
-			
+
 			if(!$this->DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE docid=?', array($invoiceid)))
 			{
 				// if that was the last item of invoice contents
@@ -1435,7 +1435,7 @@ class LMS
 
 	function IsInvoicePaid($invoiceid)
 	{
-		$i = $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) 
+		$i = $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END)
 					FROM cash WHERE docid = ?', array($invoiceid))
 		    + $this->DB->GetOne('SELECT SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END)
 					FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
@@ -1473,7 +1473,7 @@ class LMS
 				$sqlord = ' ORDER BY name';
 			break;
 		}
-		
+
 		if($search && $cat)
 		{
 			switch($cat)
@@ -1503,14 +1503,14 @@ class LMS
 		}
 
 		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city,
-						SUM(value*count) AS value, COUNT(docid) AS count 
-						FROM documents, invoicecontents 
+						SUM(value*count) AS value, COUNT(docid) AS count
+						FROM documents, invoicecontents
 						WHERE docid = documents.id AND type = 1'
 						.$where
 						.' GROUP BY id, number, cdate, customerid, name, address, zip, city '
 						.$sqlord.' '.$direction))
 		{
-			$inv_paid_main = $this->DB->GetAllByKey('SELECT docid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum 
+			$inv_paid_main = $this->DB->GetAllByKey('SELECT docid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum
 					FROM cash WHERE docid != 0 GROUP BY docid', 'id');
 			$inv_paid_ref = $this->DB->GetAllByKey('SELECT a.docid AS id, SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END) AS sum
 					FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
@@ -1523,18 +1523,18 @@ class LMS
 				$result[$idx]['year'] = date('Y',$row['cdate']);
 				$result[$idx]['month'] = date('m',$row['cdate']);
 				$result[$idx]['paid'] = ( $inv_paid_main[$row['id']]['sum'] + $inv_paid_ref[$row['id']]['sum'] >=0 ? TRUE : FALSE );
-				
+
 				if($group['group'])
 					if(!$group['exclude'] && $customers[$result[$idx]['customerid']])
-						$result1[] = $result[$idx]; 
+						$result1[] = $result[$idx];
 					elseif($group['exclude'] && !$customers[$result[$idx]['customerid']])
 						$result1[] = $result[$idx];
 			}
-			
+
 			if($group['group'])
 				$result = $result1;
 		}
-		
+
 		$result['order'] = $order;
 		$result['direction'] = $direction;
 		return $result;
@@ -1544,7 +1544,7 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
 		{
-			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid 
+			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid
 					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=?', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
@@ -1552,15 +1552,15 @@ class LMS
 					$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
 					$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
 					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
-					
+
 					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
 					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
 					$result['taxest'][$row['taxvalue']]['taxlabel'] = $row['taxlabel'];
-					
+
 					$result['total'] += $result['content'][$idx]['total'];
 					$result['totalbase'] += $result['content'][$idx]['totalbase'];
 					$result['totaltax'] += $result['content'][$idx]['totaltax'];
-					
+
 					// for backward compatybility
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
@@ -1582,12 +1582,12 @@ class LMS
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
+		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit
 				FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY name ASC'))
 		{
-			$assigned = $this->DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value 
-						FROM assignments, tariffs 
-						WHERE tariffid = tariffs.id AND suspended = 0 
+			$assigned = $this->DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value
+						FROM assignments, tariffs
+						WHERE tariffid = tariffs.id AND suspended = 0
 						AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)
 						GROUP BY tariffid', 'tariffid');
 
@@ -1597,7 +1597,7 @@ class LMS
 						FROM assignments a LEFT JOIN tariffs t ON (t.id = a.tariffid), assignments b
 						WHERE a.customerid = b.customerid AND a.tariffid = ? AND b.tariffid = 0 AND a.suspended = 0
 						AND (b.datefrom <= ?NOW? OR b.datefrom = 0) AND (b.dateto > ?NOW? OR b.dateto = 0)', array($row['id']));
-			
+
 				$tarifflist[$idx]['customers'] = $this->GetCustomersWithTariff($row['id']);
 				$tarifflist[$idx]['customerscount'] = $this->DB->GetOne("SELECT COUNT(DISTINCT customerid) FROM assignments WHERE tariffid = ?", array($row['id']));
 				// count of 'active' assignments
@@ -1615,7 +1615,7 @@ class LMS
 		$tarifflist['totalcustomers'] = $totalcustomers;
 		$tarifflist['totalcount'] = $totalcount;
 		$tarifflist['totalassignmentcount'] = $totalassignmentcount;
-		
+
 		return $tarifflist;
 	}
 
@@ -1685,20 +1685,20 @@ class LMS
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit 
+		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit
 					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE tariffs.id=?', array($id));
 		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS customername FROM assignments, customers WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
-		
-		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value 
-						FROM assignments, tariffs 
-						WHERE tariffid = tariffs.id AND tariffid = ? AND suspended = 0 
+
+		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE period WHEN 0 THEN value*4 WHEN 1 THEN value WHEN 2 THEN value/3 WHEN 3 THEN value/12 END) AS value
+						FROM assignments, tariffs
+						WHERE tariffid = tariffs.id AND tariffid = ? AND suspended = 0
 						AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
-		
+
 		$suspended = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE a.period WHEN 0 THEN t.value*4 WHEN 1 THEN t.value WHEN 2 THEN t.value/3 WHEN 3 THEN t.value/12 END) AS value
 						FROM assignments a LEFT JOIN tariffs t ON (t.id = a.tariffid), assignments b
 						WHERE a.customerid = b.customerid AND a.tariffid = ? AND b.tariffid = 0 AND a.suspended = 0
 						AND (b.datefrom <= ?NOW? OR b.datefrom = 0) AND (b.dateto > ?NOW? OR b.dateto = 0)', array($id));
-		
+
 		// count of all customers with that tariff
 		$result['customerscount'] = sizeof($result['customers']);
 		// count of all assignments
@@ -1714,7 +1714,7 @@ class LMS
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, taxes.label AS tax, prodid 
+		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, taxes.label AS tax, prodid
 					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY tariffs.value DESC');
 	}
 
@@ -1728,7 +1728,7 @@ class LMS
 		if($itemid)
 		{
 			$this->DB->Execute('DELETE FROM receiptcontents WHERE docid=? AND itemid=?', array($docid, $itemid));
-			
+
 			if(!$this->DB->GetOne('SELECT COUNT(*) FROM receiptcontents WHERE docid=?', array($docid)))
 			{
 				// if that was the last item of invoice contents
@@ -1749,8 +1749,8 @@ class LMS
 		$this->SetTS('cash');
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
 
-		return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid, reference) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+		return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid, reference)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array($addbalance['time'] ? $addbalance['time'] : time(),
 					    $addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id,
 					    $addbalance['type'],
@@ -1766,28 +1766,28 @@ class LMS
 
 	function DelBalance($id)
 	{
-		$row = $this->DB->GetRow('SELECT docid, itemid, documents.type AS doctype, cash.type AS cashtype 
-					FROM cash 
+		$row = $this->DB->GetRow('SELECT docid, itemid, documents.type AS doctype, cash.type AS cashtype
+					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
 					WHERE cash.id=?', array($id));
-		
+
 		if($row['doctype']=='1' && $row['cashtype'] = '4' && $row['docid'] && $row['itemid'])
 			$this->InvoiceContentDelete($row['docid'], $row['itemid']);
 		elseif($row['doctype']=='2' && $row['docid'] && $row['itemid'])
 			$this->ReceiptContentDelete($row['docid'], $row['itemid']);
 		else
 			$this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
-		
+
 		$this->SetTS('cash');
 	}
-	
+
 	function GetBalanceList()
 	{
 		$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
 		$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
-		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid, 
+		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid,
 						    documents.type AS doctype
-						    FROM cash 
+						    FROM cash
 						    LEFT JOIN documents ON (documents.id = docid)
 						    LEFT JOIN taxes ON (taxid = taxes.id)
 						    ORDER BY time, cash.id'))
@@ -1857,25 +1857,25 @@ class LMS
 					case 0:
 						$row['payday'] = trans('weekly ($0)', strftime("%a",mktime(0,0,0,0,$row['at']+5,0)));
 					break;
-					
+
 					case 1:
 						$row['payday'] = trans('monthly $0',$row['at']);
 					break;
-					
+
 					case 2:
 						$row['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
 					break;
-					
+
 					case 3:
 						$row['payday'] = trans('yearly ($0)', date('d/m',($row['at']-1)*86400));
 					break;
 				}
-				
+
 				$paymentlist[$idx] = $row;
-			}	
-			
+			}
+
 			$paymentlist['total'] = sizeof($paymentlist);
-		
+
 			return $paymentlist;
 	}
 
@@ -1888,31 +1888,31 @@ class LMS
 			case 0:
 				$row['payday'] = trans('weekly ($0)', strftime("%a",mktime(0,0,0,0,$row['at']+5,0)));
 			break;
-				
+
 			case 1:
 				$row['payday'] = trans('monthly $0',$row['at']);
 			break;
-				
+
 			case 2:
 				$row['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
 			break;
-			
+
 			case 3:
 				$row['payday'] = trans('yearly ($0)', date('d/m',($row['at']-1)*86400));
 			break;
 		}
 		return $payment;
 	}
-	
+
 	function GetPaymentName($id)
 	{
 		return $this->DB->GetOne('SELECT name FROM payments WHERE id=?', array($id));
 	}
-	
+
 	function GetPaymentIDByName($name)
 	{
 		return $this->DB->GetOne('SELECT id FROM payments WHERE name=?', array($name));
-	}	
+	}
 
 	function PaymentExists($id)
 	{
@@ -1937,13 +1937,13 @@ class LMS
 		else
 			return FALSE;
 	}
-	
+
 	function PaymentDelete($id)
 	{
-		$this->SetTS('payments');		
+		$this->SetTS('payments');
 		return $this->DB->Execute('DELETE FROM payments WHERE id=?', array($id));
 	}
-	
+
 	function PaymentUpdate($paymentdata)
 	{
 		$this->SetTS('payments');
@@ -2065,7 +2065,7 @@ class LMS
 		if($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY name'))
 		{
 			$size = 0; $assigned = 0; $online = 0;
-			
+
 			foreach($networks as $idx => $row)
 			{
 				$row['prefix'] = mask2prefix($row['mask']);
@@ -2171,7 +2171,7 @@ class LMS
 			if($value)
 				$nodes[] = $network['nodes']['addresslong'][$idx];
 		rsort($nodes);
-		
+
 		for($i = $address+1; $i < $broadcast; $i++)
 		{
 			if(!sizeof($nodes)) break;
@@ -2184,7 +2184,7 @@ class LMS
 					$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i,$ip));
 			}
 		}
-		
+
 		$this->SetTS('nodes');
 	}
 
@@ -2201,7 +2201,7 @@ class LMS
 		foreach($network['dest']['nodes']['id'] as $idx => $value)
 			if($value)
 				$destnodes[] = $network['dest']['nodes']['addresslong'][$idx];
-		
+
 		for($i = $address; $i < $broadcast; $i++)
 		{
 			if(!sizeof($nodes)) break;
@@ -2209,13 +2209,13 @@ class LMS
 
 			while(in_array($i, $destnodes))
 				$i++;
-				
+
 			if(!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i,$ip)))
 				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i,$ip));
-			
+
 			$counter++;
 		}
-		
+
 		return $counter;
 	}
 
@@ -2226,16 +2226,16 @@ class LMS
 		$network['size'] = pow(2,32-$network['prefix']);
 		$network['assigned'] = 0;
 		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
-		
+
 		$network['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE (ipaddr >= ? AND ipaddr < ?) OR (ipaddr_pub >= ? AND ipaddr_pub < ?)', array($network['addresslong'], $network['addresslong'] + $network['size'], $network['addresslong'], $network['addresslong'] + $network['size']));
 
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
 		if ($network['dhcpstart'])
-			$network['free'] = $network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1); 
+			$network['free'] = $network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1);
 
 		if(!$plimit)
 			return $network;
-		
+
 		$network['pagemax'] = ceil($network['size'] / $plimit);
 
 		if($page > $network['pagemax'])
@@ -2246,34 +2246,34 @@ class LMS
 		$page --;
 		$start = $page * $plimit;
 		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
-	
+
 		$network['pageassigned'] = 0;
-		
+
 		$nodes = $this->DB->GetAllByKey('SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?','ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
 		if($nodespub = $this->DB->GetAllByKey('SELECT id, name, ipaddr_pub, ownerid, netdev FROM nodes WHERE ipaddr_pub >= ? AND ipaddr_pub <= ?','ipaddr_pub', array(($network['addresslong'] + $start), ($network['addresslong'] + $end))))
 			foreach($nodespub as $idx => $row)
 				$nodes["".$idx.""] = $row;
-		
+
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
 			$longip = $network['addresslong'] + $i + $start;
-			
+
 			$node = isset($nodes["".$longip.""]) ? $nodes["".$longip.""] : NULL;
 			$network['nodes']['id'][$i] = isset($node['id']) ? $node['id'] : 0;
 			$network['nodes']['netdev'][$i] = isset($node['netdev']) ? $node['netdev'] : 0;
 			$network['nodes']['ownerid'][$i] = isset($node['ownerid']) ? $node['ownerid'] : 0;
-						
+
 			$network['nodes']['addresslong'][$i] = $longip;
 			$network['nodes']['address'][$i] = long2ip($longip);
-			
+
 			if( $network['nodes']['addresslong'][$i] >= ip_long($network['dhcpstart']) && $network['nodes']['addresslong'][$i] <= ip_long($network['dhcpend']) )
 				$network['nodes']['name'][$i] = 'DHCP';
 			elseif(isset($node['name']))
 				$network['nodes']['name'][$i] = $node['name'];
-				
+
 			if( isset($node['id']) )
 				$network['pageassigned'] ++;
-			if( $network['nodes']['ownerid'][$i] == 0 && $network['nodes']['netdev'][$i] > 0) 
+			if( $network['nodes']['ownerid'][$i] == 0 && $network['nodes']['netdev'][$i] > 0)
 			{
 				$netdev = $this->GetNetDevName($network['nodes']['netdev'][$i]);
 				$network['nodes']['name'][$i] = $network['nodes']['name'][$i]." (".$netdev['name'].")";
@@ -2306,7 +2306,7 @@ class LMS
 			$result['nodename'][] = '';
 			$result['ownerid'][] = 0;
 		}
-		
+
 		if(sizeof($result['address']))
 			if($nodes = $this->DB->GetAll('SELECT name, id, ownerid, ipaddr ,ipaddr_pub FROM nodes WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($address, getbraddr($address,$mask))))
 				foreach($nodes as $node)
@@ -2316,10 +2316,10 @@ class LMS
 					$result['nodename'][$pos] = $node['name'];
 					$result['ownerid'][$pos] = $node['ownerid'];
 				}
-		
+
 		for($pos=(ip_long($dhcpstart) - $addresslong - 1);$pos<=(ip_long($dhcpend) - $addresslong - 1);$pos++)
 			$result['nodename'][$pos] = 'DHCP';
-		
+
 		return $result;
 	}
 
@@ -2363,7 +2363,7 @@ class LMS
 		$list = $this->GetNetDevConnected($id);
 		$i = 0;
 		$names = array();
-		if ($list) 
+		if ($list)
 		{
 			foreach($list as $row)
 			{
@@ -2413,7 +2413,7 @@ class LMS
 		switch($order)
 		{
 			case 'takenports':
-				foreach($netdevlist as $idx => $row)					
+				foreach($netdevlist as $idx => $row)
 				{
 					$tptable['idx'][] = $idx;
 					$tptable['takenports'][] = $row['takenports'];
@@ -2424,7 +2424,7 @@ class LMS
 				$netdevlist = $nnetdevlist;
 			break;
 		}
-		
+
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
 		$netdevlist['direction'] = $direction;
@@ -2460,7 +2460,7 @@ class LMS
 			$this->NetDevLinkNode($node['id'],0);
 		}
 	}
-	
+
 	function NetDevReplace($sid, $did)
 	{
 		$dev1 = $this->GetNetDev($sid);
@@ -2519,7 +2519,7 @@ class LMS
 	function IsNetDevLink($dev1, $dev2)
 	{
 		return $this->DB->GetOne('SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
-	} 
+	}
 
 	function NetDevLink($dev1, $dev2, $type=0)
 	{
@@ -2527,19 +2527,19 @@ class LMS
 		{
 			if($this->IsNetDevLink($dev1,$dev2))
 				return FALSE;
-			
+
 			$netdev1 = $this->GetNetDev($dev1);
 			$netdev2 = $this->GetNetDev($dev2);
-			
+
 			if( $netdev1['takenports'] >= $netdev1['ports'] || $netdev2['takenports'] >= $netdev2['ports'])
 				return FALSE;
-			
-			$this->DB->Execute('INSERT INTO netlinks (src, dst, type) VALUES (?, ?, ?)', array($dev1, $dev2, $type)); 
+
+			$this->DB->Execute('INSERT INTO netlinks (src, dst, type) VALUES (?, ?, ?)', array($dev1, $dev2, $type));
 			$this->SetTS('netlinks');
 		}
 		return TRUE;
-	}	
-	
+	}
+
 	function NetDevUnLink($dev1, $dev2)
 	{
 		$this->SetTS('netlinks');
@@ -2555,7 +2555,7 @@ class LMS
 	{
 		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pubmac, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 	}
-	
+
 	/*
 	 * Helpdesk
 	 *
@@ -2567,7 +2567,7 @@ class LMS
 	 * 3 - dead (similiar to resolved, but not resolved)
 	 *
 	 */
-	 
+
 	var $rtstates = array(0 => RT_NEW, 1 => RT_OPEN, 2 => RT_RESOLVED, 3 => RT_DEAD);
 
 	function GetQueue($id)
@@ -2578,14 +2578,14 @@ class LMS
 		    foreach($users as $user)
 		    {
 			    $user['rights'] = $this->GetUserRightsRT($user['id'],$id);
-			    $queue['rights'][] = $user; 
+			    $queue['rights'][] = $user;
 		    }
 		    return $queue;
 		}
 		else
 		    return NULL;
 	}
-	
+
 	function GetUserRightsRT($user, $queue, $ticket=NULL)
 	{
 		if($queue==0)
@@ -2673,7 +2673,7 @@ class LMS
 				if($right['rights'])
 					$this->RightsRTAdd($queue['id'], $right['id'], $right['rights']);
 	}
-	
+
 	function GetQueueName($id)
 	{
 		return $this->DB->GetOne('SELECT name FROM rtqueues WHERE id=?', array($id));
@@ -2688,7 +2688,7 @@ class LMS
 	{
 		if(!$order)
 			$order = 'createtime,desc';
-	
+
 		list($order,$direction) = sscanf($order, '%[^,],%s');
 
 		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
@@ -2728,11 +2728,11 @@ class LMS
 				break;
 		}
 
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified
 		    FROM rttickets LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
-		    LEFT JOIN users ON (owner = users.id) 
+		    LEFT JOIN users ON (owner = users.id)
 		    LEFT JOIN customers ON (rttickets.customerid = customers.id)
-		    WHERE queueid = ? '.$statefilter 
+		    WHERE queueid = ? '.$statefilter
 		    .' GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, users.name, rttickets.customerid, customers.lastname, customers.name '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
@@ -2748,11 +2748,11 @@ class LMS
 				$result['total']++;
 			}
 		}
-		
+
 		$result['state'] = $state;
 		$result['order'] = $order;
 		$result['direction'] = $direction;
-		
+
 		return $result;
 	}
 
@@ -2768,7 +2768,7 @@ class LMS
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
 		return $stats;
 	}
-	
+
 	function RTStats()
 	{
 		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN 0 THEN 1 END) AS new,
@@ -2777,7 +2777,7 @@ class LMS
 						    COUNT(CASE state WHEN 3 THEN 1 END) AS dead
 					     FROM rttickets');
 	}
-	
+
 	function GetQueueByTicketId($id)
 	{
 		if($queueid = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($id)))
@@ -2794,14 +2794,14 @@ class LMS
 	function TicketAdd($ticket)
 	{
 		$ts = time();
-		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, state, owner, createtime) 
+		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, state, owner, createtime)
 				    VALUES (?, ?, ?, ?, 0, 0, ?)', array($ticket['queue'], $ticket['customerid'], $ticket['requestor'], $ticket['subject'], $ts));
 		$id = $this->DB->GetOne('SELECT id FROM rttickets WHERE createtime=? AND subject=?', array($ts, $ticket['subject']));
 		$this->DB->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime, subject, body, mailfrom)
 				    VALUES (?, ?, ?, ?, ?, ?)', array($id, $ticket['customerid'], $ts, $ticket['subject'], $ticket['body'], $ticket['mailfrom']));
-		$this->SetTS('rttickets');	
+		$this->SetTS('rttickets');
 		$this->SetTS('rtmessages');
-		
+
 		return $id;
 	}
 
@@ -2810,7 +2810,7 @@ class LMS
 		$ts = time();
 		$this->DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($ticketid));
 		$this->DB->Execute('DELETE FROM rttickets WHERE id=?', array($ticketid));
-		$this->SetTS('rtqueues');	
+		$this->SetTS('rtqueues');
 		$this->SetTS('rttickets');
 	}
 
@@ -2832,15 +2832,15 @@ class LMS
 	function GetTicketContents($id)
 	{
 		$ticket = $this->DB->GetRow('
-			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, users.name AS ownername, createtime, resolvetime, subject 
-			FROM rttickets 
-			LEFT JOIN rtqueues ON (queueid = rtqueues.id) 
+			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, users.name AS ownername, createtime, resolvetime, subject
+			FROM rttickets
+			LEFT JOIN rtqueues ON (queueid = rtqueues.id)
 			LEFT JOIN users ON (owner = users.id)
 			LEFT JOIN customers ON (customers.id = customerid)
 			WHERE rttickets.id = ?', array($id));
 		$ticket['messages'] = $this->DB->GetAll('
 			SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, userid, users.name AS username
-			FROM rtmessages 
+			FROM rtmessages
 			LEFT JOIN customers ON (customers.id = customerid)
 			LEFT JOIN users ON (users.id = userid)
 			WHERE ticketid = ? ORDER BY createtime ASC', array($id));
@@ -2875,8 +2875,8 @@ class LMS
 	function SetTicketState($ticket, $state)
 	{
 		($state==2 ? $resolvetime = time() : $resolvetime = 0);
-			
-		if($this->DB->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticket))) 
+
+		if($this->DB->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticket)))
 			$this->DB->Execute('UPDATE rttickets SET state=?, resolvetime=? WHERE id=?', array($state, $resolvetime, $ticket));
 		else
 			$this->DB->Execute('UPDATE rttickets SET state=?, owner=?, resolvetime=? WHERE id=?', array($state, $this->AUTH->id, $resolvetime, $ticket));
@@ -2899,7 +2899,7 @@ class LMS
 	{
 		return $this->DB->GetOne('SELECT min(id) FROM rtmessages WHERE ticketid = ?', array($ticketid));
 	}
-	
+
 	function MessageDel($id)
 	{
 		$this->SetTS('rtmessages');
@@ -2910,11 +2910,11 @@ class LMS
 	 * Konfiguracja LMS-UI
 	 */
 
-	function GetConfigOptionId($var, $section) 
+	function GetConfigOptionId($var, $section)
 	{
 		return $this->DB->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
 	}
-	
+
 	function CheckOption($var, $value)
 	{
 		switch($var)
@@ -2946,7 +2946,7 @@ class LMS
 			case 'monthly_numbering':
 			case 'newticket_notify':
 				if(!isboolean($value))
-					return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false'); 
+					return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');
 			break;
 			case 'debug_email':
 				if(!check_email($value))
@@ -2960,15 +2960,15 @@ class LMS
 	 *   Hosting: Accounts, Aliases, Domains
 	 */
 
-	function GetAccountIdByLogin($login) 
+	function GetAccountIdByLogin($login)
 	{
 		return $this->DB->GetOne('SELECT id FROM passwd WHERE login = ?', array($login));
 	}
 
 	/*
 	 *  Miscalenous
-	 */ 
-	
+	 */
+
 	function GetRemoteMACs($host = '127.0.0.1', $port = 1029)
 	{
 		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
@@ -3037,18 +3037,18 @@ class LMS
 		array_multisort($result['longip'],$result['mac'],$result['ip'],$result['nodename']);
 		return $result;
 	}
-	
+
 	function GetContractList()
 	{
 		$contractlist = explode(',', $this->CONFIG['phpui']['contract_template']);
-		
+
 		foreach($contractlist as $idx => $row)
 		{
 			list($file, $name) = sscanf($row, '%[^:]:%[^[]]');
 			$clist[$idx]['file'] = trim($file);
 			$clist[$idx]['name'] = trim($name);
 		}
-		
+
 		return $clist;
 	}
 
@@ -3062,7 +3062,7 @@ class LMS
 		}
 		return $uiid;
 	}
-	
+
 	function CheckUpdates($force = FALSE)
 	{
 		$uiid = $this->GetUniqueInstallationID();
@@ -3096,8 +3096,8 @@ class LMS
 				foreach(array('id', 'name', 'url', 'hidden') as $key)
 					$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_'.$key, $content['regdata'][$key]));
 			}
-			
-			
+
+
 		}
 
 		return $content;
@@ -3129,7 +3129,7 @@ class LMS
 			// registration data into database. in future we should read info from register.php,
 			// ie. 'Password' incorrect if we protect each installation with password (but then
 			// we should use https)
-			
+
 			sleep(5);
 			$this->DB->Execute('DELETE FROM dbinfo WHERE keytype = ?', array('last_check_for_updates_timestamp'));
 			$this->CheckUpdates(TRUE);
@@ -3144,10 +3144,10 @@ class LMS
 		@include_once('Mail.php');
 		if(!class_exists('Mail'))
 			return trans('Can\'t send message. PEAR::Mail not found!');
-		
+
 		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
 		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
-		
+
 		if ($this->CONFIG['phpui']['smtp_username'])
 		{
 			$params['auth'] = ($this->CONFIG['phpui']['smtp_auth_type'] ? $this->CONFIG['phpui']['smtp_auth_type'] : true);
@@ -3190,22 +3190,22 @@ class LMS
 		$error = $mail_object =& Mail::factory('smtp', $params);
 		if(PEAR::isError($error))
 			return $error->getMessage();
-			
+
 		$error = $mail_object->send($recipients, $headers, $buf);
 		if(PEAR::isError($error))
 			return $error->getMessage();
 		else
 			return "";
 	}
-	
+
 	function GetTaxes($from=NULL, $to=NULL)
 	{
 		$from = $from ? $from : mktime(0,0,0);
 		$to = $to ? $to : mktime(23,59,59);
-		
-		return $this->DB->GetAllByKey('SELECT id, value, label FROM taxes 
-			WHERE (validfrom = 0 OR validfrom <= ?) 
-			    AND (validto = 0 OR validto >= ?) 
+
+		return $this->DB->GetAllByKey('SELECT id, value, label FROM taxes
+			WHERE (validfrom = 0 OR validfrom <= ?)
+			    AND (validto = 0 OR validto >= ?)
 			ORDER BY value', 'id', array($from, $to));
 	}
 }
