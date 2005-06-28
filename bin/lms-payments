@@ -289,6 +289,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("UPDATE cash SET value = value+$assign->{'value'} WHERE invoiceid = $gotinv{$uid} AND itemid = $itemid AND type = 4");
+				$cdbq->execute();
 			}
 			else
 			{
@@ -312,8 +313,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 				{
 					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, ?, $gotinv{$uid}, $itemid)");
 				}
+				$cdbq->execute($desc);
 			}
-			
 		}
 		else
 		{
@@ -325,9 +326,9 @@ while(my $assign = $dbq->fetchrow_hashref())
 			{
 				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, ?)");
 			}
+			$cdbq->execute($desc);
 		}
 
-		$cdbq->execute($desc);
 		print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
 	}
 }	
