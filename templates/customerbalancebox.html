@@ -133,10 +133,10 @@
 								{if $balancelist.invoicepaid[balancelist] == 0}
 								<A href="javascript:invoicepay({$balancelist.docid[balancelist]})"><IMG SRC="img/pay.gif" ALT="[ {t}Account{/t} ]"></A>
 								{/if}
-								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"}></A>
+								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip 0=$balancelist.docid[balancelist] dynpopupmini='?m=number&id=$0' text="Invoice"}></A>
 							{/if}
 							{if $balancelist.doctype[balancelist] == 2}
-								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="" {tip text="Cash receipt"}></A>
+								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="" {tip 0=$balancelist.docid[balancelist] dynpopupmini='?m=number&id=$0' text="Cash receipt"}></A>
 							{/if}
 						{/if}
 						{cycle name=bal print=false}

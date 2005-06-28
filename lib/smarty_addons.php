@@ -52,13 +52,16 @@ function _smarty_function_sizeof($args, &$SMARTY)
 
 function _smarty_function_tip($args, &$SMARTY)
 {
-        $dynpopup = $args['dynpopup'];
+        $dynpopup = $args['dynpopup'] ? $args['dynpopup'] : $args['dynpopupmini'];
 	if ($dynpopup) 
 	{
 		if(is_array($args))
 			foreach($args as $argid => $argval)
 				$dynpopup = str_replace('$'.$argid, $argval, $dynpopup);
-		$text = "onMouseOver=\"return overlib('<iframe ID=&quot;autoiframe&quot; FRAMEBORDER=0 SCROLLING=NO width=220 height=150 src=&quot;".$dynpopup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15);\" onMouseOut=\"nd();\"";
+		$width = $args['dynpopup'] ? 220 : 10;
+		$height = $args['dynpopup'] ? 150 : 10;
+		$offsetx = $args['dynpopup'] ? 85 : 15;
+		$text = "onMouseOver=\"return overlib('<iframe ID=&quot;autoiframe&quot; FRAMEBORDER=0 SCROLLING=NO width=$width height=$height src=&quot;".$dynpopup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,$offsetx,OFFSETY,15);\" onMouseOut=\"nd();\"";
 //		global $SESSION;
 //		$text = 'onMouseOver="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe ID=&quot;autoiframe&quot; FRAMEBORDER=0 SCROLLING=NO width=220 height=150 src=&quot;'.$dynpopup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onMouseOut="nd();"';
 		return $text;
