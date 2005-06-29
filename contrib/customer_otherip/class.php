@@ -91,6 +91,7 @@ $CONFIG['directories']['config_templates_dir'] = (! $CONFIG['directories']['conf
 $CONFIG['directories']['smarty_dir'] = (! $CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : $CONFIG['directories']['lib_dir'].'/Smarty') : $CONFIG['directories']['smarty_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = (! $CONFIG['directories']['smarty_compile_dir'] ? $CONFIG['directories']['sys_dir'].'/templates_c' : $CONFIG['directories']['smarty_compile_dir']);
 $CONFIG['directories']['smarty_templates_dir'] = (! $CONFIG['directories']['smarty_templates_dir'] ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
+$CONFIG['finances']['account'] = (! $CONFIG['finances']['account'] ? '98700000000000000000000123' : $CONFIG['finances']['account']);
 
 foreach(lms_parse_ini_file($CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
 	foreach($values as $key => $val)
