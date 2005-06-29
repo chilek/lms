@@ -1,14 +1,19 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1 ALIGN="CENTER"><FONT class="red">{t}Access denied!{/t}</FONT></H1>
-<P ALIGN="CENTER"><IMG SRC="img/noaccess.png" ALT=""></P>
-<P ALIGN="CENTER"><FONT class="alert">{t}You have no access rights to this part of system.{/t}</FONT></P>
+<h1 align="center" class="alert">{t}Access denied!{/t}</h1>
+<table width="100%">
+    <tr>
+	<td align="center">
+	    <img src="img/noaccess.png" alt="">
+	</td>
+    </tr>
+    <tr>
+	<td align="center" class="alert">
+	    <br>{t}You have no access rights to this part of system.{/t}
+	</td>
+    </tr>
+</table>
 {if $layout.popup}
-<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/autoiframe.js"></SCRIPT>
-<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript">
-<!--
-auto_iframe(30);
-//-->
-</SCRIPT>
+<script type="text/javascript" language="JavaScript" src="img/autoiframe.js"></script>
 {/if}
 {include file="footer.html"}
