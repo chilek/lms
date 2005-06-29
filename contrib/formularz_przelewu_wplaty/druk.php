@@ -86,10 +86,16 @@ $KONTO_DO = (! $CONFIG['finances']['account'] ? '98700000000000000000000123' : $
 // ustaw prawid³ow± ¶cie¿kê do pliku z funkcj± to_words()
 require_once("../../lib/locale/pl/functions.php");
 
-$ISP1_DO = (! $CONFIG['finances']['line_1'] ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['account']);
-$ISP2_DO = (! $CONFIG['finances']['line_2'] ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['account']);
+$ISP1_DO = (! $CONFIG['finances']['line_1'] ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_1']);
+$ISP2_DO = (! $CONFIG['finances']['line_2'] ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_2']);
 
-$USER_TY = 'Abonament - ID:'.sprintf('%04d',$_GET['UID']);
+$USER_T1 = (! $CONFIG['finances']['pay_title'] ? 'Abonament - ID:%CID% %LongCID%' : $CONFIG['finances']['pay_title']);
+
+$Before = array ("%CID%","%LongCID%");
+$After = array ($_GET['UID'],sprintf('%04d',$_GET['UID']));
+
+$USER_TY=str_replace($Before,$After,$USER_T1);
+
 $CURR = 'PLN';
 $SHORT_TO_WORDS = 0;	// 1 - krótki format kwoty s³ownej 'jed dwa trz 15/100'
 			// 0 - d³ugi format kwoty s³ownej 'sto dwadzie¶cia trzy 15/100 z³'
