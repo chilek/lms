@@ -5,15 +5,29 @@ Wiêc tak:
 Przyda³o by siê miejsce z którego mo¿na by odnale¼æ czy przegl±daæ wszystkie
 dokumenty przy zadanych przez nas kryteriach (umowy, faktury itp).
 
-Dodajemy tabelkê docs gdzie mamy:
+ju¿ mamy tabelkê documents, teraz potrzebujemy co¶ na dokumenty inne ni¿
+faktury i KP, czyli umowy, protoko³y odbioru itp.
+proponujê ¿eby dokumenty, które nie s± bezpo¶rednio zwi±zane z 
+finansami mia³y documents.type = -1
 
+<lexx>
 id | number | data_od | data_do | data_wystawienia | id_uzytkownika | 
 id_klienta | value (dla dokumentów finansowych) | type (mo¿e z mask± binarn±) |
 path (dla dokumentów trzymanych na dysku - skanów czy innych takich) |
 title | generatorid (id tego co wygenerowa³o dokument)
+</lexx>
 
-Do faktur i kp trzeba by dodac kolumnê docsid, dodatkowo nowo tworzona faktura
-powinna dodaæ informacje o sobie do docs.
+table documentcontents (
+    id integer auto_numer
+    docid integer, -- ID dokumentu z tabeli documents
+    title text, -- tytu³ dokumentu np. 'Umowa o us³ugi Internetowe'
+    fromdate integer, -- data obowi±zywania np. umowy
+    todate integer, -- data obowi±zywania
+    filename varchar(255), -- nazwa pliku na dysku
+    contenttype varchar(255), -- typ pliku
+    PRIMARY KEY (id)
+    UNIQUE (docid)
+)
 
 Dodajemy silnik do generowania dokumentów ró¿norakich, sk³adaj±cy siê z modu³ów
 generuj±cyh rózne dokumenty. Ka¿dy taki modu³ to jeden plik php zawieraj±cy
