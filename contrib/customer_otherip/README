@@ -6,7 +6,8 @@ Spis rzeczy:
 2) lms-notify
 3) ikonki
 4) pos³owie
-
+5) ró¿ne autoryzacje
+6) dane firmy na formularzu przelewu
 
 1) co to
 
@@ -57,3 +58,18 @@ $id = GetCustomerIDByIDAndPIN($login, $pin);
 
 Oznacza to ni mniej ni wiêcej ale ¿e mo¿na klienta identyfikowaæ po:
 Telefonie albo ID albo Nr umowy. Wybór nale¿y do Was.
+
+6) Aby na formularzu wp³aty mieæ w³asne dane (nazwê firmy, tytu³) nale¿y
+w lms.ini dopisaæ w sekcji 'finances':
+
+account		-	nr konta (iban, 26 cyfr)
+line_1
+line_2		- 2 linnie z nazw± firmy
+						(po cichu przyciête pod limit na formularzu!) 
+pay_title	- p³atno¶æ tytu³em, mozna tutaj zaszaleæ:
+	np 
+	'Abonament - ID:%CID%: :%LongCID%:' 
+	zostanie zmienione na np 
+	'Abonament - ID:1: :0001:'
+
+
