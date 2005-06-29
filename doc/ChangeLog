@@ -9,6 +9,8 @@ version ? (????-??-??):
     and receipt numbers (alec)
   - lms-payments: fixed unwanted params binding in DBI's execute method (alec)
   - fixed tax calculations on Sale Registry (alec)
+  - sticky/clickable nodelistshort (alec)
+  - upgraded OverLIB to 4.17 version (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

@@ -2,7 +2,6 @@
 // www.kurshtml.boo.pl
 // Je¶li chcesz wykorzystaæ ten skrypt na swojej stronie, nie usuwaj tego komentarza!
 
-
 function auto_iframe(margines)
 {
    if (parent != self && document.body && (document.body.scrollHeight || document.body.offsetHeight))
@@ -51,4 +50,5 @@ function auto_iframe(margines)
       }
    }
 }
+
 window.onload = auto_iframe;

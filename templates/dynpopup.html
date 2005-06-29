@@ -6,13 +6,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
 <title>::: LMS :::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
-<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/autoiframe.js"></SCRIPT>
+<script type="text/javascript" src="img/autoiframe.js"></script>
 </head>
-<body>
-<P class="superlight">{$content}
-<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript">
+<body class="superlight">
+<P id="content">{$content}
+<script type="text/javascript" language="JavaScript">
 <!--
-auto_iframe(0);
+//parent.document.getElementById('autoiframe').width = document.getElementById('content').offsetWidth;
 //-->
 </SCRIPT>
 </body>

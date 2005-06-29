@@ -9,7 +9,7 @@
 <SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/autoiframe.js"></SCRIPT>
 </head>
 <body>
-<TABLE WIDTH="100%" CELLPADDING="3">
+<TABLE WIDTH="100%" CELLPADDING="3" id="table">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%">
 			<IMG SRC="img/customer.gif" ALT="">
@@ -125,7 +125,7 @@
 </TABLE>
 <SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript">
 <!--
-auto_iframe(0);
+parent.document.getElementById('autoiframe').width = document.getElementById('table').offsetWidth;
 //-->
 </SCRIPT>
 </BODY>
