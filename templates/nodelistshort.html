@@ -7,10 +7,10 @@
 <title>::: LMS :::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/autoiframe.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/common.js"></SCRIPT>
 </head>
 <body>
-
-<TABLE WIDTH="100%" CELLPADDING="3">
+<TABLE WIDTH="100%" CELLPADDING="3" id="table">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%">
 			<IMG SRC="img/node.gif" alt="">
@@ -23,12 +23,12 @@
 	{if $customernodes.total > 0}
 	{section name=customernodes loop=$customernodes}
 	{if $customernodes[customernodes].id}
-	<tr class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}">
+	<tr class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%">
 			<IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]">
 			<IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]">
 		</TD>
-		<TD WIDTH="97%">
+		<TD WIDTH="97%" onClick="parent.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 			<B>{$customernodes[customernodes].name}</B><BR>
 			<NOBR>{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub!="0.0.0.0"} ({$customernodes[customernodes].ip_pub}) {/if} / {$customernodes[customernodes].mac}</NOBR><BR>
 			<NOBR>{$customernodes[customernodes].info|truncate:45:"..."}</NOBR>
@@ -46,11 +46,11 @@
 	</TR>
 	{/if}
 </TABLE>
-
 <SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript">
 <!--
-auto_iframe(0);
+parent.document.getElementById('autoiframe').width = document.getElementById('table').offsetWidth;
 //-->
 </SCRIPT>
 </BODY>
 </HTML>
+

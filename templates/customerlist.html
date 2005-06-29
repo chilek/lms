@@ -81,7 +81,7 @@
 		<TD valign="top" align="right">
 			({$customerlist[customerlist].id|string_format:"%04d"})<BR>
 			{if $customerlist[customerlist].account}
-				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" ALT="" {tip 0=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$0'}></A>
+				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" ALT="" {tip 0=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$0' sticky=1}></A>
 			{/if}
 		</TD>
 		<TD align="right" valign="top" NOWRAP>

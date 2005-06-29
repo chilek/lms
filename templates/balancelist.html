@@ -150,10 +150,10 @@
 		<TD width="1%" class="fright" align="right" nowrap>
 			{if $balancelist[balancelist].docid}
 				{if $balancelist[balancelist].doctype==1}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip 0=$balancelist[balancelist].docid dynpopupmini='?m=number&id=$0' text="Invoice"}></A>
+				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {t}Invoice{/t} ]" {tip 0=$balancelist[balancelist].docid dynpopup='?m=number&id=$0'}></A>
 				{/if}
 				{if $balancelist[balancelist].doctype==2}
-				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printr.gif" ALT="" {tip 0=$balancelist[balancelist].docid dynpopupmini='?m=number&id=$0' text="Cash receipt"}></A>
+				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printr.gif" ALT="[ {t}Cash receipt{/t} ]" {tip 0=$balancelist[balancelist].docid dynpopup='?m=number&id=$0'}></A>
 				{/if}
 			{/if}
 			{cycle print=false}
