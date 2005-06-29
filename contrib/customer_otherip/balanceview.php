@@ -46,6 +46,7 @@ if($id)
 	$SMARTY->assign('customerinfo',$LMS->GetCustomer($id));
 	$SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($id));
 	$SMARTY->assign('limit',15);
+	$SMARTY->assign('account_no',$CONFIG['finances']['account']);
 	$SMARTY->display('balanceview.html');
 }
 else
