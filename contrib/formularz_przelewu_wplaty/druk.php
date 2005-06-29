@@ -9,15 +9,85 @@
 
 <?php 
 
+/*
+ * LMS version 1.7-cvs
+ *
+ *  (C) Copyright 2001-2005 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  $Id$
+ */
+
+// REPLACE THIS WITH PATH TO YOU CONFIG FILE
+
+$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
+
+// PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
+// *EXACTLY* WHAT ARE YOU DOING!!!
+// *******************************************************************
+
+header('X-Powered-By: LMS/1.7.1/contrib_formularzwplaty');
+
+// Parse configuration file
+
+function lms_parse_ini_file($filename, $process_sections = false) 
+{
+	$ini_array = array();
+	$section = '';
+	$lines = file($filename);
+	foreach($lines as $line) 
+	{
+		$line = trim($line);
+		
+		if($line == '' || $line[0] == ';' || $line[0] == '#') 
+			continue;
+		
+		list($sec_name) = sscanf($line, "[%[^]]");
+		
+		if( $sec_name )
+			$section = trim($sec_name);
+		else 
+		{
+			list($property, $value) = sscanf($line, "%[^=] = '%[^']'");
+			if ( !$property || !$value ) 
+			{
+				list($property, $value) = sscanf($line, "%[^=] = \"%[^\"]\"");
+				if ( !$property || !$value ) 
+				{
+					list($property, $value) = sscanf($line, "%[^=] = %[^;#]");
+					if( !$property || !$value ) 
+						continue;
+					else
+						$value = trim($value, "\"'");
+				}
+			}
+		
+			$property = trim($property);
+			$value = trim($value);
+			
+			if($process_sections) 
+				$ini_array[$section][$property] = $value;
+			else 
+				$ini_array[$property] = $value;
+		}
+	}
+	
+	return $ini_array;
+}
+
+
+foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
+    $CONFIG[$key] = $val;
+
+//  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
+$KONTO_DO = (! $CONFIG['finances']['account'] ? '98700000000000000000000123' : $CONFIG['finances']['account']);
+
 // ustaw prawid³ow± ¶cie¿kê do pliku z funkcj± to_words()
 require_once("../../lib/locale/pl/functions.php");
 
-//  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
-
-$KONTO_DO = '0000000000000000000000000';
-
-$ISP1_DO = 'xxxxxxxxxxxxxxxxxxxxxxx';
-$ISP2_DO = 'xxxxxxxxxxxxxxxxxxxxxxx';
+$ISP1_DO = (! $CONFIG['finances']['line_1'] ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['account']);
+$ISP2_DO = (! $CONFIG['finances']['line_2'] ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['account']);
 
 $USER_TY = 'Abonament - ID:'.sprintf('%04d',$_GET['UID']);
 $CURR = 'PLN';
