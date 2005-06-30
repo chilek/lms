@@ -45,7 +45,7 @@ if (typeof ol_closefont=='undefined') var ol_closefont="Tahoma,Verdana,Arial,Hel
 if (typeof ol_textsize=='undefined') var ol_textsize="1";
 if (typeof ol_captionsize=='undefined') var ol_captionsize="1";
 if (typeof ol_closesize=='undefined') var ol_closesize="1";
-if (typeof ol_width=='undefined') var ol_width="100";
+if (typeof ol_width=='undefined') var ol_width="150";
 if (typeof ol_border=='undefined') var ol_border="1";
 if (typeof ol_cellpad=='undefined') var ol_cellpad=2;
 if (typeof ol_offsetx=='undefined') var ol_offsetx=10;
