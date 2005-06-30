@@ -167,7 +167,7 @@ require_once($_LIB_DIR.'/Session.class.php');
 
 // Initialize Session, Auth and LMS classes
 
-$SESSION = new Session($DB, $CONFIG);
+$SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
 $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->lang = $_language;
