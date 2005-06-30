@@ -37,7 +37,7 @@
 				    </TD>
 				    <TD WIDTH="1%" nowrap><B>{t}Tax:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Enter Tax rate" trigger="taxvalue"}>
+					<SELECT SIZE="1" NAME="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
 					{foreach item=tax from=$taxeslist}
 					    <OPTION VALUE="{$tax.id}"{if $tariff.taxid == $tax.id} selected{/if}>{$tax.label}</OPTION>
 					{/foreach}

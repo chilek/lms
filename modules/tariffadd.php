@@ -76,6 +76,9 @@ if(isset($tariffadd))
 		if($LMS->GetTariffIDByName($tariffadd['name']))
 			$error['name'] = trans('Subscription $0 already exists!',$tariffadd['name']);
 
+	if(!$tariffadd['taxid'])
+		$tariffadd['taxid'] = 0;
+		
 	if(!$error)
 	{
 		$SESSION->redirect('?m=tarifflist&id='.$LMS->TariffAdd($tariffadd));
