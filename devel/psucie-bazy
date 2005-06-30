@@ -39,5 +39,31 @@ id | year | month
 3  | 2005 |   2
 ...
 13 | 2005 |  12
-No i paytype: (to raczej kosmetyka)
+
+Pewnie mi jak zwykle wysz³o pomarudziæ o tym "jak" i to jeszcze "przed", no 
+ale mo¿e jakie¶ wsparcie od osób które na codzieñ robi± ksiêgowo¶æ bo ja mam
+to mocno w teorii [w sensie nie wystawiam co dzien 5000 korekt...] [xxx]
+
+Wiêc tak:
+
+A) korekty dotycz± tylko i wy³±cznie dokumentów ¼ród³owych a nie korekt. Ale 
+z poziomu bazy to nie oznacza ¿e mo¿na bezpiecznie u¿ywaæ nr faktury, nale¿y 
+u¿ywaæ id z bazy.
+
+B) number_plan choæby mia³byæ 1 dla faktur i 2 dla koryguj±cych MA BYÆ i ju¿.
+i nie jest to typ... choæ mo¿emy za³o¿yæ ¿e numerki 2,4,6,8... koryguj± 1,3,5,7..
+
+C) z templatem numerowania nale¿y uciec kompletnie z lms.ini i mieæ go w bazie...
+i teraz maj±c numbering_plan "1" N/M/LMS/Y to nr 2 powinien byæ: N/M/LMSKOR/Y
+
+D) aby sobie nie strzeliæ w stopê:
+ *] koryguj±ce fakturki maj± inn± numeracjê, ale inn± tylko co do "/LMSKOR/" 
+	ca³a reszta jak wybór schematu miesciêczny/roczny zostaje
+
+ *] domy¶lnie faktura koryguj±ca musi mieæ jakiekolwiek pozycje, bez nich nei 
+    mo¿e jej byæ bo nic nie koryguje
+ *] zapisujemy pozycje PO_SKORYGOWANIU 
+
+
+UI=>
 
