@@ -18,14 +18,13 @@ title | generatorid (id tego co wygenerowa³o dokument)
 </lexx>
 
 table documentcontents (
-    id integer auto_numer
     docid integer, -- ID dokumentu z tabeli documents
     title text, -- tytu³ dokumentu np. 'Umowa o us³ugi Internetowe'
     fromdate integer, -- data obowi±zywania np. umowy
     todate integer, -- data obowi±zywania
     filename varchar(255), -- nazwa pliku na dysku
     contenttype varchar(255), -- typ pliku
-    PRIMARY KEY (id)
+    comment text, -- dodatkowe info
     UNIQUE (docid)
 )
 
