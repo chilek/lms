@@ -33,7 +33,6 @@ class Session {
 	var $_updated = FALSE;			// indicates that content has
 						// been altered
 	var $DB = NULL;				// database library object
-	var $CONFIG = NULL;			// configuration array
 	var $timeout = 600;			// timeout since session will
 						// be destroyed
 	var $autoupdate = FALSE;		// do automatic update on each
@@ -41,13 +40,12 @@ class Session {
 	var $GCprob = 10;			// probality (in percent) of
 						// garbage collector procedure
 	
-	function Session(&$DB, &$CONFIG)
+	function Session(&$DB, $timeout = 0)
 	{
 		$this->DB =& $DB;
-		$this->CONFIG =& $CONFIG;
 		
-		if(isset($this->CONFIG['phpui']['timeout']))
-			$this->timeout =& $this->CONFIG['phpui']['timeout'];
+		if(isset($timeout) && $timeout != 0)
+			$this->timeout = $timeout;
 		
 		if(! isset($_COOKIE['SID']))
 			$this->_createSession();
