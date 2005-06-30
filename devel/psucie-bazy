@@ -6,38 +6,7 @@ Otó¿ imvho, timestamp jest dobry, ale robi±c w/w operacje chcia³bym
 je oznaczaæ równie¿ dat± w sensie YYYY/MM/DD. Otó¿ wp³ata powinna byæ 
 oznaczona równie¿ dniem zaksiêgowania jej. Powodów wiele.
 
-KP/wyci±gi bankowe: (doc to domy¶lnie dokumenty powoduj±ce wp³aty 
-albo uznania - np reklamacje etc...)
-
-| doc_id |type| value  | c_date     |accounted_date|comment|user*| to_whom |
-|  123   | 1  | 110.00 | 2005/03/03 |  2005/03/10  |       |     |
-
-Teraz [Alec?] czy zbieramy na KP kilka pozycji czy nie, bo na ogó³ nie ma 
-takiej potrzeby ale dobrze jest mieæ otwart± furtkê do wyci±gów bankowych. 
-
-Idea jest te¿ taka ¿e _mo¿na_ cash potem skompresowaæ np:
-
-ID | type | value   |      Comment           | finacial_date | 
-31 |  4   | 9970.00 | Obci±¿enia za rok 2003 | 2003/01/01    |    
-32 |  3   | 9870.00 | Wp³aty za rok 2003     | 2003/12/31    |
-
-(Co nie jest ani zbyt piêkne, ani m±dre ale funkcjonalne) 
-
-alec> a mi siê to w³a¶nie podoba, z tym, ¿e wszystkie skompresowane dane 
-przewalamy do tabelki cash_archive i dajemy mo¿liwo¶æ jej przegl±dania w
-formie filtrowanej listy tak jak bilans sieci, nawet jak uzbieraj± siê tam 
-dane z kilku lat, to tabelka ta nie bêdzie czêsto u¿ywana i nie musi to
-dzia³aæ szybko.
-
-uhm Alec po raz kolejny chyba my¶limy to samo nio :>
-
-Itemid |   Comment  |  Netto  | Tax_id | Brutto |
--------+------------+---------+--------+--------+
-  1    |  Abonament |   70.00 |  1     |        |
-  2    |     NIC    |   30.00 |  4     | 36.60  |
-
-Teraz:
- id | number |   cdate    | paytime | paytype | ...
+[KP done, wyci±gi to be considered]
 
 (W 1.7/1.9 ?): 
 
@@ -64,19 +33,11 @@ lepiej mieæ w invoices i na podstawie tych warto¶ci sprawdzaæ czy jest ju¿
 faktura w danym okresie.
 
 A Period:
-
 id | year | month
 1  | 2004 | NULL
 2  | 2005 |   1
 3  | 2005 |   2
 ...
 13 | 2005 |  12
-
 No i paytype: (to raczej kosmetyka)
-
-Id | Comment
-1  | Gotówka
-2  | Przelew
-3  | Zaliczka/Przedp³ata
-... 
 
