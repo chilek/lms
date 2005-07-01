@@ -254,7 +254,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	if($customergroupscount || !$inicustomergroups)
 	{
 		my $balance = $row->{'balance'};
-		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND customerid = $row->{'id'} GROUP BY customerid HAVING SUM(value) > 0");
+		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM((value * (100 - discount)) / 100) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND customerid = $row->{'id'} GROUP BY customerid HAVING SUM(value * ((100 - discount) / 100)) > 0");
 		$sdbq->execute();
 		$srow = $sdbq->fetchrow_hashref();
 
