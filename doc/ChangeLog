@@ -12,6 +12,8 @@ version ? (????-??-??):
   - sticky/clickable nodelistshort (alec)
   - upgraded OverLIB to 4.17 version (alec)
   - now is possible to define tariff without tax (alec)
+  - contrib/customer_otherip: balanceviewuserinfomini.html renamed to
+    customerinfomini.html (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
