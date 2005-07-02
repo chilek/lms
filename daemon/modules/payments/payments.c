@@ -220,15 +220,16 @@ void reload(GLOBAL *g, struct payments_module *p)
 				}
 				g->db_free(&sres);
 			}
-    			
+
 			if( suspended == uid || s_state )
 				val = val * p->suspension_percentage / 100;
 			
 			if( !val )
 				continue;
-			
+
 			value = ftoa(val);
 			taxid = g->db_get_data(res,i,"taxid");
+
 			// prepare insert to 'cash' table
 			insert = strdup("INSERT INTO cash (time, type, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, 4, %value, %taxid, %customerid, '?', %invoiceid, %itemid)");
 			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
@@ -249,7 +250,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				if( last_customerid != uid ) 
 				{
 					// prepare insert to 'invoices' table
-					g->db_pexec(g->conn, "INSERT INTO documents (number, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, 1, ?, '? ?', '?', '?', '?', '?', '?', '?', %NOW%, ?, '?')",
+					g->db_pexec(g->conn, "INSERT INTO documents (number, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, 1, ?, '? ?', '?', '?', '?', '?', '?', %NOW%, ?, '?')",
 						itoa(++number),
 						g->db_get_data(res,i,"customerid"),
 						g->db_get_data(res,i,"lastname"),
@@ -262,7 +263,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						p->deadline,
 						p->paytype
 					);
-		
+
 					// ma³e uproszczenie w stosunku do lms-payments
 					result = g->db_query(g->conn, "SELECT MAX(id) AS id FROM documents WHERE type = 1");
 					invoiceid = (g->db_nrows(result) ? atoi(g->db_get_data(result,0,"id")) : 0);
