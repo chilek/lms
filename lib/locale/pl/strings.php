@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.6-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -593,6 +593,7 @@ $_LANG['Firstname'] = 'Imię';
 $_LANG['For:'] = 'Dla:';
 $_LANG['First name:'] = 'Imię:';
 $_LANG['free:'] = 'wolne:';
+$_LANG['from'] = 'od';
 $_LANG['from:'] = 'od:';
 $_LANG['From'] = 'Od';
 $_LANG['From:'] = 'Od:';
@@ -1340,6 +1341,7 @@ $_LANG['Timetable'] = 'Terminarz';
 $_LANG['timetable management'] = 'zarządzanie terminarzem';
 $_LANG['Title'] = 'Tytuł';
 $_LANG['Title:'] = 'Tytuł:';
+$_LANG['to'] = 'do';
 $_LANG['to:'] = 'do:';
 $_LANG['To'] = 'Do';
 $_LANG['To:'] = 'Do:';
