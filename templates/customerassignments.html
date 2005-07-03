@@ -35,8 +35,8 @@
 					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{if $a.discount!=0}{$a.discount}%{else}-{/if}</TD>
 					{/if}
 					<TD WIDTH="92%" {if $a.tariffid}OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'"{/if}>
-						{if $a.datefrom}od {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
-						{if $a.dateto}do {$a.dateto|date_format:"%Y/%m/%d"}{/if}
+						{if $a.datefrom}{t}from{/t} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
+						{if $a.dateto}{t}to{/t} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 						{if $a.tariffid}
