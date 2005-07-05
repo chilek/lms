@@ -80,10 +80,18 @@
 {if $customerinfo.im neq "" && $customerinfo.im neq 0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			{if $_language=="pl"}
 			<IMG SRC="http://www.gadu-gadu.pl/customers/status.asp?id={$customerinfo.im}&styl=1" ALT="">
+			{else}
+			<img src="img/gg.gif" alt="">
+			{/if}
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{if $_language=="pl"}
 			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
+			{else}
+			{$customerinfo.im}
+			{/if}
 		</TD>
 	</TR>
 {/if}
