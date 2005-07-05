@@ -15,6 +15,7 @@ version ? (????-??-??):
   - contrib/customer_otherip: balanceviewuserinfomini.html renamed to
     customerinfomini.html (alec)
   - lmsd/payments: fixed number of query parameters (alec)
+  - gadu-gadu status checking only for lang = pl (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
