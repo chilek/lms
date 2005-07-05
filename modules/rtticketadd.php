@@ -72,7 +72,7 @@ if(isset($ticket))
 			if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
 			{
 				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
-				if($mailfname == 'customer') $mailfname = $user['name'];
+				if($mailfname == 'user') $mailfname = $user['name'];
 				$mailfname = '"'.$mailfname.'"';
 			}
 
