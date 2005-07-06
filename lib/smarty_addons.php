@@ -58,9 +58,9 @@ function _smarty_function_tip($args, &$SMARTY)
 		if(is_array($args))
 			foreach($args as $argid => $argval)
 				$dynpopup = str_replace('$'.$argid, $argval, $dynpopup);
-		$text = "onMouseOver=\"return overlib('<iframe ID=&quot;autoiframe&quot; width=150 height=10 FRAMEBORDER=0 SCROLLING=NO src=&quot;".$dynpopup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15".($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onMouseOut=\"nd();\"";
+		$text = "onmouseover=\"return overlib('<iframe id=&quot;autoiframe&quot; width=150 height=10 frameborder=0 scrolling=no src=&quot;".$dynpopup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15".($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
 //		global $SESSION;
-//		$text = 'onMouseOver="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe ID=&quot;autoiframe&quot; FRAMEBORDER=0 SCROLLING=NO width=220 height=150 src=&quot;'.$dynpopup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onMouseOut="nd();"';
+//		$text = 'onmouseover="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe id=&quot;autoiframe&quot; frameborder=0 scrolling=no width=220 height=150 src=&quot;'.$dynpopup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onmouseout="nd();"';
 		return $text;
 	} else {
 	    $text = $args['text'];
@@ -84,9 +84,9 @@ function _smarty_function_tip($args, &$SMARTY)
 	    $text = str_replace("\n",'<BR>',$text);
 	
 	    if($SMARTY->_tpl_vars['error'][$args['trigger']])
-		    $result = ' onMouseOver="return overlib(\'<B><FONT COLOR=RED>'.$error.'</FONT></B>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();" ';
+		    $result = ' onmouseover="return overlib(\'<b><font color="red">'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
 	    elseif($args['text'] != '')
-		    $result = 'onMouseOver="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();"';
+		    $result = 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
 	    $result .= ($SMARTY->_tpl_vars['error'][$args['trigger']] ? ($args['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ') : ($args['bold'] ? ' CLASS="bold" ' : ''));
 		    return $result;
 	}
