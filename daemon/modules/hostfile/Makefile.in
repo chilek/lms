@@ -11,7 +11,7 @@ $(OUT): ${OBJECTS}
 	rm -rf $(OBJECTS)
 	
 clean:
-	rm -rf $(OUT)
+	rm -rf $(OUT) $(OBJECTS)
 
 install:
 	install -c -m 755 $(OUT) $(MODULESDIR)
