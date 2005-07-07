@@ -17,7 +17,7 @@ $(OUT): ${OBJECTS}
 	rm -rf $(OBJECTS)
 
 clean:
-	rm -rf $(OUT)
+	rm -rf $(OUT) $(OBJECTS)
 	make -C lib clean
 	make -C extensions clean
 
