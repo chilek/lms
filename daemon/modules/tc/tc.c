@@ -43,7 +43,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 {
 	FILE *fh;
 	QueryHandle *res, *ures, *nres;
-	int x=100, i, j, v, m=0, k=2, n=2, nc=0, gc=0;
+	int x=100, i, j, v=0, m=0, k=2, n=2, nc=0, gc=0;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(tc->networks);	
