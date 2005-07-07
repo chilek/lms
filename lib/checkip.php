@@ -28,11 +28,13 @@
 
 if(isset($CONFIG['phpui']['allow_from']))
 {
-	// usuñmy prefix ipv6 jak jest
+	// delete ipv6 prefix if it's present: 
 	
 	$ipaddr = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
 
 	$allowedlist = explode(',',$CONFIG['phpui']['allow_from']);
+
+	$isin = FALSE;
 
 	foreach($allowedlist as $value)
 	{
