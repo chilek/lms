@@ -593,6 +593,12 @@ mech_list: login plain
 
 # authpgsqlrc (or authmysqlrc) (Courier):
 
+# user postfix (owner of mail directory)
+#MYSQL_UID_FIELD '1004'
+PGSQL_UID_FIELD '1004'
+# group postfix (owner of mail directory)
+#MYSQL_GID_FIELD '1004'
+PGSQL_GID_FIELD '1004'
 #MYSQL_PORT		3306
 PGSQL_PORT		5432
 #MYSQL_USERNAME		lms
