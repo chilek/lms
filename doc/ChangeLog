@@ -16,6 +16,7 @@ version ? (????-??-??):
     customerinfomini.html (alec)
   - lmsd/payments: fixed number of query parameters (alec)
   - gadu-gadu status checking only for lang = pl (alec)
+  - print_balance_history on invoices now really works (hunter)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
