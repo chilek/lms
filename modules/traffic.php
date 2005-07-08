@@ -77,9 +77,13 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 		$limit = ' LIMIT '.$limit;
 	else
 		$limit = '';
-
+		
 	// join query from parts
-	$query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE 1=1 AND '.$dt.' '.$net.' GROUP BY nodeid, name, ipaddr '.$order.' '.$limit;
+	$query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download 
+		    FROM stats 
+		    LEFT JOIN nodes ON stats.nodeid=nodes.id 
+		    WHERE 1=1 AND '.$dt.' '.$net.
+		    'GROUP BY nodeid, name, ipaddr '.$order.' '.$limit;
 
 	// get results
 	if ($traffic = $DB->GetAll($query))
@@ -174,7 +178,7 @@ switch($bar)
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
-	case 'customer':
+	case 'user':
 		$traffic = Traffic($_POST['from'], $_POST['to'], $_POST['net'], $_POST['order'], $_POST['limit']);
 	break;
 
