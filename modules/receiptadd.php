@@ -136,6 +136,7 @@ switch($_GET['action'])
 		$itemdata = r_trim($_POST);
 		$itemdata['value'] = round((float) str_replace(',','.',$itemdata['value']),2);
 		$itemdata['posuid'] = (string) getmicrotime();
+		$itemdata['value'] = str_replace(',','.',$itemdata['value']);
 	
 		if($itemdata['value'] && $itemdata['description'])
 			$contents[] = $itemdata;
@@ -147,7 +148,7 @@ switch($_GET['action'])
 			{
 				$row = $DB->GetRow('SELECT docid, itemid, comment FROM cash WHERE id = ?', array($id));
 				$itemdata['value'] = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
-				//$itemdata['value'] = round((float) str_replace(',','.',$itemdata['value']),2);
+				$itemdata['value'] = str_replace(',','.',$itemdata['value']);
 				$itemdata['description'] = $row['comment'];
 				$itemdata['reference'] = $id;
 				$itemdata['posuid'] = (string) getmicrotime();
