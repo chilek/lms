@@ -10,6 +10,8 @@ version 1.6.1 ? (??/??/????):
   - lms-payments: fixed problem with DBD execute() and binding not needed 
     variables (alec)
   - BTS#0000384: upgraded OverLIB to 4.17 - fixed tooltips positioning (alec)
+  - critical bug: SESSION::remove() doesn't update session, so after restore
+    session removed variable was still avaiable (lukasz)    
 
 version 1.6.0 Thor (13/06/2005):
 
