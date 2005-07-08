@@ -115,11 +115,11 @@ class Session {
 		if(isset($this->_content[$variable]))
 		{
 			unset($this->_content[$variable]);
-			return TRUE;
 			if($this->autoupdate)
 				$this->_saveSession();
 			else
 				$this->_updated = TRUE;
+			return TRUE;
 		}
 		else
 			return FALSE;
