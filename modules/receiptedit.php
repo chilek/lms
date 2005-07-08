@@ -155,6 +155,8 @@ switch($_GET['action'])
 		
 		$itemdata = r_trim($_POST);
 		$itemdata['value'] = round((float) str_replace(',','.',$itemdata['value']),2);
+		// workaround for PHP 4.3.10 bug
+		$itemdata['value'] = str_replace(',','.',$itemdata['value']);
 		$itemdata['posuid'] = (string) getmicrotime();
 	
 		if($itemdata['value'] && $itemdata['description'])
@@ -167,7 +169,7 @@ switch($_GET['action'])
 			{
 				$row = $DB->GetRow('SELECT docid, itemid, comment FROM cash WHERE id = ?', array($id));
 				$itemdata['value'] = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
-				//$itemdata['value'] = round((float) str_replace(',','.',$itemdata['value']),2);
+				$itemdata['value'] = str_replace(',','.',$itemdata['value']);
 				$itemdata['description'] = $row['comment'];
 				$itemdata['reference'] = $id;
 				$itemdata['posuid'] = (string) getmicrotime();
