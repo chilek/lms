@@ -17,7 +17,10 @@ version ? (????-??-??):
   - lmsd/payments: fixed number of query parameters (alec)
   - gadu-gadu status checking only for lang = pl (alec)
   - print_balance_history on invoices now really works (hunter)
-
+  - critical bug: SESSION::remove() doesn't update session, so after restore
+    session removed variable was still avaiable (lukasz)
+  - added missing |escape modifier in register template (lukasz)
+	
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
   - changed upgrade scripts for 1.2 version, deleted for 1.0 (alec)
