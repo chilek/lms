@@ -21,6 +21,7 @@
 		<title>Intro</title>
 		<para>In <filename>contrib/customer_otherip</filename> directory you can find equivalent of "Customer account" module, which does not authorize user basing on his IP address, but requires login. Authentication can be performed basing on user's PIN number and phone - or alternatively ID or contact number - as username, see balanceview.php and authentication.inc files).</para>
 		<para>Script shows user his balance and contact information, and, with help of <filename>contrib/formularz_przelewu_wplaty</filename> gives user a possibility to print money order for his debts.</para>
+		<para>It also allows aquiring and printing invoices by customers</para>
 		</sect2>
 		<sect2 id="customer2-install">
 		<title>Installation</title>
