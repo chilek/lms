@@ -33,17 +33,23 @@ http://www.TwójUrl.pl/lms/contrib/customers/
 Pañstwa PIN to: %pin
 "
 
-3) ikonki
+3) ikonki,template
 
 Ikonki aby dzia³a³y dobrze jest daæ np:
 
 $ ln -s ../../img img
+
+Warto te¿ jest zrobiæ tak aby katalog templates ze wzorkiem F/V by³ we 
+w³a¶ciwym miejscu: 
+
+$ ln -s ../../templates templates
 
 w katalogu contrib/customer_otherip, oraz "Options +followlinks w apachu".
 
 4) pos³owie
 
 panel wymaga ustawienia opcji sys_dir w lms.ini (sekcja [directories]).
+Mo¿na te¿ zmieniæ [templates]...
 
 SOA#1
 
