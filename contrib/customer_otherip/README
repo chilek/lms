@@ -13,16 +13,19 @@ Spis rzeczy:
 
 Jest to mini panel dla klientów którzy:
 
-a) korzystaj± z proxy
+a) nie chc± aby dzieci/ma³¿onkowie/pracownicy mieli wgl±d w dane fiansowe 
+dotycz±ce ich dostêpu do sieci/innych us³ug sprzedawanych przez LMS. W koñcu 
+to mog± byæ dane np cafejki internetowej, czemu klienci mieliby mieæ do tego
+wgl±d?  
+
 b) nie korzystaj± z sieci tylko w domu
-c) nie chc± aby dzieci/ma³¿onkowie/pracownicy mieli wgl±d w dane fiansowe 
-dotycz±ce ich dostêpu do sieci/innych us³ug sprzedawanych przez LMS.
+
+c) korzystaj± z proxy
 	
 2) lms-notify
 	
 Dobrze jest te¿ powiadomiæ klientów w co rocznym/miesiêcznym/tygodniowym 
 mailu rozrachunkowo-newsletterowym:
-
 
 "
 Jednocze¶nie informujemy o wprowadzeniu mo¿liwo¶ci sprawdzenia stanu
@@ -53,6 +56,10 @@ Mo¿na te¿ zmieniæ [templates]...
 
 SOA#1
 
+DOBRZE jest byæ ¶wiadomym ¿e nie wymagane jest konto z pe³nym dostêpem 
+do bazy danych, ja w tym celu stworzy³em konto "lmsro" w postgresie i 
+zezwoli³em mu tylko na odczyt danych (a i to tylko niektórych...).
+
 5) W pliku balanceview.php mo¿na siê doszukaæ czego¶ takiego:
 
 #v+
@@ -64,6 +71,9 @@ $id = GetCustomerIDByIDAndPIN($login, $pin);
 
 Oznacza to ni mniej ni wiêcej ale ¿e mo¿na klienta identyfikowaæ po:
 Telefonie albo ID albo Nr umowy. Wybór nale¿y do Was.
+
+Uwaga: 'numer umowy' nie jest standardowym kawa³kiem LMSa i nale¿y tej 
+³atki po prostu sobie poszukaæ.
 
 6) Aby na formularzu wp³aty mieæ w³asne dane (nazwê firmy, tytu³) nale¿y
 w lms.ini dopisaæ w sekcji 'finances':
@@ -78,4 +88,5 @@ pay_title	- p³atno¶æ tytu³em, mozna tutaj zaszaleæ:
 	zostanie zmienione na np 
 	'Abonament - ID:1: :0001:'
 
+	Takie co¶ ma na celu u³atwienie automatyzacji "p³atno¶ci".
 
