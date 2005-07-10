@@ -47,7 +47,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 		$params = $LMS->GetNetworkParams($net);
 		$params['address']++;
 		$params['broadcast']--;
-		$net = ' AND ( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].' )';
+		$net = ' AND ((ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].') OR (ipaddr_pub > '.$params['address'].' AND ipaddr_pub < '.$params['broadcast'].'))';
 	}
 	else
 		$net = '';

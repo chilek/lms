@@ -1,6 +1,6 @@
 $Id$
 
-version 1.6.1 ? (??/??/????):
+version 1.6.1 ? Jolinar (??/??/????):
 
   - BTS#0000387: fixed problem with register_globals=on in accesstable.php
     (alec/chris)
@@ -12,6 +12,7 @@ version 1.6.1 ? (??/??/????):
   - BTS#0000384: upgraded OverLIB to 4.17 - fixed tooltips positioning (alec)
   - critical bug: SESSION::remove() doesn't update session, so after restore
     session removed variable was still avaiable (lukasz)    
+  - added ipaddr_pub support when filtering stats by network (alec)
 
 version 1.6.0 Thor (13/06/2005):
 
