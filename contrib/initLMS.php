@@ -115,9 +115,9 @@ require_once($CONFIG['directories']['lib_dir'].'/language.php');
 require_once($CONFIG['directories']['lib_dir'].'/common.php');
 require_once($CONFIG['directories']['lib_dir'].'/LMS.class.php');
 
-$_SESSION = NULL;
+$AUTH = NULL;
 
-$LMS = new LMS($DB, $_SESSION, $CONFIG);
+$LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->lang = $_language;
 
 ?>
