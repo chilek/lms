@@ -142,9 +142,8 @@ require_once($_LIB_DIR.'/LMS.class.php');
 
 // Initialize LMS class
 
-$SESSION = NULL;
-
-$LMS = new LMS($DB, $SESSION, $CONFIG);
+$AUTH = NULL;
+$LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->lang = $_language;
 
 // set some template and layout variables

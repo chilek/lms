@@ -141,13 +141,11 @@ require_once($_LIB_DIR.'/unstrip.php');
 require_once($_LIB_DIR.'/language.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/LMS.class.php');
-require_once($_LIB_DIR.'/Session.class.php');
 
-// Initialize Session and LMS classes
+// Initialize LMS class
 
-$SESSION = NULL;
-
-$LMS = new LMS($DB, $SESSION, $CONFIG);
+$AUTH = NULL;
+$LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->lang = $_language;
 
 // set some template and layout variables
