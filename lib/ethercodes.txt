@@ -99,7 +99,7 @@
 00-00-62:BULL HN INFORMATION SYSTEMS
 00-00-63:DR.ING.SEUFERT GMBH
 00-00-64:YOKOGAWA DIGITAL COMPUTER CORP
-00-00-65:NETWORK ASSOCIATES, INC.
+00-00-65:Network General Corporation
 00-00-66:TALARIS SYSTEMS, INC.
 00-00-67:SOFT * RITE, INC.
 00-00-68:ROSEMOUNT CONTROLS
@@ -2366,7 +2366,7 @@
 00-09-62:Filetrac AS
 00-09-63:Dominion Lasercom Inc.
 00-09-64:Hi-Techniques
-00-09-65:HyunJu Computer Co., Ltd.
+00-09-65:PRIVATE
 00-09-66:Thales Navigation
 00-09-67:Tachyon, Inc
 00-09-68:TECHNOVENTURE, INC.
@@ -3673,7 +3673,7 @@
 00-0E-7E:Comprog Oy
 00-0E-7F:Hewlett Packard
 00-0E-80:PRIVATE
-00-0E-81:Instant802 Networks Inc.
+00-0E-81:Devicescape Software, Inc.
 00-0E-82:Commtech Wireless
 00-0E-83:Cisco Systems
 00-0E-84:Cisco Systems
@@ -4460,7 +4460,7 @@
 00-11-92:Cisco Systems
 00-11-93:Cisco Systems
 00-11-94:Chi Mei Communication Systems, Inc.
-00-11-95:Alpha Networks Inc.
+00-11-95:D-Link Corporation
 00-11-96:Actuality Systems, Inc.
 00-11-97:Monitoring Technologies Limited
 00-11-98:Prism Media Products Limited
@@ -4469,7 +4469,7 @@
 00-11-9B:Telesynergy Research Inc.
 00-11-9C:EP&T Energy
 00-11-9D:Diginfo Technology Corporation
-00-11-9E:PRIVATE
+00-11-9E:Solectron Brazil
 00-11-9F:Nokia Danmark A/S
 00-11-A0:Vtech Engineering Canada Ltd
 00-11-A1:VISION NETWARE CO.,LTD
@@ -5282,6 +5282,100 @@
 00-14-C8:Contemporary Research Corp
 00-14-C9:Silverback Systems, Inc.
 00-14-CA:Key Radio Systems Limited
+00-14-CB:GMP|Wireless Medicine,Inc.
+00-14-CC:Zetec, Inc.
+00-14-CD:DigitalZone Co., Ltd.
+00-14-CE:NF CORPORATION
+00-14-CF:Nextlink.to A/S
+00-14-D0:BTI Photonics
+00-14-D1:TRENDware International, Inc.
+00-14-D2:KYUKI CORPORATION
+00-14-D3:SEPSA
+00-14-D4:K Technology Corporation
+00-14-D5:Datang Telecom Technology CO. , LCD,Optical Communication Br
+00-14-D6:Jeongmin Electronics Co.,Ltd.
+00-14-D7:DataStor Technology Inc.
+00-14-D8:bio-logic SA
+00-14-D9:IP Fabrics, Inc.
+00-14-DA:Sonicaid
+00-14-DB:Elma Trenew Electronic GmbH
+00-14-DC:Communication System Design & Manufacturing (CSDM)
+00-14-DD:Covergence Inc.
+00-14-DE:Sage Instruments Inc.
+00-14-DF:HI-P Tech Corporation
+00-14-E0:LET'S Corporation
+00-14-E1:Data Display AG
+00-14-E2:datacom systems inc.
+00-14-E3:mm-lab GmbH
+00-14-E4:Integral Technologies
+00-14-E5:Alticast
+00-14-E6:AIM Infrarotmodule GmbH
+00-14-E7:Stolinx,. Inc
+00-14-E8:Motorola CHS
+00-14-E9:Nortech International
+00-14-EA:S Digm Inc. (Safe Paradigm Inc.)
+00-14-EB:AwarePoint Corporation
+00-14-EC:Acro Telecom
+00-14-ED:Airak, Inc.
+00-14-EE:Western Digital Technologies, Inc.
+00-14-EF:TZero Technologies, Inc.
+00-14-F0:Business Security OL AB
+00-14-F1:Cisco Systems
+00-14-F2:Cisco Systems
+00-14-F3:ViXS Systems Inc
+00-14-F4:DekTec Digital Video B.V.
+00-14-F5:OSI Security Devices
+00-14-F6:Juniper Networks, Inc.
+00-14-F7:Crevis
+00-14-F8:Scientific Atlanta
+00-14-F9:Vantage Controls
+00-14-FA:AsGa S.A.
+00-14-FB:Technical Solutions Inc.
+00-14-FC:Extandon, Inc.
+00-14-FD:Thecus Technology Corp.
+00-14-FE:Artech Electronics
+00-14-FF:Precise Automation, LLC
+00-15-00:Intel Corporate
+00-15-01:LexBox
+00-15-02:BETA tech
+00-15-03:PROFIcomms s.r.o.
+00-15-04:GAME PLUS CO., LTD.
+00-15-05:Actiontec Electronics, Inc
+00-15-06:BeamExpress, Inc
+00-15-07:Renaissance Learning Inc
+00-15-08:Global Target Enterprise Inc
+00-15-09:Plus Technology Co., Ltd
+00-15-0A:Sonoa Systems, Inc
+00-15-0B:SAGE INFOTECH LTD.
+00-15-0C:AVM GmbH
+00-15-0D:Hoana Medical, Inc.
+00-15-0E:OPENBRAIN TECHNOLOGIES CO., LTD.
+00-15-0F:mingjong
+00-15-10:Techsphere Co., Ltd
+00-15-11:Data Center Systems
+00-15-12:Zurich University of Applied Sciences
+00-15-13:EFS sas
+00-15-14:Hu Zhou NAVA Networks&Electronics Ltd.
+00-15-15:Leipold+Co.GmbH
+00-15-16:URIEL SYSTEMS INC.
+00-15-17:Intel Corporate
+00-15-18:Shenzhen 10MOONS Technology Development CO.,Ltd
+00-15-19:StoreAge Networking Technologies
+00-15-1A:Hunter Engineering Company
+00-15-1B:Isilon Systems Inc.
+00-15-1C:LENECO
+00-15-1D:M2I CORPORATION
+00-15-1E:Metaware Co., Ltd.
+00-15-1F:Multivision Intelligent Surveillance (Hong Kong) Ltd
+00-15-20:Radiocrafts AS
+00-15-21:Horoquartz
+00-15-22:Dea Security
+00-15-23:Meteor Communications Corporation
+00-15-24:Numatics, Inc.
+00-15-25:PTI Integrated Systems, Inc.
+00-15-26:Remote Technologies Inc
+00-15-27:Balboa Instruments
+00-15-28:Beacon Medical Products LLC d.b.a. BeaconMedaes
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -7234,7 +7328,7 @@
 00-A0-A6:M.I. SYSTEMS, K.K.
 00-A0-A7:VORAX CORPORATION
 00-A0-A8:RENEX CORPORATION
-00-A0-A9:GN NETTEST (CANADA) NAVTEL DIVISION
+00-A0-A9:NAVTEL COMMUNICATIONS INC.
 00-A0-AA:SPACELABS MEDICAL
 00-A0-AB:NETCS INFORMATIONSTECHNIK GMBH
 00-A0-AC:GILAT SATELLITE NETWORKS, LTD.
@@ -7445,7 +7539,7 @@
 00-C0-50:TOYO DENKI SEIZO K.K.
 00-C0-51:ADVANCED INTEGRATION RESEARCH
 00-C0-52:BURR-BROWN
-00-C0-53:DAVOX CORPORATION
+00-C0-53:Concerto Software
 00-C0-54:NETWORK PERIPHERALS, LTD.
 00-C0-55:MODULAR COMPUTING TECHNOLOGIES
 00-C0-56:SOMELEC
