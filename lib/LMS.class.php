@@ -1576,7 +1576,7 @@ class LMS
 			// NOTE: don't waste CPU/mem when printing history is not set:
 			if ($this->CONFIG['invoices']['print_balance_history'])
 				$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
-			$result[customerbalancelistlimit]=$this->CONFIG['invoices']['print_balance_history_limit'];
+			$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
 			return $result;
 		}
 		else
