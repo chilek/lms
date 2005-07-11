@@ -1,6 +1,6 @@
 $Id$
 
-version 1.6.1 Jolinar (11/07/2005):
+version 1.6.1 Ishta (11/07/2005):
 
   - BTS#0000387: fixed problem with register_globals=on in accesstable.php
     (alec/chris)
