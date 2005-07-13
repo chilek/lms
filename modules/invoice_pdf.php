@@ -427,8 +427,6 @@ $id=$pdf->getFirstPageId();
 
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
-	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoices'));
-
 	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
@@ -462,7 +460,6 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 }
 elseif($_GET['fetchallinvoices'])
 {
-	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoices'));
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
 	$ids = $DB->GetCol('SELECT id FROM documents
@@ -494,7 +491,6 @@ elseif($_GET['fetchallinvoices'])
 elseif($_GET['fetchsingle'])
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
-	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0', $ntempl));
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$type = trans('ORIGINAL');
@@ -503,7 +499,6 @@ elseif($_GET['fetchsingle'])
 }
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
-	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0', $ntempl));
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$type = trans('ORIGINAL');
 	invoice_body();
@@ -515,8 +510,6 @@ else
 {
 	$SESSION->redirect('?m=invoicelist');
 }
-
-global $pdf;
 
 $pdf->ezStream();
 
