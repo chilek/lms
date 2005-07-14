@@ -1,5 +1,9 @@
 $Id$
 
+version 1.6.2 ? (??/??/????):
+
+  - fixed SQL query in Mailing with network filtering (alec)
+
 version 1.6.1 Ishta (11/07/2005):
 
   - BTS#0000387: fixed problem with register_globals=on in accesstable.php
