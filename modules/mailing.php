@@ -48,7 +48,7 @@ function GetEmails($group, $network=NULL, $usergroup=NULL)
 	if($emails = $LMS->DB->GetAll('SELECT users.id AS id, email, '.$LMS->DB->Concat('lastname', "' '", 'users.name').' AS username, '
 		.'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance '
 		.'FROM users LEFT JOIN cash ON (users.id=cash.userid AND (type=3 OR type=4)) '
-		.($network ? 'LEFT JOIN nodes ON (user.id=ownerid) ' : '')
+		.($network ? 'LEFT JOIN nodes ON (users.id=ownerid) ' : '')
 		.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.userid) ' : '')
 		.' WHERE deleted = '.$deleted
 		.' AND email != \'\''
