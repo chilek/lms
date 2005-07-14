@@ -3,6 +3,7 @@ $Id$
 version 1.6.2 ? (??/??/????):
 
   - fixed SQL query in Mailing with network filtering (alec)
+  - BTS#0000407: fixed page number saving in netdevices list (alec/MadMark)
 
 version 1.6.1 Ishta (11/07/2005):
 

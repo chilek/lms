@@ -40,14 +40,14 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-if ($SESSION->is_set('nlp') && !isset($_GET['page']))
-        $SESSION->restore('nlp', $_GET['page']);
+if ($SESSION->is_set('ndlp') && !isset($_GET['page']))
+        $SESSION->restore('ndlp', $_GET['page']);
 	
 $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['nodelist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$SESSION->save('nlp', $page);
+$SESSION->save('ndlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
