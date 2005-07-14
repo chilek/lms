@@ -48,7 +48,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 	if($emails = $DB->GetAll('SELECT customers.id AS id, email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, pin, '
 		.'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance '
 		.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type=3 OR type=4)) '
-		.($network ? 'LEFT JOIN nodes ON (customer.id=ownerid) ' : '')
+		.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
 		.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 		.' WHERE deleted = '.$deleted
 		.' AND email != \'\''

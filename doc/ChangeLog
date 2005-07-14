@@ -20,6 +20,7 @@ version ? (????-??-??):
   - critical bug: SESSION::remove() doesn't update session, so after restore
     session removed variable was still avaiable (lukasz)
   - added missing |escape modifier in register template (lukasz)
+  - fixed bug in SQL query in Mailing with network filtering (alec)
 	
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
