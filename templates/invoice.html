@@ -232,11 +232,6 @@
 <!-- insert page break here and buy auto-duplex printer :p -->
 
 {if $invoice.customerpin}
-	<BR>
-	<B>{t}Cautions:{/t}</B><BR>
-	<BLOCKQUOTE>
-	{t}If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.{/t}<BR>
-	</BLOCKQUOTE>
 	<BR><BR>
 	<B>{t}Customer ID:{/t} {$invoice.customerid|string_format:"%04d"}</B><BR>
 	PIN: <CODE>{$invoice.customerpin|string_format:"%04d"}</CODE>
