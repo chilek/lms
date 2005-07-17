@@ -615,7 +615,9 @@ sub instance($)
 			my $passwd = $passlist{$ipaddr} || '';
 			my $customer = $customerlist{$ipaddr} || '';
 			my $macs = lc($mac);
+			my $mmac = lc($mac);
 			$macs =~ s/://g;
+			$mmac =~ s/:/-/g;
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
 			
 			$rule =~ s/\%NID/$row->{'id'}/g;
@@ -644,6 +646,7 @@ sub instance($)
 			$rule =~ s/\%NAME/$NAME/g;
 			$rule =~ s/\%name/$name/g;
 			$rule =~ s/\%SMAC/$macs/g;
+			$rule =~ s/\%MMAC/$mmac/g;
 			$rule =~ s/\%MAC/$mac/g;
 			$rule =~ s/\%OWNER/$owner/g;
 			$rule =~ s/\%TIMES/$times/g;
