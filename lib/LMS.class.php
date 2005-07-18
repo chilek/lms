@@ -565,7 +565,7 @@ class LMS
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 
 		if($customerlist = $this->DB->GetAll(
-				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, status, address, zip, city, customers.info AS info, message, '
+				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, status, address, zip, city, email, phone1, ten, ssn, customers.info AS info, message, '
 				.($network ? 'COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance ')
 				.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type = 3 OR type = 4)) '
 				.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
@@ -576,7 +576,7 @@ class LMS
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($time ? ' AND time < '.$time : '')
 				.($sqlsarg !='' ? ' AND ('.$sqlsarg.')' :'')
-				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, customers.info, message '
+				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, email, phone1, ten, ssn, customers.info, message '
 		// ten fragment nie chcial dzialac na mysqlu
 		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
