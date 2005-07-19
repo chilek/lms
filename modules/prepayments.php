@@ -56,13 +56,13 @@ if(sizeof($pmarks) && sizeof($cmarks))
 				}
 				else
 				{
-					$DB->Execute('UPDATE cash SET reference = ?, value = ? WHERE id = ?', array($item, $value, $mark['id']));
+					$DB->Execute('UPDATE cash SET reference = ?, value = ? WHERE id = ?', array($item, str_replace(',','.',$value), $mark['id']));
 					
 					$mark['value'] -= $value;
 					$LMS->AddBalance($mark);
 					
 					$mark['id'] = $DB->GetOne('SELECT id FROM cash WHERE customerid = ? AND docid = 0 AND value = ? AND time = ? AND type = 3 AND comment = ?',
-								    array($mark['customerid'], $mark['value'], $mark['time'], $mark['comment']));
+								    array($mark['customerid'], str_replace(',','.',$mark['value']), $mark['time'], $mark['comment']));
 					
 					if(sizeof($cmarks)>1) 
 						unset($cmarks[$idx]);
