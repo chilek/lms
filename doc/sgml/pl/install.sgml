@@ -444,8 +444,16 @@ database = /usr/local/lms/lms.db</screen>
         <para>Przyk³ad:     <prompt>backup_dir = /var/backup/lms/</prompt></para>
         <para><warning><para>Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy 
         bez autoryzacji bêdzie mia³ do nich dostêp.</para></warning></para>
-       </listitem>
-          <listitem>
+        </listitem>
+        <listitem>
+        <para>doc_dir</para>
+        <para>Katalog na archiwum dokumentów - miejsce gdzie LMS zapisuje pobrane pliki.
+        Domy¶lnie jest to podkatalog 'documents'.</para>
+        <para>Przyk³ad:     <prompt>doc_dir = /usr/share/documents/</prompt></para>
+        <para><warning><para>Je¶li ten katalog bêdzie osi±galny z poziomu WWW, to ka¿dy 
+        bez autoryzacji bêdzie mia³ do nich dostêp.</para></warning></para>
+        </listitem>
+        <listitem>
         <para>smarty_dir</para>
         <para>Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir.</para>
         <para>Przyk³ad:     <prompt>smarty_dir = /usr/lib/php/Smarty</prompt></para>

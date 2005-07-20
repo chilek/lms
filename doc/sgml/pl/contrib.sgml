@@ -39,7 +39,9 @@
           wykorzystanie ID lub numeru umowy (dodatkowe pole w bazie) - patrz 
           pliki balanceview.php i authentication.inc).</para>
           <para>Skrypt wy¶wietla bilans i informacje o kliencie, a tak¿e w po³±czeniu
-          <para>Panel pozwala równie¿ na pobieranie i wydruk faktur przez klienta</para>
+	  z <filename>contrib/formularz_przelewu_wplaty</filename> umo¿liwia klientowi wydrukowanie 
+	  formularza przelewu/wp³aty na kwotê zaleg³o¶ci. Panel pozwala równie¿ na 
+	  pobieranie i wydruk faktur przez klienta.</para>
           </sect2>
           <sect2 id="customer2-install">
           <title>Instalacja</title>

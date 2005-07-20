@@ -670,6 +670,16 @@ database = /usr/local/lms/lms.db
 
    If directory with backups is accessible from WWW level (within Web
    Server DocumentRoot), anybody can access them without authentication.
+     * doc_dir
+       Directory for documents archive - it's a place where LMS can write
+       uploaded files. By default it is documents subdirectory of
+       sys_dir.
+       Example: doc_dir = /usr/share/lms/docs/
+
+       Warning
+
+   If that directory is accessible from WWW level (within Web Server
+   DocumentRoot), anybody can access them without authentication.
      * smarty_dir
        Directory with Smarty library - By default Smarty subdirectory of
        lib_dir.
@@ -1739,6 +1749,12 @@ mech_list: login plain
 
 # authpgsqlrc (or authmysqlrc) (Courier):
 
+# user postfix (owner of mail directory)
+#MYSQL_UID_FIELD '1004'
+PGSQL_UID_FIELD '1004'
+# group postfix (owner of mail directory)
+#MYSQL_GID_FIELD '1004'
+PGSQL_GID_FIELD '1004'
 #MYSQL_PORT             3306
 PGSQL_PORT              5432
 #MYSQL_USERNAME         lms
@@ -4739,6 +4755,8 @@ Chapter 8. Extensions
    Script shows user his balance and contact information, and, with help
    of contrib/formularz_przelewu_wplaty gives user a possibility to print
    money order for his debts.
+
+   It also allows aquiring and printing invoices by customers
      _________________________________________________________________
 
 8.2.2. Installation
