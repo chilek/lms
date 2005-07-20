@@ -22,14 +22,14 @@
 				{cycle values="light,lucid" print=false}
 				{foreach from=$documents item=doc}
 				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD WIDTH="1%" NOWRAP><B>{if $doc.number}{$doc.number}{/if}</B></TD>
-					<TD WIDTH="1%" NOWRAP><B>{$doc.typename}</B></TD>
-					<TD WIDTH="1%" NOWRAP>{$doc.title|truncate:40:"..."}</TD>
-					<TD WIDTH="1%" NOWRAP>
+					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{if $doc.number}{$doc.number}{/if}</B></TD>
+					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{$doc.typename}</B></TD>
+					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"..."}</TD>
+					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
 						{if $doc.fromdate}{t}from{/t} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
 						{if $doc.todate}{t}to{/t} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 					</TD>
-					<TD WIDTH="95%">{$doc.description}</TD>
+					<TD WIDTH="95%" onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.description}</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 						<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/view.gif" alt="[ {t}View{/t} ]"></a>
 						<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]"></a>
