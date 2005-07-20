@@ -22,6 +22,7 @@ version ? (????-??-??):
   - added missing |escape modifier in register template (lukasz)
   - fixed bug in SQL query in Mailing with network filtering (alec)
   - BTS#0000407: fixed page number problem in netdevices list (alec/MadMark)
+  - customer documents archive (alec)
 	
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

@@ -3201,6 +3201,35 @@ class LMS
 			return "";
 	}
 
+	function GetDocuments($customerid=NULL)
+	{
+		if(!$customerid) return NULL;
+		
+		if($doclist = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype
+				    FROM documents, documentcontents 
+				    WHERE documents.id = documentcontents.docid
+				    AND customerid = ?
+				    ORDER BY cdate', array($customerid)))
+			foreach($doclist as $idx => $row)
+				switch($row['type'])
+				{
+					case -1:
+						$doclist[$idx]['typename'] = trans('contract');
+					break;
+					case -2:
+						$doclist[$idx]['typename'] = trans('annex');
+					break;
+					case -3:
+						$doclist[$idx]['typename'] = trans('protocol');
+					break;
+					default:
+						$doclist[$idx]['typename'] = trans('other');
+					break;
+				}
+	
+		return $doclist;
+	}
+
 	function GetTaxes($from=NULL, $to=NULL)
 	{
 		$from = $from ? $from : mktime(0,0,0);
