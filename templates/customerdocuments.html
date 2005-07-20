@@ -1,0 +1,59 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD class="fleftu" width="99%" onclick="showOrHide('docpanel');">
+			<IMG src="img/docum.gif" alt="">
+			<B><A name="documents">{t}Customer's Documents:{/t}</A></B>
+		</TD>
+		<TD class="frightu" align="right" width="1%" nowrap>
+			<A href="?m=documentadd&cid={$customerinfo.id}">{t}New Document{/t} &raquo;</A>
+		</TD>
+	</TR>
+	<TR id="docpanel" style="display:none;">
+		<TD WIDTH="100%" class="fall" colspan="2">
+			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD WIDTH="1%" NOWRAP class="fleftu">{t}Number:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt"><B>{t}Type:{/t}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Title:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Period:{/t}</TD>
+					<TD WIDTH="96%" NOWRAP class="frightu" COLSPAN="2">{t}Description:{/t}</TD>
+				</TR>
+				{cycle values="light,lucid" print=false}
+				{foreach from=$documents item=doc}
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD WIDTH="1%" NOWRAP><B>{if $doc.number}{$doc.number}{/if}</B></TD>
+					<TD WIDTH="1%" NOWRAP><B>{$doc.typename}</B></TD>
+					<TD WIDTH="1%" NOWRAP>{$doc.title|truncate:40:"..."}</TD>
+					<TD WIDTH="1%" NOWRAP>
+						{if $doc.fromdate}{t}from{/t} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
+						{if $doc.todate}{t}to{/t} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+					</TD>
+					<TD WIDTH="95%">{$doc.description}</TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+						<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/view.gif" alt="[ {t}View{/t} ]"></a>
+						<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]"></a>
+						<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></a>
+					</TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD align="center" WIDTH="100%" colspan="6">
+						<p>&nbsp;</p>
+						<p><B>{t}That customer hasn't got any documents.{/t}</B></p>
+						<p>&nbsp;</p>
+					</TD>
+				</TR>
+				{/foreach}
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+{literal}<SCRIPT>
+<!--
+	if(getCookie('docpanel')=='1')
+	{
+		document.getElementById('docpanel').style.display = '';
+	}
+//-->
+</SCRIPT>{/literal}
