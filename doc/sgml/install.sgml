@@ -415,6 +415,15 @@ database = /usr/local/lms/lms.db</screen>
         authentication.</para></warning></para>
         </listitem>
         <listitem>
+        <para>doc_dir</para>
+        <para>Directory for documents archive - it's a place where LMS can write uploaded files.
+        By default it is <filename>documents</filename> subdirectory of sys_dir.</para>
+        <para>Example:     <prompt>doc_dir = /usr/share/lms/docs/</prompt></para>
+        <para><warning><para>If that directory is accessible from WWW
+        level (within Web Server DocumentRoot), anybody can access them without
+        authentication.</para></warning></para>
+        </listitem>
+        <listitem>
         <para>smarty_dir</para>
         <para>Directory with Smarty library - By default <filename>Smarty</filename> subdirectory of lib_dir.</para>
         <para>Example:     <prompt>smarty_dir = /usr/lib/php/Smarty</prompt></para>

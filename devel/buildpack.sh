@@ -46,11 +46,11 @@ wget --proxy=off "http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1&only_
 umask 022
 cd $TEMPDIR/$X/
 tar -xzf lms.tar.gz
-chmod 777 lms/{templates_c,backups}
+chmod 777 lms/{templates_c,backups,documents}
 cd lms
 rm -Rf $NOTDISTRIB
 grep -air '1\.7-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.7-cvs/$LMSVER $CODENAME/g"
-chmod 777 templates_c backups
+chmod 777 templates_c backups documents
 cd ..
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd lms/lib

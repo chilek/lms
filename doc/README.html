@@ -2113,6 +2113,49 @@ VALIGN="TOP"
 ></LI
 ><LI
 ><P
+>doc_dir</P
+><P
+>Directory for documents archive - it's a place where LMS can write uploaded files.
+        By default it is <TT
+CLASS="FILENAME"
+>documents</TT
+> subdirectory of sys_dir.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>doc_dir = /usr/share/lms/docs/</SAMP
+></P
+><P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If that directory is accessible from WWW
+        level (within Web Server DocumentRoot), anybody can access them without
+        authentication.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></LI
+><LI
+><P
 >smarty_dir</P
 ><P
 >Directory with Smarty library - By default <TT
@@ -4681,6 +4724,12 @@ mech_list: login plain
 
 # authpgsqlrc (or authmysqlrc) (Courier):
 
+# user postfix (owner of mail directory)
+#MYSQL_UID_FIELD '1004'
+PGSQL_UID_FIELD '1004'
+# group postfix (owner of mail directory)
+#MYSQL_GID_FIELD '1004'
+PGSQL_GID_FIELD '1004'
 #MYSQL_PORT		3306
 PGSQL_PORT		5432
 #MYSQL_USERNAME		lms
@@ -13236,6 +13285,8 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >contrib/formularz_przelewu_wplaty</TT
 > gives user a possibility to print money order for his debts.</P
+><P
+>It also allows aquiring and printing invoices by customers</P
 ></DIV
 ><DIV
 CLASS="SECT2"
