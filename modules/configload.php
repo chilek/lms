@@ -31,7 +31,13 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('phpui', $key, $val)
 			);
+}
 
+foreach($LMS->CONFIG['userpanel'] as $key => $val)
+{
+	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+			array('userpanel', $key, $val)
+			);
 }
 
 /*
