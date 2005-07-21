@@ -317,7 +317,13 @@
 		    w którym mo¿na stosowaæ nastêpuj±ce zmienne:
 		    <itemizedlist>
 			<listitem>
-			    <para>%saldo - aktualne saldo klienta</para>
+			    <para>%saldo - aktualne saldo klienta (tak¿e %B)</para>
+			</listitem>
+			<listitem>
+			    <para>%b - warto¶æ bezwzglêdna aktualnego salda klienta</para>
+			</listitem>
+			<listitem>
+			    <para>%pin - PIN klienta</para>
 			</listitem>
 			<listitem>
 			    <para>%name - imiê klienta</para>

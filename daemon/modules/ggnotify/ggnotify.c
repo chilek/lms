@@ -39,6 +39,13 @@
 
 #define BUFFERSIZE 1024
 
+unsigned char * ftoa(double i)
+{
+	static char string[12];
+	sprintf(string, "%.2f", i);
+	return string;
+}
+
 unsigned char * load_file(unsigned char *name)
 {
 	unsigned char *ret = NULL;
@@ -81,7 +88,8 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 {
 	QueryHandle *res, *result;
 	unsigned char *message = 0;
-	int i, j, balance;
+	int i, j;
+	double balance;
 	struct gg_session *sess;
 	struct gg_login_params p;
 
@@ -101,7 +109,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 		syslog(LOG_INFO, "DEBUG: [%s/ggnotify] Connected to Gadu-Gadu server.",n->base.instance);
 #endif
 	
-		res = g->db_query(g->conn, "SELECT customers.id AS id, im, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id, im, name, lastname");
+		res = g->db_query(g->conn, "SELECT customers.id AS id, im, pin, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id, im, pin, name, lastname");
 
 		if( g->db_nrows(res) )
 		{
@@ -109,7 +117,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 			{
 				if( atoi(g->db_get_data(res,i,"im")) )
 				{
-					balance = atoi(g->db_get_data(res,i,"balance"));
+					balance = atof(g->db_get_data(res,i,"balance"));
 			
 					if( balance < n->limit )
 					{
@@ -148,6 +156,9 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 							}
 						
 							g->str_replace(&message, "%saldo", g->db_get_data(res,i,"balance"));
+							g->str_replace(&message, "%B", g->db_get_data(res,i,"balance"));
+							g->str_replace(&message, "%b", balance < 0 ? ftoa(balance * -1) : g->db_get_data(res,i,"balance"));
+							g->str_replace(&message, "%pin", g->db_get_data(res,i,"pin"));
 							g->str_replace(&message, "%name", g->db_get_data(res,i,"name"));
 							g->str_replace(&message, "%lastname", g->db_get_data(res,i,"lastname"));
 

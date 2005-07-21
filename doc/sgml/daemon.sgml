@@ -307,7 +307,13 @@
                which may include the following variables:
               <itemizedlist>
                <listitem>
-                   <para>%saldo - current customer balance</para>
+                   <para>%saldo - current customer balance (also %b)</para>
+               </listitem>
+	       <listitem>
+                   <para>%B - absolute value of current customer balance</para>
+               </listitem>
+	       <listitem>
+                   <para>%pin - customer PIN</para>
                </listitem>
                <listitem>
                    <para>%name - customer forename</para>

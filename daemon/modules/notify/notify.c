@@ -37,6 +37,13 @@
 
 #define BUFFERSIZE 1024
 
+unsigned char * ftoa(double i)
+{
+	static char string[12];
+	sprintf(string, "%.2f", i);
+	return string;
+}
+
 unsigned char * load_file(unsigned char *name)
 {
 	unsigned char *ret = NULL;
@@ -101,15 +108,16 @@ void reload(GLOBAL *g, struct notify_module *n)
 	QueryHandle *res, *result;
 	unsigned char *mailfile = 0;
 	unsigned char *command;
-	int i, j, balance;
+	int i, j; 
+	double balance;
 
-	res = g->db_query(g->conn, "SELECT customers.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 AND email!='' GROUP BY customers.id, name, lastname, email");
+	res = g->db_query(g->conn, "SELECT customers.id AS id, email, pin, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 AND email!='' GROUP BY customers.id, name, lastname, email, pin");
 	
 	if( g->db_nrows(res) )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			balance = atoi(g->db_get_data(res,i,"balance"));
+			balance = atof(g->db_get_data(res,i,"balance"));
 			
 			if( balance < n->limit ) 
 			{
@@ -149,6 +157,9 @@ void reload(GLOBAL *g, struct notify_module *n)
 					}
 					
 					g->str_replace(&mailfile, "%saldo", g->db_get_data(res,i,"balance"));
+					g->str_replace(&mailfile, "%B", g->db_get_data(res,i,"balance"));
+					g->str_replace(&mailfile, "%b", balance < 0 ? ftoa(balance * -1) : g->db_get_data(res,i,"balance"));
+					g->str_replace(&mailfile, "%pin", g->db_get_data(res,i,"pin"));
 					g->str_replace(&mailfile, "%name", g->db_get_data(res,i,"name"));
 					g->str_replace(&mailfile, "%lastname", g->db_get_data(res,i,"lastname"));
 				
