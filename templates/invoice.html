@@ -242,7 +242,6 @@
 <TABLE cellpadding="5" cellspacing="0" width="100%">
     <TR>
         <TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-        <TD width="1%" class="fbt">{t}Admin:{/t}</TD>
         <TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
         <TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
         <TD width="1%" class="fbt" align="center">&raquo;</TD>
@@ -253,7 +252,6 @@
 {section name=balancelist loop=$invoice.customerbalancelist.id start=$invoice.customerbalancelistlimit step=-1}
 	<TR>
 		<TD width="1%"><nobr>{$invoice.customerbalancelist.date[balancelist]}</nobr></TD>
-		<TD width="1%">{$invoice.customerbalancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 		<TD width="1%" align="right"><nobr>
 		{if $invoice.customerbalancelist.type[balancelist]==3}+{else}-{/if}
 		{$invoice.customerbalancelist.value[balancelist]|money_format}</nobr></TD>
