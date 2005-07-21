@@ -462,7 +462,6 @@ static void parse_command_line(int argc, char **argv)
         		printf(" --foreground -f \t\trun in foreground (don't fork)\n");
         		printf(" --instance -i \"instance[ ...]\"\tlist of instances to reload\n");
         		printf(" --version -v \t\t\tprint version and copyright info\n");
-        		printf(" --help -h \t\t\tprint this text\n");
             		exit(1);
 		}
     	}
