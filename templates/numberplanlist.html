@@ -1,0 +1,89 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR class="dark">
+		<TD width="94%" class="fleftu" NOWRAP>
+			<IMG src="img/numberplans.gif" alt=""> <A href="?m=numberplanlist&o=label{if $listdata.direction eq "asc" && $listdata.order eq "label"},desc{/if}"><B>{t}Label:{/t}</B></A> {if $listdata.order eq "label"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="fbt" NOWRAP>{t}Example (next) number:{/t}</TD>
+		<TD width="1%" class="fbt" align="center" NOWRAP>
+			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=numberplanlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="fbt" NOWRAP>{t}No. of issued documents:{/t}</TD>
+		<TD width="1%" class="fbt" NOWRAP>{t}Document type:{/t}</TD>
+		<TD width="1%" class="frightu" NOWRAP>
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="7" CLASS="FALL">
+			<B>{t}Page:{/t}
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$numberplanlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=numberplanlist loop=$numberplanlist start=$start max=$pagelimit}
+	<TR class="{cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<IMG src="img/numberingplan.gif" alt=""><B>{$numberplanlist[numberplanlist].template}</B>
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		{$numberplanlist[numberplanlist].template|replace:"%N":$numberplanlist[numberplanlist].nextid|replace:"%Y":$today.year|replace:"%M":$today.month}
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+			({$numberplanlist[numberplanlist].id|string_format:"%03d"})
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+			{$numberplanlist[numberplanlist].issued|string_format:"%6d"}
+		</TD>
+		<TD class="fright" align="right" NOWRAP>
+			<A href="?m=numberplanedit&id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A href="?m=numberplandel&id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t 0=$numberplanlist[numberplanlist].label}Are you sure, you want to delete numberplan \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="7" align="center" class="fall">
+			<p>&nbsp;</p>
+			<p><B>{t}No such numbering plans in database.{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="7" CLASS="FALL">
+			<B>{t}Page:{/t}
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$numberplanlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+	<TR class="light">
+		<TD colspan="7" class="fall" align="right">
+			<a href="?m=numberplanadd">{t}Add numbering plan{/t} <img src="img/save.gif" alt=""></a>
+		</TD>
+	</TR>
+</TABLE></P>
+{include file="footer.html"}
