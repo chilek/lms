@@ -6,7 +6,7 @@ Otó¿ imvho, timestamp jest dobry, ale robi±c w/w operacje chcia³bym
 je oznaczaæ równie¿ dat± w sensie YYYY/MM/DD. Otó¿ wp³ata powinna byæ 
 oznaczona równie¿ dniem zaksiêgowania jej. Powodów wiele.
 
-[KP done, wyci±gi to be considered]
+[ wyci±gi ???]
 
 (W 1.7/1.9 ?): 
 
@@ -32,13 +32,51 @@ to co jest dzia³a ale pachnie ¼le. Chcia³bym i¶æ w kierunku:
 lepiej mieæ w invoices i na podstawie tych warto¶ci sprawdzaæ czy jest ju¿ 
 faktura w danym okresie.
 
-A Period:
-id | year | month
-1  | 2004 | NULL
-2  | 2005 |   1
-3  | 2005 |   2
-...
-13 | 2005 |  12
+Dalej numeracje albo plany numerowania (numberplan)
+Widzê to tak:
+
+
+lms=> SELECT * from numberplans ;
+ id |  template   | isdefault | peroid | doctype
+----+-------------+-----------+--------+---------
+  1 | %d          |         1 |      1 |       1
+  2 | %d          |         1 |      1 |       1
+  5 | %d          |         0 |      3 |       1
+  5 | %d-%n-%y-%m |         0 |      3 |       1
+  5 | %D-%N-%Y-%M |         0 |      3 |       1
+(5 rows)
+
+Doctype takie jak w (SELECT type,id from documents) trzebaby te numerki 
+dokumentów jako¶ pouk³adaæ i posegregowaæ aby to by³a jedna nie wiem tablica
+czy co¶ (¿eby nie by³o jak ze statusem ¿e mamy 3 statusy i w 5 miejscach s± 
+one po prostu napisane, niech bêd± w jednym miejscu, jaki¶ documenttypes.php
+do zaincludowania?).
+
+isdefault ma prawo byæ tylko jeden ==1 (w³a¶ciwie to default?).	
+Domy¶lnie *MUSI* byæ jaki¶ plan numerowania.
+
+procenty:
+tutaj mam uwagê ¿e %y i %Y w [posix/ISO 8601] to co¶ innego i nie wiem czy 
+jest sens rozró¿niaæ case (bo numeracji godzinnej to sobie nie wyobra¿am)
+ale /2005 i /05 i /5 to chcia³bym aby by³y ró¿ne literki.
+MOG¡ byæ jak w VBasicu: %Y %YY i %YYYY ? [tak/nie]
+wtedy mamy %M i %MM (/7 i /07) i %D i %DD  (/5, /05) 
+
+³±czniki i sta³e. Tutaj mia³bym za³o¿enie takie ¿e w template MUSI wystêpowaæ:
+%N przynajmniej/dok³adnie raz. (%NN %NNNN czy %4N ?).
+%Y/%YY/%YYYY --dok³adnie RAZ. (wymóg do¶æ racjonalny).
+³±czniki -- uznajemy: -/=\#'
+s³owa to litery mog±ce zawieraæ cyfry ale nie zaczynaæ siê od cyfr
+pomiêdzy znakami procentów i ³±cznikami oraz s³owami nie ma prawa byæ SPACJI.
+
+period:
+Zgodny z assigments -- to te¿ mo¿na opisaæ czyli 
+1--rok?
+
+5--dzieñ
+
+Acha numeracja dzienna mo¿e byæ przydadna dla KP czy czego¶ takiego...
+Albo gdy kto¶ ma 10000 faktur/miesi±c i chce mieæ <1000 w jednym numerkowaniu. 
 
 Pewnie mi jak zwykle wysz³o pomarudziæ o tym "jak" i to jeszcze "przed", no 
 ale mo¿e jakie¶ wsparcie od osób które na codzieñ robi± ksiêgowo¶æ bo ja mam
