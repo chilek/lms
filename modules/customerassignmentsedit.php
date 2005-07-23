@@ -41,12 +41,16 @@ if($a = $_POST['assignmentedit'])
 
 	$period = sprintf('%d',$a['period']);
 
-	if($period < 0 || $period > 3)
-		$period = 1;
+	if($period < DAILY || $period > YEARLY)
+		$period = MONTHLY;
 
 	switch($period)
 	{
-		case 0:
+		case DAILY:
+			$at = 0;
+		break;
+		
+		case WEEKLY:
 			$at = sprintf('%d',$a['at']);
 			
 			if($CONFIG['phpui']['use_current_payday'] && $at==0)
@@ -58,7 +62,7 @@ if($a = $_POST['assignmentedit'])
 				$error['editat'] = trans('Incorrect day of week (1-7)!');
 		break;
 
-		case 1:
+		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 			
 			if($CONFIG['phpui']['use_current_payday'] && $at==0)
@@ -70,7 +74,7 @@ if($a = $_POST['assignmentedit'])
 				$error['editat'] = trans('Incorrect day of month (1-28)!');
 		break;
 
-		case 2:
+		case QUARTERLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
 				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
@@ -97,7 +101,7 @@ if($a = $_POST['assignmentedit'])
 			}
 		break;
 
-		case 3:
+		case YEARLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
 				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
@@ -197,10 +201,10 @@ else
 	
 	switch($a['period'])
 	{
-		case 2:
+		case QUARTERLY:
 			$a['at'] = sprintf('%02d/%02d',$a['at']%100,$a['at']/100+1);
 			break;
-		case 3:
+		case YEARLY:
 			$a['at'] = date('d/m',($a['at']-1)*86400);
 			break;
 	}

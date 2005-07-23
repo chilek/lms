@@ -338,6 +338,7 @@ $_LANG['cust. payment'] = 'wpłata kl.';
 $_LANG['CVS Repository'] = 'Repozytorium CVS';
 $_LANG['daemon management and configuration'] = 'konfiguracja i zarządzanie demonem';
 $_LANG['Daemon(s) Configuration'] = 'Konfiguracja demona(ów)';
+$_LANG['daily'] = 'codziennie';
 $_LANG['Database Backup Recovery'] = 'Odtworzenie bazy danych z kopii zapasowej';
 $_LANG['Database Backups'] = 'Kopie zapasowe bazy danych';
 $_LANG['Database backups currently not found.'] = 'Nie odnaleziono żadnych kopii bazy danych.';
@@ -880,7 +881,7 @@ $_LANG['money earned by network, e.g. in result of sale network devices to custo
 $_LANG['money spent by network, e.g. to acquire physical assets, ISP payments, etc.'] = 'pieniądze wydane przez sieć, np. na zakup środków trwałych, płatności abonamentowe, itp.';
 $_LANG['money that payed customer for subscription'] = 'pieniądze, które wpłacają klienci jako opłaty abonamentowe';
 $_LANG['monthly'] = 'miesięcznie';
-$_LANG['monthly $0'] = 'miesięcznie $0';
+$_LANG['monthly ($0)'] = 'miesięcznie ($0)';
 $_LANG['Move customers to subscription:'] = 'Przenieś klientów do taryfy:';
 $_LANG['MySQL version:'] = 'Wersja MySQL:';
 $_LANG['Name'] = 'Nazwa';

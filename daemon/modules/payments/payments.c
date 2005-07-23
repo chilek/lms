@@ -62,31 +62,31 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 	
 	if( up_payments )
 		switch(period) {
-			case 0:	//week
+			case WEEKLY:
 				t->tm_mday += 7;
 				break;
-			case 1:	//month
+			case MONTHLY:
 				t->tm_mon += 1;
 				break;
-			case 2: //quarter
+			case QUARTERLY:
 				t->tm_mon += 3;
 				break;
-			case 3:	//year
+			case YEARLY:
 				t->tm_mon += 12;
 				break;
 		}
 	else
 		switch(period) {
-			case 0:	//week
+			case WEEKLY:
 				t->tm_mday -= 7;
 				break;		
-			case 1:	//month
+			case MONTHLY:
 				t->tm_mon -= 1;
 				break;
-			case 2: //quarter
+			case QUARTERLY:
 				t->tm_mon -= 3;
 				break;
-			case 3:	//year
+			case YEARLY:
 				t->tm_mon -= 12;
 				break;
 		}
@@ -96,13 +96,20 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 	strftime(to, 11, "%Y/%m/%d", localtime(&old_time));
 	strftime(from, 11, "%Y/%m/%d", localtime(&new_time));
 
-	result = (unsigned char *) malloc(strlen(from)+strlen(to)+3);
+	if(period != DAILY)
+	{
+		result = (unsigned char *) malloc(strlen(from)+strlen(to)+3);
 
-	if( up_payments )
-		sprintf(result, "%s-%s", to, from);
+		if( up_payments )
+			sprintf(result, "%s-%s", to, from);
+		else
+			sprintf(result, "%s-%s", from, to);
+	}
 	else
-		sprintf(result, "%s-%s", from, to);
-		
+	{
+		result = strdup(to);
+	}
+	
 	today = localtime(&old_time);
 	
 	return result;
@@ -112,7 +119,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 {
 	QueryHandle *res, *result, *sres;
 	unsigned char *insert;
-	unsigned char *w_period, *m_period, *q_period, *y_period, *value, *taxid;
+	unsigned char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
 	unsigned char *description;
 	int i, invoiceid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 
@@ -148,10 +155,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 			break;
 	}
 
-	y_period = get_period(tt, 3, p->up_payments);
-	q_period = get_period(tt, 2, p->up_payments);
-	m_period = get_period(tt, 1, p->up_payments);
- 	w_period = get_period(tt, 0, p->up_payments);
+	y_period = get_period(tt, YEARLY, p->up_payments);
+	q_period = get_period(tt, QUARTERLY, p->up_payments);
+	m_period = get_period(tt, MONTHLY, p->up_payments);
+ 	w_period = get_period(tt, WEEKLY, p->up_payments);
+	d_period = get_period(tt, DAILY, p->up_payments);
 
 	// and setting appropriate time limits to get current invoice number
 	tt->tm_sec = 0;
@@ -176,7 +184,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	}
 
 	/****** main payments *******/
-	if( (res = g->db_pquery(g->conn, "SELECT * FROM payments WHERE value <> 0 AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?))", weekday, monthday, quarterday, yearday))!= NULL )
+	if( (res = g->db_pquery(g->conn, "SELECT * FROM payments WHERE value <> 0 AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) OR (period="_MONTHLY_" AND at=?) OR (period="_QUARTERLY_" AND at=?) OR (period="_YEARLY_" AND at=?))", weekday, monthday, quarterday, yearday))!= NULL )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
@@ -202,7 +210,15 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_free(&res);
 
 		// payments accounting and invoices writing
-		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, customerid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxid, suspended, prodid, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, customers.name AS name, address, zip, city, ten, ssn FROM assignments, tariffs, customers WHERE tariffs.id = tariffid AND customerid = customers.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
+		res = g->db_pquery(g->conn, "\
+			SELECT assignments.id AS id, tariffid, customerid, period, at, taxid, suspended, prodid, uprate, downrate, \
+			    ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, \
+			    tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, customers.name AS name, address, zip, city, ten, ssn \
+			FROM assignments, tariffs, customers \
+			WHERE tariffs.id = tariffid AND customerid = customers.id AND status = 3 AND deleted = 0 AND value <> 0 \
+			    AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) OR (period="_MONTHLY_" AND at=?) OR (period="_QUARTERLY_" AND at=?) OR (period="_YEARLY_" AND at=?)) \
+			    AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
+			ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
 		
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
@@ -237,10 +253,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 			description = strdup(p->comment);
 			switch( atoi(g->db_get_data(res,i,"period")) ) 
 			{
-				case 0: g->str_replace(&description, "%period", w_period); break;
-				case 1: g->str_replace(&description, "%period", m_period); break;
-				case 2: g->str_replace(&description, "%period", q_period); break;
-				case 3: g->str_replace(&description, "%period", y_period); break;
+				case DAILY: g->str_replace(&description, "%period", d_period); break;
+				case WEEKLY: g->str_replace(&description, "%period", w_period); break;
+				case MONTHLY: g->str_replace(&description, "%period", m_period); break;
+				case QUARTERLY: g->str_replace(&description, "%period", q_period); break;
+				case YEARLY: g->str_replace(&description, "%period", y_period); break;
 			}
 			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"tariff"));
 			g->str_replace(&insert, "%taxid", taxid);
@@ -320,6 +337,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		free(q_period);
 		free(m_period);
 		free(w_period);
+		free(d_period);
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/payments] customer payments reloaded", p->base.instance);
 #endif

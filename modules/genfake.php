@@ -1886,11 +1886,11 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$LMS->TariffAdd($tariffdata);
 
 	echo '<B>'.trans('Generating payments...').'</B><BR>';
-	$paymentdata = array( 'name' => 'DSL-2048', 'description' => 'Internet Link subscription', 'value' => '200', 'creditor' => 'Internet Super Provider Ltd.', 'period' => '1', 'at' => '10');
+	$paymentdata = array( 'name' => 'DSL-2048', 'description' => 'Internet Link subscription', 'value' => '200', 'creditor' => 'Internet Super Provider Ltd.', 'period' => MONTHLY, 'at' => '10');
 	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( 'name' => 'Server Room', 'description' => 'Rent', 'value' => '300', 'creditor' => 'Residential Cooperative "VIEW"', 'period' => '1', 'at' => '20');
+	$paymentdata = array( 'name' => 'Server Room', 'description' => 'Rent', 'value' => '300', 'creditor' => 'Residential Cooperative "VIEW"', 'period' => MONTHLY, 'at' => '20');
 	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( 'name' => 'Domain', 'description' => 'Domain "our.net" subscription', 'value' => '150', 'creditor' => 'NASK', 'period' => '3', 'at' => '31');
+	$paymentdata = array( 'name' => 'Domain', 'description' => 'Domain "our.net" subscription', 'value' => '150', 'creditor' => 'NASK', 'period' => YEARLY, 'at' => '31');
 	$LMS->PaymentAdd($paymentdata);
 	
 	echo '<B>'.trans('Generating network...').'</B><BR>';
@@ -1931,7 +1931,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['message'] = '';
 		$customeradd['pin'] = rand(10000,99999);
 		$id = $LMS->CustomerAdd($customeradd);
-		$LMS->AddAssignment(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => 1, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
+		$LMS->AddAssignment(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => MONTHLY, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{

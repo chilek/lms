@@ -50,12 +50,16 @@ if($_GET['action'] == 'add' && isset($a))
 	
 	$period = sprintf('%d',$a['period']);
 
-	if($period < 0 || $period > 3)
-		$period = 1;
+	if($period < DAILY || $period > YEARLY)
+		$period = MONTHLY;
 
 	switch($period)
 	{
-		case 0:
+		CASE DAILY:
+			$at = 0;
+		break;
+		
+		case WEEKLY:
 			$at = sprintf('%d',$a['at']);
 			
 			if($CONFIG['phpui']['use_current_payday'] && $at==0)
@@ -67,7 +71,7 @@ if($_GET['action'] == 'add' && isset($a))
 				$error['at'] = trans('Incorrect day of week (1-7)!');
 		break;
 
-		case 1:
+		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 			
 			if($CONFIG['phpui']['use_current_payday'] && $at==0)
@@ -79,7 +83,7 @@ if($_GET['action'] == 'add' && isset($a))
 				$error['at'] = trans('Incorrect day of month (1-28)!');
 		break;
 
-		case 2:
+		case QUARTERLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
@@ -106,7 +110,7 @@ if($_GET['action'] == 'add' && isset($a))
 			}
 		break;
 
-		case 3:
+		case YEARLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
