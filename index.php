@@ -162,6 +162,7 @@ require_once($_LIB_DIR.'/language.php');
 require_once($_LIB_DIR.'/unstrip.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/checkip.php');
+require_once($_LIB_DIR.'/definitions.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Auth.class.php');
 require_once($_LIB_DIR.'/accesstable.php');

@@ -24,18 +24,6 @@
  *  $Id$
  */
 
-// we need this defines, and we need to place them here, see below why
-
-define('RT_NEW', trans('new'));
-define('RT_OPEN', trans('opened'));
-define('RT_RESOLVED', trans('resolved'));
-define('RT_DEAD', trans('dead'));
-
-define('ACCOUNT_SHELL', 1);
-define('ACCOUNT_MAIL', 2);
-define('ACCOUNT_WWW', 4);
-define('ACCOUNT_FTP', 8);
-
 // LMS Class - contains internal LMS database functions used
 // to fetch data like customer names, searching for mac's by ID, etc..
 
