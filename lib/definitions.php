@@ -26,32 +26,36 @@
 
 // that definitions should be included before LMS.class.php but after Smarty
 
+// Helpdesk ticket status
 define('RT_NEW', trans('new'));
 define('RT_OPEN', trans('opened'));
 define('RT_RESOLVED', trans('resolved'));
 define('RT_DEAD', trans('dead'));
 
+// Account types
 define('ACCOUNT_SHELL', 1);
 define('ACCOUNT_MAIL', 2);
 define('ACCOUNT_WWW', 4);
 define('ACCOUNT_FTP', 8);
 
+// Document types
 $DOCTYPES = array(
-    -10 =>	trans('other'),
-    -3	=>	trans('protocol'),
-    -2	=>	trans('annex'),
-    -1	=>	trans('contract'),
     1 	=>	trans('invoice'),
     2 	=>	trans('cash receipt'),
     3	=>	trans('correction invoice')
+    -1	=>	trans('contract'),
+    -2	=>	trans('annex'),
+    -3	=>	trans('protocol'),
+    -10 =>	trans('other'),
 );
 
-$PERIODS = array( // here numbers must be changed to drop -1 value
+// Accounting or numbering periods
+$PERIODS = array( // here numbers should be changed to drop -1 value
     3	=>	trans('yearly'),
     2	=>	trans('quarterly'),
     1	=>	trans('monthly'),
     0	=>	trans('weekly'),
-    -1	=>	trans('dayly')
+    -1	=>	trans('daily')
 );
 
 $SMARTY->assign('_DOCTYPES', $DOCTYPES);
