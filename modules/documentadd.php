@@ -40,9 +40,7 @@ if(isset($_POST['document']))
 	}
 	
 	if(!$document['type'])
-	{
 		$error['type'] = trans('Document type is required!');
-	}
 
 	if(!$document['title'])
 		$error['title'] = trans('Document title is required!');
@@ -82,22 +80,6 @@ if(isset($_POST['document']))
 		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		{
 			$document['md5sum'] = md5_file($_FILES['file']['tmp_name']);
-		
-			// check if file's md5 sum is in database yet
-			if(!$DB->GetOne('SELECT docid FROM documentcontents WHERE md5sum = ?', array($document['md5sum'])))
-			{
-		/*		$file = '';
-				$fd = fopen($_FILES['file']['tmp_name'], 'r');
-				if($fd)
-				{
-					while(!feof($fd))
-						$file .= fread($fd,256);
-					fclose($fd);
-				}
-		*/	}
-			else
-				$error['file'] = trans('Specified file exists in database!');
-			
 			$document['contenttype'] = $_FILES['file']['type'];
 			$document['filename'] = $filename;	
 		}
@@ -120,8 +102,12 @@ if(isset($_POST['document']))
 		@mkdir($path, 0700);
 		$newfile = $path.'/'.$document['md5sum'];
 		if(!file_exists($newfile))
+		{
 			if(!@rename($_FILES['file']['tmp_name'], $newfile))
 				$error['file'] = trans('Can\'t save file in "$0" directory!', $path);
+		}
+		else
+			$error['file'] = trans('Specified file exists in database!');
 	}
 	
 	if(!$error)

@@ -80,7 +80,7 @@ unset($invoicelist['direction']);
 
 $listdata['totalpos'] = sizeof($invoicelist);
 
-$pagelimit = $LMS->CONFIG['phpui']['invoicelist_pagelimit'];
+$pagelimit = $CONFIG['phpui']['invoicelist_pagelimit'];
 $page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
 

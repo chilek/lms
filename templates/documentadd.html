@@ -37,10 +37,9 @@
 		<TD width="98%" class="fright">
 			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"}>
 				<OPTION VALUE="0">... {t}select type{/t} ...</OPTION>
-				<OPTION VALUE="-1"{if $document.type==-1} SELECTED{/if}>{t}contract{/t}</OPTION>
-				<OPTION VALUE="-2"{if $document.type==-2} SELECTED{/if}>{t}annex{/t}</OPTION>
-				<OPTION VALUE="-3"{if $document.type==-3} SELECTED{/if}>{t}protocol{/t}</OPTION>
-				<OPTION VALUE="-10"{if $document.type==-10} SELECTED{/if}>{t}other{/t}</OPTION>
+				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
+				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
+				{/if}{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
