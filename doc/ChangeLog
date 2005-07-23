@@ -24,6 +24,11 @@ version ? (????-??-??):
   - BTS#0000407: fixed page number problem in netdevices list (alec/MadMark)
   - customer documents archive (alec)
   - lmsd/(gg)notify: added %b, %B, %pin variables for template (alec)
+  - in database changed periods constants: 5-yearly, 4-quarterly, 3-monthly,
+    2-weekly (alec)
+  - in 'payments' and 'assignments' tables changed 'period' and 'at' columns
+    type to smallint (alec)
+  - added accounting period: 1-daily (alec)
 	
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

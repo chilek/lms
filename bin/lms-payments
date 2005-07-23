@@ -142,6 +142,14 @@ sub localtime2()
 	}
 }
 
+use constant {
+	YEAR	=> 5,
+	QUARTER	=> 4,
+	MONTH	=> 3,
+	WEEK	=> 2,
+	DAY	=> 1
+};
+
 my $currtime = strftime("%s",localtime2());
 my $month = sprintf("%d",strftime("%m",localtime2()));
 my $day = strftime("%e",localtime2());
@@ -158,10 +166,11 @@ if($month==1 || $month==4 || $month==7 || $month==10) {
 }
 
 my %txts;
-$txts{0} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900);
-$txts{1} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900);
-$txts{2} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 2, $year - 1900);
-$txts{3} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
+$txts{DAY} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900);
+$txts{WEEK} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900);
+$txts{MONTH} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900);
+$txts{QUARTER} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 2, $year - 1900);
+$txts{YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
 
 # special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 # assigment is made not January, the 1st:
@@ -219,7 +228,7 @@ $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, customerid, perio
 	FROM assignments, tariffs, customers
 	WHERE tariffs.id = tariffid AND customerid = customers.id
 	AND status = 3 AND deleted = 0 AND value != 0
-	AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0)
+	AND (period = ".DAY." OR (period = ".WEEK." AND at = $weekday) OR (period = ".MONTH." AND at = $day) OR (period = ".QUARTER." AND at = $quarter) OR (period = ".YEAR." AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0)
 	ORDER BY customerid, invoice, value DESC");
 $dbq->execute();
 
@@ -313,7 +322,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 }	
 
 # solid payments
-$dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0 AND ((period = 0 AND at=$weekday) OR (period = 1 AND at=$day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday))");
+$dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0 AND (period = ".DAY." OR (period = ".WEEK." AND at=$weekday) OR (period = ".MONTH." AND at=$day) OR (period = ".QUARTER." AND at = $quarter) OR (period = ".YEAR." AND at = $yearday))");
 $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())

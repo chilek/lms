@@ -51,17 +51,20 @@ if(isset($payment))
 
 	$period = sprintf('%d',$payment['period']);
 	
-	if($period < 0 || $period > 3)
-		$period = 1;
+	if($period < DAILY || $period > YEARLY)
+		$period = MONTHLY;
 
 	switch($period)
 	{
-		case 0:
+		case DAILY:
+			$at = 0;
+		break;
+		case WEEKLY:
 			$at = sprintf('%d',$payment['at']);
 			if($at < 1 || $at > 7)
 				$error['at'] = trans('Incorrect day of week (1-7)!');
 		break;
-		case 1:
+		case MONTHLY:
 			$at = sprintf('%d',$payment['at']);
 			if($at == 0)
 			{
@@ -72,7 +75,7 @@ if(isset($payment))
 			if($at < 1 || $at > 28)
 		    		$error['at'] = trans('Incorrect day of month (1-28)!');
 		break;
-		case 2:
+		case QUARTERLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
 			else {
@@ -85,7 +88,7 @@ if(isset($payment))
 				$at = ($m-1) * 100 + $d;
 			};
 		break;
-		case 3:
+		case YEARLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
 			else

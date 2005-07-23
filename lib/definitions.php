@@ -42,21 +42,27 @@ define('ACCOUNT_FTP', 8);
 $DOCTYPES = array(
     1 	=>	trans('invoice'),
     2 	=>	trans('cash receipt'),
-    3	=>	trans('correction invoice')
+    3	=>	trans('correction invoice'),
     -1	=>	trans('contract'),
     -2	=>	trans('annex'),
     -3	=>	trans('protocol'),
-    -10 =>	trans('other'),
+    -10 =>	trans('other')
 );
 
 // Accounting or numbering periods
-$PERIODS = array( // here numbers should be changed to drop -1 value
-    3	=>	trans('yearly'),
-    2	=>	trans('quarterly'),
-    1	=>	trans('monthly'),
-    0	=>	trans('weekly'),
-    -1	=>	trans('daily')
+$PERIODS = array(
+    3	=>	trans('monthly'), // first will be default in UI
+    5	=>	trans('yearly'),
+    4	=>	trans('quarterly'),
+    2	=>	trans('weekly'),
+    1	=>	trans('daily')
 );
+
+define('DAILY', 1);
+define('WEEKLY', 2);
+define('MONTHLY', 3);
+define('QUARTERLY', 4);
+define('YEARLY', 5);
 
 $SMARTY->assign('_DOCTYPES', $DOCTYPES);
 $SMARTY->assign('_PERIODS', $PERIODS);
