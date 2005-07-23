@@ -35,9 +35,8 @@ faktura w danym okresie.
 Dalej numeracje albo plany numerowania (numberplan)
 Widzê to tak:
 
-
 lms=> SELECT * from numberplans ;
- id |  template   |  default  | peroid | doctype
+ id |  template   |  default  | period | doctype
 ----+-------------+-----------+--------+---------
   1 | %d          |         1 |      1 |       1
   2 | %d          |         1 |      1 |       2
@@ -46,7 +45,7 @@ lms=> SELECT * from numberplans ;
   5 | %D-%N-%Y-%M |         0 |      3 |       1
 (5 rows)
 
-Doctype takie jak w lib/definitions.php
+Doctype i period takie jak w lib/definitions.php
 
 Default ma prawo byæ tylko jeden dla ka¿dego doctype.
 Domy¶lnie *MUSI* byæ jaki¶ plan numerowania.
@@ -71,16 +70,6 @@ dodatkowo trzebaby tylko parsowaæ %N (%[1-9]N)?
 
 M±drze mówisz ale nie ka¿dy strftime() jest dopuszczany (minuta,godzina,
 sekundy... oraz nie jestem pewien czy mamy tam ostatni± cyferkê z roku).
-
-period:
-Zgodny z assigments -- to te¿ mo¿na opisaæ czyli 
-3--rok
-2--kwarta³
-1--miesi±c
-0--tydzieñ
--1--dzieñ  //to raczej do przenumerowania (+1)
-
-Albo nawet +2, ¿eby 0 nie znaczy³o NIC.
 
 Acha numeracja dzienna mo¿e byæ przydadna dla KP czy czego¶ takiego...
 Albo gdy kto¶ ma 10000 faktur/miesi±c i chce mieæ <1000 w jednym numerkowaniu. 
