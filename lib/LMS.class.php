@@ -1911,19 +1911,19 @@ class LMS
 		switch($payment['period'])
 		{
 			case 0:
-				$row['payday'] = trans('weekly ($0)', strftime("%a",mktime(0,0,0,0,$row['at']+5,0)));
+				$payment['payday'] = trans('weekly ($0)', strftime("%a",mktime(0,0,0,0,$payment['at']+5,0)));
 			break;
 				
 			case 1:
-				$row['payday'] = trans('monthly $0',$row['at']);
+				$payment['payday'] = trans('monthly $0',$payment['at']);
 			break;
 				
 			case 2:
-				$row['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
+				$payment['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1));
 			break;
 			
 			case 3:
-				$row['payday'] = trans('yearly ($0)', date('d/m',($row['at']-1)*86400));
+				$payment['payday'] = trans('yearly ($0)', date('d/m',($payment['at']-1)*86400));
 			break;
 		}
 		return $payment;
