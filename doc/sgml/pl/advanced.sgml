@@ -260,7 +260,7 @@
                     <member>name - nazwa</member>
                     <member>value - kwota</member>
                     <member>creditor - nazwa wierzyciela</member>
-                    <member>period - typ okresu naliczania: co tydzieñ/co miesi±c/co kwarta³/co rok (0/1/2/3)</member>
+                    <member>period - typ okresu naliczania: codziennie/co tydzieñ/co miesi±c/co kwarta³/co rok (1/2/3/4/5)</member>
                     <member>at - dzieñ naliczenia</member>
                     <member>description - opis</member>
                </simplelist>
@@ -271,7 +271,7 @@
                     <member>id - identyfikator</member>
                     <member>tariffid - identyfikator taryfy</member>
                     <member>customerid - identyfikator klienta</member>
-                    <member>period - typ okresu </member>
+                    <member>period - typ okresu naliczania: codziennie/co tydzieñ/co miesi±c/co kwarta³/co rok (1/2/3/4/5)</member>
                     <member>at - dzieñ naliczania</member>
                     <member>datefrom - data obowi±zywania zobowi±zania</member>
                     <member>dateto - data obowi±zywania zobowi±zania</member>

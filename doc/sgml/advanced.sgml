@@ -245,7 +245,7 @@
                     <member>name - name</member>
                     <member>value - amount</member>
                     <member>creditor - creditor name</member>
-                    <member>period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</member>
+                    <member>period - interval of operation: daily/weekly/monthly/quarterly/annually (1/2/3/4/5)</member>
                     <member>at - pay day</member>
                     <member>description - description for payment</member>
                </simplelist>
@@ -256,7 +256,7 @@
                     <member>id - serial number</member>
                     <member>tariffid - subscription serial number</member>
                     <member>customerid - customer serial number</member>
-                    <member>period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</member>
+                    <member>period - interval of operation: daily/weekly/monthly/quarterly/annually (1/2/3/4/5)</member>
                     <member>at - pay day</member>
                     <member>datefrom - start date for assignment</member>
                     <member>dateto - end date for assignment</member>
