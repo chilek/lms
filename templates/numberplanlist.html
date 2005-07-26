@@ -41,6 +41,7 @@
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 		{$numberplanlist[numberplanlist].template|replace:"%N":$numberplanlist[numberplanlist].nextid|replace:"%Y":$today.year|replace:"%M":$today.month}
+		<B>{$numberplanlist[numberplanlist].id|numbertemplate template=$numberplanlist[numberplanlist].template time=5}
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			({$numberplanlist[numberplanlist].id|string_format:"%03d"})
