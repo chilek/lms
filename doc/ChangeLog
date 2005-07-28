@@ -29,6 +29,8 @@ version ? (????-??-??):
   - in 'payments' and 'assignments' tables changed 'period' and 'at' columns
     type to smallint (alec)
   - added accounting period: 1-daily (alec)
+  - fixed bugs related to charset encoding and timeouts
+    in lms-sendinvoices script (chilek)
 	
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
