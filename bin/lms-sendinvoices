@@ -31,6 +31,8 @@ use POSIX qw(strftime);
 use LWP::UserAgent;
 use MIME::Entity;
 use Time::Local;
+use MIME::QuotedPrint;
+use Text::Iconv;
 
 my $_version = '1.7-cvs';
 
@@ -98,6 +100,7 @@ my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
+my $dbencoding = $ini->val('database', 'server_encoding') || 'UTF-8';
 
 my $invoice_ntemplate = $ini->val('invoices', 'number_template') || '%N/LMS/%Y';
 my $filetype = $ini->val('invoices', 'type') || '';
@@ -186,6 +189,10 @@ sub localtime2()
 	}
 }
 
+my $converter = Text::Iconv->new($dbencoding, "UTF-8");
+
+$sender_name = '=?UTF-8?Q?'.encode_qp($sender_name, '').'?=';
+
 my $month = sprintf("%d",strftime("%m",localtime2()));
 my $day = strftime("%e",localtime2());
 my $year = strftime("%Y",localtime2());
@@ -197,7 +204,7 @@ $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
 	my $ua = LWP::UserAgent->new;
-	$ua->timeout(10);
+	$ua->timeout(240);
 	my $response = $ua->get($lms_url.'/?m=invoice&fetchsingle=1&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
 	if ($response->is_success)
 	{
@@ -218,10 +225,10 @@ while(my $row = $dbq->fetchrow_hashref())
 		}
 
 		my $mail = build MIME::Entity Type=>"multipart/mixed";
-		$mail->head->add('To', '"'.$row->{'name'}.'"'.' <'.$custemail.'>');
+		$mail->head->add('To', '"=?UTF-8?Q?'.encode_qp($converter->convert($row->{'name'}), '').'?="'.' <'.$custemail.'>');
 		$mail->head->add('From', '"'.$sender_name.'"'.' <'.$sender_email.'>');
 		$mail->head->add('Reply-To', '"'.$sender_name.'"'.' <'.$sender_email.'>');
-		$mail->head->add('Subject', $subject);
+		$mail->head->add('Subject', '=?UTF-8?Q?'.encode_qp($subject, '').'?=');
 		$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
 		$mail->head->add('Return-path', '<'.$sender_email.'>');
 		$mail->attach(
@@ -239,10 +246,6 @@ while(my $row = $dbq->fetchrow_hashref())
 		);
 		$mail->smtpsend('MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email);
 		
-	}
-	else
-	{
-		die $response->status_line;
 	}
 }
 
