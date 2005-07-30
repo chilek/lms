@@ -63,7 +63,6 @@ $DB->Execute("
     ALTER TABLE payments ALTER at SET NOT NULL;
     ALTER TABLE payments ALTER at SET DEFAULT 0;
 ");
-$DB->Execute("CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum)");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072300', 'dbversion'));
 
