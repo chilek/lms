@@ -142,11 +142,11 @@ sub localtime2()
 	}
 }
 
-use constant YEAR	=> '5';
-use constant QUARTER	=> '4';
-use constant MONTH	=> '3';
-use constant WEEK	=> '2';
-use constant DAY	=> '1';
+use constant YEAR	=> 5;
+use constant QUARTER	=> 4;
+use constant MONTH	=> 3;
+use constant WEEK	=> 2;
+use constant DAY	=> 1;
 
 my $currtime = strftime("%s",localtime2());
 my $month = sprintf("%d",strftime("%m",localtime2()));
