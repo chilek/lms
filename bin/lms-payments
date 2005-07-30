@@ -142,13 +142,11 @@ sub localtime2()
 	}
 }
 
-use constant {
-	YEAR	=> 5,
-	QUARTER	=> 4,
-	MONTH	=> 3,
-	WEEK	=> 2,
-	DAY	=> 1
-};
+use constant YEAR	=> '5';
+use constant QUARTER	=> '4';
+use constant MONTH	=> '3';
+use constant WEEK	=> '2';
+use constant DAY	=> '1';
 
 my $currtime = strftime("%s",localtime2());
 my $month = sprintf("%d",strftime("%m",localtime2()));
@@ -166,11 +164,11 @@ if($month==1 || $month==4 || $month==7 || $month==10) {
 }
 
 my %txts;
-$txts{DAY} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900);
-$txts{WEEK} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900);
-$txts{MONTH} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900);
-$txts{QUARTER} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 2, $year - 1900);
-$txts{YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
+$txts{+DAY} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900);
+$txts{+WEEK} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900);
+$txts{+MONTH} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900);
+$txts{+QUARTER} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 2, $year - 1900);
+$txts{+YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
 
 # special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 # assigment is made not January, the 1st:
