@@ -49,7 +49,7 @@
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
-			<P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
+			<P><FORM NAME="addbalance{$smarty.section.payments.index}" METHOD="POST" ACTION="?m=balanceadd">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
 				<INPUT TYPE="HIDDEN" NAME="addbalance[type]" VALUE="2">
 				<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$paymentlist[payments].value}">
@@ -58,7 +58,7 @@
 				<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that payment?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0"></A>
 				<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0"></A>
 				<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" BORDER="0"></A>&nbsp;
-				<A HREF="javascript:document.addbalance.submit();"><IMG SRC="img/pay.gif" ALT="[ {t}Account payment{/t} ]" BORDER="0"></A>
+				<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG SRC="img/pay.gif" ALT="[ {t}Account payment{/t} ]" BORDER="0"></A>
 				</NOBR>
 			</FORM></P>
 		</TD>

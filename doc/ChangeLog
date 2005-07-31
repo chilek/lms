@@ -5,6 +5,7 @@ version 1.6.2 ? (??/??/????):
   - fixed SQL query in Mailing with network filtering (alec)
   - BTS#0000407: fixed page number saving in netdevices list (alec/MadMark)
   - fixed payment day on Payment Info (alec)
+  - BTS#0000413: fixed payments accounting on Payments List (endrju/alec)
 
 version 1.6.1 Ishta (11/07/2005):
 
