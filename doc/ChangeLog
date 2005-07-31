@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version ? Do-Sai (????-??-??):
 
   - in Mailing added replacement variables (alec)
   - in Nodes List added network and status filtering (alec)
@@ -31,7 +31,7 @@ version ? (????-??-??):
   - added accounting period: 1-daily (alec)
   - fixed bugs related to charset encoding and timeouts
     in lms-sendinvoices script (chilek)
-	
+
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
   - changed upgrade scripts for 1.2 version, deleted for 1.0 (alec)
