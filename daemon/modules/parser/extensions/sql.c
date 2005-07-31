@@ -1,6 +1,6 @@
 #include "sql.h"
-#include "extensions.h"
-#include "debug.h"
+#include "tscript_extensions.h"
+#include "tscript_debug.h"
 
 #include <stdio.h>
 #include <string.h>

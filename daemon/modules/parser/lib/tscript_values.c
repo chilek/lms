@@ -15,8 +15,9 @@ GNU General Public License for more details.
 
 */
 
-#include "values.h"
+#include "tscript_values.h"
 #include <string.h>
+#include <stdarg.h>
 
 #define str_constr(e) (strdup(e))
 #define int_comp(a, b) (a == b)
@@ -46,6 +47,23 @@ tscript_value tscript_value_create(tscript_value_type type, char* data)
 	return v;
 }
 
+tscript_value tscript_value_create_error(const char* format, ...)
+{
+	char* msg;
+	va_list va;
+	
+	va_start(va, format);
+	vasprintf(&msg, format, va);
+	va_end(va);
+
+	return tscript_value_create(TSCRIPT_TYPE_ERROR, msg);
+}
+
+tscript_value tscript_value_create_null()
+{
+	return tscript_value_create(TSCRIPT_TYPE_NULL, "");
+}
+
 tscript_value tscript_value_create_number(double val)
 {
 	tscript_value v;
@@ -56,15 +74,15 @@ tscript_value tscript_value_create_number(double val)
 	return v;
 }
 
-int tscript_value_array_count(tscript_value* val)
+tscript_value tscript_value_array_count(tscript_value* val)
 {
 	int res;
 	if (val->type != TSCRIPT_TYPE_ARRAY)
-		tscript_runtime_error("Cannot count items, value is not an array");
+		return tscript_value_create_error("Cannot count items, value is not an array");
 	tscript_debug("Counting array elements\n");
 	res = tscript_values_array_count(val->array_data);
 	tscript_debug("Array elements counted: %i\n", res);
-	return res;
+	return tscript_value_create_number(res);
 }
 
 tscript_value* tscript_value_array_item_ref(tscript_value* val, int index)
@@ -118,6 +136,9 @@ tscript_value tscript_value_convert_to_string(tscript_value val)
 	tscript_value r;
 	switch(val.type)
 	{
+		case TSCRIPT_TYPE_ERROR:
+			r = val;
+			break;
 		case TSCRIPT_TYPE_NULL:
 			r = tscript_value_create(TSCRIPT_TYPE_STRING, "");
 			break;
@@ -146,10 +167,10 @@ tscript_value tscript_value_convert_to_number(tscript_value val)
 	switch(val.type)
 	{
 		case TSCRIPT_TYPE_NULL:
-			tscript_runtime_error("Cannot convert null value to number");
+			r =  tscript_value_create_error("Cannot convert null value to number");
 			break;
 		case TSCRIPT_TYPE_REFERENCE:
-			tscript_runtime_error("Cannot convert reference to number");
+			r = tscript_value_create_error("Cannot convert reference to number");
 			break;		
 		case TSCRIPT_TYPE_NUMBER:
 			r = val;
@@ -161,9 +182,7 @@ tscript_value tscript_value_convert_to_number(tscript_value val)
 			break;
 		case TSCRIPT_TYPE_ARRAY:
 			tscript_debug("Converting array to number\n");
-			asprintf(&tmp, "%g", (double)tscript_value_array_count(&val));
-			r = tscript_value_create(TSCRIPT_TYPE_NUMBER, tmp);
-			free(tmp);
+			r = tscript_value_array_count(&val);
 			tscript_debug("Converted array to number: %s\n", r.data);
 			break;
 		default:

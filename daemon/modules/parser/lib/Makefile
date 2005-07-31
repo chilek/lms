@@ -5,7 +5,7 @@ BISON=bison
 STRIP=strip
 SOEXT=.so
 
-CFLAGS=-O2
+CFLAGS=-O2 -fPIC
 
 #######################################################################
 
@@ -17,8 +17,8 @@ else
 SOEXT		= .so
 endif
 
-HEADERS=ast.h tscript_compiler.h interpreter.h variables.h parser.tab.h values.h extensions.h debug.h list.h map.h
-OBJECTS=ast.o tscript_compiler.o interpreter.o variables.o parser.tab.o values.o extensions.o debug.o lexical.o
+HEADERS=tscript_ast.h tscript_compiler.h tscript_interpreter.h tscript_variables.h tscript_parser.h tscript_values.h tscript_extensions.h tscript_debug.h list.h map.h
+OBJECTS=tscript_ast.o tscript_compiler.o tscript_interpreter.o tscript_variables.o tscript_parser.o tscript_values.o tscript_extensions.o tscript_debug.o tscript_lexical.o
 
 all: tscript.a tscript$(SOEXT)
 
@@ -32,11 +32,11 @@ tscript.a: $(OBJECTS)
 $(OBJECTS): %.o: %.c $(HEADERS)
 	$(CC) -c $< $(CFLAGS)
 
-lexical.c: lexical.yy $(HEADERS)
-	$(FLEX) -olexical.c -Ptscript_yy lexical.yy 
+tscript_lexical.c: tscript_lexical.yy $(HEADERS)
+	$(FLEX) -otscript_lexical.c -Ptscript_yy tscript_lexical.yy 
 
-parser.tab.h: parser.y $(HEADERS)
-	$(BISON) -d parser.y -p tscript_yy
+tscript_parser.h: tscript_parser.y $(HEADERS)
+	$(BISON) -o tscript_parser.c -d tscript_parser.y -p tscript_yy
 
 clean:
-	rm -f tscript.a tscript.so tscript.dll *.o lexical.c parser.tab.c parser.tab.h
+	rm -f tscript.a tscript.so tscript.dll *.o tscript_lexical.c tscript_parser.c tscript_parser.h

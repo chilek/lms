@@ -1,8 +1,6 @@
+#include "tscript_exec.h"
 #include <stdio.h>
-
-#include "exec.h"
-#include "extensions.h"
-#include "debug.h"
+#include "tscript_extensions.h"
 
 tscript_value tscript_ext_exec(tscript_value arg)
 {
@@ -10,7 +8,7 @@ tscript_value tscript_ext_exec(tscript_value arg)
 	int res;
 	FILE* child_out = popen(arg.data, "r");
 	if (child_out == NULL)
-		tscript_runtime_error("Couldn't execute %s\n", arg.data);
+		return tscript_value_create_error("Couldn't execute %s", arg.data);
 	out = (char*)malloc(512); // FIXME
 	res = fread(out, 1, 511, child_out);
 	out[res]=0;

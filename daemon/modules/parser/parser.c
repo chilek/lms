@@ -29,16 +29,18 @@
 #include "lmsd.h"
 #include "parser.h"
 
-#include "lib/interpreter.h"
+#include "lib/tscript_interpreter.h"
 #include "lib/tscript_compiler.h"
-#include "extensions/exec.h"
+#include "lib/tscript_debug.h"
+#include "extensions/tscript_exec.h"
 #include "extensions/sql.h"
 
 void reload(GLOBAL *g, struct parser_module *p)
 {
 	FILE * fh;
 	unsigned char *out;
-
+	tscript_value res;
+	
 	tscript_ext_exec_init();
 	tscript_ext_sql_init(g->conn);
 
@@ -49,32 +51,39 @@ void reload(GLOBAL *g, struct parser_module *p)
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/parser] compiling...", p->base.instance);
 #endif
-		if( tscript_compile_string(p->script) != 0 )
+		if( tscript_compile_string(p->script) == 0 )
 		{
-			syslog(LOG_ERR, "ERROR: [%s/parser] compile error", p->base.instance);
-		}
-
-		out = tscript_value_convert_to_string(tscript_interprete()).data;
-
-		if(strlen(p->file))
-		{
-			fh = fopen(p->file, "w");
-			if(!fh)
-				syslog(LOG_ERR, "ERROR: [%s/parser] unable to open '%s' file for writing", p->base.instance, p->file);
-			else
+			res = tscript_interprete();
+		
+			if( res.type != TSCRIPT_TYPE_ERROR )
 			{
-			        fprintf(fh, "%s", out);
-				fclose(fh);
-			}
-		}
+				out = tscript_value_convert_to_string(res).data;
+				
+				if(strlen(p->file))
+				{
+					fh = fopen(p->file, "w");
+					if(!fh)
+						syslog(LOG_ERR, "ERROR: [%s/parser] unable to open '%s' file for writing", p->base.instance, p->file);
+					else
+					{
+				    		fprintf(fh, "%s", out);
+						fclose(fh);
+					}
+				}
 
-		if(strlen(p->command))
-		{
+				if(strlen(p->command))
+				{
 #ifdef DEBUG1
-			syslog(LOG_INFO, "DEBUG: [%s/parser] executing command...", p->base.instance);
+					syslog(LOG_INFO, "DEBUG: [%s/parser] executing command...", p->base.instance);
 #endif
-			system(p->command);
+					system(p->command);
+				}
+			} 
+			else
+				syslog(LOG_ERR, "ERROR: [%s/parser] interprete error: %s", p->base.instance, res.data);
 		}
+		else
+			syslog(LOG_ERR, "ERROR: [%s/parser] compile error: %s", p->base.instance, tscript_compiler_error());
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/parser] reloaded", p->base.instance);
 #endif

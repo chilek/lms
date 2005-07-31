@@ -1,7 +1,7 @@
 #ifndef TSCRIPT_EXTENSIONS_H
 #define TSCRIPT_EXTENSIONS_H
 
-#include "values.h"
+#include "tscript_values.h"
 
 typedef tscript_value tscript_extension_func(tscript_value arg);
 

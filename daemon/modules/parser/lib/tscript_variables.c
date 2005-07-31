@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 */
 
-#include "variables.h"
+#include "tscript_variables.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,5 +31,9 @@ static variables_map vars;
 
 tscript_value* tscript_variable_get_reference(char* name)
 {
-	return variables_map_ref(&vars, name, tscript_value_create(TSCRIPT_TYPE_NULL, NULL));
+	tscript_value* res;
+	tscript_debug("Getting reference for variable %s\n", name);
+	res = variables_map_ref(&vars, name, tscript_value_create_null());
+	tscript_debug("Reference retrieved for variable %s\n", name);
+	return res;
 }
