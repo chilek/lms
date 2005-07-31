@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 */
 
-#include "ast.h"
+#include "tscript_ast.h"
 #include <stdio.h>
 
 const char* TSCRIPT_AST_VALUE = "VALUE";

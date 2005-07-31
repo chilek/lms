@@ -32,6 +32,7 @@ version ? Do-Sai (????-??-??):
   - fixed bugs related to charset encoding and timeouts
     in lms-sendinvoices script (chilek)
   - BTS#0000413: fixed payments accounting on Payments List (endrju/alec)
+  - lmsd/parser: updated tscript library, runtime errors handling (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

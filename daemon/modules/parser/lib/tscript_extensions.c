@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 */
 
-#include "extensions.h"
+#include "tscript_extensions.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -43,11 +43,9 @@ int tscript_has_extension(char* keyword)
 
 tscript_value tscript_run_extension(char* keyword, tscript_value arg)
 {
-	tscript_extension_func *f;
-
-	if(tscript_extension_map_contains(&tscript_extensions, keyword)==0)
+	tscript_extension_func* f;
+	if (!tscript_extension_map_contains(&tscript_extensions, keyword))
 		tscript_internal_error("Cannot find extension\n");
-
 	f = *tscript_extension_map_ref(&tscript_extensions, keyword, NULL);
 	return f(arg);
 }

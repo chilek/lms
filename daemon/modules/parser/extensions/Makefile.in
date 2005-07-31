@@ -1,7 +1,7 @@
 CFLAGS+=-I../lib -D_GNU_SOURCE
 OBJECTS+=../../../dbdrivers/$(DBDRIVER)/db.o ../../../util.o \
-	exec.o sql.o
-HEADERS=exec.h sql.h 
+	tscript_exec.o sql.o
+HEADERS=tscript_exec.h sql.h 
 
 extensions.a: $(OBJECTS)
 	ar rs tscript_extensions.a $(OBJECTS)

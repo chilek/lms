@@ -1,7 +1,7 @@
 #ifndef TSCRIPT_AST_H
 #define TSCRIPT_AST_H
 
-#include "values.h"
+#include "tscript_values.h"
 
 extern const char* TSCRIPT_AST_VALUE;
 extern const char* TSCRIPT_AST_VAR_SET;
