@@ -1160,7 +1160,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
             </itemizedlist>
 	</sect2>
 	<sect2 id="daemon-parser-syntax">
-	<title>Syntax</title>
+	<title>Sk³adnia</title>
 	    <para>Sk³adnia jêzyka T-Script jest podobna do sk³adni innych popularnych
 	    jêzyków takich jak C czy JavaScript, ale dokonano pewnych zmian
 	    maj±cych na celu u³atwienie tworzenia szablonów. 
@@ -1169,7 +1169,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 	    <itemizedlist>
 		<listitem>
 		    <para>Ci±g znaków</para>
-		    <para><screen>"some literal"</screen></para>
+		    <para><screen>"jaki¶ ci±g znaków"</screen></para>
 		</listitem>
 		<listitem>
 		    <para>Liczba</para>
@@ -1237,12 +1237,21 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		</listitem>
 	    </itemizedlist>
 	    </para>
+	    <para>Komentarze:
+	    <itemizedlist>
+		<listitem>
+		    <para>Komentarze w stylu jêzyka C</para>
+		    <para>
+		    <screen>/* to jest komentarz - mo¿e byæ wieloliniowy */</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
 	    <para>Podstawowe polecenia:
 	    <itemizedlist>
 		<listitem>
 		    <para>Przypisuje warto¶æ wyra¿enia do podanej zmiennej</para>
 		    <para>
-		    <screen>&lt;variable_name&gt; = &lt;wyra¿enie&gt;</screen></para>
+		    <screen>&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;</screen></para>
 		</listitem>
 		<listitem>
 		    <para>Wykonuje polecenie tylko wtedy gry wyra¿enie jest prawd±. 
