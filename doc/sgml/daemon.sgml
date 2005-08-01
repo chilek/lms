@@ -1217,6 +1217,14 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		</listitem>
 	    </itemizedlist>
 	    </para>
+	    <para>Comments:
+	    <itemizedlist>
+		<listitem>
+		    <para>C-style comment</para>
+		    <para><screen>/* this is a comment - it can be also multiline */</screen></para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
 	    <para>Basic commands:
 	    <itemizedlist>
 		<listitem>
