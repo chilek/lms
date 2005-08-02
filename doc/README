@@ -90,6 +90,7 @@ LMS Developers
    4-2. Lms-notify: example of mailing template
    5-1. Lms-mgc: Example instance
    6-1. Parser: Creating /etc/hosts file
+   6-2. Parser: Notify module replacement
    7-1. Format of configuration options
      _________________________________________________________________
 
@@ -4124,6 +4125,63 @@ exec <command>
 {for (r=0; r<number(result); r++)}\
 {result[r].name}\t{result[r].ip}
 {/for}\
+
+   Second  example is longer. Here we are using especially 'exec'. Script
+   sends e-mails to customers with balance less than specified limit.
+
+   Example 6-2. Parser: Notify module replacement
+{limit = 0}
+{month = exec printf %s `date +%B` /* using printf to trim end-of-line sign */}
+{year = exec printf %s `date +%Y`}
+{customers = SELECT customers.id AS id, email, pin, name, lastname,
+        SUM((type * -2 +7) * cash.value) AS balance
+        FROM customers
+        LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 ORcash.type = 4)
+        WHERE deleted = 0 AND email!=''
+        GROUP BY customers.id, name, lastname, email, pin
+        HAVING SUM((type * -2 +7) * cash.value) < {limit}}
+
+{for(i=0; i<number(customers); i++)}
+
+    {exec echo "NOTE: This message has been generated automatically.
+
+We kindly remind that you have debt on your internet service provide account
+for the amount of $ {customers[i].balance}.
+
+If you have already regulated your subscription fees for current month, that
+is {month} {year}, please just skip this message.
+
+If you think this message was sent to you in error, please contact our
+customer service representative.
+
+All information about payments could be also found at:
+http://bigpro.com/myAccount/
+
+If you want to regulate your account status, please contact our accountant:
+
+Aldfert Rule
+phone: 0-509031337
+e-mail: alde@staff.bigpro.com
+
+PS. Last 10 operations on your account has been attached below for your
+convenience.
+--------------+--------------+-----------------------------
+     Date     |    Value     |           Comment
+--------------+--------------+-----------------------------" > /tmp/mail}
+
+    {last10 = SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value
+            FROM cash WHERE customerid = {customers[i].id}
+            ORDER BY time DESC LIMIT 10}
+
+    {for(j=0; j<number(last10); j++)}
+
+        {exec echo "{last10[j].time}|\t{last10[j].value}|\t{last10[j].comment}" >> /tmp/mail}
+
+    {/for}
+
+    {exec mail -s "Liabilities information" -r lms@domain.tld {customers[i].email} < /tmp/mail}
+
+{/for}
      _________________________________________________________________
 
 Chapter 7. For curious
