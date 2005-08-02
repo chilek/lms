@@ -63,31 +63,37 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 	if( up_payments )
 		switch(period) {
 			case WEEKLY:
-				t->tm_mday += 7;
+				t->tm_mday += 6;
 				break;
 			case MONTHLY:
 				t->tm_mon += 1;
+				t->tm_mday -= 1; 
 				break;
 			case QUARTERLY:
 				t->tm_mon += 3;
+				t->tm_mday -= 1;
 				break;
 			case YEARLY:
 				t->tm_mon += 12;
+				t->tm_mday -= 1; 
 				break;
 		}
 	else
 		switch(period) {
 			case WEEKLY:
-				t->tm_mday -= 7;
+				t->tm_mday -= 6;
 				break;		
 			case MONTHLY:
 				t->tm_mon -= 1;
+				t->tm_mday += 1;
 				break;
 			case QUARTERLY:
 				t->tm_mon -= 3;
+				t->tm_mday += 1;
 				break;
 			case YEARLY:
 				t->tm_mon -= 12;
+				t->tm_mday += 1;
 				break;
 		}
 
