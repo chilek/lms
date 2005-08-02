@@ -1,11 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
 >LMS - LAN Management System 1.7-cvs</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -9226,7 +9226,15 @@ NAME="NOTIFY-DESC"
               <UL
 ><LI
 ><P
->%saldo - current customer balance</P
+>%saldo - current customer balance (also %b)</P
+></LI
+><LI
+><P
+>%B - absolute value of current customer balance</P
+></LI
+><LI
+><P
+>%pin - customer PIN</P
 ></LI
 ><LI
 ><P
@@ -11066,6 +11074,21 @@ CLASS="SCREEN"
 >
 	    </P
 ><P
+>Comments:
+	    <UL
+><LI
+><P
+>C-style comment</P
+><P
+><PRE
+CLASS="SCREEN"
+>/* this is a comment - it can be also multiline */</PRE
+></P
+></LI
+></UL
+>
+	    </P
+><P
 >Basic commands:
 	    <UL
 ><LI
@@ -12007,7 +12030,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</TD
+>period - interval of operation: daily/weekly/monthly/quarterly/annually (1/2/3/4/5)</TD
 ></TR
 ><TR
 ><TD
@@ -12045,7 +12068,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</TD
+>period - interval of operation: daily/weekly/monthly/quarterly/annually (1/2/3/4/5)</TD
 ></TR
 ><TR
 ><TD
