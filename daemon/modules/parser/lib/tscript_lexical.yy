@@ -28,7 +28,7 @@ GNU General Public License for more details.
 	static int line;
 	static int state_stack_level;
 	
-	void tscript_init_parser()
+	void tscript_init_lexical()
 	{
 		col = 0;
 		line = 1;

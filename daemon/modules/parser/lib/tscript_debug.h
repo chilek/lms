@@ -4,6 +4,6 @@
 void tscript_set_verbose(int verbose);
 void tscript_debug(const char* format, ...);
 void tscript_internal_error(const char* format, ...);
-char* tscript_compiler_error();
+char* tscript_compile_error();
 
 #endif

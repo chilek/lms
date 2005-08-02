@@ -41,7 +41,7 @@ void tscript_yyerror(const char* msg)
 		tscript_yylloc.first_line, tscript_yylloc.first_column, msg);
 }
 
-char* tscript_compiler_error()
+char* tscript_compile_error()
 {
 	return tscript_err;
 }

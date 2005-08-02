@@ -32,6 +32,7 @@ GNU General Public License for more details.
 %left EQUALS '<' '>' EQUALS_LESS EQUALS_GREATER DIFFERS
 %left '!'
 %left '+' '-'
+%left NEG
 %left '*' '/' '%'
 %nonassoc INC DEC
 %nonassoc EXT
@@ -95,9 +96,13 @@ expression:	TEXT
 		{
 			$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
 		}
+	|	'-' expression %prec NEG
+		{
+			$$ = tscript_ast_node_1(TSCRIPT_AST_NEG, $2);
+		}
 	|	'!' expression
 		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_NOT, $1);
+			$$ = tscript_ast_node_1(TSCRIPT_AST_NOT, $2);
 		}
 	|	'(' expression ')'
 		{

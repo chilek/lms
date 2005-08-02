@@ -33,6 +33,7 @@
 #include "lib/tscript_compiler.h"
 #include "lib/tscript_debug.h"
 #include "extensions/tscript_exec.h"
+#include "extensions/tscript_string.h"
 #include "extensions/sql.h"
 
 void reload(GLOBAL *g, struct parser_module *p)
@@ -42,6 +43,7 @@ void reload(GLOBAL *g, struct parser_module *p)
 	tscript_value res;
 	
 	tscript_ext_exec_init();
+	tscript_ext_string_init();
 	tscript_ext_sql_init(g->conn);
 
 	if(!strlen(p->script))
@@ -83,13 +85,14 @@ void reload(GLOBAL *g, struct parser_module *p)
 				syslog(LOG_ERR, "ERROR: [%s/parser] interprete error: %s", p->base.instance, res.data);
 		}
 		else
-			syslog(LOG_ERR, "ERROR: [%s/parser] compile error: %s", p->base.instance, tscript_compiler_error());
+			syslog(LOG_ERR, "ERROR: [%s/parser] compile error: %s", p->base.instance, tscript_compile_error());
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/parser] reloaded", p->base.instance);
 #endif
 	}
 
 	tscript_ext_exec_close();
+	tscript_ext_string_close();
 	tscript_ext_sql_close();
 	
 	free(p->command);

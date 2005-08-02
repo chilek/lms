@@ -15,6 +15,7 @@ extern const char* TSCRIPT_AST_GREATER;
 extern const char* TSCRIPT_AST_EQUALS_LESS;
 extern const char* TSCRIPT_AST_EQUALS_GREATER;
 extern const char* TSCRIPT_AST_NOT;
+extern const char* TSCRIPT_AST_NEG;
 extern const char* TSCRIPT_AST_OR;
 extern const char* TSCRIPT_AST_AND;
 extern const char* TSCRIPT_AST_PLUS;
