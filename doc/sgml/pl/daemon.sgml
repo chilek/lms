@@ -1341,6 +1341,67 @@ DROP &lt;dalszy_ci±g_zapytania&gt;
 </screen>
 	    </example>    
 	    </para>
+	    <para>Drugi trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
+	    'exec'. Skrypt wysy³a wiadomo¶ci do klientów z bilansem ni¿szym od
+	    zadanego limitu.
+	    <example id="parser-e2">
+		<title>Parser: Zamiennik modu³u notify</title>
+<screen>
+{limit = 0}
+{month = exec printf %s `date +%B` /* u¿ywamy printf aby usun±æ znak nowej linii */}
+{year = exec printf %s `date +%Y`}
+{customers = SELECT customers.id AS id, email, pin, name, lastname,
+        SUM((type * -2 +7) * cash.value) AS balance
+        FROM customers
+        LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4)
+        WHERE deleted = 0 AND email!=''
+        GROUP BY customers.id, name, lastname, email, pin
+        HAVING SUM((type * -2 +7) * cash.value) &lt; {limit}}
+
+{for(i=0; i&lt;number(customers); i++)}
+
+    {exec echo "UWAGA: Niniejsza wiadomo¶æ zosta³a wygenerowana automatycznie.
+
+Uprzejmie informujemy, i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za 
+Internet w kwocie {customers[i].balance*-1} z³.
+
+Je¿eli nale¿no¶æ za bie¿±cy miesi±c, to jest {month} {year}, zosta³a ju¿
+uregulowana prosimy zignorowaæ tê wiadomo¶æ.
+
+W przypadku gdy uwa¿a Pani/Pan, ¿e zaleg³o¶æ ta jest nieporozumieniem
+prosimy o jak najszybszy kontakt z Biurem Obs³ugi Klienta.
+
+Wiêcej informacji na temat p³atno¶ci mo¿na uzyskaæ pod adresem:
+http://naszasiec.pl/mojekonto/
+
+W celu uregulowania nale¿no¶ci prosimy o kontakt:
+
+Nasz Siec ASK - Biuro Obs³ugi Klienta
+Gwidon Mniejwa¿ny
+telefon: 0-606031337
+e-mail: gwidonm@naszasiec.pl
+
+PS. Poni¿ej za³±czamy ostatnie 10 operacji na Pañstwa koncie.
+--------------+--------------+-----------------------------
+     Data     |    Kwota     |           Komentarz
+--------------+--------------+-----------------------------" &gt; /tmp/mail}
+
+    {last10 = SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value
+            FROM cash WHERE customerid = {customers[i].id}
+            ORDER BY time DESC LIMIT 10}
+    
+    {for(j=0; j&lt;number(last10); j++)}
+    
+        {exec echo "{last10[j].time}|\t{last10[j].value}|\t{last10[j].comment}" &gt;&gt; /tmp/mail}
+    
+    {/for}
+
+    {exec mail -s "Powiadomienie o zaleglosciach" -r lms@domain.tld {customers[i].email} &lt; /tmp/mail}
+
+{/for}
+</screen>
+	    </example>
+	    </para>
 	</sect2>
     </sect1>
 </chapter>
