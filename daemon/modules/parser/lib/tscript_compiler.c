@@ -25,7 +25,7 @@ extern void tscript_yy_cleanup_scanner(void *);
 int tscript_compile_stream(FILE* file)
 {
 	tscript_yyin = file;
-	tscript_init_parser();
+	tscript_init_lexical();
 	return tscript_yyparse();
 }
 
@@ -33,7 +33,7 @@ int tscript_compile_string(const char* string)
 {
 	int r;
 	void* buf = tscript_yy_setup_scanner(string);
-	tscript_init_parser();
+	tscript_init_lexical();
 	r = tscript_yyparse();
 	tscript_yy_cleanup_scanner(buf);
 	return r;

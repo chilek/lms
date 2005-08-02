@@ -74,6 +74,11 @@ tscript_value tscript_value_create_number(double val)
 	return v;
 }
 
+tscript_value tscript_value_create_string(char* str)
+{
+	return tscript_value_create(TSCRIPT_TYPE_STRING, strdup(str));
+}
+
 tscript_value tscript_value_array_count(tscript_value* val)
 {
 	int res;

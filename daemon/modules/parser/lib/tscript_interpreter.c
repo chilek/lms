@@ -81,12 +81,11 @@ static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 		else
 		{
 			tscript_debug("Incrementing referenced variable\n");
+			res = *tmp1.reference_data;
 			tmp = atof(tmp1.reference_data->data);
 			tmp++;
-			free(tmp1.reference_data->data);
-			asprintf(&tmp1.reference_data->data, "%g", tmp);
+			*tmp1.reference_data = tscript_value_create_number(tmp);
 			tscript_debug("Incremented\n");
-			res = *tmp1.reference_data;
 			tscript_debug("Interpreted TSCRIPT_AST_INC\n");
 		}
 	}
@@ -104,12 +103,11 @@ static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 		else
 		{
 			tscript_debug("Decrementing referenced variable\n");
+			res = *tmp1.reference_data;
 			tmp = atof(tmp1.reference_data->data);
 			tmp--;
-			free(tmp1.reference_data->data);
-			asprintf(&tmp1.reference_data->data, "%g", tmp);
+			*tmp1.reference_data = tscript_value_create_number(tmp);
 			tscript_debug("Decremented\n");
-			res = *tmp1.reference_data;
 			tscript_debug("Interpreted TSCRIPT_AST_DEC\n");
 		}
 	}
@@ -253,6 +251,31 @@ static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 			res.data[0] = (atof(tmp1.data) >= atof(tmp2.data) ? '1' : '0');
 			res.data[1] = 0;
 		}
+	}
+	else if (ast->type == TSCRIPT_AST_NOT)
+	{
+		tscript_debug("Interpretting TSCRIPT_AST_NOT\n");
+		tmp1 = tscript_value_dereference(tscript_interprete_sub(ast->children[0]));
+		if (tmp1.type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else
+		{
+			res.type = TSCRIPT_TYPE_NUMBER;
+			res.data = (char*)malloc(2);
+			res.data[0] = ((!atof(tmp1.data)) ? '1' : '0');
+			res.data[1] = 0;
+		}
+		tscript_debug("Interpretting TSCRIPT_AST_NOT\n");
+	}
+	else if (ast->type == TSCRIPT_AST_NEG)
+	{
+		tscript_debug("Interpretting TSCRIPT_AST_NEG\n");
+		tmp1 = tscript_value_dereference(tscript_interprete_sub(ast->children[0]));
+		if (tmp1.type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else
+			res = tscript_value_create_number(-atof(tmp1.data));
+		tscript_debug("Interpretting TSCRIPT_AST_NEG\n");
 	}
 	else if (ast->type == TSCRIPT_AST_OR)
 	{

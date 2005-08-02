@@ -30,6 +30,7 @@ const char* TSCRIPT_AST_GREATER = ">";
 const char* TSCRIPT_AST_EQUALS_LESS = "<=";
 const char* TSCRIPT_AST_EQUALS_GREATER = ">=";
 const char* TSCRIPT_AST_NOT = "!";
+const char* TSCRIPT_AST_NEG = "NEG";
 const char* TSCRIPT_AST_OR = "||";
 const char* TSCRIPT_AST_AND = "&&";
 const char* TSCRIPT_AST_PLUS = "+";
