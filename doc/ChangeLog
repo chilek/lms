@@ -34,6 +34,7 @@ version ? Do-Sai (????-??-??):
   - BTS#0000413: fixed payments accounting on Payments List (endrju/alec)
   - lmsd/parser: updated tscript library, runtime errors handling (alec)
   - lmsd/payments: fixed subscription period calculation (alec)
+  - Documents Numbering Plans (hunter/alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

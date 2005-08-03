@@ -24,70 +24,63 @@
  *  $Id$
  */
 
-function GetNumberPlanList($filter=NULL)
+function GetNumberPlanList()
 {
-	// Order proably doesn't have any place in here
 	global $DB;
 
-	$list = $DB->GetAll('SELECT * FROM numberplans ORDER BY id');
+	$yearstart = mktime(0,0,0,1,1);
+	$quarterstart = mktime(0,0,0,date('n')-3,1);
+	$monthstart = mktime(0,0,0,date('n'),1);
+	$weekstart = mktime(0,0,0,date('n'),date('j')-(7-date('w')));
+	$daystart = mktime(0,0,0);
 
-	foreach ($list as $item => $itemno) 
+	if($list = $DB->GetAll('SELECT * FROM numberplans ORDER BY id'))
+	{
+		$count = $DB->GetAllByKey('SELECT numberplanid AS id, COUNT(numberplanid) AS count
+					    FROM documents 
+					    GROUP BY numberplanid','id');
+					    
+		$max = $DB->GetAllByKey('SELECT numberplanid AS id, MAX(number) AS max 
+					    FROM documents LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+					    WHERE cdate >= (CASE period
+						WHEN '.YEARLY.' THEN '.$yearstart.'
+						WHEN '.QUARTERLY.' THEN '.$quarterstart.'
+						WHEN '.MONTHLY.' THEN '.$monthstart.'
+						WHEN '.WEEKLY.' THEN '.$weekstart.'
+						WHEN '.DAILY.' THEN '.$daystart.' ELSE 0 END)
+					    GROUP BY numberplanid','id');
+					    
+		foreach ($list as $idx => $item)
 		{
-			//temporary hack here, there should be right join with select max 
-			// order by numberingplan from documents where type = 
-			$list[$item]['nextid'] =1;
-			// also a hack
-			$list[$item]['issued'] =rand(5);
+			$list[$idx]['next'] = $max[$item['id']]['max']+1;
+			$list[$idx]['issued'] = $count[$item['id']]['count'];
 		}
+	}
 	
-	$list['total'] = sizeof($list);
-	$list['filter'] = $filter;
-
 	return $list;
 }
 
-if(!isset($_GET['o']))
-	$SESSION->restore('dlo', $o);
-else
-	$o = $_GET['o'];
-$SESSION->save('dlo', $o);
-
-if ($SESSION->is_set('dlp') && !isset($_GET['page']))
-	$SESSION->restore('dlp', $_GET['page']);
+if ($SESSION->is_set('nplp') && !isset($_GET['page']))
+	$SESSION->restore('nplp', $_GET['page']);
 	    
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (!isset($LMS->CONFIG['phpui']['numberplanlist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['numberplanlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$SESSION->save('dlp', $page);
+$SESSION->save('nplp', $page);
 
-$layout['pagetitle'] = trans('Number Plan List');
+$layout['pagetitle'] = trans('Numbering Plans List');
 
 $numberplanlist = GetNumberPlanList();
-$listdata['total'] = $numberplanlist['total'];
-$listdata['order'] = $numberplanlist['order'];
-$listdata['direction'] = $numberplanlist['direction'];
-unset($numberplanlist['total']);
-unset($numberplanlist['order']);
-unset($numberplanlist['direction']);
+$listdata['total'] = sizeof($numberplanlist);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$today= array ();
-
-// for exaple substitution:
-$today['day'] = date('d');
-$today['month'] = date('m');
-$today['year'] = date('y');
-$today['year_c'] = date('Y');
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('numberplanlist', $numberplanlist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('layout',$layout);
-$SMARTY->assign('today',$today);
 $SMARTY->display('numberplanlist.html');
 
 ?>
