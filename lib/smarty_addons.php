@@ -149,13 +149,16 @@ function _smarty_modifier_numbertemplate($args,$time=NULL,$template=NULL)
 {
 	//	Ugly but usefull backward compability
 	if(empty($template))
-		$template="%N/LMS/%Y";
+		$template = "%N/LMS/%Y";
 	if(empty($time))
-		$time=time();
+		$time = time();
+/* will be better to move that check to numberplanadd(edit) module
+
 	if (substr_count($template,"%N")!=1) return("ERROR in template, %N must be used ONCE!");
 	if (substr_count($template,"%Y")>1) return("ERROR in template, %N must be used ONCE!");
 	if (substr_count($template,"%M")>1) return("ERROR in template, %N must be used ONCE!");
 	if (substr_count($template,"%D")>1) return("ERROR in template, %N must be used ONCE!");
+*/
 	return strftime(str_replace("%N",$args,$template),$time);
 }
 
