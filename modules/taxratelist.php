@@ -55,19 +55,19 @@ function GetTaxRateList($order='name,asc')
 }
 
 if(!isset($_GET['o']))
-	$SESSION->restore('dlo', $o);
+	$SESSION->restore('trlo', $o);
 else
 	$o = $_GET['o'];
-$SESSION->save('dlo', $o);
+$SESSION->save('trlo', $o);
 
-if ($SESSION->is_set('dlp') && !isset($_GET['page']))
-	$SESSION->restore('dlp', $_GET['page']);
+if ($SESSION->is_set('trlp') && !isset($_GET['page']))
+	$SESSION->restore('trlp', $_GET['page']);
 	    
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (!isset($LMS->CONFIG['phpui']['taxratelist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['taxratelist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$SESSION->save('dlp', $page);
+$SESSION->save('trlp', $page);
 
 $layout['pagetitle'] = trans('Tax Rates List');
 

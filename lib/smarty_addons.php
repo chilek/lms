@@ -140,18 +140,17 @@ function _smarty_block_translate($args, $content, &$SMARTY)
     return trim($content);
 }
 
-function _smarty_bankaccount($args, &$SMARTY)
+function _smarty_function_bankaccount($args, &$SMARTY)
 {
 	return bankaccount($args['id']);
 }
 
-function _smarty_modifier_numbertemplate($args,$time=NULL,$template=NULL)
+function _smarty_function_number($args,&$SMARTY)
 {
-	//	Ugly but usefull backward compability
-	if(empty($template))
-		$template = "%N/LMS/%Y";
-	if(empty($time))
-		$time = time();
+	$template = $args['template'] ? $args['template'] : DEFAULT_NUMBER_TEMPLATE;
+	$time = $args['time'] ? $args['time'] : time();
+	$number = $args['number'] ? $args['number'] : 1;
+
 /* will be better to move that check to numberplanadd(edit) module
 
 	if (substr_count($template,"%N")!=1) return("ERROR in template, %N must be used ONCE!");
@@ -159,17 +158,17 @@ function _smarty_modifier_numbertemplate($args,$time=NULL,$template=NULL)
 	if (substr_count($template,"%M")>1) return("ERROR in template, %N must be used ONCE!");
 	if (substr_count($template,"%D")>1) return("ERROR in template, %N must be used ONCE!");
 */
-	return strftime(str_replace("%N",$args,$template),$time);
+	return strftime(str_replace("%N",$number,$template),$time);
 }
 
 $SMARTY->register_function('sum','_smarty_function_sum');
 $SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_function('tip','_smarty_function_tip');
-$SMARTY->register_function('bankaccount','_smarty_bankaccount');
+$SMARTY->register_function('bankaccount','_smarty_function_bankaccount');
+$SMARTY->register_function('number','_smarty_function_number');
 $SMARTY->register_modifier('to_words','to_words');
 $SMARTY->register_modifier('money_format','moneyf');
 $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');
-$SMARTY->register_modifier('numbertemplate','_smarty_modifier_numbertemplate');
 $SMARTY->register_block('t', '_smarty_block_translate');
 $SMARTY->assign('now', time());
 $SMARTY->assign('tomorrow', time()+86400);

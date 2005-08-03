@@ -264,6 +264,11 @@ $menu = array(
 					'tip' => trans('Tax Rates Definitions'),
 				),
 				array(
+					'name' => trans('Numbering Plans'),
+					'link' => '?m=numberplanlist',
+					'tip' => trans('Numbering Plans Definitions'),
+				),
+				array(
 					'name' => trans('Import'),
 					'link' => '?m=cashimport',
 					'tip' => trans('Import cash operations'),

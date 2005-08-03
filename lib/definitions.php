@@ -64,6 +64,8 @@ define('MONTHLY', 3);
 define('QUARTERLY', 4);
 define('YEARLY', 5);
 
+define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
+
 $SMARTY->assign('_DOCTYPES', $DOCTYPES);
 $SMARTY->assign('_PERIODS', $PERIODS);
 
