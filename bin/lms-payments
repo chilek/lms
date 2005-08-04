@@ -103,7 +103,6 @@ my $comment = $ini->val('payments', 'comment') || 'Tariff %tariff subscription f
 my $suspension_description = $ini->val('payments', 'suspension_description') || '';
 
 my $suspension_percentage = $ini->val('finances', 'suspension_percentage') || '0';
-my $monthly_num = $ini->val('invoices', 'monthly_numbering') || 0;
 
 my $dbase;
 my $utsfmt;
@@ -151,6 +150,7 @@ use constant DAY	=> 1;
 my $currtime = strftime("%s",localtime2());
 my $month = sprintf("%d",strftime("%m",localtime2()));
 my $day = strftime("%e",localtime2());
+my $dom = sprintf("%d",strftime("%d",localtime2()));
 my $year = strftime("%Y",localtime2());
 my $weekday = strftime("%u",localtime2());
 my $yearday = strftime("%j",localtime2());
@@ -175,42 +175,74 @@ $txts{+YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." 
 
 my $current_month = strftime("%Y/%m/%d", 0, 0, 12, 1, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, 0 , $month , $year - 1900);
 
-my $start = 0;
-my $end = 0;
-
-my $dbq = $dbase->prepare("SELECT value FROM uiconfig WHERE var = 'monthly_numbering' AND section = 'invoices'");
-$dbq->execute();
-if(my $row = $dbq->fetchrow_hashref())
-{
-	$monthly_num = $row->{'value'} || 0;
-}
+my $dbq;
+my $row;
 
 if(! $suspension_percentage)
 {
-	my $dbq = $dbase->prepare("SELECT value FROM uiconfig WHERE var = 'suspension_percentage' AND section = 'finances'");
+	$dbq = $dbase->prepare("SELECT value FROM uiconfig WHERE var = 'suspension_percentage' AND section = 'finances'");
 	$dbq->execute();
-	if(my $row = $dbq->fetchrow_hashref())
+	if($row = $dbq->fetchrow_hashref())
 	{
 		$suspension_percentage = $row->{'value'} || 0;
 	}
 }
 
-if($monthly_num)
+my $start = 0;
+my $end = 0;
+
+# get ID and period of default invoices numbering plan
+$dbq = $dbase->prepare("SELECT id, period FROM numberplans WHERE doctype = 1 AND isdefault = 1");
+$dbq->execute();
+$row = $dbq->fetchrow_hashref();
+my $period = $row->{'period'} || YEAR;
+my $numberplanid = $row->{'id'} || 0;
+
+# calculate start and end of numbering period
+for($period)
 {
-	# monthly invoices numbering
-	$start = strftime("%s", 0, 0, 0, 1, $month - 1, $year - 1900);
-	$end = strftime("%s", 0, 0, 0, 1, $month, $year - 1900);
-}
-else
-{
-	# yearly invoices numbering
-	$start = strftime("%s", 0, 0, 0, 1, 0, $year - 1900);
-	$end = strftime("%s", 0, 0, 0, 1, 0, $year+1 - 1900);
+	/@{[DAY]}/ && do {
+		$start = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
+		$end = strftime("%s", 0, 0, 0, $day + 1, $month - 1, $year - 1900);
+		last;
+	};
+	/@{[WEEK]}/ && do {
+		my $startweek = $dom - (7 - $weekday);
+		$start = strftime("%s", 0, 0, 0, $startweek, $month - 1, $year - 1900);
+		$end = strftime("%s", 0, 0, 0, $startweek + 7, $month - 1, $year - 1900);
+		last;
+	};
+	/@{[MONTH]}/ && do {
+		$start = strftime("%s", 0, 0, 0, 1, $month - 1, $year - 1900);
+		$end = strftime("%s", 0, 0, 0, 1, $month, $year - 1900);
+		last;
+	};
+	/@{[QUARTER]}/ && do {
+		my $startmonth;
+		if($month<=3) {
+			$startmonth = 1;
+		} elsif ($month<=6) {
+			$startmonth = 4;
+		} elsif ($month<=9) {
+			$startmonth = 7;
+		} else {
+			$startmonth = 10;
+		}
+		$start = strftime("%s", 0, 0, 0, 1, $startmonth - 1, $year - 1900);
+		$end = strftime("%s", 0, 0, 0, 1, $startmonth - 1 + 3, $year - 1900);
+		last;
+	};
+	# /@{[YEAR]}/ && do
+	{
+		$start = strftime("%s", 0, 0, 0, 1, 0, $year - 1900);
+		$end = strftime("%s", 0, 0, 0, 1, 0, $year + 1 - 1900);
+		last;
+	};
 }
 
-$dbq = $dbase->prepare("SELECT MAX(number) AS number FROM documents WHERE cdate >= $start AND cdate < $end AND type = 1");
+$dbq = $dbase->prepare("SELECT MAX(number) AS number FROM documents WHERE cdate >= $start AND cdate < $end AND type = 1 AND numberplanid = $numberplanid");
 $dbq->execute();
-my $row = $dbq->fetchrow_hashref();
+$row = $dbq->fetchrow_hashref();
 my $number = $row->{'number'} || 0;
 my %gotinv;
 my $icdbq;
@@ -277,8 +309,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten FROM customers WHERE id=$uid");
 				$udbq->execute();
 				my $urow = $udbq->fetchrow_hashref();
-				my $idbq = $dbase->prepare("INSERT INTO documents (number, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-				$idbq->execute($number, $uid, $urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'}, $urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $deadline, $paytype);
+				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				$idbq->execute($number, $numberplanid, $uid, $urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'}, $urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $deadline, $paytype);
 				$idbq = $dbase->prepare("SELECT id FROM documents WHERE number=$number AND cdate=$currtime AND type = 1 AND customerid=$uid");
 				$idbq->execute();
 				my $irow = $idbq->fetchrow_hashref();

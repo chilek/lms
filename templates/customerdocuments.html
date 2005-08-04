@@ -22,7 +22,11 @@
 				{cycle values="light,lucid" print=false}
 				{foreach from=$documents item=doc}
 				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{if $doc.number}{$doc.number}{/if}</B></TD>
+					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
+						{if $doc.number}
+							{number number=$doc.number template=$doc.template time=$doc.cdate}
+						{/if}
+					</TD>
 					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{$doc.typename}</B></TD>
 					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"..."}</TD>
 					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">

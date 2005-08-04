@@ -500,4 +500,14 @@ if (!function_exists('bcmod'))
 	    return (int)$mod;
     }
 }					     
+
+function docnumber($number=NULL, $template=NULL, $time=NULL)
+{
+	$number = $number ? $number : 1;
+	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
+	$time = $time ? $time : time();
+	
+	return strftime(str_replace("%N", $number, $template), $time);
+}
+
 ?>

@@ -147,18 +147,11 @@ function _smarty_function_bankaccount($args, &$SMARTY)
 
 function _smarty_function_number($args,&$SMARTY)
 {
-	$template = $args['template'] ? $args['template'] : DEFAULT_NUMBER_TEMPLATE;
-	$time = $args['time'] ? $args['time'] : time();
-	$number = $args['number'] ? $args['number'] : 1;
-
-/* will be better to move that check to numberplanadd(edit) module
-
-	if (substr_count($template,"%N")!=1) return("ERROR in template, %N must be used ONCE!");
-	if (substr_count($template,"%Y")>1) return("ERROR in template, %N must be used ONCE!");
-	if (substr_count($template,"%M")>1) return("ERROR in template, %N must be used ONCE!");
-	if (substr_count($template,"%D")>1) return("ERROR in template, %N must be used ONCE!");
-*/
-	return strftime(str_replace("%N",$number,$template),$time);
+	$result = docnumber($args['number'], $args['template'], $args['time']);
+	if(isset($args['assign']))
+		$SMARTY->assign($args['assign'], $result);
+	else
+		return $result;
 }
 
 $SMARTY->register_function('sum','_smarty_function_sum');

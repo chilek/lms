@@ -3,7 +3,8 @@
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="98%" CLASS="hdf" COLSPAN="2" VALIGN="TOP">
-			<B>{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Invoice No. $0{/t}</B><BR>
+			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}
+			<B>{t 0=$number}Invoice No. $0{/t}</B><BR>
 			<B>{$type}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP" CLASS="sdr">

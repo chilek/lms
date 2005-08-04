@@ -114,11 +114,8 @@ elseif($_GET['fetchallinvoices'])
 elseif($_GET['fetchsingle'])
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
-	$ntempl = $LMS->CONFIG['invoices']['number_template'];
-	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
-	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
-	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
-	$layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
+	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+	$layout['pagetitle'] = trans('Invoice No. $0', $number);
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
@@ -129,11 +126,8 @@ elseif($_GET['fetchsingle'])
 }
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
-	$ntempl = $LMS->CONFIG['invoices']['number_template'];
-	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
-	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
-	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
-	$layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
+	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+	$layout['pagetitle'] = trans('Invoice No. $0', $number);
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoiceheader.html');
