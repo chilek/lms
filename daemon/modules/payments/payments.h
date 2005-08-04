@@ -6,9 +6,10 @@ struct payments_module
 	unsigned char *comment;
 	unsigned char *paytype;
 	unsigned char *deadline;
+	unsigned char *numberplanid;
 	int up_payments;
 	int expiry_days;
-	int monthly_num;
+	int num_period;
 	double suspension_percentage;
 };
 

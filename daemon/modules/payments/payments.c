@@ -172,22 +172,52 @@ void reload(GLOBAL *g, struct payments_module *p)
 	tt->tm_min = 0;
 	tt->tm_hour = 0;
 	tt->tm_mday = 1;
+	tt->tm_mon = atoi(month)-1;
 	tt->tm_year = atoi(year)-1900;
 
-	if(p->monthly_num)
+	switch(p->num_period)
 	{
-		tt->tm_mon = atoi(month)-1; // current month
-		strftime(start,	sizeof(start), "%s", tt);
-		tt->tm_mon++; // next month
-		strftime(end, sizeof(end), "%s", tt);
+		case DAILY:
+			tt->tm_mday = atoi(monthday); // current day
+		break;
+		case WEEKLY:
+			tt->tm_mday = atoi(monthday) - atoi(weekday) + 1; // last Monday
+		break;
+		case MONTHLY:
+		break;
+		case QUARTERLY:
+			switch(tt->tm_mon)
+			{
+				case 0: case 1: case 2: tt->tm_mon = 0; break;
+				case 3: case 4: case 5: tt->tm_mon = 3; break;
+				case 6: case 7: case 8: tt->tm_mon = 6; break;
+				case 9: case 10: case 11: tt->tm_mon = 9; break;
+			}
+		break;
+		default: //YEARLY
+			tt->tm_mon = 0; // January
+		break;
 	}
-	else
+	strftime(start,	sizeof(start), "%s", tt);
+	switch(p->num_period)
 	{
-		tt->tm_mon = 0; // January
-		strftime(start,	sizeof(start), "%s", tt);
-		tt->tm_year++; // next year
-		strftime(end, sizeof(end), "%s", tt);
+		case DAILY:
+			tt->tm_mday++; // tomorrow
+		break;
+		case WEEKLY:
+			tt->tm_wday += 7; // start of next week
+		break;
+		case MONTHLY:
+			tt->tm_mon++; // next month
+		break;
+		case QUARTERLY:
+			tt->tm_mon += 3; // first month of next quarter
+		break;
+		default: //YEARLY
+			tt->tm_year++; // next year
+		break;
 	}
+	strftime(end, sizeof(end), "%s", tt);
 
 	/****** main payments *******/
 	if( (res = g->db_pquery(g->conn, "SELECT * FROM payments WHERE value <> 0 AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) OR (period="_MONTHLY_" AND at=?) OR (period="_QUARTERLY_" AND at=?) OR (period="_YEARLY_" AND at=?))", weekday, monthday, quarterday, yearday))!= NULL )
@@ -208,8 +238,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 		syslog(LOG_ERR, "[%s/payments] Unable to read 'payments' table",p->base.instance);
 		
 	/****** customer payments *******/
-	// first get max invoiceid for present year
-	if( (res = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents WHERE cdate >= ? AND cdate < ? AND type = 1", start, end))!= NULL ) 
+	// first get next invoiceid
+	if( (res = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", start, end, p->numberplanid))!= NULL ) 
 	{
   		if( g->db_nrows(res) )
 			number = atoi(g->db_get_data(res,0,"number"));
@@ -273,8 +303,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 				if( last_customerid != uid ) 
 				{
 					// prepare insert to 'invoices' table
-					g->db_pexec(g->conn, "INSERT INTO documents (number, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, 1, ?, '? ?', '?', '?', '?', '?', '?', %NOW%, ?, '?')",
+					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, ?, 1, ?, '? ?', '?', '?', '?', '?', '?', %NOW%, ?, '?')",
 						itoa(++number),
+						p->numberplanid,
 						g->db_get_data(res,i,"customerid"),
 						g->db_get_data(res,i,"lastname"),
 						g->db_get_data(res,i,"name"),
@@ -366,6 +397,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	free(p->comment);
 	free(p->deadline);
 	free(p->paytype);
+	free(p->numberplanid);
 }
 
 struct payments_module * init(GLOBAL *g, MODULE *m)
@@ -388,27 +420,24 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->up_payments = g->config_getbool(p->base.ini, p->base.instance, "up_payments", 1);
 	p->expiry_days = g->config_getint(p->base.ini, p->base.instance, "expiry_days", 30);
 	
-	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='invoices' AND var='monthly_numbering' AND disabled=0");
-	if( g->db_nrows(res) )
-	{
-		char *str = g->db_get_data(res, 0, "value");
-		switch( str[0] )
-		{
-			case 'y': p->monthly_num = 1; break;
-			case 'Y': p->monthly_num = 1; break;
-			case 'T': p->monthly_num = 1; break;
-			case 't': p->monthly_num = 1; break;
-			case '1': p->monthly_num = 1; break;
-		}
-	}
-	g->db_free(&res);
-	p->monthly_num = p->monthly_num ? p->monthly_num : 0;
-
 	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");
 	if( g->db_nrows(res) )
 		p->suspension_percentage = atof(g->db_get_data(res, 0, "value"));
 	else
 		p->suspension_percentage = 0;
+	g->db_free(&res);
+
+	res = g->db_query(g->conn, "SELECT id, period FROM numberplans WHERE doctype=1 AND isdefault=1");
+	if( g->db_nrows(res) )
+	{
+		p->num_period = atoi(g->db_get_data(res, 0, "period"));
+		p->numberplanid = strdup(g->db_get_data(res, 0, "id"));
+	}
+	else
+	{
+		p->num_period = YEARLY;
+		p->numberplanid = strdup("0");
+	}
 	g->db_free(&res);
 	
 #ifdef DEBUG1

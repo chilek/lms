@@ -39,8 +39,8 @@ function GetNumberPlanList()
 	
 	$yearstart = mktime(0,0,0,1,1);
 	$quarterstart = mktime(0,0,0,$startq,1);
-	$monthstart = mktime(0,0,0,date('n'),1);
-	$weekstart = mktime(0,0,0,date('n'),date('j')-(7-date('w')));
+	$monthstart = mktime(0,0,0,$currmonth,1);
+	$weekstart = mktime(0,0,0,$currmonth,date('j')-strftime('%u')+1);
 	$daystart = mktime(0,0,0);
 
 	if($list = $DB->GetAll('SELECT * FROM numberplans ORDER BY id'))

@@ -672,13 +672,13 @@ database = /usr/local/lms/lms.db</screen>
      <title>Section [finances] - Finances Settings</title>
      <para>This section consist options for financial system and for payment
      forms. You can read more about that in Invoices chapter.
-             <itemizedlist>
+     <itemizedlist>
           <listitem>
           <para>suspension_percentage (optional)</para>
           <para>Percentage for suspended liabilities. Default: '0'</para>
           <para>Example:     <prompt>suspension_percentage = '50'</prompt></para>
           </listitem>
-                </itemizedlist>
+    </itemizedlist>
      </para>
      </sect2>
     </sect1>
@@ -776,28 +776,16 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                 <emphasis>[invoices]</emphasis> section of <filename>lms.ini</filename>:
           <itemizedlist>
           <listitem>
-               <para>number_template</para>
-                 <para>Invoice numbering pattern. Available variables: '%N' - successive number in year/month
-                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</para>
-               <para>Example: <prompt>number_template = %N/%Y</prompt></para>
-          </listitem>
-          <listitem>
-               <para>monthly_numbering</para>
-               <para>Enable this option when you need to reset invoice numbering on start of every month.
-               Default: disabled</para>
-               <para>Example: <prompt>monthly_numbering = 1</prompt></para>
-          </listitem>
-          <listitem>
                <para>header</para>
                <para>Seller. Can use string "\n" for lines separation. Default: empty.</para>
                <para>Example: <prompt>header = "SuperNet ISP\nNew Street 15\n12-000 City\n"</prompt></para>
           </listitem>
           <listitem>
-               <para>footer</para>
-                        <para>Invoice footer - e.g. contact information about seller. Footer will be placed at bottom
-                        of an invoice, using small font. Like in header option use "\n" to separate lines. Default:
-                        empty</para>
-               <para>Example: <prompt>footer = "Internet Service Provider K-27, phone 555-23-23, etc."</prompt></para>
+		<para>footer</para>
+                <para>Invoice footer - e.g. contact information about seller. Footer will be placed at bottom
+                of an invoice, using small font. Like in header option use "\n" to separate lines. Default:
+                empty</para>
+                <para>Example: <prompt>footer = "Internet Service Provider K-27, phone 555-23-23, etc."</prompt></para>
           </listitem>
           <listitem>
                <para>default_author</para>
@@ -877,25 +865,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
     </sect2>
     <sect2 id="install-receipts">
      <title>Cash Receipts</title>
-                <para>Cash Receipts have configuration options similiar with invoices.
-		In receipts configuration is possible to decide which numbering method
-		use by setting in <emphasis>[receipts]</emphasis> section following
-		options:
-          <itemizedlist>
-          <listitem>
-               <para>number_template</para>
-                 <para>Number pattern. Available variables: '%N' - successive number in year/month
-                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</para>
-               <para>Example: <prompt>number_template = %N/%Y</prompt></para>
-          </listitem>
-          <listitem>
-               <para>monthly_numbering</para>
-               <para>Enable this option when you need to reset receipt numbering on start of every month.
-               Default: disabled</para>
-               <para>Example: <prompt>monthly_numbering = 1</prompt></para>
-          </listitem>
-          </itemizedlist>
-	  </para>
+                <para></para>
          <sect3 id="install-receipts-html">
           <title>HTML</title>
           <para>Receipts are printed in html format by default

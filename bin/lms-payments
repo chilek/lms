@@ -207,7 +207,7 @@ for($period)
 		last;
 	};
 	/@{[WEEK]}/ && do {
-		my $startweek = $dom - (7 - $weekday);
+		my $startweek = $dom - $weekday + 1;
 		$start = strftime("%s", 0, 0, 0, $startweek, $month - 1, $year - 1900);
 		$end = strftime("%s", 0, 0, 0, $startweek + 7, $month - 1, $year - 1900);
 		last;
