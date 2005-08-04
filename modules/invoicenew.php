@@ -29,6 +29,7 @@ $layout['pagetitle'] = trans('New Invoice');
 $customers = $LMS->GetCustomerNames();
 $tariffs = $LMS->GetTariffs();
 $taxeslist = $LMS->GetTaxes();
+$numberplanlist = $LMS->GetNumberPlans(DOC_INVOICE);
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
@@ -43,10 +44,10 @@ switch($_GET['action'])
     		unset($contents);
     		unset($customer);
     		unset($error);
-		
-		$invoice['number'] = $LMS->GetNewInvoiceNumber();
-		$invoice['month'] = date("m");
-		$invoice['year']  = date("Y");
+
+		// get default invoice's numberplanid and next number
+		$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype=? AND isdefault=1', array(DOC_INVOICE));
+		$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid']);
 		$invoice['cdate'] = time();
 		$invoice['paytime'] = 14;
 		if($_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
@@ -87,8 +88,6 @@ switch($_GET['action'])
 
 	case 'setcustomer':
 
-		$oldmonth = $invoice['month'];
-		$oldyear  = $invoice['year'];		
 		unset($invoice); 
 		unset($customer);
 		unset($error);
@@ -110,24 +109,11 @@ switch($_GET['action'])
 			if(checkdate($month, $day, $year)) 
 			{
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-				
-				if (($oldmonth!=$month) || ($oldyear!=$year))
-				{
-					$invoice['month'] = $month;
-					$invoice['year']  = $year;
-				} 
-				else 
-				{
-					$invoice['month'] = $oldmonth;
-					$invoice['year']  = $oldyear;
-				}
 			}
 			else
 			{
 				$error['cdate'] = trans('Incorrect date format!');
 				$invoice['cdate'] = time();
-				$invoice['month'] = $oldmonth;
-				$invoice['year']  = $oldyear;
 				break;
 			}
 		}
@@ -143,12 +129,12 @@ switch($_GET['action'])
 		}
 
 		if(!$invoice['number'])
-			$invoice['number'] = $LMS->GetNewInvoiceNumber($invoice['cdate']);
+			$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
 		else
 		{
 			if(!eregi('^[0-9]+$', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->InvoiceExists($invoice['number'], $invoice['cdate']))
+			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
 				$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
 		}
 		
@@ -162,6 +148,7 @@ switch($_GET['action'])
 
 		if($contents && $customer)
 		{
+			$invoice['type'] = DOC_INVOICE;
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 		
 			$SESSION->remove('invoicecontents');
@@ -194,6 +181,7 @@ $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('taxeslist', $taxeslist);
+$SMARTY->assign('numberplanlist', $numberplanlist);
 $SMARTY->display('invoicenew.html');
 
 ?>

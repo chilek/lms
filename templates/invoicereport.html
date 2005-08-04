@@ -46,7 +46,7 @@
 			{counter}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}<BR>
+			{$invoice.number}<BR>
 			{$invoice.cdate|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD>

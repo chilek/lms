@@ -49,6 +49,14 @@ $DOCTYPES = array(
     -10 =>	trans('other')
 );
 
+define('DOC_INVOICE', 1);
+define('DOC_RECEIPT', 2);
+define('DOC_CINVOICE', 3);
+define('DOC_CONTRACT', -1);
+define('DOC_ANNEX', -2);
+define('DOC_PROTOCOL', -3);
+define('DOC_OTHER', -10);
+
 // Accounting or numbering periods
 $PERIODS = array(
     3	=>	trans('monthly'), // first will be default in UI

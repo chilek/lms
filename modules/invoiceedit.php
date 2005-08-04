@@ -65,11 +65,7 @@ $SESSION->restore('invoice', $invoice);
 $SESSION->restore('invoiceediterror', $error);
 $itemdata = r_trim($_POST);
 
-$ntempl = $LMS->CONFIG['invoices']['number_template'];
-$ntempl = str_replace('%N', $invoice['number'], $ntempl);
-$ntempl = str_replace('%M', date('m',$invoice['oldcdate']), $ntempl);
-$ntempl = str_replace('%Y', date('Y',$invoice['oldcdate']), $ntempl);
-
+$ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 $layout['pagetitle'] = trans('Invoice Edit: $0', $ntempl);
 
 if($_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
@@ -101,12 +97,6 @@ switch($_GET['action'])
 		}
 	break;
 
-	case 'clear':
-		unset($contents);
-		unset($customer);
-		unset($invoice);
-	break;
-
 	case 'deletepos':
 		if(sizeof($contents))
 			foreach($contents as $idx => $row)
@@ -117,6 +107,7 @@ switch($_GET['action'])
 	case 'setcustomer':
 		
 		$olddate = $invoice['oldcdate'];
+		
 		unset($invoice); 
 		unset($customer);
 		unset($error);
@@ -126,7 +117,6 @@ switch($_GET['action'])
 				$invoice[$key] = $val;
 		
 		$invoice['paytime'] = sprintf('%d', $invoice['paytime']);
-		
 		$invoice['oldcdate'] = $olddate;
 		
 		if($invoice['paytime'] < 0)
@@ -138,17 +128,6 @@ switch($_GET['action'])
 			if(checkdate($month, $day, $year))
 			{
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-				$invoice['month'] = date('m', $invoice['cdate']);
-				$invoice['year'] = date('Y', $invoice['cdate']);
-				
-				$oldmonth = date('m', $olddate);
-				$oldyear = date('Y', $olddate);
-		    		
-				if((($invoice['month'] != $oldmonth || $invoice['year'] != $oldyear) && $LMS->CONFIG['invoices']['monthly_numbering']) ||
-				    ($invoice['year'] != $oldyear && !$LMS->CONFIG['invoices']['monthly_numbering']))
-				{
-					$error['cdate'] = trans('Specified date conflicts with invoice number!');
-				}		
 			}
 			else
 				$error['cdate'] = trans('Incorrect date format!');
@@ -166,6 +145,7 @@ switch($_GET['action'])
 		if($contents && $customer)
 		{
 			$SESSION->restore('invoiceid', $invoice['id']);
+			$invoice['type'] = DOC_INVOICE;
 			$LMS->InvoiceUpdate(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 			$SESSION->redirect('?m=invoice&id='.$invoice['id']);
 		}
