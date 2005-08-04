@@ -27,9 +27,18 @@
 function GetNumberPlanList()
 {
 	global $DB;
-
+	
+	$currmonth = date('n');
+	switch($currmonth)
+	{
+		case 1: case 2: case 3: $startq = 1; break;
+		case 4: case 5: case 6: $startq = 4; break;
+		case 7: case 8: case 9: $startq = 7; break;
+		case 10: case 11: case 12: $startq = 10; break;
+	}
+	
 	$yearstart = mktime(0,0,0,1,1);
-	$quarterstart = mktime(0,0,0,date('n')-3,1);
+	$quarterstart = mktime(0,0,0,$startq,1);
 	$monthstart = mktime(0,0,0,date('n'),1);
 	$weekstart = mktime(0,0,0,date('n'),date('j')-(7-date('w')));
 	$daystart = mktime(0,0,0);
