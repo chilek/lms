@@ -50,17 +50,15 @@ if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN
 {
 	foreach($covenantlist as $idx => $row)
 	{
-		$record = $DB->GetRow('SELECT cash.id AS id, number, taxes.label AS tax, comment
+		$record = $DB->GetRow('SELECT cash.id AS id, number, taxes.label AS tax, comment, template
 					    FROM cash 
 					    LEFT JOIN documents ON (docid = documents.id)
+					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    LEFT JOIN taxes ON (taxid = taxes.id)
 					    WHERE docid = ? AND itemid = ? AND cash.type = 4',
 					    array($row['docid'], $row['itemid']));
 		
-		$record['invoice'] = $CONFIG['invoices']['number_template'];
-		$record['invoice'] = str_replace('%M', date('m', $row['cdate']), $record['invoice']);
-		$record['invoice'] = str_replace('%Y', date('Y', $row['cdate']), $record['invoice']);
-		$record['invoice'] = str_replace('%N', $record['number'], $record['invoice']);
+		$record['invoice'] = docnumber($record['number'], $record['template'], $row['cdate']);
 
 		if(in_array($record['id'], (array) $SESSION->get('unpaid.'.$customerid)))
 			$record['selected'] = TRUE;

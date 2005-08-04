@@ -112,6 +112,7 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 // Include required files (including sequence is important)
 
 require_once($CONFIG['directories']['lib_dir'].'/language.php');
+require_once($CONFIG['directories']['lib_dir'].'/definitions.php');
 require_once($CONFIG['directories']['lib_dir'].'/common.php');
 require_once($CONFIG['directories']['lib_dir'].'/LMS.class.php');
 

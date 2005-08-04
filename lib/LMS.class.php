@@ -2894,7 +2894,6 @@ class LMS
 			case 'helpdesk_backend_mode':
 			case 'to_words_short_format':
 			case 'disable_devel_warning':
-			case 'monthly_numbering':
 			case 'newticket_notify':
 				if(!isboolean($value))
 					return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');

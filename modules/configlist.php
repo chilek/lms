@@ -284,10 +284,6 @@ function GetConfigList($order='var,asc')
 						$config[$idx]['description'] = trans('Default invoice issuer');
 					break;
 					
-					case 'number_template':
-						$config[$idx]['description'] = trans('Document number template. Default: number/LMS/year, ie. %N/LMS/%Y. Allowed variables: %N - successive number in year, %M - drow-up month, %Y - drow-up year.');
-					break;
-					
 					case 'cplace':
 						$config[$idx]['description'] = trans('Invoice draw-up place.');
 					break;
@@ -304,10 +300,6 @@ function GetConfigList($order='var,asc')
 						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
 					break;
 					
-					case 'monthly_numbering':
-						$config[$idx]['description'] = trans('Enabling this option will reset numbering of documents at beginning of every month.');
-					break;
-					
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;
@@ -317,10 +309,6 @@ function GetConfigList($order='var,asc')
 			case 'receipts':
 				switch($item['var'])
 				{
-					case 'number_template':
-						$config[$idx]['description'] = trans('Document number template. Default: number/LMS/year, ie. %N/LMS/%Y. Allowed variables: %N - successive number in year, %M - drow-up month, %Y - drow-up year.');
-					break;
-					
 					case 'template_file':
 						$config[$idx]['description'] = trans('Cash receipt template file. Default: "receipt.html". Should be placed in templates directory.');
 					break;
@@ -331,10 +319,6 @@ function GetConfigList($order='var,asc')
 						
 					case 'attachment_name':
 						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
-					break;
-					
-					case 'monthly_numbering':
-						$config[$idx]['description'] = trans('Enabling this option will reset numbering of documents at beginning of every month.');
 					break;
 					
 					default:

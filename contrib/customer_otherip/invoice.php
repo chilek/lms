@@ -49,10 +49,7 @@ if($LMS->CONFIG['invoices']['attachment_name'] != '')
 
 $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
-$ntempl = $LMS->CONFIG['invoices']['number_template'];
-$ntempl = str_replace('%N',$invoice['number'],$ntempl);
-$ntempl = str_replace('%M',$invoice['month'],$ntempl);
-$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
+$ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 $layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
 $invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 $invoice['last'] = TRUE;

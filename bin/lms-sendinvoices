@@ -102,7 +102,6 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 my $dbencoding = $ini->val('database', 'server_encoding') || 'UTF-8';
 
-my $invoice_ntemplate = $ini->val('invoices', 'number_template') || '%N/LMS/%Y';
 my $filetype = $ini->val('invoices', 'type') || '';
 
 my $lms_url = $ini->val('sendinvoices', 'lms_url') || 'http://localhost/lms/';
@@ -169,13 +168,6 @@ if($filetype eq 'pdf')
 	$fext = 'pdf';
 }
 
-$dbq = $dbase->prepare("SELECT value FROM uiconfig WHERE section='invoices' AND var='number_template' AND disabled=0");
-$dbq->execute();
-if(my $row = $dbq->fetchrow_hashref())
-{
-	$invoice_ntemplate = $row->{'value'};
-}
-
 sub localtime2()
 {
 	if($fakedate)
@@ -199,7 +191,11 @@ my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
 
-$dbq = $dbase->prepare('SELECT documents.id AS id, number, cdate, email, documents.name AS name, customerid FROM documents LEFT JOIN customers ON customers.id = customerid WHERE deleted = 0 AND type = 1 AND email != \'\' AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
+$dbq = $dbase->prepare('SELECT documents.id AS id, number, cdate, email, documents.name AS name, customerid, template
+			FROM documents 
+			LEFT JOIN customers ON customers.id = customerid 
+			LEFT JOIN numberplans ON numberplanid = numberplans.id
+			WHERE deleted = 0 AND type = 1 AND email != \'\' AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
@@ -209,13 +205,12 @@ while(my $row = $dbq->fetchrow_hashref())
 	if ($response->is_success)
 	{
 		my $custemail = $debug_email || $row->{'email'};
-		my $invoice_number = $invoice_ntemplate;
+		my $invoice_number = $row->{'template'} || '%N/LMS/%Y';
 		my $body = $mail_body;
 		my $subject = $mail_subject;
 		
 		$invoice_number =~ s/\%N/$row->{'number'}/g;
-		$invoice_number =~ s/\%Y/$year/g;
-		$invoice_number =~ s/\%M/$month/g;
+		$invoice_number = strftime($invoice_number, localtime($row->{'cdate'}));
 		$body =~ s/%invoice/$invoice_number/g;
 		$subject =~ s/%invoice/$invoice_number/g;
 		

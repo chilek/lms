@@ -24,25 +24,23 @@
  *  $Id$
  */
 
-if($doc = $DB->GetRow('SELECT number, cdate, type FROM documents WHERE id = ?', array($_GET['id'])))
+if($doc = $DB->GetRow('SELECT number, cdate, type, template 
+			FROM documents 
+			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			WHERE documents.id = ?', array($_GET['id'])))
 {
+	$ntempl = docnumber($doc['number'], $doc['template'], $doc['cdate']);
+
 	switch($doc['type'])
 	{
 		case 1:
-			$ntempl = trans('Invoice No. $0',$CONFIG['invoices']['number_template']);
+			$ntempl = trans('Invoice No. $0',$ntempl);
 		break;
 		case 2:
-			$ntempl = trans('Cash Receipt No. $0',$CONFIG['receipts']['number_template']);
-		break;
-		default:
-			$ntempl = '%N';
+			$ntempl = trans('Cash Receipt No. $0',$ntempl);
 		break;
 	}
 	
-	$ntempl = str_replace('%N',$doc['number'],$ntempl);
-	$ntempl = str_replace('%M',date('m',$doc['cdate']),$ntempl);
-	$ntempl = str_replace('%Y',date('Y',$doc['cdate']),$ntempl);
-
 	$SMARTY->assign('content', '<NOBR>'.$ntempl.'</NOBR>');
 	$SMARTY->display('dynpopup.html');
 }
