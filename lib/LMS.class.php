@@ -1197,45 +1197,6 @@ class LMS
 	 *  Tarrifs and finances
 	*/
 
-	function GetNewInvoiceNumber($cdate=NULL)
-	{
-		$cdate = $cdate ? $cdate : time();
-		if($this->CONFIG['invoices']['monthly_numbering'])
-		{
-			$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
-			$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
-		}
-		else
-		{
-			$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
-			$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
-		}
-
-		$number = $this->DB->GetOne('SELECT MAX(number) FROM documents WHERE cdate >= ? AND cdate < ? AND type = 1', array($start, $end));
-		$number = $number ? ++$number : 1;
-
-		return $number;
-	}
-
-	function InvoiceExists($number, $cdate=NULL)
-	{
-		if(!$number) return FALSE;
-
-		$cdate = $cdate ? $cdate : time();
-		if($this->CONFIG['invoices']['monthly_numbering'])
-		{
-			$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
-			$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
-		}
-		else
-		{
-			$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
-			$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
-		}
-
-		return ($this->DB->GetOne('SELECT number FROM documents WHERE cdate >= ? AND cdate < ? AND number = ? AND type = 1', array($start, $end, $number)) ? TRUE : FALSE);
-	}
-
 	function GetCustomerTariffsValue($id)
 	{
 		return $this->DB->GetOne('SELECT sum(value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND customerid=? AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
@@ -1312,23 +1273,13 @@ class LMS
 	function AddInvoice($invoice)
 	{
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
-
-		if($this->CONFIG['invoices']['monthly_numbering'])
-		{
-			$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
-			$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
-		}
-		else
-		{
-			$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
-			$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
-		}
-
 		$number = $invoice['invoice']['number'];
-		$this->DB->Execute('INSERT INTO documents (number, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city)
-				    VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				    array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $this->AUTH->id, $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city']));
-		$iid = $this->DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = 1', array($number,$cdate));
+		$type = $invoice['invoice']['type'];
+		
+		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city)
+				    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				    array($number, $invoice['invoice']['numberplanid'], $type, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $this->AUTH->id, $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city']));
+		$iid = $this->DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?', array($number,$cdate,$type));
 
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
@@ -1360,7 +1311,6 @@ class LMS
 	function InvoiceUpdate($invoice)
 	{
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
-
 		$iid = $invoice['invoice']['id'];
 
 		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city'], $iid));
@@ -3246,11 +3196,109 @@ class LMS
 			return $this->DB->GetAllByKey('
 				SELECT id, template, isdefault, period 
 				FROM numberplans WHERE doctype = ? ORDER BY id', 
-				array($doctype));
+				'id', array($doctype));
 		else
 			return $this->DB->GetAllByKey('
 				SELECT id, template, isdefault, period, doctype 
-				FROM numberplans ORDER BY id');
+				FROM numberplans ORDER BY id', 'id');
+	}
+	
+	function GetNewDocumentNumber($doctype=NULL, $planid=NULL, $cdate=NULL)
+	{
+		if($planid)
+			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
+		
+		$period = $period ? $period : YEARLY;
+		$cdate = $cdate ? $cdate : time();
+		
+		switch($period)
+		{
+			case DAILY:
+				$start = mktime(0, 0, 0, date('n',$cdate), date('j',$cdate), date('Y',$cdate));
+				$end = mktime(0, 0, 0, date('n',$cdate), date('j',$cdate)+1, date('Y',$cdate));
+			break;
+			case WEEKLY:
+				$weekstart = date('j',$cdate)-(7-date('w',$cdate));
+				$start = mktime(0, 0, 0, date('n',$cdate), $weekstart, date('Y',$cdate));
+				$end = mktime(0, 0, 0, date('n',$cdate), $weekstart+7, date('Y',$cdate));
+			break;
+			case MONTHLY:
+				$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
+				$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
+			break;
+			case QUARTERLY:
+				$currmonth = date('n');
+				switch(date('n'))
+				{
+					case 1: case 2: case 3: $startq = 1; break;
+					case 4: case 5: case 6: $startq = 4; break;
+					case 7: case 8: case 9: $startq = 7; break;
+					case 10: case 11: case 12: $startq = 10; break;
+				}
+				$start = mktime(0, 0, 0, $startq, 1, date('Y',$cdate));
+				$end = mktime(0, 0, 0, $startq+3, 1, date('Y',$cdate));
+			break;
+			case YEARLY:
+				$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
+				$end = mktime(0, 0, 0, 1, 1, date('Y', $cdate)+1);
+			break;
+		}
+	
+		$number = $this->DB->GetOne('
+				SELECT MAX(number) 
+				FROM documents 
+				WHERE cdate >= ? AND cdate < ? AND type = ?', 
+				array($start, $end, $doctype));
+				
+		$number = $number ? ++$number : 1;
+
+		return $number;
+	}
+
+	function DocumentExists($number, $doctype=NULL, $planid=NULL, $cdate=NULL)
+	{
+		if($planid)
+			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
+		
+		$period = $period ? $period : YEARLY;
+		$cdate = $cdate ? $cdate : time();
+		
+		switch($period)
+		{
+			case DAILY:
+				$start = mktime(0, 0, 0, date('n',$cdate), date('j',$cdate), date('Y',$cdate));
+				$end = mktime(0, 0, 0, date('n',$cdate), date('j',$cdate)+1, date('Y',$cdate));
+			break;
+			case WEEKLY:
+				$weekstart = date('j',$cdate)-(7-date('w',$cdate));
+				$start = mktime(0, 0, 0, date('n',$cdate), $weekstart, date('Y',$cdate));
+				$end = mktime(0, 0, 0, date('n',$cdate), $weekstart+7, date('Y',$cdate));
+			break;
+			case MONTHLY:
+				$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
+				$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
+			break;
+			case QUARTERLY:
+				$currmonth = date('n');
+				switch(date('n'))
+				{
+					case 1: case 2: case 3: $startq = 1; break;
+					case 4: case 5: case 6: $startq = 4; break;
+					case 7: case 8: case 9: $startq = 7; break;
+					case 10: case 11: case 12: $startq = 10; break;
+				}
+				$start = mktime(0, 0, 0, $startq, 1, date('Y',$cdate));
+				$end = mktime(0, 0, 0, $startq+3, 1, date('Y',$cdate));
+			break;
+			case YEARLY:
+				$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
+				$end = mktime(0, 0, 0, 1, 1, date('Y', $cdate)+1);
+			break;
+		}
+	
+		return $this->DB->GetOne('SELECT number FROM documents 
+				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ?', 
+				array($start, $end, $doctype, $number)) ? TRUE : FALSE;
 	}
 	
 }

@@ -45,17 +45,15 @@ function GetCustomerCovenants($id)
 	{
 		foreach($covenantlist as $idx => $row)
 		{
-			$record = $DB->GetRow('SELECT cash.id AS id, number, taxes.label AS tax, comment
+			$record = $DB->GetRow('SELECT cash.id AS id, number, taxes.label AS tax, comment, template
 					    FROM cash 
 					    LEFT JOIN documents ON (docid = documents.id)
 					    LEFT JOIN taxes ON (taxid = taxes.id)
+					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE docid = ? AND itemid = ? AND cash.type = 4',
 					    array($row['docid'], $row['itemid']));
 		
-			$record['invoice'] = $CONFIG['invoices']['number_template'];
-			$record['invoice'] = str_replace('%M', date('m', $row['cdate']), $record['invoice']);
-			$record['invoice'] = str_replace('%Y', date('Y', $row['cdate']), $record['invoice']);
-			$record['invoice'] = str_replace('%N', $record['number'], $record['invoice']);
+			$record['invoice'] = docnumber($record['number'], $record['template'], $row['cdate']);
 
 			$covenantlist[$idx] = array_merge($record, $covenantlist[$idx]);
 		}
@@ -63,61 +61,16 @@ function GetCustomerCovenants($id)
 	}
 }
 
-function GetNewReceiptNumber($date=NULL)
-{
-	global $DB, $CONFIG;
-	
-	$cdate = $date ? $date : time();
-	
-	if($CONFIG['receipts']['monthly_numbering'])
-	{
-		$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
-		$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
-	}
-	else
-	{
-		$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
-		$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
-	}
-
-	$number = $DB->GetOne('SELECT MAX(number) FROM documents WHERE cdate >= ? AND cdate < ? AND type = 2', array($start, $end));
-	$number = $number ? ++$number : 1;
-		
-	return $number;
-}
-
-function ReceiptExists($number, $date=NULL)
-{
-	global $DB, $CONFIG;
-	
-	if(!$number) return FALSE;
-	
-	$cdate = $date ? $date : time();
-	
-	if($CONFIG['receipts']['monthly_numbering'])
-	{
-		$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
-		$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
-	}
-	else
-	{
-		$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
-		$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
-	}
-
-	return $DB->GetOne('SELECT number FROM documents WHERE type = 2 AND cdate >= ? AND cdate < ? AND number = ?', array($start, $end, $number)) ? TRUE : FALSE;
-}
-
 if(isset($_GET['id']))
 {
-	$receipt = $DB->GetRow('SELECT * FROM documents WHERE id = ? AND type = 2', array($_GET['id']));
+	$receipt = $DB->GetRow('SELECT documents.*, template 
+			    FROM documents 
+			    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			    WHERE documents.id = ? AND type = ?', array($_GET['id'], DOC_RECEIPT));
 
 	if(!$receipt)
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 
-	$receipt['month'] = date('m', $receipt['cdate']);
-	$receipt['year']  = date('Y', $receipt['cdate']);
-	
 	$i = 1;
 	
 	if($items = $DB->GetAll('SELECT receiptcontents.itemid AS itemid, receiptcontents.value AS value, description, reference 
@@ -142,11 +95,7 @@ $SESSION->restore('receiptcustomer', $customer);
 $SESSION->restore('receipt', $receipt);
 $SESSION->restore('receiptediterror', $error);
 
-$receipt['titlenumber'] = $CONFIG['receipts']['number_template'];
-$receipt['titlenumber'] = str_replace('%M', $receipt['month'], $receipt['titlenumber']);
-$receipt['titlenumber'] = str_replace('%Y', $receipt['year'], $receipt['titlenumber']);
-$receipt['titlenumber'] = str_replace('%N', $receipt['number'], $receipt['titlenumber']);
-
+$receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate']);
 $layout['pagetitle'] = trans('Cash Receipt Edit: $0', $receipt['titlenumber']);
 
 switch($_GET['action'])
@@ -185,10 +134,9 @@ switch($_GET['action'])
 	break;
 	case 'setcustomer':
 
-		$oldmonth = $receipt['month'];
-		$oldyear  = $receipt['year'];
 		$oldnumber = $receipt['number'];
 		$oldcdate = $receipt['cdate'];
+		$id = $receipt['id'];
 		
 		unset($receipt);
 		unset($customer);
@@ -199,6 +147,7 @@ switch($_GET['action'])
 				$receipt[$key] = $val;
 		
 		$receipt['customerid'] = $_POST['customerid'];
+		$receipt['id'] = $id;
 		
 		if($receipt['cdate'])
 		{
@@ -206,24 +155,11 @@ switch($_GET['action'])
 			if(checkdate($month, $day, $year)) 
 			{
 				$receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-				
-				if (($oldmonth!=$month) || ($oldyear!=$year))
-				{
-					$receipt['month'] = $month;
-					$receipt['year']  = $year;
-				} 
-				else 
-				{
-					$receipt['month'] = $oldmonth;
-					$receipt['year']  = $oldyear;
-				}
 			}
 			else
 			{
 				$error['cdate'] = trans('Incorrect date format!');
 				$receipt['cdate'] = time();
-				$receipt['month'] = $oldmonth;
-				$receipt['year']  = $oldyear;
 				break;
 			}
 		}
@@ -233,7 +169,7 @@ switch($_GET['action'])
 		if($newday != $oldday)
 			if($receipt['cdate'] && !$receipt['cdatewarning'])
 			{
-				$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = 2');
+				$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = ?', array(DOC_RECEIPT));
 				if($receipt['cdate'] < $maxdate)
 				{
 					$error['cdate'] = trans('Last date of receipt settlement is $0. If sure, you want to write receipt with date of $1, then click "Submit" again.',date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $receipt['cdate']));
@@ -242,13 +178,13 @@ switch($_GET['action'])
 			}
 
 		if(!$receipt['number'])
-			$receipt['number'] = GetNewReceiptNumber($receipt['cdate']);
+			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 		else
 		{
 			if(!eregi('^[0-9]+$', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
 			elseif($receipt['number']!=$oldnumber)
-				if(ReceiptExists($receipt['number'], $receipt['cdate']))
+				if($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
 					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
 		}
 		
@@ -269,9 +205,11 @@ switch($_GET['action'])
 			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($receipt['id']));
 		
 			// re-add receipt 
-			$DB->Execute('INSERT INTO documents (type, number, cdate, customerid, userid, name, address, zip, city)
-					VALUES(2, ?, ?, ?, ?, ?, ?, ?, ?)',
-					array($receipt['number'],
+			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, name, address, zip, city)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					array(	DOC_RECEIPT,
+						$receipt['number'],
+						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$customer['id'],
 						$AUTH->id,
@@ -280,7 +218,7 @@ switch($_GET['action'])
 						$customer['zip'],
 						$customer['city']));
 						
-			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=2 AND number=? AND cdate=?', array($receipt['number'], $receipt['cdate'])); 
+			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
 			
 			$iid = 0;
 			foreach($contents as $item)
@@ -338,6 +276,7 @@ if($list = GetCustomerCovenants($customer['id'] ? $customer['id'] : $_GET['cid']
 
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('covenantlist', $covenantlist);
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('receipt', $receipt);

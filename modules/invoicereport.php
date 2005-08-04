@@ -52,16 +52,17 @@ $taxes = $DB->GetAllByKey('SELECT taxid AS id, label, taxes.value AS value
 	    FROM documents 
 	    LEFT JOIN invoicecontents ON (documents.id = docid)
 	    LEFT JOIN taxes ON (taxid = taxes.id)
-	    WHERE type = 1 AND (cdate BETWEEN ? AND ?) 
+	    WHERE type = ? AND (cdate BETWEEN ? AND ?) 
 	    GROUP BY taxid, label, taxes.value 
-	    ORDER BY value ASC', 'id', array($unixfrom, $unixto));
+	    ORDER BY value ASC', 'id', array(DOC_INVOICE,$unixfrom, $unixto));
 
-if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxid, SUM(value*count) AS value 
+if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxid, SUM(value*count) AS value, template 
 	    FROM documents 
+	    LEFT JOIN numberplans ON numberplanid = numberplans.id
 	    LEFT JOIN invoicecontents ON docid = documents.id 
-	    WHERE type = 1 AND (cdate BETWEEN ? AND ?) 
-	    GROUP BY documents.id, number, taxid, cdate, customerid, name, address, zip, city, ten, ssn 
-	    ORDER BY cdate ASC', array($unixfrom, $unixto)))
+	    WHERE type = ? AND (cdate BETWEEN ? AND ?) 
+	    GROUP BY documents.id, number, taxid, cdate, customerid, name, address, zip, city, ten, ssn, template 
+	    ORDER BY cdate ASC', array(DOC_INVOICE, $unixfrom, $unixto)))
 {
 	foreach($result as $idx => $row)
 	{
@@ -72,11 +73,9 @@ if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, z
 		$invoicelist[$id]['custname'] = $row['name'];
 		$invoicelist[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
 		$invoicelist[$id]['ten'] = ($row['ten'] ? trans('TEN').' '.$row['ten'] : ($row['ssn'] ? trans('SSN').' '.$row['ssn'] : ''));
-		$invoicelist[$id]['number'] = $row['number'];
+		$invoicelist[$id]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
 		$invoicelist[$id]['cdate'] = $row['cdate'];
 		$invoicelist[$id]['customerid'] = $row['customerid'];
-		$invoicelist[$id]['year'] = date('Y',$row['cdate']);
-		$invoicelist[$id]['month'] = date('m',$row['cdate']);
 
 		$invoicelist[$id][$taxid]['tax'] += round($value / ($taxes[$taxid]['value']+100) * 100, 2);
 		$invoicelist[$id][$taxid]['val'] += $value - $invoicelist[$id][$taxid]['tax'];

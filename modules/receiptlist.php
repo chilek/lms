@@ -80,11 +80,12 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, documents.name AS customer, address, zip, city, template 
 		FROM documents 
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-		LEFT JOIN receiptcontents ON (documents.id = docid AND type = 2) 
-		WHERE type = 2 '
+		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
+		WHERE type = ? '
 		.$where
 		.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template '
-		.($sqlord != '' ? $sqlord : '')
+		.($sqlord != '' ? $sqlord : ''), 
+		array(DOC_RECEIPT, DOC_RECEIPT)
 		))
 	{
 
