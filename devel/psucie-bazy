@@ -6,18 +6,12 @@ Otó¿ imvho, timestamp jest dobry, ale robi±c w/w operacje chcia³bym
 je oznaczaæ równie¿ dat± w sensie YYYY/MM/DD. Otó¿ wp³ata powinna byæ 
 oznaczona równie¿ dniem zaksiêgowania jej. Powodów wiele.
 
-[ wyci±gi ???]
-
-(W 1.7/1.9 ?): 
-
 id | number | number_plan | refersto | paytime | paytype | financial_peroid
 11 |   1    |      1      |    NULL  |   14    |    1    |      3
 
 12 |   1    |      2      |     11   |   10    |    1    |      3       | 
 13 |   2    |      1      |     11   |   10    |    1    |      3       | 
 
-
-Po co takie zamotanie?
 
 Zarówno id 12 jak i 13 mog± byæ korekt± 11, 
 
@@ -28,34 +22,15 @@ Daje to mo¿liwo¶æ pój¶cia zarówno w stronê LMS jak i LMSKOR
 
 Ten ca³y financial_peroid to próba racjonalizacji korzystania z cdate, 
 to co jest dzia³a ale pachnie ¼le. Chcia³bym i¶æ w kierunku:
-"%n/LMS/%period" Mo¿e to zbyt szumnie wygl±da, ale przynajmniej rok i miesi±c 
-lepiej mieæ w invoices i na podstawie tych warto¶ci sprawdzaæ czy jest ju¿ 
-faktura w danym okresie.
-
-Dalej numeracje albo plany numerowania (numberplan)
-Widzê to tak:
 
 lms=> SELECT * from numberplans ;
  id |  template   |  default  | period | doctype
 ----+-------------+-----------+--------+---------
-  1 | %d          |         1 |      1 |       1
-  2 | %d          |         1 |      1 |       2
-  5 | %d          |         0 |      3 |       1
   5 | %d-%n-%y-%m |         0 |      3 |       1
-  5 | %D-%N-%Y-%M |         0 |      3 |       1
-(5 rows)
 
 Doctype i period takie jak w lib/definitions.php
 
 Default ma prawo byæ tylko jeden dla ka¿dego doctype.
-Domy¶lnie *MUSI* byæ jaki¶ plan numerowania.
-
-procenty:
-tutaj mam uwagê ¿e %y i %Y w [posix/ISO 8601] to co¶ innego i nie wiem czy 
-jest sens rozró¿niaæ case (bo numeracji godzinnej to sobie nie wyobra¿am)
-ale /2005 i /05 i /5 to chcia³bym aby by³y ró¿ne literki.
-MOG¡ byæ jak w VBasicu: %Y %YY i %YYYY ? [tak/nie]
-wtedy mamy %M i %MM (/7 i /07) i %D i %DD  (/5, /05) 
 
 ³±czniki i sta³e. Tutaj mia³bym za³o¿enie takie ¿e w template MUSI wystêpowaæ:
 %N przynajmniej/dok³adnie raz. (%NN %NNNN czy %4N ?).
@@ -65,18 +40,25 @@ alec> ten z 4 bêdzie ³atwiej sparsowaæ
 s³owa to litery mog±ce zawieraæ cyfry ale nie zaczynaæ siê od cyfr
 pomiêdzy znakami procentów i ³±cznikami oraz s³owami nie ma prawa byæ SPACJI.
 
-alec> a nie lepiej sobie u³atwiæ i przepuszczaæ szablon numeru przez strftime(),
-dodatkowo trzebaby tylko parsowaæ %N (%[1-9]N)?
+Wa¿ne:
 
-M±drze mówisz ale nie ka¿dy strftime() jest dopuszczany (minuta,godzina,
-sekundy... oraz nie jestem pewien czy mamy tam ostatni± cyferkê z roku).
+Co raz wiêcej razy w kodzie jest co¶ takiego:
 
-Acha numeracja dzienna mo¿e byæ przydadna dla KP czy czego¶ takiego...
-Albo gdy kto¶ ma 10000 faktur/miesi±c i chce mieæ <1000 w jednym numerkowaniu. 
+if($list = $DB->GetAll('SELECT * FROM numberplans ORDER BY id'))
+	    {
+        $count = $DB->GetAllByKey('SELECT numberplanid AS id,
+		[...]
+        $max = $DB->GetAllByKey('SELECT numberplanid AS id, 
+		[...]
 
-Pewnie mi jak zwykle wysz³o pomarudziæ o tym "jak" i to jeszcze "przed", no 
-ale mo¿e jakie¶ wsparcie od osób które na codzieñ robi± ksiêgowo¶æ bo ja mam
-to mocno w teorii [w sensie nie wystawiam co dzien 5000 korekt...] [xxx]
+To siê a¿ prosi o to aby kiedy¶ kto¶ co¶ doda³ "w miedzyczasie" i by³ problem.
+
+Czy mo¿emy robiæ tak:
+$DB->BeginTrans
+	[kod]
+$DB->EndTrans
+
+I co na to mysql oraz sqlite ?
 
 Wiêc tak:
 
