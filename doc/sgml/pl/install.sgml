@@ -858,18 +858,6 @@ AddDefaultCharset Off
           opcji w sekcji <emphasis>[invoices]</emphasis> <filename>lms.ini</filename>:
           <itemizedlist>
           <listitem>
-               <para>number_template</para>
-               <para>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
-               '%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</para>
-               <para>Przyk³ad: <prompt>number_template = %N/%Y</prompt></para>
-          </listitem>
-          <listitem>
-               <para>monthly_numbering</para>
-               <para>W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
-               Domy¶lnie: wy³±czona</para>
-               <para>Przyk³ad: <prompt>monthly_numbering = 1</prompt></para>
-          </listitem>
-          <listitem>
                <para>header</para>
                <para>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
                <para>Przyk³ad: <prompt>header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</prompt></para>
@@ -995,24 +983,7 @@ AddDefaultCharset Off
     <sect2 id="install-receipts">
      <title>Dowody wp³aty (KP)</title>
           <para>Dowody wp³aty, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
-	  opcje konfiguracyjne jak faktury. W konfiguracji dowodów wp³aty
-	  mo¿na zdecydowaæ o sposobie numeracji ustawiaj±c w sekcji 
-	  <emphasis>[receipts]</emphasis> nastepuj±ce opcje:
-          <itemizedlist>
-          <listitem>
-               <para>number_template</para>
-               <para>Wzorzec numeru. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
-               '%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</para>
-               <para>Przyk³ad: <prompt>number_template = %N/%Y</prompt></para>
-          </listitem>
-          <listitem>
-               <para>monthly_numbering</para>
-               <para>W³±czenie tej opcji spowoduje zerowanie numeracji na pocz±tku ka¿dego miesi±ca.
-               Domy¶lnie: wy³±czona</para>
-               <para>Przyk³ad: <prompt>monthly_numbering = 1</prompt></para>
-          </listitem>
-          </itemizedlist>
-	  </para>
+	  opcje konfiguracyjne jak faktury.</para>
          <sect3 id="install-receipts-html">
           <title>HTML</title>
           <para>Przy domy¶lnych ustawieniach dowody wp³aty wy¶wietlane s± w

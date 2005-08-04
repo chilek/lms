@@ -3218,7 +3218,7 @@ class LMS
 				$end = mktime(0, 0, 0, date('n',$cdate), date('j',$cdate)+1, date('Y',$cdate));
 			break;
 			case WEEKLY:
-				$weekstart = date('j',$cdate)-(7-date('w',$cdate));
+				$weekstart = date('j',$cdate)-strftime('%u',$cdate)+1;
 				$start = mktime(0, 0, 0, date('n',$cdate), $weekstart, date('Y',$cdate));
 				$end = mktime(0, 0, 0, date('n',$cdate), $weekstart+7, date('Y',$cdate));
 			break;
@@ -3247,8 +3247,8 @@ class LMS
 		$number = $this->DB->GetOne('
 				SELECT MAX(number) 
 				FROM documents 
-				WHERE cdate >= ? AND cdate < ? AND type = ?', 
-				array($start, $end, $doctype));
+				WHERE cdate >= ? AND cdate < ? AND type = ? AND numberplanid = ?', 
+				array($start, $end, $doctype, $planid));
 				
 		$number = $number ? ++$number : 1;
 
@@ -3270,7 +3270,7 @@ class LMS
 				$end = mktime(0, 0, 0, date('n',$cdate), date('j',$cdate)+1, date('Y',$cdate));
 			break;
 			case WEEKLY:
-				$weekstart = date('j',$cdate)-(7-date('w',$cdate));
+				$weekstart = date('j',$cdate)-strftime('%u',$cdate)+1;
 				$start = mktime(0, 0, 0, date('n',$cdate), $weekstart, date('Y',$cdate));
 				$end = mktime(0, 0, 0, date('n',$cdate), $weekstart+7, date('Y',$cdate));
 			break;
