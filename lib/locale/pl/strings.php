@@ -1553,5 +1553,13 @@ $_LANG['That customer hasn\'t got any documents.'] = 'Ten klient nie posiada ża
 $_LANG['to'] = 'do';
 $_LANG['user'] = 'użytkownik';
 $_LANG['You must to specify file for upload!'] = 'Musisz podać plik do zapisu!';
-
+$_LANG['Numbering Plans'] = 'Plany numeracji';
+$_LANG['Numbering Plans Definitions'] = 'Definicje planow numeracji';
+$_LANG['Template:'] = 'Szablon:';
+$_LANG['Example (next) number:'] = 'Przykladowy (nastepny) numer:';
+$_LANG['No. of issued documents:'] = 'Wystawiono dokumentow:';
+$_LANG['Document type:'] = 'Typ dokumentow:';
+$_LANG['Default:'] = 'Domyslnie:';
+$_LANG['Add numbering plan'] = 'Dodaj plan numeracji';
+$_LANG['Are you sure, you want to delete numberplan \\\'$0\\\'?'] = 'Jestes pewien, ze chcesz usunac plan \\\'$0\\\'?';
 ?>
