@@ -148,7 +148,7 @@
 			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP align="right">
-			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
+			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}{$number}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$invoice.value|money_format} 
@@ -167,7 +167,7 @@
 				<IMG src="img/empty.gif" alt="" WIDTH="16">
 			{/if}
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
-			<A {if $invoice.paid}onClick="return confirmLink(this, '{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Invoice \'$0\' has been paid. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A {if $invoice.paid}onClick="return confirmLink(this, '{t 0=$number}Invoice \'$0\' has been paid. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 			<A onClick="return confirmLink(this, '{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoiceedit&id={$invoice.id}&action=invoicedel"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>

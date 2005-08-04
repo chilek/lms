@@ -77,23 +77,19 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 	}
 
 	if($list = $DB->GetAll(
-	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, documents.name AS customer, address, zip, city 
-		FROM documents LEFT JOIN receiptcontents ON (documents.id = docid AND type = 2) 
+	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, documents.name AS customer, address, zip, city, template 
+		FROM documents 
+		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+		LEFT JOIN receiptcontents ON (documents.id = docid AND type = 2) 
 		WHERE type = 2 '
 		.$where
-		.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city '
+		.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template '
 		.($sqlord != '' ? $sqlord : '')
 		))
 	{
 
 		foreach($list as $idx => $row)
-		{
-			$ntempl = $CONFIG['receipts']['number_template'];
-			$ntempl = str_replace('%N',$row['number'],$ntempl);
-			$ntempl = str_replace('%M',date('m',$row['cdate']),$ntempl);
-			$ntempl = str_replace('%Y',date('Y',$row['cdate']),$ntempl);
-			$list[$idx]['number'] = $ntempl;
-		}
+			$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
 
 		$list['order'] = $order;
 		$list['direction'] = $direction;

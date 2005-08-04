@@ -61,12 +61,7 @@ function invoice_simple_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,356*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['address']),350*$scale);
     text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city']),350*$scale);
 
-    $tmp = $CONFIG['invoices'];
-    $tmp = iconv("UTF-8","ISO-8859-2",$tmp['number_template']);
-    $tmp = str_replace("%N",$invoice['number'],$tmp);
-    $tmp = str_replace("%Y",$invoice['year'],$tmp);
-    $tmp = str_replace("%M",$invoice['month'],$tmp);
-
+    $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
     text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('Payment for invoice No. $0',$tmp)),350*$scale);
 
 }
@@ -92,11 +87,7 @@ function invoice_main_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
     text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['name']),950*$scale);
     text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['address']." ".$invoice['zip']." ".$invoice['city']),950*$scale);
-    $tmp = $CONFIG['invoices'];
-    $tmp = iconv("UTF-8","ISO-8859-2",$tmp['number_template']);
-    $tmp = str_replace("%N",$invoice['number'],$tmp);
-    $tmp = str_replace("%Y",$invoice['year'],$tmp);
-    $tmp = str_replace("%M",$invoice['month'],$tmp);
+    $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
     text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('Payment for invoice No. $0',$tmp)),950*$scale);
 
 }
@@ -172,10 +163,7 @@ function invoice_title($x,$y)
 {
     global $invoice,$pdf,$CONFIG,$type;
     $font_size=16;
-    $tmp = $CONFIG['invoices']['number_template'];
-    $tmp = str_replace("%N",$invoice['number'],$tmp);
-    $tmp = str_replace("%Y",$invoice['year'],$tmp);
-    $tmp = str_replace("%M",$invoice['month'],$tmp);
+    $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0',$tmp)).'</b>');
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$type));
     return $y;

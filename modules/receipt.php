@@ -28,19 +28,18 @@ function GetReceipt($id)
 {
 	global $CONFIG, $DB;
 	
-	if($receipt = $DB->GetRow('SELECT * FROM documents 
-				WHERE type = 2 AND id = ?', array($id)))
+	if($receipt = $DB->GetRow('SELECT documents.*, template 
+				FROM documents 
+				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+				WHERE type = 2 AND documents.id = ?', array($id)))
 	{
 		$receipt['contents'] = $DB->GetAll('SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($id));
 		
 		foreach($receipt['contents'] as $row)
 			$receipt['total'] += $row['value'];
+		
 		$receipt['totalg'] = ($receipt['total']*100 - ((int) $receipt['total'])*100);
-		$ntempl = $CONFIG['receipts']['number_template'];
-		$ntempl = str_replace('%N',$receipt['number'],$ntempl);
-		$ntempl = str_replace('%M',date('m',$receipt['cdate']),$ntempl);
-		$ntempl = str_replace('%Y',date('Y',$receipt['cdate']),$ntempl);
-		$receipt['number'] = $ntempl;
+		$receipt['number'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate']);
 		
 		return $receipt;
 	}

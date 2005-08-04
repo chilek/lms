@@ -1496,12 +1496,13 @@ class LMS
 			}
 		}
 
-		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city,
+		if($result = $this->DB->GetAll('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, template, 
 						SUM(value*count) AS value, COUNT(docid) AS count
-						FROM documents, invoicecontents
+						FROM invoicecontents, documents
+						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						WHERE docid = documents.id AND type = 1'
 						.$where
-						.' GROUP BY id, number, cdate, customerid, name, address, zip, city '
+						.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template '
 						.$sqlord.' '.$direction))
 		{
 			$inv_paid_main = $this->DB->GetAllByKey('SELECT docid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum
@@ -1536,7 +1537,10 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype FROM documents WHERE id=? AND type = 1', array($invoiceid)))
+		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid
+					    FROM documents 
+					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+					    WHERE documents.id=? AND type = 1', array($invoiceid)))
 		{
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid
 					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=?', array($invoiceid)))
@@ -3199,8 +3203,9 @@ class LMS
 	{
 		if(!$customerid) return NULL;
 		
-		if($doclist = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype
-				    FROM documents, documentcontents 
+		if($doclist = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype, template
+				    FROM documentcontents, documents
+				    LEFT JOIN numberplans ON(numberplanid = numberplans.id)
 				    WHERE documents.id = documentcontents.docid
 				    AND customerid = ?
 				    ORDER BY cdate', array($customerid)))
@@ -3234,6 +3239,20 @@ class LMS
 			    AND (validto = 0 OR validto >= ?)
 			ORDER BY value', 'id', array($from, $to));
 	}
+	
+	function GetNumberPlans($doctype=NULL)
+	{
+		if($doctype)
+			return $this->DB->GetAllByKey('
+				SELECT id, template, isdefault, period 
+				FROM numberplans WHERE doctype = ? ORDER BY id', 
+				array($doctype));
+		else
+			return $this->DB->GetAllByKey('
+				SELECT id, template, isdefault, period, doctype 
+				FROM numberplans ORDER BY id');
+	}
+	
 }
 
 ?>
