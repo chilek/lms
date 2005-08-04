@@ -137,6 +137,7 @@ $SMARTY = new Smarty;
 // Include required files (including sequence is important)
 
 require_once($_LIB_DIR.'/language.php');
+require_once($_LIB_DIR.'/definitions.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 

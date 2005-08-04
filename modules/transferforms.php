@@ -140,11 +140,7 @@ $i=0;
 foreach($ids as $idx => $invoiceid)
 {
     $invoice = $LMS->GetInvoiceContent($invoiceid);
-    $ntempl = $CONFIG['invoices']['number_template'];
-    $ntempl = str_replace('%N',$invoice['number'],$ntempl);
-    $ntempl = str_replace('%M',$invoice['month'],$ntempl);
-    $ntempl = str_replace('%Y',$invoice['year'],$ntempl);
-    $invoice['t_number'] = $ntempl;
+    $invoice['t_number'] = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
     main_fill(177,12,0.395);
     main_fill(177,313,0.396);
     simple_fill_mip(5,12,0.395);
