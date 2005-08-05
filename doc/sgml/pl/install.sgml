@@ -125,6 +125,7 @@ $ mv Smarty-2.6.6/libs Smarty
           <para><warning><para>Serwer www musi mieæ prawo odczytu pliku <filename>lms.ini</filename>
           oraz prawa odczytu i zapisu do katalogu <filename>backup</filename>. 
           Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
+		 <para><note>Pocz±wszy od wersji 1.6 przechowywanie konfiguracji w <filename>lms.ini</filename> jest przestarza³e. Jedyn± konieczn± sekcj± w tym pliku jest [database]. Ustawienia przechowywane s± w bazie danych i mog± byæ modyfikowane przez interfejs u¿ytkownika.</para></note>
           </para></warning></para>
      </sect1>
      <sect1 id="install-locale">
