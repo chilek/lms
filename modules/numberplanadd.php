@@ -36,7 +36,7 @@ if(sizeof($numberplanadd))
 	}
 	
 	if($numberplanadd['template'] == '')
-		$error['template'] = trans('Numbering plan template is required!');
+		$error['template'] = trans('Number template is required!');
 	elseif(strpos($numberplanadd['template'], '%N')===FALSE)
 		$error['template'] = trans('Template must consist "%N" specifier!');
 
