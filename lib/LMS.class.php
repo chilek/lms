@@ -3110,11 +3110,11 @@ class LMS
 		$headers['X-Mailer'] = 'LMS-'.$this->_version;
 		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
 		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+		$headers['Mime-Version'] = '1.0';
 
 		if ($files)
 		{
 			$boundary = '-LMS-'.str_replace(' ', '.', microtime());
-			$headers['Mime-Version'] = '1.0';
 			$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"".$boundary.'"';
 			$buf = "\nThis is a multi-part message in MIME format.\n\n";
 			$buf .= '--'.$boundary."\n";
