@@ -86,7 +86,6 @@ $instance['hostid'] = $instance['hostid'] ? $instance['hostid'] : $_GET['hostid'
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', $instance);
 $SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
-$SMARTY->assign('layout', $layout);
 $SMARTY->display('daemoninstanceadd.html');
 
 ?>

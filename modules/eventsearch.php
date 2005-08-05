@@ -98,7 +98,6 @@ if($event = $_POST['event'])
 
 $SMARTY->assign('userlist',$LMS->GetUserNames());
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('eventsearch.html');
 
 ?>

@@ -69,7 +69,6 @@ $layout['pagetitle'] = trans('New Domain');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('layout', $layout);
 $SMARTY->display('domainadd.html');
 
 ?>

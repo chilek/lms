@@ -75,7 +75,6 @@ $layout['pagetitle'] = trans('Option Edit: $0/$1/$2', $config['var'], $instance[
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('layout', $layout);
 $SMARTY->assign('config', $config);
 $SMARTY->display('daemonconfigedit.html');
 

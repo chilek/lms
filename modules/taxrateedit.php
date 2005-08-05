@@ -120,7 +120,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('taxrateedit', $taxrate);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('taxrateedit.html');
 
 ?>

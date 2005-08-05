@@ -100,7 +100,6 @@ $SMARTY->assign('aliasadd', $aliasadd);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('accountlist', $DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('aliasadd.html');
 
 ?>

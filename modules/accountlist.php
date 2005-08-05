@@ -144,7 +144,6 @@ $SMARTY->assign('accountlist',$accountlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->assign('domainlist',$DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('accountlist.html');
 
 ?>
