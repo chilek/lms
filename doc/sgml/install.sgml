@@ -337,7 +337,9 @@ database = /usr/local/lms/lms.db</screen>
          <xref linkend="install-install">!!!). It contains configuration options for <emphasis>LMS-UI</emphasis>
          and for all scripts with exception of <emphasis>LMS-MGC</emphasis>.</para>
          <para><note><para>Remember to remove semicolons (comments sign) from beginning of line with
-         parameter that you set.</para></note></para>
+         parameter that you set.</para></note>
+		 <para><note>As of version 1.6 and later storing config in <filename>lms.ini</filename> is beeing treaded as obsolete. The only required values there are from [database] section. Setting are stored in database and could be changed by userinterface.</para></note>
+		 </para>
          <sect2 id="install-config-db">
          <title>Section [database] - Database Settings</title>
          <para>
