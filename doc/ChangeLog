@@ -35,6 +35,7 @@ version ? Do-Sai (????-??-??):
   - lmsd/parser: updated tscript library, runtime errors handling (alec)
   - lmsd/payments: fixed subscription period calculation (alec)
   - Documents Numbering Plans (hunter/alec)
+  - documents can be numbered daily, weekly, monthly, quarterly, yearly (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

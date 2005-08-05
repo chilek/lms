@@ -24,7 +24,17 @@
 			<B>{t}Number:{/t}
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number" trigger="number"}>
+			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			{if $numberplans}
+			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
+			{foreach item=plan from=$numberplans}
+				{assign var=period value=$plan.period}
+				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$document.number template=$plan.template time=$document.cdate} ({$_PERIODS.$period})</OPTION>
+			{/foreach}
+			{else}
+				<INPUT type="hidden" name="document[numberplanid]" value="0">
+			{/if}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR class="LIGHT">

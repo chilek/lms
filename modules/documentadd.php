@@ -46,9 +46,14 @@ if(isset($_POST['document']))
 		$error['title'] = trans('Document title is required!');
 
 	if($document['number'] == '')
-		$document['number'] = 0;
-	if(!eregi('^[0-9]+$', $document['number']))
+	{
+		$tmp = $LMS->GetNewDocumentNumber($document['type'], $document['numberplanid']);
+		$document['number'] = $tmp ? $tmp : 0;
+	}
+	elseif(!eregi('^[0-9]+$', $document['number']))
     		$error['number'] = trans('Document number must be an integer!');
+	elseif($LMS->DocumentExists($document['number'], $document['type'], $document['numberplanid']))
+		$error['number'] = trans('Document with specified number exists!');
 	
 	if($document['fromdate'])
 	{
@@ -117,10 +122,11 @@ if(isset($_POST['document']))
 		
 		$DB->BeginTrans();
 		
-		$DB->Execute('INSERT INTO documents (type, number, cdate, customerid, userid, name, address, zip, city, ten, ssn)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, name, address, zip, city, ten, ssn)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(	$document['type'],
-					$document['number'] ? $document['number'] : 0,
+					$document['number'],
+					$document['numberplanid'],
 					$time,
 					$document['customerid'],
 					$AUTH->id,
@@ -169,10 +175,21 @@ if(isset($_POST['document']))
 
 //$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+if(!$document['numberplanid'])
+{
+	$document['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype<0 AND isdefault=1 LIMIT 1');
+}
+
 $document['customerid'] = $_GET['cid'];
+
+if($templist = $LMS->GetNumberPlans())
+	foreach($templist as $item)
+		if($item['doctype']<0)
+			$numberplans[] = $item;
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
+$SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('document', $document);
 $SMARTY->display('documentadd.html');
 

@@ -57,13 +57,15 @@
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{$receipt.number}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}>&nbsp;
+			{if $numberplanlist}
 			<SELECT name="receipt[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplanlist}
 				{assign var=period value=$plan.period}
 				<OPTION value="{$plan.id}"{if $plan.id==$receipt.numberplanid} SELECTED{/if}>{number number=$receipt.number template=$plan.template time=$receipt.cdate} ({$_PERIODS.$period})</OPTION>
-			{foreachelse}
-				<INPUT type="hidden" name="receipt[numberplanid]" value="0">
 			{/foreach}
+			{else}
+				<INPUT type="hidden" name="receipt[numberplanid]" value="0">
+			{/if}
 			</SELECT>
 		</TD>
 	</TR>
