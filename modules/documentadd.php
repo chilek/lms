@@ -174,7 +174,6 @@ $document['customerid'] = $_GET['cid'];
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('document', $document);
-$SMARTY->assign('layout', $layout);
 $SMARTY->display('documentadd.html');
 
 ?>

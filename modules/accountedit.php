@@ -139,7 +139,6 @@ switch ($option)
 $SMARTY->assign('error', $error);
 $SMARTY->assign('quota', $quota);
 $SMARTY->assign('account', $account);
-$SMARTY->assign('layout', $layout);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->display($template);

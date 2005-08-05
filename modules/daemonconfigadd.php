@@ -71,7 +71,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instanceid', $_GET['id']);
-$SMARTY->assign('layout', $layout);
 $SMARTY->assign('config', $config);
 $SMARTY->display('daemonconfigadd.html');
 

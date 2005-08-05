@@ -68,7 +68,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('hostadd', $hostadd);
-$SMARTY->assign('layout', $layout);
 $SMARTY->display('daemonhostadd.html');
 
 ?>

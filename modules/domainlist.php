@@ -86,7 +86,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('domainlist', $domainlist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('domainlist.html');
 
 ?>

@@ -115,7 +115,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('account', $account);
-$SMARTY->assign('layout', $layout);
 $SMARTY->display('accountadd.html');
 
 ?>

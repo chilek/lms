@@ -43,7 +43,7 @@ function GetNumberPlanList()
 	$weekstart = mktime(0,0,0,$currmonth,date('j')-strftime('%u')+1);
 	$daystart = mktime(0,0,0);
 
-	if($list = $DB->GetAll('SELECT * FROM numberplans ORDER BY id'))
+	if($list = $DB->GetAll('SELECT id, template, period, doctype, isdefault FROM numberplans ORDER BY id'))
 	{
 		$count = $DB->GetAllByKey('SELECT numberplanid AS id, COUNT(numberplanid) AS count
 					    FROM documents 

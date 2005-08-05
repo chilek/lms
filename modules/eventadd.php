@@ -93,7 +93,6 @@ $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('userlistsize', sizeof($userlist));
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
-$SMARTY->assign('layout', $layout);
 $SMARTY->assign('hours', 
 		array(0,30,100,130,200,230,300,330,400,430,500,530,
 		600,630,700,730,800,830,900,930,1000,1030,1100,1130,

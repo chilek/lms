@@ -76,7 +76,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('eventlist', $eventlist);
 $SMARTY->assign('date', $date);
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('eventprint.html');
 
 ?>

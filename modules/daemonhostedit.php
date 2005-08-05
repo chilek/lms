@@ -62,7 +62,6 @@ if(isset($_POST['hostedit']))
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('hostedit', $host);
-$SMARTY->assign('layout', $layout);
 $SMARTY->assign('error', $error);
 $SMARTY->display('daemonhostedit.html');
 
