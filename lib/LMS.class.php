@@ -1053,6 +1053,7 @@ class LMS
 					.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 					.($status==1 ? ' AND access = 1' : '') //connected
 					.($status==2 ? ' AND access = 0' : '') //disconnected
+					.($status==3 ? ' AND lastonline > ?NOW? - '.$this->CONFIG['phpui']['lastonline_limit'] : '') //online
 					.$searchargs
 					.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
