@@ -1562,4 +1562,5 @@ $_LANG['Document type:'] = 'Typ dokumentow:';
 $_LANG['Default:'] = 'Domyslnie:';
 $_LANG['Add numbering plan'] = 'Dodaj plan numeracji';
 $_LANG['Are you sure, you want to delete numberplan \\\'$0\\\'?'] = 'Jestes pewien, ze chcesz usunac plan \\\'$0\\\'?';
+$_LANG['Numbering Plans List'] = 'Lista planów numeracji';
 ?>
