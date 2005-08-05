@@ -7,6 +7,8 @@ version 1.6.2 ? (??/??/????):
   - fixed payment day on Payment Info (alec)
   - BTS#0000413: fixed payments accounting on Payments List (endrju/alec)
   - lmsd/payments: fixed subscription period calculation (alec)
+  - BTS#0000419: added 'Mime-Version: 1.0' header for all, not only multipart
+    messages (alec)
 
 version 1.6.1 Ishta (11/07/2005):
 
