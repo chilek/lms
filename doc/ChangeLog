@@ -38,6 +38,8 @@ version ? Do-Sai (????-??-??):
   - documents can be numbered daily, weekly, monthly, quarterly, yearly (alec)
   - BTS#0000419: added 'Mime-Version' header for all, not only multipart
     messages (alec)
+  - added 'online' filter on Nodes List (alec)
+  - in nodes stats panel (welcome.html) added links to nodes list (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

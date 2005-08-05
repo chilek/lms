@@ -29,6 +29,7 @@
 					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all -{/t}</OPTION>
 					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{t}connected<!plural:item>{/t}</OPTION>
 					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{t}disconnected<!plural:item>{/t}</OPTION>
+					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}online{/t}</OPTION>
 				</SELECT>&nbsp;
 				{t}Network:{/t}
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
