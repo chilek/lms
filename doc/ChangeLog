@@ -44,6 +44,7 @@ version ? Do-Sai (????-??-??):
     Numbering Plans (alec)
   - lms-arping: we can use external file with list of ip addresses (chilek)
   - documentation is opened in new window (alec)
+  - documentation: list of options moved to new chapter Configuration (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

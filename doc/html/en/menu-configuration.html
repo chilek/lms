@@ -86,6 +86,14 @@ CLASS="SECT2"
 NAME="CONFIG-UI"
 >3.13.1. User Interface</A
 ></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="CONFIG-BASIC"
+>3.13.1.1. Basics</A
+></H3
 ><P
 >Since LMS 1.5.3 you're able to configure all UI-related
     	        options directly via <SPAN
@@ -170,6 +178,538 @@ VALIGN="TOP"
     		with edit form, where you are also able to remove this option. Changing option
     		status allows you to turn it on and off instantly. When an option is off,
     	        default value will be used (if it posses any).</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="CONFIG-OPTIONS"
+>3.13.1.2. Configuration Options List</A
+></H3
+><P
+>Here we've got the list of UI configuration options. Those options
+	    should be placed in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+> section. The rest of options
+	    is described in appropriate chapters.
+    	    <UL
+><LI
+><P
+>allow_from  (optional)</P
+><P
+>List of networks or IP addresses, which have access to LMS. If empty, every IP
+    		address is permitted. You can write here list of addresses or address classes and LMS
+            	will dismiss every unwanted user with HTTP 403 error.</P
+><P
+>Example:          <SAMP
+CLASS="PROMPT"
+>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</SAMP
+></P
+></LI
+><LI
+><P
+>lang</P
+><P
+>User interface language code (ISO). IF not set, language will be based on HTML
+    		browser settings. Default: en</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>lang = pl</SAMP
+></P
+></LI
+><LI
+><P
+>timeout</P
+><P
+>Timeout for WWW session. User will be log out if he won't perform any action in such
+    		number of seconds. Default: 600</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>timeout = 900</SAMP
+></P
+><P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>It's not possible to not to have any timeout. If you set this value to
+    		zero, you won't be able to use LMS at all!</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></LI
+><LI
+><P
+>customerlist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of customers list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>customerlist_pagelimit = 10</SAMP
+></P
+></LI
+><LI
+><P
+>nodelist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of nodes list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>nodelist_pagelimit = 10</SAMP
+></P
+></LI
+><LI
+><P
+>balancelist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of customer balance. Default: 100.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>balancelist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>invoicelist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of invoices list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>invoicelist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>ticketlist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of ticket (requests) list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>ticketlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>networkhosts_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of nodes with network information.
+        	Default: 256</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>networkhosts_pagelimit = 1024</SAMP
+></P
+></LI
+><LI
+><P
+>accountlist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of customer accounts. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>accountlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>domainlist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of system domains. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>domainlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>aliaslist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of user aliases. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>aliaslist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>configlist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of UI configuration list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>configlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>taxratelist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of tax rates list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>taxratelist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>numberplanlist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of numbering plans list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>numberplanlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>reload_type</P
+><P
+>Reload type. Allowed values:</P
+><P
+>exec - execute some command (usually with sudo, script or something
+        	else, configurable below)</P
+><P
+>sql  - doing SQL writes (can be also set to custom query)</P
+><P
+>Default: sql.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>reload_type = exec</SAMP
+></P
+></LI
+><LI
+><P
+>reload_execcmd</P
+><P
+>Command to run during reload, if reload_type is set to 'exec'. By default
+        	<TT
+CLASS="FILENAME"
+>/bin/true</TT
+>. This string is send to system() command, so make sure that
+        	you know what you're doing. :) Besides, semicolons should be parsed by bash, but LMS splits
+        	that string and execute commands separately.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</SAMP
+></P
+></LI
+><LI
+><P
+>reload_sqlquery</P
+><P
+>SQL query executed while reload, if <SAMP
+CLASS="PROMPT"
+>reload_type = sql</SAMP
+>. By default,
+        	query does inserts into table 'timestamps' with '_force' value. You can use '%TIME%'
+        	template in your query which will be substituted with current UNIX timestamp. WARNING!
+        	Semicolon is handled as query separator, which means that you can enter couple of SQL
+        	queries separated by semicolon sign.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</SAMP
+></P
+></LI
+><LI
+><P
+>force_ssl</P
+><P
+>Enforce SSL for all connections. Setting this option to 1 will
+        	turn LMS into enforcing SSL connections by applying redirect to
+        	'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access without SSL. Default:
+        	0 (off).</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>force_ssl = 1</SAMP
+></P
+></LI
+><LI
+><P
+>allow_mac_sharing</P
+><P
+>Allows for node addition even if its MAC address is not unique (not checking that
+        	some computer have that MAC yet). Default: 0 (off)</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>allow_mac_sharing = 1</SAMP
+></P
+></LI
+><LI
+><P
+>smarty_debug</P
+><P
+>Enable Smarty debug console. Useful for tracking values passed from PHP to Smarty.
+        	Default: 0 (off).</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smarty_debug = 1</SAMP
+></P
+></LI
+><LI
+><P
+>lang_debug</P
+><P
+>Enable LMS language console. Useful for tracking missing translation strings.
+        	Default: 0 (off).</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>lang_debug = 1</SAMP
+></P
+></LI
+><LI
+><P
+>debug_email</P
+><P
+>E-mail address for debugging - messages sent from module 'Mailing' will be delivered
+        	to this address instead of sending them to real users. </P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>debug_email = root@localhost</SAMP
+></P
+></LI
+><LI
+><P
+>default_zip, default_city, default_address</P
+><P
+>Default zip code, city and street used on "new user" form. Useful when we have many
+        	users on the same street.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>default_zip = 39-300</SAMP
+></P
+></LI
+><LI
+><P
+>use_current_payday</P
+><P
+>Forces to use current day of month as a payment day instead of most often used day.
+        	Default: 0 (off).</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>use_current_payday = 1</SAMP
+></P
+></LI
+><LI
+><P
+>lastonline_limit</P
+><P
+>Specify time (in seconds), after which node will be marked offline. It should match
+        	frequency of execution for script responsible for checking nodes activity (i.e. lms-fping).
+        	Default: 600.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>lastonline_limit = 300</SAMP
+></P
+></LI
+><LI
+><P
+>timetable_days_forward</P
+><P
+>Specify number of days (including current day) visible on timetable.
+        	Default: 7.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>timetable_days_forward = 2</SAMP
+></P
+></LI
+><LI
+><P
+>arpd_servers</P
+><P
+>List of arpd servers for reading MAC addresses from remote networks.
+        	That list should include IP[:port] items separated with spaces.
+        	Default: empty.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>arpd_servers = 192.168.1.1 192.168.2.1</SAMP
+></P
+></LI
+><LI
+><P
+>helpdesk_backend_mode</P
+><P
+>When enabled, all messages in helpdesk system (except those sent to ticket reporter)
+        	will be sent to mail server to the appropriate queue address. Mail server should run
+        	lms-rtparser script, which will write messages to database. Default: disabled.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>helpdesk_backend_mode = On</SAMP
+></P
+></LI
+><LI
+><P
+>helpdesk_sender_name</P
+><P
+>Name of message sender or predefined values: 'queue' - ticket's queue name,
+    		'user' - name of logged user (sender). Default: empty.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>helpdesk_sender_name = Helpdesk</SAMP
+></P
+></LI
+><LI
+><P
+>newticket_notify</P
+><P
+>If enabled, after new ticket addition system will send notification
+        	emails to all users with rights to the queue. Default: disabled.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>newticket_notify = On</SAMP
+></P
+></LI
+><LI
+><P
+>contract_template</P
+><P
+>Specify contract template(s) for customer. You can provide comma separated list of
+        	contract templates. Default: contract.html.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>contract_template = "../my_templates/contract.html"</SAMP
+></P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>contract_template = "contract.html:Default Contract, file.html:Contract Plus"</SAMP
+></P
+></LI
+><LI
+><P
+>to_words_short_format</P
+><P
+>Specify format of verbal amounts representation (on invoices). For value "1"
+        	verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>to_words_short_format = 1</SAMP
+></P
+></LI
+><LI
+><P
+>nodepassword_length</P
+><P
+>Length of (auto-generated) node password. Max.32. Default: 16.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>nodepassword_length = 8</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_host, smtp_port, smtp_username, smtp_password</P
+><P
+>Parameters for smtp authorization in mailing. Default: 127.0.0.1:25.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smtp_host = mail.domain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth_type</P
+><P
+>Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
+    		will use the best supported method. Default: none.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smtp_auth_type = DIGEST-MD5</SAMP
+></P
+></LI
+><LI
+><P
+>gd_translate_to</P
+><P
+>Charset of data that GD library expects (usefull if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>gd_translate_to = </SAMP
+></P
+></LI
+><LI
+><P
+>check_for_updates_period</P
+><P
+>How often to check for LMS updates (in seconds). Default: 86400.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>check_for_updates_period = 604800</SAMP
+></P
+></LI
+><LI
+><P
+>default_taxrate</P
+><P
+>Specify value (not label) of tax rate which will be selected 
+		on drop-down lists by default. Default: 22.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>default_taxrate = 22.0</SAMP
+></P
+></LI
+></UL
+>
+	    </P
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
