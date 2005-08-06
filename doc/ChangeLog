@@ -40,6 +40,8 @@ version ? Do-Sai (????-??-??):
     messages (alec)
   - added 'online' filter on Nodes List (alec)
   - in nodes stats panel (welcome.html) added links to nodes list (alec)
+  - added menu item Configuration with subitems: User Interface, Tax Rates,
+    Numbering Plans (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

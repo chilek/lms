@@ -27,7 +27,7 @@
 $menu = array(
 		array(
 			'name' => trans('Administration'),
-			'img' =>'settings.gif',
+			'img' =>'users.gif',
 			'link' =>'?m=welcome',
 			'tip' => trans('System informations and management'),
 			'accesskey' =>'i',
@@ -54,17 +54,13 @@ $menu = array(
 					'tip' => trans('Allows you to manage database backups'),
 				),
 				array(
-					'name' => trans('UI Config'),
-					'link' =>'?m=configlist',
-					'tip' => trans('Allows you to configure UI'),
-				),
-				array(
 					'name' => trans('Copyrights'),
 					'link' =>'?m=copyrights',
 					'tip' => trans('Copyrights, authors, etc.'),
 				),
 			),
 		),
+
 
 		array(
 			'name' => trans('Customers'),
@@ -257,16 +253,6 @@ $menu = array(
 					'name' => trans('New Receipt'),
 					'link' => '?m=receiptadd&action=init',
 					'tip' => trans('Generate receipt'),
-				),
-				array(
-					'name' => trans('Tax Rates'),
-					'link' => '?m=taxratelist',
-					'tip' => trans('Tax Rates Definitions'),
-				),
-				array(
-					'name' => trans('Numbering Plans'),
-					'link' => '?m=numberplanlist',
-					'tip' => trans('Numbering Plans Definitions'),
 				),
 				array(
 					'name' => trans('Import'),
@@ -467,13 +453,40 @@ $menu = array(
 		),
 
 		array(
+			'name' => trans('Configuration'),
+			'img' =>'settings.gif',
+			'link' =>'?m=configlist',
+			'tip' => trans('System configuration'),
+			'accesskey' =>'o',
+			'prio' =>'65',
+			'submenu' => array(
+				array(
+					'name' => trans('User Interface'),
+					'link' =>'?m=configlist',
+					'tip' => trans('Allows you to configure UI'),
+				),
+				array(
+					'name' => trans('Tax Rates'),
+					'link' => '?m=taxratelist',
+					'tip' => trans('Tax Rates Definitions'),
+				),
+				array(
+					'name' => trans('Numbering Plans'),
+					'link' => '?m=numberplanlist',
+					'tip' => trans('Numbering Plans Definitions'),
+				),
+			),
+		),
+
+		array(
 			'name' => trans('Documentation'),
 			'img' => 'doc.gif',
 			'link' => (is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/'),
 			'tip' => trans('Documentation'),
-			'accesshey' => 'h',
-			'prio' => '65',
-		),
+			'accesskey' => 'h',
+			'prio' => '70',
+		)
+
 	);
 
 ?>

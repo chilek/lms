@@ -78,29 +78,6 @@
 	    aktualnej bazy danych. Odtworzenie bazy danych z kopii jest mo¿liwe tylko wtedy
 	    gdy zosta³a ona utworzona na tej samej wersji LMSa.</para>
 	</sect2>
-	<sect2 id="administration-uiconfig">
-	    <title>Konfiguracja UI</title>
-	    <para>Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
-	    u¿ytkownika tak¿e poprzez <emphasis>LMS-UI</emphasis>. Opcje przechowywane 
-	    s± w bazie danych i nale¿y je przenie¶æ z pliku <filename>lms.ini</filename>.
-	    W celu automatycznego przeniesienia konfiguracji do bazy danych kliknij na
-	    linku znajduj±cym siê na pustej li¶cie opcji konfiguracyjnych.</para>
-	    <para>
-	    <note><para>Opcje konfigurowane w <emphasis>LMS-UI</emphasis> maj±
-	    wiêkszy priorytet od tych zapisanych w <filename>lms.ini</filename>, co
-	    oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany, ale warto¶ci 
-	    zmiennych z tego pliku nadpisywane s± warto¶ciami zapisanymi
-	    w bazie danych.</para></note>
-	    <note><para>Demon odczytuje niektóre opcje konfiguracyjne UI tylko z bazy
-	    danych, dlatego zaleca siê przechowywanie konfiguracji w bazie zamiast w pliku 
-	    ini.</para></note>
-	    </para>
-	    <para>Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê'.
-	    Aby wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
-	    do formularza edycyjnego. Zmiana statusu
-	    opcji oznacza w³±czenie/wy³±czenie jej dzia³ania, co polega na przypisaniu
-	    jej warto¶ci domy¶lnej (je¿eli tak± posiada).</para>
-	</sect2>
  </sect1>
  <sect1 id="menu-customers">
 	<title>Klienci</title>
@@ -386,23 +363,6 @@
 		w oraz wp³aty systemie i wy¶wietla wydruk KP w nowym oknie.</para>
 		<para>Konfiguracjê wydruków dowodów wp³aty opisano w rozdziale p.t. 
 		Instalacja i Konfiguracja.</para>
-	</sect2>
-	<sect2 id="menu-taxes">
-	    <title>Stawki podatkowe</title>
-		<para>Przed rozpoczêciem pracy z systemem finansowym nale¿y zdefiniowaæ
-		stawki podatkowe jakich bêdziemy u¿ywaæ. Na li¶cie znajduj± siê wszystkie
-		dane stawek. Mo¿liwa jest edycja stawki podatkowej, przy czym nale¿y pamiêtaæ,
-		¿e system nie pozwoli na zmianê warto¶ci stawki, je¿eli zosta³a ona
-		u¿yta w przesz³o¶ci. Nie mo¿liwe jest tak¿e usuniêcie takiej stawki.</para>
-		<para>Link 'Dodaj stawkê' przenosi do formularza definiowania nowej stawki
-		procentowej. Etykieta stawki jest wy¶wietlana na listach wyboru oraz
-		w szablonie faktury. Warto¶æ stawki to liczba od 0 do 100 z dok³adno¶ci±
-		do dwóch miejsc po przecinku. Status opodatkowania jest wykorzystywany
-		do wyró¿nienia stawki zwolnionej z podatku, czyli wszystkie pozosta³e
-		stawki powinny mieæ w³±czone 'opodatkowanie'.</para>
-		<para>Stawkê, która bêdzie domy¶lnie zaznaczona na listach wyboru
-		mo¿na zdefiniowaæ przy pomocy opcji <filename>default_taxrate</filename>
-		w sekcji <emphasis>[phpui]</emphasis></para>
 	</sect2>
 	<sect2 id="menu-import">
 	    <title>Import</title>
@@ -842,4 +802,49 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	    zostan± wy¶wietlone zadania spe³niaj±ce wszystkie podane kryteria.</para>
 	</sect2>
  </sect1>
+    <sect1 id="menu-configuration">
+	<title>Configuration</title>
+	<sect2 id="config-ui">
+	    <title>Interfejs U¿ytkownika</title>
+	       <para>Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
+		u¿ytkownika tak¿e poprzez <emphasis>LMS-UI</emphasis>. Opcje przechowywane 
+        	s± w bazie danych i nale¿y je przenie¶æ z pliku <filename>lms.ini</filename>.
+		W celu automatycznego przeniesienia konfiguracji do bazy danych kliknij na
+    	        linku znajduj±cym siê na pustej li¶cie opcji konfiguracyjnych.</para>
+    		<para><note><para>Opcje konfigurowane w <emphasis>LMS-UI</emphasis> maj±
+    		wiêkszy priorytet od tych zapisanych w <filename>lms.ini</filename>, co
+    		oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany, ale warto¶ci 
+    		zmiennych z tego pliku nadpisywane s± warto¶ciami zapisanymi
+    		w bazie danych.</para></note>
+    		<note><para>Demon odczytuje niektóre opcje konfiguracyjne UI tylko z bazy
+    		danych, dlatego zaleca siê przechowywanie konfiguracji w bazie zamiast w pliku 
+    		ini.</para></note></para>
+    		<para>Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê'.
+    		Aby wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
+    		do formularza edycyjnego. Zmiana statusu
+    		opcji oznacza w³±czenie/wy³±czenie jej dzia³ania, co polega na przypisaniu
+    		jej warto¶ci domy¶lnej (je¿eli tak± posiada).</para>
+    	</sect2>
+    	<sect2 id="config-taxes">
+	    <title>Stawki podatkowe</title>
+		<para>Przed rozpoczêciem pracy z systemem finansowym nale¿y zdefiniowaæ
+		stawki podatkowe jakich bêdziemy u¿ywaæ. Na li¶cie znajduj± siê wszystkie
+		dane stawek. Mo¿liwa jest edycja stawki podatkowej, przy czym nale¿y pamiêtaæ,
+		¿e system nie pozwoli na zmianê warto¶ci stawki, je¿eli zosta³a ona
+		u¿yta w przesz³o¶ci. Nie mo¿liwe jest tak¿e usuniêcie takiej stawki.</para>
+		<para>Link 'Dodaj stawkê' przenosi do formularza definiowania nowej stawki
+		procentowej. Etykieta stawki jest wy¶wietlana na listach wyboru oraz
+		w szablonie faktury. Warto¶æ stawki to liczba od 0 do 100 z dok³adno¶ci±
+		do dwóch miejsc po przecinku. Status opodatkowania jest wykorzystywany
+		do wyró¿nienia stawki zwolnionej z podatku, czyli wszystkie pozosta³e
+		stawki powinny mieæ w³±czone 'opodatkowanie'.</para>
+		<para>Stawkê, która bêdzie domy¶lnie zaznaczona na listach wyboru
+		mo¿na zdefiniowaæ przy pomocy opcji <filename>default_taxrate</filename>
+		w sekcji <emphasis>[phpui]</emphasis></para>
+	</sect2>
+	<sect2 id="config-numberplans">
+	    <title>Plany numeracyjne</title>
+		<para></para>
+	</sect2>
+    </sect1>
 </chapter>

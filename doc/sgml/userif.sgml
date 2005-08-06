@@ -83,26 +83,6 @@
             be deleted and replaced by the one in backup copy. For your safety, before such
             operation current database backup is performed automatically.</para>
 	</sect2>
-	<sect2 id="administration-uiconfig">
-	    <title>UI Config</title>
-	    <para>Since LMS 1.5.3 you're able to configure all UI-related
-            options directly via <emphasis>LMS-UI</emphasis>, instead of editing
-            <filename>lms.ini</filename>. Those options are stored in database and you first
-            need to import them from your config file (even if you haven't edited anything
-            yet, default values will be imported). This can be done by clicking
-            on the link presented on empty list.</para>
-	    <para><note><para>Options setup with <emphasis>LMS-UI</emphasis>
-            have higher priority than those in configuration file. With options setup in UI,
-            the configuration will be still imported from file but values will be then
-            overwritten by those found in DB.</para></note></para>
-	    <para><note><para>Daemon read some options other than its configuration from
-	    database only, so it's prefered to store configuration in database.</para></note></para>
-	    <para>In order to manually add new option click 'Add option' on the
-            bottom of the list. To edit option value, click on its record. You'll be given
-            with edit form, where you are also able to remove this option. Changing option
-            status allows you to turn it on and off instantly. When an option is off,
-            default value will be used (if it posses any).</para>
-	</sect2>
  </sect1>
  <sect1 id="menu-customers">
 	<title>Customers</title>
@@ -399,22 +379,6 @@ invoices.</para>
 		description or select them from list of unpaid customer covenants
 		placed at bottom. 'Save and Print' will finish and save receipt
 		and payments in system and display receipt's printout in new window.</para>
-	</sect2>
-	<sect2 id="menu-taxes">
-	    <title>Tax Rates</title>
-		<para>Before you have to begin with financial system you will need
-		to define tax rates which you will use. On the list are place all 
-		rates data. It's possible to edit tax rate, but system will not
-		allow to change value of rate that was used in the past. Also isn't
-		possible to delete that rate.</para>
-		<para>Link 'Add tax rate' moves you to the form, where you can define 
-		a new rate. Tax rate label is displayed on select lists and invoice
-		printout. Value of tax rate is a number from 0 to 100 with two 
-		decimal places precision. Taxing status is used for tax-free rate, that 
-		means the rest of defined tax rates shold have taxing enabled.</para>
-		<para>Tax rate which will be selected by default on lists is defined
-		by <filename>default_taxrate</filename> option in section 
-		<emphasis>[phpui]</emphasis>.</para>
 	</sect2>
 	<sect2 id="menu-import">
 	    <title>Import</title>
@@ -794,4 +758,47 @@ recorded using 'Submitter' fields. You can provide email address (in both
 registered/unregistered cases) if ticket will be running via email.</para>
 	</sect2>
  </sect1>
+    <sect1 id="menu-configuration">
+	<title>Configuration</title>
+	    <sect2 id="config-ui">
+	    <title>User Interface</title>
+	        <para>Since LMS 1.5.3 you're able to configure all UI-related
+    	        options directly via <emphasis>LMS-UI</emphasis>, instead of editing
+        	<filename>lms.ini</filename>. Those options are stored in database and you first
+                need to import them from your config file (even if you haven't edited anything
+	        yet, default values will be imported). This can be done by clicking
+    	        on the link presented on empty list.</para>
+		<para><note><para>Options setup with <emphasis>LMS-UI</emphasis>
+                have higher priority than those in configuration file. With options setup in UI,
+	        the configuration will be still imported from file but values will be then
+    	        overwritten by those found in DB.</para></note></para>
+		<para><note><para>Daemon read some options other than its configuration from
+    		database only, so it's prefered to store configuration in database.</para></note></para>
+    		<para>In order to manually add new option click 'Add option' on the
+	        bottom of the list. To edit option value, click on its record. You'll be given
+    		with edit form, where you are also able to remove this option. Changing option
+    		status allows you to turn it on and off instantly. When an option is off,
+    	        default value will be used (if it posses any).</para>
+	</sect2>
+	<sect2 id="config-taxes">
+	    <title>Tax Rates</title>
+		<para>Before you have to begin with financial system you will need
+		to define tax rates which you will use. On the list are place all 
+		rates data. It's possible to edit tax rate, but system will not
+		allow to change value of rate that was used in the past. Also isn't
+		possible to delete that rate.</para>
+		<para>Link 'Add tax rate' moves you to the form, where you can define 
+		a new rate. Tax rate label is displayed on select lists and invoice
+		printout. Value of tax rate is a number from 0 to 100 with two 
+		decimal places precision. Taxing status is used for tax-free rate, that 
+		means the rest of defined tax rates shold have taxing enabled.</para>
+		<para>Tax rate which will be selected by default on lists is defined
+		by <filename>default_taxrate</filename> option in section 
+		<emphasis>[phpui]</emphasis>.</para>
+	</sect2>
+	<sect2 id="config-numberplans">
+	    <title>Numbering Plans</title>
+		<para></para>
+	</sect2>
+    </sect1>
 </chapter>

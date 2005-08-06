@@ -41,6 +41,7 @@ LMS Developers
         3.10. Reload
         3.11. Stats
         3.12. Helpdesk
+        3.13. Configuration
 
    4. Scripts
 
@@ -612,6 +613,13 @@ database = /usr/local/lms/lms.db
 
    Remember to remove semicolons (comments sign) from beginning of line
    with parameter that you set.
+
+   Note
+
+   As of version 1.6 and later storing config in lms.ini is beeing
+   treaded as obsolete. The only required values there are from
+   [database] and [directories] sections. Settings are stored in database
+   and could be changed by userinterface.
      _________________________________________________________________
 
 2.6.1. Section [database] - Database Settings
@@ -980,15 +988,6 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 
    For  proper  work  of  printouts  you  need to setup custom options in
    [invoices] section of lms.ini:
-     * number_template
-       Invoice  numbering pattern. Available variables: '%N' - successive
-       number  in  year/month  format,  '%M'  - month number, '%Y' - year
-       number (four digits). Default: %N/LMS/%Y
-       Example: number_template = %N/%Y
-     * monthly_numbering
-       Enable  this  option  when  you need to reset invoice numbering on
-       start of every month. Default: disabled
-       Example: monthly_numbering = 1
      * header
        Seller. Can use string "\n" for lines separation. Default: empty.
        Example: header = "SuperNet ISP\nNew Street 15\n12-000 City\n"
@@ -1067,19 +1066,6 @@ $access['table'][100]['allow_reg'] = '^invoice$';
      _________________________________________________________________
 
 2.9.2. Cash Receipts
-
-   Cash  Receipts  have  configuration options similiar with invoices. In
-   receipts  configuration  is  possible to decide which numbering method
-   use by setting in [receipts] section following options:
-     * number_template
-       Number  pattern.  Available variables: '%N' - successive number in
-       year/month  format,  '%M' - month number, '%Y' - year number (four
-       digits). Default: %N/LMS/%Y
-       Example: number_template = %N/%Y
-     * monthly_numbering
-       Enable  this  option  when  you need to reset receipt numbering on
-       start of every month. Default: disabled
-       Example: monthly_numbering = 1
      _________________________________________________________________
 
 2.9.2.1. HTML
@@ -1201,34 +1187,6 @@ Chapter 3. User Interface (LMS-UI)
    deleted  and  replaced  by  the  one  in backup copy. For your safety,
    before   such   operation   current   database   backup  is  performed
    automatically.
-     _________________________________________________________________
-
-3.2.5. UI Config
-
-   Since  LMS  1.5.3  you're  able  to  configure  all UI-related options
-   directly  via  LMS-UI,  instead  of editing lms.ini. Those options are
-   stored  in database and you first need to import them from your config
-   file  (even if you haven't edited anything yet, default values will be
-   imported). This can be done by clicking on the link presented on empty
-   list.
-
-   Note
-
-   Options setup with LMS-UI have higher priority than those in
-   configuration file. With options setup in UI, the configuration will
-   be still imported from file but values will be then overwritten by
-   those found in DB.
-
-   Note
-
-   Daemon read some options other than its configuration from database
-   only, so it's prefered to store configuration in database.
-
-   In  order  to manually add new option click 'Add option' on the bottom
-   of  the  list.  To  edit  option value, click on its record. You'll be
-   given  with  edit form, where you are also able to remove this option.
-   Changing  option  status  allows  you to turn it on and off instantly.
-   When an option is off, default value will be used (if it posses any).
      _________________________________________________________________
 
 3.3. Customers
@@ -1567,25 +1525,7 @@ Chapter 3. User Interface (LMS-UI)
    and display receipt's printout in new window.
      _________________________________________________________________
 
-3.7.11. Tax Rates
-
-   Before you have to begin with financial system you will need to define
-   tax  rates  which  you will use. On the list are place all rates data.
-   It's  possible  to  edit tax rate, but system will not allow to change
-   value of rate that was used in the past. Also isn't possible to delete
-   that rate.
-
-   Link  'Add tax rate' moves you to the form, where you can define a new
-   rate.  Tax  rate  label  is  displayed  on  select  lists  and invoice
-   printout. Value of tax rate is a number from 0 to 100 with two decimal
-   places  precision. Taxing status is used for tax-free rate, that means
-   the rest of defined tax rates shold have taxing enabled.
-
-   Tax  rate  which  will  be  selected by default on lists is defined by
-   default_taxrate option in section [phpui].
-     _________________________________________________________________
-
-3.7.12. Import
+3.7.11. Import
 
    If  you  use  homebanking,  and you're able to get a list of financial
    operations  (ie.  from  bank  www or email that they send you), Import
@@ -1613,7 +1553,7 @@ Chapter 3. User Interface (LMS-UI)
 15.02.2004      Pain Joseph     123,45  Invoice paid - LMS/34/2004
      _________________________________________________________________
 
-3.7.13. Printing
+3.7.12. Printing
 
    There are several options for balance sheet printouts:
      * Balance  sheet for your network including financial operations for
@@ -1967,6 +1907,57 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    recorded  using  'Submitter' fields. You can provide email address (in
    both  registered/unregistered  cases)  if  ticket  will be running via
    email.
+     _________________________________________________________________
+
+3.13. Configuration
+
+3.13.1. User Interface
+
+   Since  LMS  1.5.3  you're  able  to  configure  all UI-related options
+   directly  via  LMS-UI,  instead  of editing lms.ini. Those options are
+   stored  in database and you first need to import them from your config
+   file  (even if you haven't edited anything yet, default values will be
+   imported). This can be done by clicking on the link presented on empty
+   list.
+
+   Note
+
+   Options setup with LMS-UI have higher priority than those in
+   configuration file. With options setup in UI, the configuration will
+   be still imported from file but values will be then overwritten by
+   those found in DB.
+
+   Note
+
+   Daemon read some options other than its configuration from database
+   only, so it's prefered to store configuration in database.
+
+   In  order  to manually add new option click 'Add option' on the bottom
+   of  the  list.  To  edit  option value, click on its record. You'll be
+   given  with  edit form, where you are also able to remove this option.
+   Changing  option  status  allows  you to turn it on and off instantly.
+   When an option is off, default value will be used (if it posses any).
+     _________________________________________________________________
+
+3.13.2. Tax Rates
+
+   Before you have to begin with financial system you will need to define
+   tax  rates  which  you will use. On the list are place all rates data.
+   It's  possible  to  edit tax rate, but system will not allow to change
+   value of rate that was used in the past. Also isn't possible to delete
+   that rate.
+
+   Link  'Add tax rate' moves you to the form, where you can define a new
+   rate.  Tax  rate  label  is  displayed  on  select  lists  and invoice
+   printout. Value of tax rate is a number from 0 to 100 with two decimal
+   places  precision. Taxing status is used for tax-free rate, that means
+   the rest of defined tax rates shold have taxing enabled.
+
+   Tax  rate  which  will  be  selected by default on lists is defined by
+   default_taxrate option in section [phpui].
+     _________________________________________________________________
+
+3.13.3. Numbering Plans
      _________________________________________________________________
 
 Chapter 4. Scripts
