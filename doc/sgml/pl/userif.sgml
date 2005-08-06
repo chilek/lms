@@ -1097,7 +1097,47 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	</sect2>
 	<sect2 id="config-numberplans">
 	    <title>Plany numeracyjne</title>
-		<para></para>
+		<para>Wszystkim dokumentom generowanym przez system LMS mo¿na nadawaæ
+		dowoln± numeracjê wg zdefiniowanych wzorów (planów). Mo¿liwe jest
+		u¿ywanie ró¿nych numeracji w obrêbie jednego typu dokumentów. Dla
+		ka¿dego typu mo¿na zdefiniowaæ jeden plan domy¶lny (wa¿ne w przypadku
+		faktur wystawianych automatycznie, skrypty/demon musz± wiedzieæ na jakiej
+		numeracji maj± byæ oparte nowo tworzone dokumenty).</para>
+		<para>Do ka¿dego planu nale¿y przypisaæ tak¿e okres numeracyjny, czyli
+		przedzia³ czasowy w jakim zachowywana jest ci±g³o¶æ numeracji. Przy
+		przej¶ciu do nowego okresu numeracja zostanie wyzerowana. Mo¿na zdefiniowaæ
+		numeracjê jednodniow±, tygodniow± (od poniedzia³ku do niedzieli), miesiêczn±, 
+		kwartaln± oraz roczn±.</para>
+		<para>Na li¶cie planów numeracyjnych znajduj± siê wszystkie niezbêdne 
+		informacje o planach wraz z przyk³adowym numerem oraz liczb± dokumentów
+		utworzonych przy ich u¿yciu. Poprzez link 'Dodaj plan' przechodzi siê 
+		do interfejsu dodawania planu. Edycji mo¿na dokonaæ klikaj±c na wybrany 
+		rekord na li¶cie. Usuniêcie planu numeracyjnego jest mo¿liwe tylko
+		wtedy gdy nie dotyczy on ¿adnego istniej±cego dokumentu.</para>
+		<para>Szablon numeru to dowolny ci±g znaków, który zawiera specjalne
+		symbole (specyfikatory) znane z funkcji strftime. Szczegó³y u¿ycia oraz
+		wykaz wszystkich symboli mo¿na znale¼æ w <ulink 
+		url="http://www.php.net/manual/pl/function.strftime.php">manualu PHP</ulink>.
+		Podstawowym i jedynym wymaganym symbolem w szablonie jest symbol '%N', za
+		który zostanie podstawiony numer wewnêtrzny dokumentu. Pozosta³e symbole
+		wynikaj± z daty wystawienia dokumentu. A oto najczê¶ciej u¿ywane z nich:
+		<itemizedlist>
+		    <listitem>
+			<para>%Y - rok jako liczba dziesiêtna z wiekiem w³±cznie</para>
+		    </listitem>
+		    <listitem>
+			<para>%y - rok jako liczba dziesiêtna bez uwzglêdnienia wieku (00 do 99)</para>
+		    </listitem>
+		    <listitem>
+			<para>%m - miesi±c jako liczba dziesiêtna (01 do 12)</para>
+		    </listitem>
+		    <listitem>
+			<para>%b - skrótowa nazwa miesi±ca zgodnie z lokalizacj±</para>
+		    </listitem>
+		</itemizedlist>
+		</para>
+		<para><note><para>Je¿eli w systemie nie zdefiniowano planów numeracyjnych
+		dokumenty bêd± numerowane wg wzorca '%N/LMS/%Y' z okresem rocznym.</para></note></para>
 	</sect2>
     </sect1>
 </chapter>

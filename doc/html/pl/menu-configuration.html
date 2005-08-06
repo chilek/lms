@@ -763,6 +763,82 @@ NAME="CONFIG-NUMBERPLANS"
 >3.14.3. Plany numeracyjne</A
 ></H2
 ><P
+>Wszystkim dokumentom generowanym przez system LMS mo¿na nadawaæ
+		dowoln± numeracjê wg zdefiniowanych wzorów (planów). Mo¿liwe jest
+		u¿ywanie ró¿nych numeracji w obrêbie jednego typu dokumentów. Dla
+		ka¿dego typu mo¿na zdefiniowaæ jeden plan domy¶lny (wa¿ne w przypadku
+		faktur wystawianych automatycznie, skrypty/demon musz± wiedzieæ na jakiej
+		numeracji maj± byæ oparte nowo tworzone dokumenty).</P
+><P
+>Do ka¿dego planu nale¿y przypisaæ tak¿e okres numeracyjny, czyli
+		przedzia³ czasowy w jakim zachowywana jest ci±g³o¶æ numeracji. Przy
+		przej¶ciu do nowego okresu numeracja zostanie wyzerowana. Mo¿na zdefiniowaæ
+		numeracjê jednodniow±, tygodniow± (od poniedzia³ku do niedzieli), miesiêczn±, 
+		kwartaln± oraz roczn±.</P
+><P
+>Na li¶cie planów numeracyjnych znajduj± siê wszystkie niezbêdne 
+		informacje o planach wraz z przyk³adowym numerem oraz liczb± dokumentów
+		utworzonych przy ich u¿yciu. Poprzez link 'Dodaj plan' przechodzi siê 
+		do interfejsu dodawania planu. Edycji mo¿na dokonaæ klikaj±c na wybrany 
+		rekord na li¶cie. Usuniêcie planu numeracyjnego jest mo¿liwe tylko
+		wtedy gdy nie dotyczy on ¿adnego istniej±cego dokumentu.</P
+><P
+>Szablon numeru to dowolny ci±g znaków, który zawiera specjalne
+		symbole (specyfikatory) znane z funkcji strftime. Szczegó³y u¿ycia oraz
+		wykaz wszystkich symboli mo¿na znale¼æ w <A
+HREF="http://www.php.net/manual/pl/function.strftime.php"
+TARGET="_top"
+>manualu PHP</A
+>.
+		Podstawowym i jedynym wymaganym symbolem w szablonie jest symbol '%N', za
+		który zostanie podstawiony numer wewnêtrzny dokumentu. Pozosta³e symbole
+		wynikaj± z daty wystawienia dokumentu. A oto najczê¶ciej u¿ywane z nich:
+		<UL
+><LI
+><P
+>%Y - rok jako liczba dziesiêtna z wiekiem w³±cznie</P
+></LI
+><LI
+><P
+>%y - rok jako liczba dziesiêtna bez uwzglêdnienia wieku (00 do 99)</P
+></LI
+><LI
+><P
+>%m - miesi±c jako liczba dziesiêtna (01 do 12)</P
+></LI
+><LI
+><P
+>%b - skrótowa nazwa miesi±ca zgodnie z lokalizacj±</P
+></LI
+></UL
+>
+		</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Je¿eli w systemie nie zdefiniowano planów numeracyjnych
+		dokumenty bêd± numerowane wg wzorca '%N/LMS/%Y' z okresem rocznym.</P
+></TD
+></TR
+></TABLE
+></DIV
 ></P
 ></DIV
 ></DIV

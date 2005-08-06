@@ -617,6 +617,11 @@ AddDefaultCharset Off
     </sect1>
     <sect1 id="install-documents">
 	<title>Dokumenty</title>
+	    <para>LMS umo¿liwia generowanie oraz przechowywanie przeró¿nych
+	    dokumentów tj. faktur, dowodów wp³at oraz dokumentów nie-finansowych
+	    np. umów, protoko³ów. Dokumenty mog± byæ numerowane wg wzorców (planów)
+	    numeracyjnych zdefiniowanych przy pomocy menu Konfiguracja - Plany
+	    numeracyjne.</para>
     <sect2 id="install-invoices">
      <title>Faktury</title>
           <para>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
@@ -797,6 +802,18 @@ AddDefaultCharset Off
           </para>
          </sect3>
 	 -->
+    </sect2>
+    <sect2 id="install-documents-other">
+	<title>Dokumenty pozosta³e</title>
+	    <para>Oprócz dokumentów finansowych w LMSie mo¿na przechowywaæ
+	    dokumenty takie jak umowy, protoko³y, aneksy i inne. Ka¿emu klientowi
+	    mo¿na przypisaæ dowoln± liczbê dokumentów na zak³adce 'Dokumenty klienta'
+	    w panelu 'Informacje o kliencie'. Ka¿dy dokument powinien posiadaæ tytu³,
+	    typ, dodatkowo mo¿na zdefiniowaæ okres obowi±zywania oraz opis. Pliki
+	    z dokumentami przechowywane s± poza baz± danych (o czym nale¿y pamiêtaæ
+	    robi±c backupy) w katalogu okre¶lonym zmienn± 'doc_dir' w sekcji
+	    <emphasis>[directories]</emphasis> pliku konfiguracyjnego.
+	    </para>
     </sect2>
     </sect1>
 </chapter>
