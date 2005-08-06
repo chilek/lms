@@ -26,7 +26,7 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use vars qw($configfile $quiet $help $version);
+use vars qw($configfile $quiet $help $version $iplist);
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
@@ -36,7 +36,8 @@ my %options = (
 	"--config-file|C=s"  	=>	\$configfile,
         "--quiet|q"          	=>     	\$quiet,
         "--help|h"		=>     	\$help,
-        "--version|v"          	=>     	\$version
+        "--version|v"          	=>     	\$version,
+	"--iplist|L=s"		=>	\$iplist
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -78,7 +79,7 @@ lms-arping, version $_version
 -h, --help			print this help and exit;
 -v, --version               	print version info and exit;
 -q, --quiet               	suppress any output, except errors;
-
+-L, --iplist=/some/file		file that contains ip addresses of online computers; useful for external pingers ;-)
 EOF
      exit 0;
 }
@@ -163,29 +164,43 @@ my @networks = split ' ', $networks_list;
 
 my @lines;
 
-foreach my $network (@networks)
+if ($iplist)
 {
-    my $dbq = $dbase->prepare("SELECT name, interface, INET_NTOA(address) AS address, mask FROM networks WHERE UPPER(name) = UPPER('$network')");
-    $dbq->execute();
-     
-    if(my $row = $dbq->fetchrow_hashref())
-    {
-	my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+	if (! -r $iplist)
+	{
+		print STDERR "Fata error: Unable to read $iplist file, exiting.\n";
+		exit 1;
+	}
+	open(IPLISTFILE, $iplist);
+	@lines = <IPLISTFILE>;
+	close(IPLISTFILE);
+}
+else
+{
+	foreach my $network (@networks)
+	{
+		my $dbq = $dbase->prepare("SELECT name, interface, INET_NTOA(address) AS address, mask FROM networks WHERE UPPER(name) = UPPER('$network')");
+		$dbq->execute();
 
-	my $iface = $row->{'interface'} ? "-I $row->{'interface'}" : "";
-        
-	my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
-        $ndbq->execute();
-        
-	while(my $nodrow = $ndbq->fetchrow_hashref())
-        {
-	    system("$arping -c1 -q $iface $nodrow->{'ipaddr'}");
-	    if ( "$?" == "0" ) 
-	    { 
-		push(@lines, "$nodrow->{'ipaddr'}");
-	    }
-        }
-    }
+		if(my $row = $dbq->fetchrow_hashref())
+		{
+			my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+
+			my $iface = $row->{'interface'} ? "-I $row->{'interface'}" : "";
+
+			my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
+		        $ndbq->execute();
+
+			while(my $nodrow = $ndbq->fetchrow_hashref())
+		        {
+				system("$arping -c1 -q $iface $nodrow->{'ipaddr'}");
+				if ( "$?" == "0" ) 
+				{ 
+					push(@lines, "$nodrow->{'ipaddr'}");
+				}
+			}
+		}
+	}
 }
 
 foreach my $line (@lines)
