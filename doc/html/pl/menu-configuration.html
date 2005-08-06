@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.7-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Interfejs U¿ytkownika (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Terminarz"
+HREF="menu-timetable.html"><LINK
+REL="NEXT"
+TITLE="Skrypty"
+HREF="scripts.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.7-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-timetable.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 3. Interfejs U¿ytkownika (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="scripts.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-CONFIGURATION"
+>3.14. Configuration</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-UI"
+>3.14.1. Interfejs U¿ytkownika</A
+></H2
+><P
+>Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
+		u¿ytkownika tak¿e poprzez <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>. Opcje przechowywane 
+        	s± w bazie danych i nale¿y je przenie¶æ z pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.
+		W celu automatycznego przeniesienia konfiguracji do bazy danych kliknij na
+    	        linku znajduj±cym siê na pustej li¶cie opcji konfiguracyjnych.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Opcje konfigurowane w <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> maj±
+    		wiêkszy priorytet od tych zapisanych w <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>, co
+    		oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany, ale warto¶ci 
+    		zmiennych z tego pliku nadpisywane s± warto¶ciami zapisanymi
+    		w bazie danych.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+    		<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Demon odczytuje niektóre opcje konfiguracyjne UI tylko z bazy
+    		danych, dlatego zaleca siê przechowywanie konfiguracji w bazie zamiast w pliku 
+    		ini.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê'.
+    		Aby wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
+    		do formularza edycyjnego. Zmiana statusu
+    		opcji oznacza w³±czenie/wy³±czenie jej dzia³ania, co polega na przypisaniu
+    		jej warto¶ci domy¶lnej (je¿eli tak± posiada).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-TAXES"
+>3.14.2. Stawki podatkowe</A
+></H2
+><P
+>Przed rozpoczêciem pracy z systemem finansowym nale¿y zdefiniowaæ
+		stawki podatkowe jakich bêdziemy u¿ywaæ. Na li¶cie znajduj± siê wszystkie
+		dane stawek. Mo¿liwa jest edycja stawki podatkowej, przy czym nale¿y pamiêtaæ,
+		¿e system nie pozwoli na zmianê warto¶ci stawki, je¿eli zosta³a ona
+		u¿yta w przesz³o¶ci. Nie mo¿liwe jest tak¿e usuniêcie takiej stawki.</P
+><P
+>Link 'Dodaj stawkê' przenosi do formularza definiowania nowej stawki
+		procentowej. Etykieta stawki jest wy¶wietlana na listach wyboru oraz
+		w szablonie faktury. Warto¶æ stawki to liczba od 0 do 100 z dok³adno¶ci±
+		do dwóch miejsc po przecinku. Status opodatkowania jest wykorzystywany
+		do wyró¿nienia stawki zwolnionej z podatku, czyli wszystkie pozosta³e
+		stawki powinny mieæ w³±czone 'opodatkowanie'.</P
+><P
+>Stawkê, która bêdzie domy¶lnie zaznaczona na listach wyboru
+		mo¿na zdefiniowaæ przy pomocy opcji <TT
+CLASS="FILENAME"
+>default_taxrate</TT
+>
+		w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-NUMBERPLANS"
+>3.14.3. Plany numeracyjne</A
+></H2
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-timetable.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="scripts.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Terminarz</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Skrypty</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

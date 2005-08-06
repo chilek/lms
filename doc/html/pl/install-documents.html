@@ -112,30 +112,6 @@ CLASS="FILENAME"
           <UL
 ><LI
 ><P
->number_template</P
-><P
->Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
-               '%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->number_template = %N/%Y</SAMP
-></P
-></LI
-><LI
-><P
->monthly_numbering</P
-><P
->W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
-               Domy¶lnie: wy³±czona</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->monthly_numbering = 1</SAMP
-></P
-></LI
-><LI
-><P
 >header</P
 ><P
 >Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
@@ -427,43 +403,7 @@ NAME="INSTALL-RECEIPTS"
 ></H2
 ><P
 >Dowody wp³aty, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
-	  opcje konfiguracyjne jak faktury. W konfiguracji dowodów wp³aty
-	  mo¿na zdecydowaæ o sposobie numeracji ustawiaj±c w sekcji 
-	  <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[receipts]</I
-></SPAN
-> nastepuj±ce opcje:
-          <UL
-><LI
-><P
->number_template</P
-><P
->Wzorzec numeru. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
-               '%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->number_template = %N/%Y</SAMP
-></P
-></LI
-><LI
-><P
->monthly_numbering</P
-><P
->W³±czenie tej opcji spowoduje zerowanie numeracji na pocz±tku ka¿dego miesi±ca.
-               Domy¶lnie: wy³±czona</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->monthly_numbering = 1</SAMP
-></P
-></LI
-></UL
->
-	  </P
+	  opcje konfiguracyjne jak faktury.</P
 ><DIV
 CLASS="SECT3"
 ><H3

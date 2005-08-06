@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.7-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Helpdesk"
+HREF="menu-helpdesk.html"><LINK
+REL="NEXT"
+TITLE="Scripts"
+HREF="scripts.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.7-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-helpdesk.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. User Interface (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="scripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-CONFIGURATION"
+>3.13. Configuration</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-UI"
+>3.13.1. User Interface</A
+></H2
+><P
+>Since LMS 1.5.3 you're able to configure all UI-related
+    	        options directly via <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>, instead of editing
+        	<TT
+CLASS="FILENAME"
+>lms.ini</TT
+>. Those options are stored in database and you first
+                need to import them from your config file (even if you haven't edited anything
+	        yet, default values will be imported). This can be done by clicking
+    	        on the link presented on empty list.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options setup with <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>
+                have higher priority than those in configuration file. With options setup in UI,
+	        the configuration will be still imported from file but values will be then
+    	        overwritten by those found in DB.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Daemon read some options other than its configuration from
+    		database only, so it's prefered to store configuration in database.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>In order to manually add new option click 'Add option' on the
+	        bottom of the list. To edit option value, click on its record. You'll be given
+    		with edit form, where you are also able to remove this option. Changing option
+    		status allows you to turn it on and off instantly. When an option is off,
+    	        default value will be used (if it posses any).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-TAXES"
+>3.13.2. Tax Rates</A
+></H2
+><P
+>Before you have to begin with financial system you will need
+		to define tax rates which you will use. On the list are place all 
+		rates data. It's possible to edit tax rate, but system will not
+		allow to change value of rate that was used in the past. Also isn't
+		possible to delete that rate.</P
+><P
+>Link 'Add tax rate' moves you to the form, where you can define 
+		a new rate. Tax rate label is displayed on select lists and invoice
+		printout. Value of tax rate is a number from 0 to 100 with two 
+		decimal places precision. Taxing status is used for tax-free rate, that 
+		means the rest of defined tax rates shold have taxing enabled.</P
+><P
+>Tax rate which will be selected by default on lists is defined
+		by <TT
+CLASS="FILENAME"
+>default_taxrate</TT
+> option in section 
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-NUMBERPLANS"
+>3.13.3. Numbering Plans</A
+></H2
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-helpdesk.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="scripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Helpdesk</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

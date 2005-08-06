@@ -198,6 +198,11 @@ HREF="#MENU-STATS"
 HREF="#MENU-HELPDESK"
 >Helpdesk</A
 ></DT
+><DT
+>3.13. <A
+HREF="#MENU-CONFIGURATION"
+>Configuration</A
+></DT
 ></DL
 ></DD
 ><DT
@@ -1932,6 +1937,39 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 ></P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>As of version 1.6 and later storing config 
+	 in <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> is beeing treaded as obsolete. 
+	 The only required values there are from [database] and [directories]
+	 sections. Settings are stored in database and could be changed by 
+	 userinterface.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ><DIV
 CLASS="SECT2"
 ><HR><H3
@@ -2703,7 +2741,7 @@ NAME="INSTALL-CONFIG-FINANCES"
 ><P
 >This section consist options for financial system and for payment
      forms. You can read more about that in Invoices chapter.
-             <UL
+     <UL
 ><LI
 ><P
 >suspension_percentage (optional)</P
@@ -2990,30 +3028,6 @@ CLASS="FILENAME"
           <UL
 ><LI
 ><P
->number_template</P
-><P
->Invoice numbering pattern. Available variables: '%N' - successive number in year/month
-                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</P
-><P
->Example: <SAMP
-CLASS="PROMPT"
->number_template = %N/%Y</SAMP
-></P
-></LI
-><LI
-><P
->monthly_numbering</P
-><P
->Enable this option when you need to reset invoice numbering on start of every month.
-               Default: disabled</P
-><P
->Example: <SAMP
-CLASS="PROMPT"
->monthly_numbering = 1</SAMP
-></P
-></LI
-><LI
-><P
 >header</P
 ><P
 >Seller. Can use string "\n" for lines separation. Default: empty.</P
@@ -3028,8 +3042,8 @@ CLASS="PROMPT"
 >footer</P
 ><P
 >Invoice footer - e.g. contact information about seller. Footer will be placed at bottom
-                        of an invoice, using small font. Like in header option use "\n" to separate lines. Default:
-                        empty</P
+                of an invoice, using small font. Like in header option use "\n" to separate lines. Default:
+                empty</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3251,44 +3265,7 @@ NAME="INSTALL-RECEIPTS"
 >2.9.2. Cash Receipts</A
 ></H3
 ><P
->Cash Receipts have configuration options similiar with invoices.
-		In receipts configuration is possible to decide which numbering method
-		use by setting in <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[receipts]</I
-></SPAN
-> section following
-		options:
-          <UL
-><LI
-><P
->number_template</P
-><P
->Number pattern. Available variables: '%N' - successive number in year/month
-                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</P
-><P
->Example: <SAMP
-CLASS="PROMPT"
->number_template = %N/%Y</SAMP
 ></P
-></LI
-><LI
-><P
->monthly_numbering</P
-><P
->Enable this option when you need to reset receipt numbering on start of every month.
-               Default: disabled</P
-><P
->Example: <SAMP
-CLASS="PROMPT"
->monthly_numbering = 1</SAMP
-></P
-></LI
-></UL
->
-	  </P
 ><DIV
 CLASS="SECT3"
 ><HR><H4
@@ -3543,99 +3520,6 @@ CLASS="FILENAME"
             computer at any time. By clicking on 'recover' icon your current database will
             be deleted and replaced by the one in backup copy. For your safety, before such
             operation current database backup is performed automatically.</P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="ADMINISTRATION-UICONFIG"
->3.2.5. UI Config</A
-></H3
-><P
->Since LMS 1.5.3 you're able to configure all UI-related
-            options directly via <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
->, instead of editing
-            <TT
-CLASS="FILENAME"
->lms.ini</TT
->. Those options are stored in database and you first
-            need to import them from your config file (even if you haven't edited anything
-            yet, default values will be imported). This can be done by clicking
-            on the link presented on empty list.</P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Note"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Options setup with <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
->
-            have higher priority than those in configuration file. With options setup in UI,
-            the configuration will be still imported from file but values will be then
-            overwritten by those found in DB.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Note"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Daemon read some options other than its configuration from
-	    database only, so it's prefered to store configuration in database.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-><P
->In order to manually add new option click 'Add option' on the
-            bottom of the list. To edit option value, click on its record. You'll be given
-            with edit form, where you are also able to remove this option. Changing option
-            status allows you to turn it on and off instantly. When an option is off,
-            default value will be used (if it posses any).</P
 ></DIV
 ></DIV
 ><DIV
@@ -4386,42 +4270,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-TAXES"
->3.7.11. Tax Rates</A
-></H3
-><P
->Before you have to begin with financial system you will need
-		to define tax rates which you will use. On the list are place all 
-		rates data. It's possible to edit tax rate, but system will not
-		allow to change value of rate that was used in the past. Also isn't
-		possible to delete that rate.</P
-><P
->Link 'Add tax rate' moves you to the form, where you can define 
-		a new rate. Tax rate label is displayed on select lists and invoice
-		printout. Value of tax rate is a number from 0 to 100 with two 
-		decimal places precision. Taxing status is used for tax-free rate, that 
-		means the rest of defined tax rates shold have taxing enabled.</P
-><P
->Tax rate which will be selected by default on lists is defined
-		by <TT
-CLASS="FILENAME"
->default_taxrate</TT
-> option in section 
-		<SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[phpui]</I
-></SPAN
->.</P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
 NAME="MENU-IMPORT"
->3.7.12. Import</A
+>3.7.11. Import</A
 ></H3
 ><P
 >If you use homebanking, and you're able to get a list of
@@ -4473,7 +4323,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-FINANCES-PRINT"
->3.7.13. Printing</A
+>3.7.12. Printing</A
 ></H3
 ><P
 >There are several options for balance sheet printouts:
@@ -5188,6 +5038,153 @@ NAME="MENU-HELPDESK-NEWTICKET"
 queue and reporter. Unregistered users (not in customers database) should be
 recorded using 'Submitter' fields. You can provide email address (in both
 registered/unregistered cases) if ticket will be running via email.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-CONFIGURATION"
+>3.13. Configuration</A
+></H2
+><DIV
+CLASS="SECT2"
+><H3
+CLASS="SECT2"
+><A
+NAME="CONFIG-UI"
+>3.13.1. User Interface</A
+></H3
+><P
+>Since LMS 1.5.3 you're able to configure all UI-related
+    	        options directly via <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>, instead of editing
+        	<TT
+CLASS="FILENAME"
+>lms.ini</TT
+>. Those options are stored in database and you first
+                need to import them from your config file (even if you haven't edited anything
+	        yet, default values will be imported). This can be done by clicking
+    	        on the link presented on empty list.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options setup with <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>
+                have higher priority than those in configuration file. With options setup in UI,
+	        the configuration will be still imported from file but values will be then
+    	        overwritten by those found in DB.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Daemon read some options other than its configuration from
+    		database only, so it's prefered to store configuration in database.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>In order to manually add new option click 'Add option' on the
+	        bottom of the list. To edit option value, click on its record. You'll be given
+    		with edit form, where you are also able to remove this option. Changing option
+    		status allows you to turn it on and off instantly. When an option is off,
+    	        default value will be used (if it posses any).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="CONFIG-TAXES"
+>3.13.2. Tax Rates</A
+></H3
+><P
+>Before you have to begin with financial system you will need
+		to define tax rates which you will use. On the list are place all 
+		rates data. It's possible to edit tax rate, but system will not
+		allow to change value of rate that was used in the past. Also isn't
+		possible to delete that rate.</P
+><P
+>Link 'Add tax rate' moves you to the form, where you can define 
+		a new rate. Tax rate label is displayed on select lists and invoice
+		printout. Value of tax rate is a number from 0 to 100 with two 
+		decimal places precision. Taxing status is used for tax-free rate, that 
+		means the rest of defined tax rates shold have taxing enabled.</P
+><P
+>Tax rate which will be selected by default on lists is defined
+		by <TT
+CLASS="FILENAME"
+>default_taxrate</TT
+> option in section 
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="CONFIG-NUMBERPLANS"
+>3.13.3. Numbering Plans</A
+></H3
+><P
+></P
 ></DIV
 ></DIV
 ></DIV
