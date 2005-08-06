@@ -343,53 +343,53 @@ database = /usr/local/lms/lms.db</screen>
 	 The only required values there are from [database] and [directories]
 	 sections. Settings are stored in database and could be changed by 
 	 userinterface.</para></note></para>
-         <sect2 id="install-config-db">
-         <title>Section [database] - Database Settings</title>
-         <para>
-         <itemizedlist>
-            <listitem>
-         <para>type</para>
-        <para>Database type. Currently only 'mysql' is 100% supported, but for the time being
-        there has not been seen any problems with 'postgres' or 'sqlite'. Default: mysql</para>
-        <para>Example: <prompt>type = mysql</prompt></para>
-       </listitem>
-          <listitem>
-        <para>host</para>
-        <para>Host where database is running. Usually 'localhost', but you can set anything here     
-        (IP, domain or path to socket in 'localhost:/path/to/socket' format).                       
-        Default: localhost</para>
-        <para>Example:     <prompt>host = localhost</prompt></para>
-       </listitem>
-          <listitem>
-        <para>user</para>
-        <para>Database user account name. In many cases (if you follow this documentation) that will
-        be 'lms'. If you want to use privileged account, you can enter 'root' (MySQL on most of
-        *nixes), 'mysql' (on PLD) or 'postgres' (PostgreSQL). Default: mysql</para>
-        <para>Example:     <prompt>user = lms</prompt></para>
-       </listitem>
-          <listitem>
-        <para>password</para>
-        <para>Database user password. Default: empty.</para>
-        <para>Example:     <prompt>password = password</prompt></para>
-       </listitem>
-          <listitem>
-        <para>database</para>
-        <para>Database name (or path to database file for SQLite). Default: lms</para>
-        <para>Example:     <prompt>database = lms</prompt></para>
-       </listitem>
-          <listitem>
-        <para>server_encoding</para>
-        <para>Database encoding. Use if your database encoding is not Unicode. Postgres is
-        performing conversion automatically, but if you use MySQL PHP and iconv in LMS DB drivers is
-        used. Default: unicode</para>
-        <para>Example:     <prompt>server_encoding = latin2</prompt></para>
-       </listitem>
-         </itemizedlist>
-     </para>
-     </sect2>
-     <sect2 id="install-config-dir">         
-     <title>Section [directories] - Directories Settings</title>
-      <para>        
+        <sect2 id="install-config-db">
+        <title>Section [database] - Database Settings</title>
+    	    <para>
+            <itemizedlist>
+    		<listitem>
+	    	    <para>type</para>
+    		    <para>Database type. Currently only 'mysql' is 100% supported, but for the time being
+	    	    there has not been seen any problems with 'postgres' or 'sqlite'. Default: mysql</para>
+    		    <para>Example: <prompt>type = mysql</prompt></para>
+		</listitem>
+        	<listitem>
+	            <para>host</para>
+    		    <para>Host where database is running. Usually 'localhost', but you can set anything here     
+	            (IP, domain or path to socket in 'localhost:/path/to/socket' format).                       
+	            Default: localhost</para>
+	            <para>Example:     <prompt>host = localhost</prompt></para>
+		</listitem>
+    		<listitem>
+	            <para>user</para>
+	            <para>Database user account name. In many cases (if you follow this documentation) that will
+	            be 'lms'. If you want to use privileged account, you can enter 'root' (MySQL on most of
+	            *nixes), 'mysql' (on PLD) or 'postgres' (PostgreSQL). Default: mysql</para>
+	            <para>Example:     <prompt>user = lms</prompt></para>
+	        </listitem>
+    		<listitem>
+    		    <para>password</para>
+	            <para>Database user password. Default: empty.</para>
+	            <para>Example:     <prompt>password = password</prompt></para>
+		</listitem>
+        	<listitem>
+	            <para>database</para>
+	            <para>Database name (or path to database file for SQLite). Default: lms</para>
+	            <para>Example:     <prompt>database = lms</prompt></para>
+		</listitem>
+		<listitem>
+	            <para>server_encoding</para>
+	            <para>Database encoding. Use if your database encoding is not Unicode. Postgres is
+	            performing conversion automatically, but if you use MySQL PHP and iconv in LMS DB drivers is
+	            used. Default: unicode</para>
+	            <para>Example:     <prompt>server_encoding = latin2</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    	    </para>
+    </sect2>
+    <sect2 id="install-config-dir">         
+	<title>Section [directories] - Directories Settings</title>
+        <para>        
      <itemizedlist>
      <listitem>
         <para>sys_dir</para>
@@ -448,244 +448,19 @@ database = /usr/local/lms/lms.db</screen>
         </itemizedlist>
      </para>
      </sect2>
-     <sect2 id="install-config-ui">
-        <title>Section [phpui] - Interface Setting</title>
+    <sect2 id="install-config-finances">
+    <title>Section [finances] - Finances Settings</title>
+	<para>This section consist options for financial system and for payment
+        forms. You can read more about that in chapter 'Documents'.
         <itemizedlist>
-        <listitem>
-             <para>allow_from  (optional)</para>
-             <para>List of networks or IP addresses, which have access to LMS. If empty, every IP
-             address is permitted. You can write here list of addresses or address classes and LMS
-             will dismiss every unwanted user with HTTP 403 error.</para>
-             <para>Example:          <prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
-     </listitem>
-     <listitem>
-         <para>lang</para>
-         <para>User interface language code (ISO). IF not set, language will be based on HTML
-         browser settings. Default: en</para>
-         <para>Example:     <prompt>lang = pl</prompt></para>
-     </listitem>
-     <listitem>
-         <para>timeout</para>
-         <para>Timeout for WWW session. User will be log out if he won't perform any action in such
-         number of seconds. Default: 600</para>
-         <para>Example:     <prompt>timeout = 900</prompt></para>
-         <para><warning><para>It's not possible to not to have any timeout. If you set this value to
-         zero, you won't be able to use LMS at all!</para></warning></para>
-     </listitem>
-     <listitem>
-         <para>customerlist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of customers list. Default: 100</para>
-         <para>Example:     <prompt>customerlist_pagelimit = 10</prompt></para>
-     </listitem>
-     <listitem>
-         <para>nodelist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of nodes list. Default: 100</para>
-         <para>Example:     <prompt>nodelist_pagelimit = 10</prompt></para>
-     </listitem>
-     <listitem>
-         <para>balancelist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of customer balance. Default: 100.</para>
-         <para>Example:     <prompt>balancelist_pagelimit = 50</prompt></para>
-     </listitem>
-     <listitem>
-         <para>invoicelist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of invoices list. Default: 100</para>
-         <para>Example:     <prompt>invoicelist_pagelimit = 50</prompt></para>
-     </listitem>
-     <listitem>
-         <para>ticketlist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of ticket (requests) list. Default: 100</para>
-         <para>Example:     <prompt>ticketlist_pagelimit = 50</prompt></para>
-     </listitem>
-     <listitem>
-         <para>networkhosts_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of nodes with network information.
-         Default: 256</para>
-         <para>Example:     <prompt>networkhosts_pagelimit = 1024</prompt></para>
-     </listitem>
-     <listitem>
-         <para>accountlist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of customer accounts. Default: 100</para>
-         <para>Example:     <prompt>accountlist_pagelimit = 50</prompt></para>
-     </listitem>
-     <listitem>
-         <para>domainlist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of system domains. Default: 100</para>
-         <para>Example:     <prompt>domainlist_pagelimit = 50</prompt></para>
-     </listitem>
-     <listitem>
-         <para>aliaslist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of user aliases. Default: 100</para>
-         <para>Example:     <prompt>aliaslist_pagelimit = 50</prompt></para>
-     </listitem>
-     <listitem>
-         <para>configlist_pagelimit</para>
-         <para>Limit of records that can be displayed on one page of UI configuration list. Default: 100</para>
-         <para>Example:     <prompt>configlist_pagelimit = 50</prompt></para>
-     </listitem>
-     <listitem>
-         <para>reload_type</para>
-         <para>Reload type. Allowed values:</para>
-         <para>exec - execute some command (usually with sudo, script or something
-         else, configurable below)</para>
-         <para>sql  - doing SQL writes (can be also set to custom query)</para>
-         <para>Default: sql.</para>
-         <para>Example:     <prompt>reload_type = exec</prompt></para>
-     </listitem>
-     <listitem>
-         <para>reload_execcmd</para>
-         <para>Command to run during reload, if reload_type is set to 'exec'. By default
-         <filename>/bin/true</filename>. This string is send to system() command, so make sure that
-         you know what you're doing. :) Besides, semicolons should be parsed by bash, but LMS splits
-         that string and execute commands separately.</para>
-         <para>Example:     <prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
-     </listitem>
-     <listitem>
-         <para>reload_sqlquery</para>
-         <para>SQL query executed while reload, if <prompt>reload_type = sql</prompt>. By default,
-         query does inserts into table 'timestamps' with '_force' value. You can use '%TIME%'
-         template in your query which will be substituted with current UNIX timestamp. WARNING!
-         Semicolon is handled as query separator, which means that you can enter couple of SQL
-         queries separated by semicolon sign.</para>
-         <para>Example:     <prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
-     </listitem>
-     <listitem>
-         <para>force_ssl</para>
-         <para>Enforce SSL for all connections. Setting this option to 1 will
-         turn LMS into enforcing SSL connections by applying redirect to
-         'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access without SSL. Default:
-         0 (off).</para>
-         <para>Example:     <prompt>force_ssl = 1</prompt></para>
-     </listitem>
-     <listitem>
-         <para>allow_mac_sharing</para>
-         <para>Allows for node addition even if its MAC address is not unique (not checking that
-         some computer have that MAC yet). Default: 0 (off)</para>
-         <para>Example:     <prompt>allow_mac_sharing = 1</prompt></para>
-     </listitem>
-     <listitem>
-         <para>smarty_debug</para>
-         <para>Enable Smarty debug console. Useful for tracking values passed from PHP to Smarty.
-         Default: 0 (off).</para>
-         <para>Example:     <prompt>smarty_debug = 1</prompt></para>
-     </listitem>
-     <listitem>
-         <para>lang_debug</para>
-         <para>Enable LMS language console. Useful for tracking missing translation strings.
-         Default: 0 (off).</para>
-         <para>Example:     <prompt>lang_debug = 1</prompt></para>
-     </listitem>
-     <listitem>
-         <para>debug_email</para>
-         <para>E-mail address for debugging - messages sent from module 'Mailing' will be delivered
-         to this address instead of sending them to real users. </para>
-         <para>Example:     <prompt>debug_email = root@localhost</prompt></para>
-     </listitem>
-     <listitem>
-         <para>default_zip, default_city, default_address</para>
-         <para>Default zip code, city and street used on "new user" form. Useful when we have many
-         users on the same street.</para>
-         <para>Example:     <prompt>default_zip = 39-300</prompt></para>
-     </listitem>
-     <listitem>
-         <para>use_current_payday</para>
-         <para>Forces to use current day of month as a payment day instead of most often used day.
-         Default: 0 (off).</para>
-         <para>Example:     <prompt>use_current_payday = 1</prompt></para>
-     </listitem>
-     <listitem>
-         <para>lastonline_limit</para>
-         <para>Specify time (in seconds), after which node will be marked offline. It should match
-         frequency of execution for script responsible for checking nodes activity (i.e. lms-fping).
-         Default: 600.</para>
-         <para>Example:     <prompt>lastonline_limit = 300</prompt></para>
-     </listitem>
-     <listitem>
-         <para>timetable_days_forward</para>
-         <para>Specify number of days (including current day) visible on timetable.
-         Default: 7.</para>
-         <para>Example:     <prompt>timetable_days_forward = 2</prompt></para>
-     </listitem>
-     <listitem>
-         <para>arpd_servers</para>
-         <para>List of arpd servers for reading MAC addresses from remote networks.
-         That list should include IP[:port] items separated with spaces.
-         Default: empty.</para>
-         <para>Example:     <prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
-     </listitem>
-     <listitem>
-         <para>helpdesk_backend_mode</para>
-         <para>When enabled, all messages in helpdesk system (except those sent to ticket reporter)
-         will be sent to mail server to the appropriate queue address. Mail server should run
-         lms-rtparser script, which will write messages to database. Default: disabled.</para>
-         <para>Example:     <prompt>helpdesk_backend_mode = On</prompt></para>
-     </listitem>
-     <listitem>
-         <para>helpdesk_sender_name</para>
-         <para>Name of message sender or predefined values: 'queue' - ticket's queue name,
-      'user' - name of logged user (sender). Default: empty.</para>
-         <para>Example:     <prompt>helpdesk_sender_name = Helpdesk</prompt></para>
-     </listitem>
-     <listitem>
-         <para>newticket_notify</para>
-         <para>If enabled, after new ticket addition system will send notification
-         emails to all users with rights to the queue. Default: disabled.</para>
-         <para>Example:     <prompt>newticket_notify = On</prompt></para>
-     </listitem>
-     <listitem>
-         <para>contract_template</para>
-         <para>Specify contract template(s) for customer. You can provide comma separated list of
-         contract templates. Default: contract.html.</para>
-         <para>Example:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
-         <para>Example:     <prompt>contract_template = "contract.html:Default Contract, file.html:Contract Plus"</prompt></para>
-     </listitem>
-     <listitem>
-         <para>to_words_short_format</para>
-         <para>Specify format of verbal amounts representation (on invoices). For value "1"
-         verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>
-         <para>Example:     <prompt>to_words_short_format = 1</prompt></para>
-     </listitem>
-     <listitem>
-         <para>nodepassword_length</para>
-         <para>Length of (auto-generated) node password. Max.32. Default: 16.</para>
-         <para>Example:     <prompt>nodepassword_length = 8</prompt></para>
-     </listitem>
-     <listitem>
-         <para>smtp_host, smtp_port, smtp_username, smtp_password</para>
-         <para>Parameters for smtp authorization in mailing. Default: 127.0.0.1:25.</para>
-         <para>Example:     <prompt>smtp_host = mail.domain.pl</prompt></para>
-     </listitem>
-     <listitem>
-         <para>smtp_auth_type</para>
-         <para>Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
-      will use the best supported method. Default: none.</para>
-         <para>Example:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
-     </listitem>
-     <listitem>
-         <para>gd_translate_to</para>
-         <para>Charset of data that GD library expects (usefull if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</para>
-         <para>Example:     <prompt>gd_translate_to = </prompt></para>
-     </listitem>
-     <listitem>
-         <para>check_for_updates_period</para>
-         <para>How often to check for LMS updates (in seconds). Default: 86400.</para>
-         <para>Example:     <prompt>check_for_updates_period = 604800</prompt></para>
-     </listitem>
-     </itemizedlist>
-     </sect2> 
-        <sect2 id="install-config-finances">
-     <title>Section [finances] - Finances Settings</title>
-     <para>This section consist options for financial system and for payment
-     forms. You can read more about that in Invoices chapter.
-     <itemizedlist>
-          <listitem>
-          <para>suspension_percentage (optional)</para>
-          <para>Percentage for suspended liabilities. Default: '0'</para>
-          <para>Example:     <prompt>suspension_percentage = '50'</prompt></para>
-          </listitem>
-    </itemizedlist>
-     </para>
-     </sect2>
+    	    <listitem>
+            <para>suspension_percentage (optional)</para>
+            <para>Percentage for suspended liabilities. Default: '0'</para>
+            <para>Example:     <prompt>suspension_percentage = '50'</prompt></para>
+            </listitem>
+	</itemizedlist>
+        </para>
+    </sect2>
     </sect1>
     <sect1 id="install-rights">
       <title>Access rights</title>
