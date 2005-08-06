@@ -9,6 +9,7 @@ version 1.6.2 ? (??/??/????):
   - lmsd/payments: fixed subscription period calculation (alec)
   - BTS#0000419: added 'Mime-Version: 1.0' header for all, not only multipart
     messages (alec)
+  - documentation is opened in new browser window (alec)
 
 version 1.6.1 Ishta (11/07/2005):
 

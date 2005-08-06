@@ -453,6 +453,7 @@ $menu = array(
 			'tip' => trans('Documentation'),
 			'accesshey' => 'h',
 			'prio' => '65',
+			'windowopen' => TRUE,
 		),
 	);
 
