@@ -42,6 +42,7 @@ version ? Do-Sai (????-??-??):
   - in nodes stats panel (welcome.html) added links to nodes list (alec)
   - added menu item Configuration with subitems: User Interface, Tax Rates,
     Numbering Plans (alec)
+  - lms-arping: we can use external file with list of ip addresses (chilek)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
