@@ -43,6 +43,7 @@ version ? Do-Sai (????-??-??):
   - added menu item Configuration with subitems: User Interface, Tax Rates,
     Numbering Plans (alec)
   - lms-arping: we can use external file with list of ip addresses (chilek)
+  - documentation is opened in new window (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

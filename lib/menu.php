@@ -485,6 +485,7 @@ $menu = array(
 			'tip' => trans('Documentation'),
 			'accesskey' => 'h',
 			'prio' => '70',
+			'windowopen' => TRUE,
 		)
 
 	);
