@@ -3153,30 +3153,12 @@ class LMS
 	{
 		if(!$customerid) return NULL;
 		
-		if($doclist = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype, template
+		return $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype, template
 				    FROM documentcontents, documents
 				    LEFT JOIN numberplans ON(numberplanid = numberplans.id)
 				    WHERE documents.id = documentcontents.docid
 				    AND customerid = ?
-				    ORDER BY cdate', array($customerid)))
-			foreach($doclist as $idx => $row)
-				switch($row['type'])
-				{
-					case -1:
-						$doclist[$idx]['typename'] = trans('contract');
-					break;
-					case -2:
-						$doclist[$idx]['typename'] = trans('annex');
-					break;
-					case -3:
-						$doclist[$idx]['typename'] = trans('protocol');
-					break;
-					default:
-						$doclist[$idx]['typename'] = trans('other');
-					break;
-				}
-	
-		return $doclist;
+				    ORDER BY cdate', array($customerid));
 	}
 
 	function GetTaxes($from=NULL, $to=NULL)
@@ -3193,14 +3175,58 @@ class LMS
 	function GetNumberPlans($doctype=NULL)
 	{
 		if($doctype)
-			return $this->DB->GetAllByKey('
+			$list = $this->DB->GetAllByKey('
 				SELECT id, template, isdefault, period 
 				FROM numberplans WHERE doctype = ? ORDER BY id', 
 				'id', array($doctype));
 		else
-			return $this->DB->GetAllByKey('
+			$list = $this->DB->GetAllByKey('
 				SELECT id, template, isdefault, period, doctype 
 				FROM numberplans ORDER BY id', 'id');
+		
+		if($list)
+		{
+			$currmonth = date('n');
+			switch($currmonth)
+			{
+				case 1: case 2: case 3: $startq = 1; break;
+				case 4: case 5: case 6: $startq = 4; break;
+				case 7: case 8: case 9: $startq = 7; break;
+				case 10: case 11: case 12: $startq = 10; break;
+			}
+	
+			$yearstart = mktime(0,0,0,1,1);
+			$yearend = mktime(0,0,0,1,1,date('Y')+1);
+			$quarterstart = mktime(0,0,0,$startq,1);
+			$quarterend = mktime(0,0,0,$startq+3,1);
+			$monthstart = mktime(0,0,0,$currmonth,1);
+			$monthend = mktime(0,0,0,$currmonth+1,1);
+			$weekstart = mktime(0,0,0,$currmonth,date('j')-strftime('%u')+1);
+			$weekend = mktime(0,0,0,$currmonth,date('j')-strftime('%u')+1+7);
+			$daystart = mktime(0,0,0);
+			$dayend = mktime(0,0,0,date('n'),date('j')+1);
+
+			$max = $this->DB->GetAllByKey('SELECT numberplanid AS id, MAX(number) AS max 
+					    FROM documents LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+					    WHERE cdate >= (CASE period
+						WHEN '.YEARLY.' THEN '.$yearstart.'
+						WHEN '.QUARTERLY.' THEN '.$quarterstart.'
+						WHEN '.MONTHLY.' THEN '.$monthstart.'
+						WHEN '.WEEKLY.' THEN '.$weekstart.'
+						WHEN '.DAILY.' THEN '.$daystart.' ELSE 0 END)
+					    AND cdate < (CASE period
+						WHEN '.YEARLY.' THEN '.$yearend.'
+						WHEN '.QUARTERLY.' THEN '.$quarterend.'
+						WHEN '.MONTHLY.' THEN '.$monthend.'
+						WHEN '.WEEKLY.' THEN '.$weekend.'
+						WHEN '.DAILY.' THEN '.$dayend.' ELSE 4294967296 END)
+					    GROUP BY numberplanid','id');
+					    
+			foreach ($list as $idx => $item)
+				$list[$idx]['next'] = $max[$item['id']]['max']+1;
+		}
+		
+		return $list;
 	}
 	
 	function GetNewDocumentNumber($doctype=NULL, $planid=NULL, $cdate=NULL)

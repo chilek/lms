@@ -78,7 +78,7 @@ switch($_GET['action'])
     		unset($error);
 
 		// get default receipt's numberplanid and next number
-		$receipt['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array($DOC_RECEIPT));
+		$receipt['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_RECEIPT));
 		$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 		$receipt['cdate'] = time();
 		if($_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
