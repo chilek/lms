@@ -94,7 +94,7 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $limit = $ini->val('makeon', 'limit') || 0;
-my $message = $ini->val('makeon', 'message') || 'Thanks you for a payment';
+my $message = $ini->val('makeon', 'message') || 'Thank You for a payment';
 
 my $dbase;
 my $utsfmt;
