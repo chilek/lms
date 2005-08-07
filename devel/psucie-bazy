@@ -40,6 +40,10 @@ $DB->BeginTrans
 $DB->EndTrans
 
 alec> mo¿emy to nawet zrobiæ globalnie w index.php w momencie wywo³ania modu³u
+      kondi> nie mo¿emy, bo po³owa modu³ów nie wraca do index.php
+      (die, exit, etc) w zwi±zku z czym transakcje bêd± siê koñczyæ
+      (auto)rollbackiem. æwiczy³em to jaki¶ czas temu... mo¿na EndTrans
+      do register_shutdown_function()
 
 I co na to mysql oraz sqlite ?
 
