@@ -56,7 +56,7 @@ $DB->Execute("CREATE TABLE assignments (
 ");
 $DB->Execute("INSERT INTO assignments (id, tariffid, customerid, period, at, datefrom, dateto, invoice, suspended, discount)
 		SELECT id, tariffid, customerid, period+2, at, datefrom, dateto, invoice, suspended, discount FROM a_t");
-$DB->Execute("CREATE INDEX assignments_tariffid_idx ON assignments(tariffid);
+$DB->Execute("CREATE INDEX assignments_tariffid_idx ON assignments(tariffid)");
 $DB->Execute("DROP TABLE a_t");
 
 $DB->Execute("CREATE TEMP TABLE p_t AS SELECT * FROM payments");
@@ -69,7 +69,7 @@ $DB->Execute("CREATE TABLE payments (
 	period smallint		DEFAULT 0 NOT NULL,
 	at smallint 		DEFAULT 0 NOT NULL,
 	description text	DEFAULT '' NOT NULL
-);
+)");
 $DB->Execute("INSERT INTO payments (id, name, value, creditor, period, at, description)
 		SELECT id, name, value, creditor, period+2, at, description FROM p_t");
 $DB->Execute("DROP TABLE p_t");

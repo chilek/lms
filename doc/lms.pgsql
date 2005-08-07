@@ -32,9 +32,9 @@ DROP TABLE assignments;
 CREATE TABLE assignments (
 	id integer default nextval('assignments_id_seq'::text) NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL,
-	customerid integer 		DEFAULT 0 NOT NULL,
-	period integer 		DEFAULT 0 NOT NULL,
-	at integer 		DEFAULT 0 NOT NULL,
+	customerid integer	DEFAULT 0 NOT NULL,
+	period smallint 	DEFAULT 0 NOT NULL,
+	at smallint 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
 	dateto integer		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
@@ -157,8 +157,8 @@ CREATE TABLE payments (
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	creditor varchar(255) 	DEFAULT '' NOT NULL,
-	period integer 		DEFAULT 0 NOT NULL,
-	at integer 		DEFAULT 0 NOT NULL,
+	period smallint		DEFAULT 0 NOT NULL,
+	at smallint 		DEFAULT 0 NOT NULL,
 	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
 );
@@ -189,6 +189,7 @@ CREATE TABLE documents (
 	id integer DEFAULT nextval('documents_id_seq'::text) NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
 	number integer 		DEFAULT 0 NOT NULL,
+	numberplanid integer	DEFAULT 0 NOT NULL,
 	cdate integer 		DEFAULT 0 NOT NULL,
 	customerid integer 	DEFAULT 0 NOT NULL,
 	userid integer		DEFAULT 0 NOT NULL,		
@@ -203,6 +204,25 @@ CREATE TABLE documents (
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
+CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
+
+/* -------------------------------------------------------- 
+  Structure of table "documentcontents" 
+-------------------------------------------------------- */
+DROP TABLE documentcontents;
+CREATE TABLE documentcontents (
+	docid integer DEFAULT 0 NOT NULL,
+	title text DEFAULT '' NOT NULL,
+	fromdate integer DEFAULT 0 NOT NULL,
+	todate integer DEFAULT 0 NOT NULL,
+	filename varchar(255) DEFAULT '' NOT NULL,
+	contenttype varchar(255) DEFAULT '' NOT NULL,
+	md5sum varchar(32) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	UNIQUE (docid)
+);
+CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum);
+
 
 /* -------------------------------------------------------- 
   Structure of table "receiptcontents" 
@@ -232,6 +252,21 @@ CREATE TABLE invoicecontents (
 	tariffid integer 	DEFAULT 0 NOT NULL
 );	 
 CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
+
+/* -------------------------------------------------------- 
+  Structure of table "numberplans" 
+-------------------------------------------------------- */
+DROP SEQUENCE numberplans_id_seq;
+CREATE SEQUENCE numberplans_id_seq;
+DROP TABLE numberplans;
+CREATE TABLE numberplans (
+	id integer DEFAULT nextval('numberplans_id_seq'::text) NOT NULL,
+	template varchar(255) DEFAULT '' NOT NULL,
+	period smallint DEFAULT 0 NOT NULL,
+	doctype integer DEFAULT 0 NOT NULL,
+	isdefault smallint DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
 
 /* -------------------------------------------------------- 
   Structure of table "timestamps" 
@@ -652,4 +687,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005062600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005080300');
