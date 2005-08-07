@@ -33,8 +33,8 @@ CREATE TABLE assignments (
   id int(11) NOT NULL auto_increment,
   tariffid int(11) NOT NULL default '0',
   customerid int(11) NOT NULL default '0',
-  period int(11) NOT NULL default '0',
-  at int(11) NOT NULL default '0',
+  period smallint NOT NULL default '0',
+  at smallint NOT NULL default '0',
   datefrom int(11) NOT NULL default '0',
   dateto int(11) NOT NULL default '0',
   invoice tinyint(1) NOT NULL default '0',
@@ -96,6 +96,20 @@ CREATE TABLE dbinfo (
 
 # --------------------------------------------------------
 #
+# Structure of table numberplans
+#
+DROP TABLE IF EXISTS numberplans;
+CREATE TABLE numberplans (
+	id int(11) NOT NULL auto_increment,
+	template varchar(255) NOT NULL DEFAULT '',
+	period smallint NOT NULL DEFAULT '0',
+	doctype int(11) NOT NULL DEFAULT '0',
+	isdefault tinyint(1) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
 # Structure of table  invoicecontents
 #
 DROP TABLE IF EXISTS invoicecontents;
@@ -121,6 +135,7 @@ CREATE TABLE documents (
 	id int(11) NOT NULL auto_increment,
 	type tinyint NOT NULL DEFAULT '0',
 	number int(11) NOT NULL DEFAULT '0',
+	numberplanid int(11) NOT NULL DEFAULT '0',
 	cdate int(11) NOT NULL DEFAULT '0',
         customerid int(11) NOT NULL DEFAULT '0',
 	userid int(11) NOT NULL DEFAULT '0',
@@ -133,7 +148,26 @@ CREATE TABLE documents (
 	paytime tinyint NOT NULL DEFAULT '0',
 	paytype varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
-	INDEX cdate (cdate)
+	INDEX cdate (cdate),
+	INDEX numberplanid (numberplanid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table documentcontents
+#
+DROP TABLE IF EXISTS documentcontents;
+CREATE TABLE documentcontents (
+        docid int(11) DEFAULT '0' NOT NULL,
+	title text DEFAULT '' NOT NULL,
+        fromdate int(11) DEFAULT '0' NOT NULL,
+	todate int(11) DEFAULT '0' NOT NULL,
+        filename varchar(255) DEFAULT '' NOT NULL,
+	contenttype varchar(255) DEFAULT '' NOT NULL,
+        md5sum varchar(32) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+        INDEX md5sum (md5sum),
+	UNIQUE KEY docid (docid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -242,8 +276,8 @@ CREATE TABLE payments (
   name varchar(255) NOT NULL default '',
   value decimal(9,2) NOT NULL default '0.00',
   creditor varchar(255) NOT NULL default '',
-  period int(11) NOT NULL default '0',
-  at int(11) NOT NULL default '0',
+  period smallint NOT NULL default '0',
+  at smallint NOT NULL default '0',
   description text NOT NULL,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
@@ -613,4 +647,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005062600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005080300');
