@@ -27,7 +27,7 @@
 							{number number=$doc.number template=$doc.template time=$doc.cdate}
 						{/if}
 					</TD>
-					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{$doc.typename}</B></TD>
+					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>
 					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"..."}</TD>
 					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
 						{if $doc.fromdate}{t}from{/t} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
