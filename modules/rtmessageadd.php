@@ -219,7 +219,7 @@ if(isset($_POST['message']))
 				$files[0]['filename'] = $filename;
 				$files[0]['data'] = $file;
 			}
-			$LMS->SendMail($recipients, $headers, $body);
+			$LMS->SendMail($recipients, $headers, $body, $files);
 
 			// message to user is written to database
 			if($message['adminid'] && $addmsg) 

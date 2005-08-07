@@ -10,6 +10,8 @@ version 1.6.2 ? (??/??/????):
   - BTS#0000419: added 'Mime-Version: 1.0' header for all, not only multipart
     messages (alec)
   - documentation is opened in new browser window (alec)
+  - bugfix: add attachement file to new message in helpdesk with enabled
+    helpdesk_backend_mode (alec)
 
 version 1.6.1 Ishta (11/07/2005):
 
