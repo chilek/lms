@@ -21,46 +21,34 @@ Zarówno id 12 jak i 13 mog± byæ korekt± 11,
 Daje to mo¿liwo¶æ pój¶cia zarówno w stronê LMS jak i LMSKOR
 
 Ten ca³y financial_peroid to próba racjonalizacji korzystania z cdate, 
-to co jest dzia³a ale pachnie ¼le. Chcia³bym i¶æ w kierunku:
+to co jest dzia³a ale pachnie ¼le.
 
-lms=> SELECT * from numberplans ;
- id |  template   |  default  | period | doctype
-----+-------------+-----------+--------+---------
-  5 | %d-%n-%y-%m |         0 |      3 |       1
+alec> niestety period nie za³atwia sprawy do koñca, we¼my naliczanie
+miesiêczne, jak wzi±æ MAX(number) dla danego miesi±ca?
 
-Doctype i period takie jak w lib/definitions.php
 
-Default ma prawo byæ tylko jeden dla ka¿dego doctype.
-
+TODO odno¶nie planów numeracyjnych:
 ³±czniki i sta³e. Tutaj mia³bym za³o¿enie takie ¿e w template MUSI wystêpowaæ:
 %N przynajmniej/dok³adnie raz. (%NN %NNNN czy %4N ?).
 alec> ten z 4 bêdzie ³atwiej sparsowaæ
 %Y/%YY/%YYYY --dok³adnie RAZ. (wymóg do¶æ racjonalny).
-³±czniki -- uznajemy: .-/=\#'
-s³owa to litery mog±ce zawieraæ cyfry ale nie zaczynaæ siê od cyfr
-pomiêdzy znakami procentów i ³±cznikami oraz s³owami nie ma prawa byæ SPACJI.
 
-Wa¿ne:
-
-Co raz wiêcej razy w kodzie jest co¶ takiego:
-
-if($list = $DB->GetAll('SELECT * FROM numberplans ORDER BY id'))
-	    {
-        $count = $DB->GetAllByKey('SELECT numberplanid AS id,
-		[...]
-        $max = $DB->GetAllByKey('SELECT numberplanid AS id, 
-		[...]
-
-To siê a¿ prosi o to aby kiedy¶ kto¶ co¶ doda³ "w miedzyczasie" i by³ problem.
-
+Transakcje:
 Czy mo¿emy robiæ tak:
 $DB->BeginTrans
 	[kod]
 $DB->EndTrans
 
+alec> mo¿emy to nawet zrobiæ globalnie w index.php w momencie wywo³ania modu³u
+
 I co na to mysql oraz sqlite ?
 
-Wiêc tak:
+alec> sqlite jak postgres, natomiast w mysql u¿ywamy tabel MyISAM, a te
+nie wspieraj± transakcji, wystarczy zreszt± spojrzeæ na nasze drivery do
+baz danych, w mysql'owym te funkcje s± puste.
+
+
+Faktury koryguj±ce:
 
 A) korekty dotycz± tylko i wy³±cznie dokumentów ¼ród³owych a nie korekt. Ale 
 z poziomu bazy to nie oznacza ¿e mo¿na bezpiecznie u¿ywaæ nr faktury, nale¿y 
@@ -80,6 +68,4 @@ D) aby sobie nie strzeliæ w stopê:
     mo¿e jej byæ bo nic nie koryguje
  *] zapisujemy pozycje PO_SKORYGOWANIU 
 
-
-UI=>
 
