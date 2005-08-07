@@ -101,11 +101,19 @@ function GetConfigList($order='var,asc')
 				case 'receiptlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in cash receipts list. Default: 100.');
 				break;
+
+				case 'taxratelist_pagelimit':
+					$config[$idx]['description'] = trans('Limit of records displayed on one page in tax rates list. Default: 100.');
+				break;
 				
+				case 'numberplanlist_pagelimit':
+					$config[$idx]['description'] = trans('Limit of records displayed on one page in numbering plans list. Default: 100.');
+				break;
+
 				case 'networkhosts_pagelimit':
 					$config[$idx]['description'] = trans('Limit of nodes displayed on one page in Network Information. Default: 256. With 0, this information is omitted (page is displaying faster).');
 				break;
-				
+
 				case 'force_ssl':
 					$config[$idx]['description'] = trans('SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off).');
 				break;
