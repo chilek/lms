@@ -11,7 +11,7 @@ CFLAGS=-O2 -fPIC
 
 ### MINGW
 ifneq ($(findstring mingw,$(CC)),)
-LDFLAGS		+= -liberty
+LDFLAGS		+= -liberty -lrxspencer
 SOEXT		= .dll
 else
 SOEXT		= .so
