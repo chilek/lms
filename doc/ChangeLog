@@ -46,6 +46,8 @@ version 1.7.2 Doci (????-??-??):
   - documentation is opened in new window (alec)
   - documentation: list of options moved to new chapter Configuration (alec)
   - Mailing: attachement support (alec)
+  - reload_type=exec: allows you to choose which host configurations
+    to be reloaded (chilek)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 
