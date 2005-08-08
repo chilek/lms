@@ -34,6 +34,7 @@ GNU General Public License for more details.
 %left '+' '-'
 %left NEG
 %left '*' '/' '%'
+%nonassoc MATCH
 %nonassoc INC DEC
 %nonassoc EXT
 %nonassoc LITERAL NUMBER TEXT NAME TO_STRING TO_NUMBER
@@ -159,6 +160,10 @@ expression:	TEXT
 	|	expression '%' expression
 		{
 			$$ = tscript_ast_node_2(TSCRIPT_AST_MOD, $1, $3);
+		}
+	|	expression MATCH expression
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_MATCH, $1, $3);
 		}
 	|	reference INC
 		{

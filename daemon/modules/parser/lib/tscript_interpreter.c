@@ -19,10 +19,29 @@ GNU General Public License for more details.
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <regex.h>
 #include "tscript_ast.h"
 #include "tscript_variables.h"
 #include "tscript_parser.h"
 #include "tscript_extensions.h"
+
+static tscript_value tscript_match_regexp(char* str, char* regexp)
+{
+	regex_t* reg;
+	int res;
+	reg = (regex_t *)calloc(1, sizeof(regex_t));
+	res = regcomp(reg, regexp, REG_EXTENDED | REG_NOSUB);
+	if (res != 0)
+		return tscript_value_create_error("incorrect regexp");
+	res = regexec(reg, str, 0, NULL, 0);
+	regfree(reg);
+	if (res == 0)
+		return tscript_value_create_number(1);
+	else if (res == REG_NOMATCH)
+		return tscript_value_create_number(0);
+	else
+		return tscript_value_create_error("unknown regexp error");
+}
 
 static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 {
@@ -460,6 +479,25 @@ static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 			tscript_debug("Extension param: %s\n", tscript_value_convert_to_string(tmp2).data);
 			res = tscript_run_extension(tmp1.data, tmp2);
 			tscript_debug("Interpreted TSCRIPT_AST_EXT\n");
+		}
+	}
+	else if (ast->type == TSCRIPT_AST_MATCH)
+	{
+		tscript_debug("Interpretting TSCRIPT_AST_MATCH\n");
+		tmp1 = tscript_value_convert_to_string(
+			tscript_value_dereference(tscript_interprete_sub(ast->children[0])));
+		tmp2 = tscript_value_convert_to_string(
+			tscript_value_dereference(tscript_interprete_sub(ast->children[1])));
+		if (tmp1.type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else if (tmp2.type == TSCRIPT_TYPE_ERROR)
+			res = tmp2;
+		else
+		{
+			tscript_debug("Value to match: %s\n", tmp1.data);
+			tscript_debug("Regular expression: %s\n",tmp2.data);
+			res = tscript_match_regexp(tmp1.data, tmp2.data);
+			tscript_debug("Interpreted TSCRIPT_AST_MATCH\n");
 		}
 	}
 	else

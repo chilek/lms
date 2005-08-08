@@ -142,6 +142,8 @@ GNU General Public License for more details.
 
 <commands>--				YY_RETURN(DEC);
 
+<commands>=~				YY_RETURN(MATCH);
+
 <commands>\/\*([^\*]|[\r\n]|(\*+([^\*\/]|[\r\n])))*\*+\/	/* C-style comments */
 
 <commands>[[:digit:]]+(\.[[:digit:]]+)?	{

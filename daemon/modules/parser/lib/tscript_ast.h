@@ -25,6 +25,7 @@ extern const char* TSCRIPT_AST_DIV;
 extern const char* TSCRIPT_AST_MOD;
 extern const char* TSCRIPT_AST_INC;
 extern const char* TSCRIPT_AST_DEC;
+extern const char* TSCRIPT_AST_MATCH;
 extern const char* TSCRIPT_AST_IF;
 extern const char* TSCRIPT_AST_FOR;
 extern const char* TSCRIPT_AST_SEQ;

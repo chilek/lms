@@ -40,6 +40,7 @@ const char* TSCRIPT_AST_DIV = "/";
 const char* TSCRIPT_AST_MOD = "%";
 const char* TSCRIPT_AST_INC = "++";
 const char* TSCRIPT_AST_DEC = "--";
+const char* TSCRIPT_AST_MATCH = "=~";
 const char* TSCRIPT_AST_IF = "IF";
 const char* TSCRIPT_AST_FOR = "FOR";
 const char* TSCRIPT_AST_SEQ = "SEQ";
