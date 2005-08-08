@@ -37,7 +37,7 @@ if(sizeof($numberplanadd))
 	
 	if($numberplanadd['template'] == '')
 		$error['template'] = trans('Number template is required!');
-	elseif(!~preg_match('/%[1-9]{0,1}N/', $numberplanadd['template'])
+	elseif(!preg_match('/%[1-9]{0,1}N/', $numberplanadd['template']))
 		$error['template'] = trans('Template must consist "%N" specifier!');
 
 	if(!$numberplanadd['isdefault'])
