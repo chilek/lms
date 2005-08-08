@@ -545,6 +545,10 @@ $access['table'][100]['allow_reg'] = '^invoice$';
     </sect1>
     <sect1 id="install-documents">
 	<title>Documents</title>
+	    <para>LMS makes possible to generate and to store various documents
+	    i.e. invoices, receipts and non-financial documents i.e. contracts,
+	    protocols and others. Documents can be numbered with numbering plans 
+	    (patterns) defined in menu Configuration - Numbering Plans.</para>
     <sect2 id="install-invoices">
      <title>Invoices</title>
                 <para>It's possible to issue invoices in either automatic or manual way. Manual
