@@ -507,7 +507,30 @@ function docnumber($number=NULL, $template=NULL, $time=NULL)
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
 	$time = $time ? $time : time();
 	
-	return strftime(str_replace("%N", $number, $template), $time);
+	$search = array('/%N/',
+			'/%1N/',
+			'/%2N/',
+			'/%3N/',
+			'/%4N/',
+			'/%5N/',
+			'/%6N/',
+			'/%7N/',
+			'/%8N/',
+			'/%9N/'
+			);
+	$replace = array($number, 
+			sprintf('%01d', $number),
+			sprintf('%02d', $number),
+			sprintf('%03d', $number),
+			sprintf('%04d', $number),
+			sprintf('%05d', $number),
+			sprintf('%06d', $number),
+			sprintf('%07d', $number),
+			sprintf('%08d', $number),
+			sprintf('%09d', $number)
+			);
+			
+	return strftime(preg_replace($search, $replace, $template), $time);
 }
 
 ?>
