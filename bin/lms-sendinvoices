@@ -209,7 +209,7 @@ while(my $row = $dbq->fetchrow_hashref())
 		my $body = $mail_body;
 		my $subject = $mail_subject;
 		
-		$invoice_number =~ s/\%N/$row->{'number'}/g;
+		$invoice_number =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
 		$invoice_number = strftime($invoice_number, localtime($row->{'cdate'}));
 		$body =~ s/%invoice/$invoice_number/g;
 		$subject =~ s/%invoice/$invoice_number/g;
