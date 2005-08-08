@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM NAME="mailing" method="post" action="?m=mailing" TARGET="_blank">
+<FORM name="mailing" method="post" action="?m=mailing" enctype="multipart/form-data" target="_blank" >
 {literal}
 <SCRIPT LANGUAGE="JavaScript">
 	<!--
@@ -107,6 +107,17 @@
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
 			<TEXTAREA NAME="mailing[body]" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$mailing.body}</TEXTAREA><BR>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG src="img/attach.gif" alt="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Attachment:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<INPUT name="file" type="file" size="60" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
