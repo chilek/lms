@@ -57,7 +57,7 @@ $DB->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VAL
 $DB->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)", 
 		array(str_replace('%M','%m',$CONFIG['receipts']['number_template']), $CONFIG['receipts']['monthly_numbering'] ? 3 : 5));
 
-$DB->Execute("ALTER TABLE documents ADD numberplanid int(11) NOT NULL DEFAULT '0'")
+$DB->Execute("ALTER TABLE documents ADD numberplanid int(11) NOT NULL DEFAULT '0'");
 $DB->Execute("UPDATE documents SET numberplanid = 0");
 $DB->Execute("UPDATE documents SET numberplanid = 1 WHERE type = 1");
 $DB->Execute("UPDATE documents SET numberplanid = 2 WHERE type = 2");
