@@ -12,6 +12,12 @@
 			for (var i = 0; i < document.setwarnings.elements[0].length; i++)
 				document.setwarnings.elements[0].options[i].selected = false;
 	}
+
+	function SelectAllCustomers2()
+	{
+		document.setwarnings.customers.checked = !document.setwarnings.customers.checked;
+		SelectAllCustomers();
+	}
 	
 	function switchbox(id)
 	{
@@ -19,6 +25,18 @@
 			document.setwarnings.elements['setwarnings[warnoff]'].checked = false;
 		if((id.name == 'setwarnings[warnoff]') && id.checked ) 
 			document.setwarnings.elements['setwarnings[warnon]'].checked = false;
+	}
+
+	function switchbox1()
+	{
+		document.setwarnings.elements['setwarnings[warnon]'].checked = true;
+		switchbox(document.setwarnings.elements['setwarnings[warnon]']);
+	}
+
+	function switchbox2()
+	{
+		document.setwarnings.elements['setwarnings[warnoff]'].checked = true;
+		switchbox(document.setwarnings.elements['setwarnings[warnoff]']);
 	}
 //-->
 </SCRIPT>
@@ -55,11 +73,11 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbl" WIDTH="1%">
-						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" OnClick="javascript:SelectAllCustomers()">{t}Select All{/t}</INPUT>
+						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{t}Select All{/t}</A></INPUT>
 					</TD>
 					<TD CLASS="fbottom" ALIGN="left">
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}>{t}Enable warnings{/t}</INPUT></NOBR>
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}>{t}Disable warnings{/t}</INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{t}Enable warnings{/t}</A></INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{t}Disable warnings{/t}</A></INPUT></NOBR>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT">
 						<A HREF="javascript:document.setwarnings.submit()" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
