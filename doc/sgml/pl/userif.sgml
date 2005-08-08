@@ -1123,6 +1123,12 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 		wynikaj± z daty wystawienia dokumentu. A oto najczê¶ciej u¿ywane z nich:
 		<itemizedlist>
 		    <listitem>
+			<para>%N - liczba dziesiêtna okre¶laj±ca numer dokumentu</para>
+		    </listitem>
+		    <listitem>
+			<para>%[1-9]N - j.w. ale z zerami wiod±cymi, np. '%4N' dla liczby 12 zwróci '0012'</para>
+		    </listitem>
+		    <listitem>
 			<para>%Y - rok jako liczba dziesiêtna z wiekiem w³±cznie</para>
 		    </listitem>
 		    <listitem>
