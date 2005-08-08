@@ -99,6 +99,30 @@ if(isset($_POST['mailing']))
 	if($mailing['body']=='')
 		$error['body'] = trans('Message body is required!');
 
+	if($filename = $_FILES['file']['name'])
+	{
+		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
+		{
+			$file = '';
+			$fd = fopen($_FILES['file']['tmp_name'], 'r');
+			if($fd)
+			{
+				while(!feof($fd))
+					$file .= fread($fd,256);
+				fclose($fd);
+			}
+		} 
+		else // upload errors
+			switch($_FILES['file']['error'])
+			{
+				case 1: 			
+				case 2: $error['file'] = trans('File is too large.'); break;
+				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
+				case 4: $error['file'] = trans('Path to file was not specified.'); break;
+				default: $error['file'] = trans('Problem during file upload.'); break;
+			}
+	}	
+
 	if(!$error)
 	{
 		$layout['nomenu'] = TRUE;
@@ -114,6 +138,14 @@ if(isset($_POST['mailing']))
 		
 		if(sizeof($emails))
 		{
+			$files = NULL;
+			if (isset($file))
+			{
+				$files[0]['content_type'] = $_FILES['file']['type'];
+				$files[0]['filename'] = $filename;
+				$files[0]['data'] = $file;
+			}
+
 			if(isset($LMS->CONFIG['phpui']['debug_email']))
 				echo '<B>'.trans('Warning! Debug mode (using address $0).',$LMS->CONFIG['phpui']['debug_email']).'</B><BR>';
 			
@@ -152,7 +184,7 @@ if(isset($_POST['mailing']))
 				$headers['To'] = '<'.$row['email'].'>';
 				
 				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['customername'], $row['email']);
-				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body)."</font><BR>\n";
+				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body, $files)."</font><BR>\n";
 			}
 		}
 		
