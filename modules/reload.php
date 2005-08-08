@@ -36,18 +36,50 @@ $_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
 switch($_RELOAD_TYPE)
 {
 	case 'exec':
-		$execlist = explode(';',$_EXECCMD);
-		echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
-		foreach($execlist as $execcmd)
+		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM daemonhosts ORDER BY name');
+
+		if(isset($_GET['setreloads']))
 		{
-			echo '<P><B>'.$execcmd.'</B>:</P>';
-			echo '<PRE>';
-			flush();
-			echo passthru($execcmd);
-			flush();
-			echo '</PRE>';
+			echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
+			$execlist = explode(';',$_EXECCMD);
+			foreach($hosts as $host)
+				if(in_array($host['id'], (array) $_POST['hosts']))
+					foreach($execlist as $execcmd)
+					{
+						$execcmd = str_replace('%host', $host['name'], $execcmd);
+						echo '<P><B>'.$execcmd.'</B>:</P>';
+						echo '<PRE>';
+						flush();
+						echo passthru($execcmd);
+						flush();
+						echo '</PRE>';
+					}
+			echo '</TD></TR></TABLE>';
 		}
-		echo '</TD></TR></TABLE>';
+		else
+		{
+			if(!count($hosts))
+			{
+				echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
+				$execlist = explode(';',$_EXECCMD);
+				foreach($execlist as $execcmd)
+				{
+					$execcmd = str_replace('%host', '', $execcmd);
+					echo '<P><B>'.$execcmd.'</B>:</P>';
+					echo '<PRE>';
+					flush();
+					echo passthru($execcmd);
+					flush();
+					echo '</PRE>';
+				}
+				echo '</TD></TR></TABLE>';
+			}
+			else
+			{
+				$SMARTY->assign('hosts', $hosts);
+				$SMARTY->display('reload.html');
+			}
+		}
 	break;
 
 	case 'sql':
