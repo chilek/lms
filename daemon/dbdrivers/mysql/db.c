@@ -257,7 +257,7 @@ int db_pexec(ConnHandle *c, unsigned char *q, ... )
 {
     va_list ap;
     int i, res;
-    unsigned char *p, *s, *result, *temp, *escstr;
+    unsigned char *p, *s, *result, *escstr;
 
     result = (unsigned char*) strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
