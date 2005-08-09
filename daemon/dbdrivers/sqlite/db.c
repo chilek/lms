@@ -209,7 +209,7 @@ QueryHandle * db_pquery(ConnHandle *conn, unsigned char *q, ... )
     QueryHandle *query;
     va_list ap;
     int i;
-    unsigned char *p, *s, *result, *temp;
+    unsigned char *p, *s, *result, *escstr;
 
     result = (unsigned char*) strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
@@ -222,10 +222,11 @@ QueryHandle * db_pquery(ConnHandle *conn, unsigned char *q, ... )
 		    s = (unsigned char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-        	    temp = va_arg(ap, unsigned char*);
-		    i = strlen(temp)+strlen(result)+1;
+        	    escstr = db_escape(c, va_arg(ap, unsigned char*));
+		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
-		    snprintf(s, i, "%s%s", result, temp);
+		    snprintf(s, i, "%s%s", result, escstr);
+		    free(escstr);
 	    }
 	    free(result);
 	    result = (unsigned char *) strdup(s);
@@ -276,7 +277,7 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
 {
     va_list ap;
     int i, res;
-    unsigned char *p, *s, *result, *temp;
+    unsigned char *p, *s, *result, *escstr;
 
     result = (unsigned char*) strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
@@ -289,10 +290,11 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
 		    s = (unsigned char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-        	    temp = va_arg(ap, unsigned char*);
-		    i = strlen(temp)+strlen(result)+1;
+        	    escstr = db_escape(c, va_arg(ap, unsigned char*));
+		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
-		    snprintf(s, i, "%s%s", result, temp);
+		    snprintf(s, i, "%s%s", result, escstr);
+		    free(escstr);
 	    }
 	    free(result);
 	    result = (unsigned char *) strdup(s);
@@ -305,6 +307,40 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
     free(s); free(result);
 
     return res;
+}
+
+/* Escapes a string for use within SQL command */
+unsigned char * db_escape(ConnHandle *c, const unsigned char *str)
+{
+	unsigned char *target = (unsigned char *) malloc (strlen(str)*2 + 1);
+	size_t remaining = strlen(str);
+
+	while (remaining > 0 && *str != '\0')
+	{
+		switch (*str)
+		{
+			case '\\':
+				*target++ = '\\';
+				*target++ = '\\';
+				break;
+
+			case '\'':
+				*target++ = '\'';
+				*target++ = '\'';
+				break;
+
+			default:
+				*target++ = *str;
+				break;
+		}
+		str++;
+		remaining--;
+	}
+
+	/* Write the terminating NUL character. */
+	*target = '\0';
+
+	return target;
 }
 
 /* Starts transaction */

@@ -193,7 +193,7 @@ QueryHandle * db_pquery(ConnHandle *c, unsigned char *q, ... )
     QueryHandle *query;
     va_list ap;
     int i;
-    unsigned char *p, *s, *result, *temp, *escstr;
+    unsigned char *p, *s, *result, *escstr;
 
     result = (unsigned char*) strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
@@ -206,9 +206,7 @@ QueryHandle * db_pquery(ConnHandle *c, unsigned char *q, ... )
 		    s = (unsigned char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-        	    temp = va_arg(ap, unsigned char*);
-		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
-		    mysql_real_escape_string(&c->conn, escstr, temp, strlen(temp));
+        	    escstr = db_escape(c, va_arg(ap, unsigned char*));
 		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
 		    snprintf(s, i, "%s%s", result, escstr);
@@ -272,9 +270,7 @@ int db_pexec(ConnHandle *c, unsigned char *q, ... )
 		    s = (unsigned char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-	    	    temp = va_arg(ap, unsigned char*);
-		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
-		    mysql_real_escape_string(&c->conn, escstr, temp, strlen(temp));
+	    	    escstr = db_escape(c, va_arg(ap, unsigned char*));
 		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
 		    snprintf(s, i, "%s%s", result, escstr);
@@ -291,6 +287,14 @@ int db_pexec(ConnHandle *c, unsigned char *q, ... )
     free(s); free(result);
 
     return res;
+}
+
+/* Escapes a string for use within an SQL command */
+unsigned char *db_escape(ConnHandle *c, const unsigned char *str) 
+{
+    unsigned char *escstr = (unsigned char *) malloc(strlen(str)*2 + 1);
+    mysql_real_escape_string(&c->conn, escstr, str, strlen(str));
+    return escstr;
 }
 
 /* Starts transaction */

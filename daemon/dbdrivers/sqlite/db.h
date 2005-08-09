@@ -68,15 +68,18 @@ QueryHandle * db_query(ConnHandle *, unsigned char *);
    Args must be type of unsigned char* */
 QueryHandle * db_pquery(ConnHandle *, unsigned char *, ...);
 
-/* Free memory allocated in db_select() */
-void db_free(QueryHandle **);
-
 /* Executes UPDATE, INSERT, DELETE query. Returns number of affected rows */
 int db_exec(ConnHandle *, unsigned char *);
 
 /* Preparse and executes UPDATE, INSERT, DELETE query. Returns number of affected rows 
    Args must be type of unsigned char* */
 int db_pexec(ConnHandle *, unsigned char *, ...);
+
+/* Escapes a string for use within an SQL command. Returns allocated string */
+unsigned char * db_escape(ConnHandle *, unsigned char *);
+
+/* Free memory allocated in db_query() and others */
+void db_free(QueryHandle **);
 
 /* Begin transaction */
 int db_begin(ConnHandle *);

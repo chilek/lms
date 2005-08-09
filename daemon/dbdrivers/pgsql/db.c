@@ -202,7 +202,7 @@ QueryHandle * db_pquery(ConnHandle *conn, unsigned char *q, ... )
     QueryHandle *query;
     va_list ap;
     int i;
-    unsigned char *p, *s, *result, *temp, *escstr;
+    unsigned char *p, *s, *result, *escstr;
 
     result = strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
@@ -215,9 +215,7 @@ QueryHandle * db_pquery(ConnHandle *conn, unsigned char *q, ... )
 		    s = (unsigned char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-        	    temp = va_arg(ap, unsigned char*);
-		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
-		    PQescapeString(escstr, temp, strlen(temp));
+		    escstr = db_escape(conn, va_arg(ap, unsigned char*));
 		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
 		    snprintf(s, i, "%s%s", result, escstr);
@@ -272,7 +270,7 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
 {
     va_list ap;
     int i, res;
-    unsigned char *p, *s, *result, *temp, *escstr;
+    unsigned char *p, *s, *result, *escstr;
 
     result = strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
@@ -285,9 +283,7 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
 		    s = (unsigned char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-        	    temp = va_arg(ap, unsigned char*);
-		    escstr = (unsigned char *) malloc(strlen(temp)*2 + 1);
-		    PQescapeString(escstr, temp, strlen(temp));
+		    escstr = db_escape(conn, va_arg(ap, unsigned char*));
 		    i = strlen(escstr)+strlen(result)+1;
 		    s = (unsigned char*) realloc(s, i);
 		    snprintf(s, i, "%s%s", result, escstr);
@@ -306,6 +302,14 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
     return res;
 }
 
+/* Escapes a string for use within an SQL command */
+unsigned char * db_escape(ConnHandle *c, const unsigned char *str) 
+{
+    //c isn't used, but required by mysql version of db_escape()
+    unsigned char *escstr = (unsigned char *) malloc(strlen(str)*2 + 1);
+    PQescapeString(escstr, str, strlen(str));
+    return escstr;
+}
 
 /* Starts transaction */
 int db_begin(ConnHandle *conn)

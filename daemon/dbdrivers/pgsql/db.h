@@ -138,6 +138,9 @@ int db_abort(ConnHandle *);
 /* Get string data from query results. Params: handle, row number, column name. */
 unsigned char * db_get_data(QueryHandle *, int, const char *);
 
+/* Escaping strings for use within an SQL command */
+unsigned char * db_escape(ConnHandle *, const unsigned char *);
+
 /* Get number of rows and columns */
 int db_nrows(QueryHandle *);
 int db_ncols(QueryHandle *);
