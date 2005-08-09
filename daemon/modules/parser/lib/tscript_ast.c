@@ -46,6 +46,7 @@ const char* TSCRIPT_AST_FOR = "FOR";
 const char* TSCRIPT_AST_SEQ = "SEQ";
 const char* TSCRIPT_AST_CONV = "CONV";
 const char* TSCRIPT_AST_EXT = "EXT";
+const char* TSCRIPT_AST_CONST = "CONST";
 
 tscript_ast_node* ast = NULL;
 

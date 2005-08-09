@@ -31,6 +31,7 @@ extern const char* TSCRIPT_AST_FOR;
 extern const char* TSCRIPT_AST_SEQ;
 extern const char* TSCRIPT_AST_CONV;
 extern const char* TSCRIPT_AST_EXT;
+extern const char* TSCRIPT_AST_CONST;
 
 typedef struct tscript_ast_node
 {

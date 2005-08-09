@@ -36,7 +36,7 @@ GNU General Public License for more details.
 %left '*' '/' '%'
 %nonassoc MATCH
 %nonassoc INC DEC
-%nonassoc EXT
+%nonassoc EXT CONST
 %nonassoc LITERAL NUMBER TEXT NAME TO_STRING TO_NUMBER
 
 %%
@@ -93,6 +93,10 @@ expressions:	expressions expression
 expression:	TEXT
 	|	LITERAL
 	|	NUMBER
+	|	CONST
+		{
+			$$ = tscript_ast_node_1(TSCRIPT_AST_CONST, $1);
+		}
 	|	EXT expressions '}'
 		{
 			$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
@@ -178,7 +182,7 @@ expression:	TEXT
 
 reference:	NAME
 		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_VAR_GET, $1);
+				$$ = tscript_ast_node_1(TSCRIPT_AST_VAR_GET, $1);
 		}
 	|	reference '[' expression ']'
 		{
