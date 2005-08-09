@@ -757,6 +757,39 @@ queue and reporter. Unregistered users (not in customers database) should be
 recorded using 'Submitter' fields. You can provide email address (in both
 registered/unregistered cases) if ticket will be running via email.</para>
 	</sect2>
+ <sect1 id="menu-timetable">
+	<title>Timetable</title>
+	<para>Timetable is your time scheduler, where each user may setup his own 
+	calendar. Events or tasks being put here may be also visible for other
+	users and consist a list of assigned clients, which make this tool usable
+	for service crew management.</para>
+	<para>There is an additional <filename>lms-reminder</filename> script,
+	which may be executed periodically to remind users about their pending
+	tasks.</para>
+	<sect2 id="timetable-list">
+	    <title>Timetable (Task list)</title>
+	    <para>Main timetable shows list of days starting from day which is 
+	    selected from calendar popup. A number of days displayed depends on
+	    <filename>timetable_days_forward</filename> lms.ini option and
+	    defaults to 7 days. From task list you might print a day plan or go to
+	    event edit screen.</para>
+	</sect2>
+	<sect2 id="timetable-new">
+	    <title>New event</title>
+	    <para>You can add new task to the Timetable by selecting short title
+	    and start date and time (or time span). All other fields are optional.
+	    By selecting 'private' option you can hide current event from the
+	    other users, so that it will be visible only for event creator. This
+	    feature allows you to run your own, private calendar.</para>
+	</sect2>
+	<sect2 id="timetable-search">
+	    <title>Search</title>
+	    <para>You can search in Timetable by the following criteria: time span
+	    (start and end date), client affected, client or fragment of text in
+	    title, event description or its notes. List of results will include
+	    events that match all entered criteria.</para>
+	</sect2>
+ </sect1>
  </sect1>
     <sect1 id="menu-configuration">
 	<title>Configuration</title>
@@ -775,7 +808,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
 	        the configuration will be still imported from file but values will be then
     	        overwritten by those found in DB.</para></note></para>
 		<para><note><para>Daemon read some options other than its configuration from
-    		database only, so it's prefered to store configuration in database.</para></note></para>
+    		database only, so it's preferred to store configuration in database.</para></note></para>
     		<para>In order to manually add new option click 'Add option' on the
 	        bottom of the list. To edit option value, click on its record. You'll be given
     		with edit form, where you are also able to remove this option. Changing option
@@ -1010,7 +1043,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
     	    </listitem>
     	    <listitem>
         	<para>gd_translate_to</para>
-        	<para>Charset of data that GD library expects (usefull if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</para>
+        	<para>Charset of data that GD library expects (useful if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</para>
         	<para>Example:     <prompt>gd_translate_to = </prompt></para>
     	    </listitem>
     	    <listitem>
@@ -1039,14 +1072,64 @@ registered/unregistered cases) if ticket will be running via email.</para>
 		a new rate. Tax rate label is displayed on select lists and invoice
 		printout. Value of tax rate is a number from 0 to 100 with two 
 		decimal places precision. Taxing status is used for tax-free rate, that 
-		means the rest of defined tax rates shold have taxing enabled.</para>
+		means the rest of defined tax rates should have taxing enabled.</para>
 		<para>Tax rate which will be selected by default on lists is defined
 		by <filename>default_taxrate</filename> option in section 
 		<emphasis>[phpui]</emphasis>.</para>
 	</sect2>
 	<sect2 id="config-numberplans">
-	    <title>Numbering Plans</title>
-		<para></para>
+	    <title>Number plans</title>
+		<para>This feature allows you to add unique numbering plan
+	        (numbering sequence) for each type of documents created in LMS.
+		It's also possible to define different sequences within one type of 
+		documents. For each document type you might define default
+		sequence (important, ie. when you're issuing invoices
+		automatically, as perl scripts or daemon will use this default
+		scheme when creating new document).</para>
+		<para>For each sequence you should also define time span, that is
+		period in which sequence numbers will be unique. When time span
+		selected will reach its end, sequence will be zeroed. You are able
+		to set period to one of: daily, weekly (Monday to Sunday), monthly, 
+		quarterly or annually.</para>
+		<para>Numbering plans list consist of all its identifying
+		information included, followed by example number generated using
+		this plan plus number of documents created with this plan. You
+		might select 'Add plan' to enter new sequence. Editing is possible by 
+		clicking the field that you want to change. Deletion of plan is
+		only possible when no documents has been created with that
+		yet.</para>
+		<para>Sequence template might be any string, which consist some of
+		symbols (specifiers) known from PHP strftime function. Detailed
+		information and list of all symbols can be find in <ulink 
+                url="http://www.php.net/manual/pl/function.strftime.php">PHP
+		Manual</ulink>. The most important and the only required symbol in
+		sequence template is '%N', which will be substituted with
+		incremented document number. All other symbols will expand to
+		document's date of issue. Below you can find most popular ones:
+		<itemizedlist>
+		    <listitem>
+			<para>%N - integer number, uniquely identifying document</para>
+		    </listitem>
+		    <listitem>
+			<para>%[1-9]N - as above, but with leading zeroes, ie.  '%4N' will return '0012' for 12</para>
+		    </listitem>
+		    <listitem>
+			<para>%Y - year as a 4 digit number</para>
+		    </listitem>
+		    <listitem>
+			<para>%y - year as a 2 digit number</para>
+		    </listitem>
+		    <listitem>
+			<para>%m - month number with leading zero (01 to 12)</para>
+		    </listitem>
+		    <listitem>
+			<para>%b - short month name (according to system locales)</para>
+		    </listitem>
+		</itemizedlist>
+		</para>
+		<para><note><para>If you have no numbering plans defined, each document will 
+		take default number as of '%N/LMS/%Y' with annual time span.</para></note></para>
+	</sect2>
 	</sect2>
     </sect1>
 </chapter>

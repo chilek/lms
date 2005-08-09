@@ -695,5 +695,17 @@ $access['table'][100]['allow_reg'] = '^invoice$';
          </sect3>
 	 -->
     </sect2>
+    <sect2 id="install-documents-other">
+	<title>Other documents</title>
+	    <para>Documents support is not limited to invoices. You might store 
+	    virtually any documents you want in LMS, such as contracts, protocols, 
+	    annexes and others. You can assign any number of documents to each 
+	    customer in 'Customer documents' tab in 'Customer information' panel. 
+	    Each document should have defined title, type and additionally you 
+	    might define it's time span (time until when it's valid) and description.
+	    Document files are being stored outside of database (which should be kept
+	    in mind while doing backups!) in directory defined with <filename>doc_dir</filename>
+	    in <emphasis>[directories]</emphasis> section of config file.</para>
+    </sect2>
     </sect1>
 </chapter>
