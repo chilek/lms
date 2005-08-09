@@ -104,6 +104,12 @@ $others = array(
 			'info' => 'PHP, Perl',
 			),
 
+		'kondi' => array(
+			'realname' => 'Konrad Rzentarzewski',
+			'info' => 'i18n, PHP, JavaScript',
+			'www' => 'kondi.net',
+			),
+
 		'Pierzak' => array(
 			'realname' => 'Piotr M.',
 			'info' => 'Logo project',
