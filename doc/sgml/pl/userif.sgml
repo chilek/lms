@@ -773,12 +773,12 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
  </sect1>
  <sect1 id="menu-timetable">
 	<title>Terminarz</title>
-	<para>Terminarz, to tzw. organizer czasu, czyli miejsce gdzie ka¿dy klient
+	<para>Terminarz, to tzw. organizer czasu, czyli miejsce gdzie ka¿dy u¿ytkownik
 	mo¿e prowadziæ w³asny kalendarz. Wprowadzone zadania (zdarzenia) mog± byæ
 	równie¿ dostêpne dla wszystkich i mieæ przypisanych dowolnych klientów, co
 	pozwala np. na zarz±dzanie ekipami serwisowymi.</para>
 	<para>Dodatkiem do Terminarza jest skrypt <filename>lms-reminder</filename>,
-	s³u¿±cy do przypominania klientom o zaplanowanych na dany dzieñ zadaniach.</para>
+	s³u¿±cy do przypominania u¿ytkownikom o zaplanowanych na dany dzieñ zadaniach.</para>
 	<sect2 id="timetable-list">
 	    <title>Terminarz (Lista zadañ)</title>
 	    <para>Terminarz przedstawia listê dni od dnia wybranego z podrêcznego
@@ -791,8 +791,8 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	    <para>Dodaj±c do Terminarza nowe zadania musisz okre¶liæ krótki tytu³
 	    oraz dzieñ i godzinê (zakres godzin). Pozosta³e pola s± opcjonalne. 
 	    Zaznaczenie opcji 'prywatne' spowoduje ukrycie zadania przed wszystkimi
-	    klientami oprócz tego, który je doda³ do Terminarza. W³a¶ciwo¶æ ta
-	    pozwala na prowadzenie przez ka¿dego klienta w³asnego, prywatnego kalendarza.</para>
+	    u¿ytkownikami oprócz tego, który je doda³ do Terminarza. W³a¶ciwo¶æ ta
+	    pozwala na prowadzenie przez ka¿dego u¿ytkownika w³asnego, prywatnego kalendarza.</para>
 	</sect2>
 	<sect2 id="timetable-search">
 	    <title>Szukaj</title>
