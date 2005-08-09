@@ -56,7 +56,7 @@ $taxes = $DB->GetAllByKey('SELECT taxid AS id, label, taxes.value AS value
 	    GROUP BY taxid, label, taxes.value 
 	    ORDER BY value ASC', 'id', array(DOC_INVOICE,$unixfrom, $unixto));
 
-if($result = $DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxid, SUM(value*count) AS value, template 
+if($result = $DB->GetAll('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, taxid, SUM(value*count) AS value, template 
 	    FROM documents 
 	    LEFT JOIN numberplans ON numberplanid = numberplans.id
 	    LEFT JOIN invoicecontents ON docid = documents.id 
