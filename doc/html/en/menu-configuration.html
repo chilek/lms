@@ -13,8 +13,8 @@ REL="UP"
 TITLE="User Interface (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
-TITLE="Helpdesk"
-HREF="menu-helpdesk.html"><LINK
+TITLE="Timetable"
+HREF="menu-timetable.html"><LINK
 REL="NEXT"
 TITLE="Scripts"
 HREF="scripts.html"><LINK
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="menu-helpdesk.html"
+HREF="menu-timetable.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -76,7 +76,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-CONFIGURATION"
->3.13. Configuration</A
+>3.14. Configuration</A
 ></H1
 ><DIV
 CLASS="SECT2"
@@ -84,7 +84,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-UI"
->3.13.1. User Interface</A
+>3.14.1. User Interface</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -92,7 +92,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CONFIG-BASIC"
->3.13.1.1. Basics</A
+>3.14.1.1. Basics</A
 ></H3
 ><P
 >Since LMS 1.5.3 you're able to configure all UI-related
@@ -166,7 +166,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Daemon read some options other than its configuration from
-    		database only, so it's prefered to store configuration in database.</P
+    		database only, so it's preferred to store configuration in database.</P
 ></TD
 ></TR
 ></TABLE
@@ -185,7 +185,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CONFIG-OPTIONS"
->3.13.1.2. Configuration Options List</A
+>3.14.1.2. Configuration Options List</A
 ></H3
 ><P
 >Here we've got the list of UI configuration options. Those options
@@ -676,7 +676,7 @@ CLASS="PROMPT"
 ><P
 >gd_translate_to</P
 ><P
->Charset of data that GD library expects (usefull if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</P
+>Charset of data that GD library expects (useful if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -717,7 +717,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-TAXES"
->3.13.2. Tax Rates</A
+>3.14.2. Tax Rates</A
 ></H2
 ><P
 >Before you have to begin with financial system you will need
@@ -730,7 +730,7 @@ NAME="CONFIG-TAXES"
 		a new rate. Tax rate label is displayed on select lists and invoice
 		printout. Value of tax rate is a number from 0 to 100 with two 
 		decimal places precision. Taxing status is used for tax-free rate, that 
-		means the rest of defined tax rates shold have taxing enabled.</P
+		means the rest of defined tax rates should have taxing enabled.</P
 ><P
 >Tax rate which will be selected by default on lists is defined
 		by <TT
@@ -751,9 +751,96 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-NUMBERPLANS"
->3.13.3. Numbering Plans</A
+>3.14.3. Number plans</A
 ></H2
 ><P
+>This feature allows you to add unique numbering plan
+	        (numbering sequence) for each type of documents created in LMS.
+		It's also possible to define different sequences within one type of 
+		documents. For each document type you might define default
+		sequence (important, ie. when you're issuing invoices
+		automatically, as perl scripts or daemon will use this default
+		scheme when creating new document).</P
+><P
+>For each sequence you should also define time span, that is
+		period in which sequence numbers will be unique. When time span
+		selected will reach its end, sequence will be zeroed. You are able
+		to set period to one of: daily, weekly (Monday to Sunday), monthly, 
+		quarterly or annually.</P
+><P
+>Numbering plans list consist of all its identifying
+		information included, followed by example number generated using
+		this plan plus number of documents created with this plan. You
+		might select 'Add plan' to enter new sequence. Editing is possible by 
+		clicking the field that you want to change. Deletion of plan is
+		only possible when no documents has been created with that
+		yet.</P
+><P
+>Sequence template might be any string, which consist some of
+		symbols (specifiers) known from PHP strftime function. Detailed
+		information and list of all symbols can be find in <A
+HREF="http://www.php.net/manual/pl/function.strftime.php"
+TARGET="_top"
+>PHP
+		Manual</A
+>. The most important and the only required symbol in
+		sequence template is '%N', which will be substituted with
+		incremented document number. All other symbols will expand to
+		document's date of issue. Below you can find most popular ones:
+		<UL
+><LI
+><P
+>%N - integer number, uniquely identifying document</P
+></LI
+><LI
+><P
+>%[1-9]N - as above, but with leading zeroes, ie.  '%4N' will return '0012' for 12</P
+></LI
+><LI
+><P
+>%Y - year as a 4 digit number</P
+></LI
+><LI
+><P
+>%y - year as a 2 digit number</P
+></LI
+><LI
+><P
+>%m - month number with leading zero (01 to 12)</P
+></LI
+><LI
+><P
+>%b - short month name (according to system locales)</P
+></LI
+></UL
+>
+		</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If you have no numbering plans defined, each document will 
+		take default number as of '%N/LMS/%Y' with annual time span.</P
+></TD
+></TR
+></TABLE
+></DIV
 ></P
 ></DIV
 ></DIV
@@ -773,7 +860,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="menu-helpdesk.html"
+HREF="menu-timetable.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -801,7 +888,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Helpdesk</TD
+>Timetable</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

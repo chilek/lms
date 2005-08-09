@@ -757,7 +757,8 @@ queue and reporter. Unregistered users (not in customers database) should be
 recorded using 'Submitter' fields. You can provide email address (in both
 registered/unregistered cases) if ticket will be running via email.</para>
 	</sect2>
- <sect1 id="menu-timetable">
+    </sect1>
+    <sect1 id="menu-timetable">
 	<title>Timetable</title>
 	<para>Timetable is your time scheduler, where each user may setup his own 
 	calendar. Events or tasks being put here may be also visible for other
@@ -789,8 +790,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
 	    title, event description or its notes. List of results will include
 	    events that match all entered criteria.</para>
 	</sect2>
- </sect1>
- </sect1>
+    </sect1>
     <sect1 id="menu-configuration">
 	<title>Configuration</title>
 	    <sect2 id="config-ui">
@@ -1129,7 +1129,6 @@ registered/unregistered cases) if ticket will be running via email.</para>
 		</para>
 		<para><note><para>If you have no numbering plans defined, each document will 
 		take default number as of '%N/LMS/%Y' with annual time span.</para></note></para>
-	</sect2>
 	</sect2>
     </sect1>
 </chapter>
