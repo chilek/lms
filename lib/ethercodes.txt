@@ -1878,7 +1878,7 @@
 00-07-59:Boris Manufacturing Corp.
 00-07-5A:Air Products and Chemicals, Inc.
 00-07-5B:Gibson Guitars
-00-07-5C:ENCAD, Inc.
+00-07-5C:Eastman Kodak Company
 00-07-5D:Celleritas Inc.
 00-07-5E:Pulsar Technologies, Inc.
 00-07-5F:VCS Video Communication Systems AG
@@ -2870,7 +2870,7 @@
 00-0B-5B:Rincon Research Corporation
 00-0B-5C:Newtech Co.,Ltd
 00-0B-5D:FUJITSU LIMITED
-00-0B-5E:ATMAVA Ltd
+00-0B-5E:Audio Engineering Society Inc.
 00-0B-5F:Cisco Systems
 00-0B-60:Cisco Systems
 00-0B-61:Friedrich Lütze GmbH &Co.
@@ -3880,7 +3880,7 @@
 00-0F-4D:Centrepoint Technologies Inc.
 00-0F-4E:Cellink
 00-0F-4F:Cadmus Technology Ltd
-00-0F-50:BraddaHead Limited
+00-0F-50:Baxall Limited
 00-0F-51:Azul Systems, Inc.
 00-0F-52:YORK Refrigeration, Marine & Controls
 00-0F-53:Level 5 Networks, Inc.
@@ -5376,6 +5376,80 @@
 00-15-26:Remote Technologies Inc
 00-15-27:Balboa Instruments
 00-15-28:Beacon Medical Products LLC d.b.a. BeaconMedaes
+00-15-29:N3 Corporation
+00-15-2A:Nokia GmbH
+00-15-2B:Cisco Systems
+00-15-2C:Cisco Systems
+00-15-2D:TenX Networks, LLC
+00-15-2E:PacketHop, Inc.
+00-15-2F:Motorola CHS
+00-15-30:Bus-Tech, Inc.
+00-15-31:KOCOM
+00-15-32:Consumer Technologies Group, LLC
+00-15-33:NADAM.CO.,LTD
+00-15-34:A BELTRÓNICA, Companhia de Comunicações, Lda
+00-15-35:OTE Spa
+00-15-36:Powertech co.,Ltd
+00-15-37:Ventus Networks
+00-15-38:RFID, Inc.
+00-15-39:Technodrive SRL
+00-15-3A:Shenzhen Syscan Technology Co.,Ltd.
+00-15-3B:EMH Elektrizitätszähler GmbH & CoKG
+00-15-3C:Kprotech Co., Ltd.
+00-15-3D:ELIM PRODUCT CO.
+00-15-3E:Q-Matic Sweden AB
+00-15-3F:Alenia Spazio S.p.A.
+00-15-40:Nortel
+00-15-41:StrataLight Communications, Inc.
+00-15-42:MICROHARD S.R.L.
+00-15-43:Aberdeen Test Center
+00-15-44:coM.s.a.t. AG
+00-15-45:SEECODE Co., Ltd.
+00-15-46:ITG Worldwide Sdn Bhd
+00-15-47:AiZen Solutions Inc.
+00-15-48:CUBE TECHNOLOGIES
+00-15-49:Dixtal Biomedica Ind. Com. Ltda
+00-15-4A:WANSHIH ELECTRONIC CO., LTD
+00-15-4B:Wonde Proud Technology Co., Ltd
+00-15-4C:Saunders Electronics
+00-15-4D:Netronome Systems, Inc.
+00-15-4E:Hirschmann Automation and Control GmbH
+00-15-4F:one RF Technology
+00-15-50:Nits Technology Inc
+00-15-51:RadioPulse Inc.
+00-15-52:Wi-Gear Inc.
+00-15-53:Cytyc Corporation
+00-15-54:Atalum Wireless S.A.
+00-15-55:DFM GmbH
+00-15-56:SAGEM SA
+00-15-57:Olivetti
+00-15-58:FOXCONN
+00-15-59:Securaplane Technologies, Inc.
+00-15-5A:DAINIPPON PHARMACEUTICAL CO., LTD.
+00-15-5B:Sampo Corporation
+00-15-5C:Dresser Wayne
+00-15-5D:Microsoft Corporation
+00-15-5E:Morgan Stanley
+00-15-5F:Ubiwave
+00-15-60:Hewlett Packard
+00-15-61:JJPlus Corporation
+00-15-62:Cisco Systems
+00-15-63:Cisco Systems
+00-15-64:BEHRINGER Spezielle Studiotechnik GmbH
+00-15-65:XIAMEN YEALINK NETWORK TECHNOLOGY CO.,LTD
+00-15-66:A-First Technology Co., Ltd.
+00-15-67:RADWIN Inc.
+00-15-68:Dilithium Networks
+00-15-69:PECO II, Inc.
+00-15-6A:DG2L Technologies Pvt. Ltd.
+00-15-6B:Perfisans Networks Corp.
+00-15-6C:SANE SYSTEM CO., LTD
+00-15-6D:Ubiquiti Networks
+00-15-6E:A. W. Communication Systems Ltd
+00-15-6F:Xiranet Communications GmbH
+00-15-70:Symbol Technologies
+00-15-71:Nolan Systems
+00-15-72:Red-Lemon
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -6040,7 +6114,7 @@
 00-40-93:PAXDATA NETWORKS LTD.
 00-40-94:SHOGRAPHICS, INC.
 00-40-95:R.P.T. INTERGROUPS INT'L LTD.
-00-40-96:Aironet Wireless Communication
+00-40-96:Cisco Systems, Inc.
 00-40-97:DATEX DIVISION OF
 00-40-98:DRESSLER GMBH & CO.
 00-40-99:NEWGEN SYSTEMS CORP.
@@ -6607,7 +6681,7 @@
 00-60-D9:TRANSYS NETWORKS INC.
 00-60-DA:JBM ELECTRONICS CO.
 00-60-DB:NTP ELEKTRONIK A/S
-00-60-DC:TOYO COMMUNICATION EQUIPMENT Co., Ltd.
+00-60-DC:Toyo Network Systems Co, Ltd.
 00-60-DD:MYRICOM, INC.
 00-60-DE:KAYSER-THREDE GmbH
 00-60-DF:CNT Corporation
