@@ -200,6 +200,11 @@ HREF="#MENU-HELPDESK"
 ></DT
 ><DT
 >3.13. <A
+HREF="#MENU-TIMETABLE"
+>Timetable</A
+></DT
+><DT
+>3.14. <A
 HREF="#MENU-CONFIGURATION"
 >Configuration</A
 ></DT
@@ -566,6 +571,14 @@ TARGET="_top"
 >Aleksander 'A.L.E.C' Machniak</A
 ></TD
 ></TR
+><TR
+><TD
+><A
+HREF="http://kondi.net"
+TARGET="_top"
+>Konrad 'kondi' Rzentarzewski</A
+></TD
+></TR
 ></TBODY
 ></TABLE
 >
@@ -676,6 +689,14 @@ TARGET="_top"
 HREF="http://gamechannel.int.pl"
 TARGET="_top"
 >Pawel 'sickone' Kisiela</A
+></TD
+></TR
+><TR
+><TD
+><A
+HREF="http://kondi.net"
+TARGET="_top"
+>Konrad 'kondi' Rzentarzewski</A
 ></TD
 ></TR
 ></TBODY
@@ -835,7 +856,7 @@ TARGET="_top"
 ><A
 HREF="http://kondi.net"
 TARGET="_top"
->Konrad 'Kondi' Rzentarzewski</A
+>Konrad 'kondi' Rzentarzewski</A
 ></TD
 ></TR
 ></TBODY
@@ -2505,9 +2526,14 @@ CLASS="SECT1"
 NAME="INSTALL-DOCUMENTS"
 >2.9. Documents</A
 ></H2
+><P
+>LMS makes possible to generate and to store various documents
+	    i.e. invoices, receipts and non-financial documents i.e. contracts,
+	    protocols and others. Documents can be numbered with numbering plans 
+	    (patterns) defined in menu Configuration - Numbering Plans.</P
 ><DIV
 CLASS="SECT2"
-><H3
+><HR><H3
 CLASS="SECT2"
 ><A
 NAME="INSTALL-INVOICES"
@@ -2847,6 +2873,34 @@ CLASS="PROMPT"
 >
           </P
 ></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INSTALL-DOCUMENTS-OTHER"
+>2.9.3. Other documents</A
+></H3
+><P
+>Documents support is not limited to invoices. You might store 
+	    virtually any documents you want in LMS, such as contracts, protocols, 
+	    annexes and others. You can assign any number of documents to each 
+	    customer in 'Customer documents' tab in 'Customer information' panel. 
+	    Each document should have defined title, type and additionally you 
+	    might define it's time span (time until when it's valid) and description.
+	    Document files are being stored outside of database (which should be kept
+	    in mind while doing backups!) in directory defined with <TT
+CLASS="FILENAME"
+>doc_dir</TT
+>
+	    in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[directories]</I
+></SPAN
+> section of config file.</P
 ></DIV
 ></DIV
 ></DIV
@@ -4560,8 +4614,76 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="MENU-TIMETABLE"
+>3.13. Timetable</A
+></H2
+><P
+>Timetable is your time scheduler, where each user may setup his own 
+	calendar. Events or tasks being put here may be also visible for other
+	users and consist a list of assigned clients, which make this tool usable
+	for service crew management.</P
+><P
+>There is an additional <TT
+CLASS="FILENAME"
+>lms-reminder</TT
+> script,
+	which may be executed periodically to remind users about their pending
+	tasks.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="TIMETABLE-LIST"
+>3.13.1. Timetable (Task list)</A
+></H3
+><P
+>Main timetable shows list of days starting from day which is 
+	    selected from calendar popup. A number of days displayed depends on
+	    <TT
+CLASS="FILENAME"
+>timetable_days_forward</TT
+> lms.ini option and
+	    defaults to 7 days. From task list you might print a day plan or go to
+	    event edit screen.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="TIMETABLE-NEW"
+>3.13.2. New event</A
+></H3
+><P
+>You can add new task to the Timetable by selecting short title
+	    and start date and time (or time span). All other fields are optional.
+	    By selecting 'private' option you can hide current event from the
+	    other users, so that it will be visible only for event creator. This
+	    feature allows you to run your own, private calendar.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="TIMETABLE-SEARCH"
+>3.13.3. Search</A
+></H3
+><P
+>You can search in Timetable by the following criteria: time span
+	    (start and end date), client affected, client or fragment of text in
+	    title, event description or its notes. List of results will include
+	    events that match all entered criteria.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="MENU-CONFIGURATION"
->3.13. Configuration</A
+>3.14. Configuration</A
 ></H2
 ><DIV
 CLASS="SECT2"
@@ -4569,7 +4691,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-UI"
->3.13.1. User Interface</A
+>3.14.1. User Interface</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -4577,7 +4699,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CONFIG-BASIC"
->3.13.1.1. Basics</A
+>3.14.1.1. Basics</A
 ></H4
 ><P
 >Since LMS 1.5.3 you're able to configure all UI-related
@@ -4651,7 +4773,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Daemon read some options other than its configuration from
-    		database only, so it's prefered to store configuration in database.</P
+    		database only, so it's preferred to store configuration in database.</P
 ></TD
 ></TR
 ></TABLE
@@ -4670,7 +4792,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CONFIG-OPTIONS"
->3.13.1.2. Configuration Options List</A
+>3.14.1.2. Configuration Options List</A
 ></H4
 ><P
 >Here we've got the list of UI configuration options. Those options
@@ -5161,7 +5283,7 @@ CLASS="PROMPT"
 ><P
 >gd_translate_to</P
 ><P
->Charset of data that GD library expects (usefull if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</P
+>Charset of data that GD library expects (useful if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -5202,7 +5324,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-TAXES"
->3.13.2. Tax Rates</A
+>3.14.2. Tax Rates</A
 ></H3
 ><P
 >Before you have to begin with financial system you will need
@@ -5215,7 +5337,7 @@ NAME="CONFIG-TAXES"
 		a new rate. Tax rate label is displayed on select lists and invoice
 		printout. Value of tax rate is a number from 0 to 100 with two 
 		decimal places precision. Taxing status is used for tax-free rate, that 
-		means the rest of defined tax rates shold have taxing enabled.</P
+		means the rest of defined tax rates should have taxing enabled.</P
 ><P
 >Tax rate which will be selected by default on lists is defined
 		by <TT
@@ -5236,9 +5358,96 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-NUMBERPLANS"
->3.13.3. Numbering Plans</A
+>3.14.3. Number plans</A
 ></H3
 ><P
+>This feature allows you to add unique numbering plan
+	        (numbering sequence) for each type of documents created in LMS.
+		It's also possible to define different sequences within one type of 
+		documents. For each document type you might define default
+		sequence (important, ie. when you're issuing invoices
+		automatically, as perl scripts or daemon will use this default
+		scheme when creating new document).</P
+><P
+>For each sequence you should also define time span, that is
+		period in which sequence numbers will be unique. When time span
+		selected will reach its end, sequence will be zeroed. You are able
+		to set period to one of: daily, weekly (Monday to Sunday), monthly, 
+		quarterly or annually.</P
+><P
+>Numbering plans list consist of all its identifying
+		information included, followed by example number generated using
+		this plan plus number of documents created with this plan. You
+		might select 'Add plan' to enter new sequence. Editing is possible by 
+		clicking the field that you want to change. Deletion of plan is
+		only possible when no documents has been created with that
+		yet.</P
+><P
+>Sequence template might be any string, which consist some of
+		symbols (specifiers) known from PHP strftime function. Detailed
+		information and list of all symbols can be find in <A
+HREF="http://www.php.net/manual/pl/function.strftime.php"
+TARGET="_top"
+>PHP
+		Manual</A
+>. The most important and the only required symbol in
+		sequence template is '%N', which will be substituted with
+		incremented document number. All other symbols will expand to
+		document's date of issue. Below you can find most popular ones:
+		<UL
+><LI
+><P
+>%N - integer number, uniquely identifying document</P
+></LI
+><LI
+><P
+>%[1-9]N - as above, but with leading zeroes, ie.  '%4N' will return '0012' for 12</P
+></LI
+><LI
+><P
+>%Y - year as a 4 digit number</P
+></LI
+><LI
+><P
+>%y - year as a 2 digit number</P
+></LI
+><LI
+><P
+>%m - month number with leading zero (01 to 12)</P
+></LI
+><LI
+><P
+>%b - short month name (according to system locales)</P
+></LI
+></UL
+>
+		</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If you have no numbering plans defined, each document will 
+		take default number as of '%N/LMS/%Y' with annual time span.</P
+></TD
+></TR
+></TABLE
+></DIV
 ></P
 ></DIV
 ></DIV
