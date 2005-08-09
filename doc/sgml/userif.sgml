@@ -741,5 +741,38 @@ queue and reporter. Unregistered users (not in customers database) should be
 recorded using 'Submitter' fields. You can provide email address (in both
 registered/unregistered cases) if ticket will be running via email.</para>
 	</sect2>
- </sect1>
+    </sect1>
+    <sect1 id="menu-timetable">
+	<title>Timetable</title>
+	<para>Timetable is your time scheduler, where each user may setup his own 
+	calendar. Events or tasks being put here may be also visible for other
+	users and consist a list of assigned clients, which make this tool usable
+	for service crew management.</para>
+	<para>There is an additional <filename>lms-reminder</filename> script,
+	which may be executed periodically to remind users about their pending
+	tasks.</para>
+	<sect2 id="timetable-list">
+	    <title>Timetable (Task list)</title>
+	    <para>Main timetable shows list of days starting from day which is 
+	    selected from calendar popup. A number of days displayed depends on
+	    <filename>timetable_days_forward</filename> lms.ini option and
+	    defaults to 7 days. From task list you might print a day plan or go to
+	    event edit screen.</para>
+	</sect2>
+	<sect2 id="timetable-new">
+	    <title>New event</title>
+	    <para>You can add new task to the Timetable by selecting short title
+	    and start date and time (or time span). All other fields are optional.
+	    By selecting 'private' option you can hide current event from the
+	    other users, so that it will be visible only for event creator. This
+	    feature allows you to run your own, private calendar.</para>
+	</sect2>
+	<sect2 id="timetable-search">
+	    <title>Search</title>
+	    <para>You can search in Timetable by the following criteria: time span
+	    (start and end date), client affected, client or fragment of text in
+	    title, event description or its notes. List of results will include
+	    events that match all entered criteria.</para>
+	</sect2>
+    </sect1>
 </chapter>

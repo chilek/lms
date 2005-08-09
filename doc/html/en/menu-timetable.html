@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Terminarz</TITLE
+>Timetable</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,19 +10,19 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.6-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Interfejs U¿ytkownika (LMS-UI)"
+TITLE="User Interface (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
 TITLE="Helpdesk"
 HREF="menu-helpdesk.html"><LINK
 REL="NEXT"
-TITLE="Skrypty"
+TITLE="Scripts"
 HREF="scripts.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -49,13 +49,13 @@ VALIGN="bottom"
 ><A
 HREF="menu-helpdesk.html"
 ACCESSKEY="P"
->Poprzedni</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 3. Interfejs U¿ytkownika (LMS-UI)</TD
+>Chapter 3. User Interface (LMS-UI)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -63,7 +63,7 @@ VALIGN="bottom"
 ><A
 HREF="scripts.html"
 ACCESSKEY="N"
->Nast&#281;pny</A
+>Next</A
 ></TD
 ></TR
 ></TABLE
@@ -76,35 +76,37 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-TIMETABLE"
->3.13. Terminarz</A
+>3.13. Timetable</A
 ></H1
 ><P
->Terminarz, to tzw. organizer czasu, czyli miejsce gdzie ka¿dy u¿ytkownik
-	mo¿e prowadziæ w³asny kalendarz. Wprowadzone zadania (zdarzenia) mog± byæ
-	równie¿ dostêpne dla wszystkich i mieæ przypisanych dowolnych u¿ytkowników, co
-	pozwala np. na zarz±dzanie ekipami serwisowymi.</P
+>Timetable is your time scheduler, where each user may setup his own 
+	calendar. Events or tasks being put here may be also visible for other
+	users and consist a list of assigned clients, which make this tool usable
+	for service crew management.</P
 ><P
->Dodatkiem do Terminarza jest skrypt <TT
+>There is an additional <TT
 CLASS="FILENAME"
 >lms-reminder</TT
->,
-	s³u¿±cy do przypominania u¿ytkownikom o zaplanowanych na dany dzieñ zadaniach.</P
+> script,
+	which may be executed periodically to remind users about their pending
+	tasks.</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="TIMETABLE-LIST"
->3.13.1. Terminarz (Lista zadañ)</A
+>3.13.1. Timetable (Task list)</A
 ></H2
 ><P
->Terminarz przedstawia listê dni od dnia wybranego z podrêcznego
-	    kalendarzyka. Ilo¶æ dni na li¶cie okre¶la opcja <TT
+>Main timetable shows list of days starting from day which is 
+	    selected from calendar popup. A number of days displayed depends on
+	    <TT
 CLASS="FILENAME"
 >timetable_days_forward</TT
->
-	    domy¶lnie ustawiona na 7 dni. Z poziomu listy mo¿na wydrukowaæ plan dnia
-	    lub przej¶æ do edycji zdarzenia.</P
+> lms.ini option and
+	    defaults to 7 days. From task list you might print a day plan or go to
+	    event edit screen.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -112,14 +114,14 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMETABLE-NEW"
->3.13.2. Nowe zdarzenie</A
+>3.13.2. New event</A
 ></H2
 ><P
->Dodaj±c do Terminarza nowe zadania musisz okre¶liæ krótki tytu³
-	    oraz dzieñ i godzinê (zakres godzin). Pozosta³e pola s± opcjonalne. 
-	    Zaznaczenie opcji 'prywatne' spowoduje ukrycie zadania przed wszystkimi
-	    u¿ytkownikami oprócz tego, który je doda³ do Terminarza. W³a¶ciwo¶æ ta
-	    pozwala na prowadzenie przez ka¿dego u¿ytkownika w³asnego, prywatnego kalendarza.</P
+>You can add new task to the Timetable by selecting short title
+	    and start date and time (or time span). All other fields are optional.
+	    By selecting 'private' option you can hide current event from the
+	    other users, so that it will be visible only for event creator. This
+	    feature allows you to run your own, private calendar.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -127,13 +129,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMETABLE-SEARCH"
->3.13.3. Szukaj</A
+>3.13.3. Search</A
 ></H2
 ><P
->Wyszukuj±c w Terminarzu zadania mo¿emy okre¶liæ zakres dat,
-	    poszukiwanego u¿ytkownika, klienta lub fragment tekstu, znajduj±cego
-	    siê w tytule, opisie lub notatce do zadania. Na li¶cie zadañ
-	    zostan± wy¶wietlone zadania spe³niaj±ce wszystkie podane kryteria.</P
+>You can search in Timetable by the following criteria: time span
+	    (start and end date), client affected, client or fragment of text in
+	    title, event description or its notes. List of results will include
+	    events that match all entered criteria.</P
 ></DIV
 ></DIV
 ><DIV
@@ -154,7 +156,7 @@ VALIGN="top"
 ><A
 HREF="menu-helpdesk.html"
 ACCESSKEY="P"
->Poprzedni</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -163,7 +165,7 @@ VALIGN="top"
 ><A
 HREF="index.html"
 ACCESSKEY="H"
->Spis tre&#347;ci</A
+>Home</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -172,7 +174,7 @@ VALIGN="top"
 ><A
 HREF="scripts.html"
 ACCESSKEY="N"
->Nast&#281;pny</A
+>Next</A
 ></TD
 ></TR
 ><TR
@@ -188,13 +190,13 @@ VALIGN="top"
 ><A
 HREF="user.html"
 ACCESSKEY="U"
->Pocz&#261;tek rozdzia&#322;u</A
+>Up</A
 ></TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Skrypty</TD
+>Scripts</TD
 ></TR
 ></TABLE
 ></DIV

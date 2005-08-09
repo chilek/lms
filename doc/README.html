@@ -1,11 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
 >LMS - LAN Management System 1.6-cvs</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -198,6 +198,11 @@ HREF="#MENU-STATS"
 HREF="#MENU-HELPDESK"
 >Helpdesk</A
 ></DT
+><DT
+>3.13. <A
+HREF="#MENU-TIMETABLE"
+>Timetable</A
+></DT
 ></DL
 ></DD
 ><DT
@@ -357,7 +362,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2350"
+HREF="#AEN2370"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -4888,6 +4893,74 @@ recorded using 'Submitter' fields. You can provide email address (in both
 registered/unregistered cases) if ticket will be running via email.</P
 ></DIV
 ></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-TIMETABLE"
+>3.13. Timetable</A
+></H2
+><P
+>Timetable is your time scheduler, where each user may setup his own 
+	calendar. Events or tasks being put here may be also visible for other
+	users and consist a list of assigned clients, which make this tool usable
+	for service crew management.</P
+><P
+>There is an additional <TT
+CLASS="FILENAME"
+>lms-reminder</TT
+> script,
+	which may be executed periodically to remind users about their pending
+	tasks.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="TIMETABLE-LIST"
+>3.13.1. Timetable (Task list)</A
+></H3
+><P
+>Main timetable shows list of days starting from day which is 
+	    selected from calendar popup. A number of days displayed depends on
+	    <TT
+CLASS="FILENAME"
+>timetable_days_forward</TT
+> lms.ini option and
+	    defaults to 7 days. From task list you might print a day plan or go to
+	    event edit screen.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="TIMETABLE-NEW"
+>3.13.2. New event</A
+></H3
+><P
+>You can add new task to the Timetable by selecting short title
+	    and start date and time (or time span). All other fields are optional.
+	    By selecting 'private' option you can hide current event from the
+	    other users, so that it will be visible only for event creator. This
+	    feature allows you to run your own, private calendar.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="TIMETABLE-SEARCH"
+>3.13.3. Search</A
+></H3
+><P
+>You can search in Timetable by the following criteria: time span
+	    (start and end date), client affected, client or fragment of text in
+	    title, event description or its notes. List of results will include
+	    events that match all entered criteria.</P
+></DIV
+></DIV
 ></DIV
 ><DIV
 CLASS="CHAPTER"
@@ -8362,6 +8435,20 @@ CLASS="FILENAME"
 ><P
 >C compiler (gcc)</P
 ></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+>ggnotify</TT
+> module needs <TT
+CLASS="FILENAME"
+>libgadu</TT
+>
+		    library and headers (included in <TT
+CLASS="FILENAME"
+>ekg</TT
+> package)</P
+></LI
 ></UL
 >
                      </P
@@ -8585,7 +8672,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2350"
+NAME="AEN2370"
 ></A
 ><P
 ><B

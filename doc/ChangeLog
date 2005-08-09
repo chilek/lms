@@ -1,6 +1,6 @@
 $Id$
 
-version 1.6.2 ? (??/??/????):
+version 1.6.2 Desala (09/08/2005):
 
   - fixed SQL query in Mailing with network filtering (alec)
   - BTS#0000407: fixed page number saving in netdevices list (alec/MadMark)
@@ -12,6 +12,7 @@ version 1.6.2 ? (??/??/????):
   - documentation is opened in new browser window (alec)
   - bugfix: add attachement file to new message in helpdesk with enabled
     helpdesk_backend_mode (alec)
+  - added english translation of Timetable chapter in doc (kondi)
 
 version 1.6.1 Ishta (11/07/2005):
 
