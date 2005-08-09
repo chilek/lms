@@ -481,6 +481,19 @@ static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 			tscript_debug("Interpreted TSCRIPT_AST_EXT\n");
 		}
 	}
+	else if (ast->type == TSCRIPT_AST_CONST)
+	{
+		tscript_debug("Interpretting TSCRIPT_AST_CONST\n");
+		tmp1 = tscript_value_dereference(tscript_interprete_sub(ast->children[0]));
+		if (tmp1.type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else
+		{
+			tscript_debug("Constant name: %s\n", tscript_value_convert_to_string(tmp1).data);
+			res = tscript_run_constant(tmp1.data);
+			tscript_debug("Interpreted TSCRIPT_AST_CONST\n");
+		}
+	}
 	else if (ast->type == TSCRIPT_AST_MATCH)
 	{
 		tscript_debug("Interpretting TSCRIPT_AST_MATCH\n");

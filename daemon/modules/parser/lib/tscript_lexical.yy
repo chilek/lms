@@ -165,6 +165,8 @@ GNU General Public License for more details.
 							yy_push_state(INITIAL);
 							YY_RETURN(EXT);
 						}
+						if (tscript_has_constant(yytext))
+							YY_RETURN(CONST);
 						YY_RETURN(NAME);
 					}
 
