@@ -199,7 +199,7 @@
                     <member>userid - LMS user id</member>
                     <member>type - type of operation (income, expenditure, payment, debt)</member>
                     <member>value - amount in dollars</member>
-                    <member>taxvalue - tax rate in percent</member>
+                    <member>taxid - tax rate identifier</member>
                     <member>customerid - customer's serial number ('0' - does not apply)</member>
                     <member>docid - serial number for document (e.g. invoice) related to this operation</member>
                     <member>itemid - document item identifier</member>
@@ -214,7 +214,7 @@
                     <member>date - timestamp of operation</member>
                     <member>customer - customer data</member>
                     <member>value - amount</member>
-                    <member>taxvalue - tax rate in percent</member>
+                    <member>taxid - tax rate identifier</member>
                     <member>customerid - customer's serial number</member>
                     <member>description - operation description</member>
                     <member>hash - unique operation identifier</member>
@@ -227,7 +227,7 @@
                     <member>id - serial number</member>
                     <member>name - subscription name</member>
                     <member>value - amount</member>
-                    <member>taxvalue - tax rate in percent</member>
+                    <member>taxid - tax rate identifier</member>
                     <member>prodid - product/service classification number</member>
                     <member>uprate - upload warranty</member>
                     <member>upceil - upload boundary</member>
@@ -265,11 +265,33 @@
                     <member>suspended - is this payment suspended? (1 - yes, 0 - no)</member>
                </simplelist>
           </sect2>
+	  <sect2 id="taxes">
+               <title>Tax rates ('taxes')</title>
+                  <simplelist>
+                    <member>id - serial number</member>
+                    <member>value - tax value</member>
+		    <member>taxed - "is taxed" flag</member>
+		    <member>label - rate label</member>
+                    <member>validfrom - binding period start</member>
+		    <member>validto - binding period end</member>
+		  </simplelist>
+	  </sect2>    
+	  <sect2 id="numberplans">
+               <title>Documents numbering plans ('numberplans')</title>
+                  <simplelist>
+                    <member>id - serial number</member>
+                    <member>template - number template (pattern)</member>
+		    <member>period - numbering time span: day/week/month/quarter/year</member>
+		    <member>doctype - document type</member>
+                    <member>isdefault - '1' if this plan is default for respondent doctype, else '0'</member>
+		  </simplelist>
+	  </sect2>    
           <sect2 id="documents">
                <title>Documents: invoices, receipts, contracts, etc. ('documents')</title>
                   <simplelist>
                     <member>id - serial number</member>
                     <member>number - number in year</member>
+		    <member>numberplanid - numbering plan identifier</member>
 		    <member>type - document type (1 - invoice, 2 - cash receipt)</member>
                     <member>cdate - date of write out</member>
                     <member>paytime - deadline in days</member>
@@ -284,13 +306,26 @@
                     <member>city - location of customer</member>
                </simplelist>
           </sect2>
+          <sect2 id="documentcontents">
+               <title>Non-financial documents contents ('documentcontents')</title>
+                  <simplelist>
+                    <member>docid - document serial number</member>
+                    <member>title - document title</member>
+		    <member>fromdate - start of binding period</member>
+                    <member>todate - end of binding period</member>
+                    <member>filename - document file name</member>
+                    <member>contenttype - file type</member>
+                    <member>md5sum - file md5 sum</member>
+		    <member>description - additional informations</member>
+               </simplelist>
+          </sect2>
           <sect2 id="invoicecontents">
                <title>Invoices ('invoicecontents')</title>
                   <simplelist>
                     <member>docid - invoice serial number</member>
                     <member>itemid - invoice item identifier</member>
                     <member>value - amount</member>
-                    <member>taxvalue - tax rate in percent</member>
+                    <member>taxid - tax rate identifier</member>
                     <member>prodid - product/service classification number</member>
                     <member>content - used unit (usually 'pc.')</member>
                     <member>count - unit count</member>

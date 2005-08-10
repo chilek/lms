@@ -280,11 +280,22 @@
                     <member>suspended - zawieszenie p³atno¶ci (1 - tak, 0 - nie)</member>
                </simplelist>
           </sect2>
+          <sect2 id="numberplans">
+               <title>Plany (szablony) numeracyjne dokumentów ('numberplans')</title>
+                  <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>template - szablon (wzorzec) numeru</member>
+                    <member>period - typ okresu numeracyjnego: dzieñ/tydzieñ/miesi±c/kwarta³/rok</member>
+                    <member>doctype - typ dokumentu</member>
+                    <member>isdefault - '1' - je¶li dany plan jest domy¶lny dla wybranego typu dokumentów, '0' - je¶li nie</member>
+               </simplelist>
+          </sect2>
           <sect2 id="documents">
                <title>Dokumenty: faktury, KP, umowy, etc. ('documents')</title>
                   <simplelist>
                     <member>id - identyfikator</member>
                     <member>number - numer w roku</member>
+		    <member>numberplanid - identyfikator planu numeracyjnego</member>
 		    <member>type - typ dokumentu (1-faktura, 2-KP)</member>
                     <member>cdate - data wystawienia</member>
                     <member>paytime - termin p³atno¶ci (ilo¶æ dni)</member>
@@ -297,6 +308,19 @@
                     <member>ssn - PESEL klienta</member>
                     <member>zip - kod pocztowy klienta</member>
                     <member>city - miasto klienta</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="documentcontents">
+               <title>Dokumenty niefinansowe ('documentcontents')</title>
+                  <simplelist>
+                    <member>docid - identyfikator dokumentu</member>
+                    <member>title - tytu³ dokumentu</member>
+		    <member>fromdate - pocz±tek okresu obowi±zywania</member>
+                    <member>todate - koniec okresu obowi±zywania</member>
+                    <member>filename - nazwa pliku</member>
+                    <member>contenttype - typ pliku</member>
+                    <member>md5sum - suma md5 pliku</member>
+		    <member>description - dodatkowy opis</member>
                </simplelist>
           </sect2>
           <sect2 id="invoicecontents">
