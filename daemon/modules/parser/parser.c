@@ -35,6 +35,7 @@
 #include "extensions/tscript_exec.h"
 #include "extensions/tscript_string.h"
 #include "extensions/sql.h"
+#include "extensions/consts.h"
 
 void reload(GLOBAL *g, struct parser_module *p)
 {
@@ -45,6 +46,7 @@ void reload(GLOBAL *g, struct parser_module *p)
 	tscript_ext_exec_init();
 	tscript_ext_string_init();
 	tscript_ext_sql_init(g->conn);
+	tscript_ext_consts_init(g->conn);
 
 	if(!strlen(p->script))
 		syslog(LOG_ERR, "ERROR: [%s/parser] empty 'script' option", p->base.instance);
@@ -94,6 +96,7 @@ void reload(GLOBAL *g, struct parser_module *p)
 	tscript_ext_exec_close();
 	tscript_ext_string_close();
 	tscript_ext_sql_close();
+	tscript_ext_consts_close();
 	
 	free(p->command);
 	free(p->script);
