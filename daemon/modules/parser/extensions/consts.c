@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-ConnHandle *conn = NULL;
+ConnHandle *con = NULL;
 int rows;
 
 tscript_value tscript_ext_consts_customers()
@@ -13,12 +13,11 @@ tscript_value tscript_ext_consts_customers()
 	tscript_value res;
 	tscript_value *res_row;
 	int r, c;
-	char *query, *colname, *value;
+	char *colname, *value;
 	QueryHandle *q = NULL;
 	
 	tscript_debug("Executing SQL Extension: CUSTOMERS\n");
-	asprintf(&query, CUSTOMERS);
-	q = db_query(conn, query);
+	q = db_query(con, CUSTOMERS);
 
 	res = tscript_value_create(TSCRIPT_TYPE_ARRAY, "");
 
@@ -46,12 +45,11 @@ tscript_value tscript_ext_consts_nodes()
 	tscript_value res;
 	tscript_value *res_row;
 	int r, c;
-	char *query, *colname, *value;
+	char *colname, *value;
 	QueryHandle *q = NULL;
 	
 	tscript_debug("Executing SQL Extension: NODES\n");
-	asprintf(&query, NODES);
-	q = db_query(conn, query);
+	q = db_query(con, NODES);
 
 	res = tscript_value_create(TSCRIPT_TYPE_ARRAY, "");
 
@@ -79,12 +77,11 @@ tscript_value tscript_ext_consts_networks()
 	tscript_value res;
 	tscript_value *res_row;
 	int r, c;
-	char *query, *colname, *value;
+	char *colname, *value;
 	QueryHandle *q = NULL;
 	
 	tscript_debug("Executing SQL Extension: NETWORKS\n");
-	asprintf(&query, NETWORKS);
-	q = db_query(conn, query);
+	q = db_query(con, NETWORKS);
 
 	res = tscript_value_create(TSCRIPT_TYPE_ARRAY, "");
 
@@ -115,7 +112,7 @@ tscript_value tscript_ext_consts_networks()
 
 void tscript_ext_consts_init(ConnHandle *c)
 {
-	conn = c;
+	con = c;
 	tscript_add_constant("CUSTOMERS", tscript_ext_consts_customers);
 	tscript_add_constant("NODES", tscript_ext_consts_nodes);
 	tscript_add_constant("NETWORKS", tscript_ext_consts_networks);

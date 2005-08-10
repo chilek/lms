@@ -40,7 +40,7 @@ void tscript_ext_consts_close();
 		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
 		    FROM nodes \
 		    LEFT JOIN customers ON (customers.id = onwerid)"
-#elsif
+#else
 #define NODES "SELECT nodes.id AS id, nodes.name AS name, ownerid, access, \
 		    warning, netdev, lastonline, nodes.info AS info, \
 		    customers.lastname || ' ' || customers.name AS owner, \
