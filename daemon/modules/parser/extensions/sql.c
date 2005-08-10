@@ -15,6 +15,21 @@ void tscript_ext_sql_exec(char* query)
 	tscript_debug("Query executed\n");
 }
 
+tscript_value tscript_ext_sql_escape(tscript_value arg)
+{
+	char *tmp;
+	tscript_value res;
+
+	tscript_debug("Executing SQL Extension: ESCAPE\n");
+
+	tmp = db_escape(conn, tscript_value_convert_to_string(arg).data);
+	res = tscript_value_create(TSCRIPT_TYPE_STRING, tmp);
+	free(tmp);
+
+	tscript_debug("Finished executing SQL Extension: ESCAPE\n");
+	return res;
+}
+
 tscript_value tscript_ext_sql_rows(tscript_value arg)
 {
 	QueryHandle *q = NULL;
@@ -146,6 +161,7 @@ void tscript_ext_sql_init(ConnHandle *c)
 	tscript_add_extension("UPDATE", tscript_ext_sql_update);
 	tscript_add_extension("SELECT", tscript_ext_sql_select);
 	tscript_add_extension("ROWS", tscript_ext_sql_rows);
+	tscript_add_extension("ESCAPE", tscript_ext_sql_escape);
 	tscript_add_extension("create", tscript_ext_sql_create);
 	tscript_add_extension("drop", tscript_ext_sql_drop);
 	tscript_add_extension("insert", tscript_ext_sql_insert);
@@ -153,6 +169,7 @@ void tscript_ext_sql_init(ConnHandle *c)
 	tscript_add_extension("update", tscript_ext_sql_update);
 	tscript_add_extension("select", tscript_ext_sql_select);
 	tscript_add_extension("rows", tscript_ext_sql_rows);
+	tscript_add_extension("escape", tscript_ext_sql_escape);
 }
 
 void tscript_ext_sql_close()
@@ -164,6 +181,7 @@ void tscript_ext_sql_close()
 	tscript_remove_extension("UPDATE");
 	tscript_remove_extension("SELECT");
 	tscript_remove_extension("ROWS");
+	tscript_remove_extension("ESCAPE");
 	tscript_remove_extension("create");
 	tscript_remove_extension("drop");
 	tscript_remove_extension("insert");
@@ -171,4 +189,5 @@ void tscript_ext_sql_close()
 	tscript_remove_extension("update");
 	tscript_remove_extension("select");
 	tscript_remove_extension("rows");
+	tscript_remove_extension("escape");
 }
