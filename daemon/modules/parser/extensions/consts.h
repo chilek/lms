@@ -37,17 +37,17 @@ void tscript_ext_consts_close();
 		    warning, netdev, lastonline, nodes.info AS info, \
 		    CONCAT(customers.lastname, ' ', customers.name) AS owner, \
 		    customers.message AS message, mac, passwd, linktype, \
-		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
+		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub \
 		    FROM nodes \
-		    LEFT JOIN customers ON (customers.id = onwerid)"
+		    LEFT JOIN customers ON (customers.id = ownerid)"
 #else
 #define NODES "SELECT nodes.id AS id, nodes.name AS name, ownerid, access, \
 		    warning, netdev, lastonline, nodes.info AS info, \
 		    customers.lastname || ' ' || customers.name AS owner, \
 		    customers.message AS message, mac, passwd, linktype, \
-		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
+		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub \
 		    FROM nodes \
-		    LEFT JOIN customers ON (customers.id = onwerid)"
+		    LEFT JOIN customers ON (customers.id = ownerid)"
 #endif		    
 
 #define NETWORKS "SELECT id, name, INET_NTOA(address) AS address, \
