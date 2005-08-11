@@ -27,7 +27,7 @@ GNU General Public License for more details.
 %error-verbose
 %locations
 
-%nonassoc ERROR IF ELSE END_IF FOR END_FOR
+%nonassoc ERROR IF ELSE END_IF FOR END_FOR WFILE END_WFILE
 %left OR AND
 %left EQUALS '<' '>' EQUALS_LESS EQUALS_GREATER DIFFERS
 %left '!'
@@ -61,6 +61,7 @@ command:	statement
 statement:	set_stmt
 	|	for_stmt
 	|	if_stmt
+	|	file_stmt
 
 set_stmt:	reference '=' expression
 		{
@@ -79,6 +80,11 @@ if_stmt:	IF '(' expression ')' commands END_IF
 	|	IF '(' expression ')' commands ELSE commands END_IF
 		{
 			$$ = tscript_ast_node_3(TSCRIPT_AST_IF, $3, $5, $7);
+		}
+
+file_stmt:	WFILE expression commands END_WFILE
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_FILE, $2, $3);
 		}
 
 expressions:	expressions expression
@@ -100,6 +106,10 @@ expression:	TEXT
 	|	EXT expressions '}'
 		{
 			$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
+		}
+	|	EXT '(' expression ')'
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $3);
 		}
 	|	'-' expression %prec NEG
 		{
@@ -176,6 +186,14 @@ expression:	TEXT
 	|	reference DEC
 		{
 			$$ = tscript_ast_node_1(TSCRIPT_AST_DEC, $1);
+		}
+	|	expression '[' expression ']'
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_INDEX, $1, $3);
+		}
+	|	expression '.' NAME
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_SUBVAR, $1, $3);
 		}
 	|	reference
 	|	type_conv
