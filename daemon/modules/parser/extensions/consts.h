@@ -51,8 +51,8 @@ void tscript_ext_consts_close();
 #endif		    
 
 #define NETWORKS "SELECT id, name, INET_NTOA(address) AS address, \
-		    address AS addresslong, mask, interface, gateway, dns, \
-		    dns2, wins, domain, dhcpstart, dhcpend \
+		    mask, interface, gateway, dns, dns2, wins, domain, \
+		    dhcpstart, dhcpend \
 		    FROM networks" 
 
 #endif

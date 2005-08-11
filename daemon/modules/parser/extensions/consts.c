@@ -1,9 +1,11 @@
 #include "consts.h"
+#include "net.h"
 #include "tscript_extensions.h"
 #include "tscript_debug.h"
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 ConnHandle *con = NULL;
 int rows;
@@ -16,7 +18,7 @@ tscript_value tscript_ext_consts_customers()
 	char *colname, *value;
 	QueryHandle *q = NULL;
 	
-	tscript_debug("Executing SQL Extension: CUSTOMERS\n");
+	tscript_debug("Executing CONSTS Extension: CUSTOMERS\n");
 	q = db_query(con, CUSTOMERS);
 
 	res = tscript_value_create(TSCRIPT_TYPE_ARRAY, "");
@@ -30,13 +32,12 @@ tscript_value tscript_ext_consts_customers()
 		{
 			colname = db_colname(q, c);
 			value = db_get_data(q, r, colname);
-			(*tscript_value_array_item_ref(res_row, c)) = tscript_value_create(TSCRIPT_TYPE_STRING, value);
 			(*tscript_value_subvar_ref(res_row, colname)) = tscript_value_create(TSCRIPT_TYPE_STRING, value);
 		}
 	}
 	db_free(&q);
 	
-	tscript_debug("Finished executing SQL Extension: CUSTOMERS\n");
+	tscript_debug("Finished executing CONSTS Extension: CUSTOMERS\n");
 	return res;
 }
 
@@ -48,7 +49,7 @@ tscript_value tscript_ext_consts_nodes()
 	char *colname, *value;
 	QueryHandle *q = NULL;
 	
-	tscript_debug("Executing SQL Extension: NODES\n");
+	tscript_debug("Executing CONSTS Extension: NODES\n");
 	q = db_query(con, NODES);
 
 	res = tscript_value_create(TSCRIPT_TYPE_ARRAY, "");
@@ -62,13 +63,12 @@ tscript_value tscript_ext_consts_nodes()
 		{
 			colname = db_colname(q, c);
 			value = db_get_data(q, r, colname);
-			(*tscript_value_array_item_ref(res_row, c)) = tscript_value_create(TSCRIPT_TYPE_STRING, value);
 			(*tscript_value_subvar_ref(res_row, colname)) = tscript_value_create(TSCRIPT_TYPE_STRING, value);
 		}
 	}
 	db_free(&q);
 	
-	tscript_debug("Finished executing SQL Extension: NODES\n");
+	tscript_debug("Finished executing CONSTS Extension: NODES\n");
 	return res;
 }
 
@@ -80,7 +80,7 @@ tscript_value tscript_ext_consts_networks()
 	char *colname, *value;
 	QueryHandle *q = NULL;
 	
-	tscript_debug("Executing SQL Extension: NETWORKS\n");
+	tscript_debug("Executing CONSTS Extension: NETWORKS\n");
 	q = db_query(con, NETWORKS);
 
 	res = tscript_value_create(TSCRIPT_TYPE_ARRAY, "");
@@ -94,19 +94,16 @@ tscript_value tscript_ext_consts_networks()
 		{
 			colname = db_colname(q, c);
 			value = db_get_data(q, r, colname);
-			(*tscript_value_array_item_ref(res_row, c)) = tscript_value_create(TSCRIPT_TYPE_STRING, value);
 			(*tscript_value_subvar_ref(res_row, colname)) = tscript_value_create(TSCRIPT_TYPE_STRING, value);
 		}
-		/* TODO:
-		    prefix
-		    size
-		    broadcast
-		    broadcastlong
-		*/
+
+		c = mask2prefix(db_get_data(q, r, "mask"));
+		(*tscript_value_subvar_ref(res_row, "prefix")) = tscript_value_create_number(c);
+		(*tscript_value_subvar_ref(res_row, "size")) = tscript_value_create_number(pow(2,32 - c));
 	}
 	db_free(&q);
 	
-	tscript_debug("Finished executing SQL Extension: NETWORKS\n");
+	tscript_debug("Finished executing CONSTS Extension: NETWORKS\n");
 	return res;
 }
 
