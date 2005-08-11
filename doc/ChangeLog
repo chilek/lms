@@ -48,6 +48,8 @@ version 1.7.2 Doci (????-??-??):
   - Mailing: attachement support (alec)
   - reload_type=exec: allows you to choose which host configurations
     to be reloaded (chilek)
+  - lmsd/parser: updated tscript library: regexps, consts, file (alec)
+  - lmsd/parser: added extensions: NET, CONSTS (alec)
 
 version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
 

@@ -1,4 +1,4 @@
-LDFLAGS += -lfl
+LDFLAGS += -lfl -lm
 SOURCES = parser.c lib/tscript.a extensions/tscript_extensions.a
 OBJECTS = ${SOURCES:.c=.o}
 
