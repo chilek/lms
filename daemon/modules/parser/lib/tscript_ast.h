@@ -28,6 +28,7 @@ extern const char* TSCRIPT_AST_DEC;
 extern const char* TSCRIPT_AST_MATCH;
 extern const char* TSCRIPT_AST_IF;
 extern const char* TSCRIPT_AST_FOR;
+extern const char* TSCRIPT_AST_FILE;
 extern const char* TSCRIPT_AST_SEQ;
 extern const char* TSCRIPT_AST_CONV;
 extern const char* TSCRIPT_AST_EXT;

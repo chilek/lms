@@ -36,6 +36,8 @@ tscript_value tscript_value_create_error(const char* format, ...);
 tscript_value tscript_value_create_null();
 tscript_value tscript_value_create_number(double val);
 tscript_value tscript_value_create_string(char* str);
+tscript_value tscript_value_create_array();
+tscript_value tscript_value_create_reference(tscript_value* val);
 
 tscript_value tscript_value_array_count(tscript_value* val);
 tscript_value* tscript_value_array_item_ref(tscript_value* val, int index);

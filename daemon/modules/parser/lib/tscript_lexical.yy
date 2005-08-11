@@ -66,7 +66,7 @@ GNU General Public License for more details.
 %option stack
 %option noyywrap
 
-%x commands
+%x commands ext_arg
 
 %%
 
@@ -126,6 +126,10 @@ GNU General Public License for more details.
 
 <commands>\/if				YY_RETURN(END_IF);
 
+<commands>file				YY_RETURN(WFILE);
+
+<commands>\/file			YY_RETURN(END_WFILE);
+
 <commands>==				YY_RETURN(EQUALS);
 
 <commands>!=				YY_RETURN(DIFFERS);
@@ -162,7 +166,7 @@ GNU General Public License for more details.
 						if (tscript_has_extension(yytext))
 						{
 							state_stack_level++;
-							yy_push_state(INITIAL);
+							yy_push_state(ext_arg);
 							YY_RETURN(EXT);
 						}
 						if (tscript_has_constant(yytext))
@@ -173,6 +177,18 @@ GNU General Public License for more details.
 <commands>[[:space:]]+
 
 <commands>.				YY_RETURN(*yytext);
+
+<ext_arg>\(				{
+						yy_pop_state();
+						YY_RETURN('(');
+					}
+
+<ext_arg>[[:space:]]+
+
+<ext_arg>.				{
+						BEGIN(INITIAL);
+						yyless(0);
+					}	
 
 %%
 

@@ -79,6 +79,18 @@ tscript_value tscript_value_create_string(char* str)
 	return tscript_value_create(TSCRIPT_TYPE_STRING, strdup(str));
 }
 
+tscript_value tscript_value_create_array()
+{
+	return tscript_value_create(TSCRIPT_TYPE_ARRAY, "");
+}
+
+tscript_value tscript_value_create_reference(tscript_value* val)
+{
+	tscript_value v = tscript_value_create(TSCRIPT_TYPE_REFERENCE, "");
+	v.reference_data = val;
+	return v;
+}
+
 tscript_value tscript_value_array_count(tscript_value* val)
 {
 	int res;

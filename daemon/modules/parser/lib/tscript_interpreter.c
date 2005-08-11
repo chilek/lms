@@ -43,6 +43,23 @@ static tscript_value tscript_match_regexp(char* str, char* regexp)
 		return tscript_value_create_error("unknown regexp error");
 }
 
+static tscript_value tscript_save_to_file(char* filename, char* str)
+{
+	int len;
+	FILE* f = fopen(filename, "a");
+	if (f == NULL)
+		return tscript_value_create_error("error opening file %s", filename);
+	len = strlen(str);
+	if (fwrite(str, 1, len, f) != len)
+	{
+		fclose(f);
+		return tscript_value_create_error("error writting file %s", filename);
+	}
+	if (fclose(f) != 0)
+		return tscript_value_create_error("error closing file %s", filename);
+	return tscript_value_create_string("");
+}
+
 static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 {
 	tscript_value res;
@@ -139,16 +156,23 @@ static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 			res = tmp1;
 		else if (tmp2.type == TSCRIPT_TYPE_ERROR)
 			res = tmp2;
-		else if (tmp1.type != TSCRIPT_TYPE_REFERENCE)
-			res = tscript_value_create_error("Indexed symbol must be a reference");
+		else if (tmp1.type != TSCRIPT_TYPE_ARRAY && tmp1.type != TSCRIPT_TYPE_REFERENCE)
+		{
+			res = tscript_value_create_error(
+				"Indexed symbol must be array or reference");
+		}
 		else
 		{
-			res.type = TSCRIPT_TYPE_REFERENCE;
-			res.reference_data = 
-				tscript_value_array_item_ref(tmp1.reference_data, atoi(tscript_value_dereference(tmp2).data));
-			tscript_debug("Array variable: %s\n", tscript_value_convert_to_string(*tmp1.reference_data).data);
-			tmp2 = tscript_value_dereference(res);
-			tscript_debug("Indexed variable: %s\n", tscript_value_convert_to_string(tmp2).data);
+			if (tmp1.type == TSCRIPT_TYPE_REFERENCE)
+				res = tscript_value_create_reference(
+					tscript_value_array_item_ref(
+						tmp1.reference_data,
+						atoi(tscript_value_dereference(tmp2).data)));
+			else
+				res = tscript_value_create_reference(
+					tscript_value_array_item_ref(
+						&tmp1,
+						atoi(tscript_value_dereference(tmp2).data)));
 			tscript_debug("Interpreted TSCRIPT_AST_VAR_INDEX\n");
 		}
 	}
@@ -430,6 +454,23 @@ static tscript_value tscript_interprete_sub(tscript_ast_node* ast)
 			res.data = (char*)realloc(res.data, strlen(res.data) + strlen(tmp1.data) + 1);
 			strcat(res.data, tmp1.data);
 			tscript_interprete_sub(ast->children[2]);
+		}
+	}
+	else if (ast->type == TSCRIPT_AST_FILE)
+	{
+		tscript_debug("Interpretting TSCRIPT_AST_FILE\n");
+		tmp1 = tscript_value_dereference(tscript_interprete_sub(ast->children[0]));
+		tmp2 = tscript_value_dereference(tscript_interprete_sub(ast->children[1]));
+		if (tmp1.type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else if (tmp2.type == TSCRIPT_TYPE_ERROR)
+			res = tmp2;
+		else
+		{
+			tscript_debug("File name: %s\n", tscript_value_convert_to_string(tmp1).data);
+			res = tscript_save_to_file(tscript_value_convert_to_string(tmp1).data,
+				tscript_value_convert_to_string(tmp2).data);
+			tscript_debug("Interpreted TSCRIPT_AST_FILE\n");
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_SEQ)
