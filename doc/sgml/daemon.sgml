@@ -1315,15 +1315,27 @@ DROP &lt;the_rest_of_query&gt;
 {/for}\
 </screen>
 	    </example>    
-	    </para>
-	    <para>Second example is longer. Here we are using especially 'exec'.
-	    Script sends e-mails to customers with balance less than specified limit.	    
+	    <para>How to create debtors list? It's easy with use of predefined 
+	    constants.
 	    <example id="parser-e2">
+		<title>Parser: Debtors list</title>
+<screen>
+{for (r=0; r&lt;number(CUSTOMERS); r++)}\
+    {if (CUSTOMERS[r].balance < 0)}\
+{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
+    {/if}\
+{/for}\
+</screen>
+	    </example>    
+	    </para>
+	    <para>Next example is longer. Here we are using especially 'exec'.
+	    Script sends e-mails to customers with balance less than specified limit.	    
+	    <example id="parser-e3">
 		<title>Parser: Notify module replacement</title>
 <screen>
 {limit = 0}
-{month = exec printf %s `date +%B` /* using printf to trim end-of-line sign */}
-{year = exec printf %s `date +%Y`}
+{month = exec date +%B}
+{year = exec date +%Y}
 {customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
@@ -1340,7 +1352,7 @@ We kindly remind that you have debt on your internet service provide account
 for the amount of $ {customers[i].balance}.
 
 If you have already regulated your subscription fees for current month, that
-is {month} {year}, please just skip this message.
+is {trim(month)} {trim(year)}, please just skip this message.
 
 If you think this message was sent to you in error, please contact our
 customer service representative.

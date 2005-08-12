@@ -1164,70 +1164,72 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 	    <para>Sk³adnia jêzyka T-Script jest podobna do sk³adni innych popularnych
 	    jêzyków takich jak C czy JavaScript, ale dokonano pewnych zmian
 	    maj±cych na celu u³atwienie tworzenia szablonów. 
-	    Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.</para>
+	    Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.
+	    Dane poza klamrami zostan± zapisane do pliku wyj¶ciowego (lub je¶li go
+	    nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie.</para>
 	    <para>Wyra¿enia:
 	    <itemizedlist>
 		<listitem>
-		    <para>Ci±g znaków</para>
+		    <para>Ci±g znaków.</para>
 		    <para><screen>"jaki¶ ci±g znaków"</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Liczba</para>
+		    <para>Liczba.</para>
 		    <para><screen>1234</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Warto¶æ zmiannej "var"</para>
+		    <para>Warto¶æ zmiannej "var".</para>
 		    <para><screen>var</screen></para>
 		</listitem>
 		<listitem>
-		    <para>N-ty element tablicy "var"</para>
+		    <para>N-ty element tablicy "var".</para>
 		    <para><screen>var[n]</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Podzmienna "n" zmiennej "var"</para>
+		    <para>Podzmienna "n" zmiennej "var".</para>
 		    <para><screen>var.n</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Warto¶æ wyra¿enia w nawiasach</para>
+		    <para>Warto¶æ wyra¿enia w nawiasach.</para>
 		    <para><screen>( &lt;wyra¿enie&gt; )</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku 0</para>
+		    <para>Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku 0.</para>
 		    <para><screen>! &lt;wyra¿enie&gt;</screen></para>
 		</listitem>
 		<listitem>
 		    <para>Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± wyra¿enie2 
-		    lub 0 gdy s± ró¿ne</para>
+		    lub 0 gdy s± ró¿ne.</para>
 		    <para><screen>&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same</para>
+		    <para>Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same.</para>
 		    <para><screen>&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2</para>
+		    <para>Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2.</para>
 		    <para><screen>&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2</para>
+		    <para>Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2.</para>
 		    <para><screen>&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;</screen></para>
 		</listitem> 
 		<listitem>
-		    <para>Zwraca 1 gdy jedno z wyra¿eñ jest prawd±</para>
+		    <para>Zwraca 1 gdy jedno z wyra¿eñ jest prawd±.</para>
 		    <para><screen>&lt;wyra¿enie1&gt; || &lt;wyra¿enie2&gt;</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe</para>
+		    <para>Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe.</para>
 		    <para><screen>&lt;wyra¿enie1&gt; && &lt;wyra¿enie2&gt;</screen></para>
 		</listitem>
 		<listitem>
 		    <para>Gdy oba wyra¿enia s± liczbami zwraca wynik operacji
 		    arytmetycznej. W innym przypadku traktuje wyra¿enia jako ci±gi
-		    znaków i dokonuje ich po³±czenia</para>
+		    znaków i dokonuje ich po³±czenia.</para>
 		    <para><screen>&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach</para>
+		    <para>Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach.</para>
 		    <para>
 <screen>
 &lt;wyra¿enie1&gt; - &lt;wyra¿enie2&gt;
@@ -1235,33 +1237,38 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 &lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;
 &lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;</screen></para>
 		</listitem>
+		<listitem>
+		    <para>Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
+		    w przeciwnym wypadku zwraca 0.</para>
+		    <para><screen>&lt;wyra¿enie&gt; =~ &lt;wzorzec&gt;</screen></para>
+		</listitem>
 	    </itemizedlist>
 	    </para>
 	    <para>Komentarze:
 	    <itemizedlist>
 		<listitem>
-		    <para>Komentarze w stylu jêzyka C</para>
+		    <para>Komentarz w stylu jêzyka C.</para>
 		    <para>
-		    <screen>/* to jest komentarz - mo¿e byæ wieloliniowy */</screen></para>
+		    <screen>{/* to jest komentarz - mo¿e byæ wieloliniowy */}</screen></para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
 	    <para>Podstawowe polecenia:
 	    <itemizedlist>
 		<listitem>
-		    <para>Przypisuje warto¶æ wyra¿enia do podanej zmiennej</para>
+		    <para>Przypisanie warto¶ci wyra¿enia do podanej zmiennej.</para>
 		    <para>
-		    <screen>&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;</screen></para>
+		    <screen>{&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;}</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Wykonuje polecenie tylko wtedy gry wyra¿enie jest prawd±. 
+		    <para>Wykonanie polecenia tylko wtedy gry wyra¿enie jest prawd±. 
 		    Druga forma wykonuje polecenie1 gdy wyra¿enie jest prawd± lub polecenie2
-		    gdy jest fa³szem</para> 
+		    gdy jest fa³szem.</para> 
 		    <para>
-<screen>if ( &lt;wyra¿enie&gt; ) &lt;polecenia&gt; /if
-if ( &lt;wyra¿enie&gt; ) &lt;polecenie1&gt; else &lt;polecenie2&gt; /if</screen></para>
+<screen>{if ( &lt;wyra¿enie&gt; )} &lt;polecenia&gt; {/if}
+{if ( &lt;wyra¿enie&gt; )} &lt;polecenie1&gt; {else} &lt;polecenie2&gt; {/if}</screen></para>
 		    <para>Tekst miêdzy blokami jest traktowany jako polecenia
-		    dlatego nastêpuj±cy przyk³±d jest prawid³owy:
+		    dlatego nastêpuj±cy przyk³ad jest prawid³owy:
 <screen>Jaki¶ tekst
 {if (a==1)} 
 a równe jest 1
@@ -1282,48 +1289,194 @@ a nie równa siê 1
 </screen></para>
 		</listitem>
 		<listitem>
-		    <para>Wykonuje polecenie1 jako polecenie inicjalizuj±ce pêtlê. Nastêpnie
-		    wykonuje polecenia i polecenie2 dopóki wyra¿enie jest prawdziwe</para>
-		    <para><screen>for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; ) &lt;polecenia&gt; /for</screen></para>
+		    <para>Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
+		    wykonywane jest polecenie i polecenie2, dopóki wyra¿enie jest prawdziwe.</para>
+		    <para><screen>{for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )} &lt;polecenia&gt; {/for}</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Przekierowanie wyj¶cia do pliku. Dane zostan± dopisane
+		    do pliku.</para>
+		    <para><screen>{file &lt;nazwa_pliku&gt;} &lt;polecenia&gt; {/file}</screen></para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
 	    <para>Podstawowe funkcje:
 	    <itemizedlist>
 		<listitem>
-		    <para>Zamienia warto¶æ liczbow± na ci±g znaków</para>
-		    <para><screen>string(&lt;zmienna&gt;)</screen></para>
+		    <para>Zamiana warto¶ci liczbowej na ci±g znaków.</para>
+		    <para><screen>{string(&lt;zmienna&gt;)}</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Zamienia ci±g znaków na liczbê</para>
-		    <para><screen>number(&lt;zmienna&gt;)</screen></para>
+		    <para>Zamiana ci±gu znaków na liczbê. Dla tablic zwraca ilo¶æ elementów w tablicy.</para>
+		    <para><screen>{number(&lt;zmienna&gt;)}</screen></para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
-	    <para>Rozszerzenia:
-	    <itemizedlist>
-		<listitem>
-		    <para>Polecenia SQL (pisane tylko ma³ymi lub tylko du¿ymi literami)</para>
-		    <para>
-<screen>
-SELECT &lt;dalszy_ci±g_zapytania&gt;
-INSERT &lt;dalszy_ci±g_zapytania&gt;
-DELETE &lt;dalszy_ci±g_zapytania&gt;
-UPDATE &lt;dalszy_ci±g_zapytania&gt;
-CREATE &lt;dalszy_ci±g_zapytania&gt;
-DROP &lt;dalszy_ci±g_zapytania&gt;
-</screen></para>
-		</listitem>
-		<listitem>
-		    <para>Liczba wierszy, których dotyczy zapytanie (ma³e lub du¿e litery)</para>
-		    <para><screen>ROWS &lt;zapytanie_sql&gt;</screen></para>
-		</listitem>
-		<listitem>
-		    <para>Wykonywanie poleceñ pow³oki</para>
-		    <para><screen>exec &lt;polecenie&gt;</screen></para>
-		</listitem>
-	    </itemizedlist>
-	    </para>
+	</sect2>
+	<sect2 id="daemon-parser-ext">
+	    <title>Rozszerzenia</title>
+		<para>Rozszerzenia to dodatki do biblioteki <emphasis>tscript</emphasis>. 
+		S± to funkcje i sta³e, które mo¿na u¿ywaæ w skryptach. Poni¿ej przedstawiono
+		rozszerzenia udostêpnione w <emphasis>lmsd</emphasis>.
+		<note><para>Funkcje mog± byæ u¿ywane zarówno w sk³adni z nawiasem
+		(<emphasis>{funkcja(zmienna)}</emphasis>) jak i bez nawiasu 
+		(<emphasis>{funkcja {zmienna}}</emphasis>).</para></note>
+		</para>
+	    <sect3 id="exec">
+		<title>Exec</title>
+		<para>Wykonywanie poleceñ pow³oki umo¿liwia funkcja exec(). 
+		Mo¿liwe jest wykonanie wielu poleceñ oddzielonych ¶rednikami
+		w jednym wywo³aniu tej funkcji.</para>
+		<itemizedlist>
+		    <listitem>
+		        <para>Wykonywanie poleceñ pow³oki.</para>
+		        <para><screen>{exec &lt;polecenie&gt;}</screen></para>
+		    </listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3 id="string">
+		<title>String</title>
+		<para>'String' zawiera podstawowe funkcje do operowania
+		na ci±gach znaków.</para>
+		<itemizedlist>
+		    <listitem>
+		        <para>Usuniêcie "bia³ych" znaków z pocz±tku i koñca 
+			ci±gu znaków.</para>
+		        <para><screen>{trim &lt;ci±g_znaków&gt;}</screen></para>
+		    </listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3 id="sql">
+		<title>SQL</title>
+		<para>Rozszerzenie SQL udostêpnia podstawowe funkcje zwi±zane
+		z obs³ug± bazy danych. Pozwala na wykonywanie poleceñ SQL.</para>
+		<itemizedlist>
+		    <listitem>
+		        <para>Polecenia SQL</para>
+		        <para><screen>
+{SELECT &lt;dalszy_ci±g_zapytania&gt;}
+{INSERT &lt;dalszy_ci±g_zapytania&gt;}
+{DELETE &lt;dalszy_ci±g_zapytania&gt;}
+{UPDATE &lt;dalszy_ci±g_zapytania&gt;}
+{CREATE &lt;dalszy_ci±g_zapytania&gt;}
+{DROP &lt;dalszy_ci±g_zapytania&gt;}</screen></para>
+		    </listitem>
+		    <listitem>
+		        <para>Liczba wierszy, których dotyczy zapytanie.</para>
+		        <para><screen>{rows(&lt;zapytanie_sql&gt;)}</screen></para>
+		    </listitem>
+		    <listitem>
+		        <para>Zabezpieczenie znaków specjalnych w celu u¿ycia
+			w zapytaniu SQL. W szczególno¶ci chodzi o apostrofy 
+			i backslashe. Je¶li nie znasz zawarto¶ci zmiennej
+			powiniene¶ j± przepu¶ciæ przez escape().</para>
+		        <para><screen>{escape(&lt;zmienna&gt;)}</screen></para>
+		    </listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3 id="consts">
+		<title>Consts</title>
+		<para>Rozszerzenie ¶ci¶le zwi±zane z LMS-em. Umo¿liwia
+		tworzenie skryptów bez znajomo¶ci struktury bazy danych.
+		Zawiera predefiniowane sta³e, które zawieraj± dane z bazy.
+		Zdefiniowane w programie zapytanie jest wykonywane w momencie
+		pierwszego u¿ycia sta³ej. Nazwy sta³ych nale¿y pisaæ
+		du¿ymi literami. Ka¿da sta³a to tablica zawieraj±ca wiersze
+		numerowane od zera, a ka¿dy wiersz posiada podzmienne dostêpne
+		poprzez nazwê (pisan± ma³ymi literami).</para>
+		<itemizedlist>
+		    <listitem>
+		        <para>CUSTOMERS - lista klientów:
+			    <simplelist>
+				<member>id - ID klienta</member>
+				<member>lastname - nazwa/nazwisko klienta</member>
+				<member>name - imiê klienta</member>
+				<member>status - status</member>
+				<member>address - adres klienta</member>
+				<member>zip - kod pocztowy</member>
+				<member>city - miasto</member>
+				<member>email - adres e-mail</member>
+				<member>phone1, phone2, phone3 - telefony</member>
+				<member>ten - NIP</member>
+				<member>ssn - PESEL</member>
+				<member>info - informacje o kliencie</member>
+				<member>message - tre¶æ ostrze¿enia</member>
+				<member>warning - status ostrze¿enia (suma statusów wszystkich komputerów klienta)</member>
+				<member>access - status dostêpno¶ci (suma statusów wszystkich komputerów klienta)</member>
+				<member>balance - bilans klienta</member>
+			    </simplelist>
+			</para>
+		    </listitem>
+		    <listitem>
+		        <para>NODES - lista komputerów (i adresów urz±dzeñ sieciowych):
+			    <simplelist>
+				<member>id - ID komputera</member>
+				<member>owner - nazwa/nazwisko i imiê klienta</member>
+				<member>ownerid - ID klienta ('0' w przypadku urz±dzeñ)</member>
+				<member>name - nazwa komputera (adresu urz±dzenia)</member>
+				<member>access - status: w³±czony/wy³±czony (1/0)</member>
+				<member>warning - status ostrze¿eñ: w³±czone/wy³±czone (1/0)</member>
+				<member>netdev - ID urz±dzenia, do którego jest pod³±czony</member>
+				<member>lastonline - czas ostatniej aktywno¶ci</member>
+				<member>info - dodatkowe informacje</member>
+				<member>message - tre¶æ ostrze¿enia</member>
+				<member>mac - adres MAC</member>
+				<member>passwd - has³o</member>
+				<member>ip - adres IP</member>
+				<member>ip_pub - publiczny adres IP</member>
+				<member>linktype - typ po³±czenia (0-kabel, 1-radio)</member>
+			    </simplelist>
+			</para>
+		    </listitem>
+		    <listitem>
+		        <para>NETWORKS - lista sieci:
+			    <simplelist>
+				<member>id - ID sieci</member>
+				<member>name - nazwa sieci</member>
+				<member>address - adres IP</member>
+				<member>mask - maska (xxx.xxx.xxx.xxx)</member>
+				<member>prefix - liczba jedynek w masce</member>
+				<member>size - rozmiar sieci (ilo¶æ adresów)</member>
+				<member>interface - nazwa interfejsu</member>
+				<member>gateway - adres bramy</member>
+				<member>dns - adres pierwszego serwera DNS</member>
+				<member>dns2 - adres drugiego serwera DNS</member>
+				<member>wins - adres WINS</member>
+				<member>domain - nazwa domenowa</member>
+				<member>dhcpstart - pocz±tek zakresu DHCP</member>
+				<member>dhcpend - koniec zakresu DHCP</member>
+			    </simplelist>
+			</para>
+		    </listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3 id="net">
+		<title>Net</title>
+		<para>W tym rozszerzeniu zawarte s± funkcje (nazwy pisane ma³ymi literami)
+		przeznaczone do operowania na adresach IP i maskach.</para>
+		<itemizedlist>
+		    <listitem>
+		        <para>Zamiana maski sieciowej w formacie xxx.xxx.xxx.xxx
+			na liczbê (bitów).</para>
+			<para><screen>mask2prefix(&lt;maska&gt;)</screen></para>
+		    </listitem>
+		    <listitem>
+		        <para>Zamiana adresu IP w formacie 4-oktetowym na
+			liczbê.</para>
+			<para><screen>ip2long(&lt;adres&gt;)</screen></para>
+		    </listitem>
+		    <listitem>
+		        <para>Zamiana adresu IP podanego jako liczba
+			na format xxx.xxx.xxx.xxx.</para>
+			<para><screen>long2ip(&lt;adres&gt;)</screen></para>
+		    </listitem>
+		    <listitem>
+		        <para>Obliczenie adresu broadcast dla podanego
+			adresu IP oraz maski (format maski dowolny).</para>
+			<para><screen>broadcast(&lt;adres/maska&gt;)</screen></para>
+		    </listitem>
+		</itemizedlist>
+	    </sect3>
 	</sect2>
 	<sect2 id="daemon-parser-examples">
 	<title>Przyk³adowe skrypty</title>
@@ -1339,17 +1492,28 @@ DROP &lt;dalszy_ci±g_zapytania&gt;
 {result[r].name}\t{result[r].ip}
 {/for}\
 </screen>
-	    </example>    
-	    </para>
-	    <para>Drugi trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
+	    </example></para>
+	    <para>Utworzenie listy d³u¿ników jest bardzo proste, zw³aszcza
+	    gdy zastosujemy jedn± z predefiniowanych sta³ych.
+	    <example id="parser-e2">
+		<title>Parser: Lista d³u¿ników</title>
+<screen>
+{for (r=0; r&lt;number(CUSTOMERS); r++)}\
+    {if (CUSTOMERS[r].balance < 0)}\
+{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
+    {/if}
+{/for}\
+</screen>
+	    </example></para>
+	    <para>Kolejny trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
 	    'exec'. Skrypt wysy³a wiadomo¶ci do klientów z bilansem ni¿szym od
 	    zadanego limitu.
-	    <example id="parser-e2">
+	    <example id="parser-e3">
 		<title>Parser: Zamiennik modu³u notify</title>
 <screen>
 {limit = 0}
-{month = exec printf %s `date +%B` /* u¿ywamy printf aby usun±æ znak nowej linii */}
-{year = exec printf %s `date +%Y`}
+{month = exec date +%B}
+{year = exec date +%Y}
 {customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
@@ -1365,7 +1529,7 @@ DROP &lt;dalszy_ci±g_zapytania&gt;
 Uprzejmie informujemy, i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za 
 Internet w kwocie {customers[i].balance*-1} z³.
 
-Je¿eli nale¿no¶æ za bie¿±cy miesi±c, to jest {month} {year}, zosta³a ju¿
+Je¿eli nale¿no¶æ za bie¿±cy miesi±c, to jest {trim(month)} {trim(year)}, zosta³a ju¿
 uregulowana prosimy zignorowaæ tê wiadomo¶æ.
 
 W przypadku gdy uwa¿a Pani/Pan, ¿e zaleg³o¶æ ta jest nieporozumieniem
