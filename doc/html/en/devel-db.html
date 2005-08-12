@@ -573,7 +573,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->taxvalue - tax rate in percent</TD
+>taxid - tax rate identifier</TD
 ></TR
 ><TR
 ><TD
@@ -627,7 +627,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->taxvalue - tax rate in percent</TD
+>taxid - tax rate identifier</TD
 ></TR
 ><TR
 ><TD
@@ -673,7 +673,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->taxvalue - tax rate in percent</TD
+>taxid - tax rate identifier</TD
 ></TR
 ><TR
 ><TD
@@ -811,8 +811,80 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="TAXES"
+>7.2.14. Tax rates ('taxes')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>value - tax value</TD
+></TR
+><TR
+><TD
+>taxed - "is taxed" flag</TD
+></TR
+><TR
+><TD
+>label - rate label</TD
+></TR
+><TR
+><TD
+>validfrom - binding period start</TD
+></TR
+><TR
+><TD
+>validto - binding period end</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NUMBERPLANS"
+>7.2.15. Documents numbering plans ('numberplans')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>template - number template (pattern)</TD
+></TR
+><TR
+><TD
+>period - numbering time span: day/week/month/quarter/year</TD
+></TR
+><TR
+><TD
+>doctype - document type</TD
+></TR
+><TR
+><TD
+>isdefault - '1' if this plan is default for respondent doctype, else '0'</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DOCUMENTS"
->7.2.14. Documents: invoices, receipts, contracts, etc. ('documents')</A
+>7.2.16. Documents: invoices, receipts, contracts, etc. ('documents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -824,6 +896,10 @@ BORDER="0"
 ><TR
 ><TD
 >number - number in year</TD
+></TR
+><TR
+><TD
+>numberplanid - numbering plan identifier</TD
 ></TR
 ><TR
 ><TD
@@ -881,8 +957,54 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="DOCUMENTCONTENTS"
+>7.2.17. Non-financial documents contents ('documentcontents')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>docid - document serial number</TD
+></TR
+><TR
+><TD
+>title - document title</TD
+></TR
+><TR
+><TD
+>fromdate - start of binding period</TD
+></TR
+><TR
+><TD
+>todate - end of binding period</TD
+></TR
+><TR
+><TD
+>filename - document file name</TD
+></TR
+><TR
+><TD
+>contenttype - file type</TD
+></TR
+><TR
+><TD
+>md5sum - file md5 sum</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="INVOICECONTENTS"
->7.2.15. Invoices ('invoicecontents')</A
+>7.2.18. Invoices ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -901,7 +1023,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->taxvalue - tax rate in percent</TD
+>taxid - tax rate identifier</TD
 ></TR
 ><TR
 ><TD
@@ -932,7 +1054,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RECEIPTCONTENTS"
->7.2.16. Cash Receipts ('receiptcontents')</A
+>7.2.19. Cash Receipts ('receiptcontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -962,7 +1084,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.17. Accounts ('passwd')</A
+>7.2.20. Accounts ('passwd')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1040,7 +1162,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.18. Domains ('domains')</A
+>7.2.21. Domains ('domains')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1066,7 +1188,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.19. Aliases ('aliases')</A
+>7.2.22. Aliases ('aliases')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1092,7 +1214,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.20. History ('timestamps')</A
+>7.2.23. History ('timestamps')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1114,7 +1236,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.21. Bandwidth consumption statistics ('stats')</A
+>7.2.24. Bandwidth consumption statistics ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1144,7 +1266,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.22. Helpdesk - Request Tracking ('rtqueues')</A
+>7.2.25. Helpdesk - Request Tracking ('rtqueues')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1174,7 +1296,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.23. Helpdesk - Request Tracking - continued... ('rttickets')</A
+>7.2.26. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1220,7 +1342,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.24. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+>7.2.27. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1282,7 +1404,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.25. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+>7.2.28. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1308,7 +1430,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.26. Helpdesk - Request Tracking - continued... ('rtrights')</A
+>7.2.29. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1338,7 +1460,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.27. LMS-UI Online Configuration ('uiconfig')</A
+>7.2.30. LMS-UI Online Configuration ('uiconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1376,7 +1498,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.28. Timetable - events ('events')</A
+>7.2.31. Timetable - events ('events')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1434,7 +1556,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.29. Timetable - assignments ('eventassignments')</A
+>7.2.32. Timetable - assignments ('eventassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1456,7 +1578,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.30. Sessions ('sessions')</A
+>7.2.33. Sessions ('sessions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1494,7 +1616,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONHOSTS"
->7.2.31. Daemon configuration - hosts ('daemonhosts')</A
+>7.2.34. Daemon configuration - hosts ('daemonhosts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1528,7 +1650,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.32. Daemon configuration - instances ('daemoninstances')</A
+>7.2.35. Daemon configuration - instances ('daemoninstances')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1574,7 +1696,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.33. Daemon configuration - options ('daemonconfig')</A
+>7.2.36. Daemon configuration - options ('daemonconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1612,7 +1734,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.34. Database information ('dbinfo')</A
+>7.2.37. Database information ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"
