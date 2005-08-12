@@ -92,7 +92,8 @@ LMS Developers
    4-2. Lms-notify: example of mailing template
    5-1. Lms-mgc: Example instance
    6-1. Parser: Creating /etc/hosts file
-   6-2. Parser: Notify module replacement
+   6-2. Parser: Debtors list
+   6-3. Parser: Notify module replacement
    7-1. Format of configuration options
      _________________________________________________________________
 
@@ -4127,59 +4128,67 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
    T-Script language syntax is based on other popular languages like C or
    JavaScript  with  little  changes  made  to  make  writting  templates
    simpler. Additional commands should be written inside { } parenthesis.
+   Data  outside curly brackets will be writed to output file (or ommited
+   if  file  was  not  specified).  All expressions, variables, commands,
+   function names are case-sensitive.
 
    Supported expressions:
-     * Literal inside quotes
+     * Literal inside quotes.
 "some literal"
-     * Number
+     * Number.
 1234
-     * Value of variable "var"
+     * Value of variable "var".
 var
-     * N-th element of array "var"
+     * N-th element of array "var".
 var[n]
-     * Subvariable "n" of variable "var"
+     * Subvariable "n" of variable "var".
 var.n
-     * Value of expression inside parenthesis
+     * Value of expression inside parenthesis.
 ( <expression> )
-     * 1 if value of expression is false, otherwise 0
+     * 1 if value of expression is false, otherwise 0.
 ! <expression>
      * Evaluates  to 1 if expression1 value equals expression2 value or 0
-       if not
+       if not.
 <expression1> == <expression2>
      * Evaluates  to  1  if  expression1  value doesn't equal expression2
-       value or 0 if it does
+       value or 0 if it does.
 <expression1> != <expression2>
-     * Evaluates to 1 if expression1 value is less than expression2 value
+     * Evaluates  to  1  if  expression1  value  is less than expression2
+       value.
 <expression1> < <expression2>
      * Evaluates  to  1  if expression1 value is greater than expression2
-       value
+       value.
 <expression1> > <expression2>
-     * Evaluates to 1 if expression1 value or expression2 value are true
+     * Evaluates to 1 if expression1 value or expression2 value are true.
 <expression1> || <expression2>
-     * Evaluates to 1 if expression1 value and expression2 value are true
+     * Evaluates  to  1  if  expression1  value and expression2 value are
+       true.
 <expression1> && <expression2>
      * When  both expression values have numeric type evaluates to result
        of  arithmetic operation. In other situation treats expressions as
-       strings and performs string concatenation
+       strings and performs string concatenation.
 <expression1> + <expression2>
      * Evaluates  to  result  of  arithmetic  operation on two expression
-       values
+       values.
 <expression1> - <expression2>
 <expression1> * <expression2>
 <expression1> / <expression2>
 <expression1> % <expression2>
+     * Evaluates   to   1   if   expression1  value  match  with  regular
+       expression2, else 0.
+<expression1> =~ <expression2>
 
    Comments:
-     * C-style comment
-/* this is a comment - it can be also multiline */
+     * C-style comment.
+{/* this is a comment - it can be also multiline */}
 
    Basic commands:
-     * Assigns expression value to specified variable
-<variable_name> = <expression>
+     * Assigns expression value to specified variable.
+{<variable_name> = <expression>}
      * Executes  command only if expression is true. Second form executes
-       command1 if expression is true or command2 if expression is false
-if ( <expression> ) <commands> /if
-if ( <expression> ) <commands1> else <commands2> /if
+       command1 if expression is true or command2 if expression is false.
+{if ( <expression> }) <command> {/if}
+{if ( <expression> }) <commands1> {else} <commands2> {/if}
        Text  between  command  blocks  is  treated  as  a  command so the
        following example is correct:
 Some text
@@ -4197,30 +4206,141 @@ a equals 1
 a doesn't equal 1
 {/if}\
      * Executes  first  command1  as  loop  initialization  command. Then
-       executes commands and command2 while expression is true
-for ( <command1> ; <expression> ; <command2> ) <commands> /for
+       executes commands and command2 while expression is true.
+{for ( <command1> ; <expression> ; <command2> )} <commands> {/for}
+     * Redirects script output to file. Data will be appended to file.
+{file <file_name>} <commands> {/file}
 
    Basic functions:
-     * Converts numeric variable to string value
-string(<variable_name>)
-     * Converts string variable to numeric value
-number(<variable_name>)
-
-   Extensions:
-     * SQL commands (case insensitive)
-SELECT <the_rest_of_query>
-INSERT <the_rest_of_query>
-DELETE <the_rest_of_query>
-UPDATE <the_rest_of_query>
-CREATE <the_rest_of_query>
-DROP <the_rest_of_query>
-     * SQL result rows count (case insensitive)
-ROWS <sql_query>
-     * Shell command executing
-exec <command>
+     * Converts numeric variable to string value.
+{string(<variable_name>)}
+     * Converts  string  variable  to  numeric  value. For arrays returns
+       number of items in array.
+{number(<variable_name>)}
      _________________________________________________________________
 
-6.3.4. Example Scripts
+6.3.4. Extensions
+
+   Extensions  are  tscript  library  supplements. That are functions and
+   constants, wich can be used in scripts. Below are described extensions
+   implemented in lmsd.
+   Note
+
+   Functions have two calling forms: with brackets ({function(var)}) and
+   without brackets ({function {var}}).
+     _________________________________________________________________
+
+6.3.4.1. Exec
+
+   Shell  commands  execution  is  possible with exec(). You can run many
+   commands separated by semicolons in one function call.
+     * Shell commands execution.
+{exec <command>}
+     _________________________________________________________________
+
+6.3.4.2. String
+
+   'String' consists basic functions for strings operations.
+     * Deleting  of  whitespace  signs  from the beginning and the end of
+       string.
+{trim <string>}
+     _________________________________________________________________
+
+6.3.4.3. SQL
+
+   SQL  extension implements functions for database operations. Allows to
+   run SQL commands.
+     * SQL commands
+{SELECT <the_rest_of_query>}
+{INSERT <the_rest_of_query>}
+{DELETE <the_rest_of_query>}
+{UPDATE <the_rest_of_query>}
+{CREATE <the_rest_of_query>}
+{DROP <the_rest_of_query>}
+     * Returns SQL result rows count. Use it for non-select commands.
+{rows(<sql>)}
+     * Escapes a string for use within an SQL commands.
+{escape(<string>)}
+     _________________________________________________________________
+
+6.3.4.4. Consts
+
+   Extension closely connected with LMS. Makes possible to create scripts
+   without  of  LMS's  database  structure knowledge. Contains predefined
+   constants, which consists data from database. Query defined in program
+   is  executed  when  constant  is  used first time. Constants names are
+   uppercase.  Each  constant is an array with rows indexed starting from
+   zero,   and   each   row   consist  subvariables  accessible  by  name
+   (lowercase).
+     * CUSTOMERS - customers list:
+
+       id - customer ID
+       lastname - customer lastname
+       name - customer name
+       status - status
+       address - address
+       zip - postal code
+       city - city
+       email - email address
+       phone1, phone2, phone3 - phone numbers
+       ten - tax exempt number
+       ssn - security serial number
+       info - additional informations
+       message - warning contents
+       warning - warning status (status of all customer's nodes summary)
+       access - accessibility status (status of all customer's nodes summary)
+       balance - customer's balance
+     * NODES - nodes list (and network devices addresses):
+
+       id - node ID
+       owner - customer name and lastname
+       ownerid - customer ID ('0' for devices)
+       name - node (device's address) name
+       access - status: connected/disconnected (1/0)
+       warning - warnings status: enabled/disabled (1/0)
+       netdev - device ID, to which is connected
+       lastonline - last activity timestamp
+       info - additional informations
+       message - warning message contents
+       mac - MAC address
+       passwd - password
+       ip - IP address
+       ip_pub - public IP address
+       linktype - connection type (0-cable, 1-air)
+     * NETWORKS - networks list:
+
+       id - network ID
+       name - network name
+       address - IP address
+       mask - subnet mask (xxx.xxx.xxx.xxx)
+       prefix - number of bits in mask
+       size - network size (number of addresses)
+       interface - interface name
+       gateway - gateway address
+       dns - primary DNS server
+       dns2 - secondary DNS server
+       wins - WINS server
+       domain - domain name
+       dhcpstart - start of DHCP range
+       dhcpend - end of DHCP range
+     _________________________________________________________________
+
+6.3.4.5. Net
+
+   In  this  extension  are included two functions (with lowercase names)
+   destined to IP addresses and subnet masks operations.
+     * Returns number of bits in subnet mask.
+mask2prefix(<mask>)
+     * Change octal IP address to long number.
+ip2long(<address>)
+     * Change long number to IP address octal format (xxx.xxx.xxx.xxx).
+long2ip(<number>)
+     * Calculate  broadcast  address  from  specified IP address and mask
+       (any mask format).
+broadcast(<address/mask>)
+     _________________________________________________________________
+
+6.3.5. Example Scripts
 
    Let's  begin  from simple script creating file /etc/hosts with list of
    computers (and devices) IPs and names list.
@@ -4232,13 +4352,23 @@ exec <command>
 {result[r].name}\t{result[r].ip}
 {/for}\
 
-   Second  example is longer. Here we are using especially 'exec'. Script
+   How  to  create  debtors  list?  It's  easy  with  use  of  predefined
+   constants.
+
+   Example 6-2. Parser: Debtors list
+{for (r=0; r<number(CUSTOMERS); r++)}\
+    {if (CUSTOMERS[r].balance < 0)}\
+{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
+    {/if}\
+{/for}\
+
+   Next  example  is  longer. Here we are using especially 'exec'. Script
    sends e-mails to customers with balance less than specified limit.
 
-   Example 6-2. Parser: Notify module replacement
+   Example 6-3. Parser: Notify module replacement
 {limit = 0}
-{month = exec printf %s `date +%B` /* using printf to trim end-of-line sign */}
-{year = exec printf %s `date +%Y`}
+{month = exec date +%B}
+{year = exec date +%Y}
 {customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
@@ -4255,7 +4385,7 @@ We kindly remind that you have debt on your internet service provide account
 for the amount of $ {customers[i].balance}.
 
 If you have already regulated your subscription fees for current month, that
-is {month} {year}, please just skip this message.
+is {trim(month)} {trim(year)}, please just skip this message.
 
 If you think this message was sent to you in error, please contact our
 customer service representative.
@@ -4437,7 +4567,7 @@ Chapter 7. For curious
    userid - LMS user id
    type - type of operation (income, expenditure, payment, debt)
    value - amount in dollars
-   taxvalue - tax rate in percent
+   taxid - tax rate identifier
    customerid - customer's serial number ('0' - does not apply)
    docid - serial number for document (e.g. invoice) related to this
    operation
@@ -4452,7 +4582,7 @@ Chapter 7. For curious
    date - timestamp of operation
    customer - customer data
    value - amount
-   taxvalue - tax rate in percent
+   taxid - tax rate identifier
    customerid - customer's serial number
    description - operation description
    hash - unique operation identifier
@@ -4464,7 +4594,7 @@ Chapter 7. For curious
    id - serial number
    name - subscription name
    value - amount
-   taxvalue - tax rate in percent
+   taxid - tax rate identifier
    prodid - product/service classification number
    uprate - upload warranty
    upceil - upload boundary
@@ -4502,10 +4632,31 @@ Chapter 7. For curious
    suspended - is this payment suspended? (1 - yes, 0 - no)
      _________________________________________________________________
 
-7.2.14. Documents: invoices, receipts, contracts, etc. ('documents')
+7.2.14. Tax rates ('taxes')
+
+   id - serial number
+   value - tax value
+   taxed - "is taxed" flag
+   label - rate label
+   validfrom - binding period start
+   validto - binding period end
+     _________________________________________________________________
+
+7.2.15. Documents numbering plans ('numberplans')
+
+   id - serial number
+   template - number template (pattern)
+   period - numbering time span: day/week/month/quarter/year
+   doctype - document type
+   isdefault - '1' if this plan is default for respondent doctype, else
+   '0'
+     _________________________________________________________________
+
+7.2.16. Documents: invoices, receipts, contracts, etc. ('documents')
 
    id - serial number
    number - number in year
+   numberplanid - numbering plan identifier
    type - document type (1 - invoice, 2 - cash receipt)
    cdate - date of write out
    paytime - deadline in days
@@ -4520,12 +4671,24 @@ Chapter 7. For curious
    city - location of customer
      _________________________________________________________________
 
-7.2.15. Invoices ('invoicecontents')
+7.2.17. Non-financial documents contents ('documentcontents')
+
+   docid - document serial number
+   title - document title
+   fromdate - start of binding period
+   todate - end of binding period
+   filename - document file name
+   contenttype - file type
+   md5sum - file md5 sum
+   description - additional informations
+     _________________________________________________________________
+
+7.2.18. Invoices ('invoicecontents')
 
    docid - invoice serial number
    itemid - invoice item identifier
    value - amount
-   taxvalue - tax rate in percent
+   taxid - tax rate identifier
    prodid - product/service classification number
    content - used unit (usually 'pc.')
    count - unit count
@@ -4533,7 +4696,7 @@ Chapter 7. For curious
    tariffid - subscription serial number
      _________________________________________________________________
 
-7.2.16. Cash Receipts ('receiptcontents')
+7.2.19. Cash Receipts ('receiptcontents')
 
    docid - receipt serial number
    itemid - receipt item identifier
@@ -4541,7 +4704,7 @@ Chapter 7. For curious
    description - description for receipt item
      _________________________________________________________________
 
-7.2.17. Accounts ('passwd')
+7.2.20. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -4561,27 +4724,27 @@ Chapter 7. For curious
    quota_ftp - ftp space limits
      _________________________________________________________________
 
-7.2.18. Domains ('domains')
+7.2.21. Domains ('domains')
 
    id - serial number
    name - domain name
    description - comments
      _________________________________________________________________
 
-7.2.19. Aliases ('aliases')
+7.2.22. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    accountid - account serial number
      _________________________________________________________________
 
-7.2.20. History ('timestamps')
+7.2.23. History ('timestamps')
 
    time - last modified timestamp
    tablename - name of modified table
      _________________________________________________________________
 
-7.2.21. Bandwidth consumption statistics ('stats')
+7.2.24. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -4589,7 +4752,7 @@ Chapter 7. For curious
    download - number of bytes received
      _________________________________________________________________
 
-7.2.22. Helpdesk - Request Tracking ('rtqueues')
+7.2.25. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -4597,7 +4760,7 @@ Chapter 7. For curious
    description - main description for the queue
      _________________________________________________________________
 
-7.2.23. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.26. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -4609,7 +4772,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      _________________________________________________________________
 
-7.2.24. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.27. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -4625,14 +4788,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      _________________________________________________________________
 
-7.2.25. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.28. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      _________________________________________________________________
 
-7.2.26. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.29. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -4640,7 +4803,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      _________________________________________________________________
 
-7.2.27. LMS-UI Online Configuration ('uiconfig')
+7.2.30. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -4650,7 +4813,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      _________________________________________________________________
 
-7.2.28. Timetable - events ('events')
+7.2.31. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -4665,13 +4828,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      _________________________________________________________________
 
-7.2.29. Timetable - assignments ('eventassignments')
+7.2.32. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      _________________________________________________________________
 
-7.2.30. Sessions ('sessions')
+7.2.33. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -4681,7 +4844,7 @@ Chapter 7. For curious
    content - data
      _________________________________________________________________
 
-7.2.31. Daemon configuration - hosts ('daemonhosts')
+7.2.34. Daemon configuration - hosts ('daemonhosts')
 
    id - identifier
    name - host name
@@ -4690,7 +4853,7 @@ Chapter 7. For curious
    reload - reload order
      _________________________________________________________________
 
-7.2.32. Daemon configuration - instances ('daemoninstances')
+7.2.35. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -4702,7 +4865,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.33. Daemon configuration - options ('daemonconfig')
+7.2.36. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -4712,7 +4875,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.34. Database information ('dbinfo')
+7.2.37. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value
