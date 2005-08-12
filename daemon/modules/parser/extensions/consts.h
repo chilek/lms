@@ -16,7 +16,7 @@ void tscript_ext_consts_close();
 
 #define CUSTOMERS "SELECT customers.id AS id, customers.lastname AS lastname, \
 		    customers.name AS name, customers.status AS status, \
-		    address, zip, city, email, phone1, ten, ssn, \
+		    address, zip, city, email, phone1, phone2, phone3, ten, ssn, \
 		    customers.info AS info, message, \
 		    SUM(nodes.warning) AS warning, SUM(nodes.access) AS access, \
 		    ROUND(COALESCE(SUM((type * -2 + 7) * value), 0.00)/( \
