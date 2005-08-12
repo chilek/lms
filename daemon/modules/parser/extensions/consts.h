@@ -19,11 +19,11 @@ void tscript_ext_consts_close();
 		    address, zip, city, email, phone1, ten, ssn, \
 		    customers.info AS info, message, \
 		    SUM(nodes.warning) AS warning, SUM(nodes.access) AS access, \
-		    COALESCE(SUM((type * -2 + 7) * value), 0.00)/( \
+		    ROUND(COALESCE(SUM((type * -2 + 7) * value), 0.00)/( \
 			CASE COUNT(DISTINCT nodes.id) \
 			WHEN 0 THEN 1 \
 			ELSE COUNT(DISTINCT nodes.id) END \
-		    ) AS balance \
+		    ),2) AS balance \
 		FROM customers \
 		LEFT JOIN cash ON (customers.id = customerid) \
 		LEFT JOIN nodes ON (customers.id = ownerid) \
