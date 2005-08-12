@@ -1,5 +1,9 @@
 $Id$
 
+version ? (??/??/????):
+
+  - BTS#0000421: fixed icon and description in Nodes -> Print (alec)
+
 version 1.6.2 Desala (09/08/2005):
 
   - fixed SQL query in Mailing with network filtering (alec)
