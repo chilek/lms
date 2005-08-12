@@ -14,8 +14,8 @@
 		for (var i=0; i<document.page.elements.length; i++)
 		{
 			var e = document.page.elements[i];
-			if (e.name != 'allbox')
-			e.checked = document.page.allbox.checked;
+			if (e.name != 'allbox' && e.name != 'groupexclude')
+				e.checked = document.page.allbox.checked;
 		}
 	}
 

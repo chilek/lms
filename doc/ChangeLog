@@ -3,6 +3,7 @@ $Id$
 version ? (??/??/????):
 
   - BTS#0000421: fixed icon and description in Nodes -> Print (alec)
+  - BTS#0000422: fixed js function CheckAll() (alec)
 
 version 1.6.2 Desala (09/08/2005):
 
