@@ -175,13 +175,15 @@ NAME="DAEMON-PARSER-SYNTAX"
 >Sk³adnia jêzyka T-Script jest podobna do sk³adni innych popularnych
 	    jêzyków takich jak C czy JavaScript, ale dokonano pewnych zmian
 	    maj±cych na celu u³atwienie tworzenia szablonów. 
-	    Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.</P
+	    Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.
+	    Dane poza klamrami zostan± zapisane do pliku wyj¶ciowego (lub je¶li go
+	    nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie.</P
 ><P
 >Wyra¿enia:
 	    <UL
 ><LI
 ><P
->Ci±g znaków</P
+>Ci±g znaków.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -190,7 +192,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Liczba</P
+>Liczba.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -199,7 +201,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Warto¶æ zmiannej "var"</P
+>Warto¶æ zmiannej "var".</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -208,7 +210,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->N-ty element tablicy "var"</P
+>N-ty element tablicy "var".</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -217,7 +219,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Podzmienna "n" zmiennej "var"</P
+>Podzmienna "n" zmiennej "var".</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -226,7 +228,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Warto¶æ wyra¿enia w nawiasach</P
+>Warto¶æ wyra¿enia w nawiasach.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -235,7 +237,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku 0</P
+>Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku 0.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -245,7 +247,7 @@ CLASS="SCREEN"
 ><LI
 ><P
 >Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± wyra¿enie2 
-		    lub 0 gdy s± ró¿ne</P
+		    lub 0 gdy s± ró¿ne.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -254,7 +256,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same</P
+>Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -263,7 +265,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2</P
+>Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -272,7 +274,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2</P
+>Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -281,7 +283,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy jedno z wyra¿eñ jest prawd±</P
+>Zwraca 1 gdy jedno z wyra¿eñ jest prawd±.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -290,7 +292,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe</P
+>Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -301,7 +303,7 @@ CLASS="SCREEN"
 ><P
 >Gdy oba wyra¿enia s± liczbami zwraca wynik operacji
 		    arytmetycznej. W innym przypadku traktuje wyra¿enia jako ci±gi
-		    znaków i dokonuje ich po³±czenia</P
+		    znaków i dokonuje ich po³±czenia.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -310,7 +312,7 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach</P
+>Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach.</P
 ><P
 ><PRE
 CLASS="SCREEN"
@@ -318,6 +320,16 @@ CLASS="SCREEN"
 &lt;wyra¿enie1&gt; * &lt;wyra¿enie2&gt;
 &lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;
 &lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
+		    w przeciwnym wypadku zwraca 0.</P
+><P
+><PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie&gt; =~ &lt;wzorzec&gt;</PRE
 ></P
 ></LI
 ></UL
@@ -328,11 +340,11 @@ CLASS="SCREEN"
 	    <UL
 ><LI
 ><P
->Komentarze w stylu jêzyka C</P
+>Komentarz w stylu jêzyka C.</P
 ><P
 >		    <PRE
 CLASS="SCREEN"
->/* to jest komentarz - mo¿e byæ wieloliniowy */</PRE
+>{/* to jest komentarz - mo¿e byæ wieloliniowy */}</PRE
 ></P
 ></LI
 ></UL
@@ -343,27 +355,27 @@ CLASS="SCREEN"
 	    <UL
 ><LI
 ><P
->Przypisuje warto¶æ wyra¿enia do podanej zmiennej</P
+>Przypisanie warto¶ci wyra¿enia do podanej zmiennej.</P
 ><P
 >		    <PRE
 CLASS="SCREEN"
->&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;</PRE
+>{&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;}</PRE
 ></P
 ></LI
 ><LI
 ><P
->Wykonuje polecenie tylko wtedy gry wyra¿enie jest prawd±. 
+>Wykonanie polecenia tylko wtedy gry wyra¿enie jest prawd±. 
 		    Druga forma wykonuje polecenie1 gdy wyra¿enie jest prawd± lub polecenie2
-		    gdy jest fa³szem</P
+		    gdy jest fa³szem.</P
 ><P
 ><PRE
 CLASS="SCREEN"
->if ( &lt;wyra¿enie&gt; ) &lt;polecenia&gt; /if
-if ( &lt;wyra¿enie&gt; ) &lt;polecenie1&gt; else &lt;polecenie2&gt; /if</PRE
+>{if ( &lt;wyra¿enie&gt; )} &lt;polecenia&gt; {/if}
+{if ( &lt;wyra¿enie&gt; )} &lt;polecenie1&gt; {else} &lt;polecenie2&gt; {/if}</PRE
 ></P
 ><P
 >Tekst miêdzy blokami jest traktowany jako polecenia
-		    dlatego nastêpuj±cy przyk³±d jest prawid³owy:
+		    dlatego nastêpuj±cy przyk³ad jest prawid³owy:
 <PRE
 CLASS="SCREEN"
 >Jaki¶ tekst
@@ -388,12 +400,22 @@ a nie równa siê 1
 ></LI
 ><LI
 ><P
->Wykonuje polecenie1 jako polecenie inicjalizuj±ce pêtlê. Nastêpnie
-		    wykonuje polecenia i polecenie2 dopóki wyra¿enie jest prawdziwe</P
+>Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
+		    wykonywane jest polecenie i polecenie2, dopóki wyra¿enie jest prawdziwe.</P
 ><P
 ><PRE
 CLASS="SCREEN"
->for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; ) &lt;polecenia&gt; /for</PRE
+>{for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )} &lt;polecenia&gt; {/for}</PRE
+></P
+></LI
+><LI
+><P
+>Przekierowanie wyj¶cia do pliku. Dane zostan± dopisane
+		    do pliku.</P
+><P
+><PRE
+CLASS="SCREEN"
+>{file &lt;nazwa_pliku&gt;} &lt;polecenia&gt; {/file}</PRE
 ></P
 ></LI
 ></UL
@@ -404,58 +426,20 @@ CLASS="SCREEN"
 	    <UL
 ><LI
 ><P
->Zamienia warto¶æ liczbow± na ci±g znaków</P
+>Zamiana warto¶ci liczbowej na ci±g znaków.</P
 ><P
 ><PRE
 CLASS="SCREEN"
->string(&lt;zmienna&gt;)</PRE
+>{string(&lt;zmienna&gt;)}</PRE
 ></P
 ></LI
 ><LI
 ><P
->Zamienia ci±g znaków na liczbê</P
+>Zamiana ci±gu znaków na liczbê. Dla tablic zwraca ilo¶æ elementów w tablicy.</P
 ><P
 ><PRE
 CLASS="SCREEN"
->number(&lt;zmienna&gt;)</PRE
-></P
-></LI
-></UL
->
-	    </P
-><P
->Rozszerzenia:
-	    <UL
-><LI
-><P
->Polecenia SQL (pisane tylko ma³ymi lub tylko du¿ymi literami)</P
-><P
-><PRE
-CLASS="SCREEN"
->SELECT &lt;dalszy_ci±g_zapytania&gt;
-INSERT &lt;dalszy_ci±g_zapytania&gt;
-DELETE &lt;dalszy_ci±g_zapytania&gt;
-UPDATE &lt;dalszy_ci±g_zapytania&gt;
-CREATE &lt;dalszy_ci±g_zapytania&gt;
-DROP &lt;dalszy_ci±g_zapytania&gt;</PRE
-></P
-></LI
-><LI
-><P
->Liczba wierszy, których dotyczy zapytanie (ma³e lub du¿e litery)</P
-><P
-><PRE
-CLASS="SCREEN"
->ROWS &lt;zapytanie_sql&gt;</PRE
-></P
-></LI
-><LI
-><P
->Wykonywanie poleceñ pow³oki</P
-><P
-><PRE
-CLASS="SCREEN"
->exec &lt;polecenie&gt;</PRE
+>{number(&lt;zmienna&gt;)}</PRE
 ></P
 ></LI
 ></UL
@@ -467,8 +451,457 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="DAEMON-PARSER-EXT"
+>6.3.4. Rozszerzenia</A
+></H2
+><P
+>Rozszerzenia to dodatki do biblioteki <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tscript</I
+></SPAN
+>. 
+		S± to funkcje i sta³e, które mo¿na u¿ywaæ w skryptach. Poni¿ej przedstawiono
+		rozszerzenia udostêpnione w <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lmsd</I
+></SPAN
+>.
+		<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Funkcje mog± byæ u¿ywane zarówno w sk³adni z nawiasem
+		(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>{funkcja(zmienna)}</I
+></SPAN
+>) jak i bez nawiasu 
+		(<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>{funkcja {zmienna}}</I
+></SPAN
+>).</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXEC"
+>6.3.4.1. Exec</A
+></H3
+><P
+>Wykonywanie poleceñ pow³oki umo¿liwia funkcja exec(). 
+		Mo¿liwe jest wykonanie wielu poleceñ oddzielonych ¶rednikami
+		w jednym wywo³aniu tej funkcji.</P
+><UL
+><LI
+><P
+>Wykonywanie poleceñ pow³oki.</P
+><P
+><PRE
+CLASS="SCREEN"
+>{exec &lt;polecenie&gt;}</PRE
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="STRING"
+>6.3.4.2. String</A
+></H3
+><P
+>'String' zawiera podstawowe funkcje do operowania
+		na ci±gach znaków.</P
+><UL
+><LI
+><P
+>Usuniêcie "bia³ych" znaków z pocz±tku i koñca 
+			ci±gu znaków.</P
+><P
+><PRE
+CLASS="SCREEN"
+>{trim &lt;ci±g_znaków&gt;}</PRE
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SQL"
+>6.3.4.3. SQL</A
+></H3
+><P
+>Rozszerzenie SQL udostêpnia podstawowe funkcje zwi±zane
+		z obs³ug± bazy danych. Pozwala na wykonywanie poleceñ SQL.</P
+><UL
+><LI
+><P
+>Polecenia SQL</P
+><P
+><PRE
+CLASS="SCREEN"
+>{SELECT &lt;dalszy_ci±g_zapytania&gt;}
+{INSERT &lt;dalszy_ci±g_zapytania&gt;}
+{DELETE &lt;dalszy_ci±g_zapytania&gt;}
+{UPDATE &lt;dalszy_ci±g_zapytania&gt;}
+{CREATE &lt;dalszy_ci±g_zapytania&gt;}
+{DROP &lt;dalszy_ci±g_zapytania&gt;}</PRE
+></P
+></LI
+><LI
+><P
+>Liczba wierszy, których dotyczy zapytanie.</P
+><P
+><PRE
+CLASS="SCREEN"
+>{rows(&lt;zapytanie_sql&gt;)}</PRE
+></P
+></LI
+><LI
+><P
+>Zabezpieczenie znaków specjalnych w celu u¿ycia
+			w zapytaniu SQL. W szczególno¶ci chodzi o apostrofy 
+			i backslashe. Je¶li nie znasz zawarto¶ci zmiennej
+			powiniene¶ j± przepu¶ciæ przez escape().</P
+><P
+><PRE
+CLASS="SCREEN"
+>{escape(&lt;zmienna&gt;)}</PRE
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="CONSTS"
+>6.3.4.4. Consts</A
+></H3
+><P
+>Rozszerzenie ¶ci¶le zwi±zane z LMS-em. Umo¿liwia
+		tworzenie skryptów bez znajomo¶ci struktury bazy danych.
+		Zawiera predefiniowane sta³e, które zawieraj± dane z bazy.
+		Zdefiniowane w programie zapytanie jest wykonywane w momencie
+		pierwszego u¿ycia sta³ej. Nazwy sta³ych nale¿y pisaæ
+		du¿ymi literami. Ka¿da sta³a to tablica zawieraj±ca wiersze
+		numerowane od zera, a ka¿dy wiersz posiada podzmienne dostêpne
+		poprzez nazwê (pisan± ma³ymi literami).</P
+><UL
+><LI
+><P
+>CUSTOMERS - lista klientów:
+			    <TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - ID klienta</TD
+></TR
+><TR
+><TD
+>lastname - nazwa/nazwisko klienta</TD
+></TR
+><TR
+><TD
+>name - imiê klienta</TD
+></TR
+><TR
+><TD
+>status - status</TD
+></TR
+><TR
+><TD
+>address - adres klienta</TD
+></TR
+><TR
+><TD
+>zip - kod pocztowy</TD
+></TR
+><TR
+><TD
+>city - miasto</TD
+></TR
+><TR
+><TD
+>email - adres e-mail</TD
+></TR
+><TR
+><TD
+>phone1, phone2, phone3 - telefony</TD
+></TR
+><TR
+><TD
+>ten - NIP</TD
+></TR
+><TR
+><TD
+>ssn - PESEL</TD
+></TR
+><TR
+><TD
+>info - informacje o kliencie</TD
+></TR
+><TR
+><TD
+>message - tre¶æ ostrze¿enia</TD
+></TR
+><TR
+><TD
+>warning - status ostrze¿enia (suma statusów wszystkich komputerów klienta)</TD
+></TR
+><TR
+><TD
+>access - status dostêpno¶ci (suma statusów wszystkich komputerów klienta)</TD
+></TR
+><TR
+><TD
+>balance - bilans klienta</TD
+></TR
+></TBODY
+></TABLE
+>
+			</P
+></LI
+><LI
+><P
+>NODES - lista komputerów (i adresów urz±dzeñ sieciowych):
+			    <TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - ID komputera</TD
+></TR
+><TR
+><TD
+>owner - nazwa/nazwisko i imiê klienta</TD
+></TR
+><TR
+><TD
+>ownerid - ID klienta ('0' w przypadku urz±dzeñ)</TD
+></TR
+><TR
+><TD
+>name - nazwa komputera (adresu urz±dzenia)</TD
+></TR
+><TR
+><TD
+>access - status: w³±czony/wy³±czony (1/0)</TD
+></TR
+><TR
+><TD
+>warning - status ostrze¿eñ: w³±czone/wy³±czone (1/0)</TD
+></TR
+><TR
+><TD
+>netdev - ID urz±dzenia, do którego jest pod³±czony</TD
+></TR
+><TR
+><TD
+>lastonline - czas ostatniej aktywno¶ci</TD
+></TR
+><TR
+><TD
+>info - dodatkowe informacje</TD
+></TR
+><TR
+><TD
+>message - tre¶æ ostrze¿enia</TD
+></TR
+><TR
+><TD
+>mac - adres MAC</TD
+></TR
+><TR
+><TD
+>passwd - has³o</TD
+></TR
+><TR
+><TD
+>ip - adres IP</TD
+></TR
+><TR
+><TD
+>ip_pub - publiczny adres IP</TD
+></TR
+><TR
+><TD
+>linktype - typ po³±czenia (0-kabel, 1-radio)</TD
+></TR
+></TBODY
+></TABLE
+>
+			</P
+></LI
+><LI
+><P
+>NETWORKS - lista sieci:
+			    <TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - ID sieci</TD
+></TR
+><TR
+><TD
+>name - nazwa sieci</TD
+></TR
+><TR
+><TD
+>address - adres IP</TD
+></TR
+><TR
+><TD
+>mask - maska (xxx.xxx.xxx.xxx)</TD
+></TR
+><TR
+><TD
+>prefix - liczba jedynek w masce</TD
+></TR
+><TR
+><TD
+>size - rozmiar sieci (ilo¶æ adresów)</TD
+></TR
+><TR
+><TD
+>interface - nazwa interfejsu</TD
+></TR
+><TR
+><TD
+>gateway - adres bramy</TD
+></TR
+><TR
+><TD
+>dns - adres pierwszego serwera DNS</TD
+></TR
+><TR
+><TD
+>dns2 - adres drugiego serwera DNS</TD
+></TR
+><TR
+><TD
+>wins - adres WINS</TD
+></TR
+><TR
+><TD
+>domain - nazwa domenowa</TD
+></TR
+><TR
+><TD
+>dhcpstart - pocz±tek zakresu DHCP</TD
+></TR
+><TR
+><TD
+>dhcpend - koniec zakresu DHCP</TD
+></TR
+></TBODY
+></TABLE
+>
+			</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="NET"
+>6.3.4.5. Net</A
+></H3
+><P
+>W tym rozszerzeniu zawarte s± funkcje (nazwy pisane ma³ymi literami)
+		przeznaczone do operowania na adresach IP i maskach.</P
+><UL
+><LI
+><P
+>Zamiana maski sieciowej w formacie xxx.xxx.xxx.xxx
+			na liczbê (bitów).</P
+><P
+><PRE
+CLASS="SCREEN"
+>mask2prefix(&lt;maska&gt;)</PRE
+></P
+></LI
+><LI
+><P
+>Zamiana adresu IP w formacie 4-oktetowym na
+			liczbê.</P
+><P
+><PRE
+CLASS="SCREEN"
+>ip2long(&lt;adres&gt;)</PRE
+></P
+></LI
+><LI
+><P
+>Zamiana adresu IP podanego jako liczba
+			na format xxx.xxx.xxx.xxx.</P
+><P
+><PRE
+CLASS="SCREEN"
+>long2ip(&lt;adres&gt;)</PRE
+></P
+></LI
+><LI
+><P
+>Obliczenie adresu broadcast dla podanego
+			adresu IP oraz maski (format maski dowolny).</P
+><P
+><PRE
+CLASS="SCREEN"
+>broadcast(&lt;adres/maska&gt;)</PRE
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DAEMON-PARSER-EXAMPLES"
->6.3.4. Przyk³adowe skrypty</A
+>6.3.5. Przyk³adowe skrypty</A
 ></H2
 ><P
 >Zacznijmy od bardzo prostego skryptu, który tworzy plik
@@ -494,12 +927,10 @@ CLASS="SCREEN"
 {result[r].name}\t{result[r].ip}
 {/for}\</PRE
 ></DIV
->    
-	    </P
+></P
 ><P
->Drugi trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
-	    'exec'. Skrypt wysy³a wiadomo¶ci do klientów z bilansem ni¿szym od
-	    zadanego limitu.
+>Utworzenie listy d³u¿ników jest bardzo proste, zw³aszcza
+	    gdy zastosujemy jedn± z predefiniowanych sta³ych.
 	    <DIV
 CLASS="EXAMPLE"
 ><A
@@ -507,13 +938,35 @@ NAME="PARSER-E2"
 ></A
 ><P
 ><B
->Przyk&#322;ad 6-2. Parser: Zamiennik modu³u notify</B
+>Przyk&#322;ad 6-2. Parser: Lista d³u¿ników</B
+></P
+><PRE
+CLASS="SCREEN"
+>{for (r=0; r&lt;number(CUSTOMERS); r++)}\
+    {if (CUSTOMERS[r].balance &#60; 0)}\
+{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
+    {/if}
+{/for}\</PRE
+></DIV
+></P
+><P
+>Kolejny trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
+	    'exec'. Skrypt wysy³a wiadomo¶ci do klientów z bilansem ni¿szym od
+	    zadanego limitu.
+	    <DIV
+CLASS="EXAMPLE"
+><A
+NAME="PARSER-E3"
+></A
+><P
+><B
+>Przyk&#322;ad 6-3. Parser: Zamiennik modu³u notify</B
 ></P
 ><PRE
 CLASS="SCREEN"
 >{limit = 0}
-{month = exec printf %s `date +%B` /* u¿ywamy printf aby usun±æ znak nowej linii */}
-{year = exec printf %s `date +%Y`}
+{month = exec date +%B}
+{year = exec date +%Y}
 {customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
@@ -529,7 +982,7 @@ CLASS="SCREEN"
 Uprzejmie informujemy, i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za 
 Internet w kwocie {customers[i].balance*-1} z³.
 
-Je¿eli nale¿no¶æ za bie¿±cy miesi±c, to jest {month} {year}, zosta³a ju¿
+Je¿eli nale¿no¶æ za bie¿±cy miesi±c, to jest {trim(month)} {trim(year)}, zosta³a ju¿
 uregulowana prosimy zignorowaæ tê wiadomo¶æ.
 
 W przypadku gdy uwa¿a Pani/Pan, ¿e zaleg³o¶æ ta jest nieporozumieniem
