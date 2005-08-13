@@ -1,6 +1,6 @@
 $Id$
 
-version 1.7.2 Doci (????-??-??):
+version 1.7.2 Doci (2005-08-13):
 
   - in Mailing added replacement variables (alec)
   - in Nodes List added network and status filtering (alec)
