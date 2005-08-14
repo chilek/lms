@@ -35,8 +35,8 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 {
 	QueryHandle *res;
 	int i, execu=0, execn=0, u=0, n=0;
-	char time_fmt[10];
-	size_t tmax=10;
+	size_t tmax=11;
+	char time_fmt[tmax];
 	char fmt[]="%Y/%m/%d";
 	struct tm *wsk;
 	time_t t;
