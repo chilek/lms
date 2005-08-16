@@ -483,7 +483,7 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>Helpdesk (RT) administration</para></listitem>
         <listitem><para>Helpdesk (RT) operation</para></listitem>
         <listitem><para>accounts management</para></listitem>
-        <listitem><para>UI configuration</para></listitem>
+        <listitem><para>configuration</para></listitem>
         <listitem><para>networks and devices management</para></listitem>
         <listitem><para>timetable management</para></listitem>
      <listitem><para>daemon management and configuration</para></listitem>
