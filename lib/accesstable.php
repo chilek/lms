@@ -38,7 +38,7 @@ $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
 
 $access['table'][3]['name']		= trans('finances management');
-$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(taxrate|numberplan)(list|add|edit|del))|(receipt|receipt(list|add|edit|del))|(invoice|invoice(list|new|edit|report|paid))|prepayments|choosecovenants|number)$';
+$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(receipt|receipt(list|add|edit|del))|(invoice|invoice(list|new|edit|report|paid))|prepayments|choosecovenants|number)$';
 
 $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';
@@ -64,8 +64,8 @@ $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtti
 $access['table'][11]['name']        	= trans('accounts management');
 $access['table'][11]['allow_reg']   	= '^((account|domain|alias)(list|edit|add|del))$';
 
-$access['table'][12]['name']        	= trans('UI configuration');
-$access['table'][12]['allow_reg']   	= '^(config(list|edit|add|del|load))$';
+$access['table'][12]['name']        	= trans('configuration');
+$access['table'][12]['allow_reg']   	= '^((config|numberplan|taxrate)(list|edit|add|del|load))$';
 
 $access['table'][13]['name']        	= trans('networks and devices management');
 $access['table'][13]['allow_reg']   	= '^((net|netdev)(info|list|edit|add|del|cmp|map|remap)|choose(mac|ip))$';

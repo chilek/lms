@@ -513,7 +513,7 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>zarz±dzanie Helpdeskiem (RT)</para></listitem>
         <listitem><para>obs³uga Helpdesku (RT)</para></listitem>
         <listitem><para>zarz±dzanie kontami</para></listitem>
-        <listitem><para>konfiguracja UI</para></listitem>
+        <listitem><para>konfiguracja interfejsu u¿ytkownika</para></listitem>
         <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
      <listitem><para>dostêp do terminarza</para></listitem>
      <listitem><para>zarz±dzanie i konfiguracja demona</para></listitem>
