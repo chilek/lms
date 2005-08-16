@@ -91,7 +91,7 @@
                         <TABLE WIDTH="100%" CELLPADDING="5">
                                 <TR>
                                         <TD class="fall superlight">
-						{$netdevinfo.description|replace:"\n":"<BR>"}
+						{$netdevinfo.description|escape|replace:"\n":"<BR>"}
                                         </TD>
                                 </TR>
                         </TABLE>
