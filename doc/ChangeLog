@@ -1,5 +1,10 @@
 $Id$
 
+version ? (??/??/????):
+
+  - contrib/customer: removed directories checking (alec)
+  - changed access right definition for LMS configuration (alec)
+
 version 1.7.2 Doci (2005-08-13):
 
   - in Mailing added replacement variables (alec)

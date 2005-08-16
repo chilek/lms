@@ -110,7 +110,6 @@ $_DBUSER = $CONFIG['database']['user'];
 $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 
-require_once($_LIB_DIR.'/checkdirs.php');
 require_once($_LIB_DIR.'/checkconfig.php');
 
 // Init database 
