@@ -18,23 +18,21 @@ $Id$
 * pomyle¶leæ nad jakim¶ sposobem archiwizacji starych danych finansowych
   - o ile baza danych sobie poradzi z danymi z kilku lat, nawet w du¿ej sieci,
   to w UI mo¿e nie byæ ju¿ za ciekawie
-* Ujednolici¶ "Skrypty Perlowe" co¶ na kszta³t lmsdb i lms.class.php, jeden 
+* Ujednoliciæ "Skrypty Perlowe" co¶ na kszta³t lmsdb i lms.class.php, jeden 
   wspólny "connect do bazy" i funkcje typu "we¼ userów + assigmenty" [je¶li 
   bêdzie to mia³o jaki¶ sens i siê powiela³o w wiêcej ni¿ 1-2 skryptach]
 
   
-1.7 (deadline dla 1.5 to koniec kwietnia/pocz±tek maja)
+1.7
 
 * silnik modu³ów
+* usuniêcie funkcjonalno¶ci "powi±zania obc.-wp³aty" (uproszczenie finansów)
 * Faktury Korygujace
 * rozbudowa i testowanie modulu 'parser' demona
 
 
-1.9 (deadline dla 1.7 to powiedzmy koniec wakacji - do negocjacji w przypadku,
-     gdyby co¶ wiêcej tam do zrobienia by³o) [xx]
+1.9 (deadline dla 1.7 to powiedzmy koniec roku 2005) [xx]
 
-! j.w. ale dla wersji 1.2 i 1.3
- 
 * przerobienie na nowe modu³y
 * zrobienie 'LMSAPI' - czyli zintegrowanej z LMS biblioteki serwuj±cej
   podstawowe funkcje LMSa (takie read only) - ka¿dy modu³ móg³by dodawaæ
@@ -43,7 +41,7 @@ $Id$
 * xhtml
 * nowy changelog
 
-xx] general rule: utrzymywanie nie wiêcej ni¿ 3 ostatnich stabilnych release-ów
+xx] general rule: utrzymywanie nie wiêcej ni¿ 3 [xxxx] ostatnich stabilnych release-ów
 	i ich ogólne wspieranie (praca nad 1.9 to szlifowanie i bugfixowanie 
 	1.8.xxx oraz bugfixy dla 1.4, 1.6. Oficjalny komunikat o end-of-life wersji 
 	1.2.x wraz z wyciapaniem z dzia³u download wszystkiego do 1.3.99999 w³±cznie).
@@ -52,6 +50,10 @@ xx] general rule: utrzymywanie nie wiêcej ni¿ 3 ostatnich stabilnych release-ów
 	bardzo ambitny i dociekliwy.  
 
 xxx] pcap i mini daemon? 
+
+xxxx] a nawet dwóch, teraz mamy 1.7 i 1.4 nikt sobie ju¿ g³owy nie zawraca,
+	w starszych ewentualnie poprawiaæ tylko b³edy zwi±zane z 
+	bezpieczeñstwem, je¶li siê pojawi±
 
 +] przesun±æ odpowiednio nisko, jak siê komu¶ bêdzie chcia³o to mo¿na robiæ, 
 ale to jest "the way".
