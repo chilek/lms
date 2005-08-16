@@ -54,10 +54,10 @@ chmod 777 templates_c backups documents
 cd ..
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd lms/lib
-wget http://smarty.php.net/distributions/Smarty-2.6.8.tar.gz
-tar -xzf Smarty-2.6.8.tar.gz
-mv Smarty-2.6.8/libs Smarty
-rm -Rf Smarty-2.6.8 Smarty-2.6.8.tar.gz
+wget http://smarty.php.net/distributions/Smarty-2.6.10.tar.gz
+tar -xzf Smarty-2.6.10.tar.gz
+mv Smarty-2.6.10/libs Smarty
+rm -Rf Smarty-2.6.10 Smarty-2.6.10.tar.gz
 cd ../
 rm -Rf $NOTDISTRIB
 cd ../
