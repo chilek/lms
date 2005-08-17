@@ -144,6 +144,10 @@ class LMS
 		{
 			foreach($this->DB->ListTables() as $tablename)
 			{
+				// skip sessions table for security 
+				if($tablename == 'sessions')
+					continue;
+					
 				fputs($dumpfile,"DELETE FROM $tablename;\n");
 				$this->DB->Execute('SELECT * FROM '.$tablename);
 				while($row = $this->DB->_driver_fetchrow_assoc())

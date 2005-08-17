@@ -53,7 +53,13 @@ class Auth {
 		elseif(isset($_POST['loginform']))
 			$loginform = $_POST['loginform'];
 		
-		if(isset($loginform))
+		$this->SESSION->restore('session_login', $this->login);
+		
+		if($this->login)
+		{
+			$this->islogged = TRUE; 
+		}		
+		elseif(isset($loginform))
 		{
 			$this->login = $loginform['login'];
 			$this->passwd = $loginform['pwd'];
@@ -68,16 +74,14 @@ class Auth {
 			$_GET['m'] = 'useradd';
 			return TRUE;
 		}
-		else
-		{
-			$this->SESSION->restore('session_login', $this->login);
-			$this->SESSION->restore('session_passwd', $this->passwd);
-		}
-		
-		if($this->VerifyUser())
+
+		if($this->islogged || $this->VerifyUser())
 		{
 			$this->SESSION->restore('session_last', $this->last);
 			$this->SESSION->restore('session_lastip', $this->lastip);
+			$this->logname = $this->logname ? $this->logname : $this->SESSION->get('session_logname');
+			$this->id = $this->id ? $this->id : $this->SESSION->get('session_id');
+
 			if(isset($loginform))
 			{
 				$userdata = $this->DB->GetRow('SELECT lastlogindate, lastloginip FROM users WHERE id=?',array($this->id));
@@ -87,14 +91,15 @@ class Auth {
 				$this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
 				writesyslog('User '.$this->login.' logged in.', LOG_INFO);
 			}
+			
+			$this->SESSION->save('session_id', $this->id);
 			$this->SESSION->save('session_login', $this->login);
-			$this->SESSION->save('session_passwd', $this->passwd);
+			$this->SESSION->save('session_logname', $this->logname);
 			$this->SESSION->save('session_last', $this->last);
 			$this->SESSION->save('session_lastip', $this->lastip);
 		}
 		else
 		{
-			$this->islogged = FALSE;
 			if(isset($loginform))
 			{
 				if(!$this->hostverified)
@@ -117,14 +122,12 @@ class Auth {
 	{
 		if ($this->islogged)
 			writesyslog('User '.$this->login.' logged out.',LOG_INFO);
-		unset($this->login);
-		unset($this->password);
 		$this->SESSION->finish();
 	}		
 	
 	function VerifyPassword($dbpasswd = '')
 	{
-		if (crypt($this->passwd,$dbpasswd)==$dbpasswd)
+		if(crypt($this->passwd,$dbpasswd)==$dbpasswd)
 			return TRUE;
 		else 
 		{
@@ -172,11 +175,12 @@ class Auth {
 	function VerifyUser()
 	{
 		$user = $this->DB->GetRow('SELECT id, name, passwd, hosts FROM users WHERE login=? AND deleted=0', array($this->login));
-		
-		$this->passverified = $this->VerifyPassword($user['passwd']);
-		$this->hostverified = $this->VerifyHost($user['hosts']);
+
 		$this->logname = $user['name'];
 		$this->id = $user['id'];
+	
+		$this->passverified = $this->VerifyPassword($user['passwd']);
+		$this->hostverified = $this->VerifyHost($user['hosts']);
 		$this->islogged = ($this->passverified && $this->hostverified);
 		
 		return $this->islogged;
