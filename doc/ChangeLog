@@ -5,7 +5,10 @@ version ? (??/??/????):
   - BTS#0000421: fixed icon and description in Nodes -> Print (alec)
   - BTS#0000422: fixed js function CheckAll() (alec)
   - lmsd/cutoff: fixed date in warning (alec/Tomek Rydzynski)
-
+  - security bugfix: plain text passwords aren't stored in session (alec)
+  - security bugfix: session is excluded from database backup (alec)
+  - lmsd/pinger: increased MAXIFN (max interfaces number) to 1024 (alec)
+      
 version 1.6.2 Desala (09/08/2005):
 
   - fixed SQL query in Mailing with network filtering (alec)

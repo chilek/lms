@@ -210,9 +210,6 @@ $layout['popup'] = $_GET['popup'];
 
 if($AUTH->islogged)
 {
-	if($AUTH->passwd == '')
-		$SMARTY->assign('emptypasswd',TRUE);
-
 	$module = (isset($_GET['m']) ? $_GET['m'] : '');
 	$deny = FALSE;
 	
