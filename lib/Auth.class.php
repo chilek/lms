@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.6-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -37,7 +37,7 @@ class Auth {
 	var $ip;
 	var $lastip;
 	var $error;
-	var $_version = '1.7-cvs';
+	var $_version = '1.6-cvs';
 	var $_revision = '$Revision$';
 	var $DB = NULL;
 	var $SESSION = NULL;
