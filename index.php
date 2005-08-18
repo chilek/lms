@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOU CONFIG FILE
+// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
 
 $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 
@@ -32,10 +32,7 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('session.name','LMSSESSIONID');
-
 // Parse configuration file
-
 function lms_parse_ini_file($filename, $process_sections = false) 
 {
 	$ini_array = array();
@@ -211,9 +208,6 @@ $layout['popup'] = $_GET['popup'];
 
 if($AUTH->islogged)
 {
-	if($AUTH->passwd == '')
-		$SMARTY->assign('emptypasswd',TRUE);
-
 	$module = (isset($_GET['m']) ? $_GET['m'] : '');
 	$deny = FALSE;
 	
