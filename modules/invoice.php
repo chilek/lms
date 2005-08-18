@@ -31,9 +31,9 @@ if (strtolower($CONFIG['invoices']['type']) == 'pdf')
     die;
 }
 
-header('Content-Type: '.$LMS->CONFIG['invoices']['content_type']);
-if($LMS->CONFIG['invoices']['attachment_name'] != '')
-	header('Content-Disposition: attachment; filename='.$LMS->CONFIG['invoices']['attachment_name']);
+header('Content-Type: '.$CONFIG['invoices']['content_type']);
+if($CONFIG['invoices']['attachment_name'] != '')
+	header('Content-Disposition: attachment; filename='.$CONFIG['invoices']['attachment_name']);
 
 $SMARTY->assign('css', file('img/style_print.css')); 
 
@@ -71,7 +71,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('invoice',$invoice);
-			$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+			$SMARTY->display($CONFIG['invoices']['template_file']);
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -106,7 +106,7 @@ elseif($_GET['fetchallinvoices'])
 			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('invoice',$invoice);
-			$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+			$SMARTY->display($CONFIG['invoices']['template_file']);
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -121,7 +121,7 @@ elseif($_GET['fetchsingle'])
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoiceheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
-	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+	$SMARTY->display($CONFIG['invoices']['template_file']);
 	$SMARTY->display('clearfooter.html');
 }
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
@@ -132,11 +132,11 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoiceheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
-	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+	$SMARTY->display($CONFIG['invoices']['template_file']);
 	$SMARTY->assign('type',trans('COPY'));
 	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
-	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+	$SMARTY->display($CONFIG['invoices']['template_file']);
 	$SMARTY->display('clearfooter.html');
 }
 else
