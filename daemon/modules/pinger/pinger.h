@@ -21,7 +21,7 @@
 #include <sys/time.h>
 
 #define KB 1024
-#define MAXIFN 16
+#define MAXIFN 1024
 
 struct net
 {
