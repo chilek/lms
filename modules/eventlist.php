@@ -89,7 +89,7 @@ else
 	list($year, $month, $day) = explode('/', $SESSION->get('edate'));
 
 $day = ($day ? $day : date('j',time()));
-$month = ($month ? $month : date('n',time()));
+$month = ($month ? sprintf('%d',$month) : date('n',time()));
 $year = ($year ? $year : date('Y',time()));
 
 $layout['pagetitle'] = trans('Timetable');

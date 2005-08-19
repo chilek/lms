@@ -1,13 +1,14 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.3 Laira <security release> (19/08/2005):
 
   - BTS#0000421: fixed icon and description in Nodes -> Print (alec)
   - BTS#0000422: fixed js function CheckAll() (alec)
   - lmsd/cutoff: fixed date in warning (alec/Tomek Rydzynski)
+  - lmsd/pinger: increased MAXIFN (max interfaces number) to 1024 (alec)
+  - BTS#0000423: fixed date change links on events list (alec)
   - security bugfix: plain text passwords aren't stored in session (alec)
   - security bugfix: session is excluded from database backup (alec)
-  - lmsd/pinger: increased MAXIFN (max interfaces number) to 1024 (alec)
       
 version 1.6.2 Desala (09/08/2005):
 
