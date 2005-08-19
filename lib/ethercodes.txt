@@ -1676,7 +1676,7 @@
 00-06-8A:NeuronNet Co. Ltd. R&D Center
 00-06-8B:AirRunner Technologies, Inc.
 00-06-8C:3Com Corporation
-00-06-8D:SANgate Systems
+00-06-8D:SEPATON, Inc.
 00-06-8E:HID Corporation
 00-06-8F:Telemonitor, Inc.
 00-06-90:Euracom Communication GmbH
@@ -2602,7 +2602,7 @@
 00-0A-4F:Brain Boxes Limited
 00-0A-50:REMOTEK CORPORATION
 00-0A-51:GyroSignal Technology Co., Ltd.
-00-0A-52:Venitek Co. Ltd.
+00-0A-52:AsiaRF Ltd.
 00-0A-53:Intronics, Incorporated
 00-0A-54:Laguna Hills, Inc.
 00-0A-55:MARKEM Corporation
@@ -3786,7 +3786,7 @@
 00-0E-EF:PRIVATE
 00-0E-F0:Festo AG & Co. KG
 00-0E-F1:EZQUEST INC.
-00-0E-F2:World Axle Corporation
+00-0E-F2:Infinico Corporation
 00-0E-F3:Smarthome
 00-0E-F4:Shenzhen Kasda Digital Technology Co.,Ltd
 00-0E-F5:iPAC Technology Co., Ltd.
@@ -5450,6 +5450,42 @@
 00-15-70:Symbol Technologies
 00-15-71:Nolan Systems
 00-15-72:Red-Lemon
+00-15-73:NewSoft  Technology Corporation
+00-15-74:Horizon Semiconductors Ltd.
+00-15-75:Nevis Networks Inc.
+00-15-76:scil animal care company GmbH
+00-15-77:Allied Telesyn, Inc.
+00-15-78:Audio / Video Innovations
+00-15-79:Lunatone Industrielle Elektronik GmbH
+00-15-7A:Telefin S.p.A.
+00-15-7B:Leuze electronic GmbH + Co. KG
+00-15-7C:Dave Networks, Inc.
+00-15-7D:POSDATA CO., LTD.
+00-15-7E:HEYFRA ELECTRONIC gmbH
+00-15-7F:ChuanG International Holding CO.,LTD.
+00-15-80:U-WAY CORPORATION
+00-15-81:MAKUS Inc.
+00-15-82:TVonics Ltd
+00-15-83:IVT corporation
+00-15-84:Schenck Process GmbH
+00-15-85:Aonvision Technolopy Corp.
+00-15-86:Xiamen Overseas Chinese Electronic Co., Ltd.
+00-15-87:Takenaka Seisakusho Co.,Ltd
+00-15-88:Balda-Thong Fook Solutions Sdn. Bhd.
+00-15-89:D-MAX Technology Co.,Ltd
+00-15-8A:SURECOM Technology Corp.
+00-15-8B:Park Air Systems Ltd
+00-15-8C:Liab ApS
+00-15-8D:Jennic Ltd
+00-15-8E:Plustek.INC
+00-15-8F:NTT Advanced Technology Corporation
+00-15-90:Hectronic GmbH
+00-15-91:RLW Inc.
+00-15-92:Facom UK Ltd (Melksham)
+00-15-93:U4EA Technologies Inc.
+00-15-94:BIXOLON CO.,LTD
+00-15-95:Quester Tangent Corporation
+00-15-96:ARRIS International
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
