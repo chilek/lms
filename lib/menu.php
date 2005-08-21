@@ -490,4 +490,14 @@ $menu = array(
 
 	);
 
+//if (isset($_CONFIG['userpanel_dir'])) 
+{
+    $menu[13][submenu][]=array(
+			    'name' => trans('Userpanel'),
+			    'link' => '?m=userpanel',
+			    'tip' => trans('Userpanel configuration')
+			);
+}
+//echo "<pre>";
+//var_dump($menu[13]);
 ?>
