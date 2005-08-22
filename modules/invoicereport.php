@@ -77,8 +77,8 @@ if($result = $DB->GetAll('SELECT documents.id AS id, number, cdate, customerid, 
 		$invoicelist[$id]['cdate'] = $row['cdate'];
 		$invoicelist[$id]['customerid'] = $row['customerid'];
 
-		$invoicelist[$id][$taxid]['tax'] += round($value / ($taxes[$taxid]['value']+100) * 100, 2);
-		$invoicelist[$id][$taxid]['val'] += $value - $invoicelist[$id][$taxid]['tax'];
+		$invoicelist[$id][$taxid]['val'] += round($value / ($taxes[$taxid]['value']+100) * 100, 2);
+		$invoicelist[$id][$taxid]['tax'] += $value - $invoicelist[$id][$taxid]['val'];
 		$invoicelist[$id]['tax'] += $invoicelist[$id][$taxid]['tax'];
 		$invoicelist[$id]['brutto'] += $value;
 		
