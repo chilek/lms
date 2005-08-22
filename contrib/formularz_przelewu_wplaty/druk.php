@@ -194,7 +194,7 @@ for ( $j=0; $j<2; $j++ ) // pêtla g³ówna
 // kwota cyfrowo:
 
      $posx=174+$j*$SHIFT;
-     $KWOTA_SL = sprintf("%0'--12.2f",$KWOTA);
+     $KWOTA_SL = sprintf("%0'--12.2f",$KWOTA_NR);
      $KWOTA_SL = str_replace('.',',',$KWOTA_SL);
      for ( $i=0; $i<12; $i++ ) 
      {
