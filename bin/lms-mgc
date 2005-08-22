@@ -180,6 +180,7 @@ sub instance($)
 	my $dst_network_header = $ini->val("mgc:$instanceno", 'dst_network_header') || '';
 	my $network_body = $ini->val("mgc:$instanceno",'network_body') || '';
 	my $network_footer = $ini->val("mgc:$instanceno", 'network_footer') || '';
+	my $netdevnode = $ini->val("mgc:$instanceno",'netdevnode') || '';
 	my $grantednode_priv = $ini->val("mgc:$instanceno",'grantednode_priv') || '';
 	my $deniednode_priv = $ini->val("mgc:$instanceno",'deniednode_priv') || '';
 	my $freeip_priv = $ini->val("mgc:$instanceno",'freeip_priv') || '';
@@ -546,6 +547,10 @@ sub instance($)
 			{
 				print "using per node rule.\n" if $debug;
 				$rule = $pernoderule;
+			}
+			elsif($idlist{$ipaddr} && !($ownerlist{$ipaddr}))
+			{
+				$rule = $netdevnode;
 			}
 			elsif($allnodes)
 			{
