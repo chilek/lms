@@ -40,6 +40,10 @@
                     <entry>LMS Documentation</entry>
                     </row>
                     <row>
+                    <entry>documents</entry>
+                    <entry>Documents archive</entry>
+                    </row>
+                    <row>
                     <entry>img</entry>
                     <entry>User Interface Images</entry>
                     </row>
