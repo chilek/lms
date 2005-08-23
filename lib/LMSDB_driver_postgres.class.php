@@ -79,6 +79,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function _driver_execute($query)
 	{
 		$this->_query = $query;
+
 		if($this->_result = pg_query($this->_dblink,$query))
 			$this->_error = FALSE;
 		else

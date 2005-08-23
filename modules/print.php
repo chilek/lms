@@ -509,47 +509,6 @@ switch($type)
 		$SMARTY->display('printliabilityreport.html');
 	break;
 
-	case 'covenantreport': /********************************************/
-	
-		$layout['pagetitle'] = trans('Covenants Realization Report - $0', $_POST['year']);
-		
-		if($_POST['customer'])
-			$layout['pagetitle'] .= '<BR>'.$LMS->GetCustomerName($_POST['customer']);
-	
-		$from = mktime(0,0,0,1,1,$_POST['year']);
-		$to = mktime(0,0,0,1,1,$_POST['year']+1);
-
-		$payments = $DB->GetAllByKey('SELECT SUM(a.value) AS value, b.docid AS id
-					FROM cash a, cash b WHERE a.reference = b.id
-					AND a.type = 3 AND b.time >= ? AND b.time < ?'
-					.($_POST['customer'] ? ' AND a.customerid = '.$_POST['customer'] : '')
-					.' GROUP BY b.docid', 'id', array($from, $to));
-					
-		if($invoices = $DB->GetAll('SELECT SUM(value) AS value, MIN(time) AS time, docid AS id
-					FROM cash
-					WHERE docid > 0 AND type = 4 AND time >= ? AND time < ?'
-					.($_POST['customer'] ? ' AND customerid = '.$_POST['customer'] : '')
-					.' GROUP BY docid', array($from, $to)))
-
-			foreach($invoices as $row)
-			{
-				$month = date('n', $row['time']);
-				$list[$month]['covenant'] += $row['value'];
-				$list[$month]['payment'] += $payments[$row['id']]['value'];
-				$list[$month]['diff'] = $list[$month]['diff'] - $row['value'] + $payments[$row['id']]['value'];
-				$list['totalcovenant'] += $row['value'];
-				$list['totalpayment'] += $payments[$row['id']]['value'];
-			}	
-			$list['totaldiff'] = $list['totalpayment'] - $list['totalcovenant']; 
-			
-		for($i=1; $i<13; $i++) $months[$i] = strftime('%B', mktime(0,0,0,$i,1,1970));
-
-		$SMARTY->assign('list', $list);
-		$SMARTY->assign('monthnames', $months);
-		$SMARTY->assign('monthlist', array(1,2,3,4,5,6,7,8,9,10,11,12));
-		$SMARTY->display('printcovenantreport.html');
-	break;
-		
 	default: /*******************************************************/
 	
 		$layout['pagetitle'] = trans('Printing');
