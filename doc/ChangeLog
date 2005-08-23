@@ -8,6 +8,7 @@ version ? (??/??/????):
   - security bugfix: session is excluded from database backup (alec)
   - started finances revolution: removed prepayments, unpaid covenants
     and related features (alec) 
+  - fixed round-off method on Invoices Report (alec)
 
 version 1.7.2 Doci (2005-08-13):
 
