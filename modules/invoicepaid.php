@@ -61,14 +61,17 @@ if ($invoiceid == 'multi')
 				foreach($items as $item)
 				{
 					$addbalance['value'] = $LMS->GetItemUnpaidValue($invoiceid, $item['id']);
-					$addbalance['time'] = $invoicepaydate;
-					$addbalance['type'] = 3;
-					$addbalance['customerid'] = $item['customerid'];
-					$addbalance['comment'] = $item['comment'];
-					$addbalance['reference'] = $item['cashid'];
-					//$addbalance['itemid'] = $item['id'];
-					//$addbalance['docid'] = $invoiceid;
-					$LMS->AddBalance($addbalance);
+					if($addbalance['value'])
+					{
+						$addbalance['time'] = $invoicepaydate;
+						$addbalance['type'] = 3;
+						$addbalance['customerid'] = $item['customerid'];
+						$addbalance['comment'] = $item['comment'];
+						$addbalance['reference'] = $item['cashid'];
+						//$addbalance['itemid'] = $item['id'];
+						//$addbalance['docid'] = $invoiceid;
+						$LMS->AddBalance($addbalance);
+					}
 				}
 			}
 	}
@@ -83,14 +86,17 @@ elseif (!$LMS->IsInvoicePaid($invoiceid))
 	foreach($items as $item)
 	{
 		$addbalance['value'] = $LMS->GetItemUnpaidValue($invoiceid, $item['id']);
-		$addbalance['time'] = $invoicepaydate;
-		$addbalance['type'] = 3;
-		$addbalance['customerid'] = $item['customerid'];
-		$addbalance['comment'] = $item['comment'];
-		$addbalance['reference'] = $item['cashid'];
-		//$addbalance['itemid'] = $item['id'];
-		//$addbalance['docid'] = $invoiceid;
-		$LMS->AddBalance($addbalance);
+		if($addbalance['value'])
+		{
+			$addbalance['time'] = $invoicepaydate;
+			$addbalance['type'] = 3;
+			$addbalance['customerid'] = $item['customerid'];
+			$addbalance['comment'] = $item['comment'];
+			$addbalance['reference'] = $item['cashid'];
+			//$addbalance['itemid'] = $item['id'];
+			//$addbalance['docid'] = $invoiceid;
+			$LMS->AddBalance($addbalance);
+		}
 	}
 }
 
