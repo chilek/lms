@@ -73,11 +73,6 @@
 		document.addbalance.submit();
 	}
 	
-	function unpaidchoosewin()
-	{
-		pop = window.open('?m=choosecovenants&id={/literal}{$balancelist.customerid}{literal}', 'choosecash','toolbar=no,location=no,directories=no,status=no,menubar=no,width=500,height=300,scrollbars=yes,resizable=no');
-    	}
-
 	//-->
 </SCRIPT>
 {/literal}
@@ -196,13 +191,11 @@
 				</TR>
 				<TR class="light">
 					<TD colspan="3">
-						<A href="?m=prepayments&id={$balancelist.customerid}">{t}Prepayments{/t} <IMG src="img/edit.gif" alt=""></A>
 						{if $customerinfo.balance < 0}
 						<A href="?m=customerbalanceok&id={$customerinfo.id}" OnClick="return confirmLink(this, '{t 0=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" alt=""></A>
 						{/if}
 					</TD>
 					<TD align="right" colspan="6">
-						<A href="javascript:unpaidchoosewin();">{t}Select unpaid covenants{/t} <IMG src="img/search.gif" alt=""></A>&nbsp;
 						<A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 					</TD>
 			</TABLE>

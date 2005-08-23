@@ -6,6 +6,8 @@ version ? (??/??/????):
   - changed access right definition for LMS configuration (alec)
   - security bugfix: plain text passwords aren't stored in session (alec)
   - security bugfix: session is excluded from database backup (alec)
+  - started finances revolution: removed prepayments, unpaid covenants
+    and related features (alec) 
 
 version 1.7.2 Doci (2005-08-13):
 
