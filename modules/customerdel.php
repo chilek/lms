@@ -44,7 +44,6 @@ if (!$LMS->CustomerExists($_GET['id']))
 		$body .= '<P>'.trans('Customer $0 has been removed.',$LMS->GetCustomerName($_GET['id'])).'</P>';
 		$LMS->DeleteCustomer($_GET['id']);
 	}
-		
 }
 
 $SMARTY->display('header.html');
