@@ -40,6 +40,10 @@
                     <entry>Dokumentacja</entry>
                     </row>
                     <row>
+                    <entry>documents</entry>
+                    <entry>Archiwum dokumentów</entry>
+                    </row>
+                    <row>
                     <entry>img</entry>
                     <entry>Obrazki do Interfejsu U¿ytkownika</entry>
                     </row>
