@@ -61,38 +61,6 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 	{
 		if($LMS->CustomerExists($addbalance['customerid']))
 		{
-			if($unpaid = $SESSION->get('unpaid.'.$addbalance['customerid']))
-			{
-				foreach($unpaid as $cashid)
-				{
-					if($addbalance['value'] == 0)
-						break;
-				
-					$row = $DB->GetRow('SELECT docid, itemid, comment, taxid FROM cash WHERE id = ?', array($cashid));
-					$value = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
-					
-					//$balance['itemid'] = $row['itemid'];
-					//$balance['docid'] = $row['docid'];
-					$balance['taxid'] = $row['taxid'];
-					$balance['comment'] = $addbalance['comment'] ? $addbalance['comment'] : $row['comment'];
-					$balance['type'] = 3;
-					$balance['customerid'] = $addbalance['customerid'];
-					$balance['reference'] = $cashid;
-					
-					$oldvalue = $addbalance['value'];
-					if($oldvalue >= $value)
-						$balance['value'] = $value;
-					else
-						$balance['value'] = $oldvalue;
-						
-					$LMS->AddBalance($balance);
-					
-					$addbalance['value'] = $oldvalue - $balance['value'];
-				}
-				
-				$SESSION->remove('unpaid.'.$addbalance['customerid']);
-			}
-			
 			if($addbalance['value'] != 0)
 				$LMS->AddBalance($addbalance);
 		}
