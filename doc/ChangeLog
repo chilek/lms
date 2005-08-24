@@ -3,6 +3,7 @@ $Id$
 version ? (??/??/????):
 
   - BTS#0000426: fixed value in contrib/formularz_przelewu_wplaty (alec)
+  - BTS#0000428: fixed misprint in polish translation (alec)
 
 version 1.6.3 Laira <security release> (19/08/2005):
 
