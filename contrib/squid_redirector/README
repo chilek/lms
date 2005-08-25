@@ -66,3 +66,57 @@ podlega³a przekierowaniu, a druga nie trwa³o 0,774 sekundy, co daje czas
 przetwarzania oko³o 0,000387 sekundy na adres. W momencie pisania tego tekstu
 strona g³ówna Wirtualnej Polski sk³ada³a siê z 62 elementów, przez co 
 redirector zwiêkszy³ jej czas ³adowania o 0,023994 sekundy).
+
+3. Co zrobiæ je¶li nie dzia³a.
+
+Je¶li redirector nie dzia³a w ogóle, lub nie dzia³a tak jak by¶my chcieli, 
+pierwsze co nale¿y zrobiæ, to sprawdziæ czy nasz system spe³nia wymagania LMSa,
+oraz czy zrobili¶my wszystko co jest wymagane podczas instalacji redirectora. 
+Nastêpnie, warto zajrzeæ w logi Apache. Je¶li znajdziemy w logach co¶ takiego 
+(99% przypadków):
+
+Mar 14 11:20:09 localhost squid[27459]: WARNING: redirector #1 (FD 7) exited 
+Mar 14 11:20:09 localhost squid[27459]: WARNING: redirector #2 (FD 8) exited 
+Mar 14 11:20:09 localhost squid[27459]: WARNING: redirector #3 (FD 9) exited 
+Mar 14 11:20:09 localhost squid[27459]: Too few redirector processes are 
+running 
+Mar 14 11:20:09 localhost squid[27459]: The redirector helpers are crashing too 
+rapidly, need help! 
+
+to wszystkiemu winien jest sam redirector. Uruchamiamy wiêc redirector "z 
+palca" czy te¿ jak mówi± inni - w trybie interaktywnym, czyli wydajemy komendê:
+
+./lms-squid
+
+najlepiej bêd±c zalogowanym jako root. Wszystko co powinni¶my teraz zobaczyæ, 
+to migaj±cy kursor. Je¶li widzisz jakie¶ komunikaty, to radzê dok³adnie je 
+przeczytaæ, gdy¿ bêd± to komunikaty b³êdów i zarazem wskazówka czego brak. 
+Je¶li natomiast widzimy weso³o migaj±cy kursor, wpisujemy dowolny tekst, oraz 
+naciskamy enter:
+
+test
+
+Redirector powinien wys³aæ nam co¶ w stylu 
+
+302:http://adres_winetki/?oldurl=test
+
+czyli adres przekierowania, oraz kontynuowaæ pracê. Je¶li redirector w tym 
+momencie zamyka siê, oraz wy¶wietla komunikat b³êdu, mamy nastêpn± wskazówkê. 
+Je¶li natomiast nadal pracuje wpisujemy:
+
+http://lms.rulez.pl/ 192.168.0.1/-
+
+gdzie 192.168.0.1 jest adresem z naszej sieci, który nie podlega przekierowaniu. 
+Redirector powinien odpowiedzieæ dok³adnie tym samym co wpisali¶my. Je¶li nie, 
+kolejna wskazówka.
+
+Je¶li redirector nadal kontynuuje pracê, spróbuj wykonaæ powy¿sze czynno¶ci na 
+koncie na którym pracuje squid. Czyli robimy np.
+
+su proxy
+./lms-squid
+
+Je¶li na koncie na którym pracuje squid redirector dzia³a poprawnie, nale¿y 
+sprawdziæ jeszcze raz konfiguracjê squida. Je¶li to nadal nic nie daje, sprawd¼ 
+wszystkie nietypowe rzeczy w twoim systemie (byæ mo¿e u¿ywasz chroot, i w 
+chrootowanym ¶rodowisku brakuje bibliotek).
