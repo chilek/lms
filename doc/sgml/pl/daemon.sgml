@@ -1126,7 +1126,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 	<sect2 id="daemon-parser-intro">
 	<title>Wstêp</title>
 	    <para>Modu³ parser jest oparty na skryptowym jêzyku
-	    <ulink url="http://silvercoders.com/index.php?title=T-Script">T-Script</ulink>,
+	    <ulink url="http://silvercoders.com/index.php?page=T_Script">T-Script</ulink>,
 	    którego g³ównym zadaniem jest generowanie plików tekstowych. Mo¿e byæ
 	    u¿ywany do przetwarzania szablonów z danymi pobieranymi z ró¿nych
 	    ¼róde³ np. baz SQL lub plików tekstowych. W naszym przypadku tre¶æ
