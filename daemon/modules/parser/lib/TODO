@@ -1,0 +1,71 @@
+$Id$
+
+*** B£¡D: podzmienna o nazwie takiej samej jak funkcja 
+
+    przyk³ad: 
+    tworzê rozszerzenie - funkcjê broadcast()
+    teraz kod {NETWORKS[0].broadcast}
+    powoduje b³±d kompilacji:
+    unexpected EXT, expecting NAME
+    wniosek: wydaje mi siê, ¿e powinna byæ mo¿liwo¶æ definiowania podzmiennych
+    o nazwach takich samych jak funkcje lub inne rozszerzenia
+        
+*** regexpy: funkcje np. replace()
+
+    przyk³ad: mam MAC adresy 00:AD:34:... i chcê je wy¶wietliæ bez kropek.
+    Oczywi¶cie nie musi to byæ w standardzie, a raczej jako funkcje 
+    w extensions.
+
+*** problem z zagnie¿d¿eniem if (innych instr. nie sprawdza³em)
+
+    {zmienna = "dupa"}
+    {exec echo "{zmienna}" >> plik} {/* dzia³a */}
+    {exec echo "{if (1)}dupa{/if}" >> plik} {/* wywala, syntax error: unexpected IF */}
+
+*** php'owe explode()
+
+    w zwi±zku z {readfile} przyda³aby siê jaka¶ funkcja do parsowania 
+    ka¿dej linii, co¶ jak explode z PHP, albo mo¿e co¶ opartego na regexpach
+
+*** rozszerzenia blokowe
+
+    np. {mail "recipient=a@a.pl;sender=b@b.pl"}tre¶æ wiadomo¶ci{/mail}
+    
+*** funkcje wieloargumentowe
+
+    powy¿szy przyk³ad pokazuje, ¿e jest problem z przekazaniem wiêcej ni¿ 
+    jednego argumentu do funkcji.
+
+*** B£¡D: stosowanie (interpretowanie) wciêæ
+
+    obecnie nie za bardzo mo¿na stosowaæ wciêcia w skrypcie, np.:
+    
+    1.{zmienna}
+    2.    {if(.....)}\
+    3.tekst
+    4.    {/if}\
+    5.koniec
+    
+    chcia³bym aby bia³e znaki w linii 2 i 4 by³y ignorowane, czyli inaczej
+    gdy w linii zakoñczonej znakiem \ s± same bia³e znaki, to by³yby one
+    usuwane
+
+*** procedury definiowane w skrypcie (raczej niski priorytet)
+
+    na przyk³ad:
+    {function nazwa}{zmienna + 2}{/function}
+    a potem
+    {cos = nazwa(zmienna=cos)}
+
+*** ró¿ne interpretowanie argumentów w funkcjach
+
+    {file} i {exec} akceptuj± ró¿nie argumenty (filename dla {file} musi byæ 
+    objête cudzys³owami, podczas gdy komenda dla {exec} nie musi)
+
+*** predefiniowane sta³e time, timestamp, date (czy co¶ w ten deseñ)
+
+    nie mo¿na wygenerowaæ seriala dla stref w bindzie.
+
+*** Eskejpowanie { i }
+
+    zamiast { "{" } wygodniej by by³o \{ (i dla } analogicznie)
