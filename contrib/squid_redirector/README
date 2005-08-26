@@ -72,7 +72,7 @@ redirector zwiêkszy³ jej czas ³adowania o 0,023994 sekundy).
 Je¶li redirector nie dzia³a w ogóle, lub nie dzia³a tak jak by¶my chcieli, 
 pierwsze co nale¿y zrobiæ, to sprawdziæ czy nasz system spe³nia wymagania LMSa,
 oraz czy zrobili¶my wszystko co jest wymagane podczas instalacji redirectora. 
-Nastêpnie, warto zajrzeæ w logi Apache. Je¶li znajdziemy w logach co¶ takiego 
+Nastêpnie, warto zajrzeæ w logi Squida. Je¶li znajdziemy w logach co¶ takiego 
 (99% przypadków):
 
 Mar 14 11:20:09 localhost squid[27459]: WARNING: redirector #1 (FD 7) exited 
