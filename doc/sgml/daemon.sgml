@@ -1104,7 +1104,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 	<sect2 id="daemon-parser-intro">
 	<title>Introduction</title>
 	    <para>Parser module is based on a scripting language
-	    <ulink url="http://silvercoders.com/index.php?title=T-Script">T-Script</ulink> which 
+	    <ulink url="http://silvercoders.com/index.php?page=T_Script">T-Script</ulink> which 
 	    primary purpose is to generate text files. It can be useful for processing
 	    templates with some additional data retrieved from data sources 
 	    like SQL databases or text files. In lmsd's module contents of scripts
