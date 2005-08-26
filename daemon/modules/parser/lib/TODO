@@ -69,3 +69,7 @@ $Id$
 *** Eskejpowanie { i }
 
     zamiast { "{" } wygodniej by by³o \{ (i dla } analogicznie)
+
+*** delfile
+
+    zmiast {exec rm} przyda³o by siê {delfile}
