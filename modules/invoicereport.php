@@ -57,7 +57,7 @@ $taxes = $DB->GetAllByKey('SELECT taxid AS id, label, taxes.value AS value
 	    GROUP BY taxid, label, taxes.value 
 	    ORDER BY value ASC', 'id', array(DOC_INVOICE,$unixfrom, $unixto));
 
-// we can't here simply get documents with SUM(value*count)
+// we can't simply get documents with SUM(value*count)
 // because we need here incoices-like round-off
 
 // get documents items numeric values for calculations
@@ -65,15 +65,13 @@ $items = $DB->GetAll('SELECT docid, taxid, value, count
 	    FROM documents 
 	    LEFT JOIN invoicecontents ON docid = documents.id 
 	    WHERE type = ? AND (cdate BETWEEN ? AND ?) 
-	    ORDER BY cdate ASC, docid', array(DOC_INVOICE, $unixfrom, $unixto));
+	    ORDER BY cdate, docid', array(DOC_INVOICE, $unixfrom, $unixto));
 
 // get documents data
-$docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template 
+$docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template
 	    FROM documents 
 	    LEFT JOIN numberplans ON numberplanid = numberplans.id
-	    WHERE type = ? AND (cdate BETWEEN ? AND ?) 
-	    GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, ten, ssn, template 
-	    ORDER BY cdate ASC', 'id', array(DOC_INVOICE, $unixfrom, $unixto));
+	    WHERE type = ? AND (cdate BETWEEN ? AND ?) ', 'id', array(DOC_INVOICE, $unixfrom, $unixto));
 
 if($items)
 {
