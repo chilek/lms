@@ -48,50 +48,69 @@ $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 $listdata = array();
 $invoicelist = array();
 
-if($result = $LMS->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, nip, pesel, taxvalue, SUM(value*count) AS value FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 AND (cdate BETWEEN ? AND ?) GROUP BY id, number, taxvalue, cdate, customerid, name, address, zip, city, nip, pesel, finished ORDER BY cdate ASC', array($unixfrom, $unixto)))
-{
-	foreach($result as $idx => $row)
-	{
-		$id = $row['id'];
-		$value = round($row['value'], 2);
-		$invoicelist[$id]['custname'] = $row['name'];
-		$invoicelist[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
-		$invoicelist[$id]['nip'] = ($row['nip'] ? trans('TEN').' '.$row['nip'] : ($row['pesel'] ? trans('SSN').' '.$row['pesel'] : ''));
-		$invoicelist[$id]['number'] = $row['number'];
-		$invoicelist[$id]['cdate'] = $row['cdate'];
-		$invoicelist[$id]['customerid'] = $row['customerid'];
-		$invoicelist[$id]['year'] = date('Y',$row['cdate']);
-		$invoicelist[$id]['month'] = date('m',$row['cdate']);
-		$invoicelist[$id]['brutto'] += $value;
+$items = $DB->GetAll('SELECT invoiceid, taxvalue, value, count
+			FROM invoices 
+			LEFT JOIN invoicecontents ON invoiceid = id 
+			WHERE finished = 1 AND (cdate BETWEEN ? AND ?) 
+			ORDER BY cdate ASC, invoiceid', array($unixfrom, $unixto));
 
-		$listdata['brutto'] += $value;
-		if ($row['taxvalue'] == '')
+$invoices = $DB->GetAllByKey('SELECT id, number, cdate, customerid, name, address, zip, city, nip, pesel 
+			    FROM invoices 
+			    WHERE finished = 1 AND (cdate BETWEEN ? AND ?)',
+			    'id', array($unixfrom, $unixto));
+
+if($items)
+{
+	foreach($items as $item)
+	{
+		$id = $item['invoiceid'];
+		$inv = $invoices[$id];
+
+		$invoicelist[$id]['custname'] = $inv['name'];
+		$invoicelist[$id]['custaddress'] = $inv['zip'].' '.$inv['city'].', '.$inv['address'];
+		$invoicelist[$id]['nip'] = ($inv['nip'] ? trans('TEN').' '.$inv['nip'] : ($inv['pesel'] ? trans('SSN').' '.$inv['pesel'] : ''));
+		$invoicelist[$id]['number'] = $inv['number'];
+		$invoicelist[$id]['cdate'] = $inv['cdate'];
+		$invoicelist[$id]['customerid'] = $inv['customerid'];
+		$invoicelist[$id]['year'] = date('Y',$inv['cdate']);
+		$invoicelist[$id]['month'] = date('m',$inv['cdate']);
+		
+		$sum = $item['value'] * $item['count'];
+		
+		$invoicelist[$id]['brutto'] += $sum;
+		$listdata['brutto'] += $sum;
+		
+		if($item['taxvalue'] == '')
 		{
-			$invoicelist[$id]['valfree'] += $value;
-			$listdata['valfree'] += $value;
+			$invoicelist[$id]['valfree'] += $sum;
+			$listdata['valfree'] += $sum;
 		}
 		else
-			switch(round($row['taxvalue'],1))
+			switch(round($item['taxvalue'],1))
 			{
 			    case '0.0':
-				    $invoicelist[$id]['val0'] += $value;
-				    $listdata['val0'] += $value;
+				    $invoicelist[$id]['val0'] += $sum;
+				    $listdata['val0'] += $sum;
 			    break;
 			    case '7.0':
-				     $invoicelist[$id]['tax7'] += round($value - ($value/1.07), 2);
-				     $invoicelist[$id]['val7'] += $value - $invoicelist[$id]['tax7'];
-			    	     $invoicelist[$id]['tax']   += $invoicelist[$id]['tax7'];
-				     $listdata['tax7'] += $invoicelist[$id]['tax7'];
-				     $listdata['val7'] += $invoicelist[$id]['val7'];
-				     $listdata['tax']  += $invoicelist[$id]['tax7'];
+				     $tax = round($item['value'] - ($item['value']/1.07), 2) * $item['count'];
+				     $val = $sum - $tax;
+				     $invoicelist[$id]['tax7'] += $tax;
+				     $invoicelist[$id]['val7'] += $val;
+			    	     $invoicelist[$id]['tax']  += $tax;
+				     $listdata['tax7'] += $tax;
+				     $listdata['val7'] += $val;
+				     $listdata['tax']  += $tax;
 			    break;
 			    case '22.0':
-				     $invoicelist[$id]['tax22'] += round($value - ($value/1.22), 2);
-				     $invoicelist[$id]['val22'] += $value - $invoicelist[$id]['tax22'];
-			    	     $invoicelist[$id]['tax']   += $invoicelist[$id]['tax22'];
-				     $listdata['tax22'] += $invoicelist[$id]['tax22'];
-				     $listdata['val22'] += $invoicelist[$id]['val22'];
-				     $listdata['tax']   += $invoicelist[$id]['tax22'];
+				     $tax = round($item['value'] - ($item['value']/1.22), 2) * $item['count'];
+				     $val = $sum - $tax;
+				     $invoicelist[$id]['tax22'] += $tax;
+				     $invoicelist[$id]['val22'] += $val;
+			    	     $invoicelist[$id]['tax']   += $tax;
+				     $listdata['tax22'] += $tax;
+				     $listdata['val22'] += $val;
+				     $listdata['tax']   += $tax;
 			    break;
 		    }
 	}
