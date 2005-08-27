@@ -26,14 +26,14 @@
 
 $DB->BeginTrans();
 
-foreach($LMS->CONFIG['phpui'] as $key => $val)
+foreach($CONFIG['phpui'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('phpui', $key, $val)
 			);
 }
 
-foreach($LMS->CONFIG['userpanel'] as $key => $val)
+if($CONFIG['userpanel']) foreach($CONFIG['userpanel'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('userpanel', $key, $val)
@@ -41,7 +41,7 @@ foreach($LMS->CONFIG['userpanel'] as $key => $val)
 }
 
 /*
-foreach($LMS->CONFIG['directories'] as $key => $val)
+foreach($CONFIG['directories'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('directories', $key, $val)
@@ -49,21 +49,21 @@ foreach($LMS->CONFIG['directories'] as $key => $val)
 }
 */
 
-foreach($LMS->CONFIG['invoices'] as $key => $val)
+foreach($CONFIG['invoices'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('invoices', $key, $val)
 			);
 }
 
-foreach($LMS->CONFIG['receipts'] as $key => $val)
+foreach($CONFIG['receipts'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('receipts', $key, $val)
 			);
 }
 
-foreach($LMS->CONFIG['finances'] as $key => $val)
+foreach($CONFIG['finances'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('finances', $key, $val)
