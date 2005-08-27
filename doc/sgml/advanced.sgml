@@ -208,7 +208,6 @@
                     <member>docid - serial number for document (e.g. invoice) related to this operation</member>
                     <member>itemid - document item identifier</member>
                     <member>comment - description of operation</member>
-		    <member>reference - identifier of refered record</member>
                </simplelist>
           </sect2>
           <sect2 id="cashimport">
@@ -308,6 +307,7 @@
                     <member>ten - Tax Exempt Number of customer</member>
                     <member>zip - zip code of customer</member>
                     <member>city - location of customer</member>
+		    <member>closed - is document (invoice) closed (accounted)? (0/1)</member>
                </simplelist>
           </sect2>
           <sect2 id="documentcontents">

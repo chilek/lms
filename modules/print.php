@@ -370,7 +370,7 @@ switch($type)
 		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
 			FROM cash LEFT JOIN documents ON (docid = documents.id)
 			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=?
-			AND (docid=0 OR documents.type != 1) AND reference=0
+			AND docid=0
 			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));
 

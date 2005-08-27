@@ -325,13 +325,14 @@
 	    wystawiaæ faktury.</para></note></para>
 	</sect2>
 	<sect2 id="menu-invoices-list">
-	    <title>Lista faktur</title>
-	    <para>Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj]) oraz rozliczenia
-	    danej pozycji, czyli zaksiêgowania wp³aty (ikona [Rozlicz]). Faktury mo¿na filtrowaæ
-	    wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</para>
+		<title>Lista faktur</title>
+		<para>Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj])
+		oraz oznaczenia faktur jako rozliczone. Faktury oznaczone jako rozliczone bêd± na li¶cie
+		wyszarzone. Faktury mo¿na filtrowaæ
+	    	wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</para>
 	</sect2>
 	<sect2 id="menu-invoices-new">
-	    <title>Nowa faktura</title>
+		<title>Nowa faktura</title>
 		<para>Rêczne wystawianie faktury dla wybranego klienta. W pierwszej kolejno¶ci
 		wybieramy klienta z listy, ustawiamy typ p³atno¶ci i pozosta³e dane takie jak
 		termin p³atno¶ci, data wystawienia, a nawet numer faktury i klikamy 

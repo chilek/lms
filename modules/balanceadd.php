@@ -54,7 +54,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 			if($LMS->CustomerExists($value))
 			{
 				$addbalance['customerid'] = $value;
-				$LMS->AddBalance($addbalance);
+					$LMS->AddBalance($addbalance);
 			}
 	}
 	else
@@ -70,7 +70,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 if($addbalance['type']=='2' || $addbalance['type']=='1')
 {
 	$addbalance['customerid'] = '0';
-	$LMS->AddBalance($addbalance);
+		$LMS->AddBalance($addbalance);
 }
 
 header('Location: ?'.$SESSION->get('backto'));

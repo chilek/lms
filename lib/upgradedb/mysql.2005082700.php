@@ -24,23 +24,9 @@
  *  $Id$
  */
 
-$customerid = $_GET['id'];
+$DB->Execute("ALTER TABLE documents ADD closed tinyint(1) DEFAULT '0' NOT NULL");
+$DB->Execute("ALTER TABLE cash DROP reference");
 
-if($LMS->CustomerExists($customerid))
-{
-	$balance = $LMS->GetCustomerBalance($customerid);
-
-	if($balance<0)
-	{
-		$DB->Execute('INSERT INTO cash (time, userid, type, value, customerid, comment)
-			VALUES (?NOW?, ?, 3, ?, ?, ?)', 
-			array($AUTH->id, 
-				str_replace(',','.', $balance*-1),
-				$customerid,
-				trans('Accounted')));
-	}
-}
-
-header('Location: ?'.$SESSION->get('backto'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082700', 'dbversion'));
 
 ?>

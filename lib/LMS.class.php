@@ -675,7 +675,7 @@ class LMS
 		$saldolist = array();
 		// wrapper do starego formatu
 		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid, users.name AS username,
-					documents.type AS doctype
+					documents.type AS doctype, documents.closed AS closed
 					FROM cash
 					LEFT JOIN users ON users.id = cash.userid
 					LEFT JOIN documents ON documents.id = docid
@@ -692,19 +692,16 @@ class LMS
 				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
 
 				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
-				$saldolist['invoicepaid'][$i] = 1;
 
 				switch ($saldolist['type'][$i])
 				{
 					case '3':
-						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
+						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),2);
 						$saldolist['name'][$i] = trans('payment');
 					break;
 					case '4':
-						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
+						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),2);
 						$saldolist['name'][$i] = trans('covenant');
-						if ($saldolist['docid'][$i] && $saldolist['doctype'][$i]==1)
-							$saldolist['invoicepaid'][$i] = $this->IsInvoicePaid($saldolist['docid'][$i]);
 					break;
 				}
 
@@ -1283,7 +1280,21 @@ class LMS
 		
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city)
 				    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				    array($number, $invoice['invoice']['numberplanid'], $type, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $this->AUTH->id, $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city']));
+				    array($number, 
+					    $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0, 
+					    $type, 
+					    $cdate, 
+					    $invoice['invoice']['paytime'], 
+					    $invoice['invoice']['paytype'], 
+					    $this->AUTH->id, 
+					    $invoice['customer']['id'], 
+					    $invoice['customer']['customername'], 
+					    $invoice['customer']['address'], 
+					    $invoice['customer']['ten'], 
+					    $invoice['customer']['ssn'], 
+					    $invoice['customer']['zip'], 
+					    $invoice['customer']['city']
+					));
 		$iid = $this->DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?', array($number,$cdate,$type));
 
 		$itemid=0;
@@ -1321,7 +1332,6 @@ class LMS
 		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city'], $iid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($iid));
-		//if invoice was paid (then you need to manual bind orphant payments with covenants)
 		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0, customerid = ? WHERE docid = ?', array($invoice['customer']['id'], $iid));
 
 		$itemid=0;
@@ -1351,10 +1361,6 @@ class LMS
 	{
 		$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
-		if($refs = $this->DB->GetOne('SELECT id FROM cash WHERE docid = ? AND type = 4', array($invoiceid)))
-			foreach($refs as $reference)
-				$this->DB->Execute('UPDATE cash SET reference=0 WHERE reference=?', array($reference));
-		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0 WHERE docid = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($invoiceid));
 		$this->SetTS('documents');
 		$this->SetTS('invoicecontents');
@@ -1371,25 +1377,12 @@ class LMS
 				// if that was the last item of invoice contents
 				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 			}
-			$reference = $this->DB->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ? AND type = 4', array($invoiceid, $itemid));
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ? AND type = 4', array($invoiceid, $itemid));
-			$this->DB->Execute('UPDATE cash SET docid=0, itemid=0 WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
-			$this->DB->Execute('UPDATE cash SET reference=0 WHERE reference=?', array($reference));
 			$this->SetTS('documents');
 			$this->SetTS('invoicecontents');
 		}
 		else
 			$this->InvoiceDelete($invoiceid);
-	}
-
-	function IsInvoicePaid($invoiceid)
-	{
-		$i = $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END)
-					FROM cash WHERE docid = ?', array($invoiceid))
-		    + $this->DB->GetOne('SELECT SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END)
-					FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
-					WHERE a.docid = ?', array($invoiceid));
-		return $i >= 0 ? TRUE : FALSE;
 	}
 
 	function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
@@ -1450,21 +1443,19 @@ class LMS
 					break;
 			}
 		}
+		
+		if($cat=='notclosed')
+			$where = ' AND closed = 0';
 
-		if($result = $this->DB->GetAll('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, template, 
+		if($result = $this->DB->GetAll('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, template, closed, 
 						SUM(value*count) AS value, COUNT(docid) AS count
 						FROM invoicecontents, documents
 						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						WHERE docid = documents.id AND type = 1'
 						.$where
-						.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template '
+						.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template, closed '
 						.$sqlord.' '.$direction))
 		{
-			$inv_paid_main = $this->DB->GetAllByKey('SELECT docid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum
-					FROM cash WHERE docid != 0 GROUP BY docid', 'id');
-			$inv_paid_ref = $this->DB->GetAllByKey('SELECT a.docid AS id, SUM(CASE b.type WHEN 3 THEN b.value ELSE -b.value END) AS sum
-					FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
-					WHERE a.docid != 0 GROUP BY a.docid', 'id');
 			if($group['group'])
 				$customers = $this->DB->GetAllByKey('SELECT customerid AS id FROM customerassignments WHERE customergroupid=?', 'id', array($group['group']));
 
@@ -1472,7 +1463,6 @@ class LMS
 			{
 				$result[$idx]['year'] = date('Y',$row['cdate']);
 				$result[$idx]['month'] = date('m',$row['cdate']);
-				$result[$idx]['paid'] = ( $inv_paid_main[$row['id']]['sum'] + $inv_paid_ref[$row['id']]['sum'] >=0 ? TRUE : FALSE );
 
 				if($group['group'])
 					if(!$group['exclude'] && $customers[$result[$idx]['customerid']])
@@ -1492,7 +1482,7 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid
+		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid, closed
 					    FROM documents 
 					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE documents.id=? AND type = 1', array($invoiceid)))
@@ -1523,7 +1513,6 @@ class LMS
 			$result['totalg'] = round( ($result['total'] - floor($result['total'])) * 100);
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
-			$result['paid'] = $this->IsInvoicePaid($invoiceid);
 			$customer_info=$this->GetCustomer($result['customerid']);
 			$result['customerpin'] = $customer_info['pin'];
 			// NOTE: don't waste CPU/mem when printing history is not set:
@@ -1705,8 +1694,8 @@ class LMS
 		$this->SetTS('cash');
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
 
-		return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid, reference)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array($addbalance['time'] ? $addbalance['time'] : time(),
 					    $addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id,
 					    $addbalance['type'],
@@ -1715,8 +1704,7 @@ class LMS
 					    $addbalance['customerid'],
 					    $addbalance['comment'],
 					    $addbalance['docid'] ? $addbalance['docid'] : 0,
-					    $addbalance['itemid'] ? $addbalance['itemid'] : 0,
-					    $addbalance['reference'] ? $addbalance['reference'] : 0
+					    $addbalance['itemid'] ? $addbalance['itemid'] : 0
 					    ));
 	}
 
@@ -1742,7 +1730,7 @@ class LMS
 		$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
 		$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid,
-						    documents.type AS doctype
+						    documents.type AS doctype, documents.closed AS closed
 						    FROM cash
 						    LEFT JOIN documents ON (documents.id = docid)
 						    LEFT JOIN taxes ON (taxid = taxes.id)
@@ -1788,15 +1776,6 @@ class LMS
 		}
 
 		return $balancelist;
-	}
-
-	function GetItemUnpaidValue($docid, $itemid)
-	{
-		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN -value ELSE value END)
-				FROM cash WHERE docid=? AND itemid=?', array($docid, $itemid))
-			+ $this->DB->GetOne('SELECT SUM(CASE b.type WHEN 3 THEN -b.value ELSE b.value END)
-				FROM cash a LEFT JOIN cash b ON (a.id = b.reference)
-				WHERE a.docid=? AND a.itemid=?', array($docid, $itemid));
 	}
 
 	/*
@@ -3157,7 +3136,7 @@ class LMS
 	{
 		if(!$customerid) return NULL;
 		
-		return $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype, template
+		return $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype, template, closed
 				    FROM documentcontents, documents
 				    LEFT JOIN numberplans ON(numberplanid = numberplans.id)
 				    WHERE documents.id = documentcontents.docid
@@ -3237,6 +3216,8 @@ class LMS
 	{
 		if($planid)
 			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
+		else
+			$planid = 0;
 		
 		$period = $period ? $period : YEARLY;
 		$cdate = $cdate ? $cdate : time();

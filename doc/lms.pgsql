@@ -61,12 +61,10 @@ CREATE TABLE cash (
 	comment varchar(255) 	DEFAULT '' NOT NULL,
 	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
-	reference integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX cash_customerid_idx ON cash(customerid);
 CREATE INDEX cash_docid_idx ON cash(docid);
-CREATE INDEX cash_reference_idx ON cash(reference);
 CREATE INDEX cash_time_idx ON cash(time);
 
 /* -------------------------------------------------------- 
@@ -201,6 +199,7 @@ CREATE TABLE documents (
 	ssn varchar(11) 	DEFAULT '' NOT NULL,
     	paytime smallint 	DEFAULT 0 NOT NULL,
 	paytype varchar(255) 	DEFAULT '' NOT NULL,
+	closed smallint		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -687,4 +686,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005080300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005082700');
