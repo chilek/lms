@@ -24,43 +24,6 @@
  *  $Id$
  */
 
-function GetCustomerCovenants($id)
-{
-	global $CONFIG, $DB;
-
-	if(!$id) return NULL;
-	
-	if($covenantlist = $DB->GetAll('SELECT a.docid AS docid, a.itemid AS itemid, MIN(cdate) AS cdate, 
-			ROUND(SUM(CASE a.type WHEN 3 THEN a.value*-1 ELSE a.value END)/(CASE COUNT(b.id) WHEN 0 THEN 1 ELSE COUNT(b.id) END),2)
-			+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value*-1 ELSE b.value END),0) AS value
-			FROM cash a 
-			LEFT JOIN documents d ON (a.docid = d.id)
-			LEFT JOIN cash b ON (a.id = b.reference)
-			WHERE d.customerid = ? AND d.type = 1 
-			AND a.docid > 0 AND a.itemid > 0
-			GROUP BY a.docid, a.itemid
-			HAVING ROUND(SUM(CASE a.type WHEN 3 THEN a.value*-1 ELSE a.value END)/(CASE COUNT(b.id) WHEN 0 THEN 1 ELSE COUNT(b.id) END),2)
-			+ COALESCE(SUM(CASE b.type WHEN 3 THEN b.value*-1 ELSE b.value END),0) > 0
-			ORDER BY cdate LIMIT 10', array($id)))
-	{
-		foreach($covenantlist as $idx => $row)
-		{
-			$record = $DB->GetRow('SELECT cash.id AS id, number, taxes.label AS tax, comment, template
-					    FROM cash 
-					    LEFT JOIN documents ON (docid = documents.id)
-					    LEFT JOIN taxes ON (taxid = taxes.id)
-					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-					    WHERE docid = ? AND itemid = ? AND cash.type = 4',
-					    array($row['docid'], $row['itemid']));
-		
-			$record['invoice'] = docnumber($record['number'], $record['template'], $row['cdate']);
-
-			$covenantlist[$idx] = array_merge($record, $covenantlist[$idx]);
-		}
-		return $covenantlist;
-	}
-}
-
 if(isset($_GET['id']))
 {
 	$receipt = $DB->GetRow('SELECT documents.*, template 
@@ -110,20 +73,6 @@ switch($_GET['action'])
 	
 		if($itemdata['value'] && $itemdata['description'])
 			$contents[] = $itemdata;
-	break;
-	case 'additemlist':
-	
-		if($marks = $_POST['marks'])
-			foreach($marks as $id)
-			{
-				$row = $DB->GetRow('SELECT docid, itemid, comment FROM cash WHERE id = ?', array($id));
-				$itemdata['value'] = $LMS->GetItemUnpaidValue($row['docid'], $row['itemid']);
-				$itemdata['value'] = str_replace(',','.',$itemdata['value']);
-				$itemdata['description'] = $row['comment'];
-				$itemdata['reference'] = $id;
-				$itemdata['posuid'] = (string) getmicrotime();
-				$contents[] = $itemdata;
-			}
 	break;
 	case 'deletepos':
 
@@ -224,15 +173,13 @@ switch($_GET['action'])
 			foreach($contents as $item)
 			{
 				$iid++;
-				$item['reference'] = $item['reference'] ? $item['reference'] : 0;
 				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description)
 					    VALUES(?,?,?,?)', array($rid, $iid, $item['value'], $item['description']));
-				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, reference, value, comment, userid, customerid)
-					    VALUES(?, 3, ?, ?, ?, ?, ?, ?, ?)', 
+				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
+					    VALUES(?, 3, ?, ?, ?, ?, ?, ?)', 
 					    array($receipt['cdate'],
 						$rid, 
 						$iid, 
-						$item['reference'] ? $item['reference'] : 0, 
 						$item['value'], 
 						$item['description'],
 						$AUTH->id,
@@ -259,23 +206,7 @@ if($_GET['action'] != '')
 	$SESSION->redirect('?m=receiptedit');
 }
 
-if($list = GetCustomerCovenants($customer['id'] ? $customer['id'] : $_GET['cid']))
-	if($contents)
-		foreach($list as $row)
-		{
-			$i = 0;
-			foreach($contents as $item)
-				if($row['id'] == $item['reference'])
-					$i = 1;
-			if(!$i)
-				$covenantlist[] = $row;
-		}
-	else
-		$covenantlist = $list;
-
-
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-$SMARTY->assign('covenantlist', $covenantlist);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);

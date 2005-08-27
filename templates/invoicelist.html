@@ -29,20 +29,11 @@
 		CheckAll();
 	}
 	
-	function invoicepay(id)
-	{
-		if(! confirm('{/literal}{t}Are you sure, you want to account selected invoice?{/t}{literal}'))
-			return;
-		document.page.action="?m=invoicepaid&id="+id;
-		document.page.target="";
-		document.page.submit();
-	}
-
 	function pays()
 	{
-		if(! confirm('{/literal}{t}Are you sure, you want to account ALL selected invoices?{/t}{literal}'))
+		if(! confirm('{/literal}{t}Are you sure, you want to check/uncheck selected invoices as accounted?{/t}{literal}'))
 			return;
-		document.page.action="?m=invoicepaid&id=multi";
+		document.page.action="?m=invoicepaid";
 		document.page.target="";
 		document.page.submit();
 	}
@@ -116,6 +107,7 @@
 					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
 					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
 					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
+					<OPTION value="notclosed"{if $listdata.cat eq "notclosed"} SELECTED{/if}>{t}hide accounted<!plural>{/t}</OPTION>
 				</SELECT>&nbsp;
 				{t}Group:{/t}
 				<SELECT size="1" name="group">
@@ -144,7 +136,7 @@
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
 	{assign var=invoiceid value=$invoice.id}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="{cycle}{if $invoice.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="fleft">
 			{$invoice.id|string_format:"%04d"}
 		</TD>
@@ -161,17 +153,11 @@
 			{$invoice.count}
 		</TD>
 		<TD WIDTH="94%">
-			<A HREF="?m=customerinfo&id={$invoice.customerid}">{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}</A>
+			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed}class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}</A>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
-			{if !$invoice.paid}
-				<A HREF="javascript:invoicepay({$invoice.id})">
-				<IMG src="img/pay.gif" alt="[ {t}Account{/t} ]"></A>
-			{else}
-				<IMG src="img/empty.gif" alt="" WIDTH="16">
-			{/if}
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
-			<A {if $invoice.paid}onClick="return confirmLink(this, '{t 0=$number}Invoice \'$0\' has been paid. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A {if $invoice.closed}onClick="return confirmLink(this, '{t 0=$number}Invoice \'$0\' has been accounted. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 			<A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoiceedit&id={$invoice.id}&action=invoicedel"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
@@ -203,11 +189,10 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left">
+						<NOBR><A HREF="javascript:pays();">{t}Check/Uncheck as accounted{/t} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
 						<INPUT type="checkbox" class="box dark" name="original"> {t}original{/t}&nbsp;
-						<INPUT type="checkbox" class="box dark" name="copy"> {t}copy{/t}&nbsp;
-						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
-						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Enter accounting date in 'YYYY/MM/DD' format (empty field means current date)"}>&nbsp;<IMG SRC="img/calendar.gif" ALT=""></NOBR>
+						<INPUT type="checkbox" class="box dark" name="copy"> {t}copy{/t}
 					</TD>
 					<TD ALIGN="right">	
 						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
@@ -218,11 +203,4 @@
 	</TR>
 </TABLE>
 </FORM>
-<SCRIPT>
-<!--
-var cal1 = new calendar(document.forms['page'].elements['invoicepaydate']);
-cal1.time_comp = false;
-document.forms['page'].elements['invoicepaydate'].focus();
-//-->
-</SCRIPT>
 {include file="footer.html"}

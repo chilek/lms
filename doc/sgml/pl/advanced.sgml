@@ -213,7 +213,6 @@
                     <member>docid - identyfikator dokumentu (np. faktury) obejmuj±cego dan± operacjê</member>
                     <member>itemid - nr pozycji na fakturze</member>
                     <member>comment - opis operacji</member>
-		    <member>reference - powi±zanie z inn± operacj± (dokumentem) w tej tabeli</member>
                </simplelist>
           </sect2>
           <sect2 id="cashimport">
@@ -312,6 +311,7 @@
                     <member>ssn - PESEL klienta</member>
                     <member>zip - kod pocztowy klienta</member>
                     <member>city - miasto klienta</member>
+		    <member>closed - czy dokument jest rozliczony? (0/1)</member>
                </simplelist>
           </sect2>
           <sect2 id="documentcontents">

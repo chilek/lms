@@ -75,10 +75,8 @@ CREATE TABLE cash (
   comment varchar(255) NOT NULL default '',
   docid int(11) NOT NULL default '0',
   itemid smallint NOT NULL default '0',
-  reference int(11) NOT NULL default '0',
   PRIMARY KEY  (id),
   INDEX customerid (customerid),
-  INDEX reference (reference),
   INDEX docid (docid),
   INDEX time (time)
 ) TYPE=MyISAM;
@@ -147,6 +145,7 @@ CREATE TABLE documents (
 	ssn varchar(11) NOT NULL DEFAULT '',
 	paytime tinyint NOT NULL DEFAULT '0',
 	paytype varchar(255) NOT NULL DEFAULT '',
+	closed tinyint(1) NOT NULL default '0',
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid)
@@ -647,4 +646,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005080300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005082700');

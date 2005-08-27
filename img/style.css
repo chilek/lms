@@ -23,6 +23,7 @@ A		{ text-decoration: none; }
 A:link		{ color: #800000; }
 A:active	{ color: #336600; }
 A:visited	{ color: #800000; }
+A.blend		{ color: #888888; }
 A:hover		{ text-decoration: underline; color: #336600; }
 
 P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }

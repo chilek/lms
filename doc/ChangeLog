@@ -6,8 +6,12 @@ version ? (??/??/????):
   - changed access right definition for LMS configuration (alec)
   - security bugfix: plain text passwords aren't stored in session (alec)
   - security bugfix: session is excluded from database backup (alec)
-  - started finances revolution: removed prepayments, unpaid covenants
-    and related features (alec) 
+  - **********************************************************************
+    finances revolution: removed prepayments, unpaid covenants,
+    any cash references and related features,
+    invoices can't be paid, but only can be checked as accounted
+    added filter 'hide accounted' on Invoices List (alec) 
+    **********************************************************************
   - fixed round-off method on Invoices Report (alec)
 
 version 1.7.2 Doci (2005-08-13):
