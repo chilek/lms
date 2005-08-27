@@ -1,6 +1,5 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="page">
 {section name=marked loop=$marked}
@@ -138,7 +137,7 @@
 	{assign var=invoiceid value=$invoice.id}
 	<TR class="{cycle}{if $invoice.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="fleft">
-			{$invoice.id|string_format:"%04d"}
+			{$invoice.id|string_format:"%06d"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
@@ -153,14 +152,18 @@
 			{$invoice.count}
 		</TD>
 		<TD WIDTH="94%">
-			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed}class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}</A>
+			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}</A>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
-			<A {if $invoice.closed}onClick="return confirmLink(this, '{t 0=$number}Invoice \'$0\' has been accounted. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright">
+			<NOBR>
+			{if ! $invoice.closed}
+			<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 			<A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoiceedit&id={$invoice.id}&action=invoicedel"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			{/if}
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
+			</NOBR>
 		</TD>
 	</TR>
 	{sectionelse}
