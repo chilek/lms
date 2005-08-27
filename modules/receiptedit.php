@@ -36,9 +36,7 @@ if(isset($_GET['id']))
 
 	$i = 1;
 	
-	if($items = $DB->GetAll('SELECT receiptcontents.itemid AS itemid, receiptcontents.value AS value, description, reference 
-				FROM receiptcontents LEFT JOIN cash ON (receiptcontents.docid = cash.docid AND receiptcontents.itemid = cash.itemid)
-				WHERE receiptcontents.docid = ?', array($receipt['id'])))
+	if($items = $DB->GetAll('SELECT itemid, value, description FROM receiptcontents WHERE docid = ?', array($receipt['id'])))
 		foreach($items as $item)
 		{
 			$item['posuid'] = $i++;
