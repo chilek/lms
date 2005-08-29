@@ -331,13 +331,6 @@ $menu = array(
 			'tip' => trans(''),
 			'accesskey' =>'r',
 			'prio' =>'40',
-			'submenu' => array(
-				array(
-					'name' => trans('Reload'),
-					'link' => '?m=reload',
-					'tip' => trans('Configuration Reload')
-				),
-			),
 		),
 
 		array(
