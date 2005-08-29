@@ -492,7 +492,7 @@ $menu = array(
 
 if(($CONFIG['directories']['userpanel_dir']))
 {
-	// be shure that Userpanel exists
+	// be sure that Userpanel exists
 	if(file_exists($CONFIG['directories']['userpanel_dir']."/lib/Userpanel.class.php"))
 		foreach($menu as $idx => $menuitem)
 			if($menuitem['name'] == trans('Configuration'))
