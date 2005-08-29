@@ -347,7 +347,8 @@ function invoice_footnote($x, $y, $width, $font_size)
 function invoice_body() 
 {
     global $invoice,$pdf,$id,$CONFIG;
-    switch ($CONFIG['invoices']['template_file']) {
+    switch ($CONFIG['invoices']['template_file'])
+    {
 	case "standard":
 	    $top=800;
 	    invoice_dates(500,800);    
@@ -413,11 +414,24 @@ $pdf->selectFont($_LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding
 
 $id=$pdf->getFirstPageId();
 
-if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
+if($_GET['print'] == 'cached')
 {
-	foreach($_POST['marks'] as $markid => $junk)
-		if($junk)
-			$ids[] = $markid;
+	$SESSION->restore('ilm', $ilm);
+	$SESSION->remove('ilm');
+
+	if(sizeof($_POST['marks']))
+		foreach($_POST['marks'] as $id => $mark)
+			$ilm[$id] = $mark;
+
+	if(sizeof($ilm))
+		foreach($ilm as $mark)
+			$ids[] = $mark;
+
+	if(!sizeof($ids))
+	{
+		$SESSION->close();
+		die;
+	}
 
 	if($_GET['cash'])
 	{
@@ -430,7 +444,6 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 
 	sort($ids);
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
-	
 	$count = (strstr($which,'+') ? sizeof($ids)*2 : sizeof($ids));
 	$i=0;
 

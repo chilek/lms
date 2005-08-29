@@ -37,14 +37,24 @@ if($CONFIG['invoices']['attachment_name'] != '')
 
 $SMARTY->assign('css', file('img/style_print.css')); 
 
-if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
+if($_GET['print'] == 'cached')
 {
-	$layout['pagetitle'] = trans('Invoices');
-	$SMARTY->display('invoiceheader.html');
-	foreach($_POST['marks'] as $markid => $junk)
-		if($junk)
-			$ids[] = $markid;
+	$SESSION->restore('ilm', $ilm);
+	$SESSION->remove('ilm');
 
+	if(sizeof($_POST['marks']))
+		foreach($_POST['marks'] as $id => $mark)
+			$ilm[$id] = $mark;
+	if(sizeof($ilm))
+		foreach($ilm as $mark)
+			$ids[] = $mark;
+
+	if(!$ids)
+	{
+		$SESSION->close();
+		die;
+	}
+	
 	if($_GET['cash'])
 	{
 		foreach($ids as $cashid)
@@ -55,6 +65,9 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 		}
 		$ids = array_unique((array)$idsx);
 	}
+
+	$layout['pagetitle'] = trans('Invoices');
+	$SMARTY->display('invoiceheader.html');
 	
 	sort($ids);
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
