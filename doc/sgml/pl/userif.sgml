@@ -645,33 +645,18 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	<title>Prze³adowanie</title>
 	<para>Menu 'Prze³adowanie' s³u¿y do zarz±dzania us³ugami na serwerach/routerach
 	poprzez "w³±czanie" ¿±dania prze³adowania dla <emphasis>LMS-MGC</emphasis>
-	lub demona <emphasis>lmsd</emphasis>. Tutaj tak¿e znajduje siê panel
-	konfiguracyjny demona.</para>
-	<sect2 id="menu-reload-reload">
-	    <title>Prze³adowanie</title>
-	    <para>Je¿eli korzystasz z <emphasis>LMS-MGC</emphasis> klikniêcie na menu 
-	    'Prze³adowanie' spowoduje uruchomienie generatora plików konfiguracyjnych 
-	    <emphasis>LMS-MGC</emphasis>, który wygeneruje zdefiniowan± konfiguracjê i prze³aduje us³ugi. 
-	    W przypadku demona <emphasis>lmsd</emphasis> mo¿esz wybraæ z listy
-	    zdefiniowane hosty na których chcesz dokonaæ prze³adowania. Zachowanie
-	    menu 'Prze³adowanie' jest zale¿ne od ustawienia opcji 'reload_type'. Je¶li
-	    zdefiniowa³e¶ zapytanie SQL w opcji 'reload_sqlquery' zostanie ono wykonane.</para>
-	    <para>Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis>
-	    oraz demona.</para>
-	</sect2>
-	<sect2 id="menu-reload-config">
-	<title>Konfiguracja</title>
-	    <para>W tym miejscu konfigurujemy demona <emphasis>lmsd</emphasis>.
-	    Konfiguracjê zaczyna siê od zdefiniowania hostów, na których dzia³a
-	    demon. Musisz zdefiniowaæ co najmniej jeden host, nawet je¶li jest to
-	    localhost (na którym dzia³a <emphasis>LMS-UI</emphasis>). Nastêpnie
-	    klikaj±c na wybranym ho¶cie przechodzisz ju¿ do w³a¶ciwej konfiguracji
-	    (to co dawniej by³o zapisywane w pliku <filename>lms.ini</filename>).</para>
-	    <para><note><para>Nazwa hosta powinna odpowiadaæ rzeczywistej nazwie hosta,
-	    któr± zwraca polecenie <filename>hostname</filename>.</para></note></para>
-	    <para>Konfiguracja jest bardziej szczegó³owo opisana w rozdziale dotycz±cym
-	    demona.</para>
-	</sect2>
+	lub demona <emphasis>lmsd</emphasis>.</para>
+	<para>Je¿eli korzystasz z <emphasis>LMS-MGC</emphasis> klikniêcie na menu 
+	'Prze³adowanie' spowoduje uruchomienie generatora plików
+	konfiguracyjnych <emphasis>LMS-MGC</emphasis>, który wygeneruje 
+	zdefiniowan± konfiguracjê i prze³aduje us³ugi. 
+	W przypadku demona <emphasis>lmsd</emphasis> mo¿esz wybraæ z listy
+	zdefiniowane hosty na których chcesz dokonaæ prze³adowania. Zachowanie
+	menu 'Prze³adowanie' jest zale¿ne od ustawienia opcji 'reload_type'.
+	Je¶li zdefiniowa³e¶ zapytanie SQL w opcji 'reload_sqlquery' zostanie 
+	ono wykonane.</para>
+	<para>Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych 
+	<emphasis>LMS-MGC</emphasis> oraz demona.</para>
  </sect1>
  <sect1 id="menu-stats">
 	<title>Statystyki</title>
@@ -1142,6 +1127,24 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 		</para>
 		<para><note><para>Je¿eli w systemie nie zdefiniowano planów numeracyjnych
 		dokumenty bêd± numerowane wg wzorca '%N/LMS/%Y' z okresem rocznym.</para></note></para>
+	</sect2>
+	<sect2 id="config-hosts">
+		<title>Demon</title>
+		<para>Tutaj definiuje siê hosty które bêd± wspó³pracowa³y
+		z LMSem, czyli komputery (routery, serwery) pobieraj±ce 
+		konfiguracjê z bazy LMSa, na których bêd± uruchamiane
+		skrypty lub demon <emphasis>lmsd</emphasis>.</para>
+		<para>Nazwa ka¿dego hosta musi byæ unikalna i zaleca siê
+		aby odpowiada³a rzeczywistej nazwie maszyny, któr± mo¿na
+		uzyskaæ uruchamiaj±c polecenie <prompt>hostname</prompt>
+		na ka¿dej z tych maszyn (zak³adaj±c, ¿e s± to komputery
+		z linuksem).</para>
+	</sect2>
+	<sect2 id="config-daemon">
+		<title>Demon</title>
+		<para>Po zdefiniowaniu hostów mo¿na rozpocz±æ konfiguracjê
+		demona <emphasis>lmsd</emphasis>.Konfiguracja jest bardziej
+		szczegó³owo opisana w rozdziale dotycz±cym demona.</para>
 	</sect2>
     </sect1>
 </chapter>

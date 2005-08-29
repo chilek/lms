@@ -493,8 +493,8 @@
                     <member>userid - identyfikator u¿ytkownika</member>
                </simplelist>
           </sect2>
-          <sect2 id="daemonhosts">
-               <title>Konfiguracja demona - hosty ('daemonhosts')</title>
+          <sect2 id="hosts">
+               <title>Hosty ('hosts')</title>
                <simplelist>
                     <member>id - identyfikator</member>
                     <member>name - nazwa hosta</member>

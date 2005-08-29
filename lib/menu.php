@@ -337,11 +337,6 @@ $menu = array(
 					'link' => '?m=reload',
 					'tip' => trans('Configuration Reload')
 				),
-				array(
-					'name' => trans('Configuration'),
-					'link' => '?m=daemonhostlist',
-					'tip' => trans('Daemon(s) Configuration')
-				)
 			),
 		),
 
@@ -475,6 +470,17 @@ $menu = array(
 					'link' => '?m=numberplanlist',
 					'tip' => trans('Numbering Plans Definitions'),
 				),
+				array(
+					'name' => trans('Hosts'),
+					'link' => '?m=hostlist',
+					'tip' => trans('List of Hosts'),
+				),
+				array(
+					'name' => trans('Daemon'),
+					'link' => '?m=daemoninstancelist',
+					'tip' => trans('Daemon(s) Configuration')
+				)
+
 			),
 		),
 

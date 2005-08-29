@@ -622,14 +622,14 @@ CREATE TABLE cashimport (
 CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 
 /* ---------------------------------------------------
- Structure of table "daemonhosts" (lmsd config)
+ Structure of table "hosts"
 ------------------------------------------------------*/
 
-DROP SEQUENCE daemonhosts_id_seq;
-CREATE SEQUENCE daemonhosts_id_seq;
-DROP TABLE daemonhosts;
-CREATE TABLE daemonhosts (
-    id integer DEFAULT nextval('daemonhosts_id_seq'::text) NOT NULL,
+DROP SEQUENCE hosts_id_seq;
+CREATE SEQUENCE hosts_id_seq;
+DROP TABLE hosts;
+CREATE TABLE hosts (
+    id integer DEFAULT nextval('hosts_id_seq'::text) NOT NULL,
     name varchar(255) 		DEFAULT '' NOT NULL,
     description text 		DEFAULT '' NOT NULL,
     lastreload integer 		DEFAULT 0 NOT NULL,
@@ -686,4 +686,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005082700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005082900');

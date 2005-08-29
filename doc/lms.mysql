@@ -599,10 +599,10 @@ CREATE TABLE cashimport (
 
 # --------------------------------------------------------
 #
-# Structure of table daemonhosts (lmsd configuration)
+# Structure of table hosts
 #
-DROP TABLE IF EXISTS daemonhosts;
-CREATE TABLE daemonhosts (
+DROP TABLE IF EXISTS hosts;
+CREATE TABLE hosts (
     id int(11) NOT NULL auto_increment,
     name varchar(255) default '' NOT NULL,
     description text default '' NOT NULL,
@@ -646,4 +646,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005082700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005082900');

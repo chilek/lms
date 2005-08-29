@@ -180,7 +180,7 @@ int main(int argc, char *argv[], char **envp)
 		if( !reload )
 		{
 			// check reload order
-			res = db_pquery(g->conn, "SELECT reload FROM daemonhosts WHERE name = '?' AND reload != 0", dhost);
+			res = db_pquery(g->conn, "SELECT reload FROM hosts WHERE name = '?' AND reload != 0", dhost);
 			if( db_nrows(res) )
 			{
 				reload = 1;
@@ -199,7 +199,7 @@ int main(int argc, char *argv[], char **envp)
 			inst = strdup(iopt);
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
 			{
-				res = db_pquery(g->conn, "SELECT module, crontab FROM daemoninstances, daemonhosts WHERE daemonhosts.id = hostid AND disabled = 0 AND daemonhosts.name = '?' AND daemoninstances.name = '?'", dhost, instance);
+				res = db_pquery(g->conn, "SELECT module, crontab FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' AND daemoninstances.name = '?'", dhost, instance);
 				if( db_nrows(res) )
 				{
 					char *crontab = db_get_data(res, 0, "crontab");
@@ -218,7 +218,7 @@ int main(int argc, char *argv[], char **envp)
 		}		
 		else // ... or from database
 		{
-			res = db_pquery(g->conn, "SELECT module, crontab, daemoninstances.name AS name FROM daemoninstances, daemonhosts WHERE daemonhosts.id = hostid AND disabled = 0 AND daemonhosts.name = '?' ORDER BY priority", dhost);
+			res = db_pquery(g->conn, "SELECT module, crontab, daemoninstances.name AS name FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' ORDER BY priority", dhost);
 			for(i=0; i<db_nrows(res); i++)
 			{
 				char *crontab = db_get_data(res, i, "crontab");
@@ -307,7 +307,7 @@ int main(int argc, char *argv[], char **envp)
 				
 				// write reload timestamp and disable reload order
 				if( reload )
-					db_pexec(g->conn, "UPDATE daemonhosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
+					db_pexec(g->conn, "UPDATE hosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
 				
 				for(i=0; i<i_no; i++)
 				{

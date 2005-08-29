@@ -65,7 +65,7 @@ $access['table'][11]['name']        	= trans('accounts management');
 $access['table'][11]['allow_reg']   	= '^((account|domain|alias)(list|edit|add|del))$';
 
 $access['table'][12]['name']        	= trans('configuration');
-$access['table'][12]['allow_reg']   	= '^((config|numberplan|taxrate)(list|edit|add|del|load))$';
+$access['table'][12]['allow_reg']   	= '^((host|config|numberplan|taxrate)(list|edit|add|del|load))$';
 
 $access['table'][13]['name']        	= trans('networks and devices management');
 $access['table'][13]['allow_reg']   	= '^((net|netdev)(info|list|edit|add|del|cmp|map|remap)|choose(mac|ip))$';
@@ -74,7 +74,7 @@ $access['table'][14]['name']        	= trans('timetable management');
 $access['table'][14]['allow_reg']   	= '^(event(list|edit|add|del|info|print|search))$';
 
 $access['table'][15]['name']        	= trans('daemon management and configuration');
-$access['table'][15]['allow_reg']   	= '^((daemonhost|daemoninstance|daemonconfig)(list|edit|add|del|view))$';
+$access['table'][15]['allow_reg']   	= '^((daemoninstance|daemonconfig)(list|edit|add|del|view))$';
 
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';

@@ -36,7 +36,7 @@ $_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
 switch($_RELOAD_TYPE)
 {
 	case 'exec':
-		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM daemonhosts ORDER BY name');
+		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 
 		if(isset($_GET['setreloads']))
 		{
@@ -98,17 +98,15 @@ switch($_RELOAD_TYPE)
 		}
 		else
 		{
-			$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM daemonhosts ORDER BY name');
+			$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 			
 			if(isset($_GET['setreloads']))
 			{
 				foreach($hosts as $host)
 					if(in_array($host['id'], (array) $_POST['hosts']))
-						$DB->Execute('UPDATE daemonhosts SET reload=1 WHERE id=?', array($host['id']));
+						$DB->Execute('UPDATE hosts SET reload=1 WHERE id=?', array($host['id']));
 					else
-						$DB->Execute('UPDATE daemonhosts SET reload=0 WHERE id=?', array($host['id']));
-				
-				$LMS->SetTS('daemonhosts');
+						$DB->Execute('UPDATE hosts SET reload=0 WHERE id=?', array($host['id']));
 			}
 			
 			$SMARTY->assign('hosts', $hosts);

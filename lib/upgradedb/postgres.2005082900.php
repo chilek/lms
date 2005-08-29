@@ -24,31 +24,27 @@
  *  $Id$
  */
 
-function GetInstanceList($hostid)
-{
-	global $DB;
+$DB->BeginTrans();
 
-	if($hostid)
-		$where = 'WHERE hostid = '.$hostid;
-		
-	return $DB->GetAll('SELECT daemoninstances.id AS id, daemoninstances.name AS name, daemoninstances.description AS description, 
-			module, crontab, priority, disabled, hosts.name AS hostname
-			FROM daemoninstances LEFT JOIN hosts ON hosts.id = hostid '
-			.$where. 
-			' ORDER BY hostname, priority, name');
-}
+$DB->Execute("
+    DROP SEQUENCE daemonhosts_id_seq;
+    CREATE SEQUENCE hosts_id_seq;
+    CREATE TABLE hosts (
+	id integer DEFAULT nextval('hosts_id_seq'::text) NOT NULL,
+        name varchar(255)           DEFAULT '' NOT NULL,
+	description text            DEFAULT '' NOT NULL,
+        lastreload integer          DEFAULT 0 NOT NULL,
+	reload smallint             DEFAULT 0 NOT NULL,
+        PRIMARY KEY (id),
+	UNIQUE (name)
+    );
+    INSERT INTO hosts (id, name, description, lastreload, reload) SELECT id, name, description, lastreload, reload FROM daemonhosts;
+    DROP TABLE daemonhosts;
+    SELECT setval('hosts_id_seq', MAX(id)) FROM hosts;
+");
 
-$layout['pagetitle'] = trans('Instances List');
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082900', 'dbversion'));
 
-$hostid = $_GET['id'];
-
-$instancelist = GetInstanceList($hostid);
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('instancelist', $instancelist);
-$SMARTY->assign('hostid', $hostid);
-$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
-$SMARTY->display('daemoninstancelist.html');
+$DB->CommitTrans();
 
 ?>

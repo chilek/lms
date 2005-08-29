@@ -27,10 +27,10 @@
 function GetHostIdByName($name)
 {
 	global $DB;
-	return $DB->GetOne('SELECT id FROM daemonhosts WHERE name = ?', array($name));
+	return $DB->GetOne('SELECT id FROM hosts WHERE name = ?', array($name));
 }
 
-$host = $DB->GetRow('SELECT id, name, description FROM daemonhosts WHERE id=?', array($_GET['id']));
+$host = $DB->GetRow('SELECT id, name, description FROM hosts WHERE id=?', array($_GET['id']));
 
 $layout['pagetitle'] = trans('Host Edit: $0', $host['name']);
 
@@ -48,11 +48,11 @@ if(isset($_POST['hostedit']))
 	
 	if(!$error)
 	{
-		$DB->Execute('UPDATE daemonhosts SET name=?, description=? WHERE id=?',
+		$DB->Execute('UPDATE hosts SET name=?, description=? WHERE id=?',
 				    array($hostedit['name'], $hostedit['description'], $_GET['id']));
-		$LMS->SetTS('daemonhosts');
+		$LMS->SetTS('hosts');
 		
-		$SESSION->redirect('?m=daemonhostlist');
+		$SESSION->redirect('?m=hostlist');
 	}
 	
 	$host['name'] = $hostedit['name'];
@@ -63,6 +63,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('hostedit', $host);
 $SMARTY->assign('error', $error);
-$SMARTY->display('daemonhostedit.html');
+$SMARTY->display('hostedit.html');
 
 ?>

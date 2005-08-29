@@ -13,6 +13,8 @@ version ? (??/??/????):
     added filter 'hide accounted' on Invoices List (alec) 
     **********************************************************************
   - fixed round-off method on Invoices Report (alec)
+  - daemon configuration moved to menu Configuration (alec)
+  - changed table name 'daemonhosts' to 'hosts' (alec)
 
 version 1.7.2 Doci (2005-08-13):
 

@@ -24,31 +24,18 @@
  *  $Id$
  */
 
-function GetInstanceList($hostid)
-{
-	global $DB;
+$DB->Execute("CREATE TABLE hosts (
+    id int(11) NOT NULL auto_increment,
+    name varchar(255) default '' NOT NULL,
+    description text default '' NOT NULL,
+    lastreload int(11) default '0' NOT NULL,
+    reload tinyint(1) default '0' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY name (name)
+) TYPE=MyISAM");
+$DB->Execute("INSERT INTO hosts (id, name, description, lastreload, reload) SELECT id, name, description, lastreload, reload FROM daemonhosts");
+$DB->Execute("DROP TABLE daemonhosts");
 
-	if($hostid)
-		$where = 'WHERE hostid = '.$hostid;
-		
-	return $DB->GetAll('SELECT daemoninstances.id AS id, daemoninstances.name AS name, daemoninstances.description AS description, 
-			module, crontab, priority, disabled, hosts.name AS hostname
-			FROM daemoninstances LEFT JOIN hosts ON hosts.id = hostid '
-			.$where. 
-			' ORDER BY hostname, priority, name');
-}
-
-$layout['pagetitle'] = trans('Instances List');
-
-$hostid = $_GET['id'];
-
-$instancelist = GetInstanceList($hostid);
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('instancelist', $instancelist);
-$SMARTY->assign('hostid', $hostid);
-$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
-$SMARTY->display('daemoninstancelist.html');
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082900', 'dbversion'));
 
 ?>

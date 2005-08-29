@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><FORM method="POST" action="?m=daemonhostedit&id={$hostedit.id}" name="hostedit">
+<P><FORM method="POST" action="?m=hostedit&id={$hostedit.id}" name="hostedit">
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
@@ -28,7 +28,7 @@
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.hostedit.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
-			<A href="?m=daemonhostlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
+			<A href="?m=hostlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
 		</TD>
 	</TR>
 </TABLE>
