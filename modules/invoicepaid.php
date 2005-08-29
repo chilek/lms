@@ -24,18 +24,25 @@
  *  $Id$
  */
 
-if (sizeof($_POST['marks']))
-{
-	foreach($_POST['marks'] as $markid => $junk)
-		if ($junk)
-			$ids[] = $markid;
+$SESSION->restore('ilm', $ilm);
+$SESSION->remove('ilm');
 
-	foreach($ids as $idx => $invoiceid)
+if(sizeof($_POST['marks']))
+	foreach($_POST['marks'] as $id => $mark)
+		$ilm[$id] = $mark;
+
+if(sizeof($ilm))
+	foreach($ilm as $mark)
+		$ids[] = $mark;
+
+if(sizeof($ids))
+{
+	foreach($ids as $invoiceid)
 		$DB->Execute('UPDATE documents SET closed = 
 				    (CASE closed WHEN 0 THEN 1 ELSE 0 END)
 				WHERE id = ?', array($invoiceid));
 }
 
-header('Location: ?'.$SESSION->get('backto'));
+$SESSION->redirect('?'.$SESSION->get('backto'));
 
 ?>

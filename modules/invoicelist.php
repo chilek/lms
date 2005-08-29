@@ -27,11 +27,12 @@
 $layout['pagetitle'] = trans('Invoices List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$marks = $_POST['marks'];
-unset($marked);
-if( sizeof($marks) )
-	foreach($marks as $marksid => $mark)
-		$marked[] = $mark;
+$SESSION->restore('ilm', $marks);
+$marked = $_POST['marks'];
+if(sizeof($marked))
+	foreach($marked as $id => $mark)
+		$marks[$id] = $mark;
+$SESSION->save('ilm', $marks);
 
 if(isset($_POST['search']))
 	$s = $_POST['search'];
@@ -89,7 +90,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
-$SMARTY->assign('marked',$marked);
 $SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
 $SMARTY->assign('invoicelist',$invoicelist);
 $SMARTY->display('invoicelist.html');
