@@ -68,7 +68,7 @@ elseif(isset($_GET['statuschange']))
 	$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
 }	
 
-$instance = $DB->GetRow('SELECT daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($config['instanceid']));
+$instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($config['instanceid']));
 
 $layout['pagetitle'] = trans('Option Edit: $0/$1/$2', $config['var'], $instance['name'], $instance['hostname']);
 

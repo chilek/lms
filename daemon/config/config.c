@@ -135,9 +135,9 @@ Config * config_load(ConnHandle *conn, const unsigned char *dbhost, const unsign
     c = config_new(0);
     
     if( ! section )
-	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, daemonhosts, daemoninstances WHERE hostid=daemonhosts.id AND instanceid=daemoninstances.id AND daemonhosts.name='?' AND daemonconfig.disabled=0", dbhost);
+	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemonconfig.disabled=0", dbhost);
     else
-	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, daemonhosts, daemoninstances WHERE hostid=daemonhosts.id AND instanceid=daemoninstances.id AND daemonhosts.name='?' AND daemoninstances.name='?' AND daemonconfig.disabled=0", dbhost, section);
+	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, hosts, daemoninstances WHERE hostid=hosts.id AND instanceid=daemoninstances.id AND hosts.name='?' AND daemoninstances.name='?' AND daemonconfig.disabled=0", dbhost, section);
 
     for(i=0; i<db_nrows(res); i++) 
     {

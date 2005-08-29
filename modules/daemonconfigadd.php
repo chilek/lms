@@ -63,7 +63,7 @@ if($config = $_POST['config'])
 	}
 }	
 
-$instance = $DB->GetRow('SELECT daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
+$instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
 
 $layout['pagetitle'] = trans('New Option for Instance: $0/$1', $instance['name'], $instance['hostname']);
 

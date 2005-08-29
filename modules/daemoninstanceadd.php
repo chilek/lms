@@ -31,7 +31,7 @@ if($instance = $_POST['instance'])
 	
 	if($instance['name']=='' && $instance['description']=='' && $instance['module']=='' & $instance['crontab']=='')
 	{
-		$SESSION->redirect('?m=daemonhostlist');
+		$SESSION->redirect('?m=hostlist');
 	}
 	
 	if($instance['name'] == '')
@@ -85,7 +85,7 @@ $instance['hostid'] = $instance['hostid'] ? $instance['hostid'] : $_GET['hostid'
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', $instance);
-$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
+$SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->display('daemoninstanceadd.html');
 
 ?>

@@ -4,7 +4,10 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<IMG src="img/settings.gif" alt=""><B>{t}Name:{/t}</B>
+			<IMG src="img/settings.gif" alt=""> <B>{t}Name:{/t}</B>
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+			{t}Host:{/t}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
 			{t}Priority:{/t}
@@ -13,7 +16,7 @@
 			{t}Module:{/t}<BR>
 			{t}Crontab:{/t}
 		</TD>
-		<TD CLASS="fbt" WIDTH="96%">
+		<TD CLASS="fbt" WIDTH="95%">
 			{t}Description:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" nowrap>
@@ -21,13 +24,14 @@
 		</TD>
 	</TR>
 	<TR class="DARK">
-		<TD class="fall" colspan="5">
+		<TD class="fall" colspan="6">
 			<P><FORM method="GET" action="?m=daemoninstancelist" name="filter">
 				<INPUT type="HIDDEN" name="m" value="daemoninstancelist">
 				<B>{t}Filter:{/t} </B> {t}Host:{/t}
 				<SELECT size="1" name="id" OnChange="document.filter.submit();">
+					<OPTION value="0"{if ! $hostid} SELECTED{/if}>{t}- all hosts -{/t}</OPTION>
 					{section name=hosts loop=$hosts}
-					    <OPTION value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} SELECTED{/if}>{$hosts[hosts].name}</OPTION>
+					<OPTION value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} SELECTED{/if}>{$hosts[hosts].name}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM></P>
@@ -39,6 +43,9 @@
 		<TD CLASS="fleft" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
 			<IMG src="img/settings.gif" alt="">
 			<B>{$instance.name}</B>
+		</TD>
+		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+			{$instance.hostname}
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
 			{$instance.priority}
@@ -58,7 +65,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="5" align="center" class="flr">
+		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p><B>{t}There are no instances configured.{/t}<B></p>
 			<p>&nbsp;</p>
@@ -66,7 +73,7 @@
 	</TR>
 	{/foreach}
 	<TR CLASS="dark">
-		<TD colspan="5" class="fall" align="right">
+		<TD colspan="6" class="fall" align="right">
 			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>

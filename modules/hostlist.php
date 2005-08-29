@@ -27,7 +27,7 @@
 function GetHostList()
 {
 	global $DB;
-	$list = $DB->GetAll("SELECT id, name, description, lastreload FROM daemonhosts ORDER BY name");
+	$list = $DB->GetAll("SELECT id, name, description, lastreload FROM hosts ORDER BY name");
 	return $list;
 }
 
@@ -38,5 +38,5 @@ $hostlist = GetHostList();
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('hostlist', $hostlist);
-$SMARTY->display('daemonhostlist.html');
+$SMARTY->display('hostlist.html');
 ?>

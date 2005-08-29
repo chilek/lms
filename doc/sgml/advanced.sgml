@@ -500,8 +500,8 @@
                     <member>content - data</member>
                </simplelist>
           </sect2>
-          <sect2 id="daemonhosts">
-               <title>Daemon configuration - hosts ('daemonhosts')</title>
+          <sect2 id="hosts">
+               <title>Hosts ('hosts')</title>
                <simplelist>
                     <member>id - identifier</member>
                     <member>name - host name</member>

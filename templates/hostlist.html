@@ -16,29 +16,28 @@
 			{t}Description:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" nowrap>
-			<A href="?m=daemonhostadd">{t}Add host{/t} <img src="img/save.gif" alt=""></A>
+			<A href="?m=hostadd">{t}Add host{/t} <img src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$hostlist item=host}
-	<TR style="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD CLASS="fleft" onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';" nowrap>
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD CLASS="fleft" onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap>
 			<IMG src="img/host.gif" alt="">
 			<B>{$host.name}</B>
 		</TD>
-		<TD onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';">
+		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';">
 			({$host.id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';" nowrap>
+		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap>
 			{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';">
+		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';">
 			{$host.description}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemonhostedit&id={$host.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A HREF="?m=daemoninstancelist&id={$host.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]"></A>
-			<A HREF="?m=daemonhostdel&id={$host.id}" OnClick="return confirmLink(this, '{t 0=$host.name}Are you sure, you want to remove host \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=hostedit&id={$host.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=hostdel&id={$host.id}" OnClick="return confirmLink(this, '{t 0=$host.name}Are you sure, you want to remove host \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -52,7 +51,7 @@
 	{/foreach}
 	<TR CLASS="dark">
 		<TD colspan="5" class="fall" align="right">
-			<A href="?m=daemonhostadd">{t}Add host{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=hostadd">{t}Add host{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE></P>

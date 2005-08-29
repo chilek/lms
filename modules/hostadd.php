@@ -27,7 +27,7 @@
 function GetHostIdByName($name)
 {
 	global $DB;
-	return $DB->GetOne('SELECT id FROM daemonhosts WHERE name = ?', array($name));
+	return $DB->GetOne('SELECT id FROM hosts WHERE name = ?', array($name));
 }
 
 if($hostadd = $_POST['hostadd']) 
@@ -37,7 +37,7 @@ if($hostadd = $_POST['hostadd'])
 	
 	if($hostadd['name']=='' && $hostadd['description']=='')
 	{
-		$SESSION->redirect('?m=daemonhostlist');
+		$SESSION->redirect('?m=hostlist');
 	}
 	
 	if($hostadd['name'] == '')
@@ -47,13 +47,13 @@ if($hostadd = $_POST['hostadd'])
 	
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO daemonhosts (name, description) VALUES (?,?)',
+		$DB->Execute('INSERT INTO hosts (name, description) VALUES (?,?)',
 				    array($hostadd['name'], $hostadd['description']));
-		$LMS->SetTS('daemonhosts');
+		$LMS->SetTS('hosts');
 		
 		if(!$hostadd['reuse'])
 		{
-			$SESSION->redirect('?m=daemonhostlist');
+			$SESSION->redirect('?m=hostlist');
 		}
 		
 		unset($hostadd['name']);
@@ -68,6 +68,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('hostadd', $hostadd);
-$SMARTY->display('daemonhostadd.html');
+$SMARTY->display('hostadd.html');
 
 ?>

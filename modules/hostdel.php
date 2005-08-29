@@ -28,7 +28,7 @@ $id = $_GET['id'];
 
 if($id && $_GET['is_sure']=='1')
 {
-	if($DB->Execute('DELETE FROM daemonhosts WHERE id = ?', array($id)))
+	if($DB->Execute('DELETE FROM hosts WHERE id = ?', array($id)))
 	{
 		if($instances = $DB->GetCol('SELECT id FROM daemoninstances WHERE hostid = ?', array($id)))
 		{
@@ -40,10 +40,10 @@ if($id && $_GET['is_sure']=='1')
 			$LMS->SetTS('daemoninstances');
 			$LMS->SetTS('daemonconfig');
 		}
-		$LMS->SetTS('daemonhosts');
+		$LMS->SetTS('hosts');
 	}
 }
 
-header('Location: ?m=daemonhostlist');
+header('Location: ?m=hostlist');
 
 ?>
