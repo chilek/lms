@@ -27,7 +27,6 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-    DROP SEQUENCE daemonhosts_id_seq;
     CREATE SEQUENCE hosts_id_seq;
     CREATE TABLE hosts (
 	id integer DEFAULT nextval('hosts_id_seq'::text) NOT NULL,
