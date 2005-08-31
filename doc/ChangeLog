@@ -16,7 +16,7 @@ version ? (??/??/????):
   - daemon configuration moved to menu Configuration (alec)
   - changed table name 'daemonhosts' to 'hosts' (alec)
   - lmsd/parser: changed tscript's API, added extensions: deletefile, 
-    readfile, getfile, listdir (alec)
+    readfile, getfile, listdir, date (alec)
 
 version 1.7.2 Doci (2005-08-13):
 
