@@ -29,26 +29,36 @@
 #include "lmsd.h"
 #include "parser.h"
 
-#include "lib/tscript_interpreter.h"
-#include "lib/tscript_compiler.h"
-#include "lib/tscript_debug.h"
+#include "tscript_context.h"
+#include "tscript_interpreter.h"
+#include "tscript_compiler.h"
+#include "tscript_debug.h"
 #include "extensions/tscript_exec.h"
 #include "extensions/tscript_string.h"
+#include "extensions/tscript_file.h"
 #include "extensions/sql.h"
-#include "extensions/consts.h"
 #include "extensions/net.h"
+#include "extensions/time.h"
+
+void debug_callback(const char* format, va_list ap)
+{
+	vfprintf(stderr, format, ap);
+}
 
 void reload(GLOBAL *g, struct parser_module *p)
 {
-	FILE * fh;
-	unsigned char *out;
-	tscript_value res;
+	FILE *fh;
+	tscript_value *res, *out;
+	tscript_context *context = tscript_context_create();
 	
-	tscript_ext_exec_init();
-	tscript_ext_net_init();
-	tscript_ext_string_init();
-	tscript_ext_sql_init(g->conn);
-	tscript_ext_consts_init(g->conn);
+	tscript_ext_exec_init(context);
+	tscript_ext_file_init(context);
+	tscript_ext_net_init(context);
+	tscript_ext_time_init(context);
+	tscript_ext_string_init(context);
+	tscript_ext_sql_init(context, g->conn);
+
+//	tscript_set_debug_callback(context, debug_callback);
 
 	if(!strlen(p->script))
 		syslog(LOG_ERR, "ERROR: [%s/parser] empty 'script' option", p->base.instance);
@@ -57,13 +67,13 @@ void reload(GLOBAL *g, struct parser_module *p)
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/parser] compiling...", p->base.instance);
 #endif
-		if( tscript_compile_string(p->script) == 0 )
+		if( tscript_compile_string(context, p->script) == 0 )
 		{
-			res = tscript_interprete();
+			res = tscript_interprete(context);
 		
-			if( res.type != TSCRIPT_TYPE_ERROR )
+			if( res->type != TSCRIPT_TYPE_ERROR )
 			{
-				out = tscript_value_convert_to_string(res).data;
+				out = tscript_value_convert_to_string(res);
 				
 				if(strlen(p->file))
 				{
@@ -72,10 +82,11 @@ void reload(GLOBAL *g, struct parser_module *p)
 						syslog(LOG_ERR, "ERROR: [%s/parser] unable to open '%s' file for writing", p->base.instance, p->file);
 					else
 					{
-				    		fprintf(fh, "%s", out);
+				    		fprintf(fh, "%s", out->data);
 						fclose(fh);
 					}
 				}
+				tscript_value_free(out);
 
 				if(strlen(p->command))
 				{
@@ -86,21 +97,26 @@ void reload(GLOBAL *g, struct parser_module *p)
 				}
 			} 
 			else
-				syslog(LOG_ERR, "ERROR: [%s/parser] interprete error: %s", p->base.instance, res.data);
+				syslog(LOG_ERR, "ERROR: [%s/parser] interprete error: %s", p->base.instance, res->data);
+
+			tscript_value_free(res);
 		}
 		else
-			syslog(LOG_ERR, "ERROR: [%s/parser] compile error: %s", p->base.instance, tscript_compile_error());
+			syslog(LOG_ERR, "ERROR: [%s/parser] compile error: %s", p->base.instance, tscript_compile_error(context));
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/parser] reloaded", p->base.instance);
 #endif
 	}
 
-	tscript_ext_exec_close();
-	tscript_ext_net_close();
-	tscript_ext_string_close();
-	tscript_ext_sql_close();
-	tscript_ext_consts_close();
+	tscript_ext_exec_close(context);
+	tscript_ext_file_close(context);
+	tscript_ext_net_close(context);
+	tscript_ext_time_close(context);
+	tscript_ext_string_close(context);
+	tscript_ext_sql_close(context);
 	
+	tscript_context_free(context);
+
 	free(p->command);
 	free(p->script);
 	free(p->file);

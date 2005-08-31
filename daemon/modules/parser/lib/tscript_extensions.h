@@ -1,29 +1,30 @@
 #ifndef TSCRIPT_EXTENSIONS_H
 #define TSCRIPT_EXTENSIONS_H
 
+#include "tscript_context.h"
 #include "tscript_values.h"
 
-typedef tscript_value tscript_extension_func(tscript_value arg);
-typedef tscript_value tscript_constant_func();
+typedef tscript_value* tscript_extension_func(tscript_value* arg);
+typedef tscript_value* tscript_constant_func();
 
 typedef struct
 {
 	tscript_constant_func* func;
 	int cached;
-	tscript_value value;
+	tscript_value* value;
 } tscript_constant;
 
 map_declaration(tscript_extension_map, char*, tscript_extension_func*);
 map_declaration(tscript_constant_map, char*, tscript_constant);
 
-void tscript_add_extension(char* keyword, tscript_extension_func* func);
-void tscript_remove_extension(char* keyword);
-int tscript_has_extension(char* keyword);
-tscript_value tscript_run_extension(char* keyword, tscript_value arg);
+void tscript_add_extension(tscript_context* context, char* keyword, tscript_extension_func* func);
+void tscript_remove_extension(tscript_context* context, char* keyword);
+int tscript_has_extension(tscript_context* context, char* keyword);
+tscript_value* tscript_run_extension(tscript_context* context, char* keyword, tscript_value* arg);
 
-void tscript_add_constant(char* keyword, tscript_constant_func* func);
-void tscript_remove_constant(char* keyword);
-int tscript_has_constant(char* keyword);
-tscript_value tscript_run_constant(char* keyword);
+void tscript_add_constant(tscript_context* context, char* keyword, tscript_constant_func* func);
+void tscript_remove_constant(tscript_context* context, char* keyword);
+int tscript_has_constant(tscript_context* context, char* keyword);
+tscript_value* tscript_run_constant(tscript_context* context, char* keyword);
 
 #endif

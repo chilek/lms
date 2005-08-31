@@ -22,35 +22,35 @@ extern FILE* tscript_yyin;
 extern void* tscript_yy_setup_scanner(const char *);
 extern void tscript_yy_cleanup_scanner(void *);
 
-int tscript_compile_stream(FILE* file)
+int tscript_compile_stream(tscript_context* context, FILE* file)
 {
 	tscript_yyin = file;
 	tscript_init_lexical();
-	return tscript_yyparse();
+	return tscript_yyparse(&context->ast);
 }
 
-int tscript_compile_string(const char* string)
+int tscript_compile_string(tscript_context* context, const char* string)
 {
 	int r;
 	void* buf = tscript_yy_setup_scanner(string);
 	tscript_init_lexical();
-	r = tscript_yyparse();
+	r = tscript_yyparse(&context->ast);
 	tscript_yy_cleanup_scanner(buf);
 	return r;
 }
 
-int tscript_compile_stdin()
+int tscript_compile_stdin(tscript_context* context)
 {
-	return tscript_compile_stream(stdin);
+	return tscript_compile_stream(context, stdin);
 }
 
-int tscript_compile_file(char* file_name)
+int tscript_compile_file(tscript_context* context, char* file_name)
 {
 	int r;
 	FILE* f = fopen(file_name, "r");
 	if (f == NULL)
 		return -1;
-	r = tscript_compile_stream(f);
+	r = tscript_compile_stream(context, f);
 	fclose(f);
 	return r;
 }

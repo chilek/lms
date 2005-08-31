@@ -3,7 +3,6 @@ AR=ar
 FLEX=flex
 BISON=bison
 STRIP=strip
-SOEXT=.so
 
 CFLAGS=-O2 -fPIC
 
@@ -17,8 +16,8 @@ else
 SOEXT		= .so
 endif
 
-HEADERS=tscript_ast.h tscript_compiler.h tscript_interpreter.h tscript_variables.h tscript_parser.h tscript_values.h tscript_extensions.h tscript_debug.h list.h map.h
-OBJECTS=tscript_ast.o tscript_compiler.o tscript_interpreter.o tscript_variables.o tscript_parser.o tscript_values.o tscript_extensions.o tscript_debug.o tscript_lexical.o
+HEADERS=tscript_ast.h tscript_context.h tscript_compiler.h tscript_interpreter.h tscript_variables.h tscript_parser.h tscript_values.h tscript_extensions.h tscript_debug.h list.h map.h
+OBJECTS=tscript_ast.o tscript_context.o tscript_compiler.o tscript_interpreter.o tscript_variables.o tscript_parser.o tscript_values.o tscript_extensions.o tscript_debug.o tscript_lexical.o
 
 all: tscript.a tscript$(SOEXT)
 

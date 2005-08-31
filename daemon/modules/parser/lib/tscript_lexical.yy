@@ -58,7 +58,8 @@ GNU General Public License for more details.
 			yylloc.ltscript_ast_column,
 			yylloc.ltscript_ast_line);*/
 	}
-	
+
+	#define YY_DECL int tscript_yylex(tscript_context* context)
 	#define YY_BREAK set_yylloc(); break;
 	#define YY_RETURN(res) { set_yylloc(); return res; }
 %}
@@ -76,10 +77,9 @@ GNU General Public License for more details.
 					}
 
 [^{}]+					{
-						tscript_yylval = (tscript_ast_node*)malloc(sizeof(tscript_ast_node));
-						tscript_yylval->type = TSCRIPT_AST_VALUE;
-						tscript_yylval->value = tscript_value_create(TSCRIPT_TYPE_STRING, yytext);
-						tscript_yylval->children = NULL;
+						tscript_yylval = tscript_ast_node_val(
+							TSCRIPT_AST_VALUE,
+							tscript_value_create_string(yytext));
 						YY_RETURN(TEXT);
 					}
 
@@ -101,20 +101,21 @@ GNU General Public License for more details.
 
 <commands>\"[^"]*\"			{
 						char* tmp_str;
-						tscript_yylval = (tscript_ast_node*)malloc(sizeof(tscript_ast_node));
-						tscript_yylval->type = TSCRIPT_AST_VALUE;
 						tmp_str = (char*)malloc(strlen(yytext) - 2 + 1);
 						strncpy(tmp_str, &yytext[1], strlen(yytext) - 2);
 						tmp_str[strlen(yytext) - 2] = 0;
-						tscript_yylval->value = tscript_value_create(TSCRIPT_TYPE_STRING, tmp_str);
+						tscript_yylval = tscript_ast_node_val(
+							TSCRIPT_AST_VALUE,
+							tscript_value_create_string(tmp_str));
 						free(tmp_str);
-						tscript_yylval->children = NULL;
 						YY_RETURN(LITERAL);
 					}
 
 <commands>string			YY_RETURN(TO_STRING);
 
 <commands>number			YY_RETURN(TO_NUMBER);
+
+<commands>typeof			YY_RETURN(TYPEOF);
 
 <commands>for				YY_RETURN(FOR);
 
@@ -151,28 +152,28 @@ GNU General Public License for more details.
 <commands>\/\*([^\*]|[\r\n]|(\*+([^\*\/]|[\r\n])))*\*+\/	/* C-style comments */
 
 <commands>[[:digit:]]+(\.[[:digit:]]+)?	{
-						tscript_yylval = (tscript_ast_node*)malloc(sizeof(tscript_ast_node));
-						tscript_yylval->type = TSCRIPT_AST_VALUE;
-						tscript_yylval->value = tscript_value_create(TSCRIPT_TYPE_NUMBER, yytext);
-						tscript_yylval->children = NULL;
+						tscript_yylval = tscript_ast_node_val(
+							TSCRIPT_AST_VALUE,
+							tscript_value_create_number(atof(yytext)));
 						YY_RETURN(NUMBER);
 					}
 
 <commands>[[:alpha:]][[:alnum:]_]*	{
-						tscript_yylval = (tscript_ast_node*)malloc(sizeof(tscript_ast_node));
-						tscript_yylval->type = TSCRIPT_AST_VALUE;
-						tscript_yylval->value = tscript_value_create(TSCRIPT_TYPE_STRING, yytext);
-						tscript_yylval->children = NULL;
-						if (tscript_has_extension(yytext))
+						tscript_yylval = tscript_ast_node_val(
+							TSCRIPT_AST_VALUE,
+							tscript_value_create_string(yytext));
+						if (tscript_has_extension(context, yytext))
 						{
 							state_stack_level++;
 							yy_push_state(ext_arg);
 							YY_RETURN(EXT);
 						}
-						if (tscript_has_constant(yytext))
+						if (tscript_has_constant(context, yytext))
 							YY_RETURN(CONST);
 						YY_RETURN(NAME);
 					}
+
+<commands>null				YY_RETURN(NULL_CONST);
 
 <commands>[[:space:]]+
 

@@ -36,6 +36,22 @@ $Id$
     powy¿szy przyk³ad pokazuje, ¿e jest problem z przekazaniem wiêcej ni¿ 
     jednego argumentu do funkcji.
 
+*** przeci±¿anie funkcji
+
+    dok³adniej to chodzi mi o argumenty domy¶lne funkcji, czyli zamiast
+    pisaæ {funkcja("")} chcia³bym {funkcja()} i/lub {funkcja}
+
+*** ró¿ne interpretowanie argumentów w funkcjach
+
+    {file} i {exec} akceptuj± ró¿nie argumenty (filename dla {file} musi byæ 
+    objête cudzys³owami, podczas gdy komenda dla {exec} nie musi)
+    
+    a mo¿e {file} powinno byæ przeniesione do rozszerzenia 'file'?
+
+*** Eskejpowanie { i }
+
+    zamiast { "{" } wygodniej by by³o \{ (i dla } analogicznie)
+
 *** B£¡D: stosowanie (interpretowanie) wciêæ
 
     obecnie nie za bardzo mo¿na stosowaæ wciêcia w skrypcie, np.:
@@ -56,20 +72,3 @@ $Id$
     {function nazwa}{zmienna + 2}{/function}
     a potem
     {cos = nazwa(zmienna=cos)}
-
-*** ró¿ne interpretowanie argumentów w funkcjach
-
-    {file} i {exec} akceptuj± ró¿nie argumenty (filename dla {file} musi byæ 
-    objête cudzys³owami, podczas gdy komenda dla {exec} nie musi)
-
-*** predefiniowane sta³e time, timestamp, date (czy co¶ w ten deseñ)
-
-    nie mo¿na wygenerowaæ seriala dla stref w bindzie.
-
-*** Eskejpowanie { i }
-
-    zamiast { "{" } wygodniej by by³o \{ (i dla } analogicznie)
-
-*** delfile
-
-    zmiast {exec rm} przyda³o by siê {delfile}

@@ -1,25 +1,21 @@
 #include "tscript_debug.h"
 
 #include <stdio.h>
-#include <stdarg.h>
 #include "tscript_parser.h"
 
-static int tscript_verbose = 0;
-static char* tscript_err = NULL;
-
-void tscript_set_verbose(int verbose)
+void tscript_set_debug_callback(tscript_context* context, tscript_debug_callback* callback)
 {
-	tscript_verbose = verbose;
+	context->debug_callback = callback;
 }
 
-void tscript_debug(const char* format, ...)
+void tscript_debug(tscript_context* context, const char* format, ...)
 {
 	va_list va;
 	
-	if (!tscript_verbose)
+	if (context->debug_callback == NULL)
 		return;
 	va_start(va, format);
-	vfprintf(stderr, format, va);
+	context->debug_callback(format, va);
 	va_end(va);
 }
 
@@ -31,17 +27,20 @@ void tscript_internal_error(const char* format, ...)
 	va_start(va, format);
 	vfprintf(stderr, format, va);
 	va_end(va);
+	fprintf(stderr, "\n");
 	
 	exit(1);
 }
 
-void tscript_yyerror(const char* msg)
+void tscript_yyerror(tscript_context* context, const char* msg)
 {
-	asprintf(&tscript_err, "Compile error (line: %i, col: %i): %s",
+	if (context->error != NULL)
+		free(context->error);
+	asprintf(&context->error, "(line: %i, col: %i): %s",
 		tscript_yylloc.first_line, tscript_yylloc.first_column, msg);
 }
 
-char* tscript_compile_error()
+char* tscript_compile_error(tscript_context* context)
 {
-	return tscript_err;
+	return context->error;
 }

@@ -21,11 +21,16 @@ GNU General Public License for more details.
 
 	#define YYSTYPE tscript_ast_node*
 
+	// http://lists.gnu.org/archive/html/bug-bison/2003-04/msg00045.html
+	#define YYLEX_PARAM context
+
 	int i;
 %}
 
 %error-verbose
 %locations
+%parse-param { tscript_context* context }
+%lex-param { tscript_context* context }
 
 %nonassoc ERROR IF ELSE END_IF FOR END_FOR WFILE END_WFILE
 %left OR AND
@@ -33,17 +38,17 @@ GNU General Public License for more details.
 %left '!'
 %left '+' '-'
 %left NEG
-%left '*' '/' '%'
+%left '*' '/' '%' '&' '|'
 %nonassoc MATCH
 %nonassoc INC DEC
 %nonassoc EXT CONST
-%nonassoc LITERAL NUMBER TEXT NAME TO_STRING TO_NUMBER
+%nonassoc LITERAL NUMBER TEXT NAME NULL_CONST TO_STRING TO_NUMBER TYPEOF
 
 %%
 
 template: 	commands
 		{
-			ast = $1;
+			context->ast = $1;
 		}
 
 commands:	commands command
@@ -99,6 +104,11 @@ expressions:	expressions expression
 expression:	TEXT
 	|	LITERAL
 	|	NUMBER
+	|	NULL_CONST
+		{
+			$$ = tscript_ast_node_val(TSCRIPT_AST_VALUE,
+				tscript_value_create_null());
+		}
 	|	CONST
 		{
 			$$ = tscript_ast_node_1(TSCRIPT_AST_CONST, $1);
@@ -175,6 +185,14 @@ expression:	TEXT
 		{
 			$$ = tscript_ast_node_2(TSCRIPT_AST_MOD, $1, $3);
 		}
+	|	expression '&' expression
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_BAND, $1, $3);
+		}
+	|	expression '|' expression
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_BOR, $1, $3);
+		}
 	|	expression MATCH expression
 		{
 			$$ = tscript_ast_node_2(TSCRIPT_AST_MATCH, $1, $3);
@@ -197,10 +215,14 @@ expression:	TEXT
 		}
 	|	reference
 	|	type_conv
+	|	TYPEOF '(' expression ')'
+		{
+			$$ = tscript_ast_node_1(TSCRIPT_AST_TYPEOF, $3);
+		}
 
 reference:	NAME
 		{
-				$$ = tscript_ast_node_1(TSCRIPT_AST_VAR_GET, $1);
+			$$ = tscript_ast_node_1(TSCRIPT_AST_VAR_GET, $1);
 		}
 	|	reference '[' expression ']'
 		{
@@ -214,12 +236,14 @@ reference:	NAME
 type_conv:	TO_STRING '(' expression ')'
 		{
 			$$ = tscript_ast_node_1(TSCRIPT_AST_CONV, $3);
-			$$->value.type = TSCRIPT_TYPE_STRING;
+			$$->value = tscript_value_create_null();
+			$$->value->type = TSCRIPT_TYPE_STRING;
 		}
 	|	TO_NUMBER '(' expression ')'
 		{
 			$$ = tscript_ast_node_1(TSCRIPT_AST_CONV, $3);
-			$$->value.type = TSCRIPT_TYPE_NUMBER;
+			$$->value = tscript_value_create_null();
+			$$->value->type = TSCRIPT_TYPE_NUMBER;
 		}
 
 %%
