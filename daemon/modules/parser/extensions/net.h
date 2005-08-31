@@ -1,8 +1,10 @@
 #ifndef NET_H
 #define NET_H
 
-void tscript_ext_net_init();
-void tscript_ext_net_close();
+#include "tscript_context.h"
+
+void tscript_ext_net_init(tscript_context *);
+void tscript_ext_net_close(tscript_context *);
 
 int mask2prefix(const char *);
 char *long2ip(const unsigned long);

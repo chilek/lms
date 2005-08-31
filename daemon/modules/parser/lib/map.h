@@ -95,6 +95,16 @@
 	list_implementation(N##_elem, N##_elem_constr,			\
 		N##_elem_destr, N##_elem_comp);				\
 									\
+	N* N##_create()							\
+	{								\
+		return N##_elem_list_create();				\
+	}								\
+									\
+	void N##_free(N* map)						\
+	{								\
+		N##_elem_list_free(map);				\
+	}								\
+									\
 	T* N##_add(N* map, K key, T value)				\
 	{								\
 		N##_elem e;						\
@@ -128,6 +138,11 @@
 	int N##_count(N* map)						\
 	{								\
 		return N##_elem_list_count(map);			\
+	}								\
+									\
+	N* N##_duplicate(N* map)					\
+	{								\
+		return N##_elem_list_duplicate(map);			\
 	}
 
 #endif

@@ -19,21 +19,25 @@ GNU General Public License for more details.
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "map.h"
 
 #define str_constr(e) strdup(e)
 #define str_comp(a, b) (strcmp(a, b) == 0)
 
-map_declaration(variables_map, char*, tscript_value);
-map_implementation(variables_map, char*, tscript_value, str_constr, no_constr, free, no_destr, str_comp);
+map_implementation(tscript_variables_map, char*, tscript_value*, str_constr, no_constr, free, /*tscript_value_free*/no_destr, str_comp);
 
-static variables_map vars;
-
-tscript_value* tscript_variable_get_reference(char* name)
+tscript_value** tscript_variable_get_reference(tscript_context* context, char* name)
 {
-	tscript_value* res;
-	tscript_debug("Getting reference for variable %s\n", name);
-	res = variables_map_ref(&vars, name, tscript_value_create_null());
-	tscript_debug("Reference retrieved for variable %s\n", name);
+	tscript_value** res;
+	tscript_value* def;
+	tscript_debug(context, "Getting reference for variable %s\n", name);
+	if (tscript_variables_map_contains(context->vars, name))
+	{
+		def = tscript_value_create_null();
+		res = tscript_variables_map_ref(context->vars, name, def);
+		tscript_value_free(def);
+	}
+	else
+		res = tscript_variables_map_add(context->vars, name, tscript_value_create_null());
+	tscript_debug(context, "Reference retrieved for variable %s\n", name);
 	return res;
 }

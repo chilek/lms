@@ -22,29 +22,68 @@ typedef struct tscript_value
 /*	union
 	{*/
 		char* data;
-		struct tscript_value* reference_data;
+		struct tscript_value** reference_data;
 		tscript_values_array* array_data;
 //	};
 	tscript_values_list* sub_variables;
 } tscript_value;
 
-map_declaration_2(tscript_values_array, int, tscript_value);
-map_declaration_2(tscript_values_list, char*, tscript_value);
+map_declaration_2(tscript_values_array, tscript_value*, tscript_value*);
+map_declaration_2(tscript_values_list, char*, tscript_value*);
 
-tscript_value tscript_value_create(tscript_value_type type, char* data);
-tscript_value tscript_value_create_error(const char* format, ...);
-tscript_value tscript_value_create_null();
-tscript_value tscript_value_create_number(double val);
-tscript_value tscript_value_create_string(char* str);
-tscript_value tscript_value_create_array();
-tscript_value tscript_value_create_reference(tscript_value* val);
+tscript_value* tscript_value_create(tscript_value_type type, char* data);
+tscript_value* tscript_value_create_error(const char* format, ...);
+tscript_value* tscript_value_create_null();
+tscript_value* tscript_value_create_number(double val);
+tscript_value* tscript_value_create_string(char* str);
+tscript_value* tscript_value_create_array();
+tscript_value* tscript_value_create_reference(tscript_value** val);
 
-tscript_value tscript_value_array_count(tscript_value* val);
-tscript_value* tscript_value_array_item_ref(tscript_value* val, int index);
-tscript_value* tscript_value_subvar_ref(tscript_value* val, char* name);
-tscript_value tscript_value_dereference(tscript_value val);
+void tscript_value_free(tscript_value* val);
 
-tscript_value tscript_value_convert_to_string(tscript_value val);
-tscript_value tscript_value_convert_to_number(tscript_value val);
+/**
+	Creates new value - number representing size of the array.
+**/
+tscript_value* tscript_value_array_count(tscript_value* val);
+
+tscript_value** tscript_value_array_item_ref(tscript_value** val, tscript_value* index);
+tscript_value** tscript_value_subvar_ref(tscript_value* val, char* name);
+
+tscript_value* tscript_value_dereference(tscript_value* val);
+
+/**
+	Creates new value - string representation of specified value.
+**/
+tscript_value* tscript_value_convert_to_string(tscript_value* val);
+
+/**
+	Creates new value - number representation of specified value.
+**/
+tscript_value* tscript_value_convert_to_number(tscript_value* val);
+
+/**
+	Creates new value - copy of specified value.
+**/
+tscript_value* tscript_value_duplicate(tscript_value* val);
+
+/**
+	Adds to values. If one of them is not numeric convert both
+	to strings and concatenate them.
+**/
+tscript_value* tscript_value_add(tscript_value* val1, tscript_value* val2);
+
+/**
+	Compares two values.
+	Two strings or one string and one number are compared as strings.
+	Two numbers are compared as numbers.
+	If two null values are compared the result is true.
+	Other possibilities gives false result for now.
+**/
+int tscript_value_compare(tscript_value* val1, tscript_value* val2);
+
+/**
+	Returns string representation of value type, dereferencing it.
+**/
+tscript_value* tscript_value_type_string(tscript_value* val);
 
 #endif

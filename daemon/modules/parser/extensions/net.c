@@ -6,8 +6,6 @@
 
 #include "net.h"
 #include "tscript_extensions.h"
-#include "tscript_debug.h"
-
 
 int mask2prefix(const char *mask)
 {
@@ -62,70 +60,61 @@ char *broadcast(const char *addr, const char *mask)
 	return long2ip(a | (~ m));
 }
 
-tscript_value tscript_ext_net_ip2long(tscript_value arg)
+tscript_value * tscript_ext_net_ip2long(tscript_value *arg)
 {
-	tscript_value res;
+	tscript_value *res;
 	char *tmp;
-	tscript_debug("Executing NET Extension: ip2long\n");
 	
-	asprintf(&tmp, "%lu", ip2long(tscript_value_convert_to_string(arg).data));
+	asprintf(&tmp, "%lu", ip2long(tscript_value_convert_to_string(arg)->data));
 	res = tscript_value_create(TSCRIPT_TYPE_NUMBER, tmp);
 	free(tmp);
 	
-	tscript_debug("Finished executing NET Extension: ip2long\n");
 	return res;
 }
 
-tscript_value tscript_ext_net_long2ip(tscript_value arg)
+tscript_value * tscript_ext_net_long2ip(tscript_value *arg)
 {
-	tscript_value res;
+	tscript_value *res;
 	unsigned long n;
-	tscript_debug("Executing NET Extension: long2ip\n");
 
-	n = strtoul(tscript_value_convert_to_string(arg).data, NULL, 0);
+	n = strtoul(tscript_value_convert_to_string(arg)->data, NULL, 0);
 	res = tscript_value_create_string(long2ip(n));
 	
-	tscript_debug("Finished executing NET Extension: long2ip\n");
 	return res;
 }
 
-tscript_value tscript_ext_net_broadcast(tscript_value arg)
+tscript_value * tscript_ext_net_broadcast(tscript_value *arg)
 {
-	tscript_value res;
+	tscript_value *res;
 	char addr[255], mask[255];
-	tscript_debug("Executing NET Extension: broadcast\n");
 
-	sscanf(tscript_value_convert_to_string(arg).data, "%[^/]/%s", addr, mask);
-
+	sscanf(tscript_value_convert_to_string(arg)->data, "%[^/]/%s", addr, mask);
 	res = tscript_value_create_string(broadcast(addr, mask));
 	
-	tscript_debug("Finished executing NET Extension: broadcast\n");
 	return res;
 }
 
-tscript_value tscript_ext_net_mask2prefix(tscript_value arg)
+tscript_value * tscript_ext_net_mask2prefix(tscript_value *arg)
 {
-	tscript_value res;
-	tscript_debug("Executing NET Extension: mask2prefix\n");
+	tscript_value *res;
 
-	res = tscript_value_create_number(mask2prefix(tscript_value_convert_to_string(arg).data));
-	
-	tscript_debug("Finished executing NET Extension: mask2prefix\n");
+	res = tscript_value_create_number(mask2prefix(tscript_value_convert_to_string(arg)->data));
+
 	return res;
 }
 
-void tscript_ext_net_init()
+void tscript_ext_net_init(tscript_context *context)
 {
-	tscript_add_extension("mask2prefix", tscript_ext_net_mask2prefix);
-	tscript_add_extension("ip2long", tscript_ext_net_ip2long);
-	tscript_add_extension("long2ip", tscript_ext_net_long2ip);
-	tscript_add_extension("broadcast", tscript_ext_net_broadcast);
+	tscript_add_extension(context, "mask2prefix", tscript_ext_net_mask2prefix);
+	tscript_add_extension(context, "ip2long", tscript_ext_net_ip2long);
+	tscript_add_extension(context, "long2ip", tscript_ext_net_long2ip);
+	tscript_add_extension(context, "broadcast", tscript_ext_net_broadcast);
 }
 
-void tscript_ext_net_close()
+void tscript_ext_net_close(tscript_context *context)
 {
-	tscript_remove_extension("mask2prefix");
-	tscript_remove_extension("ip2long");
-	tscript_remove_extension("long2ip");
-	tscript_remove_extension("broadcast");
+	tscript_remove_extension(context, "mask2prefix");
+	tscript_remove_extension(context, "ip2long");
+	tscript_remove_extension(context, "long2ip");
+	tscript_remove_extension(context, "broadcast");
 }

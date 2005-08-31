@@ -74,6 +74,27 @@
 
 #define list_implementation(T, CONSTR, DESTR, CMP)			\
 									\
+	T##_list* T##_list_create()					\
+	{								\
+		T##_list* l = (T##_list*)malloc(sizeof(T##_list));	\
+		l->first = NULL;					\
+		return l;						\
+	}								\
+									\
+	void T##_list_free(T##_list* list)				\
+	{								\
+		T##_list_elem* e = list->first;				\
+		T##_list_elem* next;					\
+		while (e != NULL)					\
+		{							\
+			next = e->next;					\
+			DESTR(e->value);				\
+			free(e);					\
+			e = next;					\
+		}							\
+		free(list);						\
+	}								\
+									\
 	T* T##_list_add(T##_list* list, T value)			\
 	{								\
 		T##_list_elem* e =					\
@@ -96,7 +117,7 @@
 					prev->next = e->next;		\
 				else					\
 					list->first = e->next;		\
-				DESTR(e->value);				\
+				DESTR(e->value);			\
 				free(e);				\
 				return 1;				\
 			}						\
@@ -139,6 +160,18 @@
 		while (e != NULL)					\
 		{							\
 			r++;						\
+			e = e->next;					\
+		}							\
+		return r;						\
+	}								\
+									\
+	T##_list* T##_list_duplicate(T##_list* list)			\
+	{								\
+		T##_list* r = T##_list_create();			\
+		T##_list_elem* e = list->first;				\
+		while (e != NULL)					\
+		{							\
+			T##_list_add(r, e->value);			\
 			e = e->next;					\
 		}							\
 		return r;						\
