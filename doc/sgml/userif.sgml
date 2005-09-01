@@ -664,10 +664,12 @@ automatically whenever customer is in debt.</para></note></para>
  <sect1 id="menu-reload">
 	<title>Reload</title>
 	<para>Click on 'Reload' and reload request or command should execute.
-What services and how they're updated is configured in
-<emphasis>LMS-MGC</emphasis> or <emphasis>lmsd</emphasis> daemon. You'll find
-needed information about configuration in appropriate chapters of this
-documentation.</para>
+	If you did configure hosts, you will see list of hosts for
+	selection to reload configuration on selected hosts.
+	What services and how they're updated is configured in
+	<emphasis>LMS-MGC</emphasis> or <emphasis>lmsd</emphasis> daemon. You'll find
+	needed information about configuration in appropriate chapters of this
+	documentation.</para>
  </sect1>
  <sect1 id="menu-stats">
 	<title>Stats</title>
@@ -1129,6 +1131,23 @@ registered/unregistered cases) if ticket will be running via email.</para>
 		</para>
 		<para><note><para>If you have no numbering plans defined, each document will 
 		take default number as of '%N/LMS/%Y' with annual time span.</para></note></para>
+	</sect2>
+	<sect2 id="config-hosts">
+	    <title>Hosts</title>
+	    <para>This section defines host names of those machines 
+	    (routers, servers) that read its configuration from LMS database 
+	    and where scripts or <ephasis>lmsd</emphasis> daemon will be 
+	    setup. </para>
+	    <para>Each host name should be unique and it's recommended to 
+	    be machine's real name, which could be obtained by running 
+	    <prompt>hostname</prompt> command on each of them 
+	    (assuming they're all u*ix hosts).</para>
+	</sect2>
+	<sect2 id="config-daemon">
+	    <title>Daemon</title>
+	    <para>When you create hosts list, you will be able to configure
+	    daemon <emphasis>lmsd</emphasis>. Daemon configuration is described
+	    in appropriate chapter.</para>
 	</sect2>
     </sect1>
 </chapter>

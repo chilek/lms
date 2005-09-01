@@ -650,8 +650,8 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	'Prze³adowanie' spowoduje uruchomienie generatora plików
 	konfiguracyjnych <emphasis>LMS-MGC</emphasis>, który wygeneruje 
 	zdefiniowan± konfiguracjê i prze³aduje us³ugi. 
-	W przypadku demona <emphasis>lmsd</emphasis> mo¿esz wybraæ z listy
-	zdefiniowane hosty na których chcesz dokonaæ prze³adowania. Zachowanie
+	Je¿eli zdefiniowa³e¶ hosty mo¿esz wybraæ z listy, na których
+	z nich chcesz dokonaæ prze³adowania. Zachowanie
 	menu 'Prze³adowanie' jest zale¿ne od ustawienia opcji 'reload_type'.
 	Je¶li zdefiniowa³e¶ zapytanie SQL w opcji 'reload_sqlquery' zostanie 
 	ono wykonane.</para>
@@ -1129,7 +1129,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 		dokumenty bêd± numerowane wg wzorca '%N/LMS/%Y' z okresem rocznym.</para></note></para>
 	</sect2>
 	<sect2 id="config-hosts">
-		<title>Demon</title>
+		<title>Hosty</title>
 		<para>Tutaj definiuje siê hosty które bêd± wspó³pracowa³y
 		z LMSem, czyli komputery (routery, serwery) pobieraj±ce 
 		konfiguracjê z bazy LMSa, na których bêd± uruchamiane
@@ -1138,7 +1138,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 		aby odpowiada³a rzeczywistej nazwie maszyny, któr± mo¿na
 		uzyskaæ uruchamiaj±c polecenie <prompt>hostname</prompt>
 		na ka¿dej z tych maszyn (zak³adaj±c, ¿e s± to komputery
-		z linuksem).</para>
+		z u*ixem).</para>
 	</sect2>
 	<sect2 id="config-daemon">
 		<title>Demon</title>
