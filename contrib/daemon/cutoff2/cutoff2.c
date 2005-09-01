@@ -83,7 +83,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			int at = 0;
 			float value = 0;
 			
-			if( (result = g->db_pquery(g->conn, "SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ? GROUP BY customerid HAVING SUM(value) > 0", customerid))!=NULL)
+			if( (result = g->db_pquery(g->conn, "SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 3 AND suspended = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ? GROUP BY customerid HAVING SUM(value) > 0", customerid))!=NULL)
 			{
 				if( g->db_nrows(result) )
 				{
