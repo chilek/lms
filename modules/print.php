@@ -384,15 +384,20 @@ switch($type)
 		$to = $_POST['invoiceto'];
 
 		// date format 'yyyy/mm/dd'	
-		list($year, $month, $day) = split('/',$from);
-		$date['from'] = mktime(0,0,0,$month,$day,$year);
-
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else { 
 			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		}
+
+		if($from) {
+			list($year, $month, $day) = split('/',$from);
+			$date['from'] = mktime(0,0,0,$month,$day,$year);
+		} else { 
+			$from = date('Y/m/d',time());
+			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
 		}
 
 		if($_POST['invoiceorg'] && !$_POST['invoicecopy']) $witch = trans('ORIGINAL');
