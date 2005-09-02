@@ -1,0 +1,423 @@
+<!-- $Id$ -->
+<sect1 id="tscript" xreflabel="T-Script">
+<title>T-Script</title>
+	<sect2 id="tscript-intro">
+	<title>Introduction</title>
+	    <para>Parser module is based on a scripting language
+	    <ulink url="http://silvercoders.com/index.php?page=T_Script">T-Script</ulink> which 
+	    primary purpose is to generate text files. It can be useful for processing
+	    templates with some additional data retrieved from data sources 
+	    like SQL databases or text files.</para>
+	    <para>Before compilation ensure that you have in your system packages
+	    <filename>bison</filename> (at least 1.875 version) and <filename>flex</filename>.
+	    </para>
+	</sect2>
+	<sect2 id="tscript-syntax">
+	<title>Syntax</title>
+	    <para>T-Script language syntax is based on other popular languages like C 
+	    or JavaScript with little changes made to make writting templates simpler. 
+	    Additional commands should be written inside { } parenthesis. Data
+	    outside curly brackets will be writed to output file (or ommited if file 
+	    was not specified). All expressions, variables, commands, function names are
+	    case-sensitive.</para>
+	    <sect3 id="expr">
+	    <title>Expressions and operators</title>
+	    <itemizedlist>
+		<listitem>
+		    <para>Literal inside quotes.</para>
+		    <para>Example: <prompt>"some literal"</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Number.</para>
+		    <para>Example: <prompt>1234</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Value of variable "var".</para>
+		    <para>Example: <prompt>var</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>N-th element of array "var".</para>
+		    <para>Example: <prompt>var[n]</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Subvariable "n" of variable "var".</para>
+		    <para>Example: <prompt>var.n</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Value of expression inside parenthesis.</para>
+		    <para>Example: <prompt>( &lt;expression&gt; )</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>1 if value of expression is false, otherwise 0.</para>
+		    <para>Example: <prompt>! &lt;expression&gt;</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value equals expression2 
+		    value or 0 if not.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; == &lt;expression2&gt;</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value doesn't equal 
+		    expression2 value or 0 if it does.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; != &lt;expression2&gt;</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value is less than 
+		    expression2 value.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; &lt; &lt;expression2&gt;</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value is greater than 
+		    expression2 value.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; &gt; &lt;expression2&gt;</prompt></para>
+		</listitem> 
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value or expression2 value 
+		    are true.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; || &lt;expression2&gt;</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value and expression2 value 
+		    are true.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; && &lt;expression2&gt;</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>When both expression values have numeric type evaluates 
+		    to result of arithmetic operation. In other situation treats 
+		    expressions as strings and performs string concatenation.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; + &lt;expression2&gt;</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to result of arithmetic operation on two expression values.</para>
+		    <para>Example: 
+<screen>
+&lt;expression1&gt; - &lt;expression2&gt;
+&lt;expression1&gt; * &lt;expression2&gt;
+&lt;expression1&gt; / &lt;expression2&gt;
+&lt;expression1&gt; % &lt;expression2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Evaluates to 1 if expression1 value match with regular expression2, else
+		    0.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; =~ &lt;expression2&gt;</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	    </sect3>
+	    <sect3 id="comments">
+	    <title>Comments</title>
+		<itemizedlist>
+		    <listitem>
+			<para>C-style comment.</para>
+			<para>Example: <prompt>/* this is a comment - it can be also multiline */</prompt></para>
+		    </listitem>
+		</itemizedlist>
+	    </sect3>
+	    <sect3 id="commands">
+	    <title>Commands</title>
+	    <itemizedlist>
+		<listitem>
+		    <para>Assigns expression value to specified variable.</para>
+		    <para>Example: <prompt>&lt;variable_name&gt; = &lt;expression&gt;</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Executes command only if expression is true. Second form executes 
+		    command1 if expression is true or command2 if expression is false.</para>
+		    <para>Example:
+<screen>
+if ( &lt;expression&gt; ) &lt;command&gt; /if
+if ( &lt;expression&gt; ) &lt;commands1&gt; else &lt;commands2&gt; /if</screen></para>
+		    <para>Text between command blocks is treated as a command so the following example is correct:
+<screen>
+Some text 
+{if (a==1)} 
+a equals 1 
+{else} 
+a doesn't equal 1 
+{/if} 
+</screen>
+You can put backslash between command block and end of line to eat \n 
+symbol and keep normal text flow. For example: 
+<screen>
+Some text 
+{if (a==1)}\ 
+a equals 1 
+{else}\ 
+a doesn't equal 1 
+{/if}\
+</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Executes first command1 as loop initialization command. Then executes 
+		    commands and command2 while expression is true.</para>
+		    <para>Example: <prompt>
+for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt; /for
+</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Redirects script output to file. Data will be appended to file.</para>
+		    <para>Example: <prompt>{file &lt;file_name&gt;} &lt;commands&gt; {/file}</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	    </sect3>
+	    <sect3 id="functions">
+	    <title>Functions</title>
+	    <para>Functions have two calling forms: with brackets
+		(<prompt>{function(var)}</prompt>) and without brackets
+		(<prompt>{function {var}}</prompt>).</para>
+	    <itemizedlist>
+		<listitem>
+		    <para>Converts numeric variable to string value.</para>
+		    <para>Example: <prompt>string(&lt;variable_name&gt;)</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>Converts string variable to numeric value. For arrays returns number of items in array.</para>
+		    <para>Example: <prompt>number(&lt;variable_name&gt;)</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	    </sect3>
+	</sect2>
+	<sect2 id="extensions">
+	    <title>Extensions</title>
+		<para>Extensions are <emphasis>tscript</emphasis> library supplements. 
+		That are functions and predefined variables (constants), wich can be used 
+		in scripts.</para>
+		<sect3 id="exec">
+		<title>Exec</title>
+		    <para>Shell commands execution is possible with <prompt>exec()</prompt>. 
+		    You can run many commands separated by semicolons in one function 
+		    call.</para>
+		    <itemizedlist>
+			<listitem>
+		    	    <para>Shell commands execution.</para>
+		    	    <para>Example: <prompt>exec &lt;command&gt;</prompt></para>
+    		        </listitem>
+		    </itemizedlist>
+		</sect3>
+		<sect3 id="string">
+		<title>String</title>
+		    <para><prompt>String</prompt> consists basic functions for strings operations.</para>
+		    <itemizedlist>
+			<listitem>
+		    	    <para>Deleting of whitespace signs from the beginning and the end 
+			    of string.</para>
+		    	    <para>Example: <prompt>trim &lt;string&gt;</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		</sect3>
+		<sect3 id="sql">
+		<title>SQL</title>
+		    <para>SQL extension implements functions for database operations.
+		    Allows to run SQL commands.</para>
+		    <itemizedlist>
+			<listitem>
+		    	    <para>SQL commands</para>
+		    	    <para>Example:
+<screen>
+{SELECT &lt;the_rest_of_query&gt;}
+{INSERT &lt;the_rest_of_query&gt;}
+{DELETE &lt;the_rest_of_query&gt;}
+{UPDATE &lt;the_rest_of_query&gt;}
+{CREATE &lt;the_rest_of_query&gt;}
+{DROP &lt;the_rest_of_query&gt;}
+</screen></para>
+			</listitem>
+			<listitem>
+		    	    <para>Returns SQL result rows count. Use it for non-select commands.</para>
+			    <para>Example: <prompt>rows(&lt;sql&gt;)</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>Escapes a string for use within an SQL commands.</para>
+			    <para>Example: <prompt>escape(&lt;string&gt;)</prompt></para>
+			</listitem>
+		    </itemizedlist>
+    		    <para>Extension closely connected with LMS. Makes possible to
+		    create scripts without of LMS's database structure knowledge.
+		    Contains predefined constants, which consists data from database.
+		    Query defined in program is executed when constant is used first
+		    time. Constants names are uppercase. Each constant is an array
+		    with rows indexed starting from zero, and each row consist
+		    subvariables accessible by name (lowercase).</para>
+		    <itemizedlist>
+			<listitem>
+		        <para>CUSTOMERS - customers list:
+			    <simplelist>
+				<member>id - customer ID</member>
+				<member>lastname - customer lastname</member>
+				<member>name - customer name</member>
+				<member>status - status</member>
+				<member>address - address</member>
+				<member>zip - postal code</member>
+				<member>city - city</member>
+				<member>email - email address</member>
+				<member>phone1, phone2, phone3 - phone numbers</member>
+				<member>ten - tax exempt number</member>
+				<member>ssn - security serial number</member>
+				<member>info - additional informations</member>
+				<member>message - warning contents</member>
+				<member>warning - warning status (status of all customer's nodes summary)</member>
+				<member>access - accessibility status (status of all customer's nodes summary)</member>
+				<member>balance - customer's balance</member>
+			    </simplelist>
+			</para>
+			</listitem>
+			<listitem>
+		        <para>NODES - nodes list (and network devices addresses):
+			    <simplelist>
+				<member>id - node ID</member>
+				<member>owner - customer name and lastname</member>
+				<member>ownerid - customer ID ('0' for devices)</member>
+				<member>name - node (device's address) name</member>
+				<member>access - status: connected/disconnected (1/0)</member>
+				<member>warning - warnings status: enabled/disabled (1/0)</member>
+				<member>netdev - device ID, to which is connected</member>
+				<member>lastonline - last activity timestamp</member>
+				<member>info - additional informations</member>
+				<member>message - warning message contents</member>
+				<member>mac - MAC address</member>
+				<member>passwd - password</member>
+				<member>ip - IP address</member>
+				<member>ip_pub - public IP address</member>
+				<member>linktype - connection type (0-cable, 1-air)</member>
+			    </simplelist>
+			</para>
+			</listitem>
+			<listitem>
+		        <para>NETWORKS - networks list:
+			    <simplelist>
+				<member>id - network ID</member>
+				<member>name - network name</member>
+				<member>address - IP address</member>
+				<member>mask - subnet mask (xxx.xxx.xxx.xxx)</member>
+				<member>prefix - number of bits in mask</member>
+				<member>size - network size (number of addresses)</member>
+				<member>interface - interface name</member>
+				<member>gateway - gateway address</member>
+				<member>dns - primary DNS server</member>
+				<member>dns2 - secondary DNS server</member>
+				<member>wins - WINS server</member>
+				<member>domain - domain name</member>
+				<member>dhcpstart - start of DHCP range</member>
+				<member>dhcpend - end of DHCP range</member>
+			    </simplelist>
+			    </para>
+			    </listitem>
+			</itemizedlist>
+		</sect3>
+		<sect3 id="net">
+		<title>Net</title>
+		    <para>In this extension are included two functions (with lowercase names)
+		    destined to IP addresses and subnet masks operations.</para>
+		    <itemizedlist>
+			<listitem>
+		    	    <para>Returns number of bits in subnet mask.</para>
+			    <para>Example: <prompt>mask2prefix(&lt;mask&gt;)</prompt></para>
+			</listitem>
+			<listitem>
+		    	    <para>Changes octal IP address to long number.</para>
+			    <para>Example: <prompt>ip2long(&lt;address&gt;)</prompt></para>
+			</listitem>
+			<listitem>
+		    	    <para>Changes long number to IP address octal format (xxx.xxx.xxx.xxx).</para>
+			    <para>Example: <prompt>long2ip(&lt;number&gt;)</prompt></para>
+			</listitem>
+			<listitem>
+		    	    <para>Calculates broadcast address from specified IP address and
+			    mask (any mask format).</para>
+			    <para>Example: <prompt>broadcast(&lt;address/mask&gt;)</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		</sect3>
+	</sect2>
+	<sect2 id="examples">
+	<title>Example Scripts</title>
+	    <para>Let's begin from simple script creating file <filename>/etc/hosts</filename>
+	    with list of computers (and devices) IPs and names list. 
+	    <example id="parser-e1">
+	    <title>Parser: Creating /etc/hosts file</title>
+<screen>
+{result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
+127.0.0.1	localhost
+{for (r=0; r&lt;number(result); r++)}\
+{result[r].name}\t{result[r].ip}
+{/for}\
+</screen>
+	    </example></para>
+	    <para>How to create debtors list? It's easy with use of predefined 
+	    constants.
+	    <example id="parser-e2">
+		<title>Parser: Debtors list</title>
+<screen>
+{
+for (r=0; r&lt;number(CUSTOMERS); r++)
+    if (CUSTOMERS[r].balance < 0)
+}\
+{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
+{
+    /if
+/for
+}\
+</screen>
+	    </example>
+	    </para>
+	    <para>Next example is longer. Here we are using especially 'exec'.
+	    Script sends e-mails to customers with balance less than specified limit.	    
+	    <example id="parser-e3">
+	    <title>Parser: Notify module replacement</title>
+<screen>
+{limit = 0}
+{month = exec date +%B}
+{year = exec date +%Y}
+{customers = SELECT customers.id AS id, email, pin, name, lastname,
+        SUM((type * -2 +7) * cash.value) AS balance
+        FROM customers
+        LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4)
+        WHERE deleted = 0 AND email!=''
+        GROUP BY customers.id, name, lastname, email, pin
+        HAVING SUM((type * -2 +7) * cash.value) &lt; {limit}}
+
+{for(i=0; i&lt;number(customers); i++)}
+
+    {exec echo "NOTE: This message has been generated automatically.
+
+We kindly remind that you have debt on your internet service provide account
+for the amount of $ {customers[i].balance}.
+
+If you have already regulated your subscription fees for current month, that
+is {trim(month)} {trim(year)}, please just skip this message.
+
+If you think this message was sent to you in error, please contact our
+customer service representative.
+
+All information about payments could be also found at:
+http://bigpro.com/myAccount/
+
+If you want to regulate your account status, please contact our accountant:
+
+Aldfert Rule
+phone: 0-509031337
+e-mail: alde@staff.bigpro.com
+
+PS. Last 10 operations on your account has been attached below for your
+convenience.
+--------------+--------------+-----------------------------
+     Date     |    Value     |           Comment
+--------------+--------------+-----------------------------" &gt; /tmp/mail}
+
+    {last10 = SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value
+            FROM cash WHERE customerid = {customers[i].id}
+            ORDER BY time DESC LIMIT 10}
+    
+    {for(j=0; j&lt;number(last10); j++)}
+    
+        {exec echo "{last10[j].time}|\t{last10[j].value}|\t{last10[j].comment}" &gt;&gt; /tmp/mail}
+    
+    {/for}
+
+    {exec mail -s "Liabilities information" -r lms@domain.tld {customers[i].email} &lt; /tmp/mail}
+
+{/for}
+</screen>
+	    </example>
+	    </para>
+	</sect2>
+</sect1>

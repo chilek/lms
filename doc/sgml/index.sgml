@@ -11,6 +11,7 @@
 <!ENTITY rozdzial7 SYSTEM "advanced.sgml">
 <!ENTITY rozdzial8 SYSTEM "contrib.sgml">
 <!ENTITY faq SYSTEM "faq.sgml">
+<!ENTITY tscript SYSTEM "tscript.sgml">
 ]>
 
 <book lang=en>

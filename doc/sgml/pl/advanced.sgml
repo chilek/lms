@@ -552,13 +552,13 @@
           mo¿na ustawiaæ parametry <emphasis>LMS-UI</emphasis>, daemona <emphasis>lmsd</emphasis>
           oraz skryptów perlowych (<emphasis>LMS_MGC</emphasis>). Przy czym format
           warto¶ci parametrów dla skryptów perlowych podlega wiêkszym restrykcjom.</para>
-          <sect2 id="comments">
+          <sect2 id="ini-comments">
                <title>Komentarze</title>
                <para>Programy parsuj±ce plik konfiguracyjny pomijaj± wszystkie linie
                zaczynaj±ce siê znakiem '#' lub ';'. Komentarze poprzedzone jednym z tych
                znaków mo¿na tak¿e wstawiaæ w tej samej linii co sekcje i opcje.</para>
           </sect2>
-          <sect2 id="params">
+          <sect2 id="ini-params">
                <title>Sekcje, klucze, warto¶ci</title>
                <para>Opcje konfiguracyjne pogrupowane s± w sekcje. Nazwê sekcji, sk³adaj±c±
                siê z liter i/lub cyfr nale¿y zamkn±æ w nawiasy kwadratowe. Ich nazwy
@@ -584,7 +584,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 </screen>
                </example>
           </sect2>
-          <sect2 id="perl">
+          <sect2 id="ini-perl">
                <title>Zmienne dla skryptów perlowych</title>
                <para>Konfiguracja skryptów perlowych, z uwagi na zastosowanie
                modu³u Config::IniFiles, ma pewne ograniczenia. Komentarze mog±

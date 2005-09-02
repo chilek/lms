@@ -1136,7 +1136,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
 	    <title>Hosts</title>
 	    <para>This section defines host names of those machines 
 	    (routers, servers) that read its configuration from LMS database 
-	    and where scripts or <ephasis>lmsd</emphasis> daemon will be 
+	    and where scripts or <emphasis>lmsd</emphasis> daemon will be 
 	    setup. </para>
 	    <para>Each host name should be unique and it's recommended to 
 	    be machine's real name, which could be obtained by running 
