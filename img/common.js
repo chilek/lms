@@ -165,3 +165,14 @@ function setCookie(name, value)
         document.cookie = name + "=" + escape(value);
 }
 
+function addClass(theElem, theClass)
+{
+	theElem.className += " " + theClass;
+}
+
+function removeClass(theElem, theClass)
+{
+	regexp = eval("/" + theClass + "/i");
+	str = theElem.className;
+	theElem.className = str.replace(regexp, "");
+}

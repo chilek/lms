@@ -22,7 +22,6 @@ TD.red		{ color: #FF0000; }
 TD.blend	{ color: #888888; }
 TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 2pt; border-style: solid; }
 TR.dark		{ background-color: #CEBD9B; }
-TR.light	{ background-color: #DFD5BD; }
 TR.blend	{ color: #888888; }
 FONT.blend	{ color: #888888; }
 FONT.alert	{ color: #FF0000; font-weight: bold; }
@@ -67,5 +66,10 @@ IMG		{ border-style: none; }
 .click-menu .section .active,
 .click-menu .section .active:hover { color: yellow; }
 .tip		{ width: 150px; } 
+
+.light		{ background-color: #DFD5BD; }
+.lucid		{ background-color: #EBE4D6; }
+.highlight	{ background-color: #CCFFCC; }
+
 //-->
 </STYLE>
