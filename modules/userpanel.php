@@ -24,9 +24,6 @@
  *  $Id$
  */
 
-
-//$layout['pagetitle'] = trans('New Account');
-//echo "Hello from userpanel configurtion tool";
 include($CONFIG['directories']['userpanel_dir']."/lib/LMS.setup.php");
 
 ?>
