@@ -549,13 +549,13 @@
           your <emphasis>LMS-UI</emphasis>, <emphasis>lmsd</emphasis> daemon and Perl scripts 
           (including <emphasis>LMS_MGC</emphasis>) parameters here. However variable format 
           for Perl scripts is more restricted.</para>
-          <sect2 id="comments">
+          <sect2 id="ini-comments">
                <title>Comments</title>
                <para>Configuration file parsers skip all lines that begin with '#' or ';' sign. 
                You can also append comments to the end of the lines containing valid variables 
                and sections , followed by that signs. </para>
           </sect2>
-          <sect2 id="params">
+          <sect2 id="ini-params">
                <title>Sections, variables, values</title>
                <para>Configuration options are grouped in sections. Name of the section, which is 
                build with alphanumerical signs must be enclosed in square brackets. Their name 
@@ -581,7 +581,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 </screen>
                </example>
           </sect2>
-          <sect2 id="perl">
+          <sect2 id="ini-perl">
                <title>Perl scripts variables</title>
                <para>Configuration for use by Perl scripts is someway restricted, due to restrictions of Config::IniFiles module which parses configuration file. Comments must be placed in new lines only. Values shouldn't be enclosed into apostrophes or quotes and are being read from equality sign since the end of line. </para>
           </sect2>
