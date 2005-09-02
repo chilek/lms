@@ -5,6 +5,7 @@ version ? (??/??/????):
   - BTS#0000426: fixed value in contrib/formularz_przelewu_wplaty (alec)
   - BTS#0000428: fixed misprint in polish translation (alec)
   - BTS#0000420: fixed tax/net calculations in Sale Registry (alec)
+  - added support for Userpanel configuration (alec)
 
 version 1.6.3 Laira <security release> (19/08/2005):
 
