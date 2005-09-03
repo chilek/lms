@@ -42,7 +42,7 @@ function GetConfigList($order='var,asc')
 		break;
 	}
 
-	$config = $LMS->DB->GetAll('SELECT id, section, var, value, description, disabled FROM uiconfig'.$sqlord);
+	$config = $LMS->DB->GetAll('SELECT id, section, var, value, description, disabled FROM uiconfig WHERE section != \'userpanel\''.$sqlord);
 
 	$config['total'] = sizeof($config);
 	$config['order'] = $order;
