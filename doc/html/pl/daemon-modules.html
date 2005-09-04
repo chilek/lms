@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="LMS Daemon"
 HREF="daemon.html"><LINK
 REL="NEXT"
-TITLE="Parser"
-HREF="daemon-parser.html"><LINK
+TITLE="T-Script"
+HREF="tscript.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="daemon-parser.html"
+HREF="tscript.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -124,6 +124,15 @@ HREF="daemon-modules.html#DAEMON-SYSTEM"
 ></TD
 ><TD
 >Wywo³ywanie poleceñ pow³oki</TD
+></TR
+><TR
+><TD
+><A
+HREF="daemon-modules.html#DAEMON-PARSER"
+>parser</A
+></TD
+><TD
+>Parser uniwersalnych skryptów T-Script</TD
 ></TR
 ><TR
 ><TD
@@ -2028,6 +2037,105 @@ CLASS="PROMPT"
 ></UL
 ></DIV
 ></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PARSER"
+>6.2.15. Parser</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="DAEMON-PARSER-INTRO"
+>6.2.15.1. Wstêp</A
+></H3
+><P
+>Modu³ parser jest oparty na skryptowym jêzyku
+				<A
+HREF="http://silvercoders.com/index.php?page=T_Script"
+TARGET="_top"
+>T-Script</A
+>,
+				którego g³ównym zadaniem jest generowanie plików tekstowych. Mo¿e byæ
+				u¿ywany do przetwarzania szablonów z danymi pobieranymi z ró¿nych
+				¼róde³ np. baz SQL lub plików tekstowych. W naszym przypadku tre¶æ
+				skryptu (szablon) jest przechowywany w bazie danych, dlatego istnieje
+				mo¿liwo¶æ jego edycji poprzez <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>.
+				W przysz³o¶ci modu³ parser mo¿e zast±piæ wiêkszo¶æ modu³ów 
+				demona.</P
+><P
+>Opis jêzyka T-Script znajduje siê w rozdziale <A
+HREF="tscript.html"
+>T-Script</A
+>.</P
+><P
+>Przed kompilacj± modu³u upewnij siê, ¿e posiadasz w systemie
+				pakiety <TT
+CLASS="FILENAME"
+>bison</TT
+> (co najmniej w wersji 1.875) oraz 
+				<TT
+CLASS="FILENAME"
+>flex</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="DAEMON-PARSER-CONFIG"
+>6.2.15.2. Konfiguracja</A
+></H3
+><P
+>Parser posiada nastêpuj±ce opcje:</P
+><UL
+><LI
+><P
+>script</P
+><P
+>Zawarto¶æ skryptu (szablonu). Domy¶lnie: pusta.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>script = '{var=1}zmienna var={var}'</SAMP
+></P
+></LI
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku wynikowego. Domy¶lnie: pusta</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /tmp/parser.out</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki do wykonania po kompilacji skryptu. Domy¶lnie: pusta</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = "sh /tmp/parser.out"</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -2063,7 +2171,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="daemon-parser.html"
+HREF="tscript.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -2087,7 +2195,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Parser</TD
+>T-Script</TD
 ></TR
 ></TABLE
 ></DIV

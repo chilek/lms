@@ -48,56 +48,56 @@
 		    <para>Example: <prompt>( &lt;expression&gt; )</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>1 if value of expression is false, otherwise 0.</para>
+		    <para>Logical negation. 1 if value of expression is false, otherwise 0.</para>
 		    <para>Example: <prompt>! &lt;expression&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Evaluates to 1 if expression1 value equals expression2 
+		    <para>Comparision (equal). Evaluates to 1 if expression1 value equals expression2 
 		    value or 0 if not.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; == &lt;expression2&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Evaluates to 1 if expression1 value doesn't equal 
+		    <para>Comparision (not equal). Evaluates to 1 if expression1 value doesn't equal 
 		    expression2 value or 0 if it does.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; != &lt;expression2&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Evaluates to 1 if expression1 value is less than 
+		    <para>Comaprision (greater than). Evaluates to 1 if expression1 value is less than 
 		    expression2 value.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; &lt; &lt;expression2&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Evaluates to 1 if expression1 value is greater than 
+		    <para>Comparision (less than). Evaluates to 1 if expression1 value is greater than 
 		    expression2 value.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; &gt; &lt;expression2&gt;</prompt></para>
 		</listitem> 
 		<listitem>
-		    <para>Evaluates to 1 if expression1 value or expression2 value 
+		    <para>Logical OR. Evaluates to 1 if expression1 value or expression2 value 
 		    are true.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; || &lt;expression2&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Evaluates to 1 if expression1 value and expression2 value 
+		    <para>Logical AND. Evaluates to 1 if expression1 value and expression2 value 
 		    are true.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; && &lt;expression2&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>When both expression values have numeric type evaluates 
-		    to result of arithmetic operation. In other situation treats 
-		    expressions as strings and performs string concatenation.</para>
+		    <para>Strings concatenation. When both expression values haven't numeric type 
+			treats expressions as strings and performs string concatenation.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; + &lt;expression2&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Evaluates to result of arithmetic operation on two expression values.</para>
+		    <para>Arithmetic operators. Evaluates to result of arithmetic operation on two expression values.</para>
 		    <para>Example: 
 <screen>
+&lt;expression1&gt; + &lt;expression2&gt;
 &lt;expression1&gt; - &lt;expression2&gt;
 &lt;expression1&gt; * &lt;expression2&gt;
 &lt;expression1&gt; / &lt;expression2&gt;
 &lt;expression1&gt; % &lt;expression2&gt;</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Evaluates to 1 if expression1 value match with regular expression2, else
+		    <para>String comparision with regular expression. Evaluates to 1 if expression1 value match with regular expression2, else
 		    0.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; =~ &lt;expression2&gt;</prompt></para>
 		</listitem>
@@ -116,11 +116,11 @@
 	    <title>Commands</title>
 	    <itemizedlist>
 		<listitem>
-		    <para>Assigns expression value to specified variable.</para>
+		    <para>Assignment. Assigns expression value to specified variable.</para>
 		    <para>Example: <prompt>&lt;variable_name&gt; = &lt;expression&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Executes command only if expression is true. Second form executes 
+		    <para>Conditional statement. Executes command only if expression is true. Second form executes 
 		    command1 if expression is true or command2 if expression is false.</para>
 		    <para>Example:
 <screen>
@@ -147,14 +147,14 @@ a doesn't equal 1
 </screen></para>
 		</listitem>
 		<listitem>
-		    <para>Executes first command1 as loop initialization command. Then executes 
+		    <para>Iterative loop. Executes first command1 as loop initialization command. Then executes 
 		    commands and command2 while expression is true.</para>
 		    <para>Example: <prompt>
 for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt; /for
 </prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Redirects script output to file. Data will be appended to file.</para>
+		    <para>Script output redirection. Redirects script output to file. Data will be appended to file.</para>
 		    <para>Example: <prompt>{file &lt;file_name&gt;} &lt;commands&gt; {/file}</prompt></para>
 		</listitem>
 	    </itemizedlist>
@@ -163,7 +163,7 @@ for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt
 	    <title>Functions</title>
 	    <para>Functions have two calling forms: with brackets
 		(<prompt>{function(var)}</prompt>) and without brackets
-		(<prompt>{function {var}}</prompt>).</para>
+		(<prompt>{function {var}}</prompt>).
 	    <itemizedlist>
 		<listitem>
 		    <para>Converts numeric variable to string value.</para>
@@ -173,7 +173,21 @@ for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt
 		    <para>Converts string variable to numeric value. For arrays returns number of items in array.</para>
 		    <para>Example: <prompt>number(&lt;variable_name&gt;)</prompt></para>
 		</listitem>
+		<listitem>
+			<para>Type checking. Returns type name of variable, e.g. string, number, array.</para>
+			<para>Example: <prompt>typeof(&lt;variable_name&gt;)</prompt></para>
+		</listitem>
 	    </itemizedlist>
+		In script above functions can be used like that:
+<screen>
+{x = 5}x = {x}
+{var = "3"}var = {var}
+x + var = {x + var}
+x + var = {number(var) + x}
+x + var = {string(x) + var}
+x is type of {typeof(x)}
+var is type of {typeof(var)}
+</screen></para>
 	    </sect3>
 	</sect2>
 	<sect2 id="extensions">
@@ -203,6 +217,88 @@ for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt
 		    	    <para>Example: <prompt>trim &lt;string&gt;</prompt></para>
 			</listitem>
 		    </itemizedlist>
+		</sect3>
+		<sect3 id="time">
+			<title>Time</title>
+			<para>Extension with name <prompt>Time</prompt> consist functions for date
+			and time operations.</para>
+			<itemizedlist>
+				<listitem>
+					<para>Returns current date and time formated according to
+					the format specification. Default format is %Y/%m/%d. 
+					Conversion specifiers are introduced by a '%' character 
+					You can read about all of them in <prompt>`man 
+					strftime`</prompt>.</para>
+					<para>Example: <prompt>date("%s")</prompt></para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+		<sect3 id="file">
+			<title>File</title>
+			<para>This extension is destined for basic file operations.
+				<itemizedlist>
+					<listitem>
+						<para>File deletion.</para>
+						<para>Example: <prompt>deletefile("/tmp/file.txt")</prompt></para>
+					</listitem>
+					<listitem>
+						<para>Creates array where every element is separated
+						line of file.</para>
+						<para>Example: <prompt>readfile("/tmp/file.txt")</prompt></para>
+					</listitem>
+					<listitem>
+						<para>Returns file contents.</para>
+						<para>Example: <prompt>getfile("/tmp/file.txt")</prompt></para>
+					</listitem>
+					<listitem>
+						<para>Returns list of files (and subdirectories) 
+						in array. Every element contains subvariable 'size'
+						with file size in bytes.</para>
+						<para>Example: <prompt>listdir("/home/alec")</prompt></para>
+					</listitem>
+				</itemizedlist>
+				Listing below presents example script with use of all file functions.
+<screen>
+{list = listdir("/home/alec/lms/doc")}
+{for (x = 0; x &lt; number(list); x++) }\
+{list[x]}--{list[x].size}
+{/for}\
+{file "/home/alec/file.txt"}
+Line 1
+Line 2
+{/file}\
+{f = readfile /home/alec/file.txt}\
+{for (i = 0; i &lt; number(f); i++) }\
+line {i}: {f[i]}\
+{/for}\
+{f = getfile /home/alec/file.txt}\
+{f}
+{deletefile /home/alec/file.txt}\
+</screen></para>
+		</sect3>
+		<sect3 id="net">
+			<title>Net</title>
+			<para>In this extension are included two functions (with lowercase names)
+				destined to IP addresses and subnet masks operations.</para>
+			<itemizedlist>
+				<listitem>
+					<para>Returns number of bits in subnet mask.</para>
+					<para>Example: <prompt>mask2prefix(&lt;mask&gt;)</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Changes octal IP address to long number.</para>
+					<para>Example: <prompt>ip2long(&lt;address&gt;)</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Changes long number to IP address octal format (xxx.xxx.xxx.xxx).</para>
+					<para>Example: <prompt>long2ip(&lt;number&gt;)</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Calculates broadcast address from specified IP address and
+						mask (any mask format).</para>
+					<para>Example: <prompt>broadcast(&lt;address/mask&gt;)</prompt></para>
+				</listitem>
+			</itemizedlist>
 		</sect3>
 		<sect3 id="sql">
 		<title>SQL</title>
@@ -302,30 +398,6 @@ for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt
 			    </para>
 			    </listitem>
 			</itemizedlist>
-		</sect3>
-		<sect3 id="net">
-		<title>Net</title>
-		    <para>In this extension are included two functions (with lowercase names)
-		    destined to IP addresses and subnet masks operations.</para>
-		    <itemizedlist>
-			<listitem>
-		    	    <para>Returns number of bits in subnet mask.</para>
-			    <para>Example: <prompt>mask2prefix(&lt;mask&gt;)</prompt></para>
-			</listitem>
-			<listitem>
-		    	    <para>Changes octal IP address to long number.</para>
-			    <para>Example: <prompt>ip2long(&lt;address&gt;)</prompt></para>
-			</listitem>
-			<listitem>
-		    	    <para>Changes long number to IP address octal format (xxx.xxx.xxx.xxx).</para>
-			    <para>Example: <prompt>long2ip(&lt;number&gt;)</prompt></para>
-			</listitem>
-			<listitem>
-		    	    <para>Calculates broadcast address from specified IP address and
-			    mask (any mask format).</para>
-			    <para>Example: <prompt>broadcast(&lt;address/mask&gt;)</prompt></para>
-			</listitem>
-		    </itemizedlist>
 		</sect3>
 	</sect2>
 	<sect2 id="examples">
