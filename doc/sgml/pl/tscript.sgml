@@ -20,7 +20,7 @@
 		Dane poza klamrami zostan± zapisane do pliku wyj¶ciowego (lub je¶li go
 		nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie.</para>
 		<sect3 id="expr">
-		<title>Wyra¿enia</title>
+		<title>Wyra¿enia i operatory</title>
 			<itemizedlist>
 			<listitem>
 				<para>Ci±g znaków.</para>
@@ -47,49 +47,52 @@
 				<para>Przyk³ad: <prompt>( &lt;wyra¿enie&gt; )</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku .</para>
+				<para>Logiczna negacja. Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku zwraca 0.</para>
 				<para>Przyk³ad: <prompt>! &lt;wyra¿enie&gt;</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± yra¿enie2 
+				<para>Porównanie (równe). Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± yra¿enie2 
 				lub 0 gdy s± ró¿ne.</para>
 				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same.</para>
+				<para>Porównanie (nierówne). Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same.</para>
 				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2.</para>
+				<para>Porównanie (wiêkszy ni¿). Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2.</para>
 				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2.</para>
+				<para>Porównanie (mniejszy ni¿). Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2.</para>
 				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;</prompt></para>
 			</listitem> 
 			<listitem>
-				<para>Zwraca 1 gdy jedno z wyra¿eñ jest prawd±.</para>
+				<para>Logiczne LUB. Zwraca 1 gdy jedno z wyra¿eñ jest prawd±.</para>
 				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; || &lt;wyra¿enie2&gt;</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe.</para>
+				<para>Logiczne I. Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe.</para>
 				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; && &lt;wyra¿enie2&gt;</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Gdy oba wyra¿enia s± liczbami zwraca wynik operacji
-				arytmetycznej. W innym przypadku traktuje wyra¿enia jako ci±gi
-				znaków i dokonuje ich po³±czenia.</para>
+				<para>£±czenie ci±gów znaków. Gdy oba wyra¿enia nie s± liczbami 
+				traktuje je jako ci±gi znaków i dokonuje ich po³±czenia.</para>
 				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach.</para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; - &lt;wyra¿enie2&gt;</prompt></para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; * &lt;wyra¿enie2&gt;</prompt></para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;</prompt></para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;</prompt></para>
+				<para>Operatory arytmetyczne. Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach.</para>
+				<para>Przyk³ad: 
+<screen>
+&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; - &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; * &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;
+</screen></para>
 			</listitem>
 			<listitem>
-				<para>Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
+				<para>Porównanie ci±gu do z wyra¿eniem regularnym. Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
 				w przeciwnym wypadku zwraca 0.</para>
 				<para>Przyk³ad: <prompt>&lt;wyra¿enie&gt; =~ &lt;wzorzec&gt;</prompt></para>
 			</listitem>
@@ -108,11 +111,11 @@
 		<title>Polecenia</title>
 			<itemizedlist>
 				<listitem>
-					<para>Przypisanie warto¶ci wyra¿enia do podanej zmiennej.</para>
+					<para>Przypisanie. Przypisanie warto¶ci wyra¿enia do podanej zmiennej.</para>
 					<para>Przyk³ad: <prompt>&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;</prompt></para>
 				</listitem>
 				<listitem>
-					<para>Wykonanie polecenia tylko wtedy gry wyra¿enie jest prawd±. 
+					<para>Wyra¿enie warunkowe. Wykonanie polecenia tylko wtedy gry wyra¿enie jest prawd±. 
 					Druga forma wykonuje polecenie1 gdy wyra¿enie jest prawd± lub polecenie2
 					gdy jest fa³szem.</para> 
 					<para>Przyk³ad: <screen>
@@ -140,7 +143,7 @@ a nie równa siê 1
 </screen></para>
 				</listitem>
 				<listitem>
-					<para>Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
+					<para>Pêtla iteracyjna. Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
 					wykonywane jest polecenie i polecenie2, dopóki wyra¿enie jest prawdziwe.</para>
 					<para>Przyk³ad: <screen>
 for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
@@ -148,7 +151,7 @@ for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
 /for</screen></para>
 				</listitem>
 				<listitem>
-					<para>Przekierowanie wyj¶cia do pliku. Dane zostan± dopisane
+					<para>Przekierowanie wyj¶cia. Dane zostan± dopisane
 					do pliku.</para>
 					<para>Przyk³ad: <screen>
 {file &lt;nazwa_pliku&gt;} &lt;polecenia&gt; {/file}</screen></para>
@@ -159,7 +162,7 @@ for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
 		<title>Funkcje</title>
 			<para>Funkcje mog± byæ u¿ywane zarówno w sk³adni z nawiasem
 			(<prompt>{funkcja(zmienna)}</prompt>) jak i bez nawiasu 
-			(<prompt>{funkcja {zmienna}}</prompt>).</para>
+			(<prompt>{funkcja {zmienna}}</prompt>).
 			<itemizedlist>
 				<listitem>
 					<para>Zamiana warto¶ci liczbowej na ci±g znaków.</para>
@@ -169,7 +172,21 @@ for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
 					<para>Zamiana ci±gu znaków na liczbê. Dla tablic zwraca ilo¶æ elementów w tablicy.</para>
 					<para>Przyk³ad: 	<prompt>number(&lt;zmienna&gt;)</prompt></para>
 				</listitem>
+				<listitem>
+					<para>Sprawdzenie typu. Zwraca nazwê typu zmiennej np.string, number, array.</para>
+					<para>Przyk³ad: <prompt>typeof(&lt;zmienna&gt;)</prompt></para>
+				</listitem>
 			</itemizedlist>
+			W skrypcie powy¿sze funkcje mog± byæ u¿yte w nastêpuj±cy sposób:
+<screen>
+{x = 5}x = {x}
+{var = "3"}var = {var}
+x + var = {x + var}
+x + var = {number(var) + x}
+x + var = {string(x) + var}
+x jest typu {typeof(x)}
+var jest typu {typeof(var)}
+</screen></para>
 		</sect3>
 	</sect2>
 	<sect2 id="extensions">
@@ -198,6 +215,91 @@ for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
 					<para>Usuniêcie "bia³ych" znaków z pocz±tku i koñca 
 				ci±gu znaków.</para>
 					<para>Przyk³ad: <prompt>trim &lt;ci±g_znaków&gt;</prompt></para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+		<sect3 id="time">
+			<title>Time</title>
+			<para>Rozszerzenie o nazwie <prompt>Time</prompt> zawiera funkcje do operacji na datach i czasie.</para>
+			<itemizedlist>
+				<listitem>
+					<para>Zwraca bie¿±c± datê i czas wg zadanego formatu.
+					Domy¶lnie funkcja zwraca datê w formacie %Y/%m/%d. 
+					Znaczenie poszczególnych specyfikatorów konwersji mo¿na
+					znale¼æ w <prompt>`man strftime`</prompt>.</para>
+					<para>Przyk³ad: <prompt>date("%s")</prompt></para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
+		<sect3 id="file">
+			<title>File</title>
+			<para>To rozszerzenie udostêpnia podstawowe operacje na plikach.
+			<itemizedlist>
+				<listitem>
+					<para>Usuniêcie pliku.</para>
+					<para>Przyk³ad: <prompt>deletefile("/tmp/plik.txt")</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Zapisuje w tablicy zawarto¶æ pliku tak, ¿e ka¿da
+					linia pliku to osobny element tablicy.</para>
+					<para>Przyk³ad: <prompt>readfile("/tmp/plik.txt")</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Zwraca ca³± zawarto¶æ pliku.</para>
+					<para>Przyk³ad: <prompt>getfile("/tmp/plik.txt")</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Zwraca listê plików (i podkatalogów) w tablicy. Ka¿dy
+					element tablicy zawiera podzmienn± 'size', w której zapisany
+					jest rozmiar pliku w bajtach.</para>
+					<para>Przyk³ad: <prompt>listdir("/home/alec")</prompt></para>
+				</listitem>
+			</itemizedlist>
+			Poni¿szy listing prezentuje przyk³adowy skrypt z u¿yciem wszystkich funkcji
+			rozszerzenia <prompt>File</prompt>.
+<screen>
+{list = listdir("/home/alec/lms/doc")}
+{for (x = 0; x &lt; number(list); x++) }\
+{list[x]}--{list[x].size}
+{/for}\
+{file "/home/alec/plik.txt"}
+Linia 1
+Linia 2
+{/file}\
+{f = readfile /home/alec/plik.txt}\
+{for (i = 0; i &lt; number(f); i++) }\
+linia {i}: {f[i]}\
+{/for}\
+{f = getfile /home/alec/plik.txt}\
+{f}
+{deletefile /home/alec/plik.txt}\
+</screen></para>
+		</sect3>
+		<sect3 id="net">
+			<title>Net</title>
+			<para>W tym rozszerzeniu zawarte s± funkcje (nazwy pisane ma³ymi literami)
+				przeznaczone do operowania na adresach IP i maskach. Jest to rozszerzenie
+				dodane w LMS.</para>
+			<itemizedlist>
+				<listitem>
+					<para>Zamiana maski sieciowej w formacie xxx.xxx.xxx.xxx
+						na liczbê (bitów).</para>
+					<para>Przyk³ad: <prompt>mask2prefix(&lt;maska&gt;)</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Zamiana adresu IP w formacie 4-oktetowym na
+						liczbê.</para>
+					<para>Przyk³ad: <prompt>ip2long(&lt;adres&gt;)</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Zamiana adresu IP podanego jako liczba
+						na format xxx.xxx.xxx.xxx.</para>
+					<para>Przyk³ad: <prompt>long2ip(&lt;adres&gt;)</prompt></para>
+				</listitem>
+				<listitem>
+					<para>Obliczenie adresu broadcast dla podanego
+						adresu IP oraz maski (format maski dowolny).</para>
+					<para>Przyk³ad: <prompt>broadcast(&lt;adres/maska&gt;)</prompt></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
@@ -299,34 +401,6 @@ for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
 					<member>dhcpend - koniec zakresu DHCP</member>
 					</simplelist>
 					</para>
-				</listitem>
-			</itemizedlist>
-		</sect3>
-		<sect3 id="net">
-		<title>Net</title>
-			<para>W tym rozszerzeniu zawarte s± funkcje (nazwy pisane ma³ymi literami)
-			przeznaczone do operowania na adresach IP i maskach. Jest to rozszerzenie
-			dodane w LMS.</para>
-			<itemizedlist>
-				<listitem>
-		        		<para>Zamiana maski sieciowej w formacie xxx.xxx.xxx.xxx
-					na liczbê (bitów).</para>
-					<para>Przyk³ad: <prompt>mask2prefix(&lt;maska&gt;)</prompt></para>
-				</listitem>
-				<listitem>
-					<para>Zamiana adresu IP w formacie 4-oktetowym na
-					liczbê.</para>
-					<para>Przyk³ad: <prompt>ip2long(&lt;adres&gt;)</prompt></para>
-				</listitem>
-				<listitem>
-					<para>Zamiana adresu IP podanego jako liczba
-					na format xxx.xxx.xxx.xxx.</para>
-					<para>Przyk³ad: <prompt>long2ip(&lt;adres&gt;)</prompt></para>
-				</listitem>
-				<listitem>
-					<para>Obliczenie adresu broadcast dla podanego
-					adresu IP oraz maski (format maski dowolny).</para>
-					<para>Przyk³ad: <prompt>broadcast(&lt;adres/maska&gt;)</prompt></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>

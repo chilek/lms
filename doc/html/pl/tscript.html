@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Parser</TITLE
+>T-Script</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -75,248 +75,198 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="DAEMON-PARSER"
->6.3. Parser</A
+NAME="TSCRIPT"
+>6.3. T-Script</A
 ></H1
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="DAEMON-PARSER-INTRO"
+NAME="TSCRIPT-INTRO"
 >6.3.1. Wstêp</A
 ></H2
 ><P
->Modu³ parser jest oparty na skryptowym jêzyku
-	    <A
+>G³ównym przeznaczeniem jêzyka skryptowego <A
 HREF="http://silvercoders.com/index.php?page=T_Script"
 TARGET="_top"
 >T-Script</A
 >,
-	    którego g³ównym zadaniem jest generowanie plików tekstowych. Mo¿e byæ
-	    u¿ywany do przetwarzania szablonów z danymi pobieranymi z ró¿nych
-	    ¼róde³ np. baz SQL lub plików tekstowych. W naszym przypadku tre¶æ
-	    skryptu (szablon) jest przechowywany w bazie danych, dlatego istnieje
-	    mo¿liwo¶æ jego edycji poprzez <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
->.
-	    W przysz³o¶ci modu³ parser mo¿e zast±piæ wiêkszo¶æ modu³ów demona.</P
+		jest generowanie plików tekstowych. Mo¿e byæ
+		u¿ywany do przetwarzania szablonów z danymi pobieranymi z ró¿nych
+		¼róde³ np. baz SQL lub plików tekstowych.</P
 ><P
->Przed kompilacj± modu³u upewnij siê, ¿e posiadasz w systemie
-	    pakiety <TT
+>Przed kompilacj± T-Scripta upewnij siê, ¿e posiadasz w systemie
+		pakiety <TT
 CLASS="FILENAME"
 >bison</TT
 > (co najmniej w wersji 1.875) oraz 
-	    <TT
+		<TT
 CLASS="FILENAME"
 >flex</TT
->.
-	    </P
+>.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="DAEMON-PARSER-CONFIG"
->6.3.2. Konfiguracja</A
-></H2
-><P
->Parser posiada nastêpuj±ce opcje:</P
-><UL
-><LI
-><P
->script</P
-><P
->Zawarto¶æ skryptu (szablonu). Domy¶lnie: pusta.</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->script = '{var=1}zmienna var={var}'</SAMP
-></P
-></LI
-><LI
-><P
->file</P
-><P
->Lokalizacja pliku wynikowego. Domy¶lnie: pusta</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->file = /tmp/parser.out</SAMP
-></P
-></LI
-><LI
-><P
->command</P
-><P
->Polecenie pow³oki do wykonania po kompilacji skryptu. Domy¶lnie: pusta</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->command = "sh /tmp/parser.out"</SAMP
-></P
-></LI
-></UL
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="DAEMON-PARSER-SYNTAX"
->6.3.3. Sk³adnia</A
+NAME="TSCRIPT-SYNTAX"
+>6.3.2. Sk³adnia</A
 ></H2
 ><P
 >Sk³adnia jêzyka T-Script jest podobna do sk³adni innych popularnych
-	    jêzyków takich jak C czy JavaScript, ale dokonano pewnych zmian
-	    maj±cych na celu u³atwienie tworzenia szablonów. 
-	    Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.
-	    Dane poza klamrami zostan± zapisane do pliku wyj¶ciowego (lub je¶li go
-	    nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie.</P
-><P
->Wyra¿enia:
-	    <UL
+		jêzyków takich jak C czy JavaScript, ale dokonano pewnych zmian
+		maj±cych na celu u³atwienie tworzenia szablonów. 
+		Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.
+		Dane poza klamrami zostan± zapisane do pliku wyj¶ciowego (lub je¶li go
+		nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXPR"
+>6.3.2.1. Wyra¿enia i operatory</A
+></H3
+><UL
 ><LI
 ><P
 >Ci±g znaków.</P
 ><P
-><PRE
-CLASS="SCREEN"
->"jaki¶ ci±g znaków"</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>"jaki¶ ci±g znaków"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Liczba.</P
 ><P
-><PRE
-CLASS="SCREEN"
->1234</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>1234</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Warto¶æ zmiannej "var".</P
 ><P
-><PRE
-CLASS="SCREEN"
->var</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>var</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >N-ty element tablicy "var".</P
 ><P
-><PRE
-CLASS="SCREEN"
->var[n]</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>var[n]</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Podzmienna "n" zmiennej "var".</P
 ><P
-><PRE
-CLASS="SCREEN"
->var.n</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>var.n</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Warto¶æ wyra¿enia w nawiasach.</P
 ><P
-><PRE
-CLASS="SCREEN"
->( &lt;wyra¿enie&gt; )</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>( &lt;wyra¿enie&gt; )</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku 0.</P
+>Logiczna negacja. Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku zwraca 0.</P
 ><P
-><PRE
-CLASS="SCREEN"
->! &lt;wyra¿enie&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>! &lt;wyra¿enie&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± wyra¿enie2 
-		    lub 0 gdy s± ró¿ne.</P
+>Porównanie (równe). Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± yra¿enie2 
+				lub 0 gdy s± ró¿ne.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same.</P
+>Porównanie (nierówne). Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2.</P
+>Porównanie (wiêkszy ni¿). Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2.</P
+>Porównanie (mniejszy ni¿). Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy jedno z wyra¿eñ jest prawd±.</P
+>Logiczne LUB. Zwraca 1 gdy jedno z wyra¿eñ jest prawd±.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;wyra¿enie1&gt; || &lt;wyra¿enie2&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie1&gt; || &lt;wyra¿enie2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe.</P
+>Logiczne I. Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;wyra¿enie1&gt; &#38;&#38; &lt;wyra¿enie2&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie1&gt; &#38;&#38; &lt;wyra¿enie2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Gdy oba wyra¿enia s± liczbami zwraca wynik operacji
-		    arytmetycznej. W innym przypadku traktuje wyra¿enia jako ci±gi
-		    znaków i dokonuje ich po³±czenia.</P
+>£±czenie ci±gów znaków. Gdy oba wyra¿enia nie s± liczbami 
+				traktuje je jako ci±gi znaków i dokonuje ich po³±czenia.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach.</P
+>Operatory arytmetyczne. Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach.</P
 ><P
-><PRE
+>Przyk³ad: 
+<PRE
 CLASS="SCREEN"
->&lt;wyra¿enie1&gt; - &lt;wyra¿enie2&gt;
+>&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; - &lt;wyra¿enie2&gt;
 &lt;wyra¿enie1&gt; * &lt;wyra¿enie2&gt;
 &lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;
 &lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;</PRE
@@ -324,59 +274,68 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
-		    w przeciwnym wypadku zwraca 0.</P
+>Porównanie ci±gu do z wyra¿eniem regularnym. Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
+				w przeciwnym wypadku zwraca 0.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;wyra¿enie&gt; =~ &lt;wzorzec&gt;</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie&gt; =~ &lt;wzorzec&gt;</SAMP
 ></P
 ></LI
 ></UL
->
-	    </P
-><P
->Komentarze:
-	    <UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="COMMENTS"
+>6.3.2.2. Komentarze</A
+></H3
+><UL
 ><LI
 ><P
 >Komentarz w stylu jêzyka C.</P
 ><P
->		    <PRE
-CLASS="SCREEN"
->{/* to jest komentarz - mo¿e byæ wieloliniowy */}</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>/* to jest komentarz - mo¿e byæ wieloliniowy */</SAMP
 ></P
 ></LI
 ></UL
->
-	    </P
-><P
->Podstawowe polecenia:
-	    <UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="COMMANDS"
+>6.3.2.3. Polecenia</A
+></H3
+><UL
 ><LI
 ><P
->Przypisanie warto¶ci wyra¿enia do podanej zmiennej.</P
+>Przypisanie. Przypisanie warto¶ci wyra¿enia do podanej zmiennej.</P
 ><P
->		    <PRE
-CLASS="SCREEN"
->{&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;}</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Wykonanie polecenia tylko wtedy gry wyra¿enie jest prawd±. 
-		    Druga forma wykonuje polecenie1 gdy wyra¿enie jest prawd± lub polecenie2
-		    gdy jest fa³szem.</P
+>Wyra¿enie warunkowe. Wykonanie polecenia tylko wtedy gry wyra¿enie jest prawd±. 
+					Druga forma wykonuje polecenie1 gdy wyra¿enie jest prawd± lub polecenie2
+					gdy jest fa³szem.</P
 ><P
-><PRE
+>Przyk³ad: <PRE
 CLASS="SCREEN"
->{if ( &lt;wyra¿enie&gt; )} &lt;polecenia&gt; {/if}
-{if ( &lt;wyra¿enie&gt; )} &lt;polecenie1&gt; {else} &lt;polecenie2&gt; {/if}</PRE
+>if ( &lt;wyra¿enie&gt; ) &lt;polecenia&gt; /if
+if ( &lt;wyra¿enie&gt; ) &lt;polecenie1&gt; else &lt;polecenie2&gt; /if</PRE
 ></P
 ><P
 >Tekst miêdzy blokami jest traktowany jako polecenia
-		    dlatego nastêpuj±cy przyk³ad jest prawid³owy:
-<PRE
+				    	dlatego nastêpuj±cy przyk³ad jest prawid³owy: <PRE
 CLASS="SCREEN"
 >Jaki¶ tekst
 {if (a==1)} 
@@ -385,10 +344,9 @@ a równe jest 1
 a nie jest równe 1
 {/if} </PRE
 >
-Mo¿na wstawiæ backslash (\) pomiêdzy poleceniem a koñcem wiersza aby
-pozbyæ siê znaku koñca linii i zachowaæ normalny (bez za³amania linii w tym miejscu)
-przep³yw tekstu. Na przyk³ad: 
-<PRE
+					Mo¿na wstawiæ backslash (\) pomiêdzy poleceniem a koñcem wiersza aby
+					pozbyæ siê znaku koñca linii i zachowaæ normalny (bez za³amania linii w tym miejscu)
+					przep³yw tekstu. Na przyk³ad: <PRE
 CLASS="SCREEN"
 >Jaki¶ tekst
 {if (a==1)}\ 
@@ -400,136 +358,130 @@ a nie równa siê 1
 ></LI
 ><LI
 ><P
->Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
-		    wykonywane jest polecenie i polecenie2, dopóki wyra¿enie jest prawdziwe.</P
+>Pêtla iteracyjna. Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
+					wykonywane jest polecenie i polecenie2, dopóki wyra¿enie jest prawdziwe.</P
 ><P
-><PRE
+>Przyk³ad: <PRE
 CLASS="SCREEN"
->{for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )} &lt;polecenia&gt; {/for}</PRE
+>for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
+&lt;polecenia&gt;
+/for</PRE
 ></P
 ></LI
 ><LI
 ><P
->Przekierowanie wyj¶cia do pliku. Dane zostan± dopisane
-		    do pliku.</P
+>Przekierowanie wyj¶cia. Dane zostan± dopisane
+					do pliku.</P
 ><P
-><PRE
+>Przyk³ad: <PRE
 CLASS="SCREEN"
 >{file &lt;nazwa_pliku&gt;} &lt;polecenia&gt; {/file}</PRE
 ></P
 ></LI
 ></UL
->
-	    </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="FUNCTIONS"
+>6.3.2.4. Funkcje</A
+></H3
 ><P
->Podstawowe funkcje:
-	    <UL
+>Funkcje mog± byæ u¿ywane zarówno w sk³adni z nawiasem
+			(<SAMP
+CLASS="PROMPT"
+>{funkcja(zmienna)}</SAMP
+>) jak i bez nawiasu 
+			(<SAMP
+CLASS="PROMPT"
+>{funkcja {zmienna}}</SAMP
+>).
+			<UL
 ><LI
 ><P
 >Zamiana warto¶ci liczbowej na ci±g znaków.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{string(&lt;zmienna&gt;)}</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>string(&lt;zmienna&gt;)</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Zamiana ci±gu znaków na liczbê. Dla tablic zwraca ilo¶æ elementów w tablicy.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{number(&lt;zmienna&gt;)}</PRE
+>Przyk³ad: 	<SAMP
+CLASS="PROMPT"
+>number(&lt;zmienna&gt;)</SAMP
+></P
+></LI
+><LI
+><P
+>Sprawdzenie typu. Zwraca nazwê typu zmiennej np.string, number, array.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>typeof(&lt;zmienna&gt;)</SAMP
 ></P
 ></LI
 ></UL
 >
-	    </P
+			W skrypcie powy¿sze funkcje mog± byæ u¿yte w nastêpuj±cy sposób:
+<PRE
+CLASS="SCREEN"
+>{x = 5}x = {x}
+{var = "3"}var = {var}
+x + var = {x + var}
+x + var = {number(var) + x}
+x + var = {string(x) + var}
+x jest typu {typeof(x)}
+var jest typu {typeof(var)}</PRE
+></P
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="DAEMON-PARSER-EXT"
->6.3.4. Rozszerzenia</A
+NAME="EXTENSIONS"
+>6.3.3. Rozszerzenia</A
 ></H2
 ><P
->Rozszerzenia to dodatki do biblioteki <SPAN
+>Rozszerzenia (extensions) to dodatki do biblioteki <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >tscript</I
 ></SPAN
->. 
-		S± to funkcje i sta³e, które mo¿na u¿ywaæ w skryptach. Poni¿ej przedstawiono
-		rozszerzenia udostêpnione w <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->lmsd</I
-></SPAN
->.
-		<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Funkcje mog± byæ u¿ywane zarówno w sk³adni z nawiasem
-		(<SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->{funkcja(zmienna)}</I
-></SPAN
->) jak i bez nawiasu 
-		(<SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->{funkcja {zmienna}}</I
-></SPAN
->).</P
-></TD
-></TR
-></TABLE
-></DIV
->
-		</P
+>. S± to funkcje i predefiniowane 
+		zmienne (sta³e), które mo¿na stosowaæ w skryptach.</P
 ><DIV
 CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
 NAME="EXEC"
->6.3.4.1. Exec</A
+>6.3.3.1. Exec</A
 ></H3
 ><P
->Wykonywanie poleceñ pow³oki umo¿liwia funkcja exec(). 
-		Mo¿liwe jest wykonanie wielu poleceñ oddzielonych ¶rednikami
-		w jednym wywo³aniu tej funkcji.</P
+>Wykonywanie poleceñ pow³oki umo¿liwia funkcja 
+			<SAMP
+CLASS="PROMPT"
+>exec()</SAMP
+>.
+			Mo¿liwe jest wykonanie wielu poleceñ oddzielonych ¶rednikami
+			w jednym wywo³aniu tej funkcji.</P
 ><UL
 ><LI
 ><P
 >Wykonywanie poleceñ pow³oki.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{exec &lt;polecenie&gt;}</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>exec &lt;polecenie&gt;</SAMP
 ></P
 ></LI
 ></UL
@@ -540,20 +492,185 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="STRING"
->6.3.4.2. String</A
+>6.3.3.2. String</A
 ></H3
 ><P
->'String' zawiera podstawowe funkcje do operowania
-		na ci±gach znaków.</P
+><SAMP
+CLASS="PROMPT"
+>String</SAMP
+> zawiera podstawowe funkcje do operowania
+			na ci±gach znaków.</P
 ><UL
 ><LI
 ><P
 >Usuniêcie "bia³ych" znaków z pocz±tku i koñca 
-			ci±gu znaków.</P
+				ci±gu znaków.</P
 ><P
-><PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>trim &lt;ci±g_znaków&gt;</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="TIME"
+>6.3.3.3. Time</A
+></H3
+><P
+>Rozszerzenie o nazwie <SAMP
+CLASS="PROMPT"
+>Time</SAMP
+> zawiera funkcje do operacji na datach i czasie.</P
+><UL
+><LI
+><P
+>Zwraca bie¿±c± datê i czas wg zadanego formatu.
+					Domy¶lnie funkcja zwraca datê w formacie %Y/%m/%d. 
+					Znaczenie poszczególnych specyfikatorów konwersji mo¿na
+					znale¼æ w <SAMP
+CLASS="PROMPT"
+>`man strftime`</SAMP
+>.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>date("%s")</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="FILE"
+>6.3.3.4. File</A
+></H3
+><P
+>To rozszerzenie udostêpnia podstawowe operacje na plikach.
+			<UL
+><LI
+><P
+>Usuniêcie pliku.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>deletefile("/tmp/plik.txt")</SAMP
+></P
+></LI
+><LI
+><P
+>Zapisuje w tablicy zawarto¶æ pliku tak, ¿e ka¿da
+					linia pliku to osobny element tablicy.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>readfile("/tmp/plik.txt")</SAMP
+></P
+></LI
+><LI
+><P
+>Zwraca ca³± zawarto¶æ pliku.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>getfile("/tmp/plik.txt")</SAMP
+></P
+></LI
+><LI
+><P
+>Zwraca listê plików (i podkatalogów) w tablicy. Ka¿dy
+					element tablicy zawiera podzmienn± 'size', w której zapisany
+					jest rozmiar pliku w bajtach.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>listdir("/home/alec")</SAMP
+></P
+></LI
+></UL
+>
+			Poni¿szy listing prezentuje przyk³adowy skrypt z u¿yciem wszystkich funkcji
+			rozszerzenia <SAMP
+CLASS="PROMPT"
+>File</SAMP
+>.
+<PRE
 CLASS="SCREEN"
->{trim &lt;ci±g_znaków&gt;}</PRE
+>{list = listdir("/home/alec/lms/doc")}
+{for (x = 0; x &lt; number(list); x++) }\
+{list[x]}--{list[x].size}
+{/for}\
+{file "/home/alec/plik.txt"}
+Linia 1
+Linia 2
+{/file}\
+{f = readfile /home/alec/plik.txt}\
+{for (i = 0; i &lt; number(f); i++) }\
+linia {i}: {f[i]}\
+{/for}\
+{f = getfile /home/alec/plik.txt}\
+{f}
+{deletefile /home/alec/plik.txt}\</PRE
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="NET"
+>6.3.3.5. Net</A
+></H3
+><P
+>W tym rozszerzeniu zawarte s± funkcje (nazwy pisane ma³ymi literami)
+				przeznaczone do operowania na adresach IP i maskach. Jest to rozszerzenie
+				dodane w LMS.</P
+><UL
+><LI
+><P
+>Zamiana maski sieciowej w formacie xxx.xxx.xxx.xxx
+						na liczbê (bitów).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>mask2prefix(&lt;maska&gt;)</SAMP
+></P
+></LI
+><LI
+><P
+>Zamiana adresu IP w formacie 4-oktetowym na
+						liczbê.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>ip2long(&lt;adres&gt;)</SAMP
+></P
+></LI
+><LI
+><P
+>Zamiana adresu IP podanego jako liczba
+						na format xxx.xxx.xxx.xxx.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>long2ip(&lt;adres&gt;)</SAMP
+></P
+></LI
+><LI
+><P
+>Obliczenie adresu broadcast dla podanego
+						adresu IP oraz maski (format maski dowolny).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>broadcast(&lt;adres/maska&gt;)</SAMP
 ></P
 ></LI
 ></UL
@@ -564,17 +681,17 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="SQL"
->6.3.4.3. SQL</A
+>6.3.3.6. SQL</A
 ></H3
 ><P
 >Rozszerzenie SQL udostêpnia podstawowe funkcje zwi±zane
-		z obs³ug± bazy danych. Pozwala na wykonywanie poleceñ SQL.</P
+			z obs³ug± bazy danych. Pozwala na wykonywanie poleceñ SQL.</P
 ><UL
 ><LI
 ><P
 >Polecenia SQL</P
 ><P
-><PRE
+>Przyk³ad: <PRE
 CLASS="SCREEN"
 >{SELECT &lt;dalszy_ci±g_zapytania&gt;}
 {INSERT &lt;dalszy_ci±g_zapytania&gt;}
@@ -588,47 +705,38 @@ CLASS="SCREEN"
 ><P
 >Liczba wierszy, których dotyczy zapytanie.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{rows(&lt;zapytanie_sql&gt;)}</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>rows(&lt;zapytanie_sql&gt;)</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Zabezpieczenie znaków specjalnych w celu u¿ycia
-			w zapytaniu SQL. W szczególno¶ci chodzi o apostrofy 
-			i backslashe. Je¶li nie znasz zawarto¶ci zmiennej
-			powiniene¶ j± przepu¶ciæ przez escape().</P
+					w zapytaniu SQL. W szczególno¶ci chodzi o apostrofy 
+					i backslashe. Je¶li nie znasz zawarto¶ci zmiennej
+					powiniene¶ j± przepu¶ciæ przez escape().</P
 ><P
-><PRE
-CLASS="SCREEN"
->{escape(&lt;zmienna&gt;)}</PRE
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>escape(&lt;zmienna&gt;)</SAMP
 ></P
 ></LI
 ></UL
-></DIV
-><DIV
-CLASS="SECT3"
-><H3
-CLASS="SECT3"
-><A
-NAME="CONSTS"
->6.3.4.4. Consts</A
-></H3
 ><P
 >Rozszerzenie ¶ci¶le zwi±zane z LMS-em. Umo¿liwia
-		tworzenie skryptów bez znajomo¶ci struktury bazy danych.
-		Zawiera predefiniowane sta³e, które zawieraj± dane z bazy.
-		Zdefiniowane w programie zapytanie jest wykonywane w momencie
-		pierwszego u¿ycia sta³ej. Nazwy sta³ych nale¿y pisaæ
-		du¿ymi literami. Ka¿da sta³a to tablica zawieraj±ca wiersze
-		numerowane od zera, a ka¿dy wiersz posiada podzmienne dostêpne
-		poprzez nazwê (pisan± ma³ymi literami).</P
+				tworzenie skryptów bez znajomo¶ci struktury bazy danych.
+				Zawiera predefiniowane sta³e, które zawieraj± dane z bazy.
+				Zdefiniowane w programie zapytanie jest wykonywane w momencie
+				pierwszego u¿ycia sta³ej. Nazwy sta³ych nale¿y pisaæ
+				du¿ymi literami. Ka¿da sta³a to tablica zawieraj±ca wiersze
+				numerowane od zera, a ka¿dy wiersz posiada podzmienne dostêpne
+				poprzez nazwê (pisan± ma³ymi literami).</P
 ><UL
 ><LI
 ><P
 >CUSTOMERS - lista klientów:
-			    <TABLE
+					<TABLE
 BORDER="0"
 ><TBODY
 ><TR
@@ -698,12 +806,12 @@ BORDER="0"
 ></TBODY
 ></TABLE
 >
-			</P
+					</P
 ></LI
 ><LI
 ><P
 >NODES - lista komputerów (i adresów urz±dzeñ sieciowych):
-			    <TABLE
+					<TABLE
 BORDER="0"
 ><TBODY
 ><TR
@@ -712,7 +820,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->owner - nazwa/nazwisko i imiê klienta</TD
+>owner - nazwa/nazwisko i imiê 	klienta</TD
 ></TR
 ><TR
 ><TD
@@ -740,7 +848,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->info - dodatkowe informacje</TD
+>info - dodatkowe 	informacje</TD
 ></TR
 ><TR
 ><TD
@@ -769,12 +877,12 @@ BORDER="0"
 ></TBODY
 ></TABLE
 >
-			</P
+					</P
 ></LI
 ><LI
 ><P
 >NETWORKS - lista sieci:
-			    <TABLE
+					<TABLE
 BORDER="0"
 ><TBODY
 ><TR
@@ -791,7 +899,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->mask - maska (xxx.xxx.xxx.xxx)</TD
+>mask - maska 	(xxx.xxx.xxx.xxx)</TD
 ></TR
 ><TR
 ><TD
@@ -836,61 +944,7 @@ BORDER="0"
 ></TBODY
 ></TABLE
 >
-			</P
-></LI
-></UL
-></DIV
-><DIV
-CLASS="SECT3"
-><H3
-CLASS="SECT3"
-><A
-NAME="NET"
->6.3.4.5. Net</A
-></H3
-><P
->W tym rozszerzeniu zawarte s± funkcje (nazwy pisane ma³ymi literami)
-		przeznaczone do operowania na adresach IP i maskach.</P
-><UL
-><LI
-><P
->Zamiana maski sieciowej w formacie xxx.xxx.xxx.xxx
-			na liczbê (bitów).</P
-><P
-><PRE
-CLASS="SCREEN"
->mask2prefix(&lt;maska&gt;)</PRE
-></P
-></LI
-><LI
-><P
->Zamiana adresu IP w formacie 4-oktetowym na
-			liczbê.</P
-><P
-><PRE
-CLASS="SCREEN"
->ip2long(&lt;adres&gt;)</PRE
-></P
-></LI
-><LI
-><P
->Zamiana adresu IP podanego jako liczba
-			na format xxx.xxx.xxx.xxx.</P
-><P
-><PRE
-CLASS="SCREEN"
->long2ip(&lt;adres&gt;)</PRE
-></P
-></LI
-><LI
-><P
->Obliczenie adresu broadcast dla podanego
-			adresu IP oraz maski (format maski dowolny).</P
-><P
-><PRE
-CLASS="SCREEN"
->broadcast(&lt;adres/maska&gt;)</PRE
-></P
+					</P
 ></LI
 ></UL
 ></DIV
@@ -900,17 +954,17 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="DAEMON-PARSER-EXAMPLES"
->6.3.5. Przyk³adowe skrypty</A
+NAME="EXAMPLES"
+>6.3.4. Przyk³adowe skrypty</A
 ></H2
 ><P
 >Zacznijmy od bardzo prostego skryptu, który tworzy plik
-	    <TT
+		<TT
 CLASS="FILENAME"
 >/etc/hosts</TT
 > z list± adresów i nazw komputerów 
-	    (oraz urz±dzeñ).
-	    <DIV
+		(oraz urz±dzeñ).
+		<DIV
 CLASS="EXAMPLE"
 ><A
 NAME="PARSER-E1"
@@ -930,8 +984,8 @@ CLASS="SCREEN"
 ></P
 ><P
 >Utworzenie listy d³u¿ników jest bardzo proste, zw³aszcza
-	    gdy zastosujemy jedn± z predefiniowanych sta³ych.
-	    <DIV
+		gdy zastosujemy jedn± z predefiniowanych sta³ych.
+		<DIV
 CLASS="EXAMPLE"
 ><A
 NAME="PARSER-E2"
@@ -942,18 +996,24 @@ NAME="PARSER-E2"
 ></P
 ><PRE
 CLASS="SCREEN"
->{for (r=0; r&lt;number(CUSTOMERS); r++)}\
-    {if (CUSTOMERS[r].balance &#60; 0)}\
+>{
+for (r=0; r&lt;number(CUSTOMERS); r++)
+    if (CUSTOMERS[r].balance &#60; 0)
+}\
 {CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
-    {/if}
-{/for}\</PRE
+{
+    /if
+/for}\</PRE
 ></DIV
 ></P
 ><P
 >Kolejny trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
-	    'exec'. Skrypt wysy³a wiadomo¶ci do klientów z bilansem ni¿szym od
-	    zadanego limitu.
-	    <DIV
+		<SAMP
+CLASS="PROMPT"
+>exec</SAMP
+>. Skrypt wysy³a wiadomo¶ci do klientów z bilansem ni¿szym od
+		zadanego limitu.
+		<DIV
 CLASS="EXAMPLE"
 ><A
 NAME="PARSER-E3"
@@ -1018,7 +1078,7 @@ PS. Poni¿ej za³±czamy ostatnie 10 operacji na Pañstwa koncie.
 {/for}</PRE
 ></DIV
 >
-	    </P
+		</P
 ></DIV
 ></DIV
 ><DIV

@@ -187,38 +187,38 @@ HREF="daemon-modules.html#DAEMON-OIDENT"
 HREF="daemon-modules.html#DAEMON-PINGER"
 >Pinger</A
 ></DT
+><DT
+>6.2.15. <A
+HREF="daemon-modules.html#DAEMON-PARSER"
+>Parser</A
+></DT
 ></DL
 ></DD
 ><DT
 >6.3. <A
-HREF="daemon-parser.html"
->Parser</A
+HREF="tscript.html"
+>T-Script</A
 ></DT
 ><DD
 ><DL
 ><DT
 >6.3.1. <A
-HREF="daemon-parser.html#DAEMON-PARSER-INTRO"
+HREF="tscript.html#TSCRIPT-INTRO"
 >Wstêp</A
 ></DT
 ><DT
 >6.3.2. <A
-HREF="daemon-parser.html#DAEMON-PARSER-CONFIG"
->Konfiguracja</A
-></DT
-><DT
->6.3.3. <A
-HREF="daemon-parser.html#DAEMON-PARSER-SYNTAX"
+HREF="tscript.html#TSCRIPT-SYNTAX"
 >Sk³adnia</A
 ></DT
 ><DT
->6.3.4. <A
-HREF="daemon-parser.html#DAEMON-PARSER-EXT"
+>6.3.3. <A
+HREF="tscript.html#EXTENSIONS"
 >Rozszerzenia</A
 ></DT
 ><DT
->6.3.5. <A
-HREF="daemon-parser.html#DAEMON-PARSER-EXAMPLES"
+>6.3.4. <A
+HREF="tscript.html#EXAMPLES"
 >Przyk³adowe skrypty</A
 ></DT
 ></DL
@@ -235,9 +235,9 @@ NAME="DAEMON-INTRO"
 ></H1
 ><P
 >Napisany w jêzyku C program ma u³atwiaæ zarz±dzanie us³ugami. Sam demon odpowiada
-    	za uruchamianie odpowiednich modu³ów na ¿±danie u¿ytkownika. Modu³y
-    	natomiast, s³u¿± do tworzenia plików konfiguracyjnych na podstawie 
-    	danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
+	za uruchamianie odpowiednich modu³ów na ¿±danie u¿ytkownika. Modu³y
+	natomiast, s³u¿± do tworzenia plików konfiguracyjnych na podstawie 
+	danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
 	Spe³niaj± tak¿e inne funkcje np. zbieranie statystyk, badanie aktywno¶ci
 	hostów, naliczanie op³at, powiadamianie o zaleg³o¶ciach.</P
 ><DIV
@@ -256,7 +256,7 @@ CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
 > potrzebuje ju¿ na etapie kompilacji:
-      			<UL
+			<UL
 ><LI
 ><P
 >interfejs u¿ytkownika <SPAN

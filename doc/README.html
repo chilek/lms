@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -277,8 +277,8 @@ HREF="#DAEMON-MODULES"
 ></DT
 ><DT
 >6.3. <A
-HREF="#DAEMON-PARSER"
->Parser</A
+HREF="#TSCRIPT"
+>T-Script</A
 ></DT
 ></DL
 ></DD
@@ -2372,7 +2372,7 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
->UI configuration</P
+>configuration</P
 ></LI
 ><LI
 ><P
@@ -3790,8 +3790,8 @@ NAME="MENU-INVOICES-LIST"
 ></H3
 ><P
 >List of invoices that has been already written out. You're
-able to print (by selecting 'Print' icon) and account ('Account' icon) selected
-invoices.</P
+		able to print (by selecting 'Print' icon) and check as accounted selected
+		invoices.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -4364,8 +4364,10 @@ NAME="MENU-RELOAD"
 ></H2
 ><P
 >Click on 'Reload' and reload request or command should execute.
-What services and how they're updated is configured in
-<SPAN
+	If you did configure hosts, you will see list of hosts for
+	selection to reload configuration on selected hosts.
+	What services and how they're updated is configured in
+	<SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -4378,8 +4380,8 @@ CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
 > daemon. You'll find
-needed information about configuration in appropriate chapters of this
-documentation.</P
+	needed information about configuration in appropriate chapters of this
+	documentation.</P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -5454,6 +5456,53 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 ></P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="CONFIG-HOSTS"
+>3.14.4. Hosts</A
+></H3
+><P
+>This section defines host names of those machines 
+	    (routers, servers) that read its configuration from LMS database 
+	    and where scripts or <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lmsd</I
+></SPAN
+> daemon will be 
+	    setup. </P
+><P
+>Each host name should be unique and it's recommended to 
+	    be machine's real name, which could be obtained by running 
+	    <SAMP
+CLASS="PROMPT"
+>hostname</SAMP
+> command on each of them 
+	    (assuming they're all u*ix hosts).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="CONFIG-DAEMON"
+>3.14.5. Daemon</A
+></H3
+><P
+>When you create hosts list, you will be able to configure
+	    daemon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lmsd</I
+></SPAN
+>. Daemon configuration is described
+	    in appropriate chapter.</P
 ></DIV
 ></DIV
 ></DIV
@@ -9204,6 +9253,15 @@ HREF="#DAEMON-SYSTEM"
 ><TR
 ><TD
 ><A
+HREF="#DAEMON-PARSER"
+>parser</A
+></TD
+><TD
+>Universal T-Script scripts parser</TD
+></TR
+><TR
+><TD
+><A
 HREF="#DAEMON-DHCP"
 >dhcp</A
 ></TD
@@ -11088,60 +11146,64 @@ CLASS="PROMPT"
 ></UL
 ></DIV
 ></DIV
-></DIV
 ><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
 ><A
 NAME="DAEMON-PARSER"
->6.3. Parser</A
-></H2
+>6.2.15. Parser</A
+></H3
 ><DIV
-CLASS="SECT2"
-><H3
-CLASS="SECT2"
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
 ><A
 NAME="DAEMON-PARSER-INTRO"
->6.3.1. Introduction</A
-></H3
+>6.2.15.1. Introduction</A
+></H4
 ><P
 >Parser module is based on a scripting language
-	    <A
-HREF="http://silvercoders.com/wiki/index.php?title=T-Script"
+		<A
+HREF="http://silvercoders.com/index.php?page=T_Script"
 TARGET="_top"
 >T-Script</A
 > which 
-	    primary purpose is to generate text files. It can be useful for processing
-	    templates with some additional data retrieved from data sources 
-	    like SQL databases or text files. In lmsd's module contents of scripts
-	    are stored in database, so they can be edited via <SPAN
+		primary purpose is to generate text files. It can be useful for processing
+		templates with some additional data retrieved from data sources 
+		like SQL databases or text files. In lmsd's module contents of scripts
+		are stored in database, so they can be edited via <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 >.
-	    In the future parser should replace almost all lmsd modules.</P
+		In the future parser should replace almost all lmsd modules.</P
+><P
+>T-Script language is described in section <A
+HREF="#TSCRIPT"
+>T-Script</A
+>.</P
 ><P
 >Before compilation ensure that you have in your system packages
-	    <TT
+		<TT
 CLASS="FILENAME"
 >bison</TT
 > (at least 1.875 version) and <TT
 CLASS="FILENAME"
 >flex</TT
 >.
-	    </P
+		</P
 ></DIV
 ><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
 ><A
 NAME="DAEMON-PARSER-CONFIG"
->6.3.2. Configuration</A
-></H3
+>6.2.15.2. Configuration</A
+></H4
 ><P
 >Parser has following options:</P
 ><UL
@@ -11180,13 +11242,52 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ></DIV
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="TSCRIPT"
+>6.3. T-Script</A
+></H2
+><DIV
+CLASS="SECT2"
+><H3
+CLASS="SECT2"
+><A
+NAME="TSCRIPT-INTRO"
+>6.3.1. Introduction</A
+></H3
+><P
+>Parser module is based on a scripting language
+	    <A
+HREF="http://silvercoders.com/index.php?page=T_Script"
+TARGET="_top"
+>T-Script</A
+> which 
+	    primary purpose is to generate text files. It can be useful for processing
+	    templates with some additional data retrieved from data sources 
+	    like SQL databases or text files.</P
+><P
+>Before compilation ensure that you have in your system packages
+	    <TT
+CLASS="FILENAME"
+>bison</TT
+> (at least 1.875 version) and <TT
+CLASS="FILENAME"
+>flex</TT
+>.
+	    </P
+></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="DAEMON-PARSER-SYNTAX"
->6.3.3. Syntax</A
+NAME="TSCRIPT-SYNTAX"
+>6.3.2. Syntax</A
 ></H3
 ><P
 >T-Script language syntax is based on other popular languages like C 
@@ -11195,150 +11296,157 @@ NAME="DAEMON-PARSER-SYNTAX"
 	    outside curly brackets will be writed to output file (or ommited if file 
 	    was not specified). All expressions, variables, commands, function names are
 	    case-sensitive.</P
-><P
->Supported expressions:
-	    <UL
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="EXPR"
+>6.3.2.1. Expressions and operators</A
+></H4
+><UL
 ><LI
 ><P
 >Literal inside quotes.</P
 ><P
-><PRE
-CLASS="SCREEN"
->"some literal"</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>"some literal"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Number.</P
 ><P
-><PRE
-CLASS="SCREEN"
->1234</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>1234</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Value of variable "var".</P
 ><P
-><PRE
-CLASS="SCREEN"
->var</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>var</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >N-th element of array "var".</P
 ><P
-><PRE
-CLASS="SCREEN"
->var[n]</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>var[n]</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Subvariable "n" of variable "var".</P
 ><P
-><PRE
-CLASS="SCREEN"
->var.n</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>var.n</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Value of expression inside parenthesis.</P
 ><P
-><PRE
-CLASS="SCREEN"
->( &lt;expression&gt; )</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>( &lt;expression&gt; )</SAMP
 ></P
 ></LI
 ><LI
 ><P
->1 if value of expression is false, otherwise 0.</P
+>Logical negation. 1 if value of expression is false, otherwise 0.</P
 ><P
-><PRE
-CLASS="SCREEN"
->! &lt;expression&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>! &lt;expression&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Evaluates to 1 if expression1 value equals expression2 
+>Comparision (equal). Evaluates to 1 if expression1 value equals expression2 
 		    value or 0 if not.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;expression1&gt; == &lt;expression2&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; == &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Evaluates to 1 if expression1 value doesn't equal 
+>Comparision (not equal). Evaluates to 1 if expression1 value doesn't equal 
 		    expression2 value or 0 if it does.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;expression1&gt; != &lt;expression2&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; != &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Evaluates to 1 if expression1 value is less than 
+>Comaprision (greater than). Evaluates to 1 if expression1 value is less than 
 		    expression2 value.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;expression1&gt; &lt; &lt;expression2&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; &lt; &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Evaluates to 1 if expression1 value is greater than 
+>Comparision (less than). Evaluates to 1 if expression1 value is greater than 
 		    expression2 value.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;expression1&gt; &gt; &lt;expression2&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; &gt; &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Evaluates to 1 if expression1 value or expression2 value 
+>Logical OR. Evaluates to 1 if expression1 value or expression2 value 
 		    are true.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;expression1&gt; || &lt;expression2&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; || &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Evaluates to 1 if expression1 value and expression2 value 
+>Logical AND. Evaluates to 1 if expression1 value and expression2 value 
 		    are true.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;expression1&gt; &#38;&#38; &lt;expression2&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; &#38;&#38; &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->When both expression values have numeric type evaluates 
-		    to result of arithmetic operation. In other situation treats 
-		    expressions as strings and performs string concatenation.</P
+>Strings concatenation. When both expression values haven't numeric type 
+			treats expressions as strings and performs string concatenation.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;expression1&gt; + &lt;expression2&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; + &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Evaluates to result of arithmetic operation on two expression values.</P
+>Arithmetic operators. Evaluates to result of arithmetic operation on two expression values.</P
 ><P
-><PRE
+>Example: 
+<PRE
 CLASS="SCREEN"
->&lt;expression1&gt; - &lt;expression2&gt;
+>&lt;expression1&gt; + &lt;expression2&gt;
+&lt;expression1&gt; - &lt;expression2&gt;
 &lt;expression1&gt; * &lt;expression2&gt;
 &lt;expression1&gt; / &lt;expression2&gt;
 &lt;expression1&gt; % &lt;expression2&gt;</PRE
@@ -11346,53 +11454,64 @@ CLASS="SCREEN"
 ></LI
 ><LI
 ><P
->Evaluates to 1 if expression1 value match with regular expression2, else
+>String comparision with regular expression. Evaluates to 1 if expression1 value match with regular expression2, else
 		    0.</P
 ><P
-><PRE
-CLASS="SCREEN"
->&lt;expression1&gt; =~ &lt;expression2&gt;</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; =~ &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ></UL
->
-	    </P
-><P
->Comments:
-	    <UL
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="COMMENTS"
+>6.3.2.2. Comments</A
+></H4
+><UL
 ><LI
 ><P
 >C-style comment.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{/* this is a comment - it can be also multiline */}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>/* this is a comment - it can be also multiline */</SAMP
 ></P
 ></LI
 ></UL
->
-	    </P
-><P
->Basic commands:
-	    <UL
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="COMMANDS"
+>6.3.2.3. Commands</A
+></H4
+><UL
 ><LI
 ><P
->Assigns expression value to specified variable.</P
+>Assignment. Assigns expression value to specified variable.</P
 ><P
->		    <PRE
-CLASS="SCREEN"
->{&lt;variable_name&gt; = &lt;expression&gt;}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;variable_name&gt; = &lt;expression&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Executes command only if expression is true. Second form executes 
+>Conditional statement. Executes command only if expression is true. Second form executes 
 		    command1 if expression is true or command2 if expression is false.</P
 ><P
-><PRE
+>Example:
+<PRE
 CLASS="SCREEN"
->{if ( &lt;expression&gt; }) &lt;command&gt; {/if}
-{if ( &lt;expression&gt; }) &lt;commands1&gt; {else} &lt;commands2&gt; {/if}</PRE
+>if ( &lt;expression&gt; ) &lt;command&gt; /if
+if ( &lt;expression&gt; ) &lt;commands1&gt; else &lt;commands2&gt; /if</PRE
 ></P
 ><P
 >Text between command blocks is treated as a command so the following example is correct:
@@ -11419,58 +11538,93 @@ a doesn't equal 1
 ></LI
 ><LI
 ><P
->Executes first command1 as loop initialization command. Then executes 
+>Iterative loop. Executes first command1 as loop initialization command. Then executes 
 		    commands and command2 while expression is true.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; )} &lt;commands&gt; {/for}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt; /for</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Redirects script output to file. Data will be appended to file.</P
+>Script output redirection. Redirects script output to file. Data will be appended to file.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{file &lt;file_name&gt;} &lt;commands&gt; {/file}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>{file &lt;file_name&gt;} &lt;commands&gt; {/file}</SAMP
 ></P
 ></LI
 ></UL
->
-	    </P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="FUNCTIONS"
+>6.3.2.4. Functions</A
+></H4
 ><P
->Basic functions:
+>Functions have two calling forms: with brackets
+		(<SAMP
+CLASS="PROMPT"
+>{function(var)}</SAMP
+>) and without brackets
+		(<SAMP
+CLASS="PROMPT"
+>{function {var}}</SAMP
+>).
 	    <UL
 ><LI
 ><P
 >Converts numeric variable to string value.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{string(&lt;variable_name&gt;)}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>string(&lt;variable_name&gt;)</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Converts string variable to numeric value. For arrays returns number of items in array.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{number(&lt;variable_name&gt;)}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>number(&lt;variable_name&gt;)</SAMP
+></P
+></LI
+><LI
+><P
+>Type checking. Returns type name of variable, e.g. string, number, array.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>typeof(&lt;variable_name&gt;)</SAMP
 ></P
 ></LI
 ></UL
 >
-	    </P
+		In script above functions can be used like that:
+<PRE
+CLASS="SCREEN"
+>{x = 5}x = {x}
+{var = "3"}var = {var}
+x + var = {x + var}
+x + var = {number(var) + x}
+x + var = {string(x) + var}
+x is type of {typeof(x)}
+var is type of {typeof(var)}</PRE
+></P
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="DAEMON-PARSER-EXT"
->6.3.4. Extensions</A
+NAME="EXTENSIONS"
+>6.3.3. Extensions</A
 ></H3
 ><P
 >Extensions are <SPAN
@@ -11480,74 +11634,31 @@ CLASS="EMPHASIS"
 >tscript</I
 ></SPAN
 > library supplements. 
-		That are functions and constants, wich can be used in scripts. Below
-		are described extensions implemented in <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->lmsd</I
-></SPAN
->.
-		<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Note"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Functions have two calling forms: with brackets
-		(<SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->{function(var)}</I
-></SPAN
->) and without brackets
-		(<SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->{function {var}}</I
-></SPAN
->).</P
-></TD
-></TR
-></TABLE
-></DIV
->
-		</P
+		That are functions and predefined variables (constants), wich can be used 
+		in scripts.</P
 ><DIV
 CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
 NAME="EXEC"
->6.3.4.1. Exec</A
+>6.3.3.1. Exec</A
 ></H4
 ><P
->Shell commands execution is possible with exec(). 
-		You can run many commands separated by semicolons in one function 
-		call.</P
+>Shell commands execution is possible with <SAMP
+CLASS="PROMPT"
+>exec()</SAMP
+>. 
+		    You can run many commands separated by semicolons in one function 
+		    call.</P
 ><UL
 ><LI
 ><P
 >Shell commands execution.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{exec &lt;command&gt;}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>exec &lt;command&gt;</SAMP
 ></P
 ></LI
 ></UL
@@ -11558,19 +11669,178 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="STRING"
->6.3.4.2. String</A
+>6.3.3.2. String</A
 ></H4
 ><P
->'String' consists basic functions for strings operations.</P
+><SAMP
+CLASS="PROMPT"
+>String</SAMP
+> consists basic functions for strings operations.</P
 ><UL
 ><LI
 ><P
 >Deleting of whitespace signs from the beginning and the end 
-			of string.</P
+			    of string.</P
 ><P
-><PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>trim &lt;string&gt;</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="TIME"
+>6.3.3.3. Time</A
+></H4
+><P
+>Extension with name <SAMP
+CLASS="PROMPT"
+>Time</SAMP
+> consist functions for date
+			and time operations.</P
+><UL
+><LI
+><P
+>Returns current date and time formated according to
+					the format specification. Default format is %Y/%m/%d. 
+					Conversion specifiers are introduced by a '%' character 
+					You can read about all of them in <SAMP
+CLASS="PROMPT"
+>`man 
+					strftime`</SAMP
+>.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>date("%s")</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="FILE"
+>6.3.3.4. File</A
+></H4
+><P
+>This extension is destined for basic file operations.
+				<UL
+><LI
+><P
+>File deletion.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>deletefile("/tmp/file.txt")</SAMP
+></P
+></LI
+><LI
+><P
+>Creates array where every element is separated
+						line of file.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>readfile("/tmp/file.txt")</SAMP
+></P
+></LI
+><LI
+><P
+>Returns file contents.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>getfile("/tmp/file.txt")</SAMP
+></P
+></LI
+><LI
+><P
+>Returns list of files (and subdirectories) 
+						in array. Every element contains subvariable 'size'
+						with file size in bytes.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>listdir("/home/alec")</SAMP
+></P
+></LI
+></UL
+>
+				Listing below presents example script with use of all file functions.
+<PRE
 CLASS="SCREEN"
->{trim &lt;string&gt;}</PRE
+>{list = listdir("/home/alec/lms/doc")}
+{for (x = 0; x &lt; number(list); x++) }\
+{list[x]}--{list[x].size}
+{/for}\
+{file "/home/alec/file.txt"}
+Line 1
+Line 2
+{/file}\
+{f = readfile /home/alec/file.txt}\
+{for (i = 0; i &lt; number(f); i++) }\
+line {i}: {f[i]}\
+{/for}\
+{f = getfile /home/alec/file.txt}\
+{f}
+{deletefile /home/alec/file.txt}\</PRE
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="NET"
+>6.3.3.5. Net</A
+></H4
+><P
+>In this extension are included two functions (with lowercase names)
+				destined to IP addresses and subnet masks operations.</P
+><UL
+><LI
+><P
+>Returns number of bits in subnet mask.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>mask2prefix(&lt;mask&gt;)</SAMP
+></P
+></LI
+><LI
+><P
+>Changes octal IP address to long number.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>ip2long(&lt;address&gt;)</SAMP
+></P
+></LI
+><LI
+><P
+>Changes long number to IP address octal format (xxx.xxx.xxx.xxx).</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>long2ip(&lt;number&gt;)</SAMP
+></P
+></LI
+><LI
+><P
+>Calculates broadcast address from specified IP address and
+						mask (any mask format).</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>broadcast(&lt;address/mask&gt;)</SAMP
 ></P
 ></LI
 ></UL
@@ -11581,17 +11851,18 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="SQL"
->6.3.4.3. SQL</A
+>6.3.3.6. SQL</A
 ></H4
 ><P
 >SQL extension implements functions for database operations.
-		Allows to run SQL commands.</P
+		    Allows to run SQL commands.</P
 ><UL
 ><LI
 ><P
 >SQL commands</P
 ><P
-><PRE
+>Example:
+<PRE
 CLASS="SCREEN"
 >{SELECT &lt;the_rest_of_query&gt;}
 {INSERT &lt;the_rest_of_query&gt;}
@@ -11605,38 +11876,29 @@ CLASS="SCREEN"
 ><P
 >Returns SQL result rows count. Use it for non-select commands.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{rows(&lt;sql&gt;)}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>rows(&lt;sql&gt;)</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >Escapes a string for use within an SQL commands.</P
 ><P
-><PRE
-CLASS="SCREEN"
->{escape(&lt;string&gt;)}</PRE
+>Example: <SAMP
+CLASS="PROMPT"
+>escape(&lt;string&gt;)</SAMP
 ></P
 ></LI
 ></UL
-></DIV
-><DIV
-CLASS="SECT3"
-><HR><H4
-CLASS="SECT3"
-><A
-NAME="CONSTS"
->6.3.4.4. Consts</A
-></H4
 ><P
 >Extension closely connected with LMS. Makes possible to
-		create scripts without of LMS's database structure knowledge.
-		Contains predefined constants, which consists data from database.
-		Query defined in program is executed when constant is used first
-		time. Constants names are uppercase. Each constant is an array
-		with rows indexed starting from zero, and each row consist
-		subvariables accessible by name (lowercase).</P
+		    create scripts without of LMS's database structure knowledge.
+		    Contains predefined constants, which consists data from database.
+		    Query defined in program is executed when constant is used first
+		    time. Constants names are uppercase. Each constant is an array
+		    with rows indexed starting from zero, and each row consist
+		    subvariables accessible by name (lowercase).</P
 ><UL
 ><LI
 ><P
@@ -11849,58 +12111,7 @@ BORDER="0"
 ></TBODY
 ></TABLE
 >
-			</P
-></LI
-></UL
-></DIV
-><DIV
-CLASS="SECT3"
-><HR><H4
-CLASS="SECT3"
-><A
-NAME="NET"
->6.3.4.5. Net</A
-></H4
-><P
->In this extension are included two functions (with lowercase names)
-		destined to IP addresses and subnet masks operations.</P
-><UL
-><LI
-><P
->Returns number of bits in subnet mask.</P
-><P
-><PRE
-CLASS="SCREEN"
->mask2prefix(&lt;mask&gt;)</PRE
-></P
-></LI
-><LI
-><P
->Change octal IP address to long number.</P
-><P
-><PRE
-CLASS="SCREEN"
->ip2long(&lt;address&gt;)</PRE
-></P
-></LI
-><LI
-><P
->Change long number to IP address octal format (xxx.xxx.xxx.xxx).</P
-><P
-><PRE
-CLASS="SCREEN"
->long2ip(&lt;number&gt;)</PRE
-></P
-></LI
-><LI
-><P
->Calculate broadcast address from specified IP address and
-			mask (any mask format).</P
-><P
-><PRE
-CLASS="SCREEN"
->broadcast(&lt;address/mask&gt;)</PRE
-></P
+			    </P
 ></LI
 ></UL
 ></DIV
@@ -11910,8 +12121,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="DAEMON-PARSER-EXAMPLES"
->6.3.5. Example Scripts</A
+NAME="EXAMPLES"
+>6.3.4. Example Scripts</A
 ></H3
 ><P
 >Let's begin from simple script creating file <TT
@@ -11951,11 +12162,15 @@ NAME="PARSER-E2"
 ></P
 ><PRE
 CLASS="SCREEN"
->{for (r=0; r&lt;number(CUSTOMERS); r++)}\
-    {if (CUSTOMERS[r].balance &#60; 0)}\
+>{
+for (r=0; r&lt;number(CUSTOMERS); r++)
+    if (CUSTOMERS[r].balance &#60; 0)
+}\
 {CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
-    {/if}\
-{/for}\</PRE
+{
+    /if
+/for
+}\</PRE
 ></DIV
 >
 	    </P
@@ -12106,6 +12321,12 @@ ALIGN="CENTER"><THEAD
 >doc</TD
 ><TD
 >LMS Documentation</TD
+></TR
+><TR
+><TD
+>documents</TD
+><TD
+>Documents archive</TD
 ></TR
 ><TR
 ><TD
@@ -12668,10 +12889,6 @@ BORDER="0"
 ><TD
 >comment - description of operation</TD
 ></TR
-><TR
-><TD
->reference - identifier of refered record</TD
-></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -13025,6 +13242,10 @@ BORDER="0"
 ><TR
 ><TD
 >city - location of customer</TD
+></TR
+><TR
+><TD
+>closed - is document (invoice) closed (accounted)? (0/1)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -13692,8 +13913,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="DAEMONHOSTS"
->7.2.34. Daemon configuration - hosts ('daemonhosts')</A
+NAME="HOSTS"
+>7.2.34. Hosts ('hosts')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -13868,7 +14089,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="COMMENTS"
+NAME="INI-COMMENTS"
 >7.3.1. Comments</A
 ></H3
 ><P
@@ -13881,7 +14102,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="PARAMS"
+NAME="INI-PARAMS"
 >7.3.2. Sections, variables, values</A
 ></H3
 ><P
@@ -13922,7 +14143,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="PERL"
+NAME="INI-PERL"
 >7.3.3. Perl scripts variables</A
 ></H3
 ><P
