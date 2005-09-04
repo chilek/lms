@@ -3,11 +3,10 @@
 <title>T-Script</title>
 	<sect2 id="tscript-intro">
 	<title>Introduction</title>
-	    <para>Parser module is based on a scripting language
-	    <ulink url="http://silvercoders.com/index.php?page=T_Script">T-Script</ulink> which 
-	    primary purpose is to generate text files. It can be useful for processing
-	    templates with some additional data retrieved from data sources 
-	    like SQL databases or text files.</para>
+	    <para><ulink url="http://silvercoders.com/index.php?page=T_Script">T-Script</ulink> 
+	    is a scripting language which primary purpose is to generate text files. It can be 
+	    useful for processing templates with some additional data retrieved from data 
+	    sources like SQL databases or text files.</para>
 	    <para>Before compilation ensure that you have in your system packages
 	    <filename>bison</filename> (at least 1.875 version) and <filename>flex</filename>.
 	    </para>
