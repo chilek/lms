@@ -60,7 +60,7 @@ LMS Developers
 
         6.1. Basics
         6.2. Modules
-        6.3. Parser
+        6.3. T-Script
 
    7. For curious
 
@@ -738,7 +738,7 @@ database = /usr/local/lms/lms.db
      * Helpdesk (RT) administration
      * Helpdesk (RT) operation
      * accounts management
-     * UI configuration
+     * configuration
      * networks and devices management
      * timetable management
      * daemon management and configuration
@@ -1338,8 +1338,8 @@ Chapter 3. User Interface (LMS-UI)
 3.7.7. Invoices list
 
    List  of  invoices  that  has been already written out. You're able to
-   print  (by  selecting  'Print'  icon)  and  account  ('Account'  icon)
-   selected invoices.
+   print  (by  selecting  'Print'  icon)  and check as accounted selected
+   invoices.
      _________________________________________________________________
 
 3.7.8. New Invoice
@@ -1641,10 +1641,12 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
 3.10. Reload
 
-   Click  on  'Reload' and reload request or command should execute. What
-   services  and  how  they're  updated  is configured in LMS-MGC or lmsd
-   daemon.   You'll   find  needed  information  about  configuration  in
-   appropriate chapters of this documentation.
+   Click on 'Reload' and reload request or command should execute. If you
+   did  configure  hosts,  you  will  see  list of hosts for selection to
+   reload  configuration on selected hosts. What services and how they're
+   updated  is  configured  in LMS-MGC or lmsd daemon. You'll find needed
+   information  about  configuration  in  appropriate  chapters  of  this
+   documentation.
      _________________________________________________________________
 
 3.11. Stats
@@ -2074,6 +2076,23 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
    If you have no numbering plans defined, each document will take
    default number as of '%N/LMS/%Y' with annual time span.
+     _________________________________________________________________
+
+3.14.4. Hosts
+
+   This  section  defines host names of those machines (routers, servers)
+   that  read  its  configuration  from LMS database and where scripts or
+   lmsd daemon will be setup.
+
+   Each  host  name should be unique and it's recommended to be machine's
+   real name, which could be obtained by running hostname command on each
+   of them (assuming they're all u*ix hosts).
+     _________________________________________________________________
+
+3.14.5. Daemon
+
+   When you create hosts list, you will be able to configure daemon lmsd.
+   Daemon configuration is described in appropriate chapter.
      _________________________________________________________________
 
 Chapter 4. Scripts
@@ -3383,6 +3402,7 @@ Chapter 6. LMS Daemon
    Table 6-1. List of all lmsd modules
      Name                           Description
     system                   Shell commands execution
+    parser               Universal T-Script scripts parser
      dhcp                  Configuration of DHCP server
     cutoff                Disconnection of indebted users
      dns                    Configuration of DNS server
@@ -4094,9 +4114,9 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        Example: networks = 'lan1 lan2'
      _________________________________________________________________
 
-6.3. Parser
+6.2.15. Parser
 
-6.3.1. Introduction
+6.2.15.1. Introduction
 
    Parser  module is based on a scripting language T-Script which primary
    purpose  is  to  generate  text files. It can be useful for processing
@@ -4105,11 +4125,13 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
    stored  in  database,  so they can be edited via LMS-UI. In the future
    parser should replace almost all lmsd modules.
 
+   T-Script language is described in section T-Script.
+
    Before  compilation ensure that you have in your system packages bison
    (at least 1.875 version) and flex.
      _________________________________________________________________
 
-6.3.2. Configuration
+6.2.15.2. Configuration
 
    Parser has following options:
      * script
@@ -4123,7 +4145,20 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        Example: command = "sh /tmp/parser.out"
      _________________________________________________________________
 
-6.3.3. Syntax
+6.3. T-Script
+
+6.3.1. Introduction
+
+   T-Script  is a scripting language which primary purpose is to generate
+   text  files.  It  can  be  useful  for  processing templates with some
+   additional data retrieved from data sources like SQL databases or text
+   files.
+
+   Before  compilation ensure that you have in your system packages bison
+   (at least 1.875 version) and flex.
+     _________________________________________________________________
+
+6.3.2. Syntax
 
    T-Script language syntax is based on other popular languages like C or
    JavaScript  with  little  changes  made  to  make  writting  templates
@@ -4131,64 +4166,76 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
    Data  outside curly brackets will be writed to output file (or ommited
    if  file  was  not  specified).  All expressions, variables, commands,
    function names are case-sensitive.
+     _________________________________________________________________
 
-   Supported expressions:
+6.3.2.1. Expressions and operators
+
      * Literal inside quotes.
-"some literal"
+       Example: "some literal"
      * Number.
-1234
+       Example: 1234
      * Value of variable "var".
-var
+       Example: var
      * N-th element of array "var".
-var[n]
+       Example: var[n]
      * Subvariable "n" of variable "var".
-var.n
+       Example: var.n
      * Value of expression inside parenthesis.
-( <expression> )
-     * 1 if value of expression is false, otherwise 0.
-! <expression>
-     * Evaluates  to 1 if expression1 value equals expression2 value or 0
-       if not.
+       Example: ( <expression> )
+     * Null  keyword.  Prescribe  not  defined value. Useful for checking
+       that some value was or wasn't defined.
+       Example: <variable> = null
+     * Comparisions. Returns logical result of expressions comparision.
+       Example:
 <expression1> == <expression2>
-     * Evaluates  to  1  if  expression1  value doesn't equal expression2
-       value or 0 if it does.
 <expression1> != <expression2>
-     * Evaluates  to  1  if  expression1  value  is less than expression2
-       value.
 <expression1> < <expression2>
-     * Evaluates  to  1  if expression1 value is greater than expression2
-       value.
 <expression1> > <expression2>
-     * Evaluates to 1 if expression1 value or expression2 value are true.
-<expression1> || <expression2>
-     * Evaluates  to  1  if  expression1  value and expression2 value are
-       true.
-<expression1> && <expression2>
-     * When  both expression values have numeric type evaluates to result
-       of  arithmetic operation. In other situation treats expressions as
-       strings and performs string concatenation.
+<expression1> <= <expression2>
+<expression1> >= <expression2>
+     * Binary operators. Sum and product.
+       Example: <expression1> | <expression2>
+       Example: <expression1> & <expression2>
+     * Logical operators.
+       Example: <expression1> || <expression2>
+       Example: <expression1> && <expression2>
+       Example: ! <expression>
+     * Strings concatenation. When both expression values haven't numeric
+       type   treats   expressions   as   strings   and  performs  string
+       concatenation.
+       Example: <expression1> + <expression2>
+     * Arithmetic  operators. Evaluates to result of arithmetic operation
+       on two expression values.
+       Example:
 <expression1> + <expression2>
-     * Evaluates  to  result  of  arithmetic  operation on two expression
-       values.
 <expression1> - <expression2>
 <expression1> * <expression2>
 <expression1> / <expression2>
 <expression1> % <expression2>
-     * Evaluates   to   1   if   expression1  value  match  with  regular
-       expression2, else 0.
-<expression1> =~ <expression2>
+     * Single-argument incremental/decremental operators.
+       Example: <expression>++
+       Example: <expression>--
+     * String  comparision  with  regular  expression.  Evaluates to 1 if
+       expression1 value match with regular expression2, else 0.
+       Example: <expression1> =~ <expression2>
+     _________________________________________________________________
 
-   Comments:
+6.3.2.2. Comments
+
      * C-style comment.
-{/* this is a comment - it can be also multiline */}
+       Example: /* this is a comment - it can be also multiline */
+     _________________________________________________________________
 
-   Basic commands:
-     * Assigns expression value to specified variable.
-{<variable_name> = <expression>}
-     * Executes  command only if expression is true. Second form executes
-       command1 if expression is true or command2 if expression is false.
-{if ( <expression> }) <command> {/if}
-{if ( <expression> }) <commands1> {else} <commands2> {/if}
+6.3.2.3. Commands
+
+     * Assignment. Assigns expression value to specified variable.
+       Example: <variable_name> = <expression>
+     * Conditional  statement.  Executes  command  only  if expression is
+       true.  Second  form  executes  command1  if  expression is true or
+       command2 if expression is false.
+       Example:
+if ( <expression> ) <command> /if
+if ( <expression> ) <commands1> else <commands2> /if
        Text  between  command  blocks  is  treated  as  a  command so the
        following example is correct:
 Some text
@@ -4205,52 +4252,124 @@ a equals 1
 {else}\
 a doesn't equal 1
 {/if}\
-     * Executes  first  command1  as  loop  initialization  command. Then
-       executes commands and command2 while expression is true.
-{for ( <command1> ; <expression> ; <command2> )} <commands> {/for}
-     * Redirects script output to file. Data will be appended to file.
-{file <file_name>} <commands> {/file}
+     * Iterative  loop.  Executes  first  command1 as loop initialization
+       command.  Then  executes commands and command2 while expression is
+       true.
+       Example: for ( <command1> ; <expression> ; <command2> ) <commands>
+       /for
+     * Script  output  redirection. Redirects script output to file. Data
+       will be appended to file.
+       Example: {file <file_name>} <commands> {/file}
+     _________________________________________________________________
 
-   Basic functions:
+6.3.2.4. Functions
+
+   Functions  have two calling forms: with brackets ({function(var)}) and
+   without brackets ({function {var}}).
      * Converts numeric variable to string value.
-{string(<variable_name>)}
+       Example: string(<variable_name>)
      * Converts  string  variable  to  numeric  value. For arrays returns
        number of items in array.
-{number(<variable_name>)}
+       Example: number(<variable_name>)
+     * Type checking. Returns type name of variable, e.g. string, number,
+       array, null.
+       Example: typeof(<variable_name>)
+
+   In script above functions can be used like that:
+{x = 5}x = {x}
+{var = "3"}var = {var}
+x + var = {x + var}
+x + var = {number(var) + x}
+x + var = {string(x) + var}
+x is type of {typeof(x)}
+var is type of {typeof(var)}
      _________________________________________________________________
 
-6.3.4. Extensions
+6.3.3. Extensions
 
    Extensions  are  tscript  library  supplements. That are functions and
-   constants, wich can be used in scripts. Below are described extensions
-   implemented in lmsd.
-   Note
-
-   Functions have two calling forms: with brackets ({function(var)}) and
-   without brackets ({function {var}}).
+   predefined variables (constants), wich can be used in scripts.
      _________________________________________________________________
 
-6.3.4.1. Exec
+6.3.3.1. Exec
 
    Shell  commands  execution  is  possible with exec(). You can run many
    commands separated by semicolons in one function call.
      * Shell commands execution.
-{exec <command>}
+       Example: exec <command>
      _________________________________________________________________
 
-6.3.4.2. String
+6.3.3.2. String
 
-   'String' consists basic functions for strings operations.
+   String consists basic functions for strings operations.
      * Deleting  of  whitespace  signs  from the beginning and the end of
        string.
-{trim <string>}
+       Example: trim <string>
      _________________________________________________________________
 
-6.3.4.3. SQL
+6.3.3.3. Time
+
+   Extension   with  name  Time  consist  functions  for  date  and  time
+   operations.
+     * Returns  current  date  and  time formated according to the format
+       specification.  Default  format is %Y/%m/%d. Conversion specifiers
+       are  introduced  by a '%' character You can read about all of them
+       in `man strftime`.
+       Example: date("%s")
+     _________________________________________________________________
+
+6.3.3.4. File
+
+   This extension is destined for basic file operations.
+     * File deletion.
+       Example: deletefile("/tmp/file.txt")
+     * Creates array where every element is separated line of file.
+       Example: readfile("/tmp/file.txt")
+     * Returns file contents.
+       Example: getfile("/tmp/file.txt")
+     * Returns list of files (and subdirectories) in array. Every element
+       contains subvariable 'size' with file size in bytes.
+       Example: listdir("/home/alec")
+
+   Listing below presents example script with use of all file functions.
+{list = listdir("/home/alec/lms/doc")}
+{for (x = 0; x < number(list); x++) }\
+{list[x]}--{list[x].size}
+{/for}\
+{file "/home/alec/file.txt"}
+Line 1
+Line 2
+{/file}\
+{f = readfile /home/alec/file.txt}\
+{for (i = 0; i < number(f); i++) }\
+line {i}: {f[i]}\
+{/for}\
+{f = getfile /home/alec/file.txt}\
+{f}
+{deletefile /home/alec/file.txt}\
+     _________________________________________________________________
+
+6.3.3.5. Net
+
+   In  this  extension  are included two functions (with lowercase names)
+   destined to IP addresses and subnet masks operations.
+     * Returns number of bits in subnet mask.
+       Example: mask2prefix(<mask>)
+     * Changes octal IP address to long number.
+       Example: ip2long(<address>)
+     * Changes long number to IP address octal format (xxx.xxx.xxx.xxx).
+       Example: long2ip(<number>)
+     * Calculates  broadcast  address  from specified IP address and mask
+       (any mask format).
+       Example: broadcast(<address/mask>)
+     _________________________________________________________________
+
+6.3.3.6. SQL
 
    SQL  extension implements functions for database operations. Allows to
    run SQL commands.
      * SQL commands
+       Example:
 {SELECT <the_rest_of_query>}
 {INSERT <the_rest_of_query>}
 {DELETE <the_rest_of_query>}
@@ -4258,12 +4377,9 @@ a doesn't equal 1
 {CREATE <the_rest_of_query>}
 {DROP <the_rest_of_query>}
      * Returns SQL result rows count. Use it for non-select commands.
-{rows(<sql>)}
+       Example: rows(<sql>)
      * Escapes a string for use within an SQL commands.
-{escape(<string>)}
-     _________________________________________________________________
-
-6.3.4.4. Consts
+       Example: escape(<string>)
 
    Extension closely connected with LMS. Makes possible to create scripts
    without  of  LMS's  database  structure knowledge. Contains predefined
@@ -4325,22 +4441,7 @@ a doesn't equal 1
        dhcpend - end of DHCP range
      _________________________________________________________________
 
-6.3.4.5. Net
-
-   In  this  extension  are included two functions (with lowercase names)
-   destined to IP addresses and subnet masks operations.
-     * Returns number of bits in subnet mask.
-mask2prefix(<mask>)
-     * Change octal IP address to long number.
-ip2long(<address>)
-     * Change long number to IP address octal format (xxx.xxx.xxx.xxx).
-long2ip(<number>)
-     * Calculate  broadcast  address  from  specified IP address and mask
-       (any mask format).
-broadcast(<address/mask>)
-     _________________________________________________________________
-
-6.3.5. Example Scripts
+6.3.4. Example Scripts
 
    Let's  begin  from simple script creating file /etc/hosts with list of
    computers (and devices) IPs and names list.
@@ -4356,11 +4457,15 @@ broadcast(<address/mask>)
    constants.
 
    Example 6-2. Parser: Debtors list
-{for (r=0; r<number(CUSTOMERS); r++)}\
-    {if (CUSTOMERS[r].balance < 0)}\
+{
+for (r=0; r<number(CUSTOMERS); r++)
+    if (CUSTOMERS[r].balance < 0)
+}\
 {CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
-    {/if}\
-{/for}\
+{
+    /if
+/for
+}\
 
    Next  example  is  longer. Here we are using especially 'exec'. Script
    sends e-mails to customers with balance less than specified limit.
@@ -4432,6 +4537,7 @@ Chapter 7. For curious
      daemon              A.L.E.C's LMS Daemon
       devel    Developers' scripts to build LMS package
        doc                LMS Documentation
+    documents             Documents archive
        img              User Interface Images
        lib         Set of LMS and Smarty libraries
      modules            User Interface Modules
@@ -4573,7 +4679,6 @@ Chapter 7. For curious
    operation
    itemid - document item identifier
    comment - description of operation
-   reference - identifier of refered record
      _________________________________________________________________
 
 7.2.10. Import of financial operations ('cashimport')
@@ -4669,6 +4774,7 @@ Chapter 7. For curious
    ten - Tax Exempt Number of customer
    zip - zip code of customer
    city - location of customer
+   closed - is document (invoice) closed (accounted)? (0/1)
      _________________________________________________________________
 
 7.2.17. Non-financial documents contents ('documentcontents')
@@ -4844,7 +4950,7 @@ Chapter 7. For curious
    content - data
      _________________________________________________________________
 
-7.2.34. Daemon configuration - hosts ('daemonhosts')
+7.2.34. Hosts ('hosts')
 
    id - identifier
    name - host name

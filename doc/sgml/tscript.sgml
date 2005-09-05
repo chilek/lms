@@ -47,38 +47,33 @@
 		    <para>Example: <prompt>( &lt;expression&gt; )</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Logical negation. 1 if value of expression is false, otherwise 0.</para>
-		    <para>Example: <prompt>! &lt;expression&gt;</prompt></para>
+		    <para>Null keyword. Prescribe not defined value. Useful for
+		    checking that some value was or wasn't defined.</para>
+		    <para>Example: <prompt>&lt;variable&gt; = null</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Comparision (equal). Evaluates to 1 if expression1 value equals expression2 
-		    value or 0 if not.</para>
-		    <para>Example: <prompt>&lt;expression1&gt; == &lt;expression2&gt;</prompt></para>
+		    <para>Comparisions. Returns logical result of expressions
+		    comparision.</para>
+		    <para>Example: 
+<screen>
+&lt;expression1&gt; == &lt;expression2&gt;
+&lt;expression1&gt; != &lt;expression2&gt;
+&lt;expression1&gt; &lt; &lt;expression2&gt;
+&lt;expression1&gt; &gt; &lt;expression2&gt;
+&lt;expression1&gt; &lt;= &lt;expression2&gt;
+&lt;expression1&gt; &gt;= &lt;expression2&gt;
+</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Comparision (not equal). Evaluates to 1 if expression1 value doesn't equal 
-		    expression2 value or 0 if it does.</para>
-		    <para>Example: <prompt>&lt;expression1&gt; != &lt;expression2&gt;</prompt></para>
+		    <para>Binary operators. Sum and product.</para>
+		    <para>Example: <prompt>&lt;expression1&gt; | &lt;expression2&gt;</prompt></para>
+		    <para>Example: <prompt>&lt;expression1&gt; & &lt;expression2&gt;</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Comaprision (greater than). Evaluates to 1 if expression1 value is less than 
-		    expression2 value.</para>
-		    <para>Example: <prompt>&lt;expression1&gt; &lt; &lt;expression2&gt;</prompt></para>
-		</listitem>
-		<listitem>
-		    <para>Comparision (less than). Evaluates to 1 if expression1 value is greater than 
-		    expression2 value.</para>
-		    <para>Example: <prompt>&lt;expression1&gt; &gt; &lt;expression2&gt;</prompt></para>
-		</listitem> 
-		<listitem>
-		    <para>Logical OR. Evaluates to 1 if expression1 value or expression2 value 
-		    are true.</para>
+		    <para>Logical operators.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; || &lt;expression2&gt;</prompt></para>
-		</listitem>
-		<listitem>
-		    <para>Logical AND. Evaluates to 1 if expression1 value and expression2 value 
-		    are true.</para>
 		    <para>Example: <prompt>&lt;expression1&gt; && &lt;expression2&gt;</prompt></para>
+		    <para>Example: <prompt>! &lt;expression&gt;</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>Strings concatenation. When both expression values haven't numeric type 
@@ -94,6 +89,11 @@
 &lt;expression1&gt; * &lt;expression2&gt;
 &lt;expression1&gt; / &lt;expression2&gt;
 &lt;expression1&gt; % &lt;expression2&gt;</screen></para>
+		</listitem>
+		<listitem>
+		    <para>Single-argument incremental/decremental operators.</para>
+		    <para>Example: <prompt>&lt;expression&gt;++</prompt></para>
+		    <para>Example: <prompt>&lt;expression&gt;--</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>String comparision with regular expression. Evaluates to 1 if expression1 value match with regular expression2, else
@@ -173,7 +173,8 @@ for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt
 		    <para>Example: <prompt>number(&lt;variable_name&gt;)</prompt></para>
 		</listitem>
 		<listitem>
-			<para>Type checking. Returns type name of variable, e.g. string, number, array.</para>
+			<para>Type checking. Returns type name of variable, e.g. string, 
+			number, array, null.</para>
 			<para>Example: <prompt>typeof(&lt;variable_name&gt;)</prompt></para>
 		</listitem>
 	    </itemizedlist>
