@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -11261,15 +11261,14 @@ NAME="TSCRIPT-INTRO"
 >6.3.1. Introduction</A
 ></H3
 ><P
->Parser module is based on a scripting language
-	    <A
+><A
 HREF="http://silvercoders.com/index.php?page=T_Script"
 TARGET="_top"
 >T-Script</A
-> which 
-	    primary purpose is to generate text files. It can be useful for processing
-	    templates with some additional data retrieved from data sources 
-	    like SQL databases or text files.</P
+> 
+	    is a scripting language which primary purpose is to generate text files. It can be 
+	    useful for processing templates with some additional data retrieved from data 
+	    sources like SQL databases or text files.</P
 ><P
 >Before compilation ensure that you have in your system packages
 	    <TT
@@ -11361,71 +11360,61 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->Logical negation. 1 if value of expression is false, otherwise 0.</P
+>Null keyword. Prescribe not defined value. Useful for
+		    checking that some value was or wasn't defined.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->! &lt;expression&gt;</SAMP
+>&lt;variable&gt; = null</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Comparision (equal). Evaluates to 1 if expression1 value equals expression2 
-		    value or 0 if not.</P
+>Comparisions. Returns logical result of expressions
+		    comparision.</P
 ><P
->Example: <SAMP
-CLASS="PROMPT"
->&lt;expression1&gt; == &lt;expression2&gt;</SAMP
+>Example: 
+<PRE
+CLASS="SCREEN"
+>&lt;expression1&gt; == &lt;expression2&gt;
+&lt;expression1&gt; != &lt;expression2&gt;
+&lt;expression1&gt; &lt; &lt;expression2&gt;
+&lt;expression1&gt; &gt; &lt;expression2&gt;
+&lt;expression1&gt; &lt;= &lt;expression2&gt;
+&lt;expression1&gt; &gt;= &lt;expression2&gt;</PRE
 ></P
 ></LI
 ><LI
 ><P
->Comparision (not equal). Evaluates to 1 if expression1 value doesn't equal 
-		    expression2 value or 0 if it does.</P
+>Binary operators. Sum and product.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression1&gt; != &lt;expression2&gt;</SAMP
+>&lt;expression1&gt; | &lt;expression2&gt;</SAMP
+></P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression1&gt; &#38; &lt;expression2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Comaprision (greater than). Evaluates to 1 if expression1 value is less than 
-		    expression2 value.</P
-><P
->Example: <SAMP
-CLASS="PROMPT"
->&lt;expression1&gt; &lt; &lt;expression2&gt;</SAMP
-></P
-></LI
-><LI
-><P
->Comparision (less than). Evaluates to 1 if expression1 value is greater than 
-		    expression2 value.</P
-><P
->Example: <SAMP
-CLASS="PROMPT"
->&lt;expression1&gt; &gt; &lt;expression2&gt;</SAMP
-></P
-></LI
-><LI
-><P
->Logical OR. Evaluates to 1 if expression1 value or expression2 value 
-		    are true.</P
+>Logical operators.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
 >&lt;expression1&gt; || &lt;expression2&gt;</SAMP
 ></P
-></LI
-><LI
-><P
->Logical AND. Evaluates to 1 if expression1 value and expression2 value 
-		    are true.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
 >&lt;expression1&gt; &#38;&#38; &lt;expression2&gt;</SAMP
+></P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>! &lt;expression&gt;</SAMP
 ></P
 ></LI
 ><LI
@@ -11450,6 +11439,20 @@ CLASS="SCREEN"
 &lt;expression1&gt; * &lt;expression2&gt;
 &lt;expression1&gt; / &lt;expression2&gt;
 &lt;expression1&gt; % &lt;expression2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Single-argument incremental/decremental operators.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression&gt;++</SAMP
+></P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>&lt;expression&gt;--</SAMP
 ></P
 ></LI
 ><LI
@@ -11596,7 +11599,8 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->Type checking. Returns type name of variable, e.g. string, number, array.</P
+>Type checking. Returns type name of variable, e.g. string, 
+			number, array, null.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
