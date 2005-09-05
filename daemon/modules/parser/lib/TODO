@@ -52,6 +52,12 @@ $Id$
 
     zamiast { "{" } wygodniej by by³o \{ (i dla } analogicznie)
 
+*** brakuj±ce operatory
+
+    brakuje operatorów --x, ++x
+    dobrze by³oby dodaæ te¿ pozosta³e brakuj±ce operatory: binarne >>, <<, 
+    arytmetyczny ^ (potêgowanie)
+
 *** B£¡D: stosowanie (interpretowanie) wciêæ
 
     obecnie nie za bardzo mo¿na stosowaæ wciêcia w skrypcie, np.:
