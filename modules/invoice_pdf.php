@@ -496,6 +496,7 @@ elseif($_GET['fetchallinvoices'])
 }
 elseif($_GET['fetchsingle'])
 {
+	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	invoice_body();
