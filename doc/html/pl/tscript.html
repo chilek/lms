@@ -186,66 +186,61 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->Logiczna negacja. Zwraca 1 gdy wyra¿enie nie jest prawd±, w przeciwnym wypadku zwraca 0.</P
+>S³owo kluczowe "null". Okre¶la warto¶æ niezdefiniowan±.
+				Przydatne do sprawdzania, czy jaka¶ zmienna (warto¶æ) jest
+				zdefiniowana.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->! &lt;wyra¿enie&gt;</SAMP
+>&lt;zmienna&gt; = null</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Porównanie (równe). Zwraca 1 gdy warto¶æ wyra¿enie1 jest identyczna z warto¶ci± yra¿enie2 
-				lub 0 gdy s± ró¿ne.</P
+>Porównania. Zwraca wynik logiczny porównania.</P
 ><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;</SAMP
+>Przyk³ad: 
+<PRE
+CLASS="SCREEN"
+>&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; &lt;= &lt;wyra¿enie2&gt;
+&lt;wyra¿enie1&gt; &gt;= &lt;wyra¿enie2&gt;</PRE
 ></P
 ></LI
 ><LI
 ><P
->Porównanie (nierówne). Zwraca 1 gdy wyra¿enia s± ró¿ne lub 0 gdy s± takie same.</P
+>Operatory binarne. Suma i iloczyn bitowy.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;</SAMP
+>&lt;wyra¿enie1&gt; | &lt;wyra¿enie2&gt;</SAMP
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie1&gt; &#38; &lt;wyra¿enie2&gt;</SAMP
 ></P
 ></LI
 ><LI
 ><P
->Porównanie (wiêkszy ni¿). Zwraca 1 gdy wyra¿enie1 jest mniejsze od warto¶ci wyra¿enia wyra¿enie2.</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;</SAMP
-></P
-></LI
-><LI
-><P
->Porównanie (mniejszy ni¿). Zwraca 1 gdy warto¶æ wyra¿enie1 jest wiêksza od warto¶ci wyra¿enie2.</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;</SAMP
-></P
-></LI
-><LI
-><P
->Logiczne LUB. Zwraca 1 gdy jedno z wyra¿eñ jest prawd±.</P
+>Operatory logiczne.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >&lt;wyra¿enie1&gt; || &lt;wyra¿enie2&gt;</SAMP
 ></P
-></LI
-><LI
-><P
->Logiczne I. Zwraca 1 gdy wyra¿enie1 i wyra¿enie2 s± prawdziwe.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >&lt;wyra¿enie1&gt; &#38;&#38; &lt;wyra¿enie2&gt;</SAMP
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>! &lt;wyra¿enie1&gt;</SAMP
 ></P
 ></LI
 ><LI
@@ -270,6 +265,20 @@ CLASS="SCREEN"
 &lt;wyra¿enie1&gt; * &lt;wyra¿enie2&gt;
 &lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;
 &lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;</PRE
+></P
+></LI
+><LI
+><P
+>Jednoargumentowe operatory inkrementacji/dekrementacji.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie&gt;++</SAMP
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>&lt;wyra¿enie&gt;--</SAMP
 ></P
 ></LI
 ><LI
@@ -419,7 +428,8 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->Sprawdzenie typu. Zwraca nazwê typu zmiennej np.string, number, array.</P
+>Sprawdzenie typu. Zwraca nazwê typu zmiennej np.string, 
+					number, array, null.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
