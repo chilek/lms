@@ -24,28 +24,17 @@
  *  $Id$
  */
 
-if($doc = $DB->GetRow('SELECT number, cdate, type, template 
-			FROM documents 
-			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE documents.id = ?', array($_GET['id'])))
-{
-	$ntempl = docnumber($doc['number'], $doc['template'], $doc['cdate']);
+$DB->BeginTrans();
 
-	switch($doc['type'])
-	{
-		case DOC_INVOICE:
-			$ntempl = trans('Invoice No. $0',$ntempl);
-		break;
-		case DOC_RECEIPT:
-			$ntempl = trans('Cash Receipt No. $0',$ntempl);
-		break;
-		case DOC_CNOTE:
-			$ntempl = trans('Credit Note No. $0',$ntempl);
-		break;
-	}
-	
-	$SMARTY->assign('content', '<NOBR>'.$ntempl.'</NOBR>');
-	$SMARTY->display('dynpopup.html');
-}
+$DB->Execute("
+	ALTER TABLE documents ADD reference integer;
+	UPDATE documents SET reference=0;
+	ALTER TABLE documents ALTER reference SET NOT NULL;
+	ALTER TABLE documents ALTER reference SET DEFAULT 0;
+");
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005090700', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

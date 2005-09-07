@@ -84,7 +84,10 @@ if($_GET['print'] == 'cached')
 			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('invoice',$invoice);
-			$SMARTY->display($CONFIG['invoices']['template_file']);
+			if($invoice['invoice'])
+				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+			else
+				$SMARTY->display($CONFIG['invoices']['template_file']);
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -119,7 +122,10 @@ elseif($_GET['fetchallinvoices'])
 			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('invoice',$invoice);
-			$SMARTY->display($CONFIG['invoices']['template_file']);
+			if($invoice['invoice'])
+				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+			else
+				$SMARTY->display($CONFIG['invoices']['template_file']);
 		}
 	}
 	$SMARTY->display('clearfooter.html');
@@ -134,7 +140,10 @@ elseif($_GET['fetchsingle'])
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoiceheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
-	$SMARTY->display($CONFIG['invoices']['template_file']);
+	if($invoice['invoice'])
+		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+	else
+		$SMARTY->display($CONFIG['invoices']['template_file']);
 	$SMARTY->display('clearfooter.html');
 }
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
@@ -145,11 +154,17 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoiceheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
-	$SMARTY->display($CONFIG['invoices']['template_file']);
+	if($invoice['invoice'])
+		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+	else
+		$SMARTY->display($CONFIG['invoices']['template_file']);
 	$SMARTY->assign('type',trans('COPY'));
 	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
-	$SMARTY->display($CONFIG['invoices']['template_file']);
+	if($invoice['invoice'])
+		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+	else
+		$SMARTY->display($CONFIG['invoices']['template_file']);
 	$SMARTY->display('clearfooter.html');
 }
 else

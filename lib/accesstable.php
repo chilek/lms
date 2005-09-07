@@ -38,7 +38,7 @@ $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
 
 $access['table'][3]['name']		= trans('finances management');
-$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(receipt|receipt(list|add|edit|del))|(invoice|invoice(list|new|edit|report))|number|paid)$';
+$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(receipt|receipt(list|add|edit|del))|(invoice|invoice(list|new|edit|note|report))|number|paid)$';
 
 $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';
