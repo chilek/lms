@@ -1452,7 +1452,7 @@ class LMS
 						SUM(value*count) AS value, COUNT(docid) AS count
 						FROM invoicecontents, documents
 						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-						WHERE docid = documents.id AND type = 1'
+						WHERE docid = documents.id AND (type = '.DOC_INVOICE.' OR type = '.DOC_CNOTE.')'
 						.$where
 						.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template, closed, type '
 						.$sqlord.' '.$direction))
@@ -1486,10 +1486,10 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid, closed, reference
 					    FROM documents 
 					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-					    WHERE documents.id=? AND type = 1', array($invoiceid)))
+					    WHERE documents.id=? AND (type = ? OR type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
 		{
-			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid
-					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=?', array($invoiceid)))
+			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid
+					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=? ORDER BY itemid', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
 					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
@@ -1509,18 +1509,20 @@ class LMS
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
 					$result['content'][$idx]['pkwiu'] = $row['prodid'];
-					$result['content'][$idx]['pesel'] = $row['ssn'];
-					$result['content'][$idx]['nip'] = $row['ten'];
 				}
+
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 			$result['totalg'] = round( ($result['total'] - floor($result['total'])) * 100);
+			// for backward compat.
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
+			$result['pesel'] = $result['ssn'];
+			$result['nip'] = $result['ten'];
 			
 			if($result['reference'])
 				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
-			$customer_info = $this->GetCustomer($result['customerid']);
-			$result['customerpin'] = $customer_info['pin'];
+
+			$result['customerpin'] = $this->DB->GetOne('SELECT pin FROM customers WHERE id=?', array($result['customerid']));
 			// NOTE: don't waste CPU/mem when printing history is not set:
 			if($this->CONFIG['invoices']['print_balance_history'])
 			{
@@ -1723,7 +1725,7 @@ class LMS
 					LEFT JOIN documents ON (docid = documents.id)
 					WHERE cash.id=?', array($id));
 
-		if($row['doctype']=='1' && $row['cashtype'] = '4' && $row['docid'] && $row['itemid'])
+		if(($row['doctype']==DOC_INVOICE || $row['doctype']==DOC_CNOTE) && $row['cashtype'] = '4' && $row['docid'] && $row['itemid'])
 			$this->InvoiceContentDelete($row['docid'], $row['itemid']);
 		elseif($row['doctype']=='2' && $row['docid'] && $row['itemid'])
 			$this->ReceiptContentDelete($row['docid'], $row['itemid']);
