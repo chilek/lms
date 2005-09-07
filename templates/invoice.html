@@ -4,7 +4,13 @@
 	<TR>
 		<TD WIDTH="98%" CLASS="hdf" COLSPAN="2" VALIGN="TOP">
 			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}
-			<B>{t 0=$number}Invoice No. $0{/t}</B><BR>
+			{if $invoice.invoice}
+			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate assign=number_ref}
+			    <B>{t 0=$number}Credit Note No. $0{/t}</B><BR>
+			    <B>{t 0=$number_ref}for Invoice No. $0{/t}</B><BR>
+			{else}
+			    <B>{t 0=$number}Invoice No. $0{/t}</B><BR>
+			{/if}
 			<B>{$type}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP" CLASS="sdr">
@@ -40,7 +46,6 @@
 			{$invoice.zip} {$invoice.city}<BR>
 			{if $invoice.ten neq ""}{t}TEN:{/t} {$invoice.ten}<BR>{elseif $invoice.ssn neq ""}{t}SSN:{/t} {$invoice.ssn}<BR>{/if}
 			<BR>
-			<B>{t}Customer ID:{/t} {$invoice.customerid|string_format:"%04d"}</B>
 		</TD>
 		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">
 			<BR>
@@ -62,6 +67,121 @@
 		</TD>
 	</TR>
 </TABLE>
+{if $invoice.invoice}
+<B>{t}Was:{/t}</B>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="FALL">
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}No.{/t}</B>
+	</TD>
+	<TD WIDTH="91%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Name of Product, Commodity or Service:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Product ID:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Unit:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Amount:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Unitary Net Value:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Net Value:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Tax Rate:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Tax Value:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Gross Value:{/t}</B>
+	</TD>
+</TR>
+{cycle values="grey,white" print=false}
+{counter start=0 print=false}
+{foreach from=$invoice.invoice.content item=item}
+<TR class="{cycle}">
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
+	<TD WIDTH="91%" CLASS="FLR">
+		{$item.description}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR">
+		{$item.prodid}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+		{$item.content}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+		{$item.count}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.basevalue|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.totalbase|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.taxlabel}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.totaltax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.total|money_format}
+	</TD>
+</TR>
+{/foreach}
+<TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+		<P ALIGN="RIGHT"><B>{t}Total:{/t}</B></P>
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$invoice.invoice.totalbase|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		<B>x</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$invoice.invoice.totaltax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$invoice.invoice.total|money_format}
+	</TD>
+</TR>
+<TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
+		&nbsp;
+	</TD>
+	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
+		<B>{t}in it:{/t}</B>
+	</TD>
+</TR>
+{foreach from=$invoice.invoice.taxest item=item}
+<TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
+		&nbsp;
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$item.base|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		{$item.taxlabel}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$item.tax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$item.total|money_format}
+	</TD>
+</TR>
+{/foreach}
+<B>{t}Corrected to:{/t}</B>
+{/if}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="FALL">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">

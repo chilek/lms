@@ -385,7 +385,10 @@ function invoice_body()
 	    invoice_simple_form_fill(14,3,0.4);
 	    break;
 	default:
-	    require($CONFIG['invoices']['template_file']);
+	    if($invoice['invoice'])
+		    require($CONFIG['invoices']['cnote_template_file']);
+	    else
+		    require($CONFIG['invoices']['template_file']);
     }
     if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }

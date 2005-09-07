@@ -1304,7 +1304,8 @@ class LMS
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
 
-			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
 					$iid,
 					$itemid,
 					$item['valuebrutto'],
@@ -1447,13 +1448,13 @@ class LMS
 		if($cat=='notclosed')
 			$where = ' AND closed = 0';
 
-		if($result = $this->DB->GetAll('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, template, closed, 
+		if($result = $this->DB->GetAll('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, template, closed, type,
 						SUM(value*count) AS value, COUNT(docid) AS count
 						FROM invoicecontents, documents
 						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						WHERE docid = documents.id AND type = 1'
 						.$where
-						.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template, closed '
+						.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template, closed, type '
 						.$sqlord.' '.$direction))
 		{
 			if($group['group'])
@@ -1482,7 +1483,7 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid, closed
+		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid, closed, reference
 					    FROM documents 
 					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE documents.id=? AND type = 1', array($invoiceid)))
@@ -1508,17 +1509,24 @@ class LMS
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
 					$result['content'][$idx]['pkwiu'] = $row['prodid'];
+					$result['content'][$idx]['pesel'] = $row['ssn'];
+					$result['content'][$idx]['nip'] = $row['ten'];
 				}
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 			$result['totalg'] = round( ($result['total'] - floor($result['total'])) * 100);
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
-			$customer_info=$this->GetCustomer($result['customerid']);
+			
+			if($result['reference'])
+				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
+			$customer_info = $this->GetCustomer($result['customerid']);
 			$result['customerpin'] = $customer_info['pin'];
 			// NOTE: don't waste CPU/mem when printing history is not set:
-			if ($this->CONFIG['invoices']['print_balance_history'])
+			if($this->CONFIG['invoices']['print_balance_history'])
+			{
 				$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
-			$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
+				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
+			}
 			return $result;
 		}
 		else

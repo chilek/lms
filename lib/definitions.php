@@ -42,7 +42,8 @@ define('ACCOUNT_FTP', 8);
 $DOCTYPES = array(
     1 	=>	trans('invoice'),
     2 	=>	trans('cash receipt'),
-    3	=>	trans('correction invoice'),
+    3	=>	trans('credit note'), // faktura koryguj±ca
+//    4	=>	trans('credit memo'), // nota koryguj±ca
     -1	=>	trans('contract'),
     -2	=>	trans('annex'),
     -3	=>	trans('protocol'),
@@ -51,7 +52,8 @@ $DOCTYPES = array(
 
 define('DOC_INVOICE', 1);
 define('DOC_RECEIPT', 2);
-define('DOC_CINVOICE', 3);
+define('DOC_CNOTE', 3);
+//define('DOC_CMEMO', 4);
 define('DOC_CONTRACT', -1);
 define('DOC_ANNEX', -2);
 define('DOC_PROTOCOL', -3);
