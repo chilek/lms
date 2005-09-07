@@ -49,7 +49,7 @@ if ((isset($_GET['id'])) && ($_GET['action']=='init'))
 		$invoicecontents[$nitem['itemid']] = $nitem;
 	}
     
-	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ?', array(DOC_CNOTE));
+	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
 	$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid']);
 	$cnote['cdate'] = time();
 	$cnote['paytime'] = 14;
