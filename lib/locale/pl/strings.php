@@ -1581,5 +1581,6 @@ $_LANG['Remove this item'] = 'Usuń tę pozycję';
 $_LANG['Revise'] = 'Koryguj';
 $_LANG['Was:'] = 'Było:';
 $_LANG['Credit note template file. Default: "invoice.html". Should be placed in templates directory.'] = 'Szablon faktury korygującej. Domyślnie:"invoice.html". Powinien być umieszczony w katalogu templates.';
+$_LANG['To rebate:'] = 'Do zwrotu:';
 
 ?>

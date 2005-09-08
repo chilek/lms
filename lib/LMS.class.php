@@ -1488,40 +1488,56 @@ class LMS
 					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE documents.id=? AND (type = ? OR type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
 		{
+			if($result['reference'])
+				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
+
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid
 					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=? ORDER BY itemid', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
+					if($result['invoice'])
+					{
+						$row['value'] += $result['invoice']['content'][$idx]['value'];
+					}
+					
 					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
 					$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
 					$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
 					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
+					$result['content'][$idx]['value'] = $row['value'];
 
 					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
 					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
 					$result['taxest'][$row['taxvalue']]['taxlabel'] = $row['taxlabel'];
+					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
 
-					$result['total'] += $result['content'][$idx]['total'];
 					$result['totalbase'] += $result['content'][$idx]['totalbase'];
 					$result['totaltax'] += $result['content'][$idx]['totaltax'];
-
+					$result['total'] += $result['content'][$idx]['total'];
+    				//	$result['value'] += $row['value'] * $row['count'];
+    
 					// for backward compatybility
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
-					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
 					$result['content'][$idx]['pkwiu'] = $row['prodid'];
 				}
 
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
-			$result['totalg'] = round( ($result['total'] - floor($result['total'])) * 100);
+			$result['value'] = $result['total'] - $result['invoice']['value'];
+			
+			if($result['value'] < 0)
+			{
+				$result['value'] = abs($result['value']);
+				$result['rebate'] = true;
+			}
+			
+			$result['valuep'] = round( ($result['value'] - floor($result['value'])) * 100);
 			// for backward compat.
+			$result['totalg'] = round( ($result['value'] - floor($result['value'])) * 100);
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
 			$result['pesel'] = $result['ssn'];
 			$result['nip'] = $result['ten'];
 			
-			if($result['reference'])
-				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
-
 			$result['customerpin'] = $this->DB->GetOne('SELECT pin FROM customers WHERE id=?', array($result['customerid']));
 			// NOTE: don't waste CPU/mem when printing history is not set:
 			if($this->CONFIG['invoices']['print_balance_history'])
