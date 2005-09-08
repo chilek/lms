@@ -719,6 +719,23 @@ AddDefaultCharset Off
           </simplelist>
           </para>
          </sect3>
+         <sect3 id="install-invoices-cnote">
+          <title>Korekty</title>
+          <para>Faktury koryguj±ce korzystaj± z ustawieñ dotycz±cych
+	  pozosta³ych faktur z sekcji [invoices]. Domy¶lny szablon faktury
+	  uwzglêdnia faktury koryguj±ce. Jednak udostêpniono opcjê
+	  pozwalaj±c± na zdefiniowanie osobnego szablonu dla korekt (pozosta³e
+	  opcje s± wspólne dla faktur i dla korekt):
+          <itemizedlist>
+          <listitem>
+               <para>cnote_template_file</para>
+               <para>Szablon faktury koryguj±cej, który powinien znajdowaæ siê w
+               katalogu <filename>templates</filename>. Domy¶lnie: invoice.html.</para>
+               <para>Przyk³ad: <prompt>cnote_template_file = invoice-mynet.html</prompt></para>
+          </listitem>          
+          </itemizedlist>
+	  </para>
+         </sect3>     
          <sect3 id="install-invoices-iban">
           <title>Automatyczne generowanie numeru konta bankowego</title>
           <para>LMS umo¿liwia automatyczne generowanie numeru konta bankowego w standardzie IBAN
