@@ -67,7 +67,6 @@
 		</TD>
 	</TR>
 </TABLE>
-{if $invoice.invoice}
 <TABLE WIDTH="100%" CELLPADDING="3">
     <TR CLASS="FALL">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
@@ -101,6 +100,7 @@
 		<B>{t}Gross Value:{/t}</B>
 	</TD>
     </TR>
+{if $invoice.invoice}
     <TR>
 	<TD COLSPAN="10" CLASS="fbottom">
 		<B>{t}Was:{/t}</B>
