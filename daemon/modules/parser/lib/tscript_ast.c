@@ -47,6 +47,7 @@ const char* TSCRIPT_AST_IF = "IF";
 const char* TSCRIPT_AST_FOR = "FOR";
 const char* TSCRIPT_AST_FILE = "FILE";
 const char* TSCRIPT_AST_SEQ = "SEQ";
+const char* TSCRIPT_AST_ARGS = "ARGS";
 const char* TSCRIPT_AST_CONV = "CONV";
 const char* TSCRIPT_AST_TYPEOF = "TYPEOF";
 const char* TSCRIPT_AST_EXT = "EXT";
@@ -111,6 +112,18 @@ tscript_ast_node* tscript_ast_node_4(const char* type, tscript_ast_node* child1,
 	n->children[3] = child4;
 	n->children[4] = NULL;
 	return n;
+}
+
+void tscript_ast_node_add_child(tscript_ast_node* node, tscript_ast_node* child)
+{
+	int i;
+	for (i = 0; node->children != NULL && node->children[i] != NULL; i++)
+	{
+	}
+	node->children = (tscript_ast_node**)realloc(node->children,
+		(i + 2) * sizeof(tscript_ast_node*));
+	node->children[i] = child;
+	node->children[i + 1] = NULL;
 }
 
 static void tscript_print_ast_sub(tscript_ast_node* ast, int indent)

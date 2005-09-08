@@ -71,6 +71,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	tscript_value* tmp1_str;
 	tscript_value* tmp2_str;
 	double tmp1_num;
+	int i;
 
 	if (ast->type == TSCRIPT_AST_VALUE)
 	{
@@ -618,6 +619,31 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tscript_debug(context, "Interpreted TSCRIPT_AST_SEQ\n");
 		}
 	}
+	else if (ast->type == TSCRIPT_AST_ARGS)
+	{
+		tscript_debug(context, "Interpretting TSCRIPT_AST_ARGS\n");
+		if (ast->children[1] == NULL)
+			res = tscript_interprete_sub(context, ast->children[0]);
+		else
+		{
+			res = tscript_value_create_array();
+			for (i = 0; ast->children[i] != NULL; i++)
+			{
+				tmp1 = tscript_interprete_sub(context, ast->children[i]);
+				tmp1_der = tscript_value_dereference(tmp1);
+				if (tmp1->type == TSCRIPT_TYPE_ERROR)
+				{
+					tscript_value_free(res);
+					res = tmp1;
+					break;
+				}
+				tmp2 = tscript_value_create_number(i);
+				*tscript_value_array_item_ref(&res, tmp2) = tmp1_der;
+				tscript_value_free(tmp2);
+			}
+		}
+		tscript_debug(context, "Interpreted TSCRIPT_AST_ARGS\n");
+	}
 	else if (ast->type == TSCRIPT_AST_CONV)
 	{
 		tmp1 = tscript_interprete_sub(context, ast->children[0]);
@@ -649,7 +675,10 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	{
 		tscript_debug(context, "Interpretting TSCRIPT_AST_EXT\n");
 		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
+		if (ast->children[1] == NULL)
+			tmp2 = tscript_value_create_null();
+		else
+			tmp2 = tscript_interprete_sub(context, ast->children[1]);
 		tmp1_der = tscript_value_dereference(tmp1);
 		tmp2_der = tscript_value_dereference(tmp2);
 		if (tmp1->type == TSCRIPT_TYPE_ERROR)
@@ -660,13 +689,13 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		{
 			tmp1_str = tscript_value_convert_to_string(tmp1_der);
 			tmp2_str = tscript_value_convert_to_string(tmp2_der);
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
 			tscript_debug(context, "Extension name: %s\n", tmp1_str->data);
 			tscript_debug(context, "Extension param: %s\n", tmp2_str->data);
-			res = tscript_run_extension(context, tmp1_str->data, tmp2_str);
+			res = tscript_run_extension(context, tmp1_str->data, tmp2_der);
 			tscript_value_free(tmp1_str);
 			tscript_value_free(tmp2_str);
+			tscript_value_free(tmp1);
+			tscript_value_free(tmp2);
 			tscript_debug(context, "Interpreted TSCRIPT_AST_EXT\n");
 		}
 	}

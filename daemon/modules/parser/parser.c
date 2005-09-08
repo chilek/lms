@@ -36,9 +36,9 @@
 #include "extensions/tscript_exec.h"
 #include "extensions/tscript_string.h"
 #include "extensions/tscript_file.h"
+#include "extensions/tscript_sysinfo.h"
 #include "extensions/sql.h"
 #include "extensions/net.h"
-#include "extensions/time.h"
 
 void debug_callback(const char* format, va_list ap)
 {
@@ -54,7 +54,7 @@ void reload(GLOBAL *g, struct parser_module *p)
 	tscript_ext_exec_init(context);
 	tscript_ext_file_init(context);
 	tscript_ext_net_init(context);
-	tscript_ext_time_init(context);
+	tscript_ext_sysinfo_init(context);
 	tscript_ext_string_init(context);
 	tscript_ext_sql_init(context, g->conn);
 
@@ -111,7 +111,7 @@ void reload(GLOBAL *g, struct parser_module *p)
 	tscript_ext_exec_close(context);
 	tscript_ext_file_close(context);
 	tscript_ext_net_close(context);
-	tscript_ext_time_close(context);
+	tscript_ext_sysinfo_close(context);
 	tscript_ext_string_close(context);
 	tscript_ext_sql_close(context);
 	
