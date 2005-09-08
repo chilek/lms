@@ -299,6 +299,10 @@ function GetConfigList($order='var,asc')
 					case 'template_file':
 						$config[$idx]['description'] = trans('Invoice template file. Default: "invoice.html". Should be placed in templates directory.');
 					break;
+
+					case 'cnote_template_file':
+						$config[$idx]['description'] = trans('Credit note template file. Default: "invoice.html". Should be placed in templates directory.');
+					break;
 					
 					case 'content_type':
 						$config[$idx]['description'] = trans('Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
