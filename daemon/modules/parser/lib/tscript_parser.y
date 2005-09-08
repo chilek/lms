@@ -44,64 +44,11 @@ GNU General Public License for more details.
 %nonassoc EXT CONST
 %nonassoc LITERAL NUMBER TEXT NAME NULL_CONST TO_STRING TO_NUMBER TYPEOF
 
+%start template
+
 %%
 
-template: 	commands
-		{
-			context->ast = $1;
-		}
-
-commands:	commands command
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_SEQ, $1, $2);
-		}
-	|	command
-		{
-			$$ = $1;
-		}
-
-command:	statement
-	|	expression
-
-statement:	set_stmt
-	|	for_stmt
-	|	if_stmt
-	|	file_stmt
-
-set_stmt:	reference '=' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_VAR_SET, $1, $3);
-		}
-
-for_stmt:	FOR '(' command ';' expression ';' command ')' commands END_FOR
-		{
-			$$ = tscript_ast_node_4(TSCRIPT_AST_FOR, $3, $5, $7, $9);
-		}
-
-if_stmt:	IF '(' expression ')' commands END_IF
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_IF, $3, $5);
-		}
-	|	IF '(' expression ')' commands ELSE commands END_IF
-		{
-			$$ = tscript_ast_node_3(TSCRIPT_AST_IF, $3, $5, $7);
-		}
-
-file_stmt:	WFILE expression commands END_WFILE
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_FILE, $2, $3);
-		}
-
-expressions:	expressions expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_SEQ, $1, $2);
-		}
-	|	expression
-		{
-			$$ = $1;
-		}
-
-expression:	TEXT
+value:		TEXT
 	|	LITERAL
 	|	NUMBER
 	|	NULL_CONST
@@ -109,116 +56,33 @@ expression:	TEXT
 			$$ = tscript_ast_node_val(TSCRIPT_AST_VALUE,
 				tscript_value_create_null());
 		}
-	|	CONST
+
+type_conv:	TO_STRING '(' expression ')'
 		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_CONST, $1);
+			$$ = tscript_ast_node_1(TSCRIPT_AST_CONV, $3);
+			$$->value = tscript_value_create_null();
+			$$->value->type = TSCRIPT_TYPE_STRING;
 		}
-	|	EXT expressions '}'
+	|	TO_NUMBER '(' expression ')'
 		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
+			$$ = tscript_ast_node_1(TSCRIPT_AST_CONV, $3);
+			$$->value = tscript_value_create_null();
+			$$->value->type = TSCRIPT_TYPE_NUMBER;
 		}
-	|	EXT '(' expression ')'
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $3);
-		}
-	|	'-' expression %prec NEG
-		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_NEG, $2);
-		}
-	|	'!' expression
-		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_NOT, $2);
-		}
-	|	'(' expression ')'
-		{
-			$$ = $2;
-		}
-	|	expression EQUALS expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_EQUALS, $1, $3);
-		}
-	|	expression DIFFERS expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_DIFFERS, $1, $3);
-		}
-	|	expression '<' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_LESS, $1, $3);
-		}
-	|	expression '>' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_GREATER, $1, $3);
-		}
-	|	expression EQUALS_LESS expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_EQUALS_LESS, $1, $3);
-		}
-	|	expression EQUALS_GREATER expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_EQUALS_GREATER, $1, $3);
-		}
-	|	expression OR expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_OR, $1, $3);
-		}
-	|	expression AND expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_AND, $1, $3);
-		}
-	|	expression '+' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_PLUS, $1, $3);
-		}
-	|	expression '-' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_MINUS, $1, $3);
-		}
-	|	expression '*' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_MUL, $1, $3);
-		}
-	|	expression '/' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_DIV, $1, $3);
-		}
-	|	expression '%' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_MOD, $1, $3);
-		}
-	|	expression '&' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_BAND, $1, $3);
-		}
-	|	expression '|' expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_BOR, $1, $3);
-		}
-	|	expression MATCH expression
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_MATCH, $1, $3);
-		}
-	|	reference INC
-		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_INC, $1);
-		}
-	|	reference DEC
-		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_DEC, $1);
-		}
-	|	expression '[' expression ']'
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_INDEX, $1, $3);
-		}
-	|	expression '.' NAME
-		{
-			$$ = tscript_ast_node_2(TSCRIPT_AST_SUBVAR, $1, $3);
-		}
-	|	reference
-	|	type_conv
-	|	TYPEOF '(' expression ')'
+
+type_of:	TYPEOF '(' expression ')'
 		{
 			$$ = tscript_ast_node_1(TSCRIPT_AST_TYPEOF, $3);
 		}
+
+type_operator:	type_conv
+	|	type_of
+
+primary_expression:	value
+		|	'(' expression ')'
+			{
+				$$ = $2;
+			}
 
 reference:	NAME
 		{
@@ -233,17 +97,201 @@ reference:	NAME
 			$$ = tscript_ast_node_2(TSCRIPT_AST_SUBVAR, $1, $3);
 		}
 
-type_conv:	TO_STRING '(' expression ')'
+chng_operator:	reference
+	|	reference INC
 		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_CONV, $3);
-			$$->value = tscript_value_create_null();
-			$$->value->type = TSCRIPT_TYPE_STRING;
+			$$ = tscript_ast_node_1(TSCRIPT_AST_INC, $1);
 		}
-	|	TO_NUMBER '(' expression ')'
+	|	reference DEC
 		{
-			$$ = tscript_ast_node_1(TSCRIPT_AST_CONV, $3);
-			$$->value = tscript_value_create_null();
-			$$->value->type = TSCRIPT_TYPE_NUMBER;
+			$$ = tscript_ast_node_1(TSCRIPT_AST_DEC, $1);
+		}
+
+sub_variable:		postfix_expression '[' expression ']'
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_INDEX, $1, $3);
+			}
+		|	postfix_expression '.' NAME
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_SUBVAR, $1, $3);
+			}
+
+argument_expression_list:
+			logical_expression
+			{
+				$$ = tscript_ast_node_1(TSCRIPT_AST_ARGS, $1);
+			}
+		|	argument_expression_list ',' logical_expression
+			{
+				tscript_ast_node_add_child($1, $3);
+				$$ = $1;
+			}
+
+call_expression:	CONST
+			{
+				$$ = tscript_ast_node_1(TSCRIPT_AST_CONST, $1);
+			}
+		|	EXT '(' argument_expression_list ')'
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $3);
+			}
+		|	EXT expressions '}'
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
+			}
+		|	EXT '(' ')'
+			{
+				$$ = tscript_ast_node_1(TSCRIPT_AST_EXT, $1);
+			}
+
+postfix_expression:	primary_expression
+		|	sub_variable
+		|	chng_operator
+		|	call_expression
+
+unary_expression:	postfix_expression
+		|	type_operator
+		|	'-' postfix_expression %prec NEG
+			{
+				$$ = tscript_ast_node_1(TSCRIPT_AST_NEG, $2);
+			}
+		|	'!' postfix_expression
+			{
+				$$ = tscript_ast_node_1(TSCRIPT_AST_NOT, $2);
+			}
+
+multiplicative_expression:
+			unary_expression
+		|	unary_expression '*' unary_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_MUL, $1, $3);
+			}
+		|	unary_expression '/' unary_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_DIV, $1, $3);
+			}
+		|	unary_expression '%' unary_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_MOD, $1, $3);
+			}
+
+additive_expression:
+			multiplicative_expression
+		|	multiplicative_expression '+' multiplicative_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_PLUS, $1, $3);
+			}
+		|	multiplicative_expression '-' multiplicative_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_MINUS, $1, $3);
+			}
+
+relational_expression:
+			additive_expression
+		|	additive_expression '<' additive_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_LESS, $1, $3);
+			}
+		|	additive_expression '>' additive_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_GREATER, $1, $3);
+			}
+		|	additive_expression EQUALS_LESS additive_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EQUALS_LESS, $1, $3);
+			}
+		|	additive_expression EQUALS_GREATER additive_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EQUALS_GREATER, $1, $3);
+			}
+
+equality_expression:
+			relational_expression
+		|	relational_expression EQUALS relational_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EQUALS, $1, $3);
+			}
+		|	relational_expression DIFFERS relational_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_DIFFERS, $1, $3);
+			}
+		|	relational_expression MATCH relational_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_MATCH, $1, $3);
+			}
+
+logical_expression:
+			equality_expression
+		|	equality_expression OR equality_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_OR, $1, $3);
+			}
+		|	equality_expression AND equality_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_AND, $1, $3);
+			}
+		|	equality_expression '&' equality_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_BAND, $1, $3);
+			}
+		|	equality_expression '|' equality_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_BOR, $1, $3);
+			}
+
+expression:	logical_expression
+
+expressions:	expressions expression
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_SEQ, $1, $2);
+		}
+	|	expression
+		{
+			$$ = $1;
+		}
+
+assignment_statement:	reference '=' expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_VAR_SET, $1, $3);
+			}
+
+iteration_statement:	FOR '(' statement ';' expression ';' statement ')' statements END_FOR
+			{
+				$$ = tscript_ast_node_4(TSCRIPT_AST_FOR, $3, $5, $7, $9);
+			}
+
+selection_statement:	IF '(' expression ')' statements END_IF
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_IF, $3, $5);
+			}
+		|	IF '(' expression ')' statements ELSE statements END_IF
+			{
+				$$ = tscript_ast_node_3(TSCRIPT_AST_IF, $3, $5, $7);
+			}
+
+file_statement:		WFILE expression statements END_WFILE
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_FILE, $2, $3);
+			}
+
+statement:	assignment_statement
+	|	iteration_statement
+	|	selection_statement
+	|	file_statement
+	|	expression
+
+statements:	statements statement
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_SEQ, $1, $2);
+		}
+	|	statement
+		{
+			$$ = $1;
+		}
+
+template: 	statements
+		{
+			context->ast = $1;
 		}
 
 %%

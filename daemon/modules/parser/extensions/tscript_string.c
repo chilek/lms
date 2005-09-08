@@ -21,6 +21,7 @@ GNU General Public License for more details.
 
 #include <string.h>
 #include <ctype.h>
+#include <regex.h>
 
 tscript_value* tscript_ext_trim(tscript_value* arg)
 {
@@ -36,12 +37,62 @@ tscript_value* tscript_ext_trim(tscript_value* arg)
 	return val;
 }
 
+tscript_value* tscript_ext_replace(tscript_value* arg)
+{
+	regex_t* reg;
+	regmatch_t match;
+	int res;
+	char* buf;
+	tscript_value* tmp;
+	tscript_value* str;
+	tscript_value* regexp;
+	tscript_value* dst;
+	tscript_value* index;
+	if (arg->type != TSCRIPT_TYPE_ARRAY)
+		return tscript_value_create_error("replace: 3 arguments required");
+	tmp = tscript_value_array_count(arg);
+	res = atof(tmp->data);
+	tscript_value_free(tmp);
+	if (res != 3)
+		return tscript_value_create_error("replace: 3 arguments required");
+	index = tscript_value_create_number(0);
+	regexp = *tscript_value_array_item_ref(&arg, index);
+	tscript_value_free(index);
+	index = tscript_value_create_number(1);
+	dst = *tscript_value_array_item_ref(&arg, index);
+	tscript_value_free(index);
+	index = tscript_value_create_number(2);
+	str = tscript_value_duplicate(*tscript_value_array_item_ref(&arg, index));
+	tscript_value_free(index);
+	reg = (regex_t *)calloc(1, sizeof(regex_t));
+	res = regcomp(reg, regexp->data, REG_EXTENDED);
+	if (res != 0)
+		return tscript_value_create_error("incorrect regexp");
+	while (regexec(reg, str->data, 1, &match, 0) == 0)
+	{
+		buf = (char*)malloc(match.rm_so + strlen(dst->data) +
+			strlen(&str->data[match.rm_eo]) + 1);
+		if (match.rm_so > 0)
+			strncpy(buf, str->data, match.rm_so);
+		buf[match.rm_so] = 0;
+		strcat(buf, dst->data);
+		strcat(buf, &str->data[match.rm_eo]);
+		tscript_value_free(str);
+		str = tscript_value_create_string(buf);
+		free(buf);
+	}
+	regfree(reg);
+	return str;
+}
+
 void tscript_ext_string_init(tscript_context* context)
 {
 	tscript_add_extension(context, "trim", tscript_ext_trim);
+	tscript_add_extension(context, "replace", tscript_ext_replace);
 }
 
 void tscript_ext_string_close(tscript_context* context)
 {
 	tscript_remove_extension(context, "trim");
+	tscript_remove_extension(context, "replace");
 }

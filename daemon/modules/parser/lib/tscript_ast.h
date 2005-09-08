@@ -33,6 +33,7 @@ extern const char* TSCRIPT_AST_IF;
 extern const char* TSCRIPT_AST_FOR;
 extern const char* TSCRIPT_AST_FILE;
 extern const char* TSCRIPT_AST_SEQ;
+extern const char* TSCRIPT_AST_ARGS;
 extern const char* TSCRIPT_AST_CONV;
 extern const char* TSCRIPT_AST_TYPEOF;
 extern const char* TSCRIPT_AST_EXT;
@@ -51,11 +52,13 @@ typedef struct tscript_ast_node
 **/
 tscript_ast_node* tscript_ast_node_val(const char* type, tscript_value* val);
 tscript_ast_node* tscript_ast_node_1(const char* type, tscript_ast_node* child);
-tscript_ast_node* tscript_ast_node_2(const char* type, tscript_ast_node* child1, tscript_ast_node* child2);
-tscript_ast_node* tscript_ast_node_3(const char* type, tscript_ast_node* child1, tscript_ast_node* child2,
-	tscript_ast_node* child3);
-tscript_ast_node* tscript_ast_node_4(const char* type, tscript_ast_node* child1, tscript_ast_node* child2,
-	tscript_ast_node* child3, tscript_ast_node* child4);
+tscript_ast_node* tscript_ast_node_2(const char* type, tscript_ast_node* child1,
+	tscript_ast_node* child2);
+tscript_ast_node* tscript_ast_node_3(const char* type, tscript_ast_node* child1, 	
+	tscript_ast_node* child2, tscript_ast_node* child3);
+tscript_ast_node* tscript_ast_node_4(const char* type, tscript_ast_node* child1, 	
+	tscript_ast_node* child2, tscript_ast_node* child3, tscript_ast_node* child4);
+void tscript_ast_node_add_child(tscript_ast_node* node, tscript_ast_node* child);
 
 /**
 	Deletes specified AST node and frees all allocated resources.

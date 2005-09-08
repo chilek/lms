@@ -6,6 +6,8 @@ STRIP=strip
 
 CFLAGS=-O2 -fPIC
 
+DEBUG=0
+
 #######################################################################
 
 ### MINGW
@@ -14,6 +16,11 @@ LDFLAGS		+= -liberty -lrxspencer
 SOEXT		= .dll
 else
 SOEXT		= .so
+endif
+
+ifeq ($(DEBUG),1)
+CFLAGS += -g -O0
+STRIP = touch
 endif
 
 HEADERS=tscript_ast.h tscript_context.h tscript_compiler.h tscript_interpreter.h tscript_variables.h tscript_parser.h tscript_values.h tscript_extensions.h tscript_debug.h list.h map.h
@@ -35,7 +42,7 @@ tscript_lexical.c: tscript_lexical.yy $(HEADERS)
 	$(FLEX) -otscript_lexical.c -Ptscript_yy tscript_lexical.yy 
 
 tscript_parser.h: tscript_parser.y $(HEADERS)
-	$(BISON) -o tscript_parser.c -d tscript_parser.y -p tscript_yy
+	$(BISON) -o tscript_parser.c -d tscript_parser.y -p tscript_yy -r lookahead
 
 clean:
-	rm -f tscript.a tscript.so tscript.dll *.o tscript_lexical.c tscript_parser.c tscript_parser.h
+	rm -f tscript.a tscript.so tscript.dll *.o tscript_lexical.c tscript_parser.c tscript_parser.h tscript_parser.output
