@@ -147,17 +147,17 @@ switch($_GET['action'])
 
 				$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
 				
-				if($item['deleted'])
-				{
-					$contents[$idx]['valuebrutto'] = -$item['valuebrutto'];
-					$contents[$idx]['cash'] = -$item['valuebrutto'];
-				}
-				elseif($contents[$idx]['valuenetto'] != $item['valuenetto'])
+				if($contents[$idx]['valuenetto'] != $item['valuenetto'])
 				{
 					$contents[$idx]['valuebrutto'] = round($contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1),2);
 				}
 				
-				if($contents[$idx]['count'] != $item['count'] ||
+				if($item['deleted'])
+				{
+					$contents[$idx]['valuebrutto'] = 0;
+					$contents[$idx]['cash'] = round(-$item['valuebrutto'] * $item['count'],2);
+				}
+				elseif($contents[$idx]['count'] != $item['count'] ||
 				    $contents[$idx]['taxid'] != $item['taxid'] ||
 				    $contents[$idx]['valuebrutto'] != $item['valuebrutto'])
 				{
@@ -217,7 +217,6 @@ switch($_GET['action'])
 						        $id,
 						        $idx
 						));
-
 			}
 			
 			$SESSION->remove('invoice');

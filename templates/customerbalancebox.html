@@ -115,10 +115,13 @@
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.docid[balancelist]}
-							{if $balancelist.doctype[balancelist] == 1}
+							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE}
 								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="[ {t}Invoice{/t} ]" {tip 0=$balancelist.docid[balancelist] dynpopup='?m=number&id=$0'}></A>
 							{/if}
-							{if $balancelist.doctype[balancelist] == 2}
+							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_CNOTE}
+								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="[ {t}Credit note{/t} ]" {tip 0=$balancelist.docid[balancelist] dynpopup='?m=number&id=$0'}></A>
+							{/if}
+							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_RECEIPT}
 								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="[ {t}Cash receipt{/t} ]" {tip 0=$balancelist.docid[balancelist] dynpopup='?m=number&id=$0'}></A>
 							{/if}
 						{/if}
