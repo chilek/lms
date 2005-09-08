@@ -280,16 +280,20 @@
 			{t}Expositor:{/t} {$_config.invoices.default_author}
 		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
-			{t}To pay:{/t} {$invoice.total|money_format}
+			{if $invoice.rebate}
+			{t}To rebate:{/t} {$invoice.value|money_format}
+			{else}
+			{t}To pay:{/t} {$invoice.value|money_format}
+			{/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
 			{t}In words:{/t}
 			{if $_config.phpui.to_words_short_version}
-				{$invoice.total|string_format:"%d"|to_words:0:"":1} {$invoice.totalg|string_format:"%02d"}/100
+				{$invoice.value|string_format:"%d"|to_words:0:"":1} {$invoice.valuep|string_format:"%02d"}/100
 			{else}
-				{t 0=$invoice.total|string_format:"%d"|to_words 1=$invoice.totalg|to_words}$0 dollars $1 cents{/t}
+				{t 0=$invoice.value|string_format:"%d"|to_words 1=$invoice.valuep|to_words}$0 dollars $1 cents{/t}
 			{/if}
 		</TD>
 	</TR>

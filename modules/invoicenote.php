@@ -154,14 +154,15 @@ switch($_GET['action'])
 				
 				if($item['deleted'])
 				{
-					$contents[$idx]['valuebrutto'] = 0;
+					$contents[$idx]['valuebrutto'] = -$item['valuebrutto'];
 					$contents[$idx]['cash'] = round(-$item['valuebrutto'] * $item['count'],2);
 				}
 				elseif($contents[$idx]['count'] != $item['count'] ||
-				    $contents[$idx]['taxid'] != $item['taxid'] ||
 				    $contents[$idx]['valuebrutto'] != $item['valuebrutto'])
 				{
 					$contents[$idx]['cash'] = round($contents[$idx]['valuebrutto'] * $contents[$idx]['count'],2) - round($item['valuebrutto'] * $item['count'],2);
+					if($contents[$idx]['valuebrutto'] != $item['valuebrutto'])
+						$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
 				}
 			}
 

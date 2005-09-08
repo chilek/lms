@@ -134,7 +134,10 @@ elseif($_GET['fetchsingle'])
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-	$layout['pagetitle'] = trans('Invoice No. $0', $number);
+	if($invoice['doctype']==DOC_INVOICE)
+		$layout['pagetitle'] = trans('Invoice No. $0', $number);
+	else
+		$layout['pagetitle'] = trans('Credit Note No. $0', $number);
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
@@ -149,7 +152,10 @@ elseif($_GET['fetchsingle'])
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-	$layout['pagetitle'] = trans('Invoice No. $0', $number);
+	if($invoice['doctype']==DOC_INVOICE)
+		$layout['pagetitle'] = trans('Invoice No. $0', $number);
+	else
+		$layout['pagetitle'] = trans('Credit Note No. $0', $number);
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoiceheader.html');
