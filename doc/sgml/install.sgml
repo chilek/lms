@@ -646,6 +646,23 @@ $access['table'][100]['allow_reg'] = '^invoice$';
           </simplelist>
           </para>
          </sect3>
+         <sect3 id="install-invoices-cnote">
+          <title>Credit Notes</title>
+          <para>Credit notes uses invoices settings from 
+	  <emphasis>[invoices]</emphasis> section.
+	  Default invoice template include also credit notes contents, but
+	  you have possibility to define different template for credit notes
+	  (the rest of options is common for both invoices and credit notes):
+          <itemizedlist>
+          <listitem>
+               <para>cnote_template_file</para>
+               <para>Credit note template, which should be placed in 
+               <filename>templates</filename> directory. Default: invoice.html.</para>
+               <para>Example: <prompt>cnote_template_file = invoice-mynet.html</prompt></para>
+          </listitem>          
+          </itemizedlist>
+          </para>
+         </sect3>     
     </sect2>
     <sect2 id="install-receipts">
      <title>Cash Receipts</title>
