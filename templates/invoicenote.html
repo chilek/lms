@@ -196,11 +196,12 @@
 	{/if}
 	<TR CLASS="light">
 		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
-			{if !$contents}
-			<A HREF="javascript:alert('{t}Invoice have no items!{/t}');">
+			{if $error}
+			<A HREF="javascript:alert('{t}There are errors in credit note main informations!{/t}');">
 			{else}
-			<A HREF="javascript:document.save.submit();"> {t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:document.save.submit();">
 			{/if}
+			{t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
