@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$tariffs = $LMS->GetTariffs();
 $taxeslist = $LMS->GetTaxes();
 $numberplanlist = $LMS->GetNumberPlans(DOC_CNOTE);
 
@@ -63,7 +62,7 @@ if ((isset($_GET['id'])) && ($_GET['action']=='init'))
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoice', $invoice);
 $SESSION->restore('cnote', $cnote);
-$SESSION->restore('invoiceediterror', $error);
+$SESSION->restore('cnoteerror', $error);
 
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 $layout['pagetitle'] = trans('Credit Note for Invoice: $0', $ntempl);
@@ -224,7 +223,7 @@ switch($_GET['action'])
 			$SESSION->remove('invoiceid');
 			$SESSION->remove('cnote');
 			$SESSION->remove('invoicecontents');
-			$SESSION->remove('notecontents');
+			$SESSION->remove('cnoteerror');
 			$SESSION->redirect('?m=invoice&id='.$id);
 		}
 	break;
@@ -242,7 +241,7 @@ if($cnote['paytype'] == '')
 $SESSION->save('invoice', $invoice);
 $SESSION->save('cnote', $cnote);
 $SESSION->save('invoicecontents', $contents);
-$SESSION->save('invoicenoteerror', $error);
+$SESSION->save('cnoteerror', $error);
 
 if($_GET['action'] != '')
 {
@@ -254,7 +253,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('cnote', $cnote);
 $SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('numberplanlist', $numberplanlist);
 $SMARTY->display('invoicenote.html');
