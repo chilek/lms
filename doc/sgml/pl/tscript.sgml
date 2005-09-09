@@ -170,17 +170,20 @@ for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
 			(<prompt>{funkcja {zmienna}}</prompt>).
 			<itemizedlist>
 				<listitem>
+					<para><prompt>string(liczba)</prompt></para>
 					<para>Zamiana warto¶ci liczbowej na ci±g znaków.</para>
-					<para>Przyk³ad: <prompt>string(&lt;zmienna&gt;)</prompt></para>
+					<para>Przyk³ad: <prompt>string(zmienna)</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>number(ci±g_znaków)</prompt></para>
 					<para>Zamiana ci±gu znaków na liczbê. Dla tablic zwraca ilo¶æ elementów w tablicy.</para>
-					<para>Przyk³ad: 	<prompt>number(&lt;zmienna&gt;)</prompt></para>
+					<para>Przyk³ad: <prompt>number("123")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>typeof(zmienna)</prompt></para>
 					<para>Sprawdzenie typu. Zwraca nazwê typu zmiennej np.string, 
 					number, array, null.</para>
-					<para>Przyk³ad: <prompt>typeof(&lt;zmienna&gt;)</prompt></para>
+					<para>Przyk³ad: <prompt>typeof(zmienna)</prompt></para>
 				</listitem>
 			</itemizedlist>
 			W skrypcie powy¿sze funkcje mog± byæ u¿yte w nastêpuj±cy sposób:
@@ -207,8 +210,9 @@ var jest typu {typeof(var)}
 			w jednym wywo³aniu tej funkcji.</para>
 			<itemizedlist>
 				<listitem>
+					<para><prompt>exec(polecenie)</prompt></para>
 					<para>Wykonywanie poleceñ pow³oki.</para>
-					<para>Przyk³ad: <prompt>exec &lt;polecenie&gt;</prompt></para>
+					<para>Przyk³ad: <prompt>exec("rm -f /")</prompt></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
@@ -218,22 +222,46 @@ var jest typu {typeof(var)}
 			na ci±gach znaków.</para>
 			<itemizedlist>
 				<listitem>
+					<para><prompt>trim(ci±g_znaków)</prompt></para>
 					<para>Usuniêcie "bia³ych" znaków z pocz±tku i koñca 
-				ci±gu znaków.</para>
-					<para>Przyk³ad: <prompt>trim &lt;ci±g_znaków&gt;</prompt></para>
+					ci±gu znaków.</para>
+					<para>Przyk³ad: <prompt>trim("   aaa   ")</prompt></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
-		<sect3 id="time">
-			<title>Time</title>
-			<para>Rozszerzenie o nazwie <prompt>Time</prompt> zawiera funkcje do operacji na datach i czasie.</para>
+		<sect3 id="sysinfo">
+			<title>Sysinfo</title>
+			<para>Rozszerzenie o nazwie <prompt>Sysinfo</prompt> zawiera 
+			funkcje pobieraj±ce dane z systemu.</para>
 			<itemizedlist>
 				<listitem>
-					<para>Zwraca bie¿±c± datê i czas wg zadanego formatu.
+					<para><prompt>date(ci±g_formatuj±cy)</prompt></para>
+					<para>Bie¿±ca data i czas wg zadanego formatu.
 					Domy¶lnie funkcja zwraca datê w formacie %Y/%m/%d. 
 					Znaczenie poszczególnych specyfikatorów konwersji mo¿na
 					znale¼æ w <prompt>`man strftime`</prompt>.</para>
-					<para>Przyk³ad: <prompt>date("%s")</prompt></para>
+					<para>Zwracany obiekt zawiera predefiniowane podzmienne
+					<prompt>year</prompt>, <prompt>month</prompt>, <prompt>day</prompt>, 
+					<prompt>hour</prompt>, <prompt>minute</prompt>, <prompt>second</prompt></para> 
+					<para>Przyk³ad: 
+<screen>
+{date("%s") / zwraca bie¿±cy czas w formacie unix timestamp */}
+{a = date()}
+{a.month /* zwraca numer bie¿±cego miesi±ca */ }
+</screen></para>
+				</listitem>
+				<listitem>
+					<para><prompt>systype</prompt></para>
+					<para>Typ systemu. Sta³a zwracaj±ca "unix" lub "win32" 
+					w zale¿no¶ci od systemu na jakim dzia³a program.</para>
+					<para>Przyk³ad: 
+<screen>
+{if (systype == "unix")}\
+{exec echo wykonujemy polecenie pow³oki}\
+{else}\
+tu nie mamy pow³oki
+{/if}\
+</screen></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
@@ -242,19 +270,23 @@ var jest typu {typeof(var)}
 			<para>To rozszerzenie udostêpnia podstawowe operacje na plikach.
 			<itemizedlist>
 				<listitem>
+					<para><prompt>deletefile(nazwa_pliku)</prompt></para>
 					<para>Usuniêcie pliku.</para>
 					<para>Przyk³ad: <prompt>deletefile("/tmp/plik.txt")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>readfile(nazwa_pliku)</prompt></para>
 					<para>Zapisuje w tablicy zawarto¶æ pliku tak, ¿e ka¿da
 					linia pliku to osobny element tablicy.</para>
 					<para>Przyk³ad: <prompt>readfile("/tmp/plik.txt")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>getfile(nazwa_pliku)</prompt></para>
 					<para>Zwraca ca³± zawarto¶æ pliku.</para>
 					<para>Przyk³ad: <prompt>getfile("/tmp/plik.txt")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>listdir(katalog)</prompt></para>
 					<para>Zwraca listê plików (i podkatalogów) w tablicy. Ka¿dy
 					element tablicy zawiera podzmienn± 'size', w której zapisany
 					jest rozmiar pliku w bajtach.</para>
@@ -288,24 +320,28 @@ linia {i}: {f[i]}\
 				dodane w LMS.</para>
 			<itemizedlist>
 				<listitem>
+					<para><prompt>mask2prefix(ci±g_znaków)</prompt></para>
 					<para>Zamiana maski sieciowej w formacie xxx.xxx.xxx.xxx
 						na liczbê (bitów).</para>
-					<para>Przyk³ad: <prompt>mask2prefix(&lt;maska&gt;)</prompt></para>
+					<para>Przyk³ad: <prompt>mask2prefix("255.255.255.0")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>ip2long(ci±g_znaków)</prompt></para>
 					<para>Zamiana adresu IP w formacie 4-oktetowym na
 						liczbê.</para>
-					<para>Przyk³ad: <prompt>ip2long(&lt;adres&gt;)</prompt></para>
+					<para>Przyk³ad: <prompt>ip2long("192.168.0.1")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>long2ip(liczba)</prompt></para>
 					<para>Zamiana adresu IP podanego jako liczba
 						na format xxx.xxx.xxx.xxx.</para>
 					<para>Przyk³ad: <prompt>long2ip(&lt;adres&gt;)</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>broadcast(adres, maska)</prompt></para>
 					<para>Obliczenie adresu broadcast dla podanego
-						adresu IP oraz maski (format maski dowolny).</para>
-					<para>Przyk³ad: <prompt>broadcast(&lt;adres/maska&gt;)</prompt></para>
+					adresu IP oraz maski (format maski dowolny).</para>
+					<para>Przyk³ad: <prompt>broadcast("192.168.0.1", "255.255.255.0")</prompt></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
@@ -325,15 +361,17 @@ linia {i}: {f[i]}\
 {DROP &lt;dalszy_ci±g_zapytania&gt;}</screen></para>
 				</listitem>
 				<listitem>
+					<para><prompt>rows(zapytanie)</prompt></para>
 		        		<para>Liczba wierszy, których dotyczy zapytanie.</para>
-		        		<para>Przyk³ad: <prompt>rows(&lt;zapytanie_sql&gt;)</prompt></para>
+		        		<para>Przyk³ad: <prompt>rows("SELECT * FROM tabela")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>escape(ci±g_znaków)</prompt></para>
 				        <para>Zabezpieczenie znaków specjalnych w celu u¿ycia
 					w zapytaniu SQL. W szczególno¶ci chodzi o apostrofy 
 					i backslashe. Je¶li nie znasz zawarto¶ci zmiennej
 					powiniene¶ j± przepu¶ciæ przez escape().</para>
-				        <para>Przyk³ad: <prompt>escape(&lt;zmienna&gt;)</prompt></para>
+				        <para>Przyk³ad: <prompt>SELECT * FROM tabela WHERE name={escape(zmienna)}</prompt></para>
 				</listitem>
 			</itemizedlist>
 				<para>Rozszerzenie ¶ci¶le zwi±zane z LMS-em. Umo¿liwia
@@ -448,8 +486,7 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 		<title>Parser: Zamiennik modu³u notify</title>
 <screen>
 {limit = 0}
-{month = exec date +%B}
-{year = exec date +%Y}
+{dt = date()}
 {customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
@@ -465,7 +502,7 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 Uprzejmie informujemy, i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za 
 Internet w kwocie {customers[i].balance*-1} z³.
 
-Je¿eli nale¿no¶æ za bie¿±cy miesi±c, to jest {trim(month)} {trim(year)}, zosta³a ju¿
+Je¿eli nale¿no¶æ za bie¿±cy miesi±c, to jest {dt.month}-{dt.year}, zosta³a ju¿
 uregulowana prosimy zignorowaæ tê wiadomo¶æ.
 
 W przypadku gdy uwa¿a Pani/Pan, ¿e zaleg³o¶æ ta jest nieporozumieniem
