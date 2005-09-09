@@ -51,7 +51,14 @@ if ((isset($_GET['id'])) && ($_GET['action']=='init'))
 	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
 	$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid']);
 	$cnote['cdate'] = time();
-	$cnote['paytime'] = 14;
+	
+	$t = $invoice['cdate'] + $invoice['paytime']*86400;
+	$deadline = mktime(23, 59, 59, date('m',$t), date('d',$t), date('Y',$t));
+	
+	if($cnote['cdate'] > $deadline)
+		$cnote['paytime'] = 0;
+	else
+		$cnote['paytime'] = floor(($deadline - $cnote['cdate'])/86400);
     
 	$SESSION->save('cnote', $cnote);
 	$SESSION->save('invoice', $invoice);
@@ -100,12 +107,11 @@ switch($_GET['action'])
 				if($cnote['cdate'] < $invoice['cdate'])
 				{
 					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
-					$cnote['cdate'] = time();
 				}
 			}
 			else
 			{
-				$error['cdate'] = trans('Incorrect date format!');
+				$error['cdate'] = trans('Incorrect date format! Using current date.');
 				$cnote['cdate'] = time();
 			}
 		}
@@ -172,7 +178,7 @@ switch($_GET['action'])
 						DOC_CNOTE,
 		    				$cnote['cdate'],
 			    			$cnote['paytime'],
-						$cnote['paytype'],
+						$invoice['paytype'],
 						$AUTH->id,
 						$invoice['customerid'],
 						$invoice['name'],
@@ -234,9 +240,6 @@ switch($_GET['action'])
 	        $SESSION->redirect('?m=invoicelist');
 	break;				
 }
-
-if($cnote['paytype'] == '')
-	$cnote['paytype'] = $invoice['paytype'] ? $invoice['paytype'] : trans('CASH');
 
 $SESSION->save('invoice', $invoice);
 $SESSION->save('cnote', $cnote);
