@@ -1452,7 +1452,7 @@ class LMS
 						SUM(value*count) AS value, COUNT(docid) AS count
 						FROM invoicecontents, documents
 						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-						WHERE docid = documents.id AND (type = '.DOC_INVOICE.' OR type = '.DOC_CNOTE.')'
+						WHERE docid = documents.id AND (type = '.DOC_CNOTE. (($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
 						.$where
 						.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template, closed, type '
 						.$sqlord.' '.$direction))

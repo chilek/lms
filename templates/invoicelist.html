@@ -91,7 +91,7 @@
 		</TD>
 	</TR>
 	<TR class="DARK">
-		<TD class="fall" colspan="7">
+		<TD class="fall" colspan="7" nowrap>
 				<B>{t}Filter:{/t} </B> 
 				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
@@ -104,6 +104,7 @@
 					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
 					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
 					<OPTION value="notclosed"{if $listdata.cat eq "notclosed"} SELECTED{/if}>{t}hide accounted<!plural>{/t}</OPTION>
+					<OPTION value="cnotes"{if $listdata.cat eq "cnotes"} SELECTED{/if}>{t}show only credit notes{/t}</OPTION>
 				</SELECT>&nbsp;
 				{t}Group:{/t}
 				<SELECT size="1" name="group">
