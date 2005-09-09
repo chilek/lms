@@ -85,13 +85,25 @@ tscript_value * tscript_ext_net_long2ip(tscript_value *arg)
 
 tscript_value * tscript_ext_net_broadcast(tscript_value *arg)
 {
-	tscript_value *res;
-	char addr[255], mask[255];
+	tscript_value *tmp, *index, *addr, *mask;
+	int argc;
 
-	sscanf(tscript_value_convert_to_string(arg)->data, "%[^/]/%s", addr, mask);
-	res = tscript_value_create_string(broadcast(addr, mask));
-	
-	return res;
+	if (arg->type != TSCRIPT_TYPE_ARRAY)
+    		return tscript_value_create_error("broadcast: 2 arguments required");
+	tmp = tscript_value_array_count(arg);
+	argc = atof(tmp->data);
+	tscript_value_free(tmp);
+	if (argc != 2)
+	        return tscript_value_create_error("broadcast: 2 arguments required");
+
+        index = tscript_value_create_number(0);
+        addr = *tscript_value_array_item_ref(&arg, index);
+        tscript_value_free(index);
+	index = tscript_value_create_number(1);
+	mask = *tscript_value_array_item_ref(&arg, index);
+	tscript_value_free(index);
+
+	return tscript_value_create_string(broadcast(addr->data, mask->data));
 }
 
 tscript_value * tscript_ext_net_mask2prefix(tscript_value *arg)
