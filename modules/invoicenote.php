@@ -99,7 +99,7 @@ switch($_GET['action'])
 				$cnote['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
 				if($cnote['cdate'] < $invoice['cdate'])
 				{
-					$error['cdate'] = 'Credit note date cannot be earlier than invoice date!';
+					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
 					$cnote['cdate'] = time();
 				}
 			}
