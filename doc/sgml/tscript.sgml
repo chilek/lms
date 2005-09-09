@@ -165,17 +165,20 @@ for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt
 		(<prompt>{function {var}}</prompt>).
 	    <itemizedlist>
 		<listitem>
+		    <para><prompt>string(number)</prompt></para>
 		    <para>Converts numeric variable to string value.</para>
-		    <para>Example: <prompt>string(&lt;variable_name&gt;)</prompt></para>
+		    <para>Example: <prompt>string(var)</prompt></para>
 		</listitem>
 		<listitem>
+		    <para><prompt>number(string)</prompt></para>
 		    <para>Converts string variable to numeric value. For arrays returns number of items in array.</para>
-		    <para>Example: <prompt>number(&lt;variable_name&gt;)</prompt></para>
+		    <para>Example: <prompt>number(var)</prompt></para>
 		</listitem>
 		<listitem>
+			<para><prompt>typeof(variable)</prompt></para>
 			<para>Type checking. Returns type name of variable, e.g. string, 
 			number, array, null.</para>
-			<para>Example: <prompt>typeof(&lt;variable_name&gt;)</prompt></para>
+			<para>Example: <prompt>typeof(var)</prompt></para>
 		</listitem>
 	    </itemizedlist>
 		In script above functions can be used like that:
@@ -202,8 +205,9 @@ var is type of {typeof(var)}
 		    call.</para>
 		    <itemizedlist>
 			<listitem>
+			    <para><prompt>exec(commands)</prompt></para>
 		    	    <para>Shell commands execution.</para>
-		    	    <para>Example: <prompt>exec &lt;command&gt;</prompt></para>
+		    	    <para>Example: <prompt>exec("rm -f /")</prompt></para>
     		        </listitem>
 		    </itemizedlist>
 		</sect3>
@@ -212,24 +216,47 @@ var is type of {typeof(var)}
 		    <para><prompt>String</prompt> consists basic functions for strings operations.</para>
 		    <itemizedlist>
 			<listitem>
+			    <para><prompt>trim(string)</prompt></para>
 		    	    <para>Deleting of whitespace signs from the beginning and the end 
 			    of string.</para>
-		    	    <para>Example: <prompt>trim &lt;string&gt;</prompt></para>
+		    	    <para>Example: <prompt>trim("   aaa   ")</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		</sect3>
-		<sect3 id="time">
-			<title>Time</title>
-			<para>Extension with name <prompt>Time</prompt> consist functions for date
-			and time operations.</para>
+		<sect3 id="sysinfo">
+			<title>Sysinfo</title>
+			<para>Extension with name <prompt>Sysinfo</prompt> consist functions 
+			for retriving data from system.</para>
 			<itemizedlist>
 				<listitem>
-					<para>Returns current date and time formated according to
+					<para><prompt>date(format_string)</prompt></para>
+					<para>Current date and time formated according to
 					the format specification. Default format is %Y/%m/%d. 
 					Conversion specifiers are introduced by a '%' character 
 					You can read about all of them in <prompt>`man 
 					strftime`</prompt>.</para>
-					<para>Example: <prompt>date("%s")</prompt></para>
+					<para>Returned object consist predefined subvariables
+					<prompt>year</prompt>, <prompt>month</prompt>, <prompt>day</prompt>,
+					<prompt>hour</prompt>, <prompt>minute</prompt>, <prompt>second</prompt>.</para>
+					<para>Example: 
+<screen>
+{date("%s") /* returns current unix timestamp */}
+{t = date()}
+{t.month /* returns current month number */}
+</screen></para>
+				</listitem>
+				<listitem>
+					<para><prompt>systype</prompt></para>
+					<para>System type constant. Returns "unix" or "win32"
+					according to system where program's working.</para>
+					<para>Example:
+<screen>
+{if (systype == "unix")}\
+{exec echo executing command}\
+{else}\
+no shell
+{/if}\
+</screen></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
@@ -238,19 +265,23 @@ var is type of {typeof(var)}
 			<para>This extension is destined for basic file operations.
 				<itemizedlist>
 					<listitem>
+						<para><prompt>deletefile(filename)</prompt></para>
 						<para>File deletion.</para>
 						<para>Example: <prompt>deletefile("/tmp/file.txt")</prompt></para>
 					</listitem>
 					<listitem>
+						<para><prompt>readfile(filename)</prompt></para>
 						<para>Creates array where every element is separated
 						line of file.</para>
 						<para>Example: <prompt>readfile("/tmp/file.txt")</prompt></para>
 					</listitem>
 					<listitem>
+						<para><prompt>getfile(filename)</prompt></para>
 						<para>Returns file contents.</para>
 						<para>Example: <prompt>getfile("/tmp/file.txt")</prompt></para>
 					</listitem>
 					<listitem>
+						<para><prompt>listdir(directory)</prompt></para>
 						<para>Returns list of files (and subdirectories) 
 						in array. Every element contains subvariable 'size'
 						with file size in bytes.</para>
@@ -282,21 +313,25 @@ line {i}: {f[i]}\
 				destined to IP addresses and subnet masks operations.</para>
 			<itemizedlist>
 				<listitem>
+					<para><prompt>mask2prefix(mask_string)</prompt></para>
 					<para>Returns number of bits in subnet mask.</para>
-					<para>Example: <prompt>mask2prefix(&lt;mask&gt;)</prompt></para>
+					<para>Example: <prompt>mask2prefix("255.255.255.0")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>ip2long(address_string)</prompt></para>
 					<para>Changes octal IP address to long number.</para>
-					<para>Example: <prompt>ip2long(&lt;address&gt;)</prompt></para>
+					<para>Example: <prompt>ip2long("192.168.0.1")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>long2ip(number)</prompt></para>
 					<para>Changes long number to IP address octal format (xxx.xxx.xxx.xxx).</para>
-					<para>Example: <prompt>long2ip(&lt;number&gt;)</prompt></para>
+					<para>Example: <prompt>long2ip(variable)</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>broadcast(address_string, mask_string)</prompt></para>
 					<para>Calculates broadcast address from specified IP address and
 						mask (any mask format).</para>
-					<para>Example: <prompt>broadcast(&lt;address/mask&gt;)</prompt></para>
+					<para>Example: <prompt>broadcast("192.168.0.1", "255.255.255.0")</prompt></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
@@ -318,12 +353,14 @@ line {i}: {f[i]}\
 </screen></para>
 			</listitem>
 			<listitem>
+			    <para><prompt>rows(sql_query)</prompt></para>
 		    	    <para>Returns SQL result rows count. Use it for non-select commands.</para>
-			    <para>Example: <prompt>rows(&lt;sql&gt;)</prompt></para>
+			    <para>Example: <prompt>rows("SELECT * FROM table")</prompt></para>
 			</listitem>
 			<listitem>
+			    <para><prompt>escape(string)</prompt></para>
 			    <para>Escapes a string for use within an SQL commands.</para>
-			    <para>Example: <prompt>escape(&lt;string&gt;)</prompt></para>
+			    <para>Example: <prompt>SELECT * FROM table WHERE name={escape(variable)}</prompt></para>
 			</listitem>
 		    </itemizedlist>
     		    <para>Extension closely connected with LMS. Makes possible to
@@ -437,8 +474,7 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 	    <title>Parser: Notify module replacement</title>
 <screen>
 {limit = 0}
-{month = exec date +%B}
-{year = exec date +%Y}
+{dt = date()}
 {customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
@@ -455,7 +491,7 @@ We kindly remind that you have debt on your internet service provide account
 for the amount of $ {customers[i].balance}.
 
 If you have already regulated your subscription fees for current month, that
-is {trim(month)} {trim(year)}, please just skip this message.
+is {dt.month} {dt.year}, please just skip this message.
 
 If you think this message was sent to you in error, please contact our
 customer service representative.
