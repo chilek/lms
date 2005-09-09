@@ -33,7 +33,8 @@ tscript_value * tscript_ext_sql_rows(tscript_value *arg)
 	
 	rows = 0;
 		
-	if( strncmp("SELECT", query, 6)==0 )
+	if( (strncmp("SELECT", query, 6)==0) ||
+	    (strncmp("select", query, 6)==0) )
 	{
 		q = db_query(conn, query);
 		rows = db_nrows(q);
