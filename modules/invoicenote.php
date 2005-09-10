@@ -169,6 +169,8 @@ switch($_GET['action'])
 					if($contents[$idx]['valuebrutto'] != $item['valuebrutto'])
 						$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
 				}
+				else
+					$contents[$idx]['valuebrutto'] = 0;
 			}
 
 			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, reference)
