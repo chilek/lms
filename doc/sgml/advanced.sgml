@@ -308,6 +308,7 @@
                     <member>zip - zip code of customer</member>
                     <member>city - location of customer</member>
 		    <member>closed - is document (invoice) closed (accounted)? (0/1)</member>
+		    <member>reference - document ID reference</member>
                </simplelist>
           </sect2>
           <sect2 id="documentcontents">

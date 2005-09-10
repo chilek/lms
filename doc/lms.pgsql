@@ -200,6 +200,7 @@ CREATE TABLE documents (
     	paytime smallint 	DEFAULT 0 NOT NULL,
 	paytype varchar(255) 	DEFAULT '' NOT NULL,
 	closed smallint		DEFAULT 0 NOT NULL,
+	reference integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -686,4 +687,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005082900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005090700');

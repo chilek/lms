@@ -312,6 +312,7 @@
                     <member>zip - kod pocztowy klienta</member>
                     <member>city - miasto klienta</member>
 		    <member>closed - czy dokument jest rozliczony? (0/1)</member>
+		    <member>reference - ID dokumentu (np. korygowanej faktury)</member>
                </simplelist>
           </sect2>
           <sect2 id="documentcontents">
