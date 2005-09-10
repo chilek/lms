@@ -10,11 +10,10 @@ $Id$
     wniosek: wydaje mi siê, ¿e powinna byæ mo¿liwo¶æ definiowania podzmiennych
     o nazwach takich samych jak funkcje lub inne rozszerzenia
         
-*** regexpy: funkcje np. replace()
+*** rozbudowa replace()
 
-    przyk³ad: mam MAC adresy 00:AD:34:... i chcê je wy¶wietliæ bez kropek.
-    Oczywi¶cie nie musi to byæ w standardzie, a raczej jako funkcje 
-    w extensions.
+    zrobienie replace() na podobienstwo PHP'owej ereg_replace(), czyli
+    chcialbym miec mozliwosc np. replace("[a-z]", "[A-Z]", "text)
 
 *** problem z zagnie¿d¿eniem if (innych instr. nie sprawdza³em)
 
@@ -31,16 +30,6 @@ $Id$
 
     np. {mail "recipient=a@a.pl;sender=b@b.pl"}tre¶æ wiadomo¶ci{/mail}
     
-*** funkcje wieloargumentowe
-
-    powy¿szy przyk³ad pokazuje, ¿e jest problem z przekazaniem wiêcej ni¿ 
-    jednego argumentu do funkcji.
-
-*** przeci±¿anie funkcji
-
-    dok³adniej to chodzi mi o argumenty domy¶lne funkcji, czyli zamiast
-    pisaæ {funkcja("")} chcia³bym {funkcja()} i/lub {funkcja}
-
 *** ró¿ne interpretowanie argumentów w funkcjach
 
     {file} i {exec} akceptuj± ró¿nie argumenty (filename dla {file} musi byæ 
