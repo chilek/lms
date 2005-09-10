@@ -17,7 +17,7 @@ version ? (??/??/????):
   - changed table name 'daemonhosts' to 'hosts' (alec)
   - lmsd/parser: changed tscript's API, added extensions: deletefile, 
     readfile, getfile, listdir, date, replace, systype (alec)
-  - started implementation of Credit Notes (alec)
+  - Credit Notes - WARNING! Invoice templates has been changed (alec)
 
 version 1.7.2 Doci (2005-08-13):
 

@@ -146,6 +146,7 @@ CREATE TABLE documents (
 	paytime tinyint NOT NULL DEFAULT '0',
 	paytype varchar(255) NOT NULL DEFAULT '',
 	closed tinyint(1) NOT NULL default '0',
+	reference int(11) NOT NULL default '0',
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid)
@@ -646,4 +647,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005082900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005090700');
