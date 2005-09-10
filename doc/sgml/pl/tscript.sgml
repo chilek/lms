@@ -44,62 +44,62 @@
 			</listitem>
 			<listitem>
 				<para>Warto¶æ wyra¿enia w nawiasach.</para>
-				<para>Przyk³ad: <prompt>( &lt;wyra¿enie&gt; )</prompt></para>
+				<para>Przyk³ad: <prompt>( wyra¿enie )</prompt></para>
 			</listitem>
 			<listitem>
 				<para>S³owo kluczowe "null". Okre¶la warto¶æ niezdefiniowan±.
 				Przydatne do sprawdzania, czy jaka¶ zmienna (warto¶æ) jest
 				zdefiniowana.</para>
-				<para>Przyk³ad: <prompt>&lt;zmienna&gt; = null</prompt></para>
+				<para>Przyk³ad: <prompt>zmienna = null</prompt></para>
 			</listitem>
 			<listitem>
 				<para>Porównania. Zwraca wynik logiczny porównania.</para>
 				<para>Przyk³ad: 
 <screen>
-&lt;wyra¿enie1&gt; == &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; != &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; &lt; &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; &gt; &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; &lt;= &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; &gt;= &lt;wyra¿enie2&gt;
+wyra¿enie1 == wyra¿enie2
+wyra¿enie1 != wyra¿enie2
+wyra¿enie1 &lt; wyra¿enie2
+wyra¿enie1 &gt; wyra¿enie2
+wyra¿enie1 &lt;= wyra¿enie2
+wyra¿enie1 &gt;= wyra¿enie2
 </screen></para>
 			</listitem>
 			<listitem>
 				<para>Operatory binarne. Suma i iloczyn bitowy.</para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; | &lt;wyra¿enie2&gt;</prompt></para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; & &lt;wyra¿enie2&gt;</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie1 | wyra¿enie2</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie1 & wyra¿enie2</prompt></para>
 			</listitem>
 			<listitem>
 				<para>Operatory logiczne.</para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; || &lt;wyra¿enie2&gt;</prompt></para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; && &lt;wyra¿enie2&gt;</prompt></para>
-				<para>Przyk³ad: <prompt>! &lt;wyra¿enie1&gt;</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie1 || wyra¿enie2</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie1 && wyra¿enie2</prompt></para>
+				<para>Przyk³ad: <prompt>! wyra¿enie1</prompt></para>
 			</listitem>
 			<listitem>
 				<para>£±czenie ci±gów znaków. Gdy oba wyra¿enia nie s± liczbami 
 				traktuje je jako ci±gi znaków i dokonuje ich po³±czenia.</para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie1 + wyra¿enie2</prompt></para>
 			</listitem>
 			<listitem>
 				<para>Operatory arytmetyczne. Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach.</para>
 				<para>Przyk³ad: 
 <screen>
-&lt;wyra¿enie1&gt; + &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; - &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; * &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; / &lt;wyra¿enie2&gt;
-&lt;wyra¿enie1&gt; % &lt;wyra¿enie2&gt;
+wyra¿enie1 + wyra¿enie2
+wyra¿enie1 - wyra¿enie2
+wyra¿enie1 * wyra¿enie2
+wyra¿enie1 / wyra¿enie2
+wyra¿enie1 % wyra¿enie2
 </screen></para>
 			</listitem>
 			<listitem>
 				<para>Jednoargumentowe operatory inkrementacji/dekrementacji.</para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie&gt;++</prompt></para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie&gt;--</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie++</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie--</prompt></para>
 			</listitem>
 			<listitem>
 				<para>Porównanie ci±gu do z wyra¿eniem regularnym. Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
 				w przeciwnym wypadku zwraca 0.</para>
-				<para>Przyk³ad: <prompt>&lt;wyra¿enie&gt; =~ &lt;wzorzec&gt;</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie =~ wzorzec</prompt></para>
 			</listitem>
 			</itemizedlist>
 		</sect3>
@@ -117,15 +117,15 @@
 			<itemizedlist>
 				<listitem>
 					<para>Przypisanie. Przypisanie warto¶ci wyra¿enia do podanej zmiennej.</para>
-					<para>Przyk³ad: <prompt>&lt;nazwa_zmiennej&gt; = &lt;wyra¿enie&gt;</prompt></para>
+					<para>Przyk³ad: <prompt>zmienna = wyra¿enie</prompt></para>
 				</listitem>
 				<listitem>
 					<para>Wyra¿enie warunkowe. Wykonanie polecenia tylko wtedy gry wyra¿enie jest prawd±. 
 					Druga forma wykonuje polecenie1 gdy wyra¿enie jest prawd± lub polecenie2
 					gdy jest fa³szem.</para> 
 					<para>Przyk³ad: <screen>
-if ( &lt;wyra¿enie&gt; ) &lt;polecenia&gt; /if
-if ( &lt;wyra¿enie&gt; ) &lt;polecenie1&gt; else &lt;polecenie2&gt; /if
+if ( wyra¿enie ) polecenia /if
+if ( wyra¿enie ) polecenie1 else polecenie2 /if
 </screen></para>
 				    	<para>Tekst miêdzy blokami jest traktowany jako polecenia
 				    	dlatego nastêpuj±cy przyk³ad jest prawid³owy: <screen>
@@ -151,15 +151,15 @@ a nie równa siê 1
 					<para>Pêtla iteracyjna. Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
 					wykonywane jest polecenie i polecenie2, dopóki wyra¿enie jest prawdziwe.</para>
 					<para>Przyk³ad: <screen>
-for ( &lt;polecenie1&gt; ; &lt;wyra¿enie&gt; ; &lt;polecenie2&gt; )
-&lt;polecenia&gt;
+for ( polecenie1 ; wyra¿enie ; polecenie2 )
+polecenia
 /for</screen></para>
 				</listitem>
 				<listitem>
 					<para>Przekierowanie wyj¶cia. Dane zostan± dopisane
 					do pliku.</para>
 					<para>Przyk³ad: <screen>
-{file &lt;nazwa_pliku&gt;} &lt;polecenia&gt; {/file}</screen></para>
+{file nazwa_pliku} polecenia {/file}</screen></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
@@ -226,6 +226,14 @@ var jest typu {typeof(var)}
 					<para>Usuniêcie "bia³ych" znaków z pocz±tku i koñca 
 					ci±gu znaków.</para>
 					<para>Przyk³ad: <prompt>trim("   aaa   ")</prompt></para>
+				</listitem>
+				<listitem>
+					<para><prompt>replace(wzorzec, zamiennik, ci±g_znaków)</prompt></para>
+					<para>Funkcja przeszukuje ci±g_znaków w poszukiwaniu fragmentów pasuj±cych
+					do wzorca i wstawia w jego miejsce zamiennik. Wzorzec mo¿e byæ
+					wyra¿eniem regularnym.</para>
+					<para>Przyk³ad: <prompt>replace(":", "-", mac)</prompt></para>
+					<para>Przyk³ad: <prompt>replace("[a-z]", "-", "teksty")</prompt></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
@@ -335,7 +343,7 @@ linia {i}: {f[i]}\
 					<para><prompt>long2ip(liczba)</prompt></para>
 					<para>Zamiana adresu IP podanego jako liczba
 						na format xxx.xxx.xxx.xxx.</para>
-					<para>Przyk³ad: <prompt>long2ip(&lt;adres&gt;)</prompt></para>
+					<para>Przyk³ad: <prompt>long2ip(zmienna)</prompt></para>
 				</listitem>
 				<listitem>
 					<para><prompt>broadcast(adres, maska)</prompt></para>
@@ -351,14 +359,16 @@ linia {i}: {f[i]}\
 			z obs³ug± bazy danych. Pozwala na wykonywanie poleceñ SQL.</para>
 			<itemizedlist>
 				<listitem>
-		        		<para>Polecenia SQL</para>
+					<para>Polecenia SQL: <prompt>SELECT</prompt>, <prompt>INSERT</prompt>,
+					<prompt>DELETE</prompt>, <prompt>UPDATE</prompt>, <prompt>CREATE</prompt>, 
+					<prompt>DROP</prompt>.</para>
 					<para>Przyk³ad: <screen>
-{SELECT &lt;dalszy_ci±g_zapytania&gt;}
-{INSERT &lt;dalszy_ci±g_zapytania&gt;}
-{DELETE &lt;dalszy_ci±g_zapytania&gt;}
-{UPDATE &lt;dalszy_ci±g_zapytania&gt;}
-{CREATE &lt;dalszy_ci±g_zapytania&gt;}
-{DROP &lt;dalszy_ci±g_zapytania&gt;}</screen></para>
+{SELECT * FROM tabela}
+{INSERT INTO tabela VALUES(1)}
+{DELETE FROM tabela}
+{UPDATE tabela SET kolumna=1}
+{CREATE TABLE foo (bar integer)}
+{DROP TABLE foo}</screen></para>
 				</listitem>
 				<listitem>
 					<para><prompt>rows(zapytanie)</prompt></para>

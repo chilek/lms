@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -2798,6 +2798,46 @@ BORDER="0"
 ></TR
 ></TBODY
 ></TABLE
+>
+          </P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="INSTALL-INVOICES-CNOTE"
+>2.9.1.3. Credit Notes</A
+></H4
+><P
+>Credit notes uses invoices settings from 
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[invoices]</I
+></SPAN
+> section.
+	  Default invoice template include also credit notes contents, but
+	  you have possibility to define different template for credit notes
+	  (the rest of options is common for both invoices and credit notes):
+          <UL
+><LI
+><P
+>cnote_template_file</P
+><P
+>Credit note template, which should be placed in 
+               <TT
+CLASS="FILENAME"
+>templates</TT
+> directory. Default: invoice.html.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>cnote_template_file = invoice-mynet.html</SAMP
+></P
+></LI
+></UL
 >
           </P
 ></DIV
@@ -11355,7 +11395,7 @@ CLASS="PROMPT"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->( &lt;expression&gt; )</SAMP
+>( expression )</SAMP
 ></P
 ></LI
 ><LI
@@ -11365,7 +11405,7 @@ CLASS="PROMPT"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;variable&gt; = null</SAMP
+>variable = null</SAMP
 ></P
 ></LI
 ><LI
@@ -11376,12 +11416,12 @@ CLASS="PROMPT"
 >Example: 
 <PRE
 CLASS="SCREEN"
->&lt;expression1&gt; == &lt;expression2&gt;
-&lt;expression1&gt; != &lt;expression2&gt;
-&lt;expression1&gt; &lt; &lt;expression2&gt;
-&lt;expression1&gt; &gt; &lt;expression2&gt;
-&lt;expression1&gt; &lt;= &lt;expression2&gt;
-&lt;expression1&gt; &gt;= &lt;expression2&gt;</PRE
+>expression1 == expression2
+expression1 != expression2
+expression1 &lt; expression2
+expression1 &gt; expression2
+expression1 &lt;= expression2
+expression1 &gt;= expression2</PRE
 ></P
 ></LI
 ><LI
@@ -11390,12 +11430,12 @@ CLASS="SCREEN"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression1&gt; | &lt;expression2&gt;</SAMP
+>expression1 | expression2</SAMP
 ></P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression1&gt; &#38; &lt;expression2&gt;</SAMP
+>expression1 &#38; expression2</SAMP
 ></P
 ></LI
 ><LI
@@ -11404,17 +11444,17 @@ CLASS="PROMPT"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression1&gt; || &lt;expression2&gt;</SAMP
+>expression1 || expression2</SAMP
 ></P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression1&gt; &#38;&#38; &lt;expression2&gt;</SAMP
+>expression1 &#38;&#38; expression2</SAMP
 ></P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->! &lt;expression&gt;</SAMP
+>! expression</SAMP
 ></P
 ></LI
 ><LI
@@ -11424,7 +11464,7 @@ CLASS="PROMPT"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression1&gt; + &lt;expression2&gt;</SAMP
+>expression1 + expression2</SAMP
 ></P
 ></LI
 ><LI
@@ -11434,11 +11474,11 @@ CLASS="PROMPT"
 >Example: 
 <PRE
 CLASS="SCREEN"
->&lt;expression1&gt; + &lt;expression2&gt;
-&lt;expression1&gt; - &lt;expression2&gt;
-&lt;expression1&gt; * &lt;expression2&gt;
-&lt;expression1&gt; / &lt;expression2&gt;
-&lt;expression1&gt; % &lt;expression2&gt;</PRE
+>expression1 + expression2
+expression1 - expression2
+expression1 * expression2
+expression1 / expression2
+expression1 % expression2</PRE
 ></P
 ></LI
 ><LI
@@ -11447,12 +11487,12 @@ CLASS="SCREEN"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression&gt;++</SAMP
+>expression++</SAMP
 ></P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression&gt;--</SAMP
+>expression--</SAMP
 ></P
 ></LI
 ><LI
@@ -11462,7 +11502,7 @@ CLASS="PROMPT"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;expression1&gt; =~ &lt;expression2&gt;</SAMP
+>expression1 =~ expression2</SAMP
 ></P
 ></LI
 ></UL
@@ -11502,7 +11542,7 @@ NAME="COMMANDS"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->&lt;variable_name&gt; = &lt;expression&gt;</SAMP
+>variable = expression</SAMP
 ></P
 ></LI
 ><LI
@@ -11513,8 +11553,8 @@ CLASS="PROMPT"
 >Example:
 <PRE
 CLASS="SCREEN"
->if ( &lt;expression&gt; ) &lt;command&gt; /if
-if ( &lt;expression&gt; ) &lt;commands1&gt; else &lt;commands2&gt; /if</PRE
+>if ( expression ) command /if
+if ( expression ) commands1 else commands2 /if</PRE
 ></P
 ><P
 >Text between command blocks is treated as a command so the following example is correct:
@@ -11546,7 +11586,7 @@ a doesn't equal 1
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt; /for</SAMP
+>for ( command1 ; expression ; command2 ) commands /for</SAMP
 ></P
 ></LI
 ><LI
@@ -11555,7 +11595,7 @@ CLASS="PROMPT"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->{file &lt;file_name&gt;} &lt;commands&gt; {/file}</SAMP
+>{file file_name} commands {/file}</SAMP
 ></P
 ></LI
 ></UL
@@ -11581,30 +11621,45 @@ CLASS="PROMPT"
 	    <UL
 ><LI
 ><P
+><SAMP
+CLASS="PROMPT"
+>string(number)</SAMP
+></P
+><P
 >Converts numeric variable to string value.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->string(&lt;variable_name&gt;)</SAMP
+>string(var)</SAMP
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>number(string)</SAMP
+></P
 ><P
 >Converts string variable to numeric value. For arrays returns number of items in array.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->number(&lt;variable_name&gt;)</SAMP
+>number(var)</SAMP
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>typeof(variable)</SAMP
+></P
 ><P
 >Type checking. Returns type name of variable, e.g. string, 
 			number, array, null.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->typeof(&lt;variable_name&gt;)</SAMP
+>typeof(var)</SAMP
 ></P
 ></LI
 ></UL
@@ -11658,11 +11713,16 @@ CLASS="PROMPT"
 ><UL
 ><LI
 ><P
+><SAMP
+CLASS="PROMPT"
+>exec(commands)</SAMP
+></P
+><P
 >Shell commands execution.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->exec &lt;command&gt;</SAMP
+>exec("rm -f /")</SAMP
 ></P
 ></LI
 ></UL
@@ -11683,12 +11743,38 @@ CLASS="PROMPT"
 ><UL
 ><LI
 ><P
+><SAMP
+CLASS="PROMPT"
+>trim(string)</SAMP
+></P
+><P
 >Deleting of whitespace signs from the beginning and the end 
 			    of string.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->trim &lt;string&gt;</SAMP
+>trim("   aaa   ")</SAMP
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>replace(pattern, replacement, string)</SAMP
+></P
+><P
+>This function scans string for matches to pattern, then replaces 
+				the matched text with replacement. Pattern can be a regular expression.
+				</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>replace(":", "-", mac)</SAMP
+></P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>replace("[a-z]", "-", "Text")</SAMP
 ></P
 ></LI
 ></UL
@@ -11698,19 +11784,24 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="TIME"
->6.3.3.3. Time</A
+NAME="SYSINFO"
+>6.3.3.3. Sysinfo</A
 ></H4
 ><P
 >Extension with name <SAMP
 CLASS="PROMPT"
->Time</SAMP
-> consist functions for date
-			and time operations.</P
+>Sysinfo</SAMP
+> consist functions 
+			for retriving data from system.</P
 ><UL
 ><LI
 ><P
->Returns current date and time formated according to
+><SAMP
+CLASS="PROMPT"
+>date(format_string)</SAMP
+></P
+><P
+>Current date and time formated according to
 					the format specification. Default format is %Y/%m/%d. 
 					Conversion specifiers are introduced by a '%' character 
 					You can read about all of them in <SAMP
@@ -11719,9 +11810,54 @@ CLASS="PROMPT"
 					strftime`</SAMP
 >.</P
 ><P
->Example: <SAMP
+>Returned object consist predefined subvariables
+					<SAMP
 CLASS="PROMPT"
->date("%s")</SAMP
+>year</SAMP
+>, <SAMP
+CLASS="PROMPT"
+>month</SAMP
+>, <SAMP
+CLASS="PROMPT"
+>day</SAMP
+>,
+					<SAMP
+CLASS="PROMPT"
+>hour</SAMP
+>, <SAMP
+CLASS="PROMPT"
+>minute</SAMP
+>, <SAMP
+CLASS="PROMPT"
+>second</SAMP
+>.</P
+><P
+>Example: 
+<PRE
+CLASS="SCREEN"
+>{date("%s") /* returns current unix timestamp */}
+{t = date()}
+{t.month /* returns current month number */}</PRE
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>systype</SAMP
+></P
+><P
+>System type constant. Returns "unix" or "win32"
+					according to system where program's working.</P
+><P
+>Example:
+<PRE
+CLASS="SCREEN"
+>{if (systype == "unix")}\
+{exec echo executing command}\
+{else}\
+no shell
+{/if}\</PRE
 ></P
 ></LI
 ></UL
@@ -11739,6 +11875,11 @@ NAME="FILE"
 				<UL
 ><LI
 ><P
+><SAMP
+CLASS="PROMPT"
+>deletefile(filename)</SAMP
+></P
+><P
 >File deletion.</P
 ><P
 >Example: <SAMP
@@ -11747,6 +11888,11 @@ CLASS="PROMPT"
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>readfile(filename)</SAMP
+></P
 ><P
 >Creates array where every element is separated
 						line of file.</P
@@ -11758,6 +11904,11 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+><SAMP
+CLASS="PROMPT"
+>getfile(filename)</SAMP
+></P
+><P
 >Returns file contents.</P
 ><P
 >Example: <SAMP
@@ -11766,6 +11917,11 @@ CLASS="PROMPT"
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>listdir(directory)</SAMP
+></P
 ><P
 >Returns list of files (and subdirectories) 
 						in array. Every element contains subvariable 'size'
@@ -11812,39 +11968,59 @@ NAME="NET"
 ><UL
 ><LI
 ><P
+><SAMP
+CLASS="PROMPT"
+>mask2prefix(mask_string)</SAMP
+></P
+><P
 >Returns number of bits in subnet mask.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->mask2prefix(&lt;mask&gt;)</SAMP
+>mask2prefix("255.255.255.0")</SAMP
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>ip2long(address_string)</SAMP
+></P
 ><P
 >Changes octal IP address to long number.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->ip2long(&lt;address&gt;)</SAMP
+>ip2long("192.168.0.1")</SAMP
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>long2ip(number)</SAMP
+></P
 ><P
 >Changes long number to IP address octal format (xxx.xxx.xxx.xxx).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->long2ip(&lt;number&gt;)</SAMP
+>long2ip(variable)</SAMP
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>broadcast(address_string, mask_string)</SAMP
+></P
 ><P
 >Calculates broadcast address from specified IP address and
 						mask (any mask format).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->broadcast(&lt;address/mask&gt;)</SAMP
+>broadcast("192.168.0.1", "255.255.255.0")</SAMP
 ></P
 ></LI
 ></UL
@@ -11863,35 +12039,66 @@ NAME="SQL"
 ><UL
 ><LI
 ><P
->SQL commands</P
+>SQL commands: <SAMP
+CLASS="PROMPT"
+>SELECT</SAMP
+>, 
+				<SAMP
+CLASS="PROMPT"
+>INSERT</SAMP
+>, <SAMP
+CLASS="PROMPT"
+>DELETE</SAMP
+>, 
+				<SAMP
+CLASS="PROMPT"
+>UPDATE</SAMP
+>, <SAMP
+CLASS="PROMPT"
+>CREATE</SAMP
+>, 
+				<SAMP
+CLASS="PROMPT"
+>DROP</SAMP
+>.</P
 ><P
 >Example:
 <PRE
 CLASS="SCREEN"
->{SELECT &lt;the_rest_of_query&gt;}
-{INSERT &lt;the_rest_of_query&gt;}
-{DELETE &lt;the_rest_of_query&gt;}
-{UPDATE &lt;the_rest_of_query&gt;}
-{CREATE &lt;the_rest_of_query&gt;}
-{DROP &lt;the_rest_of_query&gt;}</PRE
+>{SELECT * FROM table}
+{INSERT INTO table VALUES(1)}
+{DELETE FROM table}
+{UPDATE table SET column=1}
+{CREATE TABLE foo (bar integer) }
+{DROP TABLE foo}</PRE
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>rows(sql_query)</SAMP
+></P
 ><P
 >Returns SQL result rows count. Use it for non-select commands.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->rows(&lt;sql&gt;)</SAMP
+>rows("SELECT * FROM table")</SAMP
 ></P
 ></LI
 ><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>escape(string)</SAMP
+></P
 ><P
 >Escapes a string for use within an SQL commands.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->escape(&lt;string&gt;)</SAMP
+>SELECT * FROM table WHERE name={escape(variable)}</SAMP
 ></P
 ></LI
 ></UL
@@ -12193,8 +12400,7 @@ NAME="PARSER-E3"
 ><PRE
 CLASS="SCREEN"
 >{limit = 0}
-{month = exec date +%B}
-{year = exec date +%Y}
+{dt = date()}
 {customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
@@ -12211,7 +12417,7 @@ We kindly remind that you have debt on your internet service provide account
 for the amount of $ {customers[i].balance}.
 
 If you have already regulated your subscription fees for current month, that
-is {trim(month)} {trim(year)}, please just skip this message.
+is {dt.month} {dt.year}, please just skip this message.
 
 If you think this message was sent to you in error, please contact our
 customer service representative.

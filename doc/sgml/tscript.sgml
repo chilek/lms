@@ -44,61 +44,61 @@
 		</listitem>
 		<listitem>
 		    <para>Value of expression inside parenthesis.</para>
-		    <para>Example: <prompt>( &lt;expression&gt; )</prompt></para>
+		    <para>Example: <prompt>( expression )</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>Null keyword. Prescribe not defined value. Useful for
 		    checking that some value was or wasn't defined.</para>
-		    <para>Example: <prompt>&lt;variable&gt; = null</prompt></para>
+		    <para>Example: <prompt>variable = null</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>Comparisions. Returns logical result of expressions
 		    comparision.</para>
 		    <para>Example: 
 <screen>
-&lt;expression1&gt; == &lt;expression2&gt;
-&lt;expression1&gt; != &lt;expression2&gt;
-&lt;expression1&gt; &lt; &lt;expression2&gt;
-&lt;expression1&gt; &gt; &lt;expression2&gt;
-&lt;expression1&gt; &lt;= &lt;expression2&gt;
-&lt;expression1&gt; &gt;= &lt;expression2&gt;
+expression1 == expression2
+expression1 != expression2
+expression1 &lt; expression2
+expression1 &gt; expression2
+expression1 &lt;= expression2
+expression1 &gt;= expression2
 </screen></para>
 		</listitem>
 		<listitem>
 		    <para>Binary operators. Sum and product.</para>
-		    <para>Example: <prompt>&lt;expression1&gt; | &lt;expression2&gt;</prompt></para>
-		    <para>Example: <prompt>&lt;expression1&gt; & &lt;expression2&gt;</prompt></para>
+		    <para>Example: <prompt>expression1 | expression2</prompt></para>
+		    <para>Example: <prompt>expression1 & expression2</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>Logical operators.</para>
-		    <para>Example: <prompt>&lt;expression1&gt; || &lt;expression2&gt;</prompt></para>
-		    <para>Example: <prompt>&lt;expression1&gt; && &lt;expression2&gt;</prompt></para>
-		    <para>Example: <prompt>! &lt;expression&gt;</prompt></para>
+		    <para>Example: <prompt>expression1 || expression2</prompt></para>
+		    <para>Example: <prompt>expression1 && expression2</prompt></para>
+		    <para>Example: <prompt>! expression</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>Strings concatenation. When both expression values haven't numeric type 
 			treats expressions as strings and performs string concatenation.</para>
-		    <para>Example: <prompt>&lt;expression1&gt; + &lt;expression2&gt;</prompt></para>
+		    <para>Example: <prompt>expression1 + expression2</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>Arithmetic operators. Evaluates to result of arithmetic operation on two expression values.</para>
 		    <para>Example: 
 <screen>
-&lt;expression1&gt; + &lt;expression2&gt;
-&lt;expression1&gt; - &lt;expression2&gt;
-&lt;expression1&gt; * &lt;expression2&gt;
-&lt;expression1&gt; / &lt;expression2&gt;
-&lt;expression1&gt; % &lt;expression2&gt;</screen></para>
+expression1 + expression2
+expression1 - expression2
+expression1 * expression2
+expression1 / expression2
+expression1 % expression2</screen></para>
 		</listitem>
 		<listitem>
 		    <para>Single-argument incremental/decremental operators.</para>
-		    <para>Example: <prompt>&lt;expression&gt;++</prompt></para>
-		    <para>Example: <prompt>&lt;expression&gt;--</prompt></para>
+		    <para>Example: <prompt>expression++</prompt></para>
+		    <para>Example: <prompt>expression--</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>String comparision with regular expression. Evaluates to 1 if expression1 value match with regular expression2, else
 		    0.</para>
-		    <para>Example: <prompt>&lt;expression1&gt; =~ &lt;expression2&gt;</prompt></para>
+		    <para>Example: <prompt>expression1 =~ expression2</prompt></para>
 		</listitem>
 	    </itemizedlist>
 	    </sect3>
@@ -116,15 +116,15 @@
 	    <itemizedlist>
 		<listitem>
 		    <para>Assignment. Assigns expression value to specified variable.</para>
-		    <para>Example: <prompt>&lt;variable_name&gt; = &lt;expression&gt;</prompt></para>
+		    <para>Example: <prompt>variable = expression</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>Conditional statement. Executes command only if expression is true. Second form executes 
 		    command1 if expression is true or command2 if expression is false.</para>
 		    <para>Example:
 <screen>
-if ( &lt;expression&gt; ) &lt;command&gt; /if
-if ( &lt;expression&gt; ) &lt;commands1&gt; else &lt;commands2&gt; /if</screen></para>
+if ( expression ) command /if
+if ( expression ) commands1 else commands2 /if</screen></para>
 		    <para>Text between command blocks is treated as a command so the following example is correct:
 <screen>
 Some text 
@@ -149,12 +149,12 @@ a doesn't equal 1
 		    <para>Iterative loop. Executes first command1 as loop initialization command. Then executes 
 		    commands and command2 while expression is true.</para>
 		    <para>Example: <prompt>
-for ( &lt;command1&gt; ; &lt;expression&gt; ; &lt;command2&gt; ) &lt;commands&gt; /for
+for ( command1 ; expression ; command2 ) commands /for
 </prompt></para>
 		</listitem>
 		<listitem>
 		    <para>Script output redirection. Redirects script output to file. Data will be appended to file.</para>
-		    <para>Example: <prompt>{file &lt;file_name&gt;} &lt;commands&gt; {/file}</prompt></para>
+		    <para>Example: <prompt>{file file_name} commands {/file}</prompt></para>
 		</listitem>
 	    </itemizedlist>
 	    </sect3>
@@ -221,6 +221,14 @@ var is type of {typeof(var)}
 			    of string.</para>
 		    	    <para>Example: <prompt>trim("   aaa   ")</prompt></para>
 			</listitem>
+			<listitem>
+				<para><prompt>replace(pattern, replacement, string)</prompt></para>
+				<para>This function scans string for matches to pattern, then replaces 
+				the matched text with replacement. Pattern can be a regular expression.
+				</para>
+				<para>Example: <prompt>replace(":", "-", mac)</prompt></para>
+				<para>Example: <prompt>replace("[a-z]", "-", "Text")</prompt></para>
+				</listitem>
 		    </itemizedlist>
 		</sect3>
 		<sect3 id="sysinfo">
@@ -341,15 +349,18 @@ line {i}: {f[i]}\
 		    Allows to run SQL commands.</para>
 		    <itemizedlist>
 			<listitem>
-		    	    <para>SQL commands</para>
+				<para>SQL commands: <prompt>SELECT</prompt>, 
+				<prompt>INSERT</prompt>, <prompt>DELETE</prompt>, 
+				<prompt>UPDATE</prompt>, <prompt>CREATE</prompt>, 
+				<prompt>DROP</prompt>.</para>
 		    	    <para>Example:
 <screen>
-{SELECT &lt;the_rest_of_query&gt;}
-{INSERT &lt;the_rest_of_query&gt;}
-{DELETE &lt;the_rest_of_query&gt;}
-{UPDATE &lt;the_rest_of_query&gt;}
-{CREATE &lt;the_rest_of_query&gt;}
-{DROP &lt;the_rest_of_query&gt;}
+{SELECT * FROM table}
+{INSERT INTO table VALUES(1)}
+{DELETE FROM table}
+{UPDATE table SET column=1}
+{CREATE TABLE foo (bar integer) }
+{DROP TABLE foo}
 </screen></para>
 			</listitem>
 			<listitem>
