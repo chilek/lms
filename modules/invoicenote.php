@@ -119,7 +119,7 @@ switch($_GET['action'])
 			$cnote['cdate'] = time();
 		
 		if(!$cnote['number'])
-		        $cnote['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $cnote['numberplanid'], $cnote['cdate']);
+		        $cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 		else
 		{
 			if(!eregi('^[0-9]+$', $cnote['number']))
