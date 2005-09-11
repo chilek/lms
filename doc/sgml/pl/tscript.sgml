@@ -243,7 +243,7 @@ var jest typu {typeof(var)}
 			funkcje pobieraj±ce dane z systemu.</para>
 			<itemizedlist>
 				<listitem>
-					<para><prompt>date(ci±g_formatuj±cy)</prompt></para>
+					<para><prompt>date([ci±g_formatuj±cy])</prompt></para>
 					<para>Bie¿±ca data i czas wg zadanego formatu.
 					Domy¶lnie funkcja zwraca datê w formacie %Y/%m/%d. 
 					Znaczenie poszczególnych specyfikatorów konwersji mo¿na
@@ -464,7 +464,7 @@ linia {i}: {f[i]}\
 		<para>Zacznijmy od bardzo prostego skryptu, który tworzy plik
 		<filename>/etc/hosts</filename> z list± adresów i nazw komputerów 
 		(oraz urz±dzeñ).
-		<example id="parser-e1">
+		<example id="tscript-example-hosts">
 		<title>Parser: Tworzenie pliku /etc/hosts</title>
 <screen>
 {result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
@@ -476,7 +476,7 @@ linia {i}: {f[i]}\
 		</example></para>
 		<para>Utworzenie listy d³u¿ników jest bardzo proste, zw³aszcza
 		gdy zastosujemy jedn± z predefiniowanych sta³ych.
-		<example id="parser-e2">
+		<example id="tscript-example-debtors">
 		<title>Parser: Lista d³u¿ników</title>
 <screen>
 {
@@ -492,7 +492,7 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 		<para>Kolejny trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
 		<prompt>exec</prompt>. Skrypt wysy³a wiadomo¶ci do klientów z bilansem ni¿szym od
 		zadanego limitu.
-		<example id="parser-e3">
+		<example id="tscript-example-notify">
 		<title>Parser: Zamiennik modu³u notify</title>
 <screen>
 {limit = 0}
