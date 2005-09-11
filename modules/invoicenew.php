@@ -57,7 +57,7 @@ switch($_GET['action'])
 	case 'additem':
 		$itemdata = r_trim($_POST);
 		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)
-			$itemdata[$key] = round((float) str_replace(',','.',$itemdata[$key]),2);
+			$itemdata[$key] = f_round($itemdata[$key]);
 		
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
@@ -67,12 +67,12 @@ switch($_GET['action'])
 			elseif($itemdata['valuebrutto'] != 0)
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue + 100) * 100, 2);
 			
-			// str_replace here is needed because of bug in some PHP versions
-			$itemdata['s_valuenetto'] = str_replace(',','.',$itemdata['valuenetto'] * $itemdata['count']);
-			$itemdata['s_valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto'] * $itemdata['count']);
-			$itemdata['valuenetto'] = str_replace(',','.',$itemdata['valuenetto']);
-			$itemdata['valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto']);
-			$itemdata['count'] = str_replace(',','.',$itemdata['count']);
+			// str_replace->f_round here is needed because of bug in some PHP versions
+			$itemdata['s_valuenetto'] = f_round($itemdata['valuenetto'] * $itemdata['count']);
+			$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
+			$itemdata['valuenetto'] = f_round($itemdata['valuenetto']);
+			$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto']);
+			$itemdata['count'] = f_round($itemdata['count']);
 			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
