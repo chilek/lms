@@ -147,9 +147,9 @@ switch($_GET['action'])
 				$contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx] ? $newcontents['tariffid'][$idx] : $item['tariffid'];
 				$contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx] ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
 				$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx] ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
-				$contents[$idx]['valuebrutto'] = round((float) str_replace(',','.',$contents[$idx]['valuebrutto']),2);
-				$contents[$idx]['valuenetto'] = round((float) str_replace(',','.',$contents[$idx]['valuenetto']),2);
-				$contents[$idx]['count'] = round((float) str_replace(',','.',$contents[$idx]['count']),2);
+				$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
+				$contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuenetto']);
+				$contents[$idx]['count'] = f_round($contents[$idx]['count']);
 
 				$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
 				
