@@ -26,6 +26,12 @@ to co jest dzia³a ale pachnie ¼le.
 alec> niestety period nie za³atwia sprawy do koñca, we¼my naliczanie
 miesiêczne, jak wzi±æ MAX(number) dla danego miesi±ca?
 
+To jest tak: period jest "3". kto¶ klika ¿e "3" siê skoñczy³o, a jak? ano 
+ma perla od tego :) Wiemy ¿e jest numer_plan nr "2" i on jest miesiêczny.
+To oznacza ¿e nawet w sumie 3-ciego czy 5-tego danego miesi±ca mo¿na F/V 
+z poprzedniego robiæ, byle zachowaæ numerkowanie.
+
+
 Transakcje:
 Czy mo¿emy robiæ tak:
 $DB->BeginTrans
@@ -39,6 +45,10 @@ kondi> nie mo¿emy, bo po³owa modu³ów nie wraca do index.php
       do register_shutdown_function()
 alec> no fakt, zatem chyba lepiej robiæ to rêcznie, w koñcu transakcje
       przydaj± siê tam gdzie mamy insert, update i delete.
+hunt:	  
+Oj ALEC: kurde blaszka, wysy³am Ciê na kurs relacyjnego sqla aktualnie no.
+A jak mamy przeplatane select + insert to mamy "problem". Wiem, ¿e 
+rzadkie to przypadki ale gotowym trzeba by byæ. 	  
 
 I co na to mysql oraz sqlite ?
 
@@ -49,22 +59,9 @@ baz danych, w mysql'owym te funkcje s± puste.
 
 Faktury koryguj±ce:
 
-A) korekty dotycz± tylko i wy³±cznie dokumentów ¼ród³owych a nie korekt. Ale 
-z poziomu bazy to nie oznacza ¿e mo¿na bezpiecznie u¿ywaæ nr faktury, nale¿y 
-u¿ywaæ id z bazy.
-
-B) number_plan choæby mia³byæ 1 dla faktur i 2 dla koryguj±cych MA BYÆ i ju¿.
-i nie jest to typ... choæ mo¿emy za³o¿yæ ¿e numerki 2,4,6,8... koryguj± 1,3,5,7..
-
-C) z templatem numerowania nale¿y uciec kompletnie z lms.ini i mieæ go w bazie...
-i teraz maj±c numbering_plan "1" N/M/LMS/Y to nr 2 powinien byæ: N/M/LMSKOR/Y
-
-D) aby sobie nie strzeliæ w stopê:
- *] koryguj±ce fakturki maj± inn± numeracjê, ale inn± tylko co do "/LMSKOR/" 
-	ca³a reszta jak wybór schematu miesciêczny/roczny zostaje
-
  *] domy¶lnie faktura koryguj±ca musi mieæ jakiekolwiek pozycje, bez nich nei 
     mo¿e jej byæ bo nic nie koryguje
- *] zapisujemy pozycje PO_SKORYGOWANIU 
+ *] drukujemy pozycje PO_SKORYGOWANIU, zapisujemy co/o ile korygujemy :> 
+ 
 
 
