@@ -121,7 +121,7 @@
 		{$item.content}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
-		{$item.count}
+		{$item.count|string_format:"%.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
 		{$item.basevalue|money_format}
@@ -205,7 +205,7 @@
 		{$item.content}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
-		{$item.count}
+		{$item.count|string_format:"%.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
 		{$item.basevalue|money_format}
