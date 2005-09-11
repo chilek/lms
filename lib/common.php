@@ -511,4 +511,13 @@ function docnumber($number=NULL, $template=NULL, $time=NULL)
 	return strftime($result, $time);
 }
 
+// our finance round:
+
+function f_round ($value)
+{
+	$value = str_replace(',','.', $value);
+	$value = round ( (float) $value,2);
+
+	return $value;
+}	
 ?>
