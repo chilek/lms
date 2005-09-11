@@ -163,10 +163,10 @@ function invoice_title($x,$y)
     global $invoice,$pdf,$CONFIG,$type;
     $font_size = 16;
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    if($invoice['doctype']==DOC_INVOICE)
-	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0',$tmp)).'</b>');
+    if($invoice['invoice'])
+    	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Credit Note No. $0',$tmp)).'</b>');
     else
-	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Credit Note No. $0',$tmp)).'</b>');
+	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0',$tmp)).'</b>');
     
     if($invoice['invoice'])
     {
