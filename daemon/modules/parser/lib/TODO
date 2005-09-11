@@ -9,6 +9,8 @@ $Id$
     unexpected EXT, expecting NAME
     wniosek: wydaje mi siê, ¿e powinna byæ mo¿liwo¶æ definiowania podzmiennych
     o nazwach takich samych jak funkcje lub inne rozszerzenia
+
+*** fileexists()
         
 *** rozbudowa replace()
 
