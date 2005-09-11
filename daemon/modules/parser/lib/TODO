@@ -10,8 +10,21 @@ $Id$
     wniosek: wydaje mi siê, ¿e powinna byæ mo¿liwo¶æ definiowania podzmiennych
     o nazwach takich samych jak funkcje lub inne rozszerzenia
 
-*** fileexists()
-        
+*** B£AD: problem z 'file' w pêtli
+
+    1.  {plik = "/tmp/plik"}
+    2.  {for(i=1; i<4; i++)}
+    3.  {file /tmp/plik}ci±g{/file}
+    4.  {file(plik)}zmienna w nawiasie{/file}
+    5.  {file ("/tmp/plik")}ci±g w nawiasie w ciapkach{/file}
+    6.  {/for}
+
+	linie 3,4,5 poza pêtl± dzia³aj± ok, natomiast w pêtli linia 4 powoduje b³±d:
+	Internal error: Incorrect type in tscript_value_convert_to_string(): unknown
+	Wykonanie powy¿szego skryptu w ca³o¶ci powoduje dodatkowo segfaulta.
+
+*** fileexists() lub existsfile()
+
 *** rozbudowa replace()
 
     zrobienie replace() na podobienstwo PHP'owej ereg_replace(), czyli
@@ -27,17 +40,6 @@ $Id$
 
     w zwi±zku z {readfile} przyda³aby siê jaka¶ funkcja do parsowania 
     ka¿dej linii, co¶ jak explode z PHP, albo mo¿e co¶ opartego na regexpach
-
-*** rozszerzenia blokowe
-
-    np. {mail "recipient=a@a.pl;sender=b@b.pl"}tre¶æ wiadomo¶ci{/mail}
-    
-*** ró¿ne interpretowanie argumentów w funkcjach
-
-    {file} i {exec} akceptuj± ró¿nie argumenty (filename dla {file} musi byæ 
-    objête cudzys³owami, podczas gdy komenda dla {exec} nie musi)
-    
-    a mo¿e {file} powinno byæ przeniesione do rozszerzenia 'file'?
 
 *** Eskejpowanie { i }
 

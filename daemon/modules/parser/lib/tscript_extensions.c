@@ -23,17 +23,34 @@ GNU General Public License for more details.
 #define str_comp(a, b) (strcmp(a, b) == 0)
 #define tscript_constant_destr(e) tscript_value_free(e.value)
 
-map_implementation(tscript_extension_map, char*, tscript_extension_func*, str_constr, no_constr, free, no_destr, str_comp);
+map_implementation(tscript_extension_map, char*, tscript_extension, str_constr, no_constr, free, no_destr, str_comp);
 map_implementation(tscript_constant_map, char*, tscript_constant, str_constr, no_constr, free, tscript_constant_destr, str_comp);
 
 void tscript_add_extension(tscript_context* context, char* keyword, tscript_extension_func* func)
 {
-	tscript_extension_map_add(context->extensions, keyword, func);
+	tscript_extension e;
+	e.func = func;
+	e.block = 0;
+	tscript_extension_map_add(context->extensions, keyword, e);
 }
 
 void tscript_remove_extension(tscript_context* context, char* keyword)
 {
 	tscript_extension_map_remove(context->extensions, keyword);
+}
+
+void tscript_extension_set_block(tscript_context* context, char* keyword)
+{
+	// TODO: passing en as default is not very nice
+	tscript_extension en;
+	tscript_extension_map_ref(context->extensions, keyword, en)->block = 1;
+}
+
+int tscript_extension_is_block(tscript_context* context, char* keyword)
+{
+	// TODO: passing en as default is not very nice
+	tscript_extension en;
+	return tscript_extension_map_ref(context->extensions, keyword, en)->block;
 }
 
 int tscript_has_extension(tscript_context* context, char* keyword)
@@ -43,11 +60,13 @@ int tscript_has_extension(tscript_context* context, char* keyword)
 
 tscript_value* tscript_run_extension(tscript_context* context, char* keyword, tscript_value* arg)
 {
-	tscript_extension_func* f;
+	tscript_extension* e;
+	// TODO: passing en as default is not very nice
+	tscript_extension en;
 	if (!tscript_extension_map_contains(context->extensions, keyword))
 		tscript_internal_error("Cannot find extension\n");
-	f = *tscript_extension_map_ref(context->extensions, keyword, NULL);
-	return f(arg);
+	e = tscript_extension_map_ref(context->extensions, keyword, en);
+	return e->func(arg);
 }
 
 void tscript_add_constant(tscript_context* context, char* keyword, tscript_constant_func* func)

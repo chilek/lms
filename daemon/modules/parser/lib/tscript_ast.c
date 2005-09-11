@@ -45,7 +45,6 @@ const char* TSCRIPT_AST_DEC = "--";
 const char* TSCRIPT_AST_MATCH = "=~";
 const char* TSCRIPT_AST_IF = "IF";
 const char* TSCRIPT_AST_FOR = "FOR";
-const char* TSCRIPT_AST_FILE = "FILE";
 const char* TSCRIPT_AST_SEQ = "SEQ";
 const char* TSCRIPT_AST_ARGS = "ARGS";
 const char* TSCRIPT_AST_CONV = "CONV";

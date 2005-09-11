@@ -115,6 +115,8 @@ GNU General Public License for more details.
 
 <commands>number			YY_RETURN(TO_NUMBER);
 
+<commands>null				YY_RETURN(NULL_CONST);
+
 <commands>typeof			YY_RETURN(TYPEOF);
 
 <commands>for				YY_RETURN(FOR);
@@ -126,10 +128,6 @@ GNU General Public License for more details.
 <commands>else				YY_RETURN(ELSE);
 
 <commands>\/if				YY_RETURN(END_IF);
-
-<commands>file				YY_RETURN(WFILE);
-
-<commands>\/file			YY_RETURN(END_WFILE);
 
 <commands>==				YY_RETURN(EQUALS);
 
@@ -166,6 +164,9 @@ GNU General Public License for more details.
 						{
 							state_stack_level++;
 							yy_push_state(ext_arg);
+							if (tscript_extension_is_block(context,
+								yytext))
+								YY_RETURN(BLOCK);
 							YY_RETURN(EXT);
 						}
 						if (tscript_has_constant(context, yytext))
@@ -173,7 +174,19 @@ GNU General Public License for more details.
 						YY_RETURN(NAME);
 					}
 
-<commands>null				YY_RETURN(NULL_CONST);
+<commands>\/[[:alpha:]][[:alnum:]_]*	{
+						if (tscript_has_extension(context, &yytext[1]) &&
+							tscript_extension_is_block(context,
+								&yytext[1]))
+						{
+							tscript_yylval = tscript_ast_node_val(
+								TSCRIPT_AST_VALUE,
+								tscript_value_create_string(
+									&yytext[1]));
+							YY_RETURN(END_BLOCK);
+						}
+						yyless(0);
+					}
 
 <commands>[[:space:]]+
 
