@@ -22,16 +22,13 @@ $Id$
   wspólny "connect do bazy" i funkcje typu "we¼ userów + assigmenty" [je¶li 
   bêdzie to mia³o jaki¶ sens i siê powiela³o w wiêcej ni¿ 1-2 skryptach]
 
-  
-1.7
+LMS-1.7
 
 * silnik modu³ów
-* usuniêcie funkcjonalno¶ci "powi±zania obc.-wp³aty" (uproszczenie finansów)
-* Faktury Korygujace
 * rozbudowa i testowanie modulu 'parser' demona
+* wywalenie skryptow do contrib i przepisanie ich na t-scripta
 
-
-1.9 (deadline dla 1.7 to powiedzmy koniec roku 2005) [xx]
+LMS-1.9 (deadline dla 1.7 to powiedzmy koniec roku 2005) [xx]
 
 * przerobienie na nowe modu³y
 * zrobienie 'LMSAPI' - czyli zintegrowanej z LMS biblioteki serwuj±cej
