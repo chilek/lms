@@ -237,9 +237,9 @@ var is type of {typeof(var)}
 			for retriving data from system.</para>
 			<itemizedlist>
 				<listitem>
-					<para><prompt>date(format_string)</prompt></para>
+					<para><prompt>date([format_string])</prompt></para>
 					<para>Current date and time formated according to
-					the format specification. Default format is %Y/%m/%d. 
+					the format specification. Default format is '%Y/%m/%d'. 
 					Conversion specifiers are introduced by a '%' character 
 					You can read about all of them in <prompt>`man 
 					strftime`</prompt>.</para>
@@ -452,7 +452,7 @@ line {i}: {f[i]}\
 	<title>Example Scripts</title>
 	    <para>Let's begin from simple script creating file <filename>/etc/hosts</filename>
 	    with list of computers (and devices) IPs and names list. 
-	    <example id="parser-e1">
+	    <example id="tscript-example-hosts">
 	    <title>Parser: Creating /etc/hosts file</title>
 <screen>
 {result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
@@ -464,7 +464,7 @@ line {i}: {f[i]}\
 	    </example></para>
 	    <para>How to create debtors list? It's easy with use of predefined 
 	    constants.
-	    <example id="parser-e2">
+	    <example id="tscript-example-debtors">
 		<title>Parser: Debtors list</title>
 <screen>
 {
@@ -481,7 +481,7 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 	    </para>
 	    <para>Next example is longer. Here we are using especially 'exec'.
 	    Script sends e-mails to customers with balance less than specified limit.	    
-	    <example id="parser-e3">
+	    <example id="tscript-example-notify">
 	    <title>Parser: Notify module replacement</title>
 <screen>
 {limit = 0}
