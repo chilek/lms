@@ -61,14 +61,14 @@ $taxes = $DB->GetAllByKey('SELECT taxid AS id, label, taxes.value AS value
 // because we need here incoices-like round-off
 
 // get documents items numeric values for calculations
-$items = $DB->GetAll('SELECT docid, taxid, value, count
+$items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
 	    FROM documents 
 	    LEFT JOIN invoicecontents ON docid = documents.id 
 	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) 
 	    ORDER BY cdate, docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 // get documents data
-$docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template
+$docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template, reference
 	    FROM documents 
 	    LEFT JOIN numberplans ON numberplanid = numberplans.id
 	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) ', 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
@@ -88,8 +88,30 @@ if($items)
 		$invoicelist[$idx]['cdate'] = $doc['cdate'];
 		$invoicelist[$idx]['customerid'] = $doc['customerid'];
 
-		$sum = $row['value'] * $row['count'];
-		$val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'];
+		if($doc['reference'])
+		{
+			// I think we can simply do query here instead of building
+			// big sql join in $items query, we've got so many credit notes?
+			$item = $DB->GetRow('SELECT taxid, value, count
+						FROM invoicecontents 
+						WHERE docid=? AND itemid=?', 
+						array($doc['reference'], $row['itemid']));
+
+			$row['value'] += $item['value'];
+			$row['count'] += $item['count'];
+			
+			$refitemsum = $item['value'] * $item['count'];
+			$refitemval = round($item['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $item['count'];
+
+			$sum = $row['value'] * $row['count'] - $refitemsum;
+			$val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'] - $refitemval;
+		}
+		else
+		{
+			$sum = $row['value'] * $row['count'];
+			$val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'];
+		}
+		
 		$tax = $sum - $val;
 		
 		$invoicelist[$idx][$taxid]['tax'] += $tax;
