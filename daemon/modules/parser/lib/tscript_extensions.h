@@ -9,16 +9,24 @@ typedef tscript_value* tscript_constant_func();
 
 typedef struct
 {
+	tscript_extension_func* func;
+	int block;
+} tscript_extension;
+
+typedef struct
+{
 	tscript_constant_func* func;
 	int cached;
 	tscript_value* value;
 } tscript_constant;
 
-map_declaration(tscript_extension_map, char*, tscript_extension_func*);
+map_declaration(tscript_extension_map, char*, tscript_extension);
 map_declaration(tscript_constant_map, char*, tscript_constant);
 
 void tscript_add_extension(tscript_context* context, char* keyword, tscript_extension_func* func);
 void tscript_remove_extension(tscript_context* context, char* keyword);
+void tscript_extension_set_block(tscript_context* context, char* keyword);
+int tscript_extension_is_block(tscript_context* context, char* keyword);
 int tscript_has_extension(tscript_context* context, char* keyword);
 tscript_value* tscript_run_extension(tscript_context* context, char* keyword, tscript_value* arg);
 

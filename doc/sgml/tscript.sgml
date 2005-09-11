@@ -152,10 +152,6 @@ a doesn't equal 1
 for ( command1 ; expression ; command2 ) commands /for
 </prompt></para>
 		</listitem>
-		<listitem>
-		    <para>Script output redirection. Redirects script output to file. Data will be appended to file.</para>
-		    <para>Example: <prompt>{file file_name} commands {/file}</prompt></para>
-		</listitem>
 	    </itemizedlist>
 	    </sect3>
 	    <sect3 id="functions">
@@ -272,6 +268,12 @@ no shell
 			<title>File</title>
 			<para>This extension is destined for basic file operations.
 				<itemizedlist>
+					<listitem>
+						<para><prompt>file(filename)</prompt></para>
+						<para>Script output redirection. Redirects script output 
+						to file. Data will be appended to specified file.</para>
+					        <para>Example: <prompt>{file file_name} commands {/file}</prompt></para>
+					</listitem>
 					<listitem>
 						<para><prompt>deletefile(filename)</prompt></para>
 						<para>File deletion.</para>

@@ -43,23 +43,6 @@ static tscript_value* tscript_match_regexp(char* str, char* regexp)
 		return tscript_value_create_error("unknown regexp error");
 }
 
-static tscript_value* tscript_save_to_file(char* filename, char* str)
-{
-	int len;
-	FILE* f = fopen(filename, "a");
-	if (f == NULL)
-		return tscript_value_create_error("error opening file %s", filename);
-	len = strlen(str);
-	if (fwrite(str, 1, len, f) != len)
-	{
-		fclose(f);
-		return tscript_value_create_error("error writting file %s", filename);
-	}
-	if (fclose(f) != 0)
-		return tscript_value_create_error("error closing file %s", filename);
-	return tscript_value_create_string("");
-}
-
 // returns new, created value
 static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_ast_node* ast)
 {
@@ -570,30 +553,6 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tscript_value_free(tmp1);
 			res = tmp2;
 			tscript_value_free(tscript_interprete_sub(context, ast->children[2]));
-		}
-	}
-	else if (ast->type == TSCRIPT_AST_FILE)
-	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_FILE\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			tmp1_str = tscript_value_convert_to_string(tmp1_der);
-			tmp2_str = tscript_value_convert_to_string(tmp2_der);
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-			tscript_debug(context, "File name: %s\n", tmp1_str->data);
-			res = tscript_save_to_file(tmp1_str->data, tmp2_str->data);
-			tscript_value_free(tmp1_str);
-			tscript_value_free(tmp2_str);
-			tscript_debug(context, "Interpreted TSCRIPT_AST_FILE\n");
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_SEQ)

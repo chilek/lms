@@ -20,12 +20,56 @@ GNU General Public License for more details.
 
 #include <dirent.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #ifdef WIN32
 #include <errno.h>
 #endif
+
+static tscript_value* tscript_save_to_file(char* filename, char* str)
+{
+	int len;
+	FILE* f = fopen(filename, "a");
+	if (f == NULL)
+		return tscript_value_create_error("error opening file %s", filename);
+	len = strlen(str);
+	if (fwrite(str, 1, len, f) != len)
+	{
+		fclose(f);
+		return tscript_value_create_error("error writting file %s", filename);
+	}
+	if (fclose(f) != 0)
+		return tscript_value_create_error("error closing file %s", filename);
+	return tscript_value_create_string("");
+}
+
+tscript_value* tscript_ext_file(tscript_value* arg)
+{
+	tscript_value* index;
+	tscript_value* tmp1;
+	tscript_value* tmp2;
+	tscript_value* res;
+	int count;
+	if (arg->type != TSCRIPT_TYPE_ARRAY)
+		return tscript_value_create_error("file: 2 arguments required");
+	tmp1 = tscript_value_array_count(arg);
+	count = atof(tmp1->data);
+	tscript_value_free(tmp1);
+	if (count != 2)
+		return tscript_value_create_error("file: 2 arguments required");
+	index = tscript_value_create_number(0);
+	tmp1 = tscript_value_convert_to_string(*tscript_value_array_item_ref(&arg, index));
+	tscript_value_free(index);
+	index = tscript_value_create_number(1);
+	tmp2 = tscript_value_convert_to_string(*tscript_value_array_item_ref(&arg, index));
+	tscript_value_free(index);
+	res = tscript_save_to_file(tmp1->data, tmp2->data);
+	tscript_value_free(tmp1);
+	tscript_value_free(tmp2);
+	return res;
+}
 
 tscript_value* tscript_ext_listdir(tscript_value* arg)
 {
@@ -166,6 +210,8 @@ tscript_value* tscript_ext_deletefile(tscript_value* arg)
 
 void tscript_ext_file_init(tscript_context* context)
 {
+	tscript_add_extension(context, "file", tscript_ext_file);
+	tscript_extension_set_block(context, "file");
 	tscript_add_extension(context, "listdir", tscript_ext_listdir);
 	tscript_add_extension(context, "deletefile", tscript_ext_deletefile);
 	tscript_add_extension(context, "readfile", tscript_ext_readfile);
@@ -174,6 +220,7 @@ void tscript_ext_file_init(tscript_context* context)
 
 void tscript_ext_file_close(tscript_context* context)
 {
+	tscript_remove_extension(context, "file");
 	tscript_remove_extension(context, "listdir");
 	tscript_remove_extension(context, "deletefile");
 	tscript_remove_extension(context, "readfile");

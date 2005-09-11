@@ -155,12 +155,6 @@ for ( polecenie1 ; wyra¿enie ; polecenie2 )
 polecenia
 /for</screen></para>
 				</listitem>
-				<listitem>
-					<para>Przekierowanie wyj¶cia. Dane zostan± dopisane
-					do pliku.</para>
-					<para>Przyk³ad: <screen>
-{file nazwa_pliku} polecenia {/file}</screen></para>
-				</listitem>
 			</itemizedlist>
 		</sect3>
 		<sect3 id="functions">
@@ -277,6 +271,12 @@ tu nie mamy pow³oki
 			<title>File</title>
 			<para>To rozszerzenie udostêpnia podstawowe operacje na plikach.
 			<itemizedlist>
+				<listitem>
+					<para><prompt>file(nazwa_pliku)</prompt></para>
+					<para>Przekierowanie wyj¶cia. Dane zostan± dopisane
+					do podanego pliku.</para>
+					<para>Przyk³ad: <screen>{file nazwa_pliku} polecenia {/file}</screen></para>
+				</listitem>
 				<listitem>
 					<para><prompt>deletefile(nazwa_pliku)</prompt></para>
 					<para>Usuniêcie pliku.</para>

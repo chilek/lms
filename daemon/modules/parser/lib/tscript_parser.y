@@ -32,7 +32,7 @@ GNU General Public License for more details.
 %parse-param { tscript_context* context }
 %lex-param { tscript_context* context }
 
-%nonassoc ERROR IF ELSE END_IF FOR END_FOR WFILE END_WFILE
+%nonassoc ERROR IF ELSE END_IF FOR END_FOR
 %left OR AND
 %left EQUALS '<' '>' EQUALS_LESS EQUALS_GREATER DIFFERS
 %left '!'
@@ -41,7 +41,7 @@ GNU General Public License for more details.
 %left '*' '/' '%' '&' '|'
 %nonassoc MATCH
 %nonassoc INC DEC
-%nonassoc EXT CONST
+%nonassoc EXT BLOCK END_BLOCK CONST
 %nonassoc LITERAL NUMBER TEXT NAME NULL_CONST TO_STRING TO_NUMBER TYPEOF
 
 %start template
@@ -127,7 +127,40 @@ argument_expression_list:
 				$$ = $1;
 			}
 
-call_expression:	CONST
+call_expression:	BLOCK '(' argument_expression_list ')' statements END_BLOCK
+			{
+				if (strcmp($1->value->data, $6->value->data) != 0)
+				{
+					yyerror(context,
+						"block extension begin and end mismatch");
+					YYERROR;
+				}
+				tscript_ast_node_add_child($3, $5);
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $3);
+			}
+		|	BLOCK '}' statements END_BLOCK
+			{
+				if (strcmp($1->value->data, $4->value->data) != 0)
+				{
+					yyerror(context,
+						"block extension begin and end mismatch");
+					YYERROR;
+				}
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $3);
+			}
+		|	BLOCK expressions '}' statements END_BLOCK
+			{
+				if (strcmp($1->value->data, $5->value->data) != 0)
+				{
+					yyerror(context,
+						"block extension begin and end mismatch");
+					YYERROR;
+				}
+				$$ = tscript_ast_node_1(TSCRIPT_AST_ARGS, $2);
+				tscript_ast_node_add_child($$, $4);
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $$);
+			}
+		|	CONST
 			{
 				$$ = tscript_ast_node_1(TSCRIPT_AST_CONST, $1);
 			}
@@ -135,13 +168,13 @@ call_expression:	CONST
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $3);
 			}
-		|	EXT expressions '}'
-			{
-				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
-			}
 		|	EXT '(' ')'
 			{
 				$$ = tscript_ast_node_1(TSCRIPT_AST_EXT, $1);
+			}
+		|	EXT expressions '}'
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
 			}
 
 postfix_expression:	primary_expression
@@ -269,15 +302,9 @@ selection_statement:	IF '(' expression ')' statements END_IF
 				$$ = tscript_ast_node_3(TSCRIPT_AST_IF, $3, $5, $7);
 			}
 
-file_statement:		WFILE expression statements END_WFILE
-			{
-				$$ = tscript_ast_node_2(TSCRIPT_AST_FILE, $2, $3);
-			}
-
 statement:	assignment_statement
 	|	iteration_statement
 	|	selection_statement
-	|	file_statement
 	|	expression
 
 statements:	statements statement
