@@ -298,7 +298,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 		$t_data[2] = iconv("UTF-8","ISO-8859-2",$item['description']);
 		$t_data[3] = $item['prodid'];
 		$t_data[4] = $item['content'];
-		$t_data[5] = $item['count'];
+		$t_data[5] = sprintf('%.2f',$item['count']);
 		$t_data[6] = iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue']));
 		$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['totalbase']));
 		$t_data[8] = iconv("UTF-8","ISO-8859-2",$item['taxlabel']);
@@ -349,7 +349,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$t_data[2] = iconv("UTF-8","ISO-8859-2",$item['description']);
 	$t_data[3] = $item['prodid'];
 	$t_data[4] = $item['content'];
-	$t_data[5] = $item['count'];
+	$t_data[5] = sprintf('%.2f',$item['count']);
 	$t_data[6] = iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue']));
 	$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['totalbase']));
 	$t_data[8] = iconv("UTF-8","ISO-8859-2",$item['taxlabel']);

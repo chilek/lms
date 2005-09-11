@@ -1498,6 +1498,7 @@ class LMS
 					if($result['invoice'])
 					{
 						$row['value'] += $result['invoice']['content'][$idx]['value'];
+						$row['count'] += $result['invoice']['content'][$idx]['count'];
 					}
 					
 					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
@@ -1505,6 +1506,7 @@ class LMS
 					$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
 					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
 					$result['content'][$idx]['value'] = $row['value'];
+					$result['content'][$idx]['count'] = $row['count'];
 
 					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
 					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
@@ -1514,7 +1516,6 @@ class LMS
 					$result['totalbase'] += $result['content'][$idx]['totalbase'];
 					$result['totaltax'] += $result['content'][$idx]['totaltax'];
 					$result['total'] += $result['content'][$idx]['total'];
-    				//	$result['value'] += $row['value'] * $row['count'];
     
 					// for backward compatybility
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
@@ -1529,15 +1530,8 @@ class LMS
 				$result['value'] = abs($result['value']);
 				$result['rebate'] = true;
 			}
-			
 			$result['valuep'] = round( ($result['value'] - floor($result['value'])) * 100);
-			// for backward compat.
-			$result['totalg'] = round( ($result['value'] - floor($result['value'])) * 100);
-			$result['year'] = date('Y',$result['cdate']);
-			$result['month'] = date('m',$result['cdate']);
-			$result['pesel'] = $result['ssn'];
-			$result['nip'] = $result['ten'];
-			
+
 			$result['customerpin'] = $this->DB->GetOne('SELECT pin FROM customers WHERE id=?', array($result['customerid']));
 			// NOTE: don't waste CPU/mem when printing history is not set:
 			if($this->CONFIG['invoices']['print_balance_history'])
@@ -1545,6 +1539,14 @@ class LMS
 				$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
 				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
 			}
+
+			// for backward compat.
+			$result['totalg'] = round( ($result['value'] - floor($result['value'])) * 100);
+			$result['year'] = date('Y',$result['cdate']);
+			$result['month'] = date('m',$result['cdate']);
+			$result['pesel'] = $result['ssn'];
+			$result['nip'] = $result['ten'];
+			
 			return $result;
 		}
 		else

@@ -149,6 +149,7 @@ switch($_GET['action'])
 				$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx] ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
 				$contents[$idx]['valuebrutto'] = round((float) str_replace(',','.',$contents[$idx]['valuebrutto']),2);
 				$contents[$idx]['valuenetto'] = round((float) str_replace(',','.',$contents[$idx]['valuenetto']),2);
+				$contents[$idx]['count'] = round((float) str_replace(',','.',$contents[$idx]['count']),2);
 
 				$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
 				
@@ -159,18 +160,17 @@ switch($_GET['action'])
 				
 				if($item['deleted'])
 				{
-					$contents[$idx]['valuebrutto'] = -$item['valuebrutto'];
+					$contents[$idx]['valuebrutto'] = 0;
 					$contents[$idx]['cash'] = round(-$item['valuebrutto'] * $item['count'],2);
 				}
 				elseif($contents[$idx]['count'] != $item['count'] ||
 				    $contents[$idx]['valuebrutto'] != $item['valuebrutto'])
 				{
 					$contents[$idx]['cash'] = round($contents[$idx]['valuebrutto'] * $contents[$idx]['count'],2) - round($item['valuebrutto'] * $item['count'],2);
-					if($contents[$idx]['valuebrutto'] != $item['valuebrutto'])
-						$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
 				}
-				else
-					$contents[$idx]['valuebrutto'] = 0;
+								
+				$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
+				$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 			}
 
 			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, reference)
