@@ -428,7 +428,13 @@ function invoice_footnote($x, $y, $width, $font_size)
 function invoice_body() 
 {
     global $invoice,$pdf,$id,$CONFIG;
-    switch ($CONFIG['invoices']['template_file'])
+    
+    if($invoice['invoice'])
+	    $template = $CONFIG['invoices']['cnote_template_file'];
+    else
+	    $template = $CONFIG['invoices']['template_file'];
+
+    switch ($template)
     {
 	case "standard":
 	    $top=800;
@@ -466,10 +472,7 @@ function invoice_body()
 	    invoice_simple_form_fill(14,3,0.4);
 	    break;
 	default:
-	    if($invoice['invoice'])
-		    require($CONFIG['invoices']['cnote_template_file']);
-	    else
-		    require($CONFIG['invoices']['template_file']);
+	    require($template);
     }
     if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }
