@@ -390,7 +390,6 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     }
     $return[2] = $y;
 
-
     return $return;
 }
 

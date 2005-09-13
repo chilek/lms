@@ -24,6 +24,106 @@
  *  $Id$
  */
 
+function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
+{
+	global $DB;
+	if($order=='')
+		$order='id,asc';
+	
+	list($order,$direction) = sscanf($order, '%[^,],%s');
+	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+	
+	switch($order)
+	{
+		case 'id':
+			$sqlord = ' ORDER BY documents.id';
+		break;
+		case 'cdate':
+			$sqlord = ' ORDER BY documents.cdate';
+		break;
+		case 'number':
+			$sqlord = ' ORDER BY number';
+		break;
+		case 'value':
+			$sqlord = ' ORDER BY value';
+		break;
+		case 'count':
+			$sqlord = ' ORDER BY count';
+		break;
+		case 'name':
+			$sqlord = ' ORDER BY name';
+		break;
+	}
+	
+	if($search && $cat)
+        {
+	        switch($cat)
+		{
+			case 'value':
+			        $where = ' AND value*count = '.intval($search);
+			break;
+			case 'number':
+				$where = ' AND number = '.intval($search);
+			break;
+			case 'cdate':
+				$where = ' AND cdate >= '.$search.' AND cdate < '.($search+86400);
+			break;
+			case 'ten':
+			        $where = ' AND ten = \''.$search.'\'';
+			break;
+			case 'customerid':
+				$where = ' AND customerid = '.intval($search);
+			break;
+			case 'name':
+				$where = ' AND name ?LIKE? \'%'.$search.'%\'';
+			break;
+			case 'address':
+				$where = ' AND address ?LIKE? \'%'.$search.'%\'';
+			break;
+		}
+	}
+        
+	if($cat=='notclosed')
+		$where = ' AND closed = 0';
+	
+	if($result = $DB->GetAll('SELECT documents.id AS id, number, cdate,
+			customerid, name, address, zip, city, template, closed, 
+			type, SUM(value*count) AS value, COUNT(docid) AS count
+	    		FROM invoicecontents, documents
+			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			WHERE docid = documents.id AND (type = '.DOC_CNOTE.
+			(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
+			.$where
+			.' GROUP BY documents.id, number, cdate, customerid, 
+			name, address, zip, city, template, closed, type '
+	    		.$sqlord.' '.$direction))
+	{
+		if($group['group'])
+			$customers = $DB->GetAllByKey('SELECT customerid AS id
+		        	FROM customerassignments WHERE customergroupid=?', 
+				'id', array($group['group']));
+		
+		foreach($result as $idx => $row)
+		{
+		        $result[$idx]['year'] = date('Y',$row['cdate']);
+			$result[$idx]['month'] = date('m',$row['cdate']);
+			
+			if($group['group'])
+				if(!$group['exclude'] && $customers[$result[$idx]['customerid']])
+					$result1[] = $result[$idx];
+				elseif($group['exclude'] && !$customers[$result[$idx]['customerid']])
+					$result1[] = $result[$idx];
+		}
+		
+		if($group['group'])
+			$result = $result1;
+	}
+	
+	$result['order'] = $order;
+	$result['direction'] = $direction;
+	return $result;
+}																																																																																																					       
+
 $layout['pagetitle'] = trans('Invoices List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -68,7 +168,7 @@ if($c == 'cdate' && $s)
 	$s = mktime(0,0,0, $month, $day, $year);
 }
 
-$invoicelist = $LMS->GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o);
+$invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o);
 
 $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
