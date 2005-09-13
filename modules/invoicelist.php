@@ -86,16 +86,22 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 	if($cat=='notclosed')
 		$where = ' AND closed = 0';
 	
-	if($result = $DB->GetAll('SELECT documents.id AS id, number, cdate,
+	if($result = $DB->GetAll('SELECT documents.id AS id, number, cdate, type,
 			customerid, name, address, zip, city, template, closed, 
-			type, SUM(value*count) AS value, COUNT(docid) AS count
-	    		FROM invoicecontents, documents
+			CASE reference WHEN 0 THEN
+			    SUM(a.value*a.count) 
+			ELSE
+			    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
+			END AS value, 
+			COUNT(a.docid) AS count
+	    		FROM documents
+			LEFT JOIN invoicecontents a ON (a.docid = documents.id)
+			LEFT JOIN invoicecontents b ON (reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE docid = documents.id AND (type = '.DOC_CNOTE.
-			(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
+			WHERE (type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
 			.$where
 			.' GROUP BY documents.id, number, cdate, customerid, 
-			name, address, zip, city, template, closed, type '
+			name, address, zip, city, template, closed, type, reference '
 	    		.$sqlord.' '.$direction))
 	{
 		if($group['group'])
