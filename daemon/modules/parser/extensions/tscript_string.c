@@ -21,15 +21,18 @@ GNU General Public License for more details.
 
 #include <string.h>
 #include <ctype.h>
+#include <sys/types.h>
 #include <regex.h>
 
 tscript_value* tscript_ext_trim(tscript_value* arg)
 {
+	const char* s;
 	char* tmp;
 	int i;
 	tscript_value* val = tscript_value_convert_to_string(arg);
-	for (i = 0; isspace(val->data[i]); i++) {};
-	tmp = strdup(&val->data[i]);
+	s = tscript_value_as_string(val);
+	for (i = 0; isspace(s[i]); i++) {};
+	tmp = strdup(&s[i]);
 	for (i = strlen(tmp) - 1; i >= 0 && isspace(tmp[i]); i--)
 		tmp[i] = 0;
 	val = tscript_value_create_string(tmp);
@@ -51,7 +54,7 @@ tscript_value* tscript_ext_replace(tscript_value* arg)
 	if (arg->type != TSCRIPT_TYPE_ARRAY)
 		return tscript_value_create_error("replace: 3 arguments required");
 	tmp = tscript_value_array_count(arg);
-	res = atof(tmp->data);
+	res = tscript_value_as_number(tmp);
 	tscript_value_free(tmp);
 	if (res != 3)
 		return tscript_value_create_error("replace: 3 arguments required");
@@ -65,18 +68,18 @@ tscript_value* tscript_ext_replace(tscript_value* arg)
 	str = tscript_value_duplicate(*tscript_value_array_item_ref(&arg, index));
 	tscript_value_free(index);
 	reg = (regex_t *)calloc(1, sizeof(regex_t));
-	res = regcomp(reg, regexp->data, REG_EXTENDED);
+	res = regcomp(reg, tscript_value_as_string(regexp), REG_EXTENDED);
 	if (res != 0)
 		return tscript_value_create_error("incorrect regexp");
-	while (regexec(reg, str->data, 1, &match, 0) == 0)
+	while (regexec(reg, tscript_value_as_string(str), 1, &match, 0) == 0)
 	{
-		buf = (char*)malloc(match.rm_so + strlen(dst->data) +
-			strlen(&str->data[match.rm_eo]) + 1);
+		buf = (char*)malloc(match.rm_so + strlen(tscript_value_as_string(dst)) +
+			strlen(&tscript_value_as_string(str)[match.rm_eo]) + 1);
 		if (match.rm_so > 0)
-			strncpy(buf, str->data, match.rm_so);
+			strncpy(buf, tscript_value_as_string(str), match.rm_so);
 		buf[match.rm_so] = 0;
-		strcat(buf, dst->data);
-		strcat(buf, &str->data[match.rm_eo]);
+		strcat(buf, tscript_value_as_string(dst));
+		strcat(buf, &tscript_value_as_string(str)[match.rm_eo]);
 		tscript_value_free(str);
 		str = tscript_value_create_string(buf);
 		free(buf);

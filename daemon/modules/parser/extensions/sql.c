@@ -19,7 +19,7 @@ tscript_value * tscript_ext_sql_escape(tscript_value *arg)
 	char *tmp;
 	tscript_value *res;
 
-	tmp = db_escape(conn, tscript_value_convert_to_string(arg)->data);
+	tmp = db_escape(conn, tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	res = tscript_value_create(TSCRIPT_TYPE_STRING, tmp);
 	free(tmp);
 
@@ -29,7 +29,7 @@ tscript_value * tscript_ext_sql_escape(tscript_value *arg)
 tscript_value * tscript_ext_sql_rows(tscript_value *arg)
 {
 	QueryHandle *q = NULL;
-	char *query = tscript_value_convert_to_string(arg)->data;
+	char *query = tscript_value_as_string(tscript_value_convert_to_string(arg));
 	
 	rows = 0;
 		
@@ -50,7 +50,7 @@ tscript_value * tscript_ext_sql_create(tscript_value *arg)
 {
 	char* query;
 
-	asprintf(&query, "CREATE %s", tscript_value_convert_to_string(arg)->data);
+	asprintf(&query, "CREATE %s", tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	tscript_ext_sql_exec(query);
 	free(query);
 
@@ -61,7 +61,7 @@ tscript_value * tscript_ext_sql_drop(tscript_value *arg)
 {
 	char* query;
 
-	asprintf(&query, "DROP %s", tscript_value_convert_to_string(arg)->data);
+	asprintf(&query, "DROP %s", tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	tscript_ext_sql_exec(query);
 	free(query);
 
@@ -72,7 +72,7 @@ tscript_value * tscript_ext_sql_insert(tscript_value *arg)
 {
 	char* query;
 
-	asprintf(&query, "INSERT %s", tscript_value_convert_to_string(arg)->data);
+	asprintf(&query, "INSERT %s", tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	tscript_ext_sql_exec(query);
 	free(query);
 
@@ -83,7 +83,7 @@ tscript_value * tscript_ext_sql_delete(tscript_value *arg)
 {
 	char* query;
 
-	asprintf(&query, "DELETE %s", tscript_value_convert_to_string(arg)->data);
+	asprintf(&query, "DELETE %s", tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	tscript_ext_sql_exec(query);
 	free(query);
 
@@ -94,7 +94,7 @@ tscript_value * tscript_ext_sql_update(tscript_value *arg)
 {
 	char* query;
 	
-	asprintf(&query, "UPDATE %s", tscript_value_convert_to_string(arg)->data);
+	asprintf(&query, "UPDATE %s", tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	tscript_ext_sql_exec(query);
 	free(query);
 	
@@ -108,7 +108,7 @@ tscript_value * tscript_ext_sql_select(tscript_value *arg)
 	char *query, *colname, *value;
 	QueryHandle *q = NULL;
 	
-	asprintf(&query, "SELECT %s", tscript_value_convert_to_string(arg)->data);
+	asprintf(&query, "SELECT %s", tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	q = db_query(conn, query);
 
 	res = tscript_value_create_array();

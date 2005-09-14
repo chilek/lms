@@ -65,7 +65,7 @@ tscript_value * tscript_ext_net_ip2long(tscript_value *arg)
 	tscript_value *res;
 	char *tmp;
 	
-	asprintf(&tmp, "%lu", ip2long(tscript_value_convert_to_string(arg)->data));
+	asprintf(&tmp, "%lu", ip2long(tscript_value_as_string(tscript_value_convert_to_string(arg))));
 	res = tscript_value_create(TSCRIPT_TYPE_NUMBER, tmp);
 	free(tmp);
 	
@@ -77,7 +77,7 @@ tscript_value * tscript_ext_net_long2ip(tscript_value *arg)
 	tscript_value *res;
 	unsigned long n;
 
-	n = strtoul(tscript_value_convert_to_string(arg)->data, NULL, 0);
+	n = strtoul(tscript_value_as_string(tscript_value_convert_to_string(arg)), NULL, 0);
 	res = tscript_value_create_string(long2ip(n));
 	
 	return res;
@@ -91,7 +91,7 @@ tscript_value * tscript_ext_net_broadcast(tscript_value *arg)
 	if (arg->type != TSCRIPT_TYPE_ARRAY)
     		return tscript_value_create_error("broadcast: 2 arguments required");
 	tmp = tscript_value_array_count(arg);
-	argc = atof(tmp->data);
+	argc = tscript_value_as_number(tmp);
 	tscript_value_free(tmp);
 	if (argc != 2)
 	        return tscript_value_create_error("broadcast: 2 arguments required");
@@ -103,14 +103,14 @@ tscript_value * tscript_ext_net_broadcast(tscript_value *arg)
 	mask = *tscript_value_array_item_ref(&arg, index);
 	tscript_value_free(index);
 
-	return tscript_value_create_string(broadcast(addr->data, mask->data));
+	return tscript_value_create_string(broadcast(tscript_value_as_string(addr), tscript_value_as_string(mask)));
 }
 
 tscript_value * tscript_ext_net_mask2prefix(tscript_value *arg)
 {
 	tscript_value *res;
 
-	res = tscript_value_create_number(mask2prefix(tscript_value_convert_to_string(arg)->data));
+	res = tscript_value_create_number(mask2prefix(tscript_value_as_string(tscript_value_convert_to_string(arg))));
 
 	return res;
 }

@@ -42,6 +42,20 @@ tscript_value* tscript_value_create_reference(tscript_value** val);
 void tscript_value_free(tscript_value* val);
 
 /**
+	Returns double type value of specified value after dereferencing.
+	Returns 0 if val is not a number.
+**/
+double tscript_value_as_number(tscript_value* val);
+
+/**
+	Returns char pointer string type value of specified value
+	after dereferencing.
+	You should not free allocated memory pointed by returned pointer.
+	Returns NULL if val is not a string or error.
+**/
+char* tscript_value_as_string(tscript_value* val);
+
+/**
 	Creates new value - number representing size of the array.
 **/
 tscript_value* tscript_value_array_count(tscript_value* val);

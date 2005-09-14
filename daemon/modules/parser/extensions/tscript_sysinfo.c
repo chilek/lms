@@ -43,7 +43,7 @@ tscript_value* tscript_ext_date(tscript_value* arg)
 	else
 	{
 		arg_str = tscript_value_convert_to_string(arg);
-		strftime(buf, 255, arg_str->data, tm);
+		strftime(buf, 255, tscript_value_as_string(arg_str), tm);
 		tscript_value_free(arg_str);
 	}
 	res = tscript_value_create_string(buf);

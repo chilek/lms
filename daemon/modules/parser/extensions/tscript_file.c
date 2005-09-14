@@ -20,11 +20,11 @@ GNU General Public License for more details.
 
 #include <dirent.h>
 #include <stdio.h>
-#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#ifndef GNU
+#include <string.h>
+#ifdef WIN32
 #include <errno.h>
 #endif
 
@@ -55,17 +55,19 @@ tscript_value* tscript_ext_file(tscript_value* arg)
 	if (arg->type != TSCRIPT_TYPE_ARRAY)
 		return tscript_value_create_error("file: 2 arguments required");
 	tmp1 = tscript_value_array_count(arg);
-	count = atof(tmp1->data);
+	count = tscript_value_as_number(tmp1);
 	tscript_value_free(tmp1);
 	if (count != 2)
 		return tscript_value_create_error("file: 2 arguments required");
 	index = tscript_value_create_number(0);
-	tmp1 = tscript_value_convert_to_string(*tscript_value_array_item_ref(&arg, index));
+	tmp1 = tscript_value_convert_to_string(tscript_value_dereference(*tscript_value_array_item_ref(&arg, index)));
 	tscript_value_free(index);
 	index = tscript_value_create_number(1);
-	tmp2 = tscript_value_convert_to_string(*tscript_value_array_item_ref(&arg, index));
+	tmp2 = tscript_value_convert_to_string(tscript_value_dereference(*tscript_value_array_item_ref(&arg, index)));
 	tscript_value_free(index);
-	res = tscript_save_to_file(tmp1->data, tmp2->data);
+	res = tscript_save_to_file(
+		tscript_value_as_string(tmp1),
+		tscript_value_as_string(tmp2));
 	tscript_value_free(tmp1);
 	tscript_value_free(tmp2);
 	return res;
@@ -80,18 +82,21 @@ tscript_value* tscript_ext_listdir(tscript_value* arg)
 	int i;
 	tscript_value* index;
 	tscript_value** item;
+	tscript_value* name;
 	char* tmp;
-	d = opendir(tscript_value_convert_to_string(arg)->data);
+	name = tscript_value_convert_to_string(arg);
+	d = opendir(tscript_value_as_string(name));
 	if (d == NULL)
 		return tscript_value_create_error("error opening %s directory",
-			tscript_value_convert_to_string(arg)->data);
+			tscript_value_as_string(name));
+	tscript_value_free(name);
 	res = tscript_value_create_array();
 	for (i = 0; (e = readdir(d)) != NULL; i++)
 	{
 		index = tscript_value_create_number(i);
 		item = tscript_value_array_item_ref(&res, index);
 		*item = tscript_value_create_string(e->d_name);
-		asprintf(&tmp, "%s/%s", tscript_value_convert_to_string(arg)->data, e->d_name);
+		asprintf(&tmp, "%s/%s", tscript_value_as_string(tscript_value_convert_to_string(arg)), e->d_name);
 		if (stat(tmp, &s) != 0)
 			return tscript_value_create_error("could not stat %s file", tmp);
 		free(tmp);
@@ -103,7 +108,7 @@ tscript_value* tscript_ext_listdir(tscript_value* arg)
 	return res;
 }
 
-#ifndef GNU
+#ifdef WIN32
 // TODO: from dietlibc - gpl - should be replaced later
 size_t getdelim(char **lineptr, size_t *n, int delim, FILE *stream)
 {
@@ -151,10 +156,10 @@ tscript_value* tscript_ext_readfile(tscript_value* arg)
 	int i;
 	tscript_value* index;
 
-	f = fopen(tscript_value_convert_to_string(arg)->data, "r");
+	f = fopen(tscript_value_as_string(tscript_value_convert_to_string(arg)), "r");
 	if (f == NULL)
 		return tscript_value_create_error("error opening %s file",
-			tscript_value_convert_to_string(arg)->data);
+			tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	line = NULL;
 	res = tscript_value_create_array();
 	for (i = 0; getline(&line, &n, f) >= 0; i++)
@@ -167,7 +172,7 @@ tscript_value* tscript_ext_readfile(tscript_value* arg)
 		free(line);
 	if (fclose(f) != 0)
 		return tscript_value_create_error("error closing %s file",
-			tscript_value_convert_to_string(arg)->data);
+			tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	return res;
 }
 
@@ -180,10 +185,10 @@ tscript_value* tscript_ext_getfile(tscript_value* arg)
 	tscript_value* tmp;
 	int i;
 
-	f = fopen(tscript_value_convert_to_string(arg)->data, "r");
+	f = fopen(tscript_value_as_string(tscript_value_convert_to_string(arg)), "r");
 	if (f == NULL)
 		return tscript_value_create_error("error opening %s file",
-			tscript_value_convert_to_string(arg)->data);
+			tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	line = NULL;
 	res = tscript_value_create_string("");
 	for (i = 0; getline(&line, &n, f) >= 0; i++)
@@ -196,16 +201,28 @@ tscript_value* tscript_ext_getfile(tscript_value* arg)
 		free(line);
 	if (fclose(f) != 0)
 		return tscript_value_create_error("error closing %s file",
-			tscript_value_convert_to_string(arg)->data);
+			tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	return res;
 }
 
 tscript_value* tscript_ext_deletefile(tscript_value* arg)
 {
-	if (unlink(tscript_value_convert_to_string(arg)->data) != 0)
+	if (unlink(tscript_value_as_string(tscript_value_convert_to_string(arg))) != 0)
 		return tscript_value_create_error("error deleting %s file",
-			tscript_value_convert_to_string(arg)->data);
+			tscript_value_as_string(tscript_value_convert_to_string(arg)));
 	return tscript_value_create_string("");
+}
+
+tscript_value* tscript_ext_fileexists(tscript_value* arg)
+{
+	tscript_value* path;
+	int res;
+	if (arg->type == TSCRIPT_TYPE_ARRAY)
+		return tscript_value_create_error("file: 1 argument required");
+	path = tscript_value_convert_to_string(tscript_value_dereference(arg));
+	res = access(tscript_value_as_string(path), F_OK);
+	tscript_value_free(path);
+	return tscript_value_create_number(res == 0);
 }
 
 void tscript_ext_file_init(tscript_context* context)
@@ -216,6 +233,7 @@ void tscript_ext_file_init(tscript_context* context)
 	tscript_add_extension(context, "deletefile", tscript_ext_deletefile);
 	tscript_add_extension(context, "readfile", tscript_ext_readfile);
 	tscript_add_extension(context, "getfile", tscript_ext_getfile);
+	tscript_add_extension(context, "fileexists", tscript_ext_fileexists);
 }
 
 void tscript_ext_file_close(tscript_context* context)
@@ -225,4 +243,5 @@ void tscript_ext_file_close(tscript_context* context)
 	tscript_remove_extension(context, "deletefile");
 	tscript_remove_extension(context, "readfile");
 	tscript_remove_extension(context, "getfile");
+	tscript_remove_extension(context, "fileexists");
 }

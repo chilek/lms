@@ -60,7 +60,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	{
 		tscript_debug(context, "Interpretting TSCRIPT_AST_VAR_VALUE\n");
 		res = tscript_value_duplicate(ast->value);
-		tscript_debug(context, "Value: %s\n", ast->value->data);
+		tscript_debug(context, "Value: %s\n", tscript_value_as_string(ast->value));
 		tscript_debug(context, "Interpreted TSCRIPT_AST_VAR_VALUE\n");
 	}
 	else if (ast->type == TSCRIPT_AST_VAR_GET)
@@ -69,7 +69,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		tmp1 = tscript_interprete_sub(context, ast->children[0]);
 		tmp1_der = tscript_value_dereference(tmp1);
 		res = tscript_value_create_reference(
-			tscript_variable_get_reference(context, tmp1_der->data));
+			tscript_variable_get_reference(context, tscript_value_as_string(tmp1_der)));
 		tscript_value_free(tmp1);
 		tscript_debug(context, "Interpreted TSCRIPT_AST_VAR_GET\n");
 	}
@@ -111,7 +111,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		{
 			tscript_debug(context, "Incrementing referenced variable\n");
 			res = tscript_value_duplicate(*tmp1->reference_data);
-			tmp = atof((*tmp1->reference_data)->data);
+			tmp = tscript_value_as_number(*tmp1->reference_data);
 			tmp++;
 			tscript_value_free(*tmp1->reference_data);
 			*tmp1->reference_data = tscript_value_create_number(tmp);
@@ -135,7 +135,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		{
 			tscript_debug(context, "Decrementing referenced variable\n");
 			res = tscript_value_duplicate(*tmp1->reference_data);
-			tmp = atof((*tmp1->reference_data)->data);
+			tmp = tscript_value_as_number(*tmp1->reference_data);
 			tmp--;
 			tscript_value_free(*tmp1->reference_data);
 			*tmp1->reference_data = tscript_value_create_number(tmp);
@@ -198,13 +198,13 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			{
 				tscript_debug(context, "Left value is a reference, returning reference to subvariable\n");
 				res = tscript_value_create_reference(
-					tscript_value_subvar_ref(*tmp1->reference_data, tmp2_der->data));
+					tscript_value_subvar_ref(*tmp1->reference_data, tscript_value_as_string(tmp2_der)));
 			}
 			else
 			{
 				tscript_debug(context, "Left value is not a reference, returning copy of subvariable\n");
 				res = tscript_value_duplicate(
-					*tscript_value_subvar_ref(tmp1, tmp2_der->data));
+					*tscript_value_subvar_ref(tmp1, tscript_value_as_string(tmp2_der)));
 			}
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
@@ -260,7 +260,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) < atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) < tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -278,7 +278,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) > atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) > tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -296,7 +296,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) <= atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) <= tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -314,7 +314,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) >= atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) >= tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -328,7 +328,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tmp1;
 		else
 		{
-			res = tscript_value_create_number((!atof(tmp1_der->data)));
+			res = tscript_value_create_number((!tscript_value_as_number(tmp1_der)));
 			tscript_value_free(tmp1);
 		}
 		tscript_debug(context, "Interpretting TSCRIPT_AST_NOT\n");
@@ -342,7 +342,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tmp1;
 		else
 		{
-			res = tscript_value_create_number(-atof(tmp1_der->data));
+			res = tscript_value_create_number(-tscript_value_as_number(tmp1_der));
 			tscript_value_free(tmp1);
 		}
 		tscript_debug(context, "Interpretting TSCRIPT_AST_NEG\n");
@@ -360,7 +360,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) || atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) || tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -378,7 +378,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) && atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) && tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -397,7 +397,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				(long)atof(tmp1_der->data) & (long)atof(tmp2_der->data));
+				(long)tscript_value_as_number(tmp1_der) & (long)tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -417,7 +417,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				(long)atof(tmp1_der->data) | (long)atof(tmp2_der->data));
+				(long)tscript_value_as_number(tmp1_der) | (long)tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -453,7 +453,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) - atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) - tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -471,7 +471,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) * atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) * tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -486,12 +486,12 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tmp1;
 		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
 			res = tmp2;
-		else if (atof(tmp2->data) == 0)
+		else if (tscript_value_as_number(tmp2) == 0)
 			res = tscript_value_create_error("Division by zero!");
 		else
 		{
 			res = tscript_value_create_number(
-				atof(tmp1_der->data) / atof(tmp2_der->data));
+				tscript_value_as_number(tmp1_der) / tscript_value_as_number(tmp2_der));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -508,7 +508,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tmp2;
 		else
 		{
-			res = tscript_value_create_number((double)((int)atof(tmp1_der->data) % (int)atof(tmp2_der->data)));
+			res = tscript_value_create_number((double)((int)tscript_value_as_number(tmp1_der) % (int)tscript_value_as_number(tmp2_der)));
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
@@ -516,7 +516,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	else if (ast->type == TSCRIPT_AST_IF)
 	{
 		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		if (atof(tscript_value_dereference(tmp1)->data))
+		if (tscript_value_as_number(tscript_value_dereference(tmp1)))
 		{
 			tmp2 = tscript_interprete_sub(context, ast->children[1]);
 			res = tscript_value_duplicate(
@@ -542,7 +542,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		{
 			tmp1 = tscript_interprete_sub(context, ast->children[1]);
 			tmp1_der = tscript_value_dereference(tmp1);
-			tmp1_num = atof(tmp1_der->data);
+			tmp1_num = tscript_value_as_number(tmp1_der);
 			tscript_value_free(tmp1);
 			if (!tmp1_num)
 				break;
@@ -589,7 +589,6 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			for (i = 0; ast->children[i] != NULL; i++)
 			{
 				tmp1 = tscript_interprete_sub(context, ast->children[i]);
-				tmp1_der = tscript_value_dereference(tmp1);
 				if (tmp1->type == TSCRIPT_TYPE_ERROR)
 				{
 					tscript_value_free(res);
@@ -597,7 +596,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 					break;
 				}
 				tmp2 = tscript_value_create_number(i);
-				*tscript_value_array_item_ref(&res, tmp2) = tmp1_der;
+				*tscript_value_array_item_ref(&res, tmp2) = tmp1;
 				tscript_value_free(tmp2);
 			}
 		}
@@ -648,9 +647,9 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		{
 			tmp1_str = tscript_value_convert_to_string(tmp1_der);
 			tmp2_str = tscript_value_convert_to_string(tmp2_der);
-			tscript_debug(context, "Extension name: %s\n", tmp1_str->data);
-			tscript_debug(context, "Extension param: %s\n", tmp2_str->data);
-			res = tscript_run_extension(context, tmp1_str->data, tmp2_der);
+			tscript_debug(context, "Extension name: %s\n", tscript_value_as_string(tmp1_str));
+			tscript_debug(context, "Extension param: %s\n", tscript_value_as_string(tmp2_str));
+			res = tscript_run_extension(context, tscript_value_as_string(tmp1_str), tmp2_der);
 			tscript_value_free(tmp1_str);
 			tscript_value_free(tmp2_str);
 			tscript_value_free(tmp1);
@@ -669,8 +668,8 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		{
 			tmp1_str = tscript_value_convert_to_string(tmp1_der);
 			tscript_value_free(tmp1);
-			tscript_debug(context, "Constant name: %s\n", tmp1_str->data);
-			res = tscript_run_constant(context, tmp1_str->data);
+			tscript_debug(context, "Constant name: %s\n", tscript_value_as_string(tmp1_str));
+			res = tscript_run_constant(context, tscript_value_as_string(tmp1_str));
 			tscript_value_free(tmp1_str);
 			tscript_debug(context, "Interpreted TSCRIPT_AST_CONST\n");
 		}
@@ -692,9 +691,9 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tmp2_str = tscript_value_convert_to_string(tmp2_der);
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
-			tscript_debug(context, "Value to match: %s\n", tmp1_str->data);
-			tscript_debug(context, "Regular expression: %s\n",tmp2_str->data);
-			res = tscript_match_regexp(tmp1_str->data, tmp2_str->data);
+			tscript_debug(context, "Value to match: %s\n", tscript_value_as_string(tmp1_str));
+			tscript_debug(context, "Regular expression: %s\n",tscript_value_as_string(tmp2_str));
+			res = tscript_match_regexp(tscript_value_as_string(tmp1_str), tscript_value_as_string(tmp2_str));
 			tscript_value_free(tmp1_str);
 			tscript_value_free(tmp2_str);
 			tscript_debug(context, "Interpreted TSCRIPT_AST_MATCH\n");
