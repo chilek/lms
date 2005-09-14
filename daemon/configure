@@ -118,6 +118,7 @@ echo -n "OS Type... "
 case `(uname -s || echo unknown) 2>/dev/null` in
   Linux | linux | GNU | GNU/*) 
 	OS="linux"
+	FLAGS="-DGNU"
 	CFLAGS="-fPIC"
 	MODULES=$MODULES" pinger"
 	echo "Linux";;
@@ -137,18 +138,18 @@ echo -n "Database type..."
 if test "${with_pgsql+set}" = set
 then
 	LIBS="-lpq -ldl "$LIBS
-	FLAGS="-DUSE_PGSQL"
+	FLAGS="$FLAGS -DUSE_PGSQL"
 	DBDRIVER=pgsql
 	echo " PostgreSQL"
 elif test "${with_sqlite+set}" = set
 then
 	LIBS="-lsqlite -ldl -lm "$LIBS
-	FLAGS="-DUSE_SQLITE"
+	FLAGS="$FLAGS -DUSE_SQLITE"
 	DBDRIVER=sqlite
 	echo " SQLite"
 else
 	LIBS="-lmysqlclient -ldl "$LIBS
-	FLAGS="-DUSE_MYSQL"
+	FLAGS="$FLAGS -DUSE_MYSQL"
 	DBDRIVER=mysql
 	echo " MySQL"
 fi
