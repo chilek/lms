@@ -132,7 +132,7 @@ static void tscript_print_ast_sub(tscript_ast_node* ast, int indent)
 		printf(" ");
 	printf("%s", ast->type);
 	if (ast->value->type != TSCRIPT_TYPE_NULL)
-		printf(": %s", ast->value->data);
+		printf(": %s", tscript_value_as_string(ast->value));
 	printf("\n");
 	if (ast->children != NULL)
 		for (i = 0; ast->children[i] != NULL; i++)

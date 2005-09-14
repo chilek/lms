@@ -103,6 +103,24 @@ void tscript_value_free(tscript_value* val)
 	free(val);
 }
 
+double tscript_value_as_number(tscript_value* val)
+{
+	tscript_value* tmp;
+	tmp = tscript_value_dereference(val);
+	if (tmp->type != TSCRIPT_TYPE_NUMBER)
+		return 0;
+	return atof(tmp->data);
+}
+
+char* tscript_value_as_string(tscript_value* val)
+{
+	tscript_value* tmp;
+	tmp = tscript_value_dereference(val);
+	if (tmp->type != TSCRIPT_TYPE_STRING && tmp->type != TSCRIPT_TYPE_ERROR)
+		return NULL;
+	return tmp->data;
+}
+
 tscript_value* tscript_value_array_count(tscript_value* val)
 {
 	int res;

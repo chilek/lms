@@ -129,7 +129,8 @@ argument_expression_list:
 
 call_expression:	BLOCK '(' argument_expression_list ')' statements END_BLOCK
 			{
-				if (strcmp($1->value->data, $6->value->data) != 0)
+				if (strcmp(tscript_value_as_string($1->value),
+					tscript_value_as_string($6->value)) != 0)
 				{
 					yyerror(context,
 						"block extension begin and end mismatch");
@@ -140,7 +141,8 @@ call_expression:	BLOCK '(' argument_expression_list ')' statements END_BLOCK
 			}
 		|	BLOCK '}' statements END_BLOCK
 			{
-				if (strcmp($1->value->data, $4->value->data) != 0)
+				if (strcmp(tscript_value_as_string($1->value),
+					tscript_value_as_string($4->value)) != 0)
 				{
 					yyerror(context,
 						"block extension begin and end mismatch");
@@ -150,7 +152,8 @@ call_expression:	BLOCK '(' argument_expression_list ')' statements END_BLOCK
 			}
 		|	BLOCK expressions '}' statements END_BLOCK
 			{
-				if (strcmp($1->value->data, $5->value->data) != 0)
+				if (strcmp(tscript_value_as_string($1->value),
+					tscript_value_as_string($5->value)) != 0)
 				{
 					yyerror(context,
 						"block extension begin and end mismatch");
