@@ -110,28 +110,48 @@ LIBS=
 LDFLAGS=
 CFLAGS=
 FLAGS=
+OS=
+LMSDBIN="lmsd"
+MODULES="ethers hostfile dhcp oident dns cutoff payments traffic notify tc system parser ggnotify"
+
+echo -n "OS Type... "
+case `(uname -s || echo unknown) 2>/dev/null` in
+  Linux | linux | GNU | GNU/*) 
+	OS="linux"
+	CFLAGS="-fPIC"
+	MODULES=$MODULES" pinger"
+	echo "Linux";;
+  CYGWIN* | Cygwin* | cygwin* )
+	OS="cygwin"
+	LIBS="-lz"
+	LMSDBIN="lmsd.exe"
+	echo "Cygwin";;
+
+  *)
+	CFLAGS="-fPIC"
+	echo "Other";;
+esac
 
 # Set up database
 echo -n "Database type..." 
 if test "${with_pgsql+set}" = set
 then
-	LIBS="-lpq -ldl"
+	LIBS="-lpq -ldl "$LIBS
 	FLAGS="-DUSE_PGSQL"
 	DBDRIVER=pgsql
 	echo " PostgreSQL"
 elif test "${with_sqlite+set}" = set
 then
-	LIBS="-lsqlite -ldl -lm"
+	LIBS="-lsqlite -ldl -lm "$LIBS
 	FLAGS="-DUSE_SQLITE"
 	DBDRIVER=sqlite
 	echo " SQLite"
 else
-	LIBS="-lmysqlclient -ldl"
+	LIBS="-lmysqlclient -ldl "$LIBS
 	FLAGS="-DUSE_MYSQL"
 	DBDRIVER=mysql
 	echo " MySQL"
 fi
-
 
 # Set up lib/includes location
 echo -n "Library location..."
@@ -139,7 +159,7 @@ LDFLAGS="-L$libdir"
 echo " $libdir"
 
 echo -n "Includes location..."
-CFLAGS="-I$incdir -fPIC -Wall -O2"
+CFLAGS="-I$incdir -Wall -O2 "$CFLAGS
 echo " $incdir"
 
 # Set up debug level
@@ -204,11 +224,15 @@ LIBS = $LIBS
 LDFLAGS = $LDFLAGS
 CFLAGS = $CFLAGS $FLAGS -DLMS_LIB_DIR=\\\"\$(MODULESDIR)\\\"
 DBDRIVER = $DBDRIVER
+OUT = $LMSDBIN
+OS = $OS
 " > Makefile \
 && cat Makefile.in >> Makefile
 echo " done"
 
 # Make modules Makefile's
+echo "MODULES = $MODULES" > ./modules/Makefile \
+&& cat ./modules/Makefile.in >> ./modules/Makefile
 
 cd ./modules
 for x in `ls | grep -v CVS`

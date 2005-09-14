@@ -1,7 +1,6 @@
 SOURCES = dbdrivers/$(DBDRIVER)/db.c util.c cron/cronparse.c cron/cron.c \
 	config/dictionary.c config/config.c lmsd.c
 OBJECTS = ${SOURCES:.c=.o}
-OUT = lmsd
 
 all: $(OUT) xmodules
 

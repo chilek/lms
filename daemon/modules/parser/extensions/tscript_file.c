@@ -24,7 +24,7 @@ GNU General Public License for more details.
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#ifdef WIN32
+#ifndef GNU
 #include <errno.h>
 #endif
 
@@ -103,7 +103,7 @@ tscript_value* tscript_ext_listdir(tscript_value* arg)
 	return res;
 }
 
-#ifdef WIN32
+#ifndef GNU
 // TODO: from dietlibc - gpl - should be replaced later
 size_t getdelim(char **lineptr, size_t *n, int delim, FILE *stream)
 {
