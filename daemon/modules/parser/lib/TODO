@@ -1,11 +1,11 @@
 $Id$
 
-*** BUG: kopiowanie stalych
+*** B£¡D: kopiowanie stalych
 
     wykorzystanie stalej w petli powoduje dlugie wykonanie skryptu.
     Powodem prawdopodobnie jest za kazdym razem kopiowanie stalej w pamieci.
 
-*** B£¡D: podzmienna o nazwie takiej samej jak funkcja 
+*** B£¡D: podzmienna o nazwie zastrze¿onej
 
     przyk³ad: 
     tworzê rozszerzenie - funkcjê broadcast()
@@ -14,6 +14,16 @@ $Id$
     unexpected EXT, expecting NAME
     wniosek: wydaje mi siê, ¿e powinna byæ mo¿liwo¶æ definiowania podzmiennych
     o nazwach takich samych jak funkcje lub inne rozszerzenia
+
+*** domy¶lne zachowanie if()
+
+	zamiast if(number(zmienna)), albo if(zmienna == 1) wola³bym po prostu
+	if(zmienna)
+
+*** php'owe explode()
+
+    w zwi±zku z {readfile} przyda³aby siê jaka¶ funkcja do parsowania 
+    ka¿dej linii, co¶ jak explode z PHP, albo mo¿e co¶ opartego na regexpach
 
 *** rozbudowa replace()
 
@@ -25,11 +35,6 @@ $Id$
     {zmienna = "dupa"}
     {exec echo "{zmienna}" >> plik} {/* dzia³a */}
     {exec echo "{if (1)}dupa{/if}" >> plik} {/* wywala, syntax error: unexpected IF */}
-
-*** php'owe explode()
-
-    w zwi±zku z {readfile} przyda³aby siê jaka¶ funkcja do parsowania 
-    ka¿dej linii, co¶ jak explode z PHP, albo mo¿e co¶ opartego na regexpach
 
 *** Eskejpowanie { i }
 
@@ -44,13 +49,13 @@ $Id$
 *** B£¡D: stosowanie (interpretowanie) wciêæ
 
     obecnie nie za bardzo mo¿na stosowaæ wciêcia w skrypcie, np.:
-    
+
     1.{zmienna}
     2.    {if(.....)}\
     3.tekst
     4.    {/if}\
     5.koniec
-    
+
     chcia³bym aby bia³e znaki w linii 2 i 4 by³y ignorowane, czyli inaczej
     gdy w linii zakoñczonej znakiem \ s± same bia³e znaki, to by³yby one
     usuwane
