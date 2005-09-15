@@ -278,6 +278,11 @@ tu nie mamy pow³oki
 					<para>Przyk³ad: <screen>{file nazwa_pliku} polecenia {/file}</screen></para>
 				</listitem>
 				<listitem>
+					<para><prompt>fileexists(nazwa_pliku)</prompt></para>
+					<para>Je¶li plik istnieje zwraca 1, w przeciwnym wypadku 0.</para>
+					<para>Przyk³ad: <screen>{if fileexists(plik)}{deletefile(plik)}{/if}</screen></para>
+				</listitem>
+				<listitem>
 					<para><prompt>deletefile(nazwa_pliku)</prompt></para>
 					<para>Usuniêcie pliku.</para>
 					<para>Przyk³ad: <prompt>deletefile("/tmp/plik.txt")</prompt></para>
@@ -489,6 +494,27 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 /for}\
 </screen>
 		</example></para>
+		<para>W nastêpnym przyk³adzie tworzymy plik z przypisanymi adresami IP do adresów sprzêtowych
+		hostów, u¿ywany przez program <filename>arp</filename>. Hostom z wy³±czonym dostêpem
+		zostan± przypisane "puste" MACi.
+		<example id="tscript-example-ethers">
+			<title>Parser: Plik "ethers" dla programu arp.</title>
+			<screen>
+{if(number(NODES))}\
+{       if(fileexists("/etc/ethers"))}\
+{               deletefile("/etc/ethers")}\
+{       /if}\ 
+{       for (i=0; i&lt;number(NODES); i++)}\
+{               if (number(NODES[i].access))}\
+{                       nodes[i].mac}\t{NODES[i].ip}
+{               else}\
+{                      }00:00:00:00:00:00\t{NODES[i].ip}
+{               /if}\
+{      /for}\
+{/if}\
+</screen>
+		</example>
+		</para>
 		<para>Kolejny trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
 		<prompt>exec</prompt>. Skrypt wysy³a wiadomo¶ci do klientów z bilansem ni¿szym od
 		zadanego limitu.

@@ -275,6 +275,11 @@ no shell
 					        <para>Example: <prompt>{file file_name} commands {/file}</prompt></para>
 					</listitem>
 					<listitem>
+						<para><prompt>fileexists(filename)</prompt></para>
+						<para>If file exists returns 1, else 0.</para>
+						<para>Example: <screen>{if fileexists(file)}{deletefile(file)}{/if}</screen></para>
+					</listitem>
+					<listitem>
 						<para><prompt>deletefile(filename)</prompt></para>
 						<para>File deletion.</para>
 						<para>Example: <prompt>deletefile("/tmp/file.txt")</prompt></para>
@@ -480,6 +485,27 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 }\
 </screen>
 	    </example>
+	    </para>
+	    <para>In next example we're create file with hosts ethernet hardware addresses to 
+		IP addresses mappings, used by <filename>arp</filename> program. Hosts with no
+		access gets dummy MACs.
+		    <example id="tscript-example-ethers">
+			    <title>Parser: Ethers file for arp</title>
+			    <screen>
+{if(number(NODES))}\
+{       if(fileexists("/etc/ethers"))}\
+{               deletefile("/etc/ethers")}\
+{       /if}\ 
+{       for (i=0; i&lt;number(NODES); i++)}\
+{               if (number(NODES[i].access))}\
+{                       nodes[i].mac}\t{NODES[i].ip}
+{               else}\
+{                      }00:00:00:00:00:00\t{NODES[i].ip}
+{               /if}\
+{      /for}\
+{/if}\
+</screen>
+		</example>
 	    </para>
 	    <para>Next example is longer. Here we are using especially 'exec'.
 	    Script sends e-mails to customers with balance less than specified limit.	    

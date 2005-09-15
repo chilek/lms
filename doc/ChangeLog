@@ -16,7 +16,7 @@ version ? (??/??/????):
   - daemon configuration moved to menu Configuration (alec)
   - changed table name 'daemonhosts' to 'hosts' (alec)
   - lmsd/parser: changed tscript's API, added extensions: deletefile, 
-    readfile, getfile, listdir, date, replace, systype (alec)
+    readfile, getfile, listdir, fileexists, date, replace, systype (alec)
   - Credit Notes - WARNING! Invoice templates has been changed (alec)
   - Cygwin support for lmsd (lexx)
 

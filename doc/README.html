@@ -417,17 +417,22 @@ HREF="#INSTANCE-EXAMPLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#PARSER-E1"
+HREF="#TSCRIPT-EXAMPLE-HOSTS"
 >Parser: Creating /etc/hosts file</A
 ></DT
 ><DT
 >6-2. <A
-HREF="#PARSER-E2"
+HREF="#TSCRIPT-EXAMPLE-DEBTORS"
 >Parser: Debtors list</A
 ></DT
 ><DT
 >6-3. <A
-HREF="#PARSER-E3"
+HREF="#TSCRIPT-EXAMPLE-ETHERS"
+>Parser: Ethers file for arp</A
+></DT
+><DT
+>6-4. <A
+HREF="#TSCRIPT-EXAMPLE-NOTIFY"
 >Parser: Notify module replacement</A
 ></DT
 ><DT
@@ -11589,15 +11594,6 @@ CLASS="PROMPT"
 >for ( command1 ; expression ; command2 ) commands /for</SAMP
 ></P
 ></LI
-><LI
-><P
->Script output redirection. Redirects script output to file. Data will be appended to file.</P
-><P
->Example: <SAMP
-CLASS="PROMPT"
->{file file_name} commands {/file}</SAMP
-></P
-></LI
 ></UL
 ></DIV
 ><DIV
@@ -11798,11 +11794,11 @@ CLASS="PROMPT"
 ><P
 ><SAMP
 CLASS="PROMPT"
->date(format_string)</SAMP
+>date([format_string])</SAMP
 ></P
 ><P
 >Current date and time formated according to
-					the format specification. Default format is %Y/%m/%d. 
+					the format specification. Default format is '%Y/%m/%d'. 
 					Conversion specifiers are introduced by a '%' character 
 					You can read about all of them in <SAMP
 CLASS="PROMPT"
@@ -11873,6 +11869,35 @@ NAME="FILE"
 ><P
 >This extension is destined for basic file operations.
 				<UL
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>file(filename)</SAMP
+></P
+><P
+>Script output redirection. Redirects script output 
+						to file. Data will be appended to specified file.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>{file file_name} commands {/file}</SAMP
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>fileexists(filename)</SAMP
+></P
+><P
+>If file exists returns 1, else 0.</P
+><P
+>Example: <PRE
+CLASS="SCREEN"
+>{if fileexists(file)}{deletefile(file)}{/if}</PRE
+></P
+></LI
 ><LI
 ><P
 ><SAMP
@@ -12344,7 +12369,7 @@ CLASS="FILENAME"
 	    <DIV
 CLASS="EXAMPLE"
 ><A
-NAME="PARSER-E1"
+NAME="TSCRIPT-EXAMPLE-HOSTS"
 ></A
 ><P
 ><B
@@ -12365,7 +12390,7 @@ CLASS="SCREEN"
 	    <DIV
 CLASS="EXAMPLE"
 ><A
-NAME="PARSER-E2"
+NAME="TSCRIPT-EXAMPLE-DEBTORS"
 ></A
 ><P
 ><B
@@ -12386,16 +12411,49 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 >
 	    </P
 ><P
+>In next example we're create file with hosts ethernet hardware addresses to 
+		IP addresses mappings, used by <TT
+CLASS="FILENAME"
+>arp</TT
+> program. Hosts with no
+		access gets dummy MACs.
+		    <DIV
+CLASS="EXAMPLE"
+><A
+NAME="TSCRIPT-EXAMPLE-ETHERS"
+></A
+><P
+><B
+>Example 6-3. Parser: Ethers file for arp</B
+></P
+><PRE
+CLASS="SCREEN"
+>{if(number(NODES))}\
+{       if(fileexists("/etc/ethers"))}\
+{               deletefile("/etc/ethers")}\
+{       /if}\ 
+{       for (i=0; i&lt;number(NODES); i++)}\
+{               if (number(NODES[i].access))}\
+{                       nodes[i].mac}\t{NODES[i].ip}
+{               else}\
+{                      }00:00:00:00:00:00\t{NODES[i].ip}
+{               /if}\
+{      /for}\
+{/if}\</PRE
+></DIV
+>
+	    </P
+><P
 >Next example is longer. Here we are using especially 'exec'.
 	    Script sends e-mails to customers with balance less than specified limit.	    
 	    <DIV
 CLASS="EXAMPLE"
 ><A
-NAME="PARSER-E3"
+NAME="TSCRIPT-EXAMPLE-NOTIFY"
 ></A
 ><P
 ><B
->Example 6-3. Parser: Notify module replacement</B
+>Example 6-4. Parser: Notify module replacement</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -13456,6 +13514,10 @@ BORDER="0"
 ><TR
 ><TD
 >closed - is document (invoice) closed (accounted)? (0/1)</TD
+></TR
+><TR
+><TD
+>reference - document ID reference</TD
 ></TR
 ></TBODY
 ></TABLE

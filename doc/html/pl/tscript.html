@@ -377,16 +377,6 @@ polecenia
 /for</PRE
 ></P
 ></LI
-><LI
-><P
->Przekierowanie wyj¶cia. Dane zostan± dopisane
-					do pliku.</P
-><P
->Przyk³ad: <PRE
-CLASS="SCREEN"
->{file nazwa_pliku} polecenia {/file}</PRE
-></P
-></LI
 ></UL
 ></DIV
 ><DIV
@@ -588,7 +578,7 @@ CLASS="PROMPT"
 ><P
 ><SAMP
 CLASS="PROMPT"
->date(ci±g_formatuj±cy)</SAMP
+>date([ci±g_formatuj±cy])</SAMP
 ></P
 ><P
 >Bie¿±ca data i czas wg zadanego formatu.
@@ -662,6 +652,35 @@ NAME="FILE"
 ><P
 >To rozszerzenie udostêpnia podstawowe operacje na plikach.
 			<UL
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>file(nazwa_pliku)</SAMP
+></P
+><P
+>Przekierowanie wyj¶cia. Dane zostan± dopisane
+					do podanego pliku.</P
+><P
+>Przyk³ad: <PRE
+CLASS="SCREEN"
+>{file nazwa_pliku} polecenia {/file}</PRE
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>fileexists(nazwa_pliku)</SAMP
+></P
+><P
+>Je¶li plik istnieje zwraca 1, w przeciwnym wypadku 0.</P
+><P
+>Przyk³ad: <PRE
+CLASS="SCREEN"
+>{if fileexists(plik)}{deletefile(plik)}{/if}</PRE
+></P
+></LI
 ><LI
 ><P
 ><SAMP
@@ -1144,7 +1163,7 @@ CLASS="FILENAME"
 		<DIV
 CLASS="EXAMPLE"
 ><A
-NAME="PARSER-E1"
+NAME="TSCRIPT-EXAMPLE-HOSTS"
 ></A
 ><P
 ><B
@@ -1165,7 +1184,7 @@ CLASS="SCREEN"
 		<DIV
 CLASS="EXAMPLE"
 ><A
-NAME="PARSER-E2"
+NAME="TSCRIPT-EXAMPLE-DEBTORS"
 ></A
 ><P
 ><B
@@ -1184,6 +1203,39 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 ></DIV
 ></P
 ><P
+>W nastêpnym przyk³adzie tworzymy plik z przypisanymi adresami IP do adresów sprzêtowych
+		hostów, u¿ywany przez program <TT
+CLASS="FILENAME"
+>arp</TT
+>. Hostom z wy³±czonym dostêpem
+		zostan± przypisane "puste" MACi.
+		<DIV
+CLASS="EXAMPLE"
+><A
+NAME="TSCRIPT-EXAMPLE-ETHERS"
+></A
+><P
+><B
+>Przyk&#322;ad 6-3. Parser: Plik "ethers" dla programu arp.</B
+></P
+><PRE
+CLASS="SCREEN"
+>{if(number(NODES))}\
+{       if(fileexists("/etc/ethers"))}\
+{               deletefile("/etc/ethers")}\
+{       /if}\ 
+{       for (i=0; i&lt;number(NODES); i++)}\
+{               if (number(NODES[i].access))}\
+{                       nodes[i].mac}\t{NODES[i].ip}
+{               else}\
+{                      }00:00:00:00:00:00\t{NODES[i].ip}
+{               /if}\
+{      /for}\
+{/if}\</PRE
+></DIV
+>
+		</P
+><P
 >Kolejny trochê d³u¿szy przyk³ad, w którym wykorzystujemy g³ównie
 		<SAMP
 CLASS="PROMPT"
@@ -1193,11 +1245,11 @@ CLASS="PROMPT"
 		<DIV
 CLASS="EXAMPLE"
 ><A
-NAME="PARSER-E3"
+NAME="TSCRIPT-EXAMPLE-NOTIFY"
 ></A
 ><P
 ><B
->Przyk&#322;ad 6-3. Parser: Zamiennik modu³u notify</B
+>Przyk&#322;ad 6-4. Parser: Zamiennik modu³u notify</B
 ></P
 ><PRE
 CLASS="SCREEN"
