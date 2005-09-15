@@ -1,5 +1,10 @@
 $Id$
 
+*** BUG: kopiowanie stalych
+
+    wykorzystanie stalej w petli powoduje dlugie wykonanie skryptu.
+    Powodem prawdopodobnie jest za kazdym razem kopiowanie stalej w pamieci.
+
 *** B£¡D: podzmienna o nazwie takiej samej jak funkcja 
 
     przyk³ad: 
@@ -10,25 +15,10 @@ $Id$
     wniosek: wydaje mi siê, ¿e powinna byæ mo¿liwo¶æ definiowania podzmiennych
     o nazwach takich samych jak funkcje lub inne rozszerzenia
 
-*** B£AD: problem z 'file' w pêtli
-
-    1.  {plik = "/tmp/plik"}
-    2.  {for(i=1; i<4; i++)}
-    3.  {file /tmp/plik}ci±g{/file}
-    4.  {file(plik)}zmienna w nawiasie{/file}
-    5.  {file ("/tmp/plik")}ci±g w nawiasie w ciapkach{/file}
-    6.  {/for}
-
-	linie 3,4,5 poza pêtl± dzia³aj± ok, natomiast w pêtli linia 4 powoduje b³±d:
-	Internal error: Incorrect type in tscript_value_convert_to_string(): unknown
-	Wykonanie powy¿szego skryptu w ca³o¶ci powoduje dodatkowo segfaulta.
-
-*** fileexists() lub existsfile()
-
 *** rozbudowa replace()
 
     zrobienie replace() na podobienstwo PHP'owej ereg_replace(), czyli
-    chcialbym miec mozliwosc np. replace("[a-z]", "[A-Z]", "text)
+    chcialbym miec mozliwosc np. replace("[a-z]", "[A-Z]", "text")
 
 *** problem z zagnie¿d¿eniem if (innych instr. nie sprawdza³em)
 
