@@ -33,14 +33,14 @@ if($from) {
 	$unixfrom = mktime(0,0,0,$month,$day,$year);
 } else { 
 	$from = date('Y/m/d',time());
-	$unixfrom = mktime(0,0,0); //pocz±tek dnia dzisiejszego
+	$unixfrom = mktime(0,0,0); //today
 }
 if($to) {
 	list($year, $month, $day) = split('/',$to);
 	$unixto = mktime(23,59,59,$month,$day,$year);
 } else { 
 	$to = date('Y/m/d',time());
-	$unixto = mktime(23,59,59); //koniec dnia dzisiejszego
+	$unixto = mktime(23,59,59); //today
 }
 
 $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
@@ -95,19 +95,24 @@ if($items)
 			$row['count'] += $item['count'];
 			
 			$refitemsum = $item['value'] * $item['count'];
-			$refitemval = round($item['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $item['count'];
+			$refitemval = round($item['value'] / ($taxes[$item['taxid']]['value']+100) * 100, 2) * $item['count'];
+			$refitemtax = $refitemsum - $refitemval;
 
-			$sum = $row['value'] * $row['count'] - $refitemsum;
-			$val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'] - $refitemval;
-		}
-		else
-		{
-			$sum = $row['value'] * $row['count'];
-			$val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'];
+			$invoicelist[$idx][$item['taxid']]['tax'] -= $refitemtax;
+			$invoicelist[$idx][$item['taxid']]['val'] -= $refitemval;
+			$invoicelist[$idx]['tax'] -= $refitemtax;
+			$invoicelist[$idx]['brutto'] -= $refitemsum;
+
+			$listdata[$item['taxid']]['tax'] -= $refitemtax;
+			$listdata[$item['taxid']]['val'] -= $refitemval;
+			$listdata['tax'] -= $refitemtax;
+			$listdata['brutto'] -= $refitemsum;
 		}
 		
+		$sum = $row['value'] * $row['count'];
+		$val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'];
 		$tax = $sum - $val;
-		
+
 		$invoicelist[$idx][$taxid]['tax'] += $tax;
 		$invoicelist[$idx][$taxid]['val'] += $val;
 		$invoicelist[$idx]['tax'] += $tax;
