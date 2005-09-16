@@ -617,6 +617,62 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
         AND aliases.login = '%u' AND domains.name = '%d' 
 </screen>
 	    </example></para>
+		<para>Nastêpny przyk³ad podes³any przez bart'a przedstawia instalacjê i konfiguracjê
+		serwera pure-ftpd w dystrybucji Gentoo z wykorzystaniem bazy danych MySQL.
+		<example id="accounts-e3">
+		    <title>Konta. Konfiguracja pure-ftpd.</title>
+		    <para>No to zaczynamy od instalacji serwera pure-ftpd. Pod Gentoo wygl±da to tak:
+<screen>
+bart # emerge pure-ftpd -av
+These are the packages that I would merge, in order:
+Calculating dependencies ...done!
+[ebuild   R   ] net-ftp/pure-ftpd-1.0.20-r1  -caps -ldap +mysql +pam -postgres +ssl +vchroot 459 kB
+Total size of downloads: 459 kB
+</screen>
+			Co do innych systemów to ka¿dy chyba wie jak siê instaluje pakiety w
+			swoim systemie, a je¿eli nie to pozostaje kompilacja ze ¼róde³.
+			Po zainstalowaniu przechodzimy do stworzenia pliku, który bêdzie
+			odpowiada³ za ³±czenie siê z baz± LMS'a.
+			Tworzymy plik <filename>/etc/pureftpd-mysql.conf</filename>, który to 
+			powinien zawieraæ minimum:
+<screen>
+MYSQLServer     localhost (adres serwera bazy danych - domy¶lnie 'localhost')
+MYSQLPort       3306 (port na którym dzia³a serwer MySql - domy¶lnie '3306')
+MYSQLSocket     /var/run/mysqld/mysqld.sock (
+MYSQLUser       lms (nazwa usera z dostêpem do bazy)
+MYSQLPassword   has³o (tutaj nale¿y podaæ has³o)
+MYSQLDatabase   lms (nazwa bazy danych)
+MYSQLCrypt      crypt (sposób przechowywania hase³)
+MYSQLGetPW      SELECT password FROM passwd WHERE login="\L" (pobieranie has³a dla usera)
+MYSQLGetUID     SELECT uid FROM passwd WHERE login="\L" (pobieranie uid dla usera)
+MYSQLGetGID     SELECT gid FROM passwd WHERE login="\L" (pobieranie gid dla usera)
+MYSQLGetDir     SELECT home FROM passwd WHERE login="\L" (pobieranie nazwy katalogu domowego dla usera)
+MySQLGetQTASZ   SELECT quota_ftp FROM passwd WHERE login="\L" (quota czyli pojemno¶æ konta w MB - podaj±c w lms-ui 10 oznacza to pojemno¶æ 10MB)
+</screen>
+			Teraz pozostaje nam ju¿ tylko konfiguracja serwera pure-ftpd. (w gentoo
+			plik konfiguracyjny mie¶ci siê w <filename>/etc/conf.d/pure-ftpd</filename>) 
+			a wiêc:
+<screen>
+## Najpierw odkomentujmy tê liniê, poniewa¿ inaczej serwer nie bêdzie chcia³ wystartowaæ
+IS_CONFIGURED="yes"
+## Tutaj podajemy adres naszego serwera i port na którym ma nas³uchiwaæ
+SERVER="-S www.nasza.domena.pl,21"
+## Okre¶lamy ilo¶æ jednoczesnych po³±czeñ do serwera oraz ilo¶æ po³±czeñ z tego samego IP
+## To ju¿ chyba ka¿dy wed³ug potrzeb
+MAX_CONN="-c 50"
+MAX_CONN_IP="-C 2"
+## Startujemy daemona w tle
+DAEMON="-B"
+## Ustalamy procentow± zajêto¶æ dysku/partycji kiedy serwer powinien przestaæ zezwalaæ na przyjmowanie danych
+DISK_FULL="-k 90%"
+## Je¿eli serwer jest za NATem odkomentuj tê liniê
+#USE_NAT="-N"
+## Autoryzacja ma byæ pobierana z bazy LMS'a - podajemy ¶cie¿kê do stworzonego przez nas wcze¶niej pliku
+AUTH="-l mysql:/etc/pureftpd-mysql.conf"
+## Pozosta³e opcje w moim wypadku s± takie
+MISC_OTHER="-A -x -j"
+</screen></para>
+	</example></para>
 	</sect2>
  </sect1>
  <sect1 id="menu-mailing">
