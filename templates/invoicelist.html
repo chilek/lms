@@ -159,12 +159,13 @@
 			    <A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG SRC="img/eraser.gif" ALT="[ {t}Revise{/t} ]"></A>
 			    <A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 			    <A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoiceedit&id={$invoice.id}&action=invoicedel"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			    <A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
 			    {/if}
 			    {if $invoice.type == $smarty.const.DOC_CNOTE}
 			    <A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove credit note \'$0\' from database?{/t}')" HREF="?m=invoicenote&id={$invoice.id}&action=invoicedel"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			    <A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {t}Print{/t} ]"></A>
 			    {/if}
 			{/if}
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]"></A>
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 			</NOBR>
