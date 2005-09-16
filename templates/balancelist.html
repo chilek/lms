@@ -153,7 +153,7 @@
 				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {t}Invoice{/t} ]" {tip 0=$balancelist[balancelist].docid dynpopup='?m=number&id=$0'}></A>
 				{/if}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_CNOTE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {t}Credit note{/t} ]" {tip 0=$balancelist[balancelist].docid dynpopup='?m=number&id=$0'}></A>
+				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printn.gif" ALT="[ {t}Credit note{/t} ]" {tip 0=$balancelist[balancelist].docid dynpopup='?m=number&id=$0'}></A>
 				{/if}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_RECEIPT}
 				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printr.gif" ALT="[ {t}Cash receipt{/t} ]" {tip 0=$balancelist[balancelist].docid dynpopup='?m=number&id=$0'}></A>
