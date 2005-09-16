@@ -6,31 +6,6 @@ Otó¿ imvho, timestamp jest dobry, ale robi±c w/w operacje chcia³bym
 je oznaczaæ równie¿ dat± w sensie YYYY/MM/DD. Otó¿ wp³ata powinna byæ 
 oznaczona równie¿ dniem zaksiêgowania jej. Powodów wiele.
 
-id | number | number_plan | refersto | paytime | paytype | financial_peroid
-11 |   1    |      1      |    NULL  |   14    |    1    |      3
-
-12 |   1    |      2      |     11   |   10    |    1    |      3       | 
-13 |   2    |      1      |     11   |   10    |    1    |      3       | 
-
-
-Zarówno id 12 jak i 13 mog± byæ korekt± 11, 
-
-12 ma swój inny plan numerowania ( np numer/LMSKOR/2005) 
-13 korzysta z planu "1" ( np numer/LMS/2005) 
-
-Daje to mo¿liwo¶æ pój¶cia zarówno w stronê LMS jak i LMSKOR
-
-Ten ca³y financial_peroid to próba racjonalizacji korzystania z cdate, 
-to co jest dzia³a ale pachnie ¼le.
-
-alec> niestety period nie za³atwia sprawy do koñca, we¼my naliczanie
-miesiêczne, jak wzi±æ MAX(number) dla danego miesi±ca?
-
-To jest tak: period jest "3". kto¶ klika ¿e "3" siê skoñczy³o, a jak? ano 
-ma perla od tego :) Wiemy ¿e jest numer_plan nr "2" i on jest miesiêczny.
-To oznacza ¿e nawet w sumie 3-ciego czy 5-tego danego miesi±ca mo¿na F/V 
-z poprzedniego robiæ, byle zachowaæ numerkowanie.
-
 
 Transakcje:
 Czy mo¿emy robiæ tak:
@@ -43,25 +18,10 @@ kondi> nie mo¿emy, bo po³owa modu³ów nie wraca do index.php
       (die, exit, etc) w zwi±zku z czym transakcje bêd± siê koñczyæ
       (auto)rollbackiem. æwiczy³em to jaki¶ czas temu... mo¿na EndTrans
       do register_shutdown_function()
-alec> no fakt, zatem chyba lepiej robiæ to rêcznie, w koñcu transakcje
+alec> wiec czy nie lepiej robiæ to rêcznie, w koñcu transakcje
       przydaj± siê tam gdzie mamy insert, update i delete.
 hunt:	  
-Oj ALEC: kurde blaszka, wysy³am Ciê na kurs relacyjnego sqla aktualnie no.
-A jak mamy przeplatane select + insert to mamy "problem". Wiem, ¿e 
-rzadkie to przypadki ale gotowym trzeba by byæ. 	  
-
-I co na to mysql oraz sqlite ?
-
-alec> sqlite jak postgres, natomiast w mysql u¿ywamy tabel MyISAM, a te
-nie wspieraj± transakcji, wystarczy zreszt± spojrzeæ na nasze drivery do
-baz danych, w mysql'owym te funkcje s± puste.
-
-
-Faktury koryguj±ce:
-
- *] domy¶lnie faktura koryguj±ca musi mieæ jakiekolwiek pozycje, bez nich nei 
-    mo¿e jej byæ bo nic nie koryguje
- *] drukujemy pozycje PO_SKORYGOWANIU, zapisujemy co/o ile korygujemy :> 
- 
-
-
+    Oj ALEC: kurde blaszka, wysy³am Ciê na kurs relacyjnego sqla aktualnie no.
+    A jak mamy przeplatane select + insert to mamy "problem". Wiem, ¿e 
+    rzadkie to przypadki ale gotowym trzeba by byæ. 	  
+alec> ja tu nie widze problemu
