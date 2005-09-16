@@ -26,12 +26,11 @@
 #include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "lmsd.h"
 #include "dhcp.h"
-
-unsigned long inet_addr(char *);
-unsigned char * inet_ntoa(unsigned long);
 
 void reload(GLOBAL *g, struct dhcp_module *dhcp)
 {
@@ -92,7 +91,6 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	}
 	free(groupname); free(groupnames);
 
-
 	fh = fopen(dhcp->file, "w");
 	if(fh)
 	{
@@ -135,7 +133,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			}
 		}
 		g->db_free(&res);
-		
+	
 		fprintf(fh, "%s\n", dhcp->prefix);
 		
 		res = g->db_query(g->conn, "SELECT inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend, interface FROM networks ORDER BY interface");
@@ -248,7 +246,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			{
 				if( (hosts[j].ipaddr & netmask) == network ) {
 					s = strdup(dhcp->host);
-					g->str_replace(&s, "%i", inet_ntoa(hosts[j].ipaddr));
+					g->str_replace(&s, "%i", inet_ntoa(inet_makeaddr(htonl(hosts[j].ipaddr), 0)));
 					g->str_replace(&s, "%n", hosts[j].name);
 					g->str_replace(&s, "%m", hosts[j].mac);
 					fprintf(fh, "%s\n", s);

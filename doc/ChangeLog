@@ -19,6 +19,7 @@ version ? (??/??/????):
     readfile, getfile, listdir, fileexists, date, replace, systype (alec)
   - Credit Notes - WARNING! Invoice templates has been changed (alec)
   - Cygwin support for lmsd (lexx)
+  - lmsd/dhcp,ethers: fixes for sparc64 architecture (alec)
 
 version 1.7.2 Doci (2005-08-13):
 
