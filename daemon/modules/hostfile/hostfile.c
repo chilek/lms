@@ -26,12 +26,11 @@
 #include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "lmsd.h"
 #include "hostfile.h"
-
-unsigned long inet_addr(char *);
-unsigned char * inet_ntoa(unsigned long);
 
 void reload(GLOBAL *g, struct hostfile_module *hm)
 {
@@ -197,8 +196,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					g->str_replace(&s, "%dns2", nets[j].dns2);
 					g->str_replace(&s, "%dns", nets[j].dns);
 					g->str_replace(&s, "%wins", nets[j].wins);
-					g->str_replace(&s, "%mask", inet_ntoa(nets[j].mask));
-					g->str_replace(&s, "%addr", inet_ntoa(nets[j].address));
+					g->str_replace(&s, "%mask", inet_ntoa(inet_makeaddr(htonl(nets[j].mask),0)));
+					g->str_replace(&s, "%addr", inet_ntoa(inet_makeaddr(htonl(nets[j].address),0)));
 					g->str_replace(&s, "%info", info);
 					g->str_replace(&s, "%ipub", ip_pub);
 					g->str_replace(&s, "%id", id);
