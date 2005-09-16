@@ -48,15 +48,6 @@ $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 $listdata = array();
 $invoicelist = array();
 
-// get taxes for calculations and for building report table
-$taxes = $DB->GetAllByKey('SELECT taxid AS id, label, taxes.value AS value
-	    FROM documents 
-	    LEFT JOIN invoicecontents ON (documents.id = docid)
-	    LEFT JOIN taxes ON (taxid = taxes.id)
-	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) 
-	    GROUP BY taxid, label, taxes.value 
-	    ORDER BY value ASC', 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
-
 // we can't simply get documents with SUM(value*count)
 // because we need here incoices-like round-off
 
@@ -75,6 +66,9 @@ $docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, 
 
 if($items)
 {
+	// get taxes for calculations
+	$taxes = $LMS->GetTaxes();
+
 	foreach($items as $row)
 	{
 		$idx = $row['docid'];
@@ -124,11 +118,16 @@ if($items)
 		$listdata['tax'] += $tax;
 		$listdata['brutto'] += $sum;
 	}
+	
+	// get used tax rates for building report table
+	foreach($listdata as $idx => $val)
+		if(is_int($idx))
+			$taxeslist[$idx] = $taxes[$idx];
 }
 
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('taxes', $taxes);
-$SMARTY->assign('taxescount', sizeof($taxes));
+$SMARTY->assign('taxes', $taxeslist);
+$SMARTY->assign('taxescount', sizeof($taxeslist));
 $SMARTY->assign('layout', $layout);
 $SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->display('invoicereport.html');
