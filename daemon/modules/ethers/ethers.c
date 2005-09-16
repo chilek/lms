@@ -25,12 +25,11 @@
 #include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "lmsd.h"
 #include "ethers.h"
-
-unsigned long inet_addr(unsigned char*);
-char * inet_ntoa(unsigned long);
 
 void reload(GLOBAL *g, struct ethers_module *fm)
 {
@@ -134,10 +133,10 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 			if( j!=nc && (gc==0 || m!=gc) )
 			{
 				if( atoi(g->db_get_data(res,i,"access")) )
-					fprintf(fh, "%s\t%s\n", g->db_get_data(res,i,"mac"), inet_ntoa(inet));
+					fprintf(fh, "%s\t%s\n", g->db_get_data(res,i,"mac"), inet_ntoa(inet_makeaddr(htonl(inet), 0)));
 				else
 					if( fm->dummy_macs )
-						fprintf(fh, "00:00:00:00:00:00\t%s\n", inet_ntoa(inet));	
+						fprintf(fh, "00:00:00:00:00:00\t%s\n", inet_ntoa(inet_makeaddr(htonl(inet), 0)));	
 			}
 		}
 
