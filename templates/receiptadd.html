@@ -54,6 +54,17 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Settlement date:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			{if $receipt.cdatewarning}
+			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
+			{/if}
+		</TD>
+	</TR>
 	{if $customer}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
@@ -68,17 +79,6 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Settlement date:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
-			{if $receipt.cdatewarning}
-			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
-			{/if}
-		</TD>
-	</TR>
 	<TR CLASS="light">
 		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
 			<B>{t}Customer:{/t}</B>
@@ -158,7 +158,7 @@
 			<INPUT TYPE="text" NAME="description" SIZE="100" {tip text="Enter item description"}>
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="value" SIZE="10" {tip text="Enter item value"}>
+			<INPUT TYPE="text" NAME="value" SIZE="10" VALUE="{if $customer.balance < 0}{$customer.balance*-1|string_format:"%.2f"}{/if}" {tip text="Enter item value"}>
 		</TD>
 		<TD CLASS="fright">
 			<A HREF="javascript:additem(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
