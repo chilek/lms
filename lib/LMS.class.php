@@ -570,7 +570,7 @@ class LMS
 				.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.userid) ' : '')
 				.'WHERE deleted = '.$deleted
 				.($state !=0 ? ' AND status = '.$state :'') 
-				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
+				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($usergroup ? ' AND usergroupid='.$usergroup : '')
 				.($time ? ' AND time < '.$time : '')
 				.($sqlsarg !='' ? ' AND ('.$sqlsarg.')' :'')
