@@ -723,6 +723,33 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 	    Document files are being stored outside of database (which should be kept
 	    in mind while doing backups!) in directory defined with <filename>doc_dir</filename>
 	    in <emphasis>[directories]</emphasis> section of config file.</para>
+		<para>Documents can be uploaded to system as prepared files, but also 
+		generated from templates with use of defined wizards. Here system gives
+		great configuration possibilities. In directory 
+		<filename>documents/templates/default</filename> you can find
+		default document wizard (template and engine). You can create unlimited 
+		number of own documents wizards, which must be placed in  
+		<filename>documents/templates/</filename> directory.</para>
+		<para>Each wizard must have file <filename>info.php</filename> with
+		specified structure:
+<screen>
+&lt;?php
+$engine = array(
+    'name' => 'default', 	// wizard (directory) name, lower case letters and numbers
+    'engine' => 'default', 	// engine directory (engine.php)
+    'template' => 'template.html', 		// template file (in 'name' directory)
+    'title' => trans('Default document'), 	// description for LMS-UI
+    'content_type' => 'text/html', 		// output file type
+    'output' => 'default.html', 			// output file name
+)
+?&gt;
+</screen>
+		File <filename>info.php</filename> define wizard and is required.
+		To generate document is needed engine (file with name <filename>engine.php</filename>). 
+		You can create own engine or use other by setting 'engine' variable to
+		appropriate wizard name. So, there is no need to create engine for
+		each new wizard. Is enough to make 'template' template and file
+		<filename>info.php</filename>.</para>
     </sect2>
     </sect1>
 </chapter>
