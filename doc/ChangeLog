@@ -21,6 +21,7 @@ version ? (??/??/????):
   - Cygwin support for lmsd (lexx)
   - lmsd/dhcp,ethers,hostfile: fixes for sparc64 architecture (alec)
   - documentation: added pure-ftpd and accounts how-to (bart)
+  - added public IP support in 'network' filter on Customers List (alec)
 
 version 1.7.2 Doci (2005-08-13):
 
