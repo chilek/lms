@@ -533,6 +533,56 @@ CLASS="EMPHASIS"
 ></SPAN
 > pliku konfiguracyjnego.
 	    </P
+><P
+>Dokumenty mog± byæ importowane do systemu jako gotowe pliki, ale 
+		tak¿e tworzone wed³ug szablonów przy u¿yciu zdefiniowanych kreatorów. Tutaj 
+		system daje du¿e mo¿liwo¶ci konfiguracji. W katalogu 
+		<TT
+CLASS="FILENAME"
+>documents/templates/default</TT
+>
+		znajduje siê domy¶lny kreator dokumentu (szablon i silnik). U¿ytkownik mo¿e utworzyæ
+		dowoln± liczbê w³asnych kreatorów dokumentów, które nale¿y 
+		umie¶ciæ w katalogu <TT
+CLASS="FILENAME"
+>documents/templates/</TT
+>.</P
+><P
+>Ka¿dy kreator powinien zawieraæ plik <TT
+CLASS="FILENAME"
+>info.php</TT
+> o
+		okre¶lonej strukturze:
+<PRE
+CLASS="SCREEN"
+>&lt;?php
+$engine = array(
+        'name' =&#62; 'default', 	// nazwa (katalogu) kreatora, ma³e litery i cyfry
+	'engine' =&#62; 'default', 	// katalog z silnikiem (engine.php)
+				// mo¿na u¿ywaæ silników z innych kreatorów
+	'template' =&#62; 'template.html', 		// plik szablonu (w katalogu 'name')
+	'title' =&#62; trans('Default document'), 	// opis, który bêdzie wy¶wietlany w LMS-UI
+	'content_type' =&#62; 'text/html', 		// typ pliku wynikowego
+	'output' =&#62; 'default.html', 		// nazwa pliku wynikowego
+)
+?&gt;</PRE
+>
+		Plik <TT
+CLASS="FILENAME"
+>info.php</TT
+> opisuje kreatora i jest jedynym wymaganym
+		plikiem. Do utworzenia dokumentu potrzebny jest silnik (plik o nazwie
+		<TT
+CLASS="FILENAME"
+>engine.php</TT
+>). Mo¿na utworzyæ w³asny silnik lub
+		skorzystaæ z innego, ustawiaj±c zmienn± 'engine' na nazwê kreatora, którego
+		silnik chcemy wykorzystaæ. Nie ma zatem wymogu tworzenia w³asnego silnika
+		dla ka¿dego nowego kreatora, wystarczy utworzyæ szablon 'template' i plik
+		<TT
+CLASS="FILENAME"
+>info.php</TT
+>.</P
 ></DIV
 ></DIV
 ><DIV
