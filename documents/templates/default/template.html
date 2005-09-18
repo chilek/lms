@@ -15,8 +15,8 @@ P		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
 </head>
 <body>
-<h1>{t}INTERNET SERVICES CONTRACT{/t}</h1>
-<h2>{t}Warning! This is example template of contract. You can edit contract.html file in templates directory or create your own and set contract_template option in [phpui] section of lms.ini file.{/t}</h2>
+<h1>{$engine.title} {$document.nr}</h1>
+<h2>{t}Warning! This is example document (default template). You can create your own template in documents/templates/ directory.{/t}</h2>
 <p>Zawarta w dniu {$smarty.now|date_format:"%Y-%m-%d"} w <s>Miasto</s> pomiędzy 
 <s>Naszą firmą</s> z siedzibą w <s>Siedziba</s> wpisanym do rejestru KRS pod 
 numerem <s>Numer</s>, NIP <s>Nip</s> zwanym dalej Usługodawcą reprezentowanym 
@@ -54,7 +54,8 @@ przez: {$layout.logname} a: </p>
     </TR>
     <TR>
 	<TD VALIGN="top">&sect;3.</TD>
-	<TD VALIGN="top">Umowa została zawarta na czas nieokreślony.
+	<TD VALIGN="top">Umowa została zawarta na okres od {$document.fromdate|date_format:"%Y-%m-%d"}
+	do {$document.todate|date_format:"%Y-%m-%d"}.
 	</TD>
     </TR>
     <TR>
@@ -129,20 +130,63 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	<TD>{t}Name:{/t}</TD>
 	<TD>{t}IP Address:{/t}</TD>
 	<TD>{t}MAC address:{/t}</TD>
+	<TD>{t}Mask:{/t}</TD>
+	<TD>{t}Gateway:{/t}</TD>
+	<TD>{t}Domain:{/t}</TD>
+	<TD>{t}DNS:{/t}</TD>
+	<TD>{t}WINS:{/t}</TD>
     </TR>
     {section name=customernodes loop=$customernodes}
-    {if $customernodes[customernodes].name}
     <TR>
 	<TD>{$customernodes[customernodes].name}</TD>
 	<TD>{$customernodes[customernodes].ip}</TD>
 	<TD>{$customernodes[customernodes].mac}</TD>
+	<TD>{$customernodes[customernodes].net.mask}</TD>
+	<TD>{$customernodes[customernodes].net.gateway}</TD>
+	<TD>{$customernodes[customernodes].net.domain}</TD>
+	<TD>{$customernodes[customernodes].net.dns}<BR>{$customernodes[customernodes].net.dns2}</TD>
+	<TD>{$customernodes[customernodes].net.wins}</TD>
     </TR>
-    {/if}
     {/section}
 </TABLE>
 
 	</TD>
     </TR>
+{if $customeraccounts}
+	<TR>
+	<TD VALIGN="top">&sect;9.1.</TD>
+	<TD VALIGN="top">KONTA POCZTOWE (I INNE)<br>
+<TABLE cellpadding="3" cellspacing="0" border="1">
+    <TR>
+	<TD>{t}Login:{/t}</TD>
+	<TD>{t}Domain:{/t}</TD>
+	<TD>{t}Password:{/t}</TD>
+	<TD>{t}Alias:{/t}</TD>
+	<TD>{t}Type:{/t}</TD>
+    </TR>
+    {foreach from=$customeraccounts item=account}
+    <TR>
+	<TD>{$account.login}</TD>
+	<TD>{$account.domain}</TD>
+	<TD>{$account.password}</TD>
+	<TD>
+	{foreach from=$account.aliases item=alias}
+		{$alias}<BR>
+	{/foreach}
+	</TD>
+	<TD>
+	{if ($account.type & 1) == 1}{t}shell{/t}{/if}
+	{if ($account.type & 2) == 2}{t}mail{/t}{/if}
+	{if ($account.type & 4) == 4}{t}www{/t}{/if}
+	{if ($account.type & 8) == 8}{t}ftp{/t}{/if}
+	</TD>
+    </TR>
+    {/foreach}
+</TABLE>	
+
+	</TD>
+    </TR>
+{/if}
     <TR>
 	<TD VALIGN="top">&sect;10.</TD>
 	<TD VALIGN="top">W kontaktach z Biurem Obsługi Klienta Usługobiorca 
