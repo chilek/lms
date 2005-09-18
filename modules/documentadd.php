@@ -84,9 +84,10 @@ if(isset($_POST['document']))
 	{
 		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		{
-			$document['md5sum'] = md5_file($_FILES['file']['tmp_name']);
+			$file = $_FILES['file']['tmp_name'];
+			$document['md5sum'] = md5_file($file);
 			$document['contenttype'] = $_FILES['file']['type'];
-			$document['filename'] = $filename;	
+			$document['filename'] = $filename;
 		}
 		else // upload errors
 			switch($_FILES['file']['error'])
@@ -98,8 +99,30 @@ if(isset($_POST['document']))
 				default: $error['file'] = trans('Problem during file upload.'); break;
 			}
 	}	
+	elseif($document['template'])
+	{
+		include($_DOC_DIR.'/templates/'.$document['template'].'/info.php');
+		if(file_exists($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
+			require_once($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
+		else
+			require_once($_DOC_DIR.'/templates/default/engine.php');
+
+		if($output)
+		{
+			$file = $_DOC_DIR.'/tmp.file';
+			$fh = fopen($file, 'w');
+			fwrite($fh, $output);
+			fclose($fh);
+			
+			$document['md5sum'] = md5_file($file);
+			$document['contenttype'] = $engine['content_type'];
+			$document['filename'] = $engine['output'];
+		}
+		else
+			$error['template'] = trans('Problem during file generation!');
+	}
 	else
-		$error['file'] = trans('You must to specify file for upload!');
+		$error['file'] = trans('You must to specify file for upload or select document template!');
 
 	if(!$error)
 	{
@@ -108,7 +131,7 @@ if(isset($_POST['document']))
 		$newfile = $path.'/'.$document['md5sum'];
 		if(!file_exists($newfile))
 		{
-			if(!@rename($_FILES['file']['tmp_name'], $newfile))
+			if(!@rename($file, $newfile))
 				$error['file'] = trans('Can\'t save file in "$0" directory!', $path);
 		}
 		else
@@ -187,9 +210,22 @@ if($templist = $LMS->GetNumberPlans())
 		if($item['doctype']<0)
 			$numberplans[] = $item;
 
+if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9]+$'))
+	foreach($dirs as $dir)
+	{
+		$infofile = $_DOC_DIR.'/templates/'.$dir.'/info.php';
+		if(file_exists($infofile))
+		{
+			unset($engine);
+			include($infofile);
+			$docengines[] = $engine;
+		}
+	}
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
 $SMARTY->display('documentadd.html');
 

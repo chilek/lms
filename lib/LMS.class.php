@@ -2905,20 +2905,6 @@ class LMS
 		return $result;
 	}
 
-	function GetContractList()
-	{
-		$contractlist = explode(',', $this->CONFIG['phpui']['contract_template']);
-
-		foreach($contractlist as $idx => $row)
-		{
-			list($file, $name) = sscanf($row, '%[^:]:%[^[]]');
-			$clist[$idx]['file'] = trim($file);
-			$clist[$idx]['name'] = trim($name);
-		}
-
-		return $clist;
-	}
-
 	function GetUniqueInstallationID()
 	{
 		if(!($uiid = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('unique_installation_id'))))

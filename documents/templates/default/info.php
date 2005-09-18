@@ -24,21 +24,14 @@
  *  $Id$
  */
 
-if($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid']))
-{
-	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($_GET['ownerid']));
-	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($_GET['ownerid']));
-	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($_GET['ownerid']));
-	$SMARTY->assign('tariffs', $LMS->GetTariffs());
-	$SMARTY->assign('customerinfo', $LMS->GetCustomer($_GET['ownerid']));
-	$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['ownerid']));
-}
-
-$layout['pagetitle'] = trans('Nodes Scanning');
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('nodes',$LMS->ScanNodes());
-$SMARTY->display('nodescan.html');
+$engine = array(
+	'name' => 'default', 	// template directory
+	'engine' => 'default', 	// engine.php directory
+				// you can use other engine
+	'template' => 'template.html', 		// template file (in 'name' dir)
+	'title' => trans('Default document'), 	// description for UI
+	'content_type' => 'text/html', 		// output file type
+	'output' => 'default.html', 		// output file name
+)
 
 ?>

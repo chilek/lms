@@ -60,7 +60,6 @@ $assignments = $LMS->GetCustomerAssignments($ownerid);
 $documents = $LMS->GetDocuments($ownerid);
 $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
-$contractlist = $LMS->GetContractList();
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -83,8 +82,6 @@ $SMARTY->assign('customergroups',$customergroups);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
 $SMARTY->assign('documents', $documents);
 $SMARTY->assign('tariffs',$tariffs);
-$SMARTY->assign('contractlist',$contractlist);
-$SMARTY->assign('contractcount',sizeof($contractlist));
 $SMARTY->display('nodeinfo.html');
 
 ?>

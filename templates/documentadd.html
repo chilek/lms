@@ -88,6 +88,22 @@
 		</TD>
 	</TR>
 	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/class.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Template:{/t}
+		</TD>
+		<TD width="98%" class="fright">
+			<SELECT SIZE="1" NAME="document[template]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"}>
+				<OPTION VALUE="0">... {t}select template{/t} ...</OPTION>
+				{foreach from=$docengines item=item}
+				<OPTION VALUE="{$item.name}"{if $document.template==$item.name} SELECTED{/if}>{$item.title}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
 			<A href="javascript: document.documentadd.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="?m=customerinfo&id={$document.customerid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
