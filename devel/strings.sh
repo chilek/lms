@@ -15,6 +15,10 @@ do
     perl -lne 'print for /\{t[^}]*\}([^{]*)\{\/t}/g' $FILENAME >> html_strings
     echo "done."
 done
+echo -n "../documents/templates/default/template.html... "
+perl -lne 'print for /\{t[^}]*\}([^{]*)\{\/t}/g' ../documents/templates/default/template.html >> html_strings
+echo "done."
+
 perl -pi -e 's/\\\$/\$/g' html_strings   	# \$ -> $
 perl -pi -e 's/\\/\\\\/g' html_strings   	# \ -> \\
 perl -pi -e 's/\x27/\\\x27/g' html_strings	# ' -> \'
@@ -32,6 +36,13 @@ do
     perl -lne 'print for /trans\(\x27(.*?[^\\])\x27/g' $FILENAME >> php_strings
     echo "done."
 done
+echo -n "../documents/templates/default/engine.php... "
+perl -lne 'print for /trans\(\x27(.*?[^\\])\x27/g' ../documents/templates/default/engine.php >> php_strings
+echo "done."
+echo -n "../documents/templates/default/info.php... "
+perl -lne 'print for /trans\(\x27(.*?[^\\])\x27/g' ../documents/templates/default/info.php >> php_strings
+echo "done."
+
 #perl -pi -e 's/\\/\\\\/g' php_strings   	# \ -> \\
 #perl -pi -e 's/\x27/\\\x27/g' php_strings	# ' -> \'
 
