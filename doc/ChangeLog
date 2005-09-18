@@ -25,6 +25,9 @@ version ? (??/??/????):
   - customer documents generation engine/wizards (alec)
   - removed option 'contract_template' (alec)
   - improved default document (contract) template (alec)
+  - added Userpanel menu (Mad Mark)
+  - moved Userpanel options from Configuration menu (Mad Mark)
+  - added Userpanels' customer rights management support (Mad Mark)
 
 version 1.7.2 Doci (2005-08-13):
 
