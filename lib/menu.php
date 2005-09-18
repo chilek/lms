@@ -489,18 +489,4 @@ $menu = array(
 
 	);
 
-if(($CONFIG['directories']['userpanel_dir']))
-{
-	// be sure that Userpanel exists
-	if(file_exists($CONFIG['directories']['userpanel_dir']."/lib/Userpanel.class.php"))
-		foreach($menu as $idx => $menuitem)
-			if($menuitem['name'] == trans('Configuration'))
-				$menu[$idx]['submenu'][] =  
-					array(
-						'name' => trans('Userpanel'),
-						'link' => '?m=userpanel',
-						'tip' => trans('Userpanel configuration')
-					    );
-}
-
 ?>

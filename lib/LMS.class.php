@@ -390,7 +390,13 @@ class LMS
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, im, address, zip, city, email, ten, ssn, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($customeradd['name']),  $customeradd['lastname'], $customeradd['phone1'], $customeradd['phone2'], $customeradd['phone3'], $customeradd['im'], $customeradd['address'], $customeradd['zip'], $customeradd['city'], $customeradd['email'], $customeradd['ten'], $customeradd['ssn'], $customeradd['status'], $this->AUTH->id, $customeradd['info'], $customeradd['serviceaddr'], $customeradd['message'], $customeradd['pin'])))
 		{
 			$this->SetTS('customers');
-			return $this->DB->GetOne('SELECT MAX(id) FROM customers');
+			$cust_id=$this->DB->GetOne('SELECT MAX(id) FROM customers');
+			// Add Userpanel default rights
+			if($this->CONFIG['directories']['userpanel_dir'])
+				foreach($this->DB->GetCol('SELECT id FROM up_rights WHERE setdefault=1') as $right)
+					$this->DB->Execute('INSERT INTO up_rights_assignments(customerid, rightid) 
+						VALUES(?, ?)', array($cust_id, $right));
+			return $cust_id;
 		} else
 			return FALSE;
 	}
@@ -405,6 +411,9 @@ class LMS
 		$res2=$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$res3=$this->DB->Execute('UPDATE customers SET deleted=1 WHERE id=?', array($id));
 		$res4=$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
+		// Remove Userpanel rights
+		if($this->CONFIG['directories']['userpanel_dir'])
+			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
 		return $res1 || $res2 || $res3 || $res4;
 	}
 
