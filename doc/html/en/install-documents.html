@@ -493,6 +493,54 @@ CLASS="EMPHASIS"
 >[directories]</I
 ></SPAN
 > section of config file.</P
+><P
+>Documents can be uploaded to system as prepared files, but also 
+		generated from templates with use of defined wizards. Here system gives
+		great configuration possibilities. In directory 
+		<TT
+CLASS="FILENAME"
+>documents/templates/default</TT
+> you can find
+		default document wizard (template and engine). You can create unlimited 
+		number of own documents wizards, which must be placed in  
+		<TT
+CLASS="FILENAME"
+>documents/templates/</TT
+> directory.</P
+><P
+>Each wizard must have file <TT
+CLASS="FILENAME"
+>info.php</TT
+> with
+		specified structure:
+<PRE
+CLASS="SCREEN"
+>&lt;?php
+$engine = array(
+    'name' =&#62; 'default', 	// wizard (directory) name, lower case letters and numbers
+    'engine' =&#62; 'default', 	// engine directory (engine.php)
+    'template' =&#62; 'template.html', 		// template file (in 'name' directory)
+    'title' =&#62; trans('Default document'), 	// description for LMS-UI
+    'content_type' =&#62; 'text/html', 		// output file type
+    'output' =&#62; 'default.html', 			// output file name
+)
+?&gt;</PRE
+>
+		File <TT
+CLASS="FILENAME"
+>info.php</TT
+> define wizard and is required.
+		To generate document is needed engine (file with name <TT
+CLASS="FILENAME"
+>engine.php</TT
+>). 
+		You can create own engine or use other by setting 'engine' variable to
+		appropriate wizard name. So, there is no need to create engine for
+		each new wizard. Is enough to make 'template' template and file
+		<TT
+CLASS="FILENAME"
+>info.php</TT
+>.</P
 ></DIV
 ></DIV
 ><DIV
