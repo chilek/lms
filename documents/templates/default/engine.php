@@ -24,44 +24,21 @@
  *  $Id$
  */
 
-if(!eregi("^[0-9]+$",$_GET['id']))
-{
-	$SESSION->redirect('?m=customerlist');
-}
-
-if($LMS->CustomerExists($_GET['id']) == 0)
-{
-	$SESSION->redirect('?m=customerlist');
-}
-
 $customerinfo = $LMS->GetCustomer($_GET['id']);
-$assigments = $LMS->GetCustomerAssignments($_GET['id']);
-$customergroups = $LMS->CustomergroupGetForCustomer($_GET['id']);
-$othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($_GET['id']);
-$balancelist = $LMS->GetCustomerBalanceList($_GET['id']);
+$assignments = $LMS->GetCustomerAssignments($_GET['id']);
 $customernodes = $LMS->GetCustomerNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
-$documents = $LMS->GetDocuments($_GET['id']);
-$taxeslist = $LMS->GetTaxes();
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$layout['pagetitle'] = trans('Customer Info: $0',$customerinfo['customername']);
-
 $customernodes['ownerid'] = $_GET['id'];
+
 $SMARTY->assign(
 		array(
 			'customernodes' => $customernodes,
-			'balancelist' => $balancelist,
-			'assignments' => $assigments,
-			'customergroups' => $customergroups,
-			'othercustomergroups' => $othercustomergroups,
+			'assignments' => $assignments,
 			'customerinfo' => $customerinfo,
-			'tariffs' => $tariffs,
-			'documents' => $documents,
-			'taxeslist' => $taxeslist
+			'tariffs' => $tariffs
 		     )
 		);
-$SMARTY->display('customerinfo.html');
+
+$output = $SMARTY->fetch($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['template']);
 
 ?>

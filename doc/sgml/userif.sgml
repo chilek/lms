@@ -1015,13 +1015,6 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>newticket_notify = On</prompt></para>
     	    </listitem>
     	    <listitem>
-        	<para>contract_template</para>
-        	<para>Specify contract template(s) for customer. You can provide comma separated list of
-        	contract templates. Default: contract.html.</para>
-        	<para>Example:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
-        	<para>Example:     <prompt>contract_template = "contract.html:Default Contract, file.html:Contract Plus"</prompt></para>
-    	    </listitem>
-    	    <listitem>
         	<para>to_words_short_format</para>
         	<para>Specify format of verbal amounts representation (on invoices). For value "1"
         	verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>

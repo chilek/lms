@@ -1066,13 +1066,6 @@ MISC_OTHER="-A -x -j"
             <para>Przyk³ad:     <prompt>newticket_notify = 1</prompt></para>
         </listitem>
         <listitem>
-            <para>contract_template</para>
-            <para>W³asny szablon umowy z klientem. Mo¿e zawieraæ listê umów oddzielonych 
-            przecinkami. Domy¶lnie: contract.html.</para>
-            <para>Przyk³ad:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
-            <para>Przyk³ad:     <prompt>contract_template = "contract.html:Umowa Podstawowa, umowa.html:Umowa Rozbudowana"</prompt></para>
-        </listitem>
-        <listitem>
             <para>to_words_short_format</para>
             <para>Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
             rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</para>

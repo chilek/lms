@@ -16,7 +16,6 @@
 //-->	
 </SCRIPT>
 {/literal}
-<FORM name="contract" method="POST" action="?m=contract&id={$customerinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -197,16 +196,6 @@
 			{if $customerinfo.deleted}
 				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" ALT="[ {t}Restore{/t} ]"></A>
 			{else}
-				{if $contractcount > 1}
-					<SELECT name="templ">
-					{foreach item=contract from=$contractlist}
-						<OPTION value="{$contract.file}">{if $contract.name}{$contract.name|truncate:30:"..."}{else}{$contract.file}{/if}</OPTION>
-					{/foreach}
-					</SELECT>
-					<A href="javascript:Contract();">{t}Print{/t} <IMG src="img/print.gif" alt="[ {t}Contract{/t} ]"></A>
-				{else}
-					<A href="?m=contract&id={$customerinfo.id}" target="_blank">{t}Print contract{/t} <IMG src="img/print.gif" alt="[ {t}Contract{/t} ]"></A>
-				{/if}
 				<NOBR>
 				<A HREF="javascript: SearchTickets();">{t}Tickets{/t}</A> <IMG src="img/ticket.gif" alt="[ {t}Tickets{/t} ]"></A>
 				<A href="?m=accountlist&u={$customerinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" alt="[ {t}Accounts{/t} ]"></A>
@@ -217,4 +206,3 @@
 		</TD>
 	</TR>
 </TABLE>
-</FORM>
