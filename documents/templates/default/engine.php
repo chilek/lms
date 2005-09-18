@@ -24,18 +24,47 @@
  *  $Id$
  */
 
-$customerinfo = $LMS->GetCustomer($_GET['id']);
-$assignments = $LMS->GetCustomerAssignments($_GET['id']);
-$customernodes = $LMS->GetCustomerNodes($_GET['id']);
+$cid = $document['customerid'];
+
+$customerinfo = $LMS->GetCustomer($cid);
+$assignments = $LMS->GetCustomerAssignments($cid);
+$customernodes = $LMS->GetCustomerNodes($cid);
 $tariffs = $LMS->GetTariffs();
-$customernodes['ownerid'] = $_GET['id'];
+
+unset($customernodes['total']);
+
+if($customernodes)
+	foreach($customernodes as $idx => $row)
+	{
+		$customernodes[$idx]['net'] = $DB->GetRow('SELECT *, inet_ntoa(address) AS ip FROM networks WHERE address = (inet_aton(mask) & ?)', array($row['ipaddr']));
+	}
+
+if($customeraccounts = $DB->GetAll('SELECT passwd.*, domains.name AS domain
+				FROM passwd LEFT JOIN domains ON (domainid = domains.id)
+				WHERE ownerid = ? ORDER BY login', array($cid)))
+	foreach($customeraccounts as $idx => $account)
+	{
+		$customeraccounts[$idx]['aliases'] = $DB->GetCol('SELECT login FROM aliases WHERE accountid=?', array($account['id']));
+		/*// create random password
+		$pass = '';
+		for ($i = 0; $i < 8; $i++)
+		       $pass .= substr('0123456789abcdefghijklmnopqrstuvwxyz', rand(0,36), 1);
+		$customeraccounts[$idx]['password'] = $pass;
+		*/
+	}
+
+$document['template'] = $DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($document['numberplanid']));
+$document['nr'] = docnumber($document['number'], $document['template']);
 
 $SMARTY->assign(
 		array(
 			'customernodes' => $customernodes,
 			'assignments' => $assignments,
 			'customerinfo' => $customerinfo,
-			'tariffs' => $tariffs
+			'tariffs' => $tariffs,
+			'customeraccounts' => $customeraccounts,
+			'document' => $document,
+			'engine' => $engine,
 		     )
 		);
 
