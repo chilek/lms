@@ -174,7 +174,7 @@ $assignments = $LMS->GetCustomerAssignments($ownerid);
 $balancelist = $LMS->GetCustomerBalanceList($ownerid);
 $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
-$documents = $LMS->GetDocuments($ownerid);
+$documents = $LMS->GetDocuments($ownerid, 10);
 $netdevices = $LMS->GetNetDevNames();
 
 $SMARTY->assign('netdevices',$netdevices);
