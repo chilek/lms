@@ -94,7 +94,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	fh = fopen(dhcp->file, "w");
 	if(fh)
 	{
-		res = g->db_query(g->conn, "SELECT name, mac, ipaddr, ownerid FROM nodes ORDER BY ipaddr");
+		res = g->db_query(g->conn, "SELECT name, mac, ipaddr, ipaddr_pub, ownerid FROM nodes ORDER BY ipaddr");
 
 		for(i=0; i<g->db_nrows(res); i++)
 		{
@@ -102,6 +102,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			char *name = g->db_get_data(res,i,"name");
 			char *mac = g->db_get_data(res,i,"mac");
 			char *ipaddr = g->db_get_data(res,i,"ipaddr");
+			char *ipaddr_pub = g->db_get_data(res,i,"ipaddr_pub");
 		
 			if(name && mac && ipaddr)
 			{
@@ -130,6 +131,15 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				hosts[nh].mac = strdup(mac);
 				hosts[nh].ipaddr = inet_addr(ipaddr);
 				nh++;
+				
+				if(atoi(ipaddr_pub))
+				{
+					hosts = (struct hostcache*) realloc(hosts, sizeof(struct hostcache) * (nh + 1));
+					hosts[nh].name = strdup(name);
+					hosts[nh].mac = strdup(mac);
+					hosts[nh].ipaddr = inet_addr(ipaddr_pub);
+					nh++;
+				}
 			}
 		}
 		g->db_free(&res);

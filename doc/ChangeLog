@@ -27,6 +27,7 @@ version ? (??/??/????):
   - improved default document (contract) template (alec)
   - Userpanel menu instead of Configuration -> Userpanel (Mad Mark)
   - added cashier name variable {$receipt.user} on cash receipt template (alec)
+  - lmsd/dhcp: added support for public IP addresses (alec)
 
 version 1.7.2 Doci (2005-08-13):
 
