@@ -457,18 +457,22 @@ $menu = array(
 		),
 	);
 
-if(($_CONFIG['directories']['userpanel_dir']))
+// Adding USerpanel menuitems
+if($_CONFIG['directories']['userpanel_dir'])
+        // be sure that Userpanel exists
+        if(file_exists($_CONFIG['directories']['userpanel_dir'].'/lib/LMS.menu.php'))
+                require_once($_CONFIG['directories']['userpanel_dir'].'/lib/LMS.menu.php');
+	
+if(!function_exists('menu_cmp'))
 {
-	// be sure that Userpanel exists
-	if(file_exists($_CONFIG['directories']['userpanel_dir']."/lib/Userpanel.class.php"))
-		foreach($menu as $idx => $menuitem)
-			if($menuitem['name'] == trans('Administration'))
-				$menu[$idx]['submenu'][] =  
-					array(
-						'name' => trans('Userpanel'),
-						'link' => '?m=userpanel',
-						'tip' => trans('Userpanel configuration')
-					    );
+        function menu_cmp($a, $b)
+        {
+                if ($a['prio'] == $b['prio'])
+                        return 0;
+        	return ($a['prio'] < $b['prio']) ? -1 : 1;
+	}
 }
+
+uasort($menu,'menu_cmp');
 
 ?>

@@ -185,6 +185,7 @@ $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = (isset($_CONFIG['phpui']['smarty_debug']) ? chkconfig($_CONFIG['phpui']['smarty_debug']) : FALSE);
 $SMARTY->_tpl_vars['missing_strings'] = array();
 require_once($_LIB_DIR.'/smarty_addons.php');
+require_once($_LIB_DIR.'/menu.php');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
@@ -195,10 +196,6 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.6-cvs';
 $layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['dberrors'] =& $DB->errors;
-
-$SMARTY->assign_by_ref('menu', $LMS->MENU);
-
-require_once($_LIB_DIR.'/menu.php');
 
 $SMARTY->assign_by_ref('newmenu', $menu);
 $SMARTY->assign_by_ref('layout', $layout);
