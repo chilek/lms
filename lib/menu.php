@@ -437,7 +437,7 @@ $menu = array(
 			'link' => '?m=chpasswd',
 			'tip' => trans('Allows you to change your password'),
 			'accesskey' => 'p',
-			'prio' => '60',
+			'prio' => '65',
 		),
 
 		array(
@@ -446,7 +446,7 @@ $menu = array(
 			'link' =>'?m=configlist',
 			'tip' => trans('System configuration'),
 			'accesskey' =>'o',
-			'prio' =>'65',
+			'prio' =>'60',
 			'submenu' => array(
 				array(
 					'name' => trans('User Interface'),
@@ -488,5 +488,23 @@ $menu = array(
 		)
 
 	);
+
+// Adding USerpanel menuitems
+if($CONFIG['directories']['userpanel_dir'])
+        // be sure that Userpanel exists
+	if(file_exists($CONFIG['directories']['userpanel_dir'].'/lib/LMS.menu.php'))
+	        require_once($CONFIG['directories']['userpanel_dir'].'/lib/LMS.menu.php');
+
+if(!function_exists('menu_cmp'))
+{
+        function menu_cmp($a, $b)
+	{
+	        if ($a['prio'] == $b['prio'])
+	                return 0;
+	        return ($a['prio'] < $b['prio']) ? -1 : 1;
+	}
+}
+
+uasort($menu,'menu_cmp');
 
 ?>

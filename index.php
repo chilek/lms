@@ -184,6 +184,7 @@ $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFIG['phpui']['smarty_debug']) : FALSE);
 $SMARTY->_tpl_vars['missing_strings'] = array();
 require_once($_LIB_DIR.'/smarty_addons.php');
+require_once($_LIB_DIR.'/menu.php');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
@@ -193,26 +194,6 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.7-cvs';
 $layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['dberrors'] =& $DB->errors;
-
-$SMARTY->assign_by_ref('menu', $LMS->MENU);
-
-require_once($_LIB_DIR.'/menu.php');
-if (!function_exists(menu_cmp)) {
-	function menu_cmp($a, $b)
-	{
-		if ($a['prio'] == $b['prio'])
-			return 0;
-		return ($a['prio'] < $b['prio']) ? -1 : 1;
-	}
-}
-
-// Adding USerpanel menuitems
-if($CONFIG['directories']['userpanel_dir'])
-        // be sure that Userpanel exists
-	        if(file_exists($CONFIG['directories']['userpanel_dir']."/lib/LMS.menu.php"))
-			require_once($CONFIG['directories']['userpanel_dir']."/lib/LMS.menu.php");
-		
-uasort($menu,"menu_cmp");
 
 $SMARTY->assign_by_ref('newmenu', $menu);
 $SMARTY->assign_by_ref('layout', $layout);
