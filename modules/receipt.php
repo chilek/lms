@@ -28,8 +28,9 @@ function GetReceipt($id)
 {
 	global $CONFIG, $DB;
 	
-	if($receipt = $DB->GetRow('SELECT documents.*, template 
+	if($receipt = $DB->GetRow('SELECT documents.*, users.name AS user, template
 				FROM documents 
+				LEFT JOIN users ON (userid = users.id)
 				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 				WHERE type = 2 AND documents.id = ?', array($id)))
 	{
