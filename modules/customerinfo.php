@@ -41,7 +41,7 @@ $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($_GET['id']);
 $balancelist = $LMS->GetCustomerBalanceList($_GET['id']);
 $customernodes = $LMS->GetCustomerNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
-$documents = $LMS->GetDocuments($_GET['id']);
+$documents = $LMS->GetDocuments($_GET['id'], 10);
 $taxeslist = $LMS->GetTaxes();
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

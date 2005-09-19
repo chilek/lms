@@ -110,6 +110,10 @@ function GetConfigList($order='var,asc')
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in numbering plans list. Default: 100.');
 				break;
 
+				case 'documentlist_pagelimit':
+					$config[$idx]['description'] = trans('Limit of records displayed on one page in documents list. Default: 100.');
+				break;
+
 				case 'networkhosts_pagelimit':
 					$config[$idx]['description'] = trans('Limit of nodes displayed on one page in Network Information. Default: 256. With 0, this information is omitted (page is displaying faster).');
 				break;

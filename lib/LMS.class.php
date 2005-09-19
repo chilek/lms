@@ -2801,6 +2801,7 @@ class LMS
 			case 'invoicelist_pagelimit':
 			case 'aliaslist_pagelimit':
 			case 'domainlist_pagelimit':
+			case 'documentlist_pagelimit':
 			case 'timeout':
 			case 'timetable_days_forward':
 			case 'nodepassword_length':
@@ -3059,16 +3060,27 @@ class LMS
 			return "";
 	}
 
-	function GetDocuments($customerid=NULL)
+	function GetDocuments($customerid=NULL, $limit=NULL)
 	{
 		if(!$customerid) return NULL;
 		
-		return $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype, template, closed
+		$list = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype, template, closed
 				    FROM documentcontents, documents
 				    LEFT JOIN numberplans ON(numberplanid = numberplans.id)
 				    WHERE documents.id = documentcontents.docid
 				    AND customerid = ?
 				    ORDER BY cdate', array($customerid));
+		
+		if($limit)
+		{
+			$index = (sizeof($list) - $limit) > 0 ? sizeof($list) - $limit : 0;
+			for($i = $index; $i < sizeof($list); $i++)
+				$result[] = $list[$i];
+			
+			return $result;
+		}
+		else
+			return $list;
 	}
 
 	function GetTaxes($from=NULL, $to=NULL)

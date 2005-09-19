@@ -906,6 +906,11 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>numberplanlist_pagelimit = 50</prompt></para>
     	    </listitem>
     	    <listitem>
+        	<para>documentlist_pagelimit</para>
+        	<para>Limit of records that can be displayed on one page of documents list. Default: 100</para>
+        	<para>Example:     <prompt>documentlist_pagelimit = 50</prompt></para>
+    	    </listitem>
+    	    <listitem>
         	<para>reload_type</para>
         	<para>Reload type. Allowed values:</para>
         	<para>exec - execute some command (usually with sudo, script or something

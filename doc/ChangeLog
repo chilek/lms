@@ -28,6 +28,8 @@ version ? (??/??/????):
   - Userpanel menu instead of Configuration -> Userpanel (Mad Mark)
   - added cashier name variable {$receipt.user} on cash receipt template (alec)
   - lmsd/dhcp: added support for public IP addresses (alec)
+  - in Customer Documents displaying last 10 documents with link to
+    all documents list (alec)
 
 version 1.7.2 Doci (2005-08-13):
 

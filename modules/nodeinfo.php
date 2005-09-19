@@ -57,7 +57,7 @@ $customerinfo = $LMS->GetCustomer($ownerid);
 $nodeinfo = $LMS->GetNode($nodeid);
 $balancelist = $LMS->GetCustomerBalanceList($ownerid);
 $assignments = $LMS->GetCustomerAssignments($ownerid);
-$documents = $LMS->GetDocuments($ownerid);
+$documents = $LMS->GetDocuments($ownerid, 10);
 $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 
