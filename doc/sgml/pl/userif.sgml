@@ -956,7 +956,7 @@ MISC_OTHER="-A -x -j"
         </listitem>
         <listitem>
             <para>documentlist_pagelimit</para>
-            <para>Limit wy¶wietlanych pozycji na stronie w li¶cie dokumentÃ³w. Domy¶lnie: 100.</para>
+            <para>Limit wy¶wietlanych pozycji na stronie w li¶cie dokumentów. Domy¶lnie: 100.</para>
             <para>Przyk³ad:     <prompt>documentlist_pagelimit = 10</prompt></para>
         </listitem>
         <listitem>
