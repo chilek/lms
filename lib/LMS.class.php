@@ -34,7 +34,6 @@ class LMS
 	var $CONFIG;			// table including lms.ini options
 	var $_version = '1.7-cvs';	// class version
 	var $_revision = '$Revision$';
-	var $MENU = array();
 
 	function LMS(&$DB, &$AUTH, &$CONFIG) // class variables setting
 	{
