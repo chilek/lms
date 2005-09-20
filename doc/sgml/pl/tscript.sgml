@@ -225,9 +225,17 @@ var jest typu {typeof(var)}
 					<para><prompt>replace(wzorzec, zamiennik, ci±g_znaków)</prompt></para>
 					<para>Funkcja przeszukuje ci±g_znaków w poszukiwaniu fragmentów pasuj±cych
 					do wzorca i wstawia w jego miejsce zamiennik. Wzorzec mo¿e byæ
-					wyra¿eniem regularnym.</para>
+					wyra¿eniem regularnym zgodnym z POSIX.</para>
 					<para>Przyk³ad: <prompt>replace(":", "-", mac)</prompt></para>
 					<para>Przyk³ad: <prompt>replace("[a-z]", "-", "teksty")</prompt></para>
+				</listitem>
+				<listitem>
+					<para><prompt>explode(separator, ci±g_znaków)</prompt></para>
+					<para>Zwraca tablicê ci±gów, powsta³ych z podzia³u ci±gu_znaków
+					wg okre¶lonego separatora. Separator mo¿e byæ POSIX'owym wyra¿eniem
+					regularnym.</para>
+					<para>Przyk³ad: <prompt>explode(":", "aaa:bbb:ccc")</prompt></para>
+					<para>Przyk³ad: <prompt>explode("[ ]+", "aaa bbb ccc")</prompt></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
