@@ -420,12 +420,7 @@ class LMS
 	{
 		$this->SetTS('customers');
 
-		// Update from Userpanel
-		if(!isset($this->AUTH->id))
-			return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, im=?, ten=?, ssn=?, moddate=?NOW?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $customerdata['status'], $customerdata['phone1'], $customerdata['phone2'], $customerdata['phone3'], $customerdata['address'], $customerdata['zip'], $customerdata['city'], $customerdata['email'], $customerdata['im'], $customerdata['ten'], $customerdata['ssn'], $customerdata['info'], $customerdata['serviceaddr'], $customerdata['lastname'], ucwords($customerdata['name']), $customerdata['message'], $customerdata['pin'], $customerdata['id'] ) );
-
-		// Update from LMS-UI
-		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, im=?, ten=?, ssn=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $customerdata['status'], $customerdata['phone1'], $customerdata['phone2'], $customerdata['phone3'], $customerdata['address'], $customerdata['zip'], $customerdata['city'], $customerdata['email'], $customerdata['im'], $customerdata['ten'], $customerdata['ssn'], $this->AUTH->id, $customerdata['info'], $customerdata['serviceaddr'], $customerdata['lastname'], ucwords($customerdata['name']), $customerdata['message'], $customerdata['pin'], $customerdata['id'] ) );
+		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, im=?, ten=?, ssn=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $customerdata['status'], $customerdata['phone1'], $customerdata['phone2'], $customerdata['phone3'], $customerdata['address'], $customerdata['zip'], $customerdata['city'], $customerdata['email'], $customerdata['im'], $customerdata['ten'], $customerdata['ssn'], (isset($this->AUTH->id) ? $this->AUTH->id : $customerdata['modid']), $customerdata['info'], $customerdata['serviceaddr'], $customerdata['lastname'], ucwords($customerdata['name']), $customerdata['message'], $customerdata['pin'], $customerdata['id'] ) );
 	}
 
 	function GetCustomerNodesNo($id)
