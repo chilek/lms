@@ -26,11 +26,14 @@ GNU General Public License for more details.
 map_implementation(tscript_extension_map, char*, tscript_extension, str_constr, no_constr, free, no_destr, str_comp);
 map_implementation(tscript_constant_map, char*, tscript_constant, str_constr, no_constr, free, tscript_constant_destr, str_comp);
 
-void tscript_add_extension(tscript_context* context, char* keyword, tscript_extension_func* func)
+void tscript_add_extension(tscript_context* context, char* keyword, tscript_extension_func* func,
+	int min_args, int max_args)
 {
 	tscript_extension e;
 	e.func = func;
 	e.block = 0;
+	e.min_args = min_args;
+	e.max_args = max_args;
 	tscript_extension_map_add(context->extensions, keyword, e);
 }
 
@@ -58,6 +61,34 @@ int tscript_has_extension(tscript_context* context, char* keyword)
 	return tscript_extension_map_contains(context->extensions, keyword);
 }
 
+static int tscript_extension_check_min_args(tscript_extension* e, tscript_value* arg)
+{
+	tscript_value* tmp;
+	int count;
+	if (arg->type == TSCRIPT_TYPE_NULL)
+		return (e->min_args <= 0);
+	if (arg->type != TSCRIPT_TYPE_ARRAY)
+		return (e->min_args <= 1);
+	tmp = tscript_value_array_count(arg);
+	count = tscript_value_as_number(tmp);
+	tscript_value_free(tmp);
+	return (e->min_args <= count);
+}
+
+static int tscript_extension_check_max_args(tscript_extension* e, tscript_value* arg)
+{
+	tscript_value* tmp;
+	int count;
+	if (arg->type == TSCRIPT_TYPE_NULL || e->max_args < 0)
+		return 1;
+	if (arg->type != TSCRIPT_TYPE_ARRAY)
+		return (e->max_args >= 1);
+	tmp = tscript_value_array_count(arg);
+	count = tscript_value_as_number(tmp);
+	tscript_value_free(tmp);
+	return (e->max_args >= count);
+}
+
 tscript_value* tscript_run_extension(tscript_context* context, char* keyword, tscript_value* arg)
 {
 	tscript_extension* e;
@@ -66,6 +97,10 @@ tscript_value* tscript_run_extension(tscript_context* context, char* keyword, ts
 	if (!tscript_extension_map_contains(context->extensions, keyword))
 		tscript_internal_error("Cannot find extension\n");
 	e = tscript_extension_map_ref(context->extensions, keyword, en);
+	if (!tscript_extension_check_min_args(e, arg))
+		return tscript_value_create_error("%s: too small number of arguments, minimum %i required", keyword, e->min_args);
+	if (!tscript_extension_check_max_args(e, arg))
+		return tscript_value_create_error("%s: too many arguments, maximum %i allowed", keyword, e->max_args);
 	return e->func(arg);
 }
 

@@ -232,14 +232,14 @@ tscript_value * tscript_ext_sql_networks()
 void tscript_ext_sql_init(tscript_context *context, ConnHandle *c)
 {
 	conn = c;
-	tscript_add_extension(context, "CREATE", tscript_ext_sql_create);
-	tscript_add_extension(context, "DROP", tscript_ext_sql_drop);
-	tscript_add_extension(context, "INSERT", tscript_ext_sql_insert);
-	tscript_add_extension(context, "DELETE", tscript_ext_sql_delete);
-	tscript_add_extension(context, "UPDATE", tscript_ext_sql_update);
-	tscript_add_extension(context, "SELECT", tscript_ext_sql_select);
-	tscript_add_extension(context, "rows", tscript_ext_sql_rows);
-	tscript_add_extension(context, "escape", tscript_ext_sql_escape);
+	tscript_add_extension(context, "CREATE", tscript_ext_sql_create, 1, 1);
+	tscript_add_extension(context, "DROP", tscript_ext_sql_drop, 1, 1);
+	tscript_add_extension(context, "INSERT", tscript_ext_sql_insert, 1, 1);
+	tscript_add_extension(context, "DELETE", tscript_ext_sql_delete, 1, 1);
+	tscript_add_extension(context, "UPDATE", tscript_ext_sql_update, 1, 1);
+	tscript_add_extension(context, "SELECT", tscript_ext_sql_select, 1, 1);
+	tscript_add_extension(context, "rows", tscript_ext_sql_rows, 1, 1);
+	tscript_add_extension(context, "escape", tscript_ext_sql_escape, 1, 1);
 	tscript_add_constant(context, "CUSTOMERS", tscript_ext_sql_customers);
 	tscript_add_constant(context, "NODES", tscript_ext_sql_nodes);
 	tscript_add_constant(context, "NETWORKS", tscript_ext_sql_networks);

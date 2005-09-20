@@ -61,9 +61,14 @@
 									\
 	list_declaration_2(N##_elem);					\
 									\
+	N* N##_create();						\
+	void N##_free(N* map);						\
 	T* N##_add(N* map, K key, T value);				\
-	T* N##_ref(N* map, K key, T value);
-
+	int N##_remove(N* map, K key);					\
+	T* N##_ref(N* map, K key, T value);				\
+	int N##_contains(N* map, K key);				\
+	int N##_count(N* map);						\
+	N* N##_duplicate(N* map);
 
 #define map_declaration(N, K, T)					\
 	map_declaration_1(N)						\

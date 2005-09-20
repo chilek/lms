@@ -16,6 +16,7 @@ GNU General Public License for more details.
 */
 
 #include "tscript_variables.h"
+#include "tscript_variables_private.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

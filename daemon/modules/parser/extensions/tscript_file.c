@@ -51,14 +51,6 @@ tscript_value* tscript_ext_file(tscript_value* arg)
 	tscript_value* tmp1;
 	tscript_value* tmp2;
 	tscript_value* res;
-	int count;
-	if (arg->type != TSCRIPT_TYPE_ARRAY)
-		return tscript_value_create_error("file: 2 arguments required");
-	tmp1 = tscript_value_array_count(arg);
-	count = tscript_value_as_number(tmp1);
-	tscript_value_free(tmp1);
-	if (count != 2)
-		return tscript_value_create_error("file: 2 arguments required");
 	index = tscript_value_create_number(0);
 	tmp1 = tscript_value_convert_to_string(tscript_value_dereference(*tscript_value_array_item_ref(&arg, index)));
 	tscript_value_free(index);
@@ -217,8 +209,6 @@ tscript_value* tscript_ext_fileexists(tscript_value* arg)
 {
 	tscript_value* path;
 	int res;
-	if (arg->type == TSCRIPT_TYPE_ARRAY)
-		return tscript_value_create_error("file: 1 argument required");
 	path = tscript_value_convert_to_string(tscript_value_dereference(arg));
 	res = access(tscript_value_as_string(path), F_OK);
 	tscript_value_free(path);
@@ -227,13 +217,13 @@ tscript_value* tscript_ext_fileexists(tscript_value* arg)
 
 void tscript_ext_file_init(tscript_context* context)
 {
-	tscript_add_extension(context, "file", tscript_ext_file);
+	tscript_add_extension(context, "file", tscript_ext_file, 2, 2);
 	tscript_extension_set_block(context, "file");
-	tscript_add_extension(context, "listdir", tscript_ext_listdir);
-	tscript_add_extension(context, "deletefile", tscript_ext_deletefile);
-	tscript_add_extension(context, "readfile", tscript_ext_readfile);
-	tscript_add_extension(context, "getfile", tscript_ext_getfile);
-	tscript_add_extension(context, "fileexists", tscript_ext_fileexists);
+	tscript_add_extension(context, "listdir", tscript_ext_listdir, 1, 1);
+	tscript_add_extension(context, "deletefile", tscript_ext_deletefile, 1, 1);
+	tscript_add_extension(context, "readfile", tscript_ext_readfile, 1, 1);
+	tscript_add_extension(context, "getfile", tscript_ext_getfile, 1, 1);
+	tscript_add_extension(context, "fileexists", tscript_ext_fileexists, 1, 1);
 }
 
 void tscript_ext_file_close(tscript_context* context)
