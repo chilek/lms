@@ -5,6 +5,10 @@ $Id$
     wykorzystanie stalej w petli powoduje dlugie wykonanie skryptu.
     Powodem prawdopodobnie jest za kazdym razem kopiowanie stalej w pamieci.
 
+*** break i continue
+
+    komendy steruj±ce do pêtli    
+
 *** B£¡D: podzmienna o nazwie zastrze¿onej
 
     przyk³ad: 
@@ -40,6 +44,8 @@ $Id$
     brakuje operatorów --x, ++x
     dobrze by³oby dodaæ te¿ pozosta³e brakuj±ce operatory: binarne >>, <<, 
     arytmetyczny ^ (potêgowanie)
+
+*** pêtla while()
 
 *** B£¡D: stosowanie (interpretowanie) wciêæ
 
