@@ -20,11 +20,6 @@ $Id$
 	zamiast if(number(zmienna)), albo if(zmienna == 1) wola³bym po prostu
 	if(zmienna)
 
-*** php'owe explode()
-
-    w zwi±zku z {readfile} przyda³aby siê jaka¶ funkcja do parsowania 
-    ka¿dej linii, co¶ jak explode z PHP, albo mo¿e co¶ opartego na regexpach
-
 *** rozbudowa replace()
 
     zrobienie replace() na podobienstwo PHP'owej ereg_replace(), czyli
