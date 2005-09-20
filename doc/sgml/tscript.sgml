@@ -224,7 +224,15 @@ var is type of {typeof(var)}
 				</para>
 				<para>Example: <prompt>replace(":", "-", mac)</prompt></para>
 				<para>Example: <prompt>replace("[a-z]", "-", "Text")</prompt></para>
-				</listitem>
+			</listitem>
+			<listitem>
+			        <para><prompt>explode(separator, string)</prompt></para>
+				<para>Returns an array of strings, each of which is a substring
+				of string formed by splitting it on boundaries formed by 
+				separator. Separator can be a string or POSIX's regural expression.</para>
+				<para>Example: <prompt>explode(":", "aaa:bbb:ccc")</prompt></para>
+				<para>Example: <prompt>explode("[ ]+", "aaa bbb ccc")</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		</sect3>
 		<sect3 id="sysinfo">
