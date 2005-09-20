@@ -85,16 +85,7 @@ tscript_value * tscript_ext_net_long2ip(tscript_value *arg)
 
 tscript_value * tscript_ext_net_broadcast(tscript_value *arg)
 {
-	tscript_value *tmp, *index, *addr, *mask;
-	int argc;
-
-	if (arg->type != TSCRIPT_TYPE_ARRAY)
-    		return tscript_value_create_error("broadcast: 2 arguments required");
-	tmp = tscript_value_array_count(arg);
-	argc = tscript_value_as_number(tmp);
-	tscript_value_free(tmp);
-	if (argc != 2)
-	        return tscript_value_create_error("broadcast: 2 arguments required");
+	tscript_value *index, *addr, *mask;
 
         index = tscript_value_create_number(0);
         addr = *tscript_value_array_item_ref(&arg, index);
@@ -117,10 +108,10 @@ tscript_value * tscript_ext_net_mask2prefix(tscript_value *arg)
 
 void tscript_ext_net_init(tscript_context *context)
 {
-	tscript_add_extension(context, "mask2prefix", tscript_ext_net_mask2prefix);
-	tscript_add_extension(context, "ip2long", tscript_ext_net_ip2long);
-	tscript_add_extension(context, "long2ip", tscript_ext_net_long2ip);
-	tscript_add_extension(context, "broadcast", tscript_ext_net_broadcast);
+	tscript_add_extension(context, "mask2prefix", tscript_ext_net_mask2prefix, 1, 1);
+	tscript_add_extension(context, "ip2long", tscript_ext_net_ip2long, 1, 1);
+	tscript_add_extension(context, "long2ip", tscript_ext_net_long2ip, 1, 1);
+	tscript_add_extension(context, "broadcast", tscript_ext_net_broadcast, 2, 2);
 }
 
 void tscript_ext_net_close(tscript_context *context)

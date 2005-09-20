@@ -40,7 +40,7 @@ tscript_value* tscript_ext_exec(tscript_value* arg)
 
 void tscript_ext_exec_init(tscript_context* context)
 {
-	tscript_add_extension(context, "exec", tscript_ext_exec);
+	tscript_add_extension(context, "exec", tscript_ext_exec, 1, 1);
 }
 
 void tscript_ext_exec_close(tscript_context* context)

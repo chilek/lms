@@ -64,9 +64,15 @@
 		struct T##_list_elem* first;				\
 	};								\
 									\
+	T##_list* T##_list_create();					\
+	void T##_list_free(T##_list* list);				\
 	T* T##_list_add(T##_list* list, T value);			\
+	int T##_list_remove(T##_list* list, T value);			\
 	T* T##_list_find(T##_list* list, T value);			\
-	T* T##_list_ref(T##_list* list, T value);
+	T* T##_list_ref(T##_list* list, T value);			\
+	int T##_list_contains(T##_list* list, T value);			\
+	int T##_list_count(T##_list* list);				\
+	T##_list* T##_list_duplicate(T##_list* list);
 
 #define list_declaration(T) 						\
 	list_declaration_1(T);						\

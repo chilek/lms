@@ -59,7 +59,7 @@ tscript_value* tscript_ext_date(tscript_value* arg)
 void tscript_ext_sysinfo_init(tscript_context* context)
 {
 	tscript_add_constant(context, "systype", tscript_ext_systype);
-	tscript_add_extension(context, "date", tscript_ext_date);
+	tscript_add_extension(context, "date", tscript_ext_date, 0, 1);
 }
 
 void tscript_ext_sysinfo_close(tscript_context* context)

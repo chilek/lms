@@ -46,18 +46,10 @@ tscript_value* tscript_ext_replace(tscript_value* arg)
 	regmatch_t match;
 	int res;
 	char* buf;
-	tscript_value* tmp;
 	tscript_value* str;
 	tscript_value* regexp;
 	tscript_value* dst;
 	tscript_value* index;
-	if (arg->type != TSCRIPT_TYPE_ARRAY)
-		return tscript_value_create_error("replace: 3 arguments required");
-	tmp = tscript_value_array_count(arg);
-	res = tscript_value_as_number(tmp);
-	tscript_value_free(tmp);
-	if (res != 3)
-		return tscript_value_create_error("replace: 3 arguments required");
 	index = tscript_value_create_number(0);
 	regexp = *tscript_value_array_item_ref(&arg, index);
 	tscript_value_free(index);
@@ -88,14 +80,66 @@ tscript_value* tscript_ext_replace(tscript_value* arg)
 	return str;
 }
 
+tscript_value* tscript_ext_explode(tscript_value* arg)
+{
+	regex_t* reg;
+	regmatch_t match;
+	int res;
+	char* buf;
+	tscript_value* str;
+	tscript_value* regexp;
+	tscript_value* index;
+	tscript_value* array;
+	index = tscript_value_create_number(0);
+	regexp = *tscript_value_array_item_ref(&arg, index);
+	tscript_value_free(index);
+	index = tscript_value_create_number(1);
+	str = tscript_value_duplicate(*tscript_value_array_item_ref(&arg, index));
+	tscript_value_free(index);
+	array = tscript_value_create_array();
+	reg = (regex_t *)calloc(1, sizeof(regex_t));
+	res = regcomp(reg, tscript_value_as_string(regexp), REG_EXTENDED);
+	if (res != 0)
+		return tscript_value_create_error("incorrect regexp");
+	res = 0;
+	while (regexec(reg, tscript_value_as_string(str), 1, &match, 0) == 0)
+	{
+		index = tscript_value_create_number(res);
+		buf = (char*)malloc(strlen(tscript_value_as_string(str)) + 1);
+		strncpy(buf, tscript_value_as_string(str), match.rm_so);
+		buf[match.rm_so] = 0;
+		*tscript_value_array_item_ref(&array, index) =
+			tscript_value_create_string(buf);
+		free(buf);
+		tscript_value_free(index);
+		res++;
+		buf = strdup(&tscript_value_as_string(str)[match.rm_eo]);
+		tscript_value_free(str);
+		str = tscript_value_create_string(buf);
+		free(buf);
+	}
+	if (tscript_value_as_string(str)[0] != 0)
+	{
+		index = tscript_value_create_number(res);
+		*tscript_value_array_item_ref(&array, index) =
+			tscript_value_create_string(tscript_value_as_string(str));
+		tscript_value_free(index);
+	}
+	tscript_value_free(str);
+	regfree(reg);
+	return array;
+}
+
 void tscript_ext_string_init(tscript_context* context)
 {
-	tscript_add_extension(context, "trim", tscript_ext_trim);
-	tscript_add_extension(context, "replace", tscript_ext_replace);
+	tscript_add_extension(context, "trim", tscript_ext_trim, 1, 1);
+	tscript_add_extension(context, "replace", tscript_ext_replace, 3, 3);
+	tscript_add_extension(context, "explode", tscript_ext_explode, 2, 2);
 }
 
 void tscript_ext_string_close(tscript_context* context)
 {
 	tscript_remove_extension(context, "trim");
 	tscript_remove_extension(context, "replace");
+	tscript_remove_extension(context, "explode");
 }
