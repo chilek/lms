@@ -15,5 +15,5 @@ shaper:		shaper (another bandwidth limiting program) configuration
 
     cp -r contrib/daemon/* daemon/modules/
     cd daemon
-    ./configure	(with appropriate options)
+    ./configure	(with appropriate options, or ./config.status)
     make

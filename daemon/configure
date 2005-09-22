@@ -111,7 +111,6 @@ CFLAGS=
 FLAGS=
 OS=
 LMSDBIN="lmsd"
-MODULES="ethers hostfile dhcp oident dns cutoff payments traffic notify tc system parser ggnotify"
 
 echo -n "OS Type... "
 case `(uname -s || echo unknown) 2>/dev/null` in
@@ -119,16 +118,17 @@ case `(uname -s || echo unknown) 2>/dev/null` in
 	OS="linux"
 	FLAGS="-DGNU"
 	CFLAGS="-fPIC"
-	MODULES=$MODULES" pinger"
 	echo "Linux";;
   CYGWIN* | Cygwin* | cygwin* )
 	OS="cygwin"
 	LIBS="-lz"
 	LMSDBIN="lmsd.exe"
+	EXCLUDE="pinger"
 	echo "Cygwin";;
 
   *)
 	CFLAGS="-fPIC"
+	EXCLUDE="pinger"
 	echo "Other";;
 esac
 
@@ -225,15 +225,18 @@ OS = $OS
 echo " done"
 
 # Make modules Makefile's
-echo "MODULES = $MODULES" > ./modules/Makefile \
-&& cat ./modules/Makefile.in >> ./modules/Makefile
+echo -n "MODULES = " > ./modules/Makefile
 
 cd ./modules
 for x in `ls | grep -v CVS`
 do
     if [ -d ./${x} ]
     then
-	if [ -e ./${x}/Makefile.in ]
+	if [ ! `echo $EXCLUDE | grep ${x}` ]
+	then
+	    echo -n "${x} " >> ./Makefile
+	fi
+    	if [ -e ./${x}/Makefile.in ]
 	then
 	    echo -n "Create Makefile for mod_${x}..."
 	    echo "
@@ -246,6 +249,8 @@ LDFLAGS = $LDFLAGS
 	fi
     fi
 done 
+
+cat ./Makefile.in >> ./Makefile
 
 cd parser/extensions
 if [ -e ./Makefile.in ]
