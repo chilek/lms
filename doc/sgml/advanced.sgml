@@ -73,7 +73,7 @@
      </sect1>
      <sect1 id="devel-db">
           <title>Database structure</title>
-          <para>Simple database layout is provided below. For more details (data types, fields restrictions and default values) please refer to <ulink url="../lms.mysql"><filename>lms.mysql</filename></ulink>, <ulink url="../lms.pgsql"><filename>lms.pgsql</filename></ulink> and <ulink url="../lms.sqlite"><filename>lms.sqlite</filename></ulink> in <filename>doc/</filename> directory.</para>
+          <para>Simple database layout is provided below. For more details (data types, fields restrictions and default values) please refer to <ulink url="../lms.mysql"><filename>lms.mysql</filename></ulink>, <ulink url="../lms.pgsql"><filename>lms.pgsql</filename></ulink> in <filename>doc/</filename> directory.</para>
           <sect2 id="users">
                <title>LMS users ('users')</title>
                <simplelist>
@@ -654,19 +654,6 @@ mysql&gt; show table status;
                <listitem>
                <para>Number of records:</para>
                <para>PostgreSQL does not have row number limit for tables, however COUNT returns 32-bit number, so for tables longer that 2 billions of records this function will return wrong value (at least in version 7.1).</para>
-               </listitem>
-               </itemizedlist>
-               </listitem>
-               <listitem>
-               <para>SQLite</para>
-               <itemizedlist>
-               <listitem>
-               <para>Database size:</para>
-               <para>Since 2.7.4 SQLite can support 2 terabytes big databases. Additionally it can store up to 1MB (or 16MB - defined at compilation time) in one record.</para>
-               </listitem>
-               <listitem>
-               <para>Number of records:</para>
-               <para>Maximum number of records is 2^32, although it has been never tested.</para>
                </listitem>
                </itemizedlist>
                </listitem>

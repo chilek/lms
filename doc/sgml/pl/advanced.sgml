@@ -76,9 +76,8 @@
           <para>Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej szczegó³owe
           informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domy¶lne
           zawarte s± w plikach <ulink url="../lms.mysql"><filename>lms.mysql</filename></ulink>,
-          <ulink url="../lms.pgsql"><filename>lms.pgsql</filename></ulink> i 
-          <ulink url="../lms.sqlite"><filename>lms.sqlite</filename></ulink> w katalogu
-          <filename>/doc</filename>.</para>
+          <ulink url="../lms.pgsql"><filename>lms.pgsql</filename></ulink> 
+          w katalogu <filename>/doc</filename>.</para>
           <sect2 id="users">
                <title>U¿ytkownicy ('users')</title>
                <simplelist>
@@ -698,23 +697,6 @@ mysql&gt; show table status;
                Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a zatem dla tabel
                zawieraj±cych ponad dwa miliardy wierszy wynik tej funkcji bêdzie
                nieprawid³owy. (Informacja dot. PostgreSQL 7.1)</para>
-               </listitem>
-               </itemizedlist>
-               </listitem>
-               <listitem>
-               <para>SQLite</para>
-               <itemizedlist>
-               <listitem>
-               <para>Rozmiar bazy danych:</para>
-               <para>Od wersji 2.7.4 SQLite mo¿e obs³ugiwaæ bazy o rozmiarze do 2 terabajtów. 
-               Dodatkowym ograniczeniem jest objêto¶æ danych zapisanych w jednym rekordzie.
-               Wielko¶æ ta, ograniczona do 1 MB mo¿e zostaæ zwiêkszona do 16 MB podczas 
-               kompilacji.</para>
-               </listitem>
-               <listitem>
-               <para>Ilo¶æ rekordów:</para>
-               <para>Maksymalna ilo¶æ rekordów dla tej bazy to 2^32, ale nikt nie testowa³ nigdy takiej 
-               ilo¶ci.</para>
                </listitem>
                </itemizedlist>
                </listitem>

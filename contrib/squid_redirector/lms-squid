@@ -56,11 +56,6 @@ while ($adres = <STDIN>) {
 	{
     	    $dbase = DBI->connect_cached("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	}
-	elsif($dbtype eq "sqlite")
-	{
-    	    $dbase = DBI->connect_cached("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-    	    $dbase->func('inet_aton',1,'dotquad2u32','create_function');     
-	}
 	else
 	{
     	    print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";

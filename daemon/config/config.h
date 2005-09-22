@@ -11,9 +11,6 @@
 #ifdef USE_PGSQL
 #include "../dbdrivers/pgsql/db.h"
 #endif
-#ifdef USE_SQLITE
-#include "../dbdrivers/sqlite/db.h"
-#endif
 
 /* Maximum size of variable name or section name*/
 #define NAMESZ		100

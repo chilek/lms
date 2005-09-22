@@ -19,8 +19,7 @@
                <listitem>
                     <para><filename>libmysqlclient</filename> shared library (included in full MySQL
                     installation or respective "devel" package) or <filename>libpq</filename> shared
-                    library in case of PostgreSQL database use or <filename>sqlite</filename> shared
-                    library</para>
+                    library in case of PostgreSQL database use.</para>
                      </listitem>
                <listitem>
                     <para><filename>libdl</filename> shared library (present in every modern
@@ -49,14 +48,13 @@
   --enable-debug1       events logging (disabled)
   --with-pgsql          enables using of PostgreSQL database (disabled)
   --with-mysql          enables using of MySQL database (enabled)
-  --with-sqlite         enables using of SQLite database (disabled)
   --prefix=PREFIX       program and modules install directory (/usr/local)
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration
 </screen>
-               It's required to choose one database which you will use (--with-mysql or --with-pgsql
-               or --with-sqlite) and location of libraries supplied with database (--incdir,
+               It's required to choose one database which you will use (--with-mysql or --with-pgsql) 
+	       and location of libraries supplied with database (--incdir,
                --libdir). You can use only one database. If you change database, you have to
                recompile your daemon. It's also possible to force daemon to use
 	       configuration files instead of database. It can't use

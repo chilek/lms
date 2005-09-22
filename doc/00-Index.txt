@@ -11,7 +11,6 @@ README.html	- User Manual - one html file version
 TODO		- features to do
 lms.mysql	- create database queries for MySQL
 lms.pgsql	- create database queries for PostgreSQL
-lms.sqlite	- create database queries for SQLite
 UPGRADE-*.mysql	- how to upgrade lms to current version (see doc)
 UPGRADE-*.pgsql	- how to upgrade lms to current version (see doc)
 

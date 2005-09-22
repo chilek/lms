@@ -120,7 +120,7 @@
 			</para>
 		</listitem>
 		<listitem>
-			<para>Support PostgreSQL i SQLite:
+			<para>Support PostgreSQL:
 			<simplelist>
 			<member><ulink url="http://www.alec.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
 			</simplelist>

@@ -35,16 +35,14 @@
           strony <ulink url="http://www.php.net">www.php.net</ulink>.
           W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
           w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
-          zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i jeden z
-          mysql, pgsql, sqlite (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
+          zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i 
+          mysql lub pgsql (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
           wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</para>
          </sect2>
          <sect2 id="install-req-db">
            <title>Serwer baz danych</title>
            <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx.</para>
            <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
-           <para>Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
-           problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.x.</para>
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
@@ -72,9 +70,6 @@
          </listitem>
          <listitem>
             <para>DBD-Pg (Je¶li masz zamiar u¿ywaæ postgres'a),</para>
-         </listitem>
-         <listitem>
-            <para>DBD-SQLite (Je¶li masz zamiar u¿ywaæ bazê SQLite).</para>
          </listitem>
        </itemizedlist></para>
        </sect2>
@@ -298,73 +293,6 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 
           </sect3>
           </sect2>
-          <sect2 id="install-sqlite">
-          <title>SQLite</title>
-          <sect3 id="install-sqlite-intro">
-          <title>Wstêp</title>
-               <para>Ta jednoplikowa baza jest chwalona za swoj± szybko¶æ, wg autorów
-               okre¶lan± na 2-3 krotnie szybsz± od MySQL. Poza tym przy odpowiedniej 
-               konfiguracji umo¿liwia wczytanie ca³ej bazy do pamiêci RAM przez co osi±gany jest
-               znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki opis instalacji.
-               ¬ród³a mo¿na pobraæ z <ulink url="http://www.sqlite.org">
-               www.sqlite.org</ulink>.</para>
-          </sect3>
-          <sect3 id="install-sqlite-server">
-          <title>Instalacja SQLite</title>
-               <para>Opisano tutaj sposób instalacji bibliotek SQLite oraz 
-               dodanie obs³ugi tej bazy do PHP (PHP w wersji 5.0 ma wbudowan±
-               obs³ugê SQLite). Po rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite 
-               i wydaj kolejno polecenia (¶cie¿ki przyk³adowe):
-               <screen>
-$ ./configure --enable-utf8
-$ make
-$ make install
-$ ldconfig
-$ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
-$ pear install SQLite-1.0.2.tgz</screen>
-               Nastêpnie w pliku php.ini ustaw:
-               <screen>
-extension=sqlite.so</screen>
-               Istnieje równie¿ mo¿liwo¶æ wkompilowania obs³ugi SQLite
-               w PHP przy pomocy opcji <prompt>--with-sqlite</prompt>.
-               </para>
-          </sect3>
-          <sect3 id="install-sqlite-dbcreate">
-          <title>Utworzenie bazy danych</title>
-               <para>Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. 
-               Tak wiêc, wejd¼ do katalogu w którym masz LMS'a i uruchom shell sqlite'a:
-               <screen>
-# sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
-sqlite> .exit
-# chown 99.98 /usr/local/lms/lms</screen>
-               </para>
-               <para>Innym sposobem (np. gdy nie posiadasz, ¿adnej aplikacji klienckiej SQLite)
-               jest u¿ycie skryptu <filename>sqlite_createdb.php</filename> z katalogu
-               <filename>sample</filename> LMS-a. Skonfiguruj LMS-a do u¿ycia sqlite (patrz ni¿ej),
-               a nastêpnie wejd¼ do g³ównego drzewa ¼róde³ LMS-a i wykonaj polecenie:
-                <screen>
-# php sample/sqlite_createdb.php</screen>
-               </para>             
-          </sect3>
-          <sect3 id="install-sqlite-lms">
-          <title>Konfiguracja LMS (lms.ini)</title>
-               <para>Jednym z ograniczeñ SQLite jest brak autentykacji u¿ytkowników, dlatego
-               konfiguracja ogranicza siê do podania typu oraz ¶cie¿ki do pliku bazy. W sekcji
-               [database] pliku /etc/lms/lms.ini podajemy:
-               <screen>
-type     = sqlite
-database = /usr/local/lms/lms.db</screen>
-              </para>
-               <para>Po  takim  zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
-               bazie danych nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
-               zobaczysz bêdzie formularz dodania u¿ytkownika.  
-               </para>
-               <para>Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
-               <screen>
-12 4 3,10,17,21,28 * * /bin/cp /usr/local/lms/lms.db  backups/lms-auto-"$(date +%s)"-sqlite.db</screen>
-               </para>
-          </sect3>
-          </sect2>
      </sect1>       
       <sect1 id="install-config">
                <title>Konfiguracja podstawowa</title>
@@ -380,8 +308,8 @@ database = /usr/local/lms/lms.db</screen>
          <itemizedlist>
             <listitem>
          <para>type</para>
-        <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak na razie nie 
-        widaæ wiêkszych problemów z 'postgres' i 'sqlite'. Domy¶lnie: mysql</para>
+        <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql'
+        oraz 'postgres'. Domy¶lnie: mysql</para>
         <para>Przyk³ad: <prompt>type = mysql</prompt></para>
        </listitem>
           <listitem>
@@ -406,7 +334,7 @@ database = /usr/local/lms/lms.db</screen>
        </listitem>
           <listitem>
         <para>database</para>
-        <para>Nazwa bazy danych (a w przypadku SQLite ¶cie¿ka do pliku bazy), domy¶lnie lms.</para>
+        <para>Nazwa bazy danych, domy¶lnie lms.</para>
         <para>Przyk³ad:     <prompt>database = lms</prompt></para>
        </listitem>
           <listitem>

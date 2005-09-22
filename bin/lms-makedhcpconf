@@ -154,12 +154,6 @@ elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 }
-elsif($dbtype eq "sqlite")
-{
-	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-	$dbase->func('inet_ntoa',1,'u32todotquad','create_function');
-	$dbase->func('inet_aton',1,'dotquad2u32','create_function');	
-}
 else
 {
 	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";

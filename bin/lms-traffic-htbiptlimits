@@ -36,13 +36,6 @@ sub u32todotquad($)
 	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
 }		
 
-sub dotquad2u32($)
-{
-	my $dq = shift||'0.0.0.0';
-	my @dq = split('\.',$dq,4);
-	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
-}			
-
 sub mask2prefix($)
 {
 	my $mask = shift @_;
@@ -55,16 +48,6 @@ sub mask2prefix($)
 	my $len = length($q) ;
 	return $len;
 }
-
-sub prefix2mask
-{
-	my $host_bits = 32-$_[0];
-	my $net_mask = (~0 << $host_bits) & 0xffffffff;
-	my @bytes = unpack "CCCC", pack "N", $net_mask;
-	my $dec_rep = sprintf "%d.%d.%d.%d", @bytes;
-	return $dec_rep;
-}
-
 
 my $_version = '1.7-cvs';
 
@@ -161,11 +144,6 @@ elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";	
-}
-elsif($dbtype eq "sqlite")
-{
-	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-	$utsfmt = "strftime('%s','now')";	
 }
 else
 {

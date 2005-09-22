@@ -31,7 +31,7 @@ $authors = array(
 		'alec' => array(
 			'realname' => 'Aleksander Machniak',
 			'www' => 'www.alec.pl',
-			'info' => 'PHP, C, Perl, HTML, JavaScript, images, doc, PostgreSQL, SQLite'
+			'info' => 'PHP, C, Perl, HTML, JavaScript, images, doc, PostgreSQL'
 		     ),
 
 		'Baseciq' => array(

@@ -12,9 +12,6 @@
 #ifdef USE_MYSQL
 #include "dbdrivers/mysql/db.h"
 #endif
-#ifdef USE_SQLITE
-#include "dbdrivers/sqlite/db.h"
-#endif
 
 #define APIVERSION 5
 #define PROGNAME "lmsd"
