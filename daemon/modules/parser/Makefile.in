@@ -8,10 +8,10 @@ OUT = parser.so
 all: libs ext $(OUT)
 
 libs:
-	make -C lib
+	$(MAKE) -C lib
 
 ext:
-	make -C extensions
+	$(MAKE) -C extensions
 
 $(OUT): ${OBJECTS}
 	gcc -shared $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS) 
@@ -19,8 +19,8 @@ $(OUT): ${OBJECTS}
 
 clean:
 	rm -rf $(OUT) $(OBJECTS)
-	make -C lib clean
-	make -C extensions clean
+	$(MAKE) -C lib clean
+	$(MAKE) -C extensions clean
 
 install:
 	install -c -m 755 $(OUT) $(MODULESDIR)
