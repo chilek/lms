@@ -32,6 +32,7 @@ version ? (??/??/????):
     all documents list (alec)
   - lmsd/parser: added 'explode' extension, updated T-Script library (alec)
   - removed SQLite support (alec)
+  - lmsd: fixed make usage for non-linux systems (alec)
 
 version 1.7.2 Doci (2005-08-13):
 
