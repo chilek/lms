@@ -70,11 +70,6 @@ if($query = $_POST['query'])
 			for($i=0; $i < $cols; $i++)
 				$colnames[] = mysql_field_name($LMS->DB->_result, $i);
 		break;
-		case 'sqlite':
-			$cols = sqlite_num_fields($LMS->DB->_result);
-			for($i=0; $i < $cols; $i++)
-				$colnames[] = sqlite_field_name($LMS->DB->_result, $i);
-		break;
 		}
 
 		$i = 0;

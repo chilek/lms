@@ -43,19 +43,6 @@ my %options = (
 Getopt::Long::config("no_ignore_case");
 GetOptions(%options);
 
-sub u32todotquad($)
-{
-     my $p = shift @_;
-     return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
-}
-
-sub dotquad2u32($)
-{
-     my $dq = shift||'0.0.0.0';
-     my @dq = split('\.',$dq,4);
-     return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
-}
-
 sub mask2prefix($)
 {
     my $mask = shift @_;
@@ -136,13 +123,6 @@ elsif($dbtype eq "postgres")
 {
      $dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
      $utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
-}
-elsif($dbtype eq "sqlite")
-{
-     $dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-     $utsfmt = "strftime('%s','now')";
-     $dbase->func('inet_ntoa',1,'u32todotquad','create_function');
-     $dbase->func('inet_aton',1,'dotquad2u32','create_function');     
 }
 else
 {

@@ -62,12 +62,6 @@ sub dotquad2u32($)
 	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
 }
 
-sub u32todotquad($)
-{
-	my $p = shift @_;
-	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
-}
-
 sub isprivate($)
 {
 	my ($ip) = @_;
@@ -158,12 +152,6 @@ if($dbtype eq "mysql")
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-}
-elsif($dbtype eq "sqlite")
-{
-	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-	$dbase->func('inet_ntoa',1,'u32todotquad','create_function');
-	$dbase->func('inet_aton',1,'dotquad2u32','create_function');	
 }
 else
 {

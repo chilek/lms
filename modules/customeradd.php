@@ -39,13 +39,6 @@ if(isset($_GET['ajax']))
 				$mode='address';
 				if ($CONFIG['database']['type'] == 'mysql') $mode='substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
 				if ($CONFIG['database']['type'] == 'postgres') $mode='substring(address from \'^.* \')';
-				if ($CONFIG['database']['type'] == 'sqlite') {
-					function grepaddr ($input) {
-						preg_match('/^(.*) /',$input,$matches);
-						return $matches[1];
-					}
-					$mode='php(\'grepaddr\', address)';
-				}
 				break;
 		        case 'zip':
 				$mode='zip';

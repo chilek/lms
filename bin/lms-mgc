@@ -761,14 +761,6 @@ elsif($dbtype eq "postgres")
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
 	$customerq = "UPPER(customers.lastname) || ' ' || customers.name AS customer";
 }
-elsif($dbtype eq "sqlite")
-{
-	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-	$dbase->func('inet_ntoa',1,'u32todotquad','create_function');
-	$dbase->func('inet_aton',1,'dotquad2u32','create_function');
-	$utsfmt = "strftime('%s','now')";
-	$customerq = "UPPER(customers.lastname) || ' ' || customers.name AS customer";
-}
 else
 {
 	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";

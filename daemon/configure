@@ -85,7 +85,6 @@ Options: [defaults in brackets after descriptions]
   --enable-debug1	events logging (disabled)
   --with-pgsql		enables use of PostgreSQL database (disabled)
   --with-mysql		enables use of MySQL database (enabled)
-  --with-sqlite		enables use of SQLite database (disabled)
   --prefix=PREFIX	sets program and modules install location
 			(/usr/local), modules goes to PREFIX/lms/lib and main
 			program to PREFIX/lms/bin
@@ -141,12 +140,6 @@ then
 	FLAGS="$FLAGS -DUSE_PGSQL"
 	DBDRIVER=pgsql
 	echo " PostgreSQL"
-elif test "${with_sqlite+set}" = set
-then
-	LIBS="-lsqlite -ldl -lm "$LIBS
-	FLAGS="$FLAGS -DUSE_SQLITE"
-	DBDRIVER=sqlite
-	echo " SQLite"
 else
 	LIBS="-lmysqlclient -ldl "$LIBS
 	FLAGS="$FLAGS -DUSE_MYSQL"

@@ -9,9 +9,6 @@
 #ifdef USE_MYSQL
 #include "../../../dbdrivers/mysql/db.h"
 #endif
-#ifdef USE_SQLITE
-#include "../../../dbdrivers/sqlite/db.h"
-#endif
 
 void tscript_ext_sql_init(tscript_context *, ConnHandle *);
 void tscript_ext_sql_close(tscript_context *);
