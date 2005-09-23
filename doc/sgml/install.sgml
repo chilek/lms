@@ -170,7 +170,7 @@ mysql -u[user name with database creation rights] -p
 Enter password:[just enter password :)]
 mysql> create database lms;
 mysql> grant usage on lms.* to lms@localhost;
-mysql> grant select,insert,update,delete,create,alter on lms.* to lms@localhost identified by '[your_password]';
+mysql> grant select,insert,update,delete,create,alter,rename on lms.* to lms@localhost identified by '[your_password]';
 mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;</screen>
