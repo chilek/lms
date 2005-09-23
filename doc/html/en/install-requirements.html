@@ -118,7 +118,7 @@ TARGET="_top"
 >.
            At least following PHP modules needs to be installed (look for "extension" in
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
-           compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
+           compressed backups), gd or ming (for graphical map) and mysql or pgsql (for db
            support). PEAR::Mail is being used for mailing (which require Net_SMTP and Net_Sockets from 
         PEAR package).</P
 ></DIV
@@ -135,8 +135,6 @@ NAME="INSTALL-REQ-DB"
            with older versions.</P
 ><P
 >PostgreSQL in version 7.3.x or higher is supported.</P
-><P
->SQLite database is also usable, but we only tested version 2.8.x.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -202,10 +200,6 @@ CLASS="EMPHASIS"
 ><LI
 ><P
 >DBD-Pg (if you use Postgres),</P
-></LI
-><LI
-><P
->DBD-SQLite (if you use SQLite).</P
 ></LI
 ></UL
 ></P

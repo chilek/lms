@@ -460,7 +460,7 @@ NAME="ABOUT-LMS"
 ><P
 >LMS (LAN Management System) is a package of applications for managing LAN
           networks. Its main goal is to provide the best service to customers, as seen in large ISP
-          companies. LMS is written in PHP, Perl and C and can use MySQL, PostgreSQL or SQLite as
+          companies. LMS is written in PHP, Perl and C and can use MySQL or PostgreSQL as
           its database backends. The following functionalities are provided at the time:</P
 ><UL
 ><LI
@@ -798,7 +798,7 @@ TARGET="_top"
 ></LI
 ><LI
 ><P
->PostgreSQL &#38; SQLite Support:
+>PostgreSQL Support:
                <TABLE
 BORDER="0"
 ><TBODY
@@ -1142,8 +1142,8 @@ CLASS="EMPHASIS"
 ></SPAN
 > is user interface, which is
      responsible for all interactions with user, entirely written in PHP and it uses SQL database to
-     store all data, thus PHP script interpreter and SQL engine of your choice (MySQL, Postgresql,
-     SQLite) are required.</P
+     store all data, thus PHP script interpreter and SQL engine of your choice (MySQL or Postgresql).
+     </P
 ><P
 >LMS also contains a set of Perl scripts, responsible for various operations, ie.
      periodically applying subscription fees or sending reminders to users who are in debt. It
@@ -1228,7 +1228,7 @@ TARGET="_top"
 >.
            At least following PHP modules needs to be installed (look for "extension" in
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
-           compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
+           compressed backups), gd or ming (for graphical map) and mysql or pgsql (for db
            support). PEAR::Mail is being used for mailing (which require Net_SMTP and Net_Sockets from 
         PEAR package).</P
 ></DIV
@@ -1245,8 +1245,6 @@ NAME="INSTALL-REQ-DB"
            with older versions.</P
 ><P
 >PostgreSQL in version 7.3.x or higher is supported.</P
-><P
->SQLite database is also usable, but we only tested version 2.8.x.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -1312,10 +1310,6 @@ CLASS="EMPHASIS"
 ><LI
 ><P
 >DBD-Pg (if you use Postgres),</P
-></LI
-><LI
-><P
->DBD-SQLite (if you use SQLite).</P
 ></LI
 ></UL
 ></P
@@ -1595,7 +1589,7 @@ CLASS="SCREEN"
 Enter password:[just enter password :)]
 mysql&#62; create database lms;
 mysql&#62; grant usage on lms.* to lms@localhost;
-mysql&#62; grant select,insert,update,delete,create,alter on lms.* to lms@localhost identified by '[your_password]';
+mysql&#62; grant select,insert,update,delete,create,alter,drop on lms.* to lms@localhost identified by '[your_password]';
 mysql&#62; flush privileges;
 mysql&#62; use lms;
 mysql&#62; source doc/lms.mysql;</PRE
@@ -1781,131 +1775,6 @@ CLASS="SCREEN"
          </P
 ></DIV
 ></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="INSTALL-SQLITE"
->2.5.3. SQLite</A
-></H3
-><DIV
-CLASS="SECT3"
-><H4
-CLASS="SECT3"
-><A
-NAME="INSTALL-SQLITE-INTRO"
->2.5.3.1. Intro</A
-></H4
-><P
->This one-file database is superior for its speed. Quoting its authors it
-               might be 2-3 times faster than MySQL, and with proper configuration it's possible
-               to load the whole data into RAM, which has high positive impact on performance.
-               Below is short description of installation. Sources can be downloaded from: <A
-HREF="http://www.sqlite.org"
-TARGET="_top"
->www.sqlite.org</A
->.</P
-></DIV
-><DIV
-CLASS="SECT3"
-><HR><H4
-CLASS="SECT3"
-><A
-NAME="INSTALL-SQLITE-SERVER"
->2.5.3.2. Installation</A
-></H4
-><P
->Here You can see how to install the SQLite libraries and add extension to your
-               PHP installation (PHP 5.0 has SQLite built in). After you unpack the sources go to
-               SQLite directory and type in commands step by step (for example):
-               <PRE
-CLASS="SCREEN"
->$ ./configure --enable-utf8
-$ make
-$ make install
-$ ldconfig
-$ pear download http://pecl.php.net/get/SQLite-1.0.3.tgz
-$ pear install SQLite-1.0.3.tgz</PRE
->
-               Next in php.ini set:
-               <PRE
-CLASS="SCREEN"
->extension=sqlite.so</PRE
->
-               There is an option to compile-in SQLite PHP extension: <SAMP
-CLASS="PROMPT"
->--with-sqlite</SAMP
->.
-               </P
-></DIV
-><DIV
-CLASS="SECT3"
-><HR><H4
-CLASS="SECT3"
-><A
-NAME="INSTALL-SQLITE-DBCREATE"
->2.5.3.3. Database Creation</A
-></H4
-><P
->You will need to create your database and fill it with initial schema before
-               using LMS for the first time. Go to your LMS directory and run SQLite shell:
-               <PRE
-CLASS="SCREEN"
-># sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
-sqlite&#62; .exit
-# chown 99.98 /usr/local/lms/lms.db</PRE
->
-               </P
-><P
->Second method of database creation (if you haven't got any SQLite client application) 
-               is use of LMS module named <TT
-CLASS="FILENAME"
->sqlite_createdb.php</TT
-> from <TT
-CLASS="FILENAME"
->sample</TT
-> 
-               directory. First configure LMS (see below), then go to LMS source tree, and run:
-               <PRE
-CLASS="SCREEN"
-># php sample/sqlite_createdb.php</PRE
->
-               </P
-></DIV
-><DIV
-CLASS="SECT3"
-><HR><H4
-CLASS="SECT3"
-><A
-NAME="INSTALL-SQLITE-LMS"
->2.5.3.4. LMS Configuration (lms.ini)</A
-></H4
-><P
->One of the SQLite limitations is that it doesn't authenticate users, so the
-               only configuration options you have to setup are type and path to the database file.
-               In <TT
-CLASS="FILENAME"
->[database]</TT
-> section of <TT
-CLASS="FILENAME"
->/etc/lms/lms.ini</TT
->
-               file set:
-               <PRE
-CLASS="SCREEN"
->type     = sqlite
-database = /usr/local/lms/lms.db</PRE
->
-              </P
-><P
->After this step you should be able to enter your system without any problems.
-               Just write an URL for your LMS installation. If there's no user account (first run),
-               you'll be prompted with form to add username and some personal data. When you enter
-               correct admin personal details LMS will move you to login page, where you can use
-               newly created account.</P
-></DIV
-></DIV
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -2015,8 +1884,8 @@ NAME="INSTALL-CONFIG-DB"
 ><P
 >type</P
 ><P
->Database type. Currently only 'mysql' is 100% supported, but for the time being
-	    	    there has not been seen any problems with 'postgres' or 'sqlite'. Default: mysql</P
+>Database type. Currently in 100% are supported 'mysql' 
+		    and 'postgres'. Default: mysql</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -2064,7 +1933,7 @@ CLASS="PROMPT"
 ><P
 >database</P
 ><P
->Database name (or path to database file for SQLite). Default: lms</P
+>Database name. Default: lms</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -5100,6 +4969,17 @@ CLASS="PROMPT"
 >Example:     <SAMP
 CLASS="PROMPT"
 >numberplanlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>documentlist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of documents list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>documentlist_pagelimit = 50</SAMP
 ></P
 ></LI
 ><LI
@@ -9037,11 +8917,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >libpq</TT
 > shared
-                    library in case of PostgreSQL database use or <TT
-CLASS="FILENAME"
->sqlite</TT
-> shared
-                    library</P
+                    library in case of PostgreSQL database use.</P
 ></LI
 ><LI
 ><P
@@ -9098,14 +8974,13 @@ CLASS="SCREEN"
   --enable-debug1       events logging (disabled)
   --with-pgsql          enables using of PostgreSQL database (disabled)
   --with-mysql          enables using of MySQL database (enabled)
-  --with-sqlite         enables using of SQLite database (disabled)
   --prefix=PREFIX       program and modules install directory (/usr/local)
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration</PRE
 >
-               It's required to choose one database which you will use (--with-mysql or --with-pgsql
-               or --with-sqlite) and location of libraries supplied with database (--incdir,
+               It's required to choose one database which you will use (--with-mysql or --with-pgsql) 
+	       and location of libraries supplied with database (--incdir,
                --libdir). You can use only one database. If you change database, you have to
                recompile your daemon. It's also possible to force daemon to use
 	       configuration files instead of database. It can't use
@@ -11804,6 +11679,27 @@ CLASS="PROMPT"
 >replace("[a-z]", "-", "Text")</SAMP
 ></P
 ></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>explode(separator, string)</SAMP
+></P
+><P
+>Returns an array of strings, each of which is a substring
+				of string formed by splitting it on boundaries formed by 
+				separator. Separator can be a string or POSIX's regural expression.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>explode(":", "aaa:bbb:ccc")</SAMP
+></P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>explode("[ ]+", "aaa bbb ccc")</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ><DIV
@@ -12689,13 +12585,6 @@ TARGET="_top"
 ><TT
 CLASS="FILENAME"
 >lms.pgsql</TT
-></A
-> and <A
-HREF="../lms.sqlite"
-TARGET="_top"
-><TT
-CLASS="FILENAME"
->lms.sqlite</TT
 ></A
 > in <TT
 CLASS="FILENAME"
@@ -14627,24 +14516,6 @@ CLASS="SCREEN"
 >Number of records:</P
 ><P
 >PostgreSQL does not have row number limit for tables, however COUNT returns 32-bit number, so for tables longer that 2 billions of records this function will return wrong value (at least in version 7.1).</P
-></LI
-></UL
-></LI
-><LI
-><P
->SQLite</P
-><UL
-><LI
-><P
->Database size:</P
-><P
->Since 2.7.4 SQLite can support 2 terabytes big databases. Additionally it can store up to 1MB (or 16MB - defined at compilation time) in one record.</P
-></LI
-><LI
-><P
->Number of records:</P
-><P
->Maximum number of records is 2^32, although it has been never tested.</P
 ></LI
 ></UL
 ></LI
