@@ -32,7 +32,7 @@ $DB->Execute("ALTER TABLE cash CHANGE userid customerid INT(11) DEFAULT '0' NOT 
 $DB->Execute("ALTER TABLE cash DROP INDEX userid");
 $DB->Execute("ALTER TABLE cash ADD INDEX customerid (customerid)");
 $DB->Execute("ALTER TABLE userassignments CHANGE userid customerid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE userassignments DROP INDEX usergroupid");
+$DB->Execute("ALTER TABLE userassignments DROP INDEX userassignment");
 $DB->Execute("ALTER TABLE userassignments ADD UNIQUE (usergroupid, customerid)");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052300', 'dbversion'));
