@@ -545,7 +545,7 @@ CLASS="PROMPT"
 ><P
 >Funkcja przeszukuje ci±g_znaków w poszukiwaniu fragmentów pasuj±cych
 					do wzorca i wstawia w jego miejsce zamiennik. Wzorzec mo¿e byæ
-					wyra¿eniem regularnym.</P
+					wyra¿eniem regularnym zgodnym z POSIX.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -555,6 +555,27 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >replace("[a-z]", "-", "teksty")</SAMP
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>explode(separator, ci±g_znaków)</SAMP
+></P
+><P
+>Zwraca tablicê ci±gów, powsta³ych z podzia³u ci±gu_znaków
+					wg okre¶lonego separatora. Separator mo¿e byæ POSIX'owym wyra¿eniem
+					regularnym.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>explode(":", "aaa:bbb:ccc")</SAMP
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>explode("[ ]+", "aaa bbb ccc")</SAMP
 ></P
 ></LI
 ></UL

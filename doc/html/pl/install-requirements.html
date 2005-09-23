@@ -120,8 +120,8 @@ TARGET="_top"
 >.
           W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
           w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
-          zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i jeden z
-          mysql, pgsql, sqlite (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
+          zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i 
+          mysql lub pgsql (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
           wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</P
 ></DIV
 ><DIV
@@ -136,9 +136,6 @@ NAME="INSTALL-REQ-DB"
 >LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx.</P
 ><P
 >LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</P
-><P
->Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
-           problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.x.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -211,10 +208,6 @@ TARGET="_top"
 ><LI
 ><P
 >DBD-Pg (Je¶li masz zamiar u¿ywaæ postgres'a),</P
-></LI
-><LI
-><P
->DBD-SQLite (Je¶li masz zamiar u¿ywaæ bazê SQLite).</P
 ></LI
 ></UL
 ></P

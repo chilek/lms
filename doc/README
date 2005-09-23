@@ -106,8 +106,8 @@ Chapter 1. Intro
    LMS (LAN Management System) is a package of applications for managing
    LAN networks. Its main goal is to provide the best service to
    customers, as seen in large ISP companies. LMS is written in PHP, Perl
-   and C and can use MySQL, PostgreSQL or SQLite as its database
-   backends. The following functionalities are provided at the time:
+   and C and can use MySQL or PostgreSQL as its database backends. The
+   following functionalities are provided at the time:
      * customer database (names, addresses, phones, comments, etc),
      * computers inventory (IP, MAC),
      * simple financial system suited for network operations,
@@ -175,7 +175,7 @@ Chapter 1. Intro
        Kuba 'shasta' Jankowski
        Radoslaw 'Warden' Antoniuk
        Przemyslaw Babinski
-     * PostgreSQL & SQLite Support:
+     * PostgreSQL Support:
 
        Aleksander 'A.L.E.C' Machniak
      * Web Page & Documentation:
@@ -284,8 +284,7 @@ Chapter 2. Installation and configuration
    LMS consist a few modules. LMS-UI is user interface, which is
    responsible for all interactions with user, entirely written in PHP
    and it uses SQL database to store all data, thus PHP script
-   interpreter and SQL engine of your choice (MySQL, Postgresql, SQLite)
-   are required.
+   interpreter and SQL engine of your choice (MySQL or Postgresql).
 
    LMS also contains a set of Perl scripts, responsible for various
    operations, ie. periodically applying subscription fees or sending
@@ -316,9 +315,9 @@ Chapter 2. Installation and configuration
    www.php.net. At least following PHP modules needs to be installed
    (look for "extension" in php.ini or in output of phpinfo function):
    pcre, posix (for systems info), zlib (for compressed backups), gd or
-   ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
-   support). PEAR::Mail is being used for mailing (which require Net_SMTP
-   and Net_Sockets from PEAR package).
+   ming (for graphical map) and mysql or pgsql (for db support).
+   PEAR::Mail is being used for mailing (which require Net_SMTP and
+   Net_Sockets from PEAR package).
      _________________________________________________________________
 
 2.2.3. Database Server
@@ -327,8 +326,6 @@ Chapter 2. Installation and configuration
    work correctly with older versions.
 
    PostgreSQL in version 7.3.x or higher is supported.
-
-   SQLite database is also usable, but we only tested version 2.8.x.
      _________________________________________________________________
 
 2.2.4. Smarty Library
@@ -348,7 +345,6 @@ Chapter 2. Installation and configuration
      * DBI,
      * DBD-mysql (if you use MySQL),
      * DBD-Pg (if you use Postgres),
-     * DBD-SQLite (if you use SQLite).
      _________________________________________________________________
 
 2.2.6. C Compiler
@@ -451,7 +447,7 @@ mysql -u[user name with database creation rights] -p
 Enter password:[just enter password :)]
 mysql> create database lms;
 mysql> grant usage on lms.* to lms@localhost;
-mysql> grant select,insert,update,delete,create,alter on lms.* to lms@localhost identified by '[your_password]';
+mysql> grant select,insert,update,delete,create,alter,drop on lms.* to lms@localhost identified by '[your_password]';
 mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;
@@ -545,69 +541,6 @@ password = password_entered_with_lms_user_creation
             --format=p lms -- file backups/lms-auto-"$(date +%s)".sql
      _________________________________________________________________
 
-2.5.3. SQLite
-
-2.5.3.1. Intro
-
-   This one-file database is superior for its speed. Quoting its authors
-   it might be 2-3 times faster than MySQL, and with proper configuration
-   it's possible to load the whole data into RAM, which has high positive
-   impact on performance. Below is short description of installation.
-   Sources can be downloaded from: www.sqlite.org.
-     _________________________________________________________________
-
-2.5.3.2. Installation
-
-   Here You can see how to install the SQLite libraries and add extension
-   to your PHP installation (PHP 5.0 has SQLite built in). After you
-   unpack the sources go to SQLite directory and type in commands step by
-   step (for example):
-$ ./configure --enable-utf8
-$ make
-$ make install
-$ ldconfig
-$ pear download http://pecl.php.net/get/SQLite-1.0.3.tgz
-$ pear install SQLite-1.0.3.tgz
-
-   Next in php.ini set:
-extension=sqlite.so
-
-   There is an option to compile-in SQLite PHP extension: --with-sqlite.
-     _________________________________________________________________
-
-2.5.3.3. Database Creation
-
-   You will need to create your database and fill it with initial schema
-   before using LMS for the first time. Go to your LMS directory and run
-   SQLite shell:
-# sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
-sqlite> .exit
-# chown 99.98 /usr/local/lms/lms.db
-
-   Second method of database creation (if you haven't got any SQLite
-   client application) is use of LMS module named sqlite_createdb.php
-   from sample directory. First configure LMS (see below), then go to LMS
-   source tree, and run:
-# php sample/sqlite_createdb.php
-     _________________________________________________________________
-
-2.5.3.4. LMS Configuration (lms.ini)
-
-   One of the SQLite limitations is that it doesn't authenticate users,
-   so the only configuration options you have to setup are type and path
-   to the database file. In [database] section of /etc/lms/lms.ini file
-   set:
-type     = sqlite
-database = /usr/local/lms/lms.db
-
-   After this step you should be able to enter your system without any
-   problems. Just write an URL for your LMS installation. If there's no
-   user account (first run), you'll be prompted with form to add username
-   and some personal data. When you enter correct admin personal details
-   LMS will move you to login page, where you can use newly created
-   account.
-     _________________________________________________________________
-
 2.6. Basic Configuration
 
    Main configuration file of LMS is lms.ini, which must be placed in
@@ -631,9 +564,8 @@ database = /usr/local/lms/lms.db
 2.6.1. Section [database] - Database Settings
 
      * type
-       Database type. Currently only 'mysql' is 100% supported, but for
-       the time being there has not been seen any problems with
-       'postgres' or 'sqlite'. Default: mysql
+       Database type. Currently in 100% are supported 'mysql' and
+       'postgres'. Default: mysql
        Example: type = mysql
      * host
        Host where database is running. Usually 'localhost', but you can
@@ -650,7 +582,7 @@ database = /usr/local/lms/lms.db
        Database user password. Default: empty.
        Example: password = password
      * database
-       Database name (or path to database file for SQLite). Default: lms
+       Database name. Default: lms
        Example: database = lms
      * server_encoding
        Database encoding. Use if your database encoding is not Unicode.
@@ -1936,6 +1868,10 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        Limit of records that can be displayed on one page of numbering
        plans list. Default: 100
        Example: numberplanlist_pagelimit = 50
+     * documentlist_pagelimit
+       Limit of records that can be displayed on one page of documents
+       list. Default: 100
+       Example: documentlist_pagelimit = 50
      * reload_type
        Reload type. Allowed values:
        exec - execute some command (usually with sudo, script or
@@ -3312,7 +3248,7 @@ Chapter 6. LMS Daemon
      * LMS user interface installation
      * libmysqlclient shared library (included in full MySQL installation
        or respective "devel" package) or libpq shared library in case of
-       PostgreSQL database use or sqlite shared library
+       PostgreSQL database use.
      * libdl shared library (present in every modern distribution)
      * C compiler (gcc-2.95.x or higher)
      * ggnotify module needs libgadu library and header files
@@ -3329,19 +3265,18 @@ Chapter 6. LMS Daemon
   --enable-debug1       events logging (disabled)
   --with-pgsql          enables using of PostgreSQL database (disabled)
   --with-mysql          enables using of MySQL database (enabled)
-  --with-sqlite         enables using of SQLite database (disabled)
   --prefix=PREFIX       program and modules install directory (/usr/local)
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration
 
    It's required to choose one database which you will use (--with-mysql
-   or --with-pgsql or --with-sqlite) and location of libraries supplied
-   with database (--incdir, --libdir). You can use only one database. If
-   you change database, you have to recompile your daemon. It's also
-   possible to force daemon to use configuration files instead of
-   database. It can't use both files and db at the same time, you'll need
-   to choose either before compilation.
+   or --with-pgsql) and location of libraries supplied with database
+   (--incdir, --libdir). You can use only one database. If you change
+   database, you have to recompile your daemon. It's also possible to
+   force daemon to use configuration files instead of database. It can't
+   use both files and db at the same time, you'll need to choose either
+   before compilation.
 # ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
 
    After that you can compile and install (put daemon in directory given
@@ -4346,6 +4281,12 @@ var is type of {typeof(var)}
        expression.
        Example: replace(":", "-", mac)
        Example: replace("[a-z]", "-", "Text")
+     * explode(separator, string)
+       Returns an array of strings, each of which is a substring of
+       string formed by splitting it on boundaries formed by separator.
+       Separator can be a string or POSIX's regural expression.
+       Example: explode(":", "aaa:bbb:ccc")
+       Example: explode("[ ]+", "aaa bbb ccc")
      _________________________________________________________________
 
 6.3.3.3. Sysinfo
@@ -4641,7 +4582,7 @@ Chapter 7. For curious
 
    Simple database layout is provided below. For more details (data
    types, fields restrictions and default values) please refer to
-   lms.mysql, lms.pgsql and lms.sqlite in doc/ directory.
+   lms.mysql, lms.pgsql in doc/ directory.
      _________________________________________________________________
 
 7.2.1. LMS users ('users')
@@ -5231,14 +5172,6 @@ mysql> show table status;
             COUNT returns 32-bit number, so for tables longer that 2
             billions of records this function will return wrong value (at
             least in version 7.1).
-     * SQLite
-          + Database size:
-            Since 2.7.4 SQLite can support 2 terabytes big databases.
-            Additionally it can store up to 1MB (or 16MB - defined at
-            compilation time) in one record.
-          + Number of records:
-            Maximum number of records is 2^32, although it has been never
-            tested.
      _________________________________________________________________
 
 Chapter 8. Extensions
