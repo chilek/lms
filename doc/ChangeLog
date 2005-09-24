@@ -35,6 +35,7 @@ version ? (??/??/????):
   - lmsd: fixed make usage for non-linux systems (alec)
   - documentation: added info that on mysql 'drop' privilege is required (alec)
   - fixed bug in 2005052300 autoupgrade script (alec)
+  - lmsd: fixed environment variables startup reading (alec)
 
 version 1.7.2 Doci (2005-08-13):
 
