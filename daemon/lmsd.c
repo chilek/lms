@@ -70,7 +70,10 @@ int main(int argc, char *argv[], char **envp)
 	openlog(PROGNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
     	syslog(LOG_INFO, "LMS Daemon started.");
 
-    	// check environment	
+	// initialize proces name change 
+	init_set_proc_title(argc, argv, envp);
+
+    	// read environment and command line
 	passwd = ( getenv("LMSDBPASS") ? getenv("LMSDBPASS") : "" );
 	db = ( getenv("LMSDBNAME") ? getenv("LMSDBNAME") : "lms" );
 	user = ( getenv("LMSDBUSER") ? getenv("LMSDBUSER") : "lms" );
@@ -78,11 +81,9 @@ int main(int argc, char *argv[], char **envp)
 	if( getenv("LMSDBHOST") ) strcpy(host, getenv("LMSDBHOST")); else strcpy(host, "localhost");
 	gethostname(dhost, 255);
 
-    	// read command line args
 	parse_command_line(argc, argv);
 
-	// change proces name (hide command line args)
-	init_set_proc_title(argc, argv, envp);
+	// change process name (hide command line args)
 	set_proc_title(PROGNAME);
 
 	// initialize global structure
@@ -532,13 +533,12 @@ static void init_set_proc_title(int argc, char **argv, char **envp)
 
     Argv = argv;
 
-
     for (i = 0; i < argc; i++)
         if (!i || (LastArgv + 1 == argv[i]))
     	    LastArgv = argv[i] + strlen(argv[i]);
 
     for (i = 0; envp[i] != NULL; i++)
-	if ((LastArgv + 1) == envp[i])
+	if (LastArgv + 1 == envp[i])
     	    LastArgv = envp[i] + strlen(envp[i]);
 }
 
