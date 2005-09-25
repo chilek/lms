@@ -7,7 +7,7 @@
 
 WORKDIR=`pwd`
 NOTDISTRIB="devel .project config_templates modules/confgen.php templates/confgen.html"
-SMARTYVERSION=2.6.9
+SMARTYVERSION=2.6.10
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
