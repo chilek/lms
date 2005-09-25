@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.4 Mala (25/09/2005):
 
   - BTS#0000426: fixed value in contrib/formularz_przelewu_wplaty (alec)
   - BTS#0000428: fixed misprint in polish translation (alec)
@@ -9,7 +9,7 @@ version ? (??/??/????):
   - invoice items are sorted by item id (alec)
   - public IP checking when filtering customers list by network (alec)
   - BTS#0000447: lmsd/dhcp: added support for public IP addresses (alec)
-  - lmsd: fixed make usage for non-linux systems (alec)
+  - lmsd: fixed 'make' usage for non-linux systems (alec)
 
 version 1.6.3 Laira <security release> (19/08/2005):
 
