@@ -24,7 +24,7 @@
 			<B>{$option.var}</B>
 		</TD>
 		<TD valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap>
-			{$option.value|escape|replace:"\n":"<BR>"}
+			<PRE>{$option.value|escape}</PRE>
 		</TD>
 		<TD valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';">
 			{$option.description|escape|replace:"\n":"<BR>"}
