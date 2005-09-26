@@ -35,6 +35,7 @@ $id = $_GET['id'];
 $layout['pagetitle'] = trans('Customer Balance: $0', '<A HREF="?m=customerinfo&id='.$_GET['id'].'">'.$customername.'</A>');
 
 $SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($_GET['id']));
+$SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('customername',$customername);
 $SMARTY->assign('id',$id);
 $SMARTY->display('customerbalance.html');
