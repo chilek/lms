@@ -60,12 +60,22 @@ if($LMS->CONFIG['receipts']['attachment_name'] != '')
 
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
-	$layout['pagetitle'] = trans('Cash Receipts');
-	
-	foreach($_POST['marks'] as $markid => $junk)
-		if($junk)
-			$ids[] = $markid;
+        $SESSION->restore('rlm', $rlm);
+	$SESSION->remove('rlm');
+		
+	if(sizeof($_POST['marks']))
+	        foreach($_POST['marks'] as $id => $mark)
+	                $rlm[$id] = $mark;
+	if(sizeof($rlm))
+		foreach($rlm as $mark)
+			$ids[] = $mark;
 
+	if(!$ids)
+	{
+		$SESSION->close();
+		die;
+	}
+								
 	if($_GET['cash'])
 	{
 		foreach($ids as $cashid)
@@ -76,6 +86,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 
 	sort($ids);
 
+	$layout['pagetitle'] = trans('Cash Receipts');
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type', $_GET['which']);
 	
