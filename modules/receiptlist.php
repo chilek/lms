@@ -102,11 +102,12 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 $layout['pagetitle'] = trans('Cash Receipts List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$marks = $_POST['marks'];
-unset($marked);
-if( sizeof($marks) )
-	foreach($marks as $marksid => $mark)
-		$marked[] = $mark;
+$SESSION->restore('rlm', $marks);
+$marked = $_POST['marks'];
+if(sizeof($marked))
+        foreach($marked as $id => $mark)
+	                $marks[$id] = $mark;
+$SESSION->save('rlm', $marks);
 
 if(isset($_POST['search']))
 	$s = $_POST['search'];
@@ -152,7 +153,6 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
-$SMARTY->assign('marked',$marked);
 $SMARTY->assign('receiptlist',$receiptlist);
 $SMARTY->display('receiptlist.html');
 
