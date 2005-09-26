@@ -6,7 +6,7 @@
 #
 
 WORKDIR=`pwd`
-NOTDISTRIB="devel .project config_templates modules/confgen.php templates/confgen.html"
+NOTDISTRIB="devel .project"
 SMARTYVERSION=2.6.10
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
