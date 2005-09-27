@@ -90,10 +90,15 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type', $_GET['which']);
 	
+	$i = 0;
+	$count = sizeof($ids);
 	foreach($ids as $idx => $receiptid)
 	{
 		if($receipt = GetReceipt($receiptid))
 		{
+			$i++;
+		        if($i == $count) $receipt['last'] = TRUE;
+
 			$SMARTY->assign('receipt',$receipt);
 			$SMARTY->display($CONFIG['receipts']['template_file']);
 		}
@@ -104,6 +109,7 @@ elseif($receipt = GetReceipt($_GET['id']))
 {
 	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
 	
+	$receipt['last'] = TRUE;
 	$SMARTY->assign('type', $_GET['which']);
 	$SMARTY->assign('receipt',$receipt);
 	$SMARTY->display('clearheader.html');
