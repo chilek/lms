@@ -84,11 +84,12 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
 			res = tmp2;
 		else if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
-			res = tscript_value_create_error("you can only assign tu reference!");
+			res = tscript_value_create_error("you can only assign to reference!");
 		else
 		{
 			tscript_debug(context, "Assigning to referenced variable\n");
-			tscript_value_free(*tmp1->reference_data);
+			// TODO: implement reference counting - we cannot simple delete it
+			//tscript_value_free(*tmp1->reference_data);
 			*tmp1->reference_data = tmp2_der;
 			tscript_value_free(tmp1);
 			tscript_debug(context, "Assigned\n");
@@ -142,6 +143,54 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tscript_value_free(tmp1);
 			tscript_debug(context, "Decremented\n");
 			tscript_debug(context, "Interpreted TSCRIPT_AST_DEC\n");
+		}
+	}
+	else if (ast->type == TSCRIPT_AST_UN_INC)
+	{
+		double tmp;
+		tscript_debug(context, "Interpretting TSCRIPT_AST_UN_INC\n");
+		tmp1 = tscript_interprete_sub(context, ast->children[0]);
+		if (tmp1->type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
+			res = tscript_value_create_error("reference expected!");
+		else if ((*tmp1->reference_data)->type != TSCRIPT_TYPE_NUMBER)
+			res = tscript_value_create_error("number type expected!");
+		else
+		{
+			tscript_debug(context, "Incrementing referenced variable\n");
+			tmp = tscript_value_as_number(*tmp1->reference_data);
+			tmp++;
+			tscript_value_free(*tmp1->reference_data);
+			*tmp1->reference_data = tscript_value_create_number(tmp);
+			res = tscript_value_duplicate(*tmp1->reference_data);
+			tscript_value_free(tmp1);
+			tscript_debug(context, "Incremented\n");
+			tscript_debug(context, "Interpreted TSCRIPT_AST_UN_INC\n");
+		}
+	}
+	else if (ast->type == TSCRIPT_AST_UN_DEC)
+	{
+		double tmp;
+		tscript_debug(context, "Interpretting TSCRIPT_AST_UN_DEC\n");
+		tmp1 = tscript_interprete_sub(context, ast->children[0]);
+		if (tmp1->type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
+			res = tscript_value_create_error("reference expected!");
+		else if ((*tmp1->reference_data)->type != TSCRIPT_TYPE_NUMBER)
+			res = tscript_value_create_error("number type expected!");
+		else
+		{
+			tscript_debug(context, "Decrementing referenced variable\n");
+			tmp = tscript_value_as_number(*tmp1->reference_data);
+			tmp--;
+			tscript_value_free(*tmp1->reference_data);
+			*tmp1->reference_data = tscript_value_create_number(tmp);
+			res = tscript_value_duplicate(*tmp1->reference_data);
+			tscript_value_free(tmp1);
+			tscript_debug(context, "Incremented\n");
+			tscript_debug(context, "Interpreted TSCRIPT_AST_UN_DEC\n");
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_INDEX)
@@ -331,7 +380,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tscript_value_create_number((!tscript_value_as_number(tmp1_der)));
 			tscript_value_free(tmp1);
 		}
-		tscript_debug(context, "Interpretting TSCRIPT_AST_NOT\n");
+		tscript_debug(context, "Interpreted TSCRIPT_AST_NOT\n");
 	}
 	else if (ast->type == TSCRIPT_AST_NEG)
 	{
@@ -345,7 +394,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tscript_value_create_number(-tscript_value_as_number(tmp1_der));
 			tscript_value_free(tmp1);
 		}
-		tscript_debug(context, "Interpretting TSCRIPT_AST_NEG\n");
+		tscript_debug(context, "Interpreted TSCRIPT_AST_NEG\n");
 	}
 	else if (ast->type == TSCRIPT_AST_OR)
 	{
@@ -401,7 +450,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
-		tscript_debug(context, "Interpretting TSCRIPT_AST_BAND\n");
+		tscript_debug(context, "Interpreted TSCRIPT_AST_BAND\n");
 	}
 	else if (ast->type == TSCRIPT_AST_BOR)
 	{
@@ -421,7 +470,47 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tscript_value_free(tmp1);
 			tscript_value_free(tmp2);
 		}
-		tscript_debug(context, "Interpretting TSCRIPT_AST_BOR\n");
+		tscript_debug(context, "Interpreted TSCRIPT_AST_BOR\n");
+	}
+	else if (ast->type == TSCRIPT_AST_LEFT)
+	{
+		tscript_debug(context, "Interpretting TSCRIPT_AST_LEFT\n");
+		tmp1 = tscript_interprete_sub(context, ast->children[0]);
+		tmp2 = tscript_interprete_sub(context, ast->children[1]);
+		tmp1_der = tscript_value_dereference(tmp1);
+		tmp2_der = tscript_value_dereference(tmp2);
+		if (tmp1->type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
+			res = tmp2;
+		else
+		{
+			res = tscript_value_create_number(
+				(long)tscript_value_as_number(tmp1_der) << (long)tscript_value_as_number(tmp2_der));
+			tscript_value_free(tmp1);
+			tscript_value_free(tmp2);
+		}
+		tscript_debug(context, "Interpreted TSCRIPT_AST_LEFT\n");
+	}
+	else if (ast->type == TSCRIPT_AST_RIGHT)
+	{
+		tscript_debug(context, "Interpretting TSCRIPT_AST_RIGHT\n");
+		tmp1 = tscript_interprete_sub(context, ast->children[0]);
+		tmp2 = tscript_interprete_sub(context, ast->children[1]);
+		tmp1_der = tscript_value_dereference(tmp1);
+		tmp2_der = tscript_value_dereference(tmp2);
+		if (tmp1->type == TSCRIPT_TYPE_ERROR)
+			res = tmp1;
+		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
+			res = tmp2;
+		else
+		{
+			res = tscript_value_create_number(
+				(long)tscript_value_as_number(tmp1_der) >> (long)tscript_value_as_number(tmp2_der));
+			tscript_value_free(tmp1);
+			tscript_value_free(tmp2);
+		}
+		tscript_debug(context, "Interpreted TSCRIPT_AST_RIGHT\n");
 	}
 	else if (ast->type == TSCRIPT_AST_PLUS)
 	{
@@ -533,6 +622,25 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		else
 			res = tscript_value_create_string("");
 		tscript_value_free(tmp1);
+	}
+	else if (ast->type == TSCRIPT_AST_WHILE)
+	{
+		res = tscript_value_create_string("");
+		for (;;)
+		{
+			tmp1 = tscript_interprete_sub(context, ast->children[0]);
+			tmp1_der = tscript_value_dereference(tmp1);
+			tmp1_num = tscript_value_as_number(tmp1_der);
+			tscript_value_free(tmp1);
+			if (!tmp1_num)
+				break;
+			tmp1 = tscript_interprete_sub(context, ast->children[1]);
+			tmp1_der = tscript_value_dereference(tmp1);
+			tmp2 = tscript_value_add(res, tmp1_der);
+			tscript_value_free(res);
+			tscript_value_free(tmp1);
+			res = tmp2;
+		}
 	}
 	else if (ast->type == TSCRIPT_AST_FOR)
 	{
