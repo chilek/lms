@@ -151,13 +151,11 @@ tscript_value** tscript_value_subvar_ref(tscript_value* val, char* name)
 
 tscript_value* tscript_value_dereference(tscript_value* val)
 {
-	tscript_value* r;
 	if (val->type == TSCRIPT_TYPE_REFERENCE)
 	{
 		if (val->reference_data == NULL)
 			tscript_internal_error("Reference pointer is NULL!\n");
-		r = *val->reference_data;
-		return r;
+		return tscript_value_dereference(*val->reference_data);
 	}
 	else
 		return val;

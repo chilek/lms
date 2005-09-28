@@ -36,6 +36,8 @@ version ? (??/??/????):
   - documentation: added info that on mysql 'drop' privilege is required (alec)
   - fixed bug in 2005052300 autoupgrade script (alec)
   - lmsd: fixed environment variables startup reading (alec)
+  - lmsd: fixed problem with long execution time when using constants (alec)
+  - lmsd: added while() and operators <<, >> and leftside --, ++ (alec)
 
 version 1.7.2 Doci (2005-08-13):
 

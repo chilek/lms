@@ -119,6 +119,10 @@ GNU General Public License for more details.
 
 <commands>typeof			YY_RETURN(TYPEOF);
 
+<commands>while				YY_RETURN(WHILE);
+
+<commands>\/while			YY_RETURN(END_WHILE);
+
 <commands>for				YY_RETURN(FOR);
 
 <commands>\/for				YY_RETURN(END_FOR);
@@ -144,6 +148,10 @@ GNU General Public License for more details.
 <commands>\+\+				YY_RETURN(INC);
 
 <commands>--				YY_RETURN(DEC);
+
+<commands>\<\<				YY_RETURN(LEFT);
+
+<commands>\>\>				YY_RETURN(RIGHT);
 
 <commands>=~				YY_RETURN(MATCH);
 

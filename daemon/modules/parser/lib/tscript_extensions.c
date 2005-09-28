@@ -136,5 +136,5 @@ tscript_value* tscript_run_constant(tscript_context* context, char* keyword)
 		c->value = c->func();
 		c->cached = 1;
 	}
-	return tscript_value_duplicate(c->value);
+	return tscript_value_create_reference(&c->value);
 }

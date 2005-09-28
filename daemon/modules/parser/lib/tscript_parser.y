@@ -32,7 +32,7 @@ GNU General Public License for more details.
 %parse-param { tscript_context* context }
 %lex-param { tscript_context* context }
 
-%nonassoc ERROR IF ELSE END_IF FOR END_FOR
+%nonassoc ERROR IF ELSE END_IF FOR END_FOR WHILE END_WHILE
 %left OR AND
 %left EQUALS '<' '>' EQUALS_LESS EQUALS_GREATER DIFFERS
 %left '!'
@@ -40,7 +40,7 @@ GNU General Public License for more details.
 %left NEG
 %left '*' '/' '%' '&' '|'
 %nonassoc MATCH
-%nonassoc INC DEC
+%nonassoc INC DEC LEFT RIGHT
 %nonassoc EXT BLOCK END_BLOCK CONST
 %nonassoc LITERAL NUMBER TEXT NAME NULL_CONST TO_STRING TO_NUMBER TYPEOF
 
@@ -186,6 +186,14 @@ postfix_expression:	primary_expression
 		|	call_expression
 
 unary_expression:	postfix_expression
+		|	INC reference
+			{
+				$$ = tscript_ast_node_1(TSCRIPT_AST_UN_INC, $2);
+			}
+		|	DEC reference
+			{
+				$$ = tscript_ast_node_1(TSCRIPT_AST_UN_DEC, $2);
+			}
 		|	type_operator
 		|	'-' postfix_expression %prec NEG
 			{
@@ -222,21 +230,32 @@ additive_expression:
 				$$ = tscript_ast_node_2(TSCRIPT_AST_MINUS, $1, $3);
 			}
 
-relational_expression:
+shift_expression:
 			additive_expression
-		|	additive_expression '<' additive_expression
+		|	additive_expression LEFT additive_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_LEFT, $1, $3);
+			}
+		|	additive_expression RIGHT additive_expression
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_RIGHT, $1, $3);
+			}
+
+relational_expression:
+			shift_expression
+		|	shift_expression '<' shift_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_LESS, $1, $3);
 			}
-		|	additive_expression '>' additive_expression
+		|	shift_expression '>' shift_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_GREATER, $1, $3);
 			}
-		|	additive_expression EQUALS_LESS additive_expression
+		|	shift_expression EQUALS_LESS shift_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_EQUALS_LESS, $1, $3);
 			}
-		|	additive_expression EQUALS_GREATER additive_expression
+		|	shift_expression EQUALS_GREATER shift_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_EQUALS_GREATER, $1, $3);
 			}
@@ -291,7 +310,11 @@ assignment_statement:	reference '=' expression
 				$$ = tscript_ast_node_2(TSCRIPT_AST_VAR_SET, $1, $3);
 			}
 
-iteration_statement:	FOR '(' statement ';' expression ';' statement ')' statements END_FOR
+iteration_statement:	WHILE '(' expression ')' statements END_WHILE
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_WHILE, $3, $5);
+			}
+		|	FOR '(' statement ';' expression ';' statement ')' statements END_FOR
 			{
 				$$ = tscript_ast_node_4(TSCRIPT_AST_FOR, $3, $5, $7, $9);
 			}
