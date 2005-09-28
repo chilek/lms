@@ -91,14 +91,21 @@ expression1 / expression2
 expression1 % expression2</screen></para>
 		</listitem>
 		<listitem>
-		    <para>Single-argument incremental/decremental operators.</para>
+		    <para>Unary increment/decrement operators.</para>
 		    <para>Example: <prompt>expression++</prompt></para>
 		    <para>Example: <prompt>expression--</prompt></para>
+		    <para>Example: <prompt>++expression</prompt></para>
+		    <para>Example: <prompt>--expression</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>String comparision with regular expression. Evaluates to 1 if expression1 value match with regular expression2, else
-		    0.</para>
-		    <para>Example: <prompt>expression1 =~ expression2</prompt></para>
+		    <para>Bit shift operators.</para>
+		    <para>Example: <prompt>expr1 &gt;&gt; expr2</prompt></para>
+		    <para>Example: <prompt>expr1 &lt;&lt; expr2</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>String comparision with regular expression. Evaluates to 1 if expression <prompt>expr1</prompt> 
+		    value match with regular expression <prompt>expr2</prompt>, else 0.</para>
+		    <para>Example: <prompt>expr1 =~ expr2</prompt></para>
 		</listitem>
 	    </itemizedlist>
 	    </sect3>
@@ -119,12 +126,14 @@ expression1 % expression2</screen></para>
 		    <para>Example: <prompt>variable = expression</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>Conditional statement. Executes command only if expression is true. Second form executes 
-		    command1 if expression is true or command2 if expression is false.</para>
+		    <para>Conditional statement. Executes <prompt>statement</prompt> only if 
+		    <prompt>expression</prompt> is true. Second form executes 
+		    <prompt>statement1</prompt> if <prompt>expression</prompt> is true or 
+		    <prompt>statement2</prompt> if <prompt>expression</prompt> is false.</para>
 		    <para>Example:
 <screen>
-if ( expression ) command /if
-if ( expression ) commands1 else commands2 /if</screen></para>
+if ( expression ) statement /if
+if ( expression ) statement1 else statement2 /if</screen></para>
 		    <para>Text between command blocks is treated as a command so the following example is correct:
 <screen>
 Some text 
@@ -146,11 +155,17 @@ a doesn't equal 1
 </screen></para>
 		</listitem>
 		<listitem>
-		    <para>Iterative loop. Executes first command1 as loop initialization command. Then executes 
-		    commands and command2 while expression is true.</para>
-		    <para>Example: <prompt>
-for ( command1 ; expression ; command2 ) commands /for
-</prompt></para>
+		    <para>Iterative loop. Executes first <prompt>expr1</prompt> as loop initialization 
+		    command. Then executes <prompt>statement</prompt> while <prompt>expr2</prompt> is true. 
+		    At the end of each iteration <prompt>expr2</prompt> is evaluated.</para>
+		    <para>Example: <prompt>for ( expr1 ; expr2 ; expr3 ) statement /for</prompt></para>
+		</listitem>
+		<listitem>
+		    <para><prompt>While</prompt> loop. Executes statement(s) repeatedly, as long as the 
+		    <prompt>expression</prompt> evaluates to true. The value of the expression is checked each 
+		    time at the beginning of the loop, so even if this value changes during the execution of 
+		    the nested statement(s), execution will not stop until the end of the iteration.</para>
+		    <para>Example: <prompt>while ( expression ) statement /while</prompt></para>
 		</listitem>
 	    </itemizedlist>
 	    </sect3>
