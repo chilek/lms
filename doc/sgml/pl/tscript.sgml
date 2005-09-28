@@ -95,10 +95,17 @@ wyra¿enie1 % wyra¿enie2
 				<para>Jednoargumentowe operatory inkrementacji/dekrementacji.</para>
 				<para>Przyk³ad: <prompt>wyra¿enie++</prompt></para>
 				<para>Przyk³ad: <prompt>wyra¿enie--</prompt></para>
+				<para>Przyk³ad: <prompt>++wyra¿enie</prompt></para>
+				<para>Przyk³ad: <prompt>--wyra¿enie</prompt></para>
 			</listitem>
 			<listitem>
-				<para>Porównanie ci±gu do z wyra¿eniem regularnym. Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
-				w przeciwnym wypadku zwraca 0.</para>
+				<para>Przesuniêcie bitowe.</para>
+				<para>Przyk³ad: <prompt>wyra¿enie1 &gt;&gt; wyra¿enie2</prompt></para>
+				<para>Przyk³ad: <prompt>wyra¿enie1 &lt;&lt; wyra¿enie2</prompt></para>
+			</listitem>
+			<listitem>
+				<para>Porównanie ci±gu do z wyra¿eniem regularnym. Zwraca 1 gdy <prompt>wyra¿enie</prompt>
+				pasuje do wzorca po prawej stronie, w przeciwnym wypadku zwraca 0.</para>
 				<para>Przyk³ad: <prompt>wyra¿enie =~ wzorzec</prompt></para>
 			</listitem>
 			</itemizedlist>
@@ -148,12 +155,19 @@ a nie równa siê 1
 </screen></para>
 				</listitem>
 				<listitem>
-					<para>Pêtla iteracyjna. Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
-					wykonywane jest polecenie i polecenie2, dopóki wyra¿enie jest prawdziwe.</para>
-					<para>Przyk³ad: <screen>
-for ( polecenie1 ; wyra¿enie ; polecenie2 )
-polecenia
-/for</screen></para>
+					<para>Pêtla iteracyjna. Wykonanuje wyra¿enie <prompt>wyra¿enie1</prompt> jako
+					polecenie inicjalizuj±ce pêtlê. Nastêpnie wykonywane jest 
+					<prompt>wyra¿enie3</prompt> i <prompt>polecenie</prompt> dopóki 
+					<prompt>wyra¿enie2</prompt> jest prawdziwe.</para>
+					<para>Przyk³ad: <screen>for ( wyra¿enie1 ; wyra¿enie2 ; wyra¿enie3 ) polecenie /for</screen></para>
+				</listitem>
+				<listitem>
+					<para>Pêtla <prompt>while</prompt>. Wykonanuje <prompt>polecenie</prompt>
+					tak d³ugo jak d³ugo <prompt>wyra¿enie</prompt>  jest prawdziwe. Warto¶æ wyra¿enia
+					jest sprawdzana za ka¿dym razem na pocz±tku pêtli, wiêc nawet gdy warto¶æ 
+					ta zmieni siê podczas wykonywania poleceñ, wykonywanie pêtli nie zostanie 
+					przerwane a¿ do jej zakoñczenia.</para>
+					<para>Przyk³ad: <screen>while ( wyra¿enie ) polecenie /while</screen></para>
 				</listitem>
 			</itemizedlist>
 		</sect3>
