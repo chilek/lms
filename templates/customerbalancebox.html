@@ -90,12 +90,11 @@
 				<TR class="dark">
 					<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
 					<TD width="1%" class="fbt">{t}User:{/t}</TD>
-					<TD width="1%" class="fbt"><B>{t}Type:{/t}</B></TD>
 					<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
 					<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
 					<TD width="1%" class="fbt" align="center">&raquo;</TD>
 					<TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
-					<TD width="92%" class="fbt">{t}Description:{/t}</TD>
+					<TD width="93%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle name=bal values="light,lucid" print=false}
@@ -103,17 +102,12 @@
 				<TR class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
-					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
-					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|money_format}</nobr></TD>
-					<TD width="1%" align="right">
-						{if $balancelist.type[balancelist]!=3}
-							<nobr>{$balancelist.tax[balancelist]}</nobr>
-						{/if}
-					</TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.value[balancelist] > 0}+{/if}{$balancelist.value[balancelist]|money_format}</nobr></TD>
+					<TD width="1%" align="right"><nobr>{$balancelist.tax[balancelist]}</nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT class="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
-					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
-					<TD width="1%" align="right"><nobr>
+					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
+					<TD width="1%" align="right" nowrap>
 						{if $balancelist.docid[balancelist]}
 							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE}
 								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="[ {t}Invoice{/t} ]" {tip 0=$balancelist.docid[balancelist] dynpopup='?m=number&id=$0'}></A>
@@ -127,12 +121,11 @@
 						{/if}
 						{cycle name=bal print=false}
 						<INPUT class="box {cycle name=bal}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
-						</nobr>
 					</TD>
 					</TR>
 				{sectionelse}
 				<TR>
-					<TD align="center" width="100%" colspan="9">
+					<TD align="center" width="100%" colspan="8">
 						<p>&nbsp;</p>
 						<p><B>{t}That customer hasn't got any transactions.{/t}</B></p>
 						<p>&nbsp;</p>
@@ -140,14 +133,16 @@
 				</TR>
 				{/section}
 				<TR class="light">
-					<TD CLASS="ftop" ALIGN="left" colspan="7" nowrap>
+					<TD CLASS="ftop" ALIGN="left" colspan="6" width="6%">
+						<nobr>
 						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
 						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
 						<INPUT type="checkbox" class="box light" name="original"> {t}original{/t}&nbsp;
 						<INPUT type="checkbox" class="box light" name="copy"> {t}copy{/t}
+						</nobr>
 					</TD>
-					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
+					<TD CLASS="ftop" ALIGN="right" COLSPAN="2" width="94%">
 						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
@@ -158,12 +153,6 @@
 					</TD>
 					<TD class="ftop">
 						{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
-					</TD>
-					<TD class="ftop">
-						<SELECT SIZE="1" name="addbalance[type]" {tip text="Select transaction type"}>
-							<OPTION value="3">{t}payment{/t}</OPTION>
-							<OPTION value="4">{t}covenant{/t}</OPTION>
-						</SELECT>
 					</TD>
 					<TD class="ftop">
 						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>

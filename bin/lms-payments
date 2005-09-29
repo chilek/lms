@@ -322,7 +322,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=?");
 				$icdbq->execute($desc);
 
-				$cdbq = $dbase->prepare("UPDATE cash SET value = value+$assign->{'value'} WHERE docid = $gotinv{$uid} AND itemid = $itemid AND type = 4");
+				$cdbq = $dbase->prepare("UPDATE cash SET value = value+($assign->{'value'}*-1) WHERE docid = $gotinv{$uid} AND itemid = $itemid");
 				$cdbq->execute();
 			}
 			else
@@ -332,13 +332,13 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'prodid'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
 				$icdbq->execute($desc);
 				
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxid, customerid, comment, docid, itemid) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
 				$cdbq->execute($desc);
 			}
 		}
 		else
 		{
-			$cdbq = $dbase->prepare("INSERT INTO cash (time, type, value, taxid, customerid, comment) VALUES ($currtime, 4, $assign->{'value'}, $assign->{'taxid'}, $uid, ?)");
+			$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment) VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?)");
 			$cdbq->execute($desc);
 		}
 
@@ -352,7 +352,7 @@ $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, customerid, comment) VALUES ($currtime, 2, $assign->{'value'}, 0, ?)");
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, value, customerid, comment) VALUES ($currtime, $assign->{'value'} * -1, 0, ?)");
 	$sdbq->execute($assign->{'name'}.'/'.$assign->{'creditor'});
 	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }

@@ -111,7 +111,7 @@ void reload(GLOBAL *g, struct notify_module *n)
 	int i, j; 
 	double balance;
 
-	res = g->db_query(g->conn, "SELECT customers.id AS id, email, pin, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 AND email!='' GROUP BY customers.id, name, lastname, email, pin");
+	res = g->db_query(g->conn, "SELECT customers.id AS id, email, pin, name, lastname, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 AND email!='' GROUP BY customers.id, name, lastname, email, pin");
 	
 	if( g->db_nrows(res) )
 	{
@@ -131,7 +131,7 @@ void reload(GLOBAL *g, struct notify_module *n)
 						unsigned char *date, *value, *comment, *temp, *temp2;
 						unsigned char *last_ten = strdup("");
 							
-						result = g->db_pquery(g->conn, "SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value FROM cash WHERE customerid = ? ORDER BY time DESC LIMIT 10", g->db_get_data(res,i,"id"));
+						result = g->db_pquery(g->conn, "SELECT comment, time, value FROM cash WHERE customerid = ? ORDER BY time DESC LIMIT 10", g->db_get_data(res,i,"id"));
 						
 						for(j=0; j<g->db_nrows(result); j++) 
 						{

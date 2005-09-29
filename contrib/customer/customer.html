@@ -96,9 +96,6 @@
 								<TD>
 									<FONT COLOR="#FFFFFF"><B>{t}Date:{/t}</B></FONT>
 								</TD>
-								<TD>
-									<FONT COLOR="#FFFFFF"><B>{t}Type:{/t}</B></FONT>
-								</TD>
 								<TD ALIGN="RIGHT">
 									<FONT COLOR="#FFFFFF"><B>{t}Value:{/t}</B></FONT>
 								</TD>
@@ -117,9 +114,6 @@
 								<TD>
 									{$balance.date[b]}
 								</TD>
-								<TD>
-									{$balance.name[b]}
-								</TD>
 								<TD ALIGN="RIGHT">
 									{$balance.value[b]|money_format}
 								</TD>
@@ -132,7 +126,7 @@
 							</TR>
 							{sectionelse}
 							<TR>
-								<TD COLSPAN="6" ALIGN="CENTER">
+								<TD COLSPAN="5" ALIGN="CENTER">
 									<BR>
 									<BR>
 									<B>{t}No such operations.{/t}</B><BR>

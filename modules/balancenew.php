@@ -24,9 +24,17 @@
  *  $Id$
  */
 
+$layout['pagetitle'] = trans('New Balance');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('New Balance');
+$last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, taxes.label AS tax, 
+		    customerid, time, comment, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername
+		    FROM cash 
+		    LEFT JOIN customers ON (customerid = customers.id)
+		    LEFT JOIN taxes ON (taxid = taxes.id)
+		    ORDER BY cash.id DESC LIMIT 1');
+
+$SMARTY->assign('last',$last);
 $SMARTY->assign('operation',$SESSION->get('addtype'));
 $SMARTY->assign('comment', $SESSION->get('addbc'));
 $SMARTY->assign('taxid', $SESSION->get('addbtax'));

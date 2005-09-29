@@ -205,7 +205,6 @@
                     <member>id - identyfikator</member>
                     <member>time - znacznik czasu zaksiêgowania operacji</member>
                     <member>userid - identyfikator u¿ytkownika dokonuj±cego operacji</member>
-                    <member>type - typ operacji (przychód, rozchód, wp³ata, obci±¿enie)</member>
                     <member>value - warto¶æ w z³otych</member>
                     <member>taxid - identyfikator stawki podatkowej</member>
                     <member>customerid - identyfikator klienta ('0' - je¶li nie dotyczy)</member>

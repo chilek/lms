@@ -68,7 +68,6 @@ CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
   time int(11) NOT NULL default '0',
   userid int(11) NOT NULL default '0',
-  type int(11) NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
   taxid int(11) NOT NULL default '0',
   customerid int(11) NOT NULL default '0',
@@ -647,4 +646,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005090700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005092900');

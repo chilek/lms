@@ -115,7 +115,7 @@ else
 	exit 1;
 }
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, UPPER(lastname) AS lastname, name, SUM((cash.type*-2+7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id, lastname, name HAVING SUM((cash.type*-2+7) * cash.value) >= $limit ORDER BY lastname, name");
+my $dbq = $dbase->prepare("SELECT customers.id AS id, UPPER(lastname) AS lastname, name, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, lastname, name HAVING SUM(cash.value) >= $limit ORDER BY lastname, name");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {

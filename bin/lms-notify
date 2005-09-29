@@ -158,7 +158,7 @@ open(MTFILE, "$mtfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, UPPER(lastname) AS lastname, name, email, phone1, SUM((type * -2 + 7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, pin, lastname, name, email, phone1 HAVING SUM((type * -2 + 7) * cash.value) < $limit");
+my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, UPPER(lastname) AS lastname, name, email, phone1, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, pin, lastname, name, email, phone1 HAVING SUM(cash.value) < $limit");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -244,20 +244,18 @@ while (my $row = $dbq->fetchrow_hashref())
 				$line =~ s/\%abonament/$ow_s->{'value'}/;
 			}
 			if ($line =~ /\%last_10_in_a_table/ ) {
-				my $last10_dbq = $dbase->prepare("SELECT comment, value, type, time FROM cash WHERE 
-						customerid='$row->{'id'}' AND (type>='3' ) ORDER BY time DESC LIMIT 10");
+				my $last10_dbq = $dbase->prepare("SELECT comment, value, time FROM cash WHERE 
+						customerid='$row->{'id'}' ORDER BY time DESC LIMIT 10");
 			# ok, now we are going to rise up system's load
 				$last10_dbq->execute();
 				$smtp->datasend("-----------+------------------------------------------------------+---------\n");
 				while (my $row_s = $last10_dbq->fetchrow_hashref())
 				{
-					my $aqq=($row_s->{'type'}==3)?1:-1;
-					my $op_amount=sprintf("%8.2f", $aqq*$row_s->{'value'});
-					my @typy = ('a', 'b', 'Abonament', 'Wp³ata', 'Instalacja', 'Inne');
-					my $op_type=@typy[$row_s->{'type'}] || "$row_s->{'type'}";
-					my $for_what = sprintf("%-52s",$row_s->{'comment'} || $op_type);
-					my $op_time=strftime( "%Y-%m-%d", localtime($row_s->{'time'}) );
-					$smtp->datasend("$op_time | $for_what | $op_amount \n");
+					my $op_time = strftime( "%Y/%m/%d", localtime($row_s->{'time'}));
+					my $op_amount = sprintf("%8.2f", $aqq*$row_s->{'value'});
+					my $for_what = sprintf("%-52s",$row_s->{'comment'} || '');
+														
+					$smtp->datasend("$op_time | $op_amount | $for_what \n");
 				}
 				$smtp->datasend("-----------+------------------------------------------------------+---------\n");
 			} else 

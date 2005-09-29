@@ -48,7 +48,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(*c->warning)
 		g->str_replace(&c->warning, "%time", time_fmt);
 
-	if( (res = g->db_pquery(g->conn, "SELECT customers.id AS id FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id HAVING SUM((type * -2 + 7) * cash.value) < ?", c->limit))!=NULL )
+	if( (res = g->db_pquery(g->conn, "SELECT customers.id AS id FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id HAVING SUM(cash.value) < ?", c->limit))!=NULL )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{

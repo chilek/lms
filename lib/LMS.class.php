@@ -455,7 +455,7 @@ class LMS
 
 	function GetCashByID($id)
 	{
-		return $this->DB->GetRow('SELECT time, userid, type, value, taxid, customerid, comment FROM cash WHERE id=?', array($id));
+		return $this->DB->GetRow('SELECT time, userid, value, taxid, customerid, comment FROM cash WHERE id=?', array($id));
 	}
 
 	function GetCustomerStatus($id)
@@ -587,8 +587,8 @@ class LMS
 
 		if($customerlist = $this->DB->GetAll(
 				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, status, address, zip, city, email, phone1, ten, ssn, customers.info AS info, message, '
-				.($network ? 'COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance ')
-				.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type = 3 OR type = 4)) '
+				.($network ? 'COALESCE(SUM(value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM(value), 0.00) AS balance ')
+				.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid) '
 				.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
 				.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
@@ -599,7 +599,7 @@ class LMS
 				.($sqlsarg !='' ? ' AND ('.$sqlsarg.')' :'')
 				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, email, phone1, ten, ssn, customers.info, message '
 		// ten fragment nie chcial dzialac na mysqlu
-		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
+		//		.($indebted ? ' HAVING SUM(value) < 0 ' : '')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
@@ -696,14 +696,14 @@ class LMS
 
 	function GetCustomerBalance($id)
 	{
-		return round($this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE customerid=?', array($id)),2);
+		return $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=?', array($id));
 	}
 
 	function GetCustomerBalanceList($id)
 	{
 		$saldolist = array();
 		// wrapper do starego formatu
-		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid, users.name AS username,
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid, users.name AS username,
 					documents.type AS doctype, documents.closed AS closed
 					FROM cash
 					LEFT JOIN users ON users.id = cash.userid
@@ -718,30 +718,14 @@ class LMS
 		{
 			foreach($saldolist['id'] as $i => $v)
 			{
-				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
-
-				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
-
-				switch ($saldolist['type'][$i])
-				{
-					case '3':
-						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),2);
-						$saldolist['name'][$i] = trans('payment');
-					break;
-					case '4':
-						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),2);
-						$saldolist['name'][$i] = trans('covenant');
-					break;
-				}
-
-				$saldolist['date'][$i] = date('Y/m/d H:i',$saldolist['time'][$i]);
-				$saldolist['comment'][$i] = strlen($saldolist['comment'][$i])<3 ? $saldolist['name'][$i] : $saldolist['comment'][$i];
+				$saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
+				$saldolist['balance'] += $saldolist['value'][$i];
+				$saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 			}
-
-			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
 			$saldolist['total'] = sizeof($saldolist['id']);
 		}
-		else {
+		else 
+		{
 			$saldolist['balance'] = 0;
 			$saldolist['total'] = 0;
 		}
@@ -768,7 +752,7 @@ class LMS
 		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE status=1 AND deleted=0');
 		$result['debt'] = 0;
 		$result['debtvalue'] = 0;
-		if($balances = $this->DB->GetCol('SELECT SUM((type * -2 + 7)*value) FROM cash LEFT JOIN customers ON customerid = customers.id WHERE deleted = 0 GROUP BY customerid HAVING SUM((type * -2 + 7)*value) < 0'))
+		if($balances = $this->DB->GetCol('SELECT SUM(value) FROM cash LEFT JOIN customers ON customerid = customers.id WHERE deleted = 0 GROUP BY customerid HAVING SUM(value) < 0'))
 		{
 			foreach($balances as $idx)
 				if($idx < 0)
@@ -1345,7 +1329,7 @@ class LMS
 					$item['name'],
 					$item['tariffid']));
 
-			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
+			$this->AddBalance(array('value' => $item['valuebrutto']*$item['count']*-1, 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
 
 		$this->SetTS('documents');
@@ -1361,7 +1345,7 @@ class LMS
 
 		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city'], $iid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
-		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($iid));
+		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
 		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0, customerid = ? WHERE docid = ?', array($invoice['customer']['id'], $iid));
 
 		$itemid=0;
@@ -1380,7 +1364,7 @@ class LMS
 					$item['count'],
 					$item['name'],
 					$item['tariffid']));
-			$this->AddBalance(array('type' => 4, 'time' => $cdate, 'value' => $item['valuebrutto']*$item['count'], 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
+			$this->AddBalance(array('time' => $cdate, 'value' => $item['valuebrutto']*$item['count']*-1, 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
 
 		$this->SetTS('documents');
@@ -1391,7 +1375,7 @@ class LMS
 	{
 		$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
-		$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND type = 4', array($invoiceid));
+		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($invoiceid));
 		$this->SetTS('documents');
 		$this->SetTS('invoicecontents');
 	}
@@ -1407,7 +1391,7 @@ class LMS
 				// if that was the last item of invoice contents
 				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 			}
-			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ? AND type = 4', array($invoiceid, $itemid));
+			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
 			$this->SetTS('documents');
 			$this->SetTS('invoicecontents');
 		}
@@ -1656,11 +1640,10 @@ class LMS
 		$this->SetTS('cash');
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
 
-		return $this->DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		return $this->DB->Execute('INSERT INTO cash (time, userid, value, taxid, customerid, comment, docid, itemid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 					array($addbalance['time'] ? $addbalance['time'] : time(),
 					    $addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id,
-					    $addbalance['type'],
 					    $addbalance['value'],
 					    $addbalance['taxid'] ? $addbalance['taxid'] : 0,
 					    $addbalance['customerid'],
@@ -1672,7 +1655,7 @@ class LMS
 
 	function DelBalance($id)
 	{
-		$row = $this->DB->GetRow('SELECT docid, itemid, documents.type AS doctype, cash.type AS cashtype
+		$row = $this->DB->GetRow('SELECT docid, itemid, documents.type AS doctype
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
 					WHERE cash.id=?', array($id));
@@ -1689,52 +1672,55 @@ class LMS
 
 	function GetBalanceList()
 	{
-		$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
-		$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
-		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid,
+		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, cash.customerid AS customerid, comment, docid, taxid,
 						    documents.type AS doctype, documents.closed AS closed
 						    FROM cash
 						    LEFT JOIN documents ON (documents.id = docid)
 						    LEFT JOIN taxes ON (taxid = taxes.id)
 						    ORDER BY time, cash.id'))
 		{
+			$taxeslist = $this->GetTaxes();
+			$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
+			$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
+			
 			foreach($balancelist as $idx => $row)
 			{
 				$balancelist[$idx]['user'] = $userlist[$row['userid']]['name'];
 				$balancelist[$idx]['value'] = $row['value'];
-				$balancelist[$idx]['tax'] = $row['tax'];
+				$balancelist[$idx]['tax'] = $taxeslist[$row['taxid']]['label'];
 				$balancelist[$idx]['customername'] = $customerslist[$row['customerid']]['customername'];
 				$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
 
-				switch($row['type'])
+				if($row['customerid'])
 				{
-					case 1:
-						$balancelist[$idx]['type'] = trans('income');
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
-						$balancelist['income'] = $balancelist['income'] + $balancelist[$idx]['value'];
-					break;
-					case 2:
-						$balancelist[$idx]['type'] = trans('expense');
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] - $balancelist[$idx]['value'];
-						$balancelist['expense'] = $balancelist['expense'] + $balancelist[$idx]['value'];
-					break;
-					case 3:
-						$balancelist[$idx]['type'] = trans('cust. payment');
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
-						$balancelist['incomeu'] = $balancelist['incomeu'] + $balancelist[$idx]['value'];
-					break;
-					case 4:
-						$balancelist[$idx]['type'] = trans('cust. covenant');
+					if($row['value'] < 0)
+					{
+						// customer covenant
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
-						$balancelist['uinvoice'] = $balancelist['uinvoice'] + $balancelist[$idx]['value'];
-					break;
-					default:
-						$balancelist[$idx]['type'] = '<FONT COLOR="RED">???</FONT>';
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
-					break;
+						$balancelist[$idx]['covenant'] = true;
+						$balancelist['uinvoice'] += -$row['value'];
+						$balancelist[$idx]['value'] *= -1;
+					}
+					else
+					{
+						//customer payment
+						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $row['value'];
+						$balancelist['incomeu'] += $row['value'];
+					}
+				}
+				else
+				{
+					$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $row['value'];
+					
+					if($row['value'] > 0)
+						//income
+						$balancelist['income'] += $row['value'];
+					else
+						//expense
+						$balancelist['expense'] += -$row['value'];
 				}
 			}
-			$balancelist['total'] = $balancelist[$idx]['after'];
+			$balancelist['total'] = $balancelist['income'] - $balancelist['expense'] + $balancelist['incomeu'];
 		}
 
 		return $balancelist;

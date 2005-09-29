@@ -21,9 +21,6 @@
 			{t}Date{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Type{/t}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
 			{t}Value{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
@@ -48,17 +45,18 @@
 		<TD ALIGN="CENTER" NOWRAP>
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d"}
 		</TD>
-		<TD ALIGN="LEFT" NOWRAP>
-			{$balancelist[balancelist].type}
-		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$balancelist[balancelist].value|money_format} 
+			{if $balancelist[balancelist].value > 0}+{/if}{$balancelist[balancelist].value|money_format} 
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$balancelist[balancelist].taxlabel}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
+			{if $balancelist[balancelist].covenant}
+			-
+			{else}
 			{$balancelist[balancelist].after|money_format} 
+			{/if}
 		</TD>
 		<TD ALIGN="LEFT" NOWRAP>
 			{$balancelist[balancelist].customername|truncate:20:"..."}
@@ -69,7 +67,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="8">
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
 			<P>&nbsp;</P>
 			<P><B>{t}No such cash operations.{/t}</B></P>
 			<P>&nbsp;</P>
@@ -77,8 +75,8 @@
 	</TR>
 	{/section}
 	<TR class="grey">
-		<TD ALIGN="RIGHT" COLSPAN="5">
-			<B>{t}Customers covenants:{/t}</B><BR>
+		<TD ALIGN="RIGHT" COLSPAN="4">
+			<B>{t}Customers payments:{/t}</B><BR>
 			<B>{t}Income:{/t}</B><BR>
 			<B>{t}Expenditure:{/t}</B><BR>
 			<B>{t}Total:{/t}</B>
