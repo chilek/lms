@@ -280,11 +280,38 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >wyra¿enie--</SAMP
 ></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>++wyra¿enie</SAMP
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>--wyra¿enie</SAMP
+></P
 ></LI
 ><LI
 ><P
->Porównanie ci±gu do z wyra¿eniem regularnym. Zwraca 1 gdy wyra¿enie pasuje do wzorca po prawej stronie,
-				w przeciwnym wypadku zwraca 0.</P
+>Przesuniêcie bitowe.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>wyra¿enie1 &gt;&gt; wyra¿enie2</SAMP
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>wyra¿enie1 &lt;&lt; wyra¿enie2</SAMP
+></P
+></LI
+><LI
+><P
+>Porównanie ci±gu do z wyra¿eniem regularnym. Zwraca 1 gdy <SAMP
+CLASS="PROMPT"
+>wyra¿enie</SAMP
+>
+				pasuje do wzorca po prawej stronie, w przeciwnym wypadku zwraca 0.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -367,14 +394,48 @@ a nie równa siê 1
 ></LI
 ><LI
 ><P
->Pêtla iteracyjna. Wykonanie polecenie1 jako polecenia inicjalizuj±cego pêtlê. Nastêpnie
-					wykonywane jest polecenie i polecenie2, dopóki wyra¿enie jest prawdziwe.</P
+>Pêtla iteracyjna. Wykonanuje wyra¿enie <SAMP
+CLASS="PROMPT"
+>wyra¿enie1</SAMP
+> jako
+					polecenie inicjalizuj±ce pêtlê. Nastêpnie wykonywane jest 
+					<SAMP
+CLASS="PROMPT"
+>wyra¿enie3</SAMP
+> i <SAMP
+CLASS="PROMPT"
+>polecenie</SAMP
+> dopóki 
+					<SAMP
+CLASS="PROMPT"
+>wyra¿enie2</SAMP
+> jest prawdziwe.</P
 ><P
 >Przyk³ad: <PRE
 CLASS="SCREEN"
->for ( polecenie1 ; wyra¿enie ; polecenie2 )
-polecenia
-/for</PRE
+>for ( wyra¿enie1 ; wyra¿enie2 ; wyra¿enie3 ) polecenie /for</PRE
+></P
+></LI
+><LI
+><P
+>Pêtla <SAMP
+CLASS="PROMPT"
+>while</SAMP
+>. Wykonanuje <SAMP
+CLASS="PROMPT"
+>polecenie</SAMP
+>
+					tak d³ugo jak d³ugo <SAMP
+CLASS="PROMPT"
+>wyra¿enie</SAMP
+>  jest prawdziwe. Warto¶æ wyra¿enia
+					jest sprawdzana za ka¿dym razem na pocz±tku pêtli, wiêc nawet gdy warto¶æ 
+					ta zmieni siê podczas wykonywania poleceñ, wykonywanie pêtli nie zostanie 
+					przerwane a¿ do jej zakoñczenia.</P
+><P
+>Przyk³ad: <PRE
+CLASS="SCREEN"
+>while ( wyra¿enie ) polecenie /while</PRE
 ></P
 ></LI
 ></UL
