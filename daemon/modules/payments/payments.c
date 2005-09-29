@@ -224,7 +224,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, customerid, comment, docid) VALUES (%NOW%, 2, ?, 0, '? / ?', 0)",
+			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, value, customerid, comment, docid) VALUES (%NOW%, ? * -1, 0, '? / ?', 0)",
 					g->db_get_data(res,i,"value"),
 					g->db_get_data(res,i,"name"),
 					g->db_get_data(res,i,"creditor")
@@ -283,7 +283,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			taxid = g->db_get_data(res,i,"taxid");
 
 			// prepare insert to 'cash' table
-			insert = strdup("INSERT INTO cash (time, type, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, 4, %value, %taxid, %customerid, '?', %invoiceid, %itemid)");
+			insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %invoiceid, %itemid)");
 			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
 			g->str_replace(&insert, "%value", value);
 			description = strdup(p->comment);

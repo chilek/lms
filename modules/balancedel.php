@@ -24,7 +24,11 @@
  *  $Id$
  */
 
-if (sizeof($_POST['marks']))
+if($_GET['id'])
+{
+	$LMS->DelBalance($_GET['id']);
+}
+elseif(sizeof($_POST['marks']))
 {
 	foreach($_POST['marks'] as $markid => $junk)
 		if ($junk)

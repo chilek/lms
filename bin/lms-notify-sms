@@ -138,7 +138,7 @@ open(MTFILE, "$smsfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, lastname, name, phone1, phone2, phone3, SUM((type * -2 + 7) * value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, pin, lastname, name, phone1, phone2, phone3 HAVING SUM((type * -2 + 7) * value) < 0"); 
+my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, lastname, name, phone1, phone2, phone3, SUM(value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, pin, lastname, name, phone1, phone2, phone3 HAVING SUM(value) < 0"); 
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {

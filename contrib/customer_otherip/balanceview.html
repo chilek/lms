@@ -34,22 +34,20 @@
 				    <TABLE border="0" cellpadding="5" cellspacing="0" width="100%">
 					<TR class="dark">
 					    <TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-					    <TD width="1%" class="fbt"><B>{t}Type:{/t}</B></TD>
 					    <TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
 					    <TD width="1%" class="fbt" align="center">&raquo;</TD>
 					    <TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
-					    <TD width="94%" class="fbt">{t}Description:{/t}</TD>
+					    <TD width="95%" class="fbt">{t}Description:{/t}</TD>
 					    <TD width="1%" class="frightu"></TD>
 					</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=balancelist loop=$balancelist.id start=$balancelist.id-$limit}
 					<TR bgcolor="{cycle}"{cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 					    <TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
-					    <TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
 					    <TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|money_format}</nobr></TD>
 					    <TD width="1%" align="center">&raquo;</TD>
 					    <TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
-					    <TD width="94%">{$balancelist.comment[balancelist]}</TD>
+					    <TD width="95%">{$balancelist.comment[balancelist]}</TD>
 					    <TD width="1%">
 						    {if $balancelist.doctype[balancelist]==1}
 						    <A href="invoice.php?id={$balancelist.docid[balancelist]}" target="_BLANK"><IMG src="img/print.gif" border="0" alt="[ {t}Invoice{/t} ]" align="absmiddle"></A>
@@ -58,7 +56,7 @@
 					</TR>
 				{sectionelse}
 					<TR>
-					    <TD align="center" width="100%" colspan="7">
+					    <TD align="center" width="100%" colspan="6">
 						<p>&nbsp;</p>
 						<p><B>{t}That customer hasn't got any transactions.{/t}</B></p>
 						<p>&nbsp;</p>

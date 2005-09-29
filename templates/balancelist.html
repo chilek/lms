@@ -72,9 +72,6 @@
 		<TD width="1%" class="fbt">
 			<B>{t}User:{/t}</B>
 		</TD>
-		<TD width="1%" class="fbt">
-			<B>{t}Type:{/t}</B>
-		</TD>
 		<TD width="1%" class="fbt" align="right">
 			<B>{t}Value:{/t}</B>
 		</TD>
@@ -90,7 +87,7 @@
 		<TD width="1%" class="fbt">
 			<B>{t}Customer:{/t}</B>
 		</TD>
-		<TD width="91%" class="fbt">
+		<TD width="92%" class="fbt">
 			<B>{t}Description:{/t}</B>
 		</TD>
 		<TD width="1%" CLASS="frightu">
@@ -99,7 +96,7 @@
 	</TR>
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="10">
+		<TD WIDTH="100%" class="fall" COLSPAN="9">
 			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
@@ -124,11 +121,8 @@
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].userid}<NOBR>{$balancelist[balancelist].user|truncate:16:"..."}</NOBR>{else}-{/if}
 		</TD>
-		<TD width="1%" nowrap valign="top">
-			<NOBR><B>{$balancelist[balancelist].type}</B></NOBR>
-		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
-			<NOBR>{$balancelist[balancelist].value|money_format}</NOBR>
+			<NOBR>{if $balancelist[balancelist].value > 0}+{/if}{$balancelist[balancelist].value|money_format}</NOBR>
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
 		{if $balancelist[balancelist].type!=3}
@@ -138,13 +132,17 @@
 		<TD width="1%" align="center" valign="top">
 			&raquo;
 		</TD>
-		<TD width="1%" align="right" nowrap valign="top"> 
+		<TD width="1%" align="right" nowrap valign="top">
+			{if $balancelist[balancelist].covenant}
+			-
+			{else}
 			<NOBR>{$balancelist[balancelist].after|money_format}</NOBR>
+			{/if}
 		</TD>
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].customerid}<NOBR><A HREF="?m=customerbalance&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"..."}</A></NOBR>{else} - {/if}
 		</TD>
-		<TD width="91%" valign="top">
+		<TD width="92%" valign="top">
 			{$balancelist[balancelist].comment}
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>
@@ -165,7 +163,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="10">
+		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="9">
 			<P>&nbsp;<?P>
 			<P><B>{t}No such transactions found in database.{/t}</B></P>
 			<P>&nbsp;</P>
@@ -173,7 +171,7 @@
 	</TR>    
 	{/section}
 	<TR class="dark">
-		<TD class="fleftu" COLSPAN="8" nowrap>
+		<TD class="fleftu" COLSPAN="7" nowrap>
 			<A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{t}Print invoices{/t} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{t}Print cash receipts{/t} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
@@ -186,7 +184,7 @@
 	</TR>
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="10">
+		<TD WIDTH="100%" class="fall" COLSPAN="9">
 			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
@@ -203,14 +201,14 @@
 	</TR>
 	{/if}
 	<TR class="light">
-		<TD colspan="3" width="3%" align="right" class="fleftu" NOWRAP>
+		<TD colspan="2" align="right" class="fleftu" NOWRAP>
 			<B>{t}Customers covenants:{/t}</B><HR>
 			<B>{t}Customers payments:{/t}</B><BR>
 			<B>{t}Income:{/t}</B><BR>
 			<B>{t}Expenditure:{/t}</B><HR>
 			<B>{t}Total:{/t}</B>
 		</TD>
-		<TD width="1%" nowrap class="fbt" align="right">
+		<TD nowrap class="fbt" align="right">
 			<NOBR>
 			{$listdata.uinvoice|money_format}<HR>
 			{$listdata.incomeu|money_format}<BR>
@@ -218,7 +216,7 @@
 			{$listdata.expense|money_format}<HR>
 			{$listdata.total|money_format}</NOBR>
 		</TD>
-		<TD width="96%" colspan="6" class="frightu">
+		<TD colspan="6" class="frightu">
 			&nbsp;
 		</TD>
 	</TR>

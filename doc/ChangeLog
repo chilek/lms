@@ -38,7 +38,13 @@ version ? (??/??/????):
   - lmsd: fixed environment variables startup reading (alec)
   - lmsd: fixed problem with long execution time when using constants (alec)
   - lmsd: added while() and operators <<, >> and leftside --, ++ (alec)
-
+  - ***********************************************************************
+    finances revolution: droped 'type' column from 'cash' table, now we're
+    using signed values, redesigned balance lists: using signed values instead 
+    of type (alec)
+    ***********************************************************************
+  - on New Operation added last operation info with [Delete] link (alec)
+    
 version 1.7.2 Doci (2005-08-13):
 
   - in Mailing added replacement variables (alec)

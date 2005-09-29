@@ -213,11 +213,10 @@ switch($_GET['action'])
 					    ));
 
 				if($item['cash'] != 0)
-					$DB->Execute('INSERT INTO cash (time, userid, type, value, taxid, customerid, comment, docid, itemid)
-			                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					$DB->Execute('INSERT INTO cash (time, userid, value, taxid, customerid, comment, docid, itemid)
+			                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 						array($cnote['cdate'],
 						        $AUTH->id,
-						        4,
 						        str_replace(',','.',$item['cash']),
 						        $item['taxid'],
 						        $invoice['customerid'],

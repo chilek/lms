@@ -18,7 +18,7 @@ void tscript_ext_sql_close(tscript_context *);
 		    address, zip, city, email, phone1, phone2, phone3, ten, ssn, \
 		    customers.info AS info, message, \
 		    SUM(nodes.warning) AS warning, SUM(nodes.access) AS access, \
-		    ROUND(COALESCE(SUM((type * -2 + 7) * value), 0.00)/( \
+		    ROUND(COALESCE(SUM(value), 0.00)/( \
 			CASE COUNT(DISTINCT nodes.id) \
 			WHEN 0 THEN 1 \
 			ELSE COUNT(DISTINCT nodes.id) END \

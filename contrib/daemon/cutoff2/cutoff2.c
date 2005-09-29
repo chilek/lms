@@ -73,7 +73,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	
 	if(c->deadline > 28) c->deadline = 28;
 
-	res = g->db_query(g->conn, "SELECT customers.id AS id, SUM((type * -2 + 7) * cash.value)*-1 AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY customers.id HAVING SUM((type * -2 + 7) * cash.value) < 0");
+	res = g->db_query(g->conn, "SELECT customers.id AS id, SUM(cash.value)*-1 AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id HAVING SUM(cash.value) < 0");
 	if( g->db_nrows(res) )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 

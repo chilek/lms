@@ -106,7 +106,7 @@ switch($type)
 		
 		$id = $_POST['customer'];
 
-		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, cash.value AS value, taxes.label AS taxlabel, customerid, comment, name AS username 
+		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, cash.value AS value, taxes.label AS taxlabel, customerid, comment, name AS username 
 				    FROM cash 
 				    LEFT JOIN taxes ON (taxid = taxes.id)
 				    LEFT JOIN users ON users.id=userid 
@@ -120,43 +120,24 @@ switch($type)
 		{
 			foreach($saldolist['id'] as $i => $v)
 			{
-				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
-
-				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
-
-				switch ($saldolist['type'][$i]){
-
-					case '3':
-						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = trans('payment');
-					break;
-
-					case '4':
-						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = trans('covenant');
-					break;
-				}
-
+				$saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
+				$saldolist['balance'] += $saldolist['value'][$i];
+			        $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
+				    
 				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
 				{
 					$list['id'][] = $saldolist['id'][$i];
 					$list['after'][] = $saldolist['after'][$i];
-					$list['before'][] = $saldolist['before'][$i];
+					$list['before'][] = $saldolist['balance'];
 					$list['value'][] = $saldolist['value'][$i];
 					$list['taxlabel'][] = $saldolist['taxlabel'][$i];
-					$list['name'][] = $saldolist['name'][$i];
-					switch($saldolist['type'][$i])
-					{ 
-						case '3': $list['summary'] += $saldolist['value'][$i]; break;
-						case '4': $list['summary'] -= $saldolist['value'][$i]; break;
-					}	
 					$list['date'][] = date('Y/m/d H:i',$saldolist['time'][$i]);
 					$list['username'][] = $saldolist['username'][$i];
-					(strlen($saldolist['comment'][$i])<3) ? $list['comment'][] = $saldolist['name'][$i] : $list['comment'][] = $saldolist['comment'][$i];
+					$list['comment'][] = $saldolist['comment'][$i];
+					$list['summary'] += $saldolist['value'][$i];
 				}
 			}
-
-			$list['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
+			
 			$list['total'] = sizeof($list['id']);
 
 		} else
@@ -231,13 +212,13 @@ switch($type)
 
 				$nodelist = $DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
 					    nodes.name AS name, nodes.info AS info, 
-					    COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
+					    COALESCE(SUM(value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
 					    .$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
 					    FROM nodes LEFT JOIN customers ON (ownerid = customers.id)
 					    LEFT JOIN cash ON (cash.customerid = customers.id)'
 					    .($net ? ' WHERE ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 					    .'GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, customers.lastname, customers.name
-					    HAVING SUM((type * -2 + 7) * value) < 0'
+					    HAVING SUM(value) < 0'
 					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
 				
 				$SMARTY->assign('nodelist', $nodelist);
@@ -282,9 +263,9 @@ switch($type)
 		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		
 		if($date['from'])
-			$lastafter = $DB->GetOne('SELECT SUM(CASE type WHEN 2 THEN value*-1 WHEN 4 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
+			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN customerid!=0 AND value<0 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
 		
-		if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, userid, type, cash.value AS value, taxes.label AS taxlabel, customerid, comment 
+		if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, userid, cash.value AS value, taxes.label AS taxlabel, customerid, comment 
 			    FROM cash LEFT JOIN taxes ON (taxid = taxes.id)
 			    WHERE time>=? AND time<=? ORDER BY time ASC', array($date['from'], $date['to'])))
 		{
@@ -294,11 +275,8 @@ switch($type)
 				if($user)
 					if($row['userid']!=$user)
 					{
-						if($row['type']==1 || $row['type']==3)
+						if($row['value']>0 || !$row['customerid'])  // skip cust. covenants
 							$lastafter += $row['value'];
-						elseif($row['type']==2)
-							$lastafter -= $row['value'];
-
 						unset($balancelist[$idx]);
 						continue;
 					}
@@ -309,32 +287,34 @@ switch($type)
 				$list[$x]['comment'] = $row['comment'];
 				$list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
 
-				switch($row['type'])
+				if($row['customerid'])
 				{
-					case 1:
-						$list[$x]['type'] = trans('income');
-						$list[$x]['after'] = $lastafter + $list[$x]['value'];
-						$listdata['income'] += $list[$x]['value'];
-					break;
-					case 2:
-						$list[$x]['type'] = trans('expense');
-						$list[$x]['after'] = $lastafter - $list[$x]['value'];
-						$listdata['expense'] += $list[$x]['value'];
-					break;
-					case 3:
-						$list[$x]['type'] = trans('cust. payment');
+					if($row['value'] < 0)
+	        			{
+		                		// customer covenant
+				                $list[$x]['after'] = $lastafter;
+						$list[$x]['covenant'] = true;
+						$list[$x]['value'] *= -1;
+					}
+					else
+					{
+						//customer payment
 						$list[$x]['after'] = $lastafter + $list[$x]['value'];
 						$listdata['incomeu'] += $list[$x]['value'];
-					break;
-					case 4:
-						$list[$x]['type'] = trans('cust. covenant');
-						$list[$x]['after'] = $lastafter;
-					break;
-					default:
-						$list[$x]['type'] = '???';
-						$list[$x]['after'] = $lastafter;
-					break;
+					}
 				}
+				else
+				{
+					$list[$x]['after'] = $lastafter + $list[$x]['value'];
+					
+					if($row['value'] > 0)
+        					//income
+						$listdata['income'] += $list[$x]['value'];
+			    		else
+				        	//expense
+						$listdata['expense'] -= $list[$x]['value'];
+				}
+
 				$lastafter = $list[$x]['after'];
 				$x++;
 				unset($balancelist[$idx]);
@@ -369,7 +349,7 @@ switch($type)
 		
 		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
 			FROM cash LEFT JOIN documents ON (docid = documents.id)
-			WHERE (cash.type=1 OR cash.type=3) AND time>=? AND time<=?
+			WHERE value>0 AND time>=? AND time<=?
 			AND docid=0
 			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));

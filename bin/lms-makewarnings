@@ -229,7 +229,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
-$dbq = $dbase->prepare("SELECT customers.id AS id, lastname, name, SUM((type * -2 + 7) * cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, lastname, name HAVING SUM((type * -2 + 7) * cash.value) < 0");
+$dbq = $dbase->prepare("SELECT customers.id AS id, lastname, name, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, lastname, name HAVING SUM(cash.value) < 0");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {

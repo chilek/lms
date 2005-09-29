@@ -201,7 +201,6 @@
                     <member>id - serial number</member>
                     <member>time - timestamp of operation</member>
                     <member>userid - LMS user id</member>
-                    <member>type - type of operation (income, expenditure, payment, debt)</member>
                     <member>value - amount in dollars</member>
                     <member>taxid - tax rate identifier</member>
                     <member>customerid - customer's serial number ('0' - does not apply)</member>

@@ -54,7 +54,6 @@ CREATE TABLE cash (
 	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
 	time integer 		DEFAULT 0 NOT NULL,
 	userid integer 		DEFAULT 0 NOT NULL,
-	type smallint 		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxid integer		DEFAULT 0 NOT NULL,
 	customerid integer 	DEFAULT 0 NOT NULL,
@@ -687,4 +686,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005090700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005092900');

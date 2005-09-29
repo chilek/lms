@@ -21,9 +21,6 @@
 			{t}Date{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Type{/t}
-		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER">
 			{t}Value{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
@@ -45,11 +42,8 @@
 		<TD ALIGN="CENTER" NOWRAP>
 			{$balancelist.date[balancelist]}
 		</TD>
-		<TD ALIGN="RIGHT">
-			{$balancelist.name[balancelist]}
-		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$balancelist.value[balancelist]|money_format} 
+			{if $balancelist.value[balancelist] > 0}+{/if}{$balancelist.value[balancelist]|money_format} 
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$balancelist.taxlabel[balancelist]}
@@ -63,7 +57,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="6">
 			<p>&nbsp;</p>
 			<p><B>{t}No such transactions{/t}</B></p>
 			<p>&nbsp;</p>
@@ -71,7 +65,7 @@
 	</TR>
 	{/section}
 	<TR class="grey">
-		<TD ALIGN="right" COLSPAN="3">
+		<TD ALIGN="right" COLSPAN="2">
 			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD ALIGN="right" nowrap>

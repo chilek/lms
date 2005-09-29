@@ -26,7 +26,6 @@
 
 $addbalance = $_POST['addbalance'];
 
-$SESSION->save('addtype', $addbalance['type']);
 $SESSION->save('addbc', $addbalance['comment']);
 $SESSION->save('addbt', $addbalance['time']);
 $SESSION->save('addbv', $addbalance['value']);
@@ -34,8 +33,8 @@ $SESSION->save('addbtax', $addbalance['taxid']);
 
 $addbalance['value'] = str_replace(',','.',$addbalance['value']);
 
-if($addbalance['time']) {
-
+if($addbalance['time'])
+{
 	// date format 'yyyy/mm/dd hh:mm'	
 	list($date,$time) = split(' ',$addbalance['time']);
 	$date = explode('/',$date);
@@ -46,30 +45,36 @@ if($addbalance['time']) {
 		unset($addbalance['time']);
 }
 
-if($addbalance['type']=='3' || $addbalance['type']=='4')
+if(isset($addbalance['mcustomerid']))
 {
-	if(isset($addbalance['mcustomerid']))
-	{
-		foreach($addbalance['mcustomerid'] as $value)
-			if($LMS->CustomerExists($value))
-			{
-				$addbalance['customerid'] = $value;
-					$LMS->AddBalance($addbalance);
-			}
-	}
-	else
-	{
-		if($LMS->CustomerExists($addbalance['customerid']))
+	foreach($addbalance['mcustomerid'] as $value)
+		if($LMS->CustomerExists($value))
 		{
+			$addbalance['customerid'] = $value;
+			if($addbalance['value'] > 0) 
+				$addbalance['taxid'] = 0;
+			
 			if($addbalance['value'] != 0)
 				$LMS->AddBalance($addbalance);
 		}
+}
+elseif(isset($addbalance['customerid']))
+{
+	if($LMS->CustomerExists($addbalance['customerid']))
+	{
+		if($addbalance['value'] > 0) 
+			$addbalance['taxid'] = 0;
+			
+		if($addbalance['value'] != 0)
+			$LMS->AddBalance($addbalance);
 	}
 }
-
-if($addbalance['type']=='2' || $addbalance['type']=='1')
+else
 {
 	$addbalance['customerid'] = '0';
+	$addbalance['taxid'] = '0';
+	
+	if($addbalance['value'] != 0)
 		$LMS->AddBalance($addbalance);
 }
 
