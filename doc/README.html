@@ -11394,7 +11394,7 @@ expression1 % expression2</PRE
 ></LI
 ><LI
 ><P
->Single-argument incremental/decremental operators.</P
+>Unary increment/decrement operators.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -11405,15 +11405,45 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >expression--</SAMP
 ></P
-></LI
-><LI
-><P
->String comparision with regular expression. Evaluates to 1 if expression1 value match with regular expression2, else
-		    0.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->expression1 =~ expression2</SAMP
+>++expression</SAMP
+></P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>--expression</SAMP
+></P
+></LI
+><LI
+><P
+>Bit shift operators.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>expr1 &gt;&gt; expr2</SAMP
+></P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>expr1 &lt;&lt; expr2</SAMP
+></P
+></LI
+><LI
+><P
+>String comparision with regular expression. Evaluates to 1 if expression <SAMP
+CLASS="PROMPT"
+>expr1</SAMP
+> 
+		    value match with regular expression <SAMP
+CLASS="PROMPT"
+>expr2</SAMP
+>, else 0.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>expr1 =~ expr2</SAMP
 ></P
 ></LI
 ></UL
@@ -11458,14 +11488,34 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->Conditional statement. Executes command only if expression is true. Second form executes 
-		    command1 if expression is true or command2 if expression is false.</P
+>Conditional statement. Executes <SAMP
+CLASS="PROMPT"
+>statement</SAMP
+> only if 
+		    <SAMP
+CLASS="PROMPT"
+>expression</SAMP
+> is true. Second form executes 
+		    <SAMP
+CLASS="PROMPT"
+>statement1</SAMP
+> if <SAMP
+CLASS="PROMPT"
+>expression</SAMP
+> is true or 
+		    <SAMP
+CLASS="PROMPT"
+>statement2</SAMP
+> if <SAMP
+CLASS="PROMPT"
+>expression</SAMP
+> is false.</P
 ><P
 >Example:
 <PRE
 CLASS="SCREEN"
->if ( expression ) command /if
-if ( expression ) commands1 else commands2 /if</PRE
+>if ( expression ) statement /if
+if ( expression ) statement1 else statement2 /if</PRE
 ></P
 ><P
 >Text between command blocks is treated as a command so the following example is correct:
@@ -11492,12 +11542,43 @@ a doesn't equal 1
 ></LI
 ><LI
 ><P
->Iterative loop. Executes first command1 as loop initialization command. Then executes 
-		    commands and command2 while expression is true.</P
+>Iterative loop. Executes first <SAMP
+CLASS="PROMPT"
+>expr1</SAMP
+> as loop initialization 
+		    command. Then executes <SAMP
+CLASS="PROMPT"
+>statement</SAMP
+> while <SAMP
+CLASS="PROMPT"
+>expr2</SAMP
+> is true. 
+		    At the end of each iteration <SAMP
+CLASS="PROMPT"
+>expr2</SAMP
+> is evaluated.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->for ( command1 ; expression ; command2 ) commands /for</SAMP
+>for ( expr1 ; expr2 ; expr3 ) statement /for</SAMP
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>While</SAMP
+> loop. Executes statement(s) repeatedly, as long as the 
+		    <SAMP
+CLASS="PROMPT"
+>expression</SAMP
+> evaluates to true. The value of the expression is checked each 
+		    time at the beginning of the loop, so even if this value changes during the execution of 
+		    the nested statement(s), execution will not stop until the end of the iteration.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>while ( expression ) statement /while</SAMP
 ></P
 ></LI
 ></UL
@@ -13048,10 +13129,6 @@ BORDER="0"
 ><TR
 ><TD
 >userid - LMS user id</TD
-></TR
-><TR
-><TD
->type - type of operation (income, expenditure, payment, debt)</TD
 ></TR
 ><TR
 ><TD

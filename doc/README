@@ -4181,12 +4181,18 @@ expression1 - expression2
 expression1 * expression2
 expression1 / expression2
 expression1 % expression2
-     * Single-argument incremental/decremental operators.
+     * Unary increment/decrement operators.
        Example: expression++
        Example: expression--
+       Example: ++expression
+       Example: --expression
+     * Bit shift operators.
+       Example: expr1 >> expr2
+       Example: expr1 << expr2
      * String comparision with regular expression. Evaluates to 1 if
-       expression1 value match with regular expression2, else 0.
-       Example: expression1 =~ expression2
+       expression expr1 value match with regular expression expr2, else
+       0.
+       Example: expr1 =~ expr2
      _________________________________________________________________
 
 6.3.2.2. Comments
@@ -4199,12 +4205,12 @@ expression1 % expression2
 
      * Assignment. Assigns expression value to specified variable.
        Example: variable = expression
-     * Conditional statement. Executes command only if expression is
-       true. Second form executes command1 if expression is true or
-       command2 if expression is false.
+     * Conditional statement. Executes statement only if expression is
+       true. Second form executes statement1 if expression is true or
+       statement2 if expression is false.
        Example:
-if ( expression ) command /if
-if ( expression ) commands1 else commands2 /if
+if ( expression ) statement /if
+if ( expression ) statement1 else statement2 /if
        Text between command blocks is treated as a command so the
        following example is correct:
 Some text
@@ -4221,10 +4227,16 @@ a equals 1
 {else}\
 a doesn't equal 1
 {/if}\
-     * Iterative loop. Executes first command1 as loop initialization
-       command. Then executes commands and command2 while expression is
-       true.
-       Example: for ( command1 ; expression ; command2 ) commands /for
+     * Iterative loop. Executes first expr1 as loop initialization
+       command. Then executes statement while expr2 is true. At the end
+       of each iteration expr2 is evaluated.
+       Example: for ( expr1 ; expr2 ; expr3 ) statement /for
+     * While loop. Executes statement(s) repeatedly, as long as the
+       expression evaluates to true. The value of the expression is
+       checked each time at the beginning of the loop, so even if this
+       value changes during the execution of the nested statement(s),
+       execution will not stop until the end of the iteration.
+       Example: while ( expression ) statement /while
      _________________________________________________________________
 
 6.3.2.4. Functions
@@ -4703,7 +4715,6 @@ Chapter 7. For curious
    id - serial number
    time - timestamp of operation
    userid - LMS user id
-   type - type of operation (income, expenditure, payment, debt)
    value - amount in dollars
    taxid - tax rate identifier
    customerid - customer's serial number ('0' - does not apply)
