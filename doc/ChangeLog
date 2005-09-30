@@ -44,6 +44,7 @@ version ? (??/??/????):
     of type (alec)
     ***********************************************************************
   - on New Operation added last operation info with [Delete] link (alec)
+  - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
     
 version 1.7.2 Doci (2005-08-13):
 
