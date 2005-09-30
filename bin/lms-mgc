@@ -312,7 +312,7 @@ sub instance($)
 	{
 		$srcnetwork = uc($srcnetwork);
 		print "debug: starting network $srcnetwork\n" if $debug;
-		my $dbq = $dbase->prepare("SELECT id, name, inet_ntoa(address) AS address, mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$srcnetwork'");
+		my $dbq = $dbase->prepare("SELECT id, name, inet_ntoa(address) AS address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$srcnetwork'");
 		$dbq->execute();
 		my $row = $dbq->fetchrow_hashref();
 		if(!$row)

@@ -1,5 +1,9 @@
 $Id$
 
+version ? (??/??/????):
+
+  - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
+
 version 1.6.4 Mala (25/09/2005):
 
   - BTS#0000426: fixed value in contrib/formularz_przelewu_wplaty (alec)
