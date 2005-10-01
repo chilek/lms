@@ -315,6 +315,10 @@ function GetConfigList($order='var,asc')
 					case 'attachment_name':
 						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
 					break;
+	
+					case 'type':
+						$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
+					break;
 					
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
@@ -337,6 +341,10 @@ function GetConfigList($order='var,asc')
 						$config[$idx]['description'] = trans('File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
 					break;
 					
+					case 'type':
+						$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
+					break;
+		
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;

@@ -867,6 +867,18 @@ $access['table'][100]['allow_reg'] = '^invoice$';
        Example: attachment_name = receipt.xls
      _________________________________________________________________
 
+2.9.2.2. PDF
+
+   It's possible to create receipts as PDF files. Setting option type in
+   [receipts] section to 'pdf' will force document being created in PDF
+   instead of html. Option template_file has the same meaning, with one
+   difference, that it might take predefined value: 'standard' - basic
+   receipt (receipt.html equivalent). template_file option can be set to
+   PHP file name, but this feature is meant for advanced users as it
+   requires you to create more complicated PHP script than the one used
+   with html receipts Smarty template.
+     _________________________________________________________________
+
 2.9.3. Other documents
 
    Documents support is not limited to invoices. You might store
