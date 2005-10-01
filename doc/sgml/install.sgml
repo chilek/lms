@@ -632,20 +632,17 @@ $access['table'][100]['allow_reg'] = '^invoice$';
           </listitem>
           </itemizedlist>
           </para>
-         </sect3>     
-	 <!--
-         <sect3 id="install-receipts-pdf">
-          <title>PDF</title>
-                 <para>It's possible to create receipts as PDF files. Setting option <filename>type</filename> in
-                 <emphasis>[receipts]</emphasis> section to 'pdf' will force document being created in PDF instead
-                 of html. Option <filename>template_file</filename> has the same meaning, with one difference,
-                 that it might take predefined value: 'standard' - basic receipt (receipt.html equivalent).
-                 <filename>template_file</filename> option can be set to PHP file name, but this feature is meant for
-                 advanced users as it requires you to create more complicated PHP script than the one used with html
-                 receipts Smarty template.</para>
-          </para>
-         </sect3>
-	 -->
+        </sect3>     
+        <sect3 id="install-receipts-pdf">
+    	    <title>PDF</title>
+                <para>It's possible to create receipts as PDF files. Setting option <filename>type</filename> in
+                <emphasis>[receipts]</emphasis> section to 'pdf' will force document being created in PDF instead
+                of html. Option <filename>template_file</filename> has the same meaning, with one difference,
+                that it might take predefined value: 'standard' - basic receipt (receipt.html equivalent).
+                <filename>template_file</filename> option can be set to PHP file name, but this feature is meant for
+                advanced users as it requires you to create more complicated PHP script than the one used with html
+                receipts Smarty template.</para>
+        </sect3>
     </sect2>
     <sect2 id="install-documents-other">
 	<title>Other documents</title>

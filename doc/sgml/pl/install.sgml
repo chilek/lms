@@ -731,22 +731,19 @@ AddDefaultCharset Off
           </listitem>
           </itemizedlist>
 	  </para>
-         </sect3>
-	 <!-- jak kto¶ napisze to bêd± pdfowe ;)
-         <sect3 id="install-receipts-pdf">
-          <title>PDF</title>
-          <para>Mo¿liwe jest tak¿e tworzenie dowodów wp³aty jako plików pdf. Przypisanie
-          opcji <filename>type</filename> z sekcji <emphasis>[receipts]</emphasis> 
-          warto¶ci 'pdf' spowoduje, ¿e dowody zamiast w html'u bêd± tworzone jako pliki 
-          "portable data format". Opcja <filename>template_file</filename> spe³nia podobn± 
-	  rolê jak dla wydruków html'owych z tym, ¿e posiada predefiniowan± warto¶æ: 
-	  'standard' - wydruk podstawowy (odpowiednik receipt.html).
-	  W opcji <filename>template_file</filename> mo¿na tak¿e wstawiæ nazwê pliku php, 
-	  jednak ta mo¿liwo¶æ jest przeznaczona dla zaawansowanych u¿ytkowników, gdy¿ 
-	  wymaga utworzenia pliku php, a nie tak jak w przypadku html'a szablonu Smarty.</para>
-          </para>
-         </sect3>
-	 -->
+        </sect3>
+        <sect3 id="install-receipts-pdf">
+    	    <title>PDF</title>
+        	<para>Mo¿liwe jest tak¿e tworzenie dowodów wp³aty jako plików pdf. Przypisanie
+        	opcji <filename>type</filename> z sekcji <emphasis>[receipts]</emphasis> 
+        	warto¶ci 'pdf' spowoduje, ¿e dowody zamiast w html'u bêd± tworzone jako pliki 
+        	"portable data format". Opcja <filename>template_file</filename> spe³nia podobn± 
+		rolê jak dla wydruków html'owych z tym, ¿e posiada predefiniowan± warto¶æ: 
+		'standard' - wydruk podstawowy (odpowiednik receipt.html).
+		W opcji <filename>template_file</filename> mo¿na tak¿e wstawiæ nazwê pliku php, 
+		jednak ta mo¿liwo¶æ jest przeznaczona dla zaawansowanych u¿ytkowników, gdy¿ 
+		wymaga utworzenia pliku php, a nie tak jak w przypadku html'a szablonu Smarty.</para>
+        </sect3>
     </sect2>
     <sect2 id="install-documents-other">
 	<title>Dokumenty pozosta³e</title>
