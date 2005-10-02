@@ -50,7 +50,7 @@
 			<A HREF="?m=nodewarn&ownerid={$customernodes.ownerid}"><IMG SRC="img/warningoff.gif"> {t}Disable Warnings for All{/t}</A><BR>
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP VALIGN="BOTTOM" ALIGN="RIGHT">
-			{if $customerinfo.status eq "3" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customernodes.ownerid}">{t}New{/t} <IMG SRC="img/edit.gif" alt=""></A>{else}<FONT CLASS="BLEND">{t}New{/t} <IMG SRC="img/edit.gif" alt="">{/if}
+			{if $customerinfo.status eq "3" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{t}New{/t} <IMG SRC="img/edit.gif" alt=""></A>{else}<FONT CLASS="BLEND">{t}New{/t} <IMG SRC="img/edit.gif" alt="">{/if}
 		</TD>
 	</TR>
 </TABLE>
