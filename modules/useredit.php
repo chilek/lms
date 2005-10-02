@@ -81,7 +81,7 @@ elseif(isset($_POST['userdata']))
 	if($userdata['pin']!=0 && !eregi('^[0-9]{4,6}$',$userdata['pin']))
 		$error['pin'] = trans('Incorrect PIN code!');
 
-	if($userdata['status']!=3&&$LMS->GetUserNodesNo($userdata['id'])) 
+	if($userdata['status']!=3 && $LMS->GetUserNodesNo($userdata['id'])) 
 		$error['status'] = trans('Only customer with \'connected\' status can own computers!');
 		
 	if (!$error)
@@ -91,21 +91,22 @@ elseif(isset($_POST['userdata']))
 	}
 	else
 	{
-		$olddata=$LMS->GetUser($_GET['id']);
-		$userinfo=$userdata;
-		$userinfo['createdby']=$olddata['createdby'];
-		$userinfo['modifiedby']=$olddata['modifiedby'];
-		$userinfo['creationdateh']=$olddata['creationdateh'];
-		$userinfo['moddateh']=$olddata['moddateh'];
-		$userinfo['username']=$olddata['username'];
-		$userinfo['balance']=$olddata['balance'];
+		$olddata = $LMS->GetUser($_GET['id']);
+		$userinfo = $userdata;
+		$userinfo['createdby'] = $olddata['createdby'];
+		$userinfo['modifiedby'] = $olddata['modifiedby'];
+		$userinfo['creationdateh'] = $olddata['creationdateh'];
+		$userinfo['moddateh'] = $olddata['moddateh'];
+		$userinfo['username'] = $olddata['username'];
+		$userinfo['balance'] = $olddata['balance'];
 		if($olddata['status']==3)
 			$userinfo['shownodes'] = TRUE;
 		$SMARTY->assign('error',$error);
 	}
-}else{
-
-	$userinfo=$LMS->GetUser($_GET['id']);
+}
+else
+{
+	$userinfo = $LMS->GetUser($_GET['id']);
 	if($userinfo['status'] == 3)
 		$userinfo['shownodes'] = TRUE;
 }

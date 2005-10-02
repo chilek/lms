@@ -3,6 +3,7 @@ $Id$
 version ? (??/??/????):
 
   - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
+  - fixed 'New' link in usernodesbox.html called from '?m=useredit' (alec)
 
 version 1.6.4 Mala (25/09/2005):
 

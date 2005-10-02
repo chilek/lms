@@ -52,7 +52,7 @@
 			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}"><IMG SRC="img/warningoff.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disable Warnings for All{/t}</A><BR>
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP VALIGN="BOTTOM" ALIGN="RIGHT">
-			{if $userinfo.status eq "3" and ! $userinfo.deleted}<A HREF="?m=nodeadd&ownerid={$usernodes.ownerid}">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>{else}<FONT CLASS="BLEND">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE">{/if}
+			{if $userinfo.status eq "3" and ! $userinfo.deleted}<A HREF="?m=nodeadd&ownerid={$userinfo.id}">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>{else}<FONT CLASS="BLEND">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE">{/if}
 		</TD>
 	</TR>
 </TABLE>
