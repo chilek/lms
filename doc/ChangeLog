@@ -46,6 +46,7 @@ version ? (??/??/????):
   - on New Operation added last operation info with [Delete] link (alec)
   - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
   - cash receipts in pdf (alec)
+  - added public address for network devices IPs (alec)
     
 version 1.7.2 Doci (2005-08-13):
 

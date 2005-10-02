@@ -1,5 +1,6 @@
 <!-- $Id$ -->
-<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formaddip&id={$netdevinfo.id}"><INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$netdevinfo.id}">
+<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formaddip&id={$netdevinfo.id}">
+<INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$netdevinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -21,6 +22,17 @@
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]']);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Pub. IP address:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{$nodeipdata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]']);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

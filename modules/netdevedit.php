@@ -134,7 +134,19 @@ case 'formaddip':
 	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
 		$error['ipaddr'] = trans('Specified address does not belongs to any network!');
 	elseif(!$LMS->IsIPFree($nodeipdata['ipaddr']))
-		$error['ipaddr'] = trans('IP address is in use!');
+		$error['ipaddr'] = trans('Specified IP address is in use!');
+	
+	if($nodeipdata['ipaddr_pub']!='0.0.0.0' && $nodeipdata['ipaddr_pub']!='')
+	{
+		if(!check_ip($nodeipdata['ipaddr_pub']))
+	            	$error['ipaddr_pub'] = trans('Incorrect IP address!');
+	    	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr_pub']))
+	            	$error['ipaddr_pub'] = trans('Specified IP address does not belongs to any network!');
+		elseif(!$LMS->IsIPFree($nodeipdata['ipaddr_pub']))
+			$error['ipaddr_pub'] = trans('Specified IP address is in use!');
+	}
+	else
+		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
 
 	if($nodeipdata['mac']=='')
 		$error['mac'] = trans('MAC address is required!');
@@ -146,13 +158,13 @@ case 'formaddip':
 
 	if(!$error)
 	{
-		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
 		$nodeipdata['warning'] = 0;
 		$nodeipdata['passwd'] = '';
 		$nodeipdata['netdev'] = $_GET['id'];
 		$LMS->NodeAdd($nodeipdata);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
+	
 	$SMARTY->assign('nodeipdata',$nodeipdata); 
 	$edit='addip';
 	break;
@@ -160,7 +172,6 @@ case 'formaddip':
 case 'formeditip':
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid']=0;
-	$nodeipdata['netdev']=$_GET['id'];
 
 	$nodeipdata['mac'] = str_replace('-',':',$nodeipdata['mac']);
 	foreach($nodeipdata as $key => $value)
@@ -194,6 +205,25 @@ case 'formeditip':
 		$LMS->GetNodeIPByID($_GET['ip'])!=$nodeipdata['ipaddr']
 		)
 		$error['ipaddr'] = trans('IP address is in use!');
+
+	if($nodeipdata['ipaddr_pub']!='0.0.0.0' && $nodeipdata['ipaddr_pub']!='')
+	{
+		if(check_ip($nodeipdata['ipaddr_pub']))
+		{
+		        if($LMS->IsIPValid($nodeipdata['ipaddr_pub']))
+		        {
+		                $ip = $LMS->GetNodePubIPByID($nodeipdata['id']);
+		                if($ip!=$nodeipdata['ipaddr_pub'] && !$LMS->IsIPFree($nodeipdata['ipaddr_pub']))
+		                        $error['ipaddr_pub'] = trans('Specified IP address is in use!');
+		        }
+		        else
+		                $error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
+		}
+		else
+	    		$error['ipaddr_pub'] = trans('Incorrect IP address!');
+	}
+	else
+		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
 	
 	if($nodeipdata['mac']=='')
 		$error['mac'] =  trans('MAC address is required!');
@@ -205,15 +235,17 @@ case 'formeditip':
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']) && $LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata['mac'])
 			$error['mac'] = trans('MAC address is in use!');
 	
-	$nodeipdata['warning'] = 0;
-	$nodeipdata['passwd'] = '';
-
 	if(!$error)
 	{
-		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
+		$nodeipdata['warning'] = 0;
+		$nodeipdata['passwd'] = '';
+		$nodeipdata['netdev']=$_GET['id'];
+
 		$LMS->NodeUpdate($nodeipdata);	
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
+
+	$nodeipdata['ip_pub'] = $nodeipdata['ipaddr_pub'];
 	$SMARTY->assign('nodeipdata',$nodeipdata); 
 	$edit='ip';
 	break;
