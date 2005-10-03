@@ -392,9 +392,10 @@ class LMS
 			$cust_id=$this->DB->GetOne('SELECT MAX(id) FROM customers');
 			// Add Userpanel default rights
 			if($this->CONFIG['directories']['userpanel_dir'])
-				foreach($this->DB->GetCol('SELECT id FROM up_rights WHERE setdefault=1') as $right)
-					$this->DB->Execute('INSERT INTO up_rights_assignments(customerid, rightid) 
-						VALUES(?, ?)', array($cust_id, $right));
+				if($rights = $this->DB->GetCol('SELECT id FROM up_rights WHERE setdefault=1'))
+					foreach($rights as $right)
+						$this->DB->Execute('INSERT INTO up_rights_assignments(customerid, rightid) 
+								    VALUES(?, ?)', array($cust_id, $right));
 			return $cust_id;
 		} else
 			return FALSE;
