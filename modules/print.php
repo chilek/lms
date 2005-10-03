@@ -143,7 +143,7 @@ switch($type)
 		} else
 			$list['balance'] = 0;
 
-		if($list['total'])
+/*		if($list['total'])
 		{
 			foreach($list['value'] as $key => $value)
 				$list['value'][$key] = $value;
@@ -152,7 +152,7 @@ switch($type)
 			foreach($list['before'] as $key => $value)
 				$list['before'][$key] = $value;
 		}
-
+*/
 		$list['customerid'] = $id;
 		
 		$SMARTY->assign('balancelist', $list);
@@ -494,16 +494,73 @@ switch($type)
 		$SMARTY->display('printliabilityreport.html');
 	break;
 
+	case 'customertraffic': /******************************************/
+
+		$layout['pagetitle'] = trans('Stats of Customer $0 in month $1', $LMS->GetCustomerName($_POST['customer']), strftime('%B %Y', mktime(0,0,0,$_POST['month'],1,$_POST['year'])));
+	
+		$from = mktime(0,0,0,$_POST['month'],1,$_POST['year']);
+		$to = mktime(0,0,0,$_POST['month']+1,1,$_POST['year']);
+
+    		if($list = $DB->GetAll('SELECT download, upload, dt
+	                	    FROM stats
+				    LEFT JOIN nodes ON (nodeid = nodes.id)
+				    LEFT JOIN customers ON (ownerid = customers.id)
+				    WHERE customers.id = ? AND dt >= ? AND dt < ?',
+				    array($_POST['customer'], $from, $to)))
+		{
+			for($i=1; $i<date('t',$from); $i++)
+				$stats[$i]['date'] = mktime(0,0,0,$_POST['month'],$i,$_POST['year']); 
+				
+			foreach($list as $row)
+			{
+				$day = date('j', $row['dt']);
+				
+				$stats[$day]['download'] += $row['download'];
+				$stats[$day]['upload'] += $row['upload'];
+			}
+			
+			for($i=1; $i<date('t',$from); $i++)
+			{
+				$stats[$i]['upavg'] = $stats[$i]['upload']/86400;
+				$stats[$i]['downavg'] = $stats[$i]['download']/86400;
+				
+				$listdata['upload'] += $stats[$i]['upload'];
+				$listdata['download'] += $stats[$i]['download'];
+				$listdata['upavg'] += $stats[$i]['upavg'];
+				$listdata['downavg'] += $stats[$i]['downavg'];
+				
+				list($stats[$i]['upload'], $stats[$i]['uploadunit']) = setunits($stats[$i]['upload']);
+				list($stats[$i]['download'], $stats[$i]['downloadunit']) = setunits($stats[$i]['download']);
+				list($stats[$i]['upavg'], $stats[$i]['upavgunit']) = setunits($stats[$i]['upavg']);
+				list($stats[$i]['downavg'], $stats[$i]['downavgunit']) = setunits($stats[$i]['downavg']);
+			}
+			
+			list($listdata['upload'], $listdata['uploadunit']) = setunits($listdata['upload']);
+			list($listdata['download'], $listdata['downloadunit']) = setunits($listdata['download']);
+			list($listdata['upavg'], $listdata['upavgunit']) = setunits($listdata['upavg']);
+			list($listdata['downavg'], $listdata['downavgunit']) = setunits($listdata['downavg']);
+		}
+
+		$SMARTY->assign('stats', $stats);
+		$SMARTY->assign('listdata', $listdata);
+		$SMARTY->display('printcustomertraffic.html');
+	break;
+
 	default: /*******************************************************/
 	
 		$layout['pagetitle'] = trans('Printing');
 		
-		$yearstart = date('Y',$DB->GetOne('SELECT MIN(time) FROM cash'));
-		$yearend = date('Y',$DB->GetOne('SELECT MAX(time) FROM cash'));
+		$yearstart = date('Y',$DB->GetOne('SELECT MIN(dt) FROM stats'));
+		$yearend = date('Y',$DB->GetOne('SELECT MAX(dt) FROM stats'));
 		for($i=$yearstart; $i<$yearend+1; $i++)
-			$cashyears[] = $i;
+			$statyears[] = $i;
+		for($i=1; $i<13; $i++)
+			$months[$i] = strftime('%B', mktime(0,0,0,$i,1));
 		
-		$SMARTY->assign('cashyears', $cashyears);
+		$SMARTY->assign('currmonth', date('n'));
+		$SMARTY->assign('curryear', date('Y'));
+		$SMARTY->assign('statyears', $statyears);
+		$SMARTY->assign('months', $months);
 		$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());

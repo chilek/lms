@@ -371,6 +371,11 @@ $menu = array(
 					'link' => '?m=trafficdbcompact',
 					'tip' => trans('Compacting Database'),
 				),
+				array(
+					'name' => trans('Printing'),
+					'link' => '?m=print&menu=traffic',
+					'tip' => trans('Printing of customer stats'),
+				),
 			),
 		),
 
