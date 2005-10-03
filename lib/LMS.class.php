@@ -730,16 +730,6 @@ class LMS
 			$saldolist['total'] = 0;
 		}
 
-		if($saldolist['total'])
-		{
-			foreach($saldolist['value'] as $key => $value)
-				$saldolist['value'][$key] = $value;
-			foreach($saldolist['after'] as $key => $value)
-				$saldolist['after'][$key] = $value;
-			foreach($saldolist['before'] as $key => $value)
-				$saldolist['before'][$key] = $value;
-		}
-
 		$saldolist['customerid'] = $id;
 		return $saldolist;
 	}
