@@ -1,0 +1,78 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="99%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="96%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+			{t}Day{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+			{t}Download{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+			{t}Avg. download speed{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+			{t}Upload{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" NOWRAP>
+			{t}Avg. upload speed{/t}
+		</TD>
+	</TR>
+	{cycle values="white,grey" print=false}
+	{foreach from=$stats item=stat}
+	<TR class="{cycle}">
+		<TD ALIGN="LEFT" NOWRAP>
+			{$stat.date|date_format:"%Y/%m/%d (%A)"}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$stat.download|string_format:"%.2f"} {$stat.downloadunit}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$stat.downavg|string_format:"%.2f"} {$stat.downavgunit}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$stat.upload|string_format:"%.2f"} {$stat.uploadunit}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$stat.upavg|string_format:"%.2f"} {$stat.upavgunit}
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="5">
+			<P>&nbsp;</P>
+			<P><B>{t}No such stats for selected period.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/foreach}
+	<TR class="grey">
+		<TD ALIGN="RIGHT">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit}</B>
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			<B>{$listdata.downavg|string_format:"%.2f"} {$listdata.downavgunit}</B>
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit}</B>
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			<B>{$listdata.upavg|string_format:"%.2f"} {$listdata.upavgunit}</B>
+		</TD>
+	</TR>
+</TABLE>
