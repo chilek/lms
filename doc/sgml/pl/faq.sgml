@@ -125,5 +125,33 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 		</para>
 	    </answer>
 	</qandaentry>
+	<qandaentry>
+	    <question id="q10">
+	    	<para><emphasis role="bold">Jak wy¶wietliæ listê klientów bez przypisanej taryfy?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Mo¿na to zrobiæ przy pomocy nastêpuj±cego zapytania SQL:
+<screen>
+SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0 
+     AND (customerid IS NULL
+     OR NOT ((datefrom <= UNIX_TIMESTAMP() OR datefrom = 0) 
+     AND (dateto > UNIX_TIMESTAMP() OR dateto = 0)))
+</screen>
+i wersja dla PostgreSQLa:
+<screen>
+SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0 
+     AND (customerid IS NULL
+     OR NOT ((datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR datefrom = 0) 
+     AND (dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR dateto = 0)))
+</screen>
+		</para>
+	    </answer>
+	</qandaentry>
     </qandaset>
 </chapter>

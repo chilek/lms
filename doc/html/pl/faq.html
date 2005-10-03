@@ -172,6 +172,17 @@ CLASS="EMPHASIS"
 ></SPAN
 ></A
 ></DT
+><DT
+>9.10. <A
+HREF="faq.html#Q10"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak wy¶wietliæ listê klientów bez przypisanej taryfy?</B
+></SPAN
+></A
+></DT
 ></DL
 ><DIV
 CLASS="QANDAENTRY"
@@ -485,6 +496,54 @@ CLASS="ANSWER"
 		perla (man perlsec) w dziale "Cleaning Up Your Path". Najprostszym rozwi±zaniem jest
 		usuniêcie prze³±cznika -T (który odpowiada za to zamieszanie) z pierwszej 
 		linii skryptu.
+		</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q10"
+></A
+><B
+>9.10. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak wy¶wietliæ listê klientów bez przypisanej taryfy?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Mo¿na to zrobiæ przy pomocy nastêpuj±cego zapytania SQL:
+<PRE
+CLASS="SCREEN"
+>SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0 
+     AND (customerid IS NULL
+     OR NOT ((datefrom &#60;= UNIX_TIMESTAMP() OR datefrom = 0) 
+     AND (dateto &#62; UNIX_TIMESTAMP() OR dateto = 0)))</PRE
+>
+i wersja dla PostgreSQLa:
+<PRE
+CLASS="SCREEN"
+>SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0 
+     AND (customerid IS NULL
+     OR NOT ((datefrom &#60;= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR datefrom = 0) 
+     AND (dateto &#62; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR dateto = 0)))</PRE
+>
 		</P
 ></DIV
 ></DIV
