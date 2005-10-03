@@ -14989,6 +14989,17 @@ CLASS="EMPHASIS"
 ></SPAN
 ></A
 ></DT
+><DT
+>9.10. <A
+HREF="#Q10"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>How to get list of customers without assigned tariffs?</B
+></SPAN
+></A
+></DT
 ></DL
 ><DIV
 CLASS="QANDAENTRY"
@@ -15264,6 +15275,54 @@ CLASS="ANSWER"
 ><B
 > </B
 >Quoted error appears while you run Perl scripts that needs to use external programs on some systems. Problem description and possible solutions are described in Perl manual (man perlsec) in "Cleaning Up Your Path" chapter. Simplest solution is to remove -T switch, which is responsible for the error, from the first line of the script.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q10"
+></A
+><B
+>9.10. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>How to get list of customers without assigned tariffs?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>You can do this with following SQL query:
+<PRE
+CLASS="SCREEN"
+>SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0
+     AND (customerid IS NULL
+     OR NOT ((datefrom &#60;= UNIX_TIMESTAMP() OR datefrom = 0)
+     AND (dateto &#62; UNIX_TIMESTAMP() OR dateto = 0)))</PRE
+>
+and PostgreSQL version:
+<PRE
+CLASS="SCREEN"
+>SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0
+     AND (customerid IS NULL
+     OR NOT ((datefrom &#60;= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR datefrom = 0)
+     AND (dateto &#62; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR dateto = 0)))</PRE
+>
+        	</P
 ></DIV
 ></DIV
 ></DIV

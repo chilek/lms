@@ -5330,6 +5330,7 @@ Chapter 9. FAQ
    9.7. How to unsubscribe from the mailing list?
    9.8. What is a limit of network devices on the map?
    9.9. Insecure $ENV{BASH_ENV} while running -T switch...
+   9.10. How to get list of customers without assigned tariffs?
 
    9.1. My network device map does not show up. What to do?
 
@@ -5406,3 +5407,23 @@ $ cvs -z7 diff -u > /tmp/my_patch.patch
    solutions are described in Perl manual (man perlsec) in "Cleaning Up
    Your Path" chapter. Simplest solution is to remove -T switch, which is
    responsible for the error, from the first line of the script.
+
+   9.10. How to get list of customers without assigned tariffs?
+
+   You can do this with following SQL query:
+SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0
+     AND (customerid IS NULL
+     OR NOT ((datefrom <= UNIX_TIMESTAMP() OR datefrom = 0)
+     AND (dateto > UNIX_TIMESTAMP() OR dateto = 0)))
+
+   and PostgreSQL version:
+SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0
+     AND (customerid IS NULL
+     OR NOT ((datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR datefrom= 0)
+     AND (dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR dateto = 0)))

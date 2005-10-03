@@ -85,5 +85,33 @@ $ cvs -z7 diff -u > /tmp/my_patch.patch
 	        <para>Quoted error appears while you run Perl scripts that needs to use external programs on some systems. Problem description and possible solutions are described in Perl manual (man perlsec) in "Cleaning Up Your Path" chapter. Simplest solution is to remove -T switch, which is responsible for the error, from the first line of the script.</para>
 	    </answer>
 	</qandaentry>
+	<qandaentry>
+	    <question id="q10">
+		<para><emphasis role="bold">How to get list of customers without assigned tariffs?</emphasis></para>
+	    </question>
+	    <answer>
+		<para>You can do this with following SQL query:
+<screen>
+SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0
+     AND (customerid IS NULL
+     OR NOT ((datefrom <= UNIX_TIMESTAMP() OR datefrom = 0)
+     AND (dateto > UNIX_TIMESTAMP() OR dateto = 0)))
+</screen>
+and PostgreSQL version:
+<screen>
+SELECT customers.id, customers.lastname, customers.name
+FROM customers
+LEFT JOIN assignments ON customers.id = customerid
+WHERE deleted = 0
+     AND (customerid IS NULL
+     OR NOT ((datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR datefrom = 0)
+     AND (dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR dateto = 0)))
+</screen>
+        	</para>
+	    </answer>
+	</qandaentry>
     </qandaset>
 </chapter>
