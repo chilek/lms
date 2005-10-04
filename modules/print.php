@@ -508,7 +508,7 @@ switch($type)
 				    WHERE customers.id = ? AND dt >= ? AND dt < ?',
 				    array($_POST['customer'], $from, $to)))
 		{
-			for($i=1; $i<date('t',$from); $i++)
+			for($i=1; $i<=date('t',$from); $i++)
 				$stats[$i]['date'] = mktime(0,0,0,$_POST['month'],$i,$_POST['year']); 
 				
 			foreach($list as $row)
@@ -519,7 +519,7 @@ switch($type)
 				$stats[$day]['upload'] += $row['upload'];
 			}
 			
-			for($i=1; $i<date('t',$from); $i++)
+			for($i=1; $i<=date('t',$from); $i++)
 			{
 				$stats[$i]['upavg'] = $stats[$i]['upload']/86400;
 				$stats[$i]['downavg'] = $stats[$i]['download']/86400;
