@@ -40,13 +40,13 @@
 			{$stat.download|string_format:"%.2f"} {$stat.downloadunit}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$stat.downavg|string_format:"%.2f"} {$stat.downavgunit}
+			{$stat.downavg|string_format:"%.2f"} {$stat.downavgunit}/s
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.upload|string_format:"%.2f"} {$stat.uploadunit}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$stat.upavg|string_format:"%.2f"} {$stat.upavgunit}
+			{$stat.upavg|string_format:"%.2f"} {$stat.upavgunit}/s
 		</TD>
 	</TR>
 	{foreachelse}
@@ -66,13 +66,13 @@
 			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.downavg|string_format:"%.2f"} {$listdata.downavgunit}</B>
+			<B>{$listdata.downavg|string_format:"%.2f"} {$listdata.downavgunit}/s</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upavg|string_format:"%.2f"} {$listdata.upavgunit}</B>
+			<B>{$listdata.upavg|string_format:"%.2f"} {$listdata.upavgunit}/s</B>
 		</TD>
 	</TR>
 </TABLE>
