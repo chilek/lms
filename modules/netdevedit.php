@@ -141,7 +141,7 @@ case 'formaddip':
 		if(!check_ip($nodeipdata['ipaddr_pub']))
 	            	$error['ipaddr_pub'] = trans('Incorrect IP address!');
 	    	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr_pub']))
-	            	$error['ipaddr_pub'] = trans('Specified IP address does not belongs to any network!');
+	            	$error['ipaddr_pub'] = trans('Specified address does not belongs to any network!');
 		elseif(!$LMS->IsIPFree($nodeipdata['ipaddr_pub']))
 			$error['ipaddr_pub'] = trans('Specified IP address is in use!');
 	}
@@ -217,7 +217,7 @@ case 'formeditip':
 		                        $error['ipaddr_pub'] = trans('Specified IP address is in use!');
 		        }
 		        else
-		                $error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
+		                $error['ipaddr_pub'] = trans('Specified IP address does not belongs to any network!');
 		}
 		else
 	    		$error['ipaddr_pub'] = trans('Incorrect IP address!');
