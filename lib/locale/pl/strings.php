@@ -1574,5 +1574,16 @@ $_LANG['last $0 documents'] = 'Ostatnie $0 documentów';
 $_LANG['Last operation:'] = 'Ostatnia operacja:';
 $_LANG['Limit of records displayed on one page in documents list. Default: 100.'] = 'Limit rekordów na jednej stronie listy dokumentów. Domyślnie: 100.';
 $_LANG['See all documents'] = 'Pokaż wszystkie dokumenty';
+$_LANG['Avg. download speed'] = 'Śr. prędkość downloadu';
+$_LANG['Avg. upload speed'] = 'Śr. prędkość uploadu';
+$_LANG['Day'] = 'Dzień';
+$_LANG['Documents type. You can use "html" or "pdf". Default: html.'] = 'Typ dokumentów. Możesz użyć "html" lub "pdf". Domyślnie: html.';
+$_LANG['Month:'] = 'Miesiąc:';
+$_LANG['No such stats for selected period.'] = 'Brak statystyk w wybranym okresie.';
+$_LANG['Printing of customer stats'] = 'Drukowanie statystyk klienta';
+$_LANG['Receipts'] = 'Potwierdzenia';
+$_LANG['Select period'] = 'Wybierz okres';
+$_LANG['Stats of Customer $0 in month $1'] = 'Statystyki klienta $0 za miesiąc $1';
+$_LANG['Year:'] = 'Rok:';
 
 ?>
