@@ -36,6 +36,9 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function LMSDB_driver_mysql($dbhost, $dbuser, $dbpasswd, $dbname)
 	{
+		if(!extension_loaded('mysql'))
+		        die('MySQL extension not loaded!');
+	
 		$this->_version .= ' (core: '.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).' / driver: '.$this->_dbtype.' '.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 	}

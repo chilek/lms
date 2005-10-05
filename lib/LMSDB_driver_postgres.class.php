@@ -35,6 +35,9 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function LMSDB_driver_postgres($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
+		if(!extension_loaded('pgsql'))
+			die('PostgreSQL extension not loaded!');
+
 		$this->_version .= ' (core: '.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).' / driver: '.$this->_dbtype.' '.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
 		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
