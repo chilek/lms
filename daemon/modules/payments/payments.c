@@ -126,8 +126,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 	QueryHandle *res, *result, *sres;
 	unsigned char *insert;
 	unsigned char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
-	unsigned char *description;
-	int i, invoiceid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
+	unsigned char *description, *invoiceid;
+	int i, docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
@@ -320,29 +320,30 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 					// ma³e uproszczenie w stosunku do lms-payments
 					result = g->db_query(g->conn, "SELECT MAX(id) AS id FROM documents WHERE type = 1");
-					invoiceid = (g->db_nrows(result) ? atoi(g->db_get_data(result,0,"id")) : 0);
+					docid = g->db_nrows(result) ? atoi(g->db_get_data(result,0,"id")) : 0;
 					g->db_free(&result);
 					itemid = 0;
 				}
 				
-				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND docid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description);
+				invoiceid = strdup(itoa(docid));
+				
+				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND docid = ? AND description = '?' AND value = ?", g->db_get_data(res,i,"tariffid"), invoiceid, description, value);
 
 				if( g->db_nrows(result) ) 
 				{
-					g->db_pexec(g->conn, "UPDATE invoicecontents SET count=count+1 WHERE tariffid = ? AND docid = ? AND description = '?'",
-						g->db_get_data(res,i,"tariffid"),
-						itoa(invoiceid),
-						description
+					g->db_pexec(g->conn, "UPDATE invoicecontents SET count = count+1 WHERE docid = ? AND itemid = ?",
+						invoiceid,
+						g->db_get_data(result,0,"itemid")
 						);
 					
-					exec = g->db_pexec(g->conn, "UPDATE cash SET value=value+? WHERE docid=? AND itemid=?",value, itoa(invoiceid), g->db_get_data(result,0,"itemid"));
+					exec = g->db_pexec(g->conn, "UPDATE cash SET value = value + (? * -1) WHERE docid = ? AND itemid = ?", value, invoiceid, g->db_get_data(result,0,"itemid"));
 				}
 				else 
 				{
 					itemid++;
-
+					
 					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
-						itoa(invoiceid),
+						invoiceid,
 						itoa(itemid),
 						value,
 						taxid,
@@ -351,11 +352,13 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(res,i,"tariffid")
 						);
 					
-					g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
+					g->str_replace(&insert, "%invoiceid", invoiceid);
 					g->str_replace(&insert, "%itemid", itoa(itemid));
 					exec = g->db_pexec(g->conn, insert, description);
 				}
+				
 				g->db_free(&result);
+				free(invoiceid);
 			} 
 			else 
 			{
