@@ -278,7 +278,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$gotinv{$uid} = $irow->{'id'};
 			}
 			
-			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description=?");
+			my $icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'} AND invoiceid=$gotinv{$uid} AND description=?");
 			$icdbq->execute($desc);
 			
 			if(my $icrow = $icdbq->fetchrow_hashref())
