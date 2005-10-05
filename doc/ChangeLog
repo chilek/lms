@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.7.3 Inubis (2005-10-05):
 
   - contrib/customer: removed directories checking (alec)
   - changed access right definition for LMS configuration (alec)
@@ -48,6 +48,8 @@ version ? (??/??/????):
   - cash receipts in pdf (alec)
   - added public address for network devices IPs (alec)
   - added customer's traffic raport - Stats -> Printing (alec)
+  - BTS#0000453: lms-payments fixed problem with discount (alec)
+  - BTS#0000453: lmsd/payments: fixed problem with discount and itemid (alec)
     
 version 1.7.2 Doci (2005-08-13):
 
