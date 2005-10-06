@@ -142,7 +142,7 @@ print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('messages', 'networks') || '';
 my $customergroups_list = $ini->val('messages', 'customergroups') || '';
-my $cfile = $ini->val('messages', 'config_file') || '/etc/rc.d/rc.warnings';
+my $cfile = $ini->val('messages', 'config_file') || '/etc/rc.d/rc.messages';
 my $cuid = $ini->val('messages', 'config_owneruid') || '0';
 my $cgid = $ini->val('messages', 'config_ownergid') || '0';
 my $cperm = $ini->val('messages', 'config_permission') || '700';
