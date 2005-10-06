@@ -149,7 +149,6 @@ my $cperm = $ini->val('messages', 'config_permission') || '700';
 my $redir = $ini->val('messages', 'redirect_address') || '127.0.0.1:80';
 my $ipbin = $ini->val('messages', 'iptables_binary') || '/sbin/iptables';
 my $chain = $ini->val('messages', 'chain') || 'MESSAGES';
-my $limit = $ini->val('messages', 'limit') || '0';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
