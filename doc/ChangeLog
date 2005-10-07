@@ -7,6 +7,7 @@ version ? (??/??/????):
   - BTS#0000453: fixed problem with discount in lms-payments and 
 		 lmsd/payments (alec)
   - fixed 'New' link in usernodesbox.html called from '?m=useredit' (alec)
+  - fixed summary description on balance list printout (alec)
 
 version 1.6.4 Mala (25/09/2005):
 
