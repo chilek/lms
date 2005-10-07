@@ -3,6 +3,7 @@ $Id$
 version ? (??/??/????):
 
   - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
+  - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
   - BTS#0000453: fixed problem with discount in lms-payments and 
 		 lmsd/payments (alec)
   - fixed 'New' link in usernodesbox.html called from '?m=useredit' (alec)
