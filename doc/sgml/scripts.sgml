@@ -450,11 +450,11 @@ include all networks.</para>
 		    <para>Example:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
     		<listitem>
-		    <para>usergroups</para>
+		    <para>customergroups</para>
 		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all customer groups.</para>
-		    <para>Example:	<prompt>usergroups = group1 group2</prompt></para>
+		    <para>Example:	<prompt>customergroups = group1 group2</prompt></para>
 		</listitem>
     		<listitem>
 		    <para>default_lease_time</para>
@@ -711,11 +711,11 @@ include all networks.</para>
 		    <para>Example:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
         	<listitem>
-		    <para>usergroups </para>
+		    <para>customergroups </para>
 		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</para>
-		    <para>Example:	<prompt>usergroups = settlement1 settlement2</prompt></para>
+		    <para>Example:	<prompt>customergroups = settlement1 settlement2</prompt></para>
 		</listitem>
            	<listitem>
 		    <para>iptables_binary</para>
@@ -779,11 +779,11 @@ include all networks.</para>
 		    <para>Example:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
         	<listitem>
-		    <para>usergroups </para>
+		    <para>customergroups </para>
 		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</para>
-		    <para>Example:	<prompt>usergroups = settlement1 settlement2</prompt></para>
+		    <para>Example:	<prompt>customergroups = settlement1 settlement2</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>config_owneruid</para>
@@ -830,11 +830,11 @@ include all networks.</para>
 		    <para>Example:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
         	<listitem>
-		    <para>usergroups </para>
+		    <para>customergroups </para>
 		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</para>
-		    <para>Example:	<prompt>usergroups = settlement1 settlement2</prompt></para>
+		    <para>Example:	<prompt>customergroups = settlement1 settlement2</prompt></para>
 		</listitem>
            	<listitem>
 		    <para>iptables_binary</para>
@@ -901,11 +901,11 @@ include all networks.</para>
 		    <para>Example:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
         	<listitem>
-		    <para>usergroups </para>
+		    <para>customergroups </para>
 		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</para>
-		    <para>Example:	<prompt>usergroups = settlement1 settlement2</prompt></para>
+		    <para>Example:	<prompt>customergroups = settlement1 settlement2</prompt></para>
 		</listitem>
            	<listitem>
 		    <para>iptables_binary</para>
