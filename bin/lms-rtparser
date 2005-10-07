@@ -135,6 +135,7 @@ my $entity = $parser->parse(\*STDIN);
 my $headers = $entity->head;
 my $mh_from = $headers->get('From');
 my $mh_to = $headers->get('To');
+my $mh_cc = $headers->get('Cc');
 my $mh_msgid = $headers->get('Message-ID');
 my $mh_replyto = $headers->get('Reply-To');
 my $mh_subject = $headers->get('Subject');
@@ -175,6 +176,7 @@ else
 
 chomp $mh_from;
 chomp $mh_to;
+chomp $mh_cc;
 chomp $mh_subject;
 chomp $mh_msgid;
 chomp $mailbody;
@@ -197,6 +199,8 @@ $mh_from =~ s/\\/\\\\/g;
 $mh_from =~ s/\'/\\\'/g;
 $mh_to =~ s/\\/\\\\/g;
 $mh_to =~ s/\'/\\\'/g;
+$mh_cc =~ s/\\/\\\\/g;
+$mh_cc =~ s/\'/\\\'/g;
 $mh_msgid =~ s/\\/\\\\/g;
 $mh_msgid =~ s/\'/\\\'/g;
 $mh_subject =~ s/\\/\\\\/g;
@@ -308,13 +312,15 @@ my $fromemail = $mh_from;
 $fromemail =~ s/^.*<(.+\@.+)>$/\1/g;
 my $toemail = $mh_to;
 $toemail =~ s/^.*<(.+\@.+)>$/\1/g;
+my $toemail2 = $mh_cc;
+$toemail2 =~ s/^.*<(.+\@.+)>$/\1/g;
 
 if(! $prev_tid) # generate new ticket if previous not found
 {
 	# find queue ID if not specified
 	if(!$queue)
 	{
-		$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = '$toemail'");
+		$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = '$toemail' OR email = '$toemail2'");
 		$dbq->execute();
 		if(my $row = $dbq->fetchrow_hashref())
 		{
