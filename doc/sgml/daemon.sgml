@@ -533,10 +533,10 @@
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
-                   <para>usergroups</para>
+                   <para>customergroups</para>
                    <para>List of customers groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
+                   <para>Example: <prompt>customergroups = "group1 group2"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
@@ -623,10 +623,10 @@
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
-                   <para>usergroups</para>
+                   <para>customergroups</para>
                    <para>List of customer group names which members should be included in config
                    (case insensitive). Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
+                   <para>Example: <prompt>customergroups = "group1 group2"</prompt></para>
                </listitem>
                <listitem>
                    <para>skip_dev_ips</para>
@@ -872,10 +872,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
-                   <para>usergroups</para>
+                   <para>customergroups</para>
                    <para>List of customer groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
+                   <para>Example: <prompt>customergroups = "group1 group2"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
@@ -977,10 +977,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
-                   <para>usergroups</para>
+                   <para>customergroups</para>
                    <para>List of customer (user) groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
+                   <para>Example: <prompt>customergroups = "group1 group2"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
@@ -1020,10 +1020,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
-                   <para>usergroups</para>
+                   <para>customergroups</para>
                    <para>List of customer groups names that should be included in configuration (case insensitive).
                    Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
+                   <para>Example: <prompt>customergroups = "group1 group2"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>

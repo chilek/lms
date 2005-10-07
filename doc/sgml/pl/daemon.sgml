@@ -548,10 +548,10 @@
 			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
 			</listitem>
 			<listitem>
-			    <para>usergroups</para>
+			    <para>customergroups</para>
 			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
-			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+			    <para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
@@ -640,10 +640,10 @@
 			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
 			</listitem>
 			<listitem>
-			    <para>usergroups</para>
+			    <para>customergroups</para>
 			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
-			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+			    <para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>skip_dev_ips</para>
@@ -700,7 +700,7 @@
 		    </sect3>
 		    <sect3 id="tc-config">
 		    <title>Konfiguracja</title>
-		    <para>Masz do dyspozycji standardowe parametry takie jak usergroups, file,
+		    <para>Masz do dyspozycji standardowe parametry takie jak customergroups, file,
 		    command, networks i dodatkowo opcje definiuj±ce tre¶æ regu³ek tc i firewalla.
 		    Domy¶lna konfiguracja przeznaczona jest dla ³±cz 512/128 kbit i 100mbit.</para>
 		    <itemizedlist>
@@ -893,10 +893,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
 			</listitem>
 			<listitem>
-			    <para>usergroups</para>
+			    <para>customergroups</para>
 			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
-			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+			    <para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
@@ -998,10 +998,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
 			</listitem>
 			<listitem>
-			    <para>usergroups</para>
+			    <para>custmergroups</para>
 			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
-			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+			    <para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
@@ -1041,10 +1041,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
 			</listitem>
 			<listitem>
-			    <para>usergroups</para>
+			    <para>customergroups</para>
 			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
-			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+			    <para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>

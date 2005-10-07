@@ -3,6 +3,8 @@ $Id$
 version ? (????-??-??):
 
   - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
+  - BTS#0000455: documentation fixed options names 
+    usergroups -> customergroups (alec)
 
 version 1.7.3 Inubis (2005-10-05):
 

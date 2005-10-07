@@ -453,10 +453,10 @@ http://www.naszasiec.pl/</screen></example>
 		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
     		<listitem>
-		    <para>usergroups</para>
+		    <para>customergroups</para>
 		    <para>Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
 		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich grup.</para>
-		    <para>Przyk³ad:	<prompt>usergroups = grupa1 grupa2</prompt></para>
+		    <para>Przyk³ad:	<prompt>customergroups = grupa1 grupa2</prompt></para>
 		</listitem>
     		<listitem>
 		    <para>default_lease_time</para>
@@ -705,10 +705,10 @@ wins    = 213.25.209.10</screen>
 		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
         	<listitem>
-		    <para>usergroups </para>
+		    <para>customergroups </para>
 		    <para>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
 		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</para>
-		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		    <para>Przyk³ad:	<prompt>customergroups = osiedle1 osiedle2</prompt></para>
 		</listitem>
            	<listitem>
 		    <para>iptables_binary</para>
@@ -767,10 +767,10 @@ wins    = 213.25.209.10</screen>
 		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
         	<listitem>
-		    <para>usergroups </para>
+		    <para>customergroups </para>
 		    <para>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
 		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</para>
-		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		    <para>Przyk³ad:	<prompt>customergroups = osiedle1 osiedle2</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>config_owneruid</para>
@@ -815,10 +815,10 @@ wins    = 213.25.209.10</screen>
 		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
         	<listitem>
-		    <para>usergroups </para>
+		    <para>customergroups </para>
 		    <para>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
 		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</para>
-		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		    <para>Przyk³ad:	<prompt>customergroups = osiedle1 osiedle2</prompt></para>
 		</listitem>
            	<listitem>
 		    <para>iptables_binary</para>
@@ -878,10 +878,10 @@ wins    = 213.25.209.10</screen>
 		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
 		</listitem>
         	<listitem>
-		    <para>usergroups </para>
+		    <para>customergroups </para>
 		    <para>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
 		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</para>
-		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		    <para>Przyk³ad:	<prompt>customergroups = osiedle1 osiedle2</prompt></para>
 		</listitem>
            	<listitem>
 		    <para>iptables_binary</para>
