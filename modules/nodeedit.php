@@ -176,6 +176,7 @@ $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 $documents = $LMS->GetDocuments($ownerid, 10);
 $netdevices = $LMS->GetNetDevNames();
+$taxeslist = $LMS->GetTaxes();
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
@@ -188,6 +189,7 @@ $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->assign('customers',$customers);
 $SMARTY->assign('documents', $documents);
+$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('nodeedit.html');
 
 ?>

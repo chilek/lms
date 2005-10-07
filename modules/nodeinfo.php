@@ -60,6 +60,7 @@ $assignments = $LMS->GetCustomerAssignments($ownerid);
 $documents = $LMS->GetDocuments($ownerid, 10);
 $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
+$taxeslist = $LMS->GetTaxes();
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -81,6 +82,7 @@ $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('customergroups',$customergroups);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
 $SMARTY->assign('documents', $documents);
+$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->display('nodeinfo.html');
 

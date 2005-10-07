@@ -143,7 +143,6 @@ if(isset($_GET['prename']) && $nodedata['name']=='')
 
 $layout['pagetitle'] = trans('New Node');
 
-$tariffs = $LMS->GetTariffs();
 $customers = $LMS->GetCustomerNames();
 
 if($nodedata['ownerid'])
@@ -152,10 +151,15 @@ if($nodedata['ownerid'])
 	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($nodedata['ownerid']));
 	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($nodedata['ownerid']));
 	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($nodedata['ownerid']));
+	$documents = $LMS->GetDocuments($nodedata['ownerid'], 10);
+	$taxeslist = $LMS->GetTaxes();
+	$tariffs = $LMS->GetTariffs();
 }
 
 $SMARTY->assign('netdevices',$LMS->GetNetDevNames());
 $SMARTY->assign('tariffs',$tariffs);
+$SMARTY->assign('taxeslist',$taxeslist);
+$SMARTY->assign('documents',$documents);
 $SMARTY->assign('customers',$customers);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('customerinfo',$customerinfo);
