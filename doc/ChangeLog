@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
+
 version 1.7.3 Inubis (2005-10-05):
 
   - contrib/customer: removed directories checking (alec)
