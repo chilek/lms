@@ -26,6 +26,7 @@
 
 $DB->BeginTrans();
 
+$DB->Execute("UPDATE cash SET customerid = 0 WHERE type = 1 OR type = 2");
 $DB->Execute("UPDATE cash SET value = -value WHERE type = 4 OR type = 2");
 $DB->Execute("ALTER TABLE cash DROP COLUMN type");
 
