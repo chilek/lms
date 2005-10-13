@@ -43,7 +43,6 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 		unsigned char *name;
 		unsigned char *mac;
 		unsigned long ipaddr;
-		int ispublic;
 	} *hosts = NULL;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
@@ -131,7 +130,6 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				hosts[nh].name = strdup(name);
 				hosts[nh].mac = strdup(mac);
 				hosts[nh].ipaddr = inet_addr(ipaddr);
-				hosts[nh].ispublic = 0;
 				nh++;
 				
 				if(atoi(ipaddr_pub))
@@ -140,7 +138,6 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 					hosts[nh].name = g->str_concat(name, "_pub");
 					hosts[nh].mac = strdup(mac);
 					hosts[nh].ipaddr = inet_addr(ipaddr_pub);
-					hosts[nh].ispublic = 1;
 					nh++;
 				}
 			}
