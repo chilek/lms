@@ -137,7 +137,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				if(atoi(ipaddr_pub))
 				{
 				        hosts = (struct hostcache*) realloc(hosts, sizeof(struct hostcache) * (nh + 1));
-					hosts[nh].name = strdup(name);
+					hosts[nh].name = g->str_concat(name, "_pub");
 					hosts[nh].mac = strdup(mac);
 					hosts[nh].ipaddr = inet_addr(ipaddr_pub);
 					nh++;

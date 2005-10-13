@@ -5,9 +5,11 @@ version ? (??/??/????):
   - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
   - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
   - BTS#0000453: fixed problem with discount in lms-payments and 
-		 lmsd/payments (alec)
+    lmsd/payments (alec)
   - fixed 'New' link in usernodesbox.html called from '?m=useredit' (alec)
   - fixed summary description on balance list printout (alec)
+  - lmsd/dhcp: fixed public IP's problem - using hostnames with suffix 
+    "_pub" (alec)
 
 version 1.6.4 Mala (25/09/2005):
 
