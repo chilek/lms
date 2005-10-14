@@ -46,8 +46,8 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 		$net = $LMS->GetNetworkParams($network);
 	
 	if($emails = $DB->GetAll('SELECT customers.id AS id, email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, pin, '
-		.'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance '
-		.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid AND (type=3 OR type=4)) '
+		.'COALESCE(SUM(value), 0.00) AS balance '
+		.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid) '
 		.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
 		.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 		.' WHERE deleted = '.$deleted
@@ -169,7 +169,7 @@ if(isset($_POST['mailing']))
 				if(!(strpos($body,'%last_10_in_a_table') === FALSE))
 				{
 					$last10 = '';
-					if($last10_array = $DB->GetAll('SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value 
+					if($last10_array = $DB->GetAll('SELECT comment, time, value 
 						FROM cash WHERE customerid = ?
 						ORDER BY time DESC LIMIT 10', array($row['id'])))
 						foreach($last10_array as $r)
