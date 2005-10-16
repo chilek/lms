@@ -42,6 +42,8 @@ extern const char* TSCRIPT_AST_CONV;
 extern const char* TSCRIPT_AST_TYPEOF;
 extern const char* TSCRIPT_AST_EXT;
 extern const char* TSCRIPT_AST_CONST;
+extern const char* TSCRIPT_AST_BREAK;
+extern const char* TSCRIPT_AST_CONTINUE;
 
 typedef struct tscript_ast_node
 {
@@ -55,6 +57,7 @@ typedef struct tscript_ast_node
 	Value object is not duplicated.
 **/
 tscript_ast_node* tscript_ast_node_val(const char* type, tscript_value* val);
+tscript_ast_node* tscript_ast_node_0(const char* type);
 tscript_ast_node* tscript_ast_node_1(const char* type, tscript_ast_node* child);
 tscript_ast_node* tscript_ast_node_2(const char* type, tscript_ast_node* child1,
 	tscript_ast_node* child2);
