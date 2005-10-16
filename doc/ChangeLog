@@ -6,6 +6,8 @@ version ? (????-??-??):
   - BTS#0000455: documentation fixed options names 
     usergroups -> customergroups (alec)
   - lmsd/dhcp: fixed problem with hosts with public IP (alec)
+  - lmsd/parser: updated tscript library - added "break" and "continue"
+    instructions in "for" and "while" loops (alec)
 
 version 1.7.3 Inubis (2005-10-05):
 

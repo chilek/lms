@@ -1,19 +1,33 @@
-/*
-
-T-Script - Interpreter
-Copyright (C) 2004, Adrian Smarzewski <adrian@kadu.net>
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-*/
+/****************************************************************************
+**
+** T-Script - Interpreter
+** Copyright (C) 2004-2005, SILVERCODERS Adrian Smarzewski
+** http://silvercoders.com
+**
+** Project homepage: http://silvercoders.com/index.php?page=T_Script
+** Project authors:  Adrian Smarzewski
+**
+** This program may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file COPYING.GPL included in the
+** packaging of this file.
+**
+** Please remember that any attempt to workaround the GNU General Public
+** License using wrappers, pipes, client/server protocols, and so on
+** is considered as license violation. If your program, published on license
+** other than GNU General Public License version 2, calls some part of this
+** code directly or indirectly, you have to buy commerial license.
+** If you do not like our point of view, simply do not use the product.
+**
+** Licensees holding valid commercial license for this product
+** may use this file in accordance with the license published by
+** Silvercoders and appearing in the file COPYING.COM
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+**
+*****************************************************************************/
 
 #include "tscript_interpreter.h"
 #include <string.h>
@@ -43,9 +57,53 @@ static tscript_value* tscript_match_regexp(char* str, char* regexp)
 		return tscript_value_create_error("unknown regexp error");
 }
 
-// returns new, created value
-static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_ast_node* ast)
+#define interprete_arg_1()						\
+	tmp1 = tscript_interprete_sub(context, ast->children[0],	\
+		&sub_status);						\
+	if (tmp1->type == TSCRIPT_TYPE_ERROR)				\
+		return tmp1
+
+#define interprete_arg_2()						\
+	tmp2 = tscript_interprete_sub(context, ast->children[1],	\
+		&sub_status);						\
+	if (tmp2->type == TSCRIPT_TYPE_ERROR)				\
+	{								\
+		tscript_value_free(tmp1);				\
+		return tmp2;						\
+	}
+
+#define interprete_2_args()						\
+	interprete_arg_1();						\
+	interprete_arg_2();
+
+#define interprete_arg_1_der()						\
+	interprete_arg_1();						\
+	tmp1_der = tscript_value_dereference(tmp1)
+
+#define interprete_arg_2_der()						\
+	interprete_arg_2();						\
+	tmp2_der = tscript_value_dereference(tmp2)
+
+#define interprete_2_args_der()						\
+	interprete_arg_1_der();						\
+	interprete_arg_2_der();
+
+#define free_2_args()							\
+	tscript_value_free(tmp1);					\
+	tscript_value_free(tmp2)
+
+typedef enum interprete_status
 {
+	STATUS_NORMAL,
+	STATUS_BREAK,
+	STATUS_CONTINUE
+} interprete_status;
+
+// returns new, created value
+static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_ast_node* ast,
+	interprete_status* status)
+{
+	interprete_status sub_status;
 	tscript_value* res;
 	tscript_value* tmp1;
 	tscript_value* tmp2;
@@ -56,34 +114,26 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	double tmp1_num;
 	int i;
 
+	tscript_debug(context, "Interpretting %s\n", ast->type);
+	*status = STATUS_NORMAL;
+
 	if (ast->type == TSCRIPT_AST_VALUE)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_VAR_VALUE\n");
 		res = tscript_value_duplicate(ast->value);
 		tscript_debug(context, "Value: %s\n", tscript_value_as_string(ast->value));
-		tscript_debug(context, "Interpreted TSCRIPT_AST_VAR_VALUE\n");
 	}
 	else if (ast->type == TSCRIPT_AST_VAR_GET)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_VAR_GET\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp1_der = tscript_value_dereference(tmp1);
+		interprete_arg_1_der();
 		res = tscript_value_create_reference(
 			tscript_variable_get_reference(context, tscript_value_as_string(tmp1_der)));
 		tscript_value_free(tmp1);
-		tscript_debug(context, "Interpreted TSCRIPT_AST_VAR_GET\n");
 	}
 	else if (ast->type == TSCRIPT_AST_VAR_SET)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_VAR_SET\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
+		interprete_2_args();
 		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
+		if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
 			res = tscript_value_create_error("you can only assign to reference!");
 		else
 		{
@@ -94,17 +144,13 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tscript_value_free(tmp1);
 			tscript_debug(context, "Assigned\n");
 			res = tscript_value_create_string("");
-			tscript_debug(context, "Interpreted TSCRIPT_AST_VAR_SET\n");
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_INC)
 	{
 		double tmp;
-		tscript_debug(context, "Interpretting TSCRIPT_AST_INC\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
+		interprete_arg_1();
+		if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
 			res = tscript_value_create_error("reference expected!");
 		else if ((*tmp1->reference_data)->type != TSCRIPT_TYPE_NUMBER)
 			res = tscript_value_create_error("number type expected!");
@@ -118,17 +164,13 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			*tmp1->reference_data = tscript_value_create_number(tmp);
 			tscript_value_free(tmp1);
 			tscript_debug(context, "Incremented\n");
-			tscript_debug(context, "Interpreted TSCRIPT_AST_INC\n");
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_DEC)
 	{
 		double tmp;
-		tscript_debug(context, "Interpretting TSCRIPT_AST_DEC\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
+		interprete_arg_1();
+		if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
 			res = tscript_value_create_error("reference expected!");
 		else if ((*tmp1->reference_data)->type != TSCRIPT_TYPE_NUMBER)
 			res = tscript_value_create_error("number type expected!");
@@ -142,17 +184,13 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			*tmp1->reference_data = tscript_value_create_number(tmp);
 			tscript_value_free(tmp1);
 			tscript_debug(context, "Decremented\n");
-			tscript_debug(context, "Interpreted TSCRIPT_AST_DEC\n");
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_UN_INC)
 	{
 		double tmp;
-		tscript_debug(context, "Interpretting TSCRIPT_AST_UN_INC\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
+		interprete_arg_1();
+		if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
 			res = tscript_value_create_error("reference expected!");
 		else if ((*tmp1->reference_data)->type != TSCRIPT_TYPE_NUMBER)
 			res = tscript_value_create_error("number type expected!");
@@ -166,17 +204,13 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tscript_value_duplicate(*tmp1->reference_data);
 			tscript_value_free(tmp1);
 			tscript_debug(context, "Incremented\n");
-			tscript_debug(context, "Interpreted TSCRIPT_AST_UN_INC\n");
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_UN_DEC)
 	{
 		double tmp;
-		tscript_debug(context, "Interpretting TSCRIPT_AST_UN_DEC\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
+		interprete_arg_1();
+		if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
 			res = tscript_value_create_error("reference expected!");
 		else if ((*tmp1->reference_data)->type != TSCRIPT_TYPE_NUMBER)
 			res = tscript_value_create_error("number type expected!");
@@ -190,20 +224,13 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tscript_value_duplicate(*tmp1->reference_data);
 			tscript_value_free(tmp1);
 			tscript_debug(context, "Incremented\n");
-			tscript_debug(context, "Interpreted TSCRIPT_AST_UN_DEC\n");
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_INDEX)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_VAR_INDEX\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
+		interprete_2_args();
 		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else if (tmp1->type != TSCRIPT_TYPE_ARRAY && tmp1->type != TSCRIPT_TYPE_REFERENCE)
+		if (tmp1->type != TSCRIPT_TYPE_ARRAY && tmp1->type != TSCRIPT_TYPE_REFERENCE)
 		{
 			res = tscript_value_create_error(
 				"Indexed symbol must be array or reference");
@@ -225,399 +252,180 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 						&tmp1,
 						tmp2_der));
 			}
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-			tscript_debug(context, "Interpreted TSCRIPT_AST_VAR_INDEX\n");
+			free_2_args();
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_SUBVAR)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_SUBVAR\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
+		interprete_2_args();
 		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
+		tmp2 = tscript_value_convert_to_string(tmp2_der);
+		if (tmp1->type == TSCRIPT_TYPE_REFERENCE)
+		{
+			tscript_debug(context, "Left value is a reference, returning reference to subvariable\n");
+			res = tscript_value_create_reference(
+				tscript_value_subvar_ref(*tmp1->reference_data, tscript_value_as_string(tmp2_der)));
+		}
 		else
 		{
-			tmp2 = tscript_value_convert_to_string(tmp2_der);
-			if (tmp1->type == TSCRIPT_TYPE_REFERENCE)
-			{
-				tscript_debug(context, "Left value is a reference, returning reference to subvariable\n");
-				res = tscript_value_create_reference(
-					tscript_value_subvar_ref(*tmp1->reference_data, tscript_value_as_string(tmp2_der)));
-			}
-			else
-			{
-				tscript_debug(context, "Left value is not a reference, returning copy of subvariable\n");
-				res = tscript_value_duplicate(
-					*tscript_value_subvar_ref(tmp1, tscript_value_as_string(tmp2_der)));
-			}
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-			tscript_debug(context, "Interpreted TSCRIPT_AST_SUBVAR\n");
+			tscript_debug(context, "Left value is not a reference, returning copy of subvariable\n");
+			res = tscript_value_duplicate(
+				*tscript_value_subvar_ref(tmp1, tscript_value_as_string(tmp2_der)));
 		}
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_EQUALS)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_compare(tmp1_der, tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_compare(tmp1_der, tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_DIFFERS)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				!tscript_value_compare(tmp1_der, tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			!tscript_value_compare(tmp1_der, tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_LESS)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_as_number(tmp1_der) < tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_as_number(tmp1_der) < tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_GREATER)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_as_number(tmp1_der) > tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_as_number(tmp1_der) > tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_EQUALS_LESS)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_as_number(tmp1_der) <= tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_as_number(tmp1_der) <= tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_EQUALS_GREATER)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_as_number(tmp1_der) >= tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_as_number(tmp1_der) >= tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_NOT)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_NOT\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else
-		{
-			res = tscript_value_create_number((!tscript_value_as_number(tmp1_der)));
-			tscript_value_free(tmp1);
-		}
-		tscript_debug(context, "Interpreted TSCRIPT_AST_NOT\n");
+		interprete_arg_1_der();
+		res = tscript_value_create_number((!tscript_value_as_number(tmp1_der)));
+		tscript_value_free(tmp1);
 	}
 	else if (ast->type == TSCRIPT_AST_NEG)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_NEG\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else
-		{
-			res = tscript_value_create_number(-tscript_value_as_number(tmp1_der));
-			tscript_value_free(tmp1);
-		}
-		tscript_debug(context, "Interpreted TSCRIPT_AST_NEG\n");
+		interprete_arg_1_der();
+		res = tscript_value_create_number(-tscript_value_as_number(tmp1_der));
+		tscript_value_free(tmp1);
 	}
 	else if (ast->type == TSCRIPT_AST_OR)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_as_number(tmp1_der) || tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_as_number(tmp1_der) || tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_AND)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_as_number(tmp1_der) && tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_as_number(tmp1_der) && tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_BAND)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_BAND\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				(long)tscript_value_as_number(tmp1_der) & (long)tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
-		tscript_debug(context, "Interpreted TSCRIPT_AST_BAND\n");
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			(long)tscript_value_as_number(tmp1_der) & (long)tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_BOR)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_BOR\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				(long)tscript_value_as_number(tmp1_der) | (long)tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
-		tscript_debug(context, "Interpreted TSCRIPT_AST_BOR\n");
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			(long)tscript_value_as_number(tmp1_der) | (long)tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_LEFT)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_LEFT\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				(long)tscript_value_as_number(tmp1_der) << (long)tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
-		tscript_debug(context, "Interpreted TSCRIPT_AST_LEFT\n");
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			(long)tscript_value_as_number(tmp1_der) << (long)tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_RIGHT)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_RIGHT\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				(long)tscript_value_as_number(tmp1_der) >> (long)tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
-		tscript_debug(context, "Interpreted TSCRIPT_AST_RIGHT\n");
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			(long)tscript_value_as_number(tmp1_der) >> (long)tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_PLUS)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_add(tmp1_der, tmp2_der);
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_add(tmp1_der, tmp2_der);
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_MINUS)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_as_number(tmp1_der) - tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_as_number(tmp1_der) - tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_MUL)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number(
-				tscript_value_as_number(tmp1_der) * tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number(
+			tscript_value_as_number(tmp1_der) * tscript_value_as_number(tmp2_der));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_DIV)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else if (tscript_value_as_number(tmp2) == 0)
+		interprete_2_args_der();
+		if (tscript_value_as_number(tmp2) == 0)
 			res = tscript_value_create_error("Division by zero!");
 		else
 		{
 			res = tscript_value_create_number(
 				tscript_value_as_number(tmp1_der) / tscript_value_as_number(tmp2_der));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
+			free_2_args();
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_MOD)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			res = tscript_value_create_number((double)((int)tscript_value_as_number(tmp1_der) % (int)tscript_value_as_number(tmp2_der)));
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-		}
+		interprete_2_args_der();
+		res = tscript_value_create_number((double)((int)tscript_value_as_number(tmp1_der) % (int)tscript_value_as_number(tmp2_der)));
+		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_IF)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
+		interprete_arg_1();
 		if (tscript_value_as_number(tscript_value_dereference(tmp1)))
 		{
-			tmp2 = tscript_interprete_sub(context, ast->children[1]);
+			tmp2 = tscript_interprete_sub(context, ast->children[1], &sub_status);
 			res = tscript_value_duplicate(
 				tscript_value_dereference(tmp2));
 			tscript_value_free(tmp2);
+			*status = sub_status;
 		}
 		else if(ast->children[2] != NULL)
 		{
-			tmp2 = tscript_interprete_sub(context, ast->children[2]);
+			tmp2 = tscript_interprete_sub(context, ast->children[2], &sub_status);
 			res = tscript_value_duplicate(
 				tscript_value_dereference(tmp2));
 			tscript_value_free(tmp2);
+			*status = sub_status;
 		}
 		else
 			res = tscript_value_create_string("");
@@ -628,75 +436,75 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		res = tscript_value_create_string("");
 		for (;;)
 		{
-			tmp1 = tscript_interprete_sub(context, ast->children[0]);
-			tmp1_der = tscript_value_dereference(tmp1);
+			interprete_arg_1_der();
 			tmp1_num = tscript_value_as_number(tmp1_der);
 			tscript_value_free(tmp1);
 			if (!tmp1_num)
 				break;
-			tmp1 = tscript_interprete_sub(context, ast->children[1]);
+			tmp1 = tscript_interprete_sub(context, ast->children[1], &sub_status);
 			tmp1_der = tscript_value_dereference(tmp1);
 			tmp2 = tscript_value_add(res, tmp1_der);
 			tscript_value_free(res);
 			tscript_value_free(tmp1);
 			res = tmp2;
+			if (sub_status == STATUS_BREAK)
+				break;
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_FOR)
 	{
-		tscript_value_free(tscript_interprete_sub(context, ast->children[0]));
+		tscript_value_free(tscript_interprete_sub(context, ast->children[0],
+			&sub_status));
 		res = tscript_value_create_string("");
 		for (;;)
 		{
-			tmp1 = tscript_interprete_sub(context, ast->children[1]);
+			tmp1 = tscript_interprete_sub(context, ast->children[1], &sub_status);
 			tmp1_der = tscript_value_dereference(tmp1);
 			tmp1_num = tscript_value_as_number(tmp1_der);
 			tscript_value_free(tmp1);
 			if (!tmp1_num)
 				break;
-			tmp1 = tscript_interprete_sub(context, ast->children[3]);
+			tmp1 = tscript_interprete_sub(context, ast->children[3], &sub_status);
 			tmp1_der = tscript_value_dereference(tmp1);
 			tmp2 = tscript_value_add(res, tmp1_der);
 			tscript_value_free(res);
 			tscript_value_free(tmp1);
 			res = tmp2;
-			tscript_value_free(tscript_interprete_sub(context, ast->children[2]));
+			if (sub_status == STATUS_BREAK)
+				break;
+			tscript_value_free(tscript_interprete_sub(context, ast->children[2],
+				&sub_status));
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_SEQ)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_SEQ\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
+		interprete_arg_1_der();
+		tmp1_str = tscript_value_convert_to_string(tmp1_der);
+		if (sub_status != STATUS_NORMAL)
 		{
-			tmp1_str = tscript_value_convert_to_string(tmp1_der);
-			tmp2_str = tscript_value_convert_to_string(tmp2_der);
 			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-			res = tscript_value_add(tmp1_str, tmp2_str);
-			tscript_value_free(tmp1_str);
-			tscript_value_free(tmp2_str);
-			tscript_debug(context, "Interpreted TSCRIPT_AST_SEQ\n");
+			*status = sub_status;
+			return tmp1_str;
 		}
+		interprete_arg_2_der();
+		tmp2_str = tscript_value_convert_to_string(tmp2_der);
+		free_2_args();
+		res = tscript_value_add(tmp1_str, tmp2_str);
+		tscript_value_free(tmp1_str);
+		tscript_value_free(tmp2_str);
+		*status = sub_status;
 	}
 	else if (ast->type == TSCRIPT_AST_ARGS)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_ARGS\n");
 		if (ast->children[1] == NULL)
-			res = tscript_interprete_sub(context, ast->children[0]);
+			res = tscript_interprete_sub(context, ast->children[0], &sub_status);
 		else
 		{
 			res = tscript_value_create_array();
 			for (i = 0; ast->children[i] != NULL; i++)
 			{
-				tmp1 = tscript_interprete_sub(context, ast->children[i]);
+				tmp1 = tscript_interprete_sub(context, ast->children[i],
+					&sub_status);
 				if (tmp1->type == TSCRIPT_TYPE_ERROR)
 				{
 					tscript_value_free(res);
@@ -708,15 +516,11 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 				tscript_value_free(tmp2);
 			}
 		}
-		tscript_debug(context, "Interpreted TSCRIPT_AST_ARGS\n");
 	}
 	else if (ast->type == TSCRIPT_AST_CONV)
 	{
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (ast->value->type == TSCRIPT_TYPE_STRING)
+		interprete_arg_1_der();
+		if (ast->value->type == TSCRIPT_TYPE_STRING)
 		{
 			res = tscript_value_convert_to_string(tmp1_der);
 			tscript_value_free(tmp1);
@@ -731,25 +535,19 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	}
 	else if (ast->type == TSCRIPT_AST_TYPEOF)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_TYPEOF\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
+		tmp1 = tscript_interprete_sub(context, ast->children[0], &sub_status);
 		res = tscript_value_type_string(tmp1);
 		tscript_value_free(tmp1);
-		tscript_debug(context, "Interpreted TSCRIPT_AST_TYPEOF\n");
 	}
 	else if (ast->type == TSCRIPT_AST_EXT)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_EXT\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
+		interprete_arg_1_der();
 		if (ast->children[1] == NULL)
 			tmp2 = tscript_value_create_null();
 		else
-			tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
+			tmp2 = tscript_interprete_sub(context, ast->children[1], &sub_status);
 		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
+		if (tmp2->type == TSCRIPT_TYPE_ERROR)
 			res = tmp2;
 		else
 		{
@@ -760,63 +558,52 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			res = tscript_run_extension(context, tscript_value_as_string(tmp1_str), tmp2_der);
 			tscript_value_free(tmp1_str);
 			tscript_value_free(tmp2_str);
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-			tscript_debug(context, "Interpreted TSCRIPT_AST_EXT\n");
+			free_2_args();
 		}
 	}
 	else if (ast->type == TSCRIPT_AST_CONST)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_CONST\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else
-		{
-			tmp1_str = tscript_value_convert_to_string(tmp1_der);
-			tscript_value_free(tmp1);
-			tscript_debug(context, "Constant name: %s\n", tscript_value_as_string(tmp1_str));
-			res = tscript_run_constant(context, tscript_value_as_string(tmp1_str));
-			tscript_value_free(tmp1_str);
-			tscript_debug(context, "Interpreted TSCRIPT_AST_CONST\n");
-		}
+		interprete_arg_1_der();
+		tmp1_str = tscript_value_convert_to_string(tmp1_der);
+		tscript_value_free(tmp1);
+		tscript_debug(context, "Constant name: %s\n", tscript_value_as_string(tmp1_str));
+		res = tscript_run_constant(context, tscript_value_as_string(tmp1_str));
+		tscript_value_free(tmp1_str);
 	}
 	else if (ast->type == TSCRIPT_AST_MATCH)
 	{
-		tscript_debug(context, "Interpretting TSCRIPT_AST_MATCH\n");
-		tmp1 = tscript_interprete_sub(context, ast->children[0]);
-		tmp2 = tscript_interprete_sub(context, ast->children[1]);
-		tmp1_der = tscript_value_dereference(tmp1);
-		tmp2_der = tscript_value_dereference(tmp2);
-		if (tmp1->type == TSCRIPT_TYPE_ERROR)
-			res = tmp1;
-		else if (tmp2->type == TSCRIPT_TYPE_ERROR)
-			res = tmp2;
-		else
-		{
-			tmp1_str = tscript_value_convert_to_string(tmp1_der);
-			tmp2_str = tscript_value_convert_to_string(tmp2_der);
-			tscript_value_free(tmp1);
-			tscript_value_free(tmp2);
-			tscript_debug(context, "Value to match: %s\n", tscript_value_as_string(tmp1_str));
-			tscript_debug(context, "Regular expression: %s\n",tscript_value_as_string(tmp2_str));
-			res = tscript_match_regexp(tscript_value_as_string(tmp1_str), tscript_value_as_string(tmp2_str));
-			tscript_value_free(tmp1_str);
-			tscript_value_free(tmp2_str);
-			tscript_debug(context, "Interpreted TSCRIPT_AST_MATCH\n");
-		}
+		interprete_2_args_der();
+		tmp1_str = tscript_value_convert_to_string(tmp1_der);
+		tmp2_str = tscript_value_convert_to_string(tmp2_der);
+		free_2_args();
+		tscript_debug(context, "Value to match: %s\n", tscript_value_as_string(tmp1_str));
+		tscript_debug(context, "Regular expression: %s\n",tscript_value_as_string(tmp2_str));
+		res = tscript_match_regexp(tscript_value_as_string(tmp1_str), tscript_value_as_string(tmp2_str));
+		tscript_value_free(tmp1_str);
+		tscript_value_free(tmp2_str);
+	}
+	else if (ast->type == TSCRIPT_AST_BREAK)
+	{
+		res = tscript_value_create_string("");
+		*status = STATUS_BREAK;
+	}
+	else if (ast->type == TSCRIPT_AST_CONTINUE)
+	{
+		res = tscript_value_create_string("");
+		*status = STATUS_CONTINUE;
 	}
 	else
 		tscript_internal_error("Internal error: incorrect node type!\n");
+	tscript_debug(context, "Interpreted %s\n", ast->type);
 	return res;
 }
 
 tscript_value* tscript_interprete(tscript_context* context)
 {
+	interprete_status sub_status;
 	tscript_value* res;
 	tscript_debug(context, "Interpretting\n");
-	res = tscript_interprete_sub(context, context->ast);
+	res = tscript_interprete_sub(context, context->ast, &sub_status);
 	tscript_debug(context, "Interpreted\n");
 	return res;
 }
