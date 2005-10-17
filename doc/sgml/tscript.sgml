@@ -167,6 +167,30 @@ a doesn't equal 1
 		    the nested statement(s), execution will not stop until the end of the iteration.</para>
 		    <para>Example: <prompt>while ( expression ) statement /while</prompt></para>
 		</listitem>
+                <listitem>
+                    <para><prompt>break</prompt>. This command ends execution of the current 
+		    loop structure.</para>
+                    <para>Example:
+<screen>
+{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{break}{/if}\
+: {i}
+{/for}\
+</screen></para>
+                </listitem>
+                <listitem>
+                    <para><prompt>continue</prompt>. <prompt>continue</prompt> is used
+		    within looping structures to skip the rest of the current loop 
+		    iteration and continue execution at the condition evaluation and 
+		    then the beginning of the next iteration.</para>
+                    <para>Example:
+<screen>
+{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{continue}{/if}\
+: {i}
+{/for}\
+</screen></para>
+		</listitem>
 	    </itemizedlist>
 	    </sect3>
 	    <sect3 id="functions">
