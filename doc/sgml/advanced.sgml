@@ -200,6 +200,7 @@
                <simplelist>
                     <member>id - serial number</member>
                     <member>time - timestamp of operation</member>
+		    <member>type - type of operation (1 cash, 0 non-cash)</member>
                     <member>userid - LMS user id</member>
                     <member>value - amount in dollars</member>
                     <member>taxid - tax rate identifier</member>

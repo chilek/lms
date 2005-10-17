@@ -141,8 +141,8 @@ switch($_GET['action'])
 				$iid++;
 				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description)
 					    VALUES(?,?,?,?)', array($rid, $iid, $item['value'], $item['description']));
-				$DB->Execute('INSERT INTO cash (time, docid, itemid, value, comment, userid, customerid)
-					    VALUES(?, ?, ?, ?, ?, ?, ?)', 
+				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
+					    VALUES(?, 1, ?, ?, ?, ?, ?, ?)', 
 					    array($receipt['cdate'],
 						$rid, 
 						$iid, 

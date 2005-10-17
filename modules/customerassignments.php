@@ -31,7 +31,7 @@ if(! $LMS->CustomerExists($_GET['id']))
 
 if($_GET['action'] == 'delete')
 {
-	$LMS->DeleteAssignment($_GET['aid'],$_GET['balance']);
+	$LMS->DeleteAssignment($_GET['aid']);
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 

@@ -1248,7 +1248,7 @@ class LMS
 		return $assignments;
 	}
 
-	function DeleteAssignment($id,$balance = FALSE)
+	function DeleteAssignment($id)
 	{
 		$this->SetTS('assignments');
 		return $this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
@@ -1624,11 +1624,12 @@ class LMS
 		$this->SetTS('cash');
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
 
-		return $this->DB->Execute('INSERT INTO cash (time, userid, value, taxid, customerid, comment, docid, itemid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+		return $this->DB->Execute('INSERT INTO cash (time, userid, value, type, taxid, customerid, comment, docid, itemid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array($addbalance['time'] ? $addbalance['time'] : time(),
 					    $addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id,
 					    $addbalance['value'],
+					    $addbalance['type'] ? $addbalance['type'] : 0,
 					    $addbalance['taxid'] ? $addbalance['taxid'] : 0,
 					    $addbalance['customerid'],
 					    $addbalance['comment'],
@@ -1656,7 +1657,7 @@ class LMS
 
 	function GetBalanceList()
 	{
-		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, cash.customerid AS customerid, comment, docid, taxid,
+		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, cash.customerid AS customerid, comment, docid, taxid, cash.type AS type,
 						    documents.type AS doctype, documents.closed AS closed
 						    FROM cash
 						    LEFT JOIN documents ON (documents.id = docid)
@@ -1677,12 +1678,12 @@ class LMS
 
 				if($row['customerid'])
 				{
-					if($row['value'] < 0)
+					if($row['type'] == 0)
 					{
 						// customer covenant
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
 						$balancelist[$idx]['covenant'] = true;
-						$balancelist['uinvoice'] += -$row['value'];
+						$balancelist['uinvoice'] -= $row['value'];
 						$balancelist[$idx]['value'] *= -1;
 					}
 					else

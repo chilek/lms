@@ -67,6 +67,7 @@ DROP TABLE IF EXISTS cash;
 CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
   time int(11) NOT NULL default '0',
+  type smallint NOT NULL default '0',
   userid int(11) NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
   taxid int(11) NOT NULL default '0',
