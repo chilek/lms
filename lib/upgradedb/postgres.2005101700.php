@@ -48,8 +48,8 @@ else
 }
 
 // "type" values after change: 
-// 0 - cash operations
-// 1 - non-cash operations
+// 1 - cash operations e.g. payments
+// 0 - non-cash operations e.g. invoices
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005101700', 'dbversion'));
 
