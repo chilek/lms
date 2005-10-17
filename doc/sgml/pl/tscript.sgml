@@ -169,6 +169,29 @@ a nie równa siê 1
 					przerwane a¿ do jej zakoñczenia.</para>
 					<para>Przyk³ad: <screen>while ( wyra¿enie ) polecenie /while</screen></para>
 				</listitem>
+				<listitem>
+					<para><prompt>break</prompt>. Polecenie to koñczy wykonywanie
+					aktualnej instrukcji pêtli.</para>
+					<para>Przyk³ad: 
+<screen>
+{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{break}{/if}\
+: {i}
+{/for}\
+</screen></para>
+				</listitem>
+				<listitem>
+					<para><prompt>continue</prompt>. Polecenie <prompt>continue</prompt>
+					u¿ywane jest wewn±trz instrukcji pêtli do przerwania wykonania
+					danej iteracji pêtli i rozpoczêcia kolejnej iteracji.</para>
+					<para>Przyk³ad: 
+<screen>
+{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{continue}{/if}\
+: {i}
+{/for}\
+</screen></para>
+				</listitem>
 			</itemizedlist>
 		</sect3>
 		<sect3 id="functions">
