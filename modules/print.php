@@ -143,16 +143,6 @@ switch($type)
 		} else
 			$list['balance'] = 0;
 
-/*		if($list['total'])
-		{
-			foreach($list['value'] as $key => $value)
-				$list['value'][$key] = $value;
-			foreach($list['after'] as $key => $value)
-				$list['after'][$key] = $value;
-			foreach($list['before'] as $key => $value)
-				$list['before'][$key] = $value;
-		}
-*/
 		$list['customerid'] = $id;
 		
 		$SMARTY->assign('balancelist', $list);
@@ -263,9 +253,9 @@ switch($type)
 		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		
 		if($date['from'])
-			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN customerid!=0 AND value<0 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
+			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN customerid!=0 AND type=0 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
 		
-		if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, userid, cash.value AS value, taxes.label AS taxlabel, customerid, comment 
+		if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, userid, cash.value AS value, taxes.label AS taxlabel, customerid, comment, cash.type AS type
 			    FROM cash LEFT JOIN taxes ON (taxid = taxes.id)
 			    WHERE time>=? AND time<=? ORDER BY time ASC', array($date['from'], $date['to'])))
 		{
@@ -289,7 +279,7 @@ switch($type)
 
 				if($row['customerid'])
 				{
-					if($row['value'] < 0)
+					if($row['type']==0)
 	        			{
 		                		// customer covenant
 				                $list[$x]['after'] = $lastafter;
@@ -348,9 +338,8 @@ switch($type)
 		$layout['pagetitle'] = trans('Total Invoiceless Income ($0 to $1)',($from ? $from : ''), $to);
 		
 		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
-			FROM cash LEFT JOIN documents ON (docid = documents.id)
-			WHERE value>0 AND time>=? AND time<=?
-			AND docid=0
+			FROM cash
+			WHERE value>0 AND time>=? AND time<=? AND docid=0
 			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));
 

@@ -8,6 +8,10 @@ version ? (????-??-??):
   - lmsd/dhcp: fixed problem with hosts with public IP (alec)
   - lmsd/parser: updated tscript library - added "break" and "continue"
     instructions in "for" and "while" loops (alec)
+  - added "type" in cash table to handle some operation types 
+    (cash, non-cash) - it fixes network balance calculations for
+    backward compatybility and lost in 2005092900 database upgrade 
+    additional functionality (alec)
 
 version 1.7.3 Inubis (2005-10-05):
 

@@ -204,6 +204,7 @@
                <simplelist>
                     <member>id - identyfikator</member>
                     <member>time - znacznik czasu zaksiêgowania operacji</member>
+		    <member>type - typ operacji (1-gotówkowa, 0-bezgotówkowa)</member>
                     <member>userid - identyfikator u¿ytkownika dokonuj±cego operacji</member>
                     <member>value - warto¶æ w z³otych</member>
                     <member>taxid - identyfikator stawki podatkowej</member>
