@@ -133,7 +133,7 @@
 				</TR>
 				{/section}
 				<TR class="light">
-					<TD CLASS="ftop" ALIGN="left" colspan="6" width="6%">
+					<TD CLASS="ftop" ALIGN="left" colspan="6">
 						<nobr>
 						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
@@ -142,13 +142,13 @@
 						<INPUT type="checkbox" class="box light" name="copy"> {t}copy{/t}
 						</nobr>
 					</TD>
-					<TD CLASS="ftop" ALIGN="right" COLSPAN="2" width="94%">
+					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
 						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 				<TR class="light">
-					<INPUT TYPE="hidden" NAME="addbalance[customerid]" VALUE="{$balancelist.customerid}">
 					<TD class="ftop">
+						<INPUT TYPE="hidden" NAME="addbalance[customerid]" VALUE="{$balancelist.customerid}">
 						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
 					</TD>
 					<TD class="ftop">
@@ -157,7 +157,7 @@
 					<TD class="ftop">
 						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>
 					</TD>
-					<TD class="ftop" colspan="2">
+					<TD class="ftop" colspan="2" width="1%">
 						<SELECT SIZE="1" name="addbalance[taxid]" {tip text="Select Tax value"}>
 						{foreach item=tax from=$taxeslist}
 							<OPTION value="{$tax.id}"{if $tax.value==$_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
@@ -165,7 +165,7 @@
 						</SELECT>
 					</TD>
 					<TD class="ftop" nowrap>
-						<INPUT TYPE="checkbox" align="left" name="addbalance[type]" value="1" {tip text="Select type of operation"} CHECKED> {t}cash{/t}
+						<INPUT TYPE="checkbox" align="left" name="addbalance[type]" value="1" class="box light" {tip text="Select type of operation"} CHECKED> {t}cash{/t}
 					</TD>
 					<TD class="ftop" colspan="2">
 						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
@@ -177,7 +177,7 @@
 						<A href="?m=customerbalanceok&id={$customerinfo.id}" OnClick="return confirmLink(this, '{t 0=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" alt=""></A>
 						{/if}
 					</TD>
-					<TD align="right" colspan="6">
+					<TD align="right" colspan="5">
 						<A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 					</TD>
 			</TABLE>
