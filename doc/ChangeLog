@@ -13,7 +13,7 @@ version ? (????-??-??):
     backward compatybility and lost in 2005092900 database upgrade 
     additional functionality (alec)
   - contrib/sqlpanel: design fixes (alec)
-  - forms can be submitted by Enter (lukasz)
+  - forms can be submitted by Enter (lukas)
 
 version 1.7.3 Inubis (2005-10-05):
 
