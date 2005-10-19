@@ -493,8 +493,7 @@ switch($type)
     		if($list = $DB->GetAll('SELECT download, upload, dt
 	                	    FROM stats
 				    LEFT JOIN nodes ON (nodeid = nodes.id)
-				    LEFT JOIN customers ON (ownerid = customers.id)
-				    WHERE customers.id = ? AND dt >= ? AND dt < ?',
+				    WHERE ownerid = ? AND dt >= ? AND dt < ?',
 				    array($_POST['customer'], $from, $to)))
 		{
 			for($i=1; $i<=date('t',$from); $i++)
