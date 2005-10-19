@@ -1220,6 +1220,7 @@ $_LANG['Select ticket status'] = 'Wybierz status zgłoszenia';
 $_LANG['Select ticket uptime'] = 'Wybierz czas zgłoszenia';
 $_LANG['Select time of'] = 'Wybierz czas';
 $_LANG['Select time period to account liability'] = 'Wybierz okres czasu dla naliczania zobowiązania';
+$_LANG['Select type of operation'] = 'Wybierz typ operacji';
 $_LANG['- select user -'] = '- wybierz użytkownika -';
 $_LANG['select user'] = 'wybierz użytkownika';
 $_LANG['Select user'] = 'Wybierz użytkownika';

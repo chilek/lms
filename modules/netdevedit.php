@@ -217,7 +217,7 @@ case 'formeditip':
 		                        $error['ipaddr_pub'] = trans('Specified IP address is in use!');
 		        }
 		        else
-		                $error['ipaddr_pub'] = trans('Specified IP address does not belongs to any network!');
+		                $error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
 		}
 		else
 	    		$error['ipaddr_pub'] = trans('Incorrect IP address!');
