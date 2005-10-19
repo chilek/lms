@@ -39,6 +39,7 @@
 {/if}
 {if !$emptydb}
 <P ALIGN="CENTER"><FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
+	<INPUT type="submit" class="hiddenbtn">
 	{t}Start map from:{/t}
 	<INPUT TYPE="hidden" NAME="m" VALUE="netdevmap">
 	<SELECT SIZE="1" NAME="start" onChange="document.x.submit();">

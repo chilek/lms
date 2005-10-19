@@ -2,6 +2,7 @@
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
 <P><FORM method="POST" name="message" action="?m=rtmessageadd" enctype="multipart/form-data">
+<INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
 <INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">

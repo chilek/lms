@@ -20,6 +20,7 @@
 </script>		
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
@@ -202,6 +203,7 @@
 	</TR>
 	{/if}
 	<FORM METHOD="POST" ACTION="?m=invoicenew&action=additem" NAME="additem">
+	<INPUT type="submit" class="hiddenbtn">
 	<INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
 	<TR CLASS="light">
 		<TD CLASS="ftl" WIDTH="1%" NOWRAP>

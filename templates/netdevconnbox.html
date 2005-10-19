@@ -56,6 +56,7 @@
 			<B>{t}No such devices for connection.{/t}</B>
 			{else}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
+			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">

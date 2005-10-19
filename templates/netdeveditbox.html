@@ -1,6 +1,7 @@
 <!-- $Id$ -->
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
+	<INPUT type="submit" class="hiddenbtn">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
 			<IMG SRC="img/netdev.gif" ALT="">
@@ -89,6 +90,7 @@
 		<TD WIDTH="100%" CLASS="fall" COLSPAN=4 ALIGN="center">
 			{if $replacelisttotal>1}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
+			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
