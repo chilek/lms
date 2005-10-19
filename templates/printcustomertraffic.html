@@ -63,16 +63,16 @@
 			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit}</B>
+			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.downavg|string_format:"%.2f"} {$listdata.downavgunit}/s</B>
+			<B>{$listdata.downavg|string_format:"%.2f"} {$listdata.downavgunit|default:"KB"}/s</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit}</B>
+			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upavg|string_format:"%.2f"} {$listdata.upavgunit}/s</B>
+			<B>{$listdata.upavg|string_format:"%.2f"} {$listdata.upavgunit|default:"KB"}/s</B>
 		</TD>
 	</TR>
 </TABLE>
