@@ -12,6 +12,7 @@ version ? (????-??-??):
     (cash, non-cash) - it fixes network balance calculations for
     backward compatybility and lost in 2005092900 database upgrade 
     additional functionality (alec)
+  - contrib/sqlpanel: design fixes (alec)
 
 version 1.7.3 Inubis (2005-10-05):
 

@@ -71,14 +71,18 @@ if($query = $_POST['query'])
 				$colnames[] = mysql_field_name($LMS->DB->_result, $i);
 		break;
 		}
-
+		
+		if($_GET['print'])
+			$classes = array(0 => 'grey', 1 => 'white');
+		else
+			$classes = array(0 => 'light', 1 => 'lucid');
 		$i = 0;
 		while($row = $LMS->DB->_driver_fetchrow_assoc())
 		{
 			$i++;
 			if ( $i > $start && $i < ($start+$pagelimit+1) )
 			{
-				$result .= '<TR CLASS="LIGHT"><TD CLASS="BLEND">'.$i.'</TD>';
+				$result .= '<TR CLASS="'.$classes[$i%2].'"><TD CLASS="BLEND">'.$i.'</TD>';
 				foreach($colnames as $column)	
 				{
 					$result .= '<TD>'.nl2br(htmlspecialchars($row[$column])).'</TD>';
