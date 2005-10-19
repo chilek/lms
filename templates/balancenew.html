@@ -167,6 +167,7 @@
 					</TD>
 				</TR>
 				{/if}
+				{if $last.comment}
 				<TR CLASS="LIGHT">
 					<TD WIDTH="1%" class="FLEFT">
 						<IMG SRC="img/info1.gif" ALT="">
@@ -178,6 +179,7 @@
 						<TEXTAREA rows="5" cols="50">{$last.comment|replace:"\n":"<BR>"}</TEXTAREA>
 					</TD>
 				</TR>
+				{/if}
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
 						<A HREF="?m=balancedel&id={$last.id}" ACCESSKEY="d" >{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
