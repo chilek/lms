@@ -3,7 +3,8 @@
 {include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
 {if $printmenu=="customers" || !$printmenu}
-<P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=print&type=customerlist" target="_blank">	
+<P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=print&type=customerlist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">	
 <TABLE width="100%" cellpadding="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -91,6 +92,7 @@ cal12.time_comp = false;
 {/if}
 {if $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -148,6 +150,7 @@ cal2.time_comp = false;
 {/if}
 {if $printmenu=="incomereport" || $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -191,6 +194,7 @@ cal6.time_comp = false;
 {/if}
 {if $printmenu=="customers" || $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -261,6 +265,7 @@ cal7.time_comp = false;
 {/if}
 {if $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -308,6 +313,7 @@ cal9.time_comp = false;
 {/if}
 {if $printmenu=="customers" || $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -364,6 +370,7 @@ cal4.time_comp = false;
 {/if}
 {if $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
 {literal}
 <SCRIPT language=JavaScript>
     <!--
@@ -445,6 +452,7 @@ cal11.time_comp = false;
 {/if}
 {if $printmenu=="nodes" || !$printmenu}
 <P><FORM method="post" name="printnodelist" id="printnodelist"  action="?m=print&type=nodelist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -518,6 +526,7 @@ cal11.time_comp = false;
 {/if}
 {if $printmenu=="customers" || $printmenu=="traffic" || !$printmenu}
 <P><FORM method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=print&type=customertraffic" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">

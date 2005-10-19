@@ -50,6 +50,7 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<FORM NAME="addbalance{$smarty.section.payments.index}" METHOD="POST" ACTION="?m=balanceadd">
+				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
 				<INPUT TYPE="HIDDEN" NAME="addbalance[type]" VALUE="1">
 				<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$paymentlist[payments].value}">
