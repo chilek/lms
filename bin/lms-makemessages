@@ -217,7 +217,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
-$dbq = $dbase->prepare("SELECT ipaddr, name, warning AS message, ownerid FROM nodes WHERE warning=1");
+$dbq = $dbase->prepare("SELECT ipaddr, name, ownerid FROM nodes WHERE warning=1");
 $dbq->execute();
 
 while (my $row = $dbq->fetchrow_hashref())
