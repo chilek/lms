@@ -113,9 +113,9 @@
 		</TD>
 		<TD WIDTH="93%">
 			{if $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.name}" NAME="name[{$item.itemid}]">{$item.name}
+			<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$item.itemid}]">{$item.name}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.name}" NAME="name[{$item.itemid}]" SIZE="48">
+			<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$item.itemid}]" SIZE="48">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
