@@ -14,6 +14,8 @@ version ? (????-??-??):
     additional functionality (alec)
   - contrib/sqlpanel: design fixes (alec)
   - forms can be submitted by Enter (lukas)
+  - BTS#0000460: fixed "call to a member function ..." in mailing.php (alec)
+  - fixed item's name escaping and 'cash' value on credit notes (alec)
 
 version 1.7.3 Inubis (2005-10-05):
 
