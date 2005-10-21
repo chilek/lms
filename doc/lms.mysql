@@ -22,7 +22,7 @@ CREATE TABLE users (
   deleted tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -42,7 +42,7 @@ CREATE TABLE assignments (
   discount decimal(4,2) NOT NULL default '0',
   PRIMARY KEY  (id),
   INDEX tariffid (tariffid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -57,7 +57,7 @@ CREATE TABLE taxes (
     validfrom int(11) NOT NULL DEFAULT '0',
     validto int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (id)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -79,7 +79,7 @@ CREATE TABLE cash (
   INDEX customerid (customerid),
   INDEX docid (docid),
   INDEX time (time)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -90,7 +90,7 @@ CREATE TABLE dbinfo (
   keytype varchar(255) NOT NULL default '',
   keyvalue varchar(255) NOT NULL default '',
   PRIMARY KEY  (keytype)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -104,7 +104,7 @@ CREATE TABLE numberplans (
 	doctype int(11) NOT NULL DEFAULT '0',
 	isdefault tinyint(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -122,7 +122,7 @@ CREATE TABLE invoicecontents (
   description varchar(255) NOT NULL default '',
   tariffid int(11) NOT NULL default '0',
   INDEX docid (docid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -150,7 +150,7 @@ CREATE TABLE documents (
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -168,7 +168,7 @@ CREATE TABLE documentcontents (
 	description text DEFAULT '' NOT NULL,
         INDEX md5sum (md5sum),
 	UNIQUE KEY docid (docid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -181,7 +181,7 @@ CREATE TABLE receiptcontents (
 	value decimal(9,2) NOT NULL DEFAULT '0',
 	description varchar(255) NOT NULL DEFAULT '',
 	INDEX docid (docid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -198,7 +198,7 @@ CREATE TABLE netdevices (
   serialnumber varchar(32) NOT NULL default '',
   ports int(10) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -212,7 +212,7 @@ CREATE TABLE netlinks (
   type tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY src (src,dst)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -235,7 +235,7 @@ CREATE TABLE networks (
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY address (address)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -264,7 +264,7 @@ CREATE TABLE nodes (
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr),
   INDEX netdev (netdev)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -280,7 +280,7 @@ CREATE TABLE payments (
   at smallint NOT NULL default '0',
   description text NOT NULL,
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -291,7 +291,7 @@ CREATE TABLE rtattachments (
   messageid int(11) NOT NULL default '0',
   filename varchar(255) NOT NULL default '',
   contenttype varchar(255) NOT NULL default ''
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -312,7 +312,7 @@ CREATE TABLE rtmessages (
   body mediumtext NOT NULL default '',
   createtime int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -326,7 +326,7 @@ CREATE TABLE rtqueues (
   description text NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -345,7 +345,7 @@ CREATE TABLE rttickets (
   resolvetime int(11) NOT NULL default '0',
   PRIMARY KEY  (id),
   INDEX queueid (queueid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -359,7 +359,7 @@ CREATE TABLE rtrights (
     rights INT(11) default 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (userid, queueid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -372,7 +372,7 @@ CREATE TABLE stats (
   upload BIGINT default '0',
   download BIGINT default '0',
   UNIQUE KEY nodeid (nodeid,dt)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -394,7 +394,7 @@ CREATE TABLE tariffs (
   description text NOT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -405,7 +405,7 @@ CREATE TABLE timestamps (
   time int(14) NOT NULL default '0',
   tablename varchar(255) NOT NULL default '',
   UNIQUE KEY tablename (tablename)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -437,7 +437,7 @@ CREATE TABLE customers (
   message text NOT NULL,
   pin int(6) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -450,7 +450,7 @@ CREATE TABLE customergroups (
   description text NOT NULL, 
   PRIMARY KEY (id), 
   UNIQUE KEY name (name)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -463,7 +463,7 @@ CREATE TABLE customerassignments (
   customerid int(11) NOT NULL default '0', 
   PRIMARY KEY (id),
   UNIQUE KEY customerassignment (customergroupid, customerid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -489,7 +489,7 @@ CREATE TABLE passwd (
     createtime int(11) NOT NULL default 0,
     PRIMARY KEY (id),
     UNIQUE KEY login (login)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -502,7 +502,7 @@ CREATE TABLE domains (
     description text NOT NULL default '',
     PRIMARY KEY (id),
     UNIQUE KEY (name)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -515,7 +515,7 @@ CREATE TABLE aliases (
     accountid int(11) NOT NULL default '0',
     PRIMARY KEY (id),
     UNIQUE KEY (login, accountid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -531,7 +531,7 @@ CREATE TABLE uiconfig (
     disabled tinyint(1) NOT NULL default '0',
     PRIMARY KEY (id),
     UNIQUE KEY var (section, var)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -552,7 +552,7 @@ CREATE TABLE events (
     closed tinyint(1) NOT NULL default '0',
     PRIMARY KEY (id),
     INDEX date (date)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -563,7 +563,7 @@ CREATE TABLE eventassignments (
     eventid int(11) NOT NULL default '0',
     userid int(11) NOT NULL default '0',
     UNIQUE (eventid, userid)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -578,7 +578,7 @@ CREATE TABLE sessions (
     vdata text NOT NULL, 
     content text NOT NULL, 
     PRIMARY KEY (id)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -596,7 +596,7 @@ CREATE TABLE cashimport (
     closed tinyint(1) NOT NULL default '0',
     PRIMARY KEY (id),
     INDEX hash (hash)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -611,7 +611,7 @@ CREATE TABLE hosts (
     reload tinyint(1) default '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -628,7 +628,7 @@ CREATE TABLE daemoninstances (
     description text default '' NOT NULL,
     disabled tinyint(1) default '0' NOT NULL,
     PRIMARY KEY (id)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 #
@@ -644,7 +644,7 @@ CREATE TABLE daemonconfig (
     disabled tinyint(1) default '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY instanceid (instanceid, var)
-) TYPE=MyISAM;
+) TYPE=MyISAM /*!40101 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci*/;
 
 # --------------------------------------------------------
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005092900');
