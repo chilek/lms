@@ -252,7 +252,7 @@ while (my $row = $dbq->fetchrow_hashref())
 				while (my $row_s = $last10_dbq->fetchrow_hashref())
 				{
 					my $op_time = strftime( "%Y/%m/%d", localtime($row_s->{'time'}));
-					my $op_amount = sprintf("%8.2f", $aqq*$row_s->{'value'});
+					my $op_amount = sprintf("%8.2f", $row_s->{'value'});
 					my $for_what = sprintf("%-52s",$row_s->{'comment'} || '');
 														
 					$smtp->datasend("$op_time | $op_amount | $for_what \n");
