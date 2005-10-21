@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.7.4 Wraith (????-??-??):
 
   - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
   - BTS#0000455: documentation fixed options names 
@@ -16,6 +16,13 @@ version ? (????-??-??):
   - forms can be submitted by Enter (lukas)
   - BTS#0000460: fixed "call to a member function ..." in mailing.php (alec)
   - fixed item's name escaping and 'cash' value on credit notes (alec)
+  - propably fixed neverending story about bugs with MySQL and polish
+    characters and UTF-8. Need's few tests, but it works for me at least with
+    polish characters. Any required db upgrades and new lms.mysql schema has
+    been commited, but i didn't commited new version in lib/upgradedb.php,
+    cause i don't sure how mysql will react with /*!VERSION */ from queries
+    executed from PHP - looks good for now, but it's very late and i'm tired
+    (lukasz)
 
 version 1.7.3 Inubis (2005-10-05):
 
