@@ -1,8 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if $unlockedit}<FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}">{/if}
-<INPUT type="submit" class="hiddenbtn">
+{if $unlockedit}<FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}"><INPUT type="submit" class="hiddenbtn">{/if}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		{if $unlockedit}
