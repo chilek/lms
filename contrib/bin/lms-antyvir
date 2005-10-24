@@ -55,6 +55,7 @@ if($help)
         print STDERR <<EOF;
 lms-antyvir, version $_version
 (C) 2001-2005 LMS Developers
+(C) 2001-2005 Wojciech Swiadkowski
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms
 -h, --help                      print this help and exit;
@@ -70,6 +71,7 @@ if($version)
      print STDERR <<EOF;
 lms-antyvir, version $_version
 (C) 2001-2005 LMS Developers
+(C) 2001-2005 Wojciech Swiadkowski
 
 EOF
     exit 0;
@@ -84,6 +86,7 @@ if(!$quiet)
 {
 	print STDOUT "lms-antyvir, version $_version\n";
 	print STDOUT "(C) 2001-2005 LMS Developers\n";
+	print STDOUT "(C) 2001-2005 Wojciech Swiadkowski\n"
 	print STDOUT "Using file $configfile as config.\n";
 }
 
