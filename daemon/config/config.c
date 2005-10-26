@@ -117,14 +117,14 @@ void config_add(Config *c, unsigned char *sec, unsigned char * key, unsigned cha
 
 Config * config_load(ConnHandle *conn, const unsigned char *dbhost, const unsigned char *section)
 {
+#ifdef CONFIGFILE
+    return config_load_from_file(section);
+#else
     Config *c;
     QueryHandle *res;
     unsigned char *sec, *var, *val;
     int i;
     
-#ifdef CONFIGFILE
-    return config_load_from_file(section);
-#else
     if( !conn )
     {
 	    syslog(LOG_ERR, "ERROR: [config_load] Lost connection handle.");
