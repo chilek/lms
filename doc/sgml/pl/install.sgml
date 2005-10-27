@@ -183,9 +183,9 @@ $ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</screen>
                <screen>
 mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
-mysql> create database lms;
-mysql> grant usage on lms.* to lms@localhost;
-mysql> grant select,insert,update,delete,create,alter,drop on lms.* to lms@localhost identified by 'haslo';
+mysql> CREATE DATABASE lms /*!40101 CHARACTER SET utf8 COLLATE utf8_polish_ci */;
+mysql> GRANT USAGE ON lms.* TO lms@localhost;
+mysql> GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY 'twoje_has³o';
 mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;</screen>
