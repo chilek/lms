@@ -27,9 +27,8 @@
         </sect2>
         <sect2 id="install-req-php">
            <title>PHP Interpreter</title>
-           <para>Interpreter version should be 4.2.x or higher, but it also works fine with 4.1.x
-           (but due that developers use 4.2.3 or higher, we can't guarantee correct work with older
-           versions. PHP can be downloaded from <ulink url="http://www.php.net">www.php.net</ulink>.
+           <para>Interpreter version should be 4.2.x or higher.
+           PHP can be downloaded from <ulink url="http://www.php.net">www.php.net</ulink>.
            At least following PHP modules needs to be installed (look for "extension" in
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
            compressed backups), gd or ming (for graphical map) and mysql or pgsql (for db

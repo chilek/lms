@@ -29,9 +29,8 @@
          </sect2>
          <sect2 id="install-req-php">
            <title>Interpreter PHP</title>
-           <para>Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ 
-          poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie mo¿na 
-          zagwarantowaæ poprawnej pracy na starszych wersjach (unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
+           <para>Interpreter powinien byæ w wersji 4.2.x lub nowszej
+          (unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
           strony <ulink url="http://www.php.net">www.php.net</ulink>.
           W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
           w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
