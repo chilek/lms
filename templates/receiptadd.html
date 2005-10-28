@@ -4,6 +4,22 @@
 {literal}
 <SCRIPT language=JavaScript>
 <!--
+	function CheckAll()
+	{
+		for (var i=0; i<document.additemlist.elements.length; i++)
+		{
+			var e = document.additemlist.elements[i];
+		        if (e.name != 'allbox')
+				e.checked = document.additemlist.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.additemlist.allbox.checked = !document.additemlist.allbox.checked;
+		CheckAll();
+	}
+
 	function savereceipt()
 	{	
 		var add = "";
@@ -160,7 +176,7 @@
 			<INPUT TYPE="text" NAME="description" SIZE="100" {tip text="Enter item description"}>
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="value" SIZE="10" VALUE="{if $customer.balance < 0}{$customer.balance*-1|string_format:"%.2f"}{/if}" {tip text="Enter item value"}>
+			<INPUT TYPE="text" NAME="value" SIZE="10" VALUE="{if $balance < 0}{$balance*-1|string_format:"%.2f"}{/if}" {tip text="Enter item value"}>
 		</TD>
 		<TD CLASS="fright">
 			<A HREF="javascript:additem(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
@@ -181,6 +197,61 @@
 			{t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
+	</FORM>
+	<FORM name="additemlist" method="POST" action="?m=receiptadd&action=additemlist">
+	<TR>
+		<TD colspan="4" class="fbottomu">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD class="fall">
+						<IMG src="img/money.gif" ALT="">
+						<B><A name="balance">{t}Last 10 not accounted invoices:{/t}</A></B>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="100%" class="fall">
+						<TABLE cellpadding="5" cellspacing="0" width="100%">
+							<TR class="dark">
+								<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+								<TD width="97%" class="fbt">{t}Invoice:{/t}</TD>
+								<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+								<TD width="1%" class="frightu">&nbsp;</TD>
+							</TR>
+							{cycle values="light,lucid" print=false}
+							{section name=invoicelist loop=$invoicelist}
+							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+							        <TD><nobr>{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
+								<TD>{$invoicelist[invoicelist].number}</TD>
+							        <TD align="right"><nobr>{$invoicelist[invoicelist].value|money_format}</nobr></TD>
+								<TD align="right">
+									{cycle print=false}
+									<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[]" VALUE="{$invoicelist[invoicelist].id}"{if $invoicelist[invoicelist].selected} CHECKED{/if}>
+								</TD>
+							</TR>
+							{sectionelse}
+							<TR>
+								<TD align="center" colspan="4">
+							    		<p>&nbsp;</p>
+									<p><B>{t}That customer hasn't got not accounted invoices.{/t}</B></p>
+									<p>&nbsp;</p>
+								</TD>
+							</TR>
+							{/section}
+							<TR class="light">
+								<TD CLASS="ftop" colspan="2" nowrap>
+									<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+									<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
+								</TD>
+							        <TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>
+									<A href="javascript:document.additemlist.submit();">{t}Add items{/t} <IMG src="img/save.gif" ALT=""></A>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+        </TR>
 	</FORM>
 </TABLE>
 <SCRIPT LANGUAGE="JavaScript">

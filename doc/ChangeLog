@@ -19,6 +19,8 @@ version 1.7.4 Wraith (????-??-??):
   - propably fixed neverending story about bugs with MySQL and polish
     characters and UTF-8. Added info in documentation how to create
     database with polish collation and utf8 character set (alec)
+  - added last 10 not accounted invoices list in cash receipt addition
+    form (alec)
     
 version 1.7.3 Inubis (2005-10-05):
 
