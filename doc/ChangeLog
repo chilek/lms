@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.5 Druhin (28/10/2005):
 
   - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
   - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
@@ -10,6 +10,7 @@ version ? (??/??/????):
   - fixed summary description on balance list printout (alec)
   - lmsd/dhcp: fixed public IP's problem - using hostnames with suffix 
     "_pub" (alec)
+  - added lost email, phone, ssn, ten on customers list printout (alec)
 
 version 1.6.4 Mala (25/09/2005):
 
