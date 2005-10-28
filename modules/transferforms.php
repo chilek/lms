@@ -119,7 +119,6 @@ $_CITY = (! $CONFIG[finances]['city'] ? trans("Not set") : $CONFIG[finances]['ci
 
 $control_lines = 0;
 
-
 $ids = $LMS->DB->GetCol('SELECT id FROM documents
         WHERE cdate > ? AND cdate < ? AND type = 1'
         .($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')

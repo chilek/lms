@@ -24,6 +24,29 @@
  *  $Id$
  */
 
+function GetCustomerCovenants($id)
+{
+	global $CONFIG, $DB;
+
+	if(!$id) return NULL;
+	
+	if($invoicelist = $DB->GetAll('SELECT docid AS id, cdate, SUM(value)*-1 AS value, number, template
+			FROM cash
+			LEFT JOIN documents ON (docid = documents.id)
+			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			WHERE cash.customerid = ? AND documents.type = ? AND documents.closed = 0
+			GROUP BY docid, cdate, number, template
+			ORDER BY cdate DESC LIMIT 10', array($id, DOC_INVOICE)))
+	{
+		foreach($invoicelist as $idx => $row)
+		{
+			$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+		}
+		
+		return $invoicelist;
+	}
+}
+
 $layout['pagetitle'] = trans('New Cash Receipt');
 
 $SESSION->restore('receiptcontents', $contents);
@@ -56,6 +79,24 @@ switch($_GET['action'])
 	
 		if($itemdata['value'] && $itemdata['description'])
 			$contents[] = $itemdata;
+	break;
+	case 'additemlist':
+	
+		if($marks = $_POST['marks'])
+			foreach($marks as $id)
+			{
+				$row = $DB->GetRow('SELECT SUM(value)*-1 AS value, number, cdate, template
+						    FROM cash 
+						    LEFT JOIN documents ON (docid = documents.id)
+						    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+						    WHERE docid = ?
+						    GROUP BY docid, number, cdate, template', array($id));
+				$itemdata['value'] = $row['value'];
+				$itemdata['description'] = trans('Invoice No. $0', docnumber($row['number'], $row['template'], $row['cdate']));
+				$itemdata['docid'] = $id;
+				$itemdata['posuid'] = (string) (getmicrotime()+$id);
+				$contents[] = $itemdata;
+			}
 	break;
 	case 'deletepos':
 
@@ -150,6 +191,8 @@ switch($_GET['action'])
 						$item['description'],
 						$AUTH->id,
 						$customer['id']));
+				if($item['docid'])
+					$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));
 			}
 		
 			$SESSION->remove('receiptcontents');
@@ -171,8 +214,31 @@ if($_GET['action'] != '')
 	$SESSION->redirect('?m=receiptadd');
 }
 
+if($list = GetCustomerCovenants($customer['id']))
+	if($contents)
+		foreach($list as $row)
+		{
+			$i = 0;
+			foreach($contents as $item)
+				if($row['id'] == $item['docid'])
+				{
+					$i = 1;
+					break;
+				}
+			if(!$i)
+				$invoicelist[] = $row;
+		}
+	else
+		$invoicelist = $list;
+
+if($contents)
+	foreach($contents as $item)
+		$contentsum += $item['value'];
+
+$SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
+$SMARTY->assign('balance', $customer['balance'] + $contentsum);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('receipt', $receipt);
