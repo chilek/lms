@@ -37,7 +37,7 @@
   
 #include "lmsd.h"
 
-int quit = 0, port = 0, dontfork = 0;
+int quit = 0, runall = 0, port = 0, dontfork = 0;
 char *db, *user, *passwd;
 char host[255], dhost[255];
 unsigned char *command = NULL;
@@ -192,8 +192,8 @@ int main(int argc, char *argv[], char **envp)
 		instances = (INSTANCE *) malloc(sizeof(INSTANCE));
 		
 		// get instances list even if reload == 0
-		// maybe we should do that once before main loop, but
-		// now we can change configuration without daemon restart
+		// maybe we should do that once before main loop, but in
+		// this way we can change configuration without daemon restart
 #ifndef CONFIGFILE
 		if(iopt) // from command line...
 		{
@@ -204,7 +204,7 @@ int main(int argc, char *argv[], char **envp)
 				if( db_nrows(res) )
 				{
 					char *crontab = db_get_data(res, 0, "crontab");
-					if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) )
+					if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
 					{
 						instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 						instances[i_no].name = strdup(instance);
@@ -223,7 +223,7 @@ int main(int argc, char *argv[], char **envp)
 			for(i=0; i<db_nrows(res); i++)
 			{
 				char *crontab = db_get_data(res, i, "crontab");
-				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) )
+				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 					instances[i_no].name = strdup(db_get_data(res, i, "name"));
@@ -243,7 +243,7 @@ int main(int argc, char *argv[], char **envp)
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
 			{
 				char *crontab = config_getstring(ini, instance, "crontab", "");
-				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) )
+				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 					instances[i_no].name = strdup(instance);
@@ -260,7 +260,7 @@ int main(int argc, char *argv[], char **envp)
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
 			{
 				char *crontab = config_getstring(ini, instance, "crontab", "");
-				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) )
+				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 					instances[i_no].name = strdup(instance);
@@ -409,6 +409,7 @@ static void parse_command_line(int argc, char **argv)
 	    { "hostname", 1, 0, 'H' },
     	    { "command", 2, 0, 'c' },
     	    { "reload", 0, 0, 'q' },
+	    { "reload-all", 0, 0, 'r' },
 	    { "foreground", 0, 0, 'f' },
             { "instance", 2, 0, 'i' },
     	    { "version", 0, 0, 'v' },
@@ -417,7 +418,7 @@ static void parse_command_line(int argc, char **argv)
 	
 	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
 	
-	while ( (opt = getopt_long(argc, argv, "qfvi:h:p:d:u:H:c:", options, &option_index)) != -1 )
+	while ( (opt = getopt_long(argc, argv, "qrfvi:h:p:d:u:H:c:", options, &option_index)) != -1 )
 	{
 		switch (opt) 
 		{
@@ -426,6 +427,10 @@ static void parse_command_line(int argc, char **argv)
             		exit(0);
 		case 'q':
     			quit = 1;
+            		break;
+		case 'r':
+    			runall = 1;
+			quit = 1;
             		break;
 		case 'f':
     			dontfork = 1;
@@ -460,6 +465,7 @@ static void parse_command_line(int argc, char **argv)
         		printf(" --hostname -H daemon_host\thost name where runs daemon (default: `hostname`)\n");
         		printf(" --command -c command\t\tshell command to run before database connecting\n\t\t\t\t(default: empty)\n");
         		printf(" --reload -q \t\t\tdo a reload and quit\n");
+			printf(" --reload-all -r \t\tdo a reload of all instances and quit\n");
         		printf(" --foreground -f \t\trun in foreground (don't fork)\n");
         		printf(" --instance -i \"instance[ ...]\"\tlist of instances to reload\n");
         		printf(" --version -v \t\t\tprint version and copyright info\n");

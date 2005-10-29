@@ -93,6 +93,8 @@
 --instance -i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 
                            zostan± pominiête
 --reload -q                wykonuje prze³adowanie i koñczy pracê
+--reload-all -r            wykonuje prze³adowanie wszystkich instancji (tak¿e tych, które maj±
+                           zdefiniowany crontab) i koñczy pracê
 --foreground -f            dzia³a na pierwszym planie (nie forkuje siê) 
 --version -v               wy¶wietla wersjê i prawa licencyjne
 </screen>

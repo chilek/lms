@@ -21,6 +21,9 @@ version 1.7.4 Wraith (????-??-??):
     database with polish collation and utf8 character set (alec)
   - added last 10 not accounted invoices list in cash receipt addition
     form (alec)
+  - lmsd: added option --reload-all (alec)
+  - BTS#0000391: lmsd: fixed problem with long executed (sleeping) 
+    instances (alec)
     
 version 1.7.3 Inubis (2005-10-05):
 

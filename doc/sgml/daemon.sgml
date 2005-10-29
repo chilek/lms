@@ -90,6 +90,7 @@
 --command -c command       shell command to execute before every database connection (default: empty)
 --instance -i "instance[ ...]" list of instances to reload; other instances will be ignored
 --reload -q                do reload and exit
+--reload-all -r            do reload of all instances (including those with specified crontab) and exit
 --foreground -f            run in foreground (don't fork)
 --version -v               prints version and copyright info
 </screen>
