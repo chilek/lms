@@ -99,10 +99,16 @@ time_t cron_sync_sleep(void)
 {
 	register struct tm *t;
 	time_t tt;
+	int sec;
 	
 	tt = time(0);
 	t = localtime(&tt);
-	tt += (60 - t->tm_sec);
-	sleep(60 - t->tm_sec);
+	
+	sec = 60 - t->tm_sec;
+	tt += sec;
+	
+	// don't stop sleeping even when got any signal
+	while( (sec = sleep(sec))!=0 ) {};
+	
 	return tt;
 }
