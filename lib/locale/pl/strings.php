@@ -1588,5 +1588,8 @@ $_LANG['Receipts'] = 'Potwierdzenia';
 $_LANG['Select period'] = 'Wybierz okres';
 $_LANG['Stats of Customer $0 in month $1'] = 'Statystyki klienta $0 za miesiąc $1';
 $_LANG['Year:'] = 'Rok:';
+$_LANG['Add items'] = 'Dodaj pozycje';
+$_LANG['Last 10 not accounted invoices:'] = 'Ostatnie 10 nierozliczonych faktur:';
+$_LANG['That customer hasn\'t got not accounted invoices.'] = 'Ten klient nie posiada nierozliczonych faktur.';
 
 ?>

@@ -1,6 +1,6 @@
 $Id$
 
-version 1.7.4 Wraith (????-??-??):
+version 1.7.4 Wraith (2005-10-31):
 
   - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
   - BTS#0000455: documentation fixed options names 
