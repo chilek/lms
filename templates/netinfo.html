@@ -159,12 +159,12 @@
 				<TR class="{cycle}">
 					{section name=subnetwork loop=$network.nodes.address start=$smarty.section.network.index step=$network.rows}
 					<TD align="center" width="25%" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" {if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]} onclick="return self.location.href='?m=netdevinfo&id={$network.nodes.netdev[subnetwork]}'"}{else}{if $network.nodes.id[subnetwork]} onclick="return self.location.href='?m=customerinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}'"{else}{if !$network.nodes.name[subnetwork]} onclick="return self.location.href='?m=nodeadd&preip={$network.nodes.address[subnetwork]}'"{/if}{/if}{/if}>
-					<img src="img/{if !$network.nodes.ownerid[subnetwork] && $network.nodes.name[subnetwork]}netdev{else}node{/if}.gif" align="left" ALT="{if $network.nodes.name[subnetwork]}{$network.nodes.address[subnetwork]}{/if}">
+					<img src="img/{if !$network.nodes.ownerid[subnetwork] && $network.nodes.name[subnetwork]}netdev{else}node{/if}.gif" align="left" ALT="">
 					{if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]}
 						<a href="?m=netdevinfo&id={$network.nodes.netdev[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
 					{else}
 						{if $network.nodes.id[subnetwork]}
-							<a href="?m=customerinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
+							<a href="?m=customerinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}"{if $network.nodes.name[subnetwork]} {tip text=$network.nodes.address[subnetwork]}{/if}><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
 						{else}
 							{if $network.nodes.name[subnetwork]}<FONT CLASS="blend">{$network.nodes.name[subnetwork]}</FONT>
 							{else}
