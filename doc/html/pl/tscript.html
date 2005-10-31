@@ -438,6 +438,44 @@ CLASS="SCREEN"
 >while ( wyra¿enie ) polecenie /while</PRE
 ></P
 ></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>break</SAMP
+>. Polecenie to koñczy wykonywanie
+					aktualnej instrukcji pêtli.</P
+><P
+>Przyk³ad: 
+<PRE
+CLASS="SCREEN"
+>{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{break}{/if}\
+: {i}
+{/for}\</PRE
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>continue</SAMP
+>. Polecenie <SAMP
+CLASS="PROMPT"
+>continue</SAMP
+>
+					u¿ywane jest wewn±trz instrukcji pêtli do przerwania wykonania
+					danej iteracji pêtli i rozpoczêcia kolejnej iteracji.</P
+><P
+>Przyk³ad: 
+<PRE
+CLASS="SCREEN"
+>{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{continue}{/if}\
+: {i}
+{/for}\</PRE
+></P
+></LI
 ></UL
 ></DIV
 ><DIV

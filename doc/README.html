@@ -1219,9 +1219,8 @@ NAME="INSTALL-REQ-PHP"
 >2.2.2. PHP Interpreter</A
 ></H3
 ><P
->Interpreter version should be 4.2.x or higher, but it also works fine with 4.1.x
-           (but due that developers use 4.2.3 or higher, we can't guarantee correct work with older
-           versions. PHP can be downloaded from <A
+>Interpreter version should be 4.2.x or higher.
+           PHP can be downloaded from <A
 HREF="http://www.php.net"
 TARGET="_top"
 >www.php.net</A
@@ -1587,9 +1586,9 @@ NAME="INSTALL-MYSQL-DBCREATE"
 CLASS="SCREEN"
 >mysql -u[user name with database creation rights] -p
 Enter password:[just enter password :)]
-mysql&#62; create database lms;
-mysql&#62; grant usage on lms.* to lms@localhost;
-mysql&#62; grant select,insert,update,delete,create,alter,drop on lms.* to lms@localhost identified by '[your_password]';
+mysql&#62; CREATE DATABASE lms /*!40101 CHARACTER SET utf8 COLLATE utf8_polish_ci */;
+mysql&#62; GRANT USAGE ON lms.* TO lms@localhost;
+mysql&#62; GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
 mysql&#62; flush privileges;
 mysql&#62; use lms;
 mysql&#62; source doc/lms.mysql;</PRE
@@ -6474,7 +6473,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups</P
+>customergroups</P
 ><P
 >List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
@@ -6482,7 +6481,7 @@ include all customer groups.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->usergroups = group1 group2</SAMP
+>customergroups = group1 group2</SAMP
 ></P
 ></LI
 ><LI
@@ -7035,7 +7034,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups </P
+>customergroups </P
 ><P
 >List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
@@ -7043,7 +7042,7 @@ include all groups.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->usergroups = settlement1 settlement2</SAMP
+>customergroups = settlement1 settlement2</SAMP
 ></P
 ></LI
 ><LI
@@ -7180,7 +7179,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups </P
+>customergroups </P
 ><P
 >List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
@@ -7188,7 +7187,7 @@ include all groups.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->usergroups = settlement1 settlement2</SAMP
+>customergroups = settlement1 settlement2</SAMP
 ></P
 ></LI
 ><LI
@@ -7290,7 +7289,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups </P
+>customergroups </P
 ><P
 >List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
@@ -7298,7 +7297,7 @@ include all groups.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->usergroups = settlement1 settlement2</SAMP
+>customergroups = settlement1 settlement2</SAMP
 ></P
 ></LI
 ><LI
@@ -7438,7 +7437,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups </P
+>customergroups </P
 ><P
 >List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
@@ -7446,7 +7445,7 @@ include all groups.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->usergroups = settlement1 settlement2</SAMP
+>customergroups = settlement1 settlement2</SAMP
 ></P
 ></LI
 ><LI
@@ -9070,6 +9069,7 @@ CLASS="SCREEN"
 --command -c command       shell command to execute before every database connection (default: empty)
 --instance -i "instance[ ...]" list of instances to reload; other instances will be ignored
 --reload -q                do reload and exit
+--reload-all -r            do reload of all instances (including those with specified crontab) and exit
 --foreground -f            run in foreground (don't fork)
 --version -v               prints version and copyright info</PRE
 >
@@ -10008,14 +10008,14 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups</P
+>customergroups</P
 ><P
 >List of customers groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->usergroups = "group1 group2"</SAMP
+>customergroups = "group1 group2"</SAMP
 ></P
 ></LI
 ></UL
@@ -10227,14 +10227,14 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups</P
+>customergroups</P
 ><P
 >List of customer group names which members should be included in config
                    (case insensitive). Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->usergroups = "group1 group2"</SAMP
+>customergroups = "group1 group2"</SAMP
 ></P
 ></LI
 ><LI
@@ -10620,14 +10620,14 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups</P
+>customergroups</P
 ><P
 >List of customer groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->usergroups = "group1 group2"</SAMP
+>customergroups = "group1 group2"</SAMP
 ></P
 ></LI
 ></UL
@@ -10838,14 +10838,14 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups</P
+>customergroups</P
 ><P
 >List of customer (user) groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->usergroups = "group1 group2"</SAMP
+>customergroups = "group1 group2"</SAMP
 ></P
 ></LI
 ></UL
@@ -10931,14 +10931,14 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->usergroups</P
+>customergroups</P
 ><P
 >List of customer groups names that should be included in configuration (case insensitive).
                    Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->usergroups = "group1 group2"</SAMP
+>customergroups = "group1 group2"</SAMP
 ></P
 ></LI
 ></UL
@@ -11611,6 +11611,45 @@ CLASS="PROMPT"
 >Example: <SAMP
 CLASS="PROMPT"
 >while ( expression ) statement /while</SAMP
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>break</SAMP
+>. This command ends execution of the current 
+		    loop structure.</P
+><P
+>Example:
+<PRE
+CLASS="SCREEN"
+>{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{break}{/if}\
+: {i}
+{/for}\</PRE
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>continue</SAMP
+>. <SAMP
+CLASS="PROMPT"
+>continue</SAMP
+> is used
+		    within looping structures to skip the rest of the current loop 
+		    iteration and continue execution at the condition evaluation and 
+		    then the beginning of the next iteration.</P
+><P
+>Example:
+<PRE
+CLASS="SCREEN"
+>{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{continue}{/if}\
+: {i}
+{/for}\</PRE
 ></P
 ></LI
 ></UL
@@ -13157,6 +13196,10 @@ BORDER="0"
 ><TR
 ><TD
 >time - timestamp of operation</TD
+></TR
+><TR
+><TD
+>type - type of operation (1-payment, 0-liability)</TD
 ></TR
 ><TR
 ><TD

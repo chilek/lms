@@ -456,6 +456,45 @@ CLASS="PROMPT"
 >while ( expression ) statement /while</SAMP
 ></P
 ></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>break</SAMP
+>. This command ends execution of the current 
+		    loop structure.</P
+><P
+>Example:
+<PRE
+CLASS="SCREEN"
+>{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{break}{/if}\
+: {i}
+{/for}\</PRE
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>continue</SAMP
+>. <SAMP
+CLASS="PROMPT"
+>continue</SAMP
+> is used
+		    within looping structures to skip the rest of the current loop 
+		    iteration and continue execution at the condition evaluation and 
+		    then the beginning of the next iteration.</P
+><P
+>Example:
+<PRE
+CLASS="SCREEN"
+>{for (i = 0; i &lt; 10; i++)}\
+{if (i == 5)}{continue}{/if}\
+: {i}
+{/for}\</PRE
+></P
+></LI
 ></UL
 ></DIV
 ><DIV

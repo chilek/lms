@@ -309,10 +309,8 @@ Chapter 2. Installation and configuration
 
 2.2.2. PHP Interpreter
 
-   Interpreter version should be 4.2.x or higher, but it also works fine
-   with 4.1.x (but due that developers use 4.2.3 or higher, we can't
-   guarantee correct work with older versions. PHP can be downloaded from
-   www.php.net. At least following PHP modules needs to be installed
+   Interpreter version should be 4.2.x or higher. PHP can be downloaded
+   from www.php.net. At least following PHP modules needs to be installed
    (look for "extension" in php.ini or in output of phpinfo function):
    pcre, posix (for systems info), zlib (for compressed backups), gd or
    ming (for graphical map) and mysql or pgsql (for db support).
@@ -445,9 +443,9 @@ $ /usr/local/mysql/bin/mysqladmin -u root password new_password
    with schema go to LMS directory and run:
 mysql -u[user name with database creation rights] -p
 Enter password:[just enter password :)]
-mysql> create database lms;
-mysql> grant usage on lms.* to lms@localhost;
-mysql> grant select,insert,update,delete,create,alter,drop on lms.* to lms@localhost identified by '[your_password]';
+mysql> CREATE DATABASE lms /*!40101 CHARACTER SET utf8 COLLATE utf8_polish_ci */;
+mysql> GRANT USAGE ON lms.* TO lms@localhost;
+mysql> GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
 mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;
@@ -2404,11 +2402,11 @@ http://www.bigpro.com/
        while creating configuration file. If unset, configuration will
        include all networks.
        Example: networks = public-custa public-custb
-     * usergroups
+     * customergroups
        List of (space separated) customer groups, that should be
        considered while creating configuration file. If unset,
        configuration will include all customer groups.
-       Example: usergroups = group1 group2
+       Example: customergroups = group1 group2
      * default_lease_time
        Default lease time. Default: 86400.
        Example: default_lease_time = 43200
@@ -2596,11 +2594,11 @@ wins    = 213.25.209.10
        while creating configuration file. If unset, configuration will
        include all networks.
        Example: networks = public-custa public-custb
-     * usergroups
+     * customergroups
        List of (space separated) customer groups, that should be
        considered while creating configuration file. If unset,
        configuration will include all groups.
-       Example: usergroups = settlement1 settlement2
+       Example: customergroups = settlement1 settlement2
      * iptables_binary
        Location of iptables binary. Default: /sbin/iptables
        Example: iptables_binary = /usr/local/sbin/iptables
@@ -2642,11 +2640,11 @@ wins    = 213.25.209.10
        while creating configuration file. If unset, configuration will
        include all networks.
        Example: networks = public-custa public-custb
-     * usergroups
+     * customergroups
        List of (space separated) customer groups, that should be
        considered while creating configuration file. If unset,
        configuration will include all groups.
-       Example: usergroups = settlement1 settlement2
+       Example: customergroups = settlement1 settlement2
      * config_owneruid
        UID of file owner. Default: 0 (root).
        Example: config_owneruid = 0
@@ -2680,11 +2678,11 @@ wins    = 213.25.209.10
        while creating configuration file. If unset, configuration will
        include all networks.
        Example: networks = public-custa public-custb
-     * usergroups
+     * customergroups
        List of (space separated) customer groups, that should be
        considered while creating configuration file. If unset,
        configuration will include all groups.
-       Example: usergroups = settlement1 settlement2
+       Example: customergroups = settlement1 settlement2
      * iptables_binary
        Location of iptables binary. Default: /sbin/iptables
        Example: iptables_binary = /usr/local/sbin/iptables
@@ -2729,11 +2727,11 @@ wins    = 213.25.209.10
        while creating configuration file. If unset, configuration will
        include all networks.
        Example: networks = public-custa public-custb
-     * usergroups
+     * customergroups
        List of (space separated) customer groups, that should be
        considered while creating configuration file. If unset,
        configuration will include all groups.
-       Example: usergroups = settlement1 settlement2
+       Example: customergroups = settlement1 settlement2
      * iptables_binary
        Location of iptables binary. Default: /sbin/iptables
        Example: iptables_binary = /usr/local/sbin/iptables
@@ -3317,6 +3315,7 @@ Chapter 6. LMS Daemon
 --command -c command       shell command to execute before every database connection (default: empty)
 --instance -i "instance[ ...]" list of instances to reload; other instances will be ignored
 --reload -q                do reload and exit
+--reload-all -r            do reload of all instances (including those with specified crontab) and exit
 --foreground -f            run in foreground (don't fork)
 --version -v               prints version and copyright info
 
@@ -3636,10 +3635,10 @@ Chapter 6. LMS Daemon
        List of network names that should be included in configuration
        (case insensitive). Default: empty (all networks).
        Example: networks = "lan1 lan2"
-     * usergroups
+     * customergroups
        List of customers groups that should be included in configuration
        (case insensitive). Default: empty (all groups).
-       Example: usergroups = "group1 group2"
+       Example: customergroups = "group1 group2"
      _________________________________________________________________
 
 6.2.8. Hostfile
@@ -3713,10 +3712,10 @@ Chapter 6. LMS Daemon
        List of network names which members should be included in config
        (case insensitive). Default: empty (all networks).
        Example: networks = "lan1 lan2"
-     * usergroups
+     * customergroups
        List of customer group names which members should be included in
        config (case insensitive). Default: empty (all groups).
-       Example: usergroups = "group1 group2"
+       Example: customergroups = "group1 group2"
      * skip_dev_ips
        If enabled (yes, true) network devices (devices that does not
        belong to customers) will be ignored (omitted). Default: yes
@@ -3919,10 +3918,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        List of network names that should be included in configuration
        (case insensitive). Default: empty (all networks).
        Example: networks = "lan1 lan2"
-     * usergroups
+     * customergroups
        List of customer groups that should be included in configuration
        (case insensitive). Default: empty (all groups).
-       Example: usergroups = "group1 group2"
+       Example: customergroups = "group1 group2"
      _________________________________________________________________
 
 6.2.11. Dns
@@ -3996,10 +3995,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        List of network names that should be included in configuration
        (case insensitive). Default: empty (all networks).
        Example: networks = "lan1 lan2"
-     * usergroups
+     * customergroups
        List of customer (user) groups that should be included in
        configuration (case insensitive). Default: empty (all groups).
-       Example: usergroups = "group1 group2"
+       Example: customergroups = "group1 group2"
      _________________________________________________________________
 
 6.2.12. Ethers
@@ -4029,10 +4028,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        List of network names that should be included in configuration
        (case insensitive). Default: empty (all networks).
        Example: networks = "lan1 lan2"
-     * usergroups
+     * customergroups
        List of customer groups names that should be included in
        configuration (case insensitive). Default: empty (all groups).
-       Example: usergroups = "group1 group2"
+       Example: customergroups = "group1 group2"
      _________________________________________________________________
 
 6.2.13. Oident
@@ -4249,6 +4248,20 @@ a doesn't equal 1
        value changes during the execution of the nested statement(s),
        execution will not stop until the end of the iteration.
        Example: while ( expression ) statement /while
+     * break. This command ends execution of the current loop structure.
+       Example:
+{for (i = 0; i < 10; i++)}\
+{if (i == 5)}{break}{/if}\
+: {i}
+{/for}\
+     * continue. continue is used within looping structures to skip the
+       rest of the current loop iteration and continue execution at the
+       condition evaluation and then the beginning of the next iteration.
+       Example:
+{for (i = 0; i < 10; i++)}\
+{if (i == 5)}{continue}{/if}\
+: {i}
+{/for}\
      _________________________________________________________________
 
 6.3.2.4. Functions
@@ -4726,6 +4739,7 @@ Chapter 7. For curious
 
    id - serial number
    time - timestamp of operation
+   type - type of operation (1-payment, 0-liability)
    userid - LMS user id
    value - amount in dollars
    taxid - tax rate identifier
