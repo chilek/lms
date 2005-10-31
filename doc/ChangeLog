@@ -24,6 +24,8 @@ version 1.7.4 Wraith (2005-10-31):
   - lmsd: added option --reload-all (alec)
   - BTS#0000391: lmsd: fixed problem with long executed (sleeping) 
     instances (alec)
+  - added node IP address on nodes list in network info page, hidden in 
+    node image's description (alec) 
     
 version 1.7.3 Inubis (2005-10-05):
 
