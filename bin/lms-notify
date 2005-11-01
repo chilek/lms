@@ -186,6 +186,13 @@ while (my $row = $dbq->fetchrow_hashref())
 		my $recipient = $debugemail || $row->{'email'};
 		
 		my $smtp = Net::SMTP->new("$smtpserver");
+		
+		if( !$smtp )
+		{
+		        print STDERR "Fatal error: Unable to connect to SMTP server: $smtpserver, exiting.\n";
+			exit 1;
+		}
+													       
 		$smtp->mail("$mailfrom");
 		
 		if( !$smtp->to($recipient) )
