@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - BTS#0000466: lms-antyvir: fixed parse error (alec)
+
 version 1.7.4 Wraith (2005-10-31):
 
   - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
