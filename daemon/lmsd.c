@@ -126,7 +126,7 @@ int main(int argc, char *argv[], char **envp)
     	if ( !quit && !dontfork )
 	{
 		fval = fork();
-        	switch (fval) 
+        	switch(fval) 
 		{
 			case -1:
     	    			fprintf(stderr, "Fork error. Exiting.");
@@ -147,7 +147,7 @@ int main(int argc, char *argv[], char **envp)
     	signal(SIGTERM, termination_handler);
 
     	// main loop ****************************************************
-    	for (;;)
+    	for(;;)
 	{
 		i_no = 0;
 		
@@ -163,7 +163,7 @@ int main(int argc, char *argv[], char **envp)
 		}
 
 		// run shell command, i.e. secure connections tuneling
-		if(command!=NULL)
+		if( command!=NULL )
 		{
 #ifdef DEBUG1
 			syslog(LOG_INFO, "DEBUG: [lmsd] Executing command: %s.", command);
@@ -195,7 +195,7 @@ int main(int argc, char *argv[], char **envp)
 		// maybe we should do that once before main loop, but in
 		// this way we can change configuration without daemon restart
 #ifndef CONFIGFILE
-		if(iopt) // from command line...
+		if( iopt ) // from command line...
 		{
 			inst = strdup(iopt);
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
@@ -237,7 +237,7 @@ int main(int argc, char *argv[], char **envp)
 #else 
 		// read config from ini file
 		ini = config_load(g->conn, dhost, NULL);
-		if(iopt) // from command line...
+		if( iopt ) // from command line...
 		{
 			inst = strdup(iopt);
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
@@ -278,7 +278,7 @@ int main(int argc, char *argv[], char **envp)
 		{
 			// forking reload - we can do a job for longer than one minute
 			if( quit )
-				fval = 0; // don't fork if "quit mode"
+				fval = 0; // don't fork in "quit mode"
 			else
 				fval = fork();
 			
@@ -292,7 +292,7 @@ int main(int argc, char *argv[], char **envp)
 				set_proc_title(PROGNAME": reload");
 
 				// restore old handler so we can wait for childs executed by modules
-				if( ! quit )
+				if( !quit )
 					sigaction(SIGCHLD, &orig, NULL);
 #ifdef DEBUG1
 				syslog(LOG_INFO, "DEBUG: [lmsd] Reloading...");
@@ -377,7 +377,7 @@ int main(int argc, char *argv[], char **envp)
 				}
 			}
 			else 
-				sleep(10); // it's important to sleep parent
+				sleep(10); // it's important to sleep parent for some time
 			
 			for(i=0; i<i_no; i++)
 			{ 
@@ -418,9 +418,9 @@ static void parse_command_line(int argc, char **argv)
 	
 	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
 	
-	while ( (opt = getopt_long(argc, argv, "qrfvi:h:p:d:u:H:c:", options, &option_index)) != -1 )
+	while( (opt = getopt_long(argc, argv, "qrfvi:h:p:d:u:H:c:", options, &option_index)) != -1 )
 	{
-		switch (opt) 
+		switch(opt) 
 		{
     		case 'v':
             		printf("LMS Daemon version 1.7-cvs (%s)\nCopyright (c) 2001-2005 LMS Developers\n", revision);
@@ -500,7 +500,7 @@ static int crontab_match(time_t tt, char *crontab)
 /* signal handler for SIGCHLD reaps zombie children */
 void sig_child(int signum)
 {
-	if(signum != SIGCHLD ) return;
+	if( signum != SIGCHLD ) return;
 	
 	while( waitpid(-1, NULL, WNOHANG) > 0 )	continue;
 }
@@ -508,7 +508,7 @@ void sig_child(int signum)
 /* termination signals handling */
 void termination_handler(int signum)
 {
-	if(signum)
+	if( signum )
 		syslog(LOG_ERR, "LMS Daemon exited abnormally.");
 	else
 		syslog(LOG_INFO, "LMS Daemon exited.");
@@ -522,16 +522,16 @@ static void init_set_proc_title(int argc, char **argv, char **envp)
     register int i, envpsize;
     char **p;
 
-    /* Move the environment so setproctitle can use the space. */
-    for (i = envpsize = 0; envp[i] != NULL; i++)
+    // move the environment so setproctitle can use the space
+    for(i = envpsize = 0; envp[i] != NULL; i++)
 	    envpsize += strlen(envp[i]) + 1;
 
-    if ((p = (char **)malloc((i + 1) * sizeof(char *))) != NULL)
+    if( (p = (char **)malloc((i + 1) * sizeof(char *))) != NULL )
     {
 	environ = p;
 
-	for (i = 0; envp[i] != NULL; i++)
-    	    if ((environ[i] = malloc(strlen(envp[i]) + 1)) != NULL)
+	for(i=0; envp[i] != NULL; i++)
+    	    if( (environ[i] = malloc(strlen(envp[i]) + 1)) != NULL )
     		strcpy(environ[i], envp[i]);
 
 	environ[i] = NULL;
@@ -539,12 +539,12 @@ static void init_set_proc_title(int argc, char **argv, char **envp)
 
     Argv = argv;
 
-    for (i = 0; i < argc; i++)
-        if (!i || (LastArgv + 1 == argv[i]))
+    for(i=0; i<argc; i++)
+        if( !i || (LastArgv + 1 == argv[i]) )
     	    LastArgv = argv[i] + strlen(argv[i]);
 
-    for (i = 0; envp[i] != NULL; i++)
-	if (LastArgv + 1 == envp[i])
+    for(i=0; envp[i] != NULL; i++)
+	if( LastArgv + 1 == envp[i] )
     	    LastArgv = envp[i] + strlen(envp[i]);
 }
 
