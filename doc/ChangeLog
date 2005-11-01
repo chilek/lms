@@ -3,6 +3,8 @@ $Id$
 version ? (????-??-??):
 
   - BTS#0000466: lms-antyvir: fixed parse error (alec)
+  - BTS#0000373: lms-notify: added exception handler for mail server 
+    connection problems (alec)
 
 version 1.7.4 Wraith (2005-10-31):
 
