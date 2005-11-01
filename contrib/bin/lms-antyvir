@@ -86,7 +86,7 @@ if(!$quiet)
 {
 	print STDOUT "lms-antyvir, version $_version\n";
 	print STDOUT "(C) 2001-2005 LMS Developers\n";
-	print STDOUT "(C) 2001-2005 Wojciech Swiadkowski\n"
+	print STDOUT "(C) 2001-2005 Wojciech Swiadkowski\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
