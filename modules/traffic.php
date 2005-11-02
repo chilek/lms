@@ -95,8 +95,8 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 		{
 			$traffic['upload']['data'][] = $row['upload'];
 			$traffic['download']['data'][] = $row['download'];
-			$traffic['upload']['avg'][] = $row['upload']/($delta*1024);
-			$traffic['download']['avg'][] = $row['download']/($delta*1024);
+			$traffic['upload']['avg'][] = $row['upload']*8/($delta*1024);
+			$traffic['download']['avg'][] = $row['download']*8/($delta*1024);
 			$traffic['upload']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
 			$traffic['download']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
 			$traffic['upload']['ipaddr'][] = $row['ip'];
@@ -109,8 +109,8 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 
 		$traffic['upload']['sum']['data'] = $uploadsum;
 		$traffic['download']['sum']['data'] = $downloadsum;
-		$traffic['upload']['avgsum'] = $uploadsum/($delta*1024);
-		$traffic['download']['avgsum'] = $downloadsum/($delta*1024);
+		$traffic['upload']['avgsum'] = $uploadsum*8/($delta*1024);
+		$traffic['download']['avgsum'] = $downloadsum*8/($delta*1024);
 
 		// get maximum data from array
 

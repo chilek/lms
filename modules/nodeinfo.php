@@ -24,6 +24,21 @@
  *  $Id$
  */
 
+function NodeStats($id, $dt)
+{
+	global $DB;
+	if($stats = $DB->GetRow('SELECT SUM(download) AS download, SUM(upload) AS upload 
+			    FROM stats WHERE nodeid=? AND dt>?', 
+			    array($id, time()-$dt)))
+	{
+		list($result['download']['data'], $result['download']['units']) = setunits($stats['download']);
+		list($result['upload']['data'], $result['upload']['units']) = setunits($stats['upload']);
+		$result['downavg'] = (int) $stats['download']*8/$dt;
+		$result['uplavg'] = (int) $stats['upload']*8/$dt;
+	}
+	return $result;
+}
+
 if(!eregi('^[0-9]+$',$_GET['id']))
 {
 	$SESSION->redirect('?m=nodelist');
@@ -62,6 +77,10 @@ $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 $taxeslist = $LMS->GetTaxes();
 
+$nodestats['hour'] = NodeStats($nodeid, 360);
+$nodestats['day'] = NodeStats($nodeid, 360*24);
+$nodestats['month'] = NodeStats($nodeid, 360*24*30);
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!isset($_GET['ownerid']))
@@ -78,6 +97,7 @@ $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('nodeinfo',$nodeinfo);
+$SMARTY->assign('nodestats',$nodestats);
 $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('customergroups',$customergroups);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
