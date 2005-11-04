@@ -150,7 +150,7 @@
 		            		        <B>{t}hour:{/t}</B>
 			                </TD>
 			        	<TD width="99%" nowrap>
-					        {$nodestats.hour.download.data|string_format:"%.2f"} {$nodestats.hour.download.units} ({$nodestats.hour.downavg.data|default:"0"} kbps) / {$nodestats.hour.upload.data|string_format:"%.2f"} {$nodestats.hour.upload.units} ({$nodestats.hour.upavg.data|default:"0"} kbps) 
+					        {$nodestats.hour.download.data|string_format:"%.2f"} {$nodestats.hour.download.units} ({$nodestats.hour.downavg|string_format:"%d"} kbps) / {$nodestats.hour.upload.data|string_format:"%.2f"} {$nodestats.hour.upload.units} ({$nodestats.hour.upavg|string_format:"%d"} kbps) 
 					</TD>
 				</TR>
 				<TR>
@@ -158,7 +158,7 @@
 		            		        <B>{t}24 hour:{/t}</B>
 			                </TD>
 			        	<TD width="99%" nowrap>
-					        {$nodestats.day.download.data|string_format:"%.2f"} {$nodestats.day.download.units} ({$nodestats.day.downavg.data|default:"0"} kbps) / {$nodestats.day.upload.data|string_format:"%.2f"} {$nodestats.day.upload.units} ({$nodestats.day.upavg.data|default:"0"} kbps)
+					        {$nodestats.day.download.data|string_format:"%.2f"} {$nodestats.day.download.units} ({$nodestats.day.downavg|string_format:"%d"} kbps) / {$nodestats.day.upload.data|string_format:"%.2f"} {$nodestats.day.upload.units} ({$nodestats.day.upavg|string_format:"%d"} kbps)
 					</TD>
 				</TR>
 				<TR>
@@ -166,7 +166,7 @@
 		            		        <B>{t}30 days:{/t}</B>
 			                </TD>
 			        	<TD width="99%" nowrap>
-					        {$nodestats.month.download.data|string_format:"%.2f"} {$nodestats.month.download.units} ({$nodestats.month.downavg.data|default:"0"} kbps) / {$nodestats.month.upload.data|string_format:"%.2f"} {$nodestats.month.upload.units} ({$nodestats.month.upavg.data|default:"0"} kbps)
+					        {$nodestats.month.download.data|string_format:"%.2f"} {$nodestats.month.download.units} ({$nodestats.month.downavg|string_format:"%d"} kbps) / {$nodestats.month.upload.data|string_format:"%.2f"} {$nodestats.month.upload.units} ({$nodestats.month.upavg|string_format:"%d"} kbps)
 					</TD>
 				</TR>
 			</TABLE>

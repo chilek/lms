@@ -33,8 +33,8 @@ function NodeStats($id, $dt)
 	{
 		list($result['download']['data'], $result['download']['units']) = setunits($stats['download']);
 		list($result['upload']['data'], $result['upload']['units']) = setunits($stats['upload']);
-		$result['downavg'] = (int) $stats['download']*8/$dt;
-		$result['uplavg'] = (int) $stats['upload']*8/$dt;
+		$result['downavg'] = $stats['download']*8/1024/$dt;
+		$result['uplavg'] = $stats['upload']*8/1024/$dt;
 	}
 	return $result;
 }
