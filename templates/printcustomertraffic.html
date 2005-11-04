@@ -40,13 +40,13 @@
 			{$stat.download|string_format:"%.2f"} {$stat.downloadunit}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$stat.downavg|string_format:"%.2f"} {$stat.downavgunit}/s
+			{$stat.downavg|string_format:"%d"} kbps
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.upload|string_format:"%.2f"} {$stat.uploadunit}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$stat.upavg|string_format:"%.2f"} {$stat.upavgunit}/s
+			{$stat.upavg|string_format:"%d"} kbps
 		</TD>
 	</TR>
 	{foreachelse}
@@ -66,13 +66,13 @@
 			<B>{$listdata.download|string_format:"%.2f"} {$listdata.downloadunit|default:"KB"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.downavg|string_format:"%.2f"} {$listdata.downavgunit|default:"KB"}/s</B>
+			<B>{$listdata.downavg|string_format:"%d"} kbps</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.upload|string_format:"%.2f"} {$listdata.uploadunit|default:"KB"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$listdata.upavg|string_format:"%.2f"} {$listdata.upavgunit|default:"KB"}/s</B>
+			<B>{$listdata.upavg|string_format:"%d"} kbps</B>
 		</TD>
 	</TR>
 </TABLE>

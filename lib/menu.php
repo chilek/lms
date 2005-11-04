@@ -102,7 +102,7 @@ $menu = array(
 				),
 				array(
 					'name' => trans('Printing'),
-					'link' =>'?m=print&menu=customers',
+					'link' =>'?m=customerprint',
 					'tip' => trans('Printing'),
 				),
 			),		 
@@ -116,34 +116,29 @@ $menu = array(
 			'accesskey' =>'k',
 			'prio' =>'10',
 			'submenu' => array(
-				// node
 				array(
 					'name' => trans('List'),
 					'link' => '?m=nodelist',
 					'tip' => trans('List of nodes'),
 				),
-				// node
 				array(
 					'name' => trans('New Node'),
 					'link' => '?m=nodeadd',
 					'tip' => trans('Allows you to add new node'),
 				),
-				// node
 				array(
 					'name' => trans('Search'),
 					'link' => '?m=nodesearch',
 					'tip' => trans('Allows you to search node'),
 				),
-				// node
 				array(
 					'name' => trans('Messages'),
 					'link' => '?m=nodewarn',
 					'tip' => trans('Allows you to send message to nodes'),
 				),
-				// node
 				array(
 					'name' => trans('Printing'),
-					'link' => '?m=print&menu=nodes',
+					'link' => '?m=nodeprint',
 					'tip' => trans('Allows you to print node list'),
 				),
 			),
@@ -261,7 +256,7 @@ $menu = array(
 				),
 				array(
 					'name' => trans('Printing'),
-					'link' => '?m=print&menu=finances',
+					'link' => '?m=print',
 					'tip' => trans('Printing of financial statements'),
 				),
 			),
@@ -373,7 +368,7 @@ $menu = array(
 				),
 				array(
 					'name' => trans('Printing'),
-					'link' => '?m=print&menu=traffic',
+					'link' => '?m=trafficprint',
 					'tip' => trans('Printing of customer stats'),
 				),
 			),

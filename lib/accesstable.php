@@ -32,25 +32,25 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|account|alias|domain|config|event|taxrate|document|numberplan)(list|info|view|search|balance|infoshort)|netdevmap|print|eventprint|nodelistshort|number)$';
+$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|account|alias|domain|config|event|taxrate|document|numberplan)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
 
 $access['table'][3]['name']		= trans('finances management');
-$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(receipt|receipt(list|add|edit|del))|(invoice|invoice(list|new|edit|note|report))|number|paid)$';
+$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(receipt|receipt(list|add|edit|del))|(invoice|invoice(list|new|edit|note|report))|number|paid|print)$';
 
 $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';
 
 $access['table'][5]['name']		= trans('customers management');
-$access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|del|assignments|assignmentsedit|warn)|nodewarn|customergroup(add|edit|delete|move))$';
+$access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|del|print|assignments|assignmentsedit|warn)|nodewarn|customergroup(add|edit|delete|move))$';
 
 $access['table'][6]['name'] 		= trans('nodes management');
-$access['table'][6]['allow_reg']  	= '^(node(add|scan|del|edit|warn)|choose(mac|ip))$';
+$access['table'][6]['allow_reg']  	= '^(node(add|scan|del|edit|print|warn)|choose(mac|ip))$';
 
 $access['table'][7]['name']    	     	= trans('stats access');
-$access['table'][7]['allow_reg']	= '^traffic$';
+$access['table'][7]['allow_reg']	= '^(traffic|traffic(print))$';
 
 $access['table'][8]['name']         	= trans('mailing access');
 $access['table'][8]['allow_reg']    	= '^(mailing)$';
