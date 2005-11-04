@@ -1591,5 +1591,9 @@ $_LANG['Year:'] = 'Rok:';
 $_LANG['Add items'] = 'Dodaj pozycje';
 $_LANG['Last 10 not accounted invoices:'] = 'Ostatnie 10 nierozliczonych faktur:';
 $_LANG['That customer hasn\'t got not accounted invoices.'] = 'Ten klient nie posiada nierozliczonych faktur.';
+$_LANG['24 hour:'] = '24 godzin:';
+$_LANG['30 days:'] = '30 dni:';
+$_LANG['hour:'] = 'godziny:';
+$_LANG['Traffic stats from last (download/upload):'] = 'Statystyki ruchu z ostatnich (download/upload):';
 
 ?>
