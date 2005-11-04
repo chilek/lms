@@ -7,6 +7,7 @@ version ? (????-??-??):
     connection problems (alec)
   - changed stats units to kbps (alec)
   - added traffic stats in node informations window (alec)
+  - fixed/changed access rights for printing modules (alec)
 
 version 1.7.4 Wraith (2005-10-31):
 
