@@ -1,7 +1,6 @@
-{include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if $unlockedit}<FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}"><INPUT type="submit" class="hiddenbtn">{/if}
+{if $unlockedit}<FORM NAME="useredit" METHOD="POST" ACTION="?m=core&a=useredit&id={$userinfo.id}"><INPUT type="submit" class="hiddenbtn">{/if}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		{if $unlockedit}
@@ -79,7 +78,7 @@
 			{if $unlockedit}
 			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT="">
 			{else}
-			<A HREF="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>{/if} <a href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" alt=""></A> <A HREF="?m=userpasswd&id={$userinfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" ALT=""> {if $unlockedit}<A HREF="?m=userinfo&id={$userinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			<A HREF="?m=core&a=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>{/if} <a href="?m=core&a=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" alt=""></A> <A HREF="?m=core&a=userpasswd&id={$userinfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" ALT=""> {if $unlockedit}<A HREF="?m=core&a=userinfo&id={$userinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
 			{/if}
 		</TD>
 	</TR>
@@ -110,4 +109,3 @@ document.forms['useredit'].elements['userinfo[login]'].focus();
 //-->
 </SCRIPT>
 {/if}
-{include file="footer.html"}
