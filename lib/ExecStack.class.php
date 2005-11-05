@@ -1,0 +1,280 @@
+<?php
+
+/*
+ * LMS version 1.7-cvs
+ *
+ *  (C) Copyright 2004 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is licensed under LMS Public License. Please, see
+ *  doc/LICENSE.en file for information about copyright notice.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  LMS Public License for more details.
+ *
+ *  $Id$
+ */
+
+class ExecStack
+{
+	var $version = '1.7-cvs';
+	var $_MODINFO = array();
+	var $_BINDTABLE = array();
+	var $_EXECSTACK = array();
+	var $module;
+	var $action;
+	var $modules_dir;
+	var $SESSION = NULL;
+	var $AUTH = NULL;
+
+	function ExecStack($directory = 'modules/', $module, $action, &$SESSION, &$AUTH)
+	{
+		$this->loadModules($directory);
+		$this->SESSION =& $SESSION;
+		$this->AUTH =& $AUTH;
+		$this->module = $module;
+		$this->action = $action;
+		$this->buildExecStack($module, $action);
+	}
+	
+	function loadModules($modules_dir)
+	{
+		$this->modules_dir = $modules_dir;
+		$this->_MODINFO = array();
+		$priority_table = array();
+		if ($handle = opendir($this->modules_dir))
+		{
+			while (false !== ($file = readdir($handle)))
+				if(is_dir($this->modules_dir.'/'.$file) && is_readable($this->modules_dir.'/'.$file.'/modinfo.php'))
+				{
+					include($this->modules_dir.'/'.$file.'/modinfo.php');
+					foreach($_MODINFO as $module_name => $modinfo)
+					{
+						$this->_MODINFO[$module_name] = $modinfo;
+						if(! isset($this->_MODINFO[$module_name]['hidden']))
+							$this->_MODINFO[$module_name]['hidden'] = FALSE;
+						if(! isset($this->_MODINFO[$module_name]['notpublic']))
+							$this->_MODINFO[$module_name]['notpublic'] = FALSE;
+						if(! isset($this->_MODINFO[$module_name]['default']))
+							$this->_MODINFO[$module_name]['default'] = FALSE;
+
+						if(isset($this->_MODINFO[$module_name]['actions']) && is_array($this->_MODINFO[$module_name]['actions']))
+							foreach($this->_MODINFO[$module_name]['actions'] as $actionname => $action_info)
+							{
+								if(! isset($action_info['hidden']))
+									$this->_MODINFO[$module_name]['actions'][$actionname]['hidden'] = FALSE;
+								if(! isset($action_info['notpublic']))
+									$this->_MODINFO[$module_name]['actions'][$actionname]['notpublic'] = FALSE;
+								if(! isset($action_info['dontexec']))
+									$this->_MODINFO[$module_name]['actions'][$actionname]['dontexec'] = FALSE;
+								if(! isset($action_info['notemplate']))
+									$this->_MODINFO[$module_name]['actions'][$actionname]['notemplate'] = FALSE;
+								if(! isset($action_info['bindings']))
+									$this->_MODINFO[$module_name]['actions'][$actionname]['bindings'] = array();
+								if(! isset($action_info['default']))
+									$this->_MODINFO[$module_name]['actions'][$actionname]['default'] = FALSE;
+								if(! isset($action_info['onlogin']))
+									$this->_MODINFO[$module_name]['actions'][$actionname]['onlogin'] = FALSE;
+							}
+					}
+					
+				}
+			closedir($handle);
+		}
+
+		foreach($this->_MODINFO as $module_name => $modinfo)
+		{
+			$priority_table['priority'][] = (isset($modinfo['priority']) ? $modinfo['priority'] : 255);
+			$priority_table['module'][] = $module_name;
+		}
+
+		array_multisort($priority_table['priority'], SORT_NUMERIC, SORT_ASC, $priority_table['module'], SORT_ASC);
+
+		foreach($priority_table['module'] as $module_name)
+			$_MODINFO_tmp[$module_name] = $this->_MODINFO[$module_name];
+
+		$this->_MODINFO = $_MODINFO_tmp;
+		
+		return $this->_MODINFO;
+	}
+
+	function getDefaultModule()
+	{
+		if($this->_MODINFO)
+			foreach($this->_MODINFO as $module_name => $module_info)
+				if($module_info['default'] === TRUE)
+					return $module_name;
+	}
+
+	function getDefaultAction($module)
+	{
+		if(isset($this->_MODINFO[$module]) && $this->_MODINFO[$module]['actions'])
+			foreach($this->_MODINFO[$module]['actions'] as $action_name => $action_info)
+				if($action_info['default'] === TRUE)
+					return $action_name;
+	}					
+
+	function getLoginAction()
+	{
+		if($this->_MODINFO)
+			foreach($this->_MODINFO as $module_name => $module_info)
+				if(isset($module_info['actions']))
+					foreach($module_info['actions'] as $action_name => $action_info)
+						if($action_info['onlogin'] === TRUE)
+							return array( array( 'module' => $module_name, 'action' => $action_name ) );
+	}
+
+	function buildBindTable()
+	{
+		$this->_BINDTABLE = array(
+			'pre/*:*' => array(),
+			'post/*:*' => array(),
+			);
+		if($this->_MODINFO)
+			foreach($this->_MODINFO as $module_name => $module_info)
+				if($module_info)
+					foreach($module_info['actions'] as $action_name => $action_info)
+					{
+						// init bindtable entries as arrays, to quiet errors near lines 194-204...
+						$this->_BINDTABLE['pre/'.$module_name.':'.$action_name] = array();
+						$this->_BINDTABLE['post/'.$module_name.':'.$action_name] = array();
+						foreach($action_info['bindings'] as $bind)
+							$this->_BINDTABLE[$bind][] = $module_name.':'.$action_name;
+					}
+		return $this->_BINDTABLE;
+	}
+
+	function needExec($module, $action)
+	{
+		return ! $this->_MODINFO[$module]['actions'][$action]['dontexec'];
+	}
+
+	function needTemplate($module, $action)
+	{
+		return ! $this->_MODINFO[$module]['actions'][$action]['notemplate'];
+	}
+
+	function moduleExists($module)
+	{
+		return isset($this->_MODINFO[$module]) && is_array($this->_MODINFO[$module]) && is_readable($this->modules_dir.'/'.$module.'/modinfo.php');
+	}
+
+	function moduleIsPublic($module)
+	{
+		return ! $this->_MODINFO[$module]['notpublic'];
+	}
+
+	function actionExists($module, $action)
+	{
+		return is_array($this->_MODINFO[$module]['actions'][$action]) && ($this->needExec($module, $action) ? is_readable($this->modules_dir.'/'.$module.'/actions/'.$action.'.php') : TRUE);
+	}
+
+	function actionIsPublic($module, $action)
+	{
+		return ! $this->_MODINFO[$module]['actions'][$action]['notpublic'];
+	}
+
+	function buildExecStack($module, $action, $depth = 0)
+	{
+		if($this->AUTH->islogged === TRUE)
+		{
+			if($depth == 0)
+			{	
+				if($module == '')
+					$module = $this->getDefaultModule();
+
+				if($action == '')
+					$action = $this->getDefaultAction($module);
+
+				$this->module = $module;
+				$this->action = $action;
+				
+				if(! $this->moduleExists($module))
+				{
+					$module = 'core';
+					$action = 'err_modulenotfound';
+				}
+				elseif(! $this->moduleIsPublic($module))
+				{
+					$module = 'core';
+					$action = 'err_modulenotpublic';
+				}
+				elseif(! $this->actionExists($module, $action))
+				{
+					$module = 'core';
+					$action = 'err_actionnotfound';
+				}
+				elseif(! $this->actionIsPublic($module, $action))
+				{
+					$module = 'core';
+					$action = 'err_actionnotpublic';
+				}
+			}
+				
+			if($depth > 15)
+				return NULL;
+
+			if($this->_BINDTABLE == array())
+				$this->buildBindTable();
+		
+			$stack = array();
+
+			if($depth == 0 && $this->_BINDTABLE['pre/*:*'])
+				foreach($this->_BINDTABLE['pre/*:*'] as $bind)
+				{
+					list($tmodule, $taction) = split(':', $bind);
+					foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
+						array_push($stack, $tbind);
+				}
+
+			if($this->_BINDTABLE['pre/'.$module.':'.$action])
+				foreach($this->_BINDTABLE['pre/'.$module.':'.$action] as $bind)
+				{
+					list($tmodule, $taction) = split(':', $bind);
+					foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
+						array_push($stack, $tbind);
+				}
+
+			array_push($stack, $module.':'.$action);
+		
+			if($this->_BINDTABLE['post/'.$module.':'.$action])
+				foreach($this->_BINDTABLE['post/'.$module.':'.$action] as $bind)
+				{
+					list($tmodule, $taction) = split(':', $bind);
+					foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
+						array_push($stack, $tbind);
+				}
+			
+			if($depth == 0 && $this->_BINDTABLE['post/*:*'])
+				foreach($this->_BINDTABLE['post/*:*'] as $bind)
+				{
+					list($tmodule, $taction) = split(':', $bind);
+					foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
+						array_push($stack, $tbind);
+				}
+			
+			if($stack && $depth == 0)
+			{
+				$this->_EXECSTACK = array();
+				foreach($stack as $stackitem)
+				{
+					list($module, $action) = split(':', $stackitem);
+					$this->_EXECSTACK[] = array( 'module' => $module, 'action' => $action);
+				}
+				return $this->_EXECSTACK;
+			}
+			else
+				$this->_EXECSTACK = $stack;
+		}
+		else
+			$this->_EXECSTACK = $this->getLoginAction();
+
+		return $this->_EXECSTACK;
+	}
+			
+}
+
+?>
