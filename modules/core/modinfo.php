@@ -138,12 +138,18 @@ $_MODINFO['core'] = array(
 					),
 				'menu' => 'core_administration',
 				),
+			'userdel' => array(
+				'hidden' => TRUE,
+				),
+			'useredit' => array(
+				'hidden' => TRUE,
+				'template' => 'userinfo', // TODO: use diffrent template than useredit.html
+				),
 			'userinfo' => array(
-				'menuname' => array(
+				'menuname' => array( // ta akcja jest ukryta, więc nie musi mieć 'menuname'
 					'en' => 'User information',
 					'pl' => 'Informacje o użytkowniku',
 					),
-				'notpublic' => TRUE,
 				'hidden' => TRUE,	
 				),
 			'dblist' => array(

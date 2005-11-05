@@ -41,6 +41,5 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('accesslist', $accesslist);
-$SMARTY->display('userinfo.html');
 
 ?>
