@@ -1,0 +1,110 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" NOWRAP class="fleftu"> <A href="?m=documentlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A>{if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD WIDTH="1%" NOWRAP class="fbt">{t}Number:{/t}</TD>
+		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=type{if $listdata.direction eq "asc" && $listdata.order eq "type"},desc{/if}"><B>{t}Type:{/t}</B></A>{if $listdata.order eq "type"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=title{if $listdata.direction eq "asc" && $listdata.order eq "title"},desc{/if}">{t}Title:{/t}</A>{if $listdata.order eq "title"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD WIDTH="1%" NOWRAP class="fbt">{t}Period:{/t}</TD>
+		<TD WIDTH="94%" NOWRAP class="fbt">{t}Description:{/t}</TD>
+		<TD WIDTH="1%" NOWRAP class="frightu">{t 0=$listdata.total}Total: $0{/t}</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="7">
+			<P><FORM method="GET" action="?m=documentlist" name="filter">
+				<INPUT type="submit" class="hiddenbtn">
+				<INPUT type="HIDDEN" name="m" value="documentlist">
+				<INPUT type="HIDDEN" name="page" value="1">
+				<B>{t}Filter:{/t} </B> {t}Customer:{/t}
+				<SELECT size="1" name="c" OnChange="document.filter.submit();">
+					{*
+					<OPTION value="0"{if $listdata.customer eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
+					*}
+					{section name=customerlist loop=$customerlist}
+					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
+					{/section}
+				</SELECT>&nbsp;
+				{t}Type:{/t}
+				<SELECT size="1" name="t" ONCHANGE="document.filter.submit();">
+					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{t}- all -{/t}</OPTION>
+					{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
+					<OPTION VALUE="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</OPTION>
+					{/if}{/foreach}
+				</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="7" CLASS="FALL">
+			<B>{t}Page:{/t}
+				{if $page > 1}<A HREF="?m={$layout.module}&c={$listdata.customer}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$documentlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&c={$listdata.customer}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&c={$listdata.customer}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section loop=$documentlist name=documentlist start=$start max=$pagelimit}
+	{assign var=doc value=$documentlist[documentlist]}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
+			{$doc.cdate|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP align="right" onclick="window.open('?m=documentview&id={$doc.docid}');">
+			{if $doc.number}
+				{number number=$doc.number template=$doc.template time=$doc.cdate}
+			{/if}
+		</TD>
+		<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>
+		<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"..."}</TD>
+		<TD WIDTH="1%" NOWRAP align="right" onclick="window.open('?m=documentview&id={$doc.docid}');">
+			{if $doc.fromdate}{t}from{/t} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
+			{if $doc.todate}{t}to{/t} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+		</TD>
+		<TD WIDTH="94%" onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.description}</TD>
+		<TD WIDTH="1%" CLASS="fright" ALIGN="RIGHT" NOWRAP>
+			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/view.gif" alt="[ {t}View{/t} ]"></a>
+			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]"></a>
+			<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></a>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD align="center" WIDTH="100%" colspan="7" class="fall">
+			<p>&nbsp;</p>
+			<p><B>{t}That customer hasn't got any documents.{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="7" CLASS="FALL">
+			<B>{t}Page:{/t}
+				{if $page > 1}<A HREF="?m={$layout.module}&c={$listdata.customer}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$documentlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&c={$listdata.customer}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&c={$listdata.customer}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+</TABLE>
+{include file="footer.html"}

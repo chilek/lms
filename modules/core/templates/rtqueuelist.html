@@ -1,0 +1,84 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<TABLE cellpadding="5" WIDTH="100%">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="95%">
+			<IMG src="img/queue.gif" ALT="">
+			<B>{t}Queue{/t}:</B><BR>
+			<IMG src="img/info1.gif" ALT="">
+			{t}Description{/t}:
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" align="right" NOWRAP>
+			<B>{t}E-mail:{/t}</B>
+		</TD>
+		<TD CLASS="fbt" align="right"  WIDTH="1%">
+			{t}New:{/t}
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%">
+			{t}Opened:{/t}
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%" ALIGN="CENTER">
+			{t}Last:{/t}
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%">
+			&nbsp;
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$queues item=queue}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+			<IMG src="img/queue.gif" ALT="">
+			<B>{$queue.name}</B><BR>
+			{if $queue.description}
+				<IMG src="img/info1.gif" ALT=""> {$queue.description}
+			{/if}
+		</TD>
+		<TD  align="right">
+			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+			{$queue.new|default:0}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+			{$queue.open|default:0}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';" NOWRAP>
+			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
+		</TD>
+		<TD CLASS="fright" NOWRAP>
+			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
+			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]"></A>
+			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t 0=$queue.name}Are you sure, you want to remove queue \'$0\' and all assigned tickets and messages?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="6" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>{t}There are no queues.{/t}<B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/foreach}
+	<TR CLASS="light">
+		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
+			<IMG src="img/info2.gif" ALT="">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD ALIGN="CENTER" CLASS="fbt">
+			<B>{sum array=$queues column=new}</B>
+		</TD>
+		<TD ALIGN="CENTER" CLASS="fbt">
+			<B>{sum array=$queues column=open}</B>
+		</TD>
+		<TD CLASS="frightu" COLSPAN="2">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

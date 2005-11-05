@@ -1,0 +1,80 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="adminadd" METHOD="POST" ACTION="?m=adminadd">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FLEFTU" WIDTH="1%">
+			<IMG SRC="img/pass.gif" ALT=""> <B>{t}Login:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHTU" WIDTH="99%">
+			<INPUT TYPE="TEXT" NAME="adminadd[login]" VALUE="{$adminadd.login}" {tip trigger="login" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" NOWRAP>
+			<IMG SRC="img/admins.gif" ALT=""> <B>{t}First/last name:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="adminadd[name]" VALUE="{$adminadd.name}" {tip trigger="name"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT">
+			<IMG SRC="img/mail.gif" ALT=""> <B>{t}E-mail:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="adminadd[email]" VALUE="{$adminadd.email}" {tip trigger="email"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT">
+			<IMG SRC="img/pass.gif" ALT=""> <B>{t}Password:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="PASSWORD" NAME="adminadd[password]" {tip trigger="password"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" NOWRAP>
+			<IMG SRC="img/pass.gif" ALT=""> <B>{t}Repeat password:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="PASSWORD" NAME="adminadd[confirm]" {tip trigger="password"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" NOWRAP>
+			<IMG SRC="img/ip.gif" ALT=""> <B>{t}Allowed hosts:{/t}</B>
+		</TD>
+		<TD CLASS="fright" NOWRAP>
+			<INPUT TYPE="TEXT" SIZE="40" NAME="adminadd[hosts]" VALUE="{$adminadd.hosts}" {tip text="Enter coma separated list of hosts or networks" trigger="hosts"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
+			<A HREF="javascript:document.adminadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=adminlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+		</TD>
+	</TR>
+	<TR CLASS="DARK">
+		<TD CLASS="FALL" COLSPAN="2">
+			<B>{t}Access rights:{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FALL" COLSPAN="2">
+			{section name=acl loop=$accesslist}
+			<INPUT CLASS="box light" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			{/section}
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+document.forms['adminadd'].elements['adminadd[login]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

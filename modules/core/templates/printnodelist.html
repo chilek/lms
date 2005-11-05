@@ -1,0 +1,73 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="99%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Prepared by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
+	<TR>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}No.{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}ID{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=RIGHT CLASS=head>
+			<B>{t}Node name{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}IP address{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}MAC address{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=LEFT CLASS=head>
+			{t}Owner{/t}
+		</TD>
+		<TD WIDTH="94%" ALIGN=LEFT CLASS=head>
+			{t}Description{/t}
+		</TD>
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=nodelist loop=$nodelist}
+	<TR class="{cycle}">
+		<TD WIDTH="1%" ALIGN=CENTER>
+			{counter}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER>
+			{$nodelist[nodelist].id|string_format:"%04d"}
+		</TD>
+		<TD WIDTH="1%" ALIGN=RIGHT>
+			<B>{$nodelist[nodelist].name}</B>
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER>
+			{$nodelist[nodelist].ip}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER>
+			{$nodelist[nodelist].mac}
+		</TD>
+		<TD WIDTH="1%" ALIGN=LEFT>
+			{$nodelist[nodelist].owner}
+		</TD>
+		<TD WIDTH="94%" ALIGN=LEFT>
+			{$nodelist[nodelist].info}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" COLSPAN="7">
+			<P>&nbsp;</P>
+			<P><B>{t}No such nodes in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+</TABLE>

@@ -1,0 +1,91 @@
+<!-- $Id$ -->
+<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formeditip&id={$netdevinfo.id}&ip={$nodeipdata.id}">
+	<INPUT type="submit" class="hiddenbtn">
+    <INPUT TYPE="hidden" NAME="ipadd[id]" VALUE="{$nodeipdata.id}">
+    <INPUT TYPE="hidden" NAME="ipadd[createdby]" VALUE="{$nodeipdata.createdby}">
+    <INPUT TYPE="hidden" NAME="ipadd[creationdateh]" VALUE="{$nodeipdata.creationdateh}">
+    <INPUT TYPE="hidden" NAME="ipadd[moddate]" VALUE="{$nodeipdata.moddate}">
+    <INPUT TYPE="hidden" NAME="ipadd[modifiedby]" VALUE="{$nodeipdata.modifiedby}">
+    <INPUT TYPE="hidden" NAME="ipadd[moddateh]" VALUE="{$nodeipdata.moddateh}">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/ip.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name|upper}" MAXLENGTH="16" {tip text="Enter address name" trigger="ipname" bold=1}>
+			<B>({$nodeipdata.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/ip.gif" ALT="{t}IP address:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+                       <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+                       <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{if $nodeipdata.ip_pub!="0.0.0.0"}{$nodeipdata.ip_pub}{/if}" {tip text="Enter IP address" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]'],{$nodeipdata.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/network.gif" ALT="{t}Network:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<B><A HREF="?m=netinfo&id={$netdevinfo.netid}">{$nodeipdata.netname}</A></B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<SELECT SIZE="1" NAME="ipadd[access]" {tip text="Select address status"}>
+				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/info.gif" ALT="{t}Description:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Enter additional informations (optional)"}>{$nodeipdata.info}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Created:{/t}<BR>
+			{t}Modified:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<BR>
+			{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>	
+</TABLE>
+</FORM>

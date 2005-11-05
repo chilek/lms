@@ -1,0 +1,82 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+			<IMG src="img/settings.gif" alt=""> <B>{t}Name:{/t}</B>
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+			{t}Host:{/t}
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+			{t}Priority:{/t}
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+			{t}Module:{/t}<BR>
+			{t}Crontab:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="95%">
+			{t}Description:{/t}
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%" nowrap>
+			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="6">
+			<P><FORM method="GET" action="?m=daemoninstancelist" name="filter">
+				<INPUT type="submit" class="hiddenbtn">
+				<INPUT type="HIDDEN" name="m" value="daemoninstancelist">
+				<B>{t}Filter:{/t} </B> {t}Host:{/t}
+				<SELECT size="1" name="id" OnChange="document.filter.submit();">
+					<OPTION value="0"{if ! $hostid} SELECTED{/if}>{t}- all hosts -{/t}</OPTION>
+					{section name=hosts loop=$hosts}
+					<OPTION value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} SELECTED{/if}>{$hosts[hosts].name}</OPTION>
+					{/section}
+				</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>		
+	{cycle values="light,lucid" print=false}
+	{foreach from=$instancelist item=instance}
+	<TR class="{cycle}{if $instance.disabled} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD CLASS="fleft" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
+			<IMG src="img/settings.gif" alt="">
+			<B>{$instance.name}</B>
+		</TD>
+		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+			{$instance.hostname}
+		</TD>
+		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+			{$instance.priority}
+		</TD>
+		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
+			{$instance.module}<BR>{$instance.crontab}
+		</TD>
+		<TD onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+			{$instance.description}
+		</TD>
+		<TD CLASS="fright" align="right" NOWRAP>
+			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" ALT="[ {if $instance.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
+			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse Configuration{/t} ]"></A>
+			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t 0=$instance.name}Are you sure, you want to remove instance \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="6" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no instances configured.{/t}<B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/foreach}
+	<TR CLASS="dark">
+		<TD colspan="6" class="fall" align="right">
+			<A href="?m=daemoninstanceadd&hostid={$hostid}">{t}Add instance{/t} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE></P>
+{include file="footer.html"}

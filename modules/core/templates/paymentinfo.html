@@ -1,0 +1,75 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/payment.gif" ALT="">
+		</TD>
+		<TD WIDTH="98%" COLSPAN="2" CLASS="frightu">
+			<B>{$payment.name} ({$payment.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/creditor.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Creditor:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$payment.creditor}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/value.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Value:{/t}</B> 
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$payment.value|money_format} 
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/calendar.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Payment day:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">								
+			{$payment.payday}
+		</TD>
+	</TR>	
+	{if $payment.description}
+	<TR CLASS="light">	
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/info1.gif" ALT="">
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" COLSPAN="2">
+			<TABLE WIDTH="100%" CELLPADDING="5"> 
+			    <TR><TD CLASS="fall superlight">
+				    {$payment.description|replace:"\n":"<BR>"}
+			    </TD></TR>
+			</TABLE>
+		</TD>
+	</TR>
+	{/if}
+	<FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
+	<INPUT type="submit" class="hiddenbtn">
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
+			<INPUT TYPE="HIDDEN" NAME="addbalance[type]" VALUE="1">
+			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$payment.value}">
+			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
+			<A HREF="?m=paymentedit&id={$payment.id}">{t}Edit{/t} <IMG SRC="img/edit.gif" alt=""></A>
+			<A HREF="?m=paymentlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="javascript:document.addbalance.submit();">{t}Account payment{/t} <IMG SRC="img/pay.gif" alt=""></A>
+		</TD>
+	</TR>
+	</FORM>
+</TABLE>
+{include file="footer.html"}

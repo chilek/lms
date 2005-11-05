@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
+<title>::: LMS :::</title>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/autoiframe.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/common.js"></SCRIPT>
+</head>
+<body>
+<TABLE WIDTH="100%" CELLPADDING="3" id="table">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%">
+			<IMG SRC="img/node.gif" alt="">
+		</TD>
+		<TD WIDTH="99%">
+			<B>{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{if $customernodes.total > 0}
+	{section name=customernodes loop=$customernodes}
+	{if $customernodes[customernodes].id}
+	<tr class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD WIDTH="1%">
+			<IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]">
+			<IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]">
+		</TD>
+		<TD WIDTH="97%" onClick="parent.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+			<B>{$customernodes[customernodes].name}</B><BR>
+			<NOBR>{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub!="0.0.0.0"} ({$customernodes[customernodes].ip_pub}) {/if} / {$customernodes[customernodes].mac}</NOBR><BR>
+			<NOBR>{$customernodes[customernodes].info|truncate:45:"..."}</NOBR>
+		</TD>
+	</TR>
+	{/if}
+	{/section}
+	{else}
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2" align="center">
+			<P>&nbsp;</P>
+			<P>{if $customerinfo.deleted}<FONT class="alert">{t}That customer has been deleted.{/t}</FONT>{else}<B>{t}That customer hasn't got any node.{/t}{/if}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/if}
+</TABLE>
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript">
+<!--
+parent.document.getElementById('autoiframe').width = document.getElementById('table').offsetWidth;
+//-->
+</SCRIPT>
+</BODY>
+</HTML>
+

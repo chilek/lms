@@ -1,0 +1,375 @@
+<!--// $Id$ //-->
+<DIV{if !$invoice.last} STYLE="page-break-after: always"{/if}>
+<TABLE WIDTH="100%" CELLSPACING="3">
+	<TR>
+		<TD WIDTH="98%" CLASS="hdf" COLSPAN="2" VALIGN="TOP">
+			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}
+			{if $invoice.invoice}
+			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate assign=number_ref}
+			    <B>{t 0=$number}Credit Note No. $0{/t}</B><BR>
+			    <B class="mdf">{t 0=$number_ref}for Invoice No. $0{/t}</B><BR>
+			{else}
+			    <B>{t 0=$number}Invoice No. $0{/t}</B><BR>
+			{/if}
+			<B>{$type}</B>
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP" CLASS="sdr">
+			{t}Draw-up date:{/t}<BR>
+			{t}Sale date:{/t}<BR>
+			{t}Deadline:{/t}<BR>
+			{t}Payment type:{/t}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
+			{$invoice.cdate|date_format:"%Y/%m/%d"}{if $_config.invoices.cplace neq ""}, {$_config.invoices.cplace}{/if}<BR>
+			{$invoice.cdate|date_format:"%Y/%m/%d"}<BR>
+			{$invoice.pdate|date_format:"%Y/%m/%d"}<BR>
+			{$invoice.paytype}
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="3" ALIGN="CENTER" WIDTH="100%">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLSPACING="3">
+	<TR>
+		<TD WIDTH="66%" VALIGN="TOP">
+			<B>{t}Seller:{/t}</B><BR>
+			<BR>
+			{$_config.invoices.header|replace:"\\n":"<BR>"}
+			<BR><BR>
+			<B>{t}Purchaser:{/t}</B><BR>
+			<BR>
+			{$invoice.name}<BR>
+			{$invoice.address}<BR>
+			{$invoice.zip} {$invoice.city}<BR>
+			{if $invoice.ten neq ""}{t}TEN:{/t} {$invoice.ten}<BR>{elseif $invoice.ssn neq ""}{t}SSN:{/t} {$invoice.ssn}<BR>{/if}
+			<BR>
+		</TD>
+		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">
+			<BR>
+			<BR>
+			<BR>
+			<B>{$invoice.name}<BR>
+			{if $invoice.serviceaddr neq ""}
+				{$invoice.serviceaddr|replace:"\n":"<BR>"}<BR>
+			{else}
+			{$invoice.address}<BR>
+			{$invoice.zip} {$invoice.city}<BR>
+			{/if}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			&nbsp;<BR>
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="FALL">
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}No.{/t}</B>
+	</TD>
+	<TD WIDTH="91%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Name of Product, Commodity or Service:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Product ID:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Unit:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Amount:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Unitary Net Value:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Net Value:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Tax Rate:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Tax Value:{/t}</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{t}Gross Value:{/t}</B>
+	</TD>
+    </TR>
+{if $invoice.invoice}
+    <TR>
+	<TD COLSPAN="10" CLASS="fbottom">
+		<B>{t}Was:{/t}</B>
+	</TD>
+    </TR>
+{cycle values="grey,white" print=false}
+{counter start=0 print=false}
+{foreach from=$invoice.invoice.content item=item}
+    <TR class="{cycle}">
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
+	<TD WIDTH="91%" CLASS="FLR">
+		{$item.description}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR">
+		{$item.prodid}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+		{$item.content}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+		{$item.count|string_format:"%.2f"}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.basevalue|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.totalbase|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.taxlabel}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.totaltax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.total|money_format}
+	</TD>
+    </TR>
+{/foreach}
+    <TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+		<P ALIGN="RIGHT"><B>{t}Total:{/t}</B></P>
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$invoice.invoice.totalbase|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		<B>x</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$invoice.invoice.totaltax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$invoice.invoice.total|money_format}
+	</TD>
+    </TR>
+    <TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
+		&nbsp;
+	</TD>
+	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
+		<B>{t}in it:{/t}</B>
+	</TD>
+    </TR>
+{foreach from=$invoice.invoice.taxest item=item}
+    <TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
+		&nbsp;
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$item.base|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		{$item.taxlabel}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$item.tax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$item.total|money_format}
+	</TD>
+    </TR>
+{/foreach}
+    <TR>
+	<TD COLSPAN="10" CLASS="fbottom">
+		<B>{t}Corrected to:{/t}</B>
+	</TD>
+    </TR>
+{/if}
+{cycle values="grey,white" print=false name=cycle2}
+{counter start=0 print=false}
+{foreach from=$invoice.content item=item}
+    <TR class="{cycle name=cycle2}">
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
+	<TD WIDTH="91%" CLASS="FLR">
+		{$item.description}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR">
+		{$item.prodid}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+		{$item.content}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+		{$item.count|string_format:"%.2f"}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.basevalue|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.totalbase|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.taxlabel}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.totaltax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.total|money_format}
+	</TD>
+    </TR>
+    {/foreach}
+    <TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+		<P ALIGN="RIGHT"><B>{t}Total:{/t}</B></P>
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$invoice.totalbase|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		<B>x</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$invoice.totaltax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$invoice.total|money_format}
+	</TD>
+    </TR>
+    <TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
+		&nbsp;
+	</TD>
+	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
+		<B>{t}in it:{/t}</B>
+	</TD>
+    </TR>
+    {foreach from=$invoice.taxest item=item}
+    <TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
+		&nbsp;
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$item.base|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		{$item.taxlabel}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$item.tax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$item.total|money_format}
+	</TD>
+    </TR>
+    {/foreach}
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2">
+			{t}Expositor:{/t} {$_config.invoices.default_author}
+		</TD>
+		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
+			{if $invoice.rebate}
+			{t}To repay:{/t} {$invoice.value|money_format}
+			{else}
+			{t}To pay:{/t} {$invoice.value|money_format}
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
+			{t}In words:{/t}
+			{if $_config.phpui.to_words_short_version}
+				{$invoice.value|string_format:"%d"|to_words:0:"":1} {$invoice.valuep|string_format:"%02d"}/100
+			{else}
+				{t 0=$invoice.value|string_format:"%d"|to_words 1=$invoice.valuep|to_words}$0 dollars $1 cents{/t}
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			<B>{t}Cautions:{/t}</B><BR>
+			<BLOCKQUOTE>
+			{t}If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.{/t}<BR>
+			{t}You may use our automated Customer Care Web Panel, just remember your PIN (it's printed on the other side of this page){/t}
+			</BLOCKQUOTE>
+			<BR>
+		</TD>
+	</TR>
+</TABLE>
+</TD>
+</TR>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%" ALIGN="CENTER" COLSPAN="2" CLASS="hd1">
+			<B>{t}Thanks for using our services!{/t}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" ALIGN="CENTER" COLSPAN="2">
+			{$_config.invoices.footer|replace:"\\n":"<BR>"}
+		</TD>
+	</TR>
+</TABLE>
+
+<!-- The Other Page of Invoice customerbalancelist + customerpin -->
+<!-- insert page break here and buy auto-duplex printer :p -->
+
+{if $invoice.customerpin}
+	<BR><BR>
+	<B>{t}Customer ID:{/t} {$invoice.customerid|string_format:"%04d"}</B><BR>
+	PIN: <CODE>{$invoice.customerpin|string_format:"%04d"}</CODE>
+	<BR><BR>
+{/if}
+
+{if $invoice.customerbalancelist}
+<TABLE cellpadding="5" cellspacing="0" width="100%">
+    <TR>
+        <TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+        <TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+        <TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
+        <TD width="1%" class="fbt" align="center">&raquo;</TD>
+        <TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
+        <TD width="93%" class="frightu">{t}Description:{/t}</TD>
+    </TR>
+<!-- section name=balancelist loop=$invoice.customerbalancelist.id start=-$invoice.customerbalancelistlimit-->
+{section name=balancelist loop=$invoice.customerbalancelist.id start=$invoice.customerbalancelistlimit step=-1}
+	<TR>
+		<TD width="1%"><nobr>{$invoice.customerbalancelist.date[balancelist]}</nobr></TD>
+		<TD width="1%" align="right"><nobr>
+		{if $invoice.customerbalancelist.type[balancelist]==3}+{else}-{/if}
+		{$invoice.customerbalancelist.value[balancelist]|money_format}</nobr></TD>
+		<TD width="1%" align="right">
+                        {if $invoice.customerbalancelist.type[balancelist]!=3}
+                            <nobr>{$invoice.customerbalancelist.tax[balancelist]}</nobr>
+			{/if}
+		</TD>
+		<TD width="1%" align="center">&raquo;</TD>
+		<TD width="1%" align="right"><nobr>
+			{if $invoice.customerbalancelist.after[balancelist] > 0}<STRONG>{/if}
+			    {$invoice.customerbalancelist.after[balancelist]|money_format}
+			{if $invoice.customerbalancelist.after[balancelist] > 0}</STRONG>{/if}</nobr>
+		</TD>
+		<TD width="93%">{$invoice.customerbalancelist.comment[balancelist]}</TD>
+        </TR>
+	{/section}
+</TABLE>	
+{/if}	
+
+</DIV>

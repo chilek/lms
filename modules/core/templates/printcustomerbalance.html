@@ -1,0 +1,76 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="99%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Prepared by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}No.{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Date{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Value{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Tax{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}After{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Description{/t}
+		</TD>		
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=balancelist loop=$balancelist.id}
+	<TR class="{cycle}">
+		<TD ALIGN="CENTER">
+			{counter}
+		</TD>
+		<TD ALIGN="CENTER" NOWRAP>
+			{$balancelist.date[balancelist]}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{if $balancelist.value[balancelist] > 0}+{/if}{$balancelist.value[balancelist]|money_format} 
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$balancelist.taxlabel[balancelist]}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$balancelist.after[balancelist]|money_format} 
+		</TD>
+		<TD ALIGN="LEFT">
+			{$balancelist.comment[balancelist]}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="6">
+			<p>&nbsp;</p>
+			<p><B>{t}No such transactions{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	<TR class="grey">
+		<TD ALIGN="right" COLSPAN="2">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD ALIGN="right" nowrap>
+			<B>{$balancelist.summary|money_format} </B>
+		</TD>
+		<TD COLSPAN="3"></TD>
+	</TR>
+</TABLE>

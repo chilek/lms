@@ -1,0 +1,58 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+			<img src="img/host.gif" alt=""><B>{t}Name:{/t}</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+			{t}ID:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+			{t}Last Reload:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="96%">
+			{t}Description:{/t}
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%" nowrap>
+			<A href="?m=hostadd">{t}Add host{/t} <img src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$hostlist item=host}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD CLASS="fleft" onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap>
+			<IMG src="img/host.gif" alt="">
+			<B>{$host.name}</B>
+		</TD>
+		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';">
+			({$host.id|string_format:"%04d"})
+		</TD>
+		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap>
+			{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
+		</TD>
+		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';">
+			{$host.description}
+		</TD>
+		<TD CLASS="fright" align="right" NOWRAP>
+			<A HREF="?m=hostedit&id={$host.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=hostdel&id={$host.id}" OnClick="return confirmLink(this, '{t 0=$host.name}Are you sure, you want to remove host \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="5" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no hosts configured.{/t}<B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/foreach}
+	<TR CLASS="dark">
+		<TD colspan="5" class="fall" align="right">
+			<A href="?m=hostadd">{t}Add host{/t} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE></P>
+{include file="footer.html"}

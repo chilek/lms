@@ -1,0 +1,129 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+{*include file="calendar_js.html"*}
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+	function CheckAll()
+	{
+		for (var i=0; i<document.cashimport.elements.length; i++)
+		{
+			var e = document.cashimport.elements[i];
+			if (e.name != 'allbox')
+			e.checked = document.cashimport.allbox.checked;
+		}
+	}
+	
+	function CheckAll2()
+	{
+		document.cashimport.allbox.checked = !document.cashimport.allbox.checked;
+		CheckAll();
+	}
+	
+	function Delete()
+	{
+		document.cashimport.action += '&action=delete';
+		document.cashimport.submit();
+	}
+
+	//-->
+</SCRIPT>
+{/literal}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fleftu" WIDTH="1%">
+			{t}ID:{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			{t}Date:{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>{t}Value:{/t}</B>
+		</TD>
+		<TD WIDTH="40%" CLASS="fbt">
+			{t}Customer:{/t}
+		</TD>
+		<TD WIDTH="55%" CLASS="fbt">
+			{t}Description:{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			{t}Link to:{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT" nowrap>
+			<B>{t}Total:{/t} {$listdata.total}</B>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{section name=importlist loop=$importlist}
+	<TR class="{cycle}">
+		<TD CLASS="fleft">
+			{$importlist[importlist].id|string_format:"%04d"}
+		</TD>
+		<TD NOWRAP>
+			{$importlist[importlist].date|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD NOWRAP ALIGN="RIGHT">
+			<B>{$importlist[importlist].value|money_format}</B>
+		</TD>
+		<TD ALIGN="LEFT">
+			{$importlist[importlist].customer}
+		</TD>
+		<TD ALIGN="LEFT">
+			{$importlist[importlist].description}
+		</TD>
+		<TD ALIGN="RIGHT" CLASS="fright" COLSPAN="2" NOWRAP>
+			<SELECT NAME="customer[{$importlist[importlist].id}]" {tip text="Select customer" trigger=$importlist[importlist].id}>
+				<OPTION VALUE="0">{t}- select customer -{/t}</OPTION>
+				{section name=customerlist loop=$customerlist}
+				<OPTION VALUE="{$customerlist[customerlist].id}" {if $customerlist[customerlist].id == $importlist[importlist].customerid}SELECTED{/if}>{$customerlist[customerlist].customername|truncate:50:" ..."} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
+				{/section}
+			</SELECT>&nbsp;
+			{cycle print=false}
+			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$importlist[importlist].id}]" VALUE="{$importlist[importlist].id}">
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD class="fall" ALIGN="center"  COLSPAN="7">
+			<P>&nbsp;</P>
+			<P><B>{t}No cash operations to import.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>	
+	{/section}
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" COLSPAN="4">
+			<INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll2();" VALUE="Check All">
+			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
+		</TD>
+		<TD CLASS="frightu" COLSPAN="3" align="right" nowrap>
+			<A HREF="javascript:Delete();">{t}Delete{/t} <IMG src="img/delete.gif" ALT=""></A>
+			<A HREF="javascript:document.cashimport.submit();">{t}Submit{/t} <IMG src="img/save.gif" ALT=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM></P>
+<P><FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fall" width="100%" colspan="2">
+			<B>{t}Enter path to file with data to import{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbl" width="99%" NOWRAP>
+		<IMG src="img/attach.gif" alt="">
+			<B>{t}Import file:{/t} </B><INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</TD>
+		<TD class="fbr" width="1%" align="right" nowrap>
+			<A href="javascript: document.parser.submit();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM></P>
+{include file="footer.html"}
+	

@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
+<title>::: LMS :::</title>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/autoiframe.js"></SCRIPT>
+</head>
+<body>
+<TABLE WIDTH="100%" CELLPADDING="3" id="table">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%">
+			<IMG SRC="img/customer.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
+		</TD>
+	</TR>
+	<TR >
+		<TD WIDTH="1%">
+			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
+			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
+			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}			
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{if $customerinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
+			{if $customerinfo.status eq "2"}<B>{t}waiting{/t}</B>{/if}
+			{if $customerinfo.status eq "1"}<B>{t}interested<!singular>{/t}</B>{/if}
+		</TD>
+	</TR>
+	<TR >
+		<TD WIDTH="1%">
+			<IMG SRC="img/phone.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{$customerinfo.phone1}{if $customerinfo.phone2 neq ""}<BR>
+			{$customerinfo.phone2}{/if}{if $customerinfo.phone3 neq ""}<BR>
+			{$customerinfo.phone3}{/if}
+		</TD>
+	</TR>
+	<TR >
+		<TD WIDTH="1%" >
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%"  COLSPAN="2">
+			{$customerinfo.address}<BR>
+			{$customerinfo.zip} {$customerinfo.city}
+		</TD>
+	</TR>
+{if $customerinfo.serviceaddr neq ""}
+	<TR >
+		<TD WIDTH="1%" >
+			<IMG SRC="img/post.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{$customerinfo.serviceaddr|replace:"\n":"<BR>"}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.email neq ""}
+	<TR >
+		<TD WIDTH="1%" >
+			<IMG SRC="img/mail.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.im neq "" && $customerinfo.im neq 0}
+	<TR >
+		<TD WIDTH="1%">
+			{if $_language=="pl"}
+			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$customerinfo.im}&styl=1" ALT="">
+			{else}
+			<img src="img/gg.gif" alt="">
+			{/if}
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{if $_language=="pl"}
+			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
+			{else}
+			{$customerinfo.im}
+			{/if}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.ten neq ""}
+	<TR>
+		<TD WIDTH="1%" ALIGN="CENTER">
+			<B>{t}TEN:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{$customerinfo.ten}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.ssn neq ""}
+	<TR">
+		<TD WIDTH="1%" ALIGN="CENTER">
+			<B>{t}SSN:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{$customerinfo.ssn}
+		</TD>
+	</TR>
+{/if}
+{if $customergroups}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/group.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{foreach from=$customergroups item=customergroup name=customergroup}
+				{$customergroup.name}{if !$smarty.foreach.customergroup.last},{/if} 
+			{/foreach}
+		</TD>
+	</TR>
+{/if}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/money.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Balance:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript">
+<!--
+parent.document.getElementById('autoiframe').width = document.getElementById('table').offsetWidth;
+//-->
+</SCRIPT>
+</BODY>
+</HTML>
+

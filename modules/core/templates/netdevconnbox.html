@@ -1,0 +1,73 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3">
+			<IMG SRC="img/mac.gif" alt="">
+			<B>{t}Connected devices:{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" width="98%">
+			<IMG src="img/netdev.gif" ALT=""> <B>{t}Name / Producer:{/t}</B><BR>
+			<IMG src="img/home.gif" ALT=""> {t}Location:{/t}
+		</TD>
+		<TD CLASS="fbt" width="1%" NOWRAP>
+			<IMG src="img/empty.gif" ALT="" HEIGHT="16" WIDTH="16"> {t}ID:{/t}<BR>
+			<IMG src="img/port.gif" ALT=""> {t}Ports (used):{/t}
+		</TD>
+		<TD CLASS="frightu" width="1%">
+			&nbsp;
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{section name=netdevlist loop=$netdevlist start=$start}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" VALIGN="TOP" NOWRAP>
+			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</B></A><BR>
+			<IMG src="img/home.gif" ALT=""> {$netdevlist[netdevlist].location}
+		</TD>
+		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
+			{if $netdevlist[netdevlist].linktype}
+				<A href="?m=netdevedit&action=switchlinktype&linktype=0&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/wireless.gif" ALT="[ {t}Change connection type{/t} ]"></A> 
+			{else}
+				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" ALT="[ {t}Change connection type{/t} ]"></A> 
+			{/if}
+			({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
+			<IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
+		</TD>
+		<TD WIDTH="1%" CLASS="fright">
+			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="3" CLASS="fall" align="center">
+			<P>&nbsp;</P>
+			<P><B>{t}No such connected devices.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+	<TR CLASS="DARK">
+		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3" ALIGN="CENTER">
+			{if $netdevinfo.ports eq $netdevinfo.takenports}
+			<B>{t}All ports in that device are in use.{/t}</B>
+			{elseif !$restnetdevlist}
+			<B>{t}No such devices for connection.{/t}</B>
+			{else}
+			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
+			<INPUT type="submit" class="hiddenbtn">
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
+			<A HREF="javascript:document.connect.submit(); "><B>{t}Connect device:{/t}</B></A>
+			<SELECT NAME="netdev" {tip trigger="link" text="Select from list device for connection"}>
+				{section name=restnetdevlist loop=$restnetdevlist}
+				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} {if $restnetdevlist[restnetdevlist].producer}/ {$restnetdevlist[restnetdevlist].producer}{/if} {if $restnetdevlist[restnetdevlist].location}({$restnetdevlist[restnetdevlist].location}){/if}</OPTION>
+				{/section}
+			</SELECT><INPUT class="box dark" type="checkbox" name="linktype" value="1" {if $devlinktype}CHECKED{/if}>&nbsp;wireless 
+			</FORM></P>
+			{/if}
+		</TD>
+	</TR>
+</TABLE>

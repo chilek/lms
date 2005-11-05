@@ -1,0 +1,107 @@
+<!-- $Id$ -->
+<P><TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD width="100%" CLASS="fall">
+			<IMG src="img/ticket.gif" alt="">
+			<B>{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD width="100%" class="flr">
+<TABLE width="100%" cellpadding="0">
+    <TR>
+	<TD width="50%">
+	    <TABLE>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+			<IMG src="img/ticket.gif" alt="">
+			<B>{t}Subject:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%" NOWRAP>
+		        {$ticket.subject|escape|truncate:50:"..."}
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/customer.gif" alt="">
+			<B>{t}Submitter:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%" NOWRAP>
+			{if $ticket.customerid}
+				<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|escape}</A>
+			{else}
+				{$ticket.requestor|escape} 
+			{/if}
+			{if $ticket.requestoremail && !$ticket.customerid}
+				&lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+			{/if}
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/calendar.gif" alt="">
+			<B>{t}Create time:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/time.gif" alt="">
+			<B>{t}Uptime:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			{$ticket.uptime}
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+	<TD width="50%" valign="top">	
+	    <TABLE>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+			<IMG src="img/users.gif" alt="">
+			<B>{t}Owner:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			<A href="?m=userinfo&id={$ticket.owner}">{$ticket.ownername}</A>
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/queue.gif" alt="">
+			<B>{t}Queue:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			<A HREF="?m=rtqueueview&id={$ticket.queueid}">{$ticket.queuename}</A>
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/dead.gif" alt="">
+			<B>{t}Status:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			{$ticket.status}
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+    </TR>
+</TABLE>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" ALIGN="RIGHT">
+			{if $ticket.state < 2}
+			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{t}Resolve{/t} <IMG src="img/resolved.gif" alt=""></A>&nbsp;
+			{/if}
+			<A href="?m=rtqueueview&id={$ticket.queueid}&delticketid={$ticket.ticketid}" onClick="return confirmLink(this, '{t 0=$ticket.ticketid}Are you sure, you want to remove ticket $0?{/t}')">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
+			<A href="?m=rtticketedit&id={$ticket.ticketid}">{t}Edit{/t} <IMG src="img/edit.gif" alt=""></A>
+			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
+			<A href="?m=rtqueueview&id={$ticket.queueid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</P>

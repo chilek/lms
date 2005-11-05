@@ -1,0 +1,54 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="POST" action="?m=daemonconfigadd&id={$instanceid}" name="config">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<img src="img/settings.gif" alt="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{t}Name:{/t}</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<INPUT name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/settings.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Value:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA rows="20" cols="100" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA rows="5" cols="100" name="config[description]" {tip text="Enter additional informations (optional)" trigger="description"}>{$config.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.config.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
+			<A href="?m=daemoninstanceview&id={$instanceid}">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="config[reuse]" value="ON" class="box light" {if $config.reuse}checked{/if}> {t}Display this form again, when this option is saved{/t}
+		</TD>
+	</TR>
+</TABLE>
+</P>
+<SCRIPT>
+<!--
+document.forms['config'].elements['config[var]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}
