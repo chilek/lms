@@ -1,0 +1,89 @@
+{if $layout.nomenu neq TRUE && !$layout.popup}
+<table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr><td width="1%" class="fall dark" style="vertical-align: top;">
+	<table width="100%">
+		<tr>
+			<td align="center" style="border-bottom-style: dashed; border-bottom-width: 1px;" valign="top">
+				<br>
+				<img src="img/logo-40.png" ALT="LMS {$layout.lmsv}"><br>
+				<B>LMS {$layout.lmsv}</B><br>
+				&nbsp;<br>
+			</td>
+		</tr>
+	</table>
+	<table id="click-menu1" class="click-menu" cellpadding="0" cellspacing="0">
+		{foreach from=$menu item=menuitem name=menu}
+		<tr>
+			<td class="click-menu">
+				<div class="tip"{if $menuitem.tip} {tip text="<B>\$0</B>" 0=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
+					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><font style="margin-left: 21px">{$menuitem.name}</font></div>
+				</div>
+				<div class="section">
+				{if $menuitem.submenu}
+				{foreach from=$menuitem.submenu item=submenuitem}
+					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$0</B>" 0=$submenuitem.tip}{/if}>
+						<div class="box2" onClick="return self.location.href='{$submenuitem.link}';">&raquo;&nbsp;<a href="{$submenuitem.link}">{$submenuitem.name}</a></div>
+					</div>
+				{/foreach}
+				{/if}
+				</div>
+			</td>
+		</tr>
+		{/foreach}
+		<tr>
+			<td class="click-menu" style="border-bottom-style: dashed; border-bottom-width: 1pt;">
+				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{t}Are you sure that you want to logout?{/t}')){literal}{ return self.location.href='?m=logout&is_sure=1';}{/literal} ">
+					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><NOBR><font style="margin-left: 21px">{t}Logout{/t} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
+				</div>
+			</td>
+		</tr>
+		<div id="autosuggest"><ul></ul></div>
+		<form method="get" action="?m=quicksearch" id="customerform" name="customerform">
+		<tr>
+			<td>
+				<div class="tip" {tip text="<B>Enter customer ID, first/lastname, telephone or part of customer email address and press Enter</B>"}>
+					<br>&nbsp;&nbsp;<img src="img/customer.gif" alt="*">&nbsp;<input type="text" id="customerinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="customer">
+				<script language="Javascript">
+					new AutoSuggest(document.getElementById('customerform'),document.getElementById('customerinput'),'?m=quicksearch&ajax=1&mode=customer&what=',1);
+				</script>
+				</div>
+			</td>
+		</tr>
+		</form>
+		<form method="get" action="?m=quicksearch" id="nodeform" name="nodeform">
+		<tr>
+			<td>
+				<div class="tip" {tip text="<B>Enter node ID, name, IP address or MAC address and press Enter</B>"}>
+					&nbsp;&nbsp;<img src="img/node.gif" alt="*">&nbsp;<input type="text" id="nodeinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="node">
+				<script language="Javascript">
+					new AutoSuggest(document.getElementById('nodeform'),document.getElementById('nodeinput'),'?m=quicksearch&ajax=1&mode=node&what=',1);
+				</script>
+				</div>
+			</td>
+		</tr>
+		</form>
+		<form method="get" action="?m=quicksearch" id="rtform" name="rtform">
+		<tr>
+			<td>
+				<div class="tip" {tip text="<B>Enter request tracker ID or customer name and press Enter</B>"}>
+					&nbsp;&nbsp;<img src="img/ticket.gif" alt="*">&nbsp;<input type="text" id="rtinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="ticket">
+				<script language="Javascript">
+					new AutoSuggest(document.getElementById('rtform'),document.getElementById('rtinput'),'?m=quicksearch&ajax=1&mode=ticket&what=',1);
+				</script>
+				</div>
+			</td>
+		</tr>
+		</form>
+		<tr>
+			<td nowrap align="center"><br><A href="?m=copyrights">&copy; 2001-2005<br>LMS Developers</A></td>
+		</tr>
+		<tr>
+			<td nowrap align="center"><font style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>({$layout.lmsvr})<br>DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></font>&nbsp;<br>&nbsp;<br></td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+		var clickMenu1 = new ClickShowHideMenu('click-menu1');
+		clickMenu1.init();
+	</script>				
+	</td>
+	<td width="99%" style="padding: 10pt; vertical-align: top;">
+{/if}
