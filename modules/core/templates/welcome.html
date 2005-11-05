@@ -1,0 +1,308 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P>
+<TABLE width="100%" cellpadding="3">
+	<TR>
+		<TD WIDTH="50%" style="vertical-align: top;">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
+						<IMG SRC="img/logo-ico.gif" ALT=""> <B>{t}About LMS:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="http://lms.rulez.pl" target="_BLANK">{t}LMS version:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$layout.lmsv} ({$layout.lmsvr})
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="http://lms.rulez.pl" target="_BLANK">{t}LMSDB version:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$layout.lmsdbv}
+					</TD>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>
+						{if $layout.dbtype == "mysql"}
+						<A HREF="http://www.mysql.com" target="_BLANK">{t}MySQL version:{/t}</A>
+						{elseif $layout.dbtype == "postgres"}
+						<A HREF="http://www.postgresql.org" target="_BLANK">{t}PostgreSQL version:{/t}</A>
+						{/if}
+						</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$layout.dbversion}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="http://www.php.net/" target="_BLANK">{t}PHP version:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.phpversion}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
+						<B><A HREF="http://smarty.php.net" target="_BLANK">{t}Smarty version:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FBR">
+						{$layout.smarty_version}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD WIDTH="50%" style="vertical-align: top;">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD HEIGHT="24" ALIGN="CENTER" COLSPAN="2" CLASS="FALL" NOWRAP>
+						<IMG SRC="img/info1.gif" ALT=""> <B>{t}About system:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>{t}Hostname:{/t}</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.hostname}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>{t}System version:{/t}</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.kernel}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>{t}Uptime:{/t}</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.uptime}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>{t}Users logged in:{/t}</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.users}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
+						<B>{t}Load:{/t}</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FBR">
+						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>					
+	</TR>
+	<TR>
+		<TD WIDTH="50%" style="vertical-align: top;">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
+						<IMG SRC="img/customer.gif"> <B>{t}Customers:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="?m=core&a=customerlist&s=3">{t}Connected:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$customerstats.connected}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="?m=core&a=customerlist&s=2">{t}Waiting:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$customerstats.awaiting}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="?m=core&a=customerlist&s=1">{t}Interested:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$customerstats.interested}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<B><A HREF="?m=core&a=customerlist&s=0">{t}Total:{/t}</A><BR>
+						<A HREF="?m=core&a=customerlist&s=6">{t}Total Dues:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{$customerstats.total}<BR>
+						{$customerstats.debt} ({t}amount{/t} {$customerstats.debtvalue|money_format})
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD WIDTH="50%" style="vertical-align: top;">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
+						<IMG SRC="img/node.gif"> <B>{t}Nodes:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<A HREF="?m=core&a=nodelist&s=3"><B>{t}Online:{/t}</B></A>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{$nodestats.online}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<A HREF="?m=core&a=nodelist&s=1"><B>{t}Connected Nodes:{/t}</B></A>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$nodestats.connected}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<A HREF="?m=core&a=nodelist&s=2"><B>{t}Disconnected:{/t}</B></A>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$nodestats.disconnected}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<B><A HREF="?m=core&a=nodelist">{t}Total:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{$nodestats.total}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="50%" style="vertical-align: top;">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
+						<IMG SRC="img/ticket.gif"> <B>{t}Helpdesk:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A href="?m=core&a=rtsearch&state=0&o=lastmodified,desc">{t}New:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$rtstats.new|default:"0"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A href="?m=core&a=rtsearch&state=1&o=lastmodified,desc">{t}Opened:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$rtstats.opened|default:"0"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A href="?m=core&a=rtsearch&state=3&o=lastmodified,desc">{t}Dead:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$rtstats.dead|default:"0"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A href="?m=core&a=rtsearch&state=2&o=lastmodified,desc">{t}Resolved:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$rtstats.resolved|default:"0"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<B><A href="?m=core&a=rtqueuelist">{t}Total:{/t}</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{math equation="a+b+c+d" a=$rtstats.opened b=$rtstats.new c=$rtstats.dead d=$rtstats.resolved}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD WIDTH="50%" style="vertical-align: top;">
+		    <TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD ALIGN="CENTER" CLASS="FALL">
+						<IMG SRC="img/tip.gif"> <B>{t}Useful Links:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="FALL" ALIGN="CENTER">
+						<B><A HREF="http://lms.rulez.pl" TARGET="_BLANK">{t}LMS Project Homepage{/t}</A><BR>
+							<A HREF="{$_dochref}" TARGET="_BLANK">{t}Online Documentation{/t}</A><BR>
+							<A HREF="doc/ChangeLog" TARGET="_BLANK">{t}ChangeLog{/t}</A><BR>
+							<A HREF="http://lists.rulez.pl/lms/" TARGET="_BLANK">{t}Mailing List Archive{/t}</A><BR>
+							<A HREF="http://cvs.rulez.pl" TARGET="_BLANK">{t}CVS Repository{/t}</A><BR>
+							<A HREF="http://bts.rulez.pl" TARGET="_BLANK">{t}Bug Tracking System{/t}</A>
+						</B>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="50%" style="vertical-align: top;">
+		</TD>
+		<TD WIDTH="50%" style="vertical-align: top;">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD ALIGN="CENTER" CLASS="FALL">
+						<IMG SRC="img/logo-ico.gif" ALT=""> <B>{t}Registration info:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="FALL" ALIGN="CENTER">
+						{if $regdata}
+						{t}Registration ID:{/t} {$regdata.id|string_format:"%04d"}<BR>
+						{t}Registered for:{/t} {$regdata.name}<BR>
+						{t}URL:{/t} {$regdata.url}<BR>
+						<A HREF="?m=core&a=register">{t}Change registration info{/t}</A>
+						{else}
+						{t}Your installation is unregistered!{/t}<BR>
+						<A HREF="?m=core&a=register" {tip text="But it won't give you any benefits either ;-)"}>{t}Click here, to register your installation and learn more why you should - IT'S FREE!{/t}</A>
+						{/if}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+{if $layout.fortune}
+<P>
+<TABLE width="100%" cellpadding="10">
+	<TR class="superlight">
+		<TD class="fleftu" width="1%">
+			<IMG SRC="img/totd.gif" ALT="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<P class="txt">{$layout.fortune|replace:"\n":"<BR>"}</P>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+{/if}
