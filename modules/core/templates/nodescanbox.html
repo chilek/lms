@@ -1,0 +1,33 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FALL" COLSPAN="3">
+			<IMG SRC="img/node.gif" ALT=""> <B>{t}Computers found:{/t}</B>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{section name=n loop=$nodes}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD WIDTH="99%" CLASS="FLEFT" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac|upper}&prename={$nodes[n].name|upper}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
+			<IMG SRC="img/node.gif" ALT=""> <B>{$nodes[n].name}</B>
+		</TD>
+		<TD WIDTH="1%" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac|upper}&prename={$nodes[n].name|upper}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
+			{$nodes[n].ipaddr}
+		</TD>
+		<TD WIDTH="1%" CLASS="FRIGHT" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac|upper}&prename={$nodes[n].name|upper}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
+			{$nodes[n].mac|upper}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD COLSPAN="3" ALIGN="CENTER" CLASS="FALL">
+			<P>&nbsp;</P>
+			<P><B>{t}No computers were found, either exists in the database or nbtscan binary not found.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+	<TR>
+		<TD COLSPAN="3" CLASS="FALL">{t}Click on the Computer name above to get it records{/t}.</TD>
+	</TR>
+</TABLE>

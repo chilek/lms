@@ -1,0 +1,131 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/netdev.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+			<B>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+        {if $netdevinfo.producer}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/producer.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{t}Producer:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.producer}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.model}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_model.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{t}Model:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.model}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.serialnumber}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{t}Serial number:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.serialnumber}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/port.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{t}Number of ports:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.ports}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_takenports.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{t}Ports used:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.takenports}
+		</TD>
+	</TR>
+	{if $netdevinfo.location}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/home.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{t}Location:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.location}
+		</TD>
+	</TR>
+	{/if}
+        {if $netdevinfo.description}
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="FLEFT">
+                        <IMG SRC="img/netdev_description.gif" ALT="">
+                </TD>
+                <TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+                        <TABLE WIDTH="100%" CELLPADDING="5">
+                                <TR>
+                                        <TD class="fall superlight">
+						{$netdevinfo.description|escape|replace:"\n":"<BR>"}
+                                        </TD>
+                                </TR>
+                        </TABLE>
+                </TD>
+        </TR>
+        {/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t 0=$netdevinfo.name}Are you sure, you want to remove device \'$0\' from database?{/t}');">{t}Delete{/t} <img src="img/delete.gif" ALT=""></A>
+		</TD>
+	</TR>
+	{if $netdevinfo.id}
+	<TR CLASS="DARK">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN=3 ALIGN="center">
+			{if $replacelisttotal>1}
+			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
+			<INPUT type="submit" class="hiddenbtn">
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
+			<A HREF="javascript:document.replace.submit(); "><B>{t}Replace device:{/t}</B></A>
+			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list for replacement"}>
+				{section name=replacelist loop=$replacelist}
+					{if $replacelist[replacelist].id != $netdevinfo.id}
+					<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
+					{/if}
+				{/section}
+			</SELECT>
+			</FORM></P>
+			{else}
+			<B>{t}No device for replacement.{/t}</B>
+			{/if}
+		</TD>
+	</TR>
+	{/if}
+</TABLE>
+

@@ -1,0 +1,34 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{if $customerinfo}
+{include file="calendar_js.html"}
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD VALIGN="TOP" WIDTH="50%">
+			{include file="customerinfobox.html"}
+		</TD>
+		<TD VALIGN="TOP" WIDTH="50%">
+			{include file="nodescanbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			{include file="customergroups.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			{include file="customerassignments.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			{include file="customerbalancebox.html" limit=-10}
+		</TD>
+	</TR>
+</TABLE>
+{else}
+{include file="nodescanbox.html"}
+{/if}
+{include file="footer.html"}

@@ -1,0 +1,26 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD style="vertical-align: top;" WIDTH="50%">
+			{include file="netdevinfobox.html"}
+		</TD>
+		<TD style="vertical-align: top;" WIDTH="50%">
+			{if $nodeipdata.id}
+			{include file="netdevipinfobox.html"}
+			{else}
+			{include file="netdevipbox.html"}
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD style="vertical-align: top;" WIDTH="50%">
+			{include file="netdevconnbox.html"}
+		</TD>
+		<TD style="vertical-align: top;" WIDTH="50%" ROWSPAN="2">
+			{include file="netdevnodes.html"}
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

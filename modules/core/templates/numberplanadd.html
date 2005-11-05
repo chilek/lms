@@ -1,0 +1,74 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM method="POST" action="?m=numberplanadd" name="numberplanadd">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<IMG src="img/id.gif" alt="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{t}Template:{/t}</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<INPUT name="numberplanadd[template]" value="{$numberplanadd.template|escape}" {tip text="Enter number template" trigger="template" bold=1}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/docum.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Document type:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<SELECT name="numberplanadd[doctype]" size="1" {tip text="Select document type" trigger="doctype"}>
+				<OPTION value="0">- {t}select document type{/t} -</OPTION>
+			{foreach from=$_DOCTYPES item=item key=key}
+				<OPTION value="{$key}"{if $key == $numberplanadd.doctype} SELECTED{/if}>{$item}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/calendar.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Period:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<SELECT name="numberplanadd[period]" size="1" {tip text="Select numbering period" trigger="period"}>
+				<OPTION value="0">- {t}select period{/t} -</OPTION>
+			{foreach from=$_PERIODS item=item key=key}
+				<OPTION value="{$key}"{if $key == $numberplanadd.period} SELECTED{/if}>{$item}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/empty.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Default:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT type="checkbox" class="box light" name="numberplanadd[isdefault]" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanadd.isdefault!="0"}CHECKED{/if}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.numberplanadd.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=numberplanlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="numberplanadd[reuse]" value="ON" class="box light" {if $numberplanadd.reuse}checked{/if}> {t}Display this form again, when this numbering plan is saved{/t}
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT>
+<!--
+document.forms['numberplanadd'].elements['numberplanadd[template]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

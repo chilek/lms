@@ -1,0 +1,236 @@
+<!--// $Id$ //-->
+{if !$receipt.last}<div style="page-break-after: always;">{/if}
+{if !$type || $type == "original"}
+<div>
+<table width="100%">
+	<tr><td>
+<table align="center" width="580" cellpadding="3">
+	<tr>
+		<td width="34%" colspan="2" class="ftopu" valign="top">
+			{t}Stamp:{/t}
+		</td>
+		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
+			{t}Proof of Payment{/t}<br><font class="sdr">{t}Receipt{/t}</font>
+		</td>
+		<td colspan="2" width="32%" class="ftopu shdf" align="center">
+			{t}CR{/t}
+		</td>
+	</tr>
+	<tr>
+		<td width="34%" colspan="2" class="fleft"></td>
+		<td width="34%" colspan="2" class="flr sdr" align="center" nowrap>
+			{t}Date:{/t} {$receipt.cdate|date_format:"%x"}
+		</td>
+		<td width="32%" colspan="2" class="flr sdr" align="center">
+			<b>{t 0=$receipt.number}No. $0{/t}</b>
+		</td>
+	</tr>
+	<tr>
+		<td width="34%" colspan="4" class="fall">
+			<table width="100%">
+			    <tr>
+				<td width="1%" valign="top" nowrap>{t}From who:{/t}</td>
+				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
+			    </tr>
+			</table>
+		</td>
+		<td width="16%" align="center" class="fall headgrey hdf" nowrap>{t}Owing{/t}<br><font class="sdr">{t}Cash{/t}</font></td>
+		<td width="16%" align="center" class="fall headgrey hdf" nowrap>{t}Has{/t}<br><font class="sdr">{t}Account<!singular:noun>{/t}</font></td>
+	</tr>
+	<tr class="grey">
+		<td align="center" class="fall" colspan="4" nowrap>{t}For what{/t}</td>
+		<td align="center" class="fall" nowrap>{t}Value{/t}</td>
+		<td align="center" class="fall" nowrap>{t}Number{/t}</td>
+	</tr>
+	{cycle values="grey,white" print=false name=one}
+	{foreach item="row" from=$receipt.contents}
+	<tr class="{cycle name=one}">
+		<td class="flr sdr" colspan="4" valign="top"><b>{counter name=one}.</b> {$row.description|replace:"\n":"<BR>"}</td>
+		<td class="flr sdr" align="right" valign="top" nowrap>{$row.value|money_format}</td>
+		<td class="flr"></td>
+	</tr>
+	{/foreach}
+	<tr>
+		<td class="fleftu" colspan="3"></td>
+		<td class="fbt sdr" align="right" nowrap><b>{t}Total:{/t}</b></td>
+		<td class="fall sdr" align="right" nowrap><b>{$receipt.total|money_format}</b></td>
+		<td class="fall" align="center">Symbole<br>PL. KAS. Nr</td>
+	</tr>
+	<tr>
+		<td class="fall" colspan="5">
+			<table width="100%">
+			    <tr>
+				<td width="1%" valign="top" nowrap>{t}In words:{/t}</td>
+				<td width="99%" class="sdr"><b>
+					{if $_config.phpui.to_words_short_version}
+						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
+					{else}
+						{t 0=$receipt.total|string_format:"%d"|to_words 1=$receipt.totalg|to_words}$0 dollars $1 cents{/t}
+					{/if}</b>
+				</td>
+			    </tr>
+			</table>
+		</td>
+		<td class="fall"><br><br>&nbsp;</td>
+	</tr>
+	<tr class="grey">
+		<td width="17%" class="fall" align="center" nowrap>{t}Exposed By{/t}</td>
+		<td width="17%" class="fall" align="center" nowrap>{t}Checked By{/t}</td>
+		<td align="center" class="fall" nowrap>{t}Approved By{/t}</td>
+		<td align="center" class="fall" nowrap>{t}Cash Report{/t}</td>
+		<td align="center" class="fall" colspan="2" nowrap>{t}I confirm receipt of above amount{/t}</td>
+	</tr>
+	<tr>
+		<td class="fall"></td>
+		<td class="fall"></td>
+		<td class="fall"></td>
+		<td class="fall">
+			<table width="90%" cellpadding="5" align="center">
+			    <tr>
+				<td width="100%" class="fbottom">{t}no.{/t}</td>
+			    </tr>
+			    <tr>
+				<td width="100%" class="fbottom">{t}item{/t}</td>
+			    </tr> 
+			</table>
+		</td>
+		<td colspan="2" class="fall">
+			<table width="90%" cellpadding="5" align="center">
+			    <tr>
+				<td width="100%">&nbsp;<br>&nbsp;</td>
+			    </tr>
+			    <tr>
+				<td width="100%" align="center" class="ftop">{t}Signature of cashier{/t}</td>
+			    </tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="6" align="right">
+			<font class="small">Copyright &copy; 2001-2005 LMS Developers</font>
+		</td>
+	</tr>
+</table>
+	<br></td></tr>
+	<tr><td style="border-top-width: 1pt; border-top-style: dashed;"></td></tr>
+</table>
+</div>
+{if !$type || $type == "copy"}<br><br>{/if}
+{/if}
+{if !$type || $type == "copy"}
+<div>
+<table width="100%">
+	<tr><td>
+<table align="center" width="580" cellpadding="3">
+	<tr>
+		<td width="34%" colspan="2" class="ftopu" valign="top">
+			{t}Stamp:{/t}
+		</td>
+		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
+			{t}Proof of Payment{/t}<br><font class="sdr">{t}Receipt{/t}</font>
+		</td>
+		<td colspan="2" width="32%" class="ftopu shdf" align="center">
+			{t}CR{/t}
+		</td>
+	</tr>
+	<tr>
+		<td width="34%" colspan="2" class="fleft"></td>
+		<td width="34%" colspan="2" class="flr sdr" align="center" nowrap>
+			{t}Date:{/t} {$receipt.cdate|date_format:"%x"}
+		</td>
+		<td width="32%" colspan="2" class="flr sdr" align="center">
+			<b>{t 0=$receipt.number}No. $0{/t}</b>
+		</td>
+	</tr>
+	<tr>
+		<td width="34%" colspan="4" class="fall">
+			<table width="100%">
+			    <tr>
+				<td width="1%" valign="top" nowrap>{t}From who:{/t}</td>
+				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
+			    </tr>
+			</table>
+		</td>
+		<td width="16%" align="center" class="fall headgrey hdf" nowrap>{t}Owing{/t}<br><font class="sdr">{t}Cash{/t}</font></td>
+		<td width="16%" align="center" class="fall headgrey hdf" nowrap>{t}Has{/t}<br><font class="sdr">{t}Account<!singular:noun>{/t}</font></td>
+	</tr>
+	<tr class="grey">
+		<td align="center" class="fall" colspan="4" nowrap>{t}For what{/t}</td>
+		<td align="center" class="fall" nowrap>{t}Value{/t}</td>
+		<td align="center" class="fall" nowrap>{t}Number{/t}</td>
+	</tr>
+	{cycle values="grey,white" print=false name=two}
+	{foreach item="row" from=$receipt.contents}
+	<tr class="{cycle name=two}">
+		<td class="flr sdr" colspan="4" valign="top"><b>{counter name=two}.</b> {$row.description|replace:"\n":"<BR>"}</td>
+		<td class="flr sdr" align="right" valign="top" nowrap>{$row.value|money_format}</td>
+		<td class="flr"></td>
+	</tr>
+	{/foreach}
+	<tr>
+		<td class="fleftu" colspan="3"></td>
+		<td class="fbt sdr" align="right" nowrap><b>{t}Total:{/t}</b></td>
+		<td class="fall sdr" align="right" nowrap><b>{$receipt.total|money_format}</b></td>
+		<td class="fall" align="center">Symbole<br>PL. KAS. Nr</td>
+	</tr>
+	<tr>
+		<td class="fall" colspan="5">
+			<table width="100%">
+			    <tr>
+				<td width="1%" valign="top" nowrap>{t}In words:{/t}</td>
+				<td width="99%" class="sdr"><b>
+					{if $_config.phpui.to_words_short_version}
+						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
+					{else}
+						{t 0=$receipt.total|string_format:"%d"|to_words 1=$receipt.totalg|to_words}$0 dollars $1 cents{/t}
+					{/if}</b>
+				</td>
+			    </tr>
+			</table>
+		</td>
+		<td class="fall"><br><br>&nbsp;</td>
+	</tr>
+	<tr class="grey">
+		<td width="17%" class="fall" align="center" nowrap>{t}Exposed By{/t}</td>
+		<td width="17%" class="fall" align="center" nowrap>{t}Checked By{/t}</td>
+		<td align="center" class="fall" nowrap>{t}Approved By{/t}</td>
+		<td align="center" class="fall" nowrap>{t}Cash Report{/t}</td>
+		<td align="center" class="fall" colspan="2" nowrap>{t}I confirm receipt of above amount{/t}</td>
+	</tr>
+	<tr>
+		<td class="fall"></td>
+		<td class="fall"></td>
+		<td class="fall"></td>
+		<td class="fall">
+			<table width="90%" cellpadding="5" align="center">
+			    <tr>
+				<td width="100%" class="fbottom">{t}no.{/t}</td>
+			    </tr>
+			    <tr>
+				<td width="100%" class="fbottom">{t}item{/t}</td>
+			    </tr> 
+			</table>
+		</td>
+		<td colspan="2" class="fall">
+			<table width="90%" cellpadding="5" align="center">
+			    <tr>
+				<td width="100%">&nbsp;<br>&nbsp;</td>
+			    </tr>
+			    <tr>
+				<td width="100%" align="center" class="ftop">{t}Signature of cashier{/t}</td>
+			    </tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="6" align="right">
+			<font class="small">Copyright &copy; 2001-2005 LMS Developers</font>
+		</td>
+	</tr>
+</table>
+	<br></td></tr>
+	<tr><td style="border-top-width: 1pt; border-top-style: dashed;"></td></tr>
+</table>
+</div>
+{/if}
+{if !$receipt.last}</div>{/if}

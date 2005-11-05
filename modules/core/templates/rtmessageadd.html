@@ -1,0 +1,69 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<P><FORM method="POST" name="message" action="?m=rtmessageadd" enctype="multipart/form-data">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
+<INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
+<INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
+<INPUT type="hidden" name="message[customerid]" value ="{$message.customerid}">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG src="img/mail.gif" alt="">
+			<B>{t}Subject:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="frightu">
+			<INPUT type="text" size="75" name="message[subject]" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}></INPUT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/users.gif" alt="">
+			<B>{t}Submitter:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<INPUT class="radio light" type="radio" name="message[sender]" value="user" CHECKED>{t}user{/t}</INPUT>
+			<INPUT class="radio light" type="radio" name="message[sender]" value="customer" {if $message.sender eq 'customer'}CHECKED{/if}>{t}customer{/t}</INPUT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/email.gif" alt="">
+			<B>{t}Recipient's e-mail:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/edit.gif" alt="">
+			<B>{t}Content:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/attach.gif" alt="">
+			<B>{t}Attachment:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<INPUT name="file" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
+			<A href="javascript:document.message.submit();" accesskey="s">{t}Submit/Send{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=rtticketview&id={$message.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM></P>
+{include file="footer.html}<SCRIPT language="javaScript">
+<!--
+document.forms['message'].elements['message[subject]'].focus();
+//-->
+</SCRIPT>

@@ -1,0 +1,136 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P>
+<FORM METHOD="POST" NAME="tariffadd" ACTION="?m=tariffadd">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+	    <TD WIDTH="1%" CLASS="fleftu">
+		<IMG SRC="img/money.gif" ALT="">
+	    </TD>
+	    <TD WIDTH="1%" CLASS="fbt"><B>{t}Name:{/t}</B></TD>
+	    <TD WIDTH="98%" CLASS="frightu">
+		<INPUT TYPE="TEXT" NAME="tariffadd[name]" VALUE="{$tariffadd.name}" {tip trigger="name" bold=1}>
+	    </TD>
+	</TR>
+	<TR class="LIGHT">
+	    <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+		<TABLE WIDTH="100%" CELLPADDING="0">
+		    <TR CLASS="LIGHT">
+			<TD WIDTH="50%" VALIGN="top">
+			    <TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/value.gif" ALT="">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Value:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					    <INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[value]" VALUE="{$tariffadd.value}" {tip text="Enter value" trigger="value"}>
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/tax.gif" ALT="">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Tax:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<SELECT SIZE="1" NAME="tariffadd[taxid]" {tip text="Select Tax rate" trigger="taxid"}>
+					{foreach item=tax from=$taxeslist}
+					    <OPTION VALUE="{$tax.id}"{if $tax.value == $_config.phpui.default_taxrate || $tax.id == $tariffadd.taxid} selected{/if}>{$tax.label}</OPTION>
+					{/foreach}
+					</SELECT>
+				    </TD>
+				</TR>												
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/class.gif" ALT="">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Product ID:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[prodid]" VALUE="{$tariffadd.prodid}" {tip text="Enter Product ID number (optional)" trigger="prodid"}>
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/info1.gif" ALT="">
+				    </TD>
+				    <TD WIDTH="1%"><B>{t}Description:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<TEXTAREA NAME="tariffadd[description]" COLS="50" ROWS="5" {tip text="Enter additional informations (optional)"}>{$tariffadd.description}</TEXTAREA>
+				    </TD>
+				</TR>
+			</TABLE>
+		    </TD>
+		    <TD WIDTH="50%" VALIGN="top">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/uprate.gif" ALT="">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Upload rate:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="8" VALUE="{if $tariffadd.uprate}{$tariffadd.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}> kbit/s
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Upload ceil:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" NAME="tariffadd[upceil]" SIZE="8" VALUE="{if $tariffadd.upceil}{$tariffadd.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}> kbit/s
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">			
+				    <TD WIDTH="1%">
+					<IMG SRC="img/downrate.gif" ALT="">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Download rate:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="8" VALUE="{if $tariffadd.downrate}{$tariffadd.downrate}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate"}> kbit/s
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Download ceil:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" NAME="tariffadd[downceil]" SIZE="8" VALUE="{if $tariffadd.downceil}{$tariffadd.downceil}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil"}> kbit/s
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">			
+				    <TD WIDTH="1%">
+				    	<IMG SRC="img/online.gif" ALT="">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" NAME="tariffadd[climit]" SIZE="8" VALUE="{if $tariffadd.climit}{$tariffadd.climit}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit"}>
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Packet limit:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" NAME="tariffadd[plimit]" SIZE="8" VALUE="{if $tariffadd.plimit}{$tariffadd.plimit}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit"}>
+				    </TD>
+				</TR>
+			    </TABLE>
+			</TD>
+		    </TR>
+		</TABLE>
+	    </TD>
+	</TR>
+	<TR CLASS="LIGHT">
+	    <TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+	    	<A HREF="javascript:document.tariffadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
+		<A HREF="?m=tarifflist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+	    </TD>
+	</TR>
+</TABLE></FORM></P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['tariffadd'].elements['tariffadd[name]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

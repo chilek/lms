@@ -1,0 +1,88 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<SCRIPT language="javaScript">
+{literal}
+<!-- 
+	function PrintList()
+	{
+		document.nodesearch.action = "?m=nodesearch&search=1&print=1";
+		document.nodesearch.target = "_BLANK";
+		document.nodesearch.submit();
+	}
+
+	function Search()
+	{
+		document.nodesearch.action = "?m=nodesearch&search=1";
+		document.nodesearch.target = "";
+		document.nodesearch.submit();
+	}
+//-->	
+{/literal}
+</SCRIPT>
+<H1>{$layout.pagetitle}</H1>
+<P>
+<FORM METHOD="POST" ACTION="?m=nodesearch&search" NAME="nodesearch">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT TYPE="hidden" NAME="m" VALUE="nodesearch">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FALL" COLSPAN="2">
+			<B>{t}Find nodes matching the following search criteria:{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/node.gif" width="16" alt=""> <B>{t}Node name:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[name]" {tip text="Enter node name or it's fragment"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/mac.gif" width="16" alt=""> <B>{t}MAC address:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[mac]" {tip text="Enter node MAC address or it's fragment"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/ip.gif" width="16" alt=""> <B>{t}IP address:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[ipaddr]" {tip text="Enter node IP address or it's fragment"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/info1.gif" width="16" alt=""> <B>{t}Description:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[info]" {tip text="Enter additional informations"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Qualification operator:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT class="radio light" type="radio" value="AND" name="k"{if $k!='OR'} CHECKED{/if}> {t}AND{/t}
+			<INPUT class="radio light" type="radio" value="OR" name="k"{if $k=='OR'} CHECKED{/if}> {t}OR{/t}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
+			<A href="javascript:Search()" accesskey="s">{t}Submit{/t} <IMG SRC="img/search.gif" alt=""></A>
+			<A href="javascript:PrintList()">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['nodesearch'].elements['search[name]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

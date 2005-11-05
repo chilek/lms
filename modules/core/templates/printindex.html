@@ -1,0 +1,593 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+{include file="calendar_js.html"}
+<H1>{$layout.pagetitle}</H1>
+{if $printmenu=="customer"}
+<P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&type=customerlist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">	
+<TABLE width="100%" cellpadding="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/customer.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Customers List:{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}State:{/t}</B>
+					</TD>
+					<TD width="1%" {tip text="Select customer's group"}>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="3" CHECKED>{t}connected<!plural>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="5">{t}disconnected<!plural>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="6">{t}in debt{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{t}waiting{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{t}interested<!plural>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="-1">{t}without nodes{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0">{t}all{/t}</NOBR>
+					</TD>
+					<TD width="1%">
+						<NOBR><IMG src="img/network.gif" alt=""> <B>{t}Network:{/t}</B></NOBR><BR><BR>
+						<NOBR><IMG src="img/group.gif" alt=""> <B>{t}Group:{/t}</B></NOBR><BR><BR>
+						<NOBR><IMG src="img/calendar.gif" alt=""> <B>{t}Balance date:{/t}</B></NOBR>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="network" {tip text="Select network"}>
+							<OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
+							{section name="networks" loop=$networks}
+							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
+							{/section}
+						</SELECT><BR><BR>
+						<SELECT size="1" name="customergroup" {tip text="Select group"}>
+							<OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+							{section name="customergroups" loop=$customergroups}
+							<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:50:" ..."}</OPTION>
+							{/section}
+						</SELECT><BR><BR>
+						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/view.gif" alt="">
+					</TD>
+					<TD width="1%">	
+			    			<B>{t}Sorting:{/t}</B>
+					</TD>
+					<TD width="93%" {tip text="Select sorting direction and criteria"}>
+						<SELECT SIZE="1" name="order">
+							<OPTION value="customername" SELECTED>{t}First/last or Company name{/t}</OPTION>
+							<OPTION value="id">{t}Id{/t}</OPTION> 
+							<OPTION value="balance">{t}Balance{/t}</OPTION> 
+							<OPTION value="tariff">{t}Subscription{/t}</OPTION> 
+							<OPTION value="address">{t}Address{/t}</OPTION> 
+						</SELECT><BR><BR>
+						<SELECT SIZE="1" name="direction">
+							<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+							<OPTION value="desc">{t}descending{/t}</OPTION> 
+						</SELECT>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printcustomerlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal12 = new calendar(document.printcustomerlist.elements['day']);
+cal12.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
+{if $printmenu=="finances"}
+<P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Network Balance Sheet{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/users.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}User:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
+							<OPTION value="">{t}- all users -{/t}</OPTION>
+							{section name="users" loop=$users}
+							<OPTION value="{$users[users].id}">{$users[users].name|truncate:50:" ..."}</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="96%" nowrap>
+						<B>{t}Period:{/t}</B>&nbsp;
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="balancefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="balanceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printbalancelist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal1 = new calendar(document.printbalancelist.elements['balancefrom']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.printbalancelist.elements['balanceto']);
+cal2.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
+{if $printmenu=="incomereport" || $printmenu=="finances"}
+<P><FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Total Invoiceless Income{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="96%" nowrap>
+						<B>{t}Period:{/t}</B>&nbsp;
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal5.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal6.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printincomereport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal5 = new calendar(document.printincomereport.elements['from']);
+cal5.time_comp = false;
+var cal6 = new calendar(document.printincomereport.elements['to']);
+cal6.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
+{if $printmenu=="customer" || $printmenu=="finances"}
+<P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Liability Report{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Customer:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="customer" {tip text="Select customer"}>
+							<OPTION value="0" SELECTED>{t}- all customers -{/t}</OPTION>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Day:{/t}</B>&nbsp;
+						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal7.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/view.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Sorting:{/t}</B>
+					</TD>
+					<TD width="93%" {tip text="Select sorting direction and criteria"}>
+						<SELECT SIZE="1" name="order">
+							<OPTION value="customername" SELECTED>{t}First/last or Company name{/t}</OPTION>
+							<OPTION value="brutto">{t}Gross value{/t}</OPTION> 
+						</SELECT><BR><BR>
+						<SELECT SIZE="1" name="direction">
+							<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+							<OPTION value="desc">{t}descending{/t}</OPTION> 
+						</SELECT>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.liabilityreport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal7 = new calendar(document.liabilityreport.elements['day']);
+cal7.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
+{if $printmenu=="finances"}
+<P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Sale Registry{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="1%">
+						<B>{t}Period:{/t}&nbsp;</B>
+					</TD>
+					<TD width="1%" nowrap>
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					</TD>
+					<TD width="97%" nowrap>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.invoicereport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
+cal8.time_comp = false;
+var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
+cal9.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
+{if $printmenu=="customer" || $printmenu=="finances"}
+<P><FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Customer Balance Sheet{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Customer:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="customer" {tip text="Select customer"}>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="96%" nowrap>
+						<B>{t}Period:{/t}</B>&nbsp;
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal3.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal4.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printcustomerbalance.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal3 = new calendar(document.printcustomerbalance.elements['from']);
+cal3.time_comp = false;
+var cal4 = new calendar(document.printcustomerbalance.elements['to']);
+cal4.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
+{if $printmenu=="finances"}
+<P><FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+{literal}
+<SCRIPT language=JavaScript>
+    <!--
+    function print()
+    {
+        document.printinvoices.action="?m=print&type=invoices";
+	document.printinvoices.submit();
+    }
+    function print_forms()
+    {
+        document.printinvoices.action="?m=print&type=transferforms";
+	document.printinvoices.submit();
+    }
+    //-->
+</SCRIPT>
+{/literal}					    
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Invoices{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Customer:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
+							<OPTION value="0">{t}- all customers -{/t}</OPTION>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Period:{/t}</B>&nbsp;
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</TD>
+					<TD width="1%">
+						<IMG src="img/info.gif" alt="">
+					</TD>
+					<TD width="94%" nowrap>
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoiceorg" CHECKED>&nbsp;{t}Original{/t}&nbsp;
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicecopy" CHECKED>&nbsp;{t}Copy{/t}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:print_forms();">{t}Print form of cash transfer{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:print();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal10 = new calendar(document.printinvoices.elements['invoicefrom']);
+cal10.time_comp = false;
+var cal11 = new calendar(document.printinvoices.elements['invoiceto']);
+cal11.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
+{if $printmenu=="node"}
+<P><FORM method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/node.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Nodes List{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/node.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Status:{/t}</B>
+					</TD>
+					<TD width="1%" {tip text="Select nodes group"}>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0" CHECKED>{t}all{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{t}connected<!plural:item>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{t}disconnected<!plural:item>{/t}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="3">{t}indebted owner{/t}</NOBR>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/network.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Network:{/t}</B>
+					</TD>
+					<TD width="1%" {tip text="Select network"}>
+						<SELECT size="1" name="network">
+							<OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
+							{section name="networks" loop=$networks}
+							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
+							{/section}
+						</SELECT>&nbsp;
+					</TD>
+					<TD width="1%">
+						<IMG src="img/view.gif" alt="">
+					</TD>
+					<TD width="1%">	
+			    			<B>{t}Sorting:{/t}</B>
+					</TD>
+					<TD width="92%" {tip text="Select sorting direction and criteria"}>
+						<SELECT SIZE="1" name="order">
+							<OPTION value="name" SELECTED>{t}Name{/t}</OPTION>
+							<OPTION value="id">{t}Id{/t}</OPTION> 
+							<OPTION value="owner">{t}Customer name{/t}</OPTION> 
+							<OPTION value="ownerid">{t}Customer ID{/t}</OPTION> 
+							<OPTION value="ip">{t}IP address{/t}</OPTION> 
+							<OPTION value="mac">{t}MAC address{/t}</OPTION>
+						</SELECT><BR><BR>
+						<SELECT SIZE="1" name="direction">
+							<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+							<OPTION value="desc">{t}descending{/t}</OPTION> 
+						</SELECT>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printnodelist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{/if}
+{if $printmenu=="traffic" || $printmenu=="customer"}
+<P><FORM method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=trafficprint&type=customertraffic" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/traffic.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Stats{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Customer:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="customer" {tip text="Select customer"}>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="1%">
+						<B>{t}Year:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="year" {tip text="Select period"}>
+							{foreach item=year from=$statyears}
+							<OPTION value="{$year}"{if $year == $curryear} SELECTED{/if}>{$year}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<B>{t}Month:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="month" {tip text="Select period"}>
+							{foreach item=month key=id from=$months}
+							<OPTION value="{$id}"{if $id == $currmonth} SELECTED{/if}>{$month}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<TD width="92%"></TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printcustomertraffic.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{/if}
+
+{include file="footer.html"}

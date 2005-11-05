@@ -1,0 +1,112 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE width="600" align="center">
+	<TR>
+		<TD width="100%" align="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<P>
+<TABLE width="600" cellpadding="3" border="1" align="CENTER">
+	<TR>
+		<TD class="HEAD" colspan="2">
+			<H1>{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}</H1>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<B>{t}Subject:{/t}</B>
+		</TD>
+		<TD width="99%" NOWRAP>
+		        {$ticket.subject|escape|truncate:50:"..."}
+		</TD>
+	</TR>
+	<TR>
+	        <TD width="1%">
+			<B>{t}Submitter:{/t}</B>
+	        </TD>
+	        <TD width="99%" NOWRAP>
+			{if $ticket.customerid}
+				{$ticket.customername|escape}
+			{else}
+				{$ticket.requestor|escape} 
+			{/if}
+			{if $ticket.requestoremail && !$ticket.customerid}
+				{$ticket.requestoremail}
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%" NOWRAP>
+			<B>{t}Create time:{/t}</B>
+		</TD>
+		<TD width="99%">
+			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+		</TD>
+	</TR>
+	{if $ticket.ownername}
+	<TR>
+		<TD width="1%">
+			<B>{t}Owner:{/t}</B>
+		</TD>
+		<TD width="99%" NOWRAP>
+			{$ticket.ownername}
+		</TD>
+	</TR>
+	{/if}
+{*
+	<TR>
+	        <TD width="1%">
+			<B>{t}Status:{/t}</B>
+		</TD>
+		<TD width="99%">
+			{$ticket.status}
+		</TD>
+	</TR>
+	<TR>
+	        <TD width="1%">
+			<B>{t}Uptime:{/t}</B>
+		</TD>
+		<TD width="99%" NOWRAP>
+			{$ticket.uptime}
+		</TD>
+	</TR>
+	<TR>
+	        <TD width="1%">
+			<B>{t}Queue:{/t}</B>
+		</TD>
+		<TD width="99%" NOWRAP>
+			{$ticket.queuename}
+		</TD>
+	</TR>
+*}
+	<TR>
+	        <TD width="1%">
+			<B>{t}Message:{/t}</B>
+		</TD>
+		<TD width="99%">
+			{$ticket.messages.0.body|escape|replace:"\n":"<BR>"}
+		</TD>
+	</TR>
+</TABLE>
+<P>
+<TABLE width="600" cellpadding="3" border="1" align="CENTER">
+	<TR>
+		<TD width="100%" class="HEAD">
+		{t}Notes:{/t}	
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%">
+			<P>&nbsp;
+			<P>&nbsp;
+			<P>&nbsp;
+			<P>&nbsp;
+			<P>&nbsp;
+			<P>&nbsp;
+		</TD>
+	</TR>
+</TABLE>

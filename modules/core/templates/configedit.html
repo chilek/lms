@@ -1,0 +1,72 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM method="POST" action="?m=configedit&id={$config.id}" name="config">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<img src="img/settings.gif" alt="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{t}Name:{/t}</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<INPUT name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
+			<B>{t}Section:{/t}</B>
+			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
+			    <OPTION value="phpui" {if $config.section eq "phpui"}SELECTED{/if}>phpui</OPTION>
+			    <OPTION value="finances" {if $config.section eq "finances"}SELECTED{/if}>finances</OPTION>
+			    <OPTION value="invoices" {if $config.section eq "invoices"}SELECTED{/if}>invoices</OPTION>
+			    <OPTION value="receipts" {if $config.section eq "receipts"}SELECTED{/if}>receipts</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/producer.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Value:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/info1.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Comment:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/wait.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Status:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT type="checkbox" class="box light" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}> {t}Off{/t}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.config.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
+			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t 0=$config.var}Are you sure, you want to delete option \'$0\' from database?{/t}')">{t}Delete{/t} <img src="img/delete.gif" alt=""></A>
+			<A href="?m=configlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+<SCRIPT>
+<!--
+document.forms['config'].elements['config[var]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

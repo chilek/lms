@@ -1,0 +1,54 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE width="100%" cellpadding="3">
+<TR CLASS="dark">
+	<TD class="fleftu" width="98%">
+		<IMG src="img/time.gif" alt=""> <B>{t}Creation time:{/t}</B>
+	</TD>
+	<TD class="fbt" width="1%" nowrap>
+		<IMG src="img/plain.gif" alt=""> {t}Size:{/t}
+	</TD>
+	<TD class="frightu" width="1%" align="right" nowrap>
+		<IMG src="img/empty.gif" alt="" height="16" width="1"><B> {t 0=$dblist.total}Total: $0{/t}</B>&nbsp;
+	</TD>
+</TR>
+{cycle values="light,lucid" print=false}
+{section name=dblist loop=$dblist.time}
+<TR class="{cycle}{if $dblist.dbv[dblist] != $layout.dbschversion} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TD class="fleft" width="98%" onClick="return self.location.href='?m=core&a=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
+		<IMG src="img/time.gif" alt=""> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
+	</TD>
+	<TD width="1%" align="right" onClick="return self.location.href='?m=core&a=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';" nowrap>
+		{if $dblist.type[dblist]=="gz"}
+			<IMG src="img/zipped.gif" alt="">
+		{else}
+			<IMG src="img/plain.gif" alt="">
+		{/if} {$dblist.size[dblist]} {t}bytes{/t}
+	</TD>
+	<TD class="fright" width="1%" align="right" nowrap> 
+		<nobr>
+		{if $dblist.dbv[dblist] == $layout.dbschversion}
+		<a href="?m=core&a=dbrecover&db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}" onClick="return confirmLink(this, '{t}Are you sure, you want to restore this database backup?{/t}\n{t}WARNING! It will backup current database content automatically{/t}')"><IMG src="img/recover.gif" alt="[ {t}Restore{/t} ]"></A>
+		{/if}
+		<a href="?m=core&a=dbdel&db={$dblist.name[dblist]}" onClick="return confirmLink(this, '{t}Are you sure, you want to delete this database backup?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+		<a href="?m=core&a=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/view.gif" alt="[ {t}View{/t} ]"></A>
+		<A href="?m=core&a=dbview&db={$dblist.name[dblist]}&rawmode=true&save=true&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/save.gif" alt="[ {t}Save{/t} ]"></A>
+		</nobr>
+	</TD>
+</TR>	
+{sectionelse}
+<TR>
+	<TD colspan="3" class="flr" width="100%" align="center">
+		<p>&nbsp;</p>
+		<p><B>{t}Database backups currently not found.{/t}</B></p>
+		<p>&nbsp;</p>
+	</TD>
+</TR>
+{/section}
+<TR class="light">
+	<TD colspan="3" width="100%" align="right" class="fall">
+		{t}Create new{/t}
+		<a href="?m=core&a=dbnew">{t}uncompressed{/t} <img src="img/dbnew.gif" alt=""></A> / 
+		<a href="?m=core&a=dbnew&gz=1">{t}compressed{/t} <img src="img/zipped.gif" alt=""></A>
+	</TD>
+</TABLE>

@@ -1,0 +1,92 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="99%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}No.{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Date{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Value{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Tax{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}After{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Customer{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Description{/t}
+		</TD>		
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=balancelist loop=$balancelist}
+	<TR class="{cycle}">
+		<TD ALIGN="CENTER">
+			{counter}
+		</TD>
+		<TD ALIGN="CENTER" NOWRAP>
+			{$balancelist[balancelist].time|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{if $balancelist[balancelist].value > 0}+{/if}{$balancelist[balancelist].value|money_format} 
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$balancelist[balancelist].taxlabel}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{if $balancelist[balancelist].covenant}
+			-
+			{else}
+			{$balancelist[balancelist].after|money_format} 
+			{/if}
+		</TD>
+		<TD ALIGN="LEFT" NOWRAP>
+			{$balancelist[balancelist].customername|truncate:20:"..."}
+		</TD>
+		<TD ALIGN="LEFT">
+			{$balancelist[balancelist].comment}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
+			<P>&nbsp;</P>
+			<P><B>{t}No such cash operations.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+	<TR class="grey">
+		<TD ALIGN="RIGHT" COLSPAN="4">
+			<B>{t}Customers payments:{/t}</B><BR>
+			<B>{t}Income:{/t}</B><BR>
+			<B>{t}Expenditure:{/t}</B><BR>
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT">
+			{$listdata.incomeu|money_format}<BR>
+			{$listdata.income|money_format}<BR>
+			{$listdata.expense|money_format}<BR>
+			<NOBR><B>{$listdata.total|money_format}</B><NOBR>
+		</TD>
+		<TD COLSPAN="2"></TD>
+	</TR>
+</TABLE>

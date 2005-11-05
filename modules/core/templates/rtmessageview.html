@@ -1,0 +1,137 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<P>
+<TABLE width="100%" cellpadding="3">
+        <TR class="dark">
+		<TD class="fleftu" width="1%">
+		        <IMG src="img/open.gif" alt="">
+		</TD>
+		<TD class="fbt" width="1%">
+			<B>{t}Subject:{/t}</B>
+		</TD>
+		<TD class="frightu" width="98%">
+			<B>{$message.subject|escape}</B>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/time.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Date:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" NOWRAP>
+			{$message.createtime|date_format:"%Y/%m/%d %H:%M.%S"}
+		</TD>
+	</TR>	
+	<TR class="light">
+		<TD width="1%" class="fleft" NOWRAP>
+		        {if $message.userid}
+				<IMG src="img/users.gif" alt="">
+			{else}
+				<IMG src="img/customer.gif" alt="">
+			{/if}
+		</TD>
+		<TD width="1%">
+			<B>{t}Submitter:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{if $message.customerid}
+				<A href="?m=customerinfo&id={$message.customerid}">{$message.customername} ({$message.customerid|escape|string_format:"%04d"})</A>
+			{elseif $message.userid}
+				<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
+			{elseif $message.mailfrom}
+				<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
+			{else}
+				{$message.requestor|escape}
+			{/if}
+		</TD>
+	</TR>
+	{if $message.headers}
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/mail.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Headers:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA rows="5" cols="100">{$message.headers|escape}</TEXTAREA>
+		</TD>
+	</TR>
+	{/if}
+	{if $message.messageid}
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/mail.gif" alt="">
+		</TD>
+		<TD width="1%" NOWRAP>
+			<B>Message-Id:</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{$message.messageid|escape}
+		</TD>
+	</TR>
+	{/if}
+	{if $message.replyto}
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/mail.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>Reply-To:</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{$message.replyto|escape}
+		</TD>
+	</TR>
+	{/if}
+	{if $message.inreplyto}
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/mail.gif" alt="">
+		</TD>
+		<TD width="1%" NOWRAP>
+			<B>In-Reply-To:</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<A href="?m=rtmessageview&id={$message.inreplyto}">{$message.inreplytoid|escape}</A>
+		</TD>
+	</TR>
+	{/if}
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/edit.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Message:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA rows="5" cols="100">{$message.body|escape}</TEXTAREA>
+		</TD>
+	</TR>
+	{if $message.attachments}
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/attach.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Attachments:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{foreach from=$message.attachments item=a}
+				<A href="?m=rtmessageview&tid={$message.ticketid}&mid={$message.id}&file={$a.filename}">{$a.filename} ({$a.size|string_format:"%.1f"} {$a.unit})</A><BR>
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
+	<TR class="LIGHT">
+		<TD colspan="3" width="100%" class="fbottomu" align="right" NOWRAP>
+			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{t}Reply{/t} <IMG src="img/edit.gif" alt=""></A>
+			<A href="?m=rtticketview&id={$message.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+{include file="footer.html"}

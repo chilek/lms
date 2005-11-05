@@ -1,0 +1,118 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+{include file="calendar_js.html"}
+<H1>{$layout.pagetitle}</H1>
+<FORM method="POST" action="?m=eventsearch" name="event">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD width="100%" colspan="3" class="fall">
+			<B>{t}Find events matching the following search criteria:{/t}</B>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/calendar.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Title:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title" bold=1}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/time.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Date:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{t}From:{/t} <INPUT name="event[datefrom]" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{t}To:{/t} <INPUT name="event[dateto]" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT name="event[description]" size="50" {tip text="Enter additional informations"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Note:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT name="event[note]" size="50" {tip text="Enter note"}>
+		</TD>
+	</TR>
+{*	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/access.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Status:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<INPUT type="checkbox" name="event[private]" value="1" class="box light" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {t}private{/t}
+		</TD>
+	</TR>
+*}	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/customer.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Customer:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<SELECT name="event[customerid]">
+				<OPTION value="0" SELECTED>{t}- select customer -{/t}</OPTION>
+				{section name=customerlist loop=$customerlist}	
+				<OPTION value="{$customerlist[customerlist].id}">{$customerlist[customerlist].customername}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft" valign="top">
+			<IMG src="img/users.gif" alt="">
+		</TD>
+		<TD width="1%" valign="top">
+			<B>{t}User:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<SELECT name="event[userid]">
+				<OPTION value="" SELECTED>{t}- select user -{/t}</OPTION>
+				{section name=userlist loop=$userlist}	
+				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+<SCRIPT>
+<!--
+var cal1 = new calendar(document.forms['event'].elements['event[datefrom]']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.forms['event'].elements['event[dateto]']);
+cal2.time_comp = false;
+document.forms['event'].elements['event[title]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

@@ -1,0 +1,18 @@
+{if $_config.phpui.lang_debug}
+<!--// $Id$ //-->
+<SCRIPT language="JavaScript">
+    <!--
+    config='toolbar=no,location=no,directories=no,status=no,menubar=no,width=600,height=400,scrollbars=yes,resizable=no'
+    pop = window.open ("","pop",config)
+    pop.document.write('<HTML><HEAD><TITLE>Missing strings</TITLE></HEAD>');
+    pop.document.write('<BODY bgcolor=#FFFFFF>');
+    pop.document.write('<PRE>');
+
+    {foreach item=string from=$missing_strings}
+	    pop.document.write('$_LANG[\'{$string|replace:"\\":"\\\\"|replace:"'":"\'"|replace:"\n":"\\n"|escape:"javascript"}\'] = \'{$string|replace:"\\":"\\\\"|replace:"'":"\'"|replace:"\n":"\\n"|escape:"javascript"}\';\n');
+    {/foreach}
+
+    pop.document.write('</BODY></HTML>');
+//-->
+</SCRIPT>
+{/if}

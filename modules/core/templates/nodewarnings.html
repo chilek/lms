@@ -1,0 +1,89 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+{literal}
+<SCRIPT LANGUAGE=JavaScript" TYPE="text/javascript">
+<!--
+	function SelectAllNodes()
+	{
+		if(document.setwarnings.nodes.checked) 
+			for (var i = 0; i < document.setwarnings.elements[0].length; i++)
+				document.setwarnings.elements[0].options[i].selected = true;
+		else
+			for (var i = 0; i < document.setwarnings.elements[0].length; i++)
+				document.setwarnings.elements[0].options[i].selected = false;
+	}
+
+	function SelectAllNodes2()
+	{
+		document.setwarnings.nodes.checked = !document.setwarnings.nodes.checked;
+		SelectAllNodes();
+	}
+
+	function switchbox(id)
+	{
+		if((id.name == 'setwarnings[warnon]') && id.checked ) 
+			document.setwarnings.elements['setwarnings[warnoff]'].checked = false;
+		if((id.name == 'setwarnings[warnoff]') && id.checked ) 
+			document.setwarnings.elements['setwarnings[warnon]'].checked = false;
+	}
+
+	function switchbox1()
+	{
+		document.setwarnings.elements['setwarnings[warnon]'].checked = !document.setwarnings.elements['setwarnings[warnon]'].checked;
+		switchbox(document.setwarnings.elements['setwarnings[warnon]']);
+	}
+
+	function switchbox2()
+	{
+		document.setwarnings.elements['setwarnings[warnoff]'].checked = !document.setwarnings.elements['setwarnings[warnoff]'].checked;
+		switchbox(document.setwarnings.elements['setwarnings[warnoff]']);
+	}
+//-->
+</SCRIPT>
+{/literal}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM NAME="setwarnings" METHOD="POST" ACTION="?m=nodewarn">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+	<TR>
+		<TD WIDTH="1%" VALIGN="TOP">
+			<TABLE width="100%" cellpadding="3">
+				<TR CLASS="DARK">
+					<TD CLASS="fleftu" WIDTH="1%">
+						<IMG SRC="img/node.gif" alt="">&nbsp;<B>{t}Nodes:{/t}</B>
+					</TD>
+					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
+						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{t}System message:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="fleft">
+						<SELECT size="20" name="setwarnings[mnodeid][]" multiple {tip text="Select nodes"}>
+							{section name=nodelist loop=$nodelist}
+							<OPTION value="{$nodelist[nodelist].id}" {if $nodelist[nodelist].warning}CLASS="red"{/if}>{$nodelist[nodelist].name|truncate:50:" ..."} / {$nodelist[nodelist].ip} ({$nodelist[nodelist].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD CLASS="fright" COLSPAN="2">
+						<TEXTAREA NAME="setwarnings[message]" ROWS="20" COLS="75" {tip text="Enter system message to customers"}>{$warnmessage}</TEXTAREA>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="fbl" WIDTH="1%" nowrap>
+						<INPUT TYPE="checkbox" NAME="nodes" CLASS="box light" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{t}Select All{/t}</A></INPUT>
+					</TD>
+					<TD CLASS="fbottom" ALIGN="left">
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{t}Enable message{/t}</A></INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{t}Disable message{/t}</A></INPUT></NOBR>
+					</TD>
+					<TD CLASS="fbr" ALIGN="RIGHT">
+						<A HREF="javascript:document.setwarnings.submit()">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+					</TD>
+				<TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>
+{include file="footer.html"}

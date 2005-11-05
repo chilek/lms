@@ -1,0 +1,174 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" NAME="page">
+<INPUT type="submit" class="hiddenbtn">
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+	function CheckAll()
+	{
+		for (var i=0; i<document.page.elements.length; i++)
+		{
+			var e = document.page.elements[i];
+			if (e.name != 'allbox')
+			e.checked = document.page.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.page.allbox.checked = !document.page.allbox.checked;
+		CheckAll();
+	}
+
+	function prints()
+	{
+		var add = "";
+		if(document.page.original.checked && document.page.copy.checked)
+			add = "";
+		else if(document.page.original.checked && !document.page.copy.checked)
+			add = "&which=original";
+		else if(!document.page.original.checked && document.page.copy.checked)
+			add = "&which=copy";
+		
+		document.page.action = "?m=receipt&print=cached" + add;
+		document.page.target = "_blank";
+		document.page.submit();
+	}
+
+	function page_change(page)
+	{
+		document.page.action="?m=receiptlist&page="+page;
+		document.page.target="";
+		document.page.submit();
+	}
+
+	function filter()
+	{
+		document.page.action="?m=receiptlist";
+		document.page.target="";
+		document.page.submit();
+	}
+
+	//-->
+</SCRIPT>
+{/literal}
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+			<A href="?m=receiptlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			<A href="?m=receiptlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			<A href="?m=receiptlist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{t}Number:{/t}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			<A href="?m=receiptlist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Value:{/t}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="95%" CLASS="fbt" nowrap>
+			<A href="?m=receiptlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{t}For:{/t}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu">
+			&nbsp;
+		</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="6">
+				<B>{t}Filter:{/t} </B> 
+				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<SELECT size="1" name="cat">
+					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
+					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}date (YYYY/MM/DD){/t}</OPTION>
+					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}number{/t}</OPTION>
+					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{t}value{/t}</OPTION>
+					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
+					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
+					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
+					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
+				</SELECT>&nbsp;
+				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>		
+	{if $listdata.totalpos != 0}
+	<TR CLASS="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="6">
+			<B>{t}Page:{/t} {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$receiptlist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B>
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.totalpos}
+				{assign var=endx value=$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.totalpos}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=receiptlist loop=$receiptlist start=$start max=$pagelimit}
+	{assign var=receipt value=$receiptlist[receiptlist]}
+	{assign var=receiptid value=$receipt.id}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD WIDTH="1%" CLASS="fleft">
+			{$receipt.id|string_format:"%06d"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP align="right">
+			{$receipt.number}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$receipt.value|money_format} 
+		</TD>
+		<TD WIDTH="95%">
+			<A HREF="?m=customerinfo&id={$receipt.customerid}">{$receipt.customer}, {$receipt.address}, {$receipt.zip} {$receipt.city}</A>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
+			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]"></A>
+			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A onClick="return confirmLink(this, '{t 0=$receipt.number}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			{cycle print=false}
+			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="6">
+			<P>&nbsp;</P>
+			<P><B>{t}No such receipts in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>	
+	{/section}
+	{if $listdata.totalpos != 0}
+	<TR CLASS="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="6">
+			<B>{t}Page:{/t} {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$receiptlist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.totalpos}
+				{assign var=endx value=$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.totalpos}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="dark">
+		<TD CLASS="fall" COLSPAN="6">
+			<TABLE WIDTH="100%">
+				<TR>
+					<TD ALIGN="left" nowrap>
+						<A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/printr.gif" ALT="" ></A>&nbsp;
+						<INPUT type="checkbox" class="box dark" name="original"> {t}original{/t}&nbsp;
+						<INPUT type="checkbox" class="box dark" name="copy"> {t}copy{/t}
+					</TD>
+					<TD ALIGN="right">	
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{include file="footer.html"}

@@ -1,0 +1,46 @@
+{if $database.rawmode}
+{$database.content|replace:"\n":"\r\n"}
+{else}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="dbcontent">
+<INPUT type="submit" class="hiddenbtn">
+{literal}
+<SCRIPT LANGUAGE="javascript">
+	function highlightcontent()
+	{
+		document.dbcontent.dbcontent.focus();
+		document.dbcontent.dbcontent.select();
+	}
+</SCRIPT>
+{/literal}
+<TABLE width="100%" cellpadding="3">
+	<TR>
+		<TD width="100%">
+			<img src="img/time.gif" alt=""> <B>{t}Creation time:{/t}</B> {$database.time|date_format:"%x %X (%A)"}<BR>
+			<img src="img/size.gif" alt=""> <B>{t}Size:{/t}</B> {$database.size} {t}bytes{/t}<BR>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" align="center">
+			<TEXTAREA COLS="80" ROWS="30" CLASS="pre" NAME="dbcontent">{$database.content}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" align="center">
+			<TABLE width="600">
+			    <TR>
+				<TD width="1%">
+				    <A HREF="javascript:highlightcontent();">{t}Highlight{/t}</A>
+				</TD>
+				<TD width="1%" align="right" nowrap>
+				    <A href="?m=dbview&db={$database.name}&rawmode=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql">{t}View without headers{/t} <img src="img/view.gif" alt=""></A>
+				    <A href="?m=dbview&db={$database.name}&rawmode=true&save=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql{if $use_gzip=='true'}.gz{/if}">{t}Save on local disk{/t} <img src="img/save.gif" alt=""></A>
+				</TD>
+			    </TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{/if}

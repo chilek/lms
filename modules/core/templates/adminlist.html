@@ -1,0 +1,47 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<table width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD class="fleftu" width="1%">
+			<NOBR><IMG SRC="img/admins.gif" ALT=""> <B>{t}Login:{/t}</B></NOBR>
+		</TD>
+		<TD class="fbt" width="96%">
+			<NOBR><IMG SRC="img/info2.gif" ALT=""> <B>{t}First/last name:{/t}</B></NOBR>
+		</TD>
+		<TD class="fbt" width="2%" NOWRAP>
+			<IMG SRC="img/time.gif" ALT=""> <B>{t}Last login:{/t}</B>
+		</TD>
+		<TD class="frightu" width="1%">
+			<NOBR><B>{t}Total:{/t} {$adminslist.total}</B></NOBR>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{section name=adminslist loop=$adminslist}{if $adminslist[adminslist].id}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft" width="1%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
+			<NOBR><IMG SRC="img/admins.gif" ALT=""> <B>{$adminslist[adminslist].login}</B></NOBR>
+		</TD>
+		<TD width="96%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
+			<NOBR><IMG SRC="img/info2.gif" ALT=""> {$adminslist[adminslist].name}</NOBR>
+		</TD>
+		<TD width="1%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
+			<NOBR><IMG SRC="img/time.gif" ALT=""> {$adminslist[adminslist].lastlogin}
+			{$adminslist[adminslist].lastloginip} {if $adminslist[adminslist].lastloginip neq $adminslist[adminslist].lastloginhost}({$adminslist[adminslist].lastloginhost}){/if}</NOBR>
+		</TD>
+		<TD width="1%" class="fright">
+			<nobr>
+			<a href="?m=adminpasswd&id={$adminslist[adminslist].id}"><img src="img/keys.gif" alt="[ {t}Change password{/t} ]"></A>
+			{if $adminslist[adminslist].id neq $layout.logid}<a href="?m=admindel&id={$adminslist[adminslist].id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{/if}<img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+			<a href="?m=adminedit&id={$adminslist[adminslist].id}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>
+			<a href="?m=admininfo&id={$adminslist[adminslist].id}"><img src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
+		</TD>
+	</TR>
+	{/if}{/section}
+	<TR CLASS="LIGHT">
+		<TD CLASS="FALL" COLSPAN="4">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

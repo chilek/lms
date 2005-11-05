@@ -1,0 +1,199 @@
+<!--// $Id$ //-->
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+
+	function CheckAll()
+	{
+		for (var i=0; i<document.addbalance.elements.length; i++)
+		{
+			var e = document.addbalance.elements[i];
+			if (e.name != 'allbox')
+				e.checked = document.addbalance.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.addbalance.allbox.checked = !document.addbalance.allbox.checked;
+		CheckAll();
+	}
+
+	function DeleteMarked()
+	{
+		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation(s) and/or invoice item(s)?{/t}{literal}'))
+			return;
+
+		document.addbalance.action="?m=balancedel";
+		document.addbalance.target="";
+		document.addbalance.submit();
+	}
+
+	function AddBalance()
+	{
+		document.addbalance.submit();
+	}
+
+	function printr()
+	{
+		var add = "";
+		if(document.addbalance.original.checked && document.addbalance.copy.checked)
+			add = "";
+		else if(document.addbalance.original.checked && !document.addbalance.copy.checked)
+			add = "&which=original";
+		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
+			add = "&which=copy";
+		
+		document.addbalance.action = "?m=receipt&print=cached&cash=1" + add;
+		document.addbalance.target = "_blank";
+		document.addbalance.submit();
+	}
+
+	function printi()
+	{
+		var add = "";
+		if(document.addbalance.original.checked && document.addbalance.copy.checked)
+			add = "";
+		else if(document.addbalance.original.checked && !document.addbalance.copy.checked)
+			add = "&which={/literal}{t}ORIGINAL{/t}{literal}";
+		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
+			add = "&which={/literal}{t}COPY{/t}{literal}";
+
+		document.addbalance.action="?m=invoice&print=cached&cash=1" + add;
+		document.addbalance.target="_blank";
+		document.addbalance.submit();
+	}
+	
+	//-->
+</SCRIPT>
+{/literal}
+<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD class="fleftu" {if $limit}OnCLick="showOrHide('customerbalance');"{/if}>
+			<IMG src="img/pay.gif" alt="">
+			<B>{t}Customer Account:{/t}</B> 
+			{if $limit}
+				{math equation="x * -1" x=$limit assign=n}
+				({t 0=$n}last $0 transactions{/t})
+			{/if}
+		</TD>
+		<TD class="frightu" align="right">
+			<A href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{t}New Invoice{/t} &raquo;</A>&nbsp;
+			<A href="?m=receiptadd&action=init&customerid={$balancelist.customerid}">{t}New Receipt{/t} &raquo;</A>&nbsp;
+			{if $limit}<A href="?m=customerbalance&id={$balancelist.customerid}">{t}See all transactions{/t} &raquo;</A>{/if}
+		</TD>
+	</TR>
+	<TR id="customerbalance">
+		<TD width="100%" colspan="2" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" width="100%">
+				<TR class="dark">
+					<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+					<TD width="1%" class="fbt">{t}User:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
+					<TD width="1%" class="fbt" align="center">&raquo;</TD>
+					<TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
+					<TD width="93%" class="fbt">{t}Description:{/t}</TD>
+					<TD width="1%" class="frightu">&nbsp;</TD>
+				</TR>
+				{cycle name=bal values="light,lucid" print=false}
+				{section name=balancelist loop=$balancelist.id start=$limit}
+				<TR class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
+					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.value[balancelist] > 0}+{/if}{$balancelist.value[balancelist]|money_format}</nobr></TD>
+					<TD width="1%" align="right"><nobr>{$balancelist.tax[balancelist]}</nobr></TD>
+					<TD width="1%" align="center">&raquo;</TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT class="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
+					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
+					<TD width="1%" align="right" nowrap>
+						{if $balancelist.docid[balancelist]}
+							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE}
+								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="[ {t}Invoice{/t} ]" {tip 0=$balancelist.docid[balancelist] dynpopup='?m=number&id=$0'}></A>
+							{/if}
+							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_CNOTE}
+								<A href="?m=invoice&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printn.gif" ALT="[ {t}Credit note{/t} ]" {tip 0=$balancelist.docid[balancelist] dynpopup='?m=number&id=$0'}></A>
+							{/if}
+							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_RECEIPT}
+								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="[ {t}Cash receipt{/t} ]" {tip 0=$balancelist.docid[balancelist] dynpopup='?m=number&id=$0'}></A>
+							{/if}
+						{/if}
+						{cycle name=bal print=false}
+						<INPUT class="box {cycle name=bal}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
+					</TD>
+					</TR>
+				{sectionelse}
+				<TR>
+					<TD align="center" width="100%" colspan="8">
+						<p>&nbsp;</p>
+						<p><B>{t}That customer hasn't got any transactions.{/t}</B></p>
+						<p>&nbsp;</p>
+					</TD>
+				</TR>
+				{/section}
+				<TR class="light">
+					<TD CLASS="ftop" ALIGN="left" colspan="6">
+						<nobr>
+						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
+						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
+						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
+						<INPUT type="checkbox" class="box light" name="original"> {t}original{/t}&nbsp;
+						<INPUT type="checkbox" class="box light" name="copy"> {t}copy{/t}
+						</nobr>
+					</TD>
+					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
+						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+					</TD>
+				</TR>
+				<TR class="light">
+					<TD class="ftop">
+						<INPUT TYPE="hidden" NAME="addbalance[customerid]" VALUE="{$balancelist.customerid}">
+						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
+					</TD>
+					<TD class="ftop">
+						{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
+					</TD>
+					<TD class="ftop">
+						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>
+					</TD>
+					<TD class="ftop" colspan="2" width="1%">
+						<SELECT SIZE="1" name="addbalance[taxid]" {tip text="Select Tax value"}>
+						{foreach item=tax from=$taxeslist}
+							<OPTION value="{$tax.id}"{if $tax.value==$_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
+						{/foreach}
+						</SELECT>
+					</TD>
+					<TD class="ftop" nowrap>
+						<INPUT TYPE="checkbox" align="left" name="addbalance[type]" value="1" class="box light" {tip text="Select type of operation"} CHECKED> {t}payment{/t}
+					</TD>
+					<TD class="ftop" colspan="2">
+						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
+					</TD>
+				</TR>
+				<TR class="light">
+					<TD colspan="3">
+						{if $customerinfo.balance < 0}
+						<A href="?m=customerbalanceok&id={$customerinfo.id}" OnClick="return confirmLink(this, '{t 0=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" alt=""></A>
+						{/if}
+					</TD>
+					<TD align="right" colspan="5">
+						<A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+					</TD>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal3 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
+{if $limit}{literal}
+if(getCookie('customerbalance')=='0')
+{
+	document.getElementById('customerbalance').style.display = 'none';
+}
+{/literal}{/if}
+//-->
+</SCRIPT>

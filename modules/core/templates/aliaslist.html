@@ -1,0 +1,133 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR class="DARK">
+		<TD width="95%" class="fleftu">
+			<IMG src="img/alias.gif" alt=""> <A href="?m=aliaslist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/customer.gif" alt=""> <A href="?m=aliaslist&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "customername"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD width="1%" class="fbt" align="center" valign="top">
+			<A href="?m=aliaslist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
+			<A href="?m=aliaslist&o=account{if $listdata.direction eq "asc" && $listdata.order eq "account"},desc{/if}"><B>{t}Account:{/t}</B></A> {if $listdata.order eq "account"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/account.gif" alt="">
+		</TD>
+		<TD width="1%" class="fbt" NOWRAP valign="top">
+			<IMG src="img/network.gif" alt="">
+			<A href="?m=aliaslist&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}"><B>{t}Domain:{/t}</B></A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
+			<A href="?m=aliaslist&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A> {if $listdata.order eq "expdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<TD width="1%" class="frightu" NOWRAP>
+			 <B>{t 0=$listdata.total}Total: $0{/t}</B>
+		</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="6">
+			<P><FORM method="GET" action="?m=aliaslist" name="filter">
+				<INPUT type="submit" class="hiddenbtn">
+				<INPUT type="HIDDEN" name="m" value="aliaslist">
+				<INPUT type="HIDDEN" name="page" value="1">
+				<B>{t}Filter:{/t} </B> {t}Owner:{/t}
+				<SELECT size="1" name="u" OnChange="document.filter.submit();">
+					<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
+					<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
+					{section name=customerlist loop=$customerlist}
+					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
+					{/section}
+				</SELECT>&nbsp;
+				{t}State:{/t}
+				<SELECT size="1" name="k" OnChange="document.filter.submit();">
+					<OPTION value="0"{if !$listdata.kind} SELECTED {/if}>{t}- all -{/t}</OPTION>
+					<OPTION value="1"{if $listdata.kind eq 1} SELECTED {/if}>{t}expired{/t}</OPTION>
+					<OPTION value="2"{if $listdata.kind eq 2} SELECTED {/if}>{t}active{/t}</OPTION>
+				</SELECT>&nbsp;
+				{t}Domain:{/t}
+				<SELECT size="1" name="d" OnChange="document.filter.submit();">
+					<OPTION value=""{if $listdata.domainid eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					{section name=domainlist loop=$domainlist}
+					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+					{/section}
+				</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>		
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="6" CLASS="FALL">
+			<B>{t}Page:{/t}
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$aliaslist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=aliaslist loop=$aliaslist start=$start max=$pagelimit}
+	<TR class="{cycle}{if $aliaslist[aliaslist].expdate != 0 && $aliaslist[aliaslist].expdate < $smarty.now} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft">
+			<IMG src="img/alias.gif" ALT="" ><B> {$aliaslist[aliaslist].login}</B>
+			{if $aliaslist[aliaslist].customername}
+			<BR><A href="?m=customerinfo&id={$aliaslist[aliaslist].ownerid}">
+			<IMG src="img/customer.gif" alt="" > {$aliaslist[aliaslist].customername|truncate:50:"..."}
+			</A>
+			{/if}
+		</TD>
+		<TD valign="top">
+			({$aliaslist[aliaslist].id|string_format:"%04d"})
+		</TD>
+		<TD align="right" NOWRAP valign="top">
+			<B>{$aliaslist[aliaslist].account}</B> <IMG src="img/account.gif" alt="">
+		</TD>
+		<TD NOWRAP valign="top">
+			<IMG src="img/network.gif" alt="" > <B>{$aliaslist[aliaslist].domain}</B>
+		</TD>
+		<TD align="right" valign="top">
+			{if $aliaslist[aliaslist].expdate}{$aliaslist[aliaslist].expdate|date_format:"%Y/%m/%d"}{/if}</nobr>
+		</TD>
+		<TD class="fright" align="right">
+			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t 0=$aliaslist[aliaslist].login}Are you sure, you want to delete alias: \'$0\'?{/t}')"><IMG src="img/delete.gif"  ALT="[ {t}Delete{/t} ]"></A>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="6" align="center" class="fall">
+			<p>&nbsp;</p>
+			<p><B>{t}No such aliases in database.{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD colspan="6" class="FALL">
+			<B>{t}Page:{/t}
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$aliaslist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+		</TD>
+	</TR>
+	{/if}
+
+</TABLE>
+</P>
+{include file="footer.html"}

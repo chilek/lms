@@ -1,0 +1,56 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/node.gif" alt="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="3">
+			<B>{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{if $customernodes.total > 0}
+	{section name=customernodes loop=$customernodes}
+	{if $customernodes[customernodes].id}
+	<TR class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<a href="?m=nodeset&id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]"></A>
+			<a href="?m=nodewarn&id={$customernodes[customernodes].id}"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]"></A>
+		</TD>
+		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+			<B>{$customernodes[customernodes].name}</B><BR>
+			<NOBR>{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if} / {$customernodes[customernodes].mac}</NOBR><BR>
+			<NOBR>{$customernodes[customernodes].info|truncate:45:"..."}</NOBR>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+			({$customernodes[customernodes].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
+			<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t 0=$customernodes[customernodes].name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=nodeedit&id={$customernodes[customernodes].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=nodeinfo&id={$customernodes[customernodes].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
+		</TD>
+	</TR>
+	{/if}
+	{/section}
+	{else}
+	<TR>
+		<TD WIDTH="100%" COLSPAN="4" CLASS="FALL" align="center">
+			<P>&nbsp;</P>
+			<P><B>{if $customerinfo.deleted}<FONT class="red">{t}That customer has been deleted.{/t}</FONT>{else}{t}That customer hasn't got any node.{/t}{/if}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="99%" COLSPAN="3" CLASS="FLEFTU">
+			<A HREF="?m=nodeset&ownerid={$customernodes.ownerid}&access=1"><IMG SRC="img/access.gif"> {t}Connect All{/t}</A><BR>
+			<A HREF="?m=nodeset&ownerid={$customernodes.ownerid}"><IMG SRC="img/noaccess.gif"> {t}Disconnect All{/t}</A><BR>
+			<A HREF="?m=nodewarn&ownerid={$customernodes.ownerid}&warning=1"><IMG SRC="img/warningon.gif"> {t}Enable Warnings for All{/t}</A><BR>
+			<A HREF="?m=nodewarn&ownerid={$customernodes.ownerid}"><IMG SRC="img/warningoff.gif"> {t}Disable Warnings for All{/t}</A><BR>
+		</TD>
+		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP VALIGN="BOTTOM" ALIGN="RIGHT">
+			{if $customerinfo.status eq "3" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{t}New{/t} <IMG SRC="img/edit.gif" alt=""></A>{else}<FONT CLASS="BLEND">{t}New{/t} <IMG SRC="img/edit.gif" alt="">{/if}
+		</TD>
+	</TR>
+</TABLE>
