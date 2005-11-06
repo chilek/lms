@@ -50,12 +50,33 @@ if($_GET['action'] == 'add' && isset($a))
 	
 	$period = sprintf('%d',$a['period']);
 
-	if($period < DAILY || $period > YEARLY)
-		$period = MONTHLY;
+	if($period < DISPOSABLE || $period > YEARLY)
+		$period = DISPOSABLE;
 
 	switch($period)
 	{
-		CASE DAILY:
+		case DISPOSABLE:
+			$a['dateto'] = 0;
+			$a['datefrom'] = 0;
+			
+			if(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $a['at']))
+			{
+				list($y, $m, $d) = split('/', $a['at']);
+				if(checkdate($m, $d, $y))
+				{
+					$at = mktime(0, 0, 0, $m, $d, $y);
+					
+					if($at < mktime(0,0,0))
+						$error['at'] = trans('Incorrect date!');
+				}
+				else
+					$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			}
+			else
+				$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+		break;
+		
+		case DAILY:
 			$at = 0;
 		break;
 		
@@ -147,10 +168,10 @@ if($_GET['action'] == 'add' && isset($a))
 		if(checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
-			$error['datefrom'] = trans('Incorrect charging start time!');
+			$error['datefrom'] = trans('Incorrect charging time!');
 	}
-	else
-		$error['datefrom'] = trans('Incorrect charging start time!');
+	elseif($period != DISPOSABLE)
+		$error['datefrom'] = trans('Incorrect charging time!');
 
 	if($a['dateto'] == '')
 		$to = 0;
@@ -160,16 +181,19 @@ if($_GET['action'] == 'add' && isset($a))
 		if(checkdate($m, $d, $y))
 			$to = mktime(23, 59, 59, $m, $d, $y);
 		else
-			$error['dateto'] = trans('Incorrect charging end time!');
+			$error['dateto'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['dateto'] = trans('Incorrect charging end time!');
+		$error['dateto'] = trans('Incorrect charging time!');
 
 	if($to < $from && $to != 0 && $from != 0)
 		$error['dateto'] = trans('Incorrect date range!');
 
-	if($a['tariffid']=='')
+	if($a['tariffid']=='' && $a['value']=='')
+	{
 		$error['tariffid'] = trans('Subscription not selected!');
+		$error['value'] = trans('Liability value not specified!');
+	}
 
 	$a['discount'] = str_replace(',','.',$a['discount']);
 	if($a['discount']=='')
@@ -177,15 +201,36 @@ if($_GET['action'] == 'add' && isset($a))
 	elseif($a['discount']<0 || $a['discount']>99.99 || !is_numeric($a['discount']))
 		$error['discount'] = trans('Wrong discount value!');
 
-	if($a['tariffid']==0)
+	if($a['tariffid'] == '0')
 	{
 		unset($error['at']);
-		$a['at'] = 0;
+		$at = 0;
 	}
+
+	if($a['tariffid'] != '') 
+		$a['value'] = 0;
+	
 
 	if(!$error) 
 	{
-		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'customerid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to, 'discount' => $a['discount'] ));
+		if($a['tariffid'] == '')
+		{
+			$a['tariffid'] = 0;
+		}
+
+		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 
+					    'customerid' => $_GET['id'], 
+					    'period' => $period, 
+					    'at' => $at, 
+					    'invoice' => sprintf('%d',$a['invoice']), 
+					    'datefrom' => $from, 
+					    'dateto' => $to, 
+					    'discount' => $a['discount'],
+					    'value' => str_replace(',','.',$a['value']),
+					    'name' => $a['name'],
+					    'taxid' => $a['taxid'],
+					    'prodid' => $a['prodid']
+					    ));
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 }
@@ -197,6 +242,7 @@ $layout['pagetitle'] = trans('Customer Information: $0',$customerinfo['customern
 $SMARTY->assign('customernodes',$LMS->GetCustomerNodes($customerinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($customerinfo['id']));
 $SMARTY->assign('tariffs',$LMS->GetTariffs());
+$SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('assignments',$LMS->GetCustomerAssignments($_GET['id']));
 $SMARTY->assign('customergroups',$LMS->CustomergroupGetForCustomer($_GET['id']));
 $SMARTY->assign('othercustomergroups',$LMS->GetGroupNamesWithoutCustomer($_GET['id']));

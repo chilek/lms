@@ -512,12 +512,11 @@ function docnumber($number=NULL, $template=NULL, $time=NULL)
 }
 
 // our finance round:
-
-function f_round ($value)
+function f_round($value)
 {
 	$value = str_replace(',','.', $value);
-	$value = round ( (float) $value,2);
-
+	$value = round ( (float) $value, 2);
 	return $value;
-}	
+}
+
 ?>

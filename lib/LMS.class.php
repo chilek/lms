@@ -597,11 +597,11 @@ class LMS
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
-			$day = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)*30 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.DAILY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
-			$week = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.WEEKLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
-			$month = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END) AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.MONTHLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
-			$quarter = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)/3 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.QUARTERLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
-			$year = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE ((100 - discount) * value) / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)/12 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.YEARLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$day = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)*30 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.DAILY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$week = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.WEEKLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$month = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END) AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.MONTHLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$quarter = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/3 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.QUARTERLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$year = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/12 AS value FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.YEARLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
 
 			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
 			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
@@ -1198,17 +1198,27 @@ class LMS
 
 	function GetCustomerTariffsValue($id)
 	{
-		return $this->DB->GetOne('SELECT sum(value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND customerid=? AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
+		return $this->DB->GetOne('SELECT sum(tariffs.value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND customerid=? AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
 	}
 
 	function GetCustomerAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, value, uprate, upceil, downceil, downrate, name, invoice, datefrom, dateto, discount FROM assignments LEFT JOIN tariffs ON (tariffid=tariffs.id) WHERE customerid=? ORDER BY datefrom ASC', array($id)))
+		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, uprate, upceil, downceil, downrate, invoice, datefrom, dateto, discount, liabilityid, 
+						    (CASE WHEN tariffs.value IS NULL THEN liabilities.value ELSE tariffs.value END) AS value,
+						    (CASE WHEN tariffs.name IS NULL THEN liabilities.name ELSE tariffs.name END) AS name
+						    FROM assignments 
+						    LEFT JOIN tariffs ON (tariffid=tariffs.id) 
+						    LEFT JOIN liabilities ON (liabilityid=liabilities.id) 
+						    WHERE customerid=? 
+						    ORDER BY datefrom, value', array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{
 				switch($row['period'])
 				{
+					case DISPOSABLE:
+						$row['payday'] = date('Y/m/d', $row['at']);
+					break;
 					case DAILY:
 						$row['period'] = trans('daily');
 						$row['payday'] = trans('daily');
@@ -1257,7 +1267,31 @@ class LMS
 	function AddAssignment($assignmentdata)
 	{
 		$this->SetTS('assignments');
-		return $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, datefrom, dateto, discount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($assignmentdata['tariffid'], $assignmentdata['customerid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice'], $assignmentdata['datefrom'], $assignmentdata['dateto'], $assignmentdata['discount']));
+		
+		if($assignmentdata['value'])
+		{
+			$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid) VALUES (?, ?, ?, ?)', 
+					    array($assignmentdata['name'],
+						    $assignmentdata['value'],
+						    $assignmentdata['taxid'],
+						    $assignmentdata['prodid']
+					    ));
+			$lid = $this->DB->GetOne('SELECT MAX(id) FROM liabilities');
+			$this->SetTS('liabilities');
+		}
+		
+		return $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, datefrom, dateto, discount, liabilityid) 
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+					    array($assignmentdata['tariffid'], 
+						    $assignmentdata['customerid'], 
+						    $assignmentdata['period'], 
+						    $assignmentdata['at'], 
+						    $assignmentdata['invoice'], 
+						    $assignmentdata['datefrom'], 
+						    $assignmentdata['dateto'], 
+						    $assignmentdata['discount'],
+						    $lid ? $lid : 0
+						    ));
 	}
 
 	function SuspendAssignment($id,$suspend = TRUE)
@@ -1460,7 +1494,13 @@ class LMS
 		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit
 				FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY name ASC'))
 		{
-			$assigned = $this->DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, SUM(CASE period WHEN '.DAILY.' THEN value*30 WHEN '.WEEKLY.' THEN value*4 WHEN '.MONTHLY.' THEN value WHEN '.QUARTERLY.' THEN value/3 WHEN '.YEARLY.' THEN value/12 END) AS value
+			$assigned = $this->DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, 
+							SUM(CASE period 
+							    WHEN '.DAILY.' THEN tariffs.value*30 
+							    WHEN '.WEEKLY.' THEN tariffs.value*4 
+							    WHEN '.MONTHLY.' THEN tariffs.value 
+							    WHEN '.QUARTERLY.' THEN tariffs.value/3 
+							    WHEN '.YEARLY.' THEN tariffs.value/12 END) AS value
 						FROM assignments, tariffs
 						WHERE tariffid = tariffs.id AND suspended = 0
 						AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)
@@ -1468,7 +1508,13 @@ class LMS
 
 			foreach($tarifflist as $idx => $row)
 			{
-				$suspended = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE a.period WHEN '.DAILY.' THEN t.value*30 WHEN '.WEEKLY.' THEN t.value*4 WHEN '.MONTHLY.' THEN t.value WHEN '.QUARTERLY.' THEN t.value/3 WHEN '.YEARLY.' THEN t.value/12 END) AS value
+				$suspended = $this->DB->GetRow('SELECT COUNT(*) AS count, 
+							SUM(CASE a.period 
+							    WHEN '.DAILY.' THEN t.value*30 
+							    WHEN '.WEEKLY.' THEN t.value*4 
+							    WHEN '.MONTHLY.' THEN t.value 
+							    WHEN '.QUARTERLY.' THEN t.value/3 
+							    WHEN '.YEARLY.' THEN t.value/12 END) AS value
 						FROM assignments a LEFT JOIN tariffs t ON (t.id = a.tariffid), assignments b
 						WHERE a.customerid = b.customerid AND a.tariffid = ? AND b.tariffid = 0 AND a.suspended = 0
 						AND (b.datefrom <= ?NOW? OR b.datefrom = 0) AND (b.dateto > ?NOW? OR b.dateto = 0)', array($row['id']));
@@ -1564,12 +1610,24 @@ class LMS
 					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE tariffs.id=?', array($id));
 		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS customername FROM assignments, customers WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
 
-		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE period WHEN '.DAILY.' THEN value*30 WHEN '.WEEKLY.' THEN value*4 WHEN '.MONTHLY.' THEN value WHEN '.QUARTERLY.' THEN value/3 WHEN '.YEARLY.' THEN value/12 END) AS value
+		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, 
+						    SUM(CASE period 
+							WHEN '.DAILY.' THEN tariffs.value*30 
+							WHEN '.WEEKLY.' THEN tariffs.value*4 
+							WHEN '.MONTHLY.' THEN tariffs.value 
+							WHEN '.QUARTERLY.' THEN tariffs.value/3 
+							WHEN '.YEARLY.' THEN tariffs.value/12 END) AS value
 						FROM assignments, tariffs
 						WHERE tariffid = tariffs.id AND tariffid = ? AND suspended = 0
 						AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
 
-		$suspended = $this->DB->GetRow('SELECT COUNT(*) AS count, SUM(CASE a.period WHEN '.DAILY.' THEN value*30 WHEN '.WEEKLY.' THEN t.value*4 WHEN '.MONTHLY.' THEN t.value WHEN '.QUARTERLY.' THEN t.value/3 WHEN '.YEARLY.' THEN t.value/12 END) AS value
+		$suspended = $this->DB->GetRow('SELECT COUNT(*) AS count, 
+						    SUM(CASE a.period 
+							WHEN '.DAILY.' THEN t.value*30 
+							WHEN '.WEEKLY.' THEN t.value*4 
+							WHEN '.MONTHLY.' THEN t.value 
+							WHEN '.QUARTERLY.' THEN t.value/3 
+							WHEN '.YEARLY.' THEN t.value/12 END) AS value
 						FROM assignments a LEFT JOIN tariffs t ON (t.id = a.tariffid), assignments b
 						WHERE a.customerid = b.customerid AND a.tariffid = ? AND b.tariffid = 0 AND a.suspended = 0
 						AND (b.datefrom <= ?NOW? OR b.datefrom = 0) AND (b.dateto > ?NOW? OR b.dateto = 0)', array($id));
