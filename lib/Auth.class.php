@@ -46,7 +46,15 @@ class Auth {
 	{
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
-		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
+		
+		if($_SERVER['HTTP_X_FORWARDED_FOR'])
+			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		elseif($_SERVER['HTTP_CLIENT_IP'])
+			$ip = $_SERVER['HTTP_CLIENT_IP'];
+		else
+			$ip = $_SERVER['REMOTE_ADDR'];
+		  
+		$this->ip = str_replace('::ffff:', '', $ip);
 		
 		if(isset($_GET['override']))
 			$loginform = $_GET['loginform'];
@@ -107,7 +115,7 @@ class Auth {
 				if(!$this->passverified)
 					writesyslog('Bad password for '.$this->login, LOG_WARNING);
 				
-				$this->DB->Execute('UPDATE users SET failedlogindate=?, failedloginip=? WHERE login=?',array(time(),$_SERVER['REMOTE_ADDR'],$this->login));
+				$this->DB->Execute('UPDATE users SET failedlogindate=?, failedloginip=? WHERE login=?',array(time(), $this->ip, $this->login));
 			}
 			$this->LogOut();
 		}
