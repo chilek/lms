@@ -29,6 +29,6 @@ if (isset($_GET['gz']))
 else
 	$LMS->DatabaseCreate();
 
-header('Location: ?m=dblist');
+header('Location: ?m=core&a=dblist');
 
 ?>

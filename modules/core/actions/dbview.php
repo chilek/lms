@@ -99,15 +99,8 @@ if(isset($_GET['rawmode']))
 
 $SMARTY->assign('database',$database);
 
-if(!isset($_GET['rawmode']))
-	$SMARTY->display('header.html');
-
 if (strstr($_GET['file'],"sql.gz"))
 	$SMARTY->assign('use_gzip','true');
 
-$SMARTY->display('dbview.html');
-
-if(!isset($_GET['rawmode']))
-	$SMARTY->display('footer.html');
 
 ?>

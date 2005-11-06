@@ -98,14 +98,14 @@ if(isset($_GET['is_sure']))
 		DBLoad($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
 	}
 	
-	$SESSION->redirect('?m='.$SESSION->get('lastmodule'));
-}else{
+	$SESSION->redirect('?m=core&a=dblist');
+}/*ese{
 	$layout['pagetitle'] = trans('Database Backup Recovery');
 	$SMARTY->display('header.html');
 	echo '<H1>'.trans('Database Backup Recovery').'</H1>';
 	echo '<P>'.trans('Are you sure, you want to recover database created at $0?', date('Y/m/d H:i.s',$_GET['db'])).'</P>';
-	echo '<A href="?m=dbrecover&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
+	echo '<A href="?m=core&a=dbrecover&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
 	$SMARTY->display('footer.html');
-}
+}*/
 
 ?>
