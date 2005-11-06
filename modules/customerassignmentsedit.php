@@ -38,14 +38,35 @@ if($a = $_POST['assignmentedit'])
 	
 	$a['id'] = $_GET['id'];
 	$a['customerid'] = $customerid;
+	$a['liabilityid'] = $_GET['lid'];
 
 	$period = sprintf('%d',$a['period']);
 
-	if($period < DAILY || $period > YEARLY)
-		$period = MONTHLY;
+	if($period < DISPOSABLE || $period > YEARLY)
+		$period = DISPOSABLE;
 
 	switch($period)
 	{
+		case DISPOSABLE:
+    			$a['dateto'] = 0;
+	                $a['datefrom'] = 0;
+		     
+		        if(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $a['at']))
+			{
+				list($y, $m, $d) = split('/', $a['at']);
+				if(checkdate($m, $d, $y))
+				{
+					$at = mktime(0, 0, 0, $m, $d, $y);
+					if($at < mktime(0,0,0))
+						$error['editat'] = trans('Incorrect date!');
+				}
+				else
+					$error['editat'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			}
+			else
+				$error['editat'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+		break;
+																																			   
 		case DAILY:
 			$at = 0;
 		break;
@@ -159,7 +180,7 @@ if($a = $_POST['assignmentedit'])
 	if($to < $from && $to != 0 && $from != 0)
 		$error['editdateto'] = trans('Incorrect date range!');
 
-	if($a['tariffid']==0)
+	if($a['tariffid']=='0')
 	{
 		unset($error['editat']);
 		$at = 0;
@@ -171,8 +192,31 @@ if($a = $_POST['assignmentedit'])
 	elseif($a['discount']<0 || $a['discount']>99.99 || !is_numeric($a['discount']))
 		$error['editdiscount'] = trans('Wrong discount value!');
 
+        if($a['tariffid'] != '')
+    		$a['value'] = 0;
+
+	if($_GET['lid'])
+	{
+		if($a['name'] == '')
+			$error['editname'] = trans('Liability name/description is required!');
+		if(!ereg('^[-]?[0-9.,]+$', $a['value']))
+			$error['editvalue'] = trans('Incorrect value!');
+	}
+
 	if(!$error) 
 	{
+	        if($_GET['lid'])
+		{
+			$a['tariffid'] = 0;
+			$DB->Execute('UPDATE liabilities SET value=?, name=?, taxid=?, prodid=? WHERE id=?',
+			    array(str_replace(',','.',$a['value']),
+				    $a['name'],
+				    $a['taxid'],
+				    $a['prodid'],
+				    $_GET['lid']
+				    ));
+		}
+										
 		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, datefrom=?, dateto=?, discount=? WHERE id=?',
 			    array(  $a['tariffid'], 
 				    $customerid, 
@@ -182,16 +226,20 @@ if($a = $_POST['assignmentedit'])
 				    $from, 
 				    $to,
 				    $a['discount'],
-				    $a['id'] ));
+				    $a['id'],
+				    ));
 		$LMS->SetTS('assignments');
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 }
 else
 {
-	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice, discount
-				FROM assignments LEFT JOIN tariffs 
-				ON (tariffs.id = tariffid)
+	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, period, at, datefrom, dateto, invoice, discount, liabilityid, 
+				(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
+				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid
+				FROM assignments
+				LEFT JOIN tariffs ON (tariffs.id = tariffid)
+				LEFT JOIN liabilities ON (liabilities.id = liabilityid)
 				WHERE assignments.id = ?',array($_GET['id']));
 
 	if($a['dateto']) 
@@ -207,6 +255,9 @@ else
 		case YEARLY:
 			$a['at'] = date('d/m',($a['at']-1)*86400);
 			break;
+		case DISPOSABLE:
+			$a['at'] = date('Y/m/d', $a['at']);
+			break;
 	}
 }
 
@@ -215,6 +266,7 @@ $layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetCustomerName(
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
+$SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('assignmentedit', $a);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customerid));

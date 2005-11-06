@@ -65,9 +65,11 @@ $PERIODS = array(
     5	=>	trans('yearly'),
     4	=>	trans('quarterly'),
     2	=>	trans('weekly'),
-    1	=>	trans('daily')
+    1	=>	trans('daily'),
+//  0	=>	trans('disposable')
 );
 
+define('DISPOSABLE', 0);
 define('DAILY', 1);
 define('WEEKLY', 2);
 define('MONTHLY', 3);

@@ -2,6 +2,11 @@ $Id$
 
 version ? (????-??-??):
 
+  - disposable liabilities (alec)
+  - introduction to UI modularity (lukasz)
+
+version 1.7.5 (2005-11-05):
+
   - BTS#0000466: lms-antyvir: fixed parse error (alec)
   - BTS#0000373: lms-notify: added exception handler for mail server 
     connection problems (alec)
