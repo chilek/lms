@@ -61,6 +61,8 @@ foreach($ExecStack->_MODINFO as $modulename => $modinfo)
 		}
 }
 
+
 $SMARTY->assign('menu', $menu);
 
+unset($menu);
 ?>

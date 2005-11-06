@@ -44,6 +44,18 @@ $_MODINFO['core'] = array(
 					'pl' => 'Informacja o systemie i administracja',
 					),
 				),
+			array(
+				'id' => 'core_customers',
+				'text' => array(
+					'en' => 'Customers',
+					'pl' => 'Klienci',
+					),
+				'img' => 'customer.gif',
+				'tip' => array(
+					'en' => 'Customers: list, add, search, groups',
+					'pl' => 'Klienci: lista, szukanie, dodawanie, grupy',
+					),
+				),
 			),
 		'priority' => 0,
 		'url' => 'http://lms.rulez.pl',
@@ -140,6 +152,8 @@ $_MODINFO['core'] = array(
 				),
 			'userdel' => array(
 				'hidden' => TRUE,
+				'notemplate' => TRUE, // in fact, it's not needed, because this script will force redirect
+							// before LMS will try to display this template
 				),
 			'useredit' => array(
 				'hidden' => TRUE,
@@ -158,7 +172,39 @@ $_MODINFO['core'] = array(
 					'pl' => 'Kopie zapasowe',
 					),
 				'menu' => 'core_administration',
-				),		
+				),
+			'dbdel' => array(
+				'hidden' => TRUE,
+				'notemplate' => TRUE,
+				),
+			'dbnew' => array(
+				'hidden' => TRUE,
+				'notemplate' => TRUE,
+				),
+			'dbrecover' => array(
+				'hidden' => TRUE,
+				'notemplate' => TRUE,
+				),
+			'dbview' => array(
+				'hidden' => TRUE,
+				'notemplate' => TRUE,
+				),
+			'copyrights' => array(
+				'menuname' => array(
+					'en' => 'Copyrights',
+					'pl' => 'Prawa autorskie',
+					),
+				'menu' => 'core_administration',
+				),
+			// menu klienci
+
+			'customerlist' => array(
+				'menuname' => array(
+					'en' => 'List',
+					'pl' => 'Lista',
+					),
+				'menu' => 'core_customers',
+				),
 			),
 		);
 
