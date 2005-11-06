@@ -32,9 +32,10 @@ DROP TABLE IF EXISTS assignments;
 CREATE TABLE assignments (
   id int(11) NOT NULL auto_increment,
   tariffid int(11) NOT NULL default '0',
+  liabilityid int(11) NOT NULL default '0',
   customerid int(11) NOT NULL default '0',
   period smallint NOT NULL default '0',
-  at smallint NOT NULL default '0',
+  at int(11) NOT NULL default '0',
   datefrom int(11) NOT NULL default '0',
   dateto int(11) NOT NULL default '0',
   invoice tinyint(1) NOT NULL default '0',
@@ -398,6 +399,20 @@ CREATE TABLE tariffs (
 
 # --------------------------------------------------------
 #
+# Structure of table liabilities
+#
+DROP TABLE IF EXISTS liabilities;
+CREATE TABLE liabilities (
+    id int(11)              NOT NULL auto_increment,
+    value decimal(9,2)      NOT NULL DEFAULT '0',
+    name text               NOT NULL DEFAULT '',
+    taxid int(11)           NOT NULL DEFAULT '0',
+    prodid varchar(255)     NOT NULL DEFAULT '',
+    PRIMARY KEY (id)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
 # Structure of table timestamps
 #
 DROP TABLE IF EXISTS timestamps;
@@ -647,4 +662,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005101700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005110600');

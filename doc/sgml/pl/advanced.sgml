@@ -255,6 +255,16 @@
                     <member>description - opis</member>
                </simplelist>
           </sect2>
+        <sect2 id="liabilities">
+		<title>Zobowi±zania ('liabilities')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>name - nazwa (opis) zobowi±zania</member>
+			<member>value - kwota</member>
+			<member>taxid - identyfikator stawki podatkowej</member>
+			<member>prodid - numer PKWiU</member>
+		</simplelist>
+	</sect2>
           <sect2 id="payments">
                <title>Op³aty sta³e ('payments')</title>
                <simplelist>
@@ -272,6 +282,7 @@
                   <simplelist>
                     <member>id - identyfikator</member>
                     <member>tariffid - identyfikator taryfy</member>
+		    <member>liabilityid - identyfikator zobowi±zania</member>
                     <member>customerid - identyfikator klienta</member>
                     <member>period - typ okresu naliczania: codziennie/co tydzieñ/co miesi±c/co kwarta³/co rok (1/2/3/4/5)</member>
                     <member>at - dzieñ naliczania</member>
