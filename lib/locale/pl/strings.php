@@ -439,7 +439,6 @@ $_LANG['End of DHCP range:'] = 'Koniec zakresu DHCP :';
 $_LANG['End of DHCP range has to be greater than start!'] = 'Koniec zakresu DHCP musi być większy niż jego początek!';
 $_LANG['End time must not precede start time!'] = 'Czas zakończenia musi być późniejszy niż czas rozpoczęcia!';
 $_LANG['Enter 4 to 6 digits PIN number (optional)'] = 'Wprowadź 4 do 6-u cyfr numeru PIN (opcjonalnie)';
-$_LANG['Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), and for quarterly DD/MM (MM <= 3)'] = 'Wprowadź czas naliczania. Dla tygodniowego naliczania wprowadź dzień tygodnia (poniedziałek = 1), dla tygodniowego wprowadź dzień miesiąca (1 do 28), dla rocznego wprowadź dzień i miesiąc w formacie DD/MM (15/09 znaczy 15 Września) a dla kwartalnego DD/MM (MM <=3)';
 $_LANG['Enter account limits (optional)'] = 'Wprowadź limity dla konta (opcjonalnie)';
 $_LANG['Enter account name'] = 'Wprowadź nazwę konta';
 $_LANG['Enter additional informations'] = 'Wprowadź dodatkowe informacje';
@@ -1595,5 +1594,19 @@ $_LANG['24 hour:'] = '24 godzin:';
 $_LANG['30 days:'] = '30 dni:';
 $_LANG['hour:'] = 'godziny:';
 $_LANG['Traffic stats from last (download/upload):'] = 'Statystyki ruchu z ostatnich (download/upload):';
+$_LANG['disposable'] = 'jednorazowo';
+$_LANG['Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), and for quarterly DD/MM (MM <= 3)'] = 'Wprowadź czas naliczania. Dla jednorazowego naliczania wprowadź datę w formacie RRRR/MM/DD, dla tygodniowego naliczania wprowadź dzień tygodnia (poniedziałek = 1), dla miesięcznego wprowadź dzień miesiąca (1 do 28), dla rocznego wprowadź dzień i miesiąc w formacie DD/MM (15/09 znaczy 15 Września), a dla kwartalnego DD/MM (MM <=3)';
+$_LANG['Enter liability name/description'] = 'Wprowadź nazwę/opis zobowiązania';
+$_LANG['Enter liability name/description (tariffless liabilities only)'] = 'Wprowadź nazwę/opis zobowiązania (tylko zobowiązania beztaryfowe)';
+$_LANG['Enter liability Product ID'] = 'Wprowadź symbol PKWiU';
+$_LANG['Enter liability Product ID (tariffless liabilities only)'] = 'Wprowadź symbol PKWiU (tylko zobowiązania beztaryfowe)';
+$_LANG['Enter liability value'] = 'Wprowadź kwotę zobowiązania';
+$_LANG['Enter liability value (tariffless liabilities only)'] = 'Wprowadź kwotę zobowiązania (tylko zobowiązania beztaryfowe)';
+$_LANG['Incorrect charging time!'] = 'Niepoprawny czas naliczania!';
+$_LANG['Incorrect date!'] = 'Niewłaściwa data!';
+$_LANG['Liability:'] = 'Zobowiązanie:';
+$_LANG['Liability name/description is required!'] = 'Nazwa/opis zobowiązania jest wymagany!';
+$_LANG['Liability value not specified!'] = 'Nie podano kwoty zobowiązania!';
+$_LANG['or'] = 'lub';
 
 ?>

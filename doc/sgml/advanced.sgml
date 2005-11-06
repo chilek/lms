@@ -241,6 +241,16 @@
                     <member>description - description for subscription</member>
                </simplelist>
           </sect2>
+          <sect2 id="liabilities">
+               <title>Custom liabilities ('liabilities')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>name - liability name/description</member>
+                    <member>value - amount</member>
+                    <member>taxid - tax rate identifier</member>
+                    <member>prodid - product/service classification number</member>
+               </simplelist>
+          </sect2>
           <sect2 id="payments">
                <title>Solid payments ('payments')</title>
                <simplelist>
@@ -258,6 +268,7 @@
                   <simplelist>
                     <member>id - serial number</member>
                     <member>tariffid - subscription serial number</member>
+		    <member>liabilityid - liability serial number</member>
                     <member>customerid - customer serial number</member>
                     <member>period - interval of operation: daily/weekly/monthly/quarterly/annually (1/2/3/4/5)</member>
                     <member>at - pay day</member>

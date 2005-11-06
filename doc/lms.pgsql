@@ -32,9 +32,10 @@ DROP TABLE assignments;
 CREATE TABLE assignments (
 	id integer default nextval('assignments_id_seq'::text) NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL,
+	liabilityid integer 	DEFAULT 0 NOT NULL,
 	customerid integer	DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT 0 NOT NULL,
-	at smallint 		DEFAULT 0 NOT NULL,
+	at integer 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
 	dateto integer		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
@@ -144,6 +145,21 @@ CREATE TABLE tariffs (
 	UNIQUE (name)
 );
 
+/* -------------------------------------------------------- 
+  Structure of table "liabilities" 
+-------------------------------------------------------- */
+DROP SEQUENCE "liabilities_id_seq";
+CREATE SEQUENCE "liabilities_id_seq";
+DROP TABLE liabilities;
+CREATE TABLE liabilities (
+	id integer DEFAULT nextval('liabilities_id_seq'::text) NOT NULL,
+	value numeric(9,2)  	DEFAULT 0 NOT NULL,
+	name text           	DEFAULT '' NOT NULL,
+	taxid integer       	DEFAULT 0 NOT NULL,
+	prodid varchar(255) 	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id)
+);
+										   
 /* ---------------------------------------------------------
   Structure of table "payments"
 --------------------------------------------------------- */
@@ -687,4 +703,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005101700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005110600');
