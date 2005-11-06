@@ -37,16 +37,19 @@ if(isset($_GET['is_sure']))
 		@unlink($CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz');
 	}
 
-	$SESSION->redirect('?m=dblist');
+	$SESSION->redirect('?m=core&a=dblist');
 } 
-else
-{
-	$layout['pagetitle'] = trans('Backup Delete');
-	$SMARTY->display('header.html');
-	echo '<H1>'.trans('Deletion of Database Backup').'</H1>';
-	echo '<P>'.trans('Are you sure, you want to delete database backup created at $0 ?',date('Y/m/d H:i.s',$_GET['db'])).'</P>';
-	echo '<a href="?m=dbdel&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
-	$SMARTY->display('footer.html');
-}
+// it will not work i new modules engine, so all confirmation links should be rewrited to something like
+// 'confirmationlink' handler
+
+//else
+//{
+//	$layout['pagetitle'] = trans('Backup Delete');
+//	$SMARTY->display('header.html');
+//	echo '<H1>'.trans('Deletion of Database Backup').'</H1>';
+//	echo '<P>'.trans('Are you sure, you want to delete database backup created at $0 ?',date('Y/m/d H:i.s',$_GET['db'])).'</P>';
+//	echo '<a href="?m=core&a=dbdel&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
+//	$SMARTY->display('footer.html');
+//}
 
 ?>

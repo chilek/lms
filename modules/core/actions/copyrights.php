@@ -118,6 +118,5 @@ $others = array(
 				
 $SMARTY->assign('authors', $authors);
 $SMARTY->assign('others', $others);
-$SMARTY->display('copyrights.html');
 
 ?>
