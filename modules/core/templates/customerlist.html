@@ -1,20 +1,19 @@
-{include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD width="97%" class="fleftu">
-			<img src="img/customer.gif" ALT="">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{t}First/last or Company name:{/t}</A></B> {if $listdata.order eq "customername"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/home.gif" ALT="">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<img src="img/customer.gif" ALT="">&nbsp;<a href="?m=core&a={$_action}&s={$listdata.state}&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{t}First/last or Company name:{/t}</A></B> {if $listdata.order eq "customername"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/home.gif" ALT="">&nbsp;<a href="?m=core&a={$_action}&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" VALIGN="top" NOWRAP>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m=core&a={$_action}&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			{t}Services:{/t}
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP" NOWRAP>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m=core&a={$_action}&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m=core&a={$_action}&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" align="right" class="frightu">
 			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
@@ -22,9 +21,10 @@
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="fall" colspan="4">
-			<P><FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
+			<P><FORM METHOD="GET" ACTION="?m=core&a={$_action}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
-				<INPUT TYPE="HIDDEN" NAME="m" VALUE="customerlist">
+				<INPUT TYPE="HIDDEN" NAME="m" VALUE="core">
+				<INPUT TYPE="HIDDEN" NAME="a" VALUE="customerlist">
 				<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">
 				<B>{t}Filter:{/t}</B> {t}Customers:{/t}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
@@ -58,11 +58,11 @@
 	<TR CLASS="DARK">
 		<TD COLSPAN="4" CLASS="FALL">
 			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{if $page > 1}<A HREF="?m=core&a={$_action}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$customerlist step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=core&a={$_action}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=core&a={$_action}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
 			{math equation="x + 1" x=$start assign=startx}
 			{if $start + $pagelimit > $listdata.total}
@@ -75,14 +75,14 @@
 	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
 	<TR class="{cycle}{if $customerlist[customerlist].nodeac eq 0} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" class="fleft" valign="top">
-			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip 0=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$0'}>&nbsp;<B>{$customerlist[customerlist].customername|escape}</B></A><BR>
+		<TD onClick="return self.location.href='?m=core&a=customerinfo&id={$customerlist[customerlist].id}';" class="fleft" valign="top">
+			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip 0=$customerlist[customerlist].id dynpopup='?m=core&a=customerinfoshort&id=$0'}>&nbsp;<B>{$customerlist[customerlist].customername|escape}</B></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}
 		</TD>
 		<TD valign="top" align="right">
 			({$customerlist[customerlist].id|string_format:"%04d"})<BR>
 			{if $customerlist[customerlist].account}
-				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" ALT="" {tip 0=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$0' sticky=1}></A>
+				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" ALT="" {tip 0=$customerlist[customerlist].id dynpopup='?m=core&a=nodelistshort&id=$0' sticky=1}></A>
 			{/if}
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
@@ -91,16 +91,16 @@
 		<TD align="right" class="fright">
 			<NOBR>
 			{if $customerlist[customerlist].balance < 0}
-				<A HREF="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/pay.gif" ALT="[ {t}Account{/t} ]"></A>
+				<A HREF="?m=core&a=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/pay.gif" ALT="[ {t}Account{/t} ]"></A>
 			{/if}
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status eq 3}
 					{if $customerlist[customerlist].nodeac eq 1}
-						<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG SRC="img/access.gif" ALT="[ {t}Disconnect All{/t} ]"></A>
+						<A HREF="?m=core&a=nodeset&ownerid={$customerlist[customerlist].id}"><IMG SRC="img/access.gif" ALT="[ {t}Disconnect All{/t} ]"></A>
 					{else}
 						{if $customerlist[customerlist].nodeac eq 2}
-							<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG SRC="img/mixaccess.gif" ALT="[ {t}Disconnect All{/t} ]"></A>
-						{else}<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG SRC="img/noaccess.gif" ALT="[ {t}Connect All{/t} ]"></A>
+							<A HREF="?m=core&a=nodeset&ownerid={$customerlist[customerlist].id}"><IMG SRC="img/mixaccess.gif" ALT="[ {t}Disconnect All{/t} ]"></A>
+						{else}<A HREF="?m=core&a=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG SRC="img/noaccess.gif" ALT="[ {t}Connect All{/t} ]"></A>
 						{/if}
 					{/if}
 				{/if}
@@ -108,18 +108,18 @@
 			{if $customerlist[customerlist].warncount}
 				{if $customerlist[customerlist].status eq 3}
 					{if $customerlist[customerlist].nodewarn eq 1}
-						<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" ALT="[ {t}Disable Warnings for All{/t} ]"></A>
+						<A HREF="?m=core&a=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" ALT="[ {t}Disable Warnings for All{/t} ]"></A>
 					{else}
 						{if $customerlist[customerlist].nodewarn eq 2}
-							<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable Warnings for All{/t} ]"></A>
-						{else}<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" ALT="[ {t}Enable Warnings for All{/t} ]"></A>
+							<A HREF="?m=core&a=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable Warnings for All{/t} ]"></A>
+						{else}<A HREF="?m=core&a=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" ALT="[ {t}Enable Warnings for All{/t} ]"></A>
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnCLick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> 
-			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A> 
-			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
+			<A href="?m=core&a=customerdel&id={$customerlist[customerlist].id}" OnCLick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=core&a=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A> 
+			<A href="?m=core&a=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
 			</NOBR>
 		</TD>
 	</TR>
@@ -136,11 +136,11 @@
 	<TR CLASS="DARK">
 		<TD COLSPAN="4" CLASS="FALL">
 			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+			{if $page > 1}<A HREF="?m=core&a={$_action}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$customerlist step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=core&a={$_action}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=core&a={$_action}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B>
 			{math equation="x + 1" x=$start assign=startx}
 			{if $start + $pagelimit > $listdata.total}
