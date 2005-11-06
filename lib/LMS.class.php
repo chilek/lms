@@ -1218,6 +1218,7 @@ class LMS
 				{
 					case DISPOSABLE:
 						$row['payday'] = date('Y/m/d', $row['at']);
+						$row['period'] = trans('disposable');
 					break;
 					case DAILY:
 						$row['period'] = trans('daily');
