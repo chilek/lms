@@ -170,7 +170,7 @@ if($_GET['action'] == 'add' && isset($a))
 		else
 			$error['datefrom'] = trans('Incorrect charging time!');
 	}
-	elseif($period != DISPOSABLE)
+	else
 		$error['datefrom'] = trans('Incorrect charging time!');
 
 	if($a['dateto'] == '')
