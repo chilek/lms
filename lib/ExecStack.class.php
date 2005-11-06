@@ -78,6 +78,10 @@ class ExecStack
 									$this->_MODINFO[$module_name]['actions'][$actionname]['dontexec'] = FALSE;
 								if(! isset($action_info['notemplate']))
 									$this->_MODINFO[$module_name]['actions'][$actionname]['notemplate'] = FALSE;
+							
+								if(! $action_info['notemplate'] && ! isset($action_info['template']))
+									$this->_MODINFO[$module_name]['actions'][$actionname]['template'] = $actionname;
+
 								if(! isset($action_info['bindings']))
 									$this->_MODINFO[$module_name]['actions'][$actionname]['bindings'] = array();
 								if(! isset($action_info['default']))
@@ -130,7 +134,7 @@ class ExecStack
 				if(isset($module_info['actions']))
 					foreach($module_info['actions'] as $action_name => $action_info)
 						if($action_info['onlogin'] === TRUE)
-							return array( array( 'module' => $module_name, 'action' => $action_name ) );
+							return array( 'actions' => array( array( 'module' => $module_name, 'action' => $action_name ) ), 'templates' => array( array( 'module' => $module_name, 'template' => $this->getTemplate($module_name, $action_name))));
 	}
 
 	function buildBindTable()
@@ -161,6 +165,11 @@ class ExecStack
 	function needTemplate($module, $action)
 	{
 		return ! $this->_MODINFO[$module]['actions'][$action]['notemplate'];
+	}
+	
+	function getTemplate($module, $action)
+	{
+		return $this->_MODINFO[$module]['actions'][$action]['template'];
 	}
 
 	function moduleExists($module)
@@ -197,6 +206,9 @@ class ExecStack
 
 				$this->module = $module;
 				$this->action = $action;
+
+				// TODO: consider to make functions that will find
+				// actions suitable for situations described below
 				
 				if(! $this->moduleExists($module))
 				{
@@ -268,7 +280,10 @@ class ExecStack
 				foreach($stack as $stackitem)
 				{
 					list($module, $action) = split(':', $stackitem);
-					$this->_EXECSTACK[] = array( 'module' => $module, 'action' => $action);
+					$this->_EXECSTACK['actions'][] = array( 'module' => $module, 'action' => $action, );
+					if($this->needTemplate($module, $action))
+						$this->_EXECSTACK['templates'][] = array( 'module' => $module, 'template' => $this->getTemplate($module, $action), );
+
 				}
 				return $this->_EXECSTACK;
 			}
