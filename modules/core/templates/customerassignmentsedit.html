@@ -3,7 +3,7 @@
 {include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
 <P>
-<FORM method="POST" name="assignmentedit" action="?m=customerassignmentsedit&id={$assignmentedit.id}">
+<FORM method="POST" name="assignmentedit" action="?m=customerassignmentsedit&id={$assignmentedit.id}{if $assignmentedit.liabilityid}&lid={$assignmentedit.liabilityid}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">
 	<TR class="DARK">
@@ -11,9 +11,10 @@
 			<IMG src="img/money.gif" alt="">
 		</TD>
 		<TD class="fbt" width="1%">
-			<B>{t}Subscription:{/t}</B>
+			<B>{t}Liability:{/t}</B>
 		</TD>
 		<TD class="frightu" width="98%">
+		{if $assignmentedit.liabilityid == 0}
 			<SELECT size="1" name="assignmentedit[tariffid]" {tip text="Select subscription" trigger="edittariffid"}>
 				<OPTION value="0"{if !$assignmentedit.tariffid} SELECTED{/if}>{t}- all liabilities suspended -{/t}</OPTION>
 				{section name=t loop=$tariffs}
@@ -21,7 +22,17 @@
 				{$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
 				</OPTION>
 			{/section}
+			</SELECT><BR>
+		{else}
+			<INPUT type="text" name="assignmentedit[name]" value="{$assignmentedit.name}" size="40" {tip text="Enter liability name/description" trigger="editname"}><BR>
+			{t}Value:{/t} <INPUT type="text" name="assignmentedit[value]" value="{if $assignmentedit.value!=0.00}{$assignmentedit.value|string_format:"%.2f"}{/if}" size="10" {tip text="Enter liability value" trigger="editvalue"}>
+			{t}Tax:{/t} <SELECT SIZE="1" name="assignmentedit[taxid]" {tip text="Select Tax value"}>
+			        {foreach item=tax from=$taxeslist}
+				<OPTION value="{$tax.id}"{if $tax.id==$assignmentedit.taxid} selected{/if}>{$tax.label}</OPTION>
+				{/foreach}
 			</SELECT>
+			{t}Product ID:{/t} <INPUT type="text" name="assignmentedit[prodid]" value="{$assignmentedit.prodid}" size="10" {tip text="Enter liability Product ID"}>
+		{/if}
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -33,11 +44,12 @@
 		</TD>
 		<TD class="fright" width="98%">
 			<SELECT size="1" name="assignmentedit[period]" {tip text="Select time period to account liability"}>
+				<OPTION value="0"{if !$assignmentedit.period} SELECTED{/if}>{t}disposable{/t}</OPTION>
 				{foreach from=$_PERIODS key=key item=item}
 				<OPTION value="{$key}"{if $assignmentedit.period == $key} SELECTED{/if}>{$item}</OPTION>
 				{/foreach}
 			</SELECT>
-			<B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignmentedit[at]" value="{$assignmentedit.at}" {tip text="Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), and for quarterly DD/MM (MM <= 3)" trigger="editat"} SIZE="5">
+			<B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignmentedit[at]" value="{$assignmentedit.at}" {tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), and for quarterly DD/MM (MM <= 3)" trigger="editat"} SIZE="8">
 			<B>{t}from:{/t}</B> <INPUT type="TEXT" name="assignmentedit[datefrom]" value="{if $assignmentedit.datefrom}{$assignmentedit.datefrom}{/if}" OnClick="cal3.popup();" {tip text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="editdatefrom"} SIZE="10"> 
 			<B>{t}to:{/t}</B> <INPUT type="TEXT" name="assignmentedit[dateto]" value="{if $assignmentedit.dateto}{$assignmentedit.dateto}{/if}" OnClick="cal4.popup();" {tip text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="editdateto"} SIZE="10">
 		</TD>
@@ -48,7 +60,7 @@
 			<B>{t}Discount:{/t}</B>
 		</TD>
 		<TD class="fright" width="98%">
-		        <INPUT type="text" size="3" name="assignmentedit[discount]" value="{if $assignmentedit.discount!=0}{$assignmentedit.discount}{/if}" {tip text="Enter discount percentage" trigger="editdiscount"}>
+		        <INPUT type="text" size="3" name="assignmentedit[discount]" value="{if $assignmentedit.discount!=0}{$assignmentedit.discount|string_format:"%.2f"}{/if}" {tip text="Enter discount percentage" trigger="editdiscount"}>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -57,7 +69,7 @@
 			<B>{t}Invoice:{/t}</B>
 		</TD>
 		<TD class="fright" width="98%">
-		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> {t}with invoice{/t}
+		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
