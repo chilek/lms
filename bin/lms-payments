@@ -378,7 +378,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 		print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
 
-		if ($assign->{'liabilityid'}) #remove liability
+		if ($assign->{'liabilityid'} && $assign->{'period'} == DISPOSABLE) #remove liability
 		{
 			$dbase->do("DELETE FROM liabilities WHERE id = $assign->{'liabilityid'}");
 		}
@@ -396,6 +396,12 @@ while(my $assign = $dbq->fetchrow_hashref())
 	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
 
+$dbq = $dbase->prepare("SELECT liabilityid AS id FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND liabilityid != 0");
+$dbq->execute();
+while(my $row = $dbq->fetchrow_hashref())
+{
+	$dbase->do("DELETE FROM liabilities WHERE id = $row->{'id'}");
+}
 $dbase->do("DELETE FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0");
 $dbase->do("DELETE FROM assignments WHERE at = $today");
 $dbase->do("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
