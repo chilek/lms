@@ -29,7 +29,7 @@ $_MODINFO['core'] = array(
 			'en' => 'Core module',
 			'pl' => 'Gówwny moduł'
 			),
-		'version' => '1.9-cvs',
+		'version' => '1.7-cvs',
 		'description' => array(
 			'en' => 'Core module for LMS. Contains very basic actions and items.',
 			'pl' => 'Główny moduł LMS. Zawiera bardzo podstawowe akcje i elementy.'
