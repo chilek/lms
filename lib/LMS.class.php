@@ -1262,6 +1262,10 @@ class LMS
 	function DeleteAssignment($id)
 	{
 		$this->SetTS('assignments');
+		if($lid = $this->DB->GetOne('SELECT liabilityid FROM assignments WHERE id=?', array($id)))
+		{
+			$this->DB->Execute('DELETE FROM liabilities WHERE id=?', array($lid));
+		}
 		return $this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
 	}
 
