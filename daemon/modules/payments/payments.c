@@ -127,7 +127,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	unsigned char *insert;
 	unsigned char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
 	unsigned char *description, *invoiceid;
-	int i, docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
+	int i, today, docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
@@ -167,11 +167,12 @@ void reload(GLOBAL *g, struct payments_module *p)
  	w_period = get_period(tt, WEEKLY, p->up_payments);
 	d_period = get_period(tt, DAILY, p->up_payments);
 
-	// and setting appropriate time limits to get current invoice number
+	// and set appropriate time limits to get current invoice number
 	tt->tm_sec = 0;
 	tt->tm_min = 0;
 	tt->tm_hour = 0;
 	tt->tm_mday = 1;
+
 	tt->tm_mon = atoi(month)-1;
 	tt->tm_year = atoi(year)-1900;
 
@@ -219,6 +220,16 @@ void reload(GLOBAL *g, struct payments_module *p)
 	}
 	strftime(end, sizeof(end), "%s", tt);
 
+	// today (for disposable liabilities)
+	tt->tm_sec = 0;
+	tt->tm_min = 0;
+	tt->tm_hour = 0;
+	tt->tm_wday = atoi(weekday);
+	tt->tm_mday = atoi(monthday);
+	tt->tm_mon = atoi(month)-1;
+	tt->tm_year = atoi(year)-1900;
+	today = (int) mktime(tt);
+
 	/****** main payments *******/
 	if( (res = g->db_pquery(g->conn, "SELECT * FROM payments WHERE value <> 0 AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) OR (period="_MONTHLY_" AND at=?) OR (period="_QUARTERLY_" AND at=?) OR (period="_YEARLY_" AND at=?))", weekday, monthday, quarterday, yearday))!= NULL )
 	{
@@ -247,25 +258,44 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 		// payments accounting and invoices writing
 		res = g->db_pquery(g->conn, "\
-			SELECT assignments.id AS id, tariffid, customerid, period, at, taxid, suspended, prodid, uprate, downrate, \
-			    ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, \
-			    tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, customers.name AS name, address, zip, city, ten, ssn \
-			FROM assignments, tariffs, customers \
-			WHERE tariffs.id = tariffid AND customerid = customers.id AND status = 3 AND deleted = 0 AND value <> 0 \
-			    AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) OR (period="_MONTHLY_" AND at=?) OR (period="_QUARTERLY_" AND at=?) OR (period="_YEARLY_" AND at=?)) \
+			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
+			    UPPER(lastname) AS lastname, customers.name AS custname, address, zip, city, ten, ssn, \
+			    (CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, \
+			    (CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, \
+			    (CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, \
+			    (CASE liabilityid WHEN 0 THEN \
+				ROUND(CASE discount WHEN 0 THEN tariffs.value ELSE tariffs.value-tariffs.value*discount/100 END, 2) \
+			    ELSE \
+				ROUND(CASE discount WHEN 0 THEN liabilities.value ELSE liabilities.value-liabilities.value*discount/100 END, 2) \
+			    END) AS value \
+			FROM assignments \
+			LEFT JOIN tariffs ON (tariffid = tariffs.id) \
+			LEFT JOIN liabilities ON (liabilityid = liabilities.id) \
+			LEFT JOIN customers ON (customerid = customers.id) \
+			WHERE status = 3 AND deleted = 0 \
+			    AND (period="_DAILY_" \
+			    OR (period="_WEEKLY_" AND at=?) \
+			    OR (period="_MONTHLY_" AND at=?) \
+			    OR (period="_QUARTERLY_" AND at=?) \
+			    OR (period="_YEARLY_" AND at=?) \
+			    OR (period="_DISPOSABLE_" AND at=?)) \
 			    AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
-			ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
+			ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday, itoa(today));
 		
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
 			int uid = atoi(g->db_get_data(res,i,"customerid"));
 			int s_state = atoi(g->db_get_data(res,i,"suspended"));
+			int period = atoi(g->db_get_data(res,i,"period"));
+			int liabilityid = atoi(g->db_get_data(res,i,"liabilityid"));
 			double val = atof(g->db_get_data(res,i,"value"));
+			
+			if( !atof(g->db_get_data(res,i,"value")) ) continue;
 			
 			// assignments suspending check
 			if( suspended != uid )
 			{
-				sres = g->db_pquery(g->conn, "SELECT 1 FROM assignments, customers WHERE customerid = customers.id AND tariffid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ?", g->db_get_data(res,i,"customerid"));
+				sres = g->db_pquery(g->conn, "SELECT 1 FROM assignments, customers WHERE customerid = customers.id AND tariffid = 0 AND liabilityid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ?", g->db_get_data(res,i,"customerid"));
 				if( g->db_nrows(sres) ) 
 				{
 					suspended = uid;
@@ -286,8 +316,13 @@ void reload(GLOBAL *g, struct payments_module *p)
 			insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %invoiceid, %itemid)");
 			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
 			g->str_replace(&insert, "%value", value);
-			description = strdup(p->comment);
-			switch( atoi(g->db_get_data(res,i,"period")) ) 
+			
+			if( period == DISPOSABLE )
+				description = strdup(g->db_get_data(res,i,"name"));
+			else
+				description = strdup(p->comment);
+				
+			switch( period ) 
 			{
 				case DAILY: g->str_replace(&description, "%period", d_period); break;
 				case WEEKLY: g->str_replace(&description, "%period", w_period); break;
@@ -295,7 +330,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				case QUARTERLY: g->str_replace(&description, "%period", q_period); break;
 				case YEARLY: g->str_replace(&description, "%period", y_period); break;
 			}
-			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"tariff"));
+			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
 			g->str_replace(&insert, "%taxid", taxid);
 			
 			if( atoi(g->db_get_data(res,i,"invoice")) ) 
@@ -308,7 +343,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						p->numberplanid,
 						g->db_get_data(res,i,"customerid"),
 						g->db_get_data(res,i,"lastname"),
-						g->db_get_data(res,i,"name"),
+						g->db_get_data(res,i,"custname"),
 						g->db_get_data(res,i,"address"),
 						g->db_get_data(res,i,"zip"),
 						g->db_get_data(res,i,"city"),
@@ -367,6 +402,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 				exec = g->db_pexec(g->conn, insert, description) ? 1 : exec;
 			}
 
+			// remove disposable liabilities
+			if( liabilityid && !period )
+			{
+				g->db_pexec(g->conn, "DELETE FROM liabilities WHERE id=?", itoa(liabilityid));
+			}
+
 			last_customerid = uid;
 			free(insert);
 			free(description);
@@ -392,9 +433,18 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_exec(g->conn, "INSERT INTO timestamps (tablename, time) VALUES ('cash', %NOW%)");
 		g->db_exec(g->conn, "INSERT INTO timestamps (tablename, time) VALUES ('_global', %NOW%)");
 	}
+
 	// remove old assignments
 	if(p->expiry_days<0) p->expiry_days *= -1; // number of expiry days can't be negative
+	
+	res = g->db_pquery(g->conn, "SELECT liabilityid AS id FROM assignments WHERE dateto < %NOW% - 86400 * ? AND dateto != 0 AND liabilityid != 0", itoa(p->expiry_days));
+	for(i=0; i<g->db_nrows(res); i++) 
+	{
+		g->db_pexec(g->conn, "DELETE FROM liabilities WHERE id = ?", g->db_get_data(res,i,"id"));
+	}
+	g->db_free(&res);
 	g->db_pexec(g->conn, "DELETE FROM assignments WHERE dateto < %NOW% - 86400 * ? AND dateto != 0 ", itoa(p->expiry_days));
+	g->db_pexec(g->conn, "DELETE FROM assignments WHERE at = ?", itoa(today));
 
 	// clean up
 	free(p->comment);
