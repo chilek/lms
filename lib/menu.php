@@ -332,7 +332,7 @@ $menu = array(
 			'name' => trans('Stats'),
 			'img' =>'traffic.gif',
 			'link' =>'?m=traffic',
-			'tip' => trans('Statistics on Internet Link Usage'),
+			'tip' => trans('Statistics of Internet Link Usage'),
 			'accesskey' =>'x',
 			'prio' =>'45',
 			'submenu' => array(
