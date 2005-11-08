@@ -1274,7 +1274,7 @@ $_LANG['SSN'] = 'PESEL';
 $_LANG['SSN:'] = 'PESEL:';
 $_LANG['Stamp:'] = 'Pieczęć';
 $_LANG['State:'] = 'Status:';
-$_LANG['Statistics on Internet Link Usage'] = 'Statystyki użycia łącza internetowego';
+$_LANG['Statistics of Internet Link Usage'] = 'Statystyki użycia łącza internetowego';
 $_LANG['Stats'] = 'Statystyki';
 $_LANG['stats access'] = 'dostęp do statystyk';
 $_LANG['Status:'] = 'Status:';
@@ -1608,5 +1608,10 @@ $_LANG['Liability:'] = 'Zobowiązanie:';
 $_LANG['Liability name/description is required!'] = 'Nazwa/opis zobowiązania jest wymagany!';
 $_LANG['Liability value not specified!'] = 'Nie podano kwoty zobowiązania!';
 $_LANG['or'] = 'lub';
+$_LANG['Customer ID: $0'] = 'ID klienta: $0';
+$_LANG['Enter balance limit (default 0)'] = 'Wprowadź limit bilansu (domyślnie 0)';
+$_LANG['or Group:'] = 'lub grupa:';
+$_LANG['Transfer forms'] = 'Formularze przelewu';
+$_LANG['You can select customer or group of customers to limit results'] = 'Możesz wybrać klienta lub grupę klientów w celu ograniczenia wyników';
 
 ?>
