@@ -6,6 +6,7 @@ version ? (????-??-??):
   - introduction to UI modularity (lukasz)
   - use HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP, REMOTE_ADDR to retrive 
     user IP address (Jerzy Kolosowski)
+  - added Finance -> Printing -> Transfer forms (alec)
 
 version 1.7.5 (2005-11-05):
 

@@ -450,6 +450,65 @@ cal11.time_comp = false;
 //-->
 </SCRIPT>
 {/if}
+{if $printmenu=="finances"}
+<P><FORM method="post" name="printforms" id="printforms" action="?m=transferforms2" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Transfer forms{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Customer:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="customer" {tip text="You can select customer or group of customers to limit results"}>
+							<OPTION value="0">{t}- all customers -{/t}</OPTION>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}or Group:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="customergroup" {tip text="You can select customer or group of customers to limit results"}>
+							<OPTION value="0">{t}- all groups -{/t}</OPTION>
+							{section name="groups" loop=$groups}
+							<OPTION value="{$groups[groups].id}">{$groups[groups].name|truncate:50:" ..."} ({$groups[groups].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/value.gif" alt="">
+					</TD>
+					<TD width="94%" nowrap>
+						<B>{t}Balance:{/t}</B>&nbsp;<INPUT TYPE="text" NAME="balance" SIZE="10" {tip text="Enter balance limit (default 0)"}>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printforms.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{/if}
 {if $printmenu=="node"}
 <P><FORM method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
