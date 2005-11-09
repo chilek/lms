@@ -257,8 +257,16 @@ switch($type)
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 		
-		header('Location: ?m=transferforms&customerid='.$_POST['customer'].'&from='.$date['from'].'&to='.$date['to']);
+		$_GET['from'] = $date['from'];
+		$_GET['to'] = $date['to'];
+		require_once($_MODULES_DIR.'/transferforms.php');
+		
 	break;	
+
+	case 'transferforms2': /********************************************/
+		
+		require_once($_MODULES_DIR.'/transferforms2.php');
+	break;
 
 	case 'liabilityreport': /********************************************/
 	
