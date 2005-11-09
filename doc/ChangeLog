@@ -7,6 +7,8 @@ version ? (????-??-??):
   - use HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP, REMOTE_ADDR to retrive 
     user IP address (Jerzy Kolosowski)
   - added Finance -> Printing -> Transfer forms (alec)
+  - fixed problem with access rights to transferforms module (alec)
+  - added iconv conversion on transferforms (alec)
 
 version 1.7.5 (2005-11-05):
 
