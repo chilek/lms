@@ -91,7 +91,8 @@
 				<TR class="dark">
 					<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
 					<TD width="1%" class="fbt">{t}User:{/t}</TD>
-					<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Owing{/t}:</TD>
+					<TD width="1%" class="fbt" align="right">{t}Has{/t}:</TD>
 					<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
 					<TD width="1%" class="fbt" align="center">&raquo;</TD>
 					<TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
@@ -103,10 +104,12 @@
 				<TR class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
-					<TD width="1%" align="right"><nobr>{if $balancelist.value[balancelist] > 0}+{/if}{$balancelist.value[balancelist]|money_format}</nobr></TD>
-					<TD width="1%" align="right"><nobr>{$balancelist.tax[balancelist]}</nobr></TD>
+					{if $balancelist.type[balancelist]}<td width="1%" align="right">-</td>{/if}
+					<TD width="1%" align="right" nowrap>{if $balancelist.value[balancelist] > 0}+{/if}{$balancelist.value[balancelist]|money_format}</TD>
+					{if ! $balancelist.type[balancelist]}<td width="1%" align="right">-</td>{/if}
+					<TD width="1%" align="right" nowrap>{$balancelist.tax[balancelist]}</TD>
 					<TD width="1%" align="center">&raquo;</TD>
-					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT class="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
+					<TD width="1%" align="right" nowrap>{if $balancelist.after[balancelist] < 0}<FONT class="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</TD>
 					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right" nowrap>
 						{if $balancelist.docid[balancelist]}
@@ -126,7 +129,7 @@
 					</TR>
 				{sectionelse}
 				<TR>
-					<TD align="center" width="100%" colspan="8">
+					<TD align="center" width="100%" colspan="9">
 						<p>&nbsp;</p>
 						<p><B>{t}That customer hasn't got any transactions.{/t}</B></p>
 						<p>&nbsp;</p>
@@ -134,7 +137,7 @@
 				</TR>
 				{/section}
 				<TR class="light">
-					<TD CLASS="ftop" ALIGN="left" colspan="6">
+				<TD CLASS="ftop" ALIGN="left" colspan="7">
 						<nobr>
 						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
@@ -168,7 +171,7 @@
 					<TD class="ftop" nowrap>
 						<INPUT TYPE="checkbox" align="left" name="addbalance[type]" value="1" class="box light" {tip text="Select type of operation"} CHECKED> {t}payment{/t}
 					</TD>
-					<TD class="ftop" colspan="2">
+					<TD class="ftop" colspan="3">
 						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
@@ -178,7 +181,7 @@
 						<A href="?m=customerbalanceok&id={$customerinfo.id}" OnClick="return confirmLink(this, '{t 0=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" alt=""></A>
 						{/if}
 					</TD>
-					<TD align="right" colspan="5">
+					<TD align="right" colspan="6">
 						<A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 					</TD>
 			</TABLE>

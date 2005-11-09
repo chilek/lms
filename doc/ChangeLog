@@ -10,6 +10,7 @@ version ? (????-??-??):
   - fixed problem with access rights to transferforms module (alec)
   - added iconv conversion on transferforms (alec)
   - assigning customer to ticket in ticket edition (alec)
+  - little layout fix for userballance (lukasz)
 
 version 1.7.5 (2005-11-05):
 
