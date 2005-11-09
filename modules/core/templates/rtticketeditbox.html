@@ -29,14 +29,17 @@
 			<B>{t}Submitter:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
-			{if $ticket.customerid}
-				<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|escape}</A>
-			{else}
+			{if !$ticket.customerid}
 				{$ticket.requestor|escape} 
-			{/if}
-			{if $ticket.requestoremail && !$ticket.customerid}
 				&lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+				<BR>
 			{/if}
+			<SELECT size="1" name="ticket[customerid]" {tip text="You can assign customer to ticket"}>
+			        <OPTION value="0">{t}- select customer -{/t}</OPTION>
+				{section name=customerlist loop=$customerlist}
+				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id==$ticket.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:"45":"..."} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
+				{/section}
+			</SELECT>
 		    </TD>
 		</TR>
 		<TR>
