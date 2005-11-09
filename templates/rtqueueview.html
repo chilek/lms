@@ -27,7 +27,7 @@
 				<INPUT type="HIDDEN" name="id" value="{$queuedata.id}">
 				<INPUT type="HIDDEN" name="page" value="1">
 				<B>{t}Filter:{/t} </B> {t}Status:{/t}
-				<SELECT size="1" class="bold" name="s" OnChange="document.filter.submit();">
+				<SELECT size="1" name="s" OnChange="document.filter.submit();">
 					<OPTION value=""{if $queuedata.state eq ""} SELECTED{/if}>- {t}all{/t} -</OPTION>
 					<OPTION value="0"{if $queuedata.state eq "0"} SELECTED{/if}>{t}new{/t}</OPTION>
 					<OPTION value="1"{if $queuedata.state eq "1"} SELECTED{/if}>{t}open{/t}</OPTION>
