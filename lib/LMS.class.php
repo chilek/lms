@@ -2749,14 +2749,14 @@ class LMS
 	{
 		$this->SetTS('rttickets');
 		if($ticket['state']==2)
-			return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, resolvetime=?NOW? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['ticketid']));
+			return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, resolvetime=?NOW? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['ticketid']));
 		else
 		{
 			// check if ticket was resolved, then set resolvetime=0
 			if($this->GetTicketState($ticket['ticketid'])==2)
-				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, resolvetime=0 WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['ticketid']));
+				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, resolvetime=0 WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['ticketid']));
 			else
-				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['ticketid']));
+				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['ticketid']));
 		}
 	}
 

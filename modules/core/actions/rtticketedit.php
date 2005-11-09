@@ -59,7 +59,6 @@ if(isset($ticketedit))
 	if($ticketedit['state']==0 && $ticketedit['owner'])
 		$ticketedit['state'] = 1;
 
-
 	if(!$error)
 	{
 		$LMS->TicketUpdate($ticketedit);
@@ -79,6 +78,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketedit.html');
 

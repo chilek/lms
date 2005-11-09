@@ -9,6 +9,7 @@ version ? (????-??-??):
   - added Finance -> Printing -> Transfer forms (alec)
   - fixed problem with access rights to transferforms module (alec)
   - added iconv conversion on transferforms (alec)
+  - assigning customer to ticket in ticket edition (alec)
 
 version 1.7.5 (2005-11-05):
 
