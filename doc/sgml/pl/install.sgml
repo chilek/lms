@@ -635,17 +635,6 @@ AddDefaultCharset Off
           mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
           zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
           przypadku faktur html'owych szablonu Smarty.</para>
-          <para>Dane do druku polecenia przelewu s± brane z sekcji <emphasis>[finances]</emphasis>
-          pliku <filename>lms.ini</filename>. A oto dostêpne opcje:
-          <simplelist>
-              <member>name - nazwa firmy</member>
-              <member>shortname - skrócona nazwa firmy</member>
-              <member>address - adres firmy</member>
-              <member>zip - kod pocztowy</member>
-              <member>city - miasto</member>
-              <member>account - numer konta bankowego</member>          
-          </simplelist>
-          </para>
          </sect3>
          <sect3 id="install-invoices-cnote">
           <title>Korekty</title>
@@ -698,9 +687,25 @@ AddDefaultCharset Off
 	  unikalny numer konta z zawartym ID naszego klienta.
           </para>
          </sect3>
-    </sect2>
-    <sect2 id="install-receipts">
-     <title>Dowody wp³aty (KP)</title>
+	</sect2>
+	<sect2 id="install-transferforms">
+	<title>Polecenia przelewu/wp³aty</title>
+		<para>Dane do druków polecenia przelewu brane s± z sekcji <emphasis>[finances]</emphasis>
+		konfiguracji. Dotycz± zarówno wydruków poleceñ przelewu dostêpnych w Finanse -> Wydruki 
+		jak i wydruków faktur typu FT-0100. A oto dostêpne opcje:
+		<simplelist>
+			<member>name - nazwa firmy</member>
+			<member>shortname - skrócona nazwa firmy</member>
+			<member>address - adres firmy (ulica, nr domu)</member>
+			<member>zip - kod pocztowy</member>
+			<member>city - miasto</member>
+			<member>account - numer konta bankowego</member>
+			<member>pay_title - tytu³ p³atno¶ci</member>
+		</simplelist>
+        	</para>
+	</sect2>
+	<sect2 id="install-receipts">
+	<title>Dowody wp³aty (KP)</title>
           <para>Dowody wp³aty, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
 	  opcje konfiguracyjne jak faktury.</para>
          <sect3 id="install-receipts-html">

@@ -304,49 +304,6 @@ CLASS="FILENAME"
 > option for php file name, but this feature is meant for
                  advanced users as it requires you to create more complicated php file than the one used with html
                  invoices Smarty template.</P
-><P
->Data for payment form printouts is stored in <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[finances]</I
-></SPAN
->
-          section of <TT
-CLASS="FILENAME"
->lms.ini</TT
-> file. That is:
-          <TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
->name - seller name</TD
-></TR
-><TR
-><TD
->shortname - short seller name</TD
-></TR
-><TR
-><TD
->address - seller address</TD
-></TR
-><TR
-><TD
->zip - seller postal code</TD
-></TR
-><TR
-><TD
->city - seller city</TD
-></TR
-><TR
-><TD
->account - banking account number</TD
-></TR
-></TBODY
-></TABLE
->
-          </P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -394,8 +351,61 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="INSTALL-TRANSFERFORMS"
+>2.9.2. Transfer forms</A
+></H2
+><P
+>Transfer forms it's Polish specific feature. Data for payment form printouts 
+		is stored in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[finances]</I
+></SPAN
+> configuration section. That is:
+		<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>name - seller name</TD
+></TR
+><TR
+><TD
+>shortname - short seller name</TD
+></TR
+><TR
+><TD
+>address - seller address</TD
+></TR
+><TR
+><TD
+>zip - seller postal code</TD
+></TR
+><TR
+><TD
+>city - seller city</TD
+></TR
+><TR
+><TD
+>account - banking account number</TD
+></TR
+><TR
+><TD
+>pay_title - title of payment</TD
+></TR
+></TBODY
+></TABLE
+>
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="INSTALL-RECEIPTS"
->2.9.2. Cash Receipts</A
+>2.9.3. Cash Receipts</A
 ></H2
 ><P
 ></P
@@ -405,7 +415,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-RECEIPTS-HTML"
->2.9.2.1. HTML</A
+>2.9.3.1. HTML</A
 ></H3
 ><P
 >Receipts are printed in html format by default
@@ -471,7 +481,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-RECEIPTS-PDF"
->2.9.2.2. PDF</A
+>2.9.3.2. PDF</A
 ></H3
 ><P
 >It's possible to create receipts as PDF files. Setting option <TT
@@ -504,7 +514,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-DOCUMENTS-OTHER"
->2.9.3. Other documents</A
+>2.9.4. Other documents</A
 ></H2
 ><P
 >Documents support is not limited to invoices. You might store 
