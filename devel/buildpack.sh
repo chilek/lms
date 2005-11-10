@@ -6,7 +6,7 @@
 #
 
 WORKDIR=`pwd`
-NOTDISTRIB="devel .project"
+NOTDISTRIB="devel .project modules/core"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
