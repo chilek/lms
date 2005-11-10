@@ -27,13 +27,14 @@
         </sect2>
         <sect2 id="install-req-php">
            <title>PHP Interpreter</title>
-           <para>Interpreter version should be 4.2.x or higher.
-           PHP can be downloaded from <ulink url="http://www.php.net">www.php.net</ulink>.
-           At least following PHP modules needs to be installed (look for "extension" in
-           php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
-           compressed backups), gd or ming (for graphical map) and mysql or pgsql (for db
-           support). PEAR::Mail is being used for mailing (which require Net_SMTP and Net_Sockets from 
-        PEAR package).</para>
+    	    <para>Interpreter version should be 4.2.x or higher.
+            PHP can be downloaded from <ulink url="http://www.php.net">www.php.net</ulink>.
+            At least following PHP modules needs to be installed (look for "extension" in
+            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
+            compressed backups), gd or ming (for graphical map), mysql or pgsql (for db
+            support) and iconv (for pdf printouts and latin-utf conversion). PEAR::Mail 
+	    is being used for mailing (which require Net_SMTP and Net_Sockets from 
+    	    PEAR package).</para>
          </sect2>
          <sect2 id="install-req-db">
            <title>Database Server</title>

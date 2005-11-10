@@ -34,9 +34,10 @@
           strony <ulink url="http://www.php.net">www.php.net</ulink>.
           W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
           w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
-          zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci) i 
-          mysql lub pgsql (dla bazy danych). Do mailingu u¿ywamy PEAR::Mail, który z kolei 
-          wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</para>
+          zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci), 
+          mysql lub pgsql (dla bazy danych) i iconv (dla wydruków pdf oraz obs³ugi
+	  MySQLa z kodowaniem latin2). Do mailingu u¿ywamy 
+	  PEAR::Mail, który z kolei wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</para>
          </sect2>
          <sect2 id="install-req-db">
            <title>Serwer baz danych</title>
