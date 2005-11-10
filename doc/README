@@ -313,9 +313,10 @@ Chapter 2. Installation and configuration
    from www.php.net. At least following PHP modules needs to be installed
    (look for "extension" in php.ini or in output of phpinfo function):
    pcre, posix (for systems info), zlib (for compressed backups), gd or
-   ming (for graphical map) and mysql or pgsql (for db support).
-   PEAR::Mail is being used for mailing (which require Net_SMTP and
-   Net_Sockets from PEAR package).
+   ming (for graphical map), mysql or pgsql (for db support) and iconv
+   (for pdf printouts and latin-utf conversion). PEAR::Mail is being used
+   for mailing (which require Net_SMTP and Net_Sockets from PEAR
+   package).
      _________________________________________________________________
 
 2.2.3. Database Server
@@ -817,15 +818,6 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    template_file option for php file name, but this feature is meant for
    advanced users as it requires you to create more complicated php file
    than the one used with html invoices Smarty template.
-
-   Data for payment form printouts is stored in [finances] section of
-   lms.ini file. That is:
-   name - seller name
-   shortname - short seller name
-   address - seller address
-   zip - seller postal code
-   city - seller city
-   account - banking account number
      _________________________________________________________________
 
 2.9.1.3. Credit Notes
@@ -840,10 +832,23 @@ $access['table'][100]['allow_reg'] = '^invoice$';
        Example: cnote_template_file = invoice-mynet.html
      _________________________________________________________________
 
-2.9.2. Cash Receipts
+2.9.2. Transfer forms
+
+   Transfer forms it's Polish specific feature. Data for payment form
+   printouts is stored in [finances] configuration section. That is:
+   name - seller name
+   shortname - short seller name
+   address - seller address
+   zip - seller postal code
+   city - seller city
+   account - banking account number
+   pay_title - title of payment
      _________________________________________________________________
 
-2.9.2.1. HTML
+2.9.3. Cash Receipts
+     _________________________________________________________________
+
+2.9.3.1. HTML
 
    Receipts are printed in html format by default using provided
    template. In [receipts] section you can also configure:
@@ -865,7 +870,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
        Example: attachment_name = receipt.xls
      _________________________________________________________________
 
-2.9.2.2. PDF
+2.9.3.2. PDF
 
    It's possible to create receipts as PDF files. Setting option type in
    [receipts] section to 'pdf' will force document being created in PDF
@@ -877,7 +882,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    with html receipts Smarty template.
      _________________________________________________________________
 
-2.9.3. Other documents
+2.9.4. Other documents
 
    Documents support is not limited to invoices. You might store
    virtually any documents you want in LMS, such as contracts, protocols,
@@ -4779,7 +4784,16 @@ Chapter 7. For curious
    description - description for subscription
      _________________________________________________________________
 
-7.2.12. Solid payments ('payments')
+7.2.12. Custom liabilities ('liabilities')
+
+   id - serial number
+   name - liability name/description
+   value - amount
+   taxid - tax rate identifier
+   prodid - product/service classification number
+     _________________________________________________________________
+
+7.2.13. Solid payments ('payments')
 
    id - serial number
    name - name
@@ -4791,10 +4805,11 @@ Chapter 7. For curious
    description - description for payment
      _________________________________________________________________
 
-7.2.13. Financial assignments ('assignments')
+7.2.14. Financial assignments ('assignments')
 
    id - serial number
    tariffid - subscription serial number
+   liabilityid - liability serial number
    customerid - customer serial number
    period - interval of operation:
    daily/weekly/monthly/quarterly/annually (1/2/3/4/5)
@@ -4806,7 +4821,7 @@ Chapter 7. For curious
    suspended - is this payment suspended? (1 - yes, 0 - no)
      _________________________________________________________________
 
-7.2.14. Tax rates ('taxes')
+7.2.15. Tax rates ('taxes')
 
    id - serial number
    value - tax value
@@ -4816,7 +4831,7 @@ Chapter 7. For curious
    validto - binding period end
      _________________________________________________________________
 
-7.2.15. Documents numbering plans ('numberplans')
+7.2.16. Documents numbering plans ('numberplans')
 
    id - serial number
    template - number template (pattern)
@@ -4826,7 +4841,7 @@ Chapter 7. For curious
    '0'
      _________________________________________________________________
 
-7.2.16. Documents: invoices, receipts, contracts, etc. ('documents')
+7.2.17. Documents: invoices, receipts, contracts, etc. ('documents')
 
    id - serial number
    number - number in year
@@ -4847,7 +4862,7 @@ Chapter 7. For curious
    reference - document ID reference
      _________________________________________________________________
 
-7.2.17. Non-financial documents contents ('documentcontents')
+7.2.18. Non-financial documents contents ('documentcontents')
 
    docid - document serial number
    title - document title
@@ -4859,7 +4874,7 @@ Chapter 7. For curious
    description - additional informations
      _________________________________________________________________
 
-7.2.18. Invoices ('invoicecontents')
+7.2.19. Invoices ('invoicecontents')
 
    docid - invoice serial number
    itemid - invoice item identifier
@@ -4872,7 +4887,7 @@ Chapter 7. For curious
    tariffid - subscription serial number
      _________________________________________________________________
 
-7.2.19. Cash Receipts ('receiptcontents')
+7.2.20. Cash Receipts ('receiptcontents')
 
    docid - receipt serial number
    itemid - receipt item identifier
@@ -4880,7 +4895,7 @@ Chapter 7. For curious
    description - description for receipt item
      _________________________________________________________________
 
-7.2.20. Accounts ('passwd')
+7.2.21. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -4900,27 +4915,27 @@ Chapter 7. For curious
    quota_ftp - ftp space limits
      _________________________________________________________________
 
-7.2.21. Domains ('domains')
+7.2.22. Domains ('domains')
 
    id - serial number
    name - domain name
    description - comments
      _________________________________________________________________
 
-7.2.22. Aliases ('aliases')
+7.2.23. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    accountid - account serial number
      _________________________________________________________________
 
-7.2.23. History ('timestamps')
+7.2.24. History ('timestamps')
 
    time - last modified timestamp
    tablename - name of modified table
      _________________________________________________________________
 
-7.2.24. Bandwidth consumption statistics ('stats')
+7.2.25. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -4928,7 +4943,7 @@ Chapter 7. For curious
    download - number of bytes received
      _________________________________________________________________
 
-7.2.25. Helpdesk - Request Tracking ('rtqueues')
+7.2.26. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -4936,7 +4951,7 @@ Chapter 7. For curious
    description - main description for the queue
      _________________________________________________________________
 
-7.2.26. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.27. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -4948,7 +4963,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      _________________________________________________________________
 
-7.2.27. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.28. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -4964,14 +4979,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      _________________________________________________________________
 
-7.2.28. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.29. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      _________________________________________________________________
 
-7.2.29. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.30. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -4979,7 +4994,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      _________________________________________________________________
 
-7.2.30. LMS-UI Online Configuration ('uiconfig')
+7.2.31. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -4989,7 +5004,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      _________________________________________________________________
 
-7.2.31. Timetable - events ('events')
+7.2.32. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -5004,13 +5019,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      _________________________________________________________________
 
-7.2.32. Timetable - assignments ('eventassignments')
+7.2.33. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      _________________________________________________________________
 
-7.2.33. Sessions ('sessions')
+7.2.34. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -5020,7 +5035,7 @@ Chapter 7. For curious
    content - data
      _________________________________________________________________
 
-7.2.34. Hosts ('hosts')
+7.2.35. Hosts ('hosts')
 
    id - identifier
    name - host name
@@ -5029,7 +5044,7 @@ Chapter 7. For curious
    reload - reload order
      _________________________________________________________________
 
-7.2.35. Daemon configuration - instances ('daemoninstances')
+7.2.36. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -5041,7 +5056,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.36. Daemon configuration - options ('daemonconfig')
+7.2.37. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -5051,7 +5066,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.37. Database information ('dbinfo')
+7.2.38. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value

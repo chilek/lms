@@ -296,49 +296,6 @@ CLASS="FILENAME"
           mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
           zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
           przypadku faktur html'owych szablonu Smarty.</P
-><P
->Dane do druku polecenia przelewu s± brane z sekcji <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[finances]</I
-></SPAN
->
-          pliku <TT
-CLASS="FILENAME"
->lms.ini</TT
->. A oto dostêpne opcje:
-          <TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
->name - nazwa firmy</TD
-></TR
-><TR
-><TD
->shortname - skrócona nazwa firmy</TD
-></TR
-><TR
-><TD
->address - adres firmy</TD
-></TR
-><TR
-><TD
->zip - kod pocztowy</TD
-></TR
-><TR
-><TD
->city - miasto</TD
-></TR
-><TR
-><TD
->account - numer konta bankowego</TD
-></TR
-></TBODY
-></TABLE
->
-          </P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -438,8 +395,62 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="INSTALL-TRANSFERFORMS"
+>2.9.2. Polecenia przelewu/wp³aty</A
+></H2
+><P
+>Dane do druków polecenia przelewu brane s± z sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[finances]</I
+></SPAN
+>
+		konfiguracji. Dotycz± zarówno wydruków poleceñ przelewu dostêpnych w Finanse -&#62; Wydruki 
+		jak i wydruków faktur typu FT-0100. A oto dostêpne opcje:
+		<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>name - nazwa firmy</TD
+></TR
+><TR
+><TD
+>shortname - skrócona nazwa firmy</TD
+></TR
+><TR
+><TD
+>address - adres firmy (ulica, nr domu)</TD
+></TR
+><TR
+><TD
+>zip - kod pocztowy</TD
+></TR
+><TR
+><TD
+>city - miasto</TD
+></TR
+><TR
+><TD
+>account - numer konta bankowego</TD
+></TR
+><TR
+><TD
+>pay_title - tytu³ p³atno¶ci</TD
+></TR
+></TBODY
+></TABLE
+>
+        	</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="INSTALL-RECEIPTS"
->2.9.2. Dowody wp³aty (KP)</A
+>2.9.3. Dowody wp³aty (KP)</A
 ></H2
 ><P
 >Dowody wp³aty, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
@@ -450,7 +461,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-RECEIPTS-HTML"
->2.9.2.1. HTML</A
+>2.9.3.1. HTML</A
 ></H3
 ><P
 >Przy domy¶lnych ustawieniach dowody wp³aty wy¶wietlane s± w
@@ -514,7 +525,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-RECEIPTS-PDF"
->2.9.2.2. PDF</A
+>2.9.3.2. PDF</A
 ></H3
 ><P
 >Mo¿liwe jest tak¿e tworzenie dowodów wp³aty jako plików pdf. Przypisanie
@@ -549,7 +560,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-DOCUMENTS-OTHER"
->2.9.3. Dokumenty pozosta³e</A
+>2.9.4. Dokumenty pozosta³e</A
 ></H2
 ><P
 >Oprócz dokumentów finansowych w LMSie mo¿na przechowywaæ

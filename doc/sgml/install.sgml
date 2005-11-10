@@ -569,17 +569,6 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                  <filename>template_file</filename> option for php file name, but this feature is meant for
                  advanced users as it requires you to create more complicated php file than the one used with html
                  invoices Smarty template.</para>
-          <para>Data for payment form printouts is stored in <emphasis>[finances]</emphasis>
-          section of <filename>lms.ini</filename> file. That is:
-          <simplelist>
-              <member>name - seller name</member>
-              <member>shortname - short seller name</member>
-              <member>address - seller address</member>
-              <member>zip - seller postal code</member>
-              <member>city - seller city</member>
-              <member>account - banking account number</member>          
-          </simplelist>
-          </para>
          </sect3>
          <sect3 id="install-invoices-cnote">
           <title>Credit Notes</title>
@@ -594,12 +583,27 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                <para>Credit note template, which should be placed in 
                <filename>templates</filename> directory. Default: invoice.html.</para>
                <para>Example: <prompt>cnote_template_file = invoice-mynet.html</prompt></para>
-          </listitem>          
+          </listitem>
           </itemizedlist>
           </para>
-         </sect3>     
+         </sect3>
     </sect2>
-    <sect2 id="install-receipts">
+	<sect2 id="install-transferforms">
+	<title>Transfer forms</title>
+		<para>Transfer forms it's Polish specific feature. Data for payment form printouts 
+		is stored in <emphasis>[finances]</emphasis> configuration section. That is:
+		<simplelist>
+			<member>name - seller name</member>
+			<member>shortname - short seller name</member>
+			<member>address - seller address</member>
+			<member>zip - seller postal code</member>
+			<member>city - seller city</member>
+			<member>account - banking account number</member>
+			<member>pay_title - title of payment</member>
+		</simplelist>
+		</para>
+	</sect2>
+	<sect2 id="install-receipts">
      <title>Cash Receipts</title>
                 <para></para>
          <sect3 id="install-receipts-html">
