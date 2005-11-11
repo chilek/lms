@@ -199,6 +199,7 @@
 				<NOBR>
 				<A HREF="javascript: SearchTickets();">{t}Tickets{/t}</A> <IMG src="img/ticket.gif" alt="[ {t}Tickets{/t} ]"></A>
 				<A href="?m=accountlist&u={$customerinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" alt="[ {t}Accounts{/t} ]"></A>
+				<A href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}">{t}Stats{/t} <IMG src="img/traffic.gif" alt="[ {t}Stats{/t} ]"></A>
 				<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>
 				<A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove that customer from database?\n\nIf that customer have any computers, they will be automatically removed from database too, and informations about them irreversible losed!{/t}')">{t}Delete{/t} <img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
 				</NOBR>

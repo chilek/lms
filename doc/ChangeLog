@@ -6,6 +6,7 @@ version ? (????-??-??):
     access don't need 'read only' access right (alec)
   - contrib/lms-debtors: added MySQL support (alec)
   - fixed traffic stats values in node informations (alec)
+  - added link to customer stats in customer info page (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 
