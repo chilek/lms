@@ -5,6 +5,7 @@ version ? (????-??-??):
   - BTS#0000216: now user with 'customers management' or 'nodes management'
     access don't need 'read only' access right (alec)
   - contrib/lms-debtors: added MySQL support (alec)
+  - fixed traffic stats values in node informations (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 

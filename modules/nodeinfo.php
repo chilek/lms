@@ -77,9 +77,9 @@ $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 $taxeslist = $LMS->GetTaxes();
 
-$nodestats['hour'] = NodeStats($nodeid, 360);
-$nodestats['day'] = NodeStats($nodeid, 360*24);
-$nodestats['month'] = NodeStats($nodeid, 360*24*30);
+$nodestats['hour'] = NodeStats($nodeid, 60*60);
+$nodestats['day'] = NodeStats($nodeid, 60*60*24);
+$nodestats['month'] = NodeStats($nodeid, 60*60*24*30);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
