@@ -418,6 +418,10 @@
 		    (z wyborem orygina³/kopia) lub wygenerowanie PDFa z danymi potrzebnymi do zadruku standardowych 
 		    dwuodcinkowych formularzy przelewu/wp³aty z potwierdzeniem.</para>
 		</listitem>
+		<listitem>
+			<para><emphasis>Formularze przelewu</emphasis> - wydruk PDFa z danymi przeznaczonymi
+			do zadruku standardowych czteroodcinkowych formularzy przelewu/wp³aty.</para>
+		</listitem>
 	    </itemizedlist>
 	    </para>
 	</sect2>
@@ -749,6 +753,12 @@ MISC_OTHER="-A -x -j"
 		</itemizedlist>
 	    <warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
 	    </para>
+	</sect2>
+	<sect2 id="menu-stats-print">
+		<title>Wydruki</title>
+			<para>Obecnie masz mo¿liwo¶æ wydruku statystyk klienta z wybranego miesi±ca.
+			Na wydruku bêd± statystyki podane w formie tabelarycznej z podzia³em na dni wraz
+			z podsumowaniem pobranych/wys³anych danych i ¶rednimi prêdko¶ciami.</para>
 	</sect2>
  </sect1>
   <sect1 id="menu-helpdesk">
