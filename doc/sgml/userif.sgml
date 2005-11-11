@@ -415,25 +415,33 @@ invoices.</para></note></para>
 	    <para>There are several options for balance sheet printouts:
 	    <itemizedlist>
 		<listitem>
-		    <para><emphasis>Balance sheet for your network</emphasis>
-including financial operations for given period, signed by selected LMS
-user.</para>
+			<para><emphasis>Balance sheet for your network</emphasis>
+			including financial operations for given period, signed by selected LMS
+			user</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Total invoiceless income</emphasis> for
-given period.</para>
+			<para><emphasis>Total invoiceless income</emphasis> for
+			given period</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Liability report</emphasis> for given day,
-for all or selected user.</para>
+			<para><emphasis>Liability report</emphasis> for given day,
+			for all or selected user</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Sale Registry</emphasis>, which consists of
-invoices for given period.</para>
+			<para><emphasis>Sale Registry</emphasis>, which consists of
+			invoices for given period.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Customer balance sheet</emphasis> for given
-period.</para>
+			<para><emphasis>Customer balance sheet</emphasis> for given
+			period.</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Invoices</emphasis> for given
+			period or/and selected customer.</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Transfer forms</emphasis> for selected
+			customer or customers group and given balance limit (only for polish forms).</para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
@@ -706,8 +714,14 @@ older than month will be approximated to one hour.</para></listitem>
 	    <warning><para>Data approximation is irreversible.</para></warning>
 	    </para>
 	</sect2>
- </sect1>
-  <sect1 id="menu-helpdesk">
+	<sect2 id="menu-stats-print">
+		<title>Printing</title>
+		<para>Here you can print statistics of given customer in selected
+		month. Printout consist upload/download summary grouped by month days
+		with average transfer speed.</para>
+	</sect2>
+</sect1>
+<sect1 id="menu-helpdesk">
 	<title>Helpdesk</title>
 	    <para>Helpdesk (or Request Tracker) is customer request management
 system. It's possible to keep history of all requests and questions here, both reported by
