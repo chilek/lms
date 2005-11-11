@@ -37,46 +37,12 @@ class LMS
 
 	function LMS(&$DB, &$AUTH, &$CONFIG) // class variables setting
 	{
-		if($AUTH !== NULL)
-		{
-			$this->AUTH = &$AUTH;
-			$this->modules[] = 'AUTH';
-		}
 		$this->DB = &$DB;
+		$this->AUTH = &$AUTH;
 		$this->CONFIG = &$CONFIG;
-		$this->modules[] = 'CORE';
-		$this->CORE = &$this;
 
-		// za³aduj ekstra klasy:
-/*
-		if($dirhandle = @opendir($this->CONFIG['directories']['lib_dir'].'/modules/'))
-		{
-			while(FALSE !== ($file = readdir($dirhandle)))
-			{
-				if(ereg('^[0-9a-z]+\.class.php$',$file))
-				{
-					$classname = ereg_replace('\.class.php$','',$file);
-					@require_once($this->CONFIG['directories']['lib_dir'].'/modules/'.$classname.'.class.php');
-					$this->$classname = new $classname($this);
-					$this->modules[] = $classname;
-				}
-			}
-		}
-
-		// poustawiajmy ->version
-*/
-		foreach($this->modules as $module)
-		{
-			$this->$module->_revision = eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->$module->_revision);
-			$this->$module->version = $this->$module->_version.' ('.$this->$module->_revision.')';
-		}
-/*
-		// a teraz postinit
-
-		foreach($this->modules as $module)
-			if(! ($this->$module != NULL ? $this->$module->_postinit() : TRUE))
-				trigger_error('Wyst±pi³y problemy z inicjalizacj± modu³u '.$module.'.');
-*/
+		$this->_revision = eregi_replace('^.Revision: ([0-9.]+).*','\1', $this->_revision);
+		$this->_version = $this->_version.' ('.$this->_revision.')';
 	}
 
 	function _postinit()
