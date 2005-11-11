@@ -1,5 +1,10 @@
 $Id$
 
+version ? (????-??-??):
+
+  - BTS#0000216: now user with 'customers management' or 'nodes management'
+    access don't need 'read only' access right (alec)
+
 version 1.7.6 Grannus (2005-11-10):
 
   - disposable liabilities (alec)
