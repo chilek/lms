@@ -30,19 +30,23 @@ switch($type)
 {
 	case 'customertraffic': /******************************************/
 
-		$layout['pagetitle'] = trans('Stats of Customer $0 in month $1', $LMS->GetCustomerName($_POST['customer']), strftime('%B %Y', mktime(0,0,0,$_POST['month'],1,$_POST['year'])));
+		$month = $_POST['month'] ? $_POST['month'] : date('n');
+		$year = $_POST['year'] ? $_POST['year'] : date('Y');
+		$customer = $_POST['customer'] ? $_POST['customer'] : $_GET['customer'];
+
+		$layout['pagetitle'] = trans('Stats of Customer $0 in month $1', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0,0,0,$month,1,$year)));
 	
-		$from = mktime(0,0,0,$_POST['month'],1,$_POST['year']);
-		$to = mktime(0,0,0,$_POST['month']+1,1,$_POST['year']);
+		$from = mktime(0,0,0,$month,1,$year);
+		$to = mktime(0,0,0,$month+1,1,$year);
 
     		if($list = $DB->GetAll('SELECT download, upload, dt
 	                	    FROM stats
 				    LEFT JOIN nodes ON (nodeid = nodes.id)
 				    WHERE ownerid = ? AND dt >= ? AND dt < ?',
-				    array($_POST['customer'], $from, $to)))
+				    array($customer, $from, $to)))
 		{
 			for($i=1; $i<=date('t',$from); $i++)
-				$stats[$i]['date'] = mktime(0,0,0,$_POST['month'],$i,$_POST['year']); 
+				$stats[$i]['date'] = mktime(0,0,0,$month,$i,$year); 
 				
 			foreach($list as $row)
 			{
