@@ -85,16 +85,21 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
 my $utsfmt;
+my $ownerq;
 
 if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "UNIX_TIMESTAMP()";
+	$ownerq = "CONCAT(UPPER(customers.lastname), ' ', customers.name) AS owner";
+		
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+	$ownerq = "UPPER(customers.lastname) || ' ' || customers.name AS owner";
+	     
 }
 else
 {
@@ -106,12 +111,11 @@ my $percent = 0;
 my $lastid = 0;
 
 # get all debtors
-my $dbq = $dbase->prepare("SELECT customers.id AS customerid,
-    UPPER(lastname) || ' '|| customers.name AS owner,
-    inet_ntoa(ipaddr) AS ip, 
+my $dbq = $dbase->prepare("SELECT customers.id AS customerid, $ownerq, inet_ntoa(ipaddr) AS ip, 
     ROUND(COALESCE(SUM(value), 0.00)/(CASE COUNT(DISTINCT nodes.id) 
     WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END),2) AS balance
-FROM nodes LEFT JOIN customers ON (ownerid = customers.id)
+FROM nodes 
+LEFT JOIN customers ON (ownerid = customers.id)
 LEFT JOIN cash ON (cash.customerid = customers.id)
 GROUP BY nodes.id, ipaddr, customers.id, customers.lastname, customers.name
 HAVING SUM(value) < 0
