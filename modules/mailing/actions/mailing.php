@@ -129,12 +129,12 @@ if(isset($_POST['mailing']))
 		$mailing['body'] = textwrap($mailing['body']);
 		$mailing['body'] = str_replace("\r", '', $mailing['body']);
 		$SMARTY->assign('mailing', $mailing);
-		$SMARTY->display('header.html');
+		$SMARTY->display($_LMSDIR.'/modules/core/templates/header.html');
 		
 		$emails = GetEmails($mailing['group'], $mailing['network'], $mailing['customergroup']);
 		
 		$SMARTY->assign('recipcount', sizeof($emails));
-		$SMARTY->display('mailingsend.html');
+		$SMARTY->display($_LMSDIR.'/modules/mailing/templates/mailingsend.html');
 		
 		if(sizeof($emails))
 		{
@@ -188,8 +188,8 @@ if(isset($_POST['mailing']))
 			}
 		}
 		
-		$SMARTY->display('mailingsend-footer.html');
-		$SMARTY->display('footer.html');
+		$SMARTY->display($_LMSDIR.'/modules/mailing/templates/mailingsend-footer.html');
+		$SMARTY->display($_LMSDIR.'/modules/core/templates/footer.html');
 		$SESSION->close();
 		die;
 	}
@@ -200,6 +200,5 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
-$SMARTY->display('mailing.html');
 
 ?>

@@ -1,0 +1,10 @@
+<!--// $Id$ //-->
+<BR>
+<BLOCKQUOTE><H1>{$layout.pagetitle}</H1>
+<P class="txt">
+<B>{t}Sender:{/t}</B> {$mailing.from} &lt;{$mailing.sender}&gt;<BR>
+<B>{t}Subject:{/t}</B> {$mailing.subject}<BR>
+<B>{t}Message:{/t}</B><PRE>{$mailing.body}</PRE></P>
+{if $recipcount}
+<P class="txt"><B>{t}Sending emails to:{/t}</B><BR>
+{/if}
