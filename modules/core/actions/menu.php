@@ -37,6 +37,7 @@ foreach($ExecStack->_MODINFO as $modulename => $modinfo)
 				'name' => $menuinfo['text'][$lang],
 				'img' => $menuinfo['img'],
 				'tip' => $menuinfo['tip'][$lang],
+				'link' => '?m='.$modulename,
 				'submenu' => array(),
 			);
 		}
@@ -47,7 +48,7 @@ foreach($ExecStack->_MODINFO as $modulename => $modinfo)
 	if(isset($modinfo['actions']))
 		foreach($modinfo['actions'] as $actionname => $actioninfo)
 		{
-			if(! $actioninfo['notpublic'] && ! $actioninfo['hidden'])
+			if(! $actioninfo['notpublic'] && ! $actioninfo['hidden'] && $actioninfo['menuname'])
 			{
 				if(! isset($actioninfo['menu']))
 					$actioninfo['menu'] = $modulename;
@@ -61,8 +62,8 @@ foreach($ExecStack->_MODINFO as $modulename => $modinfo)
 		}
 }
 
-
 $SMARTY->assign('menu', $menu);
 
 unset($menu);
+
 ?>
