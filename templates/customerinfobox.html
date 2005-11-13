@@ -1,21 +1,4 @@
 <!--// $Id$ //-->
-{literal}
-<SCRIPT language="JavaScript">
-<!--
-	function Contract()
-	{
-		document.contract.target = "_blank";
-		document.contract.submit();
-	}
-
-	function SearchTickets()
-	{
-		document.contract.action = "?m=rtsearch";
-		document.contract.submit();
-	}
-//-->	
-</SCRIPT>
-{/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -185,19 +168,11 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<INPUT type="hidden" name="rtsearch[subject]" value=""></INPUT>
-			<INPUT type="hidden" name="rtsearch[customerid]" value="{$customerinfo.id}"></INPUT>
-			<INPUT type="hidden" name="rtsearch[name]" value=""></INPUT>
-			<INPUT type="hidden" name="rtsearch[email]" value=""></INPUT>
-			<INPUT type="hidden" name="rtsearch[owner]" value="0"></INPUT>
-			<INPUT type="hidden" name="rtsearch[queue]" value="0"></INPUT>
-			<INPUT type="hidden" name="rtsearch[state]" value=""></INPUT>
-			<INPUT type="hidden" name="rtsearch[uptime]" value=""></INPUT>
 			{if $customerinfo.deleted}
 				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" ALT="[ {t}Restore{/t} ]"></A>
 			{else}
 				<NOBR>
-				<A HREF="javascript: SearchTickets();">{t}Tickets{/t}</A> <IMG src="img/ticket.gif" alt="[ {t}Tickets{/t} ]"></A>
+				<A HREF="?m=rtsearch&id={$customerinfo.id}">{t}Tickets{/t}</A> <IMG src="img/ticket.gif" alt="[ {t}Tickets{/t} ]"></A>
 				<A href="?m=accountlist&u={$customerinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" alt="[ {t}Accounts{/t} ]"></A>
 				<A href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}">{t}Stats{/t} <IMG src="img/traffic.gif" alt="[ {t}Stats{/t} ]"></A>
 				<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>
