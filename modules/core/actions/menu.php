@@ -48,14 +48,16 @@ foreach($ExecStack->_MODINFO as $modulename => $modinfo)
 	if(isset($modinfo['actions']))
 		foreach($modinfo['actions'] as $actionname => $actioninfo)
 		{
-			if(! $actioninfo['notpublic'] && ! $actioninfo['hidden'] && $actioninfo['menuname'])
+			if(isset($actioninfo['menuname']) && ! $actioninfo['notpublic'] && ! $actioninfo['hidden'])
 			{
 				if(! isset($actioninfo['menu']))
 					$actioninfo['menu'] = $modulename;
-
+					
+				$args = isset($actioninfo['args']) ? $actioninfo['args'] : ''; 
+				
 				$menu[$actioninfo['menu']]['submenu'][] = array(
 					'name' => $actioninfo['menuname'][$lang],
-					'link' => '?m='.$modulename.'&a='.$actionname,
+					'link' => '?m='.$modulename.'&a='.$actionname.$args,
 					'tip' => $actioninfo['tip'][$lang],
 				);
 			}
