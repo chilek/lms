@@ -73,6 +73,10 @@ if(isset($_GET['search']))
 	$listdata['direction'] = $customerlist['direction'];
 	$listdata['order'] = $customerlist['order'];
 	$listdata['state'] = $customerlist['state'];
+	$listdata['network'] = $customerlist['network'];
+	$listdata['customergroup'] = $customerlist['customergroup'];
+	$listdata['below'] = $customerlist['below'];
+	$listdata['over'] = $customerlist['over'];
 	
 	unset($customerlist['total']);
 	unset($customerlist['state']);
