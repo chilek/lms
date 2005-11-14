@@ -656,7 +656,7 @@ class LMS
 		$userlist['direction'] = $direction;
 		$userlist['below']= $below;
 		$userlist['over']= $over;
-		
+
 		return $userlist;
 	}
 

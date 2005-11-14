@@ -1,5 +1,9 @@
 $Id$
 
+version ? (??/??/????):
+
+  - fixed summary on customer search results list (alec)
+
 version 1.6.5 Druhin (28/10/2005):
 
   - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
