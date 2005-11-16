@@ -9,6 +9,9 @@ version ? (????-??-??):
   - added link to customer stats in customer info page (alec)
   - BTS#0000471: fixed 'Tickets' link in customerinfo box (alec)
   - fixed summary on customer search results list (alec)
+  - lmsd/parser: multiple logical expressions ("a && b && c" etc.) 
+    supported, multiple instructions in one block supported - using
+    semicolon (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 

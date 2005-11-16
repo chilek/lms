@@ -81,11 +81,11 @@
 %option stack
 %option noyywrap
 
-%x commands ext_arg
+%x commands ext_arg ext_arg_2
 
 %%
 
-\{					{
+<INITIAL,ext_arg>\{			{
 						state_stack_level++;
 						yy_push_state(commands);
 					}
@@ -97,20 +97,47 @@
 						YY_RETURN(TEXT);
 					}
 
-<commands>\}|\}\\\n			{
-						if (state_stack_level < 1)
-							YY_RETURN(ERROR);
-						state_stack_level--;
+<ext_arg>\(				{
 						yy_pop_state();
+						YY_RETURN('(');
 					}
 
-\}|\}\\\n				{ // hack for end of ext param
+<ext_arg>[[:space:]]+
+
+<ext_arg>.				{
+						BEGIN(ext_arg_2);	
+						yyless(0);
+					}
+
+<ext_arg_2>[^{};]+			{
+						tscript_yylval = tscript_ast_node_val(
+							TSCRIPT_AST_VALUE,
+							tscript_value_create_string(yytext));
+						YY_RETURN(TEXT);
+					}
+
+<ext_arg_2>;				{
 						if (state_stack_level < 1)
+							YY_RETURN(ERROR);
+						state_stack_level -= 1;
+						yy_pop_state();
+						YY_RETURN(';');
+					}
+
+<ext_arg_2>\}|\}\\\n			{
+						if (state_stack_level < 2)
 							YY_RETURN(ERROR);
 						state_stack_level -= 2;
 						yy_pop_state();
 						yy_pop_state();
 						YY_RETURN('}');
+					}
+
+<commands>\}|\}\\\n			{
+						if (state_stack_level < 1)
+							YY_RETURN(ERROR);
+						state_stack_level--;
+						yy_pop_state();
 					}
 
 <commands>\"[^"]*\"			{
@@ -217,18 +244,6 @@
 <commands>[[:space:]]+
 
 <commands>.				YY_RETURN(*yytext);
-
-<ext_arg>\(				{
-						yy_pop_state();
-						YY_RETURN('(');
-					}
-
-<ext_arg>[[:space:]]+
-
-<ext_arg>.				{
-						BEGIN(INITIAL);
-						yyless(0);
-					}	
 
 %%
 
