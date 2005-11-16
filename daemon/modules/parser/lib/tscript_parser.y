@@ -193,6 +193,10 @@ call_expression:	BLOCK '(' argument_expression_list ')' statements END_BLOCK
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
 			}
+		|	EXT expressions
+			{
+				$$ = tscript_ast_node_2(TSCRIPT_AST_EXT, $1, $2);
+			}
 
 postfix_expression:	primary_expression
 		|	sub_variable
@@ -291,19 +295,19 @@ equality_expression:
 
 logical_expression:
 			equality_expression
-		|	equality_expression OR equality_expression
+		|	logical_expression OR equality_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_OR, $1, $3);
 			}
-		|	equality_expression AND equality_expression
+		|	logical_expression AND equality_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_AND, $1, $3);
 			}
-		|	equality_expression '&' equality_expression
+		|	logical_expression '&' equality_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_BAND, $1, $3);
 			}
-		|	equality_expression '|' equality_expression
+		|	logical_expression '|' equality_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_BOR, $1, $3);
 			}
@@ -361,10 +365,16 @@ statements:	statements statement
 		{
 			$$ = tscript_ast_node_2(TSCRIPT_AST_SEQ, $1, $2);
 		}
+	|	statements ';' statement
+		{
+			$$ = tscript_ast_node_2(TSCRIPT_AST_SEQ, $1, $3);
+		}
+	|	statements ';'
 	|	statement
 		{
 			$$ = $1;
 		}
+	|	statement ';'
 
 template: 	statements
 		{
