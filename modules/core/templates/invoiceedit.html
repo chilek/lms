@@ -38,7 +38,7 @@
 			{if $customer.ten}{t}TEN:{/t}<BR>{elseif $customer.ssn}{t}SSN:{/t}<BR>{/if}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			{$customer.customername}<BR>
+			{$customer.customername|truncate:"80":"..."}<BR>
 			{$customer.address}<BR>
 			{$customer.zip} {$customer.city}<BR>
 			{if $customer.ten}{$customer.ten}<BR>{elseif $customer.ssn}{$customer.ssn}<BR>{/if}
@@ -79,7 +79,7 @@
 			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} SELECTED{/if}>{$c.customername} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $invoice.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"60":"..."} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 			{t}or Customer ID:{/t}

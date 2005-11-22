@@ -25,7 +25,7 @@
 				    <SELECT size="1" name="ticket[customerid]" {if !$ticket.customerid}{tip trigger="requestor"}{/if} {tip text="Select customer from list or enter his data if is not a customer"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
 					<OPTION value="0">- {t}select customer{/t} -</OPTION>
 					{foreach from=$customerlist item=customerlist}
-					    <OPTION value="{$customerlist.id}" {if $customerlist.id == $customerid}SELECTED{/if}>{$customerlist.customername} ({$customerlist.id|string_format:"%04d"})</OPTION>
+					    <OPTION value="{$customerlist.id}" {if $customerlist.id == $customerid}SELECTED{/if}>{$customerlist.customername|truncate:"60":"..."} ({$customerlist.id|string_format:"%04d"})</OPTION>
 					{/foreach}
 				    </SELECT>
 				    <NOBR>{t}or Customer ID:{/t}
