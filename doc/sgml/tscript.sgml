@@ -18,7 +18,8 @@
 	    Additional commands should be written inside { } parenthesis. Data
 	    outside curly brackets will be writed to output file (or ommited if file 
 	    was not specified). All expressions, variables, commands, function names are
-	    case-sensitive.</para>
+	    case-sensitive. To separate expressions inside parenthesis use semicolon 
+	    sign.</para>
 	    <sect3 id="expr">
 	    <title>Expressions and operators</title>
 	    <itemizedlist>
@@ -56,12 +57,12 @@
 		    comparision.</para>
 		    <para>Example: 
 <screen>
-expression1 == expression2
-expression1 != expression2
-expression1 &lt; expression2
-expression1 &gt; expression2
-expression1 &lt;= expression2
-expression1 &gt;= expression2
+expression1 == expression2;
+expression1 != expression2;
+expression1 &lt; expression2;
+expression1 &gt; expression2;
+expression1 &lt;= expression2;
+expression1 &gt;= expression2;
 </screen></para>
 		</listitem>
 		<listitem>
@@ -84,11 +85,11 @@ expression1 &gt;= expression2
 		    <para>Arithmetic operators. Evaluates to result of arithmetic operation on two expression values.</para>
 		    <para>Example: 
 <screen>
-expression1 + expression2
-expression1 - expression2
-expression1 * expression2
-expression1 / expression2
-expression1 % expression2</screen></para>
+expression1 + expression2;
+expression1 - expression2;
+expression1 * expression2;
+expression1 / expression2;
+expression1 % expression2;</screen></para>
 		</listitem>
 		<listitem>
 		    <para>Unary increment/decrement operators.</para>
