@@ -18,7 +18,8 @@
 		maj±cych na celu u³atwienie tworzenia szablonów. 
 		Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.
 		Dane poza klamrami zostan± zapisane do pliku wyj¶ciowego (lub je¶li go
-		nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie.</para>
+		nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie. Do oddzielenia
+		poleceñ s³u¿y znak ¶rednika.</para>
 		<sect3 id="expr">
 		<title>Wyra¿enia i operatory</title>
 			<itemizedlist>
@@ -56,12 +57,12 @@
 				<para>Porównania. Zwraca wynik logiczny porównania.</para>
 				<para>Przyk³ad: 
 <screen>
-wyra¿enie1 == wyra¿enie2
-wyra¿enie1 != wyra¿enie2
-wyra¿enie1 &lt; wyra¿enie2
-wyra¿enie1 &gt; wyra¿enie2
-wyra¿enie1 &lt;= wyra¿enie2
-wyra¿enie1 &gt;= wyra¿enie2
+wyra¿enie1 == wyra¿enie2;
+wyra¿enie1 != wyra¿enie2;
+wyra¿enie1 &lt; wyra¿enie2;
+wyra¿enie1 &gt; wyra¿enie2;
+wyra¿enie1 &lt;= wyra¿enie2;
+wyra¿enie1 &gt;= wyra¿enie2;
 </screen></para>
 			</listitem>
 			<listitem>
@@ -84,11 +85,11 @@ wyra¿enie1 &gt;= wyra¿enie2
 				<para>Operatory arytmetyczne. Zwraca wynik operacji arytmetycznej na dwóch wyra¿eniach.</para>
 				<para>Przyk³ad: 
 <screen>
-wyra¿enie1 + wyra¿enie2
-wyra¿enie1 - wyra¿enie2
-wyra¿enie1 * wyra¿enie2
-wyra¿enie1 / wyra¿enie2
-wyra¿enie1 % wyra¿enie2
+wyra¿enie1 + wyra¿enie2;
+wyra¿enie1 - wyra¿enie2;
+wyra¿enie1 * wyra¿enie2;
+wyra¿enie1 / wyra¿enie2;
+wyra¿enie1 % wyra¿enie2;
 </screen></para>
 			</listitem>
 			<listitem>
@@ -545,18 +546,18 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 		<example id="tscript-example-ethers">
 			<title>Parser: Plik "ethers" dla programu arp.</title>
 			<screen>
-{if(number(NODES))}\
-{       if(fileexists("/etc/ethers"))}\
-{               deletefile("/etc/ethers")}\
-{       /if}\ 
-{       for (i=0; i&lt;number(NODES); i++)}\
-{               if (number(NODES[i].access))}\
-{                       nodes[i].mac}\t{NODES[i].ip}
-{               else}\
-{                      }00:00:00:00:00:00\t{NODES[i].ip}
-{               /if}\
-{      /for}\
-{/if}\
+{if (number(NODES))
+       if (fileexists("/etc/ethers"))
+               deletefile("/etc/ethers");
+       /if; 
+       for (i=0; i&lt;number(NODES); i++)
+               if (number(NODES[i].access))
+                      }{nodes[i].mac}\t{NODES[i].ip}{
+               else
+                      }00:00:00:00:00:00\t{NODES[i].ip}{
+               /if;
+      /for;
+/if}\
 </screen>
 		</example>
 		</para>
@@ -566,16 +567,16 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 		<example id="tscript-example-notify">
 		<title>Parser: Zamiennik modu³u notify</title>
 <screen>
-{limit = 0}
-{dt = date()}
-{customers = SELECT customers.id AS id, email, pin, name, lastname,
+{limit = 0;
+dt = date();
+customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
         LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4)
         WHERE deleted = 0 AND email!=''
         GROUP BY customers.id, name, lastname, email, pin
-        HAVING SUM((type * -2 +7) * cash.value) &lt; {limit}}
-
+        HAVING SUM((type * -2 +7) * cash.value) &lt; {limit}
+}
 {for(i=0; i&lt;number(customers); i++)}
 
     {exec echo "UWAGA: Niniejsza wiadomo¶æ zosta³a wygenerowana automatycznie.
