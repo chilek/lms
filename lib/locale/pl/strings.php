@@ -464,7 +464,7 @@ $_LANG['Enter customer Tax Exempt Number (optional)'] = 'Podaj NIP klienta (opcj
 $_LANG['Enter date in \'yyyy/mm/dd\' format (empty field means current date) or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD (puste pole oznacza dzisiejszą lub kliknij żeby wybrać datę z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd hh:mm\' format (empty field means current date) or click to choose date from calendar'] = 'Podaj datę w formacie rrrr/mm/dd gg:mm (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
-$_LANG['Enter date in \'yyyy/mm/dd\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
+$_LANG['Enter date in \'yyyy/mm/dd\' format (empty field means 1970/01/01) or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza 1970/01/01) lub kliknij żeby wybrać ją z kalendarza';
 $_LANG['Enter date in YYYY/MM/DD format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter accounting start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Podaj datę od której taryfa powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD kiedy zakończyć naliczanie. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia zobowiązania';
@@ -1613,5 +1613,8 @@ $_LANG['Enter balance limit (default 0)'] = 'Wprowadź limit bilansu (domyślnie
 $_LANG['or Group:'] = 'lub grupa:';
 $_LANG['Transfer forms'] = 'Formularze przelewu';
 $_LANG['You can select customer or group of customers to limit results'] = 'Możesz wybrać klienta lub grupę klientów w celu ograniczenia wyników';
+$_LANG['Not set'] = 'Nie ustawione';
+$_LANG['New network is too small. Put in order IP addresses first!'] = 'Nowa sieć jest zbyt mała. Uporządkuj najpierw adresy IP!';
+$_LANG['You can assign customer to ticket'] = 'Możesz przypisać klienta do zgłoszenia';
 
 ?>

@@ -19,6 +19,7 @@ version ? (????-??-??):
   - don't compress network when changing network address, user must 
     do commpression by himself (alec)
   - standardised sorting of transfer forms and invoices printouts (alec) 
+  - BTS#0000481: fixed translation on transfer forms (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 
