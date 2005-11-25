@@ -2104,7 +2104,7 @@ class LMS
 			if(!sizeof($nodes)) break;
 			$ip = array_pop($nodes);
 
-			while(in_array($i, $destnodes))
+			while(in_array($i, (array)$destnodes))
 				$i++;
 
 			if(!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i,$ip)))
