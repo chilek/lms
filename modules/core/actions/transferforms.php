@@ -24,23 +24,9 @@
  *  $Id$
  */
 
-require_once($_LIB_DIR.'/ezpdf/class.ezpdf.php');
 
-$diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
-241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
-188=>'zacute',172=>'Zacute',191=>'zdot',175=>'Zdot'); 
-//$pdf =& new Cezpdf('A4','landscape');
-$pdf =& new Cezpdf('A4','portrait');
-$pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title',trans('Form of Cash Transfer'));
-$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
-$pdf->setPreferences('FitWindow','1');
-$pdf->ezSetMargins(0,0,0,0);
-$pdf->selectFont($_LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff)); 
-$pdf->setLineStyle(2);
-$id=$pdf->getFirstPageId();
-
-function main_fill($x,$y,$scale)	{
+function main_fill($x,$y,$scale)
+{
     global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$control_lines,$invoice;
     if ($control_lines) {
 	$pdf->line(7*$scale+$x,115*$scale+$y,7*$scale+$x,145*$scale+$y);
@@ -58,10 +44,11 @@ function main_fill($x,$y,$scale)	{
     $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format($invoice['total'],2,',',''));
     $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']));
     $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['address']."; ".$invoice['zip']." ".$invoice['city']));
-    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',trans("Payment for invoice: ").$invoice['t_number']));
+    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',trans('Payment for invoice No. $0', $invoice['t_number'])));
 }
 
-function simple_fill_mip($x,$y,$scale)	{
+function simple_fill_mip($x,$y,$scale)
+{
     global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_SHORT_NAME,$control_lines,$invoice;
 
     if ($control_lines) {
@@ -76,10 +63,10 @@ function simple_fill_mip($x,$y,$scale)	{
     }
     $pdf->addtext(15*$scale+$x,560*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_SHORT_NAME));
     $pdf->addtext(15*$scale+$x,525*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_ADDRESS));
-    $pdf->addtext(15*$scale+$x,490*$scale+$y,30*$scale,  iconv('UTF-8', 'ISO-8859-2',$_ZIP." ".$_CITY));
+    $pdf->addtext(15*$scale+$x,490*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_ZIP." ".$_CITY));
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid']),0,17));
     $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid']),18,200));
-    $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,"**".number_format($invoice['total'],2,',','')."**");
+    $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,'**'.number_format($invoice['total'],2,',','').'**');
     //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,$invoice['name']);
 
     $font_size=30;
@@ -93,13 +80,14 @@ function simple_fill_mip($x,$y,$scale)	{
     $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['zip']." ".$invoice['city']));
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,trans("Invoice no.: ").$invoice['t_number'])>135)
+    while ($pdf->getTextWidth($font_size*$scale,trans('Invoice No. $0', $invoice['t_number']))>135)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,385*$scale+$y,$font_size*$scale,trans("Invoice no.: ").$invoice['t_number']);
+    $pdf->addtext(15*$scale+$x,385*$scale+$y,$font_size*$scale,trans('Invoice No. $0', $invoice['t_number']));
 
 }
 
-function address_box($x,$y,$scale)	{
+function address_box($x,$y,$scale)
+{
     global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_SERVICE,$_SHORT_NAME,$invoice;
 
     $font_size=30;
@@ -110,16 +98,31 @@ function address_box($x,$y,$scale)	{
     $pdf->addtext(5*$scale+$x,240*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['zip']." ".$invoice['city']));
 }
 
-// Dobra, czytamy z lms.ini
-$_NAME = (! $CONFIG[finances]['name'] ? trans("Not set") : $CONFIG[finances]['name']);
-$_SHORT_NAME = (! $CONFIG[finances]['shortname'] ? trans("Not set") : $CONFIG[finances]['shortname']);
-$_ADDRESS = (! $CONFIG[finances]['address'] ? trans("Not set") : $CONFIG[finances]['address']);
-$_ZIP = (! $CONFIG[finances]['zip'] ? trans("Not set") : $CONFIG[finances]['zip']);
-$_CITY = (! $CONFIG[finances]['city'] ? trans("Not set") : $CONFIG[finances]['city']);
+require_once($_LIB_DIR.'/ezpdf/class.ezpdf.php');
+
+$diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
+241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
+188=>'zacute',172=>'Zacute',191=>'zdot',175=>'Zdot'); 
+//$pdf =& new Cezpdf('A4','landscape');
+$pdf =& new Cezpdf('A4','portrait');
+$pdf->addInfo('Producer','LMS Developers');
+$pdf->addInfo('Title',trans('Form of Cash Transfer'));
+$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
+$pdf->setPreferences('FitWindow','1');
+$pdf->ezSetMargins(0,0,0,0);
+$pdf->selectFont($_LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff)); 
+$pdf->setLineStyle(2);
+$id=$pdf->getFirstPageId();
+
+$_NAME = (! $CONFIG['finances']['name'] ? trans('Not set') : $CONFIG['finances']['name']);
+$_SHORT_NAME = (! $CONFIG['finances']['shortname'] ? trans('Not set') : $CONFIG['finances']['shortname']);
+$_ADDRESS = (! $CONFIG['finances']['address'] ? trans('Not set') : $CONFIG['finances']['address']);
+$_ZIP = (! $CONFIG['finances']['zip'] ? trans('Not set') : $CONFIG['finances']['zip']);
+$_CITY = (! $CONFIG['finances']['city'] ? trans('Not set') : $CONFIG['finances']['city']);
 
 $control_lines = 0;
 
-$ids = $LMS->DB->GetCol('SELECT id FROM documents
+$ids = $DB->GetCol('SELECT id FROM documents
         WHERE cdate > ? AND cdate < ? AND type = 1'
         .($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
         .' ORDER BY customerid',
@@ -146,8 +149,9 @@ foreach($ids as $idx => $invoiceid)
     simple_fill_mip(5,313,0.395);
     address_box(390,600,0.395);
     $i++;
-    if($i < $count) $id=$pdf->newPage(1,$id,'after');
+    if($i < $count) $id = $pdf->newPage(1,$id,'after');
 }
+
 $pdf->ezStream();
 
 ?>
