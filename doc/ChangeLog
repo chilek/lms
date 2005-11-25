@@ -3,6 +3,7 @@ $Id$
 version ? (??/??/????):
 
   - fixed summary on customer search results list (alec)
+  - fix in NetworkRemap() function for empty destination network (alec)
 
 version 1.6.5 Druhin (28/10/2005):
 

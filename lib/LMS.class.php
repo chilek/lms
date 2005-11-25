@@ -2218,6 +2218,9 @@ class LMS
 
 	function NetworkRemap($src,$dst)
 	{
+		$nodes = array();
+		$destnodes = array();
+		
 		$this->SetTS('nodes');
 		$network['source'] = $this->GetNetworkRecord($src);
 		$network['dest'] = $this->GetNetworkRecord($dst);
