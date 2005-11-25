@@ -54,11 +54,11 @@ function main_form($x, $y, $data)
     $y -= $lineh;
     $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trans('$0 dollars $1 cents',to_words(floor($balance)),to_words(round(($balance-floor($balance))*100)))));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',$data['customername']));
+    $pdf->addtext($x,$y,$font_size,substr(iconv('UTF-8', 'ISO-8859-2',$data['customername']),0,40));
     $y -= $lineh;
     $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trim($data['zip'].' '.$data['city'].' '.$data['address'])));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',$_TITLE));
+    $pdf->addtext($x,$y,$font_size,substr(iconv('UTF-8', 'ISO-8859-2',$_TITLE),0,80));
     $y -= $lineh;
     $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trans('Customer ID: $0',sprintf('%04d',$data['id']))));
 }
