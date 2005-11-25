@@ -76,7 +76,7 @@ $list = $DB->GetAll('SELECT customers.id AS id, address, zip, city, '
 	.($customer ? ' AND customers.id='.$customer : '')
 	.($group ? ' AND customergroupid='.$group : '')
 	.' GROUP BY customers.id, lastname, customers.name, address, zip, city
-	HAVING COALESCE(SUM(value), 0.00) < ? ORDER BY customername',
+	HAVING COALESCE(SUM(value), 0.00) < ? ORDER BY customers.id',
 	array($balance));
 
 if(!$list)
