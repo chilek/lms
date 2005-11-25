@@ -18,6 +18,7 @@ version ? (????-??-??):
     customerinfo (alec)
   - don't compress network when changing network address, user must 
     do commpression by himself (alec)
+  - standardised sorting of transfer forms and invoices printouts (alec) 
 
 version 1.7.6 Grannus (2005-11-10):
 
