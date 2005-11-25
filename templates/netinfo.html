@@ -164,7 +164,7 @@
 						<a href="?m=netdevinfo&id={$network.nodes.netdev[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
 					{else}
 						{if $network.nodes.id[subnetwork]}
-							<a href="?m=customerinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}"{if $network.nodes.name[subnetwork]} {tip text=$network.nodes.address[subnetwork]}{/if}><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
+							<a href="?m=nodeinfo&id={$network.nodes.id[subnetwork]}"{if $network.nodes.name[subnetwork]} {tip text=$network.nodes.address[subnetwork]}{/if}><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
 						{else}
 							{if $network.nodes.name[subnetwork]}<FONT CLASS="blend">{$network.nodes.name[subnetwork]}</FONT>
 							{else}
