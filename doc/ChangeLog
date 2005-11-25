@@ -13,6 +13,7 @@ version ? (????-??-??):
     supported, multiple instructions in one block supported - using
     semicolon (alec)
   - few fixes for very long customer names on pdf invoices and UI (alec)
+  - fixed NetworkRemap() function when destination network is empty (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 
