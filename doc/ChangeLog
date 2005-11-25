@@ -14,6 +14,10 @@ version ? (????-??-??):
     semicolon (alec)
   - few fixes for very long customer names on pdf invoices and UI (alec)
   - fixed NetworkRemap() function when destination network is empty (alec)
+  - changed link on nodes list in network info to node info instead of
+    customerinfo (alec)
+  - don't compress network when changing network address, user must 
+    do commpression by himself (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 

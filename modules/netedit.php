@@ -67,16 +67,22 @@ if(isset($_POST['networkdata']))
 					$error['address'] = trans('New network is too small!');
 				else
 				{
-					if($network['addresslong'] != $networkdata['addresslong'])
-						$networkdata['needshft'] = TRUE;
-
-					if($network['prefix'] < $networkdata['prefix'])
+					$node = $DB->GetRow('SELECT MAX(CASE WHEN ipaddr_pub != 0 THEN ipaddr_pub ELSE ipaddr END) AS last,
+								    MIN(CASE WHEN ipaddr_pub != 0 THEN ipaddr_pub ELSE ipaddr END) AS first
+							    FROM nodes 
+							    WHERE (ipaddr>? AND ipaddr<?) OR (ipaddr_pub>? AND ipaddr_pub<?)',
+							    array($network['addresslong'],ip_long($network['broadcast']),$network['addresslong'],ip_long($network['broadcast'])));
+				
+					if($node['first'] < $networkdata['addresslong'] ||
+					    $node['last'] >= ip_long(getbraddr($networkdata['address'],prefix2mask($networkdata['prefix']))))
 					{
-						foreach($network['nodes']['address'] as $key => $value)
-							if($network['nodes']['id'][$key])
-								$lastval = $value;
-						if(ip_long($lastval) >= ip_long(getbraddr($network['address'],prefix2mask($networkdata['prefix']))))
-							$networkdata['needcmp'] = TRUE;
+						$shift = $networkdata['addresslong'] - $network['addresslong'];
+						if($node['first'] + $shift < $networkdata['addresslong'] ||
+						    $node['last'] + $shift >= ip_long(getbraddr($networkdata['address'],prefix2mask($networkdata['prefix'])))
+						)
+							$error['address'] = trans('New network is too small. Put in order IP addresses first!');
+						else
+							$networkdata['needshft'] = TRUE;
 					}
 				}
 			}
@@ -134,10 +140,9 @@ if(isset($_POST['networkdata']))
 	
 	if(!$error)
 	{
-		if(isset($networkdata['needcmp']) && $networkdata['needcmp'])
-			$LMS->NetworkCompress($networkdata['id']);
-		if(isset($networkdata['needshft']) && $networkdata['needshft'])
-			$LMS->NetworkShift($network['address'],$network['mask'],($networkdata['addresslong'] - $network['addresslong']));
+	        if(isset($networkdata['needshft']) && $networkdata['needshft'])
+		        $LMS->NetworkShift($network['address'],$network['mask'],$networkdata['addresslong'] - $network['addresslong']);
+
 		$LMS->NetworkUpdate($networkdata);
 		$SESSION->redirect('?m=netinfo&id='.$networkdata['id']);
 	}	
