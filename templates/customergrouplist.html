@@ -14,7 +14,7 @@
 			{t}Members:{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT" nowrap>
-			<B>{t 0=$listdata.total}Total: $0{/t}</B>
+			<B>{t 0=$listdata.total|default:"0"}Total: $0{/t}</B>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
@@ -56,7 +56,7 @@
 			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t}Total:{/t}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
-			<B>{$listdata.totalcount} </B>
+			<B>{$listdata.totalcount|default:"0"} </B>
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;
