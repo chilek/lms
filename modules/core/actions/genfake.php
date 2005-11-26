@@ -1990,7 +1990,43 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$startip++;
 		if($i>1)
 			$LMS->NetDevLink($i,$i-1);
-	}	
+	}
+	
+	if($_GET['i'])
+	{
+		echo '<B>'.trans('Generating invoices...').'</B><BR>';
+		
+		if($_GET['i'] > 100) $_GET['i'] = 100;
+		
+		$inv['number'] = 0;
+		$inv['paytime'] = 14;
+		$inv['paytype'] = trans('CASH');
+		$inv['numberplanid'] = 0;
+		$inv['type'] = DOC_INVOICE;
+		$inv['cdate'] = time() - ($_GET['i']+1) * 86400;
+		$contents['prodid'] = '';
+		$contents['tariffid'] = 0;
+		$contents['jm'] = trans('item no.');
+		$contents['name'] = trans('Subscription');
+		
+		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, id, ssn, address, zip, city, ten FROM customers');
+					    
+		if($customers)
+			for($n=0; $n<$_GET['i']; $n++)
+			{
+				$contents['taxid'] = mt_rand(1,3);
+				$contents['count'] = mt_rand(1,3);
+				$contents['valuebrutto'] = 100+$n*10+$n*0.1;
+				$inv['cdate'] += 86400;
+				
+				foreach($customers as $c)
+				{
+					$inv['number']++;
+					$cont[0] = $contents;
+					$LMS->AddInvoice(array('customer' => $c, 'contents' => $cont, 'invoice' => $inv));
+				}
+			}
+	}			
 
 	echo '<P><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
 	$SMARTY->display('footer.html');
@@ -1999,7 +2035,12 @@ else
 {
 	$SMARTY->display('header.html');
 	echo '<H1>'.trans('Generating random data').'</H1>';
-	echo '<FORM METHOD="GET" ACTION="?" TARGET="_BLANK"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">'.trans('How many records? (max: 65000)').' <FONT COLOR="RED">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</FONT> <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
+	echo '<form method="get" action="?" target="_blank">';
+	echo '<input type="hidden" value="genfake" name="m">';
+	echo '<input type="submit" class="hiddenbtn">';
+	echo '<font class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</font><p>';
+	echo trans('How many customers? (max: 65000):').' <input type="text" name="l" size="5"><br>';
+	echo trans('How many invoices for each customer? (max.100):').' <input type="text" name="i" size="5"></form>';
 	$SMARTY->display('footer.html');
 }
 
