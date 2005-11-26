@@ -105,24 +105,21 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 	    		.$sqlord.' '.$direction))
 	{
 		if($group['group'])
+		{
 			$customers = $DB->GetAllByKey('SELECT customerid AS id
 		        	FROM customerassignments WHERE customergroupid=?', 
 				'id', array($group['group']));
 		
-		foreach($result as $idx => $row)
-		{
-		        $result[$idx]['year'] = date('Y',$row['cdate']);
-			$result[$idx]['month'] = date('m',$row['cdate']);
-			
-			if($group['group'])
+			foreach($result as $idx => $row)
+			{
 				if(!$group['exclude'] && $customers[$result[$idx]['customerid']])
 					$result1[] = $result[$idx];
 				elseif($group['exclude'] && !$customers[$result[$idx]['customerid']])
 					$result1[] = $result[$idx];
-		}
-		
-		if($group['group'])
+			}
+
 			$result = $result1;
+		}
 	}
 	
 	$result['order'] = $order;
