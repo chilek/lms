@@ -2039,7 +2039,7 @@ else
 	echo '<input type="hidden" value="genfake" name="m">';
 	echo '<input type="submit" class="hiddenbtn">';
 	echo '<font class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</font><p>';
-	echo trans('How many customers? (max: 65000):').' <input type="text" name="l" size="5"><br>';
+	echo trans('How many customers? (max.65000):').' <input type="text" name="l" size="5"><br>';
 	echo trans('How many invoices for each customer? (max.100):').' <input type="text" name="i" size="5"></form>';
 	$SMARTY->display('footer.html');
 }

@@ -279,7 +279,7 @@ $_LANG['Created:'] = 'Utworzony:';
 $_LANG['Created by: $0'] = 'Utworzone przez: $0';
 $_LANG['Create new'] = 'Utwórz nową';
 $_LANG['Create time:'] = 'Data utworzenia:';
-$_LANG['Generating subscriptions...'] = 'Generowanie taryf...';
+$_LANG['Generating subscriptions...'] = 'Generuję taryfy...';
 $_LANG['Creation time:'] = 'Czas utworzenia:';
 $_LANG['Creator:'] = 'Utworzył:';
 $_LANG['Creditor:'] = 'Wierzyciel:';
@@ -465,6 +465,7 @@ $_LANG['Enter date in \'yyyy/mm/dd\' format (empty field means current date) or 
 $_LANG['Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD (puste pole oznacza dzisiejszą lub kliknij żeby wybrać datę z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd hh:mm\' format (empty field means current date) or click to choose date from calendar'] = 'Podaj datę w formacie rrrr/mm/dd gg:mm (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd\' format (empty field means 1970/01/01) or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza 1970/01/01) lub kliknij żeby wybrać ją z kalendarza';
+$_LANG['Enter date in \'yyyy/mm/dd\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' lub kliknij żeby wybrać ją z kalendarza';
 $_LANG['Enter date in YYYY/MM/DD format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter accounting start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Podaj datę od której taryfa powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD kiedy zakończyć naliczanie. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia zobowiązania';
@@ -647,7 +648,8 @@ $_LANG['Host name is required!'] = 'Nazwa hosta jest wymagana!';
 $_LANG['Hosts List'] = 'Lista hostów';
 $_LANG['Host with specified name exists!'] = 'Host o podanej nazwie istnieje!';
 $_LANG['Hosts'] = 'Hosty';
-$_LANG['How many records? (max: 65000)'] = 'Ile rekordów? (max: 65000)';
+$_LANG['How many customers? (max.65000):'] = 'Ilu klientów? (max.65000):';
+$_LANG['How many invoices for each customer? (max.100):'] = 'Ile faktur dla każdego klienta? (max.100):';
 $_LANG['How often to check for LMS updates (in seconds). Default: 86400.'] = 'Jak często sprawdzać czy są dostępne uaktualnienia LMS-a (w sekundach). Domyślnie: 86400.';
 $_LANG['I confirm receipt of above amount'] = 'Kwotę powyższą otrzymałem';
 $_LANG['Id'] = 'Id';
@@ -1616,5 +1618,6 @@ $_LANG['You can select customer or group of customers to limit results'] = 'Moż
 $_LANG['Not set'] = 'Nie ustawione';
 $_LANG['New network is too small. Put in order IP addresses first!'] = 'Nowa sieć jest zbyt mała. Uporządkuj najpierw adresy IP!';
 $_LANG['You can assign customer to ticket'] = 'Możesz przypisać klienta do zgłoszenia';
+$_LANG['Generating invoices...'] = 'Generuję faktury...';
 
 ?>
