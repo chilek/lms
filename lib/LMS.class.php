@@ -1279,7 +1279,7 @@ class LMS
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
-		
+
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city)
 				    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				    array($number, 
