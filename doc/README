@@ -94,8 +94,9 @@ LMS Developers
    5-1. Lms-mgc: Example instance
    6-1. Parser: Creating /etc/hosts file
    6-2. Parser: Debtors list
-   6-3. Parser: Ethers file for arp
-   6-4. Parser: Notify module replacement
+   6-3. Parser: Ethernet hosts descriptions for iptraf.
+   6-4. Parser: Ethers file for arp
+   6-5. Parser: Notify module replacement
    7-1. Format of configuration options
      _________________________________________________________________
 
@@ -1388,11 +1389,14 @@ Chapter 3. User Interface (LMS-UI)
 
    There are several options for balance sheet printouts:
      * Balance sheet for your network including financial operations for
-       given period, signed by selected LMS user.
-     * Total invoiceless income for given period.
-     * Liability report for given day, for all or selected user.
+       given period, signed by selected LMS user
+     * Total invoiceless income for given period
+     * Liability report for given day, for all or selected user
      * Sale Registry, which consists of invoices for given period.
      * Customer balance sheet for given period.
+     * Invoices for given period or/and selected customer.
+     * Transfer forms for selected customer or customers group and given
+       balance limit (only for polish forms).
      _________________________________________________________________
 
 3.8. Accounts
@@ -1674,6 +1678,13 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    Warning
 
    Data approximation is irreversible.
+     _________________________________________________________________
+
+3.11.3. Printing
+
+   Here you can print statistics of given customer in selected month.
+   Printout consist upload/download summary grouped by month days with
+   average transfer speed.
      _________________________________________________________________
 
 3.12. Helpdesk
@@ -4150,7 +4161,8 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
    simpler. Additional commands should be written inside { } parenthesis.
    Data outside curly brackets will be writed to output file (or ommited
    if file was not specified). All expressions, variables, commands,
-   function names are case-sensitive.
+   function names are case-sensitive. To separate expressions inside
+   parenthesis use semicolon sign.
      _________________________________________________________________
 
 6.3.2.1. Expressions and operators
@@ -4172,12 +4184,12 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        Example: variable = null
      * Comparisions. Returns logical result of expressions comparision.
        Example:
-expression1 == expression2
-expression1 != expression2
-expression1 < expression2
-expression1 > expression2
-expression1 <= expression2
-expression1 >= expression2
+expression1 == expression2;
+expression1 != expression2;
+expression1 < expression2;
+expression1 > expression2;
+expression1 <= expression2;
+expression1 >= expression2;
      * Binary operators. Sum and product.
        Example: expression1 | expression2
        Example: expression1 & expression2
@@ -4192,11 +4204,11 @@ expression1 >= expression2
      * Arithmetic operators. Evaluates to result of arithmetic operation
        on two expression values.
        Example:
-expression1 + expression2
-expression1 - expression2
-expression1 * expression2
-expression1 / expression2
-expression1 % expression2
+expression1 + expression2;
+expression1 - expression2;
+expression1 * expression2;
+expression1 / expression2;
+expression1 % expression2;
      * Unary increment/decrement operators.
        Example: expression++
        Example: expression--
@@ -4524,11 +4536,20 @@ for (r=0; r<number(CUSTOMERS); r++)
 /for
 }\
 
+   List of ethernet hosts desriptions for iptraf. Here the format of
+   hardware address is specific. It must be writed without separators.
+
+   Example 6-3. Parser: Ethernet hosts descriptions for iptraf.
+{list = SELECT LOWER(mac) AS mac, UPPER(name) AS name, inet_ntoa(ipaddr) AS ipfrom nodes}\
+{for(i=0; i<number(list); i++)}\
+{replace(":","",list[i].mac)}:{list[i].name} {list[i].ip}
+{/for}
+
    In next example we're create file with hosts ethernet hardware
    addresses to IP addresses mappings, used by arp program. Hosts with no
    access gets dummy MACs.
 
-   Example 6-3. Parser: Ethers file for arp
+   Example 6-4. Parser: Ethers file for arp
 {if(number(NODES))}\
 {       if(fileexists("/etc/ethers"))}\
 {               deletefile("/etc/ethers")}\
@@ -4545,7 +4566,7 @@ for (r=0; r<number(CUSTOMERS); r++)
    Next example is longer. Here we are using especially 'exec'. Script
    sends e-mails to customers with balance less than specified limit.
 
-   Example 6-4. Parser: Notify module replacement
+   Example 6-5. Parser: Notify module replacement
 {limit = 0}
 {dt = date()}
 {customers = SELECT customers.id AS id, email, pin, name, lastname,

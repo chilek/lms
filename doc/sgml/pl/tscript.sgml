@@ -540,6 +540,18 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 /for}\
 </screen>
 		</example></para>
+		<para>Utworzenie listy z opisami komputerów dla programu iptraf. Charakterystyczne dla tego
+		programu jest to, ¿e adresy MAC komputerów musz± byæ zapisane bez dwukropków oddzielaj±cych
+		poszczególne cz³ony adresu.
+		<example id="tscript-example-iptraf">
+		<title>Parser: Opisy komputerów dla iptrafa.</title>
+<screen>
+{list = SELECT LOWER(mac) AS mac, UPPER(name) AS name, inet_ntoa(ipaddr) AS ip from nodes}\
+{for(i=0; i&lt;number(list); i++)}\
+{replace(":","",list[i].mac)}:{list[i].name} {list[i].ip}
+{/for}
+</screen>
+		</example></para>
 		<para>W nastêpnym przyk³adzie tworzymy plik z przypisanymi adresami IP do adresów sprzêtowych
 		hostów, u¿ywany przez program <filename>arp</filename>. Hostom z wy³±czonym dostêpem
 		zostan± przypisane "puste" MACi.

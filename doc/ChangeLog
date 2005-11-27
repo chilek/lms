@@ -22,6 +22,7 @@ version ? (????-??-??):
   - BTS#0000481: fixed translation on transfer forms (alec)
   - invoices list display speed optimized (alec)
   - example invoices/cash records generation in genfake module (alec)
+  - removed upgrade scripts for v.1.2 (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 
