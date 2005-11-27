@@ -29,13 +29,6 @@ my $configfile = '/etc/lms/lms.ini';
 
 $|=1;
 
-sub dotquad2u32($)
-{
-     my $dq = shift||'0.0.0.0';
-     my @dq = split('\.',$dq,4);
-     return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
-}
-
 my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
@@ -46,8 +39,12 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 my $redirect = $ini->val('redirector', 'redirect') || 'http://lms.rulez.pl/';
 
-while ($adres = <STDIN>) {
-    if ((!defined($dbase))||($dbase->state)) {
+my $dbq;
+
+while ($adres = <STDIN>)
+{
+    if ((!defined($dbase))||($dbase->state))
+    {
 	if($dbtype eq "mysql")
 	{
     	    $dbase = DBI->connect_cached("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
@@ -67,14 +64,16 @@ while ($adres = <STDIN>) {
     @ip = split('/', $lista[1]);
     $dbq->execute($ip[0]);
     my $row = $dbq->fetchrow_hashref();
-    if ($row->{'warning'}==1 || $row->{'access'}==0) {
-        if (!($lista[0] =~ m/$redirect/)) {
+    if ($row->{'warning'}==1 || $row->{'access'}==0)
+    {
+        if (!($lista[0] =~ m/$redirect/))
+	{
             $lista[0] = $redirect."?oldurl=".$lista[0];
             $adres = '302:'.join(' ',@lista)."\n";
         }
     }
     print $adres;
 }
+
 $dbq->finish;
 $dbase->disconnect();
-
