@@ -505,10 +505,10 @@ line {i}: {f[i]}\
 	</sect2>
 	<sect2 id="examples">
 	<title>Example Scripts</title>
-	    <para>Let's begin from simple script creating file <filename>/etc/hosts</filename>
-	    with list of computers (and devices) IPs and names list. 
-	    <example id="tscript-example-hosts">
-	    <title>Parser: Creating /etc/hosts file</title>
+		<para>Let's begin from simple script creating file <filename>/etc/hosts</filename>
+		with list of computers (and devices) IPs and names list. 
+		<example id="tscript-example-hosts">
+			<title>Parser: Creating /etc/hosts file</title>
 <screen>
 {result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
 127.0.0.1	localhost
@@ -516,11 +516,11 @@ line {i}: {f[i]}\
 {result[r].name}\t{result[r].ip}
 {/for}\
 </screen>
-	    </example></para>
-	    <para>How to create debtors list? It's easy with use of predefined 
-	    constants.
-	    <example id="tscript-example-debtors">
-		<title>Parser: Debtors list</title>
+		</example></para>
+		<para>How to create debtors list? It's easy with use of predefined 
+		constants.
+		<example id="tscript-example-debtors">
+			<title>Parser: Debtors list</title>
 <screen>
 {
 for (r=0; r&lt;number(CUSTOMERS); r++)
@@ -532,14 +532,24 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 /for
 }\
 </screen>
-	    </example>
-	    </para>
-	    <para>In next example we're create file with hosts ethernet hardware addresses to 
+		</example></para>
+		<para>List of ethernet hosts desriptions for iptraf. Here the format of hardware
+		address is specific. It must be writed without separators.
+		<example id="tscript-example-iptraf">
+			<title>Parser: Ethernet hosts descriptions for iptraf.</title>
+<screen>
+{list = SELECT LOWER(mac) AS mac, UPPER(name) AS name, inet_ntoa(ipaddr) AS ip from nodes}\
+{for(i=0; i&lt;number(list); i++)}\
+{replace(":","",list[i].mac)}:{list[i].name} {list[i].ip}
+{/for}
+</screen>
+		</example></para>
+		<para>In next example we're create file with hosts ethernet hardware addresses to 
 		IP addresses mappings, used by <filename>arp</filename> program. Hosts with no
 		access gets dummy MACs.
-		    <example id="tscript-example-ethers">
-			    <title>Parser: Ethers file for arp</title>
-			    <screen>
+		<example id="tscript-example-ethers">
+			<title>Parser: Ethers file for arp</title>
+			<screen>
 {if(number(NODES))}\
 {       if(fileexists("/etc/ethers"))}\
 {               deletefile("/etc/ethers")}\
@@ -554,11 +564,11 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 {/if}\
 </screen>
 		</example>
-	    </para>
-	    <para>Next example is longer. Here we are using especially 'exec'.
-	    Script sends e-mails to customers with balance less than specified limit.	    
-	    <example id="tscript-example-notify">
-	    <title>Parser: Notify module replacement</title>
+		</para>
+		<para>Next example is longer. Here we are using especially 'exec'.
+		Script sends e-mails to customers with balance less than specified limit.	    
+		<example id="tscript-example-notify">
+			<title>Parser: Notify module replacement</title>
 <screen>
 {limit = 0}
 {dt = date()}
@@ -612,7 +622,7 @@ convenience.
 
 {/for}
 </screen>
-	    </example>
-	    </para>
+		</example>
+		</para>
 	</sect2>
 </sect1>

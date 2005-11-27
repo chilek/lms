@@ -120,7 +120,8 @@ NAME="TSCRIPT-SYNTAX"
 	    Additional commands should be written inside { } parenthesis. Data
 	    outside curly brackets will be writed to output file (or ommited if file 
 	    was not specified). All expressions, variables, commands, function names are
-	    case-sensitive.</P
+	    case-sensitive. To separate expressions inside parenthesis use semicolon 
+	    sign.</P
 ><DIV
 CLASS="SECT3"
 ><H3
@@ -202,12 +203,12 @@ CLASS="PROMPT"
 >Example: 
 <PRE
 CLASS="SCREEN"
->expression1 == expression2
-expression1 != expression2
-expression1 &lt; expression2
-expression1 &gt; expression2
-expression1 &lt;= expression2
-expression1 &gt;= expression2</PRE
+>expression1 == expression2;
+expression1 != expression2;
+expression1 &lt; expression2;
+expression1 &gt; expression2;
+expression1 &lt;= expression2;
+expression1 &gt;= expression2;</PRE
 ></P
 ></LI
 ><LI
@@ -260,11 +261,11 @@ CLASS="PROMPT"
 >Example: 
 <PRE
 CLASS="SCREEN"
->expression1 + expression2
-expression1 - expression2
-expression1 * expression2
-expression1 / expression2
-expression1 % expression2</PRE
+>expression1 + expression2;
+expression1 - expression2;
+expression1 * expression2;
+expression1 / expression2;
+expression1 % expression2;</PRE
 ></P
 ></LI
 ><LI
@@ -1287,8 +1288,8 @@ NAME="EXAMPLES"
 CLASS="FILENAME"
 >/etc/hosts</TT
 >
-	    with list of computers (and devices) IPs and names list. 
-	    <DIV
+		with list of computers (and devices) IPs and names list. 
+		<DIV
 CLASS="EXAMPLE"
 ><A
 NAME="TSCRIPT-EXAMPLE-HOSTS"
@@ -1308,8 +1309,8 @@ CLASS="SCREEN"
 ></P
 ><P
 >How to create debtors list? It's easy with use of predefined 
-	    constants.
-	    <DIV
+		constants.
+		<DIV
 CLASS="EXAMPLE"
 ><A
 NAME="TSCRIPT-EXAMPLE-DEBTORS"
@@ -1330,8 +1331,27 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 /for
 }\</PRE
 ></DIV
->
-	    </P
+></P
+><P
+>List of ethernet hosts desriptions for iptraf. Here the format of hardware
+		address is specific. It must be writed without separators.
+		<DIV
+CLASS="EXAMPLE"
+><A
+NAME="TSCRIPT-EXAMPLE-IPTRAF"
+></A
+><P
+><B
+>Example 6-3. Parser: Ethernet hosts descriptions for iptraf.</B
+></P
+><PRE
+CLASS="SCREEN"
+>{list = SELECT LOWER(mac) AS mac, UPPER(name) AS name, inet_ntoa(ipaddr) AS ip from nodes}\
+{for(i=0; i&lt;number(list); i++)}\
+{replace(":","",list[i].mac)}:{list[i].name} {list[i].ip}
+{/for}</PRE
+></DIV
+></P
 ><P
 >In next example we're create file with hosts ethernet hardware addresses to 
 		IP addresses mappings, used by <TT
@@ -1339,14 +1359,14 @@ CLASS="FILENAME"
 >arp</TT
 > program. Hosts with no
 		access gets dummy MACs.
-		    <DIV
+		<DIV
 CLASS="EXAMPLE"
 ><A
 NAME="TSCRIPT-EXAMPLE-ETHERS"
 ></A
 ><P
 ><B
->Example 6-3. Parser: Ethers file for arp</B
+>Example 6-4. Parser: Ethers file for arp</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -1364,18 +1384,18 @@ CLASS="SCREEN"
 {/if}\</PRE
 ></DIV
 >
-	    </P
+		</P
 ><P
 >Next example is longer. Here we are using especially 'exec'.
-	    Script sends e-mails to customers with balance less than specified limit.	    
-	    <DIV
+		Script sends e-mails to customers with balance less than specified limit.	    
+		<DIV
 CLASS="EXAMPLE"
 ><A
 NAME="TSCRIPT-EXAMPLE-NOTIFY"
 ></A
 ><P
 ><B
->Example 6-4. Parser: Notify module replacement</B
+>Example 6-5. Parser: Notify module replacement</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -1432,7 +1452,7 @@ convenience.
 {/for}</PRE
 ></DIV
 >
-	    </P
+		</P
 ></DIV
 ></DIV
 ><DIV

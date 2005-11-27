@@ -8,11 +8,8 @@ COPYRIGHTS	- licence header for php/html/etc files
 ChangeLog	- history of changes
 README		- User Manual
 README.html	- User Manual - one html file version
-TODO		- features to do
 lms.mysql	- create database queries for MySQL
 lms.pgsql	- create database queries for PostgreSQL
-UPGRADE-*.mysql	- how to upgrade lms to current version (see doc)
-UPGRADE-*.pgsql	- how to upgrade lms to current version (see doc)
 
 html/		- directory with HTML version of User Manual
 sgml/		- directory with DocBook sources of User Manual

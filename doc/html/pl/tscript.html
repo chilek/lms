@@ -120,7 +120,8 @@ NAME="TSCRIPT-SYNTAX"
 		maj±cych na celu u³atwienie tworzenia szablonów. 
 		Wszystkie podane polecenia powinny byæ zapisywane wewn±trz klamer { }.
 		Dane poza klamrami zostan± zapisane do pliku wyj¶ciowego (lub je¶li go
-		nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie.</P
+		nie zdefiniowano, pominiête). Wielko¶æ liter ma znaczenie. Do oddzielenia
+		poleceñ s³u¿y znak ¶rednika.</P
 ><DIV
 CLASS="SECT3"
 ><H3
@@ -202,12 +203,12 @@ CLASS="PROMPT"
 >Przyk³ad: 
 <PRE
 CLASS="SCREEN"
->wyra¿enie1 == wyra¿enie2
-wyra¿enie1 != wyra¿enie2
-wyra¿enie1 &lt; wyra¿enie2
-wyra¿enie1 &gt; wyra¿enie2
-wyra¿enie1 &lt;= wyra¿enie2
-wyra¿enie1 &gt;= wyra¿enie2</PRE
+>wyra¿enie1 == wyra¿enie2;
+wyra¿enie1 != wyra¿enie2;
+wyra¿enie1 &lt; wyra¿enie2;
+wyra¿enie1 &gt; wyra¿enie2;
+wyra¿enie1 &lt;= wyra¿enie2;
+wyra¿enie1 &gt;= wyra¿enie2;</PRE
 ></P
 ></LI
 ><LI
@@ -260,11 +261,11 @@ CLASS="PROMPT"
 >Przyk³ad: 
 <PRE
 CLASS="SCREEN"
->wyra¿enie1 + wyra¿enie2
-wyra¿enie1 - wyra¿enie2
-wyra¿enie1 * wyra¿enie2
-wyra¿enie1 / wyra¿enie2
-wyra¿enie1 % wyra¿enie2</PRE
+>wyra¿enie1 + wyra¿enie2;
+wyra¿enie1 - wyra¿enie2;
+wyra¿enie1 * wyra¿enie2;
+wyra¿enie1 / wyra¿enie2;
+wyra¿enie1 % wyra¿enie2;</PRE
 ></P
 ></LI
 ><LI
@@ -1323,6 +1324,27 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
 ></DIV
 ></P
 ><P
+>Utworzenie listy z opisami komputerów dla programu iptraf. Charakterystyczne dla tego
+		programu jest to, ¿e adresy MAC komputerów musz± byæ zapisane bez dwukropków oddzielaj±cych
+		poszczególne cz³ony adresu.
+		<DIV
+CLASS="EXAMPLE"
+><A
+NAME="TSCRIPT-EXAMPLE-IPTRAF"
+></A
+><P
+><B
+>Przyk&#322;ad 6-3. Parser: Opisy komputerów dla iptrafa.</B
+></P
+><PRE
+CLASS="SCREEN"
+>{list = SELECT LOWER(mac) AS mac, UPPER(name) AS name, inet_ntoa(ipaddr) AS ip from nodes}\
+{for(i=0; i&lt;number(list); i++)}\
+{replace(":","",list[i].mac)}:{list[i].name} {list[i].ip}
+{/for}</PRE
+></DIV
+></P
+><P
 >W nastêpnym przyk³adzie tworzymy plik z przypisanymi adresami IP do adresów sprzêtowych
 		hostów, u¿ywany przez program <TT
 CLASS="FILENAME"
@@ -1336,22 +1358,22 @@ NAME="TSCRIPT-EXAMPLE-ETHERS"
 ></A
 ><P
 ><B
->Przyk&#322;ad 6-3. Parser: Plik "ethers" dla programu arp.</B
+>Przyk&#322;ad 6-4. Parser: Plik "ethers" dla programu arp.</B
 ></P
 ><PRE
 CLASS="SCREEN"
->{if(number(NODES))}\
-{       if(fileexists("/etc/ethers"))}\
-{               deletefile("/etc/ethers")}\
-{       /if}\ 
-{       for (i=0; i&lt;number(NODES); i++)}\
-{               if (number(NODES[i].access))}\
-{                       nodes[i].mac}\t{NODES[i].ip}
-{               else}\
-{                      }00:00:00:00:00:00\t{NODES[i].ip}
-{               /if}\
-{      /for}\
-{/if}\</PRE
+>{if (number(NODES))
+       if (fileexists("/etc/ethers"))
+               deletefile("/etc/ethers");
+       /if; 
+       for (i=0; i&lt;number(NODES); i++)
+               if (number(NODES[i].access))
+                      }{nodes[i].mac}\t{NODES[i].ip}{
+               else
+                      }00:00:00:00:00:00\t{NODES[i].ip}{
+               /if;
+      /for;
+/if}\</PRE
 ></DIV
 >
 		</P
@@ -1369,20 +1391,20 @@ NAME="TSCRIPT-EXAMPLE-NOTIFY"
 ></A
 ><P
 ><B
->Przyk&#322;ad 6-4. Parser: Zamiennik modu³u notify</B
+>Przyk&#322;ad 6-5. Parser: Zamiennik modu³u notify</B
 ></P
 ><PRE
 CLASS="SCREEN"
->{limit = 0}
-{dt = date()}
-{customers = SELECT customers.id AS id, email, pin, name, lastname,
+>{limit = 0;
+dt = date();
+customers = SELECT customers.id AS id, email, pin, name, lastname,
         SUM((type * -2 +7) * cash.value) AS balance
         FROM customers
         LEFT JOIN cash ON customers.id = cash.customerid AND (cash.type = 3 OR cash.type = 4)
         WHERE deleted = 0 AND email!=''
         GROUP BY customers.id, name, lastname, email, pin
-        HAVING SUM((type * -2 +7) * cash.value) &lt; {limit}}
-
+        HAVING SUM((type * -2 +7) * cash.value) &lt; {limit}
+}
 {for(i=0; i&lt;number(customers); i++)}
 
     {exec echo "UWAGA: Niniejsza wiadomo¶æ zosta³a wygenerowana automatycznie.
