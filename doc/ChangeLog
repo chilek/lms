@@ -4,6 +4,8 @@ version ? (??/??/????):
 
   - fixed summary on customer search results list (alec)
   - fix in NetworkRemap() function for empty destination network (alec)
+  - fixed summary of customer's assignments with discounts on
+    Customers List (alec)
 
 version 1.6.5 Druhin (28/10/2005):
 
