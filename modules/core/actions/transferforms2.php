@@ -56,7 +56,7 @@ function main_form($x, $y, $data)
     $y -= $lineh;
     $pdf->addtext($x,$y,$font_size,substr(iconv('UTF-8', 'ISO-8859-2',$data['customername']),0,40));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trim($data['zip'].' '.$data['city'].' '.$data['address'])));
+    $pdf->addtext($x,$y,$font_size,substr(iconv('UTF-8', 'ISO-8859-2',trim($data['zip'].' '.$data['city'].' '.$data['address'])),0,80));
     $y -= $lineh;
     $pdf->addtext($x,$y,$font_size,substr(iconv('UTF-8', 'ISO-8859-2',$_TITLE),0,80));
     $y -= $lineh;
