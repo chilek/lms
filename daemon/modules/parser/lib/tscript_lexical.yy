@@ -85,7 +85,7 @@
 
 %%
 
-<INITIAL,ext_arg>\{			{
+<INITIAL,ext_arg,ext_arg_2>\{		{
 						state_stack_level++;
 						yy_push_state(commands);
 					}
