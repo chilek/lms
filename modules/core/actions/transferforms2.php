@@ -27,6 +27,26 @@
 // Przygotowane dla druków firmy Michalczyk i Prokop Sp. z o.o.
 // dla drukarki HP LJ 1010 zostawiæ leftmargin = 0, bottommargin = 0
 
+function truncate($str, $max=85)
+{
+	$len = strlen($str);
+	if(!$max || $max >= $len)
+		return $str;
+		
+	// musimy pokombinowac bo nie mamy czcionki proporcjonalnej
+	// ten sposob i tak jest do kitu, ale dziala lepiej niz staly limit
+	for($i=0; $i<$len; $i++)
+	{
+		if(ctype_upper($str[$i]))
+			$l += 2;
+		else
+			$l += 1.5; 
+	}
+	$max = $max * ($len/$l);
+
+	return substr($str, 0, $max);
+}
+
 function main_form($x, $y, $data)
 {
     global $pdf;
@@ -54,11 +74,11 @@ function main_form($x, $y, $data)
     $y -= $lineh;
     $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trans('$0 dollars $1 cents',to_words(floor($balance)),to_words(round(($balance-floor($balance))*100)))));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,substr(iconv('UTF-8', 'ISO-8859-2',$data['customername']),0,40));
+    $pdf->addtext($x,$y,$font_size,truncate(iconv('UTF-8', 'ISO-8859-2',$data['customername'])));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,substr(iconv('UTF-8', 'ISO-8859-2',trim($data['zip'].' '.$data['city'].' '.$data['address'])),0,80));
+    $pdf->addtext($x,$y,$font_size,truncate(iconv('UTF-8', 'ISO-8859-2',trim($data['zip'].' '.$data['city'].' '.$data['address']))));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,substr(iconv('UTF-8', 'ISO-8859-2',$_TITLE),0,80));
+    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',$_TITLE));
     $y -= $lineh;
     $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trans('Customer ID: $0',sprintf('%04d',$data['id']))));
 }
