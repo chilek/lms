@@ -27,20 +27,20 @@
 // Przygotowane dla druków firmy Michalczyk i Prokop Sp. z o.o.
 // dla drukarki HP LJ 1010 zostawiæ leftmargin = 0, bottommargin = 0
 
-function truncate($str, $max=85)
+function truncate($str, $max=60)
 {
 	$len = strlen($str);
 	if(!$max || $max >= $len)
 		return $str;
 		
-	// musimy pokombinowac bo nie mamy czcionki proporcjonalnej
+	// musimy pokombinowac bo nie mamy czcionki o stalym rozmiarze,
 	// ten sposob i tak jest do kitu, ale dziala lepiej niz staly limit
 	for($i=0; $i<$len; $i++)
 	{
 		if(ctype_upper($str[$i]))
-			$l += 2;
+			$l += 1.4;
 		else
-			$l += 1.5; 
+			$l += 1;
 	}
 	$max = $max * ($len/$l);
 
