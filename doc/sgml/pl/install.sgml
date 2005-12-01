@@ -26,20 +26,37 @@
            <para>Poniewa¿ <emphasis>LMS-UI</emphasis> jest napisane w PHP, niezbêdny jest serwer WWW z interpreterem 
           tego jêzyka. Preferowanym serwerem jest Apache 
           (<ulink url="http://www.apache.org">www.apache.org</ulink>).</para>
-         </sect2>
-         <sect2 id="install-req-php">
-           <title>Interpreter PHP</title>
-           <para>Interpreter powinien byæ w wersji 4.2.x lub nowszej
-          (unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
-          strony <ulink url="http://www.php.net">www.php.net</ulink>.
-          W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
-          w php.ini lub wyj¶cie funkcji phpinfo()): pcre, posix (dla informacji o systemie),
-          zlib (dla kompresowanych backupów), gd lub ming (dla mapy sieci), 
-          mysql lub pgsql (dla bazy danych) i iconv (dla wydruków pdf oraz obs³ugi
-	  MySQLa z kodowaniem latin2). Do mailingu u¿ywamy 
-	  PEAR::Mail, który z kolei wymaga PEAR::Net_SMTP i PEAR::Net_Socket.</para>
-         </sect2>
-         <sect2 id="install-req-db">
+        </sect2>
+        <sect2 id="install-req-php">
+        <title>Interpreter PHP</title>
+    		<para>Interpreter powinien byæ w wersji 4.2.x lub nowszej
+		(unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
+    		strony <ulink url="http://www.php.net">www.php.net</ulink>.
+    		W szczególno¶ci wymagane s± nastêpuj±ce modu³y (sprawd¼ "extension"
+    		w php.ini lub wyj¶cie funkcji phpinfo()):
+		<itemizedlist>
+        		<listitem>
+				<para>pcre, posix,</para>
+			</listitem>
+			<listitem>
+				<para>zlib (dla kompresowanych backupów),</para>
+			</listitem>
+			<listitem>
+				<para>gd lub ming (dla mapy sieci),</para>
+			</listitem>
+			<listitem>
+				<para>mysql lub pgsql (dla bazy danych),</para>
+			</listitem>
+			<listitem>
+				<para>iconv (dla wydruków pdf oraz obs³ugi MySQLa z kodowaniem latin2),</para>
+			</listitem>
+			<listitem>
+				<para>PEAR::Mail (wymaga PEAR::Net_SMTP i PEAR::Net_Socket) do mailingu.</para>
+			</listitem>
+		</itemizedlist>
+		</para>
+        </sect2>
+        <sect2 id="install-req-db">
            <title>Serwer baz danych</title>
            <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx.</para>
            <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
@@ -553,7 +570,7 @@ AddDefaultCharset Off
           wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
           zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>lmsd</emphasis></para>
           <para>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
-          opcji w sekcji <emphasis>[invoices]</emphasis> <filename>lms.ini</filename>:
+          opcji w sekcji <emphasis>[invoices]</emphasis> konfiguracji:
           <itemizedlist>
           <listitem>
                <para>header</para>

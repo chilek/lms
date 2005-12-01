@@ -32,8 +32,13 @@
     	<title>SQL Panel</title>
 		<sect2 id="sqlpanel-intro">
 		<title>Intro</title>
-		<para>In <filename>contrib/sqlpanel</filename> directory you can find module which enables you direct access to LMS database, based on direct queries. Results are being shown as table, along with execution time. It's also possible to print query results.</para>
-		<para>Number of instantly displayed records is 50 by default. You can change this limit in <prompt>sqlpanel_pagelimit</prompt> variable in <emphasis>[phpui]</emphasis> section of <filename>lms.ini</filename> file.</para>
+		<para>In <filename>contrib/sqlpanel</filename> directory you can find 
+		module which enables you direct access to LMS database, based on direct 
+		queries. Results are being shown as table, along with execution time. 
+		It's also possible to print query results.</para>
+		<para>Number of instantly displayed records is 50 by default. 
+		You can change this limit in <prompt>sqlpanel_pagelimit</prompt> variable 
+		in section <emphasis>[phpui]</emphasis> of configuration.</para>
 		</sect2>
 		<sect2 id="sqlpanel-install">
 		<title>Installation</title>

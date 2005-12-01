@@ -30,11 +30,28 @@
     	    <para>Interpreter version should be 4.2.x or higher.
             PHP can be downloaded from <ulink url="http://www.php.net">www.php.net</ulink>.
             At least following PHP modules needs to be installed (look for "extension" in
-            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
-            compressed backups), gd or ming (for graphical map), mysql or pgsql (for db
-            support) and iconv (for pdf printouts and latin-utf conversion). PEAR::Mail 
-	    is being used for mailing (which require Net_SMTP and Net_Sockets from 
-    	    PEAR package).</para>
+            php.ini or in output of phpinfo function):
+		<itemizedlist>
+    			<listitem>
+				<para>pcre, posix,</para>
+			</listitem>
+			<listitem>
+				<para>zlib (for compressed backups),</para>
+			</listitem>
+			<listitem>
+				<para>gd or ming (for network map),</para>
+			</listitem>
+			<listitem>
+				<para>mysql or pgsql (for db support),</para>
+			</listitem>
+			<listitem>
+				<para>iconv (for pdf printouts and latin-utf conversion),</para>
+			</listitem>
+			<listitem>
+				<para>PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets) for mailing.</para>
+			</listitem>
+		</itemizedlist>
+	    </para>
          </sect2>
          <sect2 id="install-req-db">
            <title>Database Server</title>
@@ -277,7 +294,7 @@ password = password_entered_with_lms_user_creation</screen>
 	 in <filename>lms.ini</filename> is beeing treaded as obsolete. 
 	 The only required values there are from [database] and [directories]
 	 sections. Settings are stored in database and could be changed by 
-	 userinterface.</para></note></para>
+	 user interface.</para></note></para>
         <sect2 id="install-config-db">
         <title>Section [database] - Database Settings</title>
     	    <para>
@@ -492,7 +509,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                 In this case invoices are created by <filename>lms-payments</filename> script or
                 <emphasis>lmsd</emphasis> daemon.</para>
                 <para>For proper work of printouts you need to setup custom options in
-                <emphasis>[invoices]</emphasis> section of <filename>lms.ini</filename>:
+                configuration section <emphasis>[invoices]</emphasis>:
           <itemizedlist>
           <listitem>
                <para>header</para>

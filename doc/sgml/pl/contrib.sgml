@@ -61,7 +61,7 @@
           Mo¿liwe jest tak¿e drukowanie wyników zapytania.</para>
           <para>Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
           domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<prompt>sqlpanel_pagelimit</prompt>'
-          w sekcji <emphasis>[phpui]</emphasis> pliku konfiguracyjnego <filename>lms.ini</filename>.</para>
+          w sekcji <emphasis>[phpui]</emphasis> konfiguracji.</para>
           </sect2>
           <sect2 id="sqlpanel-install">
           <title>Instalacja</title>
