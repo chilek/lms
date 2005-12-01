@@ -24,6 +24,7 @@ version ? (????-??-??):
   - example invoices/cash records generation in genfake module (alec)
   - removed upgrade scripts for v.1.2 (alec)
   - lmsd/parser: tscript library - fixed problem with nested blocks (alec)
+  - added sorting of networks list in 'Select IP address' window (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 
