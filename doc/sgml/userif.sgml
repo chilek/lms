@@ -787,7 +787,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
 	    <title>Timetable (Task list)</title>
 	    <para>Main timetable shows list of days starting from day which is 
 	    selected from calendar popup. A number of days displayed depends on
-	    <filename>timetable_days_forward</filename> lms.ini option and
+	    <filename>timetable_days_forward</filename> configuration option and
 	    defaults to 7 days. From task list you might print a day plan or go to
 	    event edit screen.</para>
 	</sect2>

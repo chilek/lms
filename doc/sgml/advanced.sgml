@@ -557,10 +557,9 @@
      <sect1 id="devel-ini">
           <title>Configuration file format</title>
           <para>Configuration file default location is <filename>/etc/lms/lms.ini</filename>. 
-          It's intended to be central configuration for all LMS components and you can setup 
-          your <emphasis>LMS-UI</emphasis>, <emphasis>lmsd</emphasis> daemon and Perl scripts 
-          (including <emphasis>LMS_MGC</emphasis>) parameters here. However variable format 
-          for Perl scripts is more restricted.</para>
+          It's intended to be central configuration for <emphasis>LMS-UI</emphasis>,
+	  <emphasis>LMS-MGC</emphasis> and other scripts (exluding <emphasis>lmsd</emphasis> daemon).  
+	  However variable format for Perl scripts is more restricted than for PHP.</para>
           <sect2 id="ini-comments">
                <title>Comments</title>
                <para>Configuration file parsers skip all lines that begin with '#' or ';' sign. 
@@ -595,7 +594,11 @@ key = "A.L.E.C's LMS Daemon is the best"
           </sect2>
           <sect2 id="ini-perl">
                <title>Perl scripts variables</title>
-               <para>Configuration for use by Perl scripts is someway restricted, due to restrictions of Config::IniFiles module which parses configuration file. Comments must be placed in new lines only. Values shouldn't be enclosed into apostrophes or quotes and are being read from equality sign since the end of line. </para>
+               <para>Configuration for use by Perl scripts is someway restricted, 
+	       due to restrictions of Config::IniFiles module which parses 
+	       configuration file. Comments must be placed in new lines only. 
+	       Values shouldn't be enclosed into apostrophes or quotes and are 
+	       being read from equality sign since the end of line.</para>
           </sect2>
      </sect1>
      <sect1 id="devel-genfake">

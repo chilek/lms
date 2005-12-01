@@ -7,7 +7,7 @@
     <para>LMS-MGC has its own configuration file: <filename>lms-mgc.ini</filename>. You should install script by moving it to <filename>/usr/sbin</filename> directory. LMS-MGC should be used in two either ways: scheduled from cron (eg. hourly)</para>
         <screen>
 0 * * * *       /usr/sbin/lms-mgc 1 &gt; /dev/null</screen>
-	<para>or called from LMS 'Reload' menu. Second setup requires <filename>sudo</filename> to be used. Unfortunately this method requires you to add user to sudo, and set in  [phpui] section of <filename>lms.ini</filename>:</para>
+	<para>or called from LMS 'Reload' menu. Second setup requires <filename>sudo</filename> to be used. Unfortunately this method requires you to add user to sudo, and set in configuration section [phpui]</para>
 	<para><prompt>reload_type 	= exec</prompt></para>
 	<para><prompt>reload_execcmd 	= sudo /usr/sbin/lms-mgc</prompt></para>
         <para>LMS-MGC has following command line options:

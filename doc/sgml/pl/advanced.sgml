@@ -560,9 +560,10 @@
      <sect1 id="devel-ini">
           <title>Format pliku konfiguracyjnego</title>
           <para>W pliku konfiguracyjnym LMS'a (standardowo <filename>/etc/lms/lms.ini</filename>)
-          mo¿na ustawiaæ parametry <emphasis>LMS-UI</emphasis>, daemona <emphasis>lmsd</emphasis>
-          oraz skryptów perlowych (<emphasis>LMS_MGC</emphasis>). Przy czym format
-          warto¶ci parametrów dla skryptów perlowych podlega wiêkszym restrykcjom.</para>
+          mo¿na ustawiaæ parametry <emphasis>LMS-UI</emphasis>, <emphasis>LMS_MGC</emphasis>
+	  i innych skryptów. Przechowywanie konfiguracji demona <emphasis>lmsd</emphasis>
+	  w pliku konfiguracyjnym nie jest zalecane. Format warto¶ci parametrów dla skryptów 
+	  perlowych podlega wiêkszym restrykcjom ni¿ dla UI.</para>
           <sect2 id="ini-comments">
                <title>Komentarze</title>
                <para>Programy parsuj±ce plik konfiguracyjny pomijaj± wszystkie linie

@@ -11,7 +11,7 @@
 0 * * * *       /usr/sbin/lms-mgc 1 &gt; /dev/null</screen>
 	<para>albo z poziomu LMS skorzystaæ z menu "Prze³adowanie". Druga metoda wymaga u¿ycia 
 	<filename>sudo</filename>. Niestety, jedyne wyj¶cie by umo¿liwiæ uruchomienie lms-mgc, to
-	dopisanie u¿ytkownika do sudo, a nastêpnie ustawienie w sekcji [phpui] <filename>lms.ini</filename>:</para>
+	dopisanie u¿ytkownika do sudo, a nastêpnie ustawienie w sekcji konfiguracyjnej [phpui]:</para>
 	<para><prompt>reload_type 	= exec</prompt></para>
 	<para><prompt>reload_execcmd 	= sudo /usr/sbin/lms-mgc</prompt></para>
         <para>Lms-mgc posiada nastêpuj±ce opcje uruchomienia:
