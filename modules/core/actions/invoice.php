@@ -54,6 +54,9 @@ if($_GET['print'] == 'cached')
 		$SESSION->close();
 		die;
 	}
+
+	$layout['pagetitle'] = trans('Invoices');
+	$SMARTY->display('invoiceheader.html');
 	
 	if($_GET['cash'])
 	{
@@ -66,19 +69,21 @@ if($_GET['print'] == 'cached')
 		$ids = array_unique((array)$idsx);
 	}
 
-	$layout['pagetitle'] = trans('Invoices');
-	$SMARTY->display('invoiceheader.html');
-	
 	sort($ids);
-	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
-	$count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
+	if($_GET['original']) $which[] = trans('ORIGINAL');
+	if($_GET['copy']) $which[] = trans('COPY');
+	if($_GET['duplicate']) $which[] = trans('DUPLICATE');
+
+	if(!sizeof($which)) $which[] = trans('ORIGINAL');
+	
+	$count = sizeof($ids) * sizeof($which);
 	$i=0;
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-		foreach(split('\+', $which) as $type)
+		foreach($which as $type)
 		{
 			$i++;
 			if($i == $count) $invoice['last'] = TRUE;
@@ -95,9 +100,7 @@ if($_GET['print'] == 'cached')
 elseif($_GET['fetchallinvoices'])
 {
 	$layout['pagetitle'] = trans('Invoices');
-	$SMARTY->display('invoiceheader.html');
-	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
-	
+
 	$ids = $DB->GetCol('SELECT id FROM documents 
 				WHERE cdate > ? AND cdate < ? AND type = 1'
 				.($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
@@ -109,14 +112,22 @@ elseif($_GET['fetchallinvoices'])
 		die;
 	}
 
-	$count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
+	if($_GET['original']) $which[] = trans('ORIGINAL');
+	if($_GET['copy']) $which[] = trans('COPY');
+	if($_GET['duplicate']) $which[] = trans('DUPLICATE');
+	
+	if(!sizeof($which)) $which[] = trans('ORIGINAL');
+
+	$count = sizeof($ids) * sizeof($which);
 	$i=0;
+
+	$SMARTY->display('invoiceheader.html');
 
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-		foreach(split('\+', $which) as $type)
+		foreach($which as $type)
 		{
 			$i++;
 			if($i == $count) $invoice['last'] = TRUE;

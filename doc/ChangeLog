@@ -25,6 +25,8 @@ version ? (????-??-??):
   - removed upgrade scripts for v.1.2 (alec)
   - lmsd/parser: tscript library - fixed problem with nested blocks (alec)
   - added sorting of networks list in 'Select IP address' window (alec)
+  - fixed 'Check All' on Balance Sheet (alec)
+  - added invoice duplicates printing (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 

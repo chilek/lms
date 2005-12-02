@@ -52,12 +52,12 @@
 	function printi()
 	{
 		var add = "";
-		if(document.addbalance.original.checked && document.addbalance.copy.checked)
-			add = "";
-		else if(document.addbalance.original.checked && !document.addbalance.copy.checked)
-			add = "&which={/literal}{t}ORIGINAL{/t}{literal}";
-		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)
-			add = "&which={/literal}{t}COPY{/t}{literal}";
+		if(document.addbalance.original.checked)
+			add = "&original=1";
+		if(document.addbalance.copy.checked)
+			add += "&copy=1";
+		if(document.addbalance.duplicate.checked)
+			add += "&duplicate=1";
 
 		document.addbalance.action="?m=invoice&print=cached&cash=1" + add;
 		document.addbalance.target="_blank";
@@ -142,8 +142,9 @@
 						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
 						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
-						<INPUT type="checkbox" class="box light" name="original"> {t}original{/t}&nbsp;
-						<INPUT type="checkbox" class="box light" name="copy"> {t}copy{/t}
+						<INPUT type="checkbox" class="box light" name="original" checked> {t}original{/t}&nbsp;
+						<INPUT type="checkbox" class="box light" name="copy" checked> {t}copy{/t}
+						<INPUT type="checkbox" class="box light" name="duplicate"> {t}duplicate{/t}
 						</nobr>
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
