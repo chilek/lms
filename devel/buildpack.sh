@@ -6,7 +6,7 @@
 #
 
 WORKDIR=`pwd`
-NOTDISTRIB="devel .project modules/core"
+NOTDISTRIB="devel .project modules/core modules/mailing lib/ExecStack.class.php"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR

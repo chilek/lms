@@ -313,11 +313,13 @@ Chapter 2. Installation and configuration
    Interpreter version should be 4.2.x or higher. PHP can be downloaded
    from www.php.net. At least following PHP modules needs to be installed
    (look for "extension" in php.ini or in output of phpinfo function):
-   pcre, posix (for systems info), zlib (for compressed backups), gd or
-   ming (for graphical map), mysql or pgsql (for db support) and iconv
-   (for pdf printouts and latin-utf conversion). PEAR::Mail is being used
-   for mailing (which require Net_SMTP and Net_Sockets from PEAR
-   package).
+     * pcre, posix,
+     * zlib (for compressed backups),
+     * gd or ming (for network map),
+     * mysql or pgsql (for db support),
+     * iconv (for pdf printouts and latin-utf conversion),
+     * PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets)
+       for mailing.
      _________________________________________________________________
 
 2.2.3. Database Server
@@ -558,7 +560,7 @@ password = password_entered_with_lms_user_creation
    As of version 1.6 and later storing config in lms.ini is beeing
    treaded as obsolete. The only required values there are from
    [database] and [directories] sections. Settings are stored in database
-   and could be changed by userinterface.
+   and could be changed by user interface.
      _________________________________________________________________
 
 2.6.1. Section [database] - Database Settings
@@ -752,7 +754,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    lms-payments script or lmsd daemon.
 
    For proper work of printouts you need to setup custom options in
-   [invoices] section of lms.ini:
+   configuration section [invoices]:
      * header
        Seller. Can use string "\n" for lines separation. Default: empty.
        Example: header = "SuperNet ISP\nNew Street 15\n12-000 City\n"
@@ -1768,8 +1770,8 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
    Main timetable shows list of days starting from day which is selected
    from calendar popup. A number of days displayed depends on
-   timetable_days_forward lms.ini option and defaults to 7 days. From
-   task list you might print a day plan or go to event edit screen.
+   timetable_days_forward configuration option and defaults to 7 days.
+   From task list you might print a day plan or go to event edit screen.
      _________________________________________________________________
 
 3.13.2. New event
@@ -2937,7 +2939,7 @@ Chapter 5. Configuration file generator (lms-mgc)
 
    or called from LMS 'Reload' menu. Second setup requires sudo to be
    used. Unfortunately this method requires you to add user to sudo, and
-   set in [phpui] section of lms.ini:
+   set in configuration section [phpui]
 
    reload_type = exec
 
@@ -5096,10 +5098,9 @@ Chapter 7. For curious
 7.3. Configuration file format
 
    Configuration file default location is /etc/lms/lms.ini. It's intended
-   to be central configuration for all LMS components and you can setup
-   your LMS-UI, lmsd daemon and Perl scripts (including LMS_MGC)
-   parameters here. However variable format for Perl scripts is more
-   restricted.
+   to be central configuration for LMS-UI, LMS-MGC and other scripts
+   (exluding lmsd daemon). However variable format for Perl scripts is
+   more restricted than for PHP.
      _________________________________________________________________
 
 7.3.1. Comments
@@ -5312,8 +5313,8 @@ Chapter 8. Extensions
    print query results.
 
    Number of instantly displayed records is 50 by default. You can change
-   this limit in sqlpanel_pagelimit variable in [phpui] section of
-   lms.ini file.
+   this limit in sqlpanel_pagelimit variable in section [phpui] of
+   configuration.
      _________________________________________________________________
 
 8.3.2. Installation

@@ -1231,11 +1231,35 @@ TARGET="_top"
 >www.php.net</A
 >.
             At least following PHP modules needs to be installed (look for "extension" in
-            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
-            compressed backups), gd or ming (for graphical map), mysql or pgsql (for db
-            support) and iconv (for pdf printouts and latin-utf conversion). PEAR::Mail 
-	    is being used for mailing (which require Net_SMTP and Net_Sockets from 
-    	    PEAR package).</P
+            php.ini or in output of phpinfo function):
+		<UL
+><LI
+><P
+>pcre, posix,</P
+></LI
+><LI
+><P
+>zlib (for compressed backups),</P
+></LI
+><LI
+><P
+>gd or ming (for network map),</P
+></LI
+><LI
+><P
+>mysql or pgsql (for db support),</P
+></LI
+><LI
+><P
+>iconv (for pdf printouts and latin-utf conversion),</P
+></LI
+><LI
+><P
+>PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets) for mailing.</P
+></LI
+></UL
+>
+	    </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -1869,7 +1893,7 @@ CLASS="FILENAME"
 > is beeing treaded as obsolete. 
 	 The only required values there are from [database] and [directories]
 	 sections. Settings are stored in database and could be changed by 
-	 userinterface.</P
+	 user interface.</P
 ></TD
 ></TR
 ></TABLE
@@ -2440,15 +2464,12 @@ CLASS="EMPHASIS"
 > daemon.</P
 ><P
 >For proper work of printouts you need to setup custom options in
-                <SPAN
+                configuration section <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
-> section of <TT
-CLASS="FILENAME"
->lms.ini</TT
 >:
           <UL
 ><LI
@@ -4694,7 +4715,7 @@ NAME="TIMETABLE-LIST"
 	    <TT
 CLASS="FILENAME"
 >timetable_days_forward</TT
-> lms.ini option and
+> configuration option and
 	    defaults to 7 days. From task list you might print a day plan or go to
 	    event edit screen.</P
 ></DIV
@@ -7977,10 +7998,7 @@ CLASS="SCREEN"
 >or called from LMS 'Reload' menu. Second setup requires <TT
 CLASS="FILENAME"
 >sudo</TT
-> to be used. Unfortunately this method requires you to add user to sudo, and set in  [phpui] section of <TT
-CLASS="FILENAME"
->lms.ini</TT
->:</P
+> to be used. Unfortunately this method requires you to add user to sudo, and set in configuration section [phpui]</P
 ><P
 ><SAMP
 CLASS="PROMPT"
@@ -14515,28 +14533,27 @@ NAME="DEVEL-INI"
 CLASS="FILENAME"
 >/etc/lms/lms.ini</TT
 >. 
-          It's intended to be central configuration for all LMS components and you can setup 
-          your <SPAN
+          It's intended to be central configuration for <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->, <SPAN
+>,
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+> and other scripts (exluding <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
-> daemon and Perl scripts 
-          (including <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS_MGC</I
-></SPAN
->) parameters here. However variable format 
-          for Perl scripts is more restricted.</P
+> daemon).  
+	  However variable format for Perl scripts is more restricted than for PHP.</P
 ><DIV
 CLASS="SECT2"
 ><HR><H3
@@ -14600,7 +14617,11 @@ NAME="INI-PERL"
 >7.3.3. Perl scripts variables</A
 ></H3
 ><P
->Configuration for use by Perl scripts is someway restricted, due to restrictions of Config::IniFiles module which parses configuration file. Comments must be placed in new lines only. Values shouldn't be enclosed into apostrophes or quotes and are being read from equality sign since the end of line. </P
+>Configuration for use by Perl scripts is someway restricted, 
+	       due to restrictions of Config::IniFiles module which parses 
+	       configuration file. Comments must be placed in new lines only. 
+	       Values shouldn't be enclosed into apostrophes or quotes and are 
+	       being read from equality sign since the end of line.</P
 ></DIV
 ></DIV
 ><DIV
@@ -14919,21 +14940,23 @@ NAME="SQLPANEL-INTRO"
 >In <TT
 CLASS="FILENAME"
 >contrib/sqlpanel</TT
-> directory you can find module which enables you direct access to LMS database, based on direct queries. Results are being shown as table, along with execution time. It's also possible to print query results.</P
+> directory you can find 
+		module which enables you direct access to LMS database, based on direct 
+		queries. Results are being shown as table, along with execution time. 
+		It's also possible to print query results.</P
 ><P
->Number of instantly displayed records is 50 by default. You can change this limit in <SAMP
+>Number of instantly displayed records is 50 by default. 
+		You can change this limit in <SAMP
 CLASS="PROMPT"
 >sqlpanel_pagelimit</SAMP
-> variable in <SPAN
+> variable 
+		in section <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[phpui]</I
 ></SPAN
-> section of <TT
-CLASS="FILENAME"
->lms.ini</TT
-> file.</P
+> of configuration.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
