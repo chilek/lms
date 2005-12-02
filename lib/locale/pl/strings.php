@@ -1024,7 +1024,6 @@ $_LANG['or Customer ID:'] = 'lub identyfikator klienta:';
 $_LANG['original'] = 'oryginał';
 $_LANG['Original'] = 'Oryginał';
 $_LANG['ORIGINAL'] = 'ORYGINAŁ';
-$_LANG['ORIGINAL+COPY'] = 'ORYGINAŁ+KOPIA';
 $_LANG['Or, most likely, can\'t get MAC addresses table on that host.'] = 'Lub najprawdopodobniej nie można pobrać tablicy adresów MAC na tym komputerze.';
 $_LANG['Outstandings'] = 'Zaległości';
 $_LANG['Overcharges'] = 'Nadpłaty';
@@ -1619,5 +1618,7 @@ $_LANG['Not set'] = 'Nie ustawione';
 $_LANG['New network is too small. Put in order IP addresses first!'] = 'Nowa sieć jest zbyt mała. Uporządkuj najpierw adresy IP!';
 $_LANG['You can assign customer to ticket'] = 'Możesz przypisać klienta do zgłoszenia';
 $_LANG['Generating invoices...'] = 'Generuję faktury...';
+$_LANG['duplicate'] = 'duplikat';
+$_LANG['DUPLICATE'] = 'DUPLIKAT';
 
 ?>

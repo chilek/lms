@@ -8,7 +8,11 @@
 		for (var i=0; i<document.page.elements.length; i++)
 		{
 			var e = document.page.elements[i];
-			if (e.name != 'allbox')
+			if (e.name != 'allbox' &&
+			    e.name != 'original' &&
+                            e.name != 'duplicate' &&
+                            e.name != 'copy'
+			)
 				e.checked = document.page.allbox.checked;
 		}
 	}
@@ -47,13 +51,13 @@
 	function printi()
 	{
 		var add = "";
-		if(document.page.original.checked && document.page.copy.checked)
-			add = "";
-		else if(document.page.original.checked && !document.page.copy.checked)
-			add = "&which={/literal}{t}ORIGINAL{/t}{literal}";
-		else if(!document.page.original.checked && document.page.copy.checked)
-			add = "&which={/literal}{t}COPY{/t}{literal}";
-
+		if(document.page.original.checked)
+	    		add = "&original=1";
+		if(document.page.copy.checked)
+			add += "&copy=1";
+		if(document.page.duplicate.checked)
+			add += "&duplicate=1";
+														       
 		document.page.action="?m=invoice&print=cached&cash=1" + add;
 		document.page.target="_blank";
 		document.page.submit();
@@ -176,8 +180,9 @@
 			<A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{t}Print invoices{/t} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{t}Print cash receipts{/t} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<INPUT type="checkbox" class="box dark" name="original"> {t}original{/t}&nbsp;
-			<INPUT type="checkbox" class="box dark" name="copy"> {t}copy{/t}
+			<INPUT type="checkbox" class="box dark" name="original" checked> {t}original{/t}&nbsp;
+			<INPUT type="checkbox" class="box dark" name="copy" checked> {t}copy{/t}
+			<INPUT type="checkbox" class="box dark" name="duplicate"> {t}duplicate{/t}
 		</TD>
 		<TD class="frightu" ALIGN="right" colspan="2">
 			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
