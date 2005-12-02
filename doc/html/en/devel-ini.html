@@ -83,28 +83,27 @@ NAME="DEVEL-INI"
 CLASS="FILENAME"
 >/etc/lms/lms.ini</TT
 >. 
-          It's intended to be central configuration for all LMS components and you can setup 
-          your <SPAN
+          It's intended to be central configuration for <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->, <SPAN
+>,
+	  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+> and other scripts (exluding <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
-> daemon and Perl scripts 
-          (including <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS_MGC</I
-></SPAN
->) parameters here. However variable format 
-          for Perl scripts is more restricted.</P
+> daemon).  
+	  However variable format for Perl scripts is more restricted than for PHP.</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -168,7 +167,11 @@ NAME="INI-PERL"
 >7.3.3. Perl scripts variables</A
 ></H2
 ><P
->Configuration for use by Perl scripts is someway restricted, due to restrictions of Config::IniFiles module which parses configuration file. Comments must be placed in new lines only. Values shouldn't be enclosed into apostrophes or quotes and are being read from equality sign since the end of line. </P
+>Configuration for use by Perl scripts is someway restricted, 
+	       due to restrictions of Config::IniFiles module which parses 
+	       configuration file. Comments must be placed in new lines only. 
+	       Values shouldn't be enclosed into apostrophes or quotes and are 
+	       being read from equality sign since the end of line.</P
 ></DIV
 ></DIV
 ><DIV
