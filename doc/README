@@ -770,6 +770,14 @@ $access['table'][100]['allow_reg'] = '^invoice$';
      * cplace
        Invoice issue location (city). Default: empty.
        Example: cplace = Warsaw
+     * print_balance_history
+       If true on invoice (html) will be printed history of financial
+       operations on customer account. Default: not set.
+       Example: print_balance_history = true
+     * print_balance_history_limit
+       Records number on customer balance list on invoice. Specify last x
+       records. Default: 10.
+       Example: print_balance_history_limit = 20000
 
    Generated invoices can be viewed in two ways: by clicking on printer
    icon, in balance sheet page or by clicking 'Invoices List' in

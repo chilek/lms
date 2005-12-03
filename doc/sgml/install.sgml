@@ -533,6 +533,18 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                <para>Invoice issue location (city). Default: empty.</para>
                <para>Example: <prompt>cplace = Warsaw</prompt></para>
           </listitem>
+	  <listitem>
+		<para>print_balance_history</para>
+		<para>If true on invoice (html) will be printed history of financial
+		operations on customer account. Default: not set.</para>
+		<para>Example: <prompt>print_balance_history = true</prompt></para>
+	  </listitem>
+	  <listitem>
+		<para>print_balance_history_limit</para>
+		<para>Records number on customer balance list on invoice. Specify 
+		last x records.	Default: 10.</para>
+		<para>Example: <prompt>print_balance_history_limit = 20000</prompt></para>
+          </listitem>
           </itemizedlist>
           Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
           or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
