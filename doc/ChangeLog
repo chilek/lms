@@ -27,6 +27,8 @@ version ? (????-??-??):
   - added sorting of networks list in 'Select IP address' window (alec)
   - fixed 'Check All' on Balance Sheet (alec)
   - added invoice duplicates printing (alec)
+  - fixed customer balance list sorting on invoice (alec)
+  - added default value of 'print_balance_history_limit' option (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 
