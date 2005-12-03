@@ -338,33 +338,39 @@
 	<BR><BR>
 {/if}
 
+{* 
+customer's balance: {$invoice.customerbalancelist.balance} 
+*}
+
 {if $invoice.customerbalancelist}
 <TABLE cellpadding="5" cellspacing="0" width="100%">
-    <TR>
-        <TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-        <TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
-        <TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
-        <TD width="1%" class="fbt" align="center">&raquo;</TD>
-        <TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
-        <TD width="93%" class="frightu">{t}Description:{/t}</TD>
-    </TR>
-<!-- section name=balancelist loop=$invoice.customerbalancelist.id start=-$invoice.customerbalancelistlimit-->
-{section name=balancelist loop=$invoice.customerbalancelist.id start=$invoice.customerbalancelistlimit step=-1}
+	<TR>
+    		<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+	        <TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+    		<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
+	        <TD width="1%" class="fbt" align="center">&raquo;</TD>
+	        <TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
+	        <TD width="93%" class="frightu">{t}Description:{/t}</TD>
+	</TR>
+	{if $invoice.customerbalancelistlimit >= $invoice.customerbalancelist.total}
+		{assign var="startloop" value="0"}
+	{else}
+		{math assign="startloop" equation="x-y" x=$invoice.customerbalancelist.total y=$invoice.customerbalancelistlimit}
+	{/if}
+	{section name=balancelist loop=$invoice.customerbalancelist.id start=$startloop max=$invoice.customerbalancelistlimit}
+	{* section name=balancelist loop=$invoice.customerbalancelist.id start=$invoice.customerbalancelistlimit step=-1 *}
 	<TR>
 		<TD width="1%"><nobr>{$invoice.customerbalancelist.date[balancelist]}</nobr></TD>
-		<TD width="1%" align="right"><nobr>
-		{if $invoice.customerbalancelist.type[balancelist]==3}+{else}-{/if}
-		{$invoice.customerbalancelist.value[balancelist]|money_format}</nobr></TD>
+		<TD width="1%" align="right"><nobr>{if $invoice.customerbalancelist.value[balancelist] > 0}+{/if}{$invoice.customerbalancelist.value[balancelist]|money_format}</nobr>
+		</TD>
 		<TD width="1%" align="right">
-                        {if $invoice.customerbalancelist.type[balancelist]!=3}
-                            <nobr>{$invoice.customerbalancelist.tax[balancelist]}</nobr>
-			{/if}
+                        <nobr>{$invoice.customerbalancelist.tax[balancelist]}</nobr>
 		</TD>
 		<TD width="1%" align="center">&raquo;</TD>
 		<TD width="1%" align="right"><nobr>
-			{if $invoice.customerbalancelist.after[balancelist] > 0}<STRONG>{/if}
+			{if $invoice.customerbalancelist.after[balancelist] < 0}<STRONG>{/if}
 			    {$invoice.customerbalancelist.after[balancelist]|money_format}
-			{if $invoice.customerbalancelist.after[balancelist] > 0}</STRONG>{/if}</nobr>
+			{if $invoice.customerbalancelist.after[balancelist] < 0}</STRONG>{/if}</nobr>
 		</TD>
 		<TD width="93%">{$invoice.customerbalancelist.comment[balancelist]}</TD>
         </TR>
