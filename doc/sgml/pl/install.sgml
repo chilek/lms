@@ -592,6 +592,18 @@ AddDefaultCharset Off
                <para>Miejsce wystawienia faktury. Domy¶lnie: puste.</para>
                <para>Przyk³ad: <prompt>cplace = Warszawa</prompt></para>
           </listitem>
+	  <listitem>
+		<para>print_balance_history</para>
+		<para>Okre¶la czy na fakturze (html) drukowaæ listê operacji finansowych 
+		na koncie klienta. Domy¶lnie: nie ustawiona.</para>
+		<para>Przyk³ad: <prompt>print_balance_history = true</prompt></para>
+          </listitem>
+	  <listitem>
+		<para>print_balance_history_limit</para>
+		<para>Liczba rekordów na li¶cie operacji finansowych na
+		fakturze. Domy¶lnie: 10.</para>
+		<para>Przyk³ad: <prompt>print_balance_history_limit = 20000</prompt></para>
+          </listitem>
           </itemizedlist>
           Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
           na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
@@ -608,7 +620,7 @@ AddDefaultCharset Off
                <para>Szablon faktury, który powinien znajdowaæ siê w
                katalogu <filename>templates</filename>. Domy¶lnie: invoice.html.</para>
                <para>Przyk³ad: <prompt>template_file = invoice-mynet.html</prompt></para>
-          </listitem>          
+          </listitem>
           <listitem>
                <para>content_type</para>
                <para>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
@@ -616,7 +628,7 @@ AddDefaultCharset Off
                Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
                Domy¶lnie: 'text/html'</para>
                <para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
-          </listitem>     
+          </listitem>
           <listitem>
                <para>attachment_name</para>
                <para>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
@@ -732,7 +744,7 @@ AddDefaultCharset Off
                <para>Szablon dowodu wp³aty, który powinien znajdowaæ siê w
                katalogu <filename>templates</filename>. Domy¶lnie: receipt.html.</para>
                <para>Przyk³ad: <prompt>template_file = mytempl/receipt.html</prompt></para>
-          </listitem>          
+          </listitem>
           <listitem>
                <para>content_type</para>
                <para>Content-type dla druku. Je¿eli wpiszesz tutaj 'application/octet-stream'
@@ -740,7 +752,7 @@ AddDefaultCharset Off
                Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
                Domy¶lnie: 'text/html'</para>
                <para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
-          </listitem>     
+          </listitem>
           <listitem>
                <para>attachment_name</para>
                <para>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
