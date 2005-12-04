@@ -14,6 +14,14 @@
 		T - type of value
 		CMP - key comparision macro
 
+	N* N_create()
+		Creates new map
+		returns: pointer to new map
+
+	void N_free(N* map)
+		Deletes map
+		map - pointer to map
+
 	T* N_add(N* map, K key, T value)
 		map - pointer to map
 		key - key to insert
@@ -33,6 +41,16 @@
 		value - value to add if key not found
 		returns: pointer to element
 
+	K N_key(N* map, int index)
+		map - pointer to map
+		index - index
+		returns: key
+
+	T N_get(N* map, int index)
+		map - pointer to map
+		index - index
+		returns: value
+
 	int N_contains(N* map, K key)
 		Checks if a map contains a specified key.
 		map - pointer to map
@@ -43,6 +61,11 @@
 		Counts number of elements in the map.
 		map - pointer to map
 		returns: number of elements
+
+	N* N_duplicate(N* map)
+		Duplicates map
+		map - pointer to map
+		returns: pointer to new map
 **/
 
 #define map_declaration_1(N)						\
@@ -66,6 +89,7 @@
 	T* N##_add(N* map, K key, T value);				\
 	int N##_remove(N* map, K key);					\
 	T* N##_ref(N* map, K key, T value);				\
+	K N##_key(N* map, int index);					\
 	int N##_contains(N* map, K key);				\
 	int N##_count(N* map);						\
 	N* N##_duplicate(N* map);
@@ -131,6 +155,16 @@
 		e.key = key;						\
 		e.value = value;					\
 		return &N##_elem_list_ref(map, e)->value;		\
+	}								\
+									\
+	K N##_key(N* map, int index)					\
+	{								\
+		return N##_elem_list_get(map, index)->key;		\
+	}								\
+									\
+	T N##_get(N* map, int index)					\
+	{								\
+		return N##_elem_list_get(map, index)->value;		\
 	}								\
 									\
 	int N##_contains(N* map, K key)					\

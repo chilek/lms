@@ -96,6 +96,7 @@ typedef enum interprete_status
 {
 	STATUS_NORMAL,
 	STATUS_BREAK,
+	STATUS_EXIT,
 	STATUS_CONTINUE
 } interprete_status;
 
@@ -111,6 +112,13 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	tscript_value* tmp2_der;
 	tscript_value* tmp1_str;
 	tscript_value* tmp2_str;
+	tscript_value* tmp3;
+	tscript_value* tmp4;
+	tscript_value* tmp5;
+	tscript_value* tmp4_der;
+	tscript_value* tmp4_str;
+	tscript_value* tmp5_der;
+	tscript_value* tmp5_str;
 	double tmp1_num;
 	int i;
 
@@ -278,48 +286,48 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	{
 		interprete_2_args_der();
 		res = tscript_value_create_number(
-			tscript_value_compare(tmp1_der, tmp2_der));
+			tscript_value_equals(tmp1_der, tmp2_der));
 		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_DIFFERS)
 	{
 		interprete_2_args_der();
 		res = tscript_value_create_number(
-			!tscript_value_compare(tmp1_der, tmp2_der));
+			!tscript_value_equals(tmp1_der, tmp2_der));
 		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_LESS)
 	{
 		interprete_2_args_der();
 		res = tscript_value_create_number(
-			tscript_value_as_number(tmp1_der) < tscript_value_as_number(tmp2_der));
+			tscript_value_less(tmp1_der, tmp2_der));
 		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_GREATER)
 	{
 		interprete_2_args_der();
 		res = tscript_value_create_number(
-			tscript_value_as_number(tmp1_der) > tscript_value_as_number(tmp2_der));
+			!tscript_value_less_or_equals(tmp1_der, tmp2_der));
 		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_EQUALS_LESS)
 	{
 		interprete_2_args_der();
 		res = tscript_value_create_number(
-			tscript_value_as_number(tmp1_der) <= tscript_value_as_number(tmp2_der));
+			tscript_value_less_or_equals(tmp1_der, tmp2_der));
 		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_EQUALS_GREATER)
 	{
 		interprete_2_args_der();
 		res = tscript_value_create_number(
-			tscript_value_as_number(tmp1_der) >= tscript_value_as_number(tmp2_der));
+			!tscript_value_less(tmp1_der, tmp2_der));
 		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_NOT)
 	{
 		interprete_arg_1_der();
-		res = tscript_value_create_number((!tscript_value_as_number(tmp1_der)));
+		res = tscript_value_create_number((!tscript_value_as_bool(tmp1_der)));
 		tscript_value_free(tmp1);
 	}
 	else if (ast->type == TSCRIPT_AST_NEG)
@@ -332,14 +340,14 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	{
 		interprete_2_args_der();
 		res = tscript_value_create_number(
-			tscript_value_as_number(tmp1_der) || tscript_value_as_number(tmp2_der));
+			tscript_value_as_bool(tmp1_der) || tscript_value_as_bool(tmp2_der));
 		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_AND)
 	{
 		interprete_2_args_der();
 		res = tscript_value_create_number(
-			tscript_value_as_number(tmp1_der) && tscript_value_as_number(tmp2_der));
+			tscript_value_as_bool(tmp1_der) && tscript_value_as_bool(tmp2_der));
 		free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_BAND)
@@ -411,7 +419,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	else if (ast->type == TSCRIPT_AST_IF)
 	{
 		interprete_arg_1();
-		if (tscript_value_as_number(tscript_value_dereference(tmp1)))
+		if (tscript_value_as_bool(tmp1))
 		{
 			tmp2 = tscript_interprete_sub(context, ast->children[1], &sub_status);
 			res = tscript_value_duplicate(
@@ -437,7 +445,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		for (;;)
 		{
 			interprete_arg_1_der();
-			tmp1_num = tscript_value_as_number(tmp1_der);
+			tmp1_num = tscript_value_as_bool(tmp1_der);
 			tscript_value_free(tmp1);
 			if (!tmp1_num)
 				break;
@@ -447,7 +455,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tscript_value_free(res);
 			tscript_value_free(tmp1);
 			res = tmp2;
-			if (sub_status == STATUS_BREAK)
+			if (sub_status == STATUS_BREAK || sub_status == STATUS_EXIT)
 				break;
 		}
 	}
@@ -460,7 +468,7 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 		{
 			tmp1 = tscript_interprete_sub(context, ast->children[1], &sub_status);
 			tmp1_der = tscript_value_dereference(tmp1);
-			tmp1_num = tscript_value_as_number(tmp1_der);
+			tmp1_num = tscript_value_as_bool(tmp1_der);
 			tscript_value_free(tmp1);
 			if (!tmp1_num)
 				break;
@@ -470,11 +478,49 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 			tscript_value_free(res);
 			tscript_value_free(tmp1);
 			res = tmp2;
-			if (sub_status == STATUS_BREAK)
+			if (sub_status == STATUS_EXIT)
+				*status = sub_status;
+			if (sub_status == STATUS_BREAK || sub_status == STATUS_EXIT)
 				break;
 			tscript_value_free(tscript_interprete_sub(context, ast->children[2],
 				&sub_status));
 		}
+	}
+	else if (ast->type == TSCRIPT_AST_FOREACH)
+	{
+		interprete_2_args();
+		tmp2_der = tscript_value_dereference(tmp2);
+		if (tmp1->type != TSCRIPT_TYPE_REFERENCE)
+			res = tscript_value_create_error("foreach iterator must be a reference!");
+		if (tmp2_der->type != TSCRIPT_TYPE_ARRAY)
+		{
+			res = tscript_value_create_error(
+				"foreach symbol must be an array");
+		}
+		else
+		{
+			res = tscript_value_create_string("");
+			tmp3 = tscript_value_array_count(tmp2_der);
+			for (i = 0; i < tscript_value_as_number(tmp3); i++)
+			{
+				// TODO: implement reference counting - we cannot simple delete it
+				//tscript_value_free(*tmp1->reference_data);
+				tmp4 = tscript_value_array_item_get(tmp2_der, i);
+				*tmp1->reference_data =
+					tscript_value_duplicate(tmp4);
+				tmp4 = tscript_interprete_sub(context, ast->children[2], &sub_status);
+				tmp4_der = tscript_value_dereference(tmp4);
+				tmp5 = tscript_value_add(res, tmp4_der);
+				tscript_value_free(res);
+				tscript_value_free(tmp4);
+				res = tmp5;
+				if (sub_status == STATUS_EXIT)
+					*status = sub_status;
+				if (sub_status == STATUS_BREAK || sub_status == STATUS_EXIT)
+					break;
+			}
+		}
+		//free_2_args();
 	}
 	else if (ast->type == TSCRIPT_AST_SEQ)
 	{
@@ -586,6 +632,11 @@ static tscript_value* tscript_interprete_sub(tscript_context* context, tscript_a
 	{
 		res = tscript_value_create_string("");
 		*status = STATUS_BREAK;
+	}
+	else if (ast->type == TSCRIPT_AST_EXIT)
+	{
+		res = tscript_value_create_string("");
+		*status = STATUS_EXIT;
 	}
 	else if (ast->type == TSCRIPT_AST_CONTINUE)
 	{

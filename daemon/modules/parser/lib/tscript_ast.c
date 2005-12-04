@@ -64,6 +64,7 @@ const char* TSCRIPT_AST_MATCH = "=~";
 const char* TSCRIPT_AST_IF = "IF";
 const char* TSCRIPT_AST_WHILE = "WHILE";
 const char* TSCRIPT_AST_FOR = "FOR";
+const char* TSCRIPT_AST_FOREACH = "FOREACH";
 const char* TSCRIPT_AST_SEQ = "SEQ";
 const char* TSCRIPT_AST_ARGS = "ARGS";
 const char* TSCRIPT_AST_CONV = "CONV";
@@ -71,6 +72,7 @@ const char* TSCRIPT_AST_TYPEOF = "TYPEOF";
 const char* TSCRIPT_AST_EXT = "EXT";
 const char* TSCRIPT_AST_CONST = "CONST";
 const char* TSCRIPT_AST_BREAK = "BREAK";
+const char* TSCRIPT_AST_EXIT = "EXIT";
 const char* TSCRIPT_AST_CONTINUE = "CONTINUE";
 
 tscript_ast_node* tscript_ast_node_val(const char* type, tscript_value* val)

@@ -33,6 +33,11 @@
 		value - value to find
 		returns: pointer to value in the list
 
+	T* T_list_get(T_list* list, int index)
+		list - list
+		index - value index
+		returns: pointer to value in the list or NULL if not found
+
 	int T_list_contains(T_list* list, T value)
 		Checks if a map contains a specified value.
 		list - list
@@ -62,6 +67,7 @@
 	struct T##_list							\
 	{								\
 		struct T##_list_elem* first;				\
+		struct T##_list_elem* last;				\
 	};								\
 									\
 	T##_list* T##_list_create();					\
@@ -70,6 +76,7 @@
 	int T##_list_remove(T##_list* list, T value);			\
 	T* T##_list_find(T##_list* list, T value);			\
 	T* T##_list_ref(T##_list* list, T value);			\
+	T* T##_list_get(T##_list* list, int index);			\
 	int T##_list_contains(T##_list* list, T value);			\
 	int T##_list_count(T##_list* list);				\
 	T##_list* T##_list_duplicate(T##_list* list);
@@ -84,6 +91,7 @@
 	{								\
 		T##_list* l = (T##_list*)malloc(sizeof(T##_list));	\
 		l->first = NULL;					\
+		l->last = NULL;						\
 		return l;						\
 	}								\
 									\
@@ -106,8 +114,12 @@
 		T##_list_elem* e =					\
 			(T##_list_elem*)malloc(sizeof(T##_list_elem));	\
 		e->value = CONSTR(value);				\
-		e->next = list->first;					\
-		list->first = e;					\
+		e->next = NULL;						\
+		if (list->last != NULL)					\
+			list->last->next = e;				\
+		else							\
+			list->first = e;				\
+		list->last = e;						\
 		return &e->value;					\
 	}								\
 									\
@@ -123,6 +135,8 @@
 					prev->next = e->next;		\
 				else					\
 					list->first = e->next;		\
+				if (list->last == e)			\
+					list->last = prev;		\
 				DESTR(e->value);			\
 				free(e);				\
 				return 1;				\
@@ -151,6 +165,21 @@
 		if (v != NULL)						\
 			return v;					\
 		return T##_list_add(list, value);			\
+	}								\
+									\
+	T* T##_list_get(T##_list* list, int index)			\
+	{								\
+		int i;							\
+		T##_list_elem* e = list->first;				\
+		i = 0;							\
+		while (e != NULL)					\
+		{							\
+			if (i == index)					\
+				return &e->value;			\
+			e = e->next;					\
+			i++;						\
+		}							\
+		return NULL;						\
 	}								\
 									\
 	int T##_list_contains(T##_list* list, T value)			\

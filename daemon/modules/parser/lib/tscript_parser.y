@@ -46,7 +46,8 @@
 %parse-param { tscript_context* context }
 %lex-param { tscript_context* context }
 
-%nonassoc ERROR IF ELSE END_IF FOR END_FOR WHILE END_WHILE BREAK CONTINUE
+%nonassoc ERROR IF ELSE END_IF FOR END_FOR FOREACH END_FOREACH IN WHILE END_WHILE
+%nonassoc BREAK EXIT CONTINUE
 %left OR AND
 %left EQUALS '<' '>' EQUALS_LESS EQUALS_GREATER DIFFERS
 %left '!'
@@ -332,6 +333,10 @@ jump_statement:		BREAK
 			{
 				$$ = tscript_ast_node_0(TSCRIPT_AST_BREAK);
 			}
+		|	EXIT
+			{
+				$$ = tscript_ast_node_0(TSCRIPT_AST_EXIT);
+			}
 		|	CONTINUE
 			{
 				$$ = tscript_ast_node_0(TSCRIPT_AST_CONTINUE);
@@ -344,6 +349,10 @@ iteration_statement:	WHILE '(' expression ')' statements END_WHILE
 		|	FOR '(' statement ';' expression ';' statement ')' statements END_FOR
 			{
 				$$ = tscript_ast_node_4(TSCRIPT_AST_FOR, $3, $5, $7, $9);
+			}
+		|	FOREACH '(' reference IN expression ')' statements END_FOREACH
+			{
+				$$ = tscript_ast_node_3(TSCRIPT_AST_FOREACH, $3, $5, $7);
 			}
 
 selection_statement:	IF '(' expression ')' statements END_IF
