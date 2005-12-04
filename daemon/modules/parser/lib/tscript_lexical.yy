@@ -168,6 +168,12 @@
 
 <commands>\/for				YY_RETURN(END_FOR);
 
+<commands>foreach			YY_RETURN(FOREACH);
+
+<commands>\/foreach			YY_RETURN(END_FOREACH);
+
+<commands>in				YY_RETURN(IN);
+
 <commands>if				YY_RETURN(IF);
 
 <commands>else				YY_RETURN(ELSE);
@@ -175,6 +181,8 @@
 <commands>\/if				YY_RETURN(END_IF);
 
 <commands>break				YY_RETURN(BREAK);
+
+<commands>exit				YY_RETURN(EXIT);
 
 <commands>continue			YY_RETURN(CONTINUE);
 

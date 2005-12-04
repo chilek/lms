@@ -38,7 +38,7 @@
 
 map_implementation(tscript_values_array, tscript_value*, tscript_value*,
 	tscript_value_duplicate, tscript_value_duplicate, tscript_value_free, tscript_value_free,
-	tscript_value_compare);
+	tscript_value_equals);
 map_implementation(tscript_values_list, char*, tscript_value*,
 	str_constr, tscript_value_duplicate, free, tscript_value_free, str_comp);
 
@@ -135,6 +135,17 @@ char* tscript_value_as_string(tscript_value* val)
 	return tmp->data;
 }
 
+int tscript_value_as_bool(tscript_value* val)
+{
+	tscript_value* tmp;
+	tmp = tscript_value_dereference(val);
+	if (tmp->type == TSCRIPT_TYPE_STRING)
+		return (strlen(tmp->data) > 0);
+	if (tmp->type == TSCRIPT_TYPE_NUMBER)
+		return (atof(tmp->data) > 0);
+	return 0;
+}
+
 tscript_value* tscript_value_array_count(tscript_value* val)
 {
 	int res;
@@ -154,6 +165,16 @@ tscript_value** tscript_value_array_item_ref(tscript_value** val, tscript_value*
 	}
 	v = tscript_values_array_ref((*val)->array_data, index, tscript_value_create_null());
 	return v;
+}
+
+tscript_value* tscript_value_array_item_key(tscript_value* val, int index)
+{
+	return tscript_values_array_key(val->array_data, index);
+}
+
+tscript_value* tscript_value_array_item_get(tscript_value* val, int index)
+{
+	return tscript_values_array_get(val->array_data, index);
 }
 
 tscript_value** tscript_value_subvar_ref(tscript_value* val, char* name)
@@ -268,7 +289,7 @@ tscript_value* tscript_value_add(tscript_value* val1, tscript_value* val2)
 	}
 }
 
-int tscript_value_compare(tscript_value* val1, tscript_value* val2)
+int tscript_value_equals(tscript_value* val1, tscript_value* val2)
 {
 	if (
 		val1->type == TSCRIPT_TYPE_STRING && val2->type == TSCRIPT_TYPE_STRING ||
@@ -280,6 +301,32 @@ int tscript_value_compare(tscript_value* val1, tscript_value* val2)
 		return (atof(val1->data) == atof(val2->data));
 	else if (val1->type == TSCRIPT_TYPE_NULL && val2->type == TSCRIPT_TYPE_NULL)
 		return 1;
+	else
+		return 0;
+}
+
+int tscript_value_less(tscript_value* val1, tscript_value* val2)
+{
+	if (
+		val1->type == TSCRIPT_TYPE_STRING && val2->type == TSCRIPT_TYPE_STRING ||
+		val1->type == TSCRIPT_TYPE_STRING && val2->type == TSCRIPT_TYPE_NUMBER ||
+		val1->type == TSCRIPT_TYPE_NUMBER && val2->type == TSCRIPT_TYPE_STRING ||
+		val1->type == TSCRIPT_TYPE_NUMBER && val2->type == TSCRIPT_TYPE_NUMBER
+	)
+		return (atof(val1->data) < atof(val2->data));
+	else
+		return 0;
+}
+
+int tscript_value_less_or_equals(tscript_value* val1, tscript_value* val2)
+{
+	if (
+		val1->type == TSCRIPT_TYPE_STRING && val2->type == TSCRIPT_TYPE_STRING ||
+		val1->type == TSCRIPT_TYPE_STRING && val2->type == TSCRIPT_TYPE_NUMBER ||
+		val1->type == TSCRIPT_TYPE_NUMBER && val2->type == TSCRIPT_TYPE_STRING ||
+		val1->type == TSCRIPT_TYPE_NUMBER && val2->type == TSCRIPT_TYPE_NUMBER
+	)
+		return (atof(val1->data) <= atof(val2->data));
 	else
 		return 0;
 }

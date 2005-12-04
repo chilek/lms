@@ -29,6 +29,8 @@ version ? (????-??-??):
   - added invoice duplicates printing (alec)
   - fixed customer balance list sorting on invoice (alec)
   - added default value of 'print_balance_history_limit' option (alec)
+  - lmsd/parser: updated tscript library: fixed types conversion, 
+    added "exit" and "foreach" instructions (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 

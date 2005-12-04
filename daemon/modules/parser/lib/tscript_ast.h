@@ -36,6 +36,7 @@ extern const char* TSCRIPT_AST_MATCH;
 extern const char* TSCRIPT_AST_IF;
 extern const char* TSCRIPT_AST_WHILE;
 extern const char* TSCRIPT_AST_FOR;
+extern const char* TSCRIPT_AST_FOREACH;
 extern const char* TSCRIPT_AST_SEQ;
 extern const char* TSCRIPT_AST_ARGS;
 extern const char* TSCRIPT_AST_CONV;
@@ -43,6 +44,7 @@ extern const char* TSCRIPT_AST_TYPEOF;
 extern const char* TSCRIPT_AST_EXT;
 extern const char* TSCRIPT_AST_CONST;
 extern const char* TSCRIPT_AST_BREAK;
+extern const char* TSCRIPT_AST_EXIT;
 extern const char* TSCRIPT_AST_CONTINUE;
 
 typedef struct tscript_ast_node

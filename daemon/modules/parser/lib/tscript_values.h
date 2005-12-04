@@ -56,11 +56,21 @@ double tscript_value_as_number(tscript_value* val);
 char* tscript_value_as_string(tscript_value* val);
 
 /**
+	Returns boolean type value of specified value after dereferencing.
+	Strings with length greater than 0 are interpreted as TRUE.
+	Numbers greater than 0 are interpreted as TRUE.
+	Everything else is interpreted as FALSE.
+**/
+int tscript_value_as_bool(tscript_value* val);
+
+/**
 	Creates new value - number representing size of the array.
 **/
 tscript_value* tscript_value_array_count(tscript_value* val);
 
 tscript_value** tscript_value_array_item_ref(tscript_value** val, tscript_value* index);
+tscript_value* tscript_value_array_item_key(tscript_value* val, int index);
+tscript_value* tscript_value_array_item_get(tscript_value* val, int index);
 tscript_value** tscript_value_subvar_ref(tscript_value* val, char* name);
 
 tscript_value* tscript_value_dereference(tscript_value* val);
@@ -87,13 +97,29 @@ tscript_value* tscript_value_duplicate(tscript_value* val);
 tscript_value* tscript_value_add(tscript_value* val1, tscript_value* val2);
 
 /**
-	Compares two values.
+	Compares two values and checks if val1 equals val2.
 	Two strings or one string and one number are compared as strings.
 	Two numbers are compared as numbers.
 	If two null values are compared the result is true.
 	Other possibilities gives false result for now.
 **/
-int tscript_value_compare(tscript_value* val1, tscript_value* val2);
+int tscript_value_equals(tscript_value* val1, tscript_value* val2);
+
+/**
+	Compares two values and checks if val1 is less than val2.
+	Strings are converted to numbers.
+	Two numbers are compared as numbers.
+	Other possibilities gives false result for now.
+**/
+int tscript_value_less(tscript_value* val1, tscript_value* val2);
+
+/**
+	Compares two values and checks if val1 is less than or equals val2.
+	Strings are converted to numbers.
+	Two numbers are compared as numbers.
+	Other possibilities gives false result for now.
+**/
+int tscript_value_less_or_equals(tscript_value* val1, tscript_value* val2);
 
 /**
 	Returns string representation of value type, dereferencing it.
