@@ -32,8 +32,8 @@ if($LMS->CustomerExists($customerid))
 
 	if($balance<0)
 	{
-		$DB->Execute('INSERT INTO cash (time, userid, value, customerid, comment)
-			VALUES (?NOW?, ?, ?, ?, ?)', 
+		$DB->Execute('INSERT INTO cash (time, type, userid, value, customerid, comment)
+			VALUES (?NOW?, 1, ?, ?, ?, ?)', 
 			array($AUTH->id, 
 				str_replace(',','.', $balance*-1),
 				$customerid,

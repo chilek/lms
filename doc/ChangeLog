@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.0rc1 Rosha (????-??-??):
 
   - BTS#0000216: now user with 'customers management' or 'nodes management'
     access don't need 'read only' access right (alec)
@@ -31,6 +31,7 @@ version ? (????-??-??):
   - added default value of 'print_balance_history_limit' option (alec)
   - lmsd/parser: updated tscript library: fixed types conversion, 
     added "exit" and "foreach" instructions (alec)
+  - fix: do customers accounting (with "Account" link) at "Has" side (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 
