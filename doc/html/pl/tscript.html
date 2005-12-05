@@ -395,7 +395,7 @@ a nie równa siê 1
 ></LI
 ><LI
 ><P
->Pêtla iteracyjna. Wykonanuje wyra¿enie <SAMP
+>Pêtla iteracyjna. Wykonuje wyra¿enie <SAMP
 CLASS="PROMPT"
 >wyra¿enie1</SAMP
 > jako
@@ -415,6 +415,27 @@ CLASS="PROMPT"
 >Przyk³ad: <PRE
 CLASS="SCREEN"
 >for ( wyra¿enie1 ; wyra¿enie2 ; wyra¿enie3 ) polecenie /for</PRE
+></P
+></LI
+><LI
+><P
+>Konstrukcja <SAMP
+CLASS="PROMPT"
+>foreach</SAMP
+>. Pozwala na iteracjê po wszystkich
+					elementach danej tablicy. Wykunuje <SAMP
+CLASS="PROMPT"
+>polecenia</SAMP
+> tyle razy ile 
+					jest w tablicy elementów podstawiaj±c za ka¿dym razem warto¶æ odpowiedniego 
+					elementu tablicy pod <SAMP
+CLASS="PROMPT"
+>element</SAMP
+>.</P
+><P
+>Przyk³ad: <PRE
+CLASS="SCREEN"
+>foreach ( element in tablica ) polecenia /foreach</PRE
 ></P
 ></LI
 ><LI
@@ -475,6 +496,22 @@ CLASS="SCREEN"
 {if (i == 5)}{continue}{/if}\
 : {i}
 {/for}\</PRE
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>exit</SAMP
+>. Polecenie to s³u¿y po prostu do
+					przerwania wykonywania skryptu.</P
+><P
+>Przyk³ad: 
+<PRE
+CLASS="SCREEN"
+>{if (zmienna &gt; 0)
+    exit;
+/if}</PRE
 ></P
 ></LI
 ></UL
@@ -1446,6 +1483,47 @@ PS. Poni¿ej za³±czamy ostatnie 10 operacji na Pañstwa koncie.
     {exec mail -s "Powiadomienie o zaleglosciach" -r lms@domain.tld {customers[i].email} &lt; /tmp/mail}
 
 {/for}</PRE
+></DIV
+>
+		</P
+><P
+>Kolejny rozbudowany przyk³ad to odpowiednik modu³u traffic.
+		Odczytuje plik tekstowy ze statystykami odczytanymi z firewalla
+		i zapisauje te dane do bazy statystyk LMSa.
+		<DIV
+CLASS="EXAMPLE"
+><A
+NAME="TSCRIPT-EXAMPLE-TRAFFIC"
+></A
+><P
+><B
+>Przyk&#322;ad 6-6. Parser: Statystyki.</B
+></P
+><PRE
+CLASS="SCREEN"
+>{
+log = "/var/log/traffic.log";
+nodes = SELECT id, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub FROM nodes;
+if(! fileexists(log))
+    exit;
+/if;
+lines = readfile(log);
+n = number(nodes);
+for (i=0; i&lt;number(lines); i++)
+    line = explode("[[:blank:]]+", lines[i]); /* file format: IP upload download */
+    if ( number(line) == 3  &#38;&#38; (line[1] &gt; 0 || line[2] &gt; 0) )
+        for (x=0; x&lt;n; x++)
+            if (nodes[x].ip == line[0] || nodes[x].ip_pub == line[0] )
+                id = nodes[x].id;
+                break;
+            /if;
+        /for;
+        if (x &lt; n)
+            INSERT INTO stats (nodeid, dt, download, upload) VALUES ({id}, %NOW%, {line[2]}, {line[1]});
+        /if;
+    /if;
+/for;
+}	</PRE
 ></DIV
 >
 		</P

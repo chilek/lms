@@ -97,6 +97,7 @@ LMS Developers
    6-3. Parser: Ethernet hosts descriptions for iptraf.
    6-4. Parser: Ethers file for arp
    6-5. Parser: Notify module replacement
+   6-6. Parser: Traffic stats.
    7-1. Format of configuration options
      _________________________________________________________________
 
@@ -4269,6 +4270,14 @@ a doesn't equal 1
        command. Then executes statement while expr2 is true. At the end
        of each iteration expr2 is evaluated.
        Example: for ( expr1 ; expr2 ; expr3 ) statement /for
+     * Construct foreach. This simply gives an easy way to iterate over
+       arrays. foreach works only on arrays, and will issue an error when
+       you try to use it on a variable with a different data type. It
+       loops over the array given by array. On each loop, the value of
+       the current element is assigned to value and the internal array
+       pointer is advanced by one (so on the next loop, you'll be looking
+       at the next element).
+       Example: foreach ( value in array ) statement /foreach
      * While loop. Executes statement(s) repeatedly, as long as the
        expression evaluates to true. The value of the expression is
        checked each time at the beginning of the loop, so even if this
@@ -4289,6 +4298,11 @@ a doesn't equal 1
 {if (i == 5)}{continue}{/if}\
 : {i}
 {/for}\
+     * exit. This command terminates the current script.
+       Example:
+{if ( var > 0 )
+exit;
+/if}
      _________________________________________________________________
 
 6.3.2.4. Functions
@@ -4628,6 +4642,34 @@ convenience.
     {exec mail -s "Liabilities information" -r lms@domain.tld {customers[i].email} < /tmp/mail}
 
 {/for}
+
+   Next more complicated example is the traffic module replacement. Reads
+   text file with stats from firewall counters and writes data to LMS's
+   stats database.
+
+   Example 6-6. Parser: Traffic stats.
+{
+log = "/var/log/traffic.log";
+nodes = SELECT id, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub FROM nodes;
+if(! fileexists(log))
+    exit;
+/if;
+lines = readfile(log);
+n = number(nodes);
+for (i=0; i<number(lines); i++)
+    line = explode("[[:blank:]]+", lines[i]); /* file format: IP upload download */
+    if ( number(line) == 3  && (line[1] > 0 || line[2] > 0) )
+        for (x=0; x<n; x++)
+            if (nodes[x].ip == line[0] || nodes[x].ip_pub == line[0] )
+                id = nodes[x].id;
+                break;
+            /if;
+        /for;
+        if (x < n)
+            INSERT INTO stats (nodeid, dt, download, upload) VALUES ({id}, %NOW%, {line[2]}, {line[
+        /if;
+     /if;
+/for;
      _________________________________________________________________
 
 Chapter 7. For curious
