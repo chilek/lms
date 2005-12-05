@@ -88,6 +88,7 @@ if($_GET['print'] == 'cached')
 			$i++;
 			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
+			$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
 			$SMARTY->assign('invoice',$invoice);
 			if($invoice['invoice'])
 				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
@@ -132,6 +133,7 @@ elseif($_GET['fetchallinvoices'])
 			$i++;
 			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
+			$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
 			$SMARTY->assign('invoice',$invoice);
 			if($invoice['invoice'])
 				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);

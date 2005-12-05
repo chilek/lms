@@ -1620,5 +1620,6 @@ $_LANG['You can assign customer to ticket'] = 'Możesz przypisać klienta do zg�
 $_LANG['Generating invoices...'] = 'Generuję faktury...';
 $_LANG['duplicate'] = 'duplikat';
 $_LANG['DUPLICATE'] = 'DUPLIKAT';
+$_LANG['Duplicate draw-up date:'] = 'Data wyst. duplikatu:';
 
 ?>
