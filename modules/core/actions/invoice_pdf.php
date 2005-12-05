@@ -178,6 +178,12 @@ function invoice_title($x,$y)
     
     $font_size = 16;
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$type));
+
+    if($type==trans('DUPLICATE'))
+    {
+	    $font_size = 12;
+	    $y=$y-text_align_left($x,$y+4,$font_size,iconv("UTF-8","ISO-8859-2",trans('Duplicate draw-up date:').' '.date('Y/m/d')));
+    }
     
     if($invoice['invoice'])
     	$y += 10;
