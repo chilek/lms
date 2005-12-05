@@ -6,6 +6,7 @@ version ? (??/??/????):
   - fix in NetworkRemap() function for empty destination network (alec)
   - fixed summary of customer's assignments with discounts on
     Customers List (alec)
+  - little design and translation fix on netdevinfo (alec)
 
 version 1.6.5 Druhin (28/10/2005):
 
