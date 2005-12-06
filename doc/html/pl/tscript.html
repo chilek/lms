@@ -929,8 +929,56 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
+NAME="SYSLOG"
+>6.3.3.5. Syslog</A
+></H3
+><P
+>Rozszerzenie o nazwie <SAMP
+CLASS="PROMPT"
+>Syslog</SAMP
+> zawiera 
+			funkcjê pozwalaj±c± na zapisywanie komunikatów do logów systemowych.
+			Wprowadza róznie¿ definicje poziomów wa¿no¶ci komunikatów.</P
+><UL
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>syslog(ci±g [, poziom])</SAMP
+></P
+><P
+>Funkcja zapisuje do logów systemowych komunikat
+					okre¶lony przez argument <SAMP
+CLASS="PROMPT"
+>ci±g</SAMP
+>. Drugi 
+					argument funkcji jest opcjonalny i definiuje poziom
+					wa¿no¶ci komunikatu, który domy¶lnie ustawiony jest 
+					na <SAMP
+CLASS="PROMPT"
+>LOG_INFO</SAMP
+>
+					(patrz <SAMP
+CLASS="PROMPT"
+>man 3 syslog</SAMP
+>).</P
+><P
+>Przyk³ad: 
+<PRE
+CLASS="SCREEN"
+>syslog("Komunikat", LOG_ERR);
+syslog("Komunikat");</PRE
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
 NAME="NET"
->6.3.3.5. Net</A
+>6.3.3.6. Net</A
 ></H3
 ><P
 >W tym rozszerzeniu zawarte s± funkcje (nazwy pisane ma³ymi literami)
@@ -1005,7 +1053,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="SQL"
->6.3.3.6. SQL</A
+>6.3.3.7. SQL</A
 ></H3
 ><P
 >Rozszerzenie SQL udostêpnia podstawowe funkcje zwi±zane
