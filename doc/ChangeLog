@@ -32,6 +32,7 @@ version 1.8.0rc1 Rosha (????-??-??):
   - lmsd/parser: updated tscript library: fixed types conversion, 
     added "exit" and "foreach" instructions (alec)
   - fix: do customers accounting (with "Account" link) at "Has" side (alec)
+  - lmsd/parser: added "syslog" extension (alec)
 
 version 1.7.6 Grannus (2005-11-10):
 
