@@ -390,6 +390,26 @@ line {i}: {f[i]}\
 {deletefile /home/alec/file.txt}\
 </screen></para>
 		</sect3>
+		<sect3 id="syslog">
+			<title>Syslog</title>
+			<para>Extension with name <prompt>Syslog</prompt> consist function
+			for sending messages to system logger. Also includes logs priority (level)
+			definitions. </para>
+			<itemizedlist>
+				<listitem>
+					<para><prompt>syslog(string [, level])</prompt></para>
+					<para>Sends message specified by <prompt>string</prompt>.
+					Second, optional argument specify logs priority.
+					Default priority is <prompt>LOG_INFO</prompt> (see 
+					<prompt>man 3 syslog</prompt>).</para>
+					<para>Example: 
+<screen>
+syslog("message", LOG_ERR);
+syslog("message");
+</screen></para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
 		<sect3 id="net">
 			<title>Net</title>
 			<para>In this extension are included two functions (with lowercase names)

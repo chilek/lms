@@ -389,6 +389,28 @@ linia {i}: {f[i]}\
 {deletefile /home/alec/plik.txt}\
 </screen></para>
 		</sect3>
+		<sect3 id="syslog">
+			<title>Syslog</title>
+			<para>Rozszerzenie o nazwie <prompt>Syslog</prompt> zawiera 
+			funkcjê pozwalaj±c± na zapisywanie komunikatów do logów systemowych.
+			Wprowadza róznie¿ definicje poziomów wa¿no¶ci komunikatów.</para>
+			<itemizedlist>
+				<listitem>
+					<para><prompt>syslog(ci±g [, poziom])</prompt></para>
+					<para>Funkcja zapisuje do logów systemowych komunikat
+					okre¶lony przez argument <prompt>ci±g</prompt>. Drugi 
+					argument funkcji jest opcjonalny i definiuje poziom
+					wa¿no¶ci komunikatu, który domy¶lnie ustawiony jest 
+					na <prompt>LOG_INFO</prompt>
+					(patrz <prompt>man 3 syslog</prompt>).</para>
+					<para>Przyk³ad: 
+<screen>
+syslog("Komunikat", LOG_ERR);
+syslog("Komunikat");
+</screen></para>
+				</listitem>
+			</itemizedlist>
+		</sect3>
 		<sect3 id="net">
 			<title>Net</title>
 			<para>W tym rozszerzeniu zawarte s± funkcje (nazwy pisane ma³ymi literami)
