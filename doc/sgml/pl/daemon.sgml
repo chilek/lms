@@ -469,7 +469,7 @@
 			<listitem>
 			    <para>file</para>
 			    <para>Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
-			    Domy¶lnie: /tmp/dhcpd.conf.</para>
+			    Domy¶lnie: /etc/dhcpd.conf.</para>
 			    <para>Przyk³ad: <prompt>file = /etc/dhcpd.conf</prompt></para>
 			</listitem>
 			<listitem>
