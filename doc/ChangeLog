@@ -1,6 +1,6 @@
 $Id$
 
-version 1.8.0rc1 Rosha (????-??-??):
+version 1.8.0rc1 Rosha (2005-12-07):
 
   - BTS#0000216: now user with 'customers management' or 'nodes management'
     access don't need 'read only' access right (alec)

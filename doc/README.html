@@ -12205,8 +12205,54 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
+NAME="SYSLOG"
+>6.3.3.5. Syslog</A
+></H4
+><P
+>Extension with name <SAMP
+CLASS="PROMPT"
+>Syslog</SAMP
+> consist function
+			for sending messages to system logger. Also includes logs priority (level)
+			definitions. </P
+><UL
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>syslog(string [, level])</SAMP
+></P
+><P
+>Sends message specified by <SAMP
+CLASS="PROMPT"
+>string</SAMP
+>.
+					Second, optional argument specify logs priority.
+					Default priority is <SAMP
+CLASS="PROMPT"
+>LOG_INFO</SAMP
+> (see 
+					<SAMP
+CLASS="PROMPT"
+>man 3 syslog</SAMP
+>).</P
+><P
+>Example: 
+<PRE
+CLASS="SCREEN"
+>syslog("message", LOG_ERR);
+syslog("message");</PRE
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
 NAME="NET"
->6.3.3.5. Net</A
+>6.3.3.6. Net</A
 ></H4
 ><P
 >In this extension are included two functions (with lowercase names)
@@ -12277,7 +12323,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="SQL"
->6.3.3.6. SQL</A
+>6.3.3.7. SQL</A
 ></H4
 ><P
 >SQL extension implements functions for database operations.

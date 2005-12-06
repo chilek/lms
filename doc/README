@@ -4436,7 +4436,20 @@ line {i}: {f[i]}\
 {deletefile /home/alec/file.txt}\
      _________________________________________________________________
 
-6.3.3.5. Net
+6.3.3.5. Syslog
+
+   Extension with name Syslog consist function for sending messages to
+   system logger. Also includes logs priority (level) definitions.
+     * syslog(string [, level])
+       Sends message specified by string. Second, optional argument
+       specify logs priority. Default priority is LOG_INFO (see man 3
+       syslog).
+       Example:
+syslog("message", LOG_ERR);
+syslog("message");
+     _________________________________________________________________
+
+6.3.3.6. Net
 
    In this extension are included two functions (with lowercase names)
    destined to IP addresses and subnet masks operations.
@@ -4455,7 +4468,7 @@ line {i}: {f[i]}\
        Example: broadcast("192.168.0.1", "255.255.255.0")
      _________________________________________________________________
 
-6.3.3.6. SQL
+6.3.3.7. SQL
 
    SQL extension implements functions for database operations. Allows to
    run SQL commands.
