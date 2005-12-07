@@ -1,6 +1,6 @@
 #!/usr/bin/perl -Tw
 #
-#  LMS version 1.7-cvs
+#  LMS version 1.8-cvs
 #
 #  Copyright (C) 2001-2005 LMS Developers
 #
@@ -28,7 +28,7 @@ use Config::IniFiles;
 use Getopt::Long;
 use vars qw($configfile $quiet $help $version);
 
-my $_version = '1.7-cvs';
+my $_version = '1.8-cvs';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,

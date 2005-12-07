@@ -10,7 +10,7 @@
 <?php 
 
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.8-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -27,7 +27,7 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-header('X-Powered-By: LMS/1.7-cvs/contrib_formularz_przelewu_wplaty');
+header('X-Powered-By: LMS/1.8-cvs/contrib_formularz_przelewu_wplaty');
 
 // Parse configuration file
 

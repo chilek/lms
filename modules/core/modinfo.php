@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.8-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -29,7 +29,7 @@ $_MODINFO['core'] = array(
 			'en' => 'Core module',
 			'pl' => 'Gówwny moduł'
 			),
-		'version' => '1.7-cvs',
+		'version' => '1.8-cvs',
 		'description' => array(
 			'en' => 'Core module for LMS. Contains very basic actions and items.',
 			'pl' => 'Główny moduł LMS. Zawiera bardzo podstawowe akcje i elementy.'

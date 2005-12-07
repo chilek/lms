@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.8-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -159,7 +159,7 @@ require_once($_LIB_DIR.'/smarty_addons.php');
 
 @include('locale/'.$LMS->lang.'/strings.php');
 
-$layout['lmsv'] = '1.7-cvs';
+$layout['lmsv'] = '1.8-cvs';
 
 $SMARTY->assign_by_ref('layout', $layout);
 $SMARTY->assign_by_ref('_config', $CONFIG);
