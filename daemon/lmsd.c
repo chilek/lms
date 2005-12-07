@@ -1,5 +1,5 @@
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.9-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -423,7 +423,7 @@ static void parse_command_line(int argc, char **argv)
 		switch(opt) 
 		{
     		case 'v':
-            		printf("LMS Daemon version 1.7-cvs (%s)\nCopyright (c) 2001-2005 LMS Developers\n", revision);
+            		printf("LMS Daemon version 1.9-cvs (%s)\nCopyright (c) 2001-2005 LMS Developers\n", revision);
             		exit(0);
 		case 'q':
     			quit = 1;
@@ -457,7 +457,7 @@ static void parse_command_line(int argc, char **argv)
 			command = strdup(optarg);
 			break;
         	default:
-			printf("LMS Daemon version 1.7-cvs (%s). Command line options:\n", revision);
+			printf("LMS Daemon version 1.9-cvs (%s). Command line options:\n", revision);
         		printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
         		printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
         		printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");
