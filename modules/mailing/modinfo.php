@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.9-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -33,7 +33,7 @@ $_MODINFO['mailing'] = array(
 			'en' => 'Mass mail to customers',
 			'pl' => 'Korespondencja seryjna do klientów'
 			),
-		'version' => '1.7-cvs',
+		'version' => '1.9-cvs',
 		'revision' => '$Revision$',
 		'author' => 'LMS Developers',
 		'url' => 'http://lms.rulez.pl',

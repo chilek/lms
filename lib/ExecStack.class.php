@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.9-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -26,7 +26,7 @@
 		      
 class ExecStack
 {
-	var $version = '1.7-cvs';
+	var $version = '1.9-cvs';
 	var $_MODINFO = array();
 	var $_BINDTABLE = array();
 	var $_EXECSTACK = array();

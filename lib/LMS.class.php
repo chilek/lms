@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.7-cvs
+ * LMS version 1.9-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -32,7 +32,7 @@ class LMS
 	var $DB;			// database object
 	var $AUTH;			// object from Session.class.php (session management)
 	var $CONFIG;			// table including lms.ini options
-	var $_version = '1.7-cvs';	// class version
+	var $_version = '1.9-cvs';	// class version
 	var $_revision = '$Revision$';
 
 	function LMS(&$DB, &$AUTH, &$CONFIG) // class variables setting
