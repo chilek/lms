@@ -36,11 +36,11 @@ switch($type)
 				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network']);
 			break;
 			case 1:
-				$layout['pagetitle'] = trans('List of Disconnected Nodes');
+				$layout['pagetitle'] = trans('List of Connected Nodes');
 				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network'], 1);
 			break;
 			case 2:
-				$layout['pagetitle'] = trans('List of Connected Nodes');
+				$layout['pagetitle'] = trans('List of Disconnected Nodes');
 				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL,  $_POST['network'], 2);
 			break;
 			case 3:
