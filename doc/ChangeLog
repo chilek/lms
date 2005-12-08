@@ -7,6 +7,7 @@ version 1.8.0rc2 Rosha (????-??-??):
   - BTS#0000486: added duplicate and fixed invoices printing in
     Finance -> Print -> Invoices (alec)
   - added submit button in genfake interface (alec)
+  - fixed solid payments accounting (alec)
 
 version 1.8.0rc1 Rosha (2005-12-07):
 
