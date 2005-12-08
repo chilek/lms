@@ -482,7 +482,7 @@ function invoice_body()
 	default:
 	    require($template);
     }
-    if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
+    if (!$invoice['last']) $id=$pdf->newPage(1,$id,'after');
 }
 
 // brzydki hack dla ezpdf 
@@ -515,8 +515,8 @@ if($_GET['print'] == 'cached')
 	$SESSION->remove('ilm');
 
 	if(sizeof($_POST['marks']))
-		foreach($_POST['marks'] as $id => $mark)
-			$ilm[$id] = $mark;
+		foreach($_POST['marks'] as $idx => $mark)
+			$ilm[$idx] = $mark;
 
 	if(sizeof($ilm))
 		foreach($ilm as $mark)
@@ -542,9 +542,9 @@ if($_GET['print'] == 'cached')
 	if($_GET['original']) $which[] = trans('ORIGINAL');
         if($_GET['copy']) $which[] = trans('COPY');
         if($_GET['duplicate']) $which[] = trans('DUPLICATE');
-	
+
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
-	
+
 	$count = sizeof($ids) * sizeof($which);
 	$i=0;
 
