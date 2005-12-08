@@ -515,8 +515,8 @@ if($_GET['print'] == 'cached')
 	$SESSION->remove('ilm');
 
 	if(sizeof($_POST['marks']))
-		foreach($_POST['marks'] as $id => $mark)
-			$ilm[$id] = $mark;
+		foreach($_POST['marks'] as $idx => $mark)
+			$ilm[$idx] = $mark;
 
 	if(sizeof($ilm))
 		foreach($ilm as $mark)
