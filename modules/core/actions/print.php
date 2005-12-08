@@ -233,11 +233,14 @@ switch($type)
 			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
 		}
 
-		if($_POST['invoiceorg'] && !$_POST['invoicecopy']) $witch = trans('ORIGINAL');
-		if(!$_POST['invoiceorg'] && $_POST['invoicecopy']) $witch = trans('COPY');
+		$witch = '';
+		$witch .= $_POST['invoiceorg'] ? '&original=1' : '';
+		$witch .= $_POST['invoicecopy'] ? '&copy=1' : '';
+		$witch .= $_POST['invoicedup'] ? '&duplicate=1' : '';
+		if(!$witch) $witch = '&oryginal=1';
 		
 		$layout['pagetitle'] = trans('Invoices');
-		header('Location: ?m=invoice&fetchallinvoices=1&which='.$witch.'&customerid='.$_POST['customer'].'&from='.$date['from'].'&to='.$date['to']);
+		header('Location: ?m=invoice&fetchallinvoices=1'.$witch.'&customerid='.$_POST['customer'].'&from='.$date['from'].'&to='.$date['to']);
 	break;	
 
 	case 'transferforms': /********************************************/
