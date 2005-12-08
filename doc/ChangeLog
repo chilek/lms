@@ -1,5 +1,11 @@
 $Id$
 
+version ? (????-??-??):
+
+  - BTS#0000488: fixed title on nodes list printout (alec)
+  - BTS#0000486: added duplicate and fixed invoices printing in 
+    Finance -> Print -> Invoices (alec)
+
 version 1.9.0 Tilgath (2005-12-07):
 
   - BTS#0000216: now user with 'customers management' or 'nodes management'
