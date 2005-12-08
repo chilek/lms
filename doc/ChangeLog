@@ -3,6 +3,7 @@ $Id$
 version 1.8.0rc2 Rosha (????-??-??):
 
   - BTS#0000488: fixed title on nodes list printout (alec)
+  - BTS#0000487: fixed printing from Invoices List (alec)
   - BTS#0000486: added duplicate and fixed invoices printing in
     Finance -> Print -> Invoices (alec)
 
