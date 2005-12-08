@@ -235,7 +235,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, value, customerid, comment, docid) VALUES (%NOW%, ? * -1, 0, '? / ?', 0)",
+			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, customerid, comment, docid) VALUES (%NOW%, 1, ? * -1, 0, '? / ?', 0)",
 					g->db_get_data(res,i,"value"),
 					g->db_get_data(res,i,"name"),
 					g->db_get_data(res,i,"creditor")
