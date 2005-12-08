@@ -391,7 +391,7 @@ $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, value, customerid, comment) VALUES ($currtime, $assign->{'value'} * -1, 0, ?)");
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, customerid, comment) VALUES ($currtime, 1, $assign->{'value'} * -1, 0, ?)");
 	$sdbq->execute($assign->{'name'}.'/'.$assign->{'creditor'});
 	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
