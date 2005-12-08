@@ -6,6 +6,7 @@ version ? (????-??-??):
   - BTS#0000487: fixed printing from Invoices List (alec)
   - BTS#0000486: added duplicate and fixed invoices printing in 
     Finance -> Print -> Invoices (alec)
+  - added submit button in genfake interface (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 
