@@ -26,6 +26,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=payments loop=$paymentlist}
+	<FORM NAME="addbalance{$smarty.section.payments.index}" METHOD="POST" ACTION="?m=balanceadd">
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="fleft" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="fleft">
 			<IMG SRC="img/payment.gif" ALT=""><BR>
@@ -48,22 +49,21 @@
 			{$paymentlist[payments].payday} 
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
-			<FORM NAME="addbalance{$smarty.section.payments.index}" METHOD="POST" ACTION="?m=balanceadd">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
-				<INPUT TYPE="HIDDEN" NAME="addbalance[type]" VALUE="1">
-				<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$paymentlist[payments].value}">
-				<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
-				<NOBR>
-				<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that payment?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
-				<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-				<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>&nbsp;
-				<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG SRC="img/pay.gif" ALT="[ {t}Account payment{/t} ]"></A>
-				</NOBR>
-			</FORM>
+		<TD WIDTH="1%" CLASS="fright" ALIGN="right" >
+			{math assign="value" equation="x*-1" x=$paymentlist[payments].value}
+			<INPUT type="submit" class="hiddenbtn">
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
+			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$value}">
+			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
+			<NOBR>
+			<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that payment?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>&nbsp;
+			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG SRC="img/pay.gif" ALT="[ {t}Account payment{/t} ]"></A>
+			</NOBR>
 		</TD>
 	</TR>
+	</FORM>
 	{sectionelse}
 	<TR>
 		<TD COLSPAN="6" ALIGN="center" CLASS="fall">
