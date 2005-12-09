@@ -8,6 +8,7 @@ version 1.8.0rc2 Rosha (????-??-??):
     Finance -> Print -> Invoices (alec)
   - added submit button in genfake interface (alec)
   - fixed solid payments accounting (alec)
+  - fixed Liability Report (alec)
 
 version 1.8.0rc1 Rosha (2005-12-07):
 
