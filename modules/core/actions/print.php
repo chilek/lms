@@ -321,15 +321,21 @@ switch($type)
 			foreach($taxes as $tax)
 			{
 				$list =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
-					.$DB->Concat('city',"' '",'address').' AS address, ten, SUM(tariffs.value) AS value  
+					.$DB->Concat('city',"' '",'address').' AS address, ten, 
+					    SUM(tariffs.value) AS value  
 					FROM assignments, tariffs, customers
-					WHERE customerid = customers.id AND tariffid = tariffs.id AND taxid=?
-					AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
-					AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
+					WHERE customerid = customers.id 
+					AND tariffid = tariffs.id AND taxid=?
+					AND deleted=0 
+					AND (datefrom<=? OR datefrom=0) AND (dateto>=? OR dateto=0) 
+					AND ((period='.WEEKLY.'. AND at=?) 
+					    OR (period='.MONTHLY.' AND at=?) 
+					    OR (period='.QUARTERLY.' AND at=?) 
+					    OR (period='.YEARLY.' AND at=?)) '
 					.($customerid ? 'AND customerid='.$customerid : ''). 
 					' GROUP BY customerid, lastname, customers.name, city, address, ten '
 					.($sqlord != '' ? $sqlord.' '.$direction : ''), 'id',
-					array($tax['id'],$reportday, $reportday, $weekday, $monthday, $quarterday, $yearday));
+					array($tax['id'], $reportday, $reportday, $weekday, $monthday, $quarterday, $yearday));
 				if($list)
 				{
 					foreach($list as $idx => $row)
