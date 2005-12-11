@@ -22,13 +22,7 @@ $Id$
   wspólny "connect do bazy" i funkcje typu "we¼ userów + assigmenty" [je¶li 
   bêdzie to mia³o jaki¶ sens i siê powiela³o w wiêcej ni¿ 1-2 skryptach]
 
-LMS-1.7
-
-* silnik modu³ów
-* rozbudowa i testowanie modulu 'parser' demona
-* wywalenie czesci modulow demona do contrib i przepisanie ich na t-scripta
-
-LMS-1.9 (deadline dla 1.7 to powiedzmy koniec roku 2005) [xx]
+LMS-1.9 [xx]
 
 * przerobienie na nowe modu³y
 * zrobienie 'LMSAPI' - czyli zintegrowanej z LMS biblioteki serwuj±cej
@@ -37,20 +31,16 @@ LMS-1.9 (deadline dla 1.7 to powiedzmy koniec roku 2005) [xx]
   bêdzie mo¿na to nazwaæ
 * xhtml
 * nowy changelog
+* wywalenie czesci modulow demona do contrib i przepisanie ich na t-scripta
 
-xx] general rule: utrzymywanie nie wiêcej ni¿ 3 [xxxx] ostatnich stabilnych release-ów
+xx] general rule: utrzymywanie nie wiêcej ni¿ 2 ostatnich stabilnych release-ów
 	i ich ogólne wspieranie (praca nad 1.9 to szlifowanie i bugfixowanie 
-	1.8.xxx oraz bugfixy dla 1.4, 1.6. Oficjalny komunikat o end-of-life wersji 
-	1.2.x wraz z wyciapaniem z dzia³u download wszystkiego do 1.3.99999 w³±cznie).
+	1.8.xxx oraz bugfixy dla 1.6. 
 
 	Stare wersje zostaj± w cvs, mo¿na je sobie cvs up -r / --date zassaæ, jak kto¶ 
 	bardzo ambitny i dociekliwy.  
 
 xxx] pcap i mini daemon? 
-
-xxxx] a nawet dwóch, teraz mamy 1.7 i 1.4 nikt sobie ju¿ g³owy nie zawraca,
-	w starszych ewentualnie poprawiaæ tylko b³edy zwi±zane z 
-	bezpieczeñstwem, je¶li siê pojawi±
 
 +] przesun±æ odpowiednio nisko, jak siê komu¶ bêdzie chcia³o to mo¿na robiæ, 
 ale to jest "the way".
