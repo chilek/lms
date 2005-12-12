@@ -8,6 +8,8 @@ version ? (????-??-??):
     Finance -> Print -> Invoices (alec)
   - added submit button in genfake interface (alec)
   - fixed solid payments accounting (alec)
+  - fixed Liabilities Report: disposable and tariffless liabilities
+    support, suspension and discount support, fixed sorting by value (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 
