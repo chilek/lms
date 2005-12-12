@@ -304,8 +304,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 
                <para>Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
                <screen>
-12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
-              --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</screen>
+12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean  \
+            	    lms --file=backups/lms-auto-"$(date +%s)".sql</screen>
                </para>
 
           </sect3>

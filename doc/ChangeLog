@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - BTS#0000490: documentation: fixed pg_dump options (alec)
+
 version 1.8.0rc2 Rosha (2005-12-12):
 
   - BTS#0000488: fixed title on nodes list printout (alec)
