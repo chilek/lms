@@ -277,12 +277,17 @@ switch($type)
 		{
 			list($year, $month, $day) = split('/',$_POST['day']);
 			$reportday = mktime(0,0,0,$month,$day,$year);
+			$today = $reportday;
 		} else 
+		{
 			$reportday = time();
-		
+			$today = mktime(0,0,0);
+		}
+
 		$layout['pagetitle'] = trans('Liability Report on $0',date('Y/m/d', $reportday));
 
-		$order = (isset($_POST['order']) ? $_POST['order'] : 'brutto').','.(isset($_POST['direction']) ? $_POST['direction'] : 'asc');
+		$order = $_POST['order'];
+		$direction = $_POST['direction'];
 		$customerid = (isset($_POST['customer']) ? $_POST['customer'] : 0);
 
 		$yearday = date('z', $reportday);
@@ -303,43 +308,76 @@ switch($type)
 		    default: $quarterday = $monthday + 200; break;
 		}
 		
-		list($order,$direction)=explode(',', $order);
-
-		($direction != 'desc') ? $direction = 'ASC' : $direction = 'DESC';
-
-		switch($order)
-		{
-			case 'customername':
-				$sqlord = 'ORDER BY customername';
-			break;
-			default:
-				$sqlord = 'ORDER BY brutto';
-			break;
-		}
+		$suspension_percentage = $CONFIG['finances']['suspension_percentage'];
 		
 		if($taxes = $LMS->GetTaxes($reportday, $reportday))
+		{
 			foreach($taxes as $tax)
 			{
-				$list =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
+				$list1 =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
 					.$DB->Concat('city',"' '",'address').' AS address, ten, 
-					    SUM(tariffs.value) AS value  
+					SUM(CASE suspended 
+					    WHEN 0 THEN 
+						(CASE discount 
+						    WHEN 0 THEN tariffs.value 
+						    ELSE ((100 - discount) * tariffs.value) / 100 
+						END) 
+					    ELSE 
+						(CASE discount 
+						    WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 
+						END) 
+					    END) AS value
+						
 					FROM assignments, tariffs, customers
 					WHERE customerid = customers.id 
 					AND tariffid = tariffs.id AND taxid=?
 					AND deleted=0 
 					AND (datefrom<=? OR datefrom=0) AND (dateto>=? OR dateto=0) 
-					AND ((period='.WEEKLY.'. AND at=?) 
+					AND ((period='.DISPOSABLE.' AND at=?)
+					    OR (period='.WEEKLY.'. AND at=?) 
 					    OR (period='.MONTHLY.' AND at=?) 
 					    OR (period='.QUARTERLY.' AND at=?) 
 					    OR (period='.YEARLY.' AND at=?)) '
 					.($customerid ? 'AND customerid='.$customerid : ''). 
-					' GROUP BY customerid, lastname, customers.name, city, address, ten '
-					.($sqlord != '' ? $sqlord.' '.$direction : ''), 'id',
-					array($tax['id'], $reportday, $reportday, $weekday, $monthday, $quarterday, $yearday));
+					' GROUP BY customerid, lastname, customers.name, city, address, ten ', 'id',
+					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $yearday));
+
+				$list2 =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
+					.$DB->Concat('city',"' '",'address').' AS address, ten, 
+					SUM(CASE suspended 
+					    WHEN 0 THEN 
+						(CASE discount 
+						    WHEN 0 THEN liabilities.value 
+						    ELSE ((100 - discount) * liabilities.value) / 100 
+						END) 
+					    ELSE 
+						(CASE discount 
+						    WHEN 0 THEN liabilities.value * '.$suspension_percentage.' / 100 
+						    ELSE liabilities.value * discount * '.$suspension_percentage.' / 10000 
+						END) 
+					    END) AS value
+					FROM assignments, liabilities, customers
+					WHERE customerid = customers.id 
+					AND liabilityid = liabilities.id AND taxid=?
+					AND deleted=0 
+					AND (datefrom<=? OR datefrom=0) AND (dateto>=? OR dateto=0) 
+					AND ((period='.DISPOSABLE.' AND at=?)
+					    OR (period='.WEEKLY.'. AND at=?) 
+					    OR (period='.MONTHLY.' AND at=?) 
+					    OR (period='.QUARTERLY.' AND at=?) 
+					    OR (period='.YEARLY.' AND at=?)) '
+					.($customerid ? 'AND customerid='.$customerid : ''). 
+					' GROUP BY customerid, lastname, customers.name, city, address, ten ', 'id',
+					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $yearday));
+				
+				$list = array_merge($list1, $list2);
+
 				if($list)
 				{
-					foreach($list as $idx => $row)
+					foreach($list as $row)
 					{
+						$idx = $row['id'];
 						if(!isset($reportlist[$idx]))
 						{ 
 							$reportlist[$idx]['id'] = $row['id'];
@@ -356,6 +394,40 @@ switch($type)
 					}
 				}
 			}
+
+			switch($order)
+			{
+				case 'customername':
+					foreach($reportlist as $idx => $row)
+					{
+    						$table['idx'][] = $idx;
+	        				$table['customername'][] = $row['customername'];
+					}
+	    				if(is_array($table))
+	    				{
+	            				array_multisort($table['customername'],($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
+			        		foreach($table['idx'] as $idx)
+				    			$tmplist[] = $reportlist[$idx];
+					}
+					$reportlist = $tmplist;		
+				break;
+	
+				default:
+					foreach($reportlist as $idx => $row)
+					{
+    						$table['idx'][] = $idx;
+        					$table['value'][] = $row['value'];
+					}
+		    			if(is_array($table))
+	    				{
+	            				array_multisort($table['value'],($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
+			    	    		foreach($table['idx'] as $idx)
+					    		$tmplist[] = $reportlist[$idx];
+					}
+					$reportlist = $tmplist;				
+				break;
+			}
+		}
 
 		$SMARTY->assign('reportlist', $reportlist);
 		$SMARTY->assign('total',$total);

@@ -1,6 +1,6 @@
 $Id$
 
-version 1.8.0rc2 Rosha (????-??-??):
+version 1.8.0rc2 Rosha (2005-12-12):
 
   - BTS#0000488: fixed title on nodes list printout (alec)
   - BTS#0000487: fixed printing from Invoices List (alec)
@@ -8,7 +8,8 @@ version 1.8.0rc2 Rosha (????-??-??):
     Finance -> Print -> Invoices (alec)
   - added submit button in genfake interface (alec)
   - fixed solid payments accounting (alec)
-  - fixed Liability Report (alec)
+  - fixed Liabilities Report: disposable and tariffless liabilities
+    support, suspension and discount support, fixed sorting by value (alec)
 
 version 1.8.0rc1 Rosha (2005-12-07):
 
