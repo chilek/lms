@@ -276,8 +276,8 @@ password = password_entered_with_lms_user_creation</screen>
                newly created account.</para>
                <para>Let's stop here and add some stuff to cron, for peace of mind:
                <screen>
-12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
-            --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</screen>
+12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean \
+                       lms --file=backups/lms-auto-"$(date +%s)".sql</screen>
          </para>
           </sect3>
           </sect2>
