@@ -7,6 +7,7 @@ version ? (??/??/????):
   - fixed summary of customer's assignments with discounts on
     Customers List (alec)
   - little design and translation fix on netdevinfo (alec)
+  - documentation: fixed pg_dump args (alec)
 
 version 1.6.5 Druhin (28/10/2005):
 
