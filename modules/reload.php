@@ -40,32 +40,35 @@ switch($_RELOAD_TYPE)
 
 		if(isset($_GET['setreloads']))
 		{
-			echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
 			$execlist = explode(';',$_EXECCMD);
 			foreach($hosts as $host)
 				if(in_array($host['id'], (array) $_POST['hosts']))
+				{
+					echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
+					echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
 					foreach($execlist as $execcmd)
 					{
 						$execcmd = str_replace('%host', $host['name'], $execcmd);
-						echo '<P><B>'.$execcmd.'</B>:</P>';
+						echo '<B>'.$execcmd.'</B>';
 						echo '<PRE>';
 						flush();
 						echo passthru($execcmd);
 						flush();
 						echo '</PRE>';
 					}
-			echo '</TD></TR></TABLE>';
+					echo '</TD></TR></TABLE>';
+				}
 		}
 		else
 		{
 			if(!count($hosts))
 			{
-				echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
+				echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
 				$execlist = explode(';',$_EXECCMD);
 				foreach($execlist as $execcmd)
 				{
 					$execcmd = str_replace('%host', '', $execcmd);
-					echo '<P><B>'.$execcmd.'</B>:</P>';
+					echo '<P><B>'.$execcmd.'</B></P>';
 					echo '<PRE>';
 					flush();
 					echo passthru($execcmd);
@@ -83,23 +86,51 @@ switch($_RELOAD_TYPE)
 	break;
 
 	case 'sql':
+	
+		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
+		
 		if(isset($LMS->CONFIG['phpui']['reload_sqlquery']))
 		{
 			$sqlqueries = explode(';',($LMS->CONFIG['phpui']['reload_sqlquery']));
-			echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
-			foreach($sqlqueries as $query)
+			
+			if(isset($_GET['setreloads']))
 			{
-				$query = str_replace('%TIME%','?NOW?',$query);
-				echo '<P><B>'.trans('Running:').'</B></P>';
-				echo '<PRE>'.$query.'</PRE>';
-				$DB->Execute($query);
+				foreach($hosts as $host)
+					if(in_array($host['id'], (array) $_POST['hosts']))
+					{
+						echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
+						echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
+						foreach($sqlqueries as $query)
+						{
+							$query = str_replace('%TIME%', '?NOW?', $query);
+							$query = str_replace('%host', $host['name'], $query);
+							echo '<B>'.trans('Query:').'</B>';
+							echo '<PRE>'.$query.'</PRE>';
+							$DB->Execute($query);
+						}
+						echo '</TD></TR></TABLE>';
+					}
 			}
-			echo '</TD></TR></TABLE>';
+			elseif(!count($hosts))
+			{
+				echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
+				foreach($sqlqueries as $query)
+				{
+					$query = str_replace('%TIME%','?NOW?',$query);
+					echo '<P><B>'.trans('Query:').'</B></P>';
+					echo '<PRE>'.$query.'</PRE>';
+					$DB->Execute($query);
+				}
+				echo '</TD></TR></TABLE>';
+			}
+			else
+			{
+				$SMARTY->assign('hosts', $hosts);
+				$SMARTY->display('reload.html');
+			}
 		}
 		else
 		{
-			$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
-			
 			if(isset($_GET['setreloads']))
 			{
 				foreach($hosts as $host)
