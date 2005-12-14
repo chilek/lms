@@ -319,6 +319,14 @@ function GetConfigList($order='var,asc')
 					case 'type':
 						$config[$idx]['description'] = trans('Documents type. You can use "html" or "pdf". Default: html.');
 					break;
+
+					case 'print_balance_history':
+						$config[$idx]['description'] = trans('If true on invoice (html) will be printed history of financial operations on customer account. Default: not set.');
+					break;
+					
+					case 'print_balance_history_limit':
+						$config[$idx]['description'] = trans('Number of Records on customer balance list on invoice. Specify last x records. Default: 10.');
+					break;
 					
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
