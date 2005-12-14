@@ -945,7 +945,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
     	    <listitem>
         	<para>reload_sqlquery</para>
         	<para>SQL query executed while reload, if <prompt>reload_type = sql</prompt>. By default,
-        	query sets reload order for daemon <emphasis>lmsd</epmhasis>. You can use '%TIME%'
+        	query sets reload order for daemon <emphasis>lmsd</emphasis>. You can use '%TIME%'
         	template in your query which will be substituted with current UNIX timestamp and '%host'
 		for host name. WARNING!	Semicolon is handled as query separator, which means 
 		that you can enter couple of SQL queries separated by semicolon sign.</para>

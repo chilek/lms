@@ -1804,7 +1804,7 @@ TARGET="_top"
                <PRE
 CLASS="SCREEN"
 >12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean \
-            lms --file=backups/lms-auto-"$(date +%s)".sql</PRE
+        	    lms --file=backups/lms-auto-"$(date +%s)".sql</PRE
 >
          </P
 ></DIV
@@ -5142,11 +5142,12 @@ CLASS="FILENAME"
 >/bin/true</TT
 >. This string is send to system() command, so make sure that
         	you know what you're doing. :) Besides, semicolons should be parsed by bash, but LMS splits
-        	that string and execute commands separately.</P
+        	that string and execute commands separately. In commands you can use
+		'%host' variable, which is replaced by defined host name (Configuration -&#62; Hosts).</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
->reload_execcmd = "sudo /usr/bin/reload_lms.sh"</SAMP
+>reload_execcmd = "sudo /usr/bin/reload_lms.sh %host"</SAMP
 ></P
 ></LI
 ><LI
@@ -5157,10 +5158,16 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >reload_type = sql</SAMP
 >. By default,
-        	query does inserts into table 'timestamps' with '_force' value. You can use '%TIME%'
-        	template in your query which will be substituted with current UNIX timestamp. WARNING!
-        	Semicolon is handled as query separator, which means that you can enter couple of SQL
-        	queries separated by semicolon sign.</P
+        	query sets reload order for daemon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lmsd</I
+></SPAN
+>. You can use '%TIME%'
+        	template in your query which will be substituted with current UNIX timestamp and '%host'
+		for host name. WARNING!	Semicolon is handled as query separator, which means 
+		that you can enter couple of SQL queries separated by semicolon sign.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
