@@ -5,6 +5,7 @@ version ? (????-??-??):
   - BTS#0000490: documentation: fixed pg_dump options (alec)
   - added some options description in configlist module (alec)
   - fixed reload when using reload_execcmd and reload_sqlquery with hosts (alec)
+  - fixed 'TO' calculation when using Stats -> Filter (alec) 
 
 version 1.8.0rc2 Rosha (2005-12-12):
 
