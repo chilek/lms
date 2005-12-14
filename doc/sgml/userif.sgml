@@ -938,16 +938,17 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Command to run during reload, if reload_type is set to 'exec'. By default
         	<filename>/bin/true</filename>. This string is send to system() command, so make sure that
         	you know what you're doing. :) Besides, semicolons should be parsed by bash, but LMS splits
-        	that string and execute commands separately.</para>
-        	<para>Example:     <prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
+        	that string and execute commands separately. In commands you can use
+		'%host' variable, which is replaced by defined host name (Configuration -> Hosts).</para>
+        	<para>Example:     <prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh %host"</prompt></para>
     	    </listitem>
     	    <listitem>
         	<para>reload_sqlquery</para>
         	<para>SQL query executed while reload, if <prompt>reload_type = sql</prompt>. By default,
-        	query does inserts into table 'timestamps' with '_force' value. You can use '%TIME%'
-        	template in your query which will be substituted with current UNIX timestamp. WARNING!
-        	Semicolon is handled as query separator, which means that you can enter couple of SQL
-        	queries separated by semicolon sign.</para>
+        	query sets reload order for daemon <emphasis>lmsd</epmhasis>. You can use '%TIME%'
+        	template in your query which will be substituted with current UNIX timestamp and '%host'
+		for host name. WARNING!	Semicolon is handled as query separator, which means 
+		that you can enter couple of SQL queries separated by semicolon sign.</para>
         	<para>Example:     <prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
     	    </listitem>
     	    <listitem>
