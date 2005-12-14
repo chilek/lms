@@ -2828,6 +2828,7 @@ class LMS
 			case 'timetable_days_forward':
 			case 'nodepassword_length':
 			case 'check_for_updates_period':
+			case 'print_balance_list_limit':
 				if($value<=0)
 					return trans('Value of option "$0" must be a number grater than zero!' ,$var);
 			break;
@@ -2843,6 +2844,7 @@ class LMS
 			case 'to_words_short_format':
 			case 'disable_devel_warning':
 			case 'newticket_notify':
+			case 'print_balance_list':
 				if(!isboolean($value))
 					return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');
 			break;

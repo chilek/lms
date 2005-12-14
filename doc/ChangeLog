@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - BTS#0000490: documentation: fixed pg_dump options (alec)
+  - added some options description in configlist module (alec)
 
 version 1.8.0rc2 Rosha (2005-12-12):
 

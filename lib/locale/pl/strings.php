@@ -269,7 +269,6 @@ $_LANG['Content-type for document. If you enter "application/octet-stream", brow
 $_LANG['Contract'] = 'Umowa';
 $_LANG['Contractor'] = 'Klient';
 $_LANG['copy'] = 'kopia';
-$_LANG['Copy'] = 'Kopia';
 $_LANG['COPY'] = 'KOPIA';
 $_LANG['Copyrights'] = 'Prawa autorskie';
 $_LANG['Copyrights, authors, etc.'] = 'Prawa autorskie, autorzy, itp.';
@@ -1022,7 +1021,6 @@ $_LANG['Option with specified name exists in that instance!'] = 'Opcja o podanej
 $_LANG['OR'] = 'LUB';
 $_LANG['or Customer ID:'] = 'lub identyfikator klienta:';
 $_LANG['original'] = 'oryginał';
-$_LANG['Original'] = 'Oryginał';
 $_LANG['ORIGINAL'] = 'ORYGINAŁ';
 $_LANG['Or, most likely, can\'t get MAC addresses table on that host.'] = 'Lub najprawdopodobniej nie można pobrać tablicy adresów MAC na tym komputerze.';
 $_LANG['Outstandings'] = 'Zaległości';
@@ -1621,5 +1619,7 @@ $_LANG['Generating invoices...'] = 'Generuję faktury...';
 $_LANG['duplicate'] = 'duplikat';
 $_LANG['DUPLICATE'] = 'DUPLIKAT';
 $_LANG['Duplicate draw-up date:'] = 'Data wyst. duplikatu:';
+$_LANG['If true on invoice (html) will be printed history of financial operations on customer account. Default: not set.'] = 'Określa czy na fakturze (html) drukować listę operacji finansowych na koncie klienta. Domyślnie: nie ustawiona.';
+$_LANG['Number of Records on customer balance list on invoice. Specify last x records. Default: 10.'] = 'Liczba rekordów na liście operacji finansowych na fakturze. Domyślnie: 10.';
 
 ?>
