@@ -39,7 +39,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 
 	$delta = ($todate-$fromdate) ? ($todate-$fromdate) : 1;
 
-	$dt = "( dt >= $fromdate AND dt <= $todate )";
+	$dt = "( dt >= $fromdate AND dt < $todate )";
 
 	// nets
 	if ($net != "allnets")
