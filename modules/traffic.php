@@ -33,7 +33,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 	else
 		$fromdate = $from;
 	if (is_array($to))
-		$todate = mktime($to['Hour'],$to['Minute'],59,$to['Month'],$to['Day'],$to['Year']);
+		$todate = mktime($to['Hour'],$to['Minute'],0,$to['Month'],$to['Day'],$to['Year']);
 	else
 		$todate = $to;
 
