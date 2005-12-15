@@ -57,7 +57,7 @@ sub matchip($$$)
 {
         my ($ip,$net,$mask) = @_;
         my $prefix = mask2prefix($mask);
-        my $bmask = 2**32 <<(32-$prefix);
+	my $bmask = 2**32 - 2**(32-$prefix);
         my @net = split('\.',$net,4);
         my $bnet = dotquad2u32($net);
         if(($bnet & $bmask)!= $bnet) {
