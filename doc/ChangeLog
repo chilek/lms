@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.6 Therra (15/12/2005):
 
   - fixed summary on customer search results list (alec)
   - fix in NetworkRemap() function for empty destination network (alec)
@@ -8,6 +8,7 @@ version ? (??/??/????):
     Customers List (alec)
   - little design and translation fix on netdevinfo (alec)
   - documentation: fixed pg_dump args (alec)
+  - bugfix in perl scripts for 64-bit architectures (Jarek Dziubek)
 
 version 1.6.5 Druhin (28/10/2005):
 
