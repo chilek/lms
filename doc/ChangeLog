@@ -14,6 +14,7 @@ version ? (????-??-??):
     hosts (alec)
   - bugfix in perl scripts for 64-bit architectures (Jarek Dziubek)
   - BTS#0000495: fixed "Invalid argument..." error in liability report (alec)
+  - fixed Cash Receipt List filtering by value (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 

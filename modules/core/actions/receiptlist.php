@@ -53,7 +53,7 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 		switch($cat)
 		{
 			case 'value':
-				$where = ' SUM(value) = '.intval($search);
+				$where = ' AND SUM(value) = '.intval($search);
 				break;
 			case 'number':
 				$where = ' AND number = '.intval($search);
