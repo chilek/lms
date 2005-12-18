@@ -147,7 +147,7 @@ elseif($_GET['fetchsingle'])
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-	if($invoice['doctype']==DOC_INVOICE)
+	if( !$invoice['invoice'])
 		$layout['pagetitle'] = trans('Invoice No. $0', $number);
 	else
 		$layout['pagetitle'] = trans('Credit Note No. $0', $number);
@@ -165,7 +165,7 @@ elseif($_GET['fetchsingle'])
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-	if($invoice['doctype']==DOC_INVOICE)
+	if( !$invoice['invoice'])
 		$layout['pagetitle'] = trans('Invoice No. $0', $number);
 	else
 		$layout['pagetitle'] = trans('Credit Note No. $0', $number);
