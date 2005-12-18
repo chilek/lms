@@ -53,7 +53,7 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 		switch($cat)
 		{
 			case 'value':
-				$where = ' SUM(value) = '.intval($search);
+				$having = ' HAVING SUM(value) = '.str_replace(',','.',$search);
 				break;
 			case 'number':
 				$where = ' AND number = '.intval($search);
@@ -84,6 +84,7 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 		WHERE type = ? '
 		.$where
 		.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template '
+		.$having
 		.($sqlord != '' ? $sqlord : ''), 
 		array(DOC_RECEIPT, DOC_RECEIPT)
 		))
