@@ -10,6 +10,8 @@ version ? (????-??-??):
   - BTS#0000495: fixed "Invalid argument..." error in liability report (alec)
   - fixed html invoice pagetitle (alec)
   - added flush()'es in genfake module (alec)
+  - fixed Cash Receipt List filtering by value (alec)
+  - fixed 'Check All' option on Cash Receipt List (alec)
 
 version 1.8.0rc2 Rosha (2005-12-12):
 
