@@ -11,7 +11,7 @@
 		for (var i=0; i<document.page.elements.length; i++)
 		{
 			var e = document.page.elements[i];
-			if (e.name != 'allbox')
+			if (e.name != 'allbox' && e.name != 'original' && e.name != 'copy')
 			e.checked = document.page.allbox.checked;
 		}
 	}
@@ -159,8 +159,8 @@
 				<TR>
 					<TD ALIGN="left" nowrap>
 						<A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/printr.gif" ALT="" ></A>&nbsp;
-						<INPUT type="checkbox" class="box dark" name="original"> {t}original{/t}&nbsp;
-						<INPUT type="checkbox" class="box dark" name="copy"> {t}copy{/t}
+						<INPUT type="checkbox" class="box dark" name="original" checked> {t}original{/t}&nbsp;
+						<INPUT type="checkbox" class="box dark" name="copy" checked> {t}copy{/t}
 					</TD>
 					<TD ALIGN="right">	
 						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
