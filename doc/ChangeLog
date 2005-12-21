@@ -14,6 +14,9 @@ version ? (????-??-??):
   - fixed 'Check All' option on Cash Receipt List (alec)
   - fixed function DocumentExists(): added numbering plan checking (alec)
   - fixed problem with -0,00 on customer balance list (alec)
+  - fixed error triggers in netadd and netedit (alec)
+  - fixed network size checking in network edition (alec)
+  - fixed warning in NetworkCompress() function (alec)
 
 version 1.8.0rc2 Rosha (2005-12-12):
 

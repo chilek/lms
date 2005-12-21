@@ -2063,6 +2063,7 @@ class LMS
 
 	function NetworkCompress($id,$shift=0)
 	{
+		$nodes = array();
 		$network = $this->GetNetworkRecord($id);
 		$address = $network['addresslong'] + $shift;
 		$broadcast = $network['addresslong'] + $network['size'];
