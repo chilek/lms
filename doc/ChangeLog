@@ -13,6 +13,7 @@ version ? (????-??-??):
   - fixed Cash Receipt List filtering by value (alec)
   - fixed 'Check All' option on Cash Receipt List (alec)
   - fixed function DocumentExists(): added numbering plan checking (alec)
+  - fixed problem with -0,00 on customer balance list (alec)
 
 version 1.8.0rc2 Rosha (2005-12-12):
 

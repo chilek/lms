@@ -678,9 +678,10 @@ class LMS
 		{
 			foreach($saldolist['id'] as $i => $v)
 			{
-				$saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
-				$saldolist['balance'] += $saldolist['value'][$i];
-				$saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
+				$value = $saldolist['value'][$i];
+    				$saldolist['after'][$i] = round($saldolist['balance'] + $value, 2);
+	                	$saldolist['balance'] += $value;
+			  	$saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 			}
 			$saldolist['total'] = sizeof($saldolist['id']);
 		}
