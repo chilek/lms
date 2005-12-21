@@ -73,8 +73,8 @@ if(isset($_POST['networkdata']))
 							    WHERE (ipaddr>? AND ipaddr<?) OR (ipaddr_pub>? AND ipaddr_pub<?)',
 							    array($network['addresslong'],ip_long($network['broadcast']),$network['addresslong'],ip_long($network['broadcast'])));
 				
-					if($node['first'] < $networkdata['addresslong'] ||
-					    $node['last'] >= ip_long(getbraddr($networkdata['address'],prefix2mask($networkdata['prefix']))))
+					if(($node['first'] && $node['first'] < $networkdata['addresslong']) ||
+					    ($node['last'] && $node['last'] >= ip_long(getbraddr($networkdata['address'],prefix2mask($networkdata['prefix'])))) )
 					{
 						$shift = $networkdata['addresslong'] - $network['addresslong'];
 						if($node['first'] + $shift < $networkdata['addresslong'] ||
@@ -133,9 +133,9 @@ if(isset($_POST['networkdata']))
 	if(!isset($error['dhcpstart']) && !isset($error['dhcpend']))
 	{
 		if(($networkdata['dhcpstart']!='' && $networkdata['dhcpend']=='')||($networkdata['dhcpstart']=='' && $networkdata['dhcpend']!=''))
-			$error['dhcp'] = trans('Both IP addresses for DHCP range are required!');
+			$error['dhcpend'] = trans('Both IP addresses for DHCP range are required!');
 		if($networkdata['dhcpstart']!="" && $networkdata['dhcpend']!="" && !(ip_long($networkdata['dhcpend']) > ip_long($networkdata['dhcpstart'])))
-			$error['dhcp'] = trans('End of DHCP range has to be greater than start!');
+			$error['dhcpend'] = trans('End of DHCP range has to be greater than start!');
 	}
 	
 	if(!$error)
