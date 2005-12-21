@@ -3229,7 +3229,7 @@ class LMS
 		return $number;
 	}
 
-	function DocumentExists($number, $doctype=NULL, $planid=NULL, $cdate=NULL)
+	function DocumentExists($number, $doctype=NULL, $planid=0, $cdate=0)
 	{
 		if($planid)
 			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
@@ -3271,8 +3271,8 @@ class LMS
 		}
 	
 		return $this->DB->GetOne('SELECT number FROM documents 
-				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ?', 
-				array($start, $end, $doctype, $number)) ? TRUE : FALSE;
+				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?', 
+				array($start, $end, $doctype, $number, $planid)) ? TRUE : FALSE;
 	}
 	
 }
