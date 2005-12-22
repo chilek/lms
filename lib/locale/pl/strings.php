@@ -1139,7 +1139,6 @@ $_LANG['Resolve'] = 'Rozwiąż:';
 $_LANG['resolved'] = 'rozwiązany';
 $_LANG['Resolved:'] = 'Rozwiązane:';
 $_LANG['Restore'] = 'Odtwórz';
-$_LANG['Running:'] = 'Uruchomiony:';
 $_LANG['Sale date:'] = 'Data sprzedaży:';
 $_LANG['Sale Registry'] = 'Rejestr sprzedaży';
 $_LANG['Sale Registry for period $0 - $1'] = 'Rejestr sprzedaży za okres $0 - $1';
