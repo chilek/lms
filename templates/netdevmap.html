@@ -11,12 +11,12 @@
     </TD></TR></TABLE>
 {elseif $ming && (!$type || $type=='flash')}
 <P ALIGN="CENTER">
-<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" WIDTH="100%" HEIGHT="400" id="intro" ALIGN="">
-<PARAM NAME=movie VALUE="?m=netdevmap&graph=flash&start={$start}">
-<PARAM NAME=loop VALUE=false>
-<PARAM NAME=quality VALUE=high>
-<PARAM NAME=bgcolor VALUE=#EBE4D6>
-<EMBED src="?m=netdevmap&graph=flash&start={$start}" loop=false quality=high bgcolor=#EBE4D6 WIDTH="100%" HEIGHT="400" NAME="map" ALIGN=""
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" WIDTH="100%" HEIGHT="400" id="intro">
+<PARAM NAME="movie" VALUE="?m=netdevmap&graph=flash&start={$start}">
+<PARAM NAME="loop" VALUE="false">
+<PARAM NAME="quality" VALUE="high">
+<PARAM NAME="bgcolor" VALUE="#EBE4D6">
+<EMBED src="?m=netdevmap&graph=flash&start={$start}" loop="false" quality="high" bgcolor="#EBE4D6" WIDTH="100%" HEIGHT="400" NAME="map"
   TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED>
 </OBJECT>
 </P>

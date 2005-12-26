@@ -37,7 +37,7 @@
 			<IMG src="img/id.gif" alt=""> <B>{$numberplanlist[numberplanlist].template}</B>
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
-			({$numberplanlist[numberplanlist].id|string_format:"%03d"})
+			({$numberplanlist[numberplanlist].id|string_format:"%04d"})
 		</TD>
 		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
 			{number number=$numberplanlist[numberplanlist].next template=$numberplanlist[numberplanlist].template time=$smarty.now}
