@@ -442,7 +442,6 @@ switch($type)
 		$layout['pagetitle'] = trans('Printing');
 		
 		$SMARTY->assign('customers', $LMS->GetCustomerNames());
-		$SMARTY->assign('groups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
