@@ -487,8 +487,8 @@ cal11.time_comp = false;
 					<TD width="1%">
 						<SELECT size="1" name="customergroup" {tip text="You can select customer or group of customers to limit results"}>
 							<OPTION value="0">{t}- all groups -{/t}</OPTION>
-							{section name="groups" loop=$groups}
-							<OPTION value="{$groups[groups].id}">{$groups[groups].name|truncate:50:" ..."} ({$groups[groups].id|string_format:"%04d"})</OPTION>
+							{section name="groups" loop=$customergroups}
+							<OPTION value="{$customergroups[groups].id}">{$customergroups[groups].name|truncate:50:" ..."} ({$customergroups[groups].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
