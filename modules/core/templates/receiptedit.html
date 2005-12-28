@@ -15,7 +15,6 @@
 			add = "&which=copy";
 
 		document.additem.action = "?m=receiptedit&action=save" + add;
-		document.additem.target = "_blank";
 		document.additem.submit();
 	}
 	
@@ -31,6 +30,8 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
+<INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
@@ -39,20 +40,33 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Cash Registry:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
+				{foreach from=$cashreglist item=c}
+				<OPTION VALUE="{$c.id}"{if $c.id eq $receipt.regid} SELECTED{/if}>{$c.name|truncate:50:"..."} ({$c.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Receipt number:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{$receipt.number}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}>&nbsp;
-			{if $numberplanlist}
-			<SELECT name="receipt[numberplanid]" {tip text="Select numbering plan"}>
-			{foreach item=plan from=$numberplanlist}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$receipt.numberplanid} SELECTED{/if}>{number number=$receipt.number template=$plan.template time=$receipt.cdate} ({$_PERIODS.$period})</OPTION>
-			{/foreach}
-			{else}
-				<INPUT type="hidden" name="receipt[numberplanid]" value="0">
+			<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{$receipt.number}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Settlement date:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			{if $receipt.cdatewarning}
+			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}
-			</SELECT>
 		</TD>
 	</TR>
 	{if $customer}
@@ -70,27 +84,32 @@
 	</TR>
 	{/if}
 	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>{t}Settlement date:{/t}</B>
+		<TD CLASS="fleft" WIDTH="1%">
+			<B>{t}Target:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
-			{if $receipt.cdatewarning}
-			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
-			{/if}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
-			<B>{t}Customer:{/t}</B>
-			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
-				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
+			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" class="box light" checked>
+			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value" {tip trigger="customerid"}>
+				<OPTION VALUE="0" SELECTED>{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customerlist item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:50:"..."} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
+			{*
 			{t}or Customer ID:{/t}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5" onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value">
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{if $receipt.customerid}{$receipt.customerid}{/if}{/if}" SIZE="5" onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value">
+			*}
+			{t}or search:{/t}
+			<INPUT name="receipt[search]" value="{$receipt.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
+			<SELECT size="1" name="receipt[cat]">
+				<OPTION value="id"{if $receipt.cat=="id"} SELECTED{/if}>{t}ID{/t}</OPTION>
+				<OPTION value="name"{if $receipt.cat=="name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
+				<OPTION value="ten"{if $receipt.cat=="ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
+				<OPTION value="address"{if $receipt.cat=="address"} SELECTED{/if}>{t}address{/t}</OPTION>
+			</SELECT>
+			<BR>
+			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}
+			<INPUT TYPE="text" NAME="receipt[o_name]" VALUE="{$receipt.o_name}" SIZE="75" {tip text="Enter recipient"}>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -100,6 +119,7 @@
 	</TR>
 </TABLE>
 </FORM>
+{if $error.nocash}<h2 align="center"><font class="alert">{$error.nocash}</font></h2>{/if}
 <P>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -168,10 +188,10 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
-			<INPUT type="checkbox" class ="box light" name="original"> {t}original{/t}&nbsp;
-			<INPUT type="checkbox" class ="box light" name="copy"> {t}copy{/t}&nbsp;
+			<INPUT type="checkbox" class ="box light" name="original" checked> {t}original{/t}&nbsp;
+			<INPUT type="checkbox" class ="box light" name="copy" checked> {t}copy{/t}&nbsp;
 			<A HREF="?m=receiptlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A> 
-			{if !$customer}
+			{if !$customer && $receipt.o_type != "other"}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
 			{elseif !$contents}
 			<A HREF="javascript:alert('{t}Receipt have no items!{/t}');">

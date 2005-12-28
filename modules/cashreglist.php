@@ -24,32 +24,20 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+$layout['pagetitle'] = trans('Cash Registries List');
 
-if($id && $_GET['is_sure']=='1')
-{
-	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($id));
-	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) < 3)
-	{
-	        $SMARTY->display('noaccess.html');
-	        $SESSION->close();
-	        die;
-	}
+$reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name, cashregs.description AS description,
+			i.template AS in_template, o.template AS out_template, SUM(value) AS balance
+			FROM cashregs 
+			LEFT JOIN receiptcontents ON (cashregs.id = regid)
+			LEFT JOIN numberplans i ON (in_numberplanid = i.id)
+			LEFT JOIN numberplans o ON (out_numberplanid = o.id)
+			GROUP BY cashregs.id, cashregs.name, cashregs.description, i.template, o.template 
+			ORDER BY cashregs.name');
 
-	if($DB->Execute('DELETE FROM documents WHERE id = ?', array($id)))
-	{	
-		if($DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($id)))
-		{
-			$LMS->SetTS('receiptcontents');
-		}
-		if($DB->Execute('DELETE FROM cash WHERE docid = ?', array($id)))
-		{
-			$LMS->SetTS('cash');
-		}
-		$LMS->SetTS('documents');
-	}
-}
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-header('Location: ?m=receiptlist');
+$SMARTY->assign('reglist', $reglist);
+$SMARTY->display('cashreglist.html');
 
 ?>

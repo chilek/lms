@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
+function GetReceiptList($registry, $order='cdate,asc', $search=NULL, $cat=NULL, $from=0, $to=0)
 {
 	global $CONFIG, $DB;
 
@@ -34,14 +34,14 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 
 	switch($order)
 	{
-		case 'id':
-			$sqlord = " ORDER BY documents.id $direction";
+		case 'number':
+			$sqlord = " ORDER BY documents.number $direction";
 		break;
-		case 'customername':
-			$sqlord = " ORDER BY customername $direction, documents.cdate";
+		case 'name':
+			$sqlord = " ORDER BY documents.name $direction, documents.cdate";
 		break;
-		case 'value':
-			$sqlord = " ORDER BY value $direction, documents.name, documents.cdate";
+		case 'user':
+			$sqlord = " ORDER BY users.name $direction, documents.cdate";
 		break;
 		default:
 			$sqlord = " ORDER BY documents.cdate $direction";
@@ -58,9 +58,6 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 			case 'number':
 				$where = ' AND number = '.intval($search);
 				break;
-			case 'cdate':
-				$where = ' AND cdate >= '.$search.' AND cdate < '.($search+86400);
-				break;
 			case 'ten':
 				$where = ' AND ten = \''.$search.'\'';
 				break;
@@ -68,7 +65,7 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 				$where = ' AND customerid = '.intval($search);
 				break;
 			case 'name':
-				$where = ' AND name ?LIKE? \'%'.$search.'%\'';
+				$where = ' AND documents.name ?LIKE? \'%'.$search.'%\'';
 				break;
 			case 'address':
 				$where = ' AND address ?LIKE? \'%'.$search.'%\'';
@@ -76,32 +73,49 @@ function GetReceiptList($order='cdate,asc', $search=NULL, $cat=NULL)
 		}
 	}
 
+	if($from)
+		$where .= ' AND cdate >= '.$from;
+	if($to)
+		$where .= ' AND cdate <= '.$to;
+
 	if($list = $DB->GetAll(
-	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, documents.name AS customer, address, zip, city, template 
+	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
+		documents.name AS customer, address, zip, city, template, 
+		MIN(description) AS title, COUNT(*) AS posnumber, users.name AS user 
 		FROM documents 
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+		LEFT JOIN users ON (userid = users.id)
 		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
-		WHERE type = ? '
+		WHERE regid = ?'
 		.$where
-		.' GROUP BY documents.id, number, cdate, customerid, name, address, zip, city, template '
+		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, users.name '
 		.$having
 		.($sqlord != '' ? $sqlord : ''), 
-		array(DOC_RECEIPT, DOC_RECEIPT)
+		array(DOC_RECEIPT, $registry)
 		))
 	{
-
 		foreach($list as $idx => $row)
+		{
 			$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
-
+			$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
+			
+			// don't retrive descriptions of all items to not decrease speed
+			// but we want to know that there is something hidden ;)
+			if($row['posnumber'] > 1) $list[$idx]['title'] .= ' ...';
+			
+			// summary
+			if($row['value'] > 0)
+				$list['totalincome'] += $row['value'];
+			else
+				$list['totalexpense'] += -$row['value'];
+		}
+		
 		$list['order'] = $order;
 		$list['direction'] = $direction;
 
 		return $list;
 	}
 }
-
-$layout['pagetitle'] = trans('Cash Receipts List');
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SESSION->restore('rlm', $marks);
 $marked = $_POST['marks'];
@@ -128,32 +142,89 @@ else
 	$SESSION->restore('rlc', $c);
 $SESSION->save('rlc', $c);
 
-if($c == 'cdate' && $s)
+if(isset($_GET['regid']))
+	$regid = $_GET['regid'];
+else
+	$SESSION->restore('rlreg', $regid);
+$SESSION->save('rlreg', $regid);
+
+if(isset($_POST['from']))
 {
-	list($year, $month, $day) = explode('/', $s);
-	$s = mktime(0,0,0, $month, $day, $year);
+	if($_POST['from'] != '')
+	{
+		list($year, $month, $day) = explode('/', $_POST['from']);
+		$from = mktime(0,0,0, $month, $day, $year);
+	}
+}
+elseif($SESSION->is_set('rlf'))
+	$SESSION->restore('rlf', $from);
+else
+	$from = mktime(0,0,0);
+$SESSION->save('rlf', $from);
+
+if(isset($_POST['to']))
+{
+	if($_POST['to'] != '')
+	{
+		list($year, $month, $day) = explode('/', $_POST['to']);
+		$to = mktime(23,59,59, $month, $day, $year);
+	}
+}
+elseif($SESSION->is_set('rlt'))
+	$SESSION->restore('rlt', $to);
+else
+	$to = mktime(23,59,59);
+$SESSION->save('rlt', $to);
+
+if(! $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) )
+{
+        $SMARTY->display('noaccess.html');
+	$SESSION->close();
+	die;
 }
 
-$receiptlist = GetReceiptList($o, $s, $c);
+$receiptlist = GetReceiptList($regid, $o, $s, $c, $from, $to);
 
 $SESSION->restore('rlc', $listdata['cat']);
 $SESSION->restore('rls', $listdata['search']);
+$SESSION->restore('rlf', $listdata['from']);
+$SESSION->restore('rlt', $listdata['to']);
+
 $listdata['order'] = $receiptlist['order'];
 $listdata['direction'] = $receiptlist['direction'];
+$listdata['totalincome'] = $receiptlist['totalincome'];
+$listdata['totalexpense'] = $receiptlist['totalexpense'];
+$listdata['regid'] = $regid;
+
 unset($receiptlist['order']);
 unset($receiptlist['direction']);
+unset($receiptlist['totalincome']);
+unset($receiptlist['totalexpense']);
 
 $listdata['totalpos'] = sizeof($receiptlist);
+$listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid=?', array($regid));
+if($from > 0)
+	$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
+						LEFT JOIN documents ON (docid = documents.id AND type = ?) 
+						WHERE cdate < ? AND regid = ?',
+						array(DOC_RECEIPT, $from, $regid));
+
+$listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
 
 $pagelimit = $CONFIG['phpui']['receiptlist_pagelimit'];
 $page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
+
+$layout['pagetitle'] = trans('Cash Registry: $0', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));
+$SESSION->save('backto', 'm=receiptlist&regid='.$regid);
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
+$SMARTY->assign('newreceipt', $_GET['receipt']);
+$SMARTY->assign('which', $_GET['which']);
 $SMARTY->assign('receiptlist',$receiptlist);
 $SMARTY->display('receiptlist.html');
 

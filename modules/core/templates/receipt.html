@@ -10,10 +10,15 @@
 			{t}Stamp:{/t}
 		</td>
 		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
-			{t}Proof of Payment{/t}<br><font class="sdr">{t}Receipt{/t}</font>
+			{if $receipt.type == "out"}
+			{t}Proof of Pay-out{/t}
+			{else}
+			{t}Proof of Payment{/t}
+			{/if}
+			<br><font class="sdr">{t}Receipt{/t}</font>
 		</td>
 		<td colspan="2" width="32%" class="ftopu shdf" align="center">
-			{t}CR{/t}
+			{if $receipt.type == "out"}{t}CR-out{/t}{else}{t}CR-in{/t}{/if}
 		</td>
 	</tr>
 	<tr>
@@ -26,16 +31,24 @@
 		</td>
 	</tr>
 	<tr>
-		<td width="34%" colspan="4" class="fall">
+		<td width="68%" colspan="4" class="fall">
 			<table width="100%">
 			    <tr>
-				<td width="1%" valign="top" nowrap>{t}From who:{/t}</td>
+				<td width="1%" valign="top" nowrap>
+					{if $receipt.type == "out"}{t}To whom:{/t}{else}{t}From who:{/t}{/if}
+				</td>
 				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
 			    </tr>
 			</table>
 		</td>
-		<td width="16%" align="center" class="fall headgrey hdf" nowrap>{t}Owing{/t}<br><font class="sdr">{t}Cash{/t}</font></td>
-		<td width="16%" align="center" class="fall headgrey hdf" nowrap>{t}Has{/t}<br><font class="sdr">{t}Account<!singular:noun>{/t}</font></td>
+		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
+			{if $receipt.type == "out"}{t}Has{/t}{else}{t}Owing{/t}{/if}
+			<br><font class="sdr">{t}Cash{/t}</font>
+		</td>
+		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
+			{if $receipt.type == "out"}{t}Owing{/t}{else}{t}Has{/t}{/if}
+			<br><font class="sdr">{t}Account<!singular:noun>{/t}</font>
+		</td>
 	</tr>
 	<tr class="grey">
 		<td align="center" class="fall" colspan="4" nowrap>{t}For what{/t}</td>
@@ -46,13 +59,15 @@
 	{foreach item="row" from=$receipt.contents}
 	<tr class="{cycle name=one}">
 		<td class="flr sdr" colspan="4" valign="top"><b>{counter name=one}.</b> {$row.description|replace:"\n":"<BR>"}</td>
-		<td class="flr sdr" align="right" valign="top" nowrap>{$row.value|money_format}</td>
+		<td class="flr sdr" align="right" valign="top" nowrap>
+			{$row.value|money_format}
+		</td>
 		<td class="flr"></td>
 	</tr>
 	{/foreach}
 	<tr>
-		<td class="fleftu" colspan="3"></td>
-		<td class="fbt sdr" align="right" nowrap><b>{t}Total:{/t}</b></td>
+		<td width="51%" class="fleftu" colspan="3"></td>
+		<td width="17%" class="fbt sdr" align="right" nowrap><b>{t}Total:{/t}</b></td>
 		<td class="fall sdr" align="right" nowrap><b>{$receipt.total|money_format}</b></td>
 		<td class="fall" align="center">Symbole<br>PL. KAS. Nr</td>
 	</tr>
@@ -78,7 +93,13 @@
 		<td width="17%" class="fall" align="center" nowrap>{t}Checked By{/t}</td>
 		<td align="center" class="fall" nowrap>{t}Approved By{/t}</td>
 		<td align="center" class="fall" nowrap>{t}Cash Report{/t}</td>
-		<td align="center" class="fall" colspan="2" nowrap>{t}I confirm receipt of above amount{/t}</td>
+		<td align="center" class="fall" colspan="2" nowrap>
+			{if $receipt.type == "out"}
+			{t}Above amount{/t}
+			{else}
+			{t}I confirm receipt of above amount{/t}
+			{/if}
+		</td>
 	</tr>
 	<tr>
 		<td class="fall"></td>
@@ -94,6 +115,10 @@
 			    </tr> 
 			</table>
 		</td>
+		{if $receipt.type == "out"}
+		<td class="fall" align="center" valign="top">{t}payed out{/t}</td>
+		<td class="fall" align="center" valign="top">{t}received{/t}</td>
+		{else}
 		<td colspan="2" class="fall">
 			<table width="90%" cellpadding="5" align="center">
 			    <tr>
@@ -104,6 +129,7 @@
 			    </tr>
 			</table>
 		</td>
+		{/if}
 	</tr>
 	<tr>
 		<td colspan="6" align="right">
@@ -127,10 +153,15 @@
 			{t}Stamp:{/t}
 		</td>
 		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
-			{t}Proof of Payment{/t}<br><font class="sdr">{t}Receipt{/t}</font>
+			{if $receipt.type == "out"}
+			{t}Proof of Pay-out{/t}
+			{else}
+			{t}Proof of Payment{/t}
+			{/if}
+			<br><font class="sdr">{t}Receipt{/t}</font>
 		</td>
 		<td colspan="2" width="32%" class="ftopu shdf" align="center">
-			{t}CR{/t}
+			{if $receipt.type == "out"}{t}CR-out{/t}{else}{t}CR-in{/t}{/if}
 		</td>
 	</tr>
 	<tr>
@@ -143,16 +174,23 @@
 		</td>
 	</tr>
 	<tr>
-		<td width="34%" colspan="4" class="fall">
+		<td width="68%" colspan="4" class="fall">
 			<table width="100%">
 			    <tr>
-				<td width="1%" valign="top" nowrap>{t}From who:{/t}</td>
+				<td width="1%" valign="top" nowrap>
+					{if $receipt.type == "out"}{t}To whom:{/t}{else}{t}From who:{/t}{/if}</td>
 				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
 			    </tr>
 			</table>
 		</td>
-		<td width="16%" align="center" class="fall headgrey hdf" nowrap>{t}Owing{/t}<br><font class="sdr">{t}Cash{/t}</font></td>
-		<td width="16%" align="center" class="fall headgrey hdf" nowrap>{t}Has{/t}<br><font class="sdr">{t}Account<!singular:noun>{/t}</font></td>
+		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
+			{if $receipt.type == "out"}{t}Has{/t}{else}{t}Owing{/t}{/if}
+			<br><font class="sdr">{t}Cash{/t}</font>
+		</td>
+		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
+			{if $receipt.type == "out"}{t}Owing{/t}{else}{t}Has{/t}{/if}
+			<br><font class="sdr">{t}Account<!singular:noun>{/t}</font>
+		</td>
 	</tr>
 	<tr class="grey">
 		<td align="center" class="fall" colspan="4" nowrap>{t}For what{/t}</td>
@@ -168,8 +206,8 @@
 	</tr>
 	{/foreach}
 	<tr>
-		<td class="fleftu" colspan="3"></td>
-		<td class="fbt sdr" align="right" nowrap><b>{t}Total:{/t}</b></td>
+		<td width="51%" class="fleftu" colspan="3"></td>
+		<td width="17%" class="fbt sdr" align="right" nowrap><b>{t}Total:{/t}</b></td>
 		<td class="fall sdr" align="right" nowrap><b>{$receipt.total|money_format}</b></td>
 		<td class="fall" align="center">Symbole<br>PL. KAS. Nr</td>
 	</tr>
@@ -193,9 +231,15 @@
 	<tr class="grey">
 		<td width="17%" class="fall" align="center" nowrap>{t}Exposed By{/t}</td>
 		<td width="17%" class="fall" align="center" nowrap>{t}Checked By{/t}</td>
-		<td align="center" class="fall" nowrap>{t}Approved By{/t}</td>
-		<td align="center" class="fall" nowrap>{t}Cash Report{/t}</td>
-		<td align="center" class="fall" colspan="2" nowrap>{t}I confirm receipt of above amount{/t}</td>
+		<td width="17%" align="center" class="fall" nowrap>{t}Approved By{/t}</td>
+		<td width="17%" align="center" class="fall" nowrap>{t}Cash Report{/t}</td>
+		<td align="center" class="fall" colspan="2" nowrap>
+			{if $receipt.type == "out"}
+			{t}Above amount{/t}
+			{else}
+			{t}I confirm receipt of above amount{/t}
+			{/if}
+		</td>
 	</tr>
 	<tr>
 		<td class="fall"></td>
@@ -211,6 +255,10 @@
 			    </tr> 
 			</table>
 		</td>
+		{if $receipt.type == "out"}
+		<td class="fall" align="center" valign="top">{t}payed out{/t}</td>
+		<td class="fall" align="center" valign="top">{t}received{/t}</td>
+		{else}
 		<td colspan="2" class="fall">
 			<table width="90%" cellpadding="5" align="center">
 			    <tr>
@@ -221,6 +269,7 @@
 			    </tr>
 			</table>
 		</td>
+		{/if}
 	</tr>
 	<tr>
 		<td colspan="6" align="right">

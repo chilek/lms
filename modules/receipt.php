@@ -38,9 +38,21 @@ function GetReceipt($id)
 		
 		foreach($receipt['contents'] as $row)
 			$receipt['total'] += $row['value'];
-		
-		$receipt['totalg'] = ($receipt['total']*100 - ((int) $receipt['total'])*100);
+			
 		$receipt['number'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate']);
+		
+		if($receipt['total'] < 0)
+		{
+			$receipt['type'] = 'out';
+			// change values sign
+			foreach($receipt['contents'] as $idx => $row)
+				$receipt['contents'][$idx]['value'] *= -1;
+			$receipt['total'] *= -1;
+		}
+		else
+			$receipt['type'] = 'in';
+
+		$receipt['totalg'] = ($receipt['total']*100 - ((int) $receipt['total'])*100);
 		
 		return $receipt;
 	}
@@ -107,6 +119,14 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 }
 elseif($receipt = GetReceipt($_GET['id']))
 {
+	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($_GET['id']));
+	if( !$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)))
+	{
+    		$SMARTY->display('noaccess.html');
+	        $SESSION->close();
+		die;
+	}	
+
 	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
 	
 	$receipt['last'] = TRUE;

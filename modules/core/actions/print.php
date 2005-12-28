@@ -436,15 +436,108 @@ switch($type)
 		$SMARTY->assign('taxescount', sizeof($taxes));
 		$SMARTY->display('printliabilityreport.html');
 	break;
+	
+	case 'receiptlist':
+
+		if($_POST['from'])
+		{
+			list($year, $month, $day) = explode('/', $_POST['from']);
+			$from = mktime(0,0,0, $month, $day, $year);
+		}
+		else
+			$from = mktime(0,0,0, date('m'), date('d'), date('Y'));
+		
+		if($_POST['to'])
+		{
+			list($year, $month, $day) = explode('/', $_POST['to']);
+			$to = mktime(23,59,59, $month, $day, $year);
+		}
+			$to = mktime(23,59,59, date('m'), date('d'), date('Y'));
+
+		$registry = intval($_POST['registry']);
+		$user = intval($_POST['user']);
+
+		if($registry)
+			$where .= ' AND regid = '.$registry;
+		if($from)
+			$where .= ' AND cdate >= '.$from;
+		if($to)
+			$where .= ' AND cdate <= '.$to;
+		if($user)
+			$where .= ' AND userid = '.$user;
+			
+		if($from > 0)
+			$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
+						LEFT JOIN documents ON (docid = documents.id AND type = ?) 
+						WHERE cdate < ?'
+						.($registry ? ' AND regid='.$registry : ''),
+						array(DOC_RECEIPT, $from));
+			
+		if($list = $DB->GetAll(
+	    		'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
+			documents.name AS customer, address, zip, city, template, 
+			MIN(description) AS title, COUNT(*) AS posnumber 
+			FROM documents 
+			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
+			WHERE 1=1'
+			.$where.'
+			GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template
+			ORDER BY cdate, documents.id', array(DOC_RECEIPT)))
+		{
+			foreach($list as $idx => $row)
+			{
+				$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+				$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
+
+				if($row['posnumber'] > 1) 
+					$list[$idx]['title'] = $DB->GetCol('SELECT description FROM receiptcontents WHERE docid=? ORDER BY itemid', array($list[$idx]['id']));
+					
+				// summary
+				if($row['value'] > 0)
+					$listdata['totalincome'] += $row['value'];
+				else
+					$listdata['totalexpense'] += -$row['value'];
+				
+				if($idx==0) 
+					$list[$idx]['after'] = $listdata['startbalance'] + $row['value'];
+				else
+					$list[$idx]['after'] = $list[$idx-1]['after'] + $row['value'];
+			}
+		}
+
+		//$listdata['totalpos'] = sizeof($receiptlist);
+		//$listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid=?', array($regid));
+		$listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
+
+		$from = date('Y/m/d', $from);
+		$to = date('Y/m/d', $to);
+		if($from == $to)
+			$period = $from;
+		else
+			$period = $from.' - '.$to;
+
+		$layout['pagetitle'] = trans('Cash Report').' '.$period;
+		if($registry)
+			$layout['registry'] = trans('Registry: $0', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)));
+		if($user)
+			$layout['username'] = trans('Cashier: $0', $DB->GetOne('SELECT name FROM users WHERE id=?', array($user)));
+		
+		$SMARTY->assign('layout', $layout);
+		$SMARTY->assign('receiptlist', $list);
+		$SMARTY->assign('listdata', $listdata);
+		$SMARTY->display('printreceiptlist.html');
+	break;
 
 	default: /*******************************************************/
 	
 		$layout['pagetitle'] = trans('Printing');
 		
 		$SMARTY->assign('customers', $LMS->GetCustomerNames());
-		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
+		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
+		$SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
 		$SMARTY->assign('printmenu', 'finances');
 		$SMARTY->display('printindex.html');
 	break;

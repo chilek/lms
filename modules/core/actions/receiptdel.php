@@ -24,10 +24,18 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 
 if($id && $_GET['is_sure']=='1')
 {
+	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($id));
+	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) < 3)
+	{
+	        $SMARTY->display('noaccess.html');
+	        $SESSION->close();
+	        die;
+	}
+
 	if($DB->Execute('DELETE FROM documents WHERE id = ?', array($id)))
 	{	
 		if($DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($id)))
