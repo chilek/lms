@@ -128,7 +128,7 @@
 		</TD>
 	</TR>
 	{/if}
-	{if $receipt.regid}
+	{if $receipt.type}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{t}Target:{/t}</B>
@@ -156,7 +156,7 @@
 			</SELECT>
 			<BR>
 			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}
-			<INPUT TYPE="text" NAME="receipt[o_name]" VALUE="{$receipt.o_name}" SIZE="75" {tip text="Enter recipient"}>
+			<INPUT TYPE="text" NAME="receipt[o_name]" VALUE="{$receipt.o_name}" SIZE="75" {if $receipt.type=="out"}{tip text="Enter recipient (optional)"}{else}{tip text="Enter payer (optional)"}{/if}>
 		</TD>
 	</TR>
 	{/if}
