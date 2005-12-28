@@ -92,6 +92,7 @@ switch($_GET['action'])
 		// get default receipt's numberplanid and next number
 		$receipt['regid'] = $_GET['regid'] ? $_GET['regid'] : $oldreg;
 		$receipt['type'] = $_GET['type'] ? $_GET['type'] : $_POST['type'];
+		$receipt['customerid'] = $_GET['customerid'];
 
 		if(!$receipt['regid'] || !$receipt['type'])
 		{
@@ -114,8 +115,8 @@ switch($_GET['action'])
 		if($receipt['numberplanid'])
 			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 		
-		if(!$error && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
-			$customer = $LMS->GetCustomer($_GET['customerid']);
+		if(!$error && $receipt['customerid'] && $LMS->CustomerExists($receipt['customerid']))
+			$customer = $LMS->GetCustomer($receipt['customerid']);
 	break;
 
 	case 'setreg':
@@ -127,6 +128,7 @@ switch($_GET['action'])
 
 		// get default receipt's numberplanid and next number
 		$receipt = $_POST['receipt'];
+		$receipt['customerid'] = $_POST['customer'];
 		
 		if(!$receipt['regid']) break;	
 		
@@ -142,6 +144,7 @@ switch($_GET['action'])
 				if( $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
 					$error['regid'] = trans('There is no cash in selected registry!');
 		}
+		
 		$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 	break;
 
