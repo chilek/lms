@@ -60,7 +60,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 	$list['total'] = sizeof($list);
 	$list['direction'] = $direction;
 	$list['order'] = $order;
-	
+
 	return $list;
 }
 
