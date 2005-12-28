@@ -328,6 +328,8 @@ switch($_GET['action'])
 
 		if(!$error && $cid)
 			if($LMS->CustomerExists($cid))
+			{
+				$receipt['customerid'] = $cid;
 				if($receipt['type'] == 'out')
 				{
 					$balance = $LMS->GetCustomerBalance($cid);
@@ -338,6 +340,7 @@ switch($_GET['action'])
 				}
 				else
 					$customer = $LMS->GetCustomer($cid);
+			}
 		
 		if(!$error && $customer)
 			$receipt['selected'] = TRUE;

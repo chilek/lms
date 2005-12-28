@@ -1444,7 +1444,7 @@ $_LANG['You can turn it off'] = 'Możesz to wyłączyć';
 $_LANG['You may use our automated Customer Care Web Panel, just remember your PIN (it\'s printed on the other side of this page)'] = 'Aby skorzystać z naszego zautomatyzowanego internetowego panelu klienta należy pamiętać swój PIN (jest wydrukowany na drugiej stronie)';
 $_LANG['You don\'t have any IP network.'] = 'Nie posiadasz żadnej sieci IP.';
 $_LANG['You have no access rights to this part of system.'] = 'Nie posiadasz praw dostępu do tej części systemu.';
-$_LANG['You have no address pools. Use menu above to add new networks.'] = 'Nie posiadasz przestrzeni adresowej. Użyj menu u góry żeby dodać nowe sieci.';
+$_LANG['You have no address pools. Use menu to add new networks.'] = 'Nie posiadasz przestrzeni adresowej. Użyj menu żeby dodać nowe sieci.';
 $_LANG['You have no privileges to review this queue!'] = 'Nie masz uprawnień by przeglądać tą kolejkę!';
 $_LANG['You have no privileges to this queue!'] = 'Nie masz uprawnień do tej kolejki!';
 $_LANG['You have to enter first and lastname!'] = 'Musisz wpisać imię i nazwisko!';
@@ -1673,5 +1673,7 @@ $_LANG['New Cash Receipt'] = 'Nowy dok. kasowy';
 $_LANG['pay in'] = 'wpłata';
 $_LANG['pay out'] = 'wypłata';
 $_LANG['Select cash receipt type'] = 'Wybierz typ dokumentu kasowego';
+$_LANG['Enter recipient (optional)'] = 'Wprowadź odbiorcę (opcjonalnie)';
+$_LANG['Enter payer (optional)'] = 'Wprowadź wpłacającego (opcjonalnie)';
 
 ?>
