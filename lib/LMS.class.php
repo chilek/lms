@@ -2192,37 +2192,6 @@ class LMS
 		return $network;
 	}
 
-	function GetNetwork($id)
-	{
-		if($row = $this->DB->GetRow('SELECT inet_ntoa(address) AS address, address AS addresslong, mask, name, dhcpstart, dhcpend FROM networks WHERE id=?', array($id)))
-			foreach($row as $field => $value)
-				$$field = $value;
-
-		for($i=$addresslong+1;$i<ip_long(getbraddr($address,$mask));$i++)
-		{
-			$result['addresslong'][] = $i;
-			$result['address'][] = long2ip($i);
-			$result['nodeid'][] = 0;
-			$result['nodename'][] = '';
-			$result['ownerid'][] = 0;
-		}
-
-		if(sizeof($result['address']))
-			if($nodes = $this->DB->GetAll('SELECT name, id, ownerid, ipaddr ,ipaddr_pub FROM nodes WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($address, getbraddr($address,$mask))))
-				foreach($nodes as $node)
-				{
-					$pos = ($node['ipaddr'] - $addresslong - 1);
-					$result['nodeid'][$pos] = $node['nodeid'];
-					$result['nodename'][$pos] = $node['name'];
-					$result['ownerid'][$pos] = $node['ownerid'];
-				}
-
-		for($pos=(ip_long($dhcpstart) - $addresslong - 1);$pos<=(ip_long($dhcpend) - $addresslong - 1);$pos++)
-			$result['nodename'][$pos] = 'DHCP';
-
-		return $result;
-	}
-
 	/*
 	 *   Network Devices
 	 */
