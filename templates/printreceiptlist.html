@@ -1,0 +1,101 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="99%" VALIGN="TOP" NOWRAP>
+			<P class="hdf"><B>{$layout.pagetitle}</B>
+			{if $layout.username}<BR><font class="sdr"><B>{$layout.username}</B></font>{/if}
+			{if $layout.registry}<BR><font class="sdr"><B>{$layout.registry}</B></font>{/if}
+			</P>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Prepared by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD ALIGN="CENTER" CLASS="HEAD">
+			{t}No.{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Date{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Number{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Customer{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Title{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Income{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Expense{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}After{/t}
+		</TD>
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=receiptlist loop=$receiptlist}
+	<TR class="{cycle}">
+		<TD ALIGN="RIGHT">
+			{counter}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$receiptlist[receiptlist].cdate|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$receiptlist[receiptlist].number}
+		</TD>
+		<TD ALIGN="LEFT">
+			{$receiptlist[receiptlist].customer}
+		</TD>
+		<TD ALIGN="LEFT">
+			{foreach from=$receiptlist[receiptlist].title item=title}
+				{$title}<BR>
+			{/foreach}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{if $receiptlist[receiptlist].value > 0}{$receiptlist[receiptlist].value|money_format}{else}-{/if}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{if $receiptlist[receiptlist].value < 0}{$receiptlist[receiptlist].value*-1|money_format}{else}-{/if}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$receiptlist[receiptlist].after|money_format}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" COLSPAN="8">
+			<P>&nbsp;</P>
+			<P><B>{t}No such cash receipts in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+	<TR class="grey">
+		<TD COLSPAN="5" ALIGN="RIGHT" VALIGN="TOP">
+			<B>{t}Total:{/t}</B><HR>
+			<B>{t}Initial balance:{/t}</B><BR>
+			<B>{t}Final balance:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" nowrap>
+			<B>{$listdata.totalincome|money_format}</B><HR>
+			<B>{$listdata.startbalance|money_format}</B><BR>
+			<B>{$listdata.endbalance|money_format}</B>
+
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP" nowrap>
+			<B>{$listdata.totalexpense|money_format}</B><HR>
+		</TD>
+		<TD></TD>
+	</TR>
+</TABLE>

@@ -240,14 +240,14 @@ $menu = array(
 					'tip' => trans('Generate invoice'),
 				),
 				array(
-					'name' => trans('Cash Receipts List'),
-					'link' => '?m=receiptlist',
-					'tip' => trans('List of cash receipts'),
+					'name' => trans('Cash Registry'),
+					'link' => '?m=cashreglist',
+					'tip' => trans('List of cash registries'),
 				),
 				array(
-					'name' => trans('New Receipt'),
+					'name' => trans('New Cash Receipt'),
 					'link' => '?m=receiptadd&action=init',
-					'tip' => trans('Generate receipt'),
+					'tip' => trans('Generate cash receipt'),
 				),
 				array(
 					'name' => trans('Import'),

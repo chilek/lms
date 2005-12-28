@@ -177,11 +177,13 @@ CREATE TABLE documentcontents (
 #
 DROP TABLE IF EXISTS receiptcontents;
 CREATE TABLE receiptcontents (
-	docid INT(11) NOT NULL DEFAULT '0',
-	itemid TINYINT NOT NULL DEFAULT '0',
-	value decimal(9,2) NOT NULL DEFAULT '0',
+	docid int(11) 		NOT NULL DEFAULT '0',
+	itemid 			TINYINT NOT NULL DEFAULT '0',
+	value decimal(9,2) 	NOT NULL DEFAULT '0',
 	description varchar(255) NOT NULL DEFAULT '',
-	INDEX docid (docid)
+	regid int(11)		NOT NULL DEFAULT '0',
+	INDEX docid (docid),
+	INDEX regid (regid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -662,4 +664,33 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005110600');
+#
+# Structure of table cashrights
+#
+DROP TABLE IF EXISTS cashrights;
+CREATE TABLE cashrights (
+    id int(11)      NOT NULL auto_increment,
+    userid int(11)  DEFAULT '0' NOT NULL,
+    regid int(11)   DEFAULT '0' NOT NULL,
+    rights int(11)  DEFAULT '0' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY userid (userid, regid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table cashregs
+#			
+DROP TABLE IF EXISTS cashregs;
+CREATE TABLE cashregs (
+    id int(11)              NOT NULL auto_increment,
+    name varchar(255)       DEFAULT '' NOT NULL,
+    description text        DEFAULT '' NOT NULL,
+    in_numberplanid int(11) DEFAULT '0' NOT NULL,
+    out_numberplanid int(11) DEFAULT '0' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY name (name)
+) TYPE=MyISAM;													
+
+# --------------------------------------------------------
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005122800');

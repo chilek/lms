@@ -1,0 +1,78 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<TABLE cellpadding="5" WIDTH="100%">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="1%">
+			<IMG src="img/queue.gif" ALT=""> <B>{t}Name:{/t}</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+			{t}ID:{/t}
+		</TD>
+		<TD CLASS="fbt" align="right" WIDTH="1%" NOWRAP>
+			{t}Cash state:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
+			{t}Cash-in receipt numbering plan:{/t}<BR>
+			{t}Cash-out receipt numbering plan:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="95%">
+			{t}Description:{/t}
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%" align="right" nowrap>
+			<A href="?m=cashregadd">{t}Add registry{/t} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$reglist item=reg}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD CLASS="fleft" nowrap onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+			<IMG src="img/queue.gif" ALT=""> <B>{$reg.name}</B>
+		</TD>
+		<TD ALIGN="right">
+			({$reg.id|string_format:"%04d"})
+		</TD>
+		<TD ALIGN="right" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+			{if $reg.balance < 0}<font class="alert">{/if}
+			{$reg.balance|money_format}
+			{if $reg.balance < 0}</font>{/if}
+		</TD>
+		<TD ALIGN="right" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+			{$reg.in_template|default:"%N/LMS/%Y"}<BR>
+			{$reg.out_template|default:"%N/LMS/%Y"}
+		</TD>
+		<TD onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';" NOWRAP>
+			{$reg.description}
+		</TD>
+		<TD CLASS="fright" align="right" NOWRAP>
+			<A HREF="?m=cashreginfo&id={$reg.id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]"></A>
+			<A HREF="?m=cashregedit&id={$reg.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=receiptlist&regid={$reg.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]"></A>
+			<A HREF="?m=cashregdel&id={$reg.id}" OnClick="return confirmLink(this, '{t 0=$reg.name}Are you sure, you want to remove registry \'$0\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="6" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>{t}There are no cash registries.{/t}<B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/foreach}
+	<TR CLASS="light">
+		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
+			<IMG src="img/info2.gif" ALT="">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD ALIGN="CENTER" CLASS="fbt" nowrap>
+			<B>{sum array=$reglist column="balance" string_format=$LANGDEFS.$_language.money_format}</B>
+		</TD>
+		<TD CLASS="frightu" COLSPAN="3" align="right">
+			<A href="?m=cashregadd">{t}Add registry{/t} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

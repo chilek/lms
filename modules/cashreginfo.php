@@ -24,32 +24,33 @@
  *  $Id$
  */
 
+
 $id = intval($_GET['id']);
 
-if($id && $_GET['is_sure']=='1')
-{
-	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($id));
-	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) < 3)
-	{
-	        $SMARTY->display('noaccess.html');
-	        $SESSION->close();
-	        die;
-	}
+$registry = $DB->GetRow('SELECT reg.id AS id, reg.name AS name, reg.description AS description,
+			i.template AS in_template, o.template AS out_template
+			FROM cashregs reg
+			LEFT JOIN numberplans i ON (in_numberplanid = i.id)
+			LEFT JOIN numberplans o ON (out_numberplanid = o.id)
+			WHERE reg.id=?', array($id));
 
-	if($DB->Execute('DELETE FROM documents WHERE id = ?', array($id)))
-	{	
-		if($DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($id)))
-		{
-			$LMS->SetTS('receiptcontents');
-		}
-		if($DB->Execute('DELETE FROM cash WHERE docid = ?', array($id)))
-		{
-			$LMS->SetTS('cash');
-		}
-		$LMS->SetTS('documents');
-	}
+if( !$registry )
+{
+	$SESSION->redirect('?m=cashreglist');
 }
 
-header('Location: ?m=receiptlist');
+$users = $DB->GetAll('SELECT id, name FROM users WHERE deleted=0');
+foreach($users as $user)
+{
+        $user['rights'] = $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($user['id'], $id));
+        $registry['rights'][] = $user;
+}
+
+$layout['pagetitle'] = trans('Cash Registry Info: $0', $registry['name']);
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$SMARTY->assign('registry', $registry);
+$SMARTY->display('cashreginfo.html');
 
 ?>

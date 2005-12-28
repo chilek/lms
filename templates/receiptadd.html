@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 {literal}
 <SCRIPT language=JavaScript>
@@ -31,7 +32,7 @@
 			add = "&which=copy";
 
 		document.additem.action = "?m=receiptadd&action=save" + add;
-		document.additem.target = "_blank";
+		//document.additem.target = "_blank";
 		document.additem.submit();
 	}
 	
@@ -44,9 +45,10 @@
 	
 //--></SCRIPT>
 {/literal}
-<H1>{$layout.pagetitle}</H1>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd&action=setcustomer">
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
+<INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
@@ -55,11 +57,38 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Cash Registry:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
+				<OPTION VALUE="0">{t}- select registry -{/t}</OPTION>
+				{foreach from=$cashreglist item=c}
+				<OPTION VALUE="{$c.id}"{if $c.id eq $receipt.regid} SELECTED{/if}>{$c.name|truncate:50:"..."} ({$c.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	{if !$receipt.type}
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Type:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<SELECT SIZE="1" NAME="type" {tip text="Select cash receipt type"}>
+				<OPTION VALUE="in"{if $receipt.type=="in"} SELECTED{/if}>{t}pay in{/t}</OPTION>
+				<OPTION VALUE="out"{if $receipt.type=="out"} SELECTED{/if}>{t}pay out{/t}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
+	{if $receipt.number}
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Receipt number:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{$receipt.number}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}>&nbsp;
-			{if $numberplanlist}
+			<INPUT TYPE="TEXT" NAME="receipt[number]" VALUE="{$receipt.number}" SIZE="10" {tip text="Enter receipt number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}{if $rights < 3} readonly{/if}>&nbsp;
+		{*	{if $numberplanlist}
 			<SELECT name="receipt[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplanlist}
 				{assign var=period value=$plan.period}
@@ -68,20 +97,23 @@
 			{else}
 				<INPUT type="hidden" name="receipt[numberplanid]" value="0">
 			{/if}
-			</SELECT>
+			</SELECT> *}
 		</TD>
 	</TR>
+	{/if}
+	{if $receipt.cdate}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Settlement date:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} {if $rights < 3}readonly{else}OnClick="javascript:cal1.popup();"{/if}>
 			{if $receipt.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}
 		</TD>
 	</TR>
+	{/if}
 	{if $customer}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
@@ -96,28 +128,138 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $receipt.regid}
 	<TR CLASS="light">
-		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
-			<B>{t}Customer:{/t}</B>
-			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
+		<TD CLASS="fleft" WIDTH="1%">
+			<B>{t}Target:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" class="box light" checked>
+			<SELECT SIZE="1" NAME="customer" {* onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value"*} {tip trigger="customerid"}>
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customerlist item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:50:"..."} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
+			{*
 			{t}or Customer ID:{/t}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5" onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value">
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{if $receipt.customerid}{$receipt.customerid}{/if}{/if}" SIZE="5" onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value">
+			*}
+			{t}or search:{/t}
+			<INPUT name="receipt[search]" value="{$receipt.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
+			<SELECT size="1" name="receipt[cat]">
+				<OPTION value="id"{if $receipt.cat=="id"} SELECTED{/if}>{t}ID{/t}</OPTION>
+				<OPTION value="name"{if $receipt.cat=="name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
+				<OPTION value="ten"{if $receipt.cat=="ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
+				<OPTION value="address"{if $receipt.cat=="address"} SELECTED{/if}>{t}address{/t}</OPTION>
+			{*	<OPTION value="node"{if $receipt.cat=="node"} SELECTED{/if}>{t}node name{/t}</OPTION> *}
+			</SELECT>
+			<BR>
+			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}
+			<INPUT TYPE="text" NAME="receipt[o_name]" VALUE="{$receipt.o_name}" SIZE="75" {tip text="Enter recipient"}>
 		</TD>
 	</TR>
+	{/if}
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript:document.setcustomer.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="javascript:document.setcustomer.submit();">{t}Select{/t} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
+{if $error.nocash}<h2 align="center"><font class="alert">{$error.nocash}</font></h2>{/if}
+{if $receipt.type=="out" && $receipt.o_type=="other" && $cashregcount > 1}
+<P>
+<FORM name="movecash" method="POST" action="?m=receiptadd&action=movecash">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fall" WIDTH="100%">
+			<B>{t}Moving assets:{/t}</B>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="flr" nowrap>
+			<B>{t}Value:{/t}</B>
+			<INPUT TYPE="TEXT" NAME="value" VALUE="" SIZE="10" {tip text="Enter value"}>
+			<B>{t}Cash Registry:{/t}
+			<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
+				<OPTION VALUE="0">{t}- select registry -{/t}</OPTION>
+				{foreach from=$cashreglist item=c}
+				{if $c.id != $receipt.regid}
+				<OPTION VALUE="{$c.id}">{$c.name|truncate:50:"..."} ({$c.id|string_format:"%04d"})</OPTION>
+				{/if}
+				{/foreach}
+	    		</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right">
+			<A HREF="javascript:document.movecash.submit();">{t}Save & Print{/t} <IMG SRC="img/save.gif" ALT=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{/if}
+{if $receipt.selected}
 <P>
 <TABLE WIDTH="100%" CELLPADDING="3">
+	{if $receipt.o_type != "other"}
+	<FORM name="additemlist" method="POST" action="?m=receiptadd&action=additemlist">
+	<TR>
+		<TD colspan="4" class="ftopu">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD class="fall">
+						<IMG src="img/money.gif" ALT="">
+						<B><A name="balance">{t}Last 10 not accounted invoices:{/t}</A></B>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="100%" class="fall">
+						<TABLE cellpadding="5" cellspacing="0" width="100%">
+							<TR class="dark">
+								<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+								<TD width="97%" class="fbt">{t}Invoice:{/t}</TD>
+								<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+								<TD width="1%" class="frightu">&nbsp;</TD>
+							</TR>
+							{cycle values="light,lucid" print=false}
+							{section name=invoicelist loop=$invoicelist}
+							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+							        <TD><nobr>{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
+								<TD>{$invoicelist[invoicelist].number}</TD>
+							        <TD align="right"><nobr>{$invoicelist[invoicelist].value|money_format}</nobr></TD>
+								<TD align="right">
+									{cycle print=false}
+									<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[]" VALUE="{$invoicelist[invoicelist].id}"{if $invoicelist[invoicelist].selected} CHECKED{/if}>
+								</TD>
+							</TR>
+							{sectionelse}
+							<TR>
+								<TD align="center" colspan="4">
+							    		<p>&nbsp;</p>
+									<p><B>{t}That customer hasn't got not accounted invoices.{/t}</B></p>
+									<p>&nbsp;</p>
+								</TD>
+							</TR>
+							{/section}
+							<TR class="light">
+								<TD CLASS="ftop" colspan="2" nowrap>
+									<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+									<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
+								</TD>
+							        <TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>
+									<A href="javascript:document.additemlist.submit();">{t}Add items{/t} <IMG src="img/save.gif" ALT=""></A>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+        </TR>
+	</FORM>
+	{/if}
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
 			<B>{t}No.{/t}</B>
@@ -173,10 +315,10 @@
 			<B>{counter}.</B>
 		</TD>
 		<TD WIDTH="94%">
-			<INPUT TYPE="text" NAME="description" SIZE="100" {tip text="Enter item description"}>
+			<INPUT TYPE="text" NAME="description" SIZE="100" {tip text="Enter item description"}{if $rights < 3} readonly{/if}>
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="value" SIZE="10" VALUE="{if $balance < 0}{$balance*-1|string_format:"%.2f"}{/if}" {tip text="Enter item value"}>
+			<INPUT TYPE="text" NAME="value" SIZE="10" VALUE="" {tip text="Enter item value"}{if $rights < 3} readonly{/if}>
 		</TD>
 		<TD CLASS="fright">
 			<A HREF="javascript:additem(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
@@ -184,10 +326,10 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
-			<INPUT type="checkbox" class ="box light" name="original"> {t}original{/t}&nbsp;
-			<INPUT type="checkbox" class ="box light" name="copy"> {t}copy{/t}&nbsp;
+			<INPUT type="checkbox" class ="box light" name="original" checked> {t}original{/t}&nbsp;
+			<INPUT type="checkbox" class ="box light" name="copy" checked> {t}copy{/t}&nbsp;
 			<A HREF="?m=receiptadd&action=init">{t}Clear Contents{/t} <IMG SRC="img/delete.gif" alt=""></A> 
-			{if !$customer}
+			{if !$customer && $receipt.o_type != "other"}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
 			{elseif !$contents}
 			<A HREF="javascript:alert('{t}Receipt have no items!{/t}');">
@@ -198,67 +340,17 @@
 		</TD>
 	</TR>
 	</FORM>
-	<FORM name="additemlist" method="POST" action="?m=receiptadd&action=additemlist">
-	<TR>
-		<TD colspan="4" class="fbottomu">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-				<TR CLASS="DARK">
-					<TD class="fall">
-						<IMG src="img/money.gif" ALT="">
-						<B><A name="balance">{t}Last 10 not accounted invoices:{/t}</A></B>
-					</TD>
-				</TR>
-				<TR>
-					<TD width="100%" class="fall">
-						<TABLE cellpadding="5" cellspacing="0" width="100%">
-							<TR class="dark">
-								<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
-								<TD width="97%" class="fbt">{t}Invoice:{/t}</TD>
-								<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
-								<TD width="1%" class="frightu">&nbsp;</TD>
-							</TR>
-							{cycle values="light,lucid" print=false}
-							{section name=invoicelist loop=$invoicelist}
-							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-							        <TD><nobr>{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
-								<TD>{$invoicelist[invoicelist].number}</TD>
-							        <TD align="right"><nobr>{$invoicelist[invoicelist].value|money_format}</nobr></TD>
-								<TD align="right">
-									{cycle print=false}
-									<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[]" VALUE="{$invoicelist[invoicelist].id}"{if $invoicelist[invoicelist].selected} CHECKED{/if}>
-								</TD>
-							</TR>
-							{sectionelse}
-							<TR>
-								<TD align="center" colspan="4">
-							    		<p>&nbsp;</p>
-									<p><B>{t}That customer hasn't got not accounted invoices.{/t}</B></p>
-									<p>&nbsp;</p>
-								</TD>
-							</TR>
-							{/section}
-							<TR class="light">
-								<TD CLASS="ftop" colspan="2" nowrap>
-									<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
-									<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
-								</TD>
-							        <TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>
-									<A href="javascript:document.additemlist.submit();">{t}Add items{/t} <IMG src="img/save.gif" ALT=""></A>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-        </TR>
-	</FORM>
 </TABLE>
+{/if}
 <SCRIPT LANGUAGE="JavaScript">
 <!--
+{if $receipt.cdate}
 var cal1 = new calendar(document.forms['setcustomer'].elements['receipt[cdate]']);
 cal1.time_comp = false;
-document.forms['setcustomer'].elements['receipt[cdate]'].focus();
+{/if}
+{if !$receipt.selected}
+document.forms['setcustomer'].elements['receipt[regid]'].focus();
+{/if}
 //-->
 </SCRIPT>
 {include file="footer.html"}

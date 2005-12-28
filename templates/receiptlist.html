@@ -1,8 +1,10 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="page">
-<INPUT type="submit" class="hiddenbtn">
+{if $newreceipt}
+<SCRIPT>window.open('?m=receipt&id={$newreceipt}&which={$which}');</SCRIPT>
+{/if}
+{include file="calendar_js.html"}
 {literal}
 <SCRIPT language=JavaScript>
 	<!--
@@ -54,34 +56,40 @@
 	//-->
 </SCRIPT>
 {/literal}
+<FORM METHOD="POST" NAME="page">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD CLASS="fleftu" WIDTH="1%" nowrap>
-			<A href="?m=receiptlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=receiptlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		<TD WIDTH="1%" CLASS="fleftu" nowrap>
+			<A href="?m=receiptlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=receiptlist&o=user{if $listdata.direction eq "asc" && $listdata.order eq "user"},desc{/if}">{t}User:{/t}</A> {if $listdata.order eq "user"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" nowrap>
 			<A href="?m=receiptlist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{t}Number:{/t}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" nowrap>
-			<A href="?m=receiptlist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Value:{/t}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{t}Income:{/t}
 		</TD>
-		<TD WIDTH="95%" CLASS="fbt" nowrap>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			{t}Expense:{/t}
+		</TD>
+		<TD WIDTH="40%" CLASS="fbt" nowrap>
 			<A href="?m=receiptlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{t}For:{/t}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" CLASS="frightu">
-			&nbsp;
+		<TD WIDTH="50%" CLASS="fbt" nowrap>
+			{t}Title:{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu" align="right" nowrap>
+			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{t}New Cash-in Receipt{/t} <img src="img/save.gif" alt=""></A><BR>
+			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{t}New Cash-out Receipt{/t} <img src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	<TR class="DARK">
-		<TD class="fall" colspan="6">
+		<TD class="fall" colspan="7">
 				<B>{t}Filter:{/t} </B> 
 				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
-					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}date (YYYY/MM/DD){/t}</OPTION>
 					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}number{/t}</OPTION>
 					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{t}value{/t}</OPTION>
 					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
@@ -89,12 +97,15 @@
 					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
 					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
 				</SELECT>&nbsp;
+				<B>{t}Period:{/t}</B>&nbsp;
+				{t}from{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{t}to{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>		
 	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="6">
+		<TD WIDTH="100%" class="fall" COLSPAN="7">
 			<B>{t}Page:{/t} {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$receiptlist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B>
 			{math equation="x + 1" x=$start assign=startx}
 			{if $start + $pagelimit > $listdata.totalpos}
@@ -109,20 +120,28 @@
 	{assign var=receipt value=$receiptlist[receiptlist]}
 	{assign var=receiptid value=$receipt.id}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="1%" CLASS="fleft">
-			{$receipt.id|string_format:"%06d"}
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}
+		<TD WIDTH="1%" class="fleft" NOWRAP><A id="{$receipt.id}"></A>
+			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
+			{$receipt.user|truncate:"25":"..."}
 		</TD>
 		<TD WIDTH="1%" NOWRAP align="right">
 			{$receipt.number}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$receipt.value|money_format} 
+			{if $receipt.value > 0}{$receipt.value|money_format}{else}-{/if}
 		</TD>
-		<TD WIDTH="95%">
-			<A HREF="?m=customerinfo&id={$receipt.customerid}">{$receipt.customer}, {$receipt.address}, {$receipt.zip} {$receipt.city}</A>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{if $receipt.value < 0}{$receipt.value*-1|money_format}{else}-{/if}
+		</TD>
+		<TD WIDTH="45%">
+			{if $receipt.customerid}<A HREF="?m=customerinfo&id={$receipt.customerid}">{/if}
+			{$receipt.customer|truncate:"80":"..."}
+			{if $receipt.customerid}</A>{/if}
+		</TD>
+		<TD WIDTH="50%">
+			{if $receipt.title}
+			{$receipt.title|truncate:"80":"..."}
+			{/if}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]"></A>
@@ -134,7 +153,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="6">
+		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
 			<P>&nbsp;</P>
 			<P><B>{t}No such receipts in database.{/t}</B></P>
 			<P>&nbsp;</P>
@@ -142,8 +161,8 @@
 	</TR>	
 	{/section}
 	{if $listdata.totalpos != 0}
-	<TR CLASS="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="6">
+	<TR CLASS="dark" id="end">
+		<TD WIDTH="100%" class="fall" COLSPAN="7">
 			<B>{t}Page:{/t} {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$receiptlist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> 
 			{math equation="x + 1" x=$start assign=startx}
 			{if $start + $pagelimit > $listdata.totalpos}
@@ -154,7 +173,7 @@
 	</TR>
 	{/if}
 	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="6">
+		<TD CLASS="fall" COLSPAN="7">
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left" nowrap>
@@ -169,6 +188,36 @@
 			</TABLE>
 		</TD>
 	</TR>
+        <TR class="light">
+		<TD colspan="2" align="right" class="fleftu" NOWRAP style="vertical-align: top;">
+		        <B>{t}Total:{/t}</B><HR>
+		        <B>{t}Initial balance:{/t}</B><BR>
+		        <B>{t}Final balance:{/t}</B><BR>
+    		</TD>
+	        <TD nowrap class="fbt" align="right" style="vertical-align: top;">
+		        <NOBR>
+			{$listdata.totalincome|money_format}<HR>
+			{$listdata.startbalance|money_format}<BR>
+			{$listdata.endbalance|money_format}
+			</NOBR>
+		</TD>
+		<TD nowrap class="fbt" align="right" style="vertical-align: top;">
+			{$listdata.totalexpense|money_format}<HR>
+		</TD>
+		<TD colspan="3" class="frightu" align="right">
+			<H1>{t}Cash state:{/t} <B>{$listdata.cashstate|money_format}</B></H1>
+			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{t}New Cash-in Receipt{/t} <img src="img/save.gif" alt=""></A>&nbsp;
+			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{t}New Cash-out Receipt{/t} <img src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
 </TABLE>
 </FORM>
+<SCRIPT>
+<!--
+var cal1 = new calendar(document.page.elements['from']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.page.elements['to']);
+cal2.time_comp = false;
+//-->
+</SCRIPT>
 {include file="footer.html"}

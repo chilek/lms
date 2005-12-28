@@ -679,7 +679,7 @@ class LMS
 			foreach($saldolist['id'] as $i => $v)
 			{
 				$value = $saldolist['value'][$i];
-			        $saldolist['after'][$i] = round($saldolist['balance'] + $value,2);
+				$saldolist['after'][$i] = round($saldolist['balance'] + $value,2);
 				$saldolist['balance'] += $value;
 				$saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 			}
@@ -3231,7 +3231,7 @@ class LMS
 		return $number;
 	}
 
-	function DocumentExists($number, $doctype=NULL, $planid=0, $cdate=0)
+	function DocumentExists($number, $doctype=NULL, $planid=0, $cdate=NULL)
 	{
 		if($planid)
 			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
@@ -3273,7 +3273,7 @@ class LMS
 		}
 	
 		return $this->DB->GetOne('SELECT number FROM documents 
-				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?', 
+				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid=?', 
 				array($start, $end, $doctype, $number, $planid)) ? TRUE : FALSE;
 	}
 	

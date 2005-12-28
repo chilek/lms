@@ -248,9 +248,11 @@ CREATE TABLE receiptcontents (
 	docid integer		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2)	DEFAULT 0 NOT NULL,
+	regid integer		DEFAULT 0 NOT NULL,
 	description varchar(255) DEFAULT '' NOT NULL
 );
 CREATE INDEX receiptcontents_docid_idx ON receiptcontents(docid);
+CREATE INDEX receiptcontents_regid_idx ON receiptcontents(regid);
 
 /* -------------------------------------------------------- 
   Structure of table "invoicecontents" 
@@ -693,6 +695,39 @@ CREATE TABLE daemonconfig (
 );
 
 /* ---------------------------------------------------
+ Structure of table "cashrights"
+------------------------------------------------------*/
+
+DROP SEQUENCE cashrights_id_seq;
+CREATE SEQUENCE cashrights_id_seq;
+DROP TABLE cashrights;
+CREATE TABLE cashrights (
+    id integer 		DEFAULT nextval('cashrights_id_seq'::text) NOT NULL,
+    userid integer 	DEFAULT 0 NOT NULL,
+    regid integer 	DEFAULT 0 NOT NULL,
+    rights integer 	DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (userid, regid)
+);
+							    
+/* ---------------------------------------------------
+ Structure of table "cashregs"
+------------------------------------------------------*/
+
+DROP SEQUENCE cashregs_id_seq;
+CREATE SEQUENCE cashregs_id_seq;
+DROP TABLE cashregs;
+CREATE TABLE cashregs (
+    id integer 			DEFAULT nextval('cashregs_id_seq'::text) NOT NULL,
+    name varchar(255) 		DEFAULT '' NOT NULL,
+    description text 		DEFAULT '' NOT NULL,
+    in_numberplanid integer 	DEFAULT 0 NOT NULL,
+    out_numberplanid integer 	DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+/* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
 
@@ -703,4 +738,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005110600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005122800');
