@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - fixed new item addition in Cash Receipt Edit (alec)
   - removed doubled function CustomerGroupGetAll() call in print module (alec)
+  - fixed link to all customer's documents list (alec)
 
 version 1.8.0rc3 Rosha (2005-12-22):
 
