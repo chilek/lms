@@ -102,18 +102,19 @@ switch($_GET['action'])
 		$receipt['cdate'] = time();
 		
 		if($receipt['type'] == 'in')
+		{
 			$receipt['numberplanid'] = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-			
+			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
+		}	
+	
 		if($receipt['type'] == 'out')
 		{
 			$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
+			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 			if($receipt['regid'])
 				if( $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
 					$error['regid'] = trans('There is no cash in selected registry!');
 		}
-		
-		if($receipt['numberplanid'])
-			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 		
 		if(!$error && $receipt['customerid'] && $LMS->CustomerExists($receipt['customerid']))
 			$customer = $LMS->GetCustomer($receipt['customerid']);
