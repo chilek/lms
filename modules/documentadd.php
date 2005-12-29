@@ -222,6 +222,8 @@ if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9]+$'))
 		}
 	}
 
+if($docengines) asort($docengines);
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('numberplans', $numberplans);
