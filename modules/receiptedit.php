@@ -77,7 +77,7 @@ $SESSION->restore('receiptcontents', $contents);
 $SESSION->restore('receiptcustomer', $customer);
 $SESSION->restore('receipt', $receipt);
 $SESSION->restore('receiptediterror', $error);
-$SESSION->restore('receiptwhere', $receiptwhere);
+$SESSION->restore('receiptquery', $receiptquery);
 
 $receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate']);
 if($receipt['type']=='in')
@@ -191,32 +191,45 @@ switch($_GET['action'])
 		        $search = $receipt['search'];
 			switch($receipt['cat'])
 			{
-			        case 'id':
-				        $where = ' AND id = '.intval($search);
+				case 'id':
+					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
+						    FROM customers WHERE deleted = 0 AND id = '.intval($search).'
+						    ORDER BY customername';
 				break;
 				case 'ten':
-				        $where = ' AND ten = \''.$search.'\'';
+					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
+						    FROM customers WHERE deleted = 0 AND ten = \''.$search.'\'
+						    ORDER BY customername';
 				break;
 				case 'name':
-					$where = ' AND '.$DB->Concat('UPPER(lastname)',"' '",'name').' ?LIKE? \'%'.$search.'%\'';
+					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
+						    FROM customers WHERE deleted = 0 AND '.$DB->Concat('UPPER(lastname)',"' '",'name').' ?LIKE? \'%'.$search.'%\'
+						    ORDER BY customername';
 				break;
 				case 'address':
-					$where = ' AND address ?LIKE? \'%'.$search.'%\'';
+					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
+						    FROM customers WHERE deleted = 0 AND address ?LIKE? \'%'.$search.'%\'
+						    ORDER BY customername';
+				break;
+				case 'node':
+					$query = 'SELECT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername 
+						    FROM customers, nodes WHERE customers.id = ownerid AND nodes.name ?LIKE? \'%'.$search.'%\'
+						    GROUP BY customers.id ORDER BY customername';
+				break;
+				default:
+					$query = '';
 				break;
 			}
-	
-	                $customerlist = $DB->GetAll('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername
-			                            FROM customers
-			                            WHERE deleted = 0 '.$where.'
-			                            ORDER BY customername');
-		        
+
+			$customerlist = $DB->GetAll($query);
+			
 			if(sizeof($customerlist)==1)
 			{
-			        $cid = $customerlist[0]['id'];
+				$cid = $customerlist[0]['id'];
 				unset($customerlist);
 			}
 			else
-			        $SESSION->save('receiptwhere', $where);
+				$SESSION->save('receiptquery', $query);
 		}
 		else																																															    																																																																		    
 			$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'];
@@ -359,13 +372,10 @@ if($_GET['action'] != '')
 	$SESSION->redirect('?m=receiptedit');
 }
 
-if($receiptwhere)
+if($receiptquery)
 {
-        $customerlist = $DB->GetAll('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername
-	        	    FROM customers
-			    WHERE deleted = 0 '.$receiptwhere.'
-			    ORDER BY customername');
-	$SESSION->remove('receiptwhere');
+        $customerlist = $DB->GetAll($receiptquery);
+	$SESSION->remove('receiptquery');
 }
 
 $cashreglist = $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id');

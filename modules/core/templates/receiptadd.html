@@ -152,7 +152,7 @@
 				<OPTION value="name"{if $receipt.cat=="name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
 				<OPTION value="ten"{if $receipt.cat=="ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
 				<OPTION value="address"{if $receipt.cat=="address"} SELECTED{/if}>{t}address{/t}</OPTION>
-			{*	<OPTION value="node"{if $receipt.cat=="node"} SELECTED{/if}>{t}node name{/t}</OPTION> *}
+				<OPTION value="node"{if $receipt.cat=="node"} SELECTED{/if}>{t}node name{/t}</OPTION>
 			</SELECT>
 			<BR>
 			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}
