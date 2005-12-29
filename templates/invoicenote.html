@@ -125,13 +125,13 @@
 			<INPUT TYPE="text" VALUE="{$item.prodid}" NAME="prodid[{$item.itemid}]" SIZE="6">
 			{/if}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD WIDTH="1%">
 			{if $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$item.itemid}]">{$item.count|string_format:"%.2f"}<BR>
 			<INPUT TYPE="hidden" VALUE="{$item.jm}" NAME="jm[{$item.itemid}]">{$item.jm}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$item.itemid}]" SIZE="1"><BR>
-			<INPUT TYPE="text" VALUE="{$item.jm}" NAME="jm[{$item.itemid}]" SIZE="1">
+			<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$item.itemid}]" SIZE="3">
+			<INPUT TYPE="text" VALUE="{$item.jm}" NAME="jm[{$item.itemid}]" SIZE="3">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
@@ -204,7 +204,7 @@
 <!--
 var cal1 = new calendar(document.forms['setheader'].elements['cnote[cdate]']);
 cal1.time_comp = false;
-document.forms['setheader'].elements['cnote[cdate]'].focus();
+document.forms['setheader'].elements['cnote[number]'].focus();
 //-->
 </SCRIPT>
 {include file="footer.html"}
