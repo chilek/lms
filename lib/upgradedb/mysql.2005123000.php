@@ -26,7 +26,7 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE cashregs ADD COLUMN disabled tinyint NOT NULL DEFAULT '0'");
+$DB->Execute("ALTER TABLE cashregs ADD COLUMN disabled tinyint(1) NOT NULL DEFAULT '0'");
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005123000', 'dbversion'));
 
 $DB->CommitTrans();
