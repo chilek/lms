@@ -185,16 +185,19 @@ switch($_GET['action'])
 			
 			foreach($marks as $id)
 			{
-				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, template
+				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, template, documents.type AS type
 						    FROM cash 
 						    LEFT JOIN documents ON (docid = documents.id)
 						    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						    WHERE docid = ?
-						    GROUP BY docid, number, cdate, template', array($id));
+						    GROUP BY docid, number, cdate, template, documents.type', array($id));
 				$itemdata['value'] = $receipt['type']=='in' ? -$row['value'] : $row['value'];
-				$itemdata['description'] = trans('Invoice No. $0', docnumber($row['number'], $row['template'], $row['cdate']));
 				$itemdata['docid'] = $id;
 				$itemdata['posuid'] = (string) (getmicrotime()+$id);
+				if($row['type']==DOC_INVOICE)
+					$itemdata['description'] = trans('Invoice No. $0', docnumber($row['number'], $row['template'], $row['cdate']));
+				else
+					$itemdata['description'] = trans('Credit Note No. $0', docnumber($row['number'], $row['template'], $row['cdate']));
 				
 				if($receipt['type'] != 'in')
 				{
@@ -391,37 +394,29 @@ switch($_GET['action'])
 				$iid++;
 				
 				if($receipt['type'] == 'in')
-				{
-					$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-						        VALUES(?,?,?,?,?)', 
-							array($rid, 
+					$value = str_replace(',','.',$item['value']);
+				else 
+					$value = str_replace(',','.',$item['value']*-1);
+				
+				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
+					        VALUES(?,?,?,?,?)', 
+						array($rid, 
 							$iid, 
-							str_replace(',','.',$item['value']), 
+							$value, 
 							$item['description'],
 							$receipt['regid']
-							));
-					$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
-				    			VALUES(?, 1, ?, ?, ?, ?, ?, ?)', 
-							array($receipt['cdate'],
+						));
+				
+				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
+						VALUES(?, 1, ?, ?, ?, ?, ?, ?)', 
+						array($receipt['cdate'],
 							$rid, 
 							$iid, 
-							str_replace(',','.',$item['value']), 
+							$value, 
 							$item['description'],
 							$AUTH->id,
 							$customer['id']
-							));
-				}
-				else
-				{
-					$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-						        VALUES(?,?,?,?,?)', 
-							array($rid, 
-								$iid, 
-								str_replace(',','.',$item['value']*-1), 
-								$item['description'],
-								$receipt['regid']
-							));
-				}
+						));
 				
 				if($item['docid'])
 					$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));

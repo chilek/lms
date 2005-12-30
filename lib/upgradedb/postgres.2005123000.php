@@ -24,26 +24,17 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Cash Registries List');
+$DB->BeginTrans();
 
-$reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name, cashregs.description AS description,
-			i.template AS in_template, o.template AS out_template, SUM(value) AS balance, disabled
-			FROM cashregs 
-			LEFT JOIN receiptcontents ON (cashregs.id = regid)
-			LEFT JOIN numberplans i ON (in_numberplanid = i.id)
-			LEFT JOIN numberplans o ON (out_numberplanid = o.id)
-			GROUP BY cashregs.id, cashregs.name, cashregs.description, disabled, i.template, o.template 
-			ORDER BY cashregs.name');
+$DB->Execute("
+    ALTER TABLE cashregs ADD COLUMN disabled smallint;
+    UPDATE cashregs SET disabled = 0;
+    ALTER TABLE cashregs ALTER disabled SET NOT NULL;
+    ALTER TABLE cashregs ALTER disabled SET DEFAULT 0;
+");    
 
-if($reglist)
-	foreach($reglist as $row)
-		if(!$row['disabled'])
-			$listdata['sum'] += $row['balance'];
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005123000', 'dbversion'));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('reglist', $reglist);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->display('cashreglist.html');
+$DB->CommitTrans();
 
 ?>
