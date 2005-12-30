@@ -288,7 +288,7 @@ switch($_GET['action'])
 		if($DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id))<2)
 			$error['regid'] = trans('You don\'t have permission to add receipt in selected cash registry!');
 		
-		if($receipt['o_type']=='other')
+		if($receipt['o_type']=='other' || $receipt['o_type']=='move')
 		{
 			$receipt['customerid'] = 0;
 			if(!$error)
@@ -431,7 +431,7 @@ switch($_GET['action'])
 			
 			$print = TRUE;
 		}
-		elseif($contents && $receipt['o_type'] =="other")
+		elseif($contents && $receipt['o_type'] == "other")
 		{
 			$DB->BeginTrans();
 		
