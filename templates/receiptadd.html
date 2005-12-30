@@ -135,6 +135,7 @@
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" class="box light" checked>
+			{t}customer{/t}:
 			<SELECT SIZE="1" NAME="customer" {* onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value"*} {tip trigger="customerid"}>
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customerlist item=c}
@@ -154,8 +155,12 @@
 				<OPTION value="address"{if $receipt.cat=="address"} SELECTED{/if}>{t}address{/t}</OPTION>
 				<OPTION value="node"{if $receipt.cat=="node"} SELECTED{/if}>{t}node name{/t}</OPTION>
 			</SELECT>
+			{if  $cashregcount > 1 && $receipt.type=="out"}
 			<BR>
-			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}
+			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" class="box light" {if $receipt.o_type=="move"} checked{/if}> {t}assets move{/t}
+			{/if}
+			<BR>
+			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}:
 			<INPUT TYPE="text" NAME="receipt[o_name]" VALUE="{$receipt.o_name}" SIZE="75" {if $receipt.type=="out"}{tip text="Enter recipient (optional)"}{else}{tip text="Enter payer (optional)"}{/if}{if $rights < 3} readonly{/if}>
 		</TD>
 	</TR>
@@ -168,7 +173,7 @@
 </TABLE>
 </FORM>
 {if $error.nocash}<h2 align="center"><font class="alert">{$error.nocash}</font></h2>{/if}
-{if $receipt.type=="out" && $receipt.o_type=="other" && $cashregcount > 1}
+{if $receipt.type=="out" && $receipt.o_type=="move" && $cashregcount > 1}
 <P>
 <FORM name="movecash" method="POST" action="?m=receiptadd&action=movecash">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -200,7 +205,7 @@
 </TABLE>
 </FORM>
 {/if}
-{if $receipt.selected}
+{if $receipt.selected && $receipt.o_type!="move"}
 <P>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	{if $receipt.o_type != "other"}

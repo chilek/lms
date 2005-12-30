@@ -1675,5 +1675,6 @@ $_LANG['pay out'] = 'wypłata';
 $_LANG['Select cash receipt type'] = 'Wybierz typ dokumentu kasowego';
 $_LANG['Enter recipient (optional)'] = 'Wprowadź odbiorcę (opcjonalnie)';
 $_LANG['Enter payer (optional)'] = 'Wprowadź wpłacającego (opcjonalnie)';
+$_LANG['assets move'] = 'przeniesienie środków';
 
 ?>
