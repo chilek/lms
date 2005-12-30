@@ -502,7 +502,6 @@ switch($_GET['action'])
 			// cash-out
 			$description = trans('Moving assets to registry $0',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
 			
-			
 			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, name)
 					VALUES(?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
@@ -524,8 +523,12 @@ switch($_GET['action'])
 						$receipt['regid']
 					));
 
+			// number of cash-out receipt
+			$template = $DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid']));
+			$r_number = docnumber($receipt['number'], $template, $receipt['cdate']);
+
 			// cash-in
-			$description = trans('Moving assets from registry $0',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($receipt['regid'])));
+			$description = trans('Moving assets from registry $0 ($1)',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($receipt['regid'])), $r_number);
 			$numberplan = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($dest));
 			$number = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $numberplan, $receipt['cdate']);
 
