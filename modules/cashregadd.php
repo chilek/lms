@@ -45,12 +45,13 @@ if(isset($registry))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO cashregs (name, description, in_numberplanid, out_numberplanid)
-				VALUES(?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO cashregs (name, description, in_numberplanid, out_numberplanid, disabled)
+				VALUES(?, ?, ?, ?, ?)',
 				array($registry['name'],
 					$registry['description'],
 					$registry['in_numberplanid'],
 					$registry['out_numberplanid'],
+					$registry['disabled'] ? 1 : 0
 				));
 				
 		$id = $DB->GetOne('SELECT id FROM cashregs WHERE name=?', array($registry['name']));

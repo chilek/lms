@@ -688,9 +688,10 @@ CREATE TABLE cashregs (
     description text        DEFAULT '' NOT NULL,
     in_numberplanid int(11) DEFAULT '0' NOT NULL,
     out_numberplanid int(11) DEFAULT '0' NOT NULL,
+    disabled tinyint        DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005122800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005123000');

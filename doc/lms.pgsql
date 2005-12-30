@@ -723,6 +723,7 @@ CREATE TABLE cashregs (
     description text 		DEFAULT '' NOT NULL,
     in_numberplanid integer 	DEFAULT 0 NOT NULL,
     out_numberplanid integer 	DEFAULT 0 NOT NULL,
+    disabled smallint		DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (name)
 );
@@ -738,4 +739,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005122800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005123000');

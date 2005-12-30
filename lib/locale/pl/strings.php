@@ -208,7 +208,7 @@ $_LANG['Cash'] = 'Kasa';
 $_LANG['CASH'] = 'GOTÓWKA';
 $_LANG['Cash Operations Import'] = 'Import operacji kasowych';
 $_LANG['Cash receipt'] = 'Dowód wpłaty';
-$_LANG['Cash Receipt No. $0'] = 'Dowód wpłaty Nr $0';
+$_LANG['Cash Receipt No. $0'] = 'Dokument kasowy Nr $0';
 $_LANG['Cash receipt template file. Default: "receipt.html". Should be placed in templates directory.'] = 'Szablon dowodu wpłaty. Domyślnie: "receipt.html". Powinien znajdować się w katalogu templates.';
 $_LANG['Cash Report'] = 'Raport kasowy';
 $_LANG['Cautions:'] = 'Uwagi:';
@@ -270,7 +270,6 @@ $_LANG['copy'] = 'kopia';
 $_LANG['COPY'] = 'KOPIA';
 $_LANG['Copyrights'] = 'Prawa autorskie';
 $_LANG['Copyrights, authors, etc.'] = 'Prawa autorskie, autorzy, itp.';
-$_LANG['CR'] = 'KP';
 $_LANG['Create alias'] = 'Utwórz alias';
 $_LANG['Created:'] = 'Utworzony:';
 $_LANG['Created by: $0'] = 'Utworzone przez: $0';
@@ -1676,5 +1675,7 @@ $_LANG['Select cash receipt type'] = 'Wybierz typ dokumentu kasowego';
 $_LANG['Enter recipient (optional)'] = 'Wprowadź odbiorcę (opcjonalnie)';
 $_LANG['Enter payer (optional)'] = 'Wprowadź wpłacającego (opcjonalnie)';
 $_LANG['assets move'] = 'przeniesienie środków';
+$_LANG['Disabled summary:'] = 'Wyłączenie z sumowania:';
+$_LANG['no'] = 'nie';
 
 ?>

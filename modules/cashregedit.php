@@ -50,12 +50,13 @@ if(isset($_POST['registry']))
 	if(!$error)
 	{
 		$DB->BeginTrans();
-		$DB->Execute('UPDATE cashregs SET name=?, description=?, in_numberplanid=?, out_numberplanid=?
+		$DB->Execute('UPDATE cashregs SET name=?, description=?, in_numberplanid=?, out_numberplanid=?, disabled=?
 				WHERE id=?',
 				array($registry['name'],
 					$registry['description'],
 					$registry['in_numberplanid'],
 					$registry['out_numberplanid'],
+					$registry['disabled'] ? 1 : 0,
 					$registry['id']
 				));
 		
@@ -71,7 +72,7 @@ if(isset($_POST['registry']))
 }
 else
 {
-	$registry = $DB->GetRow('SELECT id, name, description, in_numberplanid, out_numberplanid
+	$registry = $DB->GetRow('SELECT id, name, description, in_numberplanid, out_numberplanid, disabled
 			FROM cashregs WHERE id=?', array($id));
 
 	$users = $DB->GetAll('SELECT id, name FROM users WHERE deleted=0');

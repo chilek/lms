@@ -28,7 +28,7 @@
 $id = intval($_GET['id']);
 
 $registry = $DB->GetRow('SELECT reg.id AS id, reg.name AS name, reg.description AS description,
-			i.template AS in_template, o.template AS out_template
+			i.template AS in_template, o.template AS out_template, disabled
 			FROM cashregs reg
 			LEFT JOIN numberplans i ON (in_numberplanid = i.id)
 			LEFT JOIN numberplans o ON (out_numberplanid = o.id)
