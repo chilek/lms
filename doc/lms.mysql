@@ -688,7 +688,7 @@ CREATE TABLE cashregs (
     description text        DEFAULT '' NOT NULL,
     in_numberplanid int(11) DEFAULT '0' NOT NULL,
     out_numberplanid int(11) DEFAULT '0' NOT NULL,
-    disabled tinyint        DEFAULT '0' NOT NULL,
+    disabled tinyint(1)     DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) TYPE=MyISAM;													
