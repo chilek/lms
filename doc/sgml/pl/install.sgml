@@ -730,18 +730,19 @@ AddDefaultCharset Off
         	</para>
 	</sect2>
 	<sect2 id="install-receipts">
-	<title>Dowody wp³aty (KP)</title>
-          <para>Dowody wp³aty, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
+	<title>Dokumenty kasowe (KP/KW)</title>
+          <para>Dokumenty kasowe, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
 	  opcje konfiguracyjne jak faktury.</para>
          <sect3 id="install-receipts-html">
           <title>HTML</title>
-          <para>Przy domy¶lnych ustawieniach dowody wp³aty wy¶wietlane s± w
-          formacie html wg domy¶lnego szablonu. W sekcji <emphasis>[receipts]</emphasis>
+          <para>Przy domy¶lnych ustawieniach dokumenty kasowe wy¶wietlane s± w
+          formacie html wg domy¶lnego szablonu. Dla dowodów wp³aty oraz wyp³aty
+	  przewidziano wspólny szablon wydruku. W sekcji <emphasis>[receipts]</emphasis>
 	  masz do dyspozycji jeszcze nastêpuj±ce opcje:
           <itemizedlist>
           <listitem>
                <para>template_file</para>
-               <para>Szablon dowodu wp³aty, który powinien znajdowaæ siê w
+               <para>Szablon dowodu wp³aty/wyp³aty, który powinien znajdowaæ siê w
                katalogu <filename>templates</filename>. Domy¶lnie: receipt.html.</para>
                <para>Przyk³ad: <prompt>template_file = mytempl/receipt.html</prompt></para>
           </listitem>
@@ -764,7 +765,7 @@ AddDefaultCharset Off
         </sect3>
         <sect3 id="install-receipts-pdf">
     	    <title>PDF</title>
-        	<para>Mo¿liwe jest tak¿e tworzenie dowodów wp³aty jako plików pdf. Przypisanie
+        	<para>Mo¿liwe jest tak¿e tworzenie dokumentów kasowych jako plików pdf. Przypisanie
         	opcji <filename>type</filename> z sekcji <emphasis>[receipts]</emphasis> 
         	warto¶ci 'pdf' spowoduje, ¿e dowody zamiast w html'u bêd± tworzone jako pliki 
         	"portable data format". Opcja <filename>template_file</filename> spe³nia podobn± 

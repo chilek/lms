@@ -303,6 +303,26 @@
                     <member>isdefault - '1' - je¶li dany plan jest domy¶lny dla wybranego typu dokumentów, '0' - je¶li nie</member>
                </simplelist>
           </sect2>
+	  <sect2 id="cashregs">
+		<title>Rejestry kasowe ('cashregs')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>name - nazwa rejestru</member>
+			<member>description - dodatkowy opis</member>
+			<member>in_numberplanid - identyfikator planu numeracyjnego dla dowodów wp³aty</member>
+			<member>out_numberplanid - identyfikator planu numeracyjnego dla dowodów wyp³aty</member>
+			<member>disabled - wy³±czenie sumowania (0/1)</member>
+		</simplelist>
+	  </sect2>
+	  <sect2 id="cashrights">
+		  <title>Rejestry kasowe - uprawnienia ('cashrights')</title>
+		  <simplelist>
+			  <member>id - identyfikator</member>
+			  <member>regid - identyfikator rejestru</member>
+			  <member>userid - identyfikator u¿ytkownika</member>
+			  <member>rights - (1-odczyt, 2-zapis, 3-zaawansowane)</member>
+		  </simplelist>
+          </sect2>
           <sect2 id="documents">
                <title>Dokumenty: faktury, KP, umowy, etc. ('documents')</title>
                   <simplelist>
@@ -357,6 +377,7 @@
                   <simplelist>
                     <member>docid - identyfikator faktury</member>
                     <member>itemid - nr pozycji</member>
+		    <member>regid - identyfikator rejestru</member>
                     <member>value - kwota pozycji</member>
                     <member>description - opis pozycji</member>
                </simplelist>
@@ -467,7 +488,7 @@
                     <member>id - identyfikator</member>
                     <member>queueid - identyfikator kolejki</member>
                     <member>userid - identyfikator u¿ytkownika</member>
-                    <member>rights - (1-odczyt, 2-zapis)</member>
+                    <member>rights - (1-odczyt, 2-zapis, 3-powiadomienia)</member>
                </simplelist>
           </sect2>
           <sect2 id="uiconfig">
