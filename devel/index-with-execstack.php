@@ -135,7 +135,7 @@ $SMARTY = new Smarty;
 // test for proper version of Smarty
 
 if(version_compare('2.6.0', $SMARTY->_version) > 0)
-	die('<B>Old version of Smarty engine! You must get newest from <A HREF="http://smarty.php.net/distributions/Smarty-2.6.8.tar.gz">http://smarty.php.net/distributions/Smarty-2.6.8.tar.gz</A></B>');
+	die('<B>Old version of Smarty engine! You must get newest from <A HREF="http://smarty.php.net/distributions/Smarty-2.6.10.tar.gz">http://smarty.php.net/distributions/Smarty-2.6.10.tar.gz</A></B>');
 
 // Read configuration of LMS-UI from database
 
@@ -173,7 +173,6 @@ $LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->lang = $_language;
 
 // EXPERIMENTAL CODE! USE WITH CAUTION ;-)
-
 
 $_LMSDIR = dirname(__FILE__);
 
@@ -218,7 +217,7 @@ foreach($ExecStack->_EXECSTACK['actions'] as $step => $execute)
 	// do include once, because testing that language for executed module has been already loaded
 	// will take some time, so let's PHP decide if we already loaded it or what...
 
-	@include_once($_LMSDIR.'/modules/'.$execute['module'].'/lang/'.$ExecStack->lang.'.php');
+	@include_once($_LMSDIR.'/modules/'.$execute['module'].'/lang/'.$LMS->lang.'.php');
 	@include_once($_LMSDIR.'/modules/'.$execute['module'].'/modinit.php');
 	
 	if($ExecStack->needExec($execute['module'], $execute['action']))
