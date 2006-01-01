@@ -437,7 +437,9 @@ CLASS="FILENAME"
 >/bin/true</TT
 >. String ten puszczany do komendy system() wiêc proponujê rozwagê 
             i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
-            wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</P
+            wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.
+	    W poleceniach mo¿na u¿ywaæ zmiennej '%host', która zostanie zamieniona na nazwê
+	    zdefiniowanego hosta (Konfiguracja -&#62; Hosty).</P
 ><P
 >Przyk³ad:     <SAMP
 CLASS="PROMPT"
@@ -452,7 +454,14 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >reload_type = sql</SAMP
 >.  
-            Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
+            Domy¶lnie zapytanie ustawia w bazie polecenie prze³adowania dla demona
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lmsd</I
+></SPAN
+>. W zapytaniu mo¿na u¿yæ zmiennej '%host' oraz
             '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
             traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</P
 ><P

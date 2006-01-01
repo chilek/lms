@@ -110,12 +110,26 @@ CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
 >, który wygeneruje 
-	zdefiniowan± konfiguracjê i prze³aduje us³ugi. 
+	zdefiniowan± konfiguracjê i prze³aduje us³ugi (zale¿nie od zdefiniowanej
+	opcji <SAMP
+CLASS="PROMPT"
+>reload_execcmd</SAMP
+>).</P
+><P
+> Zachowanie menu 'Prze³adowanie' jest zale¿ne od ustawienia 
+	opcji <SAMP
+CLASS="PROMPT"
+>reload_type</SAMP
+>. Je¶li zdefiniowa³e¶ zapytanie SQL 
+	w opcji <SAMP
+CLASS="PROMPT"
+>reload_sqlquery</SAMP
+> zostanie ono wykonane.
 	Je¿eli zdefiniowa³e¶ hosty mo¿esz wybraæ z listy, na których
-	z nich chcesz dokonaæ prze³adowania. Zachowanie
-	menu 'Prze³adowanie' jest zale¿ne od ustawienia opcji 'reload_type'.
-	Je¶li zdefiniowa³e¶ zapytanie SQL w opcji 'reload_sqlquery' zostanie 
-	ono wykonane.</P
+	z nich chcesz dokonaæ prze³adowania. W takim wypadku zapytania sql lub
+	komendy zostan± wykonane dla ka¿dego hosta, przy czym definiuj±c
+	je mo¿esz skorzystaæ ze zmiennej '%host', pod któr± zostanie
+	podstawiona w³a¶ciwa nazwa hosta.</P
 ><P
 >Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych 
 	<SPAN

@@ -638,7 +638,8 @@ $access['table'][100]['allow_reg'] = '^invoice$';
          <sect3 id="install-receipts-html">
           <title>HTML</title>
           <para>Receipts are printed in html format by default
-          using provided template. In <emphasis>[receipts]</emphasis> section
+          using provided template. We chave one printout template for
+	  cash-in and cash-out receipts. In <emphasis>[receipts]</emphasis> section
           you can also configure:
           <itemizedlist>
           <listitem>
@@ -646,7 +647,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                <para>Cash receipt template, which should be placed in 
                <filename>templates</filename> directory. Default: receipt.html.</para>
                <para>Example: <prompt>template_file = /mytemplates/receipt.html</prompt></para>
-          </listitem>          
+          </listitem> 
           <listitem>
                <para>content_type</para>
                <para>Printout content-type. If you enter here 'application/octet-stream'

@@ -361,9 +361,20 @@ invoices.</para></note></para>
 		<para>Allows you to issue an invoice for selected customer manually.</para>
 	</sect2>
 	<sect2 id="menu-receipts-list">
-	    <title>Cash Receipts List</title>
-		<para>Cash receipt it's a proof of customer payment in cash.
-		Receipts list can be sorted in any order and filtered like the
+	    <title>Cash Registry</title>
+		<para>Cash register can be divided on many registries like cash1, cash2,
+		main cash, bank, etc. On regirstries list are placed all informations about
+		defined registries with actual balance and summary which include only
+		registries with not set "Disable summary" option.</para>
+		<para>Each registry can have own numbering of cash-in and cash-out
+		documents and access rights for users. "Write" privilage is assigned for
+		common cashiers and dismiss receipts read and addition, but without chance 
+		to edit or even change of number, date and payment title (there is no chance
+		to add receipt items in other way than by selecting them from invoices list). 
+		Those activities can be done only by users with "Advanced" privilages.</para>
+		<para>Cash receipts are a proofs of payment in and out cash.
+		Receipts list, which you'll find by clicking on selected registry on registries 
+		list, can be sorted in any order and filtered like the
 		invoices list. You've got also print selected receipts.</para>
 		<para>From list you can go to receipt edition. Making changes in
 		created documents needs special care, because submitting changes
@@ -371,14 +382,18 @@ invoices.</para></note></para>
 		new ones.</para>
 	</sect2>
 	<sect2 id="menu-receipts-new">
-	    <title>New Receipt</title>
-		<para>To create new proof of payment in first place you must to
-		select customer from list, set date and number (better to leave
-		values proposed by system) Then click 'Submit' to affirm choice.
-		After that you can add any number of positions with value and
-		description or select them from list of unpaid customer covenants
-		placed at bottom. 'Save and Print' will finish and save receipt
+	    <title>New Cash Receipt</title>
+		<para>To create new cash document in first place you must specify registry
+		and operation type (pay in/pay out), select customer from list or search 
+		them using filter. You can select other operation type i.e. assets move or
+		operation not associated with customer. Also you can set date and number 
+		(better to leave values proposed by system). Then click 'Select' to affirm 
+		your choice. After that you can add any number of positions with value and
+		description or select them from list of not closed invoices/credit notes.
+		'Save and Print' will finish and save receipt
 		and payments in system and display receipt's printout in new window.</para>
+		<para>Printouts look configuration is desribed in chapter Installation and
+		Configuration.</para>
 	</sect2>
 	<sect2 id="menu-import">
 	    <title>Import</title>
@@ -430,6 +445,10 @@ invoices.</para></note></para>
 		<listitem>
 			<para><emphasis>Sale Registry</emphasis>, which consists of
 			invoices for given period.</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Cash Report</emphasis>, which consists of
+			cash receipts for given period and/or given registry and cashier.</para>
 		</listitem>
 		<listitem>
 			<para><emphasis>Customer balance sheet</emphasis> for given

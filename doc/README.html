@@ -1803,8 +1803,8 @@ TARGET="_top"
 >Let's stop here and add some stuff to cron, for peace of mind:
                <PRE
 CLASS="SCREEN"
->12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
-            --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</PRE
+>12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean \
+                       lms --file=backups/lms-auto-"$(date +%s)".sql</PRE
 >
          </P
 ></DIV
@@ -2801,7 +2801,8 @@ NAME="INSTALL-RECEIPTS-HTML"
 ></H4
 ><P
 >Receipts are printed in html format by default
-          using provided template. In <SPAN
+          using provided template. We chave one printout template for
+	  cash-in and cash-out receipts. In <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -3869,11 +3870,24 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-RECEIPTS-LIST"
->3.7.9. Cash Receipts List</A
+>3.7.9. Cash Registry</A
 ></H3
 ><P
->Cash receipt it's a proof of customer payment in cash.
-		Receipts list can be sorted in any order and filtered like the
+>Cash register can be divided on many registries like cash1, cash2,
+		main cash, bank, etc. On regirstries list are placed all informations about
+		defined registries with actual balance and summary which include only
+		registries with not set "Disable summary" option.</P
+><P
+>Each registry can have own numbering of cash-in and cash-out
+		documents and access rights for users. "Write" privilage is assigned for
+		common cashiers and dismiss receipts read and addition, but without chance 
+		to edit or even change of number, date and payment title (there is no chance
+		to add receipt items in other way than by selecting them from invoices list). 
+		Those activities can be done only by users with "Advanced" privilages.</P
+><P
+>Cash receipts are a proofs of payment in and out cash.
+		Receipts list, which you'll find by clicking on selected registry on registries 
+		list, can be sorted in any order and filtered like the
 		invoices list. You've got also print selected receipts.</P
 ><P
 >From list you can go to receipt edition. Making changes in
@@ -3887,16 +3901,21 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-RECEIPTS-NEW"
->3.7.10. New Receipt</A
+>3.7.10. New Cash Receipt</A
 ></H3
 ><P
->To create new proof of payment in first place you must to
-		select customer from list, set date and number (better to leave
-		values proposed by system) Then click 'Submit' to affirm choice.
-		After that you can add any number of positions with value and
-		description or select them from list of unpaid customer covenants
-		placed at bottom. 'Save and Print' will finish and save receipt
+>To create new cash document in first place you must specify registry
+		and operation type (pay in/pay out), select customer from list or search 
+		them using filter. You can select other operation type i.e. assets move or
+		operation not associated with customer. Also you can set date and number 
+		(better to leave values proposed by system). Then click 'Select' to affirm 
+		your choice. After that you can add any number of positions with value and
+		description or select them from list of not closed invoices/credit notes.
+		'Save and Print' will finish and save receipt
 		and payments in system and display receipt's printout in new window.</P
+><P
+>Printouts look configuration is desribed in chapter Installation and
+		Configuration.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -4005,6 +4024,17 @@ CLASS="EMPHASIS"
 ></SPAN
 >, which consists of
 			invoices for given period.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Cash Report</I
+></SPAN
+>, which consists of
+			cash receipts for given period and/or given registry and cashier.</P
 ></LI
 ><LI
 ><P
@@ -5142,11 +5172,12 @@ CLASS="FILENAME"
 >/bin/true</TT
 >. This string is send to system() command, so make sure that
         	you know what you're doing. :) Besides, semicolons should be parsed by bash, but LMS splits
-        	that string and execute commands separately.</P
+        	that string and execute commands separately. In commands you can use
+		'%host' variable, which is replaced by defined host name (Configuration -&#62; Hosts).</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
->reload_execcmd = "sudo /usr/bin/reload_lms.sh"</SAMP
+>reload_execcmd = "sudo /usr/bin/reload_lms.sh %host"</SAMP
 ></P
 ></LI
 ><LI
@@ -5157,10 +5188,16 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >reload_type = sql</SAMP
 >. By default,
-        	query does inserts into table 'timestamps' with '_force' value. You can use '%TIME%'
-        	template in your query which will be substituted with current UNIX timestamp. WARNING!
-        	Semicolon is handled as query separator, which means that you can enter couple of SQL
-        	queries separated by semicolon sign.</P
+        	query sets reload order for daemon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lmsd</I
+></SPAN
+>. You can use '%TIME%'
+        	template in your query which will be substituted with current UNIX timestamp and '%host'
+		for host name. WARNING!	Semicolon is handled as query separator, which means 
+		that you can enter couple of SQL queries separated by semicolon sign.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -13802,8 +13839,76 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="CASHREGS"
+>7.2.17. Cash registries ('cashregs')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - registry name</TD
+></TR
+><TR
+><TD
+>description - additional description</TD
+></TR
+><TR
+><TD
+>in_numberplanid - numbering plan identifier for cash-in receipts</TD
+></TR
+><TR
+><TD
+>out_numberplanid - numbering plan identifier for cash-out receipts</TD
+></TR
+><TR
+><TD
+>disabled - summary disabling (0/1)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="CASHRIGHTS"
+>7.2.18. Cash registries - access rights ('cashrights')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>regid - registry serial number</TD
+></TR
+><TR
+><TD
+>userid - user serial number</TD
+></TR
+><TR
+><TD
+>rights - (1-read, 2-write, 3-advanced)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="DOCUMENTS"
->7.2.17. Documents: invoices, receipts, contracts, etc. ('documents')</A
+>7.2.19. Documents: invoices, receipts, contracts, etc. ('documents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -13885,7 +13990,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTCONTENTS"
->7.2.18. Non-financial documents contents ('documentcontents')</A
+>7.2.20. Non-financial documents contents ('documentcontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -13931,7 +14036,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.19. Invoices ('invoicecontents')</A
+>7.2.21. Invoices ('invoicecontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -13981,7 +14086,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RECEIPTCONTENTS"
->7.2.20. Cash Receipts ('receiptcontents')</A
+>7.2.22. Cash Receipts ('receiptcontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -13993,6 +14098,10 @@ BORDER="0"
 ><TR
 ><TD
 >itemid - receipt item identifier</TD
+></TR
+><TR
+><TD
+>regid - registry serial number</TD
 ></TR
 ><TR
 ><TD
@@ -14011,7 +14120,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.21. Accounts ('passwd')</A
+>7.2.23. Accounts ('passwd')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14089,7 +14198,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.22. Domains ('domains')</A
+>7.2.24. Domains ('domains')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14115,7 +14224,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.23. Aliases ('aliases')</A
+>7.2.25. Aliases ('aliases')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14141,7 +14250,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.24. History ('timestamps')</A
+>7.2.26. History ('timestamps')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14163,7 +14272,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.25. Bandwidth consumption statistics ('stats')</A
+>7.2.27. Bandwidth consumption statistics ('stats')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14193,7 +14302,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.26. Helpdesk - Request Tracking ('rtqueues')</A
+>7.2.28. Helpdesk - Request Tracking ('rtqueues')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14223,7 +14332,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.27. Helpdesk - Request Tracking - continued... ('rttickets')</A
+>7.2.29. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14269,7 +14378,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.28. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+>7.2.30. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14331,7 +14440,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.29. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+>7.2.31. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14357,7 +14466,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.30. Helpdesk - Request Tracking - continued... ('rtrights')</A
+>7.2.32. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14387,7 +14496,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.31. LMS-UI Online Configuration ('uiconfig')</A
+>7.2.33. LMS-UI Online Configuration ('uiconfig')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14425,7 +14534,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.32. Timetable - events ('events')</A
+>7.2.34. Timetable - events ('events')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14483,7 +14592,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.33. Timetable - assignments ('eventassignments')</A
+>7.2.35. Timetable - assignments ('eventassignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14505,7 +14614,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.34. Sessions ('sessions')</A
+>7.2.36. Sessions ('sessions')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14543,7 +14652,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="HOSTS"
->7.2.35. Hosts ('hosts')</A
+>7.2.37. Hosts ('hosts')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14577,7 +14686,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.36. Daemon configuration - instances ('daemoninstances')</A
+>7.2.38. Daemon configuration - instances ('daemoninstances')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14623,7 +14732,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.37. Daemon configuration - options ('daemonconfig')</A
+>7.2.39. Daemon configuration - options ('daemonconfig')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14661,7 +14770,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.38. Database information ('dbinfo')</A
+>7.2.40. Database information ('dbinfo')</A
 ></H3
 ><TABLE
 BORDER="0"

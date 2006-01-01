@@ -299,7 +299,27 @@
 		    <member>doctype - document type</member>
                     <member>isdefault - '1' if this plan is default for respondent doctype, else '0'</member>
 		  </simplelist>
-	  </sect2>    
+	  </sect2>
+	  <sect2 id="cashregs">
+		  <title>Cash registries ('cashregs')</title>
+		  <simplelist>
+			  <member>id - serial number</member>
+			  <member>name - registry name</member>
+			  <member>description - additional description</member>
+			  <member>in_numberplanid - numbering plan identifier for cash-in receipts</member>
+			  <member>out_numberplanid - numbering plan identifier for cash-out receipts</member>
+			  <member>disabled - summary disabling (0/1)</member>
+		  </simplelist>
+	  </sect2>
+	  <sect2 id="cashrights">
+		<title>Cash registries - access rights ('cashrights')</title>
+		<simplelist>
+			<member>id - serial number</member>
+			<member>regid - registry serial number</member>
+			<member>userid - user serial number</member>
+			<member>rights - (1-read, 2-write, 3-advanced)</member>
+		</simplelist>
+          </sect2>
           <sect2 id="documents">
                <title>Documents: invoices, receipts, contracts, etc. ('documents')</title>
                   <simplelist>
@@ -354,6 +374,7 @@
                   <simplelist>
                     <member>docid - receipt serial number</member>
                     <member>itemid - receipt item identifier</member>
+		    <member>regid - registry serial number</member>
                     <member>value - amount</member>
                     <member>description - description for receipt item</member>
                </simplelist>

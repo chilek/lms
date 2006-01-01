@@ -343,26 +343,41 @@
 		Instalacja i Konfiguracja.</para>
 	</sect2>
 	<sect2 id="menu-receipts-list">
-	    <title>Lista dowodów wp³aty</title>
-		<para>Dowody wp³aty "KP", to po¶wiadczenie przyjêcia wp³aty gotówkowej
-		od klienta. Lista KP mo¿e byæ dowolnie sortowana oraz filtrowana
+	    <title>Rejestr kasowy</title>
+		<para>Kasê gotówkow± mo¿na podzieliæ na rejestry np. kasa1, kasa2, kasa g³ówna,
+		bank itp. Na li¶cie rejestrów znajduj± siê wszystkie informacje o zdefiniowanych
+		rejestrach wraz z aktualnym stanem kasy w ka¿dym z nich oraz podsumowaniem,
+		które nie obejmuje rejestrów, którym w³±czono opcjê "Wy³±czenie z sumowania".</para>
+		<para>Ka¿dy rejestr kasowy mo¿e posiadaæ w³asn± numeracjê dokumentów kasowych
+		oraz uprawnienia dla u¿ytkowników. Uprawnienie "Zapis", przeznaczone dla zwyk³ych
+		kasjerów, pozwala na odczyt oraz dodawanie nowych dokumentów, ale bez mo¿liwo¶ci 
+		ich edycji, ani edycji numeru, daty, tytu³u podczas wystawiania dokumentu (nie ma
+		mo¿liwo¶ci dodania pozycji w inny sposób ni¿ wybranie z listy faktur). 
+		Takie mo¿liwo¶ci daje jedynie uprawnienie "Zaawansowany".</para>
+		<para>Na dokumenty kasowe sk³adaj± siê dowody wp³aty "KP" oraz wyp³aty "KW",
+		stanowi±ce po¶wiadczenia przyjêcia/wydania gotówki do/z kasy (rejestru kasowego).
+		Lista dokumentów kasowych. do której dostajemy siê klikaj±c wybrany rejestr na
+		li¶cie rejestrów kasowych, mo¿e byæ dowolnie sortowana oraz filtrowana
 		podobnie jak lista faktur. Masz tak¿e mo¿liwo¶æ wydrukowania wybranych
 		dowodów.</para>
-		<para>Z listy mo¿na przej¶æ do edycji dowodu wp³aty. Dokonuj±c zmian 
+		<para>Z listy mo¿na przej¶æ do edycji dokumentu. Dokonuj±c zmian 
 		w wystawionych po¶wiadczeniach nale¿y zachowaæ szczególn± ostro¿no¶æ, gdy¿
 		zapisanie zmian powoduje usuniêcie starego po¶wiadczenia i zwi±zanych z nim
 		operacji oraz wstawienie nowych.</para>
 	</sect2>
 	<sect2 id="menu-receipts-new">
-	    <title>Nowy dowód wp³aty</title>
-		<para>Podczas wystawiania dowodu wp³aty w pierwszej kolejno¶ci
-		wybieramy klienta z listy, ustawiamy datê i numer (najlepiej pozostawiæ 
-		warto¶ci zaproponowane przez system). Nastêpnie klikamy 'Zapisz' aby
-		zatwierdziæ wybór. Po tym mo¿emy dodawaæ dowoln± ilo¶æ pozycji zawieraj±cych
-		opis i kwotê lub wybraæ je z listy niezap³aconych zobowi±zañ klienta
-		znajduj±cej siê poni¿ej. 'Zapisz i drukuj' koñczy edycjê, zapisuje po¶wiadczenie
-		w oraz wp³aty systemie i wy¶wietla wydruk KP w nowym oknie.</para>
-		<para>Konfiguracjê wydruków dowodów wp³aty opisano w rozdziale p.t. 
+	    <title>Nowy dokument kasowy</title>
+		<para>Podczas wystawiania dokumentu kasowego w pierwszej kolejno¶ci
+		wybieramy rejestr kasowy i typ operacji. Nastêpnie wybieramy z listy klienta 
+		lub wyszukujemy go wg zadanych kryteriów, ustawiamy datê i numer (najlepiej pozostawiæ 
+		warto¶ci zaproponowane przez system). Istnieje mo¿liwo¶æ wybrania innego typu
+		operacji nie zwi±zanych z klientem lub przekazania ¶rodków do innego rejestru.
+		Nastêpnie klikamy 'Wybierz' aby zatwierdziæ wybór. Po tym mo¿emy dodawaæ dowoln± 
+		ilo¶æ pozycji zawieraj±cych opis i kwotê lub wybraæ je z listy nierozliczonych 
+		faktur klienta. 'Zapisz i drukuj' koñczy edycjê, zapisuje po¶wiadczenie
+		oraz wp³aty/wyp³aty w systemie, przechodzi do listy dokumentów w wybranym
+		rejestrze i wy¶wietla wydruk KP/KW w nowym oknie.</para>
+		<para>Konfiguracjê wydruków dokumentów kasowych opisano w rozdziale p.t. 
 		Instalacja i Konfiguracja.</para>
 	</sect2>
 	<sect2 id="menu-import">
@@ -409,6 +424,11 @@
 		</listitem>
 		<listitem>
 		    <para><emphasis>Rejestr sprzeda¿y</emphasis>, czyli zestawienie faktur na dany okres.</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Raport kasowy</emphasis>, czyli zestawienie dokumentów
+			kasowych za dany okres, ca³o¶ciowe lub z wybranego rejestru albo dla
+			wybranego kasjera.</para>
 		</listitem>
 		<listitem>
 		    <para><emphasis>Bilans klienta</emphasis> na dany okres.</para>
