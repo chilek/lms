@@ -65,6 +65,7 @@ $_MODINFO['core'] = array(
 			),
 		'priority' => 0,
 		'url' => 'http://lms.rulez.pl',
+		'default' => TRUE,
 		'actions' => array(
 			'header' => array(
 				'menuname' => array(
@@ -133,6 +134,7 @@ $_MODINFO['core'] = array(
 					'pl' => 'Podstawowe informacje o systemie',
 					),
 				'menu' => 'core_administration',
+				'default' => TRUE
 				),
 			'userlist' => array(
 				'menuname' => array(
