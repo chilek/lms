@@ -47,6 +47,7 @@ $DOCTYPES = array(
     -1	=>	trans('contract'),
     -2	=>	trans('annex'),
     -3	=>	trans('protocol'),
+    -4  =>	trans('order'), 
     -10 =>	trans('other')
 );
 
@@ -57,6 +58,7 @@ define('DOC_CNOTE', 3);
 define('DOC_CONTRACT', -1);
 define('DOC_ANNEX', -2);
 define('DOC_PROTOCOL', -3);
+define('DOC_ORDER', -4);
 define('DOC_OTHER', -10);
 
 // Accounting or numbering periods

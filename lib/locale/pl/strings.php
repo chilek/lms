@@ -1677,5 +1677,6 @@ $_LANG['Enter payer (optional)'] = 'Wprowadź wpłacającego (opcjonalnie)';
 $_LANG['assets move'] = 'przeniesienie środków';
 $_LANG['Disabled summary:'] = 'Wyłączenie z sumowania:';
 $_LANG['no'] = 'nie';
+$_LANG['order'] = 'zamówienie';
 
 ?>
