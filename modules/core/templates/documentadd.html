@@ -16,7 +16,6 @@
 			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
 		</TD>
 	</TR>
-
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
 			<IMG src="img/docum.gif" alt="">
@@ -102,6 +101,15 @@
 				<OPTION VALUE="{$item.name}"{if $document.template==$item.name} SELECTED{/if}>{$item.title}</OPTION>
 				{/foreach}
 			</SELECT>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+	        	<IMG src="img/confirm.gif" ALT="">
+		</TD>
+		<TD width="1%" nowrap><B>{t}Confirmed:{/t}</B></TD>
+		<TD width="98%" class="fright">
+		        <INPUT type="checkbox" name="document[closed]" value="1" class="box light" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
 	<TR class="LIGHT">

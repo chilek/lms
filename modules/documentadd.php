@@ -145,8 +145,8 @@ if(isset($_POST['document']))
 		
 		$DB->BeginTrans();
 		
-		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, name, address, zip, city, ten, ssn)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, name, address, zip, city, ten, ssn, closed)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(	$document['type'],
 					$document['number'],
 					$document['numberplanid'],
@@ -159,6 +159,7 @@ if(isset($_POST['document']))
 					$customer['city'] ? $customer['city'] : '',
 					$customer['ten'] ? $customer['ten'] : '',
 					$customer['ssn'] ? $customer['ssn'] : '',
+					$document['closed'] ? 1 : 0
 					));
 		
 		$docid = $DB->GetOne('SELECT id FROM documents WHERE type = ? AND cdate = ? AND customerid = ?', 
@@ -225,7 +226,6 @@ if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9]+$'))
 if($docengines) asort($docengines);
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
