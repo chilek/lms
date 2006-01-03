@@ -64,6 +64,8 @@ $_MODINFO['sample'] = array(
 				'bindings' => array(
 					'pre/*:*', 
 					),
+				'template' => 'header', // template name (without .html extension)
+							// by default it's action name
 				'notpublic' => TRUE, // this action isn't public, so, even if you specify
 							// menuname or menu it will be not placed in menu
 							// and user will be unable to access this action
