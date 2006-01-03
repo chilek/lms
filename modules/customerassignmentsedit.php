@@ -48,8 +48,12 @@ if($a = $_POST['assignmentedit'])
 	switch($period)
 	{
 		case DISPOSABLE:
-    			$a['dateto'] = 0;
-	                $a['datefrom'] = 0;
+			
+			if($a['tariffid']!='0')
+			{
+    				$a['dateto'] = 0;
+	            		$a['datefrom'] = 0;
+			}
 		     
 		        if(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $a['at']))
 			{
@@ -256,7 +260,8 @@ else
 			$a['at'] = date('d/m',($a['at']-1)*86400);
 			break;
 		case DISPOSABLE:
-			$a['at'] = date('Y/m/d', $a['at']);
+			if($a['at'])
+				$a['at'] = date('Y/m/d', $a['at']);
 			break;
 	}
 }
