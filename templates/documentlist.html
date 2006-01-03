@@ -9,7 +9,7 @@
 		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=title{if $listdata.direction eq "asc" && $listdata.order eq "title"},desc{/if}">{t}Title:{/t}</A>{if $listdata.order eq "title"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD WIDTH="1%" NOWRAP class="fbt">{t}Period:{/t}</TD>
 		<TD WIDTH="94%" NOWRAP class="fbt">{t}Description:{/t}</TD>
-		<TD WIDTH="1%" NOWRAP class="frightu">{t 0=$listdata.total|default:"0"}Total: $0{/t}</TD>
+		<TD WIDTH="1%" NOWRAP class="frightu"><B>{t 0=$listdata.total|default:"0"}Total: $0{/t}</B></TD>
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="7">
@@ -57,7 +57,7 @@
 	{cycle values="light,lucid" print=false}
 	{section loop=$documentlist name=documentlist start=$start max=$pagelimit}
 	{assign var=doc value=$documentlist[documentlist]}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="{cycle}{if $doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
 			{$doc.cdate|date_format:"%Y/%m/%d"}
 		</TD>
@@ -76,6 +76,7 @@
 		<TD WIDTH="1%" CLASS="fright" ALIGN="RIGHT" NOWRAP>
 			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/view.gif" alt="[ {t}View{/t} ]"></a>
 			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]"></a>
+			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]"></a>
 			<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></a>
 		</TD>
 	</TR>
