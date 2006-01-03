@@ -56,8 +56,12 @@ if($_GET['action'] == 'add' && isset($a))
 	switch($period)
 	{
 		case DISPOSABLE:
-			$a['dateto'] = 0;
-			$a['datefrom'] = 0;
+			
+			if($a['tariffid']!='0')
+			{
+				$a['dateto'] = 0;
+				$a['datefrom'] = 0;
+			}
 			
 			if(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $a['at']))
 			{
