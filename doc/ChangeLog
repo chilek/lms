@@ -1,5 +1,9 @@
 $Id$
 
+version ? (??/??/????):
+
+  - setting moddate and modid when deleting customers (alec)
+
 version 1.6.6 Therra (15/12/2005):
 
   - fixed summary on customer search results list (alec)
