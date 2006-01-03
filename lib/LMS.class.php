@@ -368,7 +368,7 @@ class LMS
 		$this->SetTS('assignments');
 		$res1 = $this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
 		$res2 = $this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
-		$res3 = $this->DB->Execute('UPDATE customers SET deleted=1 WHERE id=?', array($id));
+		$res3 = $this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? WHERE id=?', array($this->AUTH->id, $id));
 		$res4 = $this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		// Remove Userpanel rights
 		if($this->CONFIG['directories']['userpanel_dir'])
