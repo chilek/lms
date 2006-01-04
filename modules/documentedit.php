@@ -26,7 +26,14 @@
 
 if($_GET['action'] == 'confirm')
 {
-	$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($_GET['id']));
+	if(sizeof($_POST['marks']))
+	{
+	        foreach($_POST['marks'] as $id => $mark)
+			$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($mark));
+	}
+	else
+		$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($_GET['id']));
+	
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
