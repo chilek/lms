@@ -27,7 +27,30 @@
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(isset($_POST['search']))
+{
 	$customersearch = $_POST['search'];
+	
+	if($customersearch['createdfrom'])
+	{
+		list($year, $month, $day) = explode('/', $customersearch['createdfrom']);
+		$customersearch['createdfrom'] = mktime(0, 0, 0, $month, $day, $year);
+	}
+	if($customersearch['createdto'])
+	{
+		list($year, $month, $day) = explode('/', $customersearch['createdto']);
+		$customersearch['createdto'] = mktime(23, 59, 59, $month, $day, $year);
+	}
+	if($customersearch['deletedfrom'])
+	{
+		list($year, $month, $day) = explode('/', $customersearch['deletedfrom']);
+		$customersearch['deletedfrom'] = mktime(0, 0, 0, $month, $day, $year);
+	}
+	if($customersearch['deletedto'])
+	{
+		list($year, $month, $day) = explode('/', $customersearch['deletedto']);
+		$customersearch['deletedto'] = mktime(23, 59, 59, $month, $day, $year);
+	}
+}
 
 if(!isset($customersearch))
 	$SESSION->restore('customersearch', $customersearch);

@@ -20,8 +20,9 @@ version ? (????-??-??):
   - fixed warning in NetworkCompress() function (alec)
   - Cash Registry: registries management, user per-registry access rights,
     cash-in/cash-out receipts (alec)
-  - customer documents edition and confirming (alec)
+  - customer documents edition and confirmation (alec)
   - added document type 'order' (alec)
+  - added customers searching by creation or deletion dates (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 

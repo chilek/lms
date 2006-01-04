@@ -1678,5 +1678,9 @@ $_LANG['assets move'] = 'przeniesienie środków';
 $_LANG['Disabled summary:'] = 'Wyłączenie z sumowania:';
 $_LANG['no'] = 'nie';
 $_LANG['order'] = 'zamówienie';
+$_LANG['Confirm'] = 'Zatwierdź';
+$_LANG['Confirmed:'] = 'Zatwierdzony:';
+$_LANG['Deleted:'] = 'Usunięty:';
+$_LANG['Edit Document: $0'] = 'Edycja dokumentu: $0';
 
 ?>

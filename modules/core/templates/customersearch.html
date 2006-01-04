@@ -1,5 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{include file="calendar_js.html"}
 <SCRIPT language="javaScript">
 {literal}
 <!-- 
@@ -19,7 +21,6 @@
 //-->	
 {/literal}
 </SCRIPT>
-<H1>{$layout.pagetitle}</H1>
 <P><FORM METHOD="POST" ACTION="?m=customersearch&search=1" NAME="customersearch">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -138,6 +139,24 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Created:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			{t}from{/t} <INPUT type="text" value="" name="search[createdfrom]" size="10" OnClick="javascript:cal1.popup();">
+			{t}to{/t} <INPUT type="text" value="" name="search[createdto]" size="10" OnClick="javascript:cal2.popup();">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Deleted:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			{t}from{/t} <INPUT type="text" value="" name="search[deletedfrom]" size="10" OnClick="javascript:cal3.popup();">
+			{t}to{/t} <INPUT type="text" value="" name="search[deletedto]" size="10" OnClick="javascript:cal4.popup();">
+		</TD>
+	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
 			<A ACCESSKEY="S" href="javascript:Search();">{t}Submit{/t} <IMG SRC="img/search.gif" alt=""></A>&nbsp;
@@ -150,6 +169,14 @@
 <SCRIPT language="javaScript">
 <!--
 document.forms['customersearch'].elements['search[customername]'].focus();
+var cal1 = new calendar(document.customersearch.elements['search[createdfrom]']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.customersearch.elements['search[createdto]']);
+cal2.time_comp = false;
+var cal3 = new calendar(document.customersearch.elements['search[deletedfrom]']);
+cal3.time_comp = false;
+var cal4 = new calendar(document.customersearch.elements['search[deletedto]']);
+cal4.time_comp = false;
 //-->
 </SCRIPT>
 {include file="footer.html"}			
