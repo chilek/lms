@@ -1,6 +1,29 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+{literal}
+<SCRIPT language=JavaScript>
+<!--
+        function CheckAll()
+        {
+                for (var i=0; i<document.page.elements.length; i++)
+                {
+                        var e = document.page.elements[i];
+                        if (e.name != 'allbox')
+	    			e.checked = document.page.allbox.checked;
+		}
+	}
+	
+	function CheckAll2()
+	{
+	        document.page.allbox.checked = !document.page.allbox.checked;
+		CheckAll();
+	}
+	
+	//-->
+</SCRIPT>
+{/literal}
+
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" NOWRAP class="fleftu"> <A href="?m=documentlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A>{if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
@@ -9,7 +32,7 @@
 		<TD WIDTH="1%" NOWRAP class="fbt"> <A href="?m=documentlist&o=title{if $listdata.direction eq "asc" && $listdata.order eq "title"},desc{/if}">{t}Title:{/t}</A>{if $listdata.order eq "title"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD WIDTH="1%" NOWRAP class="fbt">{t}Period:{/t}</TD>
 		<TD WIDTH="94%" NOWRAP class="fbt">{t}Description:{/t}</TD>
-		<TD WIDTH="1%" NOWRAP class="frightu">{t 0=$listdata.total|default:"0"}Total: $0{/t}</TD>
+		<TD WIDTH="1%" NOWRAP class="frightu"><B>{t 0=$listdata.total|default:"0"}Total: $0{/t}</B></TD>
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="7">
@@ -57,7 +80,9 @@
 	{cycle values="light,lucid" print=false}
 	{section loop=$documentlist name=documentlist start=$start max=$pagelimit}
 	{assign var=doc value=$documentlist[documentlist]}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	{assign var=docid value=$doc.docid}
+	<TR class="{cycle}{if $doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<FORM METHOD="POST" NAME="page" ACTION="?m=documentedit&action=confirm">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
 			{$doc.cdate|date_format:"%Y/%m/%d"}
 		</TD>
@@ -76,8 +101,12 @@
 		<TD WIDTH="1%" CLASS="fright" ALIGN="RIGHT" NOWRAP>
 			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/view.gif" alt="[ {t}View{/t} ]"></a>
 			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]"></a>
+			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]"></a>
 			<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></a>
+			{cycle print=false}
+			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
 		</TD>
+	
 	</TR>
 	{sectionelse}
 	<TR>
@@ -106,5 +135,22 @@
 		</TD>
 	</TR>
 	{/if}
+	<TR CLASS="dark">
+	        <TD CLASS="fall" COLSPAN="7">
+		        <TABLE WIDTH="100%">
+			        <TR>
+			    		<TD ALIGN="left">
+					            <NOBR><A HREF="javascript:document.page.submit();">{t}Confirm{/t} <IMG SRC="img/confirm.gif" ALT=""></A></NOBR>
+					</TD>
+					<TD ALIGN="right">
+				                    <NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						    
+				        </TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	</FORM>
 </TABLE>
+
 {include file="footer.html"}
