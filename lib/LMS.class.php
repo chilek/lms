@@ -518,24 +518,37 @@ class LMS
 				$value = str_replace(' ','%',trim($value));
 				if($value!='')
 				{
-					$value = "'%".$value."%'";
 					switch($key)
 					{
 						case 'phone':
-							$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
+							$searchargs[] = "(phone1 ?LIKE? '%$value%' OR phone2 ?LIKE? '%$value%' OR phone3 ?LIKE? '%$value%')";
 						break;
 						case 'zip':
 						case 'city':
 						case 'address':
 							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = "(UPPER($key) ?LIKE? UPPER($value) OR UPPER(serviceaddr) ?LIKE? UPPER($value))";
+							$searchargs[] = "(UPPER($key) ?LIKE? UPPER('%$value%') OR UPPER(serviceaddr) ?LIKE? UPPER('%$value%'))";
 						break;
 						case 'customername':
 							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = $this->DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)')." ?LIKE? UPPER($value)";
+							$searchargs[] = $this->DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)')." ?LIKE? UPPER('%$value%')";
+						break;
+						case 'createdfrom':
+							$searchargs[] = "creationdate >= $value";
+						break;
+						case 'createdto':
+							$searchargs[] = "creationdate <= $value";
+						break;
+						case 'deletedfrom':
+							$searchargs[] = "moddate >= $value";
+							$deleted = 1;
+						break;
+						case 'deletedto':
+							$searchargs[] = "moddate <= $value";
+							$deleted = 1;
 						break;
 						default:
-							$searchargs[] = "$key ?LIKE? $value";
+							$searchargs[] = "$key ?LIKE? '%$value%'";
 					}
 				}
 			}
