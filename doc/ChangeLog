@@ -7,6 +7,7 @@ version ? (????-??-??):
   - fixed link to all customer's documents list (alec)
   - setting moddate and modid when deleting customers (alec)
   - fixed from and to date setting for liabilities suspending (alec)
+  - in documentation added 'netdevnode' lms-mgc's rule description (alec)
 
 version 1.8.0rc3 Rosha (2005-12-22):
 

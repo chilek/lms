@@ -3106,6 +3106,9 @@ Chapter 5. Configuration file generator (lms-mgc)
        Adds  line  for  each  IP address that is 'owner' by a computer in
        database.
        Example: allexistnodes = ??
+     * netdevnode
+       Adds line for each IP address of network device.
+       Example: netdevnode = ??
      * grantednode_priv
        Adds  line for each IP address with 'connected' status in database
        (parsed only for private address classes).
