@@ -171,6 +171,11 @@ include all networks.</para>
      <para>Example:	<prompt>allexistnodes = ??</prompt></para>
     </listitem>
     <listitem>
+        <para>netdevnode</para>
+	<para>Adds line for each IP address of network device.</para>
+	<para>Example:     <prompt>netdevnode = ??</prompt></para>
+    </listitem>
+    <listitem>
      <para>grantednode_priv</para>
      <para>Adds line for each IP address with 'connected' status in database (parsed only for private address classes).</para>
      <para>Example:	<prompt>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>

@@ -186,9 +186,14 @@
      <para>Przyk³ad:	<prompt>allexistnodes = ??</prompt></para>
     </listitem>
     <listitem>
-     <para>grantednode_priv</para>
-     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
+        <para>netdevnode</para>
+	<para>Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP urz±dzenia sieciowego.</para>
+	<para>Przyk³ad:    <prompt>netdevnode = ??</prompt></para>
+    </listitem>
+    <listitem>
+	<para>grantednode_priv</para>
+        <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
+        <para>Przyk³ad:	<prompt>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
      <para>grantednode_publ</para>
