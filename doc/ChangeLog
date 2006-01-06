@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.0rc4 Rosha (2006-01-06):
 
   - fixed new item addition in Cash Receipt Edit (alec)
   - removed doubled function CustomerGroupGetAll() call in print module (alec)
