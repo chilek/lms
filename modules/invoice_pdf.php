@@ -531,7 +531,7 @@ if($_GET['print'] == 'cached')
 	if($_GET['cash'])
 	{
 		foreach($ids as $cashid)
-			if($invoiceid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND documents.type = 1 AND cash.id = ?', array($cashid)))
+			if($invoiceid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?) AND cash.id = ?', array(DOC_INVOICE, DOC_CNOTE, $cashid)))
 				$idsx[] = $invoiceid;
 		
 		$ids = array_unique((array)$idsx);

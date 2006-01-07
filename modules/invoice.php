@@ -62,8 +62,8 @@ if($_GET['print'] == 'cached')
 	{
 		foreach($ids as $cashid)
 		{
-			// we need to check if that document is an invoice
-			if($invoiceid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND documents.type=1 AND cash.id = ?', array($cashid)))
+			// we need to check if that document is an invoice or credit note
+			if($invoiceid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND (documents.type=? OR documents.type=?) AND cash.id = ?', array(DOC_INVOICE, DOC_CNOTE, $cashid)))
 				$idsx[] = $invoiceid;
 		}
 		$ids = array_unique((array)$idsx);
