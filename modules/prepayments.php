@@ -55,7 +55,7 @@ if(sizeof($pmarks) && sizeof($cmarks))
 							WHERE id = ?', array($row['itemid'], $row['invoiceid'], $mark['id']));
 					else
 						$LMS->DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, taxvalue = ?
-							WHERE id = ?', array($row['itemid'], $row['invoiceid'], $row['taxvalue'], $mark['id']));
+							WHERE id = ?', array($row['itemid'], $row['invoiceid'], str_replace(',','.',$row['taxvalue']), $mark['id']));
 					$mark['value'] = 0;	
 					break;
 				}
@@ -63,16 +63,16 @@ if(sizeof($pmarks) && sizeof($cmarks))
 				{
 					if($row['taxvalue']=='')
 						$LMS->DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, value = ?, taxvalue = NULL
-							    WHERE id = ?', array($row['itemid'], $row['invoiceid'], $value, $mark['id']));
+							    WHERE id = ?', array($row['itemid'], $row['invoiceid'], str_replace(',','.',$value), $mark['id']));
 					else
 						$LMS->DB->Execute('UPDATE cash SET itemid = ?, invoiceid = ?, value = ?, taxvalue = ?
-							    WHERE id = ?', array($row['itemid'], $row['invoiceid'], $value, $row['taxvalue'], $mark['id']));
+							    WHERE id = ?', array($row['itemid'], $row['invoiceid'], str_replace(',','.',$value), str_replace(',','.',$row['taxvalue']), $mark['id']));
 					
 					$mark['value'] -= $value;
 					$LMS->AddBalance($mark);
 					
 					$mark['id'] = $LMS->DB->GetOne('SELECT id FROM cash WHERE userid = ? AND invoiceid = 0 AND value = ? AND time = ? AND type = 3 AND comment = ?',
-								    array($mark['userid'], $mark['value'], $mark['time'], $mark['comment']));
+								    array($mark['userid'], str_replace(',','.',$mark['value']), $mark['time'], $mark['comment']));
 					
 					if(sizeof($cmarks)>1) 
 						unset($cmarks[$idx]);
