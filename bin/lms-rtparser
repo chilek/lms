@@ -156,9 +156,7 @@ if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 		if($body->mime_type =~ m/text/i && $mailbody eq '') 
 		{
 			# text message
-			#$body = $entity->parts($partnum);
 			my $tmp_body = $body->as_string;
-			print $tmp_body;
 			$mailbody = $body->bodyhandle->as_string;
 			if($tmp_body =~ m|Content-Transfer-Encoding: quoted-printable|i)
 			{
