@@ -145,8 +145,8 @@ switch($_GET['action'])
 				$contents[$idx]['count'] = $newcontents['count'][$idx] ? $newcontents['count'][$idx] : $item['count'];
 				$contents[$idx]['name'] = $newcontents['name'][$idx] ? $newcontents['name'][$idx] : $item['name'];
 				$contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx] ? $newcontents['tariffid'][$idx] : $item['tariffid'];
-				$contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx] ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
-				$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx] ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
+				$contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx]!='' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
+				$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx]!='' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
 				$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
 				$contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuenetto']);
 				$contents[$idx]['count'] = f_round($contents[$idx]['count']);
