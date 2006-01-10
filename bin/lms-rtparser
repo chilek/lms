@@ -151,11 +151,30 @@ if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 {
 	for(my $partnum = 0; $partnum < $entity->parts; $partnum++)
 	{
-		if(($body = $entity->parts($partnum))->mime_type =~ m|text/|i && $mailbody eq '') # if we have empty body now.
+		$body = $entity->parts($partnum);
+		
+		if($body->mime_type =~ m/text/i && $mailbody eq '') 
 		{
-			$body = $entity->parts($partnum);
+			# text message
+			#$body = $entity->parts($partnum);
 			my $tmp_body = $body->as_string;
+			print $tmp_body;
 			$mailbody = $body->bodyhandle->as_string;
+			if($tmp_body =~ m|Content-Transfer-Encoding: quoted-printable|i)
+			{
+				$mailbody = decode_qp($mailbody);
+			}
+		}
+		elsif(($body->mime_type =~ m/multipart\/alternative/i) && $mailbody eq '')
+		{
+			# Outlook's nasty multipart/alternative message
+			my $newbody = join " ", @{$body->body};
+			my @newbody = split /------=_NextPart_\S*\n/, $newbody;
+			$newbody = $newbody[1]; # text message part
+			my $tmp_body = $newbody;
+			# now we need to remove leading headers from body
+			$newbody =~ s/Content-Type.*Content-Transfer-Encoding.*?\n+//is; 
+			$mailbody = $newbody;
 			if($tmp_body =~ m|Content-Transfer-Encoding: quoted-printable|i)
 			{
 				$mailbody = decode_qp($mailbody);
@@ -471,14 +490,25 @@ if(scalar @attachments && $save_path)
 	mkdir($save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
 	foreach my $partnum (@attachments)
 	{
-		$body = $entity->parts($partnum);					
+		$body = $entity->parts($partnum);
+		
+		# skip part without attachement ie. multipart/alternative
+		if(!$body->bodyhandle) { next; } 
+		
 		my $filename = $body->bodyhandle->path;
 		my $content_type = $body->mime_type;
-		copy($filename, $save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
+		
+		# handle spaces and unknown characters in filename 
+		# on systems having problems with that
+		$filename =~ s/[^\w\.-_]/_/g; 
+		rename($body->bodyhandle->path, $filename);
+		move($filename, $save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
+		
 		$dbq = $dbase->prepare("INSERT INTO rtattachments (messageid, filename, contenttype) VALUES ($rt_msgid, '".basename($filename)."', '$content_type')");
 		$dbq->execute();
 	}
 }
+
 $parser->filer->purge;			# cleanup
 $dbq->finish();
 $dbase->disconnect();
