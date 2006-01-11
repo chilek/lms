@@ -386,7 +386,7 @@ switch($type)
 							$reportlist[$idx]['ten'] = $row['ten'];
 						}
 						$reportlist[$idx]['value'] += $row['value'];
-						$reportlist[$idx][$tax['id']]['netto'] = round($row['value']-$row['value']*$tax['value']/100, 2);
+						$reportlist[$idx][$tax['id']]['netto'] = round($row['value']/($tax['value']+100)*100, 2);
 						$reportlist[$idx][$tax['id']]['tax'] = $row['value'] - $reportlist[$idx][$tax['id']]['netto'];
 						$reportlist[$idx]['taxsum'] += $reportlist[$idx][$tax['id']]['tax'];
 						$total['netto'][$tax['id']] += $reportlist[$idx][$tax['id']]['netto'];
