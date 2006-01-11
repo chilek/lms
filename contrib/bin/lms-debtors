@@ -129,7 +129,7 @@ while(my $row = $dbq->fetchrow_hashref())
 	
 	if($cid != $lastid)
 	{
-		my $dbqi = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto >= $utsfmt OR dateto = 0) AND customerid = $cid GROUP BY customerid HAVING SUM(value) > 0");
+		my $dbqi = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 3 AND suspended = 0 AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto >= $utsfmt OR dateto = 0) AND customerid = $cid GROUP BY customerid HAVING SUM(value) > 0");
 		$dbqi->execute();
 		if(my $rowi = $dbqi->fetchrow_hashref())
 		{

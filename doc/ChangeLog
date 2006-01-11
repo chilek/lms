@@ -8,6 +8,7 @@ version ? (????-??-??):
     in filename (alec)
   - on invoice note value can be set to '0' instead of '0.00' or deleting 
     position (alec)
+  - contrib/bin/lms-debtors: fixed (alec)
 
 version 1.8.0rc4 Rosha (2006-01-06):
 
