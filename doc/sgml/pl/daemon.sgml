@@ -489,8 +489,8 @@
 			<listitem>
 			    <para>command</para>
 			    <para>Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
-			    Domy¶lnie: pusta.</para>
-			    <para>Przyk³ad: <prompt>command = 'killall -HUP dhcpd'</prompt></para>
+			    Domy¶lnie: 'killall dhcpd; /usr/sbin/dhcpd'.</para>
+			    <para>Przyk³ad: <prompt>command = 'service dhcp restart'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>begin</para>
