@@ -304,7 +304,7 @@
                <title>Documents: invoices, receipts, contracts, etc. ('documents')</title>
                   <simplelist>
                     <member>id - serial number</member>
-                    <member>number - number in year</member>
+                    <member>number - document number (%N)</member>
 		    <member>numberplanid - numbering plan identifier</member>
 		    <member>type - document type (1 - invoice, 2 - cash receipt)</member>
                     <member>cdate - date of write out</member>

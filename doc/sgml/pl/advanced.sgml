@@ -307,7 +307,7 @@
                <title>Dokumenty: faktury, KP, umowy, etc. ('documents')</title>
                   <simplelist>
                     <member>id - identyfikator</member>
-                    <member>number - numer w roku</member>
+                    <member>number - numer dokumentu (%N)</member>
 		    <member>numberplanid - identyfikator planu numeracyjnego</member>
 		    <member>type - typ dokumentu (1-faktura, 2-KP)</member>
                     <member>cdate - data wystawienia</member>

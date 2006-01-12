@@ -4933,7 +4933,7 @@ Chapter 7. For curious
 7.2.17. Documents: invoices, receipts, contracts, etc. ('documents')
 
    id - serial number
-   number - number in year
+   number - document number (%N)
    numberplanid - numbering plan identifier
    type - document type (1 - invoice, 2 - cash receipt)
    cdate - date of write out
