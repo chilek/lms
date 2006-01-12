@@ -1682,5 +1682,7 @@ $_LANG['Confirm'] = 'Zatwierdź';
 $_LANG['Confirmed:'] = 'Zatwierdzony:';
 $_LANG['Deleted:'] = 'Usunięty:';
 $_LANG['Edit Document: $0'] = 'Edycja dokumentu: $0';
+$_LANG['Additional number:'] = 'Dodatkowy numer:';
+$_LANG['Enter additional document number'] = 'Wprowadź dodatkowy numer dokumentu';
 
 ?>

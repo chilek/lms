@@ -135,6 +135,7 @@ CREATE TABLE documents (
 	type tinyint NOT NULL DEFAULT '0',
 	number int(11) NOT NULL DEFAULT '0',
 	numberplanid int(11) NOT NULL DEFAULT '0',
+	extnumber varchar(255) NOT NULL DEFAULT '',
 	cdate int(11) NOT NULL DEFAULT '0',
         customerid int(11) NOT NULL DEFAULT '0',
 	userid int(11) NOT NULL DEFAULT '0',
@@ -694,4 +695,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005123000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006011200');

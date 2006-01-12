@@ -501,13 +501,19 @@ if (!function_exists('bcmod'))
     }
 }					     
 
-function docnumber($number=NULL, $template=NULL, $time=NULL)
+function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 {
 	$number = $number ? $number : 1;
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
 	$time = $time ? $time : time();
 	
-	$result = preg_replace('/%(\\d*)N/e', "sprintf('%0\\1d', $number)", $template);
+	// extended number part
+	$result = str_replace('%I', $ext_num, $template);
+
+	// main document number
+	$result = preg_replace('/%(\\d*)N/e', "sprintf('%0\\1d', $number)", $result);
+	
+	// time conversion specifiers
 	return strftime($result, $time);
 }
 
