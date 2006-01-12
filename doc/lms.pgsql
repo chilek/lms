@@ -204,6 +204,7 @@ CREATE TABLE documents (
 	type smallint		DEFAULT 0 NOT NULL,
 	number integer 		DEFAULT 0 NOT NULL,
 	numberplanid integer	DEFAULT 0 NOT NULL,
+	extnumber varchar(255) 	DEFAULT '' NOT NULL,
 	cdate integer 		DEFAULT 0 NOT NULL,
 	customerid integer 	DEFAULT 0 NOT NULL,
 	userid integer		DEFAULT 0 NOT NULL,		
@@ -739,4 +740,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005123000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006011200');

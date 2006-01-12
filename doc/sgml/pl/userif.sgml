@@ -1200,6 +1200,9 @@ MISC_OTHER="-A -x -j"
 			<para>%N - liczba dziesiêtna okre¶laj±ca numer dokumentu</para>
 		    </listitem>
 		    <listitem>
+			<para>%I - dodatkowy numer (dzia³a tylko z dokumentami kasowymi)</para>
+		    </listitem>
+		    <listitem>
 			<para>%[1-9]N - j.w. ale z zerami wiod±cymi, np. '%4N' dla liczby 12 zwróci '0012'</para>
 		    </listitem>
 		    <listitem>

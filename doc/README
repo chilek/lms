@@ -678,6 +678,7 @@ password = password_entered_with_lms_user_creation
      * networks and devices management
      * timetable management
      * daemon management and configuration
+     * cash operations
      * users edition and addition forbidden
      * no access
 
@@ -2095,6 +2096,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    will  expand  to  document's  date  of  issue. Below you can find most
    popular ones:
      * %N - integer number, uniquely identifying document
+     * %I - additional part of number (works with cash documents only)
      * %[1-9]N - as above, but with leading zeroes, ie. '%4N' will return
        '0012' for 12
      * %Y - year as a 4 digit number
@@ -3129,6 +3131,9 @@ Chapter 5. Configuration file generator (lms-mgc)
        Adds  line  for  each  IP address that is 'owner' by a computer in
        database.
        Example: allexistnodes = ??
+     * netdevnode
+       Adds line for each IP address of network device.
+       Example: netdevnode = ??
      * grantednode_priv
        Adds  line for each IP address with 'connected' status in database
        (parsed only for private address classes).
@@ -4971,7 +4976,8 @@ Chapter 7. For curious
 7.2.19. Documents: invoices, receipts, contracts, etc. ('documents')
 
    id - serial number
-   number - number in year
+   number - document number (%N)
+   extnumber - additional (extended) number part (%I)
    numberplanid - numbering plan identifier
    type - document type (1 - invoice, 2 - cash receipt)
    cdate - date of write out

@@ -2296,6 +2296,10 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
+>cash operations</P
+></LI
+><LI
+><P
 >users edition and addition forbidden</P
 ></LI
 ><LI
@@ -5533,6 +5537,10 @@ TARGET="_top"
 ></LI
 ><LI
 ><P
+>%I - additional part of number (works with cash documents only)</P
+></LI
+><LI
+><P
 >%[1-9]N - as above, but with leading zeroes, ie.  '%4N' will return '0012' for 12</P
 ></LI
 ><LI
@@ -8540,6 +8548,17 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >allexistnodes = ??</SAMP
+></P
+></LI
+><LI
+><P
+>netdevnode</P
+><P
+>Adds line for each IP address of network device.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>netdevnode = ??</SAMP
 ></P
 ></LI
 ><LI
@@ -13919,7 +13938,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->number - number in year</TD
+>number - document number (%N)</TD
+></TR
+><TR
+><TD
+>extnumber - additional (extended) number part (%I)</TD
 ></TR
 ><TR
 ><TD

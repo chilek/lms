@@ -66,6 +66,10 @@ if(isset($_GET['id']))
 	
 	if($receipt['customerid'])
 		$customer = $LMS->GetCustomer($receipt['customerid']);
+
+	if($receipt['numberplanid'] && !$receipt['extnumber'])
+    		if(strpos($receipt['template'], '%I')!==FALSE)
+	                $receipt['extended'] = TRUE;
 	
 	$SESSION->save('receipt', $receipt);
 	$SESSION->save('receiptcontents', $contents);
@@ -79,7 +83,7 @@ $SESSION->restore('receipt', $receipt);
 $SESSION->restore('receiptediterror', $error);
 $SESSION->restore('receiptquery', $receiptquery);
 
-$receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate']);
+$receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], $receipt['extnumber']);
 if($receipt['type']=='in')
 	$layout['pagetitle'] = trans('Cash-in Receipt Edit: $0', $receipt['titlenumber']);
 else
@@ -178,6 +182,10 @@ switch($_GET['action'])
 					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
 		}
 
+		if($receipt['numberplanid'] && !$receipt['extnumber'])
+    			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
+	            		$receipt['extended'] = TRUE;
+
 		if($receipt['o_type']=='other')
                 {
 		        $receipt['customerid'] = 0;
@@ -254,10 +262,11 @@ switch($_GET['action'])
 			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($receipt['id']));
 		
 			// re-add receipt 
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, name, address, zip, city)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
+						$receipt['extnumber'] ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$customer['id'],
@@ -317,10 +326,11 @@ switch($_GET['action'])
 			$DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
 			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
 			
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, name)
-			    		VALUES(?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name)
+			    		VALUES(?, ?, ?, ?, ?, ?, ?)',
 			                array(  DOC_RECEIPT,
 					        $receipt['number'],
+						$receipt['extnumber'] ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$AUTH->id,

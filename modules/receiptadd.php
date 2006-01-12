@@ -116,6 +116,10 @@ switch($_GET['action'])
 					$error['regid'] = trans('There is no cash in selected registry!');
 		}
 		
+		if($receipt['numberplanid'])
+			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
+				$receipt['extended'] = TRUE;
+
 		if(!$error && $receipt['customerid'] && $LMS->CustomerExists($receipt['customerid']))
 			$customer = $LMS->GetCustomer($receipt['customerid']);
 	break;
@@ -146,6 +150,10 @@ switch($_GET['action'])
 					$error['regid'] = trans('There is no cash in selected registry!');
 		}
 		
+		if($receipt['numberplanid'])
+			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
+				$receipt['extended'] = TRUE;
+
 		$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 	break;
 
@@ -231,7 +239,7 @@ switch($_GET['action'])
 		unset($receipt); 
 		unset($customer);
 		unset($error);
-		
+
 		if($receipt = $_POST['receipt'])
 			foreach($receipt as $key => $val)
 				$receipt[$key] = $val;
@@ -287,6 +295,10 @@ switch($_GET['action'])
 			elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
 				$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
 		}
+
+		if($receipt['numberplanid'] && !$receipt['extnumber'])
+			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
+				$receipt['extended'] = TRUE;
 
 		if($DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id))<2)
 			$error['regid'] = trans('You don\'t have permission to add receipt in selected cash registry!');
@@ -373,10 +385,11 @@ switch($_GET['action'])
 		{
 			$DB->BeginTrans();
 		
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, name, address, zip, city)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
+						$receipt['extnumber'] ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$customer['id'],
@@ -430,10 +443,11 @@ switch($_GET['action'])
 		{
 			$DB->BeginTrans();
 		
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, name)
-					VALUES(?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name)
+					VALUES(?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
+						$receipt['extnumber'] ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$AUTH->id,
@@ -497,16 +511,17 @@ switch($_GET['action'])
 			// cash-out
 			$description = trans('Moving assets to registry $0',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
 			
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, name)
-					VALUES(?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name)
+					VALUES(?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
+						$receipt['extnumber'] ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$AUTH->id,
 						$receipt['o_name']
 						));
-						
+		print_r($DB->errors);				
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid'])); 
 			
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)

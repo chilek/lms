@@ -80,7 +80,7 @@ function GetReceiptList($registry, $order='cdate,asc', $search=NULL, $cat=NULL, 
 
 	if($list = $DB->GetAll(
 	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
-		documents.name AS customer, address, zip, city, template, 
+		documents.name AS customer, address, zip, city, template, extnumber,
 		MIN(description) AS title, COUNT(*) AS posnumber, users.name AS user 
 		FROM documents 
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
@@ -88,7 +88,7 @@ function GetReceiptList($registry, $order='cdate,asc', $search=NULL, $cat=NULL, 
 		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
 		WHERE regid = ?'
 		.$where
-		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, users.name '
+		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, users.name, extnumber '
 		.$having
 		.($sqlord != '' ? $sqlord : ''), 
 		array(DOC_RECEIPT, $registry)
@@ -96,7 +96,7 @@ function GetReceiptList($registry, $order='cdate,asc', $search=NULL, $cat=NULL, 
 	{
 		foreach($list as $idx => $row)
 		{
-			$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+			$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
 			$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
 			
 			// don't retrive descriptions of all items to not decrease speed
