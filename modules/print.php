@@ -49,7 +49,7 @@ switch($type)
 		
 		$id = $_POST['customer'];
 
-		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, cash.value AS value, taxes.label AS taxlabel, customerid, comment, name AS username 
+		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, cash.value AS value, taxes.label AS taxlabel, customerid, comment, name AS username 
 				    FROM cash 
 				    LEFT JOIN taxes ON (taxid = taxes.id)
 				    LEFT JOIN users ON users.id=userid 
@@ -70,6 +70,7 @@ switch($type)
 				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
 				{
 					$list['id'][] = $saldolist['id'][$i];
+					$list['type'][] = $saldolist['type'][$i];
 					$list['after'][] = $saldolist['after'][$i];
 					$list['before'][] = $saldolist['balance'];
 					$list['value'][] = $saldolist['value'][$i];
@@ -78,6 +79,18 @@ switch($type)
 					$list['username'][] = $saldolist['username'][$i];
 					$list['comment'][] = $saldolist['comment'][$i];
 					$list['summary'] += $saldolist['value'][$i];
+					
+					if($saldolist['type'][$i])
+					{
+						if($saldolist['value'][$i] > 0)
+					    		//income
+						        $list['income'] += $saldolist['value'][$i];
+						else
+						        //expense
+						        $list['expense'] -= $saldolist['value'][$i];
+					}
+					else
+					        $list['liability'] -= $saldolist['value'][$i];
 				}
 			}
 			
@@ -141,26 +154,18 @@ switch($type)
 				$list[$x]['comment'] = $row['comment'];
 				$list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
 
-				if($row['customerid'])
-				{
-					if($row['type']==0)
-	        			{
-		                		// customer covenant
-				                $list[$x]['after'] = $lastafter;
-						$list[$x]['covenant'] = true;
-						$list[$x]['value'] *= -1;
-					}
-					else
-					{
-						//customer payment
-						$list[$x]['after'] = $lastafter + $list[$x]['value'];
-						$listdata['incomeu'] += $list[$x]['value'];
-					}
+				if($row['customerid'] && $row['type']==0)
+	        		{
+		                	// customer covenant
+				        $list[$x]['after'] = $lastafter;
+					$list[$x]['covenant'] = true;
+					$listdata['liability'] -= $row['value'];
 				}
 				else
 				{
+					//customer payment
 					$list[$x]['after'] = $lastafter + $list[$x]['value'];
-					
+			
 					if($row['value'] > 0)
         					//income
 						$listdata['income'] += $list[$x]['value'];
@@ -175,7 +180,7 @@ switch($type)
 			}
 		}
 		
-		$listdata['total'] = $listdata['income'] + $listdata['incomeu'] - $listdata['expense'];
+		$listdata['total'] = $listdata['income'] - $listdata['expense'];
 		
 		$SMARTY->assign('listdata', $listdata);
 		$SMARTY->assign('balancelist', $list);

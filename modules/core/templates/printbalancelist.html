@@ -21,10 +21,13 @@
 			{t}Date{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Value{/t}
+			{t}Liability{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			{t}Tax{/t}
+			{t}Income{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Expense{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
 			{t}After{/t}
@@ -46,10 +49,13 @@
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist[balancelist].value > 0}+{/if}{$balancelist[balancelist].value|money_format} 
+			{if $balancelist[balancelist].covenant}{$balancelist[balancelist].value*-1|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$balancelist[balancelist].taxlabel}
+			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{$balancelist[balancelist].value*-1|money_format}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{if $balancelist[balancelist].covenant}
@@ -67,7 +73,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="8">
 			<P>&nbsp;</P>
 			<P><B>{t}No such cash operations.{/t}</B></P>
 			<P>&nbsp;</P>
@@ -75,18 +81,24 @@
 	</TR>
 	{/section}
 	<TR class="grey">
-		<TD ALIGN="RIGHT" COLSPAN="4">
-			<B>{t}Customers payments:{/t}</B><BR>
-			<B>{t}Income:{/t}</B><BR>
-			<B>{t}Expenditure:{/t}</B><BR>
+		<TD ALIGN="RIGHT" COLSPAN="2">
 			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT">
-			{$listdata.incomeu|money_format}<BR>
-			{$listdata.income|money_format}<BR>
-			{$listdata.expense|money_format}<BR>
-			<NOBR><B>{$listdata.total|money_format}</B><NOBR>
+			<B>{$listdata.liability|money_format}</B>
 		</TD>
-		<TD COLSPAN="2"></TD>
+		<TD ALIGN="RIGHT">
+			<B>{$listdata.income|money_format}</B>
+		</TD>
+		<TD ALIGN="RIGHT">
+			<B>{$listdata.expense|money_format}</B>
+		</TD>
+		<TD></TD>
+		<TD ALIGN="RIGHT">
+			<B>{t}Balance:{/t}</B>
+		</TD>
+		<TD ALIGN="LEFT">
+			<B>{$listdata.total|money_format}</B>
+		</TD>
 	</TR>
 </TABLE>

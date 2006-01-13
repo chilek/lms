@@ -28,14 +28,12 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $balancelist = $LMS->GetBalanceList();
 
-$listdata['incomeu'] = $balancelist['incomeu'];
+$listdata['liability'] = $balancelist['liability'];
 $listdata['income'] = $balancelist['income'];
-$listdata['uinvoice'] = $balancelist['uinvoice'];
 $listdata['expense'] = $balancelist['expense'];
 $listdata['total'] = $balancelist['total'];
-unset($balancelist['incomeu']);
+unset($balancelist['liability']);
 unset($balancelist['income']);
-unset($balancelist['uinvoice']);
 unset($balancelist['expense']);
 unset($balancelist['total']);
 $listdata['totalpos'] = sizeof($balancelist);

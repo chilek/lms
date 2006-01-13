@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
 {literal}
 <SCRIPT language=JavaScript>
 	<!--
@@ -66,7 +67,6 @@
 	//-->
 </SCRIPT>
 {/literal}
-<H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">
@@ -78,10 +78,13 @@
 			<B>{t}User:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>{t}Value:{/t}</B>
+			<B>{t}Liability:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>{t}Tax:{/t}</B>
+			<B>{t}Income:{/t}</B>
+		</TD>
+		<TD width="1%" class="fbt" align="right">
+			<B>{t}Expense:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt" align="center">
 			<B>&raquo;</B>
@@ -92,7 +95,7 @@
 		<TD width="1%" class="fbt">
 			<B>{t}Customer:{/t}</B>
 		</TD>
-		<TD width="92%" class="fbt">
+		<TD width="91%" class="fbt">
 			<B>{t}Description:{/t}</B>
 		</TD>
 		<TD width="1%" CLASS="frightu">
@@ -101,7 +104,7 @@
 	</TR>
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="9">
+		<TD WIDTH="100%" class="fall" COLSPAN="10">
 			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
@@ -120,34 +123,35 @@
 	{cycle values="light,lucid" print=false}
 	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD width="1%" class="fleft" valign="top" nowrap>
+		<TD width="1%" class="fleft" nowrap>
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
-		<TD width="1%" nowrap valign="top">
+		<TD width="1%" nowrap>
 			{if $balancelist[balancelist].userid}<NOBR>{$balancelist[balancelist].user|truncate:16:"..."}</NOBR>{else}-{/if}
 		</TD>
-		<TD width="1%" align="right" nowrap valign="top">
-			<NOBR>{if $balancelist[balancelist].value > 0}+{/if}{$balancelist[balancelist].value|money_format}</NOBR>
+		<TD width="1%" align="right" nowrap>
+			{if $balancelist[balancelist].covenant}{$balancelist[balancelist].value*-1|money_format}{else}-{/if}
 		</TD>
-		<TD width="1%" align="right" nowrap valign="top">
-		{if $balancelist[balancelist].type!=3}
-			<NOBR>{$balancelist[balancelist].tax}</NOBR>
-		{/if}
+		<TD width="1%" align="right" nowrap>
+			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
 		</TD>
-		<TD width="1%" align="center" valign="top">
+		<TD width="1%" align="right" nowrap>
+			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{$balancelist[balancelist].value*-1|money_format}{else}-{/if}
+		</TD>
+		<TD width="1%" align="center">
 			&raquo;
 		</TD>
-		<TD width="1%" align="right" nowrap valign="top">
+		<TD width="1%" align="right" nowrap>
 			{if $balancelist[balancelist].covenant}
 			-
 			{else}
-			<NOBR>{$balancelist[balancelist].after|money_format}</NOBR>
+			{$balancelist[balancelist].after|money_format}
 			{/if}
 		</TD>
-		<TD width="1%" nowrap valign="top">
+		<TD width="1%" nowrap>
 			{if $balancelist[balancelist].customerid}<NOBR><A HREF="?m=customerbalance&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"..."}</A></NOBR>{else} - {/if}
 		</TD>
-		<TD width="92%" valign="top">
+		<TD width="91%">
 			{$balancelist[balancelist].comment}
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>
@@ -168,7 +172,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="9">
+		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="10">
 			<P>&nbsp;<?P>
 			<P><B>{t}No such transactions found in database.{/t}</B></P>
 			<P>&nbsp;</P>
@@ -176,7 +180,7 @@
 	</TR>    
 	{/section}
 	<TR class="dark">
-		<TD class="fleftu" COLSPAN="7" nowrap>
+		<TD class="fleftu" COLSPAN="8" nowrap>
 			<A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{t}Print invoices{/t} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{t}Print cash receipts{/t} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
@@ -190,7 +194,7 @@
 	</TR>
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="9">
+		<TD WIDTH="100%" class="fall" COLSPAN="10">
 			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
@@ -208,21 +212,26 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="2" align="right" class="fleftu" NOWRAP>
-			<B>{t}Customers covenants:{/t}</B><HR>
-			<B>{t}Customers payments:{/t}</B><BR>
-			<B>{t}Income:{/t}</B><BR>
-			<B>{t}Expenditure:{/t}</B><HR>
-			<B>{t}Total:{/t}</B>
+			<B>{t}Total:{/t}</B><BR>
 		</TD>
 		<TD nowrap class="fbt" align="right">
-			<NOBR>
-			{$listdata.uinvoice|money_format}<HR>
-			{$listdata.incomeu|money_format}<BR>
-			{$listdata.income|money_format}<BR>
-			{$listdata.expense|money_format}<HR>
-			{$listdata.total|money_format}</NOBR>
+			<B>{$listdata.liability|money_format}</B>
 		</TD>
-		<TD colspan="6" class="frightu">
+		<TD nowrap class="fbt" align="right">
+			<B>{$listdata.income|money_format}</B>
+		</TD>
+		<TD nowrap class="fbt" align="right">
+			<B>{$listdata.expense|money_format}</B>
+		</TD>
+		<TD nowrap class="fbt" align="right" colspan="2">
+		</TD>
+		<TD nowrap class="fbt" align="right">
+			<B>{t}Balance:{/t}</B>
+		</TD>
+		<TD nowrap class="fbt" align="left">
+			<B>{$listdata.total|money_format}</B>
+		</TD>
+		<TD class="frightu">
 			&nbsp;
 		</TD>
 	</TR>
