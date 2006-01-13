@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
+{include file="calendar_js.html"}
 <P>
 <FORM method="POST" name="assignmentedit" action="?m=customerassignmentsedit&id={$assignmentedit.id}{if $assignmentedit.liabilityid}&lid={$assignmentedit.liabilityid}{/if}">
 <INPUT type="submit" class="hiddenbtn">
@@ -66,10 +66,11 @@
 	<TR class="LIGHT">
 		<TD class="fleft" width="1%"></TD>
 		<TD width="1%">
-			<B>{t}Invoice:{/t}</B>
+			<B>{t}Options:{/t}</B>
 		</TD>
 		<TD class="fright" width="98%">
-		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}>
+		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> {t}with invoice{/t}&nbsp;
+			<INPUT class="box light" type="checkbox" name="assignmentedit[settlement]" value="1" {if $assignmentedit.settlement}CHECKED{/if}> {t}with settlement of first deficient period{/t}
 		</TD>
 	</TR>
 	<TR class="LIGHT">
