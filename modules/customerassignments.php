@@ -227,6 +227,7 @@ if($_GET['action'] == 'add' && isset($a))
 					    'period' => $period, 
 					    'at' => $at, 
 					    'invoice' => sprintf('%d',$a['invoice']), 
+					    'settlement' => sprintf('%d',$a['settlement']), 
 					    'datefrom' => $from, 
 					    'dateto' => $to, 
 					    'discount' => $a['discount'],

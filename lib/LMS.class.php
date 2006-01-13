@@ -1183,7 +1183,7 @@ class LMS
 
 	function GetCustomerAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, uprate, upceil, downceil, downrate, invoice, datefrom, dateto, discount, liabilityid, 
+		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, uprate, upceil, downceil, downrate, invoice, settlement, datefrom, dateto, discount, liabilityid, 
 						    (CASE WHEN tariffs.value IS NULL THEN liabilities.value ELSE tariffs.value END) AS value,
 						    (CASE WHEN tariffs.name IS NULL THEN liabilities.name ELSE tariffs.name END) AS name
 						    FROM assignments 
@@ -1265,13 +1265,14 @@ class LMS
 			$this->SetTS('liabilities');
 		}
 		
-		return $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, datefrom, dateto, discount, liabilityid) 
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+		return $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, settlement, datefrom, dateto, discount, liabilityid) 
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 					    array($assignmentdata['tariffid'], 
 						    $assignmentdata['customerid'], 
 						    $assignmentdata['period'], 
 						    $assignmentdata['at'], 
 						    $assignmentdata['invoice'], 
+						    $assignmentdata['settlement'], 
 						    $assignmentdata['datefrom'], 
 						    $assignmentdata['dateto'], 
 						    $assignmentdata['discount'],

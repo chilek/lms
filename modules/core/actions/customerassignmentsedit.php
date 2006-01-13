@@ -221,12 +221,13 @@ if($a = $_POST['assignmentedit'])
 				    ));
 		}
 										
-		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, datefrom=?, dateto=?, discount=? WHERE id=?',
+		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, settlement=?, datefrom=?, dateto=?, discount=? WHERE id=?',
 			    array(  $a['tariffid'], 
 				    $customerid, 
 				    $period, 
 				    $at, 
 				    sprintf('%d',$a['invoice']), 
+				    sprintf('%d',$a['settlement']), 
 				    $from, 
 				    $to,
 				    $a['discount'],
@@ -238,7 +239,7 @@ if($a = $_POST['assignmentedit'])
 }
 else
 {
-	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, period, at, datefrom, dateto, invoice, discount, liabilityid, 
+	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, period, at, datefrom, dateto, invoice, settlement, discount, liabilityid, 
 				(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
 				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid
 				FROM assignments
