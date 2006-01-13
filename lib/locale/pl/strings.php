@@ -307,7 +307,6 @@ $_LANG['Customer not selected!'] = 'Nie wybrano klienta!';
 $_LANG['Customer Remove: $0'] = 'Usunięcie klienta: $0';
 $_LANG['Customers'] = 'Klienci';
 $_LANG['Customers:'] = 'Klienci:';
-$_LANG['Customers covenants:'] = 'Zobowiązania klientów:';
 $_LANG['Customer Search'] = 'Szukaj klienta';
 $_LANG['Customer Search Results'] = 'Wyniki wyszukiwania klientów';
 $_LANG['Customers in Subscription:'] = 'Klienci w taryfie:';
@@ -1033,7 +1032,6 @@ $_LANG['Password Change for User $0'] = 'Zmiana hasła dla użytkownika $0';
 $_LANG['Password is too long (max.32 characters)!'] = 'Hasło jest za długie (max.32 znaki)!';
 $_LANG['Passwords does not match!'] = 'Hasła nie pasują do siebie!';
 $_LANG['Path to file was not specified.'] = 'Ścieżka do pliku nie została określona.';
-$_LANG['payment'] = 'płatność';
 $_LANG['Payment:'] = 'Płatność:';
 $_LANG['Payment day:'] = 'Dzień zapłaty:';
 $_LANG['Payment Edit: $0'] = 'Edycja płatności: $0';
@@ -1684,5 +1682,7 @@ $_LANG['Deleted:'] = 'Usunięty:';
 $_LANG['Edit Document: $0'] = 'Edycja dokumentu: $0';
 $_LANG['Additional number:'] = 'Dodatkowy numer:';
 $_LANG['Enter additional document number'] = 'Wprowadź dodatkowy numer dokumentu';
+$_LANG['income/expense'] = 'przychód/rozchód';
+$_LANG['Liability'] = 'Zobowiązanie';
 
 ?>

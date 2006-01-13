@@ -1720,27 +1720,16 @@ class LMS
 				$balancelist[$idx]['customername'] = $customerslist[$row['customerid']]['customername'];
 				$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
 
-				if($row['customerid'])
+				if($row['customerid'] && $row['type'] == 0)
 				{
-					if($row['type'] == 0)
-					{
-						// customer covenant
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
-						$balancelist[$idx]['covenant'] = true;
-						$balancelist['uinvoice'] -= $row['value'];
-						$balancelist[$idx]['value'] *= -1;
-					}
-					else
-					{
-						//customer payment
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $row['value'];
-						$balancelist['incomeu'] += $row['value'];
-					}
+					// customer covenant
+					$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
+					$balancelist[$idx]['covenant'] = true;
+					$balancelist['liability'] -= $row['value'];
 				}
 				else
 				{
 					$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $row['value'];
-					
 					if($row['value'] > 0)
 						//income
 						$balancelist['income'] += $row['value'];
@@ -1749,7 +1738,7 @@ class LMS
 						$balancelist['expense'] += -$row['value'];
 				}
 			}
-			$balancelist['total'] = $balancelist['income'] - $balancelist['expense'] + $balancelist['incomeu'];
+			$balancelist['total'] = $balancelist['income'] - $balancelist['expense'];
 		}
 
 		return $balancelist;
