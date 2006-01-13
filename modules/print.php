@@ -475,19 +475,19 @@ switch($type)
 			
 		if($list = $DB->GetAll(
 	    		'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
-			documents.name AS customer, address, zip, city, template, 
+			documents.name AS customer, address, zip, city, template, extnumber,
 			MIN(description) AS title, COUNT(*) AS posnumber 
 			FROM documents 
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
 			WHERE 1=1'
 			.$where.'
-			GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template
+			GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, extnumber
 			ORDER BY cdate, documents.id', array(DOC_RECEIPT)))
 		{
 			foreach($list as $idx => $row)
 			{
-				$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+				$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
 				$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
 
 				if($row['posnumber'] > 1) 
