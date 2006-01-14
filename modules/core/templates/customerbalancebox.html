@@ -81,7 +81,8 @@
 		</TD>
 		<TD class="frightu" align="right">
 			<A href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{t}New Invoice{/t} &raquo;</A>&nbsp;
-			<A href="?m=receiptadd&action=init&customerid={$balancelist.customerid}">{t}New Receipt{/t} &raquo;</A>&nbsp;
+			<A href="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{t}New Cash-in Receipt{/t} &raquo;</A>&nbsp;
+			<A href="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{t}New Cash-out Receipt{/t} &raquo;</A>&nbsp;
 			{if $limit}<A href="?m=customerbalance&id={$balancelist.customerid}">{t}See all transactions{/t} &raquo;</A>{/if}
 		</TD>
 	</TR>
@@ -91,26 +92,25 @@
 				<TR class="dark">
 					<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
 					<TD width="1%" class="fbt">{t}User:{/t}</TD>
-					<TD width="1%" class="fbt" align="right">{t}Owing{/t}:</TD>
-					<TD width="1%" class="fbt" align="right">{t}Has{/t}:</TD>
-					<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Liability:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Income:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Expense:{/t}</TD>
 					<TD width="1%" class="fbt" align="center">&raquo;</TD>
 					<TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
-					<TD width="93%" class="fbt">{t}Description:{/t}</TD>
+					<TD width="92%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle name=bal values="light,lucid" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
 				<TR class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
-					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
-					{if $balancelist.type[balancelist]}<td width="1%" align="right">-</td>{/if}
-					<TD width="1%" align="right" nowrap>{if $balancelist.value[balancelist] > 0}+{/if}{$balancelist.value[balancelist]|money_format}</TD>
-					{if ! $balancelist.type[balancelist]}<td width="1%" align="right">-</td>{/if}
-					<TD width="1%" align="right" nowrap>{$balancelist.tax[balancelist]}</TD>
+					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:"..."|replace:" ":"&nbsp;"}</TD>
+					<TD width="1%" align="right" nowrap>{if !$balancelist.type[balancelist]}{$balancelist.value[balancelist]*-1|money_format}{else}-{/if}</TD>
+					<TD width="1%" align="right" nowrap>{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}</TD>
+					<TD width="1%" align="right" nowrap>{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{$balancelist.value[balancelist]*-1|money_format}{else}-{/if}</TD>
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right" nowrap>{if $balancelist.after[balancelist] < 0}<FONT class="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</TD>
-					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
+					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right" nowrap>
 						{if $balancelist.docid[balancelist]}
 							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE}
@@ -126,7 +126,7 @@
 						{cycle name=bal print=false}
 						<INPUT class="box {cycle name=bal}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
 					</TD>
-					</TR>
+				</TR>
 				{sectionelse}
 				<TR>
 					<TD align="center" width="100%" colspan="9">
@@ -137,7 +137,7 @@
 				</TR>
 				{/section}
 				<TR class="light">
-				<TD CLASS="ftop" ALIGN="left" colspan="7">
+					<TD CLASS="ftop" ALIGN="left" colspan="7">
 						<nobr>
 						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
@@ -154,25 +154,24 @@
 				<TR class="light">
 					<TD class="ftop">
 						<INPUT TYPE="hidden" NAME="addbalance[customerid]" VALUE="{$balancelist.customerid}">
-						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
+						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="16" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
 					</TD>
 					<TD class="ftop">
 						{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
 					</TD>
-					<TD class="ftop">
-						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>
-					</TD>
-					<TD class="ftop" colspan="2" width="1%">
+					<TD class="ftop" colspan="2">
+						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>&nbsp;
 						<SELECT SIZE="1" name="addbalance[taxid]" {tip text="Select Tax value"}>
 						{foreach item=tax from=$taxeslist}
 							<OPTION value="{$tax.id}"{if $tax.value==$_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
 						{/foreach}
 						</SELECT>
 					</TD>
-					<TD class="ftop" nowrap>
-						<INPUT TYPE="checkbox" align="left" name="addbalance[type]" value="1" class="box light" {tip text="Select type of operation"} CHECKED> {t}payment{/t}
+					<TD class="ftop" colspan="3" nowrap>
+						<INPUT TYPE="radio" NAME="addbalance[type]" VALUE="0" class="box light" {tip text="Select type of operation"}>{t}liability{/t}<BR>
+						<INPUT TYPE="radio" NAME="addbalance[type]" VALUE="1" class="box light" {tip text="Select type of operation"} checked>{t}income/expense{/t}
 					</TD>
-					<TD class="ftop" colspan="3">
+					<TD class="ftop" colspan="2">
 						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
@@ -185,6 +184,7 @@
 					<TD align="right" colspan="6">
 						<A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 					</TD>
+				</TR>
 			</TABLE>
 		</TD>
 	</TR>
