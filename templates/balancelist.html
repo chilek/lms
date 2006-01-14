@@ -127,7 +127,7 @@
 			{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD width="1%" nowrap>
-			{if $balancelist[balancelist].userid}<NOBR>{$balancelist[balancelist].user|truncate:16:"..."}</NOBR>{else}-{/if}
+			{if $balancelist[balancelist].userid}<NOBR>{$balancelist[balancelist].user|truncate:16:"...":true}</NOBR>{else}-{/if}
 		</TD>
 		<TD width="1%" align="right" nowrap>
 			{if $balancelist[balancelist].covenant}{$balancelist[balancelist].value*-1|money_format}{else}-{/if}
