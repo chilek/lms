@@ -49,6 +49,8 @@ if($a = $_POST['assignmentedit'])
 	{
 		case DISPOSABLE:
 			
+			$a['settlement'] = 0;
+			
 			if($a['tariffid']!='0')
 			{
     				$a['dateto'] = 0;
@@ -73,6 +75,7 @@ if($a = $_POST['assignmentedit'])
 																																			   
 		case DAILY:
 			$at = 0;
+			$a['settlement'] = 0;
 		break;
 		
 		case WEEKLY:

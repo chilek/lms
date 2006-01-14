@@ -57,6 +57,8 @@ if($_GET['action'] == 'add' && isset($a))
 	{
 		case DISPOSABLE:
 			
+			$a['settlement'] = 0;	
+		
 			if($a['tariffid']!='0')
 			{
 				$a['dateto'] = 0;
@@ -82,6 +84,7 @@ if($_GET['action'] == 'add' && isset($a))
 		
 		case DAILY:
 			$at = 0;
+			$a['settlement'] = 0;
 		break;
 		
 		case WEEKLY:
