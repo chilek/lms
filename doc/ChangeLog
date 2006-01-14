@@ -11,6 +11,8 @@ version ? (????-??-??):
   - contrib/bin/lms-debtors: fixed (alec)
   - fixed nett values calculations on Liabilities Report (alec)
   - documentation fixes (alec)
+  - contrib/customer_otherip: fixed invoices printing - added lost checkconfig.php
+    include (alec)
 
 version 1.8.0rc4 Rosha (2006-01-06):
 
