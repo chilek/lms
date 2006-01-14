@@ -104,10 +104,10 @@
 				{section name=balancelist loop=$balancelist.id start=$limit}
 				<TR class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
-					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
+					<TD width="1%">{$balancelist.username[balancelist]|truncate:20:"..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" align="right" nowrap>{if !$balancelist.type[balancelist]}{$balancelist.value[balancelist]*-1|money_format}{else}-{/if}</TD>
 					<TD width="1%" align="right" nowrap>{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}</TD>
-					<TD width="1%" align="right" nowrap>{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}</TD>
+					<TD width="1%" align="right" nowrap>{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{$balancelist.value[balancelist]*-1|money_format}{else}-{/if}</TD>
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right" nowrap>{if $balancelist.after[balancelist] < 0}<FONT class="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</TD>
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>

@@ -484,8 +484,8 @@ switch($type)
 			MIN(description) AS title, COUNT(*) AS posnumber 
 			FROM documents 
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
-			WHERE 1=1'
+			LEFT JOIN receiptcontents ON (documents.id = docid)
+			WHERE documents.type = ?'
 			.$where.'
 			GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, extnumber
 			ORDER BY cdate, documents.id', array(DOC_RECEIPT)))
