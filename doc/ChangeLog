@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.0rc5 Rosha (2006-01-15):
 
   - fixed credit notes printing from customer balance box (alec)
   - lms-rtparser: added support for multipart/alternative messages, fixed
