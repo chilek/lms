@@ -44,12 +44,12 @@ char * ftoa(double i)
 	return string;
 }
 
-unsigned char * get_period(struct tm *today, int period, int up_payments)
+char * get_period(struct tm *today, int period, int up_payments)
 {
 	struct tm *t;
 	static time_t new_time, old_time;
 	static char from[11], to[11];
-	unsigned char *result;
+	char *result;
 	
 	new_time = time(NULL);
 	t = localtime(&new_time);
@@ -121,18 +121,32 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 	return result;
 }
 
+char * get_diff_period(int fromdate, int todate)
+{
+	static char from[11], to[11];
+	char *result;
+	
+	strftime(from, 11, "%Y/%m/%d", localtime(&fromdate));
+	strftime(to, 11, "%Y/%m/%d", localtime(&todate));
+
+	result = (unsigned char *) malloc(strlen(from)+strlen(to)+3);
+
+	sprintf(result, "%s-%s", from, to);
+	
+	return result;
+}
+
 void reload(GLOBAL *g, struct payments_module *p)
 {
 	QueryHandle *res, *result, *sres;
-	unsigned char *insert;
-	unsigned char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
-	unsigned char *description, *invoiceid;
+	unsigned char *insert, *description, *invoiceid;
+	char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
 	int i, today, docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
-	unsigned char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4];  //odjac jeden?
-	unsigned char start[12], end[12];
+	char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4];  //odjac jeden?
+	char start[12], end[12];
 	
 	// get current date
 	t = time(NULL);
@@ -260,6 +274,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		res = g->db_pquery(g->conn, "\
 			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
 			    UPPER(lastname) AS lastname, customers.name AS custname, address, zip, city, ten, ssn, \
+			    assignments.id AS assignmentid, settlement, datefrom, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, \
@@ -288,6 +303,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 			int s_state = atoi(g->db_get_data(res,i,"suspended"));
 			int period = atoi(g->db_get_data(res,i,"period"));
 			int liabilityid = atoi(g->db_get_data(res,i,"liabilityid"));
+			int settlement = atoi(g->db_get_data(res,i,"settlement"));
+			int datefrom = atoi(g->db_get_data(res,i,"datefrom"));
 			double val = atof(g->db_get_data(res,i,"value"));
 			
 			if( !atof(g->db_get_data(res,i,"value")) ) continue;
@@ -313,9 +330,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 			taxid = g->db_get_data(res,i,"taxid");
 
 			// prepare insert to 'cash' table
-			insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %invoiceid, %itemid)");
+			insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
 			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
 			g->str_replace(&insert, "%value", value);
+			g->str_replace(&insert, "%taxid", taxid);
 			
 			if( period == DISPOSABLE )
 				description = strdup(g->db_get_data(res,i,"name"));
@@ -331,7 +349,6 @@ void reload(GLOBAL *g, struct payments_module *p)
 				case YEARLY: g->str_replace(&description, "%period", y_period); break;
 			}
 			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
-			g->str_replace(&insert, "%taxid", taxid);
 			
 			if( atoi(g->db_get_data(res,i,"invoice")) ) 
 			{
@@ -387,7 +404,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(res,i,"tariffid")
 						);
 					
-					g->str_replace(&insert, "%invoiceid", invoiceid);
+					g->str_replace(&insert, "%docid", invoiceid);
 					g->str_replace(&insert, "%itemid", itoa(itemid));
 					exec = g->db_pexec(g->conn, insert, description);
 				}
@@ -397,20 +414,110 @@ void reload(GLOBAL *g, struct payments_module *p)
 			} 
 			else 
 			{
-				g->str_replace(&insert, "%invoiceid", "0");
+				g->str_replace(&insert, "%docid", "0");
 				g->str_replace(&insert, "%itemid", "0");
 				exec = g->db_pexec(g->conn, insert, description) ? 1 : exec;
 			}
 
+			free(insert);
+			free(description);
+			
 			// remove disposable liabilities
 			if( liabilityid && !period )
 			{
 				g->db_pexec(g->conn, "DELETE FROM liabilities WHERE id=?", itoa(liabilityid));
 			}
+			
+			// settlements accounting has sense only for up payments
+			if( settlement && datefrom && p->up_payments)
+			{
+				int alldays;
+				int diffdays = (int) ((today - datefrom)/86400);
+				
+				switch( period )
+				{
+					// there are no disposable or daily liabilities with settlement
+					case WEEKLY: 	alldays = 7; break;
+					case MONTHLY: 	alldays = 30; break;
+					case QUARTERLY: alldays = 90; break;
+					case YEARLY: 	alldays = 365; break;
+				}
+				
+				value = ftoa(diffdays * val/alldays);
+				
+//				printf("%d - %d - %.2f -> %s\n", diffdays, alldays, val, value);
+				
+				description = strdup(p->s_comment);
+				g->str_replace(&description, "%period", get_diff_period(datefrom, today-86400));
+				g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
+				
+				// prepare insert to 'cash' table
+				insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
+				g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
+				g->str_replace(&insert, "%value", value);
+				g->str_replace(&insert, "%taxid", taxid);
+
+				// we're using transaction to not disable settlement flag
+				// when something will goes wrong
+				g->db_begin(g->conn);
+				
+				if( atoi(g->db_get_data(res,i,"invoice")) ) 
+				{
+					// oh, now we've got invoice id
+					invoiceid = strdup(itoa(docid));
+					
+					result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND docid = ? AND description = '?' AND value = ?", g->db_get_data(res,i,"tariffid"), invoiceid, description, value);
+
+					if( g->db_nrows(result) ) 
+					{
+						g->db_pexec(g->conn, "UPDATE invoicecontents SET count = count+1 WHERE docid = ? AND itemid = ?",
+							invoiceid,
+							g->db_get_data(result,0,"itemid")
+						);
+					
+						exec = g->db_pexec(g->conn, "UPDATE cash SET value = value + (? * -1) WHERE docid = ? AND itemid = ?", value, invoiceid, g->db_get_data(result,0,"itemid"));
+					}
+					else 
+					{
+						itemid++;
+					
+						g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
+							invoiceid,
+							itoa(itemid),
+							value,
+							taxid,
+							g->db_get_data(res,i,"prodid"),
+							description,
+							g->db_get_data(res,i,"tariffid")
+							);
+					
+						g->str_replace(&insert, "%docid", invoiceid);
+						g->str_replace(&insert, "%itemid", itoa(itemid));
+						g->str_replace(&insert, "%value", value);
+						exec = g->db_pexec(g->conn, insert, description);
+					}
+				
+					g->db_free(&result);
+					free(invoiceid);
+				} 
+				else 
+				{
+					g->str_replace(&insert, "%docid", "0");
+					g->str_replace(&insert, "%itemid", "0");
+					g->str_replace(&insert, "%value", value);
+					g->db_pexec(g->conn, insert, description) ? 1 : exec;
+				}
+				
+				// uncheck settlement flag
+				g->db_pexec(g->conn, "UPDATE assignments SET settlement = 0 WHERE id = ?", g->db_get_data(res,i,"assignmentid"));
+
+				g->db_commit(g->conn);
+				
+				free(insert);
+				free(description);
+			}
 
 			last_customerid = uid;
-			free(insert);
-			free(description);
 		}
     		
 		g->db_free(&res);
@@ -448,6 +555,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	// clean up
 	free(p->comment);
+	free(p->s_comment);
 	free(p->deadline);
 	free(p->paytype);
 	free(p->numberplanid);
@@ -468,6 +576,7 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 	
 	p->comment = strdup(g->config_getstring(p->base.ini, p->base.instance, "comment", "Subscription: %tariff for period: %period"));
+	p->s_comment = strdup(g->config_getstring(p->base.ini, p->base.instance, "settlement_comment", p->comment));
 	p->deadline = strdup(g->config_getstring(p->base.ini, p->base.instance, "deadline", "14"));
 	p->paytype = strdup(g->config_getstring(p->base.ini, p->base.instance, "paytype", "TRANSFER"));
 	p->up_payments = g->config_getbool(p->base.ini, p->base.instance, "up_payments", 1);
@@ -492,7 +601,7 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 		p->numberplanid = strdup("0");
 	}
 	g->db_free(&res);
-	
+
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/payments] initialized", p->base.instance);
 #endif	

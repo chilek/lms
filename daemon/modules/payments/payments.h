@@ -4,6 +4,7 @@ struct payments_module
 	MODULE base;
 	
 	unsigned char *comment;
+	unsigned char *s_comment;
 	unsigned char *paytype;
 	unsigned char *deadline;
 	unsigned char *numberplanid;
