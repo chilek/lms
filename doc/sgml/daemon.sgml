@@ -275,6 +275,13 @@
                    <para>Example: <prompt>comment = 'Subscription %tariff' </prompt></para>
                </listitem>
                <listitem>
+                   <para>settlement_comment</para>
+                   <para>Description of settlement operation. '%period' will be replaced by start and end
+                   date of settlement period, e.g. '2003/10/20 - 2003/11/09', and '%tariff' by name of
+                   liability. Defaults to <prompt>comment</prompt> option.</para>
+                   <para>Example: <prompt>settlement_comment = 'Settlement of subscription %tariff'</prompt>.</para>
+               </listitem>
+               <listitem>
                    <para>up_payments</para>
                    <para>How should period in comment be counted - forward or backward relatively to
                    date of write out. Default: yes.</para>

@@ -286,6 +286,13 @@
 			    <para>Przyk³ad: <prompt>comment = 'Abonament miesiêczny za okres %period' </prompt></para>
 			</listitem>
 			<listitem>
+			    <para>settlement_comment</para>
+			    <para>Komentarz do operacji wyrównania. '%period' zostanie zamienione na daty od-do 
+			    okresu wyrównania, np. '2003/10/20 - 2003/11/09', a '%tariff' na nazwê
+			    odpowiedniej taryfy. Domy¶lnie odpowiada opcji <prompt>comment</prompt>.</para>
+			    <para>Przyk³ad: <prompt>settlement_comment = 'Wyrównanie za okres %period'</prompt></para>
+			</listitem>
+			<listitem>
 			    <para>up_payments</para>
 			    <para>"Naliczanie z góry", czyli czy okres w komentarzu ma byæ liczony do 
 			    przodu, czy do ty³u w stosunku do daty naliczenia op³aty. Domy¶lnie: yes.</para>
