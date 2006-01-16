@@ -3,7 +3,7 @@
 /*
  * LMS version 1.8-cvs
  *
- *  (C) Copyright 2001-2005 LMS Developers
+ *  (C) Copyright 2001-2006 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
