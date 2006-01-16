@@ -521,7 +521,7 @@ switch($_GET['action'])
 						$AUTH->id,
 						$receipt['o_name']
 						));
-		print_r($DB->errors);				
+
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid'])); 
 			
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
