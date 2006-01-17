@@ -177,7 +177,7 @@
 </TABLE>
 </FORM>
 {if $error.nocash}<h2 align="center"><font class="alert">{$error.nocash}</font></h2>{/if}
-{if $receipt.type=="out" && $receipt.o_type=="move" && $cashregcount > 1}
+{if $receipt.type=="out" && $receipt.o_type=="move" && $receipt.selected && $cashregcount > 1}
 <P>
 <FORM name="movecash" method="POST" action="?m=receiptadd&action=movecash">
 <TABLE WIDTH="100%" CELLPADDING="3">

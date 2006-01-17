@@ -523,8 +523,7 @@ switch($type)
 			$period = $from.' - '.$to;
 
 		$layout['pagetitle'] = trans('Cash Report').' '.$period;
-		if($registry)
-			$layout['registry'] = trans('Registry: $0', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)));
+		$layout['registry'] = trans('Registry: $0', ($registry ? $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)) : trans('all')));
 		if($user)
 			$layout['username'] = trans('Cashier: $0', $DB->GetOne('SELECT name FROM users WHERE id=?', array($user)));
 		
