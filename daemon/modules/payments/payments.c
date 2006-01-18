@@ -121,7 +121,7 @@ char * get_period(struct tm *today, int period, int up_payments)
 	return result;
 }
 
-char * get_diff_period(int fromdate, int todate)
+char * get_diff_period(time_t fromdate, time_t todate)
 {
 	static char from[11], to[11];
 	char *result;
@@ -431,7 +431,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			// settlements accounting has sense only for up payments
 			if( settlement && datefrom && p->up_payments)
 			{
-				int alldays;
+				int alldays = 1;
 				int diffdays = (int) ((today - datefrom)/86400);
 				
 				switch( period )
