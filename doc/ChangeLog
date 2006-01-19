@@ -31,6 +31,8 @@ version ? (????-??-??):
   - changed look of balance lists: columns Liability, Income, Expense (alec)
   - automatic first deficient period settlement - Part I: Interface (alec)
   - automatic first deficient period settlement - Part II: Daemon (alec)
+  - added option phpui/default_module (alec)
+  - added '//TRANSLIT' for iconv() conversions in pdf invoice (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 

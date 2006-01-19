@@ -207,6 +207,12 @@ if($AUTH->islogged)
 {
 	$module = (isset($_GET['m']) ? $_GET['m'] : '');
 	$deny = FALSE;
+
+	if($module == '')
+	{
+		$module = $CONFIG['phpui']['default_module'];
+		$SMARTY->assign('warning',!chkconfig($CONFIG['phpui']['disable_devel_warning']));
+	}
 	
 	if (file_exists($_MODULES_DIR.'/'.$module.'.php'))
 	{
@@ -229,12 +235,6 @@ if($AUTH->islogged)
 		}
 		else
 			$SMARTY->display('noaccess.html');
-	}
-	elseif($module == '')
-	{
-		$layout['module'] = 'welcome';
-		$SMARTY->assign('warning',!chkconfig($CONFIG['phpui']['disable_devel_warning']));
-		include($_MODULES_DIR.'/welcome.php');
 	}
 	else
 	{
