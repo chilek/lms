@@ -1703,51 +1703,6 @@ class LMS
 		$this->SetTS('cash');
 	}
 
-	function GetBalanceList()
-	{
-		if($balancelist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, cash.customerid AS customerid, comment, docid, taxid, cash.type AS type,
-						    documents.type AS doctype, documents.closed AS closed
-						    FROM cash
-						    LEFT JOIN documents ON (documents.id = docid)
-						    LEFT JOIN taxes ON (taxid = taxes.id)
-						    ORDER BY time, cash.id'))
-		{
-			$taxeslist = $this->GetTaxes();
-			$userlist = $this->DB->GetAllByKey('SELECT id, name FROM users','id');
-			$customerslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
-			
-			foreach($balancelist as $idx => $row)
-			{
-				$balancelist[$idx]['user'] = $userlist[$row['userid']]['name'];
-				$balancelist[$idx]['value'] = $row['value'];
-				$balancelist[$idx]['tax'] = $taxeslist[$row['taxid']]['label'];
-				$balancelist[$idx]['customername'] = $customerslist[$row['customerid']]['customername'];
-				$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
-
-				if($row['customerid'] && $row['type'] == 0)
-				{
-					// customer covenant
-					$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
-					$balancelist[$idx]['covenant'] = true;
-					$balancelist['liability'] -= $row['value'];
-				}
-				else
-				{
-					$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $row['value'];
-					if($row['value'] > 0)
-						//income
-						$balancelist['income'] += $row['value'];
-					else
-						//expense
-						$balancelist['expense'] += -$row['value'];
-				}
-			}
-			$balancelist['total'] = $balancelist['income'] - $balancelist['expense'];
-		}
-
-		return $balancelist;
-	}
-
 	/*
 	*   Payments
 	*/

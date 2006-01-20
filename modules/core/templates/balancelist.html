@@ -63,7 +63,13 @@
 		document.page.target="_blank";
 		document.page.submit();
 	}
-	
+        
+	function filter()
+	{
+	        document.page.action="?m=balancelist";
+	        document.page.target="";
+	        document.page.submit();
+	}
 	//-->
 </SCRIPT>
 {/literal}
@@ -102,6 +108,33 @@
 			&nbsp;
 		</TD>
 	</TR>
+	<TR class="DARK">
+    		<TD class="fall" colspan="10">
+	                <B>{t}Filter:{/t} </B>
+				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<SELECT size="1" name="cat">
+					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
+					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}date (YYYY/MM/DD){/t}</OPTION>
+					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}document number{/t}</OPTION>
+					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{t}value{/t}</OPTION>
+					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
+					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
+					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
+					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
+				</SELECT>&nbsp;
+				{t}Group:{/t}
+				<SELECT size="1" name="group">
+					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{t}- all groups -{/t}</OPTION>
+					{section name="grouplist" loop=$grouplist}
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"..."}</OPTION>
+					{/section}
+				</SELECT>
+				<NOBR>
+				<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}> {t}exclude group{/t}
+				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
+				</NOBR>
+		</TD>
+	</TR>		
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="10">
