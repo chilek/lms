@@ -1684,5 +1684,6 @@ $_LANG['Liability'] = 'Zobowiązanie';
 $_LANG['Inv./Settl.:'] = 'Fakt./Wyrówn.';
 $_LANG['Options:'] = 'Opcje:';
 $_LANG['with settlement of first deficient period'] = 'z wyrównaniem początkowego okresu niepełnego';
+$_LANG['document number'] = 'numer dokumentu';
 
 ?>

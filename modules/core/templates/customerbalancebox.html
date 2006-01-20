@@ -19,16 +19,6 @@
 		CheckAll();
 	}
 
-	function DeleteMarked()
-	{
-		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation(s) and/or invoice item(s)?{/t}{literal}'))
-			return;
-
-		document.addbalance.action="?m=balancedel";
-		document.addbalance.target="";
-		document.addbalance.submit();
-	}
-
 	function AddBalance()
 	{
 		document.addbalance.submit();
@@ -139,7 +129,6 @@
 				<TR class="light">
 					<TD CLASS="ftop" ALIGN="left" colspan="7">
 						<nobr>
-						<A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
 						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
 						<INPUT type="checkbox" class="box light" name="original" checked> {t}original{/t}&nbsp;
