@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed dynamic popups resizing in Firefox (alec)
+
 version 1.8.0rc5 Rosha (2006-01-15):
 
   - fixed credit notes printing from customer balance box (alec)
