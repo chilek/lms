@@ -57,7 +57,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 		}
 	}
 	
-	if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
+	if($list = $DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
 				cash.customerid AS customerid, comment, docid, taxid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed, '
 				.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
@@ -72,38 +72,37 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 		$userlist = $DB->GetAllByKey('SELECT id, name FROM users','id');
 
     		if($group['group'])
-	        {
 		        $customers = $DB->GetAllByKey('SELECT customerid AS id
-					FROM customerassignments WHERE customergroupid=?',
-					'id', array($group['group']));
+					    FROM customerassignments WHERE customergroupid=?',
+					    'id', array($group['group']));
 
-/*			foreach($result as $idx => $row)
-			{
-			if(!$group['exclude'] && $customers[$result[$idx]['customerid']])
-				$result1[] = $result[$idx];
-			elseif($group['exclude'] && !$customers[$result[$idx]['customerid']])
-				$result1[] = $result[$idx];
-			}
-			$result = $result1;
-*/		}
-			
-		foreach($balancelist as $idx => $row)
+		$id = 0;
+		foreach($list as $idx => $row)
 		{
-			$balancelist[$idx]['user'] = $userlist[$row['userid']]['name'];
-			$balancelist[$idx]['tax'] = $taxeslist[$row['taxid']]['label'];
-			$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
-			$balancelist[$idx]['value'] = $row['value'];
+			if($group['group'])
+			{
+				if(!$group['exclude'] && !$customers[$row['customerid']])
+					continue;
+				elseif($group['exclude'] && $customers[$row['customerid']])
+					continue;
+			}
+
+			$balancelist[$id] = $row;
+			$balancelist[$id]['user'] = $userlist[$row['userid']]['name'];
+			$balancelist[$id]['tax'] = $taxeslist[$row['taxid']]['label'];
+			$balancelist[$id]['before'] = $balancelist[$id-1]['after'];
+			$balancelist[$id]['value'] = $row['value'];
 
 			if($row['customerid'] && $row['type'] == 0)
 			{
 				// customer covenant
-				$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
-				$balancelist[$idx]['covenant'] = true;
+				$balancelist[$id]['after'] = $balancelist[$id]['before'];
+				$balancelist[$id]['covenant'] = true;
 				$balancelist['liability'] -= $row['value'];
 			}
 			else
 			{
-				$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $row['value'];
+				$balancelist[$id]['after'] = $balancelist[$id]['before'] + $row['value'];
 				if($row['value'] > 0)
 					//income
 					$balancelist['income'] += $row['value'];
@@ -111,6 +110,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 					//expense
 					$balancelist['expense'] += -$row['value'];
 			}
+			$id++;
 		}
 		$balancelist['total'] = $balancelist['income'] - $balancelist['expense'];
 	}
