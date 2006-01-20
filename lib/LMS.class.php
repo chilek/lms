@@ -1405,13 +1405,16 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid, closed, reference
+		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, userid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid, closed, reference
 					    FROM documents 
 					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE documents.id=? AND (type = ? OR type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
 		{
 			if($result['reference'])
 				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
+			
+			if($result['userid'])
+				$result['user'] = $this->GetUserName($result['userid']);
 
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid
 					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=? ORDER BY itemid', array($invoiceid)))

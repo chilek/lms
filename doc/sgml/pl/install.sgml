@@ -585,7 +585,7 @@ AddDefaultCharset Off
           </listitem>
           <listitem>
                <para>default_author</para>
-               <para>Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</para>
+               <para>Domy¶lna osoba wystawiaj±ca fakturê (dla faktur wystawianych automatycznie). Domy¶lnie: puste</para>
                <para>Przyk³ad: <prompt>default_author = "specjalista d/s fakturowania"</prompt></para>
           </listitem>
           <listitem>
