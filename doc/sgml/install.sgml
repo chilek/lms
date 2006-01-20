@@ -526,7 +526,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
           </listitem>
           <listitem>
                <para>default_author</para>
-               <para>Invoice issuer name. Default: empty</para>
+               <para>Invoice expositor name (for auto-generated invoices). Default: empty</para>
                <para>Example: <prompt>default_author = "invoicing expert"</prompt></para>
           </listitem>
           <listitem>
