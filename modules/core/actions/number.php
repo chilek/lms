@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-if($doc = $DB->GetRow('SELECT number, cdate, type, template 
+if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber 
 			FROM documents 
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			WHERE documents.id = ?', array($_GET['id'])))
 {
-	$ntempl = docnumber($doc['number'], $doc['template'], $doc['cdate']);
+	$ntempl = docnumber($doc['number'], $doc['template'], $doc['cdate'], $doc['extnumber']);
 
 	switch($doc['type'])
 	{
