@@ -1145,10 +1145,10 @@ registered/unregistered cases) if ticket will be running via email.</para>
 			<para>%N - integer number, uniquely identifying document</para>
 		    </listitem>
 		    <listitem>
-			<para>%I - additional part of number (works with cash documents only)</para>
+			<para>%[1-9]N - as above, but with leading zeroes, ie.  '%4N' will return '0012' for 12</para>
 		    </listitem>
 		    <listitem>
-			<para>%[1-9]N - as above, but with leading zeroes, ie.  '%4N' will return '0012' for 12</para>
+			<para>%I - additional part of number (works with cash documents only)</para>
 		    </listitem>
 		    <listitem>
 			<para>%Y - year as a 4 digit number</para>
