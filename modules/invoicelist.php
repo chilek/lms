@@ -55,13 +55,10 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 		break;
 	}
 	
-	if($search && $cat)
+	if($search!='' && $cat)
         {
 	        switch($cat)
 		{
-			case 'value':
-			        $where = ' AND value*count = '.intval($search);
-			break;
 			case 'number':
 				$where = ' AND number = '.intval($search);
 			break;
@@ -104,6 +101,18 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			name, address, zip, city, template, closed, type, reference '
 	    		.$sqlord.' '.$direction))
 	{
+                if($search!='' && $cat=='value')
+		{
+		        $val = f_round($search);
+			
+			foreach($result as $idx => $row)
+			        if($row['value']==$val)
+			                $result1[] = $result[$idx];
+
+                        $result = $result1;
+	                unset($result1);
+		}
+																																	
 		if($group['group'])
 		{
 			$customers = $DB->GetAllByKey('SELECT customerid AS id
