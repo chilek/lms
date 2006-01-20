@@ -58,7 +58,7 @@ function _smarty_function_tip($args, &$SMARTY)
 		if(is_array($args))
 			foreach($args as $argid => $argval)
 				$dynpopup = str_replace('$'.$argid, $argval, $dynpopup);
-		$text = "onmouseover=\"return overlib('<iframe id=&quot;autoiframe&quot; width=150 height=10 frameborder=0 scrolling=no src=&quot;".$dynpopup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15".($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
+		$text = "onmouseover=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;".$dynpopup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15".($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
 //		global $SESSION;
 //		$text = 'onmouseover="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe id=&quot;autoiframe&quot; frameborder=0 scrolling=no width=220 height=150 src=&quot;'.$dynpopup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onmouseout="nd();"';
 		return $text;
