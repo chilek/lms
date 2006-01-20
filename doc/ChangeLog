@@ -33,6 +33,7 @@ version ? (????-??-??):
   - automatic first deficient period settlement - Part II: Daemon (alec)
   - added option phpui/default_module (alec)
   - added '//TRANSLIT' for iconv() conversions in pdf invoice (alec)
+  - fixed dynamic popups width resizing in Firefox (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 
