@@ -7,6 +7,7 @@
 
 WORKDIR=`pwd`
 NOTDISTRIB="devel .project modules/core modules/mailing lib/ExecStack.class.php"
+SMARTYVER="2.6.12"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
@@ -54,10 +55,10 @@ chmod 777 templates_c backups documents
 cd ..
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd lms/lib
-wget http://smarty.php.net/distributions/Smarty-2.6.10.tar.gz
-tar -xzf Smarty-2.6.10.tar.gz
-mv Smarty-2.6.10/libs Smarty
-rm -Rf Smarty-2.6.10 Smarty-2.6.10.tar.gz
+wget http://smarty.php.net/distributions/Smarty-$SMARTYVER.tar.gz
+tar -xzf Smarty-$SMARTYVER.tar.gz
+mv Smarty-$SMARTYVER/libs Smarty
+rm -Rf Smarty-$SMARTYVER Smarty-$SMARTYVER.tar.gz
 cd ../
 rm -Rf $NOTDISTRIB
 cd ../
