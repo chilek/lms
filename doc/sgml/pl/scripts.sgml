@@ -336,6 +336,12 @@ http://www.naszasiec.pl/</screen></example>
 	  <para>%desc - opis taryfy</para>
           <para>Przyk³ad:       <prompt>comment = 'Abonament za %current_month w/g taryfy %tariff'</prompt></para>
 	  </listitem>
+	 <listitem>
+          <para>settlement_comment (opcjonalny)</para>
+          <para>Opis pozycji z tytu³u wyrównania niepe³nego okresu zobowi±zania.</para>
+          <para>Domy¶lnie odpowiada opcji <prompt>comment</prompt></para>
+          <para>Przyk³ad:       <prompt>settlement_comment = 'Wyrównanie za okres %period'</prompt></para>
+	  </listitem>
           <listitem>
 	   <para>suspension_description (opcjonalny)</para>
 	   <para>Tekst dodawany na koñcu opisu operacji dla obci±¿eñ zawieszonych. 

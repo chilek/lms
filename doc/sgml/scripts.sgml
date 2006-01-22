@@ -341,6 +341,12 @@ invoices in <emphasis>[payments]</emphasis> section of
 	   <para>%desc - tariff description</para>
 	   <para>Example:	<prompt>comment = 'Subscription for %current_month'</prompt></para>
 	  </listitem>
+	  <listitem>
+	   <para>settlement_comment (optional)</para>
+	   <para>Description of settlement.</para>
+	   <para>Default set to <prompt>comment</prompt> option contents.</para>
+	   <para>Example:	<prompt>settlement_comment = 'Settlement for %period'</prompt></para>
+	  </listitem>
 	 </itemizedlist>
          <para>Script has also one useful command line parameter: <prompt>--fakedate</prompt>
          (<prompt>-f</prompt>). With this option you can make that script will execute
