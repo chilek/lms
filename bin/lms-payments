@@ -100,6 +100,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $deadline = $ini->val('payments', 'deadline') || '14';
 my $paytype = $ini->val('payments', 'paytype') || 'TRANSFER';
 my $comment = $ini->val('payments', 'comment') || 'Tariff %tariff subscription for period %period';
+my $s_comment = $ini->val('payments', 'settlement_comment') || $comment;
 my $suspension_description = $ini->val('payments', 'suspension_description') || '';
 
 my $suspension_percentage = $ini->val('finances', 'suspension_percentage') || '0';
@@ -153,7 +154,7 @@ my $yearday = strftime("%j",localtime2());
 
 my $today;
 if($fakedate) {
-	$today = strftime("%s", localtime2());
+	$today = $currtime;
 } else {
 	$today = timelocal(0,0,0,$dom,$month-1,$year);
 }
@@ -255,7 +256,9 @@ my $suspended = 0;
 my $itemid;
 
 # let's go, fetch *ALL* assignments in given day
-$dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, tariffs.description AS description,
+$dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, suspended, 
+	invoice, tariffs.description AS description, assignments.id AS assignmentid,
+	settlement, datefrom, 
 	(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
 	(CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, 
 	(CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, 
@@ -381,6 +384,78 @@ while(my $assign = $dbq->fetchrow_hashref())
 		if ($assign->{'liabilityid'} && $assign->{'period'} == DISPOSABLE) #remove liability
 		{
 			$dbase->do("DELETE FROM liabilities WHERE id = $assign->{'liabilityid'}");
+		}
+		
+		# settlements accounting
+		if ($assign->{'settlement'} && $assign->{'datefrom'})
+		{
+			my $alldays = 1;
+			my $diffdays = sprintf("%d", ($today - $assign->{'datefrom'})/86400);
+			my $period = strftime("%Y/%m/%d", 0, 0, 0, $day - $diffdays, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 0, $day -1, $month - 1, $year - 1900);;
+			
+			for ($assign->{'period'})
+	                {
+			        # there are no disposable or daily liabilities with settlement
+				/@{[WEEK]}/ && do {
+					$alldays = 7; last;
+				};
+				/@{[MONTH]}/ && do {
+					$alldays = 30; last;
+				};
+				/@{[QUARTER]}/ && do {
+					$alldays = 90; last;
+				};
+				/@{[YEAR]}/ && do {
+					$alldays = 365;	last;
+				};
+			}
+			
+			my $value = sprintf("%.2f", $diffdays * $assign->{'value'}/$alldays);
+
+			#print "value: ".$assign->{'value'}." diffdays: $diffdays alldays: $alldays settl_value: $value\n";
+			
+			my $sdesc = $s_comment;
+			$sdesc =~ s/\%tariff/$assign->{'name'}/g;
+			$sdesc =~ s/\%desc/$assign->{'description'}/g;
+			$sdesc =~ s/\%period/$period/g;
+			$sdesc =~ s/\%current_month/$current_month/g;
+	
+	    		if($assign->{'invoice'})
+		    	{
+				my $icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND value=$value AND docid=$gotinv{$uid} AND description=?");
+				$icdbq->execute($sdesc);
+			
+				if(my $icrow = $icdbq->fetchrow_hashref())
+				{
+					$itemid = $icrow->{'itemid'};
+					
+					$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=?");
+					$icdbq->execute($sdesc);
+
+					$cdbq = $dbase->prepare("UPDATE cash SET value = value+($value*-1) WHERE docid = $gotinv{$uid} AND itemid = $itemid");
+					$cdbq->execute();
+				}
+				else
+				{
+					$itemid++;
+	
+					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $value, $assign->{'taxid'}, '$assign->{'prodid'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
+					$icdbq->execute($sdesc);
+				
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES ($currtime, $value * -1, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
+					$cdbq->execute($sdesc);
+				}
+			}
+			else
+			{
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment) VALUES ($currtime, $value * -1, $assign->{'taxid'}, $uid, ?)");
+				$cdbq->execute($sdesc);
+			}
+
+			print STDERR "CID:$uid\tVAL:$value\tDESC:$sdesc\n" if not $quiet;
+
+			#remove settlement flag
+			$dbase->do("UPDATE assignments SET settlement = 0 WHERE id = $assign->{'assignmentid'}");
 		}
 	}
 }	
