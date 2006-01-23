@@ -159,7 +159,7 @@
          <sect2 id="others">
           <title>Others</title>
           <para>LMS uses elements of other software: 
-          <ulink url="http://phpwizard.net/projects/phpMyAdmin/">phpMyAdmin</ulink>,
+          <ulink url="http://www.phpmyadmin.net/">phpMyAdmin</ulink>,
           <ulink url="phpsysinfo.sourceforge.net">phpsysinfo</ulink>, 
           <ulink url="florian-amrhein.de/newsportal/index-anglish.php3">NewsPortal</ulink>, 
           <ulink url="www.bosrup.com/web/overlib/">overLIB</ulink>, 
