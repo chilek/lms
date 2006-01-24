@@ -1399,6 +1399,9 @@ class LMS
 			if($result['reference'])
 				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
 
+			if($result['userid'])
+			        $result['user'] = $this->GetUserName($result['userid']);
+					       
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid
 					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=? ORDER BY itemid', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
