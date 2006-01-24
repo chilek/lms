@@ -330,18 +330,18 @@ switch($_GET['action'])
 				break;
 				case 'name':
 					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-						    FROM customers WHERE deleted = 0 AND '.$DB->Concat('UPPER(lastname)',"' '",'name').' ?LIKE? \'%'.$search.'%\'
+						    FROM customers WHERE deleted = 0 AND UPPER('.$DB->Concat('lastname',"' '",'name').') ?LIKE? UPPER(\'%'.$search.'%\')
 						    ORDER BY customername';
 				break;
 				case 'address':
 					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-						    FROM customers WHERE deleted = 0 AND address ?LIKE? \'%'.$search.'%\'
+						    FROM customers WHERE deleted = 0 AND UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\')
 						    ORDER BY customername';
 				break;
 				case 'node':
 					$query = 'SELECT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername 
-						    FROM customers, nodes WHERE customers.id = ownerid AND nodes.name ?LIKE? \'%'.$search.'%\'
-						    GROUP BY customers.id ORDER BY customername';
+						    FROM customers, nodes WHERE customers.id = ownerid AND UPPER(nodes.name) ?LIKE? UPPER(\'%'.$search.'%\')
+						    GROUP BY customers.id, lastname, customers.name ORDER BY customername';
 				break;
 				default:
 					$query = '';
