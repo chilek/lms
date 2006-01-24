@@ -171,8 +171,9 @@ switch($_GET['action'])
 			// sprawdzamy czy mamy tyle kasy w kasie ;)
 			$cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
 			
-			foreach($contents as $item)
-				$sum += $item['value'];
+			if($contents)
+				foreach($contents as $item)
+					$sum += $item['value'];
 			$sum += $itemdata['value'];
 			
 			if( $cash < $sum )
@@ -210,8 +211,9 @@ switch($_GET['action'])
 				if($receipt['type'] != 'in')
 				{
 					// sprawdzamy czy mamy tyle kasy w kasie ;)
-					foreach($contents as $item)
-						$sum += $item['value'];
+					if($contents)
+						foreach($contents as $item)
+							$sum += $item['value'];
 					$sum += $itemdata['value'];
 									
 					if( $cash < $sum )

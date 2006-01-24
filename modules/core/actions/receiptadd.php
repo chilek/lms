@@ -171,8 +171,9 @@ switch($_GET['action'])
 			// sprawdzamy czy mamy tyle kasy w kasie ;)
 			$cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
 			
-			foreach($contents as $item)
-				$sum += $item['value'];
+			if($contents)
+				foreach($contents as $item)
+					$sum += $item['value'];
 			$sum += $itemdata['value'];
 			
 			if( $cash < $sum )
@@ -210,8 +211,9 @@ switch($_GET['action'])
 				if($receipt['type'] != 'in')
 				{
 					// sprawdzamy czy mamy tyle kasy w kasie ;)
-					foreach($contents as $item)
-						$sum += $item['value'];
+					if($contents)
+						foreach($contents as $item)
+							$sum += $item['value'];
 					$sum += $itemdata['value'];
 									
 					if( $cash < $sum )
@@ -330,18 +332,18 @@ switch($_GET['action'])
 				break;
 				case 'name':
 					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-						    FROM customers WHERE deleted = 0 AND '.$DB->Concat('UPPER(lastname)',"' '",'name').' ?LIKE? \'%'.$search.'%\'
+						    FROM customers WHERE deleted = 0 AND UPPER('.$DB->Concat('lastname',"' '",'name').') ?LIKE? UPPER(\'%'.$search.'%\')
 						    ORDER BY customername';
 				break;
 				case 'address':
 					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-						    FROM customers WHERE deleted = 0 AND address ?LIKE? \'%'.$search.'%\'
+						    FROM customers WHERE deleted = 0 AND UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\')
 						    ORDER BY customername';
 				break;
 				case 'node':
 					$query = 'SELECT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername 
-						    FROM customers, nodes WHERE customers.id = ownerid AND nodes.name ?LIKE? \'%'.$search.'%\'
-						    GROUP BY customers.id ORDER BY customername';
+						    FROM customers, nodes WHERE customers.id = ownerid AND UPPER(nodes.name) ?LIKE? UPPER(\'%'.$search.'%\')
+						    GROUP BY customers.id, lastname, customers.name ORDER BY customername';
 				break;
 				default:
 					$query = '';
@@ -521,7 +523,7 @@ switch($_GET['action'])
 						$AUTH->id,
 						$receipt['o_name']
 						));
-		print_r($DB->errors);				
+
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid'])); 
 			
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
