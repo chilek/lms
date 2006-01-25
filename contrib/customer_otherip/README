@@ -76,7 +76,7 @@ Uwaga: 'numer umowy' nie jest standardowym kawa³kiem LMSa i nale¿y tej
 ³atki po prostu sobie poszukaæ.
 
 6) Aby na formularzu wp³aty mieæ w³asne dane (nazwê firmy, tytu³) nale¿y
-w lms.ini dopisaæ w sekcji 'finances':
+w konfiguracji dopisaæ w sekcji [finances]:
 
 account		-	nr konta (iban, 26 cyfr)
 line_1
