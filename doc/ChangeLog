@@ -6,6 +6,7 @@ version ? (????-??-??):
   - fixed invoices list filtering by value (alec)
   - added variable 'user' on invoice for expositor name (alec)
   - fixed transfer forms printing for selected customer (alec)
+  - contrib/customer_otherip: removed doubtful sample lms.ini (alec)
 
 version 1.8.0rc5 Rosha (2006-01-15):
 
