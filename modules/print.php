@@ -262,6 +262,8 @@ switch($type)
 		
 		$_GET['from'] = $date['from'];
 		$_GET['to'] = $date['to'];
+		$_GET['customerid'] = $_POST['customer'];
+		
 		require_once($_MODULES_DIR.'/transferforms.php');
 		
 	break;	
