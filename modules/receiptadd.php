@@ -104,13 +104,12 @@ switch($_GET['action'])
 		if($receipt['type'] == 'in')
 		{
 			$receipt['numberplanid'] = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
+		//	$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 		}	
-	
-		if($receipt['type'] == 'out')
+		elseif($receipt['type'] == 'out')
 		{
 			$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
+		//	$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 			if($receipt['regid'])
 				if( $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
 					$error['regid'] = trans('There is no cash in selected registry!');
@@ -122,6 +121,7 @@ switch($_GET['action'])
 
 		if(!$error && $receipt['customerid'] && $LMS->CustomerExists($receipt['customerid']))
 			$customer = $LMS->GetCustomer($receipt['customerid']);
+		
 	break;
 
 	case 'setreg':
@@ -154,7 +154,7 @@ switch($_GET['action'])
 			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
 				$receipt['extended'] = TRUE;
 
-		$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
+		//$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 	break;
 
 	case 'additem':
@@ -255,8 +255,8 @@ switch($_GET['action'])
 				$receipt['numberplanid'] = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
 			else
 				$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-				
-			$receipt['number'] = 0;
+
+//			$receipt['number'] = 0;
 		}
 
 		if($receipt['cdate'])
@@ -288,9 +288,10 @@ switch($_GET['action'])
 			}
 		}
 
-		if(!$receipt['number'])
-			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
-		else
+	//	if(!$receipt['number'])
+	//		$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+	//	else
+		if($receipt['number'])
 		{
 			if(!eregi('^[0-9]+$', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
@@ -387,6 +388,19 @@ switch($_GET['action'])
 		{
 			$DB->BeginTrans();
 		
+			if(!$receipt['number'])
+				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+			else
+			{
+				if(!eregi('^[0-9]+$', $receipt['number']))
+					$error['number'] = trans('Receipt number must be integer!');
+				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+
+				if($error)
+					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+			}
+		
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
@@ -444,6 +458,19 @@ switch($_GET['action'])
 		elseif($contents && $receipt['o_type'] == "other")
 		{
 			$DB->BeginTrans();
+
+			if(!$receipt['number'])
+				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+			else
+			{
+				if(!eregi('^[0-9]+$', $receipt['number']))
+					$error['number'] = trans('Receipt number must be integer!');
+				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+				
+				if($error)
+					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+			}
 		
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name)
 					VALUES(?, ?, ?, ?, ?, ?, ?)',
@@ -509,6 +536,19 @@ switch($_GET['action'])
 			}
 		
 			$DB->BeginTrans();
+
+			if(!$receipt['number'])
+				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+			else
+			{
+				if(!eregi('^[0-9]+$', $receipt['number']))
+					$error['number'] = trans('Receipt number must be integer!');
+				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
+				
+				if($error)
+					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+			}
 			
 			// cash-out
 			$description = trans('Moving assets to registry $0',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
