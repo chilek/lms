@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.0 Rosha (2005-01-27):
 
   - fixed dynamic popups resizing in Firefox (alec)
   - fixed invoices list filtering by value (alec)
