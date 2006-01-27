@@ -165,7 +165,7 @@ switch($_GET['action'])
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
-						$receipt['numberplanid'],
+						$receipt['numberplanid'] ? $receipt['numberplanid'] : 0,
 						$receipt['cdate'],
 						$customer['id'],
 						$AUTH->id,
