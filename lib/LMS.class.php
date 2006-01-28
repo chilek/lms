@@ -3148,6 +3148,12 @@ class LMS
 				$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
 				$end = mktime(0, 0, 0, 1, 1, date('Y', $cdate)+1);
 			break;
+			case CONTINUOUS:
+				$number = $this->DB->GetOne('SELECT MAX(number) FROM documents 
+						WHERE type = ? AND numberplanid = ?', array($doctype, $planid));
+						
+				return $number ? ++$number : 1;
+			break;
 		}
 	
 		$number = $this->DB->GetOne('
@@ -3156,9 +3162,7 @@ class LMS
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND numberplanid = ?', 
 				array($start, $end, $doctype, $planid));
 				
-		$number = $number ? ++$number : 1;
-
-		return $number;
+		return $number ? ++$number : 1;
 	}
 
 	function DocumentExists($number, $doctype=NULL, $planid=0, $cdate=NULL)
@@ -3200,10 +3204,15 @@ class LMS
 				$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
 				$end = mktime(0, 0, 0, 1, 1, date('Y', $cdate)+1);
 			break;
+			case CONTINUOUS:
+				return $this->DB->GetOne('SELECT number FROM documents 
+						WHERE type = ? AND number = ? AND numberplanid = ?', 
+						array($doctype, $number, $planid)) ? TRUE : FALSE;
+			break;
 		}
 	
 		return $this->DB->GetOne('SELECT number FROM documents 
-				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid=?', 
+				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?', 
 				array($start, $end, $doctype, $number, $planid)) ? TRUE : FALSE;
 	}
 	

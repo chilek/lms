@@ -14,6 +14,7 @@ struct payments_module
 	double suspension_percentage;
 };
 
+#define CONTINUOUS 6
 #define YEARLY 5
 #define QUARTERLY 4
 #define MONTHLY 3

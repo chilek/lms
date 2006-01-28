@@ -186,7 +186,6 @@ void reload(GLOBAL *g, struct payments_module *p)
 	tt->tm_min = 0;
 	tt->tm_hour = 0;
 	tt->tm_mday = 1;
-
 	tt->tm_mon = atoi(month)-1;
 	tt->tm_year = atoi(year)-1900;
 
@@ -209,11 +208,17 @@ void reload(GLOBAL *g, struct payments_module *p)
 				case 9: case 10: case 11: tt->tm_mon = 9; break;
 			}
 		break;
+		case CONTINUOUS:
+			tt->tm_year = 70; // 1970-01-01
+			tt->tm_mday = 1;
+			tt->tm_mon = 0;
+		break;
 		default: //YEARLY
 			tt->tm_mon = 0; // January
 		break;
 	}
 	strftime(start,	sizeof(start), "%s", tt);
+	
 	switch(p->num_period)
 	{
 		case DAILY:
@@ -227,6 +232,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 		break;
 		case QUARTERLY:
 			tt->tm_mon += 3; // first month of next quarter
+		break;
+		case CONTINUOUS:
+			tt->tm_year = 138; // 2038-01-01
+			tt->tm_mday = 1;
+			tt->tm_mon = 0;
 		break;
 		default: //YEARLY
 			tt->tm_year++; // next year

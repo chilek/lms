@@ -137,6 +137,7 @@ sub localtime2()
 	}
 }
 
+use constant CONTINUOUS	=> 6;
 use constant YEAR	=> 5;
 use constant QUARTER	=> 4;
 use constant MONTH	=> 3;
@@ -237,6 +238,12 @@ for($period)
 		$end = strftime("%s", 0, 0, 0, 1, $startmonth - 1 + 3, $year - 1900);
 		last;
 	};
+	/@{[CONTINUOUS]}/ && do {
+		$start = strftime("%s", 0, 0, 0, 1, 0, 70);
+		$end = strftime("%s", 0, 0, 0, $day + 1, $month - 1, $year - 1900);
+		last;
+	};
+
 	# /@{[YEAR]}/ && do
 	{
 		$start = strftime("%s", 0, 0, 0, 1, 0, $year - 1900);
