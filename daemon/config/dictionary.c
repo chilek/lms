@@ -39,7 +39,7 @@ static void * mem_double(void *ptr, int size)
     return newptr;
 }
 
-static unsigned dictionary_hash(unsigned char *key)
+static unsigned dictionary_hash(char *key)
 {
 	int len;
 	unsigned hash;
@@ -92,7 +92,7 @@ void dictionary_free(struct dictionary *d)
 	free(d);
 }
 
-void dictionary_set(struct dictionary *d, unsigned char *key, unsigned char *val)
+void dictionary_set(struct dictionary *d, char *key, char *val)
 {
 	int i;
 	unsigned hash;
@@ -148,7 +148,7 @@ void dictionary_set(struct dictionary *d, unsigned char *key, unsigned char *val
 	return;
 }
 
-unsigned char * dictionary_get(struct dictionary *d, unsigned char *key, unsigned char *def)
+char * dictionary_get(struct dictionary *d, char *key, char *def)
 {
 	unsigned hash;
 	int i;

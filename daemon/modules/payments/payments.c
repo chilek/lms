@@ -104,7 +104,7 @@ char * get_period(struct tm *today, int period, int up_payments)
 
 	if(period != DAILY)
 	{
-		result = (unsigned char *) malloc(strlen(from)+strlen(to)+3);
+		result = (char *) malloc(strlen(from)+strlen(to)+3);
 
 		if( up_payments )
 			sprintf(result, "%s-%s", to, from);
@@ -129,7 +129,7 @@ char * get_diff_period(time_t fromdate, time_t todate)
 	strftime(from, 11, "%Y/%m/%d", localtime(&fromdate));
 	strftime(to, 11, "%Y/%m/%d", localtime(&todate));
 
-	result = (unsigned char *) malloc(strlen(from)+strlen(to)+3);
+	result = (char *) malloc(strlen(from)+strlen(to)+3);
 
 	sprintf(result, "%s-%s", from, to);
 	
@@ -139,7 +139,7 @@ char * get_diff_period(time_t fromdate, time_t todate)
 void reload(GLOBAL *g, struct payments_module *p)
 {
 	QueryHandle *res, *result, *sres;
-	unsigned char *insert, *description, *invoiceid;
+	char *insert, *description, *invoiceid;
 	char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
 	int i, today, docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 

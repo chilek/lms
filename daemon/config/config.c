@@ -33,10 +33,10 @@
 
 /* Private: Parse special char sequences in string */
 /* Maybe we don't need this if we have dictionary in database? */
-unsigned char * parse(unsigned char *string)
+char * parse(char *string)
 {
-    static unsigned char *out;
-    unsigned char c, d, e;
+    static char *out;
+    char c, d, e;
     int i, k, n;
 
     n = strlen(string);
@@ -97,10 +97,10 @@ void config_free(Config *c)
 }
 
 /* Add an entry to the config object */
-void config_add(Config *c, unsigned char *sec, unsigned char * key, unsigned char *val)
+void config_add(Config *c, char *sec, char * key, char *val)
 {
-    unsigned char longkey[2*NAMESZ+1];
-    unsigned char *value;
+    char longkey[2*NAMESZ+1];
+    char *value;
 
     /* Make a key as section:keyword */
     sprintf(longkey, "%s:%s", sec, key);
@@ -115,14 +115,14 @@ void config_add(Config *c, unsigned char *sec, unsigned char * key, unsigned cha
     free(value);
 }
 
-Config * config_load(ConnHandle *conn, const unsigned char *dbhost, const unsigned char *section)
+Config * config_load(ConnHandle *conn, const char *dbhost, const char *section)
 {
 #ifdef CONFIGFILE
     return config_load_from_file(section);
 #else
     Config *c;
     QueryHandle *res;
-    unsigned char *sec, *var, *val;
+    char *sec, *var, *val;
     int i;
     
     if( !conn )
@@ -153,14 +153,14 @@ Config * config_load(ConnHandle *conn, const unsigned char *dbhost, const unsign
 }
 
 #ifdef CONFIGFILE
-Config * config_load_from_file(const unsigned char *section)
+Config * config_load_from_file(const char *section)
 {
     Config *c;
-    unsigned char sec[1024+1];
-    unsigned char key[1024+1];
-    unsigned char lin[1024+1];
-    unsigned char val[1024+1];
-    unsigned char *where, *value, *lastsec = "";
+    char sec[1024+1];
+    char key[1024+1];
+    char lin[1024+1];
+    char val[1024+1];
+    char *where, *value, *lastsec = "";
     FILE * ini ;
     int lineno ;
 
@@ -201,7 +201,7 @@ Config * config_load_from_file(const unsigned char *section)
                 	    * this is done here
                 	    */
         		    if (!strcmp(val, "\"\"") || !strcmp(val, "''"))
-                		    val[0] = (unsigned char) 0;
+                		    val[0] = (char) 0;
 	
 			    value = parse(val);
 			    config_add(c, lastsec, key, value);
@@ -214,18 +214,18 @@ Config * config_load_from_file(const unsigned char *section)
     return c ;
 }
 
-unsigned char * strskp(unsigned char * s)
+char * strskp(char * s)
 {
-	unsigned char * skip = s;
+	char * skip = s;
 	if( s==NULL ) return NULL;
 	while (isspace((int)*skip) && *skip) skip++;
 	return skip;
 } 
 
-unsigned char * strcrop(unsigned char * s)
+char * strcrop(char * s)
 {
-	static unsigned char l[1024+1];
-	unsigned char *last;
+	static char l[1024+1];
+	char *last;
 
 	if( s==NULL ) return NULL;
 	memset(l, 0, 1024+1);
@@ -237,16 +237,16 @@ unsigned char * strcrop(unsigned char * s)
 			break;
 		last--;
 	}
-	*last = (unsigned char) 0;
+	*last = (char) 0;
 	return l;
 }
 
 #endif
 
-unsigned char * config_getstring(Config *c, unsigned char *sec, unsigned char *key, unsigned char *def)
+char * config_getstring(Config *c, char *sec, char *key, char *def)
 {
-    unsigned char *sval;
-    unsigned char longkey[2*NAMESZ+1];
+    char *sval;
+    char longkey[2*NAMESZ+1];
 
     if( c==NULL || key==NULL || sec==NULL )
         return def;
@@ -258,9 +258,9 @@ unsigned char * config_getstring(Config *c, unsigned char *sec, unsigned char *k
     return sval;
 }
 
-int config_getint(Config *c, unsigned char *sec, unsigned char *key, int notfound)
+int config_getint(Config *c, char *sec, char *key, int notfound)
 {
-    unsigned char *str;
+    char *str;
 
     str = config_getstring(c, sec, key, CONFIG_INVALID_KEY);
     if( str==CONFIG_INVALID_KEY ) 
@@ -268,9 +268,9 @@ int config_getint(Config *c, unsigned char *sec, unsigned char *key, int notfoun
     return atoi(str);
 }
 
-double config_getdouble(Config *c, unsigned char *sec, unsigned char *key, double notfound)
+double config_getdouble(Config *c, char *sec, char *key, double notfound)
 {
-    unsigned char *str;
+    char *str;
 
     str = config_getstring(c, sec, key, CONFIG_INVALID_KEY);
     if( str==CONFIG_INVALID_KEY ) 
@@ -278,9 +278,9 @@ double config_getdouble(Config *c, unsigned char *sec, unsigned char *key, doubl
     return atof(str);
 }
 
-int config_getbool(Config *c, unsigned char *sec, unsigned char * key, int notfound)
+int config_getbool(Config *c, char *sec, char * key, int notfound)
 {
-    unsigned char *str;
+    char *str;
     int ret ;
 
     str = config_getstring(c, sec, key, CONFIG_INVALID_KEY);

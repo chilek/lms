@@ -1,19 +1,19 @@
 struct net
 {
-	unsigned char *name;
-	unsigned char *domain;
-	unsigned char *interface;
-	unsigned char *gateway;
-	unsigned char *dns;
-	unsigned char *dns2;
-	unsigned char *wins;
+	char *name;
+	char *domain;
+	char *interface;
+	char *gateway;
+	char *dns;
+	char *dns2;
+	char *wins;
 	unsigned long address;
 	unsigned long mask;
 };
 
 struct group
 {
-	unsigned char *name;
+	char *name;
 	int id;
 };
 
@@ -21,16 +21,16 @@ struct hostfile_module
 {
 	MODULE base;
 
-	unsigned char *prefix;
-	unsigned char *append;
-	unsigned char *grant;
-	unsigned char *deny;
-	unsigned char *grant_pub;
-	unsigned char *deny_pub;
-	unsigned char *file;
-	unsigned char *command;
-	unsigned char *networks;
-	unsigned char *customergroups;
+	char *prefix;
+	char *append;
+	char *grant;
+	char *deny;
+	char *grant_pub;
+	char *deny_pub;
+	char *file;
+	char *command;
+	char *networks;
+	char *customergroups;
 
 	int skip_dev_ips;
 };

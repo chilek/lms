@@ -16,28 +16,28 @@
 #define NAMESZ		100
 
 /* Invalid key token */
-#define CONFIG_INVALID_KEY    ((unsigned char*)-1)
+#define CONFIG_INVALID_KEY    ((char*)-1)
 
 typedef struct dictionary Config;
 
 /* Main functions */
 Config * config_new(int);
 void config_free(Config *);
-void config_add(Config *c, unsigned char *sec, unsigned char * key, unsigned char *val);
+void config_add(Config *, char *, char *, char *);
 
 /* Get config from database */
-Config * config_load(ConnHandle *, const unsigned char *, const unsigned char *);
+Config * config_load(ConnHandle *, const char *, const char *);
 
 /* Data fetching functions */
-unsigned char * config_getstring(Config *, unsigned char *, unsigned char *, unsigned char *);
-int config_getint(Config *, unsigned char *, unsigned char *, int);
-int config_getbool(Config *, unsigned char *, unsigned char *, int);
-double config_getdouble(Config *, unsigned char *, unsigned char *, double);
+char * config_getstring(Config *, char *, char *, char *);
+int config_getint(Config *, char *, char *, int);
+int config_getbool(Config *, char *, char *, int);
+double config_getdouble(Config *, char *, char *, double);
 
 #ifdef CONFIGFILE
-Config * config_load_from_file(const unsigned char *);
-unsigned char * strskp(unsigned char *);
-unsigned char * strcrop(unsigned char *);
+Config * config_load_from_file(const char *);
+char * strskp(char *);
+char * strcrop(char *);
 #endif
 
 #endif

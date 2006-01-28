@@ -33,7 +33,7 @@ COLUMN;
 
 typedef struct
 {
-    unsigned char *data;
+    char *data;
 }
 VALUE;
 
@@ -62,28 +62,25 @@ ConnHandle;
 
 /* Connect to database. Params: db, user, password, host, port.
     Returns 0 if connection failed, alse returns 1 */
-ConnHandle *db_connect(const unsigned char *, const unsigned char *, 
-		const unsigned char *, const unsigned char *, int);
+ConnHandle *db_connect(const char *, const char *, const char *, const char *, int);
 
 /* Closes connection */
 int db_disconnect(ConnHandle *);
 
 /* Executes SELECT query. Returns handle to query results */
-QueryHandle * db_query(ConnHandle *, unsigned char *);
+QueryHandle * db_query(ConnHandle *, char *);
 
-/* Prepares and executes SELECT query. Returns handle to query results.
-   Args must be type of unsigned char* */
-QueryHandle * db_pquery(ConnHandle *, unsigned char *, ...);
+/* Prepares and executes SELECT query. Returns handle to query results. */
+QueryHandle * db_pquery(ConnHandle *, char *, ...);
 
 /* Executes UPDATE, INSERT, DELETE query. Returns number of affected rows */
-int db_exec(ConnHandle *, unsigned char *);
+int db_exec(ConnHandle *, char *);
 
-/* Preparse and executes UPDATE, INSERT, DELETE query. Returns number of affected rows 
-   Args must be type of unsigned char* */
-int db_pexec(ConnHandle *, unsigned char *, ...);
+/* Preparse and executes UPDATE, INSERT, DELETE query. Returns number of affected rows */
+int db_pexec(ConnHandle *, char *, ...);
 
 /* Escapes a string for use within an SQL command. Returns allocated string */
-unsigned char *db_escape(ConnHandle *, const unsigned char *);
+char *db_escape(ConnHandle *, const char *);
 
 /* Free memory allocated in db_query() and etc */
 void db_free(QueryHandle **);
@@ -98,13 +95,13 @@ int db_commit(ConnHandle *);
 int db_abort(ConnHandle *);
 
 /* Get string data from query results. Params: handle, row number, column name. */
-unsigned char * db_get_data(QueryHandle *, int, const char *);
+char * db_get_data(QueryHandle *, int, const char *);
 
 /* Get number of rows and cols */
 int db_nrows(QueryHandle *);
 int db_ncols(QueryHandle *);
 
 /* Get column name */
-unsigned char * db_colname(QueryHandle *, int);
+char * db_colname(QueryHandle *, int);
 
 #endif

@@ -5,18 +5,18 @@
 
 /* Replaces all instances of string in some string with new string 
    Returns number of replaces */
-int str_replace(unsigned char**, const unsigned char*, const unsigned char*);
+int str_replace(char**, const char*, const char*);
 
 /* Saves string with realloc */
-unsigned char * str_save(unsigned char *, const unsigned char*);
+char * str_save(char *, const char*);
 
 /* Concatenates strings */
-unsigned char * str_concat(const unsigned char *, const unsigned char *);
+char * str_concat(const char *, const char *);
 
 /* Convert string to lower case */
-unsigned char * str_lwc(const unsigned char *);
+char * str_lwc(const char *);
 
 /* Convert string to upper case */
-unsigned char * str_upc(const unsigned char *);
+char * str_upc(const char *);
 
 #endif

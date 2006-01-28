@@ -40,8 +40,8 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	char lastif[MAXIFN] = "";
 	struct hostcache
 	{
-		unsigned char *name;
-		unsigned char *mac;
+		char *name;
+		char *mac;
 		unsigned long ipaddr;
 	} *hosts = NULL;
 
@@ -150,7 +150,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			unsigned char *s, *d, *d2, *e;
+			char *s, *d, *d2, *e;
 			unsigned long netmask, network;
 			char iface[MAXIFN] = "";
 			
@@ -217,7 +217,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				if( (d2 = g->db_get_data(res,i,"dns2")) )
 				{
 					if( strlen(d) && strlen(d2) ) {
-						e = (unsigned char*) malloc(strlen(d)+strlen(d2)+2);
+						e = (char*) malloc(strlen(d)+strlen(d2)+2);
 						sprintf(e,"%s,%s",d,d2);
 						s = strdup(dhcp->dnsline);
 						g->str_replace(&s, "%i", e);

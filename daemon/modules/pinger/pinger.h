@@ -31,7 +31,7 @@ struct net
 
 struct host
 {
-	unsigned char *id;
+	char *id;
 	unsigned long ipaddr;
 	int active;
 };
@@ -40,7 +40,7 @@ struct pinger_module
 {
 	MODULE base;
 
-	unsigned char *networks;
+	char *networks;
 };
 
 struct if_desc 

@@ -29,8 +29,8 @@
 #include "lmsd.h"
 #include "traffic.h"
 
-unsigned long inet_addr(unsigned char*);
-unsigned char * inet_ntoa(unsigned long);
+unsigned long inet_addr(char *);
+char * inet_ntoa(unsigned long);
 
 char * itoa(int i)
 {
@@ -39,7 +39,7 @@ char * itoa(int i)
 	return string;
 }
 
-int is_host(HOSTS *hosts, int n, unsigned char *ip)
+int is_host(HOSTS *hosts, int n, char *ip)
 {
 	int i;
 	for(i=0; i<n; i++)
@@ -72,7 +72,7 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 		fh = fopen(traffic->file,"r");
 		if(fh)
 		{
-			unsigned char *buffer, *host, *download, *upload;
+			char *buffer, *host, *download, *upload;
 			
 			buffer = (char *) malloc(100+1);
 			host = (char *) malloc(100+1);

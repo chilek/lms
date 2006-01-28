@@ -2,22 +2,22 @@
 struct ethers_module
 {
 	MODULE base;
-	unsigned char *file;
-	unsigned char *command;
-	unsigned char *networks;
-	unsigned char *customergroups;
+	char *file;
+	char *command;
+	char *networks;
+	char *customergroups;
 
 	int dummy_macs;
 };
 struct net
 {
-	unsigned char *name;
+	char *name;
 	unsigned long address;
 	unsigned long mask;
 };
 
 struct group
 {
-	unsigned char *name;
+	char *name;
 	int id;
 };

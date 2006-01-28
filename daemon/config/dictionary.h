@@ -15,8 +15,8 @@
 struct dictionary {
 	int n;			/* Number of entries in dictionary */
 	int size;		/* Storage size */
-	unsigned char **val;	/* List of string values */
-	unsigned char **key;	/* List of string keys */
+	char **val;	/* List of string values */
+	char **key;	/* List of string keys */
 	unsigned *hash;		/* List of hash values for keys */
 };
 
@@ -27,9 +27,9 @@ struct dictionary * dictionary_new(int);
 void dictionary_free(struct dictionary *);
 
 /* Set dictionary entry */
-void dictionary_set(struct dictionary *, unsigned char *, unsigned char *);
+void dictionary_set(struct dictionary *, char *, char *);
 
 /* Get entry value from dictionary */
-unsigned char * dictionary_get(struct dictionary *, unsigned char *, unsigned char *);
+char * dictionary_get(struct dictionary *, char *, char *);
 
 #endif

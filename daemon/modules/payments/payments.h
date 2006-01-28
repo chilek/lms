@@ -3,11 +3,11 @@ struct payments_module
 {
 	MODULE base;
 	
-	unsigned char *comment;
-	unsigned char *s_comment;
-	unsigned char *paytype;
-	unsigned char *deadline;
-	unsigned char *numberplanid;
+	char *comment;
+	char *s_comment;
+	char *paytype;
+	char *deadline;
+	char *numberplanid;
 	int up_payments;
 	int expiry_days;
 	int num_period;

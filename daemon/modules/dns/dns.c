@@ -36,14 +36,14 @@
 
 #define BUFFERSIZE 1024
 
-unsigned long inet_addr(unsigned char*);
-unsigned char * inet_ntoa(unsigned long);
+unsigned long inet_addr(char*);
+char * inet_ntoa(unsigned long);
 unsigned long ntohl(unsigned long);
 
-unsigned char *load_file(unsigned char *name)
+char *load_file(char *name)
 {
-	unsigned char *ret = NULL;
-	static unsigned char buffer[BUFFERSIZE];
+	char *ret = NULL;
+	static char buffer[BUFFERSIZE];
 	int fd, n, l = 0;
 	
 	fd = open(name, O_RDONLY);
@@ -52,7 +52,7 @@ unsigned char *load_file(unsigned char *name)
 
 	//warning this could be done in a better way.
 	while( (n = read(fd, buffer, BUFFERSIZE)) > 0 ) {
-		unsigned char *ret0 =  (unsigned char *) realloc(ret, (n + l + 1));
+		char *ret0 =  (char *) realloc(ret, (n + l + 1));
 		if(!ret0) { 
 			free(ret); 
 			return(NULL); 
@@ -69,7 +69,7 @@ unsigned char *load_file(unsigned char *name)
 	return(ret);
 }
 
-int write_file(unsigned char *name, unsigned char *text)
+int write_file(char *name, char *text)
 {
 	int fd, n, l = strlen(text);
 	
@@ -92,17 +92,17 @@ int write_file(unsigned char *name, unsigned char *text)
 
 void reload(GLOBAL *g, struct dns_module *dns)
 {
-	unsigned char *configfile = 0;
-	unsigned char *configentries = strdup("");
+	char *configfile = 0;
+	char *configentries = strdup("");
 	QueryHandle *res, *res1;
 	int i, j, m, k=2, gc=0, nc=0, nh=0, dc=0, n=2;
 	struct hostcache
 	{
-		unsigned char *name;
+		char *name;
 		unsigned long ipaddr;
 	} *hosts = NULL;
 
-	unsigned char **domains = (unsigned char **) malloc(sizeof(char*));
+	char **domains = (char **) malloc(sizeof(char*));
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(dns->networks);	
@@ -156,7 +156,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	for(i=0; i<g->db_nrows(res); i++)
 	{
 		int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
-		unsigned char *name = g->db_get_data(res,i,"name");
+		char *name = g->db_get_data(res,i,"name");
 		char *ipaddr = g->db_get_data(res,i,"ipaddr");
 		char *ipaddr_pub = g->db_get_data(res,i,"ipaddr_pub");
 		
@@ -208,10 +208,10 @@ void reload(GLOBAL *g, struct dns_module *dns)
 		{
 			int domainmatch = 0;	
 		
-			unsigned char *e = g->db_get_data(res,i,"address");
-			unsigned char *d = g->db_get_data(res,i,"mask");
-			unsigned char *name = g->db_get_data(res,i,"domain");
-			unsigned char *dnsserv = g->db_get_data(res,i,"dns");
+			char *e = g->db_get_data(res,i,"address");
+			char *d = g->db_get_data(res,i,"mask");
+			char *name = g->db_get_data(res,i,"domain");
+			char *dnsserv = g->db_get_data(res,i,"dns");
 
 			unsigned long network = inet_addr(e);
 			unsigned long netmask = inet_addr(d);
@@ -228,12 +228,12 @@ void reload(GLOBAL *g, struct dns_module *dns)
 			if ( d && e && name )
 			{
 				int prefixlen = 1; // in bytes! 
-				unsigned char *finfile, *ftmpfile;
-				unsigned char *rinfile, *rtmpfile;
-				unsigned char *forwardzone;
-				unsigned char *reversezone;
-				unsigned char *forwardhosts = strdup("");
-				unsigned char *reversehosts = strdup("");
+				char *finfile, *ftmpfile;
+				char *rinfile, *rtmpfile;
+				char *forwardzone;
+				char *reversezone;
+				char *forwardhosts = strdup("");
+				char *reversehosts = strdup("");
 			
 				unsigned long host_netmask = ntohl(netmask);
 
@@ -288,19 +288,19 @@ void reload(GLOBAL *g, struct dns_module *dns)
 
 				if(forwardzone && reversezone)
 				{
-					unsigned char serial[12];
-					unsigned char netpart[30];
+					char serial[12];
+					char netpart[30];
 					unsigned long ip;
 				
 					for(j=0; j<nh; j++)
 					{
 						if( (hosts[j].ipaddr & netmask) == network)
 						{
-							unsigned char hostpart[30];
-							unsigned char *tmphosts;
+							char hostpart[30];
+							char *tmphosts;
 						
-							unsigned char *forwardhost = strdup(dns->forward);
-							unsigned char *reversehost = strdup(dns->reverse);
+							char *forwardhost = strdup(dns->forward);
+							char *reversehost = strdup(dns->reverse);
 				
 							g->str_replace(&forwardhost, "%n", hosts[j].name);
 							g->str_replace(&reversehost, "%n", hosts[j].name);
@@ -345,7 +345,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 
 					if( domainmatch )
 					{
-						unsigned char *tmphosts = strdup(forwardzone);
+						char *tmphosts = strdup(forwardzone);
 						g->str_replace(&tmphosts, "%h", "");
 						free(forwardzone);
 						forwardzone = g->str_concat(tmphosts, forwardhosts);
@@ -387,8 +387,8 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					g->str_replace(&forwardzone, "%c", netpart);
 					g->str_replace(&reversezone, "%c", netpart);
 
-					g->str_replace(&forwardzone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
-					g->str_replace(&reversezone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
+					g->str_replace(&forwardzone, "%v", dnsserv ? (dnsserv) : ((char*) "127.0.0.1"));
+					g->str_replace(&reversezone, "%v", dnsserv ? (dnsserv) : ((char*) "127.0.0.1"));
 		
 					finfile = dns->fzones;//strdup
 					rinfile = dns->rzones;//strdup
@@ -412,7 +412,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					}
 					else if( !domainmatch )
 					{
-						unsigned char *zone, *tmpconf;
+						char *zone, *tmpconf;
 						zone = strdup(dns->confforward);
 						g->str_replace(&zone, "%n", name);
 						g->str_replace(&zone, "%c", netpart);
@@ -429,7 +429,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						syslog(LOG_WARNING, "[%s/dns] Unable to open output reverse zone file '%s' for domain '%s', skipping reverse zone for this domain.", dns->base.instance, rinfile, name);
 					}
 					else {
-						unsigned char *zone, *tmpconf;
+						char *zone, *tmpconf;
 						zone = strdup(dns->confreverse);
 						g->str_replace(&zone, "%n", name);
 						g->str_replace(&zone, "%c", netpart);

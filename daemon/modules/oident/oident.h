@@ -8,12 +8,12 @@ struct oident_module
 {
 	MODULE base;
 
-	unsigned char *prefix;
-	unsigned char *append;
-	unsigned char *host;
-	unsigned char *file;
-	unsigned char *command;
-	unsigned char *networks;
+	char *prefix;
+	char *append;
+	char *host;
+	char *file;
+	char *command;
+	char *networks;
 	
 	int netcount;
 };

@@ -31,12 +31,12 @@
 #include "util.h"
 
 /* Replaces each instance of string 'old' on the string 'string' with string 'new' */
-int str_replace(unsigned char **string, const unsigned char *old, const unsigned char *new)
+int str_replace(char **string, const char *old, const char *new)
 {
     size_t newLen = strlen(new);
     size_t oldLen = strlen(old);
-    unsigned char *buffer = (unsigned char*)malloc(strlen(*string) + strlen(*string)*newLen +1); 
-    unsigned char *temp, *scan = buffer;
+    char *buffer = (char*)malloc(strlen(*string) + strlen(*string)*newLen +1); 
+    char *temp, *scan = buffer;
     int i=0;
 
     temp = *string;  // remember old string
@@ -48,7 +48,7 @@ int str_replace(unsigned char **string, const unsigned char *old, const unsigned
 
     while(1)
     {
-	unsigned char *there = strstr(temp, old);
+	char *there = strstr(temp, old);
 	if( there == 0 ) {
 	    strcat(scan,temp);
 	    break;
@@ -62,33 +62,33 @@ int str_replace(unsigned char **string, const unsigned char *old, const unsigned
 	    i++;
 	}
     }
-    buffer = (unsigned char *) realloc(buffer, strlen(buffer)+1);
+    buffer = (char *) realloc(buffer, strlen(buffer)+1);
     free(*string);  // warning string must be allocated
     *string = buffer;  //return new string
     return i; 
 }
 
 /* Save value to string (needed i.e. for database routines)*/
-unsigned char * str_save(unsigned char *str, const unsigned char *val)
+char * str_save(char *str, const char *val)
 {
-    str = (unsigned char *) realloc(str, strlen(val)+1);
+    str = (char *) realloc(str, strlen(val)+1);
     return strcpy(str, val);
 }
 
 /* Concatenate strings */
-unsigned char * str_concat(const unsigned char *s1, const unsigned char *s2)
+char * str_concat(const char *s1, const char *s2)
 {
 	int l = strlen(s1) + strlen(s2) + 1;
-	unsigned char *ret = (unsigned char*) malloc(l);
+	char *ret = (char*) malloc(l);
 	
 	snprintf(ret, l, "%s%s", s1, s2);
 	return(ret);
 }
 
 /* Convert string to lower case */
-unsigned char * str_lwc(const unsigned char *s)
+char * str_lwc(const char *s)
 {
-    static unsigned char l[ASCIILINESZ+1];
+    static char l[ASCIILINESZ+1];
     int i;
 
     if( s==NULL ) return NULL;
@@ -96,7 +96,7 @@ unsigned char * str_lwc(const unsigned char *s)
     i = 0;
     while( s[i] && i<ASCIILINESZ )
     {
-        l[i] = (unsigned char) tolower((int)s[i]);
+        l[i] = (char) tolower((int)s[i]);
         i++;
     }
     l[ASCIILINESZ] = (char) 0;
@@ -104,9 +104,9 @@ unsigned char * str_lwc(const unsigned char *s)
 }
 
 /* Convert string to upper case */
-unsigned char * str_upc(const unsigned char *s)
+char * str_upc(const char *s)
 {
-    static unsigned char l[ASCIILINESZ+1];
+    static char l[ASCIILINESZ+1];
     int i;
 
     if( s==NULL ) return NULL;
@@ -114,7 +114,7 @@ unsigned char * str_upc(const unsigned char *s)
     i = 0;
     while( s[i] && i<ASCIILINESZ )
     {
-        l[i] = (unsigned char) toupper((int)s[i]);
+        l[i] = (char) toupper((int)s[i]);
         i++;
     }
     l[ASCIILINESZ] = (char) 0;

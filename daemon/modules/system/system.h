@@ -3,6 +3,6 @@ struct system_module
 {
 	MODULE base;
 	
-	unsigned char *command;
-	unsigned char *sql;
+	char *command;
+	char *sql;
 };
