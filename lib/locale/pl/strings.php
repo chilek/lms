@@ -1686,5 +1686,6 @@ $_LANG['Options:'] = 'Opcje:';
 $_LANG['with settlement of first deficient period'] = 'z wyrównaniem początkowego okresu niepełnego';
 $_LANG['document number'] = 'numer dokumentu';
 $_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź numer dokumentu. UWAGA! Zmiana tego numeru może być niebezpieczna! (pozostaw pole puste aby uzyskać kolejny numer)';
+$_LANG['continuously'] = 'ciągle';
 
 ?>

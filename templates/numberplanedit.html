@@ -39,7 +39,7 @@
 		</TD>
 		<TD width="98%" class="fright">
 			<SELECT name="numberplanedit[period]" size="1" {tip text="Select numbering period" trigger="period"}>
-			{foreach from=$_PERIODS item=item key=key}
+			{foreach from=$_NUM_PERIODS item=item key=key}
 				<OPTION value="{$key}"{if $key == $numberplanedit.period} SELECTED{/if}>{$item}</OPTION>
 			{/foreach}
 			</SELECT>

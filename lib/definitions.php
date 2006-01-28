@@ -61,14 +61,24 @@ define('DOC_PROTOCOL', -3);
 define('DOC_ORDER', -4);
 define('DOC_OTHER', -10);
 
-// Accounting or numbering periods
+// Accounting periods
 $PERIODS = array(
-    3	=>	trans('monthly'), // first will be default in UI
     5	=>	trans('yearly'),
     4	=>	trans('quarterly'),
+    3	=>	trans('monthly'),
     2	=>	trans('weekly'),
     1	=>	trans('daily'),
-//  0	=>	trans('disposable')
+    0	=>	trans('disposable')
+);
+
+// Numbering periods
+$NUM_PERIODS = array(
+    6	=>	trans('continuously'),
+    5	=>	trans('yearly'),
+    4	=>	trans('quarterly'),
+    3	=>	trans('monthly'),
+    2	=>	trans('weekly'),
+    1	=>	trans('daily'),
 );
 
 define('DISPOSABLE', 0);
@@ -77,10 +87,12 @@ define('WEEKLY', 2);
 define('MONTHLY', 3);
 define('QUARTERLY', 4);
 define('YEARLY', 5);
+define('CONTINUOUS', 6);
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
 
 $SMARTY->assign('_DOCTYPES', $DOCTYPES);
 $SMARTY->assign('_PERIODS', $PERIODS);
+$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 
 ?>

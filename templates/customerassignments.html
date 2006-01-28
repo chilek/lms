@@ -116,7 +116,6 @@
 						    </TD>
 						    <TD>
 							<SELECT size="1" NAME="assignment[period]" {tip text="Select time period to account liability"}>
-							    <OPTION VALUE="0"{if !$assignment.period} SELECTED{/if}>{t}disposable{/t}</OPTION>
 							    {foreach from=$_PERIODS key=key item=item}
 							    <OPTION VALUE="{$key}"{if $assignment.period == $key} SELECTED{/if}>{$item}</OPTION>
 							    {/foreach}
