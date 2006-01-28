@@ -3,31 +3,31 @@ struct dhcp_module
 {
 	MODULE base;
 
-	unsigned char *prefix;
-	unsigned char *append;
-	unsigned char *subnetstart;
-	unsigned char *subnetend;
-	unsigned char *gateline;
-	unsigned char *dnsline;
-	unsigned char *domainline;
-	unsigned char *winsline;
-	unsigned char *rangeline;
-	unsigned char *host;
-	unsigned char *file;
-	unsigned char *command;
-	unsigned char *networks;
-	unsigned char *customergroups;
+	char *prefix;
+	char *append;
+	char *subnetstart;
+	char *subnetend;
+	char *gateline;
+	char *dnsline;
+	char *domainline;
+	char *winsline;
+	char *rangeline;
+	char *host;
+	char *file;
+	char *command;
+	char *networks;
+	char *customergroups;
 };
 
 struct net
 {
-	unsigned char *name;
+	char *name;
 	unsigned long address;
 };
 
 struct group
 {
-	unsigned char *name;
+	char *name;
 	int id;
 };
 

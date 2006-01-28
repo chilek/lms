@@ -30,7 +30,7 @@
 #include "lmsd.h"
 #include "tc.h"
 
-unsigned long inet_addr(unsigned char *);
+unsigned long inet_addr(char *);
 
 char * itoa(int i)
 {
@@ -165,13 +165,13 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					{	
 						char *ipaddr = g->db_get_data(nres,j,"ip");
 						char *mac = g->db_get_data(nres,j,"mac");
-						unsigned char *name = g->db_get_data(nres,j,"name");
-						unsigned char *mark_up = strdup(tc->host_mark_up);
-						unsigned char *mark_down = strdup(tc->host_mark_down);
-						unsigned char *htb_up = strdup(tc->host_htb_up);
-						unsigned char *htb_down = strdup(tc->host_htb_down);
-						unsigned char *cl = strdup(tc->host_climit);
-						unsigned char *pl = strdup(tc->host_plimit);
+						char *name = g->db_get_data(nres,j,"name");
+						char *mark_up = strdup(tc->host_mark_up);
+						char *mark_down = strdup(tc->host_mark_down);
+						char *htb_up = strdup(tc->host_htb_up);
+						char *htb_down = strdup(tc->host_htb_down);
+						char *cl = strdup(tc->host_climit);
+						char *pl = strdup(tc->host_plimit);
 						int h_uprate = (int) n_uprate/nres->nrows;
 						int h_upceil = (int) n_upceil/nres->nrows;
 						int h_downrate = (int) n_downrate/nres->nrows;

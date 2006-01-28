@@ -3,33 +3,33 @@ struct dns_module
 {
 	MODULE base;
 
-	unsigned char * fpatterns;
-	unsigned char * rpatterns;
-	unsigned char * fgeneric;
-	unsigned char * rgeneric;
-	unsigned char * fzones;
-	unsigned char * rzones;
-	unsigned char * forward;
-	unsigned char * reverse;
-	unsigned char * command;	
+	char *fpatterns;
+	char *rpatterns;
+	char *fgeneric;
+	char *rgeneric;
+	char *fzones;
+	char *rzones;
+	char *forward;
+	char *reverse;
+	char *command;	
 	
-	unsigned char * confpattern;
-	unsigned char * confout;
-	unsigned char * confforward;
-	unsigned char * confreverse;
+	char *confpattern;
+	char *confout;
+	char *confforward;
+	char *confreverse;
 	
-	unsigned char * networks;
-	unsigned char * customergroups;
+	char *networks;
+	char *customergroups;
 };
 
 struct net
 {
-	unsigned char *name;
+	char *name;
 	unsigned long address;
 };
 
 struct group
 {
-	unsigned char *name;
+	char *name;
 	int id;
 };

@@ -38,7 +38,7 @@ static QueryHandle * get_query_result(ResultHandle *res)
     ROW *my_row;
     VALUE *val;
     int i, j;
-    unsigned char *buf;
+    char *buf;
     Oid dtype;
 
     query = (QueryHandle *) malloc(sizeof(QueryHandle));
@@ -51,7 +51,7 @@ static QueryHandle * get_query_result(ResultHandle *res)
     // get columns defs 
     for (i = 0; i < query->ncols; i++) {
 
-	my_col[i].name = (unsigned char *) malloc(sizeof(char *));
+	my_col[i].name = (char *) malloc(sizeof(char *));
        	col = &(my_col[i]);
 	
 	col->name = str_save(col->name, PQfname(res, i));
@@ -103,7 +103,7 @@ static QueryHandle * get_query_result(ResultHandle *res)
     	my_row[i].value = (VALUE *) calloc(query->ncols, sizeof(VALUE));
         for (j = 0; j < query->ncols; j++) {
             val = &(my_row[i].value[j]);
-	    buf = (unsigned char *) PQgetvalue(res, i, j); 
+	    buf = (char *) PQgetvalue(res, i, j); 
 	    val->data = str_save(val->data,buf);
 	}
     }
@@ -114,7 +114,7 @@ static QueryHandle * get_query_result(ResultHandle *res)
 }
 
 /* Parse special sequences query in statement */
-static void parse_query_stmt(unsigned char **stmt)
+static void parse_query_stmt(char **stmt)
 {
     str_replace(stmt,"%NOW%","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
     str_replace(stmt,"LIKE","ILIKE");
@@ -123,8 +123,8 @@ static void parse_query_stmt(unsigned char **stmt)
 
 /************************* CONNECTION FUNCTIONS *************************/
 /* Opens a connection to the db server */
-ConnHandle * db_connect(const unsigned char *db, const unsigned char *user, const unsigned char *password, 
-		const unsigned char *host, int port)
+ConnHandle * db_connect(const char *db, const char *user, const char *password, 
+		const char *host, int port)
 {
     ConnHandle *conn = NULL;
     char connect_string[BUFFER_LENGTH];
@@ -166,11 +166,11 @@ int db_disconnect(ConnHandle *conn)
 
 /************************* QUERY FUNCTIONS ************************/
 /* Executes SELECT query */
-QueryHandle * db_query(ConnHandle *conn, unsigned char *q) 
+QueryHandle * db_query(ConnHandle *conn, char *q) 
 {
     ResultHandle *res=NULL;
     QueryHandle *query;
-    unsigned char *stmt;
+    char *stmt;
 
     if( !conn ) 
     {
@@ -197,32 +197,32 @@ QueryHandle * db_query(ConnHandle *conn, unsigned char *q)
 }
 
 /* Prepares and executes SELECT query */
-QueryHandle * db_pquery(ConnHandle *conn, unsigned char *q, ... ) 
+QueryHandle * db_pquery(ConnHandle *conn, char *q, ... ) 
 {
     QueryHandle *query;
     va_list ap;
     int i;
-    unsigned char *p, *s, *result, *escstr;
+    char *p, *s, *result, *escstr;
 
     result = strdup("");
-    s = (unsigned char *) malloc (sizeof(unsigned char*));    
+    s = (char*) malloc (sizeof(char*));    
     
     // find '?' and replace with arg value
     va_start(ap, q);
     for(p=q; *p; p++) {
 	    if( *p != '?' ) {
 		    i = strlen(result)+2;
-		    s = (unsigned char*) realloc(s, i);
+		    s = (char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-		    escstr = db_escape(conn, va_arg(ap, unsigned char*));
+		    escstr = db_escape(conn, va_arg(ap, char *));
 		    i = strlen(escstr)+strlen(result)+1;
-		    s = (unsigned char*) realloc(s, i);
+		    s = (char*) realloc(s, i);
 		    snprintf(s, i, "%s%s", result, escstr);
 		    free(escstr);
 	    }
 	    free(result);
-	    result = (unsigned char *) strdup(s);
+	    result = (char*) strdup(s);
     } 
     va_end(ap);
     
@@ -235,11 +235,11 @@ QueryHandle * db_pquery(ConnHandle *conn, unsigned char *q, ... )
 }
 
 /* executes a INSERT, UPDATE, DELETE queries */
-int db_exec(ConnHandle *conn, unsigned char *q)
+int db_exec(ConnHandle *conn, char *q)
 {
     ResultHandle *res=NULL;
     int result = 0;
-    unsigned char *stmt;
+    char *stmt;
     
     if( !conn ) 
     {
@@ -266,31 +266,31 @@ int db_exec(ConnHandle *conn, unsigned char *q)
 }
 
 /* Prepares and executes INSERT, UPDATE, DELETE queries */
-int db_pexec(ConnHandle *conn, unsigned char *q, ... ) 
+int db_pexec(ConnHandle *conn, char *q, ... ) 
 {
     va_list ap;
     int i, res;
-    unsigned char *p, *s, *result, *escstr;
+    char *p, *s, *result, *escstr;
 
     result = strdup("");
-    s = (unsigned char *) malloc (sizeof(unsigned char*));    
+    s = (char *) malloc (sizeof(char*));    
 
     // find '?' and replace with arg value
     va_start(ap, q);
     for(p=q; *p; p++) {
 	    if( *p != '?' ) {
 		    i = strlen(result)+2;
-		    s = (unsigned char*) realloc(s, i);
+		    s = (char*) realloc(s, i);
 	    	    snprintf(s, i,"%s%c", result, *p);
 	    } else {
-		    escstr = db_escape(conn, va_arg(ap, unsigned char*));
+		    escstr = db_escape(conn, va_arg(ap, char*));
 		    i = strlen(escstr)+strlen(result)+1;
-		    s = (unsigned char*) realloc(s, i);
+		    s = (char*) realloc(s, i);
 		    snprintf(s, i, "%s%s", result, escstr);
 		    free(escstr);
 	    }
 	    free(result);
-	    result = (unsigned char *) strdup(s);
+	    result = (char *) strdup(s);
     } 
     va_end(ap);
 
@@ -303,10 +303,10 @@ int db_pexec(ConnHandle *conn, unsigned char *q, ... )
 }
 
 /* Escapes a string for use within an SQL command */
-unsigned char * db_escape(ConnHandle *c, const unsigned char *str) 
+char * db_escape(ConnHandle *c, const char *str) 
 {
     //c isn't used, but required by mysql version of db_escape()
-    unsigned char *escstr = (unsigned char *) malloc(strlen(str)*2 + 1);
+    char *escstr = (char *) malloc(strlen(str)*2 + 1);
     PQescapeString(escstr, str, strlen(str));
     return escstr;
 }
@@ -410,7 +410,7 @@ void db_free(QueryHandle **query)
 
 /********************* DATA FETCHING FUNCTIONS *********************/
 /* fetch string data from given field */
-unsigned char * db_get_data(QueryHandle *query, int row, const char *colname) 
+char * db_get_data(QueryHandle *query, int row, const char *colname) 
 {
     int i;
 
@@ -457,7 +457,7 @@ int db_ncols(QueryHandle *query)
 
 
 /* fetch name of column given by number */
-unsigned char * db_colname(QueryHandle *query, int column) 
+char * db_colname(QueryHandle *query, int column) 
 {
     if( !query )
 	    return "";

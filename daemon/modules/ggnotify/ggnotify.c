@@ -39,17 +39,17 @@
 
 #define BUFFERSIZE 1024
 
-unsigned char * ftoa(double i)
+char * ftoa(double i)
 {
 	static char string[12];
 	sprintf(string, "%.2f", i);
 	return string;
 }
 
-unsigned char * load_file(unsigned char *name)
+char * load_file(char *name)
 {
-	unsigned char *ret = NULL;
-	static unsigned char buffer[BUFFERSIZE];
+	char *ret = NULL;
+	static char buffer[BUFFERSIZE];
 	int fd, n, l = 0;
 	
 	fd = open(name, O_RDONLY);
@@ -58,7 +58,7 @@ unsigned char * load_file(unsigned char *name)
 
 	//warning this could be done in a better way.
 	while( (n = read(fd, buffer, BUFFERSIZE)) > 0 ) {
-		unsigned char *ret0 =  (unsigned char *) realloc(ret, (n + l + 1));
+		char *ret0 =  (char *) realloc(ret, (n + l + 1));
 		if(!ret0) { 
 			free(ret); 
 			return (NULL); 
@@ -75,10 +75,10 @@ unsigned char * load_file(unsigned char *name)
 	return(ret);
 }
 
-unsigned char *utoc(unsigned long unixdate)
+char *utoc(unsigned long unixdate)
 {
 	time_t datevalue = (time_t) unixdate;
-	unsigned char *text = (unsigned char *) malloc(11);
+	char *text = (char *) malloc(11);
 
 	strftime(text, 11, "%Y/%m/%d", localtime(&datevalue)); 
 	return text;
@@ -87,7 +87,7 @@ unsigned char *utoc(unsigned long unixdate)
 void reload(GLOBAL *g, struct ggnotify_module *n)
 {
 	QueryHandle *res, *result;
-	unsigned char *message = 0;
+	char *message = 0;
 	int i, j;
 	double balance;
 	struct gg_session *sess;
@@ -127,7 +127,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 						{
 							if( strstr(message, "%last_10_in_a_table") )
 							{
-								unsigned char *date, *value, *comment, *last_ten, *temp, *temp2;
+								char *date, *value, *comment, *last_ten, *temp, *temp2;
 								
 								last_ten = strdup("");
 								
@@ -139,7 +139,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 									value = g->db_get_data(result,j,"value");
 									comment = g->db_get_data(result,j,"comment");
 							
-									temp = (unsigned char *) malloc(strlen(date)+strlen(value)+strlen(comment)+12);	
+									temp = (char *) malloc(strlen(date)+strlen(value)+strlen(comment)+12);	
 									sprintf(temp, "%s\t | %s\t\t | %s\n", date, value, comment);
 							
 									temp2 = g->str_concat(last_ten, temp);

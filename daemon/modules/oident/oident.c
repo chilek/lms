@@ -83,7 +83,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 		
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			unsigned char *name, *mac, *ipaddr;
+			char *name, *mac, *ipaddr;
 			
 			name 	= g->db_get_data(res,i,"name");
 			mac 	= g->db_get_data(res,i,"mac");
@@ -100,7 +100,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 				
 				if( j != nc )
 				{
-					unsigned char my_mac[13], *s;
+					char my_mac[13], *s;
 					
 					if( strlen(mac) >= 17 )
 						snprintf(my_mac, 13, "%c%c%c%c%c%c%c%c%c%c%c%c", mac[0], mac[1], mac[3], mac[4], mac[6], mac[7], mac[9], mac[10], mac[12], mac[13], mac[15], mac[16]);

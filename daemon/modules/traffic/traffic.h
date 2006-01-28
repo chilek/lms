@@ -2,11 +2,11 @@
 struct traffic_module
 {
 	MODULE base;
-	unsigned char *file;
+	char *file;
 };
 
 typedef struct
 {
-	unsigned char *ipaddr;
+	char *ipaddr;
 	int id;
 } HOSTS;

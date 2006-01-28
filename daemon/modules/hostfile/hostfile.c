@@ -36,7 +36,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 {
 	FILE *fh;
 	QueryHandle *res, *res1;
-	unsigned char *query;
+	char *query;
 	int i, j, m, k=2, gc=0, nc=0, n=2;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
@@ -141,7 +141,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			unsigned char *id, *mac, *ip, *ip_pub, *access, *name, *info, *passwd;
+			char *id, *mac, *ip, *ip_pub, *access, *name, *info, *passwd;
 	
 			id  = g->db_get_data(res,i,"id");
 			mac 	= g->db_get_data(res,i,"mac");
@@ -181,7 +181,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				
 				if( j!=nc && (strlen(hm->customergroups)==0 || m!=gc) )
 				{
-					unsigned char *pattern, *s;
+					char *pattern, *s;
 
 					if(*access == '1')
 						pattern = ( inet_pub ? hm->grant_pub : hm->grant );

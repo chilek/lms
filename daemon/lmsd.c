@@ -40,8 +40,8 @@
 int quit = 0, runall = 0, port = 0, dontfork = 0;
 char *db, *user, *passwd;
 char host[255], dhost[255];
-unsigned char *command = NULL;
-unsigned char *iopt = NULL;
+char *command = NULL;
+char *iopt = NULL;
 struct sigaction sa, orig;
 
 static char **Argv = NULL;
@@ -63,7 +63,7 @@ int main(int argc, char *argv[], char **envp)
 	GLOBAL *g;
 	INSTANCE *instances;
 	int fval = 0, i = 0, reload = 0, i_no = 0;
-	unsigned char *inst, *instance; 
+	char *inst, *instance; 
 #ifdef CONFIGFILE
 	Config *ini;
 #endif
@@ -315,7 +315,7 @@ int main(int argc, char *argv[], char **envp)
 					MODULE *mod = (MODULE*) malloc(sizeof(MODULE));
 					MODULE * (*init)(GLOBAL *, MODULE *);
 
-					unsigned char path[strlen(LMS_LIB_DIR) + strlen(instances[i].module) + 4];
+					char path[strlen(LMS_LIB_DIR) + strlen(instances[i].module) + 4];
 			
 					// get instance configuration and members
 					mod->ini = config_load(g->conn, dhost, instances[i].name);
