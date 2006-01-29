@@ -397,6 +397,36 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$t_data[10] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total']));
 	$y = invoice_short_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
     }
+
+    if($invoice['invoice'])
+    {
+	$total = $invoice['total'] - $invoice['invoice']['total'];
+	$totalbase = $invoice['totalbase'] - $invoice['invoice']['totalbase'];
+	$totaltax = $invoice['totaltax'] - $invoice['invoice']['totaltax'];
+	
+	if($total < 0)
+	{
+	    $txt = trans('Total reduction value:');
+	    $total *= -1;
+	    $totalbase *= -1;
+	    $totaltax *= -1;
+	}
+	else
+	    $txt = trans('Total enhancement value:');
+    
+	$y = $y - 5;
+	$fy=$y-$margin-$pdf->GetFontHeight($font_size);
+	$pdf->line($x,$y,$x+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+8*$margin,$y);
+	text_align_right($x-$margin,$fy,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", $txt).'</b>');
+    
+	$t_data[7] = iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totalbase));
+        $t_data[8] = "<b>x</b>";
+	$t_data[9] = iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totaltax));
+        $t_data[10] = iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($total));
+
+	$y = invoice_short_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
+    }
+    
     $return[2] = $y;
 
     return $return;
