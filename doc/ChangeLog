@@ -38,6 +38,7 @@ version ? (????-??-??):
   - deleted link 'Remove' on customer balance box (alec)
   - added continuous numbering plan (alec)
   - lmsd: fixed gcc-4 signedness warnings (alec)
+  - added reduction/enhancement summary on credit notes (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 

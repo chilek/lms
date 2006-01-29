@@ -2,7 +2,7 @@
 <DIV{if !$invoice.last} STYLE="page-break-after: always"{/if}>
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
-		<TD WIDTH="98%" CLASS="hdf" COLSPAN="2" VALIGN="TOP">
+		<TD WIDTH="98%" CLASS="hdf" VALIGN="TOP">
 			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}
 			{if $invoice.invoice}
 			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate assign=number_ref}
@@ -271,6 +271,36 @@
 	</TD>
     </TR>
     {/foreach}
+    {if $invoice.invoice}
+	{math assign=totalbase equation="x-y" x=$invoice.totalbase y=$invoice.invoice.totalbase}
+	{math assign=totaltax equation="x-y" x=$invoice.totaltax y=$invoice.invoice.totaltax}
+	{math assign=total equation="x-y" x=$invoice.total y=$invoice.invoice.total}
+    <TR>
+	<TD COLSPAN="10" WIDTH="100%"></TD>
+    </TR>
+    <TR>
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
+		<B>{if $total<0}{t}Total reduction value:{/t}{else}{t}Total enhancement value:{/t}{/if}</B>
+		{if $total<0}
+		    {math assign=totalbase equation="x*-1" x=$totalbase}
+		    {math assign=totaltax equation="x*-1" x=$totaltax}
+		    {math assign=total equation="x*-1" x=$total}
+		{/if}
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$totalbase|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		<B>x</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$totaltax|money_format}
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$total|money_format}
+	</TD>
+    </TR>
+    {/if}
 </TABLE>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
