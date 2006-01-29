@@ -21,7 +21,10 @@
 
 	function AddBalance()
 	{
-		document.addbalance.submit();
+		if(document.forms['addbalance'].elements['addbalance[value]'].value != '')
+			document.addbalance.submit();
+		else
+			alert('{/literal}{t}Enter transaction value{/t}{literal}!');
 	}
 
 	function printr()
