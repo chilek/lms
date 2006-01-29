@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 <script language="javascript">
 	<!--
@@ -18,7 +19,6 @@
 	{literal}}{/literal}
 	//-->
 </script>		
-<H1>{$layout.pagetitle}</H1>
 <FORM NAME="setheader" METHOD="POST" ACTION="?m=invoicenote&action=setheader">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -190,6 +190,7 @@
 	{/if}
 	<TR CLASS="light">
 		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
+			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 			{if $error}
 			<A HREF="javascript:alert('{t}There are errors in credit note main informations!{/t}');">
 			{else}
