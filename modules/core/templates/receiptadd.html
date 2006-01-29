@@ -327,6 +327,7 @@
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
 			<INPUT type="checkbox" class ="box light" name="original" checked> {t}original{/t}&nbsp;
 			<INPUT type="checkbox" class ="box light" name="copy" checked> {t}copy{/t}&nbsp;
+			<A HREF="?m=receiptlist&regid={$receipt.regid}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 			<A HREF="?m=receiptadd&action=init">{t}Clear Contents{/t} <IMG SRC="img/delete.gif" alt=""></A> 
 			{if !$customer && $receipt.o_type != "other"}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">

@@ -1,5 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 <script language="javascript">
 	<!--
@@ -18,7 +19,6 @@
 	{literal}}{/literal}
 	//-->
 </script>		
-<H1>{$layout.pagetitle}</H1>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoiceedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="HIDDEN" name="invoice[number]" value="{$invoice.number}">
