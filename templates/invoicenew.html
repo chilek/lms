@@ -32,7 +32,7 @@
 			<B>{t}Invoice number:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[number]" VALUE="{$invoice.number}" SIZE="10" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}>&nbsp;
+			<INPUT TYPE="TEXT" NAME="invoice[number]" VALUE="{$invoice.number}" SIZE="10" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
 			{if $numberplanlist}
 			<SELECT name="invoice[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplanlist}
