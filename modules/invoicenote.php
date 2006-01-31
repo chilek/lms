@@ -49,7 +49,6 @@ if ((isset($_GET['id'])) && ($_GET['action']=='init'))
 	}
     
 	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
-	$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid']);
 	$cnote['cdate'] = time();
 	
 	$t = $invoice['cdate'] + $invoice['paytime']*86400;
@@ -118,9 +117,7 @@ switch($_GET['action'])
 		else
 			$cnote['cdate'] = time();
 		
-		if(!$cnote['number'])
-		        $cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
-		else
+		if($cnote['number'])
 		{
 			if(!eregi('^[0-9]+$', $cnote['number']))
 			        $error['number'] = trans('Credit note number must be integer!');
@@ -172,7 +169,20 @@ switch($_GET['action'])
 				$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
 				$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 			}
-
+			
+			if(!$cnote['number'])
+				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
+			else
+			{
+				if(!eregi('^[0-9]+$', $cnote['number']))
+				        $error['number'] = trans('Credit note number must be integer!');
+				elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
+				        $error['number'] = trans('Credit note number $0 already exists!', $cnote['number']);
+				
+				if($error)
+					$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
+			}
+			
 			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, reference)
 		                	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array($cnote['number'],

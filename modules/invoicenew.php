@@ -47,7 +47,6 @@ switch($_GET['action'])
 
 		// get default invoice's numberplanid and next number
 		$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype=? AND isdefault=1', array(DOC_INVOICE));
-		$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid']);
 		$invoice['cdate'] = time();
 		$invoice['paytime'] = 14;
 		if($_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
@@ -128,9 +127,7 @@ switch($_GET['action'])
 			}
 		}
 
-		if(!$invoice['number'])
-			$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
-		else
+		if($invoice['number'])
 		{
 			if(!eregi('^[0-9]+$', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
@@ -148,6 +145,19 @@ switch($_GET['action'])
 
 		if($contents && $customer)
 		{
+			if(!$invoice['number'])
+				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+			else
+			{
+				if(!eregi('^[0-9]+$', $invoice['number']))
+					$error['number'] = trans('Invoice number must be integer!');
+				elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+					$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
+				
+				if($error)
+					$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+			}
+				
 			$invoice['type'] = DOC_INVOICE;
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 		

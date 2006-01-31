@@ -104,12 +104,10 @@ switch($_GET['action'])
 		if($receipt['type'] == 'in')
 		{
 			$receipt['numberplanid'] = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-		//	$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 		}	
 		elseif($receipt['type'] == 'out')
 		{
 			$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-		//	$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 			if($receipt['regid'])
 				if( $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
 					$error['regid'] = trans('There is no cash in selected registry!');
@@ -154,7 +152,6 @@ switch($_GET['action'])
 			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
 				$receipt['extended'] = TRUE;
 
-		//$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid']);
 	break;
 
 	case 'additem':
@@ -255,8 +252,6 @@ switch($_GET['action'])
 				$receipt['numberplanid'] = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
 			else
 				$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-
-//			$receipt['number'] = 0;
 		}
 
 		if($receipt['cdate'])
@@ -288,9 +283,6 @@ switch($_GET['action'])
 			}
 		}
 
-	//	if(!$receipt['number'])
-	//		$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
-	//	else
 		if($receipt['number'])
 		{
 			if(!eregi('^[0-9]+$', $receipt['number']))
