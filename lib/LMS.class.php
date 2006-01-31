@@ -662,6 +662,26 @@ class LMS
 	{
 		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, warning, info, ownerid FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
 		{
+			// assign network(s) to node record
+			if($networks = $this->GetNetworks())
+			{
+				foreach($result as $idx => $node)
+					foreach($networks as $net)
+						if(isipin($node['ip'], $net['address'], $net['mask']))
+						{
+							$result[$idx]['network'] = $net;
+							break;
+						}
+				foreach($result as $idx => $node)
+					if($node['ipaddr_pub'])
+						foreach($networks as $net)
+							if(isipin($node['ip_pub'], $net['address'], $net['mask']))
+							{
+								$result[$idx]['network_pub'] = $net;
+								break;
+							}
+			}
+			
 			$result['total'] = sizeof($result);
 		}
 		return $result;

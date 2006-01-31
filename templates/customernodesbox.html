@@ -20,7 +20,8 @@
 		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 			<B>{$customernodes[customernodes].name}</B><BR>
 			<NOBR>{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if} / {$customernodes[customernodes].mac}</NOBR><BR>
-			<NOBR>{$customernodes[customernodes].info|truncate:45:"..."}</NOBR>
+			<NOBR><B><A HREF="?m=netinfo&id={$customernodes[customernodes].network.id}">{$customernodes[customernodes].network.name|truncate:"20":"...":true}</A></B> {if $customernodes[customernodes].network_pub} (<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A></B>){/if}</NOBR><BR>
+			<NOBR>{$customernodes[customernodes].info|truncate:50:"...":true}</NOBR>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 			({$customernodes[customernodes].id|string_format:"%04d"})
