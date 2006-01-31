@@ -112,7 +112,7 @@
 				<SELECT size="1" name="group">
 					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{t}- all groups -{/t}</OPTION>
 					{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"..."}</OPTION>
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 				<NOBR>

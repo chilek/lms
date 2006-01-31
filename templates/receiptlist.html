@@ -135,12 +135,12 @@
 		</TD>
 		<TD WIDTH="45%">
 			{if $receipt.customerid}<A HREF="?m=customerinfo&id={$receipt.customerid}">{/if}
-			{$receipt.customer|truncate:"80":"..."}
+			{$receipt.customer|truncate:"60":"...":true}
 			{if $receipt.customerid}</A>{/if}
 		</TD>
 		<TD WIDTH="50%">
 			{if $receipt.title}
-			{$receipt.title|truncate:"80":"..."}
+			{$receipt.title|truncate:"80":"...":true}
 			{/if}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>

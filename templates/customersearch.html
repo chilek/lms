@@ -104,7 +104,7 @@
 			<SELECT SIZE="1" NAME="n">
 				<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
 				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
+				<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"...":true}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
@@ -117,7 +117,7 @@
 			<SELECT SIZE="1" NAME="g">
 				<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 				{section name=customergroups loop=$customergroups}
-				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"..."}</OPTION>
+				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>

@@ -40,6 +40,7 @@ version ? (????-??-??):
   - lmsd: fixed gcc-4 signedness warnings (alec)
   - added reduction/enhancement summary on credit notes (alec)
   - in customernodesbox added link to node's network (alec)
+  - using 4th argument of Smarty's truncate function (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 

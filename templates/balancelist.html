@@ -126,7 +126,7 @@
 				<SELECT size="1" name="group">
 					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{t}- all groups -{/t}</OPTION>
 					{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"..."}</OPTION>
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 				<NOBR>
@@ -182,7 +182,7 @@
 			{/if}
 		</TD>
 		<TD width="1%" nowrap>
-			{if $balancelist[balancelist].customerid}<NOBR><A HREF="?m=customerbalance&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"..."}</A></NOBR>{else} - {/if}
+			{if $balancelist[balancelist].customerid}<NOBR><A HREF="?m=customerbalance&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"...":true}</A></NOBR>{else} - {/if}
 		</TD>
 		<TD width="91%">
 			{$balancelist[balancelist].comment}

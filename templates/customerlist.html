@@ -41,14 +41,14 @@
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
 					{section name=networks loop=$networks}
-					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
+					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}Group:{/t}
 				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 					{section name=customergroups loop=$customergroups}
-					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"..."}</OPTION>
+					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM></P>

@@ -87,7 +87,7 @@
 							    <OPTION value="0">{t}- all liabilities suspended -{/t}</OPTION>
 							    {section name=t loop=$tariffs}
 								<OPTION VALUE="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
-								{$tariffs[t].name|truncate:"30":"..."} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
+								{$tariffs[t].name|truncate:"25":"...":true} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
 								</OPTION>
 							    {/section}
 							</SELECT>

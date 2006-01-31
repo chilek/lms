@@ -36,7 +36,7 @@
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
 					{section name=networks loop=$networks}
-					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
+					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM></P>
@@ -78,7 +78,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<B>{$nodelist[nodelist].name}</B></A><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" {tip 0=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" {tip 0=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
 		</TD>
 		<TD align="right" width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>

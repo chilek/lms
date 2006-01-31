@@ -54,14 +54,14 @@
 			<SELECT NAME="mailing[network]" {tip trigger="network" text="Select IP network"}>
 				<option value="0">{t}- all networks -{/t}</option>
 				{section name="networks" loop=$networks}
-				<option value="{$networks[networks].id}"{if $mailing.network == $networks[networks].id} SELECTED{/if}>{$networks[networks].name}</option>
+				<option value="{$networks[networks].id}"{if $mailing.network == $networks[networks].id} SELECTED{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
 				{/section}
 			</SELECT>&nbsp;
 			{t}Group:{/t}
 			<SELECT NAME="mailing[customergroup]" {tip trigger="customergroup" text="Select customers group"}>
 				<option value="0">{t}- all groups -{/t}</option>
 				{section name="customergroups" loop=$customergroups}
-				<option value="{$customergroups[customergroups].id}"{if $mailing.customergroup == $customergroups[customergroups].id} SELECTED{/if}>{$customergroups[customergroups].name}</option>
+				<option value="{$customergroups[customergroups].id}"{if $mailing.customergroup == $customergroups[customergroups].id} SELECTED{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
 				{/section}
 			</SELECT>
 		</TD>

@@ -37,14 +37,14 @@
 				<SELECT size="1" name="a" OnChange="document.filter.submit();">
 					<OPTION value="0"{if $listdata.userid eq ""} SELECTED{/if}>{t}- all users -{/t}</OPTION>
 					{section name=userlist loop=$userlist}
-					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.userid} SELECTED{/if}>{$userlist[userlist].name|truncate:40:"..."}</OPTION>
+					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.userid} SELECTED{/if}>{$userlist[userlist].name|truncate:40:"...":true}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}Customer:{/t}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
 					<OPTION value="0"{if $listdata.customerid eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
 					{section name=customerlist loop=$customerlist}
-					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
+					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM></P>
@@ -87,12 +87,12 @@
 		</TD>
 		<TD width="1%" valign="top">
 			{foreach item=user from=$eventlist[eventlist].userlist}
-				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name|truncate:"25":"..."}</A></NOBR><BR>
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name|truncate:"25":"...":true}</A></NOBR><BR>
 			{/foreach}
 		</TD>
 		<TD width="1%" align="right" valign="top">
 			{if $eventlist[eventlist].customername}
-				<A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"..."}</A>
+				<A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"...":true}</A>
 			{/if}
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>

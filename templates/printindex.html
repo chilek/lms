@@ -42,13 +42,13 @@
 						<SELECT size="1" name="network" {tip text="Select network"}>
 							<OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
 							{section name="networks" loop=$networks}
-							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
+							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
 							{/section}
 						</SELECT><BR><BR>
 						<SELECT size="1" name="customergroup" {tip text="Select group"}>
 							<OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
 							{section name="customergroups" loop=$customergroups}
-							<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:50:" ..."}</OPTION>
+							<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
 							{/section}
 						</SELECT><BR><BR>
 						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
@@ -116,7 +116,7 @@ cal12.time_comp = false;
 						<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
 							<OPTION value="">{t}- all users -{/t}</OPTION>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].name|truncate:50:" ..."}</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -218,7 +218,7 @@ cal6.time_comp = false;
 						<SELECT size="1" name="customer" {tip text="Select customer"}>
 							<OPTION value="0" SELECTED>{t}- all customers -{/t}</OPTION>
 							{section name="customers" loop=$customers}
-							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -337,7 +337,7 @@ cal9.time_comp = false;
 						<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
 					    		<OPTION VALUE="0">{t}- select registry -{/t}</OPTION>
 						        {foreach from=$cashreglist item=c}
-							<OPTION VALUE="{$c.id}">{$c.name|truncate:50:"..."} ({$c.id|string_format:"%04d"})</OPTION>
+							<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 						        {/foreach}
 						</SELECT>
 					</TD>
@@ -359,7 +359,7 @@ cal9.time_comp = false;
 						<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
 							<OPTION value="">{t}- all users -{/t}</OPTION>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].name|truncate:50:" ..."}</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"...":true}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -408,7 +408,7 @@ cal13.time_comp = false;
 					<TD width="1%">
 						<SELECT size="1" name="customer" {tip text="Select customer"}>
 							{section name="customers" loop=$customers}
-							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -482,7 +482,7 @@ cal4.time_comp = false;
 						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="customers" loop=$customers}
-							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -549,7 +549,7 @@ cal11.time_comp = false;
 						<SELECT size="1" name="customer" {tip text="You can select customer or group of customers to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="customers" loop=$customers}
-							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -560,7 +560,7 @@ cal11.time_comp = false;
 						<SELECT size="1" name="customergroup" {tip text="You can select customer or group of customers to limit results"}>
 							<OPTION value="0">{t}- all groups -{/t}</OPTION>
 							{section name="groups" loop=$customergroups}
-							<OPTION value="{$customergroups[groups].id}">{$customergroups[groups].name|truncate:50:" ..."} ({$customergroups[groups].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customergroups[groups].id}">{$customergroups[groups].name|truncate:40:"...":true} ({$customergroups[groups].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -620,7 +620,7 @@ cal11.time_comp = false;
 						<SELECT size="1" name="network">
 							<OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
 							{section name="networks" loop=$networks}
-							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
+							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
 							{/section}
 						</SELECT>&nbsp;
 					</TD>
@@ -681,7 +681,7 @@ cal11.time_comp = false;
 					<TD width="1%">
 						<SELECT size="1" name="customer" {tip text="Select customer"}>
 							{section name="customers" loop=$customers}
-							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

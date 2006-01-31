@@ -94,7 +94,7 @@
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="customer"}>
 				{section name=customers loop=$customers}
-				<OPTION VALUE="{$customers[customers].id}"{if $nodedata.ownerid eq $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$customers[customers].id}"{if $nodedata.ownerid eq $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
