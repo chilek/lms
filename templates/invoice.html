@@ -283,16 +283,16 @@
 		<B>{t}Difference value:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
-		{$totalbase|money_format}
+		{if $totalbase > 0}+{/if}{$totalbase|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
 		<B>x</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$totaltax|money_format}
+		{if $totaltax > 0}+{/if}{$totaltax|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$total|money_format}
+		{if $total > 0}+{/if}{$total|money_format}
 	</TD>
     </TR>
     {/if}
