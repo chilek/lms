@@ -1687,7 +1687,6 @@ $_LANG['with settlement of first deficient period'] = 'z wyrównaniem początkow
 $_LANG['document number'] = 'numer dokumentu';
 $_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź numer dokumentu. UWAGA! Zmiana tego numeru może być niebezpieczna! (pozostaw pole puste aby uzyskać kolejny numer)';
 $_LANG['continuously'] = 'ciągle';
-$_LANG['Total reduction value:'] = 'Łączna kwota zmniejszenia:';
-$_LANG['Total enhancement value:'] = 'Łączna kwota zwiększenia:';
+$_LANG['Difference value:'] = 'Wartość różnicy:';
 
 ?>

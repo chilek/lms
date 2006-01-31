@@ -201,13 +201,13 @@ function invoice_address_box($x,$y)
     $tmp = explode("\n",iconv("UTF-8","ISO-8859-2",$invoice_name));
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
 */
-    $y = text_wrap($x, $y, 160, $font_size, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['name']), 'left');
+    $y = text_wrap($x, $y, 160, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['name'].'</b>'), 'left');
     if ($invoice['serviceaddr']) {
 	$tmp = explode("\n",iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['serviceaddr']));
-	foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
+	foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,'<b>'.$line.'</b>');
     } else {
-	$y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['address'])."</b>");
-	$y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['zip']." ".$invoice['city'])."</b>");
+	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['address']).'</b>');
+	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['zip']." ".$invoice['city']).'</b>');
     }
     return $y;
 }
@@ -404,20 +404,10 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$totalbase = $invoice['totalbase'] - $invoice['invoice']['totalbase'];
 	$totaltax = $invoice['totaltax'] - $invoice['invoice']['totaltax'];
 	
-	if($total < 0)
-	{
-	    $txt = trans('Total reduction value:');
-	    $total *= -1;
-	    $totalbase *= -1;
-	    $totaltax *= -1;
-	}
-	else
-	    $txt = trans('Total enhancement value:');
-    
 	$y = $y - 5;
 	$fy=$y-$margin-$pdf->GetFontHeight($font_size);
 	$pdf->line($x,$y,$x+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+8*$margin,$y);
-	text_align_right($x-$margin,$fy,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", $txt).'</b>');
+	text_align_right($x-$margin,$fy,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", trans('Difference value:')).'</b>');
     
 	$t_data[7] = iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totalbase));
         $t_data[8] = "<b>x</b>";
