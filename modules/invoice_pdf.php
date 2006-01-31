@@ -409,10 +409,10 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$pdf->line($x,$y,$x+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+8*$margin,$y);
 	text_align_right($x-$margin,$fy,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", trans('Difference value:')).'</b>');
     
-	$t_data[7] = iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totalbase));
+	$t_data[7] = ($totalbase>0 ? '+' : '') . iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totalbase));
         $t_data[8] = "<b>x</b>";
-	$t_data[9] = iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totaltax));
-        $t_data[10] = iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($total));
+	$t_data[9] = ($totaltax>0 ? '+' : '') . iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totaltax));
+        $t_data[10] = ($total>0 ? '+' : '') . iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($total));
 
 	$y = invoice_short_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
     }
