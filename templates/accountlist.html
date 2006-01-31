@@ -34,7 +34,7 @@
 					<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
 					<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
 					{section name=customerlist loop=$customerlist}
-					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
+					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}Type:{/t}
@@ -88,7 +88,7 @@
 			{if $accountlist[accountlist].ownerid}
 			<IMG src="img/customer.gif" alt="">
 			<A href="?m=customerinfo&id={$accountlist[accountlist].ownerid}">
-			{$accountlist[accountlist].customername|truncate:50:"..."} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
+			{$accountlist[accountlist].customername|truncate:40:"...":true} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
 			</A>
 			{/if}
 		</TD>

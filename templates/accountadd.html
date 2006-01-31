@@ -83,7 +83,7 @@
 					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer"}>
     					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
 					    {section name=customers loop=$customers}
-					    <OPTION VALUE="{$customers[customers].id}"{if $account.ownerid == $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+					    <OPTION VALUE="{$customers[customers].id}"{if $account.ownerid == $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:" ...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 					    {/section}
 					</SELECT>
 				    </TD>

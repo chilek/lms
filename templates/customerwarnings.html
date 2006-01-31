@@ -60,7 +60,7 @@
 					<TD CLASS="fleft">
 						<SELECT size="20" name="setwarnings[mcustomerid][]" multiple {tip text="Select customers"}>
 							{section name=customerlist loop=$customerlist}
-							<OPTION value="{$customerlist[customerlist].id}" {if $customerlist[customerlist].warning}CLASS="red"{/if}>{$customerlist[customerlist].customername|truncate:50:" ..."} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$customerlist[customerlist].id}" {if $customerlist[customerlist].warning}CLASS="red"{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

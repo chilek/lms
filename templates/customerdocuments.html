@@ -29,7 +29,7 @@
 						{/if}
 					</TD>
 					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');"><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>
-					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"..."}</TD>
+					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
 					<TD WIDTH="1%" NOWRAP onclick="window.open('?m=documentview&id={$doc.docid}');">
 						{if $doc.fromdate}{t}from{/t} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
 						{if $doc.todate}{t}to{/t} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
