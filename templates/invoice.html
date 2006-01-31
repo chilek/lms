@@ -280,12 +280,7 @@
     </TR>
     <TR>
 	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
-		<B>{if $total<0}{t}Total reduction value:{/t}{else}{t}Total enhancement value:{/t}{/if}</B>
-		{if $total<0}
-		    {math assign=totalbase equation="x*-1" x=$totalbase}
-		    {math assign=totaltax equation="x*-1" x=$totaltax}
-		    {math assign=total equation="x*-1" x=$total}
-		{/if}
+		<B>{t}Difference value:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$totalbase|money_format}
