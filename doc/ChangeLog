@@ -43,6 +43,7 @@ version ? (????-??-??):
   - using 4th argument of Smarty's truncate function (alec)
   - changed/improved financial documents settlement for multiuser 
     environment (alec)
+  - automatic columns width setting on pdf invoices (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 
