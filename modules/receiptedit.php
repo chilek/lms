@@ -81,7 +81,6 @@ $SESSION->restore('receiptcontents', $contents);
 $SESSION->restore('receiptcustomer', $customer);
 $SESSION->restore('receipt', $receipt);
 $SESSION->restore('receiptediterror', $error);
-$SESSION->restore('receiptquery', $receiptquery);
 
 $receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], $receipt['extnumber']);
 if($receipt['type']=='in')
@@ -194,53 +193,7 @@ switch($_GET['action'])
 			break;
 		}
 		
-		if($receipt['search']!='' && !$cid)
-		{
-		        $search = $receipt['search'];
-			switch($receipt['cat'])
-			{
-				case 'id':
-					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-						    FROM customers WHERE deleted = 0 AND id = '.intval($search).'
-						    ORDER BY customername';
-				break;
-				case 'ten':
-					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-						    FROM customers WHERE deleted = 0 AND ten = \''.$search.'\'
-						    ORDER BY customername';
-				break;
-				case 'name':
-					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-						    FROM customers WHERE deleted = 0 AND UPPER('.$DB->Concat('lastname',"' '",'name').') ?LIKE? UPPER(\'%'.$search.'%\')
-						    ORDER BY customername';
-				break;
-				case 'address':
-					$query = 'SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-						    FROM customers WHERE deleted = 0 AND UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\')
-						    ORDER BY customername';
-				break;
-				case 'node':
-					$query = 'SELECT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername 
-						    FROM customers, nodes WHERE customers.id = ownerid AND nodes.name ?LIKE? \'%'.$search.'%\'
-						    GROUP BY customers.id, lastname, customers.name ORDER BY customername';
-				break;
-				default:
-					$query = '';
-				break;
-			}
-
-			$customerlist = $DB->GetAll($query);
-			
-			if(sizeof($customerlist)==1)
-			{
-				$cid = $customerlist[0]['id'];
-				unset($customerlist);
-			}
-			else
-				$SESSION->save('receiptquery', $query);
-		}
-		else																																															    																																																																		    
-			$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'];
+		$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'];
 		
 		if(!$cid)
 			$cid = $oldcid;
@@ -382,15 +335,9 @@ if($_GET['action'] != '')
 	$SESSION->redirect('?m=receiptedit');
 }
 
-if($receiptquery)
-{
-        $customerlist = $DB->GetAll($receiptquery);
-	$SESSION->remove('receiptquery');
-}
-
 $cashreglist = $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id');
 
-$SMARTY->assign('customerlist', $customerlist ? $customerlist : $LMS->GetCustomerNames());
+$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('cashreglist', $cashreglist);
 $SMARTY->assign('cashregcount', sizeof($cashreglist));
