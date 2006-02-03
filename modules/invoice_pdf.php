@@ -57,6 +57,23 @@ function text_wrap($x,$y,$width,$size,$text,$justify)
     return($y);
 }
 
+function getWrapTextWidth($font_size,$txt)
+{
+    global $pdf;
+    
+    $long = '';
+    if($words = explode(' ', $txt))
+    {
+        foreach($words as $word)
+	    if(strlen($word) > strlen($long))
+		$long = $word;
+    }
+    else
+	    $long = $txt;
+    
+    return $pdf->getTextWidth($font_size, $long)+2*$margin+1;
+}
+
 function invoice_simple_form_fill($x,$y,$scale)  
 {
     global $pdf,$invoice,$CONFIG;
@@ -225,11 +242,11 @@ function invoice_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$t_just
     }
     $left = $x;
     for ($i = 1; $i <= 10; $i++) {
-	$pdf->line($left, $y, $left, $ny);
+	$pdf->line($left, $y, $left, $ny+$font_size/2);
 	$left = $left + $t_width[$i]+2*$margin;
     }
-    $pdf->line($left, $y, $left, $ny);
-    $y=$ny;
+    $pdf->line($left, $y, $left, $ny+$font_size/2);
+    $y=$ny+$font_size/2;
     $pdf->line($x,$y,$x+$width,$y);
     return($y);
 }
@@ -247,11 +264,11 @@ function invoice_short_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$
     }
     $left = $x;
     for ($i = 7; $i <= 10; $i++) {
-	$pdf->line($left, $y, $left, $ny);
+	$pdf->line($left, $y, $left, $ny+$font_size/2);
 	$left = $left + $t_width[$i]+2*$margin;
     }
-    $pdf->line($left, $y, $left, $ny);
-    $y=$ny;
+    $pdf->line($left, $y, $left, $ny+$font_size/2);
+    $y=$ny+$font_size/2;
     //$pdf->line($x,$y,$x+$width,$y);
     $pdf->line($x,$y,$x+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+8*$margin,$y);
     return($y);
@@ -260,8 +277,10 @@ function invoice_short_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$
 function invoice_data($x,$y,$width,$font_size,$margin) 
 {
     global $invoice,$pdf;
+    
     $pdf->setlinestyle(0.5);
     $pdf->line($x,$y,$x+$width,$y);
+    
     $t_data[1] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('No.')).'</b>';
     $t_data[2] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Name of Product, Commodity or Service:')).'</b>';
     $t_data[3] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Product ID:')).'</b>';
@@ -272,25 +291,40 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $t_data[8] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Tax Rate:')).'</b>';
     $t_data[9] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Tax Value:')).'</b>';
     $t_data[10] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Gross Value:')).'</b>';
-    for ($i = 1; $i <= 10; $i++) $t_justify[$i]="left";
-    for ($i = 1; $i <= 10; $i++) $t_width[$i]=$pdf->getTextWidth($font_size,$t_data[$i])+2*$margin+1;
+    
+    for ($i = 1; $i <= 10; $i++) $t_justify[$i]="center";
+    for ($i = 1; $i <= 10; $i++) $t_width[$i] = getWrapTextWidth($font_size,$t_data[$i])+2*$margin+2;
+    
     // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pó¼niej
     if ($invoice['content']) foreach ($invoice['content'] as $item) {
 	$tt_width[2] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['description']));
 	$tt_width[3] = $pdf->getTextWidth($font_size,$item['prodid']);
 	$tt_width[4] = $pdf->getTextWidth($font_size,$item['content']);
 	$tt_width[5] = $pdf->getTextWidth($font_size,$item['count']);
-	$tt_width[6] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['basevalue'])));
-	$tt_width[7] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totalbase'])));
-	$tt_width[8] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']));
-	$tt_width[9] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])));
-	$tt_width[10] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])));
-	for ($i = 2; $i <= 5; $i++) if (($tt_width[$i]+2*margin+2)>$t_width[$i]) $t_width[$i]=$tt_width[$i]+2*margin+2;
-    }    
+	$tt_width[6] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['basevalue'])))+4;
+	$tt_width[7] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totalbase'])))+4;
+	$tt_width[8] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']))+4;
+	$tt_width[9] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])))+4;
+	$tt_width[10] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])))+4;
+	for ($i = 2; $i <= 10; $i++) if (($tt_width[$i]+2*margin+2)>$t_width[$i]) $t_width[$i] = $tt_width[$i]+2*margin+2;
+    }
+    if ($invoice['invoice']['content']) foreach ($invoice['invoice']['content'] as $item) {
+	$tt_width[2] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['description']));
+	$tt_width[3] = $pdf->getTextWidth($font_size,$item['prodid']);
+	$tt_width[4] = $pdf->getTextWidth($font_size,$item['content']);
+	$tt_width[5] = $pdf->getTextWidth($font_size,$item['count']);
+	$tt_width[6] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['basevalue'])))+4;
+	$tt_width[7] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totalbase'])))+4;
+	$tt_width[8] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']))+4;
+	$tt_width[9] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])))+4;
+	$tt_width[10] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])))+4;
+	for ($i = 2; $i <= 10; $i++) if (($tt_width[$i]+2*margin+2)>$t_width[$i]) $t_width[$i] = $tt_width[$i]+2*margin+2;
+    }
     // Kolumna 2 bêdzie mia³a rozmiar ustalany dynamicznie
     $t_width[2] = $width-($t_width[1]+$t_width[3]+$t_width[4]+$t_width[5]+$t_width[6]+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+20*$margin);
     $y = invoice_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
     $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
+    $t_justify[2] = 'left';
 
     if($invoice['invoice'])
     {

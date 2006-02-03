@@ -84,13 +84,13 @@ if(isset($_GET['rawmode']))
 		{
 			header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql.gz');
 			header('Pragma: public');
-				print $filecontent;
+			print $filecontent;
 			return TRUE;
 		}
 		else
 		{
 			header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql');
-			Header('Pragma: public');
+			header('Pragma: public');
 		}
 	}
 	else
