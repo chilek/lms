@@ -77,7 +77,7 @@ $access['table'][15]['name']        	= trans('daemon management and configuratio
 $access['table'][15]['allow_reg']   	= '^((daemoninstance|daemonconfig)(list|edit|add|del|view))$';
 
 $access['table'][16]['name']        	= trans('cash operations');
-$access['table'][16]['allow_reg']   	= '^(cashreglist|receipt|receipt(list|edit|add|del))$';
+$access['table'][16]['allow_reg']   	= '^(cashreglist|receipt|receipt(list|edit|add|del)|choosecustomer)$';
 
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';

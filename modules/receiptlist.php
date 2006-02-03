@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetReceiptList($registry, $order='cdate,asc', $search=NULL, $cat=NULL, $from=0, $to=0)
+function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, $to=0)
 {
 	global $CONFIG, $DB;
 
@@ -43,8 +43,9 @@ function GetReceiptList($registry, $order='cdate,asc', $search=NULL, $cat=NULL, 
 		case 'user':
 			$sqlord = " ORDER BY users.name $direction, documents.cdate";
 		break;
+		case 'cdate':
 		default:
-			$sqlord = " ORDER BY documents.cdate $direction";
+			$sqlord = " ORDER BY documents.cdate $direction, number";
 		break;
 	}
 

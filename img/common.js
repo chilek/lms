@@ -68,8 +68,8 @@ function openWindow(theURL,winName,myWidth,myHeight,isCenter)
 	return false;
 }
 
-function ipchoosewin(formfield,netid){
-
+function ipchoosewin(formfield,netid)
+{
 	if(netid)  
 		okno = openSelectWindow('?m=chooseip&netid=' + netid,'chooseip',250,300,'true',formfield)
 	else
@@ -78,15 +78,21 @@ function ipchoosewin(formfield,netid){
 
 }
 
-function macchoosewin(formfield){
-
+function macchoosewin(formfield)
+{
 	okno = openSelectWindow('?m=choosemac','choosemac',250,300,'true',formfield)
 	return false;
 }
 
-function sendvalue(targetfield,ipaddr)
+function customerchoosewin(formfield)
 {
-	targetfield.value = ipaddr;
+	okno = openSelectWindow('?m=choosecustomer','choosecustomer',400,220,'true',formfield)
+	return false;
+}
+
+function sendvalue(targetfield,value)
+{
+	targetfield.value = value;
 	window.close();
 	parent.window.close();
 }
