@@ -265,7 +265,7 @@ my $itemid;
 # let's go, fetch *ALL* assignments in given day
 $dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, suspended, 
 	invoice, tariffs.description AS description, assignments.id AS assignmentid,
-	settlement, datefrom, 
+	settlement, datefrom, discount, 
 	(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
 	(CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, 
 	(CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, 
@@ -373,7 +373,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			{
 				$itemid++;
 
-				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'prodid'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
+				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid, content, count, description, tariffid, itemid, discount) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'prodid'}', 'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
 				$icdbq->execute($desc);
 				
 				$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
@@ -446,7 +446,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				{
 					$itemid++;
 	
-					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $value, $assign->{'taxid'}, '$assign->{'prodid'}', 'szt', 1, ?, $assign->{'tariffid'}, $itemid)");
+					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid, content, count, description, tariffid, itemid, discount) VALUES ($gotinv{$uid}, $value, $assign->{'taxid'}, '$assign->{'prodid'}', 'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
 					$icdbq->execute($sdesc);
 				
 					$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES ($currtime, $value * -1, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");

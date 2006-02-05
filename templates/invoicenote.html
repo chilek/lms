@@ -82,7 +82,7 @@
 		<TD CLASS="fleftu" WIDTH="1%">
 			<B>{t}No.{/t}</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="93%">
+		<TD CLASS="fbt" WIDTH="92%">
 			{t}Name of product, commodity or service:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" nowrap>
@@ -91,6 +91,9 @@
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
 			{t}Amount:{/t}<BR>
 			{t}Unit:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{t}Discount:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{t}Net Price:{/t}
@@ -111,7 +114,7 @@
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{$item.itemid}.</B>
 		</TD>
-		<TD WIDTH="93%">
+		<TD WIDTH="92%">
 			{if $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$item.itemid}]">{$item.name}
 			{else}
@@ -127,7 +130,7 @@
 		</TD>
 		<TD WIDTH="1%">
 			{if $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$item.itemid}]">{$item.count|string_format:"%.2f"}<BR>
+			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$item.itemid}]">{$item.count|string_format:"%.2f"}
 			<INPUT TYPE="hidden" VALUE="{$item.jm}" NAME="jm[{$item.itemid}]">{$item.jm}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$item.itemid}]" SIZE="3">
@@ -136,9 +139,16 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{if $item.deleted}
+			<INPUT TYPE="hidden" VALUE="{$item.discount}" NAME="discount[{$item.itemid}]">{$item.discount|string_format:"%.2f"}
+			{else}
+			<INPUT TYPE="text" VALUE="{$item.discount|string_format:"%.2f"}" NAME="discount[{$item.itemid}]" SIZE="6" {tip text="Enter discount percentage"}>
+			{/if}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{if $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$item.itemid}]">{$item.valuenetto|money_format}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$item.itemid}]" SIZE="6"><BR>
+			<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$item.itemid}]" SIZE="6">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
@@ -171,7 +181,7 @@
 	{/foreach}
 	{if $contents}
 	<TR CLASS="light">
-		<TD COLSPAN="4" WIDTH="96%" ALIGN="RIGHT" CLASS="ftl">
+		<TD COLSPAN="5" WIDTH="96%" ALIGN="RIGHT" CLASS="ftl">
 			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="ftop">
@@ -189,7 +199,7 @@
 	</TR>
 	{/if}
 	<TR CLASS="light">
-		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
+		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
 			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 			{if $error}
 			<A HREF="javascript:alert('{t}There are errors in credit note main informations!{/t}');">

@@ -268,7 +268,8 @@ CREATE TABLE invoicecontents (
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,2) 	DEFAULT 0 NOT NULL,
 	description varchar(255) DEFAULT '' NOT NULL,
-	tariffid integer 	DEFAULT 0 NOT NULL
+	tariffid integer 	DEFAULT 0 NOT NULL,
+	discount numeric(4,2)	DEFAULT 0 NOT NULL
 );	 
 CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
 
@@ -740,4 +741,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006011200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006020500');

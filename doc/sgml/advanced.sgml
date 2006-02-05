@@ -362,6 +362,7 @@
                     <member>docid - invoice serial number</member>
                     <member>itemid - invoice item identifier</member>
                     <member>value - amount</member>
+		    <member>discount - discount percentage</member>
                     <member>taxid - tax rate identifier</member>
                     <member>prodid - product/service classification number</member>
                     <member>content - used unit (usually 'pc.')</member>

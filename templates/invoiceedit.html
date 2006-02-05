@@ -99,7 +99,7 @@
 		<TD CLASS="fleftu" WIDTH="1%">
 			<B>{t}No.{/t}</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="93%">
+		<TD CLASS="fbt" WIDTH="92%">
 			{t}Name of product, commodity or service:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" nowrap>
@@ -108,6 +108,9 @@
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
 			{t}Amount:{/t}<BR>
 			{t}Unit:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{t}Discount:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{t}Net Price:{/t}<BR>
@@ -131,15 +134,18 @@
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>
-		<TD WIDTH="93%">
+		<TD WIDTH="92%">
 			{$item.name}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			{$item.prodid}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.count}<BR>
+			{$item.count|string_format:"%.2f"}<BR>
 			{$item.jm}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$item.discount|string_format:"%.2f"} %
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.valuenetto|money_format}<BR>
@@ -158,7 +164,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="8" ALIGN="CENTER" CLASS="flr">
+		<TD COLSPAN="9" ALIGN="CENTER" CLASS="flr">
 			<p>&nbsp;</p>
 			<p><B>{t}Invoice have no items. Use form below for items addition.{/t}</B></p>
 			<p>&nbsp;</p>
@@ -167,17 +173,17 @@
 	{/foreach}
 	{if $contents}
 	<TR CLASS="light">
-		<TD COLSPAN="4" WIDTH="96%" ALIGN="RIGHT" CLASS="fleftu">
+		<TD COLSPAN="5" WIDTH="96%" ALIGN="RIGHT" CLASS="fleftu">
 			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			{sum array=$contents column=s_valuenetto string_format="%01.2f"}
+			<B>{sum array=$contents column=s_valuenetto string_format="%01.2f"}</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
 			&nbsp;
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
+			<B>{sum array=$contents column=s_valuebrutto string_format="%01.2f"}</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu">
 			&nbsp;
@@ -191,7 +197,7 @@
 		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
 		</TD>
-		<TD CLASS="ftop" WIDTH="94%">
+		<TD CLASS="ftop" WIDTH="92%">
 			<INPUT TYPE="text" NAME="name" SIZE="48"><BR>
 			<SELECT SIZE="1" NAME="ttariffid">
 				{foreach from=$tariffs item=tariff}
@@ -199,32 +205,35 @@
 				{/foreach}
 			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">{t}Select{/t}</A>
 		</TD>
-		<TD CLASS="ftop">
+		<TD CLASS="ftop" ALIGN="RIGHT">
 			<INPUT TYPE="text" NAME="prodid" SIZE="6">
 		</TD>
-		<TD CLASS="ftop">
-			<INPUT TYPE="text" NAME="count" SIZE="1" VALUE="1">
-			<INPUT TYPE="text" NAME="jm" SIZE="1" VALUE="{t}item no.{/t}">
+		<TD CLASS="ftop" ALIGN="RIGHT">
+			<INPUT TYPE="text" NAME="count" SIZE="3" VALUE="1">
+			<INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{t}item no.{/t}">
 		</TD>
-		<TD CLASS="ftop" NOWRAP>
-			<INPUT TYPE="text" NAME="valuenetto" SIZE="6">
+		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
+			<INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage"}>
 		</TD>
-		<TD CLASS="ftop" NOWRAP>
+		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
+			<INPUT TYPE="text" NAME="valuenetto" SIZE="6" {tip text="Enter unitary value without discount"}>
+		</TD>
+		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
 			<SELECT size="1" name="taxid" {tip text="Select Tax rate"}>
 			{foreach item=tax from=$taxeslist}
 				<OPTION value="{$tax.id}"{if $tax.value==$_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
 			{/foreach}
 			</SELECT>
 		</TD>
-		<TD CLASS="ftop" NOWRAP>
-			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6">
+		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
+			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}>
 		</TD>
 		<TD CLASS="ftr">
 			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
+		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
 			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG src="img/cancel.gif"></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
