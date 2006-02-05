@@ -39,8 +39,9 @@ if ((isset($_GET['id'])) && ($_GET['action']=='edit'))
 	$i++;
         $nitem['tariffid']	= $item['tariffid'];
 	$nitem['name']		= $item['description'];
-	$nitem['prodid']		= $item['prodid'];
+	$nitem['prodid']	= $item['prodid'];
         $nitem['count']		= str_replace(',','.',$item['count']);
+	$nitem['discount']	= str_replace(',','.',$item['discount']);
 	$nitem['jm']		= str_replace(',','.',$item['content']);
         $nitem['valuenetto']	= str_replace(',','.',$item['basevalue']);
         $nitem['valuebrutto']	= str_replace(',','.',$item['value']);
@@ -75,15 +76,21 @@ switch($_GET['action'])
 {
 	case 'additem':
 		$itemdata = r_trim($_POST);
-		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)
+		foreach(array('count', 'discount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = round((float) str_replace(',','.',$itemdata[$key]),2);
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
 			$taxvalue = $taxeslist[$itemdata['taxid']]['value'];
 			if($itemdata['valuenetto'] != 0)
+			{
+			    	$itemdata['valuenetto'] = f_round($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['discount'])/100);
 				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
+			}
 			elseif($itemdata['valuebrutto'] != 0)
+			{
+			    	$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['discount'])/100);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue + 100) * 100, 2);
+			}
 			
 			// str_replace here is needed because of bug in some PHP versions (4.3.10)
 			$itemdata['s_valuenetto'] = str_replace(',','.',$itemdata['valuenetto'] * $itemdata['count']);
@@ -91,6 +98,7 @@ switch($_GET['action'])
 			$itemdata['valuenetto'] = str_replace(',','.',$itemdata['valuenetto']);
 			$itemdata['valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto']);
 			$itemdata['count'] = str_replace(',','.',$itemdata['count']);
+			$itemdata['discount'] = str_replace(',','.',$itemdata['discount']);
 			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
@@ -178,4 +186,5 @@ $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoiceedit.html');
+
 ?>

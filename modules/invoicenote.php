@@ -37,6 +37,7 @@ if ((isset($_GET['id'])) && ($_GET['action']=='init'))
 		$nitem['name']		= $item['description'];
 		$nitem['prodid']	= $item['prodid'];
     		$nitem['count']		= str_replace(',','.',$item['count']);
+		$nitem['discount']	= str_replace(',','.',$item['discount']);
 		$nitem['jm']		= str_replace(',','.',$item['content']);
     		$nitem['valuenetto']	= str_replace(',','.',$item['basevalue']);
     		$nitem['valuebrutto']	= str_replace(',','.',$item['value']);
@@ -140,6 +141,7 @@ switch($_GET['action'])
 				$contents[$idx]['prodid'] = $newcontents['prodid'][$idx] ? $newcontents['prodid'][$idx] : $item['prodid'];
 				$contents[$idx]['jm'] = $newcontents['jm'][$idx] ? $newcontents['jm'][$idx] : $item['jm'];
 				$contents[$idx]['count'] = $newcontents['count'][$idx] ? $newcontents['count'][$idx] : $item['count'];
+				$contents[$idx]['discount'] = $newcontents['discount'][$idx] ? $newcontents['discount'][$idx] : $item['discount'];
 				$contents[$idx]['name'] = $newcontents['name'][$idx] ? $newcontents['name'][$idx] : $item['name'];
 				$contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx] ? $newcontents['tariffid'][$idx] : $item['tariffid'];
 				$contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx]!='' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
@@ -147,6 +149,7 @@ switch($_GET['action'])
 				$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
 				$contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuenetto']);
 				$contents[$idx]['count'] = f_round($contents[$idx]['count']);
+				$contents[$idx]['discount'] = f_round($contents[$idx]['discount']);
 
 				$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
 				
@@ -208,9 +211,10 @@ switch($_GET['action'])
 			{
 				$item['valuebrutto'] = str_replace(',','.', $item['valuebrutto']);
 		    		$item['count'] = str_replace(',','.', $item['count']);
+				$item['discount'] = str_replace(',','.', $item['discount']);
 						
-			        $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid)
-					    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			        $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, discount, description, tariffid)
+					    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				            array($id,
 				        	    $idx,
 					            $item['valuebrutto'],
@@ -218,6 +222,7 @@ switch($_GET['action'])
 						    $item['prodid'],
 						    $item['jm'],
 						    $item['count'],
+						    $item['discount'],
 						    $item['name'],
 						    $item['tariffid']
 					    ));

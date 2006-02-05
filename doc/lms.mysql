@@ -116,6 +116,7 @@ CREATE TABLE invoicecontents (
   docid int(11) NOT NULL default '0',
   itemid smallint NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
+  discount decimal(4,2) NOT NULL default '0.00',
   taxid int(11) NOT NULL default '0',
   prodid varchar(255) NOT NULL default '',
   content varchar(16) NOT NULL default '',
@@ -695,4 +696,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006011200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006020500');

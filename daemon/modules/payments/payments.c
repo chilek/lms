@@ -284,7 +284,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		res = g->db_pquery(g->conn, "\
 			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
 			    UPPER(lastname) AS lastname, customers.name AS custname, address, zip, city, ten, ssn, \
-			    assignments.id AS assignmentid, settlement, datefrom, \
+			    assignments.id AS assignmentid, settlement, datefrom, discount, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, \
@@ -315,6 +315,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			int liabilityid = atoi(g->db_get_data(res,i,"liabilityid"));
 			int settlement = atoi(g->db_get_data(res,i,"settlement"));
 			int datefrom = atoi(g->db_get_data(res,i,"datefrom"));
+			char *discount = g->db_get_data(res,i,"discount");
 			double val = atof(g->db_get_data(res,i,"value"));
 			
 			if( !atof(g->db_get_data(res,i,"value")) ) continue;
@@ -404,14 +405,15 @@ void reload(GLOBAL *g, struct payments_module *p)
 				{
 					itemid++;
 					
-					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
+					g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid, discount) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?, ?)",
 						invoiceid,
 						itoa(itemid),
 						value,
 						taxid,
 						g->db_get_data(res,i,"prodid"),
 						description,
-						g->db_get_data(res,i,"tariffid")
+						g->db_get_data(res,i,"tariffid"),
+						discount
 						);
 					
 					g->str_replace(&insert, "%docid", invoiceid);
@@ -491,14 +493,15 @@ void reload(GLOBAL *g, struct payments_module *p)
 					{
 						itemid++;
 					
-						g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?)",
+						g->db_pexec(g->conn,"INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid, discount) VALUES (?, ?, ?, ?, '?', 'szt.', 1, '?', ?, ?)",
 							invoiceid,
 							itoa(itemid),
 							value,
 							taxid,
 							g->db_get_data(res,i,"prodid"),
 							description,
-							g->db_get_data(res,i,"tariffid")
+							g->db_get_data(res,i,"tariffid"),
+							discount
 							);
 					
 						g->str_replace(&insert, "%docid", invoiceid);

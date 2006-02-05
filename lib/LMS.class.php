@@ -1340,9 +1340,10 @@ class LMS
 			$itemid++;
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
+			$item['discount'] = str_replace(',','.',$item['discount']);
 
-			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, discount, description, tariffid) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
 					$iid,
 					$itemid,
 					$item['valuebrutto'],
@@ -1350,6 +1351,7 @@ class LMS
 					$item['prodid'],
 					$item['jm'],
 					$item['count'],
+					$item['discount'],
 					$item['name'],
 					$item['tariffid']));
 
@@ -1377,7 +1379,7 @@ class LMS
 		{
 			$itemid++;
 
-			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, discount, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
 					$iid,
 					$itemid,
@@ -1386,6 +1388,7 @@ class LMS
 					$item['prodid'],
 					$item['jm'],
 					$item['count'],
+					$item['discount'],
 					$item['name'],
 					$item['tariffid']));
 			$this->AddBalance(array('time' => $cdate, 'value' => $item['valuebrutto']*$item['count']*-1, 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
@@ -1436,8 +1439,12 @@ class LMS
 			if($result['userid'])
 				$result['user'] = $this->GetUserName($result['userid']);
 
-			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid
-					    FROM invoicecontents LEFT JOIN taxes ON taxid = taxes.id WHERE docid=? ORDER BY itemid', array($invoiceid)))
+			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, prodid, content, count, invoicecontents.description AS description, tariffid, itemid, discount
+						FROM invoicecontents 
+						LEFT JOIN taxes ON taxid = taxes.id 
+						WHERE docid=? 
+						ORDER BY itemid', array($invoiceid))
+			)
 				foreach($result['content'] as $idx => $row)
 				{
 					if($result['invoice'])
@@ -1465,6 +1472,8 @@ class LMS
 					// for backward compatybility
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['content'][$idx]['pkwiu'] = $row['prodid'];
+					
+					$result['discount'] += $row['discount'];
 				}
 
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
