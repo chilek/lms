@@ -94,7 +94,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_execute($query)
 	{
 		$this->_query = $query;
-		
+
 		if($this->iconv)
 			$query = iconv('UTF-8', $this->iconv, $query);
 

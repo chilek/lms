@@ -1657,7 +1657,6 @@ $_LANG['Cashier: $0'] = 'Kasjer: $0';
 $_LANG['Cash-in Receipt Edit: $0'] = 'Edycja KP: $0';
 $_LANG['Cash-out Receipt Edit: $0'] = 'Edycja KW: $0';
 $_LANG['Cash Registry'] = 'Rejestr kasowy';
-$_LANG['node name'] = 'nazwa komputera';
 $_LANG['payed out'] = 'wypłaciłem';
 $_LANG['received'] = 'otrzymałem';
 $_LANG['Above amount'] = 'Kwotę powyższą';
@@ -1688,5 +1687,7 @@ $_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS!'] 
 $_LANG['continuously'] = 'ciągle';
 $_LANG['Difference value:'] = 'Wartość różnicy:';
 $_LANG['Click to search customer'] = 'Kliknij tutaj aby wyszukać klienta';
+$_LANG['Enter customer ID, part of first/lastname, address, telephone, email, TEN, SSN or node name and press Enter.'] = 'Wprowadź ID klienta, część nazwiska/imienia, adresu, telefonu, emaila, NIPu, PESELa lub nazwy jego komputera i naciśnij Enter.';
+$_LANG['Enter unitary value without discount'] = 'Wprowadź wartość jednostkową bez rabatu';
 
 ?>

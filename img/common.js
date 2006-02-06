@@ -86,7 +86,7 @@ function macchoosewin(formfield)
 
 function customerchoosewin(formfield)
 {
-	okno = openSelectWindow('?m=choosecustomer','choosecustomer',400,220,'true',formfield)
+	okno = openSelectWindow('?m=choosecustomer','choosecustomer',450,250,'true',formfield)
 	return false;
 }
 
