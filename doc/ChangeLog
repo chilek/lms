@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - fixed cash receipts problem with default numberplan (alec)
+  - lmsd/hostfile: fixed few network replacement variables (alec)
 
 version 1.8.0 Rosha (2005-01-27):
 
