@@ -26,15 +26,7 @@
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall dark" align="center" nowrap><b>{t}Search{/t}:</b>
-			<input name="search" value="{$search}" size="15">&nbsp;
-			<select size="1" name="cat">
-				<option value="id"{if $cat=="id"} SELECTED{/if}>{t}ID{/t}</option>
-				<option value="name"{if $cat=="name" || !$cat} SELECTED{/if}>{t}customer name{/t}</option>
-				<option value="ten"{if $cat=="ten"} SELECTED{/if}>{t}TEN{/t}</option>
-				<option value="address"{if $cat=="address"} SELECTED{/if}>{t}address{/t}</option>
-				<option value="node"{if $cat=="node"} SELECTED{/if}>{t}node name{/t}</option>
-			</select>
-			&nbsp;<A href="javascript: document.search.submit();">&raquo;&raquo;&raquo;</A>
+			<input name="search" value="{$search}" size="20" >
 		</td>
 	</tr>
 </table>
@@ -70,7 +62,13 @@ document.search.search.focus();
 	<tr>
 		<td colspan="3" align="center">
 			<p>&nbsp;</p>
-			<p><b>{t}No such customers matching search criteria.{/t}</b></p>
+			<p><b>
+			{if $search}
+				{t}No such customers matching search criteria.{/t}
+			{else}
+				{t}Enter customer ID, part of first/lastname, address, telephone, email, TEN, SSN or node name and press Enter.{/t}
+			{/if}
+			</b></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>
