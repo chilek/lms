@@ -46,6 +46,7 @@ version ? (????-??-??):
   - automatic columns width setting on pdf invoices (alec)
   - new customers searching popup form in cash receipts interface (alec)
   - new method of discounts presentation on invoice (alec)
+  - lmsd/hostfile: fixed few network replacement variables (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 

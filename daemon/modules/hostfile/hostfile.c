@@ -83,11 +83,11 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
 			nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
 			nets[nc].domain = strdup(g->db_get_data(res,nc,"domain"));
-			nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
-			nets[nc].gateway = strdup(g->db_get_data(res,0,"gateway"));
-			nets[nc].dns = strdup(g->db_get_data(res,0,"dns"));
-			nets[nc].dns2 = strdup(g->db_get_data(res,0,"dns2"));
-			nets[nc].wins = strdup(g->db_get_data(res,0,"wins"));
+			nets[nc].interface = strdup(g->db_get_data(res,nc,"interface"));
+			nets[nc].gateway = strdup(g->db_get_data(res,nc,"gateway"));
+			nets[nc].dns = strdup(g->db_get_data(res,nc,"dns"));
+			nets[nc].dns2 = strdup(g->db_get_data(res,nc,"dns2"));
+			nets[nc].wins = strdup(g->db_get_data(res,nc,"wins"));
 			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
 			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
 		}
