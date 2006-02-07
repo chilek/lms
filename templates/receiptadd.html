@@ -108,7 +108,7 @@
 		</TD>
 	</TR>
 	{/if}
-	{if $customer}
+{*	{if $customer}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>
@@ -122,7 +122,7 @@
 		</TD>
 	</TR>
 	{/if}
-	{if $receipt.type}
+*}	{if $receipt.type}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{t}Target:{/t}</B>
@@ -155,6 +155,22 @@
 </TABLE>
 </FORM>
 {if $error.nocash}<h2 align="center"><font class="alert">{$error.nocash}</font></h2>{/if}
+{if $receipt.selected && $customer}
+<P>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+			<IMG SRC="img/customer.gif" ALT=""> <B>{t}Customer:{/t}</B>
+		</TD>
+		<TD CLASS="frightu" WIDTH="99%">
+			<B>{$customer.customername}</B> 
+			&raquo; {$customer.address} {$customer.zip} {$customer.city}
+			&raquo; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
+		</TD>
+	</TR>
+</TABLE>
+</P>
+{/if}
 {if $receipt.type=="out" && $receipt.o_type=="move" && $receipt.selected && $cashregcount > 1}
 <P>
 <FORM name="movecash" method="POST" action="?m=receiptadd&action=movecash">
