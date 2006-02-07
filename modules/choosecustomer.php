@@ -44,6 +44,8 @@ if($_POST['searchcustomer'])
 			.' OR UPPER(email) LIKE UPPER(\'%'.$search.'%\')'
 			.' OR UPPER('.$DB->Concat('lastname',"' '",'customers.name').') ?LIKE? UPPER(\'%'.$search.'%\')'
 			.' OR UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\'))';
+	
+	$SMARTY->assign('searchcustomer', $search);
 }
 
 if($_POST['searchnode'])
@@ -55,6 +57,8 @@ if($_POST['searchnode'])
 			.' OR INET_NTOA(ipaddr_pub) LIKE \'%'.$search.'%\''
 			.' OR UPPER(mac) LIKE UPPER(\'%'.$search.'%\')'
 			.' OR UPPER(nodes.name) ?LIKE? UPPER(\'%'.$search.'%\'))';
+	
+	$SMARTY->assign('searchnode', $search);
 }
 
 if($where_node || $where_cust)
@@ -74,8 +78,6 @@ if($where_node || $where_cust)
 }
 
 $SMARTY->assign('customerlist', $customerlist);
-$SMARTY->assign('searchnode', $search);
-$SMARTY->assign('searchcustomer', $search);
 $SMARTY->assign('part', $p);
 $SMARTY->assign('js', $js);
 $SMARTY->display('choosecustomer.html');
