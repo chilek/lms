@@ -136,7 +136,7 @@
 				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customer);" {tip text="Click to search customer"}>&raquo;&raquo;&raquo;</A>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			{if  $cashregcount > 1 && $receipt.type=="out"}
 			<BR>
 			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" class="box light" {if $receipt.o_type=="move"} checked{/if}> {t}assets move{/t}
