@@ -15,25 +15,30 @@
 </head>
 {if ! $part}
 <frameset name="all" frameborder="0" framespacing="0" ROWS="36,*">
-	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=choosecustomer&p=top">
-	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=choosecustomer&p=main">
+
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosecustomer&p=top">
+	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosecustomer&p=main">
 </frameset>
 {/if}
 {if $part eq "top"}
 <body>
-<form name="search" method="post" action="?m=choosecustomer&p=main" target="m">
+
+<form name="search" method="post" action="?m=choosecustomer&p=main" target="main">
 <input type="submit" class="hiddenbtn">
 <table cellpadding="5" width="100%">
 	<tr>
-		<td class="fall dark" align="center" nowrap><b>{t}Search{/t}:</b>
-			<input name="search" value="{$search}" size="20" >
+		<td class="fall dark" align="center" nowrap>
+			<img src="img/customer.gif" alt="">
+			<input name="searchcustomer" value="{$searchcustomer}" size="20" onkeyup="document.search.submit();">&nbsp;&nbsp;
+			<img src="img/node.gif" alt="">
+			<input name="searchnode" value="{$searchnode}" size="20" onkeyup="document.search.submit();">
 		</td>
 	</tr>
 </table>
 </form>
 <script language="JavaScript">
 <!--
-document.search.search.focus();
+document.search.searchcustomer.focus();
 //-->
 </script>
 </body>
@@ -63,10 +68,10 @@ document.search.search.focus();
 		<td colspan="3" align="center">
 			<p>&nbsp;</p>
 			<p><b>
-			{if $search}
+			{if $searchcustomer || $searchnode}
 				{t}No such customers matching search criteria.{/t}
 			{else}
-				{t}Enter customer ID, part of first/lastname, address, telephone, email, TEN, SSN or node name and press Enter.{/t}
+				{t}Enter customer and/or node data and press Enter.{/t}
 			{/if}
 			</b></p>
 			<p>&nbsp;</p>
