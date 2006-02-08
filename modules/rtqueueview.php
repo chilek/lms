@@ -3,7 +3,7 @@
 /*
  * LMS version 1.6-cvs
  *
- *  (C) Copyright 2001-2005 LMS Developers
+ *  (C) Copyright 2001-2006 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,7 +31,9 @@ if(! $LMS->QueueExists($_GET['id']))
 
 $queuedata['id'] = $_GET['id'];
 
-if(! $LMS->GetAdminRightsRT($AUTH->id, $queuedata['id']))
+$right = $LMS->GetAdminRightsRT($AUTH->id, $queuedata['id']);
+
+if(!$right)
 {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();
@@ -40,6 +42,12 @@ if(! $LMS->GetAdminRightsRT($AUTH->id, $queuedata['id']))
 
 if(isset($_GET['delticketid']))
 {
+	if($right < 2)
+	{
+		$SMARTY->display('noaccess.html');
+	        $SESSION->close();
+		die;
+	}
 	$LMS->TicketDelete($_GET['delticketid']);
 }
 
