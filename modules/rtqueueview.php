@@ -31,7 +31,9 @@ if(! $LMS->QueueExists($_GET['id']))
 
 $queuedata['id'] = $_GET['id'];
 
-if(! $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']))
+$right = $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']);
+
+if(!$right)
 {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();
@@ -40,6 +42,12 @@ if(! $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']))
 
 if(isset($_GET['delticketid']))
 {
+	if($right < 2)
+	{
+		$SMARTY->display('noaccess.html');
+	        $SESSION->close();
+		die;
+	}
 	$LMS->TicketDelete($_GET['delticketid']);
 }
 
