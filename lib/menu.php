@@ -255,6 +255,11 @@ $menu = array(
 					'tip' => trans('Import cash operations'),
 				),
 				array(
+					'name' => trans('Export'),
+					'link' => '?m=export',
+					'tip' => trans('Financial data export to external systems'),
+				),
+				array(
 					'name' => trans('Printing'),
 					'link' => '?m=print',
 					'tip' => trans('Printing of financial statements'),

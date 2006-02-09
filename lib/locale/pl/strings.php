@@ -1689,5 +1689,7 @@ $_LANG['Difference value:'] = 'Wartość różnicy:';
 $_LANG['Click to search customer'] = 'Kliknij tutaj aby wyszukać klienta';
 $_LANG['Enter customer and/or node data and press Enter.'] = 'Wprowadź dane klienta i/lub komputera i naciśnij Enter.';
 $_LANG['Enter unitary value without discount'] = 'Wprowadź wartość jednostkową bez rabatu';
+$_LANG['Export'] = 'Eksport';
+$_LANG['Financial data export to external systems'] = 'Eksport danych finansowych do systemów zewnętrznych';
 
 ?>
