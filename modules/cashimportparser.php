@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-include($LMS->CONFIG['phpui']['import_config'] ? $LMS->CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
+include($CONFIG['phpui']['import_config'] ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
 
 if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 {
