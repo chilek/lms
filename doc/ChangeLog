@@ -5,6 +5,7 @@ version ? (????-??-??):
   - fixed cash receipts problem with default numberplan (alec)
   - lmsd/hostfile: fixed few network replacement variables (alec)
   - fixed rights checking while deleting helpdesk's tickets (alec)
+  - fixed 'finances management' access rule (alec)
 
 version 1.8.0 Rosha (2005-01-27):
 
