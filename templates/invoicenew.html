@@ -45,7 +45,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	{if $customer}
+{*	{if $customer}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}First/last or Company name:{/t}<BR>
@@ -61,7 +61,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="light">
+*}	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Settlement date:{/t}</B>
 		</TD>
@@ -92,8 +92,10 @@
 		</TD>
 	</TR>			
 	<TR CLASS="light">
-		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Customer:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customers item=c}
@@ -102,6 +104,7 @@
 			</SELECT>
 			{t}or Customer ID:{/t}
 			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5" onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value">
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -111,6 +114,22 @@
 	</TR>
 </TABLE>
 </FORM>
+{if $customer}
+<P>
+<TABLE WIDTH="100%" CELLPADDING="3">
+        <TR CLASS="dark">
+                <TD CLASS="fleftu" WIDTH="1%" nowrap>
+                        <IMG SRC="img/customer.gif" ALT=""> <B>{t}Customer:{/t}</B>
+                </TD>
+                <TD CLASS="frightu" WIDTH="99%">
+                        <B>{$customer.customername}</B>
+                        &nbsp;&raquo;&nbsp; {$customer.address} {$customer.zip} {$customer.city}
+                        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
+                </TD>
+        </TR>
+</TABLE>
+</P>
+{/if}
 <P>	
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
