@@ -44,7 +44,10 @@ version ? (????-??-??):
   - changed/improved financial documents settlement for multiuser 
     environment (alec)
   - automatic columns width setting on pdf invoices (alec)
-  - new customers searching popup form in cash receipts interface (alec)
+  - new customers searching popup form in cash receipts and 
+    invoices interface (alec)
+  - new method of selected customer representation in invoices
+    and cash receipts interface (alec)
   - new method of discounts presentation on invoice (alec)
   - lmsd/hostfile: fixed few network replacement variables (alec)
   - helpdesk: fixed rights checking while deleting tickets (alec)
