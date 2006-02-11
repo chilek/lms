@@ -50,7 +50,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	while( n>1 )
 	{
-		n = sscanf(netnames, "%s %[.a-zA-Z0-9-_ ]", netname, netnames);
+		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
 		if( strlen(netname) )
 		{
@@ -97,7 +97,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	while( k>1 )
 	{
-		k = sscanf(groupnames, "%s %[.a-zA-Z0-9-_ ]", groupname, groupnames);
+		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
 		{

@@ -7,6 +7,7 @@ version ? (??/??/????):
   - fixed rights checking while deleting helpdesk's tickets (alec)
   - added cashimport/cashimportparser modules to 'finances management'
     access rule (alec)
+  - lmsd/hostfile: fixed 'networks' and 'usergroups' options parsing (alec)
 
 version 1.6.6 Therra (15/12/2005):
 
