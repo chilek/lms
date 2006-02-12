@@ -517,12 +517,47 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 	return strftime($result, $time);
 }
 
-// our finance round:
+// our finance round
 function f_round($value)
 {
 	$value = str_replace(',','.', $value);
 	$value = round ( (float) $value, 2);
 	return $value;
+}
+
+function fetch_url($url)
+{
+	$url_parsed = parse_url($url);
+	$host = $url_parsed['host'];
+	$path = $url_parsed['path'];
+        $port = $url_parsed['port'];
+
+        if ($port==0)
+	        $port = 80;
+	if ($url_parsed['query'] != '')
+	         $path .= '?'.$url_parsed['query'];
+		 
+	$request = "GET $path HTTP/1.0\r\nHost: $host\r\n\r\n";
+
+	$fp = fsockopen($host, $port, $errno, $errstr, 5);
+
+	if(!$fp) return FALSE;
+	
+	fwrite($fp, $request);
+	$body = FALSE;
+	$out = '';
+	
+	while(!feof($fp))
+	{
+		$s = fgets($fp, 1024);
+		if($body)
+		        $out .= $s;
+		if($s == "\r\n")
+			$body = TRUE;
+	}
+
+	fclose($fp);
+	return $out;
 }
 
 ?>
