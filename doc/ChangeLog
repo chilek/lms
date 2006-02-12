@@ -54,6 +54,7 @@ version ? (????-??-??):
   - added Finances -> Export / financial data export to external systems
     in text files (e.g. csv) format (alec)
   - lmsd/hostfile: fixed networks option parsing (alec)
+  - using fsockopen() instead of fopen() for url opening (alec)
 
 version 1.9.0 Tilgath (2005-12-07):
 

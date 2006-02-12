@@ -2922,29 +2922,25 @@ class LMS
 		if($lastcheck + $this->CONFIG['phpui']['check_for_updates_period'] < $time)
 		{
 			list($v, ) = split(' ', $this->_version);
-			ini_set('default_socket_timeout', 5);
-			if($updatefile = @fopen('http://lms.rulez.pl/update.php?uiid='.$uiid.'&v='.$v, 'r'))
+			
+			if($content = fetch_url('http://lms.rulez.pl/update.php?uiid='.$uiid.'&v='.$v))
 			{
-				while(! feof($updatefile))
-					$content .= fgets($updatefile, 4096);
-				fclose($updatefile);
 				if($lastcheck == 0)
 					$this->DB->Execute('INSERT INTO dbinfo (keyvalue, keytype) VALUES (?NOW?, ?)', array('last_check_for_updates_timestamp'));
 				else
 					$this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?', array('last_check_for_updates_timestamp'));
 			}
-			ini_restore('default_socket_timeout');
 
 			$content = unserialize($content);
 			$content['regdata'] = unserialize($content['regdata']);
+			
 			$this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
+			
 			if(is_array($content['regdata']))
 			{
 				foreach(array('id', 'name', 'url', 'hidden') as $key)
 					$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_'.$key, $content['regdata'][$key]));
 			}
-
-
 		}
 
 		return $content;
@@ -2967,11 +2963,9 @@ class LMS
 		$url = rawurlencode($url);
 		$uiid = $this->GetUniqueInstallationID();
 		$url = 'http://lms.rulez.pl/register.php?uiid='.$uiid.'&name='.$name.'&url='.$url.($hidden == TRUE ? '&hidden=1' : '');
-		ini_set('default_socket_timeout', 5);
-		if($regfile = @fopen($url, 'r'))
+
+		if(fetch_url($url)!==FALSE)
 		{
-			fclose($regfile);
-			ini_restore('default_socket_timeout');
 			// ok, update done, so, let we fall asleep for at least 2 seconds, let's viper put our
 			// registration data into database. in future we should read info from register.php,
 			// ie. 'Password' incorrect if we protect each installation with password (but then
@@ -2982,7 +2976,7 @@ class LMS
 			$this->CheckUpdates(TRUE);
 			return TRUE;
 		}
-		ini_restore('default_socket_timeout');
+
 		return FALSE;
 	}
 
