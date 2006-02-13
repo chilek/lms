@@ -18,6 +18,11 @@
 		document.customersearch.target = "";
 		document.customersearch.submit();
 	}
+
+	function setOperator(id)
+	{
+		document.customersearch.elements[id].checked = true;
+	}
 //-->	
 {/literal}
 </SCRIPT>
@@ -92,8 +97,8 @@
 			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Qualification operator:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
-			<INPUT class="radio light" type="radio" value="AND" name="k"{if $k!='OR'} CHECKED{/if}> {t}AND{/t}
-			<INPUT class="radio light" type="radio" value="OR" name="k"{if $k=='OR'} CHECKED{/if}> {t}OR{/t}
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {t}AND{/t} </A>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {t}OR{/t} </A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
