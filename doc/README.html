@@ -956,7 +956,7 @@ NAME="OTHERS"
 ><P
 >LMS uses elements of other software: 
           <A
-HREF="http://phpwizard.net/projects/phpMyAdmin/"
+HREF="http://www.phpmyadmin.net/"
 TARGET="_top"
 >phpMyAdmin</A
 >,
@@ -2509,7 +2509,7 @@ CLASS="PROMPT"
 ><P
 >default_author</P
 ><P
->Invoice issuer name. Default: empty</P
+>Invoice expositor name (for auto-generated invoices). Default: empty</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3978,8 +3978,44 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="MENU-EXPORT"
+>3.7.12. Export</A
+></H3
+><P
+>Financial data export to external systems rely on generation
+		of text files with data fetched according to defined filters.
+		For each document is created one record in text file. Record's 
+		format sets user using variables.</P
+><P
+>Export configuration is placed in file, which localization
+		is set in <TT
+CLASS="FILENAME"
+>export_config</TT
+> option of section 
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>. Example values with variables description 
+		you can find in <TT
+CLASS="FILENAME"
+>modules/exportcfg.php</TT
+>. 
+		The bast way is to copy that file and there making needed changes.</P
+><P
+>For each position of Sale Registry (each invoice)
+		we have one record in result file. When exporting Cash Report one record is 
+		for each position of cash document.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="MENU-FINANCES-PRINT"
->3.7.12. Printing</A
+>3.7.13. Printing</A
 ></H3
 ><P
 >There are several options for balance sheet printouts:
@@ -5537,11 +5573,11 @@ TARGET="_top"
 ></LI
 ><LI
 ><P
->%I - additional part of number (works with cash documents only)</P
+>%[1-9]N - as above, but with leading zeroes, ie.  '%4N' will return '0012' for 12</P
 ></LI
 ><LI
 ><P
->%[1-9]N - as above, but with leading zeroes, ie.  '%4N' will return '0012' for 12</P
+>%I - additional part of number (works with cash documents only)</P
 ></LI
 ><LI
 ><P
@@ -6335,6 +6371,22 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >comment = 'Subscription for %current_month'</SAMP
+></P
+></LI
+><LI
+><P
+>settlement_comment (optional)</P
+><P
+>Description of settlement.</P
+><P
+>Default set to <SAMP
+CLASS="PROMPT"
+>comment</SAMP
+> option contents.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>settlement_comment = 'Settlement for %period'</SAMP
 ></P
 ></LI
 ></UL
@@ -9201,7 +9253,7 @@ NAME="DAEMON-CONFIG"
 >6.1.3. Configuration</A
 ></H3
 ><P
->Configuration for daemon and modules configuration can be edited through Reload -&#62; Configuration
+>Configuration for daemon and modules configuration can be edited through Configuration -&#62; Daemon
 	       menu in <SPAN
 CLASS="emphasis"
 ><I
@@ -9617,6 +9669,22 @@ NAME="PAYMENTS-CONFIG"
 CLASS="PROMPT"
 >comment = 'Subscription %tariff' </SAMP
 ></P
+></LI
+><LI
+><P
+>settlement_comment</P
+><P
+>Description of settlement operation. '%period' will be replaced by start and end
+                   date of settlement period, e.g. '2003/10/20 - 2003/11/09', and '%tariff' by name of
+                   liability. Defaults to <SAMP
+CLASS="PROMPT"
+>comment</SAMP
+> option.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>settlement_comment = 'Settlement of subscription %tariff'</SAMP
+>.</P
 ></LI
 ><LI
 ><P
@@ -14075,6 +14143,10 @@ BORDER="0"
 ><TR
 ><TD
 >value - amount</TD
+></TR
+><TR
+><TD
+>discount - discount percentage</TD
 ></TR
 ><TR
 ><TD

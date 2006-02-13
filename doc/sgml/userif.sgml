@@ -425,6 +425,21 @@ invoices.</para></note></para>
 </screen>
 		</para>
 	</sect2>
+	<sect2 id="menu-export">
+	        <title>Export</title>
+		<para>Financial data export to external systems rely on generation
+		of text files with data fetched according to defined filters.
+		For each document is created one record in text file. Record's 
+		format sets user using variables.</para>
+		<para>Export configuration is placed in file, which localization
+		is set in <filename>export_config</filename> option of section 
+		<emphasis>[phpui]</emphasis>. Example values with variables description 
+		you can find in <filename>modules/exportcfg.php</filename>. 
+		The bast way is to copy that file and there making needed changes.</para>
+		<para>For each position of Sale Registry (each invoice)
+		we have one record in result file. When exporting Cash Report one record is 
+		for each position of cash document.</para>
+	</sect2>
 	<sect2 id="menu-finances-print">
 	    <title>Printing</title>
 	    <para>There are several options for balance sheet printouts:
