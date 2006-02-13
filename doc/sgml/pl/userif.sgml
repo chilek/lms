@@ -407,6 +407,21 @@
 </screen>
 		</para>
 	</sect2>
+	<sect2 id="menu-export">
+		<title>Eksport</title>
+			<para>Eksport danych finansowych do systemów zewnêtrznych polega na
+			generowaniu plików tekstowych zawieraj±cych dane pobrane wg zdefiniowanych
+			filtrów. Dla ka¿dego dokumentu tworzony jest rekord w pliku tekstowym.
+			Format rekordu ustala u¿ytkownik korzystaj±c ze zmiennych.</para>
+			<para>Konfiguracji eksportu dokonujemy w pliku, którego lokalizacjê
+			podajemy w opcji <filename>export_config</filename> sekcji <emphasis>[phpui]</emphasis>.
+			Przyk³adowe warto¶ci wraz z obja¶nieniem dostêpnych parametrów znajduj± siê w pliku 
+			<filename>modules/exportcfg.php</filename>. Najlepiej wiêc jest zapisaæ jego kopiê
+			i w niej dokonywaæ stosownych zmian.</para>
+			<para>Ka¿dej pozycji Rejestru Sprzeda¿y (ka¿dej fakturze)
+			odpowiada jeden rekord w pliku wyj¶ciowym. W przypadku Raportu Kasowego rekordem 
+			jest pozycja dokumentu kasowego.</para>
+	</sect2>
 	<sect2 id="menu-finances-print">
 	    <title>Wydruki</title>
 	    <para>Wydruki zestawieñ finansowych obejmuj±:

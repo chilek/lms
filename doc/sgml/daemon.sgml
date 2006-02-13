@@ -75,7 +75,7 @@
           </sect2>
           <sect2 id="daemon-config">
           <title>Configuration</title>
-               <para>Configuration for daemon and modules configuration can be edited through Reload -> Configuration
+               <para>Configuration for daemon and modules configuration can be edited through Configuration -> Daemon
 	       menu in <emphasis>LMS-UI</emphasis>. Modules configuration is described later, in separate
                chapters concerning each module. Basic daemon parameters and data for connection to
 	       database should be specified as command line options, according to following listing:

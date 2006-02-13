@@ -76,7 +76,7 @@
 		<sect2 id="daemon-config">
 		<title>Konfiguracja</title>
 			<para>Ca³± konfiguracjê demona i modu³ów przeprowadza siê przy pomocy
-			<emphasis>LMS-UI</emphasis> w menu Prze³adowanie -> Konfiguracja.
+			<emphasis>LMS-UI</emphasis> w menu Konfiguracja -> Demon.
 			Konfiguracjê modu³ów omówiono w osobnych rozdzia³ach ich dotycz±cych.
 			Podstawowe parametry pracy demona i dane do po³±czenia z baz± danych
 			podaje siê jako opcje linii komend, zgodnie z poni¿szym listingiem:
