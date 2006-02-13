@@ -1958,7 +1958,7 @@
 00-07-AA:Quantum Data Inc.
 00-07-AC:Eolring
 00-07-AD:Pentacon GmbH Foto-und Feinwerktechnik
-00-07-AE:Layer N Networks
+00-07-AE:Britestream Networks, Inc.
 00-07-AF:N-Tron Corp.
 00-07-B0:Office Details, Inc.
 00-07-B1:Equator Technologies
@@ -3270,7 +3270,7 @@
 00-0C-EB:CNMP Networks, Inc.
 00-0C-EC:Spectracom Corp.
 00-0C-ED:Real Digital Media
-00-0C-EE:Q-Networks
+00-0C-EE:jp-embedded
 00-0C-EF:Open Networks Engineering Ltd
 00-0C-F0:M & N GmbH
 00-0C-F1:Intel Corporation
@@ -3741,12 +3741,12 @@
 00-0E-C2:Lowrance Electronics, Inc.
 00-0E-C3:Logic Controls, Inc.
 00-0E-C4:Iskra Transmission d.d.
-00-0E-C5:PRIVATE
+00-0E-C5:Digital Multitools Inc
 00-0E-C6:ASIX ELECTRONICS CORP.
-00-0E-C7:Appeal Telecom Co.,Ltd.
+00-0E-C7:Motorola Korea
 00-0E-C8:Zoran Corporation
 00-0E-C9:YOKO Technology Corp.
-00-0E-CA:PRIVATE
+00-0E-CA:WTSS Inc
 00-0E-CB:VineSys Technology
 00-0E-CC:Tableau
 00-0E-CD:SKOV A/S
@@ -4931,7 +4931,7 @@
 00-13-69:Honda Electron Co., LED.
 00-13-6A:Hach Ultra Analytics
 00-13-6B:E-TEC
-00-13-6C:PRIVATE
+00-13-6C:TomTom
 00-13-6D:Tentaculus AB
 00-13-6E:Techmetro Corp.
 00-13-6F:PacketMotion, Inc.
@@ -4974,7 +4974,7 @@
 00-13-94:Infohand Co.,Ltd
 00-13-95:congatec AG
 00-13-96:Acbel Polytech Inc.
-00-13-97:PRIVATE
+00-13-97:Xsigo Systems, Inc.
 00-13-98:TrafficSim Co.,Ltd
 00-13-99:STAC Corporation.
 00-13-9A:K-ubique ID Corp.
@@ -5761,7 +5761,7 @@
 00-16-A7:AWETA G&P
 00-16-A8:CWT CO., LTD.
 00-16-A9:2EI
-00-16-AA:Kei Communication Technology Co.,Ltd.
+00-16-AA:Kei Communication Technology Inc.
 00-16-AB:PBI-Dansensor A/S
 00-16-AC:Toho Technology Corp.
 00-16-AD:BT-Links Company Limited
@@ -5863,6 +5863,82 @@
 00-17-0D:Dust Networks Inc.
 00-17-0E:Cisco Systems
 00-17-0F:Cisco Systems
+00-17-10:Casa Systems Inc.
+00-17-11:GE Healthcare Bio-Sciences AB
+00-17-12:ISCO International
+00-17-13:Tiger NetCom
+00-17-14:BR Controls Nederland bv
+00-17-15:Qstik
+00-17-16:Qno Technology Inc.
+00-17-17:Leica Geosystems AG
+00-17-18:Vansco Electronics Oy
+00-17-19:AudioCodes USA, Inc
+00-17-1A:Winegard Company
+00-17-1B:Innovation Lab Corp.
+00-17-1C:NT MicroSystems, Inc.
+00-17-1D:DIGIT
+00-17-1E:Theo Benning GmbH & Co. KG
+00-17-1F:IMV Corporation
+00-17-20:Image Sensing Systems, Inc.
+00-17-21:FITRE S.p.A.
+00-17-22:Hanazeder Electronic GmbH
+00-17-23:Summit Data Communications
+00-17-24:Studer Professional Audio GmbH
+00-17-25:Liquid Computing
+00-17-26:m2c Electronic Technology Ltd.
+00-17-27:Thermo Ramsey Italia s.r.l.
+00-17-28:Selex Communications
+00-17-29:Ubicod Co.LTD
+00-17-2A:Proware Technology Corp.
+00-17-2B:Global Technologies Inc.
+00-17-2C:TAEJIN INFOTECH
+00-17-2D:Axcen Photonics Corporation
+00-17-2E:FXC Inc.
+00-17-2F:NeuLion Incorporated
+00-17-30:Automation Electronics
+00-17-31:ASUSTek COMPUTER INC.
+00-17-32:Science-Technical Center "RISSA"
+00-17-33:neuf cegetel
+00-17-34:LGC Wireless Inc.
+00-17-35:PRIVATE
+00-17-36:iiTron Inc.
+00-17-37:Industrie Dial Face S.p.A.
+00-17-38:XIV
+00-17-39:Bright Headphone Electronics Company
+00-17-3A:Edge Integration Systems Inc.
+00-17-3B:Arched Rock Corporation
+00-17-3C:Extreme Engineering Solutions
+00-17-3D:Neology
+00-17-3E:LeucotronEquipamentos Ltda.
+00-17-3F:Belkin Corporation
+00-17-40:Technologies Labtronix
+00-17-41:DEFIDEV
+00-17-42:FUJITSU LIMITED
+00-17-43:PRIVATE
+00-17-44:Araneo Ltd.
+00-17-45:INNOTZ CO., Ltd
+00-17-46:Freedom9 Inc.
+00-17-47:Trimble
+00-17-48:Neokoros Brasil Ltda
+00-17-49:HYUNDAE YONG-O-SA CO.,LTD
+00-17-4A:SOCOMEC
+00-17-4B:Nokia Danmark A/S
+00-17-4C:Millipore
+00-17-4D:DYNAMIC NETWORK FACTORY, INC.
+00-17-4E:Parama-tech Co.,Ltd.
+00-17-4F:iCatch Inc.
+00-17-50:GSI Group, MicroE Systems
+00-17-51:Online Corporation
+00-17-52:DAGS, Inc
+00-17-53:nFore Technology Inc.
+00-17-54:Arkino Corporation., Ltd
+00-17-55:GE Security
+00-17-56:Vinci Labs Oy
+00-17-57:RIX TECHNOLOGY LIMITED
+00-17-58:ThruVision Ltd
+00-17-59:Cisco Systems
+00-17-5A:Cisco Systems
+00-17-5B:ACS Solutions Switzerland Ltd.
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -8228,7 +8304,7 @@
 00-D0-17:SYNTECH INFORMATION CO., LTD.
 00-D0-18:QWES. COM, INC.
 00-D0-19:DAINIPPON SCREEN CORPORATE
-00-D0-1A:URMET SUD S.P.A.
+00-D0-1A:URMET  TLC S.P.A.
 00-D0-1B:MIMAKI ENGINEERING CO., LTD.
 00-D0-1C:SBS TECHNOLOGIES,
 00-D0-1D:FURUNO ELECTRIC CO., LTD.
