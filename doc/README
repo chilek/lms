@@ -3331,7 +3331,7 @@ Chapter 6. LMS Daemon
 6.1.3. Configuration
 
    Configuration  for  daemon  and  modules  configuration  can be edited
-   through  Reload -> Configuration menu in LMS-UI. Modules configuration
+   through  Configuration -> Daemon menu in LMS-UI. Modules configuration
    is described later, in separate chapters concerning each module. Basic
    daemon  parameters  and  data  for  connection  to  database should be
    specified as command line options, according to following listing:
