@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.9.1 Jumar (2006-02-13):
 
   - BTS#0000488: fixed title on nodes list printout (alec)
   - BTS#0000487: fixed printing from Invoices List (alec)
