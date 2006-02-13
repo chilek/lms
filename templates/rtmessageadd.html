@@ -23,8 +23,8 @@
 			<B>{t}Submitter:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT class="radio light" type="radio" name="message[sender]" value="user" CHECKED>{t}user{/t}</INPUT>
-			<INPUT class="radio light" type="radio" name="message[sender]" value="customer" {if $message.sender eq 'customer'}CHECKED{/if}>{t}customer{/t}</INPUT>
+			<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><A HREF="javascript:setSubmitter('sender0')">{t}user{/t}</A></INPUT>
+			<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender eq 'customer'}CHECKED{/if}><A HREF="javascript:setSubmitter('sender1')">{t}customer{/t}</A></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -62,8 +62,18 @@
 	</TR>
 </TABLE>
 </FORM></P>
-{include file="footer.html}<SCRIPT language="javaScript">
+{include file="footer.html}
+{literal}
+<SCRIPT language="javaScript">
 <!--
-document.forms['message'].elements['message[subject]'].focus();
+
+	function setSubmitter(id)
+	{
+		document.forms['message'].elements[id].checked = true;
+	}
+
+	document.forms['message'].elements['message[subject]'].focus();
+
 //-->
 </SCRIPT>
+{/literal}
