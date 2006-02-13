@@ -52,7 +52,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" class="box light" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}> {t}Off{/t}
+			<INPUT type="checkbox" class="box light" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><A HREF="javascript:switchStatus()"> {t}Off{/t}</A>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -64,9 +64,18 @@
 	</TR>
 </TABLE>
 </P>
+{literal}
 <SCRIPT>
 <!--
-document.forms['config'].elements['config[var]'].focus();
+
+	function switchStatus()
+	{
+		document.forms['config'].elements['config[disabled]'].checked = !document.forms['config'].elements['config[disabled]'].checked;
+	}
+
+	document.forms['config'].elements['config[var]'].focus();
+
 //-->
 </SCRIPT>
+{/literal}
 {include file="footer.html"}
