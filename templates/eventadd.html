@@ -19,6 +19,17 @@
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
+
+	function switchStatus()
+	{
+		document.forms['event'].elements['event[status]'].checked = !document.forms['event'].elements['event[status]'].checked;
+	}
+
+	function switchReuse()
+	{
+		document.forms['event'].elements['event[reuse]'].checked = !document.forms['event'].elements['event[reuse]'].checked;
+	}
+
 {/literal}
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
@@ -78,7 +89,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[status]" value="1" class="box light" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> {t}private{/t}
+			<INPUT type="checkbox" name="event[status]" value="1" class="box light" {tip text="Select event's status"}{if $event.status}CHECKED{/if}><A HREF="javascript:switchStatus()"> {t}private{/t}</A>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -116,7 +127,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="event[reuse]" value="ON" class="box light" {if $event.reuse}checked{/if}> {t}Display this form again, when this event is saved{/t}
+			<INPUT type="checkbox" name="event[reuse]" value="ON" class="box light" {if $event.reuse}checked{/if}><A HREF="javascript:switchReuse()"> {t}Display this form again, when this event is saved{/t}</A>
 		</TD>
 	</TR>
 </TABLE>
