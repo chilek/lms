@@ -172,6 +172,25 @@ class ExecStack
 		return $this->_MODINFO[$module]['actions'][$action]['template'];
 	}
 
+	function replaceTemplate($src_mod, $src_tpl, $dst_mod, $dst_tpl)
+	{
+		foreach($this->_EXECSTACK['templates'] as $idx => $template)
+			if($template['module'] == $src_mod && $template['template'] == $src_tpl)
+			{
+				$this->_EXECSTACK['templates'][$idx]['module'] = $dst_mod;
+				$this->_EXECSTACK['templates'][$idx]['template'] = $dst_tpl;
+			}
+	}
+
+	function dropTemplate($module, $template)
+	{
+		foreach($this->_EXECSTACK['templates'] as $idx => $tpl)
+			if($tpl['module'] == $module && $tpl['template'] == $template)
+			{
+				unset($this->_EXECSTACK['templates'][$idx]);
+			}
+	}
+
 	function moduleExists($module)
 	{
 		return isset($this->_MODINFO[$module]) && is_array($this->_MODINFO[$module]) && is_readable($this->modules_dir.'/'.$module.'/modinfo.php');
