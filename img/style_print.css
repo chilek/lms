@@ -34,3 +34,5 @@ H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 .blendbg	{ background-color: #888888; }
 .white		{ background-color: #FFFFFF; }
 .grey		{ background-color: #EEEEEE; }
+.alert          { color: #FF0000; }
+.bold           { font-weight: bold; }
