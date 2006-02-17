@@ -102,7 +102,7 @@ if($_GET['type']=='cash')
 			$line = str_replace('%CID', $row['customerid'], $line);
 			$line = str_replace('%UID4', sprintf('%04d',$doc['userid']), $line);
 			$line = str_replace('%UID', $row['userid'], $line);
-			$line = str_replace('%CUSTOMER', $row['customer'], $line);
+			$line = str_replace('%CUSTOMER', $row['customer'] ? $row['customer'] : $default_customer, $line);
 			$line = str_replace('%ADDRESS', $row['address'], $line);
 			$line = str_replace('%ZIP', $row['zip'], $line);
 			$line = str_replace('%CITY', $row['city'], $line);

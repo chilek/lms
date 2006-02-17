@@ -84,6 +84,7 @@ $inv_record[1] = '"%CID","%CUSTOMER","%ADDRESS","%ZIP","%CITY","%TEN"';
 $cash_filename = 'export.txt';
 $cash_in_type = '3'; // typ dokumentu (zmienna %TYPE)
 $cash_out_type = '4'; // typ dokumentu (zmienna %TYPE)
+$default_customer = ''; // domy¶lna warto¶æ zmiennej %CUSTOMER gdy pole jest puste (np. przeniesienie ¶rodków)
 
 $cash_record = '%I,%DATE,%ABSVALUE,"%NUMBER","%UID4",%TYPE,"%CASHREG","%CID4","%CUSTOMER","%DESC"';
 
