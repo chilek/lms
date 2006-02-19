@@ -31,7 +31,7 @@ if(isset($tariffadd))
 	foreach($tariffadd as $key => $value)
 		$tariffadd[$key] = trim($value);
 
-	if($tariffadd['name']=='' && $tariffadd['comment']=='' && $tariffadd['value']=='')
+	if($tariffadd['name']=='' && $tariffadd['description']=='' && $tariffadd['value']=='')
 	{
 		$SESSION->redirect('Location: ?m=tarifflist');
 	}
