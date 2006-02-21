@@ -539,7 +539,7 @@ function fetch_url($url)
 		 
 	$request = "GET $path HTTP/1.0\r\nHost: $host\r\n\r\n";
 
-	$fp = fsockopen($host, $port, $errno, $errstr, 5);
+	$fp = @fsockopen($host, $port, $errno, $errstr, 5);
 
 	if(!$fp) return FALSE;
 	
