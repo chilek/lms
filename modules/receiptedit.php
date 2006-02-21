@@ -71,6 +71,8 @@ if(isset($_GET['id']))
     		if(strpos($receipt['template'], '%I')!==FALSE)
 	                $receipt['extended'] = TRUE;
 	
+	$receipt['selected'] = TRUE;
+	
 	$SESSION->save('receipt', $receipt);
 	$SESSION->save('receiptcontents', $contents);
 	$SESSION->save('receiptcustomer', $customer);
@@ -193,14 +195,17 @@ switch($_GET['action'])
 			break;
 		}
 		
-		$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'];
+		$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid'];
 		
 		if(!$cid)
 			$cid = $oldcid;
 		
 		if(!$error)
 			if($LMS->CustomerExists(($cid)))
-				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer']));
+			{
+				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid']));
+	                        $receipt['selected'] = TRUE;
+			}
 
 	break;
 	case 'save':
