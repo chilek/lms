@@ -130,7 +130,7 @@ switch($_GET['action'])
 
 		// get default receipt's numberplanid and next number
 		$receipt = $_POST['receipt'];
-		$receipt['customerid'] = $_POST['customer'];
+		$receipt['customerid'] = $_POST['customerid'];
 		
 		if(!$receipt['regid']) break;	
 		
@@ -305,7 +305,7 @@ switch($_GET['action'])
 			break;
 		}
 		
-		$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'];
+		$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid'];
 		
 		if(!$error && $cid)
 			if($LMS->CustomerExists($cid))

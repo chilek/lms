@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - added input field for cust. ID on New Cash Document (alec)
+
 version 1.9.1 Jumar (2006-02-13):
 
   - BTS#0000488: fixed title on nodes list printout (alec)

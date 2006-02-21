@@ -99,7 +99,9 @@
 				{foreach from=$customerlist item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
-			</SELECT>&nbsp;
+			</SELECT>
+			{t}or Customer ID:{/t}
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5" onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value">
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			<BR>
 			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}

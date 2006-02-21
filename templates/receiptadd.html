@@ -130,12 +130,14 @@
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" class="box light" checked>
 			{t}customer{/t}:
-			<SELECT SIZE="1" NAME="customer" {* onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value"*} {tip trigger="customerid"}>
+			<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value" {tip trigger="customerid"}>
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customerlist item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
+			{t}or Customer ID:{/t}
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5" onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value">
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			{if  $cashregcount > 1 && $receipt.type=="out"}
 			<BR>
