@@ -3,6 +3,8 @@ $Id$
 version ? (????-??-??):
 
   - added input field for cust. ID on New Cash Document (alec)
+  - lmsd/tc: added %if variable for host_mark_up, host_mark_down,
+    host_htb_up, host_htb_down options (alec/Tomasz Przybysz)
 
 version 1.9.1 Jumar (2006-02-13):
 
