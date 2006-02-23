@@ -60,12 +60,11 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 		if( strlen(netname) ) 
 		{
-			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+			res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
 			if( g->db_nrows(res) ) 
 			{
 		    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
 				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-				nets[nc].domain = strdup(g->db_get_data(res,0,"domain"));
 				nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
 				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
 				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
@@ -75,6 +74,21 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		}				
 	}
 	free(netname); free(netnames);
+
+	// get table of networks (if 'networks' variable is not set)
+	if(!nc)
+	{
+	        res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask, interface FROM networks");
+		for(nc=0; nc<g->db_nrows(res); nc++)
+		{
+		        nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
+			nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
+			nets[nc].interface = strdup(g->db_get_data(res,nc,"interface"));
+			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
+			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+		}
+		g->db_free(&res);
+	 }
 
 	// get table of customergroups
 	while( k>1 ) 
@@ -180,24 +194,25 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						int h_climit = (int) n_climit/nres->nrows;  
 						
 						// test node's membership in networks
-						if(nc)
-							for(v=0; v<nc; v++)
-								if(nets[v].address == (inet_addr(ipaddr) & nets[v].mask)) 
-									break;
+						for(v=0; v<nc; v++)
+							if(nets[v].address == (inet_addr(ipaddr) & nets[v].mask)) 
+								break;
 																	
-						if(!nc || v!=nc)
+						if(v!=nc)
 						{
 							got_node = 1;
 						
 							if(h_uprate && h_downrate)
 							{
 								g->str_replace(&mark_up, "%n", name);
+								g->str_replace(&mark_up, "%if", nets[v].interface);
 								g->str_replace(&mark_up, "%i", ipaddr);
 								g->str_replace(&mark_up, "%m", mac);
 								g->str_replace(&mark_up, "%x", itoa(x));
 								fprintf(fh, "%s", mark_up);
 								
 								g->str_replace(&mark_down, "%n", name);
+								g->str_replace(&mark_down, "%if", nets[v].interface);
 								g->str_replace(&mark_down, "%i", ipaddr);
 								g->str_replace(&mark_down, "%m", mac);
 								g->str_replace(&mark_down, "%x", itoa(x));
@@ -206,6 +221,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								if(tc->one_class_per_host)
 								{
 									g->str_replace(&htb_up, "%n", name);
+									g->str_replace(&htb_up, "%if", nets[v].interface);
 									g->str_replace(&htb_up, "%i", ipaddr);
 									g->str_replace(&htb_up, "%m", mac);
 									g->str_replace(&htb_up, "%x", itoa(x));
@@ -216,6 +232,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 										g->str_replace(&htb_up, "%upceil", itoa(h_upceil));
 								
 									g->str_replace(&htb_down, "%n", name);
+									g->str_replace(&htb_down, "%if", nets[v].interface);
 									g->str_replace(&htb_down, "%i", ipaddr);
 									g->str_replace(&htb_down, "%m", mac);
 									g->str_replace(&htb_down, "%x", itoa(x));
@@ -235,6 +252,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 							{
 								g->str_replace(&cl, "%climit", itoa(h_climit));
 								g->str_replace(&cl, "%n", name);
+								g->str_replace(&cl, "%if", nets[v].interface);
     								g->str_replace(&cl, "%i", ipaddr);
 								g->str_replace(&cl, "%m", mac);
 								g->str_replace(&cl, "%x", itoa(x));
@@ -245,6 +263,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 							{
 								g->str_replace(&pl, "%plimit", itoa(h_plimit));
 								g->str_replace(&pl, "%n", name);
+								g->str_replace(&pl, "%if", nets[v].interface);
 								g->str_replace(&pl, "%i", ipaddr);
 								g->str_replace(&pl, "%m", mac);
 								g->str_replace(&pl, "%x", itoa(x));
@@ -304,7 +323,6 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	for(i=0;i<nc;i++)
 	{
 		free(nets[i].name);
-		free(nets[i].domain);	
 		free(nets[i].interface);
 	}
 	free(nets);
