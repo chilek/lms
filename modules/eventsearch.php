@@ -58,7 +58,7 @@ function EventSearch($search)
 					}
 		}
 	
-	if($adminid)
+	if($search['adminid'])
 		return $list2;	
 	else	
 		return $list;

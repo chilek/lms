@@ -8,6 +8,7 @@ version ? (??/??/????):
   - added cashimport/cashimportparser modules to 'finances management'
     access rule (alec)
   - lmsd/hostfile: fixed 'networks' and 'usergroups' options parsing (alec)
+  - fixed timetable events searching by admin (alec)
 
 version 1.6.6 Therra (15/12/2005):
 
