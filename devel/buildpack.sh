@@ -7,7 +7,7 @@
 
 WORKDIR=`pwd`
 NOTDISTRIB="devel .project"
-SMARTYVERSION=2.6.10
+SMARTYVERSION=2.6.12
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
@@ -48,6 +48,7 @@ umask 022
 cd $TEMPDIR/$X/
 tar -xzf lms.tar.gz
 chmod 777 lms/{templates_c,backups}
+touch `find . -type d`
 cd lms
 rm -Rf $NOTDISTRIB
 grep -air '1\.6-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.6-cvs/$LMSVER $CODENAME/g"
