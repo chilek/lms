@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.7 Nya (24/02/2006):
 
   - setting moddate and modid when deleting customers (alec)
   - BTS#0000511: fixed values localization in prepayments (alec)
@@ -9,6 +9,8 @@ version ? (??/??/????):
     access rule (alec)
   - lmsd/hostfile: fixed 'networks' and 'usergroups' options parsing (alec)
   - fixed timetable events searching by admin (alec)
+  - updated ethercodes.txt (alec)
+  - using Smarty-2.6.12 (alec)
 
 version 1.6.6 Therra (15/12/2005):
 
