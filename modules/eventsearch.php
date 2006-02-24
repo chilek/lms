@@ -58,7 +58,7 @@ function EventSearch($search)
 					}
 		}
 	
-	if($userid)
+	if($search['userid'])
 		return $list2;	
 	else	
 		return $list;

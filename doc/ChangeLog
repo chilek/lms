@@ -7,6 +7,7 @@ version ? (????-??-??):
   - fixed rights checking while deleting helpdesk's tickets (alec)
   - fixed 'finances management' access rule (alec)
   - lmsd/hostfile fixed 'networks' and 'customergroups' options parsing (alec)
+  - fixed timetable events searching by user (alec)
 
 version 1.8.0 Rosha (2005-01-27):
 

@@ -19,7 +19,7 @@ TD.ftr		{ border-top-width: 1pt; border-top-style: solid; border-right-width: 1p
 TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
 TD.loginform	{ border-width: 1pt; border-style: solid; border-color: #888888; }
 
-A		{ text-decoration: none; }
+A		{ text-decoration: none; vertical-align: middle; }
 A:link		{ color: #800000; }
 A:active	{ color: #336600; }
 A:visited	{ color: #800000; }
@@ -37,8 +37,8 @@ H3		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 
 INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; border-color: #000000; vertical-align: middle; }
 INPUT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; border-color: #000000; vertical-align: middle; }
-INPUT.box  	{ border-style : none; } 
-INPUT.radio  	{ border-style : none; } 
+INPUT.box  	{ border-style : none;  vertical-align: middle; } 
+INPUT.radio  	{ border-style : none;  vertical-align: middle; } 
 INPUT.hiddenbtn	{ display : none; } 
 
 TEXTAREA	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
