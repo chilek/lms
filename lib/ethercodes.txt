@@ -1175,7 +1175,7 @@
 00-04-95:Tejas Networks
 00-04-96:Extreme Networks
 00-04-97:MacroSystem Digital Video AG
-00-04-98:PRIVATE
+00-04-98:Mahi Networks
 00-04-99:Chino Corporation
 00-04-9A:Cisco Systems, Inc.
 00-04-9B:Cisco Systems, Inc.
@@ -1970,7 +1970,7 @@
 00-07-B7:Samurai Ind. Prods Eletronicos Ltda
 00-07-B8:American Predator Corp.
 00-07-B9:Ginganet Corporation
-00-07-BA:Xebeo Communications, Inc.
+00-07-BA:UTStarcom, Inc.
 00-07-BB:Candera Inc.
 00-07-BC:Identix Inc.
 00-07-BD:Radionet Ltd.
@@ -2156,7 +2156,7 @@
 00-08-90:AVILINKS SA
 00-08-91:Lyan Inc.
 00-08-92:EM Solutions
-00-08-93:PRIVATE
+00-08-93:LE INFORMATION COMMUNICATION INC.
 00-08-94:InnoVISION Multimedia Ltd.
 00-08-95:DIRC Technologie GmbH & Co.KG
 00-08-96:Printronix, Inc.
@@ -3001,7 +3001,7 @@
 00-0B-DE:PRIVATE
 00-0B-DF:Shenzhen RouterD Networks Limited
 00-0B-E0:SercoNet Ltd.
-00-0B-E1:PRIVATE
+00-0B-E1:Nokia NET Product Operations
 00-0B-E2:Lumenera Corporation
 00-0B-E3:Key Stream Co., Ltd.
 00-0B-E4:Hosiden Corporation
@@ -3743,7 +3743,7 @@
 00-0E-C4:Iskra Transmission d.d.
 00-0E-C5:Digital Multitools Inc
 00-0E-C6:ASIX ELECTRONICS CORP.
-00-0E-C7:Appeal Telecom Co.,Ltd.
+00-0E-C7:Motorola Korea
 00-0E-C8:Zoran Corporation
 00-0E-C9:YOKO Technology Corp.
 00-0E-CA:WTSS Inc
@@ -3772,7 +3772,7 @@
 00-0E-E1:ExtremeSpeed Inc.
 00-0E-E2:Custom Engineering S.p.A.
 00-0E-E3:Chiyu Technology Co.,Ltd
-00-0E-E4:PRIVATE
+00-0E-E4:BOE TECHNOLOGY GROUP CO.,LTD
 00-0E-E5:bitWallet, Inc.
 00-0E-E6:Adimos Systems LTD
 00-0E-E7:AAC ELECTRONICS CORP.
@@ -5906,6 +5906,71 @@
 00-17-38:XIV
 00-17-39:Bright Headphone Electronics Company
 00-17-3A:Edge Integration Systems Inc.
+00-17-3B:Arched Rock Corporation
+00-17-3C:Extreme Engineering Solutions
+00-17-3D:Neology
+00-17-3E:LeucotronEquipamentos Ltda.
+00-17-3F:Belkin Corporation
+00-17-40:Technologies Labtronix
+00-17-41:DEFIDEV
+00-17-42:FUJITSU LIMITED
+00-17-43:PRIVATE
+00-17-44:Araneo Ltd.
+00-17-45:INNOTZ CO., Ltd
+00-17-46:Freedom9 Inc.
+00-17-47:Trimble
+00-17-48:Neokoros Brasil Ltda
+00-17-49:HYUNDAE YONG-O-SA CO.,LTD
+00-17-4A:SOCOMEC
+00-17-4B:Nokia Danmark A/S
+00-17-4C:Millipore
+00-17-4D:DYNAMIC NETWORK FACTORY, INC.
+00-17-4E:Parama-tech Co.,Ltd.
+00-17-4F:iCatch Inc.
+00-17-50:GSI Group, MicroE Systems
+00-17-51:Online Corporation
+00-17-52:DAGS, Inc
+00-17-53:nFore Technology Inc.
+00-17-54:Arkino Corporation., Ltd
+00-17-55:GE Security
+00-17-56:Vinci Labs Oy
+00-17-57:RIX TECHNOLOGY LIMITED
+00-17-58:ThruVision Ltd
+00-17-59:Cisco Systems
+00-17-5A:Cisco Systems
+00-17-5B:ACS Solutions Switzerland Ltd.
+00-17-5C:SHARP CORPORATION
+00-17-5D:Dongseo system.
+00-17-5E:Anta Systems, Inc.
+00-17-5F:XENOLINK Communications Co., Ltd.
+00-17-60:Naito Densei Machida MFG.CO.,LTD
+00-17-61:ZKSoftware Inc.
+00-17-62:Solar Technology, Inc.
+00-17-63:Essentia S.p.A.
+00-17-64:ATMedia GmbH
+00-17-65:Nortel
+00-17-66:Accense Technology, Inc.
+00-17-67:Earforce AS
+00-17-68:Zinwave Ltd
+00-17-69:Cymphonix Corp
+00-17-6A:Avago Technologies
+00-17-6B:Kiyon, Inc.
+00-17-6C:Pivot3, Inc.
+00-17-6D:CORE CORPORATION
+00-17-6E:DUCATI SISTEMI
+00-17-6F:PAX Computer Technology(Shenzhen) Ltd.
+00-17-70:Arti Industrial Electronics Ltd.
+00-17-71:APD Communications Ltd
+00-17-72:ASTRO Strobel Kommunikationssysteme GmbH
+00-17-73:Laketune Technologies Co. Ltd
+00-17-74:Elesta GmbH
+00-17-75:TTE Germany GmbH
+00-17-76:Meso Scale Diagnostics, LLC
+00-17-77:Obsidian Research Corporation
+00-17-78:Central Music Co.
+00-17-79:QuickTel
+00-17-7A:ASSA ABLOY AB
+00-17-7B:Azalea Networks inc
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -6760,7 +6825,7 @@
 00-50-56:VMWare, Inc.
 00-50-57:BROADBAND ACCESS SYSTEMS
 00-50-58:VegaStream Limted
-00-50-59:SUITE TECHNOLOGY SYSTEMS NETWORK
+00-50-59:iBAHN
 00-50-5A:NETWORK ALCHEMY, INC.
 00-50-5B:KAWASAKI LSI U.S.A., INC.
 00-50-5C:TUNDO CORPORATION
@@ -7539,7 +7604,7 @@
 00-90-69:JUNIPER NETWORKS, INC.
 00-90-6A:TURNSTONE SYSTEMS, INC.
 00-90-6B:APPLIED RESOURCES, INC.
-00-90-6C:GWT GLOBAL WEIGHING TECHNOLOGIES GmbH
+00-90-6C:Sartorius Hamburg GmbH
 00-90-6D:CISCO SYSTEMS, INC.
 00-90-6E:PRAXON, INC.
 00-90-6F:CISCO SYSTEMS, INC.
@@ -8271,7 +8336,7 @@
 00-D0-17:SYNTECH INFORMATION CO., LTD.
 00-D0-18:QWES. COM, INC.
 00-D0-19:DAINIPPON SCREEN CORPORATE
-00-D0-1A:URMET SUD S.P.A.
+00-D0-1A:URMET  TLC S.P.A.
 00-D0-1B:MIMAKI ENGINEERING CO., LTD.
 00-D0-1C:SBS TECHNOLOGIES,
 00-D0-1D:FURUNO ELECTRIC CO., LTD.
