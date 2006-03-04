@@ -178,10 +178,8 @@ $ /usr/local/mysql/bin/mysqladmin -u root password new_password</screen>
           </sect3>
           <sect3 id="install-mysql-dbcreate">
           <title>Create Database</title>
-               <para>You have to create database if you run LMS for the first time. If you are
-               upgrading from older version, look into Changelog for appropriate notes about
-               database changes. In order to create database and load it with schema go to LMS
-               directory and run:
+               <para>You have to create database if you run LMS for the first time. 
+		In order to create database and load it with schema go to LMS directory and run:
 <screen>
 mysql -u[user name with database creation rights] -p
 Enter password:[just enter password :)]

@@ -285,11 +285,11 @@ function GetConfigList($order='var,asc')
 				switch($item['var'])
 				{
 					case 'header':
-						$config[$idx]['description'] = trans('This is a seller data. A new line replacement is "\n" sign, e.g. header = SuperNet ISP\n00-950 Warsaw\nWiosenna 52\n0 49 3883838\n\naccounting@supernet.pl\n\nNIP: 123-123-12-23');
+						$config[$idx]['description'] = trans('This is a seller data. A new line replacement is "\n" sign, e.g. SuperNet ISP\n00-950 Warsaw\nWiosenna 52\n0 49 3883838\n\naccounting@supernet.pl\n\nNIP: 123-123-12-23');
 					break;
 					
 					case 'footer':
-						$config[$idx]['description'] = trans('Small font footer will appear at the bottom of page, e.g. footer = Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123');
+						$config[$idx]['description'] = trans('Small font footer will appear at the bottom of page, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123');
 					break;
 					
 					case 'default_author':
