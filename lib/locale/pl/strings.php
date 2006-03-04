@@ -753,7 +753,7 @@ $_LANG['IP Networks'] = 'Sieci IP';
 $_LANG['item'] = 'poz.';
 $_LANG['item no.'] = 'szt.';
 $_LANG['Items:'] = 'Pozycje:';
-$_LANG['This is a seller data. A new line replacement is "\n" sign, e.g. header = SuperNet ISP\n00-950 Warsaw\nWiosenna 52\n0 49 3883838\n\naccounting@supernet.pl\n\nNIP: 123-123-12-23'] = 'To są dane sprzedawcy. Zastępstwem dla znaku nowej linii jest znak "\n". np: header = SuperNet ISP\n00-950 Warszawa\nWiosenna 52\n0 49 3883838\n\nksiegowosc@supernet.pl\n\nNIP: 123-123-12-23';
+$_LANG['This is a seller data. A new line replacement is "\n" sign, e.g. SuperNet ISP\n00-950 Warsaw\nWiosenna 52\n0 49 3883838\n\naccounting@supernet.pl\n\nNIP: 123-123-12-23'] = 'To są dane sprzedawcy. Zastępstwem dla znaku nowej linii jest znak "\n". np: SuperNet ISP\n00-950 Warszawa\nWiosenna 52\n0 49 3883838\n\nksiegowosc@supernet.pl\n\nNIP: 123-123-12-23';
 $_LANG['It scans for free ports in selected device!'] = 'Brak wolnych portów w wybranym urządzeniu!';
 $_LANG['It scans for ports in destination device!'] = 'Brak wolnych portów w urządzeniu docelowym!';
 $_LANG['It scans for ports in source device!'] = 'Brak wolnych portów w urządzeniu źródłowym!';
@@ -1234,7 +1234,7 @@ $_LANG['Display this form again, when this host is saved'] = 'Pokaż ten formula
 $_LANG['Display this form again, when this instance is saved'] = 'Pokaż ten formularz ponownie po dodaniu instancji';
 $_LANG['Display this form again, when this option is saved'] = 'Pokaż ten formularz ponownie po dodaniu nowej opcji';
 $_LANG['Size:'] = 'Rozmiar:';
-$_LANG['Small font footer will appear at the bottom of page, e.g. footer = Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123'] = 'Stopka napisana małym rozmiarem czcionki będzie zapisana u dołu faktury. np. footer = Nasz bank: SNETISP, 828823917293871928371\nNumer telefonu 555 123 123';
+$_LANG['Small font footer will appear at the bottom of page, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123'] = 'Stopka napisana małym rozmiarem czcionki będzie zapisana u dołu faktury. np. Nasz bank: SNETISP, 828823917293871928371\nNumer telefonu 555 123 123';
 $_LANG['Smarty version:'] = 'Wersja Smarty:';
 $_LANG['SMTP settings.'] = 'Ustawienia SMTP.';
 $_LANG['Sorting:'] = 'Sortowanie:';

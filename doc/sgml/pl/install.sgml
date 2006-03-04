@@ -193,10 +193,8 @@ $ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</screen>
           </sect3>
           <sect3 id="install-mysql-dbcreate">
           <title>Utworzenie bazy danych</title>
-               <para>Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. Je¿eli
-               uaktualniasz LMS z poprzedniej wersji, odpowiednie adnotacje co nale¿y zrobiæ z baz± danych
-               s± w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu w którym masz LMS'a
-               i uruchom shell mysql'a:
+               <para>Konieczne to jest je¿eli uruchamiasz LMS po raz PIERWSZY. 
+               Tak wiêc, wejd¼ do katalogu w którym masz LMS'a i uruchom shell mysql'a:
                <screen>
 mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
