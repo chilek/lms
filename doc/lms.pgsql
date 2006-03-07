@@ -40,6 +40,7 @@ CREATE TABLE assignments (
 	dateto integer		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
 	suspended smallint	DEFAULT 0 NOT NULL,
+	settlement smallint	DEFAULT 0 NOT NULL,
 	discount numeric(4,2)	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );

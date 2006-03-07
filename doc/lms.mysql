@@ -40,6 +40,7 @@ CREATE TABLE assignments (
   dateto int(11) NOT NULL default '0',
   invoice tinyint(1) NOT NULL default '0',
   suspended tinyint(1) NOT NULL default '0',
+  settlement tinyint(1) NOT NULL default '0',
   discount decimal(4,2) NOT NULL default '0',
   PRIMARY KEY  (id),
   INDEX tariffid (tariffid)
