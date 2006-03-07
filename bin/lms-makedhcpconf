@@ -137,6 +137,7 @@ my $cgid = $ini->val('dhcp','config_ownergid') || 0;
 my $cperm = $ini->val('dhcp','config_permission') || '0600';
 my $olddhcpd = $ini->val('dhcp','ignore_ddns') || '';
 my $logfacility = $ini->val('dhcp','log_facility') || '';
+my $authoritative = $ini->val('dhcp','authoritative') || '';
 
 my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
@@ -165,6 +166,11 @@ open(DHCPDCONF, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.
 if(!$olddhcpd)
 {
 	print DHCPDCONF "ddns-update-style none;\n";
+}
+
+if($authoritative)
+{
+	print DHCPDCONF "authoritative;\n";
 }
 
 if($logfacility)

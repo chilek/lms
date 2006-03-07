@@ -8,6 +8,7 @@ version ? (????-??-??):
   - fixed timetable searching by user (alec)
   - lms-payments: added option 'customergroups' and replacement
     variables %current_period, %next_period for 'comment' option (alec)
+  - lms-makedhcpconf: added option 'authoritative' (ReYu)
 
 version 1.9.1 Jumar (2006-02-13):
 
