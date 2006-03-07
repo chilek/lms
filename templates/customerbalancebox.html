@@ -97,7 +97,7 @@
 				{section name=balancelist loop=$balancelist.id start=$limit}
 				<TR class="{cycle name=bal}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
-					<TD width="1%">{$balancelist.username[balancelist]|truncate:16:"...":true}</TD>
+					<TD width="1%" nowrap>{$balancelist.username[balancelist]|truncate:16:"...":true}</TD>
 					<TD width="1%" align="right" nowrap>{if !$balancelist.type[balancelist]}{$balancelist.value[balancelist]*-1|money_format}{else}-{/if}</TD>
 					<TD width="1%" align="right" nowrap>{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}</TD>
 					<TD width="1%" align="right" nowrap>{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{$balancelist.value[balancelist]*-1|money_format}{else}-{/if}</TD>
