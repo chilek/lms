@@ -97,6 +97,7 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
+my $customergroups = $ini->val('payments', 'customergroups') || '';
 my $deadline = $ini->val('payments', 'deadline') || '14';
 my $paytype = $ini->val('payments', 'paytype') || 'TRANSFER';
 my $comment = $ini->val('payments', 'comment') || 'Tariff %tariff subscription for period %period';
@@ -145,6 +146,8 @@ use constant WEEK	=> 2;
 use constant DAY	=> 1;
 use constant DISPOSABLE	=> 0;
 
+my @customergroupslist = split ' ', $customergroups;
+
 my $currtime = strftime("%s",localtime2());
 my $month = sprintf("%d",strftime("%m",localtime2()));
 my $day = strftime("%e",localtime2());
@@ -180,6 +183,8 @@ $txts{+YEAR} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." 
 # assigment is made not January, the 1st:
 
 my $current_month = strftime("%Y/%m/%d", 0, 0, 12, 1, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, 0 , $month , $year - 1900);
+my $current_period = strftime("%m/%Y", 0, 0, 12, 1, $month - 1, $year - 1900);
+my $next_period = strftime("%m/%Y", 0, 0, 12, 1, $month, $year - 1900);
 
 my $dbq;
 my $row;
@@ -260,6 +265,8 @@ my %gotinv;
 my $icdbq;
 my $cdbq;
 my $suspended = 0;
+my $skipped = 0;
+my $tested = 0;
 my $itemid;
 
 # let's go, fetch *ALL* assignments in given day
@@ -301,6 +308,44 @@ while(my $assign = $dbq->fetchrow_hashref())
 
 	if ($assign->{'value'} == 0) { next; };
 
+	# checking groups membership
+	if ($customergroups)
+	{
+		if ($skipped != $uid && $tested != $uid)
+		{
+			my $found = 0;
+	    		my $sdbq = $dbase->prepare("SELECT UPPER(name) AS name FROM customerassignments, customergroups WHERE customergroups.id = customergroupid AND customerid = $uid GROUP BY name");
+		        $sdbq->execute();
+			
+			while (my $srow = $sdbq->fetchrow_hashref())
+			{
+				foreach my $group (@customergroupslist)
+				{
+					if ($srow->{'name'} eq uc($group))
+					{
+						$found = 1;
+						last;
+					}
+				}
+				if ($found) { last; }
+			}
+
+			if ($found)
+			{
+				$tested = $uid;
+			}
+			else
+			{
+				$skipped = $uid;
+				next;
+			}
+		}
+		elsif ($skipped == $uid)
+		{
+			next;
+		}
+	}
+
 	# check, if all customer liabilities are suspended
 	if ($suspended != $uid)
 	{
@@ -330,6 +375,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 	$desc =~ s/\%desc/$assign->{'description'}/g;
 	$desc =~ s/\%period/$txts{$assign->{'period'}}/g;
 	$desc =~ s/\%current_month/$current_month/g;
+	$desc =~ s/\%current_period/$current_period/g;
+	$desc =~ s/\%next_period/$next_period/g;
 	
 	if ($suspension_percentage && ($assign->{'suspended'} || $suspended == $uid))
 	{
