@@ -291,6 +291,7 @@
                     <member>invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</member>
                     <member>discount - warto¶æ procentowa rabatu</member>
                     <member>suspended - zawieszenie p³atno¶ci (1 - tak, 0 - nie)</member>
+		    <member>settlement - rozliczenie okresu niepe³nego (1 - tak, 0 - nie)</member>
                </simplelist>
           </sect2>
           <sect2 id="numberplans">
