@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+ - fixed value of avg upload in stats on Node Info (alec)
+
 version 1.8.1 Shyla (2006-02-25):
 
   - fixed cash receipts problem with default numberplan (alec)
