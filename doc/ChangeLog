@@ -11,6 +11,7 @@ version ? (????-??-??):
   - lms-makedhcpconf: added option 'authoritative' (ReYu)
   - BTS#0000530: added lost assignments.settlement column in database creation
     scripts (alec)
+  - fixed value of avg upload in stats on Node Info (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 
