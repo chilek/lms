@@ -90,7 +90,7 @@ if($_GET['action'] == 'add' && isset($a))
 		case WEEKLY:
 			$at = sprintf('%d',$a['at']);
 			
-			if($CONFIG['phpui']['use_current_payday'] && $at==0)
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 			{
 				$at = strftime('%u', time());
 			}
@@ -102,7 +102,7 @@ if($_GET['action'] == 'add' && isset($a))
 		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 			
-			if($CONFIG['phpui']['use_current_payday'] && $at==0)
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 				$at = date('j', time());
 
 			$a['at'] = $at;
@@ -116,7 +116,7 @@ if($_GET['action'] == 'add' && isset($a))
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
-			elseif($CONFIG['phpui']['use_current_payday'] && !$a['at'])
+			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -143,7 +143,7 @@ if($_GET['action'] == 'add' && isset($a))
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
-			elseif($CONFIG['phpui']['use_current_payday'] && !$a['at'])
+			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
