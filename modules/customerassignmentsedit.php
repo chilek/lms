@@ -81,7 +81,7 @@ if($a = $_POST['assignmentedit'])
 		case WEEKLY:
 			$at = sprintf('%d',$a['at']);
 			
-			if($CONFIG['phpui']['use_current_payday'] && $at==0)
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 			{
 				$at = strftime('%u', time());
 			}
@@ -93,7 +93,7 @@ if($a = $_POST['assignmentedit'])
 		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 			
-			if($CONFIG['phpui']['use_current_payday'] && $at==0)
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 				$at = date('j', time());
 
 			$a['at'] = $at;
@@ -107,7 +107,7 @@ if($a = $_POST['assignmentedit'])
 			{
 				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
-			elseif($CONFIG['phpui']['use_current_payday'] && !$a['at'])
+			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -134,7 +134,7 @@ if($a = $_POST['assignmentedit'])
 			{
 				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
-			elseif($CONFIG['phpui']['use_current_payday'] && !$a['at'])
+			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
