@@ -154,6 +154,41 @@ function _smarty_function_number($args,&$SMARTY)
 		return $result;
 }
 
+/*
+    Registering "plugin" function is for use in actions.
+    $handle - handle name
+    $plugin - template for including in handle. Example of use:
+    
+    register_lms_plugin('nodeinfobox-end', '/path/sometemplate.html');
+    
+    TODO: registering plugin as string instead of file
+*/
+function register_lms_plugin($handle, $plugin)
+{
+        global $PLUGINS;
+	
+        $PLUGINS[$handle][] = $plugin;
+}
+
+/*
+    Returns registered plugin(s) output.
+    Example of use: 
+    
+    {handle name="nodeinfobox-end"}
+*/
+function _smarty_function_handle($args, &$SMARTY)
+{
+	global $PLUGINS;  // or maybe $SMARTY->_tpl_vars['PLUGINS'] assigned by ref.
+	
+	$result = '';
+	if(isset($PLUGINS[$args['name']]))
+		foreach($PLUGINS[$args['name']] as $plugin)
+			$result .= $SMARTY->fetch($plugin);
+
+	return $result;
+}
+
+$SMARTY->register_function('handle','_smarty_function_handle');
 $SMARTY->register_function('sum','_smarty_function_sum');
 $SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_function('tip','_smarty_function_tip');
