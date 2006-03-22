@@ -317,8 +317,8 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])))+6;
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])))+6;
 	for ($i = 2; $i <= $v; $i++) 
-		if(($tt_width[$i]+2*margin+2)>$t_width[$i])
-			$t_width[$i] = $tt_width[$i]+2*margin+2;
+		if(($tt_width[$i]+2*$margin+2)>$t_width[$i])
+			$t_width[$i] = $tt_width[$i]+2*$margin+2;
     }
     if ($invoice['invoice']['content']) foreach ($invoice['invoice']['content'] as $item)
     {
@@ -335,8 +335,8 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])))+6;
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])))+6;
 	for ($i = 2; $i <= $v; $i++) 
-		if(($tt_width[$i]+2*margin+2)>$t_width[$i]) 
-			$t_width[$i] = $tt_width[$i]+2*margin+2;
+		if(($tt_width[$i]+2*$margin+2)>$t_width[$i]) 
+			$t_width[$i] = $tt_width[$i]+2*$margin+2;
     }
     // Kolumna 2 bêdzie mia³a rozmiar ustalany dynamicznie
     $t_width[2] = $width-($t_width[1]+$t_width[3]+$t_width[4]+$t_width[5]+$t_width[6]+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+($invoice['discount'] ? $t_width[11] : 0)+ 2*$margin*($invoice['discount'] ? 11 : 10));
