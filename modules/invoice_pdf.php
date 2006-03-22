@@ -59,7 +59,7 @@ function text_wrap($x,$y,$width,$size,$text,$justify)
 
 function getWrapTextWidth($font_size,$txt)
 {
-    global $pdf;
+    global $pdf, $margin;
     
     $long = '';
     if($words = explode(' ', $txt))
