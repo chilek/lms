@@ -78,10 +78,8 @@ class ExecStack
 									$this->_MODINFO[$module_name]['actions'][$actionname]['dontexec'] = FALSE;
 								if(! isset($action_info['notemplate']))
 									$this->_MODINFO[$module_name]['actions'][$actionname]['notemplate'] = FALSE;
-							
-								if(! $action_info['notemplate'] && ! isset($action_info['template']))
+								if(! isset($action_info['template']) && ! $this->_MODINFO[$module_name]['actions'][$actionname]['notemplate'])
 									$this->_MODINFO[$module_name]['actions'][$actionname]['template'] = $actionname;
-
 								if(! isset($action_info['bindings']))
 									$this->_MODINFO[$module_name]['actions'][$actionname]['bindings'] = array();
 								if(! isset($action_info['default']))
