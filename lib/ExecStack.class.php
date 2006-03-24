@@ -143,17 +143,15 @@ class ExecStack
 			'pre/*:*' => array(),
 			'post/*:*' => array(),
 			);
+			
 		if($this->_MODINFO)
 			foreach($this->_MODINFO as $module_name => $module_info)
 				if(isset($module_info['actions']))
 					foreach($module_info['actions'] as $action_name => $action_info)
-					{
-						// init bindtable entries as arrays, to quiet errors near lines 194-204...
-						$this->_BINDTABLE['pre/'.$module_name.':'.$action_name] = array();
-						$this->_BINDTABLE['post/'.$module_name.':'.$action_name] = array();
-						foreach($action_info['bindings'] as $bind)
-							$this->_BINDTABLE[$bind][] = $module_name.':'.$action_name;
-					}
+						if(isset($action_info['bindings']))
+							foreach($action_info['bindings'] as $bind)
+								$this->_BINDTABLE[$bind][] = $module_name.':'.$action_name;
+								
 		return $this->_BINDTABLE;
 	}
 
@@ -267,7 +265,7 @@ class ExecStack
 						array_push($stack, $tbind);
 				}
 
-			if($this->_BINDTABLE['pre/'.$module.':'.$action])
+			if(isset($this->_BINDTABLE['pre/'.$module.':'.$action]))
 				foreach($this->_BINDTABLE['pre/'.$module.':'.$action] as $bind)
 				{
 					list($tmodule, $taction) = split(':', $bind);
@@ -277,7 +275,7 @@ class ExecStack
 
 			array_push($stack, $module.':'.$action);
 		
-			if($this->_BINDTABLE['post/'.$module.':'.$action])
+			if(isset($this->_BINDTABLE['post/'.$module.':'.$action]))
 				foreach($this->_BINDTABLE['post/'.$module.':'.$action] as $bind)
 				{
 					list($tmodule, $taction) = split(':', $bind);
