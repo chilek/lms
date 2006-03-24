@@ -51,7 +51,7 @@ class ExecStack
 		$this->modules_dir = $modules_dir;
 		$this->_MODINFO = array();
 		$priority_table = array();
-		if ($handle = opendir($this->modules_dir))
+		if($handle = opendir($this->modules_dir))
 		{
 			while (false !== ($file = readdir($handle)))
 				if(is_dir($this->modules_dir.'/'.$file) && is_readable($this->modules_dir.'/'.$file.'/modinfo.php'))
@@ -145,7 +145,7 @@ class ExecStack
 			);
 		if($this->_MODINFO)
 			foreach($this->_MODINFO as $module_name => $module_info)
-				if($module_info)
+				if(isset($module_info['actions']))
 					foreach($module_info['actions'] as $action_name => $action_info)
 					{
 						// init bindtable entries as arrays, to quiet errors near lines 194-204...
