@@ -24,34 +24,6 @@
  *  $Id$
  */
 
-$ownerid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
-$id = isset($_GET['id']) ? $_GET['id'] : 0;
-
-if($LMS->CustomerExists($ownerid))
-{
-	$LMS->NodeSetU($ownerid, $_GET['access']);
-
-	$backid = $ownerid;
-	$redir = $SESSION->get('backto');
-	if($SESSION->get('lastmodule')=='customersearch')
-		$redir .= '&search=1';
-
-	$SESSION->redirect('?'.$redir.'#'.$backid);
-}
-
-if($LMS->NodeExists($id))
-{
-	$LMS->NodeSet($id);
-	$backid = $id;
-}
-
-if(isset($_GET['netdev']))
-	if($LMS->NetDevExists($_GET['netdev']))
-	{
-		$LMS->IPSetU($_GET['netdev'], $_GET['access']);
-		$backid = $_GET['netdev'];
-	}
-
-header('Location: ?'.$SESSION->get('backto').'#'.$backid);
+$SMARTY->assign('error', $AUTH->error);
 
 ?>
