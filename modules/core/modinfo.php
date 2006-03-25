@@ -37,32 +37,6 @@ $_MODINFO['core'] = array(
 		'author' => 'LMS-developers',
 		'revision' => '$Revision$',
 		'notpublic' => FALSE,
-		'menus' => array(
-			array(
-				'id' => 'core_administration',
-				'text' => array(
-					'en' => 'Administration',
-					'pl' => 'Administracja',
-					),
-				'img' => 'users.gif',
-				'tip' => array(
-					'en' => 'Systems informations and management',
-					'pl' => 'Informacja o systemie i administracja',
-					),
-				),
-			array(
-				'id' => 'core_customers',
-				'text' => array(
-					'en' => 'Customers',
-					'pl' => 'Klienci',
-					),
-				'img' => 'customer.gif',
-				'tip' => array(
-					'en' => 'Customers: list, add, search, groups',
-					'pl' => 'Klienci: lista, szukanie, dodawanie, grupy',
-					),
-				),
-			),
 		'priority' => 0,
 		'url' => 'http://lms.rulez.pl',
 		'default' => TRUE,
@@ -119,99 +93,12 @@ $_MODINFO['core'] = array(
 				),
 			'err_loginform' => array(
 				'notpublic' => TRUE,
-				'dontexec' => TRUE,
 				'onlogin' => TRUE,
 				),
-
-			// menu administracja
-			'welcome' => array(
-				'menuname' => array(
-					'en' => 'Info',
-					'pl' => 'Informacje',
-					),
-				'tip' => array(
-					'en' => 'Basic system informations',
-					'pl' => 'Podstawowe informacje o systemie',
-					),
-				'menu' => 'core_administration',
-				'default' => TRUE
-				),
-			'userlist' => array(
-				'menuname' => array(
-					'en' => 'Users',
-					'pl' => 'Użytkownicy',
-					),
-				'tip' => array(
-					'en' => 'User list',
-					'pl' => 'Lista użytkowników',
-					),
-				'menu' => 'core_administration',
-				),
-			'useradd' => array(
-				'menuname' => array(
-					'en' => 'New user',
-					'pl' => 'Nowy użytkownik',
-					),
-				'tip' => array(
-					'en' => 'New user',
-					'pl' => 'Nowy użytkownik',
-					),
-				'menu' => 'core_administration',
-				),
-			'userdel' => array(
-				'hidden' => TRUE,
-				'notemplate' => TRUE, // in fact, it's not needed, because this script will force redirect
-							// before LMS will try to display this template
-				),
-			'useredit' => array(
-				'hidden' => TRUE,
-				'template' => 'userinfo', // TODO: use diffrent template than useredit.html
-				),
-			'userinfo' => array(
-				'menuname' => array( // ta akcja jest ukryta, więc nie musi mieć 'menuname'
-					'en' => 'User information',
-					'pl' => 'Informacje o użytkowniku',
-					),
-				'hidden' => TRUE,	
-				),
-			'dblist' => array(
-				'menuname' => array(
-					'en' => 'Backups',
-					'pl' => 'Kopie zapasowe',
-					),
-				'menu' => 'core_administration',
-				),
-			'dbdel' => array(
-				'hidden' => TRUE,
-				'notemplate' => TRUE,
-				),
-			'dbnew' => array(
-				'hidden' => TRUE,
-				'notemplate' => TRUE,
-				),
-			'dbrecover' => array(
-				'hidden' => TRUE,
-				'notemplate' => TRUE,
-				),
-			'dbview' => array(
-				'hidden' => TRUE,
-				'notemplate' => TRUE,
-				),
 			'copyrights' => array(
-				'menuname' => array(
-					'en' => 'Copyrights',
-					'pl' => 'Prawa autorskie',
-					),
-				'menu' => 'core_administration',
+				'default' => TRUE,
 				),
-			// menu klienci
-
-			'customerlist' => array(
-				'menuname' => array(
-					'en' => 'List',
-					'pl' => 'Lista',
-					),
-				'menu' => 'core_customers',
+			'logout' => array(
 				),
 			),
 		);
