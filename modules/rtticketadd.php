@@ -83,7 +83,7 @@ if(isset($ticket))
 			else
 				$mailfrom =  $ticket['mailfrom'];
 				
-			$headers['Date'] = date('D, d F Y H:i:s T');
+			$headers['Date'] = date('r');
 		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
