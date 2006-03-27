@@ -1,5 +1,9 @@
 $Id$
 
+version ? (??/??/????):
+
+  - using RFC2822 date format in mail headers (alec)
+
 version 1.6.7 Nya (24/02/2006):
 
   - setting moddate and modid when deleting customers (alec)

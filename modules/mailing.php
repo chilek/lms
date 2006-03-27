@@ -117,7 +117,7 @@ if(isset($_POST['mailing']))
 			if(isset($LMS->CONFIG['phpui']['debug_email']))
 				echo '<B>'.trans('Warning! Debug mode (using address $0).',$LMS->CONFIG['phpui']['debug_email']).'</B><BR>';
 			
-			$headers['Date'] = date('D, d F Y H:i:s T');
+			$headers['Date'] = date('r');
 			$headers['From'] = '"'.$mailing['from'].'" <'.$mailing['sender'].'>';
 			$headers['Subject'] = $mailing['subject'];
 			$headers['Reply-To'] = $headers['From'];

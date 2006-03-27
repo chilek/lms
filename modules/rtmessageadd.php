@@ -146,7 +146,7 @@ if(isset($_POST['message']))
 				$recipients = $message['destination'];
 				$message['mailfrom'] = $admin['email'] ? $admin['email'] : $queue['email'];
 
-				$headers['Date'] = date('D, d F Y H:i:s T');
+				$headers['Date'] = date('r');
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 				$headers['To'] = '<'.$message['destination'].'>';
 				$headers['Subject'] = $message['subject'];
@@ -198,7 +198,7 @@ if(isset($_POST['message']))
 			if($message['userid'])
 				$message['mailfrom'] = $LMS->GetUserEmail($message['userid']);
 
-			$headers['Date'] = date('D, d F Y H:i:s T');
+			$headers['Date'] = date('r');
 			$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 			$headers['To'] = '<'.$message['destination'].'>';
 			$headers['Subject'] = $message['subject'];
