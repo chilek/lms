@@ -126,7 +126,8 @@ if(isset($_POST['mailing']))
 	if(!$error)
 	{
 		$layout['nomenu'] = TRUE;
-		$mailing['body'] = textwrap($mailing['body']);
+		//$mailing['body'] = textwrap($mailing['body']);
+		$mailing['body'] = wordwrap($mailing['body'],76,"\n");
 		$mailing['body'] = str_replace("\r", '', $mailing['body']);
 		$SMARTY->assign('mailing', $mailing);
 		$SMARTY->display('header.html');
@@ -184,7 +185,7 @@ if(isset($_POST['mailing']))
 				$headers['To'] = '<'.$row['email'].'>';
 				
 				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['customername'], $row['email']);
-				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body, $files)."</font><BR>\n";
+			//	echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body, $files)."</font><BR>\n";
 			}
 		}
 		
