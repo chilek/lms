@@ -126,7 +126,8 @@ if(isset($_POST['mailing']))
 	if(!$error)
 	{
 		$layout['nomenu'] = TRUE;
-		$mailing['body'] = textwrap($mailing['body']);
+		//$mailing['body'] = textwrap($mailing['body']);
+		$mailing['body'] = wordwrap($mailing['body'], 76, "\n");
 		$mailing['body'] = str_replace("\r", '', $mailing['body']);
 		$SMARTY->assign('mailing', $mailing);
 		$SMARTY->display('header.html');
