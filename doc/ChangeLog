@@ -13,6 +13,7 @@ version ? (????-??-??):
     scripts (alec)
   - fixed value of avg upload in stats on Node Info (alec)
   - fixed summaries on customer liabilities list (alec)
+  - BTS#0000544: lmsd/payments: fixed date calculations (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 
