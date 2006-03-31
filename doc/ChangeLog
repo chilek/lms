@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+ - BTS#0000544: lmsd/payments: fixed date calculations (alec)
+
 version 1.8.2 Shibo (2006-03-31):
 
  - fixed value of avg upload in stats on Node Info (alec)
