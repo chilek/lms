@@ -5,6 +5,7 @@ version ? (??/??/????):
   - using RFC2822 date format in mail headers (alec)
   - using native PHP's wordwrap function instead of old textwrap() for
     mail body formatting in Mailing (alec)
+  - fixed summaries on customer's liabilities list (alec)
 
 version 1.6.7 Nya (24/02/2006):
 

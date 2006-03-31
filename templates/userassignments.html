@@ -57,10 +57,10 @@
 				{/foreach}
 				<TR bgcolor="#DFD5BD">
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format=$LANGDEFS.$_language.money_format}</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="LEFT">({sum array=$assignments column="discounted_value" string_format=$LANGDEFS.$_language.money_format})</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downrate" default="-"}({sum array=$assignments column="downceil" default="-"}) kbps</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="uprate" default="-"}({sum array=$assignments column="upceil" default="-"}) kbps</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="LEFT">({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_downrate" default="-"}({sum array=$assignments column="real_downceil" default="-"}) kbps</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_uprate" default="-"}({sum array=$assignments column="real_upceil" default="-"}) kbps</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>

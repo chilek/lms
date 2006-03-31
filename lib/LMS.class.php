@@ -1291,6 +1291,20 @@ class LMS
 				if ($row['suspended'] == 1)
 					$assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * $this->CONFIG['finances']['suspension_percentage'] / 100;
 				$assignments[$idx]['discounted_value'] = round($assignments[$idx]['discounted_value'], 2);
+				
+				$now = time();
+	            		
+				if ($row['suspended'] == 0 &&
+				    (($row['datefrom'] == 0 || $row['datefrom'] < $now) &&
+				    ($row['dateto'] == 0 || $row['dateto'] > $now)))
+				{
+					$assignments[$idx]['real_value'] = $row['value'];
+					$assignments[$idx]['real_disc_value'] = $assignments[$idx]['discounted_value'];
+					$assignments[$idx]['real_downrate'] = $row['downrate'];
+					$assignments[$idx]['real_downceil'] = $row['downceil'];
+					$assignments[$idx]['real_uprate'] = $row['uprate'];
+					$assignments[$idx]['real_upceil'] = $row['upceil'];
+				}
 			}
 		}
 
