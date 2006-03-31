@@ -1,11 +1,12 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.2 Shibo (2006-03-31):
 
  - fixed value of avg upload in stats on Node Info (alec)
  - using RFC2822 date format in mail headers (alec)
  - using native PHP's wordwrap function instead of old textwrap() for
    mail body formatting in Mailing (alec)
+ - fixed summaries on customer's liabilities list (alec)
 
 version 1.8.1 Shyla (2006-02-25):
 
