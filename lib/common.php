@@ -270,6 +270,7 @@ function textwrap($text, $wrap=76, $break = "\n")
 			
 			$lastChar = $lastChar + 1; // advance the last character position by one
 		}
+		
 		$h .= substr($text, $lastBreak); // build line
 	} 
 	else 
