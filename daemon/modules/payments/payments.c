@@ -141,7 +141,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	QueryHandle *res, *result, *sres;
 	char *insert, *description, *invoiceid;
 	char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
-	int i, today, docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
+	int i, imonth, imday, today, docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
@@ -157,21 +157,24 @@ void reload(GLOBAL *g, struct payments_module *p)
 	strftime(month, 	sizeof(month), 		"%m", tt);	
 	strftime(year, 		sizeof(year), 		"%Y", tt);
 
-	switch(atoi(month)) {
+	imday = tt->tm_mday;
+	imonth = tt->tm_mon+1;
+
+	switch(imonth) {
 		case 1:
 		case 4:
 		case 7:
 		case 10:
-			sprintf(quarterday, "%d", atoi(monthday));
+			sprintf(quarterday, "%d", imday);
 			break;
 		case 2:
 		case 5:
 		case 8:
 		case 12:
-			sprintf(quarterday, "%d", atoi(monthday)+100);
+			sprintf(quarterday, "%d", imday+100);
 			break;
 		default:
-			sprintf(quarterday, "%d", atoi(monthday)+200);
+			sprintf(quarterday, "%d", imday+200);
 			break;
 	}
 
@@ -186,16 +189,16 @@ void reload(GLOBAL *g, struct payments_module *p)
 	tt->tm_min = 0;
 	tt->tm_hour = 0;
 	tt->tm_mday = 1;
-	tt->tm_mon = atoi(month)-1;
+	tt->tm_mon = imonth-1;
 	tt->tm_year = atoi(year)-1900;
 
 	switch(p->num_period)
 	{
 		case DAILY:
-			tt->tm_mday = atoi(monthday); // current day
+			tt->tm_mday = imday; // current day
 		break;
 		case WEEKLY:
-			tt->tm_mday = atoi(monthday) - atoi(weekday) + 1; // last Monday
+			tt->tm_mday = imday - atoi(weekday) + 1; // last Monday
 		break;
 		case MONTHLY:
 		break;
@@ -218,7 +221,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		break;
 	}
 	strftime(start,	sizeof(start), "%s", tt);
-	
+
 	switch(p->num_period)
 	{
 		case DAILY:
@@ -249,10 +252,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 	tt->tm_min = 0;
 	tt->tm_hour = 0;
 	tt->tm_wday = atoi(weekday);
-	tt->tm_mday = atoi(monthday);
-	tt->tm_mon = atoi(month)-1;
+	tt->tm_mday = imday;
+	tt->tm_mon = imonth-1;
 	tt->tm_year = atoi(year)-1900;
-	today = (int) mktime(tt);
+	tt->tm_yday = 0;
+	today = mktime(tt);
 
 	/****** main payments *******/
 	if( (res = g->db_pquery(g->conn, "SELECT * FROM payments WHERE value <> 0 AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) OR (period="_MONTHLY_" AND at=?) OR (period="_QUARTERLY_" AND at=?) OR (period="_YEARLY_" AND at=?))", weekday, monthday, quarterday, yearday))!= NULL )
@@ -279,7 +283,7 @@ void reload(GLOBAL *g, struct payments_module *p)
   		if( g->db_nrows(res) )
 			number = atoi(g->db_get_data(res,0,"number"));
 		g->db_free(&res);
-
+printf("%d\n", today);
 		// payments accounting and invoices writing
 		res = g->db_pquery(g->conn, "\
 			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
