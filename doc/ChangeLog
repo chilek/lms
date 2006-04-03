@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
  - BTS#0000544: lmsd/payments: fixed date calculations (alec)
+ - fixed problem with number template while invoices edition (alec)
 
 version 1.8.2 Shibo (2006-03-31):
 
