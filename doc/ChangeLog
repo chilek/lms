@@ -15,6 +15,8 @@ version ? (????-??-??):
   - fixed summaries on customer liabilities list (alec)
   - BTS#0000544: lmsd/payments: fixed date calculations (alec)
   - included credit notes in Finances -> Print -> Invoices (alec)
+  - fixed database dump recovering, specially for daemon configuration,
+    also increased max line size to 8192 bytes (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 
