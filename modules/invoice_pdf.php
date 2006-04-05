@@ -563,10 +563,10 @@ if($_GET['print'] == 'cached')
 elseif($_GET['fetchallinvoices'])
 {
 	$ids = $DB->GetCol('SELECT id FROM documents
-				WHERE cdate > ? AND cdate < ? AND type = 1'
+				WHERE cdate > ? AND cdate < ? AND (type = ? OR type = ?)'
 				.($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
 				.' ORDER BY cdate',
-				array($_GET['from'], $_GET['to']));
+				array($_GET['from'], $_GET['to'], DOC_INVOICE, DOC_CNOTE));
 	if(!$ids)
 	{
 		$SESSION->close();
