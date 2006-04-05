@@ -41,10 +41,10 @@ function DBLoad($filename=NULL)
 	$LMS->DB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 	while(!feof($file))
 	{
-		$line = fgets($file,4096);
+		$line = fgets($file, 8192);
 		if($line!='')
 		{
-			$line=str_replace(';\n','',$line);
+			$line = str_replace(";\n", '', $line);
 			$LMS->DB->Execute($line);
 		}
 	}
