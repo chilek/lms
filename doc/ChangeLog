@@ -7,6 +7,7 @@ version ? (????-??-??):
  - included credit notes in Finances -> Print -> Invoices (alec)
  - fixed database dump recovering, specially for daemon configuration,
    also increased max line size to 8192 bytes (alec)
+ - fixed css for hyperlink element (alec)
 
 version 1.8.2 Shibo (2006-03-31):
 
