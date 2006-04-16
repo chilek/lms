@@ -82,7 +82,7 @@ if(isset($payment))
 			
 		case QUARTERLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
-				$error['at'] = 'Niepoprawny format daty';
+				$error['at'] = trans('Incorrect date format!');
 			else {
 				list($d,$m) = split('/',trim($payment['at']));
 				if($d>30 || $d<1)
