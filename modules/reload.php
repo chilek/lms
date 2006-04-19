@@ -57,6 +57,8 @@ switch($_RELOAD_TYPE)
 						echo '</PRE>';
 					}
 					echo '</TD></TR></TABLE>';
+					
+					$DB->Execute('UPDATE hosts SET lastreload = ?NOW?, reload = 0 WHERE id = ?', array($host['id']));
 				}
 		}
 		else
