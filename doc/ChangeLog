@@ -18,6 +18,8 @@ version ? (????-??-??):
   - fixed database dump recovering, specially for daemon configuration,
     also increased max line size to 8192 bytes (alec)
   - setting last reload time for reloads of type 'exec' (alec)
+  - BTS#0000547: fixed items count on invoice note when invoice position
+    is deleted (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 
