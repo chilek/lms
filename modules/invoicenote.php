@@ -162,6 +162,7 @@ switch($_GET['action'])
 				{
 					$contents[$idx]['valuebrutto'] = 0;
 					$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'],2);
+					$contents[$idx]['count'] = 0;
 				}
 				elseif($contents[$idx]['count'] != $item['count'] ||
 				    $contents[$idx]['valuebrutto'] != $item['valuebrutto'])
