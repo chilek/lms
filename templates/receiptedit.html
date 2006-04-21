@@ -25,6 +25,14 @@
 		document.additem.target = "";
 		document.additem.submit();
 	}
+	
+	function saveheader()
+	{
+	        if(document.setcustomer.customer)
+		        if(document.setcustomer.customer.value)
+			        document.setcustomer.customerid.value = document.setcustomer.customer.value;
+	        document.setcustomer.submit();
+	}
 
 //--></SCRIPT>
 {/literal}
@@ -110,7 +118,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript:document.setcustomer.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="javascript: saveheader();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
