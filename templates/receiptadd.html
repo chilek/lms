@@ -35,6 +35,15 @@
 		//document.additem.target = "_blank";
 		document.additem.submit();
 	}
+
+	function saveheader()
+	{	
+		if(document.setcustomer.customer)
+			if(document.setcustomer.customer.value)
+				document.setcustomer.customerid.value = document.setcustomer.customer.value;
+
+		document.setcustomer.submit();
+	}
 	
 	function additem()
 	{
@@ -151,7 +160,7 @@
 	{/if}
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript:document.setcustomer.submit();">{t}Select{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="javascript: saveheader();">{t}Select{/t} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
