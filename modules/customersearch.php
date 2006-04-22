@@ -87,6 +87,13 @@ else
 	$k = $_POST['k'];
 $SESSION->save('uslk', $k);
 
+if(isset($_POST['setwarnings']))
+{
+	$setwarnings = $_POST['setwarnings'];
+	for ($i = 0; $i < $setwarnings['total']; $i++)
+		$LMS->NodeSetWarnU($setwarnings["id".$i], ($setwarnings['warnon'] == 1 ? TRUE : FALSE));
+}
+
 if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');

@@ -1,7 +1,22 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+{literal}
+<SCRIPT language="JavaScript">
+<!--
+	function setWarnings(total, on)
+	{
+		if (on == 1)
+			document.setwarnings.elements[1].value = 1;
+		else
+			document.setwarnings.elements[1].value = 0;
+		document.setwarnings.submit();
+	}
+-->
+</SCRIPT>
+{/literal}
 <P>
+<FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customersearch&search=0">
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD width="97%" class="fleftu">
@@ -35,6 +50,8 @@
 				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
 			{/if}
 			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+			<INPUT type="hidden" class="hiddenbtn" name="setwarnings[total]" value="{$endx - $startx}">
+			<INPUT type="hidden" class="hiddenbtn" name="setwarnings[warnon]" value="0">
 		</TD>
 	</TR>
 	{/if}
@@ -86,6 +103,7 @@
 			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> {if $customerlist[customerlist].deleted}
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="[ {t}Restore{/t} ]"></A>{else}<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>{/if} 
 			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]"></A></NOBR>
+			<INPUT type="hidden" class="hiddenbtn" name="setwarnings[id{$smarty.section.customerlist.index}]" value="{$customerlist[customerlist].id}">
 		</TD>
 	</TR>
 	{sectionelse}
@@ -116,6 +134,18 @@
 	</TR>
 	{/if}
 	<TR class="dark">
+		<TD width="100%" class="fall" COLSPAN="4">
+			<TABLE WIDTH="100%">
+				<TR>
+					<TD ALIGN="left">
+					<NOBR><A HREF="javascript:setWarnings(1);"><IMG SRC="img/warningon.gif">{t}Enable Warnings for All{/t}</A></NOBR>&nbsp;
+					<NOBR><A HREF="javascript:setWarnings(0);"><IMG SRC="img/warningoff.gif">{t}Disable Warnings for All{/t}</A></NOBR>&nbsp;
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="dark">
 		<TD class="fleftu"" align="right">
 			&nbsp;
 		</TD>
@@ -132,5 +162,6 @@
 		</TD>
 	</TR>
 </TABLE>
+</FORM>
 </P>
 {include file="footer.html"}
