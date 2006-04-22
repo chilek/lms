@@ -21,6 +21,7 @@ version ? (????-??-??):
   - BTS#0000547: fixed items count on invoice note when invoice position
     is deleted (alec)
   - fixed customer selection in invoices and receipts (alec)
+  - added possibility to enable/disable warnings for found customers (chilek)
 
 version 1.9.1 Jumar (2006-02-13):
 
