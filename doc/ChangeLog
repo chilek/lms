@@ -12,6 +12,7 @@ version ? (????-??-??):
  - BTS#0000547: fixed items count on invoice note when invoice position
    is deleted (alec)
  - lmsd/ggnotify: added lost '-lgadu' in Makefile.in (alec)
+ - fixed problem when printing invoices settled at 0:00 (alec)
 
 version 1.8.2 Shibo (2006-03-31):
 
