@@ -469,7 +469,7 @@ elseif($_GET['fetchallinvoices'])
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
 	$ids = $LMS->DB->GetCol('SELECT id FROM invoices 
-				WHERE cdate > ? AND cdate < ?'
+				WHERE cdate >= ? AND cdate <= ?'
 				.($_GET['userid'] ? ' AND customerid = '.$_GET['userid'] : '')
 				.' ORDER BY cdate',
 				array($_GET['from'], $_GET['to']));

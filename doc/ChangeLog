@@ -9,6 +9,7 @@ version ? (??/??/????):
   - fixed database dump recovering, specially for daemon configuration,
     also increased max line size to 8192 bytes (alec)
   - lmsd/ggnotify: added lost '-lgadu' in Makefile.in (alec)
+  - fixed problem when printing invoices settled at 0:00 (alec)
 
 version 1.6.7 Nya (24/02/2006):
 
