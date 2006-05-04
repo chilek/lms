@@ -1,7 +1,10 @@
 $Id$
 
 version ? (????-??-??):
-
+  
+  - added possibility to read customer's own iban bank account number from 
+    ui (lexx)
+  - added 'set names utf8;' for connection to mysql >= 5.0 (lexx)
   - added input field for cust. ID on New Cash Document (alec)
   - lmsd/tc: added %if variable for host_mark_up, host_mark_down,
     host_htb_up, host_htb_down options (alec/Tomasz Przybysz)

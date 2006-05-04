@@ -41,6 +41,8 @@ class LMSDB_driver_mysql extends LMSDB_common
 	
 		$this->_version .= ' (core: '.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).' / driver: '.$this->_dbtype.' '.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
+		if (current(explode('.',$this->_driver_dbversion()))>=5)
+			$this->Execute('set names utf8;');
 	}
 	
 	function _driver_dbversion()
