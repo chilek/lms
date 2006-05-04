@@ -1691,5 +1691,6 @@ $_LANG['Enter customer and/or node data and press Enter.'] = 'Wprowadź dane kli
 $_LANG['Enter unitary value without discount'] = 'Wprowadź wartość jednostkową bez rabatu';
 $_LANG['Export'] = 'Eksport';
 $_LANG['Financial data export to external systems'] = 'Eksport danych finansowych do systemów zewnętrznych';
+$_LANG['Bank account:'] = 'Rachunek bankowy:';
 
 ?>

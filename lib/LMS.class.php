@@ -433,6 +433,7 @@ class LMS
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
 			$result['tariffsvalue'] = $this->GetCustomerTariffsValue($result['id']);
+			$result['bankaccount'] = bankaccount($result['id']);
 			return $result;
 		}else
 			return FALSE;

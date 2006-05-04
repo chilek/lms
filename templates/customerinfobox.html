@@ -121,6 +121,19 @@
 			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
+	{if $_config.finances.iban}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/value.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			{t}Bank account:{/t}
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			{$customerinfo.bankaccount}
+		</TD>
+	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/users.gif" ALT="">
