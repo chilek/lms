@@ -260,6 +260,13 @@ else
 			
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = $reply['messageid'];
+		
+		if(chkconfig($CONFIG['phpui']['helpdesk_reply_body']))
+		{
+			$body = explode("\n",textwrap(strip_tags($reply['body']),74));
+			foreach($body as $line)
+				$message['body'] .= '> '.$line."\n";
+		}
 	}
 	
 	if(!eregi("[RT#[0-9]{6}]",$message['subject'])) 

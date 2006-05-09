@@ -25,6 +25,7 @@ version ? (????-??-??):
     is deleted (alec)
   - fixed customer selection in invoices and receipts (alec)
   - added possibility to enable/disable warnings for found customers (chilek)
+  - added option phpui/helpdesk_reply_body (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 
