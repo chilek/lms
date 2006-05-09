@@ -2823,6 +2823,7 @@ class LMS
 			case 'smarty_debug':
 			case 'use_current_payday':
 			case 'helpdesk_backend_mode':
+			case 'helpdesk_reply_body':
 			case 'to_words_short_format':
 			case 'disable_devel_warning':
 			case 'newticket_notify':
