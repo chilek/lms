@@ -1,6 +1,6 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.8 Jamal (10/05/2006):
 
   - using RFC2822 date format in mail headers (alec)
   - using native PHP's wordwrap function instead of old textwrap() for
@@ -10,6 +10,7 @@ version ? (??/??/????):
     also increased max line size to 8192 bytes (alec)
   - lmsd/ggnotify: added lost '-lgadu' in Makefile.in (alec)
   - fixed problem when printing invoices settled at 0:00 (alec)
+  - updated ethercodes list (alec)
 
 version 1.6.7 Nya (24/02/2006):
 
