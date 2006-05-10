@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.3 Tyrus (2006-05-10):
 
  - BTS#0000544: lmsd/payments: fixed date calculations (alec)
  - fixed problem with number template while invoices edition (alec)
@@ -13,6 +13,7 @@ version ? (????-??-??):
    is deleted (alec)
  - lmsd/ggnotify: added lost '-lgadu' in Makefile.in (alec)
  - fixed problem when printing invoices settled at 0:00 (alec)
+ - updated ethercodes list (alec)
 
 version 1.8.2 Shibo (2006-03-31):
 
