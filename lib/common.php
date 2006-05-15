@@ -561,4 +561,22 @@ function fetch_url($url)
 	return $out;
 }
 
+function plugin_handle($name)
+{
+        global $PLUGINS;
+	
+	if(isset($PLUGINS[$name]))
+		foreach($PLUGINS[$name] as $plugin)
+			include($plugin);
+}
+
+function clearheader()
+{
+        global $ExecStack, $layout;
+	
+	$ExecStack->replaceTemplate('core', 'header', 'core', 'clearheader');
+	//$ExecStack->dropTemplate('core', 'menu');
+	$layout['nomenu'] = TRUE;
+}
+
 ?>

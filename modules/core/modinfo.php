@@ -23,11 +23,11 @@
  *
  *  $Id$
  */
-		      
+
 $_MODINFO['core'] = array(
 		'summary' => array( 
 			'en' => 'Core module',
-			'pl' => 'Gówwny moduł'
+			'pl' => 'Moduł główny'
 			),
 		'version' => '1.9-cvs',
 		'description' => array(
@@ -41,24 +41,50 @@ $_MODINFO['core'] = array(
 		'url' => 'http://lms.rulez.pl',
 		'default' => TRUE,
 		'actions' => array(
+			'init' => array(
+				'description' => array(
+					'en' => 'System and basic classes initialization',
+					'pl' => 'Inicjalizacja systemu i klas podstawowych',
+					),
+				'notpublic' => TRUE,
+				'bindings' => array(
+					'pre/*:*', 
+					),
+				'notemplate' => TRUE,
+				),
+			'end' => array(
+				'notpublic' => TRUE,
+				'bindings' => array(
+					'post/*:*', 
+					),
+				'notemplate' => TRUE,
+				),
+			'logout' => array(
+				'description' => array(
+					'en' => 'System log out',
+					'pl' => 'Wylogowanie z systemu',
+					),
+				'notemplate' => TRUE,
+				'hidden' => TRUE,
+				),
 			'header' => array(
-				'menuname' => array(
+				'description' => array(
 					'en' => 'Header pseudo action',
 					'pl' => 'Pseudo-akcja nagłówka'
 					),
 				'bindings' => array(
-					'pre/*:*', 
+					'post/core:init', 
 					),
 				'notpublic' => TRUE,
 				'dontexec' => TRUE, // don't execute action script
 				),
 			'footer' => array(
-				'menuname' => array(
+				'description' => array(
 					'en' => 'Footer pseudo action',
 					'pl' => 'Pseudo-akcja stopki'
 					),
 				'bindings' => array(
-					'post/*:*'
+					'pre/core:end'
 					),
 				'notpublic' => TRUE,
 				'dontexec' => TRUE,
@@ -68,6 +94,13 @@ $_MODINFO['core'] = array(
 					'post/core:header'
 					),
 				'notpublic' => TRUE,
+				),
+			'install' => array(
+				'description' => array(
+					'en' => 'Post-install system initialization',
+					'pl' => 'Poinstalacyjna inicjalizacja systemu',
+					),
+				'notemplate' => TRUE,
 				),
 			'dberrorhandler' => array(
 				'bindings' => array(
@@ -97,8 +130,6 @@ $_MODINFO['core'] = array(
 				),
 			'copyrights' => array(
 				'default' => TRUE,
-				),
-			'logout' => array(
 				),
 			),
 		);

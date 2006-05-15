@@ -1,0 +1,63 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fall" COLSPAN="3" NOWRAP>
+			<IMG SRC="modules/users/img/pass.gif" ALT="">
+			<B>{$userinfo.login} ({$userinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="modules/users/img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}First/last name:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<B>{$userinfo.name}</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="modules/users/img/mail.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%"><B>{t}E-mail:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{if $userinfo.email}<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>{else}-{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="modules/users/img/ip.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Allowed hosts:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" NOWRAP>
+			{if $userinfo.hosts}{$userinfo.hosts}{else}{t}all{/t}{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft"></TD>
+		<TD WIDTH="1%" NOWRAP><B>{t}Last login:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip neq $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft"></TD>
+		<TD WIDTH="1%" NOWRAP><B>{t}Last failed login:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip neq $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
+			<A href="?m=users&a=edit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A href="?m=users&a=delete&id={$userinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" alt=""></A>
+			<A href="?m=users&a=passwd&id={$userinfo.id}">{t}Change password{/t} <IMG SRC="modules/users/img/keys.gif" ALT="">
+		</TD>
+	</TR>
+	{handle name="users-info-beforetableend"}
+</TABLE>

@@ -30,19 +30,17 @@ class ExecStack
 	var $_MODINFO = array();
 	var $_BINDTABLE = array();
 	var $_EXECSTACK = array();
+	var $_STATUS = array();
 	var $module;
 	var $action;
 	var $modules_dir;
-	var $SESSION = NULL;
-	var $AUTH = NULL;
 
-	function ExecStack($directory = 'modules/', $module, $action, &$SESSION, &$AUTH)
+	function ExecStack($directory = 'modules/', $module, $action)
 	{
-		$this->loadModules($directory);
-		$this->SESSION =& $SESSION;
-		$this->AUTH =& $AUTH;
 		$this->module = $module;
 		$this->action = $action;
+
+		$this->loadModules($directory);
 		$this->buildExecStack($module, $action);
 	}
 	
@@ -54,6 +52,7 @@ class ExecStack
 		if($handle = opendir($this->modules_dir))
 		{
 			while (false !== ($file = readdir($handle)))
+			{
 				if(is_dir($this->modules_dir.'/'.$file) && is_readable($this->modules_dir.'/'.$file.'/modinfo.php'))
 				{
 					include($this->modules_dir.'/'.$file.'/modinfo.php');
@@ -84,12 +83,10 @@ class ExecStack
 									$this->_MODINFO[$module_name]['actions'][$actionname]['bindings'] = array();
 								if(! isset($action_info['default']))
 									$this->_MODINFO[$module_name]['actions'][$actionname]['default'] = FALSE;
-								if(! isset($action_info['onlogin']))
-									$this->_MODINFO[$module_name]['actions'][$actionname]['onlogin'] = FALSE;
 							}
 					}
-					
 				}
+			}
 			closedir($handle);
 		}
 
@@ -124,16 +121,6 @@ class ExecStack
 				if($action_info['default'] === TRUE)
 					return $action_name;
 	}					
-
-	function getLoginAction()
-	{
-		if($this->_MODINFO)
-			foreach($this->_MODINFO as $module_name => $module_info)
-				if(isset($module_info['actions']))
-					foreach($module_info['actions'] as $action_name => $action_info)
-						if($action_info['onlogin'] === TRUE)
-							return array( 'actions' => array( array( 'module' => $module_name, 'action' => $action_name ) ), 'templates' => array( array( 'module' => $module_name, 'template' => $this->getTemplate($module_name, $action_name))));
-	}
 
 	function buildBindTable()
 	{
@@ -180,10 +167,23 @@ class ExecStack
 
 	function dropTemplate($module, $template)
 	{
-		foreach($this->_EXECSTACK['templates'] as $idx => $tpl)
+		$templates = $this->_EXECSTACK['templates'];
+		foreach($templates as $idx => $tpl)
 			if($tpl['module'] == $module && $tpl['template'] == $template)
 			{
 				unset($this->_EXECSTACK['templates'][$idx]);
+				break;
+			}
+	}
+
+	function dropAction($module, $action)
+	{
+		$actions = $this->_EXECSTACK['actions'];
+		foreach($actions as $idx => $act)
+			if($act['module'] == $module && $act['action'] == $action)
+			{
+				unset($this->_EXECSTACK['actions'][$idx]);
+				break;
 			}
 	}
 
@@ -209,104 +209,97 @@ class ExecStack
 
 	function buildExecStack($module, $action, $depth = 0)
 	{
-		if($this->AUTH->islogged === TRUE)
-		{
-			if($depth == 0)
-			{	
-				if($module == '')
-					$module = $this->getDefaultModule();
+		if($depth == 0)
+		{	
+			if($module == '')
+				$module = $this->getDefaultModule();
+			if($action == '')
+				$action = $this->getDefaultAction($module);
 
-				if($action == '')
-					$action = $this->getDefaultAction($module);
+			$this->module = $module;
+			$this->action = $action;
 
-				$this->module = $module;
-				$this->action = $action;
-
-				// TODO: consider to make functions that will find
-				// actions suitable for situations described below
-				
-				if(! $this->moduleExists($module))
-				{
-					$module = 'core';
-					$action = 'err_modulenotfound';
-				}
-				elseif(! $this->moduleIsPublic($module))
-				{
-					$module = 'core';
-					$action = 'err_modulenotpublic';
-				}
-				elseif(! $this->actionExists($module, $action))
-				{
-					$module = 'core';
-					$action = 'err_actionnotfound';
-				}
-				elseif(! $this->actionIsPublic($module, $action))
-				{
-					$module = 'core';
-					$action = 'err_actionnotpublic';
-				}
-			}
-				
-			if($depth > 15)
-				return NULL;
-
-			if($this->_BINDTABLE == array())
-				$this->buildBindTable();
-		
-			$stack = array();
-
-			if($depth == 0 && $this->_BINDTABLE['pre/*:*'])
-				foreach($this->_BINDTABLE['pre/*:*'] as $bind)
-				{
-					list($tmodule, $taction) = split(':', $bind);
-					foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
-						array_push($stack, $tbind);
-				}
-
-			if(isset($this->_BINDTABLE['pre/'.$module.':'.$action]))
-				foreach($this->_BINDTABLE['pre/'.$module.':'.$action] as $bind)
-				{
-					list($tmodule, $taction) = split(':', $bind);
-					foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
-						array_push($stack, $tbind);
-				}
-
-			array_push($stack, $module.':'.$action);
-		
-			if(isset($this->_BINDTABLE['post/'.$module.':'.$action]))
-				foreach($this->_BINDTABLE['post/'.$module.':'.$action] as $bind)
-				{
-					list($tmodule, $taction) = split(':', $bind);
-					foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
-						array_push($stack, $tbind);
-				}
+			// TODO: consider to make functions that will find
+			// actions suitable for situations described below
 			
-			if($depth == 0 && $this->_BINDTABLE['post/*:*'])
-				foreach($this->_BINDTABLE['post/*:*'] as $bind)
-				{
-					list($tmodule, $taction) = split(':', $bind);
-					foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
-						array_push($stack, $tbind);
-				}
-			
-			if($stack && $depth == 0)
+			if(! $this->moduleExists($module))
 			{
-				$this->_EXECSTACK = array();
-				foreach($stack as $stackitem)
-				{
-					list($module, $action) = split(':', $stackitem);
-					$this->_EXECSTACK['actions'][] = array( 'module' => $module, 'action' => $action, );
-					if($this->needTemplate($module, $action))
-						$this->_EXECSTACK['templates'][] = array( 'module' => $module, 'template' => $this->getTemplate($module, $action), );
-
-				}
-				return $this->_EXECSTACK;
+				$module = 'core';
+				$action = 'err_modulenotfound';
 			}
-			else
-				$this->_EXECSTACK = $stack;
+			elseif(! $this->moduleIsPublic($module))
+			{
+				$module = 'core';
+				$action = 'err_modulenotpublic';
+			}
+			elseif(! $this->actionExists($module, $action))
+			{
+				$module = 'core';
+				$action = 'err_actionnotfound';
+			}
+			elseif(! $this->actionIsPublic($module, $action))
+			{
+				$module = 'core';
+				$action = 'err_actionnotpublic';
+			}
+		}
+				
+		if($depth > 15)
+			return NULL;
+
+		if($this->_BINDTABLE == array())
+			$this->buildBindTable();
+	
+		$stack = array();
+
+		if($depth == 0 && $this->_BINDTABLE['pre/*:*'])
+			foreach($this->_BINDTABLE['pre/*:*'] as $bind)
+			{
+				list($tmodule, $taction) = split(':', $bind);
+				foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
+					array_push($stack, $tbind);
+			}
+		
+		if(isset($this->_BINDTABLE['pre/'.$module.':'.$action]))
+			foreach($this->_BINDTABLE['pre/'.$module.':'.$action] as $bind)
+			{
+				list($tmodule, $taction) = split(':', $bind);
+				foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
+					array_push($stack, $tbind);
+			}
+		
+		array_push($stack, $module.':'.$action);
+	
+		if(isset($this->_BINDTABLE['post/'.$module.':'.$action]))
+			foreach($this->_BINDTABLE['post/'.$module.':'.$action] as $bind)
+			{
+				list($tmodule, $taction) = split(':', $bind);
+				foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
+					array_push($stack, $tbind);
+			}
+		
+		if($depth == 0 && $this->_BINDTABLE['post/*:*'])
+			foreach($this->_BINDTABLE['post/*:*'] as $bind)
+			{
+				list($tmodule, $taction) = split(':', $bind);
+				foreach($this->buildExecStack($tmodule, $taction, $depth + 1) as $tbind)
+					array_push($stack, $tbind);
+			}
+		
+		if($stack && $depth == 0)
+		{
+			$this->_EXECSTACK = array();
+			foreach($stack as $stackitem)
+			{
+				list($module, $action) = split(':', $stackitem);
+				$this->_EXECSTACK['actions'][] = array( 'module' => $module, 'action' => $action, );
+				if($this->needTemplate($module, $action))
+					$this->_EXECSTACK['templates'][] = array( 'module' => $module, 'template' => $this->getTemplate($module, $action), );
+			}
+			return $this->_EXECSTACK;
 		}
 		else
-			$this->_EXECSTACK = $this->getLoginAction();
+			$this->_EXECSTACK = $stack;
 
 		return $this->_EXECSTACK;
 	}

@@ -1,17 +1,19 @@
+<!--// $Id$ //-->
 {if $layout.dberrors}
-<BR>
+<P>
 <TABLE WIDTH="100%" CELLPADDING="10">
 	<TR class="superlight">
 		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/core/warning.png" ALT="[{t}Error!{/t}]">
+			<IMG SRC="img/warning.png" ALT="[ {t}Error!{/t} ]">
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu">
-			<FONT class="alert bold">{t}An error(s) occured in database handler!{/t}</FONT><BR>
+			<FONT class="alert bold">{t}Database errors occurred!{/t}</FONT><BR>
 			{foreach from=$layout.dberrors item=dberror}
-			<B>{t}While executing query{/t}:</B> {$dberror.query}<BR>
-			<B>{t}Following error occured{/t}:</B> {$dberror.error}<BR>
+				<B>{t}Query:{/t}</B> {$dberror.query}<BR>
+				<B>{t}Error:{/t}</B> {$dberror.error}<BR>
 			{/foreach}
 		</TD>
 	</TR>
 </TABLE>
+</P>
 {/if}

@@ -1,0 +1,45 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<table width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD class="fleftu" width="1%">
+			<NOBR><IMG SRC="modules/users/img/users.gif" ALT=""> <B>{t}Login:{/t}</B></NOBR>
+		</TD>
+		<TD class="fbt" width="96%">
+			<NOBR><IMG SRC="img/info2.gif" ALT=""> <B>{t}First/last name:{/t}</B></NOBR>
+		</TD>
+		<TD class="fbt" width="2%" NOWRAP>
+			<IMG SRC="modules/users/img/time.gif" ALT=""> <B>{t}Last login:{/t}</B>
+		</TD>
+		<TD class="frightu" width="1%">
+			<NOBR><B>{t}Total:{/t} {$userslist.total}</B></NOBR>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{section name=userslist loop=$userslist}{if $userslist[userslist].id}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft" width="1%" onClick="return self.location.href='?m=users&a=info&id={$userslist[userslist].id}';">
+			<NOBR><IMG SRC="modules/users/img/users.gif" ALT=""> <B>{$userslist[userslist].login}</B></NOBR>
+		</TD>
+		<TD width="96%" onClick="return self.location.href='?m=users&a=info&id={$userslist[userslist].id}';">
+			<NOBR><IMG SRC="img/info2.gif" ALT=""> {$userslist[userslist].name}</NOBR>
+		</TD>
+		<TD width="1%" onClick="return self.location.href='?m=users&a=info&id={$userslist[userslist].id}';">
+			<NOBR><IMG SRC="modules/users/img/time.gif" ALT=""> {$userslist[userslist].lastlogin}
+			{$userslist[userslist].lastloginip} {if $userslist[userslist].lastloginip neq $userslist[userslist].lastloginhost}({$userslist[userslist].lastloginhost}){/if}</NOBR>
+		</TD>
+		<TD width="1%" class="fright">
+			<nobr>
+			<a href="?m=users&a=passwd&id={$userslist[userslist].id}"><img src="modules/users/img/keys.gif" alt="[ {t}Change password{/t} ]"></A>
+			{if $userslist[userslist].id neq $layout.logid}<a href="?m=users&a=delete&id={$userslist[userslist].id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{/if}<img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+			<a href="?m=users&a=edit&id={$userslist[userslist].id}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>
+			<a href="?m=users&a=info&id={$userslist[userslist].id}"><img src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
+		</TD>
+	</TR>
+	{/if}{/section}
+	<TR CLASS="LIGHT">
+		<TD CLASS="FALL" COLSPAN="4">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
