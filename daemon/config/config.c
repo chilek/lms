@@ -75,7 +75,7 @@ unsigned char * parse(unsigned char *string)
 		continue; 
 	    } 
 
-	    out[k++] = c; i++; // just an escaped character
+	    out[k++] = '\\'; // just rewrite that backslash
 	}
 	else
 	{
