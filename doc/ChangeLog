@@ -26,6 +26,14 @@ version ? (????-??-??):
   - fixed customer selection in invoices and receipts (alec)
   - added possibility to enable/disable warnings for found customers (chilek)
   - added option phpui/helpdesk_reply_body (alec)
+  - lmsd: fixed configuration parser, orphaned backslashes are not removed (alec)
+  - while editing/adding value of lmsd's configuration option 'script' it's
+    possible to use Tab key for script's code identation (alec)
+  - updated t-script library - 0.7.0 (alec):
+	special characters (\\, \", \r, \n, \t) in string literals
+        escaping brackets in plain text using backslashes (\{, \})
+	ignoring tabs at the beginning of text lines - allowing indents
+	len command in string extension 
 
 version 1.9.1 Jumar (2006-02-13):
 

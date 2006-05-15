@@ -35,7 +35,7 @@ struct global
 	int (*db_nrows)(QueryHandle *);
 	int (*db_ncols)(QueryHandle *);
 	char * (*db_get_data)(QueryHandle *, int, const char *);
-	
+
 	// config  functions
 	char * (*config_getstring)(Config *, char *, char *, char *);
 	int (*config_getint)(Config *, char *, char *, int);

@@ -39,6 +39,7 @@ tscript_value* tscript_ext_exec(tscript_value* arg)
 	tscript_value* r;
 	char* out;
 	int res;
+	
 	FILE* child_out = popen(tscript_value_as_string(arg), "r");
 	if (child_out == NULL)
 		return tscript_value_create_error("Couldn't execute %s",

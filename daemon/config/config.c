@@ -46,7 +46,7 @@ char * parse(char *string)
 
 	if(string[i]=='\\') { // is it '\' ? 
 
-	    c=string[i+1]; // get next character
+	    c = string[i+1]; // get next character
 	    if(!c) continue; // if it's end of string, forget that 
 	    if(c=='n') {
 	    	out[k++] = '\n'; i++;
@@ -75,7 +75,7 @@ char * parse(char *string)
 		continue; 
 	    } 
 
-	    out[k++] = c; i++; // just an escaped character
+	    out[k++] = '\\'; // do nothing
 	}
 	else
 	{

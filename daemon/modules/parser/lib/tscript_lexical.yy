@@ -76,6 +76,61 @@
 	#define YY_DECL int tscript_yylex(tscript_context* context)
 	#define YY_BREAK set_yylloc(); break;
 	#define YY_RETURN(res) { set_yylloc(); return res; }
+
+	static char* tscript_unescape_text(const char* text)
+	{
+		char* res;
+		int i, j;
+		res = (char*)malloc(strlen(text) + 1);
+		for (i = 0, j = 0; text[i] != '\0'; i++, j++)
+			if (text[i] == '\\')
+			{
+				i++;
+				switch (text[i])
+				{
+					case 't':
+						res[j] = '\t';
+						break;
+					default:
+						res[j] = text[i];
+				}
+			}
+			else
+				res[j] = text[i];
+		res[j] = '\0';
+		return res;
+	}
+
+	static char* tscript_unescape_literal(const char* literal)
+	{
+		char* res;
+		int i, j;
+		res = (char*)malloc(strlen(literal) - 2 + 1);
+		for (i = 1, j = 0; literal[i] != '"'; i++, j++)
+			if (literal[i] == '\\')
+			{
+				i++;
+				switch (literal[i])
+				{
+					case 'n':
+						res[j] = '\n';
+						break;
+					case 'r':
+						res[j] = '\r';
+						break;
+					case 't':
+						res[j] = '\t';
+						break;
+					default:
+						res[j] = literal[i];
+				}
+			}
+			else
+				res[j] = literal[i];
+		res[j] = '\0';
+		return res;
+	}
+
 %}
 
 %option stack
@@ -90,10 +145,14 @@
 						yy_push_state(commands);
 					}
 
-[^{}]+					{
+^\t+
+
+([^{}\t]|\\[{}])+				{
+						char* unescaped = tscript_unescape_text(yytext);
 						tscript_yylval = tscript_ast_node_val(
 							TSCRIPT_AST_VALUE,
-							tscript_value_create_string(yytext));
+							tscript_value_create_string(unescaped));
+						free(unescaped);
 						YY_RETURN(TEXT);
 					}
 
@@ -140,15 +199,12 @@
 						yy_pop_state();
 					}
 
-<commands>\"[^"]*\"			{
-						char* tmp_str;
-						tmp_str = (char*)malloc(strlen(yytext) - 2 + 1);
-						strncpy(tmp_str, &yytext[1], strlen(yytext) - 2);
-						tmp_str[strlen(yytext) - 2] = 0;
+<commands>\"([^"\\]|\\[rnt"\\])*\"	{
+						char* unescaped = tscript_unescape_literal(yytext);
 						tscript_yylval = tscript_ast_node_val(
 							TSCRIPT_AST_VALUE,
-							tscript_value_create_string(tmp_str));
-						free(tmp_str);
+							tscript_value_create_string(unescaped));
+						free(unescaped);
 						YY_RETURN(LITERAL);
 					}
 

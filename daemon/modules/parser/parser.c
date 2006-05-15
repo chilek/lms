@@ -128,6 +128,7 @@ void reload(GLOBAL *g, struct parser_module *p)
 struct parser_module * init(GLOBAL *g, MODULE *m)
 {
 	struct parser_module *p;
+	QueryHandle *q;
 	
 	if(g->api_version != APIVERSION) 
 	{
