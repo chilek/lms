@@ -1,0 +1,45 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><DIV ALIGN="CENTER"><CENTER>
+<FORM method="POST" action="{if $target}{$target}{else}?m=users&a=passwd&id={$passwd.id}{/if}" name="password">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="1%" cellpadding="3">
+	<TR class="dark">
+		<TD class="fall" nowrap colspan="2" nowrap>
+			<NOBR><img src="modules/users/img/pass.gif" alt=""> <B>{t}Enter new password:{/t}</B></NOBR>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>{t}New password:{/t}</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input type="password" name="passwd[passwd]" {tip text="Enter password" trigger="password"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>{t}Repeat password:{/t}</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input type="password" name="passwd[confirm]" {tip text="Confirm password" trigger="password"}>
+		</TD>
+		
+	</TR>
+	<TR class="light">
+		<TD colspan="2" align="center" class="flr">
+			{t}If You change your password, you will be automatically logged off, and asked to login again.{/t}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="2">
+			<A href="javascript:document.password.submit();" accesskey="s">{t}Change password{/t} <img src="modules/users/img/pass.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</CENTER></DIV></P>
+<SCRIPT>
+<!--
+document.forms['password'].elements['passwd[passwd]'].focus();
+//-->
+</SCRIPT>

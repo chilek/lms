@@ -3,7 +3,7 @@
 /*
  * LMS version 1.9-cvs
  *
- *  (C) Copyright 2001-2006 LMS Developers
+ *  (C) Copyright 2001-2005 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -126,16 +126,22 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 require_once($_LIB_DIR.'/dbencoding.php');
 require_once($_LIB_DIR.'/upgradedb.php');
 
-// Initialize templates engine (must be before locale settings)
+// Initialize templates engine
 
 require_once($_SMARTY_DIR.'/Smarty.class.php');
 
 $SMARTY = new Smarty;
 
+require_once($_LIB_DIR.'/smarty_addons.php');
+
 // test for proper version of Smarty
 
 if(version_compare('2.6.0', $SMARTY->_version) > 0)
-	die('<B>Old version of Smarty engine! You must get newest from <A HREF="http://smarty.php.net/distributions/Smarty-2.6.10.tar.gz">http://smarty.php.net/distributions/Smarty-2.6.10.tar.gz</A></B>');
+	die('<B>Old version of Smarty engine! You must get newest from <A HREF="http://smarty.php.net/distributions/Smarty-2.6.12.tar.gz">http://smarty.php.net/distributions/Smarty-2.6.12.tar.gz</A></B>');
+
+// system localization
+
+require_once($_LIB_DIR.'/language.php');
 
 // Read configuration of LMS-UI from database
 
@@ -153,73 +159,28 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 	exit(0);
 }
 
-// Include required files (including sequence is important)
-
-require_once($_LIB_DIR.'/language.php');
-require_once($_LIB_DIR.'/unstrip.php');
-require_once($_LIB_DIR.'/definitions.php');
-require_once($_LIB_DIR.'/common.php');
-require_once($_LIB_DIR.'/checkip.php');
-require_once($_LIB_DIR.'/LMS.class.php');
-require_once($_LIB_DIR.'/Auth.class.php');
-require_once($_LIB_DIR.'/accesstable.php');
-require_once($_LIB_DIR.'/Session.class.php');
-
-// Initialize Session, Auth and LMS classes
-
-$SESSION = new Session($DB, $CONFIG['phpui']['timeout']);
-$AUTH = new Auth($DB, $SESSION);
-$LMS = new LMS($DB, $AUTH, $CONFIG);
-$LMS->lang = $_language;
-
 // EXPERIMENTAL CODE! USE WITH CAUTION ;-)
 
 $_LMSDIR = dirname(__FILE__);
 
 require_once($_LIB_DIR.'/ExecStack.class.php');
 
-// set some template and layout variables
+$ExecStack = new ExecStack($_LMSDIR.'/modules/', (isset($_GET['m']) ? $_GET['m'] : NULL), (isset($_GET['a']) ? $_GET['a'] : NULL));
 
-$SMARTY->assign_by_ref('_LANG', $_LANG);
-$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
-$SMARTY->assign_by_ref('_language', $LMS->lang);
-$SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/');
-$SMARTY->assign('_config',$CONFIG);
-$SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
-$SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
-$SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFIG['phpui']['smarty_debug']) : FALSE);
-$SMARTY->_tpl_vars['missing_strings'] = array();
-require_once($_LIB_DIR.'/smarty_addons.php');
+// don't use foreach() below, because privileges checking action
+// will probably need to remove some actions from stack
+// Note: that action should be executed first
 
-$layout['logname'] = $AUTH->logname;
-$layout['logid'] = $AUTH->id;
-$layout['lmsdbv'] = $DB->_version;
-$layout['smarty_version'] = $SMARTY->_version;
-$layout['hostname'] = hostname();
-$layout['lmsv'] = '1.9-cvs';
-$layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
-$layout['dberrors'] =& $DB->errors;
-
-$SMARTY->assign_by_ref('layout', $layout);
-
-header('X-Powered-By: LMS/'.$layout['lmsv']);
-
-$error = NULL; // initialize error variable needed for (almost) all modules
-$layout['popup'] = $_GET['popup'];
-
-$ExecStack = new ExecStack($_LMSDIR.'/modules/', (isset($_GET['m']) ? $_GET['m'] : NULL), (isset($_GET['a']) ? $_GET['a'] : NULL), $SESSION, $AUTH);
-
-$SMARTY->assign('_module', $ExecStack->module);
-$SMARTY->assign('_action', $ExecStack->action);
-
-foreach($ExecStack->_EXECSTACK['actions'] as $step => $execute)
+while(list(, $execute) = each($ExecStack->_EXECSTACK['actions']))
 {
 	// do include once, because testing that language for executed module has been already loaded
 	// will take some time, so let's PHP decide if we already loaded it or what...
 
-	@include_once($_LMSDIR.'/modules/'.$execute['module'].'/lang/'.$LMS->lang.'.php');
+	@include_once($_LMSDIR.'/modules/'.$execute['module'].'/lang/'.$_language.'.php');
 	@include_once($_LMSDIR.'/modules/'.$execute['module'].'/modinit.php');
-	
+
+	// execute action
+
 	if($ExecStack->needExec($execute['module'], $execute['action']))
 		include($_LMSDIR.'/modules/'.$execute['module'].'/actions/'.$execute['action'].'.php');
 }
@@ -227,9 +188,10 @@ foreach($ExecStack->_EXECSTACK['actions'] as $step => $execute)
 foreach($ExecStack->_EXECSTACK['templates'] as $step => $execute)
 	$SMARTY->display($_LMSDIR.'/modules/'.$execute['module'].'/templates/'.$execute['template'].'.html');
 
-$SESSION->close();
 $DB->Destroy();
+
+
 echo '<PRE>';
-print_r($ExecStack->_EXECSTACK);
+print_r($ExecStack);
 
 ?>

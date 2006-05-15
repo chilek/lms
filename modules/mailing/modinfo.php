@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-		      
+
 $_MODINFO['mailing'] = array(
 		'summary' => array( 
 			'en' => 'Mailing',
@@ -56,6 +56,10 @@ $_MODINFO['mailing'] = array(
 		'actions' => array(
 			'mailing' => array(
 				'default' => TRUE,
+				'description' => array(
+					'en' => 'Sending mail to customers groups',
+					'pl' => 'Wysyłanie poczty do grup użytkowników',
+					),
 				),
 			),
 		);

@@ -1,0 +1,85 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="useradd" METHOD="POST" ACTION="?m=users&a=add">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FLEFTU" WIDTH="1%">
+			<IMG SRC="modules/users/img/pass.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
+			<B>{t}Login:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHTU" WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="useradd[login]" VALUE="{$useradd.login}" {tip trigger="login" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" NOWRAP>
+			<IMG SRC="modules/users/img/users.gif" ALT="">
+		</TD>
+		<TD NOWRAP>
+			<B>{t}First/last name:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" {tip trigger="name"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT">
+			<IMG SRC="modules/users/img/mail.gif" ALT="">
+		</TD>
+		<TD NOWRAP>
+			<B>{t}E-mail:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="useradd[email]" VALUE="{$useradd.email}" {tip trigger="email"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT">
+			<IMG SRC="modules/users/img/pass.gif" ALT="">
+		</TD>
+		<TD NOWRAP>
+			<B>{t}Password:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="PASSWORD" NAME="useradd[password]" {tip trigger="password"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" NOWRAP>
+			<IMG SRC="modules/users/img/pass.gif" ALT="">
+		</TD>
+		<TD NOWRAP>
+			<B>{t}Repeat password:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="PASSWORD" NAME="useradd[confirm]" {tip trigger="password"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" NOWRAP>
+			<IMG SRC="modules/users/img/ip.gif" ALT="">
+		</TD>
+		<TD NOWRAP>
+			<B>{t}Allowed hosts:{/t}</B>
+		</TD>
+		<TD CLASS="fright" NOWRAP>
+			<INPUT TYPE="TEXT" SIZE="40" NAME="useradd[hosts]" VALUE="{$useradd.hosts}" {tip text="Enter coma separated list of hosts or networks" trigger="hosts"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+			<A HREF="javascript:document.useradd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=users&a=list">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+		</TD>
+	</TR>
+	{handle name="users-add-beforetableend"}
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+document.forms['useradd'].elements['useradd[login]'].focus();
+//-->
+</SCRIPT>

@@ -29,13 +29,7 @@
 			</td>
 		</tr>
 		{/foreach}
-		<tr>
-			<td class="click-menu" style="border-bottom-style: dashed; border-bottom-width: 1pt;">
-				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{t}Are you sure that you want to logout?{/t}')){literal}{ return self.location.href='?a=logout&is_sure=1';}{/literal} ">
-					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><NOBR><font style="margin-left: 21px">{t}Logout{/t} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
-				</div>
-			</td>
-		</tr>
+		{handle name="menu-menuend"}
 		<div id="autosuggest"><ul></ul></div>
 		<form method="get" action="?m=quicksearch" id="customerform" name="customerform">
 		<tr>
@@ -74,7 +68,7 @@
 		</tr>
 		</form>
 		<tr>
-			<td nowrap align="center"><br><A href="?a=copyrights">&copy; 2001-2006<br>LMS Developers</A></td>
+			<td nowrap align="center"><br><A href="?m=core&a=copyrights">&copy; 2001-2006<br>LMS Developers</A></td>
 		</tr>
 		<tr>
 			<td nowrap align="center"><font style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>({$layout.lmsvr})<br>DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></font>&nbsp;<br>&nbsp;<br></td>

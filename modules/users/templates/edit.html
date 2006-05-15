@@ -1,0 +1,60 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="useredit" METHOD="POST" ACTION="?m=users&a=edit&id={$userinfo.id}">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="modules/users/img/pass.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
+			<B>{t}Login:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="frightu" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="userinfo[login]" VALUE="{$userinfo.login}" {tip trigger="login" bold=1}> <B>({$userinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="modules/users/img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}First/last name:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			 <INPUT TYPE="TEXT" NAME="userinfo[name]" VALUE="{$userinfo.name}" {tip trigger="name"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="modules/users/img/mail.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%"><B>{t}E-mail:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<INPUT TYPE="TEXT" NAME="userinfo[email]" VALUE="{$userinfo.email}" CLASS="RED">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="modules/users/img/ip.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Allowed hosts:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" NOWRAP>
+			<INPUT TYPE="TEXT" SIZE="40" NAME="userinfo[hosts]" VALUE="{$userinfo.hosts}" {tip text="Enter coma separated list of hosts or networks" trigger="hosts"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT="">
+		</TD>
+	</TR>
+	{handle name="users-edit-beforetableend"}
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+document.forms['useredit'].elements['userinfo[login]'].focus();
+//-->
+</SCRIPT>

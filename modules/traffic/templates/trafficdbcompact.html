@@ -1,0 +1,42 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="trafficdbcompact" METHOD="POST" ACTION="?m=traffic&a=compacting" TARGET="_BLANK">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE ALIGN="center" WIDTH="600" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD COLSPAN="2" ALIGN="left" CLASS="fall">
+			<B>{t}Compacting parameters{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+	 	<TD WIDTH="1%" ALIGN="right" CLASS="fleft" {tip text="Compacting of database removes non-essential data from database and averages existing data. This will decrease number of records in database and reduce results latency, but also decrease stats precision."} NOWRAP>
+			<B>{t}Data precision level:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<B><INPUT class="radio light" TYPE="radio" NAME="level" VALUE="1" {tip text="Data older than one day will be combined into one day"}>{t}Low{/t}</INPUT><BR>
+			   <INPUT class="radio light" TYPE="radio" NAME="level" VALUE="2" {tip text="Data older than one month will be combined into one day"}>{t}Medium{/t}</INPUT><BR>
+			   <INPUT class="radio light" TYPE="radio" NAME="level" VALUE="3" {tip text="Data older than one month will be combined into one hour"}>{t}High{/t}</INPUT>
+			</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+		</TD>
+		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option to remove records older than one year"}>
+		    <INPUT CLASS="box light" TYPE="checkbox" NAME="delete" VALUE="1"><B>&nbsp;{t}Delete data older than one year{/t}</B></INPUT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+		</TD>
+		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option to remove stats of deleted nodes"} NOWRAP>
+		    <INPUT CLASS="box light" TYPE="checkbox" NAME="removedeleted" VALUE="1"><B>&nbsp;{t}Delete stats of non-existing (deleted) nodes{/t}</B></INPUT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD COLSPAN="2" ALIGN="right" CLASS="fbottomu">
+			<A HREF="javascript:document.trafficdbcompact.submit();" ACCESSKEY="K" ="_blank">{t}Compact{/t} <IMG SRC="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>

@@ -1,0 +1,65 @@
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=traffic&a=printtraffic" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="modules/traffic/img/traffic.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Stats{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="modules/traffic/img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Customer:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="customer" {tip text="Select customer"}>
+							{section name="customers" loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:50:" ..."} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="modules/traffic/img/calendar.gif" alt="">
+					</TD>
+					<TD width="1%">
+						<B>{t}Year:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="year" {tip text="Select period"}>
+							{foreach item=year from=$statyears}
+							<OPTION value="{$year}"{if $year == $curryear} SELECTED{/if}>{$year}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<B>{t}Month:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="month" {tip text="Select period"}>
+							{foreach item=month key=id from=$months}
+							<OPTION value="{$id}"{if $id == $currmonth} SELECTED{/if}>{$month}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<TD width="92%"></TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printcustomertraffic.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
