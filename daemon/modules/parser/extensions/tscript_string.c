@@ -54,7 +54,16 @@ tscript_value* tscript_ext_trim(tscript_value* arg)
 	return val;
 }
 
-tscript_value* tscript_ext_replace(tscript_value* arg)
+tscript_value* tscript_ext_len(tscript_value* arg)
+{
+	tscript_value* res;
+	tscript_value* val = tscript_value_convert_to_string(arg);
+	res = tscript_value_create_number(strlen(tscript_value_as_string(val)));
+	tscript_value_free(val);
+	return res;
+}
+
+tscript_value* tscript_ext_replace(tscript_value* args)
 {
 	regex_t* reg;
 	regmatch_t match;
@@ -63,16 +72,9 @@ tscript_value* tscript_ext_replace(tscript_value* arg)
 	tscript_value* str;
 	tscript_value* regexp;
 	tscript_value* dst;
-	tscript_value* index;
-	index = tscript_value_create_number(0);
-	regexp = *tscript_value_array_item_ref(&arg, index);
-	tscript_value_free(index);
-	index = tscript_value_create_number(1);
-	dst = *tscript_value_array_item_ref(&arg, index);
-	tscript_value_free(index);
-	index = tscript_value_create_number(2);
-	str = tscript_value_duplicate(*tscript_value_array_item_ref(&arg, index));
-	tscript_value_free(index);
+	regexp = tscript_extension_arg(args, 0);
+	dst = tscript_extension_arg(args, 1);
+	str = tscript_value_duplicate(tscript_extension_arg(args, 2));
 	reg = (regex_t *)calloc(1, sizeof(regex_t));
 	res = regcomp(reg, tscript_value_as_string(regexp), REG_EXTENDED);
 	if (res != 0)
@@ -94,7 +96,7 @@ tscript_value* tscript_ext_replace(tscript_value* arg)
 	return str;
 }
 
-tscript_value* tscript_ext_explode(tscript_value* arg)
+tscript_value* tscript_ext_explode(tscript_value* args)
 {
 	regex_t* reg;
 	regmatch_t match;
@@ -104,12 +106,8 @@ tscript_value* tscript_ext_explode(tscript_value* arg)
 	tscript_value* regexp;
 	tscript_value* index;
 	tscript_value* array;
-	index = tscript_value_create_number(0);
-	regexp = *tscript_value_array_item_ref(&arg, index);
-	tscript_value_free(index);
-	index = tscript_value_create_number(1);
-	str = tscript_value_duplicate(*tscript_value_array_item_ref(&arg, index));
-	tscript_value_free(index);
+	regexp = tscript_extension_arg(args, 0);
+	str = tscript_value_duplicate(tscript_extension_arg(args, 1));
 	array = tscript_value_create_array();
 	reg = (regex_t *)calloc(1, sizeof(regex_t));
 	res = regcomp(reg, tscript_value_as_string(regexp), REG_EXTENDED);
@@ -147,6 +145,7 @@ tscript_value* tscript_ext_explode(tscript_value* arg)
 void tscript_ext_string_init(tscript_context* context)
 {
 	tscript_add_extension(context, "trim", tscript_ext_trim, 1, 1);
+	tscript_add_extension(context, "len", tscript_ext_len, 1, 1);
 	tscript_add_extension(context, "replace", tscript_ext_replace, 3, 3);
 	tscript_add_extension(context, "explode", tscript_ext_explode, 2, 2);
 }
@@ -154,6 +153,7 @@ void tscript_ext_string_init(tscript_context* context)
 void tscript_ext_string_close(tscript_context* context)
 {
 	tscript_remove_extension(context, "trim");
+	tscript_remove_extension(context, "len");
 	tscript_remove_extension(context, "replace");
 	tscript_remove_extension(context, "explode");
 }

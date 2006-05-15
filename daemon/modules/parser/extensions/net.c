@@ -107,27 +107,18 @@ tscript_value * tscript_ext_net_long2ip(tscript_value *arg)
 	return res;
 }
 
-tscript_value * tscript_ext_net_broadcast(tscript_value *arg)
+tscript_value * tscript_ext_net_broadcast(tscript_value *args)
 {
-	tscript_value *index, *addr, *mask;
-
-        index = tscript_value_create_number(0);
-        addr = *tscript_value_array_item_ref(&arg, index);
-        tscript_value_free(index);
-	index = tscript_value_create_number(1);
-	mask = *tscript_value_array_item_ref(&arg, index);
-	tscript_value_free(index);
+        tscript_value *addr = tscript_extension_arg(args, 0);
+	tscript_value *mask = tscript_extension_arg(args, 1);
 
 	return tscript_value_create_string(broadcast(tscript_value_as_string(addr), tscript_value_as_string(mask)));
 }
 
 tscript_value * tscript_ext_net_mask2prefix(tscript_value *arg)
 {
-	tscript_value *res;
-
-	res = tscript_value_create_number(mask2prefix(tscript_value_as_string(tscript_value_convert_to_string(arg))));
-
-	return res;
+	return tscript_value_create_number(mask2prefix(
+		tscript_value_as_string(tscript_value_convert_to_string(arg))));
 }
 
 void tscript_ext_net_init(tscript_context *context)
