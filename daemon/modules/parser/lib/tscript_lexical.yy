@@ -147,7 +147,7 @@
 
 ^\t+
 
-([^{}\t]|\\[{}])+				{
+([^{}\t]|\\[{}])+			{
 						char* unescaped = tscript_unescape_text(yytext);
 						tscript_yylval = tscript_ast_node_val(
 							TSCRIPT_AST_VALUE,
@@ -168,10 +168,12 @@
 						yyless(0);
 					}
 
-<ext_arg_2>[^{};]+			{
+<ext_arg_2>([^{};]|\\[{};])+		{
+						char* unescaped = tscript_unescape_text(yytext);
 						tscript_yylval = tscript_ast_node_val(
 							TSCRIPT_AST_VALUE,
-							tscript_value_create_string(yytext));
+							tscript_value_create_string(unescaped));
+						free(unescaped);
 						YY_RETURN(TEXT);
 					}
 
