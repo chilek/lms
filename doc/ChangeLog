@@ -37,6 +37,8 @@ version ? (????-??-??):
   - modularity: added example modules 'traffic', 'users' and 'auth' with use of plaugins
     and new access rights management method, core consist only core actions, added 'init', 'end'
     and 'install' core actions, and many other changes (alec)
+  - added index on column 'dt' in table 'stats' - only in database structure
+    initialization scripts (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 

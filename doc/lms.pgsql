@@ -372,6 +372,7 @@ CREATE TABLE stats (
 	PRIMARY KEY (nodeid, dt)
 );
 CREATE INDEX stats_nodeid_idx ON stats(nodeid);
+CREATE INDEX stats_dt_idx ON stats(dt);
 
 /* ---------------------------------------------------
  Structure of table "netdevices"
