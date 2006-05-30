@@ -45,7 +45,7 @@ GetOptions(%options);
 if($help)
 {
 	print STDERR <<EOF;
-lms-eachmonth, version $_version
+lms-traffic, version $_version
 (C) 2001-2006 LMS Developers
 
 -f, --traffic-log-file=/var/log/traffic.log	traffic log file (default: /var/log/traffic.log);
