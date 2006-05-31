@@ -372,7 +372,8 @@ CREATE TABLE stats (
   dt int(11) NOT NULL default '0',
   upload BIGINT default '0',
   download BIGINT default '0',
-  UNIQUE KEY nodeid (nodeid,dt)
+  UNIQUE KEY nodeid (nodeid,dt),
+  INDEX dt (dt)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------

@@ -4,6 +4,8 @@ version ? (????-??-??):
 
  - lmsd: fixed configuration parser - backslash without special sequence
    isn't removed (alec)
+ - added index on 'dt' column i table 'stats' in database initialization
+   scripts (alec)
 
 version 1.8.3 Tyrus (2006-05-10):
 
