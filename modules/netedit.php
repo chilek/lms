@@ -67,12 +67,19 @@ if(isset($_POST['networkdata']))
 					$error['address'] = trans('New network is too small!');
 				else
 				{
-					$node = $DB->GetRow('SELECT MAX(CASE WHEN ipaddr_pub != 0 THEN ipaddr_pub ELSE ipaddr END) AS last,
-								    MIN(CASE WHEN ipaddr_pub != 0 THEN ipaddr_pub ELSE ipaddr END) AS first
-							    FROM nodes 
-							    WHERE (ipaddr>? AND ipaddr<?) OR (ipaddr_pub>? AND ipaddr_pub<?)',
-							    array($network['addresslong'],ip_long($network['broadcast']),$network['addresslong'],ip_long($network['broadcast'])));
+					$node = $DB->GetRow('SELECT MAX(ipaddr) AS last, MIN(ipaddr) AS first
+							    FROM nodes WHERE (ipaddr>? AND ipaddr<?)',
+							    array($network['addresslong'],ip_long($network['broadcast'])));
+							    
+					$node_pub = $DB->GetRow('SELECT MAX(ipaddr_pub AS last, MIN(ipaddr_pub) AS first
+							    FROM nodes WHERE (ipaddr_pub>? AND ipaddr_pub<?)',
+							    array($network['addresslong'],ip_long($network['broadcast'])));
 				
+					if($node_pub['first'])
+						$node['first'] = min($node['first'], $node_pub['first']);
+					if($node_pub['last'])
+						$node['last'] = min($node['last'], $node_pub['last']);
+					
 					if(($node['first'] && $node['first'] < $networkdata['addresslong']) ||
 					    ($node['last'] && $node['last'] >= ip_long(getbraddr($networkdata['address'],prefix2mask($networkdata['prefix'])))) )
 					{
