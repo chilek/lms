@@ -141,11 +141,13 @@
 	</TR>
 	{/if}
 	<TR class="light">
-		<TD colspan="4" class="fleftu" align="right" valign="top">
+		<TD colspan="3" class="fleftu" align="right" valign="top">
 			<IMG SRC="img/info2.gif" alt=""> <B>{t 0=$listdata.total}Total: $0{/t}</B>	
 		</TD>
-		<TD class="frightu">
-			&nbsp;
+		<TD class="frightu" colspan="2" align="right">
+			{if $listdata.customer}
+			<A href="?m=accountadd&cid={$listdata.customer}">{t}New Account{/t} <IMG src="img/save.gif" alt=""></A>
+			{/if}
 		</TD>
 	</TR>
 </TABLE></P>
