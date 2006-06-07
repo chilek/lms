@@ -595,12 +595,16 @@ class LMS
 				$customerlist[$idx]['account'] = $access[$row['id']]['account'];
 				$customerlist[$idx]['warncount'] = $warning[$row['id']]['warncount'];
 
-				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'] && $customerlist[$idx]['account'])
-					$customerlist[$idx]['nodeac'] = 1; // connected all nodes
-				elseif($access[$row['id']]['acsum'] == 0)
-					$customerlist[$idx]['nodeac'] = 0; // disconected all nodes
-				else
-					$customerlist[$idx]['nodeac'] = 2; // some nodes disconneted
+				if($customerlist[$idx]['account']) // if customer have some nodes
+				{
+					if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
+						$customerlist[$idx]['nodeac'] = 1; // connected all nodes
+					elseif($access[$row['id']]['acsum'] == 0)
+						$customerlist[$idx]['nodeac'] = 0; // disconected all nodes
+					else
+						$customerlist[$idx]['nodeac'] = 2; // some nodes disconneted
+				}
+				
 				if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
 					$customerlist[$idx]['nodewarn'] = 1;
 				elseif($warning[$row['id']]['warnsum'] == 0)
