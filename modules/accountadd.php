@@ -106,6 +106,10 @@ if(isset($_POST['account']))
 	}
 	$SMARTY->assign('quota', $quota);
 }
+elseif(isset($_GET['cid']))
+{
+	$account['ownerid'] = intval($_GET['cid']);
+}
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

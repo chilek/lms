@@ -40,6 +40,7 @@ version ? (????-??-??):
   - added index on column 'dt' in table 'stats' - only in database structure
     initialization scripts (alec)
   - don't "blend" customers without nodes on Customers List (alec)
+  - added 'New Account' link with current customer id on Accounts List (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 
