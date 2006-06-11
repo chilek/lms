@@ -41,6 +41,9 @@ version ? (????-??-??):
     initialization scripts (alec)
   - don't "blend" customers without nodes on Customers List (alec)
   - added 'New Account' link with current customer id on Accounts List (alec)
+  - little fix in chkconfig() for not set variables (alec)
+  - fixed mac checking in Node Edit (alec)
+  - fixed access status saving in Node Add (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 
