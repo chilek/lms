@@ -7,8 +7,11 @@ version ? (????-??-??):
  - added index on 'dt' column i table 'stats' in database initialization
    scripts, because of long execution time you should do this manual:
    CREATE INDEX stats_dt_idx ON stats (dt); (alec)
- - fixed problem with public adresses in not public networks 
-   and "network is too small" error (alec)
+ - fixed "network is too small" error in non-public networks with public 
+   addresses (alec)
+ - little fix in chkconfig() for not set variables (alec)
+ - fixed mac checking in Node Edit (alec)
+ - fixed access status saving in Node Add (alec)
 
 version 1.8.3 Tyrus (2006-05-10):
 

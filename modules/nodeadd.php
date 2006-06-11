@@ -24,10 +24,32 @@
  *  $Id$
  */
 
-$nodedata = $_POST['nodedata'];
-
-if(isset($nodedata))
+if(isset($_GET['ownerid']))
 {
+	if($LMS->CustomerExists($_GET['ownerid']) == true)
+	{
+		$nodedata['ownerid'] = $_GET['ownerid'];
+		$customerinfo = $LMS->GetCustomer($_GET['ownerid']);
+	}
+	else
+		$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
+}
+
+$nodedata['access'] = 1;
+
+if(isset($_GET['preip']))
+	$nodedata['ipaddr'] = $_GET['preip'];
+
+if(isset($_GET['premac']))
+	$nodedata['mac'] = $_GET['premac'];
+
+if(isset($_GET['prename']))
+	$nodedata['name'] = $_GET['prename'];
+
+if(isset($_POST['nodedata']))
+{
+	$nodedata = $_POST['nodedata'];
+
 	$nodedata['ipaddr'] = $_POST['nodedataipaddr'];
 	$nodedata['ipaddr_pub'] = $_POST['nodedataipaddr_pub'];
 	$nodedata['mac'] = $_POST['nodedatamac'];
@@ -117,29 +139,6 @@ if(isset($nodedata))
 	if($nodedata['ipaddr_pub']=='0.0.0.0')
 		$nodedata['ipaddr_pub'] = '';
 }
-
-if($LMS->CustomerExists($_GET['ownerid']) < 0)
-{
-	$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
-}
-
-$nodedata['access'] = 1;
-
-if($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid']) > 0)
-{
-	$nodedata['ownerid'] = $_GET['ownerid'];
-	$customerinfo = $LMS->GetCustomer($_GET['ownerid']);
-}
-
-if(isset($_GET['preip']) && $nodedata['ipaddr']=='')
-	$nodedata['ipaddr'] = $_GET['preip'];
-
-if(isset($_GET['premac']) && $nodedata['mac']=='')
-	$nodedata['mac'] = $_GET['premac'];
-
-if(isset($_GET['prename']) && $nodedata['name']=='')
-	$nodedata['name'] = $_GET['prename'];
-		
 
 $layout['pagetitle'] = trans('New Node');
 
