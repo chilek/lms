@@ -44,6 +44,7 @@ version ? (????-??-??):
   - little fix in chkconfig() for not set variables (alec)
   - fixed mac checking in Node Edit (alec)
   - fixed access status saving in Node Add (alec)
+  - added accounts of type 'sql' (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 

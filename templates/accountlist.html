@@ -8,8 +8,8 @@
 			<IMG src="img/customer.gif" ALT=""> <A href="?m=accountlist&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "customername"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
-			{t}Type (sh/mail/www/ftp):{/t}<BR>
-			{t}Quotas (sh/mail/www/ftp):{/t}
+			{t}Type (sh/mail/www/ftp/sql):{/t}<BR>
+			{t}Quota (sh/mail/www/ftp/sql):{/t}
 		</TD>
 		<TD width="1%" valign="top" class="fbt" NOWRAP>
 			<A href="?m=accountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -44,6 +44,7 @@
 					<OPTION value="2"{if $listdata.type eq 2} SELECTED {/if}>{t}mail{/t}</OPTION>
 					<OPTION value="4"{if $listdata.type eq 4} SELECTED {/if}>{t}www{/t}</OPTION>
 					<OPTION value="8"{if $listdata.type eq 8} SELECTED {/if}>{t}ftp{/t}</OPTION>
+					<OPTION value="16"{if $listdata.type eq 16} SELECTED {/if}>{t}sql{/t}</OPTION>
 				</SELECT>&nbsp;
 				{t}State:{/t}
 				<SELECT size="1" name="k" OnChange="document.filter.submit();">
@@ -93,8 +94,8 @@
 			{/if}
 		</TD>
 		<TD align="right" NOWRAP valign="top" OnClick="return self.location.href='?m=accountedit&id={$accountlist[accountlist].id}';">
-			{if ($accountlist[accountlist].type & 1) == 1}*{else}-{/if}/{if ($accountlist[accountlist].type & 2) == 2}*{else}-{/if}/{if ($accountlist[accountlist].type & 4) == 4}*{else}-{/if}/{if ($accountlist[accountlist].type & 8) == 8}*{else}-{/if}<BR>
-			{$accountlist[accountlist].quota_sh}/{$accountlist[accountlist].quota_mail}/{$accountlist[accountlist].quota_www}/{$accountlist[accountlist].quota_ftp}
+			{if ($accountlist[accountlist].type & 1) == 1}*{else}-{/if}/{if ($accountlist[accountlist].type & 2) == 2}*{else}-{/if}/{if ($accountlist[accountlist].type & 4) == 4}*{else}-{/if}/{if ($accountlist[accountlist].type & 8) == 8}*{else}-{/if}/{if ($accountlist[accountlist].type & 16) == 16}*{else}-{/if}<BR>
+			{$accountlist[accountlist].quota_sh}/{$accountlist[accountlist].quota_mail}/{$accountlist[accountlist].quota_www}/{$accountlist[accountlist].quota_ftp}/{$accountlist[accountlist].quota_sql}
 		</TD>
 		<TD valign="top" NOWRAP OnClick="return self.location.href='?m=accountedit&id={$accountlist[accountlist].id}';">
 			({$accountlist[accountlist].id|string_format:"%04d"})<BR>
