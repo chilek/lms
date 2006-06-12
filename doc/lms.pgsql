@@ -523,9 +523,11 @@ CREATE TABLE passwd (
 	quota_mail integer	DEFAULT 0 NOT NULL,
 	quota_www integer	DEFAULT 0 NOT NULL,
 	quota_ftp integer	DEFAULT 0 NOT NULL,
+	quota_sql integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
+CREATE INDEX passwd_ownerid_idx ON passwd (ownerid);
 
 /* ---------------------------------------------------
  Structure of table "domains"
@@ -536,11 +538,13 @@ CREATE SEQUENCE domains_id_seq;
 DROP TABLE domains;
 CREATE TABLE domains (
 	id integer DEFAULT nextval('domains_id_seq'::text) NOT NULL,
+	ownerid integer 	DEFAULT 0 NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
+CREATE INDEX domains_ownerid_idx ON domains (ownerid);
 
 /* ---------------------------------------------------
  Structure of table "aliases"
@@ -743,4 +747,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006020500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006061200');

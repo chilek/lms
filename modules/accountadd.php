@@ -30,6 +30,7 @@
  *    mail = 2, (0000000000000010)
  *    www = 4,  (0000000000000100)
  *    ftp = 8	(0000000000001000)
+ *    sql = 16	(0000000000010000)
  */
 
 $layout['pagetitle'] = trans('New Account');
@@ -76,7 +77,8 @@ if(isset($_POST['account']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type, realname, quota_sh, quota_mail, quota_www, quota_ftp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type, realname, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(	$account['ownerid'],
 					$account['login'],
 					crypt($account['passwd1']),
@@ -88,7 +90,8 @@ if(isset($_POST['account']))
 					$quota['sh'],
 					$quota['mail'],
 					$quota['www'],
-					$quota['ftp']
+					$quota['ftp'],
+					$quota['sql']
 					));
 		$DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($account['login']));
 		$LMS->SetTS('passwd');

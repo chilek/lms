@@ -1091,7 +1091,7 @@ $_LANG['Queue name must be defined!'] = 'Kolejka musi posiadać swoją nazwę!';
 $_LANG['Queue Review: $0'] = 'Przegląd kolejki: $0';
 $_LANG['Queues List'] = 'Lista kolejek';
 $_LANG['Queue with specified name already exists!'] = 'Kolejka o podanej nazwie już istnieje!';
-$_LANG['Quotas (sh/mail/www/ftp):'] = 'Limity (sh/mail/www/ftp):';
+$_LANG['Quota (sh/mail/www/ftp/sql):'] = 'Limit (sh/mail/www/ftp/sql):';
 $_LANG['Read'] = 'Odczyt';
 $_LANG['Readdressing network $0'] = 'Przeadresowanie sieci $0';
 $_LANG['Readdressing Network $0'] = 'Przeadresowanie sieci $0';
@@ -1355,7 +1355,7 @@ $_LANG['Total Invoiceless Income ($0 to $1)'] = 'Łączny przychód bezrachunkow
 $_LANG['Total Tax'] = 'Suma PTU';
 $_LANG['Type:'] = 'Typ:';
 $_LANG['Type/Limit:'] = 'Typ/Limit:';
-$_LANG['Type (sh/mail/www/ftp):'] = 'Typ (sh/mail/www/ftp):';
+$_LANG['Type (sh/mail/www/ftp/sql):'] = 'Typ (sh/mail/www/ftp/sql):';
 $_LANG['configuration'] = 'konfiguracja interfejsu użytkownika';
 $_LANG['uncompressed'] = 'nieskompresowaną';
 $_LANG['Unit:'] = 'JM:';
@@ -1692,5 +1692,7 @@ $_LANG['Enter unitary value without discount'] = 'Wprowadź wartość jednostkow
 $_LANG['Export'] = 'Eksport';
 $_LANG['Financial data export to external systems'] = 'Eksport danych finansowych do systemów zewnętrznych';
 $_LANG['Bank account:'] = 'Rachunek bankowy:';
+$_LANG['Adds body of message in ticket reply. Default: false'] = 'Dodaje ciało wiadomości w odpowiedzi. Domyślnie: nie.';
+$_LANG['sql'] = 'sql';
 
 ?>

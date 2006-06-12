@@ -40,9 +40,13 @@ if($id && !AccountExists($id))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$account = $DB->GetRow('SELECT passwd.id AS id, ownerid, login, realname, lastlogin, domainid, expdate, type, home, quota_sh, quota_mail, quota_www, quota_ftp, '.$DB->Concat('customers.lastname', "' '", 'customers.name').' AS customername FROM passwd LEFT JOIN customers ON customers.id = ownerid WHERE passwd.id = ?', array($id));
+$account = $DB->GetRow('SELECT passwd.id AS id, ownerid, login, realname, lastlogin, domainid, 
+			expdate, type, home, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql, '
+			.$DB->Concat('customers.lastname', "' '", 'customers.name').' AS customername 
+			FROM passwd 
+			LEFT JOIN customers ON customers.id = ownerid WHERE passwd.id = ?', array($id));
 
-foreach(array('sh', 'mail', 'www', 'ftp') as $type)
+foreach(array('sh', 'mail', 'www', 'ftp', 'sql') as $type)
 	$quota[$type] = $account['quota_'.$type];
 
 switch ($option) 
@@ -114,7 +118,7 @@ switch ($option)
 			
 		if(!$error)
 		{
-			$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, home = ?, expdate = ?, domainid = ?, type = ?, quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ? WHERE id = ?', 
+			$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, home = ?, expdate = ?, domainid = ?, type = ?, quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ?, quota_sql = ? WHERE id = ?', 
 				array(	$account['ownerid'], 
 					$account['login'],
 					$account['realname'],
@@ -126,6 +130,7 @@ switch ($option)
 					$quota['mail'],
 					$quota['www'],
 					$quota['ftp'],
+					$quota['sql'],
 					$account['id']
 					));
 			$LMS->SetTS('passwd');

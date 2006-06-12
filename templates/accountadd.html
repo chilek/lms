@@ -136,19 +136,23 @@
 					    <table width="100%">
 						    <tr>
 							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][shell]" value="1" class="box light" {if ($account.type & 1) == 1}CHECKED{/if}> {t}shell{/t}</td>
-							    <td>&nbsp;<input type="text" size="3" maxlength="5" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account limits (optional)"}></td>
+							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account limits (optional)"}></td>
 						    </tr>
 						    <tr>
 							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][mail]" value="2" class="box light" {if ($account.type & 2) == 2}CHECKED{/if}> {t}mail{/t}</td>
-							    <td>&nbsp;<input type="text" size="3" maxlength="5" name="quota[mail]" value="{$quota.mail}" {tip text="Enter account limits (optional)"}></td>
+							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[mail]" value="{$quota.mail}" {tip text="Enter account limits (optional)"}></td>
 						    </tr>
 						    <tr>
 							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][www]" value="4" class="box light" {if ($account.type & 4) == 4}CHECKED{/if}> {t}www{/t}</td>
-							    <td>&nbsp;<input type="text" size="3" maxlength="5" name="quota[www]" value="{$quota.www}" {tip text="Enter account limits (optional)"}></td>
+							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[www]" value="{$quota.www}" {tip text="Enter account limits (optional)"}></td>
 						    </tr>
 						    <tr>
 							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][ftp]" value="8" class="box light" {if ($account.type & 8) == 8}CHECKED{/if}> {t}ftp{/t}</td>
-							    <td>&nbsp;<input type="text" size="3" maxlength="5" name="quota[ftp]" value="{$quota.ftp}" {tip text="Enter account limits (optional)"}></td>
+							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[ftp]" value="{$quota.ftp}" {tip text="Enter account limits (optional)"}></td>
+						    </tr>
+						    <tr>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][sql]" value="16" class="box light" {if ($account.type & 16) == 16}CHECKED{/if}> {t}sql{/t}</td>
+							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[sql]" value="{$quota.sql}" {tip text="Enter account limits (optional)"}></td>
 						    </tr>
 					    </table>
 				    </TD>

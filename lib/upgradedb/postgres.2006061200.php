@@ -1,0 +1,39 @@
+<?php
+
+/*
+ * LMS version 1.9-cvs
+ *
+ *  (C) Copyright 2001-2006 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+$DB->BeginTrans();
+
+$DB->Execute("ALTER TABLE passwd ADD COLUMN quota_sql integer NOT NULL DEFAULT 0");
+$DB->Execute("ALTER TABLE domains ADD COLUMN ownerid integer NOT NULL DEFAULT 0");
+
+$DB->Execute("CREATE INDEX passwd_ownerid_idx ON passwd (ownerid)");
+$DB->Execute("CREATE INDEX domains_ownerid_idx ON domains (ownerid)");
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006061200', 'dbversion'));
+
+$DB->CommitTrans();
+
+?>

@@ -506,10 +506,12 @@ CREATE TABLE passwd (
     quota_mail int(11) NOT NULL default 0,
     quota_www int(11) NOT NULL default 0,
     quota_ftp int(11) NOT NULL default 0,
+    quota_sql int(11) NOT NULL default 0,
     realname varchar(255) NOT NULL default '',
     createtime int(11) NOT NULL default 0,
     PRIMARY KEY (id),
-    UNIQUE KEY login (login)
+    UNIQUE KEY login (login),
+    INDEX ownerid (ownerid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -519,10 +521,12 @@ CREATE TABLE passwd (
 DROP TABLE IF EXISTS domains;
 CREATE TABLE domains (
     id int(11) NOT NULL auto_increment,
+    ownerid int(11) NOT NULL default 0,
     name varchar(255) NOT NULL default '',
     description text NOT NULL default '',
     PRIMARY KEY (id),
-    UNIQUE KEY (name)
+    UNIQUE KEY (name),
+    INDEX ownerid (ownerid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -698,4 +702,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006020500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006061200');
