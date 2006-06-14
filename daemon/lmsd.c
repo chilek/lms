@@ -312,6 +312,7 @@ int main(int argc, char *argv[], char **envp)
 				
 				for(i=0; i<i_no; i++)
 				{
+					MODULE *m;
 					MODULE *mod = (MODULE*) malloc(sizeof(MODULE));
 					MODULE * (*init)(GLOBAL *, MODULE *);
 
@@ -350,7 +351,7 @@ int main(int argc, char *argv[], char **envp)
 						continue;
 					}
 				
-					if( !(mod = init(g, mod)))
+					if( !(m = init(g, mod)))
 					{
 						syslog(LOG_CRIT, "Unable to initialize module '%s'. Perhaps there is a version mismatch?", mod->file);
 						free_module(mod);
@@ -358,11 +359,10 @@ int main(int argc, char *argv[], char **envp)
 					}
 
 					// now run module
-					mod->reload(g, mod);
+					m->reload(g, m);
 					
-					// close and free memory
-					dlclose(mod->dlh);
-					free_module(mod);
+					// cleanup
+					free_module(m);
 				}
 				
 				db_disconnect(g->conn);
@@ -479,6 +479,7 @@ static void free_module(MODULE *mod)
 	free(mod->instance);
 	free(mod->file);
 	config_free(mod->ini);
+	if(mod->dlh) dlclose(mod->dlh);
 	free(mod);
 }
 
