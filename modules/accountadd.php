@@ -72,8 +72,12 @@ if(isset($_POST['account']))
 			$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
 	}
 
-	if(!$account['domainid'] && (($account['type'] & 2) == 2))
-		$error['domainid'] = trans('E-mail account must contain domain part!');
+	if(!$account['domainid'] && ($account['type'] & 2) == 2)
+			$error['domainid'] = trans('E-mail account must contain domain part!');
+
+	if($account['domainid'] && $account['ownerid'])
+		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
+			$error['domainid'] = trans('Selected domain has other owner!');
 
 	if(!$error)
 	{
@@ -116,11 +120,13 @@ elseif(isset($_GET['cid']))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$domainlist = $DB->GetAll('SELECT id, name FROM domains ORDER BY name');
+
 if(!isset($account['type'])) $account['type'] = 32767;
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
-$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+$SMARTY->assign('domainlist', $domainlist);
 $SMARTY->assign('account', $account);
 $SMARTY->display('accountadd.html');
 

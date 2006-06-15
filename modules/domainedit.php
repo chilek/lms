@@ -43,7 +43,7 @@ if($id && !DomainExists($id))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$domain = $DB->GetRow('SELECT id, name, description FROM domains WHERE id = ?', array($id));
+$domain = $DB->GetRow('SELECT id, name, ownerid, description FROM domains WHERE id = ?', array($id));
 
 $layout['pagetitle'] = trans('Domain Edit: $0', $domain['name']);
 
@@ -67,11 +67,18 @@ if(isset($_POST['domain']))
 
 	if(!$error)
 	{
-		$DB->Execute('UPDATE domains SET name = ?, description = ? WHERE id = ?', 
+		$DB->Execute('UPDATE domains SET name = ?, ownerid = ?, description = ? WHERE id = ?', 
 			array(	$domain['name'],
+				$domain['ownerid'],
 				$domain['description'],
 				$domain['id']
 				));
+		
+		// accounts owner update
+		if($domain['ownerid'])
+			$DB->Execute('UPDATE passwd SET ownerid = ? WHERE domainid = ? AND ownerid != 0',
+					array($domain['ownerid'], $domain['id'])); 
+
 		$LMS->SetTS('domains');
 		$SESSION->redirect('?m=domainlist');
 	}
@@ -81,6 +88,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('domain', $domain);
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->display('domainedit.html');
 
 ?>

@@ -115,7 +115,11 @@ switch ($option)
 
 		if(!$account['domainid'] && (($account['type'] & 2) == 2))
 			$error['domainid'] = trans('E-mail account must contain domain part!');
-			
+
+		if($account['domainid'] && $account['ownerid'])
+    			if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
+	            		$error['domainid'] = trans('Selected domain has other owner!');
+						
 		if(!$error)
 		{
 			$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, home = ?, expdate = ?, domainid = ?, type = ?, quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ?, quota_sql = ? WHERE id = ?', 

@@ -366,14 +366,15 @@ class LMS
 		$this->SetTS('nodes');
 		$this->SetTS('customerassignments');
 		$this->SetTS('assignments');
-		$res1 = $this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
-		$res2 = $this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
-		$res3 = $this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? WHERE id=?', array($this->AUTH->id, $id));
-		$res4 = $this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
+		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
+		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
+		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? WHERE id=?', array($this->AUTH->id, $id));
+		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
+		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
+		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
 		// Remove Userpanel rights
 		if($this->CONFIG['directories']['userpanel_dir'])
 			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
-		return $res1 || $res2 || $res3 || $res4;
 	}
 
 	function CustomerUpdate($customerdata)
@@ -554,7 +555,7 @@ class LMS
 				}
 			}
 
-		if($searchargs)
+		if(isset($searchargs))
 			$sqlsarg = implode(' '.$sqlskey.' ',$searchargs);
 
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
@@ -570,7 +571,7 @@ class LMS
 				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($time ? ' AND time < '.$time : '')
-				.($sqlsarg !='' ? ' AND ('.$sqlsarg.')' :'')
+				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
 				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, email, phone1, ten, ssn, customers.info, message '
 		// ten fragment nie chcial dzialac na mysqlu
 		//		.($indebted ? ' HAVING SUM(value) < 0 ' : '')
@@ -592,8 +593,8 @@ class LMS
 			foreach($customerlist as $idx => $row)
 			{
 				$customerlist[$idx]['tariffvalue'] = round($day[$row['id']]['value']+$week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'], 2);
-				$customerlist[$idx]['account'] = $access[$row['id']]['account'];
-				$customerlist[$idx]['warncount'] = $warning[$row['id']]['warncount'];
+				$customerlist[$idx]['account'] = isset($access[$row['id']]['account']) ? $access[$row['id']]['account'] : 0;
+				$customerlist[$idx]['warncount'] = isset($warning[$row['id']]['warncount']) ? $warning[$row['id']]['warncount'] : 0;
 
 				if($customerlist[$idx]['account']) // if customer have some nodes
 				{
@@ -605,13 +606,16 @@ class LMS
 						$customerlist[$idx]['nodeac'] = 2; // some nodes disconneted
 				}
 				
-				if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
-					$customerlist[$idx]['nodewarn'] = 1;
-				elseif($warning[$row['id']]['warnsum'] == 0)
-					$customerlist[$idx]['nodewarn'] = 0;
-				else
-					$customerlist[$idx]['nodewarn'] = 2;
-
+				if($customerlist[$idx]['warncount'])
+				{
+					if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
+						$customerlist[$idx]['nodewarn'] = 1;
+					elseif($warning[$row['id']]['warnsum'] == 0)
+						$customerlist[$idx]['nodewarn'] = 0;
+					else
+						$customerlist[$idx]['nodewarn'] = 2;
+				}
+				
 				if (($disabled && $customerlist[$idx]['nodeac'] != 1) || !$disabled)
 					if($customerlist[$idx]['balance'] > 0)
 						$over += $customerlist[$idx]['balance'];
@@ -620,8 +624,10 @@ class LMS
 				if ($disabled && $customerlist[$idx]['nodeac'] != 1)
 					$customerlist2[] = $customerlist[$idx];
 
-				if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
+				if(isset($onlines[$row['id']]['online']) && $onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
 					$customerlist[$idx]['online'] = 1;
+				else
+					$customerlist[$idx]['online'] = 0;
 
 				if($online && $customerlist[$idx]['online'])
 					$customerlist2[] = $customerlist[$idx];
@@ -701,7 +707,9 @@ class LMS
 	{
 		$saldolist = array();
 		// wrapper do starego formatu
-		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, comment, docid, users.name AS username,
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, 
+					cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, 
+					comment, docid, users.name AS username,
 					documents.type AS doctype, documents.closed AS closed
 					FROM cash
 					LEFT JOIN users ON users.id = cash.userid
@@ -711,6 +719,9 @@ class LMS
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
+		
+		$saldolist['balance'] = 0;
+		$saldolist['total'] = 0;
 
 		if(sizeof($saldolist) > 0)
 		{
@@ -722,11 +733,6 @@ class LMS
 				$saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 			}
 			$saldolist['total'] = sizeof($saldolist['id']);
-		}
-		else 
-		{
-			$saldolist['balance'] = 0;
-			$saldolist['total'] = 0;
 		}
 
 		$saldolist['customerid'] = $id;
@@ -1042,7 +1048,7 @@ class LMS
 			}
 		}
 
-		if($searchargs)
+		if(isset($searchargs))
 			$searchargs = ' AND '.implode(' '.$sqlskey.' ',$searchargs);
 
 		$totalon = 0; $totaloff = 0;
@@ -1057,7 +1063,7 @@ class LMS
 					.($status==1 ? ' AND access = 1' : '') //connected
 					.($status==2 ? ' AND access = 0' : '') //disconnected
 					.($status==3 ? ' AND lastonline > ?NOW? - '.$this->CONFIG['phpui']['lastonline_limit'] : '') //online
-					.$searchargs
+					.(isset($searchargs) ? $searchargs : '')
 					.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
