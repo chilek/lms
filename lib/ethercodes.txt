@@ -279,7 +279,7 @@
 00-01-16:Netspect Technologies, Inc.
 00-01-17:CANAL +
 00-01-18:EZ Digital Co., Ltd.
-00-01-19:Action Controls Pty. Ltd.
+00-01-19:RTUnet (Australia)
 00-01-1A:EEH DataLink GmbH
 00-01-1B:Unizone Technologies, Inc.
 00-01-1C:Universal Talkware Corporation
@@ -388,7 +388,7 @@
 00-01-83:ANITE TELECOMS
 00-01-84:SIEB & MEYER AG
 00-01-85:Aloka Co., Ltd.
-00-01-86:DISCH GmbH
+00-01-86:Uwe Disch
 00-01-87:i2SE GmbH
 00-01-88:LXCO Technologies ag
 00-01-89:Refraction Technology, Inc.
@@ -1182,7 +1182,7 @@
 00-04-9C:Surgient Networks, Inc.
 00-04-9D:Ipanema Technologies
 00-04-9E:Wirelink Co., Ltd.
-00-04-9F:Metrowerks
+00-04-9F:Freescale Semiconductor
 00-04-A0:Verity Instruments, Inc.
 00-04-A1:Pathway Connectivity
 00-04-A2:L.S.I. Japan Co., Ltd.
@@ -1833,7 +1833,7 @@
 00-07-2C:Fabricom
 00-07-2D:CNSystems
 00-07-2E:North Node AB
-00-07-2F:Instransa, Inc.
+00-07-2F:Intransa, Inc.
 00-07-30:Hutchison OPTEL Telecom Technology Co., Ltd.
 00-07-31:Spiricon, Inc.
 00-07-32:AAEON Technology Inc.
@@ -3960,7 +3960,7 @@
 00-0F-9D:Newnham Research Ltd
 00-0F-9E:Murrelektronik GmbH
 00-0F-9F:Motorola BCS
-00-0F-A0:Lotte Canon Co., Ltd.
+00-0F-A0:CANON KOREA BUSINESS SOLUTIONS INC.
 00-0F-A1:Gigabit Systems Inc.
 00-0F-A2:Digital Path Networks
 00-0F-A3:Alpha Networks Inc.
@@ -4104,7 +4104,7 @@
 00-10-2D:HITACHI SOFTWARE ENGINEERING
 00-10-2E:NETWORK SYSTEMS & TECHNOLOGIES PVT. LTD.
 00-10-2F:CISCO SYSTEMS, INC.
-00-10-30:Wi-LAN, Inc.
+00-10-30:EION Inc.
 00-10-31:OBJECTIVE COMMUNICATIONS, INC.
 00-10-32:ALTA TECHNOLOGY
 00-10-33:ACCESSLAN COMMUNICATIONS, INC.
@@ -4205,7 +4205,7 @@
 00-10-92:NETCORE INC.
 00-10-93:CMS COMPUTERS, LTD.
 00-10-94:Performance Analysis Broadband, Spirent plc
-00-10-95:Thompson Inc.
+00-10-95:Thomson Inc.
 00-10-96:TRACEWELL SYSTEMS, INC.
 00-10-97:WinNet Metropolitan Communications Systems, Inc.
 00-10-98:STARNET TECHNOLOGIES, INC.
@@ -4538,7 +4538,7 @@
 00-11-E0:U-MEDIA Communications, Inc.
 00-11-E1:BEKO Electronics Co.
 00-11-E2:Hua Jung Components Co., Ltd.
-00-11-E3:Broadband Access Products
+00-11-E3:Thomson, Inc.
 00-11-E4:Danelec Electronics A/S
 00-11-E5:KCodes Corporation
 00-11-E6:Scientific Atlanta
@@ -6005,7 +6005,7 @@
 00-17-9B:Chant Sincere CO., LTD.
 00-17-9C:DEPRAG SCHULZ GMBH u. CO.
 00-17-9D:Kelman Limited
-00-17-9E:Samsys Technologies Inc
+00-17-9E:Sirit Inc
 00-17-9F:Apricorn
 00-17-A0:RoboTech srl
 00-17-A1:3soft inc.
@@ -6181,6 +6181,105 @@
 00-18-4B:Las Vegas Gaming, Inc.
 00-18-4C:Bogen Communications
 00-18-4D:Netgear Inc.
+00-18-4E:Lianhe Technologies, Inc.
+00-18-4F:8 Ways Technology Corp.
+00-18-50:Secfone Kft
+00-18-51:SWsoft
+00-18-52:StorLink Semiconductors, Inc.
+00-18-53:Atera Networks LTD.
+00-18-54:Airtube ,co.ltd
+00-18-55:Aeromaritime Systembau GmbH
+00-18-56:EyeFi, Inc
+00-18-57:Unilever R&D
+00-18-58:TagMaster AB
+00-18-59:Strawberry Linux Co.,Ltd.
+00-18-5A:uControl, Inc.
+00-18-5B:Network Chemistry, Inc
+00-18-5C:EDS Lab Pte Ltd
+00-18-5D:TAIGUEN TECHNOLOGY (SHEN-ZHEN) CO., LTD.
+00-18-5E:Nexterm Inc.
+00-18-5F:TAC Inc.
+00-18-60:SIM Technology Group Shanghai Simcom Ltd.,
+00-18-61:Ooma, Inc.
+00-18-62:Seagate Technology
+00-18-63:Veritech Electronics Limited
+00-18-64:Cybectec Inc.
+00-18-65:Bayer Diagnostics Sudbury Ltd
+00-18-66:Leutron Vision
+00-18-67:Evolution Robotics Retail
+00-18-68:Scientific Atlanta, A Cisco Company
+00-18-69:KINGJIM
+00-18-6A:Global Link Digital Technology Co,.LTD
+00-18-6B:Sambu Communics CO., LTD.
+00-18-6C:Neonode AB
+00-18-6D:Zhenjiang Sapphire Electronic Industry CO.
+00-18-6E:3COM Europe Ltd
+00-18-6F:Setha Industria Eletronica LTDA
+00-18-70:E28 Shanghai Limited
+00-18-71:Global Data Services
+00-18-72:Expertise Engineering
+00-18-73:Cisco Systems
+00-18-74:Cisco Systems
+00-18-75:AnaCise Testnology Pte Ltd
+00-18-76:WowWee Ltd.
+00-18-77:Amplex A/S
+00-18-78:Mackware GmbH
+00-18-79:dSys
+00-18-7A:Wiremold
+00-18-7B:4NSYS Co. Ltd.
+00-18-7C:INTERCROSS, LLC
+00-18-7D:Armorlink shanghai Co. Ltd
+00-18-7E:RGB Spectrum
+00-18-7F:ZODIANET
+00-18-80:Mobilygen
+00-18-81:Buyang Electronics Industrial Co., Ltd
+00-18-82:Huawei Technologies Co., Ltd.
+00-18-83:FORMOSA21 INC.
+00-18-84:FON
+00-18-85:Avigilon Corporation
+00-18-86:EL-TECH, INC.
+00-18-87:Metasystem SpA
+00-18-88:GOTIVE a.s.
+00-18-89:WinNet Solutions Limited
+00-18-8A:Infinova LLC
+00-18-8B:Dell
+00-18-8C:Mobile Action Technology Inc.
+00-18-8D:Nokia Danmark A/S
+00-18-8E:Ekahau, Inc.
+00-18-8F:Montgomery Technology, Inc.
+00-18-90:RadioCOM, s.r.o.
+00-18-91:Zhongshan General K-mate Electronics Co., Ltd
+00-18-92:ads-tec GmbH
+00-18-93:SHENZHEN PHOTON BROADBAND TECHNOLOGY CO.,LTD
+00-18-94:zimocom
+00-18-95:Hansun Technologies Inc.
+00-18-96:Great Well Electronic LTD
+00-18-97:JESS-LINK PRODUCTS Co., LTD
+00-18-98:KINGSTATE ELECTRONICS CORPORATION
+00-18-99:ShenZhen jieshun Science&Technology Industry CO,LTD.
+00-18-9A:HANA Micron Inc.
+00-18-9B:Thomson Inc.
+00-18-9C:Weldex Corporation
+00-18-9D:Navcast Inc.
+00-18-9E:OMNIKEY GmbH.
+00-18-9F:Lenntek Corporation
+00-18-A0:Cierma Ascenseurs
+00-18-A1:Tiqit Computers, Inc.
+00-18-A2:XIP Technology AB
+00-18-A3:ZIPPY TECHNOLOGY CORP.
+00-18-A4:Motorola Mobile Devices
+00-18-A5:ADigit Technologies Corp.
+00-18-A6:Persistent Systems, LLC
+00-18-A7:Yoggie Security Systems LTD.
+00-18-A8:AnNeal Technology Inc.
+00-18-A9:Ethernet Direct Corporation
+00-18-AA:Protec Fire Detection plc
+00-18-AB:BEIJING LHWT MICROELECTRONICS INC.
+00-18-AC:Shanghai Jiao Da HISYS Technology Co. Ltd.
+00-18-AD:NIDEC SANKYO CORPORATION
+00-18-AE:Tongwei Video Technology CO.,LTD
+00-18-AF:Samsung Electronics Co., Ltd.
+00-18-B0:Nortel
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -6617,7 +6716,7 @@
 00-30-AF:Honeywell GmbH
 00-30-B0:Convergenet Technologies
 00-30-B1:aXess-pro networks GmbH
-00-30-B2:WESCAM - HEALDSBURG
+00-30-B2:L-3 Sonoma EO
 00-30-B3:San Valley Systems, Inc.
 00-30-B4:INTERSIL CORP.
 00-30-B5:Tadiran Microwave Networks
@@ -8201,7 +8300,7 @@
 00-A0-EA:ETHERCOM CORP.
 00-A0-EB:Encore Networks
 00-A0-EC:TRANSMITTON LTD.
-00-A0-ED:PRI AUTOMATION
+00-A0-ED:Brooks Automation, Inc.
 00-A0-EE:NASHOBA NETWORKS
 00-A0-EF:LUCIDATA LTD.
 00-A0-F0:TORONTO MICROELECTRONICS INC.
