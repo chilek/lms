@@ -1694,5 +1694,8 @@ $_LANG['Financial data export to external systems'] = 'Eksport danych finansowyc
 $_LANG['Bank account:'] = 'Rachunek bankowy:';
 $_LANG['Adds body of message in ticket reply. Default: false'] = 'Dodaje ciało wiadomości w odpowiedzi. Domyślnie: nie.';
 $_LANG['sql'] = 'sql';
+$_LANG['SYSTEM DOMAIN'] = 'DOMENA SYSTEMOWA';
+$_LANG['Selected domain has other owner!'] = 'Wybrana domena posiada innego właściciela!';
+$_LANG['Select owner or \'SYSTEM DOMAIN\' if you don\'t want to assign it to any customer'] = 'Wybierz właściciela lub \'DOMENA SYSTEMOWA\' jeśli nie chcesz przypisywać jej do żadnego klienta';
 
 ?>

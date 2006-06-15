@@ -495,7 +495,7 @@ $menu = array(
 	);
 
 // Adding USerpanel menuitems
-if($CONFIG['directories']['userpanel_dir'])
+if(isset($CONFIG['directories']['userpanel_dir']))
         // be sure that Userpanel exists
 	if(file_exists($CONFIG['directories']['userpanel_dir'].'/lib/LMS.menu.php'))
 	        require_once($CONFIG['directories']['userpanel_dir'].'/lib/LMS.menu.php');

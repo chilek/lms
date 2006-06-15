@@ -30,6 +30,8 @@ function GetDomainIdByName($name)
 	return $DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
 }
 
+$domainadd = array();
+
 if(isset($_POST['domainadd']))
 {
 	$domainadd = $_POST['domainadd'];
@@ -49,8 +51,10 @@ if(isset($_POST['domainadd']))
 	
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO domains (name, description) VALUES (?,?)',
-				    array($domainadd['name'], $domainadd['description']));
+		$DB->Execute('INSERT INTO domains (name, ownerid, description) VALUES (?,?,?)',
+				    array($domainadd['name'], 
+					    $domainadd['ownerid'], 
+					    $domainadd['description']));
 		$LMS->SetTS('domains');
 		
 		if(!isset($domainadd['reuse']))
@@ -61,14 +65,19 @@ if(isset($_POST['domainadd']))
 		unset($domainadd['name']);
 		unset($domainadd['description']);
 	}
-	$SMARTY->assign('domainadd', $domainadd);
 }	
+elseif(isset($_GET['cid']))
+{
+        $domainadd['ownerid'] = intval($_GET['cid']);
+}
 
 $layout['pagetitle'] = trans('New Domain');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SMARTY->assign('domainadd', $domainadd);
 $SMARTY->assign('error', $error);
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->display('domainadd.html');
 
 ?>
