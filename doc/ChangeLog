@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.4 Teer (2006-06-15):
 
  - lmsd: fixed configuration parser - backslash without special sequence
    isn't removed (alec)
