@@ -706,7 +706,7 @@ class LMS
 	function GetCustomerBalanceList($id)
 	{
 		$saldolist = array();
-		// wrapper do starego formatu
+		
 		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, 
 					cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, 
 					comment, docid, users.name AS username,
@@ -716,23 +716,25 @@ class LMS
 					LEFT JOIN documents ON documents.id = docid
 					LEFT JOIN taxes ON cash.taxid = taxes.id
 					WHERE cash.customerid=? ORDER BY time', array($id)))
-			foreach($tslist as $row)
-				foreach($row as $column => $value)
-					$saldolist[$column][] = $value;
-		
-		$saldolist['balance'] = 0;
-		$saldolist['total'] = 0;
-
-		if(sizeof($saldolist) > 0)
 		{
-			foreach($saldolist['id'] as $i => $v)
+			$saldolist['balance'] = 0;
+			$saldolist['total'] = 0;
+			$i = 0;
+
+			foreach($tslist as $row)
 			{
-				$value = $saldolist['value'][$i];
-				$saldolist['after'][$i] = round($saldolist['balance'] + $value,2);
-				$saldolist['balance'] += $value;
-				$saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
+				// old format wrapper
+				foreach($row as $column => $value)
+					$saldolist[$column][$i] = $value;
+				
+				$saldolist['after'][$i] = round($saldolist['balance'] + $row['value'], 2);
+				$saldolist['balance'] += $row['value'];
+				$saldolist['date'][$i] = date('Y/m/d H:i', $row['time']);
+				
+				$i++;
 			}
-			$saldolist['total'] = sizeof($saldolist['id']);
+			
+			$saldolist['total'] = sizeof($tslist);
 		}
 
 		$saldolist['customerid'] = $id;
