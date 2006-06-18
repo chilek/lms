@@ -30,7 +30,7 @@ $create_reg = $DB->GetOne('SELECT docid FROM receiptcontents LIMIT 1');
 
 $DB->Execute("ALTER TABLE receiptcontents ADD COLUMN regid int(11) NOT NULL DEFAULT '0'");
 $DB->Execute("UPDATE receiptcontents SET regid = ?", array($create_reg ? 1 : 0));
-$DB->Execute("CREATE INDEX receiptcontents_regid_idx ON receiptcontents (regid)");
+$DB->Execute("ALTER TABLE receiptcontents ADD INDEX regid (regid)");
 
 $DB->Execute("CREATE TABLE cashrights (
 	id int(11) 	NOT NULL auto_increment,
