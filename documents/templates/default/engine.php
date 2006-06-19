@@ -41,7 +41,7 @@ if($customernodes)
 
 if($customeraccounts = $DB->GetAll('SELECT passwd.*, domains.name AS domain
 				FROM passwd LEFT JOIN domains ON (domainid = domains.id)
-				WHERE ownerid = ? ORDER BY login', array($cid)))
+				WHERE passwd.ownerid = ? ORDER BY login', array($cid)))
 	foreach($customeraccounts as $idx => $account)
 	{
 		$customeraccounts[$idx]['aliases'] = $DB->GetCol('SELECT login FROM aliases WHERE accountid=?', array($account['id']));
