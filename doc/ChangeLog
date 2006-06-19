@@ -1,5 +1,9 @@
 $Id$
 
+version ? (??/??/????):
+
+  - fixed tickets searching with quicksearch input (alec)
+
 version 1.6.8 Jamal (10/05/2006):
 
   - using RFC2822 date format in mail headers (alec)

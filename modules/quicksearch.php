@@ -77,8 +77,8 @@ switch($_GET['mode'])
 	break;
 	
 	case 'ticket':
-		if(intval($search))
-			$target = '?m=rtticketview&id='.$search;
+		if(is_numeric($search) && intval($search)>0)
+			$target = '?m=rtticketview&id='.intval($search);
 		else
 		{
 			$SESSION->save('rtsearch', array('name' => $search));
