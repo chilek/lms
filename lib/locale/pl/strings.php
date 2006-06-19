@@ -92,6 +92,7 @@ $_LANG['Aliases of accounts'] = 'Aliasy kont';
 $_LANG['Alias with that login name already exists in that domain!'] = 'Alias o podanej nazwie już istnieje w tej domenie!';
 $_LANG['- all -'] = '- wszystkie -';
 $_LANG['all'] = 'wszystkie';
+$_LANG['all<!customers>'] = 'wszyscy';
 $_LANG['All'] = 'Wszystkie';
 $_LANG['All addresses'] = 'Wszystkie adresy';
 $_LANG['- all customers -'] = '- wszyscy -';
@@ -1697,5 +1698,11 @@ $_LANG['sql'] = 'sql';
 $_LANG['SYSTEM DOMAIN'] = 'DOMENA SYSTEMOWA';
 $_LANG['Selected domain has other owner!'] = 'Wybrana domena posiada innego właściciela!';
 $_LANG['Select owner or \'SYSTEM DOMAIN\' if you don\'t want to assign it to any customer'] = 'Wybierz właściciela lub \'DOMENA SYSTEMOWA\' jeśli nie chcesz przypisywać jej do żadnego klienta';
+$_LANG['Customers list is empty!'] = 'Lista klientów jest pusta!';
+$_LANG['Documents Generator'] = 'Generator dokumentów';
+$_LANG['Documents mass creation'] = 'Masowe tworzenie dokumentów';
+$_LANG['Document template not selected!'] = 'Nie wybrany szablon dokumentu!';
+$_LANG['First number:'] = 'Numer początkowy:';
+$_LANG['Select document template'] = 'Wybierz szablon dokumentu';
 
 ?>
