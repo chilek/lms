@@ -682,6 +682,12 @@ wins    = 213.25.209.10</screen>
 		    Domy¶lnie: 'Attached file with Invoice No. %invoice'.</para>
 		    <para>Przyk³ad:	<prompt>mail_body = ''</prompt></para>
 		</listitem>
+		<listitem>
+		    <para>customergroups</para>
+		    <para>Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas
+		    wysy³ki. Domy¶lnie: nie ustawiona - wszystkie grupy.</para>
+		    <para>Przyk³ad:	<prompt>customergroups = grupa1 grupa2</prompt></para>
+		</listitem>
 	    </itemizedlist>
 	 Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
 	 <prompt>--fakedate</prompt> (<prompt>-f</prompt>). Przy jego u¿yciu mo¿na 
