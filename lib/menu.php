@@ -101,6 +101,11 @@ $menu = array(
 					'tip' => trans('Allows you to send message to customers'),
 				),
 				array(
+					'name' => trans('Documents Generator'),
+					'link' =>'?m=documentgen',
+					'tip' => trans('Documents mass creation'),
+				),
+				array(
 					'name' => trans('Printing'),
 					'link' =>'?m=customerprint',
 					'tip' => trans('Printing'),

@@ -27,7 +27,7 @@
 function bankaccount($id)
 {
 	global $CONFIG;
-	if(chkconfig($CONFIG['finances']['iban']))
+	if(isset($CONFIG['finances']['iban']) && chkconfig($CONFIG['finances']['iban']))
 	{
 		$cc = '2521';	// Kod kraju - Polska
     		$account = sprintf('%02d',98-bcmod($CONFIG['finances']['account'].sprintf('%012d',$id).$cc.'00',97)).$CONFIG['finances']['account'].sprintf('%012d',$id);

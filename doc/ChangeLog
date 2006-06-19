@@ -47,6 +47,7 @@ version ? (????-??-??):
   - added accounts of type 'sql' (alec)
   - domain can have an owner (alec)
   - lms-sendinvoices: added 'customergroups' option (alec)
+  - added Documents Generator for serial documents creation (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 

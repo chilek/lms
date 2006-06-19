@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
+{include file="calendar_js.html"}
 {if $printmenu=="customer"}
 <P><FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&type=customerlist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">	
@@ -31,7 +31,7 @@
 						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{t}waiting{/t}</NOBR><BR>
 						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{t}interested<!plural>{/t}</NOBR><BR>
 						<NOBR><INPUT class="radio light" type="radio" name="filter" value="-1">{t}without nodes{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0">{t}all{/t}</NOBR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0">{t}all<!customers>{/t}</NOBR>
 					</TD>
 					<TD width="1%">
 						<NOBR><IMG src="img/network.gif" alt=""> <B>{t}Network:{/t}</B></NOBR><BR><BR>
