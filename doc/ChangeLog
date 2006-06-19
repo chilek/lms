@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+ - fixed tickets searching with quicksearch input (alec)
+
 version 1.8.4 Teer (2006-06-15):
 
  - lmsd: fixed configuration parser - backslash without special sequence
