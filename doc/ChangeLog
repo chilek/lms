@@ -46,6 +46,7 @@ version ? (????-??-??):
   - fixed access status saving in Node Add (alec)
   - added accounts of type 'sql' (alec)
   - domain can have an owner (alec)
+  - lms-sendinvoices: added 'customergroups' option (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 

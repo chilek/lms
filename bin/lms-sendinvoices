@@ -112,6 +112,7 @@ my $sender_name = $ini->val('sendinvoices', 'sender_name') || '';
 my $sender_email = $ini->val('sendinvoices', 'sender_email') || '';
 my $mail_subject = $ini->val('sendinvoices', 'mail_subject') || 'Invoice No. %invoice';
 my $mail_body = $ini->val('sendinvoices', 'mail_body') || 'Attached file with Invoice No. %invoice';
+my $customergroups = $ini->val('sendinvoices', 'customergroups') || '';
 
 if(!$sender_name)
 {
@@ -186,11 +187,26 @@ my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
 
-$dbq = $dbase->prepare('SELECT documents.id AS id, number, cdate, email, documents.name AS name, customerid, template
+my $groupwhere = '';
+my $groupjoin = '';
+if($customergroups)
+{
+	$customergroups = "UPPER('$customergroups')";
+	$customergroups =~ s/[ \t]+/\'\),UPPER\(\'/g;
+	$groupwhere = " AND UPPER(customergroups.name) IN ($customergroups)";  
+	$groupjoin = "LEFT JOIN customerassignments ON (documents.customerid = customerassignments.customerid) 
+			LEFT JOIN customergroups ON (customerassignments.customergroupid = customergroups.id) ";
+}
+
+$dbq = $dbase->prepare("SELECT documents.id AS id, number, cdate, email, documents.name AS name, 
+				documents.customerid AS customerid, template
 			FROM documents 
-			LEFT JOIN customers ON customers.id = customerid 
+			LEFT JOIN customers ON customers.id = documents.customerid 
 			LEFT JOIN numberplans ON numberplanid = numberplans.id
-			WHERE deleted = 0 AND type = 1 AND email != \'\' AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
+			$groupjoin
+			WHERE deleted = 0 AND type = 1 AND email != '' 
+				AND cdate >= $daystart AND cdate <= $dayend
+				$groupwhere");
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
