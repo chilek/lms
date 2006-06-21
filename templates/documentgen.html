@@ -2,6 +2,18 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
+<SCRIPT type="text/javascript" language="javascript">
+//<!--
+{literal}
+	function printdoc()
+	{
+		document.documentgen.action = "?m=documentgen&print=1";
+		document.documentgen.target = "_blank";
+		document.documentgen.submit();
+	}
+{/literal}
+//-->
+</SCRIPT>
 <P><FORM name="documentgen" method="POST" action="?m=documentgen">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">
@@ -156,8 +168,9 @@
 	<TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
-			<A href="javascript: document.documentgen.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
+			<A href="javascript: document.documentgen.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>&nbsp;
 		{*	<A href="?m=">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A> *}
+			<A href="javascript: printdoc();">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
