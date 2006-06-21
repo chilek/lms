@@ -114,6 +114,7 @@ if(isset($_POST['document']))
 	
 	if(!$error)
 	{
+		$header = '';
 		$time = time();
 		$gencount = 0;
 		$genresult = '<H1>'.$layout['pagetitle'].'</H1>';
@@ -203,11 +204,22 @@ if(isset($_POST['document']))
 			
 			$genresult .= docnumber($document['number'], $numtemplate, $time).'.<br>';
 			$document['number']++;
+
+			if(isset($_GET['print']) && $document['contenttype']=='text/html')
+			{
+				print $output;
+				print '<DIV style="page-break-after: always;"></DIV>'; 
+				flush();
+			}
 		}
 		
-		$SMARTY->display('header.html');
-		print $genresult;
-		$SMARTY->display('footer.html');
+		if(!isset($_GET['print']))
+		{
+			$SMARTY->display('header.html');
+			print $genresult;
+			$SMARTY->display('footer.html');
+		}
+		
 		die;
 	}
 	else
