@@ -6,7 +6,7 @@
 #
 
 WORKDIR=`pwd`
-NOTDISTRIB="devel .project modules/core modules/mailing lib/ExecStack.class.php"
+NOTDISTRIB="devel .project modules/core modules/mailing modules/auth modules/traffic modules/users lib/ExecStack.class.php"
 SMARTYVER="2.6.14"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
