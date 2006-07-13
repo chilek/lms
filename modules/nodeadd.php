@@ -132,7 +132,11 @@ if(isset($_POST['nodedata']))
 		{
 			$SESSION->redirect('?m=nodeinfo&id='.$nodeid);
 		}
+		
+		$ownerid = $nodedata['ownerid'];
 		unset($nodedata);
+		
+		$nodedata['ownerid'] = $ownerid;
 		$nodedata['reuse'] = '1';
 	}
 	

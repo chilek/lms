@@ -28,12 +28,14 @@ $layout['pagetitle'] = trans('Select IP address');
 
 $networks = $LMS->GetNetworks();
 
-$p = $_GET['p'];
+$p = isset($_GET['p']) ? $_GET['p'] : '';
 
-if(!isset($p))
+if($p=='')
 	$js = 'var targetfield = window.opener.targetfield;';
-if($p == 'main')
+elseif($p == 'main')
 	$js = 'var targetfield = parent.targetfield;';
+else
+	$js = '';
 
 if (isset($_POST['netid']))
     $netid = $_POST['netid'];
@@ -55,6 +57,8 @@ else
 
 $SESSION->save('netid', $netid);
 $SESSION->save('ntlp.page.'.$netid, $page);
+
+$network = array();
 
 if($p == 'main')
 {
