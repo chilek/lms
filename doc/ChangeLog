@@ -49,6 +49,8 @@ version ? (????-??-??):
   - lms-sendinvoices: added 'customergroups' option (alec)
   - added Documents Generator for serial documents creation (alec)
   - BTS#0000576: fixed problem with MAC change (alec)
+  - BTS#0000569: saved owner context when adding nodes with reuse
+    checkbox (alec)
 
 version 1.9.1 Jumar (2006-02-13):
 
