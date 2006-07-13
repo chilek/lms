@@ -117,7 +117,7 @@ if(isset($_POST['nodeedit']))
 	{
 		if(!chkconfig($CONFIG['phpui']['allow_mac_sharing']))
 		{
-			if($LMS->GetNodeIDByMAC($nodeedit['mac']) != $nodeedit['id'])
+			if($nodeinfo['mac'] != $nodeedit['mac'] && $LMS->GetNodeIDByMAC($nodeedit['mac']))
 				$error['mac'] = trans('Specified MAC address is in use!');
 		}
 	}

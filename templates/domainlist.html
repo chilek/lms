@@ -10,7 +10,7 @@
 			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=domainlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP>
-			<IMG src="img/customer.gif" alt=""> <A href="?m=domainlist&o=customername{if $listdata.direction eq "asc" && $listdata.order eq "customername"},desc{/if}">{t}Customer:{/t}</A> {if $listdata.order eq "customername"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/customer.gif" alt=""> <A href="?m=domainlist&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{t}Customer:{/t}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="96%" class="fbt" NOWRAP>
 			<IMG src="img/info.gif" alt=""> <A href="?m=domainlist&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{t}Description:{/t}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
