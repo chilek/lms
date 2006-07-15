@@ -277,6 +277,11 @@ var jest typu {typeof(var)}
 					<para>Przyk³ad: <prompt>trim("   aaa   ")</prompt></para>
 				</listitem>
 				<listitem>
+					<para><prompt>len(ci±g_znaków)</prompt></para>
+					<para>Zwraca d³ugo¶æ ci±gu (odpowiednik funkcji strlen() z jêzyka C).</para>
+					<para>Przyk³ad: <prompt>length = len(string)</prompt></para>
+				</listitem>
+				<listitem>
 					<para><prompt>replace(wzorzec, zamiennik, ci±g_znaków)</prompt></para>
 					<para>Funkcja przeszukuje ci±g_znaków w poszukiwaniu fragmentów pasuj±cych
 					do wzorca i wstawia w jego miejsce zamiennik. Wzorzec mo¿e byæ
