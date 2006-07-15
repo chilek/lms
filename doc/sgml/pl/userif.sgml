@@ -138,6 +138,16 @@
 	    tak¿e w³±czenie lub wy³±czenie ostrze¿eñ wszystkim komputerom nale¿±cym
 	    do wybranych klientów.</para>
 	</sect2>
+	<sect2 id="menu-customers-documentgen">
+	    <title>Generator dokumentów</title>
+	    <para>Generator umo¿liwia utworzenie dokumentów wg wybranego szablonu dla wybranej
+	    grupy klientów. Opcja 'Drukuj' umo¿liwia jednocze¶nie wydruk wygenerowanych dokumentów
+	    pod warunkiem, ¿e s± to dokumenty html.
+	    <note><para>Z uwagi na wydajno¶æ zaleca siê korzystanie ze zoptymalizowanych pod k±tem 
+	    generatora szablonów oraz nie drukowania wiêkszej ilo¶ci dokumentów (co mo¿e prowadziæ do
+	    zawieszenia przegl±darki).</para></note>
+	    </para>
+	</sect2>
 	<sect2 id="menu-customers-prints">
 	    <title>Wydruki</title>
 	    <para>Zestaw modu³ów wy¶wietlaj±cych listy i raporty formie przyjaznej dla drukarki
@@ -467,8 +477,8 @@
 	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
 	u¿ytkowników. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
 	w celu korzystania z bazy danych.</para>
-	<para>W LMSie mo¿na utworzyæ cztery rodzaje kont: shell (1), poczta (2),
-	www (4), ftp (8). W nawiasach podano numeryczne wewnêtrzne oznaczenie
+	<para>W LMSie mo¿na utworzyæ piêæ rodzajów kont: shell (1), poczta (2),
+	www (4), ftp (8) i sql (16). W nawiasach podano numeryczne wewnêtrzne oznaczenie
 	typu konta w bazie. Konta mog± byæ wielotypowe. Przyk³adowo, je¶li 
 	zdefiniujesz konto shell+poczta+ftp w bazie zostanie zapisana cyfra 11.
 	Oznacza to, ¿e do rozpoznawania typu konta w warunkach WHERE zapytañ

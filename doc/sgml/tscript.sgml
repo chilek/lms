@@ -278,6 +278,11 @@ var is type of {typeof(var)}
 		    	    <para>Example: <prompt>trim("   aaa   ")</prompt></para>
 			</listitem>
 			<listitem>
+			    <para><prompt>len(string)</prompt></para>
+			    <para>String length (strlen() in C).</para>
+			    <para>Przyk³ad: <prompt>length = len(string)</prompt></para>
+			</listitem>
+			<listitem>
 				<para><prompt>replace(pattern, replacement, string)</prompt></para>
 				<para>This function scans string for matches to pattern, then replaces 
 				the matched text with replacement. Pattern can be a regular expression.

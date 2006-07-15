@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.9.2 Thanos (2006-07-15):
   
   - added possibility to read customer's own iban bank account number from 
     ui (lexx)
@@ -41,7 +41,7 @@ version ? (????-??-??):
     initialization scripts (alec)
   - don't "blend" customers without nodes on Customers List (alec)
   - added 'New Account' link with current customer id on Accounts List (alec)
-  - little fix in chkconfig() for not set variables (alec)
+  - little fix in chkconfig() for unset variables (alec)
   - fixed mac checking in Node Edit (alec)
   - fixed access status saving in Node Add (alec)
   - added accounts of type 'sql' (alec)

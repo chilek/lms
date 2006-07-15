@@ -144,13 +144,21 @@ and it only contains letters, digits and underscore and minus signs. Groups are
 being used in scripts configuration, and for this reason group names cannot
 contain spaces.</para>
 	</sect2>
-	<sect2 id="menu-customers-warnings">
+	<sect2 id="menu-customers-messages">
 	    <title>Messages</title>
             <para>In this module, you're able to write administrative message which
             will appear on customers Web browser screen and assign it massively to all
             or majority of your customers (just pick them using selection box on the left).
             It's also possible here to deselect administrative messages massively here.
             </para>
+	</sect2>
+	<sect2 id="menu-customers-documentgen">
+	    <title>Document Generator</title>
+	    <para>Generator provides possibility to create documents according to selected template
+	    group of customers. With option 'Print' you can print generated documents but only
+	    if they are of html type.
+	    <note><para>For performance reasons is recommended to use templates optimized for
+	    generator and to not print many (hundreds) documents (possible browser hang).</para></note></para>
 	</sect2>
 	<sect2 id="menu-customers-prints">
 	    <title>Printing</title>
@@ -487,8 +495,8 @@ invoices.</para></note></para>
 This functionality is provided for advanced system administrators, because it
 requires in-depth knowledge of services running on server in order to configure
 them to use LMS database.</para>
-	<para>You can create four types of accounts now: shell (1), email (2),
-www (4) and ftp (8). Decimal values for internal representation of those accounts
+	<para>You can create five types of accounts now: shell (1), email (2),
+www (4), ftp (8) and sql (16). Decimal values for internal representation of those accounts
 are given in parenthesis. This approach enables to provide multi-type accounts,
 eg. if you define shell+email+ftp account it will be given number 11 in
 database. This means that for recognition of account type you should use binary
