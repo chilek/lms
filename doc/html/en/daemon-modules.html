@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -1231,8 +1231,8 @@ NAME="TC-DESC"
               downceil, connection limit) are being calculated for each customer. Then, loop is performed
               to check networks and groups (if specified). If limit values are not zeroes rules are written
               to file with variables replacement. The following variables can be used in rules: %name - host
-              name, %i - IP address, %m - MAC, %uprate, %downrate, %upceil, %downceil, %plimit, %climit,
-              and %x - integer counter with initial value of 100 incremented by one for each node.</P
+              name, %i - IP address, %m - MAC, %if - network interface, %uprate, %downrate, %upceil, %downceil, %plimit, %climit,
+              and %x - integer counter with initial value of 100 incremented by one for each node (or customer).</P
 ><P
 >Default policy for creating HTB class is one class per all nodes belonging to
               each customer. It can be changed with 'one_class_per_host' option.</P

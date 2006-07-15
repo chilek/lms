@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
 ><TITLE
@@ -1613,10 +1613,8 @@ NAME="INSTALL-MYSQL-DBCREATE"
 >2.5.1.3. Create Database</A
 ></H4
 ><P
->You have to create database if you run LMS for the first time. If you are
-               upgrading from older version, look into Changelog for appropriate notes about
-               database changes. In order to create database and load it with schema go to LMS
-               directory and run:
+>You have to create database if you run LMS for the first time. 
+		In order to create database and load it with schema go to LMS directory and run:
 <PRE
 CLASS="SCREEN"
 >mysql -u[user name with database creation rights] -p
@@ -3315,7 +3313,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-CUSTOMERS-WARNINGS"
+NAME="MENU-CUSTOMERS-MESSAGES"
 >3.3.6. Messages</A
 ></H3
 ><P
@@ -3330,8 +3328,47 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="MENU-CUSTOMERS-DOCUMENTGEN"
+>3.3.7. Document Generator</A
+></H3
+><P
+>Generator provides possibility to create documents according to selected template
+	    group of customers. With option 'Print' you can print generated documents but only
+	    if they are of html type.
+	    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>For performance reasons is recommended to use templates optimized for
+	    generator and to not print many (hundreds) documents (possible browser hang).</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="MENU-CUSTOMERS-PRINTS"
->3.3.7. Printing</A
+>3.3.8. Printing</A
 ></H3
 ><P
 >Set of modules to provide printer-friendly version of your
@@ -4128,8 +4165,8 @@ This functionality is provided for advanced system administrators, because it
 requires in-depth knowledge of services running on server in order to configure
 them to use LMS database.</P
 ><P
->You can create four types of accounts now: shell (1), email (2),
-www (4) and ftp (8). Decimal values for internal representation of those accounts
+>You can create five types of accounts now: shell (1), email (2),
+www (4), ftp (8) and sql (16). Decimal values for internal representation of those accounts
 are given in parenthesis. This approach enables to provide multi-type accounts,
 eg. if you define shell+email+ftp account it will be given number 11 in
 database. This means that for recognition of account type you should use binary
@@ -7167,6 +7204,18 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >mail_body = ''</SAMP
+></P
+></LI
+><LI
+><P
+>customergroups</P
+><P
+>List of (space separated) customer groups, that should be
+		    considered while sending invoices. Default: unset - all customers.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>customergroups = group1 group2</SAMP
 ></P
 ></LI
 ></UL
@@ -10545,8 +10594,8 @@ NAME="TC-DESC"
               downceil, connection limit) are being calculated for each customer. Then, loop is performed
               to check networks and groups (if specified). If limit values are not zeroes rules are written
               to file with variables replacement. The following variables can be used in rules: %name - host
-              name, %i - IP address, %m - MAC, %uprate, %downrate, %upceil, %downceil, %plimit, %climit,
-              and %x - integer counter with initial value of 100 incremented by one for each node.</P
+              name, %i - IP address, %m - MAC, %if - network interface, %uprate, %downrate, %upceil, %downceil, %plimit, %climit,
+              and %x - integer counter with initial value of 100 incremented by one for each node (or customer).</P
 ><P
 >Default policy for creating HTB class is one class per all nodes belonging to
               each customer. It can be changed with 'one_class_per_host' option.</P
@@ -12074,6 +12123,20 @@ CLASS="PROMPT"
 >Example: <SAMP
 CLASS="PROMPT"
 >trim("   aaa   ")</SAMP
+></P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>len(string)</SAMP
+></P
+><P
+>String length (strlen() in C).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>length = len(string)</SAMP
 ></P
 ></LI
 ><LI
@@ -13845,6 +13908,10 @@ BORDER="0"
 ><TR
 ><TD
 >suspended - is this payment suspended? (1 - yes, 0 - no)</TD
+></TR
+><TR
+><TD
+>settlement - do deficient period settlement? (1 - yes, 0 - no)</TD
 ></TR
 ></TBODY
 ></TABLE
