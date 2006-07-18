@@ -1,0 +1,122 @@
+################################################################################
+# Object config file for Nagios
+# $Id$
+#
+################################################################################
+
+################################################################################
+# SERVICE DEFINITIONS
+#
+################################################################################
+
+# Generic service definition template
+define service {
+	name				generic-service	; The 'name' of this service template,
+							; referenced in other service definitions
+	active_checks_enabled		1		; Active service checks are enabled
+	passive_checks_enabled		1		; Passive service checks are enabled/accepted
+	parallelize_check		1		; Active service checks should be parallelized (disabling this can lead to major performance problems)
+	obsess_over_service		1		; We should obsess over this service (if necessary)
+	check_freshness			0		; Default is to NOT check service 'freshness'
+	notifications_enabled		1		; Service notifications are enabled
+	event_handler_enabled		1		; Service event handler is enabled
+	flap_detection_enabled		1		; Flap detection is enabled
+	failure_prediction_enabled	1		; Failure prediction is enabled
+	process_perf_data		1		; Process performance data
+	retain_status_information	1		; Retain status information across program restarts
+	retain_nonstatus_information	1		; Retain non-status information across program restarts
+
+	register			0		; DONT REGISTER THIS DEFINITION
+							; - ITS NOT A REAL SERVICE, JUST A TEMPLATE!
+}
+
+# Define a service to "ping" the local machine
+# Define a service to "ping" the local machine
+
+define service {
+	use			generic-service		; Name of service template to use
+	host_name		localhost
+	service_description	PING
+	is_volatile		0
+	check_period		24x7
+	max_check_attempts	4
+	normal_check_interval	5
+	retry_check_interval	1
+	contact_groups		admins
+	notification_interval	960
+	notification_period	24x7
+	check_command		check_ping!100.0,20%!500.0,60%
+}
+
+# Define a service to check the disk space of the root partition
+# on the local machine.  Warning if < 20% free, critical if
+# < 10% free space on partition.
+define service {
+	use			generic-service		; Name of service template to use
+	host_name		localhost
+	service_description	Root Partition
+	is_volatile		0
+	check_period		24x7
+	max_check_attempts	4
+	normal_check_interval	5
+	retry_check_interval	1
+	contact_groups		admins
+	notification_interval	960
+	notification_period	24x7
+	check_command		check_local_disk!20%!10%!/
+}
+
+# Define a service to check the number of currently logged in
+# users on the local machine.  Warning if > 20 users, critical
+# if > 50 users.
+define service {
+	use			generic-service		; Name of service template to use
+	host_name		localhost
+	service_description	Current Users
+	is_volatile		0
+	check_period		24x7
+	max_check_attempts	4
+	normal_check_interval	5
+	retry_check_interval	1
+	contact_groups		admins
+	notification_interval	960
+	notification_period	24x7
+	check_command		check_local_users!20!50
+}
+
+# Define a service to check the number of currently running procs
+# on the local machine.  Warning if > 250 processes, critical if
+# > 400 users.
+define service {
+	use			generic-service		; Name of service template to use
+	host_name		localhost
+	service_description	Total Processes
+	is_volatile		0
+	check_period		24x7
+	max_check_attempts	4
+	normal_check_interval	5
+	retry_check_interval	1
+	contact_groups		admins
+	notification_interval	960
+	notification_period	24x7
+	check_command		check_local_procs!250!400
+}
+
+
+# Define a service to check the load on the local machine.
+define service {
+	use			generic-service		; Name of service template to use
+	host_name		localhost
+	service_description	Current Load
+	is_volatile		0
+	check_period		24x7
+	max_check_attempts	4
+	normal_check_interval	5
+	retry_check_interval	1
+	contact_groups		admins
+	notification_interval	960
+	notification_period	24x7
+	check_command		check_local_load!5.0,4.0,3.0!10.0,6.0,4.0
+}
+
+# vim:ts=8:sw=8:syn=nagios

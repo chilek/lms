@@ -1,0 +1,20 @@
+################################################################################
+# Object config file for Nagios
+# $Id$
+#
+################################################################################
+
+################################################################################
+# HOST GROUP DEFINITIONS
+#
+################################################################################
+
+# We only have one host in our simple config file, so there is no need to
+# create more than one hostgroup.
+define hostgroup {
+	hostgroup_name	test
+	alias		Linux Servers
+	members		localhost
+}
+
+# vim:ts=8:sw=8:syn=nagios
