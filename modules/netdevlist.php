@@ -40,7 +40,7 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-if ($SESSION->is_set('ndlp') && !isset($_GET['page']))
+if(!isset($_GET['page']))
         $SESSION->restore('ndlp', $_GET['page']);
 	
 $page = (! $_GET['page'] ? 1 : $_GET['page']);
