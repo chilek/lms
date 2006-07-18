@@ -1,0 +1,48 @@
+################################################################################
+# Object config file for Nagios
+# $Id$
+#
+################################################################################
+
+################################################################################
+# HOST DEFINITIONS
+#
+################################################################################
+
+# Generic host definition template - This is NOT a real host, just a template!
+define host {
+	name				generic-host	; The name of this host template
+							; - referenced in other host definitions,
+							;   used for template recursion/resolution
+	notifications_enabled		1		; Host notifications are enabled
+	event_handler_enabled		1		; Host event handler is enabled
+	flap_detection_enabled		1		; Flap detection is enabled
+        failure_prediction_enabled      1       	; Failure prediction is enabled
+	process_perf_data		1		; Process performance data
+	retain_status_information	1		; Retain status information across program restarts
+	retain_nonstatus_information	1		; Retain non-status information across program restarts
+
+	register			0		; DONT REGISTER THIS DEFINITION
+							; - ITS NOT A REAL HOST, JUST A TEMPLATE!
+}
+
+# Since this is a simple configuration file, we only monitor one host - the
+# local host (this machine).
+define host {
+	use			generic-host		; Name of host template to use
+
+        host_name               localhost
+	alias			Linux Server
+	address			127.0.0.1
+
+	check_command		check-host-alive
+	max_check_attempts	10
+
+        notification_interval   120
+	notification_period	24x7
+        notification_options    d,r
+
+	contact_groups		admins
+}
+
+# vim:ts=8:sw=8:syn=nagios
