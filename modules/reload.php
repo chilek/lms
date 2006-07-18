@@ -26,20 +26,21 @@
 
 $layout['pagetitle'] = trans('Configuration Reload');
 
-$SMARTY->display('header.html');
-
-echo '<H1>'.$layout['pagetitle'].'</H1>';
-
 $_RELOAD_TYPE = $LMS->CONFIG['phpui']['reload_type'];
 $_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
 
 switch($_RELOAD_TYPE)
 {
 	case 'exec':
+	
 		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 
 		if(isset($_GET['setreloads']))
 		{
+			$SMARTY->display('header.html');
+
+			echo '<H1>'.$layout['pagetitle'].'</H1>';
+
 			$execlist = explode(';',$_EXECCMD);
 			foreach($hosts as $host)
 				if(in_array($host['id'], (array) $_POST['hosts']))
@@ -65,6 +66,9 @@ switch($_RELOAD_TYPE)
 		{
 			if(!count($hosts))
 			{
+				$SMARTY->display('header.html');
+
+				echo '<H1>'.$layout['pagetitle'].'</H1>';
 				echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
 				$execlist = explode(';',$_EXECCMD);
 				foreach($execlist as $execcmd)
@@ -82,6 +86,7 @@ switch($_RELOAD_TYPE)
 			else
 			{
 				$SMARTY->assign('hosts', $hosts);
+				$SMARTY->display('header.html');
 				$SMARTY->display('reload.html');
 			}
 		}
@@ -93,6 +98,10 @@ switch($_RELOAD_TYPE)
 		
 		if(isset($LMS->CONFIG['phpui']['reload_sqlquery']))
 		{
+			$SMARTY->display('header.html');
+
+			echo '<H1>'.$layout['pagetitle'].'</H1>';
+
 			$sqlqueries = explode(';',($LMS->CONFIG['phpui']['reload_sqlquery']));
 			
 			if(isset($_GET['setreloads']))
@@ -140,10 +149,15 @@ switch($_RELOAD_TYPE)
 						$DB->Execute('UPDATE hosts SET reload=1 WHERE id=?', array($host['id']));
 					else
 						$DB->Execute('UPDATE hosts SET reload=0 WHERE id=?', array($host['id']));
-			}
 			
-			$SMARTY->assign('hosts', $hosts);
-			$SMARTY->display('reload.html');
+				$SESSION->redirect('?m=reload');
+			}
+			else
+			{
+				$SMARTY->assign('hosts', $hosts);
+				$SMARTY->display('header.html');
+				$SMARTY->display('reload.html');
+			}
 		}
 	break;
 

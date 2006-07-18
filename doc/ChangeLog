@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - added reload status on hosts list in Reload (alec)
+
 version 1.9.2 Thanos (2006-07-15):
   
   - added possibility to read customer's own iban bank account number from 
