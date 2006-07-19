@@ -2,10 +2,12 @@ $Id$
 
 version ? (????-??-??):
 
- - fixed tickets searching with quicksearch input (alec)
- - BTS#0000576: fixed problem with MAC change (alec)
- - BTS#0000569: saved owner context when adding nodes with reuse
-   checkbox (alec) 
+  - fixed tickets searching with quicksearch input (alec)
+  - BTS#0000576: fixed problem with MAC change (alec)
+  - BTS#0000569: saved owner context when adding nodes with reuse
+    checkbox (alec)
+  - BTS#0000577: s/Submit/Search/ in Customer Search, Event Search
+    and Node Search (alec)
 
 version 1.8.4 Teer (2006-06-15):
 
