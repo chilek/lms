@@ -107,6 +107,7 @@ class Sysinfo {
 			case 'FreeBSD':
 			case 'OpenBSD':
 			case 'NetBSD':
+			case 'Darwin':
 			case 'WinNT':
 				exec('hostname',$return);
 				$hostname=$return[0];
@@ -140,6 +141,7 @@ class Sysinfo {
 				$sys_ticks = time() - $a;
 				$result = uptimef($sys_ticks);
 			break;
+			case 'Darwin':
 			case 'NetBSD':
 				$a = $this->bsd_grab_key('kern.boottime');
 				$sys_ticks = time() - $a;
@@ -161,12 +163,15 @@ class Sysinfo {
 	{
 		switch(PHP_OS)
 		{
-			
 			case 'WinNT':
 				$result = 'Windows NT/2000/XP N.A.';
 			break;
 			case 'Win32':
 				$result = 'Windows 95/98/ME N.A.';
+			break;
+			case 'Darwin':
+				$result = execute_program('sw_vers', '-productName');
+				$result .= ' '. execute_program('sw_vers', '-productVersion');
 			break;
 			default:
 				$result = $this->execute_program('uname','-s -r');
@@ -208,6 +213,7 @@ class Sysinfo {
 				else
 					$results = array('N.A.','N.A.','N.A.');
 			break;
+			case 'Darwin':
 			case 'FreeBSD':
 			case 'NetBSD':
 			case 'OpenBSD':			

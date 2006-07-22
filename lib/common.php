@@ -93,6 +93,7 @@ function hostname()
 			exec('hostname -f',$return);
 			$hostname=$return[0];
 			break;
+		case 'Darwin':
 		case 'FreeBSD':
 		case 'OpenBSD':
 		case 'NetBSD':
