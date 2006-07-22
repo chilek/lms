@@ -8,6 +8,7 @@ version ? (????-??-??):
     checkbox (alec)
   - BTS#0000577: s/Submit/Search/ in Customer Search, Event Search
     and Node Search (alec)
+  - BTS#0000580: sysinfo fixes for MacOS X (alec)
 
 version 1.8.4 Teer (2006-06-15):
 
