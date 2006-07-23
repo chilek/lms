@@ -105,10 +105,7 @@ function uptime()
 			$result = uptimef($sys_ticks);
 		break;
 		case 'NetBSD':
-			$a = bsd_grab_key('kern.boottime');
-			$sys_ticks = time() - $a;
-			$result = uptimef($sys_ticks);
-		break;
+		case 'Darwin':
 		case 'OpenBSD':
 			$a = bsd_grab_key('kern.boottime');
 			$sys_ticks = time() - $a;
@@ -153,6 +150,7 @@ function hostname()
 			exec('hostname -f',$return);
 			$hostname=$return[0];
 			break;
+		case 'Darwin':
 		case 'FreeBSD':
 		case 'OpenBSD':
 		case 'NetBSD':
