@@ -283,7 +283,7 @@ void reload(GLOBAL *g, struct payments_module *p)
   		if( g->db_nrows(res) )
 			number = atoi(g->db_get_data(res,0,"number"));
 		g->db_free(&res);
-printf("%d\n", today);
+
 		// payments accounting and invoices writing
 		res = g->db_pquery(g->conn, "\
 			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
