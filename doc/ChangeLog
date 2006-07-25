@@ -2,6 +2,7 @@ $Id$
 
 version ? (????-??-??):
 
+  - cosmetics on search template (djrzulf)
   - added reload status on hosts list in Reload (alec)
   - BTS#0000582: fixed query in Net Edit (alec)
 
