@@ -27,6 +27,7 @@
 function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 {
 	global $DB;
+	
 	if($order=='')
 		$order='id,asc';
 	
@@ -54,6 +55,8 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			$sqlord = ' ORDER BY name';
 		break;
 	}
+	
+	$where = '';
 	
 	if($search!='' && $cat)
         {
@@ -143,9 +146,8 @@ $layout['pagetitle'] = trans('Invoices List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SESSION->restore('ilm', $marks);
-$marked = $_POST['marks'];
-if(sizeof($marked))
-	foreach($marked as $id => $mark)
+if(isset($_POST['marks']))
+	foreach($_POST['marks'] as $id => $mark)
 		$marks[$id] = $mark;
 $SESSION->save('ilm', $marks);
 
@@ -197,7 +199,7 @@ unset($invoicelist['direction']);
 $listdata['totalpos'] = sizeof($invoicelist);
 
 $pagelimit = $CONFIG['phpui']['invoicelist_pagelimit'];
-$page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
+$page = !isset($_GET['page']) ? ceil($listdata['totalpos']/$pagelimit) : intval($_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
 $SMARTY->assign('listdata',$listdata);
