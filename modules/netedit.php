@@ -71,7 +71,7 @@ if(isset($_POST['networkdata']))
 							    FROM nodes WHERE (ipaddr>? AND ipaddr<?)',
 							    array($network['addresslong'],ip_long($network['broadcast'])));
 							    
-					$node_pub = $DB->GetRow('SELECT MAX(ipaddr_pub AS last, MIN(ipaddr_pub) AS first
+					$node_pub = $DB->GetRow('SELECT MAX(ipaddr_pub) AS last, MIN(ipaddr_pub) AS first
 							    FROM nodes WHERE (ipaddr_pub>? AND ipaddr_pub<?)',
 							    array($network['addresslong'],ip_long($network['broadcast'])));
 				
