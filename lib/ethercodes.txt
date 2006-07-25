@@ -6367,6 +6367,26 @@
 00-19-05:SCHRACK Seconet AG
 00-19-06:Cisco Systems
 00-19-07:Cisco Systems
+00-19-08:Duaxes Corporation
+00-19-09:Devi A/S
+00-19-0A:HASWARE INC.
+00-19-0B:Southern Vision Systems, Inc.
+00-19-0C:Encore Electronics, Inc.
+00-19-0D:IEEE 1394c
+00-19-0E:Atech Technology Co., Ltd.
+00-19-0F:Advansus Corp.
+00-19-10:Knick Elektronische Messgeraete GmbH & Co. KG
+00-19-11:Just In Mobile Information Technologies (Shanghai) Co., Ltd.
+00-19-12:Welcat Inc
+00-19-13:Chuang-Yi Network Equipment Co.Ltd.
+00-19-14:Winix Co., Ltd
+00-19-15:TECOM Co., Ltd.
+00-19-16:PayTec AG
+00-19-17:Posiflex Inc.
+00-19-18:Interactive Wear AG
+00-19-19:ASTEL Inc.
+00-19-1A:IRLINK
+00-19-1B:Sputnik Engineering AG
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -7865,7 +7885,7 @@
 00-80-E2:T.D.I. CO., LTD.
 00-80-E3:CORAL NETWORK CORPORATION
 00-80-E4:NORTHWEST DIGITAL SYSTEMS, INC
-00-80-E5:MYLEX CORPORATION
+00-80-E5:LSI Logic Corporation
 00-80-E6:PEER NETWORKS, INC.
 00-80-E7:LYNWOOD SCIENTIFIC DEV. LTD.
 00-80-E8:CUMULUS CORPORATIION
