@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.5 Sina (2006-07-25):
 
   - fixed tickets searching with quicksearch input (alec)
   - BTS#0000576: fixed problem with MAC change (alec)
@@ -9,6 +9,7 @@ version ? (????-??-??):
   - BTS#0000577: s/Submit/Search/ in Customer Search, Event Search
     and Node Search (alec)
   - BTS#0000580: sysinfo fixes for MacOS X (alec)
+  - BTS#0000582: fixed query in Net Edit (alec)
 
 version 1.8.4 Teer (2006-06-15):
 
