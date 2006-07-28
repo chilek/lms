@@ -5,6 +5,7 @@ version ? (????-??-??):
   - cosmetics on search template (djrzulf)
   - added reload status on hosts list in Reload (alec)
   - BTS#0000582: fixed query in Net Edit (alec)
+  - lmsd/parser: fixed T-Script's problem with big numbers (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   
