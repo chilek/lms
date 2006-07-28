@@ -103,7 +103,8 @@ static int tscript_extension_check_max_args(tscript_extension* e, tscript_value*
 	return (e->max_args >= count);
 }
 
-tscript_value* tscript_run_extension(tscript_context* context, char* keyword, tscript_value* arg)
+tscript_value* tscript_run_extension(
+	tscript_context* context, char* keyword, tscript_value* args)
 {
 	tscript_extension* e;
 	// TODO: passing en as default is not very nice
@@ -111,11 +112,38 @@ tscript_value* tscript_run_extension(tscript_context* context, char* keyword, ts
 	if (!tscript_extension_map_contains(context->extensions, keyword))
 		tscript_internal_error("Cannot find extension\n");
 	e = tscript_extension_map_ref(context->extensions, keyword, en);
-	if (!tscript_extension_check_min_args(e, arg))
+	if (!tscript_extension_check_min_args(e, args))
 		return tscript_value_create_error("%s: too small number of arguments, minimum %i required", keyword, e->min_args);
-	if (!tscript_extension_check_max_args(e, arg))
+	if (!tscript_extension_check_max_args(e, args))
 		return tscript_value_create_error("%s: too many arguments, maximum %i allowed", keyword, e->max_args);
-	return e->func(arg);
+	return e->func(args);
+}
+
+tscript_value* tscript_extension_arg(tscript_value* args, int n)
+{
+	tscript_value* count;
+	int count_num;
+	tscript_value* index;
+	tscript_value* result;
+
+	if (args->type == TSCRIPT_TYPE_ARRAY)
+	{
+		count = tscript_value_array_count(args);
+		count_num = tscript_value_as_number(count);
+		tscript_value_free(count);
+		if (n >= count_num)
+			return NULL;
+		index = tscript_value_create_number(n);
+		result = *tscript_value_array_item_ref(&args, index);
+		tscript_value_free(index);
+		return result;
+	}
+	else
+	{
+		if (n != 0)
+			return NULL;
+		return args;
+	}
 }
 
 void tscript_add_constant(tscript_context* context, char* keyword, tscript_constant_func* func)

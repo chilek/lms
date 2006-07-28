@@ -46,6 +46,7 @@
 %parse-param { tscript_context* context }
 %lex-param { tscript_context* context }
 
+%nonassoc ';'
 %nonassoc ERROR IF ELSE END_IF FOR END_FOR FOREACH END_FOREACH IN WHILE END_WHILE
 %nonassoc BREAK EXIT CONTINUE
 %left OR AND
@@ -56,6 +57,8 @@
 %left '*' '/' '%' '&' '|'
 %nonassoc MATCH
 %nonassoc INC DEC LEFT RIGHT
+%nonassoc '.'
+%nonassoc '['
 %nonassoc EXT BLOCK END_BLOCK CONST
 %nonassoc LITERAL NUMBER TEXT NAME NULL_CONST TO_STRING TO_NUMBER TYPEOF
 
