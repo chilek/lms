@@ -83,7 +83,15 @@ tscript_value* tscript_value_create_number(double val)
 {
 	tscript_value* v;
 	char* tmp;
-	asprintf(&tmp, "%g", val);
+	int len, i;
+
+	asprintf(&tmp, "%f", val);
+	len = strlen(tmp);
+	for (i = len - 1; tmp[i] == '0'; i--)
+		tmp[i] = '\0';
+	if (tmp[i] == '.')
+		tmp[i] = '\0';
+
 	v = tscript_value_create(TSCRIPT_TYPE_NUMBER, tmp);
 	free(tmp);
 	return v;
