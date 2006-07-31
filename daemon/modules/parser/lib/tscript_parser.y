@@ -228,11 +228,11 @@ unary_expression:	postfix_expression
 
 multiplicative_expression:
 			unary_expression
-		|	unary_expression '*' unary_expression
+		|	multiplicative_expression '*' unary_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_MUL, $1, $3);
 			}
-		|	unary_expression '/' unary_expression
+		|	multiplicative_expression '/' unary_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_DIV, $1, $3);
 			}
@@ -243,11 +243,11 @@ multiplicative_expression:
 
 additive_expression:
 			multiplicative_expression
-		|	multiplicative_expression '+' multiplicative_expression
+		|	additive_expression '+' multiplicative_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_PLUS, $1, $3);
 			}
-		|	multiplicative_expression '-' multiplicative_expression
+		|	additive_expression '-' multiplicative_expression
 			{
 				$$ = tscript_ast_node_2(TSCRIPT_AST_MINUS, $1, $3);
 			}
