@@ -1931,7 +1931,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['message'] = '';
 		$customeradd['pin'] = rand(10000,99999);
 		$id = $LMS->CustomerAdd($customeradd);
-		$LMS->AddAssignment(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => MONTHLY, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
+		$LMS->AddAssignment(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => MONTHLY, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0, 'settlement' => 0));
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{
@@ -2017,6 +2017,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 				$contents['taxid'] = mt_rand(1,3);
 				$contents['count'] = mt_rand(1,3);
 				$contents['valuebrutto'] = 100+$n*10+$n*0.1;
+				$contents['discount'] = 0;
 				$inv['cdate'] += 86400;
 				
 				foreach($customers as $c)
