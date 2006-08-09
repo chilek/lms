@@ -1306,7 +1306,7 @@ class LMS
 	{
 		$this->SetTS('assignments');
 		
-		if($assignmentdata['value'])
+		if(isset($assignmentdata['value']) && $assignmentdata['value']>0)
 		{
 			$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid) VALUES (?, ?, ?, ?)', 
 					    array($assignmentdata['name'],
@@ -1329,7 +1329,7 @@ class LMS
 						    $assignmentdata['datefrom'], 
 						    $assignmentdata['dateto'], 
 						    $assignmentdata['discount'],
-						    $lid ? $lid : 0
+						    isset($lid) ? $lid : 0
 						    ));
 	}
 
@@ -1736,15 +1736,15 @@ class LMS
 
 		return $this->DB->Execute('INSERT INTO cash (time, userid, value, type, taxid, customerid, comment, docid, itemid)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-					array($addbalance['time'] ? $addbalance['time'] : time(),
-					    $addbalance['userid'] ? $addbalance['userid'] : $this->AUTH->id,
+					array(isset($addbalance['time']) ? $addbalance['time'] : time(),
+					    isset($addbalance['userid']) ? $addbalance['userid'] : $this->AUTH->id,
 					    $addbalance['value'],
-					    $addbalance['type'] ? $addbalance['type'] : 0,
-					    $addbalance['taxid'] ? $addbalance['taxid'] : 0,
+					    isset($addbalance['type']) ? $addbalance['type'] : 0,
+					    isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
 					    $addbalance['customerid'],
 					    $addbalance['comment'],
-					    $addbalance['docid'] ? $addbalance['docid'] : 0,
-					    $addbalance['itemid'] ? $addbalance['itemid'] : 0
+					    isset($addbalance['docid']) ? $addbalance['docid'] : 0,
+					    isset($addbalance['itemid']) ? $addbalance['itemid'] : 0
 					    ));
 	}
 
