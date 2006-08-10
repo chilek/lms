@@ -266,6 +266,7 @@ CREATE TABLE nodes (
   warning tinyint(1) NOT NULL default '0',
   lastonline int(11) NOT NULL default '0',
   info text NOT NULL default '',
+  location text NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr),
@@ -448,6 +449,9 @@ CREATE TABLE customers (
   city varchar(32) NOT NULL default '',
   ten varchar(16) NOT NULL default '',
   ssn varchar(11) NOT NULL default '',
+  regon varchar(255) NOT NULL default '',
+  rbe varchar(255) NOT NULL default '',
+  icn varchar(255) NOT NULL default '',
   info text NOT NULL,
   serviceaddr text NOT NULL default '',
   creationdate int(11) NOT NULL default '0',
@@ -510,7 +514,7 @@ CREATE TABLE passwd (
     realname varchar(255) NOT NULL default '',
     createtime int(11) NOT NULL default 0,
     PRIMARY KEY (id),
-    UNIQUE KEY login (login),
+    UNIQUE KEY (login, domainid),
     INDEX ownerid (ownerid)
 ) TYPE=MyISAM;
 

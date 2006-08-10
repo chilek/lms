@@ -117,6 +117,7 @@ CREATE TABLE nodes (
 	warning smallint 	DEFAULT 0 NOT NULL,
 	lastonline integer	DEFAULT 0 NOT NULL,
 	info text		DEFAULT '' NOT NULL,
+	location text		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr)
@@ -320,6 +321,9 @@ CREATE TABLE customers (
 	city varchar(32) 	DEFAULT '' NOT NULL,
 	ten varchar(16) 	DEFAULT '' NOT NULL,
 	ssn varchar(11) 	DEFAULT '' NOT NULL,
+	regon varchar(255) 	DEFAULT '' NOT NULL,
+	rbe varchar(255) 	DEFAULT '' NOT NULL, -- EDG/KRS
+	icn varchar(255) 	DEFAULT '' NOT NULL, -- dow.os.
 	info text		DEFAULT '' NOT NULL,
 	serviceaddr text	DEFAULT '' NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
@@ -525,7 +529,7 @@ CREATE TABLE passwd (
 	quota_ftp integer	DEFAULT 0 NOT NULL,
 	quota_sql integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (login)
+	UNIQUE (login, domainid)
 );
 CREATE INDEX passwd_ownerid_idx ON passwd (ownerid);
 
