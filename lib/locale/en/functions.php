@@ -101,6 +101,16 @@ function check_im($im)
 	return eregi('^[0-9]+$', $im);
 }
 
+function check_regon($regon) // business registration number
+{
+	return true;
+}
+
+function check_icn($icn) // identity card number
+{
+	return true;
+}
+
 function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
 	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>
