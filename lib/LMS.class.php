@@ -2889,9 +2889,9 @@ class LMS
 	 *   Hosting: Accounts, Aliases, Domains
 	 */
 
-	function GetAccountIdByLogin($login)
+	function GetAccountId($login, $domainid=0)
 	{
-		return $this->DB->GetOne('SELECT id FROM passwd WHERE login = ?', array($login));
+		return $this->DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domainid));
 	}
 
 	/*
