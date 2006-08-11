@@ -95,9 +95,8 @@ switch ($option)
 		
 		if(!eregi("^[a-z0-9._-]+$", $account['login']))
     			$error['login'] = trans('Login contains forbidden characters!');
-	    
-		if($account['login'] != $oldlogin)
-			if($LMS->GetAccountIdByLogin($account['login']))
+		elseif($account['login'] != $oldlogin)
+			if($LMS->GetAccountId($account['login'], $account['domainid']))
 				$error['login'] = trans('Account with that login name exists!'); 
 	
 		if($account['expdate'] == '')

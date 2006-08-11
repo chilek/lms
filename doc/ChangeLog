@@ -10,7 +10,8 @@ version ? (????-??-??):
   - added shortcut icon definition in page header (alec)
   - added Business Registration Number (polish REGON), Identity Card Number 
     (polish dow.os.) and Register of Business Entities Number (polish EDG/KRS)
-    fields in customer data (alec) 
+    fields in customer data (alec)
+  - accounts must have unique logins in domain context only (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   

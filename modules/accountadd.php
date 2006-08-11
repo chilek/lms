@@ -52,7 +52,7 @@ if(isset($_POST['account']))
 
 	if(!eregi("^[a-z0-9._-]+$", $account['login']))
     		$error['login'] = trans('Login contains forbidden characters!');
-	elseif($LMS->GetAccountIdByLogin($account['login']))
+	elseif($LMS->GetAccountId($account['login'], $account['domainid']))
 		$error['login'] = trans('Account with that login name exists!');
 	
 	if($account['passwd1'] != $account['passwd2'])
