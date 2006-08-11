@@ -23,7 +23,7 @@
 		<TD WIDTH="1%" CLASS="FLEFTU">
 			<IMG SRC="img/customer.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="FRIGHTU" COLSPAN="2">
 			<TABLE>
 				<TR>
 					<TD>
@@ -36,11 +36,11 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>{t}Name:{/t}</B>
+						<B>{t}Name/Surname:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="customerdata[lastname]" VALUE="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="customername" bold=1}>
+						<INPUT TYPE="TEXT" SIZE="30" NAME="customerdata[lastname]" VALUE="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="customername" bold=1}>
 					</TD>
 				</TR>
 				<TR>
@@ -49,7 +49,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="customerdata[name]" VALUE="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="customername" bold=1}>
+						<INPUT TYPE="TEXT" SIZE="30" NAME="customerdata[name]" VALUE="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="customername" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -131,11 +131,35 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
+		<TD width="1%" CLASS="FLEFT">
+			<B><IMG src="img/serialnumber.gif" alt=""></B>
+		</TD>
+		<TD width="99%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="text" VALUE="{$customerinfo.icn}" name="customerdata[icn]" SIZE="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<B>{t}SSN{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="customerdata[ssn]" VALUE="{$customerinfo.ssn}" SIZE="30" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="1%" CLASS="FLEFT">
+			<B>{t}REGON{/t}</B>
+		</TD>
+		<TD width="99%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="text" value="{$customerinfo.regon}" name="customerdata[regon]" SIZE="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD width="1%" CLASS="FLEFT">
+			<B><IMG src="img/report.gif" alt=""></B>
+		</TD>
+		<TD width="99%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" SIZE="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

@@ -89,6 +89,12 @@ if(isset($_POST['customeradd']))
 
 	if($customeradd['ssn'] != '' && !check_ssn($customeradd['ssn']))
 		$error['ssn'] = trans('Incorrect Social Security Number!');
+
+	if($customeradd['icn'] != '' && !check_icn($customeradd['icn']))
+		$error['icn'] = trans('Incorrect Identity Card Number!');
+
+	if($customeradd['regon'] != '' && !check_regon($customeradd['regon']))
+		$error['regon'] = trans('Incorrect Business Registration Number!');
 		
 	if($customeradd['zip'] !='' && !check_zip($customeradd['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
