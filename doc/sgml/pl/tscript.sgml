@@ -500,8 +500,11 @@ syslog("Komunikat");
 					<member>city - miasto</member>
 					<member>email - adres e-mail</member>
 					<member>phone1, phone2, phone3 - telefony</member>
-					<member>ten - NIP</member>
-					<member>ssn - PESEL</member>
+					<member>ten - numer NIP</member>
+					<member>ssn - numer PESEL</member>
+					<member>regon - numer REGON</member>
+					<member>icn - numer dowodu osobistego</member>
+					<member>rbe - numer EDG/KRS</member>
 					<member>info - informacje o kliencie</member>
 					<member>message - tre¶æ ostrze¿enia</member>
 					<member>warning - status ostrze¿enia (suma statusów wszystkich komputerów klienta)</member>

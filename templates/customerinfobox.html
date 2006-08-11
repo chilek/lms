@@ -87,6 +87,16 @@
 		</TD>
 	</TR>
 {/if}
+{if $customerinfo.icn neq ""}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$customerinfo.icn}
+		</TD>
+	</TR>
+{/if}
 {if $customerinfo.ssn neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
@@ -97,6 +107,27 @@
 		</TD>
 	</TR>
 {/if}
+{if $customerinfo.regon neq ""}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
+			<B>{t}REGON:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$customerinfo.regon}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.rbe neq ""}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/report.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$customerinfo.rbe}
+		</TD>
+	</TR>
+{/if}
+
 {if $customerinfo.pin neq 0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">

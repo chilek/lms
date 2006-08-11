@@ -60,8 +60,14 @@ elseif(isset($_POST['customerdata']))
 	if($customerdata['ten'] !='' && !check_ten($customerdata['ten']))
 		$error['ten'] = trans('Incorrect Tax Exempt Number!');
 
-	if(!check_ssn($customerdata['ssn']) && $customerdata['ssn'] != '')
+	if($customerdata['ssn'] != '' && !check_ssn($customerdata['ssn']))
 		$error['ssn'] = trans('Incorrect Social Security Number!');
+
+	if($customerdata['regon'] != '' && !check_regon($customerdata['regon']))
+		$error['regon'] = trans('Incorrect Business Registration Number!');
+
+	if($customerdata['icn'] != '' && !check_icn($customerdata['icn']))
+		$error['icn'] = trans('Incorrect Identity Card Number!');
 
 	if($customerdata['zip'] !='' && !check_zip($customerdata['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
@@ -91,8 +97,8 @@ elseif(isset($_POST['customerdata']))
 	}
 	else
 	{
-		$olddata=$LMS->GetCustomer($_GET['id']);
-		$customerinfo=$customerdata;
+		$olddata = $LMS->GetCustomer($_GET['id']);
+		$customerinfo = $customerdata;
 		$customerinfo['createdby']=$olddata['createdby'];
 		$customerinfo['modifiedby']=$olddata['modifiedby'];
 		$customerinfo['creationdateh']=$olddata['creationdateh'];
@@ -105,7 +111,7 @@ elseif(isset($_POST['customerdata']))
 	}
 }else{
 
-	$customerinfo=$LMS->GetCustomer($_GET['id']);
+	$customerinfo = $LMS->GetCustomer($_GET['id']);
 	if($customerinfo['status'] == 3)
 		$customerinfo['shownodes'] = TRUE;
 }

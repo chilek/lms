@@ -1704,5 +1704,14 @@ $_LANG['Documents mass creation'] = 'Masowe tworzenie dokumentów';
 $_LANG['Document template not selected!'] = 'Nie wybrany szablon dokumentu!';
 $_LANG['First number:'] = 'Numer początkowy:';
 $_LANG['Select document template'] = 'Wybierz szablon dokumentu';
+$_LANG['Enter Business Registration Number (optional)'] = 'Wprowadź numer REGON (opcjonalnie)';
+$_LANG['Enter Identity Card Number (optional)'] = 'Wprowadź numer Dowodu Osobistego (opcjonalnie)';
+$_LANG['Enter National Court Register / Register of Business Entities Number (optional)'] = 'Wprowadź numer EDG/KRS (opcjonalnie)';
+$_LANG['Incorrect Business Registration Number!'] = 'Niepoprawny numer REGON!';
+$_LANG['Incorrect Identity Card Number!'] = 'Niepoprawny numer Dowodu Osobistego!';
+$_LANG['OK'] = 'OK';
+$_LANG['REGON'] = 'REGON';
+$_LANG['REGON:'] = 'REGON:';
+$_LANG['unknown'] = 'nieznany';
 
 ?>

@@ -496,6 +496,9 @@ syslog("message");
 				<member>phone1, phone2, phone3 - phone numbers</member>
 				<member>ten - tax exempt number</member>
 				<member>ssn - security serial number</member>
+				<member>regon - business registration number</member>
+				<member>icn - identity card number</member>
+				<member>rbe - register of business entities number</member>
 				<member>info - additional informations</member>
 				<member>message - warning contents</member>
 				<member>warning - warning status (status of all customer's nodes summary)</member>
