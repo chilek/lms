@@ -24,18 +24,20 @@
  *  $Id$
  */
 
+$nodedata['access'] = 1;
+$nodedata['ownerid'] = 0;
+
 if(isset($_GET['ownerid']))
 {
 	if($LMS->CustomerExists($_GET['ownerid']) == true)
 	{
 		$nodedata['ownerid'] = $_GET['ownerid'];
 		$customerinfo = $LMS->GetCustomer($_GET['ownerid']);
+		$SMARTY->assign('customerinfo', $customerinfo);
 	}
 	else
 		$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
 }
-
-$nodedata['access'] = 1;
 
 if(isset($_GET['preip']))
 	$nodedata['ipaddr'] = $_GET['preip'];
@@ -154,19 +156,15 @@ if($nodedata['ownerid'])
 	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($nodedata['ownerid']));
 	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($nodedata['ownerid']));
 	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($nodedata['ownerid']));
-	$documents = $LMS->GetDocuments($nodedata['ownerid'], 10);
-	$taxeslist = $LMS->GetTaxes();
-	$tariffs = $LMS->GetTariffs();
+	$SMARTY->assign('documents', $LMS->GetDocuments($nodedata['ownerid'], 10));
+	$SMARTY->assign('taxeslist', $LMS->GetTaxes());
+	$SMARTY->assign('tariffs', $LMS->GetTariffs());
 }
 
-$SMARTY->assign('netdevices',$LMS->GetNetDevNames());
-$SMARTY->assign('tariffs',$tariffs);
-$SMARTY->assign('taxeslist',$taxeslist);
-$SMARTY->assign('documents',$documents);
-$SMARTY->assign('customers',$customers);
-$SMARTY->assign('error',$error);
-$SMARTY->assign('customerinfo',$customerinfo);
-$SMARTY->assign('nodedata',$nodedata);
+$SMARTY->assign('netdevices', $LMS->GetNetDevNames());
+$SMARTY->assign('customers', $customers);
+$SMARTY->assign('error', $error);
+$SMARTY->assign('nodedata', $nodedata);
 $SMARTY->display('nodeadd.html');
 
 ?>

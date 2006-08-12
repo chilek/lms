@@ -119,6 +119,17 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Location:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<TEXTAREA NAME="nodedata[location]" COLS="50" ROWS="5" {tip text="Enter node location (optional)"}>{$nodedata.location}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/info.gif" ALT="{t}Description:{/t}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>

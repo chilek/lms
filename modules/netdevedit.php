@@ -160,6 +160,7 @@ case 'formaddip':
 	{
 		$nodeipdata['warning'] = 0;
 		$nodeipdata['passwd'] = '';
+		$nodeipdata['location'] = '';
 		$nodeipdata['netdev'] = $_GET['id'];
 		$LMS->NodeAdd($nodeipdata);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
@@ -239,6 +240,7 @@ case 'formeditip':
 	{
 		$nodeipdata['warning'] = 0;
 		$nodeipdata['passwd'] = '';
+		$nodeipdata['location'] = '';
 		$nodeipdata['netdev']=$_GET['id'];
 
 		$LMS->NodeUpdate($nodeipdata);	
