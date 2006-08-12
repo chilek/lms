@@ -116,6 +116,22 @@
 			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
+{if $nodeinfo.location}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/home.gif" ALT="{t}Location:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<TABLE width="100%" cellpadding="5">
+				<TR>
+					<TD class="fall superlight">
+						{$nodeinfo.location|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+{/if}
 {if $nodeinfo.info}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">

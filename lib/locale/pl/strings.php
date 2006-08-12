@@ -1713,5 +1713,9 @@ $_LANG['OK'] = 'OK';
 $_LANG['REGON'] = 'REGON';
 $_LANG['REGON:'] = 'REGON:';
 $_LANG['unknown'] = 'nieznany';
+$_LANG['Enter node location'] = 'Wprowadź lokalizację komputera';
+$_LANG['Enter node location (optional)'] = 'Wprowadź lokalizację komputera (opcjonalnie)';
+$_LANG['ICN:'] = 'Dowód osobisty:';
+$_LANG['RBE:'] = 'EDG/KRS:';
 
 ?>
