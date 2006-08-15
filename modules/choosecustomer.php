@@ -26,29 +26,32 @@
 
 $layout['pagetitle'] = trans('Select customer');
 
-$p = $_GET['p'];
+$p = isset($_GET['p']) ? $_GET['p'] : '';
 
-if(!isset($p))
-	$js = 'var targetfield = window.opener.targetfield;';
-if($p == 'main')
-	$js = 'var targetfield = parent.targetfield;';
+if(!$p)
+	$SMARTY->assign('js', 'var targetfield = window.opener.targetfield;');
+elseif($p == 'main')
+	$SMARTY->assign('js', 'var targetfield = parent.targetfield;');
 
-if($_POST['searchcustomer'])
+if(isset($_POST['searchcustomer']))
 {
 	$search = $_POST['searchcustomer'];
 
 	$where_cust = 'AND (customers.id = '.intval($search)
 			.' OR ten LIKE \'%'.$search.'%\''
 			.' OR ssn LIKE \'%'.$search.'%\''
+			.' OR icn LIKE \'%'.$search.'%\''
+			.' OR rbe LIKE \'%'.$search.'%\''
+			.' OR regon LIKE \'%'.$search.'%\''
 			.' OR phone1 LIKE \'%'.$search.'%\''
 			.' OR UPPER(email) LIKE UPPER(\'%'.$search.'%\')'
 			.' OR UPPER('.$DB->Concat('lastname',"' '",'customers.name').') ?LIKE? UPPER(\'%'.$search.'%\')'
-			.' OR UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\'))';
+			.' OR UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\')) ';
 	
 	$SMARTY->assign('searchcustomer', $search);
 }
 
-if($_POST['searchnode'])
+if(isset($_POST['searchnode']))
 {
 	$search = $_POST['searchnode'];
 
@@ -56,30 +59,33 @@ if($_POST['searchnode'])
 			.' OR INET_NTOA(ipaddr) LIKE \'%'.$search.'%\''
 			.' OR INET_NTOA(ipaddr_pub) LIKE \'%'.$search.'%\''
 			.' OR UPPER(mac) LIKE UPPER(\'%'.$search.'%\')'
-			.' OR UPPER(nodes.name) ?LIKE? UPPER(\'%'.$search.'%\'))';
+			.' OR UPPER(location) LIKE UPPER(\'%'.$search.'%\')'
+			.' OR UPPER(nodes.name) ?LIKE? UPPER(\'%'.$search.'%\')) ';
 	
 	$SMARTY->assign('searchnode', $search);
 }
 
-if($where_node || $where_cust)
+if(isset($where_node) || isset($where_cust))
 {
 	if($customerlist = $DB->GetAll('SELECT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, address, zip, city, email, phone1, ssn, 
 				COALESCE(SUM(value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance 
 				FROM customers 
 				LEFT JOIN cash ON (customers.id = cash.customerid)
 				LEFT JOIN nodes ON (customers.id = ownerid)
-				WHERE deleted = 0 '.$where_cust.' '.$where_node.'
+				WHERE deleted = 0 '
+				.(isset($where_cust) ? $where_cust : '')
+				.(isset($where_node) ? $where_node : '').'
 				GROUP BY customers.id, lastname, customers.name, address, zip, city, email, phone1, ssn
 				ORDER BY customername LIMIT 15'))
 	{
 		foreach($customerlist as $idx => $row)
 			$customerlist[$idx]['nodes'] = $DB->GetAll('SELECT id, name, mac, inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub FROM nodes WHERE ownerid=? ORDER BY name',array($row['id']));
 	}
+
+	$SMARTY->assign('customerlist', $customerlist);
 }
 
-$SMARTY->assign('customerlist', $customerlist);
 $SMARTY->assign('part', $p);
-$SMARTY->assign('js', $js);
 $SMARTY->display('choosecustomer.html');
 
 ?>
