@@ -26,17 +26,16 @@
 
 $layout['pagetitle'] = trans('New Invoice');
 
-$customers = $LMS->GetCustomerNames();
-$tariffs = $LMS->GetTariffs();
 $taxeslist = $LMS->GetTaxes();
-$numberplanlist = $LMS->GetNumberPlans(DOC_INVOICE);
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
 $SESSION->restore('invoicenewerror', $error);
 $itemdata = r_trim($_POST);
 
-switch($_GET['action'])
+$action = isset($_GET['action']) ? $_GET['action'] : NULL;
+
+switch($action)
 {
 	case 'init':
 
@@ -185,7 +184,7 @@ $SESSION->save('invoicecontents', $contents);
 $SESSION->save('invoicecustomer', $customer);
 $SESSION->save('invoicenewerror', $error);
 
-if($_GET['action'] != '')
+if($action)
 {
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
 	$SESSION->redirect('?m=invoicenew');
@@ -195,10 +194,10 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('tariffs', $tariffs);
-$SMARTY->assign('customers', $customers);
+$SMARTY->assign('tariffs', $LMS->GetTariffs());
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE));
 $SMARTY->assign('taxeslist', $taxeslist);
-$SMARTY->assign('numberplanlist', $numberplanlist);
 $SMARTY->display('invoicenew.html');
 
 ?>
