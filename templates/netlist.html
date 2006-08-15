@@ -29,7 +29,7 @@
 	{section name=netlist loop=$netlist}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr><IMG src="img/network.gif" ALT=""> <B>{$netlist[netlist].name}</B><BR><IMG src="img/ip.gif" ALT=""> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
+			<nobr><IMG src="img/network.gif" ALT=""> <B>{$netlist[netlist].name|truncate:40:"...":true}</B><BR><IMG src="img/ip.gif" ALT=""> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
 		</TD>
 		<TD valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';" width="1%">
 			<nobr><img src="img/empty.gif" width="1" height="16" ALT="">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" width="1" height="16" ALT="">{$netlist[netlist].size}/{$netlist[netlist].assigned|string_format:"%01d"}/{$netlist[netlist].online|string_format:"%01d"}</nobr>
