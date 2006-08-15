@@ -236,6 +236,8 @@ if(!isset($document['numberplanid']))
 	$document['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype<0 AND isdefault=1 LIMIT 1');
 }
 
+$numberplans = array();
+
 if($templist = $LMS->GetNumberPlans())
 	foreach($templist as $item)
 		if($item['doctype']<0)

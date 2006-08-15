@@ -29,7 +29,6 @@ $layout['pagetitle'] = trans('New Document');
 if(isset($_POST['document']))
 {
 	$document = $_POST['document'];
-	$document['customerid'] = $_GET['cid'];
 	
 	$oldfromdate = $document['fromdate'];
 	$oldtodate = $document['todate'];
@@ -38,6 +37,11 @@ if(isset($_POST['document']))
 	{
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
+	
+	$document['customerid'] = $_POST['customerid'] ? $_POST['customerid'] : $_POST['customer'];
+	
+	if(!$LMS->CustomerExists(intval($document['customerid'])))
+		$error['customer'] = trans('Customer not selected!');
 	
 	if(!$document['type'])
 		$error['type'] = trans('Document type is required!');
@@ -196,15 +200,19 @@ if(isset($_POST['document']))
 		$document['todate'] = $oldtodate;
 	}
 }
+else
+{
+	$document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
+}
 
-//$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!$document['numberplanid'])
+if(!isset($document['numberplanid']) || !$document['numberplanid'])
 {
 	$document['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype<0 AND isdefault=1 LIMIT 1');
 }
 
-$document['customerid'] = $_GET['cid'];
+$numberplans = array();
 
 if($templist = $LMS->GetNumberPlans())
 	foreach($templist as $item)
@@ -229,6 +237,8 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
+
 $SMARTY->display('documentadd.html');
 
 ?>
