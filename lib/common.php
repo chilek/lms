@@ -532,7 +532,7 @@ function fetch_url($url)
 	$url_parsed = parse_url($url);
 	$host = $url_parsed['host'];
 	$path = $url_parsed['path'];
-        $port = $url_parsed['port'];
+        $port = isset($url_parsed['port']) ? $url_parsed['port'] : 0; //sometimes port is undefined
 
         if ($port==0)
 	        $port = 80;
