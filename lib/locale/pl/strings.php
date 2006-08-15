@@ -1717,5 +1717,11 @@ $_LANG['Enter node location'] = 'Wprowadź lokalizację komputera';
 $_LANG['Enter node location (optional)'] = 'Wprowadź lokalizację komputera (opcjonalnie)';
 $_LANG['ICN:'] = 'Dowód osobisty:';
 $_LANG['RBE:'] = 'EDG/KRS:';
+$_LANG['Allows you to add new document'] = 'Dodanie nowego dokumentu';
+$_LANG['Allows you to search documents'] = 'Wyszukiwanie dokumentów';
+$_LANG['Documents'] = 'Dokumenty';
+$_LANG['Documents: list, searching, adding'] = 'Dokumenty: lista, wyszukiwanie, dodawanie';
+$_LANG['List of documents'] = 'Lista dokumentów';
+$_LANG['No such documents matching search criteria or list is empty.'] = 'Brak dokumentów spełniających kryteria wyszukiwania lub lista jest pusta.';
 
 ?>

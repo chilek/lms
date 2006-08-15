@@ -61,7 +61,6 @@ $menu = array(
 			),
 		),
 
-
 		array(
 			'name' => trans('Customers'),
 			'img' =>'customer.gif',
@@ -99,11 +98,6 @@ $menu = array(
 					'name' => trans('Messages'),
 					'link' =>'?m=customerwarn',
 					'tip' => trans('Allows you to send message to customers'),
-				),
-				array(
-					'name' => trans('Documents Generator'),
-					'link' =>'?m=documentgen',
-					'tip' => trans('Documents mass creation'),
 				),
 				array(
 					'name' => trans('Printing'),
@@ -268,6 +262,37 @@ $menu = array(
 					'name' => trans('Printing'),
 					'link' => '?m=print',
 					'tip' => trans('Printing of financial statements'),
+				),
+			),
+		),
+
+		array(
+			'name' => trans('Documents'),
+			'img' =>'docum.gif',
+			'link' =>'?m=documentlist',
+			'tip' => trans('Documents: list, searching, adding'),
+			'accesskey' => '',
+			'prio' =>'26',
+			'submenu' => array(
+				array(
+					'name' => trans('List'),
+					'link' => '?m=documentlist',
+					'tip' => trans('List of documents'),
+				),
+				array(
+					'name' => trans('New Document'),
+					'link' => '?m=documentadd',
+					'tip' => trans('Allows you to add new document'),
+				),
+				array(
+					'name' => trans('Documents Generator'),
+					'link' =>'?m=documentgen',
+					'tip' => trans('Documents mass creation'),
+				),
+				array(
+					'name' => trans('Search'),
+					'link' => '?m=documentsearch',
+					'tip' => trans('Allows you to search documents'),
 				),
 			),
 		),

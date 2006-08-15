@@ -28,8 +28,6 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 {
 	global $DB;
 
-	if(!$customer) return NULL;
-	
 	if($order=='')
 		$order='cdate,asc';
 	
@@ -39,23 +37,28 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 	switch($order)
 	{
 		case 'type':
-			$sqlord = ' ORDER BY type';
+			$sqlord = ' ORDER BY type, documents.name';
 		break;
 		case 'title':
-			$sqlord = ' ORDER BY title';
+			$sqlord = ' ORDER BY title, documents.name';
+		break;
+		case 'customer':
+			$sqlord = ' ORDER BY documents.name, title';
 		break;
 		default:
-			$sqlord = ' ORDER BY cdate';
+			$sqlord = ' ORDER BY cdate, documents.name';
 		break;
 	}
 
-	$list = $DB->GetAll('SELECT docid, number, type, title, cdate, fromdate, todate, description, filename, md5sum, contenttype, template, closed
+	$list = $DB->GetAll('SELECT docid, number, type, title, cdate, fromdate, todate, description, 
+				filename, md5sum, contenttype, template, closed, documents.name
                 	FROM documentcontents, documents
-		        LEFT JOIN numberplans ON(numberplanid = numberplans.id)
-			WHERE documents.id = documentcontents.docid
-			AND customerid = ?'
+		        LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			LEFT JOIN customers ON (customerid = customers.id)
+			WHERE documents.id = documentcontents.docid '
+			.($customer ? 'AND customerid = '.$customer : '')
 			.($type ? ' AND type = '.$type : '')
-			.$sqlord.' '.$direction, array($customer));
+			.$sqlord.' '.$direction);
 
 	$list['total'] = sizeof($list);
 	$list['direction'] = $direction;
