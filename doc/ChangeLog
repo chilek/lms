@@ -5,6 +5,7 @@ version ? (????-??-??):
   - lmsd/parser: fixed T-Script's problem with big numbers (alec)
   - lmsd/parser: support for multiple +, -, *, / operators in expression (alec)
   - BTS#0000570: design fix for IE in customer info box (alec)
+  - BTS#0000568: fixed XSS vulnerability (s_n/alec)
 
 version 1.8.5 Sina (2006-07-25):
 
