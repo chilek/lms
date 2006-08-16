@@ -29,7 +29,7 @@ $USE_ICONV = 1;		// w³±cza przekodowywanie ci±gów z UTF-8 do ISO-8859-2
 /************** Koniec konfiguracji ****************/
 
 $KWOTA = trim($_GET['ILE']);
-$USER_OD = trim($_GET['OD']);
+$USER_OD = trim(strip_tags($_GET['OD']));
 $USER_OD = $USE_ICONV ? iconv('UTF-8','ISO-8859-2',$USER_OD) : $USER_OD;
 
 $KWOTA_NR = str_replace(',','.',$KWOTA);  // na wszelki wypadek

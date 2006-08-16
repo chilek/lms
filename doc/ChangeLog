@@ -4,6 +4,7 @@ version ? (??/??/????):
 
   - fixed tickets searching with quicksearch input (alec)
   - BTS#0000580: sysinfo fixes for MacOS X (alec)
+  - BTS#0000568: fixed XSS vulnerability (s_n/alec)
 
 version 1.6.8 Jamal (10/05/2006):
 
