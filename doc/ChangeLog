@@ -14,6 +14,7 @@ version ? (????-??-??):
   - accounts must have unique logins in domain context only (alec)
   - added Location field in computer data (alec)
   - added menu Documents (alec)
+  - fixed problem with 'To' date on Cash Report (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   
