@@ -76,36 +76,32 @@ function lms_parse_ini_file($filename, $process_sections = false)
 	return $ini_array;
 }
 
-
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
     $CONFIG[$key] = $val;
-
-//  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
-$KONTO_DO = (! $CONFIG['finances']['account'] ? '98700000000000000000000123' : $CONFIG['finances']['account']);
 
 // ustaw prawid³ow± ¶cie¿kê do pliku z funkcj± to_words()
 require_once("../../lib/locale/pl/functions.php");
 
 $ISP1_DO = (! $CONFIG['finances']['line_1'] ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_1']);
 $ISP2_DO = (! $CONFIG['finances']['line_2'] ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_2']);
-
 $USER_T1 = (! $CONFIG['finances']['pay_title'] ? 'Abonament - ID:%CID% %LongCID%' : $CONFIG['finances']['pay_title']);
 
 $Before = array ("%CID%","%LongCID%");
 $After = array ($_GET['UID'],sprintf('%04d',$_GET['UID']));
 
-$USER_TY=str_replace($Before,$After,$USER_T1);
+$USER_TY = str_replace($Before,$After,$USER_T1);
 
-$CURR = 'PLN';
+//  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
+$KONTO_DO = (! $CONFIG['finances']['account'] ? '98700000000000000000000123' : $CONFIG['finances']['account']);
+$CURR = 'PLN';		// oznaczenie waluty
 $SHORT_TO_WORDS = 0;	// 1 - krótki format kwoty s³ownej 'jed dwa trz 15/100'
 			// 0 - d³ugi format kwoty s³ownej 'sto dwadzie¶cia trzy 15/100 z³'
-
 $USE_ICONV = 1;		// w³±cza przekodowywanie ci±gów z UTF-8 do ISO-8859-2
 
 /************** Koniec konfiguracji ****************/
 
 $KWOTA = trim($_GET['ILE']);
-$USER_OD = trim($_GET['OD']);
+$USER_OD = trim(strip_tags($_GET['OD']));
 $USER_OD = $USE_ICONV ? iconv('UTF-8','ISO-8859-2',$USER_OD) : $USER_OD;
 
 $KWOTA_NR = str_replace(',','.',$KWOTA);  // na wszelki wypadek
