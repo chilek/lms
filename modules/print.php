@@ -459,6 +459,7 @@ switch($type)
 			list($year, $month, $day) = explode('/', $_POST['to']);
 			$to = mktime(23,59,59, $month, $day, $year);
 		}
+		else
 			$to = mktime(23,59,59, date('m'), date('d'), date('Y'));
 
 		$registry = intval($_POST['registry']);
@@ -519,6 +520,7 @@ switch($type)
 
 		$from = date('Y/m/d', $from);
 		$to = date('Y/m/d', $to);
+
 		if($from == $to)
 			$period = $from;
 		else
