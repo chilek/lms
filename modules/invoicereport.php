@@ -56,7 +56,7 @@ $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
 	    FROM documents 
 	    LEFT JOIN invoicecontents ON docid = documents.id 
 	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) 
-	    ORDER BY cdate, docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+	    ORDER BY CEIL(cdate/86400), docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 // get documents data
 $docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template, reference
