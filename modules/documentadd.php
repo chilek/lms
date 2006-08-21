@@ -27,7 +27,7 @@
 /* Using AJAX for template plugins */
 require($_LIB_DIR.'/xajax/xajax.inc.php');
 
-function plugin($template)
+function plugin($template, $customer)
 {
 	global $_DOC_DIR, $SMARTY;
 	
