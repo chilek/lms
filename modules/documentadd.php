@@ -24,12 +24,40 @@
  *  $Id$
  */
 
+/* Using AJAX for template plugins */
+require($_LIB_DIR.'/xajax/xajax.inc.php');
+
+function plugin($template)
+{
+	global $_DOC_DIR, $SMARTY;
+	
+	$result = '';
+	
+	// read template informations
+	@include($_DOC_DIR.'/templates/'.$template.'/info.php');
+	// call plugin
+	@include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
+	
+	// xajax response
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("plugin", "innerHTML", $result);
+	return $objResponse;
+}
+
+$xajax = new xajax();
+//$xajax->debugOn();
+$xajax->registerFunction("plugin");
+$xajax->processRequests();						
+
+$SMARTY->assign('xajax', $xajax->getJavascript('img/', 'xajax.js'));
+/* end AJAX plugin stuff */
+
 $layout['pagetitle'] = trans('New Document');
 
 if(isset($_POST['document']))
 {
 	$document = $_POST['document'];
-	
+
 	$oldfromdate = $document['fromdate'];
 	$oldtodate = $document['todate'];
 
@@ -106,6 +134,15 @@ if(isset($_POST['document']))
 	elseif($document['template'])
 	{
 		include($_DOC_DIR.'/templates/'.$document['template'].'/info.php');
+		
+		$result = '';
+		// read template informations
+		@include($_DOC_DIR.'/templates/'.$template.'/info.php');
+		// call plugin
+		@include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
+		// display plugin
+		$SMARTY->assign('plugin_result', $result);
+		
 		if(file_exists($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
 			require_once($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
 		else

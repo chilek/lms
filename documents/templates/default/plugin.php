@@ -24,15 +24,14 @@
  *  $Id$
  */
 
-$engine = array(
-	'name' => 'default', 	// template directory
-	'engine' => 'default', 	// engine.php directory
-				// you can use other engine
-	'template' => 'template.html', 		// template file (in 'name' dir)
-	'title' => trans('Default document'), 	// description for UI
-	'content_type' => 'text/html', 		// output file type
-	'output' => 'default.html', 		// output file name
-	'plugin' => 'plugin',			// form plugin (in 'name' dir)
-)
+if(isset($_POST['document']))
+{
+	// short example of errors handling
+	// $error['notes'] = 'Error';
+	// $result = 'Error';
+	// return;
+}
+
+$result = $SMARTY->fetch($_DOC_DIR.'/templates/'.$engine['name'].'/plugin.html');
 
 ?>

@@ -805,6 +805,7 @@ $engine = array(
 	'title' => trans('Default document'), 	// opis, który bêdzie wy¶wietlany w LMS-UI
 	'content_type' => 'text/html', 		// typ pliku wynikowego
 	'output' => 'default.html', 		// nazwa pliku wynikowego
+	'plugin' => 'plugin',			// nazwa pliku pluginu (w katalogu 'name')
 )
 ?&gt;
 </screen>
@@ -815,6 +816,10 @@ $engine = array(
 		silnik chcemy wykorzystaæ. Nie ma zatem wymogu tworzenia w³asnego silnika
 		dla ka¿dego nowego kreatora, wystarczy utworzyæ szablon 'template' i plik
 		<filename>info.php</filename>.</para>
+		<para>Zmienna <filename>plugin</filename> okre¶la nazwê pliku php
+		odpowiedzialnego za wy¶wietlenie dodatkowych pól w formularzu tworzenia
+		nowego dokumentu. Plugin mo¿e ponadto zawieraæ obs³ugê b³êdów dla
+		tych pól. Prosty przyk³ad pluginu zawiera domy¶lny dokument.</para>
     </sect2>
     </sect1>
 </chapter>

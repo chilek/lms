@@ -16,6 +16,7 @@ version ? (????-??-??):
   - added menu Documents (alec)
   - fixed problem with 'To' date on Cash Report (alec)
   - fixed Sale Registry sorting order (alec)
+  - document templates plugins (using XAJAX library) (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   

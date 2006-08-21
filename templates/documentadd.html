@@ -2,6 +2,17 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
+{$xajax}
+{literal}
+<script type="text/javascript">
+<!--
+	function getplugin()
+	{
+		xajax_plugin(document.forms['documentadd'].elements['document[template]'].value);
+	}
+//-->
+</script>
+{/literal}
 <P><FORM name="documentadd" method="POST" action="?m=documentadd" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">
@@ -95,8 +106,8 @@
 			<B>{t}Template:{/t}
 		</TD>
 		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[template]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"}>
-				<OPTION VALUE="0">... {t}select template{/t} ...</OPTION>
+			<SELECT SIZE="1" NAME="document[template]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
+				<OPTION VALUE="">... {t}select template{/t} ...</OPTION>
 				{foreach from=$docengines item=item}
 				<OPTION VALUE="{$item.name}"{if $document.template==$item.name} SELECTED{/if}>{$item.title}</OPTION>
 				{/foreach}
@@ -139,6 +150,7 @@
 		</TD>
 	</TR>
 </TABLE>
+<BR><DIV id="plugin" name="plugin">{$plugin_result}</DIV>
 </FORM></P>
 <SCRIPT language="javascript">
 <!--
