@@ -24,13 +24,18 @@
  *  $Id$
  */
 
+/* short example of errors handling
+
 if(isset($_POST['document']))
 {
-	// short example of errors handling
-	// $error['notes'] = 'Error';
-	// $result = 'Error';
-	// return;
+	$error['notes'] = 'Error';
+	$result = 'Error';
+	return;
 }
+
+*/
+
+// Notice: $customer consist selected customer ID
 
 $result = $SMARTY->fetch($_DOC_DIR.'/templates/'.$engine['name'].'/plugin.html');
 
