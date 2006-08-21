@@ -49,10 +49,10 @@
 				{assign var=period value=$plan.period}
 				<OPTION value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
 			{/foreach}
+			</SELECT>
 			{else}
 				<INPUT type="hidden" name="invoice[numberplanid]" value="0">
 			{/if}
-			</SELECT>
 		</TD>
 	</TR>
 {*	{if $customer}

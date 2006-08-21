@@ -39,10 +39,10 @@
 				{assign var=period value=$plan.period}
 				<OPTION value="{$plan.id}"{if $plan.id==$cnote.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$cnote.cdate} ({$_NUM_PERIODS.$period})</OPTION>
 			{/foreach}
+			</SELECT>
 			{else}
 				<INPUT type="hidden" name="cnote[numberplanid]" value="0">
 			{/if}
-			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
