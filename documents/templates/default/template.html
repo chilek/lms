@@ -194,7 +194,12 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	    oraz numeru PIN: {$customerinfo.pin}
 	</TD>
     </TR>
-	
+{if $document.notes}
+    <TR>
+	<TD VALIGN="top">&sect;11.</TD>
+	<TD VALIGN="top">{$document.notes}</TD>
+    </TR>
+{/if}
     
 </TABLE>
 

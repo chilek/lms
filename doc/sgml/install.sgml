@@ -706,6 +706,7 @@ $engine = array(
     'title' => trans('Default document'), 	// description for LMS-UI
     'content_type' => 'text/html', 		// output file type
     'output' => 'default.html', 			// output file name
+    'plugin' => 'plugin',			// plugin file name (in 'name' directory)
 )
 ?&gt;
 </screen>
@@ -715,6 +716,9 @@ $engine = array(
 		appropriate wizard name. So, there is no need to create engine for
 		each new wizard. Is enough to make 'template' template and file
 		<filename>info.php</filename>.</para>
+		<para>Member <filename>plugin</filename> specify name of php file used
+		for printing additional fields on document creation form.
+		Plugin can also consist errors handlers for those fields.</para>
     </sect2>
     </sect1>
 </chapter>
