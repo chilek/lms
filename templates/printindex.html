@@ -288,8 +288,23 @@ cal7.time_comp = false;
 					<TD width="1%" nowrap>
 						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
-					<TD width="97%" nowrap>
+					<TD width="1%" nowrap>
 						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</TD>
+					<TD width="1%">
+						<IMG src="img/queue.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Numbering plan:{/t}</B>
+					</TD>
+					<TD width="94%">
+					    <SELECT name="numberplanid" {tip text="Select numbering plan"}>
+						<OPTION value="0">- {t}all{/t} -</OPTION>
+						{foreach item=plan from=$numberplans}
+					        {assign var=period value=$plan.period}
+						<OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+					    {/foreach}
+					    </SELECT>
 					</TD>
 				</TR>
 			</TABLE>

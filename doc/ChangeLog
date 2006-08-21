@@ -17,6 +17,7 @@ version ? (????-??-??):
   - fixed problem with 'To' date on Cash Report (alec)
   - fixed Sale Registry sorting order (alec)
   - document templates plugins (using XAJAX library) (alec)
+  - added numbering plan selection for Sale Registry printout (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   

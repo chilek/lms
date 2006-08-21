@@ -47,6 +47,7 @@ $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 
 $listdata = array();
 $invoicelist = array();
+$taxeslist = array();
 
 // we can't simply get documents with SUM(value*count)
 // because we need here incoices-like round-off
@@ -55,7 +56,8 @@ $invoicelist = array();
 $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
 	    FROM documents 
 	    LEFT JOIN invoicecontents ON docid = documents.id 
-	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) 
+	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) '
+	    .($_POST['numberplanid'] ? 'AND numberplanid = '.$_POST['numberplanid'] : '').'
 	    ORDER BY CEIL(cdate/86400), docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 // get documents data
