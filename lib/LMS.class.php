@@ -594,25 +594,41 @@ class LMS
 				else
 					$customerlist[$idx]['nodewarn'] = 2;
 
-				if (($disabled && $customerlist[$idx]['nodeac'] != 1) || !$disabled)
-					if($customerlist[$idx]['balance'] > 0)
-						$over += $customerlist[$idx]['balance'];
-					elseif($customerlist[$idx]['balance'] < 0)
-						$below += $customerlist[$idx]['balance'];
-				if ($disabled && $customerlist[$idx]['nodeac'] != 1)
-					$customerlist2[] = $customerlist[$idx];
-
-				if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
+				if(isset($onlines[$row['id']]['online']) && $onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
 					$customerlist[$idx]['online'] = 1;
+				else
+					$customerlist[$idx]['online'] = 0;
 
-				if($online && $customerlist[$idx]['online'])
-					$customerlist2[] = $customerlist[$idx];
-
-				if($indebted)
+				if($disabled)
+				{
+					if($customerlist[$idx]['nodeac'] != 1)
+						$customerlist2[] = $customerlist[$idx];
+					else
+						continue; // skip summary
+				}
+				elseif($online)
+				{
+					if($customerlist[$idx]['online'])
+						$customerlist2[] = $customerlist[$idx];
+					else
+						continue; // skip summary
+				}
+				elseif($indebted)
+				{
 					if($customerlist[$idx]['balance'] < 0)
 						$customerlist2[] = $customerlist[$idx];
+					else
+						continue; // skip summary
+				}
+				
+				// summary
+				if($customerlist[$idx]['balance'] > 0)
+					$over += $customerlist[$idx]['balance'];
+				elseif($customerlist[$idx]['balance'] < 0)
+					$below += $customerlist[$idx]['balance'];
 			}
-			if ($disabled || $online || $indebted)
+			
+			if($customerlist2)
 				$customerlist = $customerlist2;
 		}
 
