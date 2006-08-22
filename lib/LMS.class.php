@@ -570,17 +570,31 @@ class LMS
 							$searchargs[] = $this->DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)')." ?LIKE? UPPER('%$value%')";
 						break;
 						case 'createdfrom':
-							$searchargs[] = "creationdate >= $value";
+							if($search['createdto'])
+							{
+								$searchargs['createdfrom'] = "(creationdate >= $value AND creationdate <= ".$search['createdto'].')';
+								unset($search['createdto']);
+							}
+							else
+								$searchargs[] = "creationdate >= $value";
 						break;
 						case 'createdto':
-							$searchargs[] = "creationdate <= $value";
+							if(!isset($searchargs['createdfrom']))
+								$searchargs[] = "creationdate <= $value";
 						break;
 						case 'deletedfrom':
-							$searchargs[] = "moddate >= $value";
+							if($search['deletedto'])
+							{
+								$searchargs['deletedfrom'] = "(moddate >= $value AND moddate <= ".$search['deletedto'].')';
+								unset($search['deletedto']);
+							}
+							else
+								$searchargs[] = "moddate >= $value";
 							$deleted = 1;
 						break;
 						case 'deletedto':
-							$searchargs[] = "moddate <= $value";
+							if(!isset($searchargs['deletedfrom']))
+								$searchargs[] = "moddate <= $value";
 							$deleted = 1;
 						break;
 						default:
