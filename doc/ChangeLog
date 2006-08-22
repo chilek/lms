@@ -18,6 +18,7 @@ version ? (????-??-??):
   - fixed Sale Registry sorting order (alec)
   - document templates plugins (using XAJAX library) (alec)
   - added numbering plan selection for Sale Registry printout (alec)
+  - BTS#0000586: fixed summary on Customers List when using some filters (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   
