@@ -113,6 +113,9 @@
                     <member>city - nazwa miasta</member>
                     <member>ten - numer identyfikacji podatkowej NIP</member>
                     <member>ssn - numer PESEL</member>
+		    <member>regon - numer REGON</member>
+		    <member>rbe - numer KRS/EDG</member>
+		    <member>icn - numer dowodu osobistego</member>
                     <member>info - dodatkowe informacje</member>
                     <member>serviceaddr - adres do dorêczeñ (np. na faktury)</member>
                     <member>creationdate - czas utworzenia wpisu</member>
@@ -175,6 +178,7 @@
                     <member>warning - ostrzegaj/nie ostrzegaj (1/0)</member>
                     <member>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</member>
                     <member>info - informacje dodatkowe</member>
+		    <member>location - lokalizacja (adres)</member>
                </simplelist>
           </sect2>
           <sect2 id="netdevices">
@@ -284,6 +288,7 @@
                     <member>tariffid - identyfikator taryfy</member>
 		    <member>liabilityid - identyfikator zobowi±zania</member>
                     <member>customerid - identyfikator klienta</member>
+		    <member>nodeid - identyfikator komputera</member>
                     <member>period - typ okresu naliczania: codziennie/co tydzieñ/co miesi±c/co kwarta³/co rok (1/2/3/4/5)</member>
                     <member>at - dzieñ naliczania</member>
                     <member>datefrom - data obowi±zywania zobowi±zania</member>
@@ -404,6 +409,7 @@
                     <member>quota_mail - limit</member>
                     <member>quota_www - limit</member>
                     <member>quota_ftp - limit</member>
+		    <member>quota_sql - limit</member>
                </simplelist>
           </sect2>
           <sect2 id="domains">

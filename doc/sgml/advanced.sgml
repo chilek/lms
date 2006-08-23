@@ -109,6 +109,9 @@
                     <member>city - location (city)</member>
                     <member>ten - tax exempt number</member>
                     <member>ssn - social security number</member>
+		    <member>regon - business registration number</member>
+		    <member>rbe - register of business entities</member>
+		    <member>icn - identity card number</member>
                     <member>info - additional informations</member>
                     <member>serviceaddr - correspondence address</member>
                     <member>creationdate - record creation date</member>
@@ -171,6 +174,7 @@
                     <member>warning - should be warned with administration message? (1/0)</member>
                     <member>lastonline - last network activity timestamp</member>
                     <member>info - additional information</member>
+		    <member>location - location (address)</member>
                </simplelist>
           </sect2>
           <sect2 id="netdevices">
@@ -270,6 +274,7 @@
                     <member>tariffid - subscription serial number</member>
 		    <member>liabilityid - liability serial number</member>
                     <member>customerid - customer serial number</member>
+		    <member>nodeid - node (computer) serial number</member>
                     <member>period - interval of operation: daily/weekly/monthly/quarterly/annually (1/2/3/4/5)</member>
                     <member>at - pay day</member>
                     <member>datefrom - start date for assignment</member>
@@ -401,6 +406,7 @@
                     <member>quota_mail - email space limits</member>
                     <member>quota_www - www space limits</member>
                     <member>quota_ftp - ftp space limits</member>
+		    <member>quota_sql - sql database space limits</member>
                </simplelist>
           </sect2>
           <sect2 id="domains">
