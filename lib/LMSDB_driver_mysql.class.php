@@ -187,6 +187,11 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		return TRUE;
 	}
+        
+	function _driver_lastinsertid($table = NULL)
+        {
+	        return $this->GetOne('SELECT LAST_INSERT_ID()');
+	}
 }
 
 ?>

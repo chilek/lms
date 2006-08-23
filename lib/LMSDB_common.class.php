@@ -190,6 +190,11 @@ Class LMSDB_common
 		return $this->_driver_dbversion();
 	}
 
+	function GetLastInsertID($table = NULL)
+	{
+		return $this->_driver_lastinsertid($table);
+	}
+
 	function _query_parser($query, $inputarray = NULL)
 	{
 		// najpierw sparsujmy wszystkie specjalne meta ¶mieci.

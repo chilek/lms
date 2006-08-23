@@ -144,6 +144,11 @@ class LMSDB_driver_postgres extends LMSDB_common
 	{
 		return $this->Execute('COMMIT');
 	}
+	
+	function _driver_lastinsertid($table)
+	{
+               return $this->GetOne("SELECT currval('$table_id_seq')");
+	}       
 }
 
 ?>
