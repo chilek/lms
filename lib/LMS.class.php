@@ -379,7 +379,7 @@ class LMS
 					    )))
 		{
 			$this->SetTS('customers');
-			return $this->DB->GetOne('SELECT MAX(id) FROM customers');
+			return $this->DB->GetLastInsertID('customers');
 		} else
 			return FALSE;
 	}
@@ -1229,7 +1229,7 @@ class LMS
 				    $nodedata['info'],
 				    $nodedata['netdev'],
 				    $nodedata['location'])))
-			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
+			return $this->DB->GetLastInsertID('nodes');
 		else
 			return FALSE;
 	}
@@ -1394,7 +1394,7 @@ class LMS
 						    $assignmentdata['taxid'],
 						    $assignmentdata['prodid']
 					    ));
-			$lid = $this->DB->GetOne('SELECT MAX(id) FROM liabilities');
+			$lid = $this->DB->GetLastInsertID('liabilities');
 			$this->SetTS('liabilities');
 		}
 		
@@ -1446,7 +1446,7 @@ class LMS
 					    $invoice['customer']['zip'], 
 					    $invoice['customer']['city']
 					));
-		$iid = $this->DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?', array($number,$cdate,$type));
+		$iid = $this->DB->GetLastInsertID('documents');
 
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
@@ -1936,7 +1936,7 @@ class LMS
 				$paymentdata['at'],
 			)
 		))
-			return $this->DB->GetOne('SELECT id FROM payments WHERE name=?', array($paymentdata['name']));
+			return $this->DB->GetLastInsertID('payments');
 		else
 			return FALSE;
 	}
@@ -2478,7 +2478,7 @@ class LMS
 	{
 		$this->SetTS('netdevices');
 		if($this->DB->Execute('INSERT INTO netdevices (name, location, description, producer, model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?, ?)', array($netdevdata['name'],$netdevdata['location'],$netdevdata['description'],$netdevdata['producer'],$netdevdata['model'],$netdevdata['serialnumber'],$netdevdata['ports'])))
-			return $this->DB->GetOne('SELECT MAX(id) FROM netdevices');
+			return $this->DB->GetLastInsertID('netdevices');
 		else
 			return FALSE;
 	}
@@ -2769,9 +2769,12 @@ class LMS
 		$ts = time();
 		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, state, owner, createtime)
 				    VALUES (?, ?, ?, ?, 0, 0, ?)', array($ticket['queue'], $ticket['customerid'], $ticket['requestor'], $ticket['subject'], $ts));
-		$id = $this->DB->GetOne('SELECT id FROM rttickets WHERE createtime=? AND subject=?', array($ts, $ticket['subject']));
+		
+		$id = $this->DB->GetLastInsertID('rttickets');
+		
 		$this->DB->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime, subject, body, mailfrom)
 				    VALUES (?, ?, ?, ?, ?, ?)', array($id, $ticket['customerid'], $ts, $ticket['subject'], $ticket['body'], $ticket['mailfrom']));
+		
 		$this->SetTS('rttickets');
 		$this->SetTS('rtmessages');
 
