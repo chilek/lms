@@ -1723,5 +1723,8 @@ $_LANG['Documents'] = 'Dokumenty';
 $_LANG['Documents: list, searching, adding'] = 'Dokumenty: lista, wyszukiwanie, dodawanie';
 $_LANG['List of documents'] = 'Lista dokumentów';
 $_LANG['No such documents matching search criteria or list is empty.'] = 'Brak dokumentów spełniających kryteria wyszukiwania lub lista jest pusta.';
+$_LANG['Node:'] = 'Komputer:';
+$_LANG['Numbering plan:'] = 'Plan numeracyjny:';
+$_LANG['Select node'] = 'Wybierz komputer';
 
 ?>

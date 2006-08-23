@@ -237,7 +237,8 @@ if($_GET['action'] == 'add' && isset($a))
 					    'value' => str_replace(',','.',$a['value']),
 					    'name' => $a['name'],
 					    'taxid' => $a['taxid'],
-					    'prodid' => $a['prodid']
+					    'prodid' => $a['prodid'],
+					    'nodeid' => $a['nodeid']
 					    ));
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}

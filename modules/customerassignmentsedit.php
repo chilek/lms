@@ -31,8 +31,10 @@ if(!$customerid)
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-if($a = $_POST['assignmentedit'])
+if(isset($_POST['assignmentedit']))
 {
+	$a = $_POST['assignmentedit'];
+	
 	foreach($a as $key => $val)
 		$a[$key] = trim($val);
 	
@@ -224,7 +226,7 @@ if($a = $_POST['assignmentedit'])
 				    ));
 		}
 										
-		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, settlement=?, datefrom=?, dateto=?, discount=? WHERE id=?',
+		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, settlement=?, datefrom=?, dateto=?, discount=?, nodeid=? WHERE id=?',
 			    array(  $a['tariffid'], 
 				    $customerid, 
 				    $period, 
@@ -234,6 +236,7 @@ if($a = $_POST['assignmentedit'])
 				    $from, 
 				    $to,
 				    $a['discount'],
+				    $a['nodeid'],
 				    $a['id'],
 				    ));
 		$LMS->SetTS('assignments');
@@ -242,7 +245,8 @@ if($a = $_POST['assignmentedit'])
 }
 else
 {
-	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, period, at, datefrom, dateto, invoice, settlement, discount, liabilityid, 
+	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, period, at, datefrom, dateto, 
+				invoice, settlement, discount, liabilityid, nodeid,
 				(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
 				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid
 				FROM assignments
@@ -274,6 +278,7 @@ $layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetCustomerName(
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($customerid));
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('error', $error);
