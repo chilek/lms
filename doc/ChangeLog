@@ -23,6 +23,8 @@ version ? (????-??-??):
   - nodes with tariffs assignments - UI only (alec)
   - increased performance: using LAST_INSERT_ID/CURRVAL functions instead of 
     e.g. SELECT MAX(id) after insert (alec)
+  - BTS#0000467 lms-arping: setting lastonline time after scanning, not at 
+    the end of script execution (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   

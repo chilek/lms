@@ -154,6 +154,15 @@ if ($iplist)
 	open(IPLISTFILE, $iplist);
 	@lines = <IPLISTFILE>;
 	close(IPLISTFILE);
+	foreach my $line (@lines)
+	{
+    		$line =~ s/^\s+//;
+	        $line =~ s/\s+$//;
+
+    		$dbase->do("UPDATE nodes SET lastonline=$utsfmt WHERE ipaddr=INET_ATON('$line')");
+    		
+		print "$line\n" if not quiet;
+	}
 }
 else
 {
@@ -168,31 +177,21 @@ else
 
 			my $iface = $row->{'interface'} ? "-I $row->{'interface'}" : "";
 
-			my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
+			my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr, id FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
 		        $ndbq->execute();
 
 			while(my $nodrow = $ndbq->fetchrow_hashref())
 		        {
 				system("$arping -c1 -q $iface $nodrow->{'ipaddr'}");
-				if ( "$?" == "0" ) 
+				if("$?" == "0") 
 				{ 
-					push(@lines, "$nodrow->{'ipaddr'}");
+					$dbase->do("UPDATE nodes SET lastonline = $utsfmt WHERE id = $nodrow->{'id'}");
+				
+					print "$nodrow->{'ipaddr'}\n" if not $quiet;
 				}
 			}
 		}
 	}
-}
-
-foreach my $line (@lines)
-{
-     $line =~ s/^\s+//;
-     $line =~ s/\s+$//;
-     my $idbq = $dbase->prepare("UPDATE nodes SET lastonline=$utsfmt WHERE ipaddr=INET_ATON('$line')");
-     $idbq->execute();
-     if(!$quiet)
-     {
-          print "$line\n";
-     }
 }
 
 $dbase->disconnect();
