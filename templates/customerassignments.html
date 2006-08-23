@@ -28,9 +28,9 @@
 					{else}
 					<TD WIDTH="92%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">
 						{if $a.tariffid}
-							<A HREF="?m=tariffinfo&id={$a.tariffid}"><B>{$a.name}</B></A>
+							<A HREF="?m=tariffinfo&id={$a.tariffid}"><B>{$a.name}</B></A>{if $a.nodename} ({$a.nodename}){/if}
 						{else}
-							{$a.name}
+							{$a.name} {if $a.nodename}({$a.nodename}){/if}
 						{/if}
 					</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.value|money_format}</TD>
@@ -107,6 +107,15 @@
 							</SELECT>&nbsp;
 							<B>{t}Product ID:{/t}</B> <INPUT type="text" name="assignment[prodid]" value="{$assignment.prodid}" SIZE="10" {tip text="Enter liability Product ID (tariffless liabilities only)" trigger="prodid"}>&nbsp;
 							<B>{t}Discount:{/t}</B> <INPUT type="TEXT" name="assignment[discount]" value="{if $assignment.discount!=0}{$assignment.discount}{/if}" size="3" {tip text="Enter discount percentage" trigger="discount"}>
+							<B>{t}Node:{/t}</B>
+							<SELECT SIZE="1" name="assignment[nodeid]" {tip text="Select node"}>
+							    <OPTION value="0"{if !$assignment.nodeid} selected{/if}>{t}- all -{/t}</OPTION>
+							    {section name=customernodes loop=$customernodes}
+								{if $customernodes[customernodes].id}
+								<OPTION value="{$customernodes[customernodes].id}"{if $assignment.nodeid==$customernodes[customernodes].id} selected{/if}>{$customernodes[customernodes].name}</OPTION>
+								{/if}
+							    {/section}		
+							</SELECT>
 						    </TD>
 						    <TD></TD>	
 						</TR>
@@ -130,11 +139,11 @@
 						    <TD>	
 							<B>{t}Options:{/t}</B>
 						    </TD>
-						    <TD>
+						    <TD colspan="2">
 							<INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> {t}with invoice{/t}&nbsp;
 							<INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[settlement]" VALUE="1" {if $assignment.settlement}CHECKED{/if}> {t}with settlement of first deficient period{/t}
+						
 						    </TD>
-						    <TD></TD>
 						</TR>
 					    </TABLE>
 					</TD>

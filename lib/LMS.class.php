@@ -993,7 +993,8 @@ class LMS
 	function DeleteNode($id)
 	{
 		$this->SetTS('nodes');
-		return $this->DB->Execute('DELETE FROM nodes WHERE id=?', array($id));
+		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
+		$this->DB->Execute('UPDATE assignments SET nodeid = 0 WHERE nodeid = ?', array($id));
 	}
 
 	function GetNodeNameByMAC($mac)
@@ -1292,13 +1293,16 @@ class LMS
 
 	function GetCustomerAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, customerid, period, at, suspended, uprate, upceil, downceil, downrate, invoice, settlement, datefrom, dateto, discount, liabilityid, 
+		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, assignments.customerid, period, at, suspended, nodeid, 
+						    uprate, upceil, downceil, downrate, invoice, settlement, datefrom, dateto, discount, liabilityid, 
 						    (CASE WHEN tariffs.value IS NULL THEN liabilities.value ELSE tariffs.value END) AS value,
-						    (CASE WHEN tariffs.name IS NULL THEN liabilities.name ELSE tariffs.name END) AS name
+						    (CASE WHEN tariffs.name IS NULL THEN liabilities.name ELSE tariffs.name END) AS name,
+						    nodes.name AS nodename
 						    FROM assignments 
 						    LEFT JOIN tariffs ON (tariffid=tariffs.id) 
 						    LEFT JOIN liabilities ON (liabilityid=liabilities.id) 
-						    WHERE customerid=? 
+						    LEFT JOIN nodes ON (nodeid=nodes.id) 
+						    WHERE assignments.customerid=? 
 						    ORDER BY datefrom, value', array($id)))
 		{
 			foreach($assignments as $idx => $row)
@@ -1394,8 +1398,8 @@ class LMS
 			$this->SetTS('liabilities');
 		}
 		
-		return $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, settlement, datefrom, dateto, discount, liabilityid) 
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+		return $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, settlement, datefrom, dateto, discount, liabilityid, nodeid) 
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 					    array($assignmentdata['tariffid'], 
 						    $assignmentdata['customerid'], 
 						    $assignmentdata['period'], 
@@ -1405,7 +1409,8 @@ class LMS
 						    $assignmentdata['datefrom'], 
 						    $assignmentdata['dateto'], 
 						    $assignmentdata['discount'],
-						    isset($lid) ? $lid : 0
+						    isset($lid) ? $lid : 0,
+						    $assignmentdata['nodeid']
 						    ));
 	}
 
