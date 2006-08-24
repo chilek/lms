@@ -99,9 +99,9 @@ if(isset($_POST['document']))
 				default: $error['file'] = trans('Problem during file upload.'); break;
 			}
 	}	
-	elseif($document['template'])
+	elseif($document['templ'])
 	{
-		include($_DOC_DIR.'/templates/'.$document['template'].'/info.php');
+		include($_DOC_DIR.'/templates/'.$document['templ'].'/info.php');
 		if(file_exists($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
 			require_once($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
 		else

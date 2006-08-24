@@ -96,7 +96,7 @@
 			<B>{t}Template:{/t}
 		</TD>
 		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[template]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"}>
+			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"}>
 				<OPTION VALUE="0">... {t}select template{/t} ...</OPTION>
 				{foreach from=$docengines item=item}
 				<OPTION VALUE="{$item.name}"{if $document.template==$item.name} SELECTED{/if}>{$item.title}</OPTION>
