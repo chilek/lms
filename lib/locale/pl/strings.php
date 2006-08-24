@@ -1726,5 +1726,6 @@ $_LANG['No such documents matching search criteria or list is empty.'] = 'Brak d
 $_LANG['Node:'] = 'Komputer:';
 $_LANG['Numbering plan:'] = 'Plan numeracyjny:';
 $_LANG['Select node'] = 'Wybierz komputer';
+$_LANG['Additional informations:'] = 'Informacje dodatkowe:';
 
 ?>
