@@ -114,6 +114,7 @@ $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('docid', isset($_GET['docid']) ? $_GET['docid'] : 0);
 $SMARTY->display('documentlist.html');
 
 ?>

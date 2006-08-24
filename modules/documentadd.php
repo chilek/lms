@@ -53,8 +53,6 @@ $xajax->processRequests();
 $SMARTY->assign('xajax', $xajax->getJavascript('img/', 'xajax.js'));
 /* end AJAX plugin stuff */
 
-$layout['pagetitle'] = trans('New Document');
-
 if(isset($_POST['document']))
 {
 	$document = $_POST['document'];
@@ -132,18 +130,19 @@ if(isset($_POST['document']))
 				default: $error['file'] = trans('Problem during file upload.'); break;
 			}
 	}	
-	elseif($document['template'])
+	elseif($document['templ'])
 	{
-		include($_DOC_DIR.'/templates/'.$document['template'].'/info.php');
-		
 		$result = '';
 		// read template informations
-		@include($_DOC_DIR.'/templates/'.$template.'/info.php');
+		include($_DOC_DIR.'/templates/'.$document['templ'].'/info.php');
+		// set some variables
+		$SMARTY->assign('document', $document);
 		// call plugin
 		@include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
-		// display plugin
+		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
 		
+		// run template engine
 		if(file_exists($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
 			require_once($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
 		else
@@ -204,8 +203,7 @@ if(isset($_POST['document']))
 					$document['closed'] ? 1 : 0
 					));
 		
-		$docid = $DB->GetOne('SELECT id FROM documents WHERE type = ? AND cdate = ? AND customerid = ?', 
-				array($document['type'], $time, $document['customerid']));
+		$docid = $DB->GetLastInsertID('documents');
 
 		$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, filename, contenttype, md5sum, description)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
@@ -218,12 +216,12 @@ if(isset($_POST['document']))
 					$document['md5sum'],
 					$document['description']
 					));
-		
+
 		$DB->CommitTrans();
 		
 		if(!isset($document['reuse']))
 		{
-			$SESSION->redirect('?m=customerinfo&id='.$document['customerid']);
+			$SESSION->redirect('?m=documentlist'.(isset($_GET['print']) ? '&docid='.$docid : ''));
 		}
 		
 		unset($document['title']);
@@ -242,8 +240,6 @@ else
 {
 	$document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
 }
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!isset($document['numberplanid']) || !$document['numberplanid'])
 {
@@ -270,6 +266,10 @@ if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9]+$'))
 	}
 
 if($docengines) asort($docengines);
+
+$layout['pagetitle'] = trans('New Document');
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('numberplans', $numberplans);

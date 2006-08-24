@@ -8,7 +8,13 @@
 <!--
 	function getplugin()
 	{
-		xajax_plugin(document.forms['documentadd'].elements['document[template]'].value, document.forms['documentadd'].elements['customer'].value);
+		xajax_plugin(document.forms['documentadd'].elements['document[templ]'].value, document.forms['documentadd'].elements['customer'].value);
+	}
+	
+	function print_document()
+	{
+		document.forms['documentadd'].action += '&print=1';
+		document.forms['documentadd'].submit();
 	}
 //-->
 </script>
@@ -106,7 +112,7 @@
 			<B>{t}Template:{/t}
 		</TD>
 		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[template]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
+			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
 				<OPTION VALUE="">... {t}select template{/t} ...</OPTION>
 				{foreach from=$docengines item=item}
 				<OPTION VALUE="{$item.name}"{if $document.template==$item.name} SELECTED{/if}>{$item.title}</OPTION>
@@ -145,7 +151,8 @@
 	<TR class="LIGHT">
 		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
 			<A href="javascript: document.documentadd.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A href="?m=customerinfo&id={$document.customerid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
+			<A href="javascript: print_document();">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
+			<A href="?m=documentlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="document[reuse]" value="ON" class="box light" {if $document.reuse}checked{/if}> {t}Display this form again, when that document is saved{/t}
 		</TD>
 	</TR>
