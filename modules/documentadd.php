@@ -29,7 +29,7 @@ require($_LIB_DIR.'/xajax/xajax.inc.php');
 
 function plugin($template, $customer)
 {
-	global $_DOC_DIR, $SMARTY;
+	global $_DOC_DIR;
 	
 	$result = '';
 	
@@ -46,6 +46,7 @@ function plugin($template, $customer)
 
 $xajax = new xajax();
 //$xajax->debugOn();
+$xajax->errorHandlerOn();
 $xajax->registerFunction("plugin");
 $xajax->processRequests();						
 
