@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+global $SMARTY;
+
 /* short example of errors handling
 
 if(isset($_POST['document']))
