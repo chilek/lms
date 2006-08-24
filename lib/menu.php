@@ -284,15 +284,15 @@ $menu = array(
 					'link' => '?m=documentadd',
 					'tip' => trans('Allows you to add new document'),
 				),
+//				array(
+//					'name' => trans('Search'),
+//					'link' => '?m=documentsearch',
+//					'tip' => trans('Allows you to search documents'),
+//				),
 				array(
 					'name' => trans('Documents Generator'),
 					'link' =>'?m=documentgen',
 					'tip' => trans('Documents mass creation'),
-				),
-				array(
-					'name' => trans('Search'),
-					'link' => '?m=documentsearch',
-					'tip' => trans('Allows you to search documents'),
 				),
 			),
 		),
