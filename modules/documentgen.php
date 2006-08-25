@@ -24,7 +24,34 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Documents Generator');
+/* Using AJAX for template plugins */
+require($_LIB_DIR.'/xajax/xajax.inc.php');
+
+function plugin($template, $customer)
+{
+	global $_DOC_DIR;
+	
+	$result = '';
+	
+	// read template informations
+	@include($_DOC_DIR.'/templates/'.$template.'/info.php');
+	// call plugin
+	@include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
+	
+	// xajax response
+	$objResponse = new xajaxResponse();
+	$objResponse->addAssign("plugin", "innerHTML", $result);
+	return $objResponse;
+}
+
+$xajax = new xajax();
+//$xajax->debugOn();
+$xajax->errorHandlerOn();
+$xajax->registerFunction("plugin");
+$xajax->processRequests();						
+
+$SMARTY->assign('xajax', $xajax->getJavascript('img/', 'xajax.js'));
+/* end AJAX plugin stuff */
 
 if(isset($_POST['document']))
 {
@@ -74,9 +101,6 @@ if(isset($_POST['document']))
 	if($document['fromdate'] > $document['todate'] && $document['todate']!=0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
-	if(!$document['template'])
-		$error['template'] = trans('Document template not selected!');
-
 	switch($_POST['filter'])
 	{
 		case 0:
@@ -111,6 +135,9 @@ if(isset($_POST['document']))
 
 	if(!isset($customerlist) || $customerlist['total'] == 0)
 		$error['customer'] = trans('Customers list is empty!');
+
+	if(!$document['templ'])
+		$error['template'] = trans('Document template not selected!');
 	
 	if(!$error)
 	{
@@ -121,8 +148,15 @@ if(isset($_POST['document']))
 
 		$numtemplate = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
 
-		include($_DOC_DIR.'/templates/'.$document['template'].'/info.php');
-	
+		// read template informations
+		include($_DOC_DIR.'/templates/'.$document['templ'].'/info.php');
+		
+		// run template engine
+		if(file_exists($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
+			require_once($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
+		else
+			require_once($_DOC_DIR.'/templates/default/engine.php');
+
 		foreach($customerlist as $gencust)
 		{
 			if(!is_array($gencust)) continue;
@@ -185,8 +219,7 @@ if(isset($_POST['document']))
 					isset($document['closed']) ? 1 : 0
 					));
 		
-			$docid = $DB->GetOne('SELECT id FROM documents WHERE type = ? AND cdate = ? AND customerid = ?',
-				array($document['type'], $time, $document['customerid']));
+			$docid = $DB->GetLastInsertID('documents');
 
 			$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, filename, contenttype, md5sum, description)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
@@ -226,6 +259,19 @@ if(isset($_POST['document']))
 	{
 		$document['fromdate'] = $oldfromdate;
 		$document['todate'] = $oldtodate;
+		
+		if($document['templ'])
+		{
+			$result = '';
+			// read template informations
+			include($_DOC_DIR.'/templates/'.$document['templ'].'/info.php');
+			// set some variables
+			$SMARTY->assign('document', $document);
+			// call plugin
+		    	@include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
+			// get plugin content
+			$SMARTY->assign('plugin_result', $result);
+		}
 	}
 }
 
@@ -256,6 +302,8 @@ if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9]+$'))
 	}
 
 if($docengines) asort($docengines);
+
+$layout['pagetitle'] = trans('Documents Generator');
 
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

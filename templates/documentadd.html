@@ -115,7 +115,7 @@
 			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"} onchange="getplugin();">
 				<OPTION VALUE="">... {t}select template{/t} ...</OPTION>
 				{foreach from=$docengines item=item}
-				<OPTION VALUE="{$item.name}"{if $document.template==$item.name} SELECTED{/if}>{$item.title}</OPTION>
+				<OPTION VALUE="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
