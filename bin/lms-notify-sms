@@ -216,6 +216,10 @@ while (my $row = $dbq->fetchrow_hashref())
 					$line =~ s/\%pin/$row->{'pin'}/;
 				}
 
+				if ($line =~ /\%cid/) {
+					$line =~ s/\%cid/$row->{'id'}/;
+				}
+
 				if ($line =~ /\%abonament/) {
 					my $saldo_dbq = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND customerid = $row->{'id'}");
 					$saldo_dbq->execute();

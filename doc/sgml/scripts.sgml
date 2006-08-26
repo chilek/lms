@@ -155,6 +155,9 @@ scripts.</para>
 	       <para>%pin - PIN code of the customer</para>
 	    </listitem>
 	    <listitem>
+	       <para>%cid - customer ID</para>
+	    </listitem>
+	    <listitem>
 	       <para>%phone1 - customer's 1st phone number</para>
 	    </listitem>
 	    <listitem>
