@@ -268,9 +268,6 @@ function isipin($ip,$net,$mask)
 
 function isipinstrict($ip,$net,$mask)
 {
-echo "*".$ip;
-echo "***".getbraddr($net, $mask)."<BR>";
-
 	if(ip_long($ip) >= ip_long(getnetaddr($net,$mask)) && ip_long($ip) <= ip_long(getbraddr($net,$mask)))
 		return true;
 	else
