@@ -136,55 +136,6 @@ function check_ip($ip)
 		return false;
 }
 
-function getbraddr($ip,$mask)
-{
-	if(check_ip($ip) && check_mask($mask))
-	{
-		$ipa=ip2long($ip);
-		$maska=ip2long($mask);
-		$ipb = decbin($ipa);
-		while (strlen($ipb) != 32)
-		{
-			$ipb = '0'.$ipb;
-		}
-		$maskb = decbin($maska);
-		$i=0;
-		$out = '';
-		while (($i<32) && ($maskb[$i]=='1'))
-		{
-			$out .= $ipb[$i];
-			$i++;
-		}
-		while(strlen($out) != 32)
-			$out.='1';
-		return long2ip(bindec($out));
-	}
-	else
-		return false;
-}
-
-function getnetaddr($ip,$mask)
-{
-	if(check_ip($ip))
-	{
-		$ipa=ip2long($ip);
-		$maska=ip2long($mask);
-		$ipb = decbin($ipa);
-		while (strlen($ipb) != 32)
-			$ipb = '0'.$ipb;
-		$maskb = decbin($maska);
-		while (strlen($maskb) != 32)
-			$maskb = '0'.$maskb;
-		$out = '00000000000000000000000000000000';
-		for ($i=0; $i<32; $i++)
-			if ($maskb[$i] == '1')
-				$out[$i]=$ipb[$i];
-		return long2ip(bindec($out));
-	}
-	else
-		return false;
-}
-
 function check_mask($mask)
 {
 	$i=0;
@@ -208,6 +159,32 @@ function check_mask($mask)
 		else
 			return TRUE;
 	}
+}
+
+function getbraddr($ip,$mask)
+{
+	if(check_ip($ip) && check_mask($mask))
+	{
+		$net = ip2long(getnetaddr($ip, $mask));
+		$mask = ip2long($mask);
+
+		return long2ip($net | (~$mask));
+	}
+	else
+		return false;
+}
+
+function getnetaddr($ip,$mask)
+{
+	if(check_ip($ip) && check_mask($mask))
+	{
+		$ip = ip2long($ip);
+		$mask = ip2long($mask);
+		
+		return long2ip($ip & $mask);
+	}
+	else
+		return false;
 }
 
 function prefix2mask($prefix)
@@ -291,6 +268,9 @@ function isipin($ip,$net,$mask)
 
 function isipinstrict($ip,$net,$mask)
 {
+echo "*".$ip;
+echo "***".getbraddr($net, $mask)."<BR>";
+
 	if(ip_long($ip) >= ip_long(getnetaddr($net,$mask)) && ip_long($ip) <= ip_long(getbraddr($net,$mask)))
 		return true;
 	else
