@@ -25,6 +25,7 @@ version ? (????-??-??):
     e.g. SELECT MAX(id) after insert (alec)
   - BTS#0000467 lms-arping: setting lastonline time after scanning, not at 
     the end of script execution (alec)
+  - added %cid variable in lms-notify and lms-notify-sms (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   

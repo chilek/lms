@@ -156,13 +156,16 @@
 	       <para>%B - saldo z prawdziwym znakiem, np. -107</para>
 	    </listitem>
 	    <listitem>
-	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie klienta, np:</para>
+	       <para>%pin - numer PIN klienta</para>
 	    </listitem>
 	    <listitem>
-	       <para>%pin - numer PIN klienta.</para>
+	       <para>%cid - ID klienta.</para>
 	    </listitem>
 	    <listitem>
-	       <para>%phone1 - pierwszy numer telefonu klienta.</para>
+	       <para>%phone1 - pierwszy numer telefonu klienta</para>
+	    </listitem>
+	    <listitem>
+	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie klienta, np.:</para>
 	    </listitem>
 	  </itemizedlist>
 	  <example id="notify-example">
