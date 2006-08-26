@@ -158,13 +158,22 @@ class Auth {
 		
 		foreach($allowedlist as $value)
 		{
-			list($net,$mask) = sscanf($value, '%[0-9.]/%[0-9]');
+			$net = '';
+                        $mask = '';
+		       
+		        if(strpos($value, '/')===FALSE)
+			        $net = $value;
+			else
+				list($net, $mask) = explode('/', $value);
+			
 			$net = trim($net);
 			$mask = trim($mask);
+			
 			if($mask == '')
-				$mask = '32';
-			if($mask >= 0 || $mask <= 32)
+				$mask = '255.255.255.255';
+			elseif(is_numeric($mask))
 				$mask = prefix2mask($mask);
+
 			if(isipinstrict($this->ip, $net, $mask))
 			{
 				$isin = TRUE;
