@@ -161,7 +161,7 @@ if ($iplist)
 
     		$dbase->do("UPDATE nodes SET lastonline=$utsfmt WHERE ipaddr=INET_ATON('$line')");
     		
-		print "$line\n" if not quiet;
+		print "$line\n" if not $quiet;
 	}
 }
 else
