@@ -994,7 +994,7 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
-		$this->DB->Execute('UPDATE assignments SET nodeid = 0 WHERE nodeid = ?', array($id));
+		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($id));
 	}
 
 	function GetNodeNameByMAC($mac)
@@ -1293,15 +1293,13 @@ class LMS
 
 	function GetCustomerAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, assignments.customerid, period, at, suspended, nodeid, 
+		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, assignments.customerid, period, at, suspended,  
 						    uprate, upceil, downceil, downrate, invoice, settlement, datefrom, dateto, discount, liabilityid, 
 						    (CASE WHEN tariffs.value IS NULL THEN liabilities.value ELSE tariffs.value END) AS value,
-						    (CASE WHEN tariffs.name IS NULL THEN liabilities.name ELSE tariffs.name END) AS name,
-						    nodes.name AS nodename
+						    (CASE WHEN tariffs.name IS NULL THEN liabilities.name ELSE tariffs.name END) AS name
 						    FROM assignments 
 						    LEFT JOIN tariffs ON (tariffid=tariffs.id) 
 						    LEFT JOIN liabilities ON (liabilityid=liabilities.id) 
-						    LEFT JOIN nodes ON (nodeid=nodes.id) 
 						    WHERE assignments.customerid=? 
 						    ORDER BY datefrom, value', array($id)))
 		{
@@ -1339,6 +1337,10 @@ class LMS
 				}
 
 				$assignments[$idx] = $row;
+
+				// assigned nodes
+				$assignments[$idx]['nodes'] = $this->DB->GetAll('SELECT nodes.name, nodes.id FROM nodeassignments, nodes
+						    WHERE nodeid = nodes.id AND assignmentid = ?', array($row['id']));
 				
 				if ($row['discount'] == 0)
 					$assignments[$idx]['discounted_value'] = $row['value'];
@@ -1379,6 +1381,7 @@ class LMS
 		{
 			$this->DB->Execute('DELETE FROM liabilities WHERE id=?', array($lid));
 		}
+		$this->DB->Execute('DELETE FROM nodeassignments WHERE assignmentid=?', array($id));
 		return $this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
 	}
 
@@ -1398,8 +1401,8 @@ class LMS
 			$this->SetTS('liabilities');
 		}
 		
-		return $this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, settlement, datefrom, dateto, discount, liabilityid, nodeid) 
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+		$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, settlement, datefrom, dateto, discount, liabilityid) 
+					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 					    array($assignmentdata['tariffid'], 
 						    $assignmentdata['customerid'], 
 						    $assignmentdata['period'], 
@@ -1410,8 +1413,16 @@ class LMS
 						    $assignmentdata['dateto'], 
 						    $assignmentdata['discount'],
 						    isset($lid) ? $lid : 0,
-						    $assignmentdata['nodeid']
 						    ));
+
+		$result = $this->DB->GetLastInsertID('assignments');
+
+		if(is_array($assignmentdata['nodes']))
+			foreach($assignmentdata['nodes'] as $node)
+				$DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
+					array($node, $result));
+		
+		return $result;
 	}
 
 	function SuspendAssignment($id,$suspend = TRUE)

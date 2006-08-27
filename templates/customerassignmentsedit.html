@@ -54,24 +54,6 @@
 		</TD>
 	</TR>
 	<TR class="LIGHT">
-		<TD class="fleft" width="1%">
-			<IMG src="img/node.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{t}Node:{/t}</B>
-		</TD>
-		<TD class="fright" width="98%">
-	    		<SELECT SIZE="1" name="assignmentedit[nodeid]" {tip text="Select node"}>
-		        	<OPTION value="0"{if !$assignment.nodeid} selected{/if}>{t}- all -{/t}</OPTION>
-			        {section name=customernodes loop=$customernodes}
-				{if $customernodes[customernodes].id}
-				        <OPTION value="{$customernodes[customernodes].id}"{if $assignmentedit.nodeid==$customernodes[customernodes].id} selected{/if}>{$customernodes[customernodes].name}</OPTION>
-				{/if}
-				{/section}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
 		<TD class="fleft" width="1%"></TD>
 		<TD width="1%">
 			<B>{t}Discount:{/t}</B>
@@ -88,6 +70,24 @@
 		<TD class="fright" width="98%">
 		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> {t}with invoice{/t}&nbsp;
 			<INPUT class="box light" type="checkbox" name="assignmentedit[settlement]" value="1" {if $assignmentedit.settlement}CHECKED{/if}> {t}with settlement of first deficient period{/t}
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fleft" width="1%">
+			<IMG src="img/node.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Nodes:{/t}</B>
+		</TD>
+		<TD class="fright" width="98%">
+	    		<SELECT name="assignmentedit[nodes][]" {tip text="Select node"} multiple>
+			        {section name=customernodes loop=$customernodes}
+				{if $customernodes[customernodes].id}
+				{assign var=nodeid value=$customernodes[customernodes].id}
+				        <OPTION value="{$customernodes[customernodes].id}"{if $assignmentedit.nodes.$nodeid} selected{/if}>{$customernodes[customernodes].name}</OPTION>
+				{/if}
+				{/section}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR class="LIGHT">

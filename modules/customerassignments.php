@@ -216,14 +216,10 @@ if($_GET['action'] == 'add' && isset($a))
 
 	if($a['tariffid'] != '') 
 		$a['value'] = 0;
-	
 
 	if(!$error) 
 	{
-		if($a['tariffid'] == '')
-		{
-			$a['tariffid'] = 0;
-		}
+		if($a['tariffid'] == '') $a['tariffid'] = 0;
 
 		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 
 					    'customerid' => $_GET['id'], 
@@ -238,7 +234,6 @@ if($_GET['action'] == 'add' && isset($a))
 					    'name' => $a['name'],
 					    'taxid' => $a['taxid'],
 					    'prodid' => $a['prodid'],
-					    'nodeid' => $a['nodeid']
 					    ));
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
