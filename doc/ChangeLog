@@ -10,6 +10,8 @@ version ? (????-??-??):
   - BTS#0000586: fixed summary on Customers List when using some filters (alec)
   - remembering of selected template at document addition form when some
     errors occured (alec)
+  - fixed potential problem with to_words() and float numbers on cash receipt
+    printout (alec)
 
 version 1.8.5 Sina (2006-07-25):
 

@@ -39,7 +39,7 @@ function GetReceipt($id)
 		foreach($receipt['contents'] as $row)
 			$receipt['total'] += $row['value'];
 		
-		$receipt['totalg'] = ($receipt['total']*100 - ((int) $receipt['total'])*100);
+		$receipt['totalg'] = round($receipt['total']*100 - ((int) $receipt['total'])*100);
 		$receipt['number'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate']);
 		
 		return $receipt;
