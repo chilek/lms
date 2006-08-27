@@ -36,11 +36,12 @@ if(isset($_POST['assignmentedit']))
 	$a = $_POST['assignmentedit'];
 	
 	foreach($a as $key => $val)
-		$a[$key] = trim($val);
+		if(!is_array($val))
+			$a[$key] = trim($val);
 	
 	$a['id'] = $_GET['id'];
 	$a['customerid'] = $customerid;
-	$a['liabilityid'] = $_GET['lid'];
+	$a['liabilityid'] = isset($_GET['lid']) ? $_GET['lid'] : 0;
 
 	$period = sprintf('%d',$a['period']);
 
@@ -204,7 +205,7 @@ if(isset($_POST['assignmentedit']))
         if($a['tariffid'] != '')
     		$a['value'] = 0;
 
-	if($_GET['lid'])
+	if($a['liabilityid'])
 	{
 		if($a['name'] == '')
 			$error['editname'] = trans('Liability name/description is required!');
@@ -214,7 +215,7 @@ if(isset($_POST['assignmentedit']))
 
 	if(!$error) 
 	{
-	        if($_GET['lid'])
+	        if($a['liabilityid'])
 		{
 			$a['tariffid'] = 0;
 			$DB->Execute('UPDATE liabilities SET value=?, name=?, taxid=?, prodid=? WHERE id=?',
@@ -222,31 +223,40 @@ if(isset($_POST['assignmentedit']))
 				    $a['name'],
 				    $a['taxid'],
 				    $a['prodid'],
-				    $_GET['lid']
+				    $a['liabilityid']
 				    ));
 		}
 										
-		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, settlement=?, datefrom=?, dateto=?, discount=?, nodeid=? WHERE id=?',
+		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, period=?, at=?, invoice=?, settlement=?, datefrom=?, dateto=?, discount=?  WHERE id=?',
 			    array(  $a['tariffid'], 
 				    $customerid, 
 				    $period, 
 				    $at, 
-				    sprintf('%d',$a['invoice']), 
-				    sprintf('%d',$a['settlement']), 
+				    isset($a['invoice']) ? 1 : 0, 
+				    isset($a['settlement']) ? 1 : 0, 
 				    $from, 
 				    $to,
 				    $a['discount'],
-				    $a['nodeid'],
 				    $a['id'],
 				    ));
 		$LMS->SetTS('assignments');
+		
+		$DB->Execute('DELETE FROM nodeassignments WHERE assignmentid=?', array($a['id']));
+
+		if(sizeof($a['nodes']))
+		{
+			foreach($a['nodes'] as $nodeid)
+				$DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
+					array($nodeid, $a['id']));
+		}
+
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 }
 else
 {
 	$a = $DB->GetRow('SELECT assignments.id AS id, customerid, tariffid, period, at, datefrom, dateto, 
-				invoice, settlement, discount, liabilityid, nodeid,
+				invoice, settlement, discount, liabilityid, 
 				(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
 				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid
 				FROM assignments
@@ -272,6 +282,9 @@ else
 				$a['at'] = date('Y/m/d', $a['at']);
 			break;
 	}
+	
+	// nodes assignments
+	$a['nodes'] = $DB->GetAllByKey('SELECT nodeid FROM nodeassignments WHERE assignmentid=?', 'nodeid', array($a['id']));
 }
 
 $layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetCustomerName($customerid));

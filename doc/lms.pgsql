@@ -34,7 +34,6 @@ CREATE TABLE assignments (
 	tariffid integer 	DEFAULT 0 NOT NULL,
 	liabilityid integer 	DEFAULT 0 NOT NULL,
 	customerid integer	DEFAULT 0 NOT NULL,
-	nodeid integer		DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT 0 NOT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
@@ -46,8 +45,21 @@ CREATE TABLE assignments (
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
-CREATE INDEX assignments_nodeid_idx ON assignments (nodeid);
 CREATE INDEX assignments_customerid_idx ON assignments (customerid);
+
+/* -------------------------------------------------------- 
+  Structure of table "nodeassignments" 
+-------------------------------------------------------- */
+DROP SEQUENCE "nodeassignments_id_seq";
+CREATE SEQUENCE "nodeassignments_id_seq";
+DROP TABLE nodeassignments;
+CREATE TABLE nodeassignments (
+        id integer              DEFAULT nextval('nodeassignments_id_seq'::text) NOT NULL,
+	nodeid integer          DEFAULT 0 NOT NULL,
+	assignmentid integer    DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (nodeid, assignmentid)
+);
 
 /* -------------------------------------------------------- 
   Structure of table "cash" 
@@ -754,4 +766,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006082300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006082700');

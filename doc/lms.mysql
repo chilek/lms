@@ -34,7 +34,6 @@ CREATE TABLE assignments (
   tariffid int(11) NOT NULL default '0',
   liabilityid int(11) NOT NULL default '0',
   customerid int(11) NOT NULL default '0',
-  nodeid int(11) NOT NULL default '0',
   period smallint NOT NULL default '0',
   at int(11) NOT NULL default '0',
   datefrom int(11) NOT NULL default '0',
@@ -45,8 +44,20 @@ CREATE TABLE assignments (
   discount decimal(4,2) NOT NULL default '0',
   PRIMARY KEY (id),
   INDEX tariffid (tariffid),
-  INDEX nodeid (nodeid),
   INDEX customerid (customerid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table nodeassignments
+#
+DROP TABLE IF EXISTS nodeassignments;
+CREATE TABLE nodeassignments (
+    id int(11) NOT NULL auto_increment,
+    nodeid int(11) NOT NULL DEFAULT '0',
+    assignmentid int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY (id),
+    UNIQUE KEY nodeid (nodeid, assignmentid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -709,4 +720,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006082300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006082700');
