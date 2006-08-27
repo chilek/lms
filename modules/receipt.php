@@ -52,7 +52,7 @@ function GetReceipt($id)
 		else
 			$receipt['type'] = 'in';
 
-		$receipt['totalg'] = ($receipt['total']*100 - ((int) $receipt['total'])*100);
+		$receipt['totalg'] = round($receipt['total']*100 - ((int) $receipt['total'])*100);
 		
 		return $receipt;
 	}
