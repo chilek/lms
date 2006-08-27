@@ -288,7 +288,6 @@
                     <member>tariffid - identyfikator taryfy</member>
 		    <member>liabilityid - identyfikator zobowi±zania</member>
                     <member>customerid - identyfikator klienta</member>
-		    <member>nodeid - identyfikator komputera</member>
                     <member>period - typ okresu naliczania: codziennie/co tydzieñ/co miesi±c/co kwarta³/co rok (1/2/3/4/5)</member>
                     <member>at - dzieñ naliczania</member>
                     <member>datefrom - data obowi±zywania zobowi±zania</member>
@@ -299,7 +298,15 @@
 		    <member>settlement - rozliczenie okresu niepe³nego (1 - tak, 0 - nie)</member>
                </simplelist>
           </sect2>
-          <sect2 id="numberplans">
+	  <sect2 id="nodeassignments">
+		  <title>Powi±zania komputer-taryfa ('nodeassignments')</title>
+		  <simplelist>
+			  <member>id - identyfikator</member>
+			  <member>assignmentid - identyfikator zobowi±zania</member>
+			  <member>nodeid - identyfikator komputera</member>
+		  </simplelist>
+          </sect2>
+	  <sect2 id="numberplans">
                <title>Plany (szablony) numeracyjne dokumentów ('numberplans')</title>
                   <simplelist>
                     <member>id - identyfikator</member>
