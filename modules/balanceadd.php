@@ -26,24 +26,27 @@
 
 $addbalance = $_POST['addbalance'];
 
+$addbalance['value'] = str_replace(',','.',$addbalance['value']);
+
+if(isset($addbalance['time']) && $addbalance['time']!='')
+{
+	// date format 'yyyy/mm/dd hh:mm'	
+	list($date,$time) = split(' ', $addbalance['time']);
+	$date = explode('/',$date);
+	$time = explode(':',$time);
+	
+	if(checkdate($date[1],$date[2],(int)$date[0])) //if date is wrong, set today's date
+		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
+	else
+		$addbalance['time'] = time();
+}
+else
+	$addbalance['time'] = time();
+
 $SESSION->save('addbc', $addbalance['comment']);
 $SESSION->save('addbt', $addbalance['time']);
 $SESSION->save('addbv', $addbalance['value']);
 $SESSION->save('addbtax', $addbalance['taxid']);
-
-$addbalance['value'] = str_replace(',','.',$addbalance['value']);
-
-if($addbalance['time'])
-{
-	// date format 'yyyy/mm/dd hh:mm'	
-	list($date,$time) = split(' ',$addbalance['time']);
-	$date = explode('/',$date);
-	$time = explode(':',$time);
-	if(checkdate($date[1],$date[2],$date[0])) //if date is wrong, set today's date
-		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
-	else
-		unset($addbalance['time']);
-}
 
 if(isset($addbalance['mcustomerid']))
 {
