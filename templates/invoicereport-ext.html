@@ -53,9 +53,9 @@
 			{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD class="small">
-			{$invoicelist[invoicelist].custname} ({$invoicelist[invoicelist].customerid|string_format:"%04d"})<BR>
-			{$invoicelist[invoicelist].custaddress}<BR>
-			{$invoicelist[invoicelist].ten}
+			{$invoicelist[invoicelist].custname} ({$invoicelist[invoicelist].customerid|string_format:"%04d"})
+			{if $invoicelist[invoicelist].ten}{$invoicelist[invoicelist].ten}{/if}<BR>
+			{$invoicelist[invoicelist].custaddress}
 		</TD>
 		<TD ALIGN="RIGHT" class="small">
 			{$invoicelist[invoicelist].brutto|string_format:"%01.2f"}

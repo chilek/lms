@@ -3259,7 +3259,10 @@ class LMS
 					    GROUP BY numberplanid','id');
 					    
 			foreach ($list as $idx => $item)
-				$list[$idx]['next'] = $max[$item['id']]['max']+1;
+				if(isset($max[$item['id']]['max']))
+					$list[$idx]['next'] = $max[$item['id']]['max']+1;
+				else
+					$list[$idx]['next'] = 1;
 		}
 		
 		return $list;
