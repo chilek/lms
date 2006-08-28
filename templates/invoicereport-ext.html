@@ -1,0 +1,187 @@
+<!--// $Id$ //-->
+{include file="clearheader.html" landscape=true}
+{foreach from=$pages item=item}
+	{assign var=previtem value=$item-1}
+<TABLE WIDTH="960" CELLPADDING="3" ALIGN="CENTER">
+	<TR{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
+		<TD WIDTH="99%" ALIGN="LEFT">
+			<H3>{$layout.pagetitle}{if $pagescount} ({t 0=$item 1=$pagescount}Page $0 from $1{/t}){/if}</H3>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="960" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}No.{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
+			{t}Invoice No.{/t}<BR>
+			{t}Draw-up date{/t}
+		</TD>
+		<TD WIDTH="{math equation="96-x*2" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Contractor{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Gross value{/t}
+		</TD>
+		{foreach item=tax from=$taxes}
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
+		</TD>
+		{/foreach}
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Total Tax{/t}
+		</TD>
+	</TR>
+	{cycle values="grey,white" print=false}
+	{math assign=start equation="(x-1)*20" x=$item}
+	{section name=invoicelist loop=$invoicelist start=$start max=20}
+	<TR class="{cycle}">
+		<TD ALIGN="RIGHT" class="small">
+			{counter}
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			{$invoicelist[invoicelist].number}<BR>
+			{$invoicelist[invoicelist].cdate|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD class="small">
+			{$invoicelist[invoicelist].custname} ({$invoicelist[invoicelist].customerid|string_format:"%04d"})<BR>
+			{$invoicelist[invoicelist].custaddress}<BR>
+			{$invoicelist[invoicelist].ten}
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			{$invoicelist[invoicelist].brutto|string_format:"%01.2f"}
+		</TD>
+		{foreach item=tax from=$taxes}
+		{assign var=taxid value=$tax.id}
+		<TD ALIGN="RIGHT" class="small">
+			{$invoicelist[invoicelist].$taxid.val|string_format:"%01.2f"}
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			{$invoicelist[invoicelist].$taxid.tax|string_format:"%01.2f"}		
+		</TD>
+		{/foreach}
+		<TD ALIGN="RIGHT" class="small">
+			{$invoicelist[invoicelist].tax|string_format:"%01.2f"}
+		</TD>
+	</TR>
+	{/section}
+	<TR>
+		<TD COLSPAN="3" ALIGN="RIGHT" class="small">
+			<B>{t}Page total:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$item.total|string_format:"%01.2f"}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+		{assign var=taxid value=$tax.id}
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$item.val.$taxid|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$item.tax.$taxid|string_format:"%01.2f"}</B>
+		</TD>
+		{/foreach}
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$item.sumtax|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="3" ALIGN="RIGHT" class="small">
+			<B>{t}Transfered from previous page:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$previtem.total|string_format:"%01.2f"}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+		{assign var=taxid value=$tax.id}
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$previtem.val.$taxid|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$previtem.tax.$taxid|string_format:"%01.2f"}</B>
+		</TD>
+		{/foreach}
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$previtem.sumtax|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="3" ALIGN="RIGHT" class="small">
+			<B>{t}Total from start of period:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$item.alltotal|string_format:"%01.2f"}</B>
+		</TD>
+		{foreach item=tax from=$taxes}
+		{assign var=taxid value=$tax.id}
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$item.allval.$taxid|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$item.alltax.$taxid|string_format:"%01.2f"}</B>
+		</TD>
+		{/foreach}
+		<TD ALIGN="RIGHT" class="small">
+			<B>{$totals.$item.allsumtax|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+</TABLE>
+{foreachelse}
+<TABLE WIDTH="960" CELLPADDING="3" ALIGN="CENTER">
+	<TR{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
+		<TD WIDTH="99%" ALIGN="LEFT">
+			<H3>{$layout.pagetitle}</H3>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="960" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}No.{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
+			{t}Invoice No.{/t}<BR>
+			{t}Draw-up date{/t}
+		</TD>
+		<TD WIDTH="{math equation="96-x*2" x=$taxescount}%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Contractor{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Gross value{/t}
+		</TD>
+		{foreach item=tax from=$taxes}
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Net value{/t}<BR><NOBR>{$tax.label}</NOBR>
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Tax value{/t}<BR><NOBR>{$tax.label}</NOBR>
+		</TD>
+		{/foreach}
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER" VALIGN="TOP">
+			{t}Total Tax{/t}
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="center" COLSPAN="{math equation="5+x*2" x=$taxescount}">
+			<P>&nbsp;</P>
+			<P><B>{t}No such invoices in selected time period.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+</TABLE>
+{/foreach}
+{include file="clearfooter.html"}

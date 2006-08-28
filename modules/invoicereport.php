@@ -137,6 +137,56 @@ $SMARTY->assign('taxes', $taxeslist);
 $SMARTY->assign('taxescount', sizeof($taxeslist));
 $SMARTY->assign('layout', $layout);
 $SMARTY->assign('invoicelist', $invoicelist);
-$SMARTY->display('invoicereport.html');
+
+if(isset($_POST['extended']))
+{
+	$pages = array();
+	$totals = array();
+	$reccount = sizeof($invoicelist);
+	
+	// create a new array for use with {section}
+	// and do some calculations (summaries)
+	$i=1;
+	foreach($invoicelist as $row)
+	{
+		$invoicelist2[] = $row;
+		
+		$page = ceil($i/20);
+		
+		$totals[$page]['total'] += $row['brutto'];
+		$totals[$page]['sumtax'] += $row['tax'];
+	
+		foreach($taxeslist as $idx => $tax)
+		{
+			$totals[$page]['val'][$idx] += $row[$idx]['val'];
+			$totals[$page]['tax'][$idx] += $row[$idx]['tax'];
+		}
+		
+		$i++;
+	}
+
+	foreach($totals as $page => $t)
+	{
+		$pages[] = $page;
+
+		$totals[$page]['alltotal'] = $totals[$page-1]['alltotal'] + $t['total'];
+		$totals[$page]['allsumtax'] = $totals[$page-1]['allsumtax'] + $t['sumtax'];
+
+		foreach($taxeslist as $idx => $tax)
+		{
+			$totals[$page]['allval'][$idx] = $totals[$page-1]['allval'][$idx] + $t['val'][$idx];
+			$totals[$page]['alltax'][$idx] = $totals[$page-1]['alltax'][$idx] + $t['tax'][$idx];
+		}
+	}
+
+	$SMARTY->assign('invoicelist', $invoicelist2);
+	$SMARTY->assign('pages', $pages);
+	$SMARTY->assign('totals', $totals);
+	$SMARTY->assign('pagescount', sizeof($pages));
+	$SMARTY->assign('reccount', $reccount);
+	$SMARTY->display('invoicereport-ext.html');
+}
+else
+	$SMARTY->display('invoicereport.html');
 
 ?>

@@ -297,7 +297,7 @@ cal7.time_comp = false;
 					<TD width="1%" nowrap>
 						<B>{t}Numbering plan:{/t}</B>
 					</TD>
-					<TD width="94%">
+					<TD width="1%">
 					    <SELECT name="numberplanid" {tip text="Select numbering plan"}>
 						<OPTION value="0">- {t}all{/t} -</OPTION>
 						{foreach item=plan from=$numberplans}
@@ -305,6 +305,9 @@ cal7.time_comp = false;
 						<OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
 					    {/foreach}
 					    </SELECT>
+					</TD>
+					<TD width="93%" nowrap>
+						<input type="checkbox" class="box" name="extended" value="1"> {t}extended format{/t}
 					</TD>
 				</TR>
 			</TABLE>
