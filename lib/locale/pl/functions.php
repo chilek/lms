@@ -82,6 +82,7 @@ function uptimef($ts)
 function check_ten($ten)
 {
 	$steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
+	$sum_nb = 0;
 
 	$ten = str_replace('-', '', $ten);
 	$ten = str_replace(' ', '', $ten);
