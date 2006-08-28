@@ -1727,5 +1727,10 @@ $_LANG['Node:'] = 'Komputer:';
 $_LANG['Numbering plan:'] = 'Plan numeracyjny:';
 $_LANG['Select node'] = 'Wybierz komputer';
 $_LANG['Additional informations:'] = 'Informacje dodatkowe:';
+$_LANG['extended format'] = 'format rozszerzony';
+$_LANG['Page $0 from $1'] = 'Strona $0 z $1';
+$_LANG['Page total:'] = 'Razem na stronie:';
+$_LANG['Total from start of period:'] = 'Razem od początku okresu:';
+$_LANG['Transfered from previous page:'] = 'Przeniesienie z poprzedniej strony:';
 
 ?>
