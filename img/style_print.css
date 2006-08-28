@@ -1,4 +1,5 @@
 BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; }
+BODY.landscape	{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; padding: 0pt; background-color: #FFFFFF; size: landscape; }
 
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 TD		{ font-size: 8pt; }
