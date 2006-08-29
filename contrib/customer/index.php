@@ -87,7 +87,6 @@ $CONFIG['directories']['sys_dir'] = (! $CONFIG['directories']['sys_dir'] ? getcw
 $CONFIG['directories']['backup_dir'] = (! $CONFIG['directories']['backup_dir'] ? $CONFIG['directories']['sys_dir'].'/backups' : $CONFIG['directories']['backup_dir']);
 $CONFIG['directories']['lib_dir'] = (! $CONFIG['directories']['lib_dir'] ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
 $CONFIG['directories']['modules_dir'] = (! $CONFIG['directories']['modules_dir'] ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
-$CONFIG['directories']['config_templates_dir'] = (! $CONFIG['directories']['config_templates_dir'] ? $CONFIG['directories']['sys_dir'].'/config_templates' : $CONFIG['directories']['config_templates_dir']);
 $CONFIG['directories']['smarty_dir'] = (! $CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : $CONFIG['directories']['lib_dir'].'/Smarty') : $CONFIG['directories']['smarty_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = (! $CONFIG['directories']['smarty_compile_dir'] ? $CONFIG['directories']['sys_dir'].'/templates_c' : $CONFIG['directories']['smarty_compile_dir']);
 $CONFIG['directories']['smarty_templates_dir'] = (! $CONFIG['directories']['smarty_templates_dir'] ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
@@ -161,11 +160,11 @@ $layout['lmsv'] = '1.9-cvs';
 
 $SMARTY->assign_by_ref('layout', $layout);
 
-header('X-Powered-By: LMS/'.$layout[lmsv]);
+header('X-Powered-By: LMS/'.$layout['lmsv']);
 
-$_SERVER[REMOTE_ADDR] = str_replace('::ffff:','',$_SERVER[REMOTE_ADDR]);
+$_SERVER['REMOTE_ADDR'] = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
 
-if($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER[REMOTE_ADDR])))
+if($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER['REMOTE_ADDR'])))
 {
 	$balance = $LMS->GetCustomerBalanceList($customerid);
 	$customerinfo = $LMS->GetCustomer($customerid);
