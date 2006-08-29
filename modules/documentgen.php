@@ -289,7 +289,7 @@ if($templist = $LMS->GetNumberPlans())
 		if($item['doctype']<0)
 			$numberplans[] = $item;
 
-if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9]+$'))
+if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 	foreach($dirs as $dir)
 	{
 		$infofile = $_DOC_DIR.'/templates/'.$dir.'/info.php';
