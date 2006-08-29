@@ -176,18 +176,12 @@ class Auth {
 
 			if(isipinstrict($this->ip, $net, $mask))
 			{
-				$isin = TRUE;
-				break;
+				return TRUE;
 			}
 		}
 
-		if($isin)
-			return TRUE;
-		else 
-		{
-			$this->error = trans('Access denied!');
-			return FALSE;
-		}
+		$this->error = trans('Access denied!');
+		return FALSE;
 	}
 	
 	function VerifyUser()
