@@ -733,7 +733,7 @@ class LMS
 
 	function GetCustomerNodes($id)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, warning, info, ownerid FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, warning, info, ownerid, location FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
 		{
 			// assign network(s) to node record
 			if($networks = $this->GetNetworks())
