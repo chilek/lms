@@ -38,16 +38,27 @@ if(isset($CONFIG['phpui']['allow_from']))
 
 	foreach($allowedlist as $value)
 	{
-		list($net,$mask) = sscanf($value, '%[^/]/%[0-9]');
-		$net=trim($net);
-		$mask=trim($mask);
+                $net = '';
+		$mask = '';
+		
+		if(strpos($value, '/')===FALSE)
+		        $net = $value;
+		else
+		        list($net, $mask) = explode('/', $value);
+		
+		$net = trim($net);
+		$mask = trim($mask);
+		
 		if($mask == '')
-			$mask = '32';
-		if($mask >= 0 || $mask <= 32)
-			$mask = prefix2mask($mask);
-	
-		if(isipinstrict($ipaddr,$net,$mask))
-			$isin = TRUE;
+		        $mask = '255.255.255.255';
+		elseif(is_numeric($mask))
+		        $mask = prefix2mask($mask);
+		
+		if(isipinstrict($ipaddr, $net, $mask))
+		{
+		        $isin = TRUE;
+		        break;
+		}
 	}
 
 	if(!$isin)

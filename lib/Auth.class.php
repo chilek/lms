@@ -154,31 +154,33 @@ class Auth {
 			return TRUE;
 		
 		$allowedlist = explode(',', $hosts);
-		$isin = FALSE;
 		
 		foreach($allowedlist as $value)
 		{
-			list($net,$mask) = sscanf($value, '%[0-9.]/%[0-9]');
+            		$net = '';
+		        $mask = '';
+
+	                if(strpos($value, '/')===FALSE)
+				$net = $value;
+			else
+			        list($net, $mask) = explode('/', $value);
+			
 			$net = trim($net);
 			$mask = trim($mask);
+			
 			if($mask == '')
-				$mask = '32';
-			if($mask >= 0 || $mask <= 32)
-				$mask = prefix2mask($mask);
-			if(isipinstrict($this->ip, $net, $mask))
+			        $mask = '255.255.255.255';
+			elseif(is_numeric($mask))
+			        $mask = prefix2mask($mask);
+			
+			if(isipinstrict($ipaddr, $net, $mask))
 			{
-				$isin = TRUE;
-				break;
+			        return TRUE;
 			}
 		}
 
-		if($isin)
-			return TRUE;
-		else 
-		{
-			$this->error = trans('Access denied!');
-			return FALSE;
-		}
+		$this->error = trans('Access denied!');
+		return FALSE;
 	}
 	
 	function VerifyUser()

@@ -12,6 +12,8 @@ version ? (????-??-??):
     errors occured (alec)
   - fixed potential problem with to_words() and float numbers on cash receipt
     printout (alec)
+  - BTS#0000591: fixed problem with max_execution_time exceeding, added support
+    for octet-format mask in 'allow_from' option and users IP authorization (alec)
 
 version 1.8.5 Sina (2006-07-25):
 
