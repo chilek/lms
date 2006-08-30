@@ -1723,14 +1723,15 @@ $_LANG['Documents'] = 'Dokumenty';
 $_LANG['Documents: list, searching, adding'] = 'Dokumenty: lista, wyszukiwanie, dodawanie';
 $_LANG['List of documents'] = 'Lista dokumentów';
 $_LANG['No such documents matching search criteria or list is empty.'] = 'Brak dokumentów spełniających kryteria wyszukiwania lub lista jest pusta.';
-$_LANG['Node:'] = 'Komputer:';
 $_LANG['Numbering plan:'] = 'Plan numeracyjny:';
-$_LANG['Select node'] = 'Wybierz komputer';
+$_LANG['Select node(s)'] = 'Wybierz komputer(y)';
 $_LANG['Additional informations:'] = 'Informacje dodatkowe:';
 $_LANG['extended format'] = 'format rozszerzony';
 $_LANG['Page $0 from $1'] = 'Strona $0 z $1';
 $_LANG['Page total:'] = 'Razem na stronie:';
 $_LANG['Total from start of period:'] = 'Razem od początku okresu:';
 $_LANG['Transfered from previous page:'] = 'Przeniesienie z poprzedniej strony:';
+$_LANG['Click for nodes selection'] = 'Kliknij aby wybrać komputer(y)';
+$_LANG['Delete selection'] = 'Usuń zaznaczenie';
 
 ?>

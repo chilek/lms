@@ -2,7 +2,18 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-<P>
+{literal}
+<SCRIPT type="text/javascript">
+<!--
+	function uncheck()
+	{
+		var j = 0;
+	        for (var i = 0; i < document.getElementById('nodes').length; i++)
+	                document.getElementById('nodes').options[i].selected = false;
+	}
+//-->
+</SCRIPT>
+{/literal}
 <FORM method="POST" name="assignmentedit" action="?m=customerassignmentsedit&id={$assignmentedit.id}{if $assignmentedit.liabilityid}&lid={$assignmentedit.liabilityid}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">
@@ -72,6 +83,7 @@
 			<INPUT class="box light" type="checkbox" name="assignmentedit[settlement]" value="1" {if $assignmentedit.settlement}CHECKED{/if}> {t}with settlement of first deficient period{/t}
 		</TD>
 	</TR>
+{if $customernodes.total}
 	<TR class="LIGHT">
 		<TD class="fleft" width="1%">
 			<IMG src="img/node.gif" alt="">
@@ -80,16 +92,17 @@
 			<B>{t}Nodes:{/t}</B>
 		</TD>
 		<TD class="fright" width="98%">
-	    		<SELECT name="assignmentedit[nodes][]" {tip text="Select node"} multiple>
+	    		<SELECT name="assignmentedit[nodes][]" size="{if $customernodes.total>4}5{else}{$customernodes.total}{/if}" id="nodes" {tip text="Select node(s)"} multiple>
 			        {section name=customernodes loop=$customernodes}
 				{if $customernodes[customernodes].id}
 				{assign var=nodeid value=$customernodes[customernodes].id}
-				        <OPTION value="{$customernodes[customernodes].id}"{if $assignmentedit.nodes.$nodeid} selected{/if}>{$customernodes[customernodes].name}</OPTION>
+				        <OPTION value="{$customernodes[customernodes].id}"{if $assignmentedit.nodes.$nodeid} selected{/if}>{$customernodes[customernodes].name} ({$customernodes[customernodes].id|string_format:"%04d"}){if $customernodes[customernodes].location} / {$customernodes[customernodes].location|truncate:"60":"...":true}{/if}</OPTION>
 				{/if}
 				{/section}
-			</SELECT>
+			</SELECT><BR><a href="javascript:uncheck();">{t}Delete selection{/t}</a>
 		</TD>
 	</TR>
+{/if}
 	<TR class="LIGHT">
 		<TD class="fbottomu" align="RIGHT" colspan="3">
 			<A href="javascript:document.assignmentedit.submit()">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>&nbsp;
@@ -98,7 +111,6 @@
 	</TR>
 </TABLE>
 </FORM>
-</P>
 {include file="customerassignments.html"}
 <SCRIPT>
 <!--

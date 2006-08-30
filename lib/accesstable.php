@@ -44,7 +44,7 @@ $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';
 
 $access['table'][5]['name']		= trans('customers management');
-$access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|info|infoshort|list|del|print|assignments|assignmentsedit|search|warn)|documentgen|nodewarn|customergroup(add|edit|del|info|list|move))$';
+$access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|info|infoshort|list|del|print|assignments|assignmentsedit|search|warn)|documentgen|nodewarn|choosenode|customergroup(add|edit|del|info|list|move))$';
 
 $access['table'][6]['name'] 		= trans('nodes management');
 $access['table'][6]['allow_reg']  	= '^(node(add|info|infoshort|list|scan|search|del|edit|print|warn)|choose(mac|ip))$';

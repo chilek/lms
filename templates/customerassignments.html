@@ -107,17 +107,10 @@
 							    {/foreach}
 							</SELECT>&nbsp;
 							<B>{t}Product ID:{/t}</B> <INPUT type="text" name="assignment[prodid]" value="{$assignment.prodid}" SIZE="10" {tip text="Enter liability Product ID (tariffless liabilities only)" trigger="prodid"}>&nbsp;
-							<B>{t}Discount:{/t}</B> <INPUT type="TEXT" name="assignment[discount]" value="{if $assignment.discount!=0}{$assignment.discount}{/if}" size="3" {tip text="Enter discount percentage" trigger="discount"}>
-						{*	<B>{t}Node:{/t}</B>
-							<SELECT SIZE="1" name="assignment[nodeid]" {tip text="Select node"}>
-							    <OPTION value="0"{if !$assignment.nodeid} selected{/if}>{t}- all -{/t}</OPTION>
-							    {section name=customernodes loop=$customernodes}
-								{if $customernodes[customernodes].id}
-								<OPTION value="{$customernodes[customernodes].id}"{if $assignment.nodeid==$customernodes[customernodes].id} selected{/if}>{$customernodes[customernodes].name}</OPTION>
-								{/if}
-							    {/section}		
-							</SELECT>
-						*}
+							<B>{t}Discount:{/t}</B> <INPUT type="TEXT" name="assignment[discount]" value="{if $assignment.discount!=0}{$assignment.discount}{/if}" size="3" {tip text="Enter discount percentage" trigger="discount"}>&nbsp;
+							<B>{t}Nodes:{/t}</B>
+							<a href="javascript: void(0);" onClick="return nodechoosewin(document.getElementById('assignment[nodes]'), {$balancelist.customerid});" {tip text="Click for nodes selection"}>&nbsp;&raquo;&raquo;&raquo;</A>
+							<INPUT type="hidden" name="assignment[nodes]" value="">
 						    </TD>
 						    <TD></TD>	
 						</TR>

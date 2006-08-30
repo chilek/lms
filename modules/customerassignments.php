@@ -217,6 +217,12 @@ if($_GET['action'] == 'add' && isset($a))
 	if($a['tariffid'] != '') 
 		$a['value'] = 0;
 
+	$nodes = array();
+	if($tmp = explode(',', $a['nodes']))
+		foreach($tmp as $node)
+			if($node)
+				$nodes[] = $node;
+
 	if(!$error) 
 	{
 		if($a['tariffid'] == '') $a['tariffid'] = 0;
@@ -234,6 +240,7 @@ if($_GET['action'] == 'add' && isset($a))
 					    'name' => $a['name'],
 					    'taxid' => $a['taxid'],
 					    'prodid' => $a['prodid'],
+					    'nodes' => $nodes,
 					    ));
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
