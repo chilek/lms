@@ -51,7 +51,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 	}
 
 	$list = $DB->GetAll('SELECT docid, number, type, title, cdate, fromdate, todate, description, 
-				filename, md5sum, contenttype, template, closed, documents.name
+				filename, md5sum, contenttype, template, closed, documents.name, customerid
                 	FROM documentcontents, documents
 		        LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN customers ON (customerid = customers.id)
