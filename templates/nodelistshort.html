@@ -28,7 +28,7 @@
 			<IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]">
 			<IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]">
 		</TD>
-		<TD WIDTH="97%" onClick="parent.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+		<TD WIDTH="99%" onClick="parent.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 			<B>{$customernodes[customernodes].name}</B><BR>
 			<NOBR>{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub!="0.0.0.0"} ({$customernodes[customernodes].ip_pub}) {/if} / {$customernodes[customernodes].mac}</NOBR><BR>
 			<NOBR>{$customernodes[customernodes].info|truncate:40:"...":true}</NOBR>
