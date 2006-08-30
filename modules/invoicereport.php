@@ -144,6 +144,10 @@ if(isset($_POST['extended']))
 	$totals = array();
 	$reccount = sizeof($invoicelist);
 	
+	// hidden option: records count for one page of printout
+	// I thinks 20 records is fine, but someone needs 19.
+	$rows = isset($CONFIG['phpui']['printout_pagelimit']) ? $CONFIG['phpui']['printout_pagelimit'] : 20;
+	
 	// create a new array for use with {section}
 	// and do some calculations (summaries)
 	$i=1;
@@ -151,7 +155,7 @@ if(isset($_POST['extended']))
 	{
 		$invoicelist2[] = $row;
 		
-		$page = ceil($i/20);
+		$page = ceil($i/$rows);
 		
 		$totals[$page]['total'] += $row['brutto'];
 		$totals[$page]['sumtax'] += $row['tax'];
