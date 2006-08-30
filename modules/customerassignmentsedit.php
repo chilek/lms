@@ -243,7 +243,7 @@ if(isset($_POST['assignmentedit']))
 		
 		$DB->Execute('DELETE FROM nodeassignments WHERE assignmentid=?', array($a['id']));
 
-		if(sizeof($a['nodes']))
+		if(isset($a['nodes']) && sizeof($a['nodes']))
 		{
 			foreach($a['nodes'] as $nodeid)
 				$DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',

@@ -1417,9 +1417,9 @@ class LMS
 
 		$result = $this->DB->GetLastInsertID('assignments');
 
-		if(is_array($assignmentdata['nodes']))
+		if(sizeof($assignmentdata['nodes']))
 			foreach($assignmentdata['nodes'] as $node)
-				$DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
+				$this->DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
 					array($node, $result));
 		
 		return $result;
