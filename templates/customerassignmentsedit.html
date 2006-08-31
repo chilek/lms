@@ -92,14 +92,22 @@
 			<B>{t}Nodes:{/t}</B>
 		</TD>
 		<TD class="fright" width="98%">
-	    		<SELECT name="assignmentedit[nodes][]" size="{if $customernodes.total>4}5{else}{$customernodes.total}{/if}" id="nodes" {tip text="Select node(s)"} multiple>
-			        {section name=customernodes loop=$customernodes}
-				{if $customernodes[customernodes].id}
-				{assign var=nodeid value=$customernodes[customernodes].id}
-				        <OPTION value="{$customernodes[customernodes].id}"{if $assignmentedit.nodes.$nodeid} selected{/if}>{$customernodes[customernodes].name} ({$customernodes[customernodes].id|string_format:"%04d"}){if $customernodes[customernodes].location} / {$customernodes[customernodes].location|truncate:"60":"...":true}{/if}</OPTION>
-				{/if}
-				{/section}
-			</SELECT><BR><a href="javascript:uncheck();">{t}Delete selection{/t}</a>
+			<TABLE width="100%">
+			{section name=customernodes loop=$customernodes}
+			    {if $customernodes[customernodes].id}
+			    {cycle values="light,lucid" print=false}
+			    {assign var=nodeid value=$customernodes[customernodes].id}
+			    <TR class="light">
+				<TD width="1%">
+				    <INPUT type="checkbox" name="assignmentedit[nodes][{counter}]" value="{$customernodes[customernodes].id}" class="box light"{if $assignmentedit.nodes.$nodeid} checked{/if}>
+				</TD>
+				<TD width="99%" nowrap>    
+				    <B>{$customernodes[customernodes].name}</B> ({$customernodes[customernodes].id|string_format:"%04d"}){if $customernodes[customernodes].location} / {$customernodes[customernodes].location|truncate:"60":"...":true}{/if}
+				</TD>
+			    </TR>    
+			    {/if}
+			{/section}
+			</TABLE>
 		</TD>
 	</TR>
 {/if}
