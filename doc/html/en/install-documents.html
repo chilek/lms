@@ -587,6 +587,7 @@ $engine = array(
     'title' =&#62; trans('Default document'), 	// description for LMS-UI
     'content_type' =&#62; 'text/html', 		// output file type
     'output' =&#62; 'default.html', 			// output file name
+    'plugin' =&#62; 'plugin',			// plugin file name (in 'name' directory)
 )
 ?&gt;</PRE
 >
@@ -605,6 +606,13 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >info.php</TT
 >.</P
+><P
+>Member <TT
+CLASS="FILENAME"
+>plugin</TT
+> specify name of php file used
+		for printing additional fields on document creation form.
+		Plugin can also consist errors handlers for those fields.</P
 ></DIV
 ></DIV
 ><DIV
