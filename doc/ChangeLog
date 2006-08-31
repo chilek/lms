@@ -30,6 +30,7 @@ version ? (????-??-??):
     procedures for 'allow_from' option and users authorization (alec)
   - improved getnetaddr(), and getbraddr() functions (alec)
   - added Sale Registry in "extended" format (alec)
+  - added Cash Report in "extended" format (alec)
   - fixed date of financial transaction added on Customer's Balance (alec)
 
 version 1.9.2 Thanos (2006-07-15):

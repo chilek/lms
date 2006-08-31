@@ -1,0 +1,160 @@
+{include file="clearheader.html" landscape=true}
+<!--// $Id$ //-->
+{foreach from=$pages item=item}
+        {assign var=previtem value=$item-1}
+<TABLE WIDTH="960" CELLPADDING="3" ALIGN="CENTER">
+        <TR{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
+	        <TD WIDTH="99%" ALIGN="LEFT">
+			<B><font class="sdr">{$layout.pagetitle}{if $pagescount} ({t 0=$item 1=$pagescount}Page $0 from $1{/t}){/if}</font></B><BR>
+			{if $layout.username} <B>{$layout.username}</B>{/if}
+			{if $layout.registry} <B>{$layout.registry}</B>{/if}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="960" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}No.{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Number{/t}<BR>
+			{t}Date{/t}
+		</TD>
+		<TD WIDTH="45%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Customer{/t}
+		</TD>
+		<TD WIDTH="50%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Title{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Income{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Expense{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}After{/t}
+		</TD>
+	</TR>
+	{cycle values="white,grey" print=false}
+        {section name=receiptlist loop=$receiptlist start=$totals.$item.rowstart max=$totals.$item.rows}
+	<TR class="{cycle}">
+		<TD ALIGN="RIGHT" CLASS="small">
+			{counter}
+		</TD>
+		<TD ALIGN="RIGHT" CLASS="small" NOWRAP>
+			{$receiptlist[receiptlist].number}<BR>
+			{$receiptlist[receiptlist].cdate|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD ALIGN="LEFT" CLASS="small">
+			{$receiptlist[receiptlist].name} {if $receiptlist[receiptlist].customerid}({$receiptlist[receiptlist].customerid|string_format:"%04d"}){/if}<BR>
+			{$receiptlist[receiptlist].zip} {$receiptlist[receiptlist].city} {$receiptlist[receiptlist].address}
+		</TD>
+		<TD ALIGN="LEFT" CLASS="small">
+			{foreach from=$receiptlist[receiptlist].title item=title}
+				{$title|truncate:"100":"":true}<BR>
+			{/foreach}
+		</TD>
+		<TD ALIGN="RIGHT" CLASS="small" NOWRAP>
+			{if $receiptlist[receiptlist].value > 0}{$receiptlist[receiptlist].value|string_format:"%.2f"}{else}-{/if}
+		</TD>
+		<TD ALIGN="RIGHT" CLASS="small" NOWRAP>
+			{if $receiptlist[receiptlist].value < 0}{$receiptlist[receiptlist].value*-1|string_format:"%.2f"}{else}-{/if}
+		</TD>
+		<TD ALIGN="RIGHT" CLASS="small" NOWRAP>
+			{$receiptlist[receiptlist].after|string_format:"%.2f"}
+		</TD>
+	</TR>
+	{/section}
+        <TR>
+	        <TD COLSPAN="4" ALIGN="RIGHT" class="small">
+			<B>{t}Page total:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+		        <B>{$totals.$item.income|string_format:"%01.2f"}</B>
+		</TD>
+        	<TD ALIGN="RIGHT" class="small">
+		        <B>{$totals.$item.expense|string_format:"%01.2f"}</B>
+		</TD>
+		<TD></TD>
+	</TR>
+        <TR>
+	        <TD COLSPAN="4" ALIGN="RIGHT" class="small">
+			<B>{t}Transfered from previous page:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+		        <B>{$totals.$previtem.income|string_format:"%01.2f"}</B>
+		</TD>
+        	<TD ALIGN="RIGHT" class="small">
+		        <B>{$totals.$previtem.expense|string_format:"%01.2f"}</B>
+		</TD>
+		<TD></TD>
+	</TR>
+        <TR>
+	        <TD COLSPAN="4" ALIGN="RIGHT" class="small">
+			<B>{t}Total from start of period:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" class="small">
+		        <B>{$totals.$item.totalincome|string_format:"%01.2f"}</B>
+		</TD>
+        	<TD ALIGN="RIGHT" class="small">
+		        <B>{$totals.$item.totalexpense|string_format:"%01.2f"}</B>
+		</TD>
+		<TD></TD>
+	</TR>
+</TABLE>
+{foreachelse}
+<TABLE WIDTH="960" CELLPADDING="3" ALIGN="CENTER">
+        <TR style="border-style: none;">
+	        <TD WIDTH="99%" ALIGN="LEFT">
+			<B><font class="sdr">{$layout.pagetitle}</font></B><BR>
+			{if $layout.username} <B>{$layout.username}</B>{/if}
+			{if $layout.registry} <B>{$layout.registry}</B>{/if}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="960" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}No.{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Number{/t}<BR>
+			{t}Date{/t}
+		</TD>
+		<TD WIDTH="45%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Customer{/t}
+		</TD>
+		<TD WIDTH="50%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Title{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Income{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}Expense{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD small" ALIGN="CENTER">
+			{t}After{/t}
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="center" COLSPAN="7">
+			<P>&nbsp;</P>
+			<P><B>{t}No such cash receipts in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+</TABLE>
+{/foreach}
+{include file="clearfooter.html"}

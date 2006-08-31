@@ -1,11 +1,11 @@
-<!--// $Id$ //-->
 {include file="clearheader.html" landscape=true}
+<!--// $Id$ //-->
 {foreach from=$pages item=item}
 	{assign var=previtem value=$item-1}
 <TABLE WIDTH="960" CELLPADDING="3" ALIGN="CENTER">
 	<TR{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
 		<TD WIDTH="99%" ALIGN="LEFT">
-			<H3>{$layout.pagetitle}{if $pagescount} ({t 0=$item 1=$pagescount}Page $0 from $1{/t}){/if}</H3>
+			<B><font class="sdr">{$layout.pagetitle}{if $pagescount} ({t 0=$item 1=$pagescount}Page $0 from $1{/t}){/if}</font></B>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
@@ -42,8 +42,8 @@
 		</TD>
 	</TR>
 	{cycle values="grey,white" print=false}
-	{math assign=start equation="(x-1)*20" x=$item}
-	{section name=invoicelist loop=$invoicelist start=$start max=20}
+	{math assign=start equation="(x-1)*y" x=$item y=$rows}
+	{section name=invoicelist loop=$invoicelist start=$start max=$rows}
 	<TR class="{cycle}">
 		<TD ALIGN="RIGHT" class="small">
 			{counter}
@@ -137,9 +137,9 @@
 </TABLE>
 {foreachelse}
 <TABLE WIDTH="960" CELLPADDING="3" ALIGN="CENTER">
-	<TR{if $item > 1} style="page-break-before: always; border-style: none;"{/if}>
+	<TR style="border-style: none;">
 		<TD WIDTH="99%" ALIGN="LEFT">
-			<H3>{$layout.pagetitle}</H3>
+			<B><font class="sdr">{$layout.pagetitle}</font></B>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
