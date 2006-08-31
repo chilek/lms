@@ -83,6 +83,11 @@ if(!isset($_GET['c']))
 	$SESSION->restore('doclc', $c);
 else
 	$c = $_GET['c'];
+
+if(isset($_GET['docid']))
+{
+	$c = $DB->GetOne('SELECT customerid FROM documents WHERE id = ?', array(intval($_GET['docid'])));
+}
 $SESSION->save('doclc', $c);
 
 $documentlist = GetDocumentList($o, $t, $c);
