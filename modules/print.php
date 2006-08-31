@@ -483,7 +483,7 @@ switch($type)
 			
 		if($list = $DB->GetAll(
 	    		'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
-			documents.name AS customer, address, zip, city, template, extnumber,
+			documents.name, address, zip, city, template, extnumber,
 			MIN(description) AS title, COUNT(*) AS posnumber 
 			FROM documents 
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
@@ -496,7 +496,7 @@ switch($type)
 			foreach($list as $idx => $row)
 			{
 				$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
-				$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
+				$list[$idx]['customer'] = $row['name'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
 
 				if($row['posnumber'] > 1) 
 					$list[$idx]['title'] = $DB->GetCol('SELECT description FROM receiptcontents WHERE docid=? ORDER BY itemid', array($list[$idx]['id']));
@@ -528,13 +528,73 @@ switch($type)
 
 		$layout['pagetitle'] = trans('Cash Report').' '.$period;
 		$layout['registry'] = trans('Registry: $0', ($registry ? $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)) : trans('all')));
+		
 		if($user)
 			$layout['username'] = trans('Cashier: $0', $DB->GetOne('SELECT name FROM users WHERE id=?', array($user)));
 		
-		$SMARTY->assign('layout', $layout);
 		$SMARTY->assign('receiptlist', $list);
 		$SMARTY->assign('listdata', $listdata);
-		$SMARTY->display('printreceiptlist.html');
+
+		if(isset($_POST['extended']))
+		{
+		        $pages = array();
+			$totals = array();
+					
+			// hidden option: max records count for one page of printout
+			// I thinks 20 records is fine, but someone needs 19.
+			$rows = isset($CONFIG['phpui']['printout_pagelimit']) ? $CONFIG['phpui']['printout_pagelimit'] : 20;
+
+			// create a new array and do some calculations 
+			// (summaries and page size calculations)
+			$maxrows = $rows * 2;	// dwie linie na rekord
+			$counter = $maxrows;
+			$rows = 0;		// rzeczywista liczba rekordów na stronie
+			$i = 1;
+			$x = 1;
+
+			foreach($list as $row)
+			{
+				// tutaj musimy trochê pokombinowaæ, bo liczba
+				// rekordów na stronie bêdzie zmienna
+				$tmp = is_array($row['title']) ? sizeof($row['title']) : 2;
+				$counter -= max($tmp,2);
+				if($counter<0)
+				{
+					$x++;
+					$rows = 0;
+					$counter = $maxrows;
+				}
+
+				$rows++;
+			        $page = $x;
+			        
+				if($row['value']>0)
+					$totals[$page]['income'] += $row['value'];
+				else
+					$totals[$page]['expense'] += -$row['value'];
+					
+				$totals[$page]['rows'] = $rows; 
+			}
+
+			foreach($totals as $page => $t)
+			{
+				$pages[] = $page;
+			       
+			        $totals[$page]['totalincome'] = $totals[$page-1]['totalincome'] + $t['income'];
+				$totals[$page]['totalexpense'] = $totals[$page-1]['totalexpense'] + $t['expense'];
+				$totals[$page]['rowstart'] = $totals[$page-1]['rowstart'] + $totals[$page-1]['rows'];
+			}
+			
+			$SMARTY->assign('pages', $pages);
+			$SMARTY->assign('totals', $totals);
+			$SMARTY->assign('pagescount', sizeof($pages));
+			$SMARTY->assign('reccount', sizeof($list));
+			$SMARTY->display('printreceiptlist-ext.html');
+		}
+		else
+		{		
+			$SMARTY->display('printreceiptlist.html');
+		}
 	break;
 
 	default: /*******************************************************/

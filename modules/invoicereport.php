@@ -185,6 +185,7 @@ if(isset($_POST['extended']))
 
 	$SMARTY->assign('invoicelist', $invoicelist2);
 	$SMARTY->assign('pages', $pages);
+	$SMARTY->assign('rows', $rows);
 	$SMARTY->assign('totals', $totals);
 	$SMARTY->assign('pagescount', sizeof($pages));
 	$SMARTY->assign('reccount', $reccount);
