@@ -631,6 +631,7 @@ $engine = array(
 	'title' =&#62; trans('Default document'), 	// opis, który bêdzie wy¶wietlany w LMS-UI
 	'content_type' =&#62; 'text/html', 		// typ pliku wynikowego
 	'output' =&#62; 'default.html', 		// nazwa pliku wynikowego
+	'plugin' =&#62; 'plugin',			// nazwa pliku pluginu (w katalogu 'name')
 )
 ?&gt;</PRE
 >
@@ -650,6 +651,14 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >info.php</TT
 >.</P
+><P
+>Zmienna <TT
+CLASS="FILENAME"
+>plugin</TT
+> okre¶la nazwê pliku php
+		odpowiedzialnego za wy¶wietlenie dodatkowych pól w formularzu tworzenia
+		nowego dokumentu. Plugin mo¿e ponadto zawieraæ obs³ugê b³êdów dla
+		tych pól. Prosty przyk³ad pluginu zawiera domy¶lny dokument.</P
 ></DIV
 ></DIV
 ><DIV

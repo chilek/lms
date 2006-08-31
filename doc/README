@@ -202,7 +202,7 @@ Chapter 1. Intro
 1.2.2. Others
 
    LMS   uses   elements   of  other  software:  phpMyAdmin,  phpsysinfo,
-   NewsPortal,   overLIB,   ezpdf,   Tigra   Calendar,   Piotr   Kleban's
+   NewsPortal,  overLIB,  ezpdf,  xajax,  Tigra  Calendar, Piotr Kleban's
    number-to-words  conversion  procedures  and  code  examples  from PHP
    manual.
      _________________________________________________________________
@@ -924,6 +924,7 @@ $engine = array(
     'title' => trans('Default document'),       // description for LMS-UI
     'content_type' => 'text/html',              // output file type
     'output' => 'default.html',                         // output file name
+    'plugin' => 'plugin',                       // plugin file name (in 'name'directory)
 )
 ?>
 
@@ -932,6 +933,10 @@ $engine = array(
    or  use other by setting 'engine' variable to appropriate wizard name.
    So,  there  is no need to create engine for each new wizard. Is enough
    to make 'template' template and file info.php.
+
+   Member  plugin  specify  name of php file used for printing additional
+   fields  on  document  creation  form.  Plugin  can also consist errors
+   handlers for those fields.
      _________________________________________________________________
 
 Chapter 3. User Interface (LMS-UI)
@@ -1604,13 +1609,13 @@ PGSQL_PASSWORD          dbpass
 PGSQL_DATABASE          lms
 #MYSQL_SELECT_CLAUSE SELECT login, \
 #       password, '', 104, 104, '/var/spool/mail/virtual', \
-#       CONCAT(login,'/'), '', login, '' \
+#       CONCAT(domains.name,'/',login,'/'), '', login, '' \
 #       FROM passwd, domains WHERE domainid = domains.id \
 #       AND login = '$(local_part)' AND domains.name = '$(domain)' \
 #       AND type & 2 = 2 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
 PGSQL_SELECT_CLAUSE SELECT login, \
         password, '', 104, 104, '/var/spool/mail/virtual', \
-        login ||'/', '', login, '' \
+        domains.name || '/' || login ||'/', '', login, '' \
         FROM passwd, domains WHERE domainid = domains.id
         AND login = '$(local_part)' AND domains.name = '$(domain)' \
         AND type & 2 = 2 \
@@ -1642,11 +1647,12 @@ password = dbpass
 hosts = localhost
 dbname = lms
 #table = passwd, domains
-#select_field = CONCAT(login,'/')
+#select_field = CONCAT(domains.name,'/',login,'/')
 #where_field = CONCAT(login,'@',domains.name)
 additional_conditions = AND domainid = domains.id
 #       AND type & 2 = 2 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
-query = SELECT login || '/' FROM passwd, domains WHERE domainid = domains.id
+query = SELECT domains.name || '/' || login || '/'
+        FROM passwd, domains WHERE domainid = domains.id
         AND login = '%u' AND domains.name = '%d'
         AND type & 2 = 2
         AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
@@ -2233,6 +2239,7 @@ Chapter 4. Scripts
      * %b - customer balance with opposite sign, eg. 107
      * %B - customer balance with real sign, eg. -107
      * %pin - PIN code of the customer
+     * %cid - customer ID
      * %phone1 - customer's 1st phone number
      * %last_10_in_a_table  -  list  of  last 10 operations on customer's
        account, eg.
@@ -4583,6 +4590,9 @@ syslog("message");
        phone1, phone2, phone3 - phone numbers
        ten - tax exempt number
        ssn - security serial number
+       regon - business registration number
+       icn - identity card number
+       rbe - register of business entities number
        info - additional informations
        message - warning contents
        warning - warning status (status of all customer's nodes summary)
@@ -4822,6 +4832,9 @@ Chapter 7. For curious
    city - location (city)
    ten - tax exempt number
    ssn - social security number
+   regon - business registration number
+   rbe - register of business entities
+   icn - identity card number
    info - additional informations
    serviceaddr - correspondence address
    creationdate - record creation date
@@ -4880,6 +4893,7 @@ Chapter 7. For curious
    warning - should be warned with administration message? (1/0)
    lastonline - last network activity timestamp
    info - additional information
+   location - location (address)
      _________________________________________________________________
 
 7.2.7. Network devices - continued... ('netdevices')
@@ -4984,7 +4998,14 @@ Chapter 7. For curious
    settlement - do deficient period settlement? (1 - yes, 0 - no)
      _________________________________________________________________
 
-7.2.15. Tax rates ('taxes')
+7.2.15. Nodes-tariffs assignments ('nodeassignments')
+
+   id - serial number
+   assignmentid - financial assignment serial number
+   nodeid - node serial number
+     _________________________________________________________________
+
+7.2.16. Tax rates ('taxes')
 
    id - serial number
    value - tax value
@@ -4994,7 +5015,7 @@ Chapter 7. For curious
    validto - binding period end
      _________________________________________________________________
 
-7.2.16. Documents numbering plans ('numberplans')
+7.2.17. Documents numbering plans ('numberplans')
 
    id - serial number
    template - number template (pattern)
@@ -5004,7 +5025,7 @@ Chapter 7. For curious
    '0'
      _________________________________________________________________
 
-7.2.17. Cash registries ('cashregs')
+7.2.18. Cash registries ('cashregs')
 
    id - serial number
    name - registry name
@@ -5014,7 +5035,7 @@ Chapter 7. For curious
    disabled - summary disabling (0/1)
      _________________________________________________________________
 
-7.2.18. Cash registries - access rights ('cashrights')
+7.2.19. Cash registries - access rights ('cashrights')
 
    id - serial number
    regid - registry serial number
@@ -5022,7 +5043,7 @@ Chapter 7. For curious
    rights - (1-read, 2-write, 3-advanced)
      _________________________________________________________________
 
-7.2.19. Documents: invoices, receipts, contracts, etc. ('documents')
+7.2.20. Documents: invoices, receipts, contracts, etc. ('documents')
 
    id - serial number
    number - document number (%N)
@@ -5044,7 +5065,7 @@ Chapter 7. For curious
    reference - document ID reference
      _________________________________________________________________
 
-7.2.20. Non-financial documents contents ('documentcontents')
+7.2.21. Non-financial documents contents ('documentcontents')
 
    docid - document serial number
    title - document title
@@ -5056,7 +5077,7 @@ Chapter 7. For curious
    description - additional informations
      _________________________________________________________________
 
-7.2.21. Invoices ('invoicecontents')
+7.2.22. Invoices ('invoicecontents')
 
    docid - invoice serial number
    itemid - invoice item identifier
@@ -5070,7 +5091,7 @@ Chapter 7. For curious
    tariffid - subscription serial number
      _________________________________________________________________
 
-7.2.22. Cash Receipts ('receiptcontents')
+7.2.23. Cash Receipts ('receiptcontents')
 
    docid - receipt serial number
    itemid - receipt item identifier
@@ -5079,7 +5100,7 @@ Chapter 7. For curious
    description - description for receipt item
      _________________________________________________________________
 
-7.2.23. Accounts ('passwd')
+7.2.24. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -5097,29 +5118,30 @@ Chapter 7. For curious
    quota_mail - email space limits
    quota_www - www space limits
    quota_ftp - ftp space limits
+   quota_sql - sql database space limits
      _________________________________________________________________
 
-7.2.24. Domains ('domains')
+7.2.25. Domains ('domains')
 
    id - serial number
    name - domain name
    description - comments
      _________________________________________________________________
 
-7.2.25. Aliases ('aliases')
+7.2.26. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    accountid - account serial number
      _________________________________________________________________
 
-7.2.26. History ('timestamps')
+7.2.27. History ('timestamps')
 
    time - last modified timestamp
    tablename - name of modified table
      _________________________________________________________________
 
-7.2.27. Bandwidth consumption statistics ('stats')
+7.2.28. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -5127,7 +5149,7 @@ Chapter 7. For curious
    download - number of bytes received
      _________________________________________________________________
 
-7.2.28. Helpdesk - Request Tracking ('rtqueues')
+7.2.29. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -5135,7 +5157,7 @@ Chapter 7. For curious
    description - main description for the queue
      _________________________________________________________________
 
-7.2.29. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.30. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -5147,7 +5169,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      _________________________________________________________________
 
-7.2.30. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.31. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -5163,14 +5185,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      _________________________________________________________________
 
-7.2.31. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.32. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      _________________________________________________________________
 
-7.2.32. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.33. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -5178,7 +5200,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      _________________________________________________________________
 
-7.2.33. LMS-UI Online Configuration ('uiconfig')
+7.2.34. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -5188,7 +5210,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      _________________________________________________________________
 
-7.2.34. Timetable - events ('events')
+7.2.35. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -5203,13 +5225,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      _________________________________________________________________
 
-7.2.35. Timetable - assignments ('eventassignments')
+7.2.36. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      _________________________________________________________________
 
-7.2.36. Sessions ('sessions')
+7.2.37. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -5219,7 +5241,7 @@ Chapter 7. For curious
    content - data
      _________________________________________________________________
 
-7.2.37. Hosts ('hosts')
+7.2.38. Hosts ('hosts')
 
    id - identifier
    name - host name
@@ -5228,7 +5250,7 @@ Chapter 7. For curious
    reload - reload order
      _________________________________________________________________
 
-7.2.38. Daemon configuration - instances ('daemoninstances')
+7.2.39. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -5240,7 +5262,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.39. Daemon configuration - options ('daemonconfig')
+7.2.40. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -5250,7 +5272,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.40. Database information ('dbinfo')
+7.2.41. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value

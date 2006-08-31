@@ -236,6 +236,18 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>regon - numer REGON</TD
+></TR
+><TR
+><TD
+>rbe - numer KRS/EDG</TD
+></TR
+><TR
+><TD
+>icn - numer dowodu osobistego</TD
+></TR
+><TR
+><TD
 >info - dodatkowe informacje</TD
 ></TR
 ><TR
@@ -457,6 +469,10 @@ BORDER="0"
 ><TR
 ><TD
 >info - informacje dodatkowe</TD
+></TR
+><TR
+><TD
+>location - lokalizacja (adres)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -880,8 +896,34 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="NODEASSIGNMENTS"
+>7.2.16. Powi您ania komputer-taryfa ('nodeassignments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>assignmentid - identyfikator zobowi您ania</TD
+></TR
+><TR
+><TD
+>nodeid - identyfikator komputera</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="NUMBERPLANS"
->7.2.16. Plany (szablony) numeracyjne dokument闚 ('numberplans')</A
+>7.2.17. Plany (szablony) numeracyjne dokument闚 ('numberplans')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -915,7 +957,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHREGS"
->7.2.17. Rejestry kasowe ('cashregs')</A
+>7.2.18. Rejestry kasowe ('cashregs')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -953,7 +995,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHRIGHTS"
->7.2.18. Rejestry kasowe - uprawnienia ('cashrights')</A
+>7.2.19. Rejestry kasowe - uprawnienia ('cashrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -983,7 +1025,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTS"
->7.2.19. Dokumenty: faktury, KP, umowy, etc. ('documents')</A
+>7.2.20. Dokumenty: faktury, KP, umowy, etc. ('documents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1069,7 +1111,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTCONTENTS"
->7.2.20. Dokumenty niefinansowe ('documentcontents')</A
+>7.2.21. Dokumenty niefinansowe ('documentcontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1115,7 +1157,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.21. Faktury ('invoicecontents')</A
+>7.2.22. Faktury ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1169,7 +1211,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RECEIPTCONTENTS"
->7.2.22. Potwierdzenia wp豉ty - KP ('receiptcontents')</A
+>7.2.23. Potwierdzenia wp豉ty - KP ('receiptcontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1203,7 +1245,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.23. Konta ('passwd')</A
+>7.2.24. Konta ('passwd')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1272,6 +1314,10 @@ BORDER="0"
 ><TD
 >quota_ftp - limit</TD
 ></TR
+><TR
+><TD
+>quota_sql - limit</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -1281,7 +1327,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.24. Domeny ('domains')</A
+>7.2.25. Domeny ('domains')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1307,7 +1353,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.25. Aliasy ('aliases')</A
+>7.2.26. Aliasy ('aliases')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1333,7 +1379,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.26. Historia ('timestamps')</A
+>7.2.27. Historia ('timestamps')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1355,7 +1401,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.27. Statystyki wykorzystania 陰cza ('stats')</A
+>7.2.28. Statystyki wykorzystania 陰cza ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1385,7 +1431,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.28. Helpdesk - kolejki ('rtqueues')</A
+>7.2.29. Helpdesk - kolejki ('rtqueues')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1415,7 +1461,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.29. Helpdesk - zg這szenia ('rttickets')</A
+>7.2.30. Helpdesk - zg這szenia ('rttickets')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1461,7 +1507,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.30. Helpdesk - wiadomo軼i ('rtmessages')</A
+>7.2.31. Helpdesk - wiadomo軼i ('rtmessages')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1523,7 +1569,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.31. Helpdesk - za陰czniki ('rtattachments')</A
+>7.2.32. Helpdesk - za陰czniki ('rtattachments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1549,7 +1595,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.32. Helpdesk - uprawnienia ('rtrights')</A
+>7.2.33. Helpdesk - uprawnienia ('rtrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1579,7 +1625,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.33. Konfiguracja LMS-UI ('uiconfig')</A
+>7.2.34. Konfiguracja LMS-UI ('uiconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1617,7 +1663,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.34. Terminarz - zdarzenia ('events')</A
+>7.2.35. Terminarz - zdarzenia ('events')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1675,7 +1721,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.35. Terminarz - powi您ania ('eventassignments')</A
+>7.2.36. Terminarz - powi您ania ('eventassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1697,7 +1743,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="HOSTS"
->7.2.36. Hosty ('hosts')</A
+>7.2.37. Hosty ('hosts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1731,7 +1777,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.37. Konfiguracja demona - instancje ('daemoninstances')</A
+>7.2.38. Konfiguracja demona - instancje ('daemoninstances')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1777,7 +1823,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.38. Konfiguracja demona - opcje ('daemonconfig')</A
+>7.2.39. Konfiguracja demona - opcje ('daemonconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1815,7 +1861,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.39. Sesje ('sessions')</A
+>7.2.40. Sesje ('sessions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1853,7 +1899,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.40. Informacje o bazie danych ('dbinfo')</A
+>7.2.41. Informacje o bazie danych ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"
