@@ -32,6 +32,8 @@ version ? (????-??-??):
   - added Sale Registry in "extended" format (alec)
   - added Cash Report in "extended" format (alec)
   - fixed date of financial transaction added on Customer's Balance (alec)
+  - all nodes and devices can share '00:00:00:00:00:00' MAC address even
+    with disabled 'allow_mac_sharing' option (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   
