@@ -106,7 +106,7 @@ if(isset($_POST['nodedata']))
 		$error['mac'] = trans('MAC address is required!');
 	elseif(!check_mac($nodedata['mac']))
 		$error['mac'] = trans('Incorrect MAC address!');
-	elseif($LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
+	elseif($nodedata['mac']!='00:00:00:00:00:00' && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
 		if($LMS->GetNodeIDByMAC($nodedata['mac']))
 			$error['mac'] = trans('Specified MAC address is in use!');
 

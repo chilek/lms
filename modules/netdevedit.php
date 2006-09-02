@@ -152,7 +152,7 @@ case 'formaddip':
 		$error['mac'] = trans('MAC address is required!');
 	elseif(!check_mac($nodeipdata['mac']))
 		$error['mac'] = trans('Incorrect MAC address!');
-	elseif($LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
+	elseif($nodeipdata['mac']!='00:00:00:00:00:00' && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']))
 			$error['mac'] = trans('MAC address is in use!');
 
@@ -230,9 +230,8 @@ case 'formeditip':
 		$error['mac'] =  trans('MAC address is required!');
 	elseif(!check_mac($nodeipdata['mac']))
 		$error['mac'] = trans('Incorrect MAC address!');
-	elseif(isset($LMS->CONFIG['phpui']['allow_mac_sharing']) &&
-		$LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE
-		)
+	elseif($nodeipdata['mac']!='00:00:00:00:00:00' && isset($CONFIG['phpui']['allow_mac_sharing']) &&
+		!chkconfig($CONFIG['phpui']['allow_mac_sharing']))
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']) && $LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata['mac'])
 			$error['mac'] = trans('MAC address is in use!');
 	
