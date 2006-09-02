@@ -1856,7 +1856,7 @@
 00-07-43:Chelsio Communications
 00-07-44:Unico, Inc.
 00-07-45:Radlan Computer Communications Ltd.
-00-07-46:Interlink BT, LLC
+00-07-46:TURCK, Inc.
 00-07-47:Mecalc
 00-07-48:The Imaging Source Europe
 00-07-49:CENiX Inc.
@@ -5282,7 +5282,7 @@
 00-14-C8:Contemporary Research Corp
 00-14-C9:Silverback Systems, Inc.
 00-14-CA:Key Radio Systems Limited
-00-14-CB:GMP|Wireless Medicine,Inc.
+00-14-CB:LifeSync Corporation
 00-14-CC:Zetec, Inc.
 00-14-CD:DigitalZone Co., Ltd.
 00-14-CE:NF CORPORATION
@@ -6387,6 +6387,124 @@
 00-19-19:ASTEL Inc.
 00-19-1A:IRLINK
 00-19-1B:Sputnik Engineering AG
+00-19-1C:Sensicast Systems
+00-19-1D:Nintendo Co.,Ltd.
+00-19-1E:Beyondwiz Co., Ltd.
+00-19-1F:Microlink communications Inc.
+00-19-20:KUME electric Co.,Ltd.
+00-19-21:Elitegroup Computer System Co.
+00-19-22:CM Comandos Lineares
+00-19-23:Phonex Korea Co., LTD.
+00-19-24:LBNL  Engineering
+00-19-25:Intelicis Corporation
+00-19-26:BitsGen Co., Ltd.
+00-19-27:ImCoSys Ltd
+00-19-28:Siemens AG, Transportation Systems
+00-19-29:2M2B Montadora de Maquinas Bahia Brasil LTDA
+00-19-2A:Antiope Associates
+00-19-2B:Hexagram, Inc.
+00-19-2C:Motorola Mobile Devices
+00-19-2D:Nokia Corporation
+00-19-2E:Spectral Instruments, Inc.
+00-19-2F:Cisco Systems
+00-19-30:Cisco Systems
+00-19-31:Balluff GmbH
+00-19-32:Gude Analog- und Digialsysteme GmbH
+00-19-33:Strix Systems, Inc.
+00-19-34:TRENDON TOUCH TECHNOLOGY CORP.
+00-19-35:Duerr Dental GmbH & Co. KG
+00-19-36:STERLITE OPTICAL TECHNOLOGIES LIMITED
+00-19-37:CommerceGuard AB
+00-19-38:UMB Communications Co., Ltd.
+00-19-39:Gigamips
+00-19-3A:OESOLUTIONS
+00-19-3B:Deliberant LLC
+00-19-3C:HighPoint Technologies Incorporated
+00-19-3D:GMC Guardian Mobility Corp.
+00-19-3E:PIRELLI BROADBAND SOLUTIONS
+00-19-3F:RDI technology(Shenzhen) Co.,LTD
+00-19-40:Rackable Systems
+00-19-41:Pitney Bowes, Inc
+00-19-42:ON SOFTWARE INTERNATIONAL LIMITED
+00-19-43:Belden
+00-19-44:Fossil Partners, L.P.
+00-19-45:Ten-Tec Inc.
+00-19-46:Cianet Industria e Comercio S/A
+00-19-47:Scientific Atlanta, A Cisco Company
+00-19-48:AireSpider Networks
+00-19-49:TENTEL  COMTECH CO., LTD.
+00-19-4A:TESTO AG
+00-19-4B:SAGEM COMMUNICATION
+00-19-4C:Fujian Stelcom information & Technology CO.,Ltd
+00-19-4D:Avago Technologies Sdn Bhd
+00-19-4E:Ultra Electronics - TCS (Tactical Communication Systems)
+00-19-4F:Nokia Danmark A/S
+00-19-50:Harman Multimedia
+00-19-51:NETCONS, s.r.o.
+00-19-52:ACOGITO Co., Ltd
+00-19-53:Chainleader Communications Corp.
+00-19-54:Leaf Corporation.
+00-19-55:Cisco Systems
+00-19-56:Cisco Systems
+00-19-57:Saafnet Canada Inc.
+00-19-58:Bluetooth SIG, Inc.
+00-19-59:Staccato Communications Inc.
+00-19-5A:Jenaer Antriebstechnik GmbH
+00-19-5B:D-Link Corporation
+00-19-5C:Innotech Corporation
+00-19-5D:ShenZhen XinHuaTong Opto Electronics Co.,Ltd
+00-19-5E:Motorola CHS
+00-19-5F:Valemount Networks Corporation
+00-19-60:DoCoMo Systems, Inc.
+00-19-61:Blaupunkt GmbH
+00-19-62:Commerciant, LP
+00-19-63:Sony Ericsson Mobile Communications AB
+00-19-64:Doorking Inc.
+00-19-65:YuHua TelTech (ShangHai) Co., Ltd.
+00-19-66:Asiarock Technology Limited
+00-19-67:TELDAT Sp.J.
+00-19-68:Digital Video Networks(Shanghai) CO. LTD.
+00-19-69:Nortel
+00-19-6A:MikroM GmbH
+00-19-6B:Danpex Corporation
+00-19-6C:ETROVISION TECHNOLOGY
+00-19-6D:Raybit Systems Korea, Inc
+00-19-6E:Metacom (Pty) Ltd.
+00-19-6F:SensoPart GmbH
+00-19-70:Z-Com, Inc.
+00-19-71:Guangzhou Unicomp Technology Co.,Ltd
+00-19-72:Plexus (Xiamen) Co.,ltd
+00-19-73:Zeugma Systems
+00-19-74:AboCom Systems, Inc.
+00-19-75:Beijing Huisen networks technology Inc
+00-19-76:Xipher Technologies, LLC
+00-19-77:Aerohive Networks, Inc.
+00-19-78:Datum Systems, Inc.
+00-19-79:Nokia Danmark A/S
+00-19-7A:MAZeT GmbH
+00-19-7B:Picotest Corp.
+00-19-7C:Riedel Communications GmbH
+00-19-7D:Hon Hai Precision Ind. Co., Ltd
+00-19-7E:Hon Hai Precision Ind. Co., Ltd
+00-19-7F:PLANTRONICS, INC.
+00-19-80:Gridpoint Systems
+00-19-81:Vivox Inc
+00-19-82:SmarDTV
+00-19-83:CCT R&D Limited
+00-19-84:ESTIC Corporation
+00-19-85:IT Watchdogs, Inc
+00-19-86:Cheng Hongjian
+00-19-87:Panasonic Mobile Communications Co., Ltd.
+00-19-88:Wi2Wi, Inc
+00-19-89:Sonitrol Corporation
+00-19-8A:Northrop Grumman Systems Corp.
+00-19-8B:Novera Optics Korea, Inc.
+00-19-8C:iXSea
+00-19-8D:Ocean Optics, Inc.
+00-19-8E:Oticon A/S
+00-19-8F:Alcatel Bell N.V.
+00-19-90:ELM DATA Co., Ltd.
+00-19-91:avinfo
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -7216,7 +7334,7 @@
 00-50-3C:TSINGHUA NOVEL ELECTRONICS
 00-50-3E:CISCO SYSTEMS, INC.
 00-50-3F:ANCHOR GAMES
-00-50-40:Panasonic Electric Works Laboratory of America, Inc./SLC Lab
+00-50-40:Matsushita Electric Works, Ltd.
 00-50-41:CTX OPTO ELECTRONIC CORP.
 00-50-42:SCI MANUFACTURING SINGAPORE PTE, LTD.
 00-50-43:MARVELL SEMICONDUCTOR, INC.
