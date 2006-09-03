@@ -70,7 +70,7 @@
 			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[access]" {tip text="Select node status"}>
+			<SELECT SIZE="1" NAME="nodeedit[access]" {tip text="Select node status" trigger="access"}>
 				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>

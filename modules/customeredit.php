@@ -87,8 +87,8 @@ elseif(isset($_POST['customerdata']))
 	if($customerdata['pin']!=0 && !eregi('^[0-9]{4,6}$',$customerdata['pin']))
 		$error['pin'] = trans('Incorrect PIN code!');
 
-	if($customerdata['status']!=3&&$LMS->GetCustomerNodesNo($customerdata['id'])) 
-		$error['status'] = trans('Only customer with \'connected\' status can own computers!');
+	if($customerdata['status'] == 1 && $LMS->GetCustomerNodesNo($customerdata['id'])) 
+		$error['status'] = trans('Interested customers can\'t have computers!');
 		
 	if (!$error)
 	{
@@ -105,15 +105,11 @@ elseif(isset($_POST['customerdata']))
 		$customerinfo['moddateh']=$olddata['moddateh'];
 		$customerinfo['customername']=$olddata['customername'];
 		$customerinfo['balance']=$olddata['balance'];
-		if($olddata['status']==3)
-			$customerinfo['shownodes'] = TRUE;
 		$SMARTY->assign('error',$error);
 	}
 }else{
 
 	$customerinfo = $LMS->GetCustomer($_GET['id']);
-	if($customerinfo['status'] == 3)
-		$customerinfo['shownodes'] = TRUE;
 }
 
 $layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);

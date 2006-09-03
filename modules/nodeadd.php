@@ -115,8 +115,14 @@ if(isset($_POST['nodedata']))
 
 	if(! $LMS->CustomerExists($nodedata['ownerid']))
 		$error['customer'] = trans('You have to select owner!');
-	elseif($LMS->GetCustomerStatus($nodedata['ownerid']) != 3)
-		$error['customer'] = trans('Selected customer is not connected!');
+	else
+	{
+		$status = $LMS->GetCustomerStatus($nodedata['ownerid']);
+		if($status == 1) // unknown (interested)
+			$error['customer'] = trans('Selected customer is not connected!');
+		elseif($status == 2 && $nodedata['access']) // awaiting
+	                $error['access'] = trans('Node owner is not connected!');
+	}
 
 	if($nodedata['netdev'])
 	{

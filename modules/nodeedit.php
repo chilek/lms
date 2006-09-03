@@ -148,6 +148,9 @@ if(isset($_POST['nodeedit']))
 		    $error['netdev'] = trans('It scans for free ports in selected device!');
 		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
+
+	if($nodeedit['access'] && $LMS->GetCustomerStatus($nodedata['ownerid']) < 3)
+		$error['access'] = trans('Node owner is not connected!');
 	
 	$nodeinfo['name'] = $nodeedit['name'];
 	$nodeinfo['mac'] = $nodeedit['mac'];
@@ -167,7 +170,6 @@ if(isset($_POST['nodeedit']))
 		$nodeinfo['ipaddr_pub'] = '';
 }
 
-if($customerinfo['status']==3) $customerinfo['shownodes'] = TRUE;
 $customers = $LMS->GetCustomerNames();
 $tariffs = $LMS->GetTariffs();
 $assignments = $LMS->GetCustomerAssignments($ownerid);

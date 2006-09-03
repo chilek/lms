@@ -64,7 +64,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" NAME="nodedata[access]" {tip text="Select node status"}>
+			<SELECT SIZE="1" NAME="nodedata[access]" {tip text="Select node status" trigger="access"}>
 				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
@@ -94,7 +94,7 @@
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="customer"}>
 				{section name=customers loop=$customers}
-				<OPTION VALUE="{$customers[customers].id}"{if $nodedata.ownerid eq $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$customers[customers].id}"{if $nodedata.ownerid == $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
