@@ -115,15 +115,14 @@ $ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz
 </screen>
           </para>
-          <para>Dostêpne s± dwa rodzaje paczek z LMS - zawieraj±ce bibliotekê
-          Smarty (<filename>lms-x.x.x+libs.tar.gz</filename>) i bez niej. 
-          Je¿eli nie skorzysta³e¶ z wersji archiwum zawieraj±cej biblioteki,     
-          pobierz j± i umie¶æ w katalogu <filename>lib</filename>.
+          <para>Biblioteka Smarty zawarta jest w paczka z LMSem. Jednak je¶li
+	u¿ywasz snapshotów cvsowych musisz sam zadbaæ o instalacjê Smarty
+          w katalogu <filename>lib</filename>.
 <screen>
 $ cd /var/www/lms/lib
-$ wget http://smarty.php.net/distributions/Smarty-2.6.6.tar.gz
-$ tar zxf Smarty-2.6.6.tar.gz
-$ mv Smarty-2.6.6/libs Smarty
+$ wget http://smarty.php.net/distributions/Smarty-2.6.14.tar.gz
+$ tar zxf Smarty-2.6.14.tar.gz
+$ mv Smarty-2.6.14/libs Smarty
 </screen>
           </para>
           <para><note><para>Po³o¿enie wszystkich katalogów mo¿esz zmieniæ w sekcji
@@ -401,11 +400,6 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
         <para><warning><para>Je¶li ten katalog bêdzie osi±galny z poziomu WWW, to ka¿dy 
         bez autoryzacji bêdzie mia³ do nich dostêp.</para></warning></para>
         </listitem>
-        <listitem>
-        <para>smarty_dir</para>
-        <para>Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir.</para>
-        <para>Przyk³ad:     <prompt>smarty_dir = /usr/lib/php/Smarty</prompt></para>
-       </listitem>
           <listitem>
         <para>smarty_compile_dir</para>
         <para>Katalog kompilacji Smarty-ego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to 

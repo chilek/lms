@@ -257,9 +257,6 @@ function GetConfigList($order='var,asc')
      case 'config_templates_dir':
          $config[$idx]['description'] = 'Katalog z templejtami plików konfiguracyjnych. Nieu¿ywana';
          break;
-     case 'smarty_dir':
-         $config[$idx]['description'] = 'Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir';
-         break;
      case 'smarty_compile_dir':
          $config[$idx]['description'] = 'Katalog kompilacji Smartyego. Miejsce gdzie Smarty psuje nasze templejty. Domy¶lnie to templates_c w katalogu sysdir';
          break;
