@@ -41,28 +41,32 @@ if [ -z "$CODENAME" ]; then
 	exit
 fi
 
+# pobieramy LMSa
 X=$RANDOM
 mkdir -p $TEMPDIR/$X
 wget --proxy=off "http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1&only_with_tag=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
 umask 022
 cd $TEMPDIR/$X/
+# ropakowujemy
 tar -xzf lms.tar.gz
+# ustawiamy prawa do plikÃ³w/katalogÃ³w...
 chmod 777 lms/{templates_c,backups,documents}
+# i datÄ™, zepsutÄ… przez ViewCVS
 touch `find . -type d`    
 cd lms
+# usuwamy deweloperski stuff
 rm -Rf $NOTDISTRIB
+# podmieniamy numerki wersji
 grep -air '1\.9-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.9-cvs/$LMSVER $CODENAME/g"
 chmod 777 templates_c backups documents
-cd ..
-tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
-cd lms/lib
+cd lib
+#pobieramy Smarty i wlaczamy do paczki LMSa
 wget http://smarty.php.net/distributions/Smarty-$SMARTYVER.tar.gz
 tar -xzf Smarty-$SMARTYVER.tar.gz
-mv Smarty-$SMARTYVER/libs Smarty
+mv Smarty-$SMARTYVER/libs/* Smarty/
+mv Smarty-$SMARTYVER/libs/plugins/* Smarty/plugins/
 rm -Rf Smarty-$SMARTYVER Smarty-$SMARTYVER.tar.gz
-cd ../
-rm -Rf $NOTDISTRIB
-cd ../
-tar -czf $WORKDIR/lms-$LMSVER+libs.tar.gz lms
+cd ../../
+tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd $WORKDIR
 echo -ne "Aby posprz±taæ, wykonaj (ja nie bêdê eremefowa³ sam):\nrm -Rf $TEMPDIR/$X\n"
