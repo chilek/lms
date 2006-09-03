@@ -113,9 +113,8 @@ $ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz
 </screen>
           </para>
-          <para>Two kind of LMS packets are available - the one with Smarty library included
-          (<filename>lms-x.x.x+libs.tar.gz</filename>) and without this library. If you have
-          installed version without library you have to get Smarty yourself (eg. using PEAR) and
+          <para>Smarty library is included in LMS package but if you are using CVS snapshot
+    	    you have to get Smarty yourself (eg. using PEAR) and
           place it in <filename>lib</filename> subdirectory.
 <screen>
 $ cd /var/www/lms/lib
@@ -377,11 +376,6 @@ password = password_entered_with_lms_user_creation</screen>
         <para><warning><para>If that directory is accessible from WWW
         level (within Web Server DocumentRoot), anybody can access them without
         authentication.</para></warning></para>
-        </listitem>
-        <listitem>
-        <para>smarty_dir</para>
-        <para>Directory with Smarty library - By default <filename>Smarty</filename> subdirectory of lib_dir.</para>
-        <para>Example:     <prompt>smarty_dir = /usr/lib/php/Smarty</prompt></para>
         </listitem>
         <listitem>
         <para>smarty_compile_dir</para>

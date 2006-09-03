@@ -87,7 +87,6 @@ $CONFIG['directories']['sys_dir'] = (! $CONFIG['directories']['sys_dir'] ? getcw
 $CONFIG['directories']['backup_dir'] = (! $CONFIG['directories']['backup_dir'] ? $CONFIG['directories']['sys_dir'].'/backups' : $CONFIG['directories']['backup_dir']);
 $CONFIG['directories']['lib_dir'] = (! $CONFIG['directories']['lib_dir'] ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
 $CONFIG['directories']['modules_dir'] = (! $CONFIG['directories']['modules_dir'] ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
-$CONFIG['directories']['smarty_dir'] = (! $CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : $CONFIG['directories']['lib_dir'].'/Smarty') : $CONFIG['directories']['smarty_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = (! $CONFIG['directories']['smarty_compile_dir'] ? $CONFIG['directories']['sys_dir'].'/templates_c' : $CONFIG['directories']['smarty_compile_dir']);
 $CONFIG['directories']['smarty_templates_dir'] = (! $CONFIG['directories']['smarty_templates_dir'] ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
 
@@ -100,7 +99,6 @@ $_SYSTEM_DIR = $CONFIG['directories']['sys_dir'];
 $_BACKUP_DIR = $CONFIG['directories']['backup_dir'];
 $_LIB_DIR = $CONFIG['directories']['lib_dir'];
 $_MODULES_DIR = $CONFIG['directories']['modules_dir'];
-$_SMARTY_DIR = $CONFIG['directories']['smarty_dir'];
 $_SMARTY_COMPILE_DIR = $CONFIG['directories']['smarty_compile_dir'];
 $_SMARTY_TEMPLATES_DIR = $CONFIG['directories']['smarty_templates_dir'];
 $_DBTYPE = $CONFIG['database']['type'];
@@ -121,7 +119,7 @@ require_once($_LIB_DIR.'/dbencoding.php');
 
 // Initialize templates engine
 
-require_once($_SMARTY_DIR.'/Smarty.class.php');
+require_once($_LIB_DIR.'/Smarty/Smarty.class.php');
 
 $SMARTY = new Smarty;
 $SESSION = NULL;
@@ -144,8 +142,6 @@ $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
 $SMARTY->assign_by_ref('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
-
-require_once($_LIB_DIR.'/smarty_addons.php');
 include('lang.php');
 
 $SMARTY->assign_by_ref('layout', $layout);

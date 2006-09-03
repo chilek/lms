@@ -557,4 +557,18 @@ function clearheader()
 	$layout['nomenu'] = TRUE;
 }
 
+/*
+	Registering "plugin" function is for use in actions.
+	$handle - handle name
+	$plugin - template or action for including in handle. Example of use:
+	    
+	register_plugin('nodeinfobox-end', '/path/sometemplate.html');
+*/
+function register_plugin($handle, $plugin)
+{
+        global $PLUGINS;
+	
+        $PLUGINS[$handle][] = $plugin;
+}
+
 ?>
