@@ -476,7 +476,7 @@ class LMS
 
 	function GetCustomerNames()
 	{
-		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers WHERE status=3 AND deleted = 0 ORDER BY customername');
+		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers WHERE status > 1 AND deleted = 0 ORDER BY customername');
 	}
 
 	function GetAllCustomerNames()
@@ -1165,14 +1165,25 @@ class LMS
 		if($this->DB->GetOne('SELECT access FROM nodes WHERE id=?', array($id)) == 1 )
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE id=?', array($id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE id=?', array($id));
+		{
+			if($this->DB->GetOne('SELECT status FROM nodes, customers 
+					    WHERE ownerid = customers.id AND nodes.id = ?', array($id)) == 3)
+			{
+				return $this->DB->Execute('UPDATE nodes SET access=1 WHERE id=?', array($id));
+			}
+		}
 	}
 
 	function NodeSetU($id,$access=FALSE)
 	{
 		$this->SetTS('nodes');
 		if($access)
-			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE ownerid=?', array($id));
+		{
+			if($this->DB->GetOne('SELECT status FROM customers WHERE id = ?', array($id)) == 3)
+			{
+				return $this->DB->Execute('UPDATE nodes SET access=1 WHERE ownerid=?', array($id));
+			}
+		}
 		else
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE ownerid=?', array($id));
 	}
