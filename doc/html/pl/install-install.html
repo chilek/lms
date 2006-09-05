@@ -80,15 +80,15 @@ NAME="INSTALL-INSTALL"
 ></H1
 ><P
 >LMS w postaci archiwum tar.gz mo¿na pobraæ ze strony 
-          domowej projektu (<A
+        domowej projektu (<A
 HREF="http://www.lms.rulez.pl"
 TARGET="_top"
 >www.lms.rulez.pl</A
 >),
-          a nastêpnie rozpakowaæ i umie¶ciæ w wybranym katalogu (np. <TT
+        a nastêpnie rozpakowaæ i umie¶ciæ w wybranym katalogu (np. <TT
 CLASS="FILENAME"
 >/var/www/lms
-          </TT
+        </TT
 >) dostêpnym dla serwera www:
 <PRE
 CLASS="SCREEN"
@@ -96,26 +96,24 @@ CLASS="SCREEN"
 $ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz</PRE
 >
-          </P
+        </P
 ><P
->Dostêpne s± dwa rodzaje paczek z LMS - zawieraj±ce bibliotekê
-          Smarty (<TT
+>Biblioteka Smarty zawarta jest w paczce z LMSem. Natomiast gdy
+	u¿ywasz wersji systemu pobranej wprost z CVSu musisz sam zadbaæ
+	o jej instalacjê. Najpro¶ciej skorzystaæ ze skryptu 
+	<TT
 CLASS="FILENAME"
->lms-x.x.x+libs.tar.gz</TT
->) i bez niej. 
-          Je¿eli nie skorzysta³e¶ z wersji archiwum zawieraj±cej biblioteki,     
-          pobierz j± i umie¶æ w katalogu <TT
+>/devel/smarty_install.sh</TT
+>, który pobierze
+	bibliotekê Smarty z Internetu i skopiuje zawarto¶æ katalogu 
+	<TT
 CLASS="FILENAME"
->lib</TT
+>/lib</TT
+> z pobranej paczki do katalogu <TT
+CLASS="FILENAME"
+>/lib/Smarty</TT
 >.
-<PRE
-CLASS="SCREEN"
->$ cd /var/www/lms/lib
-$ wget http://smarty.php.net/distributions/Smarty-2.6.6.tar.gz
-$ tar zxf Smarty-2.6.6.tar.gz
-$ mv Smarty-2.6.6/libs Smarty</PRE
->
-          </P
+        </P
 ><P
 ><DIV
 CLASS="NOTE"

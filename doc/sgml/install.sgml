@@ -113,16 +113,11 @@ $ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz
 </screen>
           </para>
-          <para>Smarty library is included in LMS package but if you are using CVS snapshot
-    	    you have to get Smarty yourself (eg. using PEAR) and
-          place it in <filename>lib</filename> subdirectory.
-<screen>
-$ cd /var/www/lms/lib
-$ wget http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz
-$ tar zxf Smarty-2.6.0.tar.gz
-$ mv Smarty-2.6.0/libs Smarty
-</screen>
-          </para>
+        <para>Smarty library is included in LMS package but if you are using CVS
+    	you have to install Smarty yourself. After download copy contents
+        of Smarty's <filename>lib</filename> directory into <filename>/lib/Smarty</filename>
+	or use <filename>/devel/smarty_install.sh</filename> script which will do
+	this for you.</para>
           <para><note><para>Location of all directories can be set in
           <emphasis>[directories]</emphasis> section in <filename>lms.ini</filename> configuration
           file.</para></note></para> <para>Configuration files (<filename>sample/lms.ini</filename>
@@ -480,13 +475,18 @@ $access['table'][100]['allow_reg'] = '^invoice$';
      </sect2>
     </sect1>
     <sect1 id="install-upgrade">
-      <title>Upgrade</title>
-      <para>Since version 1.5.4 LMS was released in polish language only. If you are upgrading
-      read polish documentation for upgrade description. In newest versions upgrade is very easy.
-      That process has two stages. First, overwrite old files with new ones and remove contents of
-      <filename>templates_c</filename> directory (or better create new LMS directory tree). Second
-      stage is a database structure change - it's self-executing process acting upon first login to
-      the UI.</para>
+        <title>Upgrade</title>
+	<para>Since version 1.5.4 LMS was released in polish language only. If you are upgrading
+	read polish documentation for upgrade description. In newest versions upgrade is very easy.
+        That process has two stages. First, overwrite old files with new ones and remove contents of
+        <filename>templates_c</filename> directory (or better create new LMS directory tree). Second
+        stage is a database structure change - it's self-executing process acting upon first login to
+        the UI.</para>
+	<para><warning><para>If you've got CVS version you've to
+	install Smarty library. Just copy contents of Smarty's 
+	<filename>/lib</filename> directory to <filename>/lib/Smarty</filename>.
+	It can be done (including Smarty download) automatic with use of
+	<filename>/devel/smarty_install.sh</filename> script.</para></warning></para>
     </sect1>
     <sect1 id="install-documents">
 	<title>Documents</title>

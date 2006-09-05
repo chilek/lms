@@ -80,14 +80,53 @@ NAME="INSTALL-UPGRADE"
 ></H1
 ><P
 >Since version 1.5.4 LMS was released in polish language only. If you are upgrading
-      read polish documentation for upgrade description. In newest versions upgrade is very easy.
-      That process has two stages. First, overwrite old files with new ones and remove contents of
-      <TT
+	read polish documentation for upgrade description. In newest versions upgrade is very easy.
+        That process has two stages. First, overwrite old files with new ones and remove contents of
+        <TT
 CLASS="FILENAME"
 >templates_c</TT
 > directory (or better create new LMS directory tree). Second
-      stage is a database structure change - it's self-executing process acting upon first login to
-      the UI.</P
+        stage is a database structure change - it's self-executing process acting upon first login to
+        the UI.</P
+><P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If you've got CVS version you've to
+	install Smarty library. Just copy contents of Smarty's 
+	<TT
+CLASS="FILENAME"
+>/lib</TT
+> directory to <TT
+CLASS="FILENAME"
+>/lib/Smarty</TT
+>.
+	It can be done (including Smarty download) automatic with use of
+	<TT
+CLASS="FILENAME"
+>/devel/smarty_install.sh</TT
+> script.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
