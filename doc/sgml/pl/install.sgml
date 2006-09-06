@@ -803,6 +803,7 @@ $engine = array(
 	'content_type' => 'text/html', 		// typ pliku wynikowego
 	'output' => 'default.html', 		// nazwa pliku wynikowego
 	'plugin' => 'plugin',			// nazwa pliku pluginu (w katalogu 'name')
+	'post-action' => 'post-action',         // plik PHP wykonywany po dodaniu dokumentu (w transakcji)
 )
 ?&gt;
 </screen>
@@ -816,7 +817,10 @@ $engine = array(
 		<para>Zmienna <filename>plugin</filename> okre¶la nazwê pliku php
 		odpowiedzialnego za wy¶wietlenie dodatkowych pól w formularzu tworzenia
 		nowego dokumentu. Plugin mo¿e ponadto zawieraæ obs³ugê b³êdów dla
-		tych pól. Prosty przyk³ad pluginu zawiera domy¶lny dokument.</para>
+		tych pól. Po dodaniu dokumentu wykonywany jest skrypt PHP okre¶lony w 
+		zmiennej <filename>post-action</filename>.
+		Prosty przyk³ad pluginu i post-akcji przedstawiono w przyk³adowym 
+		domy¶lnym dokumencie.</para>
     </sect2>
     </sect1>
 </chapter>

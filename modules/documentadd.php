@@ -135,10 +135,11 @@ if(isset($_POST['document']))
 		$result = '';
 		// read template informations
 		include($_DOC_DIR.'/templates/'.$document['templ'].'/info.php');
-		// set some variables
-		$SMARTY->assign('document', $document);
+		// set some variables (needed in e.g. plugin)
+		$SMARTY->assign_by_ref('document', $document);
 		// call plugin
-		@include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
+		if(isset($engine['plugin']) && file_exists($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php'))
+			include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
 		
@@ -200,7 +201,7 @@ if(isset($_POST['document']))
 					$customer['city'] ? $customer['city'] : '',
 					$customer['ten'] ? $customer['ten'] : '',
 					$customer['ssn'] ? $customer['ssn'] : '',
-					$document['closed'] ? 1 : 0
+					isset($document['closed']) ? 1 : 0
 					));
 		
 		$docid = $DB->GetLastInsertID('documents');
@@ -216,6 +217,10 @@ if(isset($_POST['document']))
 					$document['md5sum'],
 					$document['description']
 					));
+
+		// template post-action
+		if(isset($engine['post-action']) && file_exists($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php'))
+			include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php');
 
 		$DB->CommitTrans();
 		
