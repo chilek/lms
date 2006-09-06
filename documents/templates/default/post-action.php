@@ -24,16 +24,10 @@
  *  $Id$
  */
 
-$engine = array(
-	'name' => 'default', 	// template directory
-	'engine' => 'default', 	// engine.php directory
-				// you can use other engine
-	'template' => 'template.html', 		// template file (in 'name' dir)
-	'title' => trans('Default document'), 	// description for UI
-	'content_type' => 'text/html', 		// output file type
-	'output' => 'default.html', 		// output file name
-	'plugin' => 'plugin',			// form plugin (in 'name' dir)
-	'post-action' => 'post-action',		// action file executed after document addition (in transaction)
-)
+/* 
+    post action example: here you can e.g. execute some SQL queries, send mail or sth
+*/
+
+$LMS->SetTS('documents');
 
 ?>

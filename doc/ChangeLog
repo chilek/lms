@@ -39,6 +39,7 @@ version ? (????-??-??):
     lib/Smarty/plugins, removed option 'smarty_dir', now Smarty will be included 
     in LMS packages (alec)
     ************ WARNING: remove contents of templates_c directory! ************
+  - added 'post-action' in document templates (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   

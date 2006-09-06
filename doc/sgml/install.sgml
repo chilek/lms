@@ -701,6 +701,7 @@ $engine = array(
     'content_type' => 'text/html', 		// output file type
     'output' => 'default.html', 			// output file name
     'plugin' => 'plugin',			// plugin file name (in 'name' directory)
+    'post-action' => 'post-action',		// action file executed after document addition (in transaction)
 )
 ?&gt;
 </screen>
@@ -712,7 +713,9 @@ $engine = array(
 		<filename>info.php</filename>.</para>
 		<para>Member <filename>plugin</filename> specify name of php file used
 		for printing additional fields on document creation form.
-		Plugin can also consist errors handlers for those fields.</para>
+		Plugin can also consist errors handlers for those fields.
+		After document creation will be executed PHP script which name (without extension) 
+		should be specified in <filename>post-action</filename> value.</para>
     </sect2>
     </sect1>
 </chapter>
