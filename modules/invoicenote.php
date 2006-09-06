@@ -27,7 +27,9 @@
 $taxeslist = $LMS->GetTaxes();
 $numberplanlist = $LMS->GetNumberPlans(DOC_CNOTE);
 
-if ((isset($_GET['id'])) && ($_GET['action']=='init'))
+$action = isset($_GET['action']) ? $_GET['action'] : NULL;
+
+if(isset($_GET['id']) && $action=='init')
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 
@@ -74,7 +76,7 @@ $SESSION->restore('cnoteerror', $error);
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 $layout['pagetitle'] = trans('Credit Note for Invoice: $0', $ntempl);
 
-switch($_GET['action'])
+switch($action)
 {
 	case 'deletepos':
 		$contents[$_GET['itemid']]['deleted'] = true;
@@ -263,7 +265,7 @@ $SESSION->save('cnote', $cnote);
 $SESSION->save('invoicecontents', $contents);
 $SESSION->save('cnoteerror', $error);
 
-if($_GET['action'] != '')
+if($action != '')
 {
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
 	$SESSION->redirect('?m=invoicenote');
