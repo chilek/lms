@@ -214,11 +214,11 @@ if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 		{
 			unset($engine);
 			include($infofile);
-			$docengines[] = $engine;
+			$docengines[$dir] = $engine;
 		}
 	}
 
-if($docengines) asort($docengines);
+if($docengines) ksort($docengines);
 */
 
 $layout['pagetitle'] = trans('Edit Document: $0', docnumber($document['number'], $document['template'], $document['cdate']));

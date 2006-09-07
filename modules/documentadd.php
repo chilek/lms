@@ -266,11 +266,11 @@ if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 		{
 			unset($engine);
 			include($infofile);
-			$docengines[] = $engine;
+			$docengines[$dir] = $engine;
 		}
 	}
 
-if($docengines) asort($docengines);
+if($docengines) ksort($docengines);
 
 $layout['pagetitle'] = trans('New Document');
 
