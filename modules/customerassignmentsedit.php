@@ -287,6 +287,8 @@ else
 	$a['nodes'] = $DB->GetAllByKey('SELECT nodeid FROM nodeassignments WHERE assignmentid=?', 'nodeid', array($a['id']));
 }
 
+$expired = isset($_GET['expired']) ? $_GET['expired'] : false;
+
 $layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetCustomerName($customerid));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -294,9 +296,10 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('customernodes', $LMS->GetCustomerNodes($customerid));
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
+$SMARTY->assign('expired', $expired);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('assignmentedit', $a);
-$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customerid));
+$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customerid, $expired));
 $balancelist['customerid'] = $customerid;
 $SMARTY->assign('balancelist', $balancelist);
 $SMARTY->display('customerassignmentsedit.html');

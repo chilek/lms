@@ -995,7 +995,6 @@ $_LANG['Off'] = 'Wyłączony';
 $_LANG['online'] = 'on-line';
 $_LANG['Online:'] = 'Włączone:';
 $_LANG['Online Documentation'] = 'Dokumentacja online';
-$_LANG['Only customer with \'connected\' status can own computers!'] = 'Tylko klienci ze statusem "podłączony" mogą posiadać komputery"!';
 $_LANG['Only \'new\' ticket can be owned by no one!'] = 'Tylko nowe zgłoszenia mogą być pozbawione właściciela!';
 $_LANG['open'] = 'otwórz';
 $_LANG['Open'] = 'Otwórz';
@@ -1724,7 +1723,6 @@ $_LANG['Documents: list, searching, adding'] = 'Dokumenty: lista, wyszukiwanie, 
 $_LANG['List of documents'] = 'Lista dokumentów';
 $_LANG['No such documents matching search criteria or list is empty.'] = 'Brak dokumentów spełniających kryteria wyszukiwania lub lista jest pusta.';
 $_LANG['Numbering plan:'] = 'Plan numeracyjny:';
-$_LANG['Select node(s)'] = 'Wybierz komputer(y)';
 $_LANG['Additional informations:'] = 'Informacje dodatkowe:';
 $_LANG['extended format'] = 'format rozszerzony';
 $_LANG['Page $0 from $1'] = 'Strona $0 z $1';
@@ -1732,6 +1730,10 @@ $_LANG['Page total:'] = 'Razem na stronie:';
 $_LANG['Total from start of period:'] = 'Razem od początku okresu:';
 $_LANG['Transfered from previous page:'] = 'Przeniesienie z poprzedniej strony:';
 $_LANG['Click for nodes selection'] = 'Kliknij aby wybrać komputer(y)';
-$_LANG['Delete selection'] = 'Usuń zaznaczenie';
+$_LANG['Hide expired'] = 'Ukryj przeterminowane';
+$_LANG['Interested customers can\'t have computers!'] = 'Zainteresowani klienci nie mogą posiadać komputerów!';
+$_LANG['Node owner is not connected!'] = 'Właściciel komputera nie jest podłączony!';
+$_LANG['Select node'] = 'Wybierz komputer';
+$_LANG['Show expired'] = 'Pokaż przeterminowane';
 
 ?>
