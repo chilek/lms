@@ -1302,7 +1302,7 @@ class LMS
 		return $this->DB->GetOne('SELECT sum(tariffs.value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND customerid=? AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
 	}
 
-	function GetCustomerAssignments($id)
+	function GetCustomerAssignments($id, $show_expired=false)
 	{
 		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, assignments.customerid, period, at, suspended,  
 						    uprate, upceil, downceil, downrate, invoice, settlement, datefrom, dateto, discount, liabilityid, 
@@ -1311,8 +1311,9 @@ class LMS
 						    FROM assignments 
 						    LEFT JOIN tariffs ON (tariffid=tariffs.id) 
 						    LEFT JOIN liabilities ON (liabilityid=liabilities.id) 
-						    WHERE assignments.customerid=? 
-						    ORDER BY datefrom, value', array($id)))
+						    WHERE assignments.customerid=? '
+						    .(!$show_expired ? 'AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)' : '')
+						    .' ORDER BY datefrom, value', array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{

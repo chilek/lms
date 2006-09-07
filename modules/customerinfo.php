@@ -34,8 +34,10 @@ if($LMS->CustomerExists($_GET['id']) == 0)
 	$SESSION->redirect('?m=customerlist');
 }
 
+$expired = isset($_GET['expired']) ? $_GET['expired'] : false;
+
 $customerinfo = $LMS->GetCustomer($_GET['id']);
-$assigments = $LMS->GetCustomerAssignments($_GET['id']);
+$assigments = $LMS->GetCustomerAssignments($_GET['id'], $expired);
 $customergroups = $LMS->CustomergroupGetForCustomer($_GET['id']);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($_GET['id']);
 $balancelist = $LMS->GetCustomerBalanceList($_GET['id']);
@@ -59,7 +61,8 @@ $SMARTY->assign(
 			'customerinfo' => $customerinfo,
 			'tariffs' => $tariffs,
 			'documents' => $documents,
-			'taxeslist' => $taxeslist
+			'taxeslist' => $taxeslist,
+			'expired' => $expired,
 		     )
 		);
 $SMARTY->display('customerinfo.html');
