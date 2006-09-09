@@ -25,6 +25,7 @@ A:active	{ color: #336600; }
 A:visited	{ color: #800000; }
 A.blend		{ color: #888888; }
 A:hover		{ text-decoration: underline; color: #336600; }
+TR.blend A	{ color: #888888; }
 
 P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
