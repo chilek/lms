@@ -138,16 +138,6 @@
 	    tak¿e w³±czenie lub wy³±czenie ostrze¿eñ wszystkim komputerom nale¿±cym
 	    do wybranych klientów.</para>
 	</sect2>
-	<sect2 id="menu-customers-documentgen">
-	    <title>Generator dokumentów</title>
-	    <para>Generator umo¿liwia utworzenie dokumentów wg wybranego szablonu dla wybranej
-	    grupy klientów. Opcja 'Drukuj' umo¿liwia jednocze¶nie wydruk wygenerowanych dokumentów
-	    pod warunkiem, ¿e s± to dokumenty html.
-	    <note><para>Z uwagi na wydajno¶æ zaleca siê korzystanie ze zoptymalizowanych pod k±tem 
-	    generatora szablonów oraz nie drukowania wiêkszej ilo¶ci dokumentów (co mo¿e prowadziæ do
-	    zawieszenia przegl±darki).</para></note>
-	    </para>
-	</sect2>
 	<sect2 id="menu-customers-prints">
 	    <title>Wydruki</title>
 	    <para>Zestaw modu³ów wy¶wietlaj±cych listy i raporty formie przyjaznej dla drukarki
@@ -470,8 +460,41 @@
 	    </itemizedlist>
 	    </para>
 	</sect2>
- </sect1>
- <sect1 id="menu-accounts">
+</sect1>
+<sect1 id="menu-documents">
+	<title>Dokumenty</title>
+	<para>Dokumenty niefinansowe mo¿na znale¼æ bezpo¶rednio w zak³adce klienta oraz
+	w menu 'Dokumenty'. LMS umo¿liwia przechowywanie gotowych dokumentów w dowolnym formacie 
+	oraz tworzenie ich wg zdefiniowanych w³asnych szablonów. Zw³aszcza funkcjonalno¶æ
+	szablonów jest ciekawa, gdy¿ umo¿liwia tworzenie rozbudowanych wtyczek, których
+	dzia³anie nie musi ograniczaæ siê tylko do wygenerowania wydruku.</para>
+	<sect2 id="menu-documents-list">
+		<title>Lista</title>
+		<para>Lista zawiera podstawowe informacje o wszystkich dokumentach takie jak numer, tytu³,
+		typ, datê utworzenia, daty obowi±zywania oraz nazwê/nazwisko i imiê klienta. Prosty
+		filtr umo¿liwia przeszukiwanie wg typu dokumentu lub klienta.</para>
+	</sect2>
+	<sect2 id="menu-documents-new">
+		<title>Nowy dokument</title>
+		<para>Dokumenty mo¿na tworzyæ na podstawie szablonów utworzonych wed³ug
+		zasad opisanych w rozdziale <xref linkend="install-documents-other">. Mog± to byæ
+		tak¿e ju¿ gotowe pliki, które zostan± zapisane na serwerze. Podczas tworzenia/zapisu 
+		dokumentu nale¿y nadaæ mu tytu³ oraz typ oraz wybraæ klienta. Mo¿na okre¶liæ daty
+		obowi±zywania oraz dodatkowy opis. Dokumenty mog± byæ numerowane wed³ug dowolnie
+		zdefiniowanych w systemie planów numeracyjnych.</para>
+	</sect2>
+	<sect2 id="menu-documents-documentgen">
+		<title>Generator dokumentów</title>
+		<para>Generator umo¿liwia utworzenie dokumentów wg wybranego szablonu dla wybranej
+		grupy klientów. Opcja 'Drukuj' umo¿liwia jednocze¶nie wydruk wygenerowanych dokumentów
+		pod warunkiem, ¿e s± to dokumenty HTML.
+		<note><para>Z uwagi na wydajno¶æ zaleca siê korzystanie ze zoptymalizowanych pod k±tem 
+		generatora szablonów oraz nie drukowania wiêkszej ilo¶ci dokumentów (mo¿e to prowadziæ do
+		zawieszenia przegl±darki).</para></note>
+		</para>
+	</sect2>
+</sect1>
+<sect1 id="menu-accounts">
 	<title>Konta</title>
 	<para>Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
 	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 

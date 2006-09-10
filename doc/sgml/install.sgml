@@ -671,7 +671,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                 receipts Smarty template.</para>
         </sect3>
     </sect2>
-    <sect2 id="install-documents-other">
+    <sect2 id="install-documents-other" xreflabel="Other documents">
 	<title>Other documents</title>
 	    <para>Documents support is not limited to invoices. You might store 
 	    virtually any documents you want in LMS, such as contracts, protocols, 
