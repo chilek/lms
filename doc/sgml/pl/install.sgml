@@ -772,17 +772,17 @@ AddDefaultCharset Off
 		wymaga utworzenia pliku php, a nie tak jak w przypadku html'a szablonu Smarty.</para>
         </sect3>
     </sect2>
-    <sect2 id="install-documents-other">
+    <sect2 id="install-documents-other" xreflabel="Dokumenty pozosta³e">
 	<title>Dokumenty pozosta³e</title>
-	    <para>Oprócz dokumentów finansowych w LMSie mo¿na przechowywaæ
-	    dokumenty takie jak umowy, protoko³y, aneksy i inne. Ka¿emu klientowi
-	    mo¿na przypisaæ dowoln± liczbê dokumentów na zak³adce 'Dokumenty klienta'
-	    w panelu 'Informacje o kliencie'. Ka¿dy dokument powinien posiadaæ tytu³,
-	    typ, dodatkowo mo¿na zdefiniowaæ okres obowi±zywania oraz opis. Pliki
-	    z dokumentami przechowywane s± poza baz± danych (o czym nale¿y pamiêtaæ
-	    robi±c backupy) w katalogu okre¶lonym zmienn± 'doc_dir' w sekcji
-	    <emphasis>[directories]</emphasis> pliku konfiguracyjnego.
-	    </para>
+		<para>Oprócz dokumentów finansowych w LMSie mo¿na przechowywaæ
+	    	dokumenty takie jak umowy, protoko³y, aneksy i inne. Ka¿emu klientowi
+	    	mo¿na przypisaæ dowoln± liczbê dokumentów na zak³adce 'Dokumenty klienta'
+	    	w panelu 'Informacje o kliencie' lub poprzez menu 'Dokumenty'. 
+	    	Pliki z dokumentami przechowywane s± poza baz± danych 
+	    	(o czym nale¿y pamiêtaæ robi±c backupy) w katalogu 
+	    	okre¶lonym zmienn± 'doc_dir' w sekcji
+	    	<emphasis>[directories]</emphasis> pliku konfiguracyjnego.
+	    	</para>
 		<para>Dokumenty mog± byæ importowane do systemu jako gotowe pliki, ale 
 		tak¿e tworzone wed³ug szablonów przy u¿yciu zdefiniowanych kreatorów. Tutaj 
 		system daje du¿e mo¿liwo¶ci konfiguracji. W katalogu 
@@ -790,12 +790,12 @@ AddDefaultCharset Off
 		znajduje siê domy¶lny kreator dokumentu (szablon i silnik). U¿ytkownik mo¿e utworzyæ
 		dowoln± liczbê w³asnych kreatorów dokumentów, które nale¿y 
 		umie¶ciæ w katalogu <filename>documents/templates/</filename>.</para>
-		<para>Ka¿dy kreator powinien zawieraæ plik <filename>info.php</filename> o
+	    	<para>Ka¿dy kreator powinien zawieraæ plik <filename>info.php</filename> o
 		okre¶lonej strukturze:
 <screen>
 &lt;?php
 $engine = array(
-        'name' => 'default', 	// nazwa (katalogu) kreatora, ma³e litery i cyfry
+	'name' => 'default', 	// nazwa (katalogu) kreatora, ma³e litery i cyfry
 	'engine' => 'default', 	// katalog z silnikiem (engine.php)
 				// mo¿na u¿ywaæ silników z innych kreatorów
 	'template' => 'template.html', 		// plik szablonu (w katalogu 'name')
@@ -804,7 +804,7 @@ $engine = array(
 	'output' => 'default.html', 		// nazwa pliku wynikowego
 	'plugin' => 'plugin',			// nazwa pliku pluginu (w katalogu 'name')
 	'post-action' => 'post-action',         // plik PHP wykonywany po dodaniu dokumentu (w transakcji)
-)
+);
 ?&gt;
 </screen>
 		Plik <filename>info.php</filename> opisuje kreatora i jest jedynym wymaganym
@@ -821,6 +821,6 @@ $engine = array(
 		zmiennej <filename>post-action</filename>.
 		Prosty przyk³ad pluginu i post-akcji przedstawiono w przyk³adowym 
 		domy¶lnym dokumencie.</para>
-    </sect2>
+    	</sect2>
     </sect1>
 </chapter>
