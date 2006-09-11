@@ -41,6 +41,7 @@ version ? (????-??-??):
     ************ WARNING: remove contents of templates_c directory! ************
   - added 'post-action' in document templates (alec)
   - hidding/showing customer's expired liabilities on the list (alec)
+  - $nodedata -> $nodeedit in nodeedit.php (chilek)
 
 version 1.9.2 Thanos (2006-07-15):
   
