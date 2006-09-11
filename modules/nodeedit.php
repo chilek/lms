@@ -149,7 +149,7 @@ if(isset($_POST['nodeedit']))
 		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
 
-	if($nodeedit['access'] && $LMS->GetCustomerStatus($nodedata['ownerid']) < 3)
+	if($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
 	
 	$nodeinfo['name'] = $nodeedit['name'];
