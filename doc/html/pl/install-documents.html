@@ -586,20 +586,20 @@ NAME="INSTALL-DOCUMENTS-OTHER"
 ></H2
 ><P
 >Oprócz dokumentów finansowych w LMSie mo¿na przechowywaæ
-	    dokumenty takie jak umowy, protoko³y, aneksy i inne. Ka¿emu klientowi
-	    mo¿na przypisaæ dowoln± liczbê dokumentów na zak³adce 'Dokumenty klienta'
-	    w panelu 'Informacje o kliencie'. Ka¿dy dokument powinien posiadaæ tytu³,
-	    typ, dodatkowo mo¿na zdefiniowaæ okres obowi±zywania oraz opis. Pliki
-	    z dokumentami przechowywane s± poza baz± danych (o czym nale¿y pamiêtaæ
-	    robi±c backupy) w katalogu okre¶lonym zmienn± 'doc_dir' w sekcji
-	    <SPAN
+	    	dokumenty takie jak umowy, protoko³y, aneksy i inne. Ka¿emu klientowi
+	    	mo¿na przypisaæ dowoln± liczbê dokumentów na zak³adce 'Dokumenty klienta'
+	    	w panelu 'Informacje o kliencie' lub poprzez menu 'Dokumenty'. 
+	    	Pliki z dokumentami przechowywane s± poza baz± danych 
+	    	(o czym nale¿y pamiêtaæ robi±c backupy) w katalogu 
+	    	okre¶lonym zmienn± 'doc_dir' w sekcji
+	    	<SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[directories]</I
 ></SPAN
 > pliku konfiguracyjnego.
-	    </P
+	    	</P
 ><P
 >Dokumenty mog± byæ importowane do systemu jako gotowe pliki, ale 
 		tak¿e tworzone wed³ug szablonów przy u¿yciu zdefiniowanych kreatorów. Tutaj 
@@ -624,7 +624,7 @@ CLASS="FILENAME"
 CLASS="SCREEN"
 >&lt;?php
 $engine = array(
-        'name' =&#62; 'default', 	// nazwa (katalogu) kreatora, ma³e litery i cyfry
+	'name' =&#62; 'default', 	// nazwa (katalogu) kreatora, ma³e litery i cyfry
 	'engine' =&#62; 'default', 	// katalog z silnikiem (engine.php)
 				// mo¿na u¿ywaæ silników z innych kreatorów
 	'template' =&#62; 'template.html', 		// plik szablonu (w katalogu 'name')
@@ -632,7 +632,8 @@ $engine = array(
 	'content_type' =&#62; 'text/html', 		// typ pliku wynikowego
 	'output' =&#62; 'default.html', 		// nazwa pliku wynikowego
 	'plugin' =&#62; 'plugin',			// nazwa pliku pluginu (w katalogu 'name')
-)
+	'post-action' =&#62; 'post-action',         // plik PHP wykonywany po dodaniu dokumentu (w transakcji)
+);
 ?&gt;</PRE
 >
 		Plik <TT
@@ -658,7 +659,13 @@ CLASS="FILENAME"
 > okre¶la nazwê pliku php
 		odpowiedzialnego za wy¶wietlenie dodatkowych pól w formularzu tworzenia
 		nowego dokumentu. Plugin mo¿e ponadto zawieraæ obs³ugê b³êdów dla
-		tych pól. Prosty przyk³ad pluginu zawiera domy¶lny dokument.</P
+		tych pól. Po dodaniu dokumentu wykonywany jest skrypt PHP okre¶lony w 
+		zmiennej <TT
+CLASS="FILENAME"
+>post-action</TT
+>.
+		Prosty przyk³ad pluginu i post-akcji przedstawiono w przyk³adowym 
+		domy¶lnym dokumencie.</P
 ></DIV
 ></DIV
 ><DIV
