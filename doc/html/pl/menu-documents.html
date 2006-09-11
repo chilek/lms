@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Mailing</TITLE
+>Dokumenty</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Interfejs U¿ytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
+TITLE="Finanse"
+HREF="menu-finances.html"><LINK
+REL="NEXT"
 TITLE="Konta"
 HREF="menu-accounts.html"><LINK
-REL="NEXT"
-TITLE="Prze³adowanie"
-HREF="menu-reload.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="menu-accounts.html"
+HREF="menu-finances.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="menu-reload.html"
+HREF="menu-accounts.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -75,63 +75,60 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="MENU-MAILING"
->3.10. Mailing</A
+NAME="MENU-DOCUMENTS"
+>3.8. Dokumenty</A
 ></H1
 ><P
->Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
-	klientów twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
-	odbiorców, do której zostanie wys³any e-mail. Grupê adresatów mo¿na okre¶liæ
-	wg statusu oraz sieci lub grup klientów do których nale¿±. Je¿eli korzystasz z serwera
-	pocztowego na zdalnym ho¶cie bêdziesz musia³ ustawiæ opcje smtp_host, smtp_port,
-	smtp_username, smtp_password w sekcji [phpui].</P
-><P
->W tre¶ci wiadomo¶ci mo¿na u¿ywaæ zmiennych, w miejsce których zostan±
-	podstawione dane w³a¶ciwe dla ka¿dego z klientów:
-	<TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%customer</SAMP
-> - nazwisko/nazwa i imiê klienta</TD
-></TR
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%balance</SAMP
-> - kwota bilansu (ze znakiem)</TD
-></TR
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%cid</SAMP
-> - ID klienta</TD
-></TR
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%pin</SAMP
-> - PIN klienta</TD
-></TR
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%last_10_in_a_table</SAMP
-> - lista ostatnich 10 operacji na koncie klienta</TD
-></TR
-></TBODY
-></TABLE
->
-	</P
-><P
+>Dokumenty niefinansowe mo¿na znale¼æ bezpo¶rednio w zak³adce klienta oraz
+	w menu 'Dokumenty'. LMS umo¿liwia przechowywanie gotowych dokumentów w dowolnym formacie 
+	oraz tworzenie ich wg zdefiniowanych w³asnych szablonów. Zw³aszcza funkcjonalno¶æ
+	szablonów jest ciekawa, gdy¿ umo¿liwia tworzenie rozbudowanych wtyczek, których
+	dzia³anie nie musi ograniczaæ siê tylko do wygenerowania wydruku.</P
 ><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-DOCUMENTS-LIST"
+>3.8.1. Lista</A
+></H2
+><P
+>Lista zawiera podstawowe informacje o wszystkich dokumentach takie jak numer, tytu³,
+		typ, datê utworzenia, daty obowi±zywania oraz nazwê/nazwisko i imiê klienta. Prosty
+		filtr umo¿liwia przeszukiwanie wg typu dokumentu lub klienta.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-DOCUMENTS-NEW"
+>3.8.2. Nowy dokument</A
+></H2
+><P
+>Dokumenty mo¿na tworzyæ na podstawie szablonów utworzonych wed³ug
+		zasad opisanych w rozdziale <A
+HREF="install-documents.html#INSTALL-DOCUMENTS-OTHER"
+>Dokumenty pozosta³e</A
+>. Mog± to byæ
+		tak¿e ju¿ gotowe pliki, które zostan± zapisane na serwerze. Podczas tworzenia/zapisu 
+		dokumentu nale¿y nadaæ mu tytu³ oraz typ oraz wybraæ klienta. Mo¿na okre¶liæ daty
+		obowi±zywania oraz dodatkowy opis. Dokumenty mog± byæ numerowane wed³ug dowolnie
+		zdefiniowanych w systemie planów numeracyjnych.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-DOCUMENTS-DOCUMENTGEN"
+>3.8.3. Generator dokumentów</A
+></H2
+><P
+>Generator umo¿liwia utworzenie dokumentów wg wybranego szablonu dla wybranej
+		grupy klientów. Opcja 'Drukuj' umo¿liwia jednocze¶nie wydruk wygenerowanych dokumentów
+		pod warunkiem, ¿e s± to dokumenty HTML.
+		<DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -150,44 +147,16 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Serwer musi byæ odpowiednio skonfigurowany do u¿ycia PEAR::Mail.</P
+>Z uwagi na wydajno¶æ zaleca siê korzystanie ze zoptymalizowanych pod k±tem 
+		generatora szablonów oraz nie drukowania wiêkszej ilo¶ci dokumentów (mo¿e to prowadziæ do
+		zawieszenia przegl±darki).</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 >
-	<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Do automatycznego wysy³ania upomnieñ do klientów zalegaj±cych z op³atami mo¿na
-	wykorzystaæ skrypt lms-notify lub modu³ notify demona <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->lmsd</I
-></SPAN
->.</P
-></TD
-></TR
-></TABLE
+		</P
 ></DIV
-></P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -205,7 +174,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="menu-accounts.html"
+HREF="menu-finances.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -223,7 +192,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="menu-reload.html"
+HREF="menu-accounts.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -233,7 +202,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Konta</TD
+>Finanse</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -247,7 +216,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Prze³adowanie</TD
+>Konta</TD
 ></TR
 ></TABLE
 ></DIV

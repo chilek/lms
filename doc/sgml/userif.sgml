@@ -497,7 +497,7 @@ invoices.</para></note></para>
 		<sect2 id="menu-documents-new">
 		<title>New document</title>
 		<para>Documents can be created with templates made accordingly to
-		rules described in section <xref linkend="install-documents-other">. That can be also
+		rules described in section <xref linkend="install-documents-other">. Those can be also
 		prepared files, which will be uploaded to server. Each document 
 		should have defined title and type. Additionally you might define it's 
 		time span (time until when it's valid) and description. Documents can be

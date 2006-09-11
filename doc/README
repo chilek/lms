@@ -36,13 +36,14 @@ LMS Developers
         3.5. Net Devices
         3.6. IP Networks
         3.7. Finances
-        3.8. Accounts
-        3.9. Mailing
-        3.10. Reload
-        3.11. Stats
-        3.12. Helpdesk
-        3.13. Timetable
-        3.14. Configuration
+        3.8. Documents
+        3.9. Accounts
+        3.10. Mailing
+        3.11. Reload
+        3.12. Stats
+        3.13. Helpdesk
+        3.14. Timetable
+        3.15. Configuration
 
    4. Scripts
 
@@ -924,6 +925,7 @@ $engine = array(
     'content_type' => 'text/html',              // output file type
     'output' => 'default.html',                         // output file name
     'plugin' => 'plugin',                       // plugin file name (in 'name'directory)
+    'post-action' => 'post-action',             // action file executed after document addition (in transaction)
 )
 ?>
 
@@ -935,7 +937,9 @@ $engine = array(
 
    Member  plugin  specify  name of php file used for printing additional
    fields  on  document  creation  form.  Plugin  can also consist errors
-   handlers for those fields.
+   handlers  for  those  fields. After document creation will be executed
+   PHP  script  which  name  (without  extension)  should be specified in
+   post-action value.
      _________________________________________________________________
 
 Chapter 3. User Interface (LMS-UI)
@@ -1119,19 +1123,7 @@ Chapter 3. User Interface (LMS-UI)
    massively here.
      _________________________________________________________________
 
-3.3.7. Document Generator
-
-   Generator  provides  possibility  to  create  documents  according  to
-   selected  template  group  of  customers.  With option 'Print' you can
-   print generated documents but only if they are of html type.
-   Note
-
-   For performance reasons is recommended to use templates optimized for
-   generator and to not print many (hundreds) documents (possible browser
-   hang).
-     _________________________________________________________________
-
-3.3.8. Printing
+3.3.7. Printing
 
    Set of modules to provide printer-friendly version of your records:
      * Customer list with filter and sort abilities,
@@ -1466,7 +1458,45 @@ Chapter 3. User Interface (LMS-UI)
        balance limit (only for polish forms).
      _________________________________________________________________
 
-3.8. Accounts
+3.8. Documents
+
+   Non-financial  documents  can be found direct on customer's page or in
+   'Documents'  menu. In LMS you can store prepared files in many formats
+   or generate new ones with user-defined templates. This feature is most
+   interesting because makes possible to create expanded plugins. Plugins
+   can provide many actions not limited to just printout generation.
+     _________________________________________________________________
+
+3.8.1. List
+
+   List  consist basic infos about all documents i.e. number, title type,
+   creation  date,  obligation dates and customer name. Simple filter let
+   you documents searching by type and/or customer.
+     _________________________________________________________________
+
+3.8.2. New document
+
+   Documents  can  be  created  with  templates made accordingly to rules
+   described in section Other documents. That can be also prepared files,
+   which  will  be  uploaded to server. Each document should have defined
+   title  and  type.  Additionally  you might define it's time span (time
+   until when it's valid) and description. Documents can be numbered with
+   any numbering plan defined in system.
+     _________________________________________________________________
+
+3.8.3. Documents Generator
+
+   Generator  provides  possibility  to  create  documents  according  to
+   selected  template  group  of  customers.  With option 'Print' you can
+   print generated documents but only if they are of html type.
+   Note
+
+   For performance reasons is recommended to use templates optimized for
+   generator and to not print many (hundreds) documents (possible browser
+   hang).
+     _________________________________________________________________
+
+3.9. Accounts
 
    It's  now  possible  to  manage accounts from your services using LMS.
    This  functionality  is  provided  for advanced system administrators,
@@ -1484,7 +1514,7 @@ Chapter 3. User Interface (LMS-UI)
    You have also possibility to define domains and aliases.
      _________________________________________________________________
 
-3.8.1. Accounts
+3.9.1. Accounts
 
    Account  list contains basic information about your customer accounts.
    It's possible to sort it by any highlighted column title and to filter
@@ -1492,7 +1522,7 @@ Chapter 3. User Interface (LMS-UI)
    Administrator (LMS user) is also able to change account passwords.
      _________________________________________________________________
 
-3.8.2. New Account
+3.9.2. New Account
 
    To  create new account you have to provide its login, password, choose
    at  least  one  account type and assign customer to it. Domain name is
@@ -1504,7 +1534,7 @@ Chapter 3. User Interface (LMS-UI)
    from section [phpui] consists default prefix "/home/".
      _________________________________________________________________
 
-3.8.3. Aliases
+3.9.3. Aliases
 
    Every  account  (email  type  mainly) might have any number of aliases
    that  is needed. Mail server administrator might redirect mail locally
@@ -1516,7 +1546,7 @@ Chapter 3. User Interface (LMS-UI)
    and create new if needed. Add new aliases at the bottom of the list.
      _________________________________________________________________
 
-3.8.4. Domains
+3.9.4. Domains
 
    You're  able to see basic informations about domains on the list. It's
    possible  to  sort  this  list  by  any highlighted column name and to
@@ -1524,7 +1554,7 @@ Chapter 3. User Interface (LMS-UI)
    'Edit' icon. Add new domain at the bottom of the list.
      _________________________________________________________________
 
-3.8.5. Examples
+3.9.5. Examples
 
    The   following   section   contains   fragments   of  proftpd  daemon
    configuration  (version  1.2.10) relevant to process of authentication
@@ -1671,7 +1701,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
         AND aliases.login = '%u' AND domains.name = '%d'
      _________________________________________________________________
 
-3.9. Mailing
+3.10. Mailing
 
    Mailing  is  component  where you can spam groups of your customers if
    you  have  to  communicate  something  to  them. Obviously you need to
@@ -1698,7 +1728,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    daemon to send emails automatically whenever customer is in debt.
      _________________________________________________________________
 
-3.10. Reload
+3.11. Reload
 
    Click on 'Reload' and reload request or command should execute. If you
    did  configure  hosts,  you  will  see  list of hosts for selection to
@@ -1708,7 +1738,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    documentation.
      _________________________________________________________________
 
-3.11. Stats
+3.12. Stats
 
    This  is  interface  to view bandwidth consumption per host statistics
    enclosed  in  bar  graphs.  Statistics  contains  data  about sent and
@@ -1721,14 +1751,14 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    collect statistics.
      _________________________________________________________________
 
-3.11.1. Filter
+3.12.1. Filter
 
    Before you can see graphs you can define parameters to limit period or
    network  (if  you  have  many), top number of computers considered and
    sort output as you like (ie. by top download).
      _________________________________________________________________
 
-3.11.2. Compacting
+3.12.2. Compacting
 
    Depending  on chosen update frequency amount of database data used for
    statistics  might  grow  fast,  which  will  lead to extension of time
@@ -1748,14 +1778,14 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    Data approximation is irreversible.
      _________________________________________________________________
 
-3.11.3. Printing
+3.12.3. Printing
 
    Here  you  can  print  statistics of given customer in selected month.
    Printout  consist  upload/download  summary grouped by month days with
    average transfer speed.
      _________________________________________________________________
 
-3.12. Helpdesk
+3.13. Helpdesk
 
    Helpdesk  (or  Request Tracker) is customer request management system.
    It's possible to keep history of all requests and questions here, both
@@ -1781,7 +1811,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    incoming requests and outgoing comments by your mail server.
      _________________________________________________________________
 
-3.12.1. Queues List
+3.13.1. Queues List
 
    Basic  informations  and  request  statistics  are available on queues
    list.  Select  and  click  on  chosen  queue  to  display  all tickets
@@ -1790,7 +1820,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    also remove all belonging tickets from database.
      _________________________________________________________________
 
-3.12.2. New queue
+3.13.2. New queue
 
    Queue  (category)  contains  a name, optional description and optional
    email address, used in correspondence. 'Permissions' table defines LMS
@@ -1804,7 +1834,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    will get notifications by email.
      _________________________________________________________________
 
-3.12.3. Searching
+3.13.3. Searching
 
    Tickets  are  searchable  by  all given criteria (AND not OR). You can
    provide  subject,  owner,  queue, status and reporter for your search.
@@ -1812,7 +1842,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    be searched by name or email address.
      _________________________________________________________________
 
-3.12.4. New ticket
+3.13.4. New ticket
 
    For  each  new  ticket you need to provide subject, content, queue and
    reporter.  Unregistered  users  (not  in customers database) should be
@@ -1821,7 +1851,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    email.
      _________________________________________________________________
 
-3.13. Timetable
+3.14. Timetable
 
    Timetable  is  your  time scheduler, where each user may setup his own
    calendar. Events or tasks being put here may be also visible for other
@@ -1832,7 +1862,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    periodically to remind users about their pending tasks.
      _________________________________________________________________
 
-3.13.1. Timetable (Task list)
+3.14.1. Timetable (Task list)
 
    Main  timetable shows list of days starting from day which is selected
    from   calendar   popup.   A  number  of  days  displayed  depends  on
@@ -1840,7 +1870,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    From task list you might print a day plan or go to event edit screen.
      _________________________________________________________________
 
-3.13.2. New event
+3.14.2. New event
 
    You  can  add  new  task to the Timetable by selecting short title and
    start  date and time (or time span). All other fields are optional. By
@@ -1849,7 +1879,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    allows you to run your own, private calendar.
      _________________________________________________________________
 
-3.13.3. Search
+3.14.3. Search
 
    You  can  search  in  Timetable  by  the following criteria: time span
    (start  and  end date), client affected, client or fragment of text in
@@ -1857,11 +1887,11 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    events that match all entered criteria.
      _________________________________________________________________
 
-3.14. Configuration
+3.15. Configuration
 
-3.14.1. User Interface
+3.15.1. User Interface
 
-3.14.1.1. Basics
+3.15.1.1. Basics
 
    Since  LMS  1.5.3  you're  able  to  configure  all UI-related options
    directly  via  LMS-UI,  instead  of editing lms.ini. Those options are
@@ -1889,7 +1919,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    When an option is off, default value will be used (if it posses any).
      _________________________________________________________________
 
-3.14.1.2. Configuration Options List
+3.15.1.2. Configuration Options List
 
    Here  we've  got  the  list of UI configuration options. Those options
    should  be placed in [phpui] section. The rest of options is described
@@ -2082,7 +2112,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        Example: default_taxrate = 22.0
      _________________________________________________________________
 
-3.14.2. Tax Rates
+3.15.2. Tax Rates
 
    Before you have to begin with financial system you will need to define
    tax  rates  which  you will use. On the list are place all rates data.
@@ -2100,7 +2130,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    default_taxrate option in section [phpui].
      _________________________________________________________________
 
-3.14.3. Number plans
+3.15.3. Number plans
 
    This  feature  allows  you  to  add  unique  numbering plan (numbering
    sequence)  for  each  type  of  documents  created  in  LMS. It's also
@@ -2144,7 +2174,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    default number as of '%N/LMS/%Y' with annual time span.
      _________________________________________________________________
 
-3.14.4. Hosts
+3.15.4. Hosts
 
    This  section  defines host names of those machines (routers, servers)
    that  read  its  configuration  from LMS database and where scripts or
@@ -2155,7 +2185,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    of them (assuming they're all u*ix hosts).
      _________________________________________________________________
 
-3.14.5. Daemon
+3.15.5. Daemon
 
    When you create hosts list, you will be able to configure daemon lmsd.
    Daemon configuration is described in appropriate chapter.

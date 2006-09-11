@@ -175,36 +175,41 @@ HREF="#MENU-FINANCES"
 ></DT
 ><DT
 >3.8. <A
+HREF="#MENU-DOCUMENTS"
+>Documents</A
+></DT
+><DT
+>3.9. <A
 HREF="#MENU-ACCOUNTS"
 >Accounts</A
 ></DT
 ><DT
->3.9. <A
+>3.10. <A
 HREF="#MENU-MAILING"
 >Mailing</A
 ></DT
 ><DT
->3.10. <A
+>3.11. <A
 HREF="#MENU-RELOAD"
 >Reload</A
 ></DT
 ><DT
->3.11. <A
+>3.12. <A
 HREF="#MENU-STATS"
 >Stats</A
 ></DT
 ><DT
->3.12. <A
+>3.13. <A
 HREF="#MENU-HELPDESK"
 >Helpdesk</A
 ></DT
 ><DT
->3.13. <A
+>3.14. <A
 HREF="#MENU-TIMETABLE"
 >Timetable</A
 ></DT
 ><DT
->3.14. <A
+>3.15. <A
 HREF="#MENU-CONFIGURATION"
 >Configuration</A
 ></DT
@@ -2977,6 +2982,7 @@ $engine = array(
     'content_type' =&#62; 'text/html', 		// output file type
     'output' =&#62; 'default.html', 			// output file name
     'plugin' =&#62; 'plugin',			// plugin file name (in 'name' directory)
+    'post-action' =&#62; 'post-action',		// action file executed after document addition (in transaction)
 )
 ?&gt;</PRE
 >
@@ -3001,7 +3007,12 @@ CLASS="FILENAME"
 >plugin</TT
 > specify name of php file used
 		for printing additional fields on document creation form.
-		Plugin can also consist errors handlers for those fields.</P
+		Plugin can also consist errors handlers for those fields.
+		After document creation will be executed PHP script which name (without extension) 
+		should be specified in <TT
+CLASS="FILENAME"
+>post-action</TT
+> value.</P
 ></DIV
 ></DIV
 ></DIV
@@ -3362,47 +3373,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-CUSTOMERS-DOCUMENTGEN"
->3.3.7. Document Generator</A
-></H3
-><P
->Generator provides possibility to create documents according to selected template
-	    group of customers. With option 'Print' you can print generated documents but only
-	    if they are of html type.
-	    <DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Note"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->For performance reasons is recommended to use templates optimized for
-	    generator and to not print many (hundreds) documents (possible browser hang).</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
 NAME="MENU-CUSTOMERS-PRINTS"
->3.3.8. Printing</A
+>3.3.7. Printing</A
 ></H3
 ><P
 >Set of modules to provide printer-friendly version of your
@@ -4190,8 +4162,95 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="MENU-DOCUMENTS"
+>3.8. Documents</A
+></H2
+><P
+>Non-financial documents can be found direct on customer's page
+	or in 'Documents' menu. In LMS you can store prepared files in many formats 
+	or generate new ones with user-defined templates. This feature is most interesting
+	because makes possible to create expanded plugins. Plugins can provide
+	many actions not limited to just printout generation.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-DOCUMENTS-LIST"
+>3.8.1. List</A
+></H3
+><P
+>List consist basic infos about all documents i.e. number, title
+		type, creation date, obligation dates and customer name. Simple filter
+		let you documents searching by type and/or customer.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-DOCUMENTS-NEW"
+>3.8.2. New document</A
+></H3
+><P
+>Documents can be created with templates made accordingly to
+		rules described in section <A
+HREF="#INSTALL-DOCUMENTS-OTHER"
+>Other documents</A
+>. That can be also
+		prepared files, which will be uploaded to server. Each document 
+		should have defined title and type. Additionally you might define it's 
+		time span (time until when it's valid) and description. Documents can be
+		numbered with any numbering plan defined in system.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-CUSTOMERS-DOCUMENTGEN"
+>3.8.3. Documents Generator</A
+></H3
+><P
+>Generator provides possibility to create documents according to selected template
+		group of customers. With option 'Print' you can print generated documents but only
+		if they are of html type.
+		<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>For performance reasons is recommended to use templates optimized for
+		generator and to not print many (hundreds) documents (possible browser
+		hang).</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="MENU-ACCOUNTS"
->3.8. Accounts</A
+>3.9. Accounts</A
 ></H2
 ><P
 >It's now possible to manage accounts from your services using LMS.
@@ -4214,7 +4273,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ACCOUNTS-ACCOUNTS"
->3.8.1. Accounts</A
+>3.9.1. Accounts</A
 ></H3
 ><P
 >Account list contains basic information about your customer
@@ -4228,7 +4287,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ACCOUNTS-NEW"
->3.8.2. New Account</A
+>3.9.2. New Account</A
 ></H3
 ><P
 >To create new account you have to provide its login, password,
@@ -4256,7 +4315,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ACCOUNTS-ALIASES"
->3.8.3. Aliases</A
+>3.9.3. Aliases</A
 ></H3
 ><P
 >Every account (email type mainly) might have any number of
@@ -4274,7 +4333,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ACCOUNTS-DOMAINS"
->3.8.4. Domains</A
+>3.9.4. Domains</A
 ></H3
 ><P
 >You're able to see basic informations about domains on the
@@ -4289,7 +4348,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ACCOUNTS-EXAMPLES"
->3.8.5. Examples</A
+>3.9.5. Examples</A
 ></H3
 ><P
 >The following section contains fragments of proftpd daemon
@@ -4462,7 +4521,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-MAILING"
->3.9. Mailing</A
+>3.10. Mailing</A
 ></H2
 ><P
 >Mailing is component where you can spam groups of your customers
@@ -4583,7 +4642,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-RELOAD"
->3.10. Reload</A
+>3.11. Reload</A
 ></H2
 ><P
 >Click on 'Reload' and reload request or command should execute.
@@ -4612,7 +4671,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-STATS"
->3.11. Stats</A
+>3.12. Stats</A
 ></H2
 ><P
 >This is interface to view bandwidth consumption per host
@@ -4659,7 +4718,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-STATS-FILTER"
->3.11.1. Filter</A
+>3.12.1. Filter</A
 ></H3
 ><P
 >Before you can see graphs you can define parameters to limit
@@ -4672,7 +4731,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-STATS-COMPACT"
->3.11.2. Compacting</A
+>3.12.2. Compacting</A
 ></H3
 ><P
 >Depending on chosen update frequency amount of database data
@@ -4750,7 +4809,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-STATS-PRINT"
->3.11.3. Printing</A
+>3.12.3. Printing</A
 ></H3
 ><P
 >Here you can print statistics of given customer in selected
@@ -4764,7 +4823,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-HELPDESK"
->3.12. Helpdesk</A
+>3.13. Helpdesk</A
 ></H2
 ><P
 >Helpdesk (or Request Tracker) is customer request management
@@ -4795,7 +4854,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-HELPDESK-LIST"
->3.12.1. Queues List</A
+>3.13.1. Queues List</A
 ></H3
 ><P
 >Basic informations and request statistics are available on
@@ -4810,7 +4869,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-HELPDESK-NEWQUEUE"
->3.12.2. New queue</A
+>3.13.2. New queue</A
 ></H3
 ><P
 >Queue (category) contains a name, optional description and
@@ -4829,7 +4888,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-HELPDESK-SEARCH"
->3.12.3. Searching</A
+>3.13.3. Searching</A
 ></H3
 ><P
 >Tickets are searchable by all given criteria (AND not OR). You
@@ -4843,7 +4902,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-HELPDESK-NEWTICKET"
->3.12.4. New ticket</A
+>3.13.4. New ticket</A
 ></H3
 ><P
 >For each new ticket you need to provide subject, content,
@@ -4858,7 +4917,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-TIMETABLE"
->3.13. Timetable</A
+>3.14. Timetable</A
 ></H2
 ><P
 >Timetable is your time scheduler, where each user may setup his own 
@@ -4878,7 +4937,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMETABLE-LIST"
->3.13.1. Timetable (Task list)</A
+>3.14.1. Timetable (Task list)</A
 ></H3
 ><P
 >Main timetable shows list of days starting from day which is 
@@ -4896,7 +4955,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMETABLE-NEW"
->3.13.2. New event</A
+>3.14.2. New event</A
 ></H3
 ><P
 >You can add new task to the Timetable by selecting short title
@@ -4911,7 +4970,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMETABLE-SEARCH"
->3.13.3. Search</A
+>3.14.3. Search</A
 ></H3
 ><P
 >You can search in Timetable by the following criteria: time span
@@ -4926,7 +4985,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-CONFIGURATION"
->3.14. Configuration</A
+>3.15. Configuration</A
 ></H2
 ><DIV
 CLASS="SECT2"
@@ -4934,7 +4993,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-UI"
->3.14.1. User Interface</A
+>3.15.1. User Interface</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -4942,7 +5001,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CONFIG-BASIC"
->3.14.1.1. Basics</A
+>3.15.1.1. Basics</A
 ></H4
 ><P
 >Since LMS 1.5.3 you're able to configure all UI-related
@@ -5035,7 +5094,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CONFIG-OPTIONS"
->3.14.1.2. Configuration Options List</A
+>3.15.1.2. Configuration Options List</A
 ></H4
 ><P
 >Here we've got the list of UI configuration options. Those options
@@ -5568,7 +5627,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-TAXES"
->3.14.2. Tax Rates</A
+>3.15.2. Tax Rates</A
 ></H3
 ><P
 >Before you have to begin with financial system you will need
@@ -5602,7 +5661,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-NUMBERPLANS"
->3.14.3. Number plans</A
+>3.15.3. Number plans</A
 ></H3
 ><P
 >This feature allows you to add unique numbering plan
@@ -5704,7 +5763,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-HOSTS"
->3.14.4. Hosts</A
+>3.15.4. Hosts</A
 ></H3
 ><P
 >This section defines host names of those machines 
@@ -5732,7 +5791,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-DAEMON"
->3.14.5. Daemon</A
+>3.15.5. Daemon</A
 ></H3
 ><P
 >When you create hosts list, you will be able to configure

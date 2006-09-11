@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Mailing</TITLE
+>Documents</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="User Interface (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
+TITLE="Finances"
+HREF="menu-finances.html"><LINK
+REL="NEXT"
 TITLE="Accounts"
 HREF="menu-accounts.html"><LINK
-REL="NEXT"
-TITLE="Reload"
-HREF="menu-reload.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="menu-accounts.html"
+HREF="menu-finances.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="menu-reload.html"
+HREF="menu-accounts.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,89 +75,60 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="MENU-MAILING"
->3.10. Mailing</A
+NAME="MENU-DOCUMENTS"
+>3.8. Documents</A
 ></H1
 ><P
->Mailing is component where you can spam groups of your customers
-	if you have to communicate something to them. Obviously you need to specify
-	sender name and address, write your message in text box and select appropriate
-	group of recipients. Your attendance can be grouped by status, network or customer
-	groups. If you use mail server on remote host, you will need to set options
-	smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</P
-><P
->In message body you can use variables, which will be replaced by
-	customer data:
-	<TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%customer</SAMP
-> - name/lastname and forename</TD
-></TR
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%balance</SAMP
-> - balance value (with sign)</TD
-></TR
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%cid</SAMP
-> - customer ID</TD
-></TR
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%pin</SAMP
-> - customer PIN</TD
-></TR
-><TR
-><TD
-><SAMP
-CLASS="PROMPT"
->%last_10_in_a_table</SAMP
-> - last 10 operations on customer account</TD
-></TR
-></TBODY
-></TABLE
->
-	</P
-><P
+>Non-financial documents can be found direct on customer's page
+	or in 'Documents' menu. In LMS you can store prepared files in many formats 
+	or generate new ones with user-defined templates. This feature is most interesting
+	because makes possible to create expanded plugins. Plugins can provide
+	many actions not limited to just printout generation.</P
 ><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Note"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-DOCUMENTS-LIST"
+>3.8.1. List</A
+></H2
 ><P
->Your server has to support PEAR::Mail for this to
-work.</P
-></TD
-></TR
-></TABLE
+>List consist basic infos about all documents i.e. number, title
+		type, creation date, obligation dates and customer name. Simple filter
+		let you documents searching by type and/or customer.</P
 ></DIV
->
-	<DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-DOCUMENTS-NEW"
+>3.8.2. New document</A
+></H2
+><P
+>Documents can be created with templates made accordingly to
+		rules described in section <A
+HREF="install-documents.html#INSTALL-DOCUMENTS-OTHER"
+>Other documents</A
+>. That can be also
+		prepared files, which will be uploaded to server. Each document 
+		should have defined title and type. Additionally you might define it's 
+		time span (time until when it's valid) and description. Documents can be
+		numbered with any numbering plan defined in system.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-CUSTOMERS-DOCUMENTGEN"
+>3.8.3. Documents Generator</A
+></H2
+><P
+>Generator provides possibility to create documents according to selected template
+		group of customers. With option 'Print' you can print generated documents but only
+		if they are of html type.
+		<DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -176,20 +147,15 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->It's best to use lms-notify Perl script or notify
-module of <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->lmsd</I
-></SPAN
-> daemon to send emails
-automatically whenever customer is in debt.</P
+>For performance reasons is recommended to use templates optimized for
+		generator and to not print many (hundreds) documents (possible browser
+		hang).</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -207,7 +173,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="menu-accounts.html"
+HREF="menu-finances.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -225,7 +191,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="menu-reload.html"
+HREF="menu-accounts.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -235,7 +201,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Accounts</TD
+>Finances</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -249,7 +215,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Reload</TD
+>Accounts</TD
 ></TR
 ></TABLE
 ></DIV
