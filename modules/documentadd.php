@@ -101,7 +101,7 @@ if(isset($_POST['document']))
 	{
 		$date = explode('/',$document['todate']);
 		if(checkdate($date[1],$date[2],$date[0]))
-			$document['todate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
+			$document['todate'] = mktime(23,59,59,$date[1],$date[2],$date[0]);
 		else
 			$error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
