@@ -167,6 +167,7 @@ if(!$networks_list)
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$networks_list = "$networks_list $row->{'name'}";
 	}
+	$dbq->finish();
 }
 
 my @networks = split ' ', $networks_list;
@@ -180,6 +181,7 @@ if(!$customergroups_list)
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$customergroups_list = "$customergroups_list $row->{'name'}";
 	}
+	$dbq->finish();
 }
 
 my %customergrouplist;
@@ -188,6 +190,8 @@ $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) {
 	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
+
+$dbq->finish();
 
 my @customergroups = split ' ',$customergroups_list;
 
@@ -201,6 +205,8 @@ while (my $row = $dbq->fetchrow_hashref())
         $namelist{u32todotquad($row->{'ipaddr'})} = lc($row->{'name'});
         $ownerlist{u32todotquad($row->{'ipaddr'})} = $row->{'ownerid'};
 }
+
+$dbq->finish();
 
 foreach my $key (@networks)
 {
@@ -226,6 +232,8 @@ foreach my $key (@networks)
                                                 $customergroupscount++;
                                         }
 
+					$sdbq->finish();
+
                                 }
                                 if($customergroupscount || !$inicustomergroups)
                                 {
@@ -234,6 +242,7 @@ foreach my $key (@networks)
 			}
 		}
 	}
+	$dbq->finish();
 }
 
 $dbase->disconnect();

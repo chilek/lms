@@ -185,6 +185,8 @@ while (my $row = $dbq->fetchrow_hashref()) {
 	$allnetworks = "$allnetworks $row->{'name'}";
 }
 
+$dbq->finsh();
+
 if(!$networks_list)
 {
 	$networks_list = $allnetworks;
@@ -201,6 +203,7 @@ if(!$customergroups_list)
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$customergroups_list = "$customergroups_list $row->{'name'}";
 	}
+	$dbq->finish();
 }
 
 my @customergroups = split ' ',$customergroups_list;
@@ -218,6 +221,8 @@ while (my $row = $dbq->fetchrow_hashref())
 	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
+$dbq->finish();
+
 $dbq = $dbase->prepare("SELECT ipaddr, mac, access, ownerid FROM nodes");
 $dbq->execute();
 my %maclist;
@@ -230,6 +235,8 @@ while (my $row = $dbq->fetchrow_hashref())
 	$accesslist{u32todotquad($row->{'ipaddr'})} = $row->{'access'};
 	$ownerlist{u32todotquad($row->{'ipaddr'})} = $row->{'ownerid'};
 }
+
+$dbq->finish();
 
 foreach my $key (@networks)
 {
@@ -247,14 +254,14 @@ foreach my $key (@networks)
 				my $customergroupscount = 0;
 				foreach my $key2 (@customergroups)
 				{
-					$dbq = $dbase->prepare("SELECT count(customerid) AS total FROM customerassignments WHERE customerid=".$ownerlist{$ipaddr}." AND customergroupid=".$customergrouplist{$key2});
-					$dbq->execute();
-					my $srow = $dbq->fetchrow_hashref();
+					$sdbq = $dbase->prepare("SELECT count(customerid) AS total FROM customerassignments WHERE customerid=".$ownerlist{$ipaddr}." AND customergroupid=".$customergrouplist{$key2});
+					$sdbq->execute();
+					my $srow = $sdbq->fetchrow_hashref();
 					if ($srow->{'total'} eq 1)
 					{
 						$customergroupscount++;
 					}
-
+					$sdbq->finish();
 				}
 				if($customergroupscount || !$inicustomergroups)
 				{
@@ -266,6 +273,7 @@ foreach my $key (@networks)
 			}
 		}                                                                                                             
 	}
+	$dbq->finish();
 }
 
 $dbase->disconnect();
