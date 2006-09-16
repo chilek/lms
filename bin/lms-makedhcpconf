@@ -343,12 +343,13 @@ while (my $row = $dbq->fetchrow_hashref())
 		}
 	}
 	print DHCPDCONF "\t}\n";
+	$dbq2->finish();
 }
 if ($last_iface)
 {
 	print DHCPDCONF "}\n";
 }
-
+$dbq->finish();
 close(DHCPDCONF);
 $dbase->disconnect();
 chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";
