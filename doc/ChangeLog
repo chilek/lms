@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - setting document's 'To' date to the end of the day (alec)
+
 version 1.8.6 Zarah (2006-09-02):
 
   - lmsd/parser: fixed T-Script's problem with big numbers (alec)
