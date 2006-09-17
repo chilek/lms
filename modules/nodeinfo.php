@@ -76,6 +76,7 @@ $documents = $LMS->GetDocuments($ownerid, 10);
 $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 $taxeslist = $LMS->GetTaxes();
+$customernodes = $LMS->GetCustomerNodes($ownerid);
 
 $nodestats['hour'] = NodeStats($nodeid, 60*60);
 $nodestats['day'] = NodeStats($nodeid, 60*60*24);
@@ -100,6 +101,7 @@ $SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->assign('nodestats',$nodestats);
 $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('customergroups',$customergroups);
+$SMARTY->assign('customernodes',$customernodes);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
 $SMARTY->assign('documents', $documents);
 $SMARTY->assign('taxeslist', $taxeslist);

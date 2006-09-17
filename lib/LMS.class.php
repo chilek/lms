@@ -1999,21 +1999,25 @@ class LMS
 
 	function ScanNodes()
 	{
+		$result = array();
 		$networks = $this->GetNetworks();
 		if($networks)
 			foreach($networks as $idx => $network)
 			{
-				$out = split("\n",execute_program('nbtscan','-q -s: '.$network['address'].'/'.$network['prefix']));
-				foreach($out as $line)
+				if($res = execute_program('nbtscan','-q -s: '.$network['address'].'/'.$network['prefix']))
 				{
-					list($ipaddr,$name,$null,$login,$mac)=split(':',$line);
-					$row['ipaddr'] = trim($ipaddr);
-					if($row['ipaddr'])
+					$out = split("\n", $res);
+					foreach($out as $line)
 					{
-						$row['name'] = trim($name);
-						$row['mac'] = str_replace('-',':',trim($mac));
-						if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
-							$result[] = $row;
+						list($ipaddr,$name,$null,$login,$mac) = split(':', $line);
+						$row['ipaddr'] = trim($ipaddr);
+						if($row['ipaddr'])
+						{
+							$row['name'] = trim($name);
+							$row['mac'] = str_replace('-', ':', trim($mac));
+							if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
+								$result[] = $row;
+						}
 					}
 				}
 			}

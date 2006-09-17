@@ -201,7 +201,7 @@ DROP SEQUENCE "taxes_id_seq";
 CREATE SEQUENCE "taxes_id_seq";
 DROP TABLE taxes;
 CREATE TABLE taxes (
-    id	integer DEFAULT nextval('taxes_id_seq'::text) NOT NULL,
+    id integer DEFAULT nextval('taxes_id_seq'::text) NOT NULL,
     value numeric(4,2) DEFAULT 0 NOT NULL,
     taxed smallint DEFAULT 0 NOT NULL,
     label varchar(16) DEFAULT '' NOT NULL,
@@ -588,12 +588,12 @@ DROP SEQUENCE uiconfig_id_seq;
 CREATE SEQUENCE uiconfig_id_seq;
 DROP TABLE uiconfig;
 CREATE TABLE uiconfig (
-    id integer DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
-    section varchar(64) NOT NULL DEFAULT '',
-    var varchar(64) NOT NULL DEFAULT '',
-    value text NOT NULL DEFAULT '',
-    description text NOT NULL DEFAULT '',
-    disabled smallint NOT NULL DEFAULT 0,
+    id 		integer 	DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
+    section 	varchar(64) 	NOT NULL DEFAULT '',
+    var 	varchar(64) 	NOT NULL DEFAULT '',
+    value 	text 		NOT NULL DEFAULT '',
+    description text 		NOT NULL DEFAULT '',
+    disabled 	smallint 	NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE (section, var)
 );
@@ -606,17 +606,17 @@ DROP SEQUENCE events_id_seq;
 CREATE SEQUENCE events_id_seq;
 DROP TABLE events;
 CREATE TABLE events (
-	id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
-	title varchar(255) DEFAULT '' NOT NULL,
-	description text DEFAULT '' NOT NULL,
-	note text DEFAULT '' NOT NULL,
-	date integer DEFAULT 0 NOT NULL,
-	begintime smallint DEFAULT 0 NOT NULL,
-	endtime smallint DEFAULT 0 NOT NULL,
-	userid integer DEFAULT 0 NOT NULL,
-	customerid integer DEFAULT 0 NOT NULL,
-	private smallint DEFAULT 0 NOT NULL,
-	closed smallint DEFAULT 0 NOT NULL,
+	id 		integer 	DEFAULT nextval('rtqueues_id_seq'::text) NOT NULL,
+	title 		varchar(255) 	DEFAULT '' NOT NULL,
+	description 	text 		DEFAULT '' NOT NULL,
+	note 		text 		DEFAULT '' NOT NULL,
+	date 		integer 	DEFAULT 0 NOT NULL,
+	begintime 	smallint 	DEFAULT 0 NOT NULL,
+	endtime 	smallint 	DEFAULT 0 NOT NULL,
+	userid 		integer 	DEFAULT 0 NOT NULL,
+	customerid 	integer 	DEFAULT 0 NOT NULL,
+	private 	smallint 	DEFAULT 0 NOT NULL,
+	closed 		smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
@@ -627,8 +627,8 @@ CREATE INDEX events_date_idx ON events(date);
 
 DROP TABLE eventassignments;
 CREATE TABLE eventassignments (
-	eventid integer DEFAULT 0 NOT NULL,
-	userid integer DEFAULT 0 NOT NULL,
+	eventid 	integer 	DEFAULT 0 NOT NULL,
+	userid 		integer 	DEFAULT 0 NOT NULL,
 	UNIQUE (eventid, userid)
 );
 
@@ -638,12 +638,12 @@ CREATE TABLE eventassignments (
 
 DROP TABLE sessions;
 CREATE TABLE sessions (
-    id varchar(50) NOT NULL default '', 
-    ctime integer NOT NULL default 0, 
-    mtime integer NOT NULL default 0, 
-    atime integer NOT NULL default 0, 
-    vdata text NOT NULL, 
-    content text NOT NULL, 
+    id 		varchar(50) 	NOT NULL DEFAULT '', 
+    ctime 	integer 	NOT NULL DEFAULT 0, 
+    mtime 	integer 	NOT NULL DEFAULT 0, 
+    atime 	integer 	NOT NULL DEFAULT 0, 
+    vdata 	text 		NOT NULL, 
+    content 	text 		NOT NULL, 
     PRIMARY KEY (id)
 );
 
@@ -655,14 +655,14 @@ DROP SEQUENCE cashimport_id_seq;
 CREATE SEQUENCE cashimport_id_seq;
 DROP TABLE cashimport;
 CREATE TABLE cashimport (
-    id integer DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
-    date integer DEFAULT 0 NOT NULL,
-    value numeric(9,2) DEFAULT 0 NOT NULL,
-    customer varchar(150) DEFAULT '' NOT NULL,
-    description varchar(150) DEFAULT '' NOT NULL,
-    customerid integer DEFAULT 0 NOT NULL,
-    hash varchar(50) DEFAULT '' NOT NULL,
-    closed smallint DEFAULT 0 NOT NULL,
+    id integer 			DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
+    date integer 		DEFAULT 0 NOT NULL,
+    value numeric(9,2) 		DEFAULT 0 NOT NULL,
+    customer varchar(150) 	DEFAULT '' NOT NULL,
+    description varchar(150) 	DEFAULT '' NOT NULL,
+    customerid integer 		DEFAULT 0 NOT NULL,
+    hash varchar(50) 		DEFAULT '' NOT NULL,
+    closed smallint 		DEFAULT 0 NOT NULL,
     PRIMARY KEY (id)
 );
 CREATE INDEX cashimport_hash_idx ON cashimport (hash);
@@ -711,12 +711,12 @@ DROP SEQUENCE daemonconfig_id_seq;
 CREATE SEQUENCE daemonconfig_id_seq;
 DROP TABLE daemonconfig;
 CREATE TABLE daemonconfig (
-    id integer DEFAULT nextval('daemonconfig_id_seq'::text) NOT NULL,
-    instanceid integer 		DEFAULT 0 NOT NULL,
-    var varchar(64) 		DEFAULT '' NOT NULL,
-    value text 			DEFAULT '' NOT NULL,
+    id 		integer 	DEFAULT nextval('daemonconfig_id_seq'::text) NOT NULL,
+    instanceid 	integer 	DEFAULT 0 NOT NULL,
+    var 	varchar(64) 	DEFAULT '' NOT NULL,
+    value 	text 		DEFAULT '' NOT NULL,
     description text 		DEFAULT '' NOT NULL,
-    disabled smallint 		DEFAULT 0 NOT NULL,
+    disabled 	smallint 	DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE(instanceid, var)
 );
@@ -729,10 +729,10 @@ DROP SEQUENCE cashrights_id_seq;
 CREATE SEQUENCE cashrights_id_seq;
 DROP TABLE cashrights;
 CREATE TABLE cashrights (
-    id integer 		DEFAULT nextval('cashrights_id_seq'::text) NOT NULL,
-    userid integer 	DEFAULT 0 NOT NULL,
-    regid integer 	DEFAULT 0 NOT NULL,
-    rights integer 	DEFAULT 0 NOT NULL,
+    id 		integer 	DEFAULT nextval('cashrights_id_seq'::text) NOT NULL,
+    userid 	integer 	DEFAULT 0 NOT NULL,
+    regid 	integer 	DEFAULT 0 NOT NULL,
+    rights 	integer 	DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (userid, regid)
 );
@@ -745,12 +745,12 @@ DROP SEQUENCE cashregs_id_seq;
 CREATE SEQUENCE cashregs_id_seq;
 DROP TABLE cashregs;
 CREATE TABLE cashregs (
-    id integer 			DEFAULT nextval('cashregs_id_seq'::text) NOT NULL,
-    name varchar(255) 		DEFAULT '' NOT NULL,
-    description text 		DEFAULT '' NOT NULL,
-    in_numberplanid integer 	DEFAULT 0 NOT NULL,
-    out_numberplanid integer 	DEFAULT 0 NOT NULL,
-    disabled smallint		DEFAULT 0 NOT NULL,
+    id 			integer 	DEFAULT nextval('cashregs_id_seq'::text) NOT NULL,
+    name 		varchar(255) 	DEFAULT '' NOT NULL,
+    description 	text 		DEFAULT '' NOT NULL,
+    in_numberplanid 	integer 	DEFAULT 0 NOT NULL,
+    out_numberplanid 	integer 	DEFAULT 0 NOT NULL,
+    disabled 		smallint	DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (name)
 );
@@ -761,8 +761,8 @@ CREATE TABLE cashregs (
 
 DROP TABLE dbinfo;
 CREATE TABLE dbinfo (
-    keytype varchar(255) DEFAULT '' NOT NULL,
-    keyvalue varchar(255) DEFAULT '' NOT NULL,
+    keytype 	varchar(255) 	DEFAULT '' NOT NULL,
+    keyvalue 	varchar(255) 	DEFAULT '' NOT NULL,
     PRIMARY KEY (keytype)
 );
 

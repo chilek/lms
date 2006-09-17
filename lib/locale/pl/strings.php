@@ -243,7 +243,7 @@ $_LANG['Compacting of database removes non-essential data from database and aver
 $_LANG['Compacting parameters'] = 'Parametry kompaktowania';
 $_LANG['compressed'] = 'skompresowaną';
 $_LANG['Statistics for computer $0 has been removed<BR>'] = 'Dane statystyczne komputera $0 zostały usunięte<BR>';
-$_LANG['Computers found:'] = 'Znalezionych komputerów:';
+$_LANG['Computers found:'] = 'Znalezione komputery:';
 $_LANG['Configuration'] = 'Konfiguracja';
 $_LANG['Configuration of Instance: $0/$1'] = 'Konfiguracja instancji: $0/$1';
 $_LANG['configuration reload'] = 'przeładowanie konfiguracji';
@@ -925,7 +925,7 @@ $_LANG['No.'] = 'Lp.';
 $_LANG['No. $0'] = 'Nr $0';
 $_LANG['no access'] = 'brak dostępu';
 $_LANG['No cash operations to import.'] = 'Brak operacji kasowych do zaimportowania.';
-$_LANG['No computers were found, either exists in the database or nbtscan binary not found.'] = 'Nie znaleziono żadnych komputerów bądź wszystkie komputery są już w bazie danych lub program nbtscan nie jest dostępny w systemie';
+$_LANG['No computers were found, either exists in the database or nbtscan binary not found.'] = 'Nie znaleziono żadnych komputerów bądź wszystkie komputery są już w bazie danych lub program nbtscan nie jest dostępny w systemie.';
 $_LANG['No configuration options in database. Click <A href="?m=configload">here</A> to import them from lms.ini.'] = 'Brak opcji konfiguracyjnych w bazie danych. Kliknij <A href="?m=configload">tutaj</A> aby je zaimportować do bazy.';
 $_LANG['Node $0 was deleted'] = 'Komputer $0 został usunięty';
 $_LANG['Node ID:'] = 'Identyfikator komputera:';

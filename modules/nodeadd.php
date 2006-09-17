@@ -161,6 +161,7 @@ if($nodedata['ownerid'])
 	$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($nodedata['ownerid']));
 	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($nodedata['ownerid']));
 	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($nodedata['ownerid']));
+	$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($nodedata['ownerid']));
 	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($nodedata['ownerid']));
 	$SMARTY->assign('documents', $LMS->GetDocuments($nodedata['ownerid'], 10));
 	$SMARTY->assign('taxeslist', $LMS->GetTaxes());

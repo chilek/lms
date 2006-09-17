@@ -1,74 +1,79 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
+	<TR CLASS="DARK"{if $customerpanel} onClick="showOrHide('customerpanel');"{/if}>
+		<TD WIDTH="1%" CLASS="FALL" COLSPAN="3">
 			<IMG SRC="img/customer.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+			{if $customerpanel}<B>{t}Owner:{/t}</B>{/if}
 			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
 		</TD>
 	</TR>
+        <TR class="LIGHT"{if $customerpanel} id="customerpanel" style="display:none;"{/if}>
+	        <TD WIDTH="100%" COLSPAN="3"{if $customerpanel} CLASS="fall" ALIGN="RIGHT"{else}CLASS="flr"{/if}>
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
 			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
 			{if $customerinfo.status eq "1"}<IMG src="img/unk.gif" alt="">{/if}			
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{if $customerinfo.status eq "3"}<B>{t}connected<!singular>{/t}</B>{/if}
 			{if $customerinfo.status eq "2"}<B>{t}waiting{/t}</B>{/if}
 			{if $customerinfo.status eq "1"}<B>{t}interested<!singular>{/t}</B>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.phone1}{if $customerinfo.phone2 neq ""}<BR>
 			{$customerinfo.phone2}{/if}{if $customerinfo.phone3 neq ""}<BR>
 			{$customerinfo.phone3}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.address}<BR>
 			{$customerinfo.zip} {$customerinfo.city}
 		</TD>
 	</TR>
 {if $customerinfo.serviceaddr neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.serviceaddr|replace:"\n":"<BR>"}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.email neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.im neq "" && $customerinfo.im neq 0}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			{if $_language=="pl"}
 			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$customerinfo.im}&styl=1" ALT="">
 			{else}
 			<img src="img/gg.gif" alt="">
 			{/if}
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{if $_language=="pl"}
 			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
 			{else}
@@ -79,111 +84,90 @@
 {/if}
 {if $customerinfo.ten neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
+		<TD WIDTH="1%" ALIGN="CENTER">
 			<B>{t}TEN:{/t}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.ten}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.icn neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.icn}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ssn neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
+		<TD WIDTH="1%" ALIGN="CENTER">
 			<B>{t}SSN:{/t}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.ssn}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.regon neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
+		<TD WIDTH="1%" ALIGN="CENTER">
 			<B>{t}REGON:{/t}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.regon}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.rbe neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/report.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.rbe}
 		</TD>
 	</TR>
 {/if}
-
 {if $customerinfo.pin neq 0}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			{t}PIN:{/t}
+			<B>{t}PIN:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 			{$customerinfo.pin}
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/money.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{t}Balance:{/t}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
-		</TD>
-	</TR>
 	{if $_config.finances.iban}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/value.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			{t}Bank account:{/t}
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 			{$customerinfo.bankaccount}
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/users.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{t}Created:{/t}<BR>
-			{t}Modified:{/t}</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			{$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
-			{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
-		</TD>
-	</TR>
+                                        </TABLE>
+				</TD>
+				<TD WIDTH="50%" style="vertical-align:top;">
+					<TABLE WIDTH="100%" CELLPADDING="3">
 	{if $customerinfo.info}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
 				<TR>
 					<TD CLASS="fall superlight">
@@ -196,10 +180,10 @@
 	{/if}
 	{if $customerinfo.message}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/warningon.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
 				<TR>
 					<TD CLASS="fall superlight">
@@ -211,7 +195,39 @@
 	</TR>
 	{/if}
 	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/money.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Balance:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Created:{/t}<BR>
+			{t}Modified:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
+			{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+                                        	</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+{if !$customerpanel}
+		</TD>
+        </TR>
+	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+{/if}
 			{if $customerinfo.deleted}
 				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" ALT="[ {t}Restore{/t} ]"></A>
 			{else}
@@ -229,3 +245,14 @@
 		</TD>
 	</TR>
 </TABLE>
+{if $customerpanel}
+{literal}<SCRIPT>
+<!--
+        if(getCookie('customerpanel')=='1')
+	{
+	        document.getElementById('customerpanel').style.display = '';
+	}
+//-->
+</SCRIPT>{/literal}
+{/if}
+					

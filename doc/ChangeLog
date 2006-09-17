@@ -44,6 +44,7 @@ version ? (????-??-??):
   - $nodedata -> $nodeedit in nodeedit.php (chilek)
   - add propably most (if not all) missing $dbq->finish() in perl scripts
     (Andy/lukasz)
+  - design changes in customers and nodes information windows (alec)
 
 version 1.9.2 Thanos (2006-07-15):
   
