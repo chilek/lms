@@ -55,7 +55,7 @@ if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$ownerid);
 							
 $customerinfo = $LMS->GetCustomer($ownerid);
-$layout['pagetitle'] = trans('Customer Info: $0 - Node Edit: $1',$customerinfo['customername'], $LMS->GetNodeName($_GET['id']));
+$layout['pagetitle'] = trans('Node Edit: $0', $LMS->GetNodeName($_GET['id']));
 
 $customernodes = $LMS->GetCustomerNodes($ownerid);
 $nodeinfo = $LMS->GetNode($_GET['id']);
@@ -179,11 +179,13 @@ $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 $documents = $LMS->GetDocuments($ownerid, 10);
 $netdevices = $LMS->GetNetDevNames();
 $taxeslist = $LMS->GetTaxes();
+$customernodes = $LMS->GetCustomerNodes($ownerid);
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('customergroups',$customergroups);
+$SMARTY->assign('customernodes',$customernodes);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('error',$error);

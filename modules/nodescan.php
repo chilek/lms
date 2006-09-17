@@ -29,6 +29,8 @@ if($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid']))
 	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($_GET['ownerid']));
 	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($_GET['ownerid']));
 	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($_GET['ownerid']));
+	$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($_GET['ownerid']));
+	$SMARTY->assign('documents', $LMS->GetDocuments($_GET['ownerid'], 10));
 	$SMARTY->assign('tariffs', $LMS->GetTariffs());
 	$SMARTY->assign('customerinfo', $LMS->GetCustomer($_GET['ownerid']));
 	$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['ownerid']));
