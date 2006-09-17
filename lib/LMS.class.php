@@ -640,7 +640,18 @@ class LMS
 
 			foreach($customerlist as $idx => $row)
 			{
-				$customerlist[$idx]['tariffvalue'] = round($day[$row['id']]['value']+$week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'], 2);
+				$customerlist[$idx]['tariffvalue'] = 0;
+				if(isset($day[$row['id']]['value']))
+					$customerlist[$idx]['tariffvalue'] += round($day[$row['id']]['value'], 2);
+				if(isset($week[$row['id']]['value']))
+					$customerlist[$idx]['tariffvalue'] += round($week[$row['id']]['value'], 2);
+				if(isset($month[$row['id']]['value']))
+					$customerlist[$idx]['tariffvalue'] += round($month[$row['id']]['value'], 2);
+				if(isset($quarter[$row['id']]['value']))
+					$customerlist[$idx]['tariffvalue'] += round($quarter[$row['id']]['value'], 2);
+				if(isset($year[$row['id']]['value']))
+					$customerlist[$idx]['tariffvalue'] += round($year[$row['id']]['value'], 2);
+					
 				$customerlist[$idx]['account'] = isset($access[$row['id']]['account']) ? $access[$row['id']]['account'] : 0;
 				$customerlist[$idx]['warncount'] = isset($warning[$row['id']]['warncount']) ? $warning[$row['id']]['warncount'] : 0;
 
