@@ -1,13 +1,13 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK" onClick="showOrHide('customernodes');">
+	<TR CLASS="DARK" onClick="showOrHide('nodespanel');">
 		<TD WIDTH="100%" CLASS="FALL">
 			<IMG SRC="img/node.gif" alt="">
 			<B><A name="customernodes">{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</A></B>
 
 		</TD>
 	</TR>
-        <TR id="customernodes" style="display:none;">
+        <TR id="nodespanel" style="display:none;">
 	        <TD WIDTH="100%" class="fall">
 		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 		        <TR class="dark">
@@ -23,8 +23,13 @@
 			{if $customernodes[customernodes].id}
     			<TR class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 			    <TD WIDTH="96%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
-				<B>{$customernodes[customernodes].name}</B><BR>
-				<NOBR>{$customernodes[customernodes].info|truncate:50:"...":true}</NOBR>
+				<B>{$customernodes[customernodes].name}</B>
+				{if $customernodes[customernodes].location}<BR>
+				<NOBR>{$customernodes[customernodes].location|truncate:60:"...":true}</NOBR>
+				{/if}
+				{if $customernodes[customernodes].info}<BR>
+				<NOBR>{$customernodes[customernodes].info|truncate:60:"...":true}</NOBR>
+				{/if}
 			    </TD>
 			    <TD WIDTH="1%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';" align="right">
 				({$customernodes[customernodes].id|string_format:"%04d"})
@@ -71,9 +76,9 @@
 </TABLE>
 {literal}<SCRIPT>
 <!--
-        if(getCookie('customernodes')=='1')
+        if(getCookie('nodespanel')=='1')
 	{
-	        document.getElementById('customernodes').style.display = '';
+	        document.getElementById('nodespanel').style.display = '';
 	}
 //-->
 </SCRIPT>{/literal}
