@@ -413,9 +413,10 @@ elseif ($graph == 'flash')
 		drawtext($px + 15, $py + 10, $n['name'], 0, 0, 0); 
 	}
 
-	$devices = $DB->GetAllByKey('SELECT netdevices.id AS id, netdevices.name AS name, location, MAX(lastonline) AS lastonline 
-				    FROM netdevices LEFT JOIN nodes ON (netdevices.id = netdev)
-				    GROUP BY netdevices.id, netdevices.name, location', 'id');
+	$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, MAX(lastonline) AS lastonline 
+				    FROM netdevices n 
+				    LEFT JOIN nodes ON (n.id = netdev)
+				    GROUP BY n.id, n.name, n.location', 'id');
 
 	foreach($devicemap as $deviceid => $device)
 	{
@@ -604,9 +605,10 @@ elseif ($graph == 'flash')
 		pngdrawtext($im, 1, $px + 15, $py + 2, $n['name'], $black, $lightbrown);
 	}
 
-	$devices = $DB->GetAllByKey('SELECT netdevices.id AS id, netdevices.name AS name, location, MAX(lastonline) AS lastonline 
-				    FROM netdevices LEFT JOIN nodes ON (netdevices.id = netdev)
-				    GROUP BY netdevices.id, netdevices.name, location', 'id');
+	$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, MAX(lastonline) AS lastonline 
+				    FROM netdevices n
+				    LEFT JOIN nodes ON (n.id = netdev)
+				    GROUP BY n.id, n.name, n.location', 'id');
 
 	foreach($devicemap as $deviceid => $device)
 	{
