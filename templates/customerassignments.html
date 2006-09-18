@@ -55,7 +55,7 @@
 						{if $a.dateto}{t}to{/t} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-						{if $a.tariffid || $a.liabilityid}
+						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $smarty.now || !$a.dateto) || ($a.liabilityid && $a.at > $smarty.now))}
 						<A href="?m=customerassignments&action=suspend&id={$balancelist.customerid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
 						{/if}
 						<A HREF="?m=customerassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
