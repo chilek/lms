@@ -181,6 +181,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	print OUTFILE "$iptables_binary -t mangle -A STAT -s $row->{'ipaddr'} -j RETURN\n";
 	print OUTFILE "$iptables_binary -t mangle -A STAT -d $row->{'ipaddr'} -j RETURN\n";
 }
+$dbq->finish();
 
 close(OUTFILE);
 chown $cuid, $cgid, $outfile or print "Warning! Unable to set owner of $outfile to $cuid.$cgid.\n";
@@ -250,4 +251,5 @@ while (my $row = $dbq->fetchrow_hashref())
 	}
 }
 # finally 
+$dbq->finish();
 $dbase->disconnect();

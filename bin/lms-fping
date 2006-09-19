@@ -137,6 +137,7 @@ if(!$networks_list)
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$networks_list = "$networks_list $row->{'name'}";
 	}
+	$dbq->finish();
 }
 
 my @networks = split ' ', $networks_list;
@@ -161,6 +162,8 @@ foreach my $network (@networks)
 			print TMPFILE "$nodrow->{'ipaddr'}\n";
 		}
 	}
+	
+	$dbq->finish();
 }
 close(TMPFILE);
 
@@ -171,13 +174,18 @@ foreach my $line (@lines)
 {
 	$line =~ s/^\s+//;
 	$line =~ s/\s+$//;
+	
 	my $idbq = $dbase->prepare("UPDATE nodes SET lastonline=$utsfmt WHERE ipaddr=INET_ATON('$line')");
 	$idbq->execute();
+	
 	if(!$quiet)
 	{
 		print "$line\n";
 	}
+	
+	$idbq->finish();
 }
 
+$dbq->finish();
 $dbase->disconnect();
 system("rm $tmpfile");	

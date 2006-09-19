@@ -180,6 +180,7 @@ $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) {
 	$allnetworks = "$allnetworks $row->{'name'}";
 }
+$dbq->finish();
 
 if(!$networks_list)
 {
@@ -187,6 +188,8 @@ if(!$networks_list)
 }
 
 my @networks = split ' ',$networks_list;
+my %maclist;
+my %accesslist;
 
 #
 # Buil nodes list
@@ -194,14 +197,12 @@ my @networks = split ' ',$networks_list;
 
 $dbq = $dbase->prepare("SELECT ipaddr, mac, access FROM nodes");
 $dbq->execute();
-my %maclist;
-my %accesslist;
-
 while (my $row = $dbq->fetchrow_hashref())
 {
 	$maclist{u32todotquad($row->{'ipaddr'})} = $row->{'mac'};
 	$accesslist{u32todotquad($row->{'ipaddr'})} = $row->{'access'};
 }
+$dbq->finish();
 
 foreach my $key (@networks)
 {
@@ -239,6 +240,8 @@ foreach my $key (@networks)
 			}
 		}                                                                                                             
 	}
+	
+	$dbq->finish();
 }
 
 $dbase->disconnect();

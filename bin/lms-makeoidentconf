@@ -186,21 +186,22 @@ $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) {
 	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
+$dbq->finish();
 
 my @customergroups = split ' ',$customergroups_list;
-
-$dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM nodes");
-$dbq->execute();
 my %namelist;
 my %idlist;
 my %ownerlist;
 
+$dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM nodes");
+$dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
         $namelist{u32todotquad($row->{'ipaddr'})} = $row->{'name'};
         $idlist{u32todotquad($row->{'ipaddr'})} = $row->{'id'};
         $ownerlist{u32todotquad($row->{'ipaddr'})} = $row->{'ownerid'};
 }
+$dbq->finish();
 
 foreach my $key (@networks)
 {
@@ -241,6 +242,7 @@ foreach my $key (@networks)
 			}
 		}
 	}
+	$dbq->finish();
 }
 
 $dbase->disconnect();

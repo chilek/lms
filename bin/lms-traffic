@@ -168,4 +168,5 @@ foreach my $line (@lines)
     }
 }
 # finally 
+$dbq->finish();
 $dbase->disconnect();

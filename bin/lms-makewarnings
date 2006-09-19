@@ -186,6 +186,7 @@ $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) {
 	$allnetworks = "$allnetworks $row->{'name'}";
 }
+$dbq->finish();
 
 if(!$networks_list)
 {
@@ -228,6 +229,7 @@ while (my $row = $dbq->fetchrow_hashref())
 {
 	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
+$dbq->finish();
 
 $dbq = $dbase->prepare("SELECT customers.id AS id, lastname, name, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, lastname, name HAVING SUM(cash.value) < 0");
 $dbq->execute();
@@ -287,6 +289,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	}
 }
 
+$dbq->finish();
 $dbase->disconnect();
 close(WARNFILE);
 chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";

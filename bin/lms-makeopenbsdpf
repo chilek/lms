@@ -172,6 +172,7 @@ $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) {
 	$allnetworks = "$allnetworks $row->{'name'}";
 }
+$dbq->finish();
 
 if(!$networks_list)
 {
@@ -206,6 +207,7 @@ foreach my $key (@networks)
 			}
 		}
 	}
+	$dbq->finish();
 }
 
 foreach my $key (@networks)
@@ -231,7 +233,9 @@ foreach my $key (@networks)
 			}
 		}
 	}
+	$dbq->finish();
 }
+
 $dbase->disconnect();
 close(PFFILE);
 chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";

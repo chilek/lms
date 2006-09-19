@@ -133,6 +133,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	}
 }
 
+$dbq->finish();
 $dbase->do("DELETE FROM timestamps WHERE tablename = 'nodes' OR tablename = '_global'");
 $dbase->do("INSERT INTO timestamps (tablename,time) VALUES ('nodes',$utsfmt)");
 $dbase->do("INSERT INTO timestamps (tablename,time) VALUES ('_global',$utsfmt)");

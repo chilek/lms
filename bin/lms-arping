@@ -138,6 +138,7 @@ if(!$networks_list)
     {
 	$networks_list = "$networks_list $row->{'name'}";
     }
+    $dbq->finish();
 }
 
 my @networks = split ' ', $networks_list;
@@ -190,7 +191,9 @@ else
 					print "$nodrow->{'ipaddr'}\n" if not $quiet;
 				}
 			}
+			$ndbq->finish();
 		}
+		$dbq->finish();
 	}
 }
 

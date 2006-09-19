@@ -190,6 +190,7 @@ $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) {
 	$allnetworks = "$allnetworks $row->{'name'}";
 }
+$dbq->finish();
 
 if(!$networks_list)
 {
@@ -197,6 +198,10 @@ if(!$networks_list)
 }
 
 my @networks = split ' ',$networks_list;
+my %limittable;
+my %maclist;
+my %accesslist;
+my %limits;
 
 # network limits:
 $dbq = $dbase->prepare("SELECT	customerid, 
@@ -211,28 +216,23 @@ $dbq = $dbase->prepare("SELECT	customerid,
 		(dateto > $utsfmt OR dateto = 0) 
 		GROUP BY customerid");
 $dbq->execute();
-
-my %limittable;
-
 while (my $srow = $dbq->fetchrow_hashref())
 {
 	$limittable{$srow->{'customerid'}}=$srow;
 }
+$dbq->finish();
 
 # Build nodes table:
 
 $dbq = $dbase->prepare("SELECT ownerid, ipaddr, mac, access FROM nodes WHERE access = '1'");
 $dbq->execute();
-my %maclist;
-my %accesslist;
-my %limits;
-
 while (my $row = $dbq->fetchrow_hashref())
 {
 	$maclist{u32todotquad($row->{'ipaddr'})} = $row->{'mac'};
 	$accesslist{u32todotquad($row->{'ipaddr'})} = $row->{'access'};
  	$limits{$row->{'ipaddr'}} = $limittable{$row->{'ownerid'}};
 }
+$dbq->finish();
 
 my $counter = '0';
 
@@ -280,8 +280,9 @@ foreach my $key (@networks)
  		print RULESFILE $fwcmd." add  $rule_num fwd 127.0.0.1,8080 tcp from  $squided_lan to not  $squided_lan dst-port $squid_redir via $oif\n";
 		print RULESDELFILE $fwcmd." delete $rule_num \n";
 	}
+	
+	$dbq->finish();
 }
-
 
 $dbase->disconnect();
 close(RULESFILE);
