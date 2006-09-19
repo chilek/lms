@@ -1734,5 +1734,6 @@ $_LANG['Interested customers can\'t have computers!'] = 'Zainteresowani klienci 
 $_LANG['Node owner is not connected!'] = 'Właściciel komputera nie jest podłączony!';
 $_LANG['Select node'] = 'Wybierz komputer';
 $_LANG['Show expired'] = 'Pokaż przeterminowane';
+$_LANG['customer sheet'] = 'karta klienta';
 
 ?>
