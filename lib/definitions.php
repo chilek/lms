@@ -48,6 +48,7 @@ $DOCTYPES = array(
     -2	=>	trans('annex'),
     -3	=>	trans('protocol'),
     -4  =>	trans('order'), 
+    -5  =>	trans('customer sheet'), // karta klienta 
     -10 =>	trans('other')
 );
 
@@ -59,6 +60,7 @@ define('DOC_CONTRACT', -1);
 define('DOC_ANNEX', -2);
 define('DOC_PROTOCOL', -3);
 define('DOC_ORDER', -4);
+define('DOC_SHEET', -5);
 define('DOC_OTHER', -10);
 
 // Accounting periods
