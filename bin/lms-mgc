@@ -218,11 +218,11 @@ sub instance($)
 	my $allnetworks = '';
 
 	my $dbq = $dbase->prepare("SELECT name FROM networks");
-
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$allnetworks = "$allnetworks $row->{'name'}";
-	}		
+	}
+	$dbq->finish();		
 
 	print "debug: allnetworks is: '$allnetworks'\n" if $debug;
 	
@@ -430,7 +430,6 @@ sub instance($)
 		
 		$dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil, SUM(climit) AS climit, SUM(plimit) AS plimit FROM assignments, customers, tariffs WHERE customers.id = customerid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY customerid");
 		$dbq->execute();
-
 		while(my $row = $dbq->fetchrow_hashref())
 		{
 			$uprates{$row->{'customerid'}} = $row->{'uprate'};
@@ -440,11 +439,9 @@ sub instance($)
 			$climits{$row->{'customerid'}} = $row->{'climit'};
 			$plimits{$row->{'customerid'}} = $row->{'plimit'};
 		}
+		$dbq->finish();
 		
 		# BUILD NODELIST
-		
-		$dbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr, inet_ntoa(ipaddr_pub) AS ipaddr_pub, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin, $customerq FROM nodes LEFT JOIN customers ON nodes.ownerid = customers.id");
-		$dbq->execute();
 
 		my %pubiplist;
 		my %maclist;
@@ -459,6 +456,8 @@ sub instance($)
 		my %passlist;
 		my %customerlist;
 		
+		$dbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr, inet_ntoa(ipaddr_pub) AS ipaddr_pub, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin, $customerq FROM nodes LEFT JOIN customers ON nodes.ownerid = customers.id");
+		$dbq->execute();
 		while (my $row = $dbq->fetchrow_hashref())
 		{
 			$pubiplist{$row->{'ipaddr'}} = $row->{'ipaddr_pub'};
@@ -474,6 +473,7 @@ sub instance($)
 			$pinlist{$row->{'ipaddr'}} = $row->{'pin'};
 			$customerlist{$row->{'ipaddr'}} = $row->{'customer'};
 		}
+		$dbq->finish();
 
 		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
 		my $dhcpstart = dotquad2u32($row->{'dhcpstart'}) || '0';

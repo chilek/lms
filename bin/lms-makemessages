@@ -203,6 +203,7 @@ if(!$customergroups_list)
 }
 
 my @customergroups = split ' ',$customergroups_list;
+my %customergrouplist;
 
 #
 # Buil nodes list
@@ -210,16 +211,14 @@ my @customergroups = split ' ',$customergroups_list;
 
 $dbq = $dbase->prepare("SELECT id, name FROM customergroups");
 $dbq->execute();
-my %customergrouplist;
-
 while (my $row = $dbq->fetchrow_hashref())
 {
 	$customergrouplist{$row->{'name'}} = $row->{'id'};
 }
+$dbq->finish();
 
 $dbq = $dbase->prepare("SELECT ipaddr, name, ownerid FROM nodes WHERE warning=1");
 $dbq->execute();
-
 while (my $row = $dbq->fetchrow_hashref())
 {
 	my $customergroupscount = 0;
@@ -258,6 +257,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	}
 }
 
+$dbq->finish();
 $dbase->disconnect();
 close(MESGFILE);
 chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";

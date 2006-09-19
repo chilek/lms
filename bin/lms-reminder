@@ -216,4 +216,5 @@ while (my $row = $dbq->fetchrow_hashref())
 	}
 }
 
+$dbq->finish();
 $dbase->disconnect();

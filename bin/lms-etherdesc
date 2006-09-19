@@ -141,21 +141,23 @@ if(!$networks_list) {
 }
 
 my @networks = split ' ',$networks_list;
-
-$dbq = $dbase->prepare("SELECT name, mac, ipaddr FROM nodes");
-$dbq->execute();
 my %maclist;
 my %namelist;
 
+$dbq = $dbase->prepare("SELECT name, mac, ipaddr FROM nodes");
+$dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) {
 	$maclist{$row->{'ipaddr'}} = $row->{'mac'};
 	$namelist{$row->{'ipaddr'}} = $row->{'name'};
 }
+$dbq->finish();
+
+$dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = UPPER(?)");
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = UPPER('$key')");
-	$dbq->execute();
+	$dbq->execute($key);
+	
 	while (my $row = $dbq->fetchrow_hashref()) 
 	{
 		my $longip = $row->{'address'};
@@ -175,7 +177,9 @@ foreach my $key (@networks)
 	}
 }
 
+$dbq->finish();
 $dbase->disconnect();
 close(ETHERSFILE);
+
 chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";
 chmod oct($cperm), $cfile or print "Warning! Unable to set permission $cperm to $cfile.\n";

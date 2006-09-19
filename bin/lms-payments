@@ -513,6 +513,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 		}
 	}
 }	
+$dbq->finish();
 
 # solid payments
 $dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0 AND (period = ".DAY." OR (period = ".WEEK." AND at=$weekday) OR (period = ".MONTH." AND at=$day) OR (period = ".QUARTER." AND at = $quarter) OR (period = ".YEAR." AND at = $yearday))");
@@ -524,6 +525,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 	$sdbq->execute($assign->{'name'}.'/'.$assign->{'creditor'});
 	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
+$dbq->finish();
 
 $dbq = $dbase->prepare("SELECT liabilityid AS id FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND liabilityid != 0");
 $dbq->execute();
@@ -531,6 +533,8 @@ while(my $row = $dbq->fetchrow_hashref())
 {
 	$dbase->do("DELETE FROM liabilities WHERE id = $row->{'id'}");
 }
+$dbq->finish();
+
 $dbase->do("DELETE FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0");
 $dbase->do("DELETE FROM assignments WHERE at = $today");
 $dbase->do("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
