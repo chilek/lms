@@ -27,14 +27,26 @@
 $DB->BeginTrans();
 
 // REGON (Business Registration Number)
-$DB->Execute("ALTER TABLE customers ADD COLUMN regon varchar(255) NOT NULL DEFAULT ''");
+$DB->Execute("ALTER TABLE customers ADD COLUMN regon varchar(255)");
+$DB->Execute("UPDATE customers SET regon = ''");
+$DB->Execute("ALTER TABLE customers ALTER COLUMN regon SET DEFAULT ''"); 
+$DB->Execute("ALTER TABLE customers ALTER COLUMN regon SET NOT NULL"); 
 // KRS/EDG (Register of Business Entities)
-$DB->Execute("ALTER TABLE customers ADD COLUMN rbe varchar(255) NOT NULL DEFAULT ''");
+$DB->Execute("ALTER TABLE customers ADD COLUMN rbe varchar(255)");
+$DB->Execute("UPDATE customers SET rbe = ''");
+$DB->Execute("ALTER TABLE customers ALTER COLUMN rbe SET DEFAULT ''"); 
+$DB->Execute("ALTER TABLE customers ALTER COLUMN rbe SET NOT NULL"); 
 // Dowod osobisty (Identity Card Number)
-$DB->Execute("ALTER TABLE customers ADD COLUMN icn varchar(255) NOT NULL DEFAULT ''");
+$DB->Execute("ALTER TABLE customers ADD COLUMN icn varchar(255)");
+$DB->Execute("UPDATE customers SET icn = ''");
+$DB->Execute("ALTER TABLE customers ALTER COLUMN icn SET DEFAULT ''"); 
+$DB->Execute("ALTER TABLE customers ALTER COLUMN icn SET NOT NULL"); 
 
 // Node location
-$DB->Execute("ALTER TABLE nodes ADD COLUMN location text NOT NULL DEFAULT ''");
+$DB->Execute("ALTER TABLE nodes ADD COLUMN location text");
+$DB->Execute("UPDATE nodes SET location = ''");
+$DB->Execute("ALTER TABLE nodes ALTER COLUMN location SET DEFAULT ''"); 
+$DB->Execute("ALTER TABLE nodes ALTER COLUMN location SET NOT NULL"); 
 
 // Account names (logins) will be unique only in one domain context
 $DB->Execute("ALTER TABLE passwd DROP CONSTRAINT passwd_login_key");
