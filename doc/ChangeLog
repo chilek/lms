@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.9.3 Zarin (2006-09-19):
 
   - cosmetics on search templates (djrzulf)
   - added reload status on hosts list in Reload (alec)
@@ -42,8 +42,8 @@ version ? (????-??-??):
   - added 'post-action' in document templates (alec)
   - hidding/showing customer's expired liabilities on the list (alec)
   - $nodedata -> $nodeedit in nodeedit.php (chilek)
-  - add propably most (if not all) missing $dbq->finish() in perl scripts
-    (Andy/lukasz)
+  - add probably most (if not all) missing $dbq->finish() in perl scripts
+    (Andy/lukasz/alec)
   - design changes in customers and nodes information windows (alec)
 
 version 1.9.2 Thanos (2006-07-15):
