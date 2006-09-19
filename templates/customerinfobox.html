@@ -145,19 +145,16 @@
 		</TD>
 	</TR>
 {/if}
-	{if $_config.finances.iban}
+{if $_config.finances.iban}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/value.gif" ALT="">
+			<IMG SRC="img/card.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-			{t}Bank account:{/t}
-		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 			{$customerinfo.bankaccount}
 		</TD>
 	</TR>
-	{/if}
+{/if}	
                                         </TABLE>
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">
