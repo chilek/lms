@@ -383,8 +383,8 @@ $ mv Smarty-2.6.0/libs Smarty
 
    Note
 
-        Location of all directories can be set in [directories] section in
-        lms.ini configuration file.
+   Location of all directories can be set in [directories] section in
+   lms.ini configuration file.
 
    Configuration  files (sample/lms.ini and sample/lms-mgc.ini) should be
    placed in /etc/lms directory.
@@ -392,15 +392,15 @@ $ mv Smarty-2.6.0/libs Smarty
    Scripts  from bin directory should be moved to /usr/sbin directory, so
    you can execute it directly without giving path.
 
- Warning
+   Warning
 
-         Web Server must have read permission on lms.ini file and write
-         permission on backup directory. Please consider security implications:
-         you might want to protect backup directory with .htaccess and place
-         your lms.ini outside Web Server's DocumentRoot (LMS allows you to
-         place it in its home directory, but then it's possible to read it with
-         http://yourserver/lms.ini, and it contains valuable information such
-         as database password!).
+   Web Server must have read permission on lms.ini file and write
+   permission on backup directory. Please consider security implications:
+   you might want to protect backup directory with .htaccess and place
+   your lms.ini outside Web Server's DocumentRoot (LMS allows you to
+   place it in its home directory, but then it's possible to read it with
+   http://yourserver/lms.ini, and it contains valuable information such
+   as database password!).
      _________________________________________________________________
 
 2.4. Localization
@@ -525,11 +525,11 @@ password = password_entered_with_lms_user_creation
 
    Note
 
-        The need for password actually depends on Postgres users
-        authentication configuration found in
-        /usr/local/pgsql/data/pg_hba.conf (refer to Postgresql documentation).
-        By default password is not required and you can comment it with
-        semicolon.
+   The need for password actually depends on Postgres users
+   authentication configuration found in
+   /usr/local/pgsql/data/pg_hba.conf (refer to Postgresql documentation).
+   By default password is not required and you can comment it with
+   semicolon.
 
    After  this  step  you should be able to enter your system without any
    problems.  Just  write an URL for your LMS installation. If there's no
@@ -552,15 +552,15 @@ password = password_entered_with_lms_user_creation
 
    Note
 
-        Remember to remove semicolons (comments sign) from beginning of line
-        with parameter that you set.
+   Remember to remove semicolons (comments sign) from beginning of line
+   with parameter that you set.
 
    Note
 
-        As of version 1.6 and later storing config in lms.ini is beeing
-        treaded as obsolete. The only required values there are from
-        [database] and [directories] sections. Settings are stored in database
-        and could be changed by user interface.
+   As of version 1.6 and later storing config in lms.ini is beeing
+   treaded as obsolete. The only required values there are from
+   [database] and [directories] sections. Settings are stored in database
+   and could be changed by user interface.
      _________________________________________________________________
 
 2.6.1. Section [database] - Database Settings
@@ -615,20 +615,20 @@ password = password_entered_with_lms_user_creation
        subdirectory of sys_dir.
        Example: backup_dir = /var/backup/lms/
 
-  Warning
+       Warning
 
-          If directory with backups is accessible from WWW level (within Web
-          Server DocumentRoot), anybody can access them without authentication.
+   If directory with backups is accessible from WWW level (within Web
+   Server DocumentRoot), anybody can access them without authentication.
      * doc_dir
        Directory for documents archive - it's a place where LMS can write
        uploaded  files.  By  default  it  is  documents  subdirectory  of
        sys_dir.
        Example: doc_dir = /usr/share/lms/docs/
 
-      Warning
+       Warning
 
-              If that directory is accessible from WWW level (within Web Server
-              DocumentRoot), anybody can access them without authentication.
+   If that directory is accessible from WWW level (within Web Server
+   DocumentRoot), anybody can access them without authentication.
      * smarty_dir
        Directory  with Smarty library - By default Smarty subdirectory of
        lib_dir.
@@ -687,8 +687,8 @@ password = password_entered_with_lms_user_creation
    rules.
    Note
 
-        If you don't define any access rule for user, then LMS defines 0 rule
-        for him, which mean: full access.
+   If you don't define any access rule for user, then LMS defines 0 rule
+   for him, which mean: full access.
      _________________________________________________________________
 
 2.7.2. How does it work?
@@ -814,8 +814,8 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 
    Note
 
-        Almost every internet browser has printing configuration, where
-        functions like header and footer or URL printing can be disabled.
+   Almost every internet browser has printing configuration, where
+   functions like header and footer or URL printing can be disabled.
      _________________________________________________________________
 
 2.9.1.2. PDF
@@ -1020,9 +1020,9 @@ Chapter 3. User Interface (LMS-UI)
 
    Note
 
-        By default your backups will be placed in lms/backups directory, which
-        could be accessed with your browser, without any authentication, so
-        it's wise to move it above your Web Server DocumentRoot.
+   By default your backups will be placed in lms/backups directory, which
+   could be accessed with your browser, without any authentication, so
+   it's wise to move it above your Web Server DocumentRoot.
 
    All  copies  can  be viewed, removed or downloaded to your computer at
    any  time. By clicking on 'recover' icon your current database will be
@@ -1038,8 +1038,8 @@ Chapter 3. User Interface (LMS-UI)
    all customer computers off with single mouse click.
    Note
 
-        Automatic cutoff of computers which owners are in debt is performed by
-        lms-cutoff Perl script.
+   Automatic cutoff of computers which owners are in debt is performed by
+   lms-cutoff Perl script.
      _________________________________________________________________
 
 3.3.1. List
@@ -1073,9 +1073,9 @@ Chapter 3. User Interface (LMS-UI)
    status (connected, waiting in queue, prospect).
    Note
 
-        Wrong capitalization (uppercase) of customer's last name is one of
-        most frequent bug reports. Uppercase is implemented via SQL functions
-        and thus you should seek for solution in your DB engine configuration.
+   Wrong capitalization (uppercase) of customer's last name is one of
+   most frequent bug reports. Uppercase is implemented via SQL functions
+   and thus you should seek for solution in your DB engine configuration.
      _________________________________________________________________
 
 3.3.3. Search
@@ -1150,13 +1150,13 @@ Chapter 3. User Interface (LMS-UI)
    again' checkbox.
    Note
 
-        To search computer addresses in your network you can use nbtscan
-        program. If it's available in system, you can click 'Scan' to get all
-        data about computers that are online.
+   To search computer addresses in your network you can use nbtscan
+   program. If it's available in system, you can click 'Scan' to get all
+   data about computers that are online.
    Note
 
-        You need to create customer and network first, so you can assign new
-        computer to it.
+   You need to create customer and network first, so you can assign new
+   computer to it.
      _________________________________________________________________
 
 3.4.3. Search
@@ -1215,8 +1215,8 @@ Chapter 3. User Interface (LMS-UI)
    other devices will be drawn relative to it.
    Note
 
-        You need GD or Ming library compiled in PHP to be able to use
-        graphical map.
+   You need GD or Ming library compiled in PHP to be able to use
+   graphical map.
    Use  'map_type'  option  in section [phpui] section to specify type of
    map.  Set it to "flash" if you've got Ming library or "gd" for graphic
    images.  By  default  (option  not set) LMS will try to generate flash
@@ -1235,8 +1235,8 @@ Chapter 3. User Interface (LMS-UI)
    list in 'Nodes' panel.
    Note
 
-        You can use lms-fping Perl script or lmsd daemon to probe hosts
-        availability.
+   You can use lms-fping Perl script or lmsd daemon to probe hosts
+   availability.
      _________________________________________________________________
 
 3.6. IP Networks
@@ -1328,9 +1328,9 @@ Chapter 3. User Interface (LMS-UI)
 
    Note
 
-        It's best to use lms-payments Perl script or lmsd daemon to automate
-        periodical operations, such as subscription fees. Those modules are
-        also able to write out appropriate invoices.
+   It's best to use lms-payments Perl script or lmsd daemon to automate
+   periodical operations, such as subscription fees. Those modules are
+   also able to write out appropriate invoices.
      _________________________________________________________________
 
 3.7.7. Invoices list
@@ -1633,11 +1633,11 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
    Note
 
-        Your server has to support PEAR::Mail for this to work.
+   Your server has to support PEAR::Mail for this to work.
    Note
 
-        It's best to use lms-notify Perl script or notify module of lmsd
-        daemon to send emails automatically whenever customer is in debt.
+   It's best to use lms-notify Perl script or notify module of lmsd
+   daemon to send emails automatically whenever customer is in debt.
      _________________________________________________________________
 
 3.10. Reload
@@ -1659,8 +1659,8 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    day, 30 days or year.
    Note
 
-        You need working lms-traffic Perl script or lmsd daemon running to
-        collect statistics.
+   You need working lms-traffic Perl script or lmsd daemon running to
+   collect statistics.
      _________________________________________________________________
 
 3.11.1. Filter
@@ -1687,7 +1687,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
    Warning
 
-           Data approximation is irreversible.
+   Data approximation is irreversible.
      _________________________________________________________________
 
 3.11.3. Printing
@@ -1814,15 +1814,15 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
    Note
 
-        Options setup with LMS-UI have higher priority than those in
-        configuration file. With options setup in UI, the configuration will
-        be still imported from file but values will be then overwritten by
-        those found in DB.
+   Options setup with LMS-UI have higher priority than those in
+   configuration file. With options setup in UI, the configuration will
+   be still imported from file but values will be then overwritten by
+   those found in DB.
 
    Note
 
-        Daemon read some options other than its configuration from database
-        only, so it's preferred to store configuration in database.
+   Daemon read some options other than its configuration from database
+   only, so it's preferred to store configuration in database.
 
    In  order  to manually add new option click 'Add option' on the bottom
    of  the  list.  To  edit  option value, click on its record. You'll be
@@ -1852,10 +1852,10 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        any action in such number of seconds. Default: 600
        Example: timeout = 900
 
- Warning
+       Warning
 
-         It's not possible to not to have any timeout. If you set this value to
-         zero, you won't be able to use LMS at all!
+   It's not possible to not to have any timeout. If you set this value to
+   zero, you won't be able to use LMS at all!
      * customerlist_pagelimit
        Limit  of  records  that can be displayed on one page of customers
        list. Default: 100
@@ -2081,8 +2081,8 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
    Note
 
-        If you have no numbering plans defined, each document will take
-        default number as of '%N/LMS/%Y' with annual time span.
+   If you have no numbering plans defined, each document will take
+   default number as of '%N/LMS/%Y' with annual time span.
      _________________________________________________________________
 
 3.14.4. Hosts
@@ -2129,29 +2129,29 @@ Chapter 4. Scripts
 4.2. List of available scripts
 
    Table 4-1. Executable scripts list
-          Name                                Description
-       lms-notify              Massive mailing for customer notification
-     lms-notify-sms            Notifies customer about his debt with SMS
-       lms-cutoff                 Cutoff of customers who are in debt
-      lms-etherdesc       MAC address - hostname pair file creation for iptraf
-      lms-payments       Accounting subscription fees (periodical) with invoice
-                                               writeouts
-       lms-traffic                 Bandwidth consumption calculation
- lms-traffic-logiptables             Bandwidth probe with iptables
-       lms-makearp                  ARP table (/etc/ethers) creation
-    lms-makedhcpconf             DHCP server configuration (dhcpd.conf)
-    lms-makeiptables            Configuration of iptables firewall rules
-    lms-makeipchains            Configuration of ipchains firewall rules
-    lms-makeopenbsdpf         Configuration of OpenBSD packet filter rules
-   lms-makeoidentconf                   Configuration of oident
-    lms-sendinvoices             Distribution of invoices to customers
-      lms-makemacs            Firewalling with use of source MAC addresses
-      lms-makehosts                     /etc/hosts file creation
-    lms-makewarnings              Redirect rules for customers in debt
-    lms-makemessages       Redirect rules for customers in debt with warning
-                                                message
-        lms-fping                          Online nodes scan
-      lms-rtparser                      Helpdesk backend for MUA
+   Name Description
+   lms-notify Massive mailing for customer notification
+   lms-notify-sms Notifies customer about his debt with SMS
+   lms-cutoff Cutoff of customers who are in debt
+   lms-etherdesc MAC address - hostname pair file creation for iptraf
+   lms-payments Accounting subscription fees (periodical) with invoice
+   writeouts
+   lms-traffic Bandwidth consumption calculation
+   lms-traffic-logiptables Bandwidth probe with iptables
+   lms-makearp ARP table (/etc/ethers) creation
+   lms-makedhcpconf DHCP server configuration (dhcpd.conf)
+   lms-makeiptables Configuration of iptables firewall rules
+   lms-makeipchains Configuration of ipchains firewall rules
+   lms-makeopenbsdpf Configuration of OpenBSD packet filter rules
+   lms-makeoidentconf Configuration of oident
+   lms-sendinvoices Distribution of invoices to customers
+   lms-makemacs Firewalling with use of source MAC addresses
+   lms-makehosts /etc/hosts file creation
+   lms-makewarnings Redirect rules for customers in debt
+   lms-makemessages  Redirect  rules  for  customers in debt with warning
+   message
+   lms-fping Online nodes scan
+   lms-rtparser Helpdesk backend for MUA
      _________________________________________________________________
 
 4.3. Description and configuration
@@ -2364,20 +2364,20 @@ http://www.bigpro.com/
 
    Note
 
-        Example script utilizing iptables might be found in
-        sample/traffic_ipt.pl file.
+   Example script utilizing iptables might be found in
+   sample/traffic_ipt.pl file.
 
    Next you should install lms-traffic script and your custom script into
    crontab.  Among  standard  options  you  can  use define location with
    created data file.
 -f=/file        location and name of data file, default: /var/log/traffic.log
 
- Warning
+   Warning
 
-         Frequency checks should be set not higher than 10 minutes, due that
-         each execution will write new database record for each computer. Thus,
-         statistics database might grow fast and it might take longer to
-         generate desired statistics.
+   Frequency checks should be set not higher than 10 minutes, due that
+   each execution will write new database record for each computer. Thus,
+   statistics database might grow fast and it might take longer to
+   generate desired statistics.
      _________________________________________________________________
 
 4.3.6. lms-traffic-logiptables
@@ -2873,9 +2873,9 @@ endif
 
    Note
 
-        Messages create in lms-ui may be directed to parser, instead of just
-        being written to database. If you prefer this behavior turn on
-        helpdesk_backend_mode option in [phpui] section of lms.ini file.
+   Messages create in lms-ui may be directed to parser, instead of just
+   being written to database. If you prefer this behavior turn on
+   helpdesk_backend_mode option in [phpui] section of lms.ini file.
 
    Configuration  of  lms-rtparser  should  be  set in lms.ini file, [rt]
    section. Following parameters are valid:
@@ -3007,8 +3007,8 @@ Chapter 5. Configuration file generator (lms-mgc)
 
    Note
 
-        You can also place instances variable in any derivative instance
-        section. See below.
+   You can also place instances variable in any derivative instance
+   section. See below.
      _________________________________________________________________
 
 5.2.3. Section [mgc:xxx] - instance configuration
@@ -3040,14 +3040,14 @@ Chapter 5. Configuration file generator (lms-mgc)
 
        Warning
 
-               You have to provide numerical UID, not username!
+   You have to provide numerical UID, not username!
      * outfile_group
        GID of output file owner. Default: 0
        Example: outfile_group = 0
 
        Warning
 
-               You have to provide numerical GID, not group name!
+   You have to provide numerical GID, not group name!
      * header_file
        Filename,  that  should  be prepended at beginning of output file.
        Default: unset
@@ -3059,8 +3059,8 @@ Chapter 5. Configuration file generator (lms-mgc)
 
        Note
 
-            You should use \n as line separator. You may omit line separator at
-            the end of last line.
+   You should use \n as line separator. You may omit line separator at
+   the end of last line.
      * networks
        >List  of  (space  separated)  networks, that should be considered
        while  creating  configuration  file. If unset, configuration will
@@ -3149,8 +3149,8 @@ Chapter 5. Configuration file generator (lms-mgc)
 
        Note
 
-            Mgc automatically detects if given address belongs to private or
-            public network.
+   Mgc automatically detects if given address belongs to private or
+   public network.
      * default_publ
        Default  line,  which  is  inserted  when  none  of grantednode or
        deniednode  matches  for  given IP address (parsed only for public
@@ -3232,9 +3232,9 @@ Chapter 5. Configuration file generator (lms-mgc)
 
    Note
 
-        Additionally, dst_network_header variable may include above templates
-        prepended with D (ie. %DADDR, %dname) to get data relevant to
-        destination networks.
+   Additionally, dst_network_header variable may include above templates
+   prepended with D (ie. %DADDR, %dname) to get data relevant to
+   destination networks.
 
    Templates which can be used everywhere:
      * %DATE - date in YYYYMMDD format;
@@ -3353,7 +3353,7 @@ Chapter 6. LMS Daemon
    variables: LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
    Note
 
-        List of instances should contain instance names separated with spaces.
+   List of instances should contain instance names separated with spaces.
 
    Daemon  configuration  is  divided into hosts (which makes possible to
    configure  and  reload several different daemons installed on numerous
@@ -4110,10 +4110,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 
    Note
 
-        Pinger for work use interface names, so (e.g. if you are using ip
-        command) you'll need to label interfaces in your system (ip addr add
-        ... label ...). Also remember, don't use a dots or dashes in interface
-        names (ip allows that, but such a name is not usable for pinger).
+   Pinger for work use interface names, so (e.g. if you are using ip
+   command) you'll need to label interfaces in your system (ip addr add
+   ... label ...). Also remember, don't use a dots or dashes in interface
+   names (ip allows that, but such a name is not usable for pinger).
      _________________________________________________________________
 
 6.2.14.2. Configuration
@@ -4181,7 +4181,8 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 
 6.3.2.1. Expressions and operators
 
-     * Literal inside quotes.
+     * Literal  inside  quotes.  Supports  formatting sequences like in C
+       language (\t, \n, \\).
        Example: "some literal"
      * Number.
        Example: 1234
@@ -5225,12 +5226,12 @@ key = "A.L.E.C's LMS Daemon is the best"
    as this algorithm is not truly random.
    Note
 
-        For proper creation of dependences you should only run this module on
-        empty database.
+   For proper creation of dependences you should only run this module on
+   empty database.
    Warning
 
-           All data will be erased from database, except LMS users
-           (Administrators) records.
+   All data will be erased from database, except LMS users
+   (Administrators) records.
      _________________________________________________________________
 
 7.5. Access levels
