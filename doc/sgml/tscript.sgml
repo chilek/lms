@@ -24,7 +24,7 @@
 	    <title>Expressions and operators</title>
 	    <itemizedlist>
 		<listitem>
-		    <para>Literal inside quotes.</para>
+		    <para>Literal inside quotes. Supports formating sequences like in C language (\t, \n, \\).</para>
 		    <para>Example: <prompt>"some literal"</prompt></para>
 		</listitem>
 		<listitem>
