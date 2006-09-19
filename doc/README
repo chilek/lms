@@ -1477,11 +1477,11 @@ Chapter 3. User Interface (LMS-UI)
 3.8.2. New document
 
    Documents  can  be  created  with  templates made accordingly to rules
-   described in section Other documents. That can be also prepared files,
-   which  will  be  uploaded to server. Each document should have defined
-   title  and  type.  Additionally  you might define it's time span (time
-   until when it's valid) and description. Documents can be numbered with
-   any numbering plan defined in system.
+   described  in  section  Other  documents.  Those  can be also prepared
+   files,  which  will  be  uploaded to server. Each document should have
+   defined  title  and type. Additionally you might define it's time span
+   (time  until  when  it's  valid)  and  description.  Documents  can be
+   numbered with any numbering plan defined in system.
      _________________________________________________________________
 
 3.8.3. Documents Generator
@@ -4287,7 +4287,8 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 
 6.3.2.1. Expressions and operators
 
-     * Literal inside quotes.
+     * Literal  inside  quotes.  Supports  formating  sequences like in C
+       language (\t, \n, \\).
        Example: "some literal"
      * Number.
        Example: 1234

@@ -24,7 +24,7 @@
 		<title>Wyra¿enia i operatory</title>
 			<itemizedlist>
 			<listitem>
-				<para>Ci±g znaków.</para>
+				<para>Ci±g znaków. Obowi±zuj± tutaj zasady jêzyka C dotycz±ce u¿ycia znaków formatuj±cych (\t, \n, \\). </para>
 				<para>Przyk³ad: <prompt>"jaki¶ ci±g znaków"</prompt></para>
 			</listitem>
 			<listitem>
