@@ -49,6 +49,7 @@ $DOCTYPES = array(
     -3	=>	trans('protocol'),
     -4  =>	trans('order'), 
     -5  =>	trans('customer sheet'), // karta klienta 
+    -6  =>	trans('contract termination'), // 
     -10 =>	trans('other')
 );
 

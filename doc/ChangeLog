@@ -5,7 +5,7 @@ version ? (????-??-??):
   - fixed upgrade scripts for PostgreSQL versions that do not support
     "ALTER TABLE ... ADD ... NOT NULL DEFAULT ...": 2006061200, 2006082300,
     2006081000 (alec) 
-  - added document type "customer sheet" (alec)
+  - added document type "customer sheet" and "contract termination" (alec)
 
 version 1.9.3 Zarin (2006-09-19):
 
