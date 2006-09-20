@@ -1735,5 +1735,6 @@ $_LANG['Node owner is not connected!'] = 'Właściciel komputera nie jest podł�
 $_LANG['Select node'] = 'Wybierz komputer';
 $_LANG['Show expired'] = 'Pokaż przeterminowane';
 $_LANG['customer sheet'] = 'karta klienta';
+$_LANG['contract termination'] = 'rozwiązanie umowy';
 
 ?>
