@@ -61,8 +61,8 @@ function GetNumberPlanList()
 					    
 		foreach ($list as $idx => $item)
 		{
-			$list[$idx]['next'] = $max[$item['id']]['max']+1;
-			$list[$idx]['issued'] = $count[$item['id']]['count'];
+			$list[$idx]['next'] = isset($max[$item['id']]['max']) ? $max[$item['id']]['max']+1 : 1;
+			$list[$idx]['issued'] = isset($count[$item['id']]['count']) ? $count[$item['id']]['count'] : 0;
 		}
 	}
 	
