@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$registry = $_POST['registry'];
-
-if(isset($registry))
+if(isset($_POST['registry']))
 {
+	$registry = $_POST['registry'];
+
 	if($registry['name']=='' && $registry['description']=='')
 	{
 		$SESSION->redirect('?m=cashreglist');
@@ -69,7 +69,7 @@ $users = $LMS->GetUserNames();
 
 foreach($users as $user) 
 {
-	$user['rights'] = $registry['users'][$user['id']];
+	$user['rights'] = isset($registry['users'][$user['id']]) ? $registry['users'][$user['id']] : 0;
 	$registry['nrights'][] = $user;
 }
 $registry['rights'] = $registry['nrights'];

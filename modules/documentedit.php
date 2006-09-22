@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if($_GET['action'] == 'confirm')
+if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 {
 	if(sizeof($_POST['marks']))
 	{
@@ -156,6 +156,8 @@ if(isset($_POST['document']))
 			$error['file'] = trans('Specified file exists in database!');
 	}
 */	
+	$documentedit['closed'] = isset($documentedit['closed']) ? 1 : 0;
+
 	if(!$error)
 	{
 		$DB->BeginTrans();
@@ -163,7 +165,7 @@ if(isset($_POST['document']))
 		$DB->Execute('UPDATE documents SET type=?, closed=?, number=?, numberplanid=?
 				WHERE id=?',
 				array(	$documentedit['type'],
-					$documentedit['closed'] ? 1 : 0,
+					$documentedit['closed'],
 					$documentedit['number'],
 					$documentedit['numberplanid'],
 					$documentedit['id'],
@@ -185,6 +187,7 @@ if(isset($_POST['document']))
 	else
 	{
 		$document['title'] = $documentedit['title'];
+		$document['type'] = $documentedit['type'];
 		$document['description'] = $documentedit['description'];
 		$document['closed'] = $documentedit['closed'];
 		$document['number'] = $documentedit['number'];
@@ -201,10 +204,21 @@ else
 		$document['todate'] = date('Y/m/d', $document['todate']);
 }
 
+$allnumberplans = array();
+$numberplans = array();
+
 if($templist = $LMS->GetNumberPlans())
-	foreach($templist as $item)
-		if($item['doctype']<0)
-			$numberplans[] = $item;
+        foreach($templist as $item)
+	        if($item['doctype']<0)
+			$allnumberplans[] = $item;
+
+if(isset($document['numberplanid']))
+{
+        foreach($allnumberplans as $plan)
+                if($plan['doctype'] == $document['numberplanid'])
+                        $numberplans[] = $plan;
+}
+
 /*
 if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 	foreach($dirs as $dir)
@@ -225,6 +239,7 @@ $layout['pagetitle'] = trans('Edit Document: $0', docnumber($document['number'],
 
 //$SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('document', $document);
 $SMARTY->display('documentedit.html');

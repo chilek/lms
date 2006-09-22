@@ -78,7 +78,9 @@ $SESSION->restore('receiptregid', $receipt['regid']);
 $SESSION->restore('receipttype', $receipt['type']);
 $SESSION->restore('receiptadderror', $error);
 
-switch($_GET['action'])
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+
+switch($action)
 {
 	case 'init':
 
@@ -566,7 +568,7 @@ $SESSION->save('receiptcontents', $contents);
 $SESSION->save('receiptcustomer', $customer);
 $SESSION->save('receiptadderror', $error);
 
-if($_GET['action'] != '')
+if($action != '')
 {
 	$SESSION->redirect('?m=receiptadd');
 }
@@ -586,7 +588,9 @@ switch($receipt['type'])
 	break;
 }
 
-if($list)
+$invoicelist = array();
+
+if(isset($list))
 	if($contents)
 		foreach($list as $row)
 		{

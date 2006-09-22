@@ -246,17 +246,20 @@ else
 	$document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
 }
 
-if(!isset($document['numberplanid']) || !$document['numberplanid'])
-{
-	$document['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype<0 AND isdefault=1 LIMIT 1');
-}
-
+$allnumberplans = array();
 $numberplans = array();
 
 if($templist = $LMS->GetNumberPlans())
 	foreach($templist as $item)
 		if($item['doctype']<0)
-			$numberplans[] = $item;
+			$allnumberplans[] = $item;
+
+if(isset($document['numberplanid']))
+{
+	foreach($allnumberplans as $plan)
+		if($plan['doctype'] == $document['numberplanid'])
+			$numberplans[] = $plan;
+} 
 
 if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 	foreach($dirs as $dir)
@@ -278,6 +281,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
