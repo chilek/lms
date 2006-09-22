@@ -49,6 +49,8 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 		break;
 	}
 
+	$where = ''; $having = '';
+
 	if($search && $cat)
 	{
 		switch($cat)
@@ -95,6 +97,9 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 		array(DOC_RECEIPT, $registry)
 		))
 	{
+		$totalincome = 0;
+		$totalexpense = 0;
+		
 		foreach($list as $idx => $row)
 		{
 			$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
@@ -106,11 +111,13 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 			
 			// summary
 			if($row['value'] > 0)
-				$list['totalincome'] += $row['value'];
+				$totalincome += $row['value'];
 			else
-				$list['totalexpense'] += -$row['value'];
+				$totalexpense += -$row['value'];
 		}
 		
+		$list['totalincome'] = $totalincome;
+		$list['totalexpense'] = $totalexpense;
 		$list['order'] = $order;
 		$list['direction'] = $direction;
 
@@ -119,10 +126,10 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 }
 
 $SESSION->restore('rlm', $marks);
-$marked = $_POST['marks'];
+$marked = isset($_POST['marks']) ? $_POST['marks'] : array();
 if(sizeof($marked))
         foreach($marked as $id => $mark)
-	                $marks[$id] = $mark;
+	        $marks[$id] = $mark;
 $SESSION->save('rlm', $marks);
 
 if(isset($_POST['search']))
@@ -213,7 +220,7 @@ if($from > 0)
 $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
 
 $pagelimit = $CONFIG['phpui']['receiptlist_pagelimit'];
-$page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
+$page = (!isset($_GET['page']) ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
 $layout['pagetitle'] = trans('Cash Registry: $0', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));

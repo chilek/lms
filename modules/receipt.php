@@ -35,6 +35,7 @@ function GetReceipt($id)
 				WHERE type = 2 AND documents.id = ?', array($id)))
 	{
 		$receipt['contents'] = $DB->GetAll('SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($id));
+		$receipt['total'] = 0;
 		
 		foreach($receipt['contents'] as $row)
 			$receipt['total'] += $row['value'];
@@ -58,7 +59,7 @@ function GetReceipt($id)
 	}
 }
 
-if (strtolower($CONFIG['receipts']['type']) == 'pdf')
+if(strtolower($CONFIG['receipts']['type']) == 'pdf')
 {
     include('receipt_pdf.php');
     $SESSION->close();
@@ -66,11 +67,10 @@ if (strtolower($CONFIG['receipts']['type']) == 'pdf')
 }
 
 header('Content-Type: '.$CONFIG['receipts']['content_type']);
-if($LMS->CONFIG['receipts']['attachment_name'] != '')
+if(isset($CONFIG['receipts']['attachment_name']) &&  $CONFIG['receipts']['attachment_name'] != '')
 	header('Content-Disposition: attachment; filename='.$CONFIG['receipts']['attachment_name']);
 
-
-if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
+if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
         $SESSION->restore('rlm', $rlm);
 	$SESSION->remove('rlm');

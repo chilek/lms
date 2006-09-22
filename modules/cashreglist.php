@@ -35,6 +35,7 @@ $reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name, cashreg
 			GROUP BY cashregs.id, cashregs.name, cashregs.description, disabled, i.template, o.template 
 			ORDER BY cashregs.name');
 
+$listdata['sum'] = 0;
 if($reglist)
 	foreach($reglist as $row)
 		if(!$row['disabled'])

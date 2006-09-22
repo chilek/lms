@@ -1,6 +1,5 @@
 /* xajax Javascript library :: version 0.2.4 */
-Array.prototype.containsValue=function(valueToCheck){for(var i=0;i<this.length;i++){if(this[i]==valueToCheck)return true;}
-return false;}
+function ArrayContainsValue(array,valueToCheck){for(var i=0;i<array.length;i++){if(array[i]==valueToCheck) return true;} return false;}
 function Xajax(){this.DebugMessage=function(text){if(text.length > 1000)text=text.substr(0,1000)+"...\n[long response]\n...";try{if(this.debugWindow==undefined||this.debugWindow.closed==true){this.debugWindow=window.open('about:blank','xajax-debug','width=800,height=600,scrollbars=1,resizable,status');this.debugWindow.document.write('<html><head><title>Xajax debug output</title></head><body><h2>Xajax debug output</h2><div id="debugTag"></div></body></html>');}
 text=text.replace(/&/g,"&amp;")
 text=text.replace(/</g,"&lt;")
@@ -106,7 +105,7 @@ return;if(r.status==200){if(xajaxDebug)xajax.DebugMessage("Received:\n"+r.respon
 xajax.processResponse(r.responseXML);else{var errorString="Error: the XML response that was returned from the server is invalid.";errorString+="\nReceived:\n"+r.responseText;trimmedResponseText=r.responseText.replace(/^\s+/g,"");trimmedResponseText=trimmedResponseText.replace(/\s+$/g,"");if(trimmedResponseText!=r.responseText)
 errorString+="\nYou have whitespace in your response.";alert(errorString);document.body.style.cursor='default';if(xajaxStatusMessages==true)window.status='Invalid XML response error';}
 }
-else{if(xajax.responseErrorsForAlert.containsValue(r.status)){var errorString="Error: the server returned the following HTTP status: "+r.status;errorString+="\nReceived:\n"+r.responseText;alert(errorString);}
+else{if(ArrayContainsValue(xajax.responseErrorsForAlert,r.status)){var errorString="Error: the server returned the following HTTP status: "+r.status;errorString+="\nReceived:\n"+r.responseText;alert(errorString);}
 document.body.style.cursor='default';if(xajaxStatusMessages==true)window.status='Invalid XML response error';}
 delete r;r=null;}
 if(xajaxDebug)this.DebugMessage("Calling "+sFunction+" uri="+uri+" (post:"+postData+")");r.send(postData);if(xajaxStatusMessages==true)window.status='Waiting for data...';delete r;return true;}

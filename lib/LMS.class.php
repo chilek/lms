@@ -3234,12 +3234,12 @@ class LMS
 	{
 		if(is_array($doctype))
 			$list = $this->DB->GetAllByKey('
-				SELECT id, template, isdefault, period 
+				SELECT id, template, isdefault, period, doctype 
 				FROM numberplans WHERE doctype IN ('.implode(',',$doctype).') 
 				ORDER BY id', 'id');
 		elseif($doctype)
 			$list = $this->DB->GetAllByKey('
-				SELECT id, template, isdefault, period 
+				SELECT id, template, isdefault, period, doctype 
 				FROM numberplans WHERE doctype = ? ORDER BY id', 
 				'id', array($doctype));
 		else
