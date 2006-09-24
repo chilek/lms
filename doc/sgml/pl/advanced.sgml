@@ -117,7 +117,8 @@
 		    <member>rbe - numer KRS/EDG</member>
 		    <member>icn - numer dowodu osobistego</member>
                     <member>info - dodatkowe informacje</member>
-                    <member>serviceaddr - adres do dorêczeñ (np. na faktury)</member>
+                    <member>notes - notatki</member>
+		    <member>serviceaddr - adres do dorêczeñ (np. na faktury)</member>
                     <member>creationdate - czas utworzenia wpisu</member>
                     <member>moddate - czas modyfikacji</member>
                     <member>creatorid - identyfikator u¿ytkownika tworz±cego wpis</member>

@@ -191,6 +191,22 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $customerinfo.notes}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/note.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<TABLE WIDTH="100%" CELLPADDING="5">
+				<TR>
+					<TD CLASS="fall superlight">
+						{$customerinfo.notes|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">

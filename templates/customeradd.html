@@ -44,7 +44,7 @@
 		</TD>
 	</TR>
 	<TR class="light">
-		<TD width="50%" class="fleft" valign="top">
+		<TD width="50%" class="fleft"  style="vertical-align: top;">
 			<TABLE cellpadding="2" cellspacing="0" WIDTH="100%">
 				<TR>
 					<TD width="1%" valign="top">
@@ -75,7 +75,7 @@
 					<TD width="1%" valign="top">
 						<IMG src="img/home.gif" alt="">
 					</TD>
-					<TD width="99%">
+					<TD width="99%" nowrap>
 						<INPUT TYPE="text" size="40" value="{$customeradd.address}" name="customeradd[address]" id="address" {tip text="Enter customer address" trigger="address"}><BR>
 						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="10" VALUE="{$customeradd.zip}" NAME="customeradd[zip]" id="zip" {tip text="Enter zip code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$customeradd.city}" NAME="customeradd[city]" id="city" {tip text="Enter customer city" trigger="city"}>
 						<script language="Javascript">
@@ -153,17 +153,13 @@
 		</TD>
 		<TD width="50%" class="fright" ALIGN="LEFT" STYLE="vertical-align: top;">
 			<P><NOBR><IMG src="img/post.gif" alt="">
-			    <TEXTAREA rows="5" cols="60" name="customeradd[serviceaddr]" {tip text="Enter correspondence address (optional)"}>
-				{$customeradd.serviceaddr}
-			    </TEXTAREA></NOBR>
+			    <TEXTAREA rows="5" cols="60" name="customeradd[serviceaddr]" {tip text="Enter correspondence address (optional)"}>{$customeradd.serviceaddr}</TEXTAREA></NOBR>
 			<P><NOBR><IMG src="img/info1.gif" alt="">
-			    <TEXTAREA rows="5" cols="60" name="customeradd[info]" {tip text="Enter additional informations (optional)"}>
-				{$customeradd.info}
-			    </TEXTAREA></NOBR>
-			<P><NOBR><IMG src="img/mail.gif" alt="">
-			    <TEXTAREA rows="5" cols="60" name="customeradd[message]" {tip text="Enter message to customer (optional)"}>
-				{$customeradd.message}
-			    </TEXTAREA></NOBR>
+			    <TEXTAREA rows="5" cols="60" name="customeradd[info]" {tip text="Enter additional informations (optional)"}>{$customeradd.info|escape}</TEXTAREA></NOBR>
+			<P><NOBR><IMG src="img/warningon.gif" alt="">
+			    <TEXTAREA rows="5" cols="60" name="customeradd[message]" {tip text="Enter message to customer (optional)"}>{$customeradd.message|escape}</TEXTAREA></NOBR>
+			<P><NOBR><IMG src="img/note.gif" alt="">
+			    <TEXTAREA rows="5" cols="60" name="customeradd[notes]" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA></NOBR>
 		</TD>
 	</TR>
 	<TR class="light">

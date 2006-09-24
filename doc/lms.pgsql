@@ -340,6 +340,7 @@ CREATE TABLE customers (
 	rbe varchar(255) 	DEFAULT '' NOT NULL, -- EDG/KRS
 	icn varchar(255) 	DEFAULT '' NOT NULL, -- dow.os.
 	info text		DEFAULT '' NOT NULL,
+	notes text		DEFAULT '' NOT NULL,
 	serviceaddr text	DEFAULT '' NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
@@ -766,4 +767,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006082700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006092400');

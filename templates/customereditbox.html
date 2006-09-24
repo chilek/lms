@@ -161,34 +161,6 @@
 			<A href="javascript: randomize()" {tip text="[ Generate PIN ]"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-                                    		</TABLE>
-					</TD>
-					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/post.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<TEXTAREA NAME="customerdata[serviceaddr]" COLS="40" ROWS="5" {tip text="Enter service address (optional)"}>{$customerinfo.serviceaddr}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<TEXTAREA NAME="customerdata[info]" COLS="40" ROWS="5" {tip text="Enter additional informations (optional)"}>{$customerinfo.info}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/warningon.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<TEXTAREA NAME="customerdata[message]" COLS="40" ROWS="5" {tip text="Enter warning message contents (optional)"}>{$customerinfo.message}</TEXTAREA>
-		</TD>
-	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" ALT="">
@@ -211,6 +183,42 @@
 		<TD WIDTH="98%">
 			{$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
 			{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+                                    		</TABLE>
+					</TD>
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/post.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<TEXTAREA NAME="customerdata[serviceaddr]" COLS="60" ROWS="5" {tip text="Enter service address (optional)"}>{$customerinfo.serviceaddr|escape}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/info1.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<TEXTAREA NAME="customerdata[info]" COLS="60" ROWS="5" {tip text="Enter additional informations (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/warningon.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<TEXTAREA NAME="customerdata[message]" COLS="60" ROWS="5" {tip text="Enter warning message contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/note.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<TEXTAREA NAME="customerdata[notes]" COLS="60" ROWS="5" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
 		</TD>
 	</TR>
                                         	</TABLE>

@@ -353,8 +353,8 @@ class LMS
 	function CustomerAdd($customeradd)
 	{
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, im, address, zip, city, 
-				    email, ten, ssn, status, creationdate, creatorid, info, serviceaddr, message, pin, regon, rbe, icn) 
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				    email, ten, ssn, status, creationdate, creatorid, info, notes, serviceaddr, message, pin, regon, rbe, icn) 
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    $customeradd['phone1'], 
@@ -370,6 +370,7 @@ class LMS
 					    $customeradd['status'], 
 					    $this->AUTH->id, 
 					    $customeradd['info'], 
+					    $customeradd['notes'],
 					    $customeradd['serviceaddr'], 
 					    $customeradd['message'], 
 					    $customeradd['pin'],
@@ -407,7 +408,7 @@ class LMS
 
 		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, 
 					    zip=?, city=?, email=?, im=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
-					    info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, 
+					    info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, 
 					    pin=?, regon=?, icn=?, rbe=? WHERE id=?', 
 			array( $customerdata['status'], 
 				$customerdata['phone1'], 
@@ -422,6 +423,7 @@ class LMS
 				$customerdata['ssn'], 
 				isset($this->AUTH->id) ? $this->AUTH->id : 0,
 				$customerdata['info'], 
+				$customerdata['notes'],
 				$customerdata['serviceaddr'], 
 				$customerdata['lastname'], 
 				ucwords($customerdata['name']), 
@@ -458,7 +460,7 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
 					    lastname, name, status, email, im, phone1, phone2, phone3, address, zip, ten, ssn, 
-					    city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
+					    city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
 					    pin, regon, icn, rbe 
 					    FROM customers WHERE id = ?', array($id)))
 		{

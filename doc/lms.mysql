@@ -467,6 +467,7 @@ CREATE TABLE customers (
   rbe varchar(255) NOT NULL default '',
   icn varchar(255) NOT NULL default '',
   info text NOT NULL,
+  notes text NOT NULL default '',
   serviceaddr text NOT NULL default '',
   creationdate int(11) NOT NULL default '0',
   moddate int(11) NOT NULL default '0',
@@ -720,4 +721,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006082700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006092400');

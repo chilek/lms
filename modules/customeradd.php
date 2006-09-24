@@ -65,6 +65,8 @@ if(isset($_GET['ajax']))
 	exit;
 }
 
+$customeradd = array();
+
 if(isset($_POST['customeradd']))
 {
 	$customeradd = $_POST['customeradd'];
