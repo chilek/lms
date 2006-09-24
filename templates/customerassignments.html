@@ -1,15 +1,15 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD class="fleftu" align="left" nowrap="nowrap" onClick="showOrHide('customerassignments');">
+		<TD width="99%" class="fleftu" align="left" nowrap="nowrap" onClick="showOrHide('customerassignments');">
 			<IMG src="img/money.gif" alt="">
 			<B><A name="balance">{t}Customer Liabilities:{/t}</A></B>
 		</TD>
-		<TD class="frightu" align="right">
+		<TD width="1%" class="frightu" align="right" nowrap>
 			{if $layout.module == 'customerassignmentsedit'}
-		        <A href="?m=customerassignmentsedit&expired={if $expired}0{else}1{/if}&id={$assignmentedit.id}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>
+		        <A href="?m=customerassignmentsedit&expired={if $expired}0{else}1{/if}&id={$assignmentedit.id}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
 			{else}
-			<A href="?m=customerinfo&expired={if $expired}0{else}1{/if}&id={$balancelist.customerid}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>
+			<A href="?m=customerinfo&expired={if $expired}0{else}1{/if}&id={$balancelist.customerid}">{if $expired}{t}Hide expired{/t}{else}{t}Show expired{/t}{/if} &raquo;</A>&nbsp;
 			{/if}
 		</TD>
 	</TR>
