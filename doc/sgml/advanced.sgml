@@ -113,6 +113,7 @@
 		    <member>rbe - register of business entities</member>
 		    <member>icn - identity card number</member>
                     <member>info - additional informations</member>
+		    <member>notes - notes</member>
                     <member>serviceaddr - correspondence address</member>
                     <member>creationdate - record creation date</member>
                     <member>moddate - record modification date</member>

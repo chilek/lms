@@ -1690,7 +1690,6 @@ $_LANG['Enter customer and/or node data and press Enter.'] = 'Wprowadź dane kli
 $_LANG['Enter unitary value without discount'] = 'Wprowadź wartość jednostkową bez rabatu';
 $_LANG['Export'] = 'Eksport';
 $_LANG['Financial data export to external systems'] = 'Eksport danych finansowych do systemów zewnętrznych';
-$_LANG['Bank account:'] = 'Rachunek bankowy:';
 $_LANG['Adds body of message in ticket reply. Default: false'] = 'Dodaje ciało wiadomości w odpowiedzi. Domyślnie: nie.';
 $_LANG['sql'] = 'sql';
 $_LANG['SYSTEM DOMAIN'] = 'DOMENA SYSTEMOWA';
@@ -1736,5 +1735,7 @@ $_LANG['Select node'] = 'Wybierz komputer';
 $_LANG['Show expired'] = 'Pokaż przeterminowane';
 $_LANG['customer sheet'] = 'karta klienta';
 $_LANG['contract termination'] = 'rozwiązanie umowy';
+$_LANG['Enter notes (optional)'] = 'Wprowadź notatki (opcjonalnie)';
+$_LANG['select numbering plan'] = 'wybierz plan numeracyjny';
 
 ?>

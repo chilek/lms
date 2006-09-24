@@ -8,6 +8,7 @@ version ? (????-??-??):
   - added document type "customer sheet" and "contract termination" (alec)
   - BTS#0000599: patched xajax library for using it with other ajaxized stuff (alec)
   - in documents creation numbering plans are binded with document types (alec)
+  - added Notes field in customer's data (alec)
 
 version 1.9.3 Zarin (2006-09-19):
 
