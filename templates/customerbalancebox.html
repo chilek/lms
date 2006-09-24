@@ -64,7 +64,7 @@
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD class="fleftu" {if $limit}OnCLick="showOrHide('customerbalance');"{/if} nowrap>
+		<TD width="99%" class="fleftu" {if $limit}OnCLick="showOrHide('customerbalance');"{/if} nowrap>
 			<IMG src="img/pay.gif" alt="">
 			<B>{t}Customer Account:{/t}</B> 
 			{if $limit}
@@ -72,11 +72,11 @@
 				({t 0=$n}last $0 transactions{/t})
 			{/if}
 		</TD>
-		<TD class="frightu" align="right" nowrap>
+		<TD width="1%" class="frightu" align="right" nowrap>
 			<A href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{t}New Invoice{/t} &raquo;</A>&nbsp;
 			<A href="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{t}New Cash-in Receipt{/t} &raquo;</A>&nbsp;
 			<A href="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{t}New Cash-out Receipt{/t} &raquo;</A>&nbsp;
-			{if $limit}<A href="?m=customerbalance&id={$balancelist.customerid}">{t}See all transactions{/t} &raquo;</A>{/if}
+			{if $limit}<A href="?m=customerbalance&id={$balancelist.customerid}">{t}See all transactions{/t} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
 	<TR id="customerbalance">
