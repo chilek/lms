@@ -1317,6 +1317,8 @@ class LMS
 
 	function GetCustomerAssignments($id, $show_expired=false)
 	{
+		$now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
+		
 		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, assignments.customerid, period, at, suspended,  
 						    uprate, upceil, downceil, downrate, invoice, settlement, datefrom, dateto, discount, liabilityid, 
 						    (CASE WHEN tariffs.value IS NULL THEN liabilities.value ELSE tariffs.value END) AS value,
@@ -1325,7 +1327,7 @@ class LMS
 						    LEFT JOIN tariffs ON (tariffid=tariffs.id) 
 						    LEFT JOIN liabilities ON (liabilityid=liabilities.id) 
 						    WHERE assignments.customerid=? '
-						    .(!$show_expired ? 'AND (dateto > ?NOW? OR dateto = 0) AND (liabilityid = 0 OR at > ?NOW?)' : '')
+						    .(!$show_expired ? 'AND (dateto > '.$now.' OR dateto = 0) AND (liabilityid = 0 OR at >= '.$now.')' : '')
 						    .' ORDER BY datefrom, value', array($id)))
 		{
 			foreach($assignments as $idx => $row)
