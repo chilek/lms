@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+{assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu" align="left" nowrap="nowrap" onClick="showOrHide('customerassignments');">
@@ -30,7 +31,7 @@
 				{cycle name=assign values="light,lucid" print=false}
 				{foreach from=$assignments item=a}
 				<TR class="{cycle name=assign}
-				    {if ($a.dateto < $smarty.now && $a.dateto) || ($a.liabilityid && $a.at < $smarty.now)} blend{elseif ($a.datefrom > $smarty.now && $a.datefrom && $a.period) || $a.suspended} alertblend{/if}"
+				    {if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) || $a.suspended} alertblend{/if}"
 				    onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" >
 					{if !$a.tariffid && !$a.liabilityid}
 					<TD WIDTH="98%" COLSPAN="7"><B>{t}Suspending of all liabilities{/t}</B></TD>
@@ -55,7 +56,7 @@
 						{if $a.dateto}{t}to{/t} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $smarty.now || !$a.dateto) || ($a.liabilityid && $a.at > $smarty.now))}
+						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
 						<A href="?m=customerassignments&action=suspend&id={$balancelist.customerid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
 						{/if}
 						<A HREF="?m=customerassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
