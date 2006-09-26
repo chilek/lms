@@ -65,8 +65,11 @@ if(isset($_GET['id']))
 	}
 	
 	if($receipt['customerid'])
+	{
 		$customer = $LMS->GetCustomer($receipt['customerid']);
-
+    		$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
+	}
+	    
 	if($receipt['numberplanid'] && !$receipt['extnumber'])
     		if(strpos($receipt['template'], '%I')!==FALSE)
 	                $receipt['extended'] = TRUE;
@@ -204,7 +207,8 @@ switch($_GET['action'])
 			if($LMS->CustomerExists(($cid)))
 			{
 				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid']));
-	                        $receipt['selected'] = TRUE;
+	                        $customer['groups'] = $LMS->CustomergroupGetForCustomer($customer['id']);
+		        	$receipt['selected'] = TRUE;
 			}
 
 	break;

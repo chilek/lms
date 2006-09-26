@@ -82,21 +82,7 @@
 			{/if}
 		</TD>
 	</TR>
-{*	{if $customer}
 	<TR CLASS="light">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<B>
-			{t}First/last or Company name:{/t}<BR>
-			{t}Address:{/t}
-			</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			{$customer.customername}<BR>
-			{$customer.address} {$customer.zip} {$customer.city}
-		</TD>
-	</TR>
-	{/if}
-*}	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{t}Target:{/t}</B>
 		</TD>
@@ -131,16 +117,20 @@
 	        <TD CLASS="fleftu" WIDTH="1%" nowrap>
 		        <IMG SRC="img/customer.gif" ALT=""> <B>{t}Customer:{/t}</B>
 		</TD>
-		<TD CLASS="frightu" WIDTH="99%">
+		<TD CLASS="fbt" WIDTH="1%" nowrap>
 		        <B>{$customer.customername}</B>
 		        &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
 		        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
                 </TD>
+		<TD CLASS="frightu" WIDTH="98%" align="right">
+                        {if $customer.groups}
+			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
+			{/if}
+		</TD>
         </TR>
 </TABLE>
 </P>
 {/if}
-<P>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">

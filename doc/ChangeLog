@@ -10,6 +10,7 @@ version ? (????-??-??):
   - in documents creation numbering plans are binded with document types (alec)
   - added Notes field in customer's data (alec)
   - BTS#0000602: don't hide disposable liabilities for current day (alec)
+  - printing customer's groups in new/edit cash receipt form (alec)
 
 version 1.9.3 Zarin (2006-09-19):
 
