@@ -129,6 +129,32 @@
 		</TD>
         </TR>
 </TABLE>
+{if $customer.notes}
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" width="1%" nowrap>
+			<IMG SRC="img/note.gif" ALT=""> <B>{t}Notes:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+		        {$customer.notes|replace:"\n":"<BR>"}
+		</TD>
+	</TR>
+</TABLE>
+{/if}
+{if $customer.docwarning}
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" width="1%" nowrap>
+			<IMG SRC="img/docum.gif" ALT=""> <B>{t}Documents:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+		        <FONT class="red">{$customer.docwarning}</FONT>
+		</TD>
+	</TR>
+</TABLE>
+{/if}
 </P>
 {/if}
 <TABLE WIDTH="100%" CELLPADDING="3">

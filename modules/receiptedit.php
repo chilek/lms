@@ -68,6 +68,18 @@ if(isset($_GET['id']))
 	{
 		$customer = $LMS->GetCustomer($receipt['customerid']);
     		$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
+		if(!chkconfig($CONFIG['receipts']['show_notes']))
+                        unset($customer['notes']);		
+
+		// niezatwierdzone dokumenty klienta
+		if(chkconfig($CONFIG['receipts']['show_documents_warning']))
+			if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
+			{
+				if($CONFIG['receipts']['documents_warning'])
+					$customer['docwarning'] = $CONFIG['receipts']['documents_warning'];
+				else
+					$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
+			}
 	}
 	    
 	if($receipt['numberplanid'] && !$receipt['extnumber'])
@@ -208,7 +220,20 @@ switch($_GET['action'])
 			{
 				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid']));
 	                        $customer['groups'] = $LMS->CustomergroupGetForCustomer($customer['id']);
-		        	$receipt['selected'] = TRUE;
+		        	if(!chkconfig($CONFIG['receipts']['show_notes']))
+				        unset($customer['notes']);
+				
+				// niezatwierdzone dokumenty klienta
+				if(chkconfig($CONFIG['receipts']['show_documents_warning']))
+					if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($customer['id'])))
+					{
+						if($CONFIG['receipts']['documents_warning'])
+							$customer['docwarning'] = $CONFIG['receipts']['documents_warning'];
+						else
+							$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
+					}
+
+				$receipt['selected'] = TRUE;
 			}
 
 	break;
