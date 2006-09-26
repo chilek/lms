@@ -119,8 +119,10 @@ switch($action)
 				$receipt['extended'] = TRUE;
 
 		if(!$error && $receipt['customerid'] && $LMS->CustomerExists($receipt['customerid']))
+		{
 			$customer = $LMS->GetCustomer($receipt['customerid']);
-		
+			$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
+		}
 	break;
 
 	case 'setreg':
@@ -319,10 +321,16 @@ switch($action)
 					if( $balance<0 )
 						$error['customerid'] = trans('Selected customer is in debt for $0!', moneyf($balance*-1));
 					else
+					{
 						$customer = $LMS->GetCustomer($cid);
+						$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
+					}
 				}
 				else
+				{
 					$customer = $LMS->GetCustomer($cid);
+					$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
+				}
 			}
 		
 		if(!$error && $customer)
