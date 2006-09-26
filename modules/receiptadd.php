@@ -122,6 +122,18 @@ switch($action)
 		{
 			$customer = $LMS->GetCustomer($receipt['customerid']);
 			$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
+			if(!chkconfig($CONFIG['receipts']['show_notes']))
+				unset($customer['notes']);
+			
+			// niezatwierdzone dokumenty klienta
+			if(chkconfig($CONFIG['receipts']['show_documents_warning']))
+				if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
+				{
+					if($CONFIG['receipts']['documents_warning'])
+						$customer['docwarning'] = $CONFIG['receipts']['documents_warning'];
+					else
+						$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
+				}
 		}
 	break;
 
@@ -320,19 +332,27 @@ switch($action)
 					$balance = $LMS->GetCustomerBalance($cid);
 					if( $balance<0 )
 						$error['customerid'] = trans('Selected customer is in debt for $0!', moneyf($balance*-1));
-					else
-					{
-						$customer = $LMS->GetCustomer($cid);
-						$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
-					}
 				}
-				else
+				
+				if(!$error)
 				{
 					$customer = $LMS->GetCustomer($cid);
 					$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
+					if(!chkconfig($CONFIG['receipts']['show_notes']))
+						unset($customer['notes']);
+					
+					// niezatwierdzone dokumenty klienta
+					if(chkconfig($CONFIG['receipts']['show_documents_warning']))
+						if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($cid)))
+						{
+							if($CONFIG['receipts']['documents_warning'])
+								$customer['docwarning'] = $CONFIG['receipts']['documents_warning'];
+							else
+								$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
+						}
 				}
 			}
-		
+			
 		if(!$error && $customer)
 			$receipt['selected'] = TRUE;
 	break;
