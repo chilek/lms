@@ -165,9 +165,9 @@
 			&nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
 		</TD>
 		<TD CLASS="frightu" WIDTH="98%" align="right">
-			{if $customer.groups}
+			{if $customer.groups}<FONT class="red bold">
 			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
-			{/if}
+			</FONT>{/if}
 		</TD>
 	</TR>
 </TABLE>
@@ -179,7 +179,7 @@
 			<IMG SRC="img/note.gif" ALT=""> <B>{t}Notes:{/t}</B>
 		</TD>
 		<TD CLASS="frightu">
-		        {$customer.notes|replace:"\n":"<BR>"}
+		        <FONT class="red">{$customer.notes|replace:"\n":"<BR>"}</FONT>
 		</TD>
 	</TR>
 </TABLE>
