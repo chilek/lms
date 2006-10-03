@@ -50,13 +50,13 @@ struct global
 	char * (*str_lwc)(const char *);
 };
 
-struct module
+struct lmsd_module
 {
 	char *file;
 	char *instance;
 	Config *ini;
 	void *dlh;
-	void (*reload)(struct global *, struct module *); 
+	void (*reload)(struct global *, struct lmsd_module *); 
 };
 
 struct instance
@@ -66,7 +66,7 @@ struct instance
 	char *module;
 };
 
-typedef struct module MODULE;
+typedef struct lmsd_module MODULE;
 typedef struct global GLOBAL;
 typedef struct instance INSTANCE;
 
