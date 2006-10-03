@@ -14,6 +14,7 @@ version ? (????-??-??):
   - now we can display to cashier warnings about unconfirmed documents and
     customer's notes with [receipts] options 'show_notes' and 
     'show_documents_warning' (alec)  
+  - fixed helpdesk tickets searching (alec)
 
 version 1.9.3 Zarin (2006-09-19):
 

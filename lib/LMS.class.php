@@ -2741,6 +2741,8 @@ class LMS
 			case '-1':
 				$statefilter = 'AND state != 2';
 				break;
+			default:
+				$statefilter = '';
 		}
 
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified
@@ -2760,10 +2762,10 @@ class LMS
 				else
 					list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 				$result[$idx] = $ticket;
-				$result['total']++;
 			}
 		}
 
+		$result['total'] = sizeof($result);
 		$result['state'] = $state;
 		$result['order'] = $order;
 		$result['direction'] = $direction;
@@ -2778,7 +2780,7 @@ class LMS
 			foreach($result as $row)
 				$stats[$row['state']] = $row['scount'];
 			foreach(array('new', 'open', 'resolved', 'dead') as $idx => $value)
-				$stats[$value] = $stats[$idx];
+				$stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
 		}
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
 		return $stats;

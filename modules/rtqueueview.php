@@ -77,6 +77,7 @@ $queuedata['total'] = $queue['total'];
 $queuedata['state'] = $queue['state'];
 $queuedata['order'] = $queue['order'];
 $queuedata['direction'] = $queue['direction'];
+
 unset($queue['total']);
 unset($queue['state']);
 unset($queue['order']);
