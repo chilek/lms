@@ -92,7 +92,6 @@ function RTSearch($search, $order='createtime,desc')
 			$result[$idx] = $ticket;
 		}
 	}
-print_r($DB);
 
 	$result['total'] = sizeof($result);	
 	$result['order'] = $order;
@@ -141,7 +140,6 @@ if(isset($search) || isset($_GET['search']))
 		$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array($AUTH->id));
 		if(sizeof($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
 			$search['queue'] = $queues;
-			print_r($queues);
 	}
 	elseif(!$LMS->GetUserRightsRT($AUTH->id, $search['queue']))
 		$error['queue'] = trans('You have no privileges to review this queue!');
