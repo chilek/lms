@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$ticket = $_POST['ticket'];
 $queue = $_GET['id'];
 
-if(isset($ticket))
+if(isset($_POST['ticket']))
 {
+	$ticket = $_POST['ticket'];
 	$queue = $ticket['queue'];
 
 	if($ticket['subject']=='' && $ticket['body']=='')
@@ -107,18 +107,18 @@ if(isset($ticket))
 		
 		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
+	$SMARTY->assign('ticket', $ticket);
+	$SMARTY->assign('error', $error);
 }
 	
 $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('customerid', isset($ticket['customerid']) ? $ticket['customerid'] : $_GET['customerid']);
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('error', $error);
 $SMARTY->display('rtticketadd.html');
 
 ?>

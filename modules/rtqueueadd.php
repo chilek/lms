@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$queue = $_POST['queue'];
-
-if(isset($queue))
+if(isset($_POST['queue']))
 {
+	$queue = $_POST['queue'];
+
 	if($queue['name']=='' && $queue['email']=='' && $queue['description']=='')
 	{
 		$SESSION->redirect('?m=rtqueuelist');

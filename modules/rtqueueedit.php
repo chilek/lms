@@ -29,10 +29,10 @@ if(! $LMS->QueueExists($_GET['id']))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-$queue = $_POST['queue'];
-
-if(isset($queue))
+if(isset($_POST['queue']))
 {
+	$queue = $_POST['queue'];
+
 	$queue['id'] = $_GET['id'];
 	
 	if($queue['name'] == '')
@@ -54,7 +54,7 @@ if(isset($queue))
 else
 	$queue = $LMS->GetQueue($_GET['id']);
 
-$layout['pagetitle'] = trans('Queue Edit: $0',$queue['name']);
+$layout['pagetitle'] = trans('Queue Edit: $0', $queue['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
