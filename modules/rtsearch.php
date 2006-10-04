@@ -57,13 +57,17 @@ function RTSearch($search, $order='createtime,desc')
 		break;
 	}
 
-	$where  = ($search['queue']     ? 'AND queueid='.$search['queue'].' '          : '');
+	$where = '';
 	$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            : '');
 	$where .= ($search['customerid']    ? 'AND rttickets.customerid='.$search['customerid'].' '   : '');
 	$where .= ($search['subject']   ? 'AND rttickets.subject ?LIKE?\'%'.$search['subject'].'%\' '       : '');
 	$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
 	$where .= ($search['email']!='' ? 'AND requestor ?LIKE? \'%'.$search['email'].'%\' ' : '');
 	$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
+	if(is_array($search['queue']))
+		$where .= 'AND queueid IN ('.implode(',',$search['queue']).') ';
+	elseif($search['queue'])
+		$where .= 'AND queueid='.$search['queue'].' ';
 	
 	if($search['name'])
 		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
@@ -84,11 +88,12 @@ function RTSearch($search, $order='createtime,desc')
 				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 			else
 				list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
+			
 			$result[$idx] = $ticket;
-			$result['total']++;
 		}
 	}
-		
+
+	$result['total'] = sizeof($result);	
 	$result['order'] = $order;
 	$result['direction'] = $direction;
 		
@@ -127,33 +132,40 @@ $SESSION->save('rto', $o);
 if ($SESSION->is_set('rtp') && !isset($_GET['page']) && !isset($search))
 	$SESSION->restore('rtp', $_GET['page']);
 
-$page = (! $_GET['page'] ? 1 : $_GET['page']); 
-$pagelimit = (! $LMS->CONFIG['phpui']['ticketlist_pagelimit'] ? $queuedata['total'] : $LMS->CONFIG['phpui']['ticketlist_pagelimit']);
-$start = ($page - 1) * $pagelimit;
-
-$SESSION->save('rtp', $page);
-
-if(isset($search) || $_GET['search'])
+if(isset($search) || isset($_GET['s']))
 {
-	if($search['queue'] && !$LMS->GetUserRightsRT($AUTH->id, $search['queue']))
+	if(!isset($search['queue']) || $search['queue'] == 0)
+	{
+		// if user hasn't got rights for all queues...
+		$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array($AUTH->id));
+		if(sizeof($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
+			$search['queue'] = $queues;
+	}
+	elseif(!$LMS->GetUserRightsRT($AUTH->id, $search['queue']))
 		$error['queue'] = trans('You have no privileges to review this queue!');
 
-	$search = $search ? $search : $SESSION->get('rtsearch');
+	$search = isset($search) ? $search : $SESSION->get('rtsearch');
 	
 	if(!$error)
 	{
 		$queue = RTSearch($search, $o);
 		
-		$SESSION->save('rtsearch', $search);
-		
 		$queuedata['total'] = $queue['total'];
 		$queuedata['order'] = $queue['order'];		
 		$queuedata['direction'] = $queue['direction'];		
 		$queuedata['queue'] = $search['queue'];
+		
 		unset($queue['total']);
 		unset($queue['order']);		
 		unset($queue['direction']);
-		
+
+		$page = (! isset($_GET['page']) ? 1 : $_GET['page']); 
+		$pagelimit = (! $CONFIG['phpui']['ticketlist_pagelimit'] ? $queuedata['total'] : $CONFIG['phpui']['ticketlist_pagelimit']);
+		$start = ($page - 1) * $pagelimit;
+
+		$SESSION->save('rtp', $page);
+		$SESSION->save('rtsearch', $search);
+
 		$SMARTY->assign('queue', $queue);
 		$SMARTY->assign('queuedata', $queuedata);
 		$SMARTY->assign('pagelimit',$pagelimit);
@@ -171,7 +183,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', $SESSION->get('rtsearch'));
+$SMARTY->assign('search', isset($search) ? $search : $SESSION->get('rtsearch'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtsearch.html');
 

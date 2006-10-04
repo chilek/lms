@@ -3,6 +3,8 @@ $Id$
 version ? (????-??-??):
 
   - setting document's 'To' date to the end of the day (alec)
+  - fixed helpdesk tickets searching module bug occuring while results page
+    change and with enabled register_globals (alec)
 
 version 1.8.6 Zarah (2006-09-02):
 
