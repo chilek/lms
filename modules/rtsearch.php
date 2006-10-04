@@ -132,7 +132,7 @@ $SESSION->save('rto', $o);
 if ($SESSION->is_set('rtp') && !isset($_GET['page']) && !isset($search))
 	$SESSION->restore('rtp', $_GET['page']);
 
-if(isset($search) || isset($_GET['search']))
+if(isset($search) || isset($_GET['s']))
 {
 	if(!isset($search['queue']) || $search['queue'] == 0)
 	{
