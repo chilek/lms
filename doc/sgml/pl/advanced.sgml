@@ -176,6 +176,7 @@
                     <member>netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</member>
                     <member>linktype - typ po³±czenia sieciowego (0-kabel, 1-radio)</member>
                     <member>access - pod³±czony/od³±czony (1/0)</member>
+                    <member>chkmac - w³±czone/wy³±czone sprawdzanie MAC adresu (1/0)</member>
                     <member>warning - ostrzegaj/nie ostrzegaj (1/0)</member>
                     <member>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</member>
                     <member>info - informacje dodatkowe</member>

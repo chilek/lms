@@ -62,6 +62,11 @@ case 'disconnectnode':
 	$LMS->NetDevLinkNode($_GET['nodeid'],0);
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
+case 'chkmac':
+
+        $DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $_GET['ip']));
+	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id'].'&ip='.$_GET['ip']);
+	
 case 'connect':
 	$linktype = isset($_GET['linktype']) ? $_GET['linktype'] : '0';
 	$SESSION->save('devlinktype', $linktype);
@@ -156,12 +161,15 @@ case 'formaddip':
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']))
 			$error['mac'] = trans('MAC address is in use!');
 
+	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
+
 	if(!$error)
 	{
 		$nodeipdata['warning'] = 0;
 		$nodeipdata['passwd'] = '';
 		$nodeipdata['location'] = '';
 		$nodeipdata['netdev'] = $_GET['id'];
+		
 		$LMS->NodeAdd($nodeipdata);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
@@ -234,6 +242,8 @@ case 'formeditip':
 		!chkconfig($CONFIG['phpui']['allow_mac_sharing']))
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']) && $LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata['mac'])
 			$error['mac'] = trans('MAC address is in use!');
+
+	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
 	
 	if(!$error)
 	{

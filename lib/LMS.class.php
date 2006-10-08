@@ -987,7 +987,9 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS('nodes');
-		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=?, location=? WHERE id=?', 
+		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), ipaddr=inet_aton(?), mac=UPPER(?), 
+					passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=?, 
+					location=?, chkmac=? WHERE id=?', 
 			    array($nodedata['name'], 
 				    $nodedata['ipaddr_pub'], 
 				    $nodedata['ipaddr'], 
@@ -1000,6 +1002,7 @@ class LMS
 				    $nodedata['ownerid'], 
 				    $nodedata['info'], 
 				    $nodedata['location'],
+				    $nodedata['chkmac'],
 				    $nodedata['id']));
 	}
 
@@ -1057,7 +1060,11 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline, info, location FROM nodes WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
+					ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
+					warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
+					info, location, chkmac
+					FROM nodes WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
@@ -1240,7 +1247,9 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS('nodes');
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, creationdate, access, warning, info, netdev, location) VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)',
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, 
+					creationdate, access, warning, info, netdev, location, chkmac) 
+					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?)',
 				array(strtoupper($nodedata['name']),
 				    strtoupper($nodedata['mac']),
 				    $nodedata['ipaddr'],
@@ -1252,7 +1261,8 @@ class LMS
 				    $nodedata['warning'],
 				    $nodedata['info'],
 				    $nodedata['netdev'],
-				    $nodedata['location'])))
+				    $nodedata['location'],
+				    $nodedata['chkmac'])))
 			return $this->DB->GetLastInsertID('nodes');
 		else
 			return FALSE;

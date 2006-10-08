@@ -133,6 +133,8 @@ if(isset($_POST['nodedata']))
 	else
 		$nodedata['netdev'] = 0;
 
+	if(!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
+
 	if(!$error)
 	{
 		$nodeid = $LMS->NodeAdd($nodedata);

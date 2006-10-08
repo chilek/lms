@@ -1,4 +1,13 @@
 <!-- $Id$ -->
+<SCRIPT type="text/javascript">
+        function chkmac_change()
+{literal}{{/literal}
+                if(document.getElementById('chkmac').checked)
+                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=1';
+                else
+                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=0';
+{literal}}{/literal}
+</SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -32,6 +41,7 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$nodeipdata.mac} {if $nodeipdata.producer}({$nodeipdata.producer}){/if}
+			<INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" CLASS="light box"{if $nodeipdata.chkmac} checked{/if} onclick="chkmac_change();"> {t}MAC checking{/t}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

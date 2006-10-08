@@ -37,7 +37,8 @@ void tscript_ext_sql_close(tscript_context *);
 		    warning, netdev, lastonline, nodes.info AS info, \
 		    CONCAT(customers.lastname, ' ', customers.name) AS owner, \
 		    customers.message AS message, mac, passwd, linktype, \
-		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub \
+		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
+		    chkmac \
 		    FROM nodes \
 		    LEFT JOIN customers ON (customers.id = ownerid)"
 #else
@@ -45,7 +46,8 @@ void tscript_ext_sql_close(tscript_context *);
 		    warning, netdev, lastonline, nodes.info AS info, \
 		    customers.lastname || ' ' || customers.name AS owner, \
 		    customers.message AS message, mac, passwd, linktype, \
-		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub \
+		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
+		    chkmac \
 		    FROM nodes \
 		    LEFT JOIN customers ON (customers.id = ownerid)"
 #endif		    

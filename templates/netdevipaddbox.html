@@ -43,8 +43,9 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}MAC address:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%" CLASS="FRIGHT" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeipdata.chkmac) || $nodeipdata.chkmac} checked{/if}> {t}MAC checking{/t}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

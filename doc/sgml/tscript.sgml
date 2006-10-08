@@ -525,6 +525,7 @@ syslog("message");
 				<member>ip - IP address</member>
 				<member>ip_pub - public IP address</member>
 				<member>linktype - connection type (0-cable, 1-air)</member>
+				<member>chkmac - MAC checking (0-disabled, 1-enable)</member>
 			    </simplelist>
 			</para>
 			</listitem>

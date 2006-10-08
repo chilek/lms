@@ -15,6 +15,7 @@ version ? (????-??-??):
     customer's notes with [receipts] options 'show_notes' and 
     'show_documents_warning' (alec)  
   - fixed helpdesk tickets searching (alec)
+  - added 'MAC checking' checkbox in nodes and device's IPs data (alec)
 
 version 1.9.3 Zarin (2006-09-19):
 
