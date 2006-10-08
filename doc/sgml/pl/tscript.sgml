@@ -531,6 +531,7 @@ syslog("Komunikat");
 					<member>ip - adres IP</member>
 					<member>ip_pub - publiczny adres IP</member>
 					<member>linktype - typ po³±czenia (0-kabel, 1-radio)</member>
+					<member>chkmac - sprawdzanie MAC'a: w³±czone/wy³±czone (1/0)</member>
 					</simplelist>
 					</para>
 				</listitem>

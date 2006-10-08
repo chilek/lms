@@ -1737,5 +1737,9 @@ $_LANG['customer sheet'] = 'karta klienta';
 $_LANG['contract termination'] = 'rozwiązanie umowy';
 $_LANG['Enter notes (optional)'] = 'Wprowadź notatki (opcjonalnie)';
 $_LANG['select numbering plan'] = 'wybierz plan numeracyjny';
+$_LANG['Customer has got unconfirmed documents!'] = 'Klient posiada niezatwierdzone dokumenty!';
+$_LANG['Documents:'] = 'Dokumenty:';
+$_LANG['Enable/disable MAC address checking'] = 'Włącz/wyłącz sprawdzanie MAC adresu';
+$_LANG['MAC checking'] = 'sprawdzanie MAC\'a';
 
 ?>

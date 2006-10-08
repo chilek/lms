@@ -32,19 +32,27 @@ if(!$LMS->NodeExists($_GET['id']))
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if($action=='link')
+switch($action)
 {
-	$netdev = $LMS->GetNetDev($_GET['devid']); 
+	case 'link':
 
-	if($netdev['ports'] > $netdev['takenports']) 
-	{
-		$LMS->NetDevLinkNode($_GET['id'],$_GET['devid']);
+		$netdev = $LMS->GetNetDev($_GET['devid']); 
+
+		if($netdev['ports'] > $netdev['takenports']) 
+		{
+			$LMS->NetDevLinkNode($_GET['id'],$_GET['devid']);
+			$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
+		}
+		else
+		{
+			$SESSION->redirect('?m=nodeinfo&id='.$_GET['id'].'&devid='.$_GET['devid']);
+		}
+	break;
+	case 'chkmac':
+
+		$DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $_GET['id']));
 		$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
-	}
-	else
-	{
-		$SESSION->redirect('?m=nodeinfo&id='.$_GET['id'].'&devid='.$_GET['devid']);
-	}	
+	break;
 }
 
 $nodeid = $_GET['id'];
@@ -136,10 +144,9 @@ if(isset($_POST['nodeedit']))
 	if(strlen($nodeedit['passwd'])>32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
 
-	if($nodeedit['access']!=1)
-		$nodeedit['access'] = 0;
-        if($nodeedit['warning']!=1)
-                $nodeedit['warning'] = 0;	
+	if(!isset($nodeedit['access']))	$nodeedit['access'] = 0;
+        if(!isset($nodeedit['warning'])) $nodeedit['warning'] = 0;	
+	if(!isset($nodeedit['chkmac']))	$nodeedit['chkmac'] = 0;
 
 	if($nodeinfo['netdev'] != $nodeedit['netdev'] && $nodeedit['netdev'] != 0)
 	{
@@ -159,6 +166,7 @@ if(isset($_POST['nodeedit']))
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];
 	$nodeinfo['ownerid'] = $nodeedit['ownerid'];
+	$nodeinfo['chkmac'] = $nodeedit['chkmac'];
 
 	if(!$error)
 	{

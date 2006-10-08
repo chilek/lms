@@ -173,6 +173,7 @@
                     <member>linktype - type of connection (0-cable, 1-wireless)</member>
                     <member>access - connected/disconnected (cutoff) (1/0)</member>
                     <member>warning - should be warned with administration message? (1/0)</member>
+                    <member>chkmac - enable/disable MAC checking? (1/0)</member>
                     <member>lastonline - last network activity timestamp</member>
                     <member>info - additional information</member>
 		    <member>location - location (address)</member>

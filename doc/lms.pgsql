@@ -130,6 +130,7 @@ CREATE TABLE nodes (
 	modid integer 		DEFAULT 0 NOT NULL,
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
+	chkmac smallint 	DEFAULT 1 NOT NULL,
 	lastonline integer	DEFAULT 0 NOT NULL,
 	info text		DEFAULT '' NOT NULL,
 	location text		DEFAULT '' NOT NULL,
@@ -767,4 +768,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006092400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006100700');
