@@ -16,6 +16,7 @@ version ? (????-??-??):
     'show_documents_warning' (alec)  
   - fixed helpdesk tickets searching (alec)
   - added 'MAC checking' checkbox in nodes and device's IPs data (alec)
+  - in new receipt interface on covenants list printing also credit notes (alec)
 
 version 1.9.3 Zarin (2006-09-19):
 
