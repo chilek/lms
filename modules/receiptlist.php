@@ -231,8 +231,8 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
-$SMARTY->assign('newreceipt', $_GET['receipt']);
-$SMARTY->assign('which', $_GET['which']);
+$SMARTY->assign('newreceipt', isset($_GET['receipt']) ? $_GET['receipt'] : NULL);
+$SMARTY->assign('which', isset($_GET['which']) ? $_GET['which'] : NULL);
 $SMARTY->assign('receiptlist',$receiptlist);
 $SMARTY->display('receiptlist.html');
 

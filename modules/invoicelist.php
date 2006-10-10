@@ -171,7 +171,7 @@ $SESSION->save('ilc', $c);
 
 if(isset($_POST['group'])) {
 	$g = $_POST['group'];
-	$ge = $_POST['groupexclude'];
+	$ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : NULL;
 } else {
 	$SESSION->restore('ilg', $g);
 	$SESSION->restore('ilge', $ge);
