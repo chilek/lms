@@ -34,10 +34,10 @@ function GetCustomerCovenants($id)
 			FROM cash
 			LEFT JOIN documents ON (docid = documents.id)
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE cash.customerid = ? AND documents.closed = 0
+			WHERE cash.customerid = ? AND documents.type IN (?,?) AND documents.closed = 0
 			GROUP BY docid, cdate, number, template
 			HAVING SUM(value) < 0
-			ORDER BY cdate DESC LIMIT 10', array($id)))
+			ORDER BY cdate DESC LIMIT 10', array($id, DOC_INVOICE, DOC_CNOTE)))
 	{
 		foreach($invoicelist as $idx => $row)
 		{
@@ -58,10 +58,10 @@ function GetCustomerNotes($id)
 			FROM cash
 			LEFT JOIN documents ON (docid = documents.id)
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE cash.customerid = ? AND documents.closed = 0
+			WHERE cash.customerid = ? AND documents.type = ? AND documents.closed = 0
 			GROUP BY docid, cdate, number, template
 			HAVING SUM(value) > 0
-			ORDER BY cdate DESC LIMIT 10', array($id)))
+			ORDER BY cdate DESC LIMIT 10', array($id, DOC_CNOTE)))
 	{
 		foreach($invoicelist as $idx => $row)
 		{
