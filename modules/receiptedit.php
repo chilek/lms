@@ -114,7 +114,8 @@ switch($_GET['action'])
 		$newday = date('Ymd',$receipt['cdate']);
 		$oldday = date('Ymd',$oldcdate);
 		if($newday != $oldday)
-			if($receipt['cdate'] && !$receipt['cdatewarning'])
+		{
+    			if($receipt['cdate'] && !$receipt['cdatewarning'])
 			{
 				$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = ?', array(DOC_RECEIPT));
 				if($receipt['cdate'] < $maxdate)
@@ -123,7 +124,10 @@ switch($_GET['action'])
 					$receipt['cdatewarning'] = 1;
 				}
 			}
-
+		}
+		else // przywracamy pierwotn± godzinê utworzenia dokumentu
+	                $receipt['cdate'] = $oldcdate;
+	
 		if(!$receipt['number'])
 			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 		else

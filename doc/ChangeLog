@@ -1,5 +1,10 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fix: while cash receipt's editing if date isn't changed time should also be 
+    not toutched (alec)
+
 version 1.8.7 Adria (2006-10-17):
 
   - setting document's 'To' date to the end of the day (alec)
