@@ -173,7 +173,7 @@ class Auth {
 			elseif(is_numeric($mask))
 			        $mask = prefix2mask($mask);
 			
-			if(isipinstrict($ipaddr, $net, $mask))
+			if(isipinstrict($this->ip, $net, $mask))
 			{
 			        return TRUE;
 			}
