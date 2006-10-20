@@ -32,6 +32,8 @@ define('RT_OPEN', trans('opened'));
 define('RT_RESOLVED', trans('resolved'));
 define('RT_DEAD', trans('dead'));
 
+$RT_STATES = array(0 => RT_NEW, 1 => RT_OPEN, 2 => RT_RESOLVED, 3 => RT_DEAD);
+
 // Account types
 define('ACCOUNT_SHELL', 1);
 define('ACCOUNT_MAIL', 2);

@@ -2581,20 +2581,6 @@ class LMS
 		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 	}
 
-	/*
-	 * Helpdesk
-	 *
-         * Ticket States:
-	 *
-	 * 0 - new
-	 * 1 - open
-	 * 2 - resolved
-	 * 3 - dead (similiar to resolved, but not resolved)
-	 *
-	 */
-
-	var $rtstates = array(0 => RT_NEW, 1 => RT_OPEN, 2 => RT_RESOLVED, 3 => RT_DEAD);
-
 	function GetQueue($id)
 	{
 		if($queue = $this->DB->GetRow('SELECT * FROM rtqueues WHERE id=?', array($id)))
@@ -2861,6 +2847,8 @@ class LMS
 
 	function GetTicketContents($id)
 	{
+		global $RT_STATES;
+		
 		$ticket = $this->DB->GetRow('
 			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, users.name AS ownername, createtime, resolvetime, subject
 			FROM rttickets
@@ -2880,7 +2868,7 @@ class LMS
 			list($ticket['requetoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 //		$ticket['requestoremail'] = ereg_replace('^.* <(.+@.+)>$','\1',$ticket['requestor']);
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
-		$ticket['status'] = $this->rtstates[$ticket['state']];
+		$ticket['status'] = $RT_STATES[$ticket['state']];
 		$ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
 		return $ticket;
 	}
