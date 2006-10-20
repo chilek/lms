@@ -1,5 +1,4 @@
-<!-- // $Id$ // -->
-<STYLE type="text/css"><!--
+/* $Id$ */
 BOOK		{ background: #CEBD9B; }
 DIV.NAVHEADER	{ background: #EBE4D6; }
 DIV.NAVFOOTER	{ background: #EBE4D6; }
@@ -7,7 +6,7 @@ DIV.TITLEPAGE  	{ background: #EBE4D6; }
 BODY		{ font-size: 9pt; font-family: Tahoma, Verdana, Arial, Helvetica; background: #EBE4D6;}
 TABLE		{ border-color: #000000; padding: 3pt; }
 TD		{ font-size: 9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-TH		{ font-width: bold; font-size: 10pt; } 
+TH		{ font-weight: bold; font-size: 10pt; } 
 PRE.SCREEN	{ background: #F4F0EC; border: 1px solid #333333; padding: 3pt; }					
 IMG		{ border-width: 0pt; }
 FONT.blend	{ color: #888888; }
@@ -28,5 +27,3 @@ TABLE.NOTE P 	{ vertical-align: middle; text-align: left; }
 HR		{ height: 1pt; }
 DIV.TABLE	{ text-align: center; }
 DIV.FIGURE	{ text-align: center; }
--->
-</STYLE>

@@ -1139,6 +1139,12 @@ registered/unregistered cases) if ticket will be running via email.</para>
 		on drop-down lists by default. Default: 22.</para>
         	<para>Example:     <prompt>default_taxrate = 22.0</prompt></para>
     	    </listitem>
+    	    <listitem>
+        	<para>big_networks</para>
+        	<para>Support for big ISPs e.g. hidding long selection dropdowns. 
+		Default: false.</para>
+        	<para>Example:     <prompt>big_networks = true</prompt></para>
+    	    </listitem>
     	    </itemizedlist>
 	    </para>
         </sect3>

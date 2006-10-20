@@ -1197,6 +1197,12 @@ MISC_OTHER="-A -x -j"
 	    bêdzie domy¶lnie zaznaczona na listach wyboru. Domy¶lnie: 22</para>
     	    <para>Przyk³ad:     <prompt>default_taxrate = 7</prompt></para>
 	</listitem>
+	<listitem>
+		<para>big_networks</para>
+		<para>Wsparcie dla du¿ych ISPów, np. ukrywanie list wyboru klientów. 
+		Domy¶lnie: wy³±czona</para>
+		<para>Przyk³ad:     <prompt>big_networks = true</prompt></para>
+	</listitem>
     </itemizedlist>
 	</para>
         </sect3>

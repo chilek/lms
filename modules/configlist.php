@@ -231,6 +231,10 @@ function GetConfigList($order='var,asc')
 				case 'helpdesk_reply_body':
 					$config[$idx]['description'] = trans('Adds body of message in ticket reply. Default: false');
 				break;					
+
+				case 'big_networks':
+					$config[$idx]['description'] = trans('Support for big ISPs e.g. hidding long customers selection dropdowns. Default: false');
+				break;					
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
