@@ -30,7 +30,7 @@ TR.alertblend A	{ color: #FA8072; }
 
 P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.txt		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: justify }
+P.txt		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: justify; }
 P.separated	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
 
 H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }

@@ -24,7 +24,8 @@
  *  $Id$
  */
 
-$queue = $_GET['id'];
+$queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$customerid = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
 
 if(isset($_POST['ticket']))
 {
@@ -48,8 +49,10 @@ if(isset($_POST['ticket']))
 	if($ticket['email']!='' && !check_email($ticket['email']))
 		$error['email'] = trans('Incorrect email!');
 
-	if($ticket['customerid'] !=0 && $ticket['custid']!=$ticket['customerid'])
+	if(isset($ticket['customerid']) && $ticket['customerid'] !=0 && $ticket['custid']!=$ticket['customerid'])
 		$error['custid'] = trans('Specified ID is not proper or does not exist!');
+	else
+		$ticket['customerid'] = $ticket['custid'];
 
 	if($ticket['surname']=='' && $ticket['customerid']==0)
 		$error['surname'] = trans('Requester name required!');
@@ -117,8 +120,8 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('customerid', isset($ticket['customerid']) ? $ticket['customerid'] : $_GET['customerid']);
-$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
+$SMARTY->assign('customerid', isset($ticket['customerid']) ? $ticket['customerid'] : $customerid);
+$SMARTY->assign('customerlist', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetAllCustomerNames() : NULL);
 $SMARTY->display('rtticketadd.html');
 
 ?>
