@@ -91,15 +91,16 @@ switch($_GET['mode'])
 	case 'node':
 		if($_GET['ajax']==1) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT id, name, inet_ntoa(ipaddr) as ipaddr, lower(mac) as mac FROM nodes WHERE id ?LIKE? \''.$search.'%\' OR lower(name) ?LIKE? lower(\''.$search.'%\') OR inet_ntoa(ipaddr) ?LIKE? \'%'.$search.'%\' OR lower(mac) ?LIKE? lower(\'%'.$search.'%\') ORDER BY name, ipaddr, mac LIMIT 15');
+			$candidates = $DB->GetAll('SELECT id, name, inet_ntoa(ipaddr) as ip, inet_ntoa(ipaddr_pub) AS ip_pub, mac FROM nodes WHERE id ?LIKE? \''.$search.'%\' OR lower(name) ?LIKE? lower(\''.$search.'%\') OR inet_ntoa(ipaddr) ?LIKE? \'%'.$search.'%\' OR inet_ntoa(ipaddr_pub) ?LIKE? \'%'.$search.'%\' OR lower(mac) ?LIKE? lower(\'%'.$search.'%\') ORDER BY name LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=nodeinfo&id='.$row['id'];
-				$eglible[$row['id']] = escape_js($row['name'].' '.$row['lastname']);
+				$eglible[$row['id']] = escape_js($row['name']);
 				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
-				if (preg_match("/$search/i",$row['ipaddr'])) $descriptions[$row['id']] = trans('IP address').': '.$row['ipaddr'];
-				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']] = trans('MAC address').': '.$row['mac'];
+				if (preg_match("/$search/i",$row['ip'])) $descriptions[$row['id']] = trans('IP').': '.$row['ip'];
+				if (preg_match("/$search/i",$row['ip_pub'])) $descriptions[$row['id']] = trans('IP').': '.$row['ip_pub'];
+				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']] = trans('MAC').': '.$row['mac'];
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
 			header('Content-type: text/plain');
