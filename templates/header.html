@@ -53,6 +53,7 @@
 				</div>
 			</td>
 		</tr>
+{*
 		<div id="autosuggest"><ul></ul></div>
 		<form method="get" action="?m=quicksearch" id="customerform" name="customerform">
 		<tr>
@@ -93,6 +94,7 @@
 		<tr>
 			<td nowrap align="center"><br><A href="?m=copyrights">&copy; 2001-2006<br>LMS Developers</A></td>
 		</tr>
+*}
 		<tr>
 			<td nowrap align="center"><font style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>({$layout.lmsvr})<br>DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></font>&nbsp;<br>&nbsp;<br></td>
 		</tr>
@@ -103,4 +105,36 @@
 	</script>				
 	</td>
 	<td width="99%" style="padding: 10pt; vertical-align: top;">
+    	    <form method="get" action="?m=quicksearch" id="quicksearch">
+	    <table width="100%" cellpadding="0" cellspacing="0">
+		<tr>
+		    <td width="1%" nowrap>
+		<div id="autosuggest"><ul></ul></div>
+		{t}Search:{/t}
+			<img src="img/customer.gif" alt="*">&nbsp;<input class="blend" type="text" id="customerinput" name="what" value="" size="15" {tip text="Enter customer ID, first/lastname, telephone or part of customer email address and press Enter"}>
+			<input type="hidden" name="m" value="quicksearch">
+			<input type="hidden" name="mode" value="customer">
+			<script language="Javascript">
+				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('customerinput'),'?m=quicksearch&ajax=1&mode=customer&what=',1);
+			</script>&nbsp;
+			<img src="img/node.gif" alt="*">&nbsp;<input class="blend" type="text" id="nodeinput" name="what" value="" size="15" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
+			<input type="hidden" name="m" value="quicksearch">
+			<input type="hidden" name="mode" value="node">
+			<script language="Javascript">
+				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('nodeinput'),'?m=quicksearch&ajax=1&mode=node&what=',1);
+			</script>&nbsp;
+			<img src="img/ticket.gif" alt="*">&nbsp;<input class="blend" type="text" id="rtinput" name="what" value="" size="15" {tip text="Enter request tracker ID or customer name and press Enter"}>
+			<input type="hidden" name="m" value="quicksearch">
+			<input type="hidden" name="mode" value="ticket">
+			<script language="Javascript">
+				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('rtinput'),'?m=quicksearch&ajax=1&mode=ticket&what=',1);
+			</script>
+		    </td>
+		    <td width="99%" align="right">
+			<A href="?m=copyrights">&copy; 2001-2006 LMS Developers</A>
+		    </td>
+		</tr>
+	    </table>
+	    <hr>
+	    </form>
 {/if}
