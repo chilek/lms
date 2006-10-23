@@ -28,7 +28,7 @@
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
 			{if $ticket.customerid}
-				<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|escape}</A>
+				<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})</A>
 			{else}
 				{$ticket.requestor|escape} 
 			{/if}

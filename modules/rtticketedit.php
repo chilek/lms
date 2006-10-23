@@ -24,9 +24,7 @@
  *  $Id$
  */
 
-$ticketedit = $_POST['ticket'];
-
-if(($id = $_GET['id']) && !isset($ticketedit))
+if(($id = $_GET['id']) && !isset($_POT['ticket']))
 {
 	if($LMS->GetUserRightsRT($AUTH->id, 0, $id) < 2)
 	{
@@ -35,7 +33,7 @@ if(($id = $_GET['id']) && !isset($ticketedit))
 		die;
 	}
 
-	if($_GET['state'])
+	if(isset($_GET['state']) && $_GET['state'])
 	{
 		$LMS->SetTicketState($id, $_GET['state']);
 		$SESSION->redirect('?m=rtticketview&id='.$id);
@@ -44,9 +42,11 @@ if(($id = $_GET['id']) && !isset($ticketedit))
 
 $ticket = $LMS->GetTicketContents($id);
 
-if(isset($ticketedit))
+if(isset($_POST['ticket']))
 {
+	$ticketedit = $_POST['ticket'];
 	$ticketedit['ticketid'] = $ticket['ticketid'];
+
 	if($LMS->GetUserRightsRT($AUTH->id, $ticketedit['queueid']) < 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 	
@@ -59,6 +59,9 @@ if(isset($ticketedit))
 	if($ticketedit['state']==0 && $ticketedit['owner'])
 		$ticketedit['state'] = 1;
 
+	if($ticketedit['custid'])
+		$ticketedit['customerid'] = $ticketedit['custid'];
+		
 	if(!$error)
 	{
 		$LMS->TicketUpdate($ticketedit);
@@ -78,7 +81,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('userlist', $LMS->GetUserNames());
-$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
+$SMARTY->assign('customerlist', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetAllCustomerNames() : NULL);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketedit.html');
 

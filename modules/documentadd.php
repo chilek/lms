@@ -284,7 +284,7 @@ $SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
+$SMARTY->assign('customers', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetCustomerNames() : NULL);
 
 $SMARTY->display('documentadd.html');
 

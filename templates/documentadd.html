@@ -8,7 +8,7 @@
 <!--
 	function getplugin()
 	{
-		xajax_plugin(document.forms['documentadd'].elements['document[templ]'].value, document.forms['documentadd'].elements['customer'].value);
+		xajax_plugin(document.forms['documentadd'].elements['document[templ]'].value, document.forms['documentadd'].elements['customerid'].value);
 	}
 	
 	function print_document()
@@ -126,6 +126,7 @@
 			<B>{t}Customer:{/t}</B>
 		</TD>
 		<TD class="fright" WIDTH="98%" nowrap>
+			{if $customers}
 			<SELECT SIZE="1" NAME="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customers item=c}
@@ -133,8 +134,11 @@
 				{/foreach}
 			</SELECT>
 			{t}or Customer ID:{/t}
+			{else}
+			{t}ID:{/t}
+			{/if}
 			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$document.customerid}{/if}" SIZE="5" onChange="document.documentadd.customer.value=document.documentadd.customerid.value">
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.documentadd.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.documentadd.customer{if !$customers}id{/if});" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR class="LIGHT">

@@ -52,7 +52,7 @@ if(isset($_POST['ticket']))
 	if(isset($ticket['customerid']) && $ticket['customerid'] !=0 && $ticket['custid']!=$ticket['customerid'])
 		$error['custid'] = trans('Specified ID is not proper or does not exist!');
 	else
-		$ticket['customerid'] = $ticket['custid'];
+		$ticket['customerid'] = $ticket['custid'] ? $ticket['custid'] : 0;
 
 	if($ticket['surname']=='' && $ticket['customerid']==0)
 		$error['surname'] = trans('Requester name required!');
@@ -67,7 +67,7 @@ if(isset($_POST['ticket']))
 	if(!$error)
 	{
 		$id = $LMS->TicketAdd($ticket);
-		
+print_r($DB); die;		
 		if($LMS->CONFIG['phpui']['newticket_notify'])
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
