@@ -19,7 +19,7 @@ version ? (????-??-??):
   - in new receipt interface on covenants list printing also credit notes (alec)
   - added option 'big_networks' for hidding some big ISP's specific stuff like 
     e.g. long selection dropdowns (alec)
-  - big_networks support in New Ticket (alec)
+  - big_networks support in New Ticket, Ticket Edit, New Document (alec)
   - added public IP searching in node's quicksearch (alec)
   - quick search fields moved to the top of the page (alec)
 

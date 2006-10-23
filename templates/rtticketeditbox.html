@@ -31,15 +31,25 @@
 		    <TD WIDTH="99%" NOWRAP>
 			{if !$ticket.customerid}
 				{$ticket.requestor|escape} 
+				{if $ticket.requestoremail}
 				&lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+				{/if}
 				<BR>
 			{/if}
+			<NOBR>
+			{if $customerlist}
 			<SELECT size="1" name="ticket[customerid]" {tip text="You can assign customer to ticket"}>
 			        <OPTION value="0">{t}- select customer -{/t}</OPTION>
 				{section name=customerlist loop=$customerlist}
 				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id==$ticket.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:"45":"..."} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>
+			{else}{if $ticket.customername}<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|truncate:"45":"...":true}</A>{/if}
+	    		{t}ID:{/t}
+			{/if}
+			<INPUT TYPE="TEXT" NAME="ticket[custid]" VALUE="{if $ticket.customerid}{$ticket.customerid}{/if}" SIZE="5" {if $customerlist}onChange="document.forms['ticket'].elements['ticket[customerid]'].value=document.forms['ticket'].elements['ticket[custid]'].value"{/if} {tip trigger="custid"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.ticket.elements['ticket[custid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			</NOBR>
 		    </TD>
 		</TR>
 		<TR>
@@ -62,7 +72,7 @@
 		</TR>
 	    </TABLE>
 	</TD>
-	<TD width="50%" valign="top">	
+	<TD width="50%" style="vertical-align:top">	
 	    <TABLE>
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>

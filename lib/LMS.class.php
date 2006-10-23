@@ -3306,7 +3306,7 @@ class LMS
 		else
 			$planid = 0;
 		
-		$period = $period ? $period : YEARLY;
+		$period = isset($period) ? $period : YEARLY;
 		$cdate = $cdate ? $cdate : time();
 		
 		switch($period)
@@ -3362,7 +3362,7 @@ class LMS
 		if($planid)
 			$period = $this->DB->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
 		
-		$period = $period ? $period : YEARLY;
+		$period = isset($period) ? $period : YEARLY;
 		$cdate = $cdate ? $cdate : time();
 		
 		switch($period)
