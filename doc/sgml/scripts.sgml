@@ -477,15 +477,21 @@ include all customer groups.</para>
 		</listitem>
     		<listitem>
 		    <para>ignore_ddns</para>
-		    <para>Dont put 'ddns-update-style none;' on beginning of
-file. Useful for older (2.2) versions of DHCP. Default: Off.</para>
+		    <para>Don't put 'ddns-update-style none;' at the beginning of
+		    file. Useful for older (2.2) versions of DHCP. Default: Off.</para>
 		    <para>Example:	<prompt>ignore_ddns = 1</prompt></para>
 		</listitem>
     		<listitem>
 		    <para>log_facility</para>
 		    <para>Logging options for DHCP daemon. Default is applied
-if not specified.</para>
+		    if not specified.</para>
 		    <para>Example:	<prompt>log_facility = 7</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>authoritative</para>
+		    <para>Add 'authoritative;' entry at the beginning of
+		    file. Default: Off.</para>
+		    <para>Example:	<prompt>authoritative = 1</prompt></para>
 		</listitem>
            	<listitem>
 		    <para>script_owneruid</para>
