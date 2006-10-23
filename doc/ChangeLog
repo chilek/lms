@@ -21,6 +21,7 @@ version ? (????-??-??):
     e.g. long selection dropdowns (alec)
   - big_networks support in New Ticket (alec)
   - added public IP searching in node's quicksearch (alec)
+  - quick search fields moved to the top of the page (alec)
 
 version 1.9.3 Zarin (2006-09-19):
 

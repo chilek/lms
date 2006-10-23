@@ -192,9 +192,9 @@ $_LANG['Basic system informations'] = 'Podstawowe informacje o systemie';
 $_LANG['Begin:'] = 'Początek:';
 $_LANG['Start map from:'] = 'Zacznij mapę od:';
 $_LANG['Begin of DHCP range:'] = 'Początek zakresu DHCP:';
-$_LANG['<B>Enter customer ID, first/lastname, telephone or part of customer email address and press Enter</B>'] = '<B>Wprowadź identyfikator klienta, imię, nazwisko, część adresu email, numer telefonu lub część adresu klienta i naciśnij Enter</B>';
-$_LANG['<B>Enter node ID, name, IP address or MAC address and press Enter</B>'] = '<B>Wprowadź identyfikator komputera, nazwę, adres IP lub adres MAC i naciśnij Enter</B>';
-$_LANG['<B>Enter request tracker ID or customer name and press Enter</B>'] = '<B>Wprowadź identyfikator zgłoszenia lub nazwisko klienta i naciśnij Enter</B>';
+$_LANG['Enter customer ID, first/lastname, telephone or part of customer email address and press Enter'] = 'Wprowadź identyfikator klienta, imię, nazwisko, część adresu email, numer telefonu lub część adresu klienta i naciśnij Enter';
+$_LANG['Enter node ID, name, IP address or MAC address and press Enter'] = 'Wprowadź identyfikator komputera, nazwę, adres IP lub adres MAC i naciśnij Enter';
+$_LANG['Enter request tracker ID or customer name and press Enter'] = 'Wprowadź identyfikator zgłoszenia lub nazwisko klienta i naciśnij Enter';
 $_LANG['Both IP addresses for DHCP range are required!'] = 'Obydwa adresy IP są wymagane dla zakresu DHCP!';
 $_LANG['Browse'] = 'Przeglądaj';
 $_LANG['Browse Configuration'] = 'Przeglądaj konfigurację';
@@ -1741,5 +1741,9 @@ $_LANG['Customer has got unconfirmed documents!'] = 'Klient posiada niezatwierdz
 $_LANG['Documents:'] = 'Dokumenty:';
 $_LANG['Enable/disable MAC address checking'] = 'Włącz/wyłącz sprawdzanie MAC adresu';
 $_LANG['MAC checking'] = 'sprawdzanie MAC\'a';
+$_LANG['IP'] = 'IP';
+$_LANG['MAC'] = 'MAC';
+$_LANG['Search:'] = 'Szukaj:';
+$_LANG['Support for big ISPs e.g. hidding long customers selection dropdowns. Default: false'] = 'Wsparcie dla dużych providerów, np. ukrywanie długich list wyboru klientów. Domyślnie: wyłączona.';
 
 ?>
