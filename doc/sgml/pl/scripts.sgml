@@ -488,6 +488,12 @@ http://www.naszasiec.pl/</screen></example>
 		    <para>Ustawienie trybu logowania daemona dhcp. Je¿eli puste to tryb domy¶lny.</para>
 		    <para>Przyk³ad:	<prompt>log_facility = 7</prompt></para>
 		</listitem>
+    		<listitem>
+		    <para>authoritative</para>
+		    <para>Dodanie wpisu 'authoritative;' na pocz±tku pliku.
+		    Domy¶lnie: wy³±czone.</para>
+		    <para>Przyk³ad:	<prompt>authoritative = 1</prompt></para>
+		</listitem>
            	<listitem>
 		    <para>script_owneruid</para>
 		    <para>UID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</para>
