@@ -22,7 +22,8 @@ version ? (????-??-??):
   - big_networks support in New Ticket, Ticket Edit, New Document (alec)
   - added public IP searching in node's quicksearch (alec)
   - quick search fields moved to the top of the page (alec)
-
+  - fixed nodes searching with 'OR' operator (alec)
+  
 version 1.9.3 Zarin (2006-09-19):
 
   - cosmetics on search templates (djrzulf)
