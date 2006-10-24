@@ -1021,7 +1021,7 @@ class LMS
 		}
 
 		if($searchargs)
-			$searchargs = ' AND '.implode(' '.$sqlskey.' ',$searchargs);
+			$searchargs = ' AND ('.implode(' '.$sqlskey.' ',$searchargs).')';
 
 		$totalon = 0; $totaloff = 0;
 

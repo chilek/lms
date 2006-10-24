@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - fix: while cash receipt's editing if date isn't changed time should also be 
     not toutched (alec)
+  - fixed nodes searching with 'OR' operator (alec)
 
 version 1.8.7 Adria (2006-10-17):
 
