@@ -31,6 +31,7 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
+define('START_TIME', microtime());
 
 // Parse configuration file
 function lms_parse_ini_file($filename, $process_sections = false) 
@@ -250,7 +251,6 @@ else
 	$SMARTY->assign('error', $AUTH->error);
 	$SMARTY->assign('target','?'.$_SERVER['QUERY_STRING']);
 	$SMARTY->display('login.html');
-	
 }
 
 $SESSION->close();
