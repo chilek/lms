@@ -30,9 +30,23 @@ function escape_js($string)
         return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
 }
 
-$search = urldecode(trim($_GET['what']));
+$mode = '';
 
-switch($_GET['mode'])
+if($_POST['qscustomer']) {
+	$mode = 'customer'; 
+	$search = urldecode(trim($_POST['qscustomer']));
+} elseif($_POST['qsnode']) {
+	$mode = 'node'; 
+	$search = urldecode(trim($_POST['qsnode']));
+} elseif($_POST['qsticket']) {
+	$mode = 'ticket'; 
+	$search = urldecode(trim($_POST['qsticket']));
+} else {
+	$search = urldecode(trim($_GET['what']));
+	$mode = $_GET['mode'];
+}
+
+switch($mode)
 {
 	case 'customer':
 		if($_GET['ajax']==1) // support for AutoSuggest
