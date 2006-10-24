@@ -67,7 +67,7 @@ if(isset($_POST['ticket']))
 	if(!$error)
 	{
 		$id = $LMS->TicketAdd($ticket);
-print_r($DB); die;		
+
 		if($LMS->CONFIG['phpui']['newticket_notify'])
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
