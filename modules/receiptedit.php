@@ -375,7 +375,7 @@ if($_GET['action'] != '')
 
 $cashreglist = $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id');
 
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+$SMARTY->assign('customerlist', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetCustomerNames() : NULL);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('cashreglist', $cashreglist);
 $SMARTY->assign('cashregcount', sizeof($cashreglist));

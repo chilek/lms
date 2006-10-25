@@ -44,10 +44,10 @@
 				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id==$ticket.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:"45":"..."} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>
-			{else}{if $ticket.customername}<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|truncate:"45":"...":true}</A>{/if}
-	    		{t}ID:{/t}
+			{else}
+			{if $ticket.customername}<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|truncate:"45":"...":true}</A>{/if}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="ticket[custid]" VALUE="{if $ticket.customerid}{$ticket.customerid}{/if}" SIZE="5" {if $customerlist}onChange="document.forms['ticket'].elements['ticket[customerid]'].value=document.forms['ticket'].elements['ticket[custid]'].value"{/if} {tip trigger="custid"}>
+			<INPUT TYPE="TEXT" NAME="ticket[custid]" VALUE="{if $ticket.customerid}{$ticket.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.forms['ticket'].elements['ticket[customerid]'].value=document.forms['ticket'].elements['ticket[custid]'].value"{/if} {tip text="Enter customer ID" trigger="custid"}>
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.ticket.elements['ticket[custid]']);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			</NOBR>
 		    </TD>

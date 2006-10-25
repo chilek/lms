@@ -142,8 +142,8 @@ switch($action)
 		}
 		
 		if(!$error)
-			if($LMS->CustomerExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'])))
-				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer']));
+			if($LMS->CustomerExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid'])))
+				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid']));
 
 	break;
 
@@ -195,7 +195,7 @@ $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
+$SMARTY->assign('customers', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetCustomerNames() : NULL);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE));
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoicenew.html');
