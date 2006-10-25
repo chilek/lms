@@ -24,11 +24,10 @@
  *  $Id$
  */
 
-$customers = $LMS->GetCustomerNames();
-$tariffs = $LMS->GetTariffs();
 $taxeslist = $LMS->GetTaxes();
+$action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if ((isset($_GET['id'])) && ($_GET['action']=='edit'))
+if(isset($_GET['id']) && $action=='edit')
 {
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
@@ -69,10 +68,10 @@ $itemdata = r_trim($_POST);
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 $layout['pagetitle'] = trans('Invoice Edit: $0', $ntempl);
 
-if($_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
-	$_GET['action'] = 'setcustomer';
+if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
+	$action = 'setcustomer';
 
-switch($_GET['action'])
+switch($action)
 {
 	case 'additem':
 		$itemdata = r_trim($_POST);
@@ -144,8 +143,8 @@ switch($_GET['action'])
 		$invoice['customerid'] = $_POST['customerid'];
 		
 		if(!$error)
-			if($LMS->CustomerExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer'])))
-				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customer']));
+			if($LMS->CustomerExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid'])))
+				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid']));
 	break;
 
 	case 'save':
@@ -172,7 +171,7 @@ $SESSION->save('invoicecontents', $contents);
 $SESSION->save('invoicecustomer', $customer);
 $SESSION->save('invoiceediterror', $error);
 
-if($_GET['action'] != '')
+if($action != '')
 {
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
 	$SESSION->redirect('?m=invoiceedit');
@@ -182,8 +181,8 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('tariffs', $tariffs);
-$SMARTY->assign('customers', $customers);
+$SMARTY->assign('tariffs', $LMS->GetTariffs());
+$SMARTY->assign('customers', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetCustomerNames() : NULL);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoiceedit.html');
 
