@@ -22,7 +22,12 @@ $Id$
   wspólny "connect do bazy" i funkcje typu "we¼ userów + assigmenty" [je¶li 
   bêdzie to mia³o jaki¶ sens i siê powiela³o w wiêcej ni¿ 1-2 skryptach]
 
-LMS-1.9 [xx]
+LMS-1.10 (koniec 2006)
+
+* modu³ tc-ng na wzór tc, ale uwzglêdniaj±cy powi±zania taryfa-komputer
+* wsparcie dla urz±dzeñ Etherwerx
+
+LMS-2.0 [xx]
 
 * przerobienie na nowe modu³y
 * zrobienie 'LMSAPI' - czyli zintegrowanej z LMS biblioteki serwuj±cej
