@@ -1337,7 +1337,7 @@ class LMS
 						    LEFT JOIN tariffs ON (tariffid=tariffs.id) 
 						    LEFT JOIN liabilities ON (liabilityid=liabilities.id) 
 						    WHERE assignments.customerid=? '
-						    .(!$show_expired ? 'AND (dateto > '.$now.' OR dateto = 0) AND (liabilityid = 0 OR at >= '.$now.')' : '')
+						    .(!$show_expired ? 'AND (dateto > '.$now.' OR dateto = 0) AND (liabilityid = 0 OR (liabilityid != 0 AND (at >= '.$now.' OR at < 365)))' : '')
 						    .' ORDER BY datefrom, value', array($id)))
 		{
 			foreach($assignments as $idx => $row)
