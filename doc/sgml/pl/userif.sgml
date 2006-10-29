@@ -1203,6 +1203,12 @@ MISC_OTHER="-A -x -j"
 		Domy¶lnie: wy³±czona</para>
 		<para>Przyk³ad:     <prompt>big_networks = true</prompt></para>
 	</listitem>
+	<listitem>
+		<para>ewx_support</para>
+		<para>Wsparcie dla urz±dzeñ <ulink url="http://etherwerx.com">EtherWerX</ulink>.
+		Domy¶lnie: wy³±czona</para>
+		<para>Przyk³ad:     <prompt>ewx_support = tak</prompt></para>
+	</listitem>
     </itemizedlist>
 	</para>
         </sect3>

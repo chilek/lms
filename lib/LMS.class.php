@@ -1263,7 +1263,40 @@ class LMS
 				    $nodedata['netdev'],
 				    $nodedata['location'],
 				    $nodedata['chkmac'])))
-			return $this->DB->GetLastInsertID('nodes');
+		{
+			$id = $this->DB->GetLastInsertID('nodes');
+			
+			// EtherWerX support (devices have some limits)
+			// We must to replace big ID with smaller (first free)
+			if($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support']))
+			{
+				$lastid = 0;
+				$row = 0;
+				while($list = $this->DB->GetCol('SELECT id FROM nodes ORDER BY id LIMIT 100 OFFSET ?', array($row)))
+				{
+					foreach($list as $nodeid)
+					{
+						if($nodeid > $lastid + 1)
+						{
+							$newid = $lastid + 1;
+							break 2;
+						}
+						else
+							$lastid = $nodeid; 
+					
+						$row++;
+					}
+				}
+
+				if(isset($newid))
+				{
+					$this->DB->Execute('UPDATE nodes SET id = ? WHERE id = ?', array($newid, $id));
+					$id = $newid;
+				}
+			}
+
+			return $id;
+		}
 		else
 			return FALSE;
 	}

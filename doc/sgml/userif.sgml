@@ -1145,6 +1145,12 @@ registered/unregistered cases) if ticket will be running via email.</para>
 		Default: false.</para>
         	<para>Example:     <prompt>big_networks = true</prompt></para>
     	    </listitem>
+    	    <listitem>
+        	<para>ewx_support</para>
+        	<para>Support for <ulink url="http://etherwerx.com">EtherWerX</ulink> devices. 
+		Default: false.</para>
+        	<para>Example:     <prompt>ewx_support = true</prompt></para>
+    	    </listitem>
     	    </itemizedlist>
 	    </para>
         </sect3>
