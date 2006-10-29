@@ -37,16 +37,16 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 	switch($order)
 	{
 		case 'type':
-			$sqlord = ' ORDER BY type, documents.name';
+			$sqlord = ' ORDER BY type '.$direction.', documents.name';
 		break;
 		case 'title':
-			$sqlord = ' ORDER BY title, documents.name';
+			$sqlord = ' ORDER BY title '.$direction.', documents.name';
 		break;
 		case 'customer':
-			$sqlord = ' ORDER BY documents.name, title';
+			$sqlord = ' ORDER BY documents.name '.$direction.', title';
 		break;
 		default:
-			$sqlord = ' ORDER BY cdate, documents.name';
+			$sqlord = ' ORDER BY cdate '.$direction.', documents.name';
 		break;
 	}
 
@@ -58,7 +58,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 			WHERE documents.id = documentcontents.docid '
 			.($customer ? 'AND customerid = '.$customer : '')
 			.($type ? ' AND type = '.$type : '')
-			.$sqlord.' '.$direction);
+			.$sqlord);
 
 	$list['total'] = sizeof($list);
 	$list['direction'] = $direction;
