@@ -181,7 +181,6 @@ $SMARTY->assign('_config',$CONFIG);
 $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFIG['phpui']['smarty_debug']) : FALSE);
-$SMARTY->_tpl_vars['missing_strings'] = array();
 require_once($_LIB_DIR.'/menu.php');
 
 $layout['logname'] = $AUTH->logname;

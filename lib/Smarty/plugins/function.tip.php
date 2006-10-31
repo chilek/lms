@@ -36,13 +36,13 @@ function smarty_function_tip($args, &$SMARTY)
 //		global $SESSION;
 //		$text = 'onmouseover="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe id=&quot;autoiframe&quot; frameborder=0 scrolling=no width=220 height=150 src=&quot;'.$dynpopup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onmouseout="nd();"';
 		return $text;
-	} else {
+	} 
+	else 
+	{
 	    $text = $args['text'];
     	    if($SMARTY->_tpl_vars['_LANG'][$text])
 	    	    $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
-		else
-			if(!in_array($text, (array) $SMARTY->_tpl_vars['missing_strings']) && $text !='')
-				$SMARTY->_tpl_vars['missing_strings'][] = $text;	    
+
 	    if(is_array($args))
 		    foreach($args as $argid => $argval)
 			    $text = str_replace('$'.$argid, $argval, $text);
