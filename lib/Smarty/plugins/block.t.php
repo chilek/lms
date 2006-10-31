@@ -28,9 +28,6 @@ function smarty_block_t($args, $content, &$SMARTY)
 {
     if($SMARTY->_tpl_vars['_LANG'][$content])
 	    $content = trim($SMARTY->_tpl_vars['_LANG'][$content]);
-    else
-	    if(!in_array($content, (array) $SMARTY->_tpl_vars['missing_strings']) && $content !='')
-		    $SMARTY->_tpl_vars['missing_strings'][] = $content;	    
     
     if(is_array($args))
 	    foreach($args as $argid => $argval)

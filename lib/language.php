@@ -26,15 +26,12 @@
 
 function trans()
 {
-	global $_LANG, $SMARTY;
+	global $_LANG;
 
 	$content = func_get_arg(0);
 
 	if(isset($_LANG[$content]))
 		$content = trim($_LANG[$content]);
-	else
-		if(!in_array($content, (array) $SMARTY->_tpl_vars['missing_strings']) && $content !='')
-			$SMARTY->_tpl_vars['missing_strings'][] = $content;
 
 	$argc = func_num_args();
 	for($i = 1; $i < $argc; $i++)
