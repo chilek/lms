@@ -1039,12 +1039,6 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>smarty_debug = 1</prompt></para>
     	    </listitem>
     	    <listitem>
-        	<para>lang_debug</para>
-        	<para>Enable LMS language console. Useful for tracking missing translation strings.
-        	Default: 0 (off).</para>
-        	<para>Example:     <prompt>lang_debug = 1</prompt></para>
-    	    </listitem>
-    	    <listitem>
         	<para>debug_email</para>
         	<para>E-mail address for debugging - messages sent from module 'Mailing' will be delivered
         	to this address instead of sending them to real users. </para>
