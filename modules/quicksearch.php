@@ -32,13 +32,13 @@ function escape_js($string)
 
 $mode = '';
 
-if($_POST['qscustomer']) {
+if(isset($_POST['qscustomer']) && $_POST['qscustomer']) {
 	$mode = 'customer'; 
 	$search = urldecode(trim($_POST['qscustomer']));
-} elseif($_POST['qsnode']) {
+} elseif(isset($_POST['qsnode']) && $_POST['qsnode']) {
 	$mode = 'node'; 
 	$search = urldecode(trim($_POST['qsnode']));
-} elseif($_POST['qsticket']) {
+} elseif(isset($_POST['qsticket']) && $_POST['qsticket']) {
 	$mode = 'ticket'; 
 	$search = urldecode(trim($_POST['qsticket']));
 } else {
