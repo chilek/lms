@@ -1090,12 +1090,6 @@ MISC_OTHER="-A -x -j"
             <para>Przyk³ad:     <prompt>smarty_debug = 1</prompt></para>
         </listitem>
         <listitem>
-            <para>lang_debug</para>
-            <para>W³±czenie translatorskiej konsoli debugowej LMS, przydatne do ¶ledzenia brakuj±cych t³umaczeñ.
-            Domy¶lnie wy³±czone.</para>
-            <para>Przyk³ad:     <prompt>lang_debug = 1</prompt></para>
-        </listitem>
-        <listitem>
             <para>debug_email</para>
             <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
             zamiast do w³a¶ciwych klientów.</para>

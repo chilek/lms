@@ -184,10 +184,6 @@ function GetConfigList($order='var,asc')
 					$config[$idx]['description'] = trans('Specify format of verbal amounts representation (on invoices). e.g. for value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.');
 				break;
 				
-				case 'lang_debug':
-					$config[$idx]['description'] = trans('Enable LMS language console. Useful for tracking missing translation strings. Default: 0 (off).');
-				break;
-				
 				case 'timetable_days_forward':
 					$config[$idx]['description'] = trans('Number of days (including current day) on timetable. Default: 7.');
 				break;
