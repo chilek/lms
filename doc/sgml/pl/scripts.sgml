@@ -304,7 +304,8 @@ http://www.naszasiec.pl/</screen></example>
 	   <para>message (optional)</para>
 	   <para>Je¶li nie jest pusta, wiadomo¶æ ta po do³±czeniu u¿ytkownika zostanie 
 	   zapisana do jego rekordu w polu wiadomo¶ci administracyjnej. W tre¶ci wiadomo¶ci
-	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê.
+	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê oraz
+	   zmiennych %b i %B tak jak w skrypcie lms-notify.
 	   Domy¶lnie: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</para>
 	   <para>Przyk³ad:	<prompt>message = ''</prompt></para>
 	  </listitem>

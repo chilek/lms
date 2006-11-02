@@ -301,7 +301,8 @@ Following parameters are valid:</para>
 	  <listitem>
 	   <para>message (optional)</para>
 	   <para>If not empty, that message will be written to warning message field in customer record 
-	   after cutting him off.  You can use %now variable, and it will be replaced by current date.
+	   after cutting him off.  You can use %now variable - it will be replaced by current date, and 
+	   %b and %B like in lms-notify script.
 	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</para>
 	   <para>Example:	<prompt>message = ''</prompt></para>
 	  </listitem>
