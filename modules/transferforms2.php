@@ -105,14 +105,14 @@ if(!$list)
     die;
 }
 
-$_NAME = (! $CONFIG['finances']['name'] ? trans("Not set") : $CONFIG['finances']['name']);
-$_ADDRESS = (! $CONFIG['finances']['address'] ? trans("Not set") : $CONFIG['finances']['address']);
-$_ZIP = (! $CONFIG['finances']['zip'] ? trans("Not set") : $CONFIG['finances']['zip']);
-$_CITY = (! $CONFIG['finances']['city'] ? trans("Not set") : $CONFIG['finances']['city']);
-$_ACCOUNT = (! $CONFIG['finances']['account'] ? '00000000000000000000000000' : $CONFIG['finances']['account']);
-$_TITLE = (! $CONFIG['finances']['pay_title'] ? trans("Not set") : $CONFIG['finances']['pay_title']);
-$_LMARGIN = (! $CONFIG['finances']['leftmargin'] ? 0 : $CONFIG['finances']['leftmargin']);
-$_BMARGIN = (! $CONFIG['finances']['bottommargin'] ? 0 : $CONFIG['finances']['bottommargin']);
+$_NAME = (!isset($CONFIG['finances']['name']) ? trans("Not set") : $CONFIG['finances']['name']);
+$_ADDRESS = (!isset($CONFIG['finances']['address']) ? trans("Not set") : $CONFIG['finances']['address']);
+$_ZIP = (!isset($CONFIG['finances']['zip']) ? trans("Not set") : $CONFIG['finances']['zip']);
+$_CITY = (!isset($CONFIG['finances']['city']) ? trans("Not set") : $CONFIG['finances']['city']);
+$_ACCOUNT = (!isset($CONFIG['finances']['account']) ? '00000000000000000000000000' : $CONFIG['finances']['account']);
+$_TITLE = (!isset($CONFIG['finances']['pay_title']) ? trans("Not set") : $CONFIG['finances']['pay_title']);
+$_LMARGIN = (!isset($CONFIG['finances']['leftmargin']) ? 0 : $CONFIG['finances']['leftmargin']);
+$_BMARGIN = (!isset($CONFIG['finances']['bottommargin']) ? 0 : $CONFIG['finances']['bottommargin']);
 
 require_once($_LIB_DIR.'/ezpdf/class.ezpdf.php');
 
