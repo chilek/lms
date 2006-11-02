@@ -117,8 +117,20 @@ else
 
 my $now_date = strftime "%Y/%m/%d", localtime;
 $message =~ s/%now/$now_date/g;
+my $keepmessage = $message;
+my $absolute = 0;
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, UPPER(lastname) AS lastname, name, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, lastname, name HAVING SUM(cash.value) < $limit ORDER BY lastname, name");
+my $dbq = $dbase->prepare("
+    SELECT customers.id AS id, UPPER(lastname) AS lastname, 
+	name, SUM(cash.value) AS balance 
+    FROM customers 
+    LEFT JOIN cash ON customers.id = cash.customerid 
+    WHERE deleted = 0 
+    GROUP BY customers.id, lastname, name 
+    HAVING SUM(cash.value) < $limit 
+    ORDER BY lastname, name
+");
+
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -132,8 +144,14 @@ while (my $row = $dbq->fetchrow_hashref())
 		
 	if($message)
 	{
+		$absolute = -1 * $row->{'balance'};
+		$message =~ s/%b/$absolute/g;
+		$message =~ s/%B/$row->{'balance'}/g;
+		
 		$sdbq = $dbase->prepare("UPDATE customers SET message=? WHERE id=?");
 		$sdbq->execute($message, $row->{'id'});
+		
+		$message = $keepmessage;
 	}
 	
 	$sdbq->finish();
