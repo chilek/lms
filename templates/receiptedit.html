@@ -97,7 +97,7 @@
 			</SELECT>
 			{t}or Customer ID:{/t}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value"{/if} {tip text="Enter customer ID"}>
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value"{/if} {tip text="Enter customer ID"}>
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			<BR>
 			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}
