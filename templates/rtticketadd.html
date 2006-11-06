@@ -21,7 +21,7 @@
 		<TD WIDTH="99%" CLASS="fright">
 			<TABLE width="100%" cellpadding="1">
 			    <TR>
-			    	<TD {if $customerlist}colspan="2"{/if}>
+			    	<TD{if $customerlist}colspan="2"{/if} nowrap>
 				    {if $customerlist}
 				    <SELECT size="1" name="ticket[customerid]" {if !$ticket.customerid}{tip trigger="requestor"}{/if} {tip text="Select customer from list or enter his data if is not a customer"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
 					<OPTION value="0">- {t}select customer{/t} -</OPTION>
@@ -30,7 +30,7 @@
 					{/foreach}
 				    </SELECT>
 				    <NOBR>{t}or Customer ID:{/t}
-				    {else}
+				    {else}{t}ID:{/t}
 				    </TD><TD>
 				    {/if}
 				    <INPUT TYPE="TEXT" NAME="ticket[custid]" VALUE="{if $customerid}{$customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.forms['ticket'].elements['ticket[customerid]'].value=document.forms['ticket'].elements['ticket[custid]'].value"{/if} {tip text="Enter customer ID" trigger="custid"}>
