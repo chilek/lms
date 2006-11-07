@@ -2840,8 +2840,8 @@ class LMS
 	function TicketAdd($ticket)
 	{
 		$ts = time();
-		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, state, owner, createtime)
-				    VALUES (?, ?, ?, ?, 0, 0, ?)', array($ticket['queue'], $ticket['customerid'], $ticket['requestor'], $ticket['subject'], $ts));
+		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, state, owner, createtime, cause)
+				    VALUES (?, ?, ?, ?, 0, 0, ?, ?)', array($ticket['queue'], $ticket['customerid'], $ticket['requestor'], $ticket['subject'], $ts, $ticket['cause']));
 		
 		$id = $this->DB->GetLastInsertID('rttickets');
 		

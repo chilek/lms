@@ -76,6 +76,19 @@
 		</TD>
 	</TR>
 	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/desc.gif" alt="">
+		        <B>{t}Cause:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<SELECT SIZE="1" name="ticket[cause]" {tip text="Select request cause" trigger="cause"}>
+			        <OPTION value="0" {if !$ticket.cause}SELECTED{/if}>{t}unknown/other{/t}</OPTION>
+				<OPTION value="1" {if $ticket.cause == 1}SELECTED{/if}>{t}customer's side{/t}</OPTION>
+				<OPTION value="2" {if $ticket.cause == 2}SELECTED{/if}>{t}company's side{/t}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
 		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
 			<A href="javascript: document.ticket.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m={if $queue}rtqueueview&id={$queue}{else}rtqueuelist{/if}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
