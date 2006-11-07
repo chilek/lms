@@ -5,7 +5,7 @@
 	<TR CLASS="dark">
 		<TD width="100%" CLASS="fall">
 			<IMG src="img/ticket.gif" alt="">
-			<B>{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}</B>
+			<B>{t 0=$ticket.ticketid|string_format:"%06d"}Ticket No. $0{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -114,6 +114,19 @@
 				<OPTION value="1" {if $ticket.state == 1}SELECTED{/if}>{t}opened{/t}</OPTION>
 				<OPTION value="2" {if $ticket.state == 2}SELECTED{/if}>{t}resolved{/t}</OPTION>
 				<OPTION value="3" {if $ticket.state == 3}SELECTED{/if}>{t}dead{/t}</OPTION>
+			</SELECT>
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/desc.gif" alt="">
+			<B>{t}Cause:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			<SELECT SIZE="1" name="ticket[cause]" {tip text="Select request cause" trigger="cause"}>
+				<OPTION value="0" {if !$ticket.cause}SELECTED{/if}>{t}unknown/other{/t}</OPTION>
+				<OPTION value="1" {if $ticket.cause == 1}SELECTED{/if}>{t}customer's side{/t}</OPTION>
+				<OPTION value="2" {if $ticket.cause == 2}SELECTED{/if}>{t}company's side{/t}</OPTION>
 			</SELECT>
 		    </TD>
 		</TR>

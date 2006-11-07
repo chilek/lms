@@ -421,7 +421,6 @@ $_LANG['Empty passwords are not allowed!'] = 'Puste hasła nie są dozwolone!';
 $_LANG['Enable'] = 'Włącz';
 $_LANG['enabled'] = 'włączony';
 $_LANG['Enable/disable accounting of selected liability'] = 'Zablokuj lub odblokuj naliczanie wybranej płatności';
-$_LANG['Enable LMS language console. Useful for tracking missing translation strings. Default: 0 (off).'] = 'Odblokuj konsolę językową. Przydatne przy śledzeniu brakujących tłumaczeń. Domyślnie: 0 (wyłączone).';
 $_LANG['Enable message'] = 'Włącz wiadomość';
 $_LANG['Enable Smarty\'s debug console. Useful for tracking values passed from PHP to Smarty. Default: 0 (off).'] = 'Włącza konsolę debugowania Smarty. Przydatne do śledzenia wartości przekazywanych w PHP do szablonów. Domyślnie: 0 (wyłączona).';
 $_LANG['Enable warning'] = 'Włącz ostrzeżenie';
@@ -1322,14 +1321,13 @@ $_LANG['This program is distributed in the hope that it will be useful, but WITH
 $_LANG['This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License Version 2 as published by the Free Software Foundation.'] = 'Niniejszy program jest oprogramowaniem wolnodostępnym; możesz go rozprowadzać dalej i/lub modyfikować na warunkach Powszechnej Licencji Publicznej GNU, wydanej przez Fundację Wolnodostępnego Oprogramowania - według wersji 2-giej tej Licencji lub którejś z późniejszych wersji';
 $_LANG['This queue is empty.'] = 'Ta kolejka jest pusta.';
 $_LANG['Ticket date:'] = 'Data zgłoszenia:';
-$_LANG['Ticket Edit: No. $0'] = 'Edycja zgłoszenia: Nr $0';
+$_LANG['Ticket Edit: $0'] = 'Edycja zgłoszenia: $0';
 $_LANG['Ticket History'] = 'Historia zgłoszenia';
 $_LANG['Ticket must have its body!'] = 'Zgłoszenie musi mieć jakąś zawartość!';
 $_LANG['Ticket must have its title!'] = 'Zgłoszenie musi mieć tytuł!';
-$_LANG['Ticket No.'] = 'Nr Zgłoszenia';
-$_LANG['Ticket No $0'] = 'Zgłoszenie Nr $0';
+$_LANG['Ticket No. $0'] = 'Zgłoszenie Nr $0';
 $_LANG['Ticket Review'] = 'Podgląd zgłoszenia';
-$_LANG['Ticket Review: No. $0'] = 'Podgląd zgłoszenia: Nr $0';
+$_LANG['Ticket Review: $0'] = 'Podgląd zgłoszenia: $0';
 $_LANG['Tickets'] = 'Zgłoszenia';
 $_LANG['Ticket Search'] = 'Wyszukiwanie zgłoszeń';
 $_LANG['Tickets searching'] = 'Wyszukiwanie zgłoszeń';
@@ -1747,5 +1745,11 @@ $_LANG['Search:'] = 'Szukaj:';
 $_LANG['Support for big ISPs e.g. hidding long customers selection dropdowns. Default: false'] = 'Wsparcie dla dużych providerów, np. ukrywanie długich list wyboru klientów. Domyślnie: wyłączona.';
 $_LANG['Page generation time:'] = 'Czas generowania strony:';
 $_LANG['sec.'] = 'sek.';
+$_LANG['Cause:'] = 'Przyczyna:';
+$_LANG['company\'s side'] = 'po stronie firmy';
+$_LANG['customer\'s side'] = 'po stronie klienta';
+$_LANG['Enter customer ID'] = 'Wprowadź ID klienta';
+$_LANG['Select request cause'] = 'Wybierz przyczynę zgłoszenia';
+$_LANG['unknown/other'] = 'nieznana/inna';
 
 ?>

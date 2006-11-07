@@ -481,6 +481,7 @@ CREATE TABLE rttickets (
   requestor varchar(255) DEFAULT '' NOT NULL,
   subject varchar(255) 	DEFAULT '' NOT NULL,
   state smallint 	DEFAULT 0 NOT NULL,
+  cause smallint	DEFAULT 0 NOT NULL,
   owner integer 	DEFAULT 0 NOT NULL,
   customerid integer 	DEFAULT 0 NOT NULL,
   createtime integer 	DEFAULT 0 NOT NULL,
@@ -768,4 +769,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006100700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006110700');

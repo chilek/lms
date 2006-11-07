@@ -471,6 +471,7 @@
                     <member>customerid - identyfikator klienta</member>
                     <member>subject - temat zg這szenia</member>
                     <member>state - status (0-nowy, 1-otwarty, 2-rozwi您any, 3-martwy)</member>
+		    <member>cause - przyczyna zg這szenia (0-nieznana, 1-klient, 2-firma)</member>
                     <member>owner - identyfikator w豉軼iciela-u篡tkownika</member>
                     <member>createtime - data zg這szenia</member>
                </simplelist>

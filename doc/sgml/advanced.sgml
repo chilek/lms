@@ -468,6 +468,7 @@
                     <member>customerid - customer serial number (if reported by customer)</member>
                     <member>subject - ticket name)</member>
                     <member>state - status (0-new, 1-open, 2-resolved, 3-dead)</member>
+                    <member>cause - request cause (0-unknown, 1-customer, 2-company)</member>
                     <member>owner - LMS user serial number (ticket owner)</member>
                     <member>createtime - timestamp of report</member>
                </simplelist>

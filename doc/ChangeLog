@@ -28,6 +28,7 @@ version ? (????-??-??):
   - EtherWerX support: added option phpui/ewx_support, node's ID should be less
     than 99999 (alec) 
   - lms-cutoff: added %b and %B variables in message (alec)
+  - added helpdesk request's cause field (alec)
   
 version 1.9.3 Zarin (2006-09-19):
 

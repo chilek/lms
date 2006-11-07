@@ -38,7 +38,7 @@ if(! $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']))
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
 
-$layout['pagetitle'] = trans('Ticket No $0',sprintf("%06d",$ticket['ticketid']));
+$layout['pagetitle'] = trans('Ticket No. $0',sprintf("%06d",$ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
