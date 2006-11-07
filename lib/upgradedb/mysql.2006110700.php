@@ -24,28 +24,12 @@
  *  $Id$
  */
 
-if(! $LMS->TicketExists($_GET['id']))
-{
-	$SESSION->redirect('?m=rtqueuelist');
-}
+$DB->BeginTrans();
 
-if(! $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']))
-{
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
-}
+$DB->Execute("ALTER TABLE rttickets ADD cause tinyint(4) NOT NULL DEFAULT '0'");
 
-if(isset($_GET['delmsgid']) && $DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($_GET['id'])) != $_GET['delmsgid'])
-{
-	$DB->Execute('DELETE FROM rtmessages WHERE id = ?', array(intval($_GET['delmsgid'])));
-}
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006110700', 'dbversion'));
 
-$ticket = $LMS->GetTicketContents($_GET['id']);
-$layout['pagetitle'] = trans('Ticket Review: $0',sprintf("%06d",$ticket['ticketid']));
+$DB->CommitTrans();
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('ticket', $ticket);
-$SMARTY->display('rtticketview.html');
 ?>

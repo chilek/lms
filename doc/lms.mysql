@@ -361,6 +361,7 @@ CREATE TABLE rttickets (
   requestor varchar(255) NOT NULL default '',
   subject varchar(255) NOT NULL default '',
   state tinyint(4) NOT NULL default '0',
+  cause tinyint(4) NOT NULL default '0',
   owner int(11) NOT NULL default '0',
   customerid int(11) NOT NULL default '0',
   createtime int(11) NOT NULL default '0',

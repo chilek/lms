@@ -2867,14 +2867,17 @@ class LMS
 	{
 		$this->SetTS('rttickets');
 		if($ticket['state']==2)
-			return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, resolvetime=?NOW? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['ticketid']));
+			return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=?NOW? 
+					WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['cause'], $ticket['ticketid']));
 		else
 		{
-			// check if ticket was resolved, then set resolvetime=0
+			// if ticket was resolved, set resolvetime=0
 			if($this->GetTicketState($ticket['ticketid'])==2)
-				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, resolvetime=0 WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['ticketid']));
+				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=0 
+					WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['cause'], $ticket['ticketid']));
 			else
-				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['ticketid']));
+				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=? 
+					WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['cause'], $ticket['ticketid']));
 		}
 	}
 
@@ -2882,19 +2885,24 @@ class LMS
 	{
 		global $RT_STATES;
 		
-		$ticket = $this->DB->GetRow('
-			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, users.name AS ownername, createtime, resolvetime, subject
-			FROM rttickets
-			LEFT JOIN rtqueues ON (queueid = rtqueues.id)
-			LEFT JOIN users ON (owner = users.id)
-			LEFT JOIN customers ON (customers.id = customerid)
-			WHERE rttickets.id = ?', array($id));
-		$ticket['messages'] = $this->DB->GetAll('
-			SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, customerid, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, userid, users.name AS username
-			FROM rtmessages
-			LEFT JOIN customers ON (customers.id = customerid)
-			LEFT JOIN users ON (users.id = userid)
-			WHERE ticketid = ? ORDER BY createtime ASC', array($id));
+		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, 
+				    requestor, state, owner, customerid, cause, '
+				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
+				    users.name AS ownername, createtime, resolvetime, subject
+				FROM rttickets
+				LEFT JOIN rtqueues ON (queueid = rtqueues.id)
+				LEFT JOIN users ON (owner = users.id)
+				LEFT JOIN customers ON (customers.id = customerid)
+				WHERE rttickets.id = ?', array($id));
+		
+		$ticket['messages'] = $this->DB->GetAll('SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
+				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
+				    userid, users.name AS username, customerid
+				FROM rtmessages
+				LEFT JOIN customers ON (customers.id = customerid)
+				LEFT JOIN users ON (users.id = userid)
+				WHERE ticketid = ? ORDER BY createtime ASC', array($id));
+		
 		if(!$ticket['customerid'])
 			list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 		else
@@ -2903,6 +2911,7 @@ class LMS
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 		$ticket['status'] = $RT_STATES[$ticket['state']];
 		$ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
+		
 		return $ticket;
 	}
 
@@ -2944,17 +2953,6 @@ class LMS
 		if($message = $this->DB->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id)))
 			$message['attachments'] = $this->DB->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
 		return $message;
-	}
-
-	function FirstMessage($ticketid)
-	{
-		return $this->DB->GetOne('SELECT min(id) FROM rtmessages WHERE ticketid = ?', array($ticketid));
-	}
-
-	function MessageDel($id)
-	{
-		$this->SetTS('rtmessages');
-		return $this->DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($id));
 	}
 
 	/*

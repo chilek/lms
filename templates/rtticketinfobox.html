@@ -3,7 +3,7 @@
 	<TR CLASS="dark">
 		<TD width="100%" CLASS="fall">
 			<IMG src="img/ticket.gif" alt="">
-			<B>{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}</B>
+			<B>{t 0=$ticket.ticketid|string_format:"%06d"}Ticket No. $0{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -84,6 +84,17 @@
 		    </TD>
 		    <TD WIDTH="99%">
 			{$ticket.status}
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/desc.gif" alt="">
+			<B>{t}Cause:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			{if $ticket.cause==2}{t}company's side{/t}
+			{elseif $ticket.cause==1}{t}customer's side{/t}
+			{else}{t}unknown/other{/t}{/if}
 		    </TD>
 		</TR>
 	    </TABLE>
