@@ -1926,12 +1926,16 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['phone3'] = '';
 		$customeradd['ten'] = '';
 		$customeradd['ssn'] = '';
+		$customeradd['regon'] = '';
+		$customeradd['rbe'] = '';
+		$customeradd['icn'] = '';
+		$customeradd['notes'] = '';
 		$customeradd['serviceaddr'] = '';
 		$customeradd['info'] = '';
 		$customeradd['message'] = '';
 		$customeradd['pin'] = rand(10000,99999);
 		$id = $LMS->CustomerAdd($customeradd);
-		$LMS->AddAssignment(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => MONTHLY, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0, 'settlement' => 0));
+		$LMS->AddAssignment(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => MONTHLY, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0, 'settlement' => 0, 'nodes' => NULL));
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{
@@ -1947,6 +1951,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$nodedata['info'] = '';
 			$nodedata['passwd'] = '';
 			$nodedata['netdev'] = 0;
+			$nodedata['location'] = '';
+			$nodedata['chkmac'] = 1;
 			if($nodeid = $LMS->NodeAdd($nodedata))
 				$DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000,time()+2592000),$nodeid));
 		}
