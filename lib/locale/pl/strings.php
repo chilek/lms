@@ -1751,5 +1751,6 @@ $_LANG['customer\'s side'] = 'po stronie klienta';
 $_LANG['Enter customer ID'] = 'Wprowadź ID klienta';
 $_LANG['Select request cause'] = 'Wybierz przyczynę zgłoszenia';
 $_LANG['unknown/other'] = 'nieznana/inna';
+$_LANG['Go to $0 page'] = 'Idź do $0 strony';
 
 ?>

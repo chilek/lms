@@ -29,6 +29,7 @@ version ? (????-??-??):
     than 99999 (alec) 
   - lms-cutoff: added %b and %B variables in message (alec)
   - added helpdesk request's cause field (alec)
+  - added option 'short_pagescroller' for lists with many pages (alec)
   
 version 1.9.3 Zarin (2006-09-19):
 

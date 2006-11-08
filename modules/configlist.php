@@ -231,6 +231,14 @@ function GetConfigList($order='var,asc')
 				case 'big_networks':
 					$config[$idx]['description'] = trans('Support for big ISPs e.g. hidding long customers selection dropdowns. Default: false');
 				break;					
+
+				case 'short_pagescroller':
+					$config[$idx]['description'] = trans('Enables page scroller designed for lists with very big number of pages. Default: false');
+				break;					
+
+				case 'ewx_support':
+					$config[$idx]['description'] = trans('Support for EtherWerX devices. Default: false');
+				break;					
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');

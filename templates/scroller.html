@@ -1,0 +1,41 @@
+{if $_config.phpui.short_pagescroller|chkconfig}
+    <B>{t}Page:{/t}
+    {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{/if}
+    {math assign=lastpage equation="ceil(x/y)" x=$listdata.total y=$pagelimit}   
+    {if $page == $lastpage}{math assign=scroller_start equation="max(0,x-3)*y" x=$page y=$pagelimit}
+    {elseif $page > 1 && $page < $lastpage}{math assign=scroller_start equation="max(0,x-2)*y" x=$page y=$pagelimit}{/if}
+    {section name=pcnt loop=$loop step=$pagelimit start=$scroller_start|default:0 max=3}
+	{math assign=cnt equation="ceil(x/y)+z" x=$scroller_start|default:0 y=$pagelimit z=$smarty.section.pcnt.rownum}
+	{if $page eq $cnt}[{else}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$cnt}">{/if}{$cnt}{if $page eq $cnt}]{else}</A>{/if}
+    {/section}
+    ... <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$lastpage}">[{$lastpage}]</A>
+    {if $page < $lastpage} <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{/if}
+    </B>
+    {math equation="x + 1" x=$start assign=startx}
+    {if $start + $pagelimit > $listdata.total}{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}{/if}
+    ({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+    {if $lastpage > 3}
+    <form method="get" action="?m={$layout.module}" name="scroller">
+    <input type="hidden" name="m" value="{$layout.module}">
+    {if $listdata.id}<input type="hidden" name="id" value="{$listdata.id}">{/if}
+    {if $listdata.type}<input type="hidden" name="t" value="{$listdata.type}">{/if}
+    {if $listdata.state}<input type="hidden" name="s" value="{$listdata.state}">{/if}
+    {if $listdata.kind}<input type="hidden" name="k" value="{$listdata.kind}">{/if}
+    {if $listdata.customer}<input type="hidden" name="c" value="{$listdata.customer}">{/if}
+    {if $listdata.order}<input type="hidden" name="o" value="{$listdata.order},{$listdata.direction}">{/if}
+    {t 0="<input class=\"blend\" type=\"text\" name=\"page\" value=\"\" size=\"3\">"}Go to $0 page{/t} <a href="javascript: void(0);" onclick="document.scroller.submit();">&raquo;&raquo;&raquo;</a>
+    </form>
+    {/if}
+{else}
+    <B>{t}Page:{/t}
+    {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+    {section name=pcnt loop=$loop step=$pagelimit}
+	{if $page eq $smarty.section.pcnt.rownum}[{else}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{if $listdata.state}&s={$listdata.state}{/if}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A>{/if}
+    {/section}
+    {if $page < $smarty.section.pcnt.rownum} <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&k={$listdata.kind}{/if}{if $listdata.order}&o={$listdata.order},{$listdata.direction}{/if}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else} &raquo;&raquo;&raquo;{/if}
+    </B> 
+    {math equation="x + 1" x=$start assign=startx}
+    {if $start + $pagelimit > $listdata.total}{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}{/if}
+    ({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+{/if}
+

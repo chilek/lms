@@ -1198,6 +1198,12 @@ MISC_OTHER="-A -x -j"
 		<para>Przyk³ad:     <prompt>big_networks = true</prompt></para>
 	</listitem>
 	<listitem>
+		<para>short_pagescroller</para>
+		<para>Zmienia wygl±d pól wyboru strony, u³atwiaj±c nawigacjê na listach z 
+		bardzo du¿± liczb± stron. Domy¶lnie: wy³±czona</para>
+		<para>Przyk³ad:     <prompt>short_pagescroller = tak</prompt></para>
+	</listitem>
+	<listitem>
 		<para>ewx_support</para>
 		<para>Wsparcie dla urz±dzeñ <ulink url="http://etherwerx.com">EtherWerX</ulink>.
 		Domy¶lnie: wy³±czona</para>

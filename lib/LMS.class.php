@@ -2997,6 +2997,9 @@ class LMS
 			case 'disable_devel_warning':
 			case 'newticket_notify':
 			case 'print_balance_list':
+			case 'short_pagescroller':
+			case 'big_networks':
+			case 'ewx_support':
 				if(!isboolean($value))
 					return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');
 			break;

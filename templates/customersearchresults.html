@@ -38,18 +38,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="4" CLASS="FALL">
-			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&search=1page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
-				{section name=pcnt loop=$customerlist step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&search=1&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
-				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&search=1&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> 
-			{math equation="x + 1" x=$start assign=startx}
-			{if $start + $pagelimit > $listdata.total}
-				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
-			{/if}
-			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
 			<INPUT type="hidden" class="hiddenbtn" name="setwarnings[total]" value="{$endx - $startx}">
 			<INPUT type="hidden" class="hiddenbtn" name="setwarnings[warnon]" value="0">
 		</TD>
@@ -120,18 +109,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="4" CLASS="FALL">
-			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&search=1&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
-				{section name=pcnt loop=$customerlist step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&search=1&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
-				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&search=1&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> 
-			{math equation="x + 1" x=$start assign=startx}
-			{if $start + $pagelimit > $listdata.total}
-				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
-			{/if}
-			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
 		</TD>
 	</TR>
 	{/if}

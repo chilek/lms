@@ -21,7 +21,7 @@
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="5">
-			<P><FORM method="GET" action="?m=rtqueueview" name="filter">
+			<FORM method="GET" action="?m=rtqueueview" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="rtqueueview">
 				<INPUT type="HIDDEN" name="id" value="{$queuedata.id}">
@@ -35,24 +35,13 @@
 					<OPTION value="3"{if $queuedata.state eq "3"} SELECTED{/if}>{t}dead{/t}</OPTION>
 					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>{t}not resolved{/t}</OPTION>
 				</SELECT>
-			</FORM></P>
+			</FORM>
 		</TD>
 	</TR>		
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
-				{section name=pcnt loop=$queue step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
-				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> 
-			{math equation="x + 1" x=$start assign=startx}
-			{if $start + $pagelimit > $queuedata.total}
-				{assign var=endx value=$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
-			{/if}
-			({t 0=$startx 1=$endx 2=$queuedata.total}records $0 - $1 of $2{/t})
+			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>
 	{/if}
@@ -126,18 +115,7 @@
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
-				{section name=pcnt loop=$queue step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
-				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> 
-			{math equation="x + 1" x=$start assign=startx}
-			{if $start + $pagelimit > $queuedata.total}
-				{assign var=endx value=$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
-			{/if}
-			({t 0=$startx 1=$endx 2=$queuedata.total}records $0 - $1 of $2{/t})
+			{include file="scroller.html" listdata=$queuedata loop=$queue}
 		</TD>
 	</TR>
 	{/if}

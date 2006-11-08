@@ -196,10 +196,10 @@ $listdata['direction'] = $invoicelist['direction'];
 unset($invoicelist['order']);
 unset($invoicelist['direction']);
 
-$listdata['totalpos'] = sizeof($invoicelist);
+$listdata['total'] = sizeof($invoicelist);
 
 $pagelimit = $CONFIG['phpui']['invoicelist_pagelimit'];
-$page = !isset($_GET['page']) ? ceil($listdata['totalpos']/$pagelimit) : intval($_GET['page']);
+$page = !isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
 $SMARTY->assign('listdata',$listdata);
