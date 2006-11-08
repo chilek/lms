@@ -209,7 +209,7 @@ unset($receiptlist['direction']);
 unset($receiptlist['totalincome']);
 unset($receiptlist['totalexpense']);
 
-$listdata['totalpos'] = sizeof($receiptlist);
+$listdata['total'] = sizeof($receiptlist);
 $listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid=?', array($regid));
 if($from > 0)
 	$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
@@ -220,7 +220,7 @@ if($from > 0)
 $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
 
 $pagelimit = $CONFIG['phpui']['receiptlist_pagelimit'];
-$page = (!isset($_GET['page']) ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
+$page = (!isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
 $layout['pagetitle'] = trans('Cash Registry: $0', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));

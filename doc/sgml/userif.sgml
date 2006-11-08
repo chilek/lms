@@ -1140,6 +1140,11 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>big_networks = true</prompt></para>
     	    </listitem>
     	    <listitem>
+        	<para>short_pagescroller</para>
+        	<para>Enables page scroller designed for lists with very big number of pages. Default: false.</para>
+        	<para>Example:     <prompt>short_pagescroller = true</prompt></para>
+    	    </listitem>
+    	    <listitem>
         	<para>ewx_support</para>
         	<para>Support for <ulink url="http://etherwerx.com">EtherWerX</ulink> devices. 
 		Default: false.</para>

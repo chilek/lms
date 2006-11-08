@@ -34,25 +34,25 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 		{
 			case 'value':
 				$val = intval($search) > 0 ? intval($search) : intval($search)*-1;
-				$where = ' AND ABS(cash.value) = '.$val;
+				$where = 'ABS(cash.value) = '.$val;
 			break;
 			case 'number':
-				$where = ' AND documents.number = '.intval($search);
+				$where = 'documents.number = '.intval($search);
 			break;
 			case 'cdate':
-				$where = ' AND cash.time >= '.$search.' AND cash.time < '.($search+86400);
+				$where = 'cash.time >= '.$search.' AND cash.time < '.($search+86400);
 			break;
 			case 'ten':
-				$where = ' AND customers.ten = \''.$search.'\'';
+				$where = 'customers.ten = \''.$search.'\'';
 			break;
 			case 'customerid':
-				$where = ' AND cash.customerid = '.intval($search);
+				$where = 'cash.customerid = '.intval($search);
 			break;
 			case 'name':
-				$where = ' AND '.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' ?LIKE? \'%'.$search.'%\'';
+				$where = $DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' ?LIKE? \'%'.$search.'%\'';
 			break;
 			case 'address':
-				$where = ' AND customers.address ?LIKE? \'%'.$search.'%\'';
+				$where = 'customers.address ?LIKE? \'%'.$search.'%\'';
 			break;
 		}
 	}
@@ -65,7 +65,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 				LEFT JOIN customers ON (cash.customerid = customers.id)
 				LEFT JOIN documents ON (documents.id = docid)
 				LEFT JOIN taxes ON (taxid = taxes.id) '
-				.($where ? 'WHERE 1=1 '.$where : '')
+				.(isset($where) ? 'WHERE '.$where : '')
 				.' ORDER BY time, cash.id'))
 	{
 		$taxeslist = $LMS->GetTaxes();
@@ -75,6 +75,10 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 		        $customers = $DB->GetAllByKey('SELECT customerid AS id
 					    FROM customerassignments WHERE customergroupid=?',
 					    'id', array($group['group']));
+
+		$balancelist['liability'] = 0;
+		$balancelist['expense'] = 0;
+		$balancelist['income'] = 0;
 
 		$id = 0;
 		foreach($list as $idx => $row)
@@ -90,7 +94,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 			$balancelist[$id] = $row;
 			$balancelist[$id]['user'] = $userlist[$row['userid']]['name'];
 			$balancelist[$id]['tax'] = $taxeslist[$row['taxid']]['label'];
-			$balancelist[$id]['before'] = $balancelist[$id-1]['after'];
+			$balancelist[$id]['before'] = isset($balancelist[$id-1]['after']) ? $balancelist[$id-1]['after'] : 0;
 			$balancelist[$id]['value'] = $row['value'];
 
 			if($row['customerid'] && $row['type'] == 0)
@@ -112,7 +116,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 			}
 			$id++;
 		}
-		$balancelist['total'] = $balancelist['income'] - $balancelist['expense'];
+		$balancelist['totalval'] = $balancelist['income'] - $balancelist['expense'];
 	}
 	
 	return $balancelist;
@@ -152,13 +156,13 @@ $balancelist = GetBalanceList($s, $c, array('group' => $g, 'exclude'=> $ge));
 $listdata['liability'] = $balancelist['liability'];
 $listdata['income'] = $balancelist['income'];
 $listdata['expense'] = $balancelist['expense'];
-$listdata['total'] = $balancelist['total'];
+$listdata['totalval'] = $balancelist['totalval'];
 unset($balancelist['liability']);
 unset($balancelist['income']);
 unset($balancelist['expense']);
-unset($balancelist['total']);
+unset($balancelist['totalval']);
 
-$listdata['totalpos'] = sizeof($balancelist);
+$listdata['total'] = sizeof($balancelist);
 
 $SESSION->restore('blc', $listdata['cat']);
 $SESSION->restore('bls', $listdata['search']);
@@ -166,7 +170,7 @@ $SESSION->restore('blg', $listdata['group']);
 $SESSION->restore('blge', $listdata['groupexclude']);
 
 $pagelimit = $LMS->CONFIG['phpui']['balancelist_pagelimit'];
-$page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']); 
+$page = (! isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page'])); 
 $start = ($page - 1) * $pagelimit;
 
 $layout['pagetitle'] = trans('Balance Sheet');

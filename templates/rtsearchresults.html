@@ -23,18 +23,7 @@
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&s=1&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
-				{section name=pcnt loop=$queue step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&s=1&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
-				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&s=1&o={$queuedata.order},{$queuedata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B>
-			{math equation="x + 1" x=$start assign=startx}
-			{if $start + $pagelimit > $queuedata.total}
-				{assign var=endx value=$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
-			{/if}
-			({t 0=$startx 1=$endx 2=$queuedata.total}records $0 - $1 of $2{/t})
+			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
 		</TD>
 	</TR>
 	{/if}
@@ -106,18 +95,7 @@
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&s=1&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
-				{section name=pcnt loop=$queue step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&s=1&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
-				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&s=1&o={$queuedata.order},{$queuedata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B>
-			{math equation="x + 1" x=$start assign=startx}
-			{if $start + $pagelimit > $queuedata.total}
-				{assign var=endx value=$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
-			{/if}
-			({t 0=$startx 1=$endx 2=$queuedata.total}records $0 - $1 of $2{/t})
+			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
 		</TD>
 	</TR>
 	{/if}

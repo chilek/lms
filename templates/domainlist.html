@@ -38,18 +38,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="5" CLASS="FALL">
-			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
-				{section name=pcnt loop=$domainlist step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
-				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> 
-			{math equation="x + 1" x=$start assign=startx}
-			{if $start + $pagelimit > $listdata.total}
-				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
-			{/if}
-			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+			{include file="scroller.html" loop=$domainlist}
 		</TD>
 	</TR>
 	{/if}
@@ -88,18 +77,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="5" CLASS="FALL">
-			<B>{t}Page:{/t}
-				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
-				{section name=pcnt loop=$domainlist step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
-				{/section}
-				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> 
-			{math equation="x + 1" x=$start assign=startx}
-			{if $start + $pagelimit > $listdata.total}
-				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
-			{/if}
-			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
+			{include file="scroller.html" loop=$domainlist}
 		</TD>
 	</TR>
 	{/if}
