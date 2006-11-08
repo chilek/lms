@@ -19,6 +19,8 @@ TD.ftr		{ border-top-width: 1pt; border-top-style: solid; border-right-width: 1p
 TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
 TD.loginform	{ border-width: 1pt; border-style: solid; border-color: #888888; }
 
+FORM		{ display: inline ;}
+
 A		{ text-decoration: none; vertical-align: baseline; }
 A:link		{ color: #800000; }
 A:active	{ color: #336600; }
