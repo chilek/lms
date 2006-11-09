@@ -85,7 +85,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
         
 	if($cat=='notclosed')
 		$where = ' AND closed = 0';
-	
+
 	if($result = $DB->GetAll('SELECT documents.id AS id, number, cdate, type,
 			customerid, name, address, zip, city, template, closed, 
 			CASE reference WHEN 0 THEN
@@ -136,7 +136,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 		}
 		
 	}
-	
+
 	$result['order'] = $order;
 	$result['direction'] = $direction;
 	return $result;

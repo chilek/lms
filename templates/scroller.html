@@ -23,7 +23,7 @@
     {if $listdata.kind}<input type="hidden" name="k" value="{$listdata.kind}">{/if}
     {if $listdata.customer}<input type="hidden" name="c" value="{$listdata.customer}">{/if}
     {if $listdata.order}<input type="hidden" name="o" value="{$listdata.order},{$listdata.direction}">{/if}
-    {t 0="<input class=\"blend\" type=\"text\" name=\"page\" value=\"\" size=\"3\">"}Go to $0 page{/t} <a href="javascript: void(0);" onclick="document.scroller.submit();">&raquo;&raquo;&raquo;</a>
+    {t 0="<input class=\"scroller\" type=\"text\" name=\"page\" value=\"\" size=\"3\">"}Go to $0 page{/t} <a href="javascript: void(0);" onclick="document.scroller.submit();">&raquo;&raquo;&raquo;</a>
     </form>
     {/if}
 {else}
