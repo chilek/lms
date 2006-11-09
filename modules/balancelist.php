@@ -56,19 +56,17 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 			break;
 		}
 	}
-	
+
 	if($list = $DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
-				cash.customerid AS customerid, comment, docid, taxid, cash.type AS type,
+				cash.customerid AS customerid, comment, docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed, '
 				.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
 				FROM cash
 				LEFT JOIN customers ON (cash.customerid = customers.id)
-				LEFT JOIN documents ON (documents.id = docid)
-				LEFT JOIN taxes ON (taxid = taxes.id) '
+				LEFT JOIN documents ON (documents.id = docid) '
 				.(isset($where) ? 'WHERE '.$where : '')
 				.' ORDER BY time, cash.id'))
 	{
-		$taxeslist = $LMS->GetTaxes();
 		$userlist = $DB->GetAllByKey('SELECT id, name FROM users','id');
 
     		if($group['group'])
@@ -93,7 +91,6 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 
 			$balancelist[$id] = $row;
 			$balancelist[$id]['user'] = $userlist[$row['userid']]['name'];
-			$balancelist[$id]['tax'] = $taxeslist[$row['taxid']]['label'];
 			$balancelist[$id]['before'] = isset($balancelist[$id-1]['after']) ? $balancelist[$id-1]['after'] : 0;
 			$balancelist[$id]['value'] = $row['value'];
 
@@ -115,7 +112,9 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 					$balancelist['expense'] += -$row['value'];
 			}
 			$id++;
+			unset($list[$idx]);
 		}
+	
 		$balancelist['totalval'] = $balancelist['income'] - $balancelist['expense'];
 	}
 	
