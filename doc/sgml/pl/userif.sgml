@@ -1150,6 +1150,12 @@ MISC_OTHER="-A -x -j"
             zg³oszenia. Domy¶lnie: wy³±czona.</para>
             <para>Przyk³ad:     <prompt>newticket_notify = 1</prompt></para>
         </listitem>
+	<listitem>
+		<para>helpdesk_stats</para>
+		<para>Dodaje statystyki przyczyn zg³oszeñ na stronie informacji o zg³oszeniu
+		oraz na jego wydruku. Domy¶lnie: w³±czona.</para>
+		<para>Przyk³ad:     <prompt>helpdesk_stats = 0</prompt></para>
+        </listitem>
         <listitem>
             <para>to_words_short_format</para>
             <para>Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
