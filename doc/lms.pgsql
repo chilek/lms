@@ -489,6 +489,8 @@ CREATE TABLE rttickets (
   PRIMARY KEY (id)
 );
 CREATE INDEX rttickets_queueid_idx ON rttickets (queueid);
+CREATE INDEX rttickets_customerid_idx ON rttickets (customerid);
+CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
 
 DROP SEQUENCE "rtmessages_id_seq";
 CREATE SEQUENCE "rtmessages_id_seq";
@@ -769,4 +771,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006110700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006111100');

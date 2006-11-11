@@ -367,7 +367,9 @@ CREATE TABLE rttickets (
   createtime int(11) NOT NULL default '0',
   resolvetime int(11) NOT NULL default '0',
   PRIMARY KEY  (id),
-  INDEX queueid (queueid)
+  INDEX queueid (queueid),
+  INDEX customerid (customerid),
+  INDEX createtime (createtime)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -723,4 +725,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006100700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006111100');
