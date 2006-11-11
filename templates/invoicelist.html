@@ -1,8 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="page">
-<INPUT type="submit" class="hiddenbtn">
 {literal}
 <SCRIPT language=JavaScript>
 	<!--
@@ -57,10 +55,25 @@
 		document.page.target="";
 		document.page.submit();
 	}
-
+{/literal}{if $_config.phpui.short_pagescroller|chkconfig}{literal}
+	function pagechange1()
+	{
+		document.page.action="?m=invoicelist&page=" + document.forms['page'].elements['page1'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+	function pagechange2()
+	{
+		document.page.action="?m=invoicelist&page=" + document.forms['page'].elements['page2'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+{/literal}{/if}{literal}
 	//-->
 </SCRIPT>
 {/literal}
+<FORM METHOD="POST" NAME="page">
+<INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%" nowrap>
@@ -117,7 +130,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			{include file="scroller.html" loop=$invoicelist}
+			{include file="scroller.html" loop=$invoicelist scrollerno=1}
 		</TD>
 	</TR>
 	{/if}
@@ -179,7 +192,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			{include file="scroller.html" loop=$invoicelist}
+			{include file="scroller.html" loop=$invoicelist scrollerno=2}
 		</TD>
 	</TR>
 	{/if}

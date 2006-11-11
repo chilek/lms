@@ -136,7 +136,7 @@ $SESSION->save('blc', $c);
 if(isset($_POST['group']))
 {
         $g = $_POST['group'];
-	$ge = $_POST['groupexclude'];
+	$ge = isset($_POST['groupexclude']) ? 1 : 0;
 } else {
         $SESSION->restore('blg', $g);
         $SESSION->restore('blge', $ge);
