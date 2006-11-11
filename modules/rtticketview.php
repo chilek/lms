@@ -42,6 +42,17 @@ if(isset($_GET['delmsgid']) && $DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE
 }
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
+
+if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconfig($CONFIG['phpui']['helpdesk_stats']))
+{
+	$yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
+	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets 
+			    WHERE customerid = ? AND createtime >= ? 
+			    GROUP BY cause', 'cause', array($ticket['customerid'], $yearago));
+
+	$SMARTY->assign('stats', $stats);
+}
+
 $layout['pagetitle'] = trans('Ticket Review: $0',sprintf("%06d",$ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

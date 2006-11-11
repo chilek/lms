@@ -116,3 +116,21 @@
 	</TR>
 </TABLE>
 </P>
+{if $stats}
+<P>
+<TABLE WIDTH="100%" CELLPADDING="3">
+        <TR CLASS="dark">
+	        <TD CLASS="fleftu" WIDTH="1%" nowrap>
+		        <IMG SRC="img/ticket.gif" ALT=""> <B>{t}Requests causes (last year):{/t}</B>
+		</TD>
+		<TD CLASS="frightu" WIDTH="99%">
+		        {t}company's side{/t}: <B>{$stats.2.num|default:0}</B>, 
+			{t}customer's side{/t}: <B>{$stats.1.num|default:0}</B>,
+			{t}unknown/other<!plural>{/t}: <B>{$stats.0.num|default:0}</B>,
+			{t}all{/t}: <B>{$stats.0.num+$stats.1.num+$stats.2.num}</B>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+{/if}
+																						

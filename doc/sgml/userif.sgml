@@ -1096,6 +1096,12 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>newticket_notify = On</prompt></para>
     	    </listitem>
     	    <listitem>
+        	<para>helpdesk_stats</para>
+        	<para>Adds requests causes stats on ticket view and print pages.
+        	Default: enabled.</para>
+        	<para>Example:     <prompt>helpdesk_stats = true</prompt></para>
+    	    </listitem>
+    	    <listitem>
         	<para>to_words_short_format</para>
         	<para>Specify format of verbal amounts representation (on invoices). For value "1"
         	verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>

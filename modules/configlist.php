@@ -239,6 +239,10 @@ function GetConfigList($order='var,asc')
 				case 'ewx_support':
 					$config[$idx]['description'] = trans('Support for EtherWerX devices. Default: false');
 				break;					
+
+				case 'helpdesk_stats':
+					$config[$idx]['description'] = trans('Adds helpdesk requests causes stats on ticket view and print pages. Default: true');
+				break;					
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
