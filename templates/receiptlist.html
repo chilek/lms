@@ -45,7 +45,20 @@
 		document.page.target="";
 		document.page.submit();
 	}
-
+{/literal}{if $_config.phpui.short_pagescroller|chkconfig}{literal}
+        function pagechange1()
+	{
+		document.page.action="?m=receiptlist&page=" + document.forms['page'].elements['page1'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+	function pagechange2()
+	{
+		document.page.action="?m=receiptlist&page=" + document.forms['page'].elements['page2'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+{/literal}{/if}{literal}
 	//-->
 </SCRIPT>
 {/literal}
@@ -99,7 +112,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			{include file="scroller.html" loop=$receiptlist}
+			{include file="scroller.html" loop=$receiptlist scrollerno=1}
 		</TD>
 	</TR>
 	{/if}
@@ -151,7 +164,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="dark" id="end">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			{include file="scroller.html" loop=$receiptlist}
+			{include file="scroller.html" loop=$receiptlist scrollerno=2}
 		</TD>
 	</TR>
 	{/if}
