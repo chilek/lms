@@ -30,6 +30,7 @@ version ? (????-??-??):
   - lms-cutoff: added %b and %B variables in message (alec)
   - added helpdesk request's cause field (alec)
   - added option 'short_pagescroller' for lists with many pages (alec)
+  - added indexes: rttickets.createtime and rttickets.customerid (alec) 
   
 version 1.9.3 Zarin (2006-09-19):
 
