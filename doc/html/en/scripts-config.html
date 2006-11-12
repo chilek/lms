@@ -422,7 +422,8 @@ CLASS="PROMPT"
 >message (optional)</P
 ><P
 >If not empty, that message will be written to warning message field in customer record 
-	   after cutting him off.  You can use %now variable, and it will be replaced by current date.
+	   after cutting him off.  You can use %now variable - it will be replaced by current date, and 
+	   %b and %B like in lms-notify script.
 	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
 ><P
 >Example:	<SAMP
@@ -851,8 +852,8 @@ CLASS="PROMPT"
 ><P
 >ignore_ddns</P
 ><P
->Dont put 'ddns-update-style none;' on beginning of
-file. Useful for older (2.2) versions of DHCP. Default: Off.</P
+>Don't put 'ddns-update-style none;' at the beginning of
+		    file. Useful for older (2.2) versions of DHCP. Default: Off.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -864,11 +865,23 @@ CLASS="PROMPT"
 >log_facility</P
 ><P
 >Logging options for DHCP daemon. Default is applied
-if not specified.</P
+		    if not specified.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
 >log_facility = 7</SAMP
+></P
+></LI
+><LI
+><P
+>authoritative</P
+><P
+>Add 'authoritative;' entry at the beginning of
+		    file. Default: Off.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>authoritative = 1</SAMP
 ></P
 ></LI
 ><LI

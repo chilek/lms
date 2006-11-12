@@ -422,7 +422,8 @@ CLASS="PROMPT"
 ><P
 >Je¶li nie jest pusta, wiadomo¶æ ta po do³±czeniu u¿ytkownika zostanie 
 	   zapisana do jego rekordu w polu wiadomo¶ci administracyjnej. W tre¶ci wiadomo¶ci
-	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê.
+	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê oraz
+	   zmiennych %b i %B tak jak w skrypcie lms-notify.
 	   Domy¶lnie: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
 ><P
 >Przyk³ad:	<SAMP
@@ -862,6 +863,18 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >log_facility = 7</SAMP
+></P
+></LI
+><LI
+><P
+>authoritative</P
+><P
+>Dodanie wpisu 'authoritative;' na pocz±tku pliku.
+		    Domy¶lnie: wy³±czone.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>authoritative = 1</SAMP
 ></P
 ></LI
 ><LI

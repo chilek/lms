@@ -1123,7 +1123,7 @@ Chapter 3. User Interface (LMS-UI)
    massively here.
      _________________________________________________________________
 
-3.3.7. Printing
+3.3.7. Reports
 
    Set of modules to provide printer-friendly version of your records:
      * Customer list with filter and sort abilities,
@@ -1187,7 +1187,7 @@ Chapter 3. User Interface (LMS-UI)
    any of 'Enable/Disable message' boxes.
      _________________________________________________________________
 
-3.4.5. Printing
+3.4.5. Reports
 
    You  can  get  printer  friendly  list  of  your  computers here. It's
    possible to use same filter and sorting capabilities as on 'List'.
@@ -1442,7 +1442,7 @@ Chapter 3. User Interface (LMS-UI)
    position of cash document.
      _________________________________________________________________
 
-3.7.13. Printing
+3.7.13. Reports
 
    There are several options for balance sheet printouts:
      * Balance  sheet for your network including financial operations for
@@ -1778,7 +1778,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    Data approximation is irreversible.
      _________________________________________________________________
 
-3.12.3. Printing
+3.12.3. Reports
 
    Here  you  can  print  statistics of given customer in selected month.
    Printout  consist  upload/download  summary grouped by month days with
@@ -1849,6 +1849,13 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    recorded  using  'Submitter' fields. You can provide email address (in
    both  registered/unregistered  cases)  if  ticket  will be running via
    email.
+     _________________________________________________________________
+
+3.13.5. Reports
+
+   Here you can print requests list and helpdesk statistics:
+     * List of requests with queue, status, uptime and customer filters,
+     * Requests stats with queue filter
      _________________________________________________________________
 
 3.14. Timetable
@@ -2035,10 +2042,6 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        Enable  Smarty  debug  console.  Useful for tracking values passed
        from PHP to Smarty. Default: 0 (off).
        Example: smarty_debug = 1
-     * lang_debug
-       Enable   LMS   language   console.  Useful  for  tracking  missing
-       translation strings. Default: 0 (off).
-       Example: lang_debug = 1
      * debug_email
        E-mail address for debugging - messages sent from module 'Mailing'
        will  be delivered to this address instead of sending them to real
@@ -2082,6 +2085,10 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        notification  emails  to  all  users  with  rights  to  the queue.
        Default: disabled.
        Example: newticket_notify = On
+     * helpdesk_stats
+       Adds  requests  causes  stats  on  ticket  view  and  print pages.
+       Default: enabled.
+       Example: helpdesk_stats = true
      * to_words_short_format
        Specify format of verbal amounts representation (on invoices). For
        value  "1"  verbal  expand of 123,15 will be "one two thr 15/100".
@@ -2110,6 +2117,17 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        Specify  value  (not  label) of tax rate which will be selected on
        drop-down lists by default. Default: 22.
        Example: default_taxrate = 22.0
+     * big_networks
+       Support  for  big  ISPs  e.g.  hidding  long  selection dropdowns.
+       Default: false.
+       Example: big_networks = true
+     * short_pagescroller
+       Enables  page  scroller designed for lists with very big number of
+       pages. Default: false.
+       Example: short_pagescroller = true
+     * ewx_support
+       Support for EtherWerX devices. Default: false.
+       Example: ewx_support = true
      _________________________________________________________________
 
 3.15.2. Tax Rates
@@ -2386,9 +2404,9 @@ http://www.bigpro.com/
      * message (optional)
        If  not  empty,  that  message  will be written to warning message
        field  in  customer record after cutting him off. You can use %now
-       variable,  and  it  will  be  replaced  by  current date. Default:
-       'Automatic  cutoff  caused  by  exceeding  of liabilities limit on
-       %now'
+       variable - it will be replaced by current date, and %b and %B like
+       in   lms-notify  script.  Default:  'Automatic  cutoff  caused  by
+       exceeding of liabilities limit on %now'
        Example: message = ''
      _________________________________________________________________
 
@@ -2535,13 +2553,16 @@ http://www.bigpro.com/
        Maximal lease time. Default: 86400.
        Example: max_lease_time = 43200
      * ignore_ddns
-       Dont  put  'ddns-update-style  none;' on beginning of file. Useful
-       for older (2.2) versions of DHCP. Default: Off.
+       Don't  put  'ddns-update-style  none;'  at  the beginning of file.
+       Useful for older (2.2) versions of DHCP. Default: Off.
        Example: ignore_ddns = 1
      * log_facility
        Logging  options  for  DHCP  daemon.  Default  is  applied  if not
        specified.
        Example: log_facility = 7
+     * authoritative
+       Add 'authoritative;' entry at the beginning of file. Default: Off.
+       Example: authoritative = 1
      * script_owneruid
        UID of 'config_file' config owner. Default: 0 (root).
        Example: script_owneruid = 0
@@ -4645,6 +4666,7 @@ syslog("message");
        ip - IP address
        ip_pub - public IP address
        linktype - connection type (0-cable, 1-air)
+       chkmac - MAC checking (0-disabled, 1-enable)
      * NETWORKS - networks list:
 
        id - network ID
@@ -4866,6 +4888,7 @@ Chapter 7. For curious
    rbe - register of business entities
    icn - identity card number
    info - additional informations
+   notes - notes
    serviceaddr - correspondence address
    creationdate - record creation date
    moddate - record modification date
@@ -4921,6 +4944,7 @@ Chapter 7. For curious
    linktype - type of connection (0-cable, 1-wireless)
    access - connected/disconnected (cutoff) (1/0)
    warning - should be warned with administration message? (1/0)
+   chkmac - enable/disable MAC checking? (1/0)
    lastonline - last network activity timestamp
    info - additional information
    location - location (address)
@@ -5195,6 +5219,7 @@ Chapter 7. For curious
    customerid - customer serial number (if reported by customer)
    subject - ticket name)
    state - status (0-new, 1-open, 2-resolved, 3-dead)
+   cause - request cause (0-unknown, 1-customer, 2-company)
    owner - LMS user serial number (ticket owner)
    createtime - timestamp of report
      _________________________________________________________________
