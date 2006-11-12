@@ -3373,8 +3373,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-CUSTOMERS-PRINTS"
->3.3.7. Printing</A
+NAME="MENU-CUSTOMERS-REPORTS"
+>3.3.7. Reports</A
 ></H3
 ><P
 >Set of modules to provide printer-friendly version of your
@@ -3547,8 +3547,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-NODES-PRINT"
->3.4.5. Printing</A
+NAME="MENU-NODES-REPORTS"
+>3.4.5. Reports</A
 ></H3
 ><P
 >You can get printer friendly list of your computers here.
@@ -4057,8 +4057,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-FINANCES-PRINT"
->3.7.13. Printing</A
+NAME="MENU-FINANCES-REPORTS"
+>3.7.13. Reports</A
 ></H3
 ><P
 >There are several options for balance sheet printouts:
@@ -4808,8 +4808,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-STATS-PRINT"
->3.12.3. Printing</A
+NAME="MENU-STATS-REPORTS"
+>3.12.3. Reports</A
 ></H3
 ><P
 >Here you can print statistics of given customer in selected
@@ -4909,6 +4909,42 @@ NAME="MENU-HELPDESK-NEWTICKET"
 queue and reporter. Unregistered users (not in customers database) should be
 recorded using 'Submitter' fields. You can provide email address (in both
 registered/unregistered cases) if ticket will be running via email.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-REPORTS"
+>3.13.5. Reports</A
+></H3
+><P
+>Here you can print requests list and helpdesk statistics:
+		<UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>List of requests</I
+></SPAN
+> with queue, status, uptime 
+			and customer filters,</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Requests stats</I
+></SPAN
+> with queue filter</P
+></LI
+></UL
+>
+		</P
 ></DIV
 ></DIV
 ><DIV
@@ -5415,18 +5451,6 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->lang_debug</P
-><P
->Enable LMS language console. Useful for tracking missing translation strings.
-        	Default: 0 (off).</P
-><P
->Example:     <SAMP
-CLASS="PROMPT"
->lang_debug = 1</SAMP
-></P
-></LI
-><LI
-><P
 >debug_email</P
 ><P
 >E-mail address for debugging - messages sent from module 'Mailing' will be delivered
@@ -5538,6 +5562,18 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>helpdesk_stats</P
+><P
+>Adds requests causes stats on ticket view and print pages.
+        	Default: enabled.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>helpdesk_stats = true</SAMP
+></P
+></LI
+><LI
+><P
 >to_words_short_format</P
 ><P
 >Specify format of verbal amounts representation (on invoices). For value "1"
@@ -5614,6 +5650,45 @@ CLASS="PROMPT"
 >Example:     <SAMP
 CLASS="PROMPT"
 >default_taxrate = 22.0</SAMP
+></P
+></LI
+><LI
+><P
+>big_networks</P
+><P
+>Support for big ISPs e.g. hidding long selection dropdowns. 
+		Default: false.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>big_networks = true</SAMP
+></P
+></LI
+><LI
+><P
+>short_pagescroller</P
+><P
+>Enables page scroller designed for lists with very big number of pages. Default: false.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>short_pagescroller = true</SAMP
+></P
+></LI
+><LI
+><P
+>ewx_support</P
+><P
+>Support for <A
+HREF="http://etherwerx.com"
+TARGET="_top"
+>EtherWerX</A
+> devices. 
+		Default: false.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>ewx_support = true</SAMP
 ></P
 ></LI
 ></UL
@@ -6414,7 +6489,8 @@ CLASS="PROMPT"
 >message (optional)</P
 ><P
 >If not empty, that message will be written to warning message field in customer record 
-	   after cutting him off.  You can use %now variable, and it will be replaced by current date.
+	   after cutting him off.  You can use %now variable - it will be replaced by current date, and 
+	   %b and %B like in lms-notify script.
 	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
 ><P
 >Example:	<SAMP
@@ -6843,8 +6919,8 @@ CLASS="PROMPT"
 ><P
 >ignore_ddns</P
 ><P
->Dont put 'ddns-update-style none;' on beginning of
-file. Useful for older (2.2) versions of DHCP. Default: Off.</P
+>Don't put 'ddns-update-style none;' at the beginning of
+		    file. Useful for older (2.2) versions of DHCP. Default: Off.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -6856,11 +6932,23 @@ CLASS="PROMPT"
 >log_facility</P
 ><P
 >Logging options for DHCP daemon. Default is applied
-if not specified.</P
+		    if not specified.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
 >log_facility = 7</SAMP
+></P
+></LI
+><LI
+><P
+>authoritative</P
+><P
+>Add 'authoritative;' entry at the beginning of
+		    file. Default: Off.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>authoritative = 1</SAMP
 ></P
 ></LI
 ><LI
@@ -12841,6 +12929,10 @@ BORDER="0"
 ><TD
 >linktype - connection type (0-cable, 1-air)</TD
 ></TR
+><TR
+><TD
+>chkmac - MAC checking (0-disabled, 1-enable)</TD
+></TR
 ></TBODY
 ></TABLE
 >
@@ -13437,6 +13529,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>notes - notes</TD
+></TR
+><TR
+><TD
 >serviceaddr - correspondence address</TD
 ></TR
 ><TR
@@ -13646,6 +13742,10 @@ BORDER="0"
 ><TR
 ><TD
 >warning - should be warned with administration message? (1/0)</TD
+></TR
+><TR
+><TD
+>chkmac - enable/disable MAC checking? (1/0)</TD
 ></TR
 ><TR
 ><TD
@@ -14678,6 +14778,10 @@ BORDER="0"
 ><TR
 ><TD
 >state - status (0-new, 1-open, 2-resolved, 3-dead)</TD
+></TR
+><TR
+><TD
+>cause - request cause (0-unknown, 1-customer, 2-company)</TD
 ></TR
 ><TR
 ><TD

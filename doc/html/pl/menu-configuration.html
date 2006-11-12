@@ -509,18 +509,6 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->lang_debug</P
-><P
->W³±czenie translatorskiej konsoli debugowej LMS, przydatne do ¶ledzenia brakuj±cych t³umaczeñ.
-            Domy¶lnie wy³±czone.</P
-><P
->Przyk³ad:     <SAMP
-CLASS="PROMPT"
->lang_debug = 1</SAMP
-></P
-></LI
-><LI
-><P
 >debug_email</P
 ><P
 >Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
@@ -636,6 +624,18 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>helpdesk_stats</P
+><P
+>Dodaje statystyki przyczyn zg³oszeñ na stronie informacji o zg³oszeniu
+		oraz na jego wydruku. Domy¶lnie: w³±czona.</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>helpdesk_stats = 0</SAMP
+></P
+></LI
+><LI
+><P
 >to_words_short_format</P
 ><P
 >Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
@@ -715,6 +715,46 @@ CLASS="PROMPT"
 >Przyk³ad:     <SAMP
 CLASS="PROMPT"
 >default_taxrate = 7</SAMP
+></P
+></LI
+><LI
+><P
+>big_networks</P
+><P
+>Wsparcie dla du¿ych ISPów, np. ukrywanie list wyboru klientów. 
+		Domy¶lnie: wy³±czona</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>big_networks = true</SAMP
+></P
+></LI
+><LI
+><P
+>short_pagescroller</P
+><P
+>Zmienia wygl±d pól wyboru strony, u³atwiaj±c nawigacjê na listach z 
+		bardzo du¿± liczb± stron. Domy¶lnie: wy³±czona</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>short_pagescroller = tak</SAMP
+></P
+></LI
+><LI
+><P
+>ewx_support</P
+><P
+>Wsparcie dla urz±dzeñ <A
+HREF="http://etherwerx.com"
+TARGET="_top"
+>EtherWerX</A
+>.
+		Domy¶lnie: wy³±czona</P
+><P
+>Przyk³ad:     <SAMP
+CLASS="PROMPT"
+>ewx_support = tak</SAMP
 ></P
 ></LI
 ></UL
