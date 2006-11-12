@@ -152,8 +152,8 @@ contain spaces.</para>
             It's also possible here to deselect administrative messages massively here.
             </para>
 	</sect2>
-	<sect2 id="menu-customers-prints">
-	    <title>Printing</title>
+	<sect2 id="menu-customers-reports">
+	    <title>Reports</title>
 	    <para>Set of modules to provide printer-friendly version of your
             records:
 	    <itemizedlist>
@@ -215,8 +215,8 @@ red). If you only want to assign a message to customer, but don't want to turn i
 on, just write a message and don't select any of 'Enable/Disable message' boxes.
 </para>
 	</sect2>	
-	<sect2 id="menu-nodes-print">
-	    <title>Printing</title>
+	<sect2 id="menu-nodes-reports">
+	    <title>Reports</title>
 		<para>You can get printer friendly list of your computers here.
 It's possible to use same filter and sorting capabilities as on 'List'.</para>
 	</sect2>
@@ -440,8 +440,8 @@ invoices.</para></note></para>
 		we have one record in result file. When exporting Cash Report one record is 
 		for each position of cash document.</para>
 	</sect2>
-	<sect2 id="menu-finances-print">
-	    <title>Printing</title>
+	<sect2 id="menu-finances-reports">
+	    <title>Reports</title>
 	    <para>There are several options for balance sheet printouts:
 	    <itemizedlist>
 		<listitem>
@@ -781,8 +781,8 @@ older than month will be approximated to one hour.</para></listitem>
 	    <warning><para>Data approximation is irreversible.</para></warning>
 	    </para>
 	</sect2>
-	<sect2 id="menu-stats-print">
-		<title>Printing</title>
+	<sect2 id="menu-stats-reports">
+		<title>Reports</title>
 		<para>Here you can print statistics of given customer in selected
 		month. Printout consist upload/download summary grouped by month days
 		with average transfer speed.</para>
@@ -839,6 +839,20 @@ searched by name or email address.</para>
 queue and reporter. Unregistered users (not in customers database) should be
 recorded using 'Submitter' fields. You can provide email address (in both
 registered/unregistered cases) if ticket will be running via email.</para>
+	</sect2>
+	<sect2 id="menu-helpdesk-reports">
+		<title>Reports</title>
+		<para>Here you can print requests list and helpdesk statistics:
+		<itemizedlist>
+		    <listitem>
+			<para><emphasis>List of requests</emphasis> with queue, status, uptime 
+			and customer filters,</para>
+		    </listitem>
+		    <listitem>
+			<para><emphasis>Requests stats</emphasis> with queue filter</para>
+		    </listitem>
+		</itemizedlist>
+		</para>
 	</sect2>
     </sect1>
     <sect1 id="menu-timetable">

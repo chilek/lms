@@ -599,7 +599,7 @@ switch($type)
 
 	default: /*******************************************************/
 	
-		$layout['pagetitle'] = trans('Printing');
+		$layout['pagetitle'] = trans('Reports');
 		
 		$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		$SMARTY->assign('users', $LMS->GetUserNames());

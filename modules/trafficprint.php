@@ -82,7 +82,7 @@ switch($type)
 	break;
 
 	default:
-		$layout['pagetitle'] = trans('Printing');
+		$layout['pagetitle'] = trans('Reports');
 		
 		$yearstart = date('Y',$DB->GetOne('SELECT MIN(dt) FROM stats'));
 		$yearend = date('Y',$DB->GetOne('SELECT MAX(dt) FROM stats'));

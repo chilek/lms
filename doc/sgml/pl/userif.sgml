@@ -138,8 +138,8 @@
 	    tak¿e w³±czenie lub wy³±czenie ostrze¿eñ wszystkim komputerom nale¿±cym
 	    do wybranych klientów.</para>
 	</sect2>
-	<sect2 id="menu-customers-prints">
-	    <title>Wydruki</title>
+	<sect2 id="menu-customers-reports">
+	    <title>Raporty</title>
 	    <para>Zestaw modu³ów wy¶wietlaj±cych listy i raporty formie przyjaznej dla drukarki
 	    zawiera:
 	    <itemizedlist>
@@ -199,8 +199,8 @@
 		tylko zmieniæ/przypisaæ klientom tre¶æ wiadomo¶ci administracyjnej, zaznacz odpowiednie
 		komputery na li¶cie i pozostaw puste pola 'W³±cz ostrze¿enia' oraz 'Wy³±cz ostrze¿enia'.</para>
 	</sect2>	
-	<sect2 id="menu-nodes-print">
-	    <title>Wydruki</title>
+	<sect2 id="menu-nodes-reports">
+	    <title>Raporty</title>
 		<para>Wy¶wietlenie list komputerów, w formacie przyjaznym dla drukarki 
 		z mo¿liwo¶ci± definiowania filtrów i sortowania podobnie jak na Li¶cie.</para>
 	</sect2>
@@ -422,8 +422,8 @@
 			odpowiada jeden rekord w pliku wyj¶ciowym. W przypadku Raportu Kasowego rekordem 
 			jest pozycja dokumentu kasowego.</para>
 	</sect2>
-	<sect2 id="menu-finances-print">
-	    <title>Wydruki</title>
+	<sect2 id="menu-finances-reports">
+	    <title>Raporty</title>
 	    <para>Wydruki zestawieñ finansowych obejmuj±:
 	    <itemizedlist>
 		<listitem>
@@ -827,8 +827,8 @@ MISC_OTHER="-A -x -j"
 	    <warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
 	    </para>
 	</sect2>
-	<sect2 id="menu-stats-print">
-		<title>Wydruki</title>
+	<sect2 id="menu-stats-reports">
+		<title>Raporty</title>
 			<para>Obecnie masz mo¿liwo¶æ wydruku statystyk klienta z wybranego miesi±ca.
 			Na wydruku bêd± statystyki podane w formie tabelarycznej z podzia³em na dni wraz
 			z podsumowaniem pobranych/wys³anych danych i ¶rednimi prêdko¶ciami.</para>
@@ -891,6 +891,19 @@ MISC_OTHER="-A -x -j"
 	    oraz zg³aszaj±cego klienta. Osoby spoza sieci wpisujemy w polach Nazwisko i Imiê.
 	    Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona poczt± elektroniczn± podajemy adres 
 	    e-mail (tak¿e dla klienta zapisanego w bazie).</para>
+	</sect2>
+	<sect2 id="menu-helpdesk-reports">
+		<title>Raporty</title>
+		<para>Tutaj mamy mo¿liwo¶æ wydruku list zg³oszeñ lub statystyk helpdesku:
+		<itemizedlist>
+			<listitem>
+				<para><emphasis>Lista zg³oszeñ</emphasis> z  filtrami kolejki, statusu i klienta oraz mo¿liwo¶ci± okre¶lenia granicy dni,</para>
+			</listitem>
+			<listitem>
+				<para><emphasis>Statystyki zg³oszeñ</emphasis> z mo¿liwo¶ci± wyboru kolejki oraz warto¶ci granicznych.</para>
+			</listitem>
+		</itemizedlist>
+		</para>
 	</sect2>
  </sect1>
  <sect1 id="menu-timetable">

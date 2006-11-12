@@ -56,7 +56,7 @@ $access['table'][8]['name']         	= trans('mailing access');
 $access['table'][8]['allow_reg']    	= '^(mailing)$';
 
 $access['table'][9]['name']         	= trans('Helpdesk (RT) administration');
-$access['table'][9]['allow_reg']    	= '^(rtsearch|(rtqueue|rtticket|rtmessage)(add|del|edit|info|view|list|print))$';
+$access['table'][9]['allow_reg']    	= '^(rtsearch|rtprint|(rtqueue|rtticket|rtmessage)(add|del|edit|info|view|list|print))$';
 
 $access['table'][10]['name']        	= trans('Helpdesk (RT) operation');
 $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage)(add|edit|info|view|print))$';

@@ -2774,7 +2774,10 @@ class LMS
 				$statefilter = '';
 		}
 
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, 
+			    requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '
+			    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
+			    rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified
 		    FROM rttickets LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
 		    LEFT JOIN users ON (owner = users.id)
 		    LEFT JOIN customers ON (rttickets.customerid = customers.id)
@@ -3000,6 +3003,7 @@ class LMS
 			case 'short_pagescroller':
 			case 'big_networks':
 			case 'ewx_support':
+			case 'helpdesk_stats':
 				if(!isboolean($value))
 					return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');
 			break;
