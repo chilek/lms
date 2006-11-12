@@ -1,0 +1,60 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="99%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Prepared by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
+			<B>{t}No.{/t}</B>
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
+			{t}Request date{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="97%" NOWRAP>
+			{t}Subject{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%" NOWRAP>
+			{t}Customer{/t}
+		</TD>
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=list loop=$list}
+	<TR class="{cycle}">
+		<TD ALIGN="CENTER">
+			<B>{$list[list].id|string_format:"%08d"}</B>
+		</TD>
+		<TD ALIGN="CENTER">
+			{$list[list].createtime|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD>
+			{$list[list].subject}
+		</TD>
+		<TD NOWRAP>
+			{if $list[list].customerid}
+			{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})
+			{else}
+			{$list[list].requestor|truncate:"50":"...":true}
+			{/if}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+	        <TD ALIGN="center" WIDTH="100%" COLSPAN="6">
+			<P>&nbsp;</P>
+			<P><B>{t}No such requests in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+</TABLE>
+{include file="clearfooter.html"}

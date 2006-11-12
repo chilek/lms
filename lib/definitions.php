@@ -27,12 +27,12 @@
 // that definitions should be included before LMS.class.php but after Smarty
 
 // Helpdesk ticket status
-define('RT_NEW', trans('new'));
-define('RT_OPEN', trans('opened'));
-define('RT_RESOLVED', trans('resolved'));
-define('RT_DEAD', trans('dead'));
+define('RT_NEW', 0);
+define('RT_OPEN', 1);
+define('RT_RESOLVED', 2);
+define('RT_DEAD', 3);
 
-$RT_STATES = array(0 => RT_NEW, 1 => RT_OPEN, 2 => RT_RESOLVED, 3 => RT_DEAD);
+$RT_STATES = array(RT_NEW => trans('new'), RT_OPEN => trans('opened'), RT_RESOLVED => trans('resolved'), RT_DEAD => trans('dead'));
 
 // Account types
 define('ACCOUNT_SHELL', 1);
@@ -99,5 +99,6 @@ define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
 $SMARTY->assign('_DOCTYPES', $DOCTYPES);
 $SMARTY->assign('_PERIODS', $PERIODS);
 $SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
+$SMARTY->assign('_RT_STATES', $RT_STATES);
 
 ?>

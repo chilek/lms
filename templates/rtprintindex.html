@@ -1,0 +1,129 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="post" name="ticketslist" id="ticketslist" action="?m=rtprint&type=ticketslist" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/ticket.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}List of Requests{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/queue.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Queue:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
+							<OPTION value="0">{t}- all queues -{/t}</OPTION>
+							{section name=queues loop=$queues}
+							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Customer:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
+							<OPTION value="0">{t}- all customers -{/t}</OPTION>
+							{section name=customers loop=$customers}
+							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/dead.gif" alt="">
+					</TD>
+					<TD width="1%">
+						<B>{t}Status:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="status" {tip text="You can select status to limit results"}>
+							<OPTION value="">- {t}all{/t} -</OPTION>
+							<OPTION value="-1">{t}not resolved{/t}</OPTION>
+							{foreach from=$_RT_STATES item=item key=key}
+							<OPTION value="{$key}">{$item}</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/time.gif" alt="">
+					</TD>
+					<TD width="1%">
+						<B>{t}Uptime:{/t}</B>
+					</TD>
+					<TD width="89%" nowrap>
+						<INPUT TYPE="text" NAME="days" SIZE="3"> {t}days{/t}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.ticketslist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>
+<P><FORM method="post" name="stats" id="stats" action="?m=rtprint&type=stats" target="_blank">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/ticket.gif" alt="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>{t}Requests Stats{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/queue.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>{t}Queue:{/t}</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
+							<OPTION value="0">{t}- all queues -{/t}</OPTION>
+							{section name=queues loop=$queues}
+							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"...":true}</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/customer.gif" alt="">
+					</TD>
+					<TD width="96%" nowrap>
+						<B>{t 0="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" 1="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $0 times in last $1 days{/t}</B>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.stats.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>

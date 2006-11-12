@@ -32,6 +32,8 @@ version ? (????-??-??):
   - added option 'short_pagescroller' for lists with many pages (alec)
   - added indexes: rttickets.createtime and rttickets.customerid (alec)
   - added helpdesk requests causes stats - helpdesk_stats option (alec) 
+  - menus Printing renamed to Reports (alec)
+  - added Helpdesk -> Reports -> List of Requests and Requests Stats (alec)
   
 version 1.9.3 Zarin (2006-09-19):
 
