@@ -108,7 +108,7 @@ switch($type)
 				    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
 		               	    FROM rttickets
 				    LEFT JOIN customers ON (customerid = customers.id)
-				    WHERE status != '.RT_RESOLVED
+				    WHERE state != '.RT_RESOLVED
 				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
 				    .' ORDER BY createtime');
 
