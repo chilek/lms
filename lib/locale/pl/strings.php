@@ -1762,6 +1762,7 @@ $_LANG['Total'] = 'Razem';
 $_LANG['- all queues -'] = '- wszystkie -';
 $_LANG['No such requests in database.'] = 'Brak zgłoszeń w bazie danych';
 $_LANG['Request date'] = 'Data zgłoszenia';
+$_LANG['Ticket No.'] = 'Nr zgłoszenia';
 $_LANG['Subject'] = 'Temat';
 $_LANG['You can select queue to limit results'] = 'Możesz wybrać kolejkę aby ograniczyć wyniki wyszukiwania';
 $_LANG['You can select status to limit results'] = 'Możesz wybrać status aby ograniczyć wyniki wyszukiwania';

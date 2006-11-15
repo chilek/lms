@@ -18,9 +18,12 @@
 			<B>{t}No.{/t}</B>
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
+			<B>{t}Ticket No.{/t}</B>
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%">
 			{t}Request date{/t}
 		</TD>
-		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="97%" NOWRAP>
+		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="96%" NOWRAP>
 			{t}Subject{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER" WIDTH="1%" NOWRAP>
@@ -31,13 +34,16 @@
 	{section name=list loop=$list}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
+			{counter}.
+		</TD>
+		<TD ALIGN="CENTER">
 			<B>{$list[list].id|string_format:"%08d"}</B>
 		</TD>
 		<TD ALIGN="CENTER">
 			{$list[list].createtime|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD>
-			{$list[list].subject}
+			{$list[list].subject|escape}
 		</TD>
 		<TD NOWRAP>
 			{if $list[list].customerid}
@@ -49,7 +55,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-	        <TD ALIGN="center" WIDTH="100%" COLSPAN="6">
+	        <TD ALIGN="center" WIDTH="100%" COLSPAN="7">
 			<P>&nbsp;</P>
 			<P><B>{t}No such requests in database.{/t}</B></P>
 			<P>&nbsp;</P>
