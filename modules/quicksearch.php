@@ -111,6 +111,7 @@ switch($mode)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=nodeinfo&id='.$row['id'];
 				$eglible[$row['id']] = escape_js($row['name']);
+				if (preg_match("/^$search/i",$row['id'])) $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']);
 				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
 				if (preg_match("/$search/i",$row['ip'])) $descriptions[$row['id']] = trans('IP').': '.$row['ip'];
 				if (preg_match("/$search/i",$row['ip_pub'])) $descriptions[$row['id']] = trans('IP').': '.$row['ip_pub'];
