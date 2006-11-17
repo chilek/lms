@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors', 'Off');
+
 /*
  * LMS version 1.9-cvs
  *
