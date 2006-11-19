@@ -159,8 +159,8 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 					{	
 						char *ipaddr = g->db_get_data(nres,j,"ip");
 						char *mac = g->db_get_data(nres,j,"mac");
-						unsigned char *name = g->db_get_data(nres,j,"name");
-						unsigned char *htb = strdup(shaper->host_htb);
+						char *name = g->db_get_data(nres,j,"name");
+						char *htb = strdup(shaper->host_htb);
 						int h_uprate = (int) n_uprate/nres->nrows;
 						int h_upceil = (int) n_upceil/nres->nrows;
 						int h_downrate = (int) n_downrate/nres->nrows;
