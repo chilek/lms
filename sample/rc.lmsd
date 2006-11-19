@@ -20,8 +20,11 @@ case $1 in
 	killall lmsd
 	$LMSD
 	;;
+  reload)
+	$LMSD -q
+	;;
   *)
-	echo "Usage: $0 {start|stop|restart}" 1>&2
+	echo "Usage: $0 {start|stop|restart|reload}" 1>&2
 	exit 1
 	;;
 esac
