@@ -44,7 +44,7 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 	FILE *fh, *fh1, *fh2;
 	QueryHandle *res, *ures, *nres;
 	int x=100, i, j, v, k=2, m=0, n=2, nc=0, gc=0;
-	unsigned char *file;
+	char *file;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(cbq->networks);	
@@ -119,7 +119,7 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 		if( g->db_nrows(ures) )
 		{
 			// delete old configuration files
-			unsigned char *cmd = strdup("rm -f %d/cbq-*");
+			char *cmd = strdup("rm -f %d/cbq-*");
 			g->str_replace(&cmd, "%d", cbq->path);
 			system(cmd);
 			free(cmd);
@@ -165,10 +165,10 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 					{	
 						char *ipaddr = g->db_get_data(nres,j,"ip");
 						char *mac = g->db_get_data(nres,j,"mac");
-						unsigned char *name = g->db_get_data(nres,j,"name");
-						unsigned char *mark_rule = strdup(cbq->mark_rule);
-						unsigned char *cbq_down = strdup(cbq->cbq_down);
-						unsigned char *cbq_up = strdup(cbq->cbq_up);
+						char *name = g->db_get_data(nres,j,"name");
+						char *mark_rule = strdup(cbq->mark_rule);
+						char *cbq_down = strdup(cbq->cbq_down);
+						char *cbq_up = strdup(cbq->cbq_up);
 						int h_uprate = (int) n_uprate/nres->nrows;
 						int h_upceil = (int) n_upceil/nres->nrows;
 						int h_downrate = (int) n_downrate/nres->nrows;
