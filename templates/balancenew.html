@@ -94,7 +94,7 @@
 						<B>{t}Date:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" class="fright">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{$time}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d"}{/if}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
