@@ -49,7 +49,7 @@
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
-			<INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}> {t}MAC checking{/t}
+			<INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}><a href="javascript:CheckMac();"> {t}MAC checking{/t}</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -189,6 +189,11 @@
 	function switchReuse()
 	{
 		document.forms['nodeadd'].elements['nodedata[reuse]'].checked = !document.forms['nodeadd'].elements['nodedata[reuse]'].checked;
+	}
+
+	function CheckMac()
+	{
+		document.forms['nodeadd'].elements['nodedata[chkmac]'].checked = !document.forms['nodeadd'].elements['nodedata[chkmac]'].checked;
 	}
 
 //-->
