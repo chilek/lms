@@ -30,11 +30,16 @@ function bankaccount($id)
 	if(isset($CONFIG['finances']['iban']) && chkconfig($CONFIG['finances']['iban']))
 	{
 		$cc = '2521';	// Kod kraju - Polska
-    		$account = sprintf('%02d',98-bcmod($CONFIG['finances']['account'].sprintf('%012d',$id).$cc.'00',97)).$CONFIG['finances']['account'].sprintf('%012d',$id);
+		$acclen = strlen($CONFIG['finances']['account']);
+		
+		if($acclen > 20 && $acclen < 8)
+    			return trans('Invalid account!');
+
+		$format = '%0'.(24 - $acclen) .'d';
+		return sprintf('%02d',98-bcmod($CONFIG['finances']['account'].sprintf($format,$id).$cc.'00',97)).$CONFIG['finances']['account'].sprintf($format,$id);
 	} 
-	else
-    		$account = (!isset($CONFIG['finances']['account']) ? trans('Not set') : $CONFIG['finances']['account']);
-        return $account;
+
+	return (!isset($CONFIG['finances']['account']) ? trans('Not set') : $CONFIG['finances']['account']);
 }
 		
 function uptimef($ts)
