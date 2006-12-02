@@ -56,7 +56,7 @@
 		document.addbalance.target="_blank";
 		document.addbalance.submit();
 	}
-{/literal}{if $_config.phpui.delete_button_in_customerbalancebox|chkconfig}{literal}
+{/literal}{if $_config.phpui.delete_link_in_customerbalancebox|chkconfig}{literal}
 	function delpos()
 	{ 	 
 		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation(s) and/or invoice item(s)?{/t}{literal}'))
@@ -141,7 +141,7 @@
 				<TR class="light">
 					<TD CLASS="ftop" ALIGN="left" colspan="7">
 						<nobr>
-						{if $_config.phpui.delete_button_in_customerbalancebox|chkconfig}
+						{if $_config.phpui.delete_link_in_customerbalancebox|chkconfig}
 						<A href="javascript:delpos();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						{/if}
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
