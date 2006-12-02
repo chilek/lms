@@ -56,10 +56,19 @@
 		document.addbalance.target="_blank";
 		document.addbalance.submit();
 	}
+{/literal}{if $_config.phpui.delete_button_in_customerbalancebox|chkconfig}{literal}
+	function delpos()
+	{ 	 
+		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation(s) and/or invoice item(s)?{/t}{literal}'))
+		        return;
 	
+	        document.addbalance.action="?m=balancedel";
+		document.addbalance.target="";
+		document.addbalance.submit();
+	}
+{/literal}{/if}
 	//-->
 </SCRIPT>
-{/literal}
 <FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -132,6 +141,9 @@
 				<TR class="light">
 					<TD CLASS="ftop" ALIGN="left" colspan="7">
 						<nobr>
+						{if $_config.phpui.delete_button_in_customerbalancebox|chkconfig}
+						<A href="javascript:delpos();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
+						{/if}
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
 						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
 						<INPUT type="checkbox" class="box light" name="original" checked> {t}original{/t}&nbsp;

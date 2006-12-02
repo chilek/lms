@@ -34,6 +34,8 @@ version ? (????-??-??):
   - added helpdesk requests causes stats - helpdesk_stats option (alec) 
   - menus Printing renamed to Reports (alec)
   - added Helpdesk -> Reports -> List of Requests and Requests Stats (alec)
+  - recovered Delete button in customer's balance list: option 
+    phpui/delete_button_in_customerbalancebox (alec)
   
 version 1.9.3 Zarin (2006-09-19):
 
