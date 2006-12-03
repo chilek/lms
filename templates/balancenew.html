@@ -177,7 +177,13 @@
 						<B>{t}Description:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" class="fright">
-						<TEXTAREA rows="5" cols="50">{$last.comment|replace:"\n":"<BR>"}</TEXTAREA>
+						<TABLE WIDTH="100%" CELLPADDING="5">
+					                <TR>
+							        <TD CLASS="fall superlight">
+							    		{$last.comment|replace:"\n":"<BR>"}
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 				{/if}
