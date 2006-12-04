@@ -186,6 +186,5 @@ foreach my $line (@lines)
 	$idbq->finish();
 }
 
-$dbq->finish();
 $dbase->disconnect();
 system("rm $tmpfile");	
