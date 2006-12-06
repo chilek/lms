@@ -89,6 +89,7 @@ var cal12 = new calendar(document.printcustomerlist.elements['day']);
 cal12.time_comp = false;
 //-->
 </SCRIPT>
+</P>
 {/if}
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
@@ -147,6 +148,7 @@ var cal2 = new calendar(document.printbalancelist.elements['balanceto']);
 cal2.time_comp = false;
 //-->
 </SCRIPT>
+</P>
 {/if}
 {if $printmenu=="incomereport" || $printmenu=="finances"}
 <P><FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport" target="_blank">
@@ -191,6 +193,7 @@ var cal6 = new calendar(document.printincomereport.elements['to']);
 cal6.time_comp = false;
 //-->
 </SCRIPT>
+</P>
 {/if}
 {if $printmenu=="customer" || $printmenu=="finances"}
 <P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
@@ -262,6 +265,7 @@ var cal7 = new calendar(document.liabilityreport.elements['day']);
 cal7.time_comp = false;
 //-->
 </SCRIPT>
+</P>
 {/if}
 {if $printmenu=="finances"}
 <P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
@@ -328,6 +332,7 @@ var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
 cal9.time_comp = false;
 //-->
 </SCRIPT>
+</P>
 {/if}
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist" target="_blank">
@@ -403,6 +408,7 @@ var cal13 = new calendar(document.printreceiptlist.elements['to']);
 cal13.time_comp = false;
 //-->
 </SCRIPT>
+</P>
 {/if}
 {if $printmenu=="customer" || $printmenu=="finances"}
 <P><FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance" target="_blank">
@@ -460,6 +466,7 @@ var cal4 = new calendar(document.printcustomerbalance.elements['to']);
 cal4.time_comp = false;
 //-->
 </SCRIPT>
+</P>
 {/if}
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
@@ -543,6 +550,7 @@ var cal11 = new calendar(document.printinvoices.elements['invoiceto']);
 cal11.time_comp = false;
 //-->
 </SCRIPT>
+</P>
 {/if}
 {if $printmenu=="finances"}
 <P><FORM method="post" name="printforms" id="printforms" action="?m=print&type=transferforms2" target="_blank">
@@ -602,6 +610,7 @@ cal11.time_comp = false;
 	</TR>
 </TABLE>
 </FORM>
+</P>
 {/if}
 {if $printmenu=="node"}
 <P><FORM method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist" target="_blank">
@@ -676,6 +685,7 @@ cal11.time_comp = false;
 	</TR>
 </TABLE>
 </FORM>
+</P>
 {/if}
 {if $printmenu=="traffic" || $printmenu=="customer"}
 <P><FORM method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=trafficprint&type=customertraffic" target="_blank">
@@ -741,6 +751,7 @@ cal11.time_comp = false;
 	</TR>
 </TABLE>
 </FORM>
+</P>
 {/if}
 
 {include file="footer.html"}
