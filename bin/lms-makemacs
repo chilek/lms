@@ -185,7 +185,7 @@ while (my $row = $dbq->fetchrow_hashref()) {
 	$allnetworks = "$allnetworks $row->{'name'}";
 }
 
-$dbq->finsh();
+$dbq->finish();
 
 if(!$networks_list)
 {
