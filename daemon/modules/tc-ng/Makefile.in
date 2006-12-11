@@ -1,0 +1,17 @@
+
+SOURCES = tc-ng.c
+OBJECTS = ${SOURCES:.c=.o}
+
+OUT = tc-ng.so
+
+all: $(OUT)
+
+$(OUT): ${OBJECTS}
+	gcc -shared $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS)
+	rm -rf $(OBJECTS)
+
+clean:
+	rm -rf $(OUT) $(OBJECTS)
+
+install:
+	install -c -m 755 $(OUT) $(MODULESDIR)

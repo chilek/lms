@@ -36,6 +36,7 @@ version ? (????-??-??):
   - added Helpdesk -> Reports -> List of Requests and Requests Stats (alec)
   - recovered Delete button in customer's balance list: option 
     phpui/delete_link_in_customerbalancebox (alec)
+  - added daemon's tc-ng module supporting tariff+node assignments (alec)
   
 version 1.9.3 Zarin (2006-09-19):
 
