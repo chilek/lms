@@ -34,6 +34,11 @@
 		document.page.submit();
 	}
 
+	function setCheckbox(id)
+	{
+		document.page.elements[id].checked = !document.page.elements[id].checked;
+	}
+
 	function printr()
 	{
 		var add = "";
@@ -144,7 +149,7 @@
 					{/section}
 				</SELECT>
 				<NOBR>
-				<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}> {t}exclude group{/t}
+				<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}> <A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 				</NOBR>
 		</TD>
@@ -220,9 +225,9 @@
 			<A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{t}Print invoices{/t} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{t}Print cash receipts{/t} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<INPUT type="checkbox" class="box dark" name="original" checked> {t}original{/t}&nbsp;
-			<INPUT type="checkbox" class="box dark" name="copy" checked> {t}copy{/t}
-			<INPUT type="checkbox" class="box dark" name="duplicate"> {t}duplicate{/t}
+			<INPUT type="checkbox" class="box dark" name="original" checked> <A HREF="javascript:setCheckbox('original')">{t}original{/t}&nbsp;</a>
+			<INPUT type="checkbox" class="box dark" name="copy" checked> <A HREF="javascript:setCheckbox('copy')">{t}copy{/t}</a>
+			<INPUT type="checkbox" class="box dark" name="duplicate"> <A HREF="javascript:setCheckbox('duplicate')">{t}duplicate{/t}</a>
 		</TD>
 		<TD class="frightu" ALIGN="right" colspan="2">
 			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
