@@ -51,12 +51,12 @@ switch($mode)
 	case 'customer':
 		if($_GET['ajax']==1) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT id, lastname, name, email, phone1, phone2, phone3 FROM customers WHERE id ?LIKE? \''.$search.'%\' OR lower(lastname) ?LIKE? lower(\''.$search.'%\') OR lower(name) ?LIKE? lower(\''.$search.'%\') OR lower(email) ?LIKE? lower(\'%'.$search.'%\') OR phone1 ?LIKE? \''.$search.'%\' OR phone2 ?LIKE? \''.$search.'%\' OR phone3 ?LIKE? \''.$search.'%\' ORDER by lastname, name, email, phone1 LIMIT 15');
+			$candidates = $DB->GetAll('SELECT id, lastname, name, email, phone1, phone2, phone3, deleted FROM customers WHERE id ?LIKE? \''.$search.'%\' OR lower(lastname) ?LIKE? lower(\''.$search.'%\') OR lower(name) ?LIKE? lower(\''.$search.'%\') OR lower(email) ?LIKE? lower(\'%'.$search.'%\') OR phone1 ?LIKE? \''.$search.'%\' OR phone2 ?LIKE? \''.$search.'%\' OR phone3 ?LIKE? \''.$search.'%\' ORDER by deleted, lastname, name, email, phone1 LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
-				$eglible[$row['id']] = escape_js($row['lastname'].' '.$row['name']);
+				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '').$row['lastname'].' '.$row['name'].($row['deleted'] ? '</font>' : ''));
 				if (preg_match("/^$search/i",$row['id'])) $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']);
 				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['lastname']);
 				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['name']);
