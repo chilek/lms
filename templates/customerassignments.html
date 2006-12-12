@@ -146,8 +146,8 @@
 							<B>{t}Options:{/t}</B>
 						    </TD>
 						    <TD colspan="2">
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> {t}with invoice{/t}&nbsp;
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[settlement]" VALUE="1" {if $assignment.settlement}CHECKED{/if}> {t}with settlement of first deficient period{/t}
+							<INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> <A HREF="javascript:setWithInvoice()">{t}with invoice{/t}&nbsp;</a>
+							<INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[settlement]" VALUE="1" {if $assignment.settlement}CHECKED{/if}> <A HREF="javascript:setWithSettlement()">{t}with settlement of first deficient period{/t}</a>
 						
 						    </TD>
 						</TR>
@@ -172,8 +172,21 @@ cal2.time_comp = false;
 
 if(getCookie('customerassignments')=='1')
 {
-	document.getElementById('customerassignments').style.display = '';
+	document..getElementById('customerassignments').style.display = '';
 }
+
+function setWithInvoice()
+{
+	document.forms['assignment'].elements['assignment[invoice]'].checked =
+		!document.forms['assignment'].elements['assignment[invoice]'].checked;
+}
+
+function setWithSettlement()
+{
+	document.forms['assignment'].elements['assignment[settlement]'].checked =
+		!document.forms['assignment'].elements['assignment[settlement]'].checked;
+}
+
 //-->
 </SCRIPT>
 {/literal}
