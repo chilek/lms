@@ -37,6 +37,7 @@ version ? (????-??-??):
   - recovered Delete button in customer's balance list: option 
     phpui/delete_link_in_customerbalancebox (alec)
   - added daemon's tc-ng module supporting tariff+node assignments (alec)
+  - added possibility to create invoices for past invoiceless liabilities (alec)
   
 version 1.9.3 Zarin (2006-09-19):
 
