@@ -25,13 +25,13 @@
 						<B>{t}State:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select customer's group"}>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="3" CHECKED>{t}connected<!plural>{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="5">{t}disconnected<!plural>{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="6">{t}in debt{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{t}waiting{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{t}interested<!plural>{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="-1">{t}without nodes{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0">{t}all<!customers>{/t}</NOBR>
+						<NOBR><INPUT class="radio light" type="radio" id="connected" name="filter" value="3" CHECKED><A HREF="javascript:setCustomerType('connected')">{t}connected<!plural>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="disconnected" name="filter" value="5"><A HREF="javascript:setCustomerType('disconnected')">{t}disconnected<!plural>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="indebt" name="filter" value="6"><A HREF="javascript:setCustomerType('indebt')">{t}in debt{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="waiting" name="filter" value="2"><A HREF="javascript:setCustomerType('waiting')">{t}waiting{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="interested" name="filter" value="1"><A HREF="javascript:setCustomerType('interested')">{t}interested<!plural>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="wonodes" name="filter" value="-1"><A HREF="javascript:setCustomerType('wonodes')">{t}without nodes{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="all" name="filter" value="0"><A HREF="javascript:setCustomerType('all')">{t}all<!customers>{/t}</a></NOBR>
 					</TD>
 					<TD width="1%">
 						<NOBR><IMG src="img/network.gif" alt=""> <B>{t}Network:{/t}</B></NOBR><BR><BR>
@@ -87,6 +87,13 @@
 <!--
 var cal12 = new calendar(document.printcustomerlist.elements['day']);
 cal12.time_comp = false;
+
+{literal}
+function setCustomerType(id)
+{
+	document.printcustomerlist.elements[id].checked = true;
+}
+{/literal}
 //-->
 </SCRIPT>
 </P>
@@ -311,7 +318,7 @@ cal7.time_comp = false;
 					    </SELECT>
 					</TD>
 					<TD width="93%" nowrap>
-						<input type="checkbox" class="box light" name="extended" value="1"> {t}extended format{/t}
+						<input type="checkbox" class="box light" name="extended" value="1"> <A HREF="javascript:setInvoiceExtFormat()">{t}extended format{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -330,6 +337,14 @@ var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
 cal8.time_comp = false;
 var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
 cal9.time_comp = false;
+
+{literal}
+function setInvoiceExtFormat()
+{
+	document.invoicereport.elements['extended'].checked =
+		!document.invoicereport.elements['extended'].checked;
+}
+{/literal}
 //-->
 </SCRIPT>
 </P>
@@ -387,7 +402,7 @@ cal9.time_comp = false;
 						</SELECT>
 					</TD>
 					<TD width="92%" nowrap>
-						<input type="checkbox" class="box light" name="extended" value="1"> {t}extended format{/t}
+						<input type="checkbox" class="box light" name="extended" value="1"> <A HREF="javascript:setFinanceExtFormat()">{t}extended format{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -406,6 +421,13 @@ var cal12 = new calendar(document.printreceiptlist.elements['from']);
 cal12.time_comp = false;
 var cal13 = new calendar(document.printreceiptlist.elements['to']);
 cal13.time_comp = false;
+
+{literal}
+function setFinanceExtFormat()
+{
+	document.printreceiptlist.elements['extended'].checked = !document.printreceiptlist.elements['extended'].checked;
+}
+{/literal}
 //-->
 </SCRIPT>
 </P>
@@ -526,9 +548,9 @@ cal4.time_comp = false;
 						<IMG src="img/info.gif" alt="">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoiceorg" CHECKED>&nbsp;{t}original{/t}&nbsp;
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicecopy" CHECKED>&nbsp;{t}copy{/t}&nbsp;
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicedup">&nbsp;{t}duplicate{/t}
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoiceorg" CHECKED>&nbsp;<A HREF="javascript:setPrintInvoices('invoiceorg')">{t}original{/t}</a>&nbsp;
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicecopy" CHECKED>&nbsp;<A HREF="javascript:setPrintInvoices('invoicecopy')">{t}copy{/t}</a>&nbsp;
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicedup">&nbsp;<A HREF="javascript:setPrintInvoices('invoicedup')">{t}duplicate{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -548,6 +570,13 @@ var cal10 = new calendar(document.printinvoices.elements['invoicefrom']);
 cal10.time_comp = false;
 var cal11 = new calendar(document.printinvoices.elements['invoiceto']);
 cal11.time_comp = false;
+
+{literal}
+function setPrintInvoices(id)
+{
+	document.printinvoices.elements[id].checked = !document.printinvoices.elements[id].checked;
+}
+{/literal}
 //-->
 </SCRIPT>
 </P>
@@ -635,10 +664,10 @@ cal11.time_comp = false;
 						<B>{t}Status:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select nodes group"}>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0" CHECKED>{t}all{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{t}connected<!plural:item>{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{t}disconnected<!plural:item>{/t}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="3">{t}indebted owner{/t}</NOBR>
+						<NOBR><INPUT class="radio light" type="radio" id="all" name="filter" value="0" CHECKED><A HREF="javascript:setNodeType('all')">{t}all{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="connected" name="filter" value="1"><A HREF="javascript:setNodeType('connected')">{t}connected<!plural:item>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="disconnected" name="filter" value="2"><A HREF="javascript:setNodeType('disconnected')">{t}disconnected<!plural:item>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="indebt" name="filter" value="3"><A HREF="javascript:setNodeType('indebt')">{t}indebted owner{/t}</a></NOBR>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/network.gif" alt="">
@@ -685,6 +714,16 @@ cal11.time_comp = false;
 	</TR>
 </TABLE>
 </FORM>
+<SCRIPT>
+<!--
+{literal}
+function setNodeType(id)
+{
+	document.printnodelist.elements[id].checked = true;
+}
+{/literal}
+//-->
+</SCRIPT>
 </P>
 {/if}
 {if $printmenu=="traffic" || $printmenu=="customer"}
