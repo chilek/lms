@@ -66,7 +66,7 @@
 	<TR CLASS="LIGHT">
 		<TD CLASS="FALL" COLSPAN="2">
 			{section name=acl loop=$accesslist}
-			<INPUT CLASS="box light" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			<INPUT CLASS="box light" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
 			{/section}
 		</TD>
 	</TR>
@@ -75,6 +75,13 @@
 <SCRIPT>
 <!--
 document.forms['useradd'].elements['useradd[login]'].focus();
+
+{literal}
+function setAcl(id)
+{
+	document.forms['useradd'].elements[id].checked = !document.forms['useradd'].elements[id].checked;
+}
+{/literal}
 //-->
 </SCRIPT>
 {include file="footer.html"}

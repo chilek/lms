@@ -92,7 +92,7 @@
 		<TD CLASS="FALL" COLSPAN="3">
 			{if $unlockedit}
 			{section name=acl loop=$accesslist}
-			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="box light"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="box light"{if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
 			{/section}
 			{else}
 			{section name=acl loop=$accesslist}
@@ -107,6 +107,14 @@
 <SCRIPT>
 <!--
 document.forms['useredit'].elements['userinfo[login]'].focus();
+
+{literal}
+function setAcl(id)
+{
+	document.forms['useredit'].elements[id].checked = !document.forms['useredit'].elements[id].checked;
+}
+{/literal}
+
 //-->
 </SCRIPT>
 {/if}
