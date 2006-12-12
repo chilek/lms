@@ -6,6 +6,7 @@ version ? (????-??-??):
     not toutched (alec)
   - fixed nodes searching with 'OR' operator (alec)
   - in quicksearch popup fixed row description when node was found by ID (alec)
+  - fixed some forms in Firefox - added display:inline style (alec)
 
 version 1.8.7 Adria (2006-10-17):
 
