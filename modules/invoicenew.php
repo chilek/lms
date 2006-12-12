@@ -24,6 +24,22 @@
  *  $Id$
  */
 
+// Invoiceless liabilities: Zobowiazania/obciazenia na ktore nie zostala wystawiona faktura
+function GetCustomerCovenants($customerid)
+{
+	global $DB;
+
+	if(!$customerid) return NULL;
+	
+	return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.comment, c.taxid, 
+			taxes.label AS tax, c.id AS cashid,
+			ROUND(c.value / (taxes.value+100)*100, 2)*-1 AS net
+			FROM cash c
+			LEFT JOIN taxes ON (c.taxid = taxes.id)
+			WHERE c.customerid = ? AND c.docid = 0 AND c.value < 0
+			ORDER BY time', array($customerid));
+}
+
 $layout['pagetitle'] = trans('New Invoice');
 
 $taxeslist = $LMS->GetTaxes();
@@ -81,6 +97,34 @@ switch($action)
 			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
+		}
+	break;
+
+	case 'additemlist':
+	
+		if($marks = $_POST['marks'])
+		{
+			foreach($marks as $id)
+			{
+				$cash = $DB->GetRow('SELECT value, comment, taxid 
+						    FROM cash WHERE id = ?', array($id));
+			
+				$itemdata['cashid'] = $id;
+				$itemdata['name'] = $cash['comment'];
+				$itemdata['taxid'] = $cash['taxid'];
+				$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
+				$itemdata['discount'] = 0;
+				$itemdata['count'] = f_round($_POST['l_count'][$id]);
+				$itemdata['valuebrutto'] = f_round((-$cash['value'])/$itemdata['count']);
+				$itemdata['s_valuebrutto'] = f_round(-$cash['value']);
+				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxeslist[$itemdata['taxid']]['value'] + 100) * 100, 2);
+				$itemdata['s_valuenetto'] = round($itemdata['s_valuebrutto'] / ($taxeslist[$itemdata['taxid']]['value'] + 100) * 100, 2);
+				$itemdata['prodid'] = $_POST['l_prodid'][$id];
+				$itemdata['jm'] = $_POST['l_jm'][$id];
+				$itemdata['posuid'] = (string) (getmicrotime()+$id);
+				$itemdata['tariffid'] = 0;
+				$contents[] = $itemdata;
+			}
 		}
 	break;
 
@@ -167,6 +211,11 @@ switch($action)
 			$invoice['type'] = DOC_INVOICE;
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 		
+			// usuwamy wczesniejsze zobowiazania bez faktury
+			foreach($contents as $item)
+				if(isset($item['cashid']))
+					$DB->Execute('DELETE FROM cash WHERE id = ?', array($item['cashid']));
+		
 			$SESSION->remove('invoicecontents');
 			$SESSION->remove('invoicecustomer');
 			$SESSION->remove('invoice');
@@ -189,6 +238,28 @@ if($action)
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
 	$SESSION->redirect('?m=invoicenew');
 }
+
+$covenantlist = array();
+$list = GetCustomerCovenants($customer['id']);
+
+if(isset($list))
+	if($contents)
+		foreach($list as $row)
+		{
+			$i = 0;
+			foreach($contents as $item)
+				if(isset($item['cashid']) && $row['cashid'] == $item['cashid'])
+				{
+					$i = 1;
+					break;
+				}
+			if(!$i)
+				$covenantlist[] = $row;
+		}
+	else
+		$covenantlist = $list;
+
+$SMARTY->assign('covenantlist', $covenantlist);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

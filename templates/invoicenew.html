@@ -16,7 +16,7 @@
 			document.additem.tariffid.value = '{$tariff.id}';
 		{literal}}{/literal}
 		{/foreach}
-	{literal}}
+{literal}}
 	
 	function saveheader()
 	{
@@ -26,8 +26,24 @@
 	
 	        document.setcustomer.submit();
 	}															
-	{/literal}
+
+	function CheckAll()
+	{
+		for (var i=0; i<document.additemlist.elements.length; i++)
+		{
+			var e = document.additemlist.elements[i];
+		        if (e.name != 'allbox')
+				e.checked = document.additemlist.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.additemlist.allbox.checked = !document.additemlist.allbox.checked;
+		CheckAll();
+	}
 	//-->
+{/literal}
 </script>		
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
@@ -128,6 +144,65 @@
 {/if}
 <P>	
 <TABLE WIDTH="100%" CELLPADDING="3">
+{if $covenantlist}
+	<FORM name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
+	<TR>
+		<TD colspan="9" class="ftopu">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD class="fall">
+						<IMG src="img/money.gif" ALT="">
+						<B>{t}Invoiceless liabilities:{/t}</B>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="100%" class="fall">
+						<TABLE cellpadding="5" cellspacing="0" width="100%">
+							<TR class="dark">
+								<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+								<TD width="92%" class="fbt">{t}Name of product, commodity or service:{/t}</TD>
+								<TD width="1%" class="fbt" align="right" nowrap>{t}Product ID:{/t}</TD>
+								<TD width="1%" class="fbt" align="right">{t}Amount:{/t}</TD>
+								<TD width="1%" class="fbt" align="right">{t}Unit:{/t}</TD>
+								<TD width="1%" class="fbt" align="right" nowrap>{t}Net Value:{/t}</TD>
+								<TD width="1%" class="fbt" align="right" nowrap>{t}Tax:{/t}</TD>
+								<TD width="1%" class="fbt" align="right" nowrap>{t}Gross Value:{/t}</TD>
+								<TD width="1%" class="frightu">&nbsp;</TD>
+							</TR>
+							{cycle values="light,lucid" print=false}
+							{section name=covenantlist loop=$covenantlist}
+							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+							        <TD><nobr>{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</nobr></TD>
+								<TD>{$covenantlist[covenantlist].comment}</TD>
+							        <TD align="right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="" size="6"></TD>
+							        <TD align="right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
+							        <TD align="right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{t}item no.{/t}" size="3"></TD>
+							        <TD align="right" nowrap>{$covenantlist[covenantlist].net|money_format}</TD>
+							        <TD align="right" nowrap>{$covenantlist[covenantlist].tax}</TD>
+							        <TD align="right" nowrap>{$covenantlist[covenantlist].value|money_format}</TD>
+								<TD align="right">
+									{cycle print=false}
+									<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].cashid}">
+								</TD>
+							</TR>
+							{/section}
+							<TR class="light">
+								<TD CLASS="ftop" colspan="2" nowrap>
+									<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+									<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
+								</TD>
+							        <TD CLASS="ftop" ALIGN="right" colspan="7" nowrap>
+									<A href="javascript:document.additemlist.submit();">{t}Add items{/t} <IMG src="img/save.gif" ALT=""></A>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+        </TR>
+	</FORM>
+{/if}
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
 			<B>{t}No.{/t}</B>
