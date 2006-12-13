@@ -29,7 +29,7 @@ use Getopt::Long;
 use vars qw($logfile $configfile $quiet $help $version);
 use POSIX qw(strftime);
 
-my $_version = '1.1';
+my $_version = '1.9-cvs';
 
 my %options = (
 	"--traffic-log-file|f=s"=>	\$logfile,
@@ -140,33 +140,43 @@ open(LOGFILE, $logfile);
 my(@lines) = <LOGFILE>;   
 close(LOGFILE);
 
+my %data;
+
 # insert data to lms database 
 foreach my $line (@lines)           
 {
-    my ($ip,$upload,$download) = split('[\t\s]+',$line);                 
-    if( $table{$ip} )   # if IP is in our database then we can insert
-    {
- 	if( $upload || $download ) # don't need zeroes 
-	{   
-	$dbq = $dbase->prepare("INSERT INTO stats (nodeid, dt, download, upload) VALUES ( $table{$ip} , $utsfmt, $download, $upload)");
-    	$dbq->execute();
-	if(!$quiet)
-    	{
-    	    print "IP: $ip\tSend: $upload\t Recv: $download\n";
-    	}
-	} else
+	my ($ip,$upload,$download) = split('[\t\s]+',$line);                 
+	if( $table{$ip} )   # if IP is in our database then we can insert
 	{
-	    print "IP: $ip\tSkipped - null data\n";
+		if( $upload || $download ) # don't need zeroes 
+		{
+			$data{$ip}{'download'} += $download;
+			$data{$ip}{'upload'} += $upload;
+			
+			if(!$quiet)
+    			{
+				print "IP: $ip\tSend: $upload\t Recv: $download\n";
+			}
+		} else
+		{
+			print "IP: $ip\tSkipped - null data\n";
+		}
+	} 
+	else 
+	{
+		if(!$quiet)
+		{
+			print "IP: $ip\tSkipped - not in database\n";
+		}
 	}
-    } 
-    else 
-    {
-	if(!$quiet)
-    	{
-    	    print "IP: $ip\tSkipped - not in database\n";
-	}
-    }
 }
+
+while (my ($ip,$record) = each %data)
+{
+	$dbq = $dbase->prepare("INSERT INTO stats (nodeid, dt, download, upload) VALUES ( $table{$ip} , $utsfmt, $record->{'download'}, $record->{'upload'})");
+	$dbq->execute();
+}
+
 # finally 
 $dbq->finish();
 $dbase->disconnect();
