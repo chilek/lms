@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.8 Selana (2006-12-13):
 
   - fix: while cash receipt's editing if date isn't changed time should also be 
     not toutched (alec)
