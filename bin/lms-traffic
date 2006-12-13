@@ -29,7 +29,7 @@ use Getopt::Long;
 use vars qw($logfile $configfile $quiet $help $version);
 use POSIX qw(strftime);
 
-my $_version = '1.1';
+my $_version = '1.8-cvs';
 
 my %options = (
 	"--traffic-log-file|f=s"=>	\$logfile,
