@@ -39,6 +39,7 @@ version ? (????-??-??):
   - added daemon's tc-ng module supporting tariff+node assignments (alec)
   - added possibility to create invoices for past invoiceless liabilities (alec)
   - lms-traffic: stats summarization for multiple records with the same ip address (chilek)
+  - traffic account units: 1kbit/s = 1000bit/s (according to SI units) (chilek)
 
 version 1.9.3 Zarin (2006-09-19):
 
