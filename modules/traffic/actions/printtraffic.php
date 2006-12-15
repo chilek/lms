@@ -52,8 +52,8 @@ if($list = $DB->GetAll('SELECT download, upload, dt
 			
 	for($i=1; $i<=date('t',$from); $i++)
 	{
-		$stats[$i]['upavg'] = $stats[$i]['upload']*8/1024/86400; //kbps
-		$stats[$i]['downavg'] = $stats[$i]['download']*8/1024/86400; //kbps
+		$stats[$i]['upavg'] = $stats[$i]['upload']*8/1000/86400; //kbit/s
+		$stats[$i]['downavg'] = $stats[$i]['download']*8/1000/86400; //kbit/s
 		
 		$listdata['upload'] += $stats[$i]['upload'];
 		$listdata['download'] += $stats[$i]['download'];
