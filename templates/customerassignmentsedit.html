@@ -81,8 +81,8 @@
 			<B>{t}Options:{/t}</B>
 		</TD>
 		<TD class="fright" width="98%">
-		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> {t}with invoice{/t}&nbsp;
-			<INPUT class="box light" type="checkbox" name="assignmentedit[settlement]" value="1" {if $assignmentedit.settlement}CHECKED{/if}> {t}with settlement of first deficient period{/t}
+		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignmentedit[invoice]')">{t}with invoice{/t}</a>&nbsp;
+			<INPUT class="box light" type="checkbox" name="assignmentedit[settlement]" value="1" {if $assignmentedit.settlement}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignmentedit[settlement]')">{t}with settlement of first deficient period{/t}</a>
 		</TD>
 	</TR>
 {if $customernodes.total}
@@ -104,7 +104,7 @@
 				    <INPUT type="checkbox" name="assignmentedit[nodes][{counter}]" value="{$customernodes[customernodes].id}" class="box light"{if $assignmentedit.nodes.$nodeid} checked{/if}>
 				</TD>
 				<TD width="99%" nowrap>    
-				    <B>{$customernodes[customernodes].name}</B> ({$customernodes[customernodes].id|string_format:"%04d"}){if $customernodes[customernodes].location} / {$customernodes[customernodes].location|truncate:"60":"...":true}{/if}
+				    <A HREF="javascript:setCheckbox('assignmentedit[nodes][{counter name=counter2}]')"><B>{$customernodes[customernodes].name}</B> ({$customernodes[customernodes].id|string_format:"%04d"}){if $customernodes[customernodes].location} / {$customernodes[customernodes].location|truncate:"60":"...":true}{/if}</a>
 				</TD>
 			    </TR>    
 			    {/if}
@@ -129,6 +129,13 @@ var cal3 = new calendar(document.forms['assignmentedit'].elements['assignmentedi
 cal3.time_comp = false;
 var cal4 = new calendar(document.forms['assignmentedit'].elements['assignmentedit[dateto]']);
 cal4.time_comp = false;
+
+{literal}
+function setCheckbox(id)
+{
+	document.forms['assignmentedit'].elements[id].checked = !document.forms['assignmentedit'].elements[id].checked;
+}
+{/literal}
 //-->
 </SCRIPT>
 {include file="footer.html"}
