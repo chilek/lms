@@ -46,8 +46,8 @@
 					</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.value|money_format}</TD>
 					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.payday}</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.downrate|default:"-"}({$a.downceil|default:"-"}) kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.uprate|default:"-"}({$a.upceil|default:"-"}) kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.downrate|default:"-"}({$a.downceil|default:"-"}) kbit/s</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.uprate|default:"-"}({$a.upceil|default:"-"}) kbit/s</TD>
 					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{if $a.invoice}{t}yes{/t}{else}{t}no{/t}{/if}/{if $a.settlement}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
 					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{if $a.discount!=0}{$a.discount}%{else}-{/if}</TD>
 					{/if}
@@ -76,8 +76,8 @@
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="LEFT">({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_downrate" default="-"}({sum array=$assignments column="real_downceil" default="-"}) kbps</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_uprate" default="-"}({sum array=$assignments column="real_upceil" default="-"}) kbps</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_downrate" default="-"}({sum array=$assignments column="real_downceil" default="-"}) kbit/s</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="real_uprate" default="-"}({sum array=$assignments column="real_upceil" default="-"}) kbit/s</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>
