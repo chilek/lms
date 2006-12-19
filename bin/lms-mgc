@@ -170,6 +170,7 @@ sub instance($)
 	print STDOUT "Starting up instance: $instanceno\n" unless $quiet;
 	
 	my $outfile = $ini->val("mgc:$instanceno",'outfile') || '';
+	my $ignore_netdevices = $ini->val("mgc:$instanceno", 'ignore_netdevices') || 0;
 	my $header_file = $ini->val("mgc:$instanceno",'header_file') || '';
 	my $header = $ini->val("mgc:$instanceno",'header') || '';
 	my $footer_file = $ini->val("mgc:$instanceno",'footer_file') || '';
@@ -548,8 +549,9 @@ sub instance($)
 				print "using per node rule.\n" if $debug;
 				$rule = $pernoderule;
 			}
-			elsif($idlist{$ipaddr} && !($ownerlist{$ipaddr}))
+			elsif($idlist{$ipaddr} && !($ownerlist{$ipaddr}) && !($ignore_netdevices))
 			{
+				print "found netdevice...\n" if $debug;
 				$rule = $netdevnode;
 			}
 			elsif($allnodes)
