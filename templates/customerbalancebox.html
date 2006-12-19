@@ -73,7 +73,7 @@
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD class="fleftu" {if $limit}OnCLick="showOrHide('customerbalance');"{/if} nowrap>
+	<TD {if $limit}class="fleftu hand" onCLick="showOrHide('customerbalance');" {else}class="fleftu" {/if}nowrap>
 			<IMG src="img/pay.gif" alt="">
 			<B>{t}Customer Account:{/t}</B> 
 			{if $limit}

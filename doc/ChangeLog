@@ -40,6 +40,8 @@ version ? (????-??-??):
   - added possibility to create invoices for past invoiceless liabilities (alec)
   - lms-traffic: stats summarization for multiple records with the same ip address (chilek)
   - traffic account units: 1kbit/s = 1000bit/s (according to SI units) (chilek)
+  - little change in css style - added pointer as cursor class to showOrHide
+    table cells and rows (lukasz)
 
 version 1.9.3 Zarin (2006-09-19):
 

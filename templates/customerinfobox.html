@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK"{if $customerpanel} onClick="showOrHide('customerpanel');"{/if}>
+	<TR{if $customerpanel} class="dark hand" onClick="showOrHide('customerpanel');"{else} class="dark"{/if}>
 		<TD WIDTH="1%" CLASS="FALL" COLSPAN="3">
 			<IMG SRC="img/customer.gif" ALT="">
 			{if $customerpanel}<B>{t}Owner:{/t}</B>{/if}
