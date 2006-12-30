@@ -168,7 +168,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	// nodes
 	res = g->db_query(g->conn, 
 		"SELECT downrate, downceil, uprate, upceil, climit, plimit, "
-			"nodes.id, ownerid, nodes.name, INET_NTOA(ipaddr) AS ip, " 
+			"nodes.id, ownerid, nodes.name, INET_NTOA(ipaddr) AS ip, mac " 
 	    		// subquery: number of enabled nodes in assignment
 			"( "
 			"SELECT count(*) "
@@ -242,6 +242,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			customers[j].nodes[k].network = n;
 			customers[j].nodes[k].ip = strdup(ip);
 			customers[j].nodes[k].name = strdup(g->db_get_data(res,i,"name"));
+			customers[j].nodes[k].mac = strdup(g->db_get_data(res,i,"mac"));
 			customers[j].no++;
 		}
 		else
@@ -283,16 +284,19 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&mark_up, "%n", host.name);
 					g->str_replace(&mark_up, "%if", nets[host.network].interface);
 					g->str_replace(&mark_up, "%i", host.ip);
+					g->str_replace(&mark_up, "%m", host.mac);
 					g->str_replace(&mark_up, "%x", itoa(x));
 			    					
 					g->str_replace(&mark_down, "%n", host.name);
 					g->str_replace(&mark_down, "%if", nets[host.network].interface);
 					g->str_replace(&mark_down, "%i", host.ip);
+					g->str_replace(&mark_down, "%m", host.mac);
 					g->str_replace(&mark_down, "%x", itoa(x));
 		
 					g->str_replace(&htb_up, "%n", host.name);
 					g->str_replace(&htb_up, "%if", nets[host.network].interface);
 					g->str_replace(&htb_up, "%i", host.ip);
+					g->str_replace(&htb_up, "%m", host.mac);
 					g->str_replace(&htb_up, "%x", itoa(x));
 					g->str_replace(&htb_up, "%uprate", itoa(host.uprate));
 	
@@ -304,6 +308,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&htb_down, "%n", host.name);
 					g->str_replace(&htb_down, "%if", nets[host.network].interface);
 					g->str_replace(&htb_down, "%i", host.ip);
+					g->str_replace(&htb_down, "%m", host.mac);
 					g->str_replace(&htb_down, "%x", itoa(x));
 					g->str_replace(&htb_down, "%downrate", itoa(host.downrate));
 
@@ -325,6 +330,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&cl, "%n", host.name);
 					g->str_replace(&cl, "%if", nets[host.network].interface);
 	    				g->str_replace(&cl, "%i", host.ip);
+	    				g->str_replace(&cl, "%m", host.mac);
 					g->str_replace(&cl, "%x", itoa(x));
 
 					fprintf(fh, "%s", cl);
@@ -336,6 +342,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&pl, "%n", host.name);
 					g->str_replace(&pl, "%if", nets[host.network].interface);
 					g->str_replace(&pl, "%i", host.ip);
+					g->str_replace(&pl, "%m", host.mac);
 					g->str_replace(&pl, "%x", itoa(x));
 
 					fprintf(fh, "%s", pl);
@@ -380,6 +387,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		{
 			free(customers[i].nodes[j].ip);
 			free(customers[i].nodes[j].name);
+			free(customers[i].nodes[j].mac);
 		}
 		free(customers[i].nodes);
 	}
