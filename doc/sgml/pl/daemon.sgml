@@ -220,7 +220,11 @@
 				</row>
 				<row>
 				<entry><xref linkend="daemon-tc"></entry>
-				<entry>Tworzenie regu³ HTB</entry>
+				<entry>Tworzenie regu³ TC</entry>
+				</row>
+				<row>
+				<entry><xref linkend="daemon-tc-ng"></entry>
+				<entry>Tworzenie regu³ TC</entry>
 				</row>
 				<row>
 				<entry><xref linkend="daemon-traffic"></entry>
@@ -910,6 +914,30 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
+		</sect2>
+		<sect2 id="daemon-tc-ng" xreflabel="tc-ng">
+			<title>Tc-ng (HTB)</title>
+			<sect3 id="tc-ng-desc">
+				<title>Opis</title>
+				<para>Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
+					do ograniczania pasma i limitowania po³±czeñ klientom. Dzia³a podobnie
+					do modu³u 'tc', lecz obs³uguje funkcjonalno¶æ pozwalaj±c± na powi±zywanie
+					taryf z komputerami. Modu³ generuje skrypt z zestawem regu³ dla ka¿dego 
+					komputera. Pod uwagê s± brane tylko taryfy którym zosta³y przypisane komputery.
+					Je¶li do jednej taryfy przypisano wiele komputerów ich limity obliczane s±
+					jako ¶rednia. W przypadku gdy dla jednego komputera zdefiniowano wiele
+					taryf limity (¶rednie) s± sumowane. W regu³kach mo¿na stosowaæ
+					nastêpuj±ce	zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, 
+					%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
+					zwiêkszany o jeden dla ka¿dego komputera.</para>
+				<para>Poniwa¿ konfiguracja modu³u jest bardzo podobna do jego poprzednika,
+					powieniene¶ zacz±æ od przeczytania opisu <xref linkend="daemon-tc">.</para>
+			</sect3>
+			<sect3 id="tc--ngconfig">
+				<title>Konfiguracja</title>
+				<para>Masz do dyspozycji standardowe parametry dostêpne dla modu³u 'tc'
+					z wyj±tkiem opcji <prompt>one_class_per_host</prompt>.</para>
+			</sect3>
 		</sect2>
 		<sect2 id="daemon-dns" xreflabel="dns">
 		<title>Dns</title>

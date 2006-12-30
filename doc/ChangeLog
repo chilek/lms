@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.9.4 Mot (2006-12-30):
 
   - fixed upgrade scripts for PostgreSQL versions that do not support
     "ALTER TABLE ... ADD ... NOT NULL DEFAULT ...": 2006061200, 2006082300,
@@ -36,7 +36,7 @@ version ? (????-??-??):
   - added Helpdesk -> Reports -> List of Requests and Requests Stats (alec)
   - recovered Delete button in customer's balance list: option 
     phpui/delete_link_in_customerbalancebox (alec)
-  - added daemon's tc-ng module supporting tariff+node assignments (alec)
+  - added daemon's tc-ng module supporting node-to-tariff assignments (alec)
   - added possibility to create invoices for past invoiceless liabilities (alec)
   - lms-traffic: stats summarization for multiple records with the same ip address (chilek)
   - traffic account units: 1kbit/s = 1000bit/s (according to SI units) (chilek)
