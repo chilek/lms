@@ -222,7 +222,16 @@ HREF="daemon-modules.html#DAEMON-TC"
 >tc</A
 ></TD
 ><TD
->Tworzenie regu³ HTB</TD
+>Tworzenie regu³ TC</TD
+></TR
+><TR
+><TD
+><A
+HREF="daemon-modules.html#DAEMON-TC-NG"
+>tc-ng</A
+></TD
+><TD
+>Tworzenie regu³ TC</TD
 ></TR
 ><TR
 ><TD
@@ -1564,8 +1573,59 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="DAEMON-TC-NG"
+>6.2.11. Tc-ng (HTB)</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="TC-NG-DESC"
+>6.2.11.1. Opis</A
+></H3
+><P
+>Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
+					do ograniczania pasma i limitowania po³±czeñ klientom. Dzia³a podobnie
+					do modu³u 'tc', lecz obs³uguje funkcjonalno¶æ pozwalaj±c± na powi±zywanie
+					taryf z komputerami. Modu³ generuje skrypt z zestawem regu³ dla ka¿dego 
+					komputera. Pod uwagê s± brane tylko taryfy którym zosta³y przypisane komputery.
+					Je¶li do jednej taryfy przypisano wiele komputerów ich limity obliczane s±
+					jako ¶rednia. W przypadku gdy dla jednego komputera zdefiniowano wiele
+					taryf limity (¶rednie) s± sumowane. W regu³kach mo¿na stosowaæ
+					nastêpuj±ce	zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, 
+					%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
+					zwiêkszany o jeden dla ka¿dego komputera.</P
+><P
+>Poniwa¿ konfiguracja modu³u jest bardzo podobna do jego poprzednika,
+					powieniene¶ zacz±æ od przeczytania opisu <A
+HREF="daemon-modules.html#DAEMON-TC"
+>tc</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="TC--NGCONFIG"
+>6.2.11.2. Konfiguracja</A
+></H3
+><P
+>Masz do dyspozycji standardowe parametry dostêpne dla modu³u 'tc'
+					z wyj±tkiem opcji <SAMP
+CLASS="PROMPT"
+>one_class_per_host</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DAEMON-DNS"
->6.2.11. Dns</A
+>6.2.12. Dns</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -1573,7 +1633,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="DNS-DESC"
->6.2.11.1. Opis</A
+>6.2.12.1. Opis</A
 ></H3
 ><P
 >Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
@@ -1590,7 +1650,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="DNS-CONFIG"
->6.2.11.2. Konfiguracja</A
+>6.2.12.2. Konfiguracja</A
 ></H3
 ><P
 ></P
@@ -1783,7 +1843,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-ETHERS"
->6.2.12. Ethers</A
+>6.2.13. Ethers</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -1791,7 +1851,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="ETHERS-DESC"
->6.2.12.1. Opis</A
+>6.2.13.1. Opis</A
 ></H3
 ><P
 >Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
@@ -1804,7 +1864,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="ETHERS-CONFIG"
->6.2.12.2. Konfiguracja</A
+>6.2.13.2. Konfiguracja</A
 ></H3
 ><P
 >Tutaj s± tylko standardowe opcje:</P
@@ -1876,7 +1936,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-OIDENT"
->6.2.13. Oident</A
+>6.2.14. Oident</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -1884,7 +1944,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="OIDENT-DESC"
->6.2.13.1. Opis</A
+>6.2.14.1. Opis</A
 ></H3
 ><P
 >Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
@@ -1896,7 +1956,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="OIDENT-CONFIG"
->6.2.13.2. Konfiguracja</A
+>6.2.14.2. Konfiguracja</A
 ></H3
 ><P
 >A oto parametry modu³u 'oident'</P
@@ -1976,7 +2036,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-PINGER"
->6.2.14. Pinger</A
+>6.2.15. Pinger</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -1984,7 +2044,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="PINGER-DESC"
->6.2.14.1. Opis</A
+>6.2.15.1. Opis</A
 ></H3
 ><P
 >Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s± jednak
@@ -2038,7 +2098,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="PINGER-CONFIG"
->6.2.14.2. Konfiguracja</A
+>6.2.15.2. Konfiguracja</A
 ></H3
 ><P
 >Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:</P
@@ -2063,7 +2123,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-PARSER"
->6.2.15. Parser</A
+>6.2.16. Parser</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -2071,7 +2131,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="DAEMON-PARSER-INTRO"
->6.2.15.1. Wstêp</A
+>6.2.16.1. Wstêp</A
 ></H3
 ><P
 >Modu³ parser jest oparty na skryptowym jêzyku
@@ -2115,7 +2175,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="DAEMON-PARSER-CONFIG"
->6.2.15.2. Konfiguracja</A
+>6.2.16.2. Konfiguracja</A
 ></H3
 ><P
 >Parser posiada nastêpuj±ce opcje:</P
