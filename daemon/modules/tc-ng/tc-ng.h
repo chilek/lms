@@ -25,6 +25,7 @@ struct node
 	int network;
 	char *ip;
 	char *name;
+	char *mac;
 };
 
 struct customer
