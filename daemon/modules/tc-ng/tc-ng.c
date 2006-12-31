@@ -168,7 +168,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	// nodes
 	res = g->db_query(g->conn, 
 		"SELECT downrate, downceil, uprate, upceil, climit, plimit, "
-			"nodes.id, ownerid, nodes.name, INET_NTOA(ipaddr) AS ip, mac " 
+			"nodes.id, ownerid, nodes.name, INET_NTOA(ipaddr) AS ip, mac, " 
 	    		// subquery: number of enabled nodes in assignment
 			"( "
 			"SELECT count(*) "
