@@ -100,7 +100,7 @@
 			<SELECT SIZE="1" NAME="net">
 				<OPTION VALUE="allnets">{t}All{/t}</OPTION>
 				{section name="netlist" loop=$netlist}
-				<OPTION VALUE="{$netlist[netlist].id}">{$netlist[netlist].name|truncate:30:"...":true}</OPTION>
+				<OPTION VALUE="{$netlist[netlist].id}" {if $netlist[netlist].id == $trafficnet}SELECTED{/if}>{$netlist[netlist].name|truncate:30:"...":true}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>

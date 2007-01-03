@@ -151,30 +151,39 @@ $layout['pagetitle'] = trans('Network Statistics');
 
 $bars = 1;
 
-if(isset($_GET['bar']) && isset($_POST['order']))
-	$SESSION->save('trafficorder', $_POST['order']);
+if(isset($_GET['bar']))
+{
+	if(isset($_POST['order']))
+		$SESSION->save('trafficorder', $_POST['order']);
+	if(isset($_POST['net']))
+		$SESSION->save('trafficnet', $_POST['net']);
+}
 
 $bar = isset($_GET['bar']) ? $_GET['bar'] : '';
 
 switch($bar)
 {
 	case 'hour':
-		$traffic = Traffic( time()-(60*60), time(), 0,
+		$traffic = Traffic( time()-(60*60), time(),
+			$SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'day':
-		$traffic = Traffic( time()-(60*60*24), time(),  0,
+		$traffic = Traffic( time()-(60*60*24), time(),
+			$SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'month':
-		$traffic = Traffic( time()-(60*60*24*30), time(), 0,
+		$traffic = Traffic( time()-(60*60*24*30), time(),
+			$SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'year':
-		$traffic = Traffic( time()-(60*60*24*365), time(), 0,
+		$traffic = Traffic( time()-(60*60*24*365), time(),
+			$SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
@@ -209,6 +218,7 @@ $SMARTY->assign('endyear',$endyear);
 $SMARTY->assign('showips', isset($_POST['showips']) ? TRUE : FALSE);
 $SMARTY->assign('bars',$bars);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
+$SMARTY->assign('trafficnet', $SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0);
 $SMARTY->display('traffic.html');
 
 ?>
