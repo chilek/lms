@@ -2,6 +2,7 @@ $Id$
 
 version 1.9.5 ??? (???):
   - traffic stats: saving chosen network in session (chilek)
+  - rtticketedit: fixed regression connected with undefined customerid (chilek)
 
 version 1.9.4 Mot (2006-12-30):
 
