@@ -59,8 +59,7 @@ if(isset($_POST['ticket']))
 	if($ticketedit['state']==0 && $ticketedit['owner'])
 		$ticketedit['state'] = 1;
 
-	if($ticketedit['custid'])
-		$ticketedit['customerid'] = $ticketedit['custid'];
+	$ticketedit['customerid'] = ($ticketedit['custid'] ? $ticketedit['custid'] : 0);
 		
 	if(!$error)
 	{
