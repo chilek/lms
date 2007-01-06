@@ -754,6 +754,7 @@ sub instance($)
 if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$dbase->do("SET NAMES utf8");
 	$utsfmt = "UNIX_TIMESTAMP()";
 	$customerq = "CONCAT(UPPER(customers.lastname), ' ', customers.name) AS customer";
 }

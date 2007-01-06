@@ -127,6 +127,10 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
 	free(c);
 	return NULL;
     }
+    
+    // SET NAMES utf8
+    mysql_set_character_set(&c->conn, "utf8");
+    
 #ifdef DEBUG0
 	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'.", db, host, user, port);
 #endif

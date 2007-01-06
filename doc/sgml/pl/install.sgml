@@ -48,7 +48,7 @@
 				<para>mysql lub pgsql (dla bazy danych),</para>
 			</listitem>
 			<listitem>
-				<para>iconv (dla wydruków pdf oraz obs³ugi MySQLa z kodowaniem latin2),</para>
+				<para>iconv (dla wydruków pdf),</para>
 			</listitem>
 			<listitem>
 				<para>PEAR::Mail (wymaga PEAR::Net_SMTP i PEAR::Net_Socket) do mailingu.</para>
@@ -58,7 +58,7 @@
         </sect2>
         <sect2 id="install-req-db">
            <title>Serwer baz danych</title>
-           <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx.</para>
+           <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 5.0.</para>
            <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
          </sect2>
          <sect2 id="install-req-smarty">
@@ -194,19 +194,13 @@ $ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</screen>
                <screen>
 mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
-mysql> CREATE DATABASE lms /*!40101 CHARACTER SET utf8 COLLATE utf8_polish_ci */;
+mysql> CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql> GRANT USAGE ON lms.* TO lms@localhost;
 mysql> GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY 'twoje_has³o';
 mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;</screen>
           </para>
-          <para><note><para>Z uwagi na to, ¿e MySQL nawet w wersji 4.1 ma pewne 
-          problemy z kodowaniem UTF baza danych LMS mo¿e mieæ inne kodowanie.
-          W takim wypadku nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
-          z opcji konfiguracyjnej <filename>server_encoding</filename> w sekcji 
-          <filename>[database]</filename> pliku <filename>lms.ini</filename>.
-          </para></note></para>
           </sect3>
           <sect3 id="install-mysql-lms">
           <title>Konfiguracja LMS (lms.ini)</title>
@@ -215,7 +209,6 @@ mysql> source doc/lms.mysql;</screen>
                <screen>
 user     = lms
 password = has³o_z_pkt.3
-server_encoding = latin2 ; je¶li baza nie jest w unicodzie</screen>
               </para>
                <para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
                danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
@@ -271,12 +264,6 @@ $ /usr/local/pgsql/bin/createuser -d -A -P lms
 $ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</screen>
           </para>
-          <para><note><para>Kodowanie UNICODE jest prawid³owo obs³ugiwane
-          dla znaków spoza zakresu ASCII dopiero od wersji 8.0 PostgreSQLa.
-          Na wcze¶niejszych wersjach nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
-          z opcji konfiguracyjnej <filename>server_encoding</filename> w sekcji 
-          <filename>[database]</filename> pliku <filename>lms.ini</filename>.
-          </para></note></para>
           </sect3>
           <sect3 id="install-pgsql-lms">
           <title>Konfiguracja LMS (lms.ini)</title>
@@ -347,14 +334,6 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
         <para>database</para>
         <para>Nazwa bazy danych, domy¶lnie lms.</para>
         <para>Przyk³ad:     <prompt>database = lms</prompt></para>
-       </listitem>
-          <listitem>
-        <para>server_encoding</para>
-        <para>Kodowanie bazy danych. Je¶li kodowanie to jest inne od UNICODE nale¿y ustawiæ 
-        tê opcjê na odpowiedni± warto¶æ. Postgres zajmie siê konwersj± sam, ale w przypadku
-        mysqla u¿ywana jest PHP-owa funkcja iconv() w LMS-owych driverach do bazy danych. 
-        Domy¶lnie: UNICODE</para>
-        <para>Przyk³ad:     <prompt>server_encoding = LATIN2</prompt></para>
        </listitem>
          </itemizedlist>
      </para>
@@ -539,12 +518,6 @@ AddDefaultCharset Off
      nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
      Po czym uruchamiamy <emphasis>LMS-UI</emphasis> i odtwarzamy dane z 
      przekonwertowanego backupu.</para>
-     <para><note><para>Mo¿liwa jest praca
-     z baz± danych z kodowaniem innym ni¿ UNICODE. W takim wypadku rezygnujemy
-     z ostatniego, opisanego wy¿ej, etapu i ustawiamy odpowiednio opcjê
-     konfiguracyjn± <filename>server_encoding</filename> w sekcji 
-     <filename>[database]</filename>. Rozwi±zanie to mo¿e mieæ z³y wp³yw
-     na wydajno¶æ ze wzglêdu na przeprowadzan± konwersjê kodowania danych.</para></note></para>
     <para><warning><para>Je¿eli u¿ywasz wersji pobranej z CVSu musisz dodatkowo
     zadbaæ o instalacjê biblioteki Smarty. Do katalogu <filename>/lib/Smarty</filename>
     wgraj zawarto¶æ katalogu <filename>/lib</filename> z paczki Smarty. Czynno¶æ

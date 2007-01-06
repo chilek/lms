@@ -123,6 +123,7 @@ my $dbase;
 if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$dbase->do("SET NAMES utf8");
 }
 elsif($dbtype eq "postgres")
 {
