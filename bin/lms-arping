@@ -116,18 +116,18 @@ my $utsfmt;
 
 if($dbtype eq "mysql")
 {
-     $dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-     $utsfmt = "UNIX_TIMESTAMP()";
+    $dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+    $utsfmt = "UNIX_TIMESTAMP()";
 }
 elsif($dbtype eq "postgres")
 {
-     $dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-     $utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+    $dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+    $utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
 }
 else
 {
-     print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
-     exit 1;
+    print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+    exit 1;
 }
 
 if(!$networks_list)

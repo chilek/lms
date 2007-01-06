@@ -32,7 +32,6 @@ class LMSDB_driver_mysql extends LMSDB_common
 {
 	var $_loaded = TRUE;
 	var $_dbtype = 'mysql';
-	var $iconv = NULL;
 
 	function LMSDB_driver_mysql($dbhost, $dbuser, $dbpasswd, $dbname)
 	{
@@ -42,8 +41,8 @@ class LMSDB_driver_mysql extends LMSDB_common
 		$this->_version .= ' (core: '.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).' / driver: '.$this->_dbtype.' '.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 
-		if(version_compare($this->_driver_dbversion(), '5')>=0)
-			$this->Execute('SET NAMES utf8');
+		if(version_compare($this->_driver_dbversion(), '5') < 0)
+			die('MySQL version not supported!');
 	}
 	
 	function _driver_dbversion()
@@ -98,9 +97,6 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		$this->_query = $query;
 
-		if($this->iconv)
-			$query = iconv('UTF-8', $this->iconv, $query);
-
 		if($this->_result = @mysql_query($query, $this->_dblink))
 			$this->_error = FALSE;
 		else
@@ -112,17 +108,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		if(! $this->_error)
 		{
-			$result =  mysql_fetch_array($this->_result, MYSQL_ASSOC);
-			
-			if(!$this->iconv)
-				return $result;
-			else
-			{
-				if($result)
-					foreach($result as $idx => $val)
-						$result[$idx] = iconv($this->iconv, 'UTF-8', $val);
-				return $result;
-			}
+			return mysql_fetch_array($this->_result, MYSQL_ASSOC);
 		}
 		else
 			return FALSE;
@@ -132,17 +118,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		if(! $this->_error)
 		{
-			$result = mysql_fetch_array($this->_result, MYSQL_NUM);
-			
-			if(!$this->iconv)
-				return $result;
-			else
-			{
-				if($result)
-					foreach($result as $idx => $val)
-						$result[$idx] = iconv($this->iconv, 'UTF-8', $val);
-				return $result;
-			}
+			return mysql_fetch_array($this->_result, MYSQL_NUM);
 		}
 		else
 			return FALSE;
