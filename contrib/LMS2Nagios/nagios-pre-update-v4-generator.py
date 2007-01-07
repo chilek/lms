@@ -142,7 +142,7 @@ hosts.close()
 services.close()
 hostgroups.close()
 
-db=MySQLdb.connect(host="192.168.50.4",user="lms",passwd="lms412",db="lmsmain")
+db=MySQLdb.connect(host="host",user="lmsuser",passwd="lmspass",db=lms)
 c=db.cursor()
 cfg=config.get("init","timestamp")
 #select="""UPDATE reload SET %s=%s WHERE data=%s"""%(host,cfg,cfg)
