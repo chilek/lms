@@ -7,16 +7,22 @@
 	function setWarnings(on)
 	{
 		if (on == 1)
-			document.setwarnings.elements[1].value = 1;
+		{
+			document.getElementById('warnon').value = 1;
+			document.getElementById('warnoff').value = 0;
+		}
 		else
-			document.setwarnings.elements[1].value = 0;
+		{
+			document.getElementById('warnon').value = 0;
+			document.getElementById('warnoff').value = 1;
+		}
 		document.setwarnings.submit();
 	}
 -->
 </SCRIPT>
 {/literal}
 <P>
-<FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customersearch&search=0">
+<FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD width="97%" class="fleftu">
@@ -32,20 +38,20 @@
 			<a href="?m=customersearch&search=1&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<NOBR><B>{t 0=$listdata.total|default:"0"}Total: $0{/t}</B></NOBR>
+			<B>{t 0=$listdata.total|default:"0"}Total: $0{/t}</B>&nbsp;
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="4" CLASS="FALL">
 			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
-			<INPUT type="hidden" class="hiddenbtn" name="setwarnings[total]" value="{$endx - $startx}">
-			<INPUT type="hidden" class="hiddenbtn" name="setwarnings[warnon]" value="0">
+			<INPUT type="hidden" id="warnon" name="setwarnings[warnon]" value="0">
+			<INPUT type="hidden" id="warnoff" name="setwarnings[warnoff]" value="0">
 		</TD>
 	</TR>
 	{/if}
 	{section name=customerlist loop=$customerlist}
-	<INPUT type="hidden" class="hiddenbtn" name="setwarnings[id{$smarty.section.customerlist.index}]" value="{$customerlist[customerlist].id}">
+	<INPUT type="hidden" class="hiddenbtn" name="setwarnings[mcustomerid][]" value="{$customerlist[customerlist].id}">
 	{/section}
 	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
@@ -112,19 +118,13 @@
 			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
 		</TD>
 	</TR>
-	{/if}
 	<TR class="dark">
-		<TD width="100%" class="fall" COLSPAN="4">
-			<TABLE WIDTH="100%">
-				<TR>
-					<TD ALIGN="left">
-					<NOBR><A HREF="javascript:setWarnings(1);"><IMG SRC="img/warningon.gif">{t}Enable Warnings for All{/t}</A></NOBR>&nbsp;
-					<NOBR><A HREF="javascript:setWarnings(0);"><IMG SRC="img/warningoff.gif">{t}Disable Warnings for All{/t}</A></NOBR>&nbsp;
-					</TD>
-				</TR>
-			</TABLE>
+		<TD width="100%" class="fall" align="left" COLSPAN="4" nowrap>
+			<A HREF="javascript:setWarnings(1);"><IMG SRC="img/warningon.gif">{t}Enable Warnings for All{/t}</A>&nbsp;
+			<A HREF="javascript:setWarnings(0);"><IMG SRC="img/warningoff.gif">{t}Disable Warnings for All{/t}</A>
 		</TD>
 	</TR>
+	{/if}
 	<TR class="dark">
 		<TD class="fleftu"" align="right">
 			&nbsp;
@@ -138,7 +138,7 @@
 			{$listdata.over|money_format}</B>
 		</TD>
 		<TD class="frightu" align="right" valign="top" nowrap>
-			<B>{t}Total:{/t} {$listdata.total|default:"0"}</B>	
+			<B>{t}Total:{/t} {$listdata.total|default:"0"}</B>&nbsp;
 		</TD>
 	</TR>
 </TABLE>
