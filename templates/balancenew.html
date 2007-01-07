@@ -13,6 +13,11 @@
 			}
 		document.forms['addbalance'].selectededit.value = j;
 	}
+
+	function setOperationType(id)
+	{
+		document.forms['addbalance'].elements[id].checked = true;
+	}
 //-->
 {/literal}
 </SCRIPT>
@@ -82,8 +87,8 @@
 						<B>{t}Type:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" CLASS="FRIGHT">
-						<INPUT TYPE="radio" NAME="addbalance[type]" VALUE="0" class="box light" {tip text="Select type of operation"}>{t}liability{/t}
-						<INPUT TYPE="radio" NAME="addbalance[type]" VALUE="1" class="box light" {tip text="Select type of operation"} checked>{t}income/expense{/t}
+						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operator0" VALUE="0" class="box light" {tip text="Select type of operation"}><A HREF="javascript:setOperationType('operator0')">{t}liability{/t}</A>
+						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operator1" VALUE="1" class="box light" {tip text="Select type of operation"} checked><A HREF="javascript:setOperationType('operator1')">{t}income/expense{/t}</A>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -94,7 +99,7 @@
 						<B>{t}Date:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" class="fright">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d"}{/if}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
