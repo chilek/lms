@@ -34,9 +34,13 @@ if(isset($addbalance['time']) && $addbalance['time']!='')
 	list($date,$time) = split(' ', $addbalance['time']);
 	$date = explode('/',$date);
 	$time = explode(':',$time);
-	
+
 	if(checkdate($date[1],$date[2],(int)$date[0])) //if date is wrong, set today's date
+	{
+		if (!strlen($time[0]) || !strlen($time[1]))
+			$time[0] = $time[1] = 0;
 		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
+	}
 	else
 		$addbalance['time'] = time();
 }
