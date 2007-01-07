@@ -1,7 +1,7 @@
 /*
  * LMS version 1.9-cvs
  *
- *  (C) Copyright 2001-2006 LMS Developers
+ *  (C) Copyright 2001-2007 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -423,7 +423,7 @@ static void parse_command_line(int argc, char **argv)
 		switch(opt) 
 		{
     		case 'v':
-            		printf("LMS Daemon version 1.9-cvs (%s)\nCopyright (c) 2001-2006 LMS Developers\n", revision);
+            		printf("LMS Daemon version 1.9-cvs (%s)\nCopyright (c) 2001-2007 LMS Developers\n", revision);
             		exit(0);
 		case 'q':
     			quit = 1;

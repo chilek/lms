@@ -1,7 +1,7 @@
 /*
  *  LMS version 1.9-cvs
  *
- *  (C) Copyright 2001-2006 LMS Developers
+ *  (C) Copyright 2001-2007 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
