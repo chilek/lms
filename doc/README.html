@@ -599,6 +599,14 @@ TARGET="_top"
 ><TR
 ><TD
 ><A
+HREF="http://www.chilan.com"
+TARGET="_top"
+>Tomasz 'chilek' Chilinski</A
+></TD
+></TR
+><TR
+><TD
+><A
 HREF="http://kondi.net"
 TARGET="_top"
 >Konrad 'kondi' Rzentarzewski</A
@@ -662,6 +670,14 @@ TARGET="_top"
 ><TD
 >Krzysztof 'hunter' Drewicz</TD
 ></TR
+><TR
+><TD
+><A
+HREF="http://www.chilan.com"
+TARGET="_top"
+>Tomasz 'chilek' Chilinski</A
+></TD
+></TR
 ></TBODY
 ></TABLE
 >
@@ -714,6 +730,14 @@ TARGET="_top"
 HREF="http://gamechannel.int.pl"
 TARGET="_top"
 >Pawel 'sickone' Kisiela</A
+></TD
+></TR
+><TR
+><TD
+><A
+HREF="http://www.chilan.com"
+TARGET="_top"
+>Tomasz 'chilek' Chilinski</A
 ></TD
 ></TR
 ><TR
@@ -773,56 +797,6 @@ TARGET="_top"
 HREF="http://jimmac.musichall.cz"
 TARGET="_top"
 >Jakub 'Jimmac' Steiner</A
-></TD
-></TR
-></TBODY
-></TABLE
->
-               </P
-></LI
-><LI
-><P
->MySQL Support:
-               <TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
-><A
-HREF="http://s.atn.pl"
-TARGET="_top"
->Kuba 'shasta' Jankowski</A
-></TD
-></TR
-><TR
-><TD
-><A
-HREF="http://debian.black.pl"
-TARGET="_top"
->Radoslaw 'Warden' Antoniuk</A
-></TD
-></TR
-><TR
-><TD
->Przemyslaw Babinski</TD
-></TR
-></TBODY
-></TABLE
->
-               </P
-></LI
-><LI
-><P
->PostgreSQL Support:
-               <TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
-><A
-HREF="http://alec.pl"
-TARGET="_top"
->Aleksander 'A.L.E.C' Machniak</A
 ></TD
 ></TR
 ></TBODY
@@ -1266,7 +1240,7 @@ TARGET="_top"
 ></LI
 ><LI
 ><P
->iconv (for pdf printouts and latin-utf conversion),</P
+>iconv (for pdf printouts),</P
 ></LI
 ><LI
 ><P
@@ -1285,7 +1259,7 @@ NAME="INSTALL-REQ-DB"
 >2.2.3. Database Server</A
 ></H3
 ><P
->MySQL server in version 3.23.xx and higher is supported. LMS won't work correctly
+>MySQL server in version 5.x is supported. Probably LMS won't work correctly
            with older versions.</P
 ><P
 >PostgreSQL in version 7.3.x or higher is supported.</P
@@ -1625,7 +1599,7 @@ NAME="INSTALL-MYSQL-DBCREATE"
 CLASS="SCREEN"
 >mysql -u[user name with database creation rights] -p
 Enter password:[just enter password :)]
-mysql&#62; CREATE DATABASE lms /*!40101 CHARACTER SET utf8 COLLATE utf8_polish_ci */;
+mysql&#62; CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql&#62; GRANT USAGE ON lms.* TO lms@localhost;
 mysql&#62; GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
 mysql&#62; flush privileges;
@@ -1922,8 +1896,8 @@ NAME="INSTALL-CONFIG-DB"
 ><P
 >type</P
 ><P
->Database type. Currently in 100% are supported 'mysql' 
-		    and 'postgres'. Default: mysql</P
+>Database type. Currently are supported 'mysql' 
+		    and 'postgres' only. Default: mysql</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -1976,19 +1950,6 @@ CLASS="PROMPT"
 >Example:     <SAMP
 CLASS="PROMPT"
 >database = lms</SAMP
-></P
-></LI
-><LI
-><P
->server_encoding</P
-><P
->Database encoding. Use if your database encoding is not Unicode. Postgres is
-	            performing conversion automatically, but if you use MySQL PHP and iconv in LMS DB drivers is
-	            used. Default: unicode</P
-><P
->Example:     <SAMP
-CLASS="PROMPT"
->server_encoding = latin2</SAMP
 ></P
 ></LI
 ></UL
@@ -15420,30 +15381,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="DEVEL-LIMITS-UNICODE"
->7.6.2. Unicode-related problems</A
-></H3
-><P
->We are switching to Unicode in UI and databases. 
-		Right now there are known problems. When you have to use SQL 
-		with poor Unicode support, you should use UI converting capabilities. 
-		(PHP only? watch out for perl scripts!). In following example (file 
-		lms.ini) we have database in LATIN2 (aka ISO-8859-2) format. 
-		<PRE
-CLASS="SCREEN"
->[database]
-user     = lms
-password = lms12354
-server_encoding = latin2 ; if DB is not encoded in Unicode </PRE
-></P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
 NAME="DEVEL-LIMITS-DB"
->7.6.3. SQL engine related</A
+>7.6.2. SQL engine related</A
 ></H3
 ><UL
 ><LI

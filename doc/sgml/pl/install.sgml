@@ -209,6 +209,7 @@ mysql> source doc/lms.mysql;</screen>
                <screen>
 user     = lms
 password = has³o_z_pkt.3
+</screen>
               </para>
                <para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
                danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w

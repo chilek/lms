@@ -141,7 +141,7 @@ NAME="INSTALL-MYSQL-DBCREATE"
 CLASS="SCREEN"
 >mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
-mysql&#62; CREATE DATABASE lms /*!40101 CHARACTER SET utf8 COLLATE utf8_polish_ci */;
+mysql&#62; CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql&#62; GRANT USAGE ON lms.* TO lms@localhost;
 mysql&#62; GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY 'twoje_has³o';
 mysql&#62; flush privileges;
@@ -149,46 +149,6 @@ mysql&#62; use lms;
 mysql&#62; source doc/lms.mysql;</PRE
 >
           </P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Z uwagi na to, ¿e MySQL nawet w wersji 4.1 ma pewne 
-          problemy z kodowaniem UTF baza danych LMS mo¿e mieæ inne kodowanie.
-          W takim wypadku nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
-          z opcji konfiguracyjnej <TT
-CLASS="FILENAME"
->server_encoding</TT
-> w sekcji 
-          <TT
-CLASS="FILENAME"
->[database]</TT
-> pliku <TT
-CLASS="FILENAME"
->lms.ini</TT
->.
-          </P
-></TD
-></TR
-></TABLE
-></DIV
-></P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -204,8 +164,7 @@ NAME="INSTALL-MYSQL-LMS"
                <PRE
 CLASS="SCREEN"
 >user     = lms
-password = has³o_z_pkt.3
-server_encoding = latin2 ; je¶li baza nie jest w unicodzie</PRE
+password = has³o_z_pkt.3</PRE
 >
               </P
 ><P
@@ -301,46 +260,6 @@ $ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
 >
           </P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Kodowanie UNICODE jest prawid³owo obs³ugiwane
-          dla znaków spoza zakresu ASCII dopiero od wersji 8.0 PostgreSQLa.
-          Na wcze¶niejszych wersjach nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
-          z opcji konfiguracyjnej <TT
-CLASS="FILENAME"
->server_encoding</TT
-> w sekcji 
-          <TT
-CLASS="FILENAME"
->[database]</TT
-> pliku <TT
-CLASS="FILENAME"
->lms.ini</TT
->.
-          </P
-></TD
-></TR
-></TABLE
-></DIV
-></P
 ></DIV
 ><DIV
 CLASS="SECT3"

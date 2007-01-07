@@ -145,6 +145,7 @@ Chapter 1. Intro
        Krzysztof 'hunter' Drewicz
        Marcin 'Lexx' Krol
        Aleksander 'A.L.E.C' Machniak
+       Tomasz 'chilek' Chilinski
        Konrad 'kondi' Rzentarzewski
      * C Code:
 
@@ -156,6 +157,7 @@ Chapter 1. Intro
        Michal 'DziQs' Zapalski
        Maciej 'agaran' Pijanka
        Krzysztof 'hunter' Drewicz
+       Tomasz 'chilek' Chilinski
      * Design:
 
        Lukasz 'Baseciq' Mozer
@@ -164,6 +166,7 @@ Chapter 1. Intro
        Lukasz 'Baseciq' Mozer
        Pawel 'Bob_R' Czerski
        Pawel 'sickone' Kisiela
+       Tomasz 'chilek' Chilinski
        Konrad 'kondi' Rzentarzewski
      * Images:
 
@@ -172,14 +175,6 @@ Chapter 1. Intro
        Kuba 'kflis' Flis
        Lukasz 'Baseciq' Mozer
        Jakub 'Jimmac' Steiner
-     * MySQL Support:
-
-       Kuba 'shasta' Jankowski
-       Radoslaw 'Warden' Antoniuk
-       Przemyslaw Babinski
-     * PostgreSQL Support:
-
-       Aleksander 'A.L.E.C' Machniak
      * Web Page & Documentation:
 
        Aleksander 'A.L.E.C' Machniak
@@ -318,15 +313,15 @@ Chapter 2. Installation and configuration
      * zlib (for compressed backups),
      * gd or ming (for network map),
      * mysql or pgsql (for db support),
-     * iconv (for pdf printouts and latin-utf conversion),
+     * iconv (for pdf printouts),
      * PEAR::Mail  (which  require  PEAR::Net_SMTP and PEAR::Net_Sockets)
        for mailing.
      _________________________________________________________________
 
 2.2.3. Database Server
 
-   MySQL  server  in  version  3.23.xx and higher is supported. LMS won't
-   work correctly with older versions.
+   MySQL  server  in  version  5.x  is supported. Probably LMS won't work
+   correctly with older versions.
 
    PostgreSQL in version 7.3.x or higher is supported.
      _________________________________________________________________
@@ -443,7 +438,7 @@ $ /usr/local/mysql/bin/mysqladmin -u root password new_password
    and run:
 mysql -u[user name with database creation rights] -p
 Enter password:[just enter password :)]
-mysql> CREATE DATABASE lms /*!40101 CHARACTER SET utf8 COLLATE utf8_polish_ci */;
+mysql> CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql> GRANT USAGE ON lms.* TO lms@localhost;
 mysql> GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
 mysql> flush privileges;
@@ -562,8 +557,8 @@ password = password_entered_with_lms_user_creation
 2.6.1. Section [database] - Database Settings
 
      * type
-       Database  type.  Currently  in  100%  are  supported  'mysql'  and
-       'postgres'. Default: mysql
+       Database  type.  Currently  are  supported  'mysql' and 'postgres'
+       only. Default: mysql
        Example: type = mysql
      * host
        Host  where  database is running. Usually 'localhost', but you can
@@ -582,11 +577,6 @@ password = password_entered_with_lms_user_creation
      * database
        Database name. Default: lms
        Example: database = lms
-     * server_encoding
-       Database  encoding.  Use if your database encoding is not Unicode.
-       Postgres  is  performing  conversion automatically, but if you use
-       MySQL PHP and iconv in LMS DB drivers is used. Default: unicode
-       Example: server_encoding = latin2
      _________________________________________________________________
 
 2.6.2. Section [directories] - Directories Settings
@@ -5441,20 +5431,7 @@ key = "A.L.E.C's LMS Daemon is the best"
    process numbers as big as 10^18.
      _________________________________________________________________
 
-7.6.2. Unicode-related problems
-
-   We  are  switching to Unicode in UI and databases. Right now there are
-   known  problems.  When  you have to use SQL with poor Unicode support,
-   you  should  use  UI converting capabilities. (PHP only? watch out for
-   perl  scripts!).  In following example (file lms.ini) we have database
-   in LATIN2 (aka ISO-8859-2) format.
-[database]
-user     = lms
-password = lms12354
-server_encoding = latin2 ; if DB is not encoded in Unicode
-     _________________________________________________________________
-
-7.6.3. SQL engine related
+7.6.2. SQL engine related
 
      * MySQL
           + Database size:
