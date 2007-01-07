@@ -9,6 +9,7 @@ version ? (????-??-??):
   - removed support for non-unicode encoding by option database/server_encoding (alec)
   - added mysql's "SET NAMES utf8" in scripts and daemon (alec)
     **********************************************************************************
+  - fixed warning setting in customer searching results list (alec)
 
 version 1.9.4 Mot (2006-12-30):
 
