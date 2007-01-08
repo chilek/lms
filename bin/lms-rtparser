@@ -118,6 +118,7 @@ if(! $autoreply_body)
 		"Please, place string [RT#%tid] in subject field of any\n".
 		"mail relating to this request.\n"
 }
+$autoreply_body =~ s/\\n/\n/g;
 
 # very ugly code, but we really need tempdir..
 my $tmpdir = $tmp_dir || ((defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '')) ? $ENV{'TMP'} : '/tmp');
@@ -299,7 +300,7 @@ if(my $tmp_body = $entity->parts(0)) #if multipart message, read encoding from f
 if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 {
 	my $charset = uc($1);
-	if(uc($dbencoding) == 'UNICODE')
+	if(uc($dbencoding) eq 'UNICODE')
 	{
 		$dbencoding = 'UTF-8';
 	}
