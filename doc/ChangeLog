@@ -12,6 +12,8 @@ version ? (????-??-??):
   - fixed warning setting in customer searching results list (alec)
   - balanceadd: fixed incorrect datetime checking - we let datetime to be
     only date, but we have to append the time in this situation (chilek)
+  - new configuration option default_monthly_payday - a day of payment for new assignments
+    (chilek)
 
 version 1.9.4 Mot (2006-12-30):
 
