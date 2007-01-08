@@ -1121,6 +1121,12 @@ MISC_OTHER="-A -x -j"
             <para>Przyk³ad:     <prompt>use_current_payday = 1</prompt></para>
         </listitem>
         <listitem>
+            <para>default_monthly_payday</para>
+            <para>Okre¶la domy¶lny dzieñ miesi±ca odpowiadaj±cy dniom zap³aty podczas
+            przypisywania zobowi±zañ klientom. Domy¶lnie niezdefiniowany.</para>
+            <para>Przyk³ad:     <prompt>default_monthly_payday = 1</prompt></para>
+        </listitem>
+        <listitem>
             <para>lastonline_limit</para>
             <para>Okre¶la czas (w sekundach), po którym komputer zostaje uznany za
             nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu

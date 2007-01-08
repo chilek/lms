@@ -99,6 +99,9 @@ if(isset($_POST['assignmentedit']))
 			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 				$at = date('j', time());
 
+			if(!chkconfig($CONFIG['phpui']['use_current_payday']) && $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+				$at = $CONFIG['phpui']['default_monthly_payday'];
+
 			$a['at'] = $at;
 			
 			if($at > 28 || $at < 1)

@@ -1071,6 +1071,12 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>use_current_payday = 1</prompt></para>
     	    </listitem>
     	    <listitem>
+        	<para>default_monthly_payday</para>
+        	<para>Forces to use given day of month as a payment day.
+		Default: 0 (undefined).</para>
+		<para>Example:     <prompt>default_monthly_payday = 1</prompt></para>
+    	    </listitem>
+    	    <listitem>
         	<para>lastonline_limit</para>
         	<para>Specify time (in seconds), after which node will be marked offline. It should match
         	frequency of execution for script responsible for checking nodes activity (i.e. lms-fping).

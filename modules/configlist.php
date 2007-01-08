@@ -151,6 +151,10 @@ function GetConfigList($order='var,asc')
 				case 'use_current_payday':
 					$config[$idx]['description'] = trans('Qualify to use current day of month for payment day instead of most often used day. Default: 0 (off).');
 				break;
+
+				case 'default_monthly_payday':
+					$config[$idx]['description'] = trans('Qualify the day of month for payment day. Default: 0 (undefined).');
+				break;
 				
 				case 'smarty_debug':
 					$config[$idx]['description'] = trans('Enable Smarty\'s debug console. Useful for tracking values passed from PHP to Smarty. Default: 0 (off).');
