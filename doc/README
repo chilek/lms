@@ -2042,8 +2042,8 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        when we have many users on the same street.
        Example: default_zip = 39-300
      * use_current_payday
-       Forces  to  use  current  day of month as a payment day instead of
-       most often used day. Default: 0 (off).
+       Forces  to  use  current  day  of month as a payment day. Default:
+       0 (off).
        Example: use_current_payday = 1
      * default_monthly_payday
        Forces  to  use  given  day  of month as a payment day. Default: 0

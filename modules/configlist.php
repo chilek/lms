@@ -149,7 +149,7 @@ function GetConfigList($order='var,asc')
 				break;
 
 				case 'use_current_payday':
-					$config[$idx]['description'] = trans('Qualify to use current day of month for payment day instead of most often used day. Default: 0 (off).');
+					$config[$idx]['description'] = trans('Qualify to use current day of month for payment day. Default: 0 (off).');
 				break;
 
 				case 'default_monthly_payday':
