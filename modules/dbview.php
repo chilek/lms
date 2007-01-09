@@ -24,90 +24,43 @@
  *  $Id$
  */
 
-function DatabaseFetchContent($db,$save=FALSE)
+function readfile_chunked($filename,$retbytes=true)
 {
-	global $DB, $CONFIG;
-	
-	if(file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
-	{		
-		$database['content'] = '';
-		if($content = file($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
-			foreach($content as $value)
-				$database['content'] .= $value;
-		$database['size'] = filesize($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
-		$database['name'] = $db;
-		list($database['time']) = explode('-',$db);
-		return $database;
-	}
-	elseif((extension_loaded('zlib'))&&(file_exists($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz')))
+	$chunksize = 1*(1024*1024); // how many bytes per chunk
+	$buffer = '';
+	$cnt = 0;
+	$handle = fopen($filename, 'rb');
+	if ($handle === false)
+		return false;
+	while (!feof($handle))
 	{
-		if($save==TRUE)
-		{
-			$file=fopen($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz',"r"); //tutaj przepisuje plik binarny 
-			$database = '';
-			while($part = fread($file,8192))
-                            	$database .= $part; 
-		}
-		else
-		{
-			$database['content'] = '';
-			if($content = gzfile($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz'))
-				foreach($content as $value)
-                        		$database['content'] .= $value;
-                	$database['size'] = filesize($CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
-                	$database['name'] = $db;
-			list($database['time']) = explode('-',$db);
-		}
-                return $database;
+		$buffer = fread($handle, $chunksize);
+		echo $buffer;
+		flush();
+		if ($retbytes)
+			$cnt += strlen($buffer);
 	}
-	else
-		return FALSE;
+	$status = fclose($handle);
+	if ($retbytes && $status)
+		return $cnt; // return num. bytes delivered like readfile() does.
+	return $status;
 }
 
-$layout['pagetitle'] = trans('View Database Backup');
+$filename = $CONFIG['directories']['backup_dir'].'/lms-'.$_GET['db'].'.sql';
 
-if ((extension_loaded('zlib'))&&(strstr($_GET['file'],"sql.gz")))
+header('Content-Type: application/octet-stream');
+if ((extension_loaded('zlib')) && (strstr($_GET['file'],"sql.gz")))
 {
-	$filecontent = DatabaseFetchContent($_GET['db'],true); //dodalem parametr bool na koncu ktory mowi czy gzipowac czy nie
-	$database = DatabaseFetchContent($_GET['db']);
+	$filename .= '.gz';
+	header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql.gz');
 }
 else
-	$database = DatabaseFetchContent($_GET['db']);
+	header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql');
+header('Pragma: public');
+header('Content-Length: '.$filename);
+set_time_limit(0);
+readfile_chunked($filename, false);
 
-if(isset($_GET['rawmode']))
-{
-	$database['rawmode'] = TRUE;
-	if(isset($_GET['save']))
-	{
-		header('Content-Type: application/octetstream');
-		if ((extension_loaded('zlib'))&&($_GET['rawmode']=='true')&&($_GET['save']=='true')&&(strstr($_GET['file'],"sql.gz")))
-		{
-			header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql.gz');
-			header('Pragma: public');
-			print $filecontent;
-			return TRUE;
-		}
-		else
-		{
-			header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql');
-			header('Pragma: public');
-		}
-	}
-	else
-		header('Content-Type: text/plain; charset='.$LANGDEFS[$LMS->lang]['charset']);
-}
-
-$SMARTY->assign('database',$database);
-
-if(!isset($_GET['rawmode']))
-	$SMARTY->display('header.html');
-
-if (strstr($_GET['file'],"sql.gz"))
-	$SMARTY->assign('use_gzip','true');
-
-$SMARTY->display('dbview.html');
-
-if(!isset($_GET['rawmode']))
-	$SMARTY->display('footer.html');
+return TRUE;
 
 ?>

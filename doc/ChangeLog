@@ -20,6 +20,8 @@ version ? (????-??-??):
     for unskilled users - putted code that scans for lms.ini few lines below
     'do-not-change' warning and added support for /etc/lms/lms-httpvhost.ini
     (lukasz)
+  - boosted download of database backup files. We don't need viewer in LMS, because
+    it's USELESS (chilek)
 
 version 1.9.4 Mot (2006-12-30):
 
