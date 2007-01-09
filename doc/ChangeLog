@@ -16,6 +16,10 @@ version ? (????-??-??):
     (chilek)
   - lms-rtparser: fixed comparison bug connected with charset encoding (chilek)
   - lms-rtparser: unescaping \n sequence in autoreply_body (chilek)
+  - changed configuration file path in index.php of php-ui to be more readable
+    for unskilled users - putted code that scans for lms.ini few lines below
+    'do-not-change' warning and added support for /etc/lms/lms-httpvhost.ini
+    (lukasz)
 
 version 1.9.4 Mot (2006-12-30):
 
