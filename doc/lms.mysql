@@ -285,7 +285,9 @@ CREATE TABLE nodes (
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr),
-  INDEX netdev (netdev)
+  INDEX netdev (netdev),
+  INDEX ownerid (ownerid),
+  INDEX ipaddr_pub (ipaddr_pub)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -725,4 +727,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2006111100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007011200');
