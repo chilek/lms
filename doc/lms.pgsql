@@ -119,7 +119,7 @@ CREATE TABLE nodes (
 	name varchar(16) 	DEFAULT '' NOT NULL,
 	mac varchar(20) 	DEFAULT '' NOT NULL,
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
-	ipaddr_pub bigint 		DEFAULT 0 NOT NULL,
+	ipaddr_pub bigint 	DEFAULT 0 NOT NULL,
 	passwd varchar(32)	DEFAULT '' NOT NULL,
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	netdev integer 		DEFAULT 0 NOT NULL,
@@ -139,6 +139,8 @@ CREATE TABLE nodes (
 	UNIQUE (ipaddr)
 );
 CREATE INDEX nodes_netdev_idx ON nodes (netdev);
+CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
+CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 
 /* -------------------------------------------------------- 
   Structure of table "tariffs" 
@@ -771,4 +773,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2006111100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007011200');
