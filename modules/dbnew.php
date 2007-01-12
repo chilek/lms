@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+set_time_limit(0);
+
 if (isset($_GET['gz']))
 	$LMS->DatabaseCreate(TRUE);
 else
