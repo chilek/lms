@@ -18,6 +18,14 @@
 	{
 		document.forms['addbalance'].elements[id].checked = true;
 	}
+	
+	function del(id)
+	{
+		if(confirm({/literal}'{t}Are you sure, you want to delete last operation?{/t}'{literal}))
+		{
+			location.href = '?m=balancedel&id=' + id;
+		}
+	}
 //-->
 {/literal}
 </SCRIPT>
@@ -194,7 +202,7 @@
 				{/if}
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
-						<A HREF="?m=balancedel&id={$last.id}" ACCESSKEY="d" >{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+						<A HREF="javascript:del({$last.id});" ACCESSKEY="d" >{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
 					</TD>
 				</TR>
 			{/if}

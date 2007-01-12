@@ -1391,7 +1391,6 @@ $_LANG['Value of tax rate which will be selected by default on tax rates lists. 
 $_LANG['Value of option "$0" must be a number grater than zero!'] = 'Wartość opcji "$0" musi być większa od zera!';
 $_LANG['Value required!'] = 'Wartość wymagana!';
 $_LANG['View'] = 'Podgląd';
-$_LANG['View Database Backup'] = 'Podgląd kopii bazy danych';
 $_LANG['View without headers'] = 'Podgląd bez nagłówków';
 $_LANG['waiting'] = 'oczekujący';
 $_LANG['Waiting:'] = 'Oczekujący:';
@@ -1769,5 +1768,6 @@ $_LANG['You can select queue to limit results'] = 'Możesz wybrać kolejkę aby 
 $_LANG['You can select status to limit results'] = 'Możesz wybrać status aby ograniczyć wyniki wyszukiwania';
 $_LANG['days'] = 'dni';
 $_LANG['Invoiceless liabilities:'] = 'Należności beztaryfowe:';
+$_LANG['Are you sure, you want to delete last operation?'] = 'Czy na pewno chcesz usunąć ostatnią operację?';
 
 ?>

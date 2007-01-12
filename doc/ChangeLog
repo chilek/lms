@@ -23,6 +23,7 @@ version ? (????-??-??):
   - boosted download of database backup files. We don't need viewer in LMS, because
     it's USELESS (chilek)
   - added indexes on nodes.ownerid and nodes.ipaddr_pub (alec)
+  - added confirm message for last operation deleting in New Operation page (alec)
 
 version 1.9.4 Mot (2006-12-30):
 
