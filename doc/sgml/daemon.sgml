@@ -49,6 +49,8 @@
   --with-pgsql          enables using of PostgreSQL database (disabled)
   --with-mysql          enables using of MySQL database (enabled)
   --prefix=PREFIX       program and modules install directory (/usr/local)
+  --lmsbindir=DIR       sets location of target LMS binaries (PREFIX/lms/bin)
+  --lmslibdir=DIR       sets location of target LMS modules (PREFIX/lms/lib)
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration

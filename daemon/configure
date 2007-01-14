@@ -4,6 +4,8 @@
 prefix="/usr/local"
 incdir="/usr/include"
 libdir="/usr/lib"
+lmsbindir=""
+lmslibdir=""
 with_mysql=yes
 
 # Create config.status file
@@ -52,6 +54,12 @@ do
 	-prefix=* | --prefix=* )
 		prefix="$ac_optarg"
 	;;
+	-lmsbindir=* | --lmsbindir=* )
+		lmsbindir="$ac_optarg"
+	;;
+	-lmslibdir=* | --lmslibdir=* )
+		lmslibdir="$ac_optarg"
+	;;
 	-with-* | --with-*)
 		ac_package=`echo $ac_option|sed -e 's/-*with-//' -e 's/=.*//'`
 		# Reject names that are not valid shell variable names.
@@ -88,6 +96,8 @@ Options: [defaults in brackets after descriptions]
   --prefix=PREFIX	sets program and modules install location
 			(/usr/local), modules goes to PREFIX/lms/lib and main
 			program to PREFIX/lms/bin
+  --lmsbindir=DIR	sets location of target LMS binaries (PREFIX/lms/bin)
+  --lmslibdir=DIR	sets location of target LMS modules (PREFIX/lms/lib)
   --libdir=DIR		sets location of database library (/usr/lib)
   --incdir=DIR		sets location of database include files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration
@@ -194,7 +204,12 @@ then
 fi
 prefix=`pwd`
 cd $start
-LMS_BIN_DIR="$prefix/lms/bin"
+if [ ! -z "$lmsbindir" ]
+then
+    LMS_BIN_DIR=$lmsbindir
+else
+    LMS_BIN_DIR="$prefix/lms/bin"
+fi
 echo " $LMS_BIN_DIR"
 
 echo -n "Modules install directory..."
@@ -206,7 +221,12 @@ then
 fi
 prefix=`pwd`
 cd $start
-LMS_LIB_DIR="$prefix/lms/lib"
+if [ ! -z "$lmslibdir" ]
+then
+    LMS_LIB_DIR=$lmslibdir
+else
+    LMS_LIB_DIR="$prefix/lms/lib"
+fi
 echo " $LMS_LIB_DIR"
 
 # Create makefiles
