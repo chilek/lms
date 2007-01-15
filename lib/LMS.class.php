@@ -617,7 +617,7 @@ class LMS
 				.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
 				.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
-				.($state !=0 ? ' AND status = '.$state :'')
+				.($state !=0 ? ' AND status = '.$state : '')
 				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($time ? ' AND time < '.$time : '')
@@ -637,8 +637,6 @@ class LMS
 			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
 			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
 			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
-
-			$customerlist2 = NULL;
 
 			foreach($customerlist as $idx => $row)
 			{
@@ -710,9 +708,11 @@ class LMS
 				elseif($customerlist[$idx]['balance'] < 0)
 					$below += $customerlist[$idx]['balance'];
 			}
-			
-			if($customerlist2)
+
+			if($disabled || $online || $indebted)
+			{
 				$customerlist = $customerlist2;
+			}
 		}
 
 		switch($order)
@@ -732,6 +732,7 @@ class LMS
 				$customerlist = $ncustomerelist;
 			break;
 		}
+		
 		$customerlist['total'] = sizeof($customerlist);
 		$customerlist['state'] = $state;
 		$customerlist['network'] = $network;
