@@ -68,6 +68,7 @@ if(isset($_POST['level']))
 	case 2 : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
 	case 3 : $period = $time-365*24*60*60; $step = 60*60; break; //month, hour
     }
+    set_time_limit(0);
     if($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats'))
     {
 	$nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
