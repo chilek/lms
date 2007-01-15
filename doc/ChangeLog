@@ -26,6 +26,7 @@ version ? (????-??-??):
   - added confirm message for last operation deleting in New Operation page (alec)
   - added --lmslibdir and --lmsbindir .configure script's options (alec/Libor)
   - fixed customers list filtering (alec)
+  - common.js: fixed syntax error in openWindow function (chilek/grzes)
 
 version 1.9.4 Mot (2006-12-30):
 
