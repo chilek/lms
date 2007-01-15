@@ -61,9 +61,7 @@ function openWindow(theURL,winName,myWidth,myHeight,isCenter)
 		myTop = (screen.height-myHeight)/2;
 	}
 
-	targetfield = formfield;
-
-	okno = window.open(theUrl, winName, 'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
+	okno = window.open(theURL, winName, 'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,titlebar=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
 
 	return false;
 }
