@@ -16,8 +16,8 @@
 			<A href="?m=accountlist&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}">{t}Domain:{/t}</A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP valign="top" align="right">
-			<A href="?m=accountlist&o=lastlogin{if $listdata.direction eq "asc" && $listdata.order eq "lastlogin"},desc{/if}">{t}Last login:{/t}</A> {if $listdata.order eq "lastlogin"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=accountlist&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A> {if $listdata.order eq "expdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=accountlist&o=lastlogin{if $listdata.direction eq "asc" && $listdata.order eq "lastlogin"},desc{/if}">{t}Last login:{/t}</A>{if $listdata.order eq "lastlogin"} <IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=accountlist&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A>{if $listdata.order eq "expdate"} <IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 			 <B>{t 0=$listdata.total}Total: $0{/t}</B>
