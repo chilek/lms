@@ -27,6 +27,7 @@ version ? (????-??-??):
   - added --lmslibdir and --lmsbindir .configure script's options (alec/Libor)
   - fixed customers list filtering (alec)
   - common.js: fixed syntax error in openWindow function (chilek/grzes)
+  - traffic.php: missed translatable 'unknown' string for node (chilek)
 
 version 1.9.4 Mot (2006-12-30):
 

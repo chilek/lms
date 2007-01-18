@@ -97,8 +97,8 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 			$traffic['download']['data'][] = $row['download'];
 			$traffic['upload']['avg'][] = $row['upload']*8/($delta*1000);
 			$traffic['download']['avg'][] = $row['download']*8/($delta*1000);
-			$traffic['upload']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
-			$traffic['download']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
+			$traffic['upload']['name'][] = ($row['name'] ? $row['name'] : trans('unknown').' (ID: '.$row['nodeid'].')');
+			$traffic['download']['name'][] = ($row['name'] ? $row['name'] : trans('unknown').' (ID: '.$row['nodeid'].')');
 			$traffic['upload']['ipaddr'][] = $row['ip'];
 			$traffic['download']['nodeid'][] = $row['nodeid'];
 			$traffic['upload']['nodeid'][] = $row['nodeid'];
