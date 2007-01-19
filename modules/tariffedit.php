@@ -68,10 +68,10 @@ if(isset($tariff))
 	if(!ereg('^[0-9]+$', $tariff['plimit']))
 		$error['plimit'] = trans('Integer value expected!');
 	
-	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 4096) && $tariff['uprate'] != 0)
-		$error['uprate'] = trans('This field must be within range 8 - 4096');
-	if(($tariff['downrate'] < 8 || $tariff['downrate'] > 4096) && $tariff['downrate'] != 0)
-		$error['downrate'] = trans('This field must be within range 8 - 4096');
+	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 10000) && $tariff['uprate'] != 0)
+		$error['uprate'] = trans('This field must be within range 8 - 10000');
+	if(($tariff['downrate'] < 8 || $tariff['downrate'] > 10000) && $tariff['downrate'] != 0)
+		$error['downrate'] = trans('This field must be within range 8 - 10000');
 	if(($tariff['upceil'] < 8 || $tariff['upceil'] < $tariff['uprate']) && $tariff['upceil'] != 0)
 		$error['upceil'] = trans('This field must be greater than 8 and greater than upload rate');
 	if(($tariff['downceil'] < 8 || $tariff['downceil'] < $tariff['downrate']) && $tariff['downceil'] != 0)
