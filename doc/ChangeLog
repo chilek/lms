@@ -28,6 +28,8 @@ version ? (????-??-??):
   - fixed customers list filtering (alec)
   - common.js: fixed syntax error in openWindow function (chilek/grzes)
   - traffic.php: missed translatable 'unknown' string for node (chilek)
+  - added workaround for ILIKE's unicode bug (postgresql < 8.2) in invoices list 
+    searching by customer's name and address (alec) 
 
 version 1.9.4 Mot (2006-12-30):
 
