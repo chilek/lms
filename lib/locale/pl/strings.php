@@ -463,7 +463,6 @@ $_LANG['Enter accounting start date in YYYY/MM/DD format. If you don\'t want to 
 $_LANG['Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD kiedy zakończyć naliczanie. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia zobowiązania';
 $_LANG['Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar'] = 'Wprowadź datę wystawienia w formacie RRRR/MM/DD lub kliknij by wybrać ją z kalendarza. Puste pole oznacza datę dzisiejszą';
 $_LANG['Enter deadline in days (optional)'] = 'Wprowadź termin zapłaty w dniach (opcjonalnie)';
-$_LANG['Enter correspondence address (optional)'] = 'Wprowadź adres do doręczeń (opcjonalnie)';
 $_LANG['Enter description (optional)'] = 'Wprowadź opis (opcjonalnie)';
 $_LANG['Enter device location (optional)'] = 'Wprowadź lokalizację urządzenia (opcjonalnie)';
 $_LANG['Enter device model (optional)'] = 'Wprowadź model urządzenia (opcjonalnie)';
@@ -629,7 +628,6 @@ $_LANG['Helpdesk (RT) administration'] = 'administracja Helpdeskiem (RT)';
 $_LANG['Helpdesk (RT) operation'] = 'obsługa Helpdesku (RT)';
 $_LANG['hide accounted<!plural>'] = 'ukryj rozliczone';
 $_LANG['High'] = 'Wysoki';
-$_LANG['Highlight'] = 'Zaznacz';
 $_LANG['Homedir:'] = 'Katalog domowy:';
 $_LANG['Host:'] = 'Host:';
 $_LANG['Host Edit: $0'] = 'Edycja hosta: $0';
@@ -1128,7 +1126,6 @@ $_LANG['Sale date:'] = 'Data sprzedaży:';
 $_LANG['Sale Registry'] = 'Rejestr sprzedaży';
 $_LANG['Sale Registry for period $0 - $1'] = 'Rejestr sprzedaży za okres $0 - $1';
 $_LANG['Save'] = 'Zapisz';
-$_LANG['Save on local disk'] = 'Zapisz na dysku lokalnym';
 $_LANG['Save & Print'] = 'Zapisz i drukuj';
 $_LANG['Scan'] = 'Skanuj';
 $_LANG['Search'] = 'Szukaj';
@@ -1391,7 +1388,6 @@ $_LANG['Value of tax rate which will be selected by default on tax rates lists. 
 $_LANG['Value of option "$0" must be a number grater than zero!'] = 'Wartość opcji "$0" musi być większa od zera!';
 $_LANG['Value required!'] = 'Wartość wymagana!';
 $_LANG['View'] = 'Podgląd';
-$_LANG['View without headers'] = 'Podgląd bez nagłówków';
 $_LANG['waiting'] = 'oczekujący';
 $_LANG['Waiting:'] = 'Oczekujący:';
 $_LANG['Warning! Debug mode (using address $0).'] = 'UWAGA! Tryb debugowania (używam adresu $0).';
@@ -1769,5 +1765,6 @@ $_LANG['You can select status to limit results'] = 'Możesz wybrać status aby o
 $_LANG['days'] = 'dni';
 $_LANG['Invoiceless liabilities:'] = 'Należności beztaryfowe:';
 $_LANG['Are you sure, you want to delete last operation?'] = 'Czy na pewno chcesz usunąć ostatnią operację?';
+$_LANG['Enter customer ID or leave empty for all customers'] = 'Wprowadź ID klienta lub pozostaw pole puste aby wybrać wszystkich';
 
 ?>
