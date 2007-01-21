@@ -36,13 +36,18 @@
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" nowrap>
+						{if $customers}
 						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name=customers loop=$customers}
 							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
+						{else}
+						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+						<a href="javascript: void(0);" onclick="return customerchoosewin(document.ticketslist.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						{/if}
 					</TD>
 					<TD width="1%">
 						<IMG src="img/dead.gif" alt="">
