@@ -32,7 +32,7 @@ switch($type)
 
 		$month = $_POST['month'] ? $_POST['month'] : date('n');
 		$year = $_POST['year'] ? $_POST['year'] : date('Y');
-		$customer = $_POST['customer'] ? $_POST['customer'] : $_GET['customer'];
+		$customer = isset($_POST['customer']) ? intval($_POST['customer']) : intval($_GET['customer']);
 
 		$layout['pagetitle'] = trans('Stats of Customer $0 in month $1', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0,0,0,$month,1,$year)));
 	
@@ -90,12 +90,15 @@ switch($type)
 			$statyears[] = $i;
 		for($i=1; $i<13; $i++)
 			$months[$i] = strftime('%B', mktime(0,0,0,$i,1));
-		
+
+		if(!isset($CONFIG['phpui']['big_networks']) && !chkconfig($CONFIG['phpui']['big_networks']))
+		{
+			$SMARTY->assign('customers', $LMS->GetCustomerNames());
+		}
 		$SMARTY->assign('currmonth', date('n'));
 		$SMARTY->assign('curryear', date('Y'));
 		$SMARTY->assign('statyears', $statyears);
 		$SMARTY->assign('months', $months);
-		$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		$SMARTY->assign('printmenu', 'traffic');
 		$SMARTY->display('printindex.html');
 	break;

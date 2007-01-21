@@ -159,12 +159,15 @@ switch($type)
 			$statyears[] = $i;
 		for($i=1; $i<13; $i++)
 			$months[$i] = strftime('%B', mktime(0,0,0,$i,1));
-		
+
+		if(!isset($CONFIG['phpui']['big_networks']) && !chkconfig($CONFIG['phpui']['big_networks']))
+		{
+			$SMARTY->assign('customers', $LMS->GetCustomerNames());
+		}
 		$SMARTY->assign('currmonth', date('n'));
 		$SMARTY->assign('curryear', date('Y'));
 		$SMARTY->assign('statyears', $statyears);
 		$SMARTY->assign('months', $months);
-		$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('printmenu', 'customer');

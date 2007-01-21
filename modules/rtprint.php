@@ -121,7 +121,10 @@ switch($type)
 	default:
 		$layout['pagetitle'] = trans('Reports');
 		
-		$SMARTY->assign('customers', $LMS->GetCustomerNames());
+		if(!isset($CONFIG['phpui']['big_networks']) && !chkconfig($CONFIG['phpui']['big_networks']))
+		{
+			$SMARTY->assign('customers', $LMS->GetCustomerNames());
+		}
 		$SMARTY->assign('queues', $LMS->GetQueueList());
 		$SMARTY->display('rtprintindex.html');
 	break;

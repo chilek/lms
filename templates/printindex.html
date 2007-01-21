@@ -224,13 +224,18 @@ cal6.time_comp = false;
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" nowrap>
+						{if $customers}
 						<SELECT size="1" name="customer" {tip text="Select customer"}>
 							<OPTION value="0" SELECTED>{t}- all customers -{/t}</OPTION>
 							{section name="customers" loop=$customers}
 							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
+						{else}
+						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.liabilityreport.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						{/if}
 					</TD>
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="">
@@ -454,12 +459,17 @@ function setFinanceExtFormat()
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" nowrap>
+						{if $customers}
 						<SELECT size="1" name="customer" {tip text="Select customer"}>
 							{section name="customers" loop=$customers}
 							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
+						{else}
+						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomerbalance.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						{/if}
 					</TD>
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="">
@@ -528,13 +538,18 @@ cal4.time_comp = false;
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" nowrap>
+						{if $customers}
 						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="customers" loop=$customers}
 							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
+						{else}
+						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printinvoices.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						{/if}
 					</TD>
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="">
@@ -603,13 +618,18 @@ function setPrintInvoices(id)
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" nowrap>
+						{if $customers}
 						<SELECT size="1" name="customer" {tip text="You can select customer or group of customers to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="customers" loop=$customers}
 							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
+						{else}
+						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						{/if}
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{t}or Group:{/t}</B>
@@ -748,12 +768,17 @@ function setNodeType(id)
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" nowrap>
+						{if $customers}
 						<SELECT size="1" name="customer" {tip text="Select customer"}>
 							{section name="customers" loop=$customers}
 							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
+						{else}
+						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
+						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomertraffic.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+						{/if}
 					</TD>
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="">
