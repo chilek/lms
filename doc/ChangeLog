@@ -33,6 +33,7 @@ version ? (????-??-??):
   - nowadays max. bandwidth 4096kbit/s for customer is not so excellent, so
     bandwidth limit has been increased to 10000kbit/s aka 10Mbit/s (chilek)
   - added 'big_networks' support in Reports forms (alec)
+  - added customers searching by notes (alec)
 
 version 1.9.4 Mot (2006-12-30):
 
