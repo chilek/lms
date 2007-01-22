@@ -192,8 +192,8 @@ switch($bar)
 			isset($_POST['from']) ? $_POST['from'] : time()-(60*60*24),
 			isset($_POST['to']) ? $_POST['to'] : time(),
 			isset($_POST['net']) ? $_POST['net'] : 0,
-			isset($_POST['order']) ? $_POST['order']: '',
-			isset($_POST['limit']) ? $_POST['limit']: 0);
+			isset($_POST['order']) ? $_POST['order'] : '',
+			isset($_POST['limit']) ? $_POST['limit'] : 0);
 	break;
 
 	default: // set filter window
