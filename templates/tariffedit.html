@@ -103,7 +103,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
-				    	<IMG SRC="img/online.gif" alt="">
+				    	<IMG SRC="img/options.gif" alt="">
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
 				    <TD WIDTH="98%">
@@ -116,6 +116,14 @@
 				    <TD WIDTH="1%" NOWRAP><B>{t}Packet limit:{/t}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" VALUE="{if $tariff.plimit}{$tariff.plimit}{/if}" SIZE="8" NAME="tariff[plimit]" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit"}> 
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Data limit:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" VALUE="{if $tariff.dlimit}{$tariff.dlimit}{/if}" SIZE="8" NAME="tariff[dlimit]" {tip text="Enter limit of data in time unit (optional)" trigger="dlimit"}> 
 				    </TD>
 				</TR>
 			    </TABLE>

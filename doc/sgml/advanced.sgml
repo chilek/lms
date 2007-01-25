@@ -174,6 +174,7 @@
                     <member>access - connected/disconnected (cutoff) (1/0)</member>
                     <member>warning - should be warned with administration message? (1/0)</member>
                     <member>chkmac - enable/disable MAC checking? (1/0)</member>
+                    <member>halfduplex - half/full duplex mode (0/1)</member>
                     <member>lastonline - last network activity timestamp</member>
                     <member>info - additional information</member>
 		    <member>location - location (address)</member>
@@ -244,6 +245,7 @@
                     <member>downceil - download boundary</member>
                     <member>climit - limit of concurrent connections</member>
                     <member>plimit - limit of packets per second</member>
+                    <member>dlimit - limit of data per time unit</member>
                     <member>description - description for subscription</member>
                </simplelist>
           </sect2>

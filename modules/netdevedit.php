@@ -66,6 +66,11 @@ case 'chkmac':
 
         $DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $_GET['ip']));
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id'].'&ip='.$_GET['ip']);
+
+case 'duplex':
+
+        $DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $_GET['ip']));
+	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id'].'&ip='.$_GET['ip']);
 	
 case 'connect':
 	$linktype = isset($_GET['linktype']) ? $_GET['linktype'] : '0';
@@ -162,6 +167,7 @@ case 'formaddip':
 			$error['mac'] = trans('MAC address is in use!');
 
 	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
+	if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
 
 	if(!$error)
 	{
@@ -244,6 +250,7 @@ case 'formeditip':
 			$error['mac'] = trans('MAC address is in use!');
 
 	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
+	if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
 	
 	if(!$error)
 	{

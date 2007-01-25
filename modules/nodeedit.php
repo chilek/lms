@@ -35,7 +35,6 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 switch($action)
 {
 	case 'link':
-
 		$netdev = $LMS->GetNetDev($_GET['devid']); 
 
 		if($netdev['ports'] > $netdev['takenports']) 
@@ -49,8 +48,11 @@ switch($action)
 		}
 	break;
 	case 'chkmac':
-
 		$DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $_GET['id']));
+		$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
+	break;
+	case 'duplex':
+		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $_GET['id']));
 		$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
 	break;
 }
@@ -147,6 +149,7 @@ if(isset($_POST['nodeedit']))
 	if(!isset($nodeedit['access']))	$nodeedit['access'] = 0;
         if(!isset($nodeedit['warning'])) $nodeedit['warning'] = 0;	
 	if(!isset($nodeedit['chkmac']))	$nodeedit['chkmac'] = 0;
+	if(!isset($nodeedit['halfduplex'])) $nodeedit['halfduplex'] = 0;
 
 	if($nodeinfo['netdev'] != $nodeedit['netdev'] && $nodeedit['netdev'] != 0)
 	{
@@ -167,6 +170,7 @@ if(isset($_POST['nodeedit']))
 	$nodeinfo['access'] = $nodeedit['access'];
 	$nodeinfo['ownerid'] = $nodeedit['ownerid'];
 	$nodeinfo['chkmac'] = $nodeedit['chkmac'];
+	$nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
 
 	if(!$error)
 	{

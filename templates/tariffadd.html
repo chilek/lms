@@ -18,7 +18,7 @@
 	    <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
 		<TABLE WIDTH="100%" CELLPADDING="0">
 		    <TR CLASS="LIGHT">
-			<TD WIDTH="50%" VALIGN="top">
+			<TD WIDTH="50%" style="vertical-align: top;">
 			    <TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
@@ -100,7 +100,7 @@
 				</TR>
 				<TR CLASS="LIGHT">			
 				    <TD WIDTH="1%">
-				    	<IMG SRC="img/online.gif" ALT="">
+				    	<IMG SRC="img/options.gif" ALT="">
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
 				    <TD WIDTH="98%">
@@ -113,6 +113,14 @@
 				    <TD WIDTH="1%" NOWRAP><B>{t}Packet limit:{/t}</B></TD>
 				    <TD WIDTH="98%">
 					<INPUT TYPE="TEXT" NAME="tariffadd[plimit]" SIZE="8" VALUE="{if $tariffadd.plimit}{$tariffadd.plimit}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit"}>
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Data limit:{/t}</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" VALUE="{if $tariffadd.dlimit}{$tariffadd.dlimit}{/if}" SIZE="8" NAME="tariffadd[dlimit]" {tip text="Enter limit of data in time unit (optional)" trigger="dlimit"}> 
 				    </TD>
 				</TR>
 			    </TABLE>

@@ -134,6 +134,7 @@ if(isset($_POST['nodedata']))
 		$nodedata['netdev'] = 0;
 
 	if(!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
+	if(!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
 
 	if(!$error)
 	{

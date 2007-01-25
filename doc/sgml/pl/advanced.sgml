@@ -177,6 +177,7 @@
                     <member>linktype - typ po³±czenia sieciowego (0-kabel, 1-radio)</member>
                     <member>access - pod³±czony/od³±czony (1/0)</member>
                     <member>chkmac - w³±czone/wy³±czone sprawdzanie MAC adresu (1/0)</member>
+                    <member>halfduplex - half/full duplex (0/1)</member>
                     <member>warning - ostrzegaj/nie ostrzegaj (1/0)</member>
                     <member>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</member>
                     <member>info - informacje dodatkowe</member>
@@ -257,7 +258,8 @@
                     <member>downrate - gwarantowany download</member>
                     <member>downceil - maksymalny download</member>
                     <member>climit - limit po³±czeñ</member>
-                    <member>plimit - limit pakietów</member>
+                    <member>plimit - limit pakietów w jednostce czasu</member>
+                    <member>plimit - limit danych w jednostce czasu</member>
                     <member>description - opis</member>
                </simplelist>
           </sect2>
