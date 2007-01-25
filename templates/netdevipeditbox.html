@@ -39,7 +39,15 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
-			<INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}> {t}MAC checking{/t}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/options.gif" ALT="{t}Options:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2" NOWRAP>
+			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}>&nbsp;
+			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" CLASS="light box" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

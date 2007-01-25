@@ -990,7 +990,7 @@ class LMS
 		$this->SetTS('nodes');
 		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), ipaddr=inet_aton(?), mac=UPPER(?), 
 					passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=?, 
-					location=?, chkmac=? WHERE id=?', 
+					location=?, chkmac=?, halfduplex=? WHERE id=?', 
 			    array($nodedata['name'], 
 				    $nodedata['ipaddr_pub'], 
 				    $nodedata['ipaddr'], 
@@ -1004,6 +1004,7 @@ class LMS
 				    $nodedata['info'], 
 				    $nodedata['location'],
 				    $nodedata['chkmac'],
+				    $nodedata['halfduplex'],
 				    $nodedata['id']));
 	}
 
@@ -1064,7 +1065,7 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
 					ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
 					warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
-					info, location, chkmac
+					info, location, chkmac, halfduplex
 					FROM nodes WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
@@ -1249,8 +1250,8 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, 
-					creationdate, access, warning, info, netdev, location, chkmac) 
-					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?)',
+					creationdate, access, warning, info, netdev, location, chkmac, halfduplex) 
+					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?)',
 				array(strtoupper($nodedata['name']),
 				    strtoupper($nodedata['mac']),
 				    $nodedata['ipaddr'],
@@ -1263,7 +1264,9 @@ class LMS
 				    $nodedata['info'],
 				    $nodedata['netdev'],
 				    $nodedata['location'],
-				    $nodedata['chkmac'])))
+				    $nodedata['chkmac'],
+				    $nodedata['halfduplex']
+				    )))
 		{
 			$id = $this->DB->GetLastInsertID('nodes');
 			
@@ -2506,7 +2509,7 @@ class LMS
 
 	function GetNetDev($id)
 	{
-		$result = $this->DB->GetRow('SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?', array($id));
+		$result = $this->DB->GetRow('SELECT * FROM netdevices WHERE id = ?', array($id));
 		$result['takenports'] = $this->CountNetDevLinks($id);
 		return $result;
 	}
@@ -2563,7 +2566,15 @@ class LMS
 	function NetDevAdd($netdevdata)
 	{
 		$this->SetTS('netdevices');
-		if($this->DB->Execute('INSERT INTO netdevices (name, location, description, producer, model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?, ?)', array($netdevdata['name'],$netdevdata['location'],$netdevdata['description'],$netdevdata['producer'],$netdevdata['model'],$netdevdata['serialnumber'],$netdevdata['ports'])))
+		if($this->DB->Execute('INSERT INTO netdevices (name, location, description, producer, 
+					model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+					array($netdevdata['name'],
+						$netdevdata['location'],
+						$netdevdata['description'],
+						$netdevdata['producer'],
+						$netdevdata['model'],
+						$netdevdata['serialnumber'],
+						$netdevdata['ports'])))
 			return $this->DB->GetLastInsertID('netdevices');
 		else
 			return FALSE;
@@ -2614,6 +2625,10 @@ class LMS
 	{
 		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 	}
+
+	/*
+	 *   Request Tracker (Helpdesk)
+	 */
 
 	function GetQueue($id)
 	{
@@ -3064,10 +3079,10 @@ class LMS
 					return FALSE;
 				while(!feof($file))
 				{
-					$line=fgets($file,4096);
-					$line=eregi_replace("[\t ]+"," ",$line);
+					$line = fgets($file, 4096);
+					$line = eregi_replace("[\t ]+", " ", $line);
 					list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
-					if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00')
+					if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00' && check_mac($hwaddr))
 					{
 						$result['mac'][] = $hwaddr;
 						$result['ip'][] = $ip;

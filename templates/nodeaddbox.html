@@ -49,7 +49,6 @@
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
-			<INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}><a href="javascript:CheckMac();"> {t}MAC checking{/t}</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -63,6 +62,24 @@
 			<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="[ Generate random password ]"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
+	{if $netdevices}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/netdev.gif" ALT="{t}Net device:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Net device:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"}>
+				<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{t}- select device -{/t}</OPTION>
+				{section name=netdevices loop=$netdevices}
+				<OPTION VALUE="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} SELECTED{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/{if ! $nodedata.access}no{/if}access.gif" ALT="">
@@ -106,27 +123,21 @@
 			</SELECT>
 		</TD>
 	</TR>
-	{if $netdevices}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/netdev.gif" ALT="{t}Net device:{/t}">
+			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Net device:{/t}</B>
+		<TD WIDTH="1%">
+			<B>{t}Options:{/t}</B>
 		</TD>
-		<TD WIDTH="98%">
-			<SELECT SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"}>
-				<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{t}- select device -{/t}</OPTION>
-				{section name=netdevices loop=$netdevices}
-				<OPTION VALUE="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} SELECTED{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</OPTION>
-				{/section}
-			</SELECT>
+		<TD WIDTH="98%" NOWRAP>
+			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
+			{t}Half duplex{/t}: <INPUT TYPE="checkbox" CLASS="box light" VALUE="1" NAME="nodedata[halfduplex]" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
 	</TR>
-	{/if}
     					</TABLE>
 				</TD>
-				<TD WIDTH="50%" VALIGN="top">
+				<TD WIDTH="50%" style="vertical-align: top;">
 					<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="1%">
@@ -190,12 +201,6 @@
 	{
 		document.forms['nodeadd'].elements['nodedata[reuse]'].checked = !document.forms['nodeadd'].elements['nodedata[reuse]'].checked;
 	}
-
-	function CheckMac()
-	{
-		document.forms['nodeadd'].elements['nodedata[chkmac]'].checked = !document.forms['nodeadd'].elements['nodedata[chkmac]'].checked;
-	}
-
 //-->
 </SCRIPT>
 {/literal}

@@ -44,6 +44,7 @@ if(isset($tariff))
 	if($tariff['downceil'] == '') $tariff['downceil'] = 0;
 	if($tariff['climit'] == '') $tariff['climit'] = 0;
 	if($tariff['plimit'] == '') $tariff['plimit'] = 0;
+	if($tariff['dlimit'] == '') $tariff['dlimit'] = 0;
 
 	if($tariff['name'] == '')
 		$error['name'] = trans('Subscription name required!');

@@ -279,6 +279,7 @@ CREATE TABLE nodes (
   access tinyint(1) NOT NULL default '1',
   warning tinyint(1) NOT NULL default '0',
   chkmac tinyint(1) NOT NULL default '1',
+  halfduplex tinyint(1) NOT NULL default '0',
   lastonline int(11) NOT NULL default '0',
   info text NOT NULL default '',
   location text NOT NULL default '',
@@ -419,6 +420,7 @@ CREATE TABLE tariffs (
   downceil int(11) NOT NULL default '0',
   climit int(11) NOT NULL default '0',
   plimit int(11) NOT NULL default '0',
+  dlimit int(11) NOT NULL default '0',
   description text NOT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name)
@@ -727,4 +729,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007011200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007012500');

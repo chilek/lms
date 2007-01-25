@@ -131,6 +131,7 @@ CREATE TABLE nodes (
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
 	chkmac smallint 	DEFAULT 1 NOT NULL,
+	halfduplex smallint	DEFAULT 0 NOT NULL,
 	lastonline integer	DEFAULT 0 NOT NULL,
 	info text		DEFAULT '' NOT NULL,
 	location text		DEFAULT '' NOT NULL,
@@ -160,6 +161,7 @@ CREATE TABLE tariffs (
 	downceil integer	DEFAULT 0 NOT NULL,
 	climit integer		DEFAULT 0 NOT NULL,
 	plimit integer		DEFAULT 0 NOT NULL,
+	dlimit integer		DEFAULT 0 NOT NULL,
 	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name)
@@ -773,4 +775,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007011200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007012500');

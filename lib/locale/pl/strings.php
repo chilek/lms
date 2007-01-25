@@ -1730,7 +1730,7 @@ $_LANG['select numbering plan'] = 'wybierz plan numeracyjny';
 $_LANG['Customer has got unconfirmed documents!'] = 'Klient posiada niezatwierdzone dokumenty!';
 $_LANG['Documents:'] = 'Dokumenty:';
 $_LANG['Enable/disable MAC address checking'] = 'Włącz/wyłącz sprawdzanie MAC adresu';
-$_LANG['MAC checking'] = 'sprawdzanie MAC\'a';
+$_LANG['MAC checking'] = 'Sprawdzanie MAC\'a';
 $_LANG['IP'] = 'IP';
 $_LANG['MAC'] = 'MAC';
 $_LANG['Search:'] = 'Szukaj:';
@@ -1766,5 +1766,9 @@ $_LANG['days'] = 'dni';
 $_LANG['Invoiceless liabilities:'] = 'Należności beztaryfowe:';
 $_LANG['Are you sure, you want to delete last operation?'] = 'Czy na pewno chcesz usunąć ostatnią operację?';
 $_LANG['Enter customer ID or leave empty for all customers'] = 'Wprowadź ID klienta lub pozostaw pole puste aby wybrać wszystkich';
+$_LANG['Data limit:'] = 'Limit danych:';
+$_LANG['Enter limit of data in time unit (optional)'] = 'Wprowadź limit danych w jednostce czasu (opcjonalnie)';
+$_LANG['Half duplex'] = 'Half duplex';
+$_LANG['Select transmission mode'] = 'Wybierz rodzaj transmisji';
 
 ?>

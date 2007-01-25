@@ -34,6 +34,9 @@ version ? (????-??-??):
     bandwidth limit has been increased to 10000kbit/s aka 10Mbit/s (chilek)
   - added 'big_networks' support in Reports forms (alec)
   - added customers searching by notes (alec)
+  - added 'Half duplex' field in node's data (alec)
+  - added 'Data limit' field in tariff's data (alec)
+  - function GetMACs() returns only valid addresses (alec)
 
 version 1.9.4 Mot (2006-12-30):
 

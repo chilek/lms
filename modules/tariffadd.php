@@ -47,6 +47,7 @@ if(isset($tariffadd))
 	if($tariffadd['downceil']=='') $tariffadd['downceil'] = 0;
 	if($tariffadd['climit']=='') $tariffadd['climit'] = 0;
 	if($tariffadd['plimit']=='') $tariffadd['plimit'] = 0;
+	if($tariffadd['dlimit']=='') $tariffadd['dlimit'] = 0;
 
 	if(!ereg('^[0-9]+$', $tariffadd['uprate']))
 		$error['uprate'] = trans('Integer value expected!');
@@ -83,7 +84,6 @@ if(isset($tariffadd))
 	{
 		$SESSION->redirect('?m=tarifflist&id='.$LMS->TariffAdd($tariffadd));
 	}
-	
 }
 
 $layout['pagetitle'] = trans('New Subscription');

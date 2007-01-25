@@ -109,7 +109,7 @@
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
-				    <IMG SRC="img/online.gif" ALT="">
+				    <IMG SRC="img/options.gif" ALT="">
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
 				<TD WIDTH="98%">
@@ -122,6 +122,14 @@
 				<TD WIDTH="1%" NOWRAP><B>{t}Packet limit:{/t}</B></TD>
 				<TD WIDTH="98%">
 				    {if $tariff.plimit}{$tariff.plimit}{else}{t}no limits{/t}{/if}
+				</TD>
+			    </TR>
+			    <TR CLASS="light">
+				<TD WIDTH="1%">
+				</TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Data limit:{/t}</B></TD>
+				<TD WIDTH="98%">
+				    {if $tariff.dlimit}{$tariff.dlimit}{else}{t}no limits{/t}{/if}
 				</TD>
 			    </TR>
 			</TABLE>

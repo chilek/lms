@@ -10,13 +10,15 @@
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=chkmac&chkmac=0';
 {literal}
 	}
-
-	function CheckMac()
+	function duplex_change()
 	{
-		document.getElementById('chkmac').checked = !document.getElementById('chkmac').checked;
-		chkmac_change();
+{/literal}
+		if(document.getElementById('duplex').checked)
+			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=1';
+		else
+			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
+{literal}
 	}
-
 {/literal}
 </SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -58,7 +60,6 @@
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{$nodeinfo.mac} {if $nodeinfo.producer}({$nodeinfo.producer}){/if}
-			<INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" CLASS="light box"{if $nodeinfo.chkmac} checked{/if} onclick="chkmac_change();"><a href="javascript:CheckMac();"> {t}MAC checking{/t}</A>
 		</TD>
 	</TR>
 {if $nodeinfo.passwd}
@@ -108,6 +109,15 @@
 {if !$nodeinfo.netdev && $netdevices}
 	</FORM>
 {/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/options.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" CLASS="light box"{if $nodeinfo.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
+			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" CLASS="light box"{if $nodeinfo.halfduplex} checked{/if} onclick="duplex_change();">
+		</TD>
+	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<A HREF="?m=nodeset&id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>

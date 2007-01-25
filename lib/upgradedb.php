@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2007011200'); // here should be always the newest version of database!
+define('DBVERSION', '2007012500'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /*
@@ -46,6 +46,7 @@ function getdir($pwd = './', $pattern = '^.*$')
 if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',array('dbversion')))
 	if(DBVERSION > $dbversion)
 	{
+		set_time_limit(0);
 		$lastupgrade = $dbversion;
 		
 		$upgradelist = getdir($_LIB_DIR.'/upgradedb/', '^'.$_DBTYPE.'.[0-9]{10}.php$');
