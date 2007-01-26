@@ -532,6 +532,7 @@ syslog("Komunikat");
 					<member>ip_pub - publiczny adres IP</member>
 					<member>linktype - typ po³±czenia (0-kabel, 1-radio)</member>
 					<member>chkmac - sprawdzanie MAC'a: w³±czone/wy³±czone (1/0)</member>
+					<member>halfduplex - rodzaj komunikacji (0-full, 1-half)</member>
 					</simplelist>
 					</para>
 				</listitem>
