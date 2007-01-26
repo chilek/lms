@@ -526,6 +526,7 @@ syslog("message");
 				<member>ip_pub - public IP address</member>
 				<member>linktype - connection type (0-cable, 1-air)</member>
 				<member>chkmac - MAC checking (0-disabled, 1-enable)</member>
+				<member>halfduplex - duplex mode (0-full, 1-half)</member>
 			    </simplelist>
 			</para>
 			</listitem>
