@@ -66,9 +66,19 @@
 				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 				{/section}
 			</SELECT>
-			<NOBR><INPUT class="box dark" type="checkbox" name="linktype" value="1" {if $nodelinktype}CHECKED{/if}> {t}wireless{/t}</NOBR>
+			<NOBR><INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {if $nodelinktype}CHECKED{/if}><A HREF="javascript:wirelessCheckbox()"> {t}wireless{/t}</A></NOBR>
 			</FORM></P>
 			{/if}
 		</TD>
 	</TR>
 </TABLE>
+<SCRIPT LANGUAGE="javaScript">
+<!--
+{literal}
+	function wirelessCheckbox()
+	{
+		document.connectnode.elements['linktype'].checked = !document.connectnode.elements['linktype'].checked;
+	}
+{/literal}
+-->
+</SCRIPT>
