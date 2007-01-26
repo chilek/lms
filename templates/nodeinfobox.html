@@ -19,6 +19,15 @@
 			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
 {literal}
 	}
+
+	function setCheckbox(id)
+	{
+		document.getElementById(id).checked = !document.getElementById(id).checked;
+		if (id == 'chkmac')
+			chkmac_change();
+		else
+			duplex_change();
+	}
 {/literal}
 </SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -114,8 +123,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" CLASS="light box"{if $nodeinfo.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
-			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" CLASS="light box"{if $nodeinfo.halfduplex} checked{/if} onclick="duplex_change();">
+			<A HREF="javascript:setCheckbox('chkmac')">{t}MAC checking{/t}: </A><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" CLASS="light box"{if $nodeinfo.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
+			<A HREF="javascript:setCheckbox('duplex')">{t}Half duplex{/t}: </A><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" CLASS="light box"{if $nodeinfo.halfduplex} checked{/if} onclick="duplex_change();">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
