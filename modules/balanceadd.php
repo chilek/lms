@@ -61,6 +61,8 @@ if(isset($addbalance['mcustomerid']))
 			if($addbalance['type']) 
 				$addbalance['taxid'] = 0;
 			
+			if($addbalance['type'] == 0)
+				$addbalance['value'] *= -1;
 			if($addbalance['value'] != 0)
 				$LMS->AddBalance($addbalance);
 		}
@@ -72,6 +74,8 @@ elseif(isset($addbalance['customerid']))
 		if($addbalance['type']) 
 			$addbalance['taxid'] = 0;
 			
+		if($addbalance['type'] == 0)
+			$addbalance['value'] *= -1;
 		if($addbalance['value'] != 0)
 			$LMS->AddBalance($addbalance);
 	}
