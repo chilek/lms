@@ -175,6 +175,14 @@ else
 	exit 1;
 }
 
+use constant CONTINUOUS => 6;
+use constant YEAR       => 5;
+use constant QUARTER    => 4;
+use constant MONTH      => 3;
+use constant WEEK       => 2;
+use constant DAY        => 1;
+use constant DISPOSABLE => 0;
+
 open(WARNFILE, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
 
 print WARNFILE $ipbin." -t nat -F ".$chain."\n\n";
@@ -250,7 +258,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	if($customergroupscount || !$inicustomergroups)
 	{
 		my $balance = $row->{'balance'};
-		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM((value * (100 - discount)) / 100) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND customerid = $row->{'id'} GROUP BY customerid HAVING SUM(value * ((100 - discount) / 100)) > 0");
+		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM((value * (100 - discount)) / 100) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = ".MONTH." AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND customerid = $row->{'id'} GROUP BY customerid HAVING SUM(value * ((100 - discount) / 100)) > 0");
 		$sdbq->execute();
 		$srow = $sdbq->fetchrow_hashref();
 
