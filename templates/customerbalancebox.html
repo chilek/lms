@@ -56,6 +56,13 @@
 		document.addbalance.target="_blank";
 		document.addbalance.submit();
 	}
+
+	function showi()
+	{
+		document.addbalance.action="?m=invoicelist";
+		document.addbalance.target="";
+		document.addbalance.submit();
+	}
 {/literal}{if $_config.phpui.delete_link_in_customerbalancebox|chkconfig}{literal}
 	function delpos()
 	{ 	 
@@ -86,6 +93,9 @@
 			<A href="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{t}New Cash-in Receipt{/t} &raquo;</A>&nbsp;
 			<A href="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{t}New Cash-out Receipt{/t} &raquo;</A>&nbsp;
 			{if $limit}<A href="?m=customerbalance&id={$balancelist.customerid}">{t}See all transactions{/t} &raquo;</A>&nbsp;{/if}
+			<INPUT type="hidden" name="cat" value="customerid">
+			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
+			<A href="javascript:showi()">{t}See all invoices{/t} &raquo;</A>&nbsp;
 		</TD>
 	</TR>
 	<TR id="customerbalance">
