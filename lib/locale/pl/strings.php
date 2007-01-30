@@ -1134,6 +1134,7 @@ $_LANG['Searching of Events in Timetable'] = 'Szukanie wpisów w kalendarzu';
 $_LANG['Section:'] = 'Sekcja:';
 $_LANG['Section name contains forbidden characters!'] = 'Nazwa sekcji zawiera zabronione znaki!';
 $_LANG['See all transactions'] = 'Pokaż wszystkie transakcje';
+$_LANG['See all invoices'] = 'Pokaż wszystkie faktury';
 $_LANG['Select'] = 'Wybierz';
 $_LANG['- select account -'] = '- wybierz konto -';
 $_LANG['Select account'] = 'Wybierz konto';
