@@ -307,6 +307,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 {
 	my $uid = $assign->{'customerid'};
 
+	if (not defined $assign->{'value'}) { next; };
+
 	if ($assign->{'value'} == 0) { next; };
 
 	# checking groups membership
