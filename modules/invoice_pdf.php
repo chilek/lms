@@ -654,7 +654,7 @@ elseif($_GET['fetchallinvoices'])
 	$ids = $DB->GetCol('SELECT id FROM documents
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
 				.($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
-				.' ORDER BY cdate',
+				.' ORDER BY CEIL(cdate/86400), id',
 				array($_GET['from'], $_GET['to'], DOC_INVOICE, DOC_CNOTE));
 	if(!$ids)
 	{
