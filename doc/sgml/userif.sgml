@@ -1077,6 +1077,12 @@ registered/unregistered cases) if ticket will be running via email.</para>
 		<para>Example:     <prompt>default_monthly_payday = 1</prompt></para>
     	    </listitem>
     	    <listitem>
+        	<para>use_invoices</para>
+        	<para>Makes option "with invoice" to be checked by default.
+		Default: false.</para>
+		<para>Example:     <prompt>use_invoices = true</prompt></para>
+    	    </listitem>
+    	    <listitem>
         	<para>lastonline_limit</para>
         	<para>Specify time (in seconds), after which node will be marked offline. It should match
         	frequency of execution for script responsible for checking nodes activity (i.e. lms-fping).

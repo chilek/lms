@@ -39,6 +39,7 @@ version ? (????-??-??):
   - function GetMACs() returns only valid addresses (alec)
   - balanceadd: fixed saved value in db while type is liability (chilek)
   - customerinfo: see all invoices added (chilek)
+  - added option phpui/use_invoices (alec)
 
 version 1.9.4 Mot (2006-12-30):
 

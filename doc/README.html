@@ -5460,6 +5460,18 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>use_invoices</P
+><P
+>Makes option "with invoice" to be checked by default.
+		Default: false.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>use_invoices = true</SAMP
+></P
+></LI
+><LI
+><P
 >lastonline_limit</P
 ><P
 >Specify time (in seconds), after which node will be marked offline. It should match
@@ -9420,6 +9432,8 @@ CLASS="SCREEN"
   --with-pgsql          enables using of PostgreSQL database (disabled)
   --with-mysql          enables using of MySQL database (enabled)
   --prefix=PREFIX       program and modules install directory (/usr/local)
+  --lmsbindir=DIR       sets location of target LMS binaries (PREFIX/lms/bin)
+  --lmslibdir=DIR       sets location of target LMS modules (PREFIX/lms/lib)
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration</PRE
@@ -12906,6 +12920,10 @@ BORDER="0"
 ><TD
 >chkmac - MAC checking (0-disabled, 1-enable)</TD
 ></TR
+><TR
+><TD
+>halfduplex - duplex mode (0-full, 1-half)</TD
+></TR
 ></TBODY
 ></TABLE
 >
@@ -13722,6 +13740,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>halfduplex - half/full duplex mode (0/1)</TD
+></TR
+><TR
+><TD
 >lastonline - last network activity timestamp</TD
 ></TR
 ><TR
@@ -13969,6 +13991,10 @@ BORDER="0"
 ><TR
 ><TD
 >plimit - limit of packets per second</TD
+></TR
+><TR
+><TD
+>dlimit - limit of data per time unit</TD
 ></TR
 ><TR
 ><TD
