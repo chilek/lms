@@ -35,6 +35,7 @@ $edit = 'data';
 switch($action)
 {
 case 'replace':
+
 	$dev1 = $LMS->GetNetDev($_GET['id']);
 	$dev2 = $LMS->GetNetDev($_GET['netdev']);
 	if ($dev1['ports'] < $dev2['takenports']) 
@@ -55,10 +56,12 @@ case 'replace':
 	break;
 	
 case 'disconnect':
+
 	$LMS->NetDevUnLink($_GET['id'],$_GET['devid']);
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
 case 'disconnectnode':
+
 	$LMS->NetDevLinkNode($_GET['nodeid'],0);
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
@@ -73,6 +76,7 @@ case 'duplex':
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id'].'&ip='.$_GET['ip']);
 	
 case 'connect':
+
 	$linktype = isset($_GET['linktype']) ? $_GET['linktype'] : '0';
 	$SESSION->save('devlinktype', $linktype);
 	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id'], $linktype) )
@@ -84,6 +88,7 @@ case 'connect':
 	break;
     
 case 'connectnode':
+
 	$linktype = isset($_GET['linktype']) ? $_GET['linktype'] : '0';
 	$SESSION->save('nodelinktype', $linktype);
 	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id'], $linktype) )
@@ -95,10 +100,12 @@ case 'connectnode':
 	break;
 
 case 'addip':
+
 	$edit = 'addip';
 	break;
 
 case 'editip':
+
 	$nodeipdata = $LMS->GetNode($_GET['ip']);
 	$nodeipdata['ipaddr'] = $nodeipdata['ip'];
 	$SMARTY->assign('nodeipdata',$nodeipdata);
@@ -106,24 +113,27 @@ case 'editip':
 	break;
 
 case 'switchlinktype':
+
 	$LMS->SetNetDevLinkType($_GET['devid'], $_GET['id'], $_GET['linktype']);
 	header('Location: ?m=netdevinfo&id='.$_GET['id']);
 	break;
 
 case 'switchnodelinktype':
+
 	$LMS->SetNodeLinkType($_GET['nodeid'], $_GET['linktype']);
 	header('Location: ?m=netdevinfo&id='.$_GET['id']);
 	break;
 
 case 'formaddip':
+
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid'] = 0;
-	
 	$nodeipdata['mac'] = str_replace('-',':',$nodeipdata['mac']);
+
 	foreach($nodeipdata as $key => $value)
 		$nodeipdata[$key] = trim($value);
 	
-	if($nodeipdata['ipaddr']=='' && $nodeipdata['mac']=='' && $nodeipdata['name']=='')
+	if($nodeipdata['ipaddr']=='' && $nodeipdata['mac']=='' && $nodeipdata['name']=='' && $nodeipdata['passwd']=='')
 	{
 		$SESSION->redirect('?m=netdevedit&action=addip&id='.$_GET['id']);
         }
@@ -166,13 +176,15 @@ case 'formaddip':
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']))
 			$error['mac'] = trans('MAC address is in use!');
 
+	if(strlen($nodeipdata['passwd']) > 32)
+                $error['passwd'] = trans('Password is too long (max.32 characters)!');
+
 	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
 	if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
 
 	if(!$error)
 	{
 		$nodeipdata['warning'] = 0;
-		$nodeipdata['passwd'] = '';
 		$nodeipdata['location'] = '';
 		$nodeipdata['netdev'] = $_GET['id'];
 		
@@ -185,14 +197,15 @@ case 'formaddip':
 	break;
 		
 case 'formeditip':
+
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid']=0;
-
 	$nodeipdata['mac'] = str_replace('-',':',$nodeipdata['mac']);
+
 	foreach($nodeipdata as $key => $value)
 		$nodeipdata[$key] = trim($value);
 	
-	if($nodeipdata['ipaddr']=='' && $nodeipdata['mac']=='' && $nodeipdata['name']=='')
+	if($nodeipdata['ipaddr']=='' && $nodeipdata['mac']=='' && $nodeipdata['name']=='' && $nodeipdata['passwd']=='')
 	{
 		$SESSION->redirect('?m=netdevedit&action=editip&id='.$_GET['id'].'&ip='.$_GET['ip']);
         }
@@ -249,15 +262,17 @@ case 'formeditip':
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']) && $LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata['mac'])
 			$error['mac'] = trans('MAC address is in use!');
 
+	if(strlen($nodeipdata['passwd']) > 32)
+                $error['passwd'] = trans('Password is too long (max.32 characters)!');
+		
 	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
 	if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
 	
 	if(!$error)
 	{
 		$nodeipdata['warning'] = 0;
-		$nodeipdata['passwd'] = '';
 		$nodeipdata['location'] = '';
-		$nodeipdata['netdev']=$_GET['id'];
+		$nodeipdata['netdev'] = $_GET['id'];
 
 		$LMS->NodeUpdate($nodeipdata);	
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);

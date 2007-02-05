@@ -1,6 +1,6 @@
 <!-- $Id$ -->
 <FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formeditip&id={$netdevinfo.id}&ip={$nodeipdata.id}">
-	<INPUT type="submit" class="hiddenbtn">
+    <INPUT type="submit" class="hiddenbtn">
     <INPUT TYPE="hidden" NAME="ipadd[id]" VALUE="{$nodeipdata.id}">
     <INPUT TYPE="hidden" NAME="ipadd[createdby]" VALUE="{$nodeipdata.createdby}">
     <INPUT TYPE="hidden" NAME="ipadd[creationdateh]" VALUE="{$nodeipdata.creationdateh}">
@@ -12,49 +12,78 @@
 		<TD WIDTH="1%" CLASS="FLEFTU">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="FBT">
+			<B>{t}Name:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name|upper}" MAXLENGTH="16" {tip text="Enter address name" trigger="ipname" bold=1}>
 			<B>({$nodeipdata.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" ALT="{t}IP address:{/t}">
+			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}IP address:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
                        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
+			<IMG SRC="img/ip_pub.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Pub. IP address:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
                        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{if $nodeipdata.ip_pub!="0.0.0.0"}{$nodeipdata.ip_pub}{/if}" {tip text="Enter IP address" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]'],{$nodeipdata.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">
+			<IMG SRC="img/mac.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2" NOWRAP>
+		<TD WIDTH="1%">
+			<B>{t}MAC:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/passwd.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Password:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="ipadd[passwd]" VALUE="{$nodeipdata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/options.gif" ALT="{t}Options:{/t}">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2" NOWRAP>
+		<TD WIDTH="1%">
+			<B>{t}Options:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" NOWRAP>
 			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}>&nbsp;
 			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" CLASS="light box" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/network.gif" ALT="{t}Network:{/t}">
+			<IMG SRC="img/network.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="1%">
+			<B>{t}Network:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<B><A HREF="?m=netinfo&id={$netdevinfo.netid}">{$nodeipdata.netname}</A></B>
 		</TD>
 	</TR>
@@ -62,7 +91,10 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="1%">
+			<B>{t}Status:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<SELECT SIZE="1" NAME="ipadd[access]" {tip text="Select address status"}>
 				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
@@ -71,9 +103,12 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/info.gif" ALT="{t}Description:{/t}">
+			<IMG SRC="img/info.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="1%">
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Enter additional informations (optional)"}>{$nodeipdata.info}</TEXTAREA>
 		</TD>
 	</TR>
@@ -98,3 +133,22 @@
 	</TR>	
 </TABLE>
 </FORM>
+{literal}
+<SCRIPT type="text/javascript">
+	function GenPasswd()
+	{
+		var passwd = new Array();
+		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		var length = {/literal}{$_config.phpui.nodepassword_length|default:"16"}{literal};
+		if(length > 32) length = 32;
+		
+		for(var i=0; i<length; i++)
+		{
+			n = Math.floor(Math.random() * items.length);
+			passwd[i] = items.substring(n, n+1);
+		}
+
+		document.forms['editipaddr'].elements['ipadd[passwd]'].value = passwd.join("");
+	}	
+</SCRIPT>
+{/literal}

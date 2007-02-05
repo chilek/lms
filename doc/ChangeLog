@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - now is possible to define password for device's IP (alec)
+
 version 1.9.5 Tagar (2007-02-05):
 
   - traffic stats: saving chosen network in session (chilek)
