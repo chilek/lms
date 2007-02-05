@@ -7,8 +7,8 @@
 	function CountSelectedCustomers()
 	{
 		var j = 0;
-		for (var i = 0; i < document.forms['addbalance'].elements[0].length; i++) {
-			if (document.forms['addbalance'].elements[0].options[i].selected)
+		for (var i = 0; i < document.getElementById('customerselect').length; i++) {
+			if (document.getElementById('customerselect').options[i].selected)
 				j++;
 			}
 		document.forms['addbalance'].selectededit.value = j;
@@ -44,7 +44,7 @@
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL">
 						{t}Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.{/t}<BR><BR>
-						<SELECT size="20" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
+						<SELECT size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
 							{section name=customers loop=$customers}
 							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 							{/section}
