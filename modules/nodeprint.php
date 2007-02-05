@@ -108,7 +108,7 @@ switch($type)
 	break;
 
 	default:
-		$layout['pagetitle'] = trans('Printing');
+		$layout['pagetitle'] = trans('Reports');
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('printmenu', 'node');
 		$SMARTY->display('printindex.html');

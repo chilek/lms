@@ -1057,7 +1057,6 @@ $_LANG['Print'] = 'Drukuj';
 $_LANG['Print cash receipts'] = 'Drukuj dowody wpłaty';
 $_LANG['Print invoices'] = 'Drukuj faktury';
 $_LANG['Print form of cash transfer'] = 'Drukuj formularz przelewu/wpłaty';
-$_LANG['Printing'] = 'Wydruki';
 $_LANG['Priority:'] = 'Priorytet:';
 $_LANG['Priority must be integer!'] = 'Priorytet musi być typu całkowitego!';
 $_LANG['private'] = 'prywatny';
@@ -1772,5 +1771,6 @@ $_LANG['Enter limit of data in time unit (optional)'] = 'Wprowadź limit danych 
 $_LANG['Half duplex'] = 'Half duplex';
 $_LANG['Select transmission mode'] = 'Wybierz rodzaj transmisji';
 $_LANG['Generator'] = 'Generator';
+$_LANG['MAC:'] = 'MAC:';
 
 ?>
