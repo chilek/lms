@@ -151,7 +151,7 @@ switch($type)
 	
 	default: /*******************************************************/
 	
-		$layout['pagetitle'] = trans('Printing');
+		$layout['pagetitle'] = trans('Reports');
     		
 		$yearstart = date('Y', (int) $DB->GetOne('SELECT MIN(dt) FROM stats'));
 	        $yearend = date('Y', (int) $DB->GetOne('SELECT MAX(dt) FROM stats'));
