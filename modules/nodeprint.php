@@ -33,15 +33,15 @@ switch($type)
 		{
 			case 0:
 				$layout['pagetitle'] = trans('Nodes List');
-				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network']);
+				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network'], NULL, $_POST['customergroup']);
 			break;
 			case 1:
 				$layout['pagetitle'] = trans('List of Connected Nodes');
-				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network'], 1);
+				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network'], 1, $_POST['customergroup']);
 			break;
 			case 2:
 				$layout['pagetitle'] = trans('List of Disconnected Nodes');
-				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL,  $_POST['network'], 2);
+				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL,  $_POST['network'], 2, $_POST['customergroup']);
 			break;
 			case 3:
 				$layout['pagetitle'] = trans('Nodes List for Customers In Debt');
@@ -78,15 +78,20 @@ switch($type)
 
 				if($_POST['network'])
 					$net = $LMS->GetNetworkParams($_POST['network']);
+				
+				$group = $_POST['customergroup'];
 
 				$nodelist = $DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
 					    nodes.name AS name, nodes.info AS info, 
 					    COALESCE(SUM(value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
 					    .$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
-					    FROM nodes LEFT JOIN customers ON (ownerid = customers.id)
-					    LEFT JOIN cash ON (cash.customerid = customers.id)'
-					    .($net ? ' WHERE ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
-					    .'GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, customers.lastname, customers.name
+					    FROM nodes 
+					    LEFT JOIN customers ON (ownerid = customers.id)
+					    LEFT JOIN cash ON (cash.customerid = customers.id) 
+					    WHERE 1=1 '
+					    .($net ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+					    .($group ? ' AND EXISTS (SELECT 1 FROM customerassignments WHERE customerid = ownerid)' : '')
+					    .' GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, customers.lastname, customers.name
 					    HAVING SUM(value) < 0'
 					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
 				
@@ -109,6 +114,8 @@ switch($type)
 
 	default:
 		$layout['pagetitle'] = trans('Reports');
+		
+		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('printmenu', 'node');
 		$SMARTY->display('printindex.html');

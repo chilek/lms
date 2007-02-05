@@ -690,18 +690,26 @@ function setPrintInvoices(id)
 						<NOBR><INPUT class="radio light" type="radio" id="indebt" name="filter" value="3"><A HREF="javascript:setNodeType('indebt')">{t}indebted owner{/t}</a></NOBR>
 					</TD>
 					<TD width="1%">
-						<IMG src="img/network.gif" alt="">
+						<IMG src="img/network.gif" alt=""><BR><BR>
+						<IMG src="img/group.gif" alt="">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Network:{/t}</B>
+						<B>{t}Network:{/t}</B><BR><BR>
+						<B>{t}Group:{/t}</B>
 					</TD>
-					<TD width="1%" {tip text="Select network"}>
-						<SELECT size="1" name="network">
+					<TD width="1%">
+						<SELECT size="1" name="network" {tip text="Select network"}>
 							<OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
 							{section name="networks" loop=$networks}
 							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
 							{/section}
-						</SELECT>&nbsp;
+						</SELECT><BR><BR>
+						<SELECT size="1" name="customergroup" {tip text="Select group"}>
+							<OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+							{section name="customergroups" loop=$customergroups}
+							<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
+							{/section}
+						</SELECT>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/view.gif" alt="">
