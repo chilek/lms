@@ -65,7 +65,7 @@
 		</TD>
 		<TD width="3%" colspan="3" class="frightu" align="right" nowrap>
 			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
-			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{t}Add Event{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{t}Add Event{/t} <IMG src="img/save.gif" alt=""></A>&nbsp;
 		</TD>
 	</TR>
 	{if $counter%2 && $counter!=0}{cycle print=false}{/if}
@@ -100,9 +100,9 @@
 			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {t}Open{/t} ]"></A> 
 			{else}
 			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {t}Close{/t} ]"></A> 
-			{/if}&nbsp;
+			{/if}
 			<A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that event?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> 
-			<A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A> 
+			<A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>&nbsp; 
 		</TD>
 	    </TR>
 	    {/if}
