@@ -1078,7 +1078,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
     	    </listitem>
     	    <listitem>
         	<para>use_invoices</para>
-        	<para>Makes option "with invoice" to be checked by default.
+        	<para>Makes option "with invoice" checked by default.
 		Default: false.</para>
 		<para>Example:     <prompt>use_invoices = true</prompt></para>
     	    </listitem>

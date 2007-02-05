@@ -2051,7 +2051,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        (undefined).
        Example: default_monthly_payday = 1
      * use_invoices
-       Makes option "with invoice" to be checked by default. Default:
+       Makes option "with invoice" checked by default. Default:
        false.
        Example: use_invoices = true
      * lastonline_limit
