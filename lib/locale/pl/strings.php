@@ -1771,5 +1771,6 @@ $_LANG['Data limit:'] = 'Limit danych:';
 $_LANG['Enter limit of data in time unit (optional)'] = 'Wprowadź limit danych w jednostce czasu (opcjonalnie)';
 $_LANG['Half duplex'] = 'Half duplex';
 $_LANG['Select transmission mode'] = 'Wybierz rodzaj transmisji';
+$_LANG['Generator'] = 'Generator';
 
 ?>

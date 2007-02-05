@@ -290,7 +290,7 @@ $menu = array(
 //					'tip' => trans('Allows you to search documents'),
 //				),
 				array(
-					'name' => trans('Documents Generator'),
+					'name' => trans('Generator'),
 					'link' =>'?m=documentgen',
 					'tip' => trans('Documents mass creation'),
 				),
