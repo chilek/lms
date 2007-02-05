@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - now is possible to define password for device's IP (alec)
+  - added nodes list (and report) filtering by customer's group (alec)
 
 version 1.9.5 Tagar (2007-02-05):
 
