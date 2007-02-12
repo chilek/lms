@@ -443,6 +443,12 @@ http://www.naszasiec.pl/</screen></example>
 		    <para>Uprawnienia skryptu okre¶lonego w 'outfile'. Domy¶lnie: 700 (rwx------).</para>
 		    <para>Przyk³ad:	<prompt>script_permission = 700</prompt></para>
 		</listitem>
+    		<listitem>
+		    <para>networks</para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
 	    </itemizedlist>
 	</para>
     </sect2>
