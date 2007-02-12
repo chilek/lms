@@ -127,22 +127,22 @@ if(isset($_POST['networkdata']))
 		if(!check_ip($networkdata['dhcpstart']))
 			$error['dhcpstart'] = trans('Incorrect IP address for DHCP range start!');
 		else
-			if(!isipin($networkdata['dhcpstart'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!="")
+			if(!isipin($networkdata['dhcpstart'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!='')
 				$error['dhcpstart'] = trans('IP address for DHCP range start does not match with network address!');
 
 	if($networkdata['dhcpend']!='')
 		if(!check_ip($networkdata['dhcpend']))
 			$error['dhcpend'] =  trans('Incorrect IP address for DHCP range end!');
 		else
-			if(!isipin($networkdata['dhcpend'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!="")
+			if(!isipin($networkdata['dhcpend'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!='')
 				$error['dhcpend'] = trans('IP address for DHCP range end does not match with network address!');
 	
 	if(!isset($error['dhcpstart']) && !isset($error['dhcpend']))
 	{
 		if(($networkdata['dhcpstart']!='' && $networkdata['dhcpend']=='')||($networkdata['dhcpstart']=='' && $networkdata['dhcpend']!=''))
 			$error['dhcpend'] = trans('Both IP addresses for DHCP range are required!');
-		if($networkdata['dhcpstart']!="" && $networkdata['dhcpend']!="" && !(ip_long($networkdata['dhcpend']) > ip_long($networkdata['dhcpstart'])))
-			$error['dhcpend'] = trans('End of DHCP range has to be greater than start!');
+		if($networkdata['dhcpstart']!='' && $networkdata['dhcpend']!='' && !(ip_long($networkdata['dhcpend']) >= ip_long($networkdata['dhcpstart'])))
+			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
 	
 	if(!$error)

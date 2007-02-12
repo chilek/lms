@@ -7,6 +7,7 @@ version ? (????-??-??):
   - cash receipts: added document's positions clearing when customer 
     is changing (alec) 
   - lms-traffic-logiptables: added 'networks' option (alec)
+  - BTS#0000625: one-address DHCP ranges allowed (alec)
 
 version 1.9.5 Tagar (2007-02-05):
 
