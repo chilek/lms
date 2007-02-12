@@ -438,6 +438,13 @@ Following parameters are valid:</para>
 		    <para>Permissions of 'outfile' script. Default: 700 (rwx------).</para>
 		    <para>Example:	<prompt>script_permission = 700</prompt></para>
 		</listitem>
+    		<listitem>
+		    <para>networks</para>
+		    <para>List of (space separated) networks, that should be
+		    considered while creating configuration file. If unset, configuration will
+		    include all networks.</para>
+		    <para>Example:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
 	    </itemizedlist>
     </sect2>
     <sect2 id="lms-makedhcpconf" xreflabel="lms-makedhcpconf">
