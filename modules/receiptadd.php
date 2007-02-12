@@ -251,6 +251,7 @@ switch($action)
 
 		$oldreg = $receipt['regid'];
 		$oldtype = $receipt['type'];
+		$oldcid = $customer['id'];
 		unset($receipt); 
 		unset($customer);
 		unset($error);
@@ -351,6 +352,10 @@ switch($action)
 							else
 								$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
 						}
+					
+					// remove positions if customer was changed
+					if($oldcid != $customer['id'])
+						unset($contents);
 				}
 			}
 			
