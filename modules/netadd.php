@@ -105,8 +105,8 @@ if(isset($_POST['netadd']))
 	{
 		if(($netadd['dhcpstart'] != '' && $netadd['dhcpend'] == '') || ($netadd['dhcpstart'] == '' && $netadd['dhcpend'] != ''))
 			$error['dhcpend'] = trans('Both IP addresses for DHCP range are required!');
-		if($netadd['dhcpstart'] != '' && $netadd['dhcpend'] != '' && !(ip_long($netadd['dhcpend']) > ip_long($netadd['dhcpstart'])))
-			$error['dhcpend'] = trans('End of DHCP range has to be greater than start!');
+		if($netadd['dhcpstart'] != '' && $netadd['dhcpend'] != '' && !(ip_long($netadd['dhcpend']) >= ip_long($netadd['dhcpstart'])))
+			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
 	
 	if(!$error)
