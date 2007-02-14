@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$payment = $_POST['payment'];
+$payment = isset($_POST['payment']) ? $_POST['payment'] : NULL;
 
-if(isset($payment))
+if($payment)
 {
 	foreach($payment as $key => $value)
 		$payment[$key] = trim($value);
@@ -103,7 +103,7 @@ if(isset($payment))
 	if(!$error)
 	{
 		$payment['at'] = $at;
-		if($payment['reuse'] =='')
+		if(isset($payment['reuse']))
 		{
 			$SESSION->redirect('?m=paymentlist&id='.$LMS->PaymentAdd($payment));
 		} else
@@ -116,8 +116,8 @@ if(isset($payment))
 
 $layout['pagetitle'] = trans('New Payment');
 
-$SMARTY->assign('error',$error);
-$SMARTY->assign('payment',$payment);
+$SMARTY->assign('error', $error);
+$SMARTY->assign('payment', $payment);
 $SMARTY->display('paymentadd.html');
 
 ?>

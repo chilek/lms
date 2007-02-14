@@ -92,9 +92,9 @@ switch($action)
     		unset($error);
 
 		// get default receipt's numberplanid and next number
-		$receipt['regid'] = $_GET['regid'] ? $_GET['regid'] : $oldreg;
-		$receipt['type'] = $_GET['type'] ? $_GET['type'] : $_POST['type'];
-		$receipt['customerid'] = $_GET['customerid'];
+		$receipt['regid'] = isset($_GET['regid']) ? $_GET['regid'] : $oldreg;
+		$receipt['type'] = isset($_GET['type']) ? $_GET['type'] : (isset($_POST['type']) ? $_POST['type'] : 0);
+		$receipt['customerid'] = isset($_GET['customerid']) ? $_GET['customerid'] : 0;
 
 		if(!$receipt['regid'] || !$receipt['type'])
 		{
@@ -119,7 +119,7 @@ switch($action)
 			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
 				$receipt['extended'] = TRUE;
 
-		if(!$error && $receipt['customerid'] && $LMS->CustomerExists($receipt['customerid']))
+		if(!isset($error) && $receipt['customerid'] && $LMS->CustomerExists($receipt['customerid']))
 		{
 			$customer = $LMS->GetCustomer($receipt['customerid']);
 			$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
@@ -146,8 +146,8 @@ switch($action)
     		unset($error);
 
 		// get default receipt's numberplanid and next number
-		$receipt = $_POST['receipt'];
-		$receipt['customerid'] = $_POST['customerid'];
+		$receipt = ($_POST['receipt']) ? $_POST['receipt'] : NULL;
+		$receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : 0;
 		
 		if(!$receipt['regid']) break;	
 		
@@ -184,6 +184,7 @@ switch($action)
 			// sprawdzamy czy mamy tyle kasy w kasie ;)
 			$cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
 			
+			$sum = 0;
 			if($contents)
 				foreach($contents as $item)
 					$sum += $item['value'];
@@ -261,7 +262,7 @@ switch($action)
 				$receipt[$key] = $val;
 		
 		//$receipt['customerid'] = $_POST['customerid'];
-		$receipt['type'] = $_POST['type'] ? $_POST['type'] : $oldtype;
+		$receipt['type'] = isset($_POST['type']) ? $_POST['type'] : $oldtype;
 
 		if($receipt['regid'] != $oldreg || !$receipt['numberplanid'])
 		{
@@ -288,7 +289,7 @@ switch($action)
 		else
 			$receipt['cdate'] = time();
 
-		if($receipt['cdate'] && !$receipt['cdatewarning'])
+		if($receipt['cdate'] && !isset($receipt['cdatewarning']))
 		{
 			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents 
 						WHERE type = ? AND numberplanid = ?', array(DOC_RECEIPT, $receipt['numberplanid']));
@@ -308,7 +309,7 @@ switch($action)
 				$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
 		}
 
-		if($receipt['numberplanid'] && !$receipt['extnumber'])
+		if($receipt['numberplanid'] && !isset($receipt['extnumber']))
 			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
 				$receipt['extended'] = TRUE;
 
@@ -318,14 +319,21 @@ switch($action)
 		if($receipt['o_type']=='other' || $receipt['o_type']=='move')
 		{
 			$receipt['customerid'] = 0;
-			if(!$error)
+			
+			if(trim($receipt['o_name']) == '')
+				$error['o_name'] = trans('Target is required!');
+				
+			if(!isset($error))
 				$receipt['selected'] = TRUE;
 			break;
 		}
 		
-		$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid'];
+		if(isset($_GET['customerid']) && $_GET['customerid'] != '')
+			$cid = $_GET['customerid'];
+		else
+			$cid = isset($_POST['customerid']) ? $_POST['customerid'] : 0;
 		
-		if(!$error && $cid)
+		if(!isset($error) && $cid)
 			if($LMS->CustomerExists($cid))
 			{
 				$receipt['customerid'] = $cid;
@@ -336,15 +344,15 @@ switch($action)
 						$error['customerid'] = trans('Selected customer is in debt for $0!', moneyf($balance*-1));
 				}
 
-				if(!$error)
+				if(!isset($error))
 				{
 					$customer = $LMS->GetCustomer($cid);
 					$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
-					if(!chkconfig($CONFIG['receipts']['show_notes']))
+					if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
 						unset($customer['notes']);
 					
 					// niezatwierdzone dokumenty klienta
-					if(chkconfig($CONFIG['receipts']['show_documents_warning']))
+					if(isset($CONFIG['receipts']['show_documents_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
 						if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($cid)))
 						{
 							if($CONFIG['receipts']['documents_warning'])
@@ -359,7 +367,7 @@ switch($action)
 				}
 			}
 			
-		if(!$error && $customer)
+		if(!isset($error) && $customer)
 			$receipt['selected'] = TRUE;
 	break;
 
@@ -386,7 +394,7 @@ switch($action)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
-						$receipt['extnumber'] ? $receipt['extnumber'] : '',
+						isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$customer['id'],
@@ -428,7 +436,7 @@ switch($action)
 							$customer['id']
 						));
 				
-				if($item['docid'])
+				if(isset($item['docid']))
 					$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));
 			}
 		
@@ -457,7 +465,7 @@ switch($action)
 					VALUES(?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
-						$receipt['extnumber'] ? $receipt['extnumber'] : '',
+						isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$AUTH->id,
@@ -491,13 +499,13 @@ switch($action)
 			$print = TRUE;
 		}
 		
-		if($print)
+		if(isset($print))
 		{
 			$SESSION->remove('receiptcontents');
 			$SESSION->remove('receiptcustomer');
 			$SESSION->remove('receipt');
 			$SESSION->remove('receiptadderror');
-			$SESSION->redirect('?m=receiptlist&receipt='.$rid.'&which='.$_GET['which'].'&regid='.$receipt['regid'].'#'.$rid);
+			$SESSION->redirect('?m=receiptlist&receipt='.$rid.(isset($_GET['which']) ? '&which='.$_GET['which'] : '').'&regid='.$receipt['regid'].'#'.$rid);
 		}
 	break;
 
@@ -598,9 +606,9 @@ switch($action)
 $SESSION->save('receipt', $receipt);
 $SESSION->save('receiptregid', $receipt['regid']);
 $SESSION->save('receipttype', $receipt['type']);
-$SESSION->save('receiptcontents', $contents);
-$SESSION->save('receiptcustomer', $customer);
-$SESSION->save('receiptadderror', $error);
+$SESSION->save('receiptcontents', isset($contents) ? $contents : NULL);
+$SESSION->save('receiptcustomer', isset($customer) ? $customer : NULL);
+$SESSION->save('receiptadderror', isset($error) ? $error : NULL);
 
 if($action != '')
 {

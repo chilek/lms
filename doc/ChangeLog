@@ -13,6 +13,7 @@ version ? (????-??-??):
   - BTS#0000603: lmsd: instance names with spaces works with -i option (alec)  
   - BTS#0000594: clickable gateway record when selecting IP for network
     device's IP (alec)
+  - cash receipts: 'other' target name is required now (alec)
   
 version 1.9.5 Tagar (2007-02-05):
 

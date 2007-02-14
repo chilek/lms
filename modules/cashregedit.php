@@ -56,7 +56,7 @@ if(isset($_POST['registry']))
 					$registry['description'],
 					$registry['in_numberplanid'],
 					$registry['out_numberplanid'],
-					$registry['disabled'] ? 1 : 0,
+					isset($registry['disabled']) ? 1 : 0,
 					$registry['id']
 				));
 		
