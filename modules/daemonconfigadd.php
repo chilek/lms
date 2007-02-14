@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-if($config = $_POST['config']) 
+$config = isset($_POST['config']) ? $_POST['config'] : NULL;
+
+if($config) 
 {
 	foreach($config as $idx => $key)
 		$config[$idx] = trim($key);
@@ -52,7 +54,7 @@ if($config = $_POST['config'])
 					    $config['value']));
 		$LMS->SetTS('daemonconfig');
 		
-		if(!$config['reuse'])
+		if(!isset($config['reuse']))
 		{
 			$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
 		}

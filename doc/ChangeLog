@@ -8,6 +8,8 @@ version ? (????-??-??):
     is changing (alec) 
   - lms-traffic-logiptables: added 'networks' option (alec)
   - BTS#0000625: one-address DHCP ranges allowed (alec)
+  - lmsd: don't save config.status when using configure script
+    with option --help (alec)  
 
 version 1.9.5 Tagar (2007-02-05):
 
