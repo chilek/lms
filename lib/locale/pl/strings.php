@@ -1654,8 +1654,8 @@ $_LANG['New Cash Receipt'] = 'Nowy dok. kasowy';
 $_LANG['pay in'] = 'wpłata';
 $_LANG['pay out'] = 'wypłata';
 $_LANG['Select cash receipt type'] = 'Wybierz typ dokumentu kasowego';
-$_LANG['Enter recipient (optional)'] = 'Wprowadź odbiorcę (opcjonalnie)';
-$_LANG['Enter payer (optional)'] = 'Wprowadź wpłacającego (opcjonalnie)';
+$_LANG['Enter recipient'] = 'Wprowadź odbiorcę';
+$_LANG['Enter payer'] = 'Wprowadź wpłacającego';
 $_LANG['assets move'] = 'przeniesienie środków';
 $_LANG['Disabled summary:'] = 'Wyłączenie z sumowania:';
 $_LANG['no'] = 'nie';
@@ -1772,5 +1772,6 @@ $_LANG['Half duplex'] = 'Half duplex';
 $_LANG['Select transmission mode'] = 'Wybierz rodzaj transmisji';
 $_LANG['Generator'] = 'Generator';
 $_LANG['MAC:'] = 'MAC:';
+$_LANG['Target is required!'] = 'Cel jest wymagany!';
 
 ?>

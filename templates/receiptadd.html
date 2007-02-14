@@ -123,10 +123,10 @@
 			<B>{t}Target:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" class="box light" checked>
+			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" class="box light" checked>
 			{t}customer{/t}:
 			{if $customerlist}
-			<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value" {tip trigger="customerid"}>
+			<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
 				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$customerlist item=c}
 				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
@@ -134,15 +134,15 @@
 			</SELECT>
 			{t}or Customer ID:{/t}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value;"{/if} onclick="document.getElementById('radio_customer').checked=true;" {tip text="Enter customer ID"}>
+			<a href="javascript: void(0);" onclick="document.getElementById('radio_customer').checked=true;return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			{if  $cashregcount > 1 && $receipt.type=="out"}
 			<BR>
 			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" class="box light" {if $receipt.o_type=="move"} checked{/if}> {t}assets move{/t}
 			{/if}
 			<BR>
-			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}:
-			<INPUT TYPE="text" NAME="receipt[o_name]" VALUE="{$receipt.o_name}" SIZE="75" {if $receipt.type=="out"}{tip text="Enter recipient (optional)"}{else}{tip text="Enter payer (optional)"}{/if}{if $rights < 3} readonly{/if}>
+			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}:
+			<INPUT TYPE="text" NAME="receipt[o_name]" VALUE="{$receipt.o_name}" SIZE="75" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="o_name"}{else}{tip text="Enter payer" trigger="o_name"}{/if}{if $rights < 3} readonly{/if} onclick="document.getElementById('radio_other').checked=true">
 		</TD>
 	</TR>
 	{/if}

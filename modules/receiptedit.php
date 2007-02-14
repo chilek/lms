@@ -209,6 +209,10 @@ switch($_GET['action'])
 		if($receipt['o_type']=='other')
                 {
 		        $receipt['customerid'] = 0;
+			
+			if(trim($receipt['o_name']) == '')
+                                $error['o_name'] = trans('Target is required!');
+
 			if(!$error)
 			        $receipt['selected'] = TRUE;
 			break;
