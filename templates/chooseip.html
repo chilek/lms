@@ -15,9 +15,9 @@
 </head>
 {if ! $part}
 <frameset name="all" frameborder="0" framespacing="0" ROWS="65,*,27">
-	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=chooseip&p=top">
-	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=chooseip&p=main">
-	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="down" noresize src="?m=chooseip&p=down">
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=chooseip&p=top{if $device}&device={$device}{/if}">
+	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=chooseip&p=main{if $device}&device={$device}{/if}">
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="down" noresize src="?m=chooseip&p=down{if $device}&device={$device}{/if}">
 </frameset>
 {/if}
 {if $part eq "main"}
@@ -27,7 +27,11 @@
 	{if $smarty.section.iplist.index is even}<TR>{/if}
 		<TD width="50%" align="center" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"{if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}>
 			{if $network.nodes.name[iplist] neq ""}
-				<FONT class="blend">{$network.nodes.name[iplist]}</FONT>
+				{if $device && $network.nodes.name[iplist] eq "*** GATEWAY ***"}
+					<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.name[iplist]}</A>
+				{else}
+					<FONT class="blend">{$network.nodes.name[iplist]}</FONT>
+				{/if}
 			{else}
 			<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.address[iplist]}</A>
 			{/if}
@@ -53,11 +57,11 @@
 			<B>{t}Select IP address:{/t}</B>
 		</td>
 	</tr>
-	<form target="m" name="selectnet" method="post" action="?m=chooseip&p=main">
+	<form target="m" name="selectnet" method="post" action="?m=chooseip&p=main{if $device}&device={$device}{/if}">
 	<INPUT type="submit" class="hiddenbtn">
 	<tr>
 		<td class="fall light" align="center">
-			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip&netid='+document.selectnet.elements['netid'].value" NAME="netid">
+			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
 				{section name=networks loop=$networks}
 				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id eq $netid} SELECTED {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
 				{sectionelse}
@@ -75,9 +79,9 @@
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall light" align="center">
-			<B>{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
+			<B>{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
 			{t 0=$network.page 1=$network.pages}Page $0 of $1{/t}
-			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;<FONT>{/if}</B>
+			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;<FONT>{/if}</B>
 		</td>
 	</tr>
 </table>

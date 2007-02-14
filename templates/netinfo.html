@@ -166,7 +166,8 @@
 						{if $network.nodes.id[subnetwork]}
 							<a href="?m=nodeinfo&id={$network.nodes.id[subnetwork]}"{if $network.nodes.name[subnetwork]} {tip text=$network.nodes.address[subnetwork]}{/if}><font class="blend">{$network.nodes.name[subnetwork]}</font></A>
 						{else}
-							{if $network.nodes.name[subnetwork]}<FONT CLASS="blend">{$network.nodes.name[subnetwork]}</FONT>
+							{if $network.nodes.name[subnetwork]}
+								<FONT CLASS="blend">{$network.nodes.name[subnetwork]}</FONT>
 							{else}
 								<a href="?m=nodeadd&preip={$network.nodes.address[subnetwork]}">{$network.nodes.address[subnetwork]}</A>
 							{/if}
