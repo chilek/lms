@@ -66,14 +66,10 @@ function openWindow(theURL,winName,myWidth,myHeight,isCenter)
 	return false;
 }
 
-function ipchoosewin(formfield,netid)
+function ipchoosewin(formfield,netid,device)
 {
-	if(netid)  
-		okno = openSelectWindow('?m=chooseip&netid=' + netid,'chooseip',250,300,'true',formfield)
-	else
-		okno = openSelectWindow('?m=chooseip','chooseip',250,300,'true',formfield)
+	okno = openSelectWindow('?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : ''),'chooseip',250,300,'true',formfield)
 	return false;
-
 }
 
 function macchoosewin(formfield)
