@@ -30,7 +30,9 @@ function GetHostIdByName($name)
 	return $DB->GetOne('SELECT id FROM hosts WHERE name = ?', array($name));
 }
 
-if($hostadd = $_POST['hostadd']) 
+$hostadd = isset($_POST['hostadd']) ? $_POST['hostadd'] : NULL;
+
+if($hostadd) 
 {
 	$hostadd['name'] = trim($hostadd['name']);
 	$hostadd['description'] = trim($hostadd['description']);
@@ -51,7 +53,7 @@ if($hostadd = $_POST['hostadd'])
 				    array($hostadd['name'], $hostadd['description']));
 		$LMS->SetTS('hosts');
 		
-		if(!$hostadd['reuse'])
+		if(!isset($hostadd['reuse']))
 		{
 			$SESSION->redirect('?m=hostlist');
 		}

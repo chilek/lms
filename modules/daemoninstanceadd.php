@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-if($instance = $_POST['instance']) 
+$instance = isset($_POST['instance']) ? $_POST['instance'] : NULL;
+
+if($instance) 
 {
 	foreach($instance as $idx => $key)
 		$instance[$idx] = trim($key);
@@ -64,7 +66,7 @@ if($instance = $_POST['instance'])
 					    $instance['priority']));
 		$LMS->SetTS('daemoninstances');
 		
-		if(!$instance['reuse'])
+		if(!isset($instance['reuse']))
 		{
 			$SESSION->redirect('?m=daemoninstancelist&id='.$instance['hostid']);
 		}
@@ -81,7 +83,7 @@ $layout['pagetitle'] = trans('New Instance');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$instance['hostid'] = $instance['hostid'] ? $instance['hostid'] : $_GET['hostid'];
+$instance['hostid'] = isset($instance['hostid']) ? $instance['hostid'] : $_GET['hostid'];
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', $instance);

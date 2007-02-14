@@ -9,9 +9,9 @@ lmslibdir=""
 with_mysql=yes
 
 # Create config.status file
-echo "#!/bin/sh" > config.status
-echo "" >> config.status
-echo "./configure \\" >> config.status
+echo "#!/bin/sh" > config.status.new
+echo "" >> config.status.new
+echo "./configure \\" >> config.status.new
 
 # Parse options *****************************************************************
 ac_prev=
@@ -102,6 +102,7 @@ Options: [defaults in brackets after descriptions]
   --incdir=DIR		sets location of database include files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration
 EOF
+		rm config.status.new
     		exit 0
 	;;
 	*)
@@ -109,9 +110,10 @@ EOF
     	;;
   esac
   
-  echo "\"$ac_option\" \\" >> config.status
+  echo "\"$ac_option\" \\" >> config.status.new
 done
 
+mv config.status.new config.status
 chmod a+x config.status
 #***************************************************************************************************
 

@@ -28,8 +28,7 @@ function GetInstanceList($hostid)
 {
 	global $DB;
 
-	if($hostid)
-		$where = 'WHERE hostid = '.$hostid;
+	$where = $hostid ? 'WHERE hostid = '.$hostid : '';
 		
 	return $DB->GetAll('SELECT daemoninstances.id AS id, daemoninstances.name AS name, daemoninstances.description AS description, 
 			module, crontab, priority, disabled, hosts.name AS hostname
@@ -40,7 +39,7 @@ function GetInstanceList($hostid)
 
 $layout['pagetitle'] = trans('Instances List');
 
-$hostid = $_GET['id'];
+$hostid = isset($_GET['id']) ? $_GET['id'] : 0;
 
 $instancelist = GetInstanceList($hostid);
 
