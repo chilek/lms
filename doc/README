@@ -2051,8 +2051,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        (undefined).
        Example: default_monthly_payday = 1
      * use_invoices
-       Makes option "with invoice" checked by default. Default:
-       false.
+       Makes option "with invoice" checked by default. Default: false.
        Example: use_invoices = true
      * lastonline_limit
        Specify time (in seconds), after which node will be marked
@@ -2524,6 +2523,11 @@ http://www.bigpro.com/
      * script_permission
        Permissions of 'outfile' script. Default: 700 (rwx------).
        Example: script_permission = 700
+     * networks
+       List of (space separated) networks, that should be considered
+       while creating configuration file. If unset, configuration will
+       include all networks.
+       Example: networks = public-custa public-custb
      _________________________________________________________________
 
 4.3.7. lms-makedhcpconf
@@ -3474,6 +3478,8 @@ Chapter 6. LMS Daemon
    Note
 
    List of instances should contain instance names separated with spaces.
+   Spaces in instance name should be replaced by '\s' sequence, i.e. lmsd
+   -i "my\sinstance".
 
    Daemon configuration is divided into hosts (which makes possible to
    configure and reload several different daemons installed on numerous

@@ -200,20 +200,24 @@ int main(int argc, char *argv[], char **envp)
 			inst = strdup(iopt);
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
 			{
-				res = db_pquery(g->conn, "SELECT module, crontab FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' AND daemoninstances.name = '?'", dhost, instance);
+				char *name = strdup(instance);
+				str_replace(&name, "\\s", " "); // instance name with spaces
+				
+				res = db_pquery(g->conn, "SELECT module, crontab FROM daemoninstances, hosts WHERE hosts.id = hostid AND disabled = 0 AND hosts.name = '?' AND daemoninstances.name = '?'", dhost, name);
 				if( db_nrows(res) )
 				{
 					char *crontab = db_get_data(res, 0, "crontab");
 					if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
 					{
 						instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
-						instances[i_no].name = strdup(instance);
+						instances[i_no].name = strdup(name);
 						instances[i_no].module = strdup(db_get_data(res, 0, "module"));
 						instances[i_no].crontab = strdup(crontab);
 						i_no++;
 					}
 				}
 				db_free(&res);
+				free(name);
 			}
 			free(inst);	
 		}		
@@ -242,15 +246,19 @@ int main(int argc, char *argv[], char **envp)
 			inst = strdup(iopt);
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
 			{
-				char *crontab = config_getstring(ini, instance, "crontab", "");
+				char *name = strdup(instance);
+				str_replace(&name, "\\s", " ");
+				
+				char *crontab = config_getstring(ini, name, "crontab", "");
 				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
-					instances[i_no].name = strdup(instance);
-					instances[i_no].module = strdup(config_getstring(ini, instance, "module", ""));
+					instances[i_no].name = strdup(name);
+					instances[i_no].module = strdup(config_getstring(ini, name, "module", ""));
 					instances[i_no].crontab = strdup(crontab);
 					i_no++;
 				}
+				free(name);
 			}
 			free(inst);	
 		}		

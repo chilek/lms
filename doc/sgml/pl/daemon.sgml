@@ -103,7 +103,9 @@
 			Opcje dostêpu do bazy s± tak¿e odczytywane ze zmiennych pow³oki:
 			LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
 			<note><para>Lista instancji sk³ada siê z nazw instancji oddzielonych 
-			spacj±.</para></note>
+			spacj±. W nazwach instancji zawieraj±cych spacje nale¿y zamieniæ je
+			na znaki '\s', np. <prompt>lmsd -i "moja\sinstancja"</prompt>.
+			</para></note>
 			</para>
 			<para>Konfiguracja demona jest podzielona na hosty (umo¿liwiaj±c
 			osobne konfigurowanie i prze³adowywanie demonów zainstalowanych
