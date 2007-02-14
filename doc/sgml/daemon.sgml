@@ -98,7 +98,9 @@
 </screen>
 		Database connection options can be also read from enviroment variables:
 		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
-               <note><para>List of instances should contain instance names separated with spaces.</para></note> 
+               <note><para>List of instances should contain instance names separated with 
+	       spaces. Spaces in instance name should be replaced by '\s' sequence, i.e.
+	       <prompt>lmsd -i "my\sinstance"</prompt>.</para></note> 
 	       </para>
                <para>Daemon configuration is divided into hosts (which makes possible to configure
 	       and reload several different daemons installed on numerous hosts/routers) and 

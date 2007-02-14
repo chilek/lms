@@ -5462,7 +5462,7 @@ CLASS="PROMPT"
 ><P
 >use_invoices</P
 ><P
->Makes option "with invoice" to be checked by default.
+>Makes option "with invoice" checked by default.
 		Default: false.</P
 ><P
 >Example:     <SAMP
@@ -6813,6 +6813,19 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >script_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>networks</P
+><P
+>List of (space separated) networks, that should be
+		    considered while creating configuration file. If unset, configuration will
+		    include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
 ></P
 ></LI
 ></UL
@@ -9522,7 +9535,12 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->List of instances should contain instance names separated with spaces.</P
+>List of instances should contain instance names separated with 
+	       spaces. Spaces in instance name should be replaced by '\s' sequence, i.e.
+	       <SAMP
+CLASS="PROMPT"
+>lmsd -i "my\sinstance"</SAMP
+>.</P
 ></TD
 ></TR
 ></TABLE
