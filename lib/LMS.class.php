@@ -906,7 +906,7 @@ class LMS
 		if($network)
 			$net = $this->GetNetworkParams($network);
 		$result = $this->DB->GetRow('SELECT id, name, description FROM customergroups WHERE id=?', array($id));
-		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt,'
+		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id,'
 			.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername FROM customerassignments, customers '
 			.($network ? 'LEFT JOIN nodes ON customers.id=nodes.ownerid ' : '')
 			.'WHERE customers.id = customerid AND customergroupid = ? '
