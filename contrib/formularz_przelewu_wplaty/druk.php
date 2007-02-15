@@ -245,7 +245,7 @@ for ( $j=0; $j<2; $j++ ) // pêtla g³ówna
 } //  koniec pêtli g³ównej
 ?>
 
-<span style="position: absolute; top: 880px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">Wydrukowano przy u¿yciu LMS (http://lms.rulez.pl)</span>
+<span style="position: absolute; top: 880px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">Wydrukowano przy u¿yciu LMS (http://www.lms.org.pl)</span>
 <span style="position: absolute; top: 900px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">LMS kompletny system sieciowo-ksiêgowy dla ma³ych ISPów i ASKów, dostêpny na licencji GNU GPL</span>
 
 </HTML>

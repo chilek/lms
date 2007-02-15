@@ -35,7 +35,7 @@ $_MODINFO['traffic'] = array(
 			),
 		'version' => '1.9-cvs',
 		'author' => 'LMS Developers',
-		'url' => 'http://lms.rulez.pl',
+		'url' => 'http://www.lms.org.pl',
 		'revision' => '$Revision$',
 		'notpublic' => FALSE,
 		'priority' => 50,

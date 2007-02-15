@@ -106,12 +106,12 @@
     <sect1 id="install-install">
     <title>Instalacja LMS</title>
         <para>LMS w postaci archiwum tar.gz mo¿na pobraæ ze strony 
-        domowej projektu (<ulink url="http://www.lms.rulez.pl">www.lms.rulez.pl</ulink>),
+        domowej projektu (<ulink url="http://www.lms.org.pl">www.lms.org.pl</ulink>),
         a nastêpnie rozpakowaæ i umie¶ciæ w wybranym katalogu (np. <filename>/var/www/lms
         </filename>) dostêpnym dla serwera www:
 <screen>
 $ cd /var/www
-$ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
+$ wget http://www.lms.org.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz
 </screen>
         </para>
