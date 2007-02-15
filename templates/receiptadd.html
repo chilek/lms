@@ -263,7 +263,7 @@
 							        <TD align="right"><nobr>{$invoicelist[invoicelist].value|money_format}</nobr></TD>
 								<TD align="right">
 									{cycle print=false}
-									<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[]" VALUE="{$invoicelist[invoicelist].id}"{if $invoicelist[invoicelist].selected} CHECKED{/if}>
+									<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[]" VALUE="{$invoicelist[invoicelist].id}" CHECKED>
 								</TD>
 							</TR>
 							{sectionelse}

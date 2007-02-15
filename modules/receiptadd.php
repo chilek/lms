@@ -214,6 +214,7 @@ switch($action)
 						    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						    WHERE docid = ?
 						    GROUP BY docid, number, cdate, template, documents.type', array($id));
+
 				$itemdata['value'] = $receipt['type']=='in' ? -$row['value'] : $row['value'];
 				$itemdata['docid'] = $id;
 				$itemdata['posuid'] = (string) (getmicrotime()+$id);
@@ -225,6 +226,7 @@ switch($action)
 				if($receipt['type'] != 'in')
 				{
 					// sprawdzamy czy mamy tyle kasy w kasie ;)
+					$sum = 0;
 					if($contents)
 						foreach($contents as $item)
 							$sum += $item['value'];
