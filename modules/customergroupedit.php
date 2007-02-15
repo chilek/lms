@@ -56,10 +56,24 @@ if(isset($_POST['customerassignments']))
 		}
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
+
+	if (isset($customerassignments['membersnetid']) && $oper=='2')
+	{
+		$SESSION->redirect('?'.ereg_replace('&membersnetid=[0-9]+', '', $SESSION->get('backto')).'&membersnetid='.$customerassignments['membersnetid']);
+	}
+
+	if (isset($customerassignments['othersnetid']) && $oper=='3')
+	{
+		$SESSION->redirect('?'.ereg_replace('&othersnetid=[0-9]+', '', $SESSION->get('backto')).'&othersnetid='.$customerassignments['othersnetid']);
+	}
 }
 
-$customergroup = $LMS->CustomergroupGet($_GET['id']);
-$customers = $LMS->GetCustomerWithoutGroupNames($_GET['id']);
+if (isset($_GET['membersnetid']))
+	$membersnetid = $_GET['membersnetid'];
+if (isset($_GET['othersnetid']))
+	$othersnetid = $_GET['othersnetid'];
+$customergroup = $LMS->CustomergroupGet($_GET['id'], $membersnetid);
+$customers = $LMS->GetCustomerWithoutGroupNames($_GET['id'], $othersnetid);
 
 $layout['pagetitle'] = trans('Group Edit: $0', $customergroup['name']);
 
@@ -91,12 +105,16 @@ if(isset($_POST['customergroup']))
 	$customergroup['name'] = $customergroupedit['name'];
 }
 
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('customergroup',$customergroup);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('customerscount', sizeof($customers));
+$SMARTY->assign('networks', $LMS->GetNetworks());
+$SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
+$SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
 $SMARTY->display('customergroupedit.html');
 
 ?>

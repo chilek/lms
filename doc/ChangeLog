@@ -16,7 +16,8 @@ version ? (????-??-??):
     device's IP (alec)
   - cash receipts: 'other' target name is required now (alec)
   - cash receipts: all not accounted invoices are checked by default (alec)
-  
+  - customergroups: filter by networks feature added (chilek)
+
 version 1.9.5 Tagar (2007-02-05):
 
   - traffic stats: saving chosen network in session (chilek)
