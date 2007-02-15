@@ -901,10 +901,18 @@ class LMS
 		return $this->DB->GetAll('SELECT id, name, description FROM customergroups ORDER BY name ASC');
 	}
 
-	function CustomergroupGet($id)
+	function CustomergroupGet($id, $network=NULL)
 	{
+		if($network)
+			$net = $this->GetNetworkParams($network);
 		$result = $this->DB->GetRow('SELECT id, name, description FROM customergroups WHERE id=?', array($id));
-		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customerassignments, customers WHERE customers.id = customerid AND customergroupid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
+		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt,'
+			.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername FROM customerassignments, customers '
+			.($network ? 'LEFT JOIN nodes ON customers.id=nodes.ownerid ' : '')
+			.'WHERE customers.id = customerid AND customergroupid = ? '
+			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR
+			(ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
+			.' GROUP BY customers.id, customername ORDER BY customername', array($id));
 		$result['customerscount'] = sizeof($result['customers']);
 		$result['count'] = $this->CustomergroupWithCustomerGet($id);
 		return $result;
@@ -968,11 +976,18 @@ class LMS
 		return $this->DB->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
 	}
 
-	function GetCustomerWithoutGroupNames($groupid)
+	function GetCustomerWithoutGroupNames($groupid, $network=NULL)
 	{
-		return $this->DB->GetAll('SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, customerid
-			FROM customers LEFT JOIN customerassignments ON (customers.id = customerid AND customerassignments.customergroupid = ?) WHERE deleted = 0
-			GROUP BY customers.id, customerid, lastname, name
+		if($network)
+			$net = $this->GetNetworkParams($network);
+		return $this->DB->GetAll('SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,
+			customerid FROM customers LEFT JOIN customerassignments ON (customers.id = customerid
+			AND customerassignments.customergroupid = ?) '
+			.($network ? 'LEFT JOIN nodes ON customers.id = nodes.ownerid ' : '').'WHERE '
+			.($network ? '((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
+			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) AND ' : '')
+			.'deleted = 0
+			GROUP BY customers.id, customerid, lastname, customers.name
 			HAVING customerid IS NULL ORDER BY customername', array($groupid));
 	}
 

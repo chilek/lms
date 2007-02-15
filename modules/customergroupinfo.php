@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if ($id = $_GET['id'])
+if (isset($_GET['id']) && $id = $_GET['id'])
 {
 	if (!$LMS->CustomergroupExists($id))
 	{
@@ -32,8 +32,27 @@ if ($id = $_GET['id'])
 	}
 }
 
-$customergroup = $LMS->CustomergroupGet($_GET['id']);
-$customers = $LMS->GetCustomerWithoutGroupNames($_GET['id']);
+if (!isset($id))
+	$SESSION->redirect('?m=customergrouplist');
+
+if (isset($_GET['membersnetid']) && $membersnetid = $_GET['membersnetid'])
+{
+	if (!$LMS->NetworkExists($membersnetid))
+	{
+		$SESSION->redirect('?m=customergrouplist');
+	}
+}
+
+if (isset($_GET['othersnetid']) && $othersnetid = $_GET['othersnetid'])
+{
+	if (!$LMS->NetworkExists($othersnetid))
+	{
+		$SESSION->redirect('?m=customergrouplist');
+	}
+}
+
+$customergroup = $LMS->CustomergroupGet($id, $membersnetid);
+$customers = $LMS->GetCustomerWithoutGroupNames($id, $othersnetid);
 $customerscount = sizeof($customers);
 
 $layout['pagetitle'] = trans('Group Info: $0',$customergroup['name']);
@@ -43,6 +62,9 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('customergroup',$customergroup);
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('customerscount', $customerscount);
+$SMARTY->assign('networks', $LMS->GetNetworks());
+$SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
+$SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
 $SMARTY->display('customergroupinfo.html');
 
 ?>

@@ -6,6 +6,17 @@
 		document.customerassignments.oper.value="0";
 		document.customerassignments.submit();
 	}
+
+	function changeMembersNetwork() {
+		document.customerassignments.oper.value="2";
+		document.customerassignments.submit();
+	}
+
+	function changeOthersNetwork() {
+		document.customerassignments.oper.value="3";
+		document.customerassignments.submit();
+	}
+
 	//-->
 {/literal}																</script>
 <P>
@@ -18,6 +29,17 @@
 		<TR CLASS="DARK">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
 			<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{t}Group members:{/t}</B>
+		    </TD>
+		</TR>
+		<TR CLASS="DARK">
+		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
+			    {t}Network:{/t}
+			    <SELECT SIZE="1" NAME="customerassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
+			    	<OPTION value="0" {if !$membersnetid}SELECTED{/if}>{t}- all networks -{/t}</OPTION>
+				{section name=networks loop=$networks}
+				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				{/section}
+			    </SELECT>&nbsp;
 		    </TD>
 		</TR>
 		<TR CLASS="LIGHT">
@@ -53,6 +75,17 @@
 		<TR CLASS="DARK">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
 			<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{t}Add new member(s):{/t}</B>
+		    </TD>
+		</TR>
+		<TR CLASS="DARK">
+		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
+			    {t}Network:{/t}
+			    <SELECT SIZE="1" NAME="customerassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
+			    	<OPTION value="0" {if !$othersnetid}SELECTED{/if}>{t}- all networks -{/t}</OPTION>
+				{section name=networks loop=$networks}
+				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				{/section}
+			    </SELECT>&nbsp;
 		    </TD>
 		</TR>
 		<TR CLASS="LIGHT">
