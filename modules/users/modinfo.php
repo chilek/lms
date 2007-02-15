@@ -38,7 +38,7 @@ $_MODINFO['users'] = array(
 		'revision' => '$Revision$',
 		'notpublic' => FALSE,
 		'priority' => 10,
-		'url' => 'http://lms.rulez.pl',
+		'url' => 'http://www.lms.org.pl',
 		'menus' => array(
 		        array(
 				'id' => 'users',
