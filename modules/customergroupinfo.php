@@ -51,8 +51,8 @@ if (isset($_GET['othersnetid']) && $othersnetid = $_GET['othersnetid'])
 	}
 }
 
-$customergroup = $LMS->CustomergroupGet($id, $membersnetid);
-$customers = $LMS->GetCustomerWithoutGroupNames($id, $othersnetid);
+$customergroup = $LMS->CustomergroupGet($id, isset($membersnetid) ? $membersnetid : 0);
+$customers = $LMS->GetCustomerWithoutGroupNames($id, isset($othersnetid) ? $othersnetid : 0);
 $customerscount = sizeof($customers);
 
 $layout['pagetitle'] = trans('Group Info: $0',$customergroup['name']);

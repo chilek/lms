@@ -68,10 +68,9 @@ if(isset($_POST['customerassignments']))
 	}
 }
 
-if (isset($_GET['membersnetid']))
-	$membersnetid = $_GET['membersnetid'];
-if (isset($_GET['othersnetid']))
-	$othersnetid = $_GET['othersnetid'];
+$membersnetid = isset($_GET['membersnetid']) ? $_GET['membersnetid'] : 0;
+$othersnetid =  isset($_GET['othersnetid']) ? $_GET['othersnetid'] : 0;
+
 $customergroup = $LMS->CustomergroupGet($_GET['id'], $membersnetid);
 $customers = $LMS->GetCustomerWithoutGroupNames($_GET['id'], $othersnetid);
 
