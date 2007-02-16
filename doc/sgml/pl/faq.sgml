@@ -91,7 +91,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 	    <answer>
 	        <para>Informacja ta jest zawarta w nag³ówkach wszystkich wiadomo¶ci 
 		z listy mailingowej. Nale¿y wys³aæ wiadomo¶æ z tematem "unsubscribe"
-		na adres lms-request@lists.rulez.pl.</para>
+		na adres lms-request@lists.lms.org.pl.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>

@@ -230,8 +230,8 @@ Chapter 1. Intro
 
    Preferably via a mailing list, which you can subscribe by sending
    empty e-mail with subject "subscribe lms-en" to address
-   ecartis@lists.rulez.pl. Further emails should be sent to address
-   lms-en@lists.rulez.pl.
+   ecartis@lists.lms.org.pl. Further emails should be sent to address
+   lms-en@lists.lms.org.pl.
      _________________________________________________________________
 
 1.4.2. Ideas and Bugs Reports
@@ -243,17 +243,17 @@ Chapter 1. Intro
    Reports from BTS are also forwarded to mailing list, so the best
    practice is to subscribe to list, report via BTS and send link to
    mailing list and finally wait as your report will evolve. BTS address
-   is bts.rulez.pl.
+   is bts.lms.org.pl.
      _________________________________________________________________
 
 1.4.3. Newest version
 
    Newest version of LMS can be downloaded from CVS repository utilizing
-   WWW interface at cvs.rulez.pl, or with CVS tools (anonymous access,
+   WWW interface at cvs.lms.org.pl, or with CVS tools (anonymous access,
    empty password):
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
+cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot login
+cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot co lms
+cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot logout
      _________________________________________________________________
 
 1.4.4. Changelog
@@ -362,11 +362,11 @@ Chapter 2. Installation and configuration
 2.3. LMS Installation
 
    LMS in tarball (.tar.gz) archive can be downloaded from project home
-   page (lms.rulez.pl), which should be extracted and placed in chosen
+   page (www.lms.org.pl), which should be extracted and placed in chosen
    directory (i.e. /var/www/lms) and made available for Web Server (ie.
    with Alias /lms/ /var/www/lms):
 $ cd /var/www
-$ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
+$ wget http://www.lms.org.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz
 
    Smarty library is included in LMS package but if you are using CVS you
@@ -5664,7 +5664,7 @@ $ cvs -z7 diff -u > /tmp/my_patch.patch
    is created instead, where new features are being put, and which might
    not function well, or might be unstable.
 
-   Archive of all LMS versions can be found here: lms.rulez.pl/download
+   Archive of all LMS versions can be found here: www.lms.org.pl/download
 
    You should be aware that -RC version (release canditate) are not as
    stable as one could expect. i.e. vestion 1.4.3 should be prefered over
@@ -5673,7 +5673,8 @@ $ cvs -z7 diff -u > /tmp/my_patch.patch
    9.7. How to unsubscribe from the mailing list?
 
    Information about it is enclosed in all messages headers. You should
-   send "unsubscribe" entitled message to lms-en-request@lists.rulez.pl.
+   send "unsubscribe" entitled message to
+   lms-en-request@lists.lms.org.pl.
 
    9.8. What is a limit of network devices on the map?
 

@@ -179,8 +179,8 @@
                <title>Contact</title>
                <para>Preferably via a mailing list, which you can subscribe by sending
                empty e-mail with subject "subscribe lms-en" to address 
-               <ulink url="mailto: ecartis@lists.rulez.pl">ecartis@lists.rulez.pl</ulink>.
-               Further emails should be sent to address lms-en@lists.rulez.pl.
+               <ulink url="mailto: ecartis@lists.lms.org.pl">ecartis@lists.lms.org.pl</ulink>.
+               Further emails should be sent to address lms-en@lists.lms.org.pl.
                </para>
           </sect2>
           <sect2 id="bugs">
