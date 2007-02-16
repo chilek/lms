@@ -2997,7 +2997,7 @@ class LMS
 		{
 			list($v, ) = split(' ', $this->_version);
 			ini_set('default_socket_timeout', 5);
-			if($updatefile = @fopen('http://lms.rulez.pl/update.php?uiid='.$uiid.'&v='.$v, 'r'))
+			if($updatefile = @fopen('http://lms.org.pl/update.php?uiid='.$uiid.'&v='.$v, 'r'))
 			{
 				while(! feof($updatefile))
 					$content .= fgets($updatefile, 4096);
@@ -3040,7 +3040,7 @@ class LMS
 		$name = rawurlencode($name);
 		$url = rawurlencode($url);
 		$uiid = $this->GetUniqueInstallationID();
-		$url = 'http://lms.rulez.pl/register.php?uiid='.$uiid.'&name='.$name.'&url='.$url.($hidden == TRUE ? '&hidden=1' : '');
+		$url = 'http://lms.org.pl/register.php?uiid='.$uiid.'&name='.$name.'&url='.$url.($hidden == TRUE ? '&hidden=1' : '');
 		ini_set('default_socket_timeout', 5);
 		if($regfile = @fopen($url, 'r'))
 		{

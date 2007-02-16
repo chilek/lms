@@ -189,8 +189,8 @@
 		<sect2 id="contact">
 			<title>Kontakt z autorami</title>
 			<para>Najlepiej poprzez listê mailingow±, na któr± mo¿na siê zapisaæ wysy³aj±c
-			pustego maila o temacie "subscribe lms" na adres <ulink url="mailto: ecartis@lists.rulez.pl">ecartis@lists.rulez.pl</ulink>,
-			a maile wysy³a siê na adres lms@lists.rulez.pl.
+			pustego maila o temacie "subscribe lms" na adres <ulink url="mailto: ecartis@lists.lms.org.pl">ecartis@lists.lms.org.pl</ulink>,
+			a maile wysy³a siê na adres lms@lists.lms.org.pl.
 			</para>
 		</sect2>
 		<sect2 id="bugs">
@@ -200,21 +200,21 @@
 			na pytania Ciê nurtuj±ce. Dostêpny jest tak¿e dla testów BTS, gdzie mo¿na
 			zg³aszaæ b³êdy po uprzedniej rejestracji. Raporty z BTS id± tak¿e na listê
 			mailingow±, wiêc najlepiej siê zapisaæ, zg³osiæ b³±d poprzez BTS, wys³aæ
-			linka na listê i czekaæ na rozwój wydarzeñ. Adres BTS to <ulink url="http://bts.rulez.pl">
-			http://bts.rulez.pl</ulink>.
+			linka na listê i czekaæ na rozwój wydarzeñ. Adres BTS to <ulink url="http://bts.lms.org.pl">
+			http://bts.lms.org.pl</ulink>.
 			</para>
 		</sect2>
 		<sect2 id="latest">
 			<title>Najnowsza wersja</title>
 			<para>Zawsze aktualn± wersjê LMS mo¿na pobraæ z repozytorium CVS za pomoc±
-			interfejsu www <ULINK URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">tutaj</ulink>,
+			interfejsu www <ULINK URL="http://cvs.lms.org.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">tutaj</ulink>,
 			lub klasycznie (dostêp anonimowy, puste has³o):</para>
 			<screen>
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
+cvs -d :pserver:cvs@cvs.lms.org.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.lms.org.pl:/home/cvsroot co lms
+cvs -d :pserver:cvs@cvs.lms.org.pl:/home/cvsroot logout</screen>
 			<para>Repozytorium CVS mo¿na tak¿e przegl±daæ przy pomocy interfejsu WWW pod
-			adresem <ulink url="http://cvs.rulez.pl">http://cvs.rulez.pl</ulink>.
+			adresem <ulink url="http://cvs.lms.org.pl">http://cvs.lms.org.pl</ulink>.
 			</para>
 		</sect2>
 		<sect2 id="history">
@@ -230,8 +230,8 @@ cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
 			pewnych konkretnych prac."
 			Aby nie za¶miecaæ g³ównej listy mailingowej powsta³a lista lms-support. 
 			Aby siê na ni± zapisaæ nale¿y wysy³aæ email o tre¶ci: "subscribe lms-support" 
-			na adres ecartis (at) lists.rulez.pl, a konkretne maile wysy³a siê na adres 
-			lms-support (at) lists.rulez.pl.</para>
+			na adres ecartis (at) lists.lms.org.pl, a konkretne maile wysy³a siê na adres 
+			lms-support (at) lists.lms.org.pl.</para>
 			<para>Osoby poszukuj±ce p³atnego wsparcia w instalacji/konfiguracji lub 
 			potrzebuj±ce nowych funkcjonalno¶ci powinny w³a¶nie skorzystaæ z listy 
 			lms-support. Tam rozmawiamy o pieni±dzach. Zlecaj±c prace czy te¿ pytaj±c 

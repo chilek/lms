@@ -64,7 +64,7 @@ $_MODINFO['core'] = array(
 				),
 			),
 		'priority' => 0,
-		'url' => 'http://lms.rulez.pl',
+		'url' => 'http://lms.org.pl',
 		'actions' => array(
 			'header' => array(
 				'menuname' => array(

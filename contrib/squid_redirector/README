@@ -104,7 +104,7 @@ czyli adres przekierowania, oraz kontynuować pracę. Jeśli redirector w tym
 momencie zamyka się, oraz wyświetla komunikat błędu, mamy następną wskazówkę. 
 Jeśli natomiast nadal pracuje wpisujemy:
 
-http://lms.rulez.pl/ 192.168.0.1/-
+http://lms.org.pl/ 192.168.0.1/-
 
 gdzie 192.168.0.1 jest adresem z naszej sieci, który nie podlega przekierowaniu. 
 Redirector powinien odpowiedzieć dokładnie tym samym co wpisaliśmy. Jeśli nie, 

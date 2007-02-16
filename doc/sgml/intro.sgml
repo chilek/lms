@@ -191,8 +191,8 @@
                <title>Contact</title>
                <para>Preferably via a mailing list, which you can subscribe by sending
                empty e-mail with subject "subscribe lms-en" to address 
-               <ulink url="mailto: ecartis@lists.rulez.pl">ecartis@lists.rulez.pl</ulink>.
-               Further emails should be sent to address lms-en@lists.rulez.pl.
+               <ulink url="mailto: ecartis@lists.lms.org.pl">ecartis@lists.lms.org.pl</ulink>.
+               Further emails should be sent to address lms-en@lists.lms.org.pl.
                </para>
           </sect2>
           <sect2 id="bugs">
@@ -203,18 +203,18 @@
                you can report bugs upon registration. Reports from BTS are also forwarded to mailing
                list, so the best practice is to subscribe to list, report via BTS and send link to
                mailing list and finally wait as your report will evolve. BTS address is <ulink
-               url="http://bts.rulez.pl">bts.rulez.pl</ulink>.</para>
+               url="http://bts.lms.org.pl">bts.lms.org.pl</ulink>.</para>
           </sect2>
           <sect2 id="latest">
                <title>Newest version</title>
                <para>Newest version of LMS can be downloaded from CVS repository
                utilizing WWW interface at <ULINK
-               URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">cvs.rulez.pl</ulink>,
+               URL="http://cvs.lms.org.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">cvs.lms.org.pl</ulink>,
                or with CVS tools (anonymous access, empty password):</para>
                <screen>
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
+cvs -d :pserver:cvs@cvs.lms.org.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.lms.org.pl:/home/cvsroot co lms
+cvs -d :pserver:cvs@cvs.lms.org.pl:/home/cvsroot logout</screen>
           </sect2>
           <sect2 id="history">
                <title>Changelog</title>
