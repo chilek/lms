@@ -106,7 +106,7 @@ padał mi wins ;-)
 $fortunes[] = "Ilu potrzeba developerów LMSa do wkręcenia żarówki?
 Żadnego. Developerzy LMSa zrobią odrazu nową lampę.";
 
-$fortunes[] = "Prima Aprilis 2004 - lms@lists.rulez.pl:
+$fortunes[] = "Prima Aprilis 2004 - lms@lists.lms.org.pl:
 <@Baseciq>     LMS-Linux 2.0 - dostępny na ftp...
 <@Woyteck>     Dlaczego ISO ma 33 bajty?
 <@Detekt>      Ponieważ baset wynalazł nowy algorytm optymalizacji.
