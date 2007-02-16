@@ -2,7 +2,7 @@ $Id$
 
 version ? (????-??-??):
 
-  - project homepage change to www.lms.org.pl (lukasz)
+  - project homepage changed to www.lms.org.pl (lukasz)
   - now is possible to define password for device's IP (alec)
   - added nodes list (and report) filtering by customer's group (alec)
   - cash receipts: added document's positions clearing when customer 
