@@ -3157,7 +3157,7 @@ class LMS
 		{
 			list($v, ) = split(' ', $this->_version);
 			
-			if($content = fetch_url('http://www.lms.org.pl/update.php?uiid='.$uiid.'&v='.$v))
+			if($content = fetch_url('http://register.lms.org.pl/update.php?uiid='.$uiid.'&v='.$v))
 			{
 				if($lastcheck == 0)
 					$this->DB->Execute('INSERT INTO dbinfo (keyvalue, keytype) VALUES (?NOW?, ?)', array('last_check_for_updates_timestamp'));
@@ -3196,7 +3196,7 @@ class LMS
 		$name = rawurlencode($name);
 		$url = rawurlencode($url);
 		$uiid = $this->GetUniqueInstallationID();
-		$url = 'http://www.lms.org.pl/register.php?uiid='.$uiid.'&name='.$name.'&url='.$url.($hidden == TRUE ? '&hidden=1' : '');
+		$url = 'http://register.lms.org.pl/register.php?uiid='.$uiid.'&name='.$name.'&url='.$url.($hidden == TRUE ? '&hidden=1' : '');
 
 		if(fetch_url($url)!==FALSE)
 		{
