@@ -24,19 +24,21 @@
  *  $Id$
  */
 
-if(!$LMS->TariffExists($_GET['id']))
+if(!$LMS->TariffExists($_GET['id']) || (isset($_GET['netid']) && $_GET['netid'] != 0 && !$LMS->NetworkExists($_GET['netid'])))
 {
 	$SESSION->redirect('?m=tarifflist');
 }
 
-$tariff = $LMS->GetTariff($_GET['id']);
+$tariff = $LMS->GetTariff($_GET['id'], isset($_GET['netid']) ? $netid = $_GET['netid'] : NULL);
 
 $layout['pagetitle'] = trans('Subscription Info: $0',$tariff['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SMARTY->assign('netid', $netid);
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('tariffs',$LMS->GetTariffs());
+$SMARTY->assign('networks',$LMS->GetNetworks());
 $SMARTY->display('tariffinfo.html');
 
 ?>

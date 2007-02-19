@@ -9,6 +9,13 @@
 		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name} ({$tariffs[lt].value|money_format})';
 		{/section}
 	{literal}}{/literal}
+
+{literal}
+	function changeNetwork()
+	{
+		document.tinfo.submit();
+	}
+{/literal}
 	//-->
 </script>
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -162,6 +169,22 @@
 			<B>{t}Customers in Subscription:{/t}</B>
 		</TD>
 	</TR>
+	<TR CLASS="DARK">
+		<TD CLASS="fall" colspan="4" ALIGN="CENTER">
+		{t}Network:{/t}
+		<FORM NAME="tinfo" METHOD="GET" ACTION="?m=tariffinfo">
+			<INPUT type="submit" class="hiddenbtn">
+			<INPUT TYPE="hidden" VALUE="tariffinfo" NAME="m">
+			<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="id">
+			<SELECT SIZE="1" NAME="netid" ONCHANGE="javascript:changeNetwork();">
+				<OPTION value="0" {if !$netid}SELECTED{/if}>{t}- all networks -{/t}</OPTION>
+				{section name=networks loop=$networks}
+				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $netid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+				{/section}
+			</SELECT>&nbsp;
+		</FORM>
+		</TD>
+	</TR>
 	<TR>
 		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="2">
@@ -192,6 +215,7 @@
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
+				<INPUT TYPE="hidden" VALUE="{if !$netid}0{else}{$netid}{/if}" NAME="netid">
 				<input type="hidden" name="is_sure">
 				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{t}Are you sure, you want to move customers to tariff '+getText(document.tmove.to.value)+'?{/t}','1');">{t}Move customers to subscription:{/t}</A> </B>
 				<SELECT SIZE="1" NAME="to">

@@ -1777,10 +1777,17 @@ class LMS
 		return $tarifflist;
 	}
 
-	function TariffMove($from, $to)
+	function TariffMove($from, $to, $network=NULL)
 	{
+		if ($network)
+			$net = $this->GetNetworkParams($network);
 		$this->SetTS('assignments');
-		$ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, customers WHERE customerid = customers.id AND deleted = 0 AND tariffid = ?', array($from));
+		$ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, customers '
+			.($network ? 'LEFT JOIN nodes ON customers.id=nodes.ownerid ' : '')
+			.'WHERE customerid = customers.id AND deleted = 0 '
+			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
+			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
+			.'AND tariffid = ?', array($from));
 		foreach($ids as $id)
 			$this->DB->Execute('UPDATE assignments SET tariffid=? WHERE id=? AND tariffid=?', array($to, $id, $from));
 	}
@@ -1841,11 +1848,21 @@ class LMS
 		return $this->DB->GetOne('SELECT name FROM tariffs WHERE id=?', array($id));
 	}
 
-	function GetTariff($id)
+	function GetTariff($id, $network=NULL)
 	{
-		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit
-					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE tariffs.id=?', array($id));
-		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS customername FROM assignments, customers WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? GROUP BY customers.id, customername ORDER BY customername', array($id));
+		if ($network)
+			$net = $this->GetNetworkParams($network);
+		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax,
+			taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit
+			FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE tariffs.id=?', array($id));
+		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '
+			.$this->DB->Concat('upper(lastname)',"' '",'customers.name').' AS customername '
+			.($network ? ', COUNT(nodes.id) AS nodescount ' : '')
+			.'FROM assignments, customers '.($network ? 'LEFT JOIN nodes ON customers.id=nodes.ownerid ' : '')
+			.'WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? '
+			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
+			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
+			.'GROUP BY customers.id, customername ORDER BY customername', array($id));
 
 		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, 
 						    SUM(CASE period 

@@ -26,8 +26,9 @@
 
 if($LMS->TariffExists($_GET['from']) && $LMS->TariffExists($_GET['to']) && $_GET['is_sure'] = 1)
 {
-	$LMS->TariffMove($_GET['from'],$_GET['to']);
-	$SESSION->redirect('?m=tariffinfo&id='.$_GET['to']);
+	$netid = ((isset($_GET['netid']) && $LMS->NetworkExists($_GET['netid'])) ? $_GET['netid'] : NULL);
+	$LMS->TariffMove($_GET['from'],$_GET['to'],$netid);
+	$SESSION->redirect('?m=tariffinfo&id='.$_GET['to'].($netid ? '&netid='.$netid : ''));
 }
 else
 	header("Location: ?".$SESSION->get('backto'));
