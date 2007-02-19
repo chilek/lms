@@ -45,7 +45,7 @@ if(isset($_POST['registry']))
 
 	if(isset($registry['users']))
 		foreach($registry['users'] as $key => $value)
-			$registry['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $registry['usernames'][$key]);
+			$registry['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $registry['usernames'][$key]);
 
 	if(!$error)
 	{

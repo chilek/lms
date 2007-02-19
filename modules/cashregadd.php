@@ -41,7 +41,7 @@ if(isset($_POST['registry']))
 
 	if(isset($registry['users']))
 		foreach($registry['users'] as $key => $value)
-			$registry['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $registry['usernames'][$key]);
+			$registry['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $registry['usernames'][$key]);
 
 	if(!$error)
 	{
@@ -51,7 +51,7 @@ if(isset($_POST['registry']))
 					$registry['description'],
 					$registry['in_numberplanid'],
 					$registry['out_numberplanid'],
-					$registry['disabled'] ? 1 : 0
+					isset($registry['disabled']) ? 1 : 0
 				));
 				
 		$id = $DB->GetOne('SELECT id FROM cashregs WHERE name=?', array($registry['name']));

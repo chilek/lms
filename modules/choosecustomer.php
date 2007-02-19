@@ -33,7 +33,7 @@ if(!$p)
 elseif($p == 'main')
 	$SMARTY->assign('js', 'var targetfield = parent.targetfield;');
 
-if(isset($_POST['searchcustomer']))
+if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 {
 	$search = $_POST['searchcustomer'];
 
@@ -45,13 +45,13 @@ if(isset($_POST['searchcustomer']))
 			.' OR regon LIKE \'%'.$search.'%\''
 			.' OR phone1 LIKE \'%'.$search.'%\''
 			.' OR UPPER(email) LIKE UPPER(\'%'.$search.'%\')'
-			.' OR UPPER('.$DB->Concat('lastname',"' '",'customers.name').') ?LIKE? UPPER(\'%'.$search.'%\')'
-			.' OR UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\')) ';
+			.' OR UPPER('.$DB->Concat('lastname',"' '",'customers.name').') LIKE UPPER(\'%'.$search.'%\')'
+			.' OR UPPER(address) LIKE UPPER(\'%'.$search.'%\')) ';
 	
 	$SMARTY->assign('searchcustomer', $search);
 }
 
-if(isset($_POST['searchnode']))
+if(isset($_POST['searchnode']) && $_POST['searchnode'])
 {
 	$search = $_POST['searchnode'];
 
@@ -60,7 +60,7 @@ if(isset($_POST['searchnode']))
 			.' OR INET_NTOA(ipaddr_pub) LIKE \'%'.$search.'%\''
 			.' OR UPPER(mac) LIKE UPPER(\'%'.$search.'%\')'
 			.' OR UPPER(location) LIKE UPPER(\'%'.$search.'%\')'
-			.' OR UPPER(nodes.name) ?LIKE? UPPER(\'%'.$search.'%\')) ';
+			.' OR UPPER(nodes.name) LIKE UPPER(\'%'.$search.'%\')) ';
 	
 	$SMARTY->assign('searchnode', $search);
 }

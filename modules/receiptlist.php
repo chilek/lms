@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, $to=0)
+function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, $to=0, $advances=0)
 {
 	global $CONFIG, $DB;
 
@@ -81,9 +81,12 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 	if($to)
 		$where .= ' AND cdate <= '.$to;
 
+	if($advances)
+		$where = ' AND closed = 0';
+
 	if($list = $DB->GetAll(
 	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
-		documents.name AS customer, address, zip, city, template, extnumber,
+		documents.name AS customer, address, zip, city, template, extnumber, closed,
 		MIN(description) AS title, COUNT(*) AS posnumber, users.name AS user 
 		FROM documents 
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
@@ -91,7 +94,7 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
 		WHERE regid = ?'
 		.$where
-		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, users.name, extnumber '
+		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, users.name, extnumber, closed '
 		.$having
 		.($sqlord != '' ? $sqlord : ''), 
 		array(DOC_RECEIPT, $registry)
@@ -184,6 +187,17 @@ else
 	$to = mktime(23,59,59);
 $SESSION->save('rlt', $to);
 
+if(isset($_POST['advances']))
+	$a = 1;
+else
+	$a = 0;
+$SESSION->save('rla', $a);
+
+if(!$regid)
+{
+	$SESSION->redirect('?m=cashreglist');
+}
+
 if(! $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) )
 {
         $SMARTY->display('noaccess.html');
@@ -191,12 +205,13 @@ if(! $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', arr
 	die;
 }
 
-$receiptlist = GetReceiptList($regid, $o, $s, $c, $from, $to);
+$receiptlist = GetReceiptList($regid, $o, $s, $c, $from, $to, $a);
 
 $SESSION->restore('rlc', $listdata['cat']);
 $SESSION->restore('rls', $listdata['search']);
 $SESSION->restore('rlf', $listdata['from']);
 $SESSION->restore('rlt', $listdata['to']);
+$SESSION->restore('rla', $listdata['advances']);
 
 $listdata['order'] = $receiptlist['order'];
 $listdata['direction'] = $receiptlist['direction'];
@@ -232,6 +247,7 @@ $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('newreceipt', isset($_GET['receipt']) ? $_GET['receipt'] : NULL);
+$SMARTY->assign('newreceipt2', isset($_GET['receipt2']) ? $_GET['receipt2'] : NULL);
 $SMARTY->assign('which', isset($_GET['which']) ? $_GET['which'] : NULL);
 $SMARTY->assign('receiptlist',$receiptlist);
 $SMARTY->display('receiptlist.html');

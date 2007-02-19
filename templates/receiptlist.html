@@ -4,6 +4,9 @@
 {if $newreceipt}
 <SCRIPT>window.open('?m=receipt&id={$newreceipt}&which={$which}');</SCRIPT>
 {/if}
+{if $newreceipt2}
+<SCRIPT>window.open('?m=receipt&id={$newreceipt2}&which={$which}');</SCRIPT>
+{/if}
 {include file="calendar_js.html"}
 {literal}
 <SCRIPT language="JavaScript">
@@ -93,9 +96,9 @@
 	<TR class="DARK">
 		<TD class="fall" colspan="7">
 				<B>{t}Filter:{/t} </B> 
-				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<INPUT name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
-					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
+					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter -{/t}</OPTION>
 					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}number{/t}</OPTION>
 					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{t}value{/t}</OPTION>
 					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
@@ -106,6 +109,7 @@
 				<B>{t}Period:{/t}</B>&nbsp;
 				{t}from{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{t}to{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				<INPUT type="checkbox" class="box dark" name="advances" value="1"{if $listdata.advances} checked{/if}>{t}not settled adv. only{/t}&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>		
@@ -122,29 +126,34 @@
 	{assign var=receiptid value=$receipt.id}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" class="fleft" NOWRAP><A id="{$receipt.id}"></A>
+			{if !$receipt.closed}<FONT class="alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
 			{$receipt.user|truncate:"16":"...":true}
+			{if !$receipt.closed}</FONT>{/if}		
 		</TD>
-		<TD WIDTH="1%" NOWRAP align="right">
+		<TD WIDTH="1%" NOWRAP align="right"{if !$receipt.closed} class="alert"{/if}>
 			{$receipt.number}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="alert"{/if}>
 			{if $receipt.value > 0}{$receipt.value|money_format}{else}-{/if}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="alert"{/if}>
 			{if $receipt.value < 0}{$receipt.value*-1|money_format}{else}-{/if}
 		</TD>
-		<TD WIDTH="45%">
+		<TD WIDTH="45%"{if !$receipt.closed} class="alert"{/if}>
 			{if $receipt.customerid}<A HREF="?m=customerinfo&id={$receipt.customerid}">{/if}
 			{$receipt.customer|truncate:"60":"...":true}
 			{if $receipt.customerid}</A>{/if}
 		</TD>
-		<TD WIDTH="50%">
+		<TD WIDTH="50%"{if !$receipt.closed} class="alert"{/if}>
 			{if $receipt.title}
 			{$receipt.title|truncate:"80":"...":true}
 			{/if}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
+			{if !$receipt.closed}
+			<A HREF="?m=receiptadv&id={$receipt.id}"><IMG SRC="img/eraser.gif" ALT="[ {t}Settle advance{/t} ]" {tip text="Settle advance"}></A>
+			{/if}
 			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]"></A>
 			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 			<A onClick="return confirmLink(this, '{t 0=$receipt.number}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>

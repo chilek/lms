@@ -464,7 +464,8 @@ switch($type)
 
 		$registry = intval($_POST['registry']);
 		$user = intval($_POST['user']);
-
+		$where = '';
+		
 		if($registry)
 			$where .= ' AND regid = '.$registry;
 		if($from)
@@ -483,16 +484,20 @@ switch($type)
 			
 		if($list = $DB->GetAll(
 	    		'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
-			documents.name, address, zip, city, template, extnumber,
+			documents.name, address, zip, city, template, extnumber, closed, 
 			MIN(description) AS title, COUNT(*) AS posnumber 
 			FROM documents 
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN receiptcontents ON (documents.id = docid)
 			WHERE documents.type = ?'
 			.$where.'
-			GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, extnumber
+			GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, extnumber, closed
 			ORDER BY cdate, documents.id', array(DOC_RECEIPT)))
 		{
+			$listdata['totalincome'] = 0;
+			$listdata['totalexpense'] = 0;
+			$listdata['advances'] = 0;
+			
 			foreach($list as $idx => $row)
 			{
 				$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
@@ -511,6 +516,9 @@ switch($type)
 					$list[$idx]['after'] = $listdata['startbalance'] + $row['value'];
 				else
 					$list[$idx]['after'] = $list[$idx-1]['after'] + $row['value'];
+				
+				if(!$row['closed'])
+					$listdata['advances'] -= $row['value'];
 			}
 		}
 

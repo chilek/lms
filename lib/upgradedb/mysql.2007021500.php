@@ -24,32 +24,15 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+$DB->BeginTrans();
 
-if($id && $_GET['is_sure']=='1')
-{
-	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($id));
-	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) < 256)
-	{
-	        $SMARTY->display('noaccess.html');
-	        $SESSION->close();
-	        die;
-	}
+$DB->Execute("UPDATE documents SET closed = 1 WHERE type = 2");
 
-	if($DB->Execute('DELETE FROM documents WHERE id = ?', array($id)))
-	{	
-		if($DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($id)))
-		{
-			$LMS->SetTS('receiptcontents');
-		}
-		if($DB->Execute('DELETE FROM cash WHERE docid = ?', array($id)))
-		{
-			$LMS->SetTS('cash');
-		}
-		$LMS->SetTS('documents');
-	}
-}
+$DB->Execute("UPDATE cashrights SET rights = 63 WHERE rights = 2");
+$DB->Execute("UPDATE cashrights SET rights = 319 WHERE rights = 3");
 
-header('Location: ?m=receiptlist');
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007021500', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

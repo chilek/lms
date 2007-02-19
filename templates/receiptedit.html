@@ -5,7 +5,7 @@
 {literal}
 <SCRIPT language=JavaScript>
 <!--
-	function savereceipt()
+	function savereceipt(print)
 	{	
 		var add = "";
 		if(document.additem.original.checked && document.additem.copy.checked)
@@ -16,6 +16,10 @@
 			add = "&which=copy";
 
 		document.additem.action = "?m=receiptedit&action=save" + add;
+		
+		if(print == 1) {
+			document.additem.action += "&print=1";
+		}
 		document.additem.submit();
 	}
 	
@@ -87,21 +91,42 @@
 			<B>{t}Target:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" class="box light" checked>
-			{if $customerlist}
-			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value" {tip trigger="customerid"}>
-				<OPTION VALUE="0" SELECTED>{t}... select customer ...{/t}</OPTION>
-				{foreach from=$customerlist item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{t}or Customer ID:{/t}
-			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
-			<BR>
-			<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}
-			<INPUT TYPE="text" NAME="receipt[o_name]" VALUE="{$receipt.o_name}" SIZE="75" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="o_name"}{else}{tip text="Enter payer" trigger="o_name"}{/if}>
+		    <TABLE>
+			<TR>
+			    <TD width="1%" nowrap>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" class="box light" checked> {t}customer{/t}:
+			    </TD>
+			    <TD width="99%">
+				{if $customerlist}
+				<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
+				    <OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
+				    {foreach from=$customerlist item=c}
+				    <OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $receipt.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				    {/foreach}
+				</SELECT>
+				{t}or Customer ID:{/t}
+				{/if}
+				<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value;"{/if} onclick="document.getElementById('radio_customer').checked=true;" {tip text="Enter customer ID"}>
+				<A href="javascript: void(0);" onclick="document.getElementById('radio_customer').checked=true;return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			    </TD>
+			</TR>
+			<TR>
+			    <TD width="1%" nowrap>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" class="box light" {if $receipt.o_type=="advance"} checked{/if}> {t}advance{/t}:
+			    </TD>
+			    <TD width="99%">
+				<INPUT TYPE="text" NAME="receipt[adv_name]" VALUE="{$receipt.adv_name}" SIZE="75" {tip text="Enter recipient" trigger="adv_name"} onclick="document.getElementById('radio_advance').checked=true">
+			    </TD>
+			</TR>
+			<TR>
+			    <TD width="1%" nowrap>
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}:
+			    </TD>
+			    <TD width="99%">
+				<INPUT TYPE="text" NAME="receipt[other_name]" VALUE="{$receipt.other_name}" SIZE="75" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="other_name"}{else}{tip text="Enter payer" trigger="other_name"}{/if} onclick="document.getElementById('radio_other').checked=true">
+			    </TD>
+			</TR>
+		    </TABLE>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -159,6 +184,7 @@
 {/if}
 </P>
 {/if}
+<P>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
@@ -228,19 +254,28 @@
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
 			<INPUT type="checkbox" class ="box light" name="original" checked> {t}original{/t}&nbsp;
 			<INPUT type="checkbox" class ="box light" name="copy" checked> {t}copy{/t}&nbsp;
-			<A HREF="?m=receiptlist&regid={$receipt.regid}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
-			{if !$customer && $receipt.o_type != "other"}
+			<A HREF="?m=receiptlist&regid={$receipt.regid}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
+			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
 			{elseif !$contents}
 			<A HREF="javascript:alert('{t}Receipt have no items!{/t}');">
 			{else}
-			<A HREF="javascript:savereceipt();">
+			<A HREF="javascript:savereceipt(0);">
+			{/if}
+			{t}Save{/t} <IMG src="img/save.gif" alt=""></A>&nbsp;
+			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
+			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
+			{elseif !$contents}
+			<A HREF="javascript:alert('{t}Receipt have no items!{/t}');">
+			{else}
+			<A HREF="javascript:savereceipt(1);">
 			{/if}
 			{t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	</FORM>
 </TABLE>
+</P>
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 var cal1 = new calendar(document.forms['setcustomer'].elements['receipt[cdate]']);
