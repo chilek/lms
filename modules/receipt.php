@@ -130,7 +130,7 @@ elseif($receipt = GetReceipt($_GET['id']))
 	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
 	
 	$receipt['last'] = TRUE;
-	$SMARTY->assign('type', $_GET['which']);
+	$SMARTY->assign('type', isset($_GET['which']) ? $_GET['which'] : NULL);
 	$SMARTY->assign('receipt',$receipt);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->display($CONFIG['receipts']['template_file']);

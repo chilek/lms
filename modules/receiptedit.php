@@ -27,7 +27,7 @@
 if(isset($_GET['id']))
 {
 	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($_GET['id']));
-	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<3)
+	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<256)
 	{
 	        $SMARTY->display('noaccess.html');
 	        $SESSION->close();
@@ -43,6 +43,7 @@ if(isset($_GET['id']))
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 
 	$i = 1;
+	$sum = 0;
 	
 	if($items = $DB->GetAll('SELECT itemid, value, description FROM receiptcontents WHERE docid = ?', array($receipt['id'])))
 		foreach($items as $item)
@@ -56,12 +57,20 @@ if(isset($_GET['id']))
 
 	$receipt['regid'] = $regid;
 	$receipt['type'] = $sum > 0 ? 'in' : 'out';
+	
 	if($receipt['customerid'])
+	{
 		$receipt['o_type'] = 'customer';
-	else
+	}
+	elseif($receipt['closed'])
 	{
 		$receipt['o_type'] = 'other';
-		$receipt['o_name'] = $receipt['name'];
+		$receipt['other_name'] = $receipt['name'];
+	}
+	elseif(!$receipt['closed'])
+	{
+		$receipt['o_type'] = 'advance';
+		$receipt['adv_name'] = $receipt['name'];
 	}
 	
 	if($receipt['customerid'])
@@ -90,7 +99,7 @@ if(isset($_GET['id']))
 	
 	$SESSION->save('receipt', $receipt);
 	$SESSION->save('receiptcontents', $contents);
-	$SESSION->save('receiptcustomer', $customer);
+	$SESSION->save('receiptcustomer', isset($customer) ? $customer : NULL);
 	$SESSION->save('receiptediterror', $error);
 }
 
@@ -105,7 +114,9 @@ if($receipt['type']=='in')
 else
 	$layout['pagetitle'] = trans('Cash-out Receipt Edit: $0', $receipt['titlenumber']);
 
-switch($_GET['action'])
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+
+switch($action)
 {
 	case 'additem':
 
@@ -133,6 +144,7 @@ switch($_GET['action'])
 		$oldreg = $receipt['regid'];
 		$oldtemplate = $receipt['template'];
 		$id = $receipt['id'];
+		$oldclosed = $receipt['closed'];
 		
 		unset($receipt);
 		unset($customer);
@@ -145,6 +157,7 @@ switch($_GET['action'])
 		$receipt['customerid'] = $_POST['customerid'];
 		$receipt['template'] = $oldtemplate;
 		$receipt['id'] = $id;
+		$receipt['closed'] = $oldclosed;
 		
 		if($receipt['regid'] != $oldreg)
 		{
@@ -155,8 +168,8 @@ switch($_GET['action'])
 			
 			$receipt['number'] = 0;
 			
-			if($DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id))<2)
-			        $error['regid'] = trans('You don\'t have permission to add receipt in selected cash registry!');
+//			if($DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id))<2)
+//			        $error['regid'] = trans('You don\'t have permission to add receipt in selected cash registry!');
 		}
 		
 		if($receipt['cdate'])
@@ -210,6 +223,18 @@ switch($_GET['action'])
                 {
 		        $receipt['customerid'] = 0;
 			
+			switch($receipt['o_type'])
+			{
+			         case 'advance':
+			                 if(trim($receipt['adv_name']) == '')
+			                         $error['adv_name'] = trans('Target is required!');
+			         break;
+			         case 'other':
+			                 if(trim($receipt['other_name']) == '')
+			                         $error['other_name'] = trans('Target is required!');
+			         break;
+			}
+			
 			if(trim($receipt['o_name']) == '')
                                 $error['o_name'] = trans('Target is required!');
 
@@ -257,8 +282,8 @@ switch($_GET['action'])
 			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($receipt['id']));
 		
 			// re-add receipt 
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
 						$receipt['extnumber'] ? $receipt['extnumber'] : '',
@@ -269,7 +294,9 @@ switch($_GET['action'])
 						$customer['customername'],
 						$customer['address'],
 						$customer['zip'],
-						$customer['city']));
+						$customer['city'],
+						$receipt['closed']
+						));
 						
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
 			
@@ -313,7 +340,7 @@ switch($_GET['action'])
 			}
 			$DB->CommitTrans();
 		}
-		elseif($contents && $receipt['o_type'] =='other')
+		elseif($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance'))
 		{
 		        $DB->BeginTrans();
 			
@@ -321,15 +348,16 @@ switch($_GET['action'])
 			$DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
 			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
 			
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name)
-			    		VALUES(?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
+			    		VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
 			                array(  DOC_RECEIPT,
 					        $receipt['number'],
 						$receipt['extnumber'] ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$AUTH->id,
-						$receipt['o_name']
+						$recept['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
+						$receipt['closed']
 					));
 						
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
@@ -363,7 +391,11 @@ switch($_GET['action'])
 		$SESSION->remove('receiptcustomer');
 		$SESSION->remove('receipt');
 		$SESSION->remove('receiptediterror');
-		$SESSION->redirect('?m=receiptlist&receipt='.$rid.'&which='.$_GET['which'].'&regid='.$receipt['regid'].'#'.$rid);
+		
+		if(isset($_GET['print']))
+			$SESSION->redirect('?m=receiptlist&receipt='.$rid.'&which='.$_GET['which'].'&regid='.$receipt['regid'].'#'.$rid);
+		else
+			$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
 	break;
 }
 
@@ -372,7 +404,7 @@ $SESSION->save('receiptcontents', $contents);
 $SESSION->save('receiptcustomer', $customer);
 $SESSION->save('receiptediterror', $error);
 
-if($_GET['action'] != '')
+if($action != '')
 {
 	$SESSION->redirect('?m=receiptedit');
 }

@@ -315,16 +315,35 @@ switch($action)
 			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
 				$receipt['extended'] = TRUE;
 
-		if($DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id))<2)
-			$error['regid'] = trans('You don\'t have permission to add receipt in selected cash registry!');
+		$rights = $DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id));
 		
-		if($receipt['o_type']=='other' || $receipt['o_type']=='move')
+		switch($receipt['o_type'])
+		{
+			case 'customer': if(($rights & 2)!=2) $rightserror = true; break; 
+			case 'move': if(($rights & 4)!=4) $rightserror = true; break; 
+			case 'advance': if(($rights & 8)!=8) $rightserror = true; break; 
+			case 'other': if(($rights & 16)!=16) $rightserror = true; break;
+		}	
+
+		if(isset($rightserror))	
+			$error['regid'] = trans('You don\'t have permission to add receipt in selected cash registry!');
+
+		if($receipt['o_type'] != 'customer')
 		{
 			$receipt['customerid'] = 0;
 			
-			if(trim($receipt['o_name']) == '')
-				$error['o_name'] = trans('Target is required!');
-				
+			switch($receipt['o_type'])
+			{
+				 case 'advance':
+					if(trim($receipt['adv_name']) == '')
+						$error['adv_name'] = trans('Target is required!');
+				break;
+				case 'other':
+					if(trim($receipt['other_name']) == '')
+						$error['other_name'] = trans('Target is required!');
+				break;
+			}
+			
 			if(!isset($error))
 				$receipt['selected'] = TRUE;
 			break;
@@ -369,7 +388,7 @@ switch($action)
 				}
 			}
 			
-		if(!isset($error) && $customer)
+		if(!isset($error) && isset($customer))
 			$receipt['selected'] = TRUE;
 	break;
 
@@ -392,8 +411,8 @@ switch($action)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
 		
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
 						isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
@@ -404,9 +423,12 @@ switch($action)
 						$customer['customername'],
 						$customer['address'],
 						$customer['zip'],
-						$customer['city']));
+						$customer['city']
+						));
 						
-			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
+			$rid = $DB->GetOne('SELECT id FROM documents 
+						WHERE type=? AND number=? AND cdate=?', 
+						array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
 			
 			$iid = 0;
 			foreach($contents as $item)
@@ -446,7 +468,7 @@ switch($action)
 			
 			$print = TRUE;
 		}
-		elseif($contents && $receipt['o_type'] == "other")
+		elseif($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance'))
 		{
 			$DB->BeginTrans();
 
@@ -463,15 +485,16 @@ switch($action)
 					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			}
 		
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name)
-					VALUES(?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
 						isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$AUTH->id,
-						$receipt['o_name']
+						$receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
+						$receipt['o_type'] == 'advance' ? 0 : 1
 						));
 						
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
@@ -507,7 +530,11 @@ switch($action)
 			$SESSION->remove('receiptcustomer');
 			$SESSION->remove('receipt');
 			$SESSION->remove('receiptadderror');
-			$SESSION->redirect('?m=receiptlist&receipt='.$rid.(isset($_GET['which']) ? '&which='.$_GET['which'] : '').'&regid='.$receipt['regid'].'#'.$rid);
+
+			if(isset($_GET['print']))
+				$SESSION->redirect('?m=receiptlist&receipt='.$rid.(isset($_GET['which']) ? '&which='.$_GET['which'] : '').'&regid='.$receipt['regid'].'#'.$rid);
+			else
+				$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
 		}
 	break;
 
@@ -544,15 +571,14 @@ switch($action)
 			// cash-out
 			$description = trans('Moving assets to registry $0',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
 			
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name)
-					VALUES(?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
+					VALUES(?, ?, ?, ?, ?, ?, \'\', 1)',
 					array(	DOC_RECEIPT,
 						$receipt['number'],
-						$receipt['extnumber'] ? $receipt['extnumber'] : '',
+						isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
 						$receipt['numberplanid'],
 						$receipt['cdate'],
-						$AUTH->id,
-						$receipt['o_name']
+						$AUTH->id
 						));
 
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid'])); 
@@ -575,8 +601,8 @@ switch($action)
 			$numberplan = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($dest));
 			$number = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $numberplan, $receipt['cdate']);
 
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid)
-					VALUES(?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed)
+					VALUES(?, ?, ?, ?, ?, 1)',
 					array(	DOC_RECEIPT,
 						$number,
 						$numberplan ? $numberplan : 0,
@@ -599,7 +625,11 @@ switch($action)
 			
 			$SESSION->remove('receipt');
 			$SESSION->remove('receiptadderror');
-			$SESSION->redirect('?m=receiptlist&receipt='.$rid.'&which='.$_GET['which'].'&regid='.$receipt['regid'].'#'.$rid);
+			
+			if(isset($_GET['print']))
+				$SESSION->redirect('?m=receiptlist&receipt='.$rid.(isset($_GET['which']) ? '&which='.$_GET['which'] : '').'&regid='.$receipt['regid'].'#'.$rid);
+			else
+				$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
 		}
 	break;
 

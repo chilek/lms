@@ -86,12 +86,13 @@
 			<B>{t}Total:{/t}</B><HR>
 			<B>{t}Initial balance:{/t}</B><BR>
 			<B>{t}Final balance:{/t}</B>
+			{if $listdata.advances}<BR><B>{t}Not accounted advances:{/t}</B>{/if}
 		</TD>
 		<TD ALIGN="RIGHT" nowrap>
 			<B>{$listdata.totalincome|money_format}</B><HR>
 			<B>{$listdata.startbalance|money_format}</B><BR>
 			<B>{$listdata.endbalance|money_format}</B>
-
+			{if $listdata.advances}<BR><B>{$listdata.advances|money_format}</B>{/if}
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP" nowrap>
 			<B>{$listdata.totalexpense|money_format}</B><HR>
