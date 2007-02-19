@@ -70,3 +70,4 @@ cd ../../
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd $WORKDIR
 echo -ne "Aby posprz±taæ, wykonaj (ja nie bêdê eremefowa³ sam):\nrm -Rf $TEMPDIR/$X\n"
+
