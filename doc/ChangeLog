@@ -6,7 +6,7 @@ version ? (????-??-??):
   - cash receipts: changed registry privilages system (alec)
   - cash receipts: added 'Save' link - saving receipts without printing (alec)
   - choosecustomer: removed not needed WHERE conditions in customer 
-    select window (alec)
+    select window, rewrited query for MySQL 5.0, now is 20-100 times faster (alec)
   - we can move customers from one tariff to another filtering it by network (chilek)
 
 version 1.9.6 Belos (2007-02-16):
