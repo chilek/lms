@@ -37,8 +37,8 @@ if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 {
 	$search = $_POST['searchcustomer'];
 
-	$where_cust = 'AND (customers.id = '.intval($search)
-			.' OR ten LIKE \'%'.$search.'%\''
+	$where_cust = 'AND ('.(intval($search) ? 'customers.id = '.intval($search).' OR' : '')
+			.'    ten LIKE \'%'.$search.'%\''
 			.' OR ssn LIKE \'%'.$search.'%\''
 			.' OR icn LIKE \'%'.$search.'%\''
 			.' OR rbe LIKE \'%'.$search.'%\''
@@ -55,8 +55,8 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 {
 	$search = $_POST['searchnode'];
 
-	$where_node = 'AND (nodes.id = '.intval($search)
-			.' OR INET_NTOA(ipaddr) LIKE \'%'.$search.'%\''
+	$where_node = 'AND ('.(intval($search) ? 'nodes.id = '.intval($search).' OR ' : '')
+			.'    INET_NTOA(ipaddr) LIKE \'%'.$search.'%\''
 			.' OR INET_NTOA(ipaddr_pub) LIKE \'%'.$search.'%\''
 			.' OR UPPER(mac) LIKE UPPER(\'%'.$search.'%\')'
 			.' OR UPPER(location) LIKE UPPER(\'%'.$search.'%\')'
