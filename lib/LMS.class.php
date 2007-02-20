@@ -156,10 +156,10 @@ class LMS
 	 *  Users (Useristrators)
 	 */
 
-	function SetUserPassword($id,$passwd) // ustawia has³o usera o id równym $id na $passwd
+	function SetUserPassword($id, $passwd) // ustawia has³o usera o id równym $id na $passwd
 	{
 		$this->SetTS('users');
-		$this->DB->Execute('UPDATE users SET passwd=? WHERE id=?', array(crypt($passwd),$id));
+		$this->DB->Execute('UPDATE users SET passwd=? WHERE id=?', array(crypt($passwd), $id));
 	}
 
 	function GetUserName($id) // zwraca imiê usera

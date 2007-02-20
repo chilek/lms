@@ -350,9 +350,9 @@ switch($action)
 		}
 		
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '')
-			$cid = $_GET['customerid'];
+			$cid = intval($_GET['customerid']);
 		else
-			$cid = isset($_POST['customerid']) ? $_POST['customerid'] : 0;
+			$cid = isset($_POST['customerid']) ? intval($_POST['customerid']) : 0;
 		
 		if(!isset($error) && $cid)
 			if($LMS->CustomerExists($cid))

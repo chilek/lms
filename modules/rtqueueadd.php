@@ -57,7 +57,7 @@ $users = $LMS->GetUserNames();
 
 foreach($users as $user) 
 {
-	$user['rights'] = $queue['users'][$user['id']];
+	$user['rights'] = isset($queue['users'][$user['id']]) ? $queue['users'][$user['id']] : NULL;
 	$queue['nrights'][] = $user;
 }
 $queue['rights'] = $queue['nrights'];
