@@ -24,12 +24,14 @@
  *  $Id$
  */
 
-if(!$LMS->TariffExists($_GET['id']) || (isset($_GET['netid']) && $_GET['netid'] != 0 && !$LMS->NetworkExists($_GET['netid'])))
+$netid = isset($_GET['netid']) ? intval($_GET['netid']) : NULL;
+
+if(!$LMS->TariffExists($_GET['id']) || ($netid != 0 && !$LMS->NetworkExists($netid)))
 {
 	$SESSION->redirect('?m=tarifflist');
 }
 
-$tariff = $LMS->GetTariff($_GET['id'], isset($_GET['netid']) ? $netid = $_GET['netid'] : NULL);
+$tariff = $LMS->GetTariff($_GET['id'], $netid);
 
 $layout['pagetitle'] = trans('Subscription Info: $0',$tariff['name']);
 

@@ -1729,6 +1729,11 @@ class LMS
 
 	function GetTariffList()
 	{
+		$totalincome = 0;
+		$totalcustomers = 0;
+		$totalcount = 0;
+		$totalassignmentcount = 0;
+
 		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, taxes.label AS tax, taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit
 				FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY name ASC'))
 		{
@@ -1763,12 +1768,14 @@ class LMS
 				$tarifflist[$idx]['assignmentcount'] =  $assigned[$row['id']]['count'] - $suspended['count'];
 				// avg monthly income
 				$tarifflist[$idx]['income'] = $assigned[$row['id']]['value'] - $suspended['value'];
+
 				$totalincome += $tarifflist[$idx]['income'];
 				$totalcustomers += $tarifflist[$idx]['customers'];
 				$totalcount += $tarifflist[$idx]['customerscount'];
 				$totalassignmentcount += $tarifflist[$idx]['assignmentcount'];
 			}
 		}
+		
 		$tarifflist['total'] = sizeof($tarifflist);
 		$tarifflist['totalincome'] = $totalincome;
 		$tarifflist['totalcustomers'] = $totalcustomers;
