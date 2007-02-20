@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-include($CONFIG['phpui']['export_config'] ? $CONFIG['phpui']['export_config'] : 'exportcfg.php');
+include(isset($CONFIG['phpui']['export_config']) && $CONFIG['phpui']['export_config'] ? $CONFIG['phpui']['export_config'] : 'exportcfg.php');
 
 function form_num($num)
 {
 	return str_replace(',','.', sprintf('%.2f',f_round($num)));
 }
 
-if($_GET['type']=='cash')
+if(isset($_GET['type']) && $_GET['type'] == 'cash')
 {
 	if($_POST['from'])
 	{
@@ -163,7 +163,7 @@ if($_GET['type']=='cash')
 
 	die;
 }
-elseif($_GET['type']=='invoices')
+elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 {
 	$from = $_POST['from'];
 	$to = $_POST['to'];
