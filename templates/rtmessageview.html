@@ -57,7 +57,7 @@
 			<B>{t}Headers:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="100">{$message.headers|escape}</TEXTAREA>
+			<TEXTAREA rows="5" cols="100" readonly>{$message.headers|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	{/if}
@@ -108,7 +108,7 @@
 			<B>{t}Message:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="100">{$message.body|escape}</TEXTAREA>
+			<TEXTAREA rows="5" cols="100" readonly>{$message.body|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	{if $message.attachments}
