@@ -2504,29 +2504,16 @@ class LMS
 				$sqlord = ' ORDER BY name';
 			break;
 		}
-
-		if($netdevlist = $this->DB->GetAll('SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices '.($sqlord != '' ? $sqlord.' '.$direction : '')))
-			foreach($netdevlist as $idx => $row)
-				$netdevlist[$idx]['takenports'] = $this->CountNetDevLinks($row['id']);
-
-		switch($order)
-		{
-			case 'takenports':
-				foreach($netdevlist as $idx => $row)
-				{
-					$tptable['idx'][] = $idx;
-					$tptable['takenports'][] = $row['takenports'];
-				}
-				array_multisort($tptable['takenports'],($direction == "desc" ? SORT_DESC : SORT_ASC),$tptable['idx']);
-				foreach($tptable['idx'] as $idx)
-					$nnetdevlist[] = $netdevlist[$idx];
-				$netdevlist = $nnetdevlist;
-			break;
-		}
+		
+		$netdevlist = $this->DB->GetAll('SELECT id, name, location, description, producer, model, serialnumber, ports, 
+					(SELECT COUNT(*) FROM nodes WHERE netdev=netdevices.id AND ownerid > 0)
+					+ (SELECT COUNT(*) FROM netlinks WHERE src = netdevices.id OR dst = netdevices.id) AS takenports
+					FROM netdevices '.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
 		$netdevlist['direction'] = $direction;
+
 		return $netdevlist;
 	}
 
