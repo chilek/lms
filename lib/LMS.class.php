@@ -611,9 +611,10 @@ class LMS
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 
 		if($customerlist = $this->DB->GetAll(
-				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, status, address, zip, city, email, phone1, ten, ssn, customers.info AS info, message, '
-				.($network ? 'COALESCE(SUM(value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM(value), 0.00) AS balance ')
-				.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid) '
+				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, 
+				status, address, zip, city, email, phone1, ten, ssn, customers.info AS info, message, 
+				(SELECT SUM(value) FROM cash WHERE customerid = customers.id) AS balance
+				FROM customers '
 				.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
 				.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
