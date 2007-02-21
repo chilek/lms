@@ -976,7 +976,7 @@ $_LANG['Note'] = 'Notatka';
 $_LANG['Note:'] = 'Notatka:';
 $_LANG['Notes:'] = 'Notatki:';
 $_LANG['No such transactions found in database.'] = 'Nie znaleziono żadnych transakcji w bazie danych.';
-$_LANG['Notices (+RW)'] = 'Powiadomienia (+OZ)';
+$_LANG['Notice (+R)'] = 'Powiadomienia (+O)';
 $_LANG['not resolved'] = 'nierozwiązane';
 $_LANG['You can close this window now.'] = 'Teraz możesz zamknąć to okno.';
 $_LANG['number'] = 'numer';
@@ -1793,5 +1793,6 @@ $_LANG['Enter receipt description'] = 'Wprowadź opis potwierdzenia';
 $_LANG['Recipient name is required!'] = 'Nazwa odbiorcy jest wymagana!';
 $_LANG['There is only $0 in registry!'] = 'W rejestrze jest tylko $0!';
 $_LANG['Value is required!'] = 'Kwota jest wymagana!';
+$_LANG['Delete (+R)'] = 'Usuwanie (+O)';
 
 ?>

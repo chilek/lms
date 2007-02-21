@@ -10,6 +10,8 @@ version ? (????-??-??):
   - we can move customers from one tariff to another filtering it by network (chilek)
   - optimized Customers List generation time when using filters (alec)
   - optimized Devices List generation time (alec)
+  - helpdesk: changed queues privilages system (alec)
+  - helpdesk: some one-time functions from LMS class moved to modules (alec)
 
 version 1.9.6 Belos (2007-02-16):
 

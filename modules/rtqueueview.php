@@ -42,7 +42,7 @@ if(!$right)
 
 if(isset($_GET['delticketid']))
 {
-	if($right < 2)
+	if(($right & 4) != 4)
 	{
 		$SMARTY->display('noaccess.html');
 	        $SESSION->close();

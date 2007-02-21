@@ -44,11 +44,26 @@ if(isset($_POST['queue']))
 
 	if(isset($queue['users']))
 		foreach($queue['users'] as $key => $value)
-			$queue['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $queue['usernames'][$key]);
+			$queue['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $queue['usernames'][$key]);
 
 	if(!$error)
 	{
-		$id = $LMS->QueueAdd($queue);
+                $DB->Execute('INSERT INTO rtqueues (name, email, description) VALUES (?, ?, ?)',
+		                array($queue['name'], $queue['email'], $queue['description']));
+				
+		$LMS->SetTS('rtqueues');
+			
+		$id = $DB->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue['name']));
+			
+		if($queue['rights'] && $id)
+		{
+		        $LMS->SetTS('rtrights');
+			foreach($queue['rights'] as $right)
+			        if($right['rights'])
+					$DB->Execute('INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)', 
+						array($id, $right['id'], $right['rights']));
+		}
+		
 		$SESSION->redirect('?m=rtqueueinfo&id='.$id);
 	}
 }

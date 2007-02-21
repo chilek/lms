@@ -729,4 +729,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007012500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007022100');

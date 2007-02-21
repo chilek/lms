@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-if(($id = $_GET['id']) && !isset($_POT['ticket']))
+if(($id = $_GET['id']) && !isset($_POST['ticket']))
 {
-	if($LMS->GetUserRightsRT($AUTH->id, 0, $id) < 2)
+	if(($LMS->GetUserRightsRT($AUTH->id, 0, $id) & 2) != 2)
 	{
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
@@ -47,7 +47,7 @@ if(isset($_POST['ticket']))
 	$ticketedit = $_POST['ticket'];
 	$ticketedit['ticketid'] = $ticket['ticketid'];
 
-	if($LMS->GetUserRightsRT($AUTH->id, $ticketedit['queueid']) < 2)
+	if(($LMS->GetUserRightsRT($AUTH->id, $ticketedit['queueid']) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 	
 	if($ticketedit['subject'] == '')

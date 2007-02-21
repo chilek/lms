@@ -50,11 +50,11 @@ function MessageAdd($msg, $headers, $file=NULL)
 				$head));
 	$LMS->SetTS('rtmessages');
 
-	if(isset($file['name']))
+	if(isset($file['name']) && isset($CONFIG['rt']['mail_dir']))
 	{
 		$id = $DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND userid=? AND customerid=? AND createtime=?', array($msg['ticketid'], $msg['userid'], $msg['customerid'], $time));
-		$dir = $LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
-		@mkdir($LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
+		$dir = $CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
+		@mkdir($CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
 		@mkdir($dir, 0700);
 		$newfile = $dir.'/'.$file['name'];
 		if(@rename($file['tmp_name'], $newfile))
@@ -128,17 +128,20 @@ if(isset($_POST['message']))
 			}
 		}
 
-		if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
+		if(isset($CONFIG['phpui']['helpdesk_sender_name']) && ($mailfname = $CONFIG['phpui']['helpdesk_sender_name']))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
 			if($mailfname == 'customer') $mailfname = $user['name'];
 			$mailfname = '"'.$mailfname.'"';
 		}
 	
-		if(!$LMS->CONFIG['phpui']['helpdesk_backend_mode'])
+		if(!isset($CONFIG['phpui']['helpdesk_backend_mode']) || !chkconfig($CONFIG['phpui']['helpdesk_backend_mode']))
 		{
+			$headers = array();
+			
 			if($message['destination'] == '')
 				$message['destination'] = $queue['email'];
+			
 			if($message['destination'] && $message['userid'])
 			{
 				if($LMS->CONFIG['phpui']['debug_email'])
@@ -261,7 +264,7 @@ else
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = $reply['messageid'];
 		
-		if(chkconfig($CONFIG['phpui']['helpdesk_reply_body']))
+		if(isset($CONFIG['phpui']['helpdesk_reply_body']) && chkconfig($CONFIG['phpui']['helpdesk_reply_body']))
 		{
 			$body = explode("\n",textwrap(strip_tags($reply['body']),74));
 			foreach($body as $line)

@@ -42,17 +42,18 @@
 	    <TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
 			<TR class="DARK">
-			    <TD width="97%" class="fleftu"><B>{t}User{/t}</B>
+			    <TD width="96%" class="fleftu"><B>{t}User{/t}</B>
 			    </TD>
 			    <TD width="1%" class="fbt" align="center" nowrap><B>{t}Read{/t}</B></TD>
 			    <TD width="1%" class="fbt" align="center" nowrap><B>{t}Write (+R){/t}</B></TD>
-			    <TD width="1%" class="frightu" align="center" nowrap><B>{t}Notices (+RW){/t}</B></TD>
+			    <TD width="1%" class="fbt" align="center" nowrap><B>{t}Delete (+R){/t}</B></TD>
+			    <TD width="1%" class="frightu" align="center" nowrap><B>{t}Notice (+R){/t}</B></TD>
 			</TR>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$queue.rights item=right}
 			{if $right.rights}
 			<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD width="97%" class="fleft">
+			    <TD width="96%" class="fleft">
 				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
 				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
@@ -60,16 +61,20 @@
 				{if $right.rights > 0}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			    <TD width="1%" align="center">
-				{if $right.rights > 1}<IMG src="img/pass.gif" alt="">{/if}
+				{if ($right.rights & 2) == 2}<IMG src="img/pass.gif" alt="">{/if}
+			    </TD>
+			    <TD width="1%" align="center">
+				{if ($right.rights & 4) == 4}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			    <TD width="1%" align="center" class="fright">
-				{if $right.rights > 2}<IMG src="img/pass.gif" alt="">{/if}
+				{if ($right.rights & 8) == 8}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			</TR>
 			{/if}
 			{/foreach}
 			<TR class=LIGHT">
-			    <TD width="97%" class="ftop"></TD>
+			    <TD width="96%" class="ftop"></TD>
+			    <TD width="1%" class="ftop"></TD>
 			    <TD width="1%" class="ftop"></TD>
 			    <TD width="1%" class="ftop"></TD>
 			    <TD width="1%" class="ftop"></TD>

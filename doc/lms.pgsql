@@ -775,4 +775,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007012500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007022100');

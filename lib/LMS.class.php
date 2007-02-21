@@ -2712,59 +2712,6 @@ class LMS
 		return $this->DB->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue));
 	}
 
-	function QueueAdd($queue)
-	{
-		if($this->DB->Execute('INSERT INTO rtqueues (name, email, description) VALUES (?, ?, ?)', array($queue['name'], $queue['email'], $queue['description'])))
-		{
-			$this->SetTS('rtqueues');
-			$id = $this->DB->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue['name']));
-			if($queue['rights'])
-			{
-				$this->SetTS('rtrights');
-				foreach($queue['rights'] as $right)
-					if($right['rights'])
-						$this->RightsRTAdd($id, $right['id'], $right['rights']);
-			}
-			return $id;
-		}
-		else
-			return FALSE;
-	}
-
-    	function QueueDelete($queue)
-	{
-		if($this->DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue)))
-			$this->SetTS('rtqueues');
-		if($this->DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue)))
-			$this->SetTS('rtrights');
-		if($tickets = $this->DB->GetCol('SELECT id FROM rttickets WHERE queueid=?', array($queue)))
-		{
-			foreach($tickets as $id)
-				$this->DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($id));
-			$this->SetTS('rtmessages');
-			$this->DB->Execute('DELETE FROM rttickets WHERE queueid=?', array($queue));
-			$this->SetTS('rttickets');
-		}
-	}
-
-	function RightsRTAdd($queueid, $userid, $rights)
-	{
-		$this->DB->Execute('INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)', array($queueid, $userid, $rights));
-		$this->SetTS('rtrights');
-	}
-
-	function QueueUpdate($queue)
-	{
-		$this->DB->Execute('UPDATE rtqueues SET name=?, email=?, description=? WHERE id=?', array($queue['name'], $queue['email'], $queue['description'], $queue['id']));
-		$this->SetTS('rtqueues');
-		$this->DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
-		$this->SetTS('rtrights');
-		if($queue['rights'])
-			foreach($queue['rights'] as $right)
-				if($right['rights'])
-					$this->RightsRTAdd($queue['id'], $right['id'], $right['rights']);
-	}
-
 	function GetQueueName($id)
 	{
 		return $this->DB->GetOne('SELECT name FROM rtqueues WHERE id=?', array($id));
