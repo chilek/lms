@@ -29,16 +29,28 @@ if(! $LMS->TicketExists($_GET['id']))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-if(! $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']))
+$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']);
+
+if(!$rights)
 {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();
 	die;
 }
 
-if(isset($_GET['delmsgid']) && $DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($_GET['id'])) != $_GET['delmsgid'])
+if(isset($_GET['delmsgid']))
 {
-	$DB->Execute('DELETE FROM rtmessages WHERE id = ?', array(intval($_GET['delmsgid'])));
+	if(($rights & 4) != 4)
+	{
+		$SMARTY->display('noaccess.html');
+		$SESSION->close();
+		die;
+	}
+
+	if($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($_GET['id'])) != $_GET['delmsgid'])
+	{
+		$DB->Execute('DELETE FROM rtmessages WHERE id = ?', array(intval($_GET['delmsgid'])));
+	}
 }
 
 $ticket = $LMS->GetTicketContents($_GET['id']);

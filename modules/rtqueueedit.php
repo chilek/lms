@@ -43,11 +43,26 @@ if(isset($_POST['queue']))
 
 	if(isset($queue['users']))
 		foreach($queue['users'] as $key => $value)
-			$queue['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $queue['usernames'][$key]);
+			$queue['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $queue['usernames'][$key]);
 
 	if(!$error)
 	{
-		$LMS->QueueUpdate($queue);
+	        $DB->Execute('UPDATE rtqueues SET name=?, email=?, description=? WHERE id=?', 
+				array($queue['name'], 
+					$queue['email'], 
+					$queue['description'], 
+					$queue['id']));
+		$LMS->SetTS('rtqueues');
+		
+		$DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
+		$LMS->SetTS('rtrights');
+		
+		if($queue['rights'])
+		        foreach($queue['rights'] as $right)
+		                if($right['rights'])
+					$DB->Execute('INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)',
+				                array($queue['id'], $right['id'], $right['rights']));
+
 		$SESSION->redirect('?m=rtqueueinfo&id='.$queue['id']);
 	}
 }
