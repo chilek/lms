@@ -54,5 +54,5 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->display('rtticketprint.html');
-?>
 
+?>
