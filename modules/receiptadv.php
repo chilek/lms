@@ -212,7 +212,7 @@ if(isset($_POST['receipt']))
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 					VALUES(?, 1, ?, ?, ?)', 
 					array($rid2, 
-						$value * -1, 
+						str_replace(',', '.', $value * -1), 
 						$receipt['description'],
 						$regid
 					));
