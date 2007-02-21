@@ -26,14 +26,15 @@
 
 $layout['pagetitle'] = trans('Cash Operations Import');
 
-if($_GET['action']=='delete')
+if(isset($_GET['action']) && $_GET['action'] == 'delete')
 {
 	if($marks = $_POST['marks'])
 		foreach($marks as $id)
 			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
 }
-elseif($marks = $_POST['marks'])
+elseif(isset($_POST['marks']))
 {
+	$marks = $_POST['marks'];
 	$customers = $_POST['customer'];
 	foreach($marks as $id)
 	{

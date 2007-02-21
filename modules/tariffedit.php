@@ -29,10 +29,10 @@ if(!$LMS->TariffExists($_GET['id']))
 	$SESSION->redirect('?m=tarifflist');
 }
 
-$tariff = $_POST['tariff'];
-
-if(isset($tariff))
+if(isset($_POST['tariff']))
 {
+	$tariff = $_POST['tariff'];
+
 	foreach($tariff as $key => $value)
 		$tariff[$key] = trim($value);
 
@@ -89,7 +89,8 @@ if(isset($tariff))
 		$SESSION->redirect('?m=tariffinfo&id='.$tariff['id']);
 	}
 
-}else
+}
+else
 	$tariff = $LMS->GetTariff($_GET['id']);
 	
 $layout['pagetitle'] = trans('Subscription Edit: $0',$tariff['name']);
