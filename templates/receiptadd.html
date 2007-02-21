@@ -42,7 +42,7 @@
 	function saveheader()
 	{	
 		if(document.setcustomer.customer)
-			if(document.setcustomer.customer.value)
+			if(document.setcustomer.customer.value != 0)
 				document.setcustomer.customerid.value = document.setcustomer.customer.value;
 
 		document.setcustomer.submit();

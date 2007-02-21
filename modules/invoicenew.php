@@ -43,10 +43,12 @@ function GetCustomerCovenants($customerid)
 $layout['pagetitle'] = trans('New Invoice');
 
 $taxeslist = $LMS->GetTaxes();
+
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
 $SESSION->restore('invoicenewerror', $error);
+
 $itemdata = r_trim($_POST);
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
@@ -64,12 +66,12 @@ switch($action)
 		$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype=? AND isdefault=1', array(DOC_INVOICE));
 		$invoice['cdate'] = time();
 		$invoice['paytime'] = 14;
-		if($_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
+		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 			$customer = $LMS->GetCustomer($_GET['customerid']);
 	break;
 
 	case 'additem':
-		$itemdata = r_trim($_POST);
+
 		foreach(array('count', 'discount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = f_round($itemdata[$key]);
 		
@@ -167,7 +169,7 @@ switch($action)
 			}
 		}
 
-		if($invoice['cdate'] && !$invoice['cdatewarning'])
+		if($invoice['cdate'] && !isset($invoice['cdatewarning']))
 		{
 			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = 1');
 			if($invoice['cdate'] < $maxdate)
@@ -185,10 +187,12 @@ switch($action)
 				$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
 		}
 		
-		if(!$error)
-			if($LMS->CustomerExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid'])))
-				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid']));
-
+		if(!isset($error))
+		{
+			$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
+			if($LMS->CustomerExists($cid))
+				$customer = $LMS->GetCustomer($cid);
+		}
 	break;
 
 	case 'save':
@@ -225,13 +229,13 @@ switch($action)
 	break;
 }
 
-if($invoice['paytype'] == '')
+if(!isset($invoice['paytype']) || $invoice['paytype'] == '')
 	$invoice['paytype'] = trans('CASH');
 
 $SESSION->save('invoice', $invoice);
-$SESSION->save('invoicecontents', $contents);
-$SESSION->save('invoicecustomer', $customer);
-$SESSION->save('invoicenewerror', $error);
+$SESSION->save('invoicecontents', isset($contents) ? $contents : NULL);
+$SESSION->save('invoicecustomer', isset($customer) ? $customer : NULL);
+$SESSION->save('invoicenewerror', isset($error) ? $error : NULL);
 
 if($action)
 {
