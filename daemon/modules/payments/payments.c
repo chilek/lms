@@ -394,7 +394,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				
 				invoiceid = strdup(itoa(docid));
 				
-				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND docid = ? AND description = '?' AND value = ?", g->db_get_data(res,i,"tariffid"), invoiceid, description, value);
+				result = g->db_pquery(g->conn, "SELECT itemid FROM invoicecontents WHERE tariffid = ? AND docid = ? AND description = '?' AND value = ? AND discount = ?", g->db_get_data(res,i,"tariffid"), invoiceid, description, value, discount);
 
 				if( g->db_nrows(result) ) 
 				{

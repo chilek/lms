@@ -99,12 +99,15 @@ if($_GET['action'] == 'add' && isset($a))
 		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 			
-			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
+			if(isset($CONFIG['phpui']['use_current_payday']) && chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 				$at = date('j', time());
 
-			if(!chkconfig($CONFIG['phpui']['use_current_payday']) && $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+			if((!isset($CONFIG['phpui']['use_current_payday']) || !chkconfig($CONFIG['phpui']['use_current_payday'])) 
+				&& isset($CONFIG['phpui']['default_monthly_payday']) && $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+			{
 				$at = $CONFIG['phpui']['default_monthly_payday'];
-
+			}
+			
 			$a['at'] = $at;
 			
 			if($at > 28 || $at < 1)

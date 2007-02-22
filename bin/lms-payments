@@ -406,14 +406,14 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$gotinv{$uid} = $irow->{'id'};
 			}
 			
-			my $icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'} AND docid=$gotinv{$uid} AND description=?");
+			my $icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'} AND docid=$gotinv{$uid} AND description=? AND discount=$assign->{'discount'}");
 			$icdbq->execute($desc);
 			
 			if(my $icrow = $icdbq->fetchrow_hashref())
 			{
 				$itemid = $icrow->{'itemid'};
 				
-				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=?");
+				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=? AND discount=$assign->{'discount'}");
 				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("UPDATE cash SET value = value+($assign->{'value'}*-1) WHERE docid = $gotinv{$uid} AND itemid = $itemid");
