@@ -503,6 +503,16 @@
                     <member>contenttype - typ pliku</member>
                </simplelist>
           </sect2>
+          <sect2 id="rtnotes">
+               <title>Helpdesk - notatki ('rtnotes')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>ticketid - identyfikator zg³oszenia</member>
+                    <member>userid - identyfikator u¿ytkownika</member>
+                    <member>body - tre¶æ notatki</member>
+                    <member>createtime - data utworzenia</member>
+               </simplelist>
+          </sect2>
           <sect2 id="rtrights">
                <title>Helpdesk - uprawnienia ('rtrights')</title>
                <simplelist>

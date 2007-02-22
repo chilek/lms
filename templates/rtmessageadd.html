@@ -55,6 +55,15 @@
 		</TD>
 	</TR>
 	<TR CLASS="light">
+	        <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+	                <IMG src="img/mail.gif" alt="">
+	                <B>{t}Notify users:{/t}</B>
+	        </TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<INPUT type="checkbox" class="box light" name="message[notify]" value="1"{if $message.notify} CHECKED{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
 		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
 			<A href="javascript:document.message.submit();" accesskey="s">{t}Submit/Send{/t} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=rtticketview&id={$message.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>

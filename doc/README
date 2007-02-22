@@ -5255,7 +5255,16 @@ Chapter 7. For curious
    contenttype - type of file
      _________________________________________________________________
 
-7.2.33. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.33. Helpdesk - Request Tracking - continued... ('rtnotes')
+
+   id - serial number
+   ticketid - ticket serial number
+   userid - LMS user serial number
+   body - content of note
+   createtime - date of creation
+     _________________________________________________________________
+
+7.2.34. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -5263,7 +5272,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      _________________________________________________________________
 
-7.2.34. LMS-UI Online Configuration ('uiconfig')
+7.2.35. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -5273,7 +5282,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      _________________________________________________________________
 
-7.2.35. Timetable - events ('events')
+7.2.36. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -5288,13 +5297,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      _________________________________________________________________
 
-7.2.36. Timetable - assignments ('eventassignments')
+7.2.37. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      _________________________________________________________________
 
-7.2.37. Sessions ('sessions')
+7.2.38. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -5304,7 +5313,7 @@ Chapter 7. For curious
    content - data
      _________________________________________________________________
 
-7.2.38. Hosts ('hosts')
+7.2.39. Hosts ('hosts')
 
    id - identifier
    name - host name
@@ -5313,7 +5322,7 @@ Chapter 7. For curious
    reload - reload order
      _________________________________________________________________
 
-7.2.39. Daemon configuration - instances ('daemoninstances')
+7.2.40. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -5325,7 +5334,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.40. Daemon configuration - options ('daemonconfig')
+7.2.41. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -5335,7 +5344,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      _________________________________________________________________
 
-7.2.41. Database information ('dbinfo')
+7.2.42. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value

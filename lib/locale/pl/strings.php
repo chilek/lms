@@ -1794,5 +1794,11 @@ $_LANG['Recipient name is required!'] = 'Nazwa odbiorcy jest wymagana!';
 $_LANG['There is only $0 in registry!'] = 'W rejestrze jest tylko $0!';
 $_LANG['Value is required!'] = 'Kwota jest wymagana!';
 $_LANG['Delete (+R)'] = 'Usuwanie (+O)';
+$_LANG['Are you sure, you want to delete that note?'] = 'Czy na pewno chcesz usunąć tą notatkę?';
+$_LANG['Enter note content'] = 'Wprowadź treść notatki';
+$_LANG['New Note'] = 'Nowa notatka';
+$_LANG['Note body not specified!'] = 'Nie podano treści notatki!';
+$_LANG['Notify users:'] = 'Powiadom użytkowników';
+$_LANG['Note content:'] = 'Treść notatki:';
 
 ?>

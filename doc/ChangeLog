@@ -12,6 +12,8 @@ version ? (????-??-??):
   - optimized Devices List generation time (alec)
   - helpdesk: changed queues privilages system (alec)
   - helpdesk: some one-time functions from LMS class moved to modules (alec)
+  - helpdesk: added notes to tickets (alec)
+  - helpdesk: new note/message e-mail notification on demand (alec)
 
 version 1.9.6 Belos (2007-02-16):
 

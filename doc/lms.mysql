@@ -336,7 +336,23 @@ CREATE TABLE rtmessages (
   headers text NOT NULL default '',
   body mediumtext NOT NULL default '',
   createtime int(11) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  INDEX ticketid (ticketid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table  rtnotes
+#
+DROP TABLE IF EXISTS rtnotes;
+CREATE TABLE rtnotes (
+	id int(11) 	     NOT NULL auto_increment,
+	ticketid int(11)     NOT NULL DEFAULT '0',
+        userid int(11)       NOT NULL DEFAULT '0',
+	body text            NOT NULL DEFAULT '',
+	createtime int(11)   NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	INDEX ticketid (ticketid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -729,4 +745,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007022100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007022200');
