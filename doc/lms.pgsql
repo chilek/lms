@@ -515,6 +515,22 @@ CREATE TABLE rtmessages (
   PRIMARY KEY (id)
 );
 
+CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
+
+DROP SEQUENCE "rtnotes_id_seq";
+CREATE SEQUENCE "rtnotes_id_seq";
+DROP TABLE rtnotes;
+CREATE TABLE rtnotes (
+	id integer default nextval('rtnotes_id_seq'::text) NOT NULL,
+	ticketid integer      DEFAULT 0 NOT NULL,
+        userid integer        DEFAULT 0 NOT NULL,
+	body text             DEFAULT '' NOT NULL,
+	createtime integer    DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
+			  
+CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);
+
 DROP SEQUENCE "rtrights_id_seq";
 CREATE SEQUENCE "rtrights_id_seq";
 DROP TABLE rtrights;
@@ -775,4 +791,17 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007022100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007022200');
+    CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
+
+    CREATE SEQUENCE \"rtnotes_id_seq\";
+    CREATE TABLE rtnotes (
+	id integer default nextval('rtnotes_id_seq'::text) NOT NULL,
+	ticketid integer      DEFAULT 0 NOT NULL,
+        userid integer        DEFAULT 0 NOT NULL,
+	body text             DEFAULT '' NOT NULL,
+	createtime integer    DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+    );
+			  
+    CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);

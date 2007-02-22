@@ -2881,7 +2881,7 @@ class LMS
 
 	function GetTicketContents($id)
 	{
-		global $RT_STATES;
+ 		global $RT_STATES;
 		
 		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, 
 				    requestor, state, owner, customerid, cause, '
@@ -2893,13 +2893,21 @@ class LMS
 				LEFT JOIN customers ON (customers.id = customerid)
 				WHERE rttickets.id = ?', array($id));
 		
-		$ticket['messages'] = $this->DB->GetAll('SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
+		$ticket['messages'] = $this->DB->GetAll(
+				'(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
 				    userid, users.name AS username, customerid
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN users ON (users.id = userid)
-				WHERE ticketid = ? ORDER BY createtime ASC', array($id));
+				WHERE ticketid = ?)
+				UNION
+				(SELECT rtnotes.id AS id, NULL, NULL, body, createtime, NULL,
+				    userid, users.name AS username, NULL
+				FROM rtnotes
+				LEFT JOIN users ON (users.id = userid)
+				WHERE ticketid = ?)
+				ORDER BY createtime ASC', array($id, $id));
 		
 		if(!$ticket['customerid'])
 			list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
@@ -3184,7 +3192,7 @@ class LMS
 
 		if ($this->CONFIG['phpui']['smtp_username'])
 		{
-			$params['auth'] = ($this->CONFIG['phpui']['smtp_auth_type'] ? $this->CONFIG['phpui']['smtp_auth_type'] : true);
+			$params['auth'] = (isset($this->CONFIG['phpui']['smtp_auth_type']) ? $this->CONFIG['phpui']['smtp_auth_type'] : true);
 			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
 			$params['password'] = $this->CONFIG['phpui']['smtp_password'];
 		}

@@ -500,6 +500,16 @@
                     <member>contenttype - type of file</member>
                </simplelist>
           </sect2>
+          <sect2 id="rtnotes">
+               <title>Helpdesk - Request Tracking - continued... ('rtnotes')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>ticketid - ticket serial number</member>
+                    <member>userid - LMS user serial number</member>
+                    <member>body - content of note</member>
+                    <member>createtime - date of creation</member>
+               </simplelist>
+          </sect2>
           <sect2 id="rtrights">
                <title>Helpdesk - Request Tracking - continued... ('rtrights')</title>
                <simplelist>

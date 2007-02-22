@@ -128,6 +128,8 @@ if(isset($_POST['message']))
 			}
 		}
 
+		$mailfname = '';
+		
 		if(isset($CONFIG['phpui']['helpdesk_sender_name']) && ($mailfname = $CONFIG['phpui']['helpdesk_sender_name']))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
@@ -144,8 +146,9 @@ if(isset($_POST['message']))
 			
 			if($message['destination'] && $message['userid'])
 			{
-				if($LMS->CONFIG['phpui']['debug_email'])
-					$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
+				if(isset($CONFIG['phpui']['debug_email']))
+					$message['destination'] = $CONFIG['phpui']['debug_email'];
+
 				$recipients = $message['destination'];
 				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
 
@@ -153,14 +156,15 @@ if(isset($_POST['message']))
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 				$headers['To'] = '<'.$message['destination'].'>';
 				$headers['Subject'] = $message['subject'];
-				if ($message['references'])
-					$headers['References'] = $message['references'];
 				$headers['Message-Id'] = $message['messageid'];
 				$headers['Reply-To'] = $headers['From'];
+				
+				if ($message['references'])
+					$headers['References'] = $message['references'];
 
 				$body = $message['body'];
 				if ($message['destination'] == $queue['email'] || $message['destination'] == $user['email'])
-					$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+					$body .= "\n\nhttp".(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 						.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 						.'?m=rtticketview&id='.$message['ticketid'];
 				$files = NULL;
@@ -228,6 +232,53 @@ if(isset($_POST['message']))
 			if($message['userid'] && $addmsg) 
 				MessageAdd($message, $headers, $_FILES['file']);
 		}
+
+		if(isset($message['notify']))
+		{
+			$mailfname = '';
+			
+			if(isset($CONFIG['phpui']['helpdesk_sender_name']))
+			{
+				if($CONFIG['phpui']['helpdesk_sender_name'] == 'queue')
+				{
+					$mailfname = $$queue['name'];
+				}
+				elseif($CONFIG['phpui']['helpdesk_sender_name'] == 'user')
+				{
+					$mailfname = $user['name'];
+				}
+				
+				$mailfname = '"'.$mailfname.'"';
+			}
+
+			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
+				
+			$headers['Date'] = date('r');
+		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+			$headers['Subject'] = sprintf("[RT#%06d] %s", $message['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($message['ticketid'])));
+			$headers['Reply-To'] = $headers['From'];
+
+			$body = $message['body']."\n\nhttp".(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+				.'?m=rtticketview&id='.$message['ticketid'];
+
+			if($recipients = $DB->GetCol('SELECT email FROM users, rtrights 
+						WHERE users.id=userid AND queueid = ? AND email != \'\' 
+							AND (rtrights.rights & 8) = 8 AND users.id != ?', 
+							array($queue['id'], $AUTH->id)))
+			{
+				foreach($recipients as $email)
+				{
+					if(isset($CONFIG['phpui']['debug_email']) && $CONFIG['phpui']['debug_email'])
+						$recip = $CONFIG['phpui']['debug_email'];
+					else
+						$recip = $email;
+					$headers['To'] = '<'.$recip.'>';
+		        
+					echo $LMS->SendMail($recip, $headers, $body);
+				}
+			}
+		}
 		
 		// setting status and ticket owner
 		if(!$LMS->GetTicketOwner($message['ticketid']))
@@ -247,7 +298,7 @@ else
 	$message['ticketid'] = $_GET['ticketid'];
 	$message['customerid'] = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));
 	
-	if($_GET['id'])
+	if(isset($_GET['id']))
 	{
 		$reply = $LMS->GetMessage($_GET['id']); 
 
@@ -260,7 +311,6 @@ else
 			$message['destination'] = $LMS->GetCustomerEmail($message['customerid']);
 	
 		$message['subject'] = 'Re: '.$reply['subject'];
-			
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = $reply['messageid'];
 		
@@ -270,10 +320,10 @@ else
 			foreach($body as $line)
 				$message['body'] .= '> '.$line."\n";
 		}
-	}
 	
-	if(!eregi("[RT#[0-9]{6}]",$message['subject'])) 
-		$message['subject'] .= sprintf(" [RT#%06d]",$message['ticketid']); 
+		if(!eregi("[RT#[0-9]{6}]",$message['subject'])) 
+			$message['subject'] .= sprintf(" [RT#%06d]",$message['ticketid']); 
+	}
 }
 
 $layout['pagetitle'] = trans('New Message');

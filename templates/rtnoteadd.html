@@ -1,0 +1,45 @@
+{include file="header.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<FORM method="POST" name="note" action="?m=rtnoteadd">
+<INPUT type="hidden" name="note[ticketid]" value="{$note.ticketid}">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD WIDTH="1%" CLASS="fall" colspan="2" NOWRAP>
+			<IMG src="img/ticket.gif" alt="">
+			<B>{t 0=$note.ticketid|string_format:"%06d"}Ticket No. $0{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/note.gif" alt="">
+			<B>{t}Note content:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/mail.gif" alt="">
+		        <B>{t}Notify users:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<INPUT type="checkbox" class="box light" name="note[notify]" value="1"{if $note.notify} CHECKED{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
+			<A href="javascript: document.note.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=rtticketview&id={$note.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT language="javaScript">
+<!--
+document.forms['note'].elements['note[body]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html}
