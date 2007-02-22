@@ -54,9 +54,9 @@ elseif(isset($_POST['note']))
 			    array($AUTH->id, $note['ticketid'], $note['body']));
 
 		// setting status
-//		if(!$LMS->GetTicketOwner($note['ticketid']))
-//			$LMS->SetTicketOwner($note['ticketid']);
-		if(!$LMS->GetTicketState($note['ticketid']))
+//		if(!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($note['ticketid'])))
+//    			$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $note['ticketid']));
+		if(!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($note['ticketid'])))
 			$LMS->SetTicketState($note['ticketid'], 1);
 
 		if(isset($note['notify']))

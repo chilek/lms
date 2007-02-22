@@ -63,7 +63,49 @@ if(isset($_POST['ticket']))
 		
 	if(!$error)
 	{
-		$LMS->TicketUpdate($ticketedit);
+		$this->SetTS('rttickets');
+
+		if($ticketedit['state'] == 2)
+		{
+			$DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=?NOW? 
+					WHERE id=?', array($ticketedit['queueid'], 
+						$ticketedit['subject'], 
+						$ticketedit['state'], 
+						$ticketedit['owner'], 
+						$ticketedit['customerid'], 
+						$ticketedit['cause'], 
+						$ticketedit['ticketid']
+						));
+		}
+		else
+		{
+			// if ticket was resolved, set resolvetime=0
+			if($DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($ticket['ticketid'])) == 2)
+			{
+				$DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=0 
+					WHERE id=?', array($ticketedit['queueid'], 
+						$ticketedit['subject'], 
+						$ticketedit['state'], 
+						$ticketedit['owner'], 
+						$ticketedit['customerid'], 
+						$ticketedit['cause'], 
+						$ticketedit['ticketid']
+						));
+			}
+			else
+			{
+				$DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=? 
+					WHERE id=?', array($ticketedit['queueid'], 
+						$ticketedit['subject'], 
+						$ticketedit['state'], 
+						$ticketedit['owner'], 
+						$ticketedit['customerid'], 
+						$ticketedit['cause'], 
+						$ticketedit['ticketid']
+						));
+			}
+		}
+
 		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
 	
