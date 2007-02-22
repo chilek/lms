@@ -2831,7 +2831,7 @@ class LMS
 
 	function TicketExists($id)
 	{
-		return $this->DB->GetOne('SELECT * FROM rttickets WHERE id = ?', array($id));
+		return $this->DB->GetOne('SELECT id FROM rttickets WHERE id = ?', array($id));
 	}
 
 	function TicketAdd($ticket)
@@ -2850,33 +2850,6 @@ class LMS
 		$this->SetTS('rtmessages');
 
 		return $id;
-	}
-
-	function TicketDelete($ticketid)
-	{
-		$ts = time();
-		$this->DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($ticketid));
-		$this->DB->Execute('DELETE FROM rttickets WHERE id=?', array($ticketid));
-		$this->SetTS('rtqueues');
-		$this->SetTS('rttickets');
-	}
-
-	function TicketUpdate($ticket)
-	{
-		$this->SetTS('rttickets');
-		if($ticket['state']==2)
-			return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=?NOW? 
-					WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['cause'], $ticket['ticketid']));
-		else
-		{
-			// if ticket was resolved, set resolvetime=0
-			if($this->GetTicketState($ticket['ticketid'])==2)
-				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=0 
-					WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['cause'], $ticket['ticketid']));
-			else
-				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=? 
-					WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['customerid'], $ticket['cause'], $ticket['ticketid']));
-		}
 	}
 
 	function GetTicketContents($id)
@@ -2921,23 +2894,6 @@ class LMS
 		return $ticket;
 	}
 
-	function GetTicketState($id)
-	{
-		return $this->DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($id));
-	}
-
-	function GetTicketOwner($id)
-	{
-		return $this->DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($id));
-	}
-
-	function SetTicketOwner($ticket, $user=NULL)
-	{
-		if(!$user) $user = $this->AUTH->id;
-		$this->SetTS('rttickets');
-		return $this->DB->Execute('UPDATE rttickets SET owner=? WHERE id = ?', array($user, $ticket));
-	}
-
 	function SetTicketState($ticket, $state)
 	{
 		($state==2 ? $resolvetime = time() : $resolvetime = 0);
@@ -2947,11 +2903,6 @@ class LMS
 		else
 			$this->DB->Execute('UPDATE rttickets SET state=?, owner=?, resolvetime=? WHERE id=?', array($state, $this->AUTH->id, $resolvetime, $ticket));
 		$this->SetTS('rttickets');
-	}
-
-	function GetAttachment($msgid, $filename)
-	{
-		return $this->DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array($msgid, $filename));
 	}
 
 	function GetMessage($id)

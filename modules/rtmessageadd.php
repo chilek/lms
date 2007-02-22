@@ -281,9 +281,9 @@ if(isset($_POST['message']))
 		}
 		
 		// setting status and ticket owner
-		if(!$LMS->GetTicketOwner($message['ticketid']))
-			$LMS->SetTicketOwner($message['ticketid']);
-		if(!$LMS->GetTicketState($message['ticketid']))
+		if(!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
+			$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $message['ticketid']));
+		if(!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
 			$LMS->SetTicketState($message['ticketid'], 1);
 
 		$SESSION->redirect('?m=rtticketview&id='.$message['ticketid']);
