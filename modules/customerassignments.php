@@ -57,8 +57,6 @@ if($_GET['action'] == 'add' && isset($a))
 	{
 		case DISPOSABLE:
 			
-			$a['settlement'] = 0;	
-		
 			if($a['tariffid']!='0')
 			{
 				$a['dateto'] = 0;
@@ -84,7 +82,6 @@ if($_GET['action'] == 'add' && isset($a))
 		
 		case DAILY:
 			$at = 0;
-			$a['settlement'] = 0;
 		break;
 		
 		case WEEKLY:
@@ -234,8 +231,8 @@ if($_GET['action'] == 'add' && isset($a))
 					    'customerid' => $_GET['id'], 
 					    'period' => $period, 
 					    'at' => $at, 
-					    'invoice' => sprintf('%d',$a['invoice']), 
-					    'settlement' => sprintf('%d',$a['settlement']), 
+					    'invoice' => isset($a['invoice']) ? 1 : 0, 
+					    'settlement' => isset($a['settlement']) ? 1 : 0, 
 					    'datefrom' => $from, 
 					    'dateto' => $to, 
 					    'discount' => $a['discount'],

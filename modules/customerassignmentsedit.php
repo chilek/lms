@@ -52,9 +52,7 @@ if(isset($_POST['assignmentedit']))
 	{
 		case DISPOSABLE:
 			
-			$a['settlement'] = 0;
-			
-			if($a['tariffid']!='0')
+			if(isset($a['tariffid']) && $a['tariffid'] != '0')
 			{
     				$a['dateto'] = 0;
 	            		$a['datefrom'] = 0;
@@ -78,7 +76,6 @@ if(isset($_POST['assignmentedit']))
 																																			   
 		case DAILY:
 			$at = 0;
-			$a['settlement'] = 0;
 		break;
 		
 		case WEEKLY:
@@ -193,7 +190,7 @@ if(isset($_POST['assignmentedit']))
 	if($to < $from && $to != 0 && $from != 0)
 		$error['editdateto'] = trans('Incorrect date range!');
 
-	if($a['tariffid']=='0')
+	if(!isset($a['tariffid']) || $a['tariffid'] == '0')
 	{
 		unset($error['editat']);
 		$at = 0;
@@ -205,7 +202,7 @@ if(isset($_POST['assignmentedit']))
 	elseif($a['discount']<0 || $a['discount']>99.99 || !is_numeric($a['discount']))
 		$error['editdiscount'] = trans('Wrong discount value!');
 
-        if($a['tariffid'] != '')
+        if(isset($a['tariffid']) && $a['tariffid'] != '')
     		$a['value'] = 0;
 
 	if($a['liabilityid'])
