@@ -2912,7 +2912,7 @@ class LMS
 		if(!$ticket['customerid'])
 			list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 		else
-			list($ticket['requetoremail']) = sscanf($ticket['requestor'], "<%[^>]");
+			list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 //		$ticket['requestoremail'] = ereg_replace('^.* <(.+@.+)>$','\1',$ticket['requestor']);
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 		$ticket['status'] = $RT_STATES[$ticket['state']];
