@@ -58,18 +58,18 @@ function RTSearch($search, $order='createtime,desc')
 	}
 
 	$where = '';
-	$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            : '');
-	$where .= ($search['customerid']    ? 'AND rttickets.customerid='.$search['customerid'].' '   : '');
-	$where .= ($search['subject']   ? 'AND rttickets.subject ?LIKE?\'%'.$search['subject'].'%\' '       : '');
-	$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
-	$where .= ($search['email']!='' ? 'AND requestor ?LIKE? \'%'.$search['email'].'%\' ' : '');
-	$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
-	if(is_array($search['queue']))
+	$where .= (isset($search['owner']) && $search['owner'] ? 'AND owner='.$search['owner'].' '            : '');
+	$where .= (isset($search['customerid']) && $search['customerid'] ? 'AND rttickets.customerid='.$search['customerid'].' '   : '');
+	$where .= (isset($search['subject']) && $search['subject'] ? 'AND rttickets.subject ?LIKE?\'%'.$search['subject'].'%\' '       : '');
+	$where .= (isset($search['state']) && $search['state'] ? 'AND state='.$search['state'].' '            : '');
+	$where .= (isset($search['email']) && $search['email'] ? 'AND requestor ?LIKE? \'%'.$search['email'].'%\' ' : '');
+	$where .= (isset($search['uptime']) && $search['uptime'] ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
+	if(isset($search['queue']) && is_array($search['queue']))
 		$where .= 'AND queueid IN ('.implode(',',$search['queue']).') ';
-	elseif($search['queue'])
+	elseif(isset($search['queue']) && $search['queue'])
 		$where .= 'AND queueid='.$search['queue'].' ';
 	
-	if($search['name'])
+	if(isset($search['name']) && $search['name'])
 		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
 
 	if($result = $DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
@@ -153,7 +153,7 @@ if(isset($search) || isset($_GET['s']))
 		$queuedata['total'] = $queue['total'];
 		$queuedata['order'] = $queue['order'];		
 		$queuedata['direction'] = $queue['direction'];		
-		$queuedata['queue'] = $search['queue'];
+		$queuedata['queue'] = isset($search['queue']) ? $search['queue'] : 0;
 		
 		unset($queue['total']);
 		unset($queue['order']);		
