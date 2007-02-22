@@ -252,7 +252,7 @@ if($graph == '')
 	$SMARTY->assign('nodemap', $nodemap);
 	$SMARTY->assign('deviceslist', $deviceslist);
 	$SMARTY->assign('start', $start);
-	$SMARTY->assign('type', strtolower($CONFIG['phpui']['map_type']));
+	$SMARTY->assign('type', strtolower(isset($CONFIG['phpui']['map_type']) ? $CONFIG['phpui']['map_type'] : ''));
 	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
 	$SMARTY->assign('gd', function_exists('imagepng'));
 	$SMARTY->assign('ming', function_exists('ming_useswfversion'));
@@ -539,10 +539,10 @@ elseif ($graph == 'flash')
 	$links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
 	if($links) foreach($links as $link)
 	{
-		$src_celx = $devicemap[$link['src']]['x'];
-		$src_cely = $devicemap[$link['src']]['y'];
-		$dst_celx = $devicemap[$link['dst']]['x'];
-		$dst_cely = $devicemap[$link['dst']]['y'];
+		$src_celx = isset($devicemap[$link['src']]['x']) ? $devicemap[$link['src']]['x'] : 0;
+		$src_cely = isset($devicemap[$link['src']]['y']) ? $devicemap[$link['src']]['y'] : 0;
+		$dst_celx = isset($devicemap[$link['dst']]['x']) ? $devicemap[$link['dst']]['x'] : 0;
+		$dst_cely = isset($devicemap[$link['dst']]['y']) ? $devicemap[$link['dst']]['y'] : 0;
 		$src_px = (($src_celx * $cellw) + $celllmargin);
 		$src_py = (($src_cely * $cellh) + $celltmargin);
 		$dst_px = (($dst_celx * $cellw) + $celllmargin);
