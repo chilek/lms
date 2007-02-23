@@ -109,8 +109,11 @@ CLASS="FILENAME"
 >):
 <PRE
 CLASS="SCREEN"
->redirector_bypass on
-redirect_program /path/to/lms-squid</PRE
+># version 2.5
+redirector_bypass on
+redirect_program /path/to/lms-squid
+# version 2.6
+url_rewrite_program /path/to/lms-squid</PRE
 >
 		That informs squid that it should use our redirector for each URL. Next step is to configure our redirector. Open lms-squid file in your favorite editor and change this line:
 <PRE

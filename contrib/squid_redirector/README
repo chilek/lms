@@ -18,10 +18,12 @@ c) konfiguracja serwera wirtualnego
 Ad a.
 
 Do squid.conf dodajemy dwie linie:
-------
+------ wersja 2.5 ------
 redirector_bypass on
 redirect_program /sciezka/do/lms-squid
-------
+------ wersja 2.6 ------
+url_rewrite_program /sciezka/do/lms-squid
+------------------------
 które informują squida aby dla każdego adresu używał naszego redirectora.
 
 Ad b.
