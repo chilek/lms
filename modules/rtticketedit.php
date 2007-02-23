@@ -63,7 +63,7 @@ if(isset($_POST['ticket']))
 		
 	if(!$error)
 	{
-		$this->SetTS('rttickets');
+		$LMS->SetTS('rttickets');
 
 		if($ticketedit['state'] == 2)
 		{
