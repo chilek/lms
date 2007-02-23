@@ -68,8 +68,10 @@ $layout['pagetitle'] = trans('Event Search');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if($event = $_POST['event'])
+if(isset($_POST['event']))
 {
+	$event = $_POST['event'];
+	
 	if($event['datefrom'])
 	{
 		list($year, $month, $day) = explode('/', $event['datefrom']);
@@ -83,10 +85,11 @@ if($event = $_POST['event'])
 	}
 	
 	$eventlist = EventSearch($event);
+	$daylist = array();
 
 	if(sizeof($eventlist))
 		foreach($eventlist as $event)
-			if(!in_array($event['date'], (array) $daylist))
+			if(!in_array($event['date'], $daylist))
 				$daylist[] = $event['date'];
 		
 	$SMARTY->assign('eventlist', $eventlist);
