@@ -5591,8 +5591,11 @@ Chapter 8. Extensions
 8.4.2. Installation
 
    Let's start from configuring squid (squid.conf):
+# version 2.5
 redirector_bypass on
 redirect_program /path/to/lms-squid
+# version 2.6
+url_rewrite_program /path/to/lms-squid
 
    That informs squid that it should use our redirector for each URL.
    Next step is to configure our redirector. Open lms-squid file in your
