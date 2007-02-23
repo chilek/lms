@@ -52,7 +52,7 @@ case "$1" in
     ;;
         
     *)
-	echo -e "$0: Lost option.\nUsage: docgen.sh html|txt"
+	echo -e "$0: Lost option.\nUsage: docgen.sh html|txt|all"
     ;;
 esac
 
