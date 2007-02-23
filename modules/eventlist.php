@@ -79,7 +79,7 @@ else
 	$u = $_GET['u'];
 $SESSION->save('elu', $u);
 
-if($_GET['day'] && $_GET['month'] && $_GET['year'])
+if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
 {
 	$day = $_GET['day'];
 	$month = $_GET['month'];
