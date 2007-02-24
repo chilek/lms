@@ -23,7 +23,7 @@
  *  $Id$
  */
 
-function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
+function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $limit = 0)
 {
 	global $DB, $LMS;
 	
@@ -82,7 +82,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 	$query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download 
 		    FROM stats 
 		    LEFT JOIN nodes ON stats.nodeid=nodes.id 
-		    WHERE '.$dt.' '.$net.
+		    WHERE '.$dt.' '.$net.' '.($customerid ? 'AND customers.id='.$customerid : '').
 		    'GROUP BY nodeid, name, ipaddr '.$order.' '.$limit;
 
 	// get results
@@ -192,6 +192,7 @@ switch($bar)
 			isset($_POST['from']) ? $_POST['from'] : time()-(60*60*24),
 			isset($_POST['to']) ? $_POST['to'] : time(),
 			isset($_POST['net']) ? $_POST['net'] : 0,
+			isset($_POST['customerid']) ? $_POST['customerid'] : 0,
 			isset($_POST['order']) ? $_POST['order'] : '',
 			isset($_POST['limit']) ? $_POST['limit'] : 0);
 	break;
@@ -220,6 +221,8 @@ $SMARTY->assign('starttime',$starttime);
 $SMARTY->assign('startyear',$startyear);
 $SMARTY->assign('endtime',$endtime);
 $SMARTY->assign('endyear',$endyear);
+if (!isset($CONFIG['phpui']['big_networks']) && !chkconfig($CONFIG['phpui']['big_networks']))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('showips', isset($_POST['showips']) ? TRUE : FALSE);
 $SMARTY->assign('bars',$bars);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
