@@ -105,6 +105,26 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG src="img/customer.gif" alt="">
+		</TD>
+		<TD nowrap>
+			<B>{t}Customer:{/t}</B>
+		</TD>
+		<TD CLASS="fright">
+			{if $customers}
+			<SELECT size="1" name="customerid" {tip text="Select customer"}>
+				{section name="customers" loop=$customers}
+				<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+				{/section}
+			</SELECT>
+			{else}
+			<INPUT type="text" name="customerid" value="" size="5" {tip text="Enter customer ID"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.traffic.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+			{/if}
+		</TD>
+	</TR>
 	<TR CLASS="light" {tip text="Select results sorting order"}>
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG src="img/view.gif">
