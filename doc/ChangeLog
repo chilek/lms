@@ -17,6 +17,7 @@ version ? (????-??-??):
   - lms-payments, lmsd/payments: fixed problem with discounts invoicing (alec)
   - traffic filter: we can filtering stats by customer (chilek)
   - added index customerid on table documents (alec)
+  - fixed encoding of subjects in mail sent from LMS-UI (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
