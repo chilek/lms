@@ -244,6 +244,7 @@ CREATE TABLE documents (
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
 CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
+CREATE INDEX documents_customerid_idx ON documents(customerid);
 
 /* -------------------------------------------------------- 
   Structure of table "documentcontents" 
@@ -791,17 +792,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007022200');
-    CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
-
-    CREATE SEQUENCE \"rtnotes_id_seq\";
-    CREATE TABLE rtnotes (
-	id integer default nextval('rtnotes_id_seq'::text) NOT NULL,
-	ticketid integer      DEFAULT 0 NOT NULL,
-        userid integer        DEFAULT 0 NOT NULL,
-	body text             DEFAULT '' NOT NULL,
-	createtime integer    DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
-    );
-			  
-    CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007022600');
