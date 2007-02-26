@@ -3077,6 +3077,7 @@ class LMS
 		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
 		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 		$headers['Mime-Version'] = '1.0';
+		$headers['Subject'] = '=?UTF-8?B?'.base64_encode($headers['Subject']).'?=';
 
 		if ($files)
 		{
