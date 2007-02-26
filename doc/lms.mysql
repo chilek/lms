@@ -167,7 +167,8 @@ CREATE TABLE documents (
 	reference int(11) NOT NULL default '0',
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
-	INDEX numberplanid (numberplanid)
+	INDEX numberplanid (numberplanid),
+	INDEX customerid (customerid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -745,4 +746,4 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007022200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007022600');
