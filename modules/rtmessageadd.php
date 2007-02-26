@@ -279,12 +279,17 @@ if(isset($_POST['message']))
 				}
 			}
 		}
-		
+
 		// setting status and ticket owner
+		if(isset($message['state']))
+                        $LMS->SetTicketState($message['ticketid'], RT_RESOLVED);
+		elseif(!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
+		        $LMS->SetTicketState($message['ticketid'], RT_OPEN);
+		
+		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($message['cause'], $message['ticketid']));
+
 		if(!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
 			$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $message['ticketid']));
-		if(!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
-			$LMS->SetTicketState($message['ticketid'], 1);
 
 		$SESSION->redirect('?m=rtticketview&id='.$message['ticketid']);
 	}
@@ -292,7 +297,11 @@ if(isset($_POST['message']))
 else
 {
 	if($_GET['ticketid'])
+	{
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
+		$message = $DB->GetRow('SELECT id AS ticketid, state, cause FROM rttickets WHERE id = ?', array($_GET['ticketid']));
+	}
+
 	$user = $LMS->GetUserInfo($AUTH->id);
 	
 	$message['ticketid'] = $_GET['ticketid'];

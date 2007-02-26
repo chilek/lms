@@ -34,6 +34,8 @@ if(isset($_GET['ticketid']))
 	        $SESSION->close();
 	        die;
 	}
+	
+	$note = $DB->GetRow('SELECT id AS ticketid, state, cause FROM rttickets WHERE id = ?', array($note['ticketid']));
 }
 elseif(isset($_POST['note']))
 {
@@ -46,19 +48,20 @@ elseif(isset($_POST['note']))
 	{
 		$SESSION->redirect('?m=rtqueuelist');
 	}
-	
+
 	if(!$error)
 	{
 		$DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
 			    VALUES(?, ?, ?, ?NOW?)',
 			    array($AUTH->id, $note['ticketid'], $note['body']));
 
-		// setting status
-//		if(!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($note['ticketid'])))
-//    			$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $note['ticketid']));
-		if(!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($note['ticketid'])))
-			$LMS->SetTicketState($note['ticketid'], 1);
+		if(isset($note['state']))
+			$LMS->SetTicketState($note['ticketid'], RT_RESOLVED);
+		elseif(!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($note['ticketid'])))
+			$LMS->SetTicketState($note['ticketid'], RT_OPEN);
 
+		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($note['cause'], $note['ticketid']));
+		
 		if(isset($note['notify']))
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
@@ -116,10 +119,6 @@ else
 	header('Locaton: ?m=rtqueuelist');
 	die;
 }
-/*
-	if(!eregi("[RT#[0-9]{6}]",$note['subject'])) 
-		$note['subject'] .= sprintf(" [RT#%06d]",$note['ticketid']); 
-*/
 
 $layout['pagetitle'] = trans('New Note');
 
