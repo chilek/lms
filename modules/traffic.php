@@ -157,6 +157,8 @@ if(isset($_GET['bar']))
 		$SESSION->save('trafficorder', $_POST['order']);
 	if(isset($_POST['net']))
 		$SESSION->save('trafficnet', $_POST['net']);
+	if(isset($_POST['customerid']))
+		$SESSION->save('trafficcustid', $_POST['customerid']);
 }
 
 $bar = isset($_GET['bar']) ? $_GET['bar'] : '';
@@ -166,24 +168,28 @@ switch($bar)
 	case 'hour':
 		$traffic = Traffic( time()-(60*60), time(),
 			$SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
+			$SESSION->is_set('trafficcustid') ? $SESSION->get('trafficcustid') : 0,
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'day':
 		$traffic = Traffic( time()-(60*60*24), time(),
 			$SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
+			$SESSION->is_set('trafficcustid') ? $SESSION->get('trafficcustid') : 0,
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'month':
 		$traffic = Traffic( time()-(60*60*24*30), time(),
 			$SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
+			$SESSION->is_set('trafficcustid') ? $SESSION->get('trafficcustid') : 0,
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'year':
 		$traffic = Traffic( time()-(60*60*24*365), time(),
 			$SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0,
+			$SESSION->is_set('trafficcustid') ? $SESSION->get('trafficcustid') : 0,
 			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
