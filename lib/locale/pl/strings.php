@@ -1798,7 +1798,8 @@ $_LANG['Are you sure, you want to delete that note?'] = 'Czy na pewno chcesz usu
 $_LANG['Enter note content'] = 'Wprowadź treść notatki';
 $_LANG['New Note'] = 'Nowa notatka';
 $_LANG['Note body not specified!'] = 'Nie podano treści notatki!';
-$_LANG['Notify users:'] = 'Powiadom użytkowników';
+$_LANG['Notify users:'] = 'Powiadom użytkowników:';
 $_LANG['Note content:'] = 'Treść notatki:';
+$_LANG['Resolve ticket:'] = 'Rozwiąż zgłoszenie:';
 
 ?>
