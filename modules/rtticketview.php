@@ -65,6 +65,13 @@ if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconf
 	$SMARTY->assign('stats', $stats);
 }
 
+if($ticket['customerid'])
+{
+	$customer = $LMS->GetCustomer($ticket['customerid']);
+        $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
+	$SMARTY->assign('customer', $customer);		
+}
+
 $layout['pagetitle'] = trans('Ticket Review: $0',sprintf("%06d",$ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
