@@ -121,7 +121,7 @@ switch($type)
 	default:
 		$layout['pagetitle'] = trans('Reports');
 		
-		if(!isset($CONFIG['phpui']['big_networks']) && !chkconfig($CONFIG['phpui']['big_networks']))
+		if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
 		{
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
 		}

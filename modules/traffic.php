@@ -227,7 +227,7 @@ $SMARTY->assign('starttime',$starttime);
 $SMARTY->assign('startyear',$startyear);
 $SMARTY->assign('endtime',$endtime);
 $SMARTY->assign('endyear',$endyear);
-if (!isset($CONFIG['phpui']['big_networks']) && !chkconfig($CONFIG['phpui']['big_networks']))
+if (!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('showips', isset($_POST['showips']) ? TRUE : FALSE);
 $SMARTY->assign('bars',$bars);

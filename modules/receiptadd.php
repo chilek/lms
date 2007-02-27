@@ -683,8 +683,12 @@ if(isset($list))
 
 $cashreglist = $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id');
 
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+        $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+}
+
 $SMARTY->assign('invoicelist', $invoicelist);
-$SMARTY->assign('customerlist', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetCustomerNames() : NULL);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid'])));
 $SMARTY->assign('cashreglist', $cashreglist);
