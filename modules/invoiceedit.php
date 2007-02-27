@@ -179,7 +179,7 @@ if($action != '')
 
 if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
 {
-        $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+        $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
 $SMARTY->assign('error', $error);
