@@ -356,7 +356,7 @@ switch($action)
 						$receipt['numberplanid'],
 						$receipt['cdate'],
 						$AUTH->id,
-						$recept['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
+						$receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 						$receipt['closed']
 					));
 						
@@ -381,7 +381,7 @@ switch($action)
 						    $receipt['regid']
 					    ));
 			}
-			
+
 			$DB->CommitTrans();
 		}
 		else
@@ -415,7 +415,7 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 {
         $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
-	
+
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('cashreglist', $cashreglist);
 $SMARTY->assign('cashregcount', sizeof($cashreglist));
