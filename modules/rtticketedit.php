@@ -193,10 +193,14 @@ $layout['pagetitle'] = trans('Ticket Edit: $0',sprintf("%06d",$ticket['ticketid'
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+        $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
+}
+
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('userlist', $LMS->GetUserNames());
-$SMARTY->assign('customerlist', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetAllCustomerNames() : NULL);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketedit.html');
 

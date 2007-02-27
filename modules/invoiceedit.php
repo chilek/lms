@@ -177,12 +177,16 @@ if($action != '')
 	$SESSION->redirect('?m=invoiceedit');
 }
 
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+        $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+}
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('customers', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetCustomerNames() : NULL);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoiceedit.html');
 

@@ -263,14 +263,17 @@ if(isset($list))
 	else
 		$covenantlist = $list;
 
-$SMARTY->assign('covenantlist', $covenantlist);
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+        $SMARTY->assign('customers', $LMS->GetCustomerNames());
+}
 
+$SMARTY->assign('covenantlist', $covenantlist);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('customers', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetCustomerNames() : NULL);
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE));
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoicenew.html');

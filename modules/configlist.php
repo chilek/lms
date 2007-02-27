@@ -247,6 +247,10 @@ function GetConfigList($order='var,asc')
 				case 'helpdesk_stats':
 					$config[$idx]['description'] = trans('Adds helpdesk requests causes stats on ticket view and print pages. Default: true');
 				break;					
+
+				case 'helpdesk_customerinfo':
+					$config[$idx]['description'] = trans('Adds customer basic informations on ticket view and in notifications. Default: true');
+				break;					
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');

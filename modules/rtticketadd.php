@@ -122,10 +122,14 @@ $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+        $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
+}
+
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('customerid', isset($ticket['customerid']) ? $ticket['customerid'] : $customerid);
-$SMARTY->assign('customerlist', !chkconfig($CONFIG['phpui']['big_networks']) ? $LMS->GetAllCustomerNames() : NULL);
 $SMARTY->display('rtticketadd.html');
 
 ?>

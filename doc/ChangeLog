@@ -24,6 +24,7 @@ version ? (????-??-??):
   - traffic filter: we can filtering stats by customer (chilek)
   - added index customerid on table documents (alec)
   - fixed encoding of subjects in mail sent from LMS-UI (alec)
+  - fixed 'big_networks' option testing (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
