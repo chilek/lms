@@ -2085,6 +2085,10 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        Adds requests causes stats on ticket view and print pages.
        Default: enabled.
        Example: helpdesk_stats = true
+     * helpdesk_customerinfo
+       Adds customer basic informations on ticket view and in
+       notifications. Default: enabled.
+       Example: helpdesk_customerinfo = false
      * to_words_short_format
        Specify format of verbal amounts representation (on invoices). For
        value "1" verbal expand of 123,15 will be "one two thr 15/100".
