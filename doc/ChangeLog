@@ -17,6 +17,9 @@ version ? (????-??-??):
   - helpdesk: simplified tickets resolving - now is possible to resolve tickets
     with cause setting while new message/note addition (alec)
   - helpdesk: added customer info in ticket view (alec)
+  - helpdesk: added option 'helpdesk_customerinfo' (alec)
+  - helpdesk: sending notifications when ticket's queue has changed and option
+    'newticket_notify' is set (alec) 
   - lms-payments, lmsd/payments: fixed problem with discounts invoicing (alec)
   - traffic filter: we can filtering stats by customer (chilek)
   - added index customerid on table documents (alec)

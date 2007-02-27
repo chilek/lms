@@ -1185,6 +1185,12 @@ MISC_OTHER="-A -x -j"
 		oraz na jego wydruku. Domy¶lnie: w³±czona.</para>
 		<para>Przyk³ad:     <prompt>helpdesk_stats = 0</prompt></para>
         </listitem>
+	<listitem>
+		<para>helpdesk_customerinfo</para>
+		<para>Dodaje podstawowe informacje o kliencie na stronie informacji o zg³oszeniu
+		oraz w tre¶ci powiadomienia. Domy¶lnie: w³±czona.</para>
+		<para>Przyk³ad:     <prompt>helpdesk_customerinfo = 0</prompt></para>
+        </listitem>
         <listitem>
             <para>to_words_short_format</para>
             <para>Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
