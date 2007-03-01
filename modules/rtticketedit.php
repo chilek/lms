@@ -142,12 +142,11 @@ if(isset($_POST['ticket']))
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$ticket['ticketid'];
 
-			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) 
-				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($ticket['ticketid']))))
+			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) && $ticketedit['customerid'])
 			{	
 				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						email, phone1, phone2, phone3, address, zip, city
-						FROM customers WHERE id = ?', array($cid));
+						FROM customers WHERE id = ?', array($ticketedit['customerid']));
 				
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";

@@ -95,6 +95,19 @@ if(isset($_POST['ticket']))
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$id;
 
+			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) && $ticket['customerid'])
+			{	
+				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+						email, phone1, phone2, phone3, address, zip, city
+						FROM customers WHERE id = ?', array($ticket['customerid']));
+				
+				$body .= "\n\n-- \n";
+				$body .= trans('Customer:').' '.$info['customername']."\n";
+				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+				$body .= trans('Phone:').' '.$info['phone1'].' '.$info['phone2'].' '.$info['phone3']."\n";
+				$body .= trans('E-mail:').' '.$info['email'];
+			}
+
 			if($recipients = $DB->GetCol('SELECT email FROM users, rtrights 
 						WHERE users.id=userid AND queueid=? AND email!=\'\' 
 							AND (rtrights.rights & 8) = 8',array($queue)))
