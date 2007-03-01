@@ -61,7 +61,7 @@ function RTSearch($search, $order='createtime,desc')
 	$where .= (isset($search['owner']) && $search['owner'] ? 'AND owner='.$search['owner'].' '            : '');
 	$where .= (isset($search['customerid']) && $search['customerid'] ? 'AND rttickets.customerid='.$search['customerid'].' '   : '');
 	$where .= (isset($search['subject']) && $search['subject'] ? 'AND rttickets.subject ?LIKE?\'%'.$search['subject'].'%\' '       : '');
-	$where .= (isset($search['state']) && $search['state'] ? 'AND state='.$search['state'].' '            : '');
+	$where .= (isset($search['state']) && $search['state'] != '' ? 'AND state='.$search['state'].' '            : '');
 	$where .= (isset($search['email']) && $search['email'] ? 'AND requestor ?LIKE? \'%'.$search['email'].'%\' ' : '');
 	$where .= (isset($search['uptime']) && $search['uptime'] ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
 	if(isset($search['queue']) && is_array($search['queue']))
