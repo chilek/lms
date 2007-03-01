@@ -92,13 +92,18 @@ if(sizeof($aliasadd))
 if(isset($_GET['accountid']))
 	$aliasadd['accountid'] = $_GET['accountid'];
 
+$accountlist = $DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain 
+			FROM passwd, domains 
+			WHERE domainid = domains.id 
+			ORDER BY login, domains.name');
+
 $layout['pagetitle'] = trans('New Alias');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('aliasadd', $aliasadd);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('accountlist', $DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
+$SMARTY->assign('accountlist', $accountlist);
 $SMARTY->display('aliasadd.html');
 
 ?>
