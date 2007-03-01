@@ -39,6 +39,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 	
 	$disabled = ($group == 5) ? 1 : 0;
 	$indebted = ($group == 6) ? 1 : 0;
+	$notindebted = ($group == 7) ? 1 : 0;
 	
 	if($group>3) $group = 0;
 	
@@ -59,17 +60,26 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 	{
 		if($disabled)
 			$access = $DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
-			
+		
+		$email2 = array();
+		
 		foreach($emails as $idx => $row)
 		{
 			if($disabled && $access[$row['id']])
 				$emails2[] = $row;
 			elseif($indebted)
+			{
 				if($row['balance'] < 0)
 					$emails2[] = $row;
+			}
+			elseif($notindebted)
+			{
+				if($row['balance'] >= 0)
+					$emails2[] = $row;
+			}
 		}
 	
-		if($disabled || $indebted)
+		if($disabled || $indebted || $notindebted)
 			$emails = $emails2;
 	}
 
@@ -82,7 +92,7 @@ if(isset($_POST['mailing']))
 {
 	$mailing = $_POST['mailing'];
 
-	if($mailing['group'] < 0 || $mailing['group'] > 6)
+	if($mailing['group'] < 0 || $mailing['group'] > 7)
 		$error['group'] = trans('Incorrect customers group!');
 
 	if($mailing['sender']=='')
