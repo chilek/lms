@@ -295,7 +295,7 @@ if(isset($_POST['message']))
 						$recip = $email;
 					$headers['To'] = '<'.$recip.'>';
 		        
-					echo $LMS->SendMail($recip, $headers, $body);
+					$LMS->SendMail($recip, $headers, $body);
 				}
 			}
 		}
