@@ -59,9 +59,9 @@
 				<TR CLASS="LIGHT">
 					<TD CLASS="fleft">
 						<SELECT size="20" name="setwarnings[mcustomerid][]" multiple {tip text="Select customers"}>
-							{section name=customerlist loop=$customerlist}
-							<OPTION value="{$customerlist[customerlist].id}" {if $customerlist[customerlist].warning}CLASS="red"{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
-							{/section}
+							{foreach from=$customerlist key=key item=item}
+							<OPTION value="{$key}" {if $item.warning}CLASS="red"{/if}{if isset($selected.$key)} SELECTED{/if}>{$item.customername|truncate:40:"...":true} ({$key|string_format:"%04d"})</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 					<TD CLASS="fright" COLSPAN="2">

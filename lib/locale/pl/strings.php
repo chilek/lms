@@ -1802,5 +1802,6 @@ $_LANG['Notify users:'] = 'Powiadom użytkowników:';
 $_LANG['Note content:'] = 'Treść notatki:';
 $_LANG['Resolve ticket:'] = 'Rozwiąż zgłoszenie:';
 $_LANG['Adds customer basic informations on ticket view and in notifications. Default: true'] = 'Dodaje podstawowe informacje o kliencie w widoku zgłoszenia oraz w powiadomieniach. Domyślnie: włączona';
+$_LANG['Set Message'] = 'Ustaw wiadomość';
 
 ?>
