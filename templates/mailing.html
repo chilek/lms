@@ -49,6 +49,7 @@
 				<option value="4"{if $mailing.group == "4"} SELECTED{/if}>{t}deleted<!plural>{/t}</option>
 				<option value="5"{if $mailing.group == "5"} SELECTED{/if}>{t}disconnected<!plural>{/t}</option>
 				<option value="6"{if $mailing.group == "6"} SELECTED{/if}>{t}in debt{/t}</option>
+				<option value="7"{if $mailing.group == "7"} SELECTED{/if}>{t}not in debt{/t}</option>
 			</SELECT>&nbsp;
 			{t}Network:{/t}
 			<SELECT NAME="mailing[network]" {tip trigger="network" text="Select IP network"}>

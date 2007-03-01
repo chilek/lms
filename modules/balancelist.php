@@ -90,7 +90,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 			}
 
 			$balancelist[$id] = $row;
-			$balancelist[$id]['user'] = $userlist[$row['userid']]['name'];
+			$balancelist[$id]['user'] = isset($userlist[$row['userid']]['name']) ? $userlist[$row['userid']]['name'] : '';
 			$balancelist[$id]['before'] = isset($balancelist[$id-1]['after']) ? $balancelist[$id-1]['after'] : 0;
 			$balancelist[$id]['value'] = $row['value'];
 
