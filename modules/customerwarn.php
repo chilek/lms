@@ -53,15 +53,43 @@ if(isset($setwarnings['mcustomerid']))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+if(isset($_GET['search']))
+{
+	$SESSION->restore('customersearch', $customersearch);
+	$SESSION->restore('uslo', $o);
+	$SESSION->restore('usls', $s);
+	$SESSION->restore('usln', $n);
+	$SESSION->restore('uslg', $g);
+	$SESSION->restore('uslk', $k);
+
+	$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, $customersearch, NULL, $k);
+	
+	unset($customerlist['total']);
+	unset($customerlist['state']);
+	unset($customerlist['network']);
+	unset($customerlist['customergroup']);
+	unset($customerlist['direction']);
+	unset($customerlist['order']);
+	unset($customerlist['below']);
+	unset($customerlist['over']);
+
+	$selected = array();
+	if($customerlist)
+		foreach($customerlist as $row)
+			$selected[$row['id']] = $row['id'];
+	
+	$SMARTY->assign('selected', $selected);
+}
 
 $layout['pagetitle'] = trans('Warnings');
 
-$customerlist = $DB->GetAll(
+$customerlist = $DB->GetAllByKey(
 		    'SELECT customers.id AS id, MAX(warning) AS warning, '.
 		    $DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername 
-		    FROM customers LEFT JOIN nodes ON customers.id = ownerid WHERE deleted = 0 
-		    GROUP BY customers.id, lastname, customers.name ORDER BY customername ASC');
+		    FROM customers LEFT JOIN nodes ON customers.id = ownerid 
+		    WHERE deleted = 0 
+		    GROUP BY customers.id, lastname, customers.name 
+		    ORDER BY customername ASC', 'id');
 
 $SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
 $SMARTY->assign('warnon', $SESSION->get('warnon'));
@@ -70,4 +98,3 @@ $SMARTY->assign('customerlist',$customerlist);
 $SMARTY->display('customerwarnings.html');
 
 ?>
-

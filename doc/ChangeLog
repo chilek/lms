@@ -25,6 +25,8 @@ version ? (????-??-??):
   - added index customerid on table documents (alec)
   - fixed encoding of subjects in mail sent from LMS-UI (alec)
   - fixed 'big_networks' option testing (alec)
+  - now we can set message for customers listed in Customer Search Results
+    list (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
