@@ -49,7 +49,7 @@ if(isset($_POST['qscustomer']) && $_POST['qscustomer']) {
 switch($mode)
 {
 	case 'customer':
-		if($_GET['ajax']==1) // support for AutoSuggest
+		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
 			$candidates = $DB->GetAll('SELECT id, lastname, name, email, phone1, phone2, phone3, deleted FROM customers WHERE id ?LIKE? \''.$search.'%\' OR lower(lastname) ?LIKE? lower(\'%'.$search.'%\') OR lower(name) ?LIKE? lower(\''.$search.'%\') OR lower(email) ?LIKE? lower(\'%'.$search.'%\') OR phone1 ?LIKE? \''.$search.'%\' OR phone2 ?LIKE? \''.$search.'%\' OR phone3 ?LIKE? \''.$search.'%\' ORDER by deleted, lastname, name, email, phone1 LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
@@ -103,7 +103,7 @@ switch($mode)
 	break;
 
 	case 'node':
-		if($_GET['ajax']==1) // support for AutoSuggest
+		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
 			$candidates = $DB->GetAll('SELECT id, name, inet_ntoa(ipaddr) as ip, inet_ntoa(ipaddr_pub) AS ip_pub, mac FROM nodes WHERE id ?LIKE? \''.$search.'%\' OR lower(name) ?LIKE? lower(\''.$search.'%\') OR inet_ntoa(ipaddr) ?LIKE? \'%'.$search.'%\' OR inet_ntoa(ipaddr_pub) ?LIKE? \'%'.$search.'%\' OR lower(mac) ?LIKE? lower(\'%'.$search.'%\') ORDER BY name LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
@@ -151,7 +151,7 @@ switch($mode)
 	break;
 	
 	case 'ticket':
-		if($_GET['ajax']==1) // support for AutoSuggest
+		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
 			$candidates = $DB->GetAll('SELECT rttickets.id, rttickets.subject, rttickets.requestor, customers.name, customers.lastname FROM rttickets LEFT JOIN customers on rttickets.customerid=customers.id WHERE rttickets.id ?LIKE? \''.$search.'%\' OR lower(rttickets.subject) ?LIKE? lower(\'%'.$search.'%\') OR lower(rttickets.requestor) ?LIKE? lower(\'%'.$search.'%\') OR lower(customers.name) ?LIKE? lower(\''.$search.'%\') OR lower(customers.lastname) ?LIKE? lower(\''.$search.'%\') ORDER BY rttickets.subject, rttickets.id, customers.lastname, customers.name, rttickets.requestor LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();

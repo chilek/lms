@@ -2089,6 +2089,10 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        Adds customer basic informations on ticket view and in
        notifications. Default: enabled.
        Example: helpdesk_customerinfo = false
+     * ticket_template_file
+       Helpdesk ticket printout template file. Default:
+       rtticketprint.html.
+       Example: ticket_template_file = ../mytemplates/ticket.html
      * to_words_short_format
        Specify format of verbal amounts representation (on invoices). For
        value "1" verbal expand of 123,15 will be "one two thr 15/100".

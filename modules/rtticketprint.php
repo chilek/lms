@@ -48,11 +48,17 @@ if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconf
         $SMARTY->assign('stats', $stats);
 }
 
+if($ticket['customerid'])
+{
+	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
+	$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($ticket['customerid']));
+}
+
 $layout['pagetitle'] = trans('Ticket No. $0',sprintf("%06d",$ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
-$SMARTY->display('rtticketprint.html');
+$SMARTY->display($CONFIG['phpui']['ticket_template_file']);
 
 ?>
