@@ -251,6 +251,10 @@ function GetConfigList($order='var,asc')
 				case 'helpdesk_customerinfo':
 					$config[$idx]['description'] = trans('Adds customer basic informations on ticket view and in notifications. Default: true');
 				break;					
+
+				case 'ticket_template_file':
+					$config[$idx]['description'] = trans('Helpdesk ticket printout template file. Default: rtticketprint.html');
+				break;					
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
