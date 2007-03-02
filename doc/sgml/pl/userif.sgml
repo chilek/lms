@@ -1191,6 +1191,11 @@ MISC_OTHER="-A -x -j"
 		oraz w tre¶ci powiadomienia. Domy¶lnie: w³±czona.</para>
 		<para>Przyk³ad:     <prompt>helpdesk_customerinfo = 0</prompt></para>
         </listitem>
+	<listitem>
+		<para>ticket_template_file</para>
+		<para>Szablon wydruku zg³oszenia. Domy¶lnie: rtticketprint.html.</para>
+		<para>Przyk³ad:     <prompt>ticket_template_file = ../mytemplates/ticket.html</prompt></para>
+        </listitem>
         <listitem>
             <para>to_words_short_format</para>
             <para>Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"

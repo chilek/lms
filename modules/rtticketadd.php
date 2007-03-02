@@ -25,14 +25,14 @@
  */
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$customerid = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
+$ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
 
 if(isset($_POST['ticket']))
 {
 	$ticket = $_POST['ticket'];
 	$queue = $ticket['queue'];
 
-	if($ticket['subject']=='' && $ticket['body']=='')
+	if($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid'])
 	{
 		$SESSION->redirect('?m=rtticketadd&id='.$queue);
 	}
@@ -140,9 +140,14 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
         $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }
 
+if(isset($ticket['customerid']) && $ticket['customerid'])
+{
+	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
+}
+
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('customerid', isset($ticket['customerid']) ? $ticket['customerid'] : $customerid);
+$SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->display('rtticketadd.html');
 
 ?>
