@@ -255,6 +255,9 @@
 				<A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove that customer from database?\n\nIf that customer have any computers, they will be automatically removed from database too, and informations about them irreversible losed!{/t}')">{t}Delete{/t} <img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
 				</NOBR>
 			{/if}
+			{if $info_link}		    
+				<A href="?m=customerinfo&id={$customerinfo.id}">{t}Info{/t} <img src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
+			{/if}
 		</TD>
 	</TR>
 </TABLE>
