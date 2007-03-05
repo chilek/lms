@@ -26,7 +26,7 @@
 	<tr class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%">
 			<IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]">
-			<IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]">
+			<IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}{t}Enable warning{/t}{else}{t}Disable warning{/t}{/if} ]">
 		</TD>
 		<TD WIDTH="99%" onClick="parent.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 			<B>{$customernodes[customernodes].name}</B><BR>

@@ -86,7 +86,7 @@
 			{if $aliaslist[aliaslist].expdate}{$aliaslist[aliaslist].expdate|date_format:"%Y/%m/%d"}{/if}</nobr>
 		</TD>
 		<TD class="fright" align="right">
-			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t 0=$aliaslist[aliaslist].login}Are you sure, you want to delete alias: \'$0\'?{/t}')"><IMG src="img/delete.gif"  ALT="[ {t}Delete{/t} ]"></A>
+			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t 0=$aliaslist[aliaslist].login}Are you sure, you want to delete alias: \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}

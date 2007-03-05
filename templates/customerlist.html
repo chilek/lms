@@ -85,11 +85,11 @@
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status eq 3}
 					{if $customerlist[customerlist].nodeac eq 1}
-						<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG SRC="img/access.gif" ALT="[ {t}Disconnect All{/t} ]"></A>
+						<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="[ {t}Disconnect All{/t} ]" title="[ {t}Disconnect All{/t} ]"></A>
 					{else}
 						{if $customerlist[customerlist].nodeac eq 2}
-							<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG SRC="img/mixaccess.gif" ALT="[ {t}Disconnect All{/t} ]"></A>
-						{else}<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG SRC="img/noaccess.gif" ALT="[ {t}Connect All{/t} ]"></A>
+							<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="[ {t}Disconnect All{/t} ]" title="[ {t}Disconnect All{/t} ]"></A>
+						{else}<A HREF="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG src="img/noaccess.gif" alt="[ {t}Connect All{/t} ]" title="[ {t}Connect All{/t} ]"></A>
 						{/if}
 					{/if}
 				{/if}
@@ -97,18 +97,18 @@
 			{if $customerlist[customerlist].warncount}
 				{if $customerlist[customerlist].status eq 3}
 					{if $customerlist[customerlist].nodewarn eq 1}
-						<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" ALT="[ {t}Disable Warnings for All{/t} ]"></A>
+						<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="[ {t}Disable Warnings for All{/t} ]" title="[ {t}Disable Warnings for All{/t} ]"></A>
 					{else}
 						{if $customerlist[customerlist].nodewarn eq 2}
-							<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable Warnings for All{/t} ]"></A>
-						{else}<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" ALT="[ {t}Enable Warnings for All{/t} ]"></A>
+							<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable Warnings for All{/t} ]" title="[ {t}Disable Warnings for All{/t} ]"></A>
+						{else}<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="[ {t}Enable Warnings for All{/t} ]" title="[ {t}Enable Warnings for All{/t} ]"></A>
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnCLick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> 
-			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A> 
-			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
+			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnCLick="return confirmLink(this, '{t 0=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
+			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 			</NOBR>
 		</TD>
 	</TR>

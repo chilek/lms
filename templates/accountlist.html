@@ -96,10 +96,10 @@
 		</TD>
 		<TD class="fright" align="right">
 			<NOBR>
-			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t 0=$accountlist[accountlist].login}Are you sure, you want to delete account \'$0\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> 
-			<A href="?m=accountedit&id={$accountlist[accountlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A> 
-			<A href="?m=accountedit&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" ALT="[ {t}Change password{/t} ]"></A> 
-			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" ALT="[ {t}Create alias{/t} ]"></A> 
+			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t 0=$accountlist[accountlist].login}Are you sure, you want to delete account \'$0\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" title="[ {t}Delete{/t} ]" alt="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=accountedit&id={$accountlist[accountlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
+			<A href="?m=accountedit&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" alt="[ {t}Change password{/t} ]" title="[ {t}Change password{/t} ]"></A> 
+			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" alt="[ {t}Create alias{/t} ]" title="[ {t}Create alias{/t} ]"></A> 
 			</NOBR>
 		</TD>
 	</TR>

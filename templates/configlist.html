@@ -14,7 +14,7 @@
 			{t}Comment:{/t}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt=""> </A>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -39,9 +39,9 @@
 			{if $configlist[configlist].usercomment != ''}<BR><B>{t}Comment:{/t}</B> {$configlist[configlist].usercomment|truncate:400:"..."}{/if}
 		</TD>
 		<TD class="fright" align="right" nowrap>
-			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>&nbsp;
-			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>
-			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t 0=$configlist[configlist].var}Are you sure, you want to delete option \'$0\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" title="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
+			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t 0=$configlist[configlist].var}Are you sure, you want to delete option \'$0\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
