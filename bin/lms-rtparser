@@ -105,6 +105,7 @@ my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost';
 my $auto_open = $ini->val('rt', 'auto_open') || 0;
 my $tmp_dir = $ini->val('rt', 'tmp_dir') || '';
 my $notify = $ini->val('rt', 'newticket_notify') || 0;
+my $customerinfo = $ini->val('rt', 'include_customerinfo') || 1;
 my $lms_url = $ini->val('rt', 'lms_url') || 'http://localhost/lms/';
 my $autoreply_from = $ini->val('rt', 'mail_from') || '';
 my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
@@ -230,17 +231,20 @@ $mh_references =~ s/\'/\\\'/g;
 
 my $dbase;
 my $utsfmt;
+my $custname;
 
 if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->do("SET NAMES utf8");
 	$utsfmt = "UNIX_TIMESTAMP()";
+	$custname = "CONCAT(UPPER(lastname), ' ', name) AS customername";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+	$custname = "UPPER(lastname) || ' ' || name AS customername";
 }
 else
 {
@@ -443,8 +447,28 @@ if(! $prev_tid) # generate new ticket if previous not found
 			$smtp->datasend("Subject: [RT#$ticketid] $mail_mh_subject\n");
 			$smtp->datasend("X-Mailer: LMS/RT v.$_version\n");
 			$smtp->datasend("\n");
-			$smtp->datasend("$lms_url/?m=rtticketview&id=$ticket_id\n\n");
 			$smtp->datasend("$orig_mailbody");
+			$smtp->datasend("\n\n");
+			$smtp->datasend("$lms_url/?m=rtticketview&id=$ticket_id");
+		
+			if($reqcustid && $customerinfo)
+			{
+				my $dbqc = $dbase->prepare("SELECT id, $custname,
+					    email, phone1, phone2, phone3, address, zip, city
+					    FROM customers WHERE id = $reqcustid");
+				$dbqc->execute();
+				if(my $customer = $dbqc->fetchrow_hashref())
+				{
+					$smtp->datasend("\n\n-- \n");
+					$smtp->datasend("$customer->{'customername'}\n");
+					$smtp->datasend("$customer->{'address'}, $customer->{'zip'} $customer->{'city'}\n");
+					$smtp->datasend("$customer->{'phone1'} $customer->{'phone2'} $customer->{'phone3'}\n");
+					$smtp->datasend("$customer->{'email'}");
+				}
+				$dbqc->finish();
+			}
+		
+			$smtp->datasend("\n\n");
 			$smtp->dataend();
 			$smtp->quit;	
 		}

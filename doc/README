@@ -3058,6 +3058,10 @@ endif
        to the notification about new ticket. Default:
        http://localhost/lms/.
        Example: lms_url = https://lms.domain.pl/
+     * include_customerinfo
+       Adds basic customer informations in new ticket notification
+       footnote. Default: On.
+       Example: include_customerinfo = 0
      _________________________________________________________________
 
 Chapter 5. Configuration file generator (lms-mgc)

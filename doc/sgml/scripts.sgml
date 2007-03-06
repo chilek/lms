@@ -1151,6 +1151,12 @@ Following parameters are valid:</para>
 		    to the notification about new ticket. Default: http://localhost/lms/.</para>
 		    <para>Example:	<prompt>lms_url = https://lms.domain.pl/</prompt></para>
 		</listitem>
+		<listitem>
+		    <para>include_customerinfo</para>
+		    <para>Adds basic customer informations in new ticket notification footnote.
+		    Default: On.</para>
+		    <para>Example:	<prompt>include_customerinfo = 0</prompt></para>
+		</listitem>
 	    </itemizedlist>
     </sect2>
     </sect1>
