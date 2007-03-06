@@ -2,14 +2,14 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $newreceipt}
-<SCRIPT>window.open('?m=receipt&id={$newreceipt}&which={$which}');</SCRIPT>
+<SCRIPT type="text/javascript">window.open('?m=receipt&id={$newreceipt}&which={$which}');</SCRIPT>
 {/if}
 {if $newreceipt2}
-<SCRIPT>window.open('?m=receipt&id={$newreceipt2}&which={$which}');</SCRIPT>
+<SCRIPT type="text/javascript">window.open('?m=receipt&id={$newreceipt2}&which={$which}');</SCRIPT>
 {/if}
 {include file="calendar_js.html"}
 {literal}
-<SCRIPT language="JavaScript">
+<SCRIPT type="text/javascript">
 	<!--
 	function CheckAll()
 	{
@@ -152,11 +152,11 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{if !$receipt.closed}
-			<A HREF="?m=receiptadv&id={$receipt.id}"><IMG SRC="img/eraser.gif" ALT="[ {t}Settle advance{/t} ]" {tip text="Settle advance"}></A>
+			<A HREF="?m=receiptadv&id={$receipt.id}"><IMG SRC="img/eraser.gif" ALT="[ {t}Settle advance{/t} ]" title="[ {t}Settle advance{/t} ]"></A>
 			{/if}
-			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]"></A>
-			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A onClick="return confirmLink(this, '{t 0=$receipt.number}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]"></A>
+			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A onClick="return confirmLink(this, '{t 0=$receipt.number}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
 		</TD>
@@ -217,7 +217,7 @@
 	</TR>
 </TABLE>
 </FORM>
-<SCRIPT>
+<SCRIPT type="text/javascript">
 <!--
 var cal1 = new calendar(document.page.elements['from']);
 cal1.time_comp = false;

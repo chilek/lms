@@ -36,8 +36,8 @@
 			{$host.description}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=hostedit&id={$host.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A HREF="?m=hostdel&id={$host.id}" OnClick="return confirmLink(this, '{t 0=$host.name}Are you sure, you want to remove host \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=hostedit&id={$host.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=hostdel&id={$host.id}" OnClick="return confirmLink(this, '{t 0=$host.name}Are you sure, you want to remove host \'$0\' and all assigned configuration?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}

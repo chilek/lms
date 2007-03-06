@@ -48,8 +48,8 @@
 			{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"%x"}{/if}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=taxrateedit&id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A href="?m=taxratedel&id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t 0=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+			<A href="?m=taxrateedit&id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=taxratedel&id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t 0=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}

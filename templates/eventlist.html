@@ -97,12 +97,12 @@
 		</TD>
 		<TD width="1%" class="fright" align="right" nowrap>
 			{if $eventlist[eventlist].closed}
-			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {t}Open{/t} ]"></A> 
+			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {t}Open{/t} ]" title="[ {t}Open{/t} ]"></A> 
 			{else}
-			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {t}Close{/t} ]"></A> 
+			<A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {t}Close{/t} ]" title="[ {t}Close{/t} ]"></A> 
 			{/if}
-			<A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that event?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A> 
-			<A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>&nbsp; 
+			<A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that event?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A> 
+			<A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>&nbsp; 
 		</TD>
 	    </TR>
 	    {/if}

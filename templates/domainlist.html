@@ -61,8 +61,8 @@
 			<IMG src="img/info.gif" alt=""> {$domainlist[domainlist].description}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=domainedit&id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A href="?m=domaindel&id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t 0=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$0\' and all accounts in that domain?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
+			<A href="?m=domainedit&id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=domaindel&id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t 0=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$0\' and all accounts in that domain?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
