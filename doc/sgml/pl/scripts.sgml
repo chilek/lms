@@ -1158,6 +1158,13 @@ endif
 		    tego zg³oszenia. Domy¶lnie: http://localhost/lms/.</para>
 		    <para>Przyk³ad:	<prompt>lms_url = https://lms.domena.pl/</prompt></para>
 		</listitem>
+		<listitem>
+			<para>include_customerinfo</para>
+			<para>Do powiadomienia o nowym zg³oszeniu zostaj± za³±czone podstawowe 
+			dane klienta, je¿eli zosta³ on rozpoznany po adresie mailowym. 
+			Domy¶lnie: w³±czona.</para>
+			<para>Przyk³ad:	<prompt>include_customerinfo = 0</prompt></para>
+		</listitem>
 	    </itemizedlist>
     </sect2>
     </sect1>

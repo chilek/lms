@@ -31,6 +31,7 @@ version ? (????-??-??):
   - helpdesk: added option 'ticket_template_file' (alec)
   - helpdesk: added customer informations box in New Ticket page after customer
     selection and form submit (alec)
+  - lms-rtparser: added option 'include_customerinfo' (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
