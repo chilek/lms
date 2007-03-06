@@ -30,9 +30,9 @@
 			{$option.description|escape|replace:"\n":"<BR>"}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemonconfigedit&id={$option.id}&statuschange=1"><IMG SRC="img/wait.gif" ALT="[ {if $option.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
-			<A HREF="?m=daemonconfigedit&id={$option.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A HREF="?m=daemonconfigdel&id={$option.id}" OnClick="return confirmLink(this, '{t 0=$option.var}Are you sure, you want to remove option \'$0\' from database?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=daemonconfigedit&id={$option.id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $option.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" title="[ {if $option.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
+			<A HREF="?m=daemonconfigedit&id={$option.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=daemonconfigdel&id={$option.id}" OnClick="return confirmLink(this, '{t 0=$option.var}Are you sure, you want to remove option \'$0\' from database?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}

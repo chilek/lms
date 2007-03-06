@@ -3,7 +3,7 @@
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 {literal}
-<SCRIPT language=JavaScript>
+<SCRIPT type="text/javascript">
 <!--
 	function CheckAll()
 	{
@@ -420,7 +420,7 @@
 	</FORM>
 </TABLE>
 {/if}
-<SCRIPT LANGUAGE="JavaScript">
+<SCRIPT type="text/javascript">
 <!--
 {if $receipt.cdate}
 var cal1 = new calendar(document.forms['setcustomer'].elements['receipt[cdate]']);

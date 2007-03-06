@@ -3,7 +3,7 @@
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
 {literal}
-<SCRIPT language=JavaScript>
+<SCRIPT type="text/javascript">
 	function show(n)
 	{
 		document.getElementById(n).style.display = '';
@@ -135,7 +135,7 @@
 	</TR>
 </TABLE>
 </FORM>
-<SCRIPT LANGUAGE="JavaScript">
+<SCRIPT type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['receipt'].elements['receiptr[cdate]']);
 cal1.time_comp = false;

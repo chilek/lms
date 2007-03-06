@@ -58,10 +58,10 @@
 			{$instance.description}
 		</TD>
 		<TD CLASS="fright" align="right" NOWRAP>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" ALT="[ {if $instance.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
-			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse Configuration{/t} ]"></A>
-			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t 0=$instance.name}Are you sure, you want to remove instance \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" alt="[ {if $instance.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" title="[ {if $instance.disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]"></A>
+			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" alt="[ {t}Browse Configuration{/t} ]" title="[ {t}Browse Configuration{/t} ]"></A>
+			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t 0=$instance.name}Are you sure, you want to remove instance \'$0\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
