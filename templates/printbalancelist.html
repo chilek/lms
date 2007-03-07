@@ -3,7 +3,10 @@
 <TABLE WIDTH="100%">
 	<TR>
 		<TD WIDTH="99%" VALIGN="TOP">
-			<H1>{$layout.pagetitle}</H1>
+			<P class="hdf"><B>{$layout.pagetitle}</B>
+			{if $net}<BR><font class="sdr"><B>{t}Network:{/t} {$net}</B></font>{/if}
+			{if $group}<BR><font class="sdr"><B>{t}Group:{/t} {$group}</B></font>{/if}			
+			</P>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
@@ -84,20 +87,20 @@
 		<TD ALIGN="RIGHT" COLSPAN="2">
 			<B>{t}Total:{/t}</B>
 		</TD>
-		<TD ALIGN="RIGHT">
+		<TD ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.liability|money_format}</B>
 		</TD>
-		<TD ALIGN="RIGHT">
+		<TD ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.income|money_format}</B>
 		</TD>
-		<TD ALIGN="RIGHT">
+		<TD ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.expense|money_format}</B>
 		</TD>
 		<TD></TD>
 		<TD ALIGN="RIGHT">
 			<B>{t}Balance:{/t}</B>
 		</TD>
-		<TD ALIGN="LEFT">
+		<TD ALIGN="LEFT" NOWRAP>
 			<B>{$listdata.total|money_format}</B>
 		</TD>
 	</TR>

@@ -109,11 +109,16 @@ switch($type)
 	
 		$from = $_POST['balancefrom'];
 		$to = $_POST['balanceto'];
+		$net = intval($_POST['network']);
+		$group = intval($_POST['customergroup']);
 
-		// date format 'yyyy/mm/dd'	
-		list($year, $month, $day) = split('/',$from);
-		$date['from'] = mktime(0,0,0,(int)$month,(int)$day,(int)$year);
-		
+		// date format 'yyyy/mm/dd'
+		if($from)
+		{
+			list($year, $month, $day) = split('/',$from);
+			$date['from'] = mktime(0,0,0,(int)$month,(int)$day,(int)$year);
+		}
+
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
@@ -122,21 +127,44 @@ switch($type)
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
+		if($net)
+		        $net = $LMS->GetNetworkParams($net);
+
 		if($user = $_POST['user'])
 			$layout['pagetitle'] = trans('Balance Sheet of User: $0 ($1 to $2)', $LMS->GetUserName($user), ($from ? $from : ''), $to);
 		else
 			$layout['pagetitle'] = trans('Balance Sheet ($0 to $1)', ($from ? $from : ''), $to);
-			
+		
 		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		
-		if($date['from'])
-			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN customerid!=0 AND type=0 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
-		
-		if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, userid, cash.value AS value, taxes.label AS taxlabel, customerid, comment, cash.type AS type
-			    FROM cash LEFT JOIN taxes ON (taxid = taxes.id)
-			    WHERE time>=? AND time<=? ORDER BY time ASC', array($date['from'], $date['to'])))
+		if(isset($date['from']))
+			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN cash.customerid!=0 AND type=0 THEN 0 ELSE value END) 
+					FROM cash '
+					.($group ? 'LEFT JOIN customerassignments a ON (cash.customerid = a.customerid) ' : '')
+					.($net ? 'LEFT JOIN nodes ON (cash.customerid = ownerid) ' : '')
+					.'WHERE time<?'
+					.($group ? ' AND a.customergroupid = '.$group : '')
+					.($net ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+					, array($date['from']));
+		else
+			$lastafter = 0;
+			
+		if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, userid, cash.value AS value, 
+					taxes.label AS taxlabel, cash.customerid, comment, cash.type AS type
+					FROM cash LEFT JOIN taxes ON (taxid = taxes.id) '
+					.($group ? 'LEFT JOIN customerassignments a ON (cash.customerid = a.customerid)  ' : '')
+					.($net ? 'LEFT JOIN nodes ON (cash.customerid = ownerid) ' : '')
+					.'WHERE time <= ? '
+					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
+					.($group ? ' AND a.customergroupid = '.$group : '')
+					.($net ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+					.' ORDER BY time ASC', array($date['to'])))
 		{
+			$listdata['income'] = 0;
+			$listdata['expense'] = 0;
+			$listdata['liability'] = 0;
 			$x = 0;
+			
 			foreach($balancelist as $idx => $row)
 			{
 				if($user)
@@ -178,12 +206,18 @@ switch($type)
 				$x++;
 				unset($balancelist[$idx]);
 			}
+		
+			$listdata['total'] = $listdata['income'] - $listdata['expense'];
+		
+			$SMARTY->assign('listdata', $listdata);
+			$SMARTY->assign('balancelist', $list);
 		}
+
+		if($net)
+			$SMARTY->assign('net', $net['name']);
+		if($group)
+			$SMARTY->assign('group', $DB->GetOne('SELECT name FROM customergroups WHERE id = ?', array($group)));
 		
-		$listdata['total'] = $listdata['income'] - $listdata['expense'];
-		
-		$SMARTY->assign('listdata', $listdata);
-		$SMARTY->assign('balancelist', $list);
 		$SMARTY->display('printbalancelist.html');
 	break;
 

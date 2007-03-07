@@ -34,6 +34,7 @@ version ? (????-??-??):
   - lms-rtparser: added option 'include_customerinfo' (alec)
   - lmsd/cutoff: added option 'expired_warning', used to set message to customer
     when disabling his computers access due to all assignments expiration (alec)
+  - added group and network filters for Network Balance Sheet report (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
