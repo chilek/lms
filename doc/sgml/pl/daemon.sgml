@@ -444,8 +444,9 @@
 		    <sect3 id="cutoff-desc">
 		    <title>Opis</title>
 		    <para>Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
-		    klientom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
-		    nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</para>
+		    klientom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. 
+		    Ponadto od³±cza komputery klientów, którym wygas³y wszystkie zobowi±zania.
+		    Ten modu³ nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</para>
 		    </sect3>
 		    <sect3 id="cutoff-config">
 		    <title>Konfiguracja</title>
@@ -469,13 +470,25 @@
 			    <para>W³±cza ostrze¿enie dla od³±czanego klienta i przypisuje mu 
 			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
 			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
-			    Domy¶lnie: 'Blocked automatically due to payment deadline override on %time".</para>
+			    Domy¶lnie: 'Blocked automatically due to payment deadline override at %time".</para>
 			    <para>Przyk³ad: <prompt>warning = ""</prompt></para>
+			</listitem>
+			<listitem>
+				<para>expired_warning</para>
+				<para>W³±cza ostrze¿enie dla od³±czanego klienta i przypisuje mu 
+				okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
+				Dotyczy klientów, którym wygas³y zobowi±zania.
+				Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+				Domy¶lnie: 'Blocked automatically due to tariff(s) expiration at %time".</para>
+				<para>Przyk³ad: <prompt>expired_warning = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>warnings_only</para>
 			    <para>Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego 
-			    modu³u wy³±cznie do w³±czania ostrze¿eñ. Domy¶lnie: wy³±czona.</para>
+			    modu³u wy³±cznie do w³±czania ostrze¿eñ. Dzia³a tylko w stosunku do 
+			    klientów, którzy posiadaj± aktywne zobowi±zania. Klienci, którym 
+			    wygas³y zobowi±zania, zostan± od³±czeni mimo w³±czenia tej opcji. 
+			    Domy¶lnie: wy³±czona.</para>
 			    <para>Przyk³ad: <prompt>warnings_only = true</prompt></para>
 			</listitem>
 		    </itemizedlist>

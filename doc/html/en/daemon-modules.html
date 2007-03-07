@@ -666,7 +666,8 @@ NAME="CUTOFF-DESC"
 ></H3
 ><P
 >Cutoff do change nodes status to 'disconnected' and/or enable warnings for
-              customers, which have debts greater than specified limit. This module does not doing
+              customers, which have debts greater than specified limit. Also, disables computers 
+	      due to assignments expiration. This module does not doing
               actual blocking of network access.</P
 ></DIV
 ><DIV
@@ -712,7 +713,7 @@ CLASS="PROMPT"
 >Enable warning for disconnected customer and write him WWW browser message
                    specified in this option. If empty, warning will be not enabled. Date in
                    message is substituted providing '%time' variable. Default: 'Blocked
-                   automatically due to payment deadline override on %time".</P
+                   automatically due to payment deadline override at %time".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -721,10 +722,24 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>expired_warning</P
+><P
+>Sets the message to customer when disabling his computers access 
+		   due to all assignments expiration. If empty, warning will be not set. 
+		   Date in message is substituted providing '%time' variable.
+		   Default: 'Blocked automatically due to tariff(s) expiration at %time'.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>expired_warning = ""</SAMP
+></P
+></LI
+><LI
+><P
 >warnings_only</P
 ><P
 >Here you can to decide, if you want to use this module only for warnings or
-                   to actually cut people off. Default: false.</P
+                   to actually cut people off. Works for customers with assignments. Default: false.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
