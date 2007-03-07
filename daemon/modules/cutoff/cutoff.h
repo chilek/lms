@@ -7,4 +7,5 @@ struct cutoff_module
 	char *command;
 	char *limit;
 	char *warning;
+	char *expwarning;
 };

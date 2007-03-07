@@ -36,64 +36,95 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	QueryHandle *res;
 	int i, execu=0, execn=0, u=0, n=0;
 	char time_fmt[11];
-	size_t tmax=11;
-	char fmt[]="%Y/%m/%d";
+	size_t tmax = 11;
+	char fmt[] = "%Y/%m/%d";
 	struct tm *wsk;
 	time_t t;
 	
-	t=time(&t);
-	wsk=localtime(&t);
-	
-	strftime(time_fmt,tmax,fmt,wsk);
+	t = time(&t);
+	wsk = localtime(&t);
+	strftime(time_fmt, tmax, fmt, wsk);
+
 	if(*c->warning)
 		g->str_replace(&c->warning, "%time", time_fmt);
+	if(*c->expwarning)
+		g->str_replace(&c->expwarning, "%time", time_fmt);
 
-	if( (res = g->db_pquery(g->conn, "SELECT customers.id AS id FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id HAVING SUM(cash.value) < ?", c->limit))!=NULL )
+	// customers without tariffs (or with expired assignments)
+	res = g->db_pquery(g->conn, 
+			"SELECT customers.id AS id FROM customers "
+			"WHERE deleted = 0 "
+				"AND NOT EXISTS "
+				"(SELECT 1 FROM assignments "
+				"WHERE customerid = customers.id "
+					"AND (datefrom <= %NOW% OR datefrom = 0) "
+					"AND (dateto >= %NOW% OR dateto = 0)"
+				")");
+
+	for(i=0; i<g->db_nrows(res); i++) 
 	{
-		for(i=0; i<g->db_nrows(res); i++) 
-		{
-			char *customerid = g->db_get_data(res,i,"id");
-			
-    			if(!c->warn_only)
-				n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
-			else 
-				n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
+		char *customerid = g->db_get_data(res,i,"id");
+		
+		n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 WHERE ownerid = ? AND access = 1", customerid);
 
-			execn = n ? 1 : execn;
+		execn = n ? 1 : execn;
 			
-			if(*c->warning && n)
-			{
-				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
-				execu = u ? 1 : execu;
-			}
-		}	
-		g->db_free(&res);
+		if(*c->expwarning && n)
+		{
+			u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->expwarning, customerid);
+			execu = u ? 1 : execu;
+		}
+	}	
+	g->db_free(&res);
 
-		// set timestamps
-		if(execu)
+	// debtors
+	res = g->db_pquery(g->conn, 
+			"SELECT customers.id AS id FROM customers "
+			"LEFT JOIN cash ON customers.id = cash.customerid "
+			"WHERE deleted = 0 GROUP BY customers.id "
+			"HAVING SUM(cash.value) < ?", c->limit);
+	
+	for(i=0; i<g->db_nrows(res); i++) 
+	{
+		char *customerid = g->db_get_data(res,i,"id");
+		
+		if(!c->warn_only)
+			n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
+		else 
+			n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
+
+		execn = n ? 1 : execn;
+			
+		if(*c->warning && n)
 		{
-			g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'customers'");
-			g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('customers',%NOW%)");
+			u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
+			execu = u ? 1 : execu;
 		}
-		if(execn)
-		{
-			g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'nodes'");
-			g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('nodes',%NOW%)");
-		}	
-		if(execn || execu)
-		{
-			g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = '_global'");
-			g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
-			system(c->command);
-		}
+	}	
+	g->db_free(&res);
+
+	// set timestamps
+	if(execu)
+	{
+		g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'customers'");
+		g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('customers',%NOW%)");
+	}
+	if(execn)
+	{
+		g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'nodes'");
+		g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('nodes',%NOW%)");
+	}	
+	if(execn || execu)
+	{
+		g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = '_global'");
+		g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
+		system(c->command);
+	}
 #ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/cutoff] reloaded", c->base.instance);
+	syslog(LOG_INFO, "DEBUG: [%s/cutoff] reloaded", c->base.instance);
 #endif
-	} 
-	else 
-		syslog(LOG_ERR, "[%s/cutoff] Unable to read 'customers' table", c->base.instance);
-
 	free(c->warning);
+	free(c->expwarning);
 	free(c->command);
 	free(c->limit);
 }
@@ -112,9 +143,10 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	c->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 
 	c->limit = strdup(g->config_getstring(c->base.ini, c->base.instance, "limit", "0"));
-	c->warning = strdup(g->config_getstring(c->base.ini, c->base.instance, "warning", "Blocked automatically due to payment deadline override on %time"));
+	c->warning = strdup(g->config_getstring(c->base.ini, c->base.instance, "warning", "Blocked automatically due to payment deadline override at %time"));
 	c->command = strdup(g->config_getstring(c->base.ini, c->base.instance, "command", ""));
 	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
+	c->expwarning = strdup(g->config_getstring(c->base.ini, c->base.instance, "expired_warning", "Blocked automatically due to tariff(s) expiration at %time"));
 	
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/cutoff] initialized", c->base.instance);

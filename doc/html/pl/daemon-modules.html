@@ -681,8 +681,9 @@ NAME="CUTOFF-DESC"
 ></H3
 ><P
 >Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
-		    klientom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
-		    nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</P
+		    klientom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. 
+		    Ponadto od³±cza komputery klientów, którym wygas³y wszystkie zobowi±zania.
+		    Ten modu³ nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -727,7 +728,7 @@ CLASS="PROMPT"
 >W³±cza ostrze¿enie dla od³±czanego klienta i przypisuje mu 
 			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
 			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
-			    Domy¶lnie: 'Blocked automatically due to payment deadline override on %time".</P
+			    Domy¶lnie: 'Blocked automatically due to payment deadline override at %time".</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -736,10 +737,28 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>expired_warning</P
+><P
+>W³±cza ostrze¿enie dla od³±czanego klienta i przypisuje mu 
+				okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
+				Dotyczy klientów, którym wygas³y zobowi±zania.
+				Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+				Domy¶lnie: 'Blocked automatically due to tariff(s) expiration at %time".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>expired_warning = ""</SAMP
+></P
+></LI
+><LI
+><P
 >warnings_only</P
 ><P
 >Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego 
-			    modu³u wy³±cznie do w³±czania ostrze¿eñ. Domy¶lnie: wy³±czona.</P
+			    modu³u wy³±cznie do w³±czania ostrze¿eñ. Dzia³a tylko w stosunku do 
+			    klientów, którzy posiadaj± aktywne zobowi±zania. Klienci, którym 
+			    wygas³y zobowi±zania, zostan± od³±czeni mimo w³±czenia tej opcji. 
+			    Domy¶lnie: wy³±czona.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"

@@ -3713,8 +3713,9 @@ Chapter 6. LMS Daemon
 6.2.6.1. Description
 
    Cutoff do change nodes status to 'disconnected' and/or enable warnings
-   for customers, which have debts greater than specified limit. This
-   module does not doing actual blocking of network access.
+   for customers, which have debts greater than specified limit. Also,
+   disables computers due to assignments expiration. This module does not
+   doing actual blocking of network access.
      _________________________________________________________________
 
 6.2.6.2. Configuration
@@ -3734,11 +3735,19 @@ Chapter 6. LMS Daemon
        message specified in this option. If empty, warning will be not
        enabled. Date in message is substituted providing '%time'
        variable. Default: 'Blocked automatically due to payment deadline
-       override on %time".
+       override at %time".
        Example: warning = ""
+     * expired_warning
+       Sets the message to customer when disabling his computers access
+       due to all assignments expiration. If empty, warning will be not
+       set. Date in message is substituted providing '%time' variable.
+       Default: 'Blocked automatically due to tariff(s) expiration at
+       %time'.
+       Example: expired_warning = ""
      * warnings_only
        Here you can to decide, if you want to use this module only for
-       warnings or to actually cut people off. Default: false.
+       warnings or to actually cut people off. Works for customers with
+       assignments. Default: false.
        Example: warnings_only = true
      _________________________________________________________________
 

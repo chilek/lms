@@ -425,7 +425,8 @@
               <sect3 id="cutoff-desc">
               <title>Description</title>
               <para>Cutoff do change nodes status to 'disconnected' and/or enable warnings for
-              customers, which have debts greater than specified limit. This module does not doing
+              customers, which have debts greater than specified limit. Also, disables computers 
+	      due to assignments expiration. This module does not doing
               actual blocking of network access.</para>
               </sect3>
               <sect3 id="cutoff-config">
@@ -450,13 +451,21 @@
                    <para>Enable warning for disconnected customer and write him WWW browser message
                    specified in this option. If empty, warning will be not enabled. Date in
                    message is substituted providing '%time' variable. Default: 'Blocked
-                   automatically due to payment deadline override on %time".</para>
+                   automatically due to payment deadline override at %time".</para>
                    <para>Example: <prompt>warning = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>expired_warning</para>
+                   <para>Sets the message to customer when disabling his computers access 
+		   due to all assignments expiration. If empty, warning will be not set. 
+		   Date in message is substituted providing '%time' variable.
+		   Default: 'Blocked automatically due to tariff(s) expiration at %time'.</para>
+                   <para>Example: <prompt>expired_warning = ""</prompt></para>
                </listitem>
                <listitem>
                    <para>warnings_only</para>
                    <para>Here you can to decide, if you want to use this module only for warnings or
-                   to actually cut people off. Default: false.</para>
+                   to actually cut people off. Works for customers with assignments. Default: false.</para>
                    <para>Example: <prompt>warnings_only = true</prompt></para>
                </listitem>
               </itemizedlist>
