@@ -782,6 +782,62 @@ CREATE TABLE cashregs (
 );
 
 /* ---------------------------------------------------
+ Structure of table "ewx_pt_config" (EtherWerX(R))
+------------------------------------------------------*/
+
+DROP SEQUENCE "ewx_pt_config_id_seq";
+CREATE SEQUENCE "ewx_pt_config_id_seq";
+DROP TABLE ewx_pt_config;
+CREATE TABLE ewx_pt_config (
+    id 		integer 	DEFAULT nextval('ewx_pt_config_id_seq'::text) NOT NULL,
+    nodeid 	integer         DEFAULT 0 NOT NULL,
+    name 	varchar(16)     DEFAULT '' NOT NULL,
+    mac 	varchar(20)     DEFAULT '' NOT NULL,
+    ipaddr 	bigint          DEFAULT 0 NOT NULL,
+    passwd 	varchar(32)     DEFAULT '' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (nodeid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "ewx_stm_nodes" (EtherWerX(R))
+------------------------------------------------------*/
+
+DROP SEQUENCE "ewx_stm_nodes_id_seq";
+CREATE SEQUENCE "ewx_stm_nodes_id_seq";
+DROP TABLE ewx_stm_nodes;
+CREATE TABLE ewx_stm_nodes (
+        id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
+	nodeid 		integer         DEFAULT 0 NOT NULL,
+	mac 		varchar(20)     DEFAULT '' NOT NULL,
+	ipaddr 		bigint          DEFAULT 0 NOT NULL,
+	channelid 	integer       	DEFAULT 0 NOT NULL,
+	uprate 		integer         DEFAULT 0 NOT NULL,
+	upceil 		integer         DEFAULT 0 NOT NULL,
+	downrate 	integer        	DEFAULT 0 NOT NULL,
+	downceil 	integer        	DEFAULT 0 NOT NULL,
+	halfduplex 	smallint     	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (nodeid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "ewx_stm_channels" (EtherWerX(R))
+------------------------------------------------------*/
+
+DROP SEQUENCE "ewx_stm_channels_id_seq";
+CREATE SEQUENCE "ewx_stm_channels_id_seq";
+DROP TABLE ewx_stm_channels;
+CREATE TABLE ewx_stm_channels (
+    id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
+    customerid 	integer      	DEFAULT 0 NOT NULL,
+    upceil 	integer         DEFAULT 0 NOT NULL,
+    downceil 	integer        	DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (customerid)
+);
+
+/* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
 
@@ -792,4 +848,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007022600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007030800');
