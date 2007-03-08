@@ -78,46 +78,6 @@
 			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
 		</TD>
 	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{t}Type:{/t}
-		</TD>
-		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
-				<OPTION VALUE="0">... {t}select type{/t} ...</OPTION>
-				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
-				{/if}{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
-			<IMG src="img/docum.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{t}Number:{/t}
-		</TD>
-		<TD width="98%" class="fright">
-			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
-			{if $numberplans}
-			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
-				<OPTION value="0"{if !$document.numberplanid} SELECTED{/if}>... {t}select numbering plan{/t} ...</OPTION>
-			    {foreach item=plan from=$numberplans}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-			    {/foreach}
-			</SELECT>
-			{else}
-				<INPUT type="hidden" name="document[numberplanid]" value="0">
-			{/if}
-			</DIV>
-		</TD>
-	</TR>
 	<TR CLASS="light">
 		<TD width="1%" class="fleft">
 	        	<IMG src="img/customer.gif" ALT="">
@@ -164,13 +124,18 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
-			<IMG src="img/save.gif" alt="">
+			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}File:{/t}
+			<B>{t}Type:{/t}
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
+				<OPTION VALUE="0">... {t}select type{/t} ...</OPTION>
+				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
+				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
+				{/if}{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -187,6 +152,41 @@
 				<OPTION VALUE="{$item.name}"{if $document.templ==$item.name} SELECTED{/if}>{$item.title}</OPTION>
 				{/foreach}
 			</SELECT>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/save.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}File:{/t}
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/docum.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Number:{/t}
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
+			{if $numberplans}
+			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
+				<OPTION value="0"{if !$document.numberplanid} SELECTED{/if}>... {t}select numbering plan{/t} ...</OPTION>
+			    {foreach item=plan from=$numberplans}
+				{assign var=period value=$plan.period}
+				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+			    {/foreach}
+			</SELECT>
+			{else}
+				<INPUT type="hidden" name="document[numberplanid]" value="0">
+			{/if}
+			</DIV>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
