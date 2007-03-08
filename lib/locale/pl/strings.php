@@ -1805,5 +1805,8 @@ $_LANG['Adds customer basic informations on ticket view and in notifications. De
 $_LANG['Set Message'] = 'Ustaw wiadomość';
 $_LANG['not in debt'] = 'nie zadłużeni';
 $_LANG['Helpdesk ticket printout template file. Default: rtticketprint.html'] = 'Szablon wydruku zgłoszenia. Domyślnie: rtticketprint.html';
+$_LANG['suspended<!plural>'] = 'zawieszeni';
+$_LANG['without tariff'] = 'bez taryfy';
+$_LANG['without group'] = 'bez grupy';
 
 ?>

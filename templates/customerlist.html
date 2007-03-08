@@ -36,6 +36,9 @@
 					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>{t}disconnected<!plural>{/t}</OPTION>
 					<OPTION VALUE="6"{if $listdata.state eq 6} SELECTED{/if}>{t}in debt{/t}</OPTION>
 					<OPTION VALUE="7"{if $listdata.state eq 7} SELECTED{/if}>{t}online{/t}</OPTION>
+					<OPTION VALUE="8"{if $listdata.state eq 8} SELECTED{/if}>{t}without group{/t}</OPTION>
+					<OPTION VALUE="9"{if $listdata.state eq 9} SELECTED{/if}>{t}without tariff{/t}</OPTION>
+					<OPTION VALUE="10"{if $listdata.state eq 10} SELECTED{/if}>{t}suspended<!plural>{/t}</OPTION>
 				</SELECT>&nbsp;
 				{t}Network:{/t}
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
