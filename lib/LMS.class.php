@@ -634,10 +634,10 @@ class LMS
 									AND (tariffid != 0 OR liabilityid != 0))' : '')
 				.($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
 								WHERE a.customerid = customers.id
-									AND ((tariffid = 0 AND liabilityid = 0) OR 
-										((datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR datefrom = 0)
-										AND (dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR dateto = 0)
-										AND suspended = 1)))' : '')
+									AND ((tariffid = 0 AND liabilityid = 0) 
+										OR ((datefrom <= ?NOW? OR datefrom = 0)
+											AND (dateto >= ?NOW? OR dateto = 0)
+											AND suspended = 1)))' : '')
 				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
 				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, email, phone1, ten, ssn, customers.info, message '
 		// ten fragment nie chcial dzialac na mysqlu
