@@ -746,4 +746,46 @@ CREATE TABLE cashregs (
 ) TYPE=MyISAM;													
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007022600');
+#
+# Structure of tables ewx_* (EtherWerX(R))
+#			
+DROP TABLE IF EXISTS ewx_stm_nodes;
+CREATE TABLE ewx_stm_nodes (
+	id int(11)              NOT NULL auto_increment,
+	nodeid int(11)          DEFAULT '0' NOT NULL,
+	mac varchar(20)         DEFAULT '' NOT NULL,
+	ipaddr int(16) unsigned DEFAULT '0' NOT NULL,
+	channelid int(11)       DEFAULT '0' NOT NULL,
+	uprate int(11)          DEFAULT '0' NOT NULL,
+	upceil int(11)          DEFAULT '0' NOT NULL,
+	downrate int(11)        DEFAULT '0' NOT NULL,
+	downceil int(11)        DEFAULT '0' NOT NULL,
+	halfduplex tinyint(1)   DEFAULT '0' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY nodeid (nodeid)
+    ) TYPE=MyISAM;
+
+DROP TABLE IF EXISTS ewx_stm_channels;
+CREATE TABLE ewx_stm_channels (
+	id int(11)              NOT NULL auto_increment,
+	customerid int(11)      DEFAULT '0' NOT NULL,
+	upceil int(11)          DEFAULT '0' NOT NULL,
+	downceil int(11)        DEFAULT '0' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY customerid (customerid)
+) TYPE=MyISAM;
+
+DROP TABLE IF EXISTS ewx_pt_config;
+CREATE TABLE ewx_pt_config (
+        id int(11)              NOT NULL auto_increment,
+	nodeid int(11)          DEFAULT '0' NOT NULL,
+	name varchar(16)        DEFAULT '' NOT NULL,
+	mac varchar(20)         DEFAULT '' NOT NULL,
+	ipaddr int(16) unsigned DEFAULT '0' NOT NULL,
+	passwd varchar(32)      DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY nodeid (nodeid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007030800');
