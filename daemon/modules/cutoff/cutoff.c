@@ -58,7 +58,8 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 				"(SELECT 1 FROM assignments "
 				"WHERE customerid = customers.id "
 					"AND (datefrom <= %NOW% OR datefrom = 0) "
-					"AND (dateto >= %NOW% OR dateto = 0)"
+					"AND (dateto >= %NOW% OR dateto = 0) "
+					"AND (tariffid != 0 OR liabilityid != 0) "
 				")");
 
 	for(i=0; i<g->db_nrows(res); i++) 
