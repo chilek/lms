@@ -56,14 +56,15 @@ if (! isset($_GET['page']))
 	$SESSION->restore('ulp', $_GET['page']);
 	    
 $customerlist = $LMS->GetCustomerList($o, $s, $n, $g);
+
 $listdata['total'] = $customerlist['total'];
-$SESSION->restore('uls', $listdata['state']);
 $listdata['network'] = $customerlist['network'];
 $listdata['customergroup'] = $customerlist['customergroup'];
 $listdata['order'] = $customerlist['order'];
 $listdata['below'] = $customerlist['below'];
 $listdata['over'] = $customerlist['over'];
 $listdata['direction'] = $customerlist['direction'];
+$SESSION->restore('uls', $listdata['state']);
 
 $page = (! $_GET['page'] ? 1 : $_GET['page']); 
 $pagelimit = (!isset($LMS->CONFIG['phpui']['customerlist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['customerlist_pagelimit']);
@@ -79,6 +80,7 @@ unset($customerlist['order']);
 unset($customerlist['below']);
 unset($customerlist['over']);
 unset($customerlist['direction']);
+
 $SMARTY->assign('customerlist',$customerlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('networks', $LMS->GetNetworks());

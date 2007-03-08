@@ -541,7 +541,10 @@ class LMS
 		$disabled = ($state == 5) ? 1 : 0;
 		$indebted = ($state == 6) ? 1 : 0;
 		$online = ($state == 7) ? 1 : 0;
-
+		$groupless = ($state == 8) ? 1 : 0;
+		$tariffless = ($state == 9) ? 1 : 0;
+		$suspended = ($state == 10) ? 1 : 0;
+		
 		if($state>3)
 			$state = 0;
 
@@ -622,6 +625,19 @@ class LMS
 				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($time ? ' AND time < '.$time : '')
+				.($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
+								WHERE customers.id = a.customerid)' : '')
+				.($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a 
+								WHERE a.customerid = customers.id
+									AND (datefrom <= ?NOW? OR datefrom = 0) 
+									AND (dateto >= ?NOW? OR dateto = 0)
+									AND (tariffid != 0 OR liabilityid != 0))' : '')
+				.($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
+								WHERE a.customerid = customers.id
+									AND ((tariffid = 0 AND liabilityid = 0) OR 
+										((datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR datefrom = 0)
+										AND (dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) OR dateto = 0)
+										AND suspended = 1)))' : '')
 				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
 				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, email, phone1, ten, ssn, customers.info, message '
 		// ten fragment nie chcial dzialac na mysqlu
