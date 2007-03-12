@@ -11,6 +11,7 @@ struct ewx_module
 	char * host;
 	u_short port;
 	int path;
+	int offset;
 };
 
 struct net
@@ -37,9 +38,7 @@ struct customer
 {
 	int id;
 	int status;
-//	int uprate;
 	int upceil;
-//	int downrate;
 	int downceil;
 	int upratesum;
 	int downratesum;
@@ -144,8 +143,7 @@ oid ChannelsTableSave[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,6,2,0};
 // we don't need to load MIB definitions
 #define DISABLE_MIB_LOADING 1
 
-// increase every node/channel ID (for testing purposes)
-#define START_ID	0
+// max. channel ID
 #define MAX_ID		99999
 
 // some helper constants

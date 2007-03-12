@@ -593,6 +593,9 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->port = g->config_getint(ewx->base.ini, ewx->base.instance, "snmp_port", 161);
 	ewx->networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "networks", ""));
 
+	// node/channel ID's offset, e.g. for testing
+	ewx->offset = g->config_getint(ewx->base.ini, ewx->base.instance, "offset", 0);
+
 	// TODO: dorobic zarzadzanie sciezkami w LMSie (Configuration -> Paths albo TC Bands)
 	// [Parametry sciezki: nazwa, full/half duplex, min upload, max upload] 
 	// bylyby pomocnie nie tylko dla EWX'a, sciezki przypisywaloby sie do 
@@ -623,7 +626,7 @@ int del_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	if(!sh) return result;
 
 	// Create OID
-	ChannelStatus[STM_OID_LEN-1] = c.id + START_ID;
+	ChannelStatus[STM_OID_LEN-1] = c.id + ewx->offset;
 
 	// Create the PDU 
 	pdu = snmp_pdu_create(SNMP_MSG_SET);
@@ -740,11 +743,11 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	}
 
 	// Create OID
-	ChannelStatus[STM_OID_LEN-1] = channelid + START_ID;
-	ChannelPathNo[STM_OID_LEN-1] = channelid + START_ID;
-	ChannelUplink[STM_OID_LEN-1] = channelid + START_ID;
-	ChannelDownlink[STM_OID_LEN-1] = channelid + START_ID;
-//	ChannelHalfDuplex[STM_OID_LEN-1] = channelid + START_ID;
+	ChannelStatus[STM_OID_LEN-1] = channelid + ewx->offset;
+	ChannelPathNo[STM_OID_LEN-1] = channelid + ewx->offset;
+	ChannelUplink[STM_OID_LEN-1] = channelid + ewx->offset;
+	ChannelDownlink[STM_OID_LEN-1] = channelid + ewx->offset;
+//	ChannelHalfDuplex[STM_OID_LEN-1] = channelid + ewx->offset;
 
 	// Create the PDU 
 	pdu = snmp_pdu_create(SNMP_MSG_SET);
@@ -789,7 +792,7 @@ int add_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	if(result == STATUS_OK)
 		for(i=0; i<c.no; i++)
 		{
-			add_node(g, ewx, sh, &c.hosts[i], channelid + START_ID);
+			add_node(g, ewx, sh, &c.hosts[i], channelid + ewx->offset);
 		}
 
 	return result;
@@ -817,11 +820,11 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 	if(!sh) return result;
 
 	// Create OIDs
-	ChannelUplink[STM_OID_LEN-1] = c.id + START_ID;
-	ChannelDownlink[STM_OID_LEN-1] = c.id + START_ID;
-//	ChannelPathNo[STM_OID_LEN-1] = c.id + START_ID;
-//	ChannelHalfDuplex[STM_OID_LEN-1] = c.id + START_ID;
-	ChannelStatus[STM_OID_LEN-1] = c.id + START_ID;
+	ChannelUplink[STM_OID_LEN-1] = c.id + ewx->offset;
+	ChannelDownlink[STM_OID_LEN-1] = c.id + ewx->offset;
+//	ChannelPathNo[STM_OID_LEN-1] = c.id + ewx->offset;
+//	ChannelHalfDuplex[STM_OID_LEN-1] = c.id + ewx->offset;
+	ChannelStatus[STM_OID_LEN-1] = c.id + ewx->offset;
 
 	// Create the PDU 
 	pdu = snmp_pdu_create(SNMP_MSG_SET);
@@ -905,7 +908,7 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 	if(result == STATUS_OK)
 		for(i=0; i<cu.no; i++)
 		{
-			add_node(g, ewx, sh, &cu.hosts[i], c.id + START_ID);
+			add_node(g, ewx, sh, &cu.hosts[i], c.id + ewx->offset);
 		}
 
 	free(upceil);
@@ -926,7 +929,7 @@ int del_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 	if(!sh) return result;
 
 	// Create OID
-	CustomerStatus[STM_OID_LEN-1] = h.id + START_ID;
+	CustomerStatus[STM_OID_LEN-1] = h.id + ewx->offset;
 
 	// Create the PDU 
 	pdu = snmp_pdu_create(SNMP_MSG_SET);
@@ -980,17 +983,17 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 	if(!sh) return result;
 	
 	// Create OIDs
-//	CustomerNo[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerPathNo[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerChannelNo[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerIpAddr[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerMacAddr[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerUpMinSpeed[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerUpMaxSpeed[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerDownMinSpeed[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerDownMaxSpeed[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerHalfDuplex[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerStatus[STM_OID_LEN-1] = h.id + START_ID;
+//	CustomerNo[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerPathNo[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerChannelNo[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerIpAddr[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerMacAddr[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerUpMinSpeed[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerUpMaxSpeed[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerDownMinSpeed[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerDownMaxSpeed[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerHalfDuplex[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerStatus[STM_OID_LEN-1] = h.id + ewx->offset;
 
 	// Create the PDU 
 	pdu = snmp_pdu_create(SNMP_MSG_SET);
@@ -1072,17 +1075,17 @@ int update_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	if(!sh) return result;
 	
 	// Create OIDs
-//	CustomerNo[STM_OID_LEN-1] = h.id + START_ID;
-//	CustomerPathNo[STM_OID_LEN-1] = h.id + START_ID;
-//	CustomerChannelNo[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerIpAddr[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerMacAddr[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerUpMinSpeed[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerUpMaxSpeed[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerDownMinSpeed[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerDownMaxSpeed[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerHalfDuplex[STM_OID_LEN-1] = h.id + START_ID;
-	CustomerStatus[STM_OID_LEN-1] = h.id + START_ID;
+//	CustomerNo[STM_OID_LEN-1] = h.id + ewx->offset;
+//	CustomerPathNo[STM_OID_LEN-1] = h.id + ewx->offset;
+//	CustomerChannelNo[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerIpAddr[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerMacAddr[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerUpMinSpeed[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerUpMaxSpeed[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerDownMinSpeed[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerDownMaxSpeed[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerHalfDuplex[STM_OID_LEN-1] = h.id + ewx->offset;
+	CustomerStatus[STM_OID_LEN-1] = h.id + ewx->offset;
 
 	// Create the PDU 
 	pdu = snmp_pdu_create(SNMP_MSG_SET);

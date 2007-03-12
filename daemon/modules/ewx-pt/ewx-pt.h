@@ -7,9 +7,9 @@ struct ewx_module
 	
 	char * community;
 	char * host;
-	u_short port;
-
 	char * networks;
+	u_short port;
+	int offset;
 };
 
 struct net
@@ -58,6 +58,3 @@ oid UsersTableSave[]		= {SNMP_OID_ENTERPRISES,20656,1,2,2,2,2};
 
 // we don't need to load MIB definitions
 #define DISABLE_MIB_LOADING 1
-
-// increase every node ID (for testing purposes)
-#define START_ID	0
