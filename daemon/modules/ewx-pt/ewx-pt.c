@@ -158,12 +158,12 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		char *type;
 
 		// Setting OIDs
-		UserStatus[PT_OID_LEN-1] = node + START_ID;
-		UserNo[PT_OID_LEN-1] = node + START_ID;
-		UserName[PT_OID_LEN-1] = node + START_ID;
-		UserPassword[PT_OID_LEN-1] = node + START_ID;
-		UserIpAddr[PT_OID_LEN-1] = node + START_ID;
-		UserAllowedMacAddr[PT_OID_LEN-1] = node + START_ID;
+		UserStatus[PT_OID_LEN-1] = node + ewx->offset;
+		UserNo[PT_OID_LEN-1] = node + ewx->offset;
+		UserName[PT_OID_LEN-1] = node + ewx->offset;
+		UserPassword[PT_OID_LEN-1] = node + ewx->offset;
+		UserIpAddr[PT_OID_LEN-1] = node + ewx->offset;
+		UserAllowedMacAddr[PT_OID_LEN-1] = node + ewx->offset;
 
 		// Create the PDU 
 		pdu = snmp_pdu_create(SNMP_MSG_SET);
@@ -369,6 +369,7 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->host = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "snmp_host", ""));
 	ewx->port = g->config_getint(ewx->base.ini, ewx->base.instance, "snmp_port", 161);
 	ewx->networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "networks", ""));
+	ewx->offset = g->config_getint(ewx->base.ini, ewx->base.instance, "offset", 0);
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/ewx-pt] initialized", ewx->base.instance);
 #endif	
