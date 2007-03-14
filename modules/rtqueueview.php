@@ -144,10 +144,14 @@ else
 	$o = $_GET['o'];
 $SESSION->save('rto', $o);
 
-if(!isset($_GET['s']))
-	$SESSION->restore('rts', $s);
-else
+if(isset($_GET['s']))
 	$s = $_GET['s'];
+elseif($SESSION->is_set('rts'))
+	$SESSION->restore('rts', $s);
+elseif(isset($CONFIG['phpui']['ticketlist_state']))
+	$s = $CONFIG['phpui']['ticketlist_state'];
+else
+	$s = NULL;
 $SESSION->save('rts', $s);
 
 $queuedata['name'] = $LMS->GetQueueName($queuedata['id']);

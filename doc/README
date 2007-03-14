@@ -2089,6 +2089,10 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
        Adds customer basic informations on ticket view and in
        notifications. Default: enabled.
        Example: helpdesk_customerinfo = false
+     * ticketlist_status
+       Default status filter setting on tickets list. For allowed values
+       see html source code. Default: not set.
+       Example: ticketlist_status = -1
      * ticket_template_file
        Helpdesk ticket printout template file. Default:
        rtticketprint.html.

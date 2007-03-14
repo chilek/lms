@@ -1133,6 +1133,12 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>helpdesk_customerinfo = false</prompt></para>
     	    </listitem>
     	    <listitem>
+        	<para>ticketlist_status</para>
+        	<para>Default status filter setting on tickets list. For allowed values
+		see html source code. Default: not set.</para>
+        	<para>Example:     <prompt>ticketlist_status = -1</prompt></para>
+    	    </listitem>
+    	    <listitem>
         	<para>ticket_template_file</para>
         	<para>Helpdesk ticket printout template file. Default: rtticketprint.html.</para>
         	<para>Example:     <prompt>ticket_template_file = ../mytemplates/ticket.html</prompt></para>

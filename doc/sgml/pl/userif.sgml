@@ -1192,6 +1192,12 @@ MISC_OTHER="-A -x -j"
 		<para>Przyk³ad:     <prompt>helpdesk_customerinfo = 0</prompt></para>
         </listitem>
 	<listitem>
+		<para>ticketlist_status</para>
+		<para>Domy¶lne ustawienie filtra statusu na li¶cie zg³oszeñ. Dozwolonych
+		warto¶ci szukaj w kodzie strony html. Domy¶lnie: nie ustawiona.</para>
+		<para>Przyk³ad:     <prompt>ticketlist_status = -1</prompt></para>
+        </listitem>
+	<listitem>
 		<para>ticket_template_file</para>
 		<para>Szablon wydruku zg³oszenia. Domy¶lnie: rtticketprint.html.</para>
 		<para>Przyk³ad:     <prompt>ticket_template_file = ../mytemplates/ticket.html</prompt></para>
