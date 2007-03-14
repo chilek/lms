@@ -41,6 +41,7 @@ version ? (????-??-??):
   - lmsd/ewx-stm: EtherWerX Standalone Traffic Manager configurator (alec)
   - helpdesk: added option phpui/ticketlist_status (alec)
   - lmsd/tc: rounded values / removed decimal digits (alec)
+  - added 'New Document' link on main documents list (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
