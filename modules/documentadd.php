@@ -244,6 +244,7 @@ if(isset($_POST['document']))
 else
 {
 	$document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
+	$document['type'] = isset($_GET['type']) ? $_GET['type'] : '';
 }
 
 $allnumberplans = array();

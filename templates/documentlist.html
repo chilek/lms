@@ -35,6 +35,9 @@
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="6">
+		    <TABLE width="100%" cellpadding="0">
+			<TR>
+			    <TD width="1%" NOWRAP>
 			<FORM method="GET" action="?m=documentlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="documentlist">
@@ -54,6 +57,12 @@
 					{/if}{/foreach}
 				</SELECT>
 			</FORM>
+			    </TD>
+			    <TD width="99%" align="right" NOWRAP>
+				<A href="?m=documentadd&cid={$listdata.customer}&type={$listdata.type}">{t}New Document{/t}</A> <IMG src="img/save.gif" alt="">
+			    </TD>
+			</TR>
+		    </TABLE>	    
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
