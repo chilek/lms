@@ -39,6 +39,8 @@ version ? (????-??-??):
     Customers List and Customers Search (alec)
   - lmsd/ewx-pt: EtherWerX PPPoE Terminator configurator (alec)
   - lmsd/ewx-stm: EtherWerX Standalone Traffic Manager configurator (alec)
+  - helpdesk: added option phpui/ticketlist_status (alec)
+  - lmsd/tc: rounded values / removed decimal digits (alec)
 
 version 1.9.6 Belos (2007-02-16):
 

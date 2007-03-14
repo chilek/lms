@@ -118,12 +118,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		// we need customer ID and average data values for nodes
 		ures = g->db_query(g->conn, "\
 			SELECT customerid AS id, \
-				SUM(uprate)/COUNT(DISTINCT nodes.id) AS uprate, \
-				SUM(downrate)/COUNT(DISTINCT nodes.id) AS downrate, \
-				SUM(upceil)/COUNT(DISTINCT nodes.id) AS upceil, \
-				SUM(downceil)/COUNT(DISTINCT nodes.id) AS downceil, \
-				SUM(climit)/COUNT(DISTINCT nodes.id) AS climit, \
-				SUM(plimit)/COUNT(DISTINCT nodes.id) AS plimit \
+				ROUND(SUM(uprate)/COUNT(DISTINCT nodes.id)) AS uprate, \
+				ROUND(SUM(downrate)/COUNT(DISTINCT nodes.id)) AS downrate, \
+				ROUND(SUM(upceil)/COUNT(DISTINCT nodes.id)) AS upceil, \
+				ROUND(SUM(downceil)/COUNT(DISTINCT nodes.id)) AS downceil, \
+				ROUND(SUM(climit)/COUNT(DISTINCT nodes.id)) AS climit, \
+				ROUND(SUM(plimit)/COUNT(DISTINCT nodes.id)) AS plimit \
 			FROM assignments \
 				LEFT JOIN tariffs ON (tariffid = tariffs.id) \
 				LEFT JOIN nodes ON (customerid = ownerid) \
