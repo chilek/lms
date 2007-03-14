@@ -1808,5 +1808,6 @@ $_LANG['Helpdesk ticket printout template file. Default: rtticketprint.html'] = 
 $_LANG['suspended<!plural>'] = 'zawieszeni';
 $_LANG['without tariff'] = 'bez taryfy';
 $_LANG['without group'] = 'bez grupy';
+$_LANG['Default status filter setting on tickets list. For allowed values see html source code. Default: not set'] = 'Domyślne ustawienie filtra statusu na liście zgłoszeń. Dozwolonych wartości szukaj w kodzie html strony. Domyślnie: nie ustawiona';
 
 ?>

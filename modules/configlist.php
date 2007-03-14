@@ -255,6 +255,10 @@ function GetConfigList($order='var,asc')
 				case 'ticket_template_file':
 					$config[$idx]['description'] = trans('Helpdesk ticket printout template file. Default: rtticketprint.html');
 				break;					
+			
+				case 'ticketlist_status':
+					$config[$idx]['description'] = trans('Default status filter setting on tickets list. For allowed values see html source code. Default: not set');
+				break;					
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
