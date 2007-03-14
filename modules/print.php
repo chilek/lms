@@ -35,7 +35,7 @@ switch($type)
 
 		// date format 'yyyy/mm/dd'	
 		list($year, $month, $day) = split('/',$from);
-		$date['from'] = mktime(0,0,0,$month,$day,$year);
+		$date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
 
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
@@ -289,7 +289,7 @@ switch($type)
 
 		// date format 'yyyy/mm/dd'	
 		list($year, $month, $day) = split('/',$from);
-		$date['from'] = mktime(0,0,0,$month,$day,$year);
+		$date['from'] = mktime(0,0,0,(int)$month,(int)$day,(int)$year);
 
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
