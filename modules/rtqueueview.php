@@ -148,8 +148,8 @@ if(isset($_GET['s']))
 	$s = $_GET['s'];
 elseif($SESSION->is_set('rts'))
 	$SESSION->restore('rts', $s);
-elseif(isset($CONFIG['phpui']['ticketlist_state']))
-	$s = $CONFIG['phpui']['ticketlist_state'];
+elseif(isset($CONFIG['phpui']['ticketlist_status']))
+	$s = $CONFIG['phpui']['ticketlist_status'];
 else
 	$s = NULL;
 $SESSION->save('rts', $s);
