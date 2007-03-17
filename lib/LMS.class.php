@@ -616,7 +616,8 @@ class LMS
 		if($customerlist = $this->DB->GetAll(
 				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, 
 				status, address, zip, city, email, phone1, ten, ssn, customers.info AS info, message, 
-				(SELECT SUM(value) FROM cash WHERE customerid = customers.id) AS balance
+				(SELECT SUM(value) FROM cash WHERE customerid = customers.id '
+				.($time ? ' AND time < '.$time : '').') AS balance
 				FROM customers '
 				.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
 				.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
@@ -624,7 +625,6 @@ class LMS
 				.($state !=0 ? ' AND status = '.$state : '')
 				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
-				.($time ? ' AND time < '.$time : '')
 				.($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
 								WHERE customers.id = a.customerid)' : '')
 				.($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a 
