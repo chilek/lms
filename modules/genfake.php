@@ -2013,7 +2013,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$inv['cdate'] = time() - ($_GET['i']+1) * 86400;
 		$contents['prodid'] = '';
 		$contents['tariffid'] = 0;
-		$contents['jm'] = trans('item no.');
+		$contents['jm'] = trans('pcs.');
 		$contents['name'] = trans('Subscription');
 		
 		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, id, ssn, address, zip, city, ten FROM customers');

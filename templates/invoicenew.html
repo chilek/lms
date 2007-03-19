@@ -176,7 +176,7 @@
 								<TD>{$covenantlist[covenantlist].comment}</TD>
 							        <TD align="right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="" size="6"></TD>
 							        <TD align="right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
-							        <TD align="right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{t}item no.{/t}" size="3"></TD>
+							        <TD align="right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{t}pcs.{/t}" size="3"></TD>
 							        <TD align="right" nowrap>{$covenantlist[covenantlist].net|money_format}</TD>
 							        <TD align="right" nowrap>{$covenantlist[covenantlist].tax}</TD>
 							        <TD align="right" nowrap>{$covenantlist[covenantlist].value|money_format}</TD>
@@ -317,7 +317,7 @@
 		</TD>
 		<TD CLASS="ftop">
 			<INPUT TYPE="text" NAME="count" SIZE="3" VALUE="1">
-			<INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{t}item no.{/t}">
+			<INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{t}pcs.{/t}">
 		</TD>
 		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
 			<INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage"}>
