@@ -135,7 +135,7 @@ function check_zip($zip)
 
 function check_im($im)
 {
-	return eregi('^[0-9]{4,}$', $im);  // gadu-gadu ID check
+	return eregi('^[0-9]+$', $im);  // gadu-gadu ID check
 }
 
 function check_regon($regon)
