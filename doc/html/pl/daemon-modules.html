@@ -2366,9 +2366,22 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>offset</P
+><P
+>Liczba ca³kowita o jak± bêd± zwiêkszane identyfikatory komputerów
+						podczas zapisu na urz±dzeniu EtherWerX. Domy¶lnie: 0.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>offset = 1000</SAMP
+></P
+></LI
+><LI
+><P
 >networks</P
 ><P
 >Lista nazw sieci, które maj± byæ brane pod uwagê. 
+						Uwaga: po zmianie warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
 						Domy¶lnie: pusta (wszystkie sieci).</P
 ><P
 >Przyk³ad: <SAMP
@@ -2378,14 +2391,30 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->offset</P
+>dummy_ip_networks</P
 ><P
->Liczba ca³kowita o jak± bêd± zwiêkszane identyfikatory komputerów
-						podczas zapisu na urz±dzeniu EtherWerX. Domy¶lnie: 0.</P
+>Lista nazw sieci, dla których komputerom zostanie
+							przypisany adres IP 0.0.0.0. Uwaga: po zmianie
+							warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
+							Domy¶lnie: pusta (¿adna sieæ).</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->offset = 1000</SAMP
+>dummy_ip_networks = lan1</SAMP
+></P
+></LI
+><LI
+><P
+>dummy_mac_networks</P
+><P
+>Lista nazw sieci, dla których komputerom zostanie
+							przypisany adres MAC 00:00:00:00:00:00. Uwaga: po zmianie
+							warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
+							Domy¶lnie: pusta (¿adna sieæ).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>dummy_mac_networks = lan1</SAMP
 ></P
 ></LI
 ></UL
@@ -2507,18 +2536,6 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->networks</P
-><P
->Lista nazw sieci, które maj± byæ brane pod uwagê. 
-							Domy¶lnie: pusta (wszystkie sieci).</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->networks = 'lan1 lan2'</SAMP
-></P
-></LI
-><LI
-><P
 >path</P
 ><P
 >Numer ¶cie¿ki zdefiniowanej na urz±dzeniu, do której
@@ -2534,7 +2551,9 @@ CLASS="PROMPT"
 >offset</P
 ><P
 >Liczba ca³kowita o jak± bêd± zwiêkszane identyfikatory komputerów
-							podczas zapisu na urz±dzeniu EtherWerX. Domy¶lnie: 0.</P
+						podczas zapisu na urz±dzeniu EtherWerX. Uwaga: po zmianie
+						warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
+						Domy¶lnie: 0.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -2543,10 +2562,25 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>networks</P
+><P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. 
+						Uwaga: po zmianie warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
+						Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = 'lan1 lan2'</SAMP
+></P
+></LI
+><LI
+><P
 >dummy_ip_networks</P
 ><P
 >Lista nazw sieci, dla których komputerom zostanie
-						przypisany adres IP 0.0.0.0. Domy¶lnie: pusta (¿adna sieæ).</P
+						przypisany adres IP 0.0.0.0. Uwaga: po zmianie
+						warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
+						Domy¶lnie: pusta (¿adna sieæ).</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -2558,7 +2592,9 @@ CLASS="PROMPT"
 >dummy_mac_networks</P
 ><P
 >Lista nazw sieci, dla których komputerom zostanie
-						przypisany adres MAC 00:00:00:00:00:00. Domy¶lnie: pusta (¿adna sieæ).</P
+						przypisany adres MAC 00:00:00:00:00:00. Uwaga: po zmianie
+						warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
+						Domy¶lnie: pusta (¿adna sieæ).</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"

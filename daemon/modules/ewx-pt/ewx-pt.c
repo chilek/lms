@@ -44,29 +44,112 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	struct snmp_session 	session, *sh;
 	struct snmp_pdu 	*pdu, *response;
 
-	int 	status, i, j, n=2, nc=0;
+	int 	status, i, j, n=2;
+	int	nc=0, anc=0, mnc=0, inc=0;
+	char 	*netnames;
+	char	*netname;
 	char 	*errstr;
 
 	QueryHandle *res;
 	
         struct net *nets = (struct net *) malloc(sizeof(struct net));
-	char *netnames = strdup(ewx->networks);
-	char *netname = strdup(netnames);
+        struct net *all_nets = (struct net *) malloc(sizeof(struct net));
+        struct net *mac_nets = (struct net *) malloc(sizeof(struct net));
+        struct net *ip_nets = (struct net *) malloc(sizeof(struct net));
 
+	// get all networks params
+        res = g->db_pquery(g->conn, "SELECT UPPER(name) AS name, address, INET_ATON(mask) AS mask, interface FROM networks");
+	
+	for(anc=0; anc<g->db_nrows(res); anc++)
+	{
+	        all_nets = (struct net*) realloc(all_nets, (sizeof(struct net) * (anc+1)));
+		all_nets[anc].name = strdup(g->db_get_data(res, anc, "name"));
+		all_nets[anc].address = inet_addr(g->db_get_data(res, anc, "address"));
+	        all_nets[anc].mask = inet_addr(g->db_get_data(res, anc, "mask"));
+	}
+	g->db_free(&res);
+																												 
+	netnames = strdup(ewx->networks);
+	netname = strdup(netnames);
+	// get networks for filter if any specified in 'networks' option
 	while( n>1 )
 	{
         	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 	        if(strlen(netname))
 		{
-			res = g->db_pquery(g->conn, "SELECT address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')", netname);
-			if(g->db_nrows(res))
+			for(i=0; i<anc; i++)
+	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                    		break;
+
+			if(i != anc)
 			{
 				nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nets[nc].address = all_nets[i].address;
+				nets[nc].mask = all_nets[i].mask;
+				nets[nc].name = strdup(all_nets[i].name);
 				nc++;
 			}
-			g->db_free(&res);
+		}
+	}
+	free(netname); free(netnames);
+
+	n = 2;
+	netnames = strdup(ewx->dummy_mac_networks);
+	netname = strdup(netnames);
+	// get networks for filter if any specified in 'dummy_mac_networks' option
+	while( n>1 )
+	{
+        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+	        if(strlen(netname))
+		{
+			for(i=0; i<anc; i++)
+	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                    		break;
+		
+			if(i != anc)
+			{
+				mac_nets = (struct net *) realloc(mac_nets, (sizeof(struct net) * (mnc+1)));
+				mac_nets[mnc].address = all_nets[i].address;
+				mac_nets[mnc].mask = all_nets[i].mask;
+				mac_nets[mnc].name = strdup(all_nets[i].name);
+				mnc++;
+			}
+		}
+	}
+	free(netname); free(netnames);
+
+	n = 2;
+	netnames = strdup(ewx->dummy_ip_networks);
+	netname = strdup(netnames);
+	// get networks for filter if any specified in 'dummy_ip_networks' option
+	while( n>1 )
+	{
+        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+	        if(strlen(netname))
+		{
+			for(i=0; i<anc; i++)
+	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                    		break;
+		
+			if(i != anc)
+			{
+				// same networks can't be included in both dummy_* options
+				for(j=0; j<mnc; j++)
+	            			if(mac_nets[j].address == all_nets[i].address)
+	                    			break;
+
+				if(j != mnc)
+				{
+	    				syslog(LOG_ERR, "[%s/ewx-stm] Network %s already included in 'dummy_mac_networks' option. Skipping.", all_nets[i].name, ewx->base.instance);
+					continue;
+				}
+
+				ip_nets = (struct net *) realloc(ip_nets, (sizeof(struct net) * (inc+1)));
+				ip_nets[inc].address = all_nets[i].address;
+				ip_nets[inc].mask = all_nets[i].mask;
+				ip_nets[inc].name = strdup(all_nets[i].name);
+				inc++;
+			}
 		}
 	}
 	free(netname); free(netnames);
@@ -129,7 +212,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		unsigned long inet = inet_addr(g->db_get_data(res,i,"ipaddr"));
 		
 		// Networks test
-		if(nc)
+		if(nc && inet)
 		{
 			for(j=0; j<nc; j++)
 		                if(nets[j].address == (inet & nets[j].mask))
@@ -148,7 +231,6 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
         	char *oldmac = g->db_get_data(res,i,"oldmac");
         	char *oldname = g->db_get_data(res,i,"oldname");
 		char *oldpasswd = g->db_get_data(res,i,"oldpasswd");
-        	int chkmac = atoi(g->db_get_data(res,i,"chkmac"));
         	int access = atoi(g->db_get_data(res,i,"access"));
 
 		int n_id = atoi(id);
@@ -156,6 +238,33 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		int node = n_nodeid ? n_nodeid : n_id;
 		char *nodename = strlen(name) ? name : oldname;
 		char *type;
+
+        	int dummy_ip = 0;
+		int dummy_mac = 0;
+
+		// Networks test for dummy_mac
+		if(atoi(g->db_get_data(res,i,"chkmac")))
+                {
+		        dummy_mac = 1;
+		}
+		else if(mnc)
+		{	
+			for(n=0; n<mnc; n++)
+	            		if(mac_nets[n].address == (inet & mac_nets[n].mask))
+	            			break;
+		
+			if(n != mnc) dummy_mac = 1;
+		}
+
+		// Networks test for dummy_ip
+		if(inc)
+		{	
+			for(n=0; n<inc; n++)
+	        		if(ip_nets[n].address == (inet & ip_nets[n].mask))
+	            			break;
+		
+			if(n != inc) dummy_ip = 1;
+		}
 
 		// Setting OIDs
 		UserStatus[PT_OID_LEN-1] = node + ewx->offset;
@@ -176,8 +285,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			
 			snmp_add_var(pdu, UserName, PT_OID_LEN, 's', name);
 			snmp_add_var(pdu, UserPassword, PT_OID_LEN, 's', passwd);
-			snmp_add_var(pdu, UserIpAddr, PT_OID_LEN, 's', ip);
-			if(chkmac)
+			if(!dummy_ip)
+				snmp_add_var(pdu, UserIpAddr, PT_OID_LEN, 's', ip);
+			if(!dummy_mac)
 				snmp_add_var(pdu, UserAllowedMacAddr, PT_OID_LEN, 's', mac);
 
 			snmp_add_var(pdu, UserStatus, PT_OID_LEN, 'i', CREATEANDGO);
@@ -193,14 +303,15 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		{
 			// existing node (something has changed?)
 			int cname = (strcmp(name,oldname)!=0);
-			int cip = (strcmp(ip,oldip)!=0);
+			int cip = (!dummy_ip && (strcmp(oldip, DUMMY_IP)==0 || strcmp(oldip, ip)!=0));
+			int dip = (dummy_ip && strcmp(oldip, DUMMY_IP)!=0);
 			int cpasswd = (strcmp(passwd,oldpasswd)!=0);
-			int cmac = (chkmac && (strcmp(oldmac, DUMMY_MAC)==0 || strcmp(oldmac, mac)!=0));
-			int dmac = (!chkmac && strcmp(oldmac, DUMMY_MAC)!=0);
+			int cmac = (!dummy_mac && (strcmp(oldmac, DUMMY_MAC)==0 || strcmp(oldmac, mac)!=0));
+			int dmac = (dummy_mac && strcmp(oldmac, DUMMY_MAC)!=0);
 			
 			type = "update";
 
-			if(!cname && !cip && !cpasswd && !cmac && !dmac)
+			if(!cname && !cip && !dip && !cpasswd && !cmac && !dmac)
 			{
 				// we have nothing to update
 				snmp_free_pdu(pdu);
@@ -241,6 +352,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				snmp_add_var(pdu, UserPassword, PT_OID_LEN, 's', passwd);
 			if(cip)
 				snmp_add_var(pdu, UserIpAddr, PT_OID_LEN, 's', ip);
+			else if(dip)
+				snmp_add_var(pdu, UserIpAddr, PT_OID_LEN, 's', DUMMY_IP);
 			if(cmac)
 				snmp_add_var(pdu, UserAllowedMacAddr, PT_OID_LEN, 's', mac);
 			else if(dmac)
@@ -271,7 +384,10 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				// insert config
     				g->db_pexec(g->conn, "INSERT INTO ewx_pt_config (nodeid, name, passwd, ipaddr, mac) "
 						    "VALUES (?, '?', '?', INET_ATON('?'), '?')",
-						    id, name, passwd, ip, (chkmac ? mac : DUMMY_MAC));
+						    id, name, passwd, 
+						    (dummy_ip ? DUMMY_IP : ip), 
+						    (dummy_mac ? DUMMY_MAC : mac)
+						    );
 #ifdef DEBUG1
 				syslog(LOG_INFO, "DEBUG: [%s/ewx-pt] Added node %s (%05d)", ewx->base.instance, nodename, node);
 #endif
@@ -289,7 +405,10 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				// update config
 				g->db_pexec(g->conn, "UPDATE ewx_pt_config SET name = '?', passwd = '?', "
 						    "ipaddr = INET_ATON('?'), mac = '?' WHERE nodeid = ?",
-						    name, passwd, ip, (chkmac ? mac : DUMMY_MAC), id);
+						    name, passwd, 
+						    (dummy_ip ? DUMMY_IP : ip), 
+						    (dummy_mac ? DUMMY_MAC : mac), 
+						    id);
 #ifdef DEBUG1
 				syslog(LOG_INFO, "DEBUG: [%s/ewx-pt] Updated node %s (%05d)", ewx->base.instance, nodename, node);
 #endif
@@ -342,7 +461,30 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	snmp_close(sh);
 
 	g->db_free(&res);
+
+        for(i=0;i<nc;i++)
+	{
+	        free(nets[i].name);
+	}
 	free(nets);
+
+        for(i=0;i<anc;i++)
+	{
+	        free(all_nets[i].name);
+	}
+	free(all_nets);
+
+	for(i=0;i<mnc;i++)
+	{
+	        free(mac_nets[i].name);
+	}
+	free(mac_nets);
+	
+	for(i=0;i<inc;i++)
+	{
+	        free(ip_nets[i].name);
+	}
+	free(ip_nets);
 	
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/ewx-pt] reloaded", ewx->base.instance);
@@ -350,6 +492,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	free(ewx->community);
 	free(ewx->host);
 	free(ewx->networks);
+	free(ewx->dummy_ip_networks);
+	free(ewx->dummy_mac_networks);
 }
 
 struct ewx_module * init(GLOBAL *g, MODULE *m)
@@ -370,6 +514,8 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->port = g->config_getint(ewx->base.ini, ewx->base.instance, "snmp_port", 161);
 	ewx->networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "networks", ""));
 	ewx->offset = g->config_getint(ewx->base.ini, ewx->base.instance, "offset", 0);
+	ewx->dummy_mac_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_mac_networks", ""));
+	ewx->dummy_ip_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_ip_networks", ""));
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/ewx-pt] initialized", ewx->base.instance);
 #endif	
