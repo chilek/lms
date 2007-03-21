@@ -185,6 +185,16 @@ Class LMSDB_common
 		return $this->_driver_committrans();
 	}
 
+	function LockTables($table)
+	{
+		return $this->_driver_locktables($table);
+	}
+
+	function UnLockTables()
+	{
+		return $this->_driver_unlocktables();
+	}
+
 	function GetDBVersion()
 	{
 		return $this->_driver_dbversion();

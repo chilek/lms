@@ -164,6 +164,19 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		return TRUE;
 	}
+
+	function _driver_locktables($table)
+	{
+		if(is_array($table))
+			$this->Execute('LOCK TABLES '.implode(', ', $table));
+		else
+			$this->Execute('LOCK TABLES '.$table);		
+	}
+
+	function _driver_unlocktables()
+	{
+		$this->Execute('UNLOCK TABLES');
+	}
         
 	function _driver_lastinsertid($table = NULL)
         {
