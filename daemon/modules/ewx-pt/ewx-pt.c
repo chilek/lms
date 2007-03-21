@@ -247,7 +247,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
                 {
 		        dummy_mac = 1;
 		}
-		else if(mnc)
+		else if(mnc && inet)
 		{	
 			for(n=0; n<mnc; n++)
 	            		if(mac_nets[n].address == (inet & mac_nets[n].mask))
@@ -257,7 +257,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		}
 
 		// Networks test for dummy_ip
-		if(inc)
+		if(inc && inet)
 		{	
 			for(n=0; n<inc; n++)
 	        		if(ip_nets[n].address == (inet & ip_nets[n].mask))
