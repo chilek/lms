@@ -144,7 +144,19 @@ class LMSDB_driver_postgres extends LMSDB_common
 	{
 		return $this->Execute('COMMIT');
 	}
-	
+
+	function _driver_locktables($table)
+        {
+	        if(is_array($table))
+		        $this->Execute('LOCK '.implode(', ', $table));
+		else
+		        $this->Execute('LOCK '.$table);
+	}
+
+	function _driver_unlocktables()
+	{
+	}
+																		
 	function _driver_lastinsertid($table)
 	{
                return $this->GetOne('SELECT currval(\''.$table.'_id_seq\')');

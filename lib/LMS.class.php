@@ -1308,8 +1308,11 @@ class LMS
 			
 			// EtherWerX support (devices have some limits)
 			// We must to replace big ID with smaller (first free)
-			if($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support']))
+			if($id > 99999 && isset($this->CONFIG['phpui']['ewx_support']) && chkconfig($this->CONFIG['phpui']['ewx_support']))
 			{
+				$this->DB->BeginTrans();
+				$this->DB->LockTables('nodes');
+				
 				if($newid = $this->DB->GetOne('SELECT n.id + 1 FROM nodes n 
 						LEFT OUTER JOIN nodes n2 ON n.id + 1 = n2.id
 						WHERE n2.id IS NULL AND n.id <= 99999
@@ -1318,6 +1321,9 @@ class LMS
 					$this->DB->Execute('UPDATE nodes SET id = ? WHERE id = ?', array($newid, $id));
 					$id = $newid;
 				}
+				
+				$this->DB->UnLockTables();
+				$this->DB->CommitTrans();
 			}
 
 			return $id;
