@@ -1310,25 +1310,10 @@ class LMS
 			// We must to replace big ID with smaller (first free)
 			if($id > 99999 && chkconfig($this->CONFIG['phpui']['ewx_support']))
 			{
-				$lastid = 0;
-				$row = 0;
-				while($list = $this->DB->GetCol('SELECT id FROM nodes ORDER BY id LIMIT 100 OFFSET ?', array($row)))
-				{
-					foreach($list as $nodeid)
-					{
-						if($nodeid > $lastid + 1)
-						{
-							$newid = $lastid + 1;
-							break 2;
-						}
-						else
-							$lastid = $nodeid; 
-					
-						$row++;
-					}
-				}
-
-				if(isset($newid))
+				if($newid = $this->DB->GetOne('SELECT n.id + 1 FROM nodes n 
+						LEFT OUTER JOIN nodes n2 ON n.id + 1 = n2.id
+						WHERE n2.id IS NULL AND n.id <= 99999
+						ORDER BY n.id ASC LIMIT 1'))
 				{
 					$this->DB->Execute('UPDATE nodes SET id = ? WHERE id = ?', array($newid, $id));
 					$id = $newid;
