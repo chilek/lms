@@ -73,16 +73,16 @@ function GetQueueContents($id, $order='createtime,desc', $state=NULL)
 	}
 
 	if($result = $DB->GetAll(
-		    'SELECT t.id AS id, t.customerid AS customerid, 
+		    'SELECT t.id AS id, t.customerid AS customerid, c.address, 
 			    requestor, t.subject AS subject, state, owner AS ownerid, users.name AS ownername, '
-			    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
+			    .$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername, 
 			    t.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified
 		    FROM rttickets t 
 		    LEFT JOIN rtmessages ON (t.id = rtmessages.ticketid)
 		    LEFT JOIN users ON (owner = users.id)
-		    LEFT JOIN customers ON (t.customerid = customers.id)
+		    LEFT JOIN customers c ON (t.customerid = c.id)
 		    WHERE queueid = ? '.$statefilter
-		    .' GROUP BY t.id, requestor, t.createtime, t.subject, state, owner, users.name, t.customerid, customers.lastname, customers.name '
+		    .' GROUP BY t.id, requestor, t.createtime, t.subject, state, owner, users.name, t.customerid, c.lastname, c.name, c.address '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 	{
 		foreach($result as $idx => $ticket)
