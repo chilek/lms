@@ -6,6 +6,8 @@ struct ewx_module
 	MODULE base;
 	
 	char * networks;
+	char * dummy_mac_networks;
+	char * dummy_ip_networks;
 	char * customergroups;
 	char * community;
 	char * host;
@@ -18,6 +20,7 @@ struct net
 {
 	unsigned long address;
 	unsigned long mask;
+	char *name;
 };
 
 struct host
@@ -139,6 +142,7 @@ oid ChannelsTableSave[]		= {SNMP_OID_ENTERPRISES,20656,1,2,1,6,2,0};
 
 // dummy MAC for nodes with disabled hardware address checking
 #define DUMMY_MAC 	"00:00:00:00:00:00"
+#define DUMMY_IP 	"0.0.0.0"
 
 // we don't need to load MIB definitions
 #define DISABLE_MIB_LOADING 1
