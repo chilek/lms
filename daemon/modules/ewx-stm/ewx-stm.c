@@ -57,16 +57,19 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	int	pathdownlink = 0;
 	int 	globaluplink = 0;
 	int	globaldownlink = 0; 
-	int 	status, i, j, k=2, n=2, cc=0, nc=0, sc=0;
+	int 	status, i, j, k=2, n=2, cc=0, sc=0;
+	int	nc=0, anc=0, mnc=0, inc=0;
 	char 	*errstr;
+	char 	*netnames;
+	char	*netname;
 
 	QueryHandle *res;
 	
         struct customer *customers = (struct customer *) malloc(sizeof(struct customer));
-
         struct net *nets = (struct net *) malloc(sizeof(struct net));
-	char *netnames = strdup(ewx->networks);
-	char *netname = strdup(netnames);
+        struct net *all_nets = (struct net *) malloc(sizeof(struct net));
+        struct net *mac_nets = (struct net *) malloc(sizeof(struct net));
+        struct net *ip_nets = (struct net *) malloc(sizeof(struct net));
 
 	if(!ewx->path)
 	{
@@ -85,6 +88,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 //	session.timeout 	= 1000000; 		// timeout in microsec.
 	session.community 	= (unsigned char *) ewx->community; 	// community name
 	session.community_len 	= strlen(ewx->community);
+
+	// man snmpcmd (-Oq)
+	netsnmp_ds_toggle_boolean(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_QUICK_PRINT);
 
 	// Open the session
 	sh = snmp_open(&session);
@@ -153,21 +159,99 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 	// If communication works, we can do the job...
 
+	// get all networks params
+        res = g->db_pquery(g->conn, "SELECT UPPER(name) AS name, address, INET_ATON(mask) AS mask, interface FROM networks");
+	
+	for(anc=0; anc<g->db_nrows(res); anc++)
+	{
+	        all_nets = (struct net*) realloc(all_nets, (sizeof(struct net) * (anc+1)));
+		all_nets[anc].name = strdup(g->db_get_data(res, anc, "name"));
+		all_nets[anc].address = inet_addr(g->db_get_data(res, anc, "address"));
+	        all_nets[anc].mask = inet_addr(g->db_get_data(res, anc, "mask"));
+	}
+	g->db_free(&res);
+																												 
+	netnames = strdup(ewx->networks);
+	netname = strdup(netnames);
 	// get networks for filter if any specified in 'networks' option
 	while( n>1 )
 	{
         	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 	        if(strlen(netname))
 		{
-			res = g->db_pquery(g->conn, "SELECT address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')", netname);
-			if(g->db_nrows(res))
+			for(i=0; i<anc; i++)
+	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                    		break;
+
+			if(i != anc)
 			{
 				nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nets[nc].address = all_nets[i].address;
+				nets[nc].mask = all_nets[i].mask;
+				nets[nc].name = strdup(all_nets[i].name);
 				nc++;
 			}
-			g->db_free(&res);
+		}
+	}
+	free(netname); free(netnames);
+
+	n = 2;
+	netnames = strdup(ewx->dummy_mac_networks);
+	netname = strdup(netnames);
+	// get networks for filter if any specified in 'dummy_mac_networks' option
+	while( n>1 )
+	{
+        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+	        if(strlen(netname))
+		{
+			for(i=0; i<anc; i++)
+	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                    		break;
+		
+			if(i != anc)
+			{
+				mac_nets = (struct net *) realloc(mac_nets, (sizeof(struct net) * (mnc+1)));
+				mac_nets[mnc].address = all_nets[i].address;
+				mac_nets[mnc].mask = all_nets[i].mask;
+				mac_nets[mnc].name = strdup(all_nets[i].name);
+				mnc++;
+			}
+		}
+	}
+	free(netname); free(netnames);
+
+	n = 2;
+	netnames = strdup(ewx->dummy_ip_networks);
+	netname = strdup(netnames);
+	// get networks for filter if any specified in 'dummy_ip_networks' option
+	while( n>1 )
+	{
+        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+	        if(strlen(netname))
+		{
+			for(i=0; i<anc; i++)
+	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                    		break;
+		
+			if(i != anc)
+			{
+				// same networks can't be included in both dummy_* options
+				for(j=0; j<mnc; j++)
+	            			if(mac_nets[j].address == all_nets[i].address)
+	                    			break;
+
+				if(j != mnc)
+				{
+	    				syslog(LOG_ERR, "[%s/ewx-stm] Network %s already included in 'dummy_mac_networks' option. Skipping.", all_nets[i].name, ewx->base.instance);
+					continue;
+				}
+
+				ip_nets = (struct net *) realloc(ip_nets, (sizeof(struct net) * (inc+1)));
+				ip_nets[inc].address = all_nets[i].address;
+				ip_nets[inc].mask = all_nets[i].mask;
+				ip_nets[inc].name = strdup(all_nets[i].name);
+				inc++;
+			}
 		}
 	}
 	free(netname); free(netnames);
@@ -214,7 +298,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	        syslog(LOG_ERR, "[%s/ewx-stm] Customers table is empty. Exiting.", ewx->base.instance);
 		return;
 	}
-	
+
 	if(globaluplink>pathuplink || globaldownlink>pathdownlink)
 	{
 	        syslog(LOG_ERR, "[%s/ewx-stm] Path is too small. Need Uplink: %d, Downlink: %d. Exiting.", ewx->base.instance, globaluplink, globaldownlink);
@@ -246,10 +330,17 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// adding hosts to customers array
 	for(i=0; i<g->db_nrows(res); i++)
         {
-        	int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
+		int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
         	int hostid = atoi(g->db_get_data(res,i,"id"));
 		char *ip = g->db_get_data(res,i,"ip");
 		unsigned long inet = inet_addr(ip);
+
+		// looking for customer
+		for(j=0; j<cc; j++)
+			if(customers[j].id == ownerid)
+				break;
+		
+		if(j == cc) continue; // break loop if customer's not found
 
 		// Networks test
 		if(nc)
@@ -261,13 +352,6 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			if(n == nc) continue;
 		}
 		
-		// looking for customer
-		for(j=0; j<cc; j++)
-			if(customers[j].id == ownerid)
-				break;
-		
-		if(j == cc) continue; // break loop if customer's not found
-
 		int cnt 	= atoi(g->db_get_data(res,i,"cnt"));
 		int uprate 	= atoi(g->db_get_data(res,i,"uprate"));
 		int downrate 	= atoi(g->db_get_data(res,i,"downrate"));
@@ -281,20 +365,49 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		
 		if(k == customers[j].no) // host not exists
 		{
+	        	int dummy_ip = 0;
+			int dummy_mac = 0;
+
+			// Networks test for dummy_mac
+			if(mnc)
+			{	
+				for(n=0; n<mnc; n++)
+	            			if(mac_nets[n].address == (inet & mac_nets[n].mask))
+	                    			break;
+		
+				if(n != mnc) dummy_mac = 1;
+			}
+
+			// Networks test for dummy_ip
+			if(inc)
+			{	
+				for(n=0; n<inc; n++)
+	            			if(ip_nets[n].address == (inet & ip_nets[n].mask))
+	                    			break;
+		
+				if(n != inc) dummy_ip = 1;
+			}
+
 			customers[j].hosts = (struct host *) realloc(customers[j].hosts, (sizeof(struct host) * (k+1)));
 			customers[j].hosts[k].id = hostid;
 			customers[j].hosts[k].uprate = uprate;
 			customers[j].hosts[k].upceil = upceil;
 			customers[j].hosts[k].downrate = downrate;
 			customers[j].hosts[k].downceil = downceil;
-			customers[j].hosts[k].ip = strdup(ip);
-			if(atoi(g->db_get_data(res,i,"chkmac")))
-				customers[j].hosts[k].mac = strdup(g->db_get_data(res,i,"mac"));
-			else
-				customers[j].hosts[k].mac = strdup(DUMMY_MAC);
 			customers[j].hosts[k].status = UNKNOWN;
 			customers[j].hosts[k].halfduplex = atoi(g->db_get_data(res,i,"halfduplex"));
 			customers[j].hosts[k].cnt = cnt;
+			
+			if(!dummy_ip)
+				customers[j].hosts[k].ip = strdup(ip);
+			else
+				customers[j].hosts[k].ip = strdup(DUMMY_IP);
+			
+			if(!dummy_mac && atoi(g->db_get_data(res,i,"chkmac")))
+				customers[j].hosts[k].mac = strdup(g->db_get_data(res,i,"mac"));
+			else
+				customers[j].hosts[k].mac = strdup(DUMMY_MAC);
+			
 			customers[j].downratesum += downrate;
 			customers[j].upratesum += uprate;
 			customers[j].no++;
@@ -333,7 +446,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		unsigned long inet = inet_addr(ip);
 
 		// Networks test
-		if(nc)
+		if(nc && inet)
 		{
 			for(j=0; j<nc; j++)
 		                if(nets[j].address == (inet & nets[j].mask))
@@ -423,7 +536,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				for(k=0; k<channels[j].no; k++)
 					for(n=0; n<c.no; n++)
 						if(	(c.hosts[n].id == channels[j].hosts[k].id) ||
-							(inet_addr(c.hosts[n].ip) == inet_addr(channels[j].hosts[k].ip)) || 
+							(inet_addr(c.hosts[n].ip) == inet_addr(channels[j].hosts[k].ip) 
+								&& inet_addr(c.hosts[n].ip) != inet_addr(DUMMY_IP)) ||
 							!(strcmp(c.hosts[n].mac, channels[j].hosts[k].mac)))
 						{
 							if( // komputer nalezy do innego kanalu
@@ -478,8 +592,10 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 					if(channels[j].status == UNKNOWN)
 						for(n=0; n<channels[j].no; n++)
 							if(channels[j].hosts[n].status == UNKNOWN)
+							{
 								if(c.hosts[k].id == channels[j].hosts[n].id ||
-								    !strcmp(c.hosts[k].ip, channels[j].hosts[n].ip) ||
+								    (inet_addr(c.hosts[k].ip) == inet_addr(channels[j].hosts[n].ip)
+									    && inet_addr(c.hosts[k].ip) != inet_addr(DUMMY_IP)) ||
 								    !strcmp(c.hosts[k].mac, channels[j].hosts[n].mac)) 
 								{
 									// komputer byl w kanale
@@ -510,6 +626,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 									channels[j].hosts[n].status = STATUS_OK;
 									found++;
 								}
+							}
+							
 				if(needupdate || !found)
 				{
 					// delete existing channel 
@@ -563,9 +681,33 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		}
 	        free(customers[i].hosts);
 	}
+
         free(channels);
         free(customers);
+
+	for(i=0;i<nc;i++)
+        {
+		free(nets[i].name);
+	}
 	free(nets);
+
+	for(i=0;i<anc;i++)
+        {
+		free(all_nets[i].name);
+	}
+	free(all_nets);
+
+	for(i=0;i<mnc;i++)
+        {
+		free(mac_nets[i].name);
+	}
+	free(mac_nets);
+
+	for(i=0;i<inc;i++)
+        {
+		free(ip_nets[i].name);
+	}
+	free(ip_nets);
 		
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/ewx-stm] reloaded", ewx->base.instance);
@@ -573,6 +715,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	free(ewx->community);
 	free(ewx->host);
 	free(ewx->networks);
+	free(ewx->dummy_mac_networks);
+	free(ewx->dummy_ip_networks);
 }
 
 struct ewx_module * init(GLOBAL *g, MODULE *m)
@@ -592,6 +736,8 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->host = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "snmp_host", ""));
 	ewx->port = g->config_getint(ewx->base.ini, ewx->base.instance, "snmp_port", 161);
 	ewx->networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "networks", ""));
+	ewx->dummy_mac_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_mac_networks", ""));
+	ewx->dummy_ip_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_ip_networks", ""));
 
 	// node/channel ID's offset, e.g. for testing
 	ewx->offset = g->config_getint(ewx->base.ini, ewx->base.instance, "offset", 0);
@@ -626,7 +772,7 @@ int del_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, stru
 	if(!sh) return result;
 
 	// Create OID
-	ChannelStatus[STM_OID_LEN-1] = c.id + ewx->offset;
+	ChannelStatus[STM_OID_LEN-1] = c.id;
 
 	// Create the PDU 
 	pdu = snmp_pdu_create(SNMP_MSG_SET);
@@ -1000,7 +1146,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 
 //	snmp_add_var(pdu, CustomerNo, STM_OID_LEN, 'i', itoa(h.id));
 	snmp_add_var(pdu, CustomerPathNo, STM_OID_LEN, 'u', itoa(ewx->path));
-	snmp_add_var(pdu, CustomerChannelNo, STM_OID_LEN, 'u', itoa(chid));
+	snmp_add_var(pdu, CustomerChannelNo, STM_OID_LEN, 'u', itoa(chid) + ewx->offset);
 	snmp_add_var(pdu, CustomerIpAddr, STM_OID_LEN, 's', h.ip);
 	snmp_add_var(pdu, CustomerMacAddr, STM_OID_LEN, 's', h.mac);
 	snmp_add_var(pdu, CustomerUpMinSpeed, STM_OID_LEN, 'u', itoa(h.uprate));

@@ -34,6 +34,9 @@
 				<para>modu³ <filename>parser</filename> wymaga pakietu bison w wersji 1.875 lub nowszej 
 				oraz pakietu flex</para>
 			</listitem>
+			<listitem>
+				<para>modu³y <filename>ewx-*</filename> wymagaj± biblioteki net-snmp i jej plików nag³ówkowych.</para>
+			</listitem>
 			</itemizedlist>
       			</para>
 		</sect2>
@@ -237,6 +240,14 @@
 				<row>
 				<entry><xref linkend="daemon-pinger"></entry>
 				<entry>Badanie aktywno¶ci klientów</entry>
+				</row>
+				<row>
+				<entry><xref linkend="daemon-ewx-pt"></entry>
+				<entry>Konfiguracja EtherWerX PPPoE Terminatora</entry>
+				</row>
+				<row>
+				<entry><xref linkend="daemon-ewx-stm"></entry>
+				<entry>Konfiguracja EtherWerX Standalone Traffic Managera</entry>
 				</row>
 				</tbody>
 			</tgroup>
@@ -1215,6 +1226,127 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 					<para>Polecenie pow³oki do wykonania po kompilacji skryptu. Domy¶lnie: pusta</para>
 					<para>Przyk³ad: <prompt>command = "sh /tmp/parser.out"</prompt></para>
 				</listitem>
+				</itemizedlist>
+			</sect3>
+		</sect2>
+		<sect2 id="daemon-ewx-pt" xreflabel="ewx-pt">
+			<title>Ewx-pt</title>
+			<sect3 id="daemon-ewx-pt-intro">
+				<title>Wstêp</title>
+				<para>Modu³ ewx-pt s³u¿y do zarz±dzania urz±dzeniem PPPoE
+				Terminator marki <ulink url="http://etherwerx.com">EtherWerX</ulink>.
+				Komunikacja odbywa siê z wykorzystaniem protoko³u SNMP.</para>
+				<para>Modu³ podczas pracy tworzy w³asn± kopiê konfiguracji urz±dzenia.
+				Konfiguracja urz±dzenia nie jest w ¿aden sposób weryfikowana, dlatego 
+				korzystaj±c z modu³u ewx-pt nie mo¿na dokonywaæ zmian bezpo¶rednio na
+				urz±dzeniu. W celu rekonfiguracji urz±dzenia nale¿y wyczy¶ciæ konfiguracjê
+				na urz±dzeniu oraz usun±æ zawarto¶æ tabeli ewx_pt_config w bazie LMSa.
+				<note><para>Pamiêtaj o w³±czeniu opcji konfiguracyjnej <prompt>ewx_support</prompt>
+				w sekcji <emphasis>[phpui]</emphasis>.</para></note>
+				</para>
+			</sect3>
+			<sect3 id="daemon-ewx-pt-config">
+				<title>Konfiguracja</title>
+				<para>Modu³ ewx-pt udostêpnia nastêpuj±ce opcje:</para>
+				<itemizedlist>
+					<listitem>
+						<para>snmp_host</para>
+						<para>Adres urz±dzenia EtherWerX. Domy¶lnie: pusty.</para>
+						<para>Przyk³ad: <prompt>snmp_host = 192.168.0.1</prompt></para>
+					</listitem>
+					<listitem>
+						<para>snmp_port</para>
+						<para>Port urz±dzenia dla komunikacji SNMP. Domy¶lnie: 161</para>
+						<para>Przyk³ad: <prompt>snmp_port = 2161</prompt></para>
+					</listitem>
+					<listitem>
+						<para>community</para>
+						<para>Nazwa community SNMP urz±dzenia. Domy¶lnie: private</para>
+						<para>Przyk³ad: <prompt>community = public</prompt></para>
+					</listitem>
+					<listitem>
+						<para>networks</para>
+						<para>Lista nazw sieci, które maj± byæ brane pod uwagê. 
+						Domy¶lnie: pusta (wszystkie sieci).</para>
+						<para>Przyk³ad: <prompt>networks = 'lan1 lan2'</prompt></para>
+					</listitem>
+					<listitem>
+						<para>offset</para>
+						<para>Liczba ca³kowita o jak± bêd± zwiêkszane identyfikatory komputerów
+						podczas zapisu na urz±dzeniu EtherWerX. Domy¶lnie: 0.</para>
+						<para>Przyk³ad: <prompt>offset = 1000</prompt></para>
+					</listitem>
+				</itemizedlist>
+			</sect3>
+		</sect2>
+		<sect2 id="daemon-ewx-stm" xreflabel="ewx-stm">
+			<title>Ewx-stm</title>
+			<sect3 id="daemon-ewx-stm-intro">
+				<title>Wstêp</title>
+				<para>Modu³ ewx-stm s³u¿y do zarz±dzania urz±dzeniem Standalone Traffic
+				Manager marki <ulink url="http://etherwerx.com">EtherWerX</ulink>.
+				Komunikacja odbywa siê z wykorzystaniem protoko³u SNMP.</para>
+				<para>Modu³ podczas pracy tworzy w³asn± kopiê konfiguracji urz±dzenia.
+				Konfiguracja urz±dzenia nie jest w ¿aden sposób weryfikowana, dlatego 
+				korzystaj±c z modu³u ewx-stm nie mo¿na dokonywaæ zmian bezpo¶rednio na
+				urz±dzeniu. W celu rekonfiguracji urz±dzenia nale¿y wyczy¶ciæ konfiguracjê
+				na urz±dzeniu oraz usun±æ zawarto¶æ tabel ewx_stm_channels oraz
+				ewx_stm_nodes w bazie LMSa.
+				<note><para>Pamiêtaj o w³±czeniu opcji konfiguracyjnej <prompt>ewx_support</prompt>
+				w sekcji <emphasis>[phpui]</emphasis>.</para></note>
+				Nale¿y tak¿e zwróciæ uwagê na to, i¿ modu³ uwzglêdnia ustawienia opcji 
+				'Sprawdzanie MACa' oraz 'Half duplex' w danych komputera.
+				</para>
+			</sect3>
+			<sect3 id="daemon-ewx-stm-config">
+				<title>Konfiguracja</title>
+				<para>Modu³ ewx-stm udostêpnia nastêpuj±ce opcje:</para>
+				<itemizedlist>
+					<listitem>
+						<para>snmp_host</para>
+						<para>Adres urz±dzenia EtherWerX. Domy¶lnie: pusty.</para>
+						<para>Przyk³ad: <prompt>snmp_host = 192.168.0.1</prompt></para>
+					</listitem>
+					<listitem>
+						<para>snmp_port</para>
+						<para>Port urz±dzenia dla komunikacji SNMP. Domy¶lnie: 161</para>
+						<para>Przyk³ad: <prompt>snmp_port = 2161</prompt></para>
+					</listitem>
+					<listitem>
+						<para>community</para>
+						<para>Nazwa community SNMP urz±dzenia. Domy¶lnie: private</para>
+						<para>Przyk³ad: <prompt>community = public</prompt></para>
+					</listitem>
+					<listitem>
+						<para>networks</para>
+						<para>Lista nazw sieci, które maj± byæ brane pod uwagê. 
+							Domy¶lnie: pusta (wszystkie sieci).</para>
+						<para>Przyk³ad: <prompt>networks = 'lan1 lan2'</prompt></para>
+					</listitem>
+					<listitem>
+						<para>path</para>
+						<para>Numer ¶cie¿ki zdefiniowanej na urz±dzeniu, do której
+						zostan± dopisane komputery i kana³y z LMSa. Domy¶lnie: nieustawiona.</para>
+						<para>Przyk³ad: <prompt>path = 1</prompt></para>
+					</listitem>
+					<listitem>
+						<para>offset</para>
+						<para>Liczba ca³kowita o jak± bêd± zwiêkszane identyfikatory komputerów
+							podczas zapisu na urz±dzeniu EtherWerX. Domy¶lnie: 0.</para>
+						<para>Przyk³ad: <prompt>offset = 1000</prompt></para>
+					</listitem>
+					<listitem>
+						<para>dummy_ip_networks</para>
+						<para>Lista nazw sieci, dla których komputerom zostanie
+						przypisany adres IP 0.0.0.0. Domy¶lnie: pusta (¿adna sieæ).</para>
+						<para>Przyk³ad: <prompt>dummy_ip_networks = lan1</prompt></para>
+					</listitem>
+					<listitem>
+						<para>dummy_mac_networks</para>
+						<para>Lista nazw sieci, dla których komputerom zostanie
+						przypisany adres MAC 00:00:00:00:00:00. Domy¶lnie: pusta (¿adna sieæ).</para>
+						<para>Przyk³ad: <prompt>dummy_mac_networks = lan1</prompt></para>
+					</listitem>
 				</itemizedlist>
 			</sect3>
 		</sect2>
