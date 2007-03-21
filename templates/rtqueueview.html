@@ -78,6 +78,7 @@
 			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
 			{if $queue[ticket].customerid}
 				{$queue[ticket].customername|escape|truncate:"60":"..."}
+				({$queue[ticket].address})
 			{else}
 				{$queue[ticket].requestor|escape} 
 			{/if}
