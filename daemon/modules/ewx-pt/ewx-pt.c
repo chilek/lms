@@ -243,11 +243,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		int dummy_mac = 0;
 
 		// Networks test for dummy_mac
-		if(atoi(g->db_get_data(res,i,"chkmac")))
-                {
-		        dummy_mac = 1;
-		}
-		else if(mnc && inet)
+		if(mnc && inet)
 		{	
 			for(n=0; n<mnc; n++)
 	            		if(mac_nets[n].address == (inet & mac_nets[n].mask))
@@ -256,8 +252,13 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			if(n != mnc) dummy_mac = 1;
 		}
 
+		if(!atoi(g->db_get_data(res,i,"chkmac")))
+                {
+		        dummy_mac = 1;
+		}
+
 		// Networks test for dummy_ip
-		if(inc && inet)
+		if(inc && inet && !dummy_mac)
 		{	
 			for(n=0; n<inc; n++)
 	        		if(ip_nets[n].address == (inet & ip_nets[n].mask))
