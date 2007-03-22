@@ -169,6 +169,12 @@ if($nodedata['ownerid'])
 	$SMARTY->assign('documents', $LMS->GetDocuments($nodedata['ownerid'], 10));
 	$SMARTY->assign('taxeslist', $LMS->GetTaxes());
 	$SMARTY->assign('tariffs', $LMS->GetTariffs());
+
+	if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
+	{
+    		$SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
+	                                        WHERE nodeid = nodes.id AND ownerid = ?', array($nodedata['ownerid'])));
+	}
 }
 
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());

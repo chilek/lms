@@ -46,6 +46,12 @@ $tariffs = $LMS->GetTariffs();
 $documents = $LMS->GetDocuments($_GET['id'], 10);
 $taxeslist = $LMS->GetTaxes();
 
+if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
+{
+        $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
+                                        WHERE nodeid = nodes.id AND ownerid = ?', array($_GET['id'])));
+}
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Customer Info: $0',$customerinfo['customername']);

@@ -114,6 +114,12 @@ elseif(isset($_POST['customerdata']))
 
 $layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);
 
+if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
+{
+        $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
+                                        WHERE nodeid = nodes.id AND ownerid = ?', array($customerinfo['id'])));
+}
+
 $SMARTY->assign('customernodes',$LMS->GetCustomerNodes($customerinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($customerinfo['id']));
 $SMARTY->assign('tariffs',$LMS->GetTariffs());

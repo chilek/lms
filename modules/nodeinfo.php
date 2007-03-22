@@ -92,6 +92,12 @@ if($nodeinfo['netdev'] == 0)
 else
 	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
 
+if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
+{
+	$SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes 
+					WHERE nodeid = nodes.id AND ownerid = ?', array($ownerid)));
+}
+
 $layout['pagetitle'] = trans('Node Info: $0',$nodeinfo['name']);
 
 $SMARTY->assign('netdevices',$netdevices);

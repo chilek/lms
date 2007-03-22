@@ -4,6 +4,9 @@
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel');">
 			<IMG SRC="img/node.gif" alt="">
 			<B><A name="customernodes">{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</A></B>
+			{if $ewx_channelid}
+			<B class="brown">[{t}Channel:{/t} {$ewx_channelid|string_format:"%05d"}]</B> 
+			{/if}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
 			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{t}New Node{/t} &raquo;</A>&nbsp;{/if}
