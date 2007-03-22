@@ -193,6 +193,12 @@ $netdevices = $LMS->GetNetDevNames();
 $taxeslist = $LMS->GetTaxes();
 $customernodes = $LMS->GetCustomerNodes($ownerid);
 
+if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
+{
+        $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
+                                        WHERE nodeid = nodes.id AND ownerid = ?', array($ownerid)));
+}
+
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('assignments',$assignments);

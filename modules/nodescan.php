@@ -34,6 +34,12 @@ if($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid']))
 	$SMARTY->assign('tariffs', $LMS->GetTariffs());
 	$SMARTY->assign('customerinfo', $LMS->GetCustomer($_GET['ownerid']));
 	$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['ownerid']));
+
+	if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
+	{
+    		$SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
+	                                        WHERE nodeid = nodes.id AND ownerid = ?', array($_GET['ownerid'])));
+	}
 }
 
 $layout['pagetitle'] = trans('Nodes Scanning');
