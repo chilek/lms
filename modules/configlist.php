@@ -259,6 +259,14 @@ function GetConfigList($order='var,asc')
 				case 'ticketlist_status':
 					$config[$idx]['description'] = trans('Default status filter setting on tickets list. For allowed values see html source code. Default: not set');
 				break;					
+
+				case 'use_invoices':
+					$config[$idx]['description'] = trans('Makes option "with invoice" checked by default. Default: false');
+				break;					
+
+				case 'default_module':
+					$config[$idx]['description'] = trans('Start-up module (filename from /modules without .php). Default: welcome');
+				break;					
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
@@ -281,9 +289,6 @@ function GetConfigList($order='var,asc')
          break;
      case 'backup_dir':
          $config[$idx]['description'] = 'Katalog z backupami SQL\'owymi - miejsce gdzie LMS zapisuje dumpy z bazy. Domy¶lnie jest to podkatalog "backups". Naprawdê dobrze by by³o go przenie¶æ poza miejsce osi±galne przez przegl±darkê';
-         break;
-     case 'config_templates_dir':
-         $config[$idx]['description'] = 'Katalog z templejtami plików konfiguracyjnych. Nieu¿ywana';
          break;
      case 'smarty_compile_dir':
          $config[$idx]['description'] = 'Katalog kompilacji Smartyego. Miejsce gdzie Smarty psuje nasze templejty. Domy¶lnie to templates_c w katalogu sysdir';

@@ -1810,5 +1810,7 @@ $_LANG['without tariff'] = 'bez taryfy';
 $_LANG['without group'] = 'bez grupy';
 $_LANG['Default status filter setting on tickets list. For allowed values see html source code. Default: not set'] = 'Domyślne ustawienie filtra statusu na liście zgłoszeń. Dozwolonych wartości szukaj w kodzie html strony. Domyślnie: nie ustawiona';
 $_LANG['Channel:'] = 'Kanał:';
+$_LANG['Makes option "with invoice" checked by default. Default: false'] = 'Sprawia że opcja "z fakturą" będzie domyślnie zaznaczona. Domyślnie: 0';
+$_LANG['Start-up module (filename from /modules without .php). Default: welcome'] = 'Nazwa modułu startowego (nazwa pliku z katalogu /modules bez rozszerzenia). Domyślnie: welcome';
 
 ?>

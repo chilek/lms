@@ -994,6 +994,12 @@ MISC_OTHER="-A -x -j"
             <para><warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
             bêdziesz móg³ korzystaæ z LMS!</para></warning></para>
         </listitem>
+	<listitem>
+		<para>default_module</para>
+		<para>Nazwa modu³u startowego (nazwa pliku z katalogu <filename>/modules</filename>
+		bez rozszerzenia .php). Domy¶lnie: welcome.</para>
+		<para>Przyk³ad:          <prompt>default_module = copyrights</prompt></para>
+        </listitem>
         <listitem>
             <para>customerlist_pagelimit</para>
             <para>Limit wy¶wietlanych pozycji na stronie w li¶cie klientów. Domy¶lnie: 100.</para>
