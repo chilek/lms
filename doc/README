@@ -1940,6 +1940,10 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
    It's not possible to not to have any timeout. If you set this value to
    zero, you won't be able to use LMS at all!
+     * default_module
+       Start-up module (filename from /modules without .php). Default:
+       welcome.
+       Example: default_module = copyrights
      * customerlist_pagelimit
        Limit of records that can be displayed on one page of customers
        list. Default: 100

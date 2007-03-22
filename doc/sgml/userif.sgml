@@ -938,6 +938,12 @@ registered/unregistered cases) if ticket will be running via email.</para>
     		<para><warning><para>It's not possible to not to have any timeout. If you set this value to
     		zero, you won't be able to use LMS at all!</para></warning></para>
 	    </listitem>
+    	    <listitem>
+    		<para>default_module</para>
+		<para>Start-up module (filename from <filename>/modules</filename> without .php). 
+		Default: welcome.</para>
+    		<para>Example:     <prompt>default_module = copyrights</prompt></para>
+	    </listitem>
 	    <listitem>
         	<para>customerlist_pagelimit</para>
         	<para>Limit of records that can be displayed on one page of customers list. Default: 100</para>
