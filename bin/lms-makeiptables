@@ -242,6 +242,7 @@ foreach my $key (@networks)
 					else
 					{
 						print IPTABLESSCRIPT "-j SNAT --to $srow->{'pubip'}\n";
+						print IPTABLESSCRIPT "$ipbin -t nat -A PREROUTING -d $srow->{'pubip'} -j DNAT --to $srow->{'ip'}\n";
 					}
 				}
 			}
