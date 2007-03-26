@@ -88,9 +88,11 @@
 		<TD WIDTH="50%" CLASS="fbt" nowrap>
 			{t}Title:{/t}
 		</TD>
-		<TD WIDTH="1%" CLASS="frightu" align="right" nowrap>
+		<TD WIDTH="1%" CLASS="frightu" align="right">
+			<NOBR>
 			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{t}New Cash-in Receipt{/t} <img src="img/save.gif" alt=""></A><BR>
 			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{t}New Cash-out Receipt{/t} <img src="img/save.gif" alt=""></A>
+			</NOBR>
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -211,12 +213,31 @@
 		</TD>
 		<TD colspan="3" class="frightu" align="right">
 			<H1>{t}Cash state:{/t} <B>{$listdata.cashstate|money_format}</B></H1>
+			<A href="?m=cashreglogview&regid={$listdata.regid}">{t}Cash history{/t} <img src="img/value.gif" alt=""></A>&nbsp;
 			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{t}New Cash-in Receipt{/t} <img src="img/save.gif" alt=""></A>&nbsp;
 			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{t}New Cash-out Receipt{/t} <img src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
+{if $logentry}
+<P>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+			<IMG SRC="img/time.gif" ALT=""> <B>{t}Cash History Last Entry:{/t}</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" nowrap>
+			{$logentry.time|date_format:"%x %H:%M"} &nbsp;
+			{if $logentry.value<0}<FONT class="alert">{/if}<B>{$logentry.value|money_format}</B>{if $logentry.value<0}</FONT>{/if} &nbsp;
+		</TD>
+		<TD CLASS="frightu" WIDTH="98%" nowrap>
+			{$logentry.description}
+		</TD>
+	</TR>
+</TABLE>
+</P>
+{/if}
 <SCRIPT type="text/javascript">
 <!--
 var cal1 = new calendar(document.page.elements['from']);

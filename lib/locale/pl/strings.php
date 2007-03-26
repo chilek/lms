@@ -1812,5 +1812,16 @@ $_LANG['Default status filter setting on tickets list. For allowed values see ht
 $_LANG['Channel:'] = 'Kanał:';
 $_LANG['Makes option "with invoice" checked by default. Default: false'] = 'Sprawia że opcja "z fakturą" będzie domyślnie zaznaczona. Domyślnie: 0';
 $_LANG['Start-up module (filename from /modules without .php). Default: welcome'] = 'Nazwa modułu startowego (nazwa pliku z katalogu /modules bez rozszerzenia). Domyślnie: welcome';
+$_LANG['Cash History of Registry:'] = 'Historia kasy rejestru:';
+$_LANG['Add entry'] = 'Dodaj wpis';
+$_LANG['No such cash history entries in database.'] = 'Brak wpisów do historii kasy w bazie danych.';
+$_LANG['Cash history'] = 'Historia kasy';
+$_LANG['Enter cash state value'] = 'Podaj wartość stanu kasy';
+$_LANG['Are you sure, you want to delete selected entry?'] = 'Czy na pewno chcesz usunąć wybrany wpis?';
+$_LANG['Cash History Entry Edit'] = 'Edycja wpisu w historii kasy';
+$_LANG['Cash History Last Entry:'] = 'Ostatni wpis w historii kasy:';
+$_LANG['Cash state value is required!'] = 'Wartość stanu kasy jest wymagana!';
+$_LANG['New Cash History Entry'] = 'Nowy wpis w historii kasy';
+$_LANG['Wrong datetime format!'] = 'Błędny format daty/czasu!';
 
 ?>

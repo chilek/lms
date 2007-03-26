@@ -241,6 +241,8 @@ $start = ($page - 1) * $pagelimit;
 $layout['pagetitle'] = trans('Cash Registry: $0', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));
 $SESSION->save('backto', 'm=receiptlist&regid='.$regid);
 
+$SMARTY->assign('logentry', $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ? ORDER BY time DESC LIMIT 1', array($regid)));
+
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
