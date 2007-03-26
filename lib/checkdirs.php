@@ -24,22 +24,22 @@
  *  $Id$
  */
 
-if(!is_dir($_SMARTY_COMPILE_DIR))
-	die('Missing directory <B>'.$_SMARTY_COMPILE_DIR.'</B>. Can anybody make them?');
+if(!is_dir(SMARTY_COMPILE_DIR))
+	die('Missing directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can anybody make them?');
 
-if(!is_writable($_SMARTY_COMPILE_DIR))
-	die('Can\'t write to directory <B>'.$_SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.$_SMARTY_COMPILE_DIR."\nchmod 755 ".$_SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
+if(!is_writable(SMARTY_COMPILE_DIR))
+	die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
 
-if(!is_dir($_BACKUP_DIR))
-	die('Missing directory <B>'.$_BACKUP_DIR.'</B>. Can anybody make them?');
+if(!is_dir(BACKUP_DIR))
+	die('Missing directory <B>'.BACKUP_DIR.'</B>. Can anybody make them?');
 	
-if(!is_writable($_BACKUP_DIR))
-	die('Can\'t write to directory <B>'.$_BACKUP_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.$_BACKUP_DIR."\nchmod 755 ".$_BACKUP_DIR.'</PRE>This helps me to work. Thanks.');
+if(!is_writable(BACKUP_DIR))
+	die('Can\'t write to directory <B>'.BACKUP_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.BACKUP_DIR."\nchmod 755 ".BACKUP_DIR.'</PRE>This helps me to work. Thanks.');
 
-if(!is_dir($_DOC_DIR))
-	die('Missing directory <B>'.$_DOC_DIR.'</B>. Can anybody make them?');
+if(!is_dir(DOC_DIR))
+	die('Missing directory <B>'.DOC_DIR.'</B>. Can anybody make them?');
 	
-if(!is_writable($_DOC_DIR))
-	die('Can\'t write to directory <B>'.$_DOC_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.$_DOC_DIR."\nchmod 755 ".$_DOC_DIR.'</PRE>This helps me to work. Thanks.');
+if(!is_writable(DOC_DIR))
+	die('Can\'t write to directory <B>'.DOC_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod 755 ".DOC_DIR.'</PRE>This helps me to work. Thanks.');
 
 ?>

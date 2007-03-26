@@ -30,7 +30,7 @@ if($_GET['is_sure']=="1")
 
 	if($DB->GetOne('SELECT COUNT(*) FROM documentcontents WHERE md5sum = ?',array((string)$md5sum))==1)
 	{
-		@unlink($_DOC_DIR.'/'.substr($md5sum,0,2).'/'.$md5sum);
+		@unlink(DOC_DIR.'/'.substr($md5sum,0,2).'/'.$md5sum);
 	}
 	
 	$DB->BeginTrans();

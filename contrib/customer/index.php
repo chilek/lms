@@ -79,6 +79,8 @@ function lms_parse_ini_file($filename, $process_sections = false)
 	return $ini_array;
 }
 
+$CONFIG = array();
+
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 	$CONFIG[$key] = $val;
 
@@ -95,29 +97,30 @@ foreach(lms_parse_ini_file($CONFIG['directories']['lib_dir'].'/config_defaults.i
 		if(! isset($CONFIG[$section][$key]))
 			$CONFIG[$section][$key] = $val;
 
-$_SYSTEM_DIR = $CONFIG['directories']['sys_dir'];
-$_BACKUP_DIR = $CONFIG['directories']['backup_dir'];
-$_LIB_DIR = $CONFIG['directories']['lib_dir'];
-$_MODULES_DIR = $CONFIG['directories']['modules_dir'];
-$_SMARTY_COMPILE_DIR = $CONFIG['directories']['smarty_compile_dir'];
-$_SMARTY_TEMPLATES_DIR = $CONFIG['directories']['smarty_templates_dir'];
+define('SYS_DIR', $CONFIG['directories']['sys_dir']);
+define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
+define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
+define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
+define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
+
 $_DBTYPE = $CONFIG['database']['type'];
 $_DBHOST = $CONFIG['database']['host'];
 $_DBUSER = $CONFIG['database']['user'];
 $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 
-require_once($_LIB_DIR.'/checkconfig.php');
+require_once(LIB_DIR.'/checkconfig.php');
 
 // Init database 
 
-require_once($_LIB_DIR.'/LMSDB.php');
+require_once(LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 // Enable data encoding conversion if needed
 
-require_once($_LIB_DIR.'/dbencoding.php');
+require_once(LIB_DIR.'/dbencoding.php');
 
 // Read configuration of LMS-UI from database
 
@@ -127,16 +130,16 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 
 // Initialize templates engine
 
-require_once($_LIB_DIR.'/Smarty/Smarty.class.php');
+require_once(LIB_DIR.'/Smarty/Smarty.class.php');
 
 $SMARTY = new Smarty;
 
 // Include required files (including sequence is important)
 
-require_once($_LIB_DIR.'/unstrip.php');
-require_once($_LIB_DIR.'/language.php');
-require_once($_LIB_DIR.'/common.php');
-require_once($_LIB_DIR.'/LMS.class.php');
+require_once(LIB_DIR.'/unstrip.php');
+require_once(LIB_DIR.'/language.php');
+require_once(LIB_DIR.'/common.php');
+require_once(LIB_DIR.'/LMS.class.php');
 
 // Initialize LMS class
 
@@ -150,7 +153,7 @@ $SMARTY->assign_by_ref('_LANG', $_LANG);
 $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
 $SMARTY->assign_by_ref('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
-$SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
+$SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 @include('locale/'.$LMS->lang.'/strings.php');
 
 $layout['lmsv'] = '1.9-cvs';

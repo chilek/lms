@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-require_once($_LIB_DIR.'/Sysinfo.class.php');
-@include($_LIB_DIR.'/locale/'.$_language.'/fortunes.php');
+require_once(LIB_DIR.'/Sysinfo.class.php');
+@include(LIB_DIR.'/locale/'.$_language.'/fortunes.php');
 
 $SI = new Sysinfo;
 

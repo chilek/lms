@@ -78,6 +78,8 @@ function lms_parse_ini_file($filename, $process_sections = false)
 	return $ini_array;
 }
 
+$CONFIG = array();
+
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 	$CONFIG[$key] = $val;
 
@@ -96,37 +98,38 @@ foreach(lms_parse_ini_file($CONFIG['directories']['lib_dir'].'/config_defaults.i
 		if(! isset($CONFIG[$section][$key]))
 			$CONFIG[$section][$key] = $val;
 
-$_SYSTEM_DIR = $CONFIG['directories']['sys_dir'];
-$_BACKUP_DIR = $CONFIG['directories']['backup_dir'];
-$_DOC_DIR = $CONFIG['directories']['doc_dir'];
-$_LIB_DIR = $CONFIG['directories']['lib_dir'];
-$_MODULES_DIR = $CONFIG['directories']['modules_dir'];
-$_SMARTY_COMPILE_DIR = $CONFIG['directories']['smarty_compile_dir'];
-$_SMARTY_TEMPLATES_DIR = $CONFIG['directories']['smarty_templates_dir'];
+define('SYS_DIR', $CONFIG['directories']['sys_dir']);
+define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('DOC_DIR', $CONFIG['directories']['doc_dir']);
+define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
+define('MODULES_DIR', = $CONFIG['directories']['modules_dir']);
+define('SMARTY_COMPILE_DIR', = $CONFIG['directories']['smarty_compile_dir']);
+define('SMARTY_TEMPLATES_DIR', = $CONFIG['directories']['smarty_templates_dir']);
+
 $_DBTYPE = $CONFIG['database']['type'];
 $_DBHOST = $CONFIG['database']['host'];
 $_DBUSER = $CONFIG['database']['user'];
 $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 
-require_once($_LIB_DIR.'/checkdirs.php');
-require_once($_LIB_DIR.'/checkconfig.php');
+require_once(LIB_DIR.'/checkdirs.php');
+require_once(LIB_DIR.'/checkconfig.php');
 
 // Init database 
 
-require_once($_LIB_DIR.'/LMSDB.php');
+require_once(LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 // Enable/disable data encoding conversion
 // Call any of upgrade process before anything else
 
-require_once($_LIB_DIR.'/dbencoding.php');
-require_once($_LIB_DIR.'/upgradedb.php');
+require_once(LIB_DIR.'/dbencoding.php');
+require_once(LIB_DIR.'/upgradedb.php');
 
 // Initialize templates engine
 
-require_once($_LIB_DIR.'/Smarty/Smarty.class.php');
+require_once(LIB_DIR.'/Smarty/Smarty.class.php');
 
 $SMARTY = new Smarty;
 
@@ -137,7 +140,7 @@ if(version_compare('2.6.0', $SMARTY->_version) > 0)
 
 // system localization
 
-require_once($_LIB_DIR.'/language.php');
+require_once(LIB_DIR.'/language.php');
 
 // Read configuration of LMS-UI from database
 
@@ -159,7 +162,7 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 
 $_LMSDIR = dirname(__FILE__);
 
-require_once($_LIB_DIR.'/ExecStack.class.php');
+require_once(LIB_DIR.'/ExecStack.class.php');
 
 $ExecStack = new ExecStack($_LMSDIR.'/modules/', (isset($_GET['m']) ? $_GET['m'] : NULL), (isset($_GET['a']) ? $_GET['a'] : NULL));
 

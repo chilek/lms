@@ -342,7 +342,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 
 function invoice_body() 
 {
-    global $invoice,$pdf,$id,$CONFIG,$_MODULES_DIR;
+    global $invoice,$pdf,$id,$CONFIG;
     switch ($CONFIG['invoices']['template_file']) {
 	case "standard":
 	    $top=800;
@@ -380,14 +380,14 @@ function invoice_body()
 	    invoice_simple_form_fill(14,3,0.4);
 	    break;
 	default:
-	    require($_MODULES_DIR.'/'.$CONFIG['invoices']['template_file']);
+	    require(MODULES_DIR.'/'.$CONFIG['invoices']['template_file']);
     }
     if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }
 
 // brzydki hack dla ezpdf 
 setlocale(LC_ALL,'C');
-require_once($_LIB_DIR.'/ezpdf/class.ezpdf.php');
+require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
 
 $diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
 241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
@@ -404,8 +404,8 @@ $tmp = array(
 );
 $pdf->setFontFamily('arial.afm',$tmp);
 
-$pdf->selectFont($_LIB_DIR.'/ezpdf/arialbd.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
-$pdf->selectFont($_LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
+$pdf->selectFont(LIB_DIR.'/ezpdf/arialbd.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
+$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
 
 $id = $pdf->getFirstPageId();
 

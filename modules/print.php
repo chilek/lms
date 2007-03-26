@@ -303,13 +303,13 @@ switch($type)
 		$_GET['to'] = $date['to'];
 		$_GET['customerid'] = $_POST['customer'];
 		
-		require_once($_MODULES_DIR.'/transferforms.php');
+		require_once(MODULES_DIR.'/transferforms.php');
 		
 	break;	
 
 	case 'transferforms2': /********************************************/
 		
-		require_once($_MODULES_DIR.'/transferforms2.php');
+		require_once(MODULES_DIR.'/transferforms2.php');
 	break;
 
 	case 'liabilityreport': /********************************************/

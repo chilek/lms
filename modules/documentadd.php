@@ -25,18 +25,16 @@
  */
 
 /* Using AJAX for template plugins */
-require($_LIB_DIR.'/xajax/xajax.inc.php');
+require(LIB_DIR.'/xajax/xajax.inc.php');
 
 function plugin($template, $customer)
 {
-	global $_DOC_DIR;
-	
 	$result = '';
 	
 	// read template informations
-	@include($_DOC_DIR.'/templates/'.$template.'/info.php');
+	@include(DOC_DIR.'/templates/'.$template.'/info.php');
 	// call plugin
-	@include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
+	@include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
 	
 	// xajax response
 	$objResponse = new xajaxResponse();
@@ -134,24 +132,24 @@ if(isset($_POST['document']))
 	{
 		$result = '';
 		// read template informations
-		include($_DOC_DIR.'/templates/'.$document['templ'].'/info.php');
+		include(DOC_DIR.'/templates/'.$document['templ'].'/info.php');
 		// set some variables (needed in e.g. plugin)
 		$SMARTY->assign_by_ref('document', $document);
 		// call plugin
-		if(isset($engine['plugin']) && file_exists($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php'))
-			include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
+		if(isset($engine['plugin']) && file_exists(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php'))
+			include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
 		
 		// run template engine
-		if(file_exists($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
-			require_once($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
+		if(file_exists(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
+			require_once(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
 		else
-			require_once($_DOC_DIR.'/templates/default/engine.php');
+			require_once(DOC_DIR.'/templates/default/engine.php');
 
 		if($output)
 		{
-			$file = $_DOC_DIR.'/tmp.file';
+			$file = DOC_DIR.'/tmp.file';
 			$fh = fopen($file, 'w');
 			fwrite($fh, $output);
 			fclose($fh);
@@ -168,7 +166,7 @@ if(isset($_POST['document']))
 
 	if(!$error)
 	{
-		$path = $_DOC_DIR.'/'.substr($document['md5sum'],0,2);
+		$path = DOC_DIR.'/'.substr($document['md5sum'],0,2);
 		@mkdir($path, 0700);
 		$newfile = $path.'/'.$document['md5sum'];
 		if(!file_exists($newfile))
@@ -219,8 +217,8 @@ if(isset($_POST['document']))
 					));
 
 		// template post-action
-		if(isset($engine['post-action']) && file_exists($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php'))
-			include($_DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php');
+		if(isset($engine['post-action']) && file_exists(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php'))
+			include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php');
 
 		$DB->CommitTrans();
 		
@@ -262,10 +260,10 @@ if(isset($document['numberplanid']))
 			$numberplans[] = $plan;
 } 
 
-if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
+if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 	foreach($dirs as $dir)
 	{
-		$infofile = $_DOC_DIR.'/templates/'.$dir.'/info.php';
+		$infofile = DOC_DIR.'/templates/'.$dir.'/info.php';
 		if(file_exists($infofile))
 		{
 			unset($engine);

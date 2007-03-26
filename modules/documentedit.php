@@ -119,15 +119,15 @@ if(isset($_POST['document']))
 	}	
 	elseif($documentedit['template'])
 	{
-		include($_DOC_DIR.'/templates/'.$documentedit['template'].'/info.php');
-		if(file_exists($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
-			require_once($_DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
+		include(DOC_DIR.'/templates/'.$documentedit['template'].'/info.php');
+		if(file_exists(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
+			require_once(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
 		else
-			require_once($_DOC_DIR.'/templates/default/engine.php');
+			require_once(DOC_DIR.'/templates/default/engine.php');
 
 		if($output)
 		{
-			$file = $_DOC_DIR.'/tmp.file';
+			$file = DOC_DIR.'/tmp.file';
 			$fh = fopen($file, 'w');
 			fwrite($fh, $output);
 			fclose($fh);
@@ -144,7 +144,7 @@ if(isset($_POST['document']))
 
 	if(!$error)
 	{
-		$path = $_DOC_DIR.'/'.substr($documentedit['md5sum'],0,2);
+		$path = DOC_DIR.'/'.substr($documentedit['md5sum'],0,2);
 		@mkdir($path, 0700);
 		$newfile = $path.'/'.$documentedit['md5sum'];
 		if(!file_exists($newfile))
@@ -220,10 +220,10 @@ if(isset($document['numberplanid']))
 }
 
 /*
-if($dirs = getdir($_DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
+if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 	foreach($dirs as $dir)
 	{
-		$infofile = $_DOC_DIR.'/templates/'.$dir.'/info.php';
+		$infofile = DOC_DIR.'/templates/'.$dir.'/info.php';
 		if(file_exists($infofile))
 		{
 			unset($engine);

@@ -87,15 +87,17 @@ function lms_parse_ini_file($filename, $process_sections = false)
 	return $ini_array;
 }
 
+$CONFIG = array();
+
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 	$CONFIG[$key] = $val;
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['backup_dir'] = (!isset($CONFIG['directories']['backup_dir']) ? $CONFIG['directories']['sys_dir'].'/backups' : $CONFIG['directories']['backup_dir']);
-$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'].'/documents' : $CONFIG['directories']['doc_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'].'/documents' : $CONFIG['directories']['doc_dir']);
 $CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
+$CONFIG['directories']['backup_dir'] = (!isset($CONFIG['directories']['backup_dir']) ? $CONFIG['directories']['sys_dir'].'/backups' : $CONFIG['directories']['backup_dir']);
 $CONFIG['directories']['config_templates_dir'] = (!isset($CONFIG['directories']['config_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/config_templates' : $CONFIG['directories']['config_templates_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'].'/templates_c' : $CONFIG['directories']['smarty_compile_dir']);
 $CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
@@ -105,37 +107,38 @@ foreach(lms_parse_ini_file($CONFIG['directories']['lib_dir'].'/config_defaults.i
 		if(! isset($CONFIG[$section][$key]))
 			$CONFIG[$section][$key] = $val;
 
-$_SYSTEM_DIR = $CONFIG['directories']['sys_dir'];
-$_BACKUP_DIR = $CONFIG['directories']['backup_dir'];
-$_DOC_DIR = $CONFIG['directories']['doc_dir'];
-$_LIB_DIR = $CONFIG['directories']['lib_dir'];
-$_MODULES_DIR = $CONFIG['directories']['modules_dir'];
-$_SMARTY_COMPILE_DIR = $CONFIG['directories']['smarty_compile_dir'];
-$_SMARTY_TEMPLATES_DIR = $CONFIG['directories']['smarty_templates_dir'];
+define('SYS_DIR', $CONFIG['directories']['sys_dir']);
+define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('DOC_DIR', $CONFIG['directories']['doc_dir']);
+define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
+define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
+define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
+define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
+
 $_DBTYPE = $CONFIG['database']['type'];
 $_DBHOST = $CONFIG['database']['host'];
 $_DBUSER = $CONFIG['database']['user'];
 $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 
-require_once($_LIB_DIR.'/checkdirs.php');
-require_once($_LIB_DIR.'/checkconfig.php');
+require_once(LIB_DIR.'/checkdirs.php');
+require_once(LIB_DIR.'/checkconfig.php');
 
 // Init database 
 
-require_once($_LIB_DIR.'/LMSDB.php');
+require_once(LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 // Enable/disable data encoding conversion
 // Call any of upgrade process before anything else
 
-require_once($_LIB_DIR.'/dbencoding.php');
-require_once($_LIB_DIR.'/upgradedb.php');
+require_once(LIB_DIR.'/dbencoding.php');
+require_once(LIB_DIR.'/upgradedb.php');
 
 // Initialize templates engine (must be before locale settings)
 
-require_once($_LIB_DIR.'/Smarty/Smarty.class.php');
+require_once(LIB_DIR.'/Smarty/Smarty.class.php');
 
 $SMARTY = new Smarty;
 
@@ -162,15 +165,15 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 
 // Include required files (including sequence is important)
 
-require_once($_LIB_DIR.'/language.php');
-require_once($_LIB_DIR.'/unstrip.php');
-require_once($_LIB_DIR.'/definitions.php');
-require_once($_LIB_DIR.'/common.php');
-require_once($_LIB_DIR.'/checkip.php');
-require_once($_LIB_DIR.'/LMS.class.php');
-require_once($_LIB_DIR.'/Auth.class.php');
-require_once($_LIB_DIR.'/accesstable.php');
-require_once($_LIB_DIR.'/Session.class.php');
+require_once(LIB_DIR.'/language.php');
+require_once(LIB_DIR.'/unstrip.php');
+require_once(LIB_DIR.'/definitions.php');
+require_once(LIB_DIR.'/common.php');
+require_once(LIB_DIR.'/checkip.php');
+require_once(LIB_DIR.'/LMS.class.php');
+require_once(LIB_DIR.'/Auth.class.php');
+require_once(LIB_DIR.'/accesstable.php');
+require_once(LIB_DIR.'/Session.class.php');
 
 // Initialize Session, Auth and LMS classes
 
@@ -186,10 +189,10 @@ $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
 $SMARTY->assign_by_ref('_language', $LMS->lang);
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/');
 $SMARTY->assign('_config',$CONFIG);
-$SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
-$SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
+$SMARTY->template_dir = SMARTY_TEMPLATES_DIR;
+$SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 $SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFIG['phpui']['smarty_debug']) : FALSE);
-require_once($_LIB_DIR.'/menu.php');
+require_once(LIB_DIR.'/menu.php');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
@@ -219,7 +222,7 @@ if($AUTH->islogged)
 		$SMARTY->assign('warning', isset($CONFIG['phpui']['disable_devel_warning']) ? !chkconfig($CONFIG['phpui']['disable_devel_warning']) : true);
 	}
 	
-	if (file_exists($_MODULES_DIR.'/'.$module.'.php'))
+	if (file_exists(MODULES_DIR.'/'.$module.'.php'))
 	{
 		if(eregi($access['allow'], $module))
 			$allow = TRUE;
@@ -236,7 +239,7 @@ if($AUTH->islogged)
 		if($allow && ! $deny)
 		{
 			$layout['module'] = $module;
-			include($_MODULES_DIR.'/'.$module.'.php');
+			include(MODULES_DIR.'/'.$module.'.php');
 		}
 		else
 			$SMARTY->display('noaccess.html');
