@@ -576,7 +576,7 @@ function invoice_body()
 
 // brzydki hack dla ezpdf 
 setlocale(LC_ALL,'C');
-require_once($_LIB_DIR.'/ezpdf/class.ezpdf.php');
+require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
 
 $diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
 241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
@@ -593,8 +593,8 @@ $tmp = array(
 );
 $pdf->setFontFamily('arial.afm',$tmp);
 
-$pdf->selectFont($_LIB_DIR.'/ezpdf/arialbd.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
-$pdf->selectFont($_LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
+$pdf->selectFont(LIB_DIR.'/ezpdf/arialbd.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
+$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
 
 $id=$pdf->getFirstPageId();
 

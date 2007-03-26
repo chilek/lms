@@ -44,6 +44,8 @@ version ? (????-??-??):
   - added 'New Document' link on main documents list (alec)
   - helpdesk: added customer's address on tickets list (alec)
   - lms-makeiptables: added DNAT rules for public IPs (alec)
+  - fixed some remote file inclusion vulnerabilities when register_globals
+    is enabled (alec)
 
 version 1.9.6 Belos (2007-02-16):
 

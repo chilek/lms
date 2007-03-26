@@ -114,7 +114,7 @@ $_TITLE = (!isset($CONFIG['finances']['pay_title']) ? trans("Not set") : $CONFIG
 $_LMARGIN = (!isset($CONFIG['finances']['leftmargin']) ? 0 : $CONFIG['finances']['leftmargin']);
 $_BMARGIN = (!isset($CONFIG['finances']['bottommargin']) ? 0 : $CONFIG['finances']['bottommargin']);
 
-require_once($_LIB_DIR.'/ezpdf/class.ezpdf.php');
+require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
 
 $diff = array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
 	241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
@@ -126,7 +126,7 @@ $pdf->addInfo('Title',trans('Form of Cash Transfer'));
 $pdf->addInfo('Creator','LMS '.$layout['lmsv']);
 $pdf->setPreferences('FitWindow','1');
 $pdf->ezSetMargins(0,0,0,0);
-$pdf->selectFont($_LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff)); 
+$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff)); 
 $pdf->setLineStyle(2);
 $id = $pdf->getFirstPageId();
 

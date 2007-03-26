@@ -26,7 +26,7 @@
 
 if($doc = $DB->GetRow('SELECT filename, md5sum, contenttype FROM documentcontents WHERE docid = ?', array($_GET['id'])))
 {
-	$filename = $_DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
+	$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
 	if(file_exists($filename))
 	{	
 		header('Content-Type: '.$doc['contenttype']);

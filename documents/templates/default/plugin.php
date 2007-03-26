@@ -39,6 +39,6 @@ if(isset($_POST['document']))
 
 // Notice: $customer consist selected customer ID
 
-$result = $SMARTY->fetch($_DOC_DIR.'/templates/'.$engine['name'].'/plugin.html');
+$result = $SMARTY->fetch(DOC_DIR.'/templates/'.$engine['name'].'/plugin.html');
 
 ?>

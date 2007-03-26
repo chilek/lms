@@ -54,9 +54,9 @@ $layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
 $invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 $invoice['last'] = TRUE;
 $SMARTY->assign('invoice',$invoice);
-$SMARTY->display($_SMARTY_TEMPLATES_DIR.'/clearheader.html');
+$SMARTY->display(SMARTY_TEMPLATES_DIR.'/clearheader.html');
 $SMARTY->assign('type',trans('ORIGINAL'));
-$SMARTY->display($_SMARTY_TEMPLATES_DIR.'/'.$LMS->CONFIG['invoices']['template_file']);
-$SMARTY->display($_SMARTY_TEMPLATES_DIR.'/clearfooter.html');
+$SMARTY->display(SMARTY_TEMPLATES_DIR.'/'.$LMS->CONFIG['invoices']['template_file']);
+$SMARTY->display(SMARTY_TEMPLATES_DIR.'/clearfooter.html');
 
 ?>

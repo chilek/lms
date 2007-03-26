@@ -401,9 +401,8 @@ function check_email( $email )
 
 function get_producer($mac)
 {
-	global $_LIB_DIR;
 	$mac = strtoupper(str_replace(':','-',substr($mac,0,8)));
-	if($macfile = fopen($_LIB_DIR.'/ethercodes.txt','r'))
+	if($macfile = fopen(LIB_DIR.'/ethercodes.txt','r'))
 		while(!feof($macfile))
 		{
 			$line = trim(fgets($macfile,4096));
