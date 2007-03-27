@@ -337,6 +337,17 @@
 			<member>rights - (1-read, 2-write, 3-advanced)</member>
 		</simplelist>
           </sect2>
+	  <sect2 id="cashreglog">
+		<title>Cash registries - cash history ('cashreglog')</title>
+		<simplelist>
+			<member>id - serial number</member>
+			<member>regid - registry serial number</member>
+			<member>userid - user serial number</member>
+			<member>time - entry timestamp</member>
+			<member>value - real cash state value</member>
+			<member>description - additional informations</member>
+		</simplelist>
+          </sect2>
           <sect2 id="documents">
                <title>Documents: invoices, receipts, contracts, etc. ('documents')</title>
                   <simplelist>
