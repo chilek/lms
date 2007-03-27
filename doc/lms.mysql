@@ -747,6 +747,22 @@ CREATE TABLE cashregs (
 
 # --------------------------------------------------------
 #
+# Structure of table cashreglog
+#			
+DROP TABLE IF EXISTS cashreglog;
+CREATE TABLE cashreglog (
+    id int(11) 			NOT NULL auto_increment,
+    regid int(11)          	DEFAULT '0' NOT NULL,
+    userid int(11)		DEFAULT '0' NOT NULL,
+    time int(11)		DEFAULT '0' NOT NULL,
+    value decimal(9,2)      	DEFAULT '0' NOT NULL,
+    description text		DEFAULT '' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY regid (regid, time)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
 # Structure of tables ewx_* (EtherWerX(R))
 #			
 DROP TABLE IF EXISTS ewx_stm_nodes;
@@ -788,4 +804,4 @@ CREATE TABLE ewx_pt_config (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007030800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007032600');

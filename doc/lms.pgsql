@@ -782,6 +782,23 @@ CREATE TABLE cashregs (
 );
 
 /* ---------------------------------------------------
+ Structure of table "cashreglog"
+------------------------------------------------------*/
+DROP SEQUENCE cashreglog_id_seq;
+CREATE SEQUENCE cashreglog_id_seq;
+DROP TABLE cashreglog;
+CREATE TABLE cashreglog (
+    id 		integer 	DEFAULT nextval('cashreglog_id_seq'::text) NOT NULL,
+    regid 	integer         DEFAULT 0 NOT NULL,
+    userid 	integer		DEFAULT 0 NOT NULL,
+    time 	integer		DEFAULT 0 NOT NULL,
+    value 	numeric(9,2)    DEFAULT 0 NOT NULL,
+    description text		DEFAULT '' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (regid, time)
+);
+
+/* ---------------------------------------------------
  Structure of table "ewx_pt_config" (EtherWerX(R))
 ------------------------------------------------------*/
 
@@ -848,4 +865,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007030800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007032600');

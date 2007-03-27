@@ -340,6 +340,17 @@
 			  <member>rights - (1-odczyt, 2-zapis, 3-zaawansowane)</member>
 		  </simplelist>
           </sect2>
+	<sect2 id="cashreglog">
+	        <title>Cash registries - cash history ('cashreglog')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>regid - identyfikator rejestru</member>
+			<member>userid - identyfikator u¿ytkownika</member>
+			<member>time - data i godzina wpisu</member>
+			<member>value - rzeczywista warto¶æ stanu kasy (gotówki)</member>
+			<member>description - dodatkowe informacje</member>
+		</simplelist>
+	</sect2>
           <sect2 id="documents">
                <title>Dokumenty: faktury, KP, umowy, etc. ('documents')</title>
                   <simplelist>
