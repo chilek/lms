@@ -39,7 +39,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 
 	$delta = ($todate-$fromdate) ? ($todate-$fromdate) : 1;
 
-	$dt = "( dt >= $fromdate AND dt < $todate )";
+	$dt = "( dt >= $fromdate AND dt < $todate ) ";
 
 	// nets
 	if ($net != "allnets")
@@ -47,7 +47,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 		$params = $LMS->GetNetworkParams($net);
 		$params['address']++;
 		$params['broadcast']--;
-		$net = ' AND (( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].') OR ( ipaddr_pub > '.$params['address'].' AND ipaddr_pub < '.$params['broadcast'].'))';
+		$net = ' AND (( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].') OR ( ipaddr_pub > '.$params['address'].' AND ipaddr_pub < '.$params['broadcast'].')) ';
 	}
 	else
 		$net = '';
@@ -79,11 +79,16 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 		$limit = '';
 		
 	// join query from parts
-	$query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download 
+	$query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, 
+			    sum(upload) as upload, sum(download) as download 
 		    FROM stats 
-		    LEFT JOIN nodes ON stats.nodeid=nodes.id 
-		    WHERE '.$dt.' '.$net.' '.($customerid ? 'AND customers.id='.$customerid : '').
-		    'GROUP BY nodeid, name, ipaddr '.$order.' '.$limit;
+		    LEFT JOIN nodes ON stats.nodeid = nodes.id 
+		    WHERE '
+		    .$dt
+		    .$net
+		    .($customerid ? ' AND ownerid = '.$customerid : '')
+		    .' GROUP BY nodeid, name, ipaddr'
+		    .$order.$limit;
 
 	// get results
 	if ($traffic = $DB->GetAll($query))
