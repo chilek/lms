@@ -238,11 +238,18 @@ $pagelimit = $CONFIG['phpui']['receiptlist_pagelimit'];
 $page = (!isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
+$logentry = $DB->GetRow('SELECT l.*, 
+			(SELECT SUM(r.value) FROM receiptcontents r 
+				LEFT JOIN documents ON (docid = documents.id)
+				WHERE cdate <= l.time AND r.regid = ?) AS state
+			FROM cashreglog l WHERE l.regid = ? 
+			ORDER BY l.time DESC LIMIT 1', array($regid, $regid));
+
 $layout['pagetitle'] = trans('Cash Registry: $0', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));
+
 $SESSION->save('backto', 'm=receiptlist&regid='.$regid);
 
-$SMARTY->assign('logentry', $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ? ORDER BY time DESC LIMIT 1', array($regid)));
-
+$SMARTY->assign('logentry', $logentry); 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);

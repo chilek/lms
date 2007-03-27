@@ -24,25 +24,32 @@
  *  $Id$
  */
 
-if(isset($_GET['is_sure']))
-{
-	$regid = $DB->GetOne('SELECT regid FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
+$reglog = $DB->GetRow('SELECT l.*, users.name AS username,
+			(SELECT SUM(r.value) FROM receiptcontents r
+                    		LEFT JOIN documents ON (docid = documents.id)
+				WHERE cdate <= l.time AND r.regid = l.regid) AS state
+			FROM cashreglog l 
+			LEFT JOIN users ON (l.userid = users.id)
+			WHERE l.id = ?', 
+			array(intval($_GET['id'])));
 
-	if(!$regid)
-	{
-    		$SESSION->redirect('?m=cashreglist');
-	}
+if(!$reglog)
+{
+        $SESSION->redirect('?m=cashreglist');
+}
 	
-	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<256)
-	{
-	        $SMARTY->display('noaccess.html');
-		$SESSION->close();
-		die;
-	}
-				
-	$DB->Execute('DELETE FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
+if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $reglog['regid']))<256)
+{
+        $SMARTY->display('noaccess.html');
+        $SESSION->close();
+        die;
 }
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$reglog['time'] = strftime('%Y/%m/%d %H:%M', $reglog['time']);
+
+$layout['pagetitle'] = trans('Cash History Entry Info');
+
+$SMARTY->assign('reglog', $reglog);
+$SMARTY->display('cashregloginfo.html');
 
 ?>

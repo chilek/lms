@@ -1816,12 +1816,14 @@ $_LANG['Cash History of Registry:'] = 'Historia kasy rejestru:';
 $_LANG['Add entry'] = 'Dodaj wpis';
 $_LANG['No such cash history entries in database.'] = 'Brak wpisów do historii kasy w bazie danych.';
 $_LANG['Cash history'] = 'Historia kasy';
-$_LANG['Enter cash state value'] = 'Podaj wartość stanu kasy';
+$_LANG['Enter real cash state value'] = 'Podaj rzeczywistą wartość stanu kasy';
 $_LANG['Are you sure, you want to delete selected entry?'] = 'Czy na pewno chcesz usunąć wybrany wpis?';
 $_LANG['Cash History Entry Edit'] = 'Edycja wpisu w historii kasy';
+$_LANG['Cash History Entry Info'] = 'Informacje o wpisie w historii kasy';
 $_LANG['Cash History Last Entry:'] = 'Ostatni wpis w historii kasy:';
 $_LANG['Cash state value is required!'] = 'Wartość stanu kasy jest wymagana!';
 $_LANG['New Cash History Entry'] = 'Nowy wpis w historii kasy';
 $_LANG['Wrong datetime format!'] = 'Błędny format daty/czasu!';
+$_LANG['Real state:'] = 'Stan rzeczywisty:';
 
 ?>

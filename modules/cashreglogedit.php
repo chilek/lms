@@ -90,13 +90,11 @@ if(isset($_POST['reglog']))
 					intval($_GET['id'])
 				));
 				
-		$SESSION->redirect('?m=cashreglogview&regid='.$regid);
+		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 }
 
 $layout['pagetitle'] = trans('Cash History Entry Edit');
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('reglog', $reglog);
 $SMARTY->assign('error', $error);
