@@ -24,11 +24,15 @@
  *  $Id$
  */
 
+$_DOC_DIR = DOC_DIR;
+
 /* Using AJAX for template plugins */
 require(LIB_DIR.'/xajax/xajax.inc.php');
 
 function plugin($template, $customer)
 {
+	global $_DOC_DIR;
+
 	$result = '';
 	
 	// read template informations
