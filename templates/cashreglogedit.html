@@ -9,9 +9,9 @@
 	    <TD width="1%" class="fleftu">
 		<IMG src="img/value.gif" ALT="">
 	    </TD>
-	    <TD width="1%" class="fbt"><B>{t}Value:{/t}</B></TD>
+	    <TD width="1%" class="fbt" NOWRAP><B>{t}Real state:{/t}</B></TD>
 	    <TD width="98%" class="frightu">
-		<INPUT TYPE="TEXT" NAME="reglog[value]" VALUE="{if $reglog.value!=''}{$reglog.value|string_format:"%.2f"}{/if}" SIZE="16" {tip text="Enter cash state value" trigger="value"}>
+		<INPUT TYPE="TEXT" NAME="reglog[value]" VALUE="{if $reglog.value!=''}{$reglog.value|string_format:"%.2f"}{/if}" SIZE="16" {tip text="Enter real cash state value" trigger="value"}>
 	    </TD>
 	</TR>
 	<TR class="LIGHT">
@@ -39,7 +39,7 @@
 	    </TD>
 	</TR>
 </TABLE>
-</FORM></P>
+</FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['reglog'].elements['reglog[value]'].focus();

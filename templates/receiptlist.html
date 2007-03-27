@@ -229,7 +229,10 @@
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" nowrap>
 			{$logentry.time|date_format:"%x %H:%M"} &nbsp;
-			{if $logentry.value<0}<FONT class="alert">{/if}<B>{$logentry.value|money_format}</B>{if $logentry.value<0}</FONT>{/if} &nbsp;
+			<B>
+			{if $logentry.value<0}<FONT class="alert">{/if}{$logentry.value|money_format}{if $logentry.value<0}</FONT>{/if}
+			<FONT class="blend">({t}Cash state:{/t} {$logentry.state|money_format})</FONT> &nbsp;
+			</B>
 		</TD>
 		<TD CLASS="frightu" WIDTH="98%" nowrap>
 			{$logentry.description}
