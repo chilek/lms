@@ -30,8 +30,8 @@ switch($type)
 {
 	case 'customertraffic': /******************************************/
 
-		$month = $_POST['month'] ? $_POST['month'] : date('n');
-		$year = $_POST['year'] ? $_POST['year'] : date('Y');
+		$month = isset($_POST['month']) ? $_POST['month'] : date('n');
+		$year = isset($_POST['year']) ? $_POST['year'] : date('Y');
 		$customer = isset($_POST['customer']) ? intval($_POST['customer']) : intval($_GET['customer']);
 
 		$layout['pagetitle'] = trans('Stats of Customer $0 in month $1', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0,0,0,$month,1,$year)));
@@ -74,10 +74,11 @@ switch($type)
 			$listdata['downavg'] = $listdata['downavg']/date('t', $from);
 			list($listdata['upload'], $listdata['uploadunit']) = setunits($listdata['upload']);
 			list($listdata['download'], $listdata['downloadunit']) = setunits($listdata['download']);
+
+			$SMARTY->assign('stats', $stats);
+			$SMARTY->assign('listdata', $listdata);
 		}
 
-		$SMARTY->assign('stats', $stats);
-		$SMARTY->assign('listdata', $listdata);
 		$SMARTY->display('printcustomertraffic.html');
 	break;
 
