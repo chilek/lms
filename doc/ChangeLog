@@ -49,6 +49,7 @@ version ? (????-??-??):
   - cash registry: added cash history for information about periodic 
     cash summary state e.g. daily cash state (alec)
   - added .htaccess files in /lib and /modules dirs (alec)
+  - Romanian language support (zet-zzz-/alec)
 
 version 1.9.6 Belos (2007-02-16):
 
