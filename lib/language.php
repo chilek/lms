@@ -59,6 +59,14 @@ $LANGDEFS = array(
 			'html' => 'en',
 			'money_format' => '$ %01.2f'
 			),
+		'ro' => array(
+			'name' => 'Romainan',
+			'orig' => 'Romana',
+			'locale' => 'ro_RO.UTF-8',
+			'charset' => 'UTF-8',
+			'html' => 'ro',
+			'money_format' => '%01.2f RON'
+			),
 		);
 
 $_language = 'en'; // default language
@@ -72,6 +80,9 @@ foreach ($langs as $val)
 		case 'pl':
 			$_language = 'pl';
     			break 2;
+		case 'ro':
+			$_language = 'ro';
+			break 2;
 		case 'en':
 			$_language = 'en';
 			break 2;
