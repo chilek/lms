@@ -26,14 +26,16 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD halfduplex smallint DEFAULT 0");
-$DB->Execute("ALTER TABLE tariffs ADD dlimit integer DEFAULT 0");
+$DB->Execute("ALTER TABLE nodes ADD halfduplex smallint");
+$DB->Execute("ALTER TABLE tariffs ADD dlimit integer");
 
 $DB->Execute("UPDATE nodes SET halfduplex = 0");
 $DB->Execute("UPDATE tariffs SET dlimit = 0");
 
 $DB->Execute("ALTER TABLE nodes ALTER halfduplex SET NOT NULL");
+$DB->Execute("ALTER TABLE nodes ALTER halfduplex SET DEFAULT 0");
 $DB->Execute("ALTER TABLE tariffs ALTER dlimit SET NOT NULL");
+$DB->Execute("ALTER TABLE tariffs ALTER dlimit SET DEFAULT 0");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007012500', 'dbversion'));
 
