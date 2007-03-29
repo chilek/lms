@@ -133,8 +133,8 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
                 $replacements[3] = 'tre ';
                 $replacements[4] = 'pat ';
                 $replacements[5] = 'cin ';
-                $replacements[6] = 'sas ';
-                $replacements[7] = 'sap ';
+                $replacements[6] = 'şas ';
+                $replacements[7] = 'şap ';
                 $replacements[8] = 'opt ';
                 $replacements[9] = 'nou ';
 
@@ -144,7 +144,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 	$ret = '';
         $_sep = ' ';
         $_minus = 'minus';
-        $_digits = array(0 => 'zero', 'unu', 'doi', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua');
+        $_digits = array(0 => 'zero', 'unu', 'doi', 'trei', 'patru', 'cinci', 'şase', 'şapte', 'opt', 'nouă');
 	$_exponent = array(
     	    0 => array(''),
     	    3 => array('mii'),
@@ -349,10 +349,10 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
         	$ret .= $_sep . $_digits[$t] . 'zeci';
         	break;
 	    case 6:
-    		$ret .= $_sep . 'saizeci';
+    		$ret .= $_sep . 'şaizeci';
         	break;
 		case 2:
-        	$ret .= $_sep . 'douazeci';
+        	$ret .= $_sep . 'douăzeci';
     		break;
 	    case 1:
         	switch ($d) 
@@ -372,7 +372,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
             		$ret .= $_sep . $_digits[$d] . 'sprezece';
             		break;
 		    case 6:
-            		$ret .= $_sep . 'saisprezece';
+            		$ret .= $_sep . 'şaisprezece';
             		break;
         	case 4:
             		$ret .= $_sep . 'paisprezece';
