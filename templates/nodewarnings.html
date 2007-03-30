@@ -6,11 +6,11 @@
 	function SelectAllNodes()
 	{
 		if(document.setwarnings.nodes.checked) 
-			for (var i = 0; i < document.setwarnings.elements[0].length; i++)
-				document.setwarnings.elements[0].options[i].selected = true;
+			for (var i = 0; i < document.getElementById('nodeslist').length; i++)
+				document.getElementById('nodeslist').options[i].selected = true;
 		else
-			for (var i = 0; i < document.setwarnings.elements[0].length; i++)
-				document.setwarnings.elements[0].options[i].selected = false;
+			for (var i = 0; i < document.getElementById('nodeslist').length; i++)
+				document.getElementById('nodeslist').options[i].selected = false;
 	}
 
 	function SelectAllNodes2()
@@ -58,7 +58,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fleft">
-						<SELECT size="20" name="setwarnings[mnodeid][]" multiple {tip text="Select nodes"}>
+						<SELECT size="20" name="setwarnings[mnodeid][]" id="nodeslist" multiple {tip text="Select nodes"}>
 							{section name=nodelist loop=$nodelist}
 							<OPTION value="{$nodelist[nodelist].id}" {if $nodelist[nodelist].warning}CLASS="red"{/if}>{$nodelist[nodelist].name|truncate:40:"...":true} / {$nodelist[nodelist].ip} ({$nodelist[nodelist].id|string_format:"%04d"})</OPTION>
 							{/section}

@@ -6,11 +6,11 @@
 	function SelectAllCustomers()
 	{
 		if(document.setwarnings.customers.checked) 
-			for (var i = 0; i < document.setwarnings.elements[0].length; i++)
-				document.setwarnings.elements[0].options[i].selected = true;
+			for (var i = 0; i < document.getElementById('customerslist').length; i++)
+				document.getElementById('customerslist').options[i].selected = true;
 		else
-			for (var i = 0; i < document.setwarnings.elements[0].length; i++)
-				document.setwarnings.elements[0].options[i].selected = false;
+			for (var i = 0; i < document.getElementById('customerslist').length; i++)
+				document.getElementById('customerslist').options[i].selected = false;
 	}
 
 	function SelectAllCustomers2()
@@ -58,7 +58,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fleft">
-						<SELECT size="20" name="setwarnings[mcustomerid][]" multiple {tip text="Select customers"}>
+						<SELECT size="20" name="setwarnings[mcustomerid][]" id="customerslist" multiple {tip text="Select customers"}>
 							{foreach from=$customerlist key=key item=item}
 							<OPTION value="{$key}" {if $item.warning}CLASS="red"{/if}{if isset($selected.$key)} SELECTED{/if}>{$item.customername|truncate:40:"...":true} ({$key|string_format:"%04d"})</OPTION>
 							{/foreach}
@@ -74,7 +74,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbl" WIDTH="1%">
-						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{t}Select All{/t}</A></INPUT>
+						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{t}Select All<!masculine>{/t}</A></INPUT>
 					</TD>
 					<TD CLASS="fbottom" ALIGN="left">
 						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{t}Enable warnings{/t}</A></INPUT></NOBR>
