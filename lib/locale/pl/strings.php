@@ -1827,5 +1827,6 @@ $_LANG['Wrong datetime format!'] = 'Błędny format daty/czasu!';
 $_LANG['Real state:'] = 'Stan rzeczywisty:';
 $_LANG['Select All<!masculine>'] = 'Zaznacz wszystkich';
 $_LANG['There is newer version of LMS ($0) available for download from $1.'] = 'Na stronie $1 jest już dostępna nowsza wersja systemu - $0.';
+$_LANG['Are you sure, you want to delete selected documents?'] = 'Czy na pewno chcesz usunąć zaznaczone dokumenty?';
 
 ?>
