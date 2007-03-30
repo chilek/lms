@@ -1825,5 +1825,7 @@ $_LANG['Cash state value is required!'] = 'Wartość stanu kasy jest wymagana!';
 $_LANG['New Cash History Entry'] = 'Nowy wpis w historii kasy';
 $_LANG['Wrong datetime format!'] = 'Błędny format daty/czasu!';
 $_LANG['Real state:'] = 'Stan rzeczywisty:';
+$_LANG['Select All<!masculine>'] = 'Zaznacz wszystkich';
+$_LANG['There is newer version of LMS ($0) available for download from $1.'] = 'Na stronie $1 jest już dostępna nowsza wersja systemu - $0.';
 
 ?>
