@@ -307,4 +307,9 @@
 </TABLE>
 </P>
 {/if}
+{if $newer_version}
+<SCRIPT TYPE="text/javascript">
+alert('{t 0=$newer_version 1="http://lms.org.pl/download"}There is newer version of LMS ($0) available for download from $1.{/t}');
+</SCRIPT>
+{/if}
 {include file="footer.html"}
