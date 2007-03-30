@@ -26,23 +26,43 @@
 
 if($_GET['is_sure']=="1")
 {
-	$md5sum = $DB->GetOne('SELECT md5sum FROM documentcontents WHERE docid = ?', array($_GET['id']));
+        if(isset($_POST['marks']))
+	{
+	        foreach($_POST['marks'] as $id => $mark)
+		{
+	    		$md5sum = $DB->GetOne('SELECT md5sum FROM documentcontents WHERE docid = ?', array($id));
 
-	if($DB->GetOne('SELECT COUNT(*) FROM documentcontents WHERE md5sum = ?',array((string)$md5sum))==1)
-	{
-		@unlink(DOC_DIR.'/'.substr($md5sum,0,2).'/'.$md5sum);
+			if($DB->GetOne('SELECT COUNT(*) FROM documentcontents WHERE md5sum = ?',array((string)$md5sum))==1)
+			{
+				@unlink(DOC_DIR.'/'.substr($md5sum,0,2).'/'.$md5sum);
+			}
+	
+			$DB->BeginTrans();
+			
+			$DB->Execute('DELETE FROM documentcontents WHERE docid = ?',array($id));
+			$DB->Execute('DELETE FROM documents WHERE id = ?',array($id));
+	
+			$DB->CommitTrans();
+		}
 	}
+	elseif(isset($_GET['id']))
+	{			
+		$md5sum = $DB->GetOne('SELECT md5sum FROM documentcontents WHERE docid = ?', array($_GET['id']));
+
+		if($DB->GetOne('SELECT COUNT(*) FROM documentcontents WHERE md5sum = ?',array((string)$md5sum))==1)
+		{
+			@unlink(DOC_DIR.'/'.substr($md5sum,0,2).'/'.$md5sum);
+		}
 	
-	$DB->BeginTrans();
+		$DB->BeginTrans();
+		
+		$DB->Execute('DELETE FROM documentcontents WHERE docid = ?',array($_GET['id']));
+		$DB->Execute('DELETE FROM documents WHERE id = ?',array($_GET['id']));
 	
-	$DB->Execute('DELETE FROM documentcontents WHERE docid = ?',array($_GET['id']));
-	$DB->Execute('DELETE FROM documents WHERE id = ?',array($_GET['id']));
-	
-	$DB->CommitTrans();
-	
-	{
-		$SESSION->redirect('?'.$SESSION->get('backto'));
+		$DB->CommitTrans();
 	}
+		
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 	
 ?>
