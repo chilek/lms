@@ -50,7 +50,7 @@ version ? (????-??-??):
     cash summary state e.g. daily cash state (alec)
   - added .htaccess files in /lib and /modules dirs (alec)
   - Romanian language support (zet/alec)
-  - added notifications about newer versions of LMS availability (alec)
+  - added notifications about availability of LMS's newer versions (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
