@@ -5,14 +5,14 @@
 {literal}
 <SCRIPT type="text/javascript">
 <!--
-        function CheckAll()
-        {
+   function CheckAll()
+   {
                 for (var i=0; i<document.page.elements.length; i++)
                 {
                         var e = document.page.elements[i];
                         if (e.name != 'allbox')
 	    			e.checked = document.page.allbox.checked;
-		}
+				}
 	}
 	
 	function CheckAll2()
@@ -20,6 +20,17 @@
 	        document.page.allbox.checked = !document.page.allbox.checked;
 		CheckAll();
 	}
+
+	function DeleteMarked()
+	{
+		if(! confirm('{/literal}{t}Are you sure, you want to delete selected documents?{/t}{literal}'))
+			return;
+
+		document.page.action="?m=documentdel";
+		document.page.target="";
+		document.page.submit();
+	}
+
 	
 	//-->
 </SCRIPT>
@@ -123,16 +134,17 @@
 	<TR CLASS="dark">
 	        <TD CLASS="fall" COLSPAN="6">
 		        <TABLE WIDTH="100%">
-			        <TR>
-			    		<TD ALIGN="left">
-					            <NOBR><A HREF="javascript:document.page.submit();">{t}Confirm{/t} <IMG SRC="img/confirm.gif" ALT=""></A></NOBR>
+			     <TR>
+			    	<TD ALIGN="left">
+						<NOBR><A HREF="javascript:document.page.submit();">{t}Confirm{/t} <IMG SRC="img/confirm.gif" ALT=""></A></NOBR>
+						<A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}" HSPACE="2"></A>&nbsp;
 					</TD>
 					<TD ALIGN="right">
 				                    <NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 						    
-				        </TD>
-				</TR>
-			</TABLE>
+					</TD>
+				 </TR>
+				</TABLE>
 		</TD>
 	</TR>
 	</FORM>
