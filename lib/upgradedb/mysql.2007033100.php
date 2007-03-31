@@ -26,20 +26,20 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("
-CREATE TABLE imessengers (
-  id int(11) NOT NULL auto_increment, 
-  customerid int(11) NOT NULL, 
-  uid varchar(32) NOT NULL default '',
-  type tinyint NOT NULL DEFAULT '0',
-  PRIMARY KEY (id) 
-  ) TYPE=MyISAM;
-");
+//$DB->Execute("
+//CREATE TABLE imessengers (
+//  id int(11) NOT NULL auto_increment, 
+//  customerid int(11) NOT NULL, 
+//  uid varchar(32) NOT NULL default '',
+//  type tinyint NOT NULL DEFAULT '0',
+//  PRIMARY KEY (id) 
+//  ) TYPE=MyISAM;
+//");
 
-// // YMSGR (yahoo messenger id )
-//$DB->Execute("ALTER TABLE customers ADD COLUMN ymsgr text NOT NULL DEFAULT ''");
-// //Skype (skype ID )
-//$DB->Execute("ALTER TABLE customers ADD COLUMN skype text NOT NULL DEFAULT ''");
+ // YMSGR (yahoo messenger id )
+$DB->Execute("ALTER TABLE customers ADD COLUMN yim varchar(32) NOT NULL DEFAULT ''");
+ //Skype (skype ID )
+$DB->Execute("ALTER TABLE customers ADD COLUMN skype varchar(32) NOT NULL DEFAULT ''");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007033100', 'dbversion'));
 
