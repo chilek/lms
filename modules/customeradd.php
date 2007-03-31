@@ -107,6 +107,12 @@ if(isset($_POST['customeradd']))
 	if($customeradd['im'] == '')
 		$customeradd['im'] = 0;
 	
+	if($customeradd['yim'] !='' && !check_oim($customeradd['yim']))
+		$error['yim'] = trans('Incorrect Yahoo ID!');
+
+	if($customeradd['skype'] !='' && !check_oim($customeradd['skype']))
+		$error['Skype'] = trans('Incorrect Skype ID!');
+
 	if($customeradd['pin'] == '')
 		$customeradd['pin'] = 0;
 

@@ -101,6 +101,11 @@ function check_im($im)
 	return eregi('^[0-9]+$', $im);
 }
 
+function check_oim($im) //instead of check_im for polish gadu gadu will check skype, yahoo messenger or other messengers -zet
+{
+	return eregi('^[-_.a-z0-9]+$', $im);
+}
+
 function check_regon($regon) // business registration number
 {
 	return true;

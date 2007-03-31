@@ -64,24 +64,39 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.im neq "" && $customerinfo.im neq '0'}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			{if $_language=="pl"}
-			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$customerinfo.im}&styl=1" ALT="">
-			{else}
-			<img src="http://opi.yahoo.com/online?u='{$customerinfo.im}'&m=g&t=1" alt="">
-			{/if}
+	<TR>
+		<TD width="1%">
+			<IMG src="img/messengers22.gif" alt="Internet Messengers">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{if $_language=="pl"}
-			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
-			{else}
-			<A HREF="ymsgr:sendIM?{$customerinfo.im}">{$customerinfo.im}</A>
+			<TABLE>
+			{if $customerinfo.im neq "" && $customerinfo.im neq 0}
+				<TR CLASS="LIGHT">
+					<TD colspan="2">
+						<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$customerinfo.im}&styl=1" ALT="Gadu Gadu Online/Offline status">
+						<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
+					</TD>
+				</TR>
 			{/if}
+			{if $customerinfo.yim neq ""}
+				<TR>
+					<TD style="position:relative; padding-right:30px">
+						<img src="http://opi.yahoo.com/online?u='{$customerinfo.yim}'&m=g&t=5" alt="Yahoo Messenger Online/Offline status">
+						<A HREF="ymsgr:sendIM?{$customerinfo.yim}">{$customerinfo.yim}</A>
+					</TD>
+				</TR>
+			{/if}
+			{if $customerinfo.skype neq ""}
+				<TR>
+					<TD>
+						<IMG SRC="http://mystatus.skype.com/smallicon/{$customerinfo.skype}" ALT="Skype Online/Offline status">
+						<A HREF="skype:{$customerinfo.skype}?call">{$customerinfo.skype}</A>
+					</TD>
+				</TR>
+			{/if}
+			</TABLE>
 		</TD>
 	</TR>
-{/if}
 {if $customerinfo.ten neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" ALIGN="CENTER">
