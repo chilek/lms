@@ -501,6 +501,8 @@ CREATE TABLE customers (
   deleted tinyint(1) NOT NULL default '0',
   message text NOT NULL,
   pin int(6) NOT NULL default '0',
+  yim varchar(32) NOT NULL default '',
+  skype varchar(32) NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
