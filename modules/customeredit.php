@@ -81,6 +81,12 @@ elseif(isset($_POST['customerdata']))
 	if($customerdata['im'] == '')
 		$customerdata['im'] = 0;
 
+	if($customerdata['yim']!='' && !check_oim($customerdata['yim']))
+		$error['yim'] = trans('Incorrect IM uin!');
+
+	if($customerdata['skype']!='' && !check_oim($customerdata['skype']))
+		$error['skype'] = trans('Incorrect IM uin!');
+		
 	if($customerdata['pin'] == '')
 		$customerdata['pin'] = 0;
 

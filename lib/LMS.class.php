@@ -353,8 +353,8 @@ class LMS
 	function CustomerAdd($customeradd)
 	{
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, im, address, zip, city, 
-				    email, ten, ssn, status, creationdate, creatorid, info, notes, serviceaddr, message, pin, regon, rbe, icn) 
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				    email, ten, ssn, status, creationdate, creatorid, info, notes, serviceaddr, message, pin, regon, rbe, icn, yim, skype) 
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    $customeradd['phone1'], 
@@ -376,7 +376,9 @@ class LMS
 					    $customeradd['pin'],
 					    $customeradd['regon'],
 					    $customeradd['rbe'],
-					    $customeradd['icn']
+					    $customeradd['icn'],
+					    $customeradd['yim'],
+					    $customeradd['skype']
 					    )))
 		{
 			$this->SetTS('customers');
@@ -409,7 +411,7 @@ class LMS
 		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, 
 					    zip=?, city=?, email=?, im=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 					    info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, 
-					    pin=?, regon=?, icn=?, rbe=? WHERE id=?', 
+					    pin=?, regon=?, icn=?, rbe=?, yim=?, skype=? WHERE id=?', 
 			array( $customerdata['status'], 
 				$customerdata['phone1'], 
 				$customerdata['phone2'], 
@@ -432,7 +434,9 @@ class LMS
 				$customerdata['regon'], 
 				$customerdata['icn'], 
 				$customerdata['rbe'], 
-				$customerdata['id']
+				$customerdata['id'],
+				$customerdata['yim'],
+				$customerdata['skype']
 				));
 	}
 
@@ -461,7 +465,7 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
 					    lastname, name, status, email, im, phone1, phone2, phone3, address, zip, ten, ssn, 
 					    city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
-					    pin, regon, icn, rbe 
+					    pin, regon, icn, rbe, yim, skype 
 					    FROM customers WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);

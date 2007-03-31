@@ -75,6 +75,10 @@ $PERIODS = array(
     1	=>	trans('daily'),
     0	=>	trans('disposable')
 );
+// Internet Messengers (zet)
+define('GaduGadu', 1);
+define('YahooMessenger', 2);
+define('SKYPE', 3);
 
 // Numbering periods
 $NUM_PERIODS = array(
