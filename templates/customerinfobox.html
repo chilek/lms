@@ -64,20 +64,20 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.im neq "" && $customerinfo.im neq 0}
+{if $customerinfo.im neq "" && $customerinfo.im neq '0'}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			{if $_language=="pl"}
 			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$customerinfo.im}&styl=1" ALT="">
 			{else}
-			<img src="img/gg.gif" alt="">
+			<img src="http://opi.yahoo.com/online?u='{$customerinfo.im}'&m=g&t=1" alt="">
 			{/if}
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{if $_language=="pl"}
 			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
 			{else}
-			{$customerinfo.im}
+			<A HREF="ymsgr:sendIM?{$customerinfo.im}">{$customerinfo.im}</A>
 			{/if}
 		</TD>
 	</TR>
