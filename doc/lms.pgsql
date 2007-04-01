@@ -546,7 +546,6 @@ CREATE TABLE rtrights (
 /* ---------------------------------------------------
  Structure of table "passwd" (accounts)
 ------------------------------------------------------*/
-
 DROP SEQUENCE passwd_id_seq;
 CREATE SEQUENCE passwd_id_seq;
 DROP TABLE passwd;
@@ -576,7 +575,6 @@ CREATE INDEX passwd_ownerid_idx ON passwd (ownerid);
 /* ---------------------------------------------------
  Structure of table "domains"
 ------------------------------------------------------*/
-
 DROP SEQUENCE domains_id_seq;
 CREATE SEQUENCE domains_id_seq;
 DROP TABLE domains;
@@ -593,7 +591,6 @@ CREATE INDEX domains_ownerid_idx ON domains (ownerid);
 /* ---------------------------------------------------
  Structure of table "aliases"
 ------------------------------------------------------*/
-
 DROP SEQUENCE aliases_id_seq;
 CREATE SEQUENCE aliases_id_seq;
 DROP TABLE aliases;
@@ -608,7 +605,6 @@ CREATE TABLE aliases (
 /* ---------------------------------------------------
  LMS-UI Configuration table
 ------------------------------------------------------*/
-
 DROP SEQUENCE uiconfig_id_seq;
 CREATE SEQUENCE uiconfig_id_seq;
 DROP TABLE uiconfig;
@@ -626,7 +622,6 @@ CREATE TABLE uiconfig (
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
 ------------------------------------------------------*/
-
 DROP SEQUENCE events_id_seq;
 CREATE SEQUENCE events_id_seq;
 DROP TABLE events;
@@ -649,7 +644,6 @@ CREATE INDEX events_date_idx ON events(date);
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
 ------------------------------------------------------*/
-
 DROP TABLE eventassignments;
 CREATE TABLE eventassignments (
 	eventid 	integer 	DEFAULT 0 NOT NULL,
@@ -660,7 +654,6 @@ CREATE TABLE eventassignments (
 /* ---------------------------------------------------
  Structure of table "sessions"
 ------------------------------------------------------*/
-
 DROP TABLE sessions;
 CREATE TABLE sessions (
     id 		varchar(50) 	NOT NULL DEFAULT '', 
@@ -675,7 +668,6 @@ CREATE TABLE sessions (
 /* ---------------------------------------------------
  Structure of table "cashimport"
 ------------------------------------------------------*/
-
 DROP SEQUENCE cashimport_id_seq;
 CREATE SEQUENCE cashimport_id_seq;
 DROP TABLE cashimport;
@@ -695,7 +687,6 @@ CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 /* ---------------------------------------------------
  Structure of table "hosts"
 ------------------------------------------------------*/
-
 DROP SEQUENCE hosts_id_seq;
 CREATE SEQUENCE hosts_id_seq;
 DROP TABLE hosts;
@@ -712,7 +703,6 @@ CREATE TABLE hosts (
 /* ---------------------------------------------------
  Structure of table "daemoninstances" (lmsd config)
 ------------------------------------------------------*/
-
 DROP SEQUENCE daemoninstances_id_seq;
 CREATE SEQUENCE daemoninstances_id_seq;
 DROP TABLE daemoninstances;
@@ -731,7 +721,6 @@ CREATE TABLE daemoninstances (
 /* ---------------------------------------------------
  Structure of table "daemonconfig" (lmsd config)
 ------------------------------------------------------*/
-
 DROP SEQUENCE daemonconfig_id_seq;
 CREATE SEQUENCE daemonconfig_id_seq;
 DROP TABLE daemonconfig;
@@ -749,7 +738,6 @@ CREATE TABLE daemonconfig (
 /* ---------------------------------------------------
  Structure of table "cashrights"
 ------------------------------------------------------*/
-
 DROP SEQUENCE cashrights_id_seq;
 CREATE SEQUENCE cashrights_id_seq;
 DROP TABLE cashrights;
@@ -765,7 +753,6 @@ CREATE TABLE cashrights (
 /* ---------------------------------------------------
  Structure of table "cashregs"
 ------------------------------------------------------*/
-
 DROP SEQUENCE cashregs_id_seq;
 CREATE SEQUENCE cashregs_id_seq;
 DROP TABLE cashregs;
@@ -800,7 +787,6 @@ CREATE TABLE cashreglog (
 /* ---------------------------------------------------
  Structure of table "ewx_pt_config" (EtherWerX(R))
 ------------------------------------------------------*/
-
 DROP SEQUENCE "ewx_pt_config_id_seq";
 CREATE SEQUENCE "ewx_pt_config_id_seq";
 DROP TABLE ewx_pt_config;
@@ -818,7 +804,6 @@ CREATE TABLE ewx_pt_config (
 /* ---------------------------------------------------
  Structure of table "ewx_stm_nodes" (EtherWerX(R))
 ------------------------------------------------------*/
-
 DROP SEQUENCE "ewx_stm_nodes_id_seq";
 CREATE SEQUENCE "ewx_stm_nodes_id_seq";
 DROP TABLE ewx_stm_nodes;
@@ -840,7 +825,6 @@ CREATE TABLE ewx_stm_nodes (
 /* ---------------------------------------------------
  Structure of table "ewx_stm_channels" (EtherWerX(R))
 ------------------------------------------------------*/
-
 DROP SEQUENCE "ewx_stm_channels_id_seq";
 CREATE SEQUENCE "ewx_stm_channels_id_seq";
 DROP TABLE ewx_stm_channels;
@@ -856,7 +840,6 @@ CREATE TABLE ewx_stm_channels (
 /* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
-
 DROP TABLE dbinfo;
 CREATE TABLE dbinfo (
     keytype 	varchar(255) 	DEFAULT '' NOT NULL,
@@ -864,4 +847,19 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007032600');
+/* ---------------------------------------------------
+ Structure of table "imessengers"
+------------------------------------------------------*/
+DROP SEQUENCE imessengers_id_seq;
+CREATE SEQUENCE imessengers_id_seq;
+DROP TABLE imessengers;
+CREATE TABLE imessengers (
+    id 		integer         DEFAULT nextval('imessengers_id_seq'::text) NOT NULL,
+    customerid 	integer    	DEFAULT 0 NOT NULL,
+    uid 	varchar(32)     DEFAULT '' NOT NULL,
+    type 	smallint        DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+CREATE INDEX imessengers_customerid_idx ON imessengers (customerid);
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007033100');
