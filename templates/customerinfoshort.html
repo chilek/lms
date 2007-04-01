@@ -69,24 +69,32 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.im neq "" && $customerinfo.im neq 0}
-	<TR >
-		<TD WIDTH="1%">
-			{if $_language=="pl"}
-			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$customerinfo.im}&styl=1" ALT="">
+{foreach from=$customerinfo.messengers item=item}
+	<TR>
+		<TD>
+			{if $item.type == $smarty.const.IM_GG}
+			<IMG src="http://www.gadu-gadu.pl/users/status.asp?id={$item.uid}&styl=1" alt="">
+			{elseif $item.type == $smarty.const.IM_YAHOO}
+			<IMG src="http://opi.yahoo.com/online?u='{$item.uid}'&m=g&t=5" alt="">
+			{elseif $item.type == $smarty.const.IM_SKYPE}
+			<IMG src="http://mystatus.skype.com/smallicon/{$item.uid}" alt="">
 			{else}
-			<img src="img/gg.gif" alt="">
+			<IMG src="img/gg.gif" alt="">
 			{/if}
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{if $_language=="pl"}
-			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
+		<TD colspan="2">
+			{if $item.type == $smarty.const.IM_GG}
+			<A HREF="gg:{$item.uid}">{$item.uid}</A>
+			{elseif $item.type == $smarty.const.IM_YAHOO}
+			<A HREF="ymsgr:sendIM?{$item.uid}">{$item.uid}</A>
+			{elseif $item.type == $smarty.const.IM_SKYPE}
+			<A HREF="skype:{$item.uid}?call">{$item.uid}</A>
 			{else}
-			{$customerinfo.im}
+			{$item.uid}
 			{/if}
 		</TD>
 	</TR>
-{/if}
+{/foreach}
 {if $customerinfo.ten neq ""}
 	<TR>
 		<TD WIDTH="1%" ALIGN="CENTER">
@@ -168,4 +176,3 @@ parent.document.getElementById('autoiframe').width = document.getElementById('ta
 </SCRIPT>
 </BODY>
 </HTML>
-

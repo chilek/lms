@@ -133,12 +133,17 @@ function check_zip($zip)
 	return eregi('^[0-9]{2}-[0-9]{3}$', $zip);
 }
 
-function check_im($im)
+function check_gg($im)
 {
 	return eregi('^[0-9]+$', $im);  // gadu-gadu ID check
 }
 
-function check_oim($im) //instead of check_im for polish gadu gadu will check skype, yahoo messenger or other messengers -zet
+function check_yahoo($im)
+{
+	return eregi('^[-_.a-z0-9]+$', $im);
+}
+
+function check_skype($im)
 {
 	return eregi('^[-_.a-z0-9]+$', $im);
 }

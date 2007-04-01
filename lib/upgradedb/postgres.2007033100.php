@@ -27,21 +27,23 @@
 $DB->BeginTrans();
 
 $DB->Execute("
+CREATE SEQUENCE imessengers_id_seq;
 CREATE TABLE imessengers (
-    id int(11) NOT NULL auto_increment, 
-    customerid int(11) NOT NULL, 
-    uid varchar(32) NOT NULL default '',
-    type tinyint(1) NOT NULL DEFAULT '0',
-    PRIMARY KEY (id),
-    INDEX customerid (customerid)
-) TYPE=MyISAM;
+  id integer 		DEFAULT nextval('imessengers_id_seq'::text) NOT NULL, 
+  customerid integer	DEFAULT 0 NOT NULL, 
+  uid varchar(32) 	DEFAULT '' NOT NULL,
+  type smallint		DEFAULT 0 NOT NULL,
+  PRIMARY KEY (id) 
+  );
 ");
 
-$DB->Execute("INSERT INTO imessengers (customerid, uid)
-        SELECT id, im FROM customers WHERE im > 0");
-	
-$DB->Execute("ALTER TABLE customers DROP im");
-	
+$DB->Execute("INSERT INTO imessengers (customerid, uid) 
+	SELECT id, im::text FROM customers WHERE im > 0");
+
+$DB->Execute("CREATE INDEX imessengers_customerid_idx ON imessengers (customerid)");
+
+$DB->Execute("ALTER TABLE customers DROP COLUMN im");
+
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007033100', 'dbversion'));
 
 $DB->CommitTrans();

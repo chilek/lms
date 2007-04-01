@@ -72,8 +72,9 @@ if(isset($_POST['customeradd']))
 	$customeradd = $_POST['customeradd'];
 
 	if(sizeof($customeradd))
-		foreach($customeradd as $key=>$value)
-			$customeradd[$key] = trim($value);
+		foreach($customeradd as $key => $value)
+			if($key != 'uid')
+				$customeradd[$key] = trim($value);
 
 	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['phone1'] == '' && $customeradd['address'] == '' && $customeradd['email'] == '')
 	{
@@ -101,18 +102,6 @@ if(isset($_POST['customeradd']))
 	if($customeradd['zip'] !='' && !check_zip($customeradd['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
 
-	if($customeradd['im'] !='' && !check_im($customeradd['im']))
-		$error['im'] = trans('Incorrect IM uin!');
-
-	if($customeradd['im'] == '')
-		$customeradd['im'] = 0;
-	
-	if($customeradd['yim'] !='' && !check_oim($customeradd['yim']))
-		$error['yim'] = trans('Incorrect Yahoo ID!');
-
-	if($customeradd['skype'] !='' && !check_oim($customeradd['skype']))
-		$error['Skype'] = trans('Incorrect Skype ID!');
-
 	if($customeradd['pin'] == '')
 		$customeradd['pin'] = 0;
 
@@ -122,13 +111,43 @@ if(isset($_POST['customeradd']))
 	if($customeradd['email']!='' && !check_email($customeradd['email']))
 		$error['email'] = trans('Incorrect email!');
 
+	foreach($customeradd['uid'] as $idx => $val)
+	{
+		$val = trim($val);
+		switch($idx)
+		{
+			case IM_GG:
+				if($val!='' && !check_gg($val))
+					$error['gg'] = trans('Incorrect IM uin!');
+			break;
+			case IM_YAHOO:
+				if($val!='' && !check_yahoo($val))
+					$error['yahoo'] = trans('Incorrect IM uin!');
+			break;
+			case IM_SKYPE:
+				if($val!='' && !check_skype($val))
+					$error['skype'] = trans('Incorrect IM uin!');
+			break;
+		}
+		
+		if($val) $im[$idx] = $val;
+	}
+
 	if(!$error)
 	{
 		$id = $LMS->CustomerAdd($customeradd);
+
+		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($id));
+		if(isset($im) && $id)
+			foreach($im as $idx => $val)
+				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
+					VALUES(?, ?, ?)', array($id, $val, $idx));
+
 		if(!isset($customeradd['reuse']))
 		{
 			$SESSION->redirect('?m=customerinfo&id='.$id);
 		}
+		
 		$reuse['status'] = $customeradd['status'];
 		unset($customeradd);
 		$customeradd = $reuse;

@@ -93,17 +93,23 @@
 						<INPUT TYPE="text" size="40" value="{$customeradd.email}" name="customeradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
 					</TD>
 				</TR>
-				<TR>
-					<TD width="1%">
-						<IMG src="img/messengers22.gif" alt="Internet Messengers">
+    				<TR>
+					<TD WIDTH="1%">
+						{t}Internet Msgrs:{/t}
 					</TD>
-					<TD width="99%">
-						<IMG src="img/gg.gif" alt="Gadu-Gadu">
-						<INPUT TYPE="text" size="10" value="{if $customeradd.im}{$customeradd.im}{/if}" name="customeradd[im]" {tip text="Enter customer Internet Messenger ID (optional)" trigger="im"}>
-						<IMG src="img/yim.gif" alt="Yahoo">
-						<INPUT TYPE="text" size="18" value="{if $customeradd.yim}{$customeradd.yim}{/if}" name="customeradd[yim]" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yim"}>
-						<IMG src="img/skype.gif" alt="Skype">
-						<INPUT TYPE="text" size="15" value="{if $customeradd.skype}{$customeradd.skype}{/if}" name="customeradd[skype]" {tip text="Enter Skype ID (optional)" trigger="skype"}>
+					<TD WIDTH="99%">
+		    			{assign var=gg value=$smarty.const.IM_GG}
+				    	{assign var=yahoo value=$smarty.const.IM_YAHOO}
+					{assign var=skype value=$smarty.const.IM_SKYPE}
+						<NOBR><IMG SRC="img/gg.gif" alt="Gadu-Gadu">
+						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$gg}]" VALUE="{if $customeradd.uid.$gg}{$customeradd.uid.$gg}{/if}" SIZE="15" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
+		    				</NOBR>			
+						<NOBR><IMG src="img/yim.gif" alt="Yahoo">
+						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$yahoo}]" VALUE="{if $customeradd.uid.$yahoo}{$customeradd.uid.$yahoo}{/if}" SIZE="15" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
+						</NOBR>			
+						<NOBR><IMG src="img/skype.gif" alt="Skype">
+						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$skype}]" VALUE="{if $customeradd.uid.$skype}{$customeradd.uid.$skype}{/if}" SIZE="15" {tip text="Enter Skype ID (optional)" trigger="skype"}>
+						</NOBR>			
 					</TD>
 				</TR>
 				<TR>

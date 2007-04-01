@@ -49,7 +49,8 @@ elseif(isset($_POST['customerdata']))
 {
 	$customerdata = $_POST['customerdata'];
 	foreach($customerdata as $key=>$value)
-		$customerdata[$key] = trim($value);
+		if($key != 'uid')
+			$customerdata[$key] = trim($value);
 
 	if($customerdata['lastname']=='')
 		$error['customername'] = trans('\'Last/Company Name\' and \'First Name\' fields cannot be empty!');
@@ -75,18 +76,6 @@ elseif(isset($_POST['customerdata']))
 	if($customerdata['email']!='' && !check_email($customerdata['email']))
 		$error['email'] = trans('Incorrect email!');
 
-	if($customerdata['im']!='' && !check_im($customerdata['im']))
-		$error['im'] = trans('Incorrect IM uin!');
-
-	if($customerdata['im'] == '')
-		$customerdata['im'] = 0;
-
-	if($customerdata['yim']!='' && !check_oim($customerdata['yim']))
-		$error['yim'] = trans('Incorrect IM uin!');
-
-	if($customerdata['skype']!='' && !check_oim($customerdata['skype']))
-		$error['skype'] = trans('Incorrect IM uin!');
-		
 	if($customerdata['pin'] == '')
 		$customerdata['pin'] = 0;
 
@@ -95,27 +84,61 @@ elseif(isset($_POST['customerdata']))
 
 	if($customerdata['status'] == 1 && $LMS->GetCustomerNodesNo($customerdata['id'])) 
 		$error['status'] = trans('Interested customers can\'t have computers!');
+
+	foreach($customerdata['uid'] as $idx => $val)
+	{
+		$val = trim($val);
+		switch($idx)
+		{
+			case IM_GG:
+				if($val!='' && !check_gg($val))
+					$error['gg'] = trans('Incorrect IM uin!');
+			break;
+			case IM_YAHOO:
+				if($val!='' && !check_yahoo($val))
+					$error['yahoo'] = trans('Incorrect IM uin!');
+			break;
+			case IM_SKYPE:
+				if($val!='' && !check_skype($val))
+					$error['skype'] = trans('Incorrect IM uin!');
+			break;
+		}
+
+		if($val) $im[$idx] = $val;
+	}
 		
 	if (!$error)
 	{
 		$LMS->CustomerUpdate($customerdata);
+		
+		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($customerdata['id']));
+		if(isset($im))
+			foreach($im as $idx => $val)
+				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
+					VALUES(?, ?, ?)', array($customerdata['id'], $val, $idx));
+		
 		$SESSION->redirect('?m=customerinfo&id='.$customerdata['id']);
 	}
 	else
 	{
 		$olddata = $LMS->GetCustomer($_GET['id']);
 		$customerinfo = $customerdata;
-		$customerinfo['createdby']=$olddata['createdby'];
-		$customerinfo['modifiedby']=$olddata['modifiedby'];
-		$customerinfo['creationdateh']=$olddata['creationdateh'];
-		$customerinfo['moddateh']=$olddata['moddateh'];
-		$customerinfo['customername']=$olddata['customername'];
-		$customerinfo['balance']=$olddata['balance'];
+		$customerinfo['createdby'] = $olddata['createdby'];
+		$customerinfo['modifiedby'] = $olddata['modifiedby'];
+		$customerinfo['creationdateh'] = $olddata['creationdateh'];
+		$customerinfo['moddateh'] = $olddata['moddateh'];
+		$customerinfo['customername'] = $olddata['customername'];
+		$customerinfo['balance'] = $olddata['balance'];
+		
 		$SMARTY->assign('error',$error);
 	}
-}else{
-
+}
+else
+{
 	$customerinfo = $LMS->GetCustomer($_GET['id']);
+	if($customerinfo['messengers'])
+		foreach($customerinfo['messengers'] as $idx => $val)
+			$customerinfo['uid'][$idx] = $val['uid'];
 }
 
 $layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);

@@ -52,6 +52,7 @@ version ? (????-??-??):
   - Romanian language support (zet/alec)
   - added notifications about availability of LMS's newer versions (alec)
   - added possibility to remove selected documents on documents list (zet/alec)
+  - many Internet Messengers (GG, Skype, Yahoo) in customer's data (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
