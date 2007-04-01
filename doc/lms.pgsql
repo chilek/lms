@@ -336,7 +336,6 @@ CREATE TABLE customers (
 	phone1 varchar(255) 	DEFAULT '' NOT NULL,
 	phone2 varchar(255) 	DEFAULT '' NOT NULL,
 	phone3 varchar(255) 	DEFAULT '' NOT NULL,
-	im integer 		DEFAULT 0 NOT NULL,
 	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,

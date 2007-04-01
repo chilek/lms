@@ -103,16 +103,21 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/messengers22.gif" ALT="Internet Messengers">
+			{t}Internet Msgrs:{/t}
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<IMG SRC="img/gg.gif" ALT="Gadu-Gadu">
-			<INPUT TYPE="TEXT" NAME="customerdata[im]" VALUE="{if $customerinfo.im}{$customerinfo.im}{/if}" SIZE="10" {tip text="Enter Gadu-Gadu UID (optional)" trigger="im"}>
-			<IMG src="img/yim.gif" alt="Yahoo">
-			<INPUT TYPE="TEXT" NAME="customerdata[yim]" VALUE="{if $customerinfo.yim}{$customerinfo.yim}{/if}" SIZE="18" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yim"}>
-			<IMG src="img/skype.gif" alt="Skype">
-			<INPUT TYPE="TEXT" NAME="customerdata[skype]" VALUE="{if $customerinfo.skype}{$customerinfo.skype}{/if}" SIZE="15" {tip text="Enter Skype ID (optional)" trigger="skype"}>
-			
+			{assign var=gg value=$smarty.const.IM_GG}
+			{assign var=yahoo value=$smarty.const.IM_YAHOO}
+			{assign var=skype value=$smarty.const.IM_SKYPE}
+			<NOBR><IMG SRC="img/gg.gif" alt="Gadu-Gadu">
+			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$gg}]" VALUE="{if $customerinfo.uid.$gg}{$customerinfo.uid.$gg}{/if}" SIZE="15" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
+			</NOBR>			
+			<NOBR><IMG src="img/yim.gif" alt="Yahoo">
+			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$yahoo}]" VALUE="{if $customerinfo.uid.$yahoo}{$customerinfo.uid.$yahoo}{/if}" SIZE="15" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
+			</NOBR>			
+			<NOBR><IMG src="img/skype.gif" alt="Skype">
+			<INPUT TYPE="TEXT" NAME="customerdata[uid][{$skype}]" VALUE="{if $customerinfo.uid.$skype}{$customerinfo.uid.$skype}{/if}" SIZE="15" {tip text="Enter Skype ID (optional)" trigger="skype"}>
+			</NOBR>			
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

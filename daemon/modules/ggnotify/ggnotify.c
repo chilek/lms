@@ -109,7 +109,14 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 		syslog(LOG_INFO, "DEBUG: [%s/ggnotify] Connected to Gadu-Gadu server.",n->base.instance);
 #endif
 	
-		res = g->db_query(g->conn, "SELECT customers.id AS id, im, pin, name, lastname, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, im, pin, name, lastname");
+		res = g->db_query(g->conn, 
+				"SELECT customers.id AS id, pin, name, lastname, "
+				"SUM(cash.value) AS balance, imessengers.uid AS im "
+				"FROM customers "
+				"LEFT JOIN imessengers ON customers.id = imessengers.customerid "
+				"LEFT JOIN cash ON customers.id = cash.customerid "
+				"WHERE deleted = 0 AND imessengers.type = 0"
+				"GROUP BY customers.id, imessengers.uid, pin, name, lastname");
 
 		if( g->db_nrows(res) )
 		{

@@ -96,12 +96,17 @@ function check_zip($zip)
 	return eregi('^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$', $zip);
 }
 
-function check_im($im)
+function check_gg($im)
 {
 	return eregi('^[0-9]+$', $im);
 }
 
-function check_oim($im) //instead of check_im for polish gadu gadu will check skype, yahoo messenger or other messengers -zet
+function check_skype($im)
+{
+	return eregi('^[-_.a-z0-9]+$', $im);
+}
+
+function check_yahoo($im)
 {
 	return eregi('^[-_.a-z0-9]+$', $im);
 }

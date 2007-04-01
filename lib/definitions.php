@@ -75,10 +75,17 @@ $PERIODS = array(
     1	=>	trans('daily'),
     0	=>	trans('disposable')
 );
-// Internet Messengers (zet)
-define('GaduGadu', 1);
-define('YahooMessenger', 2);
-define('SKYPE', 3);
+
+// Internet Messengers
+define('IM_GG', 0);
+define('IM_YAHOO', 1);
+define('IM_SKYPE', 2);
+
+$MESSENGERS = array(
+    IM_GG => trans('Gadu-Gadu'),
+    IM_YAHOO => trans('Yahoo'),
+    IM_SKYPE => trans('Skype'),
+);
 
 // Numbering periods
 $NUM_PERIODS = array(
@@ -104,5 +111,6 @@ $SMARTY->assign('_DOCTYPES', $DOCTYPES);
 $SMARTY->assign('_PERIODS', $PERIODS);
 $SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 $SMARTY->assign('_RT_STATES', $RT_STATES);
+$SMARTY->assign('_MESSENGERS', $MESSENGERS);
 
 ?>

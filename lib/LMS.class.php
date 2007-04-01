@@ -352,15 +352,14 @@ class LMS
 
 	function CustomerAdd($customeradd)
 	{
-		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, im, address, zip, city, 
-				    email, ten, ssn, status, creationdate, creatorid, info, notes, serviceaddr, message, pin, regon, rbe, icn, yim, skype) 
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, address, zip, city, 
+				    email, ten, ssn, status, creationdate, creatorid, info, notes, serviceaddr, message, pin, regon, rbe, icn) 
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    $customeradd['phone1'], 
 					    $customeradd['phone2'], 
 					    $customeradd['phone3'], 
-					    $customeradd['im'], 
 					    $customeradd['address'], 
 					    $customeradd['zip'], 
 					    $customeradd['city'], 
@@ -377,8 +376,6 @@ class LMS
 					    $customeradd['regon'],
 					    $customeradd['rbe'],
 					    $customeradd['icn'],
-					    $customeradd['yim'],
-					    $customeradd['skype']
 					    )))
 		{
 			$this->SetTS('customers');
@@ -409,9 +406,9 @@ class LMS
 		$this->SetTS('customers');
 
 		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, 
-					    zip=?, city=?, email=?, im=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
+					    zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 					    info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, 
-					    pin=?, regon=?, icn=?, rbe=?, yim=?, skype=? WHERE id=?', 
+					    pin=?, regon=?, icn=?, rbe=? WHERE id=?', 
 			array( $customerdata['status'], 
 				$customerdata['phone1'], 
 				$customerdata['phone2'], 
@@ -420,7 +417,6 @@ class LMS
 				$customerdata['zip'], 
 				$customerdata['city'], 
 				$customerdata['email'], 
-				$customerdata['im'], 
 				$customerdata['ten'], 
 				$customerdata['ssn'], 
 				isset($this->AUTH->id) ? $this->AUTH->id : 0,
@@ -435,8 +431,6 @@ class LMS
 				$customerdata['icn'], 
 				$customerdata['rbe'], 
 				$customerdata['id'],
-				$customerdata['yim'],
-				$customerdata['skype']
 				));
 	}
 
@@ -463,9 +457,9 @@ class LMS
 	function GetCustomer($id)
 	{
 		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
-					    lastname, name, status, email, im, phone1, phone2, phone3, address, zip, ten, ssn, 
+					    lastname, name, status, email, phone1, phone2, phone3, address, zip, ten, ssn, 
 					    city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
-					    pin, regon, icn, rbe, yim, skype 
+					    pin, regon, icn, rbe 
 					    FROM customers WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
@@ -475,6 +469,7 @@ class LMS
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
 			$result['tariffsvalue'] = $this->GetCustomerTariffsValue($result['id']);
 			$result['bankaccount'] = bankaccount($result['id']);
+			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
 			return $result;
 		}else
 			return FALSE;
