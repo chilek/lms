@@ -29,8 +29,8 @@ $DB->BeginTrans();
 $DB->Execute("
 CREATE TABLE imessengers (
     id int(11) NOT NULL auto_increment, 
-    customerid int(11) NOT NULL, 
-    uid varchar(32) NOT NULL default '',
+    customerid int(11) NOT NULL DEFAULT '0', 
+    uid varchar(32) NOT NULL DEFAULT '',
     type tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     INDEX customerid (customerid)

@@ -803,4 +803,18 @@ CREATE TABLE ewx_pt_config (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007032600');
+#
+# Structure of table imessengers
+#
+DROP TABLE IF EXISTS imessengers;
+CREATE TABLE imessengers (
+	id int(11) 		NOT NULL auto_increment,
+        customerid int(11) 	NOT NULL DEFAULT '0',
+	uid varchar(32) 	NOT NULL default '',
+	type tinyint(1) 	NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	INDEX customerid (customerid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007033100');
