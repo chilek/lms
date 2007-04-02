@@ -102,7 +102,6 @@
                     <member>phone1 - phone</member>
                     <member>phone2 - phone</member>
                     <member>phone3 - phone</member>
-                    <member>im - internet messenger (gadu-gadu) serial number</member>
                     <member>pin - pin number (for authentication)</member>
                     <member>address - street address (street, apartment, flat, etc)</member>
                     <member>zip - zip code</member>
@@ -407,6 +406,15 @@
 		    <member>regid - registry serial number</member>
                     <member>value - amount</member>
                     <member>description - description for receipt item</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="imessengers">
+               <title>Internet Messengers ('imessengers')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>customerid - customer serial number</member>
+                    <member>uid - messenger user name/identifier</member>
+                    <member>type - messenger type (0-gadu-gadu, 1-yahoo, 2-skype)</member>
                </simplelist>
           </sect2>
           <sect2 id="passwd">
