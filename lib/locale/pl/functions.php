@@ -135,17 +135,17 @@ function check_zip($zip)
 
 function check_gg($im)
 {
-	return eregi('^[0-9]+$', $im);  // gadu-gadu ID check
+	return eregi('^[0-9]{0,32}$', $im);  // gadu-gadu ID check
 }
 
 function check_yahoo($im)
 {
-	return eregi('^[-_.a-z0-9]+$', $im);
+	return eregi('^[-_.a-z0-9]{0,32}$', $im);
 }
 
 function check_skype($im)
 {
-	return eregi('^[-_.a-z0-9]+$', $im);
+	return eregi('^[-_.a-z0-9]{0,32}$', $im);
 }
 
 function check_regon($regon)
