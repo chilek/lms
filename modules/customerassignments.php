@@ -216,6 +216,8 @@ if($_GET['action'] == 'add' && isset($a))
 		unset($error['at']);
 		$at = 0;
 	}
+	elseif(!$a['name'] && $a['value'])
+		$error['name'] = trans('Liability name is required!');
 
 	if($a['tariffid'] != '') 
 		$a['value'] = 0;
@@ -228,9 +230,7 @@ if($_GET['action'] == 'add' && isset($a))
 
 	if(!$error) 
 	{
-		if($a['tariffid'] == '') $a['tariffid'] = 0;
-
-		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 
+		$LMS->AddAssignment(array('tariffid' => intval($a['tariffid']), 
 					    'customerid' => $_GET['id'], 
 					    'period' => $period, 
 					    'at' => $at, 
