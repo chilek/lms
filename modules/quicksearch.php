@@ -51,19 +51,30 @@ switch($mode)
 	case 'customer':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT id, lastname, name, email, phone1, phone2, phone3, deleted FROM customers WHERE id ?LIKE? \''.$search.'%\' OR lower(lastname) ?LIKE? lower(\'%'.$search.'%\') OR lower(name) ?LIKE? lower(\''.$search.'%\') OR lower(email) ?LIKE? lower(\'%'.$search.'%\') OR phone1 ?LIKE? \''.$search.'%\' OR phone2 ?LIKE? \''.$search.'%\' OR phone3 ?LIKE? \''.$search.'%\' ORDER by deleted, lastname, name, email, phone1 LIMIT 15');
+			$candidates = $DB->GetAll('SELECT id, lastname, name, email, address, phone1, phone2, phone3, deleted 
+					    FROM customers 
+					    WHERE id ?LIKE? \''.$search.'%\' 
+						    OR LOWER(lastname) ?LIKE? LOWER(\'%'.$search.'%\') 
+						    OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
+						    OR LOWER(address) ?LIKE? LOWER(\'%'.$search.'%\') 
+						    OR LOWER(email) ?LIKE? LOWER(\'%'.$search.'%\') 
+						    OR phone1 ?LIKE? \'%'.$search.'%\' 
+						    OR phone2 ?LIKE? \'%'.$search.'%\' 
+						    OR phone3 ?LIKE? \'%'.$search.'%\' 
+						    ORDER by deleted, lastname, name, email, address LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
 				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '').$row['lastname'].' '.$row['name'].($row['deleted'] ? '</font>' : ''));
-				if (preg_match("/^$search/i",$row['id'])) $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']);
-				if (preg_match("/^$search/i",$row['lastname'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['lastname']);
-				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['name']);
-				if (preg_match("/$search/i",$row['email'])) $descriptions[$row['id']] = escape_js(trans('E-mail').': '.$row['email']);
-				if (preg_match("/^$search/i",$row['phone1'])) $descriptions[$row['id']] = escape_js(trans('Phone').': '.$row['phone1']);
-				if (preg_match("/^$search/i",$row['phone2'])) $descriptions[$row['id']] = escape_js(trans('Phone').': '.$row['phone2']);
-				if (preg_match("/^$search/i",$row['phone3'])) $descriptions[$row['id']] = escape_js(trans('Phone').': '.$row['phone3']);
+				if (preg_match("/$search/i",$row['id'])) 	{ $descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']); continue; }
+				if (preg_match("/$search/i",$row['lastname'])) 	{ $descriptions[$row['id']] = escape_js(trans('Name/Surname:').' '.$row['lastname']); continue; }
+				if (preg_match("/$search/i",$row['name'])) 	{ $descriptions[$row['id']] = escape_js(trans('First name:').' '.$row['name']); continue; }
+				if (preg_match("/$search/i",$row['address'])) 	{ $descriptions[$row['id']] = escape_js(trans('Address:').' '.$row['address']); continue; }
+				if (preg_match("/$search/i",$row['email'])) 	{ $descriptions[$row['id']] = escape_js(trans('E-mail:').' '.$row['email']); continue; }
+				if (preg_match("/$search/i",$row['phone1'])) 	{ $descriptions[$row['id']] = escape_js(trans('Phone:').' '.$row['phone1']); continue; }
+				if (preg_match("/$search/i",$row['phone2'])) 	{ $descriptions[$row['id']] = escape_js(trans('Phone:').' '.$row['phone2']); continue; }
+				if (preg_match("/$search/i",$row['phone3'])) 	{ $descriptions[$row['id']] = escape_js(trans('Phone:').' '.$row['phone3']); continue; }
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
 			header('Content-type: text/plain');
