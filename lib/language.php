@@ -91,8 +91,8 @@ foreach ($langs as $val)
 
 $_LANG = array();
 
-@include($_LIB_DIR.'/locale/'.$_language.'/strings.php');
-@include($_LIB_DIR.'/locale/'.$_language.'/functions.php');
+@include(LIB_DIR.'/locale/'.$_language.'/strings.php');
+@include(LIB_DIR.'/locale/'.$_language.'/functions.php');
 
 setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);
