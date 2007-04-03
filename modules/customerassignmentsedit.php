@@ -73,7 +73,7 @@ if(isset($_POST['assignmentedit']))
 			else
 				$error['editat'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 		break;
-																																			   
+
 		case DAILY:
 			$at = 0;
 		break;
@@ -193,7 +193,7 @@ if(isset($_POST['assignmentedit']))
 	if($to < $from && $to != 0 && $from != 0)
 		$error['editdateto'] = trans('Incorrect date range!');
 
-	if(!isset($a['tariffid']) || $a['tariffid'] == '0')
+	if(!$a['liabilityid'] && (!isset($a['tariffid']) || $a['tariffid'] == '0'))
 	{
 		unset($error['editat']);
 		$at = 0;
