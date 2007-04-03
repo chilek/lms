@@ -27,13 +27,13 @@
 function bankaccount($id)
 {
 	global $CONFIG;
-	if(chkconfig($CONFIG['finances']['iban']))
+	if(isset($CONFIG['finances']['iban']) && chkconfig($CONFIG['finances']['iban']))
 	{
 	        $cc = '3028';	// Country code - RO ?
 		$account = 'RO'.sprintf('%02d',98-bcmod($CONFIG['finances']['account'].sprintf('%08d',$id).$cc.'00',97)).$CONFIG['finances']['account'].sprintf('%012d', $id);
 	} 
 	else
-		$account = (! $CONFIG['finances']['account'] ? trans('Not set') : $CONFIG['finances']['account']);
+		$account = (!isset($CONFIG['finances']['account']) || $CONFIG['finances']['account']=='' ? trans('Not set') : $CONFIG['finances']['account']);
 	return $account;
 }
 
