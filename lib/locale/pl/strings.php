@@ -1833,5 +1833,7 @@ $_LANG['Enter Yahoo Messenger ID (optional)'] = 'Wprowadź identyfikator komunik
 $_LANG['Gadu-Gadu'] = 'Gadu-Gadu';
 $_LANG['Skype'] = 'Skype';
 $_LANG['Yahoo'] = 'Yahoo';
+$_LANG['Id:'] = 'Id:';
+$_LANG['Liability name is required!'] = 'Nazwa zobowiązania jest wymagana!';
  
 ?>
