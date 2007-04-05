@@ -162,3 +162,11 @@ function setCookie(name, value)
         document.cookie = name + "=" + escape(value);
 }
 
+if (typeof String.prototype.trim == "undefined") 
+{
+	String.prototype.trim = function()
+	{
+        	var s = this.replace(/^\s*/, "");
+	        return s.replace(/\s*$/, "");
+	}
+}
