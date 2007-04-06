@@ -92,12 +92,12 @@
      <sect1 id="install-install">
      <title>LMS Installation</title>
             <para>LMS in tarball (.tar.gz) archive can be downloaded from project 
-          home page (<ulink url="http://lms.rulez.pl">lms.rulez.pl</ulink>),
+          home page (<ulink url="http://lms.org.pl">lms.org.pl</ulink>),
           which should be extracted and placed in chosen directory (i.e. <filename>/var/www/lms</filename>) 
           and made available for Web Server (ie. with Alias /lms/ /var/www/lms):
 <screen>
 $ cd /var/www
-$ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
+$ wget http://lms.org.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz
 </screen>
           </para>

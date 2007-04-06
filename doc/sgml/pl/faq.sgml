@@ -76,7 +76,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 		powstaje wersja rozwojowa 1.5.x, która przez dodanie nowych rzeczy,
 		mo¿e byæ niestabilna/nie dzia³aj±ca prawid³owo.</para>
 		<para>Archiwum wszystkich wersji LMS znajduje siê pod adresem
-		<ulink url="http://lms.rulez.pl/download/">lms.rulez.pl/download</ulink></para>
+		<ulink url="http://lms.org.pl/download/">lms.org.pl/download</ulink></para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
@@ -86,7 +86,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 	    <answer>
 	        <para>Informacja ta jest zawarta w nag³ówkach wszystkich wiadomo¶ci 
 		z listy mailingowej. Nale¿y wys³aæ wiadomo¶æ z tematem "unsubscribe"
-		na adres lms-request@lists.rulez.pl.</para>
+		na adres lms-request@lists.lms.org.pl.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>

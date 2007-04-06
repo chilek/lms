@@ -1,10 +1,12 @@
 $Id$
 
-version ? (??/??/????):
+version 1.6.9 Bryce (06/04/2007):
 
   - fixed tickets searching with quicksearch input (alec)
   - BTS#0000580: sysinfo fixes for MacOS X (alec)
   - BTS#0000568: fixed XSS vulnerability (s_n/alec)
+  - updated NIC's vendors list (alec)
+  - changed LMS project's domain name (alec)
 
 version 1.6.8 Jamal (10/05/2006):
 
@@ -1113,13 +1115,13 @@ version 1.1.7 Hathor (14/12/2003):
 
 version 1.1.6 Seth (08/12/2003):
 
-  - misprint: http://bts.rulez.pl/bug_view_page.php?bug_id=0000088
+  - misprint: http://bts.lms.org.pl/bug_view_page.php?bug_id=0000088
     (chilek/lukasz)
   - fixed upgrade module:
-    http://bts.rulez.pl/bug_view_page.php?bug_id=0000085 (chilek/lukasz)
+    http://bts.lms.org.pl/bug_view_page.php?bug_id=0000085 (chilek/lukasz)
   - fixed tariff adding (alec)
   - bugfix in lms-makearp
-    http://bts.rulez.pl/bug_view_page.php?bug_id=0000086 (chilek/lukasz)
+    http://bts.lms.org.pl/bug_view_page.php?bug_id=0000086 (chilek/lukasz)
   - tariff description can be NULL (alec)
     MySQL:
     	ALTER TABLE tariffs CHANGE description description text;
@@ -1383,7 +1385,7 @@ version 1.1.4 Tanith (03/10/2003):
     PosgreSQL:
 	ALTER TABLE netdevices ADD COLUMN location varchar(255);
   - for 'Stats' module added database compacting possibility (alec)
-  - fixed http://bts.rulez.pl/bug_view_page.php?bug_id=0000072 (lukasz)
+  - fixed http://bts.lms.org.pl/bug_view_page.php?bug_id=0000072 (lukasz)
   - at present arp table records '00:00:00:00:00:00' are not ignored, but
     static records (0x6/PERM) are (lukasz)
   - still netdev, now we break down the links (Lexx)
