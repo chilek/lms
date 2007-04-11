@@ -176,6 +176,8 @@ foreach my $port (@local_ports_list)
 }
 
 my %nodes;
+my %down;
+my %up;
 my $networkswhere = '';
 my @networks = split ' ', $networks_list;
 
@@ -204,6 +206,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	print OUTFILE "$iptables_binary -t mangle -A STAT -d $row->{'ip'} -j RETURN\n";
 	$nodes{$row->{'ip'}} = $row->{'id'};
 }
+$dbq->finish();
 
 close(OUTFILE);
 
@@ -234,35 +237,30 @@ foreach my $line (@info)
 		next;
 	}
 
-	if (!$nodes{$ipaddr})
+	if($nodes{$ipaddr})
 	{
-		if(!$quiet)
-    		{
-			print "IP: $ipaddr\tSkipped - unknown\n";
-		}
-		next;
+		$downbytes = $downbytes || 0;
+		$upbytes = $upbytes || 0;
+
+		$down{$ipaddr} = $down{$ipaddr} || $downbytes;
+		$up{$ipaddr} = $up{$ipaddr} || $upbytes;
 	}
-	
-	$downbytes = $downbytes || 0;
-	$upbytes = $upbytes || 0;
-	
- 	if( $upbytes || $downbytes ) # don't need zeroes 
+}
+
+foreach my $key (keys %down)
+{
+ 	if($up{$key} || $down{$key} ) # don't need zeroes 
 	{   
-		$dbase->do("INSERT INTO stats (nodeid, dt, download, upload) VALUES ( $nodes{$ipaddr} , $utsfmt, $downbytes, $upbytes)");
-		if(!$quiet)
-    		{
-    			print "IP: $ipaddr\tSend: $upbytes\t Recv: $downbytes\n";
-    		}
+		$dbase->do("INSERT INTO stats (nodeid, dt, download, upload) 
+			VALUES ( $nodes{$key} , $utsfmt, $down{$key}, $up{$key})");
+
+		print "IP: $key\tSend: $up{$key}\t Recv: $down{$key}\n" if not $quiet;
 	} 
 	else
 	{
-		if(!$quiet)
-    		{
-			print "IP: $ipaddr\tSkipped - null data\n";
-		}
+		print "IP: $key\tSkipped - null data\n" if not $quiet;
 	}
 }
 
 # finally 
-$dbq->finish();
 $dbase->disconnect();
