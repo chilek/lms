@@ -50,7 +50,8 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 
 	$registry = intval($_POST['registry']);
 	$user = intval($_POST['user']);
-
+	$where = '';
+	
 	if($registry)
 		$where .= ' AND regid = '.$registry;
 	if($from)
@@ -78,6 +79,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 		.$where.'
 		ORDER BY docid, itemid', array(DOC_RECEIPT)))
 	{
+		$record = '';
 		$i = 0;
 		$maz_from = array(chr(161),chr(198),chr(202),chr(163),chr(209),chr(211),chr(166),chr(172),chr(175),chr(177),chr(230),chr(234),chr(179),chr(241),chr(243),chr(182),chr(188),chr(191));
 		$maz_to = array(chr(143),chr(149),chr(144),chr(156),chr(165),chr(163),chr(152),chr(160),chr(161),chr(134),chr(141),chr(145),chr(146),chr(164),chr(162),chr(158),chr(166),chr(167));
@@ -100,7 +102,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 			$line = str_replace('%DATE', $date, $line);
 			$line = str_replace('%CID4', sprintf('%04d',$row['customerid']), $line);
 			$line = str_replace('%CID', $row['customerid'], $line);
-			$line = str_replace('%UID4', sprintf('%04d',$doc['userid']), $line);
+			$line = str_replace('%UID4', sprintf('%04d',$row['userid']), $line);
 			$line = str_replace('%UID', $row['userid'], $line);
 			$line = str_replace('%CUSTOMER', $row['customer'] ? $row['customer'] : $default_customer, $line);
 			$line = str_replace('%ADDRESS', $row['address'], $line);
