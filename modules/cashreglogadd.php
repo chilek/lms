@@ -83,15 +83,21 @@ if(isset($_POST['reglog']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO cashreglog (time, description, value, regid, userid)
-				VALUES(?, ?, ?, ?, ?)',
+		$snapshot = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
+		                        LEFT JOIN documents ON (docid = documents.id)
+					WHERE cdate <= ? AND regid = ?',
+					array($time, $regid));
+		
+		$DB->Execute('INSERT INTO cashreglog (time, description, value, regid, userid, snapshot)
+				VALUES(?, ?, ?, ?, ?, ?)',
 				array($time,
 					$reglog['description'],
 					$reglog['value'],
 					$regid,
-					$AUTH->id
+					$AUTH->id,
+					str_replace(',','.',floatval($snapshot))
 				));
-				
+		print_r($DB);		
 		$SESSION->redirect('?m=cashreglogview&regid='.$regid);
 	}
 }
