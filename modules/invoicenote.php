@@ -145,7 +145,7 @@ switch($action)
 				$contents[$idx]['count'] = $newcontents['count'][$idx] ? $newcontents['count'][$idx] : $item['count'];
 				$contents[$idx]['discount'] = $newcontents['discount'][$idx] ? $newcontents['discount'][$idx] : $item['discount'];
 				$contents[$idx]['name'] = $newcontents['name'][$idx] ? $newcontents['name'][$idx] : $item['name'];
-				$contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx] ? $newcontents['tariffid'][$idx] : $item['tariffid'];
+				$contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
 				$contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx]!='' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
 				$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx]!='' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
 				$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
@@ -160,7 +160,7 @@ switch($action)
 					$contents[$idx]['valuebrutto'] = round($contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1),2);
 				}
 				
-				if($item['deleted'])
+				if(isset($item['deleted']) && $item['deleted'])
 				{
 					$contents[$idx]['valuebrutto'] = 0;
 					$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'],2);
@@ -176,7 +176,7 @@ switch($action)
 				$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 			}
 			
-			if(!$cnote['number'])
+			if(!isset($cnote['number']) || !$cnote['number'])
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 			else
 			{
@@ -230,7 +230,7 @@ switch($action)
 						    $item['tariffid']
 					    ));
 
-				if($item['cash'] != 0)
+				if(isset($item['cash']) && $item['cash'] != 0)
 					$DB->Execute('INSERT INTO cash (time, userid, value, taxid, customerid, comment, docid, itemid)
 			                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 						array($cnote['cdate'],
