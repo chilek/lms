@@ -37,6 +37,9 @@ function GetCashLog($order='time,asc', $regid=0)
 		case 'value':
 			$sqlord = " ORDER BY value $direction";
 		break;
+		case 'snapshot':
+			$sqlord = " ORDER BY snapshot $direction";
+		break;
 		case 'description':
 			$sqlord = " ORDER BY description $direction";
 		break;
@@ -49,7 +52,7 @@ function GetCashLog($order='time,asc', $regid=0)
 	}
 
 	$list = $DB->GetAll('SELECT cashreglog.id, time, value, description, 
-				    userid, users.name AS username
+				    snapshot, userid, users.name AS username
 			    FROM cashreglog
 			    LEFT JOIN users ON (userid = users.id)
 			    WHERE regid = ?

@@ -344,6 +344,7 @@
 			<member>userid - user serial number</member>
 			<member>time - entry timestamp</member>
 			<member>value - real cash state value</member>
+			<member>snapshot - cash state value</member>
 			<member>description - additional informations</member>
 		</simplelist>
           </sect2>

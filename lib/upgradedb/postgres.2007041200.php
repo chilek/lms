@@ -24,29 +24,28 @@
  *  $Id$
  */
 
-$reglog = $DB->GetRow('SELECT l.*, users.name AS username
-			FROM cashreglog l 
-			LEFT JOIN users ON (l.userid = users.id)
-			WHERE l.id = ?', 
-			array(intval($_GET['id'])));
+$DB->BeginTrans();
 
-if(!$reglog)
-{
-        $SESSION->redirect('?m=cashreglist');
+$DB->Execute("ALTER TABLE cashreglog ADD snapshot numeric(9,2)");
+
+$list = $DB->GetAll('SELECT id, regid, time FROM cashreglog');
+
+foreach($list as $row)
+{    
+	$val = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
+	                LEFT JOIN documents ON (docid = documents.id)
+			WHERE cdate <= ? AND regid = ?',
+			array($row['time'], $row['regid']));
+
+	$DB->Execute('UPDATE cashreglog SET snapshot = ? WHERE id = ?',  
+			array(str_replace(',','.',floatval($val)), $row['id']));
 }
-	
-if(!$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $reglog['regid'])))
-{
-        $SMARTY->display('noaccess.html');
-        $SESSION->close();
-        die;
-}
 
-$reglog['time'] = strftime('%Y/%m/%d %H:%M', $reglog['time']);
+$DB->Execute("ALTER TABLE cashreglog ALTER snapshot SET NOT NULL");
+$DB->Execute("ALTER TABLE cashreglog ALTER snapshot SET DEFAULT 0");
 
-$layout['pagetitle'] = trans('Cash History Entry Info');
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007041200', 'dbversion'));
 
-$SMARTY->assign('reglog', $reglog);
-$SMARTY->display('cashregloginfo.html');
+$DB->CommitTrans();
 
 ?>

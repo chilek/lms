@@ -347,6 +347,7 @@
 			<member>userid - identyfikator u¿ytkownika</member>
 			<member>time - data i godzina wpisu</member>
 			<member>value - rzeczywista warto¶æ stanu kasy (gotówki)</member>
+			<member>snapshot - warto¶æ stanu kasy</member>
 			<member>description - dodatkowe informacje</member>
 		</simplelist>
 	</sect2>

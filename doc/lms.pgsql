@@ -779,6 +779,7 @@ CREATE TABLE cashreglog (
     userid 	integer		DEFAULT 0 NOT NULL,
     time 	integer		DEFAULT 0 NOT NULL,
     value 	numeric(9,2)    DEFAULT 0 NOT NULL,
+    snapshot 	numeric(9,2)    DEFAULT 0 NOT NULL,
     description text		DEFAULT '' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (regid, time)
@@ -862,4 +863,4 @@ CREATE TABLE imessengers (
 );
 CREATE INDEX imessengers_customerid_idx ON imessengers (customerid);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007033100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007041200');

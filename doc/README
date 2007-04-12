@@ -5140,6 +5140,7 @@ Chapter 7. For curious
    userid - user serial number
    time - entry timestamp
    value - real cash state value
+   snapshot - cash state value
    description - additional informations
      _________________________________________________________________
 
