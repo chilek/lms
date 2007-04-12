@@ -32,12 +32,12 @@ if (strtolower($CONFIG['invoices']['type']) == 'pdf')
 }
 
 header('Content-Type: '.$CONFIG['invoices']['content_type']);
-if($CONFIG['invoices']['attachment_name'] != '')
+if(isset($CONFIG['invoices']['attachment_name']) && $CONFIG['invoices']['attachment_name'] != '')
 	header('Content-Disposition: attachment; filename='.$CONFIG['invoices']['attachment_name']);
 
 $SMARTY->assign('css', file('img/style_print.css')); 
 
-if($_GET['print'] == 'cached')
+if(isset($_GET['print']) && $_GET['print'] == 'cached')
 {
 	$SESSION->restore('ilm', $ilm);
 	$SESSION->remove('ilm');
@@ -98,7 +98,7 @@ if($_GET['print'] == 'cached')
 	}
 	$SMARTY->display('clearfooter.html');
 }
-elseif($_GET['fetchallinvoices'])
+elseif(isset($_GET['fetchallinvoices']))
 {
 	$layout['pagetitle'] = trans('Invoices');
 
@@ -143,7 +143,7 @@ elseif($_GET['fetchallinvoices'])
 	}
 	$SMARTY->display('clearfooter.html');
 }
-elseif($_GET['fetchsingle'])
+elseif(isset($_GET['fetchsingle']))
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);

@@ -1658,6 +1658,11 @@ class LMS
 					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE documents.id=? AND (type = ? OR type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
 		{
+			$result['discount'] = 0;
+			$result['totalbase'] = 0;
+			$result['totaltax'] = 0;
+			$result['total'] = 0;
+			
 			if($result['reference'])
 				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
 			
@@ -1672,7 +1677,7 @@ class LMS
 			)
 				foreach($result['content'] as $idx => $row)
 				{
-					if($result['invoice'])
+					if(isset($result['invoice']))
 					{
 						$row['value'] += $result['invoice']['content'][$idx]['value'];
 						$row['count'] += $result['invoice']['content'][$idx]['count'];
@@ -1685,10 +1690,19 @@ class LMS
 					$result['content'][$idx]['value'] = $row['value'];
 					$result['content'][$idx]['count'] = $row['count'];
 
-					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
-					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
-					$result['taxest'][$row['taxvalue']]['taxlabel'] = $row['taxlabel'];
-					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+					if(isset($result['taxest'][$row['taxvalue']]))
+					{
+						$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
+						$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
+						$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+					}
+					else
+					{
+						$result['taxest'][$row['taxvalue']]['base'] = $result['content'][$idx]['totalbase'];
+						$result['taxest'][$row['taxvalue']]['total'] = $result['content'][$idx]['total'];
+						$result['taxest'][$row['taxvalue']]['tax'] = $result['content'][$idx]['totaltax'];
+						$result['taxest'][$row['taxvalue']]['taxlabel'] = $row['taxlabel'];
+					}
 
 					$result['totalbase'] += $result['content'][$idx]['totalbase'];
 					$result['totaltax'] += $result['content'][$idx]['totaltax'];
@@ -1702,7 +1716,7 @@ class LMS
 				}
 
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
-			$result['value'] = $result['total'] - $result['invoice']['value'];
+			$result['value'] = $result['total'] - (isset($result['invoice']) ? $result['invoice']['value'] : 0);
 			
 			if($result['value'] < 0)
 			{
@@ -1714,7 +1728,7 @@ class LMS
 			$result['customerpin'] = $this->DB->GetOne('SELECT pin FROM customers WHERE id=?', array($result['customerid']));
 			
 			// NOTE: don't waste CPU/mem when printing history is not set:
-			if(chkconfig($this->CONFIG['invoices']['print_balance_history']))
+			if(isset($this->CONFIG['invoices']['print_balance_history']) && chkconfig($this->CONFIG['invoices']['print_balance_history']))
 			{
 				$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
 				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
