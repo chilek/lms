@@ -394,6 +394,10 @@ $ tar zxf lms-x.x.x.tar.gz
    place it in its home directory, but then it's possible to read it with
    http://yourserver/lms.ini, and it contains valuable information such
    as database password!).
+   Warning
+
+   It's absolutely required for LMS to disable register_globals PHP's
+   option.
      _________________________________________________________________
 
 2.4. Localization

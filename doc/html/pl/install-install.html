@@ -173,7 +173,7 @@ CLASS="FILENAME"
 >.
           </P
 ><P
-><DIV
+>		<DIV
 CLASS="WARNING"
 ><TABLE
 CLASS="WARNING"
@@ -196,19 +196,47 @@ VALIGN="TOP"
 CLASS="FILENAME"
 >lms.ini</TT
 >
-          oraz prawa odczytu i zapisu do katalogu <TT
+		oraz prawa odczytu i zapisu do katalogu <TT
 CLASS="FILENAME"
 >backup</TT
 >. 
-          Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
-	  </P
+		Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
+		</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
-></P
+>
+		<DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Ostrze&#380;enie"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
 ><P
-><DIV
+>Bezwzglêdnie LMS wymaga wy³±czenia opcji PHP <TT
+CLASS="FILENAME"
+>register_globals</TT
+>.
+		</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		<DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -228,18 +256,24 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Pocz±wszy od wersji 1.6 przechowywanie konfiguracji 
-	  w <TT
+		interfejsu u¿ytkownika w <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> jest przestarza³e. Jedynymi koniecznymi
-	  sekcjami w tym pliku s± [database] i [directories]. Ustawienia 
-	  przechowywane s± w bazie danych i mog± byæ modyfikowane przez 
-	  interfejs u¿ytkownika.</P
+> jest przestarza³e. 
+		Jedynymi koniecznymi sekcjami w tym pliku s± [database] i [directories]
+		oraz konfiguracja skryptów perlowych. Ustawienia LMS-UI
+	    	przechowywane s± w bazie danych i mog± byæ modyfikowane przez 
+		interfejs u¿ytkownika, maj± tak¿e wy¿szy priorytet od tych zawartych
+		w <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
-></P
+>
+	</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

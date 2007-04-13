@@ -132,7 +132,10 @@ $ tar zxf lms-x.x.x.tar.gz
           <filename>.htaccess</filename> and place your lms.ini outside Web Server's DocumentRoot
           (LMS allows you to place it in its home directory, but then it's possible to read it
           with http://yourserver/lms.ini, and it contains valuable information such as database
-          password!).</para></warning></para>
+          password!).</para></warning>
+	  <warning><para>It's absolutely required for LMS to disable <filename>register_globals</filename>
+	  PHP's option.</para></warning>
+	  </para>
      </sect1>
      <sect1 id="install-locale">
      <title>Localization</title>
