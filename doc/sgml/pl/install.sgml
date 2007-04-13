@@ -130,15 +130,21 @@ $ tar zxf lms-x.x.x.tar.gz
           <para>Skrypty wykonywalne z katalogu <filename>bin</filename> 
           najlepiej przenie¶æ do katalogu <filename>/usr/sbin</filename>.
           </para>
-          <para><warning><para>Serwer www musi mieæ prawo odczytu pliku <filename>lms.ini</filename>
-          oraz prawa odczytu i zapisu do katalogu <filename>backup</filename>. 
-          Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
-	  </para></warning></para>
-	  <para><note><para>Pocz±wszy od wersji 1.6 przechowywanie konfiguracji 
-	  w <filename>lms.ini</filename> jest przestarza³e. Jedynymi koniecznymi
-	  sekcjami w tym pliku s± [database] i [directories]. Ustawienia 
-	  przechowywane s± w bazie danych i mog± byæ modyfikowane przez 
-	  interfejs u¿ytkownika.</para></note></para>
+        <para>
+		<warning><para>Serwer www musi mieæ prawo odczytu pliku <filename>lms.ini</filename>
+		oraz prawa odczytu i zapisu do katalogu <filename>backup</filename>. 
+		Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
+		</para></warning>
+		<warning><para>Bezwzglêdnie LMS wymaga wy³±czenia opcji PHP <filename>register_globals</filename>.
+		</para></warning>
+		<note><para>Pocz±wszy od wersji 1.6 przechowywanie konfiguracji 
+		interfejsu u¿ytkownika w <filename>lms.ini</filename> jest przestarza³e. 
+		Jedynymi koniecznymi sekcjami w tym pliku s± [database] i [directories]
+		oraz konfiguracja skryptów perlowych. Ustawienia LMS-UI
+	    	przechowywane s± w bazie danych i mog± byæ modyfikowane przez 
+		interfejs u¿ytkownika, maj± tak¿e wy¿szy priorytet od tych zawartych
+		w <filename>lms.ini</filename>.</para></note>
+	</para>
      </sect1>
      <sect1 id="install-locale">
      <title>Lokalizacja</title>
