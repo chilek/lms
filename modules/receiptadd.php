@@ -30,18 +30,49 @@ function GetCustomerCovenants($id)
 
 	if(!$id) return NULL;
 	
-	if($invoicelist = $DB->GetAll('SELECT docid AS id, cdate, SUM(value)*-1 AS value, number, template
+	if($invoicelist = $DB->GetAllByKey('SELECT docid AS id, cdate, SUM(value)*-1 AS value, number, template, reference AS ref,
+				(SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
 			FROM cash
-			LEFT JOIN documents ON (docid = documents.id)
+			LEFT JOIN documents d ON (docid = d.id)
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE cash.customerid = ? AND documents.type IN (?,?) AND documents.closed = 0
-			GROUP BY docid, cdate, number, template
+			WHERE cash.customerid = ? AND d.type IN (?,?) AND d.closed = 0
+			GROUP BY docid, cdate, number, template, reference
 			HAVING SUM(value) < 0
-			ORDER BY cdate DESC LIMIT 10', array($id, DOC_INVOICE, DOC_CNOTE)))
+			ORDER BY cdate DESC LIMIT 10', 'id', array($id, DOC_INVOICE, DOC_CNOTE)))
 	{
 		foreach($invoicelist as $idx => $row)
 		{
+			if($row['ref'] && isset($invoicelist[$row['ref']]))
+			{
+				unset($invoicelist[$idx]);
+				continue;
+			}
+			
 			$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+			
+			// invoice has cnote reference
+			if($row['reference'])
+			{
+				// get cnotes values if those values decreases invoice value
+				if($cnotes = $DB->GetAll('SELECT SUM(value) AS value, cdate, number, template
+						FROM cash
+						LEFT JOIN documents d ON (docid = d.id)
+						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+						WHERE reference = ? AND d.closed = 0
+						GROUP BY docid, cdate, number, template',
+						array($row['id'])))
+				{
+					$invoicelist[$idx]['number'] .= ' (';
+					foreach($cnotes as $cidx => $cnote)
+					{
+						$invoicelist[$idx]['number'] .= docnumber($cnote['number'], $cnote['template'], $cnote['cdate']);
+						$invoicelist[$idx]['value'] -= $cnote['value'];
+						if($cidx < count($cnotes)-1)
+							$invoicelist[$idx]['number'] .= ',';
+					}
+					$invoicelist[$idx]['number'] .= ')';
+				}
+			}
 		}
 		
 		return $invoicelist;
@@ -200,15 +231,16 @@ switch($action)
 	
 	case 'additemlist':
 	
-		if($marks = $_POST['marks'])
+		if(isset($_POST['marks']))
 		{
 			unset($error['nocash']);
 		
 			$cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
 			
-			foreach($marks as $id)
+			foreach($_POST['marks'] as $id)
 			{
-				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, template, documents.type AS type
+				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, template, documents.type AS type,
+						    (SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
 						    FROM cash 
 						    LEFT JOIN documents ON (docid = documents.id)
 						    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
@@ -218,10 +250,35 @@ switch($action)
 				$itemdata['value'] = $receipt['type']=='in' ? -$row['value'] : $row['value'];
 				$itemdata['docid'] = $id;
 				$itemdata['posuid'] = (string) (getmicrotime()+$id);
+		
 				if($row['type']==DOC_INVOICE)
 					$itemdata['description'] = trans('Invoice No. $0', docnumber($row['number'], $row['template'], $row['cdate']));
 				else
 					$itemdata['description'] = trans('Credit Note No. $0', docnumber($row['number'], $row['template'], $row['cdate']));
+
+				if($row['reference'] && $receipt['type']=='in')
+				{
+					// get cnotes values if those values decreases invoice value
+					if($cnotes = $DB->GetAll('SELECT SUM(value) AS value, docid, cdate, number, template
+						FROM cash
+						LEFT JOIN documents d ON (docid = d.id)
+						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+						WHERE reference = ? AND d.closed = 0
+						GROUP BY docid, cdate, number, template',
+						array($id)))
+					{
+						$itemdata['description'] .= ' (';
+						foreach($cnotes as $cidx => $cnote)
+						{
+							$itemdata['description'] .= docnumber($cnote['number'], $cnote['template'], $cnote['cdate']);
+							$itemdata['value'] -= $cnote['value'];
+							$itemdata['references'][] = $cnote['docid'];
+							if($cidx < count($cnotes)-1)
+								$itemdata['description'] .= ',';
+						}
+						$itemdata['description'] .= ')';
+					}
+				}
 				
 				if($receipt['type'] != 'in')
 				{
@@ -462,6 +519,9 @@ switch($action)
 				
 				if(isset($item['docid']))
 					$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));
+				if(isset($item['references']))
+					foreach($item['references'] as $ref)
+						$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($ref));
 			}
 		
 			$DB->CommitTrans();
@@ -666,7 +726,7 @@ $invoicelist = array();
 
 if(isset($list))
 	if($contents)
-		foreach($list as $row)
+		foreach($list as $idx => $row)
 		{
 			$i = 0;
 			foreach($contents as $item)
@@ -676,7 +736,7 @@ if(isset($list))
 					break;
 				}
 			if(!$i)
-				$invoicelist[] = $row;
+				$invoicelist[$idx] = $row;
 		}
 	else
 		$invoicelist = $list;
