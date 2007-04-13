@@ -165,7 +165,7 @@ elseif(isset($_GET['fetchsingle']))
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-	if( !$invoice['invoice'])
+	if(!isset($invoice['invoice']))
 		$layout['pagetitle'] = trans('Invoice No. $0', $number);
 	else
 		$layout['pagetitle'] = trans('Credit Note No. $0', $number);
@@ -173,14 +173,14 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoiceheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
-	if($invoice['invoice'])
+	if(isset($invoice['invoice']))
 		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
 	else
 		$SMARTY->display($CONFIG['invoices']['template_file']);
 	$SMARTY->assign('type',trans('COPY'));
 	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
-	if($invoice['invoice'])
+	if(isset($invoice['invoice']))
 		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
 	else
 		$SMARTY->display($CONFIG['invoices']['template_file']);
