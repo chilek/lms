@@ -30,7 +30,7 @@ $DB->Execute("ALTER TABLE cashreglog ADD snapshot numeric(9,2)");
 
 $list = $DB->GetAll('SELECT id, regid, time FROM cashreglog');
 
-foreach($list as $row)
+if($list) foreach($list as $row)
 {    
 	$val = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
 	                LEFT JOIN documents ON (docid = documents.id)
