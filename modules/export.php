@@ -69,7 +69,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 	if($list = $DB->GetAll(
     		'SELECT documents.id AS id, value, number, cdate, customerid, 
 		documents.name AS customer, address, zip, city, ten, ssn, userid,
-		template, extnumber, receiptcontents.description AS desc, 
+		template, extnumber, receiptcontents.description, 
 		cashregs.name AS cashreg
 		FROM documents 
 		LEFT JOIN receiptcontents ON (documents.id = docid)
@@ -111,7 +111,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 			$line = str_replace('%TEN', $row['ten'], $line);
 			$line = str_replace('%SSN', $row['ssn'], $line);
 			$line = str_replace('%CASHREG', $row['cashreg'], $line);
-			$line = str_replace('%DESC', $row['desc'], $line);
+			$line = str_replace('%DESC', $row['description'], $line);
 			$line = str_replace('%VALUE', $row['value'], $line);
 			$line = str_replace('%ABSVALUE', str_replace('-','',$row['value']), $line);
 			$line = str_replace('%N', $row['number'], $line);
