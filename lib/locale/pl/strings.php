@@ -1081,6 +1081,7 @@ $_LANG['Queue Info: $0'] = 'Informacje o kolejce: $0';
 $_LANG['Queue name must be defined!'] = 'Kolejka musi posiadać swoją nazwę!';
 $_LANG['Queue Review: $0'] = 'Przegląd kolejki: $0';
 $_LANG['Queues List'] = 'Lista kolejek';
+$_LANG['Queues:'] = 'Kolejki:';
 $_LANG['Queue with specified name already exists!'] = 'Kolejka o podanej nazwie już istnieje!';
 $_LANG['Quota (sh/mail/www/ftp/sql):'] = 'Limit (sh/mail/www/ftp/sql):';
 $_LANG['Read'] = 'Odczyt';
