@@ -28,9 +28,9 @@
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
 			{if $netdevlist[netdevlist].linktype}
-				<A href="?m=netdevedit&action=switchlinktype&linktype=0&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/wireless.gif" ALT="[ {t}Change connection type{/t} ]"></A> 
+				<A href="?m=netdevedit&action=switchlinktype&linktype=0&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A> 
 			{else}
-				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" ALT="[ {t}Change connection type{/t} ]"></A> 
+				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A> 
 			{/if}
 			({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
 			<IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})

@@ -28,9 +28,9 @@
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 			{if $netcomplist[netcomplist].linktype}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]"></A>
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A>
 			{else}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]"></A>
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A>
 			{/if}
 			({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
 			<IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].ip}
