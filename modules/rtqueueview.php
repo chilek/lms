@@ -154,9 +154,7 @@ else
 	$s = NULL;
 $SESSION->save('rts', $s);
 
-$queuedata['name'] = $LMS->GetQueueName($queuedata['id']);
-
-$layout['pagetitle'] = trans('Queue Review');
+$layout['pagetitle'] = trans('Tickets List');
 $queue = GetQueueContents($_GET['id'], $o, $s);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
