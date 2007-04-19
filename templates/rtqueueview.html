@@ -2,14 +2,16 @@
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
 <TABLE cellpadding="3" WIDTH="100%">
+	{if count($queues) > 1}
 	<TR class="dark">
 		<TD class="fall" colspan="5">
 		<B>{t}Queues:{/t}</B>&nbsp;
 		{foreach from=$queues item=q}
-		<a href="?m={$layout.module}&id={$q.id}" {tip 0=$q.description text='$0'}>{$q.name}</a>&nbsp;
+		<a href="?m={$layout.module}&id={$q.id}"{if $q.description} {tip 0=$q.description text='$0'}{/if}>{if $q.id == $queuedata.id}<FONT style="text-decoration:underline;">{/if}{$q.name}{if $q.id == $queuedata.id}</FONT>{/if}</a>&nbsp;
 		{/foreach}
 		</TD>
 	</TR>
+	{/if}
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{t}ID:{/t}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
