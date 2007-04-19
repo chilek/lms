@@ -103,6 +103,7 @@
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 			{if $nodeinfo.netdev}
 			<B><A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A></B>
+			    {if $nodeinfo.linktype}<IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}{/if}
 			{else}
 			{if $netdevices}
 			<SELECT SIZE="1" NAME="devid" {tip trigger="netdev"}>

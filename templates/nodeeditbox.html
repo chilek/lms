@@ -62,13 +62,14 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev.gif" ALT="{t}Net devices:{/t}">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[netdev]" {tip text="Select net device from list" trigger="netdev"}>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+			<SELECT SIZE="1" NAME="nodeedit[netdev]" {tip text="Select net device from list" trigger="netdev"} style="max-width:250px;">
 				<OPTION VALUE="0" {if ! $nodeinfo.netdev}SELECTED{/if}>{t}--- No device ---{/t}</OPTION>
 				{section name="netdev" loop=$netdevices}
 				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</OPTION>
 				{/section}
 			</SELECT>
+			<INPUT class="box light" type="checkbox" name="nodeedit[linktype]" value="1"{if $nodeinfo.linktype} CHECKED{/if}><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -98,7 +99,7 @@
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[ownerid]" {tip text="Assign node to customer"}>
+			<SELECT SIZE="1" NAME="nodeedit[ownerid]" {tip text="Assign node to customer"} style="max-width:250px;">
 				{section name=customers loop=$customers}
 				<OPTION VALUE="{$customers[customers].id}"{if $nodeinfo.ownerid eq $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 				{/section}

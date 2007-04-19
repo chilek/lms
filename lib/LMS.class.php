@@ -1021,7 +1021,7 @@ class LMS
 		$this->SetTS('nodes');
 		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), ipaddr=inet_aton(?), mac=UPPER(?), 
 					passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=?, 
-					location=?, chkmac=?, halfduplex=? WHERE id=?', 
+					location=?, chkmac=?, halfduplex=?, linktype=? WHERE id=?', 
 			    array($nodedata['name'], 
 				    $nodedata['ipaddr_pub'], 
 				    $nodedata['ipaddr'], 
@@ -1036,6 +1036,7 @@ class LMS
 				    $nodedata['location'],
 				    $nodedata['chkmac'],
 				    $nodedata['halfduplex'],
+				    isset($nodedata['linktype']) ? 1 : 0,
 				    $nodedata['id']));
 	}
 
@@ -1096,7 +1097,7 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
 					ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
 					warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
-					info, location, chkmac, halfduplex
+					info, location, chkmac, halfduplex, linktype
 					FROM nodes WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
@@ -1285,8 +1286,8 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, 
-					creationdate, access, warning, info, netdev, location, chkmac, halfduplex) 
-					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?)',
+					creationdate, access, warning, info, netdev, linktype, location, chkmac, halfduplex) 
+					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(strtoupper($nodedata['name']),
 				    strtoupper($nodedata['mac']),
 				    $nodedata['ipaddr'],
@@ -1298,6 +1299,7 @@ class LMS
 				    $nodedata['warning'],
 				    $nodedata['info'],
 				    $nodedata['netdev'],
+				    isset($nodedata['linktype']) ? 1 : 0,
 				    $nodedata['location'],
 				    $nodedata['chkmac'],
 				    $nodedata['halfduplex']
