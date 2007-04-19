@@ -2,16 +2,6 @@
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
 <TABLE cellpadding="3" WIDTH="100%">
-	{if count($queues) > 1}
-	<TR class="dark">
-		<TD class="fall" colspan="5">
-		<B>{t}Queues:{/t}</B>&nbsp;
-		{foreach from=$queues item=q}
-		<a href="?m={$layout.module}&id={$q.id}"{if $q.description} {tip 0=$q.description text='$0'}{/if}>{if $q.id == $queuedata.id}<FONT style="text-decoration:underline;">{/if}{$q.name}{if $q.id == $queuedata.id}</FONT>{/if}</a>&nbsp;
-		{/foreach}
-		</TD>
-	</TR>
-	{/if}
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{t}ID:{/t}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -34,7 +24,6 @@
 			<FORM method="GET" action="?m=rtqueueview" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="rtqueueview">
-				<INPUT type="HIDDEN" name="id" value="{$queuedata.id}">
 				<INPUT type="HIDDEN" name="page" value="1">
 				<B>{t}Filter:{/t} </B> {t}Status:{/t}
 				<SELECT size="1" name="s" OnChange="document.filter.submit();">
@@ -44,7 +33,14 @@
 					<OPTION value="2"{if $queuedata.state eq "2"} SELECTED{/if}>{t}resolved{/t}</OPTION>
 					<OPTION value="3"{if $queuedata.state eq "3"} SELECTED{/if}>{t}dead{/t}</OPTION>
 					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>{t}not resolved{/t}</OPTION>
+				</SELECT>&nbsp;
+				{t}Queue:{/t}
+				<SELECT size="1" name="id" OnChange="document.filter.submit();">
+					{foreach from=$queues item=q}
+					<OPTION value="{$q.id}"{if $queuedata.id == $q.id} SELECTED{/if}>{$q.name}</OPTION>
+					{/foreach}
 				</SELECT>
+				
 			</FORM>
 		</TD>
 	</TR>		
