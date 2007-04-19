@@ -32,9 +32,18 @@ $SI = new Sysinfo;
 $layout['pagetitle'] = 'LAN Management System';
 
 $layout['dbversion'] = $DB->GetDBVersion();
-$layout['dbtype'] = $LMS->CONFIG['database']['type'];
+$layout['dbtype'] = $CONFIG['database']['type'];
 
-$SMARTY->assign('updates', $LMS->CheckUpdates());
+$content = $LMS->CheckUpdates();
+
+if(isset($content['newer_version']))
+{
+	list($v, ) = split(' ', $LMS->_version);
+
+	if(version_compare($content['newer_version'], $v)>0)
+		$SMARTY->assign('newer_version', $content['newer_version']);
+}
+
 $SMARTY->assign('regdata', $LMS->GetRegisterData());
 $SMARTY->assign('rtstats', $LMS->RTStats());
 $SMARTY->assign('sysinfo',$SI->get_sysinfo());

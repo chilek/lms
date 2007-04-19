@@ -1,5 +1,12 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed register_globals related vulnerabilities (please, disable that option
+    immediately): added some .htaccess files (alec)
+  - added notifications for registered users about availability of LMS's newer 
+    versions (alec)
+
 version 1.8.9 Vala (2007-02-16):
 
   - changed LMS homepage links to http://lms.org.pl (alec)

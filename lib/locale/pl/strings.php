@@ -1619,5 +1619,6 @@ $_LANG['DUPLICATE'] = 'DUPLIKAT';
 $_LANG['Duplicate draw-up date:'] = 'Data wyst. duplikatu:';
 $_LANG['If true on invoice (html) will be printed history of financial operations on customer account. Default: not set.'] = 'Określa czy na fakturze (html) drukować listę operacji finansowych na koncie klienta. Domyślnie: nie ustawiona.';
 $_LANG['Number of Records on customer balance list on invoice. Specify last x records. Default: 10.'] = 'Liczba rekordów na liście operacji finansowych na fakturze. Domyślnie: 10.';
+$_LANG['There is newer version of LMS ($0) available for download from $1.'] = 'Na stronie $1 jest już dostępna nowsza wersja systemu - $0.';
 
 ?>

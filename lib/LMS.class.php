@@ -3017,8 +3017,6 @@ class LMS
 				foreach(array('id', 'name', 'url', 'hidden') as $key)
 					$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_'.$key, $content['regdata'][$key]));
 			}
-
-
 		}
 
 		return $content;
