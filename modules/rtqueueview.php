@@ -156,7 +156,7 @@ $SESSION->save('rts', $s);
 
 $queuedata['name'] = $LMS->GetQueueName($queuedata['id']);
 
-$layout['pagetitle'] = trans('Queue Review: $0',$queuedata['name']);
+$layout['pagetitle'] = trans('Queue Review');
 $queue = GetQueueContents($_GET['id'], $o, $s);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
