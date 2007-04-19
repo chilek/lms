@@ -58,6 +58,7 @@ version ? (????-??-??):
   - cash receipts: BTS#0000651: better credit notes treating in list of 
     not accounted invoices (alec)
   - node link type can be set while node addition and edition (alec)
+  - rtqueueview: we can choose queue at the top (chilek)
 
 version 1.9.6 Belos (2007-02-16):
 

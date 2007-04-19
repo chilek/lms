@@ -180,6 +180,9 @@ $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('rtp', $page);
 
+$queues = $LMS->GetQueueList();
+
+$SMARTY->assign('queues', $queues);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuedata', $queuedata);
 $SMARTY->assign('pagelimit',$pagelimit);
