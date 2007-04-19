@@ -106,7 +106,7 @@ if(isset($_POST['nodedata']))
 		$error['mac'] = trans('MAC address is required!');
 	elseif(!check_mac($nodedata['mac']))
 		$error['mac'] = trans('Incorrect MAC address!');
-	elseif($nodedata['mac']!='00:00:00:00:00:00' && !chkconfig($CONFIG['phpui']['allow_mac_sharing']))
+	elseif($nodedata['mac']!='00:00:00:00:00:00' && (!isset($CONFIG['phpui']['allow_mac_sharing']) || !chkconfig($CONFIG['phpui']['allow_mac_sharing'])))
 		if($LMS->GetNodeIDByMAC($nodedata['mac']))
 			$error['mac'] = trans('Specified MAC address is in use!');
 
@@ -139,7 +139,7 @@ if(isset($_POST['nodedata']))
 	if(!$error)
 	{
 		$nodeid = $LMS->NodeAdd($nodedata);
-		if($nodedata['reuse']=='')
+		if(isset($nodedata['reuse']))
 		{
 			$SESSION->redirect('?m=nodeinfo&id='.$nodeid);
 		}
