@@ -97,7 +97,7 @@ if(isset($_POST['reglog']))
 					$AUTH->id,
 					str_replace(',','.',floatval($snapshot))
 				));
-		print_r($DB);		
+
 		$SESSION->redirect('?m=cashreglogview&regid='.$regid);
 	}
 }
