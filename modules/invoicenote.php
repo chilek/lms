@@ -133,6 +133,8 @@ switch($action)
 
 		if($contents && $cnote)
 		{
+			$DB->BeginTrans();
+			
 			$SESSION->restore('invoiceid', $invoice['id']);
 			$newcontents = r_trim($_POST);
 
@@ -176,6 +178,8 @@ switch($action)
 				$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 			}
 			
+			$DB->LockTables('documents');
+			
 			if(!isset($cnote['number']) || !$cnote['number'])
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 			else
@@ -210,6 +214,8 @@ switch($action)
 																																																							    	
 			$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?', array($cnote['number'],$cnote['cdate'],DOC_CNOTE));
 
+			$DB->UnLockTables();
+
 			foreach($contents as $idx => $item)
 			{
 				$item['valuebrutto'] = str_replace(',','.', $item['valuebrutto']);
@@ -243,6 +249,8 @@ switch($action)
 						        $idx
 						));
 			}
+			
+			$DB->CommitTrans();
 			
 			$SESSION->remove('invoice');
 			$SESSION->remove('invoiceid');
