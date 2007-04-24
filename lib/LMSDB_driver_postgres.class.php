@@ -126,8 +126,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function _driver_concat($input)
 	{
-		$return = implode(' || ',$input);
-		return $return;
+		return implode(' || ',$input);
 	}
 
 	function _driver_listtables()
@@ -155,6 +154,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function _driver_unlocktables()
 	{
+		return TRUE;
 	}
 																		
 	function _driver_lastinsertid($table)

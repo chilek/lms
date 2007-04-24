@@ -199,6 +199,9 @@ switch($action)
 
 		if($contents && $customer)
 		{
+			$DB->BeginTrans();
+			$DB->LockTables('documents');
+			
 			if(!$invoice['number'])
 				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
 			else
@@ -220,6 +223,9 @@ switch($action)
 				if(isset($item['cashid']))
 					$DB->Execute('DELETE FROM cash WHERE id = ?', array($item['cashid']));
 		
+			$DB->UnLockTables();
+			$DB->CommitTrans();
+			
 			$SESSION->remove('invoicecontents');
 			$SESSION->remove('invoicecustomer');
 			$SESSION->remove('invoice');

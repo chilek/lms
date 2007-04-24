@@ -132,7 +132,7 @@
 			    <TD width="1%" nowrap>
 				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" class="box light" checked> {t}customer{/t}:
 			    </TD>
-			    <TD width="99%">
+			    <TD width="99%" nowrap>
 			    {if $customerlist}
 				<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
 				    <OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>

@@ -147,6 +147,9 @@ if(isset($_POST['receipt']))
 	
 	if(!$error)
 	{
+		$DB->BeginTrans();
+		$DB->LockTables('documents');
+		
 		if($receipt['type'] == 'return')
 		{
 			if(!$receipt['number'])
@@ -163,8 +166,6 @@ if(isset($_POST['receipt']))
 				$in_number = $receipt['in_number'];
 			$in_extnumber = isset($receipt['in_extnumber']) ? $receipt['in_extnumber'] : '';
 		}
-
-		$DB->BeginTrans();
 
 		// add cash-in receipt 
 		$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
@@ -220,7 +221,8 @@ if(isset($_POST['receipt']))
 
 		// advance status update
 		$DB->Execute('UPDATE documents SET closed = 1 WHERE id = ?', array($record['id']));
-				
+
+		$DB->UnLockTables();				
 		$DB->CommitTrans();
 
 		if(isset($_GET['print']))		

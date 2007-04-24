@@ -454,6 +454,7 @@ switch($action)
 		if($contents && $customer)
 		{
 			$DB->BeginTrans();
+			$DB->LockTables('documents');
 		
 			if(!$receipt['number'])
 				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
@@ -523,7 +524,8 @@ switch($action)
 					foreach($item['references'] as $ref)
 						$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($ref));
 			}
-		
+
+			$DB->UnLockTables();		
 			$DB->CommitTrans();
 			
 			$print = TRUE;
