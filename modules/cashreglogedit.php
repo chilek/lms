@@ -34,7 +34,7 @@ if(!$regid)
         $SESSION->redirect('?m=cashreglist');
 }
 	
-if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<2)
+if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<256)
 {
         $SMARTY->display('noaccess.html');
         $SESSION->close();
