@@ -157,7 +157,7 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 
 $_FORCE_SSL = (isset($CONFIG['phpui']['force_ssl']) ? chkconfig($CONFIG['phpui']['force_ssl']) : FALSE);
 
-if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
+if($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on'))
 {
 	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 	exit(0);
