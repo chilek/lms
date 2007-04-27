@@ -1302,7 +1302,8 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 				<title>Wstêp</title>
 				<para>Modu³ ewx-stm s³u¿y do zarz±dzania urz±dzeniem Standalone Traffic
 				Manager marki <ulink url="http://etherwerx.com">EtherWerX</ulink>.
-				Komunikacja odbywa siê z wykorzystaniem protoko³u SNMP.</para>
+				Komunikacja odbywa siê z wykorzystaniem protoko³u SNMP. Do prawid³owej
+				pracy wymagany jest firmware w wersji 1.4.x lub nowszej.</para>
 				<para>Modu³ podczas pracy tworzy w³asn± kopiê konfiguracji urz±dzenia.
 				Konfiguracja urz±dzenia nie jest w ¿aden sposób weryfikowana, dlatego 
 				korzystaj±c z modu³u ewx-stm nie mo¿na dokonywaæ zmian bezpo¶rednio na
