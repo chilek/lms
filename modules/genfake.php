@@ -1939,7 +1939,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{
-			$nodedata['name'] = $nodenames[$cnt].$i;
+			$nodedata['name'] = $nodenames[rand(0,sizeof($nodenames)-1)].$i;
 			$cnt++;
 			$startip++;
 			$nodedata['ipaddr'] = long2ip($startip);
