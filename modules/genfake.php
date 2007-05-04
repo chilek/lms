@@ -1903,6 +1903,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$cnt = 0;
 	$lnsize = sizeof($lastnames);
 	$nsize = sizeof($names);
+	$nodsize = sizeof($nodenames);
 	$ppsize = sizeof($phoneprefix);
 	$ssize = sizeof($streets);
 	$esize = sizeof($emaildomains);
@@ -1933,13 +1934,13 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['serviceaddr'] = '';
 		$customeradd['info'] = '';
 		$customeradd['message'] = '';
-		$customeradd['pin'] = rand(10000,99999);
+		$customeradd['pin'] = mt_rand(10000,99999);
 		$id = $LMS->CustomerAdd($customeradd);
 		$LMS->AddAssignment(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => MONTHLY, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0, 'settlement' => 0, 'nodes' => NULL));
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{
-			$nodedata['name'] = $nodenames[rand(0,sizeof($nodenames)-1)].$i;
+			$nodedata['name'] = $nodenames[mt_rand(0,$nodsize-1)].$i;
 			$cnt++;
 			$startip++;
 			$nodedata['ipaddr'] = long2ip($startip);
