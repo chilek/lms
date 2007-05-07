@@ -134,10 +134,8 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
     snprintf(connect_string,sizeof(connect_string)-1,"host='%s' dbname='%s' user='%s' port='%d' password='%s'",host,db,user,port,password);
 
     if(ssl)
-{
 	strcat(connect_string, " sslmode='require'");
-	printf("---\n");
-}
+
     connect_string[sizeof(connect_string)-1] = '\x0';
     
     conn = PQconnectdb(connect_string);
