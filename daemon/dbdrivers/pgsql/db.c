@@ -124,7 +124,7 @@ static void parse_query_stmt(char **stmt)
 /************************* CONNECTION FUNCTIONS *************************/
 /* Opens a connection to the db server */
 ConnHandle * db_connect(const char *db, const char *user, const char *password, 
-		const char *host, int port)
+		const char *host, int port, int ssl)
 {
     ConnHandle *conn = NULL;
     char connect_string[BUFFER_LENGTH];
@@ -132,7 +132,13 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
     if( !port ) 
 	port = 5432;
     snprintf(connect_string,sizeof(connect_string)-1,"host='%s' dbname='%s' user='%s' port='%d' password='%s'",host,db,user,port,password);
-    connect_string[sizeof(connect_string)-1]='\x0';
+
+    if(ssl)
+{
+	strcat(connect_string, " sslmode='require'");
+	printf("---\n");
+}
+    connect_string[sizeof(connect_string)-1] = '\x0';
     
     conn = PQconnectdb(connect_string);
     

@@ -37,7 +37,7 @@
   
 #include "lmsd.h"
 
-int quit = 0, runall = 0, port = 0, dontfork = 0;
+int quit = 0, runall = 0, port = 0, dontfork = 0, ssl = 0;
 char *db, *user, *passwd;
 char host[255], dhost[255];
 char *command = NULL;
@@ -172,7 +172,7 @@ int main(int argc, char *argv[], char **envp)
 		}
 
 		// try to connect to database
-		if( !(g->conn = db_connect(db,user,passwd,host,port)) )
+		if( !(g->conn = db_connect(db,user,passwd,host,port,ssl)) )
 		{
 			if( quit ) termination_handler(1);
 			continue;
@@ -306,7 +306,7 @@ int main(int argc, char *argv[], char **envp)
 				syslog(LOG_INFO, "DEBUG: [lmsd] Reloading...");
 #endif
 				// try to connect to database again
-				if( !(g->conn = db_connect(db,user,passwd,host,port)) )
+				if( !(g->conn = db_connect(db,user,passwd,host,port,ssl)) )
 				{
 					if( quit ) 
 						termination_handler(1);
@@ -421,18 +421,22 @@ static void parse_command_line(int argc, char **argv)
 	    { "foreground", 0, 0, 'f' },
             { "instance", 2, 0, 'i' },
     	    { "version", 0, 0, 'v' },
+    	    { "ssl", 0, 0, 's' },
     	    { 0, 0, 0, 0 }
 	};
 	
 	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
 	
-	while( (opt = getopt_long(argc, argv, "qrfvi:h:p:d:u:H:c:", options, &option_index)) != -1 )
+	while( (opt = getopt_long(argc, argv, "sqrfvi:h:p:d:u:H:c:", options, &option_index)) != -1 )
 	{
 		switch(opt) 
 		{
     		case 'v':
             		printf("LMS Daemon version 1.9-cvs (%s)\nCopyright (c) 2001-2007 LMS Developers\n", revision);
             		exit(0);
+    		case 's':
+            		ssl = 1;
+            		break;
 		case 'q':
     			quit = 1;
             		break;
@@ -470,6 +474,7 @@ static void parse_command_line(int argc, char **argv)
         		printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
         		printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");
         		printf(" --dbpass -p password\t\tdatabase password (default: '')\n");
+        		printf(" --ssl -s\t\t\tuse SSL connection (default: disabled)\n");
         		printf(" --hostname -H daemon_host\thost name where runs daemon (default: `hostname`)\n");
         		printf(" --command -c command\t\tshell command to run before database connecting\n\t\t\t\t(default: empty)\n");
         		printf(" --reload -q \t\t\tdo a reload and quit\n");

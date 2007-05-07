@@ -113,7 +113,7 @@ static void parse_query_stmt(char **stmt)
 /************************* CONNECTION FUNCTIONS *************************/
 /* Opens a connection to the db server */
 ConnHandle * db_connect(const char *db, const char *user, const char *password, 
-		const char *host, int port)
+		const char *host, int port, int ssl)
 {
     ConnHandle *c = (ConnHandle *) malloc (sizeof(ConnHandle));
     if( mysql_init(&c->conn)==NULL ) {
@@ -121,6 +121,10 @@ ConnHandle * db_connect(const char *db, const char *user, const char *password,
 	free(c);
 	return NULL;
     }
+    
+    if(ssl)
+	mysql_ssl_set(&c->conn, NULL, NULL, NULL, NULL, NULL);    
+
     if( !mysql_real_connect(&c->conn,host,user,password,db,port,NULL,0) ) {
 	syslog(LOG_CRIT,"ERROR: [db_connect] Unable to connect to database. %s", mysql_error(&c->conn));
         mysql_close(&c->conn);

@@ -22,7 +22,7 @@ struct global
 	ConnHandle *conn;
 	
 	// db functions
-	ConnHandle * (*db_connect)(const char *, const char *, const char *, const char *, int);
+	ConnHandle * (*db_connect)(const char *, const char *, const char *, const char *, int, int);
 	int (*db_disconnect)(ConnHandle *);
 	QueryHandle * (*db_query)(ConnHandle *, char *);
 	QueryHandle * (*db_pquery)(ConnHandle *, char *, ...);

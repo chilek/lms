@@ -62,7 +62,7 @@ ConnHandle;
 
 /* Connect to database. Params: db, user, password, host, port.
     Returns 0 if connection failed, alse returns 1 */
-ConnHandle *db_connect(const char *, const char *, const char *, const char *, int);
+ConnHandle *db_connect(const char *, const char *, const char *, const char *, int, int);
 
 /* Closes connection */
 int db_disconnect(ConnHandle *);
