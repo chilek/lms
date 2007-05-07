@@ -59,7 +59,7 @@
         <sect2 id="install-req-db">
            <title>Serwer baz danych</title>
            <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 5.0.</para>
-           <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
+           <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.4.x lub nowszych.</para>
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
@@ -237,10 +237,9 @@ password = has³o_z_pkt.3
           <title>PostgreSQL</title>
           <sect3 id="install-pgsql-intro">
           <title>Wstêp</title>
-               <para>LMS jest testowany na PostgreSQL 7.3.4 i nowszych, ale poniewa¿ ¿adne
-               skomplikowane w³a¶ciwo¶ci tej bazy nie s± wykorzystywane, nie powinno
-               byæ problemów z innymi wersjami. Je¿eli nie masz zainstalowanego serwera
-               PostgreSQL, najlepszym rozwi±zaniem bêdzie w³asnorêczna kompilacja
+               <para>LMS jest testowany na PostgreSQL 7.4.x i nowszych, mo¿esz mieæ
+		problemy korzystaj±c ze starszych wersji. Je¿eli nie masz zainstalowanego serwera
+               PostgreSQL, mo¿esz np. w³asnorêcznie skompilowaæ go
                ze ¼róde³ dostêpnych na stronie <ulink url="http://www.postgresql.org">
                www.postgresql.org</ulink>.</para>
           </sect3>
