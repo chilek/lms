@@ -93,6 +93,7 @@
 --hostname -H nazwa_hosta  host, na którym dzia³a demon. Domy¶lnie przyjmowana jest nazwa
                            zwracana przez komendê hostname, ale mo¿na j± nadpisaæ. Nazwa
                            ta musi zgadzaæ siê z nazw± hosta podan± w konfiguracji hostów
+--ssl -s                   wymusza bezpieczne po³±czenie z baz± danych (domy¶lnie: wy³±czone)
 --command -c polecenie     polecenie pow³oki do wykonania przed ka¿dym po³±czeniem z baz± 
                            tzn. co minutê (domy¶lnie: puste)
 --instance -i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 

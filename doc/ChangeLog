@@ -60,6 +60,7 @@ version ? (????-??-??):
   - node link type can be set while node addition and edition (alec)
   - helpdesk: added queue filter on Requests List (chilek/alec)
   - added 'documents' table locking when creating an invoice or receipt (alec)
+  - lmsd: added option --ssl (-s): database connection with SSL (alec)
 
 version 1.9.6 Belos (2007-02-16):
 
