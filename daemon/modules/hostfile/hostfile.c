@@ -32,6 +32,13 @@
 #include "lmsd.h"
 #include "hostfile.h"
 
+char * itoha(int i)
+{
+        static char string[8];
+	sprintf(string, "%x", i);
+	return string;
+}
+
 void reload(GLOBAL *g, struct hostfile_module *hm)
 {
 	FILE *fh;
@@ -141,23 +148,21 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			char *id, *mac, *ip, *ip_pub, *access, *name, *info, *passwd;
-	
-			id  = g->db_get_data(res,i,"id");
-			mac 	= g->db_get_data(res,i,"mac");
-			ip  	= g->db_get_data(res,i,"ip");
-			ip_pub 	= g->db_get_data(res,i,"ip_pub");
-			access 	= g->db_get_data(res,i,"access");
-			name 	= g->db_get_data(res,i,"name");
-			info 	= g->db_get_data(res,i,"info");
-			passwd 	= g->db_get_data(res,i,"passwd");
-
+			char *id  	= g->db_get_data(res,i,"id");
+			char *mac 	= g->db_get_data(res,i,"mac");
+			char *ip  	= g->db_get_data(res,i,"ip");
+			char *ip_pub 	= g->db_get_data(res,i,"ip_pub");
+			char *access 	= g->db_get_data(res,i,"access");
+			char *name 	= g->db_get_data(res,i,"name");
+			char *info 	= g->db_get_data(res,i,"info");
+			char *passwd 	= g->db_get_data(res,i,"passwd");
+			
 			if(ip && mac && access)
 			{
 				unsigned long inet = inet_addr(ip);
 				unsigned long inet_pub = inet_addr(ip_pub);
 				int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
-				
+
 				// networks test
 				for(j=0; j<nc; j++)
 					if(nets[j].address == (inet & nets[j].mask))
@@ -183,6 +188,10 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				{
 					char *pattern, *s;
 
+					// IP's last octet in hex
+                    			char *i16 = strdup(itoha((ntohl(inet) & 0xff)));
+					char *i16_pub = strdup(inet_pub ? itoha((ntohl(inet_pub) & 0xff)) : "");
+
 					if(*access == '1')
 						pattern = ( inet_pub ? hm->grant_pub : hm->grant );
 					else
@@ -201,6 +210,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					g->str_replace(&s, "%info", info);
 					g->str_replace(&s, "%ipub", ip_pub);
 					g->str_replace(&s, "%id", id);
+					g->str_replace(&s, "%i16pub", i16_pub);
+					g->str_replace(&s, "%i16", i16);
 					g->str_replace(&s, "%i", ip);
 					g->str_replace(&s, "%m", mac);
 					g->str_replace(&s, "%n", name);
@@ -208,6 +219,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					
 					fprintf(fh, "%s", s);
 					free(s);
+					free(i16);
+					free(i16_pub);
 				}
 			}
 		}

@@ -629,7 +629,9 @@
 			<member>%mask - maska sieci,</member>
 			<member>%gw - adres bramy,</member>
 			<member>%dns, %dns2 - adresy serwerów DNS,</member>
-			<member>%wins - adres serwera WINS.</member>
+			<member>%wins - adres serwera WINS,</member>
+			<member>%i16 - ostatni oktet adresu IP w formacie szesnatskowym,</member>
+			<member>%i16pub - ostatni oktet publicznego adresu IP w formacie szesnatskowym.</member>
 		    </simplelist></para>
 		    <para>Poni¿ej opcje udostêpniane przez ten modu³:</para>
 		    <itemizedlist>
@@ -730,7 +732,8 @@
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
 		    zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
 		    zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %if - interfejs, %uprate, %downrate, %upceil, 
-		    %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
+		    %downceil, %plimit, %climit, %i16 - ostatni oktet adresu IP w formacie
+		    szesnastkowym oraz %x - licznik o warto¶ci pocz±tkowej 100 
 		    zwiêkszany o jeden dla ka¿dego komputera (lub klienta, w zale¿no¶ci od ustawienia
 		    opcji <prompt>one_class_per_host</prompt>).</para>
 		    <para>Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy dla
@@ -957,7 +960,9 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 					jako ¶rednia. W przypadku gdy dla jednego komputera zdefiniowano wiele
 					taryf limity (¶rednie) s± sumowane. W regu³kach mo¿na stosowaæ
 					nastêpuj±ce	zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, 
-					%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
+					%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit, 
+					%i16 - ostatni oktet adresu IP w formacie szesnastkowym 
+					oraz %x - licznik o warto¶ci pocz±tkowej 100 
 					zwiêkszany o jeden dla ka¿dego komputera.</para>
 				<para>Poniwa¿ konfiguracja modu³u jest bardzo podobna do jego poprzednika,
 					powieniene¶ zacz±æ od przeczytania opisu <xref linkend="daemon-tc">.</para>

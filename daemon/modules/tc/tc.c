@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
+#include <netinet/in.h>
 
 #include "lmsd.h"
 #include "tc.h"
@@ -36,6 +37,13 @@ char * itoa(int i)
 {
 	static char string[12];
 	sprintf(string, "%d", i);
+	return string;
+}
+
+char * itoha(int i)
+{
+	static char string[8];
+	sprintf(string, "%x", i);
 	return string;
 }
 
@@ -170,7 +178,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					int got_node = 0;
 
 					nres = g->db_pquery(g->conn, " \
-						SELECT INET_NTOA(ipaddr) AS ip, ipaddr, mac, name \
+						SELECT INET_NTOA(ipaddr) AS ip, mac, name \
 						FROM nodes \
 						WHERE ownerid = ? AND access = 1 \
 						ORDER BY ipaddr", g->db_get_data(ures,i,"id"));
@@ -191,11 +199,15 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						int h_downrate = (int) n_downrate/nres->nrows;
 						int h_downceil = (int) n_downceil/nres->nrows;  
 						int h_plimit = (int) n_plimit/nres->nrows;
-						int h_climit = (int) n_climit/nres->nrows;  
+						int h_climit = (int) n_climit/nres->nrows;
 						
+						unsigned long iplong = inet_addr(ipaddr);
+						// IP's last octet in hex
+						char *i16 = itoha((ntohl(iplong) & 0xff));
+
 						// test node's membership in networks
 						for(v=0; v<nc; v++)
-							if(nets[v].address == (inet_addr(ipaddr) & nets[v].mask)) 
+							if(nets[v].address == (iplong & nets[v].mask)) 
 								break;
 																	
 						if(v!=nc)
@@ -206,6 +218,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 							{
 								g->str_replace(&mark_up, "%n", name);
 								g->str_replace(&mark_up, "%if", nets[v].interface);
+								g->str_replace(&mark_up, "%i16", i16);
 								g->str_replace(&mark_up, "%i", ipaddr);
 								g->str_replace(&mark_up, "%m", mac);
 								g->str_replace(&mark_up, "%x", itoa(x));
@@ -213,6 +226,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								
 								g->str_replace(&mark_down, "%n", name);
 								g->str_replace(&mark_down, "%if", nets[v].interface);
+								g->str_replace(&mark_down, "%i16", i16);
 								g->str_replace(&mark_down, "%i", ipaddr);
 								g->str_replace(&mark_down, "%m", mac);
 								g->str_replace(&mark_down, "%x", itoa(x));
@@ -222,6 +236,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								{
 									g->str_replace(&htb_up, "%n", name);
 									g->str_replace(&htb_up, "%if", nets[v].interface);
+									g->str_replace(&htb_up, "%i16", i16);
 									g->str_replace(&htb_up, "%i", ipaddr);
 									g->str_replace(&htb_up, "%m", mac);
 									g->str_replace(&htb_up, "%x", itoa(x));
@@ -233,6 +248,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								
 									g->str_replace(&htb_down, "%n", name);
 									g->str_replace(&htb_down, "%if", nets[v].interface);
+									g->str_replace(&htb_down, "%i16", i16);
 									g->str_replace(&htb_down, "%i", ipaddr);
 									g->str_replace(&htb_down, "%m", mac);
 									g->str_replace(&htb_down, "%x", itoa(x));
@@ -253,7 +269,8 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&cl, "%climit", itoa(h_climit));
 								g->str_replace(&cl, "%n", name);
 								g->str_replace(&cl, "%if", nets[v].interface);
-    								g->str_replace(&cl, "%i", ipaddr);
+    								g->str_replace(&cl, "%i16", i16);
+								g->str_replace(&cl, "%i", ipaddr);
 								g->str_replace(&cl, "%m", mac);
 								g->str_replace(&cl, "%x", itoa(x));
 								fprintf(fh, "%s", cl);
@@ -264,6 +281,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&pl, "%plimit", itoa(h_plimit));
 								g->str_replace(&pl, "%n", name);
 								g->str_replace(&pl, "%if", nets[v].interface);
+								g->str_replace(&pl, "%i16", i16);
 								g->str_replace(&pl, "%i", ipaddr);
 								g->str_replace(&pl, "%m", mac);
 								g->str_replace(&pl, "%x", itoa(x));
