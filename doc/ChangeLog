@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.9.7 Thalan (2007-05-09):
 
   - cash receipts: added target 'advance' (alec)
   - cash receipts: changed registry privilages system (alec)
