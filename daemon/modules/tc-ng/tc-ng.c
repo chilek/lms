@@ -208,10 +208,11 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		char *ip = g->db_get_data(res,i,"ip");
         	int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
         	int nodeid = atoi(g->db_get_data(res,i,"id"));
+		unsigned long inet = inet_addr(ip);
 
 		// Networks test
 		for(n=0; n<nc; n++)
-	                if(nets[n].address == (inet_addr(ip) & nets[n].mask))
+	                if(nets[n].address == (inet & nets[n].mask))
 	                        break;
 			
 		if(n == nc) continue;
