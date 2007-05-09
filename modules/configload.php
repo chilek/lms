@@ -33,7 +33,7 @@ foreach($CONFIG['phpui'] as $key => $val)
 			);
 }
 
-if($CONFIG['userpanel']) foreach($CONFIG['userpanel'] as $key => $val)
+if(isset($CONFIG['userpanel'])) foreach($CONFIG['userpanel'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('userpanel', $key, $val)
