@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
+#include <netinet/in.h>
 
 #include "lmsd.h"
 #include "tc-ng.h"
@@ -36,6 +37,13 @@ char * itoa(int i)
 {
 	static char string[12];
 	sprintf(string, "%d", i);
+	return string;
+}
+
+char * itoha(int i)
+{
+	static char string[8];
+	sprintf(string, "%x", i);
 	return string;
 }
 
@@ -200,11 +208,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		char *ip = g->db_get_data(res,i,"ip");
         	int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
         	int nodeid = atoi(g->db_get_data(res,i,"id"));
-		unsigned long inet = inet_addr(ip);
 
 		// Networks test
 		for(n=0; n<nc; n++)
-	                if(nets[n].address == (inet & nets[n].mask))
+	                if(nets[n].address == (inet_addr(ip) & nets[n].mask))
 	                        break;
 			
 		if(n == nc) continue;
@@ -276,25 +283,31 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				char *htb_down = strdup(tc->host_htb_down);
 				char *cl = strdup(tc->host_climit);
 				char *pl = strdup(tc->host_plimit);
-				
+			
 				struct node host = c.nodes[j];
-						
+
+			        // IP's last octet in hex
+                                char *i16 = itoha((ntohl(inet_addr(host.ip)) & 0xff));	
+
 				if(host.uprate && host.downrate)
 				{
 					g->str_replace(&mark_up, "%n", host.name);
 					g->str_replace(&mark_up, "%if", nets[host.network].interface);
+					g->str_replace(&mark_up, "%i16", i16);
 					g->str_replace(&mark_up, "%i", host.ip);
 					g->str_replace(&mark_up, "%m", host.mac);
 					g->str_replace(&mark_up, "%x", itoa(x));
 			    					
 					g->str_replace(&mark_down, "%n", host.name);
 					g->str_replace(&mark_down, "%if", nets[host.network].interface);
+					g->str_replace(&mark_down, "%i16", i16);
 					g->str_replace(&mark_down, "%i", host.ip);
 					g->str_replace(&mark_down, "%m", host.mac);
 					g->str_replace(&mark_down, "%x", itoa(x));
 		
 					g->str_replace(&htb_up, "%n", host.name);
 					g->str_replace(&htb_up, "%if", nets[host.network].interface);
+					g->str_replace(&htb_up, "%i16", i16);
 					g->str_replace(&htb_up, "%i", host.ip);
 					g->str_replace(&htb_up, "%m", host.mac);
 					g->str_replace(&htb_up, "%x", itoa(x));
@@ -307,6 +320,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					
 					g->str_replace(&htb_down, "%n", host.name);
 					g->str_replace(&htb_down, "%if", nets[host.network].interface);
+					g->str_replace(&htb_down, "%i16", i16);
 					g->str_replace(&htb_down, "%i", host.ip);
 					g->str_replace(&htb_down, "%m", host.mac);
 					g->str_replace(&htb_down, "%x", itoa(x));
@@ -329,6 +343,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&cl, "%climit", itoa(host.climit));
 					g->str_replace(&cl, "%n", host.name);
 					g->str_replace(&cl, "%if", nets[host.network].interface);
+	    				g->str_replace(&cl, "%i16", i16);
 	    				g->str_replace(&cl, "%i", host.ip);
 	    				g->str_replace(&cl, "%m", host.mac);
 					g->str_replace(&cl, "%x", itoa(x));
@@ -341,6 +356,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&pl, "%plimit", itoa(host.plimit));
 					g->str_replace(&pl, "%n", host.name);
 					g->str_replace(&pl, "%if", nets[host.network].interface);
+					g->str_replace(&pl, "%i16", i16);
 					g->str_replace(&pl, "%i", host.ip);
 					g->str_replace(&pl, "%m", host.mac);
 					g->str_replace(&pl, "%x", itoa(x));

@@ -1079,7 +1079,15 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->%wins - adres serwera WINS.</TD
+>%wins - adres serwera WINS,</TD
+></TR
+><TR
+><TD
+>%i16 - ostatni oktet adresu IP w formacie szesnatskowym,</TD
+></TR
+><TR
+><TD
+>%i16pub - ostatni oktet publicznego adresu IP w formacie szesnatskowym.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1289,7 +1297,8 @@ NAME="TC-DESC"
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
 		    zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
 		    zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %if - interfejs, %uprate, %downrate, %upceil, 
-		    %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
+		    %downceil, %plimit, %climit, %i16 - ostatni oktet adresu IP w formacie
+		    szesnastkowym oraz %x - licznik o warto¶ci pocz±tkowej 100 
 		    zwiêkszany o jeden dla ka¿dego komputera (lub klienta, w zale¿no¶ci od ustawienia
 		    opcji <SAMP
 CLASS="PROMPT"
@@ -1631,7 +1640,9 @@ NAME="TC-NG-DESC"
 					jako ¶rednia. W przypadku gdy dla jednego komputera zdefiniowano wiele
 					taryf limity (¶rednie) s± sumowane. W regu³kach mo¿na stosowaæ
 					nastêpuj±ce	zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, 
-					%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
+					%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit, 
+					%i16 - ostatni oktet adresu IP w formacie szesnastkowym 
+					oraz %x - licznik o warto¶ci pocz±tkowej 100 
 					zwiêkszany o jeden dla ka¿dego komputera.</P
 ><P
 >Poniwa¿ konfiguracja modu³u jest bardzo podobna do jego poprzednika,
