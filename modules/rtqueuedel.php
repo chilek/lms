@@ -26,15 +26,15 @@
 
 $layout['pagetitle'] = trans('Remove queue ID: $0',sprintf("%04d",$_GET['id']));
 
-if (!$LMS->QueueExists($_GET['id']))
+if(!$LMS->QueueExists($_GET['id']))
 {
-	$body = '<H1>'.$layout['pagetitle'].'</H1><P>'.trans('Specified ID is not proper or does not exist!').'</P>';
-}else{
-
+	$body = '<P>'.trans('Specified ID is not proper or does not exist!').'</P>';
+}
+else
+{
 	if($_GET['is_sure']!=1)
 	{
-		$body = '<H1>'.$layout['pagetitle'].'</H1>';
-		$body .= '<P>'.trans('Do you want to remove queue called $0?',$LMS->GetQueueName($_GET['id'])).'</P>'; 
+		$body = '<P>'.trans('Do you want to remove queue called $0?',$LMS->GetQueueName($_GET['id'])).'</P>'; 
 		$body .= '<P>'.trans('All tickets and messages in queue will be lost.').'</P>';
 		$body .= '<P><A HREF="?m=rtqueuedel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
 		$body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('No, I\'ve changed my mind.').'</A></P>';
@@ -65,9 +65,7 @@ if (!$LMS->QueueExists($_GET['id']))
 	}
 }
 
-$SMARTY->display('header.html');
 $SMARTY->assign('body',$body);
 $SMARTY->display('dialog.html');
-$SMARTY->display('footer.html');
 
 ?>

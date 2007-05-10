@@ -34,26 +34,20 @@ $SMARTY->assign('netdevid',$_GET['id']);
 
 if($LMS->CountNetDevLinks($_GET['id'])>0)
 {
-	$body = '<H1>'.$layout['pagetitle'].'</H1>';
-	$body .= '<P>'.trans('Device connected to other device or node can\'t be deleted.').'</P>';
+	$body = '<P>'.trans('Device connected to other device or node can\'t be deleted.').'</P>';
 }else{
     if($_GET['is_sure']!=1)
     {
-	    $body = '<H1>'.$layout['pagetitle'].'</H1>';
-	    $body .= '<P>'.trans('Are you sure, you want to delete that device?').'</P>'; 
+	    $body = '<P>'.trans('Are you sure, you want to delete that device?').'</P>'; 
 	    $body .= '<P><A HREF="?m=customerdel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
     }else{
 	    header('Location: ?m=netdevlist');
-	    $body = '<H1>'.$layout['pagetitle'].'</H1>';
-	    $body .= '<P>'.trans('Device has been deleted.').'</P>';
+	    $body = '<P>'.trans('Device has been deleted.').'</P>';
 	    $LMS->DeleteNetDev($_GET['id']);
     }
 }
 	
-
-$SMARTY->display('header.html');
 $SMARTY->assign('body',$body);
 $SMARTY->display('dialog.html');
-$SMARTY->display('footer.html');
 
 ?>
