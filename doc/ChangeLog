@@ -6,6 +6,7 @@ version ? (????-??-??):
   - lmsd: added %i16 variable for IP's last octet heximal representation
     in tc/tc-ng and %i16 and %i16pub in hostfile module (alec) 
   - mysql driver: server version checking only when connected (alec)
+  - fixed problem when invoicing without tax rates defined (alec)
 
 version 1.9.7 Thalan (2007-05-09):
 

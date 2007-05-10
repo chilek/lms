@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (strtolower($CONFIG['invoices']['type']) == 'pdf')
+if(strtolower($CONFIG['invoices']['type']) == 'pdf')
 {
     include('invoice_pdf.php');
     $SESSION->close();

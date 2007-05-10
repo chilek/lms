@@ -77,7 +77,7 @@ if(isset($tariffadd))
 		if($LMS->GetTariffIDByName($tariffadd['name']))
 			$error['name'] = trans('Subscription $0 already exists!',$tariffadd['name']);
 
-	if(!$tariffadd['taxid'])
+	if(!isset($tariffadd['taxid']))
 		$tariffadd['taxid'] = 0;
 		
 	if(!$error)

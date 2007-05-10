@@ -78,7 +78,7 @@ if(isset($_POST['tariff']))
 	if(($tariff['downceil'] < 8 || $tariff['downceil'] < $tariff['downrate']) && $tariff['downceil'] != 0)
 		$error['downceil'] = trans('This field must be greater than 8 and greater than download rate');
 
-	if(!$tariff['taxid'])
+	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
 
 	$tariff['id'] = $_GET['id'];
