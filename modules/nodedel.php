@@ -29,13 +29,12 @@ $SMARTY->assign('nodeid',$_GET['id']);
 
 if (!$LMS->NodeExists($_GET['id']))
 {
-	$body = '<H1>'.$layout['pagetitle'].'</H1><P>'.trans('Incorrect ID number').'</P>';
+	$body = '<P>'.trans('Incorrect ID number').'</P>';
 }else{
 
 	if($_GET['is_sure']!=1)
 	{
-		$body = '<H1>'.$layout['pagetitle'].'</H1>';
-		$body .= '<P>'.trans('Are you sure, you want to delete node $0?',$LMS->GetNodeName($_GET['id'])).'</P>'; 
+		$body = '<P>'.trans('Are you sure, you want to delete node $0?',$LMS->GetNodeName($_GET['id'])).'</P>'; 
 		$body .= '<P><A HREF="?m=nodedel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
 	}else{
 		$owner = $LMS->GetNodeOwner($_GET['id']);
@@ -44,14 +43,12 @@ if (!$LMS->NodeExists($_GET['id']))
 			header('Location: ?'.$SESSION->get('backto'));
 		else
 			header('Location: ?m=customerinfo&id='.$owner);
-		$body = '<H1>'.$layout['pagetitle'].'</H1>';
-		$body .= '<P>'.trans('Node $0 was deleted',$LMS->GetNodeName($_GET['id'])).'</P>';
+
+		$body = '<P>'.trans('Node $0 was deleted',$LMS->GetNodeName($_GET['id'])).'</P>';
 	}
 }
 
-$SMARTY->display('header.html');
 $SMARTY->assign('body',$body);
 $SMARTY->display('dialog.html');
-$SMARTY->display('footer.html');
 
 ?>
