@@ -26,7 +26,7 @@
 
 $taxrate = $DB->GetRow('SELECT * FROM taxes WHERE id=?', array($_GET['id']));
 
-if(!taxrate)
+if(!$taxrate)
 {
 	$SESSION->redirect('?m=taxratelist');
 }

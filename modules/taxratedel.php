@@ -29,10 +29,10 @@ $id = $_GET['id'];
 if($_GET['is_sure']==1 && $id)
 {
 	if( (
-	    $DB->GetOne('SELECT COUNT(*) FROM cash WHERE taxid=?',array($id))
-	    + $DB->GetOne('SELECT COUNT(*) FROM tariffs WHERE taxid=?',array($id))
-	    + $DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE taxid=?',array($id))
-	    ) == 0  
+	    $DB->GetOne('SELECT 1 FROM cash WHERE taxid=? LIMIT 1',array($id))
+	    + $DB->GetOne('SELECT 1 FROM tariffs WHERE taxid=? LIMIT 1',array($id))
+	    + $DB->GetOne('SELECT 1 FROM invoicecontents WHERE taxid=? LIMIT 1',array($id))
+	    ) == 0
 	)
 	    $DB->Execute('DELETE FROM taxes WHERE id=?',array($id));
 }	
