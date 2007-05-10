@@ -41,8 +41,9 @@ class LMSDB_driver_mysql extends LMSDB_common
 		$this->_version .= ' ('.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).'/'.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 
-		if(version_compare($this->_driver_dbversion(), '5') < 0)
-			die('MySQL version not supported!');
+		if($this->_dblink)
+			if(version_compare($this->_driver_dbversion(), '5') < 0)
+				die('MySQL version not supported!');
 	}
 	
 	function _driver_dbversion()
