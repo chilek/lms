@@ -77,7 +77,7 @@ switch($action)
 		
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
-			$taxvalue = $taxeslist[$itemdata['taxid']]['value'];
+			$taxvalue = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
 			if($itemdata['valuenetto'] != 0)
 			{
 				$itemdata['valuenetto'] = f_round($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['discount'])/100);
@@ -96,7 +96,7 @@ switch($action)
 			$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto']);
 			$itemdata['count'] = f_round($itemdata['count']);
 			$itemdata['discount'] = f_round($itemdata['discount']);
-			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
+			$itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
 		}
