@@ -24,8 +24,10 @@
  *  $Id$
  */
 
-if(!$LMS->CustomergroupWithCustomerGet($_GET['id'])&&$_GET['is_sure']="1")
+if(!$LMS->CustomergroupWithCustomerGet($_GET['id']) && $_GET['is_sure']=="1")
+{
 	$LMS->CustomergroupDelete($_GET['id']);	
+}
 
 $SESSION->redirect('?m=customergrouplist');
 
