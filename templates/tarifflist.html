@@ -71,7 +71,7 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-			{if $tarifflist[tariffs].customers}<A HREF="javascript:alert('{t}Subscription with assigned customers cannot be deleted!{/t}');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that tariff?{/t}');">{/if}<IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			{if $tarifflist[tariffs].customers}<A HREF="javascript:alert('{t}Subscription with assigned customers cannot be deleted!{/t}');">{else}<A HREF="?m=tariffdel&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that tariff?{/t}');">{/if}<IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 			</NOBR>
