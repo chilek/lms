@@ -11,6 +11,7 @@ version ? (????-??-??):
     convention (alec)
   - helpdesk: added 'include contact info' checkbox for requests list 
     printing (alec)
+  - lms-traffic-logiptables: iptables 1.3.7 support (alec)
 
 version 1.9.7 Thalan (2007-05-09):
 
