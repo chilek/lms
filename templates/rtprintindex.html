@@ -36,7 +36,7 @@
 					<TD width="1%" nowrap>
 						<B>{t}Customer:{/t}</B>
 					</TD>
-					<TD width="1%" nowrap>
+					<TD width="95%" colspan="2" nowrap>
 						{if $customers}
 						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
@@ -49,6 +49,8 @@
 						<a href="javascript: void(0);" onclick="return customerchoosewin(document.ticketslist.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 						{/if}
 					</TD>
+				</TR>
+				<TR>
 					<TD width="1%">
 						<IMG src="img/dead.gif" alt="">
 					</TD>
@@ -70,8 +72,11 @@
 					<TD width="1%">
 						<B>{t}Uptime:{/t}</B>
 					</TD>
-					<TD width="89%" nowrap>
+					<TD width="1%" nowrap>
 						<INPUT TYPE="text" NAME="days" SIZE="3"> {t}days{/t}
+					</TD>
+					<TD width="94%"nowrap>
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="extended" VALUE="1" CHECKED>{t}include contact info{/t}
 					</TD>
 				</TR>
 			</TABLE>
