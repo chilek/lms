@@ -9,6 +9,8 @@ version ? (????-??-??):
   - fixed problem when invoicing without tax rates defined (alec)
   - renamed tariffdelete.php to tariffdel.php according to modules naming
     convention (alec)
+  - helpdesk: added 'include contact info' checkbox for requests list 
+    printing (alec)
 
 version 1.9.7 Thalan (2007-05-09):
 

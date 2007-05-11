@@ -48,6 +48,8 @@
 		<TD NOWRAP>
 			{if $list[list].customerid}
 			{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})
+			{if $list[list].address}<BR>{$list[list].address}{/if}
+			{if $list[list].phone1}<BR>{t}phone:{/t} {$list[list].phone1}{/if}
 			{else}
 			{$list[list].requestor|truncate:"50":"...":true}
 			{/if}
