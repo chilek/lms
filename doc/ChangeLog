@@ -6,6 +6,8 @@ version ? (????-??-??):
     immediately): added some .htaccess files (alec)
   - added notifications for registered users about availability of LMS's newer 
     versions (alec)
+  - lms-traiffic-logiptables: added support for iptables 1.3.7 output 
+    format (alec)
 
 version 1.8.9 Vala (2007-02-16):
 
