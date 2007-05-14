@@ -83,10 +83,10 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 	closedir($handle);
 }
 
-if(sizeof($dblist['time']))
+if(isset($dblist['time']))
 	array_multisort($dblist['time'],$dblist['size'],$dblist['type'],$dblist['dbv'],$dblist['name']);
 
-$dblist['total'] = sizeof($dblist['time']);
+$dblist['total'] = isset($dblist['time']) ? sizeof($dblist['time']) : 0;
 
 $SMARTY->assign('dblist', $dblist);
 $SMARTY->display('dblist.html');
