@@ -67,15 +67,14 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 
 if(isset($where_node) || isset($where_cust))
 {
-	if($customerlist = $DB->GetAll('SELECT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, address, zip, city, email, phone1, ssn, 
+	if($customerlist = $DB->GetAll('SELECT DISTINCT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, address, zip, city, email, phone1, ssn, 
 				(SELECT SUM(value) FROM cash WHERE customerid = customers.id) AS balance 
 				FROM customers ' 
 				.(isset($where_node) ? 'LEFT JOIN nodes ON (customers.id = ownerid) ' : '')
 				.'WHERE deleted = 0 '
 				.(isset($where_cust) ? $where_cust : '')
 				.(isset($where_node) ? $where_node : '')
-				.'GROUP BY customers.id, lastname, customers.name, address, zip, city, email, phone1, ssn
-				ORDER BY customername LIMIT 15'))
+				.'ORDER BY customername LIMIT 15'))
 	{
 		foreach($customerlist as $idx => $row)
 			$customerlist[$idx]['nodes'] = $DB->GetAll('SELECT id, name, mac, inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub FROM nodes WHERE ownerid=? ORDER BY name',array($row['id']));
