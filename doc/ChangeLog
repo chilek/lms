@@ -12,6 +12,10 @@ version ? (????-??-??):
   - helpdesk: added 'include contact info' checkbox for requests list 
     printing (alec)
   - lms-traffic-logiptables: iptables 1.3.7 support (alec)
+  - mac fields should accept now every mac format, including windows, cisco,
+    etc (lukasz)
+  - %CMAC macro in lms-mgc returns cisco format address: nnnn.nnnn.nnnn
+    (lukasz)
 
 version 1.9.7 Thalan (2007-05-09):
 
