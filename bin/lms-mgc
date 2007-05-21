@@ -623,8 +623,11 @@ sub instance($)
 			my $customer = $customerlist{$ipaddr} || '';
 			my $macs = lc($mac);
 			my $mmac = lc($mac);
+			my $cmac = lc($mac);
 			$macs =~ s/://g;
 			$mmac =~ s/:/-/g;
+			$cmac =~ s/^(..):(..):(..):(..):(..):(..)$/\1\2.\3\4.\5\6/g;
+
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
 			
 			$rule =~ s/\%NID/$row->{'id'}/g;
@@ -654,6 +657,7 @@ sub instance($)
 			$rule =~ s/\%name/$name/g;
 			$rule =~ s/\%SMAC/$macs/g;
 			$rule =~ s/\%MMAC/$mmac/g;
+			$rule =~ s/\%CMAC/$cmac/g;
 			$rule =~ s/\%MAC/$mac/g;
 			$rule =~ s/\%OWNER/$owner/g;
 			$rule =~ s/\%TIMES/$times/g;
