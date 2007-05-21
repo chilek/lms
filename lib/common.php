@@ -214,10 +214,46 @@ function mask2prefix($mask)
 	}
 }
 
-function check_mac($macaddr)
+/*
+ * mac checking function - requires macaddr passed as reference,
+ * so it can fix mac address instantly to valid string
+ */
+
+function check_mac(&$macaddr)
 {
-	$macaddr = str_replace('-',':',$macaddr);
-	return eregi('^[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}$',$macaddr);
+	// save passed macaddr for future use
+	
+	$oldmac = $macaddr;
+
+	// strip EVERYTHING that doesnt match 0-9 and a-f,
+	// so $macaddr should contains 12 hex digits, and that's
+	// will be base for our test
+
+	$macaddr = eregi_replace('[^0-9a-f]', '', $macaddr);
+
+	if(! eregi('^[0-9a-f]{12}$', $macaddr))
+	{
+		// mac address isn't valid, restore it (cause we working on
+		// reference) and return false
+	
+		$macaddr = $oldmac;
+	
+		return FALSE;
+	}
+	else
+	{
+		// mac address is valid, return nice mac address that LMS
+		// uses.
+
+		$macaddr = $macaddr[0].$macaddr[1].':'.
+			$macaddr[2].$macaddr[3].':'.
+			$macaddr[4].$macaddr[5].':'.
+			$macaddr[6].$macaddr[7].':'.
+			$macaddr[8].$macaddr[9].':'.
+			$macaddr[10].$macaddr[11];
+		return TRUE;
+	}
+
 }
 
 function textwrap($text, $wrap=76, $break = "\n")
