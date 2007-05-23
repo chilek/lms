@@ -272,7 +272,10 @@ include all networks.</para>
      <para>%MAC - MAC address</para>
     </listitem>
     <listitem>
-     <para>%SMAC - MAC address, in lowercase and without colon separators</para>
+     <para>%SMAC - MAC address in lowercase and without colon separators</para>
+    </listitem>
+    <listitem>
+     <para>%CMAC - MAC address in CISCO format (FFFF.FFFF.FFFF)</para>
     </listitem>
     <listitem>
      <para>%OWNER - owner's ID</para>

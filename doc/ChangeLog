@@ -14,8 +14,11 @@ version ? (????-??-??):
   - lms-traffic-logiptables: iptables 1.3.7 support (alec)
   - mac fields should accept now every mac format, including windows, cisco,
     etc (lukasz)
-  - %CMAC macro in lms-mgc returns cisco format address: nnnn.nnnn.nnnn
-    (lukasz)
+  - %CMAC macro in lms-mgc returns cisco format address: nnnn.nnnn.nnnn (lukasz)
+  - network map: rised limit of nodes connected to one device (alec)
+  - network map: increased limit of devices connected to one device (alec)
+  - network map: devices connection lines are not overlaps (alec)
+  - network map: fixed thick line look, better map generation speed (alec)
 
 version 1.9.7 Thalan (2007-05-09):
 
