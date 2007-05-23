@@ -1838,5 +1838,6 @@ $_LANG['Id:'] = 'Id:';
 $_LANG['Liability name is required!'] = 'Nazwa zobowiązania jest wymagana!';
 $_LANG['include contact info'] = 'z danymi kontaktowymi';
 $_LANG['phone:'] = 'tel.:';
+$_LANG['only devices'] = 'tylko urządzenia';
 
 ?>

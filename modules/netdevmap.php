@@ -181,14 +181,14 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
 	return false;
 }
 
-define('STARTX', 0);
-define('STARTY', 0);
-
-function makemap(&$map, &$seen, $device = 0, $x = STARTX, $y = STARTY, $parent = 0)
+function makemap(&$map, &$seen, $device = 0, $x = 500, $y = 500, $parent = 0)
 {
-	global $DB, $nodelist, $devicelinks;
+	global $DB, $nodelist, $devicelinks, $mini;
 
-	$in = array(0,5,-5,10,-10,20,-20,25,-25,30,-30,35,-35,40,-40);
+	if($mini)
+		$in = array(0,3,-3,6,-6,9,-9,12,-12,15,-15,18,-18,21,-21);
+	else
+		$in = array(0,5,-5,10,-10,20,-20,25,-25,30,-30,35,-35,40,-40);
 	
 	// net size: count($in)^2 - 1
 	foreach($in as $ii => $i)
@@ -290,16 +290,17 @@ $layout['pagetitle'] = trans('Network Map');
 
 $graph = isset($_GET['graph']) ? $_GET['graph'] : '';
 $start = isset($_GET['start']) ? $_GET['start'] : 0;
+$mini = isset($_GET['mini']) ? true : false;
 
 $minx = 0; $maxx = 0; $miny = 0; $maxy = 0;
 $nodelist = array();
 $devicelinks = array();
 $nodemap = array();
 
-if($nodes = $DB->GetAll('SELECT id, linktype, netdev 
+if(!$mini && ($nodes = $DB->GetAll('SELECT id, linktype, netdev 
 			FROM nodes 
 			WHERE ownerid > 0 AND netdev > 0 
-			ORDER BY name ASC'))
+			ORDER BY name ASC')))
 {
 	foreach($nodes as $idx => $node)
 	{
@@ -387,6 +388,7 @@ if($graph == '')
 	$SMARTY->assign('nodemap', $nodemap);
 	$SMARTY->assign('deviceslist', $deviceslist);
 	$SMARTY->assign('start', $start);
+	$SMARTY->assign('mini', $mini);
 	$SMARTY->assign('type', strtolower(isset($CONFIG['phpui']['map_type']) ? $CONFIG['phpui']['map_type'] : ''));
 	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
 	$SMARTY->assign('gd', function_exists('imagepng'));
@@ -607,7 +609,9 @@ elseif ($graph == 'flash')
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Pragma: public");	
 	$m->output();
-} else {
+} 
+else 
+{
 	makemap($map,$seen,$start);
 	foreach($map as $idx => $x)
 	{
