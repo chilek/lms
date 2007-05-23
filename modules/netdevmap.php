@@ -65,113 +65,222 @@ function pngdrawtext($image, $font, $x, $y, $text, $color, $bgcolor)
 	imagestring($image, $font, $x, $y, $text, $color);
 }
 
-function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
+function getnodearray($size)
 {
-	$fields[] = array( 'x' => 0, 'y' => 5 );
-	$fields[] = array( 'x' => 5, 'y' => 5 );     
-	$fields[] = array( 'x' => 5, 'y' => 0 );
-	$fields[] = array( 'x' => 5, 'y' => -5 );
-	$fields[] = array( 'x' => 0, 'y' => -5 );
-	$fields[] = array( 'x' => -5, 'y' => -5 );
-	$fields[] = array( 'x' => -5, 'y' => 0 );
-	$fields[] = array( 'x' => -5, 'y' => 5 );
-	$fields[] = array( 'x' => 5, 'y' => 10 );
-	$fields[] = array( 'x' => 5, 'y' => -10 );
-	$fields[] = array( 'x' => -5, 'y' => 10 );
-	$fields[] = array( 'x' => -5, 'y' => -10 );
-	$fields[] = array( 'x' => 10, 'y' => 5 );
-	$fields[] = array( 'x' => 10, 'y' => -5 );
-	$fields[] = array( 'x' => -10, 'y' => 5 );
-	$fields[] = array( 'x' => -10, 'y' => -5 );
-	$fields[] = array( 'x' => 5, 'y' => 15 );
-	$fields[] = array( 'x' => 5, 'y' => -15 );
-	$fields[] = array( 'x' => -5, 'y' => 15 );
-	$fields[] = array( 'x' => -5, 'y' => -15 );
-	$fields[] = array( 'x' => 10, 'y' => 15 );
-	$fields[] = array( 'x' => 10, 'y' => -15 );
-	$fields[] = array( 'x' => -10, 'y' => 15 );
-	$fields[] = array( 'x' => -10, 'y' => -15 );
-
-	unset($nodefields);
-
-	$nodefields[] = array( 'x' => -2, 'y' => 2 );
-	$nodefields[] = array( 'x' => -1, 'y' => 2 );
-	$nodefields[] = array( 'x' => 0, 'y' => 2 );
-	$nodefields[] = array( 'x' => 1, 'y' => 2 );
-	$nodefields[] = array( 'x' => 2, 'y' => 2 );
-	$nodefields[] = array( 'x' => 2, 'y' => 1 );
-	$nodefields[] = array( 'x' => 2, 'y' => 0 );
-	$nodefields[] = array( 'x' => 2, 'y' => -1 );
-	$nodefields[] = array( 'x' => 2, 'y' => -2 );
-	$nodefields[] = array( 'x' => 1, 'y' => -2 );
-	$nodefields[] = array( 'x' => 0, 'y' => -2 );
-	$nodefields[] = array( 'x' => -1, 'y' => -2 );
-	$nodefields[] = array( 'x' => -2, 'y' => -2 );
-	$nodefields[] = array( 'x' => -2, 'y' => -1 );
-	$nodefields[] = array( 'x' => -2, 'y' => 0 );
-	$nodefields[] = array( 'x' => -2, 'y' => 1 );
-	$nodefields[] = array( 'x' => -1, 'y' => 1 );
-	$nodefields[] = array( 'x' => 0, 'y' => 1 );
-	$nodefields[] = array( 'x' => 1, 'y' => 1 );
-	$nodefields[] = array( 'x' => 1, 'y' => 0 );
-	$nodefields[] = array( 'x' => 1, 'y' => -1 );
-	$nodefields[] = array( 'x' => 0, 'y' => -1 );
-	$nodefields[] = array( 'x' => -1, 'y' => -1 );
-	$nodefields[] = array( 'x' => -1, 'y' => 0 );
+	$x = 1;
+	$result = array();
+	$arr = array();
 	
+	$exceptions = array('00', '01', '11', '10', '0-1', '-10');
+	
+	while($size > 0)
+	{
+		for($i=-$x; $i<=$x; $i++)
+		{
+			for($j=-$x; $j<=$x; $j++)
+			{
+				if(!isset($arr["x$i$j"]) && !in_array("$i$j", $exceptions))
+				{
+					$result[] = $arr["x$i$j"] = array('x' => $i, 'y' => $j);
+					$size--;
+					if($size <= 0) break 2;
+				}
+			}
+		}
+		$x++;	
+	}
+	
+	return $result;
+}
+
+function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
+{
+	global $devicelinks;
+
+	// x1, y1 - wspolrz. rodzica badanego urzadzenia
+	// x2, y2 - wspolrz. badanego urzadzenia
+
+	$minx = min($x1, $x2);
+	$maxx = max($x1, $x2);
+	$miny = min($y1, $y2);
+	$maxy = max($y1, $y2);
+
+	foreach($devicelinks as $d1 => $link)
+	{
+		if(isset($seen[$d1]) || $d1 == $devid) foreach($link as $d2)
+		{
+			if(isset($seen[$d2]) || $d2 == $devid)
+			{
+				$a1 = $d1 != $devid ? $seen[$d1] : array('x' => $x2, 'y' => $y2);
+				$a2 = $d2 != $devid ? $seen[$d2] : array('x' => $x2, 'y' => $y2);
+
+				// sprawdzamy czy na badanym odcinku lezy inne urzadzenie
+				// Det(a,b,c) = 0 - wyznacznik maciezy metoda Sarrusa
+				
+				// urzadzenie $d1
+				if(($x1*$y2 + $y1*$a1['x'] + $x2*$a1['y'] - $y2*$a1['x'] - $x1*$a1['y'] - $y1*$x2)==0)
+				{
+					// rzut punktu zawiera sie w rzucie odcinka
+					if((($a1['x'] != $x1 || $a1['y'] != $y1)
+					    && $a1['x'] >= $minx && $a1['x'] <= $maxx)
+					    &&
+					    (($a1['x'] != $x2 || $a1['y'] != $y2)
+					    && $a1['y'] >= $miny && $a1['y'] <= $maxy))
+					{
+						return true;
+					}
+				}
+
+				// urzadzenie $d2
+				if(($x1*$y2 + $y1*$a2['x'] + $x2*$a2['y'] - $y2*$a2['x'] - $x1*$a2['y'] - $y1*$x2)==0)
+				{
+					if((($a2['x'] != $x1 || $a2['y'] != $y1)
+					    && $a2['x'] >= $minx && $a2['x'] <= $maxx)
+					    &&
+					    (($a2['x'] != $x2 || $a2['y'] != $y2)
+					    && $a2['y'] >= $miny && $a2['y'] <= $maxy))
+					{
+						return true;
+					}
+				}
+	
+				$pminx = min($a1['x'], $a2['x']);
+	    			$pmaxx = max($a1['x'], $a2['x']);
+		    		$pminy = min($a1['y'], $a2['y']);
+			    	$pmaxy = max($a1['y'], $a2['y']);
+
+				// czy urzadzenie lezy na innym odcinku?
+				if(($a1['x']*$a2['y'] + $a1['y']*$x2 + $a2['x']*$y2 - $a2['y']*$x2 - $a1['x']*$y2 - $a1['y']*$a2['x'])==0)
+				{
+					if((($x2 != $a1['x'] || $y2 != $a1['y'])
+					    && $x2 >= $pminx && $x2 <= $pmaxx)
+					    &&
+					    (($x2 != $a2['x'] || $y2 != $a2['y'])
+			    		    && $y2 >= $pminy && $y2 <= $pmaxy))
+					{
+						return true;
+					}
+				}
+
+				// czy rodzic urzadzenia lezy na innym odcinku?
+				if(($a1['x']*$a2['y'] + $a1['y']*$x1 + $a2['x']*$y1 - $a2['y']*$x1 - $a1['x']*$y1 - $a1['y']*$a2['x'])==0)
+				{
+					if((($x1 != $a1['x'] || $y1 != $a1['y'])
+					    && $x1 >= $pminx && $x1 <= $pmaxx)
+					    &&
+					    (($x1 != $a2['x'] || $y1 != $a2['y'])
+		    			    && $y1 >= $pminy && $y1 <= $pmaxy))
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+	
+	return false;
+}
+
+define('STARTX', 0);
+define('STARTY', 0);
+
+function makemap(&$map, &$seen, $device = 0, $x = STARTX, $y = STARTY, $parent = 0)
+{
+	global $DB, $nodelist, $devicelinks;
+
+	$in = array(0,5,-5,10,-10,20,-20,25,-25,30,-30,35,-35,40,-40);
+	
+	// net size: count($in)^2 - 1
+	foreach($in as $ii => $i)
+		foreach($in as $ij => $j)
+			if(($i != 0 || $j != 0) && ($ij <= $ii))
+			{
+				$fields["x$j$i"] = array('x' => $j, 'y' => $i); 
+				$fields["x$i$j"] = array('x' => $i, 'y' => $j); 
+			}
+
 	if($device == 0)
 	{
-		if($device = $DB->GetOne('SELECT id FROM netdevices ORDER BY id ASC'))
-			makemap($DB, $map, $seen, $device, $x, $y);
+		if($device = $DB->GetOne('SELECT id FROM netdevices ORDER BY name LIMIT 1'))
+			makemap($map, $seen, $device, $x, $y);
 	}
 	else
 	{
-		// umie¶æmy urz±dzenie nasze w przestrzeni
+		// remember that current device was processed
+		$seen[$device] = array('x' => $x, 'y' => $y);
 		
+		// place device in space ...
 		$map[$x][$y] = $device;
-
-		// 'JÓZEF TKACZÓK TU BY£'
-
-		$seen[$device] = TRUE;
 		
-		// zobaczmy device'y tego urz±dzenia
-		
-		$devices = $DB->GetCol("SELECT (CASE src WHEN ? THEN dst ELSE src END) AS dst, (CASE src WHEN ? THEN src ELSE dst END) AS src FROM netlinks WHERE src = ? OR dst = ?",array($device, $device, $device, $device));
+		// ... and connected nodes (if they wasn't processed before)
+		if(isset($nodelist[$device]))
+		{
+			$nodefields = getnodearray(count($nodelist[$device]));
+			$i = 0;
+			foreach($nodefields as $field)
+				if(!isset($map[$x + $field['x']][$y + $field['y']]))
+				{
+					$ntx = $x + $field['x'];
+					$nty = $y + $field['y'];
+					$map[$ntx][$nty] = 'n'.$nodelist[$device][$i]['id'].'.'.$device.'.'.$nodelist[$device][$i]['linktype'];
+					$i++;
+				}
 
-		if($devices) foreach($devices as $deviceid)
+			unset($nodefields);
+			unset($nodelist[$device]);
+		}
+
+		// now do recursion for connected devices
+		if(isset($devicelinks[$device])) foreach($devicelinks[$device] as $deviceid)
 		{
 			if(!isset($seen[$deviceid]))
 			{
-				// tego urz±dzenia nie przerabiali¶my jeszcze
-				// wyszukajmy wolny punkt w okolicy
-				$tx = NULL;
-				$ty = NULL;
-				for($i=0;$i < sizeof($fields);$i++)
-					if($tx == NULL && $ty == NULL && !isset($map[$x + $fields[$i]['x']][$y + $fields[$i]['y']]))
-					{
-						$tx = $x + $fields[$i]['x'];
-						$ty = $y + $fields[$i]['y'];
-					}
+				if(isset($nodelist[$deviceid]))
+					$nodefields = getnodearray(count($nodelist[$deviceid]));
+		
+				foreach($fields as $devfield)
+				{
+					$tx = $x + $devfield['x'];
+					$ty = $y + $devfield['y'];
 
-				if($tx != NULL && $ty != NULL)
-					makemap($DB, $map, $seen, $deviceid, $tx, $ty);
-			}				
-		}
-
-		if($nodes = $DB->GetAll("SELECT id, linktype FROM nodes WHERE netdev=? AND ownerid>0 ORDER BY name ASC",array($device)))
-		{
-			foreach($nodes as $node)
-			{
-				$ntx = NULL;
-				$nty = NULL;
-				for($i=0;$i < sizeof($nodefields);$i++)
-					if($ntx == NULL && $nty == NULL && !isset($map[$x + $nodefields[$i]['x']][$y + $nodefields[$i]['y']]))
+					if(!isset($map[$tx][$ty]))
 					{
-						$ntx = $x + $nodefields[$i]['x'];
-						$nty = $y + $nodefields[$i]['y'];
+						// we don't want to overlap connection lines
+						if(overlaps($seen, $deviceid, $x, $y, $tx, $ty)) continue;
+
+						// try to place all connected nodes on map
+						// if there's no place, go to next field
+						if(isset($nodelist[$deviceid]))
+						{
+							$map2 = $map;
+							$cnt = 0;
+							foreach($nodefields as $field)
+							{
+								if(!isset($map2[$tx + $field['x']][$ty + $field['y']]))
+								{
+									$ntx = $tx + $field['x'];
+									$nty = $ty + $field['y'];
+									$map2[$ntx][$nty] = 'n'.$nodelist[$deviceid][$cnt]['id'].'.'.$deviceid.'.'.$nodelist[$deviceid][$cnt]['linktype'];
+									$cnt++;
+								}
+							}
+
+							// not found place for all nodes, let's try next field 
+							if($cnt < count($nodelist[$deviceid]))
+							{
+								continue;
+							}
+							
+							$map = $map2;
+							unset($nodelist[$deviceid]);
+							unset($nodefields);
+							unset($map2);
+						}
+
+						makemap($map, $seen, $deviceid, $tx, $ty, $device);
+						break;
 					}
-				if($ntx != NULL && $nty != NULL)
-					$map[$ntx][$nty] = 'n'.$node['id'].'.'.$device.'.'.$node['linktype'];
+				}
 			}
 		}
 	}
@@ -183,10 +292,35 @@ $graph = isset($_GET['graph']) ? $_GET['graph'] : '';
 $start = isset($_GET['start']) ? $_GET['start'] : 0;
 
 $minx = 0; $maxx = 0; $miny = 0; $maxy = 0;
+$nodelist = array();
+$devicelinks = array();
+$nodemap = array();
+
+if($nodes = $DB->GetAll('SELECT id, linktype, netdev 
+			FROM nodes 
+			WHERE ownerid > 0 AND netdev > 0 
+			ORDER BY name ASC'))
+{
+	foreach($nodes as $idx => $node)
+	{
+		$nodelist[$node['netdev']][] = $node;
+		unset($nodes[$idx]);
+	}
+}
+
+if($links = $DB->GetAll('SELECT src, dst FROM netlinks'))
+{
+	foreach($links as $idx => $link)
+	{
+		$devicelinks[$link['src']][$link['dst']] = $link['dst'];
+		$devicelinks[$link['dst']][$link['src']] = $link['src'];
+		unset($links[$idx]);
+	}
+}
 
 if($graph == '')
 {
-	makemap($DB,$map,$seen,$start);
+	makemap($map,$seen,$start);
 	if($map)
 	{
 		foreach($map as $idx => $x)
@@ -241,9 +375,10 @@ if($graph == '')
 					$devicemap[$device]['id'] = $device;
 				}
 			}
+			unset($map[$idx]);
 		}
 		
-		if(sizeof($nodemap)) sort($nodemap);
+		sort($nodemap);
 		sort($devicemap);
 	}
 	
@@ -260,7 +395,7 @@ if($graph == '')
 } 
 elseif ($graph == 'flash')
 {	
-	makemap($DB,$map,$seen,$start);
+	makemap($map,$seen,$start);
 	foreach($map as $idx => $x)
 	{
 		if($minx == NULL)
@@ -451,11 +586,15 @@ elseif ($graph == 'flash')
 		$i=$m->add($button);
 		$i->moveTo($px,$py);
 
-		$devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes WHERE ownerid=0 AND netdev=? ORDER BY ipaddr LIMIT 4', array($deviceid));
-		if($devip[0]) drawtext($px + 16, $py - ($devip[1]?16:8), $devip[0], 0,0,255);
-		if($devip[1]) drawtext($px + 16, $py - 8, $devip[1], 0,0,255);
-		if($devip[2]) drawtext($px + 16, $py + 16, $devip[2], 0,0,255);
-		if($devip[3]) drawtext($px + 16, $py + 24, $devip[3], 0,0,255);
+		if($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) 
+				    FROM nodes WHERE ownerid = 0 AND netdev = ? 
+				    ORDER BY ipaddr LIMIT 4', array($deviceid)))
+		{
+			if(isset($devip[0])) drawtext($px + 16, $py - (isset($devip[1])?16:8), $devip[0], 0,0,255);
+			if(isset($devip[1])) drawtext($px + 16, $py - 8, $devip[1], 0,0,255);
+			if(isset($devip[2])) drawtext($px + 16, $py + 16, $devip[2], 0,0,255);
+			if(isset($devip[3])) drawtext($px + 16, $py + 24, $devip[3], 0,0,255);
+		}
 		
 		drawtext($px + 16, $py + 0, $d['name'], 0,0,0);
 		drawtext($px + 16, $py + 8, $d['location'], 0,128,0); 
@@ -469,7 +608,7 @@ elseif ($graph == 'flash')
         header("Pragma: public");	
 	$m->output();
 } else {
-	makemap($DB,$map,$seen,$start);
+	makemap($map,$seen,$start);
 	foreach($map as $idx => $x)
 	{
 		if(!$minx)
@@ -536,6 +675,8 @@ elseif ($graph == 'flash')
 		}
 	}
 
+	imagesetthickness($im, 2);
+	
 	$links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
 	if($links) foreach($links as $link)
 	{
@@ -547,18 +688,13 @@ elseif ($graph == 'flash')
 		$src_py = (($src_cely * $cellh) + $celltmargin);
 		$dst_px = (($dst_celx * $cellw) + $celllmargin);
 		$dst_py = (($dst_cely * $cellh) + $celltmargin);
-		if(! $link['type'])
-		{
-			imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $green);
-			imageline($im, $src_px+9, $src_py+9, $dst_px+9, $dst_py+9, $green);
-		} 
-		else 
-		{
-			imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $lightblue);
-			imageline($im, $src_px+9, $src_py+9, $dst_px+9, $dst_py+9, $lightblue);
-		}
+	
+		$color = $link['type'] ? $lightblue : $green;
+		imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $color);
 	}
 
+	imagesetthickness($im, 1);
+	
 	if($nodemap) foreach($nodemap as $node)
 	{
 		$src_celx = $node['x'];
@@ -569,10 +705,9 @@ elseif ($graph == 'flash')
 		$src_py = (($src_cely * $cellh) + $celltmargin);
 		$dst_px = (($dst_celx * $cellw) + $celllmargin);
 		$dst_py = (($dst_cely * $cellh) + $celltmargin);
-		if($node['linktype']=="0")
-			imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $red);
-		else
-			imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $lightblue);
+
+		$color = $node['linktype'] ? $lightblue : $red;
+		imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $color);
 	}
 
 	$im_n_unk = imagecreatefrompng('img/node_unk.png');
@@ -627,11 +762,15 @@ elseif ($graph == 'flash')
 		} else 
 			imagecopy($im,$im_d_unk,$px,$py,0,0,16,16);
 		
-		$devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes WHERE ownerid=0 AND netdev=? ORDER BY ipaddr LIMIT 4', array($deviceid));
-		if($devip[0]) pngdrawtext($im, 1, $px + 20, $py - ($devip[1]?17:8), $devip[0], $blue, $lightbrown);
-		if($devip[1]) pngdrawtext($im, 1, $px + 20, $py - 8, $devip[1], $blue, $lightbrown);
-		if($devip[2]) pngdrawtext($im, 1, $px + 20, $py + 17, $devip[2], $blue, $lightbrown);
-		if($devip[3]) pngdrawtext($im, 1, $px + 20, $py + 26, $devip[3], $blue, $lightbrown);
+		if($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes 
+				    WHERE ownerid = 0 AND netdev = ? 
+				    ORDER BY ipaddr LIMIT 4', array($deviceid)))
+		{
+			if(isset($devip[0])) pngdrawtext($im, 1, $px + 20, $py - (isset($devip[1])?17:8), $devip[0], $blue, $lightbrown);
+			if(isset($devip[1])) pngdrawtext($im, 1, $px + 20, $py - 8, $devip[1], $blue, $lightbrown);
+			if(isset($devip[2])) pngdrawtext($im, 1, $px + 20, $py + 17, $devip[2], $blue, $lightbrown);
+			if(isset($devip[3])) pngdrawtext($im, 1, $px + 20, $py + 26, $devip[3], $blue, $lightbrown);
+		}
 		
 		pngdrawtext($im, 3, $px + 20, $py + 2, $d['name'], $black, $lightbrown);
 		pngdrawtext($im, 2, $px + 20, $py + 18, $d['location'], $green, $lightbrown);

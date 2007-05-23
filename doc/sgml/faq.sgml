@@ -70,14 +70,6 @@ $ cvs -z7 diff -u > /tmp/my_patch.patch
 	    </answer>
 	</qandaentry>
 	<qandaentry>
-	    <question id="q8">
-	    	<para><emphasis role="bold">What is a limit of network devices on the map?</emphasis></para>
-	    </question>
-	    <answer>
-	        <para>Map creation algorithm isn't perfect. You can connect maximum of 24 computers to one network device (this number at max will appear on map, you can connect more devices of course). Similarly, each network device might be connected to the other 24 devices, but usually this number is subject of change (it might be smaller), depending on how devices are placed on the map. When this number is exceeded you may observe bogus connections going beyond the map, or less likely, problems with generating map at all.</para>
-	    </answer>
-	</qandaentry>
-	<qandaentry>
 	    <question id="q9">
 	    	<para><emphasis role="bold">Insecure $ENV{BASH_ENV} while running -T switch...</emphasis></para>
 	    </question>

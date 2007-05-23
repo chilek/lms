@@ -292,6 +292,9 @@
      <para>%SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami</para>
     </listitem>
     <listitem>
+     <para>%CMAC - adres MAC pisany w formacie CISCO (FFFF.FFFF.FFFF)</para>
+    </listitem>
+    <listitem>
      <para>%OWNER - ID w³a¶ciciela komputera</para>
     </listitem>
     <listitem>
