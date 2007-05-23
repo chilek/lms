@@ -19,6 +19,7 @@ version ? (????-??-??):
   - network map: increased limit of devices connected to one device (alec)
   - network map: devices connection lines are not overlaps (alec)
   - network map: fixed thick line look, better map generation speed (alec)
+  - network map: view without nodes (alec)
 
 version 1.9.7 Thalan (2007-05-09):
 
