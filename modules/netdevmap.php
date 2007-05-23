@@ -100,6 +100,8 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
 	// x1, y1 - wspolrz. rodzica badanego urzadzenia
 	// x2, y2 - wspolrz. badanego urzadzenia
 
+	$in = array();
+	
 	$minx = min($x1, $x2);
 	$maxx = max($x1, $x2);
 	$miny = min($y1, $y2);
@@ -109,15 +111,19 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
 	{
 		if(isset($seen[$d1]) || $d1 == $devid) foreach($link as $d2)
 		{
-			if(isset($seen[$d2]) || $d2 == $devid)
+			if((isset($seen[$d2]) || $d2 == $devid) && !isset($in[$d2.'-'.$d1]))
 			{
 				$a1 = $d1 != $devid ? $seen[$d1] : array('x' => $x2, 'y' => $y2);
 				$a2 = $d2 != $devid ? $seen[$d2] : array('x' => $x2, 'y' => $y2);
+				
+				// zapamietujemy odcinek, aby nie przetwarzac tego samego odcinka 
+				// dwukrotnie ($devicelinks zawiera odcinki zdublowane)
+				$in[$d1.'-'.$d2] = true;
 
 				// sprawdzamy czy na badanym odcinku lezy inne urzadzenie
 				// Det(a,b,c) = 0 - wyznacznik maciezy metoda Sarrusa
 				
-				// urzadzenie $d1
+				// urzadzenie $a1 lezy na odcinku |(x1,y1),(x2,y2)|
 				if(($x1*$y2 + $y1*$a1['x'] + $x2*$a1['y'] - $y2*$a1['x'] - $x1*$a1['y'] - $y1*$x2)==0)
 				{
 					// rzut punktu zawiera sie w rzucie odcinka
@@ -131,7 +137,7 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
 					}
 				}
 
-				// urzadzenie $d2
+				// urzadzenie $a2 lezy na odcinku |(x1,y1),(x2,y2)|
 				if(($x1*$y2 + $y1*$a2['x'] + $x2*$a2['y'] - $y2*$a2['x'] - $x1*$a2['y'] - $y1*$x2)==0)
 				{
 					if((($a2['x'] != $x1 || $a2['y'] != $y1)
@@ -149,7 +155,7 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
 		    		$pminy = min($a1['y'], $a2['y']);
 			    	$pmaxy = max($a1['y'], $a2['y']);
 
-				// czy urzadzenie lezy na innym odcinku?
+				// urzadzenie (x2,y2) lezy na odcinku |d1,d2|
 				if(($a1['x']*$a2['y'] + $a1['y']*$x2 + $a2['x']*$y2 - $a2['y']*$x2 - $a1['x']*$y2 - $a1['y']*$a2['x'])==0)
 				{
 					if((($x2 != $a1['x'] || $y2 != $a1['y'])
@@ -162,7 +168,7 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
 					}
 				}
 
-				// czy rodzic urzadzenia lezy na innym odcinku?
+				// rodzic (x1,y1) urzadzenia lezy na odcinku |d1,d2|
 				if(($a1['x']*$a2['y'] + $a1['y']*$x1 + $a2['x']*$y1 - $a2['y']*$x1 - $a1['x']*$y1 - $a1['y']*$a2['x'])==0)
 				{
 					if((($x1 != $a1['x'] || $y1 != $a1['y'])
