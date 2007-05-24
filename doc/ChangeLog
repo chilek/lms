@@ -22,6 +22,7 @@ version ? (????-??-??):
   - network map: view without nodes (alec)
   - network devices: fixed devices list sorting by used ports count (alec)
   - network devices: added search engine (alec)
+  - let liabilities values be less than zero (chilek)
 
 version 1.9.7 Thalan (2007-05-09):
 
