@@ -508,8 +508,8 @@ $_LANG['Enter first/lastname of customer'] = 'Wprowadź nazwę/nazwisko klienta'
 $_LANG['Enter network domain (optional)'] = 'Wprowadź domenę sieci (opcjonalnie)';
 $_LANG['Enter network interface (optional)'] = 'Wprowadź interfejs sieci (opcjonalnie)';
 $_LANG['Enter new password:'] = 'Wprowadź nowe hasło:';
-$_LANG['Enter node IP address or it\'s fragment'] = 'Wprowadź adres IP komputera lub jego fragment';
-$_LANG['Enter node MAC address or it\'s fragment'] = 'Wprowadź adres MAC komputera lub jego fragment';
+$_LANG['Enter IP address or it\'s fragment'] = 'Wprowadź adres IP lub jego fragment';
+$_LANG['Enter MAC address or it\'s fragment'] = 'Wprowadź adres MAC lub jego fragment';
 $_LANG['Enter node name'] = 'Wprowadź nazwę komputera';
 $_LANG['Enter node name or it\'s fragment'] = 'Wprowadź nazwę komputera lub jej fragment';
 $_LANG['Enter note'] = 'Wprowadź notatkę';
@@ -1839,5 +1839,16 @@ $_LANG['Liability name is required!'] = 'Nazwa zobowiązania jest wymagana!';
 $_LANG['include contact info'] = 'z danymi kontaktowymi';
 $_LANG['phone:'] = 'tel.:';
 $_LANG['only devices'] = 'tylko urządzenia';
+$_LANG['Allows you to search device'] = 'Wyszukiwanie urządzeń';
+$_LANG['Enter device location or it\'s fragment'] = 'Wprowadź lokalizację urządzenia lub jej fragment';
+$_LANG['Enter device model or it\'s fragment'] = 'Wprowadź model urządzenia lub jego fragment';
+$_LANG['Enter device serial number or it\'s fragment'] = 'Wprowadź numer seryjny urządzenia lub jego fragment';
+$_LANG['Enter number of ports'] = 'Wprowadź liczbę portów';
+$_LANG['Enter device name or it\'s fragment'] = 'Wprowadź nazwę urządzenia lub jej fragment';
+$_LANG['Enter producer name or it\'s fragment'] = 'Wprowadź nazwę producenta lub jej fragment';
+$_LANG['Find devices matching the following search criteria:'] = 'Wyszukaj urządzenia pasujące do poniższych kryteriów:';
+$_LANG['Network Devices Search'] = 'Szukaj urządzeń';
+$_LANG['Network Devices Search Results'] = 'Wyniki wyszukiwania urządzeń';
+$_LANG['No such devices matching search criteria.'] = 'Brak urządzeń spełniających kryteria wyszukiwania.';
 
 ?>

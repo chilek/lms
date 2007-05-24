@@ -225,6 +225,11 @@
 		parametry tj. producent, model, nr seryjny, ilo¶æ portów, lokalizacja
 		i opis s± opcjonalne.</para>
 	    </sect2>
+	    <sect2 id="menu-netdevices-search">
+		<title>Szukaj</title>
+		<para>Wyszukiwanie urz±dzeñ wed³ug zadanych kryteriów. Mo¿esz podaæ 
+		ca³± lub fragment nazwy, adresów IP i MAC oraz innych danych.</para>
+	    </sect2>
 	    <sect2 id="menu-netdevices-map">
 	    <title>Mapa</title>
 		<para>Generowanie graficznej mapy ca³ej sieci, na podstawie

@@ -467,6 +467,10 @@ elseif ($graph == 'flash')
 	$links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
 	if($links) foreach($links as $link)
 	{
+		if(!isset($devicemap[$link['src']]['x']) || !isset($devicemap[$link['dst']]['x']))
+		{
+			continue;
+		}	
 		$src_celx = $devicemap[$link['src']]['x'];
 		$src_cely = $devicemap[$link['src']]['y'];
 		$dst_celx = $devicemap[$link['dst']]['x'];

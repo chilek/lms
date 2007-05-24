@@ -1211,7 +1211,14 @@ Chapter 3. User Interface (LMS-UI)
    are optional.
      _________________________________________________________________
 
-3.5.3. Map
+3.5.3. Search
+
+   You can search for devices here by any given criteria. You can enter
+   whole IP, MAC or device name, or just its fragment and search will
+   guess for you.
+     _________________________________________________________________
+
+3.5.4. Map
 
    Selection of 'Map' option draws graphical map of entire network. You
    can define root device, which will appear on top of the map and all

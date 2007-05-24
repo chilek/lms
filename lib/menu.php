@@ -162,6 +162,11 @@ $menu = array(
 					'tip' => trans('Add new device'),
 				),
 				array(
+					'name' => trans('Search'),
+					'link' => '?m=netdevsearch',
+					'tip' => trans('Allows you to search device'),
+				),
+				array(
 					'name' => trans('Map'),
 					'link' => '?m=netdevmap',
 					'tip' => trans('Network map display'),
