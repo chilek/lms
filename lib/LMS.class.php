@@ -1491,7 +1491,7 @@ class LMS
 	{
 		$this->SetTS('assignments');
 		
-		if(isset($assignmentdata['value']) && $assignmentdata['value']>0)
+		if(isset($assignmentdata['value']) && $assignmentdata['value']!=0)
 		{
 			$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid) VALUES (?, ?, ?, ?)', 
 					    array($assignmentdata['name'],
