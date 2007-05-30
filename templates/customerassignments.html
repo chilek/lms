@@ -34,7 +34,7 @@
 				    {if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) || $a.suspended} alertblend{/if}"
 				    onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" >
 					{if !$a.tariffid && !$a.liabilityid}
-					<TD WIDTH="98%" COLSPAN="7"><B>{t}Suspending of all liabilities{/t}</B></TD>
+					<TD WIDTH="98%" COLSPAN="7" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'"><B>{t}Suspending of all liabilities{/t}</B></TD>
 					{else}
 					<TD WIDTH="92%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">
 						{if $a.tariffid}
@@ -51,7 +51,7 @@
 					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{if $a.invoice}{t}yes{/t}{else}{t}no{/t}{/if}/{if $a.settlement}{t}yes{/t}{else}{t}no{/t}{/if}</TD>
 					<TD WIDTH="1%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{if $a.discount!=0}{$a.discount}%{else}-{/if}</TD>
 					{/if}
-					<TD WIDTH="1%" NOWRAP {if $a.tariffid}OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'"{/if}>
+					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">
 						{if $a.datefrom}{t}from{/t} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $a.dateto}{t}to{/t} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
@@ -60,7 +60,9 @@
 						<A href="?m=customerassignments&action=suspend&id={$balancelist.customerid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" alt="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]"></A>
 						{/if}
 						<A HREF="?m=customerassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+						{if $a.id != $assignmentedit.id}
 						<A onClick="return confirmLink(this, '{t}Are you sure, you want to delete this liability?{/t}')" HREF="?m=customerassignments&action=delete&aid={$a.id}&id={$balancelist.customerid}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+						{/if}
 					</TD>
 				</TR>
 				{foreachelse}
