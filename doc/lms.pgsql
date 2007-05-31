@@ -240,6 +240,7 @@ CREATE TABLE documents (
 	paytype varchar(255) 	DEFAULT '' NOT NULL,
 	closed smallint		DEFAULT 0 NOT NULL,
 	reference integer	DEFAULT 0 NOT NULL,
+	reason varchar(255)	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
