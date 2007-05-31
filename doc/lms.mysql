@@ -165,6 +165,7 @@ CREATE TABLE documents (
 	paytype varchar(255) NOT NULL DEFAULT '',
 	closed tinyint(1) NOT NULL default '0',
 	reference int(11) NOT NULL default '0',
+	reason varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
