@@ -24,7 +24,8 @@ version ? (????-??-??):
   - network devices: added search engine (alec)
   - let liabilities values be less than zero (chilek)
   - lmsd/ggnotify: fixed query (alec)
-
+  - added reason field to invoice notes (chilek)
+ 
 version 1.9.7 Thalan (2007-05-09):
 
   - cash receipts: added target 'advance' (alec)

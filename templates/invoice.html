@@ -198,6 +198,9 @@
     </TR>
 {/foreach}
     <TR>
+	<TD COLSPAN="{if $invoice.reason}11{else}10{/if}" CLASS="fbottom">
+		<B>{t}Reason:{/t} {$invoice.reason}</B>
+	</TD>
 	<TD COLSPAN="{if $invoice.discount}11{else}10{/if}" CLASS="fbottom">
 		<B>{t}Corrected to:{/t}</B>
 	</TD>

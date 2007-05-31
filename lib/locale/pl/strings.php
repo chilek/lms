@@ -1850,5 +1850,7 @@ $_LANG['Find devices matching the following search criteria:'] = 'Wyszukaj urzą
 $_LANG['Network Devices Search'] = 'Szukaj urządzeń';
 $_LANG['Network Devices Search Results'] = 'Wyniki wyszukiwania urządzeń';
 $_LANG['No such devices matching search criteria.'] = 'Brak urządzeń spełniających kryteria wyszukiwania.';
+$_LANG['Reason:'] = 'Powód:';
+$_LANG['Enter reason (optional)'] = 'Podaj powód (opcjonalnie)';
 
 ?>
