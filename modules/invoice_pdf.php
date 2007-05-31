@@ -404,6 +404,11 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	    }
 	
 	$x = $xx;
+	if ($invoice['reason'] != '')
+	{
+		$y = $y-text_align_left($x,$y-10,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Reason:').' '.$invoice['reason']).'</b>');
+		$y -= 10;
+	}
 	$y = $y-text_align_left($x,$y-10,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Corrected to:')).'</b>');
 	$y -= 5;
 	$pdf->line($x,$y,$x+$width,$y);

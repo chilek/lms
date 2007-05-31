@@ -53,6 +53,7 @@ if(isset($_GET['id']) && $action=='init')
     
 	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
 	$cnote['cdate'] = time();
+	$cnote['reason'] = '';
 	
 	$t = $invoice['cdate'] + $invoice['paytime']*86400;
 	$deadline = mktime(23, 59, 59, date('m',$t), date('d',$t), date('Y',$t));
@@ -193,8 +194,8 @@ switch($action)
 					$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 			}
 			
-			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, reference)
-		                	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, reference, reason)
+		                	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array($cnote['number'],
 				    		$cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
 						DOC_CNOTE,
@@ -209,7 +210,8 @@ switch($action)
 						$invoice['ssn'],
 						$invoice['zip'],
 						$invoice['city'],
-						$invoice['id']
+						$invoice['id'],
+						$cnote['reason']
 					));
 																																																							    	
 			$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?', array($cnote['number'],$cnote['cdate'],DOC_CNOTE));

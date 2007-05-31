@@ -68,6 +68,15 @@
 		</TD>
 	</TR>
 	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Reason:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="cnote[reason]" VALUE="{$cnote.reason}" SIZE="50" {tip text="Enter reason (optional)"}>
+			{if $cnote.reason}{$cnote.reason}{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
 			<A HREF="javascript:document.setheader.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>

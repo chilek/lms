@@ -1656,7 +1656,7 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, userid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid, closed, reference
+		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, userid, address, zip, city, ten, ssn, cdate, paytime, paytype, template, numberplanid, closed, reference, reason
 					    FROM documents 
 					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE documents.id=? AND (type = ? OR type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
