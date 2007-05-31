@@ -115,7 +115,7 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 				"FROM customers "
 				"LEFT JOIN imessengers ON customers.id = imessengers.customerid "
 				"LEFT JOIN cash ON customers.id = cash.customerid "
-				"WHERE deleted = 0 AND imessengers.type = 0"
+				"WHERE deleted = 0 AND imessengers.type = 0 "
 				"GROUP BY customers.id, imessengers.uid, pin, name, lastname");
 
 		if( g->db_nrows(res) )
