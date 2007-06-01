@@ -56,7 +56,7 @@ if(isset($_POST['registry']))
 				
 		$id = $DB->GetOne('SELECT id FROM cashregs WHERE name=?', array($registry['name']));
 		
-		if($registry['rights'])
+		if(isset($registry['rights']))
 			foreach($registry['rights'] as $right)
 			        if($right['rights'])
 			                  $DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)', array($id, $right['id'], $right['rights']));

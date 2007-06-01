@@ -110,6 +110,8 @@ $SESSION->restore('receiptregid', $receipt['regid']);
 $SESSION->restore('receipttype', $receipt['type']);
 $SESSION->restore('receiptadderror', $error);
 
+$cashreglist = $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id');
+
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 switch($action)
@@ -141,9 +143,8 @@ switch($action)
 		elseif($receipt['type'] == 'out')
 		{
 			$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-			if($receipt['regid'])
-				if( $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
-					$error['regid'] = trans('There is no cash in selected registry!');
+			if($DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
+				$error['regid'] = trans('There is no cash in selected registry!');
 		}
 		
 		if($receipt['numberplanid'])
@@ -154,11 +155,11 @@ switch($action)
 		{
 			$customer = $LMS->GetCustomer($receipt['customerid']);
 			$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
-			if(!chkconfig($CONFIG['receipts']['show_notes']))
+			if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
 				unset($customer['notes']);
 			
 			// niezatwierdzone dokumenty klienta
-			if(chkconfig($CONFIG['receipts']['show_documents_warning']))
+			if(isset($CONFIG['receipts']['show_documents_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
 				if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
 				{
 					if($CONFIG['receipts']['documents_warning'])
@@ -179,26 +180,30 @@ switch($action)
 		// get default receipt's numberplanid and next number
 		$receipt = ($_POST['receipt']) ? $_POST['receipt'] : NULL;
 		$receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : 0;
+		$receipt['type'] = isset($receipt['type']) ? $receipt['type'] : $_POST['type'];
 		
-		if(!$receipt['regid']) break;	
+		if(!$receipt['regid'])
+			$error['regid'] = trans('Registry not selected!');
+
+		if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid']))<=1)
+			$error['regid'] = trans('You have no write rights selected registry!');
+
+		if(isset($error)) break;
 		
 		$receipt['cdate'] = time();
-		$receipt['type'] = $receipt['type'] ? $receipt['type'] : $_POST['type'];
 		
 		if($receipt['type'] == 'in')
 			$receipt['numberplanid'] = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
 		else
 		{
 			$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
-			if($receipt['regid'])
-				if( $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
-					$error['regid'] = trans('There is no cash in selected registry!');
+			if( $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']))<=0)
+				$error['regid'] = trans('There is no cash in selected registry!');
 		}
 		
 		if($receipt['numberplanid'])
 			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
 				$receipt['extended'] = TRUE;
-
 	break;
 
 	case 'additem':
@@ -382,7 +387,9 @@ switch($action)
 			case 'other': if(($rights & 16)!=16) $rightserror = true; break;
 		}	
 
-		if(isset($rightserror))	
+		if(!$receipt['regid'])
+			$error['regid'] = trans('Registry not selected!');
+		elseif(isset($rightserror))	
 			$error['regid'] = trans('You don\'t have permission to add receipt in selected cash registry!');
 
 		if($receipt['o_type'] != 'customer')
@@ -410,11 +417,12 @@ switch($action)
 			$cid = intval($_GET['customerid']);
 		else
 			$cid = isset($_POST['customerid']) ? intval($_POST['customerid']) : 0;
+
+		$receipt['customerid'] = $cid;
 		
 		if(!isset($error) && $cid)
 			if($LMS->CustomerExists($cid))
 			{
-				$receipt['customerid'] = $cid;
 				if($receipt['type'] == 'out')
 				{
 					$balance = $LMS->GetCustomerBalance($cid);
@@ -742,8 +750,6 @@ if(isset($list))
 		}
 	else
 		$invoicelist = $list;
-
-$cashreglist = $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id');
 
 if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
 {
