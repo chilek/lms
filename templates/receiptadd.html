@@ -57,7 +57,7 @@
 	
 //--></SCRIPT>
 {/literal}
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid}setcustomer{else}setreg{/if}">
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
 <INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
@@ -120,7 +120,7 @@
 		</TD>
 	</TR>
 	{/if}
-	{if $receipt.type}
+	{if $receipt.type && $rights}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{t}Target:{/t}</B>
@@ -181,6 +181,8 @@
 		    </TABLE>
 		</TD>
 	</TR>
+	{elseif $receipt.customerid}
+		<INPUT type="hidden" name="customerid" value="{$receipt.customerid}">
 	{/if}
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
