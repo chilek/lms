@@ -129,6 +129,10 @@ switch($action)
 		$receipt['type'] = isset($_GET['type']) ? $_GET['type'] : (isset($_POST['type']) ? $_POST['type'] : 0);
 		$receipt['customerid'] = isset($_GET['customerid']) ? $_GET['customerid'] : 0;
 
+		// when registry is not selected but we've got only one registry in database
+		if(!$receipt['regid'] && count($cashreglist) == 1)
+			$receipt['regid'] = key($cashreglist);
+
 		if(!$receipt['regid'] || !$receipt['type'])
 		{
 			break;
