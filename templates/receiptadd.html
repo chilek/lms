@@ -54,6 +54,16 @@
 		document.additem.target = "";
 		document.additem.submit();
 	}
+
+	function setType(type)
+	{
+		document.additem.elements[type].checked = !document.additem.elements[type].checked;
+	}
+
+	function setCustomerType(type)
+	{
+		document.getElementById(type).checked = true;
+	}
 	
 //--></SCRIPT>
 {/literal}
@@ -130,7 +140,7 @@
 		    {if ($rights & 2)==2}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" class="box light" checked> {t}customer{/t}:
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" class="box light" checked> <A HREF="javascript:setCustomerType('radio_customer');">{t}customer{/t}:</A>
 			    </TD>
 			    <TD width="99%" nowrap>
 			    {if $customerlist}
@@ -171,7 +181,7 @@
 		    {if ($rights & 16)==16}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" class="box light" {if $receipt.o_type=="other"} checked{/if}> {t}other{/t}:
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" class="box light" {if $receipt.o_type=="other"} checked{/if}> <A HREF="javascript:setCustomerType('radio_other');">{t}other{/t}:</A>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[other_name]" VALUE="{$receipt.other_name}" SIZE="75" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="o_name"}{else}{tip text="Enter payer" trigger="other_name"}{/if} onclick="document.getElementById('radio_other').checked=true">
@@ -397,8 +407,8 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
-			<INPUT type="checkbox" class ="box light" name="original" checked> {t}original{/t}&nbsp;
-			<INPUT type="checkbox" class ="box light" name="copy" checked> {t}copy{/t}&nbsp;
+			<INPUT type="checkbox" class ="box light" name="original" checked> <A HREF="javascript:setType('original');">{t}original{/t}</A>&nbsp;
+			<INPUT type="checkbox" class ="box light" name="copy" checked> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>&nbsp;
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			<A HREF="?m=receiptadd&action=init">{t}Clear Contents{/t} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
