@@ -41,8 +41,9 @@ $authors = array(
 			),
 
 		'chilek' => array(
-			'info' => 'PHP, Perl',
-			'realname' => 'Tomasz Chilinski',
+			'realname' => 'Tomasz Chiliński',
+			'info' => 'PHP, Perl, HTML, JavaScript',
+			'www' => 'www.chilan.com'
 			),
 
 		'hunter' => array(
