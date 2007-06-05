@@ -26,6 +26,7 @@ version ? (????-??-??):
   - lmsd/ggnotify: fixed query (alec)
   - added reason field to invoice notes (chilek)
   - helpdesk: ticket's status change when adding note (alec)
+  - searching by any part of node name in quicksearch (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

@@ -67,7 +67,7 @@ switch($mode)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
 				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '').$row['lastname'].' '.$row['name'].($row['deleted'] ? '</font>' : ''));
-				if (preg_match("/$search/i",$row['id'])) 	{ $descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']); continue; }
+				if (preg_match("/^$search/i",$row['id'])) 	{ $descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']); continue; }
 				if (preg_match("/$search/i",$row['lastname'])) 	{ $descriptions[$row['id']] = escape_js(trans('Name/Surname:').' '.$row['lastname']); continue; }
 				if (preg_match("/$search/i",$row['name'])) 	{ $descriptions[$row['id']] = escape_js(trans('First name:').' '.$row['name']); continue; }
 				if (preg_match("/$search/i",$row['address'])) 	{ $descriptions[$row['id']] = escape_js(trans('Address:').' '.$row['address']); continue; }
@@ -116,14 +116,21 @@ switch($mode)
 	case 'node':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT id, name, inet_ntoa(ipaddr) as ip, inet_ntoa(ipaddr_pub) AS ip_pub, mac FROM nodes WHERE id ?LIKE? \''.$search.'%\' OR lower(name) ?LIKE? lower(\''.$search.'%\') OR inet_ntoa(ipaddr) ?LIKE? \'%'.$search.'%\' OR inet_ntoa(ipaddr_pub) ?LIKE? \'%'.$search.'%\' OR lower(mac) ?LIKE? lower(\'%'.$search.'%\') ORDER BY name LIMIT 15');
+			$candidates = $DB->GetAll('SELECT id, name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, mac 
+				    FROM nodes 
+				    WHERE id ?LIKE? \''.$search.'%\' 
+					    OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
+					    OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
+					    OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 
+					    OR LOWER(mac) ?LIKE? LOWER(\'%'.$search.'%\') 
+				    ORDER BY name LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=nodeinfo&id='.$row['id'];
 				$eglible[$row['id']] = escape_js($row['name']);
 				if (preg_match("/^$search/i",$row['id'])) $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']);
-				if (preg_match("/^$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
+				if (preg_match("/$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
 				if (preg_match("/$search/i",$row['ip'])) $descriptions[$row['id']] = trans('IP').': '.$row['ip'];
 				if (preg_match("/$search/i",$row['ip_pub'])) $descriptions[$row['id']] = trans('IP').': '.$row['ip_pub'];
 				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']] = trans('MAC').': '.$row['mac'];
