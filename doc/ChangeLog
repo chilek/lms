@@ -25,6 +25,7 @@ version ? (????-??-??):
   - let liabilities values be less than zero (chilek)
   - lmsd/ggnotify: fixed query (alec)
   - added reason field to invoice notes (chilek)
+  - helpdesk: ticket's status change when adding note (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

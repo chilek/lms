@@ -40,11 +40,16 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/resolved.gif" alt="">
-		        <B>{t}Resolve ticket:{/t}</B>
+			<IMG src="img/dead.gif" alt="">
+		        <B>{t}Status:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT type="checkbox" class="box light" name="note[state]" value="{$smarty.const.RT_RESOLVED}"{if $note.state==$smarty.const.RT_RESOLVED} CHECKED{/if}>
+			<SELECT SIZE="1" name="note[state]" {tip text="Select status" trigger="state"}>
+				<OPTION value="{$smarty.const.RT_NEW}" {if $note.state == $smarty.const.RT_NEW}SELECTED{/if}>{t}new{/t}</OPTION>
+				<OPTION value="{$smarty.const.RT_OPEN}" {if $note.state == $smarty.const.RT_OPEN}SELECTED{/if}>{t}opened{/t}</OPTION>
+				<OPTION value="{$smarty.const.RT_RESOLVED}" {if $note.state == $smarty.const.RT_RESOLVED}SELECTED{/if}>{t}resolved{/t}</OPTION>
+				<OPTION value="{$smarty.const.RT_DEAD}" {if $note.state == $smarty.const.RT_DEAD}SELECTED{/if}>{t}dead{/t}</OPTION>
+			</SELECT>
 		</TD>
 	</TR>
 	<TR class="light">
