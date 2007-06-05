@@ -55,10 +55,7 @@ elseif(isset($_POST['note']))
 			    VALUES(?, ?, ?, ?NOW?)',
 			    array($AUTH->id, $note['ticketid'], $note['body']));
 
-		if(isset($note['state']))
-			$LMS->SetTicketState($note['ticketid'], RT_RESOLVED);
-		elseif(!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($note['ticketid'])))
-			$LMS->SetTicketState($note['ticketid'], RT_OPEN);
+		$LMS->SetTicketState($note['ticketid'], $note['state']);
 
 		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($note['cause'], $note['ticketid']));
 		
