@@ -1116,7 +1116,8 @@ class LMS
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
 			$result['owner'] = $this->GetCustomerName($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
-			$result['netname'] = $this->GetNetworkName($result['netid']);
+			if($result['netid'])
+				$result['netname'] = $this->GetNetworkName($result['netid']);
 			$result['producer'] = get_producer($result['mac']);
 			return $result;
 		}else
