@@ -28,6 +28,7 @@ version ? (????-??-??):
   - helpdesk: ticket's status change when adding note (alec)
   - searching by any part of node name in quicksearch (alec)
   - Xajax 0.2.5 (alec)
+  - fixed balance sheet printing with use of network filter (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

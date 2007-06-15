@@ -141,10 +141,9 @@ switch($type)
 			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN cash.customerid!=0 AND type=0 THEN 0 ELSE value END) 
 					FROM cash '
 					.($group ? 'LEFT JOIN customerassignments a ON (cash.customerid = a.customerid) ' : '')
-					.($net ? 'LEFT JOIN nodes ON (cash.customerid = ownerid) ' : '')
 					.'WHERE time<?'
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE cash.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					, array($date['from']));
 		else
 			$lastafter = 0;
@@ -153,11 +152,10 @@ switch($type)
 					taxes.label AS taxlabel, cash.customerid, comment, cash.type AS type
 					FROM cash LEFT JOIN taxes ON (taxid = taxes.id) '
 					.($group ? 'LEFT JOIN customerassignments a ON (cash.customerid = a.customerid)  ' : '')
-					.($net ? 'LEFT JOIN nodes ON (cash.customerid = ownerid) ' : '')
 					.'WHERE time <= ? '
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE cash.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.' ORDER BY time ASC', array($date['to'])))
 		{
 			$listdata['income'] = 0;
