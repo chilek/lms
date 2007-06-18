@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - BTS#0000664: fixed status filter on Customers List (alec)
+
 version 1.8.10 Orin (2007-05-25):
 
   - fixed register_globals related vulnerabilities (please, disable that option

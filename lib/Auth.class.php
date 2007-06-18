@@ -48,9 +48,9 @@ class Auth {
 		$this->SESSION = &$SESSION;
                 $this->_revision = eregi_replace('^.Revision: ([0-9.]+).*','\1', $this->_revision);
 	       		
-		if($_SERVER['HTTP_X_FORWARDED_FOR'])
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'])
 			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		elseif($_SERVER['HTTP_CLIENT_IP'])
+		elseif(isset($_SERVER['HTTP_CLIENT_IP']) && $_SERVER['HTTP_CLIENT_IP'])
 			$ip = $_SERVER['HTTP_CLIENT_IP'];
 		else
 			$ip = $_SERVER['REMOTE_ADDR'];

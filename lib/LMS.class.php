@@ -510,7 +510,7 @@ class LMS
 		if($network)
 			$net = $this->GetNetworkParams($network);
 
-		$over = 0; $below = 0;
+		$over = 0; $below = 0; $sqlsarg = '';
 
 		if(sizeof($search))
 			foreach($search as $key => $value)
@@ -540,7 +540,7 @@ class LMS
 				}
 			}
 
-		if($searchargs)
+		if(isset($searchargs))
 			$sqlsarg = implode(' '.$sqlskey.' ',$searchargs);
 
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
@@ -628,7 +628,7 @@ class LMS
 					$below += $customerlist[$idx]['balance'];
 			}
 			
-			if($customerlist2)
+			if($disabled || $online || $indebted)
 				$customerlist = $customerlist2;
 		}
 
