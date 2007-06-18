@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - BTS#0000664: fixed status filter on Customers List (alec)
+  - BTS#0000665: fixed lms-traffic-logiptables with iptables 1.3.5 (alec)
 
 version 1.8.10 Orin (2007-05-25):
 
