@@ -474,6 +474,9 @@ syslog("message");
 			    <para>Example: <prompt>SELECT * FROM table WHERE name={escape(variable)}</prompt></para>
 			</listitem>
 		    </itemizedlist>
+		</sect3>
+		<sect3 id="consts">
+		<title>Constants</title>
     		    <para>Extension closely connected with LMS. Makes possible to
 		    create scripts without of LMS's database structure knowledge.
 		    Contains predefined constants, which consists data from database.
