@@ -24,6 +24,33 @@
  *  $Id$
  */
 
+function macformat($mac)
+{
+	$res = str_replace('-', ':', $mac);
+	// allow eg. format "::ab:3::12", only whole addresses
+	if(preg_match('/^([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2})$/i', $mac, $arr))
+	{
+		$res = '';
+		for($i=1; $i<=6; $i++)
+		{
+			if($i > 1) $res .= ':';
+			if(strlen($arr[$i]) == 1) $res .= '0';
+			if(strlen($arr[$i]) == 0) $res .= '00';
+			
+			$res .= $arr[$i];
+		}
+	}
+	else // other formats eg. cisco xxxx.xxxx.xxxx or parts of addresses
+	{
+		$tmp = eregi_replace('[^0-9a-f]', '', $mac);
+	
+		if(strlen($tmp) == 12) // we've the whole address
+			if(check_mac(&$tmp)) 
+				$res = $tmp;
+	}
+	return $res;
+}
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(isset($_POST['search']))
@@ -44,6 +71,9 @@ if(!isset($_POST['k']))
 else
 	$k = $_POST['k'];
 $SESSION->save('nslk', $k);
+
+// MAC address reformatting
+$nodesearch['mac'] = macformat($nodesearch['mac']);
 
 if(isset($_GET['search'])) 
 {
