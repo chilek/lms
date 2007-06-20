@@ -479,14 +479,17 @@ syslog("Komunikat");
 				        <para>Przyk³ad: <prompt>SELECT * FROM tabela WHERE name={escape(zmienna)}</prompt></para>
 				</listitem>
 			</itemizedlist>
-				<para>Rozszerzenie ¶ci¶le zwi±zane z LMS-em. Umo¿liwia
-				tworzenie skryptów bez znajomo¶ci struktury bazy danych.
-				Zawiera predefiniowane sta³e, które zawieraj± dane z bazy.
-				Zdefiniowane w programie zapytanie jest wykonywane w momencie
-				pierwszego u¿ycia sta³ej. Nazwy sta³ych nale¿y pisaæ
-				du¿ymi literami. Ka¿da sta³a to tablica zawieraj±ca wiersze
-				numerowane od zera, a ka¿dy wiersz posiada podzmienne dostêpne
-				poprzez nazwê (pisan± ma³ymi literami).</para>
+		</sect3>
+		<sect3 id="consts">
+		<title>Sta³e</title>
+			<para>Rozszerzenie ¶ci¶le zwi±zane z LMS-em. Umo¿liwia
+			tworzenie skryptów bez znajomo¶ci struktury bazy danych.
+			Zawiera predefiniowane sta³e, które zawieraj± dane z bazy.
+			Zdefiniowane w programie zapytanie jest wykonywane w momencie
+			pierwszego u¿ycia sta³ej. Nazwy sta³ych nale¿y pisaæ
+			du¿ymi literami. Ka¿da sta³a to tablica zawieraj±ca wiersze
+			numerowane od zera, a ka¿dy wiersz posiada podzmienne dostêpne
+			poprzez nazwê (pisan± ma³ymi literami).</para>
 			<itemizedlist>
 				<listitem>
 					<para>CUSTOMERS - lista klientów:
