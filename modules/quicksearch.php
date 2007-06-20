@@ -30,6 +30,33 @@ function escape_js($string)
         return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
 }
 
+function macformat($mac)
+{
+	$res = str_replace('-', ':', $mac);
+	// allow eg. format "::ab:3::12", only whole addresses
+	if(preg_match('/^([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2})$/i', $mac, $arr))
+	{
+		$res = '';
+		for($i=1; $i<=6; $i++)
+		{
+			if($i > 1) $res .= ':';
+			if(strlen($arr[$i]) == 1) $res .= '0';
+			if(strlen($arr[$i]) == 0) $res .= '00';
+			
+			$res .= $arr[$i];
+		}
+	}
+	else // other formats eg. cisco xxxx.xxxx.xxxx or parts of addresses
+	{
+		$tmp = eregi_replace('[^0-9a-f]', '', $mac);
+	
+		if(strlen($tmp) == 12) // we've the whole address
+			if(check_mac(&$tmp)) 
+				$res = $tmp;
+	}
+	return $res;
+}
+
 $mode = '';
 
 if(isset($_POST['qscustomer']) && $_POST['qscustomer']) {
@@ -122,7 +149,7 @@ switch($mode)
 					    OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
 					    OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
 					    OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 
-					    OR LOWER(mac) ?LIKE? LOWER(\'%'.$search.'%\') 
+					    OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\') 
 				    ORDER BY name LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
@@ -133,7 +160,7 @@ switch($mode)
 				if (preg_match("/$search/i",$row['name'])) $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
 				if (preg_match("/$search/i",$row['ip'])) $descriptions[$row['id']] = trans('IP').': '.$row['ip'];
 				if (preg_match("/$search/i",$row['ip_pub'])) $descriptions[$row['id']] = trans('IP').': '.$row['ip_pub'];
-				if (preg_match("/$search/i",$row['mac'])) $descriptions[$row['id']] = trans('MAC').': '.$row['mac'];
+				if (preg_match("/".macformat($search)."/i",$row['mac'])) $descriptions[$row['id']] = trans('MAC').': '.$row['mac'];
 				if (!$descriptions[$row['id']]) $descriptions[$row['id']]='-';
 			}
 			header('Content-type: text/plain');

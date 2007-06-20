@@ -29,6 +29,8 @@ version ? (????-??-??):
   - searching by any part of node name in quicksearch (alec)
   - Xajax 0.2.5 (alec)
   - fixed balance sheet printing with use of network filter (alec)
+  - nodes searching by MAC address in many formats eg. XXXXXXXXXXXX,
+    XX-XX-XX-XX-XX-XX, XXXX.XXXX.XXXX or native LMS format with colon (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

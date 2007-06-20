@@ -253,7 +253,6 @@ function check_mac(&$macaddr)
 			$macaddr[10].$macaddr[11];
 		return TRUE;
 	}
-
 }
 
 function textwrap($text, $wrap=76, $break = "\n")
