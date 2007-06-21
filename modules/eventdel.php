@@ -30,11 +30,7 @@ if($id && $_GET['is_sure']=='1')
 {
 	if($DB->Execute('DELETE FROM events WHERE id = ?', array($id)))
 	{	
-		if($DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($id)))
-		{
-			$LMS->SetTS('eventassignments');
-		}
-		$LMS->SetTS('events');
+		$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($id));
 	}
 }
 

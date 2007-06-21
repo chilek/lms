@@ -38,15 +38,8 @@ if($id && $_GET['is_sure']=='1')
 
 	if($DB->Execute('DELETE FROM documents WHERE id = ?', array($id)))
 	{	
-		if($DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($id)))
-		{
-			$LMS->SetTS('receiptcontents');
-		}
-		if($DB->Execute('DELETE FROM cash WHERE docid = ?', array($id)))
-		{
-			$LMS->SetTS('cash');
-		}
-		$LMS->SetTS('documents');
+		$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($id));
+		$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
 	}
 }
 

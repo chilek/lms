@@ -550,14 +550,6 @@ void reload(GLOBAL *g, struct payments_module *p)
 	else 
 		syslog(LOG_ERR, "[%s/payments] Unable to read 'invoices' table",p->base.instance);
 
-	// set timestamps
-	if(exec) 
-	{
-		g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
-		g->db_exec(g->conn, "INSERT INTO timestamps (tablename, time) VALUES ('cash', %NOW%)");
-		g->db_exec(g->conn, "INSERT INTO timestamps (tablename, time) VALUES ('_global', %NOW%)");
-	}
-
 	// remove old assignments
 	if(p->expiry_days<0) p->expiry_days *= -1; // number of expiry days can't be negative
 	

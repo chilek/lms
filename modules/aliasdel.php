@@ -29,7 +29,6 @@ $id = $_GET['id'];
 if($id && $_GET['is_sure']=='1')
 {
 	$DB->Execute('DELETE FROM aliases WHERE id = ?', array($id));
-	$LMS->SetTS('aliases');
 }
 
 header('Location: ?m=aliaslist');

@@ -242,7 +242,6 @@ if(isset($_POST['assignmentedit']))
 				    $a['discount'],
 				    $a['id'],
 				    ));
-		$LMS->SetTS('assignments');
 		
 		$DB->Execute('DELETE FROM nodeassignments WHERE assignmentid=?', array($a['id']));
 

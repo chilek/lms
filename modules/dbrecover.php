@@ -72,7 +72,6 @@ function DBLoad($filename=NULL)
 							'receiptcontents',
 							'documentcontents',
 							'stats',
-							'timestamps',
 							'eventassignments',
 							'sessions')))
 					$DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);

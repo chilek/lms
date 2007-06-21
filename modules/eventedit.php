@@ -27,19 +27,16 @@
 if($_GET['action'] == 'open')
 {
 	$DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
-	$LMS->SetTS('events');
 	$SESSION->redirect('?m=eventlist');
 }
 elseif($_GET['action'] == 'close')
 {
 	$DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
-	$LMS->SetTS('events');
 	$SESSION->redirect('?m=eventlist');
 }
 elseif($_GET['action'] == 'dropuser')
 {
 	$DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?',array($_GET['eid'], $_GET['aid']));
-	$LMS->SetTS('eventassignments');
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
@@ -81,14 +78,11 @@ if(isset($_POST['event']))
 		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, endtime=?, private=?, note=?, customerid=? WHERE id=?',
 				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['id']));
 				
-		$LMS->SetTS('events');
-
 		if($event['user'])
 		{
 			if(!$DB->GetOne('SELECT 1 FROM eventassignments WHERE eventid = ? AND userid = ?',array($event['id'], $event['user'])))
 			{
 				$DB->Execute('INSERT INTO eventassignments (eventid, userid) VALUES(?,?)',array($event['id'], $event['user']));
-				$LMS->SetTS('eventassignments');
 			}
 		}
 

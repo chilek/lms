@@ -372,6 +372,7 @@
                     <member>city - miasto klienta</member>
 		    <member>closed - czy dokument jest rozliczony? (0/1)</member>
 		    <member>reference - ID dokumentu (np. korygowanej faktury)</member>
+		    <member>reason - np. powód korekty faktury</member>
                </simplelist>
           </sect2>
           <sect2 id="documentcontents">
@@ -457,13 +458,6 @@
                     <member>id - identyfikator rekordu</member>
                     <member>login - nazwa konta (bez domeny)</member>
                     <member>accountid - identyfikator konta</member>
-               </simplelist>
-          </sect2>
-          <sect2 id="timestamps">
-               <title>Historia ('timestamps')</title>
-               <simplelist>
-                    <member>time - czas ostatniej modyfikacji</member>
-                    <member>tablename - nazwa tabeli</member>
                </simplelist>
           </sect2>
           <sect2 id="stats">

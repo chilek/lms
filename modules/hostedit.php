@@ -50,7 +50,6 @@ if(isset($_POST['hostedit']))
 	{
 		$DB->Execute('UPDATE hosts SET name=?, description=? WHERE id=?',
 				    array($hostedit['name'], $hostedit['description'], $_GET['id']));
-		$LMS->SetTS('hosts');
 		
 		$SESSION->redirect('?m=hostlist');
 	}

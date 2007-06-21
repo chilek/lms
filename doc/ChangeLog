@@ -31,6 +31,7 @@ version ? (????-??-??):
   - fixed balance sheet printing with use of network filter (alec)
   - nodes searching by MAC address in many formats eg. XXXXXXXXXXXX,
     XX-XX-XX-XX-XX-XX, XXXX.XXXX.XXXX or native LMS format with colon (alec)
+  - removed unused SetTS() calls and table 'timestamps' (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 
@@ -802,397 +803,397 @@ version 1.5.5 Anubis (2005-03-25):
 
 version 1.5.4 Ramius (2005-02-16):
 
-  - domy¶lnym jêzykiem interfejsu u¿ytkownika jest angielski (en), wykonano
-    t³umaczenie na jêzyk polski, zmieniono nazewnictwo: u¿ytkownicy -> klienci,
-    administratorzy -> u¿ytkownicy, jêzyk jest odczytywany z ustawieñ
-    przegl±darki, a mo¿e byæ tak¿e ustawiony poprzez opcjê 'lang', zmieniono
-    kodowanie danych i interfejsu na UTF-8, trwaj± prace nad t³umaczeniem 
+  - domyÅ›lnym jÄ™zykiem interfejsu uÅ¼ytkownika jest angielski (en), wykonano
+    tÅ‚umaczenie na jÄ™zyk polski, zmieniono nazewnictwo: uÅ¼ytkownicy -> klienci,
+    administratorzy -> uÅ¼ytkownicy, jÄ™zyk jest odczytywany z ustawieÅ„
+    przeglÄ…darki, a moÅ¼e byÄ‡ takÅ¼e ustawiony poprzez opcjÄ™ 'lang', zmieniono
+    kodowanie danych i interfejsu na UTF-8, trwajÄ… prace nad tÅ‚umaczeniem 
     dokumentacji (alec/lexx/maniac/chilek i inni)
   - zmiana opcji 'userlist_pagelimit' na 'customerlist_pagelimit' (alec) 
-  - poprawiony b³±d przy usuwaniu op³aty sta³ej powoduj±cy usuniêcie op³aty
+  - poprawiony bÅ‚Ä…d przy usuwaniu opÅ‚aty staÅ‚ej powodujÄ…cy usuniÄ™cie opÅ‚aty
     bez potwierdzenia (alec)
-  - dodana opcja konfiguracyjna (phpui -> lang_debug) która pozwala na 
-    wy¶wietlanie w popupie brakuj±cych ci±gów w t³umaczeniach (lexx)
-  - poprawiony b³±d na li¶cie u¿ytkowników wyszukanych powoduj±cy ignorowanie
-    braku potwierdzenia przy rozliczaniu u¿ytkownika (alec)
-  - BTS#0000275: poprawiony b³±d w zapytaniu sql podczas wyszukiwania zg³oszeñ
-    wg nazwiska zg³aszaj±cego (rejmer)
-  - BTS#0000278: dodane uprawnienie 'zarz±dzanie sieciami i urz±dzeniami' oraz
-    wy³±czono z uprawnienia 'zarz±dzanie komputerami' od³±czanie/w³±czanie
-    komputerów (rejmer/alec)
-  - w dokumentacji dodana informacja jak pod³±czyæ lms-rtparser do postfixa
-    przy u¿yciu procmaila (D.Rejmer)
-  - dodawanie aliasów i domen przeniesiono do osobnych modu³ów, uprawnienie
-    'tylko odczyt' zezwala na odczyt danych kont/aliasów/domen (alec)
-  - BTS#0000279: na szablonie wysy³ania maili poprawiono zamienione miejscami
-    nazwê i email nadawcy (alec)
-  - BTS#0000280: poprawione b³êdne zaokr±glanie oraz sumowanie ogólnej kwoty
-    podatku na rejestrze sprzeda¿y (.PaKud/alec)
-  - obs³uga gzipowanych kopii zapasowych (kuba)
-  - BTS#0000276: lms-rtparser: je¶li nie zdefiniowano 'mail_from_name' w polu
-    'From:' potwierdzenia wstawiamy nazwê kolejki (rejmer/alec)
+  - dodana opcja konfiguracyjna (phpui -> lang_debug) ktÃ³ra pozwala na 
+    wyÅ›wietlanie w popupie brakujÄ…cych ciÄ…gÃ³w w tÅ‚umaczeniach (lexx)
+  - poprawiony bÅ‚Ä…d na liÅ›cie uÅ¼ytkownikÃ³w wyszukanych powodujÄ…cy ignorowanie
+    braku potwierdzenia przy rozliczaniu uÅ¼ytkownika (alec)
+  - BTS#0000275: poprawiony bÅ‚Ä…d w zapytaniu sql podczas wyszukiwania zgÅ‚oszeÅ„
+    wg nazwiska zgÅ‚aszajÄ…cego (rejmer)
+  - BTS#0000278: dodane uprawnienie 'zarzÄ…dzanie sieciami i urzÄ…dzeniami' oraz
+    wyÅ‚Ä…czono z uprawnienia 'zarzÄ…dzanie komputerami' odÅ‚Ä…czanie/wÅ‚Ä…czanie
+    komputerÃ³w (rejmer/alec)
+  - w dokumentacji dodana informacja jak podÅ‚Ä…czyÄ‡ lms-rtparser do postfixa
+    przy uÅ¼yciu procmaila (D.Rejmer)
+  - dodawanie aliasÃ³w i domen przeniesiono do osobnych moduÅ‚Ã³w, uprawnienie
+    'tylko odczyt' zezwala na odczyt danych kont/aliasÃ³w/domen (alec)
+  - BTS#0000279: na szablonie wysyÅ‚ania maili poprawiono zamienione miejscami
+    nazwÄ™ i email nadawcy (alec)
+  - BTS#0000280: poprawione bÅ‚Ä™dne zaokrÄ…glanie oraz sumowanie ogÃ³lnej kwoty
+    podatku na rejestrze sprzedaÅ¼y (.PaKud/alec)
+  - obsÅ‚uga gzipowanych kopii zapasowych (kuba)
+  - BTS#0000276: lms-rtparser: jeÅ›li nie zdefiniowano 'mail_from_name' w polu
+    'From:' potwierdzenia wstawiamy nazwÄ™ kolejki (rejmer/alec)
   - BTS#0000282: lms-rtparser: w polu 'Do:' potwierdzenia wstawiamy tylko
-    adres email bez nazwy konta zg³aszaj±cego (rejmer/alec)
-  - BTS#0000274: Nie mo¿na przypisaæ komputerowi adresu gatewaya (alec)
-  - usuniêty b³±d powoduj±cy z³e rozpoznawanie adresu sieci i broadcastu na 
-    li¶cie hostów w danej sieci, je¶li lista ta by³a na wiêcej ni¿ jednej
+    adres email bez nazwy konta zgÅ‚aszajÄ…cego (rejmer/alec)
+  - BTS#0000274: Nie moÅ¼na przypisaÄ‡ komputerowi adresu gatewaya (alec)
+  - usuniÄ™ty bÅ‚Ä…d powodujÄ…cy zÅ‚e rozpoznawanie adresu sieci i broadcastu na 
+    liÅ›cie hostÃ³w w danej sieci, jeÅ›li lista ta byÅ‚a na wiÄ™cej niÅ¼ jednej
     stronie (alec)
-  - poprawiony b³±d w skrypcie lms-notify oraz modu³ach almsd notify i ggnotify
-    powoduj±cy pobieranie do %last_10_in_a_table dziesiêciu pierwszych a nie
+  - poprawiony bÅ‚Ä…d w skrypcie lms-notify oraz moduÅ‚ach almsd notify i ggnotify
+    powodujÄ…cy pobieranie do %last_10_in_a_table dziesiÄ™ciu pierwszych a nie
     ostatnich operacji (alec)
-  - poprawiony b³±d w ustawianiu daty wystawienia nowej faktury (alec)
-  - dodano zabezpieczenie przed wystawieniem faktury bez zawarto¶ci (alec)
-  - BTS#0000281: poprawiono wy¶wietlanie listy zad³u¿onych, które na MySQLu
-    uwzglêdnia³o tak¿e u¿ytkowników z bilansem równym zero (alec)
-  - zmiana warto¶ci domy¶lnej opcji invoices/content_type: usuniêto definicjê
+  - poprawiony bÅ‚Ä…d w ustawianiu daty wystawienia nowej faktury (alec)
+  - dodano zabezpieczenie przed wystawieniem faktury bez zawartoÅ›ci (alec)
+  - BTS#0000281: poprawiono wyÅ›wietlanie listy zadÅ‚uÅ¼onych, ktÃ³re na MySQLu
+    uwzglÄ™dniaÅ‚o takÅ¼e uÅ¼ytkownikÃ³w z bilansem rÃ³wnym zero (alec)
+  - zmiana wartoÅ›ci domyÅ›lnej opcji invoices/content_type: usuniÄ™to definicjÄ™
     charsetu (alec)
-  - numeracja miesiêczna faktur: invoices/monthly_numbering (alec)
-  - BTS#0000299: poprawka w funkcji sprawdzaj±cej poprawno¶æ MAC'a (lukas)
+  - numeracja miesiÄ™czna faktur: invoices/monthly_numbering (alec)
+  - BTS#0000299: poprawka w funkcji sprawdzajÄ…cej poprawnoÅ›Ä‡ MAC'a (lukas)
   - dodana opcja %PIN do lms-mgc (lukasz)
   - Terminarz (alec)
-  - zmiana typu kolumny przechowuj±cej kod pocztowy na VARCHAR(10) uwzgl.
-    amerykañski format 5+4 (alec)
-  - dodana mo¿liwo¶æ wydruku listy komputerów u¿ytkowników zad³u¿onych (alec)
-  - na li¶cie opcji konfiguracyjnych dodano linki do edycji, usuwania oraz
-    w³±czania/wy³±czania opcji (alec)
-  - dodana mo¿liwo¶æ filtrowania listy faktur wg zadanych kryteriów (alec)
-  - w opcji 'contract_template' mo¿e podawaæ kilka plików szablonów umów
+  - zmiana typu kolumny przechowujÄ…cej kod pocztowy na VARCHAR(10) uwzgl.
+    amerykaÅ„ski format 5+4 (alec)
+  - dodana moÅ¼liwoÅ›Ä‡ wydruku listy komputerÃ³w uÅ¼ytkownikÃ³w zadÅ‚uÅ¼onych (alec)
+  - na liÅ›cie opcji konfiguracyjnych dodano linki do edycji, usuwania oraz
+    wÅ‚Ä…czania/wyÅ‚Ä…czania opcji (alec)
+  - dodana moÅ¼liwoÅ›Ä‡ filtrowania listy faktur wg zadanych kryteriÃ³w (alec)
+  - w opcji 'contract_template' moÅ¼e podawaÄ‡ kilka plikÃ³w szablonÃ³w umÃ³w
     wraz z opisem, np. "plik.html:Umowa Test, plik2.html:Umowa Standard" (alec)
   - lms-sendinvoices: dodana opcja --fakedate (alec)
-  - dodano mo¿liwo¶æ wydruku listy u¿ytkowników z bilansem na dany dzieñ (alec)
-  - na bilansie u¿ytkownika oraz bilansie sieci dodano mo¿liwo¶æ wydruku 
-    orygina³ów/kopii wybranych faktur (alec)
+  - dodano moÅ¼liwoÅ›Ä‡ wydruku listy uÅ¼ytkownikÃ³w z bilansem na dany dzieÅ„ (alec)
+  - na bilansie uÅ¼ytkownika oraz bilansie sieci dodano moÅ¼liwoÅ›Ä‡ wydruku 
+    oryginaÅ‚Ã³w/kopii wybranych faktur (alec)
   - lms-payments (almsd/payments): jednej pozycji na fakturze odpowiada 
-    dok³adnie jedno obci±¿enie, tak¿e wtedy gdy pozycja sk³ada siê z wielu
+    dokÅ‚adnie jedno obciÄ…Å¼enie, takÅ¼e wtedy gdy pozycja skÅ‚ada siÄ™ z wielu
     podpozycji/taryf (alec)
   - edycja i usuwanie faktur (lexx)
-  - dodano index na kolumnie invoiceid w tabeli cash, przyspieszaj±cy niektóre
+  - dodano index na kolumnie invoiceid w tabeli cash, przyspieszajÄ…cy niektÃ³re
     zapytania SQL (alec)
-  - mo¿liwo¶æ generowania faktur w PDF (lexx)
-  - dla operacji fakturowanych dodano mo¿liwo¶æ powi±zywania obci±¿eñ z
-    wp³atami/przedp³atami, co np. pozwala na czê¶ciowe rozliczanie faktur (alec)
-  - mo¿na edytowaæ opcje sekcji [finances] z poziomu UI (alec)
-  - poprawki w nodescan.php|html - je¶li wyszukujemy komputery z poziomu klienta
-    zostaje wy¶wietlona kompletna strona informacji o kliencie (alec)
-  - lms-payments: dodano opcjê 'comment' ustalaj±c± komentarz do op³aty,
+  - moÅ¼liwoÅ›Ä‡ generowania faktur w PDF (lexx)
+  - dla operacji fakturowanych dodano moÅ¼liwoÅ›Ä‡ powiÄ…zywania obciÄ…Å¼eÅ„ z
+    wpÅ‚atami/przedpÅ‚atami, co np. pozwala na czÄ™Å›ciowe rozliczanie faktur (alec)
+  - moÅ¼na edytowaÄ‡ opcje sekcji [finances] z poziomu UI (alec)
+  - poprawki w nodescan.php|html - jeÅ›li wyszukujemy komputery z poziomu klienta
+    zostaje wyÅ›wietlona kompletna strona informacji o kliencie (alec)
+  - lms-payments: dodano opcjÄ™ 'comment' ustalajÄ…cÄ… komentarz do opÅ‚aty,
     dozwolone zmienne: %tariff, %period, %desc (alec)
 
 version 1.5.3 Nirrti (2004-12-16):
 
-  - w polu email przy dodawaniu/edycji u¿ytkownika mo¿na wpisaæ tylko jeden 
-    adres, dodane sprawdzenie poprawno¶ci tego adresu (alec)
-  - poprawiona walidacja PINu przy dodawaniu u¿ytkownika (alec)
-  - poprawione sprawdzanie poprawno¶ci loginu i domeny konta (alec)
-  - mo¿liwo¶æ zmiany opcji konfiguracyjnych z sekcji [phpui] i [invoices]
-    w interfejsie u¿ytkownika (menu Administracja -> Konfiguracja), wiêcej 
-    w dokumentacji: Rozdzia³ 3.2.5. (alec)
+  - w polu email przy dodawaniu/edycji uÅ¼ytkownika moÅ¼na wpisaÄ‡ tylko jeden 
+    adres, dodane sprawdzenie poprawnoÅ›ci tego adresu (alec)
+  - poprawiona walidacja PINu przy dodawaniu uÅ¼ytkownika (alec)
+  - poprawione sprawdzanie poprawnoÅ›ci loginu i domeny konta (alec)
+  - moÅ¼liwoÅ›Ä‡ zmiany opcji konfiguracyjnych z sekcji [phpui] i [invoices]
+    w interfejsie uÅ¼ytkownika (menu Administracja -> Konfiguracja), wiÄ™cej 
+    w dokumentacji: RozdziaÅ‚ 3.2.5. (alec)
   - contrib/formularz_przelewu_wplaty: dwa druki na stronie i inne drobne
     poprawki (J.Krzymin/alec)
-  - poprawki w Mailingu dot. obs³ugi b³êdów i kosmetyka interfejsu (alec)
-  - wydruk faktur za dany okres z mo¿liwo¶ci± wyboru u¿ytkownika (alec)
-  - lms-payments: poprawione dzia³anie opcji --quiet, dodana opcja
+  - poprawki w Mailingu dot. obsÅ‚ugi bÅ‚Ä™dÃ³w i kosmetyka interfejsu (alec)
+  - wydruk faktur za dany okres z moÅ¼liwoÅ›ciÄ… wyboru uÅ¼ytkownika (alec)
+  - lms-payments: poprawione dziaÅ‚anie opcji --quiet, dodana opcja
     -f, --fakedate=YYYY/MM/DD (alec/RIP)
-  - usuniêty b³±d powoduj±cy brak mo¿liwo¶ci edycji konta systemowego (alec)
-  - mo¿na okre¶liæ datê wystawienia nowej faktury (alec)
-  - w oknie bilansu u¿ytkownika dodany link 'Wystaw fakturê' (alec)
-  - BTS#0000254: funkcja writesyslog() dzia³a równie¿ na OpenBSD (kubatyszko)
-  - edycja zobowi±zañ u¿ytkownika (alec)
-  - dodana opcja 'to_words_short_version' w sekcji [phpui] okre¶laj±ca format
-    reprezentacji s³ownej kwot (alec/kubatyszko)
-  - w formularzu przelewu/wp³aty mo¿na zdefiniowaæ format reprezentacji s³ownej 
+  - usuniÄ™ty bÅ‚Ä…d powodujÄ…cy brak moÅ¼liwoÅ›ci edycji konta systemowego (alec)
+  - moÅ¼na okreÅ›liÄ‡ datÄ™ wystawienia nowej faktury (alec)
+  - w oknie bilansu uÅ¼ytkownika dodany link 'Wystaw fakturÄ™' (alec)
+  - BTS#0000254: funkcja writesyslog() dziaÅ‚a rÃ³wnieÅ¼ na OpenBSD (kubatyszko)
+  - edycja zobowiÄ…zaÅ„ uÅ¼ytkownika (alec)
+  - dodana opcja 'to_words_short_version' w sekcji [phpui] okreÅ›lajÄ…ca format
+    reprezentacji sÅ‚ownej kwot (alec/kubatyszko)
+  - w formularzu przelewu/wpÅ‚aty moÅ¼na zdefiniowaÄ‡ format reprezentacji sÅ‚ownej 
     kwoty (alec/kubatyszko)
-  - BTS#0000252: usuniête spacje wiod±ce w repr. s³ownej kwot (alec)
-  - filtrowanie listy zg³oszeñ Helpdesk wg statusu (alec)
-  - w dokumentacji dodany opis pod³±czenia lms-rtparser do Exima (P.Górski)
+  - BTS#0000252: usuniÄ™te spacje wiodÄ…ce w repr. sÅ‚ownej kwot (alec)
+  - filtrowanie listy zgÅ‚oszeÅ„ Helpdesk wg statusu (alec)
+  - w dokumentacji dodany opis podÅ‚Ä…czenia lms-rtparser do Exima (P.GÃ³rski)
   - Konta/Aliasy/Domeny 
-	!!! UWAGA: Domeny nie s± ju¿ trzymane w passwd !!! (alec)
-  - dodany filtr 'on-line' do listy u¿ytkowników (alec)
-  - usuniêty b³±d w module payments demona, wystêpuj±cy na mysql'u, który
-    powodowa³ niezapisywanie zawarto¶ci faktur (alec)
-  - almsd: zmiana w funkcji db_query() dla mysql'a powoduj±ca, ¿e przy pustym
+	!!! UWAGA: Domeny nie sÄ… juÅ¼ trzymane w passwd !!! (alec)
+  - dodany filtr 'on-line' do listy uÅ¼ytkownikÃ³w (alec)
+  - usuniÄ™ty bÅ‚Ä…d w module payments demona, wystÄ™pujÄ…cy na mysql'u, ktÃ³ry
+    powodowaÅ‚ niezapisywanie zawartoÅ›ci faktur (alec)
+  - almsd: zmiana w funkcji db_query() dla mysql'a powodujÄ…ca, Å¼e przy pustym
     resultsecie nie zwracamy teraz NULL'a, tzn. tak jak dla innych baz,
-    czyli po wywo³aniu tej funkcji nale¿y pamiêtaæ o sprawdzeniu pola 
+    czyli po wywoÅ‚aniu tej funkcji naleÅ¼y pamiÄ™taÄ‡ o sprawdzeniu pola 
     'nrows' wyniku (alec)
-  - usuniêta redefinicja funkcji chkconfig() z customer (chilek)
-  - w userinfo dodany link do listy kont u¿ytkownika (alec)
-  - listy kont i aliasów wspó³dziel± te same filtry (alec)
-  - lms-squid-warnings obs³uguje bazy postgres i sqlite (alec)
+  - usuniÄ™ta redefinicja funkcji chkconfig() z customer (chilek)
+  - w userinfo dodany link do listy kont uÅ¼ytkownika (alec)
+  - listy kont i aliasÃ³w wspÃ³Å‚dzielÄ… te same filtry (alec)
+  - lms-squid-warnings obsÅ‚uguje bazy postgres i sqlite (alec)
   - lms-rtparser: przy nieustawionej opcji 'mail_from' poprawnie wstawiany
     jest adres kolejki (alec)
-  - BTS#0000257: w sumie op³at miesiêcznych u¿ytkowników oraz w ¶rednim zysku
-    miesiêcznym taryf nie uwzglêdniamy zobowi±zañ zawieszonych (alec)
-  - BTS#0000266: zabezpieczenie przed generowaniem mapy sieci, w której nie ma
-    urz±dzeñ, co powodowa³o segfaulta Apache'a (alec)
-  - z szablonu faktury usuniêta informacja powo³uj±ca siê na nieaktualne
+  - BTS#0000257: w sumie opÅ‚at miesiÄ™cznych uÅ¼ytkownikÃ³w oraz w Å›rednim zysku
+    miesiÄ™cznym taryf nie uwzglÄ™dniamy zobowiÄ…zaÅ„ zawieszonych (alec)
+  - BTS#0000266: zabezpieczenie przed generowaniem mapy sieci, w ktÃ³rej nie ma
+    urzÄ…dzeÅ„, co powodowaÅ‚o segfaulta Apache'a (alec)
+  - z szablonu faktury usuniÄ™ta informacja powoÅ‚ujÄ…ca siÄ™ na nieaktualne
     przepisy prawne (alec)
-  - poprawiona walidacja NIPu przy edycji i dodawaniu u¿ytkownika (alec)
+  - poprawiona walidacja NIPu przy edycji i dodawaniu uÅ¼ytkownika (alec)
   - contrib/formularz_przelewu_wplaty_2 (lexx)
-  - lms-mgc ignoruje wpis node(x.x.x.x) je¿eli host x.x.x.x nie istnieje
+  - lms-mgc ignoruje wpis node(x.x.x.x) jeÅ¼eli host x.x.x.x nie istnieje
     (dzwonus/lukasz)
-  - Helpdesk: dodana mo¿liwo¶æ wysy³ania wiadomo¶ci z za³±cznikiem (alec)
+  - Helpdesk: dodana moÅ¼liwoÅ›Ä‡ wysyÅ‚ania wiadomoÅ›ci z zaÅ‚Ä…cznikiem (alec)
 
 version 1.5.2 Isis (2004-11-25):
 
   - experymentalny driver do MS SQL Servera (alec)
   - poprawne tworzenie shared-network w lms-makedhcpconf (alec)
   - dokumentacja: dodany opis lms-makedhcpconf (alec)
-  - dodane brakuj±ce defaulty do niektórych kolumn w tabeli rtmessages
+  - dodane brakujÄ…ce defaulty do niektÃ³rych kolumn w tabeli rtmessages
     w lms.mysql (alec)
-  - w funkcji odczytuj±cej nazwê hosta (któr± nastêpnie widaæ w nag³ówkach 
-    stron) dodano sprawdzenie sta³ych $_ENV['HOSTNAME'] i $_SERVER[SERVER_NAME']
-    je¶li nie powiedzie siê próba odczytania nazwy poprzez `hostname` (alec)
+  - w funkcji odczytujÄ…cej nazwÄ™ hosta (ktÃ³rÄ… nastÄ™pnie widaÄ‡ w nagÅ‚Ã³wkach 
+    stron) dodano sprawdzenie staÅ‚ych $_ENV['HOSTNAME'] i $_SERVER[SERVER_NAME']
+    jeÅ›li nie powiedzie siÄ™ prÃ³ba odczytania nazwy poprzez `hostname` (alec)
   - do danych komputera dodano pole 'info' (alec)
-  - lms-mgc: dodana zmienna %INFO zawieraj±ca opis komputera j.w. (alec)
-  - dodana zmienna %info w regu³kach modu³u hostfile demona almsd (alec)
-  - dokumentacja: uzupe³niony opis zmiennych lms-mgc (alec)
-  - w statystykach dodany ¶redni transfer w KB/s (alec)
-  - generowanie PINu podczas edycji/dodawania u¿ytkownika (alec)
-  - poprawka w funkcji szybkiego wyszukiwania komputera uwzglêdniaj±ca zmianê
-    dzia³ania ip2long() w PHP5 (alec)
-  - BTS#0000229: contrib/customer - uwzglêdniona sytuacja, gdy ³±czymy siê z
-    urz±dzenia sieciowego (alec)
+  - lms-mgc: dodana zmienna %INFO zawierajÄ…ca opis komputera j.w. (alec)
+  - dodana zmienna %info w reguÅ‚kach moduÅ‚u hostfile demona almsd (alec)
+  - dokumentacja: uzupeÅ‚niony opis zmiennych lms-mgc (alec)
+  - w statystykach dodany Å›redni transfer w KB/s (alec)
+  - generowanie PINu podczas edycji/dodawania uÅ¼ytkownika (alec)
+  - poprawka w funkcji szybkiego wyszukiwania komputera uwzglÄ™dniajÄ…ca zmianÄ™
+    dziaÅ‚ania ip2long() w PHP5 (alec)
+  - BTS#0000229: contrib/customer - uwzglÄ™dniona sytuacja, gdy Å‚Ä…czymy siÄ™ z
+    urzÄ…dzenia sieciowego (alec)
   - lms-arping (T.Ciaszczyk/alec)
-  - lms-rtparser: usuniêty b³±d w dzia³aniu opcji tmp_dir (alec)
-  - pinger.h: usuniêty b³±d kompilacji z glibc 2.3 (alec)
+  - lms-rtparser: usuniÄ™ty bÅ‚Ä…d w dziaÅ‚aniu opcji tmp_dir (alec)
+  - pinger.h: usuniÄ™ty bÅ‚Ä…d kompilacji z glibc 2.3 (alec)
   - almsd/cutoff: dodane opcje 'warning' i 'command' (alec)
   - BTS#0000245: poprawiona godzina w 'data do' na 23:59:59 w wydrukach
-    bilansu finansowego sieci i u¿ytkownika (alec)
-  - contrib/daemon/cbq-init: dodatkowy modu³ demona (alec)
-  - dodane sprawdzenie czy zaznaczono u¿ytkowników przy dodawaniu nowej
+    bilansu finansowego sieci i uÅ¼ytkownika (alec)
+  - contrib/daemon/cbq-init: dodatkowy moduÅ‚ demona (alec)
+  - dodane sprawdzenie czy zaznaczono uÅ¼ytkownikÃ³w przy dodawaniu nowej
     operacji (alec)
   - poprawki w genfake (lexx)
-  - almsd/cutoff: dodana opcja 'warnings_only' umo¿liwiaj±ca wykorzystanie
-    tego modu³u wy³±cznie do w³±czania ostrze¿eñ, gruntowna przebudowa (alec)
-  - contrib/daemon/cutoff2 - ulepszony cutoff dla zobowi±zañ mies. (alec)
-  - contrib/multiip_patch (alec/£.Wojciechowski/M.Adamski)
-  - BTS#0000237: na li¶cie wyboru taryfy w zobowi±zaniach u¿ytkownika pokazujemy
-    warto¶ci uprate, upceil, downrate, downceil (alec)
-  - BTS#0000246: na FreeBSD hostname wywo³ujemy bez opcji -f (alec)
-  - BTS#0000248: zmiana statusu lub ostrze¿enie komputera nie powoduje zmiany
+  - almsd/cutoff: dodana opcja 'warnings_only' umoÅ¼liwiajÄ…ca wykorzystanie
+    tego moduÅ‚u wyÅ‚Ä…cznie do wÅ‚Ä…czania ostrzeÅ¼eÅ„, gruntowna przebudowa (alec)
+  - contrib/daemon/cutoff2 - ulepszony cutoff dla zobowiÄ…zaÅ„ mies. (alec)
+  - contrib/multiip_patch (alec/Å.Wojciechowski/M.Adamski)
+  - BTS#0000237: na liÅ›cie wyboru taryfy w zobowiÄ…zaniach uÅ¼ytkownika pokazujemy
+    wartoÅ›ci uprate, upceil, downrate, downceil (alec)
+  - BTS#0000246: na FreeBSD hostname wywoÅ‚ujemy bez opcji -f (alec)
+  - BTS#0000248: zmiana statusu lub ostrzeÅ¼enie komputera nie powoduje zmiany
     administratora "ostatniej modyfikacji" (alec)
-  - w lms-makemacs poprawiona domy¶lna warto¶æ opcji config_file (alec)
-  - dodany 'Rozdzia³ 9 FAQ' w dokumentacji (alec)
+  - w lms-makemacs poprawiona domyÅ›lna wartoÅ›Ä‡ opcji config_file (alec)
+  - dodany 'RozdziaÅ‚ 9 FAQ' w dokumentacji (alec)
   - przebudowana struktura menu: Administratorzy, Bazy danych, Witamy!
     zebrane w jednym 'Administracja' (alec)
-  - poprawki formularzy u³atwiaj±ce szybsz± obs³ugê bez u¿ycia myszy (alec)
+  - poprawki formularzy uÅ‚atwiajÄ…ce szybszÄ… obsÅ‚ugÄ™ bez uÅ¼ycia myszy (alec)
   - Konta (lexx/alec)
   - contrib/daemon/shaper (M.Adamski)
 
 version 1.5.1 Eamon (2004-10-25):
 
-  - przyspieszone wy¶wietlanie modu³u wydruków i innych pobieraj±cych listê
-    administratorów (alec)
+  - przyspieszone wyÅ›wietlanie moduÅ‚u wydrukÃ³w i innych pobierajÄ…cych listÄ™
+    administratorÃ³w (alec)
   - BTS#0000200 (alec)
   - poprawki i kosmetyka w contrib/customer_otherip oraz dodany opis do
     dokumentacji (alec)
   - optymalizacja wydruku bilansu finansowego (alec)
-  - BTS#0000203: nie mo¿na siê logowaæ na usuniête konto admina (alec)
-  - usuniêty b³±d uniemo¿liwiaj±cy otwarcie za³±cznika do wiadomo¶ci rt (alec)
-  - BTS#0000206: poprawione pobieranie baz przy po³±czeniu https (alec/lexx)
-  - Helpdesk: dodane wpisy do sample/lms.ini, poprawiony b³±d przy zmianie
-    w³a¶ciciela zg³oszenia, w dokumentacji dodana informacja o wymaganych
-    przez rtparser modu³ach Perla (alec)
-  - w lms-rtparser potwierdzenia wysy³a Net::SMTP zamiast sendmaila, 
+  - BTS#0000203: nie moÅ¼na siÄ™ logowaÄ‡ na usuniÄ™te konto admina (alec)
+  - usuniÄ™ty bÅ‚Ä…d uniemoÅ¼liwiajÄ…cy otwarcie zaÅ‚Ä…cznika do wiadomoÅ›ci rt (alec)
+  - BTS#0000206: poprawione pobieranie baz przy poÅ‚Ä…czeniu https (alec/lexx)
+  - Helpdesk: dodane wpisy do sample/lms.ini, poprawiony bÅ‚Ä…d przy zmianie
+    wÅ‚aÅ›ciciela zgÅ‚oszenia, w dokumentacji dodana informacja o wymaganych
+    przez rtparser moduÅ‚ach Perla (alec)
+  - w lms-rtparser potwierdzenia wysyÅ‚a Net::SMTP zamiast sendmaila, 
     dodane opcje smtp_server, mail_from_name (alec)
-  - usuniêty b³±d przy odtwarzaniu backupu na postgresie spowodowany 
-    aktualizacj± nieistniej±cych sekwencji (alec)
-  - status online adresów urz±dzeñ w netdevinfo (alec)
-  - poprawiony b³±d w zapytaniu sql w lms-notify (alec)
-  - na li¶cie sieci podajemy ilo¶æ komputerów online dla ka¿dej sieci (alec/lukas)
-  - statystyki zg³oszeñ w welcome.html (alec)
-  - dodana opcja networkhosts_pagelimit, domy¶lnie pokazujemy 256 hostów
+  - usuniÄ™ty bÅ‚Ä…d przy odtwarzaniu backupu na postgresie spowodowany 
+    aktualizacjÄ… nieistniejÄ…cych sekwencji (alec)
+  - status online adresÃ³w urzÄ…dzeÅ„ w netdevinfo (alec)
+  - poprawiony bÅ‚Ä…d w zapytaniu sql w lms-notify (alec)
+  - na liÅ›cie sieci podajemy iloÅ›Ä‡ komputerÃ³w online dla kaÅ¼dej sieci (alec/lukas)
+  - statystyki zgÅ‚oszeÅ„ w welcome.html (alec)
+  - dodana opcja networkhosts_pagelimit, domyÅ›lnie pokazujemy 256 hostÃ³w
     w netinfo (alec)
   - przebudowany i poprawiony lms-notify-sms (alec)
-  - lms-notify: uzupe³niona dokumentacja (%phone1, %date_month_name), poprawione 
+  - lms-notify: uzupeÅ‚niona dokumentacja (%phone1, %date_month_name), poprawione 
     sortowanie %last_10_in_a_table i znak przy kwotach (alec)
-  - mo¿liwo¶æ szybkiego wyszukania zg³oszeñ o okre¶lonych stanach z welcome.html (chilek)
-  - pominiêcie usuniêtych u¿ytkowników w szybkim wyszukiwaniu (modu³ quicksearch) (averne)
-  - mo¿liwo¶æ skasowania wiadomo¶ci w widoku zg³oszenia (chilek)
-  - poprawiona kwota s³ownie w contrib/formularz_wp³aty (alec)
-  - lms-rtparser: poprawione/dodane kodowanie nag³ówków potwierdzenia (alec)
-  - poprawiony auto-upgrade: w przypadku wyst±pienia b³êdu procedura zostaje
+  - moÅ¼liwoÅ›Ä‡ szybkiego wyszukania zgÅ‚oszeÅ„ o okreÅ›lonych stanach z welcome.html (chilek)
+  - pominiÄ™cie usuniÄ™tych uÅ¼ytkownikÃ³w w szybkim wyszukiwaniu (moduÅ‚ quicksearch) (averne)
+  - moÅ¼liwoÅ›Ä‡ skasowania wiadomoÅ›ci w widoku zgÅ‚oszenia (chilek)
+  - poprawiona kwota sÅ‚ownie w contrib/formularz_wpÅ‚aty (alec)
+  - lms-rtparser: poprawione/dodane kodowanie nagÅ‚Ã³wkÃ³w potwierdzenia (alec)
+  - poprawiony auto-upgrade: w przypadku wystÄ…pienia bÅ‚Ä™du procedura zostaje
     przerwana (alec)
-  - poprawiony b³±d uniemo¿liwiaj±cy edycjê danych grupy u¿ytkowników (alec)
+  - poprawiony bÅ‚Ä…d uniemoÅ¼liwiajÄ…cy edycjÄ™ danych grupy uÅ¼ytkownikÃ³w (alec)
   - opcja phpui/contract_template lms.ini dla szablonu umowy usera (alec)
-  - lms-rtparser: auto_open - automatyczne otwieranie zamkniêtych zg³oszeñ (alec)
-  - BTS#0000204: dane o ostatnim logowaniu zalogowanego administratora zawieraj±
-    informacje z ostatniego logowania, a nie z bie¿±cej sesji (alec)
-  - po zmianie has³a wy¶wietlamy ostatni modu³ zamiast welcome (alec)
-  - nazwa interfejsu mo¿e zawieraæ ':' i '.' (alec)
-  - naprawione sumowanie w kolumnie 0% w rejestrze sprzeda¿y (alec)
-  - poprawione b³êdy w pinger.h uniemo¿liwiaj±ce kompilacjê na niektórych
+  - lms-rtparser: auto_open - automatyczne otwieranie zamkniÄ™tych zgÅ‚oszeÅ„ (alec)
+  - BTS#0000204: dane o ostatnim logowaniu zalogowanego administratora zawierajÄ…
+    informacje z ostatniego logowania, a nie z bieÅ¼Ä…cej sesji (alec)
+  - po zmianie hasÅ‚a wyÅ›wietlamy ostatni moduÅ‚ zamiast welcome (alec)
+  - nazwa interfejsu moÅ¼e zawieraÄ‡ ':' i '.' (alec)
+  - naprawione sumowanie w kolumnie 0% w rejestrze sprzedaÅ¼y (alec)
+  - poprawione bÅ‚Ä™dy w pinger.h uniemoÅ¼liwiajÄ…ce kompilacjÄ™ na niektÃ³rych
     versionch glibca (alec)
   - BTS#0000221: dodany monit o potwierdzenie rozliczenia faktury (alec)
-  - usuniête przekierowanie do listy faktur po dodaniu faktury (alec)
-  - po³±czenia wireless na mapie sieci (alec)
-  - poprawiony b³±d w polu 'adres IP' podczas edycji komputera (lukas/alec)
-  - BTS#0000214: rozwi±zany problem z brakiem pamiêci podczas tworzenia 
+  - usuniÄ™te przekierowanie do listy faktur po dodaniu faktury (alec)
+  - poÅ‚Ä…czenia wireless na mapie sieci (alec)
+  - poprawiony bÅ‚Ä…d w polu 'adres IP' podczas edycji komputera (lukas/alec)
+  - BTS#0000214: rozwiÄ…zany problem z brakiem pamiÄ™ci podczas tworzenia 
     backupu (alec)
-  - dodany contrib/import, czyli import p³atno¶ci z pliku txt (alec)
+  - dodany contrib/import, czyli import pÅ‚atnoÅ›ci z pliku txt (alec)
   
 version 1.5.0 Marduk (2004-09-18):
 
-  - w lms-makedhcpconf hosty s± sortowane (alec)
-  - drukowanie zg³oszeñ (alec)
-  - BTS#0000192: poprawione wy¶wietlanie z³ego urz±dzenia sieciowego podczas
+  - w lms-makedhcpconf hosty sÄ… sortowane (alec)
+  - drukowanie zgÅ‚oszeÅ„ (alec)
+  - BTS#0000192: poprawione wyÅ›wietlanie zÅ‚ego urzÄ…dzenia sieciowego podczas
     edycji komputera (lexx)
-  - w oknie wyboru adresu IP domy¶ln± sieci± jest ta, do której nale¿y
-    edytowany komputer/adres urz±dzenia (alec/lukas)
-  - na mapie dodana informacja (w postaci ró¿nych ikon) o aktywno¶ci
-    urz±dzeñ sieciowych (alec/lexx)
-  - podgl±d szczegó³ów wiadomo¶ci Helpdesku (alec)
-  - podczas odpowiadania na zg³oszenie nastêpuje zmiana statusu i w³a¶ciciela
-    je¶li nie by³y wcze¶niej ustawione (alec)
-  - nazwa sieci mo¿e zawieraæ znak '_' (alec)
-  - nazwa grupy mo¿e zawieraæ znak '.' (alec)
-  - dodana obs³uga opcji konfig. 'networks' i 'usergroups' w module 'ethers',
+  - w oknie wyboru adresu IP domyÅ›lnÄ… sieciÄ… jest ta, do ktÃ³rej naleÅ¼y
+    edytowany komputer/adres urzÄ…dzenia (alec/lukas)
+  - na mapie dodana informacja (w postaci rÃ³Å¼nych ikon) o aktywnoÅ›ci
+    urzÄ…dzeÅ„ sieciowych (alec/lexx)
+  - podglÄ…d szczegÃ³Å‚Ã³w wiadomoÅ›ci Helpdesku (alec)
+  - podczas odpowiadania na zgÅ‚oszenie nastÄ™puje zmiana statusu i wÅ‚aÅ›ciciela
+    jeÅ›li nie byÅ‚y wczeÅ›niej ustawione (alec)
+  - nazwa sieci moÅ¼e zawieraÄ‡ znak '_' (alec)
+  - nazwa grupy moÅ¼e zawieraÄ‡ znak '.' (alec)
+  - dodana obsÅ‚uga opcji konfig. 'networks' i 'usergroups' w module 'ethers',
     'dns' i 'dhcp' demona (alec)
-  - poprawione b³êdne interpretowanie opcji 'networks' w modu³ach demona
-    gdy nazwa sieci zawiera³a kropkê (alec)
-  - BTS#0000183: dodany indeks na kolumnie userid w tabeli cash, powoduj±cy
-    znaczne przyspieszenie zapytañ sql ze z³±czeniami tabel cash i users (alec)
-  - w formularzu nowej operacji napisy okre¶laj±ce typ operacji uaktywniaj±
-    odpowiadaj±ce im radio-buttony (chilek)
-  - w formularzu nowej operacji zapamiêtywany jest na czas sesji typ operacji (chilek)
-  - w UI dodana obs³uga PIN dla u¿ytkowników - UWAGA! automatyczny upgrade bazy
-    generuje nowe numery PIN dla wszystkich u¿ytkowników! JE¦LI POSIADASZ 
-    JU¯ NUMERY PIN W BAZIE TO ZOSTAN¡ ONE WYGENEROWANE NA NOWO! (lexx)
-  - BTS#0000185: poprawione rozliczanie u¿ytkowników (alec)
-  - mo¿liwo¶æ wydrukowania umowy z poziomu UI (lexx)
-  - w demonie mo¿na zdefiniowaæ polecenie pow³oki, które bêdzie wykonywane 
-    przed ka¿dym po³±czeniem z baz± (alec)
-  - w skryptach dodano wy¶wietlanie b³êdów w pliku konfiguracyjnym (alec)
-  - w formularzu nowej operacji pokazuje siê ilo¶æ zaznaczonych u¿ytkowników (chilek)
-  - przyspieszone wy¶wietlanie listy faktur na MySQL'u (alec) 	 
-  - polecenie 'make daemon' do kompilacji samego demona, bez modu³ów (alec) 	 
-  - przy starcie almsd w 'background mode' nie nastêpuje prze³adowanie (alec)
-  - dodane klawisze szybkiego dostêpu w formularzu wyszukiwania u¿ytkownika (S)
+  - poprawione bÅ‚Ä™dne interpretowanie opcji 'networks' w moduÅ‚ach demona
+    gdy nazwa sieci zawieraÅ‚a kropkÄ™ (alec)
+  - BTS#0000183: dodany indeks na kolumnie userid w tabeli cash, powodujÄ…cy
+    znaczne przyspieszenie zapytaÅ„ sql ze zÅ‚Ä…czeniami tabel cash i users (alec)
+  - w formularzu nowej operacji napisy okreÅ›lajÄ…ce typ operacji uaktywniajÄ…
+    odpowiadajÄ…ce im radio-buttony (chilek)
+  - w formularzu nowej operacji zapamiÄ™tywany jest na czas sesji typ operacji (chilek)
+  - w UI dodana obsÅ‚uga PIN dla uÅ¼ytkownikÃ³w - UWAGA! automatyczny upgrade bazy
+    generuje nowe numery PIN dla wszystkich uÅ¼ytkownikÃ³w! JEÅšLI POSIADASZ 
+    JUÅ» NUMERY PIN W BAZIE TO ZOSTANÄ„ ONE WYGENEROWANE NA NOWO! (lexx)
+  - BTS#0000185: poprawione rozliczanie uÅ¼ytkownikÃ³w (alec)
+  - moÅ¼liwoÅ›Ä‡ wydrukowania umowy z poziomu UI (lexx)
+  - w demonie moÅ¼na zdefiniowaÄ‡ polecenie powÅ‚oki, ktÃ³re bÄ™dzie wykonywane 
+    przed kaÅ¼dym poÅ‚Ä…czeniem z bazÄ… (alec)
+  - w skryptach dodano wyÅ›wietlanie bÅ‚Ä™dÃ³w w pliku konfiguracyjnym (alec)
+  - w formularzu nowej operacji pokazuje siÄ™ iloÅ›Ä‡ zaznaczonych uÅ¼ytkownikÃ³w (chilek)
+  - przyspieszone wyÅ›wietlanie listy faktur na MySQL'u (alec) 	 
+  - polecenie 'make daemon' do kompilacji samego demona, bez moduÅ‚Ã³w (alec) 	 
+  - przy starcie almsd w 'background mode' nie nastÄ™puje przeÅ‚adowanie (alec)
+  - dodane klawisze szybkiego dostÄ™pu w formularzu wyszukiwania uÅ¼ytkownika (S)
     oraz nowej operacji (W) (chilek)
-  - do demona dodana opcja wiersza poleceñ '-i' okre¶laj±ca instancje do
-    prze³adowania, nie ma konieczno¶ci tworzenia odrêbnych plików konfig.
-    dla modu³ów uruchamianych z crona (alec)
-  - na mapie sieci zwiêkszony górny margines i usuniête b³êdy wyst. przy
-    braku pod³±czonych komputerów (lukas)
-  - w contrib/sqlpanel wyniki poleceñ sql przepuszczane s± przez funkcje
+  - do demona dodana opcja wiersza poleceÅ„ '-i' okreÅ›lajÄ…ca instancje do
+    przeÅ‚adowania, nie ma koniecznoÅ›ci tworzenia odrÄ™bnych plikÃ³w konfig.
+    dla moduÅ‚Ã³w uruchamianych z crona (alec)
+  - na mapie sieci zwiÄ™kszony gÃ³rny margines i usuniÄ™te bÅ‚Ä™dy wyst. przy
+    braku podÅ‚Ä…czonych komputerÃ³w (lukas)
+  - w contrib/sqlpanel wyniki poleceÅ„ sql przepuszczane sÄ… przez funkcje
     nl2br() i htmlspecialchars() (alec)
-  - na mapie zwiêkszony do 24 limit urz±dzeñ pod³±czonych do jednego urz±dzenia
-    oraz usuniêty b³±d pokrywaj±cych siê linków (alec)
+  - na mapie zwiÄ™kszony do 24 limit urzÄ…dzeÅ„ podÅ‚Ä…czonych do jednego urzÄ…dzenia
+    oraz usuniÄ™ty bÅ‚Ä…d pokrywajÄ…cych siÄ™ linkÃ³w (alec)
   - lms-rtparser: przebudowany, przetestowany i dodana dokumentacja (alec)
-  - dopracowane wysy³anie wiadomo¶ci w Helpdesku (alec)
-  - obs³uga za³±czników w Helpdesku (alec)
+  - dopracowane wysyÅ‚anie wiadomoÅ›ci w Helpdesku (alec)
+  - obsÅ‚uga zaÅ‚Ä…cznikÃ³w w Helpdesku (alec)
 
 version 1.3.6 Osiris (2004-09-01);
 
-  - obci±¿enia s± naliczane wed³ug ich warto¶ci, rosn±co - w wypadku jak kto¶
-    ma odliczenie jakie¶, zostanie ono naliczone jako pierwsze, przez co nawet
-    przez chwilê saldo nie zejdzie poni¿ej zera (lukasz)
-  - dodana informacja kiedy dany komputer by³ ostatnio widziany w sieci (lexx)
-  - teraz na mapie urz±dzeñ sieciowych pokazywana jest lokalizacja urz±dzenia
+  - obciÄ…Å¼enia sÄ… naliczane wedÅ‚ug ich wartoÅ›ci, rosnÄ…co - w wypadku jak ktoÅ›
+    ma odliczenie jakieÅ›, zostanie ono naliczone jako pierwsze, przez co nawet
+    przez chwilÄ™ saldo nie zejdzie poniÅ¼ej zera (lukasz)
+  - dodana informacja kiedy dany komputer byÅ‚ ostatnio widziany w sieci (lexx)
+  - teraz na mapie urzÄ…dzeÅ„ sieciowych pokazywana jest lokalizacja urzÄ…dzenia
     (lexx)
-  - poprawiony b³±d w zapytaniu przy wyszukiwaniu zg³oszeñ po temacie (alec)
-  - uprawnienie 'manipulacja finansami' obejmuje tak¿e rozliczanie faktur (alec)
-  - BTS#0000180: zliczanie wolnych adresów w sieci nie bierze pod uwagê 
+  - poprawiony bÅ‚Ä…d w zapytaniu przy wyszukiwaniu zgÅ‚oszeÅ„ po temacie (alec)
+  - uprawnienie 'manipulacja finansami' obejmuje takÅ¼e rozliczanie faktur (alec)
+  - BTS#0000180: zliczanie wolnych adresÃ³w w sieci nie bierze pod uwagÄ™ 
     zarezerwowanych dla DHCP (lexx)
-  - BTS#0000181: okienko wyboru adresu IP nie pozwala wybraæ adresu 
+  - BTS#0000181: okienko wyboru adresu IP nie pozwala wybraÄ‡ adresu 
     zarezerwowanego dla DHCP (lexx)
-  - BTS#0000153: klikniêcie na urz±dzenie/komputer na mapie urz±dzeñ powoduje
-    przej¶cie do wybranego urz±dzenia/komputera (lexx)
-  - poprawiona czytelno¶æ napisów na mapie urz±dzeñ (lexx)
-  - zawieszanie p³atno¶ci wybranych zobowi±zañ u¿ytkownika lub wszystkich 
+  - BTS#0000153: klikniÄ™cie na urzÄ…dzenie/komputer na mapie urzÄ…dzeÅ„ powoduje
+    przejÅ›cie do wybranego urzÄ…dzenia/komputera (lexx)
+  - poprawiona czytelnoÅ›Ä‡ napisÃ³w na mapie urzÄ…dzeÅ„ (lexx)
+  - zawieszanie pÅ‚atnoÅ›ci wybranych zobowiÄ…zaÅ„ uÅ¼ytkownika lub wszystkich 
     na dany okres (alec)
-  - dodany panel 'U¿ytkownicy'->'Ostrze¿enia' (alec)
+  - dodany panel 'UÅ¼ytkownicy'->'OstrzeÅ¼enia' (alec)
   - dodany skrypt lms-fping (alec)
-  - BTS#0000052: od³±czenie u¿ytkownika poprzez cutoff powoduje automatyczne 
-    owinetkowanie komputerów u¿ytkownika oraz ustawienie wiadomo¶ci 
+  - BTS#0000052: odÅ‚Ä…czenie uÅ¼ytkownika poprzez cutoff powoduje automatyczne 
+    owinetkowanie komputerÃ³w uÅ¼ytkownika oraz ustawienie wiadomoÅ›ci 
     administracyjnej (lexx)
-  - poprawiony BTS#0000157: gubienie urz±dzeñ i b³êdne po³±czenia 
+  - poprawiony BTS#0000157: gubienie urzÄ…dzeÅ„ i bÅ‚Ä™dne poÅ‚Ä…czenia 
     na mapie (alec)
-  - w welcome.html podajemy tak¿e ilo¶æ komputerów on-line (alec)
-  - BTS#0000187: uzup. brakuj±ca definicja $utsfmt w lms-notify (alec)
+  - w welcome.html podajemy takÅ¼e iloÅ›Ä‡ komputerÃ³w on-line (alec)
+  - BTS#0000187: uzup. brakujÄ…ca definicja $utsfmt w lms-notify (alec)
   - BTS#0000189: poprawiony trigger dns2 w formularzu netadd.html (alec)
-  - dodany modu³ pinger (szybszy odpowiednik lms-fping) do demona (alec)
-  - w demonie wszystkie komunikaty informacyjne s± w DEBUG1 (alec)
-  - usuniête b³êdy przy allow_call_time_pass_reference=Off w php.ini (alec)
+  - dodany moduÅ‚ pinger (szybszy odpowiednik lms-fping) do demona (alec)
+  - w demonie wszystkie komunikaty informacyjne sÄ… w DEBUG1 (alec)
+  - usuniÄ™te bÅ‚Ä™dy przy allow_call_time_pass_reference=Off w php.ini (alec)
   - dodane contrib/squid_warnings (lexx)
-  - w dokum. dodany rozdzia³ 'Dodatki' opisuj±cy zawarto¶æ /contrib (alec)
+  - w dokum. dodany rozdziaÅ‚ 'Dodatki' opisujÄ…cy zawartoÅ›Ä‡ /contrib (alec)
   
 version 1.3.5 Ju (2004-07-30):
 
-  - usuniêty b³±d w skryptach perlowych, powoduj±cy b³êdne dzia³anie
+  - usuniÄ™ty bÅ‚Ä…d w skryptach perlowych, powodujÄ…cy bÅ‚Ä™dne dziaÅ‚anie
     przy pustej zmiennej konfiguracyjnej 'usergroups' (alec)
-  - domy¶lnie, w mailingu u¿ywamy imienia i e-maila administratora który
-    aktualnie siê zalogowa³ jako nadawcy (lukasz)
-  - skoñczony (?) interfejs www dla systemu RT-Helpdesk (alec)
-  - zaktualizowano pliki do zak³adania bazy danych (alec)
-  - w polu szybkiego wyszukiwania mo¿na podawaæ numer zg³oszenia lub
-    nazwisko u¿ytkownika (alec)
-  - w lms-mgc poprawiony b³±d w zapytaniu wybieraj±cym dane do htb oraz dodane
+  - domyÅ›lnie, w mailingu uÅ¼ywamy imienia i e-maila administratora ktÃ³ry
+    aktualnie siÄ™ zalogowaÅ‚ jako nadawcy (lukasz)
+  - skoÅ„czony (?) interfejs www dla systemu RT-Helpdesk (alec)
+  - zaktualizowano pliki do zakÅ‚adania bazy danych (alec)
+  - w polu szybkiego wyszukiwania moÅ¼na podawaÄ‡ numer zgÅ‚oszenia lub
+    nazwisko uÅ¼ytkownika (alec)
+  - w lms-mgc poprawiony bÅ‚Ä…d w zapytaniu wybierajÄ…cym dane do htb oraz dodane
     zmienne %UPCEIL, %DOWNCEIL, %CLIMIT, %PLIMIT (alec)
-  - zmiana typu kolumn statystyk na BIGINT zapobiegaj±ca b³êdom przy
-    kompaktowaniu je¶li u¿ytkownicy ¶ci±gaj± ponad 2 GB danych dziennie (alec)
-  - BTS#0000168: poprawione dzia³anie zmiennej 'use_current_payday', przy 
-    okazji wreszcie dzia³aj± error-triggery dla zobowi±zañ (alec)
-  - BTS#0000171: poprawiona obs³uga b³êdu przy braku wolnych portów 
-    w urz±dzeniu przy pierwszym pod³±czeniu komputera (alec)
-  - BTS#0000173: uzupe³nione sprawdzanie d³ugo¶ci nazwy komputera, urz±dzeñ 
-    sieciowych i ich adresów oraz dodany atrybut maxlength w szablonach (alec)
-  - dodano mo¿liwo¶æ nadpisania pojedyñczej regu³y w lms-mgc poprzez wpis:
-    node(192.168.1.1) = regu³a (lukasz)
-  - dodano pole 'adres do dorêczeñ' dla danych u¿ytkownika, który (je¶li 
-    zdefiniowano) zast±pi adres u¿ytkownika na fakturze (alec)
+  - zmiana typu kolumn statystyk na BIGINT zapobiegajÄ…ca bÅ‚Ä™dom przy
+    kompaktowaniu jeÅ›li uÅ¼ytkownicy Å›ciÄ…gajÄ… ponad 2 GB danych dziennie (alec)
+  - BTS#0000168: poprawione dziaÅ‚anie zmiennej 'use_current_payday', przy 
+    okazji wreszcie dziaÅ‚ajÄ… error-triggery dla zobowiÄ…zaÅ„ (alec)
+  - BTS#0000171: poprawiona obsÅ‚uga bÅ‚Ä™du przy braku wolnych portÃ³w 
+    w urzÄ…dzeniu przy pierwszym podÅ‚Ä…czeniu komputera (alec)
+  - BTS#0000173: uzupeÅ‚nione sprawdzanie dÅ‚ugoÅ›ci nazwy komputera, urzÄ…dzeÅ„ 
+    sieciowych i ich adresÃ³w oraz dodany atrybut maxlength w szablonach (alec)
+  - dodano moÅ¼liwoÅ›Ä‡ nadpisania pojedyÅ„czej reguÅ‚y w lms-mgc poprzez wpis:
+    node(192.168.1.1) = reguÅ‚a (lukasz)
+  - dodano pole 'adres do dorÄ™czeÅ„' dla danych uÅ¼ytkownika, ktÃ³ry (jeÅ›li 
+    zdefiniowano) zastÄ…pi adres uÅ¼ytkownika na fakturze (alec)
   - w module hostfile demona dodana zmienna '%gw' zamieniana na adres
     bramy (alec)
-  - w module 'tc' demona mo¿na okre¶liæ politykê generowania klas htb poprzez
-    zmienn± 'one_class_per_host', rozbite regu³y na kilka opcji konfiguracyjnych
+  - w module 'tc' demona moÅ¼na okreÅ›liÄ‡ politykÄ™ generowania klas htb poprzez
+    zmiennÄ… 'one_class_per_host', rozbite reguÅ‚y na kilka opcji konfiguracyjnych
     osobno dla markowania i htb w obie strony (alec)
-  - w lms-traffic-htbiptlimits dodana obs³uga upceil i downceil (alec)
-  - uptime'y zg³oszeñ, czyli czas od zg³oszenia do rozwi±zania problemu (alec)
-  - poprawna odmiana wyrazów dzieñ, godzina, minuta w uptime'ach (alec)
-  - dodany filtr 'minimalny uptime' do wyszukiwania zg³oszeñ (alec)
+  - w lms-traffic-htbiptlimits dodana obsÅ‚uga upceil i downceil (alec)
+  - uptime'y zgÅ‚oszeÅ„, czyli czas od zgÅ‚oszenia do rozwiÄ…zania problemu (alec)
+  - poprawna odmiana wyrazÃ³w dzieÅ„, godzina, minuta w uptime'ach (alec)
+  - dodany filtr 'minimalny uptime' do wyszukiwania zgÅ‚oszeÅ„ (alec)
 
 version 1.3.4 Terok (2004-07-06):
 
-  - naprawiony combobox ze stawk± podatku w 'Rachunku u¿ytkownika' (alec)
-  - je¶li ¿adna grupa nie istnieje to skrypty bior± pod uwagê wszystkich
-    u¿ytkowników (chilek)
+  - naprawiony combobox ze stawkÄ… podatku w 'Rachunku uÅ¼ytkownika' (alec)
+  - jeÅ›li Å¼adna grupa nie istnieje to skrypty biorÄ… pod uwagÄ™ wszystkich
+    uÅ¼ytkownikÃ³w (chilek)
   - dodane error-triggery w adminpasswd.html (alec)
-  - zapamiêtujemy porz±dek sortowania w statystykach (chilek)
-  - poprawiony BTS#0000137: dodany komunikat o braku wolnych portów w urz±dzeniu
-    podczas pod³±czania z nodeinfobox.html (alec)
-  - na listach u¿ytkowników filtr 'wszyscy' wybiera z bazy wszystkich oprócz
-    usuniêtych (nie bierze pod uwagê pola status), a nie tylko pod³±czonych 
+  - zapamiÄ™tujemy porzÄ…dek sortowania w statystykach (chilek)
+  - poprawiony BTS#0000137: dodany komunikat o braku wolnych portÃ³w w urzÄ…dzeniu
+    podczas podÅ‚Ä…czania z nodeinfobox.html (alec)
+  - na listach uÅ¼ytkownikÃ³w filtr 'wszyscy' wybiera z bazy wszystkich oprÃ³cz
+    usuniÄ™tych (nie bierze pod uwagÄ™ pola status), a nie tylko podÅ‚Ä…czonych 
     jak dotychczas (alec)
-  - przy obliczaniu ¶redniego zysku miesiêcznego taryfy nie uwzglêdniamy 
-    u¿ytkowników zainteresowanych i oczekuj±cych - BTS#0000151 (alec)
-  - poprawione opisy instalacji i upgrade'u bazy mysql, z uwagi na brakuj±ce
-    uprawnienia do polecenia ALTER, wszyscy planuj±cy upgrade powinni z konta
-    roota wykonaæ w mysqlu nastêpuj±ce polecenia: (alec)
+  - przy obliczaniu Å›redniego zysku miesiÄ™cznego taryfy nie uwzglÄ™dniamy 
+    uÅ¼ytkownikÃ³w zainteresowanych i oczekujÄ…cych - BTS#0000151 (alec)
+  - poprawione opisy instalacji i upgrade'u bazy mysql, z uwagi na brakujÄ…ce
+    uprawnienia do polecenia ALTER, wszyscy planujÄ…cy upgrade powinni z konta
+    roota wykonaÄ‡ w mysqlu nastÄ™pujÄ…ce polecenia: (alec)
 	GRANT select,insert,update,delete,create ON lms.* TO lms@localhost 
-		IDENTIFIED BY 'has³o';
+		IDENTIFIED BY 'hasÅ‚o';
 	FLUSH PRIVILEGES;
-  - na mapie sieci oprócz nazw hostów pokazujemy ich adresy IP oraz
-    (max.4) adresy IP urz±dzeñ sieciowych (alec)
-  - poprawiony b³±d na fakturze: BTS#0000154 (alec)
-  - w formularzu dodawania faktury mo¿na podawaæ kwoty z przecinkiem oraz
-    usuniêto wiod±ce zero dla kwot mniejszych od 10 (alec)
-  - rozliczanie u¿ykowników w rozbiciu na stawki VAT (chilek)
-  - mo¿liwo¶æ usuwania transakcji w bilansie u¿ytkowników (chilek)
-  - mo¿liwo¶æ usuwania transakcji w informacji o u¿ytkowniku (chilek)
-  - poprawka w DBDump() usuwaj±ca b³±d wystêpuj±cy podczas odtwarzania kopii
-    bazy danych z warto¶ci± NULL ('zw.') w kolumnach taxvalue (alec)
-  - lms-traffic-logiptables nie zapisuje ju¿ danych do logu, ale wstawia
-    dane do bazy wprost, nie trzeba uruchamiaæ lms-traffic (alec)
-  - do demona dodany modu³ 'system', dla tych co nie chc± u¿ywaæ sudo dla
-    skryptów perlowych, oczywi¶cie nie tylko (alec)
-  - poprawka w notify i ggnotify dodaj±ca znak minus przy obci±¿eniu w
+  - na mapie sieci oprÃ³cz nazw hostÃ³w pokazujemy ich adresy IP oraz
+    (max.4) adresy IP urzÄ…dzeÅ„ sieciowych (alec)
+  - poprawiony bÅ‚Ä…d na fakturze: BTS#0000154 (alec)
+  - w formularzu dodawania faktury moÅ¼na podawaÄ‡ kwoty z przecinkiem oraz
+    usuniÄ™to wiodÄ…ce zero dla kwot mniejszych od 10 (alec)
+  - rozliczanie uÅ¼ykownikÃ³w w rozbiciu na stawki VAT (chilek)
+  - moÅ¼liwoÅ›Ä‡ usuwania transakcji w bilansie uÅ¼ytkownikÃ³w (chilek)
+  - moÅ¼liwoÅ›Ä‡ usuwania transakcji w informacji o uÅ¼ytkowniku (chilek)
+  - poprawka w DBDump() usuwajÄ…ca bÅ‚Ä…d wystÄ™pujÄ…cy podczas odtwarzania kopii
+    bazy danych z wartoÅ›ciÄ… NULL ('zw.') w kolumnach taxvalue (alec)
+  - lms-traffic-logiptables nie zapisuje juÅ¼ danych do logu, ale wstawia
+    dane do bazy wprost, nie trzeba uruchamiaÄ‡ lms-traffic (alec)
+  - do demona dodany moduÅ‚ 'system', dla tych co nie chcÄ… uÅ¼ywaÄ‡ sudo dla
+    skryptÃ³w perlowych, oczywiÅ›cie nie tylko (alec)
+  - poprawka w notify i ggnotify dodajÄ…ca znak minus przy obciÄ…Å¼eniu w
     %last_10_in_a_table (alec)
-  - poprawka linku do listy zad³u¿onych w welcome.html (alec)
+  - poprawka linku do listy zadÅ‚uÅ¼onych w welcome.html (alec)
   - dodany contrib/customer_otherip (hunter)
   - rozbudowane faktury o dane do htb: upload ceil, download ceil, 
     connection limit, packet limit (alec)
-  - przepisany modu³ 'tc' demona uwzglêdnia zmiany w taryfach (alec)
-  - poprawka w funkcji mailing, teraz pole from: powinno byæ dobre (lexx)
-  - podczas usuwania urz±dzenia sieciowego usuwane s± tak¿e jego adresy (alec)
+  - przepisany moduÅ‚ 'tc' demona uwzglÄ™dnia zmiany w taryfach (alec)
+  - poprawka w funkcji mailing, teraz pole from: powinno byÄ‡ dobre (lexx)
+  - podczas usuwania urzÄ…dzenia sieciowego usuwane sÄ… takÅ¼e jego adresy (alec)
   - poprawione ustawianie sekwencji postgresa podczas odtwarzania kopii
     bazy danych (alec)
   - wznowiono prace na systemem RT (Helpdesk) (alec)
@@ -1200,121 +1201,121 @@ version 1.3.4 Terok (2004-07-06):
 version 1.3.3 Sokar (2004-05-05):
   
   - naprawione usuwanie pozycji na fakturze (alec) 
-  - w demonie dodana obs³uga bazy SQLite (alec)
-  - poprawione zapytanie w lms-traffic-htbiptlimits uwzglêdniaj±ce prawid³owo
+  - w demonie dodana obsÅ‚uga bazy SQLite (alec)
+  - poprawione zapytanie w lms-traffic-htbiptlimits uwzglÄ™dniajÄ…ce prawidÅ‚owo
     okresowe assignmenty (alec)
-  - dodana obs³uga datefrom i dateto w module 'tc' demona (alec)
-  - dodana obs³uga zwolnieñ z VAT w taryfach i fakturach (chilek)
-  - poprawione b³êdy w wygl±dzie listy faktur, z którymi nie radzi³a
+  - dodana obsÅ‚uga datefrom i dateto w module 'tc' demona (alec)
+  - dodana obsÅ‚uga zwolnieÅ„ z VAT w taryfach i fakturach (chilek)
+  - poprawione bÅ‚Ä™dy w wyglÄ…dzie listy faktur, z ktÃ³rymi nie radziÅ‚a
     sobie Mozilla (alec)
-  - dodana obs³uga stawek VAT w operacjach finansowych - tablica cash
+  - dodana obsÅ‚uga stawek VAT w operacjach finansowych - tablica cash
     pole taxvalue (chilek)
-  - w wydrukach bilansów uzwglêdniane s± stawki VAT (chilek)
-  - w contrib/sqlpanel dodano stronicowanie wyników oraz opcjê wydruku (alec)
-  - wybór stawki VAT przy nowej operacji w comboboksie (chilek)
-  - wydruk raportu ³±cznych przychodów bezrachunkowych (chilek)
-  - wydruk raportu wierzytelno¶ci userów (alec)
-  - dodana mo¿liwo¶æ op³acania faktur - jeszcze nie w pe³ni funkcjonalna (chilek)
-  - na fakturze termin p³atno¶ci mo¿e wynosiæ 0 (alec)
-  - mo¿na podaæ datê op³acenia faktury (chilek)
-  - mo¿na rozliczyæ wiele faktur (chilek)
-  - sprawdzamy czy faktury s± rozliczone testuj±c bilans pozycji faktur (chilek)
-  - w formularzach wyszukiwañ pokazywane s± ikonki ostrze¿eñ (chilek)
-  - rejestr sprzeda¿y przeniesiony do Taryfy i Finanse -> Wydruki (alec)
-  - wybór stawki VAT w nowej pozycji faktury za pomoc± comboboxa (chilek)
-  - wybór stawki VAT w taryfach za pomoc± comboboxa (chilek)
-  - dodany formularz zarz±dzania wiadomo¶ciami administracyjnymi (chilek)
-  - grupy u¿ytkowników (chilek/alec)
-  - mo¿liwo¶æ wyboru grupy wy¶wietlanej listy u¿ytkowników (chilek)
-  - mo¿liwo¶æ ustalania przynale¿no¶ci do grup w formularzach informacji o
-    u¿ytkowniku i edycji u¿ytkownika (chilek)
-  - mo¿liwo¶æ ustalania przynale¿no¶ci do grup w formularzach informacji o
+  - w wydrukach bilansÃ³w uzwglÄ™dniane sÄ… stawki VAT (chilek)
+  - w contrib/sqlpanel dodano stronicowanie wynikÃ³w oraz opcjÄ™ wydruku (alec)
+  - wybÃ³r stawki VAT przy nowej operacji w comboboksie (chilek)
+  - wydruk raportu Å‚Ä…cznych przychodÃ³w bezrachunkowych (chilek)
+  - wydruk raportu wierzytelnoÅ›ci userÃ³w (alec)
+  - dodana moÅ¼liwoÅ›Ä‡ opÅ‚acania faktur - jeszcze nie w peÅ‚ni funkcjonalna (chilek)
+  - na fakturze termin pÅ‚atnoÅ›ci moÅ¼e wynosiÄ‡ 0 (alec)
+  - moÅ¼na podaÄ‡ datÄ™ opÅ‚acenia faktury (chilek)
+  - moÅ¼na rozliczyÄ‡ wiele faktur (chilek)
+  - sprawdzamy czy faktury sÄ… rozliczone testujÄ…c bilans pozycji faktur (chilek)
+  - w formularzach wyszukiwaÅ„ pokazywane sÄ… ikonki ostrzeÅ¼eÅ„ (chilek)
+  - rejestr sprzedaÅ¼y przeniesiony do Taryfy i Finanse -> Wydruki (alec)
+  - wybÃ³r stawki VAT w nowej pozycji faktury za pomocÄ… comboboxa (chilek)
+  - wybÃ³r stawki VAT w taryfach za pomocÄ… comboboxa (chilek)
+  - dodany formularz zarzÄ…dzania wiadomoÅ›ciami administracyjnymi (chilek)
+  - grupy uÅ¼ytkownikÃ³w (chilek/alec)
+  - moÅ¼liwoÅ›Ä‡ wyboru grupy wyÅ›wietlanej listy uÅ¼ytkownikÃ³w (chilek)
+  - moÅ¼liwoÅ›Ä‡ ustalania przynaleÅ¼noÅ›ci do grup w formularzach informacji o
+    uÅ¼ytkowniku i edycji uÅ¼ytkownika (chilek)
+  - moÅ¼liwoÅ›Ä‡ ustalania przynaleÅ¼noÅ›ci do grup w formularzach informacji o
     komputerze i edycji komputera (chilek)
-  - obs³uga grup u¿ytkowników w lms-makedhcpconf, lms-makeoidentconf,
+  - obsÅ‚uga grup uÅ¼ytkownikÃ³w w lms-makedhcpconf, lms-makeoidentconf,
     lms-makemacs, lms-makehosts (chilek)
-  - naprawione filtrowanie listy userów wg grupy i sieci (alec) 
-  - poprawka w bazie przywracaj±ca mo¿liwo¶æ dublowania MAC'ów (alec)
-  - w Mailingu mo¿na wybraæ grupê u¿ytkowników (alec)
+  - naprawione filtrowanie listy userÃ³w wg grupy i sieci (alec) 
+  - poprawka w bazie przywracajÄ…ca moÅ¼liwoÅ›Ä‡ dublowania MAC'Ã³w (alec)
+  - w Mailingu moÅ¼na wybraÄ‡ grupÄ™ uÅ¼ytkownikÃ³w (alec)
   - dodane skrypty lms-makewarnings, lms-makemessages (chilek)
-  - dane administratorów usuniêtych nie s± usuwane z bazy (alec)
-  - wydruki list u¿ytkowników mo¿na filtrowaæ wg grupy (alec)
-  - do listy u¿ytkowników dodane filtry 'usuniêci', 'od³±czeni'
-    i 'zad³u¿eni', w zwi±zku z tym znika menu U¿ytkownicy->Od³±czeni
-    i U¿ytkownicy->Zad³u¿eni (alec/chilek)
+  - dane administratorÃ³w usuniÄ™tych nie sÄ… usuwane z bazy (alec)
+  - wydruki list uÅ¼ytkownikÃ³w moÅ¼na filtrowaÄ‡ wg grupy (alec)
+  - do listy uÅ¼ytkownikÃ³w dodane filtry 'usuniÄ™ci', 'odÅ‚Ä…czeni'
+    i 'zadÅ‚uÅ¼eni', w zwiÄ…zku z tym znika menu UÅ¼ytkownicy->OdÅ‚Ä…czeni
+    i UÅ¼ytkownicy->ZadÅ‚uÅ¼eni (alec/chilek)
   - w wersji demona dla SQLite dodane funkcje UPPER() i LOWER()
-    uwzglêdniaj±ce systemowe locales, dla prawid³owego kapitalizowania
-    polskich znaków diakrytycznych (alec)
+    uwzglÄ™dniajÄ…ce systemowe locales, dla prawidÅ‚owego kapitalizowania
+    polskich znakÃ³w diakrytycznych (alec)
   - poprawiony error-trigger w polu status w usereditbox.html (alec)
-  - poprawione ignorowanie naliczeñ o warto¶ci zerowej (lukasz)
-  - poprawiony b³±d w almsd, powoduj±cy zwa³kê demona na mysql'u, gdy
+  - poprawione ignorowanie naliczeÅ„ o wartoÅ›ci zerowej (lukasz)
+  - poprawiony bÅ‚Ä…d w almsd, powodujÄ…cy zwaÅ‚kÄ™ demona na mysql'u, gdy
     w tabeli timestamps nie ma wpisu '_force' (alec)
-  - przebudowany rozdzia³ 'Interfejs U¿ytkownika' w dokumentacji (alec)
+  - przebudowany rozdziaÅ‚ 'Interfejs UÅ¼ytkownika' w dokumentacji (alec)
 
 version 1.3.2 Kinsey (2004-04-03):
   
-  - przeniesienie warning&messages z contrib do g³ównej ga³êzi
+  - przeniesienie warning&messages z contrib do gÅ‚Ã³wnej gaÅ‚Ä™zi
     dodanie lms-updatewarnings (maniac/alec/chilek)
-  - poprawione b³êdy w module 'hostfile' demona, dodane zmienne 
-    %domain - zamieniana na nazwê domeny i %net - na nazwê sieci (alec)
-  - w zmiennej 'networks' dla modu³ów hostfile i oident nie podajemy adresów, 
-    ale listê nazw sieci (alec)
+  - poprawione bÅ‚Ä™dy w module 'hostfile' demona, dodane zmienne 
+    %domain - zamieniana na nazwÄ™ domeny i %net - na nazwÄ™ sieci (alec)
+  - w zmiennej 'networks' dla moduÅ‚Ã³w hostfile i oident nie podajemy adresÃ³w, 
+    ale listÄ™ nazw sieci (alec)
   - multilanguage? jednak nie (lexx)
-  - rozpoczêto prace nad systemem RT (lukasz)
+  - rozpoczÄ™to prace nad systemem RT (lukasz)
   - sporo poprawek kosmetycznych kodu (lukasz)
-  - nareszcie zrobiona obs³uga b³êdów SQL (lukasz/alec)
-  - poprawiony bug wystêpuj±cy na postgresie podczas dodawania usera z pustym
+  - nareszcie zrobiona obsÅ‚uga bÅ‚Ä™dÃ³w SQL (lukasz/alec)
+  - poprawiony bug wystÄ™pujÄ…cy na postgresie podczas dodawania usera z pustym
     numerem gadu-gadu (alec)
-  - poprawione sortowanie listy komputerów wg nazwy w³a¶ciciela (alec)
-  - dodany interfejs do definiowania filtrów dla wydruków list komputerów
-    i u¿ytkowników (alec)
-  - dodane drukowanie bilansu u¿ytkownika za dany okres (alec)
-  - od teraz, u¿ytkownikom mo¿na przypisywaæ taryfy na dany okres czasu
+  - poprawione sortowanie listy komputerÃ³w wg nazwy wÅ‚aÅ›ciciela (alec)
+  - dodany interfejs do definiowania filtrÃ³w dla wydrukÃ³w list komputerÃ³w
+    i uÅ¼ytkownikÃ³w (alec)
+  - dodane drukowanie bilansu uÅ¼ytkownika za dany okres (alec)
+  - od teraz, uÅ¼ytkownikom moÅ¼na przypisywaÄ‡ taryfy na dany okres czasu
     (lukasz)
-  - pola szybkiego dostêpu akceptuj± teraz takie rzeczy jak nazwa, id, adres
-    ip/mac, adres u¿ytkownika, adres email, telefon (lukasz)
-  - ma³e przyspieszenie funkcji UserStats() (alec)
-  - przebudowa struktury bazy danych: dodane warto¶ci domy¶lne pól, klucze
+  - pola szybkiego dostÄ™pu akceptujÄ… teraz takie rzeczy jak nazwa, id, adres
+    ip/mac, adres uÅ¼ytkownika, adres email, telefon (lukasz)
+  - maÅ‚e przyspieszenie funkcji UserStats() (alec)
+  - przebudowa struktury bazy danych: dodane wartoÅ›ci domyÅ›lne pÃ³l, klucze
     unikalne i ograniczenia NOT NULL (lukasz/alec)
-  - poprawione obliczanie ¶redniego dochodu miesiêcznego dla taryf (alec)
-  - dodane obliczanie ilo¶ci aktywnych przypisañ taryfy (alec)
-  - poprawione sortowanie list u¿ytkowników wg salda (alec)
-  - poprawione genfake.php: dodane zerowanie auto_increment'ów oraz
-    poprawki zwi±zane z ostatnimi zmianami w bazie (alec)
+  - poprawione obliczanie Å›redniego dochodu miesiÄ™cznego dla taryf (alec)
+  - dodane obliczanie iloÅ›ci aktywnych przypisaÅ„ taryfy (alec)
+  - poprawione sortowanie list uÅ¼ytkownikÃ³w wg salda (alec)
+  - poprawione genfake.php: dodane zerowanie auto_increment'Ã³w oraz
+    poprawki zwiÄ…zane z ostatnimi zmianami w bazie (alec)
   - dodano sprawdzenie, czy zaznaczono typ operacji podczas dodawania nowej
     operacji - BTS#0000122 (alec)
-  - poprawione b³êdy w modu³ach hostfile i oident demona powoduj±ce
-    niewykonywanie instancji wyst. po tych modu³ach (alec)
-  - na li¶cie u¿ytkowników w kolumnie Abonament jest ¶rednie obci±¿enie 
-    miesiêczne u¿ytkownika (alec)
-  - listê u¿ytkowników oraz wydruki mo¿na filtrowaæ wg sieci (alec)
-  - w mailingu dodana mo¿liwo¶æ wybrania sieci  (alec)
-  - dodany wydruk u¿ytkowników bez przypisanych komputerów (alec)
-  - dodane wydruki bilansu finansowego z mo¿liwo¶ci± ograniczenia do podanego
+  - poprawione bÅ‚Ä™dy w moduÅ‚ach hostfile i oident demona powodujÄ…ce
+    niewykonywanie instancji wyst. po tych moduÅ‚ach (alec)
+  - na liÅ›cie uÅ¼ytkownikÃ³w w kolumnie Abonament jest Å›rednie obciÄ…Å¼enie 
+    miesiÄ™czne uÅ¼ytkownika (alec)
+  - listÄ™ uÅ¼ytkownikÃ³w oraz wydruki moÅ¼na filtrowaÄ‡ wg sieci (alec)
+  - w mailingu dodana moÅ¼liwoÅ›Ä‡ wybrania sieci  (alec)
+  - dodany wydruk uÅ¼ytkownikÃ³w bez przypisanych komputerÃ³w (alec)
+  - dodane wydruki bilansu finansowego z moÅ¼liwoÅ›ciÄ… ograniczenia do podanego
     okresu oraz konkretnego administratora (alec)
   - dodany contrib/sqlpanel (alec)
-  - BTS#0000131: poprawki w 'Rejestrze sprzeda¿y' (alec)
+  - BTS#0000131: poprawki w 'Rejestrze sprzedaÅ¼y' (alec)
   - SQLite Support (alec)
-  - poprawki w lms-notify zapobiegaj±ce b³êdom na postgresie (alec)
-  - lms-sendinvoices: wysy³anie faktur (lukasz)
-  - w automatycznych fakturach mo¿na zdefiniowaæ rodzaj p³atno¶ci 
-    i termin zap³aty: lms-payments i almsd (alec)
+  - poprawki w lms-notify zapobiegajÄ…ce bÅ‚Ä™dom na postgresie (alec)
+  - lms-sendinvoices: wysyÅ‚anie faktur (lukasz)
+  - w automatycznych fakturach moÅ¼na zdefiniowaÄ‡ rodzaj pÅ‚atnoÅ›ci 
+    i termin zapÅ‚aty: lms-payments i almsd (alec)
   
 version 1.3.1 Maybourne (2004-03-04):
 
-  - poprawiony b³±d w GetInvoiceContents() powoduj±cy b³êdne wy¶wietlanie
-    liczby groszy s³ownie na fakturze - BTS#0000112 (alec)
-  - poprawione obliczanie kwot na fakturach dla kilku jednostek, b³±d
-    powodowa³ tak¿e zapisywanie niepoprawnych danych do tabeli 'cash' 
+  - poprawiony bÅ‚Ä…d w GetInvoiceContents() powodujÄ…cy bÅ‚Ä™dne wyÅ›wietlanie
+    liczby groszy sÅ‚ownie na fakturze - BTS#0000112 (alec)
+  - poprawione obliczanie kwot na fakturach dla kilku jednostek, bÅ‚Ä…d
+    powodowaÅ‚ takÅ¼e zapisywanie niepoprawnych danych do tabeli 'cash' 
     podczas dodawania nowej faktury - BTS#0000114 (alec)
-  - multilanguage? mo¿e tak (RFD) (lexx)
-  - w almsd, do modu³u hostfile dodano nowe opcje konfiguracyjne 'networks'
+  - multilanguage? moÅ¼e tak (RFD) (lexx)
+  - w almsd, do moduÅ‚u hostfile dodano nowe opcje konfiguracyjne 'networks'
     oraz 'skip_dev_ips' (alec)
-  - poprawione b³êdy w wyra¿eniu regularnym w adminadd i adminedit (alec)
-  - poprawka do upgrade'u: taryfy maj± okres miesiêczny, a nie tygodniowy,
-    poprawki sk³adni sql w UPGRADE.pgsql oraz komentarze w UPGRADE.mysql (alec) 
+  - poprawione bÅ‚Ä™dy w wyraÅ¼eniu regularnym w adminadd i adminedit (alec)
+  - poprawka do upgrade'u: taryfy majÄ… okres miesiÄ™czny, a nie tygodniowy,
+    poprawki skÅ‚adni sql w UPGRADE.pgsql oraz komentarze w UPGRADE.mysql (alec) 
   - dodane local_ips i local_dests do lms-traffic-htbiptlimits (lukasz)
-  - koniec z wyszukiwaniem koniecznych upgradów bazy danych w ChangeLogu - 
-    od teraz LMS sam bêdzie poprawia³ bazê danych. Powiedzmy prawie koniec -
+  - koniec z wyszukiwaniem koniecznych upgradÃ³w bazy danych w ChangeLogu - 
+    od teraz LMS sam bÄ™dzie poprawiaÅ‚ bazÄ™ danych. Powiedzmy prawie koniec -
     oto ostatnie konieczne do wykonania zmiany w bazie:
     MySQL:
         CREATE TABLE dbinfo (
@@ -1331,12 +1332,12 @@ version 1.3.1 Maybourne (2004-03-04):
 	    PRIMARY KEY (keytype)
 	);
 	INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
-  - dodany 'Raport sprzeda¿y' czyli wydruk listy faktur za dany okres (alec)
+  - dodany 'Raport sprzedaÅ¼y' czyli wydruk listy faktur za dany okres (alec)
 
 version 1.3.0 Apophis (2004-02-18):
 
   - Smarty libs version change 2.5.0 -> 2.6.0 (alec)
-  - added contrib/warn&msg (Rafa³ Ramocki/Tomasz Chiliñski)
+  - added contrib/warn&msg (RafaÅ‚ Ramocki/Tomasz ChiliÅ„ski)
   - another database fix results from BTS#103 (alec)
     MySQL:
 	ALTER TABLE `users` CHANGE `gguin` `gguin` INT(11) DEFAULT '0';
@@ -2001,13 +2002,13 @@ version 1.0.0rc1 (2003-05-17):
   
 version 1.0pre10 (2003-04-15):
 
-  - poprawki zgodno¶ci ze Smarty-2.5.0 (niestety, automatycznie 2.5.0 jest
+  - poprawki zgodnoÅ›ci ze Smarty-2.5.0 (niestety, automatycznie 2.5.0 jest
     wymagane przez LMS'a)
-  - usuniête zbêdne title w li¶cie userów
-  - poprawione wy¶wietlanie nazwiska usera w popupie od usuwania usera
-  - na stronie powitalnej trochê statystyk
-  - usuniêty dosyæ powa¿ny b³±d w lib/Session.class.php
-  - jak zwykle kosmetyka (literówki i tym podobne)
+  - usuniÄ™te zbÄ™dne title w liÅ›cie userÃ³w
+  - poprawione wyÅ›wietlanie nazwiska usera w popupie od usuwania usera
+  - na stronie powitalnej trochÄ™ statystyk
+  - usuniÄ™ty dosyÄ‡ powaÅ¼ny bÅ‚Ä…d w lib/Session.class.php
+  - jak zwykle kosmetyka (literÃ³wki i tym podobne)
   - logosy by Pierzak
 
 version 1.0pre9 'CVS-Has-Been-Crashed-Edition' (2003-04-13):
@@ -2015,88 +2016,88 @@ version 1.0pre9 'CVS-Has-Been-Crashed-Edition' (2003-04-13):
   - wymaga Smarty-2.4.2
   - tooltips
   - force ssl
-  - przy dodawaniu usera domy¶lna taryfa to nie ta najdro¿sza, a ta
-    najczê¶ciej u¿ywana
-  - nazwa sieci mo¿e ju¿ zawieraæ kropkê
-  - nazwa komputera mo¿e zawieraæ _ (podkre¶lenie)
-  - sporo kosmetyki (popupy i opisy pól formularzy)
+  - przy dodawaniu usera domyÅ›lna taryfa to nie ta najdroÅ¼sza, a ta
+    najczÄ™Å›ciej uÅ¼ywana
+  - nazwa sieci moÅ¼e juÅ¼ zawieraÄ‡ kropkÄ™
+  - nazwa komputera moÅ¼e zawieraÄ‡ _ (podkreÅ›lenie)
+  - sporo kosmetyki (popupy i opisy pÃ³l formularzy)
   - logosy by Pierzak
 
 version 1.0pre8 (2003-03-30):
 
-  - poprawiony bug z edycj± u¿ytkownika i traceniem zawarto¶ci pola z
+  - poprawiony bug z edycjÄ… uÅ¼ytkownika i traceniem zawartoÅ›ci pola z
     komentarzem
   - przeniesiony formularz dodawania sieci do oddzielnej strony
-  - poprawione kilka innych bugów	
+  - poprawione kilka innych bugÃ³w	
 
 version 1.0pre7 (2003-03-24):
 
-  - poprawiony powa¿ny bug w lms-mgc powoduj±cy traktowanie jako
+  - poprawiony powaÅ¼ny bug w lms-mgc powodujÄ…cy traktowanie jako
     prywatnej sieci tylko 192.168.1.0/24 a nie 192.168.0.0/16
-  - zrobiona lista u¿ytkowników od³±czonych i zad³u¿onych
-  - poprawione dodawanie userów (nie dodawali siê lub imiê nie zostawa³o
+  - zrobiona lista uÅ¼ytkownikÃ³w odÅ‚Ä…czonych i zadÅ‚uÅ¼onych
+  - poprawione dodawanie userÃ³w (nie dodawali siÄ™ lub imiÄ™ nie zostawaÅ‚o
     zapisywane (BTS: 0000019)
-  - w przypadku odrzucenia danych do dodania u¿ytkownika gubi³o siê miasto w
+  - w przypadku odrzucenia danych do dodania uÅ¼ytkownika gubiÅ‚o siÄ™ miasto w
     fromularzu
-  - poprawione templejty tak by LMS by³ zgodny ze Smarty'm 2.4.2
+  - poprawione templejty tak by LMS byÅ‚ zgodny ze Smarty'm 2.4.2
 
 version 1.0pre6 (2003-03-17):
 
-  - mo¿liwo¶æ edycji imienia i nazwiska u¿ytkownika
+  - moÅ¼liwoÅ›Ä‡ edycji imienia i nazwiska uÅ¼ytkownika
   - sporo kosmetyki, poprawek w sortowaniu i nie tylko
   - SetBalanceZERO w LMS.class.php zeruje saldo
-  - %abonament zmienia siê w kwotê abo zapisan± w tariffs.value
-  - usuniête polskie locales, sprawia³o to wiêcej problemów
-    ni¿ po¿ytku
-  - ma³y update dokumentacji
-  - dodany katalog contrib z ró¿nymi dodatkami do LMS
-  - dodano lms.spec do contrib/ zgodnego ze specyfikacj± PLD
-  - ³atka usprawniaj±ca odpalenie LMS w PLD
-  - support do pustych hase³
-  - zrobiony usersearch, nodesearch i parê innych rzeczy ;)
+  - %abonament zmienia siÄ™ w kwotÄ™ abo zapisanÄ… w tariffs.value
+  - usuniÄ™te polskie locales, sprawiaÅ‚o to wiÄ™cej problemÃ³w
+    niÅ¼ poÅ¼ytku
+  - maÅ‚y update dokumentacji
+  - dodany katalog contrib z rÃ³Å¼nymi dodatkami do LMS
+  - dodano lms.spec do contrib/ zgodnego ze specyfikacjÄ… PLD
+  - Å‚atka usprawniajÄ…ca odpalenie LMS w PLD
+  - support do pustych haseÅ‚
+  - zrobiony usersearch, nodesearch i parÄ™ innych rzeczy ;)
   - sprawdzenie stanu konta przez usera
-  - czê¶ciowo wydruki
-  - dodane ³adne cacu¶ne i s³odkie README
-  - poprawiony pagelimiter w li¶cie u¿ytkowników
-  - opcja w³±czaj±ca sharing mac-addr
-  - automagiczna instalacja domy¶lnego admina z poziomu pliku lms.mysql
-  - pole "Imiê" mo¿e byæ puste
+  - czÄ™Å›ciowo wydruki
+  - dodane Å‚adne cacuÅ›ne i sÅ‚odkie README
+  - poprawiony pagelimiter w liÅ›cie uÅ¼ytkownikÃ³w
+  - opcja wÅ‚Ä…czajÄ…ca sharing mac-addr
+  - automagiczna instalacja domyÅ›lnego admina z poziomu pliku lms.mysql
+  - pole "ImiÄ™" moÅ¼e byÄ‡ puste
 
 version 1.0pre5 (2003-01-26):
  
   - PLIKI KONFIGURACYJNE PRZENIESIONE DO KATALOGU /etc/lms/ !!!
-  - podzia³ listy u¿ytkowników na strony
+  - podziaÅ‚ listy uÅ¼ytkownikÃ³w na strony
   - poprawiony bug przy dodawaniu nowego usera
-  - Pamiêtanie ostatniej wybranej podsieci i ostatniego wpisanego 
-    komentarza do wp³at
-  - przyk³adowe configi przeniesione do sample
-  - utworzony katalog ze skryptami perlowymi - bin - znadjduj± siê
-    tam niektóre skrypty z modu³u lms-scripts
+  - PamiÄ™tanie ostatniej wybranej podsieci i ostatniego wpisanego 
+    komentarza do wpÅ‚at
+  - przykÅ‚adowe configi przeniesione do sample
+  - utworzony katalog ze skryptami perlowymi - bin - znadjdujÄ… siÄ™
+    tam niektÃ³re skrypty z moduÅ‚u lms-scripts
   - oddzielny formularz do dodawania nowych operacji finansowych
-  - informacje o taryfie i mo¿liwo¶æ jej edycji wreszcie.
-  - poprawione parsowanie wprowadzanych danych w niektórych miejscach
-    poprzez u¿ycie regexpów (dziêki mteg za podsuniêcie pomys³u)
-  - dodano nowe pola w tablicy z u¿ytkownikami, aby je wykorzystaæ i
-    bezproblemowo móc ich u¿ywaæ nale¿y wykonaæ nastêpuj±ce komendy z
+  - informacje o taryfie i moÅ¼liwoÅ›Ä‡ jej edycji wreszcie.
+  - poprawione parsowanie wprowadzanych danych w niektÃ³rych miejscach
+    poprzez uÅ¼ycie regexpÃ³w (dziÄ™ki mteg za podsuniÄ™cie pomysÅ‚u)
+  - dodano nowe pola w tablicy z uÅ¼ytkownikami, aby je wykorzystaÄ‡ i
+    bezproblemowo mÃ³c ich uÅ¼ywaÄ‡ naleÅ¼y wykonaÄ‡ nastÄ™pujÄ…ce komendy z
     poziomu klienta mysql:
 
     ALTER TABLE `users` ADD `gguin` INT AFTER `phone3`;
     ALTER TABLE `users` ADD `zip` VARCHAR(6) AFTER `address` ,
     ADD `city` VARCHAR(32) AFTER `zip`, ADD `nip` varchar(16) AFTER `city`;
-  - dodano opcjê do lms-notify:
+  - dodano opcjÄ™ do lms-notify:
       -D, --template-file=/etc/lms/another.template.txt
-    uruchamia ona alternatywny plik template, przydatne przy wysy³aniu
+    uruchamia ona alternatywny plik template, przydatne przy wysyÅ‚aniu
     upomnienia, etc.
-  - Teraz %b we wzorcu wiadomo¶ci rozwija siê do - (saldo) (czyli jest to
-    kwota do zap³aty, ksiêgowi nie znaj± liczb ujemnych :)
-    %date-y %date-m %desc rozwijaj± siê odpowiednio do: aktualnego roku,
-    nazwy miesi±ca (set LANG=pl ?) i opisu pakietu z tariffs.
-    %last_10_in_a_table zmienia siê w maksymalnie 10 ostatnich operacji na
+  - Teraz %b we wzorcu wiadomoÅ›ci rozwija siÄ™ do - (saldo) (czyli jest to
+    kwota do zapÅ‚aty, ksiÄ™gowi nie znajÄ… liczb ujemnych :)
+    %date-y %date-m %desc rozwijajÄ… siÄ™ odpowiednio do: aktualnego roku,
+    nazwy miesiÄ…ca (set LANG=pl ?) i opisu pakietu z tariffs.
+    %last_10_in_a_table zmienia siÄ™ w maksymalnie 10 ostatnich operacji na
     koncie.
 	  
 version 1.0pre4 (2003-01-21):
 
-  - pe³ne przeportowanie obs³ugi SQL'a na ADODB
+  - peÅ‚ne przeportowanie obsÅ‚ugi SQL'a na ADODB
   - support do MySQL i PostgreSQL
   - pola uprate i downrate w taryfach. upgrade:
   
@@ -2108,15 +2109,15 @@ version 1.0pre4 (2003-01-21):
     ALTER TABLE `timestamps` CHANGE `table` `tablename` VARCHAR( 255 ) 
     NOT NULL
 
-  - lista u¿ytkowników: dodana kwota abonamentu miesiêcznego poni¿ej
-    aktualnego salda u¿ytkownika (Goblin)
-  - lista u¿ytkowników: u¿ytkownik którego komputery s± od³±czone
+  - lista uÅ¼ytkownikÃ³w: dodana kwota abonamentu miesiÄ™cznego poniÅ¼ej
+    aktualnego salda uÅ¼ytkownika (Goblin)
+  - lista uÅ¼ytkownikÃ³w: uÅ¼ytkownik ktÃ³rego komputery sÄ… odÅ‚Ä…czone
     jest pokazywany na szaro
-  - wyszukiwanie u¿ytkowników;
-  - oddzielny formularz dodawania u¿ytkowników;
-  - wyszukiwanie u¿ytkowników;
-  - mo¿liwo¶æ zdefiniowania sposobu reloadu (albo via sql, albo exec
-    jakiej¶ komendy);
+  - wyszukiwanie uÅ¼ytkownikÃ³w;
+  - oddzielny formularz dodawania uÅ¼ytkownikÃ³w;
+  - wyszukiwanie uÅ¼ytkownikÃ³w;
+  - moÅ¼liwoÅ›Ä‡ zdefiniowania sposobu reloadu (albo via sql, albo exec
+    jakiejÅ› komendy);
   - poprawki w dodawaniu taryf;
   
 version 1.0pre3 (2002-12-27):
@@ -2124,19 +2125,19 @@ version 1.0pre3 (2002-12-27):
   - poprawione pobieranie hostname i uptime (Marcoos)
   - zmiana typu kolumny value w tabeli cash z float na double
   - zmiana typu kolumny value w tabeli tariffs z float na double
-  - dodane blokowanie dostêpu do aplikacji poza okre¶lonymi hostami
+  - dodane blokowanie dostÄ™pu do aplikacji poza okreÅ›lonymi hostami
     lub klasami adresowymi
-  - poprawka parsowania ¶cie¿ek do katalogów z configa
+  - poprawka parsowania Å›cieÅ¼ek do katalogÃ³w z configa
 
 version 1.0pre2 (2002-12-25):
 
   - parsowanie configa nie zapisuje odrazu zmiennych odczytanych
-    z ini jako globalnych, a do tablicy $_CONFIG (nie mo¿na napisaæ 
+    z ini jako globalnych, a do tablicy $_CONFIG (nie moÅ¼na napisaÄ‡ 
     niczego poprzez plik ini)
-  - dodane sprawdzanie czy istniej± katalogi backups i templates_c 
-    oraz czy mo¿na do nich zapisywaæ
-  - naprawiony modu³ od dodawania taryf
-  - posprz±tane w niektórych plikach
+  - dodane sprawdzanie czy istniejÄ… katalogi backups i templates_c 
+    oraz czy moÅ¼na do nich zapisywaÄ‡
+  - naprawiony moduÅ‚ od dodawania taryf
+  - posprzÄ…tane w niektÃ³rych plikach
   - poprawiony plik doc/lms.mysql i doc/INSTALL
 
 version 1.0pre1 (2002-12-24):
@@ -2145,34 +2146,34 @@ version 1.0pre1 (2002-12-24):
   - napisane z wykorzystaniem engine'u template'owego Smarty
   - dodana opcja mailingu
   - bardzo fajne sortowanie (tm) :-)
-  - wprowadzone cacheowanie wyników (nawala, ale co¶ tam dzia³a)
+  - wprowadzone cacheowanie wynikÃ³w (nawala, ale coÅ› tam dziaÅ‚a)
 
 version 0.4:
 
-  - napisana od nowa, ca³kowicie z wykorzystaniem sesji, oraz
-    paru u³atwieñ je¿eli chodzi o SQL'a
-  - dodana mo¿liwo¶æ definicji podsieci, nie ma ju¿
-    konieczno¶ci d³ubania w ¼ród³ach aby zmieniæ ustawienia
+  - napisana od nowa, caÅ‚kowicie z wykorzystaniem sesji, oraz
+    paru uÅ‚atwieÅ„ jeÅ¼eli chodzi o SQL'a
+  - dodana moÅ¼liwoÅ›Ä‡ definicji podsieci, nie ma juÅ¼
+    koniecznoÅ›ci dÅ‚ubania w ÅºrÃ³dÅ‚ach aby zmieniÄ‡ ustawienia
     podsieci
-  - serwer jest konfigurowany poprzez demona w perlu, s³uchaj±cego
+  - serwer jest konfigurowany poprzez demona w perlu, sÅ‚uchajÄ…cego
     na sockecie TCP/IP
   - rozbudowane sortowanie
-  - dane administratorów s± trzymane w bazie danych i nie trzeba
-    rêcznie ustawiaæ hase³ w pliku .htpasswd
+  - dane administratorÃ³w sÄ… trzymane w bazie danych i nie trzeba
+    rÄ™cznie ustawiaÄ‡ haseÅ‚ w pliku .htpasswd
 
 version 0.3:
    
-  - obs³uga finansów i rozliczeñ u¿ytkowników
+  - obsÅ‚uga finansÃ³w i rozliczeÅ„ uÅ¼ytkownikÃ³w
 
 version 0.2:
 
-  - obs³uga komputerów, generowanie plików od maskarady na iptables i od
+  - obsÅ‚uga komputerÃ³w, generowanie plikÃ³w od maskarady na iptables i od
     DHCP
-  - pomoc w wyszukiwaniu mac-adresów poprzez listowanie widocznych adresów w
+  - pomoc w wyszukiwaniu mac-adresÃ³w poprzez listowanie widocznych adresÃ³w w
     trakcie dodawania
 
 version 0.1:
 
   - autoryzacja oparta o .htpasswd w serwerze www
-  - prosta baza u¿ytkowników zawieraj±ca dane osobowe oraz status
-    u¿ytkowników
+  - prosta baza uÅ¼ytkownikÃ³w zawierajÄ…ca dane osobowe oraz status
+    uÅ¼ytkownikÃ³w

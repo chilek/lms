@@ -79,7 +79,6 @@ if(sizeof($aliasadd))
 	{
 		$DB->Execute('INSERT INTO aliases (login, accountid) VALUES (?,?)',
 				    array($aliasadd['login'], $aliasadd['accountid']));
-		$LMS->SetTS('aliases');
 		
 		if(!isset($aliasadd['reuse']))
 		{

@@ -36,14 +36,12 @@ if(isset($setwarnings['mcustomerid']))
 	{
 		if($warnon)
 			$LMS->NodeSetWarnU($uid, TRUE);
+
 		if($warnoff) 
 			$LMS->NodeSetWarnU($uid, FALSE);
-		
+
 		if($message)
-		{
-			$LMS->SetTS('customers');
 			$DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message, $uid));
-		}
 	}
 
 	$SESSION->save('warnmessage', $message);

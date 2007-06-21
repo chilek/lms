@@ -45,20 +45,16 @@ else
 		//$body .= "<P>Kolejka ".$LMS->GetQueueName($_GET['id'])." zosta³a usuniêta.</P>";
 		$queue = intval($_GET['id']);
 		
-                if($DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue)))
-			$LMS->SetTS('rtqueues');
+                $DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue));
 		
-		if($DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue)))
-		        $LMS->SetTS('rtrights');
+		$DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue));
 		
 		if($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid=?', array($queue)))
 		{
 		        foreach($tickets as $id)
 		                $DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($id));
-		        $LMS->SetTS('rtmessages');
 		        
 			$DB->Execute('DELETE FROM rttickets WHERE queueid=?', array($queue));
-		        $LMS->SetTS('rttickets');
 		}
 		
 		$SESSION->redirect('?m=rtqueuelist');

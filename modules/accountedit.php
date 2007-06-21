@@ -71,7 +71,6 @@ switch ($option)
 	if(!$error)
 	{
 		$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', array(crypt($account['passwd1']), $id));
-		$LMS->SetTS('passwd');
 		$SESSION->redirect('?m=accountlist');
 	}
 	
@@ -136,7 +135,7 @@ switch ($option)
 					$quota['sql'],
 					$account['id']
 					));
-			$LMS->SetTS('passwd');
+
 			$SESSION->redirect('?m=accountlist');
 		}
 	}

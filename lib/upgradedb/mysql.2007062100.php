@@ -24,22 +24,12 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$DB->BeginTrans();
 
-if($id && $_GET['is_sure']=='1')
-{
-	if($DB->Execute('DELETE FROM domains WHERE id = ?', array($id)))
-	{
-		if($accounts = $DB->GetCol('SELECT id FROM passwd WHERE domainid = ?', array($id)))
-		{
-			foreach($accounts as $aid)
-				$DB->Execute('DELETE FROM aliases WHERE accountid = ?', array($aid));
-		
-			$DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id));
-		}
-	}
-}
+$DB->Execute("DROP TABLE timestamps");
 
-header('Location: ?m=domainlist');
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007062100', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

@@ -52,7 +52,6 @@ if(isset($_POST['config']))
 					    $configedit['value'],
 					    $configedit['disabled'],
 					    $_GET['id']));
-		$LMS->SetTS('daemonconfig');
 		
 		$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
 	}
@@ -64,7 +63,6 @@ elseif(isset($_GET['statuschange']))
 	else
 		$DB->Execute('UPDATE daemonconfig SET disabled=1 WHERE id=?', array($config['id']));
 	
-	$LMS->SetTS('daemonconfig');
 	$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
 }	
 

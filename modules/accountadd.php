@@ -97,8 +97,8 @@ if(isset($_POST['account']))
 					$quota['ftp'],
 					$quota['sql']
 					));
+
 		$DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($account['login']));
-		$LMS->SetTS('passwd');
 		
 		if(!isset($account['reuse']))
 		{

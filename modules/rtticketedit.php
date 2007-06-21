@@ -63,8 +63,6 @@ if(isset($_POST['ticket']))
 		
 	if(!$error)
 	{
-		$LMS->SetTS('rttickets');
-
 		if($ticketedit['state'] == 2)
 		{
 			$DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=?NOW? 

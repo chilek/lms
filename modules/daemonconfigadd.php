@@ -52,7 +52,6 @@ if($config)
 					    $config['instanceid'], 
 					    $config['description'],
 					    $config['value']));
-		$LMS->SetTS('daemonconfig');
 		
 		if(!isset($config['reuse']))
 		{
