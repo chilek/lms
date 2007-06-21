@@ -86,7 +86,7 @@ if(isset($_POST['config']))
 					$cfg['disabled'],
 					$cfg['id']
 					));
-		$LMS->SetTS('uiconfig');
+
 		$SESSION->redirect('?m=configlist');
 	}
 	$config = $cfg;

@@ -69,7 +69,6 @@ if(isset($_POST['instance']))
 					    $instedit['priority'],
 					    $instedit['disabled'],
 					    $instedit['id']));
-		$LMS->SetTS('daemoninstances');
 		
 		$SESSION->redirect('?m=daemoninstancelist&id='.$instedit['hostid']);
 	}

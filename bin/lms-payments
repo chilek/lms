@@ -549,7 +549,5 @@ $dbq->finish();
 
 $dbase->do("DELETE FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0");
 $dbase->do("DELETE FROM assignments WHERE at = $today");
-$dbase->do("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
-$dbase->do("INSERT INTO timestamps (tablename,time) VALUES ('cash',$utsfmt)");
-$dbase->do("INSERT INTO timestamps (tablename,time) VALUES ('_global',$utsfmt)");
+
 $dbase->disconnect();

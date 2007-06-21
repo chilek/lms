@@ -104,21 +104,8 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	}	
 	g->db_free(&res);
 
-	// set timestamps
-	if(execu)
-	{
-		g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'customers'");
-		g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('customers',%NOW%)");
-	}
-	if(execn)
-	{
-		g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'nodes'");
-		g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('nodes',%NOW%)");
-	}	
 	if(execn || execu)
 	{
-		g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = '_global'");
-		g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
 		system(c->command);
 	}
 #ifdef DEBUG1

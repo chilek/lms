@@ -79,7 +79,6 @@ if(isset($_POST['domain']))
 			$DB->Execute('UPDATE passwd SET ownerid = ? WHERE domainid = ? AND ownerid != 0',
 					array($domain['ownerid'], $domain['id'])); 
 
-		$LMS->SetTS('domains');
 		$SESSION->redirect('?m=domainlist');
 	}
 }

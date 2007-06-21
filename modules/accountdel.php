@@ -30,9 +30,7 @@ if($id && $_GET['is_sure']=='1')
 {
 	if($DB->Execute('DELETE FROM passwd WHERE id = ?', array($id)))
 	{	
-		$LMS->SetTS('passwd');
-		if($DB->Execute('DELETE FROM aliases WHERE accountid = ?', array($id)))
-			$LMS->SetTS('aliases');
+		$DB->Execute('DELETE FROM aliases WHERE accountid = ?', array($id));
 	}
 }
 

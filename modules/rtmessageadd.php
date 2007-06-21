@@ -48,7 +48,6 @@ function MessageAdd($msg, $headers, $file=NULL)
 				$msg['messageid'],
 				(isset($msg['replyto']) ? $msg['replyto'] : $headers['Reply-To']),
 				$head));
-	$LMS->SetTS('rtmessages');
 
 	if(isset($file['name']) && isset($CONFIG['rt']['mail_dir']))
 	{
@@ -58,9 +57,8 @@ function MessageAdd($msg, $headers, $file=NULL)
 		@mkdir($dir, 0700);
 		$newfile = $dir.'/'.$file['name'];
 		if(@rename($file['tmp_name'], $newfile))
-			if($DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
-						VALUES (?,?,?)', array($id, $file['name'], $file['type'])))
-				$LMS->SetTS('rtattachments');
+			$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
+					VALUES (?,?,?)', array($id, $file['name'], $file['type']));
 	}		    
 }
 

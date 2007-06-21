@@ -65,36 +65,12 @@ class LMS
 		{
 			$this->DB->Execute('INSERT INTO syslog (time, userid, level, message)
 					    VALUES (?NOW?, ?, ?, ?)', array($this->AUTH->id, $loglevel, $message));
-			//I think, we can ommit SetTS('syslog')
 		}
 	}
 */
 	/*
-	 *  Database functions (backups, timestamps)
+	 *  Database functions (backups)
 	 */
-
-	function SetTS($table) // ustawia timestamp tabeli w tabeli 'timestamps'
-	{
-		if($this->DB->GetOne('SELECT * FROM timestamps WHERE tablename=?', array($table)))
-			$this->DB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?', array($table));
-		else
-			$this->DB->Execute('INSERT INTO timestamps (tablename, time) VALUES (?, ?NOW?)', array($table));
-
-		if($this->DB->GetOne('SELECT * FROM timestamps WHERE tablename=?', array('_global')))
-			$this->DB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?', array('_global'));
-		else
-			$this->DB->Execute('INSERT INTO timestamps (tablename, time) VALUES (?, ?NOW?)', array('_global'));
-	}
-
-	function GetTS($table) // zwraca timestamp tabeli zapisany w tabeli 'timestamps'
-	{
-		return $this->DB->GetOne('SELECT time FROM timestamps WHERE tablename=?', array($table));
-	}
-
-	function DeleteTS($table) // usuwa timestamp tabeli zapisany w tabeli 'timestamps'
-	{
-		return $this->DB->Execute('DELETE FROM timestamps WHERE tablename=?', array($table));
-	}
 
 	function DBDump($filename=NULL,$gzipped=FALSE) // dump database to file
 	{
@@ -158,7 +134,6 @@ class LMS
 
 	function SetUserPassword($id, $passwd) // ustawia has³o usera o id równym $id na $passwd
 	{
-		$this->SetTS('users');
 		$this->DB->Execute('UPDATE users SET passwd=? WHERE id=?', array(crypt($passwd), $id));
 	}
 
@@ -212,7 +187,6 @@ class LMS
 
 	function UserAdd($useradd) // dodaje usera. wymaga tablicy zawieraj±cej dane usera
 	{
-		$this->SetTS('users');
 		if($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights, hosts) VALUES (?, ?, ?, ?, ?, ?)', array($useradd['login'], $useradd['name'], $useradd['email'], crypt($useradd['password']),$useradd['rights'], $useradd['hosts'])))
 			return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($useradd['login']));
 		else
@@ -221,7 +195,6 @@ class LMS
 
 	function UserDelete($id) // usuwa usera o podanym id
 	{
-		$this->SetTS('users');
 		return $this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
 	}
 
@@ -283,7 +256,6 @@ class LMS
 
 	function UserUpdate($userinfo) // uaktualnia rekord usera.
 	{
-		$this->SetTS('users');
 		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?, hosts=? WHERE id=?', array($userinfo['login'],$userinfo['name'],$userinfo['email'],$userinfo['rights'],$userinfo['hosts'],$userinfo['id']));
 	}
 
@@ -340,7 +312,6 @@ class LMS
 
 	function RecoverCustomer($id)
 	{
-		$this->SetTS('customers');
 		return $this->DB->Execute('UPDATE customers SET deleted=0 WHERE id=?', array($id));
 	}
 
@@ -378,7 +349,6 @@ class LMS
 					    $customeradd['icn'],
 					    )))
 		{
-			$this->SetTS('customers');
 			return $this->DB->GetLastInsertID('customers');
 		} else
 			return FALSE;
@@ -386,10 +356,6 @@ class LMS
 
 	function DeleteCustomer($id)
 	{
-		$this->SetTS('customers');
-		$this->SetTS('nodes');
-		$this->SetTS('customerassignments');
-		$this->SetTS('assignments');
 		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? WHERE id=?', array($this->AUTH->id, $id));
@@ -403,8 +369,6 @@ class LMS
 
 	function CustomerUpdate($customerdata)
 	{
-		$this->SetTS('customers');
-
 		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, 
 					    zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 					    info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, 
@@ -864,7 +828,6 @@ class LMS
 
 	function CustomergroupAdd($customergroupdata)
 	{
-		$this->SetTS('customergroups');
 		if($this->DB->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description'])))
 			return $this->DB->GetOne('SELECT id FROM customergroups WHERE name=?', array($customergroupdata['name']));
 		else
@@ -873,7 +836,6 @@ class LMS
 
 	function CustomergroupUpdate($customergroupdata)
 	{
-		$this->SetTS('customergroups');
 		return $this->DB->Execute('UPDATE customergroups SET name=?, description=? WHERE id=?', array($customergroupdata['name'], $customergroupdata['description'], $customergroupdata['id']));
 	}
 
@@ -881,7 +843,6 @@ class LMS
 	{
 		 if (!$this->CustomergroupWithCustomerGet($id))
 		 {
-			$this->SetTS('customergroups');
 			return $this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
 		 } else
 			return FALSE;
@@ -896,7 +857,6 @@ class LMS
 	{
 		if ($ids = $this->DB->GetCol('SELECT customerassignments.id AS id FROM customerassignments, customers WHERE customerid = customers.id AND customergroupid = ?', array($from)))
 		{
-			$this->SetTS('customerassignments');
 			foreach($ids as $id)
 				$this->DB->Execute('UPDATE customerassignments SET customergroupid=? WHERE id=? AND customergroupid=?', array($to, $id, $from));
 		}
@@ -976,13 +936,11 @@ class LMS
 
 	function CustomerassignmentDelete($customerassignmentdata)
 	{
-		$this->SetTS('customerassignments');
 		return $this->DB->Execute('DELETE FROM customerassignments WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'], $customerassignmentdata['customerid']));
 	}
 
 	function CustomerassignmentAdd($customerassignmentdata)
 	{
-		$this->SetTS('customerassignments');
 		return $this->DB->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)',
 			array($customerassignmentdata['customergroupid'], $customerassignmentdata['customerid']));
 	}
@@ -1018,7 +976,6 @@ class LMS
 
 	function NodeUpdate($nodedata)
 	{
-		$this->SetTS('nodes');
 		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), ipaddr=inet_aton(?), mac=UPPER(?), 
 					passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=?, 
 					location=?, chkmac=?, halfduplex=?, linktype=? WHERE id=?', 
@@ -1042,7 +999,6 @@ class LMS
 
 	function DeleteNode($id)
 	{
-		$this->SetTS('nodes');
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($id));
 	}
@@ -1220,7 +1176,6 @@ class LMS
 
 	function NodeSet($id)
 	{
-		$this->SetTS('nodes');
 		if($this->DB->GetOne('SELECT access FROM nodes WHERE id=?', array($id)) == 1 )
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE id=?', array($id));
 		else
@@ -1235,7 +1190,6 @@ class LMS
 
 	function NodeSetU($id,$access=FALSE)
 	{
-		$this->SetTS('nodes');
 		if($access)
 		{
 			if($this->DB->GetOne('SELECT status FROM customers WHERE id = ?', array($id)) == 3)
@@ -1249,7 +1203,6 @@ class LMS
 
 	function NodeSetWarn($id,$warning=FALSE)
 	{
-		$this->SetTS('nodes');
 		if($warning)
 			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE id=?', array($id));
 		else
@@ -1258,7 +1211,6 @@ class LMS
 
 	function NodeSwitchWarn($id)
 	{
-		$this->SetTS('nodes');
 		if($this->DB->GetOne('SELECT warning FROM nodes WHERE id=?', array($id)) == 1 )
 			return $this->DB->Execute('UPDATE nodes SET warning=0 WHERE id=?', array($id));
 		else
@@ -1267,7 +1219,6 @@ class LMS
 
 	function NodeSetWarnU($id,$warning=FALSE)
 	{
-		$this->SetTS('nodes');
 		if($warning)
 			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE ownerid=?', array($id));
 		else
@@ -1276,7 +1227,6 @@ class LMS
 
 	function IPSetU($netdev, $access=FALSE)
 	{
-		$this->SetTS('nodes');
 		if($access)
 			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE netdev=? AND ownerid=0', array($netdev));
 		else
@@ -1285,7 +1235,6 @@ class LMS
 
 	function NodeAdd($nodedata)
 	{
-		$this->SetTS('nodes');
 		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, 
 					creationdate, access, warning, info, netdev, linktype, location, chkmac, halfduplex) 
 					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -1362,23 +1311,22 @@ class LMS
 				if( $netdev['takenports'] >= $netdev['ports'])
 					return FALSE;
 		}
+
 		if($type==NULL)
 			$this->DB->Execute('UPDATE nodes SET netdev=? WHERE id=?', array($netid, $id));
 		else
 			$this->DB->Execute('UPDATE nodes SET netdev=?, linktype=? WHERE id=?', array($netid,$type,$id));
-		$this->SetTS('nodes');
+
 		return TRUE;
 	}
 
 	function SetNetDevLinkType($dev1, $dev2, $type=0)
 	{
-		$this->SetTS('netlinks');
 		return $this->DB->Execute('UPDATE netlinks SET type=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $dev1, $dev2, $dev1, $dev2));
 	}
 
 	function SetNodeLinkType($node, $type=0)
 	{
-		$this->SetTS('nodes');
 		return $this->DB->Execute('UPDATE nodes SET linktype=? WHERE id=?', array($type, $node));
 	}
 
@@ -1479,7 +1427,6 @@ class LMS
 
 	function DeleteAssignment($id)
 	{
-		$this->SetTS('assignments');
 		if($lid = $this->DB->GetOne('SELECT liabilityid FROM assignments WHERE id=?', array($id)))
 		{
 			$this->DB->Execute('DELETE FROM liabilities WHERE id=?', array($lid));
@@ -1490,8 +1437,6 @@ class LMS
 
 	function AddAssignment($assignmentdata)
 	{
-		$this->SetTS('assignments');
-		
 		if(isset($assignmentdata['value']) && $assignmentdata['value']!=0)
 		{
 			$this->DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid) VALUES (?, ?, ?, ?)', 
@@ -1501,7 +1446,6 @@ class LMS
 						    $assignmentdata['prodid']
 					    ));
 			$lid = $this->DB->GetLastInsertID('liabilities');
-			$this->SetTS('liabilities');
 		}
 		
 		$this->DB->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice, settlement, datefrom, dateto, discount, liabilityid) 
@@ -1530,7 +1474,6 @@ class LMS
 
 	function SuspendAssignment($id,$suspend = TRUE)
 	{
-		$this->SetTS('assignments');
 		if($suspend)
 			return $this->DB->Execute('UPDATE assignments SET suspended=1 WHERE id=?', array($id));
 		else
@@ -1587,9 +1530,6 @@ class LMS
 			$this->AddBalance(array('value' => $item['valuebrutto']*$item['count']*-1, 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
 
-		$this->SetTS('documents');
-		$this->SetTS('invoicecontents');
-
 		return $iid;
 	}
 
@@ -1622,9 +1562,6 @@ class LMS
 					$item['tariffid']));
 			$this->AddBalance(array('time' => $cdate, 'value' => $item['valuebrutto']*$item['count']*-1, 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
 		}
-
-		$this->SetTS('documents');
-		$this->SetTS('invoicecontents');
 	}
 
 	function InvoiceDelete($invoiceid)
@@ -1632,8 +1569,6 @@ class LMS
 		$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($invoiceid));
-		$this->SetTS('documents');
-		$this->SetTS('invoicecontents');
 	}
 
 	function InvoiceContentDelete($invoiceid, $itemid=0)
@@ -1647,9 +1582,8 @@ class LMS
 				// if that was the last item of invoice contents
 				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 			}
+
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
-			$this->SetTS('documents');
-			$this->SetTS('invoicecontents');
 		}
 		else
 			$this->InvoiceDelete($invoiceid);
@@ -1813,7 +1747,7 @@ class LMS
 	{
 		if ($network)
 			$net = $this->GetNetworkParams($network);
-		$this->SetTS('assignments');
+
 		$ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, customers '
 			.($network ? 'LEFT JOIN nodes ON customers.id=nodes.ownerid ' : '')
 			.'WHERE customerid = customers.id AND deleted = 0 '
@@ -1831,7 +1765,6 @@ class LMS
 
 	function TariffAdd($tariffdata)
 	{
-		$this->SetTS('tariffs');
 		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxid, prodid, uprate, downrate, upceil, downceil, climit, plimit)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
@@ -1856,7 +1789,6 @@ class LMS
 
 	function TariffUpdate($tariff)
 	{
-		$this->SetTS('tariffs');
 		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?, climit=?, plimit=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxid'], $tariff['prodid'], $tariff['uprate'], $tariff['downrate'], $tariff['upceil'], $tariff['downceil'], $tariff['climit'], $tariff['plimit'], $tariff['id']));
 	}
 
@@ -1864,7 +1796,6 @@ class LMS
 	{
 		 if (!$this->GetCustomersWithTariff($id))
 		 {
-			$this->SetTS('tariffs');
 			return $this->DB->Execute('DELETE FROM tariffs WHERE id=?', array($id));
 		 } else
 			return FALSE;
@@ -1965,7 +1896,6 @@ class LMS
 
 	function AddBalance($addbalance)
 	{
-		$this->SetTS('cash');
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
 
 		return $this->DB->Execute('INSERT INTO cash (time, userid, value, type, taxid, customerid, comment, docid, itemid)
@@ -1995,8 +1925,6 @@ class LMS
 			$this->ReceiptContentDelete($row['docid'], $row['itemid']);
 		else
 			$this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
-
-		$this->SetTS('cash');
 	}
 
 	/*
@@ -2077,7 +2005,6 @@ class LMS
 
 	function PaymentAdd($paymentdata)
 	{
-		$this->SetTS('payments');
 		if($this->DB->Execute('INSERT INTO payments (name, creditor, description, value, period, at)
 			VALUES (?, ?, ?, ?, ?, ?)',
 			array(
@@ -2096,13 +2023,11 @@ class LMS
 
 	function PaymentDelete($id)
 	{
-		$this->SetTS('payments');
 		return $this->DB->Execute('DELETE FROM payments WHERE id=?', array($id));
 	}
 
 	function PaymentUpdate($paymentdata)
 	{
-		$this->SetTS('payments');
 		return $this->DB->Execute('UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?',
 			array(
 				$paymentdata['name'],
@@ -2177,7 +2102,7 @@ class LMS
 	{
 		if($netadd['prefix'] != '')
 			$netadd['mask'] = prefix2mask($netadd['prefix']);
-		$this->SetTS('networks');
+
 		if($this->DB->Execute('INSERT INTO networks (name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],strtolower($netadd['interface']),$netadd['gateway'],$netadd['dns'],$netadd['dns2'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
 			return $this->DB->GetOne('SELECT id FROM networks WHERE address=inet_aton(?)', array($netadd['address']));
 		else
@@ -2186,7 +2111,6 @@ class LMS
 
 	function NetworkDelete($id)
 	{
-		$this->SetTS('networks');
 		return $this->DB->Execute('DELETE FROM networks WHERE id=?', array($id));
 	}
 
@@ -2311,14 +2235,12 @@ class LMS
 
 	function NetworkShift($network='0.0.0.0',$mask='0.0.0.0',$shift=0)
 	{
-		$this->SetTS('nodes');
 		return ($this->DB->Execute('UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask)))
 			+ $this->DB->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ? WHERE ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask))));
 	}
 
 	function NetworkUpdate($networkdata)
 	{
-		$this->SetTS('networks');
 		return $this->DB->Execute('UPDATE networks SET name=?, address=inet_aton(?), mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?', array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],strtolower($networkdata['interface']),$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
 	}
 
@@ -2345,13 +2267,10 @@ class LMS
 					$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i,$ip));
 			}
 		}
-
-		$this->SetTS('nodes');
 	}
 
 	function NetworkRemap($src,$dst)
 	{
-		$this->SetTS('nodes');
 		$network['source'] = $this->GetNetworkRecord($src);
 		$network['dest'] = $this->GetNetworkRecord($dst);
 		$address = $network['dest']['addresslong']+1;
@@ -2615,15 +2534,11 @@ class LMS
 		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id));
 		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 		$this->DB->Execute('UPDATE nodes SET netdev=0 WHERE netdev=?', array($id));
-		$this->SetTS('nodes');
-		$this->SetTS('netlinks');
-		$this->SetTS('netdevices');
 		return $this->DB->Execute('DELETE FROM netdevices WHERE id=?', array($id));
 	}
 
 	function NetDevAdd($netdevdata)
 	{
-		$this->SetTS('netdevices');
 		if($this->DB->Execute('INSERT INTO netdevices (name, location, description, producer, 
 					model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?, ?)', 
 					array($netdevdata['name'],
@@ -2640,7 +2555,6 @@ class LMS
 
 	function NetDevUpdate($netdevdata)
 	{
-		$this->SetTS('netdevices');
 		$this->DB->Execute('UPDATE netdevices SET name=?, location=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?', array( $netdevdata['name'], $netdevdata['location'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
 	}
 
@@ -2663,14 +2577,12 @@ class LMS
 				return FALSE;
 
 			$this->DB->Execute('INSERT INTO netlinks (src, dst, type) VALUES (?, ?, ?)', array($dev1, $dev2, $type));
-			$this->SetTS('netlinks');
 		}
 		return TRUE;
 	}
 
 	function NetDevUnLink($dev1, $dev2)
 	{
-		$this->SetTS('netlinks');
 		$this->DB->Execute('DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
@@ -2796,9 +2708,6 @@ class LMS
 		$this->DB->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime, subject, body, mailfrom)
 				    VALUES (?, ?, ?, ?, ?, ?)', array($id, $ticket['customerid'], $ts, $ticket['subject'], $ticket['body'], $ticket['mailfrom']));
 		
-		$this->SetTS('rttickets');
-		$this->SetTS('rtmessages');
-
 		return $id;
 	}
 
@@ -2852,7 +2761,6 @@ class LMS
 			$this->DB->Execute('UPDATE rttickets SET state=?, resolvetime=? WHERE id=?', array($state, $resolvetime, $ticket));
 		else
 			$this->DB->Execute('UPDATE rttickets SET state=?, owner=?, resolvetime=? WHERE id=?', array($state, $this->AUTH->id, $resolvetime, $ticket));
-		$this->SetTS('rttickets');
 	}
 
 	function GetMessage($id)

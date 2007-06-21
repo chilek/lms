@@ -313,16 +313,6 @@ CREATE TABLE numberplans (
 );
 
 /* -------------------------------------------------------- 
-  Structure of table "timestamps" 
--------------------------------------------------------- */
-DROP TABLE timestamps;
-CREATE TABLE timestamps (
-	time integer 		DEFAULT 0  NOT NULL,
-	tablename varchar(255) 	DEFAULT '' NOT NULL,
-	UNIQUE (tablename)
-);
-
-/* -------------------------------------------------------- 
   Structure of table "customers" (customers)
 -------------------------------------------------------- */
 DROP SEQUENCE "customers_id_seq";
@@ -864,4 +854,4 @@ CREATE TABLE imessengers (
 );
 CREATE INDEX imessengers_customerid_idx ON imessengers (customerid);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007041200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007062100');

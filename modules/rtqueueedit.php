@@ -52,10 +52,8 @@ if(isset($_POST['queue']))
 					$queue['email'], 
 					$queue['description'], 
 					$queue['id']));
-		$LMS->SetTS('rtqueues');
 		
 		$DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
-		$LMS->SetTS('rtrights');
 		
 		if($queue['rights'])
 		        foreach($queue['rights'] as $right)

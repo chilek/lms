@@ -460,17 +460,6 @@ CREATE TABLE liabilities (
 
 # --------------------------------------------------------
 #
-# Structure of table timestamps
-#
-DROP TABLE IF EXISTS timestamps;
-CREATE TABLE timestamps (
-  time int(14) NOT NULL default '0',
-  tablename varchar(255) NOT NULL default '',
-  UNIQUE KEY tablename (tablename)
-) TYPE=MyISAM;
-
-# --------------------------------------------------------
-#
 # Structure of table customers (customers)
 #
 DROP TABLE IF EXISTS customers;
@@ -819,4 +808,4 @@ CREATE TABLE imessengers (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007041200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007062100');

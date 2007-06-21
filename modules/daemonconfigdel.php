@@ -28,10 +28,7 @@ $id = $_GET['id'];
 
 if($id && $_GET['is_sure']=='1')
 {
-	if($DB->Execute('DELETE FROM daemonconfig WHERE id = ?', array($id)))
-	{
-		$LMS->SetTS('daemonconfig');
-	}
+	$DB->Execute('DELETE FROM daemonconfig WHERE id = ?', array($id));
 }
 
 header('Location: ?'.$SESSION->get('backto'));

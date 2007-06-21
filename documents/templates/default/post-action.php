@@ -28,6 +28,4 @@
     post action example: here you can e.g. execute some SQL queries, send mail or sth
 */
 
-$LMS->SetTS('documents');
-
 ?>

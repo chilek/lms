@@ -66,7 +66,6 @@ if(sizeof($config))
 					$config['description'],
 					$config['disabled']
 					));
-		$LMS->SetTS('uiconfig');
 		
 		if(!isset($config['reuse']))
 		{

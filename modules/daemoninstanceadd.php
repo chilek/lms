@@ -64,7 +64,6 @@ if($instance)
 					    $instance['module'],
 					    $instance['crontab'],
 					    $instance['priority']));
-		$LMS->SetTS('daemoninstances');
 		
 		if(!isset($instance['reuse']))
 		{

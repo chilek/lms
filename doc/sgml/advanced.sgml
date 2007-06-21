@@ -369,6 +369,7 @@
                     <member>city - location of customer</member>
 		    <member>closed - is document (invoice) closed (accounted)? (0/1)</member>
 		    <member>reference - document ID reference</member>
+		    <member>reason - e.g. invoice note reason</member>
                </simplelist>
           </sect2>
           <sect2 id="documentcontents">
@@ -454,13 +455,6 @@
                     <member>id - serial number</member>
                     <member>login - account name (without domain)</member>
                     <member>accountid - account serial number</member>
-               </simplelist>
-          </sect2>
-          <sect2 id="timestamps">
-               <title>History ('timestamps')</title>
-               <simplelist>
-                    <member>time - last modified timestamp</member>
-                    <member>tablename - name of modified table</member>
                </simplelist>
           </sect2>
           <sect2 id="stats">

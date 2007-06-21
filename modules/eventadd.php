@@ -51,8 +51,6 @@ if($event = $_POST['event'])
 		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, userid, private, customerid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $AUTH->id, $event['status'], $event['customerid']));
 		
-		$LMS->SetTS('events');
-		
 		if($event['userlist'])
 		{
 			$id = $DB->GetOne('SELECT id FROM events WHERE title=? AND date=? AND begintime=? AND endtime=? AND userid=?',
@@ -61,8 +59,6 @@ if($event = $_POST['event'])
 			foreach($event['userlist'] as $userid)
 				$DB->Execute('INSERT INTO eventassignments (eventid, userid) 
 					VALUES (?, ?)', array($id, $userid));
-
-			$LMS->SetTS('eventassignments');
 		}
 		
 		if(!$event['reuse'])

@@ -131,7 +131,7 @@ function GetConfigList($order='var,asc')
 				break;
 				
 				case 'reload_sqlquery':
-					$config[$idx]['description'] = trans('SQL query executed while reload, if reload_type = sql. By default, query inserts into table \'timestamps\' value \'_force\'. You can use \'%TIME%\' as replacement to current unix timestamp. WARNING! Semicolon is handled as query separator, which means that you can enter couple of SQL queries separated by semicolon sign.');
+					$config[$idx]['description'] = trans('SQL query executed while reload, if reload_type = sql. Default: empty. You can use \'%TIME%\' as replacement to current unix timestamp. WARNING! Semicolon is handled as query separator, which means that you can enter couple of SQL queries separated by semicolon sign.');
 				break;
 				
 				case 'allow_mac_sharing':

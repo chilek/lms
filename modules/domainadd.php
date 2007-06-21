@@ -55,7 +55,6 @@ if(isset($_POST['domainadd']))
 				    array($domainadd['name'], 
 					    $domainadd['ownerid'], 
 					    $domainadd['description']));
-		$LMS->SetTS('domains');
 		
 		if(!isset($domainadd['reuse']))
 		{

@@ -37,10 +37,7 @@ if($id && $_GET['is_sure']=='1')
 				$DB->Execute('DELETE FROM daemoninstances WHERE id = ?', array($instance));
 				$DB->Execute('DELETE FROM daemonconfig WHERE instanceid = ?', array($instance));
 			}
-			$LMS->SetTS('daemoninstances');
-			$LMS->SetTS('daemonconfig');
 		}
-		$LMS->SetTS('hosts');
 	}
 }
 

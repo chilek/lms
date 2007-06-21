@@ -51,7 +51,6 @@ if($hostadd)
 	{
 		$DB->Execute('INSERT INTO hosts (name, description) VALUES (?,?)',
 				    array($hostadd['name'], $hostadd['description']));
-		$LMS->SetTS('hosts');
 		
 		if(!isset($hostadd['reuse']))
 		{
