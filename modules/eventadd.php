@@ -24,8 +24,10 @@
  *  $Id$
  */
 
-if($event = $_POST['event'])
+if(isset($_POST['event']))
 {
+	$event = $_POST['event'];
+	
 	if(!($event['title'] || $event['description'] || $event['date']))
 	{
 		$SESSION->redirect('?m=eventlist');
@@ -71,9 +73,9 @@ if($event = $_POST['event'])
 	}
 }
 
-$event['date'] = $event['date'] ? $event['date'] : $SESSION->get('edate');
+$event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
 
-if($_GET['day'] && $_GET['month'] && $_GET['year'])
+if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
 {
 	$event['date'] = sprintf('%04d/%02d/%02d', $_GET['year'], $_GET['month'], $_GET['day']);
 }
