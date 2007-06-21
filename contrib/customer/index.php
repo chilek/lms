@@ -79,6 +79,8 @@ function lms_parse_ini_file($filename, $process_sections = false)
 	return $ini_array;
 }
 
+$CONFIG = array();
+
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 	$CONFIG[$key] = $val;
 
@@ -104,6 +106,7 @@ $_MODULES_DIR = $CONFIG['directories']['modules_dir'];
 $_SMARTY_DIR = $CONFIG['directories']['smarty_dir'];
 $_SMARTY_COMPILE_DIR = $CONFIG['directories']['smarty_compile_dir'];
 $_SMARTY_TEMPLATES_DIR = $CONFIG['directories']['smarty_templates_dir'];
+
 $_DBTYPE = $CONFIG['database']['type'];
 $_DBHOST = $CONFIG['database']['host'];
 $_DBUSER = $CONFIG['database']['user'];

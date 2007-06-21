@@ -76,6 +76,7 @@ function lms_parse_ini_file($filename, $process_sections = false)
 	return $ini_array;
 }
 
+$CONFIG = array();
 
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
     $CONFIG[$key] = $val;

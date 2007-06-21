@@ -380,7 +380,8 @@ function invoice_body()
 	    invoice_simple_form_fill(14,3,0.4);
 	    break;
 	default:
-	    require($_MODULES_DIR.'/'.$CONFIG['invoices']['template_file']);
+	    if(file_exists($_MODULES_DIR.'/'.$CONFIG['invoices']['template_file']))
+		    require($_MODULES_DIR.'/'.$CONFIG['invoices']['template_file']);
     }
     if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }
