@@ -578,7 +578,7 @@ DROP SEQUENCE events_id_seq;
 CREATE SEQUENCE events_id_seq;
 DROP TABLE events;
 CREATE TABLE events (
-	id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
+	id integer default nextval('events_id_seq'::text) NOT NULL,
 	title varchar(255) DEFAULT '' NOT NULL,
 	description text DEFAULT '' NOT NULL,
 	note text DEFAULT '' NOT NULL,
@@ -704,4 +704,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005110600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005110601');
