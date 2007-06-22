@@ -34,6 +34,9 @@ version ? (????-??-??):
   - removed unused SetTS() calls and table 'timestamps' (alec)
   - fixed problem with 'events' table's sequence on postgres (alec)
   - added month and year selection fields on Timetable (alec)
+  - stats: database compacting with cron eg.: links -dump 
+    "http://lms/?m=trafficdbcompact&level=low&removeold=1&removedeleted=1
+    &loginform[login]=login&loginform[pwd]=pass&override=1" (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

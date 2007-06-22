@@ -775,15 +775,23 @@ to generate statistics. For that reason in 'Compacting' menu you're able to
 shrink your database size without data loss. This module will compact data using
 following logic:
 		<itemizedlist>
-		    <listitem><para><emphasis>Low precision</emphasis>: data
+		    <listitem><para><emphasis>Low precision (low)</emphasis>: data
 from previous date and older will be approximated to one day. If you save data
 each 10 minutes 6*24 records will be compacted to one.</para></listitem>
-		    <listitem><para><emphasis>Medium precision</emphasis>: data
+		    <listitem><para><emphasis>Medium precision (medium)</emphasis>: data
 older than month will be approximated to one day.</para></listitem>
-		    <listitem><para><emphasis>High precision</emphasis>: data
+		    <listitem><para><emphasis>High precision (high)</emphasis>: data
 older than month will be approximated to one hour.</para></listitem>
 		</itemizedlist>
 	    <warning><para>Data approximation is irreversible.</para></warning>
+	    </para>
+	    <para>
+	    It's possible to do database compacting with cron. Compacting page 
+	    can be viewed (executed) directly by web browser in following way:
+<screen>
+links -dump \
+"http://lms/?m=trafficdbcompact&amp;level=low&amp;removeold=1&amp;removedeleted=1&amp;loginform[login]=login&amp;loginform[pwd]=pass&amp;override=1"
+</screen>
 	    </para>
 	</sect2>
 	<sect2 id="menu-stats-reports">

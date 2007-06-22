@@ -819,23 +819,30 @@ MISC_OTHER="-A -x -j"
 	</sect2>
 	<sect2 id="menu-stats-compact">
 	<title>Kompaktowanie</title>
-	    <para>W zale¿no¶ci od wybranej przez klienta czêstotliwo¶ci zapisu, mo¿e
-	    nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
-	    oczekiwania na rysowanie wykresów. Z tego powodu w menu 'Kompaktowanie'
-	    udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy statystyk bez
-	    utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
-	    w nastêpuj±cy sposób:
+		<para>W zale¿no¶ci od wybranej przez klienta czêstotliwo¶ci zapisu, mo¿e
+		nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+		oczekiwania na rysowanie wykresów. Z tego powodu w menu 'Kompaktowanie'
+		udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy statystyk bez
+		utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+		w nastêpuj±cy sposób:
 		<itemizedlist>
-		    <listitem><para><emphasis>Poziom Niski</emphasis>: dane z poprzedniego dnia i starsze, zostan± u¶rednione
+			<listitem><para><emphasis>Poziom Niski (low)</emphasis>: dane z poprzedniego dnia i starsze, zostan± u¶rednione
 			do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
 			to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
-		    <listitem><para><emphasis>Poziom ¦redni</emphasis>: dane starsze ni¿ miesi±c zostan± u¶rednione do
+			<listitem><para><emphasis>Poziom ¦redni (medium)</emphasis>: dane starsze ni¿ miesi±c zostan± u¶rednione do
 			jednego dnia.</para></listitem>
-		    <listitem><para><emphasis>Poziom Wysoki</emphasis>: dane starsze ni¿ miesi±c zostan± u¶rednione do
+			<listitem><para><emphasis>Poziom Wysoki (high)</emphasis>: dane starsze ni¿ miesi±c zostan± u¶rednione do
 			jednej godziny.</para></listitem>
 		</itemizedlist>
-	    <warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
-	    </para>
+	    	<warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
+	    	</para>
+		<para>Mo¿liwe jest kompaktowanie bazy danych z wykorzystaniem cron'a. Stronê kompaktowania
+		mo¿na wywo³aæ (uruchomiæ) bezpo¶rednio w przegl±darce, np. w nastêpuj±cy sposób:
+<screen>
+links -dump \
+"http://lms/?m=trafficdbcompact&amp;level=low&amp;removeold=1&amp;removedeleted=1&amp;loginform[login]=login&amp;loginform[pwd]=pass&amp;override=1	
+</screen>
+		</para>
 	</sect2>
 	<sect2 id="menu-stats-reports">
 		<title>Raporty</title>
