@@ -18,26 +18,18 @@
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP></TD>
 	</TR>
-	<FORM method="GET" action="?m=eventlist" name="filter">
 	<TR class="DARK">
-		<TD colspan="5" class="fall" NOWRAP>
-			<select name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
-			    {section name=month loop=13 start=1}
-			    <option value="{$smarty.section.month.index}"{if $smarty.section.month.index==$month} selected{/if}>{$temp_date|replace:"m":$smarty.section.month.index|date_format:"%B"}</option>
-			    {/section}
-			</select>
-			<select name="year" onchange="document.filter.submit();">{assign var=end value=$period.to|default:$date|date_format:"%Y"}
-			    {section name=year loop=$end+2 start=$period.from|default:$date|date_format:"%Y"}
-			    <option value="{$smarty.section.year.index}"{if $smarty.section.year.index==$year} selected{/if}>{$smarty.section.year.index}</option>
-			    {/section}
-			</select>
+		<TD colspan="5" class="fall" align="center" NOWRAP>
+			<A href="?m=eventlist&day=1&month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
 			{section name=days loop=$days.day}
 				{if !$days.dow[days]}<FONT class="light">{/if}<A href="?m=eventlist&day={$days.day[days]}&month={$month}&year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} <A>{if !$days.dow[days]}</FONT>{/if}
 			{/section}
+			<A href="?m=eventlist&day=1&month={if $month==12}1{else}{math equation="x+1" x=$month}{/if}&year={if $month==12}{math equation="x+1" x=$year}{else}{$year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
 		</TD>
 	</TR>
 	<TR class="DARK">
-		<TD class="fall" colspan="5">
+		<TD class="fall" colspan="5" NOWRAP>
+			<FORM method="GET" action="?m=eventlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="eventlist">
 				<B>{t}Filter:{/t} </B> {t}User:{/t}
@@ -54,9 +46,21 @@
 					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true}</OPTION>
 					{/section}
 				</SELECT>
+				{t}Month:{/t}
+				<SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
+					{section name=month loop=13 start=1}
+					<OPTION value="{$smarty.section.month.index}"{if $smarty.section.month.index==$month} selected{/if}>{$temp_date|replace:"m":$smarty.section.month.index|date_format:"%B"}</OPTION>
+					{/section}
+				</SELECT>
+				{t}Year:{/t}
+				<SELECT name="year" onchange="document.filter.submit();">{assign var=end value=$period.to|default:$date|date_format:"%Y"}
+					{section name=year loop=$end+2 start=$period.from|default:$date|date_format:"%Y"}
+					<OPTION value="{$smarty.section.year.index}"{if $smarty.section.year.index==$year} selected{/if}>{$smarty.section.year.index}</option>
+					{/section}
+				</SELECT>
+			</FORM>
 		</TD>
 	</TR>		
-	</FORM>
 	{cycle values="light,lucid" print=false}
 	{section name=daylist loop=$daylist}
 	<TR>
