@@ -47,6 +47,8 @@ function uptimef($ts)
 	$days  = floor($hours / 24);
 	$hours = floor($hours - ($days * 24));
 	$min= floor($min - ($days * 60 * 24) - ($hours * 60));
+	$result = '';
+
 	if ($days != 0)
 	{
 		$result = $days;
