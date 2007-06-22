@@ -617,7 +617,7 @@ DROP SEQUENCE events_id_seq;
 CREATE SEQUENCE events_id_seq;
 DROP TABLE events;
 CREATE TABLE events (
-	id 		integer 	DEFAULT nextval('rtqueues_id_seq'::text) NOT NULL,
+	id 		integer 	DEFAULT nextval('events_id_seq'::text) NOT NULL,
 	title 		varchar(255) 	DEFAULT '' NOT NULL,
 	description 	text 		DEFAULT '' NOT NULL,
 	note 		text 		DEFAULT '' NOT NULL,
@@ -854,4 +854,4 @@ CREATE TABLE imessengers (
 );
 CREATE INDEX imessengers_customerid_idx ON imessengers (customerid);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007062100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007062200');
