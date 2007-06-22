@@ -808,4 +808,4 @@ CREATE TABLE imessengers (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007062100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007062200');

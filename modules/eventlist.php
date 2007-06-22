@@ -34,7 +34,8 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	
 	$startdate = mktime(0,0,0, $month, $day, $year);
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
-
+	$list2 = array();
+	
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername 
@@ -79,27 +80,30 @@ else
 	$u = $_GET['u'];
 $SESSION->save('elu', $u);
 
-if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
+if(isset($_GET['month']) && isset($_GET['year']))
 {
-	$day = $_GET['day'];
+	$day = isset($_GET['day']) ? $_GET['day'] : 1;
 	$month = $_GET['month'];
 	$year = $_GET['year'];
 }
 else
-	list($year, $month, $day) = explode('/', $SESSION->get('edate'));
+{
+	if($edate = $SESSION->get('edate'))
+		list($year, $month, $day) = explode('/', $SESSION->get('edate'));
+}
 
-$day = ($day ? $day : date('j',time()));
-$month = ($month ? sprintf('%d',$month) : date('n',time()));
-$year = ($year ? $year : date('Y',time()));
+$day = (isset($day) ? $day : date('j',time()));
+$month = (isset($month) ? sprintf('%d',$month) : date('n',time()));
+$year = (isset($year) ? $year : date('Y',time()));
 
 $layout['pagetitle'] = trans('Timetable');
 
-$eventlist = GetEventList($year, $month, $day, $LMS->CONFIG['phpui']['timetable_days_forward'], $u, $a);
+$eventlist = GetEventList($year, $month, $day, $CONFIG['phpui']['timetable_days_forward'], $u, $a);
 $SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['userid']);
 
 // create calendars
-for($i=0; $i<$LMS->CONFIG['phpui']['timetable_days_forward']; $i++)
+for($i=0; $i<$CONFIG['phpui']['timetable_days_forward']; $i++)
 {
 	$dt = mktime(0, 0, 0, $month, $day+$i, $year);
 	$daylist[$i] = $dt;
@@ -118,6 +122,7 @@ for($i=1; $i<$daysnum+1; $i++)
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('edate', sprintf('%04d/%02d/%02d', $year, $month, $day));
 
+$SMARTY->assign('period', $DB->GetRow('SELECT MAX(date) AS from, MIN(date) AS to FROM events'));
 $SMARTY->assign('eventlist',$eventlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('days',$days);
