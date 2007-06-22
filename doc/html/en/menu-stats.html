@@ -151,7 +151,7 @@ following logic:
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Low precision</I
+>Low precision (low)</I
 ></SPAN
 >: data
 from previous date and older will be approximated to one day. If you save data
@@ -163,7 +163,7 @@ each 10 minutes 6*24 records will be compacted to one.</P
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Medium precision</I
+>Medium precision (medium)</I
 ></SPAN
 >: data
 older than month will be approximated to one day.</P
@@ -174,7 +174,7 @@ older than month will be approximated to one day.</P
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->High precision</I
+>High precision (high)</I
 ></SPAN
 >: data
 older than month will be approximated to one hour.</P
@@ -205,6 +205,15 @@ VALIGN="TOP"
 ></TR
 ></TABLE
 ></DIV
+>
+	    </P
+><P
+>	    It's possible to do database compacting with cron. Compacting page 
+	    can be viewed (executed) directly by web browser in following way:
+<PRE
+CLASS="SCREEN"
+>links -dump \
+"http://lms/?m=trafficdbcompact&amp;level=low&amp;removeold=1&amp;removedeleted=1&amp;loginform[login]=login&amp;loginform[pwd]=pass&amp;override=1"</PRE
 >
 	    </P
 ></DIV

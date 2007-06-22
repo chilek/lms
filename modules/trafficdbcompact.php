@@ -26,26 +26,30 @@
 
 $layout['pagetitle'] = trans('Network Statistics Compacting');
 
-if (!isset($_POST['level']) && !isset($_POST['delete']) && !isset($_POST['removedeleted']))
+if (!isset($_GET['level']) && !isset($_GET['removeold']) && !isset($_GET['removedeleted']))
 {
     $SMARTY->display('trafficdbcompact.html');
     $SESSION->close();
     die;
 }
 
+set_time_limit(0);
+
 $layout['nomenu'] =  TRUE;
 $SMARTY->display('header.html');
 
 echo '<BR><BLOCKQUOTE><H1>'.trans('Compacting Database').'</H1><PRE>';
 echo trans('$0 records before compacting.<BR>',$DB->GetOne('SELECT COUNT(*) FROM stats'));
+flush();
 
-if(isset($_POST['delete']))
+if(isset($_GET['removeold']))
 {
     $yeardeleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60');
     echo trans('$0 at least one year old records have been removed.<BR>',$yeardeleted);
+    flush();
 }
 
-if(isset($_POST['removedeleted']))
+if(isset($_GET['removedeleted']))
 {
     if($nodes_from_stats = $DB->GetCol('SELECT DISTINCT nodeid FROM stats')) 
     {
@@ -54,21 +58,23 @@ if(isset($_POST['removedeleted']))
 	{
 	    if(!in_array($node,$nodes))
 		if($DB->Execute('DELETE FROM stats WHERE nodeid = '.$node))
+		{
 		    echo trans('Statistics for computer $0 has been removed<BR>',$node);
+		    flush();
+		}
 	}
     }
 }
 
-if(isset($_POST['level']))
+if(isset($_GET['level']))
 {
     $time = time();
-    switch($_POST['level'])
+    switch($_GET['level'])
     {
-	case 1 : $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
-	case 2 : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
-	case 3 : $period = $time-365*24*60*60; $step = 60*60; break; //month, hour
+	case 'low' : $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
+	case 'medium' : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
+	case 'high' : $period = $time-365*24*60*60; $step = 60*60; break; //month, hour
     }
-    set_time_limit(0);
     if($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats'))
     {
 	$nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
@@ -91,11 +97,14 @@ if(isset($_POST['level']))
 	    }
 	    $DB->CommitTrans();
 	    echo trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
+	    flush();
 	}
     }
 }
+
 echo trans('$0 records after compacting.<BR>',$DB->GetOne("SELECT COUNT(*) FROM stats"));
 echo '<P><BR><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
+flush();
 
 $SMARTY->display('footer.html');
 

@@ -1763,17 +1763,22 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    needed to generate statistics. For that reason in 'Compacting' menu
    you're able to shrink your database size without data loss. This
    module will compact data using following logic:
-     * Low precision: data from previous date and older will be
+     * Low precision (low): data from previous date and older will be
        approximated to one day. If you save data each 10 minutes 6*24
        records will be compacted to one.
-     * Medium precision: data older than month will be approximated to
-       one day.
-     * High precision: data older than month will be approximated to one
-       hour.
+     * Medium precision (medium): data older than month will be
+       approximated to one day.
+     * High precision (high): data older than month will be approximated
+       to one hour.
 
    Warning
 
    Data approximation is irreversible.
+
+   It's possible to do database compacting with cron. Compacting page can
+   be viewed (executed) directly by web browser in following way:
+links -dump \
+"http://lms/?m=trafficdbcompact&level=low&removeold=1&removedeleted=1&loginform[login]=login&loginform[pwd]=pass&override=1"
      _________________________________________________________________
 
 3.12.3. Reports

@@ -141,11 +141,11 @@ NAME="MENU-STATS-COMPACT"
 ></H2
 ><P
 >W zale¿no¶ci od wybranej przez klienta czêstotliwo¶ci zapisu, mo¿e
-	    nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
-	    oczekiwania na rysowanie wykresów. Z tego powodu w menu 'Kompaktowanie'
-	    udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy statystyk bez
-	    utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
-	    w nastêpuj±cy sposób:
+		nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+		oczekiwania na rysowanie wykresów. Z tego powodu w menu 'Kompaktowanie'
+		udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy statystyk bez
+		utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+		w nastêpuj±cy sposób:
 		<UL
 ><LI
 ><P
@@ -153,7 +153,7 @@ NAME="MENU-STATS-COMPACT"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Poziom Niski</I
+>Poziom Niski (low)</I
 ></SPAN
 >: dane z poprzedniego dnia i starsze, zostan± u¶rednione
 			do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
@@ -165,7 +165,7 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Poziom ¦redni</I
+>Poziom ¦redni (medium)</I
 ></SPAN
 >: dane starsze ni¿ miesi±c zostan± u¶rednione do
 			jednego dnia.</P
@@ -176,14 +176,14 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Poziom Wysoki</I
+>Poziom Wysoki (high)</I
 ></SPAN
 >: dane starsze ni¿ miesi±c zostan± u¶rednione do
 			jednej godziny.</P
 ></LI
 ></UL
 >
-	    <DIV
+	    	<DIV
 CLASS="WARNING"
 ><TABLE
 CLASS="WARNING"
@@ -208,7 +208,16 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 >
-	    </P
+	    	</P
+><P
+>Mo¿liwe jest kompaktowanie bazy danych z wykorzystaniem cron'a. Stronê kompaktowania
+		mo¿na wywo³aæ (uruchomiæ) bezpo¶rednio w przegl±darce, np. w nastêpuj±cy sposób:
+<PRE
+CLASS="SCREEN"
+>links -dump \
+"http://lms/?m=trafficdbcompact&amp;level=low&amp;removeold=1&amp;removedeleted=1&amp;loginform[login]=login&amp;loginform[pwd]=pass&amp;override=1	</PRE
+>
+		</P
 ></DIV
 ><DIV
 CLASS="SECT2"
