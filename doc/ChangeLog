@@ -33,6 +33,7 @@ version ? (????-??-??):
     XX-XX-XX-XX-XX-XX, XXXX.XXXX.XXXX or native LMS format with colon (alec)
   - removed unused SetTS() calls and table 'timestamps' (alec)
   - fixed problem with 'events' table's sequence on postgres (alec)
+  - added month and year selection fields on Timetable (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 
