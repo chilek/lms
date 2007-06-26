@@ -45,7 +45,7 @@ function macformat($mac)
 		$tmp = eregi_replace('[^0-9a-f]', '', $mac);
 	
 		if(strlen($tmp) == 12) // we've the whole address
-			if(check_mac(&$tmp)) 
+			if(check_mac($tmp)) 
 				$res = $tmp;
 	}
 	return $res;
