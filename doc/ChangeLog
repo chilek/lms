@@ -37,6 +37,7 @@ version ? (????-??-??):
   - stats: database compacting with cron eg.: links -dump 
     "http://lms/?m=trafficdbcompact&level=low&removeold=1&removedeleted=1
     &loginform[login]=login&loginform[pwd]=pass&override=1" (alec)
+  - PIN code field cannot be empty now (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

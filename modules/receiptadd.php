@@ -190,7 +190,7 @@ switch($action)
 			$error['regid'] = trans('Registry not selected!');
 
 		if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid']))<=1)
-			$error['regid'] = trans('You have no write rights selected registry!');
+			$error['regid'] = trans('You have no write rights to selected registry!');
 
 		if(isset($error)) break;
 		

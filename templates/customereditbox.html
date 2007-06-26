@@ -1,11 +1,11 @@
 <!--// $Id$ //-->
 {literal}
-<SCRIPT language="JavaScript">
-<!--
+<SCRIPT type="text/javascript">
 	function randomize()
 	{
-		if(! confirm('{/literal}{t}Are you sure, you want to generate new PIN?{/t}{literal}'))
-			return;
+		if(document.customeredit.elements['customerdata[pin]'].value != '')
+			if(! confirm('{/literal}{t}Are you sure, you want to generate new PIN?{/t}{literal}'))
+				return;
 	
 		var r = 0;
 		do
@@ -13,7 +13,6 @@
 		while (r<1000);
 		document.customeredit.elements['customerdata[pin]'].value = r;
 	}
-//-->
 </SCRIPT>
 {/literal}
 <FORM NAME="customeredit" id="customeredit" METHOD="POST" ACTION="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="customerdata[id]" VALUE="{$customerinfo.id}">
@@ -246,8 +245,6 @@
 	</TR>
 </TABLE>
 </FORM>
-<SCRIPT language="javaScript">
-<!--
+<SCRIPT type="text/javascript">
 document.forms['customeredit'].elements['customerdata[lastname]'].focus();
-//-->
 </SCRIPT>
