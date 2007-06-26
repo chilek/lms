@@ -103,9 +103,8 @@ if(isset($_POST['customeradd']))
 		$error['zip'] = trans('Incorrect ZIP code!');
 
 	if($customeradd['pin'] == '')
-		$customeradd['pin'] = 0;
-
-        if($customeradd['pin']!=0 && !eregi('^[0-9]{4,6}$',$customeradd['pin']))
+		$error['pin'] = trans('PIN code is required!');
+        elseif(!eregi('^[0-9]{4,6}$',$customeradd['pin']))
 	        $error['pin'] = trans('Incorrect PIN code!');
 
 	if($customeradd['email']!='' && !check_email($customeradd['email']))

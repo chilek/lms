@@ -3,7 +3,6 @@
 <H1>{$layout.pagetitle}</H1>
 {literal}
 <SCRIPT language="JavaScript">
-<!--
 	function randomize()
 	{
 		var r = 0;
@@ -12,7 +11,6 @@
 		while (r<1000);	
 		document.customeradd.elements['customeradd[pin]'].value = r;
 	}
-//-->
 </SCRIPT>
 {/literal}
 <P>
@@ -185,15 +183,13 @@
 </P>
 {literal}
 <SCRIPT type="text/javascript">
-<!--
-
 	function switchReuse()
 	{
 		document.forms['customeradd'].elements['customeradd[reuse]'].checked = !document.forms['customeradd'].elements['customeradd[reuse]'].checked;
 	}
 
-document.forms['customeradd'].elements['customeradd[lastname]'].focus();
-//-->
+	document.forms['customeradd'].elements['customeradd[lastname]'].focus();
+	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
 </SCRIPT>
 {/literal}
 {include file="footer.html"}
