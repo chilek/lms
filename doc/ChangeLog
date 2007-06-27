@@ -39,6 +39,7 @@ version ? (????-??-??):
     &loginform[login]=login&loginform[pwd]=pass&override=1" (alec)
   - PIN code field cannot be empty now (alec)
   - added possibility to search customers by additional informations (alec)
+  - added 'payments book' type of documents (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 
