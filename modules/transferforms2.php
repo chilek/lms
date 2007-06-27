@@ -130,7 +130,7 @@ $pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding',
 $pdf->setLineStyle(2);
 $id = $pdf->getFirstPageId();
 
-@setlocale('LC_NUMERIC','C');																						
+@setlocale(LC_NUMERIC, 'C');																						
 
 $count = sizeof($list);;
 $i = 0;

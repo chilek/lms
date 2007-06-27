@@ -134,7 +134,7 @@ if(!$ids)
     die;
 }
 
-@setlocale('LC_NUMERIC','C');																						
+@setlocale(LC_NUMERIC,'C');																						
 
 $count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
 $i=0;
