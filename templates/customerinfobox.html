@@ -90,16 +90,6 @@
 		</TD>
 	</TR>
 {/foreach}
-{if $customerinfo.ten neq ""}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" ALIGN="CENTER">
-			<B>{t}TEN:{/t}</B>
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.ten}
-		</TD>
-	</TR>
-{/if}
 {if $customerinfo.icn neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
@@ -117,6 +107,16 @@
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.ssn}
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.ten neq ""}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" ALIGN="CENTER">
+			<B>{t}TEN:{/t}</B>
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{$customerinfo.ten}
 		</TD>
 	</TR>
 {/if}
