@@ -580,7 +580,7 @@ function invoice_body()
 }
 
 // brzydki hack dla ezpdf 
-setlocale(LC_ALL,'C');
+@setlocale(LC_NUMERIC, 'C');
 require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
 
 $diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
