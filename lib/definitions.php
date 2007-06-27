@@ -44,14 +44,15 @@ define('ACCOUNT_FTP', 8);
 $DOCTYPES = array(
     1 	=>	trans('invoice'),
     2 	=>	trans('cash receipt'),
-    3	=>	trans('credit note'), // faktura koryguj±ca
-//    4	=>	trans('credit memo'), // nota koryguj±ca
+    3	=>	trans('credit note'), // faktura korygujaca
+//    4	=>	trans('credit memo'), // nota korygujaca
     -1	=>	trans('contract'),
     -2	=>	trans('annex'),
     -3	=>	trans('protocol'),
     -4  =>	trans('order'), 
     -5  =>	trans('customer sheet'), // karta klienta 
-    -6  =>	trans('contract termination'), // 
+    -6  =>	trans('contract termination'),  
+    -7  =>	trans('payments book'), // ksiazeczka oplat
     -10 =>	trans('other')
 );
 
