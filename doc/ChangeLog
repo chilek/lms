@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed link to LMS mailing lists archive (alec)
+
 version 1.8.11 Wade (2007-06-26):
 
   - BTS#0000664: fixed status filter on Customers List (alec)
