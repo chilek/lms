@@ -509,7 +509,7 @@ function invoice_expositor ($x,$y)
 {
     global $pdf, $invoice, $CONFIG;
     
-    $expositor = $invoice['user'] ? $invoice['user'] : $CONFIG['invoices']['default_author'];
+    $expositor = isset($invoice['user']) ? $invoice['user'] : isset($CONFIG['invoices']['default_author']) ? $CONFIG['invoices']['default_author'] : '';
 	    
     $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",$expositor));
     return $y;
@@ -690,7 +690,7 @@ elseif(isset($_GET['fetchallinvoices']))
 		}
 	}
 }
-elseif($_GET['fetchsingle'])
+elseif(isset($_GET['fetchsingle']))
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 	$invoice['last'] = TRUE;
