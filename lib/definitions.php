@@ -108,10 +108,13 @@ define('CONTINUOUS', 6);
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
 
-$SMARTY->assign('_DOCTYPES', $DOCTYPES);
-$SMARTY->assign('_PERIODS', $PERIODS);
-$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
-$SMARTY->assign('_RT_STATES', $RT_STATES);
-$SMARTY->assign('_MESSENGERS', $MESSENGERS);
+if(isset($SMARTY))
+{
+	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
+	$SMARTY->assign('_PERIODS', $PERIODS);
+	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
+	$SMARTY->assign('_RT_STATES', $RT_STATES);
+	$SMARTY->assign('_MESSENGERS', $MESSENGERS);
+}
 
 ?>
