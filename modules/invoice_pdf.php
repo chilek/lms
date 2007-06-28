@@ -167,7 +167,7 @@ function invoice_seller($x,$y)
     global $pdf,$CONFIG;
     $font_size=10;
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Seller:')).'</b>');
-    $tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT",$CONFIG['invoices']['header']);
+    $tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", isset($CONFIG['invoices']['header']) ? $CONFIG['invoices']['header'] : '');
     $tmp = str_replace('\n',"\n",$tmp);
     $tmp = explode("\n",$tmp);
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,$line);
@@ -180,12 +180,12 @@ function invoice_title($x,$y)
     global $invoice,$pdf,$CONFIG,$type;
     $font_size = 16;
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    if($invoice['invoice'])
+    if(isset($invoice['invoice']))
     	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Credit Note No. $0',$tmp)).'</b>');
     else
 	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Invoice No. $0',$tmp)).'</b>');
     
-    if($invoice['invoice'])
+    if(isset($invoice['invoice']))
     {
 	$font_size = 12; $y += 8;
 	$tmp = docnumber($invoice['invoice']['number'], $invoice['invoice']['template'], $invoice['invoice']['cdate']);
@@ -202,7 +202,7 @@ function invoice_title($x,$y)
 	    $y=$y-text_align_left($x,$y+4,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Duplicate draw-up date:').' '.date('Y/m/d')));
     }
     
-    if($invoice['invoice'])
+    if(isset($invoice['invoice']))
     	$y += 10;
     return $y;
 }
@@ -298,8 +298,8 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $t_data[$v++] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Tax Value:')).'</b>';
     $t_data[$v++] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Gross Value:')).'</b>';
     
-    for ($i = 1; $i <= $v; $i++) $t_justify[$i]="center";
-    for ($i = 1; $i <= $v; $i++) $t_width[$i] = getWrapTextWidth($font_size,$t_data[$i])+2*$margin+2;
+    for ($i = 1; $i < $v; $i++) $t_justify[$i]="center";
+    for ($i = 1; $i < $v; $i++) $t_width[$i] = getWrapTextWidth($font_size,$t_data[$i])+2*$margin+2;
     
     // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pó¼niej
     if ($invoice['content']) foreach ($invoice['content'] as $item)
@@ -316,11 +316,12 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']))+6;
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])))+6;
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])))+6;
-	for ($i = 2; $i <= $v; $i++) 
+	for ($i = 2; $i < $v; $i++) 
 		if(($tt_width[$i]+2*$margin+2)>$t_width[$i])
 			$t_width[$i] = $tt_width[$i]+2*$margin+2;
     }
-    if ($invoice['invoice']['content']) foreach ($invoice['invoice']['content'] as $item)
+    
+    if(isset($invoice['invoice']['content'])) foreach ($invoice['invoice']['content'] as $item)
     {
 	$v = 2;
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['description']));
@@ -334,7 +335,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']))+6;
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])))+6;
 	$tt_width[$v++] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])))+6;
-	for ($i = 2; $i <= $v; $i++) 
+	for ($i = 2; $i < $v; $i++) 
 		if(($tt_width[$i]+2*$margin+2)>$t_width[$i]) 
 			$t_width[$i] = $tt_width[$i]+2*$margin+2;
     }
@@ -344,7 +345,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $t_justify[11] = $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
     $t_justify[2] = 'left';
 
-    if($invoice['invoice'])
+    if(isset($invoice['invoice']))
     {
 	// we have credit note, so first print corrected invoice data
 	$xx = $x;
@@ -415,7 +416,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     }
         
     $lp = 1;
-    if ($invoice['content']) foreach ($invoice['content'] as $item)
+    if($invoice['content']) foreach ($invoice['content'] as $item)
     {
 	$v = 1;
 	$t_data[$v++] = $lp;
@@ -467,7 +468,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$y = invoice_short_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
     }
 
-    if($invoice['invoice'])
+    if(isset($invoice['invoice']))
     {
 	$total = $invoice['total'] - $invoice['invoice']['total'];
 	$totalbase = $invoice['totalbase'] - $invoice['invoice']['totalbase'];
@@ -496,7 +497,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 function invoice_to_pay($x,$y) 
 {
     global $pdf, $invoice;
-    if($invoice['rebate'])
+    if(isset($invoice['rebate']))
 	    $y = $y - text_align_left($x,$y,14,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('To repay:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['value'])));
     else
 	    $y = $y - text_align_left($x,$y,14,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('To pay:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['value'])));
@@ -517,7 +518,8 @@ function invoice_expositor ($x,$y)
 function invoice_footnote($x, $y, $width, $font_size) 
 {
     global $pdf, $CONFIG;
-    if ($CONFIG['invoices']['footer']) {
+    if(isset($CONFIG['invoices']['footer']) && $CONFIG['invoices']['footer'])
+    {
 	$y = $y - $pdf->getFontHeight($font_size);
 	$y = $y - text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Notes:')).'</b>');
 	$tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT",$CONFIG['invoices']['footer']);
@@ -531,7 +533,7 @@ function invoice_body()
 {
     global $invoice,$pdf,$id,$CONFIG;
     
-    if($invoice['invoice'])
+    if(isset($invoice['invoice']))
 	    $template = $CONFIG['invoices']['cnote_template_file'];
     else
 	    $template = $CONFIG['invoices']['template_file'];
@@ -576,7 +578,7 @@ function invoice_body()
 	default:
 	    require($template);
     }
-    if (!$invoice['last']) $id=$pdf->newPage(1,$id,'after');
+    if(!isset($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }
 
 // brzydki hack dla ezpdf 
@@ -603,7 +605,7 @@ $pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding',
 
 $id=$pdf->getFirstPageId();
 
-if($_GET['print'] == 'cached')
+if(isset($_GET['print']) && $_GET['print'] == 'cached')
 {
 	$SESSION->restore('ilm', $ilm);
 	$SESSION->remove('ilm');
@@ -654,7 +656,7 @@ if($_GET['print'] == 'cached')
 		}
 	}
 }
-elseif($_GET['fetchallinvoices'])
+elseif(isset($_GET['fetchallinvoices']))
 {
 	$ids = $DB->GetCol('SELECT id FROM documents
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
@@ -667,9 +669,9 @@ elseif($_GET['fetchallinvoices'])
 		die;
 	}
 
-	if($_GET['original']) $which[] = trans('ORIGINAL');
-        if($_GET['copy']) $which[] = trans('COPY');
-        if($_GET['duplicate']) $which[] = trans('DUPLICATE');
+	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
+        if(isset($_GET['copy'])) $which[] = trans('COPY');
+        if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 	
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
 	
