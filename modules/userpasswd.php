@@ -28,8 +28,6 @@ $id = (isset($_GET['id'])) ? $_GET['id'] : $AUTH->id;
 
 if($LMS->UserExists($id))
 {
-	$error = FALSE;
-
 	if(isset($_POST['passwd']))
 	{
 		$passwd = $_POST['passwd'];
@@ -47,13 +45,12 @@ if($LMS->UserExists($id))
 		}
 	}
 
-	$passwd['realname'] = $LMS->GetUserName($id);
 	$passwd['id'] = $id;
 	$layout['pagetitle'] = trans('Password Change for User $0',$passwd['realname']);
+
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);
 	$SMARTY->display('userpasswd.html');
-
 }
 else
 {
