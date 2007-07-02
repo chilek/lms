@@ -34,8 +34,7 @@ if($LMS->UserExists($id))
 		
 		if($passwd['passwd'] == '' || $passwd['confirm'] == '')
 			$error['password'] = trans('Empty passwords are not allowed!');
-		
-		if($passwd['passwd'] != $passwd['confirm'])
+		elseif($passwd['passwd'] != $passwd['confirm'])
 			$error['password'] = trans('Passwords does not match!');
 		
 		if(!$error)
@@ -47,11 +46,11 @@ if($LMS->UserExists($id))
 
 	$passwd['id'] = $id;
 	$layout['pagetitle'] = trans('Password Change');
-	$SMARTY->assign('error', $error);
+
 	$SMARTY->assign('passwd', $passwd);
+	$SMARTY->assign('error', $error);
 	$SMARTY->assign('target', '?m=chpasswd');
 	$SMARTY->display('userpasswd.html');
-
 }
 else
 {

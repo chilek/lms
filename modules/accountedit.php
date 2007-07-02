@@ -51,30 +51,27 @@ foreach(array('sh', 'mail', 'www', 'ftp', 'sql') as $type)
 
 switch ($option) 
 {
-    case 'chpasswddlg':
-	
-	$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login']);
-	$template = 'accountpasswd.html';
-	break;	
-
     case 'chpasswd':
 	
-	$account['passwd1'] = $_POST['passwd']['passwd'];
-	$account['passwd2'] = $_POST['passwd']['confirm'];
-	
-	if($account['passwd1'] != $account['passwd2'])
-	    $error['passwd'] = trans('Passwords does not match!'); 
-	
-	if($account['passwd1'] == '') 
-	    $error['passwd'] = trans('Empty passwords are not allowed!');
-	
-	if(!$error)
-	{
-		$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', array(crypt($account['passwd1']), $id));
-		$SESSION->redirect('?m=accountlist');
-	}
-	
 	$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login']);
+	
+	if(isset($_POST['passwd']))
+	{
+		$account['passwd1'] = $_POST['passwd']['passwd'];
+		$account['passwd2'] = $_POST['passwd']['confirm'];
+	
+		if($account['passwd1'] != $account['passwd2'])
+			$error['passwd'] = trans('Passwords does not match!'); 
+		elseif($account['passwd1'] == '') 
+			$error['passwd'] = trans('Empty passwords are not allowed!');
+	
+		if(!$error)
+		{
+			$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', array(crypt($account['passwd1']), $id));
+			$SESSION->redirect('?m=accountlist');
+		}
+	}
+		
 	$template = 'accountpasswd.html';
         break;
     
