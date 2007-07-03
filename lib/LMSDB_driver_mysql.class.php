@@ -105,12 +105,10 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return $this->_result;
 	}
 
-	function _driver_fetchrow_assoc()
+	function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)
-		{
-			return mysql_fetch_array($this->_result, MYSQL_ASSOC);
-		}
+			return mysql_fetch_array($result ? $result : $this->_result, MYSQL_ASSOC);
 		else
 			return FALSE;
 	}
@@ -118,9 +116,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_fetchrow_num()
 	{
 		if(! $this->_error)
-		{
 			return mysql_fetch_array($this->_result, MYSQL_NUM);
-		}
 		else
 			return FALSE;
 	}
@@ -129,6 +125,14 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		if(! $this->_error)
 			return mysql_affected_rows();
+		else
+			return FALSE;
+	}
+
+	function _driver_num_rows()
+	{
+		if(! $this->_error)
+			return mysql_num_rows($this->_result);
 		else
 			return FALSE;
 	}

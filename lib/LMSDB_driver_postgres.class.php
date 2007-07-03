@@ -90,10 +90,10 @@ class LMSDB_driver_postgres extends LMSDB_common
 		return $this->_result;
 	}
 
-	function _driver_fetchrow_assoc()
+	function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)
-			return pg_fetch_array($this->_result,NULL,PGSQL_ASSOC);
+			return pg_fetch_array($result ? $result : $this->_result,NULL, PGSQL_ASSOC);
 		else
 			return FALSE;
 	}
@@ -110,6 +110,14 @@ class LMSDB_driver_postgres extends LMSDB_common
 	{
 		if(! $this->_error)
 			return pg_affected_rows($this->_result);
+		else
+			return FALSE;
+	}
+
+	function _driver_num_rows()
+	{
+		if(! $this->_error)
+			return pg_num_rows($this->_result);
 		else
 			return FALSE;
 	}
