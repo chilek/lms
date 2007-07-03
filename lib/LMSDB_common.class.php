@@ -101,8 +101,6 @@ Class LMSDB_common
 
 	function GetAll($query = NULL, $inputarray = NULL)
 	{
-		// zwraca tablicê z ca³ym wynikiem
-	
 		if($query)
 			$this->Execute($query, $inputarray);
 
@@ -160,6 +158,32 @@ Class LMSDB_common
 		return $result;
 	}
 
+	// with Exec() & FetchRow() we can do big results looping
+	// in less memory consumptive way than using GetAll() & foreach()
+	function Exec($query, $inputarray = NULL)
+	{
+		if(! $this->_driver_execute($this->_query_parser($query, $inputarray)))
+			$this->errors[] = array(
+					'query' => $this->_query,
+					'error' => $this->_driver_geterror()
+					);
+		elseif($this->debug)
+			$this->errors[] = array(
+					'query' => $this->_query,
+					'error' => 'DEBUG: NOERROR'
+					);
+		
+		if($this->_driver_num_rows())
+			return $this->_result;
+		else
+			return NULL;
+	}
+
+	function FetchRow($result)
+	{
+		return $this->_driver_fetchrow_assoc($result);
+	}
+	
 	function Concat()
 	{
 		return $this->_driver_concat(func_get_args());

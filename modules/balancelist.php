@@ -26,7 +26,7 @@
 
 function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 {
-	global $DB, $LMS;
+	global $DB;
 
 	if($search && $cat)
         {
@@ -57,7 +57,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 		}
 	}
 
-	if($list = $DB->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
+	if($res = $DB->Exec('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
 				cash.customerid AS customerid, comment, docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed, '
 				.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
@@ -79,7 +79,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 		$balancelist['income'] = 0;
 
 		$id = 0;
-		foreach($list as $idx => $row)
+		while($row = $DB->FetchRow($res))
 		{
 			if($group['group'])
 			{
@@ -112,13 +112,12 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 					$balancelist['expense'] += -$row['value'];
 			}
 			$id++;
-			unset($list[$idx]);
 		}
 	
 		$balancelist['totalval'] = $balancelist['income'] - $balancelist['expense'];
-	}
 	
-	return $balancelist;
+		return $balancelist;
+	}
 }
 
 if(isset($_POST['search']))
@@ -168,7 +167,7 @@ $SESSION->restore('bls', $listdata['search']);
 $SESSION->restore('blg', $listdata['group']);
 $SESSION->restore('blge', $listdata['groupexclude']);
 
-$pagelimit = $LMS->CONFIG['phpui']['balancelist_pagelimit'];
+$pagelimit = $CONFIG['phpui']['balancelist_pagelimit'];
 $page = (! isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page'])); 
 $start = ($page - 1) * $pagelimit;
 

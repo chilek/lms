@@ -104,6 +104,8 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			name, address, zip, city, template, closed, type, reference '
 	    		.$sqlord.' '.$direction))
 	{
+		$result1 = array();
+		
 		if($search!='' && $cat=='value')
 		{
 			$val = f_round($search);
@@ -133,8 +135,8 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			}
 
 			$result = $result1;
+			unset($result1);
 		}
-		
 	}
 
 	$result['order'] = $order;
