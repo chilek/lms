@@ -1,51 +1,46 @@
 $Id$
 
-* ³adniejsza wizualizacja wyników statystyk
-* arpd (dokoñczyæ, support dla non-linux systems) [xxx]
-* nie-tylko-linux, silny porting demona i skryptów dla ipfw/ipf/pf [+]
-* wsparcie zdalnego konfigu dla mini-distro (co¶ a'la freesco/m0n0wall) [+]  
-* konta o ile nie zostan± przepisane ³adniej to w najbli¿szej wersji stable
-  nie powinny siê znale¼æ [ale siê znalaz³y :P]
-* ka¿dy konkretny modu³ móg³by mieæ ikonkê pomocy, która by kopa³a pacjenta
-  do odpowiedniego rozdzia³u w dokumentacji (a mo¿e w podmenu od doców)
-* feedback - co¶ co generowa³oby dumpa z wersj± bazy, pliku, a mo¿e even md5
-  modu³ów, etc. aby ³atwiej by³o rozwi±zywaæ b³êdy. oczywi¶cie konfiguracja
-  te¿.
-* wy¶wietlanie warninga ¿e lms.ini w formie pliku to ju¿ generalnie nie
-  jest u¿ywany (poza sekcj± database, chocia¿ uwa¿am ¿e bezpieczniejsze by
-  by³o w formie skryptu php, bo nie wyssa siê go tak ³atwo przez http)
-  i ¿eby zmigrowaæ do UI ustawienia a w 2.0 wyj...aæ support do tego :)
-* pomyle¶leæ nad jakim¶ sposobem archiwizacji starych danych finansowych
-  - o ile baza danych sobie poradzi z danymi z kilku lat, nawet w du¿ej sieci,
-  to w UI mo¿e nie byæ ju¿ za ciekawie
-* Ujednoliciæ "Skrypty Perlowe" co¶ na kszta³t lmsdb i lms.class.php, jeden 
-  wspólny "connect do bazy" i funkcje typu "we¼ userów + assigmenty" [je¶li 
-  bêdzie to mia³o jaki¶ sens i siê powiela³o w wiêcej ni¿ 1-2 skryptach]
-
-LMS-1.10 (koniec 2006)
-
-* modu³ tc-ng na wzór tc, ale uwzglêdniaj±cy powi±zania taryfa-komputer
-* wsparcie dla urz±dzeñ Etherwerx
+* Å‚adniejsza wizualizacja wynikÃ³w statystyk
+* arpd (dokoÅ„czyÄ‡, support dla non-linux systems) [xxx]
+* nie-tylko-linux, silny porting demona i skryptÃ³w dla ipfw/ipf/pf [+]
+* wsparcie zdalnego konfigu dla mini-distro (coÅ› a'la freesco/m0n0wall) [+]  
+* konta o ile nie zostanÄ… przepisane Å‚adniej to w najbliÅ¼szej wersji stable
+  nie powinny siÄ™ znaleÅºÄ‡ [ale siÄ™ znalazÅ‚y :P]
+* kaÅ¼dy konkretny moduÅ‚ mÃ³gÅ‚by mieÄ‡ ikonkÄ™ pomocy, ktÃ³ra by kopaÅ‚a pacjenta
+  do odpowiedniego rozdziaÅ‚u w dokumentacji (a moÅ¼e w podmenu od docÃ³w)
+* feedback - coÅ› co generowaÅ‚oby dumpa z wersjÄ… bazy, pliku, a moÅ¼e even md5
+  moduÅ‚Ã³w, etc. aby Å‚atwiej byÅ‚o rozwiÄ…zywaÄ‡ bÅ‚Ä™dy. oczywiÅ›cie konfiguracja
+  teÅ¼.
+* wyÅ›wietlanie warninga Å¼e lms.ini w formie pliku to juÅ¼ generalnie nie
+  jest uÅ¼ywany (poza sekcjÄ… database, chociaÅ¼ uwaÅ¼am Å¼e bezpieczniejsze by
+  byÅ‚o w formie skryptu php, bo nie wyssa siÄ™ go tak Å‚atwo przez http)
+  i Å¼eby zmigrowaÄ‡ do UI ustawienia a w 2.0 wyj...aÄ‡ support do tego :)
+* pomyleÅ›leÄ‡ nad jakimÅ› sposobem archiwizacji starych danych finansowych
+  - o ile baza danych sobie poradzi z danymi z kilku lat, nawet w duÅ¼ej sieci,
+  to w UI moÅ¼e nie byÄ‡ juÅ¼ za ciekawie
+* UjednoliciÄ‡ "Skrypty Perlowe" coÅ› na ksztaÅ‚t lmsdb i lms.class.php, jeden 
+  wspÃ³lny "connect do bazy" i funkcje typu "weÅº userÃ³w + assigmenty" [jeÅ›li 
+  bÄ™dzie to miaÅ‚o jakiÅ› sens i siÄ™ powielaÅ‚o w wiÄ™cej niÅ¼ 1-2 skryptach]
 
 LMS-2.0 [xx]
 
-* przerobienie na nowe modu³y
-* zrobienie 'LMSAPI' - czyli zintegrowanej z LMS biblioteki serwuj±cej
-  podstawowe funkcje LMSa (takie read only) - ka¿dy modu³ móg³by dodawaæ
-  jakie¶ dodatki do API... Oczywi¶cie to pseudo-api i nie wiem czy tak
-  bêdzie mo¿na to nazwaæ
+* przerobienie na nowe moduÅ‚y
+* zrobienie 'LMSAPI' - czyli zintegrowanej z LMS biblioteki serwujÄ…cej
+  podstawowe funkcje LMSa (takie read only) - kaÅ¼dy moduÅ‚ mÃ³gÅ‚by dodawaÄ‡
+  jakieÅ› dodatki do API... OczywiÅ›cie to pseudo-api i nie wiem czy tak
+  bÄ™dzie moÅ¼na to nazwaÄ‡
 * xhtml
 * nowy changelog
 * wywalenie czesci modulow demona do contrib i przepisanie ich na t-scripta
 
-xx] general rule: utrzymywanie nie wiêcej ni¿ 2 ostatnich stabilnych release-ów
-	i ich ogólne wspieranie (praca nad 1.9 to szlifowanie i bugfixowanie 
+xx] general rule: utrzymywanie nie wiÄ™cej niÅ¼ 2 ostatnich stabilnych release-Ã³w
+	i ich ogÃ³lne wspieranie (praca nad 1.9 to szlifowanie i bugfixowanie 
 	1.8.xxx oraz bugfixy dla 1.6. 
 
-	Stare wersje zostaj± w cvs, mo¿na je sobie cvs up -r / --date zassaæ, jak kto¶ 
+	Stare wersje zostajÄ… w cvs, moÅ¼na je sobie cvs up -r / --date zassaÄ‡, jak ktoÅ› 
 	bardzo ambitny i dociekliwy.  
 
 xxx] pcap i mini daemon? 
 
-+] przesun±æ odpowiednio nisko, jak siê komu¶ bêdzie chcia³o to mo¿na robiæ, 
++] przesunÄ…Ä‡ odpowiednio nisko, jak siÄ™ komuÅ› bÄ™dzie chciaÅ‚o to moÅ¼na robiÄ‡, 
 ale to jest "the way".
