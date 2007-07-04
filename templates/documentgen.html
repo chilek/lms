@@ -57,22 +57,6 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{t}Type:{/t}
-		</TD>
-		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"}>
-				<OPTION VALUE="0">... {t}select type{/t} ...</OPTION>
-				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
-				{/if}{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="LIGHT">
-		<TD width="1%" class="fleft">
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%">
@@ -107,6 +91,22 @@
 		</TD>
 	</TR>
 *}
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Type:{/t}
+		</TD>
+		<TD width="98%" class="fright">
+			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"}>
+				<OPTION VALUE="0">... {t}select type{/t} ...</OPTION>
+				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
+				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
+				{/if}{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
 	<TR class="LIGHT">
 		<TD width="1%" class="fleft">
 			<IMG src="img/class.gif" alt="">
