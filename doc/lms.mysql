@@ -187,6 +187,8 @@ CREATE TABLE documentcontents (
         md5sum varchar(32) DEFAULT '' NOT NULL,
 	description text DEFAULT '' NOT NULL,
         INDEX md5sum (md5sum),
+	INDEX fromdate (fromdate),
+	INDEX todate (todate),
 	UNIQUE KEY docid (docid)
 ) TYPE=MyISAM;
 
@@ -808,4 +810,4 @@ CREATE TABLE imessengers (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007062200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007070400');

@@ -41,6 +41,7 @@ version ? (????-??-??):
   - added possibility to search customers by additional informations (alec)
   - added 'payments book' type of documents (alec)
   - less memory consumption of Balance Sheet (alec)
+  - added todate and fromdate indexes in 'documentcontents' table (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 
