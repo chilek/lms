@@ -662,7 +662,7 @@ class LMS
 
 				if($disabled)
 				{
-					if($customerlist[$idx]['nodeac'] != 1)
+					if(!isset($customerlist[$idx]['nodeac']) || $customerlist[$idx]['nodeac'] != 1)
 						$customerlist2[] = $customerlist[$idx];
 					else
 						continue; // skip summary

@@ -263,6 +263,8 @@ CREATE TABLE documentcontents (
 	UNIQUE (docid)
 );
 CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum);
+CREATE INDEX documentcontents_todate_idx ON documentcontents (todate);
+CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate);
 
 
 /* -------------------------------------------------------- 
@@ -854,4 +856,4 @@ CREATE TABLE imessengers (
 );
 CREATE INDEX imessengers_customerid_idx ON imessengers (customerid);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007062200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007070400');

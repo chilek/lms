@@ -55,6 +55,8 @@ $xajax->processRequests();
 $SMARTY->assign('xajax', $xajax->getJavascript('img/', 'xajax.js'));
 /* end AJAX plugin stuff */
 
+$layout['pagetitle'] = trans('Documents Generator');
+
 if(isset($_POST['document']))
 {
 	$document = $_POST['document'];
@@ -304,8 +306,6 @@ if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 	}
 
 if($docengines) asort($docengines);
-
-$layout['pagetitle'] = trans('Documents Generator');
 
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
