@@ -86,6 +86,7 @@ else
 $SESSION->save('doclc', $c);
 
 $documentlist = GetDocumentList($o, $t, $c);
+
 $listdata['total'] = $documentlist['total'];
 $listdata['order'] = $documentlist['order'];
 $listdata['direction'] = $documentlist['direction'];
@@ -96,14 +97,9 @@ unset($documentlist['total']);
 unset($documentlist['order']);
 unset($documentlist['direction']);
 
-if($SESSION->is_set('doclp') && !isset($_GET['page']))
-	$SESSION->restore('doclp', $_GET['page']);
-	    
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($LMS->CONFIG['phpui']['documentlist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['documentlist_pagelimit']);
+$pagelimit = $CONFIG['phpui']['documentlist_pagelimit'];
+$page = !isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page']);
 $start = ($page - 1) * $pagelimit;
-
-$SESSION->save('doclp', $page);
 
 $layout['pagetitle'] = trans('Documents List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
