@@ -81,6 +81,8 @@ function DBLoad($filename=NULL)
 
 if(isset($_GET['is_sure']))
 {
+	set_time_limit(0);
+
 	if ($_GET['gz'])
 		$LMS->DatabaseCreate(TRUE);
 	else
