@@ -5,62 +5,62 @@ Spis rzeczy:
 1) co to
 2) lms-notify
 3) ikonki
-4) pos³owie
-5) ró¿ne autoryzacje
+4) posÅ‚owie
+5) rÃ³Å¼ne autoryzacje
 6) dane firmy na formularzu przelewu
 
 1) co to
 
-Jest to mini panel dla klientów którzy:
+Jest to mini panel dla klientÃ³w ktÃ³rzy:
 
-a) nie chc± aby dzieci/ma³¿onkowie/pracownicy mieli wgl±d w dane fiansowe 
-dotycz±ce ich dostêpu do sieci/innych us³ug sprzedawanych przez LMS. W koñcu 
-to mog± byæ dane np cafejki internetowej, czemu klienci mieliby mieæ do tego
-wgl±d?  
+a) nie chcÄ… aby dzieci/maÅ‚Å¼onkowie/pracownicy mieli wglÄ…d w dane fiansowe 
+dotyczÄ…ce ich dostÄ™pu do sieci/innych usÅ‚ug sprzedawanych przez LMS. W koÅ„cu 
+to mogÄ… byÄ‡ dane np cafejki internetowej, czemu klienci mieliby mieÄ‡ do tego
+wglÄ…d?  
 
-b) nie korzystaj± z sieci tylko w domu
+b) nie korzystajÄ… z sieci tylko w domu
 
-c) korzystaj± z proxy
+c) korzystajÄ… z proxy
 	
 2) lms-notify
 	
-Dobrze jest te¿ powiadomiæ klientów w co rocznym/miesiêcznym/tygodniowym 
+Dobrze jest teÅ¼ powiadomiÄ‡ klientÃ³w w co rocznym/miesiÄ™cznym/tygodniowym 
 mailu rozrachunkowo-newsletterowym:
 
 "
-Jednocze¶nie informujemy o wprowadzeniu mo¿liwo¶ci sprawdzenia stanu
-swojego konta w ka¿dej chwili:
+JednoczeÅ›nie informujemy o wprowadzeniu moÅ¼liwoÅ›ci sprawdzenia stanu
+swojego konta w kaÅ¼dej chwili:
 
-http://www.TwójUrl.pl/lms/contrib/customers/
+http://www.TwÃ³jUrl.pl/lms/contrib/customers/
 
-Pañstwa PIN to: %pin
+PaÅ„stwa PIN to: %pin
 "
 
 3) ikonki,template
 
-Ikonki aby dzia³a³y dobrze jest daæ np:
+Ikonki aby dziaÅ‚aÅ‚y dobrze jest daÄ‡ np:
 
 $ ln -s ../../img img
 
-Warto te¿ jest zrobiæ tak aby katalog templates ze wzorkiem F/V by³ we 
-w³a¶ciwym miejscu: 
+Warto teÅ¼ jest zrobiÄ‡ tak aby katalog templates ze wzorkiem F/V byÅ‚ we 
+wÅ‚aÅ›ciwym miejscu: 
 
 $ ln -s ../../templates templates
 
 w katalogu contrib/customer_otherip, oraz "Options +followlinks w apachu".
 
-4) pos³owie
+4) posÅ‚owie
 
 panel wymaga ustawienia opcji sys_dir w lms.ini (sekcja [directories]).
-Mo¿na te¿ zmieniæ [templates]...
+MoÅ¼na teÅ¼ zmieniÄ‡ [templates]...
 
 SOA#1
 
-DOBRZE jest byæ ¶wiadomym ¿e nie wymagane jest konto z pe³nym dostêpem 
-do bazy danych, ja w tym celu stworzy³em konto "lmsro" w postgresie i 
-zezwoli³em mu tylko na odczyt danych (a i to tylko niektórych...).
+DOBRZE jest byÄ‡ Å›wiadomym Å¼e nie wymagane jest konto z peÅ‚nym dostÄ™pem 
+do bazy danych, ja w tym celu stworzyÅ‚em konto "lmsro" w postgresie i 
+zezwoliÅ‚em mu tylko na odczyt danych (a i to tylko niektÃ³rych...).
 
-5) W pliku balanceview.php mo¿na siê doszukaæ czego¶ takiego:
+5) W pliku balanceview.php moÅ¼na siÄ™ doszukaÄ‡ czegoÅ› takiego:
 
 #v+
 customer authorization ways
@@ -69,24 +69,24 @@ customer authorization ways
 $id = GetCustomerIDByIDAndPIN($login, $pin);
 #v-
 
-Oznacza to ni mniej ni wiêcej ale ¿e mo¿na klienta identyfikowaæ po:
-Telefonie albo ID albo Nr umowy. Wybór nale¿y do Was.
+Oznacza to ni mniej ni wiÄ™cej ale Å¼e moÅ¼na klienta identyfikowaÄ‡ po:
+Telefonie albo ID albo Nr umowy. WybÃ³r naleÅ¼y do Was.
 
-Uwaga: 'numer umowy' nie jest standardowym kawa³kiem LMSa i nale¿y tej 
-³atki po prostu sobie poszukaæ.
+Uwaga: 'numer umowy' nie jest standardowym kawaÅ‚kiem LMSa i naleÅ¼y tej 
+Å‚atki po prostu sobie poszukaÄ‡.
 
-6) Aby na formularzu wp³aty mieæ w³asne dane (nazwê firmy, tytu³) nale¿y
-w lms.ini dopisaæ w sekcji 'finances':
+6) Aby na formularzu wpÅ‚aty mieÄ‡ wÅ‚asne dane (nazwÄ™ firmy, tytuÅ‚) naleÅ¼y
+w lms.ini dopisaÄ‡ w sekcji 'finances':
 
 account		-	nr konta (iban, 26 cyfr)
 line_1
-line_2		- 2 linnie z nazw± firmy
-						(po cichu przyciête pod limit na formularzu!) 
-pay_title	- p³atno¶æ tytu³em, mozna tutaj zaszaleæ:
+line_2		- 2 linnie z nazwÄ… firmy
+						(po cichu przyciÄ™te pod limit na formularzu!) 
+pay_title	- pÅ‚atnoÅ›Ä‡ tytuÅ‚em, mozna tutaj zaszaleÄ‡:
 	np 
 	'Abonament - ID:%CID%: :%LongCID%:' 
 	zostanie zmienione na np 
 	'Abonament - ID:1: :0001:'
 
-	Takie co¶ ma na celu u³atwienie automatyzacji "p³atno¶ci".
+	Takie coÅ› ma na celu uÅ‚atwienie automatyzacji "pÅ‚atnoÅ›ci".
 

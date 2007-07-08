@@ -1,19 +1,19 @@
-*** Wstêp ***
+*** WstÄ™p ***
 
-	Modu³ 'SQL - panel' daje mo¿liwo¶æ bezpo¶redniego dostêpu 
-do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
+	ModuÅ‚ 'SQL - panel' daje moÅ¼liwoÅ›Ä‡ bezpoÅ›redniego dostÄ™pu 
+do bazy danych poprzez zadawanie zapytaÅ„ SQL. Wyniki wyÅ›wietlane sÄ…
 w formie tabeli. Ponadto podawany jest czas wykonania zapytania.
 
-	Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
-domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej 'sqlpanel_pagelimit'
+	IloÅ›Ä‡ wyÅ›wietlanych wierszy na jednej stronie ograniczana jest
+domyÅ›lnie do 50. MoÅ¼na to zmieniÄ‡ przy pomocy zmiennej 'sqlpanel_pagelimit'
 w sekcji [phpui] pliku konfiguracyjnego lms.ini.
 
-	Modu³ umo¿liwia tak¿e wydruk wyników zapytania.
+	ModuÅ‚ umoÅ¼liwia takÅ¼e wydruk wynikÃ³w zapytania.
 
 *** Instalacja ***
 	
-	Instalacja polega na skopiowaniu plików w odpowiednie miejsca
-w drzewie katalogów lms'a. Plik sql.php, sqllang.php skopiuj do katalogu modules, 
+	Instalacja polega na skopiowaniu plikÃ³w w odpowiednie miejsca
+w drzewie katalogÃ³w lms'a. Plik sql.php, sqllang.php skopiuj do katalogu modules, 
 a pliki sql.html, sqlprint.html do katalogu templates.
-	Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy przez wywo³anie
+	Po tej czynnoÅ›ci dostÄ™p do moduÅ‚u bÄ™dzie moÅ¼liwy przez wywoÅ‚anie
 http://lms.adres.pl/?m=sql.
