@@ -2,24 +2,24 @@ $Id$
 
 0. Co to?
 
-LMS potrafi du¿o, a wraz z tym modu³em bêdzie potrafi³ zaparzyæ kawê.
+LMS potrafi duÅ¼o, a wraz z tym moduÅ‚em bÄ™dzie potrafiÅ‚ zaparzyÄ‡ kawÄ™.
 
 1. Instalacja.
 
-Plik coffee.php kopiujemy do katalogu modules lmsa. Po tym zabiegu mo¿emy
-z LMS-UI wywo³aæ go przy pomocy http://adres/?m=coffee.
+Plik coffee.php kopiujemy do katalogu modules lmsa. Po tym zabiegu moÅ¼emy
+z LMS-UI wywoÅ‚aÄ‡ go przy pomocy http://adres/?m=coffee.
 
-Domy¶lnie coffee.php próboje wykonaæ plik /sbin/coffee który powinien 
-uruchomiæ ekspres do kawy. Je¶li nie posiadasz w/w pliku, mo¿esz siê
-pos³u¿yæ przyk³adowym coffee.c, opartym na Coffee HOWTO. Coffee.c uruchamia
-ekspres do kawy przy³±czony do pierwszego portu równoleg³ego (/dev/lp0) za 
-pomoc± jednego z interface'ów zamieszczonych w w/w howto, odczekuje jedn± minutê,
-po czym wy³±cza ekspres. Po tym czasie powiniene¶ mieæ smaczn± kawê. Pamiêtaj
-¿e coffee.c po kompilacji powinien otrzymaæ uprawnienia suid root, bo inaczej
-¿aden u¿ytkownik nie bêdzie w stanie uruchomiæ ekspresu (w tym coffee.php).
+DomyÅ›lnie coffee.php prÃ³boje wykonaÄ‡ plik /sbin/coffee ktÃ³ry powinien 
+uruchomiÄ‡ ekspres do kawy. JeÅ›li nie posiadasz w/w pliku, moÅ¼esz siÄ™
+posÅ‚uÅ¼yÄ‡ przykÅ‚adowym coffee.c, opartym na Coffee HOWTO. Coffee.c uruchamia
+ekspres do kawy przyÅ‚Ä…czony do pierwszego portu rÃ³wnolegÅ‚ego (/dev/lp0) za 
+pomocÄ… jednego z interface'Ã³w zamieszczonych w w/w howto, odczekuje jednÄ… minutÄ™,
+po czym wyÅ‚Ä…cza ekspres. Po tym czasie powinieneÅ› mieÄ‡ smacznÄ… kawÄ™. PamiÄ™taj
+Å¼e coffee.c po kompilacji powinien otrzymaÄ‡ uprawnienia suid root, bo inaczej
+Å¼aden uÅ¼ytkownik nie bÄ™dzie w stanie uruchomiÄ‡ ekspresu (w tym coffee.php).
 
-2. W dzia³aniu.
+2. W dziaÅ‚aniu.
 
-Powinno dzia³aæ. Serio :) A tak powa¿nie, w/w przyk³ad demonstruje mo¿liwo¶æ
-sterowania portem lpt za pomoc± LMS-a. Ot, taki prosty a mo¿e siê np. przydaæ
-do zdalnego resetowania urz±dzeñ z poziomu UI.
+Powinno dziaÅ‚aÄ‡. Serio :) A tak powaÅ¼nie, w/w przykÅ‚ad demonstruje moÅ¼liwoÅ›Ä‡
+sterowania portem lpt za pomocÄ… LMS-a. Ot, taki prosty a moÅ¼e siÄ™ np. przydaÄ‡
+do zdalnego resetowania urzÄ…dzeÅ„ z poziomu UI.

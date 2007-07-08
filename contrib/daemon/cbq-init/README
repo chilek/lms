@@ -1,40 +1,40 @@
-1. WstÍp.
+1. Wstƒôp.
 
-Modu≥ cbq-init tworzy pliki konfiguracyjne dla skryptu cbq.init. Dla kaødego
-komputera zostan± wygenerowane dwa pliki (download i upload). Dodatkowo
-powstanie plik z regu≥ami markuj±cymi pakiety na potrzeby cbq.
+Modu≈Ç cbq-init tworzy pliki konfiguracyjne dla skryptu cbq.init. Dla ka≈ºdego
+komputera zostanƒÖ wygenerowane dwa pliki (download i upload). Dodatkowo
+powstanie plik z regu≈Çami markujƒÖcymi pakiety na potrzeby cbq.
 
 2. Konfiguracja.
 
 * path = /etc/sysconfig/cbq
 
-	lokalizacja plikÛw konfiguracyjnych - nazwa istniej±cego katalogu 
-	(bez uko∂nika na koÒcu).
+	lokalizacja plik√≥w konfiguracyjnych - nazwa istniejƒÖcego katalogu 
+	(bez uko≈õnika na ko≈Ñcu).
 
 * command = "/etc/rc.d/cbq.init restart nocache"
 
-	polecenie wykonywane po utworzeniu plikÛw konfiguracyjnych.
+	polecenie wykonywane po utworzeniu plik√≥w konfiguracyjnych.
 
 * cbq_down, cbq_up 
 
-	szablony tre∂ci plikÛw dla downloadu i uploadu (warto∂ci domy∂lne
+	szablony tre≈õci plik√≥w dla downloadu i uploadu (warto≈õci domy≈õlne
 	zdefiniowano w cbq-init.c).
 	
 * mark_file = /etc/rc.d/rc.marks
 
-	lokalizacja pliku z regu≥ami markuj±cymi pakiety. Je∂li przypiszemy tej
-	opcji pust± warto∂Ê plik nie zostanie utworzony.
+	lokalizacja pliku z regu≈Çami markujƒÖcymi pakiety. Je≈õli przypiszemy tej
+	opcji pustƒÖ warto≈õƒá plik nie zostanie utworzony.
 	
 * mark_file_begin, mark_file_end
 
-	nag≥Ûwek i stopka w/w pliku (warto∂ci domy∂lne zdef. w cbq-init.c). 
+	nag≈Ç√≥wek i stopka w/w pliku (warto≈õci domy≈õlne zdef. w cbq-init.c). 
 
 * mark_rule
 
-	regu≥a markuj±ca dla kaødego komputera (warto∂Ê domy∂lna w cbq-init.c).
+	regu≈Ça markujƒÖca dla ka≈ºdego komputera (warto≈õƒá domy≈õlna w cbq-init.c).
 
 * networks, customergroups
 
-	jak w innych modu≥ach, ograniczenie generowanych plikÛw do wybranych
-	sieci i grup uøytkownikÛw (domy∂lnie wszyscy uøytkownicy).
+	jak w innych modu≈Çach, ograniczenie generowanych plik√≥w do wybranych
+	sieci i grup u≈ºytkownik√≥w (domy≈õlnie wszyscy u≈ºytkownicy).
 	
