@@ -469,6 +469,13 @@
                    to actually cut people off. Works for customers with assignments. Default: false.</para>
                    <para>Example: <prompt>warnings_only = true</prompt></para>
                </listitem>
+               <listitem>
+                   <para>use_nodeassignments</para>
+                   <para>You should enable this option only if you are using nodes with
+		   tariffs assignments. In other way tariffs assignments with customers
+		   are checked. Default: false.</para>
+                   <para>Example: <prompt>use_nodeassignments = true</prompt></para>
+               </listitem>
               </itemizedlist>
               </sect3>
           </sect2>

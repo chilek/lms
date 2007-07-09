@@ -50,10 +50,42 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(*c->expwarning)
 		g->str_replace(&c->expwarning, "%time", time_fmt);
 
-	// customers without tariffs (or with expired assignments)
-	res = g->db_pquery(g->conn, 
-			"SELECT customers.id AS id FROM customers "
-			"WHERE deleted = 0 "
+	// nodes without tariffs (or with expired assignments)
+	if(c->nodeassignments)
+	{
+		res = g->db_pquery(g->conn, "SELECT nodes.id, ownerid FROM nodes "
+        			    "WHERE access = 1 "
+	                             "AND NOT EXISTS "
+				            "(SELECT 1 FROM nodeassignments, assignments "
+						    "WHERE nodeid = nodes.id AND assignmentid = assignments.id "
+							    "AND (datefrom <= %NOW% OR datefrom = 0) "
+							    "AND (dateto >= %NOW% OR dateto = 0) "
+							    "AND (tariffid != 0 OR liabilityid != 0) "
+				")");
+
+		for(i=0; i<g->db_nrows(res); i++) 
+		{
+			char *nodeid = g->db_get_data(res,i,"id");
+			char *ownerid = g->db_get_data(res,i,"ownerid");
+		
+			n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 WHERE id = ?", nodeid);
+
+			execn = 1;
+			
+			if(*c->expwarning && n)
+			{
+				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->expwarning, ownerid);
+				execu = 1;
+			}
+		}	
+		g->db_free(&res);
+	}
+	else
+	{
+		// customers without tariffs (or with expired assignments)
+		res = g->db_pquery(g->conn, 
+			"SELECT DISTINCT customers.id FROM customers, nodes "
+			"WHERE customers.id = ownerid AND deleted = 0 AND access = 1 "
 				"AND NOT EXISTS "
 				"(SELECT 1 FROM assignments "
 				"WHERE customerid = customers.id "
@@ -62,25 +94,26 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 					"AND (tariffid != 0 OR liabilityid != 0) "
 				")");
 
-	for(i=0; i<g->db_nrows(res); i++) 
-	{
-		char *customerid = g->db_get_data(res,i,"id");
-		
-		n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 WHERE ownerid = ? AND access = 1", customerid);
-
-		execn = n ? 1 : execn;
-			
-		if(*c->expwarning && n)
+		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->expwarning, customerid);
-			execu = u ? 1 : execu;
-		}
-	}	
-	g->db_free(&res);
+			char *customerid = g->db_get_data(res,i,"id");
+		
+			n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 WHERE ownerid = ?", customerid);
 
+			execn = 1;
+			
+			if(*c->expwarning && n)
+			{
+				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->expwarning, customerid);
+				execu = 1;
+			}
+		}	
+		g->db_free(&res);
+	}
+	
 	// debtors
 	res = g->db_pquery(g->conn, 
-			"SELECT customers.id AS id FROM customers "
+			"SELECT customers.id FROM customers "
 			"LEFT JOIN cash ON customers.id = cash.customerid "
 			"WHERE deleted = 0 GROUP BY customers.id "
 			"HAVING SUM(cash.value) < ?", c->limit);
@@ -135,6 +168,7 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	c->command = strdup(g->config_getstring(c->base.ini, c->base.instance, "command", ""));
 	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
 	c->expwarning = strdup(g->config_getstring(c->base.ini, c->base.instance, "expired_warning", "Blocked automatically due to tariff(s) expiration at %time"));
+	c->nodeassignments = g->config_getbool(c->base.ini, c->base.instance, "use_nodeassignments", 0);
 	
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/cutoff] initialized", c->base.instance);

@@ -3773,6 +3773,11 @@ Chapter 6. LMS Daemon
        warnings or to actually cut people off. Works for customers with
        assignments. Default: false.
        Example: warnings_only = true
+     * use_nodeassignments
+       You should enable this option only if you are using nodes with
+       tariffs assignments. In other way tariffs assignments with
+       customers are checked. Default: false.
+       Example: use_nodeassignments = true
      _________________________________________________________________
 
 6.2.7. DHCP
