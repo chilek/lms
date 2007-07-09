@@ -43,6 +43,8 @@ version ? (????-??-??):
   - less memory consumption of Balance Sheet (alec)
   - added todate and fromdate indexes in 'documentcontents' table (alec)
   - documents list opens on last page by default (alec)
+  - lmsd/cutoff: added option 'use_nodeassignments' for disabling nodes
+    without tariff assignments (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

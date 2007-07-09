@@ -503,6 +503,13 @@
 			    Domy¶lnie: wy³±czona.</para>
 			    <para>Przyk³ad: <prompt>warnings_only = true</prompt></para>
 			</listitem>
+			<listitem>
+				<para>use_nodeassignments</para>
+				<para>Je¶li stosujesz powi±zywanie komputerów z zobowi±zaniami
+				powiniene¶ w³±czyæ t± opcjê. W przeciwnym wypadku bêd± sprawdzane
+				powi±zania taryf z klientami. Domy¶lnie: wy³±czona.</para>
+				<para>Przyk³ad: <prompt>use_nodeassignments = true</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
