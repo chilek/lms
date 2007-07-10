@@ -37,9 +37,9 @@ if($p == 'main')
 if($p == 'main')
 {
 	$maclist = $LMS->GetMACs();
-	if($LMS->CONFIG['phpui']['arpd_servers'])
+	if(isset($CONFIG['phpui']['arpd_servers']) && $CONFIG['phpui']['arpd_servers'])
 	{
-		$servers = split(' ',eregi_replace("[\t ]+"," ",$LMS->CONFIG['phpui']['arpd_servers']));
+		$servers = split(' ',eregi_replace("[\t ]+"," ",$CONFIG['phpui']['arpd_servers']));
 		foreach($servers as $server)
 		{
 			list($addr,$port) = split(':',$server);

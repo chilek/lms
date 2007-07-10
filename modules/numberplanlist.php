@@ -73,7 +73,7 @@ if ($SESSION->is_set('nplp') && !isset($_GET['page']))
 	$SESSION->restore('nplp', $_GET['page']);
 	    
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($LMS->CONFIG['phpui']['numberplanlist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['numberplanlist_pagelimit']);
+$pagelimit = (!isset($CONFIG['phpui']['numberplanlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['numberplanlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('nplp', $page);

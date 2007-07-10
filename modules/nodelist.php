@@ -72,7 +72,7 @@ if ($SESSION->is_set('nlp') && !isset($_GET['page']))
 	$SESSION->restore('nlp', $_GET['page']);
 	
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (!isset($LMS->CONFIG['phpui']['nodelist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['nodelist_pagelimit']);
+$pagelimit = (!isset($CONFIG['phpui']['nodelist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['nodelist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('nlp', $page);

@@ -26,8 +26,8 @@
 
 $layout['pagetitle'] = trans('Configuration Reload');
 
-$_RELOAD_TYPE = $LMS->CONFIG['phpui']['reload_type'];
-$_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
+$_RELOAD_TYPE = $CONFIG['phpui']['reload_type'];
+$_EXECCMD = $CONFIG['phpui']['reload_execcmd'];
 
 switch($_RELOAD_TYPE)
 {
@@ -96,13 +96,13 @@ switch($_RELOAD_TYPE)
 	
 		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 		
-		if(isset($LMS->CONFIG['phpui']['reload_sqlquery']))
+		if(isset($CONFIG['phpui']['reload_sqlquery']))
 		{
 			$SMARTY->display('header.html');
 
 			echo '<H1>'.$layout['pagetitle'].'</H1>';
 
-			$sqlqueries = explode(';',($LMS->CONFIG['phpui']['reload_sqlquery']));
+			$sqlqueries = explode(';',($CONFIG['phpui']['reload_sqlquery']));
 			
 			if(isset($_GET['setreloads']))
 			{

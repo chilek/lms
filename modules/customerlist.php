@@ -67,7 +67,7 @@ $listdata['direction'] = $customerlist['direction'];
 $SESSION->restore('uls', $listdata['state']);
 
 $page = (! $_GET['page'] ? 1 : $_GET['page']); 
-$pagelimit = (!isset($LMS->CONFIG['phpui']['customerlist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['customerlist_pagelimit']);
+$pagelimit = (!$CONFIG['phpui']['customerlist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['customerlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('ulp', $page);

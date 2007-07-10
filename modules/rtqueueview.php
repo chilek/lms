@@ -173,7 +173,7 @@ unset($queue['order']);
 unset($queue['direction']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($LMS->CONFIG['phpui']['ticketlist_pagelimit']) ? $queuedata['total'] : $LMS->CONFIG['phpui']['ticketlist_pagelimit']);
+$pagelimit = (!isset($CONFIG['phpui']['ticketlist_pagelimit']) ? $queuedata['total'] : $CONFIG['phpui']['ticketlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('rtp', $page);

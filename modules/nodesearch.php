@@ -98,7 +98,7 @@ if(isset($_GET['search']))
 		
 	$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 	
-	$pagelimit = (! $LMS->CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['nodelist_pagelimit']);
+	$pagelimit = (! $CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['nodelist_pagelimit']);
 	$start = ($page - 1) * $pagelimit;
 	$SESSION->save('nslp', $page);
 	
