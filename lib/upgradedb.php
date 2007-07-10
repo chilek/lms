@@ -48,12 +48,13 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 	{
 		set_time_limit(0);
 		$lastupgrade = $dbversion;
+		$_dbtype = $CONFIG['database']['type'] == 'mysqli' ? 'mysql' : $CONFIG['database']['type'];
 		
-		$upgradelist = getdir(LIB_DIR.'/upgradedb/', '^'.$_DBTYPE.'.[0-9]{10}.php$');
+		$upgradelist = getdir(LIB_DIR.'/upgradedb/', '^'.$_dbtype.'.[0-9]{10}.php$');
 		if(sizeof($upgradelist))
 			foreach($upgradelist as $upgrade)
 			{
-				$upgradeversion = ereg_replace('^'.$_DBTYPE.'.([0-9]{10}).php$','\1',$upgrade);
+				$upgradeversion = ereg_replace('^'.$_dbtype.'.([0-9]{10}).php$','\1',$upgrade);
 				
 				if($upgradeversion > $dbversion && $upgradeversion <= DBVERSION)
 					$pendingupgrades[] = $upgradeversion;
@@ -64,7 +65,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 			sort($pendingupgrades);
 			foreach($pendingupgrades as $upgrade)
 			{	
-				include(LIB_DIR.'/upgradedb/'.$_DBTYPE.'.'.$upgrade.'.php');
+				include(LIB_DIR.'/upgradedb/'.$_dbtype.'.'.$upgrade.'.php');
 				if(!sizeof($DB->errors))
 					$lastupgrade = $upgrade;
 				else

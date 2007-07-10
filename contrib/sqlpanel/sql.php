@@ -39,7 +39,7 @@ if($query = $_POST['query'])
 	$rows = $LMS->DB->Execute($query);
 	$duration = getmicrotime() - $t;
 
-	if(sizeof($LMS->DB->errors)) 
+	if(sizeof($DB->errors)) 
 	{
 		$error['query'] = trans('Query is not correct!');
 		$SMARTY->assign('error', $error);
@@ -61,14 +61,23 @@ if($query = $_POST['query'])
 		switch($CONFIG['database']['type'])
 		{
 		case 'postgres':
-			$cols = pg_num_fields($LMS->DB->_result);
+			$cols = pg_num_fields($DB->_result);
 			for($i=0; $i < $cols; $i++)
-				$colnames[] = pg_field_name($LMS->DB->_result, $i);
+				$colnames[] = pg_field_name($DB->_result, $i);
 		break;
 		case 'mysql':
-			$cols = mysql_num_fields($LMS->DB->_result);
+			$cols = mysql_num_fields($DB->_result);
 			for($i=0; $i < $cols; $i++)
-				$colnames[] = mysql_field_name($LMS->DB->_result, $i);
+				$colnames[] = mysql_field_name($DB->_result, $i);
+		break;
+		case 'mysqli':
+			$cols = mysqli_num_fields($DB->_result);
+			for($i=0; $i < $cols; $i++)
+			{
+				mysqli_field_seek($DB->_result, $i);
+				$finfo = mysqli_fetch_field($DB->_result);
+				$colnames[] = $finfo->name;
+			}
 		break;
 		}
 		
@@ -77,7 +86,7 @@ if($query = $_POST['query'])
 		else
 			$classes = array(0 => 'light', 1 => 'lucid');
 		$i = 0;
-		while($row = $LMS->DB->_driver_fetchrow_assoc())
+		while($row = $DB->_driver_fetchrow_assoc())
 		{
 			$i++;
 			if ( $i > $start && $i < ($start+$pagelimit+1) )

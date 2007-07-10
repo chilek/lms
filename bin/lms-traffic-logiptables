@@ -119,7 +119,7 @@ if(!$wan_interfaces)
 	exit 1;
 }
 
-if($dbtype eq "mysql")
+if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "UNIX_TIMESTAMP()";

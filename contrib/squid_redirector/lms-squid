@@ -43,7 +43,7 @@ while ($adres = <STDIN>)
 {
     if ((!defined($dbase))||($dbase->state))
     {
-	if($dbtype eq "mysql")
+	if($dbtype =~ /mysql/)
 	{
     	    $dbase = DBI->connect_cached("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	}

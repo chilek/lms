@@ -147,7 +147,7 @@ my $dbtype = $ini->val('database', 'type') || 'mysql';
 
 my $dbase;
 
-if($dbtype eq "mysql")
+if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 }

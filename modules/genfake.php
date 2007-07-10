@@ -1850,7 +1850,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM invoicecontents');
 	$DB->Execute('DELETE FROM receiptcontents');
 	
-	if($LMS->CONFIG['database']['type']=='postgres')
+	if($CONFIG['database']['type']=='postgres')
 	{
 		$DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
 		$DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
@@ -1863,8 +1863,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "documents_id_seq";  CREATE SEQUENCE "documents_id_seq"');
 		$DB->Execute('DROP SEQUENCE "taxes_id_seq";  CREATE SEQUENCE "taxes_id_seq"');
 	}
-	
-	if($LMS->CONFIG['database']['type']=='mysql')
+	elseif($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli')
 	{
 		$DB->Execute('ALTER TABLE customers auto_increment=0');
 		$DB->Execute('ALTER TABLE nodes auto_increment=0');

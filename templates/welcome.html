@@ -29,7 +29,7 @@
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
 						<B>
-						{if $layout.dbtype == "mysql"}
+						{if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}
 						<A HREF="http://www.mysql.com" target="_BLANK">{t}MySQL version:{/t}</A>
 						{elseif $layout.dbtype == "postgres"}
 						<A HREF="http://www.postgresql.org" target="_BLANK">{t}PostgreSQL version:{/t}</A>

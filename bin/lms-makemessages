@@ -158,7 +158,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
 
-if($dbtype eq "mysql")
+if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->do("SET NAMES utf8");

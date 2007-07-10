@@ -99,7 +99,7 @@ my $message = $ini->val('cutoff', 'message') || 'Automatic cutoff caused by exce
 my $dbase;
 my $utsfmt;
 
-if($dbtype eq "mysql")
+if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->do("SET NAMES utf8");
