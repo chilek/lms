@@ -79,7 +79,7 @@ class LMSDB_driver_mysqli extends LMSDB_common
 		elseif($this->_query)
 			return 'We\'re not connected!';
 		else
-			return 'unknown error';
+			return mysqli_connect_error();
 	}
 
 	function _driver_disconnect()
