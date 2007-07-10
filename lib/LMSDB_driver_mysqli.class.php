@@ -38,7 +38,7 @@ class LMSDB_driver_mysqli extends LMSDB_common
 		if(!extension_loaded('mysqli'))
 		        die('MySQLi extension not loaded!');
 	
-		$this->_version .= ' ('.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).'/'.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
+		$this->_version .= ' ('.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).'/'.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').'-mysqli)';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 
 		if($this->_dblink)
