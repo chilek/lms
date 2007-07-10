@@ -198,7 +198,6 @@ $_LANG['Both IP addresses for DHCP range are required!'] = 'Obydwa adresy IP są
 $_LANG['Browse'] = 'Przeglądaj';
 $_LANG['Browse Configuration'] = 'Przeglądaj konfigurację';
 $_LANG['Bug Tracking System'] = 'System śledzenia błędów';
-$_LANG['But it won\'t give you any benefits either ;-)'] = 'Ale nie daje Ci to żadnych korzyści ;-)';
 $_LANG['bytes'] = 'bajtów';
 $_LANG['Cancel'] = 'Anuluj';
 $_LANG['Can\'t change value of tax rate which was used in the past!'] = 'Nie można zmienić wartości stawki podatkowej, która była już używana w przeszłości';
