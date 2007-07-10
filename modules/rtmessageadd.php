@@ -195,8 +195,8 @@ if(isset($_POST['message']))
 		{
 			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
 			
-			if($LMS->CONFIG['phpui']['debug_email'])
-				$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
+			if($CONFIG['phpui']['debug_email'])
+				$message['destination'] = $CONFIG['phpui']['debug_email'];
 			if($message['destination']=='') 
 				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];

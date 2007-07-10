@@ -68,11 +68,11 @@ if(isset($_POST['ticket']))
 	{
 		$id = $LMS->TicketAdd($ticket);
 
-		if(isset($LMS->CONFIG['phpui']['newticket_notify']) && chkconfig($LMS->CONFIG['phpui']['newticket_notify']))
+		if(isset($CONFIG['phpui']['newticket_notify']) && chkconfig($CONFIG['phpui']['newticket_notify']))
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
 
-			if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
+			if($mailfname = $CONFIG['phpui']['helpdesk_sender_name'])
 			{
 				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
 				if($mailfname == 'user') $mailfname = $user['name'];
@@ -114,8 +114,8 @@ if(isset($_POST['ticket']))
 			{
 				foreach($recipients as $email)
 				{
-					if($LMS->CONFIG['phpui']['debug_email'])
-						$recip = $LMS->CONFIG['phpui']['debug_email'];
+					if($CONFIG['phpui']['debug_email'])
+						$recip = $CONFIG['phpui']['debug_email'];
 					else
 						$recip = $email;
 					$headers['To'] = '<'.$recip.'>';

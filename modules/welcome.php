@@ -32,7 +32,7 @@ $SI = new Sysinfo;
 $layout['pagetitle'] = 'LAN Management System';
 
 $layout['dbversion'] = $DB->GetDBVersion();
-$layout['dbtype'] = $LMS->CONFIG['database']['type'];
+$layout['dbtype'] = $CONFIG['database']['type'];
 
 $content = $LMS->CheckUpdates();
 

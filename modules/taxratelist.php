@@ -64,7 +64,7 @@ if ($SESSION->is_set('trlp') && !isset($_GET['page']))
 	$SESSION->restore('trlp', $_GET['page']);
 	    
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($LMS->CONFIG['phpui']['taxratelist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['taxratelist_pagelimit']);
+$pagelimit = (!isset($CONFIG['phpui']['taxratelist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['taxratelist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('trlp', $page);

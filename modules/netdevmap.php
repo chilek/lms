@@ -537,7 +537,7 @@ elseif ($graph == 'flash')
 		$n = $nodes[$nodeid];
 		
 		if ($n['lastonline']) {	
-			if ((time()-$n['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit']) {
+			if ((time()-$n['lastonline'])>$CONFIG['phpui']['lastonline_limit']) {
 				$myfill = $squareshape->addFill($im_n_off,SWFFILL_TILED_BITMAP);
 			} else {
 				$myfill = $squareshape->addFill($im_n_on,SWFFILL_TILED_BITMAP);
@@ -578,7 +578,7 @@ elseif ($graph == 'flash')
 		
 		if ($d['lastonline']) 
 		{	
-			if ((time()-$d['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit']) {
+			if ((time()-$d['lastonline'])>$CONFIG['phpui']['lastonline_limit']) {
 				$myfill = $squareshape->addFill($im_d_off,SWFFILL_TILED_BITMAP);
 			} else {
 				$myfill = $squareshape->addFill($im_d_on,SWFFILL_TILED_BITMAP);
@@ -743,7 +743,7 @@ else
 		$n = $nodes[$nodeid];
 
 		if ($n['lastonline']) {	
-			if ((time()-$n['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
+			if ((time()-$n['lastonline'])>$CONFIG['phpui']['lastonline_limit'])
 				imagecopy($im,$im_n_off,$px,$py,0,0,16,16);
 			else 
 				imagecopy($im,$im_n_on,$px,$py,0,0,16,16);
@@ -769,7 +769,7 @@ else
 		$d = $devices[$deviceid];
 		
 		if ($d['lastonline']) {	
-			if ((time()-$d['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
+			if ((time()-$d['lastonline'])>$CONFIG['phpui']['lastonline_limit'])
 				imagecopy($im,$im_d_off,$px,$py,0,0,16,16);
 			else 
 				imagecopy($im,$im_d_on,$px,$py,0,0,16,16);

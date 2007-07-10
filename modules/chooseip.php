@@ -62,7 +62,7 @@ $network = array();
 
 if($p == 'main')
 {
-	$network = $LMS->GetNetworkRecord($netid, $page, $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
+	$network = $LMS->GetNetworkRecord($netid, $page, $CONFIG['phpui']['networkhosts_pagelimit']);
 	$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
 }
 
@@ -72,7 +72,7 @@ if($p == 'down' || $p == 'top')
 	$SESSION->restore('ntlp.pages.'.$netid, $network['pages']);
 	if (!isset($network['pages'])) 
 	{
-		$network = $LMS->GetNetworkRecord($netid, $page, $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
+		$network = $LMS->GetNetworkRecord($netid, $page, $CONFIG['phpui']['networkhosts_pagelimit']);
 		$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
 	}
 }
