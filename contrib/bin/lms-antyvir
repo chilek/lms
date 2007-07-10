@@ -116,7 +116,7 @@ my $logmessage = $ini->val('antyvir', 'message') || '';
 my $dbase;
 my $utsfmt;
 
-if($dbtype eq "mysql")
+if($dbtype =~ /mysql/)
 {
         $dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 }

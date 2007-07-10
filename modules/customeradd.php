@@ -32,13 +32,16 @@ if(isset($_GET['ajax']))
         	// escape quotes and backslashes, newlines, etc.
         	return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
 	}
+	
 	$search = urldecode(trim($_GET['what']));
 	switch($_GET['mode'])
 	{
 		        case 'address':
 				$mode='address';
-				if ($CONFIG['database']['type'] == 'mysql') $mode='substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-				if ($CONFIG['database']['type'] == 'postgres') $mode='substring(address from \'^.* \')';
+				if ($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli') 
+					$mode = 'substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
+				elseif($CONFIG['database']['type'] == 'postgres') 
+					$mode = 'substring(address from \'^.* \')';
 				break;
 		        case 'zip':
 				$mode='zip';

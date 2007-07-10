@@ -45,10 +45,10 @@
 				<para>gd lub ming (dla mapy sieci),</para>
 			</listitem>
 			<listitem>
-				<para>mysql lub pgsql (dla bazy danych),</para>
+				<para>mysql, mysqli lub pgsql (dla bazy danych),</para>
 			</listitem>
 			<listitem>
-				<para>iconv (dla wydruków pdf),</para>
+				<para>iconv,</para>
 			</listitem>
 			<listitem>
 				<para>PEAR::Mail (wymaga PEAR::Net_SMTP i PEAR::Net_Socket) do mailingu.</para>
@@ -217,6 +217,9 @@ user     = lms
 password = has³o_z_pkt.3
 </screen>
               </para>
+	      	<para>W PHP dostêpne s± dwa rozszerzenia do obs³ugi bazy MySQL (mysql i mysqli). 
+		LMS obs³uguje oba, mo¿esz wybraæ, ktego chcesz u¿yæ ustawiaj±c odpowiednio
+		opcjê <emphasis>type</emphasis> w sekcji [database].</para>
                <para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
                danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
                bazie  danych  nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
@@ -312,8 +315,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
          <itemizedlist>
             <listitem>
          <para>type</para>
-        <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql'
-        oraz 'postgres'. Domy¶lnie: mysql</para>
+        <para>Typ drivera bazy danych. Aktualnie w 100% supportowany jest 'mysql',
+        'mysqli' oraz 'postgres'. Domy¶lnie: mysql</para>
         <para>Przyk³ad: <prompt>type = mysql</prompt></para>
        </listitem>
           <listitem>

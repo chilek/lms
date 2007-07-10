@@ -45,6 +45,7 @@ version ? (????-??-??):
   - documents list opens on last page by default (alec)
   - lmsd/cutoff: added option 'use_nodeassignments' for disabling nodes
     without tariff assignments (alec)
+  - added 'mysqli' database driver (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

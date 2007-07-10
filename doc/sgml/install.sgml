@@ -42,10 +42,10 @@
 				<para>gd or ming (for network map),</para>
 			</listitem>
 			<listitem>
-				<para>mysql or pgsql (for db support),</para>
+				<para>mysql or mysqli or pgsql (for db support),</para>
 			</listitem>
 			<listitem>
-				<para>iconv (for pdf printouts),</para>
+				<para>iconv,</para>
 			</listitem>
 			<listitem>
 				<para>PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets) for mailing.</para>
@@ -295,8 +295,8 @@ password = password_entered_with_lms_user_creation</screen>
             <itemizedlist>
     		<listitem>
 	    	    <para>type</para>
-    		    <para>Database type. Currently are supported 'mysql' 
-		    and 'postgres' only. Default: mysql</para>
+    		    <para>Database driver type. Currently are supported 'mysql' or 'mysqli' 
+		    and 'postgres'. Default: mysql</para>
     		    <para>Example: <prompt>type = mysql</prompt></para>
 		</listitem>
         	<listitem>

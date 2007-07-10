@@ -31,6 +31,7 @@ switch($CONFIG['database']['type'])
 	break;
 		
 	case 'mysql':
+	case 'mysqli':
 		$DB->Execute("SET NAMES utf8");
 	break;
 }

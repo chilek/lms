@@ -99,7 +99,7 @@ my $message = $ini->val('makeon', 'message') || 'Thank You for a payment';
 my $dbase;
 my $utsfmt;
 
-if($dbtype eq "mysql")
+if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->do("SET NAMES utf8");

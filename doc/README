@@ -313,8 +313,8 @@ Chapter 2. Installation and configuration
      * pcre, posix,
      * zlib (for compressed backups),
      * gd or ming (for network map),
-     * mysql or pgsql (for db support),
-     * iconv (for pdf printouts),
+     * mysql or mysqli or pgsql (for db support),
+     * iconv,
      * PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets)
        for mailing.
      _________________________________________________________________
@@ -560,8 +560,8 @@ password = password_entered_with_lms_user_creation
 2.6.1. Section [database] - Database Settings
 
      * type
-       Database type. Currently are supported 'mysql' and 'postgres'
-       only. Default: mysql
+       Database driver type. Currently are supported 'mysql' or 'mysqli'
+       and 'postgres'. Default: mysql
        Example: type = mysql
      * host
        Host where database is running. Usually 'localhost', but you can
