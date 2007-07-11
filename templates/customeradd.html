@@ -26,7 +26,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="customeradd[lastname]" VALUE="{$customeradd.lastname}" SIZE="40" {tip text="Enter customer last name or company name" trigger="customername" bold=1}>
+						<INPUT TYPE="TEXT" NAME="customeradd[lastname]" VALUE="{$customeradd.lastname}" SIZE="50" {tip text="Enter customer last name or company name" trigger="customername" bold=1}>
 					</TD>
 				</TR>
 				<TR>
@@ -35,7 +35,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="customeradd[name]" VALUE="{$customeradd.name}" SIZE="40" {tip text="Enter customer name" trigger="customername" bold=1}>
+						<INPUT TYPE="TEXT" NAME="customeradd[name]" VALUE="{$customeradd.name}" SIZE="50" {tip text="Enter customer name" trigger="customername" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -74,13 +74,53 @@
 						<IMG src="img/home.gif" alt="">
 					</TD>
 					<TD width="99%" nowrap>
-						<INPUT TYPE="text" size="40" value="{$customeradd.address}" name="customeradd[address]" id="address" {tip text="Enter customer address" trigger="address"}><BR>
-						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="10" VALUE="{$customeradd.zip}" NAME="customeradd[zip]" id="zip" {tip text="Enter zip code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$customeradd.city}" NAME="customeradd[city]" id="city" {tip text="Enter customer city" trigger="city"}>
-						<script language="Javascript">
+						<TABLE width="100%" cellpadding="2" cellspacing="0">
+						    <TR>
+							<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
+							<TD width="99%"><INPUT TYPE="text" size="30" value="{$customeradd.address}" name="customeradd[address]" id="address" {tip text="Enter customer address" trigger="address"}></TD>
+						    </TR>
+						    <TR>
+							<TD width="1%" NOWRAP>{t}City:{/t}</TD>
+							<TD width="99%"><INPUT TYPE="TEXT" SIZE="30" VALUE="{$customeradd.city}" NAME="customeradd[city]" id="city" {tip text="Enter customer city" trigger="city"}></TD>
+						    </TR>
+						    <TR>
+							<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
+							<TD width="99%"><INPUT TYPE="text" SIZE="10" VALUE="{$customeradd.zip}" NAME="customeradd[zip]" id="zip" {tip text="Enter zip code" trigger="zip"}>
+						    </TR>
+						</TABLE>    
+						<script type="text/javascript">
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 						</script>
+					</TD>
+				</TR>
+    				<TR>
+					<TD WIDTH="1%">
+						<IMG SRC="img/gg.gif" alt="Gadu-Gadu">
+					</TD>
+					<TD WIDTH="99%">
+		    			{assign var=gg value=$smarty.const.IM_GG}
+						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$gg}]" VALUE="{if $customeradd.uid.$gg}{$customeradd.uid.$gg}{/if}" SIZE="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
+					</TD>
+				</TR>
+    				<TR>
+					<TD WIDTH="1%">
+						<IMG src="img/yim.gif" alt="Yahoo">
+					</TD>
+					<TD WIDTH="99%">
+				    	{assign var=yahoo value=$smarty.const.IM_YAHOO}
+						
+						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$yahoo}]" VALUE="{if $customeradd.uid.$yahoo}{$customeradd.uid.$yahoo}{/if}" SIZE="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
+					</TD>
+				</TR>
+    				<TR>
+					<TD WIDTH="1%">
+						<IMG src="img/skype.gif" alt="Skype">
+					</TD>
+					<TD WIDTH="99%">
+					{assign var=skype value=$smarty.const.IM_SKYPE}
+						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$skype}]" VALUE="{if $customeradd.uid.$skype}{$customeradd.uid.$skype}{/if}" SIZE="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
 					</TD>
 				</TR>
 				<TR>
@@ -89,25 +129,6 @@
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$customeradd.email}" name="customeradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
-					</TD>
-				</TR>
-    				<TR>
-					<TD WIDTH="1%">
-						{t}Internet Msgrs:{/t}
-					</TD>
-					<TD WIDTH="99%">
-		    			{assign var=gg value=$smarty.const.IM_GG}
-				    	{assign var=yahoo value=$smarty.const.IM_YAHOO}
-					{assign var=skype value=$smarty.const.IM_SKYPE}
-						<NOBR><IMG SRC="img/gg.gif" alt="Gadu-Gadu">
-						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$gg}]" VALUE="{if $customeradd.uid.$gg}{$customeradd.uid.$gg}{/if}" SIZE="15" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
-		    				</NOBR>			
-						<NOBR><IMG src="img/yim.gif" alt="Yahoo">
-						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$yahoo}]" VALUE="{if $customeradd.uid.$yahoo}{$customeradd.uid.$yahoo}{/if}" SIZE="15" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
-						</NOBR>			
-						<NOBR><IMG src="img/skype.gif" alt="Skype">
-						<INPUT TYPE="TEXT" NAME="customeradd[uid][{$skype}]" VALUE="{if $customeradd.uid.$skype}{$customeradd.uid.$skype}{/if}" SIZE="15" {tip text="Enter Skype ID (optional)" trigger="skype"}>
-						</NOBR>			
 					</TD>
 				</TR>
 				<TR>
@@ -160,15 +181,25 @@
 				</TR>
 			</TABLE>
 		</TD>
-		<TD width="50%" class="fright" ALIGN="LEFT" STYLE="vertical-align: top;">
-			<P><NOBR><IMG src="img/post.gif" alt="">
-			    <TEXTAREA rows="5" cols="60" name="customeradd[serviceaddr]" {tip text="Enter service address (optional)"}>{$customeradd.serviceaddr}</TEXTAREA></NOBR>
-			<P><NOBR><IMG src="img/info1.gif" alt="">
-			    <TEXTAREA rows="5" cols="60" name="customeradd[info]" {tip text="Enter additional informations (optional)"}>{$customeradd.info|escape}</TEXTAREA></NOBR>
-			<P><NOBR><IMG src="img/warningon.gif" alt="">
-			    <TEXTAREA rows="5" cols="60" name="customeradd[message]" {tip text="Enter message to customer (optional)"}>{$customeradd.message|escape}</TEXTAREA></NOBR>
-			<P><NOBR><IMG src="img/note.gif" alt="">
-			    <TEXTAREA rows="5" cols="60" name="customeradd[notes]" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA></NOBR>
+		<TD width="50%" class="fright" STYLE="vertical-align: top;">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+		    		<TR>
+			            <TD WIDTH="1%"><IMG src="img/post.gif" alt=""></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[serviceaddr]" {tip text="Enter service address (optional)"}>{$customeradd.serviceaddr}</TEXTAREA></TD>
+				</TR>
+		    		<TR>
+			            <TD WIDTH="1%"><IMG src="img/info1.gif" alt=""></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[info]" {tip text="Enter additional informations (optional)"}>{$customeradd.info|escape}</TEXTAREA></TD>
+		    		</TR>
+				<TR>
+			            <TD WIDTH="1%"><IMG src="img/warningon.gif" alt=""></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[message]" {tip text="Enter message to customer (optional)"}>{$customeradd.message|escape}</TEXTAREA></TD>
+		    		</TR>
+				<TR>
+			            <TD WIDTH="1%"><IMG src="img/note.gif" alt=""></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[notes]" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA></TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
 	<TR class="light">
