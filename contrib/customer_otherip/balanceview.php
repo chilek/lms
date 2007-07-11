@@ -34,7 +34,7 @@ $login = (trim($loginform['login']) ? trim($loginform['login']) : 0);
 $pin = (trim($loginform['pwd']) ? trim($loginform['pwd']) : 0);
 
 // customer authorization ways
-//$id = GetCustomerIDByPhone1AndPIN($login, $pin);
+//$id = GetCustomerIDByPhoneAndPIN($login, $pin);
 //$id = GetCustomerIDByContractAndPIN($login, $pin);
 $id = GetCustomerIDByIDAndPIN($login, $pin);
 

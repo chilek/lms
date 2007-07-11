@@ -106,7 +106,7 @@ switch($type)
 		
     		$list = $DB->GetAll('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 				    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
-				    .(isset($_POST['extended']) ? ', address, phone1 ' : '')
+				    .(isset($_POST['extended']) ? ', address, (SELECT phone FROM customercontacts WHERE customerid = customers.id LIMIT 1) AS phone ' : '')
 		               	    .'FROM rttickets
 				    LEFT JOIN customers ON (customerid = customers.id)
 				    WHERE state != '.RT_RESOLVED

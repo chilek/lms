@@ -146,7 +146,8 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $contents = '';
 	
 	my $dbqi = $dbase->prepare("SELECT DISTINCT title, description, begintime, endtime,
-			customerid, UPPER(lastname) AS lastname, customers.name AS name, phone1, address, city, zip 
+			customerid, UPPER(lastname) AS lastname, customers.name AS name, address, city, zip,
+			(SELECT phone FROM customercontacts WHERE customerid = event.customerid ORDER BY phone LIMIT 1) AS phone 
 			FROM events 
 			LEFT JOIN customers ON (customers.id = customerid)
 			LEFT JOIN eventassignments ON (events.id = eventid)
@@ -173,7 +174,7 @@ while (my $row = $dbq->fetchrow_hashref())
 
 		if($rowi->{'customerid'})
 		{
-			$contents .= "Cust.:\t$rowi->{'lastname'} $rowi->{'name'}, $rowi->{'zip'} $rowi->{'city'}, $rowi->{'address'}, $rowi->{'phone1'}\n";
+			$contents .= "Cust.:\t$rowi->{'lastname'} $rowi->{'name'}, $rowi->{'zip'} $rowi->{'city'}, $rowi->{'address'}, $rowi->{'phone'}\n";
 		}
 
 		$contents .= "----------------------------------------------------------------------------\n";

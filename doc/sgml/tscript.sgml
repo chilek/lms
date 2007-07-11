@@ -496,7 +496,6 @@ syslog("message");
 				<member>zip - postal code</member>
 				<member>city - city</member>
 				<member>email - email address</member>
-				<member>phone1, phone2, phone3 - phone numbers</member>
 				<member>ten - tax exempt number</member>
 				<member>ssn - security serial number</member>
 				<member>regon - business registration number</member>

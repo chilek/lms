@@ -103,9 +103,6 @@
                     <member>name - imiê</member>
                     <member>status - status (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</member>
                     <member>email - adres poczty internetowej</member>
-                    <member>phone1 - telefon</member>
-                    <member>phone2 - telefon</member>
-                    <member>phone3 - telefon</member>
                     <member>pin - numer pin (uwierzytelnianie)</member>
                     <member>address - adres (ulica, nr domu, nr lokalu)</member>
                     <member>zip - kod pocztowy</member>
@@ -420,6 +417,15 @@
 			<member>customerid - identyfikator klienta</member>
 			<member>uid - identyfikator/nazwa u¿ytkownika komunikatora </member>
 			<member>type - typ komunikatora (0-gadu-gadu, 1-yahoo, 2-skype)</member>
+		</simplelist>
+	</sect2>
+	<sect2 id="customercontacts">
+		<title>Kontakty ('customercontacts')</title>
+		<simplelist>
+			<member>id - identyfikator rekordu</member>
+			<member>customerid - identyfikator klienta</member>
+			<member>phone - numer telefoniczny</member>
+			<member>name - nazwa/opis kontaktu</member>
 		</simplelist>
 	</sect2>
           <sect2 id="passwd">

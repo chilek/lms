@@ -335,16 +335,13 @@ class LMS
 
 	function CustomerAdd($customeradd)
 	{
-		if($this->DB->Execute('INSERT INTO customers (name, lastname, phone1, phone2, phone3, 
+		if($this->DB->Execute('INSERT INTO customers (name, lastname,  
 				    address, zip, city, email, ten, ssn, status, creationdate, 
 				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, icn) 
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
-					    $customeradd['phone1'], 
-					    $customeradd['phone2'], 
-					    $customeradd['phone3'], 
 					    $customeradd['address'], 
 					    $customeradd['zip'], 
 					    $customeradd['city'], 
@@ -383,14 +380,11 @@ class LMS
 
 	function CustomerUpdate($customerdata)
 	{
-		return $this->DB->Execute('UPDATE customers SET status=?, phone1=?, phone2=?, phone3=?, address=?, 
+		return $this->DB->Execute('UPDATE customers SET status=?, address=?, 
 					    zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 					    info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, 
 					    pin=?, regon=?, icn=?, rbe=? WHERE id=?', 
 			array( $customerdata['status'], 
-				$customerdata['phone1'], 
-				$customerdata['phone2'], 
-				$customerdata['phone3'], 
 				$customerdata['address'], 
 				$customerdata['zip'], 
 				$customerdata['city'], 
@@ -438,7 +432,7 @@ class LMS
 	function GetCustomer($id)
 	{
 		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
-					    lastname, name, status, email, phone1, phone2, phone3, address, zip, ten, ssn, 
+					    lastname, name, status, email, address, zip, ten, ssn, 
 					    city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
 					    pin, regon, icn, rbe 
 					    FROM customers WHERE id = ?', array($id)))
@@ -451,6 +445,7 @@ class LMS
 			$result['tariffsvalue'] = $this->GetCustomerTariffsValue($result['id']);
 			$result['bankaccount'] = bankaccount($result['id']);
 			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
+			$result['contacts'] = $this->DB->GetAll('SELECT phone, name FROM customercontacts WHERE customerid = ? ORDER BY id', array($result['id']));
 		
 			return $result;
 		}
@@ -547,7 +542,7 @@ class LMS
 					switch($key)
 					{
 						case 'phone':
-							$searchargs[] = "(phone1 ?LIKE? '%$value%' OR phone2 ?LIKE? '%$value%' OR phone3 ?LIKE? '%$value%')";
+							$searchargs[] = "EXISTS (SELECT 1 FROM customercontacts WHERE customerid = customers.id AND phone ?LIKE? '%$value%')";
 						break;
 						case 'zip':
 						case 'city':
@@ -600,7 +595,7 @@ class LMS
 
 		if($customerlist = $this->DB->GetAll(
 				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, 
-				status, address, zip, city, email, phone1, ten, ssn, customers.info AS info, message, 
+				status, address, zip, city, email, ten, ssn, customers.info AS info, message, 
 				(SELECT SUM(value) FROM cash WHERE customerid = customers.id '
 				.($time ? ' AND time < '.$time : '').') AS balance
 				FROM customers '
@@ -624,7 +619,7 @@ class LMS
 											AND (dateto >= ?NOW? OR dateto = 0)
 											AND suspended = 1)))' : '')
 				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
-				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, email, phone1, ten, ssn, customers.info, message '
+				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, email, ten, ssn, customers.info, message '
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{

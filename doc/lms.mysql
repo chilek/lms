@@ -471,9 +471,6 @@ CREATE TABLE customers (
   name varchar(255) NOT NULL default '',
   status int(11) NOT NULL default '0',
   email varchar(255) NOT NULL default '',
-  phone1 varchar(255) NOT NULL default '',
-  phone2 varchar(255) NOT NULL default '',
-  phone3 varchar(255) NOT NULL default '',
   address varchar(255) NOT NULL default '',
   zip varchar(10) NOT NULL default '',
   city varchar(32) NOT NULL default '',
@@ -810,4 +807,20 @@ CREATE TABLE imessengers (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007070400');
+#
+# Structure of table customercontacts
+#
+DROP TABLE IF EXISTS customercontacts;
+CREATE TABLE customercontacts (
+	id int(11) NOT NULL auto_increment,
+        customerid int(11) NOT NULL DEFAULT 0,
+	name varchar(255) NOT NULL DEFAULT '',
+	phone varchar(255) NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	INDEX customerid (customerid),
+	INDEX phone (phone)
+) TYPE=MyISAM;
+											
+
+# --------------------------------------------------------
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007071100');

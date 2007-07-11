@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {literal}
-<SCRIPT language="JavaScript">
+<SCRIPT type="text/javascript">
 	function randomize()
 	{
 		var r = 0;
@@ -10,6 +10,11 @@
 			r = Math.floor(Math.random()*1000000-1);
 		while (r<1000);	
 		document.customeradd.elements['customeradd[pin]'].value = r;
+	}
+	function newcontact()
+	{
+		document.customeradd.action += '&newcontact=1';
+		document.customeradd.submit();
 	}
 </SCRIPT>
 {/literal}
@@ -60,17 +65,6 @@
 				</tr>
 				<TR>
 					<TD width="1%" valign="top">
-						<IMG src="img/phone.gif" alt="">
-					</TD>
-					<TD width="99%" {tip text="Enter contact phones"}>
-						<INPUT TYPE="text" size="40" value="{$customeradd.phone1}" name="customeradd[phone1]"><BR>
-						<INPUT TYPE="text" size="40" value="{$customeradd.phone2}" name="customeradd[phone2]"><BR>
-						<INPUT TYPE="text" size="40" value="{$customeradd.phone3}" name="customeradd[phone3]">
-					</TD>
-				
-				</TR>
-				<TR>
-					<TD width="1%" valign="top">
 						<IMG src="img/home.gif" alt="">
 					</TD>
 					<TD width="99%" nowrap>
@@ -96,6 +90,22 @@
 					</TD>
 				</TR>
     				<TR>
+					<TD width="1%" valign="top">
+						<IMG src="img/phone.gif" alt="">
+					</TD>
+					<TD width="99%" NOWRAP>
+						<TABLE width="100%" cellpadding="2" cellspacing="0">
+						{foreach from=$customeradd.contacts item=item key=key}
+						    <TR>
+							<TD width="1%"><INPUT TYPE="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}></TD>
+							<TD width="99%" align="left"><INPUT TYPE="text" size="20" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description"}></TD>
+						    </TR>
+						{/foreach}
+						</TABLE>
+						<A href="javascript: newcontact()">{t}Add contact field{/t} &raquo;&raquo;&raquo;</A>
+					</TD>
+				</TR>
+				<TR>
 					<TD WIDTH="1%">
 						<IMG SRC="img/gg.gif" alt="Gadu-Gadu">
 					</TD>
@@ -173,7 +183,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>{t}PIN{/t}</B>
+						<IMG src="img/pin.gif" alt="">
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>

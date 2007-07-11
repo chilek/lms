@@ -43,7 +43,6 @@ if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 			.' OR icn LIKE \'%'.$search.'%\''
 			.' OR rbe LIKE \'%'.$search.'%\''
 			.' OR regon LIKE \'%'.$search.'%\''
-			.' OR phone1 LIKE \'%'.$search.'%\''
 			.' OR UPPER(email) LIKE UPPER(\'%'.$search.'%\')'
 			.' OR UPPER('.$DB->Concat('lastname',"' '",'customers.name').') LIKE UPPER(\'%'.$search.'%\')'
 			.' OR UPPER(address) LIKE UPPER(\'%'.$search.'%\')) ';
@@ -67,7 +66,7 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 
 if(isset($where_node) || isset($where_cust))
 {
-	if($customerlist = $DB->GetAll('SELECT DISTINCT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, address, zip, city, email, phone1, ssn, 
+	if($customerlist = $DB->GetAll('SELECT DISTINCT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, address, zip, city, email, ssn, 
 				(SELECT SUM(value) FROM cash WHERE customerid = customers.id) AS balance 
 				FROM customers ' 
 				.(isset($where_node) ? 'LEFT JOIN nodes ON (customers.id = ownerid) ' : '')

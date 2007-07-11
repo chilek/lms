@@ -159,7 +159,7 @@ open(MTFILE, "$mtfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, UPPER(lastname) AS lastname, name, email, phone1, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, pin, lastname, name, email, phone1 HAVING SUM(cash.value) < $limit");
+my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, UPPER(lastname) AS lastname, name, email, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, pin, lastname, name, email HAVING SUM(cash.value) < $limit");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -224,10 +224,6 @@ while (my $row = $dbq->fetchrow_hashref())
 				my $year = strftime( "%Y", localtime());
 				$line =~ s/\%date-y/$year/; 
 			}
-		        {
-           			my $phone = $row->{'phone1'};
-		    		$line =~ s/\%phone1/$phone/;
-			}
 			{
 				my $month = strftime ( "%m", localtime());
 				$line =~ s/\%date-m/$month/;
@@ -280,7 +276,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	}else{
 		if(!$quiet)
 		{
-			print STDOUT "This customer don't have any e-mail in database, call him if You can ($row->{'phone1'}).\n";
+			print STDOUT "This customer don't have any e-mails in database.\n";
 		}
 	}
 }

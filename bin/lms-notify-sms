@@ -117,17 +117,20 @@ if(! -r $smsfile)
 
 my $dbase;
 my $utsfmt;
+my $regexp;
 
 if($dbtype =~ /mysql/)
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->do("SET NAMES utf8");
 	$utsfmt = "UNIX_TIMESTAMP()";
+	$regexp = "phone REGEXP '%RE%'";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+	$regexp = "regexp_replace(phone, '[^0-9]', '') ~ '%RE%'";
 }
 else
 {
@@ -135,11 +138,26 @@ else
 	exit 1;
 }
 
+# for Poland:
+# 888xxxxxx 880xxxxxx (heyah), 6(0,9)xxxxxxx (plus and era), 50xxxxxxx (idea)
+# it will also treat as valid numbers begining with: +48, 0, 0-, 0 (space)...
+my $pnum_regex = '^(\+48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$';
+
+$regexp =~ s/%RE%/$pnum_regex/;
+
 open(MTFILE, "$smsfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, lastname, name, phone1, phone2, phone3, SUM(value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, pin, lastname, name, phone1, phone2, phone3 HAVING SUM(value) < 0"); 
+my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, lastname, name, SUM(value) AS balance,
+			(SELECT phone FROM customercontacts c 
+				WHERE c.customerid = customers.id AND $regexp
+				LIMIT 1
+			) AS phone
+		FROM customers 
+		LEFT JOIN cash ON (customers.id = cash.customerid)
+		GROUP BY customers.id, pin, lastname, name
+		HAVING SUM(value) < 0"); 
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -151,30 +169,13 @@ while (my $row = $dbq->fetchrow_hashref())
 			print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
 		}
 		
-		# is it ok? what should be sms regexp?
-		my $sms_phone_number;
-		# someone should learn how to write regexp!
-		# This one match:
-		# numbers: 888xxxxxx 880xxxxxx (heyah), 6(0,9)xxxxxxx (plus and era), 50xxxxxxx (idea)
-		# it will also treat as valid numbers begining with: +48, 0, 0-, 0 (space)...
-		my $pnum_regex = '^(\+48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$';
-		
-		$row->{'phone1'} =~ s/[ -]//g;
-		$row->{'phone2'} =~ s/[ -]//g;
-		$row->{'phone3'} =~ s/[ -]//g;
-		
-		if($row->{'phone1'} =~ /$pnum_regex/) {
-			$sms_phone_number = $row->{'phone1'}; }
-		elsif ($row->{'phone2'} =~ /$pnum_regex/) {
-			$sms_phone_number = $row->{'phone2'}; }
-		elsif ($row->{'phone3'} =~ /$pnum_regex/) {
-			$sms_phone_number = $row->{'phone3'}; }
+		$row->{'phone'} =~ s/[^0-9]//g;
 			
-		if ($sms_phone_number)
+		if($row->{'phone'})
 		{
 			if(!$quiet)
 			{
-				print STDOUT "Sending sms to $sms_phone_number\n";
+				print STDOUT "Sending sms to $row->{'phone'}\n";
 			}
 			
 			my @desttempl = @mtempl;
@@ -192,11 +193,6 @@ while (my $row = $dbq->fetchrow_hashref())
 				{ 
 					my $year = strftime( "%Y", localtime());
 					$line =~ s/\%date-y/$year/; 
-				}
-
-				{
-					my $phone = $row->{'phone1'};
-					$line =~ s/\%phone1/$phone/;
 				}
 
 				{ 
@@ -233,12 +229,12 @@ while (my $row = $dbq->fetchrow_hashref())
 			
 			if(!$debug) 
 			{
-				system("echo $sms_data | gnokii --sendsms $sms_phone_number");
+				system("echo $sms_data | gnokii --sendsms $row->{'phone'}");
 			}
 		}
 		elsif(!$quiet) 
 		{
-				print STDOUT "This customer don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
+				print STDOUT "This customer don't have any sms capable number in database.\n";
 		}
 	}
 }

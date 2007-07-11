@@ -64,7 +64,7 @@ zezwoliłem mu tylko na odczyt danych (a i to tylko niektórych...).
 
 #v+
 customer authorization ways
-//$id = GetCustomerIDByPhone1AndPIN($login, $pin);
+//$id = GetCustomerIDByPhoneAndPIN($login, $pin);
 //$id = GetCustomerIDByContractAndPIN($login, $pin);
 $id = GetCustomerIDByIDAndPIN($login, $pin);
 #v-

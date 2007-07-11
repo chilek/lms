@@ -62,7 +62,9 @@
 						<B>{t}Phone:{/t}</B>
 					</TD>
 					<TD WIDTH="54%">
-						{$customerinfo.phone1}
+						{foreach from=$customerinfo.contacts item=item}
+					            {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
+						{/foreach}
 					</TD>
 				</TR>
 				<TR>

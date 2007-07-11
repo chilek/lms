@@ -27,16 +27,6 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/phone.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.phone1}{if $customerinfo.phone2 neq ""}<BR>
-			{$customerinfo.phone2}{/if}{if $customerinfo.phone3 neq ""}<BR>
-			{$customerinfo.phone3}{/if}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
@@ -44,6 +34,18 @@
 			{$customerinfo.zip} {$customerinfo.city}
 		</TD>
 	</TR>
+{if $customerinfo.contacts}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/phone.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{foreach from=$customerinfo.contacts item=item}
+			    {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
+			{/foreach}
+		</TD>
+	</TR>
+{/if}
 {if $customerinfo.serviceaddr neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
@@ -145,10 +147,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-			<B>{t}PIN:{/t}</B>
-		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.pin}
 		</TD>
 	</TR>

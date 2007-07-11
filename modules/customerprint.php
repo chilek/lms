@@ -68,20 +68,24 @@ switch($type)
 				$layout['pagetitle'] = trans('Customers Without Nodes List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $0)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
 				if($customerlist = $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['customergroup'], NULL, $date))
 				{
-				unset($customerlist['total']);
-				unset($customerlist['state']);
-				unset($customerlist['order']);
-				unset($customerlist['below']);
-				unset($customerlist['over']);
-				unset($customerlist['direction']);
-
-				foreach($customerlist as $idx => $row)
-					if(! $row['account'])
-						$ncustomerlist[] = $customerlist[$idx];
+					unset($customerlist['total']);
+					unset($customerlist['state']);
+					unset($customerlist['order']);
+					unset($customerlist['below']);
+					unset($customerlist['over']);
+					unset($customerlist['direction']);
+	
+					foreach($customerlist as $idx => $row)
+						if(! $row['account'])
+							$ncustomerlist[] = $customerlist[$idx];
 				}
 				$SMARTY->assign('customerlist', $ncustomerlist);
 			break;	
-		}		
+		}
+		
+		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(phone) AS phone 
+						FROM customercontacts WHERE phone != \'\' GROUP BY customerid', 'customerid'));
+		
 		$SMARTY->display('printcustomerlist.html');
 	break;
 

@@ -158,9 +158,6 @@ scripts.</para>
 	       <para>%cid - customer ID</para>
 	    </listitem>
 	    <listitem>
-	       <para>%phone1 - customer's 1st phone number</para>
-	    </listitem>
-	    <listitem>
 	       <para>%last_10_in_a_table - list of last 10 operations on customer's account, eg.</para>
 	    </listitem>
 	  </itemizedlist>

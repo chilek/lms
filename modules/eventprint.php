@@ -31,7 +31,8 @@ function GetEvents($date=NULL, $userid=0, $customerid=0)
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
-		 customers.address AS customeraddr, customers.phone1 AS customerphone 
+		 customers.address AS customeraddr, 
+		 (SELECT phone FROM customercontacts WHERE customerid = customers.id ORDER BY id LIMIT 1) AS customerphone 
 		 FROM events LEFT JOIN customers ON (customerid = customers.id)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND userid = ?)) '
 		 .($customerid ? 'AND customerid = '.$customerid : '')

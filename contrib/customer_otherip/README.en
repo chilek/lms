@@ -46,7 +46,7 @@ panel requires to set sys_dir in lms.ini file (section [directories]).
 
 #v+
 customer authorization ways
-//$id = GetCustomerIDByPhone1AndPIN($login, $pin);
+//$id = GetCustomerIDByPhoneAndPIN($login, $pin);
 //$id = GetCustomerIDByContractAndPIN($login, $pin);
 $id = GetCustomerIDByIDAndPIN($login, $pin);
 #v-
