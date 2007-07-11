@@ -45,11 +45,11 @@ elseif($action == 'customergroupadd')
 		$LMS->CustomerAssignmentAdd(array('customerid' => $_GET['id'], 'customergroupid' => $_POST['customergroupid']));
 	$SESSION->redirect('?m=customerinfo&id='.$_GET['id']);
 }
-elseif(isset($_POST['customerdata']))
+elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 {
 	$customerdata = $_POST['customerdata'];
 	foreach($customerdata as $key=>$value)
-		if($key != 'uid')
+		if($key != 'uid' && $key != 'contacts')
 			$customerdata[$key] = trim($value);
 
 	if($customerdata['lastname']=='')
@@ -105,8 +105,19 @@ elseif(isset($_POST['customerdata']))
 
 		if($val) $im[$idx] = $val;
 	}
-		
-	if (!$error)
+
+	foreach($customerdata['contacts'] as $idx => $val)
+        {
+	        $phone = trim($val['phone']);
+	        $name = trim($val['name']);
+					
+	        if($name && !$phone)
+	                $error['contact'.$idx] = trans('Phone number is required!');
+	        elseif($phone)
+	                $contacts[] = array('name' => $name, 'phone' => $phone);
+	}
+
+	if(!$error)
 	{
 		$LMS->CustomerUpdate($customerdata);
 		
@@ -115,12 +126,19 @@ elseif(isset($_POST['customerdata']))
 			foreach($im as $idx => $val)
 				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
 					VALUES(?, ?, ?)', array($customerdata['id'], $val, $idx));
+
+		$DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
+		if(isset($contacts))
+			foreach($contacts as $contact)
+				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name)
+					VALUES(?, ?, ?)', array($customerdata['id'], $contact['phone'], $contact['name']));
 		
 		$SESSION->redirect('?m=customerinfo&id='.$customerdata['id']);
 	}
 	else
 	{
 		$olddata = $LMS->GetCustomer($_GET['id']);
+
 		$customerinfo = $customerdata;
 		$customerinfo['createdby'] = $olddata['createdby'];
 		$customerinfo['modifiedby'] = $olddata['modifiedby'];
@@ -134,10 +152,22 @@ elseif(isset($_POST['customerdata']))
 }
 else
 {
+	
 	$customerinfo = $LMS->GetCustomer($_GET['id']);
+
 	if($customerinfo['messengers'])
 		foreach($customerinfo['messengers'] as $idx => $val)
 			$customerinfo['uid'][$idx] = $val['uid'];
+
+	if(!$customerinfo['contacts'])
+		$customerinfo['contacts'][] = array();
+
+	elseif(isset($_POST['customerdata']) && isset($_GET['newcontact']))
+	{
+    		$customerdata = $_POST['customerdata'];
+		$customerdata['contacts'][] = array();
+		$customerinfo = array_merge($customerinfo, $customerdata);
+	}
 }
 
 $layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);

@@ -46,6 +46,13 @@ version ? (????-??-??):
   - lmsd/cutoff: added option 'use_nodeassignments' for disabling nodes
     without tariff assignments (alec)
   - added 'mysqli' database driver (alec)
+  - Customer Info: added descriptions for contact phones, not limited number of
+    phones for each customer, now numbers are stored in 'customercontacts' 
+    table (alec)
+  - lmsd/parser: removed phone1, phone2, phone3 subvariables of 
+    CUSTOMERS constant (alec)
+  - lms-notify: removed %phone variable (alec)
+  - lms-notify-sms: removed %phone variable (alec)
  
 version 1.9.7 Thalan (2007-05-09):
 

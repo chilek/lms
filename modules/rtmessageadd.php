@@ -270,13 +270,14 @@ if(isset($_POST['message']))
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']))))
 			{	
 				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-						email, phone1, phone2, phone3, address, zip, city
+						email, address, zip, city, (SELECT phone FROM customercontacts 
+							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
 						FROM customers WHERE id = ?', array($cid));
 				
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-				$body .= trans('Phone:').' '.$info['phone1'].' '.$info['phone2'].' '.$info['phone3']."\n";
+				$body .= trans('Phone:').' '.$info['phone']."\n";
 				$body .= trans('E-mail:').' '.$info['email'];
 			}
 

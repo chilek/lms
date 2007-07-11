@@ -162,9 +162,6 @@
 	       <para>%cid - ID klienta.</para>
 	    </listitem>
 	    <listitem>
-	       <para>%phone1 - pierwszy numer telefonu klienta</para>
-	    </listitem>
-	    <listitem>
 	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie klienta, np.:</para>
 	    </listitem>
 	  </itemizedlist>

@@ -143,7 +143,7 @@
 		<TD CLASS="fbt" WIDTH="1%" nowrap>
 			<B>{$customer.customername}</B> 
 			&nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
-			{if $customer.phone1}&nbsp;&raquo;&nbsp; {$customer.phone1}{/if}
+			{if $customer.phone}&nbsp;&raquo;&nbsp; {$customer.phone}{/if}
 			&nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
 		</TD>
 		<TD CLASS="frightu" WIDTH="98%" align="right">

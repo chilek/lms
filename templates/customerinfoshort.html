@@ -18,7 +18,7 @@
 			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
 		</TD>
 	</TR>
-	<TR >
+	<TR>
 		<TD WIDTH="1%">
 			{if $customerinfo.status eq "3"}<IMG src="img/customer.gif" alt="">{/if}
 			{if $customerinfo.status eq "2"}<IMG src="img/wait.gif" alt="">{/if}
@@ -30,17 +30,7 @@
 			{if $customerinfo.status eq "1"}<B>{t}interested<!singular>{/t}</B>{/if}
 		</TD>
 	</TR>
-	<TR >
-		<TD WIDTH="1%">
-			<IMG SRC="img/phone.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{$customerinfo.phone1}{if $customerinfo.phone2 neq ""}<BR>
-			{$customerinfo.phone2}{/if}{if $customerinfo.phone3 neq ""}<BR>
-			{$customerinfo.phone3}{/if}
-		</TD>
-	</TR>
-	<TR >
+	<TR>
 		<TD WIDTH="1%" >
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
@@ -49,8 +39,20 @@
 			{$customerinfo.zip} {$customerinfo.city}
 		</TD>
 	</TR>
+{if $customerinfo.contacts}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/phone.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{foreach from=$customerinfo.contacts item=item}
+		              {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
+			{/foreach}
+		</TD>
+	</TR>
+{/if}
 {if $customerinfo.serviceaddr neq ""}
-	<TR >
+	<TR>
 		<TD WIDTH="1%" >
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
@@ -60,7 +62,7 @@
 	</TR>
 {/if}
 {if $customerinfo.email neq ""}
-	<TR >
+	<TR>
 		<TD WIDTH="1%" >
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>

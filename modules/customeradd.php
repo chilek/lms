@@ -70,16 +70,21 @@ if(isset($_GET['ajax']))
 
 $customeradd = array();
 
-if(isset($_POST['customeradd']))
+if(isset($_POST['customeradd']) && isset($_GET['newcontact']))
+{
+	$customeradd = $_POST['customeradd'];
+	$customeradd['contacts'][] = array();
+}
+elseif(isset($_POST['customeradd']))
 {
 	$customeradd = $_POST['customeradd'];
 
 	if(sizeof($customeradd))
 		foreach($customeradd as $key => $value)
-			if($key != 'uid')
+			if($key != 'uid' && $key != 'contacts')
 				$customeradd[$key] = trim($value);
 
-	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['phone1'] == '' && $customeradd['address'] == '' && $customeradd['email'] == '')
+	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '' && $customeradd['email'] == '')
 	{
 		$SESSION->redirect('?m=customeradd');
 	}
@@ -135,15 +140,30 @@ if(isset($_POST['customeradd']))
 		if($val) $im[$idx] = $val;
 	}
 
+	foreach($customeradd['contacts'] as $idx => $val)
+	{
+		$phone = trim($val['phone']);
+		$name = trim($val['name']);
+		
+		if($name && !$phone)
+			$error['contact'.$idx] = trans('Phone number is required!');
+		elseif($phone) 
+			$contacts[] = array('name' => $name, 'phone' => $phone);
+	}
+
 	if(!$error)
 	{
 		$id = $LMS->CustomerAdd($customeradd);
 
-		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($id));
 		if(isset($im) && $id)
 			foreach($im as $idx => $val)
 				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
 					VALUES(?, ?, ?)', array($id, $val, $idx));
+
+		if(isset($contacts) && $id)
+			foreach($contacts as $contact)
+				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name)
+					VALUES(?, ?, ?)', array($id, $contact['phone'], $contact['name']));
 
 		if(!isset($customeradd['reuse']))
 		{
@@ -151,10 +171,15 @@ if(isset($_POST['customeradd']))
 		}
 		
 		$reuse['status'] = $customeradd['status'];
+		$reuse['contacts'][] = array();
 		unset($customeradd);
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
 	}
+}
+else
+{
+	$customeradd['contacts'][] = array();
 }
 
 if(!isset($customeradd['zip']) && isset($CONFIG['phpui']['default_zip']))

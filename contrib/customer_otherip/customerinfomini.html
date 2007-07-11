@@ -40,9 +40,9 @@
 			<IMG SRC="img/phone.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			{$customerinfo.phone1}{if $customerinfo.phone2 neq ""}<BR>
-			{$customerinfo.phone2}{/if}{if $customerinfo.phone3 neq ""}<BR>
-			{$customerinfo.phone3}{/if}
+			{foreach from=$customerinfo.contacts item=item}
+		            {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
+			{/foreach}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

@@ -1910,9 +1910,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	{
 		$customeradd['lastname'] = $lastnames[mt_rand(0,$lnsize-1)];
 		$customeradd['name'] = $names[mt_rand(0,$nsize-1)];
-		$customeradd['phone1'] = $phoneprefix[mt_rand(0,$ppsize-1)];
+		$customeradd['phone'] = $phoneprefix[mt_rand(0,$ppsize-1)];
 		for($j = 0; $j < 6; $j++)
-			$customeradd['phone1'] .= mt_rand(0,9);
+			$customeradd['phone'] .= mt_rand(0,9);
 		$street = mt_rand(0,$ssize-1);
 		$customeradd['address'] = $streets[$street].' '.mt_rand(1,50).'/'.mt_rand(1,300);
 		$customeradd['zip'] = '03-7'.sprintf('%02d',$street);
@@ -1934,8 +1934,22 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['info'] = '';
 		$customeradd['message'] = '';
 		$customeradd['pin'] = mt_rand(10000,99999);
+
 		$id = $LMS->CustomerAdd($customeradd);
-		$LMS->AddAssignment(array( 'tariffid' => $customeradd['tariff'], 'customerid' => $id, 'period' => MONTHLY, 'at' => $customeradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0, 'settlement' => 0, 'nodes' => NULL));
+		$LMS->AddAssignment(array(
+			'tariffid' => $customeradd['tariff'],
+			'customerid' => $id,
+			'period' => MONTHLY,
+			'at' => $customeradd['payday'], 
+			'invoice' => 0, 
+			'datefrom' => 0, 
+			'dateto' => 0, 
+			'discount' => 0, 
+			'settlement' => 0, 
+			'nodes' => NULL
+		));
+		$DB->Execute('INSERT INTO customercontacts (customerid, phone) VALUES (?, ?)', array($id, $customeradd['phone']));
+
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{

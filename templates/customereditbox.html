@@ -13,6 +13,11 @@
 		while (r<1000);
 		document.customeredit.elements['customerdata[pin]'].value = r;
 	}
+	function newcontact()
+	{
+		document.customeredit.action += '&newcontact=1';
+		document.customeredit.submit();
+	}
 </SCRIPT>
 {/literal}
 <FORM NAME="customeredit" id="customeredit" METHOD="POST" ACTION="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="customerdata[id]" VALUE="{$customerinfo.id}">
@@ -54,16 +59,6 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/phone.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2" {tip text="Enter phone number(s)"}>
-			<INPUT TYPE="TEXT" NAME="customerdata[phone1]" VALUE="{$customerinfo.phone1}" SIZE="40"><BR>
-			<INPUT TYPE="TEXT" NAME="customerdata[phone2]" VALUE="{$customerinfo.phone2}" SIZE="40"><BR>
-			<INPUT TYPE="TEXT" NAME="customerdata[phone3]" VALUE="{$customerinfo.phone3}" SIZE="40">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
@@ -86,6 +81,22 @@
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 		</script>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/phone.gif" ALT="">
+		</TD>
+		<TD width="99%" COLSPAN="2" NOWRAP>
+			<TABLE width="100%" cellpadding="2" cellspacing="0">
+				{foreach from=$customerinfo.contacts item=item key=key}
+				<TR>
+					<TD width="1%"><INPUT TYPE="text" size="15" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}></TD>
+					<TD width="99%" align="left"><INPUT TYPE="text" size="20" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description"}></TD>
+				</TR>
+				{/foreach}
+			</TABLE>
+			<A href="javascript: newcontact()">{t}Add contact field{/t} &raquo;&raquo;&raquo;</A>
+		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
@@ -166,10 +177,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/pin.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-			<B>{t}PIN:{/t}</B>
-		</TD>
-		<TD WIDTH="99%">
+		<TD WIDTH="98%" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="customerdata[pin]" VALUE="{if $customerinfo.pin}{$customerinfo.pin}{/if}" SIZE="6" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
 			<A href="javascript: randomize()" {tip text="[ Generate PIN ]"}>&raquo;&raquo;&raquo;</A>
 		</TD>

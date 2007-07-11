@@ -99,9 +99,6 @@
                     <member>name - first name</member>
                     <member>status - customer status (3-connected, 2-awaiting, 1-prospect)</member>
                     <member>email - email address</member>
-                    <member>phone1 - phone</member>
-                    <member>phone2 - phone</member>
-                    <member>phone3 - phone</member>
                     <member>pin - pin number (for authentication)</member>
                     <member>address - street address (street, apartment, flat, etc)</member>
                     <member>zip - zip code</member>
@@ -417,6 +414,15 @@
                     <member>customerid - customer serial number</member>
                     <member>uid - messenger user name/identifier</member>
                     <member>type - messenger type (0-gadu-gadu, 1-yahoo, 2-skype)</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="customercontacts">
+               <title>Customers contacts ('customer contacts')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>customerid - customer serial number</member>
+                    <member>phone - phone number</member>
+                    <member>name - contact name/description</member>
                </simplelist>
           </sect2>
           <sect2 id="passwd">

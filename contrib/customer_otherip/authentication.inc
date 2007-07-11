@@ -24,12 +24,14 @@
  *  $Id$
  */
 
-function GetCustomerIDByPhone1AndPIN($phone1, $pin)
+function GetCustomerIDByPhoneAndPIN($phone, $pin)
 {
 	global $DB;
 	if(!ereg('^[0-9]+$', $pin))
 		return NULL;
-	return $DB->GetOne('SELECT id from customers WHERE pin=? AND phone1=?', array($pin, $phone1));
+	return $DB->GetOne('SELECT id FROM customers, customercontacts 
+		    WHERE customerid = customers.id AND pin=? AND phone=? LIMIT 1', 
+		    array($pin, $phone));
 }
 
 function GetCustomerIDByIDAndPIN($id, $pin)

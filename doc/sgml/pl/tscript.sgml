@@ -502,7 +502,6 @@ syslog("Komunikat");
 					<member>zip - kod pocztowy</member>
 					<member>city - miasto</member>
 					<member>email - adres e-mail</member>
-					<member>phone1, phone2, phone3 - telefony</member>
 					<member>ten - numer NIP</member>
 					<member>ssn - numer PESEL</member>
 					<member>regon - numer REGON</member>

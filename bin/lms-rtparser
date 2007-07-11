@@ -453,8 +453,8 @@ if(! $prev_tid) # generate new ticket if previous not found
 		
 			if($reqcustid && $customerinfo)
 			{
-				my $dbqc = $dbase->prepare("SELECT id, $custname,
-					    email, phone1, phone2, phone3, address, zip, city
+				my $dbqc = $dbase->prepare("SELECT id, $custname, email, address, zip, city,
+					    (SELECT phone FROM customercontacts WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
 					    FROM customers WHERE id = $reqcustid");
 				$dbqc->execute();
 				if(my $customer = $dbqc->fetchrow_hashref())
@@ -462,7 +462,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 					$smtp->datasend("\n\n-- \n");
 					$smtp->datasend("$customer->{'customername'}\n");
 					$smtp->datasend("$customer->{'address'}, $customer->{'zip'} $customer->{'city'}\n");
-					$smtp->datasend("$customer->{'phone1'} $customer->{'phone2'} $customer->{'phone3'}\n");
+					$smtp->datasend("$customer->{'phone'}\n");
 					$smtp->datasend("$customer->{'email'}");
 				}
 				$dbqc->finish();

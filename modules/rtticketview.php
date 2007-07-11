@@ -69,6 +69,8 @@ if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
 {
 	$customer = $LMS->GetCustomer($ticket['customerid']);
         $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
+
+	if($customer['contacts']) $customer['phone'] = $customer['contacts'][0]['phone'];
 	$SMARTY->assign('customer', $customer);		
 }
 

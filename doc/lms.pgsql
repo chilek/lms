@@ -326,9 +326,6 @@ CREATE TABLE customers (
 	name varchar(255)	DEFAULT '' NOT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
 	email varchar(255) 	DEFAULT '' NOT NULL,
-	phone1 varchar(255) 	DEFAULT '' NOT NULL,
-	phone2 varchar(255) 	DEFAULT '' NOT NULL,
-	phone3 varchar(255) 	DEFAULT '' NOT NULL,
 	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
@@ -856,4 +853,20 @@ CREATE TABLE imessengers (
 );
 CREATE INDEX imessengers_customerid_idx ON imessengers (customerid);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007070400');
+/* ---------------------------------------------------
+ Structure of table "customercontacts"
+------------------------------------------------------*/
+DROP SEQUENCE customercontacts_id_seq;
+CREATE SEQUENCE customercontacts_id_seq;
+DROP TABLE customercontacts;
+CREATE TABLE customercontacts (
+    id 		integer 	DEFAULT nextval('customercontacts_id_seq'::text) NOT NULL,
+    customerid 	integer 	NOT NULL DEFAULT 0,
+    name 	varchar(255) 	NOT NULL DEFAULT '',
+    phone 	varchar(255) 	NOT NULL DEFAULT '',
+    PRIMARY KEY (id)
+);
+CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
+CREATE INDEX customercontacts_phone_idx ON customercontacts (phone);
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007071100');
