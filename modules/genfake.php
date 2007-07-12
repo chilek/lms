@@ -1922,8 +1922,6 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['tariff'] = mt_rand(1,3);
 		$customeradd['payday'] = mt_rand(1,28);
 		$customeradd['im'] = 0;
-		$customeradd['phone2'] = '';
-		$customeradd['phone3'] = '';
 		$customeradd['ten'] = '';
 		$customeradd['ssn'] = '';
 		$customeradd['regon'] = '';
