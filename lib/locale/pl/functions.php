@@ -105,11 +105,11 @@ function check_ssn($ssn)
 {
 	// AFAIR This doesn't cover people born after Y2k, they have month+20
 	// Be warned.
-	
 	if (!eregi('^[0-9]{11}$',$ssn))
 		return FALSE;
 	
 	$steps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3);
+	$sum_nb = 0;
 	
 	for ($x = 0; $x < 10; $x++)
 	{

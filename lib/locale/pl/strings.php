@@ -1850,7 +1850,7 @@ $_LANG['Registry not selected!'] = 'Nie wybrano rejestru!';
 $_LANG['You have no write rights to selected registry!'] = 'Nie posiadasz prawa zapisu w wybranym rejestrze!';
 $_LANG['payments book'] = 'książeczka opłat';
 $_LANG['Add contact field'] = 'Dodaj pole kontaktu';
-$_LANG['Enter contact name/description'] = 'Wprowadź nazwę/opis kontaktu';
+$_LANG['Enter contact name/description (optional)'] = 'Wprowadź nazwę/opis kontaktu (opcjonalnie)';
 $_LANG['Phone number is required!'] = 'Numer telefonu jest wymagany!';
 
 ?>
