@@ -98,7 +98,7 @@
 						{foreach from=$customeradd.contacts item=item key=key}
 						    <TR>
 							<TD width="1%"><INPUT TYPE="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}></TD>
-							<TD width="99%" align="left"><INPUT TYPE="text" size="20" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description"}></TD>
+							<TD width="99%" align="left"><INPUT TYPE="text" size="20" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}></TD>
 						    </TR>
 						{/foreach}
 						</TABLE>
