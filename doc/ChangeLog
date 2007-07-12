@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.9.8 Idos (2007-07-12):
 
   - changed DB driver version format (alec)
   - lmsd: added %i16 variable for IP's last octet heximal representation
