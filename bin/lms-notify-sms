@@ -124,26 +124,24 @@ if($dbtype =~ /mysql/)
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->do("SET NAMES utf8");
 	$utsfmt = "UNIX_TIMESTAMP()";
-	$regexp = "phone REGEXP '%RE%'";
+	
+	# for Poland:
+	# 888xxxxxx 880xxxxxx (heyah), 6(0,9)xxxxxxx (plus and era), 50xxxxxxx (idea)
+	# it will also treat as valid numbers begining with: +48, 0, 0-, 0 (space)...
+
+	$regexp = "phone REGEXP '^(\\+48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$'";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
-	$regexp = "regexp_replace(phone, '[^0-9]', '') ~ '%RE%'";
+	$regexp = "regexp_replace(phone, '[^0-9]', '') ~ '^(48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$'";
 }
 else
 {
 	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
 	exit 1;
 }
-
-# for Poland:
-# 888xxxxxx 880xxxxxx (heyah), 6(0,9)xxxxxxx (plus and era), 50xxxxxxx (idea)
-# it will also treat as valid numbers begining with: +48, 0, 0-, 0 (space)...
-my $pnum_regex = '^(\+48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$';
-
-$regexp =~ s/%RE%/$pnum_regex/;
 
 open(MTFILE, "$smsfile");
 my @mtempl = <MTFILE>;
