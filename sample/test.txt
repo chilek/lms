@@ -20,9 +20,6 @@ saldo
 abonament
 %abonament
 
-phone1
-%phone1
-
 b
 %b
 
