@@ -13,31 +13,31 @@ echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
 if [ -z "$TEMPDIR" ]; then
 	if [ -z "$TMPDIR" ]; then
-		echo "Muszê mieæ jaki¶ katalog tymczasowy..."
+		echo "You need some temp directory..."
 		exit
 	else
 		TEMPDIR=$TMPDIR
 	fi
 fi
 
-echo -ne "Dobra, a która wersja LMS?: "
+echo -ne "LMS version?: "
 read LMSVER
 if [ -z "$LMSVER" ]; then
-	echo "Nie ma mocnych ;) Bez tego nie ruszymy."
+	echo "No way, we can't go without this."
 	exit
 fi
 
-echo -ne "TAG z CVS'a?: "
+echo -ne "CVS Tag?: "
 read CVSTAG
 if [ -z "$CVSTAG" ]; then
-	echo "Nie ma mocnych ;) Bez tego nie ruszymy."
+	echo "No way, we can't go without this."
 	exit
 fi
 
-echo -ne "Nazwa kodowa?: "
+echo -ne "Codename?: "
 read CODENAME
 if [ -z "$CODENAME" ]; then
-	echo "Nie ma mocnych ;) Bez tego nie ruszymy."
+	echo "No way, we can't go without this."
 	exit
 fi
 
@@ -69,5 +69,5 @@ rm -Rf Smarty-$SMARTYVER Smarty-$SMARTYVER.tar.gz
 cd ../../
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd $WORKDIR
-echo -ne "Aby posprz±taæ, wykonaj (ja nie bêdê eremefowa³ sam):\nrm -Rf $TEMPDIR/$X\n"
+echo -ne "Do clenup (I'll don't do this):\nrm -Rf $TEMPDIR/$X\n"
 
