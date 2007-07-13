@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - common pdf functions and initialization moved to lib/pdf.php (alec)
+
 version 1.9.8 Idos (2007-07-12):
 
   - changed DB driver version format (alec)

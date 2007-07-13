@@ -24,45 +24,6 @@
  *  $Id$
  */
 
-function text_autosize($x,$y,$size,$text,$width) 
-{
-    global $pdf;
-    while ($pdf->getTextWidth($size,$text)>$width) $size=$size-1;
-    $pdf->addtext($x,$y,$size,$text);
-}
-
-function text_align_right($x,$y,$size,$text) 
-{
-    global $pdf;
-    $pdf->addText($x-$pdf->getTextWidth($size,$text),$y,$size,$text);
-    return $pdf->getFontHeight($size);
-}
-
-function text_align_left($x,$y,$size,$text) 
-{
-    global $pdf;
-    $pdf->addText($x,$y,$size,$text);
-    return $pdf->getFontHeight($size);
-}
-
-function text_align_center($x,$y,$size,$text) 
-{
-    global $pdf;
-    $pdf->addText($x - $pdf->getTextWidth($size,$text)/2,$y,$size,$text);
-    return $pdf->getFontHeight($size);
-}
-
-function text_wrap($x,$y,$width,$size,$text,$justify) 
-{
-    global $pdf;
-    while ($text!='') 
-    {
-	$text = $pdf->addTextWrap($x, $y, $width, $size,$text,$justify);
-	$y -= $pdf->getFontHeight($size);
-    }
-    return $y;
-}
-
 function receipt_header($x,$y)
 {
     global $receipt,$pdf;
@@ -264,7 +225,7 @@ function receipt_body()
 			$y = receipt_buyer(80,$y);
     			$y = receipt_data(80,$y);
 			$y = receipt_footer(80,$y);
-			if($type=='')
+			if(!$type)
 			{
 				$y -= 20;
 				$y = receipt_header(80,$y);
@@ -280,32 +241,13 @@ function receipt_body()
 	if (!($receipt['last'])) $id = $pdf->newPage(1,$id,'after');
 }
 
-// brzydki hack dla ezpdf 
-@setlocale(LC_NUMERIC,'C');
-require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
+require_once(LIB_DIR.'/pdf.php');
 
-$diff = array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
-241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
-188=>'zacute',172=>'Zacute',191=>'zdot',175=>'Zdot');
-//$pdf =& new Cezpdf('A4','landscape');
-$pdf =& new Cezpdf('A4','portrait');
-$pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title',iconv("UTF-8","ISO-8859-2",trans('Receipts')));
-$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
-$pdf->setPreferences('FitWindow','1');
-$pdf->ezSetMargins(0,0,0,0);
-$tmp = array(
-    'b'=>'arialbd.afm',
-);
-$pdf->setFontFamily('arial.afm',$tmp);
-$pdf->setLineStyle(0.5);
-
-$pdf->selectFont(LIB_DIR.'/ezpdf/arialbd.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
-$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
+$pdf =& init_pdf('A4', 'portrait', trans('Receipts'));
 
 $id = $pdf->getFirstPageId();
 
-if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
+if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
         $SESSION->restore('rlm', $rlm);
         $SESSION->remove('rlm');
@@ -348,7 +290,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 }
 elseif($receipt = GetReceipt($_GET['id']))
 {
-	$type = $_GET['which'];
+	$type = isset($_GET['which']) ? $_GET['which'] : '';
 	$receipt['last'] = TRUE;
 	receipt_body();
 }
@@ -357,6 +299,6 @@ else
 	$SESSION->redirect('?m=receiptlist');
 }
 	
-$pdf->ezStream();
+close_pdf($pdf);
 
 ?>

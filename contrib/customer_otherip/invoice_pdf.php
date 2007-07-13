@@ -26,13 +26,6 @@
 // Faktury w PDF, do u¿ycia z formularzami FT-0100 (c) Polarnet
 // w razie pytañ mailto:lexx@polarnet.org
 
-function text_autosize($x,$y,$size,$text,$width) 
-{
-    global $pdf;
-    while ($pdf->getTextWidth($size,$text)>$width) $size=$size-1;
-    $pdf->addtext($x,$y,$size,$text);
-}
-
 function invoice_simple_form_fill($x,$y,$scale)  
 {
     global $pdf,$invoice,$CONFIG;
@@ -385,27 +378,9 @@ function invoice_body()
     if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }
 
-// brzydki hack dla ezpdf 
-setlocale(LC_ALL,'C');
-require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
+require_once(LIB_DIR.'/pdf.php');
 
-$diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
-241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
-188=>'zacute',172=>'Zacute',191=>'zdot',175=>'Zdot');
-//$pdf =& new Cezpdf('A4','landscape');
-$pdf =& new Cezpdf('A4','portrait');
-$pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title',iconv("UTF-8","ISO-8859-2",trans('Invoices')));
-$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
-$pdf->setPreferences('FitWindow','1');
-$pdf->ezSetMargins(0,0,0,0);
-$tmp = array(
-    'b'=>'arialbd.afm',
-);
-$pdf->setFontFamily('arial.afm',$tmp);
-
-$pdf->selectFont(LIB_DIR.'/ezpdf/arialbd.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
-$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
+$pdf =& init_pdf('A4', 'portrait', trans('Invoices'));
 
 $id = $pdf->getFirstPageId();
 
@@ -416,6 +391,6 @@ $invoice['last'] = TRUE;
 $type = trans('ORIGINAL');
 invoice_body();
 
-$pdf->ezStream();
+close_pdf($pdf);
 
 ?>
