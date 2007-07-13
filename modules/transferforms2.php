@@ -114,23 +114,13 @@ $_TITLE = (!isset($CONFIG['finances']['pay_title']) ? trans("Not set") : $CONFIG
 $_LMARGIN = (!isset($CONFIG['finances']['leftmargin']) ? 0 : $CONFIG['finances']['leftmargin']);
 $_BMARGIN = (!isset($CONFIG['finances']['bottommargin']) ? 0 : $CONFIG['finances']['bottommargin']);
 
-require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
+require_once(LIB_DIR.'/pdf.php');
 
-$diff = array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
-	241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
-	188=>'zacute',172=>'Zacute',191=>'zdot',175=>'Zdot'); 
-$pdf =& new Cezpdf('A4','landscape');
-//$pdf =& new Cezpdf('A4','portrait');
-$pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title',trans('Form of Cash Transfer'));
-$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
-$pdf->setPreferences('FitWindow','1');
-$pdf->ezSetMargins(0,0,0,0);
-$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff)); 
+$pdf =& init_pdf('A4', 'landscape', trans('Form of Cash Transfer'));
+
 $pdf->setLineStyle(2);
-$id = $pdf->getFirstPageId();
 
-@setlocale(LC_NUMERIC, 'C');																						
+$id = $pdf->getFirstPageId();
 
 $count = sizeof($list);;
 $i = 0;
@@ -145,6 +135,6 @@ foreach($list as $row)
     if($i < $count) $id = $pdf->newPage(1, $id, 'after');
 }
 
-$pdf->ezStream();
+close_pdf($pdf);
 
 ?>

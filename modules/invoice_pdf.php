@@ -26,54 +26,6 @@
 // Faktury w PDF, do u¿ycia z formularzami FT-0100 (c) Polarnet
 // w razie pytañ mailto:lexx@polarnet.org
 
-function text_autosize($x,$y,$size,$text,$width) 
-{
-    global $pdf;
-    while ($pdf->getTextWidth($size,$text)>$width) $size=$size-1;
-    $pdf->addtext($x,$y,$size,$text);
-}
-
-function text_align_right($x,$y,$size,$text) 
-{
-    global $pdf;
-    $pdf->addText($x-$pdf->getTextWidth($size,$text),$y,$size,$text);
-    return($pdf->getFontHeight($size));
-}
-
-function text_align_left($x,$y,$size,$text) 
-{
-    global $pdf;
-    $pdf->addText($x,$y,$size,$text);
-    return($pdf->getFontHeight($size));
-}
-
-function text_wrap($x,$y,$width,$size,$text,$justify) 
-{
-    global $pdf;
-    while ($text!='') {
-	$text = $pdf->addTextWrap($x, $y, $width, $size,$text,$justify);
-	$y = $y - $pdf->getFontHeight($size);
-    }
-    return($y);
-}
-
-function getWrapTextWidth($font_size,$txt)
-{
-    global $pdf, $margin;
-    
-    $long = '';
-    if($words = explode(' ', $txt))
-    {
-        foreach($words as $word)
-	    if(strlen($word) > strlen($long))
-		$long = $word;
-    }
-    else
-	    $long = $txt;
-    
-    return $pdf->getTextWidth($font_size, $long)+2*$margin+1;
-}
-
 function invoice_simple_form_fill($x,$y,$scale)  
 {
     global $pdf,$invoice,$CONFIG;
@@ -509,7 +461,7 @@ function invoice_expositor ($x,$y)
 {
     global $pdf, $invoice, $CONFIG;
     
-    $expositor = isset($invoice['user']) ? $invoice['user'] : isset($CONFIG['invoices']['default_author']) ? $CONFIG['invoices']['default_author'] : '';
+    $expositor = isset($invoice['user']) ? $invoice['user'] : (isset($CONFIG['invoices']['default_author']) ? $CONFIG['invoices']['default_author'] : '');
 	    
     $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",$expositor));
     return $y;
@@ -581,29 +533,11 @@ function invoice_body()
     if(!isset($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }
 
-// brzydki hack dla ezpdf 
-@setlocale(LC_NUMERIC, 'C');
-require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
+require_once(LIB_DIR.'/pdf.php');
 
-$diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
-241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
-188=>'zacute',172=>'Zacute',191=>'zdot',175=>'Zdot');
-//$pdf =& new Cezpdf('A4','landscape');
-$pdf =& new Cezpdf('A4','portrait');
-$pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title',iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Invoices')));
-$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
-$pdf->setPreferences('FitWindow','1');
-$pdf->ezSetMargins(0,0,0,0);
-$tmp = array(
-    'b'=>'arialbd.afm',
-);
-$pdf->setFontFamily('arial.afm',$tmp);
+$pdf =& init_pdf('A4', 'portrait', trans('Invoices'));
 
-$pdf->selectFont(LIB_DIR.'/ezpdf/arialbd.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
-$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
-
-$id=$pdf->getFirstPageId();
+$id = $pdf->getFirstPageId();
 
 if(isset($_GET['print']) && $_GET['print'] == 'cached')
 {
@@ -624,7 +558,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 		die;
 	}
 
-	if($_GET['cash'])
+	if(isset($_GET['cash']))
 	{
 		foreach($ids as $cashid)
 			if($invoiceid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?) AND cash.id = ?', array(DOC_INVOICE, DOC_CNOTE, $cashid)))
@@ -635,9 +569,9 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 
 	sort($ids);
 
-	if($_GET['original']) $which[] = trans('ORIGINAL');
-        if($_GET['copy']) $which[] = trans('COPY');
-        if($_GET['duplicate']) $which[] = trans('DUPLICATE');
+	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
+        if(isset($_GET['copy'])) $which[] = trans('COPY');
+        if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
 
@@ -712,6 +646,6 @@ else
 	$SESSION->redirect('?m=invoicelist');
 }
 
-$pdf->ezStream();
+close_pdf($pdf);
 
 ?>

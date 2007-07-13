@@ -98,21 +98,13 @@ function address_box($x,$y,$scale)
     $pdf->addtext(5*$scale+$x,240*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['zip']." ".$invoice['city']));
 }
 
-require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
+require_once(LIB_DIR.'/pdf.php');
 
-$diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
-241=>'nacute',209=>'Nacute',179=>'lslash',163=>'Lslash',182=>'sacute',166=>'Sacute',
-188=>'zacute',172=>'Zacute',191=>'zdot',175=>'Zdot'); 
-//$pdf =& new Cezpdf('A4','landscape');
-$pdf =& new Cezpdf('A4','portrait');
-$pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title',trans('Form of Cash Transfer'));
-$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
-$pdf->setPreferences('FitWindow','1');
-$pdf->ezSetMargins(0,0,0,0);
-$pdf->selectFont(LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff)); 
+$pdf =& init_pdf('A4', 'portrait', trans('Form of Cash Transfer'));
+
 $pdf->setLineStyle(2);
-$id=$pdf->getFirstPageId();
+
+$id = $pdf->getFirstPageId();
 
 $_NAME = (! $CONFIG['finances']['name'] ? trans('Not set') : $CONFIG['finances']['name']);
 $_SHORT_NAME = (! $CONFIG['finances']['shortname'] ? trans('Not set') : $CONFIG['finances']['shortname']);
@@ -134,8 +126,6 @@ if(!$ids)
     die;
 }
 
-@setlocale(LC_NUMERIC,'C');																						
-
 $count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
 $i=0;
 
@@ -152,6 +142,6 @@ foreach($ids as $idx => $invoiceid)
     if($i < $count) $id = $pdf->newPage(1,$id,'after');
 }
 
-$pdf->ezStream();
+close_pdf($pdf);
 
 ?>
