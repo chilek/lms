@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - common pdf functions and initialization moved to lib/pdf.php (alec)
+  - lms-reminder: BTS#0000670 - fixed query (alec)
 
 version 1.9.8 Idos (2007-07-12):
 
