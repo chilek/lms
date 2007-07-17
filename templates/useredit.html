@@ -1,0 +1,83 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/pass.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
+			<B>{t}Login:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="frightu" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="userinfo[login]" VALUE="{$userinfo.login}" {tip trigger="login" bold=1}> <B>({$userinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}First/last name:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			 <INPUT TYPE="TEXT" NAME="userinfo[name]" VALUE="{$userinfo.name}" SIZE="40" {tip trigger="name"}>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/mail.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%"><B>{t}E-mail:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<INPUT TYPE="TEXT" NAME="userinfo[email]" VALUE="{$userinfo.email}" SIZE="40">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/ip.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Allowed hosts:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" NOWRAP>
+			<INPUT TYPE="TEXT" SIZE="40" NAME="userinfo[hosts]" VALUE="{$userinfo.hosts}" {tip text="Enter coma separated list of hosts or networks" trigger="hosts"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/pass.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Access rights:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" NOWRAP>
+			{section name=acl loop=$accesslist}
+			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="box light"{if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
+			{/section}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT="">
+			<A HREF="?m=userinfo&id={$userinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['useredit'].elements['userinfo[login]'].focus();
+
+{literal}
+function setAcl(id)
+{
+	document.forms['useredit'].elements[id].checked = !document.forms['useredit'].elements[id].checked;
+}
+{/literal}
+
+//-->
+</SCRIPT>
+{include file="footer.html"}
