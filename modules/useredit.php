@@ -59,11 +59,11 @@ if($userinfo)
 	
 	for($i=0;$i<256;$i++)
 		$mask .= '0';
-	
+
 	foreach($access['table'] as $idx => $row)
 		if(isset($acl[$idx]))
-			if($acl[$idx]=='1')
-				$mask[255-$idx] = '1';
+			$mask[255-$idx] = '1';
+
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
@@ -72,7 +72,48 @@ if($userinfo)
 	if(!$error)
 	{
 		$LMS->UserUpdate($userinfo);
+	
+		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));	
+		if(isset($_POST['selected']))
+		        foreach($_POST['selected'] as $idx => $name)
+				$DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
+				    		VALUES(?, ?)', array($idx, $userinfo['id']));
+
 		$SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
+	}
+	else
+	{
+		$userinfo['selected'] = array();
+		if(isset($_POST['selected']))
+		{
+		        foreach($_POST['selected'] as $idx => $name)
+			{
+			        $userinfo['selected'][$idx]['id'] = $idx;
+			    	$userinfo['selected'][$idx]['name'] = $name;
+			}
+		}
+
+		foreach($access['table'] as $idx => $row)
+		{
+			$row['id'] = $idx;
+			if(isset($acl[$idx]))
+				$row['enabled'] = TRUE;
+			
+			$accesslist[] = $row;
+		}
+	}
+}
+else
+{
+	$rights = $LMS->GetUserRights($_GET['id']);
+	
+	foreach($access['table'] as $idx => $row)
+	{
+		$row['id'] = $idx;
+		foreach($rights as $right)
+			if($right == $idx)
+				$row['enabled'] = TRUE;
+		$accesslist[] = $row;
 	}
 }
 
@@ -80,24 +121,21 @@ foreach($LMS->GetUserInfo($_GET['id']) as $key => $value)
 	if(!isset($userinfo[$key]))
 		$userinfo[$key] = $value;
 
+if(!isset($userinfo['selected']))
+	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name 
+					FROM customergroups g, excludedgroups
+	                                WHERE customergroupid = g.id AND userid = ?
+					ORDER BY name', 'id', array($userinfo['id']));
+
 $layout['pagetitle'] = trans('User Edit: $0', $userinfo['login']);
-
-$rights = $LMS->GetUserRights($_GET['id']);
-
-foreach($access['table'] as $idx => $row)
-{
-	$row['id'] = $idx;
-	foreach($rights as $right)
-		if($right == $idx)
-			$row['enabled']=TRUE;
-	$accesslist[] = $row;
-}
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('accesslist', $accesslist);
+$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('error', $error);
+
 $SMARTY->display('useredit.html');
 
 ?>

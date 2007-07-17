@@ -4,6 +4,8 @@ version ? (????-??-??):
 
   - common pdf functions and initialization moved to lib/pdf.php (alec)
   - lms-reminder: BTS#0000670 - fixed query (alec)
+  - Excluded groups - possibility to disable user access to specified
+    customers groups (alec)
 
 version 1.9.8 Idos (2007-07-12):
 

@@ -222,7 +222,7 @@ if($AUTH->islogged)
 		$SMARTY->assign('warning', isset($CONFIG['phpui']['disable_devel_warning']) ? !chkconfig($CONFIG['phpui']['disable_devel_warning']) : true);
 	}
 	
-	if (file_exists(MODULES_DIR.'/'.$module.'.php'))
+	if(file_exists(MODULES_DIR.'/'.$module.'.php'))
 	{
 		if(eregi($access['allow'], $module))
 			$allow = TRUE;
@@ -239,6 +239,7 @@ if($AUTH->islogged)
 		if($allow && ! $deny)
 		{
 			$layout['module'] = $module;
+			include(LIB_DIR.'/views.php');
 			include(MODULES_DIR.'/'.$module.'.php');
 		}
 		else

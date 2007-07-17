@@ -77,8 +77,21 @@ if(sizeof($useradd))
 
 	if(!$error)
 	{
-		$SESSION->redirect('?m=userinfo&id='.$LMS->UserAdd($useradd));
+		$id = $LMS->UserAdd($useradd);
+		
+                if(isset($_POST['selected']))
+                        foreach($_POST['selected'] as $idx => $name)
+                                $DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
+                                            VALUES(?, ?)', array($idx, $id));
+		
+		$SESSION->redirect('?m=userinfo&id='.$id);
 	}
+	elseif(isset($_POST['selected']))
+	        foreach($_POST['selected'] as $idx => $name)
+	        {
+	                $useradd['selected'][$idx]['id'] = $idx;
+	                $useradd['selected'][$idx]['name'] = $name;
+	        }
 }
 
 foreach($access['table'] as $idx => $row)
@@ -91,9 +104,12 @@ foreach($access['table'] as $idx => $row)
 }
 
 $layout['pagetitle'] = trans('New User');
+
 $SMARTY->assign('useradd', $useradd);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('accesslist', $accesslist);
+$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
+
 $SMARTY->display('useradd.html');
 
 ?>

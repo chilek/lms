@@ -24,27 +24,34 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET['id']))
-{
-	$SESSION->redirect('?m=userlist');
-}
+$DB->BeginTrans();
 
-$userinfo = $LMS->GetUserInfo($_GET['id']);
-$layout['pagetitle'] = trans('User Info: $0', $userinfo['login']);
+$DB->Execute("
+    CREATE TABLE excludedgroups (
+	id 		int(11) 	NOT NULL auto_increment,
+        customergroupid int(11) 	NOT NULL DEFAULT 0,
+	userid 		int(11) 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY userid (userid, customergroupid)
+    ) TYPE=MyISAM;
+");
 
-$rights = $LMS->GetUserRights($_GET['id']);
-foreach($rights as $right)
-	if($access['table'][$right]['name'])
-		$accesslist[] = $access['table'][$right]['name'];
+$DB->Execute("
+    CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
+    RETURN @lms_current_user;
+");
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$DB->Execute("		
+    CREATE VIEW customersview AS
+	    SELECT c.* FROM customers c
+	    WHERE NOT EXISTS (
+	    	    SELECT 1 FROM customerassignments a
+		    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+		    WHERE e.userid = lms_current_user() AND a.customerid = c.id)
+");
 
-$SMARTY->assign('userinfo', $userinfo);
-$SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups 
-					    WHERE customergroupid = g.id AND userid = ?
-					    ORDER BY name', array($userinfo['id'])));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071600', 'dbversion'));
 
-$SMARTY->display('userinfo.html');
+$DB->CommitTrans();
 
 ?>

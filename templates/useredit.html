@@ -59,6 +59,17 @@
 			{/section}
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+	        <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/group.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Excluded groups:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" NOWRAP>
+		        {include file="multiselect.html" selected=$userinfo.selected}
+		</TD>
+	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
 			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT="">
