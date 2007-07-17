@@ -198,9 +198,6 @@
     </TR>
 {/foreach}
     <TR>
-	<TD COLSPAN="{if $invoice.reason}11{else}10{/if}" CLASS="fbottom">
-		<B>{t}Reason:{/t} {$invoice.reason}</B>
-	</TD>
 	<TD COLSPAN="{if $invoice.discount}11{else}10{/if}" CLASS="fbottom">
 		<B>{t}Corrected to:{/t}</B>
 	</TD>
@@ -311,6 +308,13 @@
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{if $total > 0}+{/if}{$total|money_format}
+	</TD>
+    </TR>
+    {/if}
+    {if $invoice.reason}
+    <TR>
+	<TD COLSPAN="{if $invoice.reason}11{else}10{/if}">
+		<B>{t}Reason:{/t}</B> {$invoice.reason}
 	</TD>
     </TR>
     {/if}
