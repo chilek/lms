@@ -52,7 +52,7 @@ if($userinfo)
 	if($userinfo['email']!='' && !check_email($userinfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 				
-	// zróbmy maskê ACL...
+	// let's make an ACL mask...
 
 	$mask = '';
 	$outmask = '';
@@ -74,7 +74,6 @@ if($userinfo)
 		$LMS->UserUpdate($userinfo);
 		$SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
 	}
-
 }
 
 foreach($LMS->GetUserInfo($_GET['id']) as $key => $value)
@@ -96,10 +95,9 @@ foreach($access['table'] as $idx => $row)
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('accesslist',$accesslist);
-$SMARTY->assign('userinfo',$userinfo);
-$SMARTY->assign('unlockedit',TRUE);
-$SMARTY->assign('error',$error);
-$SMARTY->display('userinfo.html');
+$SMARTY->assign('accesslist', $accesslist);
+$SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('error', $error);
+$SMARTY->display('useredit.html');
 
 ?>

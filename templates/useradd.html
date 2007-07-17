@@ -17,7 +17,7 @@
 			<IMG SRC="img/users.gif" ALT=""> <B>{t}First/last name:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" {tip trigger="name"}>
+			<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" SIZE="40" {tip trigger="name"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -25,7 +25,7 @@
 			<IMG SRC="img/mail.gif" ALT=""> <B>{t}E-mail:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="useradd[email]" VALUE="{$useradd.email}" {tip trigger="email"}>
+			<INPUT TYPE="TEXT" NAME="useradd[email]" VALUE="{$useradd.email}" SIZE="40" {tip trigger="email"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -53,21 +53,19 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
-			<A HREF="javascript:document.useradd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=userlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+		<TD CLASS="fleft" NOWRAP>
+			<IMG SRC="img/pass.gif" ALT=""> <B>{t}Access rights:{/t}</B>
 		</TD>
-	</TR>
-	<TR CLASS="DARK">
-		<TD CLASS="FALL" COLSPAN="2">
-			<B>{t}Access rights:{/t}</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="FALL" COLSPAN="2">
+		<TD CLASS="fright" NOWRAP>
 			{section name=acl loop=$accesslist}
 			<INPUT CLASS="box light" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
 			{/section}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
+			<A HREF="javascript:document.useradd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=userlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
