@@ -89,8 +89,8 @@ switch($action)
 
 	case 'setheader':
 		
-		unset($cnote); 
-		unset($error);
+		$cnote = NULL; 
+		$error = NULL;
 		
 		if($cnote = $_POST['cnote'])
 			foreach($cnote as $key => $val)

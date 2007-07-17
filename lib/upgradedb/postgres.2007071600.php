@@ -24,27 +24,21 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET['id']))
-{
-	$SESSION->redirect('?m=userlist');
-}
+$DB->BeginTrans();
 
-$userinfo = $LMS->GetUserInfo($_GET['id']);
-$layout['pagetitle'] = trans('User Info: $0', $userinfo['login']);
+$DB->Execute("
+    CREATE SEQUENCE excludedgroups_id_seq;
+    CREATE TABLE excludedgroups (
+	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
+        customergroupid integer NOT NULL DEFAULT 0,
+	userid 		integer NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (userid, customergroupid)
+    );
+");
 
-$rights = $LMS->GetUserRights($_GET['id']);
-foreach($rights as $right)
-	if($access['table'][$right]['name'])
-		$accesslist[] = $access['table'][$right]['name'];
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071600', 'dbversion'));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('userinfo', $userinfo);
-$SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups 
-					    WHERE customergroupid = g.id AND userid = ?
-					    ORDER BY name', array($userinfo['id'])));
-
-$SMARTY->display('userinfo.html');
+$DB->CommitTrans();
 
 ?>

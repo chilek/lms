@@ -51,6 +51,17 @@
 		</TD>
 	</TR>
 	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/group.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP><B>{t}Excluded groups:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">		
+			{foreach from=$excludedgroups item=item}
+			<li type="square"><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
+			{/foreach}
+		</TD>
+	</TR>
+	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft"></TD>
 		<TD WIDTH="1%" NOWRAP><B>{t}Last login:{/t}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">

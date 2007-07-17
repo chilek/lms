@@ -594,32 +594,32 @@ class LMS
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 
 		if($customerlist = $this->DB->GetAll(
-				'SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, 
-				status, address, zip, city, email, ten, ssn, customers.info AS info, message, 
-				(SELECT SUM(value) FROM cash WHERE customerid = customers.id '
+				'SELECT c.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, 
+				status, address, zip, city, email, ten, ssn, c.info AS info, message, 
+				(SELECT SUM(value) FROM cash WHERE customerid = c.id '
 				.($time ? ' AND time < '.$time : '').') AS balance
-				FROM customers '
-				.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
-				.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
+				FROM customersview c '
+				.($network ? 'LEFT JOIN nodes ON (c.id=ownerid) ' : '')
+				.($customergroup ? 'LEFT JOIN customerassignments ON (c.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
 				.($state !=0 ? ' AND status = '.$state : '')
 				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
-								WHERE customers.id = a.customerid)' : '')
+								WHERE c.id = a.customerid)' : '')
 				.($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a 
-								WHERE a.customerid = customers.id
+								WHERE a.customerid = c.id
 									AND (datefrom <= ?NOW? OR datefrom = 0) 
 									AND (dateto >= ?NOW? OR dateto = 0)
 									AND (tariffid != 0 OR liabilityid != 0))' : '')
 				.($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
-								WHERE a.customerid = customers.id
+								WHERE a.customerid = c.id
 									AND ((tariffid = 0 AND liabilityid = 0) 
 										OR ((datefrom <= ?NOW? OR datefrom = 0)
 											AND (dateto >= ?NOW? OR dateto = 0)
 											AND suspended = 1)))' : '')
 				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
-				.' GROUP BY customers.id, lastname, customers.name, status, address, zip, city, email, ten, ssn, customers.info, message '
+				.' GROUP BY c.id, lastname, c.name, status, address, zip, city, email, ten, ssn, c.info, message '
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
@@ -874,8 +874,11 @@ class LMS
 	{
 		 if (!$this->CustomergroupWithCustomerGet($id))
 		 {
-			return $this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
-		 } else
+			$this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
+			$this->DB->Execute('DELETE FROM excludedgroups WHERE customergroupid=?', array($id));
+			return TRUE;
+		 } 
+		 else
 			return FALSE;
 	}
 

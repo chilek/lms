@@ -24,27 +24,22 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET['id']))
+switch($CONFIG['database']['type'])
 {
-	$SESSION->redirect('?m=userlist');
+	case 'postgres':
+		$DB->Execute('CREATE TEMP VIEW customersview AS
+				SELECT c.* FROM customers c
+				WHERE NOT EXISTS (
+		    			SELECT 1 FROM customerassignments a
+			    		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				        WHERE e.userid = ? AND a.customerid = c.id
+					)', array($AUTH->id));
+	break;
+		
+	case 'mysql':
+	case 'mysqli':
+		$DB->Execute('SET @lms_current_user=?', array($AUTH->id));
+	break;
 }
-
-$userinfo = $LMS->GetUserInfo($_GET['id']);
-$layout['pagetitle'] = trans('User Info: $0', $userinfo['login']);
-
-$rights = $LMS->GetUserRights($_GET['id']);
-foreach($rights as $right)
-	if($access['table'][$right]['name'])
-		$accesslist[] = $access['table'][$right]['name'];
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$SMARTY->assign('userinfo', $userinfo);
-$SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups 
-					    WHERE customergroupid = g.id AND userid = ?
-					    ORDER BY name', array($userinfo['id'])));
-
-$SMARTY->display('userinfo.html');
 
 ?>

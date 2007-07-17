@@ -1852,5 +1852,8 @@ $_LANG['payments book'] = 'książeczka opłat';
 $_LANG['Add contact field'] = 'Dodaj pole kontaktu';
 $_LANG['Enter contact name/description (optional)'] = 'Wprowadź nazwę/opis kontaktu (opcjonalnie)';
 $_LANG['Phone number is required!'] = 'Numer telefonu jest wymagany!';
+$_LANG['Excluded groups:'] = 'Wyłączone grupy:';
+$_LANG['Available<!plural>'] = 'Dostępne';
+$_LANG['Selected<!plural>'] = 'Wybrane';
 
 ?>
