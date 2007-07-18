@@ -79,7 +79,7 @@ switch($mode)
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
 			$candidates = $DB->GetAll('SELECT id, lastname, name, email, address, deleted 
-					    FROM customers 
+					    FROM customersview 
 					    WHERE id ?LIKE? \''.$search.'%\' 
 						    OR LOWER(lastname) ?LIKE? LOWER(\'%'.$search.'%\') 
 						    OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
@@ -111,7 +111,7 @@ switch($mode)
 
 		if(is_numeric($search)) // maybe it's customer ID
 		{
-			if($customerid = $DB->GetOne('SELECT id FROM customers WHERE id = '.$search))
+			if($customerid = $DB->GetOne('SELECT id FROM customersview WHERE id = '.$search))
 			{
 				$target = '?m=customerinfo&id='.$customerid;
 				break;
@@ -137,14 +137,15 @@ switch($mode)
 	case 'node':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT id, name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, mac 
-				    FROM nodes 
-				    WHERE id ?LIKE? \''.$search.'%\' 
-					    OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
+			$candidates = $DB->GetAll('SELECT n.id, n.name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, mac 
+				    FROM nodes n
+				    JOIN customersview c ON (c.id = n.ownerid)
+				    WHERE n.id ?LIKE? \''.$search.'%\' 
+					    OR LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\') 
 					    OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
 					    OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 
 					    OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\') 
-				    ORDER BY name LIMIT 15');
+				    ORDER BY n.name LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {

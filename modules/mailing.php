@@ -46,17 +46,17 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 	if($network) 
 		$net = $LMS->GetNetworkParams($network);
 	
-	if($emails = $DB->GetAll('SELECT customers.id AS id, email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, pin, '
+	if($emails = $DB->GetAll('SELECT c.id AS id, email, '.$DB->Concat('c.lastname', "' '", 'c.name').' AS customername, pin, '
 		.'COALESCE(SUM(value), 0.00) AS balance '
-		.'FROM customers LEFT JOIN cash ON (customers.id=cash.customerid) '
-		.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
-		.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
+		.'FROM customersview LEFT JOIN cash ON (c.id = cash.customerid) '
+		.($network ? 'LEFT JOIN nodes ON (c.id = ownerid) ' : '')
+		.($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
 		.' WHERE deleted = '.$deleted
 		.' AND email != \'\''
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 		.($customergroup ? ' AND customergroupid='.$customergroup : '')
-		.' GROUP BY email, lastname, customers.name, customers.id, pin ORDER BY customername'))
+		.' GROUP BY email, c.lastname, c.name, c.id, pin ORDER BY customername'))
 	{
 		if($disabled)
 			$access = $DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
