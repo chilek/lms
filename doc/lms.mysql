@@ -812,15 +812,37 @@ CREATE TABLE imessengers (
 #
 DROP TABLE IF EXISTS customercontacts;
 CREATE TABLE customercontacts (
-	id int(11) NOT NULL auto_increment,
-        customerid int(11) NOT NULL DEFAULT 0,
-	name varchar(255) NOT NULL DEFAULT '',
-	phone varchar(255) NOT NULL DEFAULT '',
+	id 		int(11) 	NOT NULL auto_increment,
+        customerid 	int(11) 	NOT NULL DEFAULT 0,
+	name 		varchar(255) 	NOT NULL DEFAULT '',
+	phone 		varchar(255) 	NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX phone (phone)
 ) TYPE=MyISAM;
 											
+# --------------------------------------------------------
+#
+# Structure of table excludedgroups
+#
+DROP TABLE IF EXISTS excludedgroups;
+CREATE TABLE excludedgroups (
+	id 		int(11) 	NOT NULL auto_increment,
+        customergroupid int(11) 	NOT NULL DEFAULT 0,
+	userid 		int(11) 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY userid (userid, customergroupid)
+) TYPE=MyISAM;
+
+CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
+RETURN @lms_current_user;
+
+CREATE VIEW customersview AS
+	SELECT c.* FROM customers c
+	WHERE NOT EXISTS (
+	    	SELECT 1 FROM customerassignments a
+		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007071100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007071600');
