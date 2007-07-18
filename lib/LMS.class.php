@@ -307,7 +307,7 @@ class LMS
 
 	function CustomerExists($id)
 	{
-		switch($this->DB->GetOne('SELECT deleted FROM customers WHERE id=?', array($id)))
+		switch($this->DB->GetOne('SELECT deleted FROM customersview WHERE id=?', array($id)))
 		{
 			case '0':
 				return TRUE;
@@ -435,7 +435,7 @@ class LMS
 					    lastname, name, status, email, address, zip, ten, ssn, 
 					    city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
 					    pin, regon, icn, rbe 
-					    FROM customers WHERE id = ?', array($id)))
+					    FROM customersview WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
@@ -456,14 +456,14 @@ class LMS
 	function GetCustomerNames()
 	{
 		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-				FROM customers WHERE status > 1 AND deleted = 0 
+				FROM customersview WHERE status > 1 AND deleted = 0 
 				ORDER BY customername');
 	}
 
 	function GetAllCustomerNames()
 	{
 		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-				FROM customers WHERE deleted = 0 ORDER BY customername');
+				FROM customersview WHERE deleted = 0 ORDER BY customername');
 	}
 
 	function GetCustomerNodesAC($id)
@@ -542,7 +542,7 @@ class LMS
 					switch($key)
 					{
 						case 'phone':
-							$searchargs[] = "EXISTS (SELECT 1 FROM customercontacts WHERE customerid = customers.id AND phone ?LIKE? '%$value%')";
+							$searchargs[] = "EXISTS (SELECT 1 FROM customercontacts WHERE customerid = c.id AND phone ?LIKE? '%$value%')";
 						break;
 						case 'zip':
 						case 'city':
@@ -552,7 +552,7 @@ class LMS
 						break;
 						case 'customername':
 							// UPPER here is a workaround for postgresql ILIKE bug
-							$searchargs[] = $this->DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)')." ?LIKE? UPPER('%$value%')";
+							$searchargs[] = $this->DB->Concat('UPPER(c.lastname)',"' '",'UPPER(c.name)')." ?LIKE? UPPER('%$value%')";
 						break;
 						case 'createdfrom':
 							if($search['createdto'])
@@ -820,14 +820,14 @@ class LMS
 
 	function CustomerStats()
 	{
-		$result['total'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE deleted=0');
-		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE status=3 AND deleted=0');
-		$result['awaiting'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE status=2 AND deleted=0');
-		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM customers WHERE status=1 AND deleted=0');
+		$result['total'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE deleted=0');
+		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=3 AND deleted=0');
+		$result['awaiting'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=2 AND deleted=0');
+		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=1 AND deleted=0');
 		$result['debt'] = 0;
 		$result['debtvalue'] = 0;
 
-		if($balances = $this->DB->GetCol('SELECT SUM(value) FROM cash LEFT JOIN customers ON customerid = customers.id 
+		if($balances = $this->DB->GetCol('SELECT SUM(value) FROM cash LEFT JOIN customersview ON customerid = customersview.id 
 				WHERE deleted = 0 GROUP BY customerid HAVING SUM(value) < 0'))
 		{
 			foreach($balances as $idx)
@@ -846,8 +846,8 @@ class LMS
 
 	function CustomergroupWithCustomerGet($id)
 	{
-		return $this->DB->GetOne('SELECT COUNT(customerid) FROM customerassignments, customers 
-				WHERE customers.id = customerid AND customergroupid = ?', array($id));
+		return $this->DB->GetOne('SELECT COUNT(customerid) FROM customerassignments, customersview 
+				WHERE customersview.id = customerid AND customergroupid = ?', array($id));
 	}
 
 	function CustomergroupAdd($customergroupdata)
@@ -889,8 +889,8 @@ class LMS
 
 	function CustomergroupMove($from, $to)
 	{
-		if ($ids = $this->DB->GetCol('SELECT customerassignments.id AS id FROM customerassignments, customers 
-				WHERE customerid = customers.id AND customergroupid = ?', array($from)))
+		if ($ids = $this->DB->GetCol('SELECT customerassignments.id AS id FROM customerassignments, customersview 
+				WHERE customerid = customersview.id AND customergroupid = ?', array($from)))
 		{
 			foreach($ids as $id)
 				$this->DB->Execute('UPDATE customerassignments SET customergroupid=? 
@@ -919,13 +919,14 @@ class LMS
 			$net = $this->GetNetworkParams($network);
 
 		$result = $this->DB->GetRow('SELECT id, name, description FROM customergroups WHERE id=?', array($id));
-		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id,'
-			.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername FROM customerassignments, customers '
-			.($network ? 'LEFT JOIN nodes ON customers.id=nodes.ownerid ' : '')
-			.'WHERE customers.id = customerid AND customergroupid = ? '
+		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id,'
+			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername 
+			FROM customerassignments, customersview c '
+			.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
+			.'WHERE c.id = customerid AND customergroupid = ? '
 			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR
 			(ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
-			.' GROUP BY customers.id, customername ORDER BY customername', array($id));
+			.' GROUP BY c.id, customername ORDER BY customername', array($id));
 
 		$result['customerscount'] = sizeof($result['customers']);
 		$result['count'] = $this->CustomergroupWithCustomerGet($id);
@@ -943,7 +944,10 @@ class LMS
 			foreach($customergrouplist as $idx => $row)
 			{
 				$customergrouplist[$idx]['customers'] = $this->CustomergroupWithCustomerGet($row['id']);
-				$customergrouplist[$idx]['customerscount'] = sizeof($this->DB->GetCol('SELECT customerid FROM customerassignments, customers WHERE customers.id = customerid AND customergroupid = ? GROUP BY customerid', array($row['id'])));
+				$customergrouplist[$idx]['customerscount'] = $this->DB->GetOne('SELECT COUNT(DISTINCT customerid)
+						FROM customerassignments, customersview 
+						WHERE customersview.id = customerid AND customergroupid = ?',
+						array($row['id']));
 				$totalcustomers += $customergrouplist[$idx]['customers'];
 				$totalcount += $customergrouplist[$idx]['customerscount'];
 			}
@@ -1008,14 +1012,14 @@ class LMS
 		if($network)
 			$net = $this->GetNetworkParams($network);
 
-		return $this->DB->GetAll('SELECT customers.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,
-			customerid FROM customers LEFT JOIN customerassignments ON (customers.id = customerid
-			AND customerassignments.customergroupid = ?) '
-			.($network ? 'LEFT JOIN nodes ON customers.id = nodes.ownerid ' : '').'WHERE '
+		return $this->DB->GetAll('SELECT c.id AS id, '.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
+			customerid FROM customersview c
+			LEFT JOIN customerassignments ON (c.id = customerid AND customerassignments.customergroupid = ?) '
+			.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '').'WHERE '
 			.($network ? '((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
 			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) AND ' : '')
 			.'deleted = 0
-			GROUP BY customers.id, customerid, lastname, customers.name
+			GROUP BY c.id, customerid, lastname, c.name
 			HAVING customerid IS NULL ORDER BY customername', array($groupid));
 	}
 
@@ -1204,11 +1208,10 @@ class LMS
 
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 					mac, nodes.name AS name, ownerid, access, warning, netdev, lastonline, nodes.info AS info, '
-					.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner
-					FROM nodes 
-					LEFT JOIN customers ON ownerid = customers.id '
-					.($group ? 'LEFT JOIN customerassignments ON (customerid = customers.id) ' : '')
-					.' WHERE ownerid > 0 '
+					.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner
+					FROM nodes, customersview c '
+					.($group ? 'LEFT JOIN customerassignments ON (customerid = c.id) ' : '')
+					.' WHERE ownerid = c.id '
 					.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 					.($status==1 ? ' AND access = 1' : '') //connected
 					.($status==2 ? ' AND access = 0' : '') //disconnected
@@ -1344,7 +1347,7 @@ class LMS
 
 	function NodeExists($id)
 	{
-		return ($this->DB->GetOne('SELECT id FROM nodes WHERE id=?', array($id))?TRUE:FALSE);
+		return ($this->DB->GetOne('SELECT n.id FROM nodes n, customersview c WHERE ownerid = c.id AND n.id = ?', array($id)) ? TRUE : FALSE);
 	}
 
 	function NodeStats()
@@ -1360,9 +1363,9 @@ class LMS
 	{
 		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, 
 				inet_ntoa(ipaddr) AS ip,ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, netdev,
-				'.$this->DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS owner, 
-				ownerid FROM nodes, customers 
-				WHERE ownerid = customers.id AND netdev=? AND ownerid > 0 
+				'.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner, 
+				ownerid FROM nodes, customersview c 
+				WHERE ownerid = c.id AND netdev = ? AND ownerid > 0 
 				ORDER BY nodes.name ASC', array($id));
 	}
 
@@ -1839,9 +1842,9 @@ class LMS
 		if ($network)
 			$net = $this->GetNetworkParams($network);
 
-		if($ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, customers '
-			.($network ? 'LEFT JOIN nodes ON customers.id=nodes.ownerid ' : '')
-			.'WHERE customerid = customers.id AND deleted = 0 '
+		if($ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, customersview c '
+			.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
+			.'WHERE customerid = c.id AND deleted = 0 '
 			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
 			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
 			.'AND tariffid = ?', array($from)))
@@ -1926,14 +1929,14 @@ class LMS
 		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax,
 			taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit
 			FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE tariffs.id=?', array($id));
-		$result['customers'] = $this->DB->GetAll('SELECT customers.id AS id, COUNT(customers.id) AS cnt, '
-			.$this->DB->Concat('upper(lastname)',"' '",'customers.name').' AS customername '
+		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt, '
+			.$this->DB->Concat('upper(c.lastname)',"' '",'c.name').' AS customername '
 			.($network ? ', COUNT(nodes.id) AS nodescount ' : '')
-			.'FROM assignments, customers '.($network ? 'LEFT JOIN nodes ON customers.id=nodes.ownerid ' : '')
-			.'WHERE customers.id = customerid AND deleted = 0 AND tariffid = ? '
+			.'FROM assignments, customersview c '.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
+			.'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
 			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
 			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
-			.'GROUP BY customers.id, customername ORDER BY customername', array($id));
+			.'GROUP BY c.id, customername ORDER BY customername', array($id));
 
 		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, 
 						    SUM(CASE period 
