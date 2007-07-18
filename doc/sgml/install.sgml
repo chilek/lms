@@ -473,7 +473,10 @@ $access['table'][100]['allow_reg'] = '^invoice$';
         <title>Upgrade</title>
 	<para>Since version 1.5.4 LMS was released in polish language only. If you are upgrading
 	read polish documentation for upgrade description. In newest versions upgrade is very easy.
-        That process has two stages. First, overwrite old files with new ones and remove contents of
+        That process has two stages. Before you start check LMS requirements (they're
+	changing). Also if you're using MySQL check user privileges, they're changed
+	few times in the past.</para>
+	<para>Now, overwrite old files with new ones and remove contents of
         <filename>templates_c</filename> directory (or better create new LMS directory tree). Second
         stage is a database structure change - it's self-executing process acting upon first login to
         the UI.</para>
