@@ -6,6 +6,7 @@ version ? (????-??-??):
   - lms-reminder: BTS#0000670 - fixed query (alec)
   - Excluded groups - possibility to disable user access to specified
     customers groups (alec)
+  - PostgreSQL 8.1 is required now (alec)
 
 version 1.9.8 Idos (2007-07-12):
 
