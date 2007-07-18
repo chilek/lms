@@ -57,7 +57,7 @@
            <title>Database Server</title>
            <para>MySQL server in version 5.x is supported. Probably LMS won't work correctly
            with older versions.</para>
-           <para>PostgreSQL in version 7.4.x or higher is supported.</para>
+           <para>PostgreSQL in version 8.1.x or higher is supported.</para>
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Smarty Library</title>
@@ -182,7 +182,7 @@ mysql -u[user name with database creation rights] -p
 Enter password:[just enter password :)]
 mysql> CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql> GRANT USAGE ON lms.* TO lms@localhost;
-mysql> GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
+mysql> GRANT ALL ON lms.* TO lms@localhost IDENTIFIED BY '[your_password]';
 mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;</screen>
@@ -215,7 +215,7 @@ password = your_password</screen>
           <title>PostgreSQL</title>
           <sect3 id="install-pgsql-intro">
           <title>Intro</title>
-               <para>LMS is tested on PostgreSQL 7.4 and higher, there can be problems with its later
+               <para>LMS is tested on PostgreSQL 8.1 and higher, there can be problems with its later
                versions. If you have not installed PostgreSQL server, you can compile
                it yourself from sources available on <ulink url="http://www.postgresql.org">
                www.postgresql.org</ulink>.</para>
@@ -260,7 +260,7 @@ password = password_entered_with_lms_user_creation</screen>
                <para><note><para>The need for password actually depends
                on Postgres users authentication configuration found in
                <filename>/usr/local/pgsql/data/pg_hba.conf</filename> (refer to <ulink
-               url="http://www.postgresql.org/docs/8.0/interactive/client-authentication.html#EXAMPLE-PG-HBA.CONF">
+               url="http://www.postgresql.org/docs/8.1/interactive/client-authentication.html#EXAMPLE-PG-HBA.CONF">
                Postgresql documentation</ulink>). By default password is not
                required and you can comment it with semicolon.</para></note></para>
                <para>After this step you should be able to enter your system without any problems.
