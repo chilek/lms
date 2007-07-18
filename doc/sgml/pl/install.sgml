@@ -59,7 +59,7 @@
         <sect2 id="install-req-db">
            <title>Serwer baz danych</title>
            <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 5.0.</para>
-           <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.4.x lub nowszych.</para>
+           <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 8.1.x lub nowszych.</para>
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
@@ -202,7 +202,7 @@ mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
 mysql> CREATE DATABASE lms CHARACTER SET utf8 COLLATE utf8_polish_ci;
 mysql> GRANT USAGE ON lms.* TO lms@localhost;
-mysql> GRANT select,insert,update,delete,create,alter,drop ON lms.* TO lms@localhost IDENTIFIED BY 'twoje_has³o';
+mysql> GRANT ALL ON lms.* TO lms@localhost IDENTIFIED BY 'twoje_has³o';
 mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;</screen>
@@ -219,7 +219,7 @@ password = has³o_z_pkt.3
               </para>
 	      	<para>W PHP dostêpne s± dwa rozszerzenia do obs³ugi bazy MySQL (mysql i mysqli). 
 		LMS obs³uguje oba, mo¿esz wybraæ, ktego chcesz u¿yæ ustawiaj±c odpowiednio
-		opcjê <emphasis>type</emphasis>w sekcji [database].</para>
+		opcjê <emphasis>type</emphasis> w sekcji [database].</para>
                <para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
                danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
                bazie  danych  nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
@@ -240,7 +240,7 @@ password = has³o_z_pkt.3
           <title>PostgreSQL</title>
           <sect3 id="install-pgsql-intro">
           <title>Wstêp</title>
-               <para>LMS jest testowany na PostgreSQL 7.4.x i nowszych, mo¿esz mieæ
+               <para>LMS jest testowany na PostgreSQL 8.1.x i nowszych, mo¿esz mieæ
 		problemy korzystaj±c ze starszych wersji. Je¿eli nie masz zainstalowanego serwera
                PostgreSQL, mo¿esz np. w³asnorêcznie skompilowaæ go
                ze ¼róde³ dostêpnych na stronie <ulink url="http://www.postgresql.org">
