@@ -132,13 +132,21 @@
                </simplelist>
           </sect2>
           <sect2 id="customerassignments">
-               <title>Grupy klientów - c.d. ('customerassignments')</title>
+               <title>Grupy klientów - powi±zania ('customerassignments')</title>
                <simplelist>
                     <member>id - identyfikator</member>
                     <member>customergroupid - identyfikator grupy</member>
                     <member>customerid - identyfikator klienta</member>
                </simplelist>
           </sect2>
+	    <sect2 id="excludedgroups">
+        	<title>Grupy klientów - dostêp u¿ytkowników ('excludedgroups')</title>
+	    	    <simplelist>
+			<member>id - identyfikator</member>
+			<member>userid - identyfikator u¿ytkownika</member>
+			<member>customergroupid - identyfikator grupy</member>
+		    </simplelist>
+	    </sect2>
           <sect2 id="networks">
                <title>Sieci ('networks')</title>
                <simplelist>

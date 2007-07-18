@@ -128,11 +128,19 @@
                </simplelist>
           </sect2>
           <sect2 id="customerassignments">
-               <title>Customer groups - continued... ('customerassignments')</title>
+               <title>Customer groups - assignments ('customerassignments')</title>
                <simplelist>
                     <member>id - serial number</member>
                     <member>customergroupid - group serial number</member>
                     <member>customerid - customer serial number</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="excludedgroups">
+               <title>Customer groups - users access ('excludedgroups')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>userid - user serial number</member>
+                    <member>customergroupid - group serial number</member>
                </simplelist>
           </sect2>
           <sect2 id="networks">

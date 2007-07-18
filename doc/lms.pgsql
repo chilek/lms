@@ -869,4 +869,18 @@ CREATE TABLE customercontacts (
 CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
 CREATE INDEX customercontacts_phone_idx ON customercontacts (phone);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007071100');
+/* ---------------------------------------------------
+ Structure of table "excludedgroups"
+------------------------------------------------------*/
+DROP SEQUENCE excludedgroups_id_seq;
+CREATE SEQUENCE excludedgroups_id_seq;
+DROP TABLE excludedgroups;
+CREATE TABLE excludedgroups (
+	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
+        customergroupid integer NOT NULL DEFAULT 0,
+	userid 		integer NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (userid, customergroupid)
+    );
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007071600');
