@@ -33,6 +33,7 @@ $CONFIG_FILE = '/etc/lms/lms.ini';
 // *******************************************************************
 
 define('START_TIME', microtime());
+define('LMS-UI', true);
 
 // find alternative config files:
 

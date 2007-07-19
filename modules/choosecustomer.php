@@ -37,14 +37,14 @@ if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 {
 	$search = $_POST['searchcustomer'];
 
-	$where_cust = 'AND ('.(intval($search) ? 'customers.id = '.intval($search).' OR' : '')
+	$where_cust = 'AND ('.(intval($search) ? 'c.id = '.intval($search).' OR' : '')
 			.'    ten LIKE \'%'.$search.'%\''
 			.' OR ssn LIKE \'%'.$search.'%\''
 			.' OR icn LIKE \'%'.$search.'%\''
 			.' OR rbe LIKE \'%'.$search.'%\''
 			.' OR regon LIKE \'%'.$search.'%\''
 			.' OR UPPER(email) LIKE UPPER(\'%'.$search.'%\')'
-			.' OR UPPER('.$DB->Concat('lastname',"' '",'customers.name').') LIKE UPPER(\'%'.$search.'%\')'
+			.' OR UPPER('.$DB->Concat('lastname',"' '",'c.name').') LIKE UPPER(\'%'.$search.'%\')'
 			.' OR UPPER(address) LIKE UPPER(\'%'.$search.'%\')) ';
 	
 	$SMARTY->assign('searchcustomer', $search);
@@ -66,10 +66,10 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 
 if(isset($where_node) || isset($where_cust))
 {
-	if($customerlist = $DB->GetAll('SELECT DISTINCT customers.id AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, address, zip, city, email, ssn, 
-				(SELECT SUM(value) FROM cash WHERE customerid = customers.id) AS balance 
-				FROM customers ' 
-				.(isset($where_node) ? 'LEFT JOIN nodes ON (customers.id = ownerid) ' : '')
+	if($customerlist = $DB->GetAll('SELECT DISTINCT c.id AS id, '.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername, address, zip, city, email, ssn, 
+				(SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance 
+				FROM customersview c ' 
+				.(isset($where_node) ? 'LEFT JOIN nodes ON (c.id = ownerid) ' : '')
 				.'WHERE deleted = 0 '
 				.(isset($where_cust) ? $where_cust : '')
 				.(isset($where_node) ? $where_node : '')

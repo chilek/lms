@@ -435,7 +435,7 @@ class LMS
 					    lastname, name, status, email, address, zip, ten, ssn, 
 					    city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
 					    pin, regon, icn, rbe 
-					    FROM customersview WHERE id = ?', array($id)))
+					    FROM customers'.(defined('LMS-UI') ? 'view' : '').' WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
