@@ -6,7 +6,12 @@ version ? (????-??-??):
   - lms-reminder: BTS#0000670 - fixed query (alec)
   - Excluded groups - possibility to disable user access to specified
     customers groups (alec)
+    *****************************************************************
   - PostgreSQL 8.1 is required now (alec)
+    *****************************************************************
+  - cash import: when customer is known don't show selection field,
+    added $modvalue configuration variable, code cleanup, transactions
+    support (alec)
 
 version 1.9.8 Idos (2007-07-12):
 

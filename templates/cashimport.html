@@ -74,12 +74,16 @@
 			{$importlist[importlist].description}
 		</TD>
 		<TD ALIGN="RIGHT" CLASS="fright" COLSPAN="2" NOWRAP>
+			{if !$importlist[importlist].customerid}
 			<SELECT NAME="customer[{$importlist[importlist].id}]" {tip text="Select customer" trigger=$importlist[importlist].id}>
 				<OPTION VALUE="0">{t}- select customer -{/t}</OPTION>
 				{section name=customerlist loop=$customerlist}
 				<OPTION VALUE="{$customerlist[customerlist].id}" {if $customerlist[customerlist].id == $importlist[importlist].customerid}SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>&nbsp;
+			{else}
+			<INPUT TYPE="hidden" NAME="customer[{$importlist[importlist].id}]" VALUE="{$importlist[importlist].customerid}">
+			{/if}
 			{cycle print=false}
 			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$importlist[importlist].id}]" VALUE="{$importlist[importlist].id}">
 		</TD>

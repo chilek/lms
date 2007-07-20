@@ -33,6 +33,7 @@ $plastname = 3; // forename position
 $pvalue = 4;	// value position
 $pcomment = 5;  // operation comment position
 $pdate = 1;  	// date position
+
 $date_regexp = '/([0-9]{2})\.([0-9]{2})\.([0-9]{4})/'; // date format (dd.mm.yyyy)
 $pday = 1;
 $pmonth = 2;
@@ -43,5 +44,8 @@ $pinvoice_number = 1; // position of invoice number in $invoice_regexp
 $pinvoice_year = 2;   // year position in $invoice_regexp
 
 $encoding = 'UTF-8';  // imported data encoding (for conversion)
+
+$modvalue = FALSE;	// if operation's value is 1000.00, then
+			// enabled $modvalue will modify it to 10.00
 
 ?>
