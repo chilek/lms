@@ -32,20 +32,20 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 	foreach($file as $line)
 	{
 		$id = 0;
-		preg_match($pattern, $line, $matches);
 
-		$name = trim($matches[$pname]);
-		$lastname = trim($matches[$plastname]);
-		$comment = trim($matches[$pcomment]);
-		$time = trim($matches[$pdate]);
-		$value = str_replace(',','.',trim($matches[$pvalue]));
-
-		if($encoding != 'UTF-8')
+		if(strtoupper($encoding) != 'UTF-8')
 		{
-			$name = iconv($encoding, 'UTF-8', $name);
-			$lastname = iconv($encoding, 'UTF-8', $lastname);
-			$comment = iconv($encoding, 'UTF-8', $comment);
+			$line = iconv($encoding, 'UTF-8//TRANSLIT', $line);
 		}
+		
+		if(!preg_match($pattern, $line, $matches))
+			continue;
+
+		$name = isset($matches[$pname]) ? trim($matches[$pname]) : '';
+		$lastname = isset($matches[$plastname]) ? trim($matches[$plastname]) : '';
+		$comment = isset($matches[$pcomment]) ? trim($matches[$pcomment]) : '';
+		$time = isset($matches[$pdate]) ? trim($matches[$pdate]) : '';
+		$value = str_replace(',','.', isset($matches[$pvalue]) ? trim($matches[$pvalue]) : '');
 		
 		if(!$pid)
 		{
@@ -53,7 +53,7 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 				$id = $matches[1];
 		}
 		else
-			$id = trim($matches[$pid]);
+			$id = isset($matches[$pid]) ? intval($matches[$pid]) : 0;
 		
 /*		// seek invoice number
 		if(!$id)
@@ -77,23 +77,42 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 			if(sizeof($uids)==1)
 				$id = $uids[0];
 		}
+		elseif($id && (!$name || !$lastname))
+		{
+			if($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE id = ?', array($id)))
+			{
+				$lastname = $tmp['lastname'];
+				$name = $tmp['name'];
+			}
+			else
+				$id = 0;
+		}
 		
 		if($time)
 		{
 			if(preg_match($date_regexp, $time, $date))
 				$time = mktime(0,0,0, $date[$pmonth], $date[$pday], $date[$pyear]);
+			elseif(!is_numeric($time))
+				$time = time();
 		}
 		else
 			$time = time();
 			
 		$customer = trim($lastname.' '.$name);
 		$hash = md5($time.$value.$customer.$comment);
-
-		if(is_numeric($value))
-			if(!$DB->GetOne('SELECT id FROM cashimport WHERE hash=?', array($hash)))
-				$DB->Execute('INSERT INTO cashimport(date, value, customer, customerid, description, hash) VALUES(?,?,?,?,?,?)',
-					array($time, $value, $customer, $id, $comment, $hash));
 		
+		if(is_numeric($value))
+		{
+			if(isset($modvalue) && $modvalue)
+			{
+				$value = str_replace(',','.', ($value * 100) / 10000);
+			}
+		
+			if(!$DB->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash)))
+				$DB->Execute('INSERT INTO cashimport (date, value, customer, 
+					customerid, description, hash) VALUES (?,?,?,?,?,?)',
+					array($time, $value, $customer, $id, $comment, $hash));
+		}
 	}
 	
 	$SESSION->redirect('?m=cashimport');

@@ -38,8 +38,9 @@ elseif(isset($_POST['marks']))
 	$customers = $_POST['customer'];
 	foreach($marks as $id)
 	{
-		if($customers[$id])
+		if(isset($customers[$id]))
 		{
+			$DB->BeginTrans();
 			$import = $DB->GetRow('SELECT * FROM cashimport WHERE id = ?', array($id));
 			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
 			$balance['time'] = $import['date'];
@@ -48,13 +49,14 @@ elseif(isset($_POST['marks']))
 			$balance['customerid'] = $customers[$id];
 			$balance['comment'] = $import['description'];
 			$LMS->AddBalance($balance);
+			$DB->CommitTrans();
 		}
 		else
 			$error[$id] = trans('Customer not selected!');
 	}
 }
 
-$importlist = $DB->GetAll('SELECT * FROM cashimport WHERE closed = 0 AND value > 0');
+$importlist = $DB->GetAll('SELECT * FROM cashimport WHERE closed = 0 AND value > 0 ORDER BY id');
 $listdata['total'] = sizeof($importlist);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
