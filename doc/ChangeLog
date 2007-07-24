@@ -12,6 +12,8 @@ version ? (????-??-??):
   - cash import: when customer is known don't show selection field,
     added $modvalue configuration variable, code cleanup, transactions
     support (alec)
+  - when customer wasn't found in quick customer search do redirect to 
+    customer search module with filled zip and city fields  (alec)
 
 version 1.9.8 Idos (2007-07-12):
 
