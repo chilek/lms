@@ -75,6 +75,8 @@ switch($_GET['mode'])
 		// use customersearch module to find all customers
 		$s['customername'] = $search;
 		$s['address'] = $search;
+		$s['zip'] = $search;
+		$s['city'] = $search;
 		$s['phone'] = $search;
 		$s['email'] = $search;
 		$SESSION->save('customersearch', $s);
