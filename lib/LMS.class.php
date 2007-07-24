@@ -2328,9 +2328,6 @@ class LMS
 			case 'ports':
 				$sqlord = ' ORDER BY ports';
 			break;
-			case 'takenports':
-				$sqlord = ' ORDER BY takenports';
-			break;
 			case 'serialnumber':
 				$sqlord = ' ORDER BY serialnumber';
 			break;

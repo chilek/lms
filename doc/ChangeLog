@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - fixed link to LMS mailing lists archive (alec)
+  - fixed devices list sorting by used ports count (alec)
 
 version 1.8.11 Wade (2007-06-26):
 
