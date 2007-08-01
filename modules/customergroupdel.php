@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if(!$LMS->CustomergroupWithCustomerGet($_GET['id']) && $_GET['is_sure']=="1")
+if(isset($_GET['is_sure']) && !$LMS->CustomergroupWithCustomerGet($_GET['id']))
 {
 	$LMS->CustomergroupDelete($_GET['id']);	
 }

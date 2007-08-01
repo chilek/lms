@@ -422,6 +422,7 @@ password = password_entered_with_lms_user_creation</screen>
         <listitem><para>timetable management</para></listitem>
         <listitem><para>daemon management and configuration</para></listitem>
 	<listitem><para>cash operations</para></listitem>
+        <listitem><para>customers groups management</para></listitem>
         <listitem><para>users edition and addition forbidden</para></listitem>
         <listitem><para>no access</para></listitem>
        </itemizedlist>

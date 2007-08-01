@@ -669,6 +669,7 @@ password = password_entered_with_lms_user_creation
      * timetable management
      * daemon management and configuration
      * cash operations
+     * customers groups management
      * users edition and addition forbidden
      * no access
 

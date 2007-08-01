@@ -29,13 +29,13 @@ $layout['pagetitle'] = trans('Group List');
 $customergrouplist = $LMS->CustomergroupGetList();
 
 $listdata['total'] = $customergrouplist['total'];
-$listdata['totalcustomers'] = $customergrouplist['totalcustomers'];
 $listdata['totalcount'] = $customergrouplist['totalcount'];
 
-unset($customergrouplist['total'],$customergrouplist['totalcustomers'],$customergrouplist['totalcount']);
+unset($customergrouplist['total']);
+unset($customergrouplist['totalcount']);
 
-$SMARTY->assign('customergrouplist',$customergrouplist);
-$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('customergrouplist', $customergrouplist);
+$SMARTY->assign('listdata', $listdata);
 $SMARTY->display('customergrouplist.html');
 
 ?>
