@@ -921,7 +921,7 @@ class LMS
 		$result = $this->DB->GetRow('SELECT id, name, description FROM customergroups WHERE id=?', array($id));
 		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id,'
 			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername 
-			FROM customerassignments, customersview c '
+			FROM customerassignments, customers c '
 			.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
 			.'WHERE c.id = customerid AND customergroupid = ? '
 			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR
@@ -938,15 +938,16 @@ class LMS
 	{
 		if($customergrouplist = $this->DB->GetAll('SELECT id, name, description FROM customergroups ORDER BY name ASC'))
 		{
-			$totalcustomers = 0;
 			$totalcount = 0;
 
 			foreach($customergrouplist as $idx => $row)
 			{
-				$customergrouplist[$idx]['customerscount'] = $this->DB->GetOne('SELECT COUNT(DISTINCT customerid)
+				$customergrouplist[$idx]['customerscount'] = $this->DB->GetOne('
+						SELECT COUNT(DISTINCT customerid)
 						FROM customerassignments, customers 
 						WHERE customers.id = customerid AND customergroupid = ?',
 						array($row['id']));
+
 				$totalcount += $customergrouplist[$idx]['customerscount'];
 			}
 
