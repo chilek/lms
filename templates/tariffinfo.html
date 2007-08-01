@@ -6,7 +6,7 @@
 	function getText(index)
 	{literal}{{/literal}
 		{section name=lt loop=$tariffs}
-		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name} ({$tariffs[lt].value|money_format})';
+		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({$tariffs[lt].value|money_format})';
 		{/section}
 	{literal}}{/literal}
 	//-->
