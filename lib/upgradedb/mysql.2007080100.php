@@ -24,16 +24,10 @@
  *  $Id$
  */
 
-switch($CONFIG['database']['type'])
-{
-	case 'postgres':
-		$DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array($AUTH->id));
-	break;
-		
-	case 'mysql':
-	case 'mysqli':
-		$DB->Execute('SET @lms_current_user=?', array($AUTH->id));
-	break;
-}
+$DB->BeginTrans();
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007080100', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

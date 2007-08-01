@@ -478,9 +478,9 @@ password = your_password
 
 2.5.2.1. Intro
 
-   LMS is tested on PostgreSQL 8.1 and higher, there can be problems with
-   its later versions. If you have not installed PostgreSQL server, you
-   can compile it yourself from sources available on www.postgresql.org.
+   LMS require PostgreSQL 8.1 or higher. If you have not installed
+   PostgreSQL server, you can compile it yourself from sources available
+   on www.postgresql.org.
      _________________________________________________________________
 
 2.5.2.2. Installation
@@ -498,6 +498,11 @@ $ chown postgres /usr/local/pgsql/data
 $ su - postgres
 $ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data --locale=pl_PL.UTF-8
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &
+
+   Warning
+
+   It's required to add in postgresql.conf: custom_variable_classes =
+   'lms'
      _________________________________________________________________
 
 2.5.2.3. Database Creation
@@ -553,8 +558,8 @@ password = password_entered_with_lms_user_creation
 
    As of version 1.6 and later storing config in lms.ini is beeing
    treaded as obsolete. The only required values there are from
-   [database] and [directories] sections. Settings are stored in database
-   and could be changed by user interface.
+   [database] and [directories] sections. Other settings are stored in
+   database and could be changed by user interface.
      _________________________________________________________________
 
 2.6.1. Section [database] - Database Settings

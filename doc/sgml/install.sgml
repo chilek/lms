@@ -215,9 +215,8 @@ password = your_password</screen>
           <title>PostgreSQL</title>
           <sect3 id="install-pgsql-intro">
           <title>Intro</title>
-               <para>LMS is tested on PostgreSQL 8.1 and higher, there can be problems with its later
-               versions. If you have not installed PostgreSQL server, you can compile
-               it yourself from sources available on <ulink url="http://www.postgresql.org">
+               <para>LMS require PostgreSQL 8.1 or higher. If you have not installed PostgreSQL server, 
+	       you can compile it yourself from sources available on <ulink url="http://www.postgresql.org">
                www.postgresql.org</ulink>.</para>
           </sect3>
           <sect3 id="install-pgsql-server">
@@ -237,6 +236,7 @@ $ su - postgres
 $ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data --locale=pl_PL.UTF-8
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</screen>
                </para>
+		<para><warning><para>It's required to add in postgresql.conf: custom_variable_classes = 'lms'</para></warning></para>
           </sect3>
           <sect3 id="install-pgsql-dbcreate">
           <title>Database Creation</title>
@@ -287,7 +287,7 @@ password = password_entered_with_lms_user_creation</screen>
 	 <para><note><para>As of version 1.6 and later storing config 
 	 in <filename>lms.ini</filename> is beeing treaded as obsolete. 
 	 The only required values there are from [database] and [directories]
-	 sections. Settings are stored in database and could be changed by 
+	 sections. Other settings are stored in database and could be changed by 
 	 user interface.</para></note></para>
         <sect2 id="install-config-db">
         <title>Section [database] - Database Settings</title>
