@@ -16,6 +16,7 @@ version ? (????-??-??):
   - when customer wasn't found in quick customer search do redirect to 
     customer search module with filled zip and city fields  (alec)
   - fixed few problems with apostrophe sign in tariffs names (alec)
+  - optimized query speed of cash registries list (alec)
 
 version 1.9.8 Idos (2007-07-12):
 
