@@ -40,16 +40,13 @@ if(sizeof($numberplanadd))
 	elseif(!preg_match('/%[1-9]{0,1}N/', $numberplanadd['template']))
 		$error['template'] = trans('Template must consist "%N" specifier!');
 
-	if(!$numberplanadd['isdefault'])
-		$numberplanadd['isdefault'] = 0;
-
 	if($numberplanadd['doctype'] == 0)
 		$error['doctype'] = trans('Document type is required!');
 
 	if($numberplanadd['period'] == 0)
 		$error['period'] = trans('Numbering period is required!');
 	
-	if($numberplanadd['doctype'] && $numberplanadd['isdefault'])
+	if($numberplanadd['doctype'] && isset($numberplanadd['isdefault']))
 		if($DB->GetOne('SELECT 1 FROM numberplans WHERE doctype=? AND isdefault=1', array($numberplanadd['doctype'])))
 			$error['doctype'] = trans('Selected document type has already defined default plan!');
 
@@ -60,7 +57,7 @@ if(sizeof($numberplanadd))
 				    $numberplanadd['template'],
 				    $numberplanadd['doctype'],
 				    $numberplanadd['period'],
-				    $numberplanadd['isdefault']
+				    isset($numberplanadd['isdefault']) ? 1 : 0
 				    ));
 		
 		if(!isset($numberplanadd['reuse']))
