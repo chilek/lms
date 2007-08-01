@@ -882,5 +882,21 @@ CREATE TABLE excludedgroups (
 	PRIMARY KEY (id),
 	UNIQUE (userid, customergroupid)
     );
+    
+CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
+SELECT 
+CASE 
+    WHEN current_setting(''lms.current_user'') = '''' 
+    THEN 0 
+    ELSE current_setting(''lms.current_user'')::integer
+END
+' LANGUAGE SQL;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007071600');
+CREATE VIEW customersview AS
+SELECT c.* FROM customers c
+        WHERE NOT EXISTS (
+	        SELECT 1 FROM customerassignments a
+	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007080100');

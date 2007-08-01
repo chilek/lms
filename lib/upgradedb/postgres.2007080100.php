@@ -24,16 +24,28 @@
  *  $Id$
  */
 
-switch($CONFIG['database']['type'])
-{
-	case 'postgres':
-		$DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array($AUTH->id));
-	break;
-		
-	case 'mysql':
-	case 'mysqli':
-		$DB->Execute('SET @lms_current_user=?', array($AUTH->id));
-	break;
-}
+$DB->BeginTrans();
+
+$DB->Execute("
+	CREATE VIEW customersview AS
+	SELECT c.* FROM customers c
+        WHERE NOT EXISTS (
+                SELECT 1 FROM customerassignments a
+                JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+                WHERE e.userid = lms_current_user() AND a.customerid = c.id);
+
+	CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
+	SELECT
+	CASE
+	    WHEN current_setting(''lms.current_user'') = ''''
+    	    THEN 0
+	    ELSE current_setting(''lms.current_user'')::integer
+	    END
+	' LANGUAGE SQL;
+");
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007080100', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

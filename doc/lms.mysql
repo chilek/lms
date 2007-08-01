@@ -845,4 +845,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007071600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007080100');
