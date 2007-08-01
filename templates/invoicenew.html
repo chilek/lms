@@ -9,7 +9,7 @@
 		{foreach from=$tariffs item=tariff}
 		if(index=={$tariff.id})
 		{literal}{{/literal}
-			document.additem.name.value = '{$tariff.name}';
+			document.additem.name.value = '{$tariff.name|escape}';
 			document.additem.taxid.value = '{$tariff.taxid}';
 			document.additem.valuebrutto.value = '{$tariff.value}';
 			document.additem.prodid.value = '{$tariff.prodid}';
