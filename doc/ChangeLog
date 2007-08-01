@@ -17,6 +17,7 @@ version ? (????-??-??):
     customer search module with filled zip and city fields  (alec)
   - fixed few problems with apostrophe sign in tariffs names (alec)
   - optimized query speed of cash registries list (alec)
+  - access rights: added 'customers group management' privilage (alec)
 
 version 1.9.8 Idos (2007-07-12):
 

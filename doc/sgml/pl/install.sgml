@@ -427,10 +427,10 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
      <listitem><para>pe³en dostêp</para></listitem>
         <listitem><para>odczyt wszystkich danych (z wyj±tkiem Helpdesku)</para></listitem>
         <listitem><para>pod³±czanie i od³±czanie komputerów</para></listitem>
-        <listitem><para>manipulowanie finansami</para></listitem>
+        <listitem><para>zarz±dzanie finansami</para></listitem>
         <listitem><para>prze³adowywanie konfiguracji</para></listitem>
-        <listitem><para>manipulowanie danymi klientów</para></listitem>
-        <listitem><para>manipulowanie danymi komputerów</para></listitem>
+        <listitem><para>zarz±dzanie klientami</para></listitem>
+        <listitem><para>zarz±dzanie komputerami</para></listitem>
         <listitem><para>dostêp do statystyk</para></listitem>
         <listitem><para>dostêp do korespondencji seryjnej</para></listitem>
         <listitem><para>zarz±dzanie Helpdeskiem (RT)</para></listitem>
@@ -438,9 +438,10 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
         <listitem><para>zarz±dzanie kontami</para></listitem>
         <listitem><para>konfiguracja interfejsu u¿ytkownika</para></listitem>
         <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
-	<listitem><para>dostêp do terminarza</para></listitem>
+	<listitem><para>zarz±dzanie terminarzem</para></listitem>
 	<listitem><para>zarz±dzanie i konfiguracja demona</para></listitem>
 	<listitem><para>operacje kasowe</para></listitem>
+        <listitem><para>zarz±dzanie grupami klientów</para></listitem>
         <listitem><para>brak dostêpu do modyfikacji i zak³adania kont u¿ytkowników</para></listitem>
         <listitem><para>brak dostêpu</para></listitem>
        </itemizedlist>

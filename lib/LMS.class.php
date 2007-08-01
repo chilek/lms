@@ -846,8 +846,8 @@ class LMS
 
 	function CustomergroupWithCustomerGet($id)
 	{
-		return $this->DB->GetOne('SELECT COUNT(customerid) FROM customerassignments, customersview 
-				WHERE customersview.id = customerid AND customergroupid = ?', array($id));
+		return $this->DB->GetOne('SELECT COUNT(customerid) FROM customerassignments, customers
+				WHERE customers.id = customerid AND customergroupid = ?', array($id));
 	}
 
 	function CustomergroupAdd($customergroupdata)
@@ -943,17 +943,14 @@ class LMS
 
 			foreach($customergrouplist as $idx => $row)
 			{
-				$customergrouplist[$idx]['customers'] = $this->CustomergroupWithCustomerGet($row['id']);
 				$customergrouplist[$idx]['customerscount'] = $this->DB->GetOne('SELECT COUNT(DISTINCT customerid)
-						FROM customerassignments, customersview 
-						WHERE customersview.id = customerid AND customergroupid = ?',
+						FROM customerassignments, customers 
+						WHERE customers.id = customerid AND customergroupid = ?',
 						array($row['id']));
-				$totalcustomers += $customergrouplist[$idx]['customers'];
 				$totalcount += $customergrouplist[$idx]['customerscount'];
 			}
 
 			$customergrouplist['total'] = sizeof($customergrouplist);
-			$customergrouplist['totalcustomers'] = $totalcustomers;
 			$customergrouplist['totalcount'] = $totalcount;
 		}
 

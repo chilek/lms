@@ -1855,5 +1855,6 @@ $_LANG['Phone number is required!'] = 'Numer telefonu jest wymagany!';
 $_LANG['Excluded groups:'] = 'Wyłączone grupy:';
 $_LANG['Available<!plural>'] = 'Dostępne';
 $_LANG['Selected<!plural>'] = 'Wybrane';
+$_LANG['customers groups management'] = 'zarządzanie grupami klientów';
 
 ?>
