@@ -26,14 +26,16 @@
 
 $layout['pagetitle'] = trans('Cash Registries List');
 
-$reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name, cashregs.description AS description,
-			i.template AS in_template, o.template AS out_template, SUM(value) AS balance, disabled
-			FROM cashregs 
-			LEFT JOIN receiptcontents ON (cashregs.id = regid)
-			LEFT JOIN numberplans i ON (in_numberplanid = i.id)
-			LEFT JOIN numberplans o ON (out_numberplanid = o.id)
-			GROUP BY cashregs.id, cashregs.name, cashregs.description, disabled, i.template, o.template 
-			ORDER BY cashregs.name');
+$reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name, 
+			cashregs.description AS description, disabled,
+			(SELECT SUM(value) FROM receiptcontents 
+				WHERE cashregs.id = regid) AS balance,
+			(SELECT template FROM numberplans 
+				WHERE in_numberplanid = numberplans.id ) AS in_template,
+			(SELECT template FROM numberplans 
+				WHERE out_numberplanid = numberplans.id) AS out_template
+		FROM cashregs 
+		ORDER BY cashregs.name');
 
 $listdata['sum'] = 0;
 if($reglist)
