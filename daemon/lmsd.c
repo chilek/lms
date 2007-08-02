@@ -30,8 +30,9 @@
 #include <syslog.h>
 #include <stdio.h>     
 #include <string.h>
+#include <locale.h>
 #include <stdarg.h>
-#include <dlfcn.h>  
+#include <dlfcn.h>
 #include <sys/types.h>
 #include <sys/wait.h>
   
@@ -81,6 +82,10 @@ int main(int argc, char *argv[], char **envp)
 	if( getenv("LMSDBHOST") ) strcpy(host, getenv("LMSDBHOST")); else strcpy(host, "localhost");
 	gethostname(dhost, 255);
 
+	// date/time localization according to environement settings
+	setlocale(LC_TIME, "");
+	
+	// command line arguments
 	parse_command_line(argc, argv);
 
 	// change process name (hide command line args)

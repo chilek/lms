@@ -146,15 +146,17 @@ void reload(GLOBAL *g, struct payments_module *p)
 	time_t t;
 	struct tm *tt;
 	char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4];  //odjac jeden?
+	char monthname[20];
 	char start[12], end[12];
 	
 	// get current date
 	t = time(NULL);
 	tt = localtime(&t);
 	strftime(monthday, 	sizeof(monthday), 	"%d", tt);
-	strftime(weekday, 	sizeof(weekday), 	"%u", tt);	
+	strftime(weekday, 	sizeof(weekday), 	"%u", tt);
 	strftime(yearday, 	sizeof(yearday), 	"%j", tt);
-	strftime(month, 	sizeof(month), 		"%m", tt);	
+	strftime(monthname, 	sizeof(monthname), 	"%B", tt);
+	strftime(month, 	sizeof(month), 		"%m", tt);
 	strftime(year, 		sizeof(year), 		"%Y", tt);
 
 	imday = tt->tm_mday;
@@ -364,6 +366,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 				case YEARLY: g->str_replace(&description, "%period", y_period); break;
 			}
 			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
+			g->str_replace(&description, "%month", monthname);
+			g->str_replace(&description, "%year", year);
 			
 			if( atoi(g->db_get_data(res,i,"invoice")) ) 
 			{
@@ -466,6 +470,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 				description = strdup(p->s_comment);
 				g->str_replace(&description, "%period", get_diff_period(datefrom, today-86400));
 				g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
+				g->str_replace(&description, "%month", monthname);
+				g->str_replace(&description, "%year", year);
 				
 				// prepare insert to 'cash' table
 				insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");

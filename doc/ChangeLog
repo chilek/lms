@@ -18,6 +18,7 @@ version ? (????-??-??):
   - fixed few problems with apostrophe sign in tariffs names (alec)
   - optimized query speed of cash registries list (alec)
   - access rights: added 'customers group management' privilage (alec)
+  - lmsd/payments: added %month and %year variables for comment (alec)
 
 version 1.9.8 Idos (2007-07-12):
 
