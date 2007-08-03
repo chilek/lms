@@ -170,7 +170,7 @@
 			{if $receipt.type=="out"}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" class="box light" {if $receipt.o_type=="advance"} checked{/if}> {t}advance{/t}:
+				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" class="box light" {if $receipt.o_type=="advance"} checked{/if}> <A HREF="javascript:setCustomerType('radio_advance');">{t}advance{/t}:</A>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[adv_name]" VALUE="{$receipt.adv_name}" SIZE="75" {tip text="Enter recipient" trigger="adv_name"} onclick="document.getElementById('radio_advance').checked=true">
