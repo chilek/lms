@@ -28,7 +28,7 @@ $addbalance = $_POST['addbalance'];
 
 $addbalance['value'] = str_replace(',','.',$addbalance['value']);
 
-if($addbalance['time'] != '' && ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$', $addbalance['time']))
+if(isset($addbalance['time']) && $addbalance['time'] != '' && ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$', $addbalance['time']))
 {
 	// here we should throw error back to user about fucked up date format or something
 	// otherwise mktime invokes error about expected parameters
@@ -57,7 +57,7 @@ else
 $SESSION->save('addbc', $addbalance['comment']);
 $SESSION->save('addbt', $addbalance['time']);
 $SESSION->save('addbv', $addbalance['value']);
-$SESSION->save('addbtax', $addbalance['taxid']);
+$SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0);
 
 if(isset($addbalance['mcustomerid']))
 {
