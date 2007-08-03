@@ -29,10 +29,10 @@ if(!$LMS->PaymentExists($_GET['id']))
 	$SESSION->redirect('?m=paymentlist');
 }
 
-$payment = $_POST['payment'];
-
-if(isset($payment))
+if(isset($_POST['payment']))
 {
+	$payment = $_POST['payment'];
+	
 	foreach($payment as $key => $value)
 		$payment[$key] = trim($value);
 
@@ -114,9 +114,11 @@ if(isset($payment))
 		$SESSION->redirect('?m=paymentinfo&id='.$payment['id']);
 	}
 
-} else 
+} 
+else 
 {
 	$payment = $LMS->GetPayment($_GET['id']);
+
 	if($payment['period'] == YEARLY)
 		$payment['at'] = date('d/m',($payment['at']-1)*86400);
 	if($payment['period'] == QUARTERLY)
@@ -125,8 +127,8 @@ if(isset($payment))
 	
 $layout['pagetitle'] = trans('Payment Edit: $0',$payment['name']);
 
-$SMARTY->assign('payment',$payment);
-$SMARTY->assign('error',$error);
+$SMARTY->assign('payment', $payment);
+$SMARTY->assign('error', $error);
 $SMARTY->display('paymentedit.html');
 
 ?>
