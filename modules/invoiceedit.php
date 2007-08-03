@@ -34,6 +34,7 @@ if(isset($_GET['id']) && $action=='edit')
     $SESSION->remove('invoicecontents');
     $SESSION->remove('invoicecustomer');
 
+    $i = 0;
     foreach ($invoice['content'] as $item) {
 	$i++;
         $nitem['tariffid']	= $item['tariffid'];
