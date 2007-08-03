@@ -307,37 +307,29 @@ switch($action)
 				$iid++;
 
 				if($receipt['type'] == 'in')
-				{
-					$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-						VALUES(?,?,?,?,?)', 
+				        $value = str_replace(',','.',$item['value']);
+				else
+				        $value = str_replace(',','.',$item['value']*-1);
+
+				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
+						VALUES(?, ?, ?, ?, ?)', 
 						array($rid, 
 							$iid, 
-							str_replace(',','.',$item['value']), 
+							$value, 
 							$item['description'],
 							$receipt['regid']
 						));
-					$DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid, customerid)
+
+				$DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid, customerid)
 					        VALUES(1, ?, ?, ?, ?, ?, ?, ?)', 
 						array($receipt['cdate'],
 							$rid, 
 							$iid, 
-							str_replace(',','.',$item['value']),
+							$value,
 							$item['description'],
 							$AUTH->id,
 							$customer['id']
 						));
-				}
-				else
-				{
-					$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-						VALUES(?,?,?,?,?)', 
-						array($rid, 
-							$iid, 
-							str_replace(',','.',$item['value']*-1), 
-							$item['description'],
-							$receipt['regid']
-						));
-				}
 			}
 			
 			$DB->UnLockTables();
@@ -351,6 +343,7 @@ switch($action)
 			// delete old receipt 
 			$DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
 			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
+			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($receipt['id']));
 			
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
 			    		VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
@@ -377,13 +370,23 @@ switch($action)
 				        $value = str_replace(',','.',$item['value']*-1);
 				
 				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-					    VALUES(?,?,?,?,?)', 
-					    array($rid, 
-						    $iid, 
-						    $value, 
-						    $item['description'],
-						    $receipt['regid']
-					    ));
+						VALUES(?, ?, ?, ?, ?)', 
+						array($rid, 
+							$iid, 
+							$value, 
+							$item['description'],
+							$receipt['regid']
+					));
+					    
+				$DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid)
+					        VALUES(1, ?, ?, ?, ?, ?, ?)', 
+						array($receipt['cdate'],
+							$rid, 
+							$iid, 
+							$value,
+							$item['description'],
+							$AUTH->id,
+					));
 			}
 
 			$DB->UnLockTables();

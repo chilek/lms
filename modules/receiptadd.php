@@ -584,13 +584,23 @@ switch($action)
 					$value = str_replace(',','.',$item['value']*-1);
 				
 					$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-						        VALUES(?,?,?,?,?)', 
-							array($rid, 
-								$iid, 
-								$value, 
-								$item['description'],
-								$receipt['regid']
-							));
+						VALUES(?,?,?,?,?)', 
+						array($rid, 
+							$iid, 
+							$value, 
+							$item['description'],
+							$receipt['regid']
+						));
+
+					$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
+						VALUES(?, 1, ?, ?, ?, ?, ?)', 
+						array($receipt['cdate'],
+							$rid, 
+							$iid, 
+							$value, 
+							$item['description'],
+							$AUTH->id,
+						));
 			}
 		
 			$DB->CommitTrans();

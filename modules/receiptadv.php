@@ -179,8 +179,7 @@ if(isset($_POST['receipt']))
 						$record['name']
 						));
 						
-		$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', 
-					array(DOC_RECEIPT, $in_number, $receipt['cdate']));
+		$rid = $DB->GetLastInsertId('documents');
 			
 		$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 					VALUES(?, 1, ?, ?, ?)', 
@@ -188,6 +187,15 @@ if(isset($_POST['receipt']))
 						str_replace(',', '.', $record['value'] * -1), 
 						trans('Advance return').' - '.$titlenumber,
 						$regid
+					));
+
+		$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
+					VALUES(?, 1, ?, 1, ?, ?, ?)', 
+					array($receipt['cdate'],
+						$rid, 
+						str_replace(',', '.', $record['value'] * -1), 
+						trans('Advance return').' - '.$titlenumber,
+						$AUTH->id
 					));
 
 		if($receipt['type'] == 'settle')
@@ -207,8 +215,7 @@ if(isset($_POST['receipt']))
 						$receipt['name']
 						));
 						
-			$rid2 = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', 
-					array(DOC_RECEIPT, $receipt['out_number'], $receipt['cdate']));
+			$rid2 = $DB->GetLastInsertId('documents');
 			
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 					VALUES(?, 1, ?, ?, ?)', 
@@ -216,6 +223,15 @@ if(isset($_POST['receipt']))
 						str_replace(',', '.', $value * -1), 
 						$receipt['description'],
 						$regid
+					));
+
+			$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
+					VALUES(?, 1, ?, 1, ?, ?, ?)', 
+					array($receipt['cdate'],
+						$rid, 
+						str_replace(',', '.', $value * -1), 
+						$receipt['description'],
+						$AUTH->id
 					));
 		}
 

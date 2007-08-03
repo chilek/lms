@@ -19,6 +19,8 @@ version ? (????-??-??):
   - optimized query speed of cash registries list (alec)
   - access rights: added 'customers group management' privilage (alec)
   - lmsd/payments: added %month and %year variables for comment (alec)
+  - cash receipts: BTS#0000673 - cash receipts of type 'other' and
+    'advance' included in balance sheet (alec)
 
 version 1.9.8 Idos (2007-07-12):
 
