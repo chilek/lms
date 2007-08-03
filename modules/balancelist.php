@@ -43,16 +43,16 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 				$where = 'cash.time >= '.$search.' AND cash.time < '.($search+86400);
 			break;
 			case 'ten':
-				$where = 'customers.ten = \''.$search.'\'';
+				$where = 'c.ten = \''.$search.'\'';
 			break;
 			case 'customerid':
 				$where = 'cash.customerid = '.intval($search);
 			break;
 			case 'name':
-				$where = $DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' ?LIKE? \'%'.$search.'%\'';
+				$where = $DB->Concat('UPPER(c.lastname)',"' '",'c.name').' ?LIKE? \'%'.$search.'%\'';
 			break;
 			case 'address':
-				$where = 'customers.address ?LIKE? \'%'.$search.'%\'';
+				$where = 'c.address ?LIKE? \'%'.$search.'%\'';
 			break;
 		}
 	}
@@ -60,9 +60,9 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 	if($res = $DB->Exec('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
 				cash.customerid AS customerid, comment, docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed, '
-				.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
+				.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
 				FROM cash
-				LEFT JOIN customers ON (cash.customerid = customers.id)
+				LEFT JOIN customersview c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid) '
 				.(isset($where) ? 'WHERE '.$where : '')
 				.' ORDER BY time, cash.id'))

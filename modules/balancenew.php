@@ -30,7 +30,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, taxes.label AS tax, 
 		    customerid, time, comment, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername
 		    FROM cash 
-		    LEFT JOIN customers ON (customerid = customers.id)
+		    LEFT JOIN customersview c ON (customerid = c.id)
 		    LEFT JOIN taxes ON (taxid = taxes.id)
 		    ORDER BY cash.id DESC LIMIT 1');
 
