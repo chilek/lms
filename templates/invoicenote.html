@@ -72,8 +72,7 @@
 			<B>{t}Reason:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="cnote[reason]" VALUE="{$cnote.reason}" SIZE="50" {tip text="Enter reason (optional)"}>
-			{if $cnote.reason}{$cnote.reason}{/if}
+			<TEXTAREA NAME="cnote[reason]" ROWS="4" COLS="50" {tip text="Enter reason (optional)"}>{$cnote.reason}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="light">
