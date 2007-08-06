@@ -57,10 +57,10 @@ function GetAliasList($order='login,asc', $customer=NULL, $kind=NULL, $domain=''
 	$list = $DB->GetAll(
 	        'SELECT aliases.id AS id, passwd.id AS aid, passwd.ownerid AS ownerid, 
 		aliases.login AS login, passwd.login AS account, expdate, domains.name AS domain, domainid, '
-		.$DB->Concat('customers.lastname', "' '",'customers.name').
-		' AS customername FROM aliases 
+		.$DB->Concat('c.lastname', "' '",'c.name').' AS customername 
+		FROM aliases 
 		LEFT JOIN passwd ON accountid = passwd.id
-		LEFT JOIN customers ON customers.id = passwd.ownerid 
+		LEFT JOIN customers c ON c.id = passwd.ownerid 
 		LEFT JOIN domains ON domains.id = domainid 
 		WHERE 1=1'
 		.($customer != '' ? ' AND passwd.ownerid = '.$customer : '')

@@ -55,10 +55,12 @@ function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NU
 	}
 
 	$list = $DB->GetAll(
-	        'SELECT passwd.id AS id, passwd.ownerid AS ownerid, login, lastlogin, expdate, domains.name AS domain, 
+	        'SELECT passwd.id AS id, passwd.ownerid AS ownerid, login, lastlogin, 
+			expdate, domains.name AS domain, 
 			type, quota_www, quota_sh, quota_mail, quota_ftp, quota_sql, '
-		.$DB->Concat('customers.lastname', "' '",'customers.name').
-		' AS customername FROM passwd LEFT JOIN customers ON customers.id = passwd.ownerid 
+			.$DB->Concat('c.lastname', "' '",'c.name').' AS customername 
+		FROM passwd 
+		LEFT JOIN customers c ON c.id = passwd.ownerid 
 		LEFT JOIN domains ON domains.id = domainid WHERE 1=1'
 		.($customer != '' ? ' AND passwd.ownerid = '.$customer : '')
 		.($type ? ' AND type & '.$type.' = '.$type : '')
