@@ -54,7 +54,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 				filename, md5sum, contenttype, template, closed, documents.name, customerid
                 	FROM documentcontents, documents
 		        LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			LEFT JOIN customers ON (customerid = customers.id)
+			LEFT JOIN customersview c ON (customerid = c.id)
 			WHERE documents.id = documentcontents.docid '
 			.($customer ? 'AND customerid = '.$customer : '')
 			.($type ? ' AND type = '.$type : '')

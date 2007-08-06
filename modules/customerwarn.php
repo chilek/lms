@@ -81,12 +81,12 @@ if(isset($_GET['search']))
 
 $layout['pagetitle'] = trans('Warnings');
 
-$customerlist = $DB->GetAllByKey(
-		    'SELECT customers.id AS id, MAX(warning) AS warning, '.
-		    $DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername 
-		    FROM customers LEFT JOIN nodes ON customers.id = ownerid 
+$customerlist = $DB->GetAllByKey('SELECT c.id AS id, MAX(warning) AS warning, '.
+		    $DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername 
+		    FROM customersview c 
+		    LEFT JOIN nodes ON c.id = ownerid 
 		    WHERE deleted = 0 
-		    GROUP BY customers.id, lastname, customers.name 
+		    GROUP BY c.id, lastname, c.name 
 		    ORDER BY customername ASC', 'id');
 
 $SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
