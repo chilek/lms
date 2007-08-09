@@ -105,7 +105,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 	    		.$sqlord.' '.$direction))
 	{
 		$result1 = array();
-		
+
 		if($search!='' && $cat=='value')
 		{
 			$val = f_round($search);
