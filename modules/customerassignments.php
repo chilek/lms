@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if(! $LMS->CustomerExists($_GET['id']))
+if($LMS->CustomerExists($_GET['id']) !== TRUE)
 {
 	$SESSION->redirect('?m=customerlist');
 }
