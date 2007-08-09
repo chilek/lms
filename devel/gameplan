@@ -16,8 +16,6 @@ $Id$
   było w formie skryptu php, bo nie wyssa się go tak łatwo przez http)
   i żeby zmigrować do UI ustawienia a w 2.0 wyj...ać support do tego :)
 * pomyleśleć nad jakimś sposobem archiwizacji starych danych finansowych
-  - o ile baza danych sobie poradzi z danymi z kilku lat, nawet w dużej sieci,
-  to w UI może nie być już za ciekawie
 * Ujednolicić "Skrypty Perlowe" coś na kształt lmsdb i lms.class.php, jeden 
   wspólny "connect do bazy" i funkcje typu "weź userów + assigmenty" [jeśli 
   będzie to miało jakiś sens i się powielało w więcej niż 1-2 skryptach]
