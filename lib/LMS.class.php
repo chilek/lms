@@ -367,15 +367,19 @@ class LMS
 
 	function DeleteCustomer($id)
 	{
+		$this->DB->BeginTrans();
+		
+		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? WHERE id=?', array($this->AUTH->id, $id));
 		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
-		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? WHERE id=?', array($this->AUTH->id, $id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
 		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
 		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
 		// Remove Userpanel rights
 		if($this->CONFIG['directories']['userpanel_dir'])
 			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
+		
+		$this->DB->CommitTrans();
 	}
 
 	function CustomerUpdate($customerdata)
@@ -903,8 +907,10 @@ class LMS
 	{
 		 if (!$this->CustomergroupWithCustomerGet($id))
 		 {
+			$this->DB->BeginTrans();
 			$this->DB->Execute('DELETE FROM customergroups WHERE id=?', array($id));
 			$this->DB->Execute('DELETE FROM excludedgroups WHERE customergroupid=?', array($id));
+			$this->DB->CommitTrans();
 			return TRUE;
 		 } 
 		 else
@@ -1086,8 +1092,10 @@ class LMS
 
 	function DeleteNode($id)
 	{
+		$this->BeginTrans();
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($id));
+		$this->CommitTrans();
 	}
 
 	function GetNodeNameByMAC($mac)
@@ -1524,12 +1532,16 @@ class LMS
 
 	function DeleteAssignment($id)
 	{
+		$this->DB->BeginTrans();
+		
 		if($lid = $this->DB->GetOne('SELECT liabilityid FROM assignments WHERE id=?', array($id)))
 		{
 			$this->DB->Execute('DELETE FROM liabilities WHERE id=?', array($lid));
 		}
 		$this->DB->Execute('DELETE FROM nodeassignments WHERE assignmentid=?', array($id));
-		return $this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
+		$this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
+		
+		$this->DB->CommitTrans();
 	}
 
 	function AddAssignment($assignmentdata)
@@ -1634,6 +1646,8 @@ class LMS
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
 		$iid = $invoice['invoice']['id'];
 
+		$this->DB->BeginTrans();
+		
 		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city'], $iid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
@@ -1669,19 +1683,24 @@ class LMS
 				'itemid'=>$itemid
 			));
 		}
+		
+		$this->DB->CommitTrans();
 	}
 
 	function InvoiceDelete($invoiceid)
 	{
+		$this->DB->BeginTrans();
 		$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($invoiceid));
+		$this->DB->CommitTrans();
 	}
 
 	function InvoiceContentDelete($invoiceid, $itemid=0)
 	{
 		if($itemid)
 		{
+			$this->DB->BeginTrans();
 			$this->DB->Execute('DELETE FROM invoicecontents WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
 
 			if(!$this->DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE docid=?', array($invoiceid)))
@@ -1691,6 +1710,7 @@ class LMS
 			}
 
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
+			$this->DB->CommitTrans();
 		}
 		else
 			$this->InvoiceDelete($invoiceid);
@@ -2669,10 +2689,12 @@ class LMS
 
 	function DeleteNetDev($id)
 	{
+		$this->DB->BeginTrans();
 		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id));
 		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 		$this->DB->Execute('UPDATE nodes SET netdev=0 WHERE netdev=?', array($id));
-		return $this->DB->Execute('DELETE FROM netdevices WHERE id=?', array($id));
+		$this->DB->Execute('DELETE FROM netdevices WHERE id=?', array($id));
+		$this->DB->CommitTrans();
 	}
 
 	function NetDevAdd($netdevdata)
