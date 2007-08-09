@@ -23,6 +23,8 @@ version ? (????-??-??):
     'advance' included in balance sheet (alec)
   - customers list: fixed sorting by balance when balance is NULL 
     (customers without cash operations) (alec)
+  - added transactions for deleting (customer, node, etc.) 
+    operations (alec)
 
 version 1.9.8 Idos (2007-07-12):
 
