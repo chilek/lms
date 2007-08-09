@@ -596,14 +596,15 @@ class LMS
 		if($customerlist = $this->DB->GetAll(
 				'SELECT c.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, 
 				status, address, zip, city, email, ten, ssn, c.info AS info, message, 
-				(SELECT SUM(value) FROM cash WHERE customerid = c.id '
-				.($time ? ' AND time < '.$time : '').') AS balance
+				(SELECT COALESCE(SUM(value),0) FROM cash WHERE customerid = c.id '
+					.($time ? ' AND time < '.$time : '').') AS balance
 				FROM customersview c '
 				.($network ? 'LEFT JOIN nodes ON (c.id=ownerid) ' : '')
 				.($customergroup ? 'LEFT JOIN customerassignments ON (c.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
 				.($state !=0 ? ' AND status = '.$state : '')
-				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
+					OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
 								WHERE c.id = a.customerid)' : '')
@@ -623,20 +624,48 @@ class LMS
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
-			$day = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)*30 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.DAILY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
-			$week = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.WEEKLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
-			$month = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END) AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.MONTHLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
-			$quarter = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/3 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.QUARTERLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
-			$year = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value ELSE ((100 - discount) * tariffs.value) / 100 END) ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/12 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 AND period = '.YEARLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY customers.id', 'id');
+			$day = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
+						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
+						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)*30 AS value 
+					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
+						    AND period = '.DAILY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
+					    GROUP BY customers.id', 'id');
+			$week = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
+						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
+						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value 
+					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
+						    AND period = '.WEEKLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
+					    GROUP BY customers.id', 'id');
+			$month = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
+						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
+						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END) AS value 
+					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
+						    AND period = '.MONTHLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
+					    GROUP BY customers.id', 'id');
+			$quarter = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
+						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
+						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/3 AS value 
+					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
+						    AND period = '.QUARTERLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
+					    GROUP BY customers.id', 'id');
+			$year = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
+						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
+						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/12 AS value 
+					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
+						    AND period = '.YEARLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
+					    GROUP BY customers.id', 'id');
 
-			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
-			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
-			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
+			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account 
+					    FROM nodes GROUP BY ownerid','id');
+			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount 
+					    FROM nodes GROUP BY ownerid','id');
+			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id
+					    FROM nodes GROUP BY ownerid','id');
 
 			foreach($customerlist as $idx => $row)
 			{
