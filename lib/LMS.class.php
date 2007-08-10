@@ -498,7 +498,7 @@ class LMS
 		switch($order)
 		{
 			case 'id':
-				$sqlord = 'ORDER BY customers.id';
+				$sqlord = 'ORDER BY c.id';
 			break;
 			case 'address':
 				$sqlord = 'ORDER BY address';
