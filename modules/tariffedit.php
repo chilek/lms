@@ -68,6 +68,8 @@ if(isset($_POST['tariff']))
 		$error['climit'] = trans('Integer value expected!');
 	if(!ereg('^[0-9]+$', $tariff['plimit']))
 		$error['plimit'] = trans('Integer value expected!');
+	if(!ereg('^[0-9]+$', $tariff['dlimit']))
+		$error['dlimit'] = trans('Integer value expected!');
 	
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 10000) && $tariff['uprate'] != 0)
 		$error['uprate'] = trans('This field must be within range 8 - 10000');
