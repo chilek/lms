@@ -29,7 +29,7 @@ $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
 if($LMS->CustomerExists($ownerid))
 {
-	$LMS->NodeSetU($ownerid, $_GET['access']);
+	$LMS->NodeSetU($ownerid, isset($_GET['access']) ? 1 : 0);
 
 	$backid = $ownerid;
 	$redir = $SESSION->get('backto');
