@@ -27,7 +27,7 @@
 $ownerid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
 $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
-if($LMS->CustomerExists($ownerid))
+if($ownerid && $LMS->CustomerExists($ownerid))
 {
 	$LMS->NodeSetU($ownerid, isset($_GET['access']) ? 1 : 0);
 
@@ -39,7 +39,7 @@ if($LMS->CustomerExists($ownerid))
 	$SESSION->redirect('?'.$redir.'#'.$backid);
 }
 
-if($LMS->NodeExists($id))
+if($id && $LMS->NodeExists($id))
 {
 	$LMS->NodeSet($id);
 	$backid = $id;
@@ -52,6 +52,6 @@ if(isset($_GET['netdev']))
 		$backid = $_GET['netdev'];
 	}
 
-header('Location: ?'.$SESSION->get('backto').'#'.$backid);
+header('Location: ?'.$SESSION->get('backto').'#'.(isset($backid) ? $backid : ''));
 
 ?>
