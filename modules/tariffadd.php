@@ -61,6 +61,8 @@ if(isset($tariffadd))
 		$error['climit'] = trans('Integer value expected!');
 	if(!ereg('^[0-9]+$', $tariffadd['plimit']))
 		$error['plimit'] = trans('Integer value expected!');
+	if(!ereg('^[0-9]+$', $tariffadd['dlimit']))
+		$error['dlimit'] = trans('Integer value expected!');
 
 	if(($tariffadd['uprate'] < 8 || $tariffadd['uprate'] > 10000) && $tariffadd['uprate'] != 0)
 		$error['uprate'] = trans('This field must be within range 8 - 10000');

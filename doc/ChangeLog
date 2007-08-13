@@ -25,6 +25,7 @@ version ? (????-??-??):
     (customers without cash operations) (alec)
   - added transactions for deleting (customer, node, etc.) 
     operations (alec)
+  - tarifs: fixed data limit feature (alec)    
 
 version 1.9.8 Idos (2007-07-12):
 

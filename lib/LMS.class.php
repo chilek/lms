@@ -1910,8 +1910,8 @@ class LMS
 	function TariffAdd($tariffdata)
 	{
 		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, 
-				taxid, prodid, uprate, downrate, upceil, downceil, climit, plimit)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				taxid, prodid, uprate, downrate, upceil, downceil, climit, plimit, dlimit)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
 					$tariffdata['name'],
 					$tariffdata['description'],
@@ -1923,7 +1923,8 @@ class LMS
 					$tariffdata['upceil'],
 					$tariffdata['downceil'],
 					$tariffdata['climit'],
-					$tariffdata['plimit']
+					$tariffdata['plimit'],
+					$tariffdata['dlimit'],
 				));
 		if ($result)
 			return $this->GetTariffIDByName($tariffdata['name']);
@@ -1935,7 +1936,7 @@ class LMS
 	{
 		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, 
 				taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?, 
-				climit=?, plimit=? WHERE id=?', 
+				climit=?, plimit=?, dlimit=? WHERE id=?', 
 				array($tariff['name'], 
 					$tariff['description'],
 					$tariff['value'],
@@ -1947,6 +1948,7 @@ class LMS
 					$tariff['downceil'],
 					$tariff['climit'],
 					$tariff['plimit'],
+					$tariff['dlimit'],
 					$tariff['id']
 				));
 	}
@@ -1973,13 +1975,18 @@ class LMS
 	{
 		if ($network)
 			$net = $this->GetNetworkParams($network);
+
 		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax,
-			taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, climit, plimit
-			FROM tariffs LEFT JOIN taxes ON taxid = taxes.id WHERE tariffs.id=?', array($id));
+			taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, 
+			climit, plimit, dlimit
+			FROM tariffs 
+			LEFT JOIN taxes ON (taxid = taxes.id)
+			WHERE tariffs.id=?', array($id));
+
 		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt, '
 			.$this->DB->Concat('upper(c.lastname)',"' '",'c.name').' AS customername '
 			.($network ? ', COUNT(nodes.id) AS nodescount ' : '')
-			.'FROM assignments, customersview c '.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
+			.'FROM assignments, customersview c '.($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
 			.'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
 			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
 			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
