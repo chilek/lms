@@ -60,8 +60,8 @@
 	{/if}{/section}
 	<TR class="grey">
 		<TD COLSPAN="3" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
-		<TD ALIGN="RIGHT"><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 	</TR>
 </TABLE>
 {include file="clearfooter.html"}
