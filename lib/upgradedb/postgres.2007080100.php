@@ -27,13 +27,6 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-	CREATE VIEW customersview AS
-	SELECT c.* FROM customers c
-        WHERE NOT EXISTS (
-                SELECT 1 FROM customerassignments a
-                JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-                WHERE e.userid = lms_current_user() AND a.customerid = c.id);
-
 	CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
 	SELECT
 	CASE
@@ -42,6 +35,13 @@ $DB->Execute("
 	    ELSE current_setting(''lms.current_user'')::integer
 	    END
 	' LANGUAGE SQL;
+
+	CREATE VIEW customersview AS
+	SELECT c.* FROM customers c
+        WHERE NOT EXISTS (
+                SELECT 1 FROM customerassignments a
+                JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+                WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007080100', 'dbversion'));
