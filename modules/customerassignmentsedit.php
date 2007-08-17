@@ -291,7 +291,7 @@ else
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
 
-$layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetCustomerName($customerid));
+$layout['pagetitle'] = trans('Customer Charging Edit: $0', '<A href="?m=customerinfo&id='.$customerid.'">'.$LMS->GetCustomerName($customerid).'</A>');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
