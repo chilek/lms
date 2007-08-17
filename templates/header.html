@@ -7,7 +7,7 @@
     <meta http-equiv="refresh" content="{math equation="x+5" x=$_config.phpui.timeout}">
     <meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
     <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
-    <link href="img/style.css" rel="stylesheet" type="text/css">
+    <link href="img/{if $_config.phpui.style}{$_config.phpui.style}{else}style.css{/if}" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
     <script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
     <script language="JavaScript" type="text/JavaScript" src="img/ClickShowHideMenu.js"> </script>
