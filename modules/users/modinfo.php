@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.9-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *
@@ -29,7 +29,7 @@ $_MODINFO['users'] = array(
 			'en' => 'System users',
 			'pl' => 'Użytkownicy systemu'
 			),
-		'version' => '1.9-cvs',
+		'version' => '1.11-cvs',
 		'description' => array(
 			'en' => 'System users management',
 			'pl' => 'Zarządzanie użytkownikami systemu'

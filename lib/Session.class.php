@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.9-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *
@@ -27,7 +27,7 @@
 class Session {
 
 	var $SID = NULL;			// session unique ID
-	var $_version = '1.9-cvs';		// library version
+	var $_version = '1.11-cvs';		// library version
 	var $_revision = '$Revision$';	// library revision
 	var $_content = array();		// session content array
 	var $_updated = FALSE;			// indicates that content has

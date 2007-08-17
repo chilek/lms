@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.9-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *
@@ -33,7 +33,7 @@ $_MODINFO['auth'] = array(
 			'en' => 'Users access rights management and verification',
 			'pl' => 'Zarządzanie i weryfikacja uprawnień użytkowników'
 			),
-		'version' => '1.9-cvs',
+		'version' => '1.11-cvs',
 		'revision' => '$Revision$',
 		'author' => 'LMS Developers',
 		'url' => 'http://www.lms.org.pl',

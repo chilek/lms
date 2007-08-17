@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.9-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -52,7 +52,7 @@ $layout['logname'] = $AUTH->logname;
 $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['hostname'] = hostname();
-$layout['lmsv'] = '1.9-cvs';
+$layout['lmsv'] = '1.11-cvs';
 $layout['lmsvr'] = $LMS->_revision;
 $layout['dberrors'] =& $DB->errors;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
