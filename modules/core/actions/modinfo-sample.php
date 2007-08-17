@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.9-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2004 LMS Developers
  *
@@ -23,7 +23,7 @@ $_MODINFO['sample'] = array(
 			'en' => 'Example template for modinfo.php',
 			'pl' => 'Przykładowy szablon dla modinfo.php'
 			),
-		'version' => '1.9-cvs', // version
+		'version' => '1.11-cvs', // version
 		'description' => array( // description
 			'en' => 'This is sample module that contains template for modinfo.php',
 			'pl' => 'To jest przykładowy moduł, który tak naprawdę zawiera tylko przykładowy modinfo.php',

@@ -57,7 +57,7 @@ cd lms
 # usuwamy deweloperski stuff
 rm -Rf $NOTDISTRIB
 # podmieniamy numerki wersji
-grep -air '1\.9-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.9-cvs/$LMSVER $CODENAME/g"
+grep -air '1\.11-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.11-cvs/$LMSVER $CODENAME/g"
 chmod 777 templates_c backups documents
 cd lib
 #pobieramy Smarty i wlaczamy do paczki LMSa
