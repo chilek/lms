@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11-cvs
+ * LMS version 1.10-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *
@@ -200,7 +200,7 @@ $layout['logid'] = $AUTH->id;
 $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['hostname'] = hostname();
-$layout['lmsv'] = '1.11-cvs';
+$layout['lmsv'] = '1.10-cvs';
 $layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['dberrors'] =& $DB->errors;
 

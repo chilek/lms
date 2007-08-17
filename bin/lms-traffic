@@ -1,6 +1,6 @@
 #!/usr/bin/perl -Tw
 #
-#  LMS version 1.11-cvs
+#  LMS version 1.10-cvs
 #
 #  Copyright (C) 2001-2007 LMS Developers
 #
@@ -29,7 +29,7 @@ use Getopt::Long;
 use vars qw($logfile $configfile $quiet $help $version);
 use POSIX qw(strftime);
 
-my $_version = '1.11-cvs';
+my $_version = '1.10-cvs';
 
 my %options = (
 	"--traffic-log-file|f=s"=>	\$logfile,

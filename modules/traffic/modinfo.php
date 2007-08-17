@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.11-cvs
+ * LMS version 1.10-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
@@ -33,7 +33,7 @@ $_MODINFO['traffic'] = array(
 			'en' => 'Statistics of Internet Link Usage',
 			'pl' => 'Statystyki uĹźycia ĹÄcza internetowego',
 			),
-		'version' => '1.11-cvs',
+		'version' => '1.10-cvs',
 		'author' => 'LMS Developers',
 		'url' => 'http://www.lms.org.pl',
 		'revision' => '$Revision$',

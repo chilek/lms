@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.11-cvs
+ * LMS version 1.10-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *

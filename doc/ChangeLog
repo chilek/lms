@@ -1,6 +1,6 @@
 $Id$
 
-version 1.11.0 Thoth (2007-08-17):
+version 1.10.0rc1 Urgo (2007-08-17):
 
   - common pdf functions and initialization moved to lib/pdf.php (alec)
   - lms-reminder: BTS#0000670 - fixed query (alec)
