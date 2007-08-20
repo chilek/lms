@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - fixed bug in DeleteNode() (alec)
+  - fixes in config reload, now at least one host is required (alec) 
 
 version 1.10.0rc1 Urgo (2007-08-17):
 

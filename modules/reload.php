@@ -35,15 +35,16 @@ switch($_RELOAD_TYPE)
 	
 		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 
-		if(isset($_GET['setreloads']))
+		if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 		{
 			$SMARTY->display('header.html');
 
 			echo '<H1>'.$layout['pagetitle'].'</H1>';
 
 			$execlist = explode(';',$_EXECCMD);
+
 			foreach($hosts as $host)
-				if(in_array($host['id'], (array) $_POST['hosts']))
+				if(in_array($host['id'], $_POST['hosts']))
 				{
 					echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
 					echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
@@ -64,31 +65,9 @@ switch($_RELOAD_TYPE)
 		}
 		else
 		{
-			if(!count($hosts))
-			{
-				$SMARTY->display('header.html');
-
-				echo '<H1>'.$layout['pagetitle'].'</H1>';
-				echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
-				$execlist = explode(';',$_EXECCMD);
-				foreach($execlist as $execcmd)
-				{
-					$execcmd = str_replace('%host', '', $execcmd);
-					echo '<P><B>'.$execcmd.'</B></P>';
-					echo '<PRE>';
-					flush();
-					echo passthru($execcmd);
-					flush();
-					echo '</PRE>';
-				}
-				echo '</TD></TR></TABLE>';
-			}
-			else
-			{
-				$SMARTY->assign('hosts', $hosts);
-				$SMARTY->display('header.html');
-				$SMARTY->display('reload.html');
-			}
+			$SMARTY->assign('hosts', $hosts);
+			$SMARTY->display('header.html');
+			$SMARTY->display('reload.html');
 		}
 	break;
 
@@ -96,18 +75,18 @@ switch($_RELOAD_TYPE)
 	
 		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 		
-		if(isset($CONFIG['phpui']['reload_sqlquery']))
+		if(isset($CONFIG['phpui']['reload_sqlquery']) && $hosts)
 		{
 			$SMARTY->display('header.html');
-
-			echo '<H1>'.$layout['pagetitle'].'</H1>';
-
-			$sqlqueries = explode(';',($CONFIG['phpui']['reload_sqlquery']));
 			
-			if(isset($_GET['setreloads']))
+			if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 			{
+				$sqlqueries = explode(';',($CONFIG['phpui']['reload_sqlquery']));
+				
+				echo '<H1>'.$layout['pagetitle'].'</H1>';
+
 				foreach($hosts as $host)
-					if(in_array($host['id'], (array) $_POST['hosts']))
+					if(in_array($host['id'], $_POST['hosts']))
 					{
 						echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
 						echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
@@ -122,18 +101,6 @@ switch($_RELOAD_TYPE)
 						echo '</TD></TR></TABLE>';
 					}
 			}
-			elseif(!count($hosts))
-			{
-				echo '<TABLE WIDTH="100%" CLASS="superlight" CELLPADDING="5"><TR><TD CLASS="FALL">';
-				foreach($sqlqueries as $query)
-				{
-					$query = str_replace('%TIME%','?NOW?',$query);
-					echo '<P><B>'.trans('Query:').'</B></P>';
-					echo '<PRE>'.$query.'</PRE>';
-					$DB->Execute($query);
-				}
-				echo '</TD></TR></TABLE>';
-			}
 			else
 			{
 				$SMARTY->assign('hosts', $hosts);
@@ -142,10 +109,10 @@ switch($_RELOAD_TYPE)
 		}
 		else
 		{
-			if(isset($_GET['setreloads']))
+			if(isset($_GET['setreloads']) && isset($_POST['hosts']) && $hosts)
 			{
 				foreach($hosts as $host)
-					if(in_array($host['id'], (array) $_POST['hosts']))
+					if(in_array($host['id'], $_POST['hosts']))
 						$DB->Execute('UPDATE hosts SET reload=1 WHERE id=?', array($host['id']));
 					else
 						$DB->Execute('UPDATE hosts SET reload=0 WHERE id=?', array($host['id']));
