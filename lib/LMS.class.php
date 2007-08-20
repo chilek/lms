@@ -1092,10 +1092,10 @@ class LMS
 
 	function DeleteNode($id)
 	{
-		$this->BeginTrans();
+		$this->DB->BeginTrans();
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($id));
-		$this->CommitTrans();
+		$this->DB->CommitTrans();
 	}
 
 	function GetNodeNameByMAC($mac)
