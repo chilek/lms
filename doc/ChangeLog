@@ -1,5 +1,10 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed customerprint module on some php versions which needs date()
+    second argument to be of type integer (alec)
+
 version 1.8.12 Tagan (2007-08-21):
 
   - fixed link to LMS mailing lists archive (alec)

@@ -153,8 +153,9 @@ switch($type)
 	
 		$layout['pagetitle'] = trans('Printing');
     		
-		$yearstart = date('Y',$DB->GetOne('SELECT MIN(dt) FROM stats'));
-	        $yearend = date('Y',$DB->GetOne('SELECT MAX(dt) FROM stats'));
+		$yearstart = date('Y', (int) $DB->GetOne('SELECT MIN(dt) FROM stats'));
+	        $yearend = date('Y', (int) $DB->GetOne('SELECT MAX(dt) FROM stats'));
+
 		for($i=$yearstart; $i<$yearend+1; $i++)
 			$statyears[] = $i;
 		for($i=1; $i<13; $i++)
