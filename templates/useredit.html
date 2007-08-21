@@ -64,10 +64,10 @@
 			<IMG SRC="img/group.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Excluded groups:{/t}</B>
+			<B>{t}Groups:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright" NOWRAP>
-		        {include file="multiselect.html" selected=$userinfo.selected}
+		        {include file="multiselect.html" selected=$userinfo.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
 		</TD>
 	</TR>
 	<TR CLASS="light">

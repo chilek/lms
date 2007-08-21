@@ -1856,5 +1856,8 @@ $_LANG['Excluded groups:'] = 'Wyłączone grupy:';
 $_LANG['Available<!plural>'] = 'Dostępne';
 $_LANG['Selected<!plural>'] = 'Wybrane';
 $_LANG['customers groups management'] = 'zarządzanie grupami klientów';
+$_LANG['Enabled<!plural>:'] = 'Włączone:';
+$_LANG['Disabled<!plural>:'] = 'Wyłączone:';
+$_LANG['Groups:'] = 'Grupy:';
 
 ?>
