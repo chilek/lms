@@ -4,6 +4,9 @@ version ? (????-??-??):
 
   - added link to customerinfo in title of assignments edition page (alec)
   - fixes in config reload, now at least one host is required (alec)
+  - added mb_internal_encoding('UTF-8') call, so we can now use PHP's
+    option mbstring.func_overload = 7, added info about mbstring
+    extension requirement and recommended settings in documentation (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 

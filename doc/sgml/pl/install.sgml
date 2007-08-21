@@ -48,7 +48,7 @@
 				<para>mysql, mysqli lub pgsql (dla bazy danych),</para>
 			</listitem>
 			<listitem>
-				<para>iconv,</para>
+				<para>iconv, mbstring</para>
 			</listitem>
 			<listitem>
 				<para>PEAR::Mail (wymaga PEAR::Net_SMTP i PEAR::Net_Socket) do mailingu.</para>
@@ -144,6 +144,14 @@ $ tar zxf lms-x.x.x.tar.gz
 	    	przechowywane s± w bazie danych i mog± byæ modyfikowane przez 
 		interfejs u¿ytkownika, maj± tak¿e wy¿szy priorytet od tych zawartych
 		w <filename>lms.ini</filename>.</para></note>
+	</para>
+	<para>Zalecane zmiany w php.ini (lub httpd.conf dla wirtualki LMSa):
+<screen>
+mbstring.func_overload = 7
+register_globals = off
+max_execution_time = 60 ; co najmniej
+memory_limit = 32M ; co najmniej
+</screen>
 	</para>
      </sect1>
      <sect1 id="install-locale">

@@ -314,7 +314,7 @@ Chapter 2. Installation and configuration
      * zlib (for compressed backups),
      * gd or ming (for network map),
      * mysql or mysqli or pgsql (for db support),
-     * iconv,
+     * iconv, mbstring (LMS uses unicode)
      * PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets)
        for mailing.
      _________________________________________________________________
@@ -398,6 +398,13 @@ $ tar zxf lms-x.x.x.tar.gz
 
    It's absolutely required for LMS to disable register_globals PHP's
    option.
+
+   Recommended setting in php.ini (or httpd.conf for LMS virtual host
+   directory):
+mbstring.func_overload = 7
+register_globals = off
+max_execution_time = 60 ; or more
+memory_limit = 32M ; or more
      _________________________________________________________________
 
 2.4. Localization
