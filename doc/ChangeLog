@@ -1,11 +1,12 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.12 Tagan (2007-08-21):
 
   - fixed link to LMS mailing lists archive (alec)
   - fixed devices list sorting by used ports count (alec)
   - fixed customers searching by zip and city in quick search (alec)
   - fixed few javascript problems with apostrophe sign in tariffs names (alec)
+  - updated ethercodes.txt (alec)
 
 version 1.8.11 Wade (2007-06-26):
 
