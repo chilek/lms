@@ -32,7 +32,7 @@
 		<TD ALIGN="right">
 			({$reg.id|string_format:"%04d"})
 		</TD>
-		<TD ALIGN="right" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+		<TD ALIGN="right" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';" NOWRAP>
 			{if $reg.balance < 0}<font class="alert">{/if}
 			{$reg.balance|money_format}
 			{if $reg.balance < 0}</font>{/if}
