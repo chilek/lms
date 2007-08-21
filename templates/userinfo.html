@@ -58,6 +58,8 @@
 		<TD WIDTH="98%" CLASS="fright">		
 			{foreach from=$excludedgroups item=item}
 			<li type="square"><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
+			{foreachelse}
+			-
 			{/foreach}
 		</TD>
 	</TR>
