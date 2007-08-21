@@ -64,10 +64,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" NOWRAP>
-			<IMG SRC="img/group.gif" ALT=""> <B>{t}Excluded groups:{/t}</B>
+			<IMG SRC="img/group.gif" ALT=""> <B>{t}Groups:{/t}</B>
 		</TD>
 		<TD CLASS="fright" NOWRAP>
-			{include file="multiselect.html" selected=$useradd.selected}
+			{include file="multiselect.html" selected=$useradd.selected available_tip="Enabled<!plural>:" selected_tip="Disabled<!plural>:"}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
