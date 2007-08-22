@@ -54,11 +54,15 @@ $taxeslist = array();
 
 // get documents items numeric values for calculations
 $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
-	    FROM documents 
-	    LEFT JOIN invoicecontents ON docid = documents.id 
+	    FROM documents d
+	    LEFT JOIN invoicecontents ON docid = d.id 
 	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) '
 	    .($_POST['numberplanid'] ? 'AND numberplanid = '.$_POST['numberplanid'] : '').'
-	    ORDER BY CEIL(cdate/86400), documents.id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+		    AND NOT EXISTS (
+                	    SELECT 1 FROM customerassignments a
+			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
+	    ORDER BY CEIL(cdate/86400), d.id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 // get documents data
 $docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template, reference
