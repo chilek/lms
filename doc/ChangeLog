@@ -4,6 +4,8 @@ version ? (????-??-??):
 
   - fixed customerprint module on some php versions which needs date()
     second argument to be of type integer (alec)
+  - contrib/formularz_przelewu_wplaty: fixed css vulnerability, also
+    configuration is readed from database and can be set in UI (alec)
 
 version 1.8.12 Tagan (2007-08-21):
 

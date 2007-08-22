@@ -1,18 +1,9 @@
-<HTML>
-<HEAD>
-
-<META http-equiv="Content-Type" content="text/html;charset=ISO-8859-2">
-</HEAD>
-<BODY>
-
-<FORM><P style="font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">W zależności od poczty/banku wpisz 1 lub 2 kopie. <input type="button" value="Drukuj" onClick="top.print();"></FORM>
-
 <?php 
 
 /*
  * LMS version 1.8-cvs
  *
- *  (C) Copyright 2001-2006 LMS Developers
+ *  (C) Copyright 2001-2007 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +18,7 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-header('X-Powered-By: LMS/1.8-cvs/contrib_formularz_przelewu_wplaty');
+header('X-Powered-By: LMS/1.11-cvs/contrib_formularz_przelewu_wplaty');
 
 // Parse configuration file
 
@@ -81,32 +72,63 @@ $CONFIG = array();
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
     $CONFIG[$key] = $val;
 
-//  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
-$KONTO_DO = (! $CONFIG['finances']['account'] ? '98700000000000000000000123' : $CONFIG['finances']['account']);
+// Check for configuration vars and set default values
+$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
 
-// ustaw prawidłową ścieżkę do pliku z funkcją to_words()
-require_once("../../lib/locale/pl/functions.php");
+foreach(lms_parse_ini_file($CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
+        foreach($values as $key => $val)
+	        if(! isset($CONFIG[$section][$key]))
+		        $CONFIG[$section][$key] = $val;
 
-$ISP1_DO = (! $CONFIG['finances']['line_1'] ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_1']);
-$ISP2_DO = (! $CONFIG['finances']['line_2'] ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_2']);
+define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
-$USER_T1 = (! $CONFIG['finances']['pay_title'] ? 'Abonament - ID:%CID% %LongCID%' : $CONFIG['finances']['pay_title']);
+$_DBTYPE = $CONFIG['database']['type'];
+$_DBHOST = $CONFIG['database']['host'];
+$_DBUSER = $CONFIG['database']['user'];
+$_DBPASS = $CONFIG['database']['password'];
+$_DBNAME = $CONFIG['database']['database'];
+
+// Init database
+
+require_once(LIB_DIR.'/LMSDB.php');
+
+$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
+
+// Enable data encoding conversion if needed
+
+require_once(LIB_DIR.'/dbencoding.php');
+
+// Read configuration of LMS-UI from database
+
+if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
+        foreach($cfg as $row)
+                $CONFIG[$row['section']][$row['var']] = $row['value'];
+
+// funkcja to_words()
+require_once($CONFIG['directories']['lib_dir'].'/locale/pl/functions.php');
+
+$ISP1_DO = (!isset($CONFIG['finances']['line_1']) ? 'LINIA1xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_1']);
+$ISP2_DO = (!isset($CONFIG['finances']['line_2']) ? 'linia2xxxxxxxxxxxxxxxxxxxyz' : $CONFIG['finances']['line_2']);
+$USER_T1 = (!isset($CONFIG['finances']['pay_title']) ? 'Abonament - ID:%CID% %LongCID%' : $CONFIG['finances']['pay_title']);
+$UID = isset($_GET['UID']) ? intval($_GET['UID']) : 0;
 
 $Before = array ("%CID%","%LongCID%");
-$After = array ($_GET['UID'],sprintf('%04d',$_GET['UID']));
+$After = array ($UID, sprintf('%04d', $UID));
 
-$USER_TY=str_replace($Before,$After,$USER_T1);
+$USER_TY = str_replace($Before,$After,$USER_T1);
 
-$CURR = 'PLN';
-$SHORT_TO_WORDS = 0;	// 1 - krótki format kwoty słownej 'jed dwa trz 15/100'
-			// 0 - długi format kwoty słownej 'sto dwadzieścia trzy 15/100 zł'
-
-$USE_ICONV = 1;		// włącza przekodowywanie ciągów z UTF-8 do ISO-8859-2
+//  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
+$KONTO_DO = (!isset($CONFIG['finances']['account']) ? '98700000000000000000000123' : $CONFIG['finances']['account']);
+$CURR = 'PLN';		// oznaczenie waluty
+$SHORT_TO_WORDS = 0;	// 1 - krĂłtki format kwoty sĹownej 'jed dwa trz 15/100'
+			// 0 - dĹugi format kwoty sĹownej 'sto dwadzieĹcia trzy 15/100 zĹ'
+$USE_ICONV = 1;		// wĹÄcza przekodowywanie ciÄgĂłw z UTF-8 do ISO-8859-2
 
 /************** Koniec konfiguracji ****************/
 
-$KWOTA = trim($_GET['ILE']);
-$USER_OD = trim(strip_tags($_GET['OD']));
+$KWOTA = trim(isset($_GET['ILE']) ? $_GET['ile'] : 0);
+$USER_OD = trim(strip_tags(isset($_GET['OD']) ? $_GET['OD'] : ''));
 $USER_OD = $USE_ICONV ? iconv('UTF-8','ISO-8859-2',$USER_OD) : $USER_OD;
 
 $KWOTA_NR = str_replace(',','.',$KWOTA);  // na wszelki wypadek
@@ -122,17 +144,30 @@ else
 {
 	$KWOTA_ZL = to_words(floor($KWOTA_NR));
 	if($USE_ICONV) $KWOTA_ZL = iconv('UTF-8','ISO-8859-2',$KWOTA_ZL);
-	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100 złotych';
+	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100 zĹotych';
 }
 
-$SHIFT=394; // drugi druczek przesunięcie o 394
+?>
 
-for ( $j=0; $j<2; $j++ ) // pętla główna
+<HTML>
+<HEAD>
+
+<META http-equiv="Content-Type" content="text/html;charset=utf-8">
+</HEAD>
+<BODY>
+
+<FORM><P style="font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">W zaleĹźnoĹci od poczty/banku wpisz 1 lub 2 kopie. <input type="button" value="Drukuj" onClick="top.print();"></FORM>
+
+<?php
+
+$SHIFT=394; // drugi druczek przesuniÄcie o 394
+
+for ( $j=0; $j<2; $j++ ) // pÄtla gĹĂłwna
 {
 // teksty na druczku:
 
      $posx=60+$j*$SHIFT; 
-     echo('<div style="position: absolute; top: '. $posx .'px; left: 10px"><img src="przelew.png" border=0 alt="wpłata gotówkowa"></div>');
+     echo('<div style="position: absolute; top: '. $posx .'px; left: 10px"><img src="przelew.png" border=0 alt="wpĹata gotĂłwkowa"></div>');
      $posx=63+$j*$SHIFT;
      echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Arial, Helvetica;color: #FF0000;font-size: 6pt;">nazwa odbiorcy</span>');
      $posx=96+$j*$SHIFT;
@@ -144,27 +179,27 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
      $posx=163+$j*$SHIFT;
      echo('<span style="position: absolute; top: '. $posx .'px; left: 352px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">kwota</span>');
      $posx=194+$j*$SHIFT;
-     echo('<span style="position: absolute; top: '. $posx .'px; left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">kwota słownie</span>');
+     echo('<span style="position: absolute; top: '. $posx .'px; left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">kwota sĹownie</span>');
      $posx=222+$j*$SHIFT;
      echo('<span style="position: absolute; top: '. $posx .'px; left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">nazwa zleceniodawcy</span>');
      $posx=253+$j*$SHIFT;
      echo('<span style="position: absolute; top: '. $posx .'px; left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">nazwa zleceniodawcy cd.</span>');
      $posx=284+$j*$SHIFT;
-     echo('<span style="position: absolute; top: '. $posx .'px; left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">tytułem</span>');
+     echo('<span style="position: absolute; top: '. $posx .'px; left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">tytuĹem</span>');
      $posx=317+$j*$SHIFT;
-     echo('<span style="position: absolute; top: '. $posx .'px; left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">tytułem cd.</span>');
+     echo('<span style="position: absolute; top: '. $posx .'px; left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">tytuĹem cd.</span>');
      $posx=395+$j*$SHIFT;
-     echo('<span style="position: absolute; top: '. $posx .'px; left: 337px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">Opłata</span>');
+     echo('<span style="position: absolute; top: '. $posx .'px; left: 337px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">OpĹata</span>');
      $posx=425+$j*$SHIFT;
      echo('<span style="position: absolute; top: '. $posx .'px; left: 337px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">Podpis</span>');
 
 // waluta:
 
      $posx=174+$j*$SHIFT;
-     for ( $i=0; $i<27; $i++ ) 
+     for ( $i=0; $i<3; $i++ )
      {
           $posy=272+$i*19;
-          echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'.$CURR[$i].'</SpAn>');
+          echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'.$CURR[$i].'</span>');
      }
 
 // nazwa beneficjenta:
@@ -173,7 +208,7 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
      for ( $i=0; $i<27; $i++ ) 
      {
           $posy=62+$i*19;
-          echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'.$ISP1_DO[$i].'</SpAn>');
+          echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'.$ISP1_DO[$i].'</span>');
      }
      
      $posx=109+$j*$SHIFT;
@@ -203,41 +238,41 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
           echo('<SPAN style="position: absolute; top: '. $posx .'px; left: ' . $posy . 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'. $KWOTA_SL[$i] .'</SPAN>');
      }
 
-// kwota słownie:
+// kwota sĹownie:
 
      $posx=205+$j*$SHIFT;
      echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold; ";>'.$KWOTA_X.'</span>');
 
-// dane płatnika:
+// dane pĹatnika:
 
 
-     if (strlen($USER_OD)>54)  // jeżeli nazwa+adres są dłuższe niz 54 znaki _nie_ wpisujemy w kratki
+     if (strlen($USER_OD)>54)  // jeĹźeli nazwa+adres sÄ dĹuĹźsze niz 54 znaki _nie_ wpisujemy w kratki
      {
           $posx=235+$j*$SHIFT;
           echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'. substr($USER_OD,0,50) .'</span>');
           $posx=265+$j*$SHIFT;
           echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'. substr($USER_OD,50,100) .'</span>');
      }
-     else                // jeżeli nazwa+adres zmieszczą się w kratkach to wpisujemy w kratkach
+     else                // jeĹźeli nazwa+adres zmieszczÄ siÄ w kratkach to wpisujemy w kratkach
      {                    
           $posx=235+$j*$SHIFT;
-          for ( $i=0; $i<27; $i++ ) 
+          for ( $i=0; $i<27; $i++ ) if(isset($USER_OD[$i]))
           {
                $posy=62+$i*19;
                echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'. $USER_OD[$i].'</span>');
           }
           $posx=265+$j*$SHIFT;
-          for ( $i=27; $i<54; $i++ ) 
+          for ( $i=27; $i<54; $i++ ) if(isset($USER_OD[$i]))
           {
                $posy=62+$i*19-513;
                echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'. $USER_OD[$i].'</span>');
           }
      }
 
-// tytułem:
+// tytuĹem:
 
      $posx=298+$j*$SHIFT;
-     for ( $i=0; $i<27; $i++ ) 
+     for ( $i=0; $i<27; $i++ )  if(isset($USER_TY[$i]))
      {
           $posy=62+$i*19;
           echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'. $USER_TY[$i].'</span>');
@@ -247,10 +282,10 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
      $posx=327+$j*$SHIFT;   // wolna linijka
      echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">-</span>');
 
-} //  koniec pętli głównej
+} //  koniec pÄtli gĹĂłwnej
 ?>
 
-<span style="position: absolute; top: 880px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">Wydrukowano przy użyciu LMS (http://lms.org.pl)</span>
-<span style="position: absolute; top: 900px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">LMS kompletny system sieciowo-księgowy dla małych ISPów i ASKów, dostępny na licencji GNU GPL</span>
+<span style="position: absolute; top: 880px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">Wydrukowano przy uĹźyciu LMS (http://www.lms.org.pl)</span>
+<span style="position: absolute; top: 900px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">LMS kompletny system sieciowo-ksiÄgowy dla maĹych ISPĂłw i ASKĂłw, dostÄpny na licencji GNU GPL</span>
 
 </HTML>
