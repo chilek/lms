@@ -79,8 +79,10 @@ function getWrapTextWidth($font_size,$txt)
     return $pdf->getTextWidth($font_size, $long)+2*$margin+1;
 }
 
-// brzydki hack dla ezpdf 
+// brzydkie hacki dla ezpdf 
 @setlocale(LC_NUMERIC, 'C');
+mb_internal_encoding('ISO-8859-2'); // can't be set to UTF-8
+
 require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
 
 function init_pdf($pagesize, $orientation, $title)
