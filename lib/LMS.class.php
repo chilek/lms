@@ -945,7 +945,12 @@ class LMS
 
 	function CustomergroupGetAll()
 	{
-		return $this->DB->GetAll('SELECT id, name, description FROM customergroups ORDER BY name ASC');
+		return $this->DB->GetAll('SELECT g.id, g.name, g.description 
+				FROM customergroups g
+				WHERE NOT EXISTS (
+					SELECT 1 FROM excludedgroups 
+					WHERE userid = lms_current_user() AND customergroupid = g.id) 
+				ORDER BY g.name ASC');
 	}
 
 	function CustomergroupGet($id, $network=NULL)
