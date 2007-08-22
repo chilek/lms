@@ -67,16 +67,20 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 	header('Pragma: public');
 
 	if($list = $DB->GetAll(
-    		'SELECT documents.id AS id, value, number, cdate, customerid, 
-		documents.name AS customer, address, zip, city, ten, ssn, userid,
+    		'SELECT d.id AS id, value, number, cdate, customerid, 
+		d.name AS customer, address, zip, city, ten, ssn, userid,
 		template, extnumber, receiptcontents.description, 
 		cashregs.name AS cashreg
-		FROM documents 
-		LEFT JOIN receiptcontents ON (documents.id = docid)
+		FROM documents d
+		LEFT JOIN receiptcontents ON (d.id = docid)
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 		LEFT JOIN cashregs ON (cashregs.id = regid)
-		WHERE documents.type = ?'
+		WHERE d.type = ?'
 		.$where.'
+			AND NOT EXISTS (
+		    		SELECT 1 FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid) 
 		ORDER BY docid, itemid', array(DOC_RECEIPT)))
 	{
 		$record = '';
@@ -194,9 +198,13 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 
 	// get documents items numeric values for calculations
 	$items = $DB->GetAll('SELECT docid, itemid, taxid, value, count, description, prodid, content
-		FROM documents 
-		LEFT JOIN invoicecontents ON docid = documents.id 
+		FROM documents d
+		LEFT JOIN invoicecontents ON docid = d.id 
 		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) 
+			AND NOT EXISTS (
+		    		SELECT 1 FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid) 
 		ORDER BY cdate, docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 	// get documents data

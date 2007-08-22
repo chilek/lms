@@ -102,9 +102,13 @@ elseif(isset($_GET['fetchallinvoices']))
 {
 	$layout['pagetitle'] = trans('Invoices');
 
-	$ids = $DB->GetCol('SELECT id FROM documents 
+	$ids = $DB->GetCol('SELECT id FROM documents d
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
 				.($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
+				.' AND NOT EXISTS (
+					SELECT 1 FROM customerassignments a
+				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)' 
 				.' ORDER BY CEIL(cdate/86400), id',
 				array($_GET['from'], $_GET['to'], DOC_INVOICE, DOC_CNOTE));
 	if(!$ids)
