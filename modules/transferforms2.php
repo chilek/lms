@@ -84,20 +84,20 @@ function main_form($x, $y, $data)
 }
 
 $balance = $_POST['balance'] ? $_POST['balance'] : 0;
-$customer = $_POST['customer'] ? $_POST['customer'] : 0;
-$group = $_POST['customergroup'] ? $_POST['customergroup'] : 0;
+$customer = isset($_POST['customer']) ? intval($_POST['customer']) : 0;
+$group = isset($_POST['customergroup']) ? intval($_POST['customergroup']) : 0;
 
-$list = $DB->GetAll('SELECT customers.id AS id, address, zip, city, '
-	.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,   
+$list = $DB->GetAll('SELECT c.id AS id, address, zip, city, '
+	.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,   
 	COALESCE(SUM(value), 0.00) AS balance
-	FROM customers LEFT JOIN cash ON (customers.id=cash.customerid) '
-	.($group ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid)' : '')
+	FROM customersview c LEFT JOIN cash ON (c.id=cash.customerid) '
+	.($group ? 'LEFT JOIN customerassignments ON (c.id=customerassignments.customerid)' : '')
 	.'WHERE deleted = 0'
-	.($customer ? ' AND customers.id='.$customer : '')
+	.($customer ? ' AND c.id='.$customer : '')
 	.($group ? ' AND customergroupid='.$group : '')
-	.' GROUP BY customers.id, lastname, customers.name, address, zip, city
-	HAVING COALESCE(SUM(value), 0.00) < ? ORDER BY customers.id',
-	array($balance));
+	.' GROUP BY c.id, lastname, c.name, address, zip, city
+	HAVING COALESCE(SUM(value), 0.00) < ? ORDER BY c.id',
+	array(str_replace(',','.',$balance)));
 
 if(!$list)
 {

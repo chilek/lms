@@ -37,10 +37,10 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 	switch($order)
 	{
 		case 'id':
-			$sqlord = ' ORDER BY documents.id';
+			$sqlord = ' ORDER BY d.id';
 		break;
 		case 'cdate':
-			$sqlord = ' ORDER BY documents.cdate';
+			$sqlord = ' ORDER BY d.cdate';
 		break;
 		case 'number':
 			$sqlord = ' ORDER BY number';
@@ -86,7 +86,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 	if($cat=='notclosed')
 		$where = ' AND closed = 0';
 
-	if($result = $DB->GetAll('SELECT documents.id AS id, number, cdate, type,
+	if($result = $DB->GetAll('SELECT d.id AS id, number, cdate, type,
 			customerid, name, address, zip, city, template, closed, 
 			CASE reference WHEN 0 THEN
 			    SUM(a.value*a.count) 
@@ -94,13 +94,17 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
 			END AS value, 
 			COUNT(a.docid) AS count
-	    		FROM documents
-			LEFT JOIN invoicecontents a ON (a.docid = documents.id)
-			LEFT JOIN invoicecontents b ON (reference = b.docid AND a.itemid = b.itemid)
-			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+	    		FROM documents d
+			LEFT JOIN invoicecontents a ON (a.docid = d.id)
+			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
+			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			WHERE (type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
 			.$where
-			.' GROUP BY documents.id, number, cdate, customerid, 
+			.'AND NOT EXISTS (
+			        SELECT 1 FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
+			.' GROUP BY d.id, number, cdate, customerid, 
 			name, address, zip, city, template, closed, type, reference '
 	    		.$sqlord.' '.$direction))
 	{

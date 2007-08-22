@@ -7,6 +7,12 @@ version ? (????-??-??):
   - contrib/formularz_przelewu_wplaty: fixed css vulnerability, also
     configuration is readed from database and can be set in UI (alec) 
   - don't show excluded groups on filters (alec)
+  - excluded groups: works on Finances -> Raports (alec)
+  - excluded groups: works on Finances -> Export (alec)
+  - excluded groups: works on Finances -> Invoices List (alec)
+  - in Finances -> Raports -> Transfer forms balance value can be entered
+    with . or , sign (alec)
+  - invoices list: fixed sorting by items count (alec)
 
 version 1.10.0rc1 Urgo (2007-08-17):
 

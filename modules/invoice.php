@@ -71,9 +71,9 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 
 	sort($ids);
 	
-	if($_GET['original']) $which[] = trans('ORIGINAL');
-	if($_GET['copy']) $which[] = trans('COPY');
-	if($_GET['duplicate']) $which[] = trans('DUPLICATE');
+	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
+	if(isset($_GET['copy'])) $which[] = trans('COPY');
+	if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
 	
@@ -90,7 +90,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
 			$SMARTY->assign('invoice',$invoice);
-			if($invoice['invoice'])
+			if(isset($invoice['invoice']))
 				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
 			else
 				$SMARTY->display($CONFIG['invoices']['template_file']);
@@ -102,9 +102,13 @@ elseif(isset($_GET['fetchallinvoices']))
 {
 	$layout['pagetitle'] = trans('Invoices');
 
-	$ids = $DB->GetCol('SELECT id FROM documents 
+	$ids = $DB->GetCol('SELECT id FROM documents d
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
 				.($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
+				.' AND NOT EXISTS (
+					SELECT 1 FROM customerassignments a
+				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)' 
 				.' ORDER BY CEIL(cdate/86400), id',
 				array($_GET['from'], $_GET['to'], DOC_INVOICE, DOC_CNOTE));
 	if(!$ids)
@@ -113,9 +117,9 @@ elseif(isset($_GET['fetchallinvoices']))
 		die;
 	}
 
-	if($_GET['original']) $which[] = trans('ORIGINAL');
-	if($_GET['copy']) $which[] = trans('COPY');
-	if($_GET['duplicate']) $which[] = trans('DUPLICATE');
+	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
+	if(isset($_GET['copy'])) $which[] = trans('COPY');
+	if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 	
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
 
@@ -135,7 +139,7 @@ elseif(isset($_GET['fetchallinvoices']))
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
 			$SMARTY->assign('invoice',$invoice);
-			if($invoice['invoice'])
+			if(isset($invoice['invoice']))
 				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
 			else
 				$SMARTY->display($CONFIG['invoices']['template_file']);
@@ -156,7 +160,7 @@ elseif(isset($_GET['fetchsingle']))
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoiceheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
-	if($invoice['invoice'])
+	if(isset($invoice['invoice']))
 		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
 	else
 		$SMARTY->display($CONFIG['invoices']['template_file']);

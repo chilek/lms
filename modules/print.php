@@ -45,22 +45,27 @@ switch($type)
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
-		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetCustomerName($_POST['customer']), ($from ? $from : ''), $to);
-		
-		$id = $_POST['customer'];
+		$id = intval($_POST['customer']);
 
-		if($tslist = $DB->GetAll('SELECT cash.id AS id, time, type, cash.value AS value, taxes.label AS taxlabel, customerid, comment, name AS username 
-				    FROM cash 
-				    LEFT JOIN taxes ON (taxid = taxes.id)
-				    LEFT JOIN users ON users.id=userid 
-				    WHERE customerid=? ORDER BY time', array($id))
+		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetCustomerName($id), ($from ? $from : ''), $to);
+
+		if($tslist = $DB->GetAll('SELECT c.id AS id, time, type, c.value AS value, 
+				    taxes.label AS taxlabel, customerid, comment, name AS username 
+				    FROM cash c
+				    LEFT JOIN taxes ON (c.taxid = taxes.id)
+				    LEFT JOIN users ON (users.id = userid)
+				    WHERE c.customerid = ? 
+					    AND NOT EXISTS (
+				                    SELECT 1 FROM customerassignments a
+					            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					            WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)
+				    ORDER BY time', array($id))
 		)
+		{
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
 
-		if(sizeof($saldolist['id']) > 0)
-		{
 			foreach($saldolist['id'] as $i => $v)
 			{
 				$saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
@@ -144,18 +149,27 @@ switch($type)
 					.'WHERE time<?'
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE cash.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.' AND NOT EXISTS (
+			        		SELECT 1 FROM customerassignments a
+						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+						WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)'
 					, array($date['from']));
 		else
 			$lastafter = 0;
 			
-		if($balancelist = $DB->GetAll('SELECT cash.id AS id, time, userid, cash.value AS value, 
-					taxes.label AS taxlabel, cash.customerid, comment, cash.type AS type
-					FROM cash LEFT JOIN taxes ON (taxid = taxes.id) '
-					.($group ? 'LEFT JOIN customerassignments a ON (cash.customerid = a.customerid)  ' : '')
+		if($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid, c.value AS value, 
+					taxes.label AS taxlabel, c.customerid, comment, c.type AS type
+					FROM cash c 
+					LEFT JOIN taxes ON (taxid = taxes.id) '
+					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid)  ' : '')
 					.'WHERE time <= ? '
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE cash.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.' AND NOT EXISTS (
+			        		SELECT 1 FROM customerassignments a
+						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+						WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)'
 					.' ORDER BY time ASC', array($date['to'])))
 		{
 			$listdata['income'] = 0;
@@ -239,8 +253,12 @@ switch($type)
 		$layout['pagetitle'] = trans('Total Invoiceless Income ($0 to $1)',($from ? $from : ''), $to);
 		
 		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
-			FROM cash
+			FROM cash c
 			WHERE value>0 AND time>=? AND time<=? AND docid=0
+				AND NOT EXISTS (
+			        	SELECT 1 FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)
 			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));
 
@@ -353,7 +371,7 @@ switch($type)
 		{
 			foreach($taxes as $tax)
 			{
-				$list1 =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
+				$list1 =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
 					.$DB->Concat('city',"' '",'address').' AS address, ten, 
 					SUM(CASE suspended 
 					    WHEN 0 THEN 
@@ -368,8 +386,8 @@ switch($type)
 						END) 
 					    END) AS value
 						
-					FROM assignments, tariffs, customers
-					WHERE customerid = customers.id 
+					FROM assignments, tariffs, customersview c
+					WHERE customerid = c.id 
 					AND tariffid = tariffs.id AND taxid=?
 					AND deleted=0 
 					AND (datefrom<=? OR datefrom=0) AND (dateto>=? OR dateto=0) 
@@ -379,10 +397,10 @@ switch($type)
 					    OR (period='.QUARTERLY.' AND at=?) 
 					    OR (period='.YEARLY.' AND at=?)) '
 					.($customerid ? 'AND customerid='.$customerid : ''). 
-					' GROUP BY customerid, lastname, customers.name, city, address, ten ', 'id',
+					' GROUP BY customerid, lastname, c.name, city, address, ten ', 'id',
 					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $yearday));
 
-				$list2 =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, '
+				$list2 =  $DB->GetAllByKey('SELECT customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
 					.$DB->Concat('city',"' '",'address').' AS address, ten, 
 					SUM(CASE suspended 
 					    WHEN 0 THEN 
@@ -396,8 +414,8 @@ switch($type)
 						    ELSE liabilities.value * discount * '.$suspension_percentage.' / 10000 
 						END) 
 					    END) AS value
-					FROM assignments, liabilities, customers
-					WHERE customerid = customers.id 
+					FROM assignments, liabilities, customersview c
+					WHERE customerid = c.id 
 					AND liabilityid = liabilities.id AND taxid=?
 					AND deleted=0 
 					AND (datefrom<=? OR datefrom=0) AND (dateto>=? OR dateto=0) 
@@ -407,7 +425,7 @@ switch($type)
 					    OR (period='.QUARTERLY.' AND at=?) 
 					    OR (period='.YEARLY.' AND at=?)) '
 					.($customerid ? 'AND customerid='.$customerid : ''). 
-					' GROUP BY customerid, lastname, customers.name, city, address, ten ', 'id',
+					' GROUP BY customerid, lastname, c.name, city, address, ten ', 'id',
 					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $yearday));
 				
 				$list = array_merge((array) $list1, (array) $list2);
@@ -467,12 +485,12 @@ switch($type)
 				}
 			}
 
+			$SMARTY->assign('reportlist', $reportlist);
+			$SMARTY->assign('total',$total);
+			$SMARTY->assign('taxes', $taxes);
+			$SMARTY->assign('taxescount', sizeof($taxes));
 		}
 
-		$SMARTY->assign('reportlist', $reportlist);
-		$SMARTY->assign('total',$total);
-		$SMARTY->assign('taxes', $taxes);
-		$SMARTY->assign('taxescount', sizeof($taxes));
 		$SMARTY->display('printliabilityreport.html');
 	break;
 	
@@ -509,27 +527,35 @@ switch($type)
 			
 		if($from > 0)
 			$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
-						LEFT JOIN documents ON (docid = documents.id AND type = ?) 
+						LEFT JOIN documents d ON (docid = d.id AND type = ?) 
 						WHERE cdate < ?'
-						.($registry ? ' AND regid='.$registry : ''),
+						.($registry ? ' AND regid='.$registry : '')
+						.' AND NOT EXISTS (
+						        SELECT 1 FROM customerassignments a
+							JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+							WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)',
 						array(DOC_RECEIPT, $from));
+
+		$listdata['totalincome'] = 0;
+		$listdata['totalexpense'] = 0;
+		$listdata['advances'] = 0;
 			
 		if($list = $DB->GetAll(
-	    		'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
-			documents.name, address, zip, city, template, extnumber, closed, 
-			MIN(description) AS title, COUNT(*) AS posnumber 
-			FROM documents 
+	    		'SELECT d.id AS id, SUM(value) AS value, number, cdate, customerid, 
+				d.name, address, zip, city, template, extnumber, closed, 
+				MIN(description) AS title, COUNT(*) AS posnumber 
+			FROM documents d
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			LEFT JOIN receiptcontents ON (documents.id = docid)
-			WHERE documents.type = ?'
+			LEFT JOIN receiptcontents ON (d.id = docid)
+			WHERE d.type = ?'
 			.$where.'
-			GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, extnumber, closed
-			ORDER BY cdate, documents.id', array(DOC_RECEIPT)))
+				AND NOT EXISTS (
+					SELECT 1 FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
+			GROUP BY d.id, number, cdate, customerid, d.name, address, zip, city, template, extnumber, closed
+			ORDER BY cdate, d.id', array(DOC_RECEIPT)))
 		{
-			$listdata['totalincome'] = 0;
-			$listdata['totalexpense'] = 0;
-			$listdata['advances'] = 0;
-			
 			foreach($list as $idx => $row)
 			{
 				$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
@@ -554,8 +580,6 @@ switch($type)
 			}
 		}
 
-		//$listdata['totalpos'] = sizeof($receiptlist);
-		//$listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid=?', array($regid));
 		$listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
 
 		$from = date('Y/m/d', $from);
