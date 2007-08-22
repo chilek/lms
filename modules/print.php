@@ -271,9 +271,9 @@ switch($type)
 		}
 
 		$type = '';
-		$type .= $_POST['invoiceorg'] ? '&original=1' : '';
-		$type .= $_POST['invoicecopy'] ? '&copy=1' : '';
-		$type .= $_POST['invoicedup'] ? '&duplicate=1' : '';
+		$type .= isset($_POST['invoiceorg']) ? '&original=1' : '';
+		$type .= isset($_POST['invoicecopy']) ? '&copy=1' : '';
+		$type .= isset($_POST['invoicedup']) ? '&duplicate=1' : '';
 		if(!$type) $type = '&oryginal=1';
 		
 		$layout['pagetitle'] = trans('Invoices');
