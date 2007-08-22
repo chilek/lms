@@ -215,7 +215,7 @@ $layout['popup'] = isset($_GET['popup']) ? true : false;
 if($AUTH->islogged)
 {
 	$module = (isset($_GET['m']) ? $_GET['m'] : '');
-	$deny = FALSE;
+	$deny = $allow = FALSE;
 
 	if($module == '')
 	{
