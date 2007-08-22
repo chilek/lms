@@ -7,6 +7,8 @@ version ? (????-??-??):
   - added mb_internal_encoding('UTF-8') call, so we can now use PHP's
     option mbstring.func_overload = 7, added info about mbstring
     extension requirement and recommended settings in documentation (alec)
+  - contrib/formularz_przelewu_wplaty: fixed css vulnerability, also
+    configuration is readed from database and can be set in UI (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
