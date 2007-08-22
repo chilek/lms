@@ -1,0 +1,10 @@
+Konfiguracja 
+ 
+[finances]
+account			= '0000000000000000000001234'
+line_1			= 'SuperNet ISP 12-234 W-Wa'
+line_2			= 'Wiosenna 52/33' 
+pay_title		= 'Abonament - ID:%CID%: :%LongCID%:'
+
+[directories]
+lib_dir 		= /katalog/lib/lmsa	
