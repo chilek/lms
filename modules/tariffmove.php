@@ -24,11 +24,29 @@
  *  $Id$
  */
 
-if($LMS->TariffExists($_GET['from']) && $LMS->TariffExists($_GET['to']) && $_GET['is_sure'] = 1)
+$from = intval($_GET['from']);
+$to = intval($_GET['to']);
+
+if($LMS->TariffExists($from) && $LMS->TariffExists($to) && $_GET['is_sure'] == 1)
 {
-	$netid = ((isset($_GET['netid']) && $LMS->NetworkExists($_GET['netid'])) ? $_GET['netid'] : NULL);
-	$LMS->TariffMove($_GET['from'],$_GET['to'],$netid);
-	$SESSION->redirect('?m=tariffinfo&id='.$_GET['to'].($netid ? '&netid='.$netid : ''));
+	$network = ((isset($_GET['netid']) && $LMS->NetworkExists($_GET['netid'])) ? $_GET['netid'] : NULL);
+
+	if($network)
+	        $net = $LMS->GetNetworkParams($network);
+	
+	if($ids = $DB->GetCol('SELECT assignments.id AS id FROM assignments, customersview c '
+			.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
+			.'WHERE customerid = c.id AND deleted = 0 AND tariffid = '.$from
+			.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
+			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
+			))
+	{
+	        foreach($ids as $id)
+		        $DB->Execute('UPDATE assignments SET tariffid=?
+		    		WHERE id=? AND tariffid=?', array($to, $id, $from));
+	}
+
+	$SESSION->redirect('?m=tariffinfo&id='.$to.($network ? '&netid='.$network : ''));
 }
 else
 	header("Location: ?".$SESSION->get('backto'));

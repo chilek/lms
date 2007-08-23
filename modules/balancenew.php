@@ -30,8 +30,12 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, taxes.label AS tax, 
 		    customerid, time, comment, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername
 		    FROM cash 
-		    LEFT JOIN customersview c ON (customerid = c.id)
+		    LEFT JOIN customers c ON (customerid = c.id)
 		    LEFT JOIN taxes ON (taxid = taxes.id)
+		    WHERE NOT EXISTS (
+		            SELECT 1 FROM customerassignments a
+			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			    WHERE e.userid = lms_current_user() AND a.customerid = cash.customerid)
 		    ORDER BY cash.id DESC LIMIT 1');
 
 $SMARTY->assign('last',$last);

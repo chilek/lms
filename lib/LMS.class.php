@@ -1889,24 +1889,6 @@ class LMS
 		return $tarifflist;
 	}
 
-	function TariffMove($from, $to, $network=NULL)
-	{
-		if ($network)
-			$net = $this->GetNetworkParams($network);
-
-		if($ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, customersview c '
-			.($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
-			.'WHERE customerid = c.id AND deleted = 0 '
-			.($network ? 'AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '
-			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
-			.'AND tariffid = ?', array($from)))
-		{
-			foreach($ids as $id)
-				$this->DB->Execute('UPDATE assignments SET tariffid=? 
-					WHERE id=? AND tariffid=?', array($to, $id, $from));
-		}
-	}
-
 	function GetTariffIDByName($name)
 	{
 		return $this->DB->GetOne('SELECT id FROM tariffs WHERE name=?', array($name));
