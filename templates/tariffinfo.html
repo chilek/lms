@@ -216,8 +216,8 @@
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
 				<INPUT TYPE="hidden" VALUE="{if !$netid}0{else}{$netid}{/if}" NAME="netid">
-				<input type="hidden" name="is_sure">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{t}Are you sure, you want to move customers to tariff '+getText(document.tmove.to.value)+'?{/t}','1');">{t}Move customers to subscription:{/t}</A> </B>
+				<input type="hidden" name="is_sure" VALUE="0">
+				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(document.tmove.elements['is_sure'],'{t}Are you sure, you want to move customers to tariff '+getText(document.tmove.to.value)+'?{/t}','1');">{t}Move customers to subscription:{/t}</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs}
 					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
