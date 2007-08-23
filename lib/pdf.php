@@ -110,8 +110,7 @@ function init_pdf($pagesize, $orientation, $title)
 	    'b'=>'arialbd.afm',
 	);
 
-	//$pdf =& new Cezpdf('A4','landscape');
-	$pdf =& new Cezpdf('A4','portrait');
+	$pdf =& new Cezpdf('A4', $orientation); //landscape/portrait
 
 	$pdf->addInfo('Producer','LMS Developers');
 	$pdf->addInfo('Title',iconv("UTF-8","ISO-8859-2//TRANSLIT",$title));
