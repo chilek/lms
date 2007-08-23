@@ -34,25 +34,25 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 		{
 			case 'value':
 				$val = intval($search) > 0 ? intval($search) : intval($search)*-1;
-				$where = 'ABS(cash.value) = '.$val;
+				$where = ' AND ABS(cash.value) = '.$val;
 			break;
 			case 'number':
-				$where = 'documents.number = '.intval($search);
+				$where = ' AND documents.number = '.intval($search);
 			break;
 			case 'cdate':
-				$where = 'cash.time >= '.$search.' AND cash.time < '.($search+86400);
+				$where = ' AND cash.time >= '.$search.' AND cash.time < '.($search+86400);
 			break;
 			case 'ten':
-				$where = 'c.ten = \''.$search.'\'';
+				$where = ' AND c.ten = \''.$search.'\'';
 			break;
 			case 'customerid':
-				$where = 'cash.customerid = '.intval($search);
+				$where = ' AND cash.customerid = '.intval($search);
 			break;
 			case 'name':
-				$where = $DB->Concat('UPPER(c.lastname)',"' '",'c.name').' ?LIKE? \'%'.$search.'%\'';
+				$where = ' AND '.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' ?LIKE? \'%'.$search.'%\'';
 			break;
 			case 'address':
-				$where = 'c.address ?LIKE? \'%'.$search.'%\'';
+				$where = ' AND c.address ?LIKE? \'%'.$search.'%\'';
 			break;
 		}
 	}
@@ -62,9 +62,13 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 				documents.type AS doctype, documents.closed AS closed, '
 				.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
 				FROM cash
-				LEFT JOIN customersview c ON (cash.customerid = c.id)
+				LEFT JOIN customers c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid) '
-				.(isset($where) ? 'WHERE '.$where : '')
+				.' WHERE NOT EXISTS (
+				        SELECT 1 FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = cash.customerid)'
+				.(isset($where) ? $where : '')
 				.' ORDER BY time, cash.id'))
 	{
 		$userlist = $DB->GetAllByKey('SELECT id, name FROM users','id');
@@ -83,9 +87,9 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 		{
 			if($group['group'])
 			{
-				if(!$group['exclude'] && !$customers[$row['customerid']])
+				if(!$group['exclude'] && !isset($customers[$row['customerid']]))
 					continue;
-				elseif($group['exclude'] && $customers[$row['customerid']])
+				elseif($group['exclude'] && isset($customers[$row['customerid']]))
 					continue;
 			}
 
@@ -146,7 +150,7 @@ $SESSION->save('blge', $ge);
 if($c == 'cdate' && $s)
 {
         list($year, $month, $day) = explode('/', $s);
-	$s = mktime(0,0,0, $month, $day, $year);
+	$s = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
 }
 
 $balancelist = GetBalanceList($s, $c, array('group' => $g, 'exclude'=> $ge));
