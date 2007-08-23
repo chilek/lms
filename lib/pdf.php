@@ -79,10 +79,8 @@ function getWrapTextWidth($font_size,$txt)
     return $pdf->getTextWidth($font_size, $long)+2*$margin+1;
 }
 
-// brzydkie hacki dla ezpdf 
+// brzydki hack dla ezpdf 
 @setlocale(LC_NUMERIC, 'C');
-mb_internal_encoding('ISO-8859-2'); // can't be set to UTF-8
-
 require_once(LIB_DIR.'/ezpdf/class.ezpdf.php');
 
 function init_pdf($pagesize, $orientation, $title)
@@ -112,8 +110,7 @@ function init_pdf($pagesize, $orientation, $title)
 	    'b'=>'arialbd.afm',
 	);
 
-	//$pdf =& new Cezpdf('A4','landscape');
-	$pdf =& new Cezpdf('A4','portrait');
+	$pdf =& new Cezpdf('A4', $orientation); //landscape/portrait
 
 	$pdf->addInfo('Producer','LMS Developers');
 	$pdf->addInfo('Title',iconv("UTF-8","ISO-8859-2//TRANSLIT",$title));
