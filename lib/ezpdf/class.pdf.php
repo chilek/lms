@@ -1863,7 +1863,7 @@ function newPage($insert=0,$id=0,$pos='after'){
   if ($insert){
     // the id from the ezPdf class is the od of the contents of the page, not the page object itself
     // query that object to find the parent
-    $rid = $this->objects[$id]['onPage'];
+    $rid = isset($this->objects[$id]) ? $this->objects[$id]['onPage'] : array();
     $opt= array('rid'=>$rid,'pos'=>$pos);
     $this->o_page($this->numObj,'new',$opt);
   } else {

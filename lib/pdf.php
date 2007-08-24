@@ -24,6 +24,11 @@
  *  $Id$
  */
 
+define('PDF_MARGIN_BOTTOM', 40);
+define('PDF_MARGIN_TOP', 40);
+define('PDF_MARGIN_LEFT', 30);
+define('PDF_MARGIN_RIGHT', 30);
+
 function text_autosize($x,$y,$size,$text,$width) 
 {
     global $pdf;
@@ -79,6 +84,18 @@ function getWrapTextWidth($font_size,$txt)
     return $pdf->getTextWidth($font_size, $long)+2*$margin+1;
 }
 
+// page break checking
+function check_page_length(&$y, $len=0)
+{
+	global $pdf, $id;
+
+	if($y - $len < PDF_MARGIN_BOTTOM)
+	{
+		$pdf->ezNewPage();
+		$y = $pdf->ez['pageHeight'] - PDF_MARGIN_TOP;
+	}
+}
+
 // brzydkie hacki dla ezpdf 
 @setlocale(LC_NUMERIC, 'C');
 mb_internal_encoding('ISO-8859-2'); // can't be set to UTF-8
@@ -117,7 +134,7 @@ function init_pdf($pagesize, $orientation, $title)
 	$pdf->addInfo('Title',iconv("UTF-8","ISO-8859-2//TRANSLIT",$title));
 	$pdf->addInfo('Creator','LMS '.$layout['lmsv']);
 	$pdf->setPreferences('FitWindow','1');
-	$pdf->ezSetMargins(0,0,0,0);
+	$pdf->ezSetMargins(PDF_MARGIN_TOP, PDF_MARGIN_BOTTOM, PDF_MARGIN_LEFT, PDF_MARGIN_RIGHT);
 	$pdf->setLineStyle(0.5);
 	$pdf->setFontFamily('arial.afm',$tmp);
 	$pdf->selectFont(LIB_DIR.'/ezpdf/arialbd.afm',

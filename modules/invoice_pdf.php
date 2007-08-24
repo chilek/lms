@@ -446,6 +446,289 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     return $return;
 }
 
+function new_invoice_data($x,$y,$width,$font_size,$margin) 
+{
+    global $invoice, $pdf;
+
+    $pdf->setlinestyle(0.5);
+    $data = array();
+    $cols = array();
+    $params = array(
+	    'fontSize' => $font_size,
+	    'xPos' => $x,
+	    'xOrientation' => 'right', // I think it should be left here (bug?)
+	    'rowGap' => 2,
+	    'colGap' => 2,
+	    'showHeadings' => 0,
+	    'cols' => array(),
+	    );
+        
+    // tabelka glowna
+    $cols['no'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('No.')).'</b>';
+    $cols['name'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Name of Product, Commodity or Service:')).'</b>';
+    $cols['prodid'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Product ID:')).'</b>';
+    $cols['content'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Unit:')).'</b>';
+    $cols['count'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Amount:')).'</b>';
+    if($invoice['discount'])
+	    $cols['discount'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Discount:')).'</b>';
+    $cols['basevalue'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Unitary Net Value:')).'</b>';
+    $cols['totalbase'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Net Value:')).'</b>';
+    $cols['taxlabel'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Tax Rate:')).'</b>';
+    $cols['totaltax'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Tax Value:')).'</b>';
+    $cols['total'] = '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Gross Value:')).'</b>';
+
+    foreach($cols as $name => $text)
+    {
+	    $params['cols'][$name] = array(
+		    'justification' => 'center',
+		    'width' => getWrapTextWidth($font_size,$text)+2*$margin+2,
+	    );
+    }
+    
+    // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pó¼niej
+    if ($invoice['content']) foreach ($invoice['content'] as $item)
+    {
+	$tt_width['name'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['description']));
+	$tt_width['prodid'] = $pdf->getTextWidth($font_size,$item['prodid']);
+	$tt_width['content'] = $pdf->getTextWidth($font_size,$item['content']);
+	$tt_width['count'] = $pdf->getTextWidth($font_size,sprintf('%.2f',$item['count']));
+	if($invoice['discount'])
+	    $tt_width['discount'] = $pdf->getTextWidth($font_size,sprintf('%.2f%%',$item['discount']));
+	$tt_width['basevalue'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['basevalue'])))+6;
+	$tt_width['totalbase'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totalbase'])))+6;
+	$tt_width['taxlabel'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']))+6;
+	$tt_width['totaltax'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])))+6;
+	$tt_width['total'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])))+6;
+
+	foreach($tt_width as $name => $w) 
+		if(($w+2*$margin+2) > $params['cols'][$name]['width']) 
+			$params['cols'][$name]['width'] = $w+2*$margin+2;
+    }
+    
+    if(isset($invoice['invoice']['content'])) foreach ($invoice['invoice']['content'] as $item)
+    {
+	$tt_width['name'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['description']));
+	$tt_width['prodid'] = $pdf->getTextWidth($font_size,$item['prodid']);
+	$tt_width['content'] = $pdf->getTextWidth($font_size,$item['content']);
+	$tt_width['count'] = $pdf->getTextWidth($font_size,sprintf('%.2f',$item['count']));
+	if($invoice['discount'])
+	    $tt_width['discount'] = $pdf->getTextWidth($font_size,sprintf('%.2f%%',$item['discount']));
+	$tt_width['basevalue'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['basevalue'])))+6;
+	$tt_width['totalbase'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totalbase'])))+6;
+	$tt_width['taxlabel'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']))+6;
+	$tt_width['totaltax'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax'])))+6;
+	$tt_width['total'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total'])))+6;
+
+	foreach($tt_width as $name => $w) 
+		if(($w+2*$margin+2) > $params['cols'][$name]['width']) 
+			$params['cols'][$name]['width'] = $w+2*$margin+2;
+    }
+
+    // Kolumna 'name' bedzie miala rozmiar ustalany dynamicznie
+    $sum = 0;
+    foreach($params['cols'] as $name => $col)
+	    if($name != 'name')
+		    $sum += $col['width'];
+    $params['cols']['name']['width'] = $width - $sum;
+
+    // table header
+    $pdf->ezSetY($y);
+    $data = array(0=>$cols);
+    $y = $pdf->ezTable($data, $cols,'', $params);
+    $data = array();
+
+    foreach($cols as $name => $text)
+    {
+	    switch($name)
+	    {
+		    case 'name': $params['cols'][$name]['justification'] = 'left'; break;
+		    default: $params['cols'][$name]['justification'] = 'right'; break;
+	    }
+    }
+
+    // size of taxes summary table
+    $xx = $x;
+    foreach($params['cols'] as $name => $value)
+	    if(in_array($name, array('no','name','prodid','content','count','discount','basevalue')))
+	    {
+		    $xx += $params['cols'][$name]['width'];
+	    }
+	    else
+	    	    $cols2[$name] = $params['cols'][$name];
+
+    $data2 = array();
+    $params2 = array(
+	    'fontSize' => $font_size,
+	    'xPos' => $xx,
+	    'xOrientation' => 'right',
+	    'rowGap' => 2,
+	    'colGap' => 2,
+	    'showHeadings' => 0,
+	    'cols' => $cols2,
+    );
+
+    if(isset($invoice['invoice']))
+    {
+	// we have credit note, so first print corrected invoice data
+
+	$y -= 20;	
+	check_page_length($y);
+        $y = $y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Was:')).'</b>');
+
+	$i = 0;
+	if ($invoice['invoice']['content']) 
+	    foreach ($invoice['invoice']['content'] as $item)
+	    {
+		$data[$i]['no'] = $i+1;
+		$data[$i]['name'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['description']);
+		$data[$i]['prodid'] = $item['prodid'];
+		$data[$i]['content'] = $item['content'];
+		$data[$i]['count'] = sprintf('%.2f',$item['count']);
+		if($invoice['discount'])
+			$data[$i]['discount'] = sprintf('%.2f%%',$item['discount']);
+		$data[$i]['basevalue'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['basevalue']));
+		$data[$i]['totalbase'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totalbase']));
+		$data[$i]['taxlabel'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']);
+		$data[$i]['totaltax'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax']));
+		$data[$i]['total'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total']));
+	
+		$i++;
+	    }
+
+	$pdf->ezSetY($y);
+	$y = $pdf->ezTable($data, $cols,'', $params);
+	$data = array();
+
+	$y -= 10;
+	check_page_length($y);
+        $fy = $y - $margin - $pdf->GetFontHeight($font_size);    
+	text_align_right($xx-5, $fy, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Total:')).'</b>');
+    
+	$data2[0]['totalbase'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['invoice']['totalbase']));
+        $data2[0]['taxlabel'] = "<b>x</b>";
+	$data2[0]['totaltax'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['invoice']['totaltax']));
+        $data2[0]['total'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['invoice']['total']));
+
+	$pdf->ezSetY($y);
+	$y = $pdf->ezTable($data2, NULL,'', $params2);
+	$data2 = array();
+    
+	check_page_length($y);
+	$fy = $y - $margin - $pdf->GetFontHeight($font_size);    
+	text_align_right($xx-5,$fy,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('in it:')).'</b>');
+	
+	if ($invoice['invoice']['taxest']) 
+	{
+	    $i = 0;
+	    foreach ($invoice['invoice']['taxest'] as $item) 
+	    {
+		$data2[$i]['totalbase'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['base']));
+		$data2[$i]['taxlabel'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']);
+		$data2[$i]['totaltax'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['tax']));
+		$data2[$i]['total'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total']));
+		$i++;
+	    }
+	    $pdf->ezSetY($y);
+	    $y = $pdf->ezTable($data2, NULL,'', $params2);
+	    $data2 = array();
+	}
+
+	$y -= 20;
+	if($invoice['reason'] != '')
+	{
+		check_page_length($y);
+		$y = text_wrap($x,$y,$width,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Reason:').' '.$invoice['reason']).'</b>','left');
+		$y -= 10;
+	}
+	check_page_length($y);
+	$y = $y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Corrected to:')).'</b>');
+    }
+        
+    // pozycje faktury
+    $i = 0;
+    if(isset($invoice['content'])) foreach ($invoice['content'] as $item)
+    {
+	$data[$i]['no'] = $i+1;
+	$data[$i]['name'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['description']);
+	$data[$i]['prodid'] = $item['prodid'];
+	$data[$i]['content'] = $item['content'];
+	$data[$i]['count'] = sprintf('%.2f',$item['count']);
+	if($invoice['discount'])
+		$data[$i]['discount'] = sprintf('%.2f%%',$item['discount']);
+	$data[$i]['basevalue'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['basevalue']));
+	$data[$i]['totalbase'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totalbase']));
+	$data[$i]['taxlabel'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']);
+	$data[$i]['totaltax'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['totaltax']));
+	$data[$i]['total'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total']));
+	
+	$i++;
+    }
+
+    $pdf->ezSetY($y);
+    $y = $pdf->ezTable($data, $cols,'', $params);
+
+    $y -= 10;
+    check_page_length($y);
+    $return[1] = $y;
+
+    $fy = $y - $margin - $pdf->GetFontHeight($font_size);    
+    text_align_right($xx-5, $fy, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Total:')).'</b>');
+
+    // podsumowanie podatku    
+    $data2[0]['totalbase'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['totalbase']));
+    $data2[0]['taxlabel'] = "<b>x</b>";
+    $data2[0]['totaltax'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['totaltax']));
+    $data2[0]['total'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['total']));
+
+    $pdf->ezSetY($y);
+    $y = $pdf->ezTable($data2, NULL,'', $params2);
+    $data2 = array();
+    
+    check_page_length($y);
+    $fy = $y - $margin - $pdf->GetFontHeight($font_size);    
+    text_align_right($xx-5,$fy,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('in it:')).'</b>');
+    
+    if(isset($invoice['taxest'])) 
+    {
+	$i = 0;
+	foreach ($invoice['taxest'] as $item) 
+	{
+	    $data2[$i]['totalbase'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['base']));
+	    $data2[$i]['taxlabel'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['taxlabel']);
+	    $data2[$i]['totaltax'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['tax']));
+	    $data2[$i]['total'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($item['total']));
+	    $i++;
+	}
+	$pdf->ezSetY($y);
+	$y = $pdf->ezTable($data2, NULL,'', $params2);
+	$data2 = array();
+    }
+
+    if(isset($invoice['invoice']))
+    {
+	$total = $invoice['total'] - $invoice['invoice']['total'];
+	$totalbase = $invoice['totalbase'] - $invoice['invoice']['totalbase'];
+	$totaltax = $invoice['totaltax'] - $invoice['invoice']['totaltax'];
+	
+	$y -= 10;
+	$fy = $y - $margin - $pdf->GetFontHeight($font_size);
+	text_align_right($xx-5,$fy,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT", trans('Difference value:')).'</b>');
+    
+	$data2[0]['totalbase'] = ($totalbase>0 ? '+' : '') . iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totalbase));
+        $data2[0]['taxlabel'] = "<b>x</b>";
+	$data2[0]['totaltax'] = ($totaltax>0 ? '+' : '') . iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($totaltax));
+        $data2[0]['total'] = ($total>0 ? '+' : '') . iconv("UTF-8","ISO-8859-2//TRANSLIT", moneyf($total));
+	
+	$pdf->ezSetY($y);
+	$y = $pdf->ezTable($data2, NULL,'', $params2);
+	$data2 = array();
+    }
+    
+    $return[2] = $y;
+
+    return $return;
+}
+
 function invoice_to_pay($x,$y) 
 {
     global $pdf, $invoice;
@@ -483,7 +766,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 
 function invoice_body() 
 {
-    global $invoice,$pdf,$id,$CONFIG;
+    global $invoice,$pdf,$CONFIG;
     
     if(isset($invoice['invoice']))
 	    $template = $CONFIG['invoices']['cnote_template_file'];
@@ -493,6 +776,7 @@ function invoice_body()
     switch ($template)
     {
 	case "standard":
+	    $page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']-50,20,8,'right',trans('Page $0 of $1', '{PAGENUM}','{TOTALPAGENUM}'),1);
 	    $top=800;
 	    invoice_dates(500,800);    
     	    invoice_address_box(400,700);
@@ -502,14 +786,16 @@ function invoice_body()
 	    $top=$top-20;
     	    $top=invoice_buyer(30,$top);
 	    $top=$top-20;
-    	    $return=invoice_data(30,$top,530,7,2);
+    	    $return=new_invoice_data(30,$top,530,7,2);
 	    invoice_expositor(30,$return[1]-20);
     	    $top=$return[2]-20;
 	    $top=invoice_to_pay(30,$top);
 	    $top=$top-20;
 	    invoice_footnote(30,$top,530,10);
+	    $page = $pdf->ezStopPageNumbers(1,1,$page);
 	    break;
 	case "FT-0100":
+	    $page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']-50,20,8,'',trans('Page $0 of $1', '{PAGENUM}','{TOTALPAGENUM}'),1);
 	    $top=800;
 	    invoice_dates(500,800);    
     	    invoice_address_box(400,700);
@@ -519,25 +805,26 @@ function invoice_body()
 	    $top=$top-10;
     	    $top=invoice_buyer(30,$top);
 	    $top=$top-10;
-    	    $return=invoice_data(30,$top,430,6,1);
 	    invoice_footnote(470,$top,90,8);
-	    invoice_expositor(30,$return[1]-20);
+    	    $return=new_invoice_data(30,$top,430,6,1);
     	    $top=$return[2]-10;
+	    invoice_expositor(30,$return[1]-10);
 	    invoice_to_pay(30,$top);
+	    check_page_length($top, 200);
 	    invoice_main_form_fill(187,3,0.4);
 	    invoice_simple_form_fill(14,3,0.4);
+	    $page = $pdf->ezStopPageNumbers(1,1,$page);
 	    break;
 	default:
 	    require($template);
     }
-    if(!isset($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
+
+    if(!isset($invoice['last'])) $pdf->ezNewPage();
 }
 
 require_once(LIB_DIR.'/pdf.php');
 
 $pdf =& init_pdf('A4', 'portrait', trans('Invoices'));
-
-$id = $pdf->getFirstPageId();
 
 if(isset($_GET['print']) && $_GET['print'] == 'cached')
 {
