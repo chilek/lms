@@ -13,6 +13,7 @@ version ? (????-??-??):
   - invoices list: fixed sorting by items count (alec)
   - fixed customers moving from one tariff to other (alec)
   - fixed sql query in Mailing (alec)
+  - fixed device's IP removing (alec)
 
 version 1.10.0rc1 Urgo (2007-08-17):
 

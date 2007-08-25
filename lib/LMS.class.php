@@ -1387,7 +1387,12 @@ class LMS
 
 	function NodeExists($id)
 	{
-		return ($this->DB->GetOne('SELECT n.id FROM nodes n, customersview c WHERE ownerid = c.id AND n.id = ?', array($id)) ? TRUE : FALSE);
+		return ($this->DB->GetOne('SELECT n.id FROM nodes n 
+				WHERE n.id = ? AND NOT EXISTS (
+				        SELECT 1 FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)'
+				, array($id)) ? TRUE : FALSE);
 	}
 
 	function NodeStats()
