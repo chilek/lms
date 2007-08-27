@@ -541,6 +541,7 @@ function new_invoice_data($x,$y,$width,$font_size,$margin)
     {
 	    switch($name)
 	    {
+		    case 'no': $params['cols'][$name]['justification'] = 'center'; break;
 		    case 'name': $params['cols'][$name]['justification'] = 'left'; break;
 		    default: $params['cols'][$name]['justification'] = 'right'; break;
 	    }
