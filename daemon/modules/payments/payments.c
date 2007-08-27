@@ -26,8 +26,6 @@
 #include <syslog.h>
 #include <string.h>
 #include <time.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
 #include "lmsd.h"
 #include "payments.h"
