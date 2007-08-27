@@ -601,8 +601,6 @@ function new_invoice_data($x,$y,$width,$font_size,$margin)
 
 	$y -= 10;
 	check_page_length($y);
-        $fy = $y - $margin - $pdf->GetFontHeight($font_size);    
-	text_align_right($xx-5, $fy, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Total:')).'</b>');
     
 	$data2[0]['totalbase'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['invoice']['totalbase']));
         $data2[0]['taxlabel'] = "<b>x</b>";
@@ -612,6 +610,9 @@ function new_invoice_data($x,$y,$width,$font_size,$margin)
 	$pdf->ezSetY($y);
 	$y = $pdf->ezTable($data2, NULL,'', $params2);
 	$data2 = array();
+
+	$fy = $y + $pdf->GetFontHeight($font_size)/2;    
+	text_align_right($xx-5, $fy, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Total:')).'</b>');
     
 	check_page_length($y);
 	$fy = $y - $margin - $pdf->GetFontHeight($font_size);    
@@ -669,10 +670,6 @@ function new_invoice_data($x,$y,$width,$font_size,$margin)
 
     $y -= 10;
     check_page_length($y);
-    $return[1] = $y;
-
-    $fy = $y - $margin - $pdf->GetFontHeight($font_size);    
-    text_align_right($xx-5, $fy, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Total:')).'</b>');
 
     // podsumowanie podatku    
     $data2[0]['totalbase'] = iconv("UTF-8","ISO-8859-2//TRANSLIT",moneyf($invoice['totalbase']));
@@ -683,6 +680,11 @@ function new_invoice_data($x,$y,$width,$font_size,$margin)
     $pdf->ezSetY($y);
     $y = $pdf->ezTable($data2, NULL,'', $params2);
     $data2 = array();
+
+    $fy = $y + $pdf->GetFontHeight($font_size)/2;    
+    text_align_right($xx-5, $fy, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Total:')).'</b>');
+
+    $return[1] = $y;
     
     check_page_length($y);
     $fy = $y - $margin - $pdf->GetFontHeight($font_size);    
