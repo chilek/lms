@@ -229,7 +229,7 @@ QueryHandle * db_pquery(ConnHandle *conn, char *q, ... )
 	    result = (char*) strdup(s);
     } 
     va_end(ap);
-    
+
     // execute prepared query
     query = db_query(conn, result);
     // free temporary vars

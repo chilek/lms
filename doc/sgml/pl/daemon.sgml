@@ -336,6 +336,24 @@
 			    <para>Rozdzaj p³atno¶ci. Domy¶lnie: 'TRANSFER'.</para>
 			    <para>Przyk³ad: <prompt>paytype = 'GOTÓWKA'</prompt></para>
 			</listitem>
+			<listitem>
+				<para>numberplan</para>
+				<para>ID planu numeracyjnego faktur. 
+				Domy¶lnie: 0 (plan domy¶lny).</para>
+				<para>Przyk³ad: <prompt>numberplan = 0</prompt></para>
+			</listitem>
+			<listitem>
+				<para>networks</para>
+				<para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+				Domy¶lnie: pusta (wszystkie sieci).</para>
+				<para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>customergroups</para>
+				<para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+				Domy¶lnie: pusta (wszystkie grupy).</para>
+				<para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>

@@ -9,6 +9,7 @@ struct ethers_module
 
 	int dummy_macs;
 };
+
 struct net
 {
 	char *name;
