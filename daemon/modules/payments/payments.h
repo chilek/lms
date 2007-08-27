@@ -7,7 +7,9 @@ struct payments_module
 	char *s_comment;
 	char *paytype;
 	char *deadline;
-	char *numberplanid;
+	char *networks;
+	char *customergroups;	
+	int numberplanid;
 	int up_payments;
 	int expiry_days;
 	int num_period;
@@ -28,3 +30,9 @@ struct payments_module
 #define _WEEKLY_ "2"
 #define _DAILY_ "1"
 #define _DISPOSABLE_ "0"
+
+#ifdef USE_PGSQL
+#define BROADCAST "cast(cast(address as bit(32)) | ~ cast(inet_aton(mask) as bit(32)) as bigint)"
+#else
+#define BROADCAST "address | 4294967295>>bit_count(inet_aton(mask))"
+#endif

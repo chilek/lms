@@ -310,6 +310,24 @@
                    <para>Payment type. Default: 'TRANSFER'.</para>
                    <para>Example: <prompt>paytype = 'CASH'</prompt></para>
                </listitem>
+               <listitem>
+                   <para>numberplan</para>
+                   <para>ID of invoices numbering plan defined in Configuration -> Numbering Plans. 
+                   Default: 0 (default plan).</para>
+                   <para>Example: <prompt>numberplan = 1</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>networks</para>
+                   <para>List of network names to restrinct customers for accounting.
+                   Default: empty (all networks).</para>
+                   <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>customergroups</para>
+                   <para>List of customers groups to restrict customers for accounting.
+                   Default: empty (all groups).</para>
+                   <para>Example: <prompt>customergroups = "group1 group2"</prompt></para>
+               </listitem>
               </itemizedlist>
               </sect3>
           </sect2>

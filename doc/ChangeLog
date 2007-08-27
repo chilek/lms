@@ -17,6 +17,7 @@ version ? (????-??-??):
   - fixed SQL query in Mailing (alec)
   - pdf invoices: added page numbers, invoices can have many positions -
     added page breaking, using ezpdf tables (alec)
+  - lmsd/payments: added options 'networks', 'customergroups', 'numberplan' (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 

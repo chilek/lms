@@ -3672,6 +3672,18 @@ Chapter 6. LMS Daemon
      * paytype
        Payment type. Default: 'TRANSFER'.
        Example: paytype = 'CASH'
+     * numberplan
+       ID of invoices numbering plan defined in Configuration ->
+       Numbering Plans. Default: 0 (default plan).
+       Example: numberplan = 1
+     * networks
+       List of network names to restrinct customers for accounting.
+       Default: empty (all networks).
+       Example: networks = "lan1 lan2"
+     * customergroups
+       List of customers groups to restrict customers for accounting.
+       Default: empty (all groups).
+       Example: customergroups = "group1 group2"
      _________________________________________________________________
 
 6.2.4. Notify

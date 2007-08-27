@@ -26,6 +26,8 @@
 #include <syslog.h>
 #include <string.h>
 #include <time.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "lmsd.h"
 #include "payments.h"
@@ -141,13 +143,79 @@ void reload(GLOBAL *g, struct payments_module *p)
 	QueryHandle *res, *result, *sres;
 	char *insert, *description, *invoiceid;
 	char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
-	int i, imonth, imday, today, docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
+	int i, imonth, imday, today, n=2, k=2;
+	int docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
 	char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4];  //odjac jeden?
 	char monthname[20];
 	char start[12], end[12];
+
+	char *numberplanid = strdup(itoa(p->numberplanid));
+	
+	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n \
+				WHERE ownerid = customerid \
+				AND (%nets) \
+	                        AND ((ipaddr > address AND ipaddr < ("BROADCAST")) \
+				OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) \
+				)");
+				
+	char *netnames = strdup(p->networks);
+	char *netname = strdup(netnames);
+	char *netsql = strdup("");
+			
+	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a \
+				WHERE a.customerid = customerid \
+				AND g.id = a.customergroupid \
+				AND (%groups)) \
+				");
+	
+	char *groupnames = strdup(p->customergroups);
+	char *groupname = strdup(groupnames);
+	char *groupsql = strdup("");
+	
+	while( n>1 )
+	{
+    		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+
+		if( strlen(netname) )
+		{
+			netsql = realloc(netsql, sizeof(char *) * (strlen(netsql) + strlen(netname) + 30));
+			if(strlen(netsql))
+				strcat(netsql, " OR UPPER(n.name) = UPPER('");
+			else
+				strcat(netsql, "UPPER(n.name) = UPPER('");
+			
+			strcat(netsql, netname);
+			strcat(netsql, "')");
+		}
+	}
+	free(netname); free(netnames);
+	
+	if(strlen(netsql))
+		g->str_replace(&nets, "%nets", netsql);
+
+	while( k>1 )
+	{
+		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
+
+		if( strlen(groupname) )
+		{
+			groupsql = realloc(groupsql, sizeof(char *) * (strlen(groupsql) + strlen(netname) + 30));
+			if(strlen(groupsql))
+				strcat(groupsql, " OR UPPER(g.name) = UPPER('");
+			else
+				strcat(groupsql, "UPPER(g.name) = UPPER('");
+			
+			strcat(groupsql, groupname);
+			strcat(groupsql, "')");
+		}		
+	}		
+	free(groupname); free(groupnames);
+
+	if(strlen(groupsql))
+		g->str_replace(&groups, "%groups", groupsql);
 	
 	// get current date
 	t = time(NULL);
@@ -277,17 +345,13 @@ void reload(GLOBAL *g, struct payments_module *p)
 #endif
 	} else 
 		syslog(LOG_ERR, "[%s/payments] Unable to read 'payments' table",p->base.instance);
-		
+
 	/****** customer payments *******/
 	// first get next invoiceid
-	if( (res = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", start, end, p->numberplanid))!= NULL ) 
+	if( (res = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", start, end, numberplanid))!= NULL ) 
 	{
-  		if( g->db_nrows(res) )
-			number = atoi(g->db_get_data(res,0,"number"));
-		g->db_free(&res);
-
-		// payments accounting and invoices writing
-		res = g->db_pquery(g->conn, "\
+		// let's create main query
+  		char *query = strdup("\
 			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
 			    UPPER(lastname) AS lastname, customers.name AS custname, address, zip, city, ten, ssn, \
 			    assignments.id AS assignmentid, settlement, datefrom, discount, \
@@ -311,8 +375,21 @@ void reload(GLOBAL *g, struct payments_module *p)
 			    OR (period="_YEARLY_" AND at=?) \
 			    OR (period="_DISPOSABLE_" AND at=?)) \
 			    AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
-			ORDER BY customerid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday, itoa(today));
+			    %nets \
+			    %groups \
+			ORDER BY customerid, invoice DESC, value DESC\
+			");
+			
+		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
+		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
 		
+		if( g->db_nrows(res) )
+			number = atoi(g->db_get_data(res,0,"number"));
+		g->db_free(&res);
+
+		// payments accounting and invoices writing
+		res = g->db_pquery(g->conn, query, weekday, monthday, quarterday, yearday, itoa(today));
+
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
 			int uid = atoi(g->db_get_data(res,i,"customerid"));
@@ -376,7 +453,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, ?, 1, ?, '? ?', '?', '?', '?', '?', '?', %NOW%, ?, '?')",
 						itoa(++number),
-						p->numberplanid,
+						numberplanid,
 						g->db_get_data(res,i,"customerid"),
 						g->db_get_data(res,i,"lastname"),
 						g->db_get_data(res,i,"custname"),
@@ -569,11 +646,17 @@ void reload(GLOBAL *g, struct payments_module *p)
 	g->db_pexec(g->conn, "DELETE FROM assignments WHERE at = ?", itoa(today));
 
 	// clean up
+	free(nets);
+	free(groups);
+	free(netsql);
+	free(groupsql);
+	free(numberplanid);
 	free(p->comment);
 	free(p->s_comment);
 	free(p->deadline);
 	free(p->paytype);
-	free(p->numberplanid);
+	free(p->networks);
+	free(p->customergroups);	
 }
 
 struct payments_module * init(GLOBAL *g, MODULE *m)
@@ -596,6 +679,9 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->paytype = strdup(g->config_getstring(p->base.ini, p->base.instance, "paytype", "TRANSFER"));
 	p->up_payments = g->config_getbool(p->base.ini, p->base.instance, "up_payments", 1);
 	p->expiry_days = g->config_getint(p->base.ini, p->base.instance, "expiry_days", 30);
+	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
+	p->networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "networks", ""));
+	p->customergroups = strdup(g->config_getstring(p->base.ini, p->base.instance, "customergroups", ""));
 	
 	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");
 	if( g->db_nrows(res) )
@@ -604,18 +690,28 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 		p->suspension_percentage = 0;
 	g->db_free(&res);
 
-	res = g->db_query(g->conn, "SELECT id, period FROM numberplans WHERE doctype=1 AND isdefault=1");
-	if( g->db_nrows(res) )
+	if(p->numberplanid)
 	{
-		p->num_period = atoi(g->db_get_data(res, 0, "period"));
-		p->numberplanid = strdup(g->db_get_data(res, 0, "id"));
+		res = g->db_pquery(g->conn, "SELECT id, period FROM numberplans WHERE doctype=1 AND id=?", itoa(p->numberplanid));
+		if(!g->db_nrows(res))
+			p->numberplanid = 0;
 	}
-	else
+
+	if(!p->numberplanid)
 	{
-		p->num_period = YEARLY;
-		p->numberplanid = strdup("0");
+		res = g->db_query(g->conn, "SELECT id, period FROM numberplans WHERE doctype=1 AND isdefault=1");
+		if( g->db_nrows(res) )
+		{
+			p->num_period = atoi(g->db_get_data(res, 0, "period"));
+			p->numberplanid = atoi(g->db_get_data(res, 0, "id"));
+		}
+		else
+		{
+			p->num_period = YEARLY;
+			p->numberplanid = 0;
+		}
+    		g->db_free(&res);
 	}
-	g->db_free(&res);
 
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/payments] initialized", p->base.instance);
