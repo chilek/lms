@@ -41,7 +41,7 @@ if(sizeof($numberplanedit))
 	elseif(!preg_match('/%[1-9]{0,1}N/', $numberplanedit['template']))
 		$error['template'] = trans('Template must consist "%N" specifier!');
 
-	if(!$numberplanedit['isdefault'])
+	if(!isset($numberplanedit['isdefault']))
 		$numberplanedit['isdefault'] = 0;
 
 	if($numberplanedit['doctype'] == 0)
