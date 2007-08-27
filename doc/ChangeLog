@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - genfake: fixed problem with data limit field in tariffs (alec)
+  - customers list: optimized sql query (alec)
 
 version 1.10.0rc2 Urgo (2007-08-27):
 

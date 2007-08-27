@@ -603,12 +603,12 @@ class LMS
 				(SELECT COALESCE(SUM(value),0) FROM cash WHERE customerid = c.id '
 					.($time ? ' AND time < '.$time : '').') AS balance
 				FROM customersview c '
-				.($network ? 'LEFT JOIN nodes ON (c.id=ownerid) ' : '')
 				.($customergroup ? 'LEFT JOIN customerassignments ON (c.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
 				.($state !=0 ? ' AND status = '.$state : '')
-				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
-					OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+				.($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND 
+							((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
+							OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
 								WHERE c.id = a.customerid)' : '')
@@ -624,7 +624,6 @@ class LMS
 											AND (dateto >= ?NOW? OR dateto = 0)
 											AND suspended = 1)))' : '')
 				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
-				.' GROUP BY c.id, lastname, c.name, status, address, zip, city, email, ten, ssn, c.info, message '
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
@@ -743,26 +742,26 @@ class LMS
 
 			if($disabled || $online || $indebted)
 			{
-				$customerlist = $customerlist2;
+				$customerlist = isset($customerlist2) ? $customerlist2 : array();
 			}
-		}
-
-		switch($order)
-		{
-			case 'tariff':
-				foreach($customerlist as $idx => $row)
-				{
-					$tarifftable['idx'][] = $idx;
-					$tarifftable['tariffvalue'][] = $row['tariffvalue'];
-				}
-				if(is_array($tarifftable))
-				{
-					array_multisort($tarifftable['tariffvalue'],($direction == "desc" ? SORT_DESC : SORT_ASC),$tarifftable['idx']);
-					foreach($tarifftable['idx'] as $idx)
-						$ncustomerelist[] = $customerlist[$idx];
-				}
-				$customerlist = $ncustomerelist;
-			break;
+		
+			switch($order)
+			{
+				case 'tariff':
+					foreach($customerlist as $idx => $row)
+					{
+						$tarifftable['idx'][] = $idx;
+						$tarifftable['tariffvalue'][] = $row['tariffvalue'];
+					}
+					if(is_array($tarifftable))
+					{
+						array_multisort($tarifftable['tariffvalue'],($direction == "desc" ? SORT_DESC : SORT_ASC),$tarifftable['idx']);
+						foreach($tarifftable['idx'] as $idx)
+							$ncustomerelist[] = $customerlist[$idx];
+					}
+					$customerlist = $ncustomerelist;
+				break;
+			}
 		}
 		
 		$customerlist['total'] = sizeof($customerlist);
@@ -1387,10 +1386,10 @@ class LMS
 
 	function NodeExists($id)
 	{
-		return ($this->DB->GetOne('SELECT n.id FROM nodes n 
+		return ($this->DB->GetOne('SELECT n.id FROM nodes n
 				WHERE n.id = ? AND NOT EXISTS (
-				        SELECT 1 FROM customerassignments a
-					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+		            		SELECT 1 FROM customerassignments a
+				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)'
 				, array($id)) ? TRUE : FALSE);
 	}
