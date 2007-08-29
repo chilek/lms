@@ -396,7 +396,7 @@ function setInvoiceExtFormat()
 					</TD>
 					<TD width="1%">
 						<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-					    		<OPTION VALUE="0">{t}- select registry -{/t}</OPTION>
+					    		<OPTION VALUE="0">{t}- all -{/t}</OPTION>
 						        {foreach from=$cashreglist item=c}
 							<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 						        {/foreach}
