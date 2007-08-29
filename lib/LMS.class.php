@@ -498,16 +498,16 @@ class LMS
 		switch($order)
 		{
 			case 'id':
-				$sqlord = 'ORDER BY c.id';
+				$sqlord = ' ORDER BY c.id';
 			break;
 			case 'address':
-				$sqlord = 'ORDER BY address';
+				$sqlord = ' ORDER BY address';
 			break;
 			case 'balance':
-				$sqlord = 'ORDER BY balance';
+				$sqlord = ' ORDER BY balance';
 			break;
 			default:
-				$sqlord = 'ORDER BY customername';
+				$sqlord = ' ORDER BY customername';
 			break;
 		}
 
