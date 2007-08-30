@@ -114,10 +114,20 @@ $_CITY = (! $CONFIG['finances']['city'] ? trans('Not set') : $CONFIG['finances']
 
 $control_lines = 0;
 
-$ids = $DB->GetCol('SELECT id FROM documents
+$ids = $DB->GetCol('SELECT id FROM documents d
         WHERE cdate > ? AND cdate < ? AND type = 1'
-        .($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
-        .' ORDER BY customerid',
+	.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
+        .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
+	.(!empty($_GET['groupid']) ?
+	' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
+	        EXISTS (SELECT 1 FROM customerassignments a
+			WHERE a.customergroupid = '.intval($_GET['groupid']).'
+			AND a.customerid = d.customerid)' : '')
+	.' AND NOT EXISTS (
+	        SELECT 1 FROM customerassignments a
+		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+		WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
+	.' ORDER BY CEIL(cdate/86400), id',
         array($_GET['from'], $_GET['to']));
 
 if(!$ids)

@@ -760,39 +760,51 @@ function setPrintInvoices(id)
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
-						<IMG src="img/customer.gif" alt="">
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{t}Customer:{/t}</B>
-					</TD>
-					<TD width="1%" nowrap>
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="You can select customer or group of customers to limit results"}>
-							<OPTION value="0">{t}- all customers -{/t}</OPTION>
-							{section name="customers" loop=$customers}
-							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
-							{/section}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{t}or Group:{/t}</B>
-					</TD>
-					<TD width="1%">
-						<SELECT size="1" name="customergroup" {tip text="You can select customer or group of customers to limit results"}>
-							<OPTION value="0">{t}- all groups -{/t}</OPTION>
-							{section name="groups" loop=$customergroups}
-							<OPTION value="{$customergroups[groups].id}">{$customergroups[groups].name|truncate:40:"...":true} ({$customergroups[groups].id|string_format:"%04d"})</OPTION>
-							{/section}
-						</SELECT>
+					    <TABLE width="100%">
+						<TR>
+						    <TD width="1%">
+							<IMG src="img/customer.gif" alt="">
+						    </TD>
+						    <TD width="1%" nowrap>
+							<B>{t}Customer:{/t}</B>
+						    </TD>
+						    <TD width="98%" nowrap>
+							{if $customers}
+							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
+							    <OPTION value="0">{t}- all customers -{/t}</OPTION>
+							    {section name="customers" loop=$customers}
+							    <OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+							    {/section}
+							</SELECT>
+							{else}
+							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+							{/if}
+						    </TD>
+						</TR>
+						<TR>
+						    <TD width="1%">
+							<IMG src="img/group.gif" alt="">
+						    </TD>
+						    <TD width="1%" nowrap>
+							<B>{t}Group:{/t}</B>
+						    </TD>
+						    <TD width="98%" nowrap>
+							<SELECT size="1" name="customergroup">
+							    <OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+			    				    {section name="customergroups" loop=$customergroups}
+							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+							    {/section}
+							</SELECT>
+    							<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}>{t}exclude group{/t}</a>
+						    </TD>
+						</TR>
+					    </TABLE>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/value.gif" alt="">
 					</TD>
-					<TD width="94%" nowrap>
+					<TD width="98%" nowrap>
 						<B>{t}Balance:{/t}</B>&nbsp;<INPUT TYPE="text" NAME="balance" SIZE="10" {tip text="Enter balance limit (default 0)"}>
 					</TD>
 				</TR>
