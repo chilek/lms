@@ -86,15 +86,19 @@ function main_form($x, $y, $data)
 $balance = $_POST['balance'] ? $_POST['balance'] : 0;
 $customer = isset($_POST['customer']) ? intval($_POST['customer']) : 0;
 $group = isset($_POST['customergroup']) ? intval($_POST['customergroup']) : 0;
+$exclgroup = isset($_POST['groupexclude']) ? 1 : 0;
 
 $list = $DB->GetAll('SELECT c.id AS id, address, zip, city, '
 	.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,   
 	COALESCE(SUM(value), 0.00) AS balance
-	FROM customersview c LEFT JOIN cash ON (c.id=cash.customerid) '
-	.($group ? 'LEFT JOIN customerassignments ON (c.id=customerassignments.customerid)' : '')
+	FROM customersview c 
+	LEFT JOIN cash ON (c.id = cash.customerid) '
 	.'WHERE deleted = 0'
-	.($customer ? ' AND c.id='.$customer : '')
-	.($group ? ' AND customergroupid='.$group : '')
+	.($customer ? ' AND c.id = '.$customer : '')
+	.($group ?
+        ' AND '.($exclgroup ? 'NOT' : '').'
+	        EXISTS (SELECT 1 FROM customerassignments a
+		WHERE a.customergroupid = '.$group.' AND a.customerid = c.id)' : '')						
 	.' GROUP BY c.id, lastname, c.name, address, zip, city
 	HAVING COALESCE(SUM(value), 0.00) < ? ORDER BY c.id',
 	array(str_replace(',','.',$balance)));

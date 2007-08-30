@@ -312,10 +312,6 @@ switch($type)
 		$from = $_POST['invoicefrom'];
 		$to = $_POST['invoiceto'];
 
-		// date format 'yyyy/mm/dd'	
-		list($year, $month, $day) = split('/',$from);
-		$date['from'] = mktime(0,0,0,(int)$month,(int)$day,(int)$year);
-
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
@@ -323,10 +319,22 @@ switch($type)
 			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
+
+		if($from) {
+			list($year, $month, $day) = split('/',$from);
+			$date['from'] = mktime(0,0,0,$month,$day,$year);
+		} else { 
+			$from = date('Y/m/d',time());
+			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
+		}
 		
 		$_GET['from'] = $date['from'];
 		$_GET['to'] = $date['to'];
 		$_GET['customerid'] = $_POST['customer'];
+		$_GET['groupid'] = $_POST['group'];
+		$_GET['numberplan'] = $_POST['numberplan'];
+		$_GET['groupexclude'] = !empty($_POST['groupexclude']) ? 1 : 0;
+		$which = '';
 		
 		require_once(MODULES_DIR.'/transferforms.php');
 		

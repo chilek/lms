@@ -21,6 +21,7 @@ version ? (????-??-??):
     'numberplan' (alec)
   - added numbering plan filter to Sale Registry report (alec)
   - added customer groups filter to Cash Report (alec)
+  - added customer groups filter to Finances/Reports/Transfer Forms (alec)
   - added customer groups and numberng plan filter to 
     Finances/Reports/Invoices  (alec)
 
