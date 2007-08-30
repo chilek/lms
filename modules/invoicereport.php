@@ -45,9 +45,25 @@ if($to) {
 
 $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 
-$listdata = array();
+$listdata = array('tax' => 0, 'brutto' => 0);
 $invoicelist = array();
 $taxeslist = array();
+
+if(!empty($_POST['group']))
+{
+	$group = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').' 
+		EXISTS (SELECT 1 FROM customerassignments a
+			WHERE a.customergroupid = '.intval($_POST['group']).'
+			AND a.customerid = d.customerid)';
+
+        $groupname = $DB->GetOne('SELECT name FROM customergroups WHERE id=?', 
+			array(intval($_POST['group'])));
+	
+	if(isset($_POST['groupexclude']))
+	        $layout['group'] = trans('Group: all excluding $0', $groupname);
+	else
+	        $layout['group'] = trans('Group: $0', $groupname);
+}
 
 // we can't simply get documents with SUM(value*count)
 // because we need here incoices-like round-off
@@ -57,18 +73,22 @@ $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
 	    FROM documents d
 	    LEFT JOIN invoicecontents ON docid = d.id 
 	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) '
-	    .($_POST['numberplanid'] ? 'AND numberplanid = '.$_POST['numberplanid'] : '').'
-		    AND NOT EXISTS (
+	    .($_POST['numberplanid'] ? 'AND d.numberplanid = '.intval($_POST['numberplanid']) : '')
+	    .(isset($group) ? $group : '')
+	    .' AND NOT EXISTS (
                 	    SELECT 1 FROM customerassignments a
 			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
 	    ORDER BY CEIL(cdate/86400), d.id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 // get documents data
-$docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template, reference
-	    FROM documents 
-	    LEFT JOIN numberplans ON numberplanid = numberplans.id
-	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) ', 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+$docs = $DB->GetAllByKey('SELECT d.id AS id, number, cdate, customerid, name, address, zip, city, ten, ssn, template, reference
+	    FROM documents d
+	    LEFT JOIN numberplans ON d.numberplanid = numberplans.id
+	    WHERE (d.type = ? OR d.type = ?) AND (d.cdate BETWEEN ? AND ?) '
+	    .($_POST['numberplanid'] ? 'AND d.numberplanid = '.intval($_POST['numberplanid']) : '')
+	    .(isset($group) ? $group : '')
+	    , 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 if($items)
 {
@@ -88,6 +108,15 @@ if($items)
 		$invoicelist[$idx]['cdate'] = $doc['cdate'];
 		$invoicelist[$idx]['customerid'] = $doc['customerid'];
 
+		if(!isset($invoicelist[$idx][$taxid]))
+		{
+			$invoicelist[$idx][$taxid]['tax'] = 0;
+			$invoicelist[$idx][$taxid]['val'] = 0;
+		}
+		
+		if(!isset($invoicelist[$idx]['tax'])) $invoicelist[$idx]['tax'] = 0;
+		if(!isset($invoicelist[$idx]['brutto'])) $invoicelist[$idx]['brutto'] = 0;
+		
 		if($doc['reference'])
 		{
 			// I think we can simply do query here instead of building
@@ -123,6 +152,12 @@ if($items)
 		$invoicelist[$idx][$taxid]['val'] += $val;
 		$invoicelist[$idx]['tax'] += $tax;
 		$invoicelist[$idx]['brutto'] += $sum;
+		
+		if(!isset($listdata[$taxid]))
+		{
+			$listdata[$taxid]['tax'] = 0;
+			$listdata[$taxid]['val'] = 0;
+		}
 		
 		$listdata[$taxid]['tax'] += $tax;
 		$listdata[$taxid]['val'] += $val;

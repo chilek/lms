@@ -102,14 +102,20 @@ elseif(isset($_GET['fetchallinvoices']))
 {
 	$layout['pagetitle'] = trans('Invoices');
 
-	$ids = $DB->GetCol('SELECT id FROM documents d
-				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
-				.($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
+	$ids = $DB->GetCol('SELECT d.id FROM documents d
+				WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?)'
+				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
+				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
+				.(!empty($_GET['groupid']) ? 
+				' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
+				        EXISTS (SELECT 1 FROM customerassignments a
+					        WHERE a.customergroupid = '.intval($_GET['groupid']).'
+						AND a.customerid = d.customerid)' : '')
 				.' AND NOT EXISTS (
 					SELECT 1 FROM customerassignments a
 				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)' 
-				.' ORDER BY CEIL(cdate/86400), id',
+				.' ORDER BY CEIL(d.cdate/86400), d.id',
 				array($_GET['from'], $_GET['to'], DOC_INVOICE, DOC_CNOTE));
 	if(!$ids)
 	{

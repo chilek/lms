@@ -3,7 +3,9 @@
 <TABLE WIDTH="100%">
 	<TR>
 		<TD WIDTH="99%" ALIGN="LEFT">
-			<H1>{$layout.pagetitle}</H1>
+			<P class="hdf"><B>{$layout.pagetitle}</B>
+			{if $layout.group}<BR><font class="sdr"><B>{$layout.group}</B></font>{/if}
+			</P>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>

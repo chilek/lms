@@ -295,7 +295,16 @@ switch($type)
 		if(!$type) $type = '&oryginal=1';
 		
 		$layout['pagetitle'] = trans('Invoices');
-		header('Location: ?m=invoice&fetchallinvoices=1'.$type.'&customerid='.$_POST['customer'].'&from='.$date['from'].'&to='.$date['to']);
+	
+		header('Location: ?m=invoice&fetchallinvoices=1'
+			.$type
+			.'&from='.$date['from']
+			.'&to='.$date['to']
+			.(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
+			.(!empty($_POST['group']) ? '&groupid='.intval($_POST['group']) : '')
+			.(!empty($_POST['numberplan']) ? '&numberplanid='.intval($_POST['numberplan']) : '')
+			.(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
+		);
 	break;	
 
 	case 'transferforms': /********************************************/
@@ -514,6 +523,7 @@ switch($type)
 
 		$registry = intval($_POST['registry']);
 		$user = intval($_POST['user']);
+		$group = intval($_POST['group']);
 		$where = '';
 		
 		if($registry)
@@ -524,12 +534,23 @@ switch($type)
 			$where .= ' AND cdate <= '.$to;
 		if($user)
 			$where .= ' AND userid = '.$user;
+		if($group)
+		{
+		        $groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').'
+			            EXISTS (SELECT 1 FROM customerassignments a
+				            WHERE a.customergroupid = '.$group.'
+					    AND a.customerid = d.customerid)';
+			$where .= $groupwhere;
+		}
+											
 			
 		if($from > 0)
 			$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
 						LEFT JOIN documents d ON (docid = d.id AND type = ?) 
 						WHERE cdate < ?'
 						.($registry ? ' AND regid='.$registry : '')
+						.($user ? ' AND userid='.$user : '')
+						.($group ? $groupwhere : '')
 						.' AND NOT EXISTS (
 						        SELECT 1 FROM customerassignments a
 							JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -591,11 +612,20 @@ switch($type)
 			$period = $from.' - '.$to;
 
 		$layout['pagetitle'] = trans('Cash Report').' '.$period;
-		$layout['registry'] = trans('Registry: $0', ($registry ? $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)) : trans('all')));
 		
+		if($registry)
+			$layout['registry'] = trans('Registry: $0', ($registry ? $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)) : trans('all')));
 		if($user)
 			$layout['username'] = trans('Cashier: $0', $DB->GetOne('SELECT name FROM users WHERE id=?', array($user)));
-		
+		if($group)
+		{
+			$groupname = $DB->GetOne('SELECT name FROM customergroups WHERE id=?', array($group));
+	
+			if(isset($_POST['groupexclude']))
+				$layout['group'] = trans('Group: all excluding $0', $groupname);
+			else	
+				$layout['group'] = trans('Group: $0', $groupname);
+		}
 		$SMARTY->assign('receiptlist', $list);
 		$SMARTY->assign('listdata', $listdata);
 
@@ -605,7 +635,7 @@ switch($type)
 			$totals = array();
 					
 			// hidden option: max records count for one page of printout
-			// I thinks 20 records is fine, but someone needs 19.
+			// I think 20 records is fine, but someone needs 19.
 			$rows = isset($CONFIG['phpui']['printout_pagelimit']) ? $CONFIG['phpui']['printout_pagelimit'] : 20;
 
 			// create a new array and do some calculations 
