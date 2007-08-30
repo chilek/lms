@@ -1703,7 +1703,7 @@ $_LANG['Documents'] = 'Dokumenty';
 $_LANG['Documents: list, searching, adding'] = 'Dokumenty: lista, wyszukiwanie, dodawanie';
 $_LANG['List of documents'] = 'Lista dokumentów';
 $_LANG['No such documents matching search criteria or list is empty.'] = 'Brak dokumentów spełniających kryteria wyszukiwania lub lista jest pusta.';
-$_LANG['Numbering plan:'] = 'Plan numeracyjny:';
+$_LANG['Plan:'] = 'Plan:';
 $_LANG['Additional informations:'] = 'Informacje dodatkowe:';
 $_LANG['extended format'] = 'format rozszerzony';
 $_LANG['Page $0 from $1'] = 'Strona $0 z $1';
@@ -1856,8 +1856,8 @@ $_LANG['Excluded groups:'] = 'Wyłączone grupy:';
 $_LANG['Available<!plural>'] = 'Dostępne';
 $_LANG['Selected<!plural>'] = 'Wybrane';
 $_LANG['customers groups management'] = 'zarządzanie grupami klientów';
-$_LANG['Enabled<!plural>:'] = 'Włączone:';
-$_LANG['Disabled<!plural>:'] = 'Wyłączone:';
 $_LANG['Groups:'] = 'Grupy:';
-
+$_LANG['Group: $0'] = 'Grupa: $0';
+$_LANG['Group: all excluding $0'] = 'Grupa: wszystkie oprócz $0';
+ 
 ?>
