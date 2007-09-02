@@ -253,14 +253,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					// add domain to table
 					domains[dc++] = strdup(name);
 					
-					finfile = dns->fpatterns;//strdup
+					finfile = dns->fpatterns;
 				}
 				else
 				{
-					finfile = dns->fzones;//strdup
+					finfile = dns->fzones;
 				}
 
-				rinfile = dns->rpatterns;//strdup
+				rinfile = dns->rpatterns;
 				
 				if(finfile[strlen(finfile) - 1] != '/')
 					ftmpfile = g->str_concat(finfile, "/");
@@ -270,7 +270,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 				if(rinfile[strlen(rinfile) - 1] != '/')
 					rtmpfile = g->str_concat(rinfile, "/");
 				else 
-					rtmpfile = rinfile;
+					rtmpfile = strdup(rinfile);
 				
 				finfile = g->str_concat(ftmpfile, name);
 				rinfile = g->str_concat(rtmpfile, inet_ntoa(network));
