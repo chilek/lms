@@ -5,6 +5,7 @@ version ? (????-??-??):
   - genfake: fixed problem with data limit field in tariffs (alec)
   - customers list: optimized sql query (alec)
   - excluded groups: works with transfer forms and pdf invoices (alec)
+  - lmsd/dns: fixed bug in dns.c - added lost strdup() (alec)
 
 version 1.10.0rc2 Urgo (2007-08-27):
 
