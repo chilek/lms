@@ -26,7 +26,7 @@
 
 function MessageAdd($msg, $headers, $file=NULL)
 {
-	global $DB, $LMS;
+	global $DB, $LMS, $CONFIG;
 	$time = time();
 	
 	$head = '';
@@ -59,7 +59,7 @@ function MessageAdd($msg, $headers, $file=NULL)
 		if(@rename($file['tmp_name'], $newfile))
 			$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
 					VALUES (?,?,?)', array($id, $file['name'], $file['type']));
-	}		    
+	}
 }
 
 if(isset($_POST['message']))

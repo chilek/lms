@@ -38,21 +38,6 @@ if(!$rights)
 	die;
 }
 
-if(isset($_GET['delmsgid']))
-{
-	if(($rights & 4) != 4)
-	{
-		$SMARTY->display('noaccess.html');
-		$SESSION->close();
-		die;
-	}
-
-	if($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($_GET['id'])) != $_GET['delmsgid'])
-	{
-		$DB->Execute('DELETE FROM rtmessages WHERE id = ?', array(intval($_GET['delmsgid'])));
-	}
-}
-
 $ticket = $LMS->GetTicketContents($_GET['id']);
 
 if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconfig($CONFIG['phpui']['helpdesk_stats']))

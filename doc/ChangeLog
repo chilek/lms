@@ -24,6 +24,7 @@ version ? (????-??-??):
   - added customer groups filter to Finances/Reports/Transfer Forms (alec)
   - added customer groups and numberng plan filter to 
     Finances/Reports/Invoices  (alec)
+  - helpdesk: fixed attachments removing when deleting tickets and messages (alec) 
 
 version 1.11.0 Thoth (2007-08-17):
 
