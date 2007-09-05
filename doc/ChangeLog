@@ -6,7 +6,9 @@ version ? (????-??-??):
     second argument to be of type integer (alec)
   - contrib/formularz_przelewu_wplaty: fixed css vulnerability, also
     configuration is readed from database and can be set in UI (alec)
-  - lmsd/dns: fixed bug in dns.c - added lost strdup()
+  - lmsd/dns: fixed bug in dns.c - added lost strdup() (alec)
+  - helpdesk: fixed attachments removing when deleting tickets and 
+    messages (alec)
 
 version 1.8.12 Tagan (2007-08-21):
 

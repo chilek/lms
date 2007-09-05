@@ -2740,7 +2740,23 @@ class LMS
 
 	function TicketDelete($ticketid)
 	{
-		$ts = time();
+		if(isset($this->CONFIG['rt']['mail_dir']))
+		{
+			if($messages = $this->DB->GetCol('SELECT id FROM rtmessages WHERE ticketid = ?', array($ticketid)))
+    				foreach($messages as $msg)
+	    			{
+		    			if($attachments = $this->DB->GetCol('SELECT filename FROM rtattachments WHERE messageid = ?', array($msg)))
+			    			foreach($attachments as $file)
+						{
+				    			@unlink($this->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d/%s',$ticketid, $msg, $file));
+						}
+			
+					@rmdir($this->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d', $ticketid, $msg));
+					$this->DB->Execute('DELETE FROM rtattachments WHERE messageid = ?', array($msg));
+				}
+		        @rmdir($this->CONFIG['rt']['mail_dir'].sprintf('/%06d', $ticketid));
+		}
+		
 		$this->DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($ticketid));
 		$this->DB->Execute('DELETE FROM rttickets WHERE id=?', array($ticketid));
 		$this->SetTS('rtqueues');
@@ -2836,6 +2852,21 @@ class LMS
 	function MessageDel($id)
 	{
 		$this->SetTS('rtmessages');
+		
+		if(isset($this->CONFIG['rt']['mail_dir']))
+		{
+			$ticket = $this->DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($id));
+		        if($attachments = $this->DB->GetCol('SELECT filename FROM rtattachments WHERE messageid = ?', array($id)))
+			        foreach($attachments as $file)
+				{
+				        @unlink($this->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d/%s',$ticket, $id, $file));
+				}
+			
+			@rmdir($this->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d', $ticket, $id));
+		}
+		
+		$this->DB->Execute('DELETE FROM rtattachments WHERE messageid = ?', array($id));
+																						
 		return $this->DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($id));
 	}
 
