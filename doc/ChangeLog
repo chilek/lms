@@ -8,6 +8,8 @@ version ? (????-??-??):
   - lmsd/dns: fixed bug in dns.c - added lost strdup() (alec)
   - helpdesk: fixed attachments removing when deleting tickets and 
     messages (alec)
+  - new invoice settlement date checking takes numbering plan into 
+    consideration (alec)
 
 version 1.10.0rc2 Urgo (2007-08-27):
 
