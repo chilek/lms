@@ -121,23 +121,6 @@ if(!$right)
 	die;
 }
 
-if(isset($_GET['delticketid']))
-{
-	if(($right & 4) != 4)
-	{
-		$SMARTY->display('noaccess.html');
-	        $SESSION->close();
-		die;
-	}
-	
-	$ticketid = intval($_GET['delticketid']);
-	
-	$ts = time();
-	$DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($ticketid));
-	$DB->Execute('DELETE FROM rtnotes WHERE ticketid=?', array($ticketid));
-	$DB->Execute('DELETE FROM rttickets WHERE id=?', array($ticketid));
-}
-
 if(!isset($_GET['o']))
 	$SESSION->restore('rto', $o);
 else
