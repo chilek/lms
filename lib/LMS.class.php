@@ -3001,6 +3001,8 @@ class LMS
 
 	function GetRemoteMACs($host = '127.0.0.1', $port = 1029)
 	{
+		$inputbuf = '';
+		
 		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
 			if(@socket_connect ($socket, $host, $port))
 			{
@@ -3008,18 +3010,21 @@ class LMS
 					$inputbuf .= $input;
 				socket_close ($socket);
 			}
-		foreach(split("\n",$inputbuf) as $line)
+		if($inputbuf)
 		{
-			list($ip,$hwaddr) = split(' ',$line);
-			if(check_mac($hwaddr))
+			foreach(explode("\n",$inputbuf) as $line)
 			{
-				$result['mac'][] = $hwaddr;
-				$result['ip'][] = $ip;
-				$result['longip'][] = ip_long($ip);
-				$result['nodename'][] = $this->GetNodeNameByMAC($hwaddr);
+				list($ip,$hwaddr) = explode(' ',$line);
+				if(check_mac($hwaddr))
+				{
+					$result['mac'][] = $hwaddr;
+					$result['ip'][] = $ip;
+					$result['longip'][] = ip_long($ip);
+					$result['nodename'][] = $this->GetNodeNameByMAC($hwaddr);
+				}
 			}
+			return $result;
 		}
-		return $result;
 	}
 
 	function GetMACs()
@@ -3028,20 +3033,23 @@ class LMS
 		{
 			case 'Linux':
 				if(@is_readable('/proc/net/arp'))
-					$file=fopen('/proc/net/arp','r');
+					$file = fopen('/proc/net/arp','r');
 				else
 					return FALSE;
 				while(!feof($file))
 				{
 					$line = fgets($file, 4096);
 					$line = eregi_replace("[\t ]+", " ", $line);
-					list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
-					if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00' && check_mac($hwaddr))
+					if(ereg('[0-9]', $line)) // skip header line
 					{
-						$result['mac'][] = $hwaddr;
-						$result['ip'][] = $ip;
-						$result['longip'][] = ip_long($ip);
-						$result['nodename'][] = $this->GetNodeNameByMAC($hwaddr);
+						list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
+						if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00' && check_mac($hwaddr))
+						{
+							$result['mac'][] = $hwaddr;
+							$result['ip'][] = $ip;
+							$result['longip'][] = ip_long($ip);
+							$result['nodename'][] = $this->GetNodeNameByMAC($hwaddr);
+						}
 					}
 				}
 				fclose($file);
