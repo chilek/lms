@@ -4,6 +4,8 @@ version ? (????-??-??):
 
   - fixed "Argument #2 is not an array in /var/www/lms/modules/choosemac.php
     on line 48" (alec)
+  - fix: customers assignments addition and edition moved from 
+    "customers management" privilege to "finances management" (alec)
 
 version 1.10.0rc3 Urgo (2007-09-10):
 
