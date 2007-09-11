@@ -1,5 +1,10 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed "Argument #2 is not an array in /var/www/lms/modules/choosemac.php
+    on line 48" (alec)
+
 version 1.10.0rc3 Urgo (2007-09-10):
 
   - genfake: fixed problem with data limit field in tariffs (alec)
