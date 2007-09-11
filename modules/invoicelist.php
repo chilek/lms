@@ -100,7 +100,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			WHERE (type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
 			.$where
-			.'AND NOT EXISTS (
+			.' AND NOT EXISTS (
 			        SELECT 1 FROM customerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
