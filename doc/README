@@ -5592,10 +5592,7 @@ mysql> show table status;
             size of 16 terabytes. Filesystem restrictions are avoided by
             keeping data in slices, 1GB each.
           + Number of records:
-            PostgreSQL does not have row number limit for tables, however
-            COUNT returns 32-bit number, so for tables longer that 2
-            billions of records this function will return wrong value (at
-            least in version 7.1).
+            PostgreSQL does not have row number limit for tables.
      _________________________________________________________________
 
 Chapter 8. Extensions
