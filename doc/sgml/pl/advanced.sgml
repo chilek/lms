@@ -775,10 +775,7 @@ mysql&gt; show table status;
                </listitem>
                <listitem>
                <para>Ilo¶æ rekordów:</para>
-               <para>PostgreSQL nie narzuca ograniczenia na liczbê wierszy w dowolnej tabeli.
-               Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a zatem dla tabel
-               zawieraj±cych ponad dwa miliardy wierszy wynik tej funkcji bêdzie
-               nieprawid³owy. (Informacja dot. PostgreSQL 7.1)</para>
+               <para>PostgreSQL nie narzuca ograniczenia na liczbê wierszy w dowolnej tabeli.</para>
                </listitem>
                </itemizedlist>
                </listitem>

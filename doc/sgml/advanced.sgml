@@ -733,7 +733,7 @@ mysql&gt; show table status;
                </listitem>
                <listitem>
                <para>Number of records:</para>
-               <para>PostgreSQL does not have row number limit for tables, however COUNT returns 32-bit number, so for tables longer that 2 billions of records this function will return wrong value (at least in version 7.1).</para>
+               <para>PostgreSQL does not have row number limit for tables.</para>
                </listitem>
                </itemizedlist>
                </listitem>
