@@ -6,6 +6,7 @@ version ? (????-??-??):
     on line 48" (alec)
   - fix: customers assignments addition and edition moved from 
     "customers management" privilege to "finances management" (alec)
+  - fixed sql query on Invoices List (alec)
 
 version 1.10.0rc3 Urgo (2007-09-10):
 
