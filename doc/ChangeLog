@@ -28,6 +28,8 @@ version ? (????-??-??):
     messages (alec) 
   - new invoice settlement date checking takes numbering plan into
     consideration (alec)
+  - fix: customers assignments addition and edition moved from
+    "customers management" privilege to "finances management" (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
