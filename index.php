@@ -220,7 +220,6 @@ if($AUTH->islogged)
 	if($module == '')
 	{
 		$module = $CONFIG['phpui']['default_module'];
-		$SMARTY->assign('warning', isset($CONFIG['phpui']['disable_devel_warning']) ? !chkconfig($CONFIG['phpui']['disable_devel_warning']) : true);
 	}
 	
 	if(file_exists(MODULES_DIR.'/'.$module.'.php'))

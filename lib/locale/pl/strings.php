@@ -1390,7 +1390,6 @@ $_LANG['Warning message:'] = 'Treść ostrzeżenia:';
 $_LANG['warning off'] = 'ostrzeżenie wyłączone';
 $_LANG['warning on'] = 'ostrzeżenie włączone';
 $_LANG['Warnings'] = 'Ostrzeżenia';
-$_LANG['Warning! This version of LMS is under development! Remember that it might work unstable and certainly has still many bugs! If you need stability try 1.8 version!'] = 'Ostrzeżenie! Ta wersja LMSa jest w trakcie rozbudowy! Pamiętaj, że może być niestabilna i na pewno posiada jakieś błędy! Jeśli potrzebujesz stabilności wypróbuj wersję z linii 1.8!';
 $_LANG['WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!'] = 'UWAGA! TO USUNIE WSZELKIE DANE Z BAZY!!!';
 $_LANG['weekly'] = 'tygodniowo';
 $_LANG['weekly ($0)'] = 'tygodniowo ($0)';
@@ -1856,8 +1855,6 @@ $_LANG['Excluded groups:'] = 'Wyłączone grupy:';
 $_LANG['Available<!plural>'] = 'Dostępne';
 $_LANG['Selected<!plural>'] = 'Wybrane';
 $_LANG['customers groups management'] = 'zarządzanie grupami klientów';
-$_LANG['Enabled<!plural>:'] = 'Włączone:';
-$_LANG['Disabled<!plural>:'] = 'Wyłączone:';
 $_LANG['Groups:'] = 'Grupy:';
 
 ?>
