@@ -352,10 +352,10 @@ version 1.9.2 Thanos (2006-07-15):
   - while editing/adding value of lmsd's configuration option 'script' it's
     possible to use Tab key for script's code identation (alec)
   - updated t-script library - 0.7.0 (alec):
-	special characters (\\, \", \r, \n, \t) in string literals
-        escaping brackets in plain text using backslashes (\{, \})
-	ignoring tabs at the beginning of text lines - allowing indents
-	len command in string extension 
+    special characters (\\, \", \r, \n, \t) in string literals
+    escaping brackets in plain text using backslashes (\{, \})
+    ignoring tabs at the beginning of text lines - allowing indents
+    len command in string extension 
   - modularity: added example modules 'traffic', 'users' and 'auth' with use of plaugins
     and new access rights management method, core consist only core actions, added 'init', 'end'
     and 'install' core actions, and many other changes (alec)
