@@ -798,9 +798,9 @@ function invoice_body()
 	    $page = $pdf->ezStopPageNumbers(1,1,$page);
 	    break;
 	case "FT-0100":
-	    $page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']-50,20,8,'',trans('Page $0 of $1', '{PAGENUM}','{TOTALPAGENUM}'),1);
-	    $top=800;
-	    invoice_dates(500,800);    
+	    $page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']/2+10,$pdf->ez['pageHeight']-30,8,'',trans('Page $0 of $1', '{PAGENUM}','{TOTALPAGENUM}'),1);
+	    $top=$pdf->ez['pageHeight']-50;
+	    invoice_dates(500,$top);    
     	    invoice_address_box(400,700);
 	    $top=invoice_title(30,$top);
 	    $top=$top-10;
@@ -811,7 +811,7 @@ function invoice_body()
 	    invoice_footnote(470,$top,90,8);
     	    $return=new_invoice_data(30,$top,430,6,1);
     	    $top=$return[2]-10;
-	    invoice_expositor(30,$return[1]-10);
+	    invoice_expositor(30,$return[1]);
 	    invoice_to_pay(30,$top);
 	    check_page_length($top, 200);
 	    invoice_main_form_fill(187,3,0.4);
