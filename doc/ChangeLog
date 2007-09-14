@@ -7,6 +7,7 @@ version ? (????-??-??):
   - fix: customers assignments addition and edition moved from 
     "customers management" privilege to "finances management" (alec)
   - fixed sql query on Invoices List (alec)
+  - BTS#0000684: nodes quicksearch is seeking devices IP's again (alec)
 
 version 1.10.0rc3 Urgo (2007-09-10):
 
