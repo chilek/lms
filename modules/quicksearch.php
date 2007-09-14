@@ -141,12 +141,16 @@ switch($mode)
 		{
 			$candidates = $DB->GetAll('SELECT n.id, n.name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, mac 
 				    FROM nodes n
-				    JOIN customersview c ON (c.id = n.ownerid)
-				    WHERE n.id ?LIKE? \''.$search.'%\' 
+				    WHERE (n.id ?LIKE? \''.$search.'%\' 
 					    OR LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\') 
 					    OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
 					    OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 
-					    OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\') 
+					    OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\')
+					    ) 
+				    AND NOT EXISTS (
+                    			    SELECT 1 FROM customerassignments a
+			                    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					    WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)
 				    ORDER BY n.name LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
