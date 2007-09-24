@@ -607,7 +607,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 	  Be aware that for example Cyprus and Hungary also use 26 digits.
 	  More on: <ulink url="http://en.wikipedia.org/wiki/International_Bank_Account_Number">Wikipedia</ulink>
 	  </para>
-         </sect> 
+         </sect3> 
          <sect3 id="install-invoices-cnote">
           <title>Credit Notes</title>
           <para>Credit notes uses invoices settings from 
