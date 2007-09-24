@@ -98,7 +98,7 @@
 		</TD>
 		<TD CLASS="fright">
 			<SELECT SIZE="1" NAME="net">
-				<OPTION VALUE="allnets">{t}All{/t}</OPTION>
+				<OPTION VALUE="0">{t}- all -{/t}</OPTION>
 				{section name="netlist" loop=$netlist}
 				<OPTION VALUE="{$netlist[netlist].id}" {if $netlist[netlist].id == $trafficnet}SELECTED{/if}>{$netlist[netlist].name|truncate:30:"...":true}</OPTION>
 				{/section}
@@ -115,6 +115,7 @@
 		<TD CLASS="fright">
 			{if $customers}
 			<SELECT size="1" name="customerid" {tip text="Select customer"}>
+				<OPTION VALUE="0">{t}- all customers -{/t}</OPTION>
 				{section name="customers" loop=$customers}
 				<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
 				{/section}
