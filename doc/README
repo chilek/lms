@@ -314,7 +314,7 @@ Chapter 2. Installation and configuration
      * zlib (for compressed backups),
      * gd or ming (for network map),
      * mysql or mysqli or pgsql (for db support),
-     * iconv,
+     * iconv, mbstring (LMS uses unicode)
      * PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets)
        for mailing.
      _________________________________________________________________
@@ -398,6 +398,13 @@ $ tar zxf lms-x.x.x.tar.gz
 
    It's absolutely required for LMS to disable register_globals PHP's
    option.
+
+   Recommended setting in php.ini (or httpd.conf for LMS virtual host
+   directory):
+mbstring.func_overload = 7
+register_globals = off
+max_execution_time = 60 ; or more
+memory_limit = 32M ; or more
      _________________________________________________________________
 
 2.4. Localization
@@ -835,7 +842,16 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    than the one used with html invoices Smarty template.
      _________________________________________________________________
 
-2.9.1.3. Credit Notes
+2.9.1.3. Automatic iban account number generation
+
+   LMS allows for automatic IBAN number generation. As of now it supports
+   fixed lenght of 26 digits and 2 letters (letters are set fixed to PL
+   -- POLAND). You need to specify 8 to 20 digits, the rest is taken as
+   as-many-leading-zeros-as-needed plus Customer-ID Be aware that for
+   example Cyprus and Hungary also use 26 digits. More on: Wikipedia
+     _________________________________________________________________
+
+2.9.1.4. Credit Notes
 
    Credit notes uses invoices settings from [invoices] section. Default
    invoice template include also credit notes contents, but you have

@@ -42,7 +42,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 	$dt = "( dt >= $fromdate AND dt < $todate ) ";
 
 	// nets
-	if ($net != "allnets")
+	if($net)
 	{
 		$params = $LMS->GetNetworkParams($net);
 		$params['address']++;

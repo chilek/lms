@@ -48,7 +48,7 @@
 				<para>mysql, mysqli lub pgsql (dla bazy danych),</para>
 			</listitem>
 			<listitem>
-				<para>iconv,</para>
+				<para>iconv, mbstring</para>
 			</listitem>
 			<listitem>
 				<para>PEAR::Mail (wymaga PEAR::Net_SMTP i PEAR::Net_Socket) do mailingu.</para>
@@ -144,6 +144,14 @@ $ tar zxf lms-x.x.x.tar.gz
 	    	przechowywane s± w bazie danych i mog± byæ modyfikowane przez 
 		interfejs u¿ytkownika, maj± tak¿e wy¿szy priorytet od tych zawartych
 		w <filename>lms.ini</filename>.</para></note>
+	</para>
+	<para>Zalecane zmiany w php.ini (lub httpd.conf dla wirtualki LMSa):
+<screen>
+mbstring.func_overload = 7
+register_globals = off
+max_execution_time = 60 ; co najmniej
+memory_limit = 32M ; co najmniej
+</screen>
 	</para>
      </sect1>
      <sect1 id="install-locale">
@@ -688,12 +696,16 @@ AddDefaultCharset Off
 		<listitem>
 		    <para>account</para>
 		    <para>skrócony numer konta bankowego powsta³y przez po³±czenie numeru rozliczeniowego banku 
-		    z identyfikatorem rachunku, numer ten musi siê sk³adaæ z 12 cyfr bez spacji i innych znaków.</para>
+		    z identyfikatorem rachunku, numer ten musi siê sk³adaæ od 8 do 20 cyfr bez spacji i innych 
+		    znaków. Standardem jest podanie 12 cyfr. (numer rozliczeniowy banku-8 oraz Twój nr 
+		    rozliczeniowy-4)</para>
 		</listitem>
 	  </itemizedlist>
 	  Od tej pory je¶li u¿ywamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wp³aty z
 	  menu Finanse -> Wydruki -> Faktury -> Drukuj polecenia przelewu/wp³aty, ka¿dy wydruk bêdzie zawiera³
-	  unikalny numer konta z zawartym ID naszego klienta.
+	  unikalny numer konta z zawartym ID naszego klienta. ID klienta zostanie dodane na koñcu, oraz
+	  poprzedzone odpowiednia ilo¶ci± zer. Suma kontrolna bêdzie wyliczana automatycznie.
+	  Wiêcej o IBAN w <ulink url="http://en.wikipedia.org/wiki/International_Bank_Account_Number">Wikipedii</ulink>
           </para>
          </sect3>
 	</sect2>

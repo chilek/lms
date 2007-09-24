@@ -1240,7 +1240,7 @@ TARGET="_top"
 ></LI
 ><LI
 ><P
->iconv,</P
+>iconv, mbstring (LMS uses unicode)</P
 ></LI
 ><LI
 ><P
@@ -1537,6 +1537,16 @@ CLASS="FILENAME"
 ></DIV
 >
 	  </P
+><P
+>Recommended setting in php.ini (or httpd.conf for LMS virtual host directory):
+<PRE
+CLASS="SCREEN"
+>mbstring.func_overload = 7
+register_globals = off
+max_execution_time = 60 ; or more
+memory_limit = 32M ; or more</PRE
+>
+        </P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -2748,8 +2758,28 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
+NAME="INSTALL-INVOICES-IBAN"
+>2.9.1.3. Automatic iban account number generation</A
+></H4
+><P
+>LMS allows for automatic IBAN number generation. As of now it supports fixed lenght of 26 digits 
+	  and  2 letters (letters are set fixed to PL -- POLAND). 
+	  You need to specify 8 to 20 digits, the rest is taken as as-many-leading-zeros-as-needed plus Customer-ID
+	  Be aware that for example Cyprus and Hungary also use 26 digits.
+	  More on: <A
+HREF="http://en.wikipedia.org/wiki/International_Bank_Account_Number"
+TARGET="_top"
+>Wikipedia</A
+>
+	  </P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
 NAME="INSTALL-INVOICES-CNOTE"
->2.9.1.3. Credit Notes</A
+>2.9.1.4. Credit Notes</A
 ></H4
 ><P
 >Credit notes uses invoices settings from 

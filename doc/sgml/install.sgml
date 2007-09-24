@@ -45,7 +45,7 @@
 				<para>mysql or mysqli or pgsql (for db support),</para>
 			</listitem>
 			<listitem>
-				<para>iconv,</para>
+				<para>iconv, mbstring (LMS uses unicode)</para>
 			</listitem>
 			<listitem>
 				<para>PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets) for mailing.</para>
@@ -136,6 +136,14 @@ $ tar zxf lms-x.x.x.tar.gz
 	  <warning><para>It's absolutely required for LMS to disable <filename>register_globals</filename>
 	  PHP's option.</para></warning>
 	  </para>
+        <para>Recommended setting in php.ini (or httpd.conf for LMS virtual host directory):
+<screen>
+mbstring.func_overload = 7
+register_globals = off
+max_execution_time = 60 ; or more
+memory_limit = 32M ; or more
+</screen>
+        </para>
      </sect1>
      <sect1 id="install-locale">
      <title>Localization</title>
@@ -591,6 +599,15 @@ $access['table'][100]['allow_reg'] = '^invoice$';
                  advanced users as it requires you to create more complicated php file than the one used with html
                  invoices Smarty template.</para>
          </sect3>
+ 	 <sect3 id="install-invoices-iban">
+          <title>Automatic iban account number generation</title>
+          <para>LMS allows for automatic IBAN number generation. As of now it supports fixed lenght of 26 digits 
+	  and  2 letters (letters are set fixed to PL -- POLAND). 
+	  You need to specify 8 to 20 digits, the rest is taken as as-many-leading-zeros-as-needed plus Customer-ID
+	  Be aware that for example Cyprus and Hungary also use 26 digits.
+	  More on: <ulink url="http://en.wikipedia.org/wiki/International_Bank_Account_Number">Wikipedia</ulink>
+	  </para>
+         </sect3> 
          <sect3 id="install-invoices-cnote">
           <title>Credit Notes</title>
           <para>Credit notes uses invoices settings from 
