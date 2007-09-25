@@ -142,12 +142,12 @@ switch($action)
 			foreach($contents as $item)
 			{
 				$idx = $item['itemid'];
-				$contents[$idx]['taxid'] = $newcontents['taxid'][$idx] ? $newcontents['taxid'][$idx] : $item['taxid'];
-				$contents[$idx]['prodid'] = $newcontents['prodid'][$idx] ? $newcontents['prodid'][$idx] : $item['prodid'];
-				$contents[$idx]['jm'] = $newcontents['jm'][$idx] ? $newcontents['jm'][$idx] : $item['jm'];
-				$contents[$idx]['count'] = $newcontents['count'][$idx] ? $newcontents['count'][$idx] : $item['count'];
-				$contents[$idx]['discount'] = $newcontents['discount'][$idx] ? $newcontents['discount'][$idx] : $item['discount'];
-				$contents[$idx]['name'] = $newcontents['name'][$idx] ? $newcontents['name'][$idx] : $item['name'];
+				$contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
+				$contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
+				$contents[$idx]['jm'] = isset($newcontents['jm'][$idx]) ? $newcontents['jm'][$idx] : $item['jm'];
+				$contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
+				$contents[$idx]['discount'] = isset($newcontents['discount'][$idx]) ? $newcontents['discount'][$idx] : $item['discount'];
+				$contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
 				$contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
 				$contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx]!='' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
 				$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx]!='' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
