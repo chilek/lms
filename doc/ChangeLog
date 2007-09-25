@@ -10,6 +10,8 @@ version ? (????-??-??):
   - BTS#0000684: nodes quicksearch is seeking devices IP's again (alec)
   - BTS#0000687: added option 'all customers' to customers selection field
     in traffic filter (alec)
+  - BTS#0000686: to delete invoice position now we can also enter zero value
+    in amount or net price inputs instead of "Remove this item" link (alec) 
 
 version 1.10.0rc3 Urgo (2007-09-10):
 
