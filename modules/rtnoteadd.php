@@ -65,16 +65,14 @@ elseif(isset($_POST['note']))
 			$queue = $LMS->GetQueueByTicketId($note['ticketid']);
 			$mailfname = '';
 			
-			if(isset($CONFIG['phpui']['helpdesk_sender_name']))
+			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
 			{
-				if($CONFIG['phpui']['helpdesk_sender_name'] == 'queue')
-				{
-					$mailfname = $$queue['name'];
-				}
-				elseif($CONFIG['phpui']['helpdesk_sender_name'] == 'user')
-				{
+				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
+
+				if($mailfname == 'queue')
+					$mailfname = $queue['name'];
+				elseif($mailfname == 'user')
 					$mailfname = $user['name'];
-				}
 				
 				$mailfname = '"'.$mailfname.'"';
 			}
@@ -86,8 +84,10 @@ elseif(isset($_POST['note']))
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $note['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($note['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
 
-			$body = $note['body']."\n\nhttp".(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+			$body = $note['body']."\n\nhttp"
+				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+				.$_SERVER['HTTP_HOST']
+				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$note['ticketid'];
 
 			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) 
@@ -112,12 +112,12 @@ elseif(isset($_POST['note']))
 			{
 				foreach($recipients as $email)
 				{
-					if(isset($CONFIG['phpui']['debug_email']) && $CONFIG['phpui']['debug_email'])
+					if(!empty($CONFIG['phpui']['debug_email']))
 						$recip = $CONFIG['phpui']['debug_email'];
 					else
 						$recip = $email;
 					$headers['To'] = '<'.$recip.'>';
-		        
+
 					$LMS->SendMail($recip, $headers, $body);
 				}
 			}

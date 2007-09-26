@@ -72,12 +72,16 @@ if(isset($_POST['ticket']))
 		{
 			$user = $LMS->GetUserInfo($AUTH->id);
 
-			if($mailfname = $CONFIG['phpui']['helpdesk_sender_name'])
+			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
 			{
+				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
+				
 				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
-				if($mailfname == 'user') $mailfname = $user['name'];
+				elseif($mailfname == 'user') $mailfname = $user['name'];
 				$mailfname = '"'.$mailfname.'"';
 			}
+			else
+				$mailfname = '';
 
 			if ($user['email'])
 				$mailfrom = $user['email'];
@@ -91,8 +95,10 @@ if(isset($_POST['ticket']))
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
 
-			$body = $ticket['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+			$body = $ticket['body']."\n\nhttp"
+				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+				.$_SERVER['HTTP_HOST']
+				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$id;
 
 			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) && $ticket['customerid'])
