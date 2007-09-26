@@ -139,11 +139,9 @@ if(isset($_POST['message']))
 		{
 			$headers = array();
 			
-			// juz sie pogubilem, te linijki chyba sa bez sensu
-//			if($message['destination'] == '')
-//				$message['destination'] = $queue['email'];
-			
-			if($message['destination'] && $message['userid'])
+			if($message['destination'] && $message['userid']
+				&& ($user['email'] || $queue['email'])
+				&& $message['destination'] != $queue['email'])
 			{
 				if(isset($CONFIG['phpui']['debug_email']))
 					$message['destination'] = $CONFIG['phpui']['debug_email'];
@@ -162,14 +160,7 @@ if(isset($_POST['message']))
 					$headers['References'] = $message['references'];
 
 				$body = $message['body'];
-			/*
-				if ($message['destination'] == $queue['email'] || $message['destination'] == $user['email'])
-				{
-					$body .= "\n\nhttp".(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-						.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-						.'?m=rtticketview&id='.$message['ticketid'];
-				}
-			*/	
+
 				$files = NULL;
 				if (isset($file))
 				{
@@ -195,7 +186,7 @@ if(isset($_POST['message']))
 		{
 			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
 			
-			if($CONFIG['phpui']['debug_email'])
+			if(!empty($CONFIG['phpui']['debug_email']))
 				$message['destination'] = $CONFIG['phpui']['debug_email'];
 			if($message['destination']=='') 
 				$message['destination'] = $queue['email'];
@@ -237,20 +228,18 @@ if(isset($_POST['message']))
 				MessageAdd($message, $headers, $_FILES['file']);
 		}
 
-		if(isset($message['notify']))
+		if(isset($message['notify']) && ($user['email'] || $queue['email']))
 		{
 			$mailfname = '';
 			
-			if(isset($CONFIG['phpui']['helpdesk_sender_name']))
+			if(!empty($CONFIG['phpui']['helpdesk_sender_name']))
 			{
-				if($CONFIG['phpui']['helpdesk_sender_name'] == 'queue')
-				{
-					$mailfname = $$queue['name'];
-				}
-				elseif($CONFIG['phpui']['helpdesk_sender_name'] == 'user')
-				{
+				$mailfname = $CONFIG['phpui']['helpdesk_sender_name'];
+				
+				if($mailfname == 'queue')
+					$mailfname = $queue['name'];
+				elseif($mailfname == 'user')
 					$mailfname = $user['name'];
-				}
 				
 				$mailfname = '"'.$mailfname.'"';
 			}
@@ -262,8 +251,10 @@ if(isset($_POST['message']))
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $message['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($message['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
 
-			$body = $message['body']."\n\nhttp".(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+			$body = $message['body']."\n\nhttp"
+				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+				.$_SERVER['HTTP_HOST']
+				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
 
 			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) 
@@ -288,7 +279,7 @@ if(isset($_POST['message']))
 			{
 				foreach($recipients as $email)
 				{
-					if(isset($CONFIG['phpui']['debug_email']) && $CONFIG['phpui']['debug_email'])
+					if(!empty($CONFIG['phpui']['debug_email']))
 						$recip = $CONFIG['phpui']['debug_email'];
 					else
 						$recip = $email;
@@ -349,7 +340,7 @@ else
 				$message['body'] .= '> '.$line."\n";
 		}
 	
-		if(!eregi("[RT#[0-9]{6}]",$message['subject'])) 
+		if(!eregi("[RT#[0-9]{6}]", $message['subject'])) 
 			$message['subject'] .= sprintf(" [RT#%06d]",$message['ticketid']); 
 	}
 }
