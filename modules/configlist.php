@@ -180,10 +180,6 @@ function GetConfigList($order='var,asc')
 					$config[$idx]['description'] = trans('When enabled, system will sent notification to all users with rights for current queue after new ticket creation. Default: disabled.');
 				break;
 				
-				case 'contract_template':
-					$config[$idx]['description'] = trans('Specify customer contract template. It can include comma separated list of contract templates with their names. Default: contract.html.');
-				break;
-				
 				case 'to_words_short_version':
 					$config[$idx]['description'] = trans('Specify format of verbal amounts representation (on invoices). e.g. for value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.');
 				break;
