@@ -32,7 +32,7 @@ if(strtolower($CONFIG['invoices']['type']) == 'pdf')
 }
 
 header('Content-Type: '.$CONFIG['invoices']['content_type']);
-if(isset($CONFIG['invoices']['attachment_name']) && $CONFIG['invoices']['attachment_name'] != '')
+if(!empty($CONFIG['invoices']['attachment_name']))
 	header('Content-Disposition: attachment; filename='.$CONFIG['invoices']['attachment_name']);
 
 $SMARTY->assign('css', file('img/style_print.css')); 
