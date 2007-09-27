@@ -180,10 +180,6 @@ function GetConfigList($order='var,asc')
 					$config[$idx]['description'] = trans('When enabled, system will sent notification to all users with rights for current queue after new ticket creation. Default: disabled.');
 				break;
 				
-				case 'contract_template':
-					$config[$idx]['description'] = trans('Specify customer contract template. It can include comma separated list of contract templates with their names. Default: contract.html.');
-				break;
-				
 				case 'to_words_short_version':
 					$config[$idx]['description'] = trans('Specify format of verbal amounts representation (on invoices). e.g. for value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.');
 				break;
@@ -198,23 +194,23 @@ function GetConfigList($order='var,asc')
 
 				case 'nodepassword_length':
 					$config[$idx]['description'] = trans('Length of (auto-generated) node password. Max.32. Default: 16.');
-				break;					
+				break;
 				
 				case 'custom_accesstable':
 					$config[$idx]['description'] = trans('PHP file with user-defined access rules in "lib" directory. Default: empty.');
-				break;					
+				break;
 
 				case 'check_for_updates_period':
 					$config[$idx]['description'] = trans('How often to check for LMS updates (in seconds). Default: 86400.');
-				break;					
+				break;
 
 				case 'map_type':
 					$config[$idx]['description'] = trans('Network map type. Use "flash" if you have Ming library or "gd" if your PHP supports gdlib. By default LMS will try to generate flash map, with fallback to GD if it fails.');
-				break;					
+				break;
 
 				case 'homedir_prefix':
 					$config[$idx]['description'] = trans('Prefix for account home directory. Default: /home/');
-				break;					
+				break;
 
 				case 'smtp_port':
 				case 'smtp_host':
@@ -258,15 +254,15 @@ function GetConfigList($order='var,asc')
 			
 				case 'ticketlist_status':
 					$config[$idx]['description'] = trans('Default status filter setting on tickets list. For allowed values see html source code. Default: not set');
-				break;					
+				break;
 
 				case 'use_invoices':
 					$config[$idx]['description'] = trans('Makes option "with invoice" checked by default. Default: false');
-				break;					
+				break;
 
 				case 'default_module':
 					$config[$idx]['description'] = trans('Start-up module (filename from /modules without .php). Default: welcome');
-				break;					
+				break;
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');

@@ -67,7 +67,7 @@ if(strtolower($CONFIG['receipts']['type']) == 'pdf')
 }
 
 header('Content-Type: '.$CONFIG['receipts']['content_type']);
-if(isset($CONFIG['receipts']['attachment_name']) &&  $CONFIG['receipts']['attachment_name'] != '')
+if(!empty($CONFIG['receipts']['attachment_name']))
 	header('Content-Disposition: attachment; filename='.$CONFIG['receipts']['attachment_name']);
 
 if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']))

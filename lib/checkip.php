@@ -26,7 +26,7 @@
 
 // Checking if connection is from allowed IP
 
-if(isset($CONFIG['phpui']['allow_from']))
+if(!empty($CONFIG['phpui']['allow_from']))
 {
 	// delete ipv6 prefix if it's present: 
 	
