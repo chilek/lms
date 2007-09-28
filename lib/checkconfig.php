@@ -26,11 +26,11 @@
 
 function chkconfig($value, $default = FALSE)
 {
-	if(!isset($value) || $value == '')
+	if($value == '')
 		return $default;
-	elseif(eregi('^(1|y|on|yes|true|tak|t)$', $value))
+	elseif(eregi('^(1|y|on|yes|true|tak|t|enabled)$', $value))
 		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
+	elseif(eregi('^(0|n|no|off|false|nie|disabled)$', $value))
 		return FALSE;
 	else
 		trigger_error('Incorrect option value: '.$value);
