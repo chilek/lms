@@ -15,6 +15,7 @@ version ? (????-??-??):
   - fixed helpdesk_sender_name in notifications (alec)
   - BTS#0000690: documents viewing allowed in 'customers management'
     access right (alec)
+  - fixed problem when option allow_from is set but is empty (alec)
 
 version 1.10.0rc3 Urgo (2007-09-10):
 
