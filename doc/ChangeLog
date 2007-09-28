@@ -32,6 +32,9 @@ version ? (????-??-??):
     "customers management" privilege to "finances management" (alec)
   - in config_defaults.ini added all options described in 
     configlist.php (alec)
+  - BTS#0000690: documents viewing allowed in 'customers management'
+    access right (alec)
+  - fixed problem when option allow_from is set but is empty (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
