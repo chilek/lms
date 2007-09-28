@@ -13,6 +13,8 @@ version ? (????-??-??):
   - BTS#0000686: to delete invoice position now we can also enter zero value
     in amount or net price inputs instead of "Remove this item" link (alec) 
   - fixed helpdesk_sender_name in notifications (alec)
+  - BTS#0000690: documents viewing allowed in 'customers management'
+    access right (alec)
 
 version 1.10.0rc3 Urgo (2007-09-10):
 

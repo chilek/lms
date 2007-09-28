@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.10-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *
@@ -44,7 +44,7 @@ $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';
 
 $access['table'][5]['name']		= trans('customers management');
-$access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn)|documentgen|nodewarn|choosenode)$';
+$access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn)|documentgen|documentview|nodewarn|choosenode)$';
 
 $access['table'][6]['name'] 		= trans('nodes management');
 $access['table'][6]['allow_reg']  	= '^(node(add|info|infoshort|list|scan|search|del|edit|print|warn)|choose(mac|ip))$';
