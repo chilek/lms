@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.10-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *
@@ -75,13 +75,13 @@ switch($_RELOAD_TYPE)
 	
 		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 		
-		if(isset($CONFIG['phpui']['reload_sqlquery']) && $hosts)
+		if(!empty($CONFIG['phpui']['reload_sqlquery']) && $hosts)
 		{
 			$SMARTY->display('header.html');
 			
 			if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 			{
-				$sqlqueries = explode(';',($CONFIG['phpui']['reload_sqlquery']));
+				$sqlqueries = explode(';', $CONFIG['phpui']['reload_sqlquery']);
 				
 				echo '<H1>'.$layout['pagetitle'].'</H1>';
 
