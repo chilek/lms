@@ -9,7 +9,10 @@ version ? (????-??-??):
   - lmsd/dns: fixed bug in dns.c - added lost strdup() (alec)
   - helpdesk: fixed attachments removing when deleting tickets and 
     messages (alec)
-
+  - BTS#0000690: documents viewing allowed in 'customers management'
+    access right (alec)
+  - fixed problem when option allow_from is set but is empty (alec)
+      
 version 1.8.12 Tagan (2007-08-21):
 
   - fixed link to LMS mailing lists archive (alec)
