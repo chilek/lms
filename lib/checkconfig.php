@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.10-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *
@@ -26,11 +26,11 @@
 
 function chkconfig($value, $default = FALSE)
 {
-	if(!isset($value) || $value == '')
+	if($value == '')
 		return $default;
-	elseif(eregi('^(1|y|on|yes|true|tak|t)$', $value))
+	elseif(eregi('^(1|y|on|yes|true|tak|t|enabled)$', $value))
 		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
+	elseif(eregi('^(0|n|no|off|false|nie|disabled)$', $value))
 		return FALSE;
 	else
 		trigger_error('Incorrect option value: '.$value);
