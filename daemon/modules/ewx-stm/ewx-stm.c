@@ -53,10 +53,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	struct snmp_session 	session, *sh=NULL;
 	struct snmp_pdu 	*pdu, *response;
 
-	int	pathuplink = 0;
-	int	pathdownlink = 0;
-	int 	globaluplink = 0;
-	int	globaldownlink = 0; 
+	int	pathuplink=0, pathdownlink=0;
+	int 	globaluprate=0, globaldownrate=0; 
+	int	maxupceil=0, maxdownceil=0;
 	int 	status, i, j, k=2, n=2, cc=0, sc=0;
 	int	nc=0, anc=0, mnc=0, inc=0;
 	char 	*errstr;
@@ -286,9 +285,6 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
                         customers[cc].hosts = NULL;
 			customers[cc].status = UNKNOWN;
 			cc++;
-		
-			globaluplink += upceil;
-			globaldownlink += downceil;
 		}
 	}
 	g->db_free(&res);
@@ -296,12 +292,6 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	if(!cc)
 	{
 	        syslog(LOG_ERR, "[%s/ewx-stm] Customers table is empty. Exiting.", ewx->base.instance);
-		return;
-	}
-
-	if(globaluplink>pathuplink || globaldownlink>pathdownlink)
-	{
-	        syslog(LOG_ERR, "[%s/ewx-stm] Path is too small. Need Uplink: %d, Downlink: %d. Exiting.", ewx->base.instance, globaluplink, globaldownlink);
 		return;
 	}
 
@@ -428,8 +418,25 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			if(customers[j].hosts[k].cnt < cnt) 
 				customers[j].hosts[k].cnt = cnt;
 		}
+		
+		globaluprate += uprate;
+		globaldownrate += downrate;
+		maxupceil = maxupceil < customers[j].upceil ? customers[j].upceil : maxupceil;
+		maxdownceil = maxdownceil < customers[j].downceil ? customers[j].downceil : maxdownceil;
 	}
 	g->db_free(&res);
+
+	// path limits checking
+	if(globaluprate>pathuplink || globaldownrate>pathdownlink)
+	{
+	        syslog(LOG_ERR, "[%s/ewx-stm] Path is too small. Need Uplink: %d, Downlink: %d. Exiting.", ewx->base.instance, globaluprate, globaldownrate);
+		return;
+	}
+	if(maxupceil>pathuplink || maxdownceil>pathdownlink)
+	{
+	        syslog(LOG_ERR, "[%s/ewx-stm] Path is too small. Need Uplink: %d, Downlink: %d. Exiting.", ewx->base.instance, maxupceil, maxdownceil);
+		return;
+	}
 
 	// Reading hosts/channels definitions from ewx_stm_* tables
 	// NOTE: to re-create device configuration do DELETE FROM ewx_stm_nodes; DELETE FROM ewx_stm_channels;
