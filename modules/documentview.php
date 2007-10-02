@@ -31,7 +31,8 @@ if($doc = $DB->GetRow('SELECT filename, md5sum, contenttype FROM documentcontent
 	{	
 		header('Content-Type: '.$doc['contenttype']);
 	
-		if(isset($_GET['save']) && $_GET['save']=="1")
+		if(!eregi('^text', $doc['contenttype'])
+			|| (isset($_GET['save']) && $_GET['save']=="1"))
 		{
 			header('Content-Disposition: attachment; filename='.$doc['filename']);
 			header('Pragma: public');
