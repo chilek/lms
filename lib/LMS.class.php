@@ -3001,6 +3001,9 @@ class LMS
 
 	function GetRemoteMACs($host = '127.0.0.1', $port = 1029)
 	{
+		$result = array();
+		$inputbuf = '';
+		
 		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
 			if(@socket_connect ($socket, $host, $port))
 			{
@@ -3008,6 +3011,7 @@ class LMS
 					$inputbuf .= $input;
 				socket_close ($socket);
 			}
+		
 		foreach(split("\n",$inputbuf) as $line)
 		{
 			list($ip,$hwaddr) = split(' ',$line);
@@ -3024,13 +3028,15 @@ class LMS
 
 	function GetMACs()
 	{
+		$result = array();
 		switch(PHP_OS)
 		{
 			case 'Linux':
 				if(@is_readable('/proc/net/arp'))
 					$file=fopen('/proc/net/arp','r');
 				else
-					return FALSE;
+					break;
+				
 				while(!feof($file))
 				{
 					$line = fgets($file, 4096);

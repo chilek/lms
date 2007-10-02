@@ -17,6 +17,7 @@ version ? (????-??-??):
     access right (alec)
   - fixed problem when option allow_from is set but is empty (alec)
   - boolean options can contains 'enabled' and 'disabled' values (alec)
+  - fix: GetMACs() and GetRemoteMACs() returns array (alec)
 
 version 1.10.0rc3 Urgo (2007-09-10):
 
