@@ -47,7 +47,7 @@ elseif($p == 'main')
 				$res[1] = 1029;
 			
 			$remote = $LMS->GetRemoteMACs($res[0], $res[1]);
-			$maclist = array_merge($maclist, (array)$remote);
+			$maclist = array_merge($maclist, $remote);
 		}
 	}
 	
