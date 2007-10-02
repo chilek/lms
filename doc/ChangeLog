@@ -20,6 +20,7 @@ version ? (????-??-??):
   - fix: GetMACs() and GetRemoteMACs() returns array (alec)
   - fix for tariff names with special characters (alec)
   - increased size of input fields for tariff names (alec)
+  - lmsd/ewx-stm: fixed path limits checks (alec)
 
 version 1.10.0rc3 Urgo (2007-09-10):
 
