@@ -21,6 +21,8 @@ version ? (????-??-??):
   - fix for tariff names with special characters (alec)
   - increased size of input fields for tariff names (alec)
   - lmsd/ewx-stm: fixed path limits checks (alec)
+  - set attachment header for documents with non-text content type for
+    documents viewing (alec)
 
 version 1.10.0rc3 Urgo (2007-09-10):
 
