@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.13 Tessa (2007-10-03):
 
   - fixed customerprint module on some php versions which needs date()
     second argument to be of type integer (alec)
@@ -12,6 +12,7 @@ version ? (????-??-??):
   - BTS#0000690: documents viewing allowed in 'customers management'
     access right (alec)
   - fixed problem when option allow_from is set but is empty (alec)
+  - tariffs bandwidth limit has been increased to 10000 (alec)
       
 version 1.8.12 Tagan (2007-08-21):
 
