@@ -202,14 +202,19 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						int h_climit = (int) n_climit/nres->nrows;
 						
 						unsigned long iplong = inet_addr(ipaddr);
-						// IP's last octet in hex
-						char *i16 = itoha((ntohl(iplong) & 0xff));
+						unsigned int hostip = ntohl(iplong);
+						
+						char *o1 = strdup(itoa((hostip >> 24) & 0xff)); // 1st octet
+						char *o2 = strdup(itoa((hostip >> 16) & 0xff)); // 2nd octet
+						char *o3 = strdup(itoa((hostip >> 8) & 0xff)); // 3rd octet
+						char *o4 = strdup(itoa(hostip & 0xff)); // 4th octet
+						char *i16 = strdup(itoha(hostip & 0xff)); // 4th octet in hex
 
 						// test node's membership in networks
 						for(v=0; v<nc; v++)
 							if(nets[v].address == (iplong & nets[v].mask)) 
 								break;
-																	
+															
 						if(v!=nc)
 						{
 							got_node = 1;
@@ -221,6 +226,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&mark_up, "%i16", i16);
 								g->str_replace(&mark_up, "%i", ipaddr);
 								g->str_replace(&mark_up, "%m", mac);
+								g->str_replace(&mark_up, "%o1", o1);
+								g->str_replace(&mark_up, "%o2", o2);
+								g->str_replace(&mark_up, "%o3", o3);
+								g->str_replace(&mark_up, "%o4", o4);
 								g->str_replace(&mark_up, "%x", itoa(x));
 								fprintf(fh, "%s", mark_up);
 								
@@ -229,6 +238,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&mark_down, "%i16", i16);
 								g->str_replace(&mark_down, "%i", ipaddr);
 								g->str_replace(&mark_down, "%m", mac);
+								g->str_replace(&mark_down, "%o1", o1);
+								g->str_replace(&mark_down, "%o2", o2);
+								g->str_replace(&mark_down, "%o3", o3);
+								g->str_replace(&mark_down, "%o4", o4);
 								g->str_replace(&mark_down, "%x", itoa(x));
 								fprintf(fh, "%s", mark_down);
 					
@@ -272,6 +285,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
     								g->str_replace(&cl, "%i16", i16);
 								g->str_replace(&cl, "%i", ipaddr);
 								g->str_replace(&cl, "%m", mac);
+								g->str_replace(&cl, "%o1", o1);
+								g->str_replace(&cl, "%o2", o2);
+								g->str_replace(&cl, "%o3", o3);
+								g->str_replace(&cl, "%o4", o4);
 								g->str_replace(&cl, "%x", itoa(x));
 								fprintf(fh, "%s", cl);
 							}
@@ -284,6 +301,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&pl, "%i16", i16);
 								g->str_replace(&pl, "%i", ipaddr);
 								g->str_replace(&pl, "%m", mac);
+								g->str_replace(&pl, "%o1", o1);
+								g->str_replace(&pl, "%o2", o2);
+								g->str_replace(&pl, "%o3", o3);
+								g->str_replace(&pl, "%o4", o4);
 								g->str_replace(&pl, "%x", itoa(x));
 								fprintf(fh, "%s", pl);
 							}	
@@ -318,6 +339,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						free(cl); free(pl); 
 						free(mark_up); free(mark_down);
 						free(htb_up); free(htb_down);
+						free(o1); free(o2); free(o3); free(o4); free(i16);
 					}
 					g->db_free(&nres);
 				}
