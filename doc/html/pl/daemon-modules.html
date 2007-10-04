@@ -1348,7 +1348,7 @@ NAME="TC-DESC"
 		    zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
 		    zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %if - interfejs, %uprate, %downrate, %upceil, 
 		    %downceil, %plimit, %climit, %i16 - ostatni oktet adresu IP w formacie
-		    szesnastkowym oraz %x - licznik o warto¶ci pocz±tkowej 100 
+		    szesnastkowym, %o1, %o2, %o3, %o4 - kolejne oktety adresu IP oraz %x - licznik o warto¶ci pocz±tkowej 100 
 		    zwiêkszany o jeden dla ka¿dego komputera (lub klienta, w zale¿no¶ci od ustawienia
 		    opcji <SAMP
 CLASS="PROMPT"
@@ -1533,35 +1533,35 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->host_mark_down</P
-><P
->Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
-<PRE
-CLASS="SCREEN"
-># %n
-$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x</PRE
->
-			    </P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->host_mark_down = ""</SAMP
-></P
-></LI
-><LI
-><P
 >host_mark_up</P
 ><P
 >Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
->$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x</PRE
+># %n
+$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x</PRE
 >
 			    </P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >host_mark_up = ""</SAMP
+></P
+></LI
+><LI
+><P
+>host_mark_down</P
+><P
+>Regu³a markuj±ca dla ka¿dego komputera. Domy¶lnie:
+<PRE
+CLASS="SCREEN"
+>$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x</PRE
+>
+			    </P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host_mark_down = ""</SAMP
 ></P
 ></LI
 ><LI

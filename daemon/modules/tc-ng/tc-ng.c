@@ -287,8 +287,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			
 				struct node host = c.nodes[j];
 
-			        // IP's last octet in hex
-                                char *i16 = itoha((ntohl(inet_addr(host.ip)) & 0xff));	
+				unsigned int hostip = ntohl(inet_addr(host.ip));
+				char *o1 = strdup(itoa((hostip >> 24) & 0xff)); // first octet
+				char *o2 = strdup(itoa((hostip >> 16) & 0xff)); // second octet
+				char *o3 = strdup(itoa((hostip >> 8) & 0xff)); // third octet
+				char *o4 = strdup(itoa(hostip & 0xff)); // last octet
+				char *i16 = strdup(itoha(hostip & 0xff));  // last octet in hex
 
 				if(host.uprate && host.downrate)
 				{
@@ -298,13 +302,21 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&mark_up, "%i", host.ip);
 					g->str_replace(&mark_up, "%m", host.mac);
 					g->str_replace(&mark_up, "%x", itoa(x));
-			    					
+					g->str_replace(&mark_up, "%o1", o1);
+					g->str_replace(&mark_up, "%o2", o2);
+					g->str_replace(&mark_up, "%o3", o3);
+					g->str_replace(&mark_up, "%o4", o4);
+			    		
 					g->str_replace(&mark_down, "%n", host.name);
 					g->str_replace(&mark_down, "%if", nets[host.network].interface);
 					g->str_replace(&mark_down, "%i16", i16);
 					g->str_replace(&mark_down, "%i", host.ip);
 					g->str_replace(&mark_down, "%m", host.mac);
 					g->str_replace(&mark_down, "%x", itoa(x));
+					g->str_replace(&mark_down, "%o1", o1);
+					g->str_replace(&mark_down, "%o2", o2);
+					g->str_replace(&mark_down, "%o3", o3);
+					g->str_replace(&mark_down, "%o4", o4);
 		
 					g->str_replace(&htb_up, "%n", host.name);
 					g->str_replace(&htb_up, "%if", nets[host.network].interface);
@@ -348,6 +360,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	    				g->str_replace(&cl, "%i", host.ip);
 	    				g->str_replace(&cl, "%m", host.mac);
 					g->str_replace(&cl, "%x", itoa(x));
+					g->str_replace(&cl, "%o1", o1);
+					g->str_replace(&cl, "%o2", o2);
+					g->str_replace(&cl, "%o3", o3);
+					g->str_replace(&cl, "%o4", o4);
 
 					fprintf(fh, "%s", cl);
 				}
@@ -361,6 +377,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					g->str_replace(&pl, "%i", host.ip);
 					g->str_replace(&pl, "%m", host.mac);
 					g->str_replace(&pl, "%x", itoa(x));
+					g->str_replace(&pl, "%o1", o1);
+					g->str_replace(&pl, "%o2", o2);
+					g->str_replace(&pl, "%o3", o3);
+					g->str_replace(&pl, "%o4", o4);
 
 					fprintf(fh, "%s", pl);
 				}	
@@ -373,6 +393,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				free(mark_down);
 				free(htb_up); 
 				free(htb_down);
+				free(o1); free(o2); free(o3); free(o4); free(i16);
 			}
 		}
 		
