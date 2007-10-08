@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.10.0 Urgo (2007-10-08):
 
   - fixed "Argument #2 is not an array in /var/www/lms/modules/choosemac.php
     on line 48" (alec)
