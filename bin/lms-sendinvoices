@@ -259,7 +259,7 @@ while(my $row = $dbq->fetchrow_hashref())
 	}
 	else
 	{
-		die $response->status_line;
+		print STDERR "Error: ".$response->status_line."\n";
 	}
 }
 
