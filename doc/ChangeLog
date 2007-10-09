@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - BTS#0000695: fixed node addition form displaying after node addition (alec)
+
 version 1.10.0 Urgo (2007-10-08):
 
   - fixed "Argument #2 is not an array in /var/www/lms/modules/choosemac.php

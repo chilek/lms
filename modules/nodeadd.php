@@ -139,7 +139,7 @@ if(isset($_POST['nodedata']))
 	if(!$error)
 	{
 		$nodeid = $LMS->NodeAdd($nodedata);
-		if(isset($nodedata['reuse']))
+		if(!isset($nodedata['reuse']))
 		{
 			$SESSION->redirect('?m=nodeinfo&id='.$nodeid);
 		}
@@ -150,9 +150,9 @@ if(isset($_POST['nodedata']))
 		$nodedata['ownerid'] = $ownerid;
 		$nodedata['reuse'] = '1';
 	}
-	
-	if($nodedata['ipaddr_pub']=='0.0.0.0')
-		$nodedata['ipaddr_pub'] = '';
+	else
+		if($nodedata['ipaddr_pub']=='0.0.0.0')
+			$nodedata['ipaddr_pub'] = '';
 }
 
 $layout['pagetitle'] = trans('New Node');
