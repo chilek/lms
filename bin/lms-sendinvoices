@@ -216,6 +216,7 @@ while(my $row = $dbq->fetchrow_hashref())
 	my $response = $ua->get($lms_url.'/?m=invoice&fetchsingle=1&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
 	if ($response->is_success)
 	{
+		print $response->content;
 		my $custemail = $debug_email || $row->{'email'};
 		my $invoice_number = $row->{'template'} || '%N/LMS/%Y';
 		my $body = $mail_body;
@@ -252,7 +253,10 @@ while(my $row = $dbq->fetchrow_hashref())
 			Data => [ $response->content ],
 		);
 		$mail->smtpsend('MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email);
-		
+	}
+	else
+	{
+		die $response->status_line;
 	}
 }
 
