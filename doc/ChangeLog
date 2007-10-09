@@ -39,6 +39,8 @@ version ? (????-??-??):
   - fix: GetMACs() and GetRemoteMACs() returns array (alec)
   - lmsd/tc, lmsd/tc-ng: added %o1, %o2, %o3, %o4 variables (alec)
   - LMS-UI uses unix socket connection to postgres when host=localhost (alec)
+  - lms-sendinvoices: added smtp_host option and errors printing for
+    problems with http or smtp connection (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 

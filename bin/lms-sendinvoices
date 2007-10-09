@@ -110,6 +110,7 @@ my $lms_password = $ini->val('sendinvoices', 'lms_password') || '';
 my $debug_email = $ini->val('sendinvoices', 'debug_email') || '';
 my $sender_name = $ini->val('sendinvoices', 'sender_name') || '';
 my $sender_email = $ini->val('sendinvoices', 'sender_email') || '';
+my $smtphost = $ini->val('sendinvoices', 'smtp_host') || '';
 my $mail_subject = $ini->val('sendinvoices', 'mail_subject') || 'Invoice No. %invoice';
 my $mail_body = $ini->val('sendinvoices', 'mail_body') || 'Attached file with Invoice No. %invoice';
 my $customergroups = $ini->val('sendinvoices', 'customergroups') || '';
@@ -251,7 +252,10 @@ while(my $row = $dbq->fetchrow_hashref())
 			Filename => 'invoice_'.$row->{'id'}.'.'.$fext,
 			Data => [ $response->content ],
 		);
-		$mail->smtpsend('MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email);
+		if(!$mail->smtpsend('Host' => $smtphost, 'MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email))
+		{
+			print STDERR "Error: Unable to send mail.\n";
+		}
 	}
 	else
 	{
