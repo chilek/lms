@@ -73,7 +73,7 @@ $_language = 'en'; // default language
 
 if(!empty($CONFIG['phpui']['lang']))
 	$langs = $CONFIG['phpui']['lang'];
-if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+elseif(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 	$langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 else
 	$langs = '';
