@@ -70,8 +70,8 @@ if(isset($_POST['nodedata']))
 	
 	if($nodedata['name']=='')
 		$error['name'] = trans('Node name is required!');
-	elseif(strlen($nodedata['name']) > 16)
-		$error['name'] = trans('Node name is too long (max.16 characters)!');
+	elseif(strlen($nodedata['name']) > 32)
+		$error['name'] = trans('Node name is too long (max.32 characters)!');
 	elseif($LMS->GetNodeIDByName($nodedata['name']))
 		$error['name'] = trans('Specified name is in use!');
 	elseif(!eregi('^[_a-z0-9-]+$',$nodedata['name']))

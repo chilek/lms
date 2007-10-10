@@ -140,8 +140,8 @@ case 'formaddip':
 	
 	if($nodeipdata['name']=='')
 		$error['ipname'] = trans('Address field is required!');
-	elseif(strlen($nodeipdata['name']) > 16)
-		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','16');
+	elseif(strlen($nodeipdata['name']) > 32)
+		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
 	elseif($LMS->GetNodeIDByName($nodeipdata['name']))
 		$error['ipname'] = trans('Specified name is in use!');
 	elseif(!eregi('^[_a-z0-9-]+$',$nodeipdata['name']))
@@ -212,8 +212,8 @@ case 'formeditip':
 	
 	if($nodeipdata['name']=='')
 		$error['ipname'] = trans('Address field is required!');
-	elseif(strlen($nodeipdata['name']) > 16)
-		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','16');
+	elseif(strlen($nodeipdata['name']) > 32)
+		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
 	elseif(
 		$LMS->GetNodeIDByName($nodeipdata['name']) &&
 		$LMS->GetNodeName($_GET['ip'])!=$nodeipdata['name']

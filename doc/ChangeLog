@@ -41,6 +41,7 @@ version ? (????-??-??):
   - LMS-UI uses unix socket connection to postgres when host=localhost (alec)
   - lms-sendinvoices: added smtp_host option and errors printing for
     problems with http or smtp connection (alec)
+  - increased node/IP name length limit to 32 characters (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
