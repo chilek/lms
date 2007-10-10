@@ -268,7 +268,7 @@ CREATE TABLE networks (
 DROP TABLE IF EXISTS nodes;
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
-  name varchar(16) NOT NULL default '',
+  name varchar(32) NOT NULL default '',
   mac varchar(20) NOT NULL default '',
   ipaddr int(16) unsigned NOT NULL default '0',
   ipaddr_pub int(16) unsigned NOT NULL default '0',
@@ -845,4 +845,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007080100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007101000');

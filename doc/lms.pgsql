@@ -116,7 +116,7 @@ CREATE SEQUENCE "nodes_id_seq";
 DROP TABLE nodes;
 CREATE TABLE nodes (
 	id integer DEFAULT nextval('nodes_id_seq'::text) NOT NULL,
-	name varchar(16) 	DEFAULT '' NOT NULL,
+	name varchar(32) 	DEFAULT '' NOT NULL,
 	mac varchar(20) 	DEFAULT '' NOT NULL,
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
 	ipaddr_pub bigint 	DEFAULT 0 NOT NULL,
@@ -899,4 +899,4 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007080100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007101000');

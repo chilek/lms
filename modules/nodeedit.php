@@ -140,8 +140,8 @@ if(isset($_POST['nodeedit']))
 		$error['name'] = trans('Specified name is in use!');
 	elseif(!eregi('^[_a-z0-9-]+$',$nodeedit['name']))
 		$error['name'] = trans('Specified name contains forbidden characters!');
-	elseif(strlen($nodeedit['name'])>16)
-		$error['name'] = trans('Node name is too long (max.16 characters)!');
+	elseif(strlen($nodeedit['name'])>32)
+		$error['name'] = trans('Node name is too long (max.32 characters)!');
 
 	if(strlen($nodeedit['passwd'])>32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
