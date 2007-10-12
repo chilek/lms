@@ -121,7 +121,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	}
 	free(groupname); free(groupnames);
 
-	// get customers with tariff rates summaries (ie. channels when one_class_per_host=disabled)
+	// get customers with tariff rates summaries
 	res = g->db_query(g->conn, 
 			"SELECT customerid AS id, "
 				"ROUND(SUM(uprate)) AS uprate, "
