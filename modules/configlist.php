@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetConfigList($order='var,asc')
+function GetConfigList($order='var,asc', $section='')
 {
 	global $DB;
 
@@ -42,8 +42,15 @@ function GetConfigList($order='var,asc')
 		break;
 	}
 
-	if($config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled FROM uiconfig WHERE section != \'userpanel\''.$sqlord))
-	foreach ($config as $idx => $item) 
+	if($section)
+		$config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled 
+			FROM uiconfig WHERE section != \'userpanel\' AND section = ?'
+			.$sqlord, array($section));
+	else
+		$config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled 
+			FROM uiconfig WHERE section != \'userpanel\''.$sqlord);
+
+	if($config) foreach ($config as $idx => $item) 
 	{
 		switch($item['section'])
 		{
@@ -398,6 +405,7 @@ function GetConfigList($order='var,asc')
 	$config['total'] = sizeof($config);
 	$config['order'] = $order;
 	$config['direction'] = $direction;
+	$config['section'] = $section;
 
 	return $config;
 }
@@ -410,16 +418,26 @@ else
 	$o = $_GET['o'];
 $SESSION->save('clo', $o);
 
+if(!isset($_GET['s']))
+        $SESSION->restore('als', $s);
+else
+	$s = $_GET['s'];
+$SESSION->save('als', $s);
+		
 if ($SESSION->is_set('clp') && !isset($_GET['page']))
 	$SESSION->restore('clp', $_GET['page']);
 
-$configlist = GetConfigList($o);
+$configlist = GetConfigList($o, $s);
+
 $listdata['total'] = $configlist['total'];
 $listdata['order'] = $configlist['order'];
 $listdata['direction'] = $configlist['direction'];
+$listdata['section'] = $configlist['section'];
+
 unset($configlist['total']);
 unset($configlist['order']);
 unset($configlist['direction']);
+unset($configlist['section']);
 	    
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (! $LMS->CONFIG['phpui']['configlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['configlist_pagelimit']);

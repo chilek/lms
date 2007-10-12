@@ -42,6 +42,7 @@ version ? (????-??-??):
   - lms-sendinvoices: added smtp_host option and errors printing for
     problems with http or smtp connection (alec)
   - increased node/IP name length limit to 32 characters (alec)
+  - added section filter on UI Configuration (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
