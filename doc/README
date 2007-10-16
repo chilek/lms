@@ -2141,11 +2141,11 @@ links -dump \
        Helpdesk ticket printout template file. Default:
        rtticketprint.html.
        Example: ticket_template_file = ../mytemplates/ticket.html
-     * to_words_short_format
+     * to_words_short_version
        Specify format of verbal amounts representation (on invoices). For
        value "1" verbal expand of 123,15 will be "one two thr 15/100".
        Default: 0.
-       Example: to_words_short_format = 1
+       Example: to_words_short_version = 1
      * nodepassword_length
        Length of (auto-generated) node password. Max.32. Default: 16.
        Example: nodepassword_length = 8

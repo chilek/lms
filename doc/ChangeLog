@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - BTS#0000695: fixed node addition form displaying after node addition (alec)
   - BTS#0000697: increased tariff name length in select (alec)
+  - fixed name of to_words_short_version option in documentation (alec)
 
 version 1.10.0 Urgo (2007-10-08):
 
