@@ -1221,10 +1221,10 @@ links -dump \
 		<para>Przyk³ad:     <prompt>ticket_template_file = ../mytemplates/ticket.html</prompt></para>
         </listitem>
         <listitem>
-            <para>to_words_short_format</para>
+            <para>to_words_short_version</para>
             <para>Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
             rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</para>
-            <para>Przyk³ad:     <prompt>to_words_short_format = 1</prompt></para>
+            <para>Przyk³ad:     <prompt>to_words_short_version = 1</prompt></para>
         </listitem>
         <listitem>
             <para>nodepassword_length</para>

@@ -1164,10 +1164,10 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>ticket_template_file = ../mytemplates/ticket.html</prompt></para>
     	    </listitem>
     	    <listitem>
-        	<para>to_words_short_format</para>
+        	<para>to_words_short_version</para>
         	<para>Specify format of verbal amounts representation (on invoices). For value "1"
         	verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>
-        	<para>Example:     <prompt>to_words_short_format = 1</prompt></para>
+        	<para>Example:     <prompt>to_words_short_version = 1</prompt></para>
     	    </listitem>
     	    <listitem>
         	<para>nodepassword_length</para>
