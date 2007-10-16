@@ -77,7 +77,7 @@
 			    <tr>
 				<td width="1%" valign="top" nowrap>{t}In words:{/t}</td>
 				<td width="99%" class="sdr"><b>
-					{if $_config.phpui.to_words_short_version}
+					{if $_config.phpui.to_words_short_version|chkconfig}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
 					{else}
 						{t 0=$receipt.total|string_format:"%d"|to_words 1=$receipt.totalg|to_words}$0 dollars $1 cents{/t}
@@ -217,7 +217,7 @@
 			    <tr>
 				<td width="1%" valign="top" nowrap>{t}In words:{/t}</td>
 				<td width="99%" class="sdr"><b>
-					{if $_config.phpui.to_words_short_version}
+					{if $_config.phpui.to_words_short_version|chkconfig}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
 					{else}
 						{t 0=$receipt.total|string_format:"%d"|to_words 1=$receipt.totalg|to_words}$0 dollars $1 cents{/t}
