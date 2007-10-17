@@ -24,44 +24,57 @@
  *  $Id$
  */
 
-include($CONFIG['phpui']['import_config'] ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
+include(!empty($CONFIG['phpui']['import_config']) ? $CONFIG['phpui']['import_config'] : 'cashimportcfg.php');
 
-if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
+if(!isset($patterns) || !is_array($patterns))
+{
+	$error['file'] = trans('Configuration error. Patterns array not found!');
+}
+elseif(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 {
 	$file = file($_FILES['file']['tmp_name']);
+	$patterns_cnt = isset($patterns) ? sizeof($patterns) : 0;
+	
 	foreach($file as $line)
 	{
-		$id = 0;
-
-		if(strtoupper($encoding) != 'UTF-8')
+		$count = 0;
+		if(isset($patterns)) foreach($patterns as $idx => $pattern)
 		{
-			$line = iconv($encoding, 'UTF-8//TRANSLIT', $line);
+			if(!preg_match($pattern['pattern'], $line, $matches))
+				$count++;
+			else
+				break;
 		}
-		
-		if(!preg_match($pattern, $line, $matches))
-			continue;
 
-		$name = isset($matches[$pname]) ? trim($matches[$pname]) : '';
-		$lastname = isset($matches[$plastname]) ? trim($matches[$plastname]) : '';
-		$comment = isset($matches[$pcomment]) ? trim($matches[$pcomment]) : '';
-		$time = isset($matches[$pdate]) ? trim($matches[$pdate]) : '';
-		$value = str_replace(',','.', isset($matches[$pvalue]) ? trim($matches[$pvalue]) : '');
-		
-		if(!$pid)
+		// line isn't matching to any pattern
+		if($count == $patterns_cnt) continue; // go to next line
+
+		if(strtoupper($pattern['encoding']) != 'UTF-8')
+		{
+			$line = iconv($pattern['encoding'], 'UTF-8//TRANSLIT', $line);
+		}
+
+		$name = isset($matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
+		$lastname = isset($matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
+		$comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
+		$time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
+		$value = str_replace(',','.', isset($matches[$pattern['pvalue']]) ? trim($matches[$pattern['pvalue']]) : '');
+
+		if(!$pattern['pid'])
 		{
 			if(preg_match("/.*ID[:\-\/]([0-9]{0,4}).*/i", $line, $matches))
 				$id = $matches[1];
 		}
 		else
-			$id = isset($matches[$pid]) ? intval($matches[$pid]) : 0;
+			$id = isset($matches[$pattern['pid']]) ? intval($matches[$pattern['pid']]) : 0;
 		
-/*		// seek invoice number
-		if(!$id)
+		// seek invoice number
+		if(!$id && !empty($pattern['invoice_regexp']))
 		{
-			if(preg_match($invoice_regexp, $line, $matches)) 
+			if(preg_match($pattern['invoice_regexp'], $line, $matches)) 
 			{
-				$invid = $matches[$pinvoice_number];
-				$invyear = $matches[$pinvoice_year];
+				$invid = $matches[$pattern['pinvoice_number']];
+				$invyear = $matches[$pattern['pinvoice_year']];
 				if($invid && $invyear)
 				{
 					$from = mktime(0,0,0,1,1,$invyear);
@@ -70,7 +83,7 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 				}
 			}
 		}
-*/		
+
 		if(!$id && $name && $lastname)
 		{
 			$uids = $DB->GetCol('SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)', array($lastname, $name));
@@ -90,8 +103,13 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		
 		if($time)
 		{
-			if(preg_match($date_regexp, $time, $date))
-				$time = mktime(0,0,0, $date[$pmonth], $date[$pday], $date[$pyear]);
+			if(preg_match($pattern['date_regexp'], $time, $date))
+			{
+				$time = mktime(0,0,0, 
+					$date[$pattern['pmonth']], 
+					$date[$pattern['pday']], 
+					$date[$pattern['pyear']]);
+			}
 			elseif(!is_numeric($time))
 				$time = time();
 		}
@@ -100,16 +118,16 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 			
 		$customer = trim($lastname.' '.$name);
 		
-		if(isset($CONFIG['phpui']['use_line_hash']) && chkconfig($CONFIG['phpui']['use_line_hash']))
+		if(isset($pattern['use_line_hash']) && $pattern['use_line_hash'])
 			$hash = md5($line);
 		else
 			$hash = md5($time.$value.$customer.$comment);
 		
 		if(is_numeric($value))
 		{
-			if(isset($modvalue) && $modvalue)
+			if(isset($pattern['modvalue']) && $pattern['modvalue'])
 			{
-				$value = str_replace(',','.', ($value * 100) / 10000);
+				$value = str_replace(',','.', $value * $pattern['modvalue']);
 			}
 		
 			if(!$DB->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash)))
