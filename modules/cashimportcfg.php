@@ -24,28 +24,30 @@
  *  $Id$
  */
 
-$pattern = "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/";
-$pid = 0;	// customer ID position in expression
-		// if zero - we try to search ID by regexp,
-		// invoice number or customer name and forename in entire row
-$pname = 2;	// name position 
-$plastname = 3; // forename position 
-$pvalue = 4;	// value position
-$pcomment = 5;  // operation comment position
-$pdate = 1;  	// date position
+$patterns[] = array(
+    'pattern' => "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/",
+    'pid' => 0,		// customer ID position in expression
+			// if zero - we try to search ID by regexp,
+			// invoice number or customer name and forename in entire row
+    'pname' => 2,	// name position 
+    'plastname' => 3,	// forename position 
+    'pvalue' => 4,	// value position
+    'pcomment' => 5,	// operation comment position
+    'pdate' => 1,  	// date position
 
-$date_regexp = '/([0-9]{2})\.([0-9]{2})\.([0-9]{4})/'; // date format (dd.mm.yyyy)
-$pday = 1;
-$pmonth = 2;
-$pyear = 3;
-$invoice_regexp = '/.* (\d*)\/LMS\/([0-9]{4}).*/'; 	// format of invoice number
+    'date_regexp' => '/([0-9]{2})\.([0-9]{2})\.([0-9]{4})/', // date format (dd.mm.yyyy)
+    'pday' => 1,
+    'pmonth' => 2,
+    'pyear' => 3,
+    'invoice_regexp' => '/.* (\d*)\/LMS\/([0-9]{4}).*/',// format of invoice number
 							// default %N/LMS/%Y
-$pinvoice_number = 1; // position of invoice number in $invoice_regexp
-$pinvoice_year = 2;   // year position in $invoice_regexp
+    'pinvoice_number' => 1,	// position of invoice number in $invoice_regexp
+    'pinvoice_year' => 2,	// year position in $invoice_regexp
 
-$encoding = 'UTF-8';  // imported data encoding (for conversion)
+    'encoding' => 'UTF-8',	// imported data encoding (for conversion)
 
-$modvalue = FALSE;	// if operation's value is 1000.00, then
-			// enabled $modvalue will modify it to 10.00
+    'modvalue' => 0,		// if not zero do value = value * modvalue
+    'use_line_hash' => FALSE,	// create md5 hash for whole import line
+);
 
 ?>

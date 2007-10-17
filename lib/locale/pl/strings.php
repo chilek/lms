@@ -1856,5 +1856,6 @@ $_LANG['Groups:'] = 'Grupy:';
 $_LANG['Group: $0'] = 'Grupa: $0';
 $_LANG['Group: all excluding $0'] = 'Grupa: wszystkie oprócz $0';
 $_LANG['Position:'] = 'Stanowisko:';
+$_LANG['Configuration error. Patterns array not found!'] = 'Błąd w konfiguracji. Nie znaleziono tablicy wzorców!';
 
 ?>
