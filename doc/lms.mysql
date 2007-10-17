@@ -12,6 +12,7 @@ CREATE TABLE users (
   login varchar(32) NOT NULL default '',
   name varchar(64) NOT NULL default '',
   email varchar(255) NOT NULL default '',
+  position varchar(255) NOT NULL default '',
   rights varchar(64) NOT NULL default '',
   hosts varchar(255) NOT NULL default '',
   passwd varchar(255) NOT NULL default '',
@@ -845,4 +846,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007101000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007101700');

@@ -81,6 +81,7 @@
                     <member>login - login</member>
                     <member>name - first and last name</member>
                     <member>email - user's email address</member>
+                    <member>position - user's position name</member>
                     <member>rights - binary access rights</member>
                     <member>hosts - list of hosts allowed to login</member>
                     <member>passwd - password to login</member>

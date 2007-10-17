@@ -11,6 +11,7 @@ CREATE TABLE users (
 	login varchar(32) 	DEFAULT '' NOT NULL,
 	name varchar(64) 	DEFAULT '' NOT NULL,
 	email varchar(255) 	DEFAULT '' NOT NULL,
+	position varchar(255) 	DEFAULT '' NOT NULL,
 	rights varchar(64) 	DEFAULT '' NOT NULL,
 	hosts varchar(255) 	DEFAULT '' NOT NULL,
 	passwd varchar(255) 	DEFAULT '' NOT NULL,
@@ -899,4 +900,4 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007101000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007101700');

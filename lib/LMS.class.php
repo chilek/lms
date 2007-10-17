@@ -188,7 +188,16 @@ class LMS
 
 	function UserAdd($useradd) 
 	{
-		if($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights, hosts) VALUES (?, ?, ?, ?, ?, ?)', array($useradd['login'], $useradd['name'], $useradd['email'], crypt($useradd['password']),$useradd['rights'], $useradd['hosts'])))
+		if($this->DB->Execute('INSERT INTO users (login, name, email, passwd, rights, 
+				hosts, position) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+				array($useradd['login'], 
+					$useradd['name'], 
+					$useradd['email'], 
+					crypt($useradd['password']),
+					$useradd['rights'], 
+					$useradd['hosts'],
+					$useradd['position']
+		)))
 			return $this->DB->GetOne('SELECT id FROM users WHERE login=?', array($useradd['login']));
 		else
 			return FALSE;
@@ -219,7 +228,7 @@ class LMS
 	function GetUserInfo($id) // zwraca pe³ne info o podanym userie
 	{
 		if($userinfo = $this->DB->GetRow('SELECT id, login, name, email, hosts, lastlogindate, 
-				lastloginip, failedlogindate, failedloginip, deleted 
+				lastloginip, failedlogindate, failedloginip, deleted, position 
 				FROM users WHERE id=?', array($id)))
 		{
 			if($userinfo['id']==$this->AUTH->id)
@@ -259,13 +268,14 @@ class LMS
 
 	function UserUpdate($userinfo) 
 	{
-		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?, hosts=? 
-				WHERE id=?', 
+		return $this->DB->Execute('UPDATE users SET login=?, name=?, email=?, rights=?, 
+				hosts=?, position=? WHERE id=?', 
 				array($userinfo['login'],
 					$userinfo['name'],
 					$userinfo['email'],
 					$userinfo['rights'],
 					$userinfo['hosts'],
+					$userinfo['position'],
 					$userinfo['id']
 				));
 	}

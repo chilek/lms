@@ -19,6 +19,17 @@
 			<B>{$userinfo.name}</B>
 		</TD>
 	</TR>
+{if $userinfo.position}
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/info.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%"><B>{t}Position:{/t}</B></TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$userinfo.position}
+		</TD>
+	</TR>
+{/if}
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/mail.gif" ALT="">
