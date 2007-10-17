@@ -72,7 +72,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			        $where = ' AND ten = \''.$search.'\'';
 			break;
 			case 'customerid':
-				$where = ' AND customerid = '.intval($search);
+				$where = ' AND d.customerid = '.intval($search);
 			break;
 			case 'name':
 				$where = ' AND UPPER(name) ?LIKE? UPPER(\'%'.$search.'%\')';
@@ -87,7 +87,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 		$where = ' AND closed = 0';
 
 	if($result = $DB->GetAll('SELECT d.id AS id, number, cdate, type,
-			customerid, name, address, zip, city, template, closed, 
+			d.customerid, name, address, zip, city, template, closed, 
 			CASE reference WHEN 0 THEN
 			    SUM(a.value*a.count) 
 			ELSE
@@ -98,13 +98,15 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			LEFT JOIN invoicecontents a ON (a.docid = d.id)
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
-			WHERE (type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
+			LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = d.customerid) 
+			WHERE e.customerid IS NULL AND 
+				(type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
 			.$where
-			.' AND NOT EXISTS (
-			        SELECT 1 FROM customerassignments a
-				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
-			.' GROUP BY d.id, number, cdate, customerid, 
+			.' GROUP BY d.id, number, cdate, d.customerid, 
 			name, address, zip, city, template, closed, type, reference '
 	    		.$sqlord.' '.$direction))
 	{
