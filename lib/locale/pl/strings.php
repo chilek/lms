@@ -1859,5 +1859,6 @@ $_LANG['customers groups management'] = 'zarządzanie grupami klientów';
 $_LANG['Groups:'] = 'Grupy:';
 $_LANG['Group: $0'] = 'Grupa: $0';
 $_LANG['Group: all excluding $0'] = 'Grupa: wszystkie oprócz $0';
- 
+$_LANG['Position:'] = 'Stanowisko:';
+
 ?>

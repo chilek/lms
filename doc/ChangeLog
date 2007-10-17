@@ -44,6 +44,7 @@ version ? (????-??-??):
   - increased node/IP name length limit to 32 characters (alec)
   - added section filter on UI Configuration (alec)
   - fixed name of to_words_short_version option in documentation (alec)
+  - added user's position field (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 

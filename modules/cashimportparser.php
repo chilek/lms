@@ -99,7 +99,11 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 			$time = time();
 			
 		$customer = trim($lastname.' '.$name);
-		$hash = md5($time.$value.$customer.$comment);
+		
+		if(isset($CONFIG['phpui']['use_line_hash']) && chkconfig($CONFIG['phpui']['use_line_hash']))
+			$hash = md5($line);
+		else
+			$hash = md5($time.$value.$customer.$comment);
 		
 		if(is_numeric($value))
 		{
