@@ -30,14 +30,16 @@ if(!isset($patterns) || !is_array($patterns))
 {
 	$error['file'] = trans('Configuration error. Patterns array not found!');
 }
-elseif(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
+elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 {
 	$file = file($_FILES['file']['tmp_name']);
 	$patterns_cnt = isset($patterns) ? sizeof($patterns) : 0;
+	$ln = 0;
 	
 	foreach($file as $line)
 	{
 		$count = 0;
+		$ln++;
 		if(isset($patterns)) foreach($patterns as $idx => $pattern)
 		{
 			if(!preg_match($pattern['pattern'], $line, $matches))
@@ -47,7 +49,11 @@ elseif(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		}
 
 		// line isn't matching to any pattern
-		if($count == $patterns_cnt) continue; // go to next line
+		if($count == $patterns_cnt)
+		{
+			if(trim($line) != '') $error['lines'][$ln] = $line;
+			continue; // go to next line
+		}
 
 		if(strtoupper($pattern['encoding']) != 'UTF-8')
 		{
@@ -62,7 +68,12 @@ elseif(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 
 		if(!$pattern['pid'])
 		{
-			if(preg_match("/.*ID[:\-\/]([0-9]{0,4}).*/i", $line, $matches))
+			if(!empty($pattern['pid_regexp'])) 
+				$regexp = $pattern['pid_regexp'];
+			else
+				$regexp = '/.*ID[:\-\/]([0-9]{0,4}).*/i';
+
+			if(preg_match($regexp, $line, $matches))
 				$id = $matches[1];
 		}
 		else
@@ -116,7 +127,11 @@ elseif(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		else
 			$time = time();
 			
+		if(isset($pattern['comment_replace']))
+			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
+
 		$customer = trim($lastname.' '.$name);
+		$comment = trim($comment);
 		
 		if(isset($pattern['use_line_hash']) && $pattern['use_line_hash'])
 			$hash = md5($line);
@@ -136,10 +151,11 @@ elseif(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 					array($time, $value, $customer, $id, $comment, $hash));
 		}
 	}
-	
-	$SESSION->redirect('?m=cashimport');
+
+	include(MODULES_DIR.'/cashimport.php');
+	die;
 } 
-else // upload errors
+elseif(isset($_FILES['file'])) // upload errors
 	switch($_FILES['file']['error'])
 	{
 		case 1: 			

@@ -28,7 +28,7 @@ $patterns[] = array(
     'pattern' => "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/",
     'pid' => 0,		// customer ID position in expression
 			// if zero - we try to search ID by regexp,
-			// invoice number or customer name and forename in entire row
+			// invoice number or customer name and forename in entire line
     'pname' => 2,	// name position 
     'plastname' => 3,	// forename position 
     'pvalue' => 4,	// value position
@@ -39,6 +39,10 @@ $patterns[] = array(
     'pday' => 1,
     'pmonth' => 2,
     'pyear' => 3,
+
+    'pid_regexp' => '/.*ID[:\-\/]([0-9]{0,4}).*/i', 	// if 'pid' is not specified
+    							// try to find it by regexp
+
     'invoice_regexp' => '/.* (\d*)\/LMS\/([0-9]{4}).*/',// format of invoice number
 							// default %N/LMS/%Y
     'pinvoice_number' => 1,	// position of invoice number in $invoice_regexp
@@ -47,7 +51,8 @@ $patterns[] = array(
     'encoding' => 'UTF-8',	// imported data encoding (for conversion)
 
     'modvalue' => 0,		// if not zero do value = value * modvalue
-    'use_line_hash' => FALSE,	// create md5 hash for whole import line
+    'use_line_hash' => FALSE,	// create md5 hash for whole import line instead of
+				// time, value, customer name and comment
 );
 
 ?>
