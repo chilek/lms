@@ -46,7 +46,9 @@ version ? (????-??-??):
   - fixed name of to_words_short_version option in documentation (alec)
   - added user's position field (alec)
   - optimized Invoices List sql query (25% faster) (alec)
-  - Cash Import: added support for many import patterns, added 'use_line_hash' (alec)
+  - Cash Import: added support for many import patterns, added 'use_line_hash',
+    'pid_regexp' and 'comment_replace' pattern parameters, added not matching
+    lines printing (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
