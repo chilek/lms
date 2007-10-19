@@ -86,11 +86,15 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			{
 				$invid = $matches[$pattern['pinvoice_number']];
 				$invyear = $matches[$pattern['pinvoice_year']];
+				$invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
+				
 				if($invid && $invyear)
 				{
-					$from = mktime(0,0,0,1,1,$invyear);
-					$to = mktime(0,0,0,13,1,$invyear);
-					$id = $DB->GetOne('SELECT customerid FROM invoices WHERE number=? AND cdate>? AND cdate<?', array($invid, $from, $to));
+					$from = mktime(0,0,0, $invmonth, 1, $invyear);
+					$to = mktime(0,0,0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
+					$id = $DB->GetOne('SELECT customerid FROM documents 
+							WHERE number=? AND cdate>? AND cdate<? AND type IN (?,?)', 
+							array($invid, $from, $to, DOC_INVOICE, DOC_CNOTE));
 				}
 			}
 		}

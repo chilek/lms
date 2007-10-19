@@ -43,10 +43,11 @@ $patterns[] = array(
     'pid_regexp' => '/.*ID[:\-\/]([0-9]{0,4}).*/i', 	// if 'pid' is not specified
     							// try to find it by regexp
 
-    'invoice_regexp' => '/.* (\d*)\/LMS\/([0-9]{4}).*/',// format of invoice number
+    'invoice_regexp' => '/.*(\d+)\/LMS\/([0-9]{4}).*/',// format of invoice number
 							// default %N/LMS/%Y
     'pinvoice_number' => 1,	// position of invoice number in $invoice_regexp
     'pinvoice_year' => 2,	// year position in $invoice_regexp
+    'pinvoice_month' => 0,	// month position in $invoice_regexp
 
     'encoding' => 'UTF-8',	// imported data encoding (for conversion)
 
