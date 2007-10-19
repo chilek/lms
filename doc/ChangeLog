@@ -47,8 +47,8 @@ version ? (????-??-??):
   - added user's position field (alec)
   - optimized Invoices List sql query (25% faster) (alec)
   - Cash Import: added support for many import patterns, added 'use_line_hash',
-    'pid_regexp' and 'comment_replace' pattern parameters, added not matching
-    lines printing (alec)
+    'pid_regexp', pinvoice_month' and 'comment_replace' pattern parameters, 
+    added not matching lines printing (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
