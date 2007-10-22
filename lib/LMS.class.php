@@ -1321,10 +1321,9 @@ class LMS
 
 	function NodeSwitchWarn($id)
 	{
-		if($this->DB->GetOne('SELECT warning FROM nodes WHERE id=?', array($id)) == 1 )
-			return $this->DB->Execute('UPDATE nodes SET warning=0 WHERE id=?', array($id));
-		else
-			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE id=?', array($id));
+		return $this->DB->Execute('UPDATE nodes 
+			SET warning = (CASE warning WHEN 0 THEN 1 ELSE 0 END)
+			WHERE id = ?', array($id));
 	}
 
 	function NodeSetWarnU($id,$warning=FALSE)
