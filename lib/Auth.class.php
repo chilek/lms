@@ -72,7 +72,6 @@ class Auth {
 		{
 			$this->login = $loginform['login'];
 			$this->passwd = $loginform['pwd'];
-			$this->SESSION->save('session_timestamp', time());
 			writesyslog('Login attempt by '.$this->login, LOG_INFO);
 		}
 		elseif($this->DB->GetOne('SELECT COUNT(id) FROM users') == 0)
