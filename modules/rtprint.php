@@ -56,23 +56,15 @@ switch($type)
 				    .' GROUP BY customerid', 'customerid');
     			$company = $DB->GetAllByKey('SELECT COUNT(*) AS total, customerid
 		               	    FROM rttickets 
-				    WHERE cause = 1'
-				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
-				    .' GROUP BY customerid', 'customerid');
-    			$other = $DB->GetAllByKey('SELECT COUNT(*) AS total, customerid
-		               	    FROM rttickets 
-				    WHERE cause = 1'
+				    WHERE cause = 2'
 				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
 				    .' GROUP BY customerid', 'customerid');
 			
 			foreach($list as $idx => $row)
 			{
-				if(isset($customer[$row['customerid']]))
-					$list[$idx]['customer'] = $customer[$row['customerid']]['total'];
-				if(isset($company[$row['customerid']]))
-					$list[$idx]['customer'] = $company[$row['customerid']]['total'];
-				if(isset($other[$row['customerid']]))
-					$list[$idx]['other'] = $other[$row['customerid']]['total'];
+				$list[$idx]['customer'] = isset($customer[$row['customerid']]) ? $customer[$row['customerid']]['total'] : 0;
+				$list[$idx]['company'] = isset($company[$row['customerid']]) ? $company[$row['customerid']]['total'] : 0;
+				$list[$idx]['other'] = $list[$idx]['total'] - $list[$idx]['customer'] - $list[$idx]['company'];
 			}
 		}
 
