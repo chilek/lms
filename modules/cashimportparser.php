@@ -38,11 +38,20 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 	
 	foreach($file as $line)
 	{
+		$id = 0;
 		$count = 0;
 		$ln++;
+
 		if(isset($patterns)) foreach($patterns as $idx => $pattern)
 		{
-			if(!preg_match($pattern['pattern'], $line, $matches))
+			$theline = $line;
+		
+			if(strtoupper($pattern['encoding']) != 'UTF-8')
+			{
+				$theline = @iconv($pattern['encoding'], 'UTF-8//TRANSLIT', $theline);
+			}
+			
+			if(!preg_match($pattern['pattern'], $theline, $matches))
 				$count++;
 			else
 				break;
@@ -53,11 +62,6 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		{
 			if(trim($line) != '') $error['lines'][$ln] = $line;
 			continue; // go to next line
-		}
-
-		if(strtoupper($pattern['encoding']) != 'UTF-8')
-		{
-			$line = iconv($pattern['encoding'], 'UTF-8//TRANSLIT', $line);
 		}
 
 		$name = isset($matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
@@ -73,7 +77,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			else
 				$regexp = '/.*ID[:\-\/]([0-9]{0,4}).*/i';
 
-			if(preg_match($regexp, $line, $matches))
+			if(preg_match($regexp, $theline, $matches))
 				$id = $matches[1];
 		}
 		else
@@ -82,7 +86,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		// seek invoice number
 		if(!$id && !empty($pattern['invoice_regexp']))
 		{
-			if(preg_match($pattern['invoice_regexp'], $line, $matches)) 
+			if(preg_match($pattern['invoice_regexp'], $theline, $matches)) 
 			{
 				$invid = $matches[$pattern['pinvoice_number']];
 				$invyear = $matches[$pattern['pinvoice_year']];
@@ -138,7 +142,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		$comment = trim($comment);
 		
 		if(isset($pattern['use_line_hash']) && $pattern['use_line_hash'])
-			$hash = md5($line);
+			$hash = md5($theline);
 		else
 			$hash = md5($time.$value.$customer.$comment);
 		
