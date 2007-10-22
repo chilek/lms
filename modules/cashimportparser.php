@@ -54,8 +54,8 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		}
 		else
 			$id = isset($matches[$pid]) ? intval($matches[$pid]) : 0;
-		
-/*		// seek invoice number
+/*		
+		// seek invoice number
 		if(!$id)
 		{
 			if(preg_match($invoice_regexp, $line, $matches)) 
@@ -66,7 +66,9 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 				{
 					$from = mktime(0,0,0,1,1,$invyear);
 					$to = mktime(0,0,0,13,1,$invyear);
-					$id = $DB->GetOne('SELECT customerid FROM invoices WHERE number=? AND cdate>? AND cdate<?', array($invid, $from, $to));
+					$id = $DB->GetOne('SELECT customerid FROM documents 
+						WHERE number=? AND cdate>? AND cdate<? AND type IN (?, ?)', 
+						array($invid, $from, $to, DOC_INVOICE, DOC_CNOTE));
 				}
 			}
 		}
