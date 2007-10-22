@@ -6,6 +6,7 @@ version ? (????-??-??):
   - BTS#0000697: increased tariff name length in select (alec)
   - fixed name of to_words_short_version option in documentation (alec)
   - s/customer_variable_classes/custom_variable_classes/ in polish doc (alec)
+  - fixed and optimized cause counters in helpdesk ticket stats (alec)
 
 version 1.10.0 Urgo (2007-10-08):
 
