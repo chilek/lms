@@ -49,6 +49,7 @@ version ? (????-??-??):
   - Cash Import: added support for many import patterns, added 'use_line_hash',
     'pid_regexp', pinvoice_month' and 'comment_replace' pattern parameters, 
     added not matching lines printing (alec)
+  - lms-traffic-htbiptlimits: fixed tc class identifiers (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 

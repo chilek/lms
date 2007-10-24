@@ -244,8 +244,8 @@ foreach my $key (keys %iftable)
 {
 	print OUTFILE "$tc_binary qdisc del root dev $key\n";
 	print OUTFILE "$tc_binary qdisc add dev $key root handle 1: htb\n";
-	print OUTFILE "$tc_binary class add dev $key parent 1: classid 1:19998 htb rate 10mbit burst 1mbit\n";
-	print OUTFILE "$tc_binary class add dev $key parent 1:19998 classid 1:19999 htb rate ".$iftable{$key}."kbit burst ".($iftable{$key} / 10)."kbit\n";
+	print OUTFILE "$tc_binary class add dev $key parent 1: classid 1:9998 htb rate 10mbit burst 1mbit\n";
+	print OUTFILE "$tc_binary class add dev $key parent 1:9998 classid 1:9999 htb rate ".$iftable{$key}."kbit burst ".($iftable{$key} / 10)."kbit\n";
 	
 }
 $dbq->finish();
@@ -271,7 +271,7 @@ while (my $row = $dbq->fetchrow_hashref())
 		{
 			$htbid{$key} = 0 if not defined $htbid{$key};
 			$htbid{$key} ++;
-			print OUTFILE "$tc_binary class add dev $key parent 1:19999 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit ceil ".$row->{'downceil'}."kbit burst ".($row->{'downrate'} / 8)."kbit\n";
+			print OUTFILE "$tc_binary class add dev $key parent 1:9999 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit ceil ".$row->{'downceil'}."kbit burst ".($row->{'downrate'} / 8)."kbit\n";
 			print OUTFILE "$tc_binary filter add dev $key protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$key}."\n";
 		}
 	}
@@ -288,7 +288,7 @@ while (my $row = $dbq->fetchrow_hashref())
 			my ($if,$spd) = split(':', $wan_interface);
 			$htbid{$if} = 0 if not defined $htbid{$if};
 			$htbid{$if} ++;
-			print OUTFILE "$tc_binary class add dev $if parent 1:19999 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit ceil ".$row->{'upceil'}."kbit burst ".($row->{'uprate'} / 8). "kbit\n";
+			print OUTFILE "$tc_binary class add dev $if parent 1:9999 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit ceil ".$row->{'upceil'}."kbit burst ".($row->{'uprate'} / 8). "kbit\n";
 			print OUTFILE "$tc_binary filter add dev $if protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$if}."\n";
 		}
 	}		
