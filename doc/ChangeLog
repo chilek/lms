@@ -8,6 +8,7 @@ version ? (????-??-??):
   - s/customer_variable_classes/custom_variable_classes/ in polish doc (alec)
   - fixed and optimized cause counters in helpdesk ticket stats (alec)
   - lms-traffic-htbiptlimits: fixed tc class identifiers (alec)
+  - fixed document numbers in Customer Info (alec)
 
 version 1.10.0 Urgo (2007-10-08):
 
