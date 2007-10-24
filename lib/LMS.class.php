@@ -3152,7 +3152,8 @@ class LMS
 	{
 		if(!$customerid) return NULL;
 		
-		$list = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, description, filename, md5sum, contenttype, template, closed
+		$list = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, 
+				    description, filename, md5sum, contenttype, template, closed, cdate
 				    FROM documentcontents, documents
 				    LEFT JOIN numberplans ON(numberplanid = numberplans.id)
 				    WHERE documents.id = documentcontents.docid

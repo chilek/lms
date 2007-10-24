@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed document numbers in Customer Info (alec)
+
 version 1.8.13 Tessa (2007-10-03):
 
   - fixed customerprint module on some php versions which needs date()
