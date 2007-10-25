@@ -43,7 +43,7 @@ elseif(isset($addbalance['time']) && $addbalance['time']!='')
 		$time = explode(':',$date[1]);
 	else {
 		$time[0] = $time[1] = 0;
-	
+	}	
 	$date = explode('/',$date[0]);
 	
 	if(checkdate($date[1],$date[2],(int)$date[0])) //if date is wrong, set today's date
