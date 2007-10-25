@@ -82,6 +82,7 @@ if(isset($_POST['document']))
 	{
 		$tmp = $LMS->GetNewDocumentNumber($document['type'], $document['numberplanid']);
 		$document['number'] = $tmp ? $tmp : 0;
+		$autonumber = true;
 	}
 	elseif(!eregi('^[0-9]+$', $document['number']))
     		$error['number'] = trans('Document number must be an integer!');
@@ -241,6 +242,8 @@ if(isset($_POST['document']))
 	{
 		$document['fromdate'] = $oldfromdate;
 		$document['todate'] = $oldtodate;
+		if(isset($autonumber))
+			$document['number'] = '';
 	}
 }
 else
