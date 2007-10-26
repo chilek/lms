@@ -323,10 +323,22 @@
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
+                   <para>excluded_networks</para>
+                   <para>List of excluded network names to restrinct customers for accounting.
+                   Default: empty (none).</para>
+                   <para>Example: <prompt>excluded_networks = "lan3 lan4"</prompt></para>
+               </listitem>
+               <listitem>
                    <para>customergroups</para>
                    <para>List of customers groups to restrict customers for accounting.
                    Default: empty (all groups).</para>
                    <para>Example: <prompt>customergroups = "group1 group2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>excluded_customergroups</para>
+                   <para>List of excluded customers groups to restrict customers for accounting.
+                   Default: empty (none).</para>
+                   <para>Example: <prompt>excluded_customergroups = "group3 group4"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>

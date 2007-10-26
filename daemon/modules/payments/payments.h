@@ -9,6 +9,8 @@ struct payments_module
 	char *deadline;
 	char *networks;
 	char *customergroups;	
+	char *excluded_networks;
+	char *excluded_customergroups;	
 	int numberplanid;
 	int up_payments;
 	int expiry_days;

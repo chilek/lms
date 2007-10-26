@@ -141,7 +141,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	QueryHandle *res, *result, *sres;
 	char *insert, *description, *invoiceid;
 	char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
-	int i, imonth, imday, today, n=2, k=2;
+	int i, imonth, imday, today, n=2, k=2, m=2, o=2;
 	int docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
@@ -153,7 +153,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *numberplanid = strdup(itoa(p->numberplanid));
 	
 	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n \
-				WHERE ownerid = customerid \
+				WHERE ownerid = ats.customerid \
 				AND (%nets) \
 	                        AND ((ipaddr > address AND ipaddr < ("BROADCAST")) \
 				OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) \
@@ -162,9 +162,20 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *netnames = strdup(p->networks);
 	char *netname = strdup(netnames);
 	char *netsql = strdup("");
+
+	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes, networks n \
+				WHERE ownerid = ats.customerid \
+				AND (%enets) \
+	                        AND ((ipaddr > address AND ipaddr < ("BROADCAST")) \
+				OR (ipaddr_pub > address AND ipaddr_pub < ("BROADCAST"))) \
+				)");
+				
+	char *enetnames = strdup(p->excluded_networks);
+	char *enetname = strdup(enetnames);
+	char *enetsql = strdup("");
 			
 	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a \
-				WHERE a.customerid = customerid \
+				WHERE a.customerid = ats.customerid \
 				AND g.id = a.customergroupid \
 				AND (%groups)) \
 				");
@@ -172,7 +183,17 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *groupnames = strdup(p->customergroups);
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
+
+	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a \
+				WHERE a.customerid = ats.customerid \
+				AND g.id = a.customergroupid \
+				AND (%egroups)) \
+				");
 	
+	char *egroupnames = strdup(p->excluded_customergroups);
+	char *egroupname = strdup(egroupnames);
+	char *egroupsql = strdup("");
+
 	while( n>1 )
 	{
     		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
@@ -194,13 +215,34 @@ void reload(GLOBAL *g, struct payments_module *p)
 	if(strlen(netsql))
 		g->str_replace(&nets, "%nets", netsql);
 
+	while( o>1 )
+	{
+    		o = sscanf(enetnames, "%s %[._a-zA-Z0-9- ]", enetname, enetnames);
+
+		if( strlen(enetname) )
+		{
+			enetsql = realloc(enetsql, sizeof(char *) * (strlen(enetsql) + strlen(enetname) + 30));
+			if(strlen(enetsql))
+				strcat(enetsql, " OR UPPER(n.name) = UPPER('");
+			else
+				strcat(enetsql, "UPPER(n.name) = UPPER('");
+			
+			strcat(netsql, enetname);
+			strcat(netsql, "')");
+		}
+	}
+	free(enetname); free(enetnames);
+	
+	if(strlen(enetsql))
+		g->str_replace(&enets, "%enets", enetsql);
+
 	while( k>1 )
 	{
 		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
 		{
-			groupsql = realloc(groupsql, sizeof(char *) * (strlen(groupsql) + strlen(netname) + 30));
+			groupsql = realloc(groupsql, sizeof(char *) * (strlen(groupsql) + strlen(groupname) + 30));
 			if(strlen(groupsql))
 				strcat(groupsql, " OR UPPER(g.name) = UPPER('");
 			else
@@ -214,6 +256,27 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	if(strlen(groupsql))
 		g->str_replace(&groups, "%groups", groupsql);
+	
+	while( m>1 )
+	{
+		m = sscanf(egroupnames, "%s %[._a-zA-Z0-9- ]", egroupname, egroupnames);
+
+		if( strlen(egroupname) )
+		{
+			egroupsql = realloc(egroupsql, sizeof(char *) * (strlen(egroupsql) + strlen(egroupname) + 30));
+			if(strlen(egroupsql))
+				strcat(egroupsql, " OR UPPER(g.name) = UPPER('");
+			else
+				strcat(egroupsql, "UPPER(g.name) = UPPER('");
+			
+			strcat(egroupsql, egroupname);
+			strcat(egroupsql, "')");
+		}		
+	}		
+	free(egroupname); free(egroupnames);
+
+	if(strlen(egroupsql))
+		g->str_replace(&egroups, "%egroups", egroupsql);
 	
 	// get current date
 	t = time(NULL);
@@ -339,20 +402,18 @@ void reload(GLOBAL *g, struct payments_module *p)
 		}
 		g->db_free(&res);
 #ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/payments] main payments reloaded", p->base.instance);
+		syslog(LOG_INFO, "DEBUG: [%s/payments] Main payments reloaded", p->base.instance);
 #endif
-	} else 
+	}
+	else 
 		syslog(LOG_ERR, "[%s/payments] Unable to read 'payments' table",p->base.instance);
 
 	/****** customer payments *******/
-	// first get next invoiceid
-	if( (res = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", start, end, numberplanid))!= NULL ) 
-	{
-		// let's create main query
-  		char *query = strdup("\
+	// let's create main query
+	char *query = strdup("\
 			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
 			    UPPER(lastname) AS lastname, customers.name AS custname, address, zip, city, ten, ssn, \
-			    assignments.id AS assignmentid, settlement, datefrom, discount, \
+			    ats.id AS assignmentid, settlement, datefrom, discount, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, \
@@ -361,10 +422,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 			    ELSE \
 				ROUND(CASE discount WHEN 0 THEN liabilities.value ELSE liabilities.value-liabilities.value*discount/100 END, 2) \
 			    END) AS value \
-			FROM assignments \
-			LEFT JOIN tariffs ON (tariffid = tariffs.id) \
-			LEFT JOIN liabilities ON (liabilityid = liabilities.id) \
-			LEFT JOIN customers ON (customerid = customers.id) \
+			FROM assignments ats \
+			LEFT JOIN tariffs ON (ats.tariffid = tariffs.id) \
+			LEFT JOIN liabilities ON (ats.liabilityid = liabilities.id) \
+			LEFT JOIN customers ON (ats.customerid = customers.id) \
 			WHERE status = 3 AND deleted = 0 \
 			    AND (period="_DAILY_" \
 			    OR (period="_WEEKLY_" AND at=?) \
@@ -374,20 +435,35 @@ void reload(GLOBAL *g, struct payments_module *p)
 			    OR (period="_DISPOSABLE_" AND at=?)) \
 			    AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
 			    %nets \
+			    %enets \
 			    %groups \
-			ORDER BY customerid, invoice DESC, value DESC\
+			    %egroups \
+			ORDER BY ats.customerid, invoice DESC, value DESC\
 			");
 			
-		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
-		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
+	g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
+	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
+	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
+	g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");	
 		
+	if( (res = g->db_pquery(g->conn, query, weekday, monthday, quarterday, yearday, itoa(today))) != NULL)
+	{
 		if( g->db_nrows(res) )
-			number = atoi(g->db_get_data(res,0,"number"));
-		g->db_free(&res);
-
+		{
+			// first get next invoiceid
+			sres = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents \
+				WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", 
+				start, end, numberplanid); 
+	
+			if( g->db_nrows(sres) )
+				number = atoi(g->db_get_data(sres,0,"number"));
+			g->db_free(&sres);
+		}
+#ifdef DEBUG1
+		else
+			syslog(LOG_INFO, "DEBUG: [%s/payments] Not found customer assignments", p->base.instance);
+#endif		
 		// payments accounting and invoices writing
-		res = g->db_pquery(g->conn, query, weekday, monthday, quarterday, yearday, itoa(today));
-
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
 			int uid = atoi(g->db_get_data(res,i,"customerid"));
@@ -629,7 +705,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 #endif
 	}
 	else 
-		syslog(LOG_ERR, "[%s/payments] Unable to read 'invoices' table",p->base.instance);
+		syslog(LOG_ERR, "[%s/payments] Unable to read tariff assignments", p->base.instance);
 
 	// remove old assignments
 	if(p->expiry_days<0) p->expiry_days *= -1; // number of expiry days can't be negative
@@ -644,17 +720,19 @@ void reload(GLOBAL *g, struct payments_module *p)
 	g->db_pexec(g->conn, "DELETE FROM assignments WHERE at = ?", itoa(today));
 
 	// clean up
-	free(nets);
-	free(groups);
-	free(netsql);
-	free(groupsql);
+	free(nets); free(enets);
+	free(groups); free(egroups);
+	free(netsql); free(enetsql);
+	free(groupsql);	free(egroupsql);
 	free(numberplanid);
 	free(p->comment);
 	free(p->s_comment);
 	free(p->deadline);
 	free(p->paytype);
 	free(p->networks);
-	free(p->customergroups);	
+	free(p->customergroups);
+	free(p->excluded_networks);
+	free(p->excluded_customergroups);
 }
 
 struct payments_module * init(GLOBAL *g, MODULE *m)
@@ -680,6 +758,8 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
 	p->networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "networks", ""));
 	p->customergroups = strdup(g->config_getstring(p->base.ini, p->base.instance, "customergroups", ""));
+	p->excluded_customergroups = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_customergroups", ""));
+	p->excluded_networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_networks", ""));
 	
 	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");
 	if( g->db_nrows(res) )

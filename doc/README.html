@@ -5722,14 +5722,14 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->to_words_short_format</P
+>to_words_short_version</P
 ><P
 >Specify format of verbal amounts representation (on invoices). For value "1"
         	verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
->to_words_short_format = 1</SAMP
+>to_words_short_version = 1</SAMP
 ></P
 ></LI
 ><LI
@@ -10176,6 +10176,18 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>excluded_networks</P
+><P
+>List of excluded network names to restrinct customers for accounting.
+                   Default: empty (none).</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>excluded_networks = "lan3 lan4"</SAMP
+></P
+></LI
+><LI
+><P
 >customergroups</P
 ><P
 >List of customers groups to restrict customers for accounting.
@@ -10184,6 +10196,18 @@ CLASS="PROMPT"
 >Example: <SAMP
 CLASS="PROMPT"
 >customergroups = "group1 group2"</SAMP
+></P
+></LI
+><LI
+><P
+>excluded_customergroups</P
+><P
+>List of excluded customers groups to restrict customers for accounting.
+                   Default: empty (none).</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>excluded_customergroups = "group3 group4"</SAMP
 ></P
 ></LI
 ></UL
@@ -13668,6 +13692,10 @@ BORDER="0"
 ><TR
 ><TD
 >email - user's email address</TD
+></TR
+><TR
+><TD
+>position - user's position name</TD
 ></TR
 ><TR
 ><TD
