@@ -50,6 +50,8 @@ version ? (????-??-??):
     'pid_regexp', pinvoice_month' and 'comment_replace' pattern parameters, 
     added not matching lines printing (alec)
   - lms-traffic-htbiptlimits: fixed tc class identifiers (alec)
+  - lmsd/payments: fixed 'customergroups' and 'networks' option, added options
+    'excluded_customergroups' and 'excluded_networks' (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
