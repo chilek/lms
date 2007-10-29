@@ -9,6 +9,7 @@ version ? (????-??-??):
   - fixed and optimized cause counters in helpdesk ticket stats (alec)
   - lms-traffic-htbiptlimits: fixed tc class identifiers (alec)
   - fixed document numbers in Customer Info (alec)
+  - fixed warning in GetMACs() (alec)
 
 version 1.10.0 Urgo (2007-10-08):
 
