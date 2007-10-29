@@ -235,8 +235,8 @@ if(isset($_POST['document']))
 		unset($document['title']);
 		unset($document['number']);
 		unset($document['description']);
-		unset($document['datefrom']);
-		unset($document['dateto']);
+		unset($document['fromdate']);
+		unset($document['todate']);
 	}
 	else
 	{
