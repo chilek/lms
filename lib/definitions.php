@@ -77,6 +77,17 @@ $PERIODS = array(
     0	=>	trans('disposable')
 );
 
+// Guarantee periods
+$GUARANTEEPERIODS = array(
+-1 => trans('lifetime'),
+ 0 => trans('none'),
+12 => trans('$0 months', 12), 
+24 => trans('24 months', 24), 
+36 => trans('$0 months', 36), 
+48 => trans('$0 months', 48), 
+60 => trans('$0 months', 60)
+);
+
 // Internet Messengers
 define('IM_GG', 0);
 define('IM_YAHOO', 1);
@@ -112,6 +123,7 @@ if(isset($SMARTY))
 {
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
 	$SMARTY->assign('_PERIODS', $PERIODS);
+	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
 	$SMARTY->assign('_MESSENGERS', $MESSENGERS);

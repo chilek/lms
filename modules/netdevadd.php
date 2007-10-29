@@ -30,15 +30,43 @@ if(isset($_POST['netdev']))
 
 	if($netdevdata['ports'] == '')
 		$netdevdata['ports'] = 0;
+		
 	if($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
 	elseif(strlen($netdevdata['name'])>32)
 		$error['name'] = trans('Device name is too long (max.32 characters)!');
 
+	// date format 'yyyy/mm/dd'
+	// FIXME: check if purchasedate isn't in the future
+	$netdevdata['purchasetime'] = NULL;
+	if($netdevdata['purchasedate'] != '') 
+	{
+		if(!ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $netdevdata['purchasedate']))
+		{
+			$error['purchasedate'] = trans('Invalid date format!');
+		}
+		else
+		{
+			$date = explode('/', $netdevdata['purchasedate']);
+			if(checkdate($date[1], $date[2], (int)$date[0]))
+				$netdevdata['purchasetime'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
+			else
+				$error['purchasedate'] = trans('Invalid date format!');
+		}
+	}
+
+	if($netdevdata['guaranteeperiod'] != 0 && $netdevdata['purchasetime'] == NULL)
+	{
+		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
+	}
+
         if(!$error)
         {
-	    $netdevid = $LMS->NetDevAdd($netdevdata);
-	    $SESSION->redirect('?m=netdevinfo&id='.$netdevid);
+		if($netdevdata['guaranteeperiod'] == -1)
+			$netdevdata['guaranteeperiod'] = NULL;
+		
+		$netdevid = $LMS->NetDevAdd($netdevdata);
+		$SESSION->redirect('?m=netdevinfo&id='.$netdevid);
         }
 	
 	$SMARTY->assign('error', $error);

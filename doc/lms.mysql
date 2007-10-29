@@ -9,18 +9,18 @@
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id int(11) NOT NULL auto_increment,
-  login varchar(32) NOT NULL default '',
-  name varchar(64) NOT NULL default '',
-  email varchar(255) NOT NULL default '',
-  position varchar(255) NOT NULL default '',
-  rights varchar(64) NOT NULL default '',
-  hosts varchar(255) NOT NULL default '',
-  passwd varchar(255) NOT NULL default '',
-  lastlogindate int(11) NOT NULL default '0',
-  lastloginip varchar(16) NOT NULL default '',
-  failedlogindate int(11) NOT NULL default '0',
-  failedloginip varchar(16) NOT NULL default '',
-  deleted tinyint(1) NOT NULL default '0',
+  login varchar(32) NOT NULL DEFAULT '',
+  name varchar(64) NOT NULL DEFAULT '',
+  email varchar(255) NOT NULL DEFAULT '',
+  position varchar(255) NOT NULL DEFAULT '',
+  rights varchar(64) NOT NULL DEFAULT '',
+  hosts varchar(255) NOT NULL DEFAULT '',
+  passwd varchar(255) NOT NULL DEFAULT '',
+  lastlogindate int(11) NOT NULL DEFAULT '0',
+  lastloginip varchar(16) NOT NULL DEFAULT '',
+  failedlogindate int(11) NOT NULL DEFAULT '0',
+  failedloginip varchar(16) NOT NULL DEFAULT '',
+  deleted tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) TYPE=MyISAM;
@@ -32,17 +32,17 @@ CREATE TABLE users (
 DROP TABLE IF EXISTS assignments;
 CREATE TABLE assignments (
   id int(11) NOT NULL auto_increment,
-  tariffid int(11) NOT NULL default '0',
-  liabilityid int(11) NOT NULL default '0',
-  customerid int(11) NOT NULL default '0',
-  period smallint NOT NULL default '0',
-  at int(11) NOT NULL default '0',
-  datefrom int(11) NOT NULL default '0',
-  dateto int(11) NOT NULL default '0',
-  invoice tinyint(1) NOT NULL default '0',
-  suspended tinyint(1) NOT NULL default '0',
-  settlement tinyint(1) NOT NULL default '0',
-  discount decimal(4,2) NOT NULL default '0',
+  tariffid int(11) NOT NULL DEFAULT '0',
+  liabilityid int(11) NOT NULL DEFAULT '0',
+  customerid int(11) NOT NULL DEFAULT '0',
+  period smallint NOT NULL DEFAULT '0',
+  at int(11) NOT NULL DEFAULT '0',
+  datefrom int(11) NOT NULL DEFAULT '0',
+  dateto int(11) NOT NULL DEFAULT '0',
+  invoice tinyint(1) NOT NULL DEFAULT '0',
+  suspended tinyint(1) NOT NULL DEFAULT '0',
+  settlement tinyint(1) NOT NULL DEFAULT '0',
+  discount decimal(4,2) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   INDEX tariffid (tariffid),
   INDEX customerid (customerid)
@@ -83,15 +83,15 @@ CREATE TABLE taxes (
 DROP TABLE IF EXISTS cash;
 CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
-  time int(11) NOT NULL default '0',
-  type smallint NOT NULL default '0',
-  userid int(11) NOT NULL default '0',
-  value decimal(9,2) NOT NULL default '0.00',
-  taxid int(11) NOT NULL default '0',
-  customerid int(11) NOT NULL default '0',
-  comment varchar(255) NOT NULL default '',
-  docid int(11) NOT NULL default '0',
-  itemid smallint NOT NULL default '0',
+  time int(11) NOT NULL DEFAULT '0',
+  type smallint NOT NULL DEFAULT '0',
+  userid int(11) NOT NULL DEFAULT '0',
+  value decimal(9,2) NOT NULL DEFAULT '0.00',
+  taxid int(11) NOT NULL DEFAULT '0',
+  customerid int(11) NOT NULL DEFAULT '0',
+  comment varchar(255) NOT NULL DEFAULT '',
+  docid int(11) NOT NULL DEFAULT '0',
+  itemid smallint NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   INDEX customerid (customerid),
   INDEX docid (docid),
@@ -104,8 +104,8 @@ CREATE TABLE cash (
 #
 DROP TABLE IF EXISTS dbinfo;
 CREATE TABLE dbinfo (
-  keytype varchar(255) NOT NULL default '',
-  keyvalue varchar(255) NOT NULL default '',
+  keytype varchar(255) NOT NULL DEFAULT '',
+  keyvalue varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY  (keytype)
 ) TYPE=MyISAM;
 
@@ -129,16 +129,16 @@ CREATE TABLE numberplans (
 #
 DROP TABLE IF EXISTS invoicecontents;
 CREATE TABLE invoicecontents (
-  docid int(11) NOT NULL default '0',
-  itemid smallint NOT NULL default '0',
-  value decimal(9,2) NOT NULL default '0.00',
-  discount decimal(4,2) NOT NULL default '0.00',
-  taxid int(11) NOT NULL default '0',
-  prodid varchar(255) NOT NULL default '',
-  content varchar(16) NOT NULL default '',
-  count decimal(9,2) NOT NULL default '0.00',
-  description varchar(255) NOT NULL default '',
-  tariffid int(11) NOT NULL default '0',
+  docid int(11) NOT NULL DEFAULT '0',
+  itemid smallint NOT NULL DEFAULT '0',
+  value decimal(9,2) NOT NULL DEFAULT '0.00',
+  discount decimal(4,2) NOT NULL DEFAULT '0.00',
+  taxid int(11) NOT NULL DEFAULT '0',
+  prodid varchar(255) NOT NULL DEFAULT '',
+  content varchar(16) NOT NULL DEFAULT '',
+  count decimal(9,2) NOT NULL DEFAULT '0.00',
+  description varchar(255) NOT NULL DEFAULT '',
+  tariffid int(11) NOT NULL DEFAULT '0',
   INDEX docid (docid)
 ) TYPE=MyISAM;
 
@@ -164,8 +164,8 @@ CREATE TABLE documents (
 	ssn varchar(11) NOT NULL DEFAULT '',
 	paytime tinyint NOT NULL DEFAULT '0',
 	paytype varchar(255) NOT NULL DEFAULT '',
-	closed tinyint(1) NOT NULL default '0',
-	reference int(11) NOT NULL default '0',
+	closed tinyint(1) NOT NULL DEFAULT '0',
+	reference int(11) NOT NULL DEFAULT '0',
 	reason varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
@@ -215,13 +215,15 @@ CREATE TABLE receiptcontents (
 DROP TABLE IF EXISTS netdevices;
 CREATE TABLE netdevices (
   id int(11) NOT NULL auto_increment,
-  name varchar(32) NOT NULL default '',
-  location varchar(255) NOT NULL default '',
-  description varchar(255) NOT NULL default '',
-  producer varchar(64) NOT NULL default '',
-  model varchar(32) NOT NULL default '',
-  serialnumber varchar(32) NOT NULL default '',
-  ports int(10) NOT NULL default '0',
+  name varchar(32) NOT NULL DEFAULT '',
+  location varchar(255) NOT NULL DEFAULT '',
+  description varchar(255) NOT NULL DEFAULT '',
+  producer varchar(64) NOT NULL DEFAULT '',
+  model varchar(32) NOT NULL DEFAULT '',
+  serialnumber varchar(32) NOT NULL DEFAULT '',
+  ports int(11) NOT NULL DEFAULT '0',
+  purchasetime int(11) NOT NULL DEFAULT '0',
+  guaranteeperiod tinyint unsigned DEFAULT '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -232,9 +234,9 @@ CREATE TABLE netdevices (
 DROP TABLE IF EXISTS netlinks;
 CREATE TABLE netlinks (
   id int(11) NOT NULL auto_increment,
-  src int(11) NOT NULL default '0',
-  dst int(11) NOT NULL default '0',
-  type tinyint(1) NOT NULL default '0',
+  src int(11) NOT NULL DEFAULT '0',
+  dst int(11) NOT NULL DEFAULT '0',
+  type tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY src (src,dst)
 ) TYPE=MyISAM;
@@ -246,17 +248,17 @@ CREATE TABLE netlinks (
 DROP TABLE IF EXISTS networks;
 CREATE TABLE networks (
   id int(11) NOT NULL auto_increment,
-  name varchar(255) NOT NULL default '',
-  address int(16) unsigned NOT NULL default '0',
-  mask varchar(16) NOT NULL default '',
-  gateway varchar(16) NOT NULL default '',
-  interface varchar(8) NOT NULL default '',
-  dns varchar(16) NOT NULL default '',
-  dns2 varchar(16) NOT NULL default '',
-  domain varchar(64) NOT NULL default '',
-  wins varchar(16) NOT NULL default '',
-  dhcpstart varchar(16) NOT NULL default '',
-  dhcpend varchar(16) NOT NULL default '',
+  name varchar(255) NOT NULL DEFAULT '',
+  address int(16) unsigned NOT NULL DEFAULT '0',
+  mask varchar(16) NOT NULL DEFAULT '',
+  gateway varchar(16) NOT NULL DEFAULT '',
+  interface varchar(8) NOT NULL DEFAULT '',
+  dns varchar(16) NOT NULL DEFAULT '',
+  dns2 varchar(16) NOT NULL DEFAULT '',
+  domain varchar(64) NOT NULL DEFAULT '',
+  wins varchar(16) NOT NULL DEFAULT '',
+  dhcpstart varchar(16) NOT NULL DEFAULT '',
+  dhcpend varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY address (address)
@@ -269,25 +271,25 @@ CREATE TABLE networks (
 DROP TABLE IF EXISTS nodes;
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
-  name varchar(32) NOT NULL default '',
-  mac varchar(20) NOT NULL default '',
-  ipaddr int(16) unsigned NOT NULL default '0',
-  ipaddr_pub int(16) unsigned NOT NULL default '0',
-  passwd varchar(32) NOT NULL default '',
-  ownerid int(11) NOT NULL default '0',
-  creationdate int(11) NOT NULL default '0',
-  moddate int(11) NOT NULL default '0',
-  creatorid int(11) NOT NULL default '0',
-  modid int(11) NOT NULL default '0',
-  netdev int(11) NOT NULL default '0',
-  linktype tinyint(1) NOT NULL default '0',
-  access tinyint(1) NOT NULL default '1',
-  warning tinyint(1) NOT NULL default '0',
-  chkmac tinyint(1) NOT NULL default '1',
-  halfduplex tinyint(1) NOT NULL default '0',
-  lastonline int(11) NOT NULL default '0',
-  info text NOT NULL default '',
-  location text NOT NULL default '',
+  name varchar(32) NOT NULL DEFAULT '',
+  mac varchar(20) NOT NULL DEFAULT '',
+  ipaddr int(16) unsigned NOT NULL DEFAULT '0',
+  ipaddr_pub int(16) unsigned NOT NULL DEFAULT '0',
+  passwd varchar(32) NOT NULL DEFAULT '',
+  ownerid int(11) NOT NULL DEFAULT '0',
+  creationdate int(11) NOT NULL DEFAULT '0',
+  moddate int(11) NOT NULL DEFAULT '0',
+  creatorid int(11) NOT NULL DEFAULT '0',
+  modid int(11) NOT NULL DEFAULT '0',
+  netdev int(11) NOT NULL DEFAULT '0',
+  linktype tinyint(1) NOT NULL DEFAULT '0',
+  access tinyint(1) NOT NULL DEFAULT '1',
+  warning tinyint(1) NOT NULL DEFAULT '0',
+  chkmac tinyint(1) NOT NULL DEFAULT '1',
+  halfduplex tinyint(1) NOT NULL DEFAULT '0',
+  lastonline int(11) NOT NULL DEFAULT '0',
+  info text NOT NULL DEFAULT '',
+  location text NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr),
@@ -303,11 +305,11 @@ CREATE TABLE nodes (
 DROP TABLE IF EXISTS payments;
 CREATE TABLE payments (
   id int(11) NOT NULL auto_increment,
-  name varchar(255) NOT NULL default '',
-  value decimal(9,2) NOT NULL default '0.00',
-  creditor varchar(255) NOT NULL default '',
-  period smallint NOT NULL default '0',
-  at smallint NOT NULL default '0',
+  name varchar(255) NOT NULL DEFAULT '',
+  value decimal(9,2) NOT NULL DEFAULT '0.00',
+  creditor varchar(255) NOT NULL DEFAULT '',
+  period smallint NOT NULL DEFAULT '0',
+  at smallint NOT NULL DEFAULT '0',
   description text NOT NULL,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
@@ -318,9 +320,9 @@ CREATE TABLE payments (
 #
 DROP TABLE IF EXISTS rtattachments;
 CREATE TABLE rtattachments (
-  messageid int(11) NOT NULL default '0',
-  filename varchar(255) NOT NULL default '',
-  contenttype varchar(255) NOT NULL default ''
+  messageid int(11) NOT NULL DEFAULT '0',
+  filename varchar(255) NOT NULL DEFAULT '',
+  contenttype varchar(255) NOT NULL DEFAULT ''
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -330,17 +332,17 @@ CREATE TABLE rtattachments (
 DROP TABLE IF EXISTS rtmessages;
 CREATE TABLE rtmessages (
   id int(11) NOT NULL auto_increment,
-  ticketid int(11) NOT NULL default '0',
-  userid int(11) NOT NULL default '0',
-  customerid int(11) NOT NULL default '0',
-  mailfrom varchar(255) NOT NULL default '',
-  subject varchar(255) NOT NULL default '',
-  messageid varchar(255) NOT NULL default '',
-  inreplyto int(11) NOT NULL default '0',
-  replyto text NOT NULL default '',
-  headers text NOT NULL default '',
-  body mediumtext NOT NULL default '',
-  createtime int(11) NOT NULL default '0',
+  ticketid int(11) NOT NULL DEFAULT '0',
+  userid int(11) NOT NULL DEFAULT '0',
+  customerid int(11) NOT NULL DEFAULT '0',
+  mailfrom varchar(255) NOT NULL DEFAULT '',
+  subject varchar(255) NOT NULL DEFAULT '',
+  messageid varchar(255) NOT NULL DEFAULT '',
+  inreplyto int(11) NOT NULL DEFAULT '0',
+  replyto text NOT NULL DEFAULT '',
+  headers text NOT NULL DEFAULT '',
+  body mediumtext NOT NULL DEFAULT '',
+  createtime int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   INDEX ticketid (ticketid)
 ) TYPE=MyISAM;
@@ -367,9 +369,9 @@ CREATE TABLE rtnotes (
 DROP TABLE IF EXISTS rtqueues;
 CREATE TABLE rtqueues (
   id int(11) NOT NULL auto_increment,
-  name varchar(255) NOT NULL default '',
-  email varchar(255) NOT NULL default '',
-  description text NOT NULL default '',
+  name varchar(255) NOT NULL DEFAULT '',
+  email varchar(255) NOT NULL DEFAULT '',
+  description text NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name)
 ) TYPE=MyISAM;
@@ -381,15 +383,15 @@ CREATE TABLE rtqueues (
 DROP TABLE IF EXISTS rttickets;
 CREATE TABLE rttickets (
   id int(11) NOT NULL auto_increment,
-  queueid int(11) NOT NULL default '0',
-  requestor varchar(255) NOT NULL default '',
-  subject varchar(255) NOT NULL default '',
-  state tinyint(4) NOT NULL default '0',
-  cause tinyint(4) NOT NULL default '0',
-  owner int(11) NOT NULL default '0',
-  customerid int(11) NOT NULL default '0',
-  createtime int(11) NOT NULL default '0',
-  resolvetime int(11) NOT NULL default '0',
+  queueid int(11) NOT NULL DEFAULT '0',
+  requestor varchar(255) NOT NULL DEFAULT '',
+  subject varchar(255) NOT NULL DEFAULT '',
+  state tinyint(4) NOT NULL DEFAULT '0',
+  cause tinyint(4) NOT NULL DEFAULT '0',
+  owner int(11) NOT NULL DEFAULT '0',
+  customerid int(11) NOT NULL DEFAULT '0',
+  createtime int(11) NOT NULL DEFAULT '0',
+  resolvetime int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   INDEX queueid (queueid),
   INDEX customerid (customerid),
@@ -403,9 +405,9 @@ CREATE TABLE rttickets (
 DROP TABLE IF EXISTS rtrights;
 CREATE TABLE rtrights (
     id INT(11) NOT NULL auto_increment, 
-    userid INT(11) default 0 NOT NULL,
-    queueid INT(11) default 0 NOT NULL,
-    rights INT(11) default 0 NOT NULL,
+    userid INT(11) DEFAULT 0 NOT NULL,
+    queueid INT(11) DEFAULT 0 NOT NULL,
+    rights INT(11) DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (userid, queueid)
 ) TYPE=MyISAM;
@@ -416,10 +418,10 @@ CREATE TABLE rtrights (
 #
 DROP TABLE IF EXISTS stats;
 CREATE TABLE stats (
-  nodeid int(11) NOT NULL default '0',
-  dt int(11) NOT NULL default '0',
-  upload BIGINT default '0',
-  download BIGINT default '0',
+  nodeid int(11) NOT NULL DEFAULT '0',
+  dt int(11) NOT NULL DEFAULT '0',
+  upload BIGINT DEFAULT '0',
+  download BIGINT DEFAULT '0',
   UNIQUE KEY nodeid (nodeid,dt),
   INDEX dt (dt)
 ) TYPE=MyISAM;
@@ -431,17 +433,17 @@ CREATE TABLE stats (
 DROP TABLE IF EXISTS tariffs;
 CREATE TABLE tariffs (
   id int(11) NOT NULL auto_increment,
-  name varchar(255) NOT NULL default '',
-  value decimal(9,2) NOT NULL default '0.00',
-  taxid int(11) NOT NULL default '0',
-  prodid varchar(255) NOT NULL default '',
-  uprate int(11) NOT NULL default '0',
-  upceil int(11) NOT NULL default '0',
-  downrate int(11) NOT NULL default '0',
-  downceil int(11) NOT NULL default '0',
-  climit int(11) NOT NULL default '0',
-  plimit int(11) NOT NULL default '0',
-  dlimit int(11) NOT NULL default '0',
+  name varchar(255) NOT NULL DEFAULT '',
+  value decimal(9,2) NOT NULL DEFAULT '0.00',
+  taxid int(11) NOT NULL DEFAULT '0',
+  prodid varchar(255) NOT NULL DEFAULT '',
+  uprate int(11) NOT NULL DEFAULT '0',
+  upceil int(11) NOT NULL DEFAULT '0',
+  downrate int(11) NOT NULL DEFAULT '0',
+  downceil int(11) NOT NULL DEFAULT '0',
+  climit int(11) NOT NULL DEFAULT '0',
+  plimit int(11) NOT NULL DEFAULT '0',
+  dlimit int(11) NOT NULL DEFAULT '0',
   description text NOT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name)
@@ -468,28 +470,28 @@ CREATE TABLE liabilities (
 DROP TABLE IF EXISTS customers;
 CREATE TABLE customers (
   id int(11) NOT NULL auto_increment,
-  lastname varchar(255) NOT NULL default '',
-  name varchar(255) NOT NULL default '',
-  status int(11) NOT NULL default '0',
-  email varchar(255) NOT NULL default '',
-  address varchar(255) NOT NULL default '',
-  zip varchar(10) NOT NULL default '',
-  city varchar(32) NOT NULL default '',
-  ten varchar(16) NOT NULL default '',
-  ssn varchar(11) NOT NULL default '',
-  regon varchar(255) NOT NULL default '',
-  rbe varchar(255) NOT NULL default '',
-  icn varchar(255) NOT NULL default '',
+  lastname varchar(255) NOT NULL DEFAULT '',
+  name varchar(255) NOT NULL DEFAULT '',
+  status int(11) NOT NULL DEFAULT '0',
+  email varchar(255) NOT NULL DEFAULT '',
+  address varchar(255) NOT NULL DEFAULT '',
+  zip varchar(10) NOT NULL DEFAULT '',
+  city varchar(32) NOT NULL DEFAULT '',
+  ten varchar(16) NOT NULL DEFAULT '',
+  ssn varchar(11) NOT NULL DEFAULT '',
+  regon varchar(255) NOT NULL DEFAULT '',
+  rbe varchar(255) NOT NULL DEFAULT '',
+  icn varchar(255) NOT NULL DEFAULT '',
   info text NOT NULL,
-  notes text NOT NULL default '',
-  serviceaddr text NOT NULL default '',
-  creationdate int(11) NOT NULL default '0',
-  moddate int(11) NOT NULL default '0',
-  creatorid int(11) NOT NULL default '0',
-  modid int(11) NOT NULL default '0',
-  deleted tinyint(1) NOT NULL default '0',
+  notes text NOT NULL DEFAULT '',
+  serviceaddr text NOT NULL DEFAULT '',
+  creationdate int(11) NOT NULL DEFAULT '0',
+  moddate int(11) NOT NULL DEFAULT '0',
+  creatorid int(11) NOT NULL DEFAULT '0',
+  modid int(11) NOT NULL DEFAULT '0',
+  deleted tinyint(1) NOT NULL DEFAULT '0',
   message text NOT NULL,
-  pin int(6) NOT NULL default '0',
+  pin int(6) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -500,7 +502,7 @@ CREATE TABLE customers (
 DROP TABLE IF EXISTS customergroups;
 CREATE TABLE customergroups (
   id int(11) NOT NULL auto_increment, 
-  name varchar(255) NOT NULL default '', 
+  name varchar(255) NOT NULL DEFAULT '', 
   description text NOT NULL, 
   PRIMARY KEY (id), 
   UNIQUE KEY name (name)
@@ -513,8 +515,8 @@ CREATE TABLE customergroups (
 DROP TABLE IF EXISTS customerassignments;
 CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment, 
-  customergroupid int(11) NOT NULL default '0', 
-  customerid int(11) NOT NULL default '0', 
+  customergroupid int(11) NOT NULL DEFAULT '0', 
+  customerid int(11) NOT NULL DEFAULT '0', 
   PRIMARY KEY (id),
   UNIQUE KEY customerassignment (customergroupid, customerid)
 ) TYPE=MyISAM;
@@ -526,22 +528,22 @@ CREATE TABLE customerassignments (
 DROP TABLE IF EXISTS passwd;
 CREATE TABLE passwd (
     id int(11) NOT NULL auto_increment,
-    ownerid int(11) NOT NULL default 0,
-    login varchar(200) NOT NULL default '',
-    password varchar(200) NOT NULL default '',
-    lastlogin int(11) NOT NULL default 0,
-    uid int(11)	NOT NULL default 0,
-    home varchar(255) NOT NULL default '',
-    type smallint NOT NULL default 0,
-    expdate int(11) NOT NULL default 0,
-    domainid int(11) NOT NULL default 0,
-    quota_sh int(11) NOT NULL default 0,
-    quota_mail int(11) NOT NULL default 0,
-    quota_www int(11) NOT NULL default 0,
-    quota_ftp int(11) NOT NULL default 0,
-    quota_sql int(11) NOT NULL default 0,
-    realname varchar(255) NOT NULL default '',
-    createtime int(11) NOT NULL default 0,
+    ownerid int(11) NOT NULL DEFAULT 0,
+    login varchar(200) NOT NULL DEFAULT '',
+    password varchar(200) NOT NULL DEFAULT '',
+    lastlogin int(11) NOT NULL DEFAULT 0,
+    uid int(11)	NOT NULL DEFAULT 0,
+    home varchar(255) NOT NULL DEFAULT '',
+    type smallint NOT NULL DEFAULT 0,
+    expdate int(11) NOT NULL DEFAULT 0,
+    domainid int(11) NOT NULL DEFAULT 0,
+    quota_sh int(11) NOT NULL DEFAULT 0,
+    quota_mail int(11) NOT NULL DEFAULT 0,
+    quota_www int(11) NOT NULL DEFAULT 0,
+    quota_ftp int(11) NOT NULL DEFAULT 0,
+    quota_sql int(11) NOT NULL DEFAULT 0,
+    realname varchar(255) NOT NULL DEFAULT '',
+    createtime int(11) NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY (login, domainid),
     INDEX ownerid (ownerid)
@@ -554,9 +556,9 @@ CREATE TABLE passwd (
 DROP TABLE IF EXISTS domains;
 CREATE TABLE domains (
     id int(11) NOT NULL auto_increment,
-    ownerid int(11) NOT NULL default 0,
-    name varchar(255) NOT NULL default '',
-    description text NOT NULL default '',
+    ownerid int(11) NOT NULL DEFAULT 0,
+    name varchar(255) NOT NULL DEFAULT '',
+    description text NOT NULL DEFAULT '',
     PRIMARY KEY (id),
     UNIQUE KEY (name),
     INDEX ownerid (ownerid)
@@ -569,8 +571,8 @@ CREATE TABLE domains (
 DROP TABLE IF EXISTS aliases;
 CREATE TABLE aliases (
     id int(11) NOT NULL auto_increment,
-    login varchar(255) NOT NULL default '',
-    accountid int(11) NOT NULL default '0',
+    login varchar(255) NOT NULL DEFAULT '',
+    accountid int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     UNIQUE KEY (login, accountid)
 ) TYPE=MyISAM;
@@ -582,11 +584,11 @@ CREATE TABLE aliases (
 DROP TABLE IF EXISTS uiconfig;
 CREATE TABLE uiconfig (
     id int(11) NOT NULL auto_increment,
-    section varchar(64) NOT NULL default '',
-    var varchar(64) NOT NULL default '',
-    value text NOT NULL default '',
-    description text NOT NULL default '',
-    disabled tinyint(1) NOT NULL default '0',
+    section varchar(64) NOT NULL DEFAULT '',
+    var varchar(64) NOT NULL DEFAULT '',
+    value text NOT NULL DEFAULT '',
+    description text NOT NULL DEFAULT '',
+    disabled tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     UNIQUE KEY var (section, var)
 ) TYPE=MyISAM;
@@ -598,16 +600,16 @@ CREATE TABLE uiconfig (
 DROP TABLE IF EXISTS events;
 CREATE TABLE events (
     id int(11) NOT NULL auto_increment,
-    title varchar(255) NOT NULL default '',
-    description text NOT NULL default '',
-    note text NOT NULL default '',
-    date int(11) NOT NULL default '0',
-    begintime smallint(4) NOT NULL default '0',
-    endtime smallint(4) NOT NULL default '0',
-    userid int(11) NOT NULL default '0',
-    customerid int(11) NOT NULL default '0',
-    private tinyint(1) NOT NULL default '0',
-    closed tinyint(1) NOT NULL default '0',
+    title varchar(255) NOT NULL DEFAULT '',
+    description text NOT NULL DEFAULT '',
+    note text NOT NULL DEFAULT '',
+    date int(11) NOT NULL DEFAULT '0',
+    begintime smallint(4) NOT NULL DEFAULT '0',
+    endtime smallint(4) NOT NULL DEFAULT '0',
+    userid int(11) NOT NULL DEFAULT '0',
+    customerid int(11) NOT NULL DEFAULT '0',
+    private tinyint(1) NOT NULL DEFAULT '0',
+    closed tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     INDEX date (date)
 ) TYPE=MyISAM;
@@ -618,8 +620,8 @@ CREATE TABLE events (
 #
 DROP TABLE IF EXISTS eventassignments;
 CREATE TABLE eventassignments (
-    eventid int(11) NOT NULL default '0',
-    userid int(11) NOT NULL default '0',
+    eventid int(11) NOT NULL DEFAULT '0',
+    userid int(11) NOT NULL DEFAULT '0',
     UNIQUE (eventid, userid)
 ) TYPE=MyISAM;
 
@@ -629,10 +631,10 @@ CREATE TABLE eventassignments (
 #
 DROP TABLE IF EXISTS sessions;
 CREATE TABLE sessions (
-    id varchar(50) NOT NULL default '', 
-    ctime int(11) NOT NULL default 0, 
-    mtime int(11) NOT NULL default 0, 
-    atime int(11) NOT NULL default 0, 
+    id varchar(50) NOT NULL DEFAULT '', 
+    ctime int(11) NOT NULL DEFAULT 0, 
+    mtime int(11) NOT NULL DEFAULT 0, 
+    atime int(11) NOT NULL DEFAULT 0, 
     vdata text NOT NULL, 
     content text NOT NULL, 
     PRIMARY KEY (id)
@@ -645,13 +647,13 @@ CREATE TABLE sessions (
 DROP TABLE IF EXISTS cashimport;
 CREATE TABLE cashimport (
     id int(11) NOT NULL auto_increment,
-    date int(11) NOT NULL default '0',
-    value decimal(9,2) NOT NULL default '0.00',
-    customer varchar(150) NOT NULL default '',
-    description varchar(150) NOT NULL default '',
-    customerid int(11) NOT NULL default '0',
-    hash varchar(50) NOT NULL default '',
-    closed tinyint(1) NOT NULL default '0',
+    date int(11) NOT NULL DEFAULT '0',
+    value decimal(9,2) NOT NULL DEFAULT '0.00',
+    customer varchar(150) NOT NULL DEFAULT '',
+    description varchar(150) NOT NULL DEFAULT '',
+    customerid int(11) NOT NULL DEFAULT '0',
+    hash varchar(50) NOT NULL DEFAULT '',
+    closed tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     INDEX hash (hash)
 ) TYPE=MyISAM;
@@ -663,10 +665,10 @@ CREATE TABLE cashimport (
 DROP TABLE IF EXISTS hosts;
 CREATE TABLE hosts (
     id int(11) NOT NULL auto_increment,
-    name varchar(255) default '' NOT NULL,
-    description text default '' NOT NULL,
-    lastreload int(11) default '0' NOT NULL,
-    reload tinyint(1) default '0' NOT NULL,
+    name varchar(255) DEFAULT '' NOT NULL,
+    description text DEFAULT '' NOT NULL,
+    lastreload int(11) DEFAULT '0' NOT NULL,
+    reload tinyint(1) DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) TYPE=MyISAM;
@@ -677,14 +679,14 @@ CREATE TABLE hosts (
 #
 DROP TABLE IF EXISTS daemoninstances;
 CREATE TABLE daemoninstances (
-    id int(11) NOT NULL auto_increment,
-    name varchar(255) default '' NOT NULL,
-    hostid int(11) default '0' NOT NULL,
-    module varchar(255) default '' NOT NULL,
-    crontab varchar(255) default '' NOT NULL,
-    priority int(11) default '0' NOT NULL,
-    description text default '' NOT NULL,
-    disabled tinyint(1) default '0' NOT NULL,
+    id int(11) 			NOT NULL auto_increment,
+    name varchar(255) 		DEFAULT '' NOT NULL,
+    hostid int(11) 		DEFAULT '0' NOT NULL,
+    module varchar(255) 	DEFAULT '' NOT NULL,
+    crontab varchar(255) 	DEFAULT '' NOT NULL,
+    priority int(11) 		DEFAULT '0' NOT NULL,
+    description text 		DEFAULT '' NOT NULL,
+    disabled tinyint(1) 	DEFAULT '0' NOT NULL,
     PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
@@ -694,12 +696,12 @@ CREATE TABLE daemoninstances (
 #
 DROP TABLE IF EXISTS daemonconfig;
 CREATE TABLE daemonconfig (
-    id int(11) NOT NULL auto_increment,
-    instanceid int(11) default '0' NOT NULL,
-    var varchar(64) default '' NOT NULL,
-    value text default '' NOT NULL,
-    description text default '' NOT NULL,
-    disabled tinyint(1) default '0' NOT NULL,
+    id int(11) 		NOT NULL auto_increment,
+    instanceid int(11) 	DEFAULT '0' NOT NULL,
+    var varchar(64) 	DEFAULT '' NOT NULL,
+    value text 		DEFAULT '' NOT NULL,
+    description text 	DEFAULT '' NOT NULL,
+    disabled tinyint(1) DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY instanceid (instanceid, var)
 ) TYPE=MyISAM;
@@ -801,7 +803,7 @@ DROP TABLE IF EXISTS imessengers;
 CREATE TABLE imessengers (
 	id int(11) 		NOT NULL auto_increment,
         customerid int(11) 	NOT NULL DEFAULT '0',
-	uid varchar(32) 	NOT NULL default '',
+	uid varchar(32) 	NOT NULL DEFAULT '',
 	type tinyint(1) 	NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	INDEX customerid (customerid)
@@ -846,4 +848,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007101700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007102600');
