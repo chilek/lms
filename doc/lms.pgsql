@@ -405,6 +405,8 @@ CREATE TABLE netdevices (
 	model varchar(32) 	DEFAULT '' NOT NULL,
 	serialnumber varchar(32) DEFAULT '' NOT NULL,
 	ports integer 		DEFAULT 0 NOT NULL,
+	purchasetime integer	DEFAULT 0 NOT NULL,
+	quaranteeperiod smallint DEFAULT 0,
 	PRIMARY KEY (id)
 );
 
@@ -900,4 +902,4 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007101700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007102600');

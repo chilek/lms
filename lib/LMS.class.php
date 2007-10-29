@@ -2653,6 +2653,10 @@ class LMS
 	{
 		$result = $this->DB->GetRow('SELECT * FROM netdevices WHERE id = ?', array($id));
 		$result['takenports'] = $this->CountNetDevLinks($id);
+		if($result['guaranteeperiod'] != NULL && $result['guaranteeperiod'] != 0)
+			$result['guaranteetime'] = strtotime('+'.$result['guaranteeperiod'].' month', $result['purchasetime'] ); // transform to UNIX timestamp
+		elseif($result['guaranteeperiod'] == NULL)
+			$result['guaranteeperiod'] = -1;
 		return $result;
 	}
 
@@ -2707,14 +2711,16 @@ class LMS
 	function NetDevAdd($netdevdata)
 	{
 		if($this->DB->Execute('INSERT INTO netdevices (name, location, description, producer, 
-					model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+					model, serialnumber, ports, purchasetime, guaranteeperiod) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 					array($netdevdata['name'],
 						$netdevdata['location'],
 						$netdevdata['description'],
 						$netdevdata['producer'],
 						$netdevdata['model'],
 						$netdevdata['serialnumber'],
-						$netdevdata['ports'])))
+						$netdevdata['ports'],
+						$netdevdata['purchasetime'],
+						$netdevdata['guaranteeperiod'])))
 			return $this->DB->GetLastInsertID('netdevices');
 		else
 			return FALSE;
@@ -2722,7 +2728,20 @@ class LMS
 
 	function NetDevUpdate($netdevdata)
 	{
-		$this->DB->Execute('UPDATE netdevices SET name=?, location=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?', array( $netdevdata['name'], $netdevdata['location'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
+		$this->DB->Execute('UPDATE netdevices SET name=?, location=?, description=?, producer=?, 
+				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=? 
+				WHERE id=?', 
+				array( $netdevdata['name'], 
+					$netdevdata['location'], 
+					$netdevdata['description'], 
+					$netdevdata['producer'], 
+					$netdevdata['model'], 
+					$netdevdata['serialnumber'], 
+					$netdevdata['ports'], 
+					$netdevdata['purchasetime'], 
+					$netdevdata['guaranteeperiod'], 
+					$netdevdata['id']
+				));
 	}
 
 	function IsNetDevLink($dev1, $dev2)

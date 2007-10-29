@@ -82,6 +82,36 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $netdevinfo.purchasetime}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/calendar.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{t}Purchase date:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.purchasetime|date_format:"%Y/%m/%d"}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.guaranteeperiod}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/guarantee.png" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>{t}Guarantee:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			{if $netdevinfo.guaranteeperiod == -1}
+				{t}lifetime{/t}
+			{else}
+		        	{if $netdevinfo.guaranteetime-$smarty.now < 0}{t}expired{/t}{else}{t 0=$netdevinfo.guaranteetime|date_format:"%Y/%m/%d"}expires on $0{/t}{/if}
+			{/if}
+		</TD>
+	</TR>
+	{/if}
         {if $netdevinfo.description}
         <TR CLASS="LIGHT">
                 <TD WIDTH="1%" CLASS="FLEFT">

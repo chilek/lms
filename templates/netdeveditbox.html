@@ -1,4 +1,5 @@
 <!-- $Id$ -->
+{include file="calendar_js.html"}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
 	<INPUT type="submit" class="hiddenbtn">
@@ -69,6 +70,32 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/calendar.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Purchase date:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdevinfo.purchasetime}{$netdevinfo.purchasetime|date_format:"%Y/%m/%d"}{/if}" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/guarantee.png" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Guarantee period:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+			<SELECT SIZE="1" NAME="netdev[guaranteeperiod]" {tip text="Select device guarantee period (optional)"}>
+				{foreach from=$_GUARANTEEPERIODS key=key item=period}
+				<OPTION VALUE="{$key}"{if $netdevinfo.guaranteeperiod eq $key} SELECTED{/if}>{$period}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/desc.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
@@ -110,3 +137,9 @@
 	</TR>
 	{/if}
 </TABLE>
+<SCRIPT type="text/javascript">
+<!--
+BUL_TIMECOMPONENT = false;
+var cal1 = new calendar(document.forms['netdevedit'].elements['netdev[purchasedate]']);
+//-->
+</SCRIPT>

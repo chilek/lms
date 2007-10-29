@@ -297,8 +297,35 @@ if(isset($_POST['netdev']))
 	if($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
 		$error['ports'] = trans('Connected devices number exceeds number of ports!');
 	
+	// date format 'yyyy/mm/dd'
+	// FIXME: check if purchasedate isn't in the future
+	$netdevdata['purchasetime'] = NULL;
+	if($netdevdata['purchasedate'] != '')
+	{
+		if(!ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $netdevdata['purchasedate'])) 
+		{
+			$error['purchasedate'] = trans('Invalid date format!');
+		}
+		else
+		{
+			$date = explode('/', $netdevdata['purchasedate']);
+			if(checkdate($date[1], $date[2], (int)$date[0]))
+				$netdevdata['purchasetime'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
+			else
+				$error['purchasedate'] = trans('Invalid date format!');
+		}
+	}
+
+	if($netdevdata['guaranteeperiod'] != 0 && $netdevdata['purchasedate'] == '')
+	{
+		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
+	}
+
 	if(!$error)
 	{
+		if($netdevdata['guaranteeperiod'] == -1)
+			$netdevdata['guaranteeperiod'] = NULL;
+		
 		$LMS->NetDevUpdate($netdevdata);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
