@@ -60,6 +60,11 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 
 	if( g->db_nrows(res) )
 	{
+		if(*traffic->begin_command)
+		{
+			system(traffic->begin_command);
+		}
+		
 		for(i=0; i<g->db_nrows(res); i++)
 		{
 			hosts = (HOSTS *) realloc(hosts, sizeof(HOSTS) * (j + 1));
@@ -109,8 +114,15 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 	else 
 		syslog(LOG_ERR, "[%s/traffic] Unable to read table 'nodes'", traffic->base.instance);
 
+	if(*traffic->end_command)
+	{
+		system(traffic->end_command);
+	}
+
 	g->db_free(&res);
 	free(hosts);
+	free(traffic->begin_command);
+	free(traffic->end_command);
 	free(traffic->file);
 }
 
@@ -129,6 +141,9 @@ struct traffic_module * init(GLOBAL *g, MODULE *m)
 
 	traffic->file = strdup(g->config_getstring(traffic->base.ini, traffic->base.instance, "file", "/var/log/traffic.log"));
 	
+	traffic->begin_command = strdup(g->config_getstring(traffic->base.ini, traffic->base.instance, "begin_command", ""));
+	traffic->end_command = strdup(g->config_getstring(traffic->base.ini, traffic->base.instance, "end_command", ""));
+
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/traffic] initialized", traffic->base.instance);
 #endif	
