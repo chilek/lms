@@ -277,8 +277,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								}
 							}
 							
-							if(h_climit)
+							if(!tc->limit_per_host)
 							{
+							    if(h_climit)
+							    {
 								g->str_replace(&cl, "%climit", itoa(h_climit));
 								g->str_replace(&cl, "%n", name);
 								g->str_replace(&cl, "%if", nets[v].interface);
@@ -291,10 +293,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&cl, "%o4", o4);
 								g->str_replace(&cl, "%x", itoa(x));
 								fprintf(fh, "%s", cl);
-							}
+							    }
 							
-							if(h_plimit)
-							{
+							    if(h_plimit)
+							    {
 								g->str_replace(&pl, "%plimit", itoa(h_plimit));
 								g->str_replace(&pl, "%n", name);
 								g->str_replace(&pl, "%if", nets[v].interface);
@@ -307,7 +309,41 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								g->str_replace(&pl, "%o4", o4);
 								g->str_replace(&pl, "%x", itoa(x));
 								fprintf(fh, "%s", pl);
-							}	
+							    }
+							} else
+							{
+							    if(n_climit)
+							    {
+								g->str_replace(&cl, "%climit", itoa(n_climit));
+								g->str_replace(&cl, "%n", name);
+								g->str_replace(&cl, "%if", nets[v].interface);
+    								g->str_replace(&cl, "%i16", i16);
+								g->str_replace(&cl, "%i", ipaddr);
+								g->str_replace(&cl, "%m", mac);
+								g->str_replace(&cl, "%o1", o1);
+								g->str_replace(&cl, "%o2", o2);
+								g->str_replace(&cl, "%o3", o3);
+								g->str_replace(&cl, "%o4", o4);
+								g->str_replace(&cl, "%x", itoa(x));
+								fprintf(fh, "%s", cl);
+							    }
+							
+							    if(n_plimit)
+							    {
+								g->str_replace(&pl, "%plimit", itoa(n_plimit));
+								g->str_replace(&pl, "%n", name);
+								g->str_replace(&pl, "%if", nets[v].interface);
+								g->str_replace(&pl, "%i16", i16);
+								g->str_replace(&pl, "%i", ipaddr);
+								g->str_replace(&pl, "%m", mac);
+								g->str_replace(&pl, "%o1", o1);
+								g->str_replace(&pl, "%o2", o2);
+								g->str_replace(&pl, "%o3", o3);
+								g->str_replace(&pl, "%o4", o4);
+								g->str_replace(&pl, "%x", itoa(x));
+								fprintf(fh, "%s", pl);
+							    }
+							}
 					
 							if(tc->one_class_per_host) x++;
 						}
@@ -512,6 +548,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 	tc->networks = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "networks", ""));
 	tc->customergroups = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "customergroups", ""));
 	tc->one_class_per_host = g->config_getbool(tc->base.ini, tc->base.instance, "one_class_per_host", 0);
+	tc->limit_per_host = g->config_getbool(tc->base.ini, tc->base.instance, "limit_per_host", 0);
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/tc] initialized", tc->base.instance);
 #endif
