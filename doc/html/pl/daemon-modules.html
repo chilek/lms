@@ -1328,7 +1328,7 @@ NAME="TRAFFIC-CONFIG"
 >6.2.9.2. Konfiguracja</A
 ></H3
 ><P
->Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</P
+>Modu³ zawiera trzy opcjê:</P
 ><UL
 ><LI
 ><P
@@ -1339,6 +1339,28 @@ NAME="TRAFFIC-CONFIG"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >file = /tmp/log</SAMP
+></P
+></LI
+><LI
+><P
+>begin_command</P
+><P
+>Polecenie pow³oki wykonywane przed wczytaniem pliku. Domy¶lnie: puste</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>begin_command = 'perl /usr/local/lms/bin/traffic_ipt.pl'</SAMP
+></P
+></LI
+><LI
+><P
+>end_command</P
+><P
+>Polecenie pow³oki wykonywane po wczytaniem pliku. Domy¶lnie: puste</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>end_command = 'rm /var/log/traffic.log'</SAMP
 ></P
 ></LI
 ></UL
@@ -1553,6 +1575,22 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >one_class_per_host = 1</SAMP
+></P
+></LI
+><LI
+><P
+>limit_per_host</P
+><P
+>Okre¶la politykê tworzenia limitów po³±czeñ/pakietów dla komputerów. W ustawieniu domy¶lnym
+			    limit po³±czeñ/pakietów jest dzielony przez wszystkie komputery klienta.
+			    Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
+			    host_climit i host_plimit zostan± wygenerowane dla wszystkich
+			    komputerów klienta (z warto¶ci± '%climit' i '%plimit' nie podzeilon± przez ilo¶æ komputerów).
+				 Domy¶lnie: false</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>limit_per_host = 1</SAMP
 ></P
 ></LI
 ><LI
