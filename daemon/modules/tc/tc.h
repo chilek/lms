@@ -30,4 +30,5 @@ struct tc_module
 	char *networks;
 	char *customergroups;
 	int one_class_per_host;
+	int limit_per_host;
 };
