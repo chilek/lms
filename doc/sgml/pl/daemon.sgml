@@ -746,12 +746,22 @@
 		    </sect3>
 		    <sect3 id="traffic-config">
 		    <title>Konfiguracja</title>
-		    <para>Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</para>
+		    <para>Modu³ posiada trzy opcjê:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
 			    <para>Lokalizacja pliku ze statystykami firewalla. Domy¶lnie: /var/log/traffic.log</para>
 			    <para>Przyk³ad: <prompt>file = /tmp/log</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>begin_command</para>
+			    <para>Polecenie pow³oki wykonywane przed wczytaniem pliku. Domy¶lnie: puste</para>
+			    <para>Przyk³ad: <prompt>begin_command = 'perl /usr/local/lms/bin/traffic_ipt.pl'</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>end_command</para>
+			    <para>Polecenie pow³oki wykonywane po wczytaniem pliku. Domy¶lnie: puste</para>
+			    <para>Przyk³ad: <prompt>end_command = 'rm /var/log/traffic.log'</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
@@ -905,6 +915,16 @@ esac
 			    host_mark_up, host_plimit i host_climit generowane s± dla ka¿dego
 			    komputera niezale¿nie od ustawieñ tej zmiennej. Domy¶lnie: false</para>
 			    <para>Przyk³ad: <prompt>one_class_per_host = 1</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>limit_per_host</para>
+			    <para>Okre¶la politykê tworzenia limitów po³±czeñ/pakietów dla komputerów. W ustawieniu domy¶lnym
+			    limit po³±czeñ/pakietów jest dzielony przez wszystkie komputery klienta.
+			    Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
+			    host_climit i host_plimit zostan± wygenerowane dla wszystkich
+			    komputerów klienta (z warto¶ci± '%climit' i '%plimit' nie podzeilon± przez ilo¶æ komputerów).
+				 Domy¶lnie: false</para>
+			    <para>Przyk³ad: <prompt>limit_per_host = 1</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>host_mark_up</para>
