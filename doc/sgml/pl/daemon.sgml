@@ -746,7 +746,7 @@
 		    </sect3>
 		    <sect3 id="traffic-config">
 		    <title>Konfiguracja</title>
-		    <para>Modu³ posiada trzy opcjê:</para>
+		    <para>Modu³ posiada trzy opcje:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
@@ -760,7 +760,7 @@
 			</listitem>
 			<listitem>
 			    <para>end_command</para>
-			    <para>Polecenie pow³oki wykonywane po wczytaniem pliku. Domy¶lnie: puste</para>
+			    <para>Polecenie pow³oki wykonywane po wczytaniu pliku. Domy¶lnie: puste</para>
 			    <para>Przyk³ad: <prompt>end_command = 'rm /var/log/traffic.log'</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -919,10 +919,10 @@ esac
 			<listitem>
 			    <para>limit_per_host</para>
 			    <para>Okre¶la politykê tworzenia limitów po³±czeñ/pakietów dla komputerów. W ustawieniu domy¶lnym
-			    limit po³±czeñ/pakietów jest dzielony przez wszystkie komputery klienta.
-			    Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
+			    limit po³±czeñ/pakietów jest dzielony przez ilo¶æ komputerów klienta.
+			    W³±czenie tej opcji spowoduje, ¿e regu³y okre¶lone w 
 			    host_climit i host_plimit zostan± wygenerowane dla wszystkich
-			    komputerów klienta (z warto¶ci± '%climit' i '%plimit' nie podzeilon± przez ilo¶æ komputerów).
+			    komputerów klienta z warto¶ci± $climit i %plimit zdefiniowan± w taryfie (nie podzielon± przez ilo¶æ komputerów).
 				 Domy¶lnie: false</para>
 			    <para>Przyk³ad: <prompt>limit_per_host = 1</prompt></para>
 			</listitem>
