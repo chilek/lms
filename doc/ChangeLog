@@ -56,6 +56,7 @@ version ? (????-??-??):
   - lmsd/traffic: added 'begin_command' and 'end_command' options (siradams)
   - lmsd/tc: added 'limit_per_host' option (siradams)
   - fixed problem with ajax plugins in Opera (alec)
+  - invoices: improved tariff selection when adding/editing invoices (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
