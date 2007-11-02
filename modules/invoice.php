@@ -140,10 +140,7 @@ elseif(isset($_GET['fetchallinvoices']))
 		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
 		foreach($which as $type)
 		{
-			$i++;
-			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
-			$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
 			$SMARTY->assign('invoice',$invoice);
 			if(isset($invoice['invoice']))
 				$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
@@ -153,25 +150,6 @@ elseif(isset($_GET['fetchallinvoices']))
 	}
 	$SMARTY->display('clearfooter.html');
 }
-elseif(isset($_GET['fetchsingle']))
-{
-	$invoice = $LMS->GetInvoiceContent($_GET['id']);
-	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-	if(!isset($invoice['invoice']))
-		$layout['pagetitle'] = trans('Invoice No. $0', $number);
-	else
-		$layout['pagetitle'] = trans('Credit Note No. $0', $number);
-	$invoice['last'] = TRUE;
-	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-	$SMARTY->assign('invoice',$invoice);
-	$SMARTY->display('invoiceheader.html');
-	$SMARTY->assign('type',trans('ORIGINAL'));
-	if(isset($invoice['invoice']))
-		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
-	else
-		$SMARTY->display($CONFIG['invoices']['template_file']);
-	$SMARTY->display('clearfooter.html');
-}
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
@@ -179,21 +157,33 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 		$layout['pagetitle'] = trans('Invoice No. $0', $number);
 	else
 		$layout['pagetitle'] = trans('Credit Note No. $0', $number);
+
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-	$SMARTY->assign('invoice',$invoice);
+
+	$which = array();
+
+	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
+	if(isset($_GET['copy'])) $which[] = trans('COPY');
+	if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	
+	if(!sizeof($which)) $which[] = trans('ORIGINAL');
+	$count = sizeof($which);
+	$i = 0;
+	
 	$SMARTY->display('invoiceheader.html');
-	$SMARTY->assign('type',trans('ORIGINAL'));
-	if(isset($invoice['invoice']))
-		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
-	else
-		$SMARTY->display($CONFIG['invoices']['template_file']);
-	$SMARTY->assign('type',trans('COPY'));
-	$invoice['last'] = TRUE;
-	$SMARTY->assign('invoice',$invoice);
-	if(isset($invoice['invoice']))
-		$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
-	else
-		$SMARTY->display($CONFIG['invoices']['template_file']);
+	foreach($which as $type)
+	{
+		$i++;
+		if($i == $count) $invoice['last'] = TRUE;
+		$SMARTY->assign('invoice',$invoice);
+		$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
+		$SMARTY->assign('type',$type);
+
+		if(isset($invoice['invoice']))
+			$SMARTY->display($CONFIG['invoices']['cnote_template_file']);
+		else
+			$SMARTY->display($CONFIG['invoices']['template_file']);
+	}
 	$SMARTY->display('clearfooter.html');
 }
 else

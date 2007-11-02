@@ -4,19 +4,22 @@
 {include file="calendar_js.html"}
 <script type="text/javascript">
 	<!--
-	function setItem(index)
-	{literal}{{/literal}
-		{foreach from=$tariffs item=tariff}
-		if(index=={$tariff.id})
-		{literal}{{/literal}
-			document.additem.name.value = '{$tariff.name|escape}';
-			document.additem.taxid.value = '{$tariff.taxid}';
-			document.additem.valuebrutto.value = '{$tariff.value}';
-			document.additem.prodid.value = '{$tariff.prodid}';
-			document.additem.tariffid.value = '{$tariff.id}';
-		{literal}}{/literal}
-		{/foreach}
-	{literal}}{/literal}
+	{literal}
+	function setType(type)
+	{
+	        document.save.elements[type].checked = !document.save.elements[type].checked;
+	}
+	function printinvoice()
+	{
+		var add = "";
+		if(document.save.original.checked)
+		        add += "&original=1";
+		if(document.save.copy.checked)
+		        add += "&copy=1";
+		document.save.action = "?m=invoicenote&action=save&print=1" + add;
+		document.save.submit();
+	}
+	{/literal}																								
 	//-->
 </script>		
 <FORM NAME="setheader" METHOD="POST" ACTION="?m=invoicenote&action=setheader">
@@ -83,7 +86,7 @@
 </TABLE>
 </FORM>
 <P>
-<FORM NAME="save" METHOD="POST" ACTION="?m=invoicenote&action=save" target="_BLANK">
+<FORM NAME="save" METHOD="POST" ACTION="?m=invoicenote&action=save">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -208,18 +211,21 @@
 	{/if}
 	<TR CLASS="light">
 		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
+			<INPUT type="checkbox" class ="box light" name="original" checked> <A HREF="javascript:setType('original');">{t}original{/t}</A>
+            		<INPUT type="checkbox" class ="box light" name="copy"> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>&nbsp;
 			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 			{if $error}
-			<A HREF="javascript:alert('{t}There are errors in credit note main informations!{/t}');">
+			<A HREF="javascript:alert('{t}There are errors in credit note main informations!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:alert('{t}There are errors in credit note main informations!{/t}');">{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>
 			{else}
-			<A HREF="javascript:document.save.submit();">
+			<A HREF="javascript:document.save.submit()">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:printinvoice()">{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>
 			{/if}
-			{t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
-<SCRIPT LANGUAGE="JavaScript">
+<SCRIPT type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['setheader'].elements['cnote[cdate]']);
 cal1.time_comp = false;

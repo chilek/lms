@@ -924,22 +924,27 @@ elseif(isset($_GET['fetchallinvoices']))
 		}
 	}
 }
-elseif(isset($_GET['fetchsingle']))
-{
-	$invoice = $LMS->GetInvoiceContent($_GET['id']);
-	$invoice['last'] = TRUE;
-	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-	$type = trans('ORIGINAL');
-	invoice_body();
-}
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-	$type = trans('ORIGINAL');
-	invoice_body();
-	$type = trans('COPY');
-	$invoice['last'] = TRUE;
-	invoice_body();
+
+	$which = array();
+
+	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
+        if(isset($_GET['copy'])) $which[] = trans('COPY');
+        if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	
+	if(!sizeof($which)) $which[] = trans('ORIGINAL');
+	
+	$count = sizeof($which);
+	$i=0;
+
+	foreach($which as $type)
+	{
+		$i++;
+		if($i == $count) $invoice['last'] = TRUE;
+		invoice_body();
+	}
 }
 else
 {
