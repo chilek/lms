@@ -6,17 +6,29 @@
 	<!--
 	function setItem(index)
 	{literal}{{/literal}
+		var e = document.additem;
 		{foreach from=$tariffs item=tariff}
 		if(index=={$tariff.id})
 		{literal}{{/literal}
-			document.additem.name.value = '{$tariff.name|escape}';
-			document.additem.taxid.value = '{$tariff.taxid}';
-			document.additem.valuebrutto.value = '{$tariff.value}';
-			document.additem.prodid.value = '{$tariff.prodid}';
-			document.additem.tariffid.value = '{$tariff.id}';
+			e.name.value = '{$tariff.name|escape}';
+			e.taxid.value = '{$tariff.taxid}';
+			e.valuebrutto.value = '{$tariff.value}';
+			e.prodid.value = '{$tariff.prodid}';
+			e.tariffid.value = '{$tariff.id}';
+			e.count.value = 1;
+			return;
 		{literal}}{/literal}
 		{/foreach}
-	{literal}}
+	{literal}
+		if(index==0)
+	        {
+		        e.name.value = '';
+		        e.valuebrutto.value = '';
+			e.prodid.value = '';
+		        e.tariffid.value = '';
+		        e.count.value = 1
+		}
+	}
 
 	function saveheader()
 	{
@@ -212,13 +224,14 @@
 		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
 		</TD>
-		<TD CLASS="ftop" WIDTH="92%">
-			<INPUT TYPE="text" NAME="name" SIZE="48"><BR>
-			<SELECT SIZE="1" NAME="ttariffid">
+		<TD CLASS="ftop" WIDTH="92%" NOWRAP>
+			<INPUT TYPE="text" NAME="name" SIZE="40"style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
+			<SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
+				<OPTION value="0">-</OPTION>
 				{foreach from=$tariffs item=tariff}
 				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
 				{/foreach}
-			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">{t}Select{/t}</A>
+			</SELECT>
 		</TD>
 		<TD CLASS="ftop" ALIGN="RIGHT">
 			<INPUT TYPE="text" NAME="prodid" SIZE="6">
