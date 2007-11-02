@@ -57,6 +57,11 @@ version ? (????-??-??):
   - lmsd/tc: added 'limit_per_host' option (siradams)
   - fixed problem with ajax plugins in Opera (alec)
   - invoices: improved tariff selection when adding/editing invoices (alec)
+  - invoices: added link Save in invoice(note) edit/add forms (alec)
+  - invoices: added possibility to select original/copy/duplicate when
+    creating/editing an invoice(note) with Save & Print (alec)
+  - invoices: after invoice addition/edition redirecting to invoices list 
+    or to empty new invoice form (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 

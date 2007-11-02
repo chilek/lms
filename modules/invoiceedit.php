@@ -47,7 +47,7 @@ if(isset($_GET['id']) && $action=='edit')
         $nitem['valuebrutto']	= str_replace(',','.',$item['value']);
 	$nitem['s_valuenetto']	= str_replace(',','.',$item['totalbase']);
         $nitem['s_valuebrutto']	= str_replace(',','.',$item['total']);
-	$nitem['tax']		= $taxeslist[$item['taxid']]['label'];
+	$nitem['tax']		= isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '';
 	$nitem['taxid']		= $item['taxid'];
 	$nitem['posuid']	= $i;
 	$SESSION->restore('invoicecontents', $invoicecontents);
@@ -155,7 +155,15 @@ switch($action)
 			$SESSION->restore('invoiceid', $invoice['id']);
 			$invoice['type'] = DOC_INVOICE;
 			$LMS->InvoiceUpdate(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
-			$SESSION->redirect('?m=invoice&id='.$invoice['id']);
+			
+			if(isset($_GET['print']))
+				$SESSION->redirect('?m=invoicelist&invoice='.$invoice['id']
+					.(isset($_GET['original']) ? '&original=1' : '')
+			        	.(isset($_GET['copy']) ? '&copy=1' : '')
+					.(isset($_GET['duplicate']) ? '&duplicate=1' : '')			
+				);
+			else
+				$SESSION->redirect('?m=invoicelist');
 		}
 	break;
 

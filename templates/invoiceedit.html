@@ -38,6 +38,25 @@
 	
 	        document.setcustomer.submit();
 	}
+	
+	function setType(type)
+        {
+	        document.additem.elements[type].checked = !document.additem.elements[type].checked;
+	}
+
+	function printinvoice()
+	{
+		var add = "";
+		if(document.additem.original.checked)
+		        add += "&original=1";
+		if(document.additem.copy.checked)
+			add += "&copy=1";
+		if(document.additem.duplicate.checked)
+			add += "&duplicate=1";
+
+		document.additem.action = "?m=invoiceedit&action=save&print=1" + add;
+		document.additem.submit();
+	}
 	{/literal}
 	//-->
 </script>		
@@ -262,15 +281,20 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
+			<INPUT type="checkbox" class ="box light" name="original" checked> <A HREF="javascript:setType('original');">{t}original{/t}</A>
+		        <INPUT type="checkbox" class ="box light" name="copy"> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>
+			<INPUT type="checkbox" class ="box light" name="duplicate"> <A HREF="javascript:setType('duplicate');">{t}duplicate{/t}</A>&nbsp;
 			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG src="img/cancel.gif"></A> 
 			{if !$customer}
-			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
+			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>
 			{elseif !$contents}
-			<A HREF="javascript:alert('{t}Invoice have no items!{/t}');">
+			<A HREF="javascript:alert('{t}Invoice have no items!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:alert('{t}Invoice have no items!{/t}');">{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>
 			{else}
-			<A HREF="?m=invoiceedit&action=save" target="_BLANK">
+			<A HREF="?m=invoiceedit&action=save">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:printinvoice()">{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>
 			{/if}
-			{t}Save & Print{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	</FORM>

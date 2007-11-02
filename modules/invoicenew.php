@@ -114,13 +114,13 @@ switch($action)
 				$itemdata['cashid'] = $id;
 				$itemdata['name'] = $cash['comment'];
 				$itemdata['taxid'] = $cash['taxid'];
-				$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
+				$itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
 				$itemdata['discount'] = 0;
 				$itemdata['count'] = f_round($_POST['l_count'][$id]);
 				$itemdata['valuebrutto'] = f_round((-$cash['value'])/$itemdata['count']);
 				$itemdata['s_valuebrutto'] = f_round(-$cash['value']);
-				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxeslist[$itemdata['taxid']]['value'] + 100) * 100, 2);
-				$itemdata['s_valuenetto'] = round($itemdata['s_valuebrutto'] / ($taxeslist[$itemdata['taxid']]['value'] + 100) * 100, 2);
+				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) + 100) * 100, 2);
+				$itemdata['s_valuenetto'] = round($itemdata['s_valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) + 100) * 100, 2);
 				$itemdata['prodid'] = $_POST['l_prodid'][$id];
 				$itemdata['jm'] = $_POST['l_jm'][$id];
 				$itemdata['posuid'] = (string) (getmicrotime()+$id);
@@ -232,7 +232,14 @@ switch($action)
 			$SESSION->remove('invoicecustomer');
 			$SESSION->remove('invoice');
 			$SESSION->remove('invoicenewerror');
-			$SESSION->redirect('?m=invoice&id='.$iid);
+			
+			if(isset($_GET['print']))
+				$SESSION->redirect('?m=invoicenew&action=init&invoice='.$iid
+					.(isset($_GET['original']) ? '&original=1' : '')
+					.(isset($_GET['copy']) ? '&copy=1' : '')
+					);
+			else
+				$SESSION->redirect('?m=invoicenew&action=init');
 		}
 	break;
 }
@@ -248,7 +255,17 @@ $SESSION->save('invoicenewerror', isset($error) ? $error : NULL);
 if($action)
 {
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
-	$SESSION->redirect('?m=invoicenew');
+	if($action == 'init')
+	{
+//print_r($_GET); die;
+		$SESSION->redirect('?m=invoicenew'
+			.(isset($_GET['invoice']) ? '&invoice='.intval($_GET['invoice']) : '')
+			.(isset($_GET['original']) ? '&original=1' : '')
+			.(isset($_GET['copy']) ? '&copy=1' : '')
+		);
+	}
+	else
+		$SESSION->redirect('?m=invoicenew');
 }
 
 $covenantlist = array();
@@ -284,6 +301,9 @@ $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE));
 $SMARTY->assign('taxeslist', $taxeslist);
+$SMARTY->assign('newinvoice', isset($_GET['invoice']) ? $_GET['invoice'] : NULL);
+$SMARTY->assign('original', isset($_GET['original']) ? TRUE : FALSE);
+$SMARTY->assign('copy', isset($_GET['copy']) ? TRUE : FALSE);
 $SMARTY->display('invoicenew.html');
 
 ?>

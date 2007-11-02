@@ -1,6 +1,9 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+{if $newinvoice}
+<SCRIPT type="text/javascript">window.open('?m=invoice&id={$newinvoice}{if $original}&original=1{/if}{if $copy}&copy=1{/if}{if $duplicate}&duplicate=1{/if}');</SCRIPT>
+{/if}
 {literal}
 <SCRIPT type="text/javascript">
 	<!--

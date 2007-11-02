@@ -259,7 +259,14 @@ switch($action)
 			$SESSION->remove('cnote');
 			$SESSION->remove('invoicecontents');
 			$SESSION->remove('cnoteerror');
-			$SESSION->redirect('?m=invoice&id='.$id);
+			
+			if(isset($_GET['print']))
+			        $SESSION->redirect('?m=invoicelist&invoice='.$id
+				        .(isset($_GET['original']) ? '&original=1' : '')
+					.(isset($_GET['copy']) ? '&copy=1' : '')
+                        	);
+			else
+                                $SESSION->redirect('?m=invoicelist');
 		}
 	break;
 	
