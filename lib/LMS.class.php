@@ -1882,9 +1882,9 @@ class LMS
 				$tarifflist[$idx]['customers'] = $this->GetCustomersWithTariff($row['id']);
 				$tarifflist[$idx]['customerscount'] = $this->DB->GetOne("SELECT COUNT(DISTINCT customerid) FROM assignments WHERE tariffid = ?", array($row['id']));
 				// count of 'active' assignments
-				$tarifflist[$idx]['assignmentcount'] =  $assigned[$row['id']]['count'] - $suspended['count'];
+				$tarifflist[$idx]['assignmentcount'] = (isset($assigned[$row['id']]) ? $assigned[$row['id']]['count'] : 0) - $suspended['count'];
 				// avg monthly income
-				$tarifflist[$idx]['income'] = $assigned[$row['id']]['value'] - $suspended['value'];
+				$tarifflist[$idx]['income'] = (isset($assigned[$row['id']]) ? $assigned[$row['id']]['value'] : 0) - $suspended['value'];
 
 				$totalincome += $tarifflist[$idx]['income'];
 				$totalcustomers += $tarifflist[$idx]['customers'];

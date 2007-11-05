@@ -161,7 +161,10 @@
 	{/if}
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="2">
-			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>{if $tariff.count eq 0} <A HREF="?m=tariffdel&id={$tariff.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
+			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
+			    {if $tariff.count eq 0}
+			    <A HREF="?m=tariffdel&id={$tariff.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that tariff?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			    {/if}
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
