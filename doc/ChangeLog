@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - fixed document numbers in Customer Info (alec)
+  - fixed tariff deleting from tariff info page (alec)
 
 version 1.8.13 Tessa (2007-10-03):
 
