@@ -14,7 +14,7 @@
 			{t}Comment:{/t}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt=""> </A>
+			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{t}Add option{/t} <IMG src="img/save.gif" alt=""> </A>
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -78,7 +78,7 @@
 	{/if}
 	<TR CLASS="DARK">
 		<TD colspan="4" class="FALL" align="right">
-			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=configadd{if $listdata.section}&section={$listdata.section}{/if}">{t}Add option{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 
