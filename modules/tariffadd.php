@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$tariffadd = $_POST['tariffadd'];
-
-if(isset($tariffadd))
+if(isset($_POST['tariffadd']))
 {
+	$tariffadd = $_POST['tariffadd'];
+	
 	foreach($tariffadd as $key => $value)
 		$tariffadd[$key] = trim($value);
 
@@ -86,12 +86,13 @@ if(isset($tariffadd))
 	{
 		$SESSION->redirect('?m=tarifflist&id='.$LMS->TariffAdd($tariffadd));
 	}
+
+	$SMARTY->assign('tariffadd',$tariffadd);
+	$SMARTY->assign('error',$error);
 }
 
 $layout['pagetitle'] = trans('New Subscription');
 
-$SMARTY->assign('error',$error);
-$SMARTY->assign('tariffadd',$tariffadd);
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->display('tariffadd.html');
 
