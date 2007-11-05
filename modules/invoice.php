@@ -58,7 +58,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	$layout['pagetitle'] = trans('Invoices');
 	$SMARTY->display('invoiceheader.html');
 	
-	if($_GET['cash'])
+	if(isset($_GET['cash']))
 	{
 		foreach($ids as $cashid)
 		{
