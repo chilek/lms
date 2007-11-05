@@ -12,6 +12,7 @@ version ? (????-??-??):
   - fixed warning in GetMACs() (alec)
   - fixed problem with ajax plugins in Opera (alec)
   - fixed receipt add/edit pages length (alec)
+  - fixed tariff deleting from tariff info page (alec)
   
 version 1.10.0 Urgo (2007-10-08):
 
