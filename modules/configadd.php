@@ -80,6 +80,9 @@ if(sizeof($config))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+if(isset($_GET['section']))
+	$config['section'] = $_GET['section'];
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
 $SMARTY->display('configadd.html');
