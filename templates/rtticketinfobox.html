@@ -46,6 +46,17 @@
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 		    </TD>
 		</TR>
+		{if $ticket.creatorid}
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/users.gif" alt="">
+			<B>{t}Created by:{/t}</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
+		    </TD>
+		</TR>
+		{/if}
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/time.gif" alt="">

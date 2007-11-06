@@ -2862,10 +2862,10 @@ class LMS
 
 	function RTStats()
 	{
-		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN 0 THEN 1 END) AS new,
-						    COUNT(CASE state WHEN 1 THEN 1 END) AS opened,
-						    COUNT(CASE state WHEN 2 THEN 1 END) AS resolved,
-						    COUNT(CASE state WHEN 3 THEN 1 END) AS dead
+		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN '.RT_NEW.' THEN 1 END) AS new,
+						    COUNT(CASE state WHEN '.RT_OPEN.' THEN 1 END) AS opened,
+						    COUNT(CASE state WHEN '.RT_RESOLVED.' THEN 1 END) AS resolved,
+						    COUNT(CASE state WHEN '.RT_DEAD.' THEN 1 END) AS dead
 					     FROM rttickets');
 	}
 
@@ -2885,9 +2885,17 @@ class LMS
 	function TicketAdd($ticket)
 	{
 		$ts = time();
-		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, state, owner, createtime, cause)
-				    VALUES (?, ?, ?, ?, 0, 0, ?, ?)', array($ticket['queue'], $ticket['customerid'], $ticket['requestor'], $ticket['subject'], $ts, 
-				    isset($ticket['cause']) ? $ticket['cause'] : 0));
+		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, state, 
+				owner, createtime, cause, creatorid)
+				VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?)', 
+				array($ticket['queue'], 
+					$ticket['customerid'],
+					$ticket['requestor'],
+					$ticket['subject'],
+					$ts, 
+					isset($ticket['cause']) ? $ticket['cause'] : 0,
+					$this->AUTH->id
+					));
 		
 		$id = $this->DB->GetLastInsertID('rttickets');
 		
@@ -2901,15 +2909,16 @@ class LMS
 	{
  		global $RT_STATES;
 		
-		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, 
-				    requestor, state, owner, customerid, cause, '
+		$ticket = $this->DB->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, 
+				    t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
-				    users.name AS ownername, createtime, resolvetime, subject
-				FROM rttickets
-				LEFT JOIN rtqueues ON (queueid = rtqueues.id)
-				LEFT JOIN users ON (owner = users.id)
-				LEFT JOIN customers ON (customers.id = customerid)
-				WHERE rttickets.id = ?', array($id));
+				    o.name AS ownername, t.createtime, t.resolvetime, t.subject
+				FROM rttickets t
+				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
+				LEFT JOIN users o ON (t.owner = o.id)
+				LEFT JOIN users c ON (t.creatorid = c.id)
+				LEFT JOIN customers ON (customers.id = t.customerid)
+				WHERE t.id = ?', array($id));
 		
 		$ticket['messages'] = $this->DB->GetAll(
 				'(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
