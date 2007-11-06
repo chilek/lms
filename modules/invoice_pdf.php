@@ -872,6 +872,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
+		
 		foreach($which as $type)
 		{
 			$i++;
