@@ -1872,5 +1872,6 @@ $_LANG['Line:'] = 'Linia:';
 $_LANG['Errors'] = 'Błędy';
 $_LANG['24 months'] = '24 m-ce';
 $_LANG['Enter description or select tariff from the list'] = 'Wprowadź opis lub wybierz taryfę z listy';
+$_LANG['Created by:'] = 'Utworzył:';
 
 ?>
