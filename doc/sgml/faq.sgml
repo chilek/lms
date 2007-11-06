@@ -43,7 +43,7 @@
 	        <para>You should post it to our mailing list. Attach your patches (preferably to current cvs version, use unified diff format) along with short description on what your code does. Eg.
 <screen>
 $ cd lms
-$ cvs -z7 diff -u > /tmp/my_patch.patch
+$ cvs -z7 diff -uN > /tmp/my_patch.patch
 </screen>
 		If you're interested into joining LMS developers team, please apply on the mailing list. You should however first make a good impression and stay on the list for a while, that may prove your skills, before asking us for cvs account.</para>
 	    </answer>
