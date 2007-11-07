@@ -64,6 +64,7 @@ version ? (????-??-??):
     or to empty new invoice form (alec)
   - helpdesk: added info about ticket creator in ticket info (alec)
   - BTS#0000705: lmsd/dhcp: fixed default value of 'subnet_domain' option (alec)
+  - fix: allow searching strings with '/' sign in quicksearch (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
