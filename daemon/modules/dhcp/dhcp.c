@@ -334,7 +334,7 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 	dhcp->subnetend = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_end", "}"));
 	dhcp->gateline = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_gateway", "option routers %i;"));
 	dhcp->dnsline = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_dns", "option domain-name-servers %i;"));
-	dhcp->domainline = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_domain", "option domain-name %n;"));
+	dhcp->domainline = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_domain", "option domain-name \"%n\";"));
 	dhcp->winsline = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_wins", "option netbios-name-servers %i;"));
 	dhcp->rangeline = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "subnet_range", "range %s %e;"));
 	dhcp->host = strdup(g->config_getstring(dhcp->base.ini, dhcp->base.instance, "host", "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}"));

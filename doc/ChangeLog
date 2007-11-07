@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.10.1 Ramus (2007-11-07):
 
   - BTS#0000695: fixed node addition form displaying after node addition (alec)
   - BTS#0000697: increased tariff name length in select (alec)
@@ -13,6 +13,7 @@ version ? (????-??-??):
   - fixed problem with ajax plugins in Opera (alec)
   - fixed receipt add/edit pages length (alec)
   - fixed tariff deleting from tariff info page (alec)
+  - BTS#0000705: lmsd/dhcp: fixed default value of 'subnet_domain' option (alec)
   
 version 1.10.0 Urgo (2007-10-08):
 

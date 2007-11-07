@@ -562,7 +562,7 @@
 			</listitem>
 			<listitem>
 			    <para>subnet_gateway</para>
-			    <para>Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie: 'option routers %i;'.</para>
+			    <para>Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie: "option routers %i;".</para>
 			    <para>Przyk³ad: <prompt>subnet_gateway = "option routers %i"</prompt></para>
 			</listitem>
 			<listitem>
@@ -572,8 +572,8 @@
 			</listitem>
 			<listitem>
 			    <para>subnet_domain</para>
-			    <para>Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: "option domain-name %n;".</para>
-			    <para>Przyk³ad: <prompt>subnet_domain = "option domain-name test.%n;"</prompt></para>
+			    <para>Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: 'option domain-name "%n";'.</para>
+			    <para>Przyk³ad: <prompt>subnet_domain = 'option domain-name "test.%n";'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_wins</para>
