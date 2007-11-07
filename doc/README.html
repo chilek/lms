@@ -10658,7 +10658,7 @@ CLASS="PROMPT"
 ><P
 >subnet_gateway</P
 ><P
->Subnet gateway. '%i' will be changed to IP address. Default: 'option routers %i;'.</P
+>Subnet gateway. '%i' will be changed to IP address. Default: "option routers %i;".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -10680,11 +10680,11 @@ CLASS="PROMPT"
 ><P
 >subnet_domain</P
 ><P
->Subnet domain name. '%n' - name. Default: "option domain-name %n;".</P
+>Subnet domain name. '%n' - name. Default: 'option domain-name "%n";'.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->subnet_domain = "option domain-name test.%n;"</SAMP
+>subnet_domain = 'option domain-name "test.%n";'</SAMP
 ></P
 ></LI
 ><LI
@@ -16408,7 +16408,7 @@ CLASS="ANSWER"
 <PRE
 CLASS="SCREEN"
 >$ cd lms
-$ cvs -z7 diff -u &#62; /tmp/my_patch.patch</PRE
+$ cvs -z7 diff -uN &#62; /tmp/my_patch.patch</PRE
 >
 		If you're interested into joining LMS developers team, please apply on the mailing list. You should however first make a good impression and stay on the list for a while, that may prove your skills, before asking us for cvs account.</P
 ></DIV

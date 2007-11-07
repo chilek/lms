@@ -63,6 +63,7 @@ version ? (????-??-??):
   - invoices: after invoice addition/edition redirecting to invoices list 
     or to empty new invoice form (alec)
   - helpdesk: added info about ticket creator in ticket info (alec)
+  - BTS#0000705: lmsd/dhcp: fixed default value of 'subnet_domain' option (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 

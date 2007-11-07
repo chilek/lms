@@ -557,7 +557,7 @@
                </listitem>
                <listitem>
                    <para>subnet_gateway</para>
-                   <para>Subnet gateway. '%i' will be changed to IP address. Default: 'option routers %i;'.</para>
+                   <para>Subnet gateway. '%i' will be changed to IP address. Default: "option routers %i;".</para>
                    <para>Example: <prompt>subnet_gateway = "option routers %i"</prompt></para>
                </listitem>
                <listitem>
@@ -567,8 +567,8 @@
                </listitem>
                <listitem>
                    <para>subnet_domain</para>
-                   <para>Subnet domain name. '%n' - name. Default: "option domain-name %n;".</para>
-                   <para>Example: <prompt>subnet_domain = "option domain-name test.%n;"</prompt></para>
+                   <para>Subnet domain name. '%n' - name. Default: 'option domain-name "%n";'.</para>
+                   <para>Example: <prompt>subnet_domain = 'option domain-name "test.%n";'</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_wins</para>
