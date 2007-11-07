@@ -3841,15 +3841,16 @@ Chapter 6. LMS Daemon
        Example: subnet_end = '\t}'
      * subnet_gateway
        Subnet gateway. '%i' will be changed to IP address. Default:
-       'option routers %i;'.
+       "option routers %i;".
        Example: subnet_gateway = "option routers %i"
      * subnet_dns
        Subnet DNS servers. '%i - dns addresses. Default: "option
        domain-name-servers %i;".
        Example: subnet_dns = "option domain-name-servers 192.168.0.1"
      * subnet_domain
-       Subnet domain name. '%n' - name. Default: "option domain-name %n;".
-       Example: subnet_domain = "option domain-name test.%n;"
+       Subnet domain name. '%n' - name. Default: 'option domain-name
+       "%n";'.
+       Example: subnet_domain = 'option domain-name "test.%n";'
      * subnet_wins
        WINS servers. '%i' - server IP address. Default: "option
        netbios-name-servers %i;".
@@ -5747,7 +5748,7 @@ Chapter 9. FAQ
    to current cvs version, use unified diff format) along with short
    description on what your code does. Eg.
 $ cd lms
-$ cvs -z7 diff -u > /tmp/my_patch.patch
+$ cvs -z7 diff -uN > /tmp/my_patch.patch
 
    If you're interested into joining LMS developers team, please apply on
    the mailing list. You should however first make a good impression and
