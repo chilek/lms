@@ -24,12 +24,37 @@
  *  $Id$
  */
 
+$id = $_GET['id'];
 
-$customerinfo = $LMS->GetCustomer($_GET['id']);
-$customergroups = $LMS->CustomergroupGetForCustomer($_GET['id']);
+if(! $LMS->TicketExists($id))
+{
+	$SESSION->redirect('?m=rtqueuelist');
+}
 
-$SMARTY->assign('customergroups',$customergroups);
-$SMARTY->assign('customerinfo',$customerinfo);
-$SMARTY->display('customerinfoshort.html');
+$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $id);
+
+if(!$rights)
+{
+	$SMARTY->display('noaccess.html');
+	$SESSION->close();
+	die;
+}
+
+$ticket = $DB->GetRow('SELECT t.id, t.cause, t.creatorid, c.name AS creator, 
+		    t.createtime, t.resolvetime
+		    FROM rttickets t
+		    LEFT JOIN users c ON (t.creatorid = c.id)
+		    WHERE t.id = ?', array($id));
+
+$ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
+		    WHERE ticketid = ?
+		    ORDER BY createtime DESC LIMIT 1', 
+		    array($id));
+
+$ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
+
+$SMARTY->assign('ticket', $ticket);
+
+$SMARTY->display('rtticketinfoshort.html');
 
 ?>

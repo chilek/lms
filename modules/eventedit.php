@@ -24,17 +24,17 @@
  *  $Id$
  */
 
-if($_GET['action'] == 'open')
+if(isset($_GET['action']) && $_GET['action'] == 'open')
 {
 	$DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
 	$SESSION->redirect('?m=eventlist');
 }
-elseif($_GET['action'] == 'close')
+elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 {
 	$DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
 	$SESSION->redirect('?m=eventlist');
 }
-elseif($_GET['action'] == 'dropuser')
+elseif(isset($_GET['action']) && $_GET['action'] == 'dropuser')
 {
 	$DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?',array($_GET['eid'], $_GET['aid']));
 	$SESSION->redirect('?'.$SESSION->get('backto'));
@@ -73,7 +73,7 @@ if(isset($_POST['event']))
 	if(!$error)
 	{
 		$date = mktime(0, 0, 0, $month, $day, $year);
-		$event['private'] = $event['private'] ? 1 : 0;
+		$event['private'] = isset($event['private']) ? 1 : 0;
 
 		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, endtime=?, private=?, note=?, customerid=? WHERE id=?',
 				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['id']));
