@@ -34,38 +34,33 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	
 	$startdate = mktime(0,0,0, $month, $day, $year);
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
-	$list2 = array();
 	
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
-		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername 
-		 FROM events LEFT JOIN customers ON (customerid = customers.id)
-		 WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND userid = ?)) '
-		.($customerid ? 'AND customerid = '.$customerid : '')
+		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
+		userid, users.name AS username 
+		FROM events 
+		LEFT JOIN customers ON (customerid = customers.id)
+		LEFT JOIN users ON (userid = users.id)
+		WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND userid = ?)) '
+		.($customerid ? ' AND customerid = '.$customerid : '')
+		.($userid ? ' AND EXISTS (
+			SELECT 1 FROM eventassignments 
+			WHERE eventid = events.id AND userid = '.intval($userid).'
+			)' : '')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $AUTH->id));
-	
+
 	if($list)
 		foreach($list as $idx => $row)
 		{
 			$list[$idx]['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
-								    FROM eventassignments, users
-								    WHERE userid = users.id AND eventid = ? ',
-								    array($row['id']));
-
-			if($userid && sizeof($list[$idx]['userlist']))
-				foreach($list[$idx]['userlist'] as $user)
-					if($user['id'] == $userid)
-					{
-						$list2[] = $list[$idx];
-						break;
-					}
+					FROM eventassignments, users
+					WHERE userid = users.id AND eventid = ? ',
+					array($row['id']));
 		}
-	
-	if($userid)
-		return $list2;	
-	else	
-		return $list;
+
+	return $list;
 }
 
 if(!isset($_GET['a']))
@@ -80,16 +75,23 @@ else
 	$u = $_GET['u'];
 $SESSION->save('elu', $u);
 
+if($edate = $SESSION->get('edate'))
+	list($year, $month, $day) = explode('/', $SESSION->get('edate'));
+
 if(isset($_GET['month']) && isset($_GET['year']))
 {
-	$day = isset($_GET['day']) ? $_GET['day'] : 1;
+	if(isset($_GET['day']))
+		$day = $_GET['day'];
+	elseif($edate)
+	{
+		if($month != $_GET['month'] || $year != $_GET['year'])
+			$day = 1;
+	}
+	else
+		$day = 1;
+		
 	$month = $_GET['month'];
 	$year = $_GET['year'];
-}
-else
-{
-	if($edate = $SESSION->get('edate'))
-		list($year, $month, $day) = explode('/', $SESSION->get('edate'));
 }
 
 $day = (isset($day) ? $day : date('j',time()));

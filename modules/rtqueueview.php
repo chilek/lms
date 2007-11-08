@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetQueueContents($id, $order='createtime,desc', $state=NULL)
+function GetQueueContents($id, $order='createtime,desc', $state=NULL, $owner=0)
 {
 	global $DB;
 	
@@ -38,22 +38,25 @@ function GetQueueContents($id, $order='createtime,desc', $state=NULL)
 	switch($order)
 	{
 		case 'ticketid':
-			$sqlord = 'ORDER BY t.id';
+			$sqlord = ' ORDER BY t.id';
 		break;
 		case 'subject':
-			$sqlord = 'ORDER BY t.subject';
+			$sqlord = ' ORDER BY t.subject';
 		break;
 		case 'requestor':
-			$sqlord = 'ORDER BY requestor';
+			$sqlord = ' ORDER BY requestor';
 		break;
 		case 'owner':
-			$sqlord = 'ORDER BY ownername';
+			$sqlord = ' ORDER BY ownername';
 		break;
 		case 'lastmodified':
-			$sqlord = 'ORDER BY lastmodified';
+			$sqlord = ' ORDER BY lastmodified';
+		break;
+		case 'creator':
+			$sqlord = ' ORDER BY creatorname';
 		break;
 		default:
-			$sqlord = 'ORDER BY t.createtime';
+			$sqlord = ' ORDER BY t.createtime';
 		break;
 	}
 
@@ -76,13 +79,15 @@ function GetQueueContents($id, $order='createtime,desc', $state=NULL)
 		    'SELECT t.id AS id, t.customerid AS customerid, c.address, 
 			    requestor, t.subject AS subject, state, owner AS ownerid, users.name AS ownername, '
 			    .$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername, 
-			    t.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified
+			    t.createtime AS createtime, u.name AS creatorname,
+			    (SELECT MAX(createtime) FROM rtmessages WHERE ticketid = t.id) AS lastmodified
 		    FROM rttickets t 
-		    LEFT JOIN rtmessages ON (t.id = rtmessages.ticketid)
 		    LEFT JOIN users ON (owner = users.id)
 		    LEFT JOIN customers c ON (t.customerid = c.id)
-		    WHERE queueid = ? '.$statefilter
-		    .' GROUP BY t.id, requestor, t.createtime, t.subject, state, owner, users.name, t.customerid, c.lastname, c.name, c.address '
+		    LEFT JOIN users u ON (t.creatorid = u.id)
+		    WHERE queueid = ? '
+		    .$statefilter
+		    .($owner ? ' AND t.owner = '.intval($owner) : '')
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 	{
 		foreach($result as $idx => $ticket)
@@ -101,6 +106,7 @@ function GetQueueContents($id, $order='createtime,desc', $state=NULL)
 	$result['state'] = $state;
 	$result['order'] = $order;
 	$result['direction'] = $direction;
+	$result['owner'] = $owner;
 
 	return $result;
 }
@@ -127,6 +133,12 @@ else
 	$o = $_GET['o'];
 $SESSION->save('rto', $o);
 
+if(!isset($_GET['owner']))
+	$SESSION->restore('rtowner', $owner);
+else
+	$owner = $_GET['owner'];
+$SESSION->save('rtowner', $owner);
+
 if(isset($_GET['s']))
 	$s = $_GET['s'];
 elseif($SESSION->is_set('rts'))
@@ -138,7 +150,7 @@ else
 $SESSION->save('rts', $s);
 
 $layout['pagetitle'] = trans('Tickets List');
-$queue = GetQueueContents($_GET['id'], $o, $s);
+$queue = GetQueueContents($_GET['id'], $o, $s, $owner);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -149,11 +161,13 @@ $queuedata['total'] = $queue['total'];
 $queuedata['state'] = $queue['state'];
 $queuedata['order'] = $queue['order'];
 $queuedata['direction'] = $queue['direction'];
+$queuedata['owner'] = $queue['owner'];
 
 unset($queue['total']);
 unset($queue['state']);
 unset($queue['order']);
 unset($queue['direction']);
+unset($queue['owner']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (!isset($CONFIG['phpui']['ticketlist_pagelimit']) ? $queuedata['total'] : $CONFIG['phpui']['ticketlist_pagelimit']);
@@ -169,6 +183,7 @@ $SMARTY->assign('queuedata', $queuedata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('start',$start);
+$SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->display('rtqueueview.html');
 
 ?>

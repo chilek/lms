@@ -48,10 +48,19 @@ if(isset($_POST['event']))
 	if(!$error)
 	{
 		$date = mktime(0, 0, 0, $month, $day, $year);
-		$event['status'] = $event['status'] ? 1 : 0;
+		$event['status'] = isset($event['status']) ? 1 : 0;
 
-		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, userid, private, customerid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $AUTH->id, $event['status'], $event['customerid']));
+		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, userid, private, customerid) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+				array($event['title'], 
+					$event['description'], 
+					$date, 
+					$event['begintime'], 
+					$event['endtime'], 
+					$AUTH->id, 
+					$event['status'], 
+					$event['customerid']
+					));
 		
 		if($event['userlist'])
 		{
@@ -63,7 +72,7 @@ if(isset($_POST['event']))
 					VALUES (?, ?)', array($id, $userid));
 		}
 		
-		if(!$event['reuse'])
+		if(!isset($event['reuse']))
 		{
 			$SESSION->redirect('?m=eventlist');
 		}

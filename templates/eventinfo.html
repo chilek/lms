@@ -1,7 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P>
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
@@ -64,12 +63,10 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Users:{/t}</B>
+			<B>{t}Created by:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			{foreach item=user from=$event.userlist}	
-				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A></NOBR><BR>
-			{/foreach}
+			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -102,19 +99,19 @@
 		</TD>
 	</TR>
 {/if}
-{*
 	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{t}Creator:{/t}</B>
+			<B>{t}Users:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
+			{foreach item=user from=$event.userlist}	
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A></NOBR><BR>
+			{/foreach}
 		</TD>
 	</TR>
-*}
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="?m=eventedit&id={$event.id}">{t}Edit{/t} <IMG src="img/edit.gif" alt=""></A>
@@ -127,5 +124,4 @@
 		</TD>
 	</TR>
 </TABLE>
-</P>
 {include file="footer.html"}

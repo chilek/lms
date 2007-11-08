@@ -65,6 +65,9 @@ version ? (????-??-??):
   - helpdesk: added info about ticket creator in ticket info (alec)
   - BTS#0000705: lmsd/dhcp: fixed default value of 'subnet_domain' option (alec)
   - fix: allow searching strings with '/' sign in quicksearch (alec)
+  - timetable: added info about event creator in event info and list (alec)
+  - helpdesk: added owner filter on tickets list + list query speedup (alec)
+  - helpdesk: added info popup on tickets list (alec)
 
 version 1.11.0 Thoth (2007-08-17):
 
