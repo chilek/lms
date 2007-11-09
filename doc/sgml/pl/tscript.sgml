@@ -572,7 +572,7 @@ syslog("Komunikat");
 {result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
 127.0.0.1    localhost
 {for (r=0; r&lt;number(result); r++)}\
-{result[r].name}\t{result[r].ip}
+{result[r].name}"\t"{result[r].ip}
 {/for}\
 </screen>
 		</example></para>
@@ -585,7 +585,7 @@ syslog("Komunikat");
 for (r=0; r&lt;number(CUSTOMERS); r++)
     if (CUSTOMERS[r].balance < 0)
 }\
-{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
+{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}"\t"{CUSTOMERS[r].balance}
 {
     /if
 /for}\
@@ -615,9 +615,9 @@ for (r=0; r&lt;number(CUSTOMERS); r++)
        /if; 
        for (i=0; i&lt;number(NODES); i++)
                if (number(NODES[i].access))
-                      }{nodes[i].mac}\t{NODES[i].ip}{
+                      }{nodes[i].mac}"\t"{NODES[i].ip}{
                else
-                      }00:00:00:00:00:00\t{NODES[i].ip}{
+                      }00:00:00:00:00:00"\t"{NODES[i].ip}{
                /if;
       /for;
 /if}\
@@ -674,7 +674,7 @@ PS. Poni¿ej za³±czamy ostatnie 10 operacji na Pañstwa koncie.
     
     {for(j=0; j&lt;number(last10); j++)}
     
-        {exec echo "{last10[j].time}|\t{last10[j].value}|\t{last10[j].comment}" &gt;&gt; /tmp/mail}
+        {exec echo "{last10[j].time}|"\t"{last10[j].value}|"\t"{last10[j].comment}" &gt;&gt; /tmp/mail}
     
     {/for}
 
