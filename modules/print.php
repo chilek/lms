@@ -34,10 +34,16 @@ switch($type)
 		$to = $_POST['to'];
 
 		// date format 'yyyy/mm/dd'	
-		list($year, $month, $day) = split('/',$from);
-		$date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
+		if($from && ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $from))
+		{
+			list($year, $month, $day) = split('/',$from);
+    			$date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
+		}
+		else
+			$date['from'] = 0;
 
-		if($to) {
+		if($to && ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $to))
+		{
 			list($year, $month, $day) = split('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else { 
@@ -49,6 +55,13 @@ switch($type)
 
 		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetCustomerName($id), ($from ? $from : ''), $to);
 
+		$list['balance'] = 0;
+		$list['income'] = 0;
+		$list['expense'] = 0;
+		$list['liability'] = 0;
+		$list['summary'] = 0;
+		$list['customerid'] = $id;
+
 		if($tslist = $DB->GetAll('SELECT c.id AS id, time, type, c.value AS value, 
 				    taxes.label AS taxlabel, customerid, comment, name AS username 
 				    FROM cash c
@@ -58,13 +71,15 @@ switch($type)
 					    AND NOT EXISTS (
 				                    SELECT 1 FROM customerassignments a
 					            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					            WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)
-				    ORDER BY time', array($id))
+					            WHERE e.userid = lms_current_user() AND a.customerid = ?)
+				    ORDER BY time', array($id, $id))
 		)
 		{
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
+			
+			$saldolist['balance'] = 0;
 
 			foreach($saldolist['id'] as $i => $v)
 			{
@@ -100,11 +115,7 @@ switch($type)
 			}
 			
 			$list['total'] = sizeof($list['id']);
-
-		} else
-			$list['balance'] = 0;
-
-		$list['customerid'] = $id;
+		}
 		
 		$SMARTY->assign('balancelist', $list);
 		$SMARTY->display('printcustomerbalance.html');
@@ -143,12 +154,12 @@ switch($type)
 		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		
 		if(isset($date['from']))
-			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN cash.customerid!=0 AND type=0 THEN 0 ELSE value END) 
-					FROM cash '
-					.($group ? 'LEFT JOIN customerassignments a ON (cash.customerid = a.customerid) ' : '')
+			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN c.customerid!=0 AND type=0 THEN 0 ELSE value END) 
+					FROM cash c '
+					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
 					.'WHERE time<?'
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE cash.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.' AND NOT EXISTS (
 			        		SELECT 1 FROM customerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)

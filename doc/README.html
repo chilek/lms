@@ -13324,7 +13324,7 @@ CLASS="SCREEN"
 >{result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
 127.0.0.1	localhost
 {for (r=0; r&lt;number(result); r++)}\
-{result[r].name}\t{result[r].ip}
+{result[r].name}{"\t"}{result[r].ip}
 {/for}\</PRE
 ></DIV
 ></P
@@ -13346,7 +13346,7 @@ CLASS="SCREEN"
 for (r=0; r&lt;number(CUSTOMERS); r++)
     if (CUSTOMERS[r].balance &#60; 0)
 }\
-{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
+{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}{"\t"}{CUSTOMERS[r].balance}
 {
     /if
 /for
@@ -13397,9 +13397,9 @@ CLASS="SCREEN"
 {       /if}\ 
 {       for (i=0; i&lt;number(NODES); i++)}\
 {               if (number(NODES[i].access))}\
-{                       nodes[i].mac}\t{NODES[i].ip}
+{                       nodes[i].mac}{"\t"}{NODES[i].ip}
 {               else}\
-{                      }00:00:00:00:00:00\t{NODES[i].ip}
+{                      }00:00:00:00:00:00{"\t"}{NODES[i].ip}
 {               /if}\
 {      /for}\
 {/if}\</PRE
@@ -13464,7 +13464,7 @@ convenience.
     
     {for(j=0; j&lt;number(last10); j++)}
     
-        {exec echo "{last10[j].time}|\t{last10[j].value}|\t{last10[j].comment}" &gt;&gt; /tmp/mail}
+        {exec echo "{last10[j].time}|{"\t"}{last10[j].value}|{"\t"}{last10[j].comment}" &gt;&gt; /tmp/mail}
     
     {/for}
 
@@ -14110,6 +14110,14 @@ BORDER="0"
 ><TR
 ><TD
 >ports - number of connections available</TD
+></TR
+><TR
+><TD
+>purchasetime - purchase date</TD
+></TR
+><TR
+><TD
+>guaranteeperiod - period in months (NULL - lifetime)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -15179,7 +15187,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->owner - LMS user serial number (ticket owner)</TD
+>owner - user serial number (ticket's owner)</TD
+></TR
+><TR
+><TD
+>creatorid - user serial number (ticket's creator)</TD
 ></TR
 ><TR
 ><TD

@@ -196,6 +196,8 @@
                     <member>model - model number</member>
                     <member>serialnumber - products serial number (not DB identifier)</member>
                     <member>ports - number of connections available</member>
+		    <member>purchasetime - purchase date</member>
+		    <member>guaranteeperiod - period in months (NULL - lifetime)</member>
                </simplelist>
           </sect2>
           <sect2 id="netlinks">
@@ -500,7 +502,8 @@
                     <member>subject - ticket name)</member>
                     <member>state - status (0-new, 1-open, 2-resolved, 3-dead)</member>
                     <member>cause - request cause (0-unknown, 1-customer, 2-company)</member>
-                    <member>owner - LMS user serial number (ticket owner)</member>
+                    <member>owner - user serial number (ticket's owner)</member>
+                    <member>creatorid - user serial number (ticket's creator)</member>
                     <member>createtime - timestamp of report</member>
                </simplelist>
           </sect2>
