@@ -296,7 +296,7 @@
 		    </sect3>
 		    <sect3 id="payments-config">
 		    <title>Konfiguracja</title>
-		    <para>Dla tego modu³u s± dostêpne nastêpuj±ce zmienne kofiguracyjne:</para>
+		    <para>Dla tego modu³u s± dostêpne nastêpuj±ce zmienne konfiguracyjne:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>comment</para>
@@ -333,7 +333,7 @@
 			</listitem>
 			<listitem>
 			    <para>paytype</para>
-			    <para>Rozdzaj p³atno¶ci. Domy¶lnie: 'TRANSFER'.</para>
+			    <para>Rodzaj p³atno¶ci. Domy¶lnie: 'TRANSFER'.</para>
 			    <para>Przyk³ad: <prompt>paytype = 'GOTÓWKA'</prompt></para>
 			</listitem>
 			<listitem>
@@ -1022,7 +1022,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 					%i16 - ostatni oktet adresu IP w formacie szesnastkowym 
 					oraz %x - licznik o warto¶ci pocz±tkowej 100 
 					zwiêkszany o jeden dla ka¿dego komputera.</para>
-				<para>Poniwa¿ konfiguracja modu³u jest bardzo podobna do jego poprzednika,
+				<para>Poniewa¿ konfiguracja modu³u jest bardzo podobna do jego poprzednika,
 					powieniene¶ zacz±æ od przeczytania opisu <xref linkend="daemon-tc">.</para>
 			</sect3>
 			<sect3 id="tc--ngconfig">
