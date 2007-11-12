@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - fix: allow searching strings with '/' sign in quicksearch (alec)
+  - BTS#0000706: fixed query in Finances/Reports/Network Balance Sheet (alec)
 
 version 1.10.1 Ramus (2007-11-07):
 

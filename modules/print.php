@@ -58,8 +58,8 @@ switch($type)
 					    AND NOT EXISTS (
 				                    SELECT 1 FROM customerassignments a
 					            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					            WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)
-				    ORDER BY time', array($id))
+					            WHERE e.userid = lms_current_user() AND a.customerid = ?)
+				    ORDER BY time', array($id, $id))
 		)
 		{
 			foreach($tslist as $row)
@@ -143,12 +143,12 @@ switch($type)
 		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		
 		if(isset($date['from']))
-			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN cash.customerid!=0 AND type=0 THEN 0 ELSE value END) 
-					FROM cash '
-					.($group ? 'LEFT JOIN customerassignments a ON (cash.customerid = a.customerid) ' : '')
+			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN c.customerid!=0 AND type=0 THEN 0 ELSE value END) 
+					FROM cash c '
+					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
 					.'WHERE time<?'
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE cash.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.' AND NOT EXISTS (
 			        		SELECT 1 FROM customerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
