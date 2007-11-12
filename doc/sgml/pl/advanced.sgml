@@ -200,7 +200,9 @@
                     <member>model - model</member>
                     <member>serialnumber - numer seryjny</member>
                     <member>ports - ilo¶æ portów</member>
-               </simplelist>
+		<member>purchasetime - data zakupu</member>
+		<member>guaranteeperiod - okres gwarancji w miesi±cach (NULL - gwarancja wieczysta)</member>
+	    </simplelist>
           </sect2>
           <sect2 id="netlinks">
                <title>Po³±czenia sieciowe ('netlinks')</title>
@@ -504,6 +506,7 @@
                     <member>state - status (0-nowy, 1-otwarty, 2-rozwi±zany, 3-martwy)</member>
 		    <member>cause - przyczyna zg³oszenia (0-nieznana, 1-klient, 2-firma)</member>
                     <member>owner - identyfikator w³a¶ciciela-u¿ytkownika</member>
+		    <member>creatorid - identyfikator u¿ytkownika dodaj±cego zg³oszenie</member>
                     <member>createtime - data zg³oszenia</member>
                </simplelist>
           </sect2>
