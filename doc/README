@@ -4772,7 +4772,7 @@ syslog("message");
 {result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
 127.0.0.1       localhost
 {for (r=0; r<number(result); r++)}\
-{result[r].name}\t{result[r].ip}
+{result[r].name}{"\t"}{result[r].ip}
 {/for}\
 
    How to create debtors list? It's easy with use of predefined constants.
@@ -4782,7 +4782,7 @@ syslog("message");
 for (r=0; r<number(CUSTOMERS); r++)
     if (CUSTOMERS[r].balance < 0)
 }\
-{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}\t{CUSTOMERS[r].balance}
+{CUSTOMERS[r].lastname} {CUSTOMERS[r].name}{"\t"}{CUSTOMERS[r].balance}
 {
     /if
 /for
@@ -4808,9 +4808,9 @@ for (r=0; r<number(CUSTOMERS); r++)
 {       /if}\
 {       for (i=0; i<number(NODES); i++)}\
 {               if (number(NODES[i].access))}\
-{                       nodes[i].mac}\t{NODES[i].ip}
+{                       nodes[i].mac}{"\t"}{NODES[i].ip}
 {               else}\
-{                      }00:00:00:00:00:00\t{NODES[i].ip}
+{                      }00:00:00:00:00:00{"\t"}{NODES[i].ip}
 {               /if}\
 {      /for}\
 {/if}\
@@ -4863,7 +4863,7 @@ convenience.
 
     {for(j=0; j<number(last10); j++)}
 
-        {exec echo "{last10[j].time}|\t{last10[j].value}|\t{last10[j].comment}">> /tmp/mail}
+        {exec echo "{last10[j].time}|{"\t"}{last10[j].value}|{"\t"}{last10[j].comment}" >> /tmp/mail}
 
     {/for}
 
@@ -5042,6 +5042,8 @@ Chapter 7. For curious
    model - model number
    serialnumber - products serial number (not DB identifier)
    ports - number of connections available
+   purchasetime - purchase date
+   guaranteeperiod - period in months (NULL - lifetime)
      __________________________________________________________________
 
 7.2.9. Network connections ('netlinks')
@@ -5325,7 +5327,8 @@ Chapter 7. For curious
    subject - ticket name)
    state - status (0-new, 1-open, 2-resolved, 3-dead)
    cause - request cause (0-unknown, 1-customer, 2-company)
-   owner - LMS user serial number (ticket owner)
+   owner - user serial number (ticket's owner)
+   creatorid - user serial number (ticket's creator)
    createtime - timestamp of report
      __________________________________________________________________
 

@@ -68,7 +68,8 @@ version ? (????-??-??):
   - timetable: added info about event creator in event info and list (alec)
   - helpdesk: added owner filter on tickets list + list query speedup (alec)
   - helpdesk: added info popup on tickets list (alec)
-
+  - BTS#0000706: fixed query in Finances/Reports/Network Balance Sheet (alec)
+  
 version 1.11.0 Thoth (2007-08-17):
 
   - common pdf functions and initialization moved to lib/pdf.php (alec)

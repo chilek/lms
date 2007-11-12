@@ -481,12 +481,15 @@ CREATE TABLE rttickets (
   cause smallint	DEFAULT 0 NOT NULL,
   owner integer 	DEFAULT 0 NOT NULL,
   customerid integer 	DEFAULT 0 NOT NULL,
+  creatorid integer 	DEFAULT 0 NOT NULL,
   createtime integer 	DEFAULT 0 NOT NULL,
   resolvetime integer 	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
+
 CREATE INDEX rttickets_queueid_idx ON rttickets (queueid);
 CREATE INDEX rttickets_customerid_idx ON rttickets (customerid);
+CREATE INDEX rttickets_creatorid_idx ON rttickets (creatorid);
 CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
 
 DROP SEQUENCE "rtmessages_id_seq";
@@ -902,4 +905,4 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007102600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007110600');

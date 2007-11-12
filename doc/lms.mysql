@@ -390,11 +390,13 @@ CREATE TABLE rttickets (
   cause tinyint(4) NOT NULL DEFAULT '0',
   owner int(11) NOT NULL DEFAULT '0',
   customerid int(11) NOT NULL DEFAULT '0',
+  creatorid int(11) NOT NULL DEFAULT '0',
   createtime int(11) NOT NULL DEFAULT '0',
   resolvetime int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   INDEX queueid (queueid),
   INDEX customerid (customerid),
+  INDEX creatorid (creatorid),
   INDEX createtime (createtime)
 ) TYPE=MyISAM;
 
@@ -848,4 +850,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007102600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007110600');
