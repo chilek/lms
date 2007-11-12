@@ -1282,6 +1282,17 @@ links -dump \
 		Domy¶lnie: wy³±czona</para>
 		<para>Przyk³ad:     <prompt>ewx_support = tak</prompt></para>
 	</listitem>
+	<listitem>
+		<para>account_type</para>
+		<para>Zmienia domy¶lnego zaznaczenie checkboxów w dodwaniu kont.
+		shell = 1 (0000000000000001)
+		mail = 2  (0000000000000010)
+		www = 4   (0000000000000100)
+		ftp = 8   (0000000000001000)
+		sql = 16  (0000000000010000)
+		Domy¶lnie: 32767</para>
+		<para>Przyk³ad:     <prompt>account_type = 2</prompt></para>
+	</listitem>
     </itemizedlist>
 	</para>
         </sect3>
