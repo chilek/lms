@@ -122,6 +122,9 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $domainlist = $DB->GetAll('SELECT id, name FROM domains ORDER BY name');
 
+if(!isset($account['type']) && isset($CONFIG['phpui']['account_type']))
+	$account['type'] = $CONFIG['phpui']['account_type'];
+
 if(!isset($account['type'])) $account['type'] = 32767;
 
 $SMARTY->assign('error', $error);
