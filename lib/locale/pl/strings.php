@@ -276,7 +276,6 @@ $_LANG['Create new'] = 'Utwórz nową';
 $_LANG['Create time:'] = 'Data utworzenia:';
 $_LANG['Generating subscriptions...'] = 'Generuję taryfy...';
 $_LANG['Creation time:'] = 'Czas utworzenia:';
-$_LANG['Creator:'] = 'Utworzył:';
 $_LANG['Creditor:'] = 'Wierzyciel:';
 $_LANG['Creditor name is required!'] = 'Nazwa wierzyciela jest wymagana!';
 $_LANG['Crontab:'] = 'Crontab:';
@@ -1873,5 +1872,7 @@ $_LANG['Errors'] = 'Błędy';
 $_LANG['24 months'] = '24 m-ce';
 $_LANG['Enter description or select tariff from the list'] = 'Wprowadź opis lub wybierz taryfę z listy';
 $_LANG['Created by:'] = 'Utworzył:';
+$_LANG['Body:'] = 'Treść';
+$_LANG['Coma-separated list of default invoice printout pages. You can use "original", "copy", "duplicate". Default: "original,copy".'] = 'Lista oddzielonych przecinkiem nazw stron wydruku faktur. Można użyć ciągi "original", "copy" i "duplicate". Domyślnie: "original,copy".';
 
 ?>

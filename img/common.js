@@ -170,3 +170,8 @@ if (typeof String.prototype.trim == "undefined")
 	        return s.replace(/\s*$/, "");
 	}
 }
+
+function checkElement(id)
+{
+        document.getElementById(id).checked = !document.getElementById(id).checked;
+}

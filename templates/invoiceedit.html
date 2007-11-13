@@ -281,9 +281,9 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="9" CLASS="fbottomu" ALIGN="RIGHT">
-			<INPUT type="checkbox" class ="box light" name="original" checked> <A HREF="javascript:setType('original');">{t}original{/t}</A>
-		        <INPUT type="checkbox" class ="box light" name="copy"> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>
-			<INPUT type="checkbox" class ="box light" name="duplicate"> <A HREF="javascript:setType('duplicate');">{t}duplicate{/t}</A>&nbsp;
+			<INPUT type="checkbox" class ="box light" name="original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('original');">{t}original{/t}</A>
+		        <INPUT type="checkbox" class ="box light" name="copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>
+			<INPUT type="checkbox" class ="box light" name="duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('duplicate');">{t}duplicate{/t}</A>&nbsp;
 			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG src="img/cancel.gif"></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>

@@ -549,6 +549,16 @@ $access['table'][100]['allow_reg'] = '^invoice$';
           Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
           or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
           filter invoices for printing.</para>
+                <para>When printing by default are displayed original and copy pages, it can be changed:
+          <itemizedlist>
+          <listitem>
+               <para>default_printpage</para>
+               <para>Coma-separated list of default invoice printout pages. You can use 
+	       "original", "copy", "duplicate". Default: "original,copy".</para>
+               <para>Example: <prompt>default_printpage = "original"</prompt></para>
+          </listitem>
+          </itemizedlist>
+        </para>
          <sect3 id="install-invoices-html">
           <title>HTML</title>
           <para>Invoices are printed in html format by default

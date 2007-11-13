@@ -364,6 +364,10 @@ function GetConfigList($order='var,asc', $section='')
 					case 'print_balance_history_limit':
 						$config[$idx]['description'] = trans('Number of Records on customer balance list on invoice. Specify last x records. Default: 10.');
 					break;
+
+					case 'default_printpage':
+						$config[$idx]['description'] = trans('Coma-separated list of default invoice printout pages. You can use "original", "copy", "duplicate". Default: "original,copy".');
+					break;
 					
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');

@@ -211,9 +211,9 @@
 					<TD ALIGN="left">
 						<NOBR><A HREF="javascript:pays();">{t}Check/Uncheck as accounted{/t} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
-						<INPUT type="checkbox" class="box dark" name="original" checked> <A HREF="javascript:setCheckbox('original')">{t}original{/t}</a>&nbsp;
-						<INPUT type="checkbox" class="box dark" name="copy" checked> <A HREF="javascript:setCheckbox('copy')">{t}copy{/t}</a>
-						<INPUT type="checkbox" class="box dark" name="duplicate"> <A HREF="javascript:setCheckbox('duplicate')">{t}duplicate{/t}</a>
+						<INPUT type="checkbox" class="box dark" name="original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('original')">{t}original{/t}</a>&nbsp;
+						<INPUT type="checkbox" class="box dark" name="copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('copy')">{t}copy{/t}</a>
+						<INPUT type="checkbox" class="box dark" name="duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('duplicate')">{t}duplicate{/t}</a>
 					</TD>
 					<TD ALIGN="right">	
 						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
