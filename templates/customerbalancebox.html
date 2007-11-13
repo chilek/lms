@@ -8,8 +8,11 @@
 		for (var i=0; i<document.addbalance.elements.length; i++)
 		{
 			var e = document.addbalance.elements[i];
-			if (e.name != 'allbox')
+			if (e.type == 'checkbox' && e.name != 'allbox' 
+				&& e.name != 'original' && e.name != 'copy' && e.name != 'duplicate')
+			{
 				e.checked = document.addbalance.allbox.checked;
+			}
 		}
 	}
 
