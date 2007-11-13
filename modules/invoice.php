@@ -165,8 +165,18 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
 	if(isset($_GET['copy'])) $which[] = trans('COPY');
 	if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+
+	if(!sizeof($which))
+        {
+	        $tmp = explode(',', $CONFIG['invoices']['default_printpage']);
+	        foreach($tmp as $t)
+			if(trim($t) == 'original') $which[] = trans('ORIGINAL');
+			elseif(trim($t) == 'copy') $which[] = trans('COPY');
+			elseif(trim($t) == 'duplicate') $which[] = trans('DUPLICATE');
+		
+		if(!sizeof($which)) $which[] = trans('ORIGINAL');
+	}
 	
-	if(!sizeof($which)) $which[] = trans('ORIGINAL');
 	$count = sizeof($which);
 	$i = 0;
 	

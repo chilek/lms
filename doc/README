@@ -789,6 +789,13 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    icon, in balance sheet page or by clicking 'Invoices List' in
    'Finances' menu. In second case, is also possible to filter invoices
    for printing.
+
+   When printing by default are displayed original and copy pages, it can
+   be changed:
+     * default_printpage
+       Coma-separated list of default invoice printout pages. You can use
+       "original", "copy", "duplicate". Default: "original,copy".
+       Example: default_printpage = "original"
      __________________________________________________________________
 
 2.9.1.1. HTML

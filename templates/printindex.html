@@ -25,13 +25,13 @@
 						<B>{t}State:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select customer's group"}>
-						<NOBR><INPUT class="radio light" type="radio" id="connected" name="filter" value="3" CHECKED><A HREF="javascript:setCustomerType('connected')">{t}connected<!plural>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="disconnected" name="filter" value="5"><A HREF="javascript:setCustomerType('disconnected')">{t}disconnected<!plural>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="indebt" name="filter" value="6"><A HREF="javascript:setCustomerType('indebt')">{t}in debt{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="waiting" name="filter" value="2"><A HREF="javascript:setCustomerType('waiting')">{t}waiting{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="interested" name="filter" value="1"><A HREF="javascript:setCustomerType('interested')">{t}interested<!plural>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="wonodes" name="filter" value="-1"><A HREF="javascript:setCustomerType('wonodes')">{t}without nodes{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="all" name="filter" value="0"><A HREF="javascript:setCustomerType('all')">{t}all<!customers>{/t}</a></NOBR>
+						<NOBR><INPUT class="radio light" type="radio" id="connected" name="filter" value="3" CHECKED><A HREF="javascript:checkElement('connected')">{t}connected<!plural>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="disconnected" name="filter" value="5"><A HREF="javascript:checkElement('disconnected')">{t}disconnected<!plural>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="indebt" name="filter" value="6"><A HREF="javascript:checkElement('indebt')">{t}in debt{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="waiting" name="filter" value="2"><A HREF="javascript:checkElement('waiting')">{t}waiting{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="interested" name="filter" value="1"><A HREF="javascript:checkElement('interested')">{t}interested<!plural>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="wonodes" name="filter" value="-1"><A HREF="javascript:checkElement('wonodes')">{t}without nodes{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="all" name="filter" value="0"><A HREF="javascript:checkElement('all')">{t}all<!customers>{/t}</a></NOBR>
 					</TD>
 					<TD width="1%">
 					    <TABLE width="100%">
@@ -111,13 +111,6 @@
 <!--
 var cal12 = new calendar(document.printcustomerlist.elements['day']);
 cal12.time_comp = false;
-
-{literal}
-function setCustomerType(id)
-{
-	document.printcustomerlist.elements[id].checked = true;
-}
-{/literal}
 //-->
 </SCRIPT>
 </P>
@@ -371,7 +364,7 @@ cal7.time_comp = false;
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}>{t}exclude group{/t}
+    							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoicereport-groupexclude')">{t}exclude group{/t}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -406,7 +399,7 @@ cal7.time_comp = false;
 						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="95%" nowrap>
-						<input type="checkbox" class="box light" name="extended" value="1"> <A HREF="javascript:setInvoiceExtFormat()">{t}extended format{/t}</a>
+						<input type="checkbox" class="box light" name="extended" value="1" id="invoicereport-extended"> <A HREF="javascript:checkElement('invoicereport-extended')">{t}extended format{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -425,14 +418,6 @@ var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
 cal8.time_comp = false;
 var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
 cal9.time_comp = false;
-
-{literal}
-function setInvoiceExtFormat()
-{
-	document.invoicereport.elements['extended'].checked =
-		!document.invoicereport.elements['extended'].checked;
-}
-{/literal}
 //-->
 </SCRIPT>
 </P>
@@ -485,7 +470,7 @@ function setInvoiceExtFormat()
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}>{t}exclude group{/t}
+    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('receiptlist-groupexclude')">{t}exclude group{/t}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -514,7 +499,7 @@ function setInvoiceExtFormat()
 						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="97%" nowrap>
-						<input type="checkbox" class="box light" name="extended" value="1"> <A HREF="javascript:setFinanceExtFormat()">{t}extended format{/t}</a>
+						<input type="checkbox" class="box light" name="extended" value="1" id="receiptlist-extended"> <A HREF="javascript:checkElement('receiptlist-extended')">{t}extended format{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -533,13 +518,6 @@ var cal12 = new calendar(document.printreceiptlist.elements['from']);
 cal12.time_comp = false;
 var cal13 = new calendar(document.printreceiptlist.elements['to']);
 cal13.time_comp = false;
-
-{literal}
-function setFinanceExtFormat()
-{
-	document.printreceiptlist.elements['extended'].checked = !document.printreceiptlist.elements['extended'].checked;
-}
-{/literal}
 //-->
 </SCRIPT>
 </P>
@@ -676,7 +654,7 @@ cal4.time_comp = false;
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}>{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoices-groupexclude')">{t}exclude group{/t}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -710,9 +688,9 @@ cal4.time_comp = false;
 						<IMG src="img/info.gif" alt="">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoiceorg" CHECKED>&nbsp;<A HREF="javascript:setPrintInvoices('invoiceorg')">{t}original{/t}</a>&nbsp;
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicecopy" CHECKED>&nbsp;<A HREF="javascript:setPrintInvoices('invoicecopy')">{t}copy{/t}</a>&nbsp;
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicedup">&nbsp;<A HREF="javascript:setPrintInvoices('invoicedup')">{t}duplicate{/t}</a>
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoiceorg" ID="invoiceorg"{if eregi('original',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoiceorg')">{t}original{/t}</a>&nbsp;
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicecopy" ID="invoicecopy"{if eregi('copy',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicecopy')">{t}copy{/t}</a>&nbsp;
+						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicedup" ID="invoicedup"{if eregi('duplicate',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicedup')">{t}duplicate{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -732,13 +710,6 @@ var cal10 = new calendar(document.printinvoices.elements['invoicefrom']);
 cal10.time_comp = false;
 var cal11 = new calendar(document.printinvoices.elements['invoiceto']);
 cal11.time_comp = false;
-
-{literal}
-function setPrintInvoices(id)
-{
-	document.printinvoices.elements[id].checked = !document.printinvoices.elements[id].checked;
-}
-{/literal}
 //-->
 </SCRIPT>
 </P>
@@ -796,7 +767,7 @@ function setPrintInvoices(id)
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}>{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="printforms-groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('printforms-groupexclude')">{t}exclude group{/t}</a>
 						    </TD>
 						</TR>
 					    </TABLE>
@@ -843,10 +814,10 @@ function setPrintInvoices(id)
 						<B>{t}Status:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select nodes group"}>
-						<NOBR><INPUT class="radio light" type="radio" id="all" name="filter" value="0" CHECKED><A HREF="javascript:setNodeType('all')">{t}all{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="connected" name="filter" value="1"><A HREF="javascript:setNodeType('connected')">{t}connected<!plural:item>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="disconnected" name="filter" value="2"><A HREF="javascript:setNodeType('disconnected')">{t}disconnected<!plural:item>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="indebt" name="filter" value="3"><A HREF="javascript:setNodeType('indebt')">{t}indebted owner{/t}</a></NOBR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><A HREF="javascript:checkElement('nodelist-all')">{t}all{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><A HREF="javascript:checkElement('nodelist-connected')">{t}connected<!plural:item>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><A HREF="javascript:checkElement('nodelist-disconnected')">{t}disconnected<!plural:item>{/t}</a></NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><A HREF="javascript:checkElement('nodelist-indebt')">{t}indebted owner{/t}</a></NOBR>
 					</TD>
 					<TD width="1%" nowrap>
 					    <TABLE width="100%">
@@ -917,16 +888,6 @@ function setPrintInvoices(id)
 	</TR>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-{literal}
-function setNodeType(id)
-{
-	document.printnodelist.elements[id].checked = true;
-}
-{/literal}
-//-->
-</SCRIPT>
 </P>
 {/if}
 {if $printmenu=="traffic" || $printmenu=="customer"}

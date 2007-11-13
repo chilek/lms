@@ -214,7 +214,7 @@ while(my $row = $dbq->fetchrow_hashref())
 {
 	my $ua = LWP::UserAgent->new;
 	$ua->timeout(240);
-	my $response = $ua->get($lms_url.'/?m=invoice&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
+	my $response = $ua->get($lms_url.'/?m=invoice&override=1&original=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
 	if ($response->is_success)
 	{
 		my $custemail = $debug_email || $row->{'email'};

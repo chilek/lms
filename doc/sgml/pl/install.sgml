@@ -601,6 +601,16 @@ AddDefaultCharset Off
           na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
           poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
           tak¿e filtrowanie faktur do wydruku.</para>
+
+            <para>Podczas wydruku faktury domy¶lnie wy¶wietlany jest orygina³ i kopia, mo¿na to zmieniæ:
+    	    <itemizedlist>
+            <listitem>
+        	<para>default_printpage</para>
+		<para>Lista oddzielonych przecinkiem nazw stron wydruku faktur. Mo¿na u¿yæ zdefiniowane ci±gi znaków "original", "copy" i "duplicate". Domy¶lnie: "original,copy".</para>
+                <para>Przyk³ad: <prompt>default_printpage = "original"</prompt></para>
+            </listitem>
+            </itemizedlist>
+	    </para>
          <sect3 id="install-invoices-html">
           <title>HTML</title>
           <para>Przy domy¶lnych ustawieniach faktury wy¶wietlane s± w
