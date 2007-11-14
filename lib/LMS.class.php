@@ -1835,99 +1835,34 @@ class LMS
 			return FALSE;
 	}
 
-	function GetTariffList()
-	{
-		$totalincome = 0;
-		$totalcustomers = 0;
-		$totalcount = 0;
-		$totalassignmentcount = 0;
-
-		if($tarifflist = $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, 
-				taxes.label AS tax, taxes.value AS taxvalue, prodid, 
-				tariffs.description AS description, uprate, downrate, 
-				upceil, downceil, climit, plimit
-				FROM tariffs LEFT JOIN taxes ON (taxid = taxes.id) 
-				ORDER BY name ASC'))
-		{
-			$assigned = $this->DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, 
-							SUM(CASE period 
-							    WHEN '.DAILY.' THEN tariffs.value*30 
-							    WHEN '.WEEKLY.' THEN tariffs.value*4 
-							    WHEN '.MONTHLY.' THEN tariffs.value 
-							    WHEN '.QUARTERLY.' THEN tariffs.value/3 
-							    WHEN '.YEARLY.' THEN tariffs.value/12 END) AS value
-						FROM assignments, tariffs
-						WHERE tariffid = tariffs.id AND suspended = 0
-							AND (datefrom <= ?NOW? OR datefrom = 0) 
-							AND (dateto > ?NOW? OR dateto = 0)
-						GROUP BY tariffid', 'tariffid');
-
-			foreach($tarifflist as $idx => $row)
-			{
-				$suspended = $this->DB->GetRow('SELECT COUNT(*) AS count, 
-							SUM(CASE a.period 
-							    WHEN '.DAILY.' THEN t.value*30 
-							    WHEN '.WEEKLY.' THEN t.value*4 
-							    WHEN '.MONTHLY.' THEN t.value 
-							    WHEN '.QUARTERLY.' THEN t.value/3 
-							    WHEN '.YEARLY.' THEN t.value/12 END) AS value
-						FROM assignments a LEFT JOIN tariffs t ON (t.id = a.tariffid), assignments b
-						WHERE a.customerid = b.customerid 
-							AND a.tariffid = ? 
-							AND b.tariffid = 0 AND a.suspended = 0
-							AND (b.datefrom <= ?NOW? OR b.datefrom = 0) 
-							AND (b.dateto > ?NOW? OR b.dateto = 0)', 
-							array($row['id']));
-
-				$tarifflist[$idx]['customers'] = $this->GetCustomersWithTariff($row['id']);
-				$tarifflist[$idx]['customerscount'] = $this->DB->GetOne("SELECT COUNT(DISTINCT customerid) FROM assignments WHERE tariffid = ?", array($row['id']));
-				// count of 'active' assignments
-				$tarifflist[$idx]['assignmentcount'] = (isset($assigned[$row['id']]) ? $assigned[$row['id']]['count'] : 0) - $suspended['count'];
-				// avg monthly income
-				$tarifflist[$idx]['income'] = (isset($assigned[$row['id']]) ? $assigned[$row['id']]['value'] : 0) - $suspended['value'];
-
-				$totalincome += $tarifflist[$idx]['income'];
-				$totalcustomers += $tarifflist[$idx]['customers'];
-				$totalcount += $tarifflist[$idx]['customerscount'];
-				$totalassignmentcount += $tarifflist[$idx]['assignmentcount'];
-			}
-		}
-		
-		$tarifflist['total'] = sizeof($tarifflist);
-		$tarifflist['totalincome'] = $totalincome;
-		$tarifflist['totalcustomers'] = $totalcustomers;
-		$tarifflist['totalcount'] = $totalcount;
-		$tarifflist['totalassignmentcount'] = $totalassignmentcount;
-
-		return $tarifflist;
-	}
-
 	function GetTariffIDByName($name)
 	{
 		return $this->DB->GetOne('SELECT id FROM tariffs WHERE name=?', array($name));
 	}
 
-	function TariffAdd($tariffdata)
+	function TariffAdd($tariff)
 	{
 		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, 
-				taxid, prodid, uprate, downrate, upceil, downceil, climit, plimit, dlimit)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				taxid, prodid, uprate, downrate, upceil, downceil, climit, 
+				plimit, dlimit, type)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
-					$tariffdata['name'],
-					$tariffdata['description'],
-					$tariffdata['value'],
-					$tariffdata['taxid'],
-					$tariffdata['prodid'],
-					$tariffdata['uprate'],
-					$tariffdata['downrate'],
-					$tariffdata['upceil'],
-					$tariffdata['downceil'],
-					$tariffdata['climit'],
-					$tariffdata['plimit'],
-					$tariffdata['dlimit'],
+					$tariff['name'],
+					$tariff['description'],
+					$tariff['value'],
+					$tariff['taxid'],
+					$tariff['prodid'],
+					$tariff['uprate'],
+					$tariff['downrate'],
+					$tariff['upceil'],
+					$tariff['downceil'],
+					$tariff['climit'],
+					$tariff['plimit'],
+					$tariff['dlimit'],
+					$tariff['type'],
 				));
 		if ($result)
-			return $this->GetTariffIDByName($tariffdata['name']);
+			return $this->DB->GetLastInsertID('tariffs');
 		else
 			return FALSE;
 	}
@@ -1936,7 +1871,7 @@ class LMS
 	{
 		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, 
 				taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?, 
-				climit=?, plimit=?, dlimit=? WHERE id=?', 
+				climit=?, plimit=?, dlimit=?, type=? WHERE id=?', 
 				array($tariff['name'], 
 					$tariff['description'],
 					$tariff['value'],
@@ -1949,6 +1884,7 @@ class LMS
 					$tariff['climit'],
 					$tariff['plimit'],
 					$tariff['dlimit'],
+					$tariff['type'],
 					$tariff['id']
 				));
 	}
@@ -1961,16 +1897,6 @@ class LMS
 			return FALSE;
 	}
 
-	function GetTariffValue($id)
-	{
-		return $this->DB->GetOne('SELECT value FROM tariffs WHERE id=?', array($id));
-	}
-
-	function GetTariffName($id)
-	{
-		return $this->DB->GetOne('SELECT name FROM tariffs WHERE id=?', array($id));
-	}
-
 	function GetTariff($id, $network=NULL)
 	{
 		if ($network)
@@ -1978,7 +1904,7 @@ class LMS
 
 		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax,
 			taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, 
-			climit, plimit, dlimit
+			climit, plimit, dlimit, type
 			FROM tariffs 
 			LEFT JOIN taxes ON (taxid = taxes.id)
 			WHERE tariffs.id=?', array($id));
@@ -2029,8 +1955,12 @@ class LMS
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll('SELECT tariffs.id AS id, name, tariffs.value AS value, uprate, downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, taxes.label AS tax, prodid
-					FROM tariffs LEFT JOIN taxes ON taxid = taxes.id ORDER BY tariffs.value DESC');
+		return $this->DB->GetAll('SELECT t.id AS id, t.name, t.value AS value, uprate, 
+				downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, 
+				taxes.label AS tax, prodid
+				FROM tariffs t 
+				LEFT JOIN taxes ON t.taxid = taxes.id
+				ORDER BY t.value DESC');
 	}
 
 	function TariffExists($id)

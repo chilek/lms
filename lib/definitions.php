@@ -117,6 +117,19 @@ define('QUARTERLY', 4);
 define('YEARLY', 5);
 define('CONTINUOUS', 6);
 
+// Tariff types
+$TARIFFTYPES = array(
+    1 	=>	trans('internet'),
+    2 	=>	trans('hosting'),
+    3 	=>	trans('service'),
+    -1	=>	trans('other'),
+);
+
+define('TARIFF_INTERNET', 1);
+define('TARIFF_HOSTING', 2);
+define('TARIFF_SERVICE', 3);
+define('TARIFF_OTHER', -1);
+
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
 
 if(isset($SMARTY))
@@ -127,6 +140,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
 	$SMARTY->assign('_MESSENGERS', $MESSENGERS);
+	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
 }
 
 ?>

@@ -48,9 +48,12 @@ if(isset($_POST['tariff']))
 
 	if($tariff['name'] == '')
 		$error['name'] = trans('Subscription name required!');
-	elseif($LMS->GetTariffIDByName($tariff['name']) && $tariff['name'] != $LMS->GetTariffName($_GET['id']))
+	elseif($LMS->GetTariffIDByName($tariff['name']) 
+		&& $tariff['name'] != $DB->GetOne('SELECT name FROM tariffs WHERE id=?', array($_GET['id'])))
+	{
 		$error['name'] = trans('Subscription with specified name already exists!');
-
+	}
+	
 	if($tariff['value'] == '')
 		$error['value'] = trans('Value required!');
 	elseif(!(ereg('^[-]?[0-9.,]+$', $tariff['value'])))

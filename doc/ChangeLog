@@ -74,6 +74,8 @@ version ? (????-??-??):
   - removed unused GetNumberPlans() function calls in cash receipts 
     interface (alec)
   - increased speed of customer searching with choosecustomer.php (alec)
+  - added tariffs list sorting (alec)
+  - added tariffs types: hosting, internet, service, other (alec)
   
 version 1.11.0 Thoth (2007-08-17):
 
