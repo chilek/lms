@@ -7,6 +7,7 @@ version ? (????-??-??):
   - fixed all invoices selection on customers balance page (alec)
   - removed unused GetNumberPlans() function call in cash receipts 
     interface (alec)
+  - fixed customer short address printing on contrib/formularz_przelewu... (alec)
 
 version 1.10.1 Ramus (2007-11-07):
 

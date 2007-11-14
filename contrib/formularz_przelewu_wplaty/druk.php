@@ -264,7 +264,7 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
           $posx=265+$j*$SHIFT;
           for ( $i=27; $i<54; $i++ ) if(isset($USER_OD[$i]))
           {
-               $posy=62+$i*19-513;
+               $posy=62+$i*19;
                echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'. $USER_OD[$i].'</span>');
           }
      }
