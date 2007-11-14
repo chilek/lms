@@ -3337,7 +3337,9 @@ class LMS
 
 			$max = $this->DB->GetAllByKey('SELECT numberplanid AS id, MAX(number) AS max 
 					    FROM documents LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-					    WHERE cdate >= (CASE period
+					    WHERE '
+					    .($doctype ? 'numberplanid IN ('.implode(',', array_keys($list)).') AND ' : '')
+					    .' cdate >= (CASE period
 						WHEN '.YEARLY.' THEN '.$yearstart.'
 						WHEN '.QUARTERLY.' THEN '.$quarterstart.'
 						WHEN '.MONTHLY.' THEN '.$monthstart.'
@@ -3350,7 +3352,7 @@ class LMS
 						WHEN '.WEEKLY.' THEN '.$weekend.'
 						WHEN '.DAILY.' THEN '.$dayend.' ELSE 4294967296 END)
 					    GROUP BY numberplanid','id');
-					    
+
 			foreach ($list as $idx => $item)
 				if(isset($max[$item['id']]['max']))
 					$list[$idx]['next'] = $max[$item['id']]['max']+1;

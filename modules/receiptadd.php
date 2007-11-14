@@ -340,7 +340,7 @@ switch($action)
 				$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
 		}
 
-		if($receipt['cdate'])
+		if(isset($receipt['cdate']) && $receipt['cdate'])
 		{
 			list($year, $month, $day) = split('/',$receipt['cdate']);
 			if(checkdate($month, $day, $year)) 
@@ -369,7 +369,7 @@ switch($action)
 			}
 		}
 
-		if($receipt['number'])
+		if(isset($receipt['number']) && $receipt['number'])
 		{
 			if(!eregi('^[0-9]+$', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
@@ -383,13 +383,15 @@ switch($action)
 
 		$rights = $DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id));
 		
-		switch($receipt['o_type'])
+		if(isset($receipt['o_type'])) switch($receipt['o_type'])
 		{
 			case 'customer': if(($rights & 2)!=2) $rightserror = true; break; 
 			case 'move': if(($rights & 4)!=4) $rightserror = true; break; 
 			case 'advance': if(($rights & 8)!=8) $rightserror = true; break; 
 			case 'other': if(($rights & 16)!=16) $rightserror = true; break;
-		}	
+		}
+		else
+			$receipt['o_type'] = 'customer';
 
 		if(!$receipt['regid'])
 			$error['regid'] = trans('Registry not selected!');
@@ -771,7 +773,6 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 }
 
 $SMARTY->assign('invoicelist', $invoicelist);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid'])));
 $SMARTY->assign('cashreglist', $cashreglist);
 $SMARTY->assign('cashregcount', sizeof($cashreglist));
