@@ -771,7 +771,6 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 }
 
 $SMARTY->assign('invoicelist', $invoicelist);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
 $SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid'])));
 $SMARTY->assign('cashreglist', $cashreglist);
 $SMARTY->assign('cashregcount', sizeof($cashreglist));

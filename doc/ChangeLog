@@ -5,6 +5,8 @@ version ? (????-??-??):
   - fix: allow searching strings with '/' sign in quicksearch (alec)
   - BTS#0000706: fixed query in Finances/Reports/Network Balance Sheet (alec)
   - fixed all invoices selection on customers balance page (alec)
+  - removed unused GetNumberPlans() function call in cash receipts 
+    interface (alec)
 
 version 1.10.1 Ramus (2007-11-07):
 
