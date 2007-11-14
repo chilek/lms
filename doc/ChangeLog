@@ -73,6 +73,7 @@ version ? (????-??-??):
   - improved GetNumberPlans() function (alec)
   - removed unused GetNumberPlans() function calls in cash receipts 
     interface (alec)
+  - increased speed of customer searching with choosecustomer.php (alec)
   
 version 1.11.0 Thoth (2007-08-17):
 
