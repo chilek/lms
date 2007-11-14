@@ -70,6 +70,8 @@ version ? (????-??-??):
   - helpdesk: added info popup on tickets list (alec)
   - BTS#0000706: fixed query in Finances/Reports/Network Balance Sheet (alec)
   - added option invoices/default_printpage (alec)
+  - improved GetNumberPlans() function (alec)
+  - removed unused GetNumberPlans() function call in cash receipts interface (alec)
   
 version 1.11.0 Thoth (2007-08-17):
 
