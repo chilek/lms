@@ -174,7 +174,7 @@ $_LANG['Assign node to customer'] = 'Przypisz komputer klientowi';
 $_LANG['Attachment:'] = 'Załącznik:';
 $_LANG['Attachments:'] = 'Załączniki:';
 $_LANG['Assign subscription to customer'] = 'Przypisz tą taryfę użytkownikowi';
-$_LANG['Avg. monthly income:'] = 'Średni miesięczny przychód:';
+$_LANG['Avg. monthly income:'] = 'Śr. mies. przychód:';
 $_LANG['awaiting'] = 'oczekujący';
 $_LANG['List of awaiting customers'] = 'Lista klientów oczekujących';
 $_LANG['<B>$0</B>'] = '<B>$0</B>';
@@ -1874,5 +1874,8 @@ $_LANG['Enter description or select tariff from the list'] = 'Wprowadź opis lub
 $_LANG['Created by:'] = 'Utworzył:';
 $_LANG['Body:'] = 'Treść';
 $_LANG['Coma-separated list of default invoice printout pages. You can use "original", "copy", "duplicate". Default: "original,copy".'] = 'Lista oddzielonych przecinkiem nazw stron wydruku faktur. Można użyć ciągi "original", "copy" i "duplicate". Domyślnie: "original,copy".';
+$_LANG['internet'] = 'internet';
+$_LANG['hosting'] = 'hosting';
+$_LANG['service'] = 'usługa';
 
 ?>

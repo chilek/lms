@@ -1,33 +1,32 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="5">
-	<TR class="dark">
-		<TD WIDTH="93%" CLASS="fleftu">
-			<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{t}Name:{/t}</B><BR>
-			<IMG SRC="img/info1.gif" ALT="">&nbsp;{t}Description:{/t}
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR class="dark" {tip text="Click on column name to change sorting order"}>
+		<TD WIDTH="93%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{t}Description:{/t}</A> {if $listdata.order eq "description"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			{t}ID:{/t}
+		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+			<A href="?m=tarifflist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			{t}Downrate:{/t}<BR>
-			{t}Uprate{/t}:
+		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+			<A href="?m=tarifflist&o=downrate{if $listdata.direction eq "asc" && $listdata.order eq "downrate"},desc{/if}">{t}Downrate:{/t}</A> {if $listdata.order eq "downrate"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&o=uprate{if $listdata.direction eq "asc" && $listdata.order eq "uprate"},desc{/if}">{t}Uprate{/t}:</A> {if $listdata.order eq "uprate"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>	
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			{t}Downceil:{/t}<BR>
-			{t}Upceil:{/t}
+		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+			<A href="?m=tarifflist&o=uprate{if $listdata.direction eq "asc" && $listdata.order eq "downceil"},desc{/if}">{t}Downceil:{/t}</A> {if $listdata.order eq "downceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&o=upceil{if $listdata.direction eq "asc" && $listdata.order eq "upceil"},desc{/if}">{t}Upceil:{/t}</A> {if $listdata.order eq "upceil"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>	
-
-		<TD NOWRAP WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			{t}Value:{/t}<BR>
+		<TD NOWRAP WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+			<A href="?m=tarifflist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Value:{/t}</A> {if $listdata.order eq "value"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			{t}Tax:{/t}
 		</TD>	
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			{t}Assigned:{/t}
+		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+			<A href="?m=tarifflist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{t}Assigned:{/t}</A> {if $listdata.order eq "count"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<NOBR>{t}Avg. monthly income:{/t}</NOBR>
+		<TD WIDTH="1%" CLASS="fbt" align="right" NOWRAP>
+			<A href="?m=tarifflist&o=income{if $listdata.direction eq "asc" && $listdata.order eq "income"},desc{/if}">{t}Avg. monthly income:{/t}</A> {if $listdata.order eq "income"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
 			<NOBR>
@@ -35,6 +34,23 @@
 			</NOBR>
 		</TD>
 	</TR>
+	<TR CLASS="DARK">
+		<TD CLASS="fall" colspan="8">
+			<P><FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
+				<INPUT type="submit" class="hiddenbtn">
+				<INPUT TYPE="HIDDEN" NAME="m" VALUE="tarifflist">
+				{*<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">*}
+				<B>{t}Filter:{/t}</B>
+				{t}Type:{/t}
+				<SELECT SIZE="1" NAME="t" ONCHANGE="document.choosefilter.submit();">
+					<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					{foreach from=$_TARIFFTYPES item=item key=key}
+					<OPTION value="{$key}" {if $listdata.type eq $key} SELECTED {/if}>{$item}</OPTION>
+					{/foreach}
+				</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>		
 	{cycle values="light,lucid" print=false}
 	{section name=tariffs loop=$tarifflist}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
@@ -42,31 +58,31 @@
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
 			{if $tarifflist[tariffs].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tarifflist[tariffs].description}{/if}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			({$tarifflist[tariffs].id|string_format:"%04d"})
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
 			{if $tarifflist[tariffs].downrate}{$tarifflist[tariffs].downrate} kbit{else}-{/if}<BR>
 			{if $tarifflist[tariffs].uprate}{$tarifflist[tariffs].uprate} kbit{else}-{/if}
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
 			{if $tarifflist[tariffs].downceil}{$tarifflist[tariffs].downceil} kbit{else}-{/if}<BR>
 			{if $tarifflist[tariffs].upceil}{$tarifflist[tariffs].upceil} kbit{else}-{/if}
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
 			{$tarifflist[tariffs].value|money_format} <BR>
 			{$tarifflist[tariffs].tax}
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			{$tarifflist[tariffs].customerscount} ({$tarifflist[tariffs].customers},{$tarifflist[tariffs].assignmentcount})
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			{$tarifflist[tariffs].income|money_format} 
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
