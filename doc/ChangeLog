@@ -8,6 +8,8 @@ version ? (????-??-??):
   - removed unused GetNumberPlans() function call in cash receipts 
     interface (alec)
   - fixed customer short address printing on contrib/formularz_przelewu... (alec)
+  - fixed name of to_words_short_version option in LMS.class and sample
+    lms.ini (alec)
 
 version 1.10.1 Ramus (2007-11-07):
 

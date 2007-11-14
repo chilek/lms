@@ -2966,7 +2966,7 @@ class LMS
 			case 'use_current_payday':
 			case 'helpdesk_backend_mode':
 			case 'helpdesk_reply_body':
-			case 'to_words_short_format':
+			case 'to_words_short_version':
 			case 'disable_devel_warning':
 			case 'newticket_notify':
 			case 'print_balance_list':
