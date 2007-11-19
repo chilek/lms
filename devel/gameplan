@@ -19,6 +19,11 @@ $Id$
 * Ujednolicić "Skrypty Perlowe" coś na kształt lmsdb i lms.class.php, jeden 
   wspólny "connect do bazy" i funkcje typu "weź userów + assigmenty" [jeśli 
   będzie to miało jakiś sens i się powielało w więcej niż 1-2 skryptach]
+* lmsd: przeładowania bardziej "na żywo" - idea jest taka, żeby demon nie 
+  musiał łączyć sie co minute i zaciagać informacji o instancjach. Ja to widzę 
+  tak, LMS-UI podczas przeładowania komunikuje się bezpiecznie po sockecie 
+  z lmsd i wysyła zdefiniowane rozkazy przeladowania lub wczytania konfiguracji
+  oraz hasło uwierzytelniające serwer
 
 LMS-2.0 [xx]
 
