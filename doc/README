@@ -5093,6 +5093,7 @@ Chapter 7. For curious
 
    id - serial number
    name - subscription name
+   type - subscription type (see lib/definitions.php)
    value - amount
    taxid - tax rate identifier
    prodid - product/service classification number

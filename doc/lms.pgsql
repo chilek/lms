@@ -153,6 +153,7 @@ DROP TABLE tariffs;
 CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
+	type smallint		DEFAULT 1 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
@@ -167,6 +168,7 @@ CREATE TABLE tariffs (
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
+CREATE INDEX tariffs_type_idx ON tariffs (type);
 
 /* -------------------------------------------------------- 
   Structure of table "liabilities" 
@@ -905,4 +907,4 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007110600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007111400');
