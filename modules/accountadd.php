@@ -125,9 +125,21 @@ $domainlist = $DB->GetAll('SELECT id, name FROM domains ORDER BY name');
 if(!isset($account['type']) && isset($CONFIG['phpui']['account_type']))
 	$account['type'] = $CONFIG['phpui']['account_type'];
 
+if(!isset($quota['mail']) && isset($CONFIG['phpui']['quota_mail']))
+	$quota['mail'] = $CONFIG['phpui']['quota_mail'];
+if(!isset($quota['sql']) && isset($CONFIG['phpui']['quota_sql']))
+	$quota['sql'] = $CONFIG['phpui']['quota_sql'];
+if(!isset($quota['sh']) && isset($CONFIG['phpui']['quota_ssh']))
+	$quota['sh'] = $CONFIG['phpui']['quota_ssh'];
+if(!isset($quota['www']) && isset($CONFIG['phpui']['quota_www']))
+	$quota['www'] = $CONFIG['phpui']['quota_www'];
+if(!isset($quota['ftp']) && isset($CONFIG['phpui']['quota_ftp']))
+	$quota['ftp'] = $CONFIG['phpui']['quota_ftp'];
+
 if(!isset($account['type'])) $account['type'] = 32767;
 
 $SMARTY->assign('error', $error);
+$SMARTY->assign('quota', $quota);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $domainlist);
 $SMARTY->assign('account', $account);
