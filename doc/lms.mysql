@@ -436,6 +436,7 @@ DROP TABLE IF EXISTS tariffs;
 CREATE TABLE tariffs (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL DEFAULT '',
+  type tinyint NOT NULL DEFAULT '1',
   value decimal(9,2) NOT NULL DEFAULT '0.00',
   taxid int(11) NOT NULL DEFAULT '0',
   prodid varchar(255) NOT NULL DEFAULT '',
@@ -448,7 +449,8 @@ CREATE TABLE tariffs (
   dlimit int(11) NOT NULL DEFAULT '0',
   description text NOT NULL,
   PRIMARY KEY  (id),
-  UNIQUE KEY name (name)
+  UNIQUE KEY name (name),
+  INDEX type (type)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -850,4 +852,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007110600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007111400');

@@ -243,6 +243,7 @@
                <simplelist>
                     <member>id - serial number</member>
                     <member>name - subscription name</member>
+                    <member>type - subscription type (see lib/definitions.php)</member>
                     <member>value - amount</member>
                     <member>taxid - tax rate identifier</member>
                     <member>prodid - product/service classification number</member>

@@ -256,7 +256,8 @@
                <title>Taryfy ('tariffs')</title>
                <simplelist>
                     <member>id - identyfikator</member>
-                    <member>name - nazwa</member>
+                    <member>name - nazwa taryfy</member>
+                    <member>type - typ taryfy (zobacz lib/definitions.php)</member>
                     <member>value - kwota</member>
                     <member>taxid - identyfikator stawki podatkowej</member>
                     <member>prodid - numer PKWiU</member>
