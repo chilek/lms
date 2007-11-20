@@ -175,25 +175,24 @@ void reload(GLOBAL *g, struct tc_module *tc)
 
 	// nodes
 	res = g->db_query(g->conn, 
-		"SELECT downrate, downceil, uprate, upceil, climit, plimit, "
-			"nodes.id, ownerid, nodes.name, INET_NTOA(ipaddr) AS ip, mac, " 
+		"SELECT t.downrate, t.downceil, t.uprate, t.upceil, t.climit, t.plimit, cn.cnt, "
+			"n.id, n.ownerid, n.name, INET_NTOA(n.ipaddr) AS ip, n.mac " 
+		"FROM nodeassignments na "
+		"JOIN assignments a ON (na.assignmentid = a.id) "
+		"JOIN tariffs t ON (a.tariffid = t.id) "
+		"JOIN nodes n ON (na.nodeid = n.id) "
 	    		// subquery: number of enabled nodes in assignment
-			"( "
-			"SELECT count(*) "
+		"JOIN ( "
+			"SELECT count(*) AS cnt, assignmentid "
 			"FROM nodeassignments "
 			"LEFT JOIN nodes ON (nodeid = nodes.id) "
-			"WHERE nodes.access = 1 "
-			"GROUP BY assignmentid "
-			"HAVING assignmentid = a1.assignmentid "
-			") AS cnt "
-		"FROM nodeassignments a1 "
-		"LEFT JOIN assignments ON (assignmentid = assignments.id) "
-		"LEFT JOIN tariffs ON (tariffid = tariffs.id) "
-		"LEFT JOIN nodes ON (nodeid = nodes.id) "
+			"WHERE n.access = 1 "
+			"GROUP BY a.assignmentid "
+			") cn ON (cn.assignmentid = na.assignmentid) "
 		"WHERE "
-			"(datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) "
+			"(t.datefrom <= %NOW% OR t.datefrom = 0) AND (t.dateto >= %NOW% OR t.dateto = 0) "
 			"AND "
-			"nodes.access = 1 "
+			"n.access = 1 "
 	);
 
 	if(!g->db_nrows(res))
