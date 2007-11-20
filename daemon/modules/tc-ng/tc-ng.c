@@ -187,7 +187,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			"HAVING assignmentid = a1.assignmentid "
 			") AS cnt "
 		"FROM nodeassignments a1 "
-		"LEFT JOIN assignments ON (assignmentid = assignments.id)"
+		"LEFT JOIN assignments ON (assignmentid = assignments.id) "
 		"LEFT JOIN tariffs ON (tariffid = tariffs.id) "
 		"LEFT JOIN nodes ON (nodeid = nodes.id) "
 		"WHERE "
