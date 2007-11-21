@@ -567,7 +567,7 @@ $_LANG['exclude group'] = 'wyłącz grupę';
 $_LANG['Execute mailing'] = 'Wysyłanie poczty';
 $_LANG['Expiration date:'] = 'Data ważności:';
 $_LANG['expired'] = 'wygasł';
-$_LANG['expires on $0'] = 'wygasa dnia $0';
+$_LANG['expired<!guarantee>'] = 'wygasła';
 $_LANG['Exposed By'] = 'Wystawił';
 $_LANG['Expositor:'] = 'Wystawił:';
 $_LANG['File upload has finished prematurely.'] = 'Plik został wysłany częściowo.';
@@ -1878,5 +1878,7 @@ $_LANG['internet'] = 'internet';
 $_LANG['hosting'] = 'hosting';
 $_LANG['service'] = 'usługa';
 $_LANG['Select tariff type'] = 'Wybierz typ taryfy';
+$_LANG['Date from the future not allowed!'] = 'Data z przyszłości nie jest dozwolona!';
+$_LANG['no guarantee'] = 'brak';
 
 ?>
