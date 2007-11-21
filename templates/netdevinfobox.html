@@ -137,9 +137,9 @@
 	</TR>
 	{if $netdevinfo.id}
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="fall" COLSPAN=3 ALIGN="center">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN=3 ALIGN="center" NOWRAP>
 			{if $replacelisttotal>1}
-			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
+			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
@@ -148,11 +148,14 @@
 			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list for replacement"}>
 				{section name=replacelist loop=$replacelist}
 					{if $replacelist[replacelist].id != $netdevinfo.id}
-					<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
+					{assign var=netdevname value=$replacelist[replacelist].name}
+					{if $replacelist[replacelist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$replacelist[replacelist].producer}{/if}
+					{if $replacelist[replacelist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$replacelist[replacelist].location|cat:")"}{/if}
+					<OPTION VALUE="{$replacelist[replacelist].id}">{$netdevname|truncate:40:"...":true}</OPTION>
 					{/if}
 				{/section}
 			</SELECT>
-			</FORM></P>
+			</FORM>
 			{else}
 			<B>{t}No device for replacement.{/t}</B>
 			{/if}

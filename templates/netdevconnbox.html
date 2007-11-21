@@ -49,13 +49,13 @@
 	</TR>
 	{/section}
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3" ALIGN="CENTER">
+		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3" ALIGN="CENTER" NOWRAP>
 			{if $netdevinfo.ports eq $netdevinfo.takenports}
 			<B>{t}All ports in that device are in use.{/t}</B>
 			{elseif !$restnetdevlist}
 			<B>{t}No such devices for connection.{/t}</B>
 			{else}
-			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
+			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
@@ -63,22 +63,15 @@
 			<A HREF="javascript:document.connect.submit(); "><B>{t}Connect device:{/t}</B></A>
 			<SELECT NAME="netdev" {tip trigger="link" text="Select from list device for connection"}>
 				{section name=restnetdevlist loop=$restnetdevlist}
-				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} {if $restnetdevlist[restnetdevlist].producer}/ {$restnetdevlist[restnetdevlist].producer}{/if} {if $restnetdevlist[restnetdevlist].location}({$restnetdevlist[restnetdevlist].location}){/if}</OPTION>
+				{assign var=netdevname value=$restnetdevlist[restnetdevlist].name}
+				{if $restnetdevlist[restnetdevlist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$restnetdevlist[restnetdevlist].producer}{/if}
+				{if $restnetdevlist[restnetdevlist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$restnetdevlist[restnetdevlist].location|cat:")"}{/if}
+				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$netdevname|truncate:35:"...":true}</OPTION>
 				{/section}
 			</SELECT>
-			<NOBR><INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {if $devlinktype}CHECKED{/if}><A HREF="javascript:wirelessCheckbox()"> {t}wireless{/t}</A></NOBR>
-			</FORM></P>
+			<INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {tip text="wireless"} {if $devlinktype}CHECKED{/if}><IMG src="img/wireless.gif" alt="">
+			</FORM>
 			{/if}
 		</TD>
 	</TR>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
-{literal}
-	function wirelessCheckbox()
-	{
-		document.connect.elements['linktype'].checked = !document.connect.elements['linktype'].checked;
-	}
-{/literal}
--->
-</SCRIPT>
