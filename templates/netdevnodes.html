@@ -49,13 +49,13 @@
 	</TR>
 	{/section}
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="fall" COLSPAN="3" ALIGN="CENTER">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN="3" ALIGN="CENTER" NOWRAP>
 			{if $netdevinfo.ports eq $netdevinfo.takenports}
 			<B>{t}All ports in that device are in use.{/t}</B>
 			{elseif $nodelist eq NULL}
 			<B>{t}No such nodes to connection.{/t}</B>
 			{else}
-			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
+			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
@@ -66,19 +66,9 @@
 				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 				{/section}
 			</SELECT>
-			<NOBR><INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {if $nodelinktype}CHECKED{/if}><A HREF="javascript:wirelessCheckbox2()"> {t}wireless{/t}</A></NOBR>
-			</FORM></P>
+			<INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {tip text="wireless"} {if $nodelinktype}CHECKED{/if}><IMG src="img/wireless.gif" alt="">
+			</FORM>
 			{/if}
 		</TD>
 	</TR>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
-{literal}
-	function wirelessCheckbox2()
-	{
-		document.connectnode.elements['linktype'].checked = !document.connectnode.elements['linktype'].checked;
-	}
-{/literal}
--->
-</SCRIPT>
