@@ -70,7 +70,7 @@ if(isset($_POST['instance']))
 					    $instedit['disabled'],
 					    $instedit['id']));
 		
-		$SESSION->redirect('?m=daemoninstancelist&id='.$instedit['hostid']);
+		$SESSION->redirect('?m=daemoninstancelist');
 	}
 }	
 elseif(isset($_GET['statuschange']))
@@ -79,7 +79,7 @@ elseif(isset($_GET['statuschange']))
 		$DB->Execute('UPDATE daemoninstances SET disabled=0 WHERE id=?', array($_GET['id']));
 	else
 		$DB->Execute('UPDATE daemoninstances SET disabled=1 WHERE id=?', array($_GET['id']));
-	$SESSION->redirect('?m=daemoninstancelist&id='.$instance['hostid']);
+	$SESSION->redirect('?m=daemoninstancelist');
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

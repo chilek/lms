@@ -39,8 +39,12 @@ function GetInstanceList($hostid)
 
 $layout['pagetitle'] = trans('Instances List');
 
-$hostid = isset($_GET['id']) ? $_GET['id'] : 0;
-
+if(!isset($_GET['id']))
+        $SESSION->restore('dilh', $hostid);
+else
+        $hostid = $_GET['id'];
+$SESSION->save('dilh', $hostid);
+		
 $instancelist = GetInstanceList($hostid);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
