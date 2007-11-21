@@ -36,11 +36,10 @@ if(isset($_POST['netdev']))
 	elseif(strlen($netdevdata['name'])>32)
 		$error['name'] = trans('Device name is too long (max.32 characters)!');
 
-	// date format 'yyyy/mm/dd'
-	// FIXME: check if purchasedate isn't in the future
-	$netdevdata['purchasetime'] = NULL;
+	$netdevdata['purchasetime'] = 0;
 	if($netdevdata['purchasedate'] != '') 
 	{
+		// date format 'yyyy/mm/dd'
 		if(!ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $netdevdata['purchasedate']))
 		{
 			$error['purchasedate'] = trans('Invalid date format!');
@@ -49,7 +48,13 @@ if(isset($_POST['netdev']))
 		{
 			$date = explode('/', $netdevdata['purchasedate']);
 			if(checkdate($date[1], $date[2], (int)$date[0]))
-				$netdevdata['purchasetime'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
+			{
+				$tmpdate = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
+                        	if(mktime(0,0,0) < $tmpdate)
+			                $error['purchasedate'] = trans('Date from the future not allowed!');
+				else
+				        $netdevdata['purchasetime'] = $tmpdate;
+			}
 			else
 				$error['purchasedate'] = trans('Invalid date format!');
 		}
