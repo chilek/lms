@@ -41,6 +41,7 @@ struct pinger_module
 	MODULE base;
 
 	char *networks;
+	int use_secure_function;
 };
 
 struct if_desc 
