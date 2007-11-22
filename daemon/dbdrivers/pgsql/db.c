@@ -257,7 +257,8 @@ int db_exec(ConnHandle *conn, char *q)
     syslog(LOG_INFO,"DEBUG: [SQL] %s.", stmt);
 #endif
     res = PQexec(conn,stmt);
-    if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
+    if( res==NULL || (PQresultStatus(res)!=PGRES_COMMAND_OK && PQresultStatus(res)!=PGRES_TUPLES_OK) )
+    {
 	syslog(LOG_ERR,"ERROR: [db_exec] Query failed. %s",PQerrorMessage(conn));
 	PQclear(res);
 	free(stmt);

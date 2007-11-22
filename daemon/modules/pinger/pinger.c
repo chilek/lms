@@ -364,8 +364,13 @@ void reload(GLOBAL *g, struct pinger_module *p)
 			signal(SIGINT, sig_int);
 			recv_arp_reply();
 			for(i=0; i<nh; i++) 
-				if(hosts[i].active) 
-					g->db_pexec(g->conn, "UPDATE nodes SET lastonline=%NOW% WHERE id=?", hosts[i].id);
+				if(hosts[i].active)
+				{ 
+					if(p->use_secure_function)
+						g->db_pexec(g->conn, "SELECT set_lastonline(?)", hosts[i].id);
+					else
+						g->db_pexec(g->conn, "UPDATE nodes SET lastonline=%NOW% WHERE id=?", hosts[i].id);
+				}
 		break;
 	}
 
@@ -394,6 +399,12 @@ struct pinger_module * init(GLOBAL *g, MODULE *m)
 	p->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 	
 	p->networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "networks", ""));
+	// on PostgreSQL we can use "security definer" function:
+	// CREATE OR REPLACE FUNCTION set_lastonline(int) RETURNS void AS $$ 
+	// UPDATE nodes SET lastonline = EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))
+	// WHERE id = $1;
+	// $$ LANGUAGE SQL SECURITY DEFINER;
+	p->use_secure_function = g->config_getbool(p->base.ini, p->base.instance, "use_secure_function", 0);
 	
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/pinger] initialized", p->base.instance);
