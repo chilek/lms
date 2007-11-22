@@ -4,16 +4,14 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/node.gif" ALT="">
+			<IMG SRC="img/node.gif" ALT="{t}Name:{/t}">
 		</TD>
-		<TD WIDTH="1%" CLASS="FBT">
-			<B>{t}Name:{/t}</B>
-		<TD WIDTH="98%" CLASS="FRIGHTU">
+		<TD WIDTH="99%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" MAXLENGTH="32" size="30" {tip text="Enter node name" trigger="name" bold=1}>
 		</TD>
 	</TR>
         <TR class="LIGHT">
-                <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+                <TD WIDTH="100%" COLSPAN="2" CLASS="flr">
 		        <TABLE WIDTH="100%" CELLPADDING="0">
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" VALIGN="top">
@@ -22,10 +20,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip.gif" ALT="{t}IP address:{/t}">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}IP address:{/t}</B>
-		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -33,10 +28,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Pub. IP address:{/t}</B>
-		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr_pub" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr_pub);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -44,10 +36,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}MAC address:{/t}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -55,10 +44,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/passwd.gif" ALT="{t}Password:{/t}">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Password:{/t}</B>
-		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -67,10 +53,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/netdev.gif" ALT="{t}Net device:{/t}">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Net device:{/t}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			<SELECT SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"} style="max-width:250px;">
 				<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{t}- select device -{/t}</OPTION>
 				{section name=netdevices loop=$netdevices}
@@ -85,10 +68,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/{if ! $nodedata.access}no{/if}access.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Status:{/t}</B>
-		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="nodedata[access]" {tip text="Select node status" trigger="access"}>
 				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
@@ -99,10 +79,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/warning{if !$nodedata.warning}off{else}on{/if}.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Message:{/t}</B>
-		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="nodedata[warning]" {tip text="Set message for node"}>
 				<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
@@ -113,10 +90,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Customer:{/t}</B>
-		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="customer"} style="max-width:250px;">
 				{section name=customers loop=$customers}
 				<OPTION VALUE="{$customers[customers].id}"{if $nodedata.ownerid == $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
@@ -128,10 +102,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-			<B>{t}Options:{/t}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
 			{t}Half duplex{/t}: <INPUT TYPE="checkbox" CLASS="box light" VALUE="1" NAME="nodedata[halfduplex]" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
@@ -169,7 +140,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
 			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{t}Scan{/t} <IMG SRC="img/search.gif" alt=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
