@@ -1079,9 +1079,9 @@ class LMS
 		return $this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
 	}
 
-	function NodeUpdate($nodedata)
+	function NodeUpdate($nodedata, $deleteassignments=FALSE)
 	{
-		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), 
+		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), 
 				ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, 
 				modid=?, access=?, warning=?, ownerid=?, info=?, 
 				location=?, chkmac=?, halfduplex=?, linktype=? WHERE id=?', 
@@ -1102,6 +1102,9 @@ class LMS
 				    isset($nodedata['linktype']) ? 1 : 0,
 				    $nodedata['id']
 			    ));
+		
+		if($deleteassignments)
+			$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($nodedata['id']));
 	}
 
 	function DeleteNode($id)
