@@ -77,9 +77,10 @@ version ? (????-??-??):
   - added tariffs list sorting (alec)
   - added tariffs types: hosting, internet, service, other (alec)
   - lmsd/tc-ng: optimized sql query (alec)
-  - lmsd/pinger: added option 'use_secure_function' (alec)
+  - lmsd/pinger: added option 'use_secure_function' - postgres only (alec)
+  - lmsd/pinger: making one big query instead of one for each host (alec)
   - lmsd: fixed db_exec() function in postgresql's drivers, now is possible to
-    use that function for queries like "SELECT some_function()" (alec)
+    use that function for select queries without results (alec)
   
 version 1.11.0 Thoth (2007-08-17):
 
