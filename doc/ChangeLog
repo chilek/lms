@@ -81,6 +81,8 @@ version ? (????-??-??):
   - lmsd/pinger: making one big query instead of one for each host (alec)
   - lmsd: fixed db_exec() function in postgresql's drivers, now is possible to
     use that function for select queries without results (alec)
+  - optimized node edition (alec)
+  - deleting node-to-tariff assignment when owner is changing (alec)
   
 version 1.11.0 Thoth (2007-08-17):
 

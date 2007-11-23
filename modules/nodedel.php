@@ -24,27 +24,29 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Delete Node $0',$LMS->GetNodeName($_GET['id']));
-$SMARTY->assign('nodeid',$_GET['id']);
+$nodeid = intval($_GET['id']);
+$nodename = $LMS->GetNodeName($nodeid);
 
-if (!$LMS->NodeExists($_GET['id']))
+$layout['pagetitle'] = trans('Delete Node $0', $nodename);
+
+if (!$LMS->NodeExists($nodeid))
 {
 	$body = '<P>'.trans('Incorrect ID number').'</P>';
 }else{
 
 	if($_GET['is_sure']!=1)
 	{
-		$body = '<P>'.trans('Are you sure, you want to delete node $0?',$LMS->GetNodeName($_GET['id'])).'</P>'; 
-		$body .= '<P><A HREF="?m=nodedel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
+		$body = '<P>'.trans('Are you sure, you want to delete node $0?', $nodename).'</P>'; 
+		$body .= '<P><A HREF="?m=nodedel&id='.$nodeid.'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
 	}else{
-		$owner = $LMS->GetNodeOwner($_GET['id']);
-		$LMS->DeleteNode($_GET['id']);
+		$owner = $LMS->GetNodeOwner($nodeid);
+		$LMS->DeleteNode($nodeid);
 		if($SESSION->is_set('backto'))
 			header('Location: ?'.$SESSION->get('backto'));
 		else
 			header('Location: ?m=customerinfo&id='.$owner);
 
-		$body = '<P>'.trans('Node $0 was deleted',$LMS->GetNodeName($_GET['id'])).'</P>';
+		$body = '<P>'.trans('Node $0 was deleted', $nodename).'</P>';
 	}
 }
 

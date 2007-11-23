@@ -57,18 +57,16 @@ switch($action)
 	break;
 }
 
-$nodeid = $_GET['id'];
+$nodeid = intval($_GET['id']);
 $ownerid = $LMS->GetNodeOwner($nodeid);
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-	
+$nodeinfo = $LMS->GetNode($nodeid);
+
 if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$ownerid);
+else
+	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 							
-$customerinfo = $LMS->GetCustomer($ownerid);
-$layout['pagetitle'] = trans('Node Edit: $0', $LMS->GetNodeName($_GET['id']));
-
-$customernodes = $LMS->GetCustomerNodes($ownerid);
-$nodeinfo = $LMS->GetNode($_GET['id']);
+$layout['pagetitle'] = trans('Node Edit: $0', $nodeinfo['name']);
 
 if(isset($_POST['nodeedit']))
 {
@@ -174,14 +172,16 @@ if(isset($_POST['nodeedit']))
 
 	if(!$error)
 	{
-		$LMS->NodeUpdate($nodeedit);
-		header('Location: ?m=nodeinfo&id='.$nodeedit['id']);
+		$LMS->NodeUpdate($nodeedit, ($ownerid != $nodeedit['ownerid']));
+		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
+		die;
 	}
 
 	if($nodeedit['ipaddr_pub']=='0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
 }
 
+$customerinfo = $LMS->GetCustomer($ownerid);
 $customers = $LMS->GetCustomerNames();
 $tariffs = $LMS->GetTariffs();
 $assignments = $LMS->GetCustomerAssignments($ownerid);
