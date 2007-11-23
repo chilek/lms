@@ -280,6 +280,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 {
 	QueryHandle *res;
 	int i, j, nc=0, n=2;
+	char *hoststr;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(p->networks);	
@@ -363,14 +364,29 @@ void reload(GLOBAL *g, struct pinger_module *p)
 		default:
 			signal(SIGINT, sig_int);
 			recv_arp_reply();
+
+			hoststr = strdup("0");
+			j = 0;
+
 			for(i=0; i<nh; i++) 
 				if(hosts[i].active)
 				{ 
-					if(p->use_secure_function)
-						g->db_pexec(g->conn, "SELECT set_lastonline(?)", hosts[i].id);
-					else
-						g->db_pexec(g->conn, "UPDATE nodes SET lastonline=%NOW% WHERE id=?", hosts[i].id);
-				}
+					hoststr = realloc(hoststr, sizeof(char *) * (strlen(hoststr) + strlen(hosts[i].id) + 1));
+	                    		strcat(hoststr, ",");
+					strcat(hoststr, hosts[i].id);
+					j++;
+				}	
+			
+			if(j)
+			{
+				if(p->use_secure_function)
+					// works with postgres only
+					g->db_pexec(g->conn, "SELECT set_lastonline(ARRAY[?])", hoststr);
+				else
+					g->db_pexec(g->conn, "UPDATE nodes SET lastonline=%NOW% WHERE id IN (?)", hoststr);
+			}
+			
+			free(hoststr);
 		break;
 	}
 
@@ -400,9 +416,9 @@ struct pinger_module * init(GLOBAL *g, MODULE *m)
 	
 	p->networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "networks", ""));
 	// on PostgreSQL we can use "security definer" function:
-	// CREATE OR REPLACE FUNCTION set_lastonline(int) RETURNS void AS $$ 
+	// CREATE OR REPLACE FUNCTION set_lastonline(int[]) RETURNS void AS $$
 	// UPDATE nodes SET lastonline = EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))
-	// WHERE id = $1;
+	// WHERE id = ANY($1);
 	// $$ LANGUAGE SQL SECURITY DEFINER;
 	p->use_secure_function = g->config_getbool(p->base.ini, p->base.instance, "use_secure_function", 0);
 	
