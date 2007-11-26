@@ -19,3 +19,4 @@ clean:
 
 install:
 	install -c -m 755 $(OUT) $(MODULESDIR)
+	strip $(MODULESDIR)/$(OUT)
