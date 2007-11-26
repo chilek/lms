@@ -12,12 +12,12 @@ xmodules:
 
 $(OUT): ${OBJECTS}
 	gcc $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS)
-	strip $(OUT)
 
 install: 
 	mkdir -p -m 755 $(INSTALLDIR)
 	mkdir -p -m 755 $(MODULESDIR)
-	install -c -m 700 lmsd $(INSTALLDIR)/
+	install -c -m 700 $(OUT) $(INSTALLDIR)/
+	strip $(INSTALLDIR)/$(OUT)
 	$(MAKE) -C modules install
  
 remove:
