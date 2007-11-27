@@ -121,7 +121,20 @@ class LMSDB_driver_postgres extends LMSDB_common
 		else
 			return FALSE;
 	}
-
+/*	
+	// added 'E' for postgresql 8.2 to skip warnings in error log:
+	// HINT:  Use the escape string syntax for backslashes, e.g., E'\\'.
+	// WARNING:  nonstandard use of escape in a string literal at character...
+	function _quote_value($input)
+        {
+                if($input === NULL)
+			return 'NULL';
+		elseif(gettype($input) == 'string')
+			return 'E\''.addcslashes($input,"'\\\0").'\'';
+		else
+			return $input;
+	}
+*/	
 	function _driver_now()
 	{
 		return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))';
