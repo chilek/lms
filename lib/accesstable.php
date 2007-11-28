@@ -90,6 +90,7 @@ $access['table'][255]['deny_reg']	= '^.*$';
 
 // read user-defined access rights table
 if(isset($CONFIG['phpui']['custom_accesstable']))
-	@include_once(LIB_DIR.'/'.$CONFIG['phpui']['custom_accesstable']);
+	if(is_readable($CONFIG['phpui']['custom_accesstable']))
+                @include_once($CONFIG['phpui']['custom_accesstable']);
 
 ?>

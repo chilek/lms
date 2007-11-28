@@ -459,9 +459,8 @@ password = password_entered_with_lms_user_creation</screen>
                 <title>User-defined access rules</title>
           <para>Advanced users can define any additional access rules
           or redefine existing ones.  In order to do that you must make
-          PHP script based on file <filename>lib/accesstable.php</filename>
-          and place it in LMS's <filename>lib</filename> directory. Then 
-          set option <filename>custom_accesstable</filename> in [phpui]
+          PHP script based on file <filename>lib/accesstable.php</filename>.
+          Then set option <filename>custom_accesstable</filename> in [phpui]
           section to created file name.</para>
           <para>In that way it's possible to define your own rules to allow
           or deny access for any modules. Module is a name of PHP file

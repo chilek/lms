@@ -83,6 +83,7 @@ version ? (????-??-??):
     use that function for select queries without results (alec)
   - optimized node edition (alec)
   - deleting node-to-tariff assignment when owner is changing (alec)
+  - custom_accesstable file can be anywhere - requires absolute path (alec)
   
 version 1.11.0 Thoth (2007-08-17):
 
