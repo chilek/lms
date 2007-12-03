@@ -118,6 +118,7 @@
                     <member>modid - serial of LMS user last modification this record</member>
                     <member>deleted - if is deleted from database boolean (0/1)</member>
                     <member>message - message to be displayed if warnings enabled</member>
+                    <member>cutoffstop - date to which customers cutting off is disabled</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">

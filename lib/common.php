@@ -573,6 +573,12 @@ function fetch_url($url)
 	return $out;
 }
 
+// escape quotes and backslashes, newlines, etc.
+function escape_js($string)
+{
+    	return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
+}
+
 function plugin_handle($name)
 {
         global $PLUGINS;

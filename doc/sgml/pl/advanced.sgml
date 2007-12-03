@@ -122,6 +122,7 @@
                     <member>modid - identyfikator u¿ytkownika dokonuj±cego zmian danych</member>
                     <member>deleted - usuniêty z bazy (0/1)</member>
                     <member>message - komunikat do wy¶wietlenia przy w³±czonych ostrze¿eniach</member>
+		    <member>cutoffstop - data, do której blokowanie klientów zad³u¿onych jest wy³±czone</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">

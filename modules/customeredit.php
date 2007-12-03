@@ -119,6 +119,9 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 
 	if(!$error)
 	{
+		if($customerdata['cutoffstop'])
+			$customerdata['cutoffstop'] = mktime(23,59,59,date('m'), date('d') + $customerdata['cutoffstop']);
+		
 		$LMS->CustomerUpdate($customerdata);
 		
 		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($customerdata['id']));
@@ -155,13 +158,17 @@ else
 	
 	$customerinfo = $LMS->GetCustomer($_GET['id']);
 
+	if($customerinfo['cutoffstop'] > mktime(0,0,0))
+		$customerinfo['cutoffstop'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
+
 	if($customerinfo['messengers'])
 		foreach($customerinfo['messengers'] as $idx => $val)
 			$customerinfo['uid'][$idx] = $val['uid'];
 
 	if(!$customerinfo['contacts'])
+	{
 		$customerinfo['contacts'][] = array();
-
+	}
 	elseif(isset($_POST['customerdata']) && isset($_GET['newcontact']))
 	{
     		$customerdata = $_POST['customerdata'];

@@ -347,6 +347,7 @@ CREATE TABLE customers (
 	deleted smallint 	DEFAULT 0 NOT NULL,
 	message text		DEFAULT '' NOT NULL,
 	pin integer		DEFAULT 0 NOT NULL,
+	cutoffstop integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)	
 );
 
@@ -907,4 +908,4 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007111400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007120300');
