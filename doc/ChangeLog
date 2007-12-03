@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.11.1 Talus (2007-12-03):
 
   - added link to customerinfo in title of assignments edition page (alec)
   - fixes in config reload, now at least one host is required (alec)
