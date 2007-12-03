@@ -473,29 +473,30 @@ CREATE TABLE liabilities (
 #
 DROP TABLE IF EXISTS customers;
 CREATE TABLE customers (
-  id int(11) NOT NULL auto_increment,
+  id int(11) 		NOT NULL auto_increment,
   lastname varchar(255) NOT NULL DEFAULT '',
-  name varchar(255) NOT NULL DEFAULT '',
-  status int(11) NOT NULL DEFAULT '0',
-  email varchar(255) NOT NULL DEFAULT '',
-  address varchar(255) NOT NULL DEFAULT '',
-  zip varchar(10) NOT NULL DEFAULT '',
-  city varchar(32) NOT NULL DEFAULT '',
-  ten varchar(16) NOT NULL DEFAULT '',
-  ssn varchar(11) NOT NULL DEFAULT '',
-  regon varchar(255) NOT NULL DEFAULT '',
-  rbe varchar(255) NOT NULL DEFAULT '',
-  icn varchar(255) NOT NULL DEFAULT '',
-  info text NOT NULL,
-  notes text NOT NULL DEFAULT '',
-  serviceaddr text NOT NULL DEFAULT '',
-  creationdate int(11) NOT NULL DEFAULT '0',
-  moddate int(11) NOT NULL DEFAULT '0',
-  creatorid int(11) NOT NULL DEFAULT '0',
-  modid int(11) NOT NULL DEFAULT '0',
-  deleted tinyint(1) NOT NULL DEFAULT '0',
-  message text NOT NULL,
-  pin int(6) NOT NULL DEFAULT '0',
+  name varchar(255) 	NOT NULL DEFAULT '',
+  status int(11) 	NOT NULL DEFAULT '0',
+  email varchar(255) 	NOT NULL DEFAULT '',
+  address varchar(255) 	NOT NULL DEFAULT '',
+  zip varchar(10) 	NOT NULL DEFAULT '',
+  city varchar(32) 	NOT NULL DEFAULT '',
+  ten varchar(16) 	NOT NULL DEFAULT '',
+  ssn varchar(11) 	NOT NULL DEFAULT '',
+  regon varchar(255) 	NOT NULL DEFAULT '',
+  rbe varchar(255) 	NOT NULL DEFAULT '',
+  icn varchar(255) 	NOT NULL DEFAULT '',
+  info text 		NOT NULL,
+  notes text 		NOT NULL DEFAULT '',
+  serviceaddr text 	NOT NULL DEFAULT '',
+  creationdate int(11) 	NOT NULL DEFAULT '0',
+  moddate int(11) 	NOT NULL DEFAULT '0',
+  creatorid int(11) 	NOT NULL DEFAULT '0',
+  modid int(11) 	NOT NULL DEFAULT '0',
+  deleted tinyint(1) 	NOT NULL DEFAULT '0',
+  message text 		NOT NULL,
+  pin int(6) 		NOT NULL DEFAULT '0',
+  cutoffstop int(11) 	NOT NULL DEFAULT '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -852,4 +853,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007111400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007120300');

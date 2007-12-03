@@ -189,6 +189,26 @@
 						<INPUT TYPE="text" size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
+				<TR>
+					<TD width="1%">
+						<IMG src="img/options.gif" alt="">
+					</TD>
+					<TD width="99%">
+						<SELECT name="customeradd[cutoffstop]" {tip text="Select days number of cutoff suspending (optional)" trigger="cutoffstop"}>
+						    <OPTION value="0"{if !$customeradd.cutoffstop} selected{/if}>0</OPTION>
+						    <OPTION value="1"{if $customeradd.cutoffstop==1} selected{/if}>1</OPTION>
+						    <OPTION value="2"{if $customeradd.cutoffstop==2} selected{/if}>2</OPTION>
+						    <OPTION value="3"{if $customeradd.cutoffstop==3} selected{/if}>3</OPTION>
+						    <OPTION value="4"{if $customeradd.cutoffstop==4} selected{/if}>4</OPTION>
+						    <OPTION value="5"{if $customeradd.cutoffstop==5} selected{/if}>5</OPTION>
+						    <OPTION value="6"{if $customeradd.cutoffstop==6} selected{/if}>6</OPTION>
+						    <OPTION value="7"{if $customeradd.cutoffstop==7} selected{/if}>7</OPTION>
+						    <OPTION value="14"{if $customeradd.cutoffstop==14} selected{/if}>14</OPTION>
+						    <OPTION value="21"{if $customeradd.cutoffstop==21} selected{/if}>21</OPTION>
+						    <OPTION value="30"{if $customeradd.cutoffstop==30} selected{/if}>30</OPTION>
+						</SELECT>
+					</TD>
+				</TR>
 			</TABLE>
 		</TD>
 		<TD width="50%" class="fright" STYLE="vertical-align: top;">

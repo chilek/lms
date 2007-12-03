@@ -24,12 +24,6 @@
  *  $Id$
  */
 
-function escape_js($string)
-{
-        // escape quotes and backslashes, newlines, etc.
-        return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
-}
-
 function macformat($mac)
 {
 	$res = str_replace('-', ':', $mac);

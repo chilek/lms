@@ -31,16 +31,86 @@
 #include "lmsd.h"
 #include "cutoff.h"
 
+char * itoa(int i)
+{
+        static char string[12];
+	sprintf(string, "%d", i);
+	return string;
+}
+
 void reload(GLOBAL *g, struct cutoff_module *c)
 {
 	QueryHandle *res;
-	int i, execu=0, execn=0, u=0, n=0;
+	int i, execu=0, execn=0, u=0, n=0, k=2, m=2;
 	char time_fmt[11];
 	size_t tmax = 11;
 	char fmt[] = "%Y/%m/%d";
 	struct tm *wsk;
 	time_t t;
+
+	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+				"WHERE a.customerid = %ownerid "
+				"AND g.id = a.customergroupid "
+				"AND (%groups))"
+				);
 	
+	char *groupnames = strdup(c->customergroups);
+	char *groupname = strdup(groupnames);
+	char *groupsql = strdup("");
+
+	char *egroups = strdup(" AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+				"WHERE a.customerid = %ownerid "
+				"AND g.id = a.customergroupid "
+				"AND (%egroups))"
+				);
+	
+	char *egroupnames = strdup(c->excluded_customergroups);
+	char *egroupname = strdup(egroupnames);
+	char *egroupsql = strdup("");
+
+	while( k>1 )
+	{
+		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
+
+		if( strlen(groupname) )
+		{
+			groupsql = realloc(groupsql, sizeof(char *) * (strlen(groupsql) + strlen(groupname) + 30));
+			if(strlen(groupsql))
+				strcat(groupsql, " OR UPPER(g.name) = UPPER('");
+			else
+				strcat(groupsql, "UPPER(g.name) = UPPER('");
+			
+			strcat(groupsql, groupname);
+			strcat(groupsql, "')");
+		}		
+	}		
+	free(groupname); free(groupnames);
+
+	if(strlen(groupsql))
+		g->str_replace(&groups, "%groups", groupsql);
+	
+	while( m>1 )
+	{
+		m = sscanf(egroupnames, "%s %[._a-zA-Z0-9- ]", egroupname, egroupnames);
+
+		if( strlen(egroupname) )
+		{
+			egroupsql = realloc(egroupsql, sizeof(char *) * (strlen(egroupsql) + strlen(egroupname) + 30));
+			if(strlen(egroupsql))
+				strcat(egroupsql, " OR UPPER(g.name) = UPPER('");
+			else
+				strcat(egroupsql, "UPPER(g.name) = UPPER('");
+			
+			strcat(egroupsql, egroupname);
+			strcat(egroupsql, "')");
+		}		
+	}		
+	free(egroupname); free(egroupnames);
+
+	if(strlen(egroupsql))
+		g->str_replace(&egroups, "%egroups", egroupsql);
+
+	// current date
 	t = time(&t);
 	wsk = localtime(&t);
 	strftime(time_fmt, tmax, fmt, wsk);
@@ -53,15 +123,27 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	// nodes without tariffs (or with expired assignments)
 	if(c->nodeassignments)
 	{
-		res = g->db_pquery(g->conn, "SELECT nodes.id, ownerid FROM nodes "
-        			    "WHERE access = 1 "
-	                             "AND NOT EXISTS "
+		char *groups2 = strdup(groups);
+		char *egroups2 = strdup(egroups);
+
+		if(strlen(groupsql))
+	    		g->str_replace(&groups2, "%ownerid", "n.ownerid");
+		if(strlen(egroupsql))
+	    		g->str_replace(&egroups2, "%ownerid", "n.ownerid");
+	
+		res = g->db_pquery(g->conn, "SELECT n.id, n.ownerid FROM nodes n "
+        			    "WHERE n.access = 1 "
+	                            "AND NOT EXISTS "
 				            "(SELECT 1 FROM nodeassignments, assignments "
-						    "WHERE nodeid = nodes.id AND assignmentid = assignments.id "
+						    "WHERE nodeid = n.id AND assignmentid = assignments.id "
 							    "AND (datefrom <= %NOW% OR datefrom = 0) "
 							    "AND (dateto >= %NOW% OR dateto = 0) "
 							    "AND (tariffid != 0 OR liabilityid != 0) "
-				")");
+					    ")"
+				    "??",
+				    strlen(groupsql) ? groups2 : "",
+				    strlen(egroupsql) ? egroups2 : ""
+			);
 
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
@@ -79,20 +161,36 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			}
 		}	
 		g->db_free(&res);
+
+		free(groups2);
+		free(egroups2);
 	}
 	else
 	{
+		char *groups2 = strdup(groups);
+		char *egroups2 = strdup(egroups);
+
+		if(strlen(groupsql))
+	    		g->str_replace(&groups2, "%ownerid", "c.id");
+		if(strlen(egroupsql))
+	    		g->str_replace(&egroups2, "%ownerid", "c.id");
+
 		// customers without tariffs (or with expired assignments)
 		res = g->db_pquery(g->conn, 
-			"SELECT DISTINCT customers.id FROM customers, nodes "
-			"WHERE customers.id = ownerid AND deleted = 0 AND access = 1 "
-				"AND NOT EXISTS "
-				"(SELECT 1 FROM assignments "
-				"WHERE customerid = customers.id "
-					"AND (datefrom <= %NOW% OR datefrom = 0) "
-					"AND (dateto >= %NOW% OR dateto = 0) "
-					"AND (tariffid != 0 OR liabilityid != 0) "
-				")");
+			"SELECT DISTINCT c.id FROM customers c, nodes n "
+			"WHERE c.id = n.ownerid "
+				"AND deleted = 0 "
+				"AND access = 1 "
+				"AND NOT EXISTS (SELECT 1 FROM assignments "
+					"WHERE customerid = customers.id "
+						"AND (datefrom <= %NOW% OR datefrom = 0) "
+						"AND (dateto >= %NOW% OR dateto = 0) "
+						"AND (tariffid != 0 OR liabilityid != 0) "
+					")"
+			"??",
+			strlen(groupsql) ? groups2 : "",
+			strlen(egroupsql) ? egroups2 : ""
+			);
 
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
@@ -109,14 +207,78 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			}
 		}	
 		g->db_free(&res);
+
+		free(groups2);
+		free(egroups2);
 	}
+
+	if(c->checkinvoices)
+	{
+		char *groups2 = strdup(groups);
+		char *egroups2 = strdup(egroups);
+
+		if(strlen(groupsql))
+    			g->str_replace(&groups2, "%ownerid", "d.customerid");
+		if(strlen(egroupsql))
+    			g->str_replace(&egroups2, "%ownerid", "d.customerid");
+	
+		// not payed invoices
+		res = g->db_pquery(g->conn, 
+			"SELECT DISTINCT d.customerid AS id "
+			"FROM documents d "
+			"JOIN customers c ON (d.customerid = c.id) "
+			"WHERE d.type = 1 "
+				"AND d.closed = 0 "
+				"AND d.cdate + d.paytime * 86400 + 86400 * ? < %NOW% "
+				"AND c.cutoffstop < %NOW%"
+				"??", 
+			itoa(c->deadline),
+			strlen(groupsql) ? groups2 : "",
+			strlen(egroupsql) ? egroups2 : ""
+			);
+	
+		for(i=0; i<g->db_nrows(res); i++) 
+		{
+			char *customerid = g->db_get_data(res,i,"id");
+		
+			if(!c->warn_only)
+				n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), customerid);
+			else 
+				n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", customerid);
+
+			execn = n ? 1 : execn;
+			
+			if(*c->warning && n)
+			{
+				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
+				execu = u ? 1 : execu;
+			}
+		}	
+		g->db_free(&res);
+
+		free(groups2);
+		free(egroups2);
+	}
+	
+	if(strlen(groupsql))
+    		g->str_replace(&groups, "%ownerid", "c.id");
+	if(strlen(egroupsql))
+    		g->str_replace(&egroups, "%ownerid", "c.id");
 	
 	// debtors
 	res = g->db_pquery(g->conn, 
-			"SELECT customers.id FROM customers "
-			"LEFT JOIN cash ON customers.id = cash.customerid "
-			"WHERE deleted = 0 GROUP BY customers.id "
-			"HAVING SUM(cash.value) < ?", c->limit);
+			"SELECT c.id "
+			"FROM customers c "
+			"JOIN cash ON c.id = cash.customerid "
+			"WHERE c.deleted = 0 "
+				"AND c.cutoffstop < %NOW% "
+				"??" 
+			" GROUP BY c.id "
+			"HAVING SUM(cash.value) < ? ",
+			strlen(groupsql) ? groups : "",
+			strlen(egroupsql) ? egroups : "",
+			c->limit
+			);
 	
 	for(i=0; i<g->db_nrows(res); i++) 
 	{
@@ -144,10 +306,17 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/cutoff] reloaded", c->base.instance);
 #endif
+	free(groups);
+	free(egroups);
+	free(groupsql);
+	free(egroupsql);
+	
 	free(c->warning);
 	free(c->expwarning);
 	free(c->command);
 	free(c->limit);
+	free(c->customergroups);
+	free(c->excluded_customergroups);
 }
 
 struct cutoff_module * init(GLOBAL *g, MODULE *m)
@@ -169,6 +338,12 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
 	c->expwarning = strdup(g->config_getstring(c->base.ini, c->base.instance, "expired_warning", "Blocked automatically due to tariff(s) expiration at %time"));
 	c->nodeassignments = g->config_getbool(c->base.ini, c->base.instance, "use_nodeassignments", 0);
+
+	c->checkinvoices = g->config_getbool(c->base.ini, c->base.instance, "check_invoices", 0);
+	c->deadline = g->config_getint(c->base.ini, c->base.instance, "deadline", 0);
+
+	c->customergroups = strdup(g->config_getstring(c->base.ini, c->base.instance, "customergroups", ""));
+	c->excluded_customergroups = strdup(g->config_getstring(c->base.ini, c->base.instance, "excluded_customergroups", ""));
 	
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/cutoff] initialized", c->base.instance);

@@ -347,9 +347,10 @@ class LMS
 	{
 		if($this->DB->Execute('INSERT INTO customers (name, lastname,  
 				    address, zip, city, email, ten, ssn, status, creationdate, 
-				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, icn) 
+				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
+				    icn, cutoffstop) 
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    $customeradd['address'], 
@@ -368,6 +369,7 @@ class LMS
 					    $customeradd['regon'],
 					    $customeradd['rbe'],
 					    $customeradd['icn'],
+					    $customeradd['cutoffstop']
 					    )))
 		{
 			return $this->DB->GetLastInsertID('customers');
@@ -397,7 +399,7 @@ class LMS
 		return $this->DB->Execute('UPDATE customers SET status=?, address=?, 
 					    zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 					    info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, 
-					    pin=?, regon=?, icn=?, rbe=? WHERE id=?', 
+					    pin=?, regon=?, icn=?, rbe=?, cutoffstop=? WHERE id=?', 
 			array( $customerdata['status'], 
 				$customerdata['address'], 
 				$customerdata['zip'], 
@@ -416,6 +418,7 @@ class LMS
 				$customerdata['regon'], 
 				$customerdata['icn'], 
 				$customerdata['rbe'], 
+				$customerdata['cutoffstop'],
 				$customerdata['id'],
 				));
 	}
@@ -445,11 +448,11 @@ class LMS
 
 	function GetCustomer($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
-					    lastname, name, status, email, address, zip, ten, ssn, 
-					    city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, 
-					    pin, regon, icn, rbe 
-					    FROM customers'.(defined('LMS-UI') ? 'view' : '').' WHERE id = ?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, lastname, name, status, email, address, zip, ten, ssn, '
+				.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
+				city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, 
+				message, pin, regon, icn, rbe, cutoffstop
+				FROM customers'.(defined('LMS-UI') ? 'view' : '').' WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);

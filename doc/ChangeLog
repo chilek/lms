@@ -1,5 +1,14 @@
 $Id$
 
+version ? (????-??-??):
+
+  - added possibility to disable customers cutting off for some time (alec)
+  - lmsd/cutoff: added 'customergroups' & 'excluded_customergroups' opts (alec)
+  - lmsd/cutoff: added not payed invoices checking with 'check_invoices'
+    and 'deadline' options (alec)
+  - BTS#0000704: lmsd/ewx-stm: fixed problem with mac checking and
+    dummy_mac_networks option, optimized sql query (alec)
+
 version 1.11.1 Talus (2007-12-03):
 
   - added link to customerinfo in title of assignments edition page (alec)

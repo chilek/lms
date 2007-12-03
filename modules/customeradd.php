@@ -27,29 +27,25 @@
 if(isset($_GET['ajax'])) 
 {
 	header('Content-type: text/plain');
-	function escape_js($string)
-	{
-        	// escape quotes and backslashes, newlines, etc.
-        	return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
-	}
-	
 	$search = urldecode(trim($_GET['what']));
+
 	switch($_GET['mode'])
 	{
-		        case 'address':
-				$mode='address';
-				if ($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli') 
-					$mode = 'substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-				elseif($CONFIG['database']['type'] == 'postgres') 
-					$mode = 'substring(address from \'^.* \')';
-				break;
-		        case 'zip':
-				$mode='zip';
-				break;
-		        case 'city':
-				$mode='city';
-				break;
+	        case 'address':
+			$mode='address';
+			if ($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli') 
+				$mode = 'substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
+			elseif($CONFIG['database']['type'] == 'postgres') 
+				$mode = 'substring(address from \'^.* \')';
+		break;
+	        case 'zip':
+			$mode='zip';
+		break;
+	        case 'city':
+			$mode='city';
+		break;
 	}
+
 	if (!isset($mode)) { print 'false;'; exit; }
 	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries FROM customers WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(\'%'.$search.'%\') GROUP BY item ORDER BY entries desc, item asc');
 	$eglible=array(); $descriptions=array();
@@ -153,6 +149,9 @@ elseif(isset($_POST['customeradd']))
 
 	if(!$error)
 	{
+		if($customeradd['cutoffstop'])
+			$customeradd['cutoffstop'] = mktime(23,59,59,date('m'), date('d') + $customeradd['cutoffstop']);
+
 		$id = $LMS->CustomerAdd($customeradd);
 
 		if(isset($im) && $id)
