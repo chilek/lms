@@ -160,6 +160,8 @@ else
 
 	if($customerinfo['cutoffstop'] > mktime(0,0,0))
 		$customerinfo['cutoffstop'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
+	else
+		$customerinfo['cutoffstop'] = 0;
 
 	if($customerinfo['messengers'])
 		foreach($customerinfo['messengers'] as $idx => $val)
