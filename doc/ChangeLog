@@ -10,6 +10,8 @@ version ? (????-??-??):
   - fixed customer short address printing on contrib/formularz_przelewu... (alec)
   - fixed name of to_words_short_version option in LMS.class and sample
     lms.ini (alec)
+  - BTS#0000704: lmsd/ewx-stm: fixed problem with mac checking and 
+    dummy_mac_networks option, optimized sql query (alec)
 
 version 1.10.1 Ramus (2007-11-07):
 

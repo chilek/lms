@@ -1,5 +1,5 @@
 /*
- * LMS version 1.10-cvs
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2007 LMS Developers
  *
@@ -297,24 +297,23 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 	// hosts
 	res = g->db_query(g->conn, 
-		"SELECT downrate, downceil, uprate, upceil, mac, chkmac, "
-			"nodes.id, ownerid, INET_NTOA(ipaddr) AS ip, halfduplex " 
-	    		// subquery: number of enabled nodes in assignment
-			",( "
-			"SELECT count(*) "
+		"SELECT t.downrate, t.downceil, t.uprate, t.upceil, n.mac, n.chkmac, "
+			"n.id, n.ownerid, INET_NTOA(n.ipaddr) AS ip, n.halfduplex, cn.cnt " 
+		"FROM nodeassignments na "
+		"JOIN assignments a ON (na.assignmentid = a.id)"
+		"JOIN tariffs t ON (a.tariffid = t.id) "
+		"JOIN nodes n ON (na.nodeid = n.id) "
+	    	// subquery: number of enabled nodes in assignment
+		"JOIN ( "
+			"SELECT count(*) AS cnt, assignmentid "
 			"FROM nodeassignments "
 			"LEFT JOIN nodes ON (nodeid = nodes.id) "
-			"WHERE nodes.access = 1 "
+			"WHERE access = 1 "
 			"GROUP BY assignmentid "
-			"HAVING assignmentid = a1.assignmentid "
-			") AS cnt "
-		"FROM nodeassignments a1 "
-		"LEFT JOIN assignments ON (assignmentid = assignments.id)"
-		"LEFT JOIN tariffs ON (tariffid = tariffs.id) "
-		"LEFT JOIN nodes ON (nodeid = nodes.id) "
+			") cn ON (cn.assignmentid = na.assignmentid) "
 		"WHERE "
-			"(datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) "
-			"AND nodes.access = 1"
+			"(a.datefrom <= %NOW% OR a.datefrom = 0) AND (a.dateto >= %NOW% OR a.dateto = 0) "
+			"AND n.access = 1"
 	);
 
 	// adding hosts to customers array
@@ -540,17 +539,24 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				c.hosts[k].downrate = ceil(c.hosts[k].downrate / c.hosts[k].cnt);
 		}
 
+//printf("%d [%d %d %d %d]\n", c.id, upceil, c.upceil, downceil, c.downceil);
+
 		// check that we need to create channel
 		if(upceil > c.upceil || downceil > c.downceil)
 		{
 			// szukamy komputerow, moga nalezec do innego kanalu, dlatego przegladamy wszystkie
 			for(j=0; j<sc; j++)
 				for(k=0; k<channels[j].no; k++)
-					for(n=0; n<c.no; n++)
-						if(	(c.hosts[n].id == channels[j].hosts[k].id) ||
+					for(n=0; n<c.no; n++) if(channels[j].hosts[k].status == UNKNOWN)
+						if(	
+							c.hosts[n].id == channels[j].hosts[k].id
+							||
 							(inet_addr(c.hosts[n].ip) == inet_addr(channels[j].hosts[k].ip) 
-								&& inet_addr(c.hosts[n].ip) != inet_addr(DUMMY_IP)) ||
-							!(strcmp(c.hosts[n].mac, channels[j].hosts[k].mac)))
+								&& inet_addr(c.hosts[n].ip) != inet_addr(DUMMY_IP)) 
+							||
+							(!strcmp(c.hosts[n].mac, channels[j].hosts[k].mac)
+								&& strcmp(c.hosts[n].mac, DUMMY_MAC))
+							)
 						{
 							if( // komputer nalezy do innego kanalu
 							    ((x && channels[x].customerid != channels[j].customerid) || 
@@ -605,10 +611,15 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 						for(n=0; n<channels[j].no; n++)
 							if(channels[j].hosts[n].status == UNKNOWN)
 							{
-								if(c.hosts[k].id == channels[j].hosts[n].id ||
+								if(
+								    c.hosts[k].id == channels[j].hosts[n].id 
+								    ||
 								    (inet_addr(c.hosts[k].ip) == inet_addr(channels[j].hosts[n].ip)
-									    && inet_addr(c.hosts[k].ip) != inet_addr(DUMMY_IP)) ||
-								    !strcmp(c.hosts[k].mac, channels[j].hosts[n].mac)) 
+									    && inet_addr(c.hosts[k].ip) != inet_addr(DUMMY_IP)) 
+								    ||
+								    (!strcmp(c.hosts[k].mac, channels[j].hosts[n].mac)
+									    && strcmp(c.hosts[k].mac, DUMMY_MAC))
+								    ) 
 								{
 									// komputer byl w kanale
 									if( (channels[j].customerid != 0) 
@@ -1036,7 +1047,7 @@ int update_channel(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, s
 	if(status == STAT_SUCCESS && response->errstat == SNMP_ERR_NOERROR)
 	{
 //		struct variable_list 	*vars;
-//    		for(vars = response->variables; vars; vars = vars->next_variable)
+//		for(vars = response->variables; vars; vars = vars->next_variable)
 //    			print_variable(vars->name, vars->name_length, vars);
 		
 		g->db_pexec(g->conn, "UPDATE ewx_stm_channels SET upceil = ?, downceil = ? "
