@@ -230,6 +230,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			"WHERE d.type = 1 "
 				"AND d.closed = 0 "
 				"AND d.cdate + d.paytime * 86400 + 86400 * ? < %NOW% "
+				"AND c.deleted = 0 "
 				"AND c.cutoffstop < %NOW%"
 				"??", 
 			itoa(c->deadline),
