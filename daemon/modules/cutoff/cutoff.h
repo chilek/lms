@@ -7,9 +7,9 @@ struct cutoff_module
 	int nodeassignments;
 	int checkinvoices;
 	int deadline;
+	int limit;
 	
 	char *command;
-	char *limit;
 	char *warning;
 	char *expwarning;
 
