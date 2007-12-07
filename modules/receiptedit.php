@@ -84,7 +84,7 @@ if(isset($_GET['id']))
 		if(chkconfig($CONFIG['receipts']['show_documents_warning']))
 			if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
 			{
-				if($CONFIG['receipts']['documents_warning'])
+				if(!empty($CONFIG['receipts']['documents_warning']))
 					$customer['docwarning'] = $CONFIG['receipts']['documents_warning'];
 				else
 					$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
@@ -271,7 +271,7 @@ switch($action)
 				if(chkconfig($CONFIG['receipts']['show_documents_warning']))
 					if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($customer['id'])))
 					{
-						if($CONFIG['receipts']['documents_warning'])
+						if(!empty($CONFIG['receipts']['documents_warning']))
 							$customer['docwarning'] = $CONFIG['receipts']['documents_warning'];
 						else
 							$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
