@@ -221,7 +221,6 @@
 		</TD>
 	</TR>
 </TABLE>
-</P>
 {if $customer.notes}
 <BR>
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -244,6 +243,19 @@
 		</TD>
 		<TD CLASS="frightu">
 		        <FONT class="red">{$customer.docwarning}</FONT>
+		</TD>
+	</TR>
+</TABLE>
+{/if}
+{if $customer.nodeswarning}
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" width="1%" nowrap>
+			<IMG SRC="img/node.gif" ALT=""> <B>{t}Nodes:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+		        <FONT class="red">{$customer.nodeswarning}</FONT>
 		</TD>
 	</TR>
 </TABLE>

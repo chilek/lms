@@ -89,6 +89,17 @@ if(isset($_GET['id']))
 				else
 					$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
 			}
+		
+		// jesli klient posiada zablokowane komputery poinformujmy
+		// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
+		if(isset($CONFIG['receipts']['show_nodes_warning']) && chkconfig($CONFIG['receipts']['show_nodes_warning']))
+		        if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($receipt['customerid'])))
+			{
+			        if(!empty($CONFIG['receipts']['nodes_warning']))
+			        	$customer['nodeswarning'] = $CONFIG['receipts']['nodes_warning'];
+				else
+					$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
+			}
 	}
 	    
 	if($receipt['numberplanid'] && !$receipt['extnumber'])
@@ -265,6 +276,18 @@ switch($action)
 						else
 							$customer['docwarning'] = trans('Customer has got unconfirmed documents!');
 					}
+				
+				// jesli klient posiada zablokowane komputery poinformujmy
+				// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
+				if(isset($CONFIG['receipts']['show_nodes_warning']) && chkconfig($CONFIG['receipts']['show_nodes_warning']))
+				        if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($customer['id'])))
+					{
+					        if(!empty($CONFIG['receipts']['nodes_warning']))
+					        	$customer['nodeswarning'] = $CONFIG['receipts']['nodes_warning'];
+						else
+							$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
+					}
+
 
 				$receipt['selected'] = TRUE;
 			}

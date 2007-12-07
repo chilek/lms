@@ -1882,5 +1882,6 @@ $_LANG['Date from the future not allowed!'] = 'Data z przyszłości nie jest doz
 $_LANG['no guarantee'] = 'brak';
 $_LANG['Select days number of cutoff suspending (optional)'] = 'Wybierz ilość dni zawieszenia blokowania (opcjonalnie)';
 $_LANG['Cutoff suspended to $0'] = 'Blokowanie zawieszone do dnia $0';
+$_LANG['Customer has got disconnected nodes!'] = 'Klient posiada odłączone komputery!';
 
 ?>
