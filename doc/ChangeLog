@@ -8,6 +8,11 @@ version ? (????-??-??):
     and 'deadline' options (alec)
   - BTS#0000704: lmsd/ewx-stm: fixed problem with mac checking and
     dummy_mac_networks option, optimized sql query (alec)
+  - lmsd: when used with -q option crontab instances are skipped (alec)
+  - lmsd/hostfile: better customergroups option handling (alec)
+  - lmsd/hostfile: added options 'warn', 'warn_pub', 'warn_replace' for
+    warning flag support, 'public_replace' for better public IPs 
+    handling and 'host_begin', 'host_end' for usability (alec)
 
 version 1.11.1 Talus (2007-12-03):
 

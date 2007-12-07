@@ -39,20 +39,73 @@ char * itoha(int i)
 	return string;
 }
 
+void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
+{
+	char *s = strdup(rule);
+
+	g->str_replace(&s, "%domain", h.net.domain);
+	g->str_replace(&s, "%net", h.net.name);
+	g->str_replace(&s, "%if", h.net.interface);
+	g->str_replace(&s, "%gw", h.net.gateway);
+	g->str_replace(&s, "%dns2", h.net.dns2);
+	g->str_replace(&s, "%dns", h.net.dns);
+	g->str_replace(&s, "%wins", h.net.wins);
+	g->str_replace(&s, "%mask", inet_ntoa(inet_makeaddr(htonl(h.net.mask),0)));
+	g->str_replace(&s, "%addr", inet_ntoa(inet_makeaddr(htonl(h.net.address),0)));
+	g->str_replace(&s, "%info", h.info);
+	g->str_replace(&s, "%ipub", h.ip_pub);
+	g->str_replace(&s, "%id", h.id);
+	g->str_replace(&s, "%i16pub", h.i16_pub);
+	g->str_replace(&s, "%i16", h.i16);
+	g->str_replace(&s, "%i", h.ip);
+	g->str_replace(&s, "%m", h.mac);
+	g->str_replace(&s, "%n", h.name);
+	g->str_replace(&s, "%p", h.passwd);
+
+	fprintf(fh, "%s", s);
+	free(s);
+}
+
 void reload(GLOBAL *g, struct hostfile_module *hm)
 {
 	FILE *fh;
-	QueryHandle *res, *res1;
+	QueryHandle *res;
 	char *query;
-	int i, j, m, k=2, gc=0, nc=0, n=2;
+	int i, j, k=2, nc=0, n=2;
 
-	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(hm->networks);	
 	char *netname = strdup(netnames);
+	struct net *nets = (struct net *) malloc(sizeof(struct net));
+
+	char *groups = strdup("EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+				"WHERE a.customerid = ownerid "
+				"AND g.id = a.customergroupid "
+				"AND (%groups)) ");
 	
-	struct group *ugps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(hm->customergroups);	
+	char *groupnames = strdup(hm->customergroups);
 	char *groupname = strdup(groupnames);
+	char *groupsql = strdup("");
+	
+	while( k>1 )
+	{
+		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
+
+		if( strlen(groupname) )
+		{
+			groupsql = realloc(groupsql, sizeof(char *) * (strlen(groupsql) + strlen(groupname) + 30));
+			if(strlen(groupsql))
+				strcat(groupsql, " OR UPPER(g.name) = UPPER('");
+			else
+				strcat(groupsql, "UPPER(g.name) = UPPER('");
+			
+			strcat(groupsql, groupname);
+			strcat(groupsql, "')");
+		}		
+	}		
+	free(groupname); free(groupnames);
+
+	if(strlen(groupsql))
+		g->str_replace(&groups, "%groups", groupsql);
 
 	while( n>1 )
 	{
@@ -101,130 +154,103 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		g->db_free(&res);
 	}
 
-	while( k>1 )
-	{
-		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
-
-		if( strlen(groupname) )
-		{
-			res = g->db_pquery(g->conn, "SELECT name, id FROM customergroups WHERE UPPER(name)=UPPER('?')",groupname);
-
-			if( g->db_nrows(res) )
-			{
-		    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
-				ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
-				ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
-				gc++;
-			}
-    			g->db_free(&res);
-		}				
-	}
-	free(groupname); free(groupnames);
-
-	if(!gc)
-	{
-		res = g->db_query(g->conn, "SELECT name, id FROM customergroups ORDER BY name");
-
-		for(gc=0; gc<g->db_nrows(res); gc++)
-		{
-			ugps = (struct group*) realloc(ugps, (sizeof(struct group) * (gc+1)));
-			ugps[gc].name = strdup(g->db_get_data(res,gc,"name"));
-			ugps[gc].id = atoi(g->db_get_data(res,gc,"id"));
-		}
-		g->db_free(&res);
-	}
-	
 	fh = fopen(hm->file, "w");
 	if(fh)
 	{
 		fprintf(fh, "%s", hm->prefix);
 		
 		if(hm->skip_dev_ips)
-			query = strdup("SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, passwd, ownerid, access, info FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
+			query = strdup(
+				"SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
+				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning "
+				"FROM nodes "
+				"WHERE ownerid<>0 AND %groups "
+				"ORDER BY ipaddr");
 		else
-			query = strdup("SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, passwd, ownerid, access, info FROM nodes ORDER BY ipaddr");
+			query = strdup(
+				"SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
+				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning "
+				"FROM nodes "
+				"WHERE ownerid = 0 AND %groups "
+				"ORDER BY ipaddr");
 			
+		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "1=1");	
 		res = g->db_query(g->conn, query);
-		
+
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			char *id  	= g->db_get_data(res,i,"id");
-			char *mac 	= g->db_get_data(res,i,"mac");
-			char *ip  	= g->db_get_data(res,i,"ip");
-			char *ip_pub 	= g->db_get_data(res,i,"ip_pub");
-			char *access 	= g->db_get_data(res,i,"access");
-			char *name 	= g->db_get_data(res,i,"name");
-			char *info 	= g->db_get_data(res,i,"info");
-			char *passwd 	= g->db_get_data(res,i,"passwd");
+			unsigned long inet, inet_pub;
+			struct host h;
 			
-			if(ip && mac && access)
-			{
-				unsigned long inet = inet_addr(ip);
-				unsigned long inet_pub = inet_addr(ip_pub);
-				int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
+			h.ip 		= g->db_get_data(res,i,"ip");
+			h.ip_pub 	= g->db_get_data(res,i,"ip_pub");
+			inet 		= inet_addr(h.ip);
+			inet_pub 	= inet_addr(h.ip_pub);
 
-				// networks test
+			// networks test
+			for(j=0; j<nc; j++)
+				if(nets[j].address == (inet & nets[j].mask))
+					break;
+			if( j==nc )
 				for(j=0; j<nc; j++)
-					if(nets[j].address == (inet & nets[j].mask))
+					if(nets[j].address == (inet_pub & nets[j].mask))
 						break;
-								
-				// groups test
-				m = gc;
-				if( strlen(hm->customergroups)>0 && ownerid )
+
+			if( j!=nc )
+			{
+				char *pattern;
+
+				h.access 	= g->db_get_data(res,i,"access");
+			    	h.warning	= g->db_get_data(res,i,"warning");
+				h.name 		= g->db_get_data(res,i,"name");
+				h.info 		= g->db_get_data(res,i,"info");
+				h.passwd 	= g->db_get_data(res,i,"passwd");
+				h.id  		= g->db_get_data(res,i,"id");
+				h.mac 		= g->db_get_data(res,i,"mac");
+				h.net 		= nets[j];
+				// IP's last octet in hex
+                    		h.i16 		= strdup(itoha((ntohl(inet) & 0xff)));
+				h.i16_pub 	= strdup(inet_pub ? itoha((ntohl(inet_pub) & 0xff)) : "");
+
+				addrule(g, fh, hm->host_prefix, h);
+
+				if(*h.access == '1')
+					pattern = ( inet_pub && hm->pub_replace ? hm->grant_pub : hm->grant );
+				else
+					pattern = ( inet_pub && hm->pub_replace ? hm->deny_pub : hm->deny );
+
+				if(*h.warning == '1' && hm->warn_replace)
+					pattern = ( inet_pub ? hm->warn_pub : hm->warn );
+
+				addrule(g, fh, pattern, h);
+
+				if(!hm->warn_replace && *h.warning == '1' && (!hm->pub_replace || !inet_pub))
 				{
-					res1 = g->db_pquery(g->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db_get_data(res,i,"ownerid"));
-					for(k=0; k<g->db_nrows(res1); k++)
-					{
-						int groupid = atoi(g->db_get_data(res1, k, "customergroupid"));
-						for(m=0; m<gc; m++) 
-							if( ugps[m].id==groupid ) 
-								break;
-						if( m!=gc ) break;
-					}
-					g->db_free(&res1);
-				}
+					addrule(g, fh, hm->warn, h);
+				}			
 				
-				if( j!=nc && (strlen(hm->customergroups)==0 || m!=gc) )
+				if(!hm->pub_replace && inet_pub)
 				{
-					char *pattern, *s;
+					pattern = ( *h.access == '1' ? hm->grant_pub : hm->deny_pub );
 
-					// IP's last octet in hex
-                    			char *i16 = strdup(itoha((ntohl(inet) & 0xff)));
-					char *i16_pub = strdup(inet_pub ? itoha((ntohl(inet_pub) & 0xff)) : "");
+					if(*h.warning == '1' && hm->warn_replace)
+						pattern = hm->warn_pub;
 
-					if(*access == '1')
-						pattern = ( inet_pub ? hm->grant_pub : hm->grant );
-					else
-						pattern = ( inet_pub ? hm->deny_pub : hm->deny );
-			
-					s = strdup(pattern);
-					g->str_replace(&s, "%domain", nets[j].domain);
-					g->str_replace(&s, "%net", nets[j].name);
-					g->str_replace(&s, "%if", nets[j].interface);
-					g->str_replace(&s, "%gw", nets[j].gateway);
-					g->str_replace(&s, "%dns2", nets[j].dns2);
-					g->str_replace(&s, "%dns", nets[j].dns);
-					g->str_replace(&s, "%wins", nets[j].wins);
-					g->str_replace(&s, "%mask", inet_ntoa(inet_makeaddr(htonl(nets[j].mask),0)));
-					g->str_replace(&s, "%addr", inet_ntoa(inet_makeaddr(htonl(nets[j].address),0)));
-					g->str_replace(&s, "%info", info);
-					g->str_replace(&s, "%ipub", ip_pub);
-					g->str_replace(&s, "%id", id);
-					g->str_replace(&s, "%i16pub", i16_pub);
-					g->str_replace(&s, "%i16", i16);
-					g->str_replace(&s, "%i", ip);
-					g->str_replace(&s, "%m", mac);
-					g->str_replace(&s, "%n", name);
-					g->str_replace(&s, "%p", passwd);
-					
-					fprintf(fh, "%s", s);
-					free(s);
-					free(i16);
-					free(i16_pub);
-				}
+					addrule(g, fh, pattern, h);
+				}			
+
+				if(!hm->warn_replace && *h.warning == '1' && inet_pub)
+				{
+					addrule(g, fh, hm->warn_pub, h);
+				}			
+
+				addrule(g, fh, hm->host_append, h);
+
+				free(h.i16);
+				free(h.i16_pub);
 			}
 		}
-		
+	
 		fprintf(fh, "%s", hm->append);
 		
 		g->db_free(&res);
@@ -251,14 +277,17 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	}
 	free(nets);
 	
-	for(i=0;i<gc;i++)
-		free(ugps[i].name);
-	free(ugps);
+	free(groups);
+	free(groupsql);
 	
 	free(hm->prefix);
 	free(hm->append);
+	free(hm->host_prefix);
+	free(hm->host_append);
 	free(hm->grant);
 	free(hm->deny);
+	free(hm->warn);
+	free(hm->warn_pub);
 	free(hm->grant_pub);
 	free(hm->deny_pub);
 	free(hm->file);
@@ -282,13 +311,24 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 
 	hm->prefix = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "begin", "/usr/sbin/iptables -F FORWARD\n"));
 	hm->append = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "end", "/usr/sbin/iptables -A FORWARD -j REJECT\n"));
+	hm->host_prefix = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "host_begin", ""));
+	hm->host_append = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "host_end", ""));
+
 	hm->grant = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "grantedhost", "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n/usr/sbin/iptables -A FORWARD -d %i -j ACCEPT\n"));
 	hm->deny = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "deniedhost", "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"));
+
 	hm->grant_pub = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "public_grantedhost", hm->grant));
 	hm->deny_pub = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "public_deniedhost", hm->deny));
+	hm->pub_replace = g->config_getbool(hm->base.ini, hm->base.instance, "public_replace", 1);
+
+	hm->warn = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "warnedhost", ""));
+	hm->warn_pub = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "public_warnedhost", hm->warn));
+	hm->warn_replace = g->config_getbool(hm->base.ini, hm->base.instance, "warn_replace", 0);
+
 	hm->skip_dev_ips = g->config_getbool(hm->base.ini, hm->base.instance, "skip_dev_ips", 1);
 	hm->file = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "file", "/tmp/hostfile"));
 	hm->command = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "command", ""));
+
 	hm->networks = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "networks", ""));
 	hm->customergroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "customergroups", ""));
 #ifdef DEBUG1

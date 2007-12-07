@@ -63,7 +63,7 @@ int main(int argc, char *argv[], char **envp)
 	time_t tt;
 	GLOBAL *g;
 	INSTANCE *instances;
-	int fval = 0, i = 0, reload = 0, i_no = 0;
+	int fval = 0, i = 0, reload = 0;
 	char *inst, *instance; 
 #ifdef CONFIGFILE
 	Config *ini;
@@ -154,7 +154,7 @@ int main(int argc, char *argv[], char **envp)
     	// main loop ****************************************************
     	for(;;)
 	{
-		i_no = 0;
+		int i_no = 0;
 		
 		if( quit ) 
 		{
@@ -212,7 +212,7 @@ int main(int argc, char *argv[], char **envp)
 				if( db_nrows(res) )
 				{
 					char *crontab = db_get_data(res, 0, "crontab");
-					if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
+					if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
 					{
 						instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 						instances[i_no].name = strdup(name);
@@ -232,7 +232,7 @@ int main(int argc, char *argv[], char **envp)
 			for(i=0; i<db_nrows(res); i++)
 			{
 				char *crontab = db_get_data(res, i, "crontab");
-				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
+				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 					instances[i_no].name = strdup(db_get_data(res, i, "name"));
@@ -255,7 +255,7 @@ int main(int argc, char *argv[], char **envp)
 				str_replace(&name, "\\s", " ");
 				
 				char *crontab = config_getstring(ini, name, "crontab", "");
-				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
+				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 					instances[i_no].name = strdup(name);
@@ -273,7 +273,7 @@ int main(int argc, char *argv[], char **envp)
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
 			{
 				char *crontab = config_getstring(ini, instance, "crontab", "");
-				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) || runall )
+				if( runall || (reload && !strlen(crontab)) || (!quit && crontab_match(tt, crontab)) )
 				{
 					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
 					instances[i_no].name = strdup(instance);
