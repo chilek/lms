@@ -13,6 +13,8 @@ version ? (????-??-??):
   - lmsd/hostfile: added options 'warn', 'warn_pub', 'warn_replace' for
     warning flag support, 'public_replace' for better public IPs 
     handling and 'host_begin', 'host_end' for usability (alec)
+  - cash receipts: added 'show_nodes_warning' and 'nodes_warning' in
+    receipts section (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
