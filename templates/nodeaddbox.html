@@ -103,8 +103,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<A HREF="javascript:switchCheckbox('nodedata[chkmac]');">{t}MAC checking{/t}: </A><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
-			<A HREF="javascript:switchCheckbox('nodedata[halfduplex]');">{t}Half duplex{/t}: </A><INPUT TYPE="checkbox" CLASS="box light" VALUE="1" NAME="nodedata[halfduplex]" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
+			<A HREF="javascript:checkElement('chkmac');">{t}MAC checking{/t}: </A><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" CLASS="light box" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
+			<A HREF="javascript:checkElement('halfduplex');">{t}Half duplex{/t}: </A><INPUT TYPE="checkbox" CLASS="box light" VALUE="1" NAME="nodedata[halfduplex]" id="halfduplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
 	</TR>
     					</TABLE>
@@ -144,7 +144,7 @@
 			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{t}Scan{/t} <IMG SRC="img/search.gif" alt=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="nodedata[reuse]" id="reuse" value="ON" class="box light"" {if $nodedata.reuse}checked{/if}><A HREF="javascript:switchCheckbox('nodedata[reuse]')"> {t}Display this form again, when this node is saved{/t}</A>
+			<INPUT type="checkbox" name="nodedata[reuse]" id="reuse" value="ON" class="box light"" id="reuse" {if $nodedata.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when this node is saved{/t}</A>
 		</TD>
 	</TR>	
 </TABLE></FORM>
@@ -168,11 +168,6 @@
 
 		document.forms['nodeadd'].elements['nodedata[passwd]'].value = passwd.join("");
 	}	
-
-	function switchCheckbox(elem)
-	{
-		document.forms['nodeadd'].elements[elem].checked = !document.forms['nodeadd'].elements[elem].checked;
-	}
 //-->
 </SCRIPT>
 {/literal}
