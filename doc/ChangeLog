@@ -15,7 +15,9 @@ version ? (????-??-??):
     handling and 'host_begin', 'host_end' for usability (alec)
   - cash receipts: added 'show_nodes_warning' and 'nodes_warning' in
     receipts section (alec)
-
+  - quicksearch: there is a problem in pgsql at least 8.2.x series with national letters 
+    while using LOWER, UPPER functions and ILIKE operator (chilek)
+    
 version 1.11.1 Talus (2007-12-03):
 
   - added link to customerinfo in title of assignments edition page (alec)
