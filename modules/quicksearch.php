@@ -75,12 +75,9 @@ switch($mode)
 			$candidates = $DB->GetAll('SELECT id, lastname, name, email, address, deleted 
 					    FROM customersview 
 					    WHERE id ?LIKE? \''.$search.'%\' 
-						    OR UPPER(lastname) ?LIKE? UPPER(\'%'.mb_strtoupper($search).'%\') 
-						    OR LOWER(lastname) ?LIKE? LOWER(\'%'.mb_strtolower($search).'%\')
-						    OR UPPER(name) ?LIKE? UPPER(\'%'.mb_strtoupper($search).'%\') 
-						    OR LOWER(name) ?LIKE? LOWER(\'%'.mb_strtolower($search).'%\') 
-						    OR UPPER(address) ?LIKE? UPPER(\'%'.mb_strtoupper($search).'%\') 
-						    OR LOWER(address) ?LIKE? LOWER(\'%'.mb_strtolower($search).'%\') 
+						    OR LOWER(lastname) ?LIKE? LOWER(\'%'.$search.'%\')
+						    OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
+						    OR LOWER(address) ?LIKE? LOWER(\'%'.$search.'%\') 
 						    OR LOWER(email) ?LIKE? LOWER(\'%'.$search.'%\') 
 						    ORDER by deleted, lastname, name, email, address LIMIT 15');
 			$eglible=array(); $actions=array(); $descriptions=array();
