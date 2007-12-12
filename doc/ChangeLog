@@ -16,8 +16,9 @@ version ? (????-??-??):
   - cash receipts: added 'show_nodes_warning' and 'nodes_warning' in
     receipts section (alec)
   - quicksearch: there is a problem in pgsql at least 8.2.x series with national letters 
-    while using LOWER, UPPER functions and ILIKE operator (chilek)
-    
+    while using LOWER, UPPER functions and ILIKE operator (chilan)
+  - rtmessageadd: checking php_ui/debug_email empty value checking (chilan)
+
 version 1.11.1 Talus (2007-12-03):
 
   - added link to customerinfo in title of assignments edition page (alec)
