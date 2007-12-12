@@ -143,7 +143,7 @@ if(isset($_POST['message']))
 				&& ($user['email'] || $queue['email'])
 				&& $message['destination'] != $queue['email'])
 			{
-				if(isset($CONFIG['phpui']['debug_email']))
+				if(!empty($CONFIG['phpui']['debug_email']))
 					$message['destination'] = $CONFIG['phpui']['debug_email'];
 
 				$recipients = $message['destination'];
