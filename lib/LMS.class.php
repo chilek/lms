@@ -825,7 +825,7 @@ class LMS
 		return $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=?', array($id));
 	}
 
-	function GetCustomerBalanceList($id)
+	function GetCustomerBalanceList($id, $totime=NULL)
 	{
 		$saldolist = array();
 		
@@ -837,7 +837,9 @@ class LMS
 					LEFT JOIN users ON users.id = cash.userid
 					LEFT JOIN documents ON documents.id = docid
 					LEFT JOIN taxes ON cash.taxid = taxes.id
-					WHERE cash.customerid=? ORDER BY time', array($id)))
+					WHERE cash.customerid=? '
+					.($totime ? ' AND time <= '.$totime : '')
+					.' ORDER BY time', array($id)))
 		{
 			$saldolist['balance'] = 0;
 			$saldolist['total'] = 0;
@@ -1824,7 +1826,10 @@ class LMS
 			// NOTE: don't waste CPU/mem when printing history is not set:
 			if(chkconfig($this->CONFIG['invoices']['print_balance_history']))
 			{
-				$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
+				if(isset($this->CONFIG['invoices']['print_balance_history_save']) && chkconfig($this->CONFIG['invoices']['print_balance_history_save']))
+					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $invoice['cdate']);
+				else
+					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
 				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
 			}
 
@@ -2830,7 +2835,7 @@ class LMS
 					$ticket['subject'],
 					$ts, 
 					isset($ticket['cause']) ? $ticket['cause'] : 0,
-					$this->AUTH->id
+					isset($this->AUTH->id) ? $this->AUTH->id : 0
 					));
 		
 		$id = $this->DB->GetLastInsertID('rttickets');
