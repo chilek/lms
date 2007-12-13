@@ -1827,7 +1827,7 @@ class LMS
 			if(chkconfig($this->CONFIG['invoices']['print_balance_history']))
 			{
 				if(isset($this->CONFIG['invoices']['print_balance_history_save']) && chkconfig($this->CONFIG['invoices']['print_balance_history_save']))
-					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $invoice['cdate']);
+					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
 				else
 					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
 				$result['customerbalancelistlimit'] = $this->CONFIG['invoices']['print_balance_history_limit'];
