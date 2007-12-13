@@ -16,6 +16,7 @@ version ? (????-??-??):
   - cash receipts: added 'show_nodes_warning' and 'nodes_warning' in
     receipts section (alec)
   - rtmessageadd: fixed php_ui/debug_email empty value checking (chilan)
+  - invoices: added option invoices/print_balance_history_save (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
