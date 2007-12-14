@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed 'at' checking of yearly assignments when 'at' is empty (alec)
+
 version 1.10.2 Roham (2007-12-12):
 
   - fix: allow searching strings with '/' sign in quicksearch (alec)

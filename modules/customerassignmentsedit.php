@@ -136,15 +136,15 @@ if(isset($_POST['assignmentedit']))
 		break;
 
 		case YEARLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
-			{
-				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			}
-			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
+			}
+			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			{
+				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
