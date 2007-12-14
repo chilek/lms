@@ -77,11 +77,11 @@ if(isset($_GET['id']))
 	{
 		$customer = $LMS->GetCustomer($receipt['customerid']);
     		$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
-		if(!chkconfig($CONFIG['receipts']['show_notes']))
-                        unset($customer['notes']);		
+		if(empty($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
+                        unset($customer['notes']);
 
 		// niezatwierdzone dokumenty klienta
-		if(chkconfig($CONFIG['receipts']['show_documents_warning']))
+		if(isset($CONFIG['receipts']['show_documents_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
 			if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
 			{
 				if(!empty($CONFIG['receipts']['documents_warning']))
@@ -114,6 +114,21 @@ if(isset($_GET['id']))
 	$SESSION->save('receiptediterror', $error);
 }
 
+// receipt positions adding with double click protection
+function additem(&$content, $item)
+{
+        for($i=0, $x=sizeof($content); $i<$x; $i++)
+	        if($content[$i]['value'] == $item['value']
+			&& $content[$i]['description'] == $item['description']
+			&& $content[$i]['posuid'] > $item['posuid'] - 1)
+		{
+			break;
+		}
+	
+	if($i == $x)
+	        $content[] = $item;
+}
+
 $SESSION->restore('receiptcontents', $contents);
 $SESSION->restore('receiptcustomer', $customer);
 $SESSION->restore('receipt', $receipt);
@@ -138,7 +153,7 @@ switch($action)
 		$itemdata['posuid'] = (string) getmicrotime();
 	
 		if($itemdata['value'] && $itemdata['description'])
-			$contents[] = $itemdata;
+			additem($contents, $itemdata);
 	break;
 	case 'deletepos':
 

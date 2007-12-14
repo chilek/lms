@@ -103,6 +103,21 @@ function GetCustomerNotes($id)
 	}
 }
 
+// receipt positions adding with double click protection
+function additem(&$content, $item)
+{
+	for($i=0, $x=sizeof($content); $i<$x; $i++)
+		if($content[$i]['value'] == $item['value']
+			&& $content[$i]['description'] == $item['description']
+			&& $content[$i]['posuid'] + 1 > $item['posuid'])
+		{
+			break;
+		}
+
+	if($i == $x)
+		$content[] = $item;
+}
+
 $SESSION->restore('receiptcontents', $contents);
 $SESSION->restore('receiptcustomer', $customer);
 $SESSION->restore('receipt', $receipt);
@@ -246,7 +261,7 @@ switch($action)
 		}
 	
 		if(!$error && $itemdata['value'] && $itemdata['description'])
-			$contents[] = $itemdata;
+			additem($contents, $itemdata);
 	break;
 	
 	case 'additemlist':
@@ -316,7 +331,8 @@ switch($action)
 					}
 				}
 
-				$contents[] = $itemdata;
+				if(!$error)
+					additem($contents, $itemdata);
 			}
 		}
 	break;
