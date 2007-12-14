@@ -41,10 +41,10 @@ if($_GET['action'] == 'suspend')
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$a = $_POST['assignment'];
-
-if($_GET['action'] == 'add' && isset($a))
+if($_GET['action'] == 'add' && isset($_POST['assignment']))
 {
+	$a = $_POST['assignment'];
+
 	foreach($a as $key => $val)
 		$a[$key] = trim($val);
 	
@@ -99,11 +99,11 @@ if($_GET['action'] == 'add' && isset($a))
 		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 			
-			if(isset($CONFIG['phpui']['use_current_payday']) && chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
 				$at = date('j', time());
 
-			if((!isset($CONFIG['phpui']['use_current_payday']) || !chkconfig($CONFIG['phpui']['use_current_payday'])) 
-				&& isset($CONFIG['phpui']['default_monthly_payday']) && $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+			if(!chkconfig($CONFIG['phpui']['use_current_payday']) 
+				&& $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
 			{
 				$at = $CONFIG['phpui']['default_monthly_payday'];
 			}
@@ -115,15 +115,15 @@ if($_GET['action'] == 'add' && isset($a))
 		break;
 
 		case QUARTERLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
-			{
-				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			}
-			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
+			}
+			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			{
+				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
@@ -142,15 +142,15 @@ if($_GET['action'] == 'add' && isset($a))
 		break;
 
 		case YEARLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
-			{
-				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			}
-			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
+			}
+			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			{
+				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
@@ -247,6 +247,8 @@ if($_GET['action'] == 'add' && isset($a))
 					    ));
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
+
+	$SMARTY->assign('assignment', $a);
 }
 
 $customerinfo = $LMS->GetCustomer($_GET['id']);
@@ -263,7 +265,6 @@ $SMARTY->assign('othercustomergroups',$LMS->GetGroupNamesWithoutCustomer($_GET['
 $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('recover',($_GET['action'] == 'recover' ? 1 : 0));
 $SMARTY->assign('error', $error);
-$SMARTY->assign('assignment', $a);
 $SMARTY->display('customerinfo.html');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
