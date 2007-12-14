@@ -792,14 +792,10 @@ if(isset($list))
 	if($contents)
 		foreach($list as $idx => $row)
 		{
-			$i = 0;
-			foreach($contents as $item)
-				if($row['id'] == $item['docid'])
-				{
-					$i = 1;
+			for($i=0, $x=sizeof($contents); $i<$x; $i++)
+				if(isset($contents[$i]['docid']) && $row['id'] == $contents[$i]['docid'])
 					break;
-				}
-			if(!$i)
+			if($i == $x)
 				$invoicelist[$idx] = $row;
 		}
 	else
