@@ -94,10 +94,11 @@ if(isset($_POST['assignmentedit']))
 			$at = sprintf('%d',$a['at']);
 			
 			if(isset($CONFIG['phpui']['use_current_payday']) && chkconfig($CONFIG['phpui']['use_current_payday']) && $at==0)
+			{
 				$at = date('j', time());
-
-			if((!isset($CONFIG['phpui']['use_current_payday']) || !chkconfig($CONFIG['phpui']['use_current_payday']))
-				 && isset($CONFIG['phpui']['default_monthly_payday']) && $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
+			}
+			elseif(!chkconfig($CONFIG['phpui']['use_current_payday'])
+				 && $CONFIG['phpui']['default_monthly_payday']>0 && $at==0)
 			{
 				$at = $CONFIG['phpui']['default_monthly_payday'];
 			}
@@ -109,15 +110,15 @@ if(isset($_POST['assignmentedit']))
 		break;
 
 		case QUARTERLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
-			{
-				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			}
-			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
+			}
+			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			{
+				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
@@ -136,15 +137,15 @@ if(isset($_POST['assignmentedit']))
 		break;
 
 		case YEARLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
-			{
-				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			}
-			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
+			}
+			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			{
+				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
