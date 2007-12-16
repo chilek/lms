@@ -155,7 +155,6 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 }
 else
 {
-	
 	$customerinfo = $LMS->GetCustomer($_GET['id']);
 
 	if($customerinfo['cutoffstop'] > mktime(0,0,0))
