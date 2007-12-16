@@ -332,11 +332,6 @@ class LMS
 		}
 	}
 
-	function RecoverCustomer($id)
-	{
-		return $this->DB->Execute('UPDATE customers SET deleted=0 WHERE id=?', array($id));
-	}
-
 	// confusing function name, returns count of tariff assignments, not count of customers with this tariff
 	function GetCustomersWithTariff($id)
 	{
@@ -388,7 +383,7 @@ class LMS
 		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
 		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
 		// Remove Userpanel rights
-		if($this->CONFIG['directories']['userpanel_dir'])
+		if(!empty($this->CONFIG['directories']['userpanel_dir']))
 			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
 		
 		$this->DB->CommitTrans();
@@ -871,19 +866,18 @@ class LMS
 		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=3 AND deleted=0');
 		$result['awaiting'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=2 AND deleted=0');
 		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=1 AND deleted=0');
-		$result['debt'] = 0;
-		$result['debtvalue'] = 0;
 
-		if($balances = $this->DB->GetCol('SELECT SUM(value) FROM cash LEFT JOIN customersview ON customerid = customersview.id 
-				WHERE deleted = 0 GROUP BY customerid HAVING SUM(value) < 0'))
-		{
-			foreach($balances as $idx)
-				if($idx < 0)
-				{
-					$result['debtvalue'] -= $idx;
-					$result['debt']++;
-				}
-		}
+		$tmp = $this->DB->GetRow('SELECT SUM(a.value)*-1 AS debtvalue, COUNT(*) AS debt 
+				FROM (SELECT SUM(value) AS value 
+				    FROM cash 
+				    LEFT JOIN customersview ON (customerid = customersview.id) 
+				    WHERE deleted = 0 
+				    GROUP BY customerid 
+				    HAVING SUM(value) < 0
+				) a');
+
+		$result = array_merge($result, $tmp);
+
 		return $result;
 	}
 
