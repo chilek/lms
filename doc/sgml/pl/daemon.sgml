@@ -541,6 +541,33 @@
 				powi±zania taryf z klientami. Domy¶lnie: wy³±czona.</para>
 				<para>Przyk³ad: <prompt>use_nodeassignments = true</prompt></para>
 			</listitem>
+			<listitem>
+				<para>check_invoices</para>
+				<para>Opcja w³±cza dodatkowe sprawdzenie czy klient posiada nierozliczone
+				faktury z dniem p³atno¶ci starszym o okre¶lon± w opcji 'deadline'
+				ilo¶æ dni. Domy¶lnie: wy³±czona.</para>
+				<para>Przyk³ad: <prompt>check_invoices = true</prompt></para>
+			</listitem>
+			<listitem>
+				<para>deadline</para>
+				<para>Okre¶la okres w dniach (licz±c od terminu p³atno¶ci faktury), 
+				po którym nierozliczona faktura jest brana pod uwagê przy zastosowaniu
+				opcji 'check_invoices'. Domy¶lnie, klient zostanie zablokowany od razu
+				po terminie p³atno¶ci. Domy¶lnie: 0.</para>
+				<para>Przyk³ad: <prompt>deadline = 30</prompt></para>
+			</listitem>
+			<listitem>
+				<para>customergroups</para>
+				<para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+					Domy¶lnie: pusta (wszystkie grupy).</para>
+				<para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>excluded_customergroups</para>
+				<para>Lista nazw grup klientów, które maj± byæ pominiête. Wielko¶æ liter nie ma znaczenia. 
+					Domy¶lnie: pusta (¿adna).</para>
+				<para>Przyk³ad: <prompt>excluded_customergroups = "grupa3 grupa4"</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
@@ -641,16 +668,18 @@
 		    <sect3 id="hostfile-desc">
 		    <title>Opis</title>
 		    <para>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
-		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
-		    status (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz
-		    grupy do których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np. regu³
+		    wykonuje pêtlê po wszystkich komputerach (oraz adresach urz±dzeñ sieciowych)
+			w bazie rozró¿niaj±c ich status pod³±czenia i ostrze¿enia, adresy prywatne 
+			i publiczne, a ponadto sieæ do której s± pod³±czone oraz grupy do których 
+			nale¿± ich w³a¶ciciele. 
+			Dziêki temu mo¿liwe jest tworzenie np. regu³
 		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
 		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</para>
 		    </sect3>
 		    <sect3 id="hostfile-config">
 		    <title>Konfiguracja</title>
-		    <para>W opcjach 'grantedhost' i 'deniedhost' oraz 'public_deniedhost' i 'public_grantedhost'
-		    mo¿na stosowaæ specjalne zmienne, które podczas zapisu do pliku zostan± 
+		    <para>W opcjach zawieraj±cych regu³y hosta mo¿na stosowaæ specjalne 
+			zmienne, które podczas zapisu do pliku zostan± 
 		    zast±pione odpowiednimi dla danego komputera danymi:
 		    <simplelist>
 			<member>%i - adres IP,</member>
@@ -668,8 +697,8 @@
 			<member>%gw - adres bramy,</member>
 			<member>%dns, %dns2 - adresy serwerów DNS,</member>
 			<member>%wins - adres serwera WINS,</member>
-			<member>%i16 - ostatni oktet adresu IP w formacie szesnatskowym,</member>
-			<member>%i16pub - ostatni oktet publicznego adresu IP w formacie szesnatskowym.</member>
+			<member>%i16 - ostatni oktet adresu IP w formacie szesnastkowym,</member>
+			<member>%i16pub - ostatni oktet publicznego adresu IP w formacie szesnastkowym.</member>
 		    </simplelist></para>
 		    <para>Poni¿ej opcje udostêpniane przez ten modu³:</para>
 		    <itemizedlist>
@@ -694,26 +723,59 @@
 			    <para>Przyk³ad: <prompt>end = "$IPT -A FORWARD -J REJECT\n"</prompt></para>
 			</listitem>
 			<listitem>
+				<para>host_begin</para>
+				<para>Nag³ówek regu³y hosta. Domy¶lnie: ""</para>
+				<para>Przyk³ad: <prompt>host_begin = "#%n\n"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>host_end</para>
+				<para>Stopka regu³y hosta. Domy¶lnie: ""</para>
+				<para>Przyk³ad: <prompt>host_end = "\n"</prompt></para>
+			</listitem>
+			<listitem>
 			    <para>grantedhost</para>
-			    <para>Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
+			    <para>Regu³a dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
 			    <para>Przyk³ad: <prompt>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>deniedhost</para>
-			    <para>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
+			    <para>Regu³a dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
 			    <para>Przyk³ad: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
 			</listitem>
 			<listitem>
-			    <para>public_grantedhost</para>
-			    <para>Tekst dla hosta pod³±czonego, który posiada adres publiczny. 
-			    Domy¶lnie regu³a okre¶lona opcj± 'grantedhost'.</para>
-			    <para>Przyk³ad: <prompt>public_grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s %i -j SNAT --to-source %ipub\n"</prompt></para>
+				<para>public_grantedhost</para>
+				<para>Regu³a dla hosta pod³±czonego, który posiada adres publiczny. 
+				Domy¶lnie regu³a okre¶lona opcj± 'grantedhost'.</para>
+				<para>Przyk³ad: <prompt>public_grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s %i -j SNAT --to-source %ipub\n"</prompt></para>
 			</listitem>
 			<listitem>
-			    <para>public_deniedhost</para>
-			    <para>Tekst dla hosta od³±czonego, który posiada adres publiczny. 
-			    Domy¶lnie regu³a okre¶lona opcj± 'deniedhost'.</para>
-			    <para>Przyk³ad: <prompt>public_deniedhost = ""</prompt></para>
+				<para>public_deniedhost</para>
+				<para>Regu³a dla hosta od³±czonego, który posiada adres publiczny. 
+				Domy¶lnie regu³a okre¶lona opcj± 'deniedhost'.</para>
+				<para>Przyk³ad: <prompt>public_deniedhost = ""</prompt></para>
+			</listitem>
+			<listitem>
+				<para>warnedhost</para>
+				<para>Regu³a dla hosta z w³±czonym ostrze¿eniem.
+				Domy¶lnie regu³a okre¶lona opcj± 'grantedhost'.</para>
+				<para>Przyk³ad: <prompt>warnedhost = "$IPT -A PREROUTING -s %i --dport 80 -p tcp -j REDIRECT --to-port 82\n"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>public_warnedhost</para>
+				<para>Regu³a dla hosta z w³±czonym ostrze¿eniem, który posiada adres
+				publiczny. Domy¶lnie regu³a okre¶lona opcj± 'warnedhost'.</para>
+				<para>Przyk³ad: <prompt>public_warnedhost = ""</prompt></para>
+			</listitem>
+			<listitem>
+				<para>public_replace</para>
+				<para>Okre¶la czy regu³y zdefiniowane dla adresów publicznych maj± nadpisaæ
+				regu³y g³ówne, czy zostaæ dopisane do nich.	Domy¶lnie: w³±czona.</para>
+				<para>Przyk³ad: <prompt>public_replace = false</prompt></para>
+			</listitem>
+			<listitem>
+				<para>warn_replace</para>
+				<para>Okre¶la czy regu³y zdefiniowane dla komputerów z ostrze¿eniem maj± nadpisaæ regu³y g³ówne, czy zostaæ dopisane do nich. Domy¶lnie: wy³±czona.</para>
+				<para>Przyk³ad: <prompt>warn_replace = true</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>networks</para>
