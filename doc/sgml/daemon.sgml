@@ -507,6 +507,31 @@
 		   are checked. Default: false.</para>
                    <para>Example: <prompt>use_nodeassignments = true</prompt></para>
                </listitem>
+			   <listitem>
+					<para>check_invoices</para>
+					<para>This option enables additional checking if customer has
+					unpayed invoices with deadline date older than date specified in 'deadline' option. Default: false.</para>
+				   <para>Example: <prompt>check_invoices = true</prompt></para>
+			   </listitem>
+			   <listitem>
+					<para>deadline</para>
+					<para>Sets period in days (from invoice deadline date), after which 
+					unpayed invoice is considered for 'check_invoices' check. By default, 
+					customer would be blocked just after deadline. Default: 0.</para>
+					<para>Example: <prompt>deadline = 30</prompt></para>
+			</listitem>
+			   <listitem>
+					<para>customergroups</para>
+					<para>List of customers groups to restrict customers for accounting.
+					Default: empty (all groups).</para>
+					<para>Example: <prompt>customergroups = "group1 group2"</prompt></para>
+			   </listitem>
+			   <listitem>
+					<para>excluded_customergroups</para>
+					<para>List of excluded customers groups to restrict customers for 
+					accounting. Default: empty (none).</para>
+					<para>Example: <prompt>excluded_customergroups = "group3 group4"</prompt></para>
+               </listitem>
               </itemizedlist>
               </sect3>
           </sect2>
@@ -605,35 +630,36 @@
           <title>Hostfile</title>
               <sect3 id="hostfile-desc">
               <title>Description</title>
-              <para>Module 'hostfile' is a multipurpose tool. It performs loop on all hosts from
-              database fetching their status (connected/disconnected), network that they are
-              connected to and groups of they owners. Because of that it is possible to create any
-              firewall rules, or /etc/hosts file. Data is written to file and after that specified
-              shell command is executed.</para>
+				<para>Module 'hostfile' is a multipurpose tool. It performs loop on all hosts
+				(nodes and network devices addresses) from database fetching their 
+				connection and warnings status, private and public addresses, network
+				that they are connected to and groups of they owners. Because of that it 
+				is possible to create any set of firewall rules, or /etc/hosts file. Data is 
+				written to file and after that specified shell command can be 
+				executed.</para>
               </sect3>
               <sect3 id="hostfile-config">
               <title>Configuration</title>
-              <para>The following templates might be used for 'grantedhost', 'deniedhost', 'public_grantedhost'
-	      and 'public_deniedhost' options replaced with actual data from database: 
-	      <simplelist>
-	        <member>%i - IP address,</member>
-	        <member>%ipub - public IP address,</member>
-		<member>%id - node ID,</member>
-		<member>%m - MAC address,</member>
-		<member>%n - host name,</member>
-		<member>%p - node (computer) password,</member>
-	        <member>%info - node description,</member>
-		<member>%domain - domain,</member>
-		<member>%net - network name,</member>
-		<member>%gw - gateway address of network,</member>
-		<member>%if - network's interface,</member>
-		<member>%mask - network mask,</member>
-		<member>%addr - network's address,</member>
-		<member>%dns, %dns2 - DNS server addresses,</member>
-		<member>%wins - WINS server address,</member>
-		<member>%i16 - IP's last octet in hex,</member>
-		<member>%i16pub - public IP's last octet in hex.</member>
-	      </simplelist>
+              <para>The following replacement variables can be used in host rule options:
+			<simplelist>
+			<member>%i - IP address,</member>
+			<member>%ipub - public IP address,</member>
+			<member>%id - node ID,</member>
+			<member>%m - MAC address,</member>
+			<member>%n - host name,</member>
+			<member>%p - node (computer) password,</member>
+			<member>%info - node description,</member>
+			<member>%domain - domain,</member>
+			<member>%net - network name,</member>
+			<member>%gw - gateway address of network,</member>
+			<member>%if - network's interface,</member>
+			<member>%mask - network mask,</member>
+			<member>%addr - network's address,</member>
+			<member>%dns, %dns2 - DNS server addresses,</member>
+			<member>%wins - WINS server address,</member>
+			<member>%i16 - IP's last octet in hex,</member>
+			<member>%i16pub - public IP's last octet in hex.</member>
+			</simplelist>
               This module has following options:</para>
               <itemizedlist>
                <listitem>
@@ -656,6 +682,16 @@
                    <para>File footer. Default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</para>
                    <para>Example: <prompt>end = "$IPT -A FORWARD -J REJECT\n"</prompt></para>
                </listitem>
+			   <listitem>
+				   <para>host_begin</para>
+				   <para>Host rule header. Default: ""</para>
+				   <para>Example: <prompt>host_begin = "#%n\n"</prompt></para>
+			   </listitem>
+			   <listitem>
+				   <para>host_end</para>
+				   <para>Host rule footer. Default: ""</para>
+				   <para>Example: <prompt>host_end = "\n"</prompt></para>
+               </listitem>
                <listitem>
                    <para>grantedhost</para>
                    <para>Line with rule(s) for connected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
@@ -666,18 +702,41 @@
                    <para>Line with rule(s) for disconnected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
                    <para>Example: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
                </listitem>
-	        <listitem>
-		    <para>public_grantedhost</para>
-		    <para>Line with rule(s) for connected node with specified public IP.
-		    By default rule specified in 'grantedhost' option.</para>
-		    <para>Example: <prompt>public_grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s %i -j SNAT --to-source %ipub\n"</prompt></para>
-		</listitem>
-		<listitem>
-		    <para>public_deniedhost</para>
-		    <para>Line with rule(s) for disconnected node with specified public IP.
-		    By default rule specified in 'deniedhost' option.</para>
-		    <para>Example: <prompt>public_deniedhost = ""</prompt></para>
-		</listitem>
+			<listitem>
+				<para>public_grantedhost</para>
+				<para>Line with rule(s) for connected node with specified public IP.
+				By default rule specified in 'grantedhost' option.</para>
+				<para>Example: <prompt>public_grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s %i -j SNAT --to-source %ipub\n"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>public_deniedhost</para>
+				<para>Line with rule(s) for disconnected node with specified public IP.
+				By default rule specified in 'deniedhost' option.</para>
+				<para>Example: <prompt>public_deniedhost = ""</prompt></para>
+			</listitem>
+			<listitem>
+				<para>warnedhost</para>
+				<para>Line with rule(s) for node with set warnings flag.</para>
+				<para>Example: <prompt>warnedhost = "$IPT -A PREROUTING -s %i --dport 80 -p tcp -j REDIRECT --to-port 82\n"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>public_warnedhost</para>
+				<para>Line with rule(s) for node with set warnings flag and specified 
+				public IP. By default rule specified in 'warnedhost' option.</para>
+				<para>Example: <prompt>public_warnedhost = ""</prompt></para>
+			</listitem>
+			<listitem>
+				<para>public_replace</para>
+				<para>Specify that rules for public addresses would overwrite main rules
+				or be added to them. Default: enabled.</para>
+				<para>Przyk³ad: <prompt>public_replace = false</prompt></para>
+			</listitem>
+			<listitem>
+				<para>warn_replace</para>
+				<para>Specify that rules for nodes with warnings would replace main rules 
+				or be added to them. Default: disabled.</para>
+				<para>Przyk³ad: <prompt>warn_replace = true</prompt></para>
+			</listitem>
                <listitem>
                    <para>networks</para>
                    <para>List of network names which members should be included in config (case
