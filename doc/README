@@ -706,8 +706,8 @@ password = password_entered_with_lms_user_creation
 
    Advanced users can define any additional access rules or redefine
    existing ones. In order to do that you must make PHP script based on
-   file lib/accesstable.php and place it in LMS's lib directory. Then set
-   option custom_accesstable in [phpui] section to created file name.
+   file lib/accesstable.php. Then set option custom_accesstable in [phpui]
+   section to created file name.
 
    In that way it's possible to define your own rules to allow or deny
    access for any modules. Module is a name of PHP file in modules
@@ -3809,6 +3809,24 @@ Chapter 6. LMS Daemon
        tariffs assignments. In other way tariffs assignments with
        customers are checked. Default: false.
        Example: use_nodeassignments = true
+     * check_invoices
+       This option enables additional checking if customer has unpayed
+       invoices with deadline date older than date specified in 'deadline'
+       option. Default: false.
+       Example: check_invoices = true
+     * deadline
+       Sets period in days (from invoice deadline date), after which
+       unpayed invoice is considered for 'check_invoices' check. By
+       default, customer would be blocked just after deadline. Default: 0.
+       Example: deadline = 30
+     * customergroups
+       List of customers groups to restrict customers for accounting.
+       Default: empty (all groups).
+       Example: customergroups = "group1 group2"
+     * excluded_customergroups
+       List of excluded customers groups to restrict customers for
+       accounting. Default: empty (none).
+       Example: excluded_customergroups = "group3 group4"
      __________________________________________________________________
 
 6.2.7. DHCP
@@ -3886,17 +3904,17 @@ Chapter 6. LMS Daemon
 6.2.8.1. Description
 
    Module 'hostfile' is a multipurpose tool. It performs loop on all hosts
-   from database fetching their status (connected/disconnected), network
+   (nodes and network devices addresses) from database fetching their
+   connection and warnings status, private and public addresses, network
    that they are connected to and groups of they owners. Because of that
-   it is possible to create any firewall rules, or /etc/hosts file. Data
-   is written to file and after that specified shell command is executed.
+   it is possible to create any set of firewall rules, or /etc/hosts file.
+   Data is written to file and after that specified shell command can be
+   executed.
      __________________________________________________________________
 
 6.2.8.2. Configuration
 
-   The following templates might be used for 'grantedhost', 'deniedhost',
-   'public_grantedhost' and 'public_deniedhost' options replaced with
-   actual data from database:
+   The following replacement variables can be used in host rule options:
    %i - IP address,
    %ipub - public IP address,
    %id - node ID,
@@ -3927,6 +3945,12 @@ Chapter 6. LMS Daemon
      * end
        File footer. Default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"
        Example: end = "$IPT -A FORWARD -J REJECT\n"
+     * host_begin
+       Host rule header. Default: ""
+       Example: host_begin = "#%n\n"
+     * host_end
+       Host rule footer. Default: ""
+       Example: host_end = "\n"
      * grantedhost
        Line with rule(s) for connected node. Default: "/usr/sbin/iptables
        -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"
@@ -3949,6 +3973,22 @@ Chapter 6. LMS Daemon
        Line with rule(s) for disconnected node with specified public IP.
        By default rule specified in 'deniedhost' option.
        Example: public_deniedhost = ""
+     * warnedhost
+       Line with rule(s) for node with set warnings flag.
+       Example: warnedhost = "$IPT -A PREROUTING -s %i --dport 80 -p tcp
+       -j REDIRECT --to-port 82\n"
+     * public_warnedhost
+       Line with rule(s) for node with set warnings flag and specified
+       public IP. By default rule specified in 'warnedhost' option.
+       Example: public_warnedhost = ""
+     * public_replace
+       Specify that rules for public addresses would overwrite main rules
+       or be added to them. Default: enabled.
+       Przyk³ad: public_replace = false
+     * warn_replace
+       Specify that rules for nodes with warnings would replace main rules
+       or be added to them. Default: disabled.
+       Przyk³ad: warn_replace = true
      * networks
        List of network names which members should be included in config
        (case insensitive). Default: empty (all networks).
@@ -4977,6 +5017,7 @@ Chapter 7. For curious
    modid - serial of LMS user last modification this record
    deleted - if is deleted from database boolean (0/1)
    message - message to be displayed if warnings enabled
+   cutoffstop - date to which customers cutting off is disabled
      __________________________________________________________________
 
 7.2.3. Customer groups ('customergroups')
