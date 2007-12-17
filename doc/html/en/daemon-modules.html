@@ -820,6 +820,55 @@ CLASS="PROMPT"
 >use_nodeassignments = true</SAMP
 ></P
 ></LI
+><LI
+><P
+>check_invoices</P
+><P
+>This option enables additional checking if customer has
+					unpayed invoices with deadline date older than date specified in 'deadline' option. Default: false.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>check_invoices = true</SAMP
+></P
+></LI
+><LI
+><P
+>deadline</P
+><P
+>Sets period in days (from invoice deadline date), after which 
+					unpayed invoice is considered for 'check_invoices' check. By default, 
+					customer would be blocked just after deadline. Default: 0.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>deadline = 30</SAMP
+></P
+></LI
+><LI
+><P
+>customergroups</P
+><P
+>List of customers groups to restrict customers for accounting.
+					Default: empty (all groups).</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>customergroups = "group1 group2"</SAMP
+></P
+></LI
+><LI
+><P
+>excluded_customergroups</P
+><P
+>List of excluded customers groups to restrict customers for 
+					accounting. Default: empty (none).</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>excluded_customergroups = "group3 group4"</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ></DIV
@@ -1035,11 +1084,13 @@ NAME="HOSTFILE-DESC"
 >6.2.8.1. Description</A
 ></H3
 ><P
->Module 'hostfile' is a multipurpose tool. It performs loop on all hosts from
-              database fetching their status (connected/disconnected), network that they are
-              connected to and groups of they owners. Because of that it is possible to create any
-              firewall rules, or /etc/hosts file. Data is written to file and after that specified
-              shell command is executed.</P
+>Module 'hostfile' is a multipurpose tool. It performs loop on all hosts
+				(nodes and network devices addresses) from database fetching their 
+				connection and warnings status, private and public addresses, network
+				that they are connected to and groups of they owners. Because of that it 
+				is possible to create any set of firewall rules, or /etc/hosts file. Data is 
+				written to file and after that specified shell command can be 
+				executed.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -1050,9 +1101,8 @@ NAME="HOSTFILE-CONFIG"
 >6.2.8.2. Configuration</A
 ></H3
 ><P
->The following templates might be used for 'grantedhost', 'deniedhost', 'public_grantedhost'
-	      and 'public_deniedhost' options replaced with actual data from database: 
-	      <TABLE
+>The following replacement variables can be used in host rule options:
+			<TABLE
 BORDER="0"
 ><TBODY
 ><TR
@@ -1174,6 +1224,28 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>host_begin</P
+><P
+>Host rule header. Default: ""</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>host_begin = "#%n\n"</SAMP
+></P
+></LI
+><LI
+><P
+>host_end</P
+><P
+>Host rule footer. Default: ""</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>host_end = "\n"</SAMP
+></P
+></LI
+><LI
+><P
 >grantedhost</P
 ><P
 >Line with rule(s) for connected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</P
@@ -1199,7 +1271,7 @@ CLASS="PROMPT"
 >public_grantedhost</P
 ><P
 >Line with rule(s) for connected node with specified public IP.
-		    By default rule specified in 'grantedhost' option.</P
+				By default rule specified in 'grantedhost' option.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -1211,11 +1283,58 @@ CLASS="PROMPT"
 >public_deniedhost</P
 ><P
 >Line with rule(s) for disconnected node with specified public IP.
-		    By default rule specified in 'deniedhost' option.</P
+				By default rule specified in 'deniedhost' option.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
 >public_deniedhost = ""</SAMP
+></P
+></LI
+><LI
+><P
+>warnedhost</P
+><P
+>Line with rule(s) for node with set warnings flag.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>warnedhost = "$IPT -A PREROUTING -s %i --dport 80 -p tcp -j REDIRECT --to-port 82\n"</SAMP
+></P
+></LI
+><LI
+><P
+>public_warnedhost</P
+><P
+>Line with rule(s) for node with set warnings flag and specified 
+				public IP. By default rule specified in 'warnedhost' option.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>public_warnedhost = ""</SAMP
+></P
+></LI
+><LI
+><P
+>public_replace</P
+><P
+>Specify that rules for public addresses would overwrite main rules
+				or be added to them. Default: enabled.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>public_replace = false</SAMP
+></P
+></LI
+><LI
+><P
+>warn_replace</P
+><P
+>Specify that rules for nodes with warnings would replace main rules 
+				or be added to them. Default: disabled.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>warn_replace = true</SAMP
 ></P
 ></LI
 ><LI

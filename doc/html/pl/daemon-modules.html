@@ -857,6 +857,57 @@ CLASS="PROMPT"
 >use_nodeassignments = true</SAMP
 ></P
 ></LI
+><LI
+><P
+>check_invoices</P
+><P
+>Opcja w³±cza dodatkowe sprawdzenie czy klient posiada nierozliczone
+				faktury z dniem p³atno¶ci starszym o okre¶lon± w opcji 'deadline'
+				ilo¶æ dni. Domy¶lnie: wy³±czona.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>check_invoices = true</SAMP
+></P
+></LI
+><LI
+><P
+>deadline</P
+><P
+>Okre¶la okres w dniach (licz±c od terminu p³atno¶ci faktury), 
+				po którym nierozliczona faktura jest brana pod uwagê przy zastosowaniu
+				opcji 'check_invoices'. Domy¶lnie, klient zostanie zablokowany od razu
+				po terminie p³atno¶ci. Domy¶lnie: 0.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>deadline = 30</SAMP
+></P
+></LI
+><LI
+><P
+>customergroups</P
+><P
+>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+					Domy¶lnie: pusta (wszystkie grupy).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>customergroups = "grupa1 grupa2"</SAMP
+></P
+></LI
+><LI
+><P
+>excluded_customergroups</P
+><P
+>Lista nazw grup klientów, które maj± byæ pominiête. Wielko¶æ liter nie ma znaczenia. 
+					Domy¶lnie: pusta (¿adna).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>excluded_customergroups = "grupa3 grupa4"</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ></DIV
@@ -1074,9 +1125,11 @@ NAME="HOSTFILE-DESC"
 ></H3
 ><P
 >Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
-		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
-		    status (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz
-		    grupy do których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np. regu³
+		    wykonuje pêtlê po wszystkich komputerach (oraz adresach urz±dzeñ sieciowych)
+			w bazie rozró¿niaj±c ich status pod³±czenia i ostrze¿enia, adresy prywatne 
+			i publiczne, a ponadto sieæ do której s± pod³±czone oraz grupy do których 
+			nale¿± ich w³a¶ciciele. 
+			Dziêki temu mo¿liwe jest tworzenie np. regu³
 		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
 		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</P
 ></DIV
@@ -1089,8 +1142,8 @@ NAME="HOSTFILE-CONFIG"
 >6.2.8.2. Konfiguracja</A
 ></H3
 ><P
->W opcjach 'grantedhost' i 'deniedhost' oraz 'public_deniedhost' i 'public_grantedhost'
-		    mo¿na stosowaæ specjalne zmienne, które podczas zapisu do pliku zostan± 
+>W opcjach zawieraj±cych regu³y hosta mo¿na stosowaæ specjalne 
+			zmienne, które podczas zapisu do pliku zostan± 
 		    zast±pione odpowiednimi dla danego komputera danymi:
 		    <TABLE
 BORDER="0"
@@ -1157,11 +1210,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->%i16 - ostatni oktet adresu IP w formacie szesnatskowym,</TD
+>%i16 - ostatni oktet adresu IP w formacie szesnastkowym,</TD
 ></TR
 ><TR
 ><TD
->%i16pub - ostatni oktet publicznego adresu IP w formacie szesnatskowym.</TD
+>%i16pub - ostatni oktet publicznego adresu IP w formacie szesnastkowym.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -1215,9 +1268,31 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>host_begin</P
+><P
+>Nag³ówek regu³y hosta. Domy¶lnie: ""</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host_begin = "#%n\n"</SAMP
+></P
+></LI
+><LI
+><P
+>host_end</P
+><P
+>Stopka regu³y hosta. Domy¶lnie: ""</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host_end = "\n"</SAMP
+></P
+></LI
+><LI
+><P
 >grantedhost</P
 ><P
->Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</P
+>Regu³a dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -1228,7 +1303,7 @@ CLASS="PROMPT"
 ><P
 >deniedhost</P
 ><P
->Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</P
+>Regu³a dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -1239,8 +1314,8 @@ CLASS="PROMPT"
 ><P
 >public_grantedhost</P
 ><P
->Tekst dla hosta pod³±czonego, który posiada adres publiczny. 
-			    Domy¶lnie regu³a okre¶lona opcj± 'grantedhost'.</P
+>Regu³a dla hosta pod³±czonego, który posiada adres publiczny. 
+				Domy¶lnie regu³a okre¶lona opcj± 'grantedhost'.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -1251,12 +1326,59 @@ CLASS="PROMPT"
 ><P
 >public_deniedhost</P
 ><P
->Tekst dla hosta od³±czonego, który posiada adres publiczny. 
-			    Domy¶lnie regu³a okre¶lona opcj± 'deniedhost'.</P
+>Regu³a dla hosta od³±czonego, który posiada adres publiczny. 
+				Domy¶lnie regu³a okre¶lona opcj± 'deniedhost'.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >public_deniedhost = ""</SAMP
+></P
+></LI
+><LI
+><P
+>warnedhost</P
+><P
+>Regu³a dla hosta z w³±czonym ostrze¿eniem.
+				Domy¶lnie regu³a okre¶lona opcj± 'grantedhost'.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>warnedhost = "$IPT -A PREROUTING -s %i --dport 80 -p tcp -j REDIRECT --to-port 82\n"</SAMP
+></P
+></LI
+><LI
+><P
+>public_warnedhost</P
+><P
+>Regu³a dla hosta z w³±czonym ostrze¿eniem, który posiada adres
+				publiczny. Domy¶lnie regu³a okre¶lona opcj± 'warnedhost'.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>public_warnedhost = ""</SAMP
+></P
+></LI
+><LI
+><P
+>public_replace</P
+><P
+>Okre¶la czy regu³y zdefiniowane dla adresów publicznych maj± nadpisaæ
+				regu³y g³ówne, czy zostaæ dopisane do nich.	Domy¶lnie: w³±czona.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>public_replace = false</SAMP
+></P
+></LI
+><LI
+><P
+>warn_replace</P
+><P
+>Okre¶la czy regu³y zdefiniowane dla komputerów z ostrze¿eniem maj± nadpisaæ regu³y g³ówne, czy zostaæ dopisane do nich. Domy¶lnie: wy³±czona.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>warn_replace = true</SAMP
 ></P
 ></LI
 ><LI
