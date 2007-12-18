@@ -65,11 +65,20 @@ if($instance)
 					    $instance['crontab'],
 					    $instance['priority']));
 		
+		if($instance['id'])
+		{
+			$id = $DB->GetLastInsertId('daemoninstances');
+			$DB->Execute('INSERT INTO daemonconfig (var, description, value, instanceid)
+					SELECT var, description, value, ? FROM daemonconfig
+					WHERE instanceid = ?', array($id, $instance['id']));
+		}
+		
 		if(!isset($instance['reuse']))
 		{
 			$SESSION->redirect('?m=daemoninstancelist&id='.$instance['hostid']);
 		}
 		
+		unset($instance['id']);
 		unset($instance['name']);
 		unset($instance['module']);
 		unset($instance['crontab']);
@@ -78,15 +87,22 @@ if($instance)
 	}
 }	
 
+if(isset($_GET['id']))
+{
+	$instance = $DB->GetRow('SELECT * FROM daemoninstances
+			WHERE id = ?', array(intval($_GET['id'])));
+}
+
+$instance['hostid'] = isset($instance['hostid']) ? $instance['hostid'] : $_GET['hostid'];
+
 $layout['pagetitle'] = trans('New Instance');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$instance['hostid'] = isset($instance['hostid']) ? $instance['hostid'] : $_GET['hostid'];
-
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', $instance);
 $SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
+
 $SMARTY->display('daemoninstanceadd.html');
 
 ?>

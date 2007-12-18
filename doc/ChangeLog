@@ -18,6 +18,7 @@ version ? (????-??-??):
   - rtmessageadd: fixed php_ui/debug_email empty value checking (chilan)
   - invoices: added option invoices/print_balance_history_save (alec)
   - receipts: positions adding with double click protection (alec)
+  - lmsd configuration: instances cloning (alec) 
 
 version 1.11.1 Talus (2007-12-03):
 
