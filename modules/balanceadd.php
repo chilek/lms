@@ -28,7 +28,9 @@ $addbalance = $_POST['addbalance'];
 
 $addbalance['value'] = str_replace(',','.',$addbalance['value']);
 
-if(isset($addbalance['time']) && $addbalance['time'] != '' && ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$', $addbalance['time']))
+if(isset($addbalance['time']) && $addbalance['time'] != '' 
+	&& ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$', $addbalance['time'])
+	&& ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $addbalance['time']))
 {
 	// here we should throw error back to user about fucked up date format or something
 	// otherwise mktime invokes error about expected parameters
@@ -36,14 +38,16 @@ if(isset($addbalance['time']) && $addbalance['time'] != '' && ! ereg('^[0-9]{4}/
 elseif(isset($addbalance['time']) && $addbalance['time']!='')
 {
 	// date format 'yyyy/mm/dd hh:mm'	
-	list($date,$time) = split(' ', $addbalance['time']);
-	$date = explode('/',$date);
-	$time = explode(':',$time);
-
+	$date = split(' ', $addbalance['time']);
+	if(isset($date[1]))
+		$time = explode(':',$date[1]);
+	else {
+		$time[0] = $time[1] = 0;
+	}	
+	$date = explode('/',$date[0]);
+	
 	if(checkdate($date[1],$date[2],(int)$date[0])) //if date is wrong, set today's date
 	{
-		if (!strlen($time[0]) || !strlen($time[1]))
-			$time[0] = $time[1] = 0;
 		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
 	}
 	else
@@ -59,17 +63,17 @@ $SESSION->save('addbt', $addbalance['time']);
 $SESSION->save('addbv', $addbalance['value']);
 $SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0);
 
+if($addbalance['type'] == 0)
+	$addbalance['value'] *= -1;
+else
+	$addbalance['taxid'] = 0;
+
 if(isset($addbalance['mcustomerid']))
 {
 	foreach($addbalance['mcustomerid'] as $value)
 		if($LMS->CustomerExists($value))
 		{
 			$addbalance['customerid'] = $value;
-			if($addbalance['type']) 
-				$addbalance['taxid'] = 0;
-			
-			if($addbalance['type'] == 0)
-				$addbalance['value'] *= -1;
 			if($addbalance['value'] != 0)
 				$LMS->AddBalance($addbalance);
 		}
@@ -78,11 +82,6 @@ elseif(isset($addbalance['customerid']))
 {
 	if($LMS->CustomerExists($addbalance['customerid']))
 	{
-		if($addbalance['type']) 
-			$addbalance['taxid'] = 0;
-			
-		if($addbalance['type'] == 0)
-			$addbalance['value'] *= -1;
 		if($addbalance['value'] != 0)
 			$LMS->AddBalance($addbalance);
 	}
