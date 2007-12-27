@@ -168,7 +168,7 @@ if(isset($_POST['ticket']))
 				{
 					if(in_array($email, (array)$oldrecipients)) continue;					
 				
-					if(isset($CONFIG['phpui']['debug_email']) && $CONFIG['phpui']['debug_email'])
+					if(!empty($CONFIG['phpui']['debug_email']))
 						$recip = $CONFIG['phpui']['debug_email'];
 					else
 						$recip = $email;
