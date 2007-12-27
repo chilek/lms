@@ -121,7 +121,7 @@ if(isset($_POST['ticket']))
 			{
 				foreach($recipients as $email)
 				{
-					if($CONFIG['phpui']['debug_email'])
+					if(!empty($CONFIG['phpui']['debug_email']))
 						$recip = $CONFIG['phpui']['debug_email'];
 					else
 						$recip = $email;

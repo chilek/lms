@@ -146,7 +146,7 @@ if(isset($_POST['mailing']))
 				$files[0]['data'] = $file;
 			}
 
-			if(isset($CONFIG['phpui']['debug_email']))
+			if(!empty($CONFIG['phpui']['debug_email']))
 				echo '<B>'.trans('Warning! Debug mode (using address $0).',$CONFIG['phpui']['debug_email']).'</B><BR>';
 			
 			$headers['Date'] = date('D, d F Y H:i:s T');
@@ -156,7 +156,7 @@ if(isset($_POST['mailing']))
 			
 			foreach($emails as $key => $row)
 			{
-				if(isset($CONFIG['phpui']['debug_email']))
+				if(!empty($CONFIG['phpui']['debug_email']))
 					$row['email'] = $CONFIG['phpui']['debug_email'];
 				
 				$body = $mailing['body'];

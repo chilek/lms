@@ -157,8 +157,8 @@ if(isset($_POST['mailing']))
 				$files[0]['data'] = $file;
 			}
 
-			if(isset($LMS->CONFIG['phpui']['debug_email']))
-				echo '<B>'.trans('Warning! Debug mode (using address $0).',$LMS->CONFIG['phpui']['debug_email']).'</B><BR>';
+			if(!empty($CONFIG['phpui']['debug_email']))
+				echo '<B>'.trans('Warning! Debug mode (using address $0).',$CONFIG['phpui']['debug_email']).'</B><BR>';
 			
 			$headers['Date'] = date('r');
 			$headers['From'] = '"'.$mailing['from'].'" <'.$mailing['sender'].'>';
@@ -167,8 +167,8 @@ if(isset($_POST['mailing']))
 			
 			foreach($emails as $key => $row)
 			{
-				if(isset($LMS->CONFIG['phpui']['debug_email']))
-					$row['email'] = $LMS->CONFIG['phpui']['debug_email'];
+				if(!empty($CONFIG['phpui']['debug_email']))
+					$row['email'] = $CONFIG['phpui']['debug_email'];
 				
 				$body = $mailing['body'];
 				
