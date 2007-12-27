@@ -63,17 +63,17 @@ $SESSION->save('addbt', $addbalance['time']);
 $SESSION->save('addbv', $addbalance['value']);
 $SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0);
 
+if($addbalance['type'] == 0)
+	$addbalance['value'] *= -1;
+else
+	$addbalance['taxid'] = 0;
+
 if(isset($addbalance['mcustomerid']))
 {
 	foreach($addbalance['mcustomerid'] as $value)
 		if($LMS->CustomerExists($value))
 		{
 			$addbalance['customerid'] = $value;
-			if($addbalance['type']) 
-				$addbalance['taxid'] = 0;
-			
-			if($addbalance['type'] == 0)
-				$addbalance['value'] *= -1;
 			if($addbalance['value'] != 0)
 				$LMS->AddBalance($addbalance);
 		}
@@ -82,11 +82,6 @@ elseif(isset($addbalance['customerid']))
 {
 	if($LMS->CustomerExists($addbalance['customerid']))
 	{
-		if($addbalance['type']) 
-			$addbalance['taxid'] = 0;
-			
-		if($addbalance['type'] == 0)
-			$addbalance['value'] *= -1;
 		if($addbalance['value'] != 0)
 			$LMS->AddBalance($addbalance);
 	}
