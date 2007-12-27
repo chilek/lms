@@ -409,7 +409,7 @@ CREATE TABLE netdevices (
 	serialnumber varchar(32) DEFAULT '' NOT NULL,
 	ports integer 		DEFAULT 0 NOT NULL,
 	purchasetime integer	DEFAULT 0 NOT NULL,
-	quaranteeperiod smallint DEFAULT 0,
+	guaranteeperiod smallint DEFAULT 0,
 	PRIMARY KEY (id)
 );
 
