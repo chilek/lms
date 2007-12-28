@@ -141,6 +141,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('messages', 'networks') || '';
+my $except_networks_list = $ini->val('messages', 'except_networks') || '';
 my $customergroups_list = $ini->val('messages', 'customergroups') || '';
 my $cfile = $ini->val('messages', 'config_file') || '/etc/rc.d/rc.messages';
 my $cuid = $ini->val('messages', 'config_owneruid') || '0';
@@ -191,6 +192,15 @@ if(!$networks_list)
 }
 
 my @networks = split ' ',$networks_list;
+
+if($except_networks_list)
+{
+    my @except_networks = split ' ', $except_networks_list;
+    foreach my $except_network (@except_networks)
+    {
+	@networks = grep(!/^$except_network$/, @networks);
+    }
+}
 
 my $inicustomergroups = $customergroups_list;
 

@@ -143,6 +143,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('warnings', 'networks') || '';
+my $except_networks_list = $ini->val('warnings', 'except_networks') || '';
 my $customergroups_list = $ini->val('warnings', 'customergroups') || '';
 my $cfile = $ini->val('warnings', 'config_file') || '/etc/rc.d/rc.warnings';
 my $cuid = $ini->val('warnings', 'config_owneruid') || '0';
@@ -202,6 +203,15 @@ if(!$networks_list)
 }
 
 my @networks = split ' ',$networks_list;
+
+if($except_networks_list)
+{
+    my @except_networks = split ' ', $except_networks_list;
+    foreach my $except_network (@except_networks)
+    {
+	@networks = grep(!/^$except_network$/, @networks);
+    }
+}
 
 my $inicustomergroups = $customergroups_list;
 

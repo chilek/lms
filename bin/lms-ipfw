@@ -145,6 +145,7 @@ if(! -r $configfile)
 my $ini = new Config::IniFiles -file => $configfile;
 
 my $networks_list = $ini->val('freebsd_ipfw', 'networks') || $my_network;
+my $except_networks_list = $ini->val('freebsd_ipfw', 'except_networks') || '';
 my $cfile = $ini->val('freebsd_ipfw', 'rules_file') || '/usr/local/sbin/ipfw_rules.sh';
 my $cfile1 = $ini->val('freebsd_ipfw', 'rules_del_file') || '/usr/local/sbin/ipfw_del_rules.sh';
 my $cfile2 = '/usr/local/sbin/dhcp_rules';
@@ -198,6 +199,16 @@ if(!$networks_list)
 }
 
 my @networks = split ' ',$networks_list;
+
+if($except_networks_list)
+{
+    my @except_networks = split ' ', $except_networks_list;
+    foreach my $except_network (@except_networks)
+    {
+	@networks = grep(!/^$except_network$/, @networks);
+    }
+}
+			
 my %limittable;
 my %maclist;
 my %accesslist;
