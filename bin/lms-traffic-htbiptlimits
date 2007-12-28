@@ -269,6 +269,7 @@ foreach my $key (@networks)
 		}
 		$sdbq->finish();
 	}
+	$dbq->finish();
 }
 
 foreach my $key (keys %iftable)
@@ -279,7 +280,6 @@ foreach my $key (keys %iftable)
 	print OUTFILE "$tc_binary class add dev $key parent 1:9998 classid 1:9999 htb rate ".$iftable{$key}."kbit burst ".($iftable{$key} / 10)."kbit\n";
 	
 }
-$dbq->finish();
 
 my $iptid = 0;
 my %htbid;
