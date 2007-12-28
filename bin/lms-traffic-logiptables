@@ -103,6 +103,7 @@ my $cuid = $ini->val('traffic-logiptables', 'script_owneruid') || '0';
 my $cgid = $ini->val('traffic-logiptables', 'script_ownergid') || '0';
 my $cperm = $ini->val('traffic-logiptables', 'script_permission') || '700';
 my $networks_list = $ini->val('traffic-logiptables', 'networks') || '';
+my $except_networks_list = $ini->val('traffic-logiptables', 'except_networks') || '';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
@@ -180,6 +181,15 @@ my %down;
 my %up;
 my $networkswhere = '';
 my @networks = split ' ', $networks_list;
+
+if($except_networks_list)
+{
+    my @except_networks = split ' ', $except_networks_list;
+    foreach my $except_network (@except_networks)
+    {
+	@networks = grep(!/^$except_network$/, @networks);
+    }
+}
 
 foreach my $net (@networks)
 {

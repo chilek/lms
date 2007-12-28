@@ -128,6 +128,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('dhcp', 'networks') || '';
+my $except_networks_list = $ini->val('dhcp', 'except_networks') || '';
 my $customergroups_list = $ini->val('dhcp', 'customergroups') || '';
 my $deflease = $ini->val('dhcp', 'default_lease_time') || '86400';
 my $maxlease = $ini->val('dhcp', 'max_lease_time') || '86400';
@@ -196,6 +197,15 @@ my @used_ifaces;
 my $last_iface = '';
 my @if;
 my @networks = split ' ',$networks_list;
+
+if($except_networks_list)
+{
+    my @except_networks = split ' ', $except_networks_list;
+    foreach my $except_network (@except_networks)
+    {
+	@networks = grep(!/^$except_network$/, @networks);
+    }
+}
 
 my $dbq = $dbase->prepare("SELECT id, name FROM customergroups");
 $dbq->execute();

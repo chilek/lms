@@ -176,6 +176,7 @@ sub instance($)
 	my $footer_file = $ini->val("mgc:$instanceno",'footer_file') || '';
 	my $footer = $ini->val("mgc:$instanceno",'footer') || '';			
 	my $networks = $ini->val("mgc:$instanceno", 'networks') || '';
+	my $except_networks = $ini->val("mgc:$instanceno", 'except_networks') || '';
 	my $dst_networks = $ini->val("mgc:$instanceno", 'dst_networks') || '';
 	my $network_header = $ini->val("mgc:$instanceno", 'network_header') || '';
 	my $dst_network_header = $ini->val("mgc:$instanceno", 'dst_network_header') || '';
@@ -308,6 +309,16 @@ sub instance($)
 	}
 
 	my @networks = split ' ',$networks;
+
+	if($except_networks)
+	{
+		my @except_networks = split ' ', $except_networks;
+		foreach my $except_network (@except_networks)
+		{
+			@networks = grep(!/^$except_network$/, @networks);
+		}
+	}
+			
 	my @dst_networks = split ' ',$dst_networks;
 	my @ignore_items = split ' ',$ignore_list;
 	

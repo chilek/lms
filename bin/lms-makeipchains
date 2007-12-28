@@ -127,6 +127,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('ipchains', 'networks') || '';
+my $except_networks_list = $ini->val('ipchains', 'except_networks') || '';
 my $forward_to_list = $ini->val('ipchains', 'forward_to') || '';
 my $cfile = $ini->val('ipchains', 'script_file') || '/etc/rc.d/rc.masq';
 my $cuid = $ini->val('ipchains', 'script_owneruid') || '0';
@@ -192,6 +193,16 @@ if(!$forward_to_list)
 }
 
 my @networks = split ' ',$networks_list;
+
+if($except_networks_list)
+{
+    my @except_networks = split ' ', $except_networks_list;
+    foreach my $except_network (@except_networks)
+    {
+	@networks = grep(!/^$except_network$/, @networks);
+    }
+}
+
 my @fw_networks = split ' ',$forward_to_list;
 
 $tcp_rports_list =~ s/ //g;
