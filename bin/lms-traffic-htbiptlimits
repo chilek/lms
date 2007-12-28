@@ -107,6 +107,8 @@ if(! -r $configfile)
 my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
+my $networks_list = $ini->val('traffic-htbiptlimits','networks') || '';
+my $except_networks_list = $ini->val('traffic-htbiptlimits','except_networks') || '';
 my $outfile = $ini->val('traffic-htbiptlimits','outfile') || '/etc/rc.d/rc.limits';
 my $iptables_binary = $ini->val('traffic-htbiptlimits','iptables_binary') || '/usr/sbin/iptables';
 my $tc_binary = $ini->val('traffic-htbiptlimits','tc_binary') || '/sbin/tc';
@@ -151,6 +153,31 @@ else
 	exit 1;
 }
 
+my $allnetworks = "";
+
+my $dbq = $dbase->prepare("SELECT name FROM networks");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref()) {
+        $allnetworks = "$allnetworks $row->{'name'}";
+}
+$dbq->finish();
+	
+if(!$networks_list)
+{
+	$networks_list = $allnetworks;
+}
+
+my @networks = split ' ',$networks_list;
+
+if($except_networks_list)
+{
+	my @except_networks = split ' ', $except_networks_list;
+	foreach my $except_network (@except_networks)
+	{
+		@networks = grep(!/^$except_network$/, @networks);
+	}
+}
+					
 open(OUTFILE, ">$outfile") or die("Fatal error: Unable to write $outfile, exiting.\n");
 
 my @local_ports_list = split(' ',$local_ports);
@@ -221,22 +248,26 @@ foreach my $local_dest (@local_dests_list)
 }
 
 my %nodetable;
-my $dbq = $dbase->prepare("SELECT address, mask, interface FROM networks");
-$dbq->execute();
-while (my $row = $dbq->fetchrow_hashref())
+foreach my $key (@networks)
 {
-	my $netstart = $row->{'address'};
-	my $prefix = mask2prefix($row->{'mask'});
-	my $netsize = 2**(32 - $prefix);
-	my $netend = $netstart + $netsize - 1;
-	my $sdbq = $dbase->prepare("SELECT ipaddr, ownerid FROM nodes WHERE ipaddr >= $netstart AND ipaddr <= $netend");
-	$sdbq->execute();
-	while (my $srow = $sdbq->fetchrow_hashref())
+	my $dbq = $dbase->prepare("SELECT address, mask, interface FROM networks WHERE name = UPPER('$key')");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref())
 	{
-		my $ipaddr = u32todotquad($srow->{'ipaddr'});
-		$nodetable{$srow->{'ownerid'}} = "" if not defined $nodetable{$srow->{'ownerid'}};
-		$nodetable{$srow->{'ownerid'}} = $nodetable{$srow->{'ownerid'}} . " " . $ipaddr . ":" . $row->{'interface'};
-		$iftable{$row->{'interface'}} = $totalspd if not defined $iftable{$row->{'interface'}};
+		my $netstart = $row->{'address'};
+		my $prefix = mask2prefix($row->{'mask'});
+		my $netsize = 2**(32 - $prefix);
+		my $netend = $netstart + $netsize - 1;
+		my $sdbq = $dbase->prepare("SELECT ipaddr, ownerid FROM nodes WHERE ipaddr >= $netstart AND ipaddr <= $netend");
+		$sdbq->execute();
+		while (my $srow = $sdbq->fetchrow_hashref())
+		{
+			my $ipaddr = u32todotquad($srow->{'ipaddr'});
+			$nodetable{$srow->{'ownerid'}} = "" if not defined $nodetable{$srow->{'ownerid'}};
+			$nodetable{$srow->{'ownerid'}} = $nodetable{$srow->{'ownerid'}} . " " . $ipaddr . ":" . $row->{'interface'};
+			$iftable{$row->{'interface'}} = $totalspd if not defined $iftable{$row->{'interface'}};
+		}
+		$sdbq->finish();
 	}
 }
 
