@@ -19,6 +19,7 @@ version ? (????-??-??):
   - invoices: added option invoices/print_balance_history_save (alec)
   - receipts: positions adding with double click protection (alec)
   - lmsd configuration: instances cloning (alec) 
+  - perl backend: except_networks parameter added (chilan)
 
 version 1.11.1 Talus (2007-12-03):
 
