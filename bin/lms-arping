@@ -103,6 +103,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('arping','networks') || '';
+my $except_networks_list = $ini->val('arping','except_networks') || '';
 my $arping = $ini->val('arping','arping_binary') || '/sbin/arping';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
@@ -142,6 +143,15 @@ if(!$networks_list)
 }
 
 my @networks = split ' ', $networks_list;
+
+if($except_networks_list)
+{
+    my @except_networks = split ' ', $except_networks_list;
+    foreach my $except_network (@except_networks)
+    {
+	@networks = grep(!/^$except_network$/, @networks);
+    }
+}
 
 my @lines;
 
