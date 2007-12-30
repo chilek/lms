@@ -102,7 +102,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('fping','networks') || '';
-my $except_networks_list = $ini->val('fping','except_networks') || '';
+my $excluded_networks_list = $ini->val('fping','excluded_networks') || '';
 my $fping = $ini->val('fping','fping_binary') || '/usr/sbin/fping';
 my $tmpfile = $ini->val('fping','temp_file') || '/tmp/fping_hosts';
 
@@ -143,12 +143,12 @@ if(!$networks_list)
 
 my @networks = split ' ', $networks_list;
 
-if($except_networks_list)
+if($excluded_networks_list)
 {
-    my @except_networks = split ' ', $except_networks_list;
-    foreach my $except_network (@except_networks)
+    my @excluded_networks = split ' ', $excluded_networks_list;
+    foreach my $excluded_network (@excluded_networks)
     {
-	@networks = grep(!/^$except_network$/, @networks);
+	@networks = grep(!/^$excluded_network$/, @networks);
     }
 }
 
