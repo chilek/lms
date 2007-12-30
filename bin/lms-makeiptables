@@ -127,7 +127,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('iptables', 'networks') || '';
-my $except_networks_list = $ini->val('iptables', 'except_networks') || '';
+my $excluded_networks_list = $ini->val('iptables', 'excluded_networks') || '';
 my $forward_to_list = $ini->val('iptables', 'forward_to') || '';
 my $cfile = $ini->val('iptables', 'script_file') || '/etc/rc.d/rc.masq';
 my $cuid = $ini->val('iptables', 'script_owneruid') || '0';
@@ -193,12 +193,12 @@ if(!$forward_to_list)
 
 my @networks = split ' ',$networks_list;
 
-if($except_networks_list)
+if($excluded_networks_list)
 {
-    my @except_networks = split ' ', $except_networks_list;
-    foreach my $except_network (@except_networks)
+    my @excluded_networks = split ' ', $excluded_networks_list;
+    foreach my $excluded_network (@excluded_networks)
     {
-	@networks = grep(!/^$except_network$/, @networks);
+	@networks = grep(!/^$excluded_network$/, @networks);
     }
 }
 
