@@ -2399,74 +2399,85 @@ class LMS
 		return $counter;
 	}
 
-	function GetNetworkRecord($id, $page = 0, $plimit = 4294967296)
+	function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree=false)
 	{
 		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?', array($id));
 		$network['prefix'] = mask2prefix($network['mask']);
-		$network['size'] = pow(2,32-$network['prefix']);
-		$network['assigned'] = 0;
 		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
 
-		$network['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE (ipaddr >= ? AND ipaddr < ?) OR (ipaddr_pub >= ? AND ipaddr_pub < ?)', array($network['addresslong'], $network['addresslong'] + $network['size'], $network['addresslong'], $network['addresslong'] + $network['size']));
-
+		$nodes = $this->DB->GetAllByKey('
+				SELECT id, name, ipaddr, ownerid, netdev 
+				FROM nodes WHERE ipaddr > ? AND ipaddr < ?
+				UNION ALL
+				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev 
+				FROM nodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?',
+				'ipaddr',
+				array($network['addresslong'], ip_long($network['broadcast'])-1));
+	
+		$network['size'] = pow(2,32-$network['prefix']);
+		$network['assigned'] = sizeof($nodes);
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
 		if ($network['dhcpstart'])
 			$network['free'] = $network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1);
 
-		if(!$plimit)
-			return $network;
+		if(!$plimit) $plimit = 256;
+		$network['pages'] = ceil($network['size'] / $plimit);
 
-		$network['pagemax'] = ceil($network['size'] / $plimit);
-
-		if($page > $network['pagemax'])
-			$page = $network['pagemax'];
+		if($page > $network['pages'])
+			$page = $network['pages'];
 		if($page < 1)
 			$page = 1;
-
-		$page --;
-		$start = $page * $plimit;
-		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
-
-		$network['pageassigned'] = 0;
-
-		$nodes = $this->DB->GetAllByKey('SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?','ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
-		if($nodespub = $this->DB->GetAllByKey('SELECT id, name, ipaddr_pub, ownerid, netdev FROM nodes WHERE ipaddr_pub >= ? AND ipaddr_pub <= ?','ipaddr_pub', array(($network['addresslong'] + $start), ($network['addresslong'] + $end))))
-			foreach($nodespub as $idx => $row)
-				$nodes["".$idx.""] = $row;
-
-		for($i = 0; $i < ($end - $start) ; $i ++)
+    		$page --;
+		
+		while(1)
 		{
-			$longip = $network['addresslong'] + $i + $start;
-
-			$node = isset($nodes["".$longip.""]) ? $nodes["".$longip.""] : NULL;
-			$network['nodes']['id'][$i] = isset($node['id']) ? $node['id'] : 0;
-			$network['nodes']['netdev'][$i] = isset($node['netdev']) ? $node['netdev'] : 0;
-			$network['nodes']['ownerid'][$i] = isset($node['ownerid']) ? $node['ownerid'] : 0;
+		    $start = $page * $plimit;
+		    $end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
+		    $network['pageassigned'] = 0;
+		    unset($network['nodes']);
+		
+		    for($i = 0; $i < ($end - $start) ; $i ++)
+		    {
+			$longip = (string) ($network['addresslong'] + $i + $start);
 
 			$network['nodes']['addresslong'][$i] = $longip;
 			$network['nodes']['address'][$i] = long2ip($longip);
 
-			if( $network['nodes']['addresslong'][$i] >= ip_long($network['dhcpstart']) && $network['nodes']['addresslong'][$i] <= ip_long($network['dhcpend']) )
-				$network['nodes']['name'][$i] = 'DHCP';
-			elseif(isset($node['name']))
-				$network['nodes']['name'][$i] = $node['name'];
-
-			if( isset($node['id']) )
-				$network['pageassigned'] ++;
-			if( $network['nodes']['ownerid'][$i] == 0 && $network['nodes']['netdev'][$i] > 0)
+			if(isset($nodes[$longip]))
 			{
-				$netdev = $this->GetNetDevName($network['nodes']['netdev'][$i]);
-				$network['nodes']['name'][$i] = $network['nodes']['name'][$i]." (".$netdev['name'].")";
+				$network['nodes']['id'][$i] = $nodes[$longip]['id'];
+				$network['nodes']['netdev'][$i] = $nodes[$longip]['netdev'];
+				$network['nodes']['ownerid'][$i] = $nodes[$longip]['ownerid'];
+				$network['nodes']['name'][$i] = $nodes[$longip]['name'];
+				$network['pageassigned']++;
 			}
-			if( $longip == $network['addresslong'])
-				$network['nodes']['name'][$i] = '*** NETWORK ***';
-			if( $network['nodes']['address'][$i] == $network['broadcast'])
-				$network['nodes']['name'][$i] = '*** BROADCAST ***';
-			if( $network['nodes']['address'][$i] == $network['gateway'] && !isset($node['name']))
-				$network['nodes']['name'][$i] = '*** GATEWAY ***';
+			else
+			{
+				$network['nodes']['id'][$i] = 0;
+				
+				if($longip == $network['addresslong'])
+					$network['nodes']['name'][$i] = '*** NETWORK ***';
+				elseif($network['nodes']['address'][$i] == $network['broadcast'])
+					$network['nodes']['name'][$i] = '*** BROADCAST ***';
+				elseif($network['nodes']['address'][$i] == $network['gateway'])
+					$network['nodes']['name'][$i] = '*** GATEWAY ***';
+				elseif( $longip >= ip_long($network['dhcpstart']) && $longip <= ip_long($network['dhcpend']) )
+					$network['nodes']['name'][$i] = 'DHCP';
+				else
+					$freenode = true;
+			}
+		    }
+		    
+		    if($firstfree && !isset($freenode))
+		    {
+			if($page+1 > $network['pages']) break;
+			$page++;
+		    }
+		    else
+			    break;
 		}
+
 		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
-		$network['pages'] = ceil($network['size'] / $plimit);
 		$network['page'] = $page + 1;
 
 		return $network;
@@ -2479,11 +2490,6 @@ class LMS
 	function NetDevExists($id)
 	{
 		return ($this->DB->GetOne('SELECT * FROM netdevices WHERE id=?', array($id)) ? TRUE : FALSE);
-	}
-
-	function GetNetDevName($id)
-	{
-		return $this->DB->GetRow('SELECT name, model, location FROM netdevices WHERE id=?', array($id));
 	}
 
 	function GetNetDevIDByNode($id)
@@ -2925,6 +2931,7 @@ class LMS
 			case 'nodepassword_length':
 			case 'check_for_updates_period':
 			case 'print_balance_list_limit':
+			case 'networkhosts_pagelimit':
 				if($value<=0)
 					return trans('Value of option "$0" must be a number grater than zero!' ,$var);
 			break;

@@ -50,32 +50,43 @@ if (isset($_POST['page']))
     $page = $_POST['page'];
 elseif (isset($_GET['page']))
     $page = $_GET['page'];
-elseif ($SESSION->is_set('ntlp.page.'.$netid))
+elseif($SESSION->is_set('ntlp.page.'.$netid))
     $SESSION->restore('ntlp.page.'.$netid, $page);
 else
+{
     $page = 1;
-
-$SESSION->save('netid', $netid);
-$SESSION->save('ntlp.page.'.$netid, $page);
+    $firstfree = true;
+}
 
 $network = array();
 
-if($p == 'main')
+switch($p)
 {
-	$network = $LMS->GetNetworkRecord($netid, $page, $CONFIG['phpui']['networkhosts_pagelimit']);
-	$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
+	case 'main':
+		$network = $LMS->GetNetworkRecord($netid, $page, 
+			$CONFIG['phpui']['networkhosts_pagelimit'], 
+			isset($firstfree) ? true : false);
+
+		$page = $network['page'];
+		$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
+	break;
+	case 'top':
+	break;
+	case 'down':
+		$network['page'] = $page;
+		$SESSION->restore('ntlp.pages.'.$netid, $network['pages']);
+		if(!isset($network['pages'])) 
+		{
+			$network = $LMS->GetNetworkRecord($netid, $page, 
+				$CONFIG['phpui']['networkhosts_pagelimit'],
+				isset($firstfree) ? true : false);
+		}
+		$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
+	break;
 }
 
-if($p == 'down' || $p == 'top')
-{
-	$SESSION->restore('ntlp.page.'.$netid, $network['page']);
-	$SESSION->restore('ntlp.pages.'.$netid, $network['pages']);
-	if (!isset($network['pages'])) 
-	{
-		$network = $LMS->GetNetworkRecord($netid, $page, $CONFIG['phpui']['networkhosts_pagelimit']);
-		$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
-	}
-}
+$SESSION->save('ntlp.page.'.$netid, $page);
+$SESSION->save('netid', $netid);
 
 $SMARTY->assign('part',$p);
 $SMARTY->assign('js',$js);

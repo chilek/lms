@@ -181,8 +181,7 @@ class Session {
 
 	function _garbageCollector()
 	{
-		
-		// usuwa sesje które dosiêgn± timeout
+		// deleting sessions with timeout exceeded
 		$this->DB->Execute('DELETE FROM sessions WHERE atime < ?NOW? - ? AND mtime < ?NOW? - ?', array($this->timeout, $this->timeout)); 
 		return TRUE;
 	}
