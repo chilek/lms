@@ -19,9 +19,11 @@ version ? (????-??-??):
   - invoices: added option invoices/print_balance_history_save (alec)
   - receipts: positions adding with double click protection (alec)
   - lmsd configuration: instances cloning (alec) 
-  - perl backend: except_networks parameter added (chilan)
+  - perl backend: excluded_networks parameter added (chilan)
   - added phpui/custom_menu option with possibility to add user-defined items
     and/or subitems to LMS menu (alec)
+  - in IP choosing box page with the first not assigned address is displayed
+    by default, optimized (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
