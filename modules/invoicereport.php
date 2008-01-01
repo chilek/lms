@@ -51,7 +51,7 @@ $taxeslist = array();
 
 if(!empty($_POST['group']))
 {
-	$group = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').' 
+	$groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').' 
 		EXISTS (SELECT 1 FROM customerassignments a
 			WHERE a.customergroupid = '.intval($_POST['group']).'
 			AND a.customerid = d.customerid)';
@@ -74,7 +74,7 @@ $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
 	    LEFT JOIN invoicecontents ON docid = d.id 
 	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) '
 	    .($_POST['numberplanid'] ? 'AND d.numberplanid = '.intval($_POST['numberplanid']) : '')
-	    .(isset($group) ? $group : '')
+	    .(isset($groupwhere) ? $groupwhere : '')
 	    .' AND NOT EXISTS (
                 	    SELECT 1 FROM customerassignments a
 			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -87,7 +87,7 @@ $docs = $DB->GetAllByKey('SELECT d.id AS id, number, cdate, customerid, name, ad
 	    LEFT JOIN numberplans ON d.numberplanid = numberplans.id
 	    WHERE (d.type = ? OR d.type = ?) AND (d.cdate BETWEEN ? AND ?) '
 	    .($_POST['numberplanid'] ? 'AND d.numberplanid = '.intval($_POST['numberplanid']) : '')
-	    .(isset($group) ? $group : '')
+	    .(isset($groupwhere) ? $groupwhere : '')
 	    , 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 if($items)
