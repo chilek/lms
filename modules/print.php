@@ -562,7 +562,6 @@ switch($type)
 			$where .= $groupwhere;
 		}
 											
-			
 		if($from > 0)
 			$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
 						LEFT JOIN documents d ON (docid = d.id AND type = ?) 
