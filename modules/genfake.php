@@ -1881,19 +1881,22 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'value' => '30', 'taxid' => '1', 'prodid' => '', 
 			    'uprate' => '64', 'upceil' => '64', 
 			    'downrate' => '128', 'downceil' => '128', 
-			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0);
+			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+			    'type' => TARIFF_INTERNET);
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 
 			    'value' => '60', 'taxid' => '2', 'prodid' => '', 
 			    'uprate' => '128', 'upceil' => '128', 
 			    'downrate' => '256', 'downceil' => '256', 
-			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0);
+			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+			    'type' => TARIFF_INTERNET);
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff', 
 			    'value' => '120', 'taxid' => '3', 'prodid' => '', 
 			    'uprate' => '256', 'upceil' => '256', 
 			    'downrate' => '512', 'downceil' => '512', 
-			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0);
+			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+			    'type' => TARIFF_INTERNET);
 	$LMS->TariffAdd($tariffdata);
 
 	echo '<B>'.trans('Generating payments...').'</B><BR>'; flush();
@@ -1944,6 +1947,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['info'] = '';
 		$customeradd['message'] = '';
 		$customeradd['pin'] = mt_rand(10000,99999);
+		$customeradd['cutoffstop'] = 0;
 
 		$id = $LMS->CustomerAdd($customeradd);
 		$LMS->AddAssignment(array(
@@ -2000,6 +2004,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			'model' => '10/100 Mbps Switch',
 			'serialnumber' => ($i*1000000+$i*200000).'-'.($i*11111).'-'.($i*33),
 			'ports' => '16',
+			'purchasetime' => 0,
 			'info' => ''));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
