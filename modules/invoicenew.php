@@ -257,7 +257,6 @@ if($action)
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
 	if($action == 'init')
 	{
-//print_r($_GET); die;
 		$SESSION->redirect('?m=invoicenew'
 			.(isset($_GET['invoice']) ? '&invoice='.intval($_GET['invoice']) : '')
 			.(isset($_GET['original']) ? '&original=1' : '')
