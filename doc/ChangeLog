@@ -24,6 +24,7 @@ version ? (????-??-??):
     and/or subitems to LMS menu (alec)
   - in IP choosing box page with the first not assigned address is displayed
     by default, optimized (alec)
+  - fixed getnetworkrecord bug introduced by previous commit (chilan)
 
 version 1.11.1 Talus (2007-12-03):
 

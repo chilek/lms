@@ -2412,8 +2412,8 @@ class LMS
 				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev 
 				FROM nodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?',
 				'ipaddr',
-				array($network['addresslong'], ip_long($network['broadcast'])-1));
-	
+				array($network['addresslong'], ip_long($network['broadcast'])-1, $network['addresslong'], ip_long($network['broadcast'])-1));
+
 		$network['size'] = pow(2,32-$network['prefix']);
 		$network['assigned'] = sizeof($nodes);
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
