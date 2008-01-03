@@ -475,7 +475,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			char *discount = g->db_get_data(res,i,"discount");
 			double val = atof(g->db_get_data(res,i,"value"));
 			
-			if( !atof(g->db_get_data(res,i,"value")) ) continue;
+			if( !val ) continue;
 			
 			// assignments suspending check
 			if( suspended != uid )
@@ -491,8 +491,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			if( suspended == uid || s_state )
 				val = val * p->suspension_percentage / 100;
 			
-			if( !val )
-				continue;
+			if( !val ) continue;
 
 			value = ftoa(val);
 			taxid = g->db_get_data(res,i,"taxid");
