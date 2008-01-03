@@ -315,6 +315,7 @@ while (my $row = $dbq->fetchrow_hashref())
 				my $dbq3 = $dbase->prepare("SELECT count(customerid) as total FROM customerassignments WHERE customerid=$row2->{'ownerid'} AND customergroupid=".$customergrouplist{$key2});
 				$dbq3->execute();
 				my $srow = $dbq3->fetchrow_hashref();
+				$dbq3->finish();
 				if ($srow->{'total'} eq 1)
 				{
 					$customergroupscount++;
