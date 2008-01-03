@@ -392,9 +392,10 @@ class LMS
 	function CustomerUpdate($customerdata)
 	{
 		return $this->DB->Execute('UPDATE customers SET status=?, address=?, 
-					    zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
-					    info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, 
-					    pin=?, regon=?, icn=?, rbe=?, cutoffstop=? WHERE id=?', 
+				zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
+				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
+				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, cutoffstop=?
+				WHERE id=?', 
 			array( $customerdata['status'], 
 				$customerdata['address'], 
 				$customerdata['zip'], 
@@ -444,10 +445,11 @@ class LMS
 	function GetCustomer($id)
 	{
 		if($result = $this->DB->GetRow('SELECT id, lastname, name, status, email, address, zip, ten, ssn, '
-				.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
-				city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, 
-				message, pin, regon, icn, rbe, cutoffstop
-				FROM customers'.(defined('LMS-UI') ? 'view' : '').' WHERE id = ?', array($id)))
+			.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
+			city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, 
+			message, pin, regon, icn, rbe, cutoffstop
+			FROM customers'.(defined('LMS-UI') ? 'view' : '').' 
+			WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
@@ -984,7 +986,8 @@ class LMS
 
 	function CustomergroupGetList()
 	{
-		if($customergrouplist = $this->DB->GetAll('SELECT id, name, description FROM customergroups ORDER BY name ASC'))
+		if($customergrouplist = $this->DB->GetAll('SELECT id, name, description 
+			FROM customergroups ORDER BY name ASC'))
 		{
 			$totalcount = 0;
 
@@ -2401,7 +2404,11 @@ class LMS
 
 	function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree=false)
 	{
-		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?', array($id));
+		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, 
+				address AS addresslong, mask, interface, gateway, dns, dns2, domain, 
+				wins, dhcpstart, dhcpend 
+				FROM networks WHERE id = ?', array($id));
+				
 		$network['prefix'] = mask2prefix($network['mask']);
 		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
 
@@ -2412,7 +2419,8 @@ class LMS
 				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev 
 				FROM nodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?',
 				'ipaddr',
-				array($network['addresslong'], ip_long($network['broadcast'])-1, $network['addresslong'], ip_long($network['broadcast'])-1));
+				array($network['addresslong'], ip_long($network['broadcast'])-1,
+				$network['addresslong'], ip_long($network['broadcast'])-1));
 
 		$network['size'] = pow(2,32-$network['prefix']);
 		$network['assigned'] = sizeof($nodes);
@@ -2461,7 +2469,7 @@ class LMS
 					$network['nodes']['name'][$i] = '*** BROADCAST ***';
 				elseif($network['nodes']['address'][$i] == $network['gateway'])
 					$network['nodes']['name'][$i] = '*** GATEWAY ***';
-				elseif( $longip >= ip_long($network['dhcpstart']) && $longip <= ip_long($network['dhcpend']) )
+				elseif($longip >= ip_long($network['dhcpstart']) && $longip <= ip_long($network['dhcpend']) )
 					$network['nodes']['name'][$i] = 'DHCP';
 				else
 					$freenode = true;
@@ -2499,17 +2507,26 @@ class LMS
 
 	function CountNetDevLinks($id)
 	{
-		return $this->DB->GetOne('SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?', array($id,$id)) + $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0', array($id));
+		return $this->DB->GetOne('SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?', 
+				array($id,$id)) 
+			+ $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0', 
+				array($id));
 	}
 
 	function GetNetDevConnected($id)
 	{
-		return $this->DB->GetAll('SELECT type, (CASE src WHEN '.$id.' THEN src ELSE dst END) AS src, (CASE src WHEN '.$id.' THEN dst ELSE src END) AS dst FROM netlinks WHERE src = '.$id.' OR dst = '.$id);
+		return $this->DB->GetAll('SELECT type, 
+			(CASE src WHEN ? THEN src ELSE dst END) AS src, 
+			(CASE src WHEN ? THEN dst ELSE src END) AS dst 
+			FROM netlinks WHERE src = ? OR dst = ?',
+			array($id, $id, $id, $id));
 	}
 
 	function GetNetDevLinkType($dev1,$dev2)
 	{
-		return $this->DB->GetOne('SELECT type FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1,$dev2,$dev1,$dev2));
+		return $this->DB->GetOne('SELECT type FROM netlinks 
+			WHERE (src=? AND dst=?) OR (dst=? AND src=?)', 
+			array($dev1,$dev2,$dev1,$dev2));
 	}
 
 	function GetNetDevConnectedNames($id)
@@ -2564,10 +2581,12 @@ class LMS
 			break;
 		}
 		
-		$netdevlist = $this->DB->GetAll('SELECT id, name, location, description, producer, model, serialnumber, ports, 
-					(SELECT COUNT(*) FROM nodes WHERE netdev=netdevices.id AND ownerid > 0)
-					+ (SELECT COUNT(*) FROM netlinks WHERE src = netdevices.id OR dst = netdevices.id) AS takenports
-					FROM netdevices '.($sqlord != '' ? $sqlord.' '.$direction : ''));
+		$netdevlist = $this->DB->GetAll('SELECT id, name, location, description, producer, 
+			model, serialnumber, ports, 
+			(SELECT COUNT(*) FROM nodes WHERE netdev=netdevices.id AND ownerid > 0)
+			+ (SELECT COUNT(*) FROM netlinks WHERE src = netdevices.id OR dst = netdevices.id) 
+			AS takenports
+			FROM netdevices '.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
@@ -2578,7 +2597,8 @@ class LMS
 
 	function GetNetDevNames()
 	{
-		return $this->DB->GetAll('SELECT id, name, location, producer FROM netdevices ORDER BY name');
+		return $this->DB->GetAll('SELECT id, name, location, producer 
+			FROM netdevices ORDER BY name');
 	}
 
 	function GetNotConnectedDevices($id)
@@ -2586,7 +2606,7 @@ class LMS
 		$query = 'SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!='.$id;
 		if ($lista = $this->GetNetDevConnected($id))
 			foreach($lista as $row)
-				$query = $query.' AND id!='.$row['dst'];
+				$query = $query.' AND id != '.$row['dst'];
 		return $this->DB->GetAll($query.' ORDER BY name');
 	}
 
@@ -2652,7 +2672,8 @@ class LMS
 	function NetDevAdd($netdevdata)
 	{
 		if($this->DB->Execute('INSERT INTO netdevices (name, location, description, producer, 
-					model, serialnumber, ports, purchasetime, guaranteeperiod) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+					model, serialnumber, ports, purchasetime, guaranteeperiod) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 					array($netdevdata['name'],
 						$netdevdata['location'],
 						$netdevdata['description'],
@@ -2687,7 +2708,9 @@ class LMS
 
 	function IsNetDevLink($dev1, $dev2)
 	{
-		return $this->DB->GetOne('SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
+		return $this->DB->GetOne('SELECT COUNT(id) FROM netlinks 
+			WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
+			array($dev1, $dev2, $dev1, $dev2));
 	}
 
 	function NetDevLink($dev1, $dev2, $type=0)
@@ -2703,24 +2726,29 @@ class LMS
 			if( $netdev1['takenports'] >= $netdev1['ports'] || $netdev2['takenports'] >= $netdev2['ports'])
 				return FALSE;
 
-			$this->DB->Execute('INSERT INTO netlinks (src, dst, type) VALUES (?, ?, ?)', array($dev1, $dev2, $type));
+			$this->DB->Execute('INSERT INTO netlinks (src, dst, type) VALUES (?, ?, ?)', 
+				array($dev1, $dev2, $type));
 		}
 		return TRUE;
 	}
 
 	function NetDevUnLink($dev1, $dev2)
 	{
-		$this->DB->Execute('DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
+		$this->DB->Execute('DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)',
+			array($dev1, $dev2, $dev1, $dev2));
 	}
 
 	function GetUnlinkedNodes()
 	{
-		return $this->DB->GetAll('SELECT *, inet_ntoa(ipaddr) AS ip FROM nodes WHERE netdev=0 ORDER BY name ASC');
+		return $this->DB->GetAll('SELECT *, inet_ntoa(ipaddr) AS ip 
+			FROM nodes WHERE netdev=0 ORDER BY name ASC');
 	}
 
 	function GetNetDevIPs($id)
 	{
-		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
+		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info 
+			FROM nodes WHERE ownerid = 0 AND netdev = ?', array($id));
 	}
 
 	/*
@@ -2748,13 +2776,16 @@ class LMS
 		if($queue==0)
 			$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
 
-		$rights = $this->DB->GetOne('SELECT rights FROM rtrights WHERE userid=? AND queueid=?', array($user, $queue));
+		$rights = $this->DB->GetOne('SELECT rights FROM rtrights WHERE userid=? AND queueid=?',
+			array($user, $queue));
+
 		return ($rights ? $rights : 0);
 	}
 
 	function GetQueueList()
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, email, description FROM rtqueues ORDER BY name'))
+		if($result = $this->DB->GetAll('SELECT id, name, email, description 
+				FROM rtqueues ORDER BY name'))
 		{
 			foreach($result as $idx => $row)
 				foreach($this->GetQueueStats($row['id']) as $sidx => $row)
@@ -2790,24 +2821,27 @@ class LMS
 
 	function GetQueueStats($id)
 	{
-		if($result = $this->DB->GetAll('SELECT state, COUNT(state) AS scount FROM rttickets WHERE queueid = ? GROUP BY state ORDER BY state ASC', array($id)))
+		if($result = $this->DB->GetAll('SELECT state, COUNT(state) AS scount 
+			FROM rttickets WHERE queueid = ? GROUP BY state ORDER BY state ASC', array($id)))
 		{
 			foreach($result as $row)
 				$stats[$row['state']] = $row['scount'];
 			foreach(array('new', 'open', 'resolved', 'dead') as $idx => $value)
 				$stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
 		}
-		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
+		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets 
+			WHERE queueid = ? ORDER BY createtime DESC', array($id));
+		
 		return $stats;
 	}
 
 	function RTStats()
 	{
 		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN '.RT_NEW.' THEN 1 END) AS new,
-						    COUNT(CASE state WHEN '.RT_OPEN.' THEN 1 END) AS opened,
-						    COUNT(CASE state WHEN '.RT_RESOLVED.' THEN 1 END) AS resolved,
-						    COUNT(CASE state WHEN '.RT_DEAD.' THEN 1 END) AS dead
-					     FROM rttickets');
+				    COUNT(CASE state WHEN '.RT_OPEN.' THEN 1 END) AS opened,
+				    COUNT(CASE state WHEN '.RT_RESOLVED.' THEN 1 END) AS resolved,
+				    COUNT(CASE state WHEN '.RT_DEAD.' THEN 1 END) AS dead
+				    FROM rttickets');
 	}
 
 	function GetQueueByTicketId($id)
@@ -2826,8 +2860,8 @@ class LMS
 	function TicketAdd($ticket)
 	{
 		$ts = time();
-		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, state, 
-				owner, createtime, cause, creatorid)
+		$this->DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, 
+				state, owner, createtime, cause, creatorid)
 				VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?)', 
 				array($ticket['queue'], 
 					$ticket['customerid'],
@@ -2840,8 +2874,15 @@ class LMS
 		
 		$id = $this->DB->GetLastInsertID('rttickets');
 		
-		$this->DB->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime, subject, body, mailfrom)
-				    VALUES (?, ?, ?, ?, ?, ?)', array($id, $ticket['customerid'], $ts, $ticket['subject'], $ticket['body'], $ticket['mailfrom']));
+		$this->DB->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime, 
+				subject, body, mailfrom)
+				VALUES (?, ?, ?, ?, ?, ?)', 
+				array($id, 
+					$ticket['customerid'],
+					$ts,
+					$ticket['subject'],
+					$ticket['body'],
+					$ticket['mailfrom']));
 		
 		return $id;
 	}
