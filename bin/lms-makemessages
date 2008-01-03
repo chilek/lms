@@ -240,11 +240,11 @@ while (my $row = $dbq->fetchrow_hashref())
 		my $sdbq = $dbase->prepare("SELECT count(customerid) AS total FROM customerassignments WHERE customerid=$row->{'ownerid'} AND customergroupid=".$customergrouplist{$key2});
 		$sdbq->execute();
 		my $srow = $sdbq->fetchrow_hashref();
+		$sdbq->finish();
 		if ($srow->{'total'} eq 1)
 		{
 			$customergroupscount++;
 		}
-		$sdbq->finish();
 	}
 	if($customergroupscount || !$inicustomergroups)
 	{
