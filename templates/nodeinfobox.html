@@ -89,6 +89,7 @@
 			<B><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></B>
 		</TD>
 	</TR>
+{if $nodeinfo.netdev || $netdevices}
 {if !$nodeinfo.netdev && $netdevices}
 	<FORM METHOD="GET" ACTION="?m=nodeedit" NAME="nodelink">
 	<INPUT TYPE="HIDDEN" NAME="m" VALUE="nodeedit">
@@ -118,6 +119,7 @@
 	</TR>
 {if !$nodeinfo.netdev && $netdevices}
 	</FORM>
+{/if}
 {/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
