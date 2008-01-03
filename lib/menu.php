@@ -199,20 +199,20 @@ $menu = array(
 			'name' => trans('IP Networks'),
 			'img' =>'network.gif',
 			'link' =>'?m=netlist',
-			'tip' => trans('IP Address Classes Management'),
+			'tip' => trans('IP Address Pools Management'),
 			'accesskey' =>'t',
 			'prio' => 20,
 			'submenu' => array(
 				array(
 					'name' => trans('List'),
 					'link' => '?m=netlist',
-					'tip' => trans('List of IP classes'),
+					'tip' => trans('List of IP pools'),
 					'prio' => 10,
 				),
 				array(
 					'name' => trans('New Network'),
 					'link' => '?m=netadd',
-					'tip' => trans('Add new address class'),
+					'tip' => trans('Add new address pool'),
 					'prio' => 20,
 				),
 			),
