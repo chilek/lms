@@ -24,24 +24,30 @@
  *  $Id$
  */
 
-$from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
-$to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
+$DB->BeginTrans();
 
-if($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET['is_sure'] == 1)
-{
-	$DB->BeginTrans();
-	
-	$DB->Execute('INSERT INTO customerassignments (customergroupid, customerid)
-			SELECT ?, customerid 
-			FROM customerassignments a, customersview c
-	                WHERE a.customerid = c.id AND a.customergroupid = ?
-			AND NOT EXISTS (SELECT 1 FROM customerassignments ca
-				WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
-			array($to, $from, $to)))
+$DB->Execute("
+    CREATE SEQUENCE nodesgroups_id_seq;
+    CREATE TABLE nodegroups (
+	id 		integer 	NOT NULL DEFAULT nextval('nodegroups_id_seq'::text),
+        name		varchar(255) 	NOT NULL DEFAULT '',
+	description	text 		NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE (name)
+    );
 
-	$SESSION->redirect('?m=customergroupinfo&id='.$to);
-}
-else
-	header('Location: ?'.$SESSION->get('backto'));
+    CREATE SEQUENCE nodegroupassignments_id_seq;
+    CREATE TABLE nodegroupassignments (
+	id 		integer 	NOT NULL DEFAULT nextval('nodegroupassignments_id_seq'::text),
+        nodegroupid	integer 	NOT NULL DEFAULT 0,
+	nodeid		integer		NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (nodeid, nodegroupid)
+    );
+");
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010400', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

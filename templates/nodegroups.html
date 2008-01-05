@@ -1,0 +1,64 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR class="dark hand" onclick="showOrHide('nodegroupspanel');">
+		<TD class="fall">
+			<IMG src="img/nodegroup.gif" alt="">
+			<B><A name="nodegroups">{t}Node Groups:{/t}</A></B> 
+		</TD>
+	</TR>
+	<TR id="nodegroupspanel" style="display:none;">
+		<TD WIDTH="100%" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Name:{/t}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{t}Description:{/t}</TD>
+					<TD WIDTH="97%" NOWRAP class="fbt">{t}ID:{/t}</TD>
+					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+				</TR>
+				{cycle name=groups values="light,lucid" print=false}
+				{foreach from=$nodegroups item=nodegroup}
+				<TR class="{cycle name=groups}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=nodegroupinfo&id={$nodegroup.id}">{$nodegroup.name}</A></B></TD>
+					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$nodegroup.description}</TD>
+					<TD WIDTH="97%" NOWRAP>({$nodegroup.id|string_format:"%04d"})</TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you sure, you want to remove node from group?{/t}')" HREF="?m=nodeedit&action=nodegroupdelete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" {tip text="Remove assignment"}></A></TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD align="center" WIDTH="100%" colspan="5">
+						<p>&nbsp;</p>
+						<p><B>{t}That node is not a member of any group.{/t}</B></p>
+						<p>&nbsp;</p>
+					</TD>
+				</TR>
+				{/foreach}
+				<FORM METHOD="POST" NAME="nodegroupassignment" ACTION="?m=nodeedit&action=nodegroupadd&id={$nodeinfo.id}">
+				<INPUT type="submit" class="hiddenbtn">
+				<TR class="light">
+					<TD COLSPAN="4" CLASS="ftop">
+						<B>{t}Add:{/t}</B>
+						<SELECT SIZE="1" NAME="nodegroupid" {tip text="Select group to attribute to node"}>
+							<OPTION VALUE="0">{t}... select group ...{/t}</OPTION>
+							{foreach from=$othernodegroups item=item}
+							<OPTION VALUE="{$item.id}">{$item.name} ({$item.id|string_format:"%04d"})</OPTION>
+							{/foreach}
+						</SELECT>
+						<NOBR>
+					</TD>
+					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
+						<A HREF="javascript:document.nodegroupassignment.submit()" {tip text="Add node to group"}>{t}Add{/t} <IMG SRC="img/save.gif" alt=""></A>
+					</TD>
+				</TR>
+				</FORM>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+{literal}<SCRIPT type="text/javascript">
+<!--
+	if(getCookie('nodegroupspanel')=='1')
+	{
+		document.getElementById('nodegroupspanel').style.display = '';
+	}
+//-->
+</SCRIPT>{/literal}

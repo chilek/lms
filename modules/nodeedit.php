@@ -55,6 +55,17 @@ switch($action)
 		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $_GET['id']));
 		$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
 	break;
+	case 'nodegroupdelete':
+		$DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid=? AND nodegroupid=?',
+				array(intval($_GET['id']), intval($_GET['nodegroupid'])));
+		$SESSION->redirect('?'.$SESSION->get('backto'));
+	break;
+	case 'nodegroupadd':
+		if(!empty($_POST['nodegroupid']))
+			$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
+				VALUES (?, ?)', array(intval($_GET['id']), intval($_POST['nodegroupid'])));
+		$SESSION->redirect('?'.$SESSION->get('backto'));
+	break;
 }
 
 $nodeid = intval($_GET['id']);
@@ -192,6 +203,8 @@ $documents = $LMS->GetDocuments($ownerid, 10);
 $netdevices = $LMS->GetNetDevNames();
 $taxeslist = $LMS->GetTaxes();
 $customernodes = $LMS->GetCustomerNodes($ownerid);
+$nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
+$othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
 
 if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
 {
@@ -202,9 +215,11 @@ if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_sup
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('assignments',$assignments);
-$SMARTY->assign('customergroups',$customergroups);
 $SMARTY->assign('customernodes',$customernodes);
+$SMARTY->assign('customergroups',$customergroups);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
+$SMARTY->assign('nodegroups',$nodegroups);
+$SMARTY->assign('othernodegroups',$othernodegroups);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('customerinfo',$customerinfo);

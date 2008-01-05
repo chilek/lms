@@ -2,25 +2,26 @@
 {literal}
 <script type="text/javascript">
 	<!--
-	function removeCustomers() {
-		document.customerassignments.oper.value="0";
-		document.customerassignments.submit();
+	function removeNodes() {
+		document.nodeassignments.oper.value="0";
+		document.nodeassignments.submit();
 	}
 
 	function changeMembersNetwork() {
-		document.customerassignments.oper.value="2";
-		document.customerassignments.submit();
+		document.nodeassignments.oper.value="2";
+		document.nodeassignments.submit();
 	}
 
 	function changeOthersNetwork() {
-		document.customerassignments.oper.value="3";
-		document.customerassignments.submit();
+		document.nodeassignments.oper.value="3";
+		document.nodeassignments.submit();
 	}
 
 	//-->
-{/literal}																</script>
+{/literal}
+</script>
 <P>
-<FORM NAME="customerassignments" METHOD="POST" ACTION="?m=customergroupedit&id={$customergroup.id}">
+<FORM NAME="nodeassignments" METHOD="POST" ACTION="?m=nodegroupedit&id={$nodegroup.id}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="oper" VALUE="1">
 <TABLE WIDTH="100%" CELLPADDING="0">
@@ -28,13 +29,13 @@
 	    <TABLE WIDTH="100%" CELLPADDING="3">
 		<TR CLASS="DARK">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
-			<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{t}Group members:{/t}</B>
+			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{t}Group members:{/t}</B>
 		    </TD>
 		</TR>
 		<TR CLASS="DARK">
 		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
 			    {t}Network:{/t}
-			    <SELECT SIZE="1" NAME="customerassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
+			    <SELECT SIZE="1" NAME="nodeassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
 			    	<OPTION value="0" {if !$membersnetid}SELECTED{/if}>{t}- all networks -{/t}</OPTION>
 				{section name=networks loop=$networks}
 				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $membersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
@@ -44,11 +45,11 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
-		    {if $customergroup.customerscount}
-			<SELECT SIZE="20" NAME="customerassignments[gmcustomerid][]" multiple>
-				{section name=customer loop=$customergroup.customers}
-					<OPTION VALUE="{$customergroup.customers[customer].id}">
-					{$customergroup.customers[customer].customername|truncate:40:"...":true} ({$customergroup.customers[customer].id|string_format:"%04d"})
+		    {if $nodegroup.nodescount}
+			<SELECT SIZE="20" NAME="nodeassignments[gmnodeid][]" multiple>
+				{section name=node loop=$nodegroup.nodes}
+					<OPTION VALUE="{$nodegroup.nodes[node].id}">
+					{$nodegroup.nodes[node].nodename|truncate:40:"...":true} ({$nodegroup.nodes[node].id|string_format:"%04d"})
 					</OPTION>
 				{/section}
 			</SELECT>
@@ -63,24 +64,24 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:removeCustomers();">{t}Delete{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+			<A HREF="javascript:removeNodes();">{t}Delete{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
 		    </TD>
 		</TR>
 	    </TABLE>
     </TD>
     <TD WIDTH="2%">
     </TD>
-    <TD WIDTH="49%" style="vertical-align: top">
+    <TD WIDTH="49%" STYLE="vertical-align: top;">
 	    <TABLE WIDTH="100%" CELLPADDING="3">
 		<TR CLASS="DARK">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
-			<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{t}Add new member(s):{/t}</B>
+			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{t}Add new member(s):{/t}</B>
 		    </TD>
 		</TR>
 		<TR CLASS="DARK">
 		    <TD CLASS="fall" colspan="4" ALIGN="CENTER">
 			    {t}Network:{/t}
-			    <SELECT SIZE="1" NAME="customerassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
+			    <SELECT SIZE="1" NAME="nodeassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
 			    	<OPTION value="0" {if !$othersnetid}SELECTED{/if}>{t}- all networks -{/t}</OPTION>
 				{section name=networks loop=$networks}
 				<OPTION value="{$networks[networks].id}" {if $networks[networks].id eq $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
@@ -90,18 +91,18 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
-			{if $customerscount}
-			<SELECT SIZE="20" NAME="customerassignments[mcustomerid][]" multiple>
-				{section name=customer loop=$customers}
-					<OPTION VALUE="{$customers[customer].id}">
-					{$customers[customer].customername|truncate:40:"...":true} ({$customers[customer].id|string_format:"%04d"})
+			{if $nodescount}
+			<SELECT SIZE="20" NAME="nodeassignments[mnodeid][]" multiple>
+				{section name=node loop=$nodes}
+					<OPTION VALUE="{$nodes[node].id}">
+					{$nodes[node].nodename} ({$nodes[node].id|string_format:"%04d"})
 					</OPTION>
 				{/section}
 			</SELECT>
 			{else}
 			<BR>
 			<BR>
-			<B>{t}All customers are members of this group.{/t}</B><BR>
+			<B>{t}All nodes are members of this group.{/t}</B><BR>
 			<BR>
 			<BR>
 			{/if}
@@ -109,7 +110,7 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:document.customerassignments.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="javascript:document.nodeassignments.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 		    </TD>
 		</TR>
 	</TABLE>

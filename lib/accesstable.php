@@ -32,7 +32,7 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|account|alias|domain|config|event|taxrate|document|numberplan)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number)$';
+$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|nodegroup|account|alias|domain|config|event|taxrate|document|numberplan)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
@@ -81,6 +81,9 @@ $access['table'][16]['allow_reg']   	= '^(cashreglist|receipt|receipt(list|edit|
 
 $access['table'][17]['name']		= trans('customers groups management');
 $access['table'][17]['allow_reg']	= '^(customergroup(add|edit|del|info|list|move))$';
+
+$access['table'][18]['name']		= trans('nodes groups management');
+$access['table'][18]['allow_reg']	= '^(nodegroup(add|edit|del|info|list|move))$';
 
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';

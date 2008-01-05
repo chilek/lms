@@ -889,8 +889,8 @@ class LMS
 
 	function CustomergroupWithCustomerGet($id)
 	{
-		return $this->DB->GetOne('SELECT COUNT(customerid) FROM customerassignments, customers
-				WHERE customers.id = customerid AND customergroupid = ?', array($id));
+		return $this->DB->GetOne('SELECT COUNT(*) FROM customerassignments
+				WHERE customergroupid = ?', array($id));
 	}
 
 	function CustomergroupAdd($customergroupdata)
@@ -986,20 +986,18 @@ class LMS
 
 	function CustomergroupGetList()
 	{
-		if($customergrouplist = $this->DB->GetAll('SELECT id, name, description 
-			FROM customergroups ORDER BY name ASC'))
+		if($customergrouplist = $this->DB->GetAll('SELECT id, name, description,
+				(SELECT COUNT(*)
+					FROM customerassignments 
+					WHERE customergroupid = customergroups.id
+				) AS customerscount
+				FROM customergroups ORDER BY name ASC'))
 		{
 			$totalcount = 0;
 
 			foreach($customergrouplist as $idx => $row)
 			{
-				$customergrouplist[$idx]['customerscount'] = $this->DB->GetOne('
-						SELECT COUNT(DISTINCT customerid)
-						FROM customerassignments, customers 
-						WHERE customers.id = customerid AND customergroupid = ?',
-						array($row['id']));
-
-				$totalcount += $customergrouplist[$idx]['customerscount'];
+				$totalcount += $row['customerscount'];
 			}
 
 			$customergrouplist['total'] = sizeof($customergrouplist);
@@ -1414,6 +1412,67 @@ class LMS
 		$result['disconnected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=0 AND ownerid>0');
 		$result['online'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE ?NOW?-lastonline < ? AND ownerid>0', array($this->CONFIG['phpui']['lastonline_limit']));
 		$result['total'] = $result['connected'] + $result['disconnected'];
+		return $result;
+	}
+
+	function GetNodeGroupNamesByNode($nodeid)
+	{
+		return $this->DB->GetAllByKey('SELECT id, name, description FROM nodegroups
+				WHERE id IN (SELECT nodegroupid FROM nodegroupassignments
+					WHERE nodeid = ?)
+				ORDER BY name', 'id', array($nodeid));
+	}
+
+	function GetNodeGroupNamesWithoutNode($nodeid)
+	{
+		return $this->DB->GetAllByKey('SELECT id, name FROM nodegroups
+				WHERE id NOT IN (SELECT nodegroupid FROM nodegroupassignments
+					WHERE nodeid = ?)
+				ORDER BY name', 'id', array($nodeid));
+	}
+
+	function GetNodesWithoutGroup($groupid, $network=NULL)
+	{
+		if($network)
+			$net = $this->GetNetworkParams($network);
+
+		return $this->DB->GetAll('SELECT n.id AS id, n.name AS nodename, a.nodeid
+			FROM nodes n
+			JOIN customersview c ON (n.ownerid = c.id)
+			LEFT JOIN nodegroupassignments a ON (n.id = a.nodeid AND a.nodegroupid = ?) 
+			WHERE a.nodeid IS NULL '
+			.($network ? 
+				' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
+					OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
+			.' ORDER BY nodename', array($groupid));
+	}
+
+	function GetNodesWithGroup($groupid, $network=NULL)
+	{
+		if($network)
+			$net = $this->GetNetworkParams($network);
+
+		return $this->DB->GetAll('SELECT n.id AS id, n.name AS nodename, a.nodeid
+			FROM nodes n
+			JOIN customersview c ON (n.ownerid = c.id)
+			JOIN nodegroupassignments a ON (n.id = a.nodeid) 
+			WHERE a.nodegroupid = ?'
+			.($network ? 
+				' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
+					OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
+			.' ORDER BY nodename', array($groupid));
+	}
+
+	function GetNodeGroup($id, $network=NULL)
+	{
+		$result = $this->DB->GetRow('SELECT id, name, description,
+				(SELECT COUNT(*) FROM nodegroupassignments 
+					WHERE nodegroupid = nodegroups.id) AS count
+				FROM nodegroups WHERE id = ?', array($id));
+		
+		$result['nodes'] = $this->GetNodesWithGroup($id, $network);
+		$result['nodescount'] = sizeof($result['nodes']);
+
 		return $result;
 	}
 
