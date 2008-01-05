@@ -27,7 +27,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-    CREATE SEQUENCE nodesgroups_id_seq;
+    CREATE SEQUENCE nodegroups_id_seq;
     CREATE TABLE nodegroups (
 	id 		integer 	NOT NULL DEFAULT nextval('nodegroups_id_seq'::text),
         name		varchar(255) 	NOT NULL DEFAULT '',
