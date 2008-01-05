@@ -932,17 +932,6 @@ class LMS
 		return ($this->DB->GetOne('SELECT id FROM customergroups WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
-	function CustomergroupMove($from, $to)
-	{
-		if ($ids = $this->DB->GetCol('SELECT customerassignments.id AS id FROM customerassignments, customersview 
-				WHERE customerid = customersview.id AND customergroupid = ?', array($from)))
-		{
-			foreach($ids as $id)
-				$this->DB->Execute('UPDATE customerassignments SET customergroupid=? 
-						WHERE id=? AND customergroupid=?', array($to, $id, $from));
-		}
-	}
-
 	function CustomergroupGetId($name)
 	{
 		return $this->DB->GetOne('SELECT id FROM customergroups WHERE name=?', array($name));
