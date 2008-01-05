@@ -52,7 +52,13 @@ else
 	$g = $_GET['g'];
 $SESSION->save('nlg', $g);
 
-$nodelist = $LMS->GetNodeList($o, NULL, NULL, $n, $s, $g);
+if(!isset($_GET['ng']))
+	$SESSION->restore('nlng', $ng);
+else
+	$ng = $_GET['ng'];
+$SESSION->save('nlng', $ng);
+
+$nodelist = $LMS->GetNodeList($o, NULL, NULL, $n, $s, $g, $ng);
 $listdata['total'] = $nodelist['total'];
 $listdata['order'] = $nodelist['order'];
 $listdata['direction'] = $nodelist['direction'];
@@ -60,6 +66,7 @@ $listdata['totalon'] = $nodelist['totalon'];
 $listdata['totaloff'] = $nodelist['totaloff'];
 $listdata['network'] = $n;
 $listdata['customergroup'] = $g;
+$listdata['nodegroup'] = $ng;
 $listdata['state'] = $s;
 
 unset($nodelist['total']);
@@ -83,6 +90,7 @@ $SMARTY->assign('start',$start);
 $SMARTY->assign('nodelist',$nodelist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('networks',$LMS->GetNetworks());
+$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->display('nodelist.html');
 
