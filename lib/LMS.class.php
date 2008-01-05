@@ -1182,7 +1182,7 @@ class LMS
 			return FALSE;
 	}
 
-	function GetNodeList($order='name,asc', $search=NULL, $sqlskey='AND', $network=NULL, $status=NULL, $group=NULL)
+	function GetNodeList($order='name,asc', $search=NULL, $sqlskey='AND', $network=NULL, $status=NULL, $customergroup=NULL, $nodegroup=NULL)
 	{
 		if($order=='')
 			$order='name,asc';
@@ -1250,14 +1250,16 @@ class LMS
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 					mac, nodes.name AS name, ownerid, access, warning, netdev, lastonline, nodes.info AS info, '
 					.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner
-					FROM nodes, customersview c '
-					.($group ? 'LEFT JOIN customerassignments ON (customerid = c.id) ' : '')
+					FROM customersview c LEFT JOIN nodes ON (nodes.ownerid = c.id) '
+					.($customergroup ? 'LEFT JOIN customerassignments ON (customerid = c.id) ' : '')
+					.($nodegroup ? 'LEFT JOIN nodegroupassignments ON (nodeid = nodes.id) ' : '')
 					.' WHERE ownerid = c.id '
 					.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 					.($status==1 ? ' AND access = 1' : '') //connected
 					.($status==2 ? ' AND access = 0' : '') //disconnected
 					.($status==3 ? ' AND lastonline > ?NOW? - '.$this->CONFIG['phpui']['lastonline_limit'] : '') //online
-					.($group ? ' AND customergroupid = '.$group : '')
+					.($customergroup ? ' AND customergroupid = '.$customergroup : '')
+					.($nodegroup ? ' AND nodegroupid = '.$nodegroup : '')
 					.(isset($searchargs) ? $searchargs : '')
 					.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
@@ -1402,6 +1404,12 @@ class LMS
 		$result['online'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE ?NOW?-lastonline < ? AND ownerid>0', array($this->CONFIG['phpui']['lastonline_limit']));
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
+	}
+
+	function GetNodeGroupNames()
+	{
+		return $this->DB->GetAll('SELECT id, name, description FROM nodegroups
+				ORDER BY name ASC');
 	}
 
 	function GetNodeGroupNamesByNode($nodeid)
