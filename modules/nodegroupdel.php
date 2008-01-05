@@ -24,24 +24,20 @@
  *  $Id$
  */
 
-$from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
-$to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
-
-if($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET['is_sure'] == 1)
+if(isset($_GET['is_sure']))
 {
-	$DB->BeginTrans();
-	
-	$DB->Execute('INSERT INTO customerassignments (customergroupid, customerid)
-			SELECT ?, customerid 
-			FROM customerassignments a, customersview c
-	                WHERE a.customerid = c.id AND a.customergroupid = ?
-			AND NOT EXISTS (SELECT 1 FROM customerassignments ca
-				WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
-			array($to, $from, $to)))
+	$id = intval($_GET['id']);
 
-	$SESSION->redirect('?m=customergroupinfo&id='.$to);
+	if(!$DB->GetOne('SELECT 1 FROM nodegroupassignments WHERE nodegroupid = ? 
+		LIMIT 1', array($id)))
+	{
+		$DB->BeginTrans();
+		$DB->Execute('DELETE FROM nodegroups WHERE id = ?', array($id));
+//		$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($id));
+		$DB->CommitTrans();
+	}
 }
-else
-	header('Location: ?'.$SESSION->get('backto'));
+
+$SESSION->redirect('?m=nodegrouplist');
 
 ?>

@@ -27,19 +27,23 @@
 $from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
 $to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
 
-if($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET['is_sure'] == 1)
+if($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from)) 
+	&& $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($to)) 
+	&& $_GET['is_sure'] == 1)
 {
 	$DB->BeginTrans();
 	
-	$DB->Execute('INSERT INTO customerassignments (customergroupid, customerid)
-			SELECT ?, customerid 
-			FROM customerassignments a, customersview c
-	                WHERE a.customerid = c.id AND a.customergroupid = ?
-			AND NOT EXISTS (SELECT 1 FROM customerassignments ca
-				WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
+	$DB->Execute('INSERT INTO nodegroupassignments (nodegroupid, nodeid)
+			SELECT ?, nodeid 
+			FROM nodegroupassignments a
+			JOIN nodes n ON (a.nodeid = n.id)
+			JOIN customersview c (n.ownerid = c.id)
+	                WHERE a.nodegroupid = ?
+			AND NOT EXISTS (SELECT 1 FROM nodegroupassignments na
+				WHERE na.nodeid = a.nodeid AND na.nodegroupid = ?)',
 			array($to, $from, $to)))
 
-	$SESSION->redirect('?m=customergroupinfo&id='.$to);
+	$SESSION->redirect('?m=nodegroupinfo&id='.$to);
 }
 else
 	header('Location: ?'.$SESSION->get('backto'));

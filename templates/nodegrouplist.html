@@ -1,0 +1,62 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR class="dark">
+		<TD WIDTH="97%" CLASS="fleftu">
+			<IMG SRC="img/nodegroup.gif" ALT="">&nbsp;<B>{t}Name:{/t}</B><BR>
+			<IMG SRC="img/info1.gif" ALT="">&nbsp;{t}Description:{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" align="right">
+			{t}ID:{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" align="right">
+			{t}Members:{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
+			<NOBR><B>{t 0=$listdata.total|default:"0"}Total: $0{/t}</B><NOBR>
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{section name=nodegroups loop=$nodegrouplist}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD WIDTH="97%" CLASS="fleft" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';" class="fleft">
+			<IMG SRC="img/nodegroup.gif" ALT="">&nbsp;<B>{$nodegrouplist[nodegroups].name}</B><BR>
+			{if $nodegrouplist[nodegroups].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$nodegrouplist[nodegroups].description}{/if}
+		</TD>
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';">
+			({$nodegrouplist[nodegroups].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}';">
+			{$nodegrouplist[nodegroups].nodescount} 
+		</TD>
+		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
+			<NOBR>
+			<A HREF="?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			<A HREF="?m=nodegroupedit&id={$nodegrouplist[nodegroups].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A HREF="?m=nodegroupdel&id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			</NOBR>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD COLSPAN="4" ALIGN="center" CLASS="fall">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no such groups in database.{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	<TR CLASS="light">
+		<TD CLASS="fleftu" COLSPAN="2" WIDTH="98%" ALIGN="right">
+			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t}Total:{/t}</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
+			<B>{$listdata.nodestotal|default:"0"} </B>
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

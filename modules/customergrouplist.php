@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Group List');
+$layout['pagetitle'] = trans('Customer Groups List');
 
 $customergrouplist = $LMS->CustomergroupGetList();
 

@@ -24,24 +24,29 @@
  *  $Id$
  */
 
-$from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
-$to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
+$DB->BeginTrans();
 
-if($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET['is_sure'] == 1)
-{
-	$DB->BeginTrans();
-	
-	$DB->Execute('INSERT INTO customerassignments (customergroupid, customerid)
-			SELECT ?, customerid 
-			FROM customerassignments a, customersview c
-	                WHERE a.customerid = c.id AND a.customergroupid = ?
-			AND NOT EXISTS (SELECT 1 FROM customerassignments ca
-				WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
-			array($to, $from, $to)))
+$DB->Execute("
+    CREATE TABLE nodegroups (
+	id 		int(11) 	NOT NULL auto_increment,
+        name		varchar(255) 	NOT NULL DEFAULT '',
+	description	text 		NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+    );
+");
+$DB->Execute("
+    CREATE TABLE nodegroupassignments (
+	id 		int(11) 	NOT NULL auto_increment,
+        nodegroupid	int(11) 	NOT NULL DEFAULT 0,
+	nodeid		int(11)		NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY nodeid (nodeid, nodegroupid)
+    );
+");
 
-	$SESSION->redirect('?m=customergroupinfo&id='.$to);
-}
-else
-	header('Location: ?'.$SESSION->get('backto'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010400', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>
