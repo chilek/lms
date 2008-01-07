@@ -28,7 +28,7 @@ function GroupList()
 {
 	global $DB;
 	
-	if($nodegrouplist = $DB->GetAll('SELECT id, name, description, prio
+	if($nodegrouplist = $DB->GetAll('SELECT id, name, description, prio,
 	    	        (SELECT COUNT(*)
 	                FROM nodegroupassignments
 	                WHERE nodegroupid = nodegroups.id
