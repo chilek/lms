@@ -499,7 +499,7 @@ class LMS
 			return FALSE;
 	}
 
-	function GetCustomerList($order='customername,asc', $state=NULL, $network=NULL, $customergroup=NULL, $search=NULL, $time=NULL, $sqlskey='AND')
+	function GetCustomerList($order='customername,asc', $state=NULL, $network=NULL, $customergroup=NULL, $search=NULL, $time=NULL, $sqlskey='AND', $nodegroup=NULL)
 	{
 		list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -620,19 +620,22 @@ class LMS
 							((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
 							OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
+				.($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
+							JOIN nodes n ON (n.id = na.nodeid) 
+							WHERE n.ownerid = c.id AND na.nodegroupid = '.intval($nodegroup).')' : '')
 				.($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
-								WHERE c.id = a.customerid)' : '')
+							WHERE c.id = a.customerid)' : '')
 				.($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a 
-								WHERE a.customerid = c.id
-									AND (datefrom <= ?NOW? OR datefrom = 0) 
-									AND (dateto >= ?NOW? OR dateto = 0)
-									AND (tariffid != 0 OR liabilityid != 0))' : '')
+							WHERE a.customerid = c.id
+								AND (datefrom <= ?NOW? OR datefrom = 0) 
+								AND (dateto >= ?NOW? OR dateto = 0)
+								AND (tariffid != 0 OR liabilityid != 0))' : '')
 				.($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
-								WHERE a.customerid = c.id
-									AND ((tariffid = 0 AND liabilityid = 0) 
-										OR ((datefrom <= ?NOW? OR datefrom = 0)
-											AND (dateto >= ?NOW? OR dateto = 0)
-											AND suspended = 1)))' : '')
+							WHERE a.customerid = c.id
+								AND ((tariffid = 0 AND liabilityid = 0) 
+								OR ((datefrom <= ?NOW? OR datefrom = 0)
+								AND (dateto >= ?NOW? OR dateto = 0)
+								AND suspended = 1)))' : '')
 				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
@@ -776,8 +779,6 @@ class LMS
 		
 		$customerlist['total'] = sizeof($customerlist);
 		$customerlist['state'] = $state;
-		$customerlist['network'] = $network;
-		$customerlist['customergroup'] = $customergroup;
 		$customerlist['order'] = $order;
 		$customerlist['direction'] = $direction;
 		$customerlist['below']= $below;

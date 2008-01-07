@@ -171,6 +171,19 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/nodegroup.gif" alt=""> <B>{t}Nodes Group:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="ng">
+    			    <OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
+	        	    {foreach from=$nodegroups item=nodegroup}
+		            <OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+			    {/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<IMG src="img/access.gif" width="16" alt=""> <B>{t}State:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">

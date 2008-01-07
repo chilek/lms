@@ -29,53 +29,59 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $layout['pagetitle'] = trans('Customers List');
 
 if(!isset($_GET['o']))
-	$SESSION->restore('ulo', $o);
+	$SESSION->restore('clo', $o);
 else
 	$o = $_GET['o'];
-$SESSION->save('ulo', $o);
+$SESSION->save('clo', $o);
 
 if(!isset($_GET['s']))
-	$SESSION->restore('uls', $s);
+	$SESSION->restore('cls', $s);
 else
 	$s = $_GET['s'];
-$SESSION->save('uls', $s);
+$SESSION->save('cls', $s);
 
 if(!isset($_GET['n']))
-	$SESSION->restore('uln', $n);
+	$SESSION->restore('cln', $n);
 else
 	$n = $_GET['n'];
-$SESSION->save('uln', $n);
+$SESSION->save('cln', $n);
 
 if(!isset($_GET['g']))
-	$SESSION->restore('ulg', $g);
+	$SESSION->restore('clg', $g);
 else
 	$g = $_GET['g'];
-$SESSION->save('ulg', $g);
+$SESSION->save('clg', $g);
 
+if(!isset($_GET['ng']))
+        $SESSION->restore('clng', $ng);
+else
+        $ng = $_GET['ng'];
+$SESSION->save('clng', $ng);
+		
 if (! isset($_GET['page']))
-	$SESSION->restore('ulp', $_GET['page']);
+	$SESSION->restore('clp', $_GET['page']);
 	    
-$customerlist = $LMS->GetCustomerList($o, $s, $n, $g);
+$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng);
 
 $listdata['total'] = $customerlist['total'];
-$listdata['network'] = $customerlist['network'];
-$listdata['customergroup'] = $customerlist['customergroup'];
 $listdata['order'] = $customerlist['order'];
 $listdata['below'] = $customerlist['below'];
 $listdata['over'] = $customerlist['over'];
 $listdata['direction'] = $customerlist['direction'];
-$SESSION->restore('uls', $listdata['state']);
+$listdata['network'] = $n;
+$listdata['nodegroup'] = $ng;
+$listdata['customergroup'] = $g;
+
+$SESSION->restore('cls', $listdata['state']);
 
 $page = (! $_GET['page'] ? 1 : $_GET['page']); 
 $pagelimit = (!$CONFIG['phpui']['customerlist_pagelimit'] ? $listdata['total'] : $CONFIG['phpui']['customerlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$SESSION->save('ulp', $page);
+$SESSION->save('clp', $page);
 
 unset($customerlist['total']);
 unset($customerlist['state']);
-unset($customerlist['network']);
-unset($customerlist['customergroup']);
 unset($customerlist['order']);
 unset($customerlist['below']);
 unset($customerlist['over']);
@@ -85,6 +91,7 @@ $SMARTY->assign('customerlist',$customerlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
+$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('start',$start);

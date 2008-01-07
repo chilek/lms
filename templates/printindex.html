@@ -60,6 +60,18 @@
 						    </TD>
 						</TR>
 						<TR>    
+						    <TD width="1%" nowrap><IMG src="img/nodegroup.gif" alt=""></TD>
+						    <TD width="1%" nowrap><B>{t}Nodes Group:{/t}</B></TD>
+						    <TD width="98%" nowrap>
+							<SELECT size="1" name="nodegroup" {tip text="Select group"}>
+							    <OPTION value="" SELECTED>{t}- all groups -{/t}</OPTION>
+        						    {foreach from=$nodegroups item=nodegroup}
+							    <OPTION value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</OPTION>
+	        					    {/foreach}
+							    </SELECT>
+						    </TD>
+						</TR>
+						<TR>    
 						    <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
 						    <TD width="1%" nowrap><B>{t}Balance date:{/t}</B></TD>
 						    <TD width="98%" nowrap>
