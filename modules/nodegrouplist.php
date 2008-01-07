@@ -57,25 +57,47 @@ if (isset($_GET['id']) && isset($_GET['move']))
 		switch ($move)
 		{
 			case 'up':
-				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MAX(prio) FROM nodegroups WHERE prio<?)', array($prio));
+				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MAX(prio) FROM nodegroups WHERE prio<?)',
+					array($prio));
 				break;
 			case 'down':
-				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups WHERE prio>?)', array($prio));
+				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups WHERE prio>?)',
+					array($prio));
 				break;
 			case 'top':
-				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups)');
+				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups WHERE id<>?)',
+					array($id));
 				break;
 			case 'bottom':
-				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MAX(prio) FROM nodegroups)');
+				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MAX(prio) FROM nodegroups WHERE id<>?)',
+					array($id));
 				break;
 			default:
 				$neighbour = NULL;
 		}
 		if ($neighbour != NULL)
 		{
-			$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?;
-				UPDATE nodegroups SET prio=? WHERE id=?',
-				array($neighbour['prio'], $id, $prio, $neighbour['id']));
+			switch ($move)
+			{
+				case 'up':
+				case 'down':
+					$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?;
+						UPDATE nodegroups SET prio=? WHERE id=?',
+						array($neighbour['prio'], $id, $prio, $neighbour['id']));
+					break;
+				case 'top':
+					$DB->Execute('UPDATE nodegroups SET prio=prio+1 WHERE id<>? AND prio<?',
+						array($id, $prio));
+					$DB->Execute('UPDATE nodegroups SET prio=1 WHERE id=?',
+						array($id));
+					break;
+				case 'bottom':
+					$DB->Execute('UPDATE nodegroups SET prio=prio-1 WHERE id<>? AND prio>?',
+						array($id, $prio));
+					$DB->Execute('UPDATE nodegroups SET prio=(SELECT MAX(prio) FROM nodegroups)+1 WHERE id=?',
+						array($id));
+					break;
+			}
 			$LMS->CompactNodeGroups();
 		}
 	}
