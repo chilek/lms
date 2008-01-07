@@ -30,7 +30,7 @@ version ? (????-??-??):
   - added searching customers and printing customers list by nodes group (alec)
   - lmsd/hostfile: added 'nodegroups' option (alec)
   - lmsd/cutoff: added 'setnodegroup_only' option (alec)
-  - nodegroups: added prio field - we will be able to set nodegroups order (chilan)
+  - nodegroups: added prio field - we are be able to set nodegroups order (chilan)
 
 version 1.11.1 Talus (2007-12-03):
 
