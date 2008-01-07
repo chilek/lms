@@ -417,19 +417,19 @@ function GetConfigList($order='var,asc', $section='')
 $layout['pagetitle'] = trans('User Interface Configuration');
 
 if(!isset($_GET['o']))
-	$SESSION->restore('clo', $o);
+	$SESSION->restore('conlo', $o);
 else
 	$o = $_GET['o'];
-$SESSION->save('clo', $o);
+$SESSION->save('conlo', $o);
 
 if(!isset($_GET['s']))
-        $SESSION->restore('als', $s);
+        $SESSION->restore('conls', $s);
 else
 	$s = $_GET['s'];
-$SESSION->save('als', $s);
+$SESSION->save('conls', $s);
 		
-if ($SESSION->is_set('clp') && !isset($_GET['page']))
-	$SESSION->restore('clp', $_GET['page']);
+if ($SESSION->is_set('conlp') && !isset($_GET['page']))
+	$SESSION->restore('conlp', $_GET['page']);
 
 $configlist = GetConfigList($o, $s);
 
@@ -447,7 +447,7 @@ $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['configlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['configlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$SESSION->save('clp', $page);
+$SESSION->save('conlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

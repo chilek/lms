@@ -25,34 +25,35 @@
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="nodelist">
 				<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">
-				<B>{t}Filter:{/t}</B> {t}Status:{/t}
+				<B>{t}Filter:{/t}</B> 
+				<NOBR>{t}Status:{/t}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all -{/t}</OPTION>
 					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{t}connected<!plural:item>{/t}</OPTION>
 					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{t}disconnected<!plural:item>{/t}</OPTION>
 					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}online{/t}</OPTION>
-				</SELECT>&nbsp;
-				{t}Network:{/t}
+				</SELECT></NOBR>&nbsp;
+				<NOBR>{t}Network:{/t}
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
 					{section name=networks loop=$networks}
 					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 					{/section}
-				</SELECT>&nbsp;
-				{t}Group:{/t}
+				</SELECT></NOBR>&nbsp;
+				<NOBR>{t}Group:{/t}
 				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 					{foreach from=$nodegroups item=nodegroup}
 					<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 					{/foreach}
-				</SELECT>&nbsp;
-				{t}Customer's Group:{/t}
+				</SELECT></NOBR>&nbsp;
+				<NOBR>{t}Customers Group:{/t}
 				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 					{section name=customergroups loop=$customergroups}
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 					{/section}
-				</SELECT>
+				</SELECT></NOBR>
 			</FORM></P>
 		</TD>
 	</TR>		

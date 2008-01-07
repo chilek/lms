@@ -58,66 +58,71 @@ else
 	$SESSION->save('customersearch', $customersearch);
 
 if(!isset($_GET['o']))
-	$SESSION->restore('uslo', $o);
+	$SESSION->restore('cslo', $o);
 else
 	$o = $_GET['o'];
-$SESSION->save('uslo', $o);
+$SESSION->save('cslo', $o);
 
 if(!isset($_POST['s']))
-	$SESSION->restore('usls', $s);
+	$SESSION->restore('csls', $s);
 else
 	$s = $_POST['s'];
-$SESSION->save('usls', $s);
+$SESSION->save('csls', $s);
 
 if(!isset($_POST['n']))
-	$SESSION->restore('usln', $n);
+	$SESSION->restore('csln', $n);
 else
 	$n = $_POST['n'];
-$SESSION->save('usln', $n);
+$SESSION->save('csln', $n);
 
 if(!isset($_POST['g']))
-	$SESSION->restore('uslg', $g);
+	$SESSION->restore('cslg', $g);
 else
 	$g = $_POST['g'];
-$SESSION->save('uslg', $g);
+$SESSION->save('cslg', $g);
 
 if(!isset($_POST['k']))
-	$SESSION->restore('uslk', $k);
+	$SESSION->restore('cslk', $k);
 else
 	$k = $_POST['k'];
-$SESSION->save('uslk', $k);
+$SESSION->save('cslk', $k);
+
+if(!isset($_POST['ng']))
+	$SESSION->restore('cslng', $ng);
+else
+	$ng = $_POST['ng'];
+$SESSION->save('cslng', $ng);
 
 if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');
-	$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, $customersearch, NULL, $k);
+	$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, $customersearch, NULL, $k, $ng);
 	
 	$listdata['total'] = $customerlist['total'];
 	$listdata['direction'] = $customerlist['direction'];
 	$listdata['order'] = $customerlist['order'];
 	$listdata['state'] = $customerlist['state'];
-	$listdata['network'] = $customerlist['network'];
-	$listdata['customergroup'] = $customerlist['customergroup'];
 	$listdata['below'] = $customerlist['below'];
 	$listdata['over'] = $customerlist['over'];
+	$listdata['network'] = $n;
+	$listdata['customergroup'] = $g;
+	$listdata['nodegroup'] = $ng;
 	
 	unset($customerlist['total']);
 	unset($customerlist['state']);
-	unset($customerlist['network']);
-	unset($customerlist['customergroup']);
 	unset($customerlist['direction']);
 	unset($customerlist['order']);
 	unset($customerlist['below']);
 	unset($customerlist['over']);
 
 	if (! isset($_GET['page']))
-		$SESSION->restore('uslp', $_GET['page']);
+		$SESSION->restore('cslp', $_GET['page']);
 
 	$page = (! $_GET['page'] ? 1 : $_GET['page']); 
 	$pagelimit = (!isset($CONFIG['phpui']['customerlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['customerlist_pagelimit']);
 	$start = ($page - 1) * $pagelimit;
 
-	$SESSION->save('uslp', $page);
+	$SESSION->save('cslp', $page);
 		
 	$SMARTY->assign('customerlist',$customerlist);
 	$SMARTY->assign('listdata',$listdata);
@@ -140,10 +145,11 @@ else
 {
 	$layout['pagetitle'] = trans('Customer Search');
 	
-	$SESSION->remove('uslp');
+	$SESSION->remove('cslp');
 	
 	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
+	$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 	$SMARTY->assign('k', $k);
 	$SMARTY->display('customersearch.html');
 }
