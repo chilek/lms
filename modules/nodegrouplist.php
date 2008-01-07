@@ -28,12 +28,12 @@ function GroupList()
 {
 	global $DB;
 	
-	if($nodegrouplist = $DB->GetAll('SELECT id, name, description,
+	if($nodegrouplist = $DB->GetAll('SELECT id, name, description, prio
 	    	        (SELECT COUNT(*)
 	                FROM nodegroupassignments
 	                WHERE nodegroupid = nodegroups.id
 			) AS nodescount
-	                FROM nodegroups ORDER BY name ASC'))
+	                FROM nodegroups ORDER BY prio ASC, name ASC'))
 	{
 	        $nodegrouplist['total'] = sizeof($nodegrouplist);
 	        $nodegrouplist['nodestotal'] = 0;
