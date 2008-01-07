@@ -91,7 +91,7 @@ if(isset($_POST['nodegroup']))
 
 	if(!$error)
 	{
-		$LMS->Execute('UPDATE nodegroups SET name=?, description=?
+		$LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
 				WHERE id=?',
 				array($nodegroupedit['name'],
 					$nodegroupedit['description']
