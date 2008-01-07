@@ -120,12 +120,12 @@ switch($mode)
 		$s['phone'] = $search;
 		$s['email'] = $search;
 		$SESSION->save('customersearch', $s);
-		$SESSION->save('uslk', 'OR');
+		$SESSION->save('cslk', 'OR');
 		
-		$SESSION->remove('uslp');
-		$SESSION->remove('usln');
-		$SESSION->remove('uslg');
-		$SESSION->remove('usls');
+		$SESSION->remove('cslp');
+		$SESSION->remove('csln');
+		$SESSION->remove('cslg');
+		$SESSION->remove('csls');
 		
 		$target = '?m=customersearch&search=1';
 	break;
