@@ -195,7 +195,7 @@ $_LANG['Enter customer ID, first/lastname, telephone or part of customer email a
 $_LANG['Enter node ID, name, IP address or MAC address and press Enter'] = 'Wprowadź identyfikator komputera, nazwę, adres IP lub adres MAC i naciśnij Enter';
 $_LANG['Enter request tracker ID or customer name and press Enter'] = 'Wprowadź identyfikator zgłoszenia lub nazwisko klienta i naciśnij Enter';
 $_LANG['Both IP addresses for DHCP range are required!'] = 'Obydwa adresy IP są wymagane dla zakresu DHCP!';
-$_LANG['Bottom'] = 'Spód';
+$_LANG['Bottom'] = 'Koniec';
 $_LANG['Browse'] = 'Przeglądaj';
 $_LANG['Browse Configuration'] = 'Przeglądaj konfigurację';
 $_LANG['Bug Tracking System'] = 'System śledzenia błędów';
@@ -1342,7 +1342,7 @@ $_LANG['To:'] = 'Do:';
 $_LANG['To add a new network see "IP Networks" menu.'] = 'Aby dodać nową sieć zobacz menu "Sieci IP".';
 $_LANG['To (day/month/year hh:mm):'] = 'Do (dzień/miesiąc/rok gg:mm):';
 $_LANG['To pay:'] = 'Do zapłaty:';
-$_LANG['Top'] = 'Szczyt';
+$_LANG['Top'] = 'Początek';
 $_LANG['Total:'] = 'Razem:';
 $_LANG['Total: $0'] = 'Razem: $0';
 $_LANG['Total Dues:'] = 'W tym zadłużonych:';
