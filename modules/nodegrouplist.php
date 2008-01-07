@@ -69,7 +69,7 @@ if (isset($_GET['id']) && isset($_GET['move']))
 		{
 			$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?;
 				UPDATE nodegroups SET prio=? WHERE id=?',
-				array($id, $neighbour['prio'], $neighbour['id'], $prio));
+				array($neighbour['prio'], $id, $prio, $neighbour['id']));
 			$LMS->CompactNodeGroups();
 		}
 	}
