@@ -6,6 +6,7 @@ struct cutoff_module
 	int warn_only;
 	int nodeassignments;
 	int checkinvoices;
+	int nodegroup_only;
 	int deadline;
 	int limit;
 	
