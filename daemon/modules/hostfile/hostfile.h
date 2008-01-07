@@ -53,6 +53,7 @@ struct hostfile_module
 	char *command;
 	char *networks;
 	char *customergroups;
+	char *nodegroups;
 
 	int skip_dev_ips;
 	int pub_replace;

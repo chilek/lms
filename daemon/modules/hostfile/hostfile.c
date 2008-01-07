@@ -71,13 +71,13 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	FILE *fh;
 	QueryHandle *res;
 	char *query;
-	int i, j, k=2, nc=0, n=2;
+	int i, j, nc=0, ng=2, k=2, n=2;
 
 	char *netnames = strdup(hm->networks);	
 	char *netname = strdup(netnames);
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 
-	char *groups = strdup("EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+	char *groups = strdup("AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
 				"WHERE a.customerid = ownerid "
 				"AND g.id = a.customergroupid "
 				"AND (%groups)) ");
@@ -85,6 +85,15 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *groupnames = strdup(hm->customergroups);
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
+
+	char *ngroups = strdup("AND EXISTS (SELECT 1 FROM nodegroups g, nodegroupassignments na "
+				"WHERE na.nodeid = id "
+				"AND g.id = na.nodegroupid "
+				"AND (%groups)) ");
+	
+	char *ngroupnames = strdup(hm->nodegroups);
+	char *ngroupname = strdup(ngroupnames);
+	char *ngroupsql = strdup("");
 	
 	while( k>1 )
 	{
@@ -107,13 +116,37 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	if(strlen(groupsql))
 		g->str_replace(&groups, "%groups", groupsql);
 
+	while( ng>1 )
+	{
+		ng = sscanf(ngroupnames, "%s %[._a-zA-Z0-9- ]", ngroupname, ngroupnames);
+
+		if( strlen(ngroupname) )
+		{
+			ngroupsql = realloc(ngroupsql, sizeof(char *) * (strlen(ngroupsql) + strlen(ngroupname) + 30));
+			if(strlen(ngroupsql))
+				strcat(ngroupsql, " OR UPPER(g.name) = UPPER('");
+			else
+				strcat(ngroupsql, "UPPER(g.name) = UPPER('");
+			
+			strcat(ngroupsql, ngroupname);
+			strcat(ngroupsql, "')");
+		}		
+	}		
+	free(ngroupname); free(ngroupnames);
+
+	if(strlen(ngroupsql))
+		g->str_replace(&ngroups, "%groups", ngroupsql);
+
 	while( n>1 )
 	{
 		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
 		if( strlen(netname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway, dns, dns2, wins FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, "
+					"interface, gateway, dns, dns2, wins "
+					"FROM networks WHERE UPPER(name)=UPPER('?')",
+					netname);
 
 			if( g->db_nrows(res) )
 			{
@@ -136,7 +169,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	if(!nc)
 	{
-		res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway, dns, dns2, wins FROM networks");
+		res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, "
+				"interface, gateway, dns, dns2, wins FROM networks");
 
 		for(nc=0; nc<g->db_nrows(res); nc++)
 		{
@@ -164,17 +198,19 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning "
 				"FROM nodes "
-				"WHERE ownerid<>0 AND %groups "
+				"WHERE ownerid<>0 %groups %ngroups"
 				"ORDER BY ipaddr");
 		else
 			query = strdup(
 				"SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning "
 				"FROM nodes "
-				"WHERE ownerid = 0 AND %groups "
+				"WHERE ownerid = 0 %groups %ngroups"
 				"ORDER BY ipaddr");
 			
-		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "1=1");	
+		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
+		g->str_replace(&query, "%ngroups", strlen(ngroupsql) ? ngroups : "");	
+
 		res = g->db_query(g->conn, query);
 
 		for(i=0; i<g->db_nrows(res); i++)
@@ -279,6 +315,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	
 	free(groups);
 	free(groupsql);
+	free(ngroups);
+	free(ngroupsql);
 	
 	free(hm->prefix);
 	free(hm->append);
@@ -294,6 +332,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	free(hm->command);
 	free(hm->networks);
 	free(hm->customergroups);
+	free(hm->nodegroups);
 }
 
 struct hostfile_module * init(GLOBAL *g, MODULE *m)
@@ -331,6 +370,7 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 
 	hm->networks = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "networks", ""));
 	hm->customergroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "customergroups", ""));
+	hm->nodegroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "nodegroups", ""));
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/hostfile] initialized", hm->base.instance);
 #endif
