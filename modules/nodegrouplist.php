@@ -99,6 +99,7 @@ if (isset($_GET['id']) && isset($_GET['move']))
 					break;
 			}
 			$LMS->CompactNodeGroups();
+			$SESSION->redirect('?m=nodegrouplist');
 		}
 	}
 }
