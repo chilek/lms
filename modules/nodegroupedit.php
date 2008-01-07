@@ -94,7 +94,8 @@ if(isset($_POST['nodegroup']))
 		$LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
 				WHERE id=?',
 				array($nodegroupedit['name'],
-					$nodegroupedit['description']
+					$nodegroupedit['description'],
+					$nodegroupedit['id']
 				));
 
 		$SESSION->redirect('?m=nodegroupinfo&id='.$id);
