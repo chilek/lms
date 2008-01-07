@@ -62,6 +62,12 @@ if (isset($_GET['id']) && isset($_GET['move']))
 			case 'down':
 				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups WHERE prio>?)', array($prio));
 				break;
+			case 'top':
+				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups)');
+				break;
+			case 'bottom':
+				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MAX(prio) FROM nodegroups)');
+				break;
 			default:
 				$neighbour = NULL;
 		}
