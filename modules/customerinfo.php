@@ -45,6 +45,7 @@ $customernodes = $LMS->GetCustomerNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
 $documents = $LMS->GetDocuments($_GET['id'], 10);
 $taxeslist = $LMS->GetTaxes();
+$allnodegroups = $LMS->GetNodeGroupNames();
 
 if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
 {
@@ -63,6 +64,7 @@ $SMARTY->assign(
 			'balancelist' => $balancelist,
 			'assignments' => $assigments,
 			'customergroups' => $customergroups,
+			'allnodegroups' => $allnodegroups,
 			'othercustomergroups' => $othercustomergroups,
 			'customerinfo' => $customerinfo,
 			'tariffs' => $tariffs,

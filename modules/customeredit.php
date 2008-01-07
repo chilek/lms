@@ -192,6 +192,7 @@ $SMARTY->assign('tariffs',$LMS->GetTariffs());
 $SMARTY->assign('assignments',$LMS->GetCustomerAssignments($_GET['id']));
 $SMARTY->assign('customergroups',$LMS->CustomergroupGetForCustomer($_GET['id']));
 $SMARTY->assign('othercustomergroups',$LMS->GetGroupNamesWithoutCustomer($_GET['id']));
+$SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('documents',$LMS->GetDocuments($_GET['id'], 10));
 $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());

@@ -30,9 +30,13 @@ version ? (????-??-??):
   - added searching customers and printing customers list by nodes group (alec)
   - lmsd/hostfile: added 'nodegroups' option (alec)
   - lmsd/cutoff: added 'setnodegroup_only' option (alec)
-  - nodegroups: added prio field - we are be able to set nodegroups order (chilan)
-  - mac sort moved from GetMACs() to choosemac dialog (sorting local mac adresses
-    with mac adresses received from arpd servers) (Mad Mark)
+  - nodegroups: added prio field - we are be able to set nodegroups 
+    order (chilan)
+  - mac sort moved from GetMACs() to choosemac dialog (sorting local mac 
+    adresses with mac adresses received from arpd servers) (Mad Mark)
+  - improved status/warning setting and group assigning in customer's nodes
+    list - checkbox selection (alec)
+  - added nodes groups list popups in customer's nodes list (alec)
 
 version 1.11.1 Talus (2007-12-03):
 

@@ -1900,5 +1900,7 @@ $_LANG['Node Groups List'] = 'Lista grup komputerów';
 $_LANG['Remove assignment'] = 'Usuń powiązanie';
 $_LANG['Select group to attribute to node'] = 'Wybierz grupę aby przypisać ją do komputera';
 $_LANG['That node is not a member of any group.'] = 'Ten komputer nie należy do żadnej grupy.';
+$_LANG['Remove Group'] = 'Usuń grupę';
+$_LANG['Node\'s Groups ($0):'] = 'Grupy komputera ($0):';
 
 ?>

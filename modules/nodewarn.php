@@ -50,6 +50,14 @@ if(isset($setwarnings['mnodeid']))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
+if(!empty($_POST['marks']))
+{
+        foreach($_POST['marks'] as $id)
+	        $LMS->NodeSetWarn($id, isset($_GET['warning']) ? 1 : 0);
+
+	$SESSION->redirect('?'.$SESSION->get('backto'));
+}
+
 $backid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
 
 if($backid)
