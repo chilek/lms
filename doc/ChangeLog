@@ -31,6 +31,8 @@ version ? (????-??-??):
   - lmsd/hostfile: added 'nodegroups' option (alec)
   - lmsd/cutoff: added 'setnodegroup_only' option (alec)
   - nodegroups: added prio field - we are be able to set nodegroups order (chilan)
+  - mac sort moved from GetMACs() to choosemac dialog (sorting local mac adresses
+    with mac adresses received from arpd servers) (Mad Mark)
 
 version 1.11.1 Talus (2007-12-03):
 

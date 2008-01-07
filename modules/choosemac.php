@@ -51,6 +51,9 @@ elseif($p == 'main')
 		}
 	}
 	
+	if(sizeof($maclist))
+		array_multisort($maclist['longip'],$maclist['mac'],$maclist['ip'],$maclist['nodename']);
+				
 	$SMARTY->assign('maclist',$maclist);
 }
 

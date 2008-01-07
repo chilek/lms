@@ -3171,9 +3171,6 @@ class LMS
 
 		}
 		
-		if(sizeof($result))
-			array_multisort($result['longip'],$result['mac'],$result['ip'],$result['nodename']);
-		
 		return $result;
 	}
 
