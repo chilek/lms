@@ -24,11 +24,15 @@
 	<tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%">
 			<IMG src="img/nodegroup.gif" ALT="">
+			{*
 			<IMG src="img/info1.gif" ALT="">
+			*}
 		</TD>
 		<TD WIDTH="99%" onClick="parent.location.href='?m=nodegroupinfo&id={$nodegroups[nodegroups].id}';">
 			<B>{$nodegroup.name}</B><BR>
+			{*
 			<NOBR>{$nodegroup.description|truncate:50:"...":true}</NOBR>
+			*}
 		</TD>
 	</TR>
 	{/foreach}
