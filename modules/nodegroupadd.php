@@ -47,10 +47,12 @@ if(isset($_POST['nodegroupadd']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO nodegroups (name, description)
-				VALUES (?, ?)', 
+		$prio = $BB->GetOne('SELECT MAX(prio) FROM nodegroups');
+		$DB->Execute('INSERT INTO nodegroups (name, description, prio)
+				VALUES (?, ?, ?)', 
 				array($nodegroupadd['name'],
-					$nodegroupadd['description']
+					$nodegroupadd['description'],
+					($prio != NULL ? $prio : 1)
 				));
 	
 		$id = $DB->GetLastInsertID('nodegroups');
