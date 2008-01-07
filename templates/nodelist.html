@@ -38,19 +38,19 @@
 					{section name=networks loop=$networks}
 					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 					{/section}
-				</SELECT>
+				</SELECT>&nbsp;
+				{t}Group:{/t}
+				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
+					<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
+					{foreach from=$nodegroups item=nodegroup}
+					<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+					{/foreach}
+				</SELECT>&nbsp;
 				{t}Customer's Group:{/t}
 				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 					{section name=customergroups loop=$customergroups}
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
-					{/section}
-				</SELECT>
-				{t}Node's Group:{/t}
-				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
-					{section name=nodegroups loop=$nodegroups}
-					<OPTION value="{$nodegroups[nodegroups].id}" {if $listdata.nodegroup eq $nodegroups[nodegroups].id} SELECTED {/if}>{$nodegroups[nodegroups].name|truncate:30:"...":true}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM></P>

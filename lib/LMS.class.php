@@ -1408,8 +1408,8 @@ class LMS
 
 	function GetNodeGroupNames()
 	{
-		return $this->DB->GetAll('SELECT id, name, description FROM nodegroups
-				ORDER BY name ASC');
+		return $this->DB->GetAllByKey('SELECT id, name, description FROM nodegroups
+				ORDER BY name ASC', 'id');
 	}
 
 	function GetNodeGroupNamesByNode($nodeid)
