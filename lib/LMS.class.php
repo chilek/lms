@@ -1248,21 +1248,23 @@ class LMS
 		if($network)
 			$net = $this->GetNetworkParams($network);
 
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
-					mac, nodes.name AS name, ownerid, access, warning, netdev, lastonline, nodes.info AS info, '
-					.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner
-					FROM customersview c LEFT JOIN nodes ON (nodes.ownerid = c.id) '
-					.($customergroup ? 'LEFT JOIN customerassignments ON (customerid = c.id) ' : '')
-					.($nodegroup ? 'LEFT JOIN nodegroupassignments ON (nodeid = nodes.id) ' : '')
-					.' WHERE ownerid = c.id '
-					.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
-					.($status==1 ? ' AND access = 1' : '') //connected
-					.($status==2 ? ' AND access = 0' : '') //disconnected
-					.($status==3 ? ' AND lastonline > ?NOW? - '.$this->CONFIG['phpui']['lastonline_limit'] : '') //online
-					.($customergroup ? ' AND customergroupid = '.$customergroup : '')
-					.($nodegroup ? ' AND nodegroupid = '.$nodegroup : '')
-					.(isset($searchargs) ? $searchargs : '')
-					.($sqlord != '' ? $sqlord.' '.$direction : '')))
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
+				inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, 
+				netdev, lastonline, nodes.info AS info, '
+				.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner
+				FROM nodes 
+				JOIN customersview c ON (nodes.ownerid = c.id) '
+				.($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
+				.($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = nodes.id) ' : '')
+				.' WHERE 1=1 '
+				.($network ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR ( ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
+				.($status==1 ? ' AND access = 1' : '') //connected
+				.($status==2 ? ' AND access = 0' : '') //disconnected
+				.($status==3 ? ' AND lastonline > ?NOW? - '.$this->CONFIG['phpui']['lastonline_limit'] : '') //online
+				.($customergroup ? ' AND customergroupid = '.$customergroup : '')
+				.($nodegroup ? ' AND nodegroupid = '.$nodegroup : '')
+				.(isset($searchargs) ? $searchargs : '')
+				.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
