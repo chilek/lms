@@ -28,8 +28,7 @@ version ? (????-??-??):
   - few improvements in customer groups (alec)
   - nodelist: we can filter nodes by node groups (chilan)
   - added searching customers and printing customers list by nodes group (alec)
-  - quicksearch: fixed uninitialized $cslk value causing errors during
-    customer search (chilan)
+  - lmsd/hostfile: added 'nodegroups' option (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
