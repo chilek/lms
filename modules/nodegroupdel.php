@@ -35,6 +35,7 @@ if(isset($_GET['is_sure']))
 		$DB->Execute('DELETE FROM nodegroups WHERE id = ?', array($id));
 //		$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($id));
 		$DB->CommitTrans();
+		$LMS->CompactNodeGroups();
 	}
 }
 

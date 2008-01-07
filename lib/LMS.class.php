@@ -1465,15 +1465,31 @@ class LMS
 
 	function GetNodeGroup($id, $network=NULL)
 	{
-		$result = $this->DB->GetRow('SELECT id, name, description,
+		$result = $this->DB->GetRow('SELECT id, name, description, prio,
 				(SELECT COUNT(*) FROM nodegroupassignments 
 					WHERE nodegroupid = nodegroups.id) AS count
 				FROM nodegroups WHERE id = ?', array($id));
-		
+
 		$result['nodes'] = $this->GetNodesWithGroup($id, $network);
 		$result['nodescount'] = sizeof($result['nodes']);
 
 		return $result;
+	}
+
+	function CompactNodeGroups()
+	{
+	        $this->DB->BeginTrans();
+		$this->DB->LockTables('nodegroups');
+	        if($nodegroups = $this->DB->GetAll('SELECT id, prio FROM nodegroups ORDER BY prio ASC'))
+	        {
+			$prio = 1;
+			foreach($nodegroups as $idx => $row)
+			{
+				$this->DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?', array($prio, $row['id']));
+				$prio++;
+			}
+		}
+		$this->DB->CommitTrans();
 	}
 
 	function GetNetDevLinkedNodes($id)

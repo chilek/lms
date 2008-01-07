@@ -47,7 +47,7 @@ if(isset($_POST['nodegroupadd']))
 
 	if(!$error)
 	{
-		$prio = $BB->GetOne('SELECT MAX(prio) FROM nodegroups');
+		$prio = $DB->GetOne('SELECT MAX(prio)+1 FROM nodegroups');
 		$DB->Execute('INSERT INTO nodegroups (name, description, prio)
 				VALUES (?, ?, ?)', 
 				array($nodegroupadd['name'],

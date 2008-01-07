@@ -47,6 +47,34 @@ function GroupList()
         return $nodegrouplist;
 }
 
+if (isset($_GET['id']) && isset($_GET['move']))
+{
+	$id = $_GET['id'];
+	$move = $_GET['move'];
+	$prio = $DB->GetOne('SELECT prio FROM nodegroups WHERE id = ?', array($id));
+	if ($prio != NULL)
+	{
+		switch ($move)
+		{
+			case 'up':
+				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MAX(prio) FROM nodegroups WHERE prio<?)', array($prio));
+				break;
+			case 'down':
+				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups WHERE prio>?)', array($prio));
+				break;
+			default:
+				$neighbour = NULL;
+		}
+		if ($neighbour != NULL)
+		{
+			$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?;
+				UPDATE nodegroups SET prio=? WHERE id=?',
+				array($id, $neighbour['prio'], $neighbour['id'], $prio));
+			$LMS->CompactNodeGroups();
+		}
+	}
+}
+
 $layout['pagetitle'] = trans('Node Groups List');
 
 $nodegrouplist = GroupList();
