@@ -39,6 +39,16 @@ function NodeStats($id, $dt)
 	return $result;
 }
 
+if(isset($_GET['nodegroups']))
+{
+	$nodegroups = $LMS->GetNodeGroupNamesByNode(intval($_GET['id']));
+	
+	$SMARTY->assign('nodegroups', $nodegroups);
+	$SMARTY->assign('total', sizeof($nodegroups));
+	$SMARTY->display('nodegrouplistshort.html');
+	die;
+}
+
 if(!eregi('^[0-9]+$',$_GET['id']))
 {
 	$SESSION->redirect('?m=nodelist');
@@ -77,6 +87,7 @@ $customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
 $taxeslist = $LMS->GetTaxes();
 $customernodes = $LMS->GetCustomerNodes($ownerid);
+$allnodegroups = $LMS->GetNodeGroupNames();
 $nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
 $othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
 
@@ -111,6 +122,7 @@ $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('customernodes',$customernodes);
 $SMARTY->assign('customergroups',$customergroups);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
+$SMARTY->assign('allnodegroups',$allnodegroups);
 $SMARTY->assign('nodegroups',$nodegroups);
 $SMARTY->assign('othernodegroups',$othernodegroups);
 $SMARTY->assign('documents', $documents);

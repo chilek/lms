@@ -1,4 +1,47 @@
 <!--// $Id$ //-->
+{literal}<SCRIPT type="text/javascript">
+function setstatus(access)
+{
+	if(access)
+		document.custnodeslist.action = '?m=nodeset&access=1';
+	else
+		document.custnodeslist.action = '?m=nodeset';
+	
+	document.custnodeslist.submit();
+}
+function setwarning(warning)
+{
+	if(warning)
+		document.custnodeslist.action = '?m=nodewarn&warning=1';
+	else
+		document.custnodeslist.action = '?m=nodewarn';
+	
+	document.custnodeslist.submit();
+}
+function setgroup(act)
+{
+	document.custnodeslist.action = '?m=nodeedit&action=' + act + '&groupid=' + document.getElementById('groupselect').value;
+	document.custnodeslist.submit();
+}
+
+function CheckAllN()
+{
+	for (var i=0; i<document.custnodeslist.elements.length; i++)
+	{
+	        var e = document.custnodeslist.elements[i];
+	        if (e.type == 'checkbox' && e.name != 'allbox')
+	        {
+	                e.checked = document.custnodeslist.allbox.checked;
+	        }
+	}
+}
+
+function CheckAllN2()
+{
+        document.custnodeslist.allbox.checked = !document.custnodeslist.allbox.checked;
+	CheckAllN();
+}
+</SCRIPT>{/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel');">
@@ -14,20 +57,22 @@
 	</TR>
         <TR id="nodespanel" style="display:none;">
 	        <TD WIDTH="100%" colspan="2" class="fall">
+		    <FORM method="post" action="" name="custnodeslist">
 		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 		        <TR class="dark">
-	                    <TD WIDTH="96%" class="fleftu"><B>{t}Name:{/t}</B></TD>
+	                    <TD WIDTH="95%" class="fleftu"><B>{t}Name:{/t}</B></TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}ID:{/t}</TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Address:{/t}</TD>
+		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Groups:{/t}</TD>
 		    	    <TD WIDTH="1%" class="fbt" align="right">{t}Network:{/t}</TD>
 		    	    <TD WIDTH="1%" class="frightu">&nbsp;</TD>
 			</TR>
-			{cycle values="light,lucid" print=false}
+			{cycle values="light,lucid" print=false name=nodes}
 			{if $customernodes.total > 0}
 			{section name=customernodes loop=$customernodes}
 			{if $customernodes[customernodes].id}
-    			<TR class="{cycle}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-			    <TD WIDTH="96%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+    			<TR class="{cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+			    <TD WIDTH="95%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
 				<B>{$customernodes[customernodes].name}</B>
 				{if $customernodes[customernodes].location}<BR>
 				<NOBR>{$customernodes[customernodes].location|truncate:60:"...":true}</NOBR>
@@ -43,6 +88,11 @@
 				{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if} / {$customernodes[customernodes].mac}
 			    </TD>
 			    <TD WIDTH="1%" align="right" NOWRAP>
+				{if $customernodes[customernodes].gcount}
+				<img src="img/nodegroup.gif" alt="" {tip 0=$customernodes[customernodes].id dynpopup='?m=nodeinfo&id=$0&nodegroups=1' sticky=1}>
+				{/if}
+			    </TD>
+			    <TD WIDTH="1%" align="right" NOWRAP>
 				<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network.id}">{$customernodes[customernodes].network.name|truncate:"20":"...":true}</A></B> {if $customernodes[customernodes].network_pub} (<B><A HREF="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A></B>){/if}
 			    </TD>
 			    <TD WIDTH="1%" NOWRAP>
@@ -51,13 +101,15 @@
 				<A HREF="?m=nodeedit&id={$customernodes[customernodes].id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 				<A HREF="?m=nodeinfo&id={$customernodes[customernodes].id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>&nbsp;
 				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t 0=$customernodes[customernodes].name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+				{cycle name=nodes print=false}
+				<INPUT class="box {cycle name=nodes}" TYPE="checkbox" NAME="marks[{$customernodes[customernodes].id}]" VALUE="{$customernodes[customernodes].id}" CHECKED>
 			    </TD>
 			</TR>
 			{/if}
 			{/section}
 			{else}
 			<TR>
-			    <TD WIDTH="100%" COLSPAN="5" align="center">
+			    <TD WIDTH="100%" COLSPAN="6" align="center">
 				<P>&nbsp;</P>
 				<P><B>{if $customerinfo.deleted}<FONT class="red">{t}That customer has been deleted.{/t}</FONT>{else}{t}That customer hasn't got any node.{/t}{/if}</B></P>
 				<P>&nbsp;</P>
@@ -65,22 +117,33 @@
 			</TR>
 			{/if}
 			<TR CLASS="LIGHT">
-			    <TD WIDTH="100%" COLSPAN="5" CLASS="FTOP">
-				<A HREF="?m=nodeset&ownerid={$customerinfo.id}&access=1"><IMG SRC="img/access.gif"> {t}Connect All{/t}</A>
-			    	<A HREF="?m=nodeset&ownerid={$customerinfo.id}"><IMG SRC="img/noaccess.gif"> {t}Disconnect All{/t}</A>
-				<A HREF="?m=nodewarn&ownerid={$customerinfo.id}&warning=1"><IMG SRC="img/warningon.gif"> {t}Enable Warnings for All{/t}</A>
-				<A HREF="?m=nodewarn&ownerid={$customerinfo.id}"><IMG SRC="img/warningoff.gif"> {t}Disable Warnings for All{/t}</A>
+			    <TD WIDTH="100%" COLSPAN="4" CLASS="FTOP">
+				<IMG SRC="img/access.gif">
+				<A HREF="javascript: setstatus(1)"> {t}Connect{/t}</A>/<A HREF="javascript: setstatus(0)">{t}Disconnect{/t}</A>
+				<IMG SRC="img/warningon.gif">
+				<A HREF="javascript: setwarning(1)"> {t}Enable{/t}</A>/<A HREF="javascript: setwarning(0)">{t}Disable{/t}</A>
+				{if $allnodegroups}
+				<IMG SRC="img/nodegroup.gif">
+				<A HREF="javascript: setgroup('setgroup')"> {t}Add{/t}</A>/<A HREF="javascript: setgroup('unsetgroup')">{t}Remove Group{/t}</A>:
+				<SELECT SIZE="1" ID="groupselect">
+	            		    {foreach from=$allnodegroups item=nodegroup}
+			            <OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+				    {/foreach}
+				</SELECT>
+				{/if}
 			    </TD>
+			    <TD CLASS="ftop" ALIGN="right" COLSPAN="2">
+			        <NOBR><A href="javascript:CheckAllN2();">{t}Check All{/t}</A><INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAllN();" VALUE="Check All Boxes" CHECKED></NOBR>
+                            </TD>
 			</TR>
 		    </TABLE>
+		    </FORM>
 		</TD>
 	</TR>
 </TABLE>
 {literal}<SCRIPT type="text/javascript">
-<!--
         if(getCookie('nodespanel')=='1')
 	{
 	        document.getElementById('nodespanel').style.display = '';
 	}
-//-->
 </SCRIPT>{/literal}

@@ -789,9 +789,14 @@ class LMS
 
 	function GetCustomerNodes($id)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
-				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, warning, info, ownerid, location 
-				FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, 
+				inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
+				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, 
+				warning, info, ownerid, location,
+				(SELECT COUNT(*) FROM nodegroupassignments
+					WHERE nodeid = nodes.id) AS gcount 
+				FROM nodes WHERE ownerid=? 
+				ORDER BY name ASC', array($id)))
 		{
 			// assign network(s) to node record
 			if($networks = $this->GetNetworks())
@@ -1281,18 +1286,15 @@ class LMS
 		return $nodelist;
 	}
 
-	function NodeSet($id)
+	function NodeSet($id, $access=-1)
 	{
-		if($this->DB->GetOne('SELECT access FROM nodes WHERE id=?', array($id)) == 1 )
+		if($access != -1)
+			return $this->DB->Execute('UPDATE nodes SET access=? WHERE id=?', array(
+					$access ? 1 : 0, $id));
+		elseif($this->DB->GetOne('SELECT access FROM nodes WHERE id=?', array($id)) == 1 )
 			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE id=?', array($id));
 		else
-		{
-			if($this->DB->GetOne('SELECT status FROM nodes, customers 
-					    WHERE ownerid = customers.id AND nodes.id = ?', array($id)) == 3)
-			{
-				return $this->DB->Execute('UPDATE nodes SET access=1 WHERE id=?', array($id));
-			}
-		}
+			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE id=?', array($id));
 	}
 
 	function NodeSetU($id,$access=FALSE)
@@ -3151,8 +3153,7 @@ class LMS
 					}
 				}
 				fclose($file);
-				break;
-
+			break;
 			default:
 				exec('arp -an|grep -v incompl',$result);
 				foreach($result as $arpline)
@@ -3167,8 +3168,7 @@ class LMS
 						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
 					}
 				}
-				break;
-
+			break;
 		}
 		
 		return $result;

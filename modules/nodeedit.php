@@ -24,13 +24,31 @@
  *  $Id$
  */
 
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+
+if(!empty($_POST['marks']) && !empty($_GET['groupid']))
+{
+	foreach($_POST['marks'] as $mark)
+		if($action == 'unsetgroup')
+			$DB->Execute('DELETE FROM nodegroupassignments
+					WHERE nodegroupid = ? AND nodeid = ?',
+					array($_GET['groupid'], $mark));
+		elseif($action == 'setgroup')
+			if(!$DB->GetOne('SELECT 1 FROM nodegroupassignments
+					WHERE nodegroupid = ? AND nodeid = ?',
+					array($_GET['groupid'], $mark)))
+				$DB->Execute('INSERT INTO nodegroupassignments 
+					(nodegroupid, nodeid) VALUES (?, ?)',
+					array($_GET['groupid'], $mark));
+
+	$SESSION->redirect('?'.$SESSION->get('backto'));
+}
+
 if(!$LMS->NodeExists($_GET['id']))
 	if(isset($_GET['ownerid']))
 		header('Location: ?m=customerinfo&id='.$_GET['ownerid']);
 	else
 		header('Location: ?m=nodelist');
-
-$action = isset($_GET['action']) ? $_GET['action'] : '';
 
 switch($action)
 {
@@ -205,6 +223,7 @@ $taxeslist = $LMS->GetTaxes();
 $customernodes = $LMS->GetCustomerNodes($ownerid);
 $nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
 $othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
+$allnodegroups = $LMS->GetNodeGroupNames();
 
 if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
 {
@@ -218,6 +237,7 @@ $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('customernodes',$customernodes);
 $SMARTY->assign('customergroups',$customergroups);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
+$SMARTY->assign('allnodegroups',$allnodegroups);
 $SMARTY->assign('nodegroups',$nodegroups);
 $SMARTY->assign('othernodegroups',$othernodegroups);
 $SMARTY->assign('tariffs',$tariffs);
