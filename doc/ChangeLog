@@ -4,7 +4,9 @@ version ? (????-??-??):
 
   - fixed 'at' checking of yearly assignments when 'at' is empty (alec)
   - BTS#0000713: fixed financial operations mass addition (alec/endrju)
-
+  - fixed members count in customers group info when network
+    filter is used (alec)
+  
 version 1.10.2 Roham (2007-12-12):
 
   - fix: allow searching strings with '/' sign in quicksearch (alec)

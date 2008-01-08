@@ -878,8 +878,8 @@ class LMS
 
 	function CustomergroupWithCustomerGet($id)
 	{
-		return $this->DB->GetOne('SELECT COUNT(customerid) FROM customerassignments, customers
-				WHERE customers.id = customerid AND customergroupid = ?', array($id));
+		return $this->DB->GetOne('SELECT COUNT(*) FROM customerassignments
+				WHERE customergroupid = ?', array($id));
 	}
 
 	function CustomergroupAdd($customergroupdata)
