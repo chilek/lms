@@ -248,7 +248,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 			execn = n ? 1 : execn;
 			
-			if(*c->warning && n)
+			if(*c->warning && !c->nodegroup_only && n)
 			{
 				u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
 				execu = u ? 1 : execu;
@@ -298,7 +298,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 		execn = n ? 1 : execn;
 			
-		if(*c->warning && n)
+		if(*c->warning && !c->nodegroup_only && n)
 		{
 			u = g->db_pexec(g->conn, "UPDATE customers SET message = '?' WHERE id = ?", c->warning, customerid);
 			execu = u ? 1 : execu;
@@ -331,6 +331,8 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 struct cutoff_module * init(GLOBAL *g, MODULE *m)
 {
 	struct cutoff_module *c;
+	char *nodegroup;
+	QueryHandle *res;
 	
 	if(g->api_version != APIVERSION)
 	{
@@ -347,13 +349,21 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
 	c->expwarning = strdup(g->config_getstring(c->base.ini, c->base.instance, "expired_warning", "Blocked automatically due to tariff(s) expiration at %time"));
 	c->nodeassignments = g->config_getbool(c->base.ini, c->base.instance, "use_nodeassignments", 0);
-	c->nodegroup_only = g->config_getint(c->base.ini, c->base.instance, "setnodegroup_only", 0);
 
 	c->checkinvoices = g->config_getbool(c->base.ini, c->base.instance, "check_invoices", 0);
 	c->deadline = g->config_getint(c->base.ini, c->base.instance, "deadline", 0);
 
 	c->customergroups = strdup(g->config_getstring(c->base.ini, c->base.instance, "customergroups", ""));
 	c->excluded_customergroups = strdup(g->config_getstring(c->base.ini, c->base.instance, "excluded_customergroups", ""));
+	
+	c->nodegroup_only = 0;
+	nodegroup = g->config_getstring(c->base.ini, c->base.instance, "setnodegroup_only", "");
+	if(strlen(nodegroup))
+	{
+		res = g->db_pquery(g->conn, "SELECT id FROM nodegroups WHERE UPPER(name) = UPPER('?')", nodegroup);
+		if(g->db_nrows(res))
+			c->nodegroup_only = atoi(g->db_get_data(res,0,"id"));
+	}
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/cutoff] initialized", c->base.instance);
 #endif	

@@ -4,9 +4,9 @@ struct cutoff_module
 	MODULE base;
 	
 	int warn_only;
+	int nodegroup_only;
 	int nodeassignments;
 	int checkinvoices;
-	int nodegroup_only;
 	int deadline;
 	int limit;
 	
