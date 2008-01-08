@@ -30,11 +30,13 @@ if(!$LMS->NetworkExists($_GET['id']))
 }
 
 if($SESSION->is_set('ntlp.'.$_GET['id']) && ! isset($_GET['page']))
-	$SESSION->restore('ntlp.'.$_GET['id'], $_GET['page']);
+	$SESSION->restore('ntlp.'.$_GET['id'], $page);
+else
+	$page = empty($_GET['page']) ? 0 : $_GET['page']; 
 
-$SESSION->save('ntlp.'.$_GET['id'], $_GET['page']);
+$SESSION->save('ntlp.'.$_GET['id'], $page);
 	
-$network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'], $CONFIG['phpui']['networkhosts_pagelimit']);
+$network = $LMS->GetNetworkRecord($_GET['id'], $page, $CONFIG['phpui']['networkhosts_pagelimit']);
 
 if(isset($_POST['networkdata']))
 {
@@ -167,14 +169,15 @@ if(isset($_POST['networkdata']))
 	$network['dns2'] = $networkdata['dns2'];
 }
 
-$prefixlist = $LMS->GetPrefixList();
 $networks = $LMS->GetNetworks();
+
 $layout['pagetitle'] = trans('Network Edit: $0',$network['name']);
+
 $SMARTY->assign('unlockedit',TRUE);
 $SMARTY->assign('network',$network);
 $SMARTY->assign('networks',$networks);
 $SMARTY->assign('netlistsize',sizeof($networks));
-$SMARTY->assign('prefixlist',$prefixlist);
+$SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->assign('error',$error);
 $SMARTY->display('netinfo.html');
 
