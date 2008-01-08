@@ -37,7 +37,11 @@ if($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET['
 	                WHERE a.customerid = c.id AND a.customergroupid = ?
 			AND NOT EXISTS (SELECT 1 FROM customerassignments ca
 				WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
-			array($to, $from, $to)))
+			array($to, $from, $to));
+
+	$DB->Execute('DELETE FROM customerassignments WHERE customergroupid = ?', array($from));
+	
+	$DB->CommitTrans();
 
 	$SESSION->redirect('?m=customergroupinfo&id='.$to);
 }

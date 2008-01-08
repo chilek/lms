@@ -1,9 +1,9 @@
 {include file="header.html"}
 <!--// $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<P><FORM METHOD="POST" NAME="tedit" ACTION="?m=nodegroupedit&id={$nodegroup.id}">
-<INPUT type="submit" class="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
+<FORM METHOD="POST" NAME="tedit" ACTION="?m=nodegroupedit&id={$nodegroup.id}">
+<INPUT type="submit" class="hiddenbtn">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/nodegroup.gif" alt="">
@@ -27,8 +27,22 @@
 			<TEXTAREA ROWS="5" COLS="50" NAME="nodegroup[description]" {tip text="Enter additional informations (optional)"}>{$nodegroup.description}</TEXTAREA>
 		</TD>
 	</TR>
+</FORM>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="FBOTTOMU">
+			{if sizeof($nodegroups) > 1 && $nodegroup.count}
+			<FORM name="tmove" method="get" action="">
+			    <input type="hidden" name="is_sure" value="1">
+		            <input type="hidden" name="m" value="nodegroupmove">
+			    <input type="hidden" name="from" value="{$nodegroup.id}">
+	    		    <A HREF="javascript:document.tmove.submit();" onclick="return confirm('{t}Are you sure, you want to move members to selected group?{/t}')">{t}Move members to group:{/t}</A>
+			    <SELECT SIZE="1" NAME="to" {tip text="Select group to which you want to move members"}>
+		            {foreach from=$nodegroups item=item}{if $item.id != $nodegroup.id}
+			            <OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+		            {/if}{/foreach}
+		    	    </SELECT>
+			</FORM>
+			{/if}
 			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 			{if !$nodegroup.count}
 			<A HREF="?m=nodegroupdel&id={$nodegroup.id}" onclick="return confirmLink(this,'{t}Are you sure, you want to delete that group?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
@@ -37,8 +51,7 @@
 		</TD>
 	</TR>
 </TABLE>
-</FORM></P>
-<SCRIPT language="javaScript">
+<SCRIPT type="text/javascript">
 <!--
 document.forms['tedit'].elements['nodegroup[name]'].focus();
 //-->
