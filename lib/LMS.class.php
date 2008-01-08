@@ -1108,6 +1108,7 @@ class LMS
 		$this->DB->BeginTrans();
 		$this->DB->Execute('DELETE FROM nodes WHERE id = ?', array($id));
 		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid = ?', array($id));
+		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid = ?', array($id));
 		$this->DB->CommitTrans();
 	}
 
