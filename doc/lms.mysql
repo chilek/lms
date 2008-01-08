@@ -300,6 +300,33 @@ CREATE TABLE nodes (
 
 # --------------------------------------------------------
 #
+# Structure of table nodegroups
+#
+DROP TABLE IF EXISTS nodegroups;
+CREATE TABLE nodegroups (
+        id              int(11)         NOT NULL auto_increment,
+	name            varchar(255)    NOT NULL DEFAULT '',
+	prio		int(11)		NOT NULL DEFAULT '0',
+	description     text            NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table nodegroupassignments
+#
+DROP TABLE IF EXISTS nodegroupassignments;
+CREATE TABLE nodegroupassignments (
+        id              int(11)         NOT NULL auto_increment,
+        nodegroupid     int(11)         NOT NULL DEFAULT 0,
+	nodeid          int(11)         NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY nodeid (nodeid, nodegroupid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
 # Structure of table  payments
 #
 DROP TABLE IF EXISTS payments;
@@ -853,4 +880,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007120300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007010800');

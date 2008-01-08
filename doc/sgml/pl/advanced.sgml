@@ -166,30 +166,6 @@
                     <member>dhcpend - koniec zakresu DHCP</member>
                </simplelist>
           </sect2>
-          <sect2 id="nodes">
-               <title>Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</title>
-               <simplelist>
-                    <member>id - identyfikator</member>
-                    <member>name - nazwa</member>
-                    <member>mac - adres MAC</member>
-                    <member>ipaddr - adres IP</member>
-                    <member>passwd - has³o np. pppoe</member>
-                    <member>ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</member>
-                    <member>creationdate - znacznik czasu utworzenia wpisu</member>
-                    <member>moddate - znacznik czasu ostatniej modyfikacji</member>
-                    <member>creatorid - identyfikator u¿ytkownika tworz±cego wpis</member>
-                    <member>modid - identyfikator u¿ytkownika ostatnio modyfikuj±cego wpis</member>
-                    <member>netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</member>
-                    <member>linktype - typ po³±czenia sieciowego (0-kabel, 1-radio)</member>
-                    <member>access - pod³±czony/od³±czony (1/0)</member>
-                    <member>chkmac - w³±czone/wy³±czone sprawdzanie MAC adresu (1/0)</member>
-                    <member>halfduplex - half/full duplex (0/1)</member>
-                    <member>warning - ostrzegaj/nie ostrzegaj (1/0)</member>
-                    <member>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</member>
-                    <member>info - informacje dodatkowe</member>
-		    <member>location - lokalizacja (adres)</member>
-               </simplelist>
-          </sect2>
           <sect2 id="netdevices">
                <title>Sprzêt sieciowy ('netdevices')</title>
                <simplelist>
@@ -214,6 +190,47 @@
                     <member>type - typ po³±czenia (0-kabel, 1-radio)</member>
                </simplelist>
           </sect2>
+          <sect2 id="nodes">
+               <title>Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>name - nazwa</member>
+                    <member>mac - adres MAC</member>
+                    <member>ipaddr - adres IP</member>
+                    <member>passwd - has³o np. pppoe</member>
+                    <member>ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</member>
+                    <member>creationdate - znacznik czasu utworzenia wpisu</member>
+                    <member>moddate - znacznik czasu ostatniej modyfikacji</member>
+                    <member>creatorid - identyfikator u¿ytkownika tworz±cego wpis</member>
+                    <member>modid - identyfikator u¿ytkownika ostatnio modyfikuj±cego wpis</member>
+                    <member>netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</member>
+                    <member>linktype - typ po³±czenia sieciowego (0-kabel, 1-radio)</member>
+                    <member>access - pod³±czony/od³±czony (1/0)</member>
+                    <member>chkmac - w³±czone/wy³±czone sprawdzanie MAC adresu (1/0)</member>
+                    <member>halfduplex - half/full duplex (0/1)</member>
+                    <member>warning - ostrzegaj/nie ostrzegaj (1/0)</member>
+                    <member>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</member>
+                    <member>info - informacje dodatkowe</member>
+		    <member>location - lokalizacja (adres)</member>
+               </simplelist>
+          </sect2>
+	    <sect2 id="nodegroups">
+	        <title>Grupy komputerów ('nodegroups')</title>
+		<simplelist>
+		    <member>id - identyfikator</member>
+		    <member>name - nazwa</member>
+		    <member>prio - priorytet</member>
+		    <member>description - opis</member>
+		</simplelist>
+	    </sect2>
+	    <sect2 id="nodegroupassignments">
+	        <title>Grupy komputerów - powi±zania ('nodegroupassignments')</title>
+		<simplelist>
+		    <member>id - identyfikator rekordu</member>
+		    <member>nodegroupid - identyfikator grupy</member>
+		    <member>nodeid - identyfikator komputera</member>
+		</simplelist>
+	    </sect2>
           <sect2 id="cash">
                <title>Operacje finansowe ('cash')</title>
                <simplelist>
