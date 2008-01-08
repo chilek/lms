@@ -34,7 +34,9 @@
 			<NOBR>
 			<A HREF="?m=nodegroupinfo&id={$nodegrouplist[nodegroups].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 			<A HREF="?m=nodegroupedit&id={$nodegrouplist[nodegroups].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-			<A HREF="?m=nodegroupdel&id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			{if $nodegrouplist[nodegroups].nodescount}<A HREF="javascript:alert('{t}Group with members cannot be deleted!{/t}');">
+			{else}<A HREF="?m=nodegroupdel&id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');">
+			{/if}<IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<A HREF="?m=nodegrouplist&id={$nodegrouplist[nodegroups].id}&move=up"><IMG src="img/desc_order.gif" alt="[ {t}Up{/t} ]" title="[ {t}Up{/t} ]"></A>
 			<A HREF="?m=nodegrouplist&id={$nodegrouplist[nodegroups].id}&move=down"><IMG src="img/asc_order.gif" alt="[ {t}Down{/t} ]" title="[ {t}Down{/t} ]"></A>
 			<A HREF="?m=nodegrouplist&id={$nodegrouplist[nodegroups].id}&move=top"><IMG src="img/desc_order.gif" alt="[ {t}Top{/t} ]" title="[ {t}Top{/t} ]"></A>

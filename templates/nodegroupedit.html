@@ -30,7 +30,9 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="FBOTTOMU">
 			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-			{if !$nodegroup.count}<A HREF="?m=nodegroupdel&id={$nodegroup.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>{/if}
+			{if !$nodegroup.count}
+			<A HREF="?m=nodegroupdel&id={$nodegroup.id}" onclick="return confirmLink(this,'{t}Are you sure, you want to delete that group?{/t}');">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			{/if}
 			<A HREF="?m=nodegroupinfo&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A> 
 		</TD>
 	</TR>
