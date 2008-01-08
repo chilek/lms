@@ -617,7 +617,7 @@ $_LANG['Group members:'] = 'Członkowie grupy:';
 $_LANG['Group name is too long!'] = 'Nazwa grupy za długa!';
 $_LANG['Group name required!'] = 'Wymagana nazwa grupy!';
 $_LANG['Groups'] = 'Grupy';
-$_LANG['Group with members cannot be deleted!'] = 'Grupy z członkami nie mogą zostać usunięte!';
+$_LANG['Group with members cannot be deleted!'] = 'Nie można usunąć grupy posiadającej członków!';
 $_LANG['Group with name $0 already exists!'] = 'Grupa o nazwie $0 już istnieje!';
 $_LANG['Guarantee:'] = 'Gwarancja:';
 $_LANG['Guarantee period:'] = 'Okres gwarancji:';
@@ -1902,5 +1902,6 @@ $_LANG['Select group to attribute to node'] = 'Wybierz grupę aby przypisać ją
 $_LANG['That node is not a member of any group.'] = 'Ten komputer nie należy do żadnej grupy.';
 $_LANG['Remove Group'] = 'Usuń grupę';
 $_LANG['Node\'s Groups ($0):'] = 'Grupy komputera ($0):';
+$_LANG['Are you sure, you want to delete that group?'] = 'Jesteś pewien, że chcesz usunąć tą grupę?';
 
 ?>
