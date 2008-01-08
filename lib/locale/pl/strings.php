@@ -1854,5 +1854,6 @@ $_LANG['Available<!plural>'] = 'Dostępne';
 $_LANG['Selected<!plural>'] = 'Wybrane';
 $_LANG['customers groups management'] = 'zarządzanie grupami klientów';
 $_LANG['Groups:'] = 'Grupy:';
+$_LANG['Are you sure, you want to delete that group?'] = 'Jesteś pewien, że chcesz usunąć tą grupę?';
 
 ?>

@@ -6,6 +6,7 @@ version ? (????-??-??):
   - BTS#0000713: fixed financial operations mass addition (alec/endrju)
   - fixed members count in customers group info when network
     filter is used (alec)
+  - fixed customers group deleting from group info and edit forms (alec)
   
 version 1.10.2 Roham (2007-12-12):
 
