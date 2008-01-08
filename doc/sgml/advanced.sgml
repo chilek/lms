@@ -162,8 +162,32 @@
                     <member>dhcpend - last address of dynamic DHCP range</member>
                </simplelist>
           </sect2>
+          <sect2 id="netdevices">
+               <title>Network devices ('netdevices')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>name - name</member>
+                    <member>location - physical location</member>
+                    <member>description - device summary</member>
+                    <member>producer - manufacturer's name</member>
+                    <member>model - model number</member>
+                    <member>serialnumber - products serial number (not DB identifier)</member>
+                    <member>ports - number of connections available</member>
+		    <member>purchasetime - purchase date</member>
+		    <member>guaranteeperiod - period in months (NULL - lifetime)</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="netlinks">
+               <title>Network connections ('netlinks')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>src - connection's beginning</member>
+                    <member>dst- connection's end</member>
+                    <member>type - type of connection (0-cable, 1-wireless)</member>
+               </simplelist>
+          </sect2>
           <sect2 id="nodes">
-               <title>Computers and network devices ('nodes')</title>
+               <title>Computers and IP addresses ('nodes')</title>
                <simplelist>
                     <member>id - serial number</member>
                     <member>name - device name</member>
@@ -186,28 +210,21 @@
 		    <member>location - location (address)</member>
                </simplelist>
           </sect2>
-          <sect2 id="netdevices">
-               <title>Network devices - continued... ('netdevices')</title>
+          <sect2 id="nodegroups">
+               <title>Node groups ('nodegroups')</title>
                <simplelist>
                     <member>id - serial number</member>
-                    <member>name - name</member>
-                    <member>location - physical location</member>
-                    <member>description - device summary</member>
-                    <member>producer - manufacturer's name</member>
-                    <member>model - model number</member>
-                    <member>serialnumber - products serial number (not DB identifier)</member>
-                    <member>ports - number of connections available</member>
-		    <member>purchasetime - purchase date</member>
-		    <member>guaranteeperiod - period in months (NULL - lifetime)</member>
+                    <member>name - group name</member>
+		    <member>prio - group order</member>
+                    <member>description - group description</member>
                </simplelist>
           </sect2>
-          <sect2 id="netlinks">
-               <title>Network connections ('netlinks')</title>
+          <sect2 id="nodegroupassignments">
+               <title>Node groups - assignments ('nodegroupassignments')</title>
                <simplelist>
                     <member>id - serial number</member>
-                    <member>src - connection's beginning</member>
-                    <member>dst- connection's end</member>
-                    <member>type - type of connection (0-cable, 1-wireless)</member>
+                    <member>nodegroupid - group serial number</member>
+                    <member>nodeid - node serial number</member>
                </simplelist>
           </sect2>
           <sect2 id="cash">

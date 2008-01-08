@@ -26,7 +26,7 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodegroups ADD prio integer NOT NULL DEFAULT '0'");
+$DB->Execute("ALTER TABLE nodegroups ADD prio int(11) NOT NULL DEFAULT '0'");
 
 $list = $DB->GetAll('SELECT id FROM nodegroups');
 

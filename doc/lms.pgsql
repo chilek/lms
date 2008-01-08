@@ -3,8 +3,8 @@
 /* -------------------------------------------------------- 
   Structure of table "users" 
 -------------------------------------------------------- */
-DROP SEQUENCE "users_id_seq";
-CREATE SEQUENCE "users_id_seq";
+DROP SEQUENCE users_id_seq;
+CREATE SEQUENCE users_id_seq;
 DROP TABLE users;
 CREATE TABLE users (
 	id integer DEFAULT nextval('users_id_seq'::text) NOT NULL,
@@ -27,8 +27,8 @@ CREATE TABLE users (
 /* ----------------------------------------------------
  Structure of table "assignments"
 ---------------------------------------------------*/
-DROP SEQUENCE "assignments_id_seq";
-CREATE SEQUENCE "assignments_id_seq";
+DROP SEQUENCE assignments_id_seq;
+CREATE SEQUENCE assignments_id_seq;
 DROP TABLE assignments;
 CREATE TABLE assignments (
 	id integer default nextval('assignments_id_seq'::text) NOT NULL,
@@ -51,8 +51,8 @@ CREATE INDEX assignments_customerid_idx ON assignments (customerid);
 /* -------------------------------------------------------- 
   Structure of table "nodeassignments" 
 -------------------------------------------------------- */
-DROP SEQUENCE "nodeassignments_id_seq";
-CREATE SEQUENCE "nodeassignments_id_seq";
+DROP SEQUENCE nodeassignments_id_seq;
+CREATE SEQUENCE nodeassignments_id_seq;
 DROP TABLE nodeassignments;
 CREATE TABLE nodeassignments (
         id integer              DEFAULT nextval('nodeassignments_id_seq'::text) NOT NULL,
@@ -65,8 +65,8 @@ CREATE TABLE nodeassignments (
 /* -------------------------------------------------------- 
   Structure of table "cash" 
 -------------------------------------------------------- */
-DROP SEQUENCE "cash_id_seq";
-CREATE SEQUENCE "cash_id_seq";
+DROP SEQUENCE cash_id_seq;
+CREATE SEQUENCE cash_id_seq;
 DROP TABLE cash;
 CREATE TABLE cash (
 	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
@@ -88,8 +88,8 @@ CREATE INDEX cash_time_idx ON cash(time);
 /* -------------------------------------------------------- 
   Structure of table "networks" 
 -------------------------------------------------------- */
-DROP SEQUENCE "networks_id_seq";
-CREATE SEQUENCE "networks_id_seq";
+DROP SEQUENCE networks_id_seq;
+CREATE SEQUENCE networks_id_seq;
 DROP TABLE networks;
 CREATE TABLE networks (
 	id integer DEFAULT nextval('networks_id_seq'::text) NOT NULL,
@@ -112,8 +112,8 @@ CREATE TABLE networks (
 /* -------------------------------------------------------- 
   Structure of table "nodes" 
 -------------------------------------------------------- */
-DROP SEQUENCE "nodes_id_seq";
-CREATE SEQUENCE "nodes_id_seq";
+DROP SEQUENCE nodes_id_seq;
+CREATE SEQUENCE nodes_id_seq;
 DROP TABLE nodes;
 CREATE TABLE nodes (
 	id integer DEFAULT nextval('nodes_id_seq'::text) NOT NULL,
@@ -143,12 +143,42 @@ CREATE TABLE nodes (
 CREATE INDEX nodes_netdev_idx ON nodes (netdev);
 CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
+CREATE SEQUENCE nodegroups_id_seq;
+
+/* -------------------------------------------------------- 
+  Structure of table "nodegroups" 
+-------------------------------------------------------- */
+DROP SEQUENCE nodegroups_id_seq;
+CREATE SEQUENCE nodegroups_id_seq;
+DROP TABLE nodegroups;
+CREATE TABLE nodegroups (
+        id              integer         NOT NULL DEFAULT nextval('nodegroups_id_seq'::text),
+	name            varchar(255)    NOT NULL DEFAULT '',
+	prio		integer		NOT NULL DEFAULT 0,
+	description     text            NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* -------------------------------------------------------- 
+  Structure of table "nodegroupassignments" 
+-------------------------------------------------------- */
+DROP SEQUENCE nodegroupassignments_id_seq;
+CREATE SEQUENCE nodegroupassignments_id_seq;
+DROP TABLE nodegroupassignments;
+CREATE TABLE nodegroupassignments (
+        id              integer         NOT NULL DEFAULT nextval('nodegroupassignments_id_seq'::text),
+	nodegroupid     integer         NOT NULL DEFAULT 0,
+	nodeid          integer         NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (nodeid, nodegroupid)
+);
 
 /* -------------------------------------------------------- 
   Structure of table "tariffs" 
 -------------------------------------------------------- */
-DROP SEQUENCE "tariffs_id_seq";
-CREATE SEQUENCE "tariffs_id_seq"; 
+DROP SEQUENCE tariffs_id_seq;
+CREATE SEQUENCE tariffs_id_seq; 
 DROP TABLE tariffs;
 CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
@@ -173,8 +203,8 @@ CREATE INDEX tariffs_type_idx ON tariffs (type);
 /* -------------------------------------------------------- 
   Structure of table "liabilities" 
 -------------------------------------------------------- */
-DROP SEQUENCE "liabilities_id_seq";
-CREATE SEQUENCE "liabilities_id_seq";
+DROP SEQUENCE liabilities_id_seq;
+CREATE SEQUENCE liabilities_id_seq;
 DROP TABLE liabilities;
 CREATE TABLE liabilities (
 	id integer DEFAULT nextval('liabilities_id_seq'::text) NOT NULL,
@@ -188,8 +218,8 @@ CREATE TABLE liabilities (
 /* ---------------------------------------------------------
   Structure of table "payments"
 --------------------------------------------------------- */
-DROP SEQUENCE "payments_id_seq";
-CREATE SEQUENCE "payments_id_seq";
+DROP SEQUENCE payments_id_seq;
+CREATE SEQUENCE payments_id_seq;
 DROP TABLE payments;
 CREATE TABLE payments (
 	id integer DEFAULT nextval('payments_id_seq'::text) NOT NULL,
@@ -205,8 +235,8 @@ CREATE TABLE payments (
 /* -------------------------------------------------------- 
   Structure of table "taxes" 
 -------------------------------------------------------- */
-DROP SEQUENCE "taxes_id_seq";
-CREATE SEQUENCE "taxes_id_seq";
+DROP SEQUENCE taxes_id_seq;
+CREATE SEQUENCE taxes_id_seq;
 DROP TABLE taxes;
 CREATE TABLE taxes (
     id integer DEFAULT nextval('taxes_id_seq'::text) NOT NULL,
@@ -221,8 +251,8 @@ CREATE TABLE taxes (
 /* -------------------------------------------------------- 
   Structure of table "documents" 
 -------------------------------------------------------- */
-DROP SEQUENCE "documents_id_seq";
-CREATE SEQUENCE "documents_id_seq";
+DROP SEQUENCE documents_id_seq;
+CREATE SEQUENCE documents_id_seq;
 DROP TABLE documents;
 CREATE TABLE documents (
 	id integer DEFAULT nextval('documents_id_seq'::text) NOT NULL,
@@ -320,8 +350,8 @@ CREATE TABLE numberplans (
 /* -------------------------------------------------------- 
   Structure of table "customers" (customers)
 -------------------------------------------------------- */
-DROP SEQUENCE "customers_id_seq";
-CREATE SEQUENCE "customers_id_seq";
+DROP SEQUENCE customers_id_seq;
+CREATE SEQUENCE customers_id_seq;
 DROP TABLE customers;
 CREATE TABLE customers (
 	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
@@ -354,8 +384,8 @@ CREATE TABLE customers (
 /* -------------------------------------------------------- 
   Structure of table "customergroups" 
 -------------------------------------------------------- */
-DROP SEQUENCE "customergroups_id_seq";
-CREATE SEQUENCE "customergroups_id_seq";
+DROP SEQUENCE customergroups_id_seq;
+CREATE SEQUENCE customergroups_id_seq;
 DROP TABLE customergroups;
 CREATE TABLE customergroups (
 	id integer DEFAULT nextval('customergroups_id_seq'::text) NOT NULL, 
@@ -368,8 +398,8 @@ CREATE TABLE customergroups (
 /* -------------------------------------------------------- 
   Structure of table "customerassignments" 
 -------------------------------------------------------- */
-DROP SEQUENCE "customerassignments_id_seq";
-CREATE SEQUENCE "customerassignments_id_seq";
+DROP SEQUENCE customerassignments_id_seq;
+CREATE SEQUENCE customerassignments_id_seq;
 DROP TABLE customerassignments;
 CREATE TABLE customerassignments (
 	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL, 
@@ -396,8 +426,8 @@ CREATE INDEX stats_dt_idx ON stats(dt);
 /* ---------------------------------------------------
  Structure of table "netdevices"
 ----------------------------------------------------*/
-DROP SEQUENCE "netdevices_id_seq";
-CREATE SEQUENCE "netdevices_id_seq";
+DROP SEQUENCE netdevices_id_seq;
+CREATE SEQUENCE netdevices_id_seq;
 DROP TABLE netdevices;
 CREATE TABLE netdevices (
 	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
@@ -416,8 +446,8 @@ CREATE TABLE netdevices (
 /* ---------------------------------------------------
  Structure of table "netlinks"
 ----------------------------------------------------*/
-DROP SEQUENCE "netlinks_id_seq";
-CREATE SEQUENCE "netlinks_id_seq";
+DROP SEQUENCE netlinks_id_seq;
+CREATE SEQUENCE netlinks_id_seq;
 DROP TABLE netlinks;
 CREATE TABLE netlinks (
 	id integer default nextval('netlinks_id_seq'::text) NOT NULL,
@@ -460,8 +490,8 @@ CREATE TABLE rtattachments (
 	contenttype varchar(255) DEFAULT '' NOT NULL
 );
 
-DROP SEQUENCE "rtqueues_id_seq";
-CREATE SEQUENCE "rtqueues_id_seq";
+DROP SEQUENCE rtqueues_id_seq;
+CREATE SEQUENCE rtqueues_id_seq;
 DROP TABLE rtqueues;
 CREATE TABLE rtqueues (
   id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
@@ -472,8 +502,8 @@ CREATE TABLE rtqueues (
   UNIQUE (name)
 );
 
-DROP SEQUENCE "rttickets_id_seq";
-CREATE SEQUENCE "rttickets_id_seq";
+DROP SEQUENCE rttickets_id_seq;
+CREATE SEQUENCE rttickets_id_seq;
 DROP TABLE rttickets;
 CREATE TABLE rttickets (
   id integer default nextval('rttickets_id_seq'::text) NOT NULL,  
@@ -495,8 +525,8 @@ CREATE INDEX rttickets_customerid_idx ON rttickets (customerid);
 CREATE INDEX rttickets_creatorid_idx ON rttickets (creatorid);
 CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
 
-DROP SEQUENCE "rtmessages_id_seq";
-CREATE SEQUENCE "rtmessages_id_seq";
+DROP SEQUENCE rtmessages_id_seq;
+CREATE SEQUENCE rtmessages_id_seq;
 DROP TABLE rtmessages;
 CREATE TABLE rtmessages (
   id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
@@ -516,8 +546,8 @@ CREATE TABLE rtmessages (
 
 CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
 
-DROP SEQUENCE "rtnotes_id_seq";
-CREATE SEQUENCE "rtnotes_id_seq";
+DROP SEQUENCE rtnotes_id_seq;
+CREATE SEQUENCE rtnotes_id_seq;
 DROP TABLE rtnotes;
 CREATE TABLE rtnotes (
 	id integer default nextval('rtnotes_id_seq'::text) NOT NULL,
@@ -530,8 +560,8 @@ CREATE TABLE rtnotes (
 			  
 CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);
 
-DROP SEQUENCE "rtrights_id_seq";
-CREATE SEQUENCE "rtrights_id_seq";
+DROP SEQUENCE rtrights_id_seq;
+CREATE SEQUENCE rtrights_id_seq;
 DROP TABLE rtrights;
 CREATE TABLE rtrights (
     id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL, 
@@ -787,8 +817,8 @@ CREATE TABLE cashreglog (
 /* ---------------------------------------------------
  Structure of table "ewx_pt_config" (EtherWerX(R))
 ------------------------------------------------------*/
-DROP SEQUENCE "ewx_pt_config_id_seq";
-CREATE SEQUENCE "ewx_pt_config_id_seq";
+DROP SEQUENCE ewx_pt_config_id_seq;
+CREATE SEQUENCE ewx_pt_config_id_seq;
 DROP TABLE ewx_pt_config;
 CREATE TABLE ewx_pt_config (
     id 		integer 	DEFAULT nextval('ewx_pt_config_id_seq'::text) NOT NULL,
@@ -804,8 +834,8 @@ CREATE TABLE ewx_pt_config (
 /* ---------------------------------------------------
  Structure of table "ewx_stm_nodes" (EtherWerX(R))
 ------------------------------------------------------*/
-DROP SEQUENCE "ewx_stm_nodes_id_seq";
-CREATE SEQUENCE "ewx_stm_nodes_id_seq";
+DROP SEQUENCE ewx_stm_nodes_id_seq;
+CREATE SEQUENCE ewx_stm_nodes_id_seq;
 DROP TABLE ewx_stm_nodes;
 CREATE TABLE ewx_stm_nodes (
         id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
@@ -825,8 +855,8 @@ CREATE TABLE ewx_stm_nodes (
 /* ---------------------------------------------------
  Structure of table "ewx_stm_channels" (EtherWerX(R))
 ------------------------------------------------------*/
-DROP SEQUENCE "ewx_stm_channels_id_seq";
-CREATE SEQUENCE "ewx_stm_channels_id_seq";
+DROP SEQUENCE ewx_stm_channels_id_seq;
+CREATE SEQUENCE ewx_stm_channels_id_seq;
 DROP TABLE ewx_stm_channels;
 CREATE TABLE ewx_stm_channels (
     id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
@@ -908,4 +938,4 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2007120300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008010700');
