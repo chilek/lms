@@ -117,7 +117,7 @@
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
 				<INPUT type="submit" class="hiddenbtn">
-				<A href="?m=netcmp&id={$network.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!{/t}');">{t}Put in order{/t} <img src="img/cmp.gif" ALT="[ {t}Put in order{/t} ]"></A><BR>
+				<A href="?m=netcmp&id={$network.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!{/t}');">{t}Put in order{/t} <img src="img/cmp.gif" ALT="[ {t}Put in order{/t} ]"></A>
 				<input type="hidden" name="is_sure" value="1">
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
@@ -130,11 +130,11 @@
 						{/if}
 						{/section}
 					</select>
-				<img src="img/remap.gif" ALT=""><BR>
 				{/if}
 				<A href="javascript:document.netedit.submit()" ACCESSKEY="S">{t}Submit{/t} <IMG src="img/save.gif" ALT="[ {t}Submit{/t} ]"></a>
 				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name|upper}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
-				<A href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" ALT="[ {t}Cancel{/t} ]"></A></TD></form>
+				<A href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" ALT="[ {t}Cancel{/t} ]"></A></TD>
+				</form>
 			{else}
 			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{t}Edit{/t} <img src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
 			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name|upper}Are you sure, you want to remove network \'$0\'?{/t}')">{t}Remove{/t} <img src="img/delete.gif" ALT="[ {t}Remove{/t} ]"></A>
