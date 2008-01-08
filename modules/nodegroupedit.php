@@ -112,6 +112,7 @@ $SMARTY->assign('nodegroup',$nodegroup);
 $SMARTY->assign('nodes', $nodes);
 $SMARTY->assign('nodescount', sizeof($nodes));
 $SMARTY->assign('networks', $LMS->GetNetworks());
+$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
 $SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
 

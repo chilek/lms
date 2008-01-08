@@ -41,8 +41,12 @@ if($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
 	                WHERE a.nodegroupid = ?
 			AND NOT EXISTS (SELECT 1 FROM nodegroupassignments na
 				WHERE na.nodeid = a.nodeid AND na.nodegroupid = ?)',
-			array($to, $from, $to)))
+			array($to, $from, $to));
+	
+	$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
 
+        $DB->CommitTrans();
+	
 	$SESSION->redirect('?m=nodegroupinfo&id='.$to);
 }
 else

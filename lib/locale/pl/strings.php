@@ -1903,5 +1903,8 @@ $_LANG['That node is not a member of any group.'] = 'Ten komputer nie należy do
 $_LANG['Remove Group'] = 'Usuń grupę';
 $_LANG['Node\'s Groups ($0):'] = 'Grupy komputera ($0):';
 $_LANG['Are you sure, you want to delete that group?'] = 'Jesteś pewien, że chcesz usunąć tą grupę?';
+$_LANG['Are you sure, you want to move members to selected group?'] = 'Czy jesteś pewien, że chcesz przenieść członków do wybranej grupy?';
+$_LANG['Move members to group:'] = 'Przenieś członków do grupy:';
+$_LANG['Select group to which you want to move members'] = 'Wybierz grupę, do której chcesz przenieść członków';
 
 ?>
