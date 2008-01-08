@@ -963,7 +963,8 @@ class LMS
 		if($network)
 			$net = $this->GetNetworkParams($network);
 
-		$result = $this->DB->GetRow('SELECT id, name, description FROM customergroups WHERE id=?', array($id));
+		$result = $this->DB->GetRow('SELECT id, name, description 
+			FROM customergroups WHERE id=?', array($id));
 		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id,'
 			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername 
 			FROM customerassignments, customers c '
