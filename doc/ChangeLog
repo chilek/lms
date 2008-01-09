@@ -7,6 +7,7 @@ version ? (????-??-??):
   - fixed members count in customers group info when network
     filter is used (alec)
   - fixed customers group deleting from group info and edit forms (alec)
+  - fix: added node assignments deleting in CustomerDelete() (alec)
   
 version 1.10.2 Roham (2007-12-12):
 

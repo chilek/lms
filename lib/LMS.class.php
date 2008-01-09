@@ -370,6 +370,8 @@ class LMS
 		$this->DB->BeginTrans();
 		
 		$this->DB->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=? WHERE id=?', array($this->AUTH->id, $id));
+		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid IN (
+		                SELECT id FROM nodes WHERE ownerid=?)', array($id));
 		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
