@@ -43,6 +43,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	QueryHandle *res;
 	char *query;
 	int i, execu=0, execn=0, u=0, n=0, k=2, m=2;
+	int plimit=0, limit=0;
 	char time_fmt[11];
 	size_t tmax = 11;
 	char fmt[] = "%Y/%m/%d";
@@ -123,6 +124,18 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(*c->expwarning)
 		g->str_replace(&c->expwarning, "%time", time_fmt);
 
+        // limit option as percentage value
+	if(g->str_replace(&c->limit, "%", ""))
+	{
+	        plimit = atoi(c->limit);
+	        plimit = (plimit < 0 ? plimit*-1 : plimit);
+	}
+	else
+	{
+	        limit = atoi(c->limit);
+//	        limit = (limit < 0 ? limit*-1 : limit);
+	}
+
 	// nodes without tariffs (or with expired assignments)
 	if(c->nodeassignments)
 	{
@@ -173,7 +186,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 				"AND deleted = 0 "
 				"AND access = 1 "
 				"AND NOT EXISTS (SELECT 1 FROM assignments "
-					"WHERE customerid = customers.id "
+					"WHERE customerid = c.id "
 						"AND (datefrom <= %NOW% OR datefrom = 0) "
 						"AND (dateto >= %NOW% OR dateto = 0) "
 						"AND (tariffid != 0 OR liabilityid != 0) "
@@ -260,22 +273,55 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	}
 	
 	// debtors
-	query = strdup(
+	if(plimit)
+		query = strdup(
 			"SELECT c.id "
 			"FROM customers c "
-			"JOIN cash ON c.id = cash.customerid "
+			// balance
+			"JOIN (SELECT SUM(value) AS balance, customerid "
+				"FROM cash "
+				"GROUP BY customerid "
+				"HAVING SUM(value) < 0 "
+				") ca ON (c.id = ca.customerid) "
+			// monthly assignments sum
+			"JOIN (SELECT SUM(value) AS tariff, customerid "
+				"FROM assignments, tariffs "
+				"WHERE tariffid = tariffs.id "
+					"AND period = 3 "
+					"AND suspended = 0 "
+					"AND (datefrom <= %NOW% OR datefrom = 0) "
+					"AND (dateto >= %NOW% OR dateto = 0) "
+				"GROUP BY customerid "
+				") t ON (t.customerid = c.id) "	
+			"WHERE c.deleted = 0 "
+				"AND c.cutoffstop < %NOW% "
+#ifdef USE_PGSQL
+				"AND balance * -1 > (?/100::numeric * tariff) "
+#else
+				"AND balance * -1 > (?/100 * tariff) "
+#endif
+				"%groups%egroups" 
+		);
+	else
+		query = strdup(
+			"SELECT c.id "
+			"FROM customers c "
+			"JOIN cash ON (c.id = cash.customerid) "
 			"WHERE c.deleted = 0 "
 				"AND c.cutoffstop < %NOW% "
 				"%groups%egroups" 
 			" GROUP BY c.id "
 			"HAVING SUM(cash.value) < ? "
-	);
+		);
 
 	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
 	g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
 	g->str_replace(&query, "%ownerid", "c.id");
 
-	res = g->db_pquery(g->conn, query, itoa(c->limit)); 
+	if(plimit)
+		res = g->db_pquery(g->conn, query, itoa(plimit)); 
+	else
+		res = g->db_pquery(g->conn, query, itoa(limit)); 
 	
 	for(i=0; i<g->db_nrows(res); i++) 
 	{
@@ -321,6 +367,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	free(groupsql);
 	free(egroupsql);
 	
+	free(c->limit);
 	free(c->warning);
 	free(c->expwarning);
 	free(c->command);
@@ -343,7 +390,7 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	
 	c->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 
-	c->limit = g->config_getint(c->base.ini, c->base.instance, "limit", 0);
+	c->limit = strdup(g->config_getstring(c->base.ini, c->base.instance, "limit", "0"));
 	c->warning = strdup(g->config_getstring(c->base.ini, c->base.instance, "warning", "Blocked automatically due to payment deadline override at %time"));
 	c->command = strdup(g->config_getstring(c->base.ini, c->base.instance, "command", ""));
 	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
