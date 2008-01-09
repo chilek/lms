@@ -38,6 +38,9 @@ version ? (????-??-??):
     list - checkbox selection (alec)
   - added nodes groups list popups in customer's nodes list (alec)
   - added possibility to move members of one group to other group (alec)
+  - lmsd/cutoff: fixed query for customers without tariffs (alec)
+  - lmsd/cutoff: balance limit can be set as percentage value of sum of monthly 
+    assignments (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
