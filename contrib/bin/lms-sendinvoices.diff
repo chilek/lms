@@ -1,0 +1,155 @@
+--- lms-sendinvoices	2008-01-04 23:35:18.000000000 +0100
++++ lms-sendinvoices-smtpauth	2008-01-09 14:37:36.936720132 +0100
+@@ -29,10 +29,11 @@
+ use vars qw($configfile $help $version $quiet $fakedate);
+ use POSIX qw(strftime);
+ use LWP::UserAgent;
+-use MIME::Entity;
+ use Time::Local;
+ use MIME::QuotedPrint;
++use MIME::Entity;
+ use Text::Iconv;
++use Mail::SendEasy
+ 
+ my $_version = '1.11-cvs';
+ 
+@@ -104,13 +105,18 @@
+ 
+ my $filetype = $ini->val('invoices', 'type') || '';
+ 
++my $smtpauth = $ini->val('sendinvoices', 'smtpauth') || 'FALSE'; 
++my $smtp_user = $ini->val('sendinvoices', 'smtp_user') || '';
++my $smtp_pass = $ini->val('sendinvoices', 'smtp_pass') || '';
++my $smtp_host = $ini->val('sendinvoices', 'smtp_host') || '';
++my $att_file = $ini->val('sendinvoices', 'att_file') || '';
++
+ my $lms_url = $ini->val('sendinvoices', 'lms_url') || 'http://localhost/lms/';
+ my $lms_user = $ini->val('sendinvoices', 'lms_user') || '';
+ my $lms_password = $ini->val('sendinvoices', 'lms_password') || '';
+ my $debug_email = $ini->val('sendinvoices', 'debug_email') || '';
+ my $sender_name = $ini->val('sendinvoices', 'sender_name') || '';
+ my $sender_email = $ini->val('sendinvoices', 'sender_email') || '';
+-my $smtphost = $ini->val('sendinvoices', 'smtp_host') || '';
+ my $mail_subject = $ini->val('sendinvoices', 'mail_subject') || 'Invoice No. %invoice';
+ my $mail_body = $ini->val('sendinvoices', 'mail_body') || 'Attached file with Invoice No. %invoice';
+ my $customergroups = $ini->val('sendinvoices', 'customergroups') || '';
+@@ -127,6 +133,12 @@
+ 	exit 1;
+ }
+ 
++if($smtpauth eq "TRUE" && (!$smtp_host || !$smtp_user || !$smtp_pass))
++{
++        print STDERR "Fatal error: I need params for SMTP connection! Can't continue, exiting.\n";
++        exit 1;
++}
++
+ my $dbase;
+ my $utsfmt;
+ 
+@@ -214,7 +226,7 @@
+ {
+ 	my $ua = LWP::UserAgent->new;
+ 	$ua->timeout(240);
+-	my $response = $ua->get($lms_url.'/?m=invoice&override=1&original=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
++	my $response = $ua->get($lms_url.'/?m=invoice&fetchsingle=1&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
+ 	if ($response->is_success)
+ 	{
+ 		my $custemail = $debug_email || $row->{'email'};
+@@ -232,30 +244,75 @@
+ 			print "Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
+ 		}
+ 
+-		my $mail = build MIME::Entity Type=>"multipart/mixed";
+-		$mail->head->add('To', '"=?UTF-8?Q?'.encode_qp($converter->convert($row->{'name'}), '').'?="'.' <'.$custemail.'>');
+-		$mail->head->add('From', '"'.$sender_name.'"'.' <'.$sender_email.'>');
+-		$mail->head->add('Reply-To', '"'.$sender_name.'"'.' <'.$sender_email.'>');
+-		$mail->head->add('Subject', '=?UTF-8?Q?'.encode_qp($subject, '').'?=');
+-		$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
+-		$mail->head->add('Return-path', '<'.$sender_email.'>');
+-		$mail->attach(
+-			Type => 'text/plain',
+-			Charset => 'UTF-8',
+-			Encoding => 'quoted-printable',
+-			Data => [ "$body\n" ],
+-		);
+-		$mail->attach(
+-			Type => $ftype,
+-			Charset => 'UTF-8',
+-			Encoding => $fencoding,
+-			Filename => 'invoice_'.$row->{'id'}.'.'.$fext,
+-			Data => [ $response->content ],
+-		);
+-		if(!$mail->smtpsend('Host' => $smtphost, 'MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email))
++		if($smtpauth eq "FALSE")
+ 		{
+-			print STDERR "Error: Unable to send mail.\n";
++			my $mail = build MIME::Entity Type=>"multipart/mixed";
++			$mail->head->add('To', '"=?UTF-8?Q?'.encode_qp($converter->convert($row->{'name'}), '').'?="'.' <'.$custemail.'>');
++			$mail->head->add('From', '"'.$sender_name.'"'.' <'.$sender_email.'>');
++			$mail->head->add('Reply-To', '"'.$sender_name.'"'.' <'.$sender_email.'>');
++			$mail->head->add('Subject', '=?UTF-8?Q?'.encode_qp($subject, '').'?=');
++			$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
++			$mail->head->add('Return-path', '<'.$sender_email.'>');
++			$mail->attach(
++				Type => 'text/plain',
++				Charset => 'UTF-8',
++				Encoding => 'quoted-printable',
++				Data => [ "$body\n" ],
++			);
++			$mail->attach(
++				Type => $ftype,
++				Charset => 'UTF-8',
++				Encoding => $fencoding,
++				Filename => 'invoice_'.$row->{'id'}.'.'.$fext,
++				Data => [ $response->content ],
++			);
++			if(!$mail->smtpsend('MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email))
++			{
++				print STDERR "Error: Unable to send mail.\n";
++			}
+ 		}
++		else
++		{
++			print STDOUT "SMTPAUTH";
++			# First, we save the attachment to file (in my case - file is placed in RAMDISK)
++		        open(DSTFILE, ">$att_file") or die("nie udalo sie otworzyc pliku $att_file do zapisu");
++        		print DSTFILE $response->content;
++        		close (DSTFILE);
++        		chown 0,0, $att_file;
++        		chmod 0700, $att_file;
++			my $msgid = $row->{'id'};
++
++
++		        my $status = Mail::SendEasy::send(
++        		smtp => $smtp_host ,
++        		user => $smtp_user ,
++        		pass => $smtp_pass ,
++        		from    => $sender_email ,
++        		from_title => $sender_name ,
++        		reply   => $sender_email ,
++        		error   => $sender_email ,
++        		to      => $custemail ,
++        		subject => '=?UTF-8?Q?'.encode_qp($subject, '').'?=',
++        		anex	=> $att_file ,
++			msg	=> $body ,
++		#	msg	=> "Here you should paste content of the message if you don't want to use the $body way" ,
++		#       html    => "<b>With this option you can send a message in HTML-format</b>" , 
++        		msgid   => $msgid ,
++	        	) ;
++			if(!$quiet)
++			{
++			        if ($status)
++				{
++					print STDOUT "Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
++				}
++    				else
++				{
++					print STDERR "Error: Unable to send mail.\n";
++					Mail::SendEasy::error;
++				}
++			}
++
++		}		
+ 	}
+ 	else
+ 	{
