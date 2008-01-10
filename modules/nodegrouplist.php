@@ -47,62 +47,26 @@ function GroupList()
         return $nodegrouplist;
 }
 
-if (isset($_GET['id']) && isset($_GET['move']))
+if (isset($_POST['from']) && isset($_POST['to']))
 {
-	$id = $_GET['id'];
-	$move = $_GET['move'];
-	$prio = $DB->GetOne('SELECT prio FROM nodegroups WHERE id = ?', array($id));
-	if ($prio != NULL)
+	$from = $_POST['from'];
+	$to = $_POST['to'];
+	if ($from != '' && $to != '' && $from != $to)
 	{
-		switch ($move)
-		{
-			case 'up':
-				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MAX(prio) FROM nodegroups WHERE prio<?)',
-					array($prio));
-				break;
-			case 'down':
-				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups WHERE prio>?)',
-					array($prio));
-				break;
-			case 'top':
-				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MIN(prio) FROM nodegroups WHERE id<>?)',
-					array($id));
-				break;
-			case 'bottom':
-				$neighbour = $DB->GetRow('SELECT id, prio FROM nodegroups WHERE prio=(SELECT MAX(prio) FROM nodegroups WHERE id<>?)',
-					array($id));
-				break;
-			default:
-				$neighbour = NULL;
-		}
-		if ($neighbour != NULL)
-		{
-			switch ($move)
-			{
-				case 'up':
-				case 'down':
-					$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?;
-						UPDATE nodegroups SET prio=? WHERE id=?',
-						array($neighbour['prio'], $id, $prio, $neighbour['id']));
-					break;
-				case 'top':
-					$DB->Execute('UPDATE nodegroups SET prio=prio+1 WHERE id<>? AND prio<?',
-						array($id, $prio));
-					$DB->Execute('UPDATE nodegroups SET prio=1 WHERE id=?',
-						array($id));
-					break;
-				case 'bottom':
-					$DB->Execute('UPDATE nodegroups SET prio=prio-1 WHERE id<>? AND prio>?',
-						array($id, $prio));
-					$DB->Execute('UPDATE nodegroups SET prio=(SELECT MAX(prio) FROM nodegroups)+1 WHERE id=?',
-						array($id));
-					break;
-			}
-			$LMS->CompactNodeGroups();
-			$SESSION->redirect('?m=nodegrouplist');
-		}
+		$prio['from'] = $DB->GetOne('SELECT prio FROM nodegroups WHERE id=?', array($from));
+		$prio['to'] = $DB->GetOne('SELECT prio FROM nodegroups WHERE id=?', array($to));
+		if ($prio['to'] < $prio['from'])
+			$DB->Execute('UPDATE nodegroups SET prio=prio+1 WHERE id<>? AND prio<? AND prio>=?',
+				array($from, $prio['from'], $prio['to']));
+		else
+			$DB->Execute('UPDATE nodegroups SET prio=prio-1 WHERE id<>? AND prio<=? AND prio>?',
+				array($from, $prio['to'], $prio['from']));
+		$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?',
+			array($prio['to'], $from));
+		$LMS->CompactNodeGroups();
 	}
 }
+
 
 $layout['pagetitle'] = trans('Node Groups List');
 

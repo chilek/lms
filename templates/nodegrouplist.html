@@ -1,6 +1,8 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<FORM NAME="tmove" METHOD="POST" ACTION="">
+<INPUT TYPE="submit" CLASS="hiddenbtn">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR class="dark">
 		<TD WIDTH="97%" CLASS="fleftu">
@@ -37,10 +39,10 @@
 			{if $nodegrouplist[nodegroups].nodescount}<A HREF="javascript:alert('{t}Group with members cannot be deleted!{/t}');">
 			{else}<A HREF="?m=nodegroupdel&id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');">
 			{/if}<IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			<A HREF="?m=nodegrouplist&id={$nodegrouplist[nodegroups].id}&move=up"><IMG src="img/desc_order.gif" alt="[ {t}Up{/t} ]" title="[ {t}Up{/t} ]"></A>
-			<A HREF="?m=nodegrouplist&id={$nodegrouplist[nodegroups].id}&move=down"><IMG src="img/asc_order.gif" alt="[ {t}Down{/t} ]" title="[ {t}Down{/t} ]"></A>
-			<A HREF="?m=nodegrouplist&id={$nodegrouplist[nodegroups].id}&move=top"><IMG src="img/desc_order.gif" alt="[ {t}Top{/t} ]" title="[ {t}Top{/t} ]"></A>
-			<A HREF="?m=nodegrouplist&id={$nodegrouplist[nodegroups].id}&move=bottom"><IMG src="img/asc_order.gif" alt="[ {t}Bottom{/t} ]" title="[ {t}Bottom{/t} ]"></A>
+			<INPUT CLASS="radio light" TYPE="radio" NAME="from" ID="{$nodegrouplist[nodegroups].id}" VALUE="{$nodegrouplist[nodegroups].id}"></INPUT>
+			<INPUT CLASS="radio light" TYPE="radio" NAME="to" ID="{$nodegrouplist[nodegroups].id}" VALUE="{$nodegrouplist[nodegroups].id}">
+				<A HREF="javascript:document.tmove.submit();"><IMG SRC="img/reload.gif"></A>
+			</INPUT>
 			</NOBR>
 		</TD>
 	</TR>
@@ -65,4 +67,5 @@
 		</TD>
 	</TR>
 </TABLE>
+</FORM>
 {include file="footer.html"}
