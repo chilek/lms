@@ -41,6 +41,7 @@ version ? (????-??-??):
   - lmsd/cutoff: fixed query for customers without tariffs (alec)
   - lmsd/cutoff: balance limit can be set as percentage value of sum of monthly 
     assignments (alec)
+  - nodegrouplist: improved nodegroups UI movement ergonomy (chilan)
 
 version 1.11.1 Talus (2007-12-03):
 
