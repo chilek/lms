@@ -66,7 +66,8 @@ if (isset($_POST['from']) && isset($_POST['to']))
 		$LMS->CompactNodeGroups();
 	}
 }
-
+else
+	$from = 0;
 
 $layout['pagetitle'] = trans('Node Groups List');
 
@@ -78,6 +79,7 @@ $listdata['nodestotal'] = $nodegrouplist['nodestotal'];
 unset($nodegrouplist['total']);
 unset($nodegrouplist['nodestotal']);
 
+$SMARTY->assign('selectednodegroupid', $from);
 $SMARTY->assign('nodegrouplist', $nodegrouplist);
 $SMARTY->assign('listdata', $listdata);
 
