@@ -29,10 +29,9 @@ use Getopt::Long;
 use vars qw($configfile $help $version $quiet $fakedate);
 use POSIX qw(strftime);
 use LWP::UserAgent;
-use MIME::Entity;
 use Time::Local;
 use MIME::QuotedPrint;
-use Text::Iconv;
+use Mail::Sender;
 
 my $_version = '1.11-cvs';
 
@@ -100,30 +99,33 @@ my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
-my $dbencoding = $ini->val('database', 'server_encoding') || 'UTF-8';
-
-my $filetype = $ini->val('invoices', 'type') || '';
 
 my $lms_url = $ini->val('sendinvoices', 'lms_url') || 'http://localhost/lms/';
 my $lms_user = $ini->val('sendinvoices', 'lms_user') || '';
 my $lms_password = $ini->val('sendinvoices', 'lms_password') || '';
+
+my $smtp_host = $ini->val('sendinvoices', 'smtp_host') || 'localhost';
+my $smtp_user = $ini->val('sendinvoices', 'smtp_user') || '';
+my $smtp_pass = $ini->val('sendinvoices', 'smtp_pass') || '';
+my $smtp_auth = $ini->val('sendinvoices', 'smtp_auth') || ''; # 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
+
+my $filetype = $ini->val('invoices', 'type') || '';
 my $debug_email = $ini->val('sendinvoices', 'debug_email') || '';
 my $sender_name = $ini->val('sendinvoices', 'sender_name') || '';
 my $sender_email = $ini->val('sendinvoices', 'sender_email') || '';
-my $smtphost = $ini->val('sendinvoices', 'smtp_host') || '';
 my $mail_subject = $ini->val('sendinvoices', 'mail_subject') || 'Invoice No. %invoice';
 my $mail_body = $ini->val('sendinvoices', 'mail_body') || 'Attached file with Invoice No. %invoice';
 my $customergroups = $ini->val('sendinvoices', 'customergroups') || '';
 
-if(!$sender_name)
-{
-	print STDERR "Fatal error: sender_name unset! Can't continue, exiting.\n";
-	exit 1;
-}
-
 if(!$sender_email)
 {
 	print STDERR "Fatal error: sender_email unset! Can't continue, exiting.\n";
+	exit 1;
+}
+
+if($smtp_auth && $smtp_auth !~ /LOGIN|PLAIN|CRAM-MD5|NTLM/i)
+{
+	print STDERR "Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n";
 	exit 1;
 }
 
@@ -162,7 +164,7 @@ my $fext = 'html';
 if($filetype eq 'pdf')
 {
 	$ftype = 'application/octetstream';
-	$fencoding = '';
+	$fencoding = 'Base64';
 	$fext = 'pdf';
 }
 
@@ -179,15 +181,18 @@ sub localtime2()
 	}
 }
 
-my $converter = Text::Iconv->new($dbencoding, "UTF-8");
-
-$sender_name = '=?UTF-8?Q?'.encode_qp($sender_name, '').'?=';
-
 my $month = sprintf("%d",strftime("%m",localtime2()));
 my $day = strftime("%e",localtime2());
 my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
+my $from = $sender_email;
+
+if($sender_name)
+{
+	$sender_name = '=?UTF-8?Q?'.encode_qp($sender_name, '').'?=';
+	$from = '"'.$sender_name.'"'.' <'.$from.'>';
+}
 
 my $groupwhere = '';
 my $groupjoin = '';
@@ -212,9 +217,10 @@ $dbq = $dbase->prepare("SELECT documents.id AS id, number, cdate, email, documen
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
+	my $sender;
 	my $ua = LWP::UserAgent->new;
-	$ua->timeout(240);
 	my $response = $ua->get($lms_url.'/?m=invoice&override=1&original=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
+	
 	if ($response->is_success)
 	{
 		my $custemail = $debug_email || $row->{'email'};
@@ -232,29 +238,45 @@ while(my $row = $dbq->fetchrow_hashref())
 			print "Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
 		}
 
-		my $mail = build MIME::Entity Type=>"multipart/mixed";
-		$mail->head->add('To', '"=?UTF-8?Q?'.encode_qp($converter->convert($row->{'name'}), '').'?="'.' <'.$custemail.'>');
-		$mail->head->add('From', '"'.$sender_name.'"'.' <'.$sender_email.'>');
-		$mail->head->add('Reply-To', '"'.$sender_name.'"'.' <'.$sender_email.'>');
-		$mail->head->add('Subject', '=?UTF-8?Q?'.encode_qp($subject, '').'?=');
-		$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
-		$mail->head->add('Return-path', '<'.$sender_email.'>');
-		$mail->attach(
-			Type => 'text/plain',
-			Charset => 'UTF-8',
-			Encoding => 'quoted-printable',
-			Data => [ "$body\n" ],
-		);
-		$mail->attach(
-			Type => $ftype,
-			Charset => 'UTF-8',
-			Encoding => $fencoding,
-			Filename => 'invoice_'.$row->{'id'}.'.'.$fext,
-			Data => [ $response->content ],
-		);
-		if(!$mail->smtpsend('Host' => $smtphost, 'MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email))
-		{
-			print STDERR "Error: Unable to send mail.\n";
+		if( ref ($sender = new Mail::Sender {
+		        smtp => $smtp_host,
+			from => $sender_email,
+			auth => $smtp_auth,
+			authid => $smtp_user,
+			authpwd => $smtp_pass,
+			on_errors => undef,
+#			debug_level => 4,
+#			debug => './log.txt',
+	        })) {
+			if( ref ($sender->OpenMultipart ({
+		                subject => '=?UTF-8?Q?'.encode_qp($subject, '').'?=',
+				fake_from => $from,
+				to => $custemail,
+				fake_to => '"=?UTF-8?Q?'.encode_qp($row->{'name'}, '').'?="'.' <'.$custemail.'>',
+				replyto => $sender_email,
+				messageid => '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>',
+			}))) {
+				$sender->Body ({
+					ctype => 'text/plain',
+			    		encoding => 'quoted-printable',
+					charset => 'UTF-8',
+					msg => "$body\n",
+				});
+				$sender->Part ({
+				        ctype => $ftype,
+				        encoding => $fencoding,
+					disposition => 'inline; filename="invoice_'.$row->{'id'}.'.'.$fext.'"',
+					msg => $response->content,
+				});
+				$sender->EndPart($ftype);
+				$sender->Close;
+			}
+			else {
+				print STDERR "Error sending mail: $Mail::Sender::Error\n";
+			}
+		}
+		else {	
+			print STDERR "Error sending mail: $Mail::Sender::Error\n";
 		}
 	}
 	else

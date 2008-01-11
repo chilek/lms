@@ -26,9 +26,10 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use Net::SMTP;
 use vars qw($configfile $my_template $quiet $help $version);
 use POSIX qw(strftime);
+use MIME::QuotedPrint;
+use Mail::Sender;
 
 my $_version = '1.11-cvs';
 
@@ -96,13 +97,16 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
+my $smtp_host = $ini->val('sendinvoices', 'smtp_host') || 'localhost';
+my $smtp_user = $ini->val('sendinvoices', 'smtp_user') || '';
+my $smtp_pass = $ini->val('sendinvoices', 'smtp_pass') || '';
+my $smtp_auth = $ini->val('sendinvoices', 'smtp_auth') || ''; # 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
+
 my $limit = $ini->val('notify', 'limit') || 0;
 my $mtfile = $my_template || $ini->val('notify', 'mailtemplate');
 my $mailfrom = $ini->val('notify', 'mailfrom') || '';
 my $mailfname = $ini->val('notify', 'mailfname') || '';
 my $mailsubject = $ini->val('notify', 'mailsubject') || '';
-my $mailcharset = $ini->val('notify', 'mailcharset') || 'UTF-8';
-my $smtpserver = $ini->val('notify', 'smtp_server') || '127.0.0.1';
 my $debugemail = $ini->val('notify', 'debug_email') || '';
 
 if(!$mtfile)
@@ -123,18 +127,18 @@ if(!$mailfrom)
 	exit 1;
 }
 
-if(!$mailfname)
-{
-	print STDERR "Fatal error: mailfname unset! Can't continue, exiting.\n";
-	exit 1;
-}
-
 if(!$mailsubject)
 {
 	print STDERR "Fatal error: mailsubject unset! Can't continue, exiting.\n";
 	exit 1;
 }
-		
+
+if($smtp_auth && $smtp_auth !~ /LOGIN|PLAIN|CRAM-MD5|NTLM/i)
+{
+        print STDERR "Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n";
+        exit 1;
+}
+
 my $dbase;
 my $utsfmt;
 
@@ -155,130 +159,128 @@ else
 	exit 1;
 }
 
+my $from = $mailfrom;
+
+if($mailfname)
+{
+        $mailfname = '=?UTF-8?Q?'.encode_qp($mailfname, '').'?=';
+	$from = '"'.$mailfname.'"'.' <'.$from.'>';
+}
+
 open(MTFILE, "$mtfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, UPPER(lastname) AS lastname, name, email, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, pin, lastname, name, email HAVING SUM(cash.value) < $limit");
+my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, UPPER(lastname) AS lastname, 
+		name, email, SUM(cash.value) AS balance 
+		FROM customers 
+		JOIN cash ON (customers.id = cash.customerid)
+		WHERE deleted = 0 AND email != ''
+		GROUP BY customers.id, pin, lastname, name, email 
+		HAVING SUM(cash.value) < $limit");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
 	my $balance = $row->{'balance'};
+	my $recipient = $debugemail || $row->{'email'};
+
 	if(!$quiet)
 	{
 		print STDOUT "$row->{'lastname'} $row->{'name'} (".sprintf("%04d",$row->{'id'}).")\t$balance\n";
 	}
-	if($row->{'email'})
+
+	if(!$quiet)
 	{
-		if(!$quiet)
-		{
-			print STDOUT "Sending e-mail to $row->{'email'}\n";
+		print STDOUT "Sending e-mail to <$recipient>\n";
+	}
+		
+	my @desttempl = @mtempl;
+	my $subject = $mailsubject;
+	my $body = '';
+	my $sender;
+		
+	$subject =~ s/\%B/$balance/g;
+
+	{
+		my $amount = -$balance; $subject =~ s/\%b/$amount/g;
+	} 
+		
+	foreach my $line (@desttempl)
+	{
+		{ 	
+			my $amount = sprintf "%.2f", -$balance;
+			$line =~ s/\%b/$amount/g; 	
 		}
-		
-		my @desttempl = @mtempl;
-		my $subject = $mailsubject;
-		
-		$subject =~ s/\%B/$balance/g;
-		
+		{ 
+			my $year = strftime( "%Y", localtime());
+			$line =~ s/\%date-y/$year/; 
+		}
 		{
-			my $amount = -$balance; $subject =~ s/\%b/$amount/g;
+			my $month = strftime ( "%m", localtime());
+			$line =~ s/\%date-m/$month/;
+		}
+		{
+			my $month_name = strftime ( "%B", localtime());
+			$line =~ s/\%date_month_name/$month_name/;
+		}
+			
+		$line =~ s/\%B/$balance/g;
+		$line =~ s/\%saldo/$row->{'balance'}/;
+		$line =~ s/\%pin/$row->{'pin'}/;
+		$line =~ s/\%cid/$row->{'id'}/;
+
+		if ($line =~ /\%abonament/) {
+			my $saldo_dbq = $dbase->prepare("SELECT sum(value) AS value FROM assignments, tariffs 
+					WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) 
+						AND (dateto > $utsfmt OR dateto = 0) 
+						AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) 
+						AND customerid = $row->{'id'}");
+			$saldo_dbq->execute();
+			my $ow_s = $saldo_dbq->fetchrow_hashref();
+			$saldo_dbq->finish();
+			$line =~ s/\%abonament/$ow_s->{'value'}/;
+		}
+		if ($line =~ /\%last_10_in_a_table/ ) {
+			my $last10_dbq = $dbase->prepare("SELECT comment, value, time FROM cash WHERE 
+					customerid='$row->{'id'}' ORDER BY time DESC LIMIT 10");
+			# ok, now we are going to rise up system's load
+			$last10_dbq->execute();
+			my $l10 = "-----------+-----------+----------------------------------------------------\n";
+			while (my $row_s = $last10_dbq->fetchrow_hashref())
+			{
+				my $op_time = strftime( "%Y/%m/%d", localtime($row_s->{'time'}));
+				my $op_amount = sprintf("%9.2f", $row_s->{'value'});
+				my $for_what = sprintf("%-52s",$row_s->{'comment'} || '');
+														
+				$l10 = $l10."$op_time | $op_amount | $for_what \n";
+			}
+			$last10_dbq->finish();
+			$l10 = $l10."-----------+---------+------------------------------------------------------\n";
+			$line =~ s/\%last_10_in_a_table/$l10/;
 		} 
 		
-		my $recipient = $debugemail || $row->{'email'};
-		
-		my $smtp = Net::SMTP->new("$smtpserver");
-		
-		if( !$smtp )
-		{
-		        print STDERR "Fatal error: Unable to connect to SMTP server: $smtpserver, exiting.\n";
-			exit 1;
-		}
-													       
-		$smtp->mail("$mailfrom");
-		
-		if( !$smtp->to($recipient) )
-		{
-			print STDERR "Unable to send message to <$recipient>. Recipient skipped.\n";
-			$smtp->reset();
-			next;
-		}
-
-		$smtp->data();
-		$smtp->datasend("From: $mailfname <$mailfrom>\n");
-		$smtp->datasend("To: $row->{'name'} $row->{'lastname'} <$recipient>\n");
-		$smtp->datasend("Subject: $subject\n");
-		$smtp->datasend("User-Agent: lms\-notify v. $_version\n");
-		$smtp->datasend("Content-type: text/plain; charset=$mailcharset\n");
-		$smtp->datasend("Mime-Version: 1.0\n");
-		$smtp->datasend("Content-transfer-encoding: 8bit\n");
-		$smtp->datasend("\n");
-
-		foreach my $line (@desttempl)
-		{
-			$line =~ s/\%B/$balance/g;
-			{ 	
-				my $amount = -$balance;
-				$line =~ s/\%b/$amount/g; 	
-			}
-			{ 
-				my $year = strftime( "%Y", localtime());
-				$line =~ s/\%date-y/$year/; 
-			}
-			{
-				my $month = strftime ( "%m", localtime());
-				$line =~ s/\%date-m/$month/;
-			}
-			{
-				my $month_name = strftime ( "%B", localtime());
-				$line =~ s/\%date_month_name/$month_name/;
-			}
-				
-			if ($line =~ /\%saldo/) {
-				$line =~ s/\%saldo/$row->{'balance'}/;
-			}
-
-			if ($line =~ /\%pin/) {
-				$line =~ s/\%pin/$row->{'pin'}/;
-			}
-
-			if ($line =~ /\%cid/) {
-				$line =~ s/\%cid/$row->{'id'}/;
-			}
-
-			if ($line =~ /\%abonament/) {
-				my $saldo_dbq = $dbase->prepare("SELECT sum(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND customerid = $row->{'id'}");
-				$saldo_dbq->execute();
-				my $ow_s = $saldo_dbq->fetchrow_hashref();
-				$line =~ s/\%abonament/$ow_s->{'value'}/;
-			}
-			if ($line =~ /\%last_10_in_a_table/ ) {
-				my $last10_dbq = $dbase->prepare("SELECT comment, value, time FROM cash WHERE 
-						customerid='$row->{'id'}' ORDER BY time DESC LIMIT 10");
-			# ok, now we are going to rise up system's load
-				$last10_dbq->execute();
-				$smtp->datasend("-----------+------------------------------------------------------+---------\n");
-				while (my $row_s = $last10_dbq->fetchrow_hashref())
-				{
-					my $op_time = strftime( "%Y/%m/%d", localtime($row_s->{'time'}));
-					my $op_amount = sprintf("%8.2f", $row_s->{'value'});
-					my $for_what = sprintf("%-52s",$row_s->{'comment'} || '');
-														
-					$smtp->datasend("$op_time | $op_amount | $for_what \n");
-				}
-				$smtp->datasend("-----------+------------------------------------------------------+---------\n");
-			} else 
-			{
-				$smtp->datasend("$line"); 
-			}
-		}
-		$smtp->dataend();
-		$smtp->quit;
-	}else{
-		if(!$quiet)
-		{
-			print STDOUT "This customer don't have any e-mails in database.\n";
-		}
+		$body = $body.$line;
 	}
+	
+	(new Mail::Sender)->MailMsg ({
+	        smtp => $smtp_host,
+		from => $mailfrom,
+		auth => $smtp_auth,
+		authid => $smtp_user,
+		authpwd => $smtp_pass,
+		on_errors => undef,
+#		debug_level => 4,
+#		debug => './log.txt',
+                subject => '=?UTF-8?Q?'.encode_qp($subject, '').'?=',
+		fake_from => $from,
+		to => $recipient,
+		fake_to => '"=?UTF-8?Q?'.encode_qp($row->{'name'}.' '.$row->{'lastname'}, '').'?="'.' <'.$recipient.'>',
+		replyto => $mailfrom,
+		ctype => 'text/plain',
+    		encoding => '8bit',
+		charset => 'UTF-8',
+		msg => "$body\n",
+	}) or print STDERR "Error sending mail: $Mail::Sender::Error\n";
 }
 
 $dbq->finish();

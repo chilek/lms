@@ -24,7 +24,7 @@ email: j.lessmoreimportant@ournetwork.com
 
 ps. for your convenience we attach last 10 operations connected to your account
 
-Amount | operation type | date 
+Amount | Date | Description
 
 %last_10_in_a_table 
 
