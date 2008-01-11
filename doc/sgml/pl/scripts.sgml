@@ -128,8 +128,8 @@
        <sect2 id="lms-notify" xreflabel="lms-notify">
 	<title>lms-notify</title>
 	  <para>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
-	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych 
-	  (w iso-8859-2) i traktowania ich jako szablonów do mailingu.</para>
+	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych i traktowania ich jako szablonów do mailingu. Do wysy³ania poczty
+  	zosta³ zastosowany modu³ Mail::Sender.</para>
 	 <sect3 id="lms-notify-templates">
 	  <title>Szablony</title>
 	  <para>W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</para>
@@ -243,20 +243,31 @@ http://www.naszasiec.pl/</screen></example>
              <para>Przyk³ad:	<prompt>mailfrom = staff@domain.pl</prompt></para>
             </listitem>
             <listitem>
-             <para>mailfname (wymagana)</para>
+             <para>mailfname</para>
              <para>Nazwa nadawcy maila. Domy¶lnie: pusta.</para>
              <para>Przyk³ad:	<prompt>mailfname = Administratorzy</prompt></para>
             </listitem>
             <listitem>
-	     <para>mailcharset</para>
-	     <para>Strona kodowa wiadomo¶ci. Domy¶lnie: UTF-8.</para>
-	     <para>Przyk³ad:	<prompt>mailcharset = ISO-8859-2</prompt></para>
-	    </listitem>
-            <listitem>
-             <para>smtp_server</para>
-             <para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</para>
-             <para>Przyk³ad:	<prompt>smtp_server = smtp.mydomain.pl</prompt></para>
+             <para>smtp_host</para>
+             <para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</para>
+             <para>Przyk³ad:	<prompt>smtp_host = smtp.mydomain.pl</prompt></para>
             </listitem>
+		<listitem>
+		<para>smtp_auth</para>
+		<para>Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
+		Domy¶lnie: pusta (brak autoryzacji)</para>
+		<para>Przyk³ad:	<prompt>smtp_auth = LOGIN</prompt></para>
+		</listitem>
+		<listitem>
+		<para>smtp_user</para>
+		<para>Login do autoryzacji SMTP. Domy¶lnie: pusty</para>
+		<para>Przyk³ad:	<prompt>smtp_user = admin</prompt></para>
+		</listitem>
+		<listitem>
+		<para>smtp_pass</para>
+		<para>Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</para>
+		<para>Przyk³ad:	<prompt>smtp_pass = password</prompt></para>
+		</listitem>
             <listitem>
              <para>debug_email (opcjonalny)</para>
              <para>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do klientów. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</para>
@@ -650,7 +661,7 @@ wins    = 213.25.209.10</screen>
 	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
 	dlatego wymagane jest podanie klienta i has³a do interfejsu www lms-ui.</para>
 	<para>W odró¿nieniu od pozosta³ych skryptów ten wymaga dodatkowych modu³ów perla:
-	LWP::UserAgent, MIME::Entity.</para>
+	LWP::UserAgent, MIME::QuotedPrint oraz Mail::Sender.</para>
 	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[sendinvoices]</emphasis>:
 	    <itemizedlist>
         	<listitem>
@@ -696,10 +707,30 @@ wins    = 213.25.209.10</screen>
 		    <para>Przyk³ad:	<prompt>mail_body = ''</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>customergroups</para>
-		    <para>Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas
-		    wysy³ki. Domy¶lnie: nie ustawiona - wszystkie grupy.</para>
-		    <para>Przyk³ad:	<prompt>customergroups = grupa1 grupa2</prompt></para>
+		<para>customergroups</para>
+		<para>Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione 
+		podczas wysy³ki. Domy¶lnie: nie ustawiona - wszystkie grupy.</para>
+		<para>Przyk³ad:	<prompt>customergroups = grupa1 grupa2</prompt></para>
+		</listitem>
+		<listitem>
+		<para>smtp_host</para>
+		<para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</para>
+		<para>Przyk³ad:	<prompt>smtp_host = smtp.mydomain.pl</prompt></para>
+		</listitem>
+		<listitem>
+		<para>smtp_auth</para>
+		<para>Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM. Domy¶lnie: pusta (brak autoryzacji)</para>
+		<para>Przyk³ad:	<prompt>smtp_auth = LOGIN</prompt></para>
+		</listitem>
+		<listitem>
+		<para>smtp_user</para>
+		<para>Login do autoryzacji SMTP. Domy¶lnie: pusty</para>
+		<para>Przyk³ad:	<prompt>smtp_user = admin</prompt></para>
+		</listitem>
+		<listitem>
+			<para>smtp_pass</para>
+			<para>Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</para>
+			<para>Przyk³ad:	<prompt>smtp_pass = password</prompt></para>
 		</listitem>
 	    </itemizedlist>
 	 Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ

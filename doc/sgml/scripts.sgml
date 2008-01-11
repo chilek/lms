@@ -125,7 +125,8 @@ scripts.</para>
 	<title>lms-notify</title>
 	  <para>lms-notify is perfect tool to remind your customers that they are actually the ones who
 	    cover all your network and WAN links costs. It makes you possible to create numerous text templates
-	    for various occasions and use them for mailing your customers.</para>
+	    for various occasions and use them for mailing your customers. For smtp connection Mail::Sender 
+	    module is used.</para>
 	 <sect3 id="lms-notify-templates">
 	  <title>Templates</title>
 	  <para>You can use following variables in your templates:</para>
@@ -237,19 +238,30 @@ Following parameters are valid:</para>
              <para>Example:	<prompt>mailfrom = staff@bigpro.com</prompt></para>
             </listitem>
             <listitem>
-             <para>mailfname (mandatory)</para>
+             <para>mailfname</para>
              <para>Sender name. Default: none</para>
              <para>Example:	<prompt>mailfname = Administrators</prompt></para>
             </listitem>
             <listitem>
-	     <para>mailcharset</para>
-	     <para>Message character set (Content-Type). Default: UTF-8</para>
-	     <para>Example:	<prompt>mailcharset = ISO-8859-2</prompt></para>
-	    </listitem>
+             <para>smtp_host</para>
+             <para>SMTP server to be used when sending emails. Default: localhost</para>
+             <para>Example:	<prompt>smtp_host = smtp.bigpro.com</prompt></para>
+            </listitem>
             <listitem>
-             <para>smtp_server</para>
-             <para>SMTP server to be used when sending emails. Default: 127.0.0.1</para>
-             <para>Example:	<prompt>smtp_server = smtp.bigpro.com</prompt></para>
+             <para>smtp_auth</para>
+             <para>SMTP authorization type. Allowed values: 
+	     LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</para>
+             <para>Example:	<prompt>smtp_auth = LOGIN</prompt></para>
+            </listitem>
+            <listitem>
+             <para>smtp_user</para>
+             <para>Login for SMTP authorization. Default: none</para>
+             <para>Example:	<prompt>smtp_user = admin</prompt></para>
+            </listitem>
+            <listitem>
+             <para>smtp_pass</para>
+             <para>Password for SMTP authorization. Default: none</para>
+             <para>Example:	<prompt>smtp_pass = password</prompt></para>
             </listitem>
             <listitem>
              <para>debug_email (optional)</para>
@@ -654,7 +666,7 @@ email, as email attachments. Invoices are being created in accordance to
 template used in LMS-UI, thus, you need to provide username and password to
 interface for this module to work.</para>
 	<para>This module, unlike the others, needs some extra Perl modules to
-work: Data::Dumper, LWP::UserAgent and MIME::Entity.</para>
+work: LWP::UserAgent, MIME::QuotedPrint and Mail::Sender.</para>
         <para>Configuration of lms-sendinvoices should be set in
 <filename>lms.ini</filename> file, <emphasis>[sendinvoices]</emphasis> section.
 Following parameters are valid:</para>
@@ -708,6 +720,27 @@ Following parameters are valid:</para>
 		    considered while sending invoices. Default: unset - all customers.</para>
 		    <para>Example:	<prompt>customergroups = group1 group2</prompt></para>
 		</listitem>
+		<listitem>
+            	    <para>smtp_host</para>
+	            <para>SMTP server to be used when sending emails. Default: localhost</para>
+            	    <para>Example:	<prompt>smtp_host = smtp.bigpro.com</prompt></para>
+        	</listitem>
+        	<listitem>
+            	    <para>smtp_auth</para>
+            	    <para>SMTP authorization type. Allowed values: 
+	    	    LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</para>
+            	    <para>Example:	<prompt>smtp_auth = LOGIN</prompt></para>
+        	</listitem>
+        	<listitem>
+            	    <para>smtp_user</para>
+            	    <para>Login for SMTP authorization. Default: none</para>
+            	    <para>Example:	<prompt>smtp_user = admin</prompt></para>
+        	</listitem>
+        	<listitem>
+            	    <para>smtp_pass</para>
+            	    <para>Password for SMTP authorization. Default: none</para>
+            	    <para>Example:	<prompt>smtp_pass = password</prompt></para>
+        	</listitem>
 	    </itemizedlist>
 	 <para>Script has also one useful command line parameter: <prompt>--fakedate</prompt> 
 	 (<prompt>-f</prompt>). With this option you can make that script will execute 
