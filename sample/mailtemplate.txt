@@ -28,8 +28,7 @@ email: gwidonm@naszasiec.pl
 ps. załączamy ostatnie 10 operacji jakie zostało zarejestrowane przez nasz
 system bilingowy na Państwa koncie:
 
-kwota operacji | typ operacji | data
-
+---data----+---kwota---+------------------------opis------------------------
 %last_10_in_a_table 
 
 --

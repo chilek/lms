@@ -42,6 +42,11 @@ version ? (????-??-??):
   - lmsd/cutoff: balance limit can be set as percentage value of sum of monthly 
     assignments (alec)
   - nodegrouplist: improved nodegroups UI movement ergonomy (chilan)
+  - lms-sendinvoice: added smtp authorization, sending mail with Mail::Sender,
+    added 'smtp_host', 'smtp_user', 'smtp_pass', 'smtp_auth' options (alec)
+  - lms-notify: added smtp authorization, sending mail with Mail::Sender,
+    removed option 'mailcharset' and 'smtp_server', added 'smtp_host',
+    'smtp_user', 'smtp_pass', 'smtp_auth' options (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
