@@ -498,7 +498,8 @@
 			<listitem>
 			    <para>limit</para>
 			    <para>Od³±czenie nastêpuje je¶li saldo klienta spadnie poni¿ej
-			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</para>
+			    warto¶ci okre¶lonej jako kwota lub warto¶æ procentowa sumy miesiêcznych
+			    zobowi±zañ klienta (ze znakiem '%'). Domy¶lnie: 0.</para>
 			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
 			</listitem>
 			<listitem>
@@ -533,6 +534,16 @@
 			    wygas³y zobowi±zania, zostan± od³±czeni mimo w³±czenia tej opcji. 
 			    Domy¶lnie: wy³±czona.</para>
 			    <para>Przyk³ad: <prompt>warnings_only = true</prompt></para>
+			</listitem>
+			<listitem>
+			<para>setnodegroup_only</para>
+			<para>Ta opcja pozwala zdecydowaæ, czy chemy przypisaæ do wybranej grupy 
+			komputery klienta, zamiast zmieniaæ jego status lub w³±czaæ ostrze¿enie. Do grupa 
+			o podanej nazwie zostan± przypisane wszystkie komputery klienta, który przekroczy³
+			limit zad³u¿enia, albo posiada nierozliczone faktury (je¶li w³±czono 
+			check_invoices).
+			Domy¶lnie: pusta.</para>
+			<para>Przyk³ad: <prompt>setnodegroup_only = ograniczony_dostep</prompt></para>
 			</listitem>
 			<listitem>
 				<para>use_nodeassignments</para>
@@ -788,6 +799,12 @@
 			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
 			    <para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>nodegroups</para>
+				<para>Lista nazw grup komputerów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+				Domy¶lnie: pusta (wszystkie grupy).</para>
+				<para>Przyk³ad: <prompt>nodegroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>skip_dev_ips</para>
