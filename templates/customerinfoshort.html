@@ -166,7 +166,7 @@
 		<TD WIDTH="1%">
 			<B>{t}Balance:{/t}</B>
 		</TD>
-		<TD WIDTH="98%">
+		<TD WIDTH="98%" NOWRAP>
 			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
