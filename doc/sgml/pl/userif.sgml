@@ -1293,6 +1293,20 @@ links -dump \
 		Domy¶lnie: 32767</para>
 		<para>Przyk³ad:     <prompt>account_type = 2</prompt></para>
 	</listitem>
+	<listitem>
+		<para>default_assignment_period</para>
+		<para>Domy¶lnie wybrana z listy rozwijanej warto¶æ okresu obci±¿enia, przy dodawaniu zobowi±zania dla klienta.
+			Mo¿liwe warto¶ci:
+			
+			jednorazowo - 0
+			codziennie  - 1
+			co tydzieñ  - 2
+			co miesi±c  - 3 
+			co kwarta³  - 4
+			co rok	    - 5			
+			Domy¶lnie: 0</para>
+		<para>Przyk³ad:     <prompt>default_assignment_period = 3</prompt></para>
+	</listitem>
     </itemizedlist>
 	</para>
         </sect3>

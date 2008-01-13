@@ -47,6 +47,7 @@ version ? (????-??-??):
   - lms-notify: added smtp authorization, sending mail with Mail::Sender,
     removed option 'mailcharset' and 'smtp_server', added 'smtp_host',
     'smtp_user', 'smtp_pass', 'smtp_auth' options (alec)
+  - added phpui.default_assignment_period (chilan)
 
 version 1.11.1 Talus (2007-12-03):
 
