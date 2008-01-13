@@ -1218,6 +1218,20 @@ registered/unregistered cases) if ticket will be running via email.</para>
 		Default: false.</para>
         	<para>Example:     <prompt>ewx_support = true</prompt></para>
     	    </listitem>
+	    <listitem>
+		    <para>default_assignment_period</para>
+		    <para>Default period value for assignment.
+			    Possible values:
+			    
+			    disposable - 0
+			    daily      - 1
+			    weekly     - 2
+			    monthly    - 3 
+			    quarterly  - 4
+			    yearly     - 5			
+			    Default: 0</para>
+		    <para>Example:     <prompt>default_assignment_period = 3</prompt></para>
+	</listitem>
     	    </itemizedlist>
 	    </para>
         </sect3>

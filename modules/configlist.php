@@ -270,6 +270,10 @@ function GetConfigList($order='var,asc', $section='')
 				case 'default_module':
 					$config[$idx]['description'] = trans('Start-up module (filename from /modules without .php). Default: welcome');
 				break;
+
+				case 'default_assignment_period':
+					$config[$idx]['description'] = trans('Default period value for assignment. Default: 0');
+				break;
 				
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');

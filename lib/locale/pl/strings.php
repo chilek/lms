@@ -1906,5 +1906,6 @@ $_LANG['Are you sure, you want to delete that group?'] = 'Jesteś pewien, że ch
 $_LANG['Are you sure, you want to move members to selected group?'] = 'Czy jesteś pewien, że chcesz przenieść członków do wybranej grupy?';
 $_LANG['Move members to group:'] = 'Przenieś członków do grupy:';
 $_LANG['Select group to which you want to move members'] = 'Wybierz grupę, do której chcesz przenieść członków';
+$_LANG['Default period value for assignment. Default: 0'] = 'Domyślna wartość okresu obciążenia. Domyślnie: 0';
 
 ?>
