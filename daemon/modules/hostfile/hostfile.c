@@ -78,7 +78,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 
 	char *groups = strdup("AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
-				"WHERE a.customerid = ownerid "
+				"WHERE a.customerid = n.ownerid "
 				"AND g.id = a.customergroupid "
 				"AND (%groups)) ");
 	
@@ -87,7 +87,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *groupsql = strdup("");
 
 	char *ngroups = strdup("AND EXISTS (SELECT 1 FROM nodegroups g, nodegroupassignments na "
-				"WHERE na.nodeid = id "
+				"WHERE na.nodeid = n.id "
 				"AND g.id = na.nodegroupid "
 				"AND (%groups)) ");
 	
@@ -195,17 +195,17 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		
 		if(hm->skip_dev_ips)
 			query = strdup(
-				"SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
+				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning "
-				"FROM nodes "
-				"WHERE ownerid<>0 %groups %ngroups"
+				"FROM nodes n "
+				"WHERE n.ownerid<>0 %groups %ngroups"
 				"ORDER BY ipaddr");
 		else
 			query = strdup(
-				"SELECT id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
+				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning "
-				"FROM nodes "
-				"WHERE ownerid = 0 %groups %ngroups"
+				"FROM nodes n "
+				"WHERE n.ownerid = 0 %groups %ngroups"
 				"ORDER BY ipaddr");
 			
 		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
