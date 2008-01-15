@@ -1907,6 +1907,6 @@ $_LANG['Are you sure, you want to move members to selected group?'] = 'Czy jeste
 $_LANG['Move members to group:'] = 'Przenieś członków do grupy:';
 $_LANG['Select group to which you want to move members'] = 'Wybierz grupę, do której chcesz przenieść członków';
 $_LANG['Default period value for assignment. Default: 0'] = 'Domyślna wartość okresu obciążenia. Domyślnie: 0';
-$_LANG['Customer has got nodes in group(s): <b>$0</b>!'] = 'Komputer(y) klienta należą do grupy(y): <b>$0</b>!';
+$_LANG['Customer has got nodes in group(s): <b>$0</b>!'] = 'Komputer(y) klienta należą do grup(y): <b>$0</b>!';
 
 ?>
