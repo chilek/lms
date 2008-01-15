@@ -422,8 +422,92 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="NETDEVICES"
+>7.2.7. Sprzêt sieciowy ('netdevices')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa</TD
+></TR
+><TR
+><TD
+>location - lokalizacja</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+><TR
+><TD
+>producer - producent</TD
+></TR
+><TR
+><TD
+>model - model</TD
+></TR
+><TR
+><TD
+>serialnumber - numer seryjny</TD
+></TR
+><TR
+><TD
+>ports - ilo¶æ portów</TD
+></TR
+><TR
+><TD
+>purchasetime - data zakupu</TD
+></TR
+><TR
+><TD
+>guaranteeperiod - okres gwarancji w miesi±cach (NULL - gwarancja wieczysta)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NETLINKS"
+>7.2.8. Po³±czenia sieciowe ('netlinks')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>src - jeden koniec</TD
+></TR
+><TR
+><TD
+>dst- drugi koniec</TD
+></TR
+><TR
+><TD
+>type - typ po³±czenia (0-kabel, 1-radio)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="NODES"
->7.2.7. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
+>7.2.9. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -512,8 +596,8 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="NETDEVICES"
->7.2.8. Sprzêt sieciowy ('netdevices')</A
+NAME="NODEGROUPS"
+>7.2.10. Grupy komputerów ('nodegroups')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -528,35 +612,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->location - lokalizacja</TD
+>prio - priorytet</TD
 ></TR
 ><TR
 ><TD
 >description - opis</TD
-></TR
-><TR
-><TD
->producer - producent</TD
-></TR
-><TR
-><TD
->model - model</TD
-></TR
-><TR
-><TD
->serialnumber - numer seryjny</TD
-></TR
-><TR
-><TD
->ports - ilo¶æ portów</TD
-></TR
-><TR
-><TD
->purchasetime - data zakupu</TD
-></TR
-><TR
-><TD
->guaranteeperiod - okres gwarancji w miesi±cach (NULL - gwarancja wieczysta)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -566,27 +626,23 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="NETLINKS"
->7.2.9. Po³±czenia sieciowe ('netlinks')</A
+NAME="NODEGROUPASSIGNMENTS"
+>7.2.11. Grupy komputerów - powi±zania ('nodegroupassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->id - identyfikator</TD
+>id - identyfikator rekordu</TD
 ></TR
 ><TR
 ><TD
->src - jeden koniec</TD
+>nodegroupid - identyfikator grupy</TD
 ></TR
 ><TR
 ><TD
->dst- drugi koniec</TD
-></TR
-><TR
-><TD
->type - typ po³±czenia (0-kabel, 1-radio)</TD
+>nodeid - identyfikator komputera</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -597,7 +653,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASH"
->7.2.10. Operacje finansowe ('cash')</A
+>7.2.12. Operacje finansowe ('cash')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -651,7 +707,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHIMPORT"
->7.2.11. Import operacji finansowych ('cashimport')</A
+>7.2.13. Import operacji finansowych ('cashimport')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -697,7 +753,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TAXES"
->7.2.12. Stawki podatkowe ('taxes')</A
+>7.2.14. Stawki podatkowe ('taxes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -735,7 +791,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TARIFFS"
->7.2.13. Taryfy ('tariffs')</A
+>7.2.15. Taryfy ('tariffs')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -805,7 +861,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LIABILITIES"
->7.2.14. Zobowi±zania ('liabilities')</A
+>7.2.16. Zobowi±zania ('liabilities')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -839,7 +895,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PAYMENTS"
->7.2.15. Op³aty sta³e ('payments')</A
+>7.2.17. Op³aty sta³e ('payments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -881,7 +937,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ASSIGNMENTS"
->7.2.16. Powi±zania ('assignments')</A
+>7.2.18. Powi±zania ('assignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -943,7 +999,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NODEASSIGNMENTS"
->7.2.17. Powi±zania komputer-taryfa ('nodeassignments')</A
+>7.2.19. Powi±zania komputer-taryfa ('nodeassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -969,7 +1025,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NUMBERPLANS"
->7.2.18. Plany (szablony) numeracyjne dokumentów ('numberplans')</A
+>7.2.20. Plany (szablony) numeracyjne dokumentów ('numberplans')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1003,7 +1059,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHREGS"
->7.2.19. Rejestry kasowe ('cashregs')</A
+>7.2.21. Rejestry kasowe ('cashregs')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1041,7 +1097,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHRIGHTS"
->7.2.20. Rejestry kasowe - uprawnienia ('cashrights')</A
+>7.2.22. Rejestry kasowe - uprawnienia ('cashrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1071,7 +1127,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHREGLOG"
->7.2.21. Cash registries - cash history ('cashreglog')</A
+>7.2.23. Cash registries - cash history ('cashreglog')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1113,7 +1169,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTS"
->7.2.22. Dokumenty: faktury, KP, umowy, etc. ('documents')</A
+>7.2.24. Dokumenty: faktury, KP, umowy, etc. ('documents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1203,7 +1259,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTCONTENTS"
->7.2.23. Dokumenty niefinansowe ('documentcontents')</A
+>7.2.25. Dokumenty niefinansowe ('documentcontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1249,7 +1305,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.24. Faktury ('invoicecontents')</A
+>7.2.26. Faktury ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1303,7 +1359,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RECEIPTCONTENTS"
->7.2.25. Potwierdzenia wp³aty - KP ('receiptcontents')</A
+>7.2.27. Potwierdzenia wp³aty - KP ('receiptcontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1337,7 +1393,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="IMESSENGERS"
->7.2.26. Identyfikatory internetowe ('imessengers')</A
+>7.2.28. Identyfikatory internetowe ('imessengers')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1367,7 +1423,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CUSTOMERCONTACTS"
->7.2.27. Kontakty ('customercontacts')</A
+>7.2.29. Kontakty ('customercontacts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1397,7 +1453,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.28. Konta ('passwd')</A
+>7.2.30. Konta ('passwd')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1479,7 +1535,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.29. Domeny ('domains')</A
+>7.2.31. Domeny ('domains')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1505,7 +1561,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.30. Aliasy ('aliases')</A
+>7.2.32. Aliasy ('aliases')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1531,7 +1587,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.31. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.33. Statystyki wykorzystania ³±cza ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1561,7 +1617,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.32. Helpdesk - kolejki ('rtqueues')</A
+>7.2.34. Helpdesk - kolejki ('rtqueues')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1591,7 +1647,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.33. Helpdesk - zg³oszenia ('rttickets')</A
+>7.2.35. Helpdesk - zg³oszenia ('rttickets')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1645,7 +1701,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.34. Helpdesk - wiadomo¶ci ('rtmessages')</A
+>7.2.36. Helpdesk - wiadomo¶ci ('rtmessages')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1707,7 +1763,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.35. Helpdesk - za³±czniki ('rtattachments')</A
+>7.2.37. Helpdesk - za³±czniki ('rtattachments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1733,7 +1789,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTNOTES"
->7.2.36. Helpdesk - notatki ('rtnotes')</A
+>7.2.38. Helpdesk - notatki ('rtnotes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1767,7 +1823,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.37. Helpdesk - uprawnienia ('rtrights')</A
+>7.2.39. Helpdesk - uprawnienia ('rtrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1797,7 +1853,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.38. Konfiguracja LMS-UI ('uiconfig')</A
+>7.2.40. Konfiguracja LMS-UI ('uiconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1835,7 +1891,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.39. Terminarz - zdarzenia ('events')</A
+>7.2.41. Terminarz - zdarzenia ('events')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1893,7 +1949,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.40. Terminarz - powi±zania ('eventassignments')</A
+>7.2.42. Terminarz - powi±zania ('eventassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1915,7 +1971,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="HOSTS"
->7.2.41. Hosty ('hosts')</A
+>7.2.43. Hosty ('hosts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1949,7 +2005,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.42. Konfiguracja demona - instancje ('daemoninstances')</A
+>7.2.44. Konfiguracja demona - instancje ('daemoninstances')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1995,7 +2051,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.43. Konfiguracja demona - opcje ('daemonconfig')</A
+>7.2.45. Konfiguracja demona - opcje ('daemonconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2033,7 +2089,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.44. Sesje ('sessions')</A
+>7.2.46. Sesje ('sessions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2071,7 +2127,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.45. Informacje o bazie danych ('dbinfo')</A
+>7.2.47. Informacje o bazie danych ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"

@@ -2172,6 +2172,11 @@ links -dump \
      * ewx_support
        Support for EtherWerX devices. Default: false.
        Example: ewx_support = true
+     * default_assignment_period
+       Default period value for assignment. Possible values: disposable -
+       0 daily - 1 weekly - 2 monthly - 3 quarterly - 4 yearly - 5
+       Default: 0
+       Example: default_assignment_period = 3
      __________________________________________________________________
 
 3.15.2. Tax Rates
@@ -2312,7 +2317,8 @@ Chapter 4. Scripts
    lms-notify is perfect tool to remind your customers that they are
    actually the ones who cover all your network and WAN links costs. It
    makes you possible to create numerous text templates for various
-   occasions and use them for mailing your customers.
+   occasions and use them for mailing your customers. For smtp connection
+   Mail::Sender module is used.
      __________________________________________________________________
 
 4.3.1.1. Templates
@@ -2399,15 +2405,22 @@ http://www.bigpro.com/
      * mailfrom (mandatory)
        Lets you setup email of the sender. Default: none.
        Example: mailfrom = staff@bigpro.com
-     * mailfname (mandatory)
+     * mailfname
        Sender name. Default: none
        Example: mailfname = Administrators
-     * mailcharset
-       Message character set (Content-Type). Default: UTF-8
-       Example: mailcharset = ISO-8859-2
-     * smtp_server
-       SMTP server to be used when sending emails. Default: 127.0.0.1
-       Example: smtp_server = smtp.bigpro.com
+     * smtp_host
+       SMTP server to be used when sending emails. Default: localhost
+       Example: smtp_host = smtp.bigpro.com
+     * smtp_auth
+       SMTP authorization type. Allowed values: LOGIN, PLAIN, CRAM-MD5,
+       NTLM. Default: none
+       Example: smtp_auth = LOGIN
+     * smtp_user
+       Login for SMTP authorization. Default: none
+       Example: smtp_user = admin
+     * smtp_pass
+       Password for SMTP authorization. Default: none
+       Example: smtp_pass = password
      * debug_email (optional)
        Email address for debugging. All email will be sent to this address
        instead of sending to real customers. Default: not set.
@@ -2725,7 +2738,7 @@ wins    = 213.25.209.10
    password to interface for this module to work.
 
    This module, unlike the others, needs some extra Perl modules to work:
-   Data::Dumper, LWP::UserAgent and MIME::Entity.
+   LWP::UserAgent, MIME::QuotedPrint and Mail::Sender.
 
    Configuration of lms-sendinvoices should be set in lms.ini file,
    [sendinvoices] section. Following parameters are valid:
@@ -2760,6 +2773,19 @@ wins    = 213.25.209.10
        List of (space separated) customer groups, that should be
        considered while sending invoices. Default: unset - all customers.
        Example: customergroups = group1 group2
+     * smtp_host
+       SMTP server to be used when sending emails. Default: localhost
+       Example: smtp_host = smtp.bigpro.com
+     * smtp_auth
+       SMTP authorization type. Allowed values: LOGIN, PLAIN, CRAM-MD5,
+       NTLM. Default: none
+       Example: smtp_auth = LOGIN
+     * smtp_user
+       Login for SMTP authorization. Default: none
+       Example: smtp_user = admin
+     * smtp_pass
+       Password for SMTP authorization. Default: none
+       Example: smtp_pass = password
 
    Script has also one useful command line parameter: --fakedate (-f).
    With this option you can make that script will execute with system date
@@ -3778,7 +3804,8 @@ Chapter 6. LMS Daemon
    You can use following options for 'cutoff' module:
      * limit
        Disconnection occurs when customer balance decreases below
-       specified value. Default: 0.
+       specified limit as numeric value or as percentage of sum of
+       customer's monthly assignments (with '%' sign). Default: 0.
        Example: limit = -20
      * command
        Specifies system command, that is executed if at least one customer
@@ -3804,6 +3831,11 @@ Chapter 6. LMS Daemon
        warnings or to actually cut people off. Works for customers with
        assignments. Default: false.
        Example: warnings_only = true
+     * setnodegroup_only
+       Sets nodes group name. Module assigns to that group all computers
+       of customer who exceeds value or invoice limit. Customer's status
+       isn't changed. Default: none.
+       Example: setnodegroup_only = blocked_nodes
      * use_nodeassignments
        You should enable this option only if you are using nodes with
        tariffs assignments. In other way tariffs assignments with
@@ -3994,9 +4026,13 @@ Chapter 6. LMS Daemon
        (case insensitive). Default: empty (all networks).
        Example: networks = "lan1 lan2"
      * customergroups
-       List of customer group names which members should be included in
+       List of customer groups names which members should be included in
        config (case insensitive). Default: empty (all groups).
        Example: customergroups = "group1 group2"
+     * nodegroups
+       List of node groups names which members should be included in
+       config (case insensitive). Default: empty (all groups).
+       Example: nodegroups = "group1 group2"
      * skip_dev_ips
        If enabled (yes, true) network devices (devices that does not
        belong to customers) will be ignored (omitted). Default: yes
@@ -5057,7 +5093,29 @@ Chapter 7. For curious
    dhcpend - last address of dynamic DHCP range
      __________________________________________________________________
 
-7.2.7. Computers and network devices ('nodes')
+7.2.7. Network devices ('netdevices')
+
+   id - serial number
+   name - name
+   location - physical location
+   description - device summary
+   producer - manufacturer's name
+   model - model number
+   serialnumber - products serial number (not DB identifier)
+   ports - number of connections available
+   purchasetime - purchase date
+   guaranteeperiod - period in months (NULL - lifetime)
+     __________________________________________________________________
+
+7.2.8. Network connections ('netlinks')
+
+   id - serial number
+   src - connection's beginning
+   dst- connection's end
+   type - type of connection (0-cable, 1-wireless)
+     __________________________________________________________________
+
+7.2.9. Computers and IP addresses ('nodes')
 
    id - serial number
    name - device name
@@ -5080,29 +5138,22 @@ Chapter 7. For curious
    location - location (address)
      __________________________________________________________________
 
-7.2.8. Network devices - continued... ('netdevices')
+7.2.10. Node groups ('nodegroups')
 
    id - serial number
-   name - name
-   location - physical location
-   description - device summary
-   producer - manufacturer's name
-   model - model number
-   serialnumber - products serial number (not DB identifier)
-   ports - number of connections available
-   purchasetime - purchase date
-   guaranteeperiod - period in months (NULL - lifetime)
+   name - group name
+   prio - group order
+   description - group description
      __________________________________________________________________
 
-7.2.9. Network connections ('netlinks')
+7.2.11. Node groups - assignments ('nodegroupassignments')
 
    id - serial number
-   src - connection's beginning
-   dst- connection's end
-   type - type of connection (0-cable, 1-wireless)
+   nodegroupid - group serial number
+   nodeid - node serial number
      __________________________________________________________________
 
-7.2.10. Financial operations ('cash')
+7.2.12. Financial operations ('cash')
 
    id - serial number
    time - timestamp of operation
@@ -5117,7 +5168,7 @@ Chapter 7. For curious
    comment - description of operation
      __________________________________________________________________
 
-7.2.11. Import of financial operations ('cashimport')
+7.2.13. Import of financial operations ('cashimport')
 
    id - serial number
    date - timestamp of operation
@@ -5130,7 +5181,7 @@ Chapter 7. For curious
    closed - yes (1), if operation was moved to cash table
      __________________________________________________________________
 
-7.2.12. Subscription fees ('tariffs')
+7.2.14. Subscription fees ('tariffs')
 
    id - serial number
    name - subscription name
@@ -5148,7 +5199,7 @@ Chapter 7. For curious
    description - description for subscription
      __________________________________________________________________
 
-7.2.13. Custom liabilities ('liabilities')
+7.2.15. Custom liabilities ('liabilities')
 
    id - serial number
    name - liability name/description
@@ -5157,7 +5208,7 @@ Chapter 7. For curious
    prodid - product/service classification number
      __________________________________________________________________
 
-7.2.14. Solid payments ('payments')
+7.2.16. Solid payments ('payments')
 
    id - serial number
    name - name
@@ -5169,7 +5220,7 @@ Chapter 7. For curious
    description - description for payment
      __________________________________________________________________
 
-7.2.15. Financial assignments ('assignments')
+7.2.17. Financial assignments ('assignments')
 
    id - serial number
    tariffid - subscription serial number
@@ -5186,14 +5237,14 @@ Chapter 7. For curious
    settlement - do deficient period settlement? (1 - yes, 0 - no)
      __________________________________________________________________
 
-7.2.16. Nodes-tariffs assignments ('nodeassignments')
+7.2.18. Nodes-tariffs assignments ('nodeassignments')
 
    id - serial number
    assignmentid - financial assignment serial number
    nodeid - node serial number
      __________________________________________________________________
 
-7.2.17. Tax rates ('taxes')
+7.2.19. Tax rates ('taxes')
 
    id - serial number
    value - tax value
@@ -5203,7 +5254,7 @@ Chapter 7. For curious
    validto - binding period end
      __________________________________________________________________
 
-7.2.18. Documents numbering plans ('numberplans')
+7.2.20. Documents numbering plans ('numberplans')
 
    id - serial number
    template - number template (pattern)
@@ -5213,7 +5264,7 @@ Chapter 7. For curious
    '0'
      __________________________________________________________________
 
-7.2.19. Cash registries ('cashregs')
+7.2.21. Cash registries ('cashregs')
 
    id - serial number
    name - registry name
@@ -5223,7 +5274,7 @@ Chapter 7. For curious
    disabled - summary disabling (0/1)
      __________________________________________________________________
 
-7.2.20. Cash registries - access rights ('cashrights')
+7.2.22. Cash registries - access rights ('cashrights')
 
    id - serial number
    regid - registry serial number
@@ -5231,7 +5282,7 @@ Chapter 7. For curious
    rights - (1-read, 2-write, 3-advanced)
      __________________________________________________________________
 
-7.2.21. Cash registries - cash history ('cashreglog')
+7.2.23. Cash registries - cash history ('cashreglog')
 
    id - serial number
    regid - registry serial number
@@ -5242,7 +5293,7 @@ Chapter 7. For curious
    description - additional informations
      __________________________________________________________________
 
-7.2.22. Documents: invoices, receipts, contracts, etc. ('documents')
+7.2.24. Documents: invoices, receipts, contracts, etc. ('documents')
 
    id - serial number
    number - document number (%N)
@@ -5265,7 +5316,7 @@ Chapter 7. For curious
    reason - e.g. invoice note reason
      __________________________________________________________________
 
-7.2.23. Non-financial documents contents ('documentcontents')
+7.2.25. Non-financial documents contents ('documentcontents')
 
    docid - document serial number
    title - document title
@@ -5277,7 +5328,7 @@ Chapter 7. For curious
    description - additional informations
      __________________________________________________________________
 
-7.2.24. Invoices ('invoicecontents')
+7.2.26. Invoices ('invoicecontents')
 
    docid - invoice serial number
    itemid - invoice item identifier
@@ -5291,7 +5342,7 @@ Chapter 7. For curious
    tariffid - subscription serial number
      __________________________________________________________________
 
-7.2.25. Cash Receipts ('receiptcontents')
+7.2.27. Cash Receipts ('receiptcontents')
 
    docid - receipt serial number
    itemid - receipt item identifier
@@ -5300,7 +5351,7 @@ Chapter 7. For curious
    description - description for receipt item
      __________________________________________________________________
 
-7.2.26. Internet Messengers ('imessengers')
+7.2.28. Internet Messengers ('imessengers')
 
    id - serial number
    customerid - customer serial number
@@ -5308,7 +5359,7 @@ Chapter 7. For curious
    type - messenger type (0-gadu-gadu, 1-yahoo, 2-skype)
      __________________________________________________________________
 
-7.2.27. Customers contacts ('customer contacts')
+7.2.29. Customers contacts ('customer contacts')
 
    id - serial number
    customerid - customer serial number
@@ -5316,7 +5367,7 @@ Chapter 7. For curious
    name - contact name/description
      __________________________________________________________________
 
-7.2.28. Accounts ('passwd')
+7.2.30. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -5337,21 +5388,21 @@ Chapter 7. For curious
    quota_sql - sql database space limits
      __________________________________________________________________
 
-7.2.29. Domains ('domains')
+7.2.31. Domains ('domains')
 
    id - serial number
    name - domain name
    description - comments
      __________________________________________________________________
 
-7.2.30. Aliases ('aliases')
+7.2.32. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    accountid - account serial number
      __________________________________________________________________
 
-7.2.31. Bandwidth consumption statistics ('stats')
+7.2.33. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -5359,7 +5410,7 @@ Chapter 7. For curious
    download - number of bytes received
      __________________________________________________________________
 
-7.2.32. Helpdesk - Request Tracking ('rtqueues')
+7.2.34. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -5367,7 +5418,7 @@ Chapter 7. For curious
    description - main description for the queue
      __________________________________________________________________
 
-7.2.33. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.35. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -5381,7 +5432,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      __________________________________________________________________
 
-7.2.34. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.36. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -5397,14 +5448,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      __________________________________________________________________
 
-7.2.35. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.37. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      __________________________________________________________________
 
-7.2.36. Helpdesk - Request Tracking - continued... ('rtnotes')
+7.2.38. Helpdesk - Request Tracking - continued... ('rtnotes')
 
    id - serial number
    ticketid - ticket serial number
@@ -5413,7 +5464,7 @@ Chapter 7. For curious
    createtime - date of creation
      __________________________________________________________________
 
-7.2.37. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.39. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -5421,7 +5472,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      __________________________________________________________________
 
-7.2.38. LMS-UI Online Configuration ('uiconfig')
+7.2.40. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -5431,7 +5482,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      __________________________________________________________________
 
-7.2.39. Timetable - events ('events')
+7.2.41. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -5446,13 +5497,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      __________________________________________________________________
 
-7.2.40. Timetable - assignments ('eventassignments')
+7.2.42. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      __________________________________________________________________
 
-7.2.41. Sessions ('sessions')
+7.2.43. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -5462,7 +5513,7 @@ Chapter 7. For curious
    content - data
      __________________________________________________________________
 
-7.2.42. Hosts ('hosts')
+7.2.44. Hosts ('hosts')
 
    id - identifier
    name - host name
@@ -5471,7 +5522,7 @@ Chapter 7. For curious
    reload - reload order
      __________________________________________________________________
 
-7.2.43. Daemon configuration - instances ('daemoninstances')
+7.2.45. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -5483,7 +5534,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.44. Daemon configuration - options ('daemonconfig')
+7.2.46. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -5493,7 +5544,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.45. Database information ('dbinfo')
+7.2.47. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value
