@@ -197,6 +197,26 @@ switch($action)
 					else
 						$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
 				}
+
+			// jesli klient posiada komputery przypisane do wybranych grup..., u mnie
+			// komputery zadluzonych dodawane sa do grupy "zadluzenie"
+			if(!empty($CONFIG['receipts']['show_nodegroups_warning']))
+			{
+				$list = preg_split("/\s+/", $CONFIG['receipts']['show_nodegroups_warning']);
+				if($DB->GetOne('SELECT COUNT(*) FROM nodes n
+						JOIN nodegroupassignments a ON (n.id = a.nodeid)
+						JOIN nodegroups g ON (g.id = a.nodegroupid)
+						WHERE n.ownerid = ? AND UPPER(g.name) IN (UPPER(\''
+						.implode("'),UPPER('", $list).'\'))', 
+						array($receipt['customerid'])))
+				{
+					if(!empty($CONFIG['receipts']['nodegroups_warning']))
+						$customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
+					else
+						$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$0</b>!', 
+							$CONFIG['receipts']['show_nodegroups_warning']);
+				}
+			}
 		}
 	break;
 
@@ -490,6 +510,26 @@ switch($action)
 							else
 								$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
 						}
+
+					// jesli klient posiada komputery przypisane do wybranych grup, u mnie
+					// komputery zadluzonych dodawane sa do grupy "zadluzenie"
+	    				if(!empty($CONFIG['receipts']['show_nodegroups_warning']))
+					{
+						$list = preg_split("/\s+/", $CONFIG['receipts']['show_nodegroups_warning']);
+		
+						if($DB->GetOne('SELECT COUNT(*) FROM nodes n
+			    				JOIN nodegroupassignments a ON (n.id = a.nodeid)
+				    			JOIN nodegroups g ON (g.id = a.nodegroupid)
+					    		WHERE n.ownerid = ? AND UPPER(g.name) IN (UPPER(\''
+						    	.implode("'),UPPER('", $list).'\'))', 
+	    						array($cid)))
+						{
+							if(!empty($CONFIG['receipts']['nodegroups_warning']))
+								$customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
+							else
+								$customer['nodegroupswarning'] = trans('Customer has got nodes in group(s): <b>$0</b>!', $CONFIG['receipts']['show_nodegroups_warning']);
+						}
+					}
 
 					// remove positions if customer was changed
 					if($oldcid != $customer['id'])

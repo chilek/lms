@@ -100,6 +100,25 @@ if(isset($_GET['id']))
 				else
 					$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
 			}
+		// jesli klient posiada komputery przypisane do wybranych grup..., u mnie
+    		// komputery zadluzonych dodawane sa do grupy "zadluzenie"
+		if(!empty($CONFIG['receipts']['show_nodegroups_warning']))
+		{
+		        $list = preg_split("/\s+/", $CONFIG['receipts']['show_nodegroups_warning']);
+		        if($DB->GetOne('SELECT COUNT(*) FROM nodes n
+			                JOIN nodegroupassignments a ON (n.id = a.nodeid)
+					JOIN nodegroups g ON (g.id = a.nodegroupid)
+					WHERE n.ownerid = ? AND UPPER(g.name) IN (UPPER(\''
+					.implode("'),UPPER('", $list).'\'))',
+					array($receipt['customerid'])))
+			{
+			        if(!empty($CONFIG['receipts']['nodegroups_warning']))
+			                $customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
+			        else
+			        	$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$0</b>!',
+			                            $CONFIG['receipts']['show_nodegroups_warning']);
+			}
+		}
 	}
 	    
 	if($receipt['numberplanid'] && !$receipt['extnumber'])
@@ -134,7 +153,9 @@ $SESSION->restore('receiptcustomer', $customer);
 $SESSION->restore('receipt', $receipt);
 $SESSION->restore('receiptediterror', $error);
 
-$receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], $receipt['extnumber']);
+$receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], 
+			    isset($receipt['extnumber']) ? $receipt['extnumber'] : '');
+
 if($receipt['type']=='in')
 	$layout['pagetitle'] = trans('Cash-in Receipt Edit: $0', $receipt['titlenumber']);
 else
@@ -174,7 +195,7 @@ switch($action)
 		
 		unset($receipt);
 		unset($customer);
-		unset($error);
+		$error = NULL;
 		
 		if($receipt = $_POST['receipt'])
 			foreach($receipt as $key => $val)
@@ -193,9 +214,6 @@ switch($action)
 				$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
 			
 			$receipt['number'] = 0;
-			
-//			if($DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id))<2)
-//			        $error['regid'] = trans('You don\'t have permission to add receipt in selected cash registry!');
 		}
 		
 		if($receipt['cdate'])
@@ -227,7 +245,7 @@ switch($action)
 				}
 			}
 		}
-		else // przywracamy pierwotn± godzinê utworzenia dokumentu
+		else // przywracamy pierwotna godzine utworzenia dokumentu
 			$receipt['cdate'] = $oldcdate;
 			
 		if(!$receipt['number'])
@@ -269,21 +287,22 @@ switch($action)
 			break;
 		}
 		
-		$cid = $_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid'];
+		$cid = !empty($_GET['customerid']) ? $_GET['customerid'] : $_POST['customerid'];
 		
 		if(!$cid)
 			$cid = $oldcid;
 		
-		if(!$error)
+		if(!isset($error))
 			if($LMS->CustomerExists(($cid)))
 			{
-				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid']));
+				$customer = $LMS->GetCustomer($cid);
 	                        $customer['groups'] = $LMS->CustomergroupGetForCustomer($customer['id']);
-		        	if(!chkconfig($CONFIG['receipts']['show_notes']))
+		        	
+				if(empty($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
 				        unset($customer['notes']);
 				
 				// niezatwierdzone dokumenty klienta
-				if(chkconfig($CONFIG['receipts']['show_documents_warning']))
+				if(isset($CONFIG['receipts']['show_nodes_warning']) && chkconfig($CONFIG['receipts']['show_documents_warning']))
 					if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($customer['id'])))
 					{
 						if(!empty($CONFIG['receipts']['documents_warning']))
@@ -303,7 +322,26 @@ switch($action)
 							$customer['nodeswarning'] = trans('Customer has got disconnected nodes!');
 					}
 
-
+				// jesli klient posiada komputery przypisane do wybranych grup..., u mnie
+                    		// komputery zadluzonych dodawane sa do grupy "zadluzenie"
+			        if(!empty($CONFIG['receipts']['show_nodegroups_warning']))
+				{
+				        $list = preg_split("/\s+/", $CONFIG['receipts']['show_nodegroups_warning']);
+				        if($DB->GetOne('SELECT COUNT(*) FROM nodes n
+				                JOIN nodegroupassignments a ON (n.id = a.nodeid)
+						JOIN nodegroups g ON (g.id = a.nodegroupid)
+						WHERE n.ownerid = ? AND UPPER(g.name) IN (UPPER(\''
+						.implode("'),UPPER('", $list).'\'))',
+						array($customer['id'])))
+					{
+					        if(!empty($CONFIG['receipts']['nodegroups_warning']))
+					                $customer['nodegroupswarning'] = $CONFIG['receipts']['nodegroups_warning'];
+					        else
+					        	$customer['nodegroupswarning'] = trans('Customer has got nodes in groups: <b>$0</b>!',
+					                            $CONFIG['receipts']['show_nodegroups_warning']);
+					}
+				}
+				
 				$receipt['selected'] = TRUE;
 			}
 

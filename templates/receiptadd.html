@@ -260,6 +260,19 @@
 	</TR>
 </TABLE>
 {/if}
+{if $customer.nodegroupswarning}
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" width="1%" nowrap>
+			<IMG SRC="img/nodegroup.gif" ALT=""> <B>{t}Groups:{/t}</B>
+		</TD>
+		<TD CLASS="frightu">
+		        <FONT class="red">{$customer.nodegroupswarning}</FONT>
+		</TD>
+	</TR>
+</TABLE>
+{/if}
 </P>
 {/if}
 {if $receipt.type=="out" && $receipt.o_type=="move" && $receipt.selected && $cashregcount > 1}

@@ -48,6 +48,8 @@ version ? (????-??-??):
     removed option 'mailcharset' and 'smtp_server', added 'smtp_host',
     'smtp_user', 'smtp_pass', 'smtp_auth' options (alec)
   - added phpui.default_assignment_period (chilan)
+  - added options 'show_nodegroups_warning' and 'nodegroups_warning' in
+    [receipts] section (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
