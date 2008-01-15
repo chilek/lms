@@ -88,8 +88,8 @@ NAME="LMS-NOTIFY"
 ></H2
 ><P
 >lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
-	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych 
-	  (w iso-8859-2) i traktowania ich jako szablonów do mailingu.</P
+	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych i traktowania ich jako szablonów do mailingu. Do wysy³ania poczty
+  	zosta³ zastosowany modu³ Mail::Sender.</P
 ><DIV
 CLASS="SECT3"
 ><H3
@@ -279,7 +279,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfname (wymagana)</P
+>mailfname</P
 ><P
 >Nazwa nadawcy maila. Domy¶lnie: pusta.</P
 ><P
@@ -290,24 +290,47 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailcharset</P
+>smtp_host</P
 ><P
->Strona kodowa wiadomo¶ci. Domy¶lnie: UTF-8.</P
+>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->mailcharset = ISO-8859-2</SAMP
+>smtp_host = smtp.mydomain.pl</SAMP
 ></P
 ></LI
 ><LI
 ><P
->smtp_server</P
+>smtp_auth</P
 ><P
->Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</P
+>Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
+		Domy¶lnie: pusta (brak autoryzacji)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->smtp_server = smtp.mydomain.pl</SAMP
+>smtp_auth = LOGIN</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_user</P
+><P
+>Login do autoryzacji SMTP. Domy¶lnie: pusty</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_pass</P
+><P
+>Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_pass = password</SAMP
 ></P
 ></LI
 ><LI
@@ -1217,7 +1240,7 @@ NAME="LMS-SENDINVOICES"
 	dlatego wymagane jest podanie klienta i has³a do interfejsu www lms-ui.</P
 ><P
 >W odró¿nieniu od pozosta³ych skryptów ten wymaga dodatkowych modu³ów perla:
-	LWP::UserAgent, MIME::Entity.</P
+	LWP::UserAgent, MIME::QuotedPrint oraz Mail::Sender.</P
 ><P
 >Konfiguracjê nale¿y umie¶ciæ w sekcji <SPAN
 CLASS="emphasis"
@@ -1321,12 +1344,56 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas
-		    wysy³ki. Domy¶lnie: nie ustawiona - wszystkie grupy.</P
+>Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione 
+		podczas wysy³ki. Domy¶lnie: nie ustawiona - wszystkie grupy.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >customergroups = grupa1 grupa2</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_host</P
+><P
+>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_host = smtp.mydomain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth</P
+><P
+>Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM. Domy¶lnie: pusta (brak autoryzacji)</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_auth = LOGIN</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_user</P
+><P
+>Login do autoryzacji SMTP. Domy¶lnie: pusty</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_pass</P
+><P
+>Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_pass = password</SAMP
 ></P
 ></LI
 ></UL

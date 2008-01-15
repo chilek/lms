@@ -5853,6 +5853,26 @@ CLASS="PROMPT"
 >ewx_support = true</SAMP
 ></P
 ></LI
+><LI
+><P
+>default_assignment_period</P
+><P
+>Default period value for assignment.
+			    Possible values:
+			    
+			    disposable - 0
+			    daily      - 1
+			    weekly     - 2
+			    monthly    - 3 
+			    quarterly  - 4
+			    yearly     - 5			
+			    Default: 0</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>default_assignment_period = 3</SAMP
+></P
+></LI
 ></UL
 >
 	    </P
@@ -6318,7 +6338,8 @@ NAME="LMS-NOTIFY"
 ><P
 >lms-notify is perfect tool to remind your customers that they are actually the ones who
 	    cover all your network and WAN links costs. It makes you possible to create numerous text templates
-	    for various occasions and use them for mailing your customers.</P
+	    for various occasions and use them for mailing your customers. For smtp connection Mail::Sender 
+	    module is used.</P
 ><DIV
 CLASS="SECT3"
 ><HR><H4
@@ -6506,7 +6527,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfname (mandatory)</P
+>mailfname</P
 ><P
 >Sender name. Default: none</P
 ><P
@@ -6517,24 +6538,47 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailcharset</P
+>smtp_host</P
 ><P
->Message character set (Content-Type). Default: UTF-8</P
+>SMTP server to be used when sending emails. Default: localhost</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->mailcharset = ISO-8859-2</SAMP
+>smtp_host = smtp.bigpro.com</SAMP
 ></P
 ></LI
 ><LI
 ><P
->smtp_server</P
+>smtp_auth</P
 ><P
->SMTP server to be used when sending emails. Default: 127.0.0.1</P
+>SMTP authorization type. Allowed values: 
+	     LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->smtp_server = smtp.bigpro.com</SAMP
+>smtp_auth = LOGIN</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_user</P
+><P
+>Login for SMTP authorization. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_pass</P
+><P
+>Password for SMTP authorization. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_pass = password</SAMP
 ></P
 ></LI
 ><LI
@@ -7457,7 +7501,7 @@ template used in LMS-UI, thus, you need to provide username and password to
 interface for this module to work.</P
 ><P
 >This module, unlike the others, needs some extra Perl modules to
-work: Data::Dumper, LWP::UserAgent and MIME::Entity.</P
+work: LWP::UserAgent, MIME::QuotedPrint and Mail::Sender.</P
 ><P
 >Configuration of lms-sendinvoices should be set in
 <TT
@@ -7573,6 +7617,51 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >customergroups = group1 group2</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_host</P
+><P
+>SMTP server to be used when sending emails. Default: localhost</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_host = smtp.bigpro.com</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth</P
+><P
+>SMTP authorization type. Allowed values: 
+	    	    LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_auth = LOGIN</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_user</P
+><P
+>Login for SMTP authorization. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_pass</P
+><P
+>Password for SMTP authorization. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_pass = password</SAMP
 ></P
 ></LI
 ></UL
@@ -10490,7 +10579,9 @@ NAME="CUTOFF-CONFIG"
 ><P
 >limit</P
 ><P
->Disconnection occurs when customer balance decreases below specified value.
+>Disconnection occurs when customer balance decreases 
+		   below specified limit as numeric value or as percentage of
+		   sum of customer's monthly assignments (with '%' sign). 
                    Default: 0.</P
 ><P
 >Example: <SAMP
@@ -10553,6 +10644,19 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>setnodegroup_only</P
+><P
+>Sets nodes group name. Module assigns to that group all computers
+		    of customer who exceeds value or invoice limit. Customer's status isn't changed.
+                    Default: none.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>setnodegroup_only = blocked_nodes</SAMP
+></P
+></LI
+><LI
+><P
 >use_nodeassignments</P
 ><P
 >You should enable this option only if you are using nodes with
@@ -10569,7 +10673,7 @@ CLASS="PROMPT"
 >check_invoices</P
 ><P
 >This option enables additional checking if customer has
-					unpayed invoices with deadline date older than date specified in 'deadline' option. Default: false.</P
+			unpayed invoices with deadline date older than date specified in 'deadline' option. Default: false.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -10581,8 +10685,8 @@ CLASS="PROMPT"
 >deadline</P
 ><P
 >Sets period in days (from invoice deadline date), after which 
-					unpayed invoice is considered for 'check_invoices' check. By default, 
-					customer would be blocked just after deadline. Default: 0.</P
+			unpayed invoice is considered for 'check_invoices' check. By default, 
+			customer would be blocked just after deadline. Default: 0.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -10594,7 +10698,7 @@ CLASS="PROMPT"
 >customergroups</P
 ><P
 >List of customers groups to restrict customers for accounting.
-					Default: empty (all groups).</P
+			Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -10606,7 +10710,7 @@ CLASS="PROMPT"
 >excluded_customergroups</P
 ><P
 >List of excluded customers groups to restrict customers for 
-					accounting. Default: empty (none).</P
+			accounting. Default: empty (none).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -11097,12 +11201,24 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->List of customer group names which members should be included in config
+>List of customer groups names which members should be included in config
                    (case insensitive). Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
 >customergroups = "group1 group2"</SAMP
+></P
+></LI
+><LI
+><P
+>nodegroups</P
+><P
+>List of node groups names which members should be included in config
+                   (case insensitive). Default: empty (all groups).</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>nodegroups = "group1 group2"</SAMP
 ></P
 ></LI
 ><LI
@@ -14120,8 +14236,92 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="NETDEVICES"
+>7.2.7. Network devices ('netdevices')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - name</TD
+></TR
+><TR
+><TD
+>location - physical location</TD
+></TR
+><TR
+><TD
+>description - device summary</TD
+></TR
+><TR
+><TD
+>producer - manufacturer's name</TD
+></TR
+><TR
+><TD
+>model - model number</TD
+></TR
+><TR
+><TD
+>serialnumber - products serial number (not DB identifier)</TD
+></TR
+><TR
+><TD
+>ports - number of connections available</TD
+></TR
+><TR
+><TD
+>purchasetime - purchase date</TD
+></TR
+><TR
+><TD
+>guaranteeperiod - period in months (NULL - lifetime)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="NETLINKS"
+>7.2.8. Network connections ('netlinks')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>src - connection's beginning</TD
+></TR
+><TR
+><TD
+>dst- connection's end</TD
+></TR
+><TR
+><TD
+>type - type of connection (0-cable, 1-wireless)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="NODES"
->7.2.7. Computers and network devices ('nodes')</A
+>7.2.9. Computers and IP addresses ('nodes')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14210,8 +14410,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="NETDEVICES"
->7.2.8. Network devices - continued... ('netdevices')</A
+NAME="NODEGROUPS"
+>7.2.10. Node groups ('nodegroups')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14222,39 +14422,15 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->name - name</TD
+>name - group name</TD
 ></TR
 ><TR
 ><TD
->location - physical location</TD
+>prio - group order</TD
 ></TR
 ><TR
 ><TD
->description - device summary</TD
-></TR
-><TR
-><TD
->producer - manufacturer's name</TD
-></TR
-><TR
-><TD
->model - model number</TD
-></TR
-><TR
-><TD
->serialnumber - products serial number (not DB identifier)</TD
-></TR
-><TR
-><TD
->ports - number of connections available</TD
-></TR
-><TR
-><TD
->purchasetime - purchase date</TD
-></TR
-><TR
-><TD
->guaranteeperiod - period in months (NULL - lifetime)</TD
+>description - group description</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -14264,8 +14440,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="NETLINKS"
->7.2.9. Network connections ('netlinks')</A
+NAME="NODEGROUPASSIGNMENTS"
+>7.2.11. Node groups - assignments ('nodegroupassignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14276,15 +14452,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->src - connection's beginning</TD
+>nodegroupid - group serial number</TD
 ></TR
 ><TR
 ><TD
->dst- connection's end</TD
-></TR
-><TR
-><TD
->type - type of connection (0-cable, 1-wireless)</TD
+>nodeid - node serial number</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -14295,7 +14467,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASH"
->7.2.10. Financial operations ('cash')</A
+>7.2.12. Financial operations ('cash')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14349,7 +14521,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHIMPORT"
->7.2.11. Import of financial operations ('cashimport')</A
+>7.2.13. Import of financial operations ('cashimport')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14399,7 +14571,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TARIFFS"
->7.2.12. Subscription fees ('tariffs')</A
+>7.2.14. Subscription fees ('tariffs')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14469,7 +14641,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LIABILITIES"
->7.2.13. Custom liabilities ('liabilities')</A
+>7.2.15. Custom liabilities ('liabilities')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14503,7 +14675,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PAYMENTS"
->7.2.14. Solid payments ('payments')</A
+>7.2.16. Solid payments ('payments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14545,7 +14717,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ASSIGNMENTS"
->7.2.15. Financial assignments ('assignments')</A
+>7.2.17. Financial assignments ('assignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14607,7 +14779,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NODEASSIGNMENTS"
->7.2.16. Nodes-tariffs assignments ('nodeassignments')</A
+>7.2.18. Nodes-tariffs assignments ('nodeassignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14633,7 +14805,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TAXES"
->7.2.17. Tax rates ('taxes')</A
+>7.2.19. Tax rates ('taxes')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14671,7 +14843,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NUMBERPLANS"
->7.2.18. Documents numbering plans ('numberplans')</A
+>7.2.20. Documents numbering plans ('numberplans')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14705,7 +14877,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHREGS"
->7.2.19. Cash registries ('cashregs')</A
+>7.2.21. Cash registries ('cashregs')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14743,7 +14915,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHRIGHTS"
->7.2.20. Cash registries - access rights ('cashrights')</A
+>7.2.22. Cash registries - access rights ('cashrights')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14773,7 +14945,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHREGLOG"
->7.2.21. Cash registries - cash history ('cashreglog')</A
+>7.2.23. Cash registries - cash history ('cashreglog')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14815,7 +14987,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTS"
->7.2.22. Documents: invoices, receipts, contracts, etc. ('documents')</A
+>7.2.24. Documents: invoices, receipts, contracts, etc. ('documents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14905,7 +15077,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTCONTENTS"
->7.2.23. Non-financial documents contents ('documentcontents')</A
+>7.2.25. Non-financial documents contents ('documentcontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -14951,7 +15123,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.24. Invoices ('invoicecontents')</A
+>7.2.26. Invoices ('invoicecontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15005,7 +15177,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RECEIPTCONTENTS"
->7.2.25. Cash Receipts ('receiptcontents')</A
+>7.2.27. Cash Receipts ('receiptcontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15039,7 +15211,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="IMESSENGERS"
->7.2.26. Internet Messengers ('imessengers')</A
+>7.2.28. Internet Messengers ('imessengers')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15069,7 +15241,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CUSTOMERCONTACTS"
->7.2.27. Customers contacts ('customer contacts')</A
+>7.2.29. Customers contacts ('customer contacts')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15099,7 +15271,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.28. Accounts ('passwd')</A
+>7.2.30. Accounts ('passwd')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15181,7 +15353,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.29. Domains ('domains')</A
+>7.2.31. Domains ('domains')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15207,7 +15379,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.30. Aliases ('aliases')</A
+>7.2.32. Aliases ('aliases')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15233,7 +15405,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.31. Bandwidth consumption statistics ('stats')</A
+>7.2.33. Bandwidth consumption statistics ('stats')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15263,7 +15435,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.32. Helpdesk - Request Tracking ('rtqueues')</A
+>7.2.34. Helpdesk - Request Tracking ('rtqueues')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15293,7 +15465,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.33. Helpdesk - Request Tracking - continued... ('rttickets')</A
+>7.2.35. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15347,7 +15519,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.34. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+>7.2.36. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15409,7 +15581,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.35. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+>7.2.37. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15435,7 +15607,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTNOTES"
->7.2.36. Helpdesk - Request Tracking - continued... ('rtnotes')</A
+>7.2.38. Helpdesk - Request Tracking - continued... ('rtnotes')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15469,7 +15641,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.37. Helpdesk - Request Tracking - continued... ('rtrights')</A
+>7.2.39. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15499,7 +15671,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.38. LMS-UI Online Configuration ('uiconfig')</A
+>7.2.40. LMS-UI Online Configuration ('uiconfig')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15537,7 +15709,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.39. Timetable - events ('events')</A
+>7.2.41. Timetable - events ('events')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15595,7 +15767,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.40. Timetable - assignments ('eventassignments')</A
+>7.2.42. Timetable - assignments ('eventassignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15617,7 +15789,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.41. Sessions ('sessions')</A
+>7.2.43. Sessions ('sessions')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15655,7 +15827,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="HOSTS"
->7.2.42. Hosts ('hosts')</A
+>7.2.44. Hosts ('hosts')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15689,7 +15861,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.43. Daemon configuration - instances ('daemoninstances')</A
+>7.2.45. Daemon configuration - instances ('daemoninstances')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15735,7 +15907,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.44. Daemon configuration - options ('daemonconfig')</A
+>7.2.46. Daemon configuration - options ('daemonconfig')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -15773,7 +15945,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.45. Database information ('dbinfo')</A
+>7.2.47. Database information ('dbinfo')</A
 ></H3
 ><TABLE
 BORDER="0"

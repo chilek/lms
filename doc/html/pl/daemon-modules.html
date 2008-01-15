@@ -780,7 +780,8 @@ NAME="CUTOFF-CONFIG"
 >limit</P
 ><P
 >Od³±czenie nastêpuje je¶li saldo klienta spadnie poni¿ej
-			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</P
+			    warto¶ci okre¶lonej jako kwota lub warto¶æ procentowa sumy miesiêcznych
+			    zobowi±zañ klienta (ze znakiem '%'). Domy¶lnie: 0.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -842,6 +843,22 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >warnings_only = true</SAMP
+></P
+></LI
+><LI
+><P
+>setnodegroup_only</P
+><P
+>Ta opcja pozwala zdecydowaæ, czy chemy przypisaæ do wybranej grupy 
+			komputery klienta, zamiast zmieniaæ jego status lub w³±czaæ ostrze¿enie. Do grupa 
+			o podanej nazwie zostan± przypisane wszystkie komputery klienta, który przekroczy³
+			limit zad³u¿enia, albo posiada nierozliczone faktury (je¶li w³±czono 
+			check_invoices).
+			Domy¶lnie: pusta.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>setnodegroup_only = ograniczony_dostep</SAMP
 ></P
 ></LI
 ><LI
@@ -1403,6 +1420,18 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >customergroups = "grupa1 grupa2"</SAMP
+></P
+></LI
+><LI
+><P
+>nodegroups</P
+><P
+>Lista nazw grup komputerów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+				Domy¶lnie: pusta (wszystkie grupy).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>nodegroups = "grupa1 grupa2"</SAMP
 ></P
 ></LI
 ><LI

@@ -746,7 +746,9 @@ NAME="CUTOFF-CONFIG"
 ><P
 >limit</P
 ><P
->Disconnection occurs when customer balance decreases below specified value.
+>Disconnection occurs when customer balance decreases 
+		   below specified limit as numeric value or as percentage of
+		   sum of customer's monthly assignments (with '%' sign). 
                    Default: 0.</P
 ><P
 >Example: <SAMP
@@ -809,6 +811,19 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>setnodegroup_only</P
+><P
+>Sets nodes group name. Module assigns to that group all computers
+		    of customer who exceeds value or invoice limit. Customer's status isn't changed.
+                    Default: none.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>setnodegroup_only = blocked_nodes</SAMP
+></P
+></LI
+><LI
+><P
 >use_nodeassignments</P
 ><P
 >You should enable this option only if you are using nodes with
@@ -825,7 +840,7 @@ CLASS="PROMPT"
 >check_invoices</P
 ><P
 >This option enables additional checking if customer has
-					unpayed invoices with deadline date older than date specified in 'deadline' option. Default: false.</P
+			unpayed invoices with deadline date older than date specified in 'deadline' option. Default: false.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -837,8 +852,8 @@ CLASS="PROMPT"
 >deadline</P
 ><P
 >Sets period in days (from invoice deadline date), after which 
-					unpayed invoice is considered for 'check_invoices' check. By default, 
-					customer would be blocked just after deadline. Default: 0.</P
+			unpayed invoice is considered for 'check_invoices' check. By default, 
+			customer would be blocked just after deadline. Default: 0.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -850,7 +865,7 @@ CLASS="PROMPT"
 >customergroups</P
 ><P
 >List of customers groups to restrict customers for accounting.
-					Default: empty (all groups).</P
+			Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -862,7 +877,7 @@ CLASS="PROMPT"
 >excluded_customergroups</P
 ><P
 >List of excluded customers groups to restrict customers for 
-					accounting. Default: empty (none).</P
+			accounting. Default: empty (none).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -1353,12 +1368,24 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->List of customer group names which members should be included in config
+>List of customer groups names which members should be included in config
                    (case insensitive). Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
 >customergroups = "group1 group2"</SAMP
+></P
+></LI
+><LI
+><P
+>nodegroups</P
+><P
+>List of node groups names which members should be included in config
+                   (case insensitive). Default: empty (all groups).</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>nodegroups = "group1 group2"</SAMP
 ></P
 ></LI
 ><LI
