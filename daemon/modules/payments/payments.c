@@ -759,6 +759,7 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->customergroups = strdup(g->config_getstring(p->base.ini, p->base.instance, "customergroups", ""));
 	p->excluded_customergroups = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_customergroups", ""));
 	p->excluded_networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_networks", ""));
+	p->num_period = YEARLY;
 	
 	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");
 	if( g->db_nrows(res) )
@@ -770,10 +771,14 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	if(p->numberplanid)
 	{
 		res = g->db_pquery(g->conn, "SELECT id, period FROM numberplans WHERE doctype=1 AND id=?", itoa(p->numberplanid));
-		if(!g->db_nrows(res))
+		if(g->db_nrows(res))
+			p->num_period = atoi(g->db_get_data(res, 0, "period"));
+		else
 			p->numberplanid = 0;
-	}
 
+		g->db_free(&res);
+	}
+	
 	if(!p->numberplanid)
 	{
 		res = g->db_query(g->conn, "SELECT id, period FROM numberplans WHERE doctype=1 AND isdefault=1");
@@ -783,10 +788,8 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 			p->numberplanid = atoi(g->db_get_data(res, 0, "id"));
 		}
 		else
-		{
-			p->num_period = YEARLY;
 			p->numberplanid = 0;
-		}
+
     		g->db_free(&res);
 	}
 
