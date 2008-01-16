@@ -542,7 +542,7 @@ $dbq->finish();
 
 $dbq = $dbase->prepare("SELECT liabilityid AS id FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND liabilityid != 0");
 $dbq->execute();
-while($row = $dbq->fetchrow_hashref())
+while(my $row = $dbq->fetchrow_hashref())
 {
 	$dbase->do("DELETE FROM liabilities WHERE id = $row->{'id'}");
 }
