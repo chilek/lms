@@ -264,6 +264,7 @@ $row = $dbq->fetchrow_hashref();
 my $number = $row->{'number'} || 0;
 my %gotinv;
 my $icdbq;
+my $icrow;
 my $cdbq;
 my $suspended = 0;
 my $skipped = 0;
@@ -410,10 +411,10 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$idbq->finish();
 			}
 			
-			my $icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'} AND docid=$gotinv{$uid} AND description=? AND discount=$assign->{'discount'}");
+			$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'} AND docid=$gotinv{$uid} AND description=? AND discount=$assign->{'discount'}");
 			$icdbq->execute($desc);
 			
-			if(my $icrow = $icdbq->fetchrow_hashref())
+			if($icrow = $icdbq->fetchrow_hashref())
 			{
 				$itemid = $icrow->{'itemid'};
 				
@@ -485,10 +486,10 @@ while(my $assign = $dbq->fetchrow_hashref())
 	
 	    		if($assign->{'invoice'})
 		    	{
-				my $icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND value=$value AND docid=$gotinv{$uid} AND description=?");
+				$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND value=$value AND docid=$gotinv{$uid} AND description=?");
 				$icdbq->execute($sdesc);
 			
-				if(my $icrow = $icdbq->fetchrow_hashref())
+				if($icrow = $icdbq->fetchrow_hashref())
 				{
 					$itemid = $icrow->{'itemid'};
 					
@@ -541,7 +542,7 @@ $dbq->finish();
 
 $dbq = $dbase->prepare("SELECT liabilityid AS id FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0 AND liabilityid != 0");
 $dbq->execute();
-while(my $row = $dbq->fetchrow_hashref())
+while($row = $dbq->fetchrow_hashref())
 {
 	$dbase->do("DELETE FROM liabilities WHERE id = $row->{'id'}");
 }
