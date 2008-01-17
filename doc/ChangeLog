@@ -53,6 +53,7 @@ version ? (????-??-??):
   - lmsd/cutoff: added 'disable_suspended' option (alec)
   - lmsd/dhcp: added broadcast address (%b) variable in 'subnet_start' 
     option (alec)
+  - added improved traffic control module lmsd/tc-new (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
