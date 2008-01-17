@@ -8,6 +8,7 @@ struct cutoff_module
 	int nodeassignments;
 	int checkinvoices;
 	int deadline;
+	int disable_suspended;
 
 	char *limit;
 	char *command;
