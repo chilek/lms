@@ -150,8 +150,8 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			char *s, *d, *d2, *e;
-			unsigned long netmask, network;
+			char *s, *d, *d2, *e, *b;
+			unsigned long netmask, network, broadcast;
 			char iface[MAXIFN] = "";
 			
 			e = g->db_get_data(res,i,"address");
@@ -184,10 +184,15 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				strcpy(lastif, iface);
 			}
 
+			// broadcast address
+			broadcast = network | (~netmask);
+			b = inet_ntoa(inet_makeaddr(htonl(broadcast), 0));
+			
 			// start subnet record				
 			s = strdup(dhcp->subnetstart);
 			g->str_replace(&s, "%m", d);
 			g->str_replace(&s, "%a", e);
+			g->str_replace(&s, "%b", b);
 			fprintf(fh, "%s\n", s);
 			free(s); 
 

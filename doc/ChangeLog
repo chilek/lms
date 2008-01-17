@@ -51,6 +51,8 @@ version ? (????-??-??):
   - added options 'show_nodegroups_warning' and 'nodegroups_warning' in
     [receipts] section (alec)
   - lmsd/cutoff: added 'disable_suspended' option (alec)
+  - lmsd/dhcp: added broadcast address (%b) variable in 'subnet_start' 
+    option (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
