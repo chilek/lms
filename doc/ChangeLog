@@ -50,6 +50,7 @@ version ? (????-??-??):
   - added phpui.default_assignment_period (chilan)
   - added options 'show_nodegroups_warning' and 'nodegroups_warning' in
     [receipts] section (alec)
+  - lmsd/cutoff: added 'disable_suspended' option (alec)
 
 version 1.11.1 Talus (2007-12-03):
 

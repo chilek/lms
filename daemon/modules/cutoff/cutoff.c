@@ -49,6 +49,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	char fmt[] = "%Y/%m/%d";
 	struct tm *wsk;
 	time_t t;
+	char *suspended;
 
 	char *group = strdup(itoa(c->nodegroup_only));
 
@@ -114,6 +115,17 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(strlen(egroupsql))
 		g->str_replace(&egroups, "%egroups", egroupsql);
 
+	if(c->disable_suspended)
+		suspended = " AND suspended != 1 "
+		    		"AND NOT EXISTS (SELECT 1 FROM assignments "
+		            		"WHERE customerid = a.customerid "
+				        "AND (datefrom <= %NOW% OR datefrom = 0) "
+					"AND (dateto >= %NOW% OR dateto = 0) "
+					"AND tariffid = 0 AND liabilityid = 0 "
+				")";   
+	else
+		suspended = "";
+
 	// current date
 	t = time(&t);
 	wsk = localtime(&t);
@@ -143,17 +155,19 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			"SELECT n.id, n.ownerid FROM nodes n "
         		"WHERE n.access = 1 "
 	                    	"AND NOT EXISTS "
-				"(SELECT 1 FROM nodeassignments, assignments "
-					"WHERE nodeid = n.id AND assignmentid = assignments.id "
+				"(SELECT 1 FROM nodeassignments, assignments a "
+					"WHERE nodeid = n.id AND assignmentid = a.id "
 						"AND (datefrom <= %NOW% OR datefrom = 0) "
 						"AND (dateto >= %NOW% OR dateto = 0) "
 						"AND (tariffid != 0 OR liabilityid != 0) "
+						"%suspended"
 				")"
 				"%groups%egroups"
 		);
 
     		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
     		g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
+    		g->str_replace(&query, "%suspended", suspended);
     		g->str_replace(&query, "%ownerid", "n.ownerid");
 	
 		res = g->db_pquery(g->conn, query);
@@ -185,17 +199,19 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			"WHERE c.id = n.ownerid "
 				"AND deleted = 0 "
 				"AND access = 1 "
-				"AND NOT EXISTS (SELECT 1 FROM assignments "
-					"WHERE customerid = c.id "
+				"AND NOT EXISTS (SELECT 1 FROM assignments a "
+					"WHERE a.customerid = c.id "
 						"AND (datefrom <= %NOW% OR datefrom = 0) "
 						"AND (dateto >= %NOW% OR dateto = 0) "
 						"AND (tariffid != 0 OR liabilityid != 0) "
+						"%suspended"
 					")"
 				"%groups%egroups"
 		);
 
     		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
     		g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
+    		g->str_replace(&query, "%suspended", suspended);
     		g->str_replace(&query, "%ownerid", "c.id");
 
 		res = g->db_pquery(g->conn, query);
@@ -396,6 +412,7 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
 	c->expwarning = strdup(g->config_getstring(c->base.ini, c->base.instance, "expired_warning", "Blocked automatically due to tariff(s) expiration at %time"));
 	c->nodeassignments = g->config_getbool(c->base.ini, c->base.instance, "use_nodeassignments", 0);
+	c->disable_suspended = g->config_getbool(c->base.ini, c->base.instance, "disable_suspended", 0);
 
 	c->checkinvoices = g->config_getbool(c->base.ini, c->base.instance, "check_invoices", 0);
 	c->deadline = g->config_getint(c->base.ini, c->base.instance, "deadline", 0);
