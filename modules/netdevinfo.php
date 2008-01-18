@@ -33,7 +33,6 @@ $netdevinfo = $LMS->GetNetDev($_GET['id']);
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
 $netcomplist = $LMS->GetNetdevLinkedNodes($_GET['id']);
 $netdevlist = $LMS->GetNotConnectedDevices($_GET['id']);
-$nodelist = $LMS->GetNodeList();
 $replacelist = $LMS->GetNetDevList();
 
 $replacelisttotal = $replacelist['total'];
@@ -43,12 +42,6 @@ unset($replacelist['direction']);
 
 $nodelist = $LMS->GetUnlinkedNodes();
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
-
-unset($nodelist['total']);
-unset($nodelist['order']);
-unset($nodelist['totalon']);
-unset($nodelist['totaloff']);
-unset($nodelist['direction']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
