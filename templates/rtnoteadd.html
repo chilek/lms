@@ -32,10 +32,10 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="ftl" NOWRAP>
 			<IMG src="img/mail.gif" alt="">
-		        <B>{t}Notify users:{/t}</B>
+		        <A HREF="javascript:checkElement('notify');"><B>{t}Notify users:{/t}</B></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="ftr">
-			<INPUT type="checkbox" class="box light" name="note[notify]" value="1"{if $note.notify} CHECKED{/if}>
+			<INPUT type="checkbox" class="box light" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="light">
