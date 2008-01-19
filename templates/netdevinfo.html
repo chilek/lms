@@ -3,22 +3,22 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
-		<TD style="vertical-align: top;" WIDTH="50%">
+		<TD WIDTH="100%">
 			{include file="netdevinfobox.html"}
-		</TD>
-		<TD style="vertical-align: top;" WIDTH="50%">
-			{if $nodeipdata.id}
-			{include file="netdevipinfobox.html"}
-			{else}
-			{include file="netdevipbox.html"}
-			{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="vertical-align: top;" WIDTH="50%">
+		<TD WIDTH="100%">
+			{include file="netdevipbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
 			{include file="netdevconnbox.html"}
 		</TD>
-		<TD style="vertical-align: top;" WIDTH="50%" ROWSPAN="2">
+	<TR>
+	<TR>
+		<TD WIDTH="100%">
 			{include file="netdevnodes.html"}
 		</TD>
 	</TR>

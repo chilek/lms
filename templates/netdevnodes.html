@@ -1,74 +1,102 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="fall" COLSPAN="3">
+        <TR CLASS="DARK">
+	        <TD width="100%" class="fall hand" align="left" nowrap="nowrap" onClick="showOrHide('devicenodes');">
 			<IMG SRC="img/node.gif" ALT="">
-			<B>{t}Connected Nodes:{/t}</B>
-		</TD>
-	</TR>
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="98%" nowrap>
-			<img src="img/node.gif" ALT=""> <B>{t}Name:{/t}</B><BR>
-			<img src="img/customer.gif" ALT=""> {t}Owner:{/t}
-		</TD>
-		<TD CLASS="fbt" width="1%" NOWRAP>
-			<img src="img/empty.gif" WIDTH="16" HEIGHT="16"> {t}ID:{/t}<BR>
-			<img src="img/ip.gif" ALT=""> {t}IP address:{/t}
-		</TD>
-		<TD CLASS="frightu" WIDTH="1%">
-			&nbsp;	
-		</TD>
-	</TR>
-	{cycle values="light,lucid" print=false}
-	{section name=netcomplist loop=$netcomplist start=$start}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD width="98%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
-			<IMG SRC="img/node.gif" ALT=""> <B>{$netcomplist[netcomplist].name}</B><BR>
-			<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
-		</TD>
-		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
-			{if $netcomplist[netcomplist].linktype}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A>
-			{else}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A>
-			{/if}
-			({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
-			<IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].ip}
-		</TD>
-		<TD CLASS="fright" WIDTH="1%">
-			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
-		</TD>
-	</TR>
-	{sectionelse}
-	<TR>
-		<TD colspan="3" CLASS="fall" align="center">
-			<p>&nbsp;</p>
-			<p><B>{t}No such connected nodes.{/t}</b></p>
-			<p>&nbsp;</p>
-		</TD>
-	</TR>
-	{/section}
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="fall" COLSPAN="3" ALIGN="CENTER" NOWRAP>
-			{if $netdevinfo.ports eq $netdevinfo.takenports}
-			<B>{t}All ports in that device are in use.{/t}</B>
-			{elseif $nodelist eq NULL}
-			<B>{t}No such nodes to connection.{/t}</B>
-			{else}
-			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
-			<INPUT type="submit" class="hiddenbtn">
-			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
-			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
-			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
-			<A HREF="javascript:document.connectnode.submit(); "><B>{t}Connect node:{/t}</B></A>
-			<SELECT NAME="nodeid" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
-				{section name=nodelist loop=$nodelist}
-				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
+			<B>{t 0=$netcomplist|@count}Connected nodes ($0):{/t}</B>
+                </TD>
+        </TR>
+	<TR id="devicenodes" style="display:none;">
+	        <TD WIDTH="100%" class="fall">
+	                <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD CLASS="fleftu" width="97%" nowrap>
+						<img src="img/node.gif" ALT=""> <B>{t}Name:{/t}</B><BR>
+						<img src="img/customer.gif" ALT=""> {t}Owner:{/t}
+					</TD>
+					<TD CLASS="fbt" width="1%" align="right" NOWRAP>
+						{t}ID:{/t}
+					</TD>
+					<TD CLASS="fbt" width="1%" NOWRAP>
+						<img src="img/netdev_takenports.gif"> {t}Port{/t}:<BR>
+						<img src="img/ip.gif" ALT=""> {t}IP address:{/t}
+					</TD>
+					<TD CLASS="frightu" WIDTH="1%">&nbsp;</TD>
+			    	</TR>
+				{cycle values="light,lucid" print=false}
+				{section name=netcomplist loop=$netcomplist start=$start}
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD width="97%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
+						<IMG SRC="img/node.gif" ALT=""> <B>{$netcomplist[netcomplist].name}</B><BR>
+						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
+					</TD>
+					<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
+						({$netcomplist[netcomplist].id|string_format:"%04d"})
+					</TD>
+					<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
+						{if $netcomplist[netcomplist].linktype}
+						<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A>
+						{else}
+						<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A>
+						{/if}
+						[{if $netcomplist[netcomplist].port}{$netcomplist[netcomplist].port}{/if}]
+						<BR><IMG SRC="img/ip.gif" ALT=""> {$netcomplist[netcomplist].ip}{if $netcomplist[netcomplist].ip_pub != "0.0.0.0"} ({$netcomplist[netcomplist].ip_pub}){/if}
+					</TD>
+					<TD WIDTH="1%">
+						<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
+					</TD>
+				</TR>
+				{sectionelse}
+				<TR>
+					<TD colspan="4" align="center">
+						<p>&nbsp;</p>
+						<p><B>{t}No such connected nodes.{/t}</b></p>
+						<p>&nbsp;</p>
+					</TD>
+				</TR>
 				{/section}
-			</SELECT>
-			<INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {tip text="wireless"} {if $nodelinktype}CHECKED{/if}><IMG src="img/wireless.gif" alt="">
-			</FORM>
-			{/if}
+				<TR CLASS="light">
+					<TD WIDTH="100%" CLASS="ftop" COLSPAN="4" ALIGN="CENTER" NOWRAP>
+						{if $netdevinfo.ports eq $netdevinfo.takenports}
+						<B>{t}All ports in that device are in use.{/t}</B>
+						{elseif $nodelist eq NULL}
+						<B>{t}No such nodes to connection.{/t}</B>
+						{else}
+						<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
+						<INPUT type="submit" class="hiddenbtn">
+						<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+						<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+						<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
+						<TABLE WIDTH="100%">
+						    <TR>
+							<TD width="99%" NOWRAP>
+						<b>{t}Connect{/t}:</b>
+						{t}Node:{/t}<SELECT NAME="nodeid" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
+		    				{section name=nodelist loop=$nodelist}
+							<OPTION VALUE="{$nodelist[nodelist].id}"{if $connectnode.id == $nodelist[nodelist].id} selected{/if}>{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
+						{/section}
+						</SELECT>
+						{t}Dest. port{/t}:<INPUT name="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+						{t}Wireless{/t}:<INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {tip text="wireless"} {if $nodelinktype}CHECKED{/if}>
+							</TD>
+							<TD width="1%" align="right">
+								<NOBR><A HREF="javascript:document.connectnode.submit(); ">{t}Connect{/t}</A> <IMG src="img/save.gif" alt=""></NOBR>
+							</TD>
+						    </TR>
+						</TABLE>	
+						</FORM>
+						{/if}
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
+{literal}
+<SCRIPT type="text/javascript">
+if(getCookie('devicenodes')=='1')
+{
+        document.getElementById('devicenodes').style.display = '';
+}
+</SCRIPT>
+{/literal}

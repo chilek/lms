@@ -30,7 +30,9 @@ if(isset($_POST['netdev']))
 
 	if($netdevdata['ports'] == '')
 		$netdevdata['ports'] = 0;
-		
+	else
+		$netdevdata['ports'] = intval($netdevdata['ports']);
+			
 	if($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
 	elseif(strlen($netdevdata['name'])>32)

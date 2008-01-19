@@ -1504,29 +1504,23 @@ class LMS
 	function GetNetDevLinkedNodes($id)
 	{
 		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, 
-				inet_ntoa(ipaddr) AS ip,ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, netdev,
-				'.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner, 
-				ownerid FROM nodes, customersview c 
-				WHERE ownerid = c.id AND netdev = ? AND ownerid > 0 
-				ORDER BY nodes.name ASC', array($id));
+			inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
+			netdev, port, ownerid,
+			'.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner 
+			FROM nodes, customersview c 
+			WHERE ownerid = c.id AND netdev = ? AND ownerid > 0 
+			ORDER BY nodes.name ASC', array($id));
 	}
 
-	function NetDevLinkNode($id, $netid, $type=NULL)
+	function NetDevLinkNode($id, $devid, $type=0, $port=0)
 	{
-		if($netid != 0)
-		{
-			$netdev = $this->GetNetDev($netid);
-			if( $this->GetNodeOwner($id) )
-				if( $netdev['takenports'] >= $netdev['ports'])
-					return FALSE;
-		}
-
-		if($type==NULL)
-			$this->DB->Execute('UPDATE nodes SET netdev=? WHERE id=?', array($netid, $id));
-		else
-			$this->DB->Execute('UPDATE nodes SET netdev=?, linktype=? WHERE id=?', array($netid,$type,$id));
-
-		return TRUE;
+		return $this->DB->Execute('UPDATE nodes SET netdev=?, linktype=?, port=?
+			 WHERE id=?', 
+			 array($devid,
+				intval($type),
+				intval($port),
+				$id
+			));
 	}
 
 	function SetNetDevLinkType($dev1, $dev2, $type=0)
@@ -2597,15 +2591,6 @@ class LMS
 				array($id));
 	}
 
-	function GetNetDevConnected($id)
-	{
-		return $this->DB->GetAll('SELECT type, 
-			(CASE src WHEN ? THEN src ELSE dst END) AS src, 
-			(CASE src WHEN ? THEN dst ELSE src END) AS dst 
-			FROM netlinks WHERE src = ? OR dst = ?',
-			array($id, $id, $id, $id));
-	}
-
 	function GetNetDevLinkType($dev1,$dev2)
 	{
 		return $this->DB->GetOne('SELECT type FROM netlinks 
@@ -2615,20 +2600,20 @@ class LMS
 
 	function GetNetDevConnectedNames($id)
 	{
-		// To powinno byæ lepiej zrobione...
-		$list = $this->GetNetDevConnected($id);
-		$i = 0;
-		$names = array();
-		if ($list)
-		{
-			foreach($list as $row)
-			{
-				$names[$i] = $this->GetNetDev($row['dst']);
-				$names[$i]['linktype'] = $this->GetNetDevLinkType($row['dst'],$id);
-				$i++;
-			}
-		}
-		return $names;
+		return $this->DB->GetAll('SELECT d.id, d.name, d.description,
+			d.location, d.producer, d.ports, l.type AS linktype,
+			l.srcport, l.dstport,
+			(SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
+			+ (SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
+			AS takenports 
+			FROM netdevices d
+			JOIN (SELECT DISTINCT type,
+				(CASE src WHEN ? THEN dst ELSE src END) AS dev, 
+				(CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport, 
+				(CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport 
+				FROM netlinks WHERE src = ? OR dst = ?
+			) l ON (d.id = l.dev)
+			ORDER BY name', array($id, $id, $id, $id, $id));
 	}
 
 	function GetNetDevList($order='name,asc')
@@ -2665,12 +2650,13 @@ class LMS
 			break;
 		}
 		
-		$netdevlist = $this->DB->GetAll('SELECT id, name, location, description, producer, 
-			model, serialnumber, ports, 
-			(SELECT COUNT(*) FROM nodes WHERE netdev=netdevices.id AND ownerid > 0)
-			+ (SELECT COUNT(*) FROM netlinks WHERE src = netdevices.id OR dst = netdevices.id) 
+		$netdevlist = $this->DB->GetAll('SELECT d.id, d.name, d.location, 
+			d.description, d.producer, d.model, d.serialnumber, d.ports, 
+			(SELECT COUNT(*) FROM nodes WHERE netdev=d.id AND ownerid > 0)
+			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
 			AS takenports
-			FROM netdevices '.($sqlord != '' ? $sqlord.' '.$direction : ''));
+			FROM netdevices d '
+			.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
@@ -2687,60 +2673,36 @@ class LMS
 
 	function GetNotConnectedDevices($id)
 	{
-		$query = 'SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!='.$id;
-		if ($lista = $this->GetNetDevConnected($id))
-			foreach($lista as $row)
-				$query = $query.' AND id != '.$row['dst'];
-		return $this->DB->GetAll($query.' ORDER BY name');
+		return $this->DB->GetAll('SELECT d.id, d.name, d.description,
+			d.location, d.producer, d.ports
+			FROM netdevices d
+			LEFT JOIN (SELECT DISTINCT 
+				(CASE src WHEN ? THEN dst ELSE src END) AS dev 
+				FROM netlinks WHERE src = ? OR dst = ?
+			) l ON (d.id = l.dev)
+			WHERE l.dev IS NULL AND d.id != ?
+			ORDER BY name', array($id, $id, $id, $id));
 	}
 
 	function GetNetDev($id)
 	{
 		$result = $this->DB->GetRow('SELECT * FROM netdevices WHERE id = ?', array($id));
+
 		$result['takenports'] = $this->CountNetDevLinks($id);
+
 		if($result['guaranteeperiod'] != NULL && $result['guaranteeperiod'] != 0)
 			$result['guaranteetime'] = strtotime('+'.$result['guaranteeperiod'].' month', $result['purchasetime'] ); // transform to UNIX timestamp
 		elseif($result['guaranteeperiod'] == NULL)
 			$result['guaranteeperiod'] = -1;
+
 		return $result;
 	}
 
 	function NetDevDelLinks($id)
 	{
-		return $this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id,$id));
-		$nodes = GetNetDevLinkedNodes($id);
-		if ($nodes) foreach($nodes as $node) {
-			$this->NetDevLinkNode($node['id'],0);
-		}
-	}
-
-	function NetDevReplace($sid, $did)
-	{
-		$dev1 = $this->GetNetDev($sid);
-		$dev2 = $this->GetNetDev($did);
-		$location = $dev1['location'];
-		$dev1['location'] = $dev2['location'];
-		$dev2['location'] = $location;
-		$links1 = $this->GetNetDevConnected($sid);
-		$links2 = $this->GetNetDevConnected($did);
-		$nodes1 = $this->GetNetDevLinkedNodes($sid);
-		$nodes2 = $this->GetNetDevLinkedNodes($did);
-		$this->NetDevDelLinks($sid);
-		$this->NetDevDelLinks($did);
-		if ($links1) foreach($links1 as $row) {
-			$this->NetDevLink($did,$row['dst'],$row['type']);
-		}
-		if ($links2) foreach($links2 as $row) {
-			$this->NetDevLink($sid,$row['dst'], $row['type']);
-		}
-		if ($nodes1) foreach($nodes1 as $row) {
-			$this->NetDevLinkNode($row['id'],$did);
-		}
-		if ($nodes2) foreach($nodes2 as $row) {
-			$this->NetDevLinkNode($row['id'],$sid);
-		}
-		$this->NetDevUpdate($dev1);
-		$this->NetDevUpdate($dev2);
+		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id,$id));
+		$this->DB->Execute('UPDATE nodes SET netdev=0, port=0 
+				WHERE netdev=? AND ownerid=0', array($id));
 	}
 
 	function DeleteNetDev($id)
@@ -2755,18 +2717,20 @@ class LMS
 
 	function NetDevAdd($netdevdata)
 	{
-		if($this->DB->Execute('INSERT INTO netdevices (name, location, description, producer, 
-					model, serialnumber, ports, purchasetime, guaranteeperiod) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-					array($netdevdata['name'],
-						$netdevdata['location'],
-						$netdevdata['description'],
-						$netdevdata['producer'],
-						$netdevdata['model'],
-						$netdevdata['serialnumber'],
-						$netdevdata['ports'],
-						$netdevdata['purchasetime'],
-						$netdevdata['guaranteeperiod'])))
+		if($this->DB->Execute('INSERT INTO netdevices (name, location, 
+				description, producer, model, serialnumber, 
+				ports, purchasetime, guaranteeperiod) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				array($netdevdata['name'],
+					$netdevdata['location'],
+					$netdevdata['description'],
+					$netdevdata['producer'],
+					$netdevdata['model'],
+					$netdevdata['serialnumber'],
+					$netdevdata['ports'],
+					$netdevdata['purchasetime'],
+					$netdevdata['guaranteeperiod']
+		)))
 			return $this->DB->GetLastInsertID('netdevices');
 		else
 			return FALSE;
@@ -2797,23 +2761,17 @@ class LMS
 			array($dev1, $dev2, $dev1, $dev2));
 	}
 
-	function NetDevLink($dev1, $dev2, $type=0)
+	function NetDevLink($dev1, $dev2, $type=0, $sport=0, $dport=0)
 	{
 		if($dev1 != $dev2)
-		{
-			if($this->IsNetDevLink($dev1,$dev2))
-				return FALSE;
+			if(!$this->IsNetDevLink($dev1,$dev2))
+				return $this->DB->Execute('INSERT INTO netlinks 
+					(src, dst, type, srcport, dstport) 
+					VALUES (?, ?, ?, ?, ?)', 
+					array($dev1, $dev2, $type, 
+						intval($sport), intval($dport)));
 
-			$netdev1 = $this->GetNetDev($dev1);
-			$netdev2 = $this->GetNetDev($dev2);
-
-			if( $netdev1['takenports'] >= $netdev1['ports'] || $netdev2['takenports'] >= $netdev2['ports'])
-				return FALSE;
-
-			$this->DB->Execute('INSERT INTO netlinks (src, dst, type) VALUES (?, ?, ?)', 
-				array($dev1, $dev2, $type));
-		}
-		return TRUE;
+		return FALSE;
 	}
 
 	function NetDevUnLink($dev1, $dev2)
@@ -2831,7 +2789,7 @@ class LMS
 	function GetNetDevIPs($id)
 	{
 		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info 
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port 
 			FROM nodes WHERE ownerid = 0 AND netdev = ?', array($id));
 	}
 
