@@ -29,8 +29,9 @@ if(! $LMS->NetDevExists($_GET['id']))
 	$SESSION->redirect('?m=netdevlist');
 }		
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
-$edit = 'data';
+$action = !empty($_GET['action']) ? $_GET['action'] : '';
+$edit = '';
+$subtitle = '';
 
 switch($action)
 {
@@ -38,21 +39,103 @@ case 'replace':
 
 	$dev1 = $LMS->GetNetDev($_GET['id']);
 	$dev2 = $LMS->GetNetDev($_GET['netdev']);
+
 	if ($dev1['ports'] < $dev2['takenports']) 
 	{
 	    $error['replace'] = trans('It scans for ports in source device!');
-	    $edit = FALSE;
 	} 
 	elseif ($dev2['ports'] < $dev1['takenports']) 
 	{
 	    $error['replace'] = trans('It scans for ports in destination device!');
-	    $edit = FALSE;
 	} 
-	else 
+	
+	if(!$error) 
 	{
-	    $LMS->NetDevReplace($_GET['id'],$_GET['netdev']);
+		$links1 = $DB->GetAll('(SELECT type, 
+                        (CASE src WHEN ? THEN dst ELSE src END) AS id,
+			(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
+			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport
+			FROM netlinks WHERE src = ? OR dst = ?)
+			UNION
+			(SELECT linktype AS type, id, port AS srcport, NULL AS dstport
+			FROM nodes WHERE netdev = ? AND ownerid > 0)
+			ORDER BY srcport',
+			array($dev1['id'], $dev1['id'], $dev1['id'], 
+				$dev1['id'], $dev1['id'], $dev1['id']));
+		$links2 = $DB->GetAll('(SELECT type, 
+                        (CASE src WHEN ? THEN dst ELSE src END) AS id,
+			(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
+			(CASE src WHEN ? THEN dstport ELSE srcport END) AS dstport
+			FROM netlinks WHERE src = ? OR dst = ?)
+			UNION
+			(SELECT linktype AS type, id, port AS srcport, NULL AS dstport
+			FROM nodes WHERE netdev = ? AND ownerid > 0)
+			ORDER BY srcport',
+			array($dev2['id'], $dev2['id'], $dev2['id'], 
+				$dev2['id'], $dev2['id'], $dev2['id']));
+
+		$DB->BeginTrans();
+		
+		$DB->Execute('UPDATE netdevices SET location = ? WHERE id = ?', 
+				array($dev1['location'], $dev2['id']));
+		$DB->Execute('UPDATE netdevices SET location = ? WHERE id = ?', 
+				array($dev2['location'], $dev1['id']));
+
+		$LMS->NetDevDelLinks($dev1['id']);
+		$LMS->NetDevDelLinks($dev2['id']);
+		
+		$ports = array();
+		// przypisujemy urzadzenia/komputer, probujac zachowac numeracje portow
+		if ($links1) foreach($links1 as $row)
+		{
+			$sport = $row['srcport'];
+			if($sport)
+			{
+				if($sport > $dev2['ports'])
+					for($i=1; $i<=$dev2['ports']; $i++) 
+						if(!isset($ports[$sport]))
+						{
+							$sport = $i;
+							break;
+		    				}
+				
+				$ports[$sport] = $sport;
+			}
+			
+			if(isset($row['dstport'])) // device
+				$LMS->NetDevLink($dev2['id'], $row['id'], $row['type'], $sport, $row['dstport']);
+			else // node
+				$LMS->NetDevLinkNode($row['id'], $dev2['id'], $row['type'], $sport);
+		}
+
+		$ports = array();
+		if ($links2) foreach($links2 as $row)
+		{
+			$sport = $row['srcport'];
+			if($sport)
+			{
+				if($sport > $dev1['ports'])
+					for($i=1; $i<=$dev1['ports']; $i++) 
+						if(!isset($ports[$sport]))
+						{
+							$sport = $i;
+							break;
+		    				}
+				
+				$ports[$sport] = $sport;
+			}
+			
+			if(isset($row['dstport'])) // device
+				$LMS->NetDevLink($dev1['id'], $row['id'], $row['type'], $sport, $row['dstport']);
+			else // node
+				$LMS->NetDevLinkNode($row['id'], $dev1['id'], $row['type'], $sport);
+		}
+		
+		$DB->CommitTrans();
+
 	    $SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
+	
 	break;
 	
 case 'disconnect':
@@ -77,36 +160,115 @@ case 'duplex':
 	
 case 'connect':
 
-	$linktype = isset($_GET['linktype']) ? $_GET['linktype'] : '0';
-	$SESSION->save('devlinktype', $linktype);
-	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id'], $linktype) )
+	$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
+	$dev['srcport'] = !empty($_GET['srcport']) ? intval($_GET['srcport']) : '0';
+	$dev['dstport'] = !empty($_GET['dstport']) ? intval($_GET['dstport']) : '0';
+	$dev['id'] = !empty($_GET['netdev']) ? intval($_GET['netdev']) : '0';
+
+	$ports1 = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($_GET['id']));
+	$takenports1 = $LMS->CountNetDevLinks($_GET['id']);
+
+	$ports2 = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($dev['id']));
+	$takenports2 = $LMS->CountNetDevLinks($dev['id']);
+
+	if($ports1 <= $takenports1 || $ports2 <= $takenports2)
+		$error['linknode'] = trans('No free ports on device!');
+	else
 	{
-		$edit = FALSE;
-		$error['link'] = trans('No free ports on device!');
-	} else
-		header('Location: ?m=netdevinfo&id='.$_GET['id']);
+		if($dev['srcport'])
+		{
+			if(!ereg('^[0-9]+$', $dev['srcport']) || $dev['srcport'] > $ports2)
+			{
+				$error['srcport'] = trans('Incorrect port number!');	
+			}
+			elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', 
+					array($dev['id'], $dev['srcport']))
+				|| $DB->GetOne('SELECT 1 FROM netlinks WHERE src = ? OR dst = ?
+					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
+					array($dev['id'], $dev['id'], $dev['id'], $dev['srcport'])))
+			{
+				$error['srcport'] = trans('Selected port number is taken by other device or node!');
+			}
+		}
+
+		if($dev['dstport'])
+		{
+			if(!ereg('^[0-9]+$', $dev['dstport']) || $dev['dstport'] > $ports1)
+			{
+				$error['dstport'] = trans('Incorrect port number!');	
+			}
+			elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', 
+					array($_GET['id'], $dev['dstport']))
+				|| $DB->GetOne('SELECT 1 FROM netlinks WHERE src = ? OR dst = ?
+					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
+					array($_GET['id'], $_GET['id'], $_GET['id'], $dev['dstport'])))
+			{
+				$error['dstport'] = trans('Selected port number is taken by other device or node!');
+			}
+		}
+	}
+
+	$SESSION->save('devlinktype', $linktype);
+	
+	if(!$error)
+	{
+		$LMS->NetDevLink($dev['id'], $_GET['id'], $linktype, $dev['srcport'], $dev['dstport']);
+		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
+	}
+
+	$SMARTY->assign('connect', $dev);
+
 	break;
     
 case 'connectnode':
 
-	$linktype = isset($_GET['linktype']) ? $_GET['linktype'] : '0';
-	$SESSION->save('nodelinktype', $linktype);
-	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id'], $linktype) )
-	{
+	$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
+	$node['port'] = !empty($_GET['port']) ? intval($_GET['port']) : '0';
+	$node['id'] = !empty($_GET['nodeid']) ? intval($_GET['nodeid']) : '0';
+
+	$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($_GET['id']));
+	$takenports = $LMS->CountNetDevLinks($_GET['id']);
+
+	if($ports <= $takenports)
 		$error['linknode'] = trans('No free ports on device!');
-		$edit = FALSE;
-	} else
-		header('Location: ?m=netdevinfo&id='.$_GET['id']);
+	elseif($node['port'])
+	{
+		if(!ereg('^[0-9]+$', $node['port']) || $node['port'] > $ports)
+		{
+			$error['port'] = trans('Incorrect port number!');	
+		}
+		elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', 
+				array($_GET['id'], $node['port']))
+			|| $DB->GetOne('SELECT 1 FROM netlinks WHERE src = ? OR dst = ?
+				AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
+				array($_GET['id'], $_GET['id'], $_GET['id'], $node['port'])))
+		{
+			$error['port'] = trans('Selected port number is taken by other device or node!');
+		}
+	}
+
+	$SESSION->save('nodelinktype', $linktype);
+	
+	if(!$error) 
+	{
+		$LMS->NetDevLinkNode($node['id'], $_GET['id'], $linktype, $node['port']);
+		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
+	}
+
+	$SMARTY->assign('connectnode', $node);
+
 	break;
 
 case 'addip':
 
+	$subtitle = trans('New IP address');
 	$edit = 'addip';
 	break;
 
 case 'editip':
 
 	$nodeipdata = $LMS->GetNode($_GET['ip']);
+	$subtitle = trans('IP address edit');
 	$nodeipdata['ipaddr'] = $nodeipdata['ip'];
 	$SMARTY->assign('nodeipdata',$nodeipdata);
 	$edit = 'ip';
@@ -115,17 +277,16 @@ case 'editip':
 case 'switchlinktype':
 
 	$LMS->SetNetDevLinkType($_GET['devid'], $_GET['id'], $_GET['linktype']);
-	header('Location: ?m=netdevinfo&id='.$_GET['id']);
-	break;
+	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
 case 'switchnodelinktype':
 
 	$LMS->SetNodeLinkType($_GET['nodeid'], $_GET['linktype']);
-	header('Location: ?m=netdevinfo&id='.$_GET['id']);
-	break;
+	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
 case 'formaddip':
 
+	$subtitle = trans('New IP address');
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid'] = 0;
 	$nodeipdata['mac'] = str_replace('-',':',$nodeipdata['mac']);
@@ -198,6 +359,7 @@ case 'formaddip':
 		
 case 'formeditip':
 
+	$subtitle = trans('IP address edit');
 	$nodeipdata = $_POST['ipadd'];
 	$nodeipdata['ownerid']=0;
 	$nodeipdata['mac'] = str_replace('-',':',$nodeipdata['mac']);
@@ -282,6 +444,10 @@ case 'formeditip':
 	$SMARTY->assign('nodeipdata',$nodeipdata); 
 	$edit='ip';
 	break;
+
+default:
+	$edit = 'data';
+	break;
 }
 
 if(isset($_POST['netdev']))
@@ -294,6 +460,8 @@ if(isset($_POST['netdev']))
 	elseif(strlen($netdevdata['name']) > 32)
 		$error['name'] =  trans('Specified name is too long (max.$0 characters)!','32');
 
+	$netdevdata['ports'] = intval($netdevdata['ports']);
+	
 	if($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
 		$error['ports'] = trans('Connected devices number exceeds number of ports!');
 	
@@ -345,6 +513,8 @@ else
 
 $netdevdata['id'] = $_GET['id'];
 
+$netdevips = $LMS->GetNetDevIPs($_GET['id']);
+$nodelist = $LMS->GetUnlinkedNodes();
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
 $netcomplist = $LMS->GetNetDevLinkedNodes($_GET['id']);
 $netdevlist = $LMS->GetNotConnectedDevices($_GET['id']);
@@ -353,22 +523,16 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-$nodelist = $LMS->GetUnlinkedNodes();
-unset($nodelist['totaloff']);
-unset($nodelist['totalon']);
-unset($nodelist['total']);
-unset($nodelist['order']);
-unset($nodelist['direction']);
-
 $replacelist = $LMS->GetNetDevList();
+
 $replacelisttotal = $replacelist['total'];
 unset($replacelist['order']);
 unset($replacelist['total']);
 unset($replacelist['direction']);
 
-$netdevips = $LMS->GetNetDevIPs($_GET['id']);
-
 $layout['pagetitle'] = trans('Device Edit: $0 ($1)', $netdevdata['name'], $netdevdata['producer']);
+
+if($subtitle) $layout['pagetitle'] .= ' - '.$subtitle;
 
 $SMARTY->assign('error',$error);
 $SMARTY->assign('netdevinfo',$netdevdata);

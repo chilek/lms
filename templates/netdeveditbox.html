@@ -9,84 +9,95 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>{t}Name:{/t}</B>
-		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdevinfo.name}" MAXLENGTH="32" {tip trigger="name" text="Enter device name" bold=1}>
 		</TD>
 	</TR>
+	<TR class="LIGHT">
+                <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+		        <TABLE WIDTH="100%" CELLPADDING="0">
+		                <TR CLASS="LIGHT">
+		                        <TD WIDTH="50%" style="vertical-align:top;">
+		                                <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Producer:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdevinfo.producer}" {tip text="Enter device producer (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Model:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdevinfo.model}" {tip text="Enter model name (optional)" }>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Serial number:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdevinfo.serialnumber}" {tip text="Enter serial number (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Ports number:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdevinfo.ports}" {tip trigger="ports" text="Enter number of ports (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Location:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdevinfo.location}" {tip text="Enter device location (optional)"}>
 		</TD>
 	</TR>
+                                        </TABLE>
+				</TD>
+			        <TD WIDTH="50%" style="vertical-align:top;">
+			                <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Purchase date:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdevinfo.purchasedate}{$netdevinfo.purchasedate}{/if}" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/guarantee.png" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Guarantee period:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%">
 			<SELECT SIZE="1" NAME="netdev[guaranteeperiod]" {tip text="Select device guarantee period (optional)"}>
 				{foreach from=$_GUARANTEEPERIODS key=key item=period}
 				<OPTION VALUE="{$key}"{if $netdevinfo.guaranteeperiod eq $key} SELECTED{/if}>{$period}</OPTION>
@@ -95,33 +106,32 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/desc.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Description:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%">
 			<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" COLS="40" ROWS="5" {tip text="Enter additional informations (optional)"}>{$netdevinfo.description}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="4" ALIGN="RIGHT">
-			<A HREF="javascript:document.netdevedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>	
+                                    		</TABLE>
+                            		</TD>
+                    		</TR>
+            		</TABLE>
+        	</TD>
+	</TR>
 	</FORM>
-	{if $netdevinfo.id}
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="fall" COLSPAN=4 ALIGN="center">
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			{if $replacelisttotal>1}
-			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
+			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
-			<A HREF="javascript:document.replace.submit(); "><B>{t}Replace device:{/t}</B></A>
+			<A HREF="javascript:document.replace.submit(); ">{t}Replace with:{/t}</A>
 			<SELECT NAME="netdev" {tip trigger="replace" text="Select from list device for replacement"}>
 				{section name=replacelist loop=$replacelist}
 				{if $replacelist[replacelist].id != $netdevinfo.id}
@@ -129,13 +139,12 @@
 				{/if}
 				{/section}
 			</SELECT>
-			</FORM></P>
-			{else}
-			<B>{t}No device for replacement.{/t}</B>
+			</FORM>
 			{/if}
+			<A HREF="javascript:document.netdevedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
-	</TR>
-	{/if}
+	</TR>	
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

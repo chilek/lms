@@ -1,108 +1,118 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
+	<TR{if $devicepanel} class="dark hand" onClick="showOrHide('devicepanel');"{else} class="dark"{/if}>
 		<TD WIDTH="1%" CLASS="FLEFTU">
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="FRIGHTU">
 			<B>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
+	<TR class="LIGHT"{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
+	        <TD WIDTH="100%" COLSPAN="2"{if $devicepanel} CLASS="fall" ALIGN="RIGHT"{else}CLASS="flr"{/if}>
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
         {if $netdevinfo.producer}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 		        <B>{t}Producer:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 		        {$netdevinfo.producer}
 		</TD>
 	</TR>
 	{/if}
 	{if $netdevinfo.model}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 		        <B>{t}Model:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 		        {$netdevinfo.model}
 		</TD>
 	</TR>
 	{/if}
 	{if $netdevinfo.serialnumber}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Serial number:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 		        {$netdevinfo.serialnumber}
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Number of ports:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 		        {$netdevinfo.ports}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/netdev_takenports.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Ports used:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 		        {$netdevinfo.takenports}
 		</TD>
 	</TR>
 	{if $netdevinfo.location}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Location:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 		        {$netdevinfo.location}
 		</TD>
 	</TR>
 	{/if}
+	                        	</TABLE>
+				</TD>
+				<TD WIDTH="50%" style="vertical-align:top;">
+				        <TABLE WIDTH="100%" CELLPADDING="3">
 	{if $netdevinfo.purchasetime}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/calendar.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Purchase date:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 		        {$netdevinfo.purchasetime|date_format:"%Y/%m/%d"}
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/guarantee.png" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{t}Guarantee:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 			{if !$netdevinfo.guaranteeperiod}
 				{t}no guarantee{/t}
 			{elseif $netdevinfo.guaranteeperiod == -1}
@@ -116,10 +126,10 @@
 	</TR>
         {if $netdevinfo.description}
         <TR CLASS="LIGHT">
-                <TD WIDTH="1%" CLASS="FLEFT">
+                <TD WIDTH="1%">
                         <IMG SRC="img/desc.gif" ALT="">
                 </TD>
-                <TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+                <TD WIDTH="99%" COLSPAN="2">
                         <TABLE WIDTH="100%" CELLPADDING="5">
                                 <TR>
                                         <TD class="fall superlight">
@@ -130,21 +140,23 @@
                 </TD>
         </TR>
         {/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t 0=$netdevinfo.name}Are you sure, you want to remove device \'$0\' from database?{/t}');">{t}Delete{/t} <img src="img/delete.gif" ALT=""></A>
-		</TD>
+	                                        </TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+{if !$devicepanel}
+    		</TD>
 	</TR>
-	{if $netdevinfo.id}
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="fall" COLSPAN=3 ALIGN="center" NOWRAP>
+	<TR CLASS="LIGHT">
+	        <TD WIDTH="100%" COLSPAN="2" CLASS="FBOTTOMU" ALIGN="RIGHT">
+{/if}
 			{if $replacelisttotal>1}
 			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
-			<A HREF="javascript:document.replace.submit(); "><B>{t}Replace device:{/t}</B></A>
+			<A HREF="javascript:document.replace.submit(); ">{t}Replace with:{/t}</A>
 			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list for replacement"}>
 				{section name=replacelist loop=$replacelist}
 					{if $replacelist[replacelist].id != $netdevinfo.id}
@@ -156,11 +168,19 @@
 				{/section}
 			</SELECT>
 			</FORM>
-			{else}
-			<B>{t}No device for replacement.{/t}</B>
 			{/if}
+			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" ALT="[ {t}Edit{/t} ]"></A>
+			<A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t 0=$netdevinfo.name}Are you sure, you want to remove device \'$0\' from database?{/t}');">{t}Delete{/t} <img src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
-	{/if}
 </TABLE>
-
+{if $devicepanel}
+{literal}<SCRIPT type="text/javascript">
+<!--
+if(getCookie('devicepanel')=='1')
+{
+        document.getElementById('devicepanel').style.display = '';
+}
+//-->
+</SCRIPT>{/literal}
+{/if}

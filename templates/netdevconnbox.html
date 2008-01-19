@@ -1,18 +1,25 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3">
+        <TR CLASS="DARK">
+	        <TD width="100%" class="fall hand" align="left" nowrap="nowrap" onClick="showOrHide('devicedevices');">
 			<IMG SRC="img/mac.gif" alt="">
-			<B>{t}Connected devices:{/t}</B>
+			<B>{t 0=$netdevlist|@count}Connected devices ($0):{/t}</B>
 		</TD>
 	</TR>
+	<TR id="devicedevices" style="display:none;">
+	        <TD WIDTH="100%" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="98%">
-			<IMG src="img/netdev.gif" ALT=""> <B>{t}Name / Producer:{/t}</B><BR>
+		<TD CLASS="fleftu" width="97%">
+			<IMG src="img/netdev.gif" ALT=""> <B>{t}Name{/t} / {t}Producer{/t}:</B><BR>
 			<IMG src="img/home.gif" ALT=""> {t}Location:{/t}
 		</TD>
+		<TD CLASS="fbt" width="1%" align="right" NOWRAP>
+			{t}Port{/t}:<BR>
+			{t}ID:{/t}
+		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<IMG src="img/empty.gif" ALT="" HEIGHT="16" WIDTH="16"> {t}ID:{/t}<BR>
+			<IMG src="img/netdev_takenports.gif" ALT=""> {t}Dest. port{/t}:<BR>
 			<IMG src="img/port.gif" ALT=""> {t}Ports (used):{/t}
 		</TD>
 		<TD CLASS="frightu" width="1%">
@@ -22,9 +29,13 @@
 	{cycle values="light,lucid" print=false}
 	{section name=netdevlist loop=$netdevlist start=$start}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" VALIGN="TOP" NOWRAP>
+		<TD width="97%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" VALIGN="TOP" NOWRAP>
 			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</B></A><BR>
 			<IMG src="img/home.gif" ALT=""> {$netdevlist[netdevlist].location}
+		</TD>
+		<TD width="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
+			<IMG src="img/empty.gif" height="16">[{if $netdevlist[netdevlist].srcport}{$netdevlist[netdevlist].srcport}{/if}]<BR>
+			({$netdevlist[netdevlist].id|string_format:"%04d"})
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
 			{if $netdevlist[netdevlist].linktype}
@@ -32,24 +43,24 @@
 			{else}
 				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" title="[ {t}Change connection type{/t} ]"></A> 
 			{/if}
-			({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
-			<IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
+			[{if $netdevlist[netdevlist].dstport}{$netdevlist[netdevlist].dstport}{/if}]
+			<BR><IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 		</TD>
-		<TD WIDTH="1%" CLASS="fright">
+		<TD WIDTH="1%">
 			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="3" CLASS="fall" align="center">
+		<TD colspan="4" align="center">
 			<P>&nbsp;</P>
 			<P><B>{t}No such connected devices.{/t}</B></P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3" ALIGN="CENTER" NOWRAP>
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="ftop" COLSPAN="4" ALIGN="CENTER" NOWRAP>
 			{if $netdevinfo.ports eq $netdevinfo.takenports}
 			<B>{t}All ports in that device are in use.{/t}</B>
 			{elseif !$restnetdevlist}
@@ -60,18 +71,40 @@
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
-			<A HREF="javascript:document.connect.submit(); "><B>{t}Connect device:{/t}</B></A>
-			<SELECT NAME="netdev" {tip trigger="link" text="Select from list device for connection"}>
+			<TABLE width="100%">
+			    <TR>
+				<TD width="99%" NOWRAP>
+				<b>{t}Connect{/t}:</b>
+			{t}Device:{/t}<SELECT NAME="netdev" {tip trigger="link" text="Select from list device for connection"}>
 				{section name=restnetdevlist loop=$restnetdevlist}
 				{assign var=netdevname value=$restnetdevlist[restnetdevlist].name}
 				{if $restnetdevlist[restnetdevlist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$restnetdevlist[restnetdevlist].producer}{/if}
 				{if $restnetdevlist[restnetdevlist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$restnetdevlist[restnetdevlist].location|cat:")"}{/if}
-				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$netdevname|truncate:35:"...":true}</OPTION>
+				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}"{if $connect.id == $restnetdevlist[restnetdevlist].id} selected{/if}>{$netdevname|truncate:40:"...":true}</OPTION>
 				{/section}
 			</SELECT>
-			<INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {tip text="wireless"} {if $devlinktype}CHECKED{/if}><IMG src="img/wireless.gif" alt="">
+			{t}Port{/t}:<INPUT name="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
+			{t}Dest. port{/t}:<INPUT name="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2" {tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
+			{t}Wireless{/t}:<INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {tip text="wireless"} {if $devlinktype}CHECKED{/if}>
+				    </TD>
+				    <TD width="1%">
+					<NOBR><A HREF="javascript:document.connect.submit(); ">{t}Connect{/t}</A> <IMG src="img/save.gif" alt=""></NOBR>
+				    </TD>
+				</TR>
+			</TABLE>
 			</FORM>
 			{/if}
 		</TD>
 	</TR>
 </TABLE>
+               </TD>
+       </TR>
+</TABLE>
+{literal}
+<SCRIPT type="text/javascript">
+if(getCookie('devicedevices')=='1')
+{
+	document.getElementById('devicedevices').style.display = '';
+}
+</SCRIPT>
+{/literal}

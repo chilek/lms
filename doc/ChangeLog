@@ -54,6 +54,12 @@ version ? (????-??-??):
   - lmsd/dhcp: added broadcast address (%b) variable in 'subnet_start' 
     option (alec)
   - added improved traffic control module lmsd/tc-new (alec)
+  - network devices: few functions optimized (alec)
+  - network devices: added port numbers for links (alec)
+  - network devices: redesigned device's info/edit pages with 
+    show'n'hide boxes (alec)
+  - network devices: show both (private and public) addresses in connected
+    nodes box (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
