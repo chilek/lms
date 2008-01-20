@@ -15,7 +15,8 @@
 						<img src="img/customer.gif" ALT=""> {t}Owner:{/t}
 					</TD>
 					<TD CLASS="fbt" width="1%" align="right" NOWRAP>
-						{t}ID:{/t}
+						{t}Node ID:{/t}<BR>
+						{t}Customer ID:{/t}
 					</TD>
 					<TD CLASS="fbt" width="1%" NOWRAP>
 						<img src="img/netdev_takenports.gif"> {t}Port{/t}:<BR>
@@ -30,8 +31,9 @@
 						<IMG SRC="img/node.gif" ALT=""> <B>{$netcomplist[netcomplist].name}</B><BR>
 						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
 					</TD>
-					<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
-						({$netcomplist[netcomplist].id|string_format:"%04d"})
+					<TD width="1%" align="right" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
+						({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
+						<font class="blend">({$netcomplist[netcomplist].ownerid|string_format:"%04d"})</font>
 					</TD>
 					<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 						{if $netcomplist[netcomplist].linktype}
