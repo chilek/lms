@@ -183,7 +183,7 @@ case 'connect':
 			}
 			elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', 
 					array($dev['id'], $dev['srcport']))
-				|| $DB->GetOne('SELECT 1 FROM netlinks WHERE src = ? OR dst = ?
+				|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
 					array($dev['id'], $dev['id'], $dev['id'], $dev['srcport'])))
 			{
@@ -199,7 +199,7 @@ case 'connect':
 			}
 			elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', 
 					array($_GET['id'], $dev['dstport']))
-				|| $DB->GetOne('SELECT 1 FROM netlinks WHERE src = ? OR dst = ?
+				|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
 					array($_GET['id'], $_GET['id'], $_GET['id'], $dev['dstport'])))
 			{
@@ -239,7 +239,7 @@ case 'connectnode':
 		}
 		elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', 
 				array($_GET['id'], $node['port']))
-			|| $DB->GetOne('SELECT 1 FROM netlinks WHERE src = ? OR dst = ?
+			|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 				AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
 				array($_GET['id'], $_GET['id'], $_GET['id'], $node['port'])))
 		{

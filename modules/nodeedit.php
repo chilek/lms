@@ -180,12 +180,36 @@ if(isset($_POST['nodeedit']))
 
 	if($nodeinfo['netdev'] != $nodeedit['netdev'] && $nodeedit['netdev'] != 0)
 	{
-		$netdev = $LMS->GetNetDev($nodeedit['netdev']); 
-		if($netdev['ports'] <= $netdev['takenports'])
+		$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodeedit['netdev']));
+	        $takenports = $LMS->CountNetDevLinks($nodeedit['netdev']);
+
+		if($ports <= $takenports)
 		    $error['netdev'] = trans('It scans for free ports in selected device!');
 		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
 
+	if($nodeedit['netdev'] && ($nodeedit['port'] != $nodeinfo['port'] || $nodeinfo['netdev'] != $nodeedit['netdev']))
+    	{
+		if($nodeedit['port'])
+		{
+			if(!isset($ports))
+				$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodeedit['netdev']));
+		
+		        if(!ereg('^[0-9]+$', $nodeedit['port']) || $nodeedit['port'] > $ports)
+		        {
+		                $error['port'] = trans('Incorrect port number!');
+		        }
+		        elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0',
+		        		array($nodeedit['netdev'], $nodeedit['port']))
+			        || $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
+			                AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
+			                array($nodeedit['netdev'], $nodeedit['netdev'], $nodeedit['netdev'], $nodeedit['port'])))
+			{
+			        $error['port'] = trans('Selected port number is taken by other device or node!');
+			}
+		}
+	}
+	
 	if($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
 	
@@ -198,6 +222,7 @@ if(isset($_POST['nodeedit']))
 	$nodeinfo['ownerid'] = $nodeedit['ownerid'];
 	$nodeinfo['chkmac'] = $nodeedit['chkmac'];
 	$nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
+	$nodeinfo['port'] = $nodeedit['port'];
 
 	if(!$error)
 	{

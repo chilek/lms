@@ -1085,7 +1085,8 @@ class LMS
 		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), 
 				ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, 
 				modid=?, access=?, warning=?, ownerid=?, info=?, 
-				location=?, chkmac=?, halfduplex=?, linktype=? WHERE id=?', 
+				location=?, chkmac=?, halfduplex=?, linktype=?, port=? 
+				WHERE id=?', 
 				array($nodedata['name'], 
 				    $nodedata['ipaddr_pub'], 
 				    $nodedata['ipaddr'], 
@@ -1101,6 +1102,7 @@ class LMS
 				    $nodedata['chkmac'],
 				    $nodedata['halfduplex'],
 				    isset($nodedata['linktype']) ? 1 : 0,
+				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 				    $nodedata['id']
 			    ));
 		
@@ -1168,7 +1170,7 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
 					ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
 					warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
-					info, location, chkmac, halfduplex, linktype
+					info, location, chkmac, halfduplex, linktype, port
 					FROM nodes WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
@@ -1350,9 +1352,11 @@ class LMS
 
 	function NodeAdd($nodedata)
 	{
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, 
-					creationdate, access, warning, info, netdev, linktype, location, chkmac, halfduplex) 
-					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, 
+					passwd, creatorid, creationdate, access, warning, info, netdev, 
+					linktype, port, location, chkmac, halfduplex) 
+					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, 
+					?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(strtoupper($nodedata['name']),
 				    strtoupper($nodedata['mac']),
 				    $nodedata['ipaddr'],
@@ -1365,6 +1369,7 @@ class LMS
 				    $nodedata['info'],
 				    $nodedata['netdev'],
 				    isset($nodedata['linktype']) ? 1 : 0,
+				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
 				    $nodedata['location'],
 				    $nodedata['chkmac'],
 				    $nodedata['halfduplex']
@@ -1395,8 +1400,8 @@ class LMS
 
 			return $id;
 		}
-		else
-			return FALSE;
+
+		return FALSE;
 	}
 
 	function NodeExists($id)

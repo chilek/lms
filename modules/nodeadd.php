@@ -126,12 +126,30 @@ if(isset($_POST['nodedata']))
 
 	if($nodedata['netdev'])
 	{
-		$netdev = $LMS->GetNetDev($nodedata['netdev']); 
-		if($netdev['ports'] <= $netdev['takenports']) 
+		$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodedata['netdev']));
+	        $takenports = $LMS->CountNetDevLinks($nodedata['netdev']);
+
+		if($ports <= $takenports) 
 			$error['netdev'] = trans('No free ports on device!');
+		elseif($nodedata['port'])
+		{
+		        if(!ereg('^[0-9]+$', $nodedata['port']) || $nodedata['port'] > $ports)
+		        {
+		                $error['port'] = trans('Incorrect port number!');
+		        }
+		        elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0',
+		        		array($nodedata['netdev'], $nodedata['port']))
+			        || $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
+			                AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
+			                array($nodedata['netdev'], $nodedata['netdev'], $nodedata['netdev'], $nodedata['port'])))
+			{
+			        $error['port'] = trans('Selected port number is taken by other device or node!');
+			}
+		}
 	}
 	else
 		$nodedata['netdev'] = 0;
+
 
 	if(!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
 	if(!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
