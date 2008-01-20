@@ -85,7 +85,7 @@
 			</SELECT>
 			{t}Port{/t}:<INPUT name="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
 			{t}Dest. port{/t}:<INPUT name="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2" {tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
-			{t}Wireless{/t}:<INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {tip text="wireless"} {if $devlinktype}CHECKED{/if}>
+			<A HREF="javascript:checkElement('connboxlinktype')">{t}Wireless{/t}:</A><INPUT class="box dark" type="checkbox" name="linktype" id="connboxlinktype" value="1" {tip text="wireless"} {if $devlinktype}CHECKED{/if}>
 				    </TD>
 				    <TD width="1%">
 					<NOBR><A HREF="javascript:document.connect.submit(); ">{t}Connect{/t}</A> <IMG src="img/save.gif" alt=""></NOBR>
