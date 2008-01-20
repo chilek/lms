@@ -32,9 +32,9 @@ use File::Copy;
 use MIME::Parser;
 use MIME::Words qw(:all);
 use MIME::QuotedPrint;
-use Net::SMTP;
 use Sys::Hostname;
 use Text::Iconv;
+use Mail::Sender;
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
@@ -97,11 +97,15 @@ my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
-my $dbencoding = $ini->val('database', 'server_encoding') || 'UTF-8';
+
+my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost'; # backward copatybility
+my $smtp_host = $ini->val('rt', 'smtp_host') || $smtpserver;
+my $smtp_user = $ini->val('rt', 'smtp_user') || '';
+my $smtp_pass = $ini->val('rt', 'smtp_pass') || '';
+my $smtp_auth = $ini->val('rt', 'smtp_auth') || ''; # 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
 
 my $save_path = $ini->val('rt', 'mail_dir') || '';
 my $queue = $queue || $ini->val('rt', 'default_queue');
-my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost';
 my $auto_open = $ini->val('rt', 'auto_open') || 0;
 my $tmp_dir = $ini->val('rt', 'tmp_dir') || '';
 my $notify = $ini->val('rt', 'newticket_notify') || 0;
@@ -112,6 +116,12 @@ my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
 my $autoreply_subject = $ini->val('rt', 'autoreply_subject') || "[RT#%tid] Receipt of request '%subject'";
 my $autoreply_body = $ini->val('rt', 'autoreply_body') || '';
 
+if($smtp_auth && $smtp_auth !~ /LOGIN|PLAIN|CRAM-MD5|NTLM/i)
+{
+        print STDERR "Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n";
+        exit 1;
+}
+		
 if(! $autoreply_body)
 {
 	$autoreply_body = "Your request was registered in our system.\n".
@@ -122,11 +132,10 @@ if(! $autoreply_body)
 $autoreply_body =~ s/\\n/\n/g;
 
 # very ugly code, but we really need tempdir..
+# TODO - FIXME - better handling of temporary dir - we should use sth simillar to mktemp();
 my $tmpdir = $tmp_dir || ((defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '')) ? $ENV{'TMP'} : '/tmp');
 
 my $parser = new MIME::Parser;
-
-# TODO - FIXME - better handling of temporary dir - we should use sth simillar to mktemp();
 
 $parser->decode_headers(1);
 $parser->extract_uuencode(1);
@@ -139,7 +148,7 @@ my $mh_from = $headers->get('From');
 my $mh_to = $headers->get('To');
 my $mh_cc = $headers->get('Cc');
 my $mh_msgid = $headers->get('Message-ID');
-my $mh_replyto = $headers->get('Reply-To');
+my $mh_replyto = $headers->get('Reply-To') || '';
 my $mh_subject = $headers->get('Subject');
 my $mh_references = $headers->get('References');
 my $mailheaders = $headers->as_string;
@@ -210,24 +219,6 @@ if($mh_subject eq '')
 
 my $mail_mh_subject = $mh_subject;
 my $orig_mailbody = $mailbody;
-$mailbody =~ s/\\/\\\\/g;
-$mailbody =~ s/\'/\\\'/g;
-$mailheaders =~ s/\\/\\\\/g;
-$mailheaders =~ s/\'/\\\'/g;
-$mh_from =~ s/\\/\\\\/g;
-$mh_from =~ s/\'/\\\'/g;
-$mh_to =~ s/\\/\\\\/g;
-$mh_to =~ s/\'/\\\'/g;
-$mh_cc =~ s/\\/\\\\/g;
-$mh_cc =~ s/\'/\\\'/g;
-$mh_msgid =~ s/\\/\\\\/g;
-$mh_msgid =~ s/\'/\\\'/g;
-$mh_subject =~ s/\\/\\\\/g;
-$mh_subject =~ s/\'/\\\'/g;
-$mh_replyto =~ s/\\/\\\\/g;
-$mh_replyto =~ s/\'/\\\'/g;
-$mh_references =~ s/\\/\\\\/g;
-$mh_references =~ s/\'/\\\'/g;
 
 my $dbase;
 my $utsfmt;
@@ -270,8 +261,8 @@ my $lastref = $reftab[scalar(@reftab)-1];
 # check 'References'
 if($lastref)
 {
-	$dbq = $dbase->prepare("SELECT id, ticketid FROM rtmessages WHERE messageid = '$lastref'");
-	$dbq->execute();
+	$dbq = $dbase->prepare("SELECT id, ticketid FROM rtmessages WHERE messageid = ?");
+	$dbq->execute($lastref);
 	if($row = $dbq->fetchrow_hashref())
 	{
 		$prev_tid = $row->{'ticketid'};
@@ -304,13 +295,10 @@ if(my $tmp_body = $entity->parts(0)) #if multipart message, read encoding from f
 if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 {
 	my $charset = uc($1);
-	if(uc($dbencoding) eq 'UNICODE')
+
+	if($charset ne 'UTF-8')
 	{
-		$dbencoding = 'UTF-8';
-	}
-	if($charset ne $dbencoding)
-	{
-		my $converter = Text::Iconv->new($charset, $dbencoding);
+		my $converter = Text::Iconv->new($charset, 'UTF-8');
 		$mailbody = $converter->convert($mailbody);
 		$orig_mailbody = $converter->convert($orig_mailbody);
 		$mailheaders = $converter->convert($mailheaders);
@@ -343,8 +331,8 @@ if(! $prev_tid) # generate new ticket if previous not found
 	# find queue ID if not specified
 	if(!$queue)
 	{
-		$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = '$toemail' OR email = '$toemail2'");
-		$dbq->execute();
+		$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = ? OR email = ?");
+		$dbq->execute($toemail, $toemail2);
 		if(my $row = $dbq->fetchrow_hashref())
 		{
 			$queue = $row->{'id'};
@@ -358,27 +346,32 @@ if(! $prev_tid) # generate new ticket if previous not found
 	}
 
 	# find customerid
-	$dbq = $dbase->prepare("SELECT id FROM customers WHERE email = '$fromemail'");
-	$dbq->execute();
+	$dbq = $dbase->prepare("SELECT id FROM customers WHERE email = ?");
+	$dbq->execute($fromemail);
 	if(my $row = $dbq->fetchrow_hashref())
 	{
 		$reqcustid = $row->{'id'};
 	}
 
-	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, customerid, subject, createtime) VALUES ($queue, '$mh_from', $reqcustid, '$mh_subject', $timestamp)");
-	$dbq->execute();
+	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, customerid, subject, createtime) 
+			VALUES ($queue, ?, $reqcustid, ?, $timestamp)");
+	$dbq->execute($mh_from, $mh_subject);
 
-	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = $queue AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = $timestamp");
-	$dbq->execute();
+	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = $queue 
+			AND requestor = ? AND subject = ? AND createtime = $timestamp");
+	$dbq->execute($mh_from, $mh_subject);
 	$row = $dbq->fetchrow_hashref();
 	$ticket_id = $row->{'id'};
 
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, replyto, customerid, subject, messageid, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_replyto', $reqcustid, '$mh_subject', '$mh_msgid', '$mailheaders', '$mailbody', $timestamp)");
-	$dbq->execute();
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, replyto, 
+			customerid, subject, messageid, headers, body, createtime) 
+			VALUES ($ticket_id, ?, ?, $reqcustid, ?, ?, ?, ?, $timestamp)");
+	$dbq->execute($mh_from, $mh_replyto, $mh_subject, $mh_msgid, $mailheaders, $mailbody);
 
 	# i think that this expr should be enought to fetch id of previously inserted message
-	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $ticket_id AND messageid = '$mh_msgid' AND createtime = $timestamp");
-	$dbq->execute();
+	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $ticket_id 
+			AND messageid = ? AND createtime = $timestamp");
+	$dbq->execute($mh_msgid);
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};	
 
@@ -401,101 +394,121 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$autoreply_body =~ s/\%subject/$mail_mh_subject/g;
 
 	# encode confirmation headers
+	my $mailto;
 	my $c_subject = encode_mimeword($autoreply_subject,'q','UTF-8');
 	$autoreply_name = encode_mimeword($autoreply_name,'q','UTF-8');
 	$replytoname = encode_mimeword($replytoname,'q','UTF-8');
 	$fromname = encode_mimeword($fromname,'q','UTF-8');
 	
-	my $smtp = Net::SMTP->new($smtpserver);
-	$smtp->mail("$autoreply_from");
-	$smtp->to($replytoemail || $fromemail);
-	$smtp->data();
 	if($replytoemail) {
-		$smtp->datasend("To: $replytoname <$replytoemail>\n");
+		$mailto = "$replytoname <$replytoemail>";
 	} else {
-		$smtp->datasend("To: $fromname <$fromemail>\n");
+		$mailto = "$fromname <$fromemail>";
 	}
-	$smtp->datasend("From: \"$autoreply_name\" <$autoreply_from>\n");
-	$smtp->datasend("Mime-Version: 1.0\n");
-	$smtp->datasend("Content-type: text/plain; charset=UTF-8\n");
-	$smtp->datasend("Content-transfer-encoding: 8bit\n");
-	$smtp->datasend("Subject: $c_subject\n");
-	$smtp->datasend("References: $mh_references $mh_msgid\n");
-	$smtp->datasend("Message-ID: <confirm.$ticket_id.$queue.$timestamp\@rtsystem.$hostname>\n");
-	$smtp->datasend("In-Reply-To: $mh_msgid\n");
-	$smtp->datasend("X-Mailer: LMS/RT v.$_version\n");
-	$smtp->datasend("\n$autoreply_body\n");
-	$smtp->dataend();
-	$smtp->quit;	
+
+	$Mail::Sender::NO_X_MAILER = 1;
+	$Mail::Sender::SITE_HEADERS = "X-Mailer: LMS/RT v.$_version";
+
+        (new Mail::Sender)->MailMsg ({
+	        smtp => $smtp_host,
+		from => $autoreply_from,
+		auth => $smtp_auth,
+		authid => $smtp_user,
+		authpwd => $smtp_pass,
+		on_errors => undef,
+#		debug_level => 4,
+#		debug => './log.txt',
+		subject => $c_subject,
+		fake_from => "\"$autoreply_name\" <$autoreply_from>",
+		to => $replytoemail || $fromemail,
+		fake_to => $mailto,
+		encoding => '8bit',
+		charset => 'UTF-8',
+		messageid => "<confirm.$ticket_id.$queue.$timestamp\@rtsystem.$hostname>",
+		headers => 
+			"References: $mh_references $mh_msgid\n"
+			."In-Reply-To: $mh_msgid",
+		msg => "$autoreply_body\n",
+	});	
 	
 	if($notify)
 	{
+		my $body = "$mailbody\n\n$lms_url/?m=rtticketview&id=$ticket_id";
+
 		# find users emails
-		$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights WHERE users.id=userid AND queueid = $queue AND email!='' AND (rtrights.rights & 8) = 8");
+		$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights 
+				WHERE users.id = userid AND queueid = $queue 
+				AND email != '' AND (rtrights.rights & 8) = 8");
 		$dbq->execute();
+
+		if($dbq->rows() && $reqcustid && $customerinfo)
+		{
+			my $dbqc = $dbase->prepare("SELECT id, $custname, email, address, zip, city,
+					    (SELECT phone FROM customercontacts WHERE customerid = customers.id 
+						    ORDER BY id LIMIT 1) AS phone
+					    FROM customers WHERE id = $reqcustid");
+			$dbqc->execute();
+			if(my $customer = $dbqc->fetchrow_hashref())
+			{
+				$body .= "\n\n-- \n";
+				$body .= "$customer->{'customername'}\n";
+				$body .= "$customer->{'address'}, $customer->{'zip'} $customer->{'city'}\n";
+				$body .= "$customer->{'phone'}\n";
+				$body .= "$customer->{'email'}\n";
+			}
+			$dbqc->finish();
+		}
+		
 		while(my $row = $dbq->fetchrow_hashref())
 		{
-			my $smtp = Net::SMTP->new($smtpserver);
-			$smtp->mail("$autoreply_from");
-			$smtp->to($row->{'email'});
-			$smtp->data();
-			$smtp->datasend("To: \"$row->{'name'}\" <$row->{'email'}>\n");
-			$smtp->datasend("From: \"$autoreply_name\" <$autoreply_from>\n");
-			$smtp->datasend("Mime-Version: 1.0\n");
-			$smtp->datasend("Content-type: text/plain; charset=UTF-8\n");
-			$smtp->datasend("Content-transfer-encoding: 8bit\n");
-			$smtp->datasend("Subject: [RT#$ticketid] $mail_mh_subject\n");
-			$smtp->datasend("X-Mailer: LMS/RT v.$_version\n");
-			$smtp->datasend("\n");
-			$smtp->datasend("$orig_mailbody");
-			$smtp->datasend("\n\n");
-			$smtp->datasend("$lms_url/?m=rtticketview&id=$ticket_id");
-		
-			if($reqcustid && $customerinfo)
-			{
-				my $dbqc = $dbase->prepare("SELECT id, $custname, email, address, zip, city,
-					    (SELECT phone FROM customercontacts WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-					    FROM customers WHERE id = $reqcustid");
-				$dbqc->execute();
-				if(my $customer = $dbqc->fetchrow_hashref())
-				{
-					$smtp->datasend("\n\n-- \n");
-					$smtp->datasend("$customer->{'customername'}\n");
-					$smtp->datasend("$customer->{'address'}, $customer->{'zip'} $customer->{'city'}\n");
-					$smtp->datasend("$customer->{'phone'}\n");
-					$smtp->datasend("$customer->{'email'}");
-				}
-				$dbqc->finish();
-			}
-		
-			$smtp->datasend("\n\n");
-			$smtp->dataend();
-			$smtp->quit;	
+    			(new Mail::Sender)->MailMsg ({
+			        smtp => $smtp_host,
+				from => $autoreply_from,
+				auth => $smtp_auth,
+				authid => $smtp_user,
+				authpwd => $smtp_pass,
+				on_errors => undef,
+#				debug_level => 4,
+#				debug => './log.txt',
+				subject => "[RT#$ticketid] $mail_mh_subject",
+				fake_from => "\"$autoreply_name\" <$autoreply_from>",
+				to => $row->{'email'},
+				fake_to => "\"$row->{'name'}\" <$row->{'email'}>",
+				encoding => '8bit',
+				charset => 'UTF-8',
+				headers => 
+					"References: $mh_references $mh_msgid\n"
+					."In-Reply-To: $mh_msgid",
+				msg => "$body\n",
+			});
 		}
 	}
 }
 else
 {
 	# find userid
-	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail' AND email!=''");
-	$dbq->execute();
+	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = ? AND email!=''");
+	$dbq->execute($fromemail);
 	if(my $row = $dbq->fetchrow_hashref())
 	{
 		$requserid = $row->{'id'};
 	}
 
 	# find customerid
-	$dbq = $dbase->prepare("SELECT id FROM customers WHERE email = '$fromemail' AND email!=''");
-	$dbq->execute();
+	$dbq = $dbase->prepare("SELECT id FROM customers WHERE email = ? AND email!=''");
+	$dbq->execute($fromemail);
 	if(my $row = $dbq->fetchrow_hashref())
 	{
 		$reqcustid = $row->{'id'};
 	}
 
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, customerid, userid, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', $reqcustid, $requserid, '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
-	$dbq->execute();
-	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $prev_tid AND messageid = '$mh_msgid' AND createtime = $timestamp");
-	$dbq->execute();
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, customerid, 
+			userid, subject, messageid, replyto, headers, body, inreplyto, createtime) 
+			VALUES ($prev_tid, ?, $reqcustid, $requserid, ?, ?, ?, ?, ?, $inreplytoid, $timestamp)");
+	$dbq->execute($mh_from, $mh_subject, $mh_msgid, $mh_replyto, $mailheaders, $mailbody);
+	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $prev_tid 
+			AND messageid = ? AND createtime = $timestamp");
+	$dbq->execute($mh_msgid);
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};
 	
@@ -528,11 +541,12 @@ if(scalar @attachments && $save_path)
 		rename($body->bodyhandle->path, $filename);
 		move($filename, $save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
 		
-		$dbq = $dbase->prepare("INSERT INTO rtattachments (messageid, filename, contenttype) VALUES ($rt_msgid, '".basename($filename)."', '$content_type')");
+		$dbq = $dbase->prepare("INSERT INTO rtattachments (messageid, filename, 
+				contenttype) VALUES ($rt_msgid, '".basename($filename)."', '$content_type')");
 		$dbq->execute();
 	}
 }
 
-$parser->filer->purge;			# cleanup
+$parser->filer->purge;	# cleanup
 $dbq->finish();
 $dbase->disconnect();

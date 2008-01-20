@@ -60,6 +60,10 @@ version ? (????-??-??):
     show'n'hide boxes (alec)
   - network devices: show both (private and public) addresses in connected
     nodes box (alec)
+  - lms-rtparser: BTS#0000719: fixed problem with string escaping (alec)
+  - lms-rtparser: use Mail::Sender (with authentication) instead of 
+    Net::SMTP, added options 'smtp_host', 'smtp_auth', 'smtp_user',
+    'smtp_pass' (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
