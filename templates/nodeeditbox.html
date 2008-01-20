@@ -69,6 +69,7 @@
 				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</OPTION>
 				{/section}
 			</SELECT>
+			<INPUT name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 			<INPUT class="box light" type="checkbox" name="nodeedit[linktype]" value="1"{if $nodeinfo.linktype} CHECKED{/if}><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}>
 		</TD>
 	</TR>
