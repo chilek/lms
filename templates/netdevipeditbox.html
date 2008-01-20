@@ -20,109 +20,125 @@
 			<B>({$nodeipdata.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
+        <TR class="LIGHT">
+	        <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}IP address:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
                        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid},{$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/ip_pub.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Pub. IP address:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
                        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{if $nodeipdata.ip_pub!="0.0.0.0"}{$nodeipdata.ip_pub}{/if}" {tip text="Enter IP address" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]'],{$nodeipdata.netid},{$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/mac.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}MAC:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" NOWRAP>
+		<TD WIDTH="98%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/passwd.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Password:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="ipadd[passwd]" VALUE="{$nodeipdata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/options.gif" ALT="{t}Options:{/t}">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Options:{/t}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" NOWRAP>
+		<TD WIDTH="99%" NOWRAP>
 			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}>&nbsp;
 			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" CLASS="light box" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/network.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Network:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 			<B><A HREF="?m=netinfo&id={$netdevinfo.netid}">{$nodeipdata.netname}</A></B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Status:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 			<SELECT SIZE="1" NAME="ipadd[access]" {tip text="Select address status"}>
 				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected<!singular>{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
+	                                                </TABLE>
+					        </TD>
+					        <TD WIDTH="50%" style="vertical-align:top;">
+					                <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/info.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Description:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Enter additional informations (optional)"}>{$nodeipdata.info}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{t}Created:{/t}<BR>
 			{t}Modified:{/t}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%">
 			{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<BR>
 			{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+                                                </TABLE>
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
