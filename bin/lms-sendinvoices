@@ -149,6 +149,9 @@ else
 	exit 1;
 }
 
+$Mail::Sender::NO_X_MAILER = 1;
+$Mail::Sender::SITE_HEADERS = "X-Mailer: lms-sendinvoices v.$_version";
+
 # get/set invoice file type
 my $dbq = $dbase->prepare("SELECT value FROM uiconfig WHERE section='invoices' AND var='type' AND disabled=0");
 $dbq->execute();

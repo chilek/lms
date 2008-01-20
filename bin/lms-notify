@@ -171,6 +171,9 @@ open(MTFILE, "$mtfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
+$Mail::Sender::NO_X_MAILER = 1;
+$Mail::Sender::SITE_HEADERS = "X-Mailer: lms-notify v.$_version";
+
 my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, UPPER(lastname) AS lastname, 
 		name, email, SUM(cash.value) AS balance 
 		FROM customers 
