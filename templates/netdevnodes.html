@@ -77,7 +77,7 @@
 						{/section}
 						</SELECT>
 						{t}Dest. port{/t}:<INPUT name="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-						{t}Wireless{/t}:<INPUT class="box dark" type="checkbox" name="linktype" id="linktype" value="1" {tip text="wireless"} {if $nodelinktype}CHECKED{/if}>
+						<A HREF="javascript:checkElement('devnodeslinktype');">{t}Wireless{/t}:</A><INPUT class="box dark" type="checkbox" name="linktype" id="devnodeslinktype" value="1" {tip text="wireless"} {if $nodelinktype}CHECKED{/if}>
 							</TD>
 							<TD width="1%" align="right">
 								<NOBR><A HREF="javascript:document.connectnode.submit(); ">{t}Connect{/t}</A> <IMG src="img/save.gif" alt=""></NOBR>
