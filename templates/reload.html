@@ -43,16 +43,16 @@
 				</TR>
 				{cycle values="light,lucid" print=false}
 				{section name=hosts loop=$hosts}
-				<TR class="{cycle}">
-					<TD nowrap><IMG src="img/host.gif" ALT=""> <B>{$hosts[hosts].name}</B></TD>
-					<TD>{$hosts[hosts].description}</TD>
-					<TD align="right" nowrap>{if $hosts[hosts].lastreload}{$hosts[hosts].lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</TD>
-					<TD nowrap>{if $hosts[hosts].reload==1}{t}waiting{/t}
+				<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD nowrap onClick="return checkElement({$hosts[hosts].id});"><IMG src="img/host.gif" ALT=""> <B>{$hosts[hosts].name}</B></TD>
+					<TD onClick="return checkElement({$hosts[hosts].id});">{$hosts[hosts].description}</TD>
+					<TD align="right" nowrap onClick="return checkElement({$hosts[hosts].id});">{if $hosts[hosts].lastreload}{$hosts[hosts].lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</TD>
+					<TD nowrap onClick="return checkElement({$hosts[hosts].id});">{if $hosts[hosts].reload==1}{t}waiting{/t}
 						    {elseif $hosts[hosts].reload==0}{t}OK{/t}
 						    {else}{t}unknown{/t}{/if}</TD>
 					<TD>
 						{cycle print=false}
-						<INPUT class="box {cycle}" TYPE="checkbox" NAME="hosts[]" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
+						<INPUT class="box {cycle}" TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
 					</TD>
 				</TR>
 				{sectionelse}
