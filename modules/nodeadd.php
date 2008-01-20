@@ -157,6 +157,13 @@ if(isset($_POST['nodedata']))
 	if(!$error)
 	{
 		$nodeid = $LMS->NodeAdd($nodedata);
+
+		if($nodedata['nodegroup'] != '0')
+		{
+			$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
+				VALUES (?, ?)', array($nodeid, intval($nodedata['nodegroup'])));
+		}
+
 		if(!isset($nodedata['reuse']))
 		{
 			$SESSION->redirect('?m=nodeinfo&id='.$nodeid);
@@ -196,6 +203,7 @@ if($nodedata['ownerid'])
 	}
 }
 
+$SMARTY->assign('allnodegroups',$LMS->GetNodeGroupNames());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('error', $error);
