@@ -48,6 +48,20 @@
 			<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/nodegroup.gif" ALT="{t}Node group:{/t}">
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			<SELECT SIZE="1" NAME="nodedata[nodegroup]" {tip text="Select group to attribute to node"} trigger="nodegroup"} style="max-width:250px;">
+				<OPTION VALUE="0">{t}... select group ...{/t}</OPTION>
+				{foreach from=$allnodegroups item=group}
+				<OPTION VALUE="{$group.id}" {if $group.id==$nodedata.nodegroup} SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+
 	{if $netdevices}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
