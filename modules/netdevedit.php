@@ -262,6 +262,8 @@ case 'connectnode':
 case 'addip':
 
 	$subtitle = trans('New IP address');
+	$nodeipdata['access'] = 1;
+	$SMARTY->assign('nodeipdata', $nodeipdata);
 	$edit = 'addip';
 	break;
 
