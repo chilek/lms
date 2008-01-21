@@ -1049,7 +1049,7 @@ detached and stored in directory defined with <filename>mail_dir</filename>
 option.</para>
 	    <para>Unlike other Perl modules, this one additionally requires:
 <filename>MIME::Parser</filename> and <filename>MIME::Words</filename> from
-MIME-Tools package along with <filename>Net::SMTP</filename> and
+MIME-Tools package along with <filename>Mail::Sender</filename> and
 <filename>Text::Iconv</filename>.</para>
 	    <para>This script might be installed in several ways. One way is to
 create shell script which reads content of users' mailboxes and calls
@@ -1144,11 +1144,26 @@ Following parameters are valid:</para>
 		    <para>Example:	<prompt>autoreply_body = ''</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>smtp_server</para>
-		    <para>SMTP server to be used for sending emails. Default:
-		    localhost.</para>
-		    <para>Example:	<prompt>smtp_server = smtp.bigpro.com</prompt></para>
-		</listitem>
+            	    <para>smtp_host</para>
+            	    <para>SMTP server to be used when sending emails. Default: localhost</para>
+            	    <para>Example:	<prompt>smtp_host = smtp.bigpro.com</prompt></para>
+        	</listitem>
+        	<listitem>
+        	    <para>smtp_auth</para>
+            	    <para>SMTP authorization type. Allowed values: 
+	    	    LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</para>
+            	    <para>Example:	<prompt>smtp_auth = LOGIN</prompt></para>
+        	</listitem>
+        	<listitem>
+            	    <para>smtp_user</para>
+            	    <para>Login for SMTP authorization. Default: none</para>
+            	    <para>Example:	<prompt>smtp_user = admin</prompt></para>
+        	</listitem>
+        	<listitem>
+            	    <para>smtp_pass</para>
+            	    <para>Password for SMTP authorization. Default: none</para>
+            	    <para>Example:	<prompt>smtp_pass = password</prompt></para>
+        	</listitem>
 		<listitem>
 		    <para>mail_dir</para>
 		    <para>Directory where attachments should be saved. This

@@ -761,8 +761,9 @@ NAME="CUTOFF-DESC"
 ><P
 >Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
 		    klientom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. 
-		    Ponadto od³±cza komputery klientów, którym wygas³y wszystkie zobowi±zania.
-		    Ten modu³ nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</P
+		    Ponadto od³±cza komputery klientów, którym wygas³y wszystkie zobowi±zania
+		    lub s± one zawieszone. Ten modu³ nie zajmuje siê fizycznym blokowaniem
+		    dostêpu do sieci.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -872,6 +873,19 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >use_nodeassignments = true</SAMP
+></P
+></LI
+><LI
+><P
+>disable_suspended</P
+><P
+>W³±czenie tej opcji spowoduje od³aczenie tak¿e klientów,
+				których wszystkie obowi±zuj±ce zobowi±zania s± zawieszone. 
+				Domy¶lnie: wy³±czona.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>disable_suspended = true</SAMP
 ></P
 ></LI
 ><LI
@@ -1012,7 +1026,8 @@ CLASS="PROMPT"
 ><P
 >subnet_start</P
 ><P
->Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
+>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska, %b - broadcast. 
+			    Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"

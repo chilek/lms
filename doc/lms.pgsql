@@ -125,6 +125,7 @@ CREATE TABLE nodes (
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	netdev integer 		DEFAULT 0 NOT NULL,
 	linktype smallint	DEFAULT 0 NOT NULL,
+	port smallint		DEFAULT 0 NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
 	creatorid integer 	DEFAULT 0 NOT NULL,
@@ -454,6 +455,8 @@ CREATE TABLE netlinks (
 	src integer 		DEFAULT 0 NOT NULL,
 	dst integer 		DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
+	srcport smallint	DEFAULT 0 NOT NULL,
+	dstport smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY  (id),
 	UNIQUE (src, dst)
 );
@@ -938,4 +941,4 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008010700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008011800');

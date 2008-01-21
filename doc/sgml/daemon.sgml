@@ -509,6 +509,12 @@
                     Default: none.</para>
             	    <para>Example: <prompt>setnodegroup_only = blocked_nodes</prompt></para>
         	</listitem>
+                <listitem>
+                    <para>disable_suspended</para>
+                    <para>Use this option to disable customers with suspended all current assignments.
+                    Default: false.</para>
+            	    <para>Example: <prompt>disable_suspended = true</prompt></para>
+        	</listitem>
                <listitem>
                    <para>use_nodeassignments</para>
                    <para>You should enable this option only if you are using nodes with
@@ -581,7 +587,8 @@
                </listitem>
                <listitem>
                    <para>subnet_start</para>
-                   <para>Subnet header. '%a' - name, '%m' - mask. Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
+                   <para>Subnet header. '%a' - name, '%m' - mask, %b - broadcast address. 
+		   Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
                    <para>Example: <prompt>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</prompt></para>
                </listitem>
                <listitem>

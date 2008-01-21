@@ -488,8 +488,9 @@
 		    <title>Opis</title>
 		    <para>Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
 		    klientom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. 
-		    Ponadto od³±cza komputery klientów, którym wygas³y wszystkie zobowi±zania.
-		    Ten modu³ nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</para>
+		    Ponadto od³±cza komputery klientów, którym wygas³y wszystkie zobowi±zania
+		    lub s± one zawieszone. Ten modu³ nie zajmuje siê fizycznym blokowaniem
+		    dostêpu do sieci.</para>
 		    </sect3>
 		    <sect3 id="cutoff-config">
 		    <title>Konfiguracja</title>
@@ -551,6 +552,13 @@
 				powiniene¶ w³±czyæ t± opcjê. W przeciwnym wypadku bêd± sprawdzane
 				powi±zania taryf z klientami. Domy¶lnie: wy³±czona.</para>
 				<para>Przyk³ad: <prompt>use_nodeassignments = true</prompt></para>
+			</listitem>
+			<listitem>
+				<para>disable_suspended</para>
+				<para>W³±czenie tej opcji spowoduje od³aczenie tak¿e klientów,
+				których wszystkie obowi±zuj±ce zobowi±zania s± zawieszone. 
+				Domy¶lnie: wy³±czona.</para>
+				<para>Przyk³ad: <prompt>disable_suspended = true</prompt></para>
 			</listitem>
 			<listitem>
 				<para>check_invoices</para>
@@ -620,7 +628,8 @@
 			</listitem>
 			<listitem>
 			    <para>subnet_start</para>
-			    <para>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
+			    <para>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska, %b - broadcast. 
+			    Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
 			    <para>Przyk³ad: <prompt>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</prompt></para>
 			</listitem>
 			<listitem>

@@ -182,8 +182,10 @@
                <simplelist>
                     <member>id - serial number</member>
                     <member>src - connection's beginning</member>
-                    <member>dst- connection's end</member>
+                    <member>dst - connection's end</member>
                     <member>type - type of connection (0-cable, 1-wireless)</member>
+                    <member>srcport - begin's port number</member>
+                    <member>dstport - end's port number</member>
                </simplelist>
           </sect2>
           <sect2 id="nodes">
@@ -201,6 +203,7 @@
                     <member>modid - modifier's serial number</member>
                     <member>netdev - serial number of connected network device</member>
                     <member>linktype - type of connection (0-cable, 1-wireless)</member>
+                    <member>port - port number in device</member>
                     <member>access - connected/disconnected (cutoff) (1/0)</member>
                     <member>warning - should be warned with administration message? (1/0)</member>
                     <member>chkmac - enable/disable MAC checking? (1/0)</member>

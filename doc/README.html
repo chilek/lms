@@ -8320,7 +8320,7 @@ CLASS="FILENAME"
 > from
 MIME-Tools package along with <TT
 CLASS="FILENAME"
->Net::SMTP</TT
+>Mail::Sender</TT
 > and
 <TT
 CLASS="FILENAME"
@@ -8508,14 +8508,47 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->smtp_server</P
+>smtp_host</P
 ><P
->SMTP server to be used for sending emails. Default:
-		    localhost.</P
+>SMTP server to be used when sending emails. Default: localhost</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->smtp_server = smtp.bigpro.com</SAMP
+>smtp_host = smtp.bigpro.com</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth</P
+><P
+>SMTP authorization type. Allowed values: 
+	    	    LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_auth = LOGIN</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_user</P
+><P
+>Login for SMTP authorization. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_pass</P
+><P
+>Password for SMTP authorization. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_pass = password</SAMP
 ></P
 ></LI
 ><LI
@@ -10657,6 +10690,18 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>disable_suspended</P
+><P
+>Use this option to disable customers with suspended all current assignments.
+                    Default: false.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>disable_suspended = true</SAMP
+></P
+></LI
+><LI
+><P
 >use_nodeassignments</P
 ><P
 >You should enable this option only if you are using nodes with
@@ -10803,7 +10848,8 @@ CLASS="PROMPT"
 ><P
 >subnet_start</P
 ><P
->Subnet header. '%a' - name, '%m' - mask. Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
+>Subnet header. '%a' - name, '%m' - mask, %b - broadcast address. 
+		   Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -14306,11 +14352,19 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->dst- connection's end</TD
+>dst - connection's end</TD
 ></TR
 ><TR
 ><TD
 >type - type of connection (0-cable, 1-wireless)</TD
+></TR
+><TR
+><TD
+>srcport - begin's port number</TD
+></TR
+><TR
+><TD
+>dstport - end's port number</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -14373,6 +14427,10 @@ BORDER="0"
 ><TR
 ><TD
 >linktype - type of connection (0-cable, 1-wireless)</TD
+></TR
+><TR
+><TD
+>port - port number in device</TD
 ></TR
 ><TR
 ><TD

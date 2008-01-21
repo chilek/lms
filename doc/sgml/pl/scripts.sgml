@@ -1057,7 +1057,7 @@ wins    = 213.25.209.10</screen>
 	    i umieszczone w katalogu zdefiniowanym w opcji <filename>mail_dir</filename>.</para>
 	    <para>Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów, nale¿y 
 	    zainstalowaæ tak¿e modu³y <filename>MIME::Parser</filename> i <filename>MIME::Words</filename> z 
-	    pakietu MIME-Tools oraz <filename>Net::SMTP</filename> i <filename>Text::Iconv</filename>.</para>
+	    pakietu MIME-Tools oraz <filename>Mail::Sender</filename> i <filename>Text::Iconv</filename>.</para>
 	    <para>Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
 	    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a lms-rtparser
 	    dla ka¿dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
@@ -1147,10 +1147,26 @@ endif
 		    Domy¶lnie: "Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n."</para>
 		    <para>Example:	<prompt>autoreply_body = "Pañstwa zg³oszenie zosta³o zarejestrowane w naszym systemie.\nZg³oszeniu zosta³ nadany numer: RT#%tid.\nW korespondencji zwi±zanej z tym zg³oszeniem prosimy podawaæ w temacie ci±g znaków [RT#%tid].\n"</prompt></para>
 		</listitem>
+    		<listitem>
+            	    <para>smtp_host</para>
+            	    <para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</para>
+            	    <para>Przyk³ad:	<prompt>smtp_host = smtp.mydomain.pl</prompt></para>
+        	</listitem>
 		<listitem>
-		    <para>smtp_server</para>
-		    <para>Serwer SMTP, przez który zostanie wys³ana wiadomo¶æ. Domy¶lnie: localhost.</para>
-		    <para>Przyk³ad:	<prompt>smtp_server = smtp.mydomain.pl</prompt></para>
+		    <para>smtp_auth</para>
+		    <para>Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
+		    Domy¶lnie: pusta (brak autoryzacji)</para>
+		    <para>Przyk³ad:	<prompt>smtp_auth = LOGIN</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>smtp_user</para>
+		    <para>Login do autoryzacji SMTP. Domy¶lnie: pusty</para>
+		    <para>Przyk³ad:	<prompt>smtp_user = admin</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>smtp_pass</para>
+		    <para>Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</para>
+		    <para>Przyk³ad:	<prompt>smtp_pass = password</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>mail_dir</para>

@@ -3011,7 +3011,7 @@ wins    = 213.25.209.10
    mail_dir option.
 
    Unlike other Perl modules, this one additionally requires: MIME::Parser
-   and MIME::Words from MIME-Tools package along with Net::SMTP and
+   and MIME::Words from MIME-Tools package along with Mail::Sender and
    Text::Iconv.
 
    This script might be installed in several ways. One way is to create
@@ -3093,9 +3093,19 @@ endif
        assigned to this request.\nPlease, place string [RT#%tid] in
        subject field of any\nfurther mail relating to this request.\n.'
        Example: autoreply_body = ''
-     * smtp_server
-       SMTP server to be used for sending emails. Default: localhost.
-       Example: smtp_server = smtp.bigpro.com
+     * smtp_host
+       SMTP server to be used when sending emails. Default: localhost
+       Example: smtp_host = smtp.bigpro.com
+     * smtp_auth
+       SMTP authorization type. Allowed values: LOGIN, PLAIN, CRAM-MD5,
+       NTLM. Default: none
+       Example: smtp_auth = LOGIN
+     * smtp_user
+       Login for SMTP authorization. Default: none
+       Example: smtp_user = admin
+     * smtp_pass
+       Password for SMTP authorization. Default: none
+       Example: smtp_pass = password
      * mail_dir
        Directory where attachments should be saved. This directory will be
        accessed for read/write both by rtparser user and your Web Server
@@ -3836,6 +3846,10 @@ Chapter 6. LMS Daemon
        of customer who exceeds value or invoice limit. Customer's status
        isn't changed. Default: none.
        Example: setnodegroup_only = blocked_nodes
+     * disable_suspended
+       Use this option to disable customers with suspended all current
+       assignments. Default: false.
+       Example: disable_suspended = true
      * use_nodeassignments
        You should enable this option only if you are using nodes with
        tariffs assignments. In other way tariffs assignments with
@@ -3889,8 +3903,9 @@ Chapter 6. LMS Daemon
        File footer. Default: empty.
        Example: end = ""
      * subnet_start
-       Subnet header. '%a' - name, '%m' - mask. Default: "subnet %a
-       netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".
+       Subnet header. '%a' - name, '%m' - mask, %b - broadcast address.
+       Default: "subnet %a netmask %m {\ndefault-lease-time
+       86400;\nmax-lease-time 86400;".
        Example: subnet_start = "subnet %a netmask %m {default-lease-time
        3600;"
      * subnet_end
@@ -5111,8 +5126,10 @@ Chapter 7. For curious
 
    id - serial number
    src - connection's beginning
-   dst- connection's end
+   dst - connection's end
    type - type of connection (0-cable, 1-wireless)
+   srcport - begin's port number
+   dstport - end's port number
      __________________________________________________________________
 
 7.2.9. Computers and IP addresses ('nodes')
@@ -5129,6 +5146,7 @@ Chapter 7. For curious
    modid - modifier's serial number
    netdev - serial number of connected network device
    linktype - type of connection (0-cable, 1-wireless)
+   port - port number in device
    access - connected/disconnected (cutoff) (1/0)
    warning - should be warned with administration message? (1/0)
    chkmac - enable/disable MAC checking? (1/0)
