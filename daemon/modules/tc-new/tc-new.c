@@ -576,12 +576,12 @@ esac\n\
 	));
 
 	tc->climit = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "climit",
-	"$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT\n"
+	"$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT\n"
 	));
 	
 	tc->plimit = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "plimit",
-	"$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT\n"
-	"$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT\n"
+	"$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -j ACCEPT\n"
+	"$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -j ACCEPT\n"
 	));
 	
 	tc->networks = strdup(g->config_getstring(tc->base.ini, tc->base.instance, "networks", ""));
