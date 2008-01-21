@@ -1,0 +1,23 @@
+* Opis
+
+Moduł generujący skrypt zawierający polecenia iptables i tc służące
+do ograniczania pasma i limitowania połączeń klientom. Działa podobnie
+do modułu 'tc', lecz obsługuje funkcjonalność pozwalającą na powiązywanie
+taryf z komputerami. Moduł generuje skrypt z zestawem reguł dla każdego 
+komputera. Pod uwagę są brane tylko taryfy którym zostały przypisane komputery.
+Jeśli do jednej taryfy przypisano wiele komputerów ich limity obliczane są
+jako średnia. W przypadku gdy dla jednego komputera zdefiniowano wiele
+taryf limity (średnie) są sumowane. W regułkach można stosować
+następujące zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, 
+%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit, 
+%i16 - ostatni oktet adresu IP w formacie szesnastkowym 
+oraz %x - licznik o wartości początkowej 100 
+zwiększany o jeden dla każdego komputera.
+
+Ponieważ konfiguracja modułu jest bardzo podobna do jego poprzednika,
+powienieneś zacząć od przeczytania jego opisu. 
+
+* Konfiguracja
+
+Masz do dyspozycji standardowe parametry dostępne dla modułu 'tc'
+z wyjątkiem opcji one_class_per_host.
