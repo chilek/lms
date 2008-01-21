@@ -227,11 +227,11 @@ HREF="daemon-modules.html#DAEMON-TC"
 ><TR
 ><TD
 ><A
-HREF="daemon-modules.html#DAEMON-TC-NG"
->tc-ng</A
+HREF="daemon-modules.html#DAEMON-TC-NEW"
+>tc-new</A
 ></TD
 ><TD
->Tworzenie regu³ TC</TD
+>Tworzenie regu³ TC (powi±zania komputerów z taryfami)</TD
 ></TR
 ><TR
 ><TD
@@ -1897,52 +1897,229 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="DAEMON-TC-NG"
->6.2.11. Tc-ng (HTB)</A
+NAME="DAEMON-TC-NEW"
+>6.2.11. Tc-new (HTB)</A
 ></H2
 ><DIV
 CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="TC-NG-DESC"
+NAME="TC-NEW-DESC"
 >6.2.11.1. Opis</A
 ></H3
 ><P
 >Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
-					do ograniczania pasma i limitowania po³±czeñ klientom. Dzia³a podobnie
-					do modu³u 'tc', lecz obs³uguje funkcjonalno¶æ pozwalaj±c± na powi±zywanie
-					taryf z komputerami. Modu³ generuje skrypt z zestawem regu³ dla ka¿dego 
-					komputera. Pod uwagê s± brane tylko taryfy którym zosta³y przypisane komputery.
-					Je¶li do jednej taryfy przypisano wiele komputerów ich limity obliczane s±
-					jako ¶rednia. W przypadku gdy dla jednego komputera zdefiniowano wiele
-					taryf limity (¶rednie) s± sumowane. W regu³kach mo¿na stosowaæ
-					nastêpuj±ce	zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, 
-					%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit, 
-					%i16 - ostatni oktet adresu IP w formacie szesnastkowym 
-					oraz %x - licznik o warto¶ci pocz±tkowej 100 
-					zwiêkszany o jeden dla ka¿dego komputera.</P
-><P
->Poniewa¿ konfiguracja modu³u jest bardzo podobna do jego poprzednika,
-					powieniene¶ zacz±æ od przeczytania opisu <A
-HREF="daemon-modules.html#DAEMON-TC"
->tc</A
->.</P
+				do ograniczania pasma i limitowania po³±czeñ klientom. Dzia³a podobnie
+				do modu³u 'tc', lecz obs³uguje funkcjonalno¶æ pozwalaj±c± na powi±zywanie
+				taryf z komputerami. Skrypt tworzy tzw. kana³y dla komputerów klienta
+				przypisanych do tej samej taryfy. Przyk³±dowo: dla klienta z dwoma 
+				komputerami przypisanymi do tej samej taryfy zostan± utworzone dwie
+				klasy (upload i download) oraz po dwa filtry dla ka¿dego komputera. 
+				W przypadku gdy klient ma dwie taryfy i do ka¿dej po jednym komputerze 
+				powstan± po dwie klasy dla ka¿dej taryfy i odpowiednia ilo¶æ filtrów.
+				Warto¶æ pocz±tkowa liczników (%x i %h w regu³ach) wynosi 100.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="TC--NGCONFIG"
+NAME="TC-NEW-CONFIG"
 >6.2.11.2. Konfiguracja</A
 ></H3
 ><P
->Masz do dyspozycji standardowe parametry dostêpne dla modu³u 'tc'
-					z wyj±tkiem opcji <SAMP
+>Warto¶ci domy¶lne niektórych opcj± s± zgodne z modu³em <A
+HREF="daemon-modules.html#DAEMON-TC"
+>tc</A
+>.
+				</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku wynikowego. Domy¶lnie: /etc/rc.d/rc.htb.</P
+><P
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->one_class_per_host</SAMP
->.</P
+>file = /tmp/rc.htb</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "sh /etc/rc.d/rc.htb start".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = "chmod 700 /tmp/rc.htb; /tmp/rc.htb start"</SAMP
+></P
+></LI
+><LI
+><P
+>begin</P
+><P
+>Nag³ówek skryptu. Domy¶lnie: jak w module tc</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>begin = "#!/bin/bash\n$TC=/usr/local/sbin/tc\n"</SAMP
+></P
+></LI
+><LI
+><P
+>end</P
+><P
+>Stopka skryptu. Domy¶lnie: jak w module tc</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>end = ""</SAMP
+></P
+></LI
+><LI
+><P
+>class_up</P
+><P
+>Definicja klasy dla uploadu, w której mo¿emy u¿yæ nastêpuj±cych 
+					zmiennych: %cid - ID klienta, %cname - nazwa klienta, %h - numer uchwytu 
+					klasy %uprate, %upceil. Domy¶lnie: 
+					<PRE
+CLASS="SCREEN"
+># %cname (ID:%cid)
+$TC class add dev $WAN parent 2:1 classid 2:%h htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
+$TC qdisc add dev $WAN parent 2:%h esfq perturb 10 hash dst</PRE
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>class_up = "$TC class add dev $WAN parent 2:1 classid 2:%h htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500"</SAMP
+></P
+></LI
+><LI
+><P
+>class_down</P
+><P
+>Definicja klasy dla downloadu, w której mo¿emy u¿yæ nastêpuj±cych 
+					zmiennych: %cid - ID klienta, %cname - nazwa klienta, %h - numer uchwytu 
+					klasy, %downrate, %downceil. Domy¶lnie: 
+					<PRE
+CLASS="SCREEN"
+>$TC class add dev $LAN parent 1:2 classid 1:%h htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
+$TC qdisc add dev $LAN parent 1:%h esfq perturb 10 hash dst						</PRE
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>class_up = "$TC class add dev $LAN parent 1:2 classid 1:%h htb rate %downratekbit ceil %ceilceilkbit $BURST prio 2 quantum 1500"</SAMP
+></P
+></LI
+><LI
+><P
+>filter_up</P
+><P
+>Definicja filtrów dla ruchu w kierunku od hosta. Dozwolone zmienne:
+					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni oktet adresu szesnastkowo, 
+					%i - adres, %m - mac, %o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %h - uchwyt klasy, %x - uchwyt filtra (unikalny numer regu³y). Domy¶lnie: 
+					<PRE
+CLASS="SCREEN"
+># %n
+$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
+$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%h</PRE
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>class_up = "%n\n$IPT -A src%o3 -s %i -j CLASSIFY --set-class 2:%h\n"</SAMP
+></P
+></LI
+><LI
+><P
+>filter_down</P
+><P
+>Definicja filtrów dla ruchu w kierunku do hosta. Dozwolone zmienne:
+					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni 
+					oktet adresu szesnastkowo, %i - adres, %m - mac, %o1, %o2, %o3, 
+					%o4 - oktety adresu dziesiêtnie, %h - uchwyt klasy, %x - uchwyt
+					filtra (unikalny numer regu³y). Domy¶lnie: 
+					<PRE
+CLASS="SCREEN"
+>$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
+$TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%h</PRE
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>class_down = "%n\n$IPT -A dst%o3 -d %i -j CLASSIFY --set-class 1:%h\n"</SAMP
+></P
+></LI
+><LI
+><P
+>climit</P
+><P
+>Definicja regu³y dla limitu po³±czeñ hosta. Dozwolone 
+					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
+					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %climit - limit
+					po³±czeñ. Domy¶lnie: 
+					<PRE
+CLASS="SCREEN"
+>$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT
+					</PRE
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>climit = ""</SAMP
+></P
+></LI
+><LI
+><P
+>plimit</P
+><P
+>Definicja regu³y dla limitu pakietów dla hosta. Dozwolone 
+					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
+					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %plimit - limit
+					pakietów. Domy¶lnie: 
+					<PRE
+CLASS="SCREEN"
+>$IPT -t filter -I FORWARD -d %i -m limit --limit %plimit/s -j ACCEPT
+$IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</PRE
+></P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>plimit = ""</SAMP
+></P
+></LI
+><LI
+><P
+>networks</P
+><P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+					Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = "lan1 lan2"</SAMP
+></P
+></LI
+><LI
+><P
+>customergroups</P
+><P
+>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+					Domy¶lnie: pusta (wszystkie grupy).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>customergroups = "grupa1 grupa2"</SAMP
+></P
+></LI
+></UL
 ></DIV
 ></DIV
 ><DIV
