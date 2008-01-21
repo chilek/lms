@@ -231,8 +231,8 @@
 				<entry>Tworzenie regu³ TC</entry>
 				</row>
 				<row>
-				<entry><xref linkend="daemon-tc-ng"></entry>
-				<entry>Tworzenie regu³ TC</entry>
+				<entry><xref linkend="daemon-tc-new"></entry>
+				<entry>Tworzenie regu³ TC (powi±zania komputerów z taryfami)</entry>
 				</row>
 				<row>
 				<entry><xref linkend="daemon-traffic"></entry>
@@ -1093,30 +1093,130 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-tc-ng" xreflabel="tc-ng">
-			<title>Tc-ng (HTB)</title>
-			<sect3 id="tc-ng-desc">
+		<sect2 id="daemon-tc-new" xreflabel="tc-new">
+			<title>Tc-new (HTB)</title>
+			<sect3 id="tc-new-desc">
 				<title>Opis</title>
 				<para>Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
-					do ograniczania pasma i limitowania po³±czeñ klientom. Dzia³a podobnie
-					do modu³u 'tc', lecz obs³uguje funkcjonalno¶æ pozwalaj±c± na powi±zywanie
-					taryf z komputerami. Modu³ generuje skrypt z zestawem regu³ dla ka¿dego 
-					komputera. Pod uwagê s± brane tylko taryfy którym zosta³y przypisane komputery.
-					Je¶li do jednej taryfy przypisano wiele komputerów ich limity obliczane s±
-					jako ¶rednia. W przypadku gdy dla jednego komputera zdefiniowano wiele
-					taryf limity (¶rednie) s± sumowane. W regu³kach mo¿na stosowaæ
-					nastêpuj±ce	zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, 
-					%if - interfejs, %uprate, %downrate, %upceil, %downceil, %plimit, %climit, 
-					%i16 - ostatni oktet adresu IP w formacie szesnastkowym 
-					oraz %x - licznik o warto¶ci pocz±tkowej 100 
-					zwiêkszany o jeden dla ka¿dego komputera.</para>
-				<para>Poniewa¿ konfiguracja modu³u jest bardzo podobna do jego poprzednika,
-					powieniene¶ zacz±æ od przeczytania opisu <xref linkend="daemon-tc">.</para>
+				do ograniczania pasma i limitowania po³±czeñ klientom. Dzia³a podobnie
+				do modu³u 'tc', lecz obs³uguje funkcjonalno¶æ pozwalaj±c± na powi±zywanie
+				taryf z komputerami. Skrypt tworzy tzw. kana³y dla komputerów klienta
+				przypisanych do tej samej taryfy. Przyk³±dowo: dla klienta z dwoma 
+				komputerami przypisanymi do tej samej taryfy zostan± utworzone dwie
+				klasy (upload i download) oraz po dwa filtry dla ka¿dego komputera. 
+				W przypadku gdy klient ma dwie taryfy i do ka¿dej po jednym komputerze 
+				powstan± po dwie klasy dla ka¿dej taryfy i odpowiednia ilo¶æ filtrów.
+				Warto¶æ pocz±tkowa liczników (%x i %h w regu³ach) wynosi 100.</para>
 			</sect3>
-			<sect3 id="tc--ngconfig">
+			<sect3 id="tc-new-config">
 				<title>Konfiguracja</title>
-				<para>Masz do dyspozycji standardowe parametry dostêpne dla modu³u 'tc'
-					z wyj±tkiem opcji <prompt>one_class_per_host</prompt>.</para>
+				<para>Warto¶ci domy¶lne niektórych opcj± s± zgodne z modu³em <xref linkend="daemon-tc">.
+				</para>
+				<itemizedlist>
+				<listitem>
+					<para>file</para>
+					<para>Lokalizacja pliku wynikowego. Domy¶lnie: /etc/rc.d/rc.htb.</para>
+					<para>Przyk³ad: <prompt>file = /tmp/rc.htb</prompt></para>
+				</listitem>
+				<listitem>
+					<para>command</para>
+					<para>Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "sh /etc/rc.d/rc.htb start".</para>
+					<para>Przyk³ad: <prompt>command = "chmod 700 /tmp/rc.htb; /tmp/rc.htb start"</prompt></para>
+				</listitem>
+				<listitem>
+					<para>begin</para>
+					<para>Nag³ówek skryptu. Domy¶lnie: jak w module tc</para>
+					<para>Przyk³ad: <prompt>begin = "#!/bin/bash\n$TC=/usr/local/sbin/tc\n"</prompt></para>
+				</listitem>    
+				<listitem>
+					<para>end</para>
+					<para>Stopka skryptu. Domy¶lnie: jak w module tc</para>
+					<para>Przyk³ad: <prompt>end = ""</prompt></para>
+				</listitem>
+				<listitem>
+					<para>class_up</para>
+					<para>Definicja klasy dla uploadu, w której mo¿emy u¿yæ nastêpuj±cych 
+					zmiennych: %cid - ID klienta, %cname - nazwa klienta, %h - numer uchwytu 
+					klasy %uprate, %upceil. Domy¶lnie: 
+					<screen>
+# %cname (ID:%cid)
+$TC class add dev $WAN parent 2:1 classid 2:%h htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
+$TC qdisc add dev $WAN parent 2:%h esfq perturb 10 hash dst
+</screen></para>
+<para>Przyk³ad: <prompt>class_up = "$TC class add dev $WAN parent 2:1 classid 2:%h htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500"</prompt></para>
+				</listitem>
+				<listitem>
+					<para>class_down</para>
+					<para>Definicja klasy dla downloadu, w której mo¿emy u¿yæ nastêpuj±cych 
+					zmiennych: %cid - ID klienta, %cname - nazwa klienta, %h - numer uchwytu 
+					klasy, %downrate, %downceil. Domy¶lnie: 
+					<screen>
+$TC class add dev $LAN parent 1:2 classid 1:%h htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
+$TC qdisc add dev $LAN parent 1:%h esfq perturb 10 hash dst						</screen></para>
+					<para>Przyk³ad: <prompt>class_up = "$TC class add dev $LAN parent 1:2 classid 1:%h htb rate %downratekbit ceil %ceilceilkbit $BURST prio 2 quantum 1500"</prompt></para>
+				</listitem>
+				<listitem>
+					<para>filter_up</para>
+					<para>Definicja filtrów dla ruchu w kierunku od hosta. Dozwolone zmienne:
+					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni oktet adresu szesnastkowo, 
+					%i - adres, %m - mac, %o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %h - uchwyt klasy, %x - uchwyt filtra (unikalny numer regu³y). Domy¶lnie: 
+					<screen>
+# %n
+$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
+$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%h
+</screen></para>
+					<para>Przyk³ad: <prompt>class_up = "%n\n$IPT -A src%o3 -s %i -j CLASSIFY --set-class 2:%h\n"</prompt></para>
+				</listitem>
+				<listitem>
+					<para>filter_down</para>
+					<para>Definicja filtrów dla ruchu w kierunku do hosta. Dozwolone zmienne:
+					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i16 - ostatni 
+					oktet adresu szesnastkowo, %i - adres, %m - mac, %o1, %o2, %o3, 
+					%o4 - oktety adresu dziesiêtnie, %h - uchwyt klasy, %x - uchwyt
+					filtra (unikalny numer regu³y). Domy¶lnie: 
+					<screen>
+$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
+$TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%h
+</screen></para>
+					<para>Przyk³ad: <prompt>class_down = "%n\n$IPT -A dst%o3 -d %i -j CLASSIFY --set-class 1:%h\n"</prompt></para>
+				</listitem>
+				<listitem>
+					<para>climit</para>
+					<para>Definicja regu³y dla limitu po³±czeñ hosta. Dozwolone 
+					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
+					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %climit - limit
+					po³±czeñ. Domy¶lnie: 
+					<screen>
+$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT
+					</screen></para>
+					<para>Przyk³ad: <prompt>climit = ""</prompt></para>
+				</listitem>
+				<listitem>
+					<para>plimit</para>
+					<para>Definicja regu³y dla limitu pakietów dla hosta. Dozwolone 
+					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
+					%i16 - ostatni oktet adresu szesnastkowo, %i - adres, %m - mac, 
+					%o1, %o2, %o3, %o4 - oktety adresu dziesiêtnie, %plimit - limit
+					pakietów. Domy¶lnie: 
+					<screen>
+$IPT -t filter -I FORWARD -d %i -m limit --limit %plimit/s -j ACCEPT
+$IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</screen></para>
+					<para>Przyk³ad: <prompt>plimit = ""</prompt></para>
+				</listitem>
+				<listitem>
+					<para>networks</para>
+					<para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+					Domy¶lnie: pusta (wszystkie sieci).</para>
+					<para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+				</listitem>
+				<listitem>
+					<para>customergroups</para>
+					<para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+					Domy¶lnie: pusta (wszystkie grupy).</para>
+					<para>Przyk³ad: <prompt>customergroups = "grupa1 grupa2"</prompt></para>
+				</listitem>
+		    </itemizedlist>
 			</sect3>
 		</sect2>
 		<sect2 id="daemon-dns" xreflabel="dns">
