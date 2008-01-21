@@ -824,6 +824,18 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>disable_suspended</P
+><P
+>Use this option to disable customers with suspended all current assignments.
+                    Default: false.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>disable_suspended = true</SAMP
+></P
+></LI
+><LI
+><P
 >use_nodeassignments</P
 ><P
 >You should enable this option only if you are using nodes with
@@ -970,7 +982,8 @@ CLASS="PROMPT"
 ><P
 >subnet_start</P
 ><P
->Subnet header. '%a' - name, '%m' - mask. Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
+>Subnet header. '%a' - name, '%m' - mask, %b - broadcast address. 
+		   Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"

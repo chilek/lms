@@ -2071,7 +2071,7 @@ CLASS="FILENAME"
 > from
 MIME-Tools package along with <TT
 CLASS="FILENAME"
->Net::SMTP</TT
+>Mail::Sender</TT
 > and
 <TT
 CLASS="FILENAME"
@@ -2259,14 +2259,47 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->smtp_server</P
+>smtp_host</P
 ><P
->SMTP server to be used for sending emails. Default:
-		    localhost.</P
+>SMTP server to be used when sending emails. Default: localhost</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->smtp_server = smtp.bigpro.com</SAMP
+>smtp_host = smtp.bigpro.com</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth</P
+><P
+>SMTP authorization type. Allowed values: 
+	    	    LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_auth = LOGIN</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_user</P
+><P
+>Login for SMTP authorization. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_pass</P
+><P
+>Password for SMTP authorization. Default: none</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_pass = password</SAMP
 ></P
 ></LI
 ><LI

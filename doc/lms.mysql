@@ -237,6 +237,8 @@ CREATE TABLE netlinks (
   src int(11) NOT NULL DEFAULT '0',
   dst int(11) NOT NULL DEFAULT '0',
   type tinyint(1) NOT NULL DEFAULT '0',
+  srcport smallint NOT NULL DEFAULT '0',
+  dstport smallint NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY src (src,dst)
 ) TYPE=MyISAM;
@@ -283,6 +285,7 @@ CREATE TABLE nodes (
   modid int(11) NOT NULL DEFAULT '0',
   netdev int(11) NOT NULL DEFAULT '0',
   linktype tinyint(1) NOT NULL DEFAULT '0',
+  port smallint NOT NULL DEFAULT '0',
   access tinyint(1) NOT NULL DEFAULT '1',
   warning tinyint(1) NOT NULL DEFAULT '0',
   chkmac tinyint(1) NOT NULL DEFAULT '1',
@@ -880,4 +883,4 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007010800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007011800');
