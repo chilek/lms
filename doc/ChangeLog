@@ -65,6 +65,7 @@ version ? (????-??-??):
     Net::SMTP, added options 'smtp_host', 'smtp_auth', 'smtp_user',
     'smtp_pass' (alec)
   - lmsd/tc-ng moved to contrib as deprecated (alec)
+  - lms-notify-sms: fixed sql query on mysql (alec)
 
 version 1.11.1 Talus (2007-12-03):
 
