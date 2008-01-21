@@ -129,7 +129,7 @@ if($dbtype =~ /mysql/)
 	# 888xxxxxx 880xxxxxx (heyah), 6(0,9)xxxxxxx (plus and era), 50xxxxxxx (idea)
 	# it will also treat as valid numbers begining with: +48, 0, 0-, 0 (space)...
 
-	$regexp = "phone REGEXP '^(\\+48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$'";
+	$regexp = "phone REGEXP '^(\\\\+48|0)?(88[08]|50[0-9]|6[09][0-9])[0-9]{6}\$'";
 }
 elsif($dbtype eq "postgres")
 {

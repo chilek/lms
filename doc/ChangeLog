@@ -9,6 +9,7 @@ version ? (????-??-??):
   - fixed customers group deleting from group info and edit forms (alec)
   - fix: added node assignments deleting in CustomerDelete() (alec)
   - removed redundant GetNodeList() call in netdevinfo (alec)
+  - lms-notify-sms: fixed sql query on mysql (alec)
   
 version 1.10.2 Roham (2007-12-12):
 
