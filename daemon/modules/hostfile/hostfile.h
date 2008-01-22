@@ -25,6 +25,7 @@ struct host
 	char *access;
 	char *info;
 	char *mac;
+	char *port;
 	char *id;
 	char *ip;
 	char *ip_pub;

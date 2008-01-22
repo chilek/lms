@@ -708,6 +708,7 @@
 			<member>%m - mac adres,</member>
 			<member>%n - nazwa komputera,</member>
 			<member>%p - has³o,</member>
+			<member>%port - nr portu w urz±dzeniu, do którego jest pod³±czony komputer,</member>
 			<member>%info - opis komputera,</member>
 			<member>%domain - domena,</member>
 			<member>%net - nazwa sieci, do której nale¿y host,</member>
