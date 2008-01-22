@@ -38,7 +38,7 @@
 			{/if}
 			<NOBR>
 			{if $customerlist}
-			<SELECT size="1" name="ticket[customerid]" {tip text="You can assign customer to ticket"}>
+			<SELECT size="1" name="ticket[customerid]" {tip text="You can assign customer to ticket"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
 			        <OPTION value="0">{t}- select customer -{/t}</OPTION>
 				{section name=customerlist loop=$customerlist}
 				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id==$ticket.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:"45":"..."} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
