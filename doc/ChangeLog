@@ -69,6 +69,8 @@ version 1.11.2 Neera (????-??-??):
   - lmsd/parser: added 'port' field in NODES constant (alec)
   - lmsd/hostfile: added %port variable (alec)
   - lms-mgc: added %PORT variable in nodes rules (alec)
+  - added SQL functions mask2prefix() and broadcast() (alec)
+  - added IMMUTABLE flag for inet_ntoa/inet_aton functions on postgres (alec) 
 
 version 1.11.1 Talus (2007-12-03):
 
