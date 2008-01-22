@@ -2307,11 +2307,8 @@ class LMS
 
 	function GetNetIDByIP($ipaddr)
 	{
-		if($networks = $this->DB->GetAll('SELECT id, inet_ntoa(address) AS address, mask FROM networks'))
-			foreach($networks as $idx => $row)
-				if(isipin($ipaddr,$row['address'],$row['mask']))
-					return $row['id'];
-		return FALSE;
+		return $this->DB->GetOne('SELECT id FROM networks 
+				WHERE address = (inet_aton(?) & inet_aton(mask))', array($ipaddr));
 	}
 
 	function GetNetworks()
@@ -2332,7 +2329,9 @@ class LMS
 
 	function GetNetworkList()
 	{
-		if($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY name'))
+		if($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, 
+				mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend 
+				FROM networks ORDER BY name'))
 		{
 			$size = 0; $assigned = 0; $online = 0;
 
@@ -2358,6 +2357,11 @@ class LMS
 
 	function IsIPValid($ip,$checkbroadcast=FALSE,$ignoreid=0)
 	{
+#		return $this->DB->GetOne('SELECT 1 FROM networks
+#				WHERE id != ? AND address = (inet_aton(?) & inet_aton(mask))', 
+# przydala by sie funkcja broadcast() w sqlu 
+#				array(intval($ignoreid), $ip));
+	
 		if($networks = $this->GetNetworks())
 		{
 			foreach($networks as $idx => $row)
