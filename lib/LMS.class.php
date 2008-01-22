@@ -2289,8 +2289,22 @@ class LMS
 		if($netadd['prefix'] != '')
 			$netadd['mask'] = prefix2mask($netadd['prefix']);
 
-		if($this->DB->Execute('INSERT INTO networks (name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],strtolower($netadd['interface']),$netadd['gateway'],$netadd['dns'],$netadd['dns2'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
-			return $this->DB->GetOne('SELECT id FROM networks WHERE address=inet_aton(?)', array($netadd['address']));
+		if($this->DB->Execute('INSERT INTO networks (name, address, mask, interface, gateway, 
+				dns, dns2, domain, wins, dhcpstart, dhcpend) 
+				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				array(strtoupper($netadd['name']),
+					$netadd['address'],
+					$netadd['mask'],
+					strtolower($netadd['interface']),
+					$netadd['gateway'],
+					$netadd['dns'],
+					$netadd['dns2'],
+					$netadd['domain'],
+					$netadd['wins'],
+					$netadd['dhcpstart'],
+					$netadd['dhcpend']
+		)))
+			return $this->DB->GetOne('SELECT id FROM networks WHERE address = inet_aton(?)', array($netadd['address']));
 		else
 			return FALSE;
 	}
@@ -2313,41 +2327,51 @@ class LMS
 
 	function GetNetworks()
 	{
-		if($netlist = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask FROM networks ORDER BY name'))
-			foreach($netlist as $idx => $row)
-				$netlist[$idx]['prefix'] = mask2prefix($row['mask']);
-
-		return $netlist;
+		return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+			address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix
+			FROM networks ORDER BY name');
 	}
 
 	function GetNetworkParams($id)
 	{
-		if($params = $this->DB->GetRow('SELECT *, inet_ntoa(address) AS netip FROM networks WHERE id=?', array($id)))
-			$params['broadcast'] = ip_long(getbraddr($params['netip'],$params['mask']));
-		return $params;
+		return $this->DB->GetRow('SELECT *, inet_ntoa(address) AS netip, 
+			broadcast(address, inet_aton(mask)) AS broadcast
+			FROM networks WHERE id = ?', array($id));
 	}
 
 	function GetNetworkList()
 	{
-		if($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, 
-				mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend 
-				FROM networks ORDER BY name'))
+		if($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+				address AS addresslong, mask, interface, gateway, dns, dns2, 
+				domain, wins, dhcpstart, dhcpend,
+				mask2prefix(inet_aton(mask)) AS prefix,
+				broadcast(address, inet_aton(mask)) AS broadcastlong,
+				(SELECT COUNT(*) 
+					FROM nodes 
+					WHERE (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
+				) AS assigned,
+				(SELECT COUNT(*) 
+					FROM nodes 
+					WHERE ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
+						AND (?NOW? - lastonline < ?)
+				) AS online
+				FROM networks ORDER BY name', 
+				array(intval($this->CONFIG['phpui']['lastonline_limit']))))
 		{
 			$size = 0; $assigned = 0; $online = 0;
 
 			foreach($networks as $idx => $row)
 			{
-				$row['prefix'] = mask2prefix($row['mask']);
 				$row['size'] = pow(2,(32 - $row['prefix']));
-				$row['broadcast'] = getbraddr($row['address'],$row['mask']);
-				$row['broadcastlong'] = ip_long($row['broadcast']);
-				$row['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE (ipaddr >= ? AND ipaddr <= ?) OR (ipaddr_pub >= ? AND ipaddr_pub <= ?)', array($row['addresslong'], $row['broadcastlong'], $row['addresslong'], $row['broadcastlong']));
-            			$row['online'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ((ipaddr >= ? AND ipaddr <= ?)  OR (ipaddr_pub >= ? AND ipaddr_pub <= ?)) AND (?NOW? - lastonline < ?)', array($row['addresslong'], $row['broadcastlong'], $row['addresslong'], $row['broadcastlong'], $this->CONFIG['phpui']['lastonline_limit']));
+				$row['broadcast'] = long2ip($row['broadcastlong']);
 				$networks[$idx] = $row;
 				$size += $row['size'];
 				$assigned += $row['assigned'];
 				$online += $row['online'];
 			}
+			
 			$networks['size'] = $size;
 			$networks['assigned'] = $assigned;
 			$networks['online'] = $online;
@@ -2357,70 +2381,28 @@ class LMS
 
 	function IsIPValid($ip,$checkbroadcast=FALSE,$ignoreid=0)
 	{
-#		return $this->DB->GetOne('SELECT 1 FROM networks
-#				WHERE id != ? AND address = (inet_aton(?) & inet_aton(mask))', 
-# przydala by sie funkcja broadcast() w sqlu 
-#				array(intval($ignoreid), $ip));
-	
-		if($networks = $this->GetNetworks())
-		{
-			foreach($networks as $idx => $row)
-			{
-				if($row['id'] != $ignoreid)
-					if($checkbroadcast)
-					{
-						if((ip_long($ip) > $row['addresslong'] - 1)&&(ip_long($ip) < ip_long(getbraddr($row['address'],$row['mask'])) + 1))
-						{
-							return TRUE;
-						}
-					}
-					else
-					{
-						if((ip_long($ip) > $row['addresslong'])&&(ip_long($ip) < ip_long(getbraddr($row['address'],$row['mask']))))
-						{
-							return TRUE;
-						}
-					}
-			}
-		}
-
-		return FALSE;
+		$ip = ip_long($ip);
+		return $this->DB->GetOne('SELECT 1 FROM networks
+			WHERE id != ? AND address < ?
+			AND broadcast(address, inet_aton(mask)) >'.($checkbroadcast ? '=' : '').' ?', 
+			array(intval($ignoreid), $ip, $ip));
 	}
 
 	function NetworkOverlaps($network,$mask,$ignorenet=0)
 	{
 		$cnetaddr = ip_long($network);
-		$cbroadcast = ip_long(getbraddr($network,$mask));
+		$cbroadcast = ip_long(getbraddr($network, $mask));
 
-		if($networks = $this->GetNetworks())
-			foreach($networks as $idx => $row)
-			{
-				$broadcast = ip_long(getbraddr($row['address'],$row['mask']));
-				$netaddr = $row['addresslong'];
-				if($row['id'] != $ignorenet)
-				{
-					if(
-							($cbroadcast == $broadcast)
-							||
-							($cnetaddr == $netaddr)
-							||
-							(
-							 ($cnetaddr < $netaddr)
-							 &&
-							 ($cbroadcast > $broadcast)
-							 )
-							||
-							(
-							 ($cnetaddr > $netaddr)
-							 &&
-							 ($cbroadcast < $broadcast)
-							 )
-							)
-						return TRUE;
-
-				}
-			}
-		return FALSE;
+		return $this->DB->GetOne('SELECT 1 FROM networks
+			WHERE id != ? AND (
+				address = ? OR broadcast(address, inet_aton(mask)) = ?
+				OR (address > ? AND broadcast(address, inet_aton(mask)) < ?) 
+				OR (address < ? AND broadcast(address, inet_aton(mask)) > ?) 
+			)', array(intval($ignoreid), 
+				$cnetaddr, $cbroadcast,
+				$cnetaddr, $cbroadcast,
+				$cnetaddr, $cbroadcast
+			));
 	}
 
 	function NetworkShift($network='0.0.0.0',$mask='0.0.0.0',$shift=0)
@@ -2431,7 +2413,22 @@ class LMS
 
 	function NetworkUpdate($networkdata)
 	{
-		return $this->DB->Execute('UPDATE networks SET name=?, address=inet_aton(?), mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?', array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],strtolower($networkdata['interface']),$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
+		return $this->DB->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
+			mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, 
+			dhcpstart=?, dhcpend=? WHERE id=?', 
+			array(strtoupper($networkdata['name']),
+				$networkdata['address'],
+				$networkdata['mask'],
+				strtolower($networkdata['interface']),
+				$networkdata['gateway'],
+				$networkdata['dns'],
+				$networkdata['dns2'],
+				$networkdata['domain'],
+				$networkdata['wins'],
+				$networkdata['dhcpstart'],
+				$networkdata['dhcpend'],
+				$networkdata['id']
+			));
 	}
 
 	function NetworkCompress($id,$shift=0)
@@ -2492,12 +2489,11 @@ class LMS
 	function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree=false)
 	{
 		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, interface, gateway, dns, dns2, domain, 
-				wins, dhcpstart, dhcpend 
+				address AS addresslong, mask, interface, gateway, dns, dns2, 
+				domain, wins, dhcpstart, dhcpend, 
+				mask2prefix(inet_aton(mask)) AS prefix,
+				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast 
 				FROM networks WHERE id = ?', array($id));
-				
-		$network['prefix'] = mask2prefix($network['mask']);
-		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
 
 		$nodes = $this->DB->GetAllByKey('
 				SELECT id, name, ipaddr, ownerid, netdev 
