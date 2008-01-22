@@ -135,7 +135,10 @@
 			<SELECT NAME="netdev" {tip trigger="replace" text="Select from list device for replacement"}>
 				{section name=replacelist loop=$replacelist}
 				{if $replacelist[replacelist].id != $netdevinfo.id}
-				<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
+				{assign var=netdevname value=$replacelist[replacelist].name}
+				{if $replacelist[replacelist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$replacelist[replacelist].producer}{/if}
+				{if $replacelist[replacelist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$replacelist[replacelist].location|cat:")"}{/if}
+				<OPTION VALUE="{$replacelist[replacelist].id}">{$netdevname|truncate:120:"..."}</OPTION>
 				{/if}
 				{/section}
 			</SELECT>

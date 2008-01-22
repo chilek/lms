@@ -75,7 +75,7 @@
 			    <TR>
 				<TD width="99%" NOWRAP>
 				<b>{t}Connect{/t}:</b>
-			{t}Device:{/t}<SELECT NAME="netdev" {tip trigger="link" text="Select from list device for connection"}>
+			{t}Device:{/t}<SELECT NAME="netdev" style="width: 300px" {tip trigger="link" text="Select from list device for connection"}>
 				{section name=restnetdevlist loop=$restnetdevlist}
 				{assign var=netdevname value=$restnetdevlist[restnetdevlist].name}
 				{if $restnetdevlist[restnetdevlist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$restnetdevlist[restnetdevlist].producer}{/if}
