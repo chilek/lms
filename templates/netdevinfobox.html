@@ -163,7 +163,7 @@
 					{assign var=netdevname value=$replacelist[replacelist].name}
 					{if $replacelist[replacelist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$replacelist[replacelist].producer}{/if}
 					{if $replacelist[replacelist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$replacelist[replacelist].location|cat:")"}{/if}
-					<OPTION VALUE="{$replacelist[replacelist].id}">{$netdevname|truncate:40:"...":true}</OPTION>
+					<OPTION VALUE="{$replacelist[replacelist].id}">{$netdevname|truncate:120:"...":true}</OPTION>
 					{/if}
 				{/section}
 			</SELECT>
