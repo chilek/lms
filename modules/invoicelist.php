@@ -95,7 +95,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			END AS value, 
 			COUNT(a.docid) AS count
 	    		FROM documents d
-			LEFT JOIN invoicecontents a ON (a.docid = d.id)
+			JOIN invoicecontents a ON (a.docid = d.id)
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
