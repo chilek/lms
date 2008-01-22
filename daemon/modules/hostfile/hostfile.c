@@ -60,6 +60,7 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%i", h.ip);
 	g->str_replace(&s, "%m", h.mac);
 	g->str_replace(&s, "%n", h.name);
+	g->str_replace(&s, "%port", h.port);
 	g->str_replace(&s, "%p", h.passwd);
 
 	fprintf(fh, "%s", s);
@@ -196,14 +197,14 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		if(hm->skip_dev_ips)
 			query = strdup(
 				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
-				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning "
+				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning, port "
 				"FROM nodes n "
 				"WHERE n.ownerid<>0 %groups %ngroups"
 				"ORDER BY ipaddr");
 		else
 			query = strdup(
 				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
-				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning "
+				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning, port "
 				"FROM nodes n "
 				"WHERE n.ownerid = 0 %groups %ngroups"
 				"ORDER BY ipaddr");
@@ -243,6 +244,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				h.passwd 	= g->db_get_data(res,i,"passwd");
 				h.id  		= g->db_get_data(res,i,"id");
 				h.mac 		= g->db_get_data(res,i,"mac");
+				h.port 		= g->db_get_data(res,i,"port");
 				h.net 		= nets[j];
 				// IP's last octet in hex
                     		h.i16 		= strdup(itoha((ntohl(inet) & 0xff)));

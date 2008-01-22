@@ -646,13 +646,13 @@
           <title>Hostfile</title>
               <sect3 id="hostfile-desc">
               <title>Description</title>
-				<para>Module 'hostfile' is a multipurpose tool. It performs loop on all hosts
-				(nodes and network devices addresses) from database fetching their 
-				connection and warnings status, private and public addresses, network
-				that they are connected to and groups of they owners. Because of that it 
-				is possible to create any set of firewall rules, or /etc/hosts file. Data is 
-				written to file and after that specified shell command can be 
-				executed.</para>
+			<para>Module 'hostfile' is a multipurpose tool. It performs loop on all hosts
+			(nodes and network devices addresses) from database fetching their 
+			connection and warnings status, private and public addresses, network
+			that they are connected to and groups of they owners. Because of that it 
+			is possible to create any set of firewall rules, or /etc/hosts file. Data is 
+			written to file and after that specified shell command can be 
+			executed.</para>
               </sect3>
               <sect3 id="hostfile-config">
               <title>Configuration</title>
@@ -664,6 +664,7 @@
 			<member>%m - MAC address,</member>
 			<member>%n - host name,</member>
 			<member>%p - node (computer) password,</member>
+			<member>%port - device's port to which computer is connected,</member>
 			<member>%info - node description,</member>
 			<member>%domain - domain,</member>
 			<member>%net - network name,</member>

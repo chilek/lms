@@ -43,14 +43,14 @@ void tscript_ext_sql_close(tscript_context *);
 		    LEFT JOIN customers ON (customers.id = ownerid)"
 #else
 #define NODES "SELECT nodes.id AS id, nodes.name AS name, ownerid, access, \
-		    warning, netdev, lastonline, nodes.info AS info, \
+		    warning, netdev, lastonline, nodes.info AS info, port, \
 		    customers.lastname || ' ' || customers.name AS owner, \
 		    customers.message AS message, mac, passwd, linktype, \
 		    INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, \
 		    chkmac, halfduplex \
 		    FROM nodes \
 		    LEFT JOIN customers ON (customers.id = ownerid)"
-#endif		    
+#endif
 
 #define NETWORKS "SELECT id, name, INET_NTOA(address) AS address, \
 		    mask, interface, gateway, dns, dns2, wins, domain, \

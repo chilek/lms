@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.11.2 Neera (????-??-??):
 
   - added possibility to disable customers cutting off for some time (alec)
   - lmsd/cutoff: added 'customergroups' & 'excluded_customergroups' opts (alec)
@@ -66,6 +66,9 @@ version ? (????-??-??):
     'smtp_pass' (alec)
   - lmsd/tc-ng moved to contrib as deprecated (alec)
   - lms-notify-sms: fixed sql query on mysql (alec)
+  - lmsd/parser: added 'port' field in NODES constant (alec)
+  - lmsd/hostfile: added %port variable (alec)
+  - lms-mgc: added %PORT variable in nodes rules (alec)
 
 version 1.11.1 Talus (2007-12-03):
 

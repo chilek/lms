@@ -313,6 +313,9 @@
      <para>%PASSWD - has³o komputera</para>
     </listitem>
     <listitem>
+	<para>%PORT - port urz±dzenia, do którego pod³±czony jest komputer</para>
+    </listitem>
+    <listitem>
      <para>%UPRATE - gwarantowany transfer dla danych wychodz±cych</para>
     </listitem>
     <listitem>
