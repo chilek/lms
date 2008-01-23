@@ -882,5 +882,12 @@ CREATE VIEW customersview AS
 		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
+
+CREATE FUNCTION mask2prefix(mask bigint) RETURNS smallint DETERMINISTIC
+RETURN bit_count(mask);
+
+CREATE FUNCTION broadcast(address bigint, mask bigint) RETURNS bigint DETERMINISTIC
+RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
+
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007011800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007012200');
