@@ -2346,6 +2346,8 @@ class LMS
 				domain, wins, dhcpstart, dhcpend,
 				mask2prefix(inet_aton(mask)) AS prefix,
 				broadcast(address, inet_aton(mask)) AS broadcastlong,
+				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
+				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size,
 				(SELECT COUNT(*) 
 					FROM nodes 
 					WHERE (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
@@ -2364,9 +2366,6 @@ class LMS
 
 			foreach($networks as $idx => $row)
 			{
-				$row['size'] = pow(2,(32 - $row['prefix']));
-				$row['broadcast'] = long2ip($row['broadcastlong']);
-				$networks[$idx] = $row;
 				$size += $row['size'];
 				$assigned += $row['assigned'];
 				$online += $row['online'];
@@ -2407,8 +2406,12 @@ class LMS
 
 	function NetworkShift($network='0.0.0.0',$mask='0.0.0.0',$shift=0)
 	{
-		return ($this->DB->Execute('UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask)))
-			+ $this->DB->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ? WHERE ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask))));
+		return ($this->DB->Execute('UPDATE nodes SET ipaddr = ipaddr + ? 
+				WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', 
+				array($shift, $network, getbraddr($network,$mask)))
+			+ $this->DB->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ? 
+				WHERE ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)',
+				array($shift, $network, getbraddr($network,$mask))));
 	}
 
 	function NetworkUpdate($networkdata)
