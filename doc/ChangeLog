@@ -1,6 +1,6 @@
 $Id$
 
-version 1.11.2 Neera (????-??-??):
+version 1.11.2 Neera (2008-01-23):
 
   - added possibility to disable customers cutting off for some time (alec)
   - lmsd/cutoff: added 'customergroups' & 'excluded_customergroups' opts (alec)
@@ -72,6 +72,7 @@ version 1.11.2 Neera (????-??-??):
   - added SQL functions mask2prefix() and broadcast() (alec)
   - added IMMUTABLE flag for inet_ntoa/inet_aton functions on postgres (alec)
   - networks: few functions optimized (alec)  
+  - documents: hide exluded customers groups on documents list (alec) 
 
 version 1.11.1 Talus (2007-12-03):
 
