@@ -37,27 +37,32 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 	switch($order)
 	{
 		case 'type':
-			$sqlord = ' ORDER BY type '.$direction.', documents.name';
+			$sqlord = ' ORDER BY d.type '.$direction.', d.name';
 		break;
 		case 'title':
-			$sqlord = ' ORDER BY title '.$direction.', documents.name';
+			$sqlord = ' ORDER BY title '.$direction.', d.name';
 		break;
 		case 'customer':
-			$sqlord = ' ORDER BY documents.name '.$direction.', title';
+			$sqlord = ' ORDER BY d.name '.$direction.', title';
 		break;
 		default:
-			$sqlord = ' ORDER BY cdate '.$direction.', documents.name';
+			$sqlord = ' ORDER BY d.cdate '.$direction.', d.name';
 		break;
 	}
 
-	$list = $DB->GetAll('SELECT docid, number, type, title, cdate, fromdate, todate, description, 
-				filename, md5sum, contenttype, template, closed, documents.name, customerid
-                	FROM documentcontents, documents
-		        LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			LEFT JOIN customersview c ON (customerid = c.id)
-			WHERE documents.id = documentcontents.docid '
-			.($customer ? 'AND customerid = '.$customer : '')
-			.($type ? ' AND type = '.$type : '')
+	$list = $DB->GetAll('SELECT docid, d.number, d.type, title, d.cdate, fromdate, todate, description, 
+				filename, md5sum, contenttype, template, d.closed, d.name, d.customerid
+                	FROM documentcontents
+			JOIN documents d ON (d.id = documentcontents.docid)
+		        LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+			        SELECT DISTINCT a.customerid FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+			) e ON (e.customerid = d.customerid)
+			WHERE e.customerid IS NULL '
+			.($customer ? 'AND d.customerid = '.$customer : '')
+			.($type ? ' AND d.type = '.$type : '')
 			.$sqlord);
 
 	$list['total'] = sizeof($list);
