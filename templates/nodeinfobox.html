@@ -108,11 +108,16 @@
 			    {if $nodeinfo.linktype}<IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}{/if}
 			{else}
 			{if $netdevices}
-			<SELECT SIZE="1" NAME="devid" {tip trigger="netdev"}>
+			<SELECT SIZE="1" style="width:300px" NAME="devid" {tip trigger="netdev"}>
 				{section name=netdev loop=$netdevices}
-				<OPTION VALUE="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevices[netdev].name} {$netdevices[netdev].producer}{if $netdevices[netdev].location} / {$netdevices[netdev].location}{/if}</OPTION>
+				{assign var=netdevname value=$netdevices[netdev].name}
+				{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
+		                {if $netdevices[netdev].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$netdevices[netdev].location|cat:")"}{/if}
+				<OPTION VALUE="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:45:"...":true}</OPTION>
 				{/section}
 			</SELECT>
+			<INPUT name="nodedata[port]" value="{if $nodedata.port}{$nodedata.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+			<INPUT class="box light" type="checkbox" name="nodedata[linktype]" value="1"{if $nodedata.linktype} CHECKED{/if}><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless">
 			<A HREF="javascript:document.nodelink.submit(); ">{t}Connect{/t} <IMG SRC="img/edit.gif" alt=""></A>
 			{/if}
 			{/if}

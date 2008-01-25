@@ -1,5 +1,12 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed 'suspended' filter on customers list (alec)
+  - added option phpui.printer_window which enables onload="window.print()"
+    for html printouts, allowed values: 'invoice', 'receipt', 'report' (alec)
+  - fixed problem with one before last address name in chooseip page (alec)
+
 version 1.11.2 Neera (2008-01-23):
 
   - added possibility to disable customers cutting off for some time (alec)
