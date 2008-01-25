@@ -636,11 +636,14 @@ class LMS
 								AND (dateto >= ?NOW? OR dateto = 0)
 								AND (tariffid != 0 OR liabilityid != 0))' : '')
 				.($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
-							WHERE a.customerid = c.id
-								AND ((tariffid = 0 AND liabilityid = 0) 
+							WHERE a.customerid = c.id AND (
+								(tariffid = 0 AND liabilityid = 0
+								    AND (datefrom <= ?NOW? OR datefrom = 0)
+								    AND (dateto >= ?NOW? OR dateto = 0)) 
 								OR ((datefrom <= ?NOW? OR datefrom = 0)
-								AND (dateto >= ?NOW? OR dateto = 0)
-								AND suspended = 1)))' : '')
+								    AND (dateto >= ?NOW? OR dateto = 0)
+								    AND suspended = 1)
+								))' : '')
 				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
@@ -2397,7 +2400,7 @@ class LMS
 				address = ? OR broadcast(address, inet_aton(mask)) = ?
 				OR (address > ? AND broadcast(address, inet_aton(mask)) < ?) 
 				OR (address < ? AND broadcast(address, inet_aton(mask)) > ?) 
-			)', array(intval($ignoreid), 
+			)', array(intval($ignorenet), 
 				$cnetaddr, $cbroadcast,
 				$cnetaddr, $cbroadcast,
 				$cnetaddr, $cbroadcast
@@ -2505,8 +2508,8 @@ class LMS
 				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev 
 				FROM nodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?',
 				'ipaddr',
-				array($network['addresslong'], ip_long($network['broadcast'])-1,
-				$network['addresslong'], ip_long($network['broadcast'])-1));
+				array($network['addresslong'], ip_long($network['broadcast']),
+				$network['addresslong'], ip_long($network['broadcast'])));
 
 		$network['size'] = pow(2,32-$network['prefix']);
 		$network['assigned'] = sizeof($nodes);
@@ -3174,20 +3177,23 @@ class LMS
 			if($content = fetch_url('http://register.lms.org.pl/update.php?uiid='.$uiid.'&v='.$v))
 			{
 				if($lastcheck == 0)
-					$this->DB->Execute('INSERT INTO dbinfo (keyvalue, keytype) VALUES (?NOW?, ?)', array('last_check_for_updates_timestamp'));
+					$this->DB->Execute('INSERT INTO dbinfo (keyvalue, keytype) VALUES (?NOW?, ?)', 
+						array('last_check_for_updates_timestamp'));
 				else
-					$this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?', array('last_check_for_updates_timestamp'));
-			}
+					$this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?',
+						array('last_check_for_updates_timestamp'));
 
-			$content = unserialize((string)$content);
-			$content['regdata'] = unserialize((string)$content['regdata']);
+				$content = unserialize((string)$content);
+				$content['regdata'] = unserialize((string)$content['regdata']);
 			
-			$this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
+				if(is_array($content['regdata']))
+				{
+					$this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
 			
-			if(is_array($content['regdata']))
-			{
-				foreach(array('id', 'name', 'url', 'hidden') as $key)
-					$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_'.$key, $content['regdata'][$key]));
+					foreach(array('id', 'name', 'url', 'hidden') as $key)
+						$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', 
+							array('regdata_'.$key, $content['regdata'][$key]));
+				}
 			}
 		}
 
@@ -3239,7 +3245,7 @@ class LMS
 
 		if ($this->CONFIG['phpui']['smtp_username'])
 		{
-			$params['auth'] = (isset($this->CONFIG['phpui']['smtp_auth_type']) ? $this->CONFIG['phpui']['smtp_auth_type'] : true);
+			$params['auth'] = !empty($this->CONFIG['phpui']['smtp_auth_type']) ? $this->CONFIG['phpui']['smtp_auth_type'] : true;
 			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
 			$params['password'] = $this->CONFIG['phpui']['smtp_password'];
 		}

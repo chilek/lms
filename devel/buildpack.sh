@@ -47,6 +47,7 @@ mkdir -p $TEMPDIR/$X
 wget --proxy=off "http://cvs.lms.org.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1&only_with_tag=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
 umask 022
 cd $TEMPDIR/$X/
+exit 1
 # ropakowujemy
 tar -xzf lms.tar.gz
 # ustawiamy prawa do plików/katalogów...
