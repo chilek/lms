@@ -613,18 +613,21 @@ class LMS
 							OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 				.($customergroup ? ' AND customergroupid='.$customergroup : '')
 				.($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
-								WHERE c.id = a.customerid)' : '')
+							WHERE c.id = a.customerid)' : '')
 				.($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a 
-								WHERE a.customerid = c.id
-									AND (datefrom <= ?NOW? OR datefrom = 0) 
-									AND (dateto >= ?NOW? OR dateto = 0)
-									AND (tariffid != 0 OR liabilityid != 0))' : '')
+							WHERE a.customerid = c.id
+							AND (datefrom <= ?NOW? OR datefrom = 0) 
+							AND (dateto >= ?NOW? OR dateto = 0)
+							AND (tariffid != 0 OR liabilityid != 0))' : '')
 				.($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
-								WHERE a.customerid = c.id
-									AND ((tariffid = 0 AND liabilityid = 0) 
-										OR ((datefrom <= ?NOW? OR datefrom = 0)
-											AND (dateto >= ?NOW? OR dateto = 0)
-											AND suspended = 1)))' : '')
+							WHERE a.customerid = c.id AND (
+							(tariffid = 0 AND liabilityid = 0
+								AND (datefrom <= ?NOW? OR datefrom = 0)
+								AND (dateto >= ?NOW? OR dateto = 0))
+							OR ((datefrom <= ?NOW? OR datefrom = 0)
+								AND (dateto >= ?NOW? OR dateto = 0)
+								AND suspended = 1)
+							))' : '')
 				.(isset($sqlsarg) ? ' AND ('.$sqlsarg.')' :'')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
