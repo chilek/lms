@@ -22,7 +22,7 @@ REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -79,17 +79,17 @@ NAME="INSTALL-INSTALL"
 >2.3. Instalacja LMS</A
 ></H1
 ><P
->LMS w postaci archiwum tar.gz mo¿na pobraæ ze strony 
+>LMS w postaci archiwum tar.gz moÅ¼na pobraÄ‡ ze strony 
         domowej projektu (<A
 HREF="http://www.lms.org.pl"
 TARGET="_top"
 >www.lms.org.pl</A
 >),
-        a nastêpnie rozpakowaæ i umie¶ciæ w wybranym katalogu (np. <TT
+        a nastÄ™pnie rozpakowaÄ‡ i umieÅ›ciÄ‡ w wybranym katalogu (np. <TT
 CLASS="FILENAME"
 >/var/www/lms
         </TT
->) dostêpnym dla serwera www:
+>) dostÄ™pnym dla serwera www:
 <PRE
 CLASS="SCREEN"
 >$ cd /var/www
@@ -99,13 +99,13 @@ $ tar zxf lms-x.x.x.tar.gz</PRE
         </P
 ><P
 >Biblioteka Smarty zawarta jest w paczce z LMSem. Natomiast gdy
-	u¿ywasz wersji systemu pobranej wprost z CVSu musisz sam zadbaæ
-	o jej instalacjê. Najpro¶ciej skorzystaæ ze skryptu 
+	uÅ¼ywasz wersji systemu pobranej wprost z CVSu musisz sam zadbaÄ‡
+	o jej instalacjÄ™. NajproÅ›ciej skorzystaÄ‡ ze skryptu 
 	<TT
 CLASS="FILENAME"
 >/devel/smarty_install.sh</TT
->, który pobierze
-	bibliotekê Smarty z Internetu i skopiuje zawarto¶æ katalogu 
+>, ktÃ³ry pobierze
+	bibliotekÄ™ Smarty z Internetu i skopiuje zawartoÅ›Ä‡ katalogu 
 	<TT
 CLASS="FILENAME"
 >/lib</TT
@@ -134,7 +134,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Po³o¿enie wszystkich katalogów mo¿esz zmieniæ w sekcji
+>PoÅ‚oÅ¼enie wszystkich katalogÃ³w moÅ¼esz zmieniÄ‡ w sekcji
           <SPAN
 CLASS="emphasis"
 ><I
@@ -151,13 +151,13 @@ CLASS="FILENAME"
 ></DIV
 ></P
 ><P
->Pliki z konfiguracj± (<TT
+>Pliki z konfiguracjÄ… (<TT
 CLASS="FILENAME"
 >sample/lms.ini</TT
 > i <TT
 CLASS="FILENAME"
 >          sample/lms-mgc.ini</TT
->) umie¶æ w katalogu <TT
+>) umieÅ›Ä‡ w katalogu <TT
 CLASS="FILENAME"
 >/etc/lms</TT
 >.
@@ -167,7 +167,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >bin</TT
 > 
-          najlepiej przenie¶æ do katalogu <TT
+          najlepiej przenieÅ›Ä‡ do katalogu <TT
 CLASS="FILENAME"
 >/usr/sbin</TT
 >.
@@ -192,7 +192,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Serwer www musi mieæ prawo odczytu pliku <TT
+>Serwer www musi mieÄ‡ prawo odczytu pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >
@@ -200,7 +200,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >backup</TT
 >. 
-		Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
+		Stanowi to potencjalne obniÅ¼enie poziomu bezpieczeÅ„stwa systemu.
 		</P
 ></TD
 ></TR
@@ -226,7 +226,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Bezwzglêdnie LMS wymaga wy³±czenia opcji PHP <TT
+>BezwzglÄ™dnie LMS wymaga wyÅ‚Ä…czenia opcji PHP <TT
 CLASS="FILENAME"
 >register_globals</TT
 >.
@@ -255,15 +255,15 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Pocz±wszy od wersji 1.6 przechowywanie konfiguracji 
-		interfejsu u¿ytkownika w <TT
+>PoczÄ…wszy od wersji 1.6 przechowywanie konfiguracji 
+		interfejsu uÅ¼ytkownika w <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> jest przestarza³e. 
-		Jedynymi koniecznymi sekcjami w tym pliku s± [database] i [directories]
-		oraz konfiguracja skryptów perlowych. Ustawienia LMS-UI
-	    	przechowywane s± w bazie danych i mog± byæ modyfikowane przez 
-		interfejs u¿ytkownika, maj± tak¿e wy¿szy priorytet od tych zawartych
+> jest przestarzaÅ‚e. 
+		Jedynymi koniecznymi sekcjami w tym pliku sÄ… [database] i [directories]
+		oraz konfiguracja skryptÃ³w perlowych. Ustawienia LMS-UI
+	    	przechowywane sÄ… w bazie danych i mogÄ… byÄ‡ modyfikowane przez 
+		interfejs uÅ¼ytkownika, majÄ… takÅ¼e wyÅ¼szy priorytet od tych zawartych
 		w <TT
 CLASS="FILENAME"
 >lms.ini</TT

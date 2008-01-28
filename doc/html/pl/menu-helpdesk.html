@@ -10,7 +10,7 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.11-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Interfejs U¿ytkownika (LMS-UI)"
+TITLE="Interfejs UÅ¼ytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
 TITLE="Statystyki"
@@ -22,7 +22,7 @@ REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -55,7 +55,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 3. Interfejs U¿ytkownika (LMS-UI)</TD
+>Rozdzia&#322; 3. Interfejs UÅ¼ytkownika (LMS-UI)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -79,31 +79,31 @@ NAME="MENU-HELPDESK"
 >3.13. Helpdesk</A
 ></H1
 ><P
->Helpdesk (inaczej Request Tracker) to system obs³ugi zg³oszeñ.
-	    W systemie mo¿na prowadziæ bazê wszystkich zg³oszeñ i zapytañ klientów
-	    sieci, ale tak¿e osób które nie s± wpisane do bazy LMS'a. Zg³oszenia mo¿na
-	    pogrupowaæ w kategorie (kolejki) i wyszukiwaæ wg zadanych kryteriów.
-	    Do ka¿dej kolejki mo¿na zdefiniowaæ uprawnienia dla u¿ytkowników.
+>Helpdesk (inaczej Request Tracker) to system obsÅ‚ugi zgÅ‚oszeÅ„.
+	    W systemie moÅ¼na prowadziÄ‡ bazÄ™ wszystkich zgÅ‚oszeÅ„ i zapytaÅ„ klientÃ³w
+	    sieci, ale takÅ¼e osÃ³b ktÃ³re nie sÄ… wpisane do bazy LMS'a. ZgÅ‚oszenia moÅ¼na
+	    pogrupowaÄ‡ w kategorie (kolejki) i wyszukiwaÄ‡ wg zadanych kryteriÃ³w.
+	    Do kaÅ¼dej kolejki moÅ¼na zdefiniowaÄ‡ uprawnienia dla uÅ¼ytkownikÃ³w.
 	    </P
 ><P
->W menu po lewej stronie znajduje siê pole szybkiego wyszukiwania
-	    zg³oszenia, w którym mo¿na podawaæ jego ID lub nazwisko zg³aszaj±cego je
-	    klienta. W drugim przypadku zostanie wy¶wietlona lista wszystkich zg³oszeñ
+>W menu po lewej stronie znajduje siÄ™ pole szybkiego wyszukiwania
+	    zgÅ‚oszenia, w ktÃ³rym moÅ¼na podawaÄ‡ jego ID lub nazwisko zgÅ‚aszajÄ…cego je
+	    klienta. W drugim przypadku zostanie wyÅ›wietlona lista wszystkich zgÅ‚oszeÅ„
 	    danego klienta.</P
 ><P
->Ka¿de zg³oszenie posiada historiê, na któr± sk³adaj± siê wiadomo¶ci
-	    od u¿ytkowników i klientów. Administrator mo¿e wys³aæ swoj± wiadomo¶æ do 
-	    klienta, klikaj±c 'Wy¶lij' podczas dodawania wiadomo¶ci. (Nale¿y podaæ
-	    e-mail odbiorcy. Adresem nadawcy bêdzie adres kolejki, a je¶li jest pusty, adres 
-	    u¿ytkownika). Wszystkie wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane 
-	    w historii zg³oszenia. Zg³oszenie mo¿e mieæ cztery stany: nowy, otwarty, rozwi±zany 
+>KaÅ¼de zgÅ‚oszenie posiada historiÄ™, na ktÃ³rÄ… skÅ‚adajÄ… siÄ™ wiadomoÅ›ci
+	    od uÅ¼ytkownikÃ³w i klientÃ³w. Administrator moÅ¼e wysÅ‚aÄ‡ swojÄ… wiadomoÅ›Ä‡ do 
+	    klienta, klikajÄ…c 'WyÅ›lij' podczas dodawania wiadomoÅ›ci. (NaleÅ¼y podaÄ‡
+	    e-mail odbiorcy. Adresem nadawcy bÄ™dzie adres kolejki, a jeÅ›li jest pusty, adres 
+	    uÅ¼ytkownika). Wszystkie wiadomoÅ›ci takÅ¼e te wysÅ‚ane, zostajÄ… zapisane 
+	    w historii zgÅ‚oszenia. ZgÅ‚oszenie moÅ¼e mieÄ‡ cztery stany: nowy, otwarty, rozwiÄ…zany 
 	    i martwy.</P
 ><P
 >Skrypt <A
 HREF="scripts-config.html#LMS-RTPARSER"
 >lms-rtparser</A
-> zosta³ stworzony aby umo¿liwiæ
-	    obs³ugê systemu i przesy³anie zg³oszeñ poczt± elektroniczn±.</P
+> zostaÅ‚ stworzony aby umoÅ¼liwiÄ‡
+	    obsÅ‚ugÄ™ systemu i przesyÅ‚anie zgÅ‚oszeÅ„ pocztÄ… elektronicznÄ….</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -113,10 +113,10 @@ NAME="MENU-HELPDESK-LIST"
 >3.13.1. Lista kolejek</A
 ></H2
 ><P
->Na li¶cie kolejek znajduj± siê podstawowe informacje i statystyki zg³oszeñ.
-	    Klikniêcie na wybranej kolejce powoduje wy¶wietlenie listy zg³oszeñ. St±d mo¿na
-	    tak¿e przej¶æ do informacji szczegó³owych (w tym tak¿e uprawnieniach) o kolejce lub
-	    usun±æ wybran± kolejkê. Usuniêcie kolejki spowoduje tak¿e usuniêcie zg³oszeñ z bazy
+>Na liÅ›cie kolejek znajdujÄ… siÄ™ podstawowe informacje i statystyki zgÅ‚oszeÅ„.
+	    KlikniÄ™cie na wybranej kolejce powoduje wyÅ›wietlenie listy zgÅ‚oszeÅ„. StÄ…d moÅ¼na
+	    takÅ¼e przejÅ›Ä‡ do informacji szczegÃ³Å‚owych (w tym takÅ¼e uprawnieniach) o kolejce lub
+	    usunÄ…Ä‡ wybranÄ… kolejkÄ™. UsuniÄ™cie kolejki spowoduje takÅ¼e usuniÄ™cie zgÅ‚oszeÅ„ z bazy
 	    danych przypisanych do niej.
 	    </P
 ></DIV
@@ -129,16 +129,16 @@ NAME="MENU-HELPDESK-NEWQUEUE"
 >3.13.2. Nowa kolejka</A
 ></H2
 ><P
->Kolejka (kategoria) posiada nazwê, opcjonalny opis oraz opcjonalny adres
-	    poczty elektronicznej, który u¿ywany jest do korespondencji. W tabeli 'Uprawnienia'
-	    definiuje siê prawa do danej kolejki, które maj± moc wiêksz± od ogólnych 
-	    uprawnieñ u¿ytkowników tzn. je¶li user nie ma praw do danej kolejki, to nawet
-	    je¶li ma 'pe³ny dostêp' zg³oszeñ w tej kolejce nie zobaczy. Prawo zapisu pozwala na edycjê i dodawanie zg³oszeñ i wiadomo¶ci. Prawo 'Usuwanie'
-	    pozwala na usuwanie wiadomo¶ci i zg³oszeñ. Prawo 'Powiadomienia'
-	    s³u¿y do otrzymywania informacji o nowych zg³oszeniach. Je¿eli w³±czono opcjê 'newticket_notify' 
-	    wszyscy u¿ytkownicy z tym uprawnieniem bêd± otrzymywaæ emailowe powiadomienia 
-	    o nowych zg³oszeniach do przedmiotowej kolejki. Wszystkie prawa "wy¿sze" od
-    	prawa 'Odczyt' zawieraj± uprawnienie do odczytu wiadomo¶ci.</P
+>Kolejka (kategoria) posiada nazwÄ™, opcjonalny opis oraz opcjonalny adres
+	    poczty elektronicznej, ktÃ³ry uÅ¼ywany jest do korespondencji. W tabeli 'Uprawnienia'
+	    definiuje siÄ™ prawa do danej kolejki, ktÃ³re majÄ… moc wiÄ™kszÄ… od ogÃ³lnych 
+	    uprawnieÅ„ uÅ¼ytkownikÃ³w tzn. jeÅ›li user nie ma praw do danej kolejki, to nawet
+	    jeÅ›li ma 'peÅ‚ny dostÄ™p' zgÅ‚oszeÅ„ w tej kolejce nie zobaczy. Prawo zapisu pozwala na edycjÄ™ i dodawanie zgÅ‚oszeÅ„ i wiadomoÅ›ci. Prawo 'Usuwanie'
+	    pozwala na usuwanie wiadomoÅ›ci i zgÅ‚oszeÅ„. Prawo 'Powiadomienia'
+	    sÅ‚uÅ¼y do otrzymywania informacji o nowych zgÅ‚oszeniach. JeÅ¼eli wÅ‚Ä…czono opcjÄ™ 'newticket_notify' 
+	    wszyscy uÅ¼ytkownicy z tym uprawnieniem bÄ™dÄ… otrzymywaÄ‡ emailowe powiadomienia 
+	    o nowych zgÅ‚oszeniach do przedmiotowej kolejki. Wszystkie prawa "wyÅ¼sze" od
+    	prawa 'Odczyt' zawierajÄ… uprawnienie do odczytu wiadomoÅ›ci.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -149,10 +149,10 @@ NAME="MENU-HELPDESK-SEARCH"
 >3.13.3. Wyszukiwanie</A
 ></H2
 ><P
->Wyszukiwanie zg³oszeñ polega na wybraniu z bazy zg³oszeñ spe³niaj±cych 
-	    wszystkie podane kryteria (warunek AND, nie OR). Mo¿esz podaæ temat, w³a¶ciciela, 
-	    kolejkê, status i zg³aszaj±cego. Klientów sieci wybieraj z listy, dla pozosta³ych
-	    nale¿y podaæ Nazwisko/Imiê i/lub e-mail.
+>Wyszukiwanie zgÅ‚oszeÅ„ polega na wybraniu z bazy zgÅ‚oszeÅ„ speÅ‚niajÄ…cych 
+	    wszystkie podane kryteria (warunek AND, nie OR). MoÅ¼esz podaÄ‡ temat, wÅ‚aÅ›ciciela, 
+	    kolejkÄ™, status i zgÅ‚aszajÄ…cego. KlientÃ³w sieci wybieraj z listy, dla pozostaÅ‚ych
+	    naleÅ¼y podaÄ‡ Nazwisko/ImiÄ™ i/lub e-mail.
 	    </P
 ></DIV
 ><DIV
@@ -161,13 +161,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-HELPDESK-NEWTICKET"
->3.13.4. Nowe zg³oszenie</A
+>3.13.4. Nowe zgÅ‚oszenie</A
 ></H2
 ><P
->Dodaj±c nowe zg³oszenie nale¿y okre¶liæ dla niego temat, tre¶æ, wybraæ kolejkê
-	    oraz zg³aszaj±cego klienta. Osoby spoza sieci wpisujemy w polach Nazwisko i Imiê.
-	    Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona poczt± elektroniczn± podajemy adres 
-	    e-mail (tak¿e dla klienta zapisanego w bazie).</P
+>DodajÄ…c nowe zgÅ‚oszenie naleÅ¼y okreÅ›liÄ‡ dla niego temat, treÅ›Ä‡, wybraÄ‡ kolejkÄ™
+	    oraz zgÅ‚aszajÄ…cego klienta. Osoby spoza sieci wpisujemy w polach Nazwisko i ImiÄ™.
+	    Opcjonalnie, jeÅ›li wiadomoÅ›Ä‡ zostaÅ‚a zgÅ‚oszona pocztÄ… elektronicznÄ… podajemy adres 
+	    e-mail (takÅ¼e dla klienta zapisanego w bazie).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -178,7 +178,7 @@ NAME="MENU-HELPDESK-REPORTS"
 >3.13.5. Raporty</A
 ></H2
 ><P
->Tutaj mamy mo¿liwo¶æ wydruku list zg³oszeñ lub statystyk helpdesku:
+>Tutaj mamy moÅ¼liwoÅ›Ä‡ wydruku list zgÅ‚oszeÅ„ lub statystyk helpdesku:
 		<UL
 ><LI
 ><P
@@ -186,9 +186,9 @@ NAME="MENU-HELPDESK-REPORTS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Lista zg³oszeñ</I
+>Lista zgÅ‚oszeÅ„</I
 ></SPAN
-> z  filtrami kolejki, statusu i klienta oraz mo¿liwo¶ci± okre¶lenia granicy dni,</P
+> z  filtrami kolejki, statusu i klienta oraz moÅ¼liwoÅ›ciÄ… okreÅ›lenia granicy dni,</P
 ></LI
 ><LI
 ><P
@@ -196,9 +196,9 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Statystyki zg³oszeñ</I
+>Statystyki zgÅ‚oszeÅ„</I
 ></SPAN
-> z mo¿liwo¶ci± wyboru kolejki oraz warto¶ci granicznych.</P
+> z moÅ¼liwoÅ›ciÄ… wyboru kolejki oraz wartoÅ›ci granicznych.</P
 ></LI
 ></UL
 >

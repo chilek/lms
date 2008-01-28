@@ -13,7 +13,7 @@ REL="UP"
 TITLE="Dodatki"
 HREF="contrib.html"><LINK
 REL="PREVIOUS"
-TITLE="Ostrze¿enia + squid"
+TITLE="OstrzeÅ¼enia + squid"
 HREF="contrib-squid.html"><LINK
 REL="NEXT"
 TITLE="FAQ"
@@ -22,7 +22,7 @@ REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -84,19 +84,19 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONTRIB-ANTYVIR-INTRO"
->8.5.1. Wstêp</A
+>8.5.1. WstÄ™p</A
 ></H2
 ><P
->Wiêkszo¶æ z nas mia³a problemy z zawirusowanymi komputerami.
-               Ró¿ni ludzie maj± ró¿ne podej¶cie do problemu. Skrypt lms-antyvir
-               wykrywa wirusy zagra¿aj±ce stabilno¶ci sieci. Jest oparty na programie
-               tcpdump, przy pomocy którego mo¿emy spróbowaæ wykryæ wirusy/trojany
-               same siê rozprzestrzeniaj±ce jak Mydoom itp. Cech± wspóln± prawie wszystkich 
-               tego typu programów jest skanowanie sieci na portach 135 i 445 oraz 
-               dodatkowych w zale¿no¶ci od odmiany wirusa. Oczywi¶cie MS Windows te¿ korzysta 
-               z tych portów, ale nie w takim stopniu. Po wykryciu nadmiernego ruchu
-               wy¶wietlana jest informacja na standardowe wyj¶cie lub w³±czane jest 
-               ostrze¿enie ze zdefiniowanym komunikatem.</P
+>WiÄ™kszoÅ›Ä‡ z nas miaÅ‚a problemy z zawirusowanymi komputerami.
+               RÃ³Å¼ni ludzie majÄ… rÃ³Å¼ne podejÅ›cie do problemu. Skrypt lms-antyvir
+               wykrywa wirusy zagraÅ¼ajÄ…ce stabilnoÅ›ci sieci. Jest oparty na programie
+               tcpdump, przy pomocy ktÃ³rego moÅ¼emy sprÃ³bowaÄ‡ wykryÄ‡ wirusy/trojany
+               same siÄ™ rozprzestrzeniajÄ…ce jak Mydoom itp. CechÄ… wspÃ³lnÄ… prawie wszystkich 
+               tego typu programÃ³w jest skanowanie sieci na portach 135 i 445 oraz 
+               dodatkowych w zaleÅ¼noÅ›ci od odmiany wirusa. OczywiÅ›cie MS Windows teÅ¼ korzysta 
+               z tych portÃ³w, ale nie w takim stopniu. Po wykryciu nadmiernego ruchu
+               wyÅ›wietlana jest informacja na standardowe wyjÅ›cie lub wÅ‚Ä…czane jest 
+               ostrzeÅ¼enie ze zdefiniowanym komunikatem.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -107,7 +107,7 @@ NAME="CONTRIB-ANTYVIR-CONFIG"
 >8.5.2. Konfiguracja</A
 ></H2
 ><P
->Konfiguracjê lms-antyvir dokonuje siê w sekcji <SPAN
+>KonfiguracjÄ™ lms-antyvir dokonuje siÄ™ w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -117,16 +117,16 @@ CLASS="EMPHASIS"
                <TT
 CLASS="FILENAME"
 >lms.ini</TT
->, a masz do dyspozycji nastêpuj±ce opcje:</P
+>, a masz do dyspozycji nastÄ™pujÄ…ce opcje:</P
 ><UL
 ><LI
 ><P
 >logfile</P
 ><P
->Lokalizacja tymczasowych pliku(ów) z logami tcpdumpa.
-                         Domy¶lnie: /tmp/antyvir</P
+>Lokalizacja tymczasowych pliku(Ã³w) z logami tcpdumpa.
+                         DomyÅ›lnie: /tmp/antyvir</P
 ><P
->Przyk³ad:     <SAMP
+>PrzykÅ‚ad:     <SAMP
 CLASS="PROMPT"
 >logfile = /var/log/antyvir</SAMP
 ></P
@@ -135,10 +135,10 @@ CLASS="PROMPT"
 ><P
 >interfaces</P
 ><P
->Lista oddzielonych spacj± nazw interfejsów, z których tcpdump ma 
-                         zbieraæ dane. Domy¶lnie: eth0</P
+>Lista oddzielonych spacjÄ… nazw interfejsÃ³w, z ktÃ³rych tcpdump ma 
+                         zbieraÄ‡ dane. DomyÅ›lnie: eth0</P
 ><P
->Przyk³ad:     <SAMP
+>PrzykÅ‚ad:     <SAMP
 CLASS="PROMPT"
 >interfaces = eth0 eth1</SAMP
 ></P
@@ -147,10 +147,10 @@ CLASS="PROMPT"
 ><P
 >ports</P
 ><P
->Lista oddzielonych spacj± portów, z których tcpdump ma zbieraæ dane.
-                         Dla ka¿dego tworzony jest osobny proces, wiêc nie przesadzaæ. Domy¶lnie: 135 445</P
+>Lista oddzielonych spacjÄ… portÃ³w, z ktÃ³rych tcpdump ma zbieraÄ‡ dane.
+                         Dla kaÅ¼dego tworzony jest osobny proces, wiÄ™c nie przesadzaÄ‡. DomyÅ›lnie: 135 445</P
 ><P
->Przyk³ad:     <SAMP
+>PrzykÅ‚ad:     <SAMP
 CLASS="PROMPT"
 >ports = 445</SAMP
 ></P
@@ -159,10 +159,10 @@ CLASS="PROMPT"
 ><P
 >packets</P
 ><P
->Okre¶la liczbê pakietów po odebraniu której tcpdump koñczy pracê.
-                         Domy¶lnie: 1000</P
+>OkreÅ›la liczbÄ™ pakietÃ³w po odebraniu ktÃ³rej tcpdump koÅ„czy pracÄ™.
+                         DomyÅ›lnie: 1000</P
 ><P
->Przyk³ad:     <SAMP
+>PrzykÅ‚ad:     <SAMP
 CLASS="PROMPT"
 >packets = 500</SAMP
 ></P
@@ -171,10 +171,10 @@ CLASS="PROMPT"
 ><P
 >threshold</P
 ><P
->Okre¶la liczbê pakietów, po przekroczeniu której program uznaje
-                         ruch w sieci za podejrzany. Domy¶lnie: 50</P
+>OkreÅ›la liczbÄ™ pakietÃ³w, po przekroczeniu ktÃ³rej program uznaje
+                         ruch w sieci za podejrzany. DomyÅ›lnie: 50</P
 ><P
->Przyk³ad:     <SAMP
+>PrzykÅ‚ad:     <SAMP
 CLASS="PROMPT"
 >threshold = 100</SAMP
 ></P
@@ -183,13 +183,13 @@ CLASS="PROMPT"
 ><P
 >field</P
 ><P
->Ma to zwi±zek z tcpdumpem i jego ró¿nymi wersjami. W starszych
-                         wersjach powinno byæ tu 6. Jak to sprawdziæ? tcpdump -i eth1 -enp -c 1
+>Ma to zwiÄ…zek z tcpdumpem i jego rÃ³Å¼nymi wersjami. W starszych
+                         wersjach powinno byÄ‡ tu 6. Jak to sprawdziÄ‡? tcpdump -i eth1 -enp -c 1
                          otrzymujemy 00:03:38.613761 0:40:f4:b3:1c:67 0:30:84:b3:bb:8d 0800 1414:
                          10.100.0.52.4314 &#62; 172.181.172.35.4662: .... interesuje nas pole w tym
-                         wypadku 6 czyli adres IP nadawcy. Domy¶lnie: 11</P
+                         wypadku 6 czyli adres IP nadawcy. DomyÅ›lnie: 11</P
 ><P
->Przyk³ad:     <SAMP
+>PrzykÅ‚ad:     <SAMP
 CLASS="PROMPT"
 >field = 6</SAMP
 ></P
@@ -198,10 +198,10 @@ CLASS="PROMPT"
 ><P
 >message</P
 ><P
->Tre¶æ ostrze¿enia, w którym mo¿na zastosowaæ zmienn± %DATE dla bie¿±cej daty
-                         i godziny. Je¶li pusta, ostrze¿enie nie zostanie w³±czone. Domy¶lnie: pusta</P
+>TreÅ›Ä‡ ostrzeÅ¼enia, w ktÃ³rym moÅ¼na zastosowaÄ‡ zmiennÄ… %DATE dla bieÅ¼Ä…cej daty
+                         i godziny. JeÅ›li pusta, ostrzeÅ¼enie nie zostanie wÅ‚Ä…czone. DomyÅ›lnie: pusta</P
 ><P
->Przyk³ad:     <SAMP
+>PrzykÅ‚ad:     <SAMP
 CLASS="PROMPT"
 >message = Wykryto wirusa w dniu %DATE</SAMP
 ></P
@@ -253,7 +253,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Ostrze¿enia + squid</TD
+>OstrzeÅ¼enia + squid</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

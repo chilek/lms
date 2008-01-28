@@ -16,6 +16,11 @@ case "$1" in
 	    then exit 1
 	fi
 	mv ./*.html ../../html/pl/
+	for i in ../../html/pl/*.html
+	do
+	    iconv --from latin2 --to utf-8 < $i > $i.tmp
+	    mv -f $i.tmp $i
+	done
 	exit 0
     ;;
 
@@ -30,6 +35,8 @@ case "$1" in
 	    then
 	    exit 2
 	fi
+	iconv --from latin2 --to utf-8 < ../../README_pl > ../../README_pl.tmp
+	mv -f ../../README_pl.tmp ../../README_pl
 	exit 0
     ;;
 
@@ -39,6 +46,11 @@ case "$1" in
 	    then exit 1
 	fi
 	mv ./*.html ../../html/pl/
+	for i in ../../html/pl/*.html
+	do
+	    iconv --from latin2 --to utf-8 < $i > $i.tmp
+	    mv -f $i.tmp $i
+	done
 
 	jade -t sgml -V nochunks -d lms.dsl index.sgml > ../../README_pl.html
 	if [ $? -ne 0 ]
@@ -49,6 +61,8 @@ case "$1" in
 	    then
 	    exit 2
 	fi
+	iconv --from latin2 --to utf-8 < ../../README_pl > ../../README_pl.tmp
+	mv -f ../../README_pl.tmp ../../README_pl
     ;;
         
     *)

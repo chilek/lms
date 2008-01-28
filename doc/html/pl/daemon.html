@@ -10,16 +10,16 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.11-cvs"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Przyk³ad zastosowania lms-mgc"
+TITLE="PrzykÅ‚ad zastosowania lms-mgc"
 HREF="mgc-example.html"><LINK
 REL="NEXT"
-TITLE="Modu³y"
+TITLE="ModuÅ‚y"
 HREF="daemon-modules.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="CHAPTER"
 BGCOLOR="#EBE4D6"
@@ -113,14 +113,14 @@ HREF="daemon.html#DAEMON-RUN"
 ><DT
 >6.2. <A
 HREF="daemon-modules.html"
->Modu³y</A
+>ModuÅ‚y</A
 ></DT
 ><DD
 ><DL
 ><DT
 >6.2.1. <A
 HREF="daemon-modules.html#DAEMON-MODULESLIST"
->Lista dostêpnych modu³ów</A
+>Lista dostÄ™pnych moduÅ‚Ã³w</A
 ></DT
 ><DT
 >6.2.2. <A
@@ -219,12 +219,12 @@ HREF="tscript.html"
 ><DT
 >6.3.1. <A
 HREF="tscript.html#TSCRIPT-INTRO"
->Wstêp</A
+>WstÄ™p</A
 ></DT
 ><DT
 >6.3.2. <A
 HREF="tscript.html#TSCRIPT-SYNTAX"
->Sk³adnia</A
+>SkÅ‚adnia</A
 ></DT
 ><DT
 >6.3.3. <A
@@ -234,7 +234,7 @@ HREF="tscript.html#EXTENSIONS"
 ><DT
 >6.3.4. <A
 HREF="tscript.html#EXAMPLES"
->Przyk³adowe skrypty</A
+>PrzykÅ‚adowe skrypty</A
 ></DT
 ></DL
 ></DD
@@ -249,12 +249,12 @@ NAME="DAEMON-INTRO"
 >6.1. Informacje podstawowe</A
 ></H1
 ><P
->Napisany w jêzyku C program ma u³atwiaæ zarz±dzanie us³ugami. Sam demon odpowiada
-	za uruchamianie odpowiednich modu³ów na ¿±danie u¿ytkownika. Modu³y
-	natomiast, s³u¿± do tworzenia plików konfiguracyjnych na podstawie 
-	danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
-	Spe³niaj± tak¿e inne funkcje np. zbieranie statystyk, badanie aktywno¶ci
-	hostów, naliczanie op³at, powiadamianie o zaleg³o¶ciach.</P
+>Napisany w jÄ™zyku C program ma uÅ‚atwiaÄ‡ zarzÄ…dzanie usÅ‚ugami. Sam demon odpowiada
+	za uruchamianie odpowiednich moduÅ‚Ã³w na Å¼Ä…danie uÅ¼ytkownika. ModuÅ‚y
+	natomiast, sÅ‚uÅ¼Ä… do tworzenia plikÃ³w konfiguracyjnych na podstawie 
+	danych z bazy LMS'a oraz restartowania odpowiednich usÅ‚ug na serwerze.
+	SpeÅ‚niajÄ… takÅ¼e inne funkcje np. zbieranie statystyk, badanie aktywnoÅ›ci
+	hostÃ³w, naliczanie opÅ‚at, powiadamianie o zalegÅ‚oÅ›ciach.</P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -264,17 +264,17 @@ NAME="DAEMON-REQUIREMENTS"
 >6.1.1. Wymagania</A
 ></H2
 ><P
->Oto lista rzeczy, które <SPAN
+>Oto lista rzeczy, ktÃ³re <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
-> potrzebuje ju¿ na etapie kompilacji:
+> potrzebuje juÅ¼ na etapie kompilacji:
 			<UL
 ><LI
 ><P
->interfejs u¿ytkownika <SPAN
+>interfejs uÅ¼ytkownika <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -287,7 +287,7 @@ CLASS="EMPHASIS"
 ><TT
 CLASS="FILENAME"
 >libmysqlclient</TT
-> (tj. pe³nej instalacji MySQL'a lub odpowiedniego 
+> (tj. peÅ‚nej instalacji MySQL'a lub odpowiedniego 
 				pakietu) lub <TT
 CLASS="FILENAME"
 >libpq</TT
@@ -298,26 +298,26 @@ CLASS="FILENAME"
 ><TT
 CLASS="FILENAME"
 >libdl</TT
-> (to w ka¿dej dzisiejszej dystrybucji jest)</P
+> (to w kaÅ¼dej dzisiejszej dystrybucji jest)</P
 ></LI
 ><LI
 ><P
->kompilator jêzyka C (testowany na gcc-2.95.x i nowszych)</P
+>kompilator jÄ™zyka C (testowany na gcc-2.95.x i nowszych)</P
 ></LI
 ><LI
 ><P
->modu³ <TT
+>moduÅ‚ <TT
 CLASS="FILENAME"
 >ggnotify</TT
 > wymaga biblioteki <TT
 CLASS="FILENAME"
 >libgadu</TT
 >
-				i jej plików nag³ówkowych</P
+				i jej plikÃ³w nagÅ‚Ã³wkowych</P
 ></LI
 ><LI
 ><P
->modu³ <TT
+>moduÅ‚ <TT
 CLASS="FILENAME"
 >parser</TT
 > wymaga pakietu bison w wersji 1.875 lub nowszej 
@@ -325,10 +325,10 @@ CLASS="FILENAME"
 ></LI
 ><LI
 ><P
->modu³y <TT
+>moduÅ‚y <TT
 CLASS="FILENAME"
 >ewx-*</TT
-> wymagaj± biblioteki net-snmp i jej plików nag³ówkowych.</P
+> wymagajÄ… biblioteki net-snmp i jej plikÃ³w nagÅ‚Ã³wkowych.</P
 ></LI
 ></UL
 >
@@ -343,51 +343,51 @@ NAME="DAEMON-INSTALL"
 >6.1.2. Instalacja</A
 ></H2
 ><P
->Przed kompilacj± nale¿y przy pomocy skryptu <TT
+>Przed kompilacjÄ… naleÅ¼y przy pomocy skryptu <TT
 CLASS="FILENAME"
 >./configure</TT
 >
-			ustaliæ opcje przedstawione na poni¿szym listingu (w nawiasach podano
-			warto¶ci domy¶lne opcji):
+			ustaliÄ‡ opcje przedstawione na poniÅ¼szym listingu (w nawiasach podano
+			wartoÅ›ci domyÅ›lne opcji):
 <PRE
 CLASS="SCREEN"
 >  --help                pomoc
-  --enable-debug0       logowanie zapytañ SQL (wy³±czone)
-  --enable-debug1       logowanie zdarzeñ (wy³±czone)
-  --with-pgsql          gdy korzystasz z bazy PostgreSQL (wy³±czone)
-  --with-mysql          gdy korzystasz z bazy MySQL (w³±czone)
-  --prefix=PREFIX       docelowy katalog instalacyjny demona i modu³ów (/usr/local)
+  --enable-debug0       logowanie zapytaÅ„ SQL (wyÅ‚Ä…czone)
+  --enable-debug1       logowanie zdarzeÅ„ (wyÅ‚Ä…czone)
+  --with-pgsql          gdy korzystasz z bazy PostgreSQL (wyÅ‚Ä…czone)
+  --with-mysql          gdy korzystasz z bazy MySQL (wÅ‚Ä…czone)
+  --prefix=PREFIX       docelowy katalog instalacyjny demona i moduÅ‚Ã³w (/usr/local)
   --lmsbindir=DIR       docelowa lokalizacja binarki lmsd (PREFIX/lms/bin)
-  --lmslibdir=DIR       docelowa lokalizacja modu³ów lmsd (PREFIX/lms/lib)
+  --lmslibdir=DIR       docelowa lokalizacja moduÅ‚Ã³w lmsd (PREFIX/lms/lib)
   --libdir=DIR          lokalizacja bibliotek bazy danych (/usr/lib)
-  --incdir=DIR          lokalizacja plików nag³ówkowych bazy danych (/usr/include)
-  --inifile=FILE        plik konfiguracyjny - wy³±cza konfiguracjê przez UI</PRE
+  --incdir=DIR          lokalizacja plikÃ³w nagÅ‚Ã³wkowych bazy danych (/usr/include)
+  --inifile=FILE        plik konfiguracyjny - wyÅ‚Ä…cza konfiguracjÄ™ przez UI</PRE
 >
-			Zatem wymagane jest okre¶lenie bazy z jakiej bêdziemy korzystaæ (-with-mysql 
-			lub -with-pgsql) oraz po³o¿enia bibliotek dostarczanych wraz z baz± (--incdir, 
-			--libdir). Mo¿liwe jest zmuszenie demona do korzystania
-			z plików konfiguracyjnych zamiast bazy danych. Nie jest
-			mo¿liwe u¿ywanie obu sposobów przechowywania konfiguracji,
-			dlatego nale¿y o tym zdecydowaæ przed kompilacj±.
+			Zatem wymagane jest okreÅ›lenie bazy z jakiej bÄ™dziemy korzystaÄ‡ (-with-mysql 
+			lub -with-pgsql) oraz poÅ‚oÅ¼enia bibliotek dostarczanych wraz z bazÄ… (--incdir, 
+			--libdir). MoÅ¼liwe jest zmuszenie demona do korzystania
+			z plikÃ³w konfiguracyjnych zamiast bazy danych. Nie jest
+			moÅ¼liwe uÅ¼ywanie obu sposobÃ³w przechowywania konfiguracji,
+			dlatego naleÅ¼y o tym zdecydowaÄ‡ przed kompilacjÄ….
 <PRE
 CLASS="SCREEN"
 ># ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include</PRE
 >
-    			Nastêpnie kompilacja i instalacja (umieszczenie demona w katalogu
-			okre¶lonym zmienn± --prefix):
+    			NastÄ™pnie kompilacja i instalacja (umieszczenie demona w katalogu
+			okreÅ›lonym zmiennÄ… --prefix):
 <PRE
 CLASS="SCREEN"
 ># make &#38;&#38; make install</PRE
 >
-			Skompilowane modu³y (pliki z rozszerzeniem <TT
+			Skompilowane moduÅ‚y (pliki z rozszerzeniem <TT
 CLASS="FILENAME"
 >.so</TT
 >),
-			znajduj±ce siê w katalogu <TT
+			znajdujÄ…ce siÄ™ w katalogu <TT
 CLASS="FILENAME"
->modules/nazwa_modu³u</TT
-> zostaj± 
-			umieszczone w katalogu PREFIX/lms/lib, a g³ówny program (lmsd) w katalogu
+>modules/nazwa_moduÅ‚u</TT
+> zostajÄ… 
+			umieszczone w katalogu PREFIX/lms/lib, a gÅ‚Ã³wny program (lmsd) w katalogu
 			PREFIX/lms/bin.
 			</P
 ></DIV
@@ -400,7 +400,7 @@ NAME="DAEMON-CONFIG"
 >6.1.3. Konfiguracja</A
 ></H2
 ><P
->Ca³± konfiguracjê demona i modu³ów przeprowadza siê przy pomocy
+>CaÅ‚Ä… konfiguracjÄ™ demona i moduÅ‚Ã³w przeprowadza siÄ™ przy pomocy
 			<SPAN
 CLASS="emphasis"
 ><I
@@ -408,30 +408,30 @@ CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 > w menu Konfiguracja -&#62; Demon.
-			Konfiguracjê modu³ów omówiono w osobnych rozdzia³ach ich dotycz±cych.
-			Podstawowe parametry pracy demona i dane do po³±czenia z baz± danych
-			podaje siê jako opcje linii komend, zgodnie z poni¿szym listingiem:
+			KonfiguracjÄ™ moduÅ‚Ã³w omÃ³wiono w osobnych rozdziaÅ‚ach ich dotyczÄ…cych.
+			Podstawowe parametry pracy demona i dane do poÅ‚Ä…czenia z bazÄ… danych
+			podaje siÄ™ jako opcje linii komend, zgodnie z poniÅ¼szym listingiem:
 <PRE
 CLASS="SCREEN"
->--dbhost -h host[:port]    host na którym zainstalowana jest baza danych (domy¶lnie: 'localhost')
---dbname -d nazwa_bazy     nazwa bazy danych (domy¶lnie: 'lms')
---dbuser -u u¿ytkownik     nazwa u¿ytkownika bazy danych (domy¶lnie: 'lms')
---dbpass -p has³o          has³o do bazy danych (domy¶lnie: puste)
---hostname -H nazwa_hosta  host, na którym dzia³a demon. Domy¶lnie przyjmowana jest nazwa
-                           zwracana przez komendê hostname, ale mo¿na j± nadpisaæ. Nazwa
-                           ta musi zgadzaæ siê z nazw± hosta podan± w konfiguracji hostów
---ssl -s                   wymusza bezpieczne po³±czenie z baz± danych (domy¶lnie: wy³±czone)
---command -c polecenie     polecenie pow³oki do wykonania przed ka¿dym po³±czeniem z baz± 
-                           tzn. co minutê (domy¶lnie: puste)
---instance -i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 
-                           zostan± pominiête
---reload -q                wykonuje prze³adowanie i koñczy pracê
---reload-all -r            wykonuje prze³adowanie wszystkich instancji (tak¿e tych, które maj±
-                           zdefiniowany crontab) i koñczy pracê
---foreground -f            dzia³a na pierwszym planie (nie forkuje siê) 
---version -v               wy¶wietla wersjê i prawa licencyjne</PRE
+>--dbhost -h host[:port]    host na ktÃ³rym zainstalowana jest baza danych (domyÅ›lnie: 'localhost')
+--dbname -d nazwa_bazy     nazwa bazy danych (domyÅ›lnie: 'lms')
+--dbuser -u uÅ¼ytkownik     nazwa uÅ¼ytkownika bazy danych (domyÅ›lnie: 'lms')
+--dbpass -p hasÅ‚o          hasÅ‚o do bazy danych (domyÅ›lnie: puste)
+--hostname -H nazwa_hosta  host, na ktÃ³rym dziaÅ‚a demon. DomyÅ›lnie przyjmowana jest nazwa
+                           zwracana przez komendÄ™ hostname, ale moÅ¼na jÄ… nadpisaÄ‡. Nazwa
+                           ta musi zgadzaÄ‡ siÄ™ z nazwÄ… hosta podanÄ… w konfiguracji hostÃ³w
+--ssl -s                   wymusza bezpieczne poÅ‚Ä…czenie z bazÄ… danych (domyÅ›lnie: wyÅ‚Ä…czone)
+--command -c polecenie     polecenie powÅ‚oki do wykonania przed kaÅ¼dym poÅ‚Ä…czeniem z bazÄ… 
+                           tzn. co minutÄ™ (domyÅ›lnie: puste)
+--instance -i "instancja[ ...]" lista instancji (moduÅ‚Ã³w) do przeÅ‚adowania. Wszystkie pozostaÅ‚e 
+                           zostanÄ… pominiÄ™te
+--reload -q                wykonuje przeÅ‚adowanie i koÅ„czy pracÄ™
+--reload-all -r            wykonuje przeÅ‚adowanie wszystkich instancji (takÅ¼e tych, ktÃ³re majÄ…
+                           zdefiniowany crontab) i koÅ„czy pracÄ™
+--foreground -f            dziaÅ‚a na pierwszym planie (nie forkuje siÄ™) 
+--version -v               wyÅ›wietla wersjÄ™ i prawa licencyjne</PRE
 >
-			Opcje dostêpu do bazy s± tak¿e odczytywane ze zmiennych pow³oki:
+			Opcje dostÄ™pu do bazy sÄ… takÅ¼e odczytywane ze zmiennych powÅ‚oki:
 			LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
 			<DIV
 CLASS="NOTE"
@@ -452,8 +452,8 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Lista instancji sk³ada siê z nazw instancji oddzielonych 
-			spacj±. W nazwach instancji zawieraj±cych spacje nale¿y zamieniæ je
+>Lista instancji skÅ‚ada siÄ™ z nazw instancji oddzielonych 
+			spacjÄ…. W nazwach instancji zawierajÄ…cych spacje naleÅ¼y zamieniÄ‡ je
 			na znaki '\s', np. <SAMP
 CLASS="PROMPT"
 >lmsd -i "moja\sinstancja"</SAMP
@@ -466,49 +466,49 @@ CLASS="PROMPT"
 >
 			</P
 ><P
->Konfiguracja demona jest podzielona na hosty (umo¿liwiaj±c
-			osobne konfigurowanie i prze³adowywanie demonów zainstalowanych
-			na ró¿nych komputerach/routerach) oraz sekcje konfiguracyjne 
+>Konfiguracja demona jest podzielona na hosty (umoÅ¼liwiajÄ…c
+			osobne konfigurowanie i przeÅ‚adowywanie demonÃ³w zainstalowanych
+			na rÃ³Å¼nych komputerach/routerach) oraz sekcje konfiguracyjne 
 			nazwane instancjami.</P
 ><P
->Instancja oprócz parametrów konfiguracyjnych wybranego modu³u
+>Instancja oprÃ³cz parametrÃ³w konfiguracyjnych wybranego moduÅ‚u
 			zawiera opcje podstawowe, takie jak:
 			<UL
 ><LI
 ><P
 >Nazwa</P
 ><P
->Nazwa instancji unikalna w obrêbie jednego hosta.</P
+>Nazwa instancji unikalna w obrÄ™bie jednego hosta.</P
 ><P
->Przyk³ad: system</P
+>PrzykÅ‚ad: system</P
 ></LI
 ><LI
 ><P
 >Priorytet</P
 ><P
->Liczba okre¶laj±ca priorytet, czyli kolejno¶æ wykonania instancji. Instancja o najni¿szym numerze zostanie wykonana jako pierwsza.</P
+>Liczba okreÅ›lajÄ…ca priorytet, czyli kolejnoÅ›Ä‡ wykonania instancji. Instancja o najniÅ¼szym numerze zostanie wykonana jako pierwsza.</P
 ><P
->Przyk³ad: 10</P
+>PrzykÅ‚ad: 10</P
 ></LI
 ><LI
 ><P
->Modu³</P
+>ModuÅ‚</P
 ><P
->Nazwa pliku modu³u (z rozszerzeniem lub bez). Je¶li nie podano
-				¶cie¿ki demon bêdzie szuka³ modu³u w katalogu PREFIX/lms/lib, do
-				którego trafiaj± modu³y podczas "make install".</P
+>Nazwa pliku moduÅ‚u (z rozszerzeniem lub bez). JeÅ›li nie podano
+				Å›cieÅ¼ki demon bÄ™dzie szukaÅ‚ moduÅ‚u w katalogu PREFIX/lms/lib, do
+				ktÃ³rego trafiajÄ… moduÅ‚y podczas "make install".</P
 ><P
->Przyk³ad: /usr/lib/system.so</P
+>PrzykÅ‚ad: /usr/lib/system.so</P
 ></LI
 ><LI
 ><P
 >Crontab</P
 ><P
->Czas wykonania modu³u okre¶lany w sposób podobny do u¿ywanego w programie crontab. Wszystkie dane musz± byæ numeryczne.
-				Podany przyk³ad spowoduje wykonywanie wybranej instancji co 5 minut, w godzinach od 8 do 18. Gdy opcja ta jest pusta instancja 
-				zostanie wykonana wy³±cznie podczas prze³adowania. Domy¶lnie: pusta.</P
+>Czas wykonania moduÅ‚u okreÅ›lany w sposÃ³b podobny do uÅ¼ywanego w programie crontab. Wszystkie dane muszÄ… byÄ‡ numeryczne.
+				Podany przykÅ‚ad spowoduje wykonywanie wybranej instancji co 5 minut, w godzinach od 8 do 18. Gdy opcja ta jest pusta instancja 
+				zostanie wykonana wyÅ‚Ä…cznie podczas przeÅ‚adowania. DomyÅ›lnie: pusta.</P
 ><P
->Przyk³ad: */5 8-18 * * *</P
+>PrzykÅ‚ad: */5 8-18 * * *</P
 ></LI
 ></UL
 >
@@ -525,24 +525,24 @@ NAME="DAEMON-RUN"
 >6.1.4. Uruchomienie</A
 ></H2
 ><P
->Program domy¶lnie dzia³a w trybie demona. Wtedy 
-			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przy u¿yciu menu 
-			'Prze³adowanie' w <SPAN
+>Program domyÅ›lnie dziaÅ‚a w trybie demona. Wtedy 
+			przeÅ‚adowanie konfiguracji i usÅ‚ug jest dokonywane na Å¼Ä…danie, przy uÅ¼yciu menu 
+			'PrzeÅ‚adowanie' w <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->. Sprawdzenie ¿±dania prze³adowania
-			oraz odczyt konfiguracji (w szczególno¶ci listy instancji i ich konfiguracji)
-			nastêpuje co minutê. Gdy demon wykryje ¿±danie wykonania reloadu, wywo³a 
-			wszystkie w³±czone instancje. Instancje z podan± opcj± 'crontab' zostan±
-			wykonane o okre¶lonym t± opcj± czasie.</P
+>. Sprawdzenie Å¼Ä…dania przeÅ‚adowania
+			oraz odczyt konfiguracji (w szczegÃ³lnoÅ›ci listy instancji i ich konfiguracji)
+			nastÄ™puje co minutÄ™. Gdy demon wykryje Å¼Ä…danie wykonania reloadu, wywoÅ‚a 
+			wszystkie wÅ‚Ä…czone instancje. Instancje z podanÄ… opcjÄ… 'crontab' zostanÄ…
+			wykonane o okreÅ›lonym tÄ… opcjÄ… czasie.</P
 ><P
 >Innym sposobem uruchomienia jest jednorazowy reload z wykorzystaniem
-			opcji -q. Ten sposób najczê¶ciej u¿ywany jest w celach testowych, a w po³±czeniu
-			z opcj± -i pozwala na wykonanie dowolnych instancji z pominiêciem pozosta³ych
-			zapisanych w bazie oraz bez wzglêdu na warto¶æ opcji 'crontab' tych 
+			opcji -q. Ten sposÃ³b najczÄ™Å›ciej uÅ¼ywany jest w celach testowych, a w poÅ‚Ä…czeniu
+			z opcjÄ… -i pozwala na wykonanie dowolnych instancji z pominiÄ™ciem pozostaÅ‚ych
+			zapisanych w bazie oraz bez wzglÄ™du na wartoÅ›Ä‡ opcji 'crontab' tych 
 			instancji.</P
 ></DIV
 ></DIV
@@ -591,7 +591,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Przyk³ad zastosowania lms-mgc</TD
+>PrzykÅ‚ad zastosowania lms-mgc</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -601,7 +601,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Modu³y</TD
+>ModuÅ‚y</TD
 ></TR
 ></TABLE
 ></DIV

@@ -16,13 +16,13 @@ REL="PREVIOUS"
 TITLE="Upgrade"
 HREF="install-upgrade.html"><LINK
 REL="NEXT"
-TITLE="Interfejs U¿ytkownika (LMS-UI)"
+TITLE="Interfejs UÅ¼ytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -79,9 +79,9 @@ NAME="INSTALL-DOCUMENTS"
 >2.9. Dokumenty</A
 ></H1
 ><P
->LMS umo¿liwia generowanie oraz przechowywanie przeró¿nych
-	    dokumentów tj. faktur, dowodów wp³at oraz dokumentów nie-finansowych
-	    np. umów, protoko³ów. Dokumenty mog± byæ numerowane wg wzorców (planów)
+>LMS umoÅ¼liwia generowanie oraz przechowywanie przerÃ³Å¼nych
+	    dokumentÃ³w tj. faktur, dowodÃ³w wpÅ‚at oraz dokumentÃ³w nie-finansowych
+	    np. umÃ³w, protokoÅ‚Ã³w. Dokumenty mogÄ… byÄ‡ numerowane wg wzorcÃ³w (planÃ³w)
 	    numeracyjnych zdefiniowanych przy pomocy menu Konfiguracja - Plany
 	    numeracyjne.</P
 ><DIV
@@ -93,10 +93,10 @@ NAME="INSTALL-INVOICES"
 >2.9.1. Faktury</A
 ></H2
 ><P
->LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
-          faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
-          wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
-          zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <SPAN
+>LMS umoÅ¼liwia wystawianie faktur automatycznie i rÄ™cznie. RÄ™czne wystawienie
+          faktury jest moÅ¼liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
+          wymaga wÅ‚Ä…czenia tej opcji podczas przypisywania taryf uÅ¼ytkownikom. W takim wypadku
+          zapisem faktur do bazy zajmuje siÄ™ skrypt lms-payments lub demon <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -104,7 +104,7 @@ CLASS="EMPHASIS"
 ></SPAN
 ></P
 ><P
->Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
+>Do poprawnego dziaÅ‚ania i tworzenia wydrukÃ³w wymagane jest ustawienie podstawowych 
           opcji w sekcji <SPAN
 CLASS="emphasis"
 ><I
@@ -117,31 +117,31 @@ CLASS="EMPHASIS"
 ><P
 >header</P
 ><P
->Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
+>Dane sprzedawcy. DomyÅ›lnie: pusty. MoÅ¼na uÅ¼yÄ‡ ciÄ…gu "\n" aby oddzieliÄ‡ linie od siebie.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
->header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</SAMP
+>header = "SuperNet ISP\nul.Nowa 15\n12-000 WÄ…chock\n"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >footer</P
 ><P
->Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
+>Stopka faktury - np. dane sprzedawcy. DomyÅ›lnie: pusta. Stopka zostanie umieszczona na dole faktury, maÅ‚Ä… czcionkÄ…. Podobnie jak i w przypadku opcji header, moÅ¼na uÅ¼yÄ‡ ciÄ…gu "\n" aby oddzieliÄ‡ linie od siebie.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
->footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</SAMP
+>footer = "Blokowa SieÄ‡ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >default_author</P
 ><P
->Domy¶lna osoba wystawiaj±ca fakturê (dla faktur wystawianych automatycznie). Domy¶lnie: puste</P
+>DomyÅ›lna osoba wystawiajÄ…ca fakturÄ™ (dla faktur wystawianych automatycznie). DomyÅ›lnie: puste</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >default_author = "specjalista d/s fakturowania"</SAMP
 ></P
@@ -150,9 +150,9 @@ CLASS="PROMPT"
 ><P
 >cplace</P
 ><P
->Miejsce wystawienia faktury. Domy¶lnie: puste.</P
+>Miejsce wystawienia faktury. DomyÅ›lnie: puste.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >cplace = Warszawa</SAMP
 ></P
@@ -161,10 +161,10 @@ CLASS="PROMPT"
 ><P
 >print_balance_history</P
 ><P
->Okre¶la czy na fakturze (html) drukowaæ listê operacji finansowych 
-		na koncie klienta. Domy¶lnie: nie ustawiona.</P
+>OkreÅ›la czy na fakturze (html) drukowaÄ‡ listÄ™ operacji finansowych 
+		na koncie klienta. DomyÅ›lnie: nie ustawiona.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >print_balance_history = true</SAMP
 ></P
@@ -173,30 +173,30 @@ CLASS="PROMPT"
 ><P
 >print_balance_history_limit</P
 ><P
->Liczba rekordów na li¶cie operacji finansowych na
-		fakturze. Domy¶lnie: 10.</P
+>Liczba rekordÃ³w na liÅ›cie operacji finansowych na
+		fakturze. DomyÅ›lnie: 10.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >print_balance_history_limit = 20000</SAMP
 ></P
 ></LI
 ></UL
 >
-          Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
-          na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
-          poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
-          tak¿e filtrowanie faktur do wydruku.</P
+          Wygenerowane faktury moÅ¼na obejrzeÄ‡ w dwojaki sposÃ³b: albo poprzez ikonkÄ™ drukarki 
+          na wykazie bilansu finansowego (ogÃ³lnego bÄ…dÅº pojedynczego uÅ¼ytkownika), albo 
+          poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, moÅ¼liwe jest 
+          takÅ¼e filtrowanie faktur do wydruku.</P
 ><P
->Podczas wydruku faktury domy¶lnie wy¶wietlany jest orygina³ i kopia, mo¿na to zmieniæ:
+>Podczas wydruku faktury domyÅ›lnie wyÅ›wietlany jest oryginaÅ‚ i kopia, moÅ¼na to zmieniÄ‡:
     	    <UL
 ><LI
 ><P
 >default_printpage</P
 ><P
->Lista oddzielonych przecinkiem nazw stron wydruku faktur. Mo¿na u¿yæ zdefiniowane ci±gi znaków "original", "copy" i "duplicate". Domy¶lnie: "original,copy".</P
+>Lista oddzielonych przecinkiem nazw stron wydruku faktur. MoÅ¼na uÅ¼yÄ‡ zdefiniowane ciÄ…gi znakÃ³w "original", "copy" i "duplicate". DomyÅ›lnie: "original,copy".</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >default_printpage = "original"</SAMP
 ></P
@@ -213,21 +213,21 @@ NAME="INSTALL-INVOICES-HTML"
 >2.9.1.1. HTML</A
 ></H3
 ><P
->Przy domy¶lnych ustawieniach faktury wy¶wietlane s± w
-          formacie html wg domy¶lnego szablonu. W sekcji [invoices] masz
-          do dyspozycji jeszcze nastêpuj±ce opcje:
+>Przy domyÅ›lnych ustawieniach faktury wyÅ›wietlane sÄ… w
+          formacie html wg domyÅ›lnego szablonu. W sekcji [invoices] masz
+          do dyspozycji jeszcze nastÄ™pujÄ…ce opcje:
           <UL
 ><LI
 ><P
 >template_file</P
 ><P
->Szablon faktury, który powinien znajdowaæ siê w
+>Szablon faktury, ktÃ³ry powinien znajdowaÄ‡ siÄ™ w
                katalogu <TT
 CLASS="FILENAME"
 >templates</TT
->. Domy¶lnie: invoice.html.</P
+>. DomyÅ›lnie: invoice.html.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >template_file = invoice-mynet.html</SAMP
 ></P
@@ -236,12 +236,12 @@ CLASS="PROMPT"
 ><P
 >content_type</P
 ><P
->Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
-               to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
-               Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
-               Domy¶lnie: 'text/html'</P
+>Content-type dla faktury. JeÅ¼eli wpiszesz tutaj 'application/octet-stream'
+               to przeglÄ…darka zechce wysÅ‚aÄ‡ plik do zapisania na dysku, zamiast go wyÅ›wietliÄ‡.
+               Przydatne jeÅ›li uÅ¼ywasz wÅ‚asnego szablonu, ktÃ³ry wygeneruje np.rtf'a lub xls'a.
+               DomyÅ›lnie: 'text/html'</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >content_type = application/octet-stream</SAMP
 ></P
@@ -250,20 +250,20 @@ CLASS="PROMPT"
 ><P
 >attachment_name</P
 ><P
->Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
-               wydruk. Domy¶lnie: pusta.</P
+>MoÅ¼na podaÄ‡ nazwÄ™ pliku, jako ktÃ³ry ma zostaÄ‡ zapisany gotowy
+               wydruk. DomyÅ›lnie: pusta.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >attachment_name = faktura.xls</SAMP
 ></P
 ></LI
 ></UL
 >
-          Wynikowy dokument HTML zawiera orygina³y 
-          i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
-          Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
-          faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+          Wynikowy dokument HTML zawiera oryginaÅ‚y 
+          i kopie, ktÃ³re sÄ… oddzielone znacznikami podziaÅ‚u strony poprzez CSS. 
+          Tak wiÄ™c kaÅ¼da nowoczesna przeglÄ…darka zgodna z CSS powinna bezproblemowo drukowaÄ‡ 
+          faktury Å‚adnie podzielone na strony. Funkcja ta byÅ‚a testowana na przeglÄ…darkach 
           Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
 ><P
 >               <DIV
@@ -285,9 +285,9 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
-               konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie
-               stopki i nag³ówka, czy te¿ adresu na wydruku.</P
+>Praktycznie kaÅ¼da przeglÄ…darka internetowa ma moÅ¼liwoÅ›Ä‡ 
+               konfiguracji wydruku, gdzie moÅ¼na wyÅ‚Ä…czyÄ‡ funkcje takie jak drukowanie
+               stopki i nagÅ‚Ã³wka, czy teÅ¼ adresu na wydruku.</P
 ></TD
 ></TR
 ></TABLE
@@ -304,7 +304,7 @@ NAME="INSTALL-INVOICES-PDF"
 >2.9.1.2. PDF</A
 ></H3
 ><P
->Mo¿liwe jest tak¿e tworzenie faktur jako pliki pdf. Przypisanie
+>MoÅ¼liwe jest takÅ¼e tworzenie faktur jako pliki pdf. Przypisanie
           opcji <TT
 CLASS="FILENAME"
 >type</TT
@@ -315,24 +315,24 @@ CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
 > 
-          warto¶ci 'pdf' spowoduje, ¿e faktury zamiast w html'u bêd± tworzone jako pliki 
+          wartoÅ›ci 'pdf' spowoduje, Å¼e faktury zamiast w html'u bÄ™dÄ… tworzone jako pliki 
           "portable data format". Opcja <TT
 CLASS="FILENAME"
 >template_file</TT
-> spe³nia podobn± rolê jak dla faktur html'owych,
-          z tym, ¿e posiada predefiniowane warto¶ci: 'standard' - faktura podstawowa 
+> speÅ‚nia podobnÄ… rolÄ™ jak dla faktur html'owych,
+          z tym, Å¼e posiada predefiniowane wartoÅ›ci: 'standard' - faktura podstawowa 
           (odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
           na drukach <A
 HREF="http://www.polarnet.org/produkty/ft-0100/"
 TARGET="_top"
 >FT-0100</A
 > 
-	  zawieraj±cych druk polecenia przelewu. W opcji <TT
+	  zawierajÄ…cych druk polecenia przelewu. W opcji <TT
 CLASS="FILENAME"
 >template_file</TT
 >
-          mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
-          zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
+          moÅ¼na takÅ¼e wstawiÄ‡ nazwÄ™ pliku php, jednak ta moÅ¼liwoÅ›Ä‡ jest przeznaczona dla
+          zaawansowanych uÅ¼ytkownikÃ³w, gdyÅ¼ wymaga utworzenia pliku php, a nie tak jak w 
           przypadku faktur html'owych szablonu Smarty.</P
 ></DIV
 ><DIV
@@ -344,23 +344,23 @@ NAME="INSTALL-INVOICES-CNOTE"
 >2.9.1.3. Korekty</A
 ></H3
 ><P
->Faktury koryguj±ce korzystaj± z ustawieñ dotycz±cych
-	  pozosta³ych faktur z sekcji [invoices]. Domy¶lny szablon faktury
-	  uwzglêdnia faktury koryguj±ce. Jednak udostêpniono opcjê
-	  pozwalaj±c± na zdefiniowanie osobnego szablonu dla korekt (pozosta³e
-	  opcje s± wspólne dla faktur i dla korekt):
+>Faktury korygujÄ…ce korzystajÄ… z ustawieÅ„ dotyczÄ…cych
+	  pozostaÅ‚ych faktur z sekcji [invoices]. DomyÅ›lny szablon faktury
+	  uwzglÄ™dnia faktury korygujÄ…ce. Jednak udostÄ™pniono opcjÄ™
+	  pozwalajÄ…cÄ… na zdefiniowanie osobnego szablonu dla korekt (pozostaÅ‚e
+	  opcje sÄ… wspÃ³lne dla faktur i dla korekt):
           <UL
 ><LI
 ><P
 >cnote_template_file</P
 ><P
->Szablon faktury koryguj±cej, który powinien znajdowaæ siê w
+>Szablon faktury korygujÄ…cej, ktÃ³ry powinien znajdowaÄ‡ siÄ™ w
                katalogu <TT
 CLASS="FILENAME"
 >templates</TT
->. Domy¶lnie: invoice.html.</P
+>. DomyÅ›lnie: invoice.html.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >cnote_template_file = invoice-mynet.html</SAMP
 ></P
@@ -378,26 +378,26 @@ NAME="INSTALL-INVOICES-IBAN"
 >2.9.1.4. Automatyczne generowanie numeru konta bankowego</A
 ></H3
 ><P
->LMS umo¿liwia automatyczne generowanie numeru konta bankowego w standardzie IBAN
-	  zawieraj±cego ID klienta. Funkcja ta mo¿e byæ u¿ywana do masowej identyfikacji p³atno¶ci
-	  która jako us³uga znajduje siê w ofercie wiêkszo¶ci banków. Aby masowa identyfikacja by³a
-	  mo¿liwa, nale¿y podpisaæ umowê z bankiem z której potrzebne nam bêd±:
+>LMS umoÅ¼liwia automatyczne generowanie numeru konta bankowego w standardzie IBAN
+	  zawierajÄ…cego ID klienta. Funkcja ta moÅ¼e byÄ‡ uÅ¼ywana do masowej identyfikacji pÅ‚atnoÅ›ci
+	  ktÃ³ra jako usÅ‚uga znajduje siÄ™ w ofercie wiÄ™kszoÅ›ci bankÃ³w. Aby masowa identyfikacja byÅ‚a
+	  moÅ¼liwa, naleÅ¼y podpisaÄ‡ umowÄ™ z bankiem z ktÃ³rej potrzebne nam bÄ™dÄ…:
 	  <UL
 ><LI
 ><P
 >Numer rozliczeniowy banku</P
 ><P
->zawsze sta³y dla ka¿dego banku, z³o¿ony z 8 cyfr</P
+>zawsze staÅ‚y dla kaÅ¼dego banku, zÅ‚oÅ¼ony z 8 cyfr</P
 ></LI
 ><LI
 ><P
 >Identyfikator rachunku</P
 ><P
->identyfikator naszego wirtualnego rachunku, z³o¿ony z 4 cyfr</P
+>identyfikator naszego wirtualnego rachunku, zÅ‚oÅ¼ony z 4 cyfr</P
 ></LI
 ></UL
 >
-	  Gdy mamy potrzebne dane, mo¿emy przej¶æ do konfiguracji LMSa.</P
+	  Gdy mamy potrzebne dane, moÅ¼emy przejÅ›Ä‡ do konfiguracji LMSa.</P
 ><P
 >W sekcji <SPAN
 CLASS="emphasis"
@@ -411,24 +411,24 @@ CLASS="EMPHASIS"
 ><P
 >iban</P
 ><P
->okre¶la czy numer konta na fakturach ma byæ zwyk³y czy generowany automatycznie (0|1)</P
+>okreÅ›la czy numer konta na fakturach ma byÄ‡ zwykÅ‚y czy generowany automatycznie (0|1)</P
 ></LI
 ><LI
 ><P
 >account</P
 ><P
->skrócony numer konta bankowego powsta³y przez po³±czenie numeru rozliczeniowego banku 
-		    z identyfikatorem rachunku, numer ten musi siê sk³adaæ od 8 do 20 cyfr bez spacji i innych 
-		    znaków. Standardem jest podanie 12 cyfr. (numer rozliczeniowy banku-8 oraz Twój nr 
+>skrÃ³cony numer konta bankowego powstaÅ‚y przez poÅ‚Ä…czenie numeru rozliczeniowego banku 
+		    z identyfikatorem rachunku, numer ten musi siÄ™ skÅ‚adaÄ‡ od 8 do 20 cyfr bez spacji i innych 
+		    znakÃ³w. Standardem jest podanie 12 cyfr. (numer rozliczeniowy banku-8 oraz TwÃ³j nr 
 		    rozliczeniowy-4)</P
 ></LI
 ></UL
 >
-	  Od tej pory je¶li u¿ywamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wp³aty z
-	  menu Finanse -&#62; Wydruki -&#62; Faktury -&#62; Drukuj polecenia przelewu/wp³aty, ka¿dy wydruk bêdzie zawiera³
-	  unikalny numer konta z zawartym ID naszego klienta. ID klienta zostanie dodane na koñcu, oraz
-	  poprzedzone odpowiednia ilo¶ci± zer. Suma kontrolna bêdzie wyliczana automatycznie.
-	  Wiêcej o IBAN w <A
+	  Od tej pory jeÅ›li uÅ¼ywamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wpÅ‚aty z
+	  menu Finanse -&#62; Wydruki -&#62; Faktury -&#62; Drukuj polecenia przelewu/wpÅ‚aty, kaÅ¼dy wydruk bÄ™dzie zawieraÅ‚
+	  unikalny numer konta z zawartym ID naszego klienta. ID klienta zostanie dodane na koÅ„cu, oraz
+	  poprzedzone odpowiednia iloÅ›ciÄ… zer. Suma kontrolna bÄ™dzie wyliczana automatycznie.
+	  WiÄ™cej o IBAN w <A
 HREF="http://en.wikipedia.org/wiki/International_Bank_Account_Number"
 TARGET="_top"
 >Wikipedii</A
@@ -442,18 +442,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-TRANSFERFORMS"
->2.9.2. Polecenia przelewu/wp³aty</A
+>2.9.2. Polecenia przelewu/wpÅ‚aty</A
 ></H2
 ><P
->Dane do druków polecenia przelewu brane s± z sekcji <SPAN
+>Dane do drukÃ³w polecenia przelewu brane sÄ… z sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[finances]</I
 ></SPAN
 >
-		konfiguracji. Dotycz± zarówno wydruków poleceñ przelewu dostêpnych w Finanse -&#62; Wydruki 
-		jak i wydruków faktur typu FT-0100. A oto dostêpne opcje:
+		konfiguracji. DotyczÄ… zarÃ³wno wydrukÃ³w poleceÅ„ przelewu dostÄ™pnych w Finanse -&#62; Wydruki 
+		jak i wydrukÃ³w faktur typu FT-0100. A oto dostÄ™pne opcje:
 		<TABLE
 BORDER="0"
 ><TBODY
@@ -463,7 +463,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->shortname - skrócona nazwa firmy</TD
+>shortname - skrÃ³cona nazwa firmy</TD
 ></TR
 ><TR
 ><TD
@@ -483,7 +483,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->pay_title - tytu³ p³atno¶ci</TD
+>pay_title - tytuÅ‚ pÅ‚atnoÅ›ci</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -499,7 +499,7 @@ NAME="INSTALL-RECEIPTS"
 >2.9.3. Dokumenty kasowe (KP/KW)</A
 ></H2
 ><P
->Dokumenty kasowe, ze wzglêdu na swoj± specyfikê, posiadaj± podobne 
+>Dokumenty kasowe, ze wzglÄ™du na swojÄ… specyfikÄ™, posiadajÄ… podobne 
 	  opcje konfiguracyjne jak faktury.</P
 ><DIV
 CLASS="SECT3"
@@ -510,28 +510,28 @@ NAME="INSTALL-RECEIPTS-HTML"
 >2.9.3.1. HTML</A
 ></H3
 ><P
->Przy domy¶lnych ustawieniach dokumenty kasowe wy¶wietlane s± w
-          formacie html wg domy¶lnego szablonu. Dla dowodów wp³aty oraz wyp³aty
-	  przewidziano wspólny szablon wydruku. W sekcji <SPAN
+>Przy domyÅ›lnych ustawieniach dokumenty kasowe wyÅ›wietlane sÄ… w
+          formacie html wg domyÅ›lnego szablonu. Dla dowodÃ³w wpÅ‚aty oraz wypÅ‚aty
+	  przewidziano wspÃ³lny szablon wydruku. W sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[receipts]</I
 ></SPAN
 >
-	  masz do dyspozycji jeszcze nastêpuj±ce opcje:
+	  masz do dyspozycji jeszcze nastÄ™pujÄ…ce opcje:
           <UL
 ><LI
 ><P
 >template_file</P
 ><P
->Szablon dowodu wp³aty/wyp³aty, który powinien znajdowaæ siê w
+>Szablon dowodu wpÅ‚aty/wypÅ‚aty, ktÃ³ry powinien znajdowaÄ‡ siÄ™ w
                katalogu <TT
 CLASS="FILENAME"
 >templates</TT
->. Domy¶lnie: receipt.html.</P
+>. DomyÅ›lnie: receipt.html.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >template_file = mytempl/receipt.html</SAMP
 ></P
@@ -540,12 +540,12 @@ CLASS="PROMPT"
 ><P
 >content_type</P
 ><P
->Content-type dla druku. Je¿eli wpiszesz tutaj 'application/octet-stream'
-               to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
-               Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
-               Domy¶lnie: 'text/html'</P
+>Content-type dla druku. JeÅ¼eli wpiszesz tutaj 'application/octet-stream'
+               to przeglÄ…darka zechce wysÅ‚aÄ‡ plik do zapisania na dysku, zamiast go wyÅ›wietliÄ‡.
+               Przydatne jeÅ›li uÅ¼ywasz wÅ‚asnego szablonu, ktÃ³ry wygeneruje np.rtf'a lub xls'a.
+               DomyÅ›lnie: 'text/html'</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >content_type = application/octet-stream</SAMP
 ></P
@@ -554,10 +554,10 @@ CLASS="PROMPT"
 ><P
 >attachment_name</P
 ><P
->Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
-               wydruk. Domy¶lnie: pusta.</P
+>MoÅ¼na podaÄ‡ nazwÄ™ pliku, jako ktÃ³ry ma zostaÄ‡ zapisany gotowy
+               wydruk. DomyÅ›lnie: pusta.</P
 ><P
->Przyk³ad: <SAMP
+>PrzykÅ‚ad: <SAMP
 CLASS="PROMPT"
 >attachment_name = receipt.xls</SAMP
 ></P
@@ -575,7 +575,7 @@ NAME="INSTALL-RECEIPTS-PDF"
 >2.9.3.2. PDF</A
 ></H3
 ><P
->Mo¿liwe jest tak¿e tworzenie dokumentów kasowych jako plików pdf. Przypisanie
+>MoÅ¼liwe jest takÅ¼e tworzenie dokumentÃ³w kasowych jako plikÃ³w pdf. Przypisanie
         	opcji <TT
 CLASS="FILENAME"
 >type</TT
@@ -586,18 +586,18 @@ CLASS="EMPHASIS"
 >[receipts]</I
 ></SPAN
 > 
-        	warto¶ci 'pdf' spowoduje, ¿e dowody zamiast w html'u bêd± tworzone jako pliki 
+        	wartoÅ›ci 'pdf' spowoduje, Å¼e dowody zamiast w html'u bÄ™dÄ… tworzone jako pliki 
         	"portable data format". Opcja <TT
 CLASS="FILENAME"
 >template_file</TT
-> spe³nia podobn± 
-		rolê jak dla wydruków html'owych z tym, ¿e posiada predefiniowan± warto¶æ: 
+> speÅ‚nia podobnÄ… 
+		rolÄ™ jak dla wydrukÃ³w html'owych z tym, Å¼e posiada predefiniowanÄ… wartoÅ›Ä‡: 
 		'standard' - wydruk podstawowy (odpowiednik receipt.html).
 		W opcji <TT
 CLASS="FILENAME"
 >template_file</TT
-> mo¿na tak¿e wstawiæ nazwê pliku php, 
-		jednak ta mo¿liwo¶æ jest przeznaczona dla zaawansowanych u¿ytkowników, gdy¿ 
+> moÅ¼na takÅ¼e wstawiÄ‡ nazwÄ™ pliku php, 
+		jednak ta moÅ¼liwoÅ›Ä‡ jest przeznaczona dla zaawansowanych uÅ¼ytkownikÃ³w, gdyÅ¼ 
 		wymaga utworzenia pliku php, a nie tak jak w przypadku html'a szablonu Smarty.</P
 ></DIV
 ></DIV
@@ -607,16 +607,16 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-DOCUMENTS-OTHER"
->2.9.4. Dokumenty pozosta³e</A
+>2.9.4. Dokumenty pozostaÅ‚e</A
 ></H2
 ><P
->Oprócz dokumentów finansowych w LMSie mo¿na przechowywaæ
-	    	dokumenty takie jak umowy, protoko³y, aneksy i inne. Ka¿emu klientowi
-	    	mo¿na przypisaæ dowoln± liczbê dokumentów na zak³adce 'Dokumenty klienta'
+>OprÃ³cz dokumentÃ³w finansowych w LMSie moÅ¼na przechowywaÄ‡
+	    	dokumenty takie jak umowy, protokoÅ‚y, aneksy i inne. KaÅ¼emu klientowi
+	    	moÅ¼na przypisaÄ‡ dowolnÄ… liczbÄ™ dokumentÃ³w na zakÅ‚adce 'Dokumenty klienta'
 	    	w panelu 'Informacje o kliencie' lub poprzez menu 'Dokumenty'. 
-	    	Pliki z dokumentami przechowywane s± poza baz± danych 
-	    	(o czym nale¿y pamiêtaæ robi±c backupy) w katalogu 
-	    	okre¶lonym zmienn± 'doc_dir' w sekcji
+	    	Pliki z dokumentami przechowywane sÄ… poza bazÄ… danych 
+	    	(o czym naleÅ¼y pamiÄ™taÄ‡ robiÄ…c backupy) w katalogu 
+	    	okreÅ›lonym zmiennÄ… 'doc_dir' w sekcji
 	    	<SPAN
 CLASS="emphasis"
 ><I
@@ -626,34 +626,34 @@ CLASS="EMPHASIS"
 > pliku konfiguracyjnego.
 	    	</P
 ><P
->Dokumenty mog± byæ importowane do systemu jako gotowe pliki, ale 
-		tak¿e tworzone wed³ug szablonów przy u¿yciu zdefiniowanych kreatorów. Tutaj 
-		system daje du¿e mo¿liwo¶ci konfiguracji. W katalogu 
+>Dokumenty mogÄ… byÄ‡ importowane do systemu jako gotowe pliki, ale 
+		takÅ¼e tworzone wedÅ‚ug szablonÃ³w przy uÅ¼yciu zdefiniowanych kreatorÃ³w. Tutaj 
+		system daje duÅ¼e moÅ¼liwoÅ›ci konfiguracji. W katalogu 
 		<TT
 CLASS="FILENAME"
 >documents/templates/default</TT
 >
-		znajduje siê domy¶lny kreator dokumentu (szablon i silnik). U¿ytkownik mo¿e utworzyæ
-		dowoln± liczbê w³asnych kreatorów dokumentów, które nale¿y 
-		umie¶ciæ w katalogu <TT
+		znajduje siÄ™ domyÅ›lny kreator dokumentu (szablon i silnik). UÅ¼ytkownik moÅ¼e utworzyÄ‡
+		dowolnÄ… liczbÄ™ wÅ‚asnych kreatorÃ³w dokumentÃ³w, ktÃ³re naleÅ¼y 
+		umieÅ›ciÄ‡ w katalogu <TT
 CLASS="FILENAME"
 >documents/templates/</TT
 >.</P
 ><P
->Ka¿dy kreator powinien zawieraæ plik <TT
+>KaÅ¼dy kreator powinien zawieraÄ‡ plik <TT
 CLASS="FILENAME"
 >info.php</TT
 > o
-		okre¶lonej strukturze:
+		okreÅ›lonej strukturze:
 <PRE
 CLASS="SCREEN"
 >&lt;?php
 $engine = array(
-	'name' =&#62; 'default', 	// nazwa (katalogu) kreatora, ma³e litery i cyfry
+	'name' =&#62; 'default', 	// nazwa (katalogu) kreatora, maÅ‚e litery i cyfry
 	'engine' =&#62; 'default', 	// katalog z silnikiem (engine.php)
-				// mo¿na u¿ywaæ silników z innych kreatorów
+				// moÅ¼na uÅ¼ywaÄ‡ silnikÃ³w z innych kreatorÃ³w
 	'template' =&#62; 'template.html', 		// plik szablonu (w katalogu 'name')
-	'title' =&#62; trans('Default document'), 	// opis, który bêdzie wy¶wietlany w LMS-UI
+	'title' =&#62; trans('Default document'), 	// opis, ktÃ³ry bÄ™dzie wyÅ›wietlany w LMS-UI
 	'content_type' =&#62; 'text/html', 		// typ pliku wynikowego
 	'output' =&#62; 'default.html', 		// nazwa pliku wynikowego
 	'plugin' =&#62; 'plugin',			// nazwa pliku pluginu (w katalogu 'name')
@@ -669,10 +669,10 @@ CLASS="FILENAME"
 		<TT
 CLASS="FILENAME"
 >engine.php</TT
->). Mo¿na utworzyæ w³asny silnik lub
-		skorzystaæ z innego, ustawiaj±c zmienn± 'engine' na nazwê kreatora, którego
-		silnik chcemy wykorzystaæ. Nie ma zatem wymogu tworzenia w³asnego silnika
-		dla ka¿dego nowego kreatora, wystarczy utworzyæ szablon 'template' i plik
+>). MoÅ¼na utworzyÄ‡ wÅ‚asny silnik lub
+		skorzystaÄ‡ z innego, ustawiajÄ…c zmiennÄ… 'engine' na nazwÄ™ kreatora, ktÃ³rego
+		silnik chcemy wykorzystaÄ‡. Nie ma zatem wymogu tworzenia wÅ‚asnego silnika
+		dla kaÅ¼dego nowego kreatora, wystarczy utworzyÄ‡ szablon 'template' i plik
 		<TT
 CLASS="FILENAME"
 >info.php</TT
@@ -681,16 +681,16 @@ CLASS="FILENAME"
 >Zmienna <TT
 CLASS="FILENAME"
 >plugin</TT
-> okre¶la nazwê pliku php
-		odpowiedzialnego za wy¶wietlenie dodatkowych pól w formularzu tworzenia
-		nowego dokumentu. Plugin mo¿e ponadto zawieraæ obs³ugê b³êdów dla
-		tych pól. Po dodaniu dokumentu wykonywany jest skrypt PHP okre¶lony w 
+> okreÅ›la nazwÄ™ pliku php
+		odpowiedzialnego za wyÅ›wietlenie dodatkowych pÃ³l w formularzu tworzenia
+		nowego dokumentu. Plugin moÅ¼e ponadto zawieraÄ‡ obsÅ‚ugÄ™ bÅ‚Ä™dÃ³w dla
+		tych pÃ³l. Po dodaniu dokumentu wykonywany jest skrypt PHP okreÅ›lony w 
 		zmiennej <TT
 CLASS="FILENAME"
 >post-action</TT
 >.
-		Prosty przyk³ad pluginu i post-akcji przedstawiono w przyk³adowym 
-		domy¶lnym dokumencie.</P
+		Prosty przykÅ‚ad pluginu i post-akcji przedstawiono w przykÅ‚adowym 
+		domyÅ›lnym dokumencie.</P
 ></DIV
 ></DIV
 ><DIV
@@ -751,7 +751,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Interfejs U¿ytkownika (LMS-UI)</TD
+>Interfejs UÅ¼ytkownika (LMS-UI)</TD
 ></TR
 ></TABLE
 ></DIV

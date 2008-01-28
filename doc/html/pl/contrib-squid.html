@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Ostrze¿enia + squid</TITLE
+>OstrzeÅ¼enia + squid</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -22,7 +22,7 @@ REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -76,7 +76,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="CONTRIB-SQUID"
->8.4. Ostrze¿enia + squid</A
+>8.4. OstrzeÅ¼enia + squid</A
 ></H1
 ><DIV
 CLASS="SECT2"
@@ -84,25 +84,25 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SQUID-REDIRECTOR-INTRO"
->8.4.1. Wstêp</A
+>8.4.1. WstÄ™p</A
 ></H2
 ><P
->Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki sposób 
-          wy¶wietlaæ wiadomo¶ci administracyjne oraz w razie potrzeby blokowaæ dostêp
-          do w3cache. Oczywi¶cie aby to dzia³a³o w 100%, wszyscy klienci musz± 
-          korzystaæ ze squida.</P
+>Ten maÅ‚y zestaw narzÄ™dzi pozwala za pomocÄ… squida w dosyÄ‡ elegancki sposÃ³b 
+          wyÅ›wietlaÄ‡ wiadomoÅ›ci administracyjne oraz w razie potrzeby blokowaÄ‡ dostÄ™p
+          do w3cache. OczywiÅ›cie aby to dziaÅ‚aÅ‚o w 100%, wszyscy klienci muszÄ… 
+          korzystaÄ‡ ze squida.</P
 ><P
 >Kluczowym elementem jest redirector. Odpowiada on za to, 
           aby w momencie ustawienia dla danego komputera flagi warn, 
-          przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
-          ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
-          adres naszej winietki, tak aby umo¿liwiæ za³adowanie siê obrazków.
-          Je¶li komputer ma ustawion± flagê warn, to po przekierowaniu u¿ytkownik ma 
-          mo¿liwo¶æ oznaczenia wiadomo¶ci jako przeczytanej, po czym skrypt automatycznie 
-          kieruje przegl±darkê na pierwotnie wywo³ywany URL. W przypadku oznaczeniu danego 
-          komputera jako wy³±czony, u¿ytkownik bêdzie zawsze przekierowywany na adres 
-          winietki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
-          Wiêcej informacji znajdziesz w pliku
+          przekierowywaÅ‚ wszystkie Å¼Ä…dania wysyÅ‚ane do serwera proxy na nasz, 
+          ustalony wczeÅ›niej adres. Przekierowaniu nie ulegajÄ… adresy zawierajÄ…ce 
+          adres naszej winietki, tak aby umoÅ¼liwiÄ‡ zaÅ‚adowanie siÄ™ obrazkÃ³w.
+          JeÅ›li komputer ma ustawionÄ… flagÄ™ warn, to po przekierowaniu uÅ¼ytkownik ma 
+          moÅ¼liwoÅ›Ä‡ oznaczenia wiadomoÅ›ci jako przeczytanej, po czym skrypt automatycznie 
+          kieruje przeglÄ…darkÄ™ na pierwotnie wywoÅ‚ywany URL. W przypadku oznaczeniu danego 
+          komputera jako wyÅ‚Ä…czony, uÅ¼ytkownik bÄ™dzie zawsze przekierowywany na adres 
+          winietki, bez moÅ¼liwoÅ›ci oznaczenia wiadomoÅ›ci jako przeczytanej.
+          WiÄ™cej informacji znajdziesz w pliku
           <TT
 CLASS="FILENAME"
 >README</TT
@@ -129,19 +129,19 @@ redirect_program /sciezka/do/lms-squid
 # wersja 2.6
 url_rewrite_program /sciezka/do/lms-squid</PRE
 >
-          które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego 
-          redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy 
+          ktÃ³re informujÄ… squida aby dla kaÅ¼dego adresu uÅ¼ywaÅ‚ naszego 
+          redirectora. NastÄ™pnie naleÅ¼y skonfigurowaÄ‡ redirectora. Otwieramy 
           w naszym ulubionym edytorze plik lms-squid i praktycznie
-          wszystko co mo¿na w nim ustawiæ to:
+          wszystko co moÅ¼na w nim ustawiÄ‡ to:
 <PRE
 CLASS="SCREEN"
 >my $configfile = '/etc/lms/lms.ini';</PRE
 >
-          Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
+          Czyli poÅ‚oÅ¼enie pliku konfiguracyjnego. Reszta konfiguracji 
           ustawiana jest w <TT
 CLASS="FILENAME"
 >lms.ini</TT
->, gdzie dopisujemy sekcjê 
+>, gdzie dopisujemy sekcjÄ™ 
           <TT
 CLASS="FILENAME"
 >[redirector]</TT
@@ -151,11 +151,11 @@ CLASS="SCREEN"
 >[redirector]
 redirect        = http://net-komp.net.pl</PRE
 >
-          Do katalogu gdzie ma byæ widoczna winietka kopiujemy pliki
+          Do katalogu gdzie ma byÄ‡ widoczna winietka kopiujemy pliki
           <TT
 CLASS="FILENAME"
 >index.php, message.html</TT
-> i zawarto¶æ katalogu 
+> i zawartoÅ›Ä‡ katalogu 
           <TT
 CLASS="FILENAME"
 >img</TT

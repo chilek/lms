@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Generator plików konfiguracyjnych (lms-mgc)</TITLE
+>Generator plikÃ³w konfiguracyjnych (lms-mgc)</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -19,7 +19,7 @@ REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="CHAPTER"
 BGCOLOR="#EBE4D6"
@@ -73,7 +73,7 @@ CLASS="CHAPTER"
 ><A
 NAME="MGC"
 ></A
->Rozdzia&#322; 5. Generator plików konfiguracyjnych (lms-mgc)</H1
+>Rozdzia&#322; 5. Generator plikÃ³w konfiguracyjnych (lms-mgc)</H1
 ><DIV
 CLASS="TOC"
 ><DL
@@ -118,12 +118,12 @@ HREF="mgc-config.html#MGC-CONFIG-VARS"
 ><DT
 >5.3. <A
 HREF="mgc-example.html"
->Przyk³ad zastosowania lms-mgc</A
+>PrzykÅ‚ad zastosowania lms-mgc</A
 ></DT
 ></DL
 ></DIV
 ><P
->LMS-MGC to "magiczny" generator plików konfiguracyjnych. Przy odrobinie wysi³ku mo¿na stworzyæ przy jego pomocy dowolnego rodzaju plik konfiguracyjny (np. generuj±cy odpowiednie strefy dla DNS)</P
+>LMS-MGC to "magiczny" generator plikÃ³w konfiguracyjnych. Przy odrobinie wysiÅ‚ku moÅ¼na stworzyÄ‡ przy jego pomocy dowolnego rodzaju plik konfiguracyjny (np. generujÄ…cy odpowiednie strefy dla DNS)</P
 ><DIV
 CLASS="SECT1"
 ><H1
@@ -133,7 +133,7 @@ NAME="MGC-INSTALL"
 >5.1. Instalacja</A
 ></H1
 ><P
->Lms-mgc posiada w³asny plik konfiguracyjny: <TT
+>Lms-mgc posiada wÅ‚asny plik konfiguracyjny: <TT
 CLASS="FILENAME"
 >lms-mgc.ini</TT
 >. Jego instalacja
@@ -141,17 +141,17 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >/usr/sbin</TT
 >. Uruchomienie generatora
-	mo¿na wykonaæ na dwa sposoby: wpisaæ do crona (np. co godzinê)</P
+	moÅ¼na wykonaÄ‡ na dwa sposoby: wpisaÄ‡ do crona (np. co godzinÄ™)</P
 ><PRE
 CLASS="SCREEN"
 >0 * * * *       /usr/sbin/lms-mgc 1 &gt; /dev/null</PRE
 ><P
->albo z poziomu LMS skorzystaæ z menu "Prze³adowanie". Druga metoda wymaga u¿ycia 
+>albo z poziomu LMS skorzystaÄ‡ z menu "PrzeÅ‚adowanie". Druga metoda wymaga uÅ¼ycia 
 	<TT
 CLASS="FILENAME"
 >sudo</TT
->. Niestety, jedyne wyj¶cie by umo¿liwiæ uruchomienie lms-mgc, to
-	dopisanie u¿ytkownika do sudo, a nastêpnie ustawienie w sekcji konfiguracyjnej [phpui]:</P
+>. Niestety, jedyne wyjÅ›cie by umoÅ¼liwiÄ‡ uruchomienie lms-mgc, to
+	dopisanie uÅ¼ytkownika do sudo, a nastÄ™pnie ustawienie w sekcji konfiguracyjnej [phpui]:</P
 ><P
 ><SAMP
 CLASS="PROMPT"
@@ -163,17 +163,17 @@ CLASS="PROMPT"
 >reload_execcmd 	= sudo /usr/sbin/lms-mgc</SAMP
 ></P
 ><P
->Lms-mgc posiada nastêpuj±ce opcje uruchomienia:
+>Lms-mgc posiada nastÄ™pujÄ…ce opcje uruchomienia:
 	<PRE
 CLASS="SCREEN"
 >-C, --config-file=/path/lms-mgc.ini alternatywny plik konfiguracyjny 
                                     (default: /etc/lms/lms-mgc.ini);
 -i, --instances=name                nazwa (lub numer) instancji do uruchomienia, bez czytania 
                                     konfiguracji z lms-mgc.ini, np. -i "name1 name2"
--h, --help                          wy¶wietla pomoc;
--v, --version                       wy¶wietla numer wersji;
--q, --quiet                         tylko komunikaty o b³êdach;
--d, --debug                         informacje szczegó³owe dla ka¿dego IP;</PRE
+-h, --help                          wyÅ›wietla pomoc;
+-v, --version                       wyÅ›wietla numer wersji;
+-q, --quiet                         tylko komunikaty o bÅ‚Ä™dach;
+-d, --debug                         informacje szczegÃ³Å‚owe dla kaÅ¼dego IP;</PRE
 >
 	</P
 ></DIV

@@ -6,6 +6,7 @@ version ? (????-??-??):
   - added option phpui.printer_window which enables onload="window.print()"
     for html printouts, allowed values: 'invoice', 'receipt', 'report' (alec)
   - fixed problem with one before last address name in chooseip page (alec)
+  - polish documentation converted to utf8 (alec)
 
 version 1.11.2 Neera (2008-01-23):
 

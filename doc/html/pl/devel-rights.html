@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Poziomy dostêpu</TITLE
+>Poziomy dostÄ™pu</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -22,7 +22,7 @@ REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -76,24 +76,24 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-RIGHTS"
->7.5. Poziomy dostêpu</A
+>7.5. Poziomy dostÄ™pu</A
 ></H1
 ><P
->W  sumie  tutaj  to  wyt³umaczê  bardziej  dla developerów, gdy¿ osoby
-          korzystaj±ce z LMS raczej nie bêd± zainteresowane.</P
+>W  sumie  tutaj  to  wytÅ‚umaczÄ™  bardziej  dla developerÃ³w, gdyÅ¼ osoby
+          korzystajÄ…ce z LMS raczej nie bÄ™dÄ… zainteresowane.</P
 ><P
->Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne litery.
-          By³o to  za³o¿enie  z  czasów LMS-0.4, lecz nigdy nie wykorzystane. Z
-          racji  tego,  ¿e  wesz³o  to  do 1.0, d³ugo siê g³owi³em jak wykorzystaæ
-          64-znakowego  stringa. Otó¿ w kolumnie rights jest po prostu 64-znakowa
-          (256-bitowa)  liczba  heksadecymalna.  Ka¿dy jej znak mo¿e opisaæ
-          maksymalnie  cztery bity kombinacji (4*64 = 256 - st±d ilo¶æ mo¿liwych
-          poziomów).  Tak  wiêc  w³±czenie  jakiego¶  poziomu  dostêpu  powoduje
-          ustawienie  w  tej  liczbie  odpowiedniego  bitu.  I tak je¿eli "pe³en
-          dostêp"  ma pozycjê 0 w lib/accesstable.php, zostanie ustawiony bit 0,
-          czyli  bêdzie  to liczba 1. Wiêc poziomy mog± mieæ numery od 0 do 255.
-          Nie jest to finalne ograniczenie. Stosuj±c wiêcej liter i znaków mo¿na
-          rozszerzyæ ilo¶æ mo¿liwych kombinacji do przynajmniej 6 bitów na znak,
+>Oryginalnie poziomy dostÄ™pu miaÅ‚y byÄ‡ definiowane poprzez rÃ³Å¼ne litery.
+          ByÅ‚o to  zaÅ‚oÅ¼enie  z  czasÃ³w LMS-0.4, lecz nigdy nie wykorzystane. Z
+          racji  tego,  Å¼e  weszÅ‚o  to  do 1.0, dÅ‚ugo siÄ™ gÅ‚owiÅ‚em jak wykorzystaÄ‡
+          64-znakowego  stringa. OtÃ³Å¼ w kolumnie rights jest po prostu 64-znakowa
+          (256-bitowa)  liczba  heksadecymalna.  KaÅ¼dy jej znak moÅ¼e opisaÄ‡
+          maksymalnie  cztery bity kombinacji (4*64 = 256 - stÄ…d iloÅ›Ä‡ moÅ¼liwych
+          poziomÃ³w).  Tak  wiÄ™c  wÅ‚Ä…czenie  jakiegoÅ›  poziomu  dostÄ™pu  powoduje
+          ustawienie  w  tej  liczbie  odpowiedniego  bitu.  I tak jeÅ¼eli "peÅ‚en
+          dostÄ™p"  ma pozycjÄ™ 0 w lib/accesstable.php, zostanie ustawiony bit 0,
+          czyli  bÄ™dzie  to liczba 1. WiÄ™c poziomy mogÄ… mieÄ‡ numery od 0 do 255.
+          Nie jest to finalne ograniczenie. StosujÄ…c wiÄ™cej liter i znakÃ³w moÅ¼na
+          rozszerzyÄ‡ iloÅ›Ä‡ moÅ¼liwych kombinacji do przynajmniej 6 bitÃ³w na znak,
           co da nam 384 kombinacje.
           </P
 ></DIV
