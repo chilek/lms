@@ -13,7 +13,7 @@ REL="UP"
 TITLE="Dla dociekliwych"
 HREF="devel.html"><LINK
 REL="PREVIOUS"
-TITLE="Poziomy dostêpu"
+TITLE="Poziomy dostÄ™pu"
 HREF="devel-rights.html"><LINK
 REL="NEXT"
 TITLE="Dodatki"
@@ -22,7 +22,7 @@ REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -79,8 +79,8 @@ NAME="DEVEL-LIMITS"
 >7.6. Ograniczenia</A
 ></H1
 ><P
->Ka¿dy system ma ograniczenia. Pewne wynikaj± z u¿ytego silnika SQL (DBMS)
-          inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system
+>KaÅ¼dy system ma ograniczenia. Pewne wynikajÄ… z uÅ¼ytego silnika SQL (DBMS)
+          inne zaÅ› z zaÅ‚oÅ¼eÅ„ [prawie] Å›wiadomie podjÄ™tych przez developerÃ³w. Nasz system
           takowe posiada:</P
 ><DIV
 CLASS="SECT2"
@@ -88,15 +88,15 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DEVEL-LIMITS-LMS"
->7.6.1. Wynikaj±ce z naszego projektu</A
+>7.6.1. WynikajÄ…ce z naszego projektu</A
 ></H2
 ><P
->Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowywali¶my jako
-               32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat mogli¶cie nas nie lubiæ 
-               posiadaj±c oko³o 5000 u¿ytkowników.  Aktualnie (od lms-1.1.7 Hathor) u¿ywamy 
-               bardziej odpowiedniego typu danych [decimal (9.2), 2 miejsca znacz±ce po przecinku,
-               a w sumie 9 miejsc na ca³± liczbê]. Maksymalna warto¶æ to 9'999'999.99 (dotyczy sumy                wszystkich operacji finansowych!). Procedury konwertuj±ce liczby na s³owa s± 
-               przygotowane na kwoty tak du¿e jak 10^18.</P
+>IloÅ›Ä‡ pieniÄ™dzy (tabela 'cash'). PieniÄ…Å¼ki (od lms-1.1) przechowywaliÅ›my jako
+               32 bitowÄ… liczbÄ™ caÅ‚kowitÄ… i w zwiÄ…zku z tym za 8 lat mogliÅ›cie nas nie lubiÄ‡ 
+               posiadajÄ…c okoÅ‚o 5000 uÅ¼ytkownikÃ³w.  Aktualnie (od lms-1.1.7 Hathor) uÅ¼ywamy 
+               bardziej odpowiedniego typu danych [decimal (9.2), 2 miejsca znaczÄ…ce po przecinku,
+               a w sumie 9 miejsc na caÅ‚Ä… liczbÄ™]. Maksymalna wartoÅ›Ä‡ to 9'999'999.99 (dotyczy sumy                wszystkich operacji finansowych!). Procedury konwertujÄ…ce liczby na sÅ‚owa sÄ… 
+               przygotowane na kwoty tak duÅ¼e jak 10^18.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -104,7 +104,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DEVEL-LIMITS-DB"
->7.6.2. Wynikaj±ce z u¿ywanego DBMS</A
+>7.6.2. WynikajÄ…ce z uÅ¼ywanego DBMS</A
 ></H2
 ><UL
 ><LI
@@ -115,18 +115,18 @@ NAME="DEVEL-LIMITS-DB"
 ><P
 >Rozmiar bazy danych:</P
 ><P
->Jak mówi dokumentacja do MySQL'a (rozdzia³: Table size, paragraf "How Big Can
-               MySQL Tables Be?"), MySQL wersja 3.22 by³ ograniczony do 4 GB na tabelkê.
-               W wersji za¶ 3.23 zosta³o to podniesione do 8 milionów terabajtów (czyli
-               2^63 bajtów). Jednak warto zauwa¿yæ ¿e ró¿ne systemy operacyjne maj±
-               limity nak³adane przez systemy plików, najczê¶ciej jest to 2 lub 4 GB.</P
+>Jak mÃ³wi dokumentacja do MySQL'a (rozdziaÅ‚: Table size, paragraf "How Big Can
+               MySQL Tables Be?"), MySQL wersja 3.22 byÅ‚ ograniczony do 4 GB na tabelkÄ™.
+               W wersji zaÅ› 3.23 zostaÅ‚o to podniesione do 8 milionÃ³w terabajtÃ³w (czyli
+               2^63 bajtÃ³w). Jednak warto zauwaÅ¼yÄ‡ Å¼e rÃ³Å¼ne systemy operacyjne majÄ…
+               limity nakÅ‚adane przez systemy plikÃ³w, najczÄ™Å›ciej jest to 2 lub 4 GB.</P
 ></LI
 ><LI
 ><P
->Ilo¶æ rekordów:</P
+>IloÅ›Ä‡ rekordÃ³w:</P
 ><P
->Prawdziwe informacje na temat limitów uzyskamy dopiero po wydaniu polecenia:
-               (w interpreterze poleceñ mysql)</P
+>Prawdziwe informacje na temat limitÃ³w uzyskamy dopiero po wydaniu polecenia:
+               (w interpreterze poleceÅ„ mysql)</P
 ><PRE
 CLASS="SCREEN"
 >mysql&gt; show table status;
@@ -134,9 +134,9 @@ CLASS="SCREEN"
 ...| Avg_row_length | Data_length | Max_data_length | Index_length |
 ...|             44 |       24136 |      4294967295 |        19456 |</PRE
 ><P
->Zauwa¿ymy ¿e miejsca wystarczy na oko³o 175 000 razy tyle ile mamy
-               aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spokojnie, chyba ¿e
-               planujesz posiadanie ponad 100000 u¿ytkowników :-)</P
+>ZauwaÅ¼ymy Å¼e miejsca wystarczy na okoÅ‚o 175 000 razy tyle ile mamy
+               aktualnie wpisÃ³w w tabelce. (czyt.: moÅ¼esz spaÄ‡ spokojnie, chyba Å¼e
+               planujesz posiadanie ponad 100000 uÅ¼ytkownikÃ³w :-)</P
 ></LI
 ></UL
 ></LI
@@ -148,16 +148,16 @@ CLASS="SCREEN"
 ><P
 >Rozmiar bazy danych:</P
 ><P
->PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych bloków jest
-               ograniczona do 32-bitowej liczby ca³kowitej ze znakiem, daj±c maksymaln±
-               wielko¶æ tabeli wynosz±c± 16 terabajtów. Z uwagi na ograniczenia systemów
-               operacyjnych dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.</P
+>PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych blokÃ³w jest
+               ograniczona do 32-bitowej liczby caÅ‚kowitej ze znakiem, dajÄ…c maksymalnÄ…
+               wielkoÅ›Ä‡ tabeli wynoszÄ…cÄ… 16 terabajtÃ³w. Z uwagi na ograniczenia systemÃ³w
+               operacyjnych dane przechowywane sÄ… w wielu plikach o wielkoÅ›ci 1 GB kaÅ¼dy.</P
 ></LI
 ><LI
 ><P
->Ilo¶æ rekordów:</P
+>IloÅ›Ä‡ rekordÃ³w:</P
 ><P
->PostgreSQL nie narzuca ograniczenia na liczbê wierszy w dowolnej tabeli.</P
+>PostgreSQL nie narzuca ograniczenia na liczbÄ™ wierszy w dowolnej tabeli.</P
 ></LI
 ></UL
 ></LI
@@ -208,7 +208,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Poziomy dostêpu</TD
+>Poziomy dostÄ™pu</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

@@ -13,16 +13,16 @@ REL="UP"
 TITLE="Skrypty"
 HREF="scripts.html"><LINK
 REL="PREVIOUS"
-TITLE="Lista dostêpnych skryptów"
+TITLE="Lista dostÄ™pnych skryptÃ³w"
 HREF="scripts-list.html"><LINK
 REL="NEXT"
-TITLE="Generator plików konfiguracyjnych (lms-mgc)"
+TITLE="Generator plikÃ³w konfiguracyjnych (lms-mgc)"
 HREF="mgc.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -87,9 +87,9 @@ NAME="LMS-NOTIFY"
 >4.3.1. lms-notify</A
 ></H2
 ><P
->lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
-	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych i traktowania ich jako szablonów do mailingu. Do wysy³ania poczty
-  	zosta³ zastosowany modu³ Mail::Sender.</P
+>lms-notify jest dobrym sposobem przypominania ludziom o tym Å¼e do pracy sieci 
+	  i Å‚Ä…cz konieczne sÄ… ich pieniÄ…Å¼ki. Pozwala on na napisanie kilku[-nastu] plikÃ³w tekstowych i traktowania ich jako szablonÃ³w do mailingu. Do wysyÅ‚ania poczty
+  	zostaÅ‚ zastosowany moduÅ‚ Mail::Sender.</P
 ><DIV
 CLASS="SECT3"
 ><H3
@@ -99,27 +99,27 @@ NAME="LMS-NOTIFY-TEMPLATES"
 >4.3.1.1. Szablony</A
 ></H3
 ><P
->W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</P
+>W szablonach moÅ¼na uÅ¼ywaÄ‡ nastÄ™pujÄ…cych zmiennych:</P
 ><UL
 ><LI
 ><P
->%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</P
+>%date-m - zostanie zastÄ…pione aktualnym miesiÄ…cem, liczÄ…c od 1 poprzedzone 0, np. 02</P
 ></LI
 ><LI
 ><P
->%date-y - zostanie zast±pione aktualnym rokiem, np. 2003</P
+>%date-y - zostanie zastÄ…pione aktualnym rokiem, np. 2003</P
 ></LI
 ><LI
 ><P
->%date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca, np. marzec</P
+>%date_month_name - zostanie zastÄ…pione nazwÄ… bieÅ¼Ä…cego miesiÄ…ca, np. marzec</P
 ></LI
 ><LI
 ><P
->%saldo - zostanie zast±pione aktualnym saldem klienta, np. 535</P
+>%saldo - zostanie zastÄ…pione aktualnym saldem klienta, np. 535</P
 ></LI
 ><LI
 ><P
->%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego klienta przypisana, np. 107</P
+>%abonament - zostanie zastÄ…pione kwotÄ… abonamentu jaka jest do danego klienta przypisana, np. 107</P
 ></LI
 ><LI
 ><P
@@ -139,7 +139,7 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie klienta, np.:</P
+>%last_10_in_a_table - wyciÄ…g ostatnich 10 operacji kasowych na koncie klienta, np.:</P
 ></LI
 ></UL
 ><DIV
@@ -149,18 +149,18 @@ NAME="NOTIFY-EXAMPLE"
 ></A
 ><P
 ><B
->Przyk&#322;ad 4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</B
+>Przyk&#322;ad 4-1. Lms-notify: PrzykÅ‚adowy wyciÄ…g 10 ostatnich operacji kasowych</B
 ></P
 ><PRE
 CLASS="SCREEN"
 >-----------+------------------------------------------------------+---------
-2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
-2003-02-01 | Wp³ata                                               | -107.00
-2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
-2003-02-01 | Wp³ata                                               | -321.00
-2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
-2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
-2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-02-02 | Abonament za miesiÄ…c 2003/02                         |  107.00
+2003-02-01 | WpÅ‚ata                                               | -107.00
+2003-02-01 | Abonament za miesiÄ…c 2003/02                         |  107.00
+2003-02-01 | WpÅ‚ata                                               | -321.00
+2003-01-31 | Abonament za miesiÄ…c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesiÄ…c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesiÄ…c 2003/01                         |  107.00
 -----------+------------------------------------------------------+---------</PRE
 ></DIV
 ><DIV
@@ -170,45 +170,45 @@ NAME="NOTIFY-TEMPLATE"
 ></A
 ><P
 ><B
->Przyk&#322;ad 4-2. Lms-notify: Przyk³ad szablonu</B
+>Przyk&#322;ad 4-2. Lms-notify: PrzykÅ‚ad szablonu</B
 ></P
 ><PRE
 CLASS="SCREEN"
->UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
+>UWAGA! Ta wiadomoÅ›Ä‡ zostaÅ‚a wygenerowana automatycznie.
 
-Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
-internet w wysoko¶ci %B z³.
+Uprzejmie informujemy iÅ¼ na Pani/Pana koncie figuruje zalegÅ‚oÅ›Ä‡ w opÅ‚atach za
+internet w wysokoÅ›ci %B zÅ‚.
 
-Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
-bie¿±cy miesi±c czyli %date-m %date-y roku, prosimy o
-zignorowanie tej wiadomo¶ci.
+JeÅ¼eli porozumieli siÄ™ juÅ¼ PaÅ„stwo z administratorami w kwestii opÅ‚aty za
+bieÅ¼Ä…cy miesiÄ…c czyli %date-m %date-y roku, prosimy o
+zignorowanie tej wiadomoÅ›ci.
 
-W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
+W wypadku gdy uwaÅ¼ajÄ… PaÅ„stwo iÅ¼ zalegÅ‚oÅ›Ä‡ ta jest nieporozumieniem prosimy o
 jak najszybszy kontakt.
 
-Wszelkie informacje na temat Pañstwa rozliczeñ mog± Pañstwo znale¼æ pod
+Wszelkie informacje na temat PaÅ„stwa rozliczeÅ„ mogÄ… PaÅ„stwo znaleÅºÄ‡ pod
 adresem http://www.naszasiec.pl/mojekonto/
 
-Je¿eli chcieliby Pañstwo uregulowaæ zaleg³o¶ci prosimy o kontakt:
+JeÅ¼eli chcieliby PaÅ„stwo uregulowaÄ‡ zalegÅ‚oÅ›ci prosimy o kontakt:
 
-Dzia³ Rozliczeñ ASK NaszaSiec
+DziaÅ‚ RozliczeÅ„ ASK NaszaSiec
 
-Gerwazy Regu³a
+Gerwazy ReguÅ‚a
 telefon: 0-509031337
 e-mail: gerwazy@staff.naszasiec.pl
 
-Gwidon Mniejwa¿ny
+Gwidon MniejwaÅ¼ny
 telefon: 0-606666666
 e-mail: gwidonm@naszasiec.pl
 
-ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
-system billingowy na Pañstwa koncie:
+ps. zaÅ‚Ä…czamy ostatnie 10 operacji jakie zostaÅ‚o zarejestrowane przez nasz
+system billingowy na PaÅ„stwa koncie:
 
-Data       | Opis                                                 | Warto¶æ
+Data       | Opis                                                 | WartoÅ›Ä‡
 %last_10_in_a_table
 
 --
-Amatorska Sieæ Komputerowa NaszaSiec
+Amatorska SieÄ‡ Komputerowa NaszaSiec
 http://www.naszasiec.pl/</PRE
 ></DIV
 ></DIV
@@ -221,7 +221,7 @@ NAME="LMS-NOTIFY-CONFIG"
 >4.3.1.2. Konfiguracja</A
 ></H3
 ><P
->Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku <TT
+>KonfiguracjÄ™ dla lms-notify moÅ¼na ustaliÄ‡ w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 > w sekcji <SPAN
@@ -231,15 +231,15 @@ CLASS="EMPHASIS"
 >[notify]</I
 ></SPAN
 >. 
-	   Mo¿esz tam ustawiæ nastêpuj±ce parametry:</P
+	   MoÅ¼esz tam ustawiÄ‡ nastÄ™pujÄ…ce parametry:</P
 ><UL
 ><LI
 ><P
 >limit</P
 ><P
->Pozwala na ustalenie limitu bilansu, poni¿ej którego do klienta zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</P
+>Pozwala na ustalenie limitu bilansu, poniÅ¼ej ktÃ³rego do klienta zostanie wysÅ‚any e-mail z upomnieniem. DomyÅ›lnie limit = 0</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
@@ -248,20 +248,20 @@ CLASS="PROMPT"
 ><P
 >mailsubject (wymagana)</P
 ><P
->Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: pusta.</P
+>Pozwala na ustalenie tematu e-maila wysyÅ‚anego do klienta. MoÅ¼na uÅ¼ywaÄ‡ podstawieÅ„ znanych z szablonÃ³w (%B, %b, %date-y, %date-m, %last_10_in_a_table). DomyÅ›lnie: pusta.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
->mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</SAMP
+>mailsubject = Informacje o zalegÅ‚oÅ›ciach w opÅ‚atach za internet</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >mailtemplate (wymagana)</P
 ><P
->Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do klienta. Wiêcej o szablonach tutaj. Domy¶lnie: pusta.</P
+>Pozwala na wskazanie szablonu wiadomoÅ›ci, ktÃ³ra zostanie wysÅ‚ana do klienta. WiÄ™cej o szablonach tutaj. DomyÅ›lnie: pusta.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mailtemplate = /etc/lms/notifytemplate.txt</SAMP
 ></P
@@ -270,9 +270,9 @@ CLASS="PROMPT"
 ><P
 >mailfrom (wymagana)</P
 ><P
->Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie: pusta.</P
+>Adres e-mail z ktÃ³rego zostanie wysÅ‚any e-mail. ProszÄ™ pamiÄ™taÄ‡, Å¼e na niektÃ³rych MTA (np. exim) konto to musi istnieÄ‡ w systemie. DomyÅ›lnie: pusta.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mailfrom = staff@domain.pl</SAMP
 ></P
@@ -281,9 +281,9 @@ CLASS="PROMPT"
 ><P
 >mailfname</P
 ><P
->Nazwa nadawcy maila. Domy¶lnie: pusta.</P
+>Nazwa nadawcy maila. DomyÅ›lnie: pusta.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mailfname = Administratorzy</SAMP
 ></P
@@ -292,9 +292,9 @@ CLASS="PROMPT"
 ><P
 >smtp_host</P
 ><P
->Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</P
+>Serwer SMTP, przez ktÃ³ry ma zostaÄ‡ wysÅ‚ana wiadomoÅ›Ä‡. DomyÅ›lnie: localhost</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_host = smtp.mydomain.pl</SAMP
 ></P
@@ -303,10 +303,10 @@ CLASS="PROMPT"
 ><P
 >smtp_auth</P
 ><P
->Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
-		Domy¶lnie: pusta (brak autoryzacji)</P
+>SposÃ³b autoryzacji. Dozwolone wartoÅ›ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
+		DomyÅ›lnie: pusta (brak autoryzacji)</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_auth = LOGIN</SAMP
 ></P
@@ -315,9 +315,9 @@ CLASS="PROMPT"
 ><P
 >smtp_user</P
 ><P
->Login do autoryzacji SMTP. Domy¶lnie: pusty</P
+>Login do autoryzacji SMTP. DomyÅ›lnie: pusty</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_user = admin</SAMP
 ></P
@@ -326,9 +326,9 @@ CLASS="PROMPT"
 ><P
 >smtp_pass</P
 ><P
->Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</P
+>HasÅ‚o do konta zdefiniowanego w opcji smtp_user. DomyÅ›lnie: puste</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_pass = password</SAMP
 ></P
@@ -337,9 +337,9 @@ CLASS="PROMPT"
 ><P
 >debug_email (opcjonalny)</P
 ><P
->Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do klientów. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</P
+>Adres e-mail do debugowania. Gdy ustawiony, caÅ‚a poczta zostaje wysÅ‚ana na dany email zamiast do klientÃ³w. Przydatne do debugowania i sprawdzania czy wszystko dziaÅ‚a OK. DomyÅ›lnie: nie ustawiony.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >debug_email = lexx@domain.pl</SAMP
 ></P
@@ -356,16 +356,16 @@ NAME="LMS-NOTIFY-SMS"
 >4.3.2. lms-notify-sms</A
 ></H2
 ><P
->lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
-	  smsów. Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz oprogramowanie,
-	  które nale¿y pobraæ z (<A
+>lms-notify-sms to odpowiednik lms-notify, sÅ‚uÅ¼Ä…cy do wysyÅ‚ania
+	  smsÃ³w. Do wysyÅ‚ania wiadomoÅ›ci potrzebna jest komÃ³rka Nokii oraz oprogramowanie,
+	  ktÃ³re naleÅ¼y pobraÄ‡ z (<A
 HREF="http://www.gnokii.org"
 TARGET="_top"
 >www.gnokii.org</A
 >)
-	  i zainstalowaæ w systemie.</P
+	  i zainstalowaÄ‡ w systemie.</P
 ><P
->Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku <TT
+>KonfiguracjÄ™ dla lms-notify-sms moÅ¼na ustaliÄ‡ w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 > 
@@ -375,16 +375,16 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[notify-sms]</I
 ></SPAN
->, a masz do dyspozycji nastêpuj±ce opcje:</P
+>, a masz do dyspozycji nastÄ™pujÄ…ce opcje:</P
 ><UL
 ><LI
 ><P
 >limit (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu poni¿ej którego do klienta 
-	     zostanie wys³any sms z upomnieniem. Domy¶lnie: 0</P
+>Pozwala na ustalenie limitu bilansu poniÅ¼ej ktÃ³rego do klienta 
+	     zostanie wysÅ‚any sms z upomnieniem. DomyÅ›lnie: 0</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
@@ -393,9 +393,9 @@ CLASS="PROMPT"
 ><P
 >smstemplate (wymagany)</P
 ><P
->Szablon wiadomo¶ci. Domy¶lnie: nie ustawione.</P
+>Szablon wiadomoÅ›ci. DomyÅ›lnie: nie ustawione.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smstemplate = /etc/lms/smstemplate.txt</SAMP
 ></P
@@ -411,9 +411,9 @@ NAME="LMS-CUTOFF"
 >4.3.3. lms-cutoff</A
 ></H2
 ><P
->Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) klientów których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</P
+>Skrypt pozwala na odÅ‚Ä…czenie (a raczej zmianÄ™ w bazie danych stanu komputerÃ³w na wyÅ‚Ä…czony) klientÃ³w ktÃ³rych bilans jest poniÅ¼ej zadanej wartoÅ›ci. WÅ‚aÅ›ciwe odÅ‚Ä…czanie powinno byÄ‡ realizowane przez generator plikÃ³w konfiguracyjnych.</P
 ><P
->Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <TT
+>KonfiguracjÄ™ dla lms-cutoff moÅ¼emy ustaliÄ‡ w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 > w sekcji <SPAN
@@ -422,15 +422,15 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[cutoff]</I
 ></SPAN
->. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</P
+>. MoÅ¼emy tam ustawiÄ‡ nastÄ™pujÄ…ce parametry:</P
 ><UL
 ><LI
 ><P
 >limit (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych zostanie zapisany stan od³±czony. Domy¶lnie: 0</P
+>Pozwala na ustalenie limitu bilansu poniÅ¼ej ktÃ³rego do bazy danych zostanie zapisany stan odÅ‚Ä…czony. DomyÅ›lnie: 0</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
@@ -439,13 +439,13 @@ CLASS="PROMPT"
 ><P
 >message (optional)</P
 ><P
->Je¶li nie jest pusta, wiadomo¶æ ta po do³±czeniu u¿ytkownika zostanie 
-	   zapisana do jego rekordu w polu wiadomo¶ci administracyjnej. W tre¶ci wiadomo¶ci
-	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê oraz
+>JeÅ›li nie jest pusta, wiadomoÅ›Ä‡ ta po doÅ‚Ä…czeniu uÅ¼ytkownika zostanie 
+	   zapisana do jego rekordu w polu wiadomoÅ›ci administracyjnej. W treÅ›ci wiadomoÅ›ci
+	   moÅ¼na uÅ¼yÄ‡ zmiennej %now, ktÃ³ra zostanie zamieniona na bieÅ¼Ä…cÄ… datÄ™ oraz
 	   zmiennych %b i %B tak jak w skrypcie lms-notify.
-	   Domy¶lnie: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
+	   DomyÅ›lnie: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >message = ''</SAMP
 ></P
@@ -461,11 +461,11 @@ NAME="LMS-PAYMENTS"
 >4.3.4. lms-payments</A
 ></H2
 ><P
->Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-	 klientom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
-	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</P
+>Skrypt sÅ‚uÅ¼Ä…cy do naliczania opÅ‚at abonamentowych przypisanych
+	 klientom oraz opÅ‚at staÅ‚ych. Ponadto zapisuje dane do faktur.
+	 Aby dziaÅ‚aÅ‚ poprawnie powinien byÄ‡ uruchamiany codziennie.</P
 ><P
->Skrypt ten udostêpnia trzy opcje do fakturowania, które mo¿na ustawiæ
+>Skrypt ten udostÄ™pnia trzy opcje do fakturowania, ktÃ³re moÅ¼na ustawiÄ‡
 	 w sekcji <SPAN
 CLASS="emphasis"
 ><I
@@ -481,9 +481,9 @@ CLASS="FILENAME"
 ><P
 >deadline (opcjonalny)</P
 ><P
->Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</P
+>Pozwala na ustalenie terminu pÅ‚atnoÅ›ci w dniach. DomyÅ›lnie: 14</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >deadline = 7</SAMP
 ></P
@@ -492,9 +492,9 @@ CLASS="PROMPT"
 ><P
 >paytype (opcjonalny)</P
 ><P
->Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'TRANSFER'</P
+>OkreÅ›la rodzaj pÅ‚atnoÅ›ci. DomyÅ›lnie: 'TRANSFER'</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >paytype = 'PRZELEW'</SAMP
 ></P
@@ -503,21 +503,21 @@ CLASS="PROMPT"
 ><P
 >comment (opcjonalny)</P
 ><P
->Opis pozycji na fakturze za naliczane zobowi±zanie</P
+>Opis pozycji na fakturze za naliczane zobowiÄ…zanie</P
 ><P
->Domy¶lnie: 'Tariff %tariff subscription for period %period'</P
+>DomyÅ›lnie: 'Tariff %tariff subscription for period %period'</P
 ><P
->Niektóre ze s³ów kluczowych s± zastêpowane:</P
+>NiektÃ³re ze sÅ‚Ã³w kluczowych sÄ… zastÄ™powane:</P
 ><P
 >%tariff - nazwa taryfy</P
 ><P
->%period - okres (liczony od dzi¶ do ostatniego dnia cyklu rozliczeniowego, w formacie YYYY/MM/DD)</P
+>%period - okres (liczony od dziÅ› do ostatniego dnia cyklu rozliczeniowego, w formacie YYYY/MM/DD)</P
 ><P
->%current_month - okres od pierwszego dnia bie¿±cego miesi±ca do jego koñca</P
+>%current_month - okres od pierwszego dnia bieÅ¼Ä…cego miesiÄ…ca do jego koÅ„ca</P
 ><P
 >%desc - opis taryfy</P
 ><P
->Przyk³ad:       <SAMP
+>PrzykÅ‚ad:       <SAMP
 CLASS="PROMPT"
 >comment = 'Abonament za %current_month w/g taryfy %tariff'</SAMP
 ></P
@@ -526,26 +526,26 @@ CLASS="PROMPT"
 ><P
 >settlement_comment (opcjonalny)</P
 ><P
->Opis pozycji z tytu³u wyrównania niepe³nego okresu zobowi±zania.</P
+>Opis pozycji z tytuÅ‚u wyrÃ³wnania niepeÅ‚nego okresu zobowiÄ…zania.</P
 ><P
->Domy¶lnie odpowiada opcji <SAMP
+>DomyÅ›lnie odpowiada opcji <SAMP
 CLASS="PROMPT"
 >comment</SAMP
 ></P
 ><P
->Przyk³ad:       <SAMP
+>PrzykÅ‚ad:       <SAMP
 CLASS="PROMPT"
->settlement_comment = 'Wyrównanie za okres %period'</SAMP
+>settlement_comment = 'WyrÃ³wnanie za okres %period'</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >suspension_description (opcjonalny)</P
 ><P
->Tekst dodawany na koñcu opisu operacji dla obci±¿eñ zawieszonych. 
-	   Domy¶lnie: ''</P
+>Tekst dodawany na koÅ„cu opisu operacji dla obciÄ…Å¼eÅ„ zawieszonych. 
+	   DomyÅ›lnie: ''</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >suspension_description = (zawieszenie)</SAMP
 ></P
@@ -554,16 +554,16 @@ CLASS="PROMPT"
 >
 	 </P
 ><P
->Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
+>Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceÅ„
 	 <SAMP
 CLASS="PROMPT"
 >--fakedate</SAMP
 > (<SAMP
 CLASS="PROMPT"
 >-f</SAMP
->). Przy jego u¿yciu mo¿na 
-	 sprawiæ, aby skrypt dzia³a³ z podmienion± dat± systemow± (w formacie YYYY/MM/DD),
-	 na przyk³ad <SAMP
+>). Przy jego uÅ¼yciu moÅ¼na 
+	 sprawiÄ‡, aby skrypt dziaÅ‚aÅ‚ z podmienionÄ… datÄ… systemowÄ… (w formacie YYYY/MM/DD),
+	 na przykÅ‚ad <SAMP
 CLASS="PROMPT"
 >--fakedate=2004/10/10</SAMP
 >.
@@ -578,17 +578,17 @@ NAME="LMS-TRAFFIC"
 >4.3.5. lms-traffic</A
 ></H2
 ><P
->Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
-	przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest ilo¶æ
+>Skrypt sÅ‚uÅ¼y do logowania informacji o iloÅ›ci danych pobranych i wysÅ‚anych
+	przez kaÅ¼dy komputer w sieci lokalnej. W bazie danych zapisywana jest iloÅ›Ä‡
 	danych w bajtach, numer komputera z bazy lms i znacznik czasu. 
-	Od klienta zale¿y w jakich odstêpach dane bêd± odczytywane.
-	Poniewa¿ dane odczytywane s± z pliku utworzonego przez klienta, nie ma
-	znaczenia z jakiego ¼ród³a pochodz±, mo¿e to byæ iptables, ipchains lub
-	program zewnêtrzny np. ipfm.
+	Od klienta zaleÅ¼y w jakich odstÄ™pach dane bÄ™dÄ… odczytywane.
+	PoniewaÅ¼ dane odczytywane sÄ… z pliku utworzonego przez klienta, nie ma
+	znaczenia z jakiego ÅºrÃ³dÅ‚a pochodzÄ…, moÅ¼e to byÄ‡ iptables, ipchains lub
+	program zewnÄ™trzny np. ipfm.
     </P
 ><P
->Przegl±danie wykresów wykorzystania ³±cza oraz definiowanie filtrów
-	dostêpne jest z g³ównego menu 'Statystyki'.
+>PrzeglÄ…danie wykresÃ³w wykorzystania Å‚Ä…cza oraz definiowanie filtrÃ³w
+	dostÄ™pne jest z gÅ‚Ã³wnego menu 'Statystyki'.
     </P
 ><DIV
 CLASS="SECT3"
@@ -599,15 +599,15 @@ NAME="LMS-TRAFFIC-CONFIG"
 >4.3.5.1. Instalacja</A
 ></H3
 ><P
->Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie
-	    pliku z danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:</P
+>Przed uruchomieniem lms-traffic naleÅ¼y zadbaÄ‡ o utworzenie
+	    pliku z danymi. ZawartoÅ›Ä‡ pliku powinna mieÄ‡ nastÄ™pujÄ…cy format:</P
 ><PRE
 CLASS="SCREEN"
 >&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
 &lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
 ...</PRE
 ><P
->Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam± czêstotliwo¶ci± 
+>Skrypt tworzÄ…cy statystyki naleÅ¼y uruchamiaÄ‡ z takÄ… samÄ… czÄ™stotliwoÅ›ciÄ… 
 	    co lms-traffic.</P
 ><P
 ><DIV
@@ -629,7 +629,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Przyk³ad takiego skryptu dla iptables znajduje siê w 
+>PrzykÅ‚ad takiego skryptu dla iptables znajduje siÄ™ w 
 	    pliku <TT
 CLASS="FILENAME"
 >/sample/traffic_ipt.pl</TT
@@ -640,12 +640,12 @@ CLASS="FILENAME"
 ></DIV
 ></P
 ><P
->Nastêpnie instalujemy skrypt dopisuj±c do crontaba.
-	    Oprócz standardowych opcji wiersza poleceñ mo¿liwe jest
+>NastÄ™pnie instalujemy skrypt dopisujÄ…c do crontaba.
+	    OprÃ³cz standardowych opcji wiersza poleceÅ„ moÅ¼liwe jest
 	    zdefiniowanie lokalizacji pliku z logiem</P
 ><PRE
 CLASS="SCREEN"
->-f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</PRE
+>-f=/plik 	poÅ‚oÅ¼enie i nazwa pliku ze statystykami domyÅ›lnie /var/log/traffic.log</PRE
 ><P
 >	    <DIV
 CLASS="WARNING"
@@ -666,10 +666,10 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Czêstotliwo¶æ zapisywania danych do bazy ustala klient. Ustawienie
-	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
-	    bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
-	    wyników.</P
+>CzÄ™stotliwoÅ›Ä‡ zapisywania danych do bazy ustala klient. Ustawienie
+	    jej poniÅ¼ej 10 minut, moÅ¼e spowodowaÄ‡ szybki przyrost iloÅ›ci rekordÃ³w w 
+	    bazie danych, a co za tym idzie zwiÄ™kszyÄ‡ czas oczekiwania na wyÅ›wietlenie
+	    wynikÃ³w.</P
 ></TD
 ></TR
 ></TABLE
@@ -687,17 +687,17 @@ NAME="LMS-TRAFFIC-LOGIPTABLES"
 >4.3.6. lms-traffic-logiptables</A
 ></H2
 ><P
->Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
-	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
-	sczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
-	konieczne rêczne tworzenie regu³ iptables, ani wywo³ywanie skryptu  
+>Skrypt sÅ‚uÅ¼y do logowania informacji o iloÅ›ci danych pobranych i wysÅ‚anych
+	przez kaÅ¼dy komputer z sieci lokalnej, na podstawie licznikÃ³w iptables. Dane 
+	sczytuje z firewalla, tworzÄ…c jednoczeÅ›nie odpowiednie reguÅ‚y. Zatem, nie jest 
+	konieczne rÄ™czne tworzenie reguÅ‚ iptables, ani wywoÅ‚ywanie skryptu  
 	<TT
 CLASS="FILENAME"
 >lms-traffic</TT
 >.
 	</P
 ><P
->Konfiguracjê nale¿y umie¶ciæ w sekcji <SPAN
+>KonfiguracjÄ™ naleÅ¼y umieÅ›ciÄ‡ w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -709,9 +709,9 @@ CLASS="EMPHASIS"
 ><P
 >outfile</P
 ><P
->Lokalizacja skryptu z regu³ami iptables. Domy¶lnie: /etc/rc.d/rc.stat</P
+>Lokalizacja skryptu z reguÅ‚ami iptables. DomyÅ›lnie: /etc/rc.d/rc.stat</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >outfile = /etc/rc.d/rc.stat</SAMP
 ></P
@@ -720,9 +720,9 @@ CLASS="PROMPT"
 ><P
 >iptables_binary</P
 ><P
->Lokalizacja programu iptables. Domy¶lnie: /usr/sbin/iptables</P
+>Lokalizacja programu iptables. DomyÅ›lnie: /usr/sbin/iptables</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >iptables_binary = /usr/local/sbin/iptables</SAMP
 ></P
@@ -731,9 +731,9 @@ CLASS="PROMPT"
 ><P
 >wan_interfaces</P
 ><P
->Nazwy interfejsów, na których dane maj± byæ zliczane. Domy¶lnie: niezdefiniowane.</P
+>Nazwy interfejsÃ³w, na ktÃ³rych dane majÄ… byÄ‡ zliczane. DomyÅ›lnie: niezdefiniowane.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >wan_interfaces = eth0</SAMP
 ></P
@@ -742,9 +742,9 @@ CLASS="PROMPT"
 ><P
 >local_ports</P
 ><P
->Lista portów (¼ród³owych i docelowych) dla zliczanych pakietów. Domy¶lnie: niezdefiniowane.</P
+>Lista portÃ³w (ÅºrÃ³dÅ‚owych i docelowych) dla zliczanych pakietÃ³w. DomyÅ›lnie: niezdefiniowane.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >local_ports = 80</SAMP
 ></P
@@ -753,9 +753,9 @@ CLASS="PROMPT"
 ><P
 >script_owneruid</P
 ><P
->UID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</P
+>UID wÅ‚aÅ›ciciela skryptu okreÅ›lonego w 'outfile'. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_owneruid = 0</SAMP
 ></P
@@ -764,9 +764,9 @@ CLASS="PROMPT"
 ><P
 >script_ownergid</P
 ><P
->GID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</P
+>GID wÅ‚aÅ›ciciela skryptu okreÅ›lonego w 'outfile'. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_ownergid = 0</SAMP
 ></P
@@ -775,9 +775,9 @@ CLASS="PROMPT"
 ><P
 >script_permission</P
 ><P
->Uprawnienia skryptu okre¶lonego w 'outfile'. Domy¶lnie: 700 (rwx------).</P
+>Uprawnienia skryptu okreÅ›lonego w 'outfile'. DomyÅ›lnie: 700 (rwx------).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_permission = 700</SAMP
 ></P
@@ -786,10 +786,10 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -807,8 +807,8 @@ NAME="LMS-MAKEDHCPCONF"
 >4.3.7. lms-makedhcpconf</A
 ></H2
 ><P
->Tworzenie pliku konfiguracyjnego serwera DHCP - dhcpd.conf. Konfiguracjê
-	skryptu umieszcza siê w sekcji <SPAN
+>Tworzenie pliku konfiguracyjnego serwera DHCP - dhcpd.conf. KonfiguracjÄ™
+	skryptu umieszcza siÄ™ w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -820,9 +820,9 @@ CLASS="EMPHASIS"
 ><P
 >config_file</P
 ><P
->Lokalizacja pliku wynikowego. Domy¶lnie: /etc/dhcpd.conf</P
+>Lokalizacja pliku wynikowego. DomyÅ›lnie: /etc/dhcpd.conf</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_file = /tmp/dhcpd.conf</SAMP
 ></P
@@ -831,10 +831,10 @@ CLASS="PROMPT"
 ><P
 >networks </P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -843,10 +843,10 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich grup.</P
+>Lista nazw grup (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony konfig dla wszystkich grup.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >customergroups = grupa1 grupa2</SAMP
 ></P
@@ -855,9 +855,9 @@ CLASS="PROMPT"
 ><P
 >default_lease_time</P
 ><P
->Domy¶lny czas dzier¿awy. Domy¶lnie: 86400.</P
+>DomyÅ›lny czas dzierÅ¼awy. DomyÅ›lnie: 86400.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >default_lease_time = 43200</SAMP
 ></P
@@ -866,9 +866,9 @@ CLASS="PROMPT"
 ><P
 >max_lease_time</P
 ><P
->Maksymalny czas dzier¿awy. Domy¶lnie: 86400.</P
+>Maksymalny czas dzierÅ¼awy. DomyÅ›lnie: 86400.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >max_lease_time = 43200</SAMP
 ></P
@@ -877,10 +877,10 @@ CLASS="PROMPT"
 ><P
 >ignore_ddns</P
 ><P
->Nie generuj wpisu 'ddns-update-style none;' na pocz±tku pliku.
-		    Przydatne przy starszych (2.2) wersjach demona dhcpd. Domy¶lnie: wy³±czone.</P
+>Nie generuj wpisu 'ddns-update-style none;' na poczÄ…tku pliku.
+		    Przydatne przy starszych (2.2) wersjach demona dhcpd. DomyÅ›lnie: wyÅ‚Ä…czone.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >ignore_ddns = 1</SAMP
 ></P
@@ -889,9 +889,9 @@ CLASS="PROMPT"
 ><P
 >log_facility</P
 ><P
->Ustawienie trybu logowania daemona dhcp. Je¿eli puste to tryb domy¶lny.</P
+>Ustawienie trybu logowania daemona dhcp. JeÅ¼eli puste to tryb domyÅ›lny.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >log_facility = 7</SAMP
 ></P
@@ -900,10 +900,10 @@ CLASS="PROMPT"
 ><P
 >authoritative</P
 ><P
->Dodanie wpisu 'authoritative;' na pocz±tku pliku.
-		    Domy¶lnie: wy³±czone.</P
+>Dodanie wpisu 'authoritative;' na poczÄ…tku pliku.
+		    DomyÅ›lnie: wyÅ‚Ä…czone.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >authoritative = 1</SAMP
 ></P
@@ -912,9 +912,9 @@ CLASS="PROMPT"
 ><P
 >script_owneruid</P
 ><P
->UID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</P
+>UID wÅ‚aÅ›ciciela skryptu okreÅ›lonego w 'config_file'. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_owneruid = 0</SAMP
 ></P
@@ -923,9 +923,9 @@ CLASS="PROMPT"
 ><P
 >script_ownergid</P
 ><P
->GID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</P
+>GID wÅ‚aÅ›ciciela skryptu okreÅ›lonego w 'config_file'. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_ownergid = 0</SAMP
 ></P
@@ -934,9 +934,9 @@ CLASS="PROMPT"
 ><P
 >script_permission</P
 ><P
->Uprawnienia skryptu okre¶lonego w 'config_file'. Domy¶lnie: 600 (rwx------).</P
+>Uprawnienia skryptu okreÅ›lonego w 'config_file'. DomyÅ›lnie: 600 (rwx------).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_permission = 700</SAMP
 ></P
@@ -945,19 +945,19 @@ CLASS="PROMPT"
 >
 	</P
 ><P
->Mo¿esz podaæ czasy dzier¿awy dla konkretnych sieci poprzez stworzenie
+>MoÅ¼esz podaÄ‡ czasy dzierÅ¼awy dla konkretnych sieci poprzez stworzenie
 	sekcji <SAMP
 CLASS="PROMPT"
 >[dhcp:nazwasieci]</SAMP
 > np.:
 <PRE
 CLASS="SCREEN"
->[dhcp:public-custa] # nazwa sieci ma³ymi literami!
+>[dhcp:public-custa] # nazwa sieci maÅ‚ymi literami!
 default_lease_time = 3600
 max_lease_time     = 3600</PRE
 >
 
-Mo¿esz podaæ gateway, serwer dns, nazwê domeny i wins dla konkretnego
+MoÅ¼esz podaÄ‡ gateway, serwer dns, nazwÄ™ domeny i wins dla konkretnego
 hosta poprzez stworzenie sekcji <SAMP
 CLASS="PROMPT"
 >[dhcp:adresip]</SAMP
@@ -981,12 +981,12 @@ NAME="LMS-MAKEIPTABLES"
 >4.3.8. lms-makeiptables, lms-makeipchains</A
 ></H2
 ><P
->Para skryptów s³u¿±cych do generowania plików zawieraj±cych
-	    regu³y firewalla. Do utworzonego pliku mo¿esz do³±czyæ inne wcze¶niej
-	    utworzone pliki, a w koñcu nadaæ mu odpowiednie uprawnienia. Skrypty nie
-	    uruchamiaj± wygenerowanych plików.</P
+>Para skryptÃ³w sÅ‚uÅ¼Ä…cych do generowania plikÃ³w zawierajÄ…cych
+	    reguÅ‚y firewalla. Do utworzonego pliku moÅ¼esz doÅ‚Ä…czyÄ‡ inne wczeÅ›niej
+	    utworzone pliki, a w koÅ„cu nadaÄ‡ mu odpowiednie uprawnienia. Skrypty nie
+	    uruchamiajÄ… wygenerowanych plikÃ³w.</P
 ><P
->Konfiguracjê dla tych skryptów mo¿esz ustaliæ w pliku <TT
+>KonfiguracjÄ™ dla tych skryptÃ³w moÅ¼esz ustaliÄ‡ w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 > w sekcji <SPAN
@@ -1002,17 +1002,17 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[ipchains]</I
 ></SPAN
->). Oba skrypty posiadaj± te same
+>). Oba skrypty posiadajÄ… te same
 	    opcje: </P
 ><UL
 ><LI
 ><P
 >networks </P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku firewalla. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku firewalla. JeÅ›li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -1021,9 +1021,9 @@ CLASS="PROMPT"
 ><P
 >iptables_binary (ipchains_binary)</P
 ><P
->Lokalizacja programu iptables (ipchains). Domy¶lnie: /usr/sbin/iptables (/usr/sbin/ipchains)</P
+>Lokalizacja programu iptables (ipchains). DomyÅ›lnie: /usr/sbin/iptables (/usr/sbin/ipchains)</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >iptables_binary = /usr/local/sbin/iptables</SAMP
 ></P
@@ -1032,9 +1032,9 @@ CLASS="PROMPT"
 ><P
 >script_file</P
 ><P
->Plik, do którego zapisujemy regu³y firewalla. Domy¶lnie: /etc/rc.d/rc.masq</P
+>Plik, do ktÃ³rego zapisujemy reguÅ‚y firewalla. DomyÅ›lnie: /etc/rc.d/rc.masq</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_file = /etc/rc.d/rc.firewall</SAMP
 ></P
@@ -1043,10 +1043,10 @@ CLASS="PROMPT"
 ><P
 >pre_script</P
 ><P
->Plik wykonywany PO wyczyszczeniu regu³ek, ale PRZED ustawieniem nowych. 
-		    Domy¶lnie: niezdefiniowany.</P
+>Plik wykonywany PO wyczyszczeniu reguÅ‚ek, ale PRZED ustawieniem nowych. 
+		    DomyÅ›lnie: niezdefiniowany.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >pre_script = /etc/rc.d/rc.masq-pre</SAMP
 ></P
@@ -1055,9 +1055,9 @@ CLASS="PROMPT"
 ><P
 >post_script</P
 ><P
->Plik wykonywany PO ustawieniu regu³ek. Domy¶lnie: niezdefiniowany.</P
+>Plik wykonywany PO ustawieniu reguÅ‚ek. DomyÅ›lnie: niezdefiniowany.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >post_script = /etc/rc.d/rc.masq-post</SAMP
 ></P
@@ -1066,11 +1066,11 @@ CLASS="PROMPT"
 ><P
 >forward_to</P
 ><P
->Lista sieci, dla których w³±czamy forwarding. Mo¿liwe warto¶ci: "" - pe³ny forward, 
-		    "dowolny ci±g" - wy³±cz forward, "siec1 siec2" - lista sieci z w³±czonym forwardingiem.  
-		    Domy¶lnie: pe³ny forward.</P
+>Lista sieci, dla ktÃ³rych wÅ‚Ä…czamy forwarding. MoÅ¼liwe wartoÅ›ci: "" - peÅ‚ny forward, 
+		    "dowolny ciÄ…g" - wyÅ‚Ä…cz forward, "siec1 siec2" - lista sieci z wÅ‚Ä…czonym forwardingiem.  
+		    DomyÅ›lnie: peÅ‚ny forward.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >forward_to = public-custa public-custb</SAMP
 ></P
@@ -1079,9 +1079,9 @@ CLASS="PROMPT"
 ><P
 >script_owneruid</P
 ><P
->UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>UID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_owneruid = 0</SAMP
 ></P
@@ -1090,9 +1090,9 @@ CLASS="PROMPT"
 ><P
 >script_ownergid</P
 ><P
->GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>GID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_ownergid = 0</SAMP
 ></P
@@ -1101,9 +1101,9 @@ CLASS="PROMPT"
 ><P
 >script_permission</P
 ><P
->Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+>Uprawnienia pliku skryptu. DomyÅ›lnie: 700 (rwx------).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >script_permission = 700</SAMP
 ></P
@@ -1112,11 +1112,11 @@ CLASS="PROMPT"
 ><P
 >snat_address</P
 ><P
->Adres SNAT. Je¶li nie ustawiono, dla hostów z adresami publicznymi bêdzie
-		    u¿yte "-j MASQUERADE". Je¶li ustawiono zostanie u¿yte "-j SNAT --to xxx.xxx.xxx.xxx".
-		    Dotyczy lms-makeiptables. Domy¶lnie: nie ustawiony.</P
+>Adres SNAT. JeÅ›li nie ustawiono, dla hostÃ³w z adresami publicznymi bÄ™dzie
+		    uÅ¼yte "-j MASQUERADE". JeÅ›li ustawiono zostanie uÅ¼yte "-j SNAT --to xxx.xxx.xxx.xxx".
+		    Dotyczy lms-makeiptables. DomyÅ›lnie: nie ustawiony.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >snat_address = 123.123.123.123</SAMP
 ></P
@@ -1125,11 +1125,11 @@ CLASS="PROMPT"
 ><P
 >tcp_redirect_ports (udp_redirect_ports)</P
 ><P
->Konfiguracja przekierowañ w formie port_¼ród³owy:port_docelowy dla
-		    przekierowañ na lokaln± maszynê dla po³±czeñ wychodz±cych. Dotyczy lms-makeipchains.
-		    Domy¶lnie: nie ustawione.</P
+>Konfiguracja przekierowaÅ„ w formie port_ÅºrÃ³dÅ‚owy:port_docelowy dla
+		    przekierowaÅ„ na lokalnÄ… maszynÄ™ dla poÅ‚Ä…czeÅ„ wychodzÄ…cych. Dotyczy lms-makeipchains.
+		    DomyÅ›lnie: nie ustawione.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >tcp_redirect_ports = 80:3128 25:25</SAMP
 ></P
@@ -1145,8 +1145,8 @@ NAME="LMS-ETHERDESC"
 >4.3.9. lms-etherdesc</A
 ></H2
 ><P
->Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
-	    nazwy hostów pobierane z bazy lms'a. Adresy zapisywane s± w formacie 'stripped mac',
+>Skrypt sÅ‚uÅ¼Ä…cy do generowania pliku zawierajÄ…cego MAC adresy oraz
+	    nazwy hostÃ³w pobierane z bazy lms'a. Adresy zapisywane sÄ… w formacie 'stripped mac',
 	    czyli bez ":". Tego typu plik wykorzystywany jest przez pakiet <SPAN
 CLASS="emphasis"
 ><I
@@ -1156,7 +1156,7 @@ CLASS="EMPHASIS"
 >.
 	    </P
 ><P
->Konfiguracjê tego skryptu zawiera sekcja <SPAN
+>KonfiguracjÄ™ tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1172,10 +1172,10 @@ CLASS="FILENAME"
 ><P
 >networks </P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -1184,9 +1184,9 @@ CLASS="PROMPT"
 ><P
 >etherdesc_owneruid</P
 ><P
->UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>UID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >etherdesc_owneruid = 0</SAMP
 ></P
@@ -1195,9 +1195,9 @@ CLASS="PROMPT"
 ><P
 >etherdesc_file</P
 ><P
->Lokalizacja pliku. Domy¶lnie: /var/lib/iptraf/ethernet.desc.</P
+>Lokalizacja pliku. DomyÅ›lnie: /var/lib/iptraf/ethernet.desc.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >etherdesc_file = /etc/ethernet.desc</SAMP
 ></P
@@ -1206,9 +1206,9 @@ CLASS="PROMPT"
 ><P
 >etherdesc_ownergid</P
 ><P
->GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>GID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >etherdesc_ownergid = 0</SAMP
 ></P
@@ -1217,9 +1217,9 @@ CLASS="PROMPT"
 ><P
 >etherdesc_permission</P
 ><P
->Uprawnienia pliku skryptu. Domy¶lnie: 600 (rw-------).</P
+>Uprawnienia pliku skryptu. DomyÅ›lnie: 600 (rw-------).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >etherdesc_permission = 600</SAMP
 ></P
@@ -1235,14 +1235,14 @@ NAME="LMS-SENDINVOICES"
 >4.3.10. lms-sendinvoices</A
 ></H2
 ><P
->Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
-	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
-	dlatego wymagane jest podanie klienta i has³a do interfejsu www lms-ui.</P
+>Skrypt sÅ‚uÅ¼y do wysyÅ‚ania pocztÄ… elektronicznÄ… faktur, jako zaÅ‚Ä…cznikÃ³w
+	do wiadomoÅ›ci. Faktury generowane sÄ… na podstawie szablonu dostÄ™pnego w lms-ui,
+	dlatego wymagane jest podanie klienta i hasÅ‚a do interfejsu www lms-ui.</P
 ><P
->W odró¿nieniu od pozosta³ych skryptów ten wymaga dodatkowych modu³ów perla:
+>W odrÃ³Å¼nieniu od pozostaÅ‚ych skryptÃ³w ten wymaga dodatkowych moduÅ‚Ã³w perla:
 	LWP::UserAgent, MIME::QuotedPrint oraz Mail::Sender.</P
 ><P
->Konfiguracjê nale¿y umie¶ciæ w sekcji <SPAN
+>KonfiguracjÄ™ naleÅ¼y umieÅ›ciÄ‡ w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1254,9 +1254,9 @@ CLASS="EMPHASIS"
 ><P
 >lms_url</P
 ><P
->Adres do lms-ui. Domy¶lnie: http://localhost/lms/</P
+>Adres do lms-ui. DomyÅ›lnie: http://localhost/lms/</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >lms_url = http://lms.mynet.pl</SAMP
 ></P
@@ -1265,9 +1265,9 @@ CLASS="PROMPT"
 ><P
 >lms_user</P
 ><P
->Login u¿ytkownika. Domy¶lnie: pusty</P
+>Login uÅ¼ytkownika. DomyÅ›lnie: pusty</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >lms_user = admin</SAMP
 ></P
@@ -1276,20 +1276,20 @@ CLASS="PROMPT"
 ><P
 >lms_password</P
 ><P
->Has³o do lms-ui. Domy¶lnie: puste</P
+>HasÅ‚o do lms-ui. DomyÅ›lnie: puste</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
->lms_password = moje_has³o</SAMP
+>lms_password = moje_hasÅ‚o</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >debug_email</P
 ><P
->Konto pocztowe do testów. Domy¶lnie: niezdefiniowane.</P
+>Konto pocztowe do testÃ³w. DomyÅ›lnie: niezdefiniowane.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >debug_email = admin@mynet.pl</SAMP
 ></P
@@ -1298,9 +1298,9 @@ CLASS="PROMPT"
 ><P
 >sender_name</P
 ><P
->Nadawca listu. Domy¶lnie: niezdefiniowany.</P
+>Nadawca listu. DomyÅ›lnie: niezdefiniowany.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >sender_name = ASK MyNet</SAMP
 ></P
@@ -1309,9 +1309,9 @@ CLASS="PROMPT"
 ><P
 >sender_email</P
 ><P
->Adres nadawcy listu. Domy¶lnie: niezdefiniowany.</P
+>Adres nadawcy listu. DomyÅ›lnie: niezdefiniowany.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >sender_email = admin@mynet.pl</SAMP
 ></P
@@ -1320,10 +1320,10 @@ CLASS="PROMPT"
 ><P
 >mail_subject</P
 ><P
->Temat wiadomo¶ci. Mo¿na u¿yæ zmiennej %invoice zastêpowanej numerem faktury. 
-		    Domy¶lnie: 'Invoice No. %invoice'.</P
+>Temat wiadomoÅ›ci. MoÅ¼na uÅ¼yÄ‡ zmiennej %invoice zastÄ™powanej numerem faktury. 
+		    DomyÅ›lnie: 'Invoice No. %invoice'.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mail_subject = 'Nowa faktura'</SAMP
 ></P
@@ -1332,10 +1332,10 @@ CLASS="PROMPT"
 ><P
 >mail_body</P
 ><P
->Tre¶æ wiadomo¶ci. Mo¿na u¿yæ zmiennej %invoice, która zostanie zast±piona numerem faktury. 
-		    Domy¶lnie: 'Attached file with Invoice No. %invoice'.</P
+>TreÅ›Ä‡ wiadomoÅ›ci. MoÅ¼na uÅ¼yÄ‡ zmiennej %invoice, ktÃ³ra zostanie zastÄ…piona numerem faktury. 
+		    DomyÅ›lnie: 'Attached file with Invoice No. %invoice'.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mail_body = ''</SAMP
 ></P
@@ -1344,10 +1344,10 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione 
-		podczas wysy³ki. Domy¶lnie: nie ustawiona - wszystkie grupy.</P
+>Lista nazw grup (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione 
+		podczas wysyÅ‚ki. DomyÅ›lnie: nie ustawiona - wszystkie grupy.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >customergroups = grupa1 grupa2</SAMP
 ></P
@@ -1356,9 +1356,9 @@ CLASS="PROMPT"
 ><P
 >smtp_host</P
 ><P
->Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</P
+>Serwer SMTP, przez ktÃ³ry ma zostaÄ‡ wysÅ‚ana wiadomoÅ›Ä‡. DomyÅ›lnie: localhost</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_host = smtp.mydomain.pl</SAMP
 ></P
@@ -1367,9 +1367,9 @@ CLASS="PROMPT"
 ><P
 >smtp_auth</P
 ><P
->Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM. Domy¶lnie: pusta (brak autoryzacji)</P
+>SposÃ³b autoryzacji. Dozwolone wartoÅ›ci: LOGIN, PLAIN, CRAM-MD5, NTLM. DomyÅ›lnie: pusta (brak autoryzacji)</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_auth = LOGIN</SAMP
 ></P
@@ -1378,9 +1378,9 @@ CLASS="PROMPT"
 ><P
 >smtp_user</P
 ><P
->Login do autoryzacji SMTP. Domy¶lnie: pusty</P
+>Login do autoryzacji SMTP. DomyÅ›lnie: pusty</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_user = admin</SAMP
 ></P
@@ -1389,25 +1389,25 @@ CLASS="PROMPT"
 ><P
 >smtp_pass</P
 ><P
->Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</P
+>HasÅ‚o do konta zdefiniowanego w opcji smtp_user. DomyÅ›lnie: puste</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_pass = password</SAMP
 ></P
 ></LI
 ></UL
 >
-	 Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
+	 Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceÅ„
 	 <SAMP
 CLASS="PROMPT"
 >--fakedate</SAMP
 > (<SAMP
 CLASS="PROMPT"
 >-f</SAMP
->). Przy jego u¿yciu mo¿na 
-	 sprawiæ, aby skrypt dzia³a³ z podmienion± dat± systemow± (w formacie YYYY/MM/DD),
-	 na przyk³ad <SAMP
+>). Przy jego uÅ¼yciu moÅ¼na 
+	 sprawiÄ‡, aby skrypt dziaÅ‚aÅ‚ z podmienionÄ… datÄ… systemowÄ… (w formacie YYYY/MM/DD),
+	 na przykÅ‚ad <SAMP
 CLASS="PROMPT"
 >--fakedate=2004/10/10</SAMP
 >.
@@ -1422,18 +1422,18 @@ NAME="LMS-MAKEMACS"
 >4.3.11. lms-makemacs</A
 ></H2
 ><P
->Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
-	    klientów na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
-	    jedna regu³a dla tablicy nat, zadanego ³añcucha, testuj±ca adres ¼ród³owy IP pakietu oraz adres
-	    ¼ród³owy MAC ramki. Je¶li testy zakoñcz± siê pozytywnie nastêpuje powrót do ³añcucha nadrzêdnego
-	    za pomoc± decyzji RETURN. Na koñcu listy regu³ dodawane s± 2 regu³y przekierowuj±ce ruch http
+>Skrypt sÅ‚uÅ¼Ä…cy do generowania pliku zawierajÄ…cego reguÅ‚y netfiltra filtrujÄ…ce ruch
+	    klientÃ³w na bazie testu adresu ÅºrÃ³dÅ‚owego MAC. Dla kaÅ¼dego komputera generowana jest
+	    jedna reguÅ‚a dla tablicy nat, zadanego Å‚aÅ„cucha, testujÄ…ca adres ÅºrÃ³dÅ‚owy IP pakietu oraz adres
+	    ÅºrÃ³dÅ‚owy MAC ramki. JeÅ›li testy zakoÅ„czÄ… siÄ™ pozytywnie nastÄ™puje powrÃ³t do Å‚aÅ„cucha nadrzÄ™dnego
+	    za pomocÄ… decyzji RETURN. Na koÅ„cu listy reguÅ‚ dodawane sÄ… 2 reguÅ‚y przekierowujÄ…ce ruch http
 	    oraz webcache na podany w konfiguracji adres IP oraz port (z wykorzystaniem decyzji DNAT).
-	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem klienta
-	    o zaleg³o¶ciach finansowych bez mo¿liwo¶ci wy³±czenia zawiadomienia. Na koñcu dodawana jest 
-	    regu³a blokuj±ca jakikolwiek inny ruch.
+	    Przekierowanie moÅ¼e odbywaÄ‡ siÄ™ na wirtualny host www z zawiadomieniem klienta
+	    o zalegÅ‚oÅ›ciach finansowych bez moÅ¼liwoÅ›ci wyÅ‚Ä…czenia zawiadomienia. Na koÅ„cu dodawana jest 
+	    reguÅ‚a blokujÄ…ca jakikolwiek inny ruch.
 	    </P
 ><P
->Konfiguracjê tego skryptu zawiera sekcja <SPAN
+>KonfiguracjÄ™ tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1449,10 +1449,10 @@ CLASS="FILENAME"
 ><P
 >networks </P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -1461,10 +1461,10 @@ CLASS="PROMPT"
 ><P
 >customergroups </P
 ><P
->Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</P
+>Lista nazw grup klientÃ³w (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientÃ³w.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >customergroups = osiedle1 osiedle2</SAMP
 ></P
@@ -1473,9 +1473,9 @@ CLASS="PROMPT"
 ><P
 >iptables_binary</P
 ><P
->Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+>Lokalizacja programu iptables. DomyÅ›lnie: /sbin/iptables</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >iptables_binary = /usr/local/sbin/iptables</SAMP
 ></P
@@ -1484,9 +1484,9 @@ CLASS="PROMPT"
 ><P
 >config_owneruid</P
 ><P
->UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>UID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_owneruid = 0</SAMP
 ></P
@@ -1495,9 +1495,9 @@ CLASS="PROMPT"
 ><P
 >config_file</P
 ><P
->Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.macs.</P
+>Lokalizacja pliku. DomyÅ›lnie: /etc/rc.d/rc.macs.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_file = /etc/conf.d/rc.macs</SAMP
 ></P
@@ -1506,9 +1506,9 @@ CLASS="PROMPT"
 ><P
 >config_ownergid</P
 ><P
->GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>GID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_ownergid = 0</SAMP
 ></P
@@ -1517,9 +1517,9 @@ CLASS="PROMPT"
 ><P
 >config_permission</P
 ><P
->Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+>Uprawnienia pliku skryptu. DomyÅ›lnie: 700 (rwx------).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_permission = 700</SAMP
 ></P
@@ -1528,9 +1528,9 @@ CLASS="PROMPT"
 ><P
 >chain</P
 ><P
->£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</P
+>ÅaÅ„cuch do ktÃ³rego bÄ™dÄ… dodawane generowane reguÅ‚y. DomyÅ›lnie: MACS.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >chain = TESTY_MACOW</SAMP
 ></P
@@ -1539,9 +1539,9 @@ CLASS="PROMPT"
 ><P
 >redirect_address</P
 ><P
->Adres IP + port na który bêdzie przekierowywany niesklasyfikowany ruch http i webcache. Domy¶lnie: 127.0.0.1:80.</P
+>Adres IP + port na ktÃ³ry bÄ™dzie przekierowywany niesklasyfikowany ruch http i webcache. DomyÅ›lnie: 127.0.0.1:80.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >redirect_address = 192.168.1.1:3000</SAMP
 ></P
@@ -1550,9 +1550,9 @@ CLASS="PROMPT"
 ><P
 >lock_noaccess</P
 ><P
->Czy generowaæ regu³ki testuj±ce z decyzj± RETURN dla komputerów, które s± od³±czone. Domy¶lnie: 0 (regu³y s± generowane)</P
+>Czy generowaÄ‡ reguÅ‚ki testujÄ…ce z decyzjÄ… RETURN dla komputerÃ³w, ktÃ³re sÄ… odÅ‚Ä…czone. DomyÅ›lnie: 0 (reguÅ‚y sÄ… generowane)</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >lock_noaccess = 1</SAMP
 ></P
@@ -1568,11 +1568,11 @@ NAME="LMS-MAKEHOSTS"
 >4.3.12. lms-makehosts</A
 ></H2
 ><P
->Skrypt s³u¿±cy do generowania pliku /etc/hosts zawieraj±cego odwzorowania nazw komputerów
+>Skrypt sÅ‚uÅ¼Ä…cy do generowania pliku /etc/hosts zawierajÄ…cego odwzorowania nazw komputerÃ³w
 	    na adresy IP.
 	    </P
 ><P
->Konfiguracjê tego skryptu zawiera sekcja <SPAN
+>KonfiguracjÄ™ tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1588,10 +1588,10 @@ CLASS="FILENAME"
 ><P
 >networks </P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -1600,10 +1600,10 @@ CLASS="PROMPT"
 ><P
 >customergroups </P
 ><P
->Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</P
+>Lista nazw grup klientÃ³w (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientÃ³w.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >customergroups = osiedle1 osiedle2</SAMP
 ></P
@@ -1612,9 +1612,9 @@ CLASS="PROMPT"
 ><P
 >config_owneruid</P
 ><P
->UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>UID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_owneruid = 0</SAMP
 ></P
@@ -1623,9 +1623,9 @@ CLASS="PROMPT"
 ><P
 >config_file</P
 ><P
->Lokalizacja pliku. Domy¶lnie: /etc/hosts.</P
+>Lokalizacja pliku. DomyÅ›lnie: /etc/hosts.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_file = /etc/hosts</SAMP
 ></P
@@ -1634,9 +1634,9 @@ CLASS="PROMPT"
 ><P
 >config_ownergid</P
 ><P
->GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>GID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_ownergid = 0</SAMP
 ></P
@@ -1645,9 +1645,9 @@ CLASS="PROMPT"
 ><P
 >config_permission</P
 ><P
->Uprawnienia pliku skryptu. Domy¶lnie: 644 (rw-r--r--).</P
+>Uprawnienia pliku skryptu. DomyÅ›lnie: 644 (rw-r--r--).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_permission = 600</SAMP
 ></P
@@ -1656,9 +1656,9 @@ CLASS="PROMPT"
 ><P
 >config_header</P
 ><P
->Pierwsza linia w pliku /etc/hosts. Domy¶lnie: 127.0.0.1 localhost localhost.localdomain.</P
+>Pierwsza linia w pliku /etc/hosts. DomyÅ›lnie: 127.0.0.1 localhost localhost.localdomain.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_header = 192.168.1.1 serwer serwer.nasza-siec</SAMP
 ></P
@@ -1674,12 +1674,12 @@ NAME="LMS-MAKEWARNINGS"
 >4.3.13. lms-makewarnings</A
 ></H2
 ><P
->Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
-	    klientów o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
-	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+>Skrypt sÅ‚uÅ¼Ä…cy do generowania pliku zawierajÄ…cego reguÅ‚y netfiltra przekierowujÄ…ce ruch http i webcache
+	    klientÃ³w o saldzie mniejszym lub rÃ³wnym od zadanego na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresÃ³w ÅºrÃ³dÅ‚owych IP oraz decyzja DNAT).
 	    </P
 ><P
->Konfiguracjê tego skryptu zawiera sekcja <SPAN
+>KonfiguracjÄ™ tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1695,10 +1695,10 @@ CLASS="FILENAME"
 ><P
 >networks </P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -1707,10 +1707,10 @@ CLASS="PROMPT"
 ><P
 >customergroups </P
 ><P
->Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</P
+>Lista nazw grup klientÃ³w (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientÃ³w.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >customergroups = osiedle1 osiedle2</SAMP
 ></P
@@ -1719,9 +1719,9 @@ CLASS="PROMPT"
 ><P
 >iptables_binary</P
 ><P
->Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+>Lokalizacja programu iptables. DomyÅ›lnie: /sbin/iptables</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >iptables_binary = /usr/local/sbin/iptables</SAMP
 ></P
@@ -1730,9 +1730,9 @@ CLASS="PROMPT"
 ><P
 >config_owneruid</P
 ><P
->UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>UID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_owneruid = 0</SAMP
 ></P
@@ -1741,9 +1741,9 @@ CLASS="PROMPT"
 ><P
 >config_file</P
 ><P
->Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.warnings.</P
+>Lokalizacja pliku. DomyÅ›lnie: /etc/rc.d/rc.warnings.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_file = /etc/conf.d/rc.warnings</SAMP
 ></P
@@ -1752,9 +1752,9 @@ CLASS="PROMPT"
 ><P
 >config_ownergid</P
 ><P
->GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>GID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_ownergid = 0</SAMP
 ></P
@@ -1763,9 +1763,9 @@ CLASS="PROMPT"
 ><P
 >config_permission</P
 ><P
->Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+>Uprawnienia pliku skryptu. DomyÅ›lnie: 700 (rwx------).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_permission = 700</SAMP
 ></P
@@ -1774,9 +1774,9 @@ CLASS="PROMPT"
 ><P
 >chain</P
 ><P
->£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</P
+>ÅaÅ„cuch do ktÃ³rego bÄ™dÄ… dodawane generowane reguÅ‚y. DomyÅ›lnie: WARNINGS.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >chain = OSTRZEZENIA</SAMP
 ></P
@@ -1785,9 +1785,9 @@ CLASS="PROMPT"
 ><P
 >redirect_address</P
 ><P
->Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czone ostrze¿enie o zaleg³o¶ciach finansowych. Domy¶lnie: 127.0.0.1:80.</P
+>Adres IP + port na ktÃ³ry bÄ™dzie przekierowywany ruch http i webcache pochodzÄ…cy z hostÃ³w dla ktÃ³rych ma byÄ‡ wÅ‚Ä…czone ostrzeÅ¼enie o zalegÅ‚oÅ›ciach finansowych. DomyÅ›lnie: 127.0.0.1:80.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >redirect_address = 192.168.1.1:3001</SAMP
 ></P
@@ -1796,9 +1796,9 @@ CLASS="PROMPT"
 ><P
 >limit</P
 ><P
->Saldo klienta przy którym dla wszystkich komputerów klienta generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </P
+>Saldo klienta przy ktÃ³rym dla wszystkich komputerÃ³w klienta generowane sÄ… reguÅ‚ki przekierowujÄ…ce ruch. DomyÅ›lnie: 0 </P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >limit = -85</SAMP
 ></P
@@ -1814,12 +1814,12 @@ NAME="LMS-MAKEMESSAGES"
 >4.3.14. lms-makemessages</A
 ></H2
 ><P
->Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
-	    klientów dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
-	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+>Skrypt sÅ‚uÅ¼Ä…cy do generowania pliku zawierajÄ…cego reguÅ‚y netfiltra przekierowujÄ…ce ruch http i webcache
+	    klientÃ³w dla ktÃ³rych zostaÅ‚o wÅ‚Ä…czone przekazywanie wiadomoÅ›ci administracyjnej (ostrzeÅ¼enia) na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresÃ³w ÅºrÃ³dÅ‚owych IP oraz decyzja DNAT).
 	    </P
 ><P
->Konfiguracjê tego skryptu zawiera sekcja <SPAN
+>KonfiguracjÄ™ tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1835,10 +1835,10 @@ CLASS="FILENAME"
 ><P
 >networks </P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -1847,10 +1847,10 @@ CLASS="PROMPT"
 ><P
 >customergroups </P
 ><P
->Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</P
+>Lista nazw grup klientÃ³w (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas generowania
+		    pliku. JeÅ›li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientÃ³w.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >customergroups = osiedle1 osiedle2</SAMP
 ></P
@@ -1859,9 +1859,9 @@ CLASS="PROMPT"
 ><P
 >iptables_binary</P
 ><P
->Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+>Lokalizacja programu iptables. DomyÅ›lnie: /sbin/iptables</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >iptables_binary = /usr/local/sbin/iptables</SAMP
 ></P
@@ -1870,9 +1870,9 @@ CLASS="PROMPT"
 ><P
 >config_owneruid</P
 ><P
->UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>UID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_owneruid = 0</SAMP
 ></P
@@ -1881,9 +1881,9 @@ CLASS="PROMPT"
 ><P
 >config_file</P
 ><P
->Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.messages.</P
+>Lokalizacja pliku. DomyÅ›lnie: /etc/rc.d/rc.messages.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_file = /etc/conf.d/rc.messages</SAMP
 ></P
@@ -1892,9 +1892,9 @@ CLASS="PROMPT"
 ><P
 >config_ownergid</P
 ><P
->GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+>GID wÅ‚aÅ›ciciela pliku. DomyÅ›lnie: 0 (root).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_ownergid = 0</SAMP
 ></P
@@ -1903,9 +1903,9 @@ CLASS="PROMPT"
 ><P
 >config_permission</P
 ><P
->Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+>Uprawnienia pliku skryptu. DomyÅ›lnie: 700 (rwx------).</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >config_permission = 700</SAMP
 ></P
@@ -1914,9 +1914,9 @@ CLASS="PROMPT"
 ><P
 >chain</P
 ><P
->£añcuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</P
+>ÅaÅ„cuch do ktÃ³rego bÄ™dÄ… dodawane generowane reguÅ‚y. DomyÅ›lnie: MESSAGES.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >chain = WIADOMOSCI</SAMP
 ></P
@@ -1925,9 +1925,9 @@ CLASS="PROMPT"
 ><P
 >redirect_address</P
 ><P
->Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czona wiadomo¶æ administracyjna. Domy¶lnie: 127.0.0.1:80.</P
+>Adres IP + port na ktÃ³ry bÄ™dzie przekierowywany ruch http i webcache pochodzÄ…cy z hostÃ³w dla ktÃ³rych ma byÄ‡ wÅ‚Ä…czona wiadomoÅ›Ä‡ administracyjna. DomyÅ›lnie: 127.0.0.1:80.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >redirect_address = 192.168.1.1:3002</SAMP
 ></P
@@ -1943,13 +1943,13 @@ NAME="LMS-FPING"
 >4.3.15. lms-fping</A
 ></H2
 ><P
->Skrypt zapisuje do bazy informacje o aktywno¶ci komputerów. 
+>Skrypt zapisuje do bazy informacje o aktywnoÅ›ci komputerÃ³w. 
 	    Do skanowania wykorzystywany jest szybki program fping (z opcjami -ar1). 
-	    Najpierw tworzona jest lista hostów, a nastêpnie, po wywo³aniu fping'a, 
-	    komputerom w³±czonym zostaje przypisana data i czas skanowania. Dziêki temu 
-	    mamy w bazie informacje kiedy dany komputer by³ ostatnio w³±czony.</P
+	    Najpierw tworzona jest lista hostÃ³w, a nastÄ™pnie, po wywoÅ‚aniu fping'a, 
+	    komputerom wÅ‚Ä…czonym zostaje przypisana data i czas skanowania. DziÄ™ki temu 
+	    mamy w bazie informacje kiedy dany komputer byÅ‚ ostatnio wÅ‚Ä…czony.</P
 ><P
->Konfiguracjê tego skryptu zawiera sekcja <SPAN
+>KonfiguracjÄ™ tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1965,10 +1965,10 @@ CLASS="FILENAME"
 ><P
 >networks </P
 ><P
->Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas skanowania.
-		    Je¶li nie ustawiono przeskanowane zostan± wszystkie komputery.</P
+>Lista nazw sieci (oddzielonych spacjami), ktÃ³re majÄ… byÄ‡ uwzglÄ™dnione podczas skanowania.
+		    JeÅ›li nie ustawiono przeskanowane zostanÄ… wszystkie komputery.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >networks = public-custa public-custb</SAMP
 ></P
@@ -1977,9 +1977,9 @@ CLASS="PROMPT"
 ><P
 >fping_binary</P
 ><P
->Lokalizacja programu fping. Domy¶lnie: /usr/sbin/fping</P
+>Lokalizacja programu fping. DomyÅ›lnie: /usr/sbin/fping</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >fping_binary = /usr/local/sbin/fping</SAMP
 ></P
@@ -1988,10 +1988,10 @@ CLASS="PROMPT"
 ><P
 >temp_file</P
 ><P
->Lokalizacja pliku tymczasowego na listê hostów, który
-		    po wykonaniu skryptu zostaje usuniêty. Domy¶lnie: /tmp/fping_hosts.</P
+>Lokalizacja pliku tymczasowego na listÄ™ hostÃ³w, ktÃ³ry
+		    po wykonaniu skryptu zostaje usuniÄ™ty. DomyÅ›lnie: /tmp/fping_hosts.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >temp_file = /tmp/hosts</SAMP
 ></P
@@ -2007,11 +2007,11 @@ NAME="LMS-REMINDER"
 >4.3.16. lms-reminder</A
 ></H2
 ><P
->Skrypt s³u¿y do przypominania klientom o zaplanowanych na dany dzieñ 
-	  zadaniach. Lista zdarzeñ przypisanych w Terminarzu danemu klientowi w bie¿±cym
-	  dniu zostaje wys³ana na jego adres e-mail.</P
+>Skrypt sÅ‚uÅ¼y do przypominania klientom o zaplanowanych na dany dzieÅ„ 
+	  zadaniach. Lista zdarzeÅ„ przypisanych w Terminarzu danemu klientowi w bieÅ¼Ä…cym
+	  dniu zostaje wysÅ‚ana na jego adres e-mail.</P
 ><P
->Konfiguracjê dla lms-reminder umieszcza siê w pliku <TT
+>KonfiguracjÄ™ dla lms-reminder umieszcza siÄ™ w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
 > 
@@ -2021,15 +2021,15 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[reminder]</I
 ></SPAN
->. Mo¿esz tam ustawiæ nastêpuj±ce parametry:</P
+>. MoÅ¼esz tam ustawiÄ‡ nastÄ™pujÄ…ce parametry:</P
 ><UL
 ><LI
 ><P
 >mailsubject (wymagany)</P
 ><P
->Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Domy¶lnie: nie ustawione.</P
+>Pozwala na ustalenie tematu e-maila wysyÅ‚anego do klienta. DomyÅ›lnie: nie ustawione.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mailsubject = 'Terminarz z LMSa'</SAMP
 ></P
@@ -2038,11 +2038,11 @@ CLASS="PROMPT"
 ><P
 >mailfrom</P
 ><P
->Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na 
-	     niektórych MTA (np. exim) konto to musi istnieæ w systemie. 
-	     Domy¶lnie nieustawione.</P
+>Adres e-mail z ktÃ³rego zostanie wysÅ‚any e-mail. ProszÄ™ pamiÄ™taÄ‡, Å¼e na 
+	     niektÃ³rych MTA (np. exim) konto to musi istnieÄ‡ w systemie. 
+	     DomyÅ›lnie nieustawione.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mailfrom = staff@domain.pl</SAMP
 ></P
@@ -2053,7 +2053,7 @@ CLASS="PROMPT"
 ><P
 >Nazwa nadawcy maila.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mailfname = LMS</SAMP
 ></P
@@ -2062,9 +2062,9 @@ CLASS="PROMPT"
 ><P
 >smtp_server</P
 ><P
->Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1.</P
+>Serwer SMTP, przez ktÃ³ry ma zostaÄ‡ wysÅ‚ana wiadomoÅ›Ä‡. DomyÅ›lnie: 127.0.0.1.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_server = smtp.mydomain.pl</SAMP
 ></P
@@ -2073,11 +2073,11 @@ CLASS="PROMPT"
 ><P
 >debug_email (opcjonalny)</P
 ><P
->Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje 
-	     wys³ana na dany email zamiast do klientów. Przydatne do debugowania 
-	     i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</P
+>Adres e-mail do debugowania. Gdy ustawiony, caÅ‚a poczta zostaje 
+	     wysÅ‚ana na dany email zamiast do klientÃ³w. Przydatne do debugowania 
+	     i sprawdzania czy wszystko dziaÅ‚a OK. DomyÅ›lnie: nie ustawiony.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >debug_email = alec@domain.pl</SAMP
 ></P
@@ -2093,21 +2093,21 @@ NAME="LMS-RTPARSER"
 >4.3.17. lms-rtparser</A
 ></H2
 ><P
->Jest to tzw. backend dla systemu Helpdesk, czyli skrypt który wspó³pracuj±c
-	    z serwerem pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
-	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
-	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
-	    potwierdzenie przyjêcia wiadomo¶ci. W temacie potwierdzenia znajduje siê symbol
-	    zg³oszenia. Podczas parsowania wiadomo¶ci nastêpuje, na 
-	    podstawie tematu wiadomo¶ci, próba rozpoznania czy wiadomo¶æ nie jest odpowiedzi± na inn± wiadomo¶æ z ju¿
-	    przypisanym numerem zg³oszenia. Od wiadomo¶ci zostaj± od³±czone za³±czniki
+>Jest to tzw. backend dla systemu Helpdesk, czyli skrypt ktÃ³ry wspÃ³Å‚pracujÄ…c
+	    z serwerem pocztowym zapisuje do bazy danych wszystkie wiadomoÅ›ci skierowane na
+	    adresy Helpdesk'a. Skrypt pobiera z wejÅ›cia wiadomoÅ›Ä‡ pocztowÄ…, parsuje zawartoÅ›Ä‡
+	    i umieszcza zgÅ‚oszenie w kolejce, wysyÅ‚ajÄ…c do zgÅ‚aszajÄ…cych
+	    potwierdzenie przyjÄ™cia wiadomoÅ›ci. W temacie potwierdzenia znajduje siÄ™ symbol
+	    zgÅ‚oszenia. Podczas parsowania wiadomoÅ›ci nastÄ™puje, na 
+	    podstawie tematu wiadomoÅ›ci, prÃ³ba rozpoznania czy wiadomoÅ›Ä‡ nie jest odpowiedziÄ… na innÄ… wiadomoÅ›Ä‡ z juÅ¼
+	    przypisanym numerem zgÅ‚oszenia. Od wiadomoÅ›ci zostajÄ… odÅ‚Ä…czone zaÅ‚Ä…czniki
 	    i umieszczone w katalogu zdefiniowanym w opcji <TT
 CLASS="FILENAME"
 >mail_dir</TT
 >.</P
 ><P
->Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów, nale¿y 
-	    zainstalowaæ tak¿e modu³y <TT
+>OprÃ³cz moduÅ‚Ã³w Perla standardowo wymaganych przez resztÄ™ skryptÃ³w, naleÅ¼y 
+	    zainstalowaÄ‡ takÅ¼e moduÅ‚y <TT
 CLASS="FILENAME"
 >MIME::Parser</TT
 > i <TT
@@ -2122,11 +2122,11 @@ CLASS="FILENAME"
 >Text::Iconv</TT
 >.</P
 ><P
->Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
-	    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a lms-rtparser
-	    dla ka¿dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
-	    go z serwerem pocztowym. Poni¿ej przedstawiono sposób pod³±czenia go do
-	    postfixa przy u¿yciu opcji header_checks.
+>Skrypt moÅ¼na uruchamiaÄ‡ na wiele sposobÃ³w. Jednym z nich jest
+	    stworzenie skryptu powÅ‚oki, ktÃ³ry odczytujÄ…c skrzynkÄ™ pocztowÄ… wywoÅ‚a lms-rtparser
+	    dla kaÅ¼dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
+	    go z serwerem pocztowym. PoniÅ¼ej przedstawiono sposÃ³b podÅ‚Ä…czenia go do
+	    postfixa przy uÅ¼yciu opcji header_checks.
 <PRE
 CLASS="SCREEN"
 ># plik main.cf:
@@ -2139,15 +2139,15 @@ header_checks = regexp:/etc/postfix/header_checks
 filter unix - n n - 10 pipe
       -flags=Rq user=nobody argv=/path/to/lms-rtparser</PRE
 >
-	    Powy¿szy sposób dzia³a dla postfixa w wersjach nowszych od 2.0.
-	    Wcze¶niejsze wersje nie obs³uguj± FILTER w header_checks. Z tym
-	    problemem mo¿na sobie poradziæ u¿ywaj±c procmaila:
+	    PowyÅ¼szy sposÃ³b dziaÅ‚a dla postfixa w wersjach nowszych od 2.0.
+	    WczeÅ›niejsze wersje nie obsÅ‚ugujÄ… FILTER w header_checks. Z tym
+	    problemem moÅ¼na sobie poradziÄ‡ uÅ¼ywajÄ…c procmaila:
 <PRE
 CLASS="SCREEN"
 ># plik main.cf
 mailbox_command = /usr/bin/procmail
 
-# w katalogu domowym klienta, którego maile maj± byæ obs³ugiwane przez HelpDesk:
+# w katalogu domowym klienta, ktÃ³rego maile majÄ… byÄ‡ obsÅ‚ugiwane przez HelpDesk:
 # plik .forward
 "|IFS=' ' &#38;&#38; exec /usr/bin/procmail -f - || exit 75 #YOUR_USERNAME"
 
@@ -2160,8 +2160,8 @@ mailbox_command = /usr/bin/procmail
 $DEFAULT</PRE
 ></P
 ><P
->Kolejny listing to przyk³ad pod³±czenia parsera do Exima 
-	    przy u¿yciu filtrów systemowych:
+>Kolejny listing to przykÅ‚ad podÅ‚Ä…czenia parsera do Exima 
+	    przy uÅ¼yciu filtrÃ³w systemowych:
 <PRE
 CLASS="SCREEN"
 ># plik exim.conf
@@ -2195,15 +2195,15 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Je¿eli chcesz aby wiadomo¶ci wprowadzane poprzez <SPAN
+>JeÅ¼eli chcesz aby wiadomoÅ›ci wprowadzane poprzez <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >lms-ui</I
 ></SPAN
 >
-	    by³y kierowane do parsera, zamiast bezpo¶rednio zapisywane do bazy, powiniene¶ w³±czyæ
-	    opcjê konfiguracyjn± <TT
+	    byÅ‚y kierowane do parsera, zamiast bezpoÅ›rednio zapisywane do bazy, powinieneÅ› wÅ‚Ä…czyÄ‡
+	    opcjÄ™ konfiguracyjnÄ… <TT
 CLASS="FILENAME"
 >helpdesk_backend_mode</TT
 > w sekcji
@@ -2220,7 +2220,7 @@ CLASS="EMPHASIS"
 ></DIV
 ></P
 ><P
->Konfiguracjê tego skryptu zawiera sekcja <SPAN
+>KonfiguracjÄ™ tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -2236,12 +2236,12 @@ CLASS="FILENAME"
 ><P
 >default_queue</P
 ><P
->Numer ID kolejki, do której trafi± zg³oszenia. Je¶li nie
+>Numer ID kolejki, do ktÃ³rej trafiÄ… zgÅ‚oszenia. JeÅ›li nie
 		    podano, Kolejka zostanie odszukana na podstawie adresu odbiorcy maila.
-		    Opcja ta mo¿e zostaæ nadpisana przy pomocy parametru -q przy
-		    uruchomieniu skryptu. Domy¶lnie: niezdefiniowana.</P
+		    Opcja ta moÅ¼e zostaÄ‡ nadpisana przy pomocy parametru -q przy
+		    uruchomieniu skryptu. DomyÅ›lnie: niezdefiniowana.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >default_queue = </SAMP
 ></P
@@ -2250,10 +2250,10 @@ CLASS="PROMPT"
 ><P
 >mail_from</P
 ><P
->Nadawca potwierdzenia (adres). Je¶li nie zdefiniowano, zostanie u¿yty adres
-		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</P
+>Nadawca potwierdzenia (adres). JeÅ›li nie zdefiniowano, zostanie uÅ¼yty adres
+		    kolejki do ktÃ³rej zapisano zgÅ‚oszenie. DomyÅ›lnie: pusty.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mail_from = rt@net.pl</SAMP
 ></P
@@ -2262,9 +2262,9 @@ CLASS="PROMPT"
 ><P
 >mail_from_name</P
 ><P
->Nadawca potwierdzenia (nazwa). Domy¶lnie: niezdefiniowana.</P
+>Nadawca potwierdzenia (nazwa). DomyÅ›lnie: niezdefiniowana.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mail_from_name = 'BOK SuperLAN'</SAMP
 ></P
@@ -2273,35 +2273,35 @@ CLASS="PROMPT"
 ><P
 >autoreply_subject</P
 ><P
->Temat potwierdzenia. Tu mo¿na korzystaæ ze zmiennych %tid - 
-		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
-		    Domy¶lnie: "[RT#%tid] Receipt of request '%subject'".</P
+>Temat potwierdzenia. Tu moÅ¼na korzystaÄ‡ ze zmiennych %tid - 
+		    identyfikator zgÅ‚oszenia i %subject - temat zgÅ‚oszenia.
+		    DomyÅ›lnie: "[RT#%tid] Receipt of request '%subject'".</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
->autoreply_subject = "[RT#%tid] Potwierdzenie odbioru zg³oszenia o temacie '%subject'"</SAMP
+>autoreply_subject = "[RT#%tid] Potwierdzenie odbioru zgÅ‚oszenia o temacie '%subject'"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >autoreply_body</P
 ><P
->Tre¶æ potwierdzenia. Tu mo¿na korzystaæ ze zmiennych: %tid - 
-		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
-		    Domy¶lnie: "Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n."</P
+>TreÅ›Ä‡ potwierdzenia. Tu moÅ¼na korzystaÄ‡ ze zmiennych: %tid - 
+		    identyfikator zgÅ‚oszenia i %subject - temat zgÅ‚oszenia.
+		    DomyÅ›lnie: "Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n."</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->autoreply_body = "Pañstwa zg³oszenie zosta³o zarejestrowane w naszym systemie.\nZg³oszeniu zosta³ nadany numer: RT#%tid.\nW korespondencji zwi±zanej z tym zg³oszeniem prosimy podawaæ w temacie ci±g znaków [RT#%tid].\n"</SAMP
+>autoreply_body = "PaÅ„stwa zgÅ‚oszenie zostaÅ‚o zarejestrowane w naszym systemie.\nZgÅ‚oszeniu zostaÅ‚ nadany numer: RT#%tid.\nW korespondencji zwiÄ…zanej z tym zgÅ‚oszeniem prosimy podawaÄ‡ w temacie ciÄ…g znakÃ³w [RT#%tid].\n"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >smtp_host</P
 ><P
->Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</P
+>Serwer SMTP, przez ktÃ³ry ma zostaÄ‡ wysÅ‚ana wiadomoÅ›Ä‡. DomyÅ›lnie: localhost</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_host = smtp.mydomain.pl</SAMP
 ></P
@@ -2310,10 +2310,10 @@ CLASS="PROMPT"
 ><P
 >smtp_auth</P
 ><P
->Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
-		    Domy¶lnie: pusta (brak autoryzacji)</P
+>SposÃ³b autoryzacji. Dozwolone wartoÅ›ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
+		    DomyÅ›lnie: pusta (brak autoryzacji)</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_auth = LOGIN</SAMP
 ></P
@@ -2322,9 +2322,9 @@ CLASS="PROMPT"
 ><P
 >smtp_user</P
 ><P
->Login do autoryzacji SMTP. Domy¶lnie: pusty</P
+>Login do autoryzacji SMTP. DomyÅ›lnie: pusty</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_user = admin</SAMP
 ></P
@@ -2333,9 +2333,9 @@ CLASS="PROMPT"
 ><P
 >smtp_pass</P
 ><P
->Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</P
+>HasÅ‚o do konta zdefiniowanego w opcji smtp_user. DomyÅ›lnie: puste</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >smtp_pass = password</SAMP
 ></P
@@ -2344,11 +2344,11 @@ CLASS="PROMPT"
 ><P
 >mail_dir</P
 ><P
->Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien byæ
-		    dostêpny dla apache'a i klienta uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
-		    za³±czniki zostan± utracone. Domy¶lnie: niezdefiniowany.</P
+>Katalog w ktÃ³rym zostanÄ… zapisane zaÅ‚Ä…czniki. Katalog ten powinien byÄ‡
+		    dostÄ™pny dla apache'a i klienta uruchamiajÄ…cego lms-rtparser. Gdy nie ustawiono, 
+		    zaÅ‚Ä…czniki zostanÄ… utracone. DomyÅ›lnie: niezdefiniowany.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >mail_dir = /usr/local/lms/mail</SAMP
 ></P
@@ -2357,13 +2357,13 @@ CLASS="PROMPT"
 ><P
 >tmp_dir</P
 ><P
->Katalog tymczasowy. Domy¶lnie zostanie u¿yty katalog 
+>Katalog tymczasowy. DomyÅ›lnie zostanie uÅ¼yty katalog 
 		    zdefiniowany w zmiennej systemowej lub <TT
 CLASS="FILENAME"
 >/tmp</TT
 >.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >tmp_dir = /home/user/tmp</SAMP
 ></P
@@ -2372,11 +2372,11 @@ CLASS="PROMPT"
 ><P
 >auto_open</P
 ><P
->W³±czenie tej opcji spowoduje, ¿e w momencie odebrania
-		    wiadomo¶ci dotycz±cej zg³oszenia zamkniêtego (lub martwego)
-		    zg³oszenie to zostanie otwarte. Domy¶lnie: wy³±czone.</P
+>WÅ‚Ä…czenie tej opcji spowoduje, Å¼e w momencie odebrania
+		    wiadomoÅ›ci dotyczÄ…cej zgÅ‚oszenia zamkniÄ™tego (lub martwego)
+		    zgÅ‚oszenie to zostanie otwarte. DomyÅ›lnie: wyÅ‚Ä…czone.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >auto_open = 1</SAMP
 ></P
@@ -2385,11 +2385,11 @@ CLASS="PROMPT"
 ><P
 >newticket_notify</P
 ><P
->W³±czenie tej opcji spowoduje wysy³anie powiadomieñ o
-		    nowych zg³oszeniach do u¿ytkowników którzy maj± prawa do
-		    konkretnej kolejki. Domy¶lnie: wy³±czone.</P
+>WÅ‚Ä…czenie tej opcji spowoduje wysyÅ‚anie powiadomieÅ„ o
+		    nowych zgÅ‚oszeniach do uÅ¼ytkownikÃ³w ktÃ³rzy majÄ… prawa do
+		    konkretnej kolejki. DomyÅ›lnie: wyÅ‚Ä…czone.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >newticket_notify = 1</SAMP
 ></P
@@ -2398,11 +2398,11 @@ CLASS="PROMPT"
 ><P
 >lms_url</P
 ><P
->Do powiadomienia o nowym zg³oszeniu zostaje za³±czony link 
-		    do tego zg³oszenia w LMS-UI, aby u¿ytkownik móg³ szybko przej¶æ do
-		    tego zg³oszenia. Domy¶lnie: http://localhost/lms/.</P
+>Do powiadomienia o nowym zgÅ‚oszeniu zostaje zaÅ‚Ä…czony link 
+		    do tego zgÅ‚oszenia w LMS-UI, aby uÅ¼ytkownik mÃ³gÅ‚ szybko przejÅ›Ä‡ do
+		    tego zgÅ‚oszenia. DomyÅ›lnie: http://localhost/lms/.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >lms_url = https://lms.domena.pl/</SAMP
 ></P
@@ -2411,11 +2411,11 @@ CLASS="PROMPT"
 ><P
 >include_customerinfo</P
 ><P
->Do powiadomienia o nowym zg³oszeniu zostaj± za³±czone podstawowe 
-			dane klienta, je¿eli zosta³ on rozpoznany po adresie mailowym. 
-			Domy¶lnie: w³±czona.</P
+>Do powiadomienia o nowym zgÅ‚oszeniu zostajÄ… zaÅ‚Ä…czone podstawowe 
+			dane klienta, jeÅ¼eli zostaÅ‚ on rozpoznany po adresie mailowym. 
+			DomyÅ›lnie: wÅ‚Ä…czona.</P
 ><P
->Przyk³ad:	<SAMP
+>PrzykÅ‚ad:	<SAMP
 CLASS="PROMPT"
 >include_customerinfo = 0</SAMP
 ></P
@@ -2467,7 +2467,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Lista dostêpnych skryptów</TD
+>Lista dostÄ™pnych skryptÃ³w</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -2481,7 +2481,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Generator plików konfiguracyjnych (lms-mgc)</TD
+>Generator plikÃ³w konfiguracyjnych (lms-mgc)</TD
 ></TR
 ></TABLE
 ></DIV

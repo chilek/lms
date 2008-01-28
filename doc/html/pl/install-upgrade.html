@@ -13,7 +13,7 @@ REL="UP"
 TITLE="Instalacja i konfiguracja"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Prawa dostêpu"
+TITLE="Prawa dostÄ™pu"
 HREF="install-rights.html"><LINK
 REL="NEXT"
 TITLE="Dokumenty"
@@ -22,7 +22,7 @@ REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=UTF-8"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -80,38 +80,38 @@ NAME="INSTALL-UPGRADE"
 ></H1
 ><P
 >Uaktualnienie LMS'a przebiega w kilku etapach. Zacznij od 
-		sprawdzenia wymagañ systemu, gdy¿ mog³y ulec zmianie. Je¶li
-		korzystasz z bazy MySQL powiniene¶ tak¿e zweryfikowaæ uprawnienia
-		u¿ytkownika, one te¿ ulega³y zmianie w przesz³o¶ci.
+		sprawdzenia wymagaÅ„ systemu, gdyÅ¼ mogÅ‚y ulec zmianie. JeÅ›li
+		korzystasz z bazy MySQL powinieneÅ› takÅ¼e zweryfikowaÄ‡ uprawnienia
+		uÅ¼ytkownika, one teÅ¼ ulegaÅ‚y zmianie w przeszÅ‚oÅ›ci.
 		</P
 ><P
->Najpierw utwórz katalog z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
-      nowymi) oraz usuñ zawarto¶æ katalogu <TT
+>Najpierw utwÃ³rz katalog z plikami nowej wersji (nie zaleca siÄ™ nadpisywania starych plikÃ³w
+      nowymi) oraz usuÅ„ zawartoÅ›Ä‡ katalogu <TT
 CLASS="FILENAME"
 >templates_c</TT
 >.</P
 ><P
->Nastêpnie, je¶li nie masz jeszcze w systemie locali pl_PL.UTF-8, nale¿y
-      je utworzyæ komend±:
+>NastÄ™pnie, jeÅ›li nie masz jeszcze w systemie locali pl_PL.UTF-8, naleÅ¼y
+      je utworzyÄ‡ komendÄ…:
       <PRE
 CLASS="SCREEN"
 ># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
 >
-     Je¶li w interfejsie u¿ytkownika znaki narodowe nie bêd± wy¶wietlane poprawnie
-     mo¿liwe, ¿e trzeba bêdzie w pliku konfiguracyjnym serwera www (httpd.conf)
-     ustawiæ:
+     JeÅ›li w interfejsie uÅ¼ytkownika znaki narodowe nie bÄ™dÄ… wyÅ›wietlane poprawnie
+     moÅ¼liwe, Å¼e trzeba bÄ™dzie w pliku konfiguracyjnym serwera www (httpd.conf)
+     ustawiÄ‡:
      <PRE
 CLASS="SCREEN"
 >AddDefaultCharset Off</PRE
 >
-     oraz w konfiguracji PHP (php.ini) wy³±czyæ/zakomentowaæ domy¶lne kodowanie:
+     oraz w konfiguracji PHP (php.ini) wyÅ‚Ä…czyÄ‡/zakomentowaÄ‡ domyÅ›lne kodowanie:
      <PRE
 CLASS="SCREEN"
 >;default_charset = "iso-8859-1"</PRE
 ></P
 ><P
->Kolejnym krokiem jest dokonanie zmian w bazie. Od wersji 1.3.1 wprowadzono automatyczn±
-	procedurê aktualizacji struktury bazy danych. Nastêpuje ona za ka¿dym razem podczas
+>Kolejnym krokiem jest dokonanie zmian w bazie. Od wersji 1.3.1 wprowadzono automatycznÄ…
+	procedurÄ™ aktualizacji struktury bazy danych. NastÄ™puje ona za kaÅ¼dym razem podczas
 	uruchomienia <SPAN
 CLASS="emphasis"
 ><I
@@ -121,25 +121,25 @@ CLASS="EMPHASIS"
 > (jeszcze przed zalogowaniem do systemu).</P
 ><P
 >Ostatni etap - konwersja danych do unicodu.
-      Pocz±wszy od wersji 1.5.4 zaleca siê przechowywanie danych zakodowanych w 
-      utf-8 (UNICODE), poni¿ej zostanie przedstawiony przyk³ad migracji z kodowania ISO-8859-2
+      PoczÄ…wszy od wersji 1.5.4 zaleca siÄ™ przechowywanie danych zakodowanych w 
+      utf-8 (UNICODE), poniÅ¼ej zostanie przedstawiony przykÅ‚ad migracji z kodowania ISO-8859-2
       do UNICODE na bazie danych PostgreSQL.</P
 ><P
->Zaczynamy od utworzenia backupu danych w LMSie. Nastêpnie przechodzimy do
-      katalogu z backupami i wykonujemy konwersjê pliku backupu.
+>Zaczynamy od utworzenia backupu danych w LMSie. NastÄ™pnie przechodzimy do
+      katalogu z backupami i wykonujemy konwersjÄ™ pliku backupu.
       <PRE
 CLASS="SCREEN"
 ># iconv --from-code=ISO-8859-2 --to-code=UTF-8 &#60; plik_backupu &#62; nowy_plik</PRE
 >
-     Po czym zmieniamy nazwê nowo powsta³ego pliku na lms-xxxxxxx.sql, aby
-     plik ten by³ widoczny z poziomu <SPAN
+     Po czym zmieniamy nazwÄ™ nowo powstaÅ‚ego pliku na lms-xxxxxxx.sql, aby
+     plik ten byÅ‚ widoczny z poziomu <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 >. Teraz
-     nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
+     naleÅ¼y utworzyÄ‡ bazÄ™ danych z kodowaniem UNICODE (opis w dziale Instalacja).
      Po czym uruchamiamy <SPAN
 CLASS="emphasis"
 ><I
@@ -168,15 +168,15 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Je¿eli u¿ywasz wersji pobranej z CVSu musisz dodatkowo
-    zadbaæ o instalacjê biblioteki Smarty. Do katalogu <TT
+>JeÅ¼eli uÅ¼ywasz wersji pobranej z CVSu musisz dodatkowo
+    zadbaÄ‡ o instalacjÄ™ biblioteki Smarty. Do katalogu <TT
 CLASS="FILENAME"
 >/lib/Smarty</TT
 >
-    wgraj zawarto¶æ katalogu <TT
+    wgraj zawartoÅ›Ä‡ katalogu <TT
 CLASS="FILENAME"
 >/lib</TT
-> z paczki Smarty. Czynno¶æ
+> z paczki Smarty. CzynnoÅ›Ä‡
     (wraz z pobraniem biblioteki Smarty) automatycznie wykonuje skrypt
     <TT
 CLASS="FILENAME"
@@ -232,7 +232,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Prawa dostêpu</TD
+>Prawa dostÄ™pu</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

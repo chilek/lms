@@ -11,7 +11,7 @@
 (define %use-id-as-filename% #t)
 (define %stylesheet% "../images/style.css")
 (define %html-header-tags% 
-    '(("META" ("HTTP-EQUIV" "Content-Type")("CONTENT" "text/html; charset=ISO-8859-2"))))
+    '(("META" ("HTTP-EQUIV" "Content-Type")("CONTENT" "text/html; charset=UTF-8"))))
 (define %section-autolabel% #t)
 (define (toc-depth nd)
   (cond ((string=? (gi nd) (normalize "book")) 2)
