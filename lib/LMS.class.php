@@ -3183,6 +3183,7 @@ class LMS
 					$this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?',
 						array('last_check_for_updates_timestamp'));
 
+
 				$content = unserialize((string)$content);
 				$content['regdata'] = unserialize((string)$content['regdata']);
 			
