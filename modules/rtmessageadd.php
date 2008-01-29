@@ -260,13 +260,14 @@ if(isset($_POST['message']))
 			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) 
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']))))
 			{	
-				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+				$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						email, address, zip, city, (SELECT phone FROM customercontacts 
 							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
 						FROM customers WHERE id = ?', array($cid));
 				
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
+				$body .= trans('ID:').' '.sprintf('%04d', $cid)."\n";
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
 				$body .= trans('Phone:').' '.$info['phone']."\n";
 				$body .= trans('E-mail:').' '.$info['email'];

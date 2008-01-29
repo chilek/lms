@@ -103,13 +103,14 @@ if(isset($_POST['ticket']))
 
 			if(chkconfig($CONFIG['phpui']['helpdesk_customerinfo']) && $ticket['customerid'])
 			{	
-				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+				$info = $DB->GetRow('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						email, address, zip, city, (SELECT phone FROM customercontacts 
 							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
 						FROM customers WHERE id = ?', array($ticket['customerid']));
 				
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
+				$body .= trans('ID:').' '.sprintf('%04d', $ticket['customerid'])."\n";
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
 				$body .= trans('Phone:').' '.$info['phone']."\n";
 				$body .= trans('E-mail:').' '.$info['email'];
