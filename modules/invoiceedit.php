@@ -119,6 +119,7 @@ switch($action)
 		unset($invoice); 
 		unset($customer);
 		unset($error);
+		$error = NULL;
 		
 		if($invoice = $_POST['invoice'])
 			foreach($invoice as $key => $val)
@@ -144,8 +145,8 @@ switch($action)
 		$invoice['customerid'] = $_POST['customerid'];
 		
 		if(!$error)
-			if($LMS->CustomerExists(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid'])))
-				$customer = $LMS->GetCustomer(($_GET['customerid'] != '' ? $_GET['customerid'] : $_POST['customerid']));
+			if($LMS->CustomerExists($invoice['customerid']))
+				$customer = $LMS->GetCustomer($invoice['customerid']);
 	break;
 
 	case 'save':
