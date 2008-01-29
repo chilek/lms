@@ -890,4 +890,4 @@ CREATE FUNCTION broadcast(address bigint, mask bigint) RETURNS bigint DETERMINIS
 RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2007012200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008012200');
