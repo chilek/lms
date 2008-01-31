@@ -63,7 +63,7 @@ $SESSION->save('addbt', $addbalance['time']);
 $SESSION->save('addbv', $addbalance['value']);
 $SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0);
 
-if($addbalance['type'] == 0)
+if(empty($addbalance['type']) == 0)
 	$addbalance['value'] *= -1;
 else
 	$addbalance['taxid'] = 0;
