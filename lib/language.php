@@ -60,7 +60,7 @@ $LANGDEFS = array(
 			'money_format' => '$ %01.2f'
 			),
 		'ro' => array(
-			'name' => 'Romainan',
+			'name' => 'Romanian',
 			'orig' => 'Romana',
 			'locale' => 'ro_RO.UTF-8',
 			'charset' => 'UTF-8',
