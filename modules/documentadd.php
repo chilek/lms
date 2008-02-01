@@ -67,7 +67,7 @@ if(isset($_POST['document']))
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 	
-	$document['customerid'] = $_POST['customerid'] ? $_POST['customerid'] : $_POST['customer'];
+	$document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 	
 	if(!$LMS->CustomerExists(intval($document['customerid'])))
 		$error['customer'] = trans('Customer not selected!');
