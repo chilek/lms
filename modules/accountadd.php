@@ -113,28 +113,32 @@ if(isset($_POST['account']))
 	}
 	$SMARTY->assign('quota', $quota);
 }
-elseif(isset($_GET['cid']))
+else
 {
-	$account['ownerid'] = intval($_GET['cid']);
+	if(isset($_GET['cid']))
+	{
+		$account['ownerid'] = intval($_GET['cid']);
+	}
+	
+	$quota = array();
+	if(!empty($CONFIG['phpui']['quota_mail']))
+		$quota['mail'] = $CONFIG['phpui']['quota_mail'];
+	if(!empty($CONFIG['phpui']['quota_sql']))
+		$quota['sql'] = $CONFIG['phpui']['quota_sql'];
+	if(!empty($CONFIG['phpui']['quota_ssh']))
+		$quota['sh'] = $CONFIG['phpui']['quota_ssh'];
+	if(!empty($CONFIG['phpui']['quota_www']))
+		$quota['www'] = $CONFIG['phpui']['quota_www'];
+	if(!empty($CONFIG['phpui']['quota_ftp']))
+		$quota['ftp'] = $CONFIG['phpui']['quota_ftp'];
+
+	if(!empty($CONFIG['phpui']['account_type']))
+		$account['type'] = $CONFIG['phpui']['account_type'];
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $domainlist = $DB->GetAll('SELECT id, name FROM domains ORDER BY name');
-
-if(!isset($account['type']) && isset($CONFIG['phpui']['account_type']))
-	$account['type'] = $CONFIG['phpui']['account_type'];
-
-if(!isset($quota['mail']) && isset($CONFIG['phpui']['quota_mail']))
-	$quota['mail'] = $CONFIG['phpui']['quota_mail'];
-if(!isset($quota['sql']) && isset($CONFIG['phpui']['quota_sql']))
-	$quota['sql'] = $CONFIG['phpui']['quota_sql'];
-if(!isset($quota['sh']) && isset($CONFIG['phpui']['quota_ssh']))
-	$quota['sh'] = $CONFIG['phpui']['quota_ssh'];
-if(!isset($quota['www']) && isset($CONFIG['phpui']['quota_www']))
-	$quota['www'] = $CONFIG['phpui']['quota_www'];
-if(!isset($quota['ftp']) && isset($CONFIG['phpui']['quota_ftp']))
-	$quota['ftp'] = $CONFIG['phpui']['quota_ftp'];
 
 if(!isset($account['type'])) $account['type'] = 32767;
 
