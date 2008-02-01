@@ -78,7 +78,8 @@ if($payment)
 		case QUARTERLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
-			else {
+			else
+			{
 				list($d,$m) = split('/',trim($payment['at']));
 				if($d>30 || $d<1)
 					$error['at'] = trans('Incorrect day of month (1-30)!');
@@ -92,9 +93,11 @@ if($payment)
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
 			else
+			{
 				list($d,$m) = split('/',trim($payment['at']));
-			$ttime = mktime(12, 0, 0, $m, $d, 1990);
-			$at = date('z',$ttime) + 1;
+				$ttime = mktime(12, 0, 0, $m, $d, 1990);
+				$at = date('z',$ttime) + 1;
+			}
 		break;	
 	}
 	
