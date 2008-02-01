@@ -75,7 +75,7 @@ switch($p)
 		$SESSION->save('ntlp.page.'.$netid, $page);
 	break;
 	case 'down':
-		$network['page'] = $page;
+		$SESSION->restore('ntlp.page.'.$netid, $network['page']);
 		$SESSION->restore('ntlp.pages.'.$netid, $network['pages']);
 		if(!isset($network['pages'])) 
 		{
@@ -84,7 +84,11 @@ switch($p)
 				isset($firstfree) ? true : false);
 		}
 		$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
-		$SESSION->save('ntlp.page.'.$netid, $page);
+		$SESSION->save('ntlp.page.'.$netid, $network['page']);
+	break;
+	default:
+		if(!isset($firstfree))
+			$SESSION->save('ntlp.page.'.$netid, $page);
 	break;
 }
 
