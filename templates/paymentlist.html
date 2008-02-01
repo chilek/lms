@@ -50,10 +50,9 @@
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right" >
-			{math assign="value" equation="x*-1" x=$paymentlist[payments].value}
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
-			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$value}">
+			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$paymentlist[payments].value}">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
 			<NOBR>
 			<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that payment?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
