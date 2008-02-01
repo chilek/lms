@@ -69,8 +69,10 @@ switch($p)
 
 		$page = $network['page'];
 		$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
+		$SESSION->save('ntlp.page.'.$netid, $page);
 	break;
 	case 'top':
+		$SESSION->save('ntlp.page.'.$netid, $page);
 	break;
 	case 'down':
 		$network['page'] = $page;
@@ -82,10 +84,10 @@ switch($p)
 				isset($firstfree) ? true : false);
 		}
 		$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
+		$SESSION->save('ntlp.page.'.$netid, $page);
 	break;
 }
 
-$SESSION->save('ntlp.page.'.$netid, $page);
 $SESSION->save('netid', $netid);
 
 $SMARTY->assign('part',$p);

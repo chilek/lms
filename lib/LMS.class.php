@@ -2553,18 +2553,18 @@ class LMS
 				$network['nodes']['id'][$i] = 0;
 				
 				if($longip == $network['addresslong'])
-					$network['nodes']['name'][$i] = '*** NETWORK ***';
+					$network['nodes']['name'][$i] = '<b>NETWORK</b>';
 				elseif($network['nodes']['address'][$i] == $network['broadcast'])
-					$network['nodes']['name'][$i] = '*** BROADCAST ***';
+					$network['nodes']['name'][$i] = '<b>BROADCAST</b>';
 				elseif($network['nodes']['address'][$i] == $network['gateway'])
-					$network['nodes']['name'][$i] = '*** GATEWAY ***';
+					$network['nodes']['name'][$i] = '<b>GATEWAY</b>';
 				elseif($longip >= ip_long($network['dhcpstart']) && $longip <= ip_long($network['dhcpend']) )
-					$network['nodes']['name'][$i] = 'DHCP';
+					$network['nodes']['name'][$i] = '<b>DHCP</b>';
 				else
 					$freenode = true;
 			}
 		    }
-		    
+
 		    if($firstfree && !isset($freenode))
 		    {
 			if($page+1 > $network['pages']) break;
