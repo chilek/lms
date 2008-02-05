@@ -1,0 +1,2396 @@
+$Id$
+
+version ? (????-??-??):
+
+  - fixed 'suspended' filter on customers list (alec)
+  - added option phpui.printer_window which enables onload="window.print()"
+    for html printouts, allowed values: 'invoice', 'receipt', 'report' (alec)
+  - fixed problem with one before last address name in chooseip page (alec)
+  - polish documentation converted to utf8 (alec)
+  - added customer ID in footer of heldesk notifications with enabled option
+    phpui.helpdesk_customerinfo (alec)
+
+version 1.11.2 Neera (2008-01-23):
+
+  - added possibility to disable customers cutting off for some time (alec)
+  - lmsd/cutoff: added 'customergroups' & 'excluded_customergroups' opts (alec)
+  - lmsd/cutoff: added not payed invoices checking with 'check_invoices'
+    and 'deadline' options (alec)
+  - BTS#0000704: lmsd/ewx-stm: fixed problem with mac checking and
+    dummy_mac_networks option, optimized sql query (alec)
+  - lmsd: when used with -q option crontab instances are skipped (alec)
+  - lmsd/hostfile: better customergroups option handling (alec)
+  - lmsd/hostfile: added options 'warn', 'warn_pub', 'warn_replace' for
+    warning flag support, 'public_replace' for better public IPs 
+    handling and 'host_begin', 'host_end' for usability (alec)
+  - cash receipts: added 'show_nodes_warning' and 'nodes_warning' in
+    receipts section (alec)
+  - rtmessageadd: fixed php_ui/debug_email empty value checking (chilan)
+  - invoices: added option invoices/print_balance_history_save (alec)
+  - receipts: positions adding with double click protection (alec)
+  - lmsd configuration: instances cloning (alec) 
+  - perl backend: excluded_networks parameter added (chilan)
+  - added phpui/custom_menu option with possibility to add user-defined items
+    and/or subitems to LMS menu (alec)
+  - in IP choosing box page with the first not assigned address is displayed
+    by default, optimized (alec)
+  - nodes groups (alec)
+  - few improvements in customer groups (alec)
+  - nodelist: we can filter nodes by node groups (chilan)
+  - added searching customers and printing customers list by nodes group (alec)
+  - lmsd/hostfile: added 'nodegroups' option (alec)
+  - lmsd/cutoff: added 'setnodegroup_only' option (alec)
+  - nodegroups: added prio field - we are be able to set nodegroups 
+    order (chilan)
+  - mac sort moved from GetMACs() to choosemac dialog (sorting local mac 
+    adresses with mac adresses received from arpd servers) (Mad Mark)
+  - improved status/warning setting and group assigning in customer's nodes
+    list - checkbox selection (alec)
+  - added nodes groups list popups in customer's nodes list (alec)
+  - added possibility to move members of one group to other group (alec)
+  - lmsd/cutoff: fixed query for customers without tariffs (alec)
+  - lmsd/cutoff: balance limit can be set as percentage value of sum of monthly 
+    assignments (alec)
+  - nodegrouplist: improved nodegroups UI movement ergonomy (chilan)
+  - lms-sendinvoice: added smtp authorization, sending mail with Mail::Sender,
+    added 'smtp_host', 'smtp_user', 'smtp_pass', 'smtp_auth' options (alec)
+  - lms-notify: added smtp authorization, sending mail with Mail::Sender,
+    removed option 'mailcharset' and 'smtp_server', added 'smtp_host',
+    'smtp_user', 'smtp_pass', 'smtp_auth' options (alec)
+  - added phpui.default_assignment_period (chilan)
+  - added options 'show_nodegroups_warning' and 'nodegroups_warning' in
+    [receipts] section (alec)
+  - lmsd/cutoff: added 'disable_suspended' option (alec)
+  - lmsd/dhcp: added broadcast address (%b) variable in 'subnet_start' 
+    option (alec)
+  - added improved traffic control module lmsd/tc-new (alec)
+  - network devices: few functions optimized (alec)
+  - network devices: added port numbers for links (alec)
+  - network devices: redesigned device's info/edit pages with 
+    show'n'hide boxes (alec)
+  - network devices: show both (private and public) addresses in connected
+    nodes box (alec)
+  - lms-rtparser: BTS#0000719: fixed problem with string escaping (alec)
+  - lms-rtparser: use Mail::Sender (with authentication) instead of 
+    Net::SMTP, added options 'smtp_host', 'smtp_auth', 'smtp_user',
+    'smtp_pass' (alec)
+  - lmsd/tc-ng moved to contrib as deprecated (alec)
+  - lms-notify-sms: fixed sql query on mysql (alec)
+  - lmsd/parser: added 'port' field in NODES constant (alec)
+  - lmsd/hostfile: added %port variable (alec)
+  - lms-mgc: added %PORT variable in nodes rules (alec)
+  - added SQL functions mask2prefix() and broadcast() (alec)
+  - added IMMUTABLE flag for inet_ntoa/inet_aton functions on postgres (alec)
+  - networks: few functions optimized (alec)  
+  - documents: hide exluded customers groups on documents list (alec) 
+
+version 1.11.1 Talus (2007-12-03):
+
+  - added link to customerinfo in title of assignments edition page (alec)
+  - fixes in config reload, now at least one host is required (alec)
+  - added mb_internal_encoding('UTF-8') call, so we can now use PHP's
+    option mbstring.func_overload = 7, added info about mbstring
+    extension requirement and recommended settings in documentation (alec)
+  - contrib/formularz_przelewu_wplaty: fixed css vulnerability, also
+    configuration is readed from database and can be set in UI (alec)
+  - excluded groups: don't show excluded groups on filters (alec)
+  - excluded groups: works in modules from menu Finances (alec)
+  - in Finances -> Raports -> Transfer forms balance value can be entered 
+    with . or , sign (alec)
+  - invoices list: fixed sorting by items count (alec)
+  - fixed SQL query in Mailing (alec)
+  - pdf invoices: added page numbers, invoices can have many positions -
+    added page breaking, using ezpdf tables (alec)
+  - lmsd/payments: added options 'networks', 'customergroups', 
+    'numberplan' (alec)
+  - added numbering plan filter to Sale Registry report (alec)
+  - added customer groups filter to Cash Report (alec)
+  - added customer groups filter to Finances/Reports/Transfer Forms (alec)
+  - added customer groups and numberng plan filter to 
+    Finances/Reports/Invoices  (alec)
+  - helpdesk: fixed attachments removing when deleting tickets and 
+    messages (alec) 
+  - new invoice settlement date checking takes numbering plan into
+    consideration (alec)
+  - fix: customers assignments addition and edition moved from
+    "customers management" privilege to "finances management" (alec)
+  - in config_defaults.ini added all options described in 
+    configlist.php (alec)
+  - BTS#0000690: documents viewing allowed in 'customers management'
+    access right (alec)
+  - fixed problem when option allow_from is set but is empty (alec)
+  - boolean options can contains 'enabled' and 'disabled' values (alec)
+  - fix: GetMACs() and GetRemoteMACs() returns array (alec)
+  - lmsd/tc, lmsd/tc-ng: added %o1, %o2, %o3, %o4 variables (alec)
+  - LMS-UI uses unix socket connection to postgres when host=localhost (alec)
+  - lms-sendinvoices: added smtp_host option and errors printing for
+    problems with http or smtp connection (alec)
+  - increased node/IP name length limit to 32 characters (alec)
+  - added section filter on UI Configuration (alec)
+  - fixed name of to_words_short_version option in documentation (alec)
+  - added user's position field (alec)
+  - optimized Invoices List sql query (25% faster) (alec)
+  - Cash Import: added support for many import patterns, added 'use_line_hash',
+    'pid_regexp', pinvoice_month' and 'comment_replace' pattern parameters, 
+    added not matching lines printing (alec)
+  - lms-traffic-htbiptlimits: fixed tc class identifiers (alec)
+  - lmsd/payments: fixed 'customergroups' and 'networks' option, added options
+    'excluded_customergroups' and 'excluded_networks' (alec)
+  - Network Devices: added purchase date and guarantee period fields (endrju/alec)
+  - lmsd/traffic: added 'begin_command' and 'end_command' options (siradams)
+  - lmsd/tc: added 'limit_per_host' option (siradams)
+  - fixed problem with ajax plugins in Opera (alec)
+  - invoices: improved tariff selection when adding/editing invoices (alec)
+  - invoices: added link Save in invoice(note) edit/add forms (alec)
+  - invoices: added possibility to select original/copy/duplicate when
+    creating/editing an invoice(note) with Save & Print (alec)
+  - invoices: after invoice addition/edition redirecting to invoices list 
+    or to empty new invoice form (alec)
+  - helpdesk: added info about ticket creator in ticket info (alec)
+  - BTS#0000705: lmsd/dhcp: fixed default value of 'subnet_domain' option (alec)
+  - fix: allow searching strings with '/' sign in quicksearch (alec)
+  - timetable: added info about event creator in event info and list (alec)
+  - helpdesk: added owner filter on tickets list + list query speedup (alec)
+  - helpdesk: added info popup on tickets list (alec)
+  - BTS#0000706: fixed query in Finances/Reports/Network Balance Sheet (alec)
+  - added option invoices/default_printpage (alec)
+  - improved GetNumberPlans() function (alec)
+  - removed unused GetNumberPlans() function calls in cash receipts 
+    interface (alec)
+  - increased speed of customer searching with choosecustomer.php (alec)
+  - added tariffs list sorting (alec)
+  - added tariffs types: hosting, internet, service, other (alec)
+  - lmsd/tc-ng: optimized sql query (alec)
+  - lmsd/pinger: added option 'use_secure_function' - postgres only (alec)
+  - lmsd/pinger: making one big query instead of one for each host (alec)
+  - lmsd: fixed db_exec() function in postgresql's drivers, now is possible to
+    use that function for select queries without results (alec)
+  - optimized node edition (alec)
+  - deleting node-to-tariff assignment when owner is changing (alec)
+  - custom_accesstable file can be anywhere - requires absolute path (alec)
+  
+version 1.11.0 Thoth (2007-08-17):
+
+  - common pdf functions and initialization moved to lib/pdf.php (alec)
+  - lms-reminder: BTS#0000670 - fixed query (alec)
+  - Excluded groups - possibility to disable user access to specified
+    customers groups (alec)
+    *****************************************************************
+  - PostgreSQL 8.1 is required now (alec)
+	!!!! postgresql.conf: custom_variable_classes = 'lms'
+    *****************************************************************
+  - cash import: when customer is known don't show selection field,
+    added $modvalue configuration variable, code cleanup, transactions
+    support (alec)
+  - when customer wasn't found in quick customer search do redirect to 
+    customer search module with filled zip and city fields  (alec)
+  - fixed few problems with apostrophe sign in tariffs names (alec)
+  - optimized query speed of cash registries list (alec)
+  - access rights: added 'customers group management' privilage (alec)
+  - lmsd/payments: added %month and %year variables for comment (alec)
+  - cash receipts: BTS#0000673 - cash receipts of type 'other' and
+    'advance' included in balance sheet (alec)
+  - customers list: fixed sorting by balance when balance is NULL 
+    (customers without cash operations) (alec)
+  - added transactions for deleting (customer, node, etc.) 
+    operations (alec)
+  - tariffs: fixed data limit feature (alec)    
+
+version 1.9.8 Idos (2007-07-12):
+
+  - changed DB driver version format (alec)
+  - lmsd: added %i16 variable for IP's last octet heximal representation
+    in tc/tc-ng and %i16 and %i16pub in hostfile module (alec) 
+  - mysql driver: server version checking only when connected (alec)
+  - fixed problem when invoicing without tax rates defined (alec)
+  - renamed tariffdelete.php to tariffdel.php according to modules naming
+    convention (alec)
+  - helpdesk: added 'include contact info' checkbox for requests list 
+    printing (alec)
+  - lms-traffic-logiptables: iptables 1.3.7 support (alec)
+  - mac fields should accept now every mac format, including windows, cisco,
+    etc (lukasz)
+  - %CMAC macro in lms-mgc returns cisco format address: nnnn.nnnn.nnnn (lukasz)
+  - network map: rised limit of nodes connected to one device (alec)
+  - network map: increased limit of devices connected to one device (alec)
+  - network map: devices connection lines are not overlaps (alec)
+  - network map: fixed thick line look, better map generation speed (alec)
+  - network map: view without nodes (alec)
+  - network devices: fixed devices list sorting by used ports count (alec)
+  - network devices: added search engine (alec)
+  - let liabilities values be less than zero (chilek)
+  - lmsd/ggnotify: fixed query (alec)
+  - added reason field to invoice notes (chilek)
+  - helpdesk: ticket's status change when adding note (alec)
+  - searching by any part of node name in quicksearch (alec)
+  - Xajax 0.2.5 (alec)
+  - fixed balance sheet printing with use of network filter (alec)
+  - nodes searching by MAC address in many formats eg. XXXXXXXXXXXX,
+    XX-XX-XX-XX-XX-XX, XXXX.XXXX.XXXX or native LMS format with colon (alec)
+  - removed unused SetTS() calls and table 'timestamps' (alec)
+  - fixed problem with 'events' table's sequence on postgres (alec)
+  - added month and year selection fields on Timetable (alec)
+  - stats: database compacting with cron eg.: links -dump 
+    "http://lms/?m=trafficdbcompact&level=low&removeold=1&removedeleted=1
+    &loginform[login]=login&loginform[pwd]=pass&override=1" (alec)
+  - PIN code field cannot be empty now (alec)
+  - added possibility to search customers by additional informations (alec)
+  - added 'payments book' type of documents (alec)
+  - less memory consumption of Balance Sheet (alec)
+  - added todate and fromdate indexes in 'documentcontents' table (alec)
+  - documents list opens on last page by default (alec)
+  - lmsd/cutoff: added option 'use_nodeassignments' for disabling nodes
+    without tariff assignments (alec)
+  - added 'mysqli' database driver (alec)
+  - Customer Info: added descriptions for contact phones, not limited number of
+    phones for each customer, now numbers are stored in 'customercontacts' 
+    table (alec)
+  - lmsd/parser: removed phone1, phone2, phone3 subvariables of 
+    CUSTOMERS constant (alec)
+  - lms-notify: removed %phone variable (alec)
+  - lms-notify-sms: removed %phone variable (alec)
+ 
+version 1.9.7 Thalan (2007-05-09):
+
+  - cash receipts: added target 'advance' (alec)
+  - cash receipts: changed registry privilages system (alec)
+  - cash receipts: added 'Save' link - saving receipts without printing (alec)
+  - choosecustomer: removed not needed WHERE conditions in customer 
+    select window, rewrited query for MySQL 5.0, now is 20-100 times faster (alec)
+  - we can move customers from one tariff to another filtering it by network (chilek)
+  - optimized Customers List generation time when using filters (alec)
+  - optimized Devices List generation time (alec)
+  - helpdesk: changed queues privilages system (alec)
+  - helpdesk: some one-time functions from LMS class moved to modules (alec)
+  - helpdesk: added notes to tickets (alec)
+  - helpdesk: new note/message e-mail notification on demand (alec)
+  - helpdesk: simplified tickets resolving - now is possible to resolve tickets
+    with cause setting while new message/note addition (alec)
+  - helpdesk: added customer info in ticket view (alec)
+  - helpdesk: added option 'helpdesk_customerinfo' (alec)
+  - helpdesk: sending notifications when ticket's queue has changed and option
+    'newticket_notify' is set (alec) 
+  - lms-payments, lmsd/payments: fixed problem with discounts invoicing (alec)
+  - traffic filter: we can filtering stats by customer (chilek)
+  - added index customerid on table documents (alec)
+  - fixed encoding of subjects in mail sent from LMS-UI (alec)
+  - fixed 'big_networks' option testing (alec)
+  - now we can set message for customers listed in Customer Search Results
+    list (alec)
+  - mailing: added 'not in debt' customers filter (alec)
+  - helpdesk: added option 'ticket_template_file' (alec)
+  - helpdesk: added customer informations box in New Ticket page after customer
+    selection and form submit (alec)
+  - lms-rtparser: added option 'include_customerinfo' (alec)
+  - lmsd/cutoff: added option 'expired_warning', used to set message to customer
+    when disabling his computers access due to all assignments expiration (alec)
+  - added group and network filters for Network Balance Sheet report (alec)
+  - added 'suspended', 'without tariff' and 'without group' status filters on
+    Customers List and Customers Search (alec)
+  - lmsd/ewx-pt: EtherWerX PPPoE Terminator configurator (alec)
+  - lmsd/ewx-stm: EtherWerX Standalone Traffic Manager configurator (alec)
+  - helpdesk: added option phpui/ticketlist_status (alec)
+  - lmsd/tc: rounded values / removed decimal digits (alec)
+  - added 'New Document' link on main documents list (alec)
+  - helpdesk: added customer's address on tickets list (alec)
+  - lms-makeiptables: added DNAT rules for public IPs (alec)
+  - fixed some remote file inclusion vulnerabilities when register_globals
+    is enabled (alec)
+  - cash registry: added cash history for information about periodic 
+    cash summary state e.g. daily cash state (alec)
+  - added .htaccess files in /lib and /modules dirs (alec)
+  - Romanian language support (zet/alec)
+  - added notifications about availability of LMS's newer versions (alec)
+  - added possibility to remove selected documents on documents list (zet/alec)
+  - many Internet Messengers (GG, Skype, Yahoo) in customer's data (zet/alec)
+  - fixed customers searching by address in quick search module (alec)
+  - fixed %UID4 in cash documents export (alec)
+  - cash receipts: BTS#0000651: better credit notes treating in list of 
+    not accounted invoices (alec)
+  - node link type can be set while node addition and edition (alec)
+  - helpdesk: added queue filter on Requests List (chilek/alec)
+  - added 'documents' table locking when creating an invoice or receipt (alec)
+  - lmsd: added option --ssl (-s): database connection with SSL (alec)
+
+version 1.9.6 Belos (2007-02-16):
+
+  - project's homepage changed to www.lms.org.pl (lukasz)
+  - now is possible to define password for device's IP (alec)
+  - added nodes list (and report) filtering by customer's group (alec)
+  - cash receipts: added document's positions clearing when customer 
+    is changing (alec) 
+  - lms-traffic-logiptables: added 'networks' option (alec)
+  - BTS#0000625: one-address DHCP ranges allowed (alec)
+  - lmsd: don't save config.status when using configure script
+    with option --help (alec)
+  - BTS#0000603: lmsd: instance names with spaces works with -i option (alec)  
+  - BTS#0000594: clickable gateway record when selecting IP for network
+    device's IP (alec)
+  - cash receipts: 'other' target name is required now (alec)
+  - cash receipts: all not accounted invoices are checked by default (alec)
+  - customergroups: filter by networks feature added (chilek)
+
+version 1.9.5 Tagar (2007-02-05):
+
+  - traffic stats: saving chosen network in session (chilek)
+  - rtticketedit: fixed regression connected with undefined customerid (chilek)
+    **********************************************************************************
+  - increased requirements to MySQL 5.0.7 (alec)
+  - removed support for non-unicode encoding by option database/server_encoding (alec)
+  - added mysql's "SET NAMES utf8" in scripts and daemon (alec)
+    **********************************************************************************
+  - fixed warning setting in customer searching results list (alec)
+  - balanceadd: fixed incorrect datetime checking - we let datetime to be
+    only date, but we have to append the time in this situation (chilek)
+  - new configuration option default_monthly_payday - a day of payment for new assignments
+    (chilek)
+  - lms-rtparser: fixed comparison bug connected with charset encoding (chilek)
+  - lms-rtparser: unescaping \n sequence in autoreply_body (chilek)
+  - changed configuration file path in index.php of php-ui to be more readable
+    for unskilled users - putted code that scans for lms.ini few lines below
+    'do-not-change' warning and added support for /etc/lms/lms-httpvhost.ini
+    (lukasz)
+  - boosted download of database backup files. We don't need viewer in LMS, because
+    it's USELESS (chilek)
+  - added indexes on nodes.ownerid and nodes.ipaddr_pub (alec)
+  - added confirm message for last operation deleting in New Operation page (alec)
+  - added --lmslibdir and --lmsbindir .configure script's options (alec/Libor)
+  - fixed customers list filtering (alec)
+  - common.js: fixed syntax error in openWindow function (chilek/grzes)
+  - traffic.php: missed translatable 'unknown' string for node (chilek)
+  - added workaround for ILIKE's unicode bug (postgresql < 8.2) in invoices list 
+    searching by customer's name and address (alec) 
+  - nowadays max. bandwidth 4096kbit/s for customer is not so excellent, so
+    bandwidth limit has been increased to 10000kbit/s aka 10Mbit/s (chilek)
+  - added 'big_networks' support in Reports forms (alec)
+  - added customers searching by notes (alec)
+  - added 'Half duplex' field in node's data (alec)
+  - added 'Data limit' field in tariff's data (alec)
+  - function GetMACs() returns only valid addresses (alec)
+  - balanceadd: fixed saved value in db while type is liability (chilek)
+  - customerinfo: "All invoices" link added (chilek)
+  - added option phpui/use_invoices (alec)
+
+version 1.9.4 Mot (2006-12-30):
+
+  - fixed upgrade scripts for PostgreSQL versions that do not support
+    "ALTER TABLE ... ADD ... NOT NULL DEFAULT ...": 2006061200, 2006082300,
+    2006081000 (alec) 
+  - added document type "customer sheet" and "contract termination" (alec)
+  - BTS#0000599: patched xajax library for using it with other ajaxized stuff (alec)
+  - in documents creation numbering plans are binded with document types (alec)
+  - added Notes field in customer's data (alec)
+  - BTS#0000602: don't hide disposable liabilities for current day (alec)
+  - printing customer's groups in new/edit cash receipt form (alec)
+  - now we can display to cashier warnings about unconfirmed documents and
+    customer's notes with [receipts] options 'show_notes' and 
+    'show_documents_warning' (alec)  
+  - fixed helpdesk tickets searching (alec)
+  - added 'MAC checking' checkbox in nodes and device's IPs data (alec)
+  - in new receipt interface on covenants list printing also credit notes (alec)
+  - added option 'big_networks' for hidding some big ISP's specific stuff like 
+    e.g. long selection dropdowns (alec)
+  - big_networks support in forms: helpdesk ticket new/edit, document add,
+    invoice new/edit, cash receipts add/edit (alec)
+  - added public IP searching in node's quicksearch (alec)
+  - quick search fields moved to the top of the page (alec)
+  - fixed nodes searching with 'OR' operator (alec)
+  - printing page generation time (alec)
+  - EtherWerX support: added option phpui/ewx_support, node's ID should be less
+    than 99999 (alec) 
+  - lms-cutoff: added %b and %B variables in message (alec)
+  - added helpdesk request's cause field (alec)
+  - added option 'short_pagescroller' for lists with many pages (alec)
+  - added indexes: rttickets.createtime and rttickets.customerid (alec)
+  - added helpdesk requests causes stats - helpdesk_stats option (alec) 
+  - menus Printing renamed to Reports (alec)
+  - added Helpdesk -> Reports -> List of Requests and Requests Stats (alec)
+  - recovered Delete button in customer's balance list: option 
+    phpui/delete_link_in_customerbalancebox (alec)
+  - added daemon's tc-ng module supporting node-to-tariff assignments (alec)
+  - added possibility to create invoices for past invoiceless liabilities (alec)
+  - lms-traffic: stats summarization for multiple records with the same ip address (chilek)
+  - traffic account units: 1kbit/s = 1000bit/s (according to SI units) (chilek)
+  - little change in css style - added pointer as cursor class to showOrHide
+    table cells and rows (lukasz)
+
+version 1.9.3 Zarin (2006-09-19):
+
+  - cosmetics on search templates (djrzulf)
+  - added reload status on hosts list in Reload (alec)
+  - BTS#0000582: fixed query in Net Edit (alec)
+  - lmsd/parser: fixed T-Script's problem with big numbers (alec)
+  - lmsd/parser: support for multiple +, -, *, / operators in expression (alec)
+  - added shortcut icon definition in page header (alec)
+  - added Business Registration Number (polish REGON), Identity Card Number 
+    (polish dow.os.) and Register of Business Entities Number (polish EDG/KRS)
+    fields in customer data (alec)
+  - accounts must have unique logins in domain context only (alec)
+  - added Location field in computer data (alec)
+  - added menu Documents (alec)
+  - fixed problem with 'To' date on Cash Report (alec)
+  - fixed Sale Registry sorting order (alec)
+  - document templates plugins (using XAJAX library) (alec)
+  - added numbering plan selection for Sale Registry printout (alec)
+  - BTS#0000586: fixed summary on Customers List when using some filters (alec)
+  - BTS#0000589: fixed customers searching by create/delete dates (alec)
+  - nodes with tariffs assignments - UI only (alec)
+  - increased performance: using LAST_INSERT_ID/CURRVAL functions instead of 
+    e.g. SELECT MAX(id) after insert (alec)
+  - BTS#0000467 lms-arping: setting lastonline time after scanning, not at 
+    the end of script execution (alec)
+  - added %cid variable in lms-notify and lms-notify-sms (alec)
+  - BTS#0000591: fixed problems with octet-format mask in IP checking 
+    procedures for 'allow_from' option and users authorization (alec)
+  - improved getnetaddr(), and getbraddr() functions (alec)
+  - added Sale Registry in "extended" format (alec)
+  - added Cash Report in "extended" format (alec)
+  - fixed date of financial transaction added on Customer's Balance (alec)
+  - all nodes and devices can share '00:00:00:00:00:00' MAC address even
+    with disabled 'allow_mac_sharing' option (alec)
+  - awaiting customers can have nodes (alec)
+  - Smarty integration: LMS's smarty addons rewrited to plugins in 
+    lib/Smarty/plugins, removed option 'smarty_dir', now Smarty will be included 
+    in LMS packages (alec)
+    ************ WARNING: remove contents of templates_c directory! ************
+  - added 'post-action' in document templates (alec)
+  - hidding/showing customer's expired liabilities on the list (alec)
+  - $nodedata -> $nodeedit in nodeedit.php (chilek)
+  - add probably most (if not all) missing $dbq->finish() in perl scripts
+    (Andy/lukasz/alec)
+  - design changes in customers and nodes information windows (alec)
+
+version 1.9.2 Thanos (2006-07-15):
+  
+  - added possibility to read customer's own iban bank account number from 
+    ui (lexx)
+  - added 'set names utf8;' for connection to mysql >= 5.0 (lexx)
+  - added input field for cust. ID on New Cash Document (alec)
+  - lmsd/tc: added %if variable for host_mark_up, host_mark_down,
+    host_htb_up, host_htb_down options (alec/Tomasz Przybysz)
+  - fixed timetable searching by user (alec)
+  - lms-payments: added option 'customergroups' and replacement
+    variables %current_period, %next_period for 'comment' option (alec)
+  - lms-makedhcpconf: added option 'authoritative' (ReYu)
+  - BTS#0000530: added lost assignments.settlement column in database creation
+    scripts (alec)
+  - fixed value of avg upload in stats on Node Info (alec)
+  - fixed summaries on customer liabilities list (alec)
+  - BTS#0000544: lmsd/payments: fixed date calculations (alec)
+  - included credit notes in Finances -> Print -> Invoices (alec)
+  - fixed database dump recovering, specially for daemon configuration,
+    also increased max line size to 8192 bytes (alec)
+  - setting last reload time for reloads of type 'exec' (alec)
+  - BTS#0000547: fixed items count on invoice note when invoice position
+    is deleted (alec)
+  - fixed customer selection in invoices and receipts (alec)
+  - added possibility to enable/disable warnings for found customers (chilek)
+  - added option phpui/helpdesk_reply_body (alec)
+  - lmsd: fixed configuration parser, orphaned backslashes are not removed (alec)
+  - while editing/adding value of lmsd's configuration option 'script' it's
+    possible to use Tab key for script's code identation (alec)
+  - updated t-script library - 0.7.0 (alec):
+    special characters (\\, \", \r, \n, \t) in string literals
+    escaping brackets in plain text using backslashes (\{, \})
+    ignoring tabs at the beginning of text lines - allowing indents
+    len command in string extension 
+  - modularity: added example modules 'traffic', 'users' and 'auth' with use of plaugins
+    and new access rights management method, core consist only core actions, added 'init', 'end'
+    and 'install' core actions, and many other changes (alec)
+  - added index on column 'dt' in table 'stats' - only in database structure
+    initialization scripts (alec)
+  - don't "blend" customers without nodes on Customers List (alec)
+  - added 'New Account' link with current customer id on Accounts List (alec)
+  - little fix in chkconfig() for unset variables (alec)
+  - fixed mac checking in Node Edit (alec)
+  - fixed access status saving in Node Add (alec)
+  - added accounts of type 'sql' (alec)
+  - domain can have an owner (alec)
+  - lms-sendinvoices: added 'customergroups' option (alec)
+  - added Documents Generator for serial documents creation (alec)
+  - BTS#0000576: fixed problem with MAC change (alec)
+  - BTS#0000569: saved owner context when adding nodes with reuse
+    checkbox (alec)
+
+version 1.9.1 Jumar (2006-02-13):
+
+  - BTS#0000488: fixed title on nodes list printout (alec)
+  - BTS#0000487: fixed printing from Invoices List (alec)
+  - BTS#0000486: added duplicate and fixed invoices printing in 
+    Finance -> Print -> Invoices (alec)
+  - added submit button in genfake interface (alec)
+  - fixed solid payments accounting (alec)
+  - fixed Liabilities Report: disposable and tariffless liabilities
+    support, suspension and discount support, fixed sorting by value (alec)
+  - fixes in reload when using reload_execcmd and reload_sqlquery with
+    hosts (alec)
+  - bugfix in perl scripts for 64-bit architectures (Jarek Dziubek)
+  - BTS#0000495: fixed "Invalid argument..." error in liability report (alec)
+  - fixed Cash Receipt List filtering by value (alec)
+  - fixed error triggers in netadd and netedit (alec)
+  - fixed network size checking in network edition (alec)
+  - fixed warning in NetworkCompress() function (alec)
+  - Cash Registry: registries management, user per-registry access rights,
+    cash-in/cash-out receipts (alec)
+  - customer documents edition and confirmation (alec)
+  - added document type 'order' (alec)
+  - added customers searching by creation or deletion dates (alec)
+  - fixed credit notes printing from customer balance box (alec)
+  - lms-rtparser: added support for multipart/alternative messages, fixed
+    problem with attachements with spaces and unknown/forbidden characters 
+    in filename (alec)
+  - cash documents extended numbering (alec)
+  - changed look of balance lists: columns Liability, Income, Expense (alec)
+  - automatic first deficient period settlement (alec)
+  - added option phpui/default_module (alec)
+  - added '//TRANSLIT' for iconv() conversions in pdf invoice (alec)
+  - fixed dynamic popups width resizing in Firefox (alec)
+  - added real expositor name printing on invoices (alec)
+  - added filter on Operations History (Balance Sheet) (alec)
+  - deleted link 'Remove' on customer balance box (alec)
+  - added continuous numbering plan (alec)
+  - lmsd: fixed gcc-4 signedness warnings (alec)
+  - added reduction/enhancement summary on credit notes (alec)
+  - in customernodesbox added link to node's network (alec)
+  - using 4th argument of Smarty's truncate function (alec)
+  - changed/improved financial documents settlement for multiuser 
+    environment (alec)
+  - automatic columns width setting on pdf invoices (alec)
+  - new customers searching popup form in cash receipts and 
+    invoices interface (alec)
+  - new method of selected customer representation in invoices
+    and cash receipts interface (alec)
+  - new method of discounts presentation on invoice (alec)
+  - lmsd/hostfile: fixed few network replacement variables (alec)
+  - helpdesk: fixed rights checking while deleting tickets (alec)
+  - added Finances -> Export / financial data export to external systems
+    in text files (e.g. csv) format (alec)
+  - lmsd/hostfile: fixed networks option parsing (alec)
+  - using fsockopen() instead of fopen() for url opening (alec)
+
+version 1.9.0 Tilgath (2005-12-07):
+
+  - BTS#0000216: now user with 'customers management' or 'nodes management'
+    access don't need 'read only' access right (alec)
+  - contrib/lms-debtors: added MySQL support (alec)
+  - fixed traffic stats values in node informations (alec)
+  - added link to customer stats in customer info page (alec)
+  - BTS#0000471: fixed 'Tickets' link in customerinfo box (alec)
+  - fixed summary on customer search results list (alec)
+  - lmsd/parser: multiple logical expressions ("a && b && c" etc.) 
+    supported, multiple instructions in one block supported - using
+    semicolon (alec)
+  - few fixes for very long customer names on pdf invoices and UI (alec)
+  - fixed NetworkRemap() function when destination network is empty (alec)
+  - changed link on nodes list in network info to node info instead of
+    customerinfo (alec)
+  - don't compress network when changing network address, user must 
+    do commpression by himself (alec)
+  - standardised sorting of transfer forms and invoices printouts (alec) 
+  - BTS#0000481: fixed translation on transfer forms (alec)
+  - invoices list display speed optimized (alec)
+  - example invoices/cash records generation in genfake module (alec)
+  - removed upgrade scripts for v.1.2 (alec)
+  - lmsd/parser: tscript library - fixed problem with nested blocks (alec)
+  - added sorting of networks list in 'Select IP address' window (alec)
+  - fixed 'Check All' on Balance Sheet (alec)
+  - added invoice duplicates printing (alec)
+  - fixed customer balance list sorting on invoice (alec)
+  - added default value of 'print_balance_history_limit' option (alec)
+  - lmsd/parser: updated tscript library: fixed types conversion, 
+    added "exit" and "foreach" instructions (alec)
+  - fix: do customers accounting (with "Account" link) at "Has" side (alec)
+  - lmsd/parser: added "syslog" extension (alec)
+
+version 1.7.6 Grannus (2005-11-10):
+
+  - disposable liabilities (alec)
+  - introduction to UI modularity (lukasz)
+  - use HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP, REMOTE_ADDR to retrive 
+    user IP address (Jerzy Kolosowski)
+  - added Finance -> Printing -> Transfer forms (alec)
+  - fixed problem with access rights to transferforms modules (alec)
+  - added iconv conversion on transferforms (alec)
+  - assigning customer to ticket in ticket edition (alec)
+  - little layout fix for userbalance (lukasz)
+
+version 1.7.5 Shaq-ran <broken version> (2005-11-05):
+
+  - BTS#0000466: lms-antyvir: fixed parse error (alec)
+  - BTS#0000373: lms-notify: added exception handler for mail server 
+    connection problems (alec)
+  - changed stats units to kbps (alec)
+  - added traffic stats in node informations window (alec)
+  - fixed/changed access rights for printing modules (alec)
+
+version 1.7.4 Wraith (2005-10-31):
+
+  - BTS#0000451: lms-rtparser uses also CC: header to get queue ID (alec)
+  - BTS#0000455: documentation fixed options names 
+    usergroups -> customergroups (alec)
+  - lmsd/dhcp: fixed problem with hosts with public IP (alec)
+  - lmsd/parser: updated tscript library - added "break" and "continue"
+    instructions in "for" and "while" loops (alec)
+  - added "type" in cash table to handle some operation types 
+    (cash, non-cash) - it fixes network balance calculations for
+    backward compatybility and lost in 2005092900 database upgrade 
+    additional functionality (alec)
+  - contrib/sqlpanel: design fixes (alec)
+  - forms can be submitted by Enter (lukas)
+  - BTS#0000460: fixed "call to a member function ..." in mailing.php (alec)
+  - fixed item's name escaping and 'cash' value on credit notes (alec)
+  - propably fixed neverending story about bugs with MySQL and polish
+    characters and UTF-8. Added info in documentation how to create
+    database with polish collation and utf8 character set (alec)
+  - added last 10 not accounted invoices list in cash receipt addition
+    form (alec)
+  - lmsd: added option --reload-all (alec)
+  - BTS#0000391: lmsd: fixed problem with long executed (sleeping) 
+    instances (alec)
+  - added tip with IP address on nodes list in network info page (alec)
+    
+version 1.7.3 Inubis (2005-10-05):
+
+  - contrib/customer: removed directories checking (alec)
+  - changed access right definition for LMS configuration (alec)
+  - security bugfix: plain text passwords aren't stored in session (alec)
+  - security bugfix: session is excluded from database backup (alec)
+  - **********************************************************************
+    finances revolution: removed prepayments, unpaid covenants,
+    any cash references and related features,
+    invoices can't be paid, but only can be checked as accounted
+    added filter 'hide accounted' on Invoices List (alec) 
+    **********************************************************************
+  - fixed round-off method on Invoices Report (alec)
+  - daemon configuration moved to menu Configuration (alec)
+  - changed table name 'daemonhosts' to 'hosts' (alec)
+  - lmsd/parser: changed tscript's API, added extensions: deletefile, 
+    readfile, getfile, listdir, fileexists, date, replace, systype (alec)
+  - Credit Notes - WARNING! Invoice templates has been changed (alec)
+  - Cygwin support for lmsd (lexx)
+  - lmsd/dhcp,ethers,hostfile: fixes for sparc64 architecture (alec)
+  - documentation: added pure-ftpd and accounts how-to (bart)
+  - added public IP support in 'network' filter on Customers List (alec)
+  - customer documents generation engine/wizards (alec)
+  - removed option 'contract_template' (alec)
+  - improved default document (contract) template (alec)
+  - Userpanel menu instead of Configuration -> Userpanel (Mad Mark)
+  - added cashier name variable {$receipt.user} on cash receipt template (alec)
+  - lmsd/dhcp: added support for public IP addresses (alec)
+  - in Customer Documents displaying last 10 documents with link to
+    all documents list (alec)
+  - lmsd/parser: added 'explode' extension, updated T-Script library (alec)
+  - removed SQLite support (alec)
+  - lmsd: fixed make usage for non-linux systems (alec)
+  - documentation: added info that on mysql 'drop' privilege is required (alec)
+  - fixed bug in 2005052300 autoupgrade script (alec)
+  - lmsd: fixed environment variables startup reading (alec)
+  - lmsd: fixed problem with long execution time when using constants (alec)
+  - lmsd: added while() and operators <<, >> and leftside --, ++ (alec)
+  - ***********************************************************************
+    finances revolution: droped 'type' column from 'cash' table, now we're
+    using signed values, redesigned balance lists: using signed values instead 
+    of type (alec)
+    ***********************************************************************
+  - on New Operation added last operation info with [Delete] link (alec)
+  - BTS#0000450: fixed %DNS2 in lms-mgc (alec)
+  - cash receipts in pdf (alec)
+  - added public address for network devices IPs (alec)
+  - added customer's traffic raport - Stats -> Printing (alec)
+  - BTS#0000453: lms-payments fixed problem with discount (alec)
+  - BTS#0000453: lmsd/payments: fixed problem with discount and itemid (alec)
+    
+version 1.7.2 Doci (2005-08-13):
+
+  - in Mailing added replacement variables (alec)
+  - in Nodes List added network and status filtering (alec)
+  - in Nodes -> Print added network filter (alec)
+  - in Balance Sheet and Customer Balance added dynamic popups with invoice 
+    and receipt numbers (alec)
+  - lms-payments: fixed unwanted params binding in DBI's execute method (alec)
+  - fixed tax calculations on Sale Registry (alec)
+  - sticky/clickable nodelistshort (alec)
+  - upgraded OverLIB to 4.17 version (alec)
+  - now is possible to define tariff without tax (alec)
+  - contrib/customer_otherip: balanceviewuserinfomini.html renamed to
+    customerinfomini.html (alec)
+  - lmsd/payments: fixed number of query parameters (alec)
+  - gadu-gadu status checking only for lang = pl (alec)
+  - print_balance_history on invoices now really works (hunter)
+  - critical bug: SESSION::remove() doesn't update session, so after restore
+    session removed variable was still avaiable (lukasz)
+  - added missing |escape modifier in register template (lukasz)
+  - fixed bug in SQL query in Mailing with network filtering (alec)
+  - BTS#0000407: fixed page number problem in netdevices list (alec/MadMark)
+  - customer documents archive (alec)
+  - lmsd/(gg)notify: added %b, %B, %pin variables for template (alec)
+  - in database changed periods constants: 5-yearly, 4-quarterly, 3-monthly,
+    2-weekly (alec)
+  - in 'payments' and 'assignments' tables changed 'period' and 'at' columns
+    type to smallint (alec)
+  - added accounting period: 1-daily (alec)
+  - fixed bugs related to charset encoding and timeouts
+    in lms-sendinvoices script (chilek)
+  - BTS#0000413: fixed payments accounting on Payments List (endrju/alec)
+  - lmsd/parser: updated tscript library, runtime errors handling (alec)
+  - lmsd/payments: fixed subscription period calculation (alec)
+  - Documents Numbering Plans (hunter/alec)
+  - documents can be numbered daily, weekly, monthly, quarterly, yearly (alec)
+  - BTS#0000419: added 'Mime-Version' header for all, not only multipart
+    messages (alec)
+  - added 'online' filter on Nodes List (alec)
+  - in nodes stats panel (welcome.html) added links to nodes list (alec)
+  - added menu item Configuration with subitems: User Interface, Tax Rates,
+    Numbering Plans (alec)
+  - lms-arping: we can use external file with list of ip addresses (chilek)
+  - documentation is opened in new window (alec)
+  - documentation: list of options moved to new chapter Configuration (alec)
+  - Mailing: attachement support (alec)
+  - reload_type=exec: allows you to choose which host configurations
+    to be reloaded (chilek)
+  - lmsd/parser: updated tscript library: regexps, consts, file (alec)
+  - lmsd/parser: added extensions: NET, CONSTS (alec)
+
+version 1.7.1 Swarog <A.L.E.C's Nightmare> (2005-06-27):
+
+  - changed upgrade scripts for 1.2 version, deleted for 1.0 (alec)
+  - bugfix: ipaddr_pub support in NetworkShift() (alec)
+  - lmsd/pinger: activate online status for addresses matching interfaces
+    where runs daemon, speedup - dropped ORDER BY from query (alec)
+  - Customer Search Results paging (alec)
+  - fixed smtp_auth_type default behaviour - use best method (alec)
+  - added warning about lack of PEAR::Mail in SendMail() function (alec)
+  - fixed nodes searching results list - nodes with ID=0 (alec)
+  - lmsd/system: added option 'sql' (alec)
+  - in nodes and customers searching added workaround for postgresql's ILIKE 
+    problem with national characters (alec)
+  - lmsd/dns: networks can share the same domain name (alec)
+  - lms-notify: added option 'mailcharset' with default setting 'UTF-8' (alec)
+  - lms-notify: don't send messages to deleted customers (alec)
+  - lms-notify: don't stop on unknown/wrong recipient address (alec)
+  - file sample/mailtemplate.txt converted to UTF-8 (alec)
+  - fixed tickets searching by requestor name (also added workaround for
+    postgresql's ILIKE bug) (alec)
+  - fixed _smarty_function_sum() - each row must be an array (alec)
+  - better english UI messages (kondi)
+  - we can add and search tickets with all customer statuses (chilek)
+  - all UI colors moved to style.css (alec)
+  - added workarround for page margin in Opera browsers (lukasz)
+  - lms-makeiptables: added public IP (SNAT) support (alec/daro)
+  - changed naming convention: user -> customer, admin -> user (alec)
+    ********************************************************************
+    *       WARNING!   WARNING!   WARNING!   WARNING!   WARNING!       *
+    ********************************************************************
+    *       Changed database structure: table 'users' replaced by      *
+    *       'customers', table 'admins' replaced by 'users', also      *
+    *                changed column names in other tables              *
+    ********************************************************************
+  - fixed customers and nodes searching when register_globals is on (alec)
+  - quick search made quick (kondi)
+  - bugfix: compressed backup restoring is possible again (alec)
+  - BTS#0000360: tickets adding in customer context (alec)
+  - bugfix: going to backup view by clicking on record on backup list (alec)
+  - SQLite support: fixed upgradedb scripts, added iconv support, added
+    sample/sqlite_createdb.php script for database creation without any 
+    of sqlite client applications (alec)
+  - lms-payments: again tariff value can be less than zero (alec)
+  - fixed customer name capitalization on contract (alec)
+  - lmsd: added 'parser' module (alec)
+  - formularz_przelewu_wplaty_2 (cash transfer forms) is now integrated
+    with LMS (lexx)
+  - changed finances database structure (alec)
+  - changed naming convention (pesel, nip, pkwiu) in database (alec)
+    ********************************************************************
+    *       WARNING!   WARNING!   WARNING!   WARNING!   WARNING!       *
+    ********************************************************************
+    *     Changed database structure: table 'invoices' replaced by     *
+    *       'documents', dropped 'phone' and 'finished' columns,       *
+    *  Changed 'pesel' to 'ssn' and 'nip' to 'ten' and 'gguin' to 'im' *
+    *  Changed 'pkwiu' to 'prodid' in 'tariffs' and 'invoicecontents'  *
+    *               Tax rates moved to table 'taxes'                   *
+    ********************************************************************
+  - Finances -> Tax Rates - user-defined tax rates (alec)    
+  - automatic generation of bank account number (iban format) to use with 
+    automatic identification of massive payments (lexx)
+  - added 'assign' argument for _smarty_function_sum() (alec)
+  - added dberrors displaying on login form (alec)
+  - Cash Receipts (in Poland known as "druki KP") (alec)
+  - lms-sendinvoices: fixed invoice number in mail subject and body (alec)
+  - BTS#0000369: preparing statements for strings quoting in perl scripts (alec)
+  - lmsd/pinger: using more glibc instead of kernel headers (alec)
+  - lmsd: fixed long (above 60 sec.) reload problem (alec)
+  - lmsd: long names of command line options (alec/Jerzy Kolosowski)
+  - lmsd: hiding command line arguments on processes list (alec)
+  - when taxrate is above 0.00 it can't be "nottaxed" (hunter)
+  - lmsd: added -fPIC flag for x86-64 arch. compat. (alec)
+  - changed defaults of customerlist_pagelimit and nodelist_pagelimit
+    to '100' (alec)
+    
+version 1.7.0 Klorel (2005-05-13):
+
+  - lmsd/ethers: fixed output file format (alec)
+  - fixed bug (made in last release) in chooseip module (alec)
+  - keeping ShowOrHide status of boxes in customer info (alec)
+  - BTS#0000337: fixed helpdesk tickets searching (alec)
+  - lmsd: added option --inifile to ./configure script for configuration files
+    support (alec)
+  - lmsd: added command line option '-f' to run in foreground (without fork),
+    fixed reload of instances with empty crontab on every minute, write last 
+    reload time to database if reload was ordered, fixed problem with
+    zombies (alec/G.Stanislawski)
+  - BTS#0000338: can specify network device while node addition (alec)
+  - lmsd: fixed -h option segfault (alec)
+  - on customers list added nodes online status and icon for nodes connection 
+    status change (alec)
+  - additional filters for Customer Search, searching in service address (alec)
+  - most of icons resized to 16x16 (alec)
+  - fixed nodes and warnings enabling/disabling on Customer Search Results
+    list (alec)
+  - added "realname" field to account record (alec)
+  - lms-mgc: added %CUSTOMER variable for node record (alec)
+  - node's public IP (alec/kuba)
+  - lms-squid: changed/fixed lms.ini section name to [redirector] (alec)
+  - removed old contrib/squid_warnings (alec)
+  - added option custom_accesstable for user-defined access rights (alec)
+  - fixed devices desc on map when device has no IP, now device lastonline 
+    status is getting from all connected nodes lastonline value (alec)
+  - BTS#0000340: option [Account] on customer list accounts all customer's 
+    covenants including invoices (alec)
+  - added contrib/bin/lms-antyvir (alec/wojtek_sw)
+  - added contrib/bin/lms-debtors (alec)
+  - added option [phpui] map_type (alec)
+  - lmsd/hostfile: added variables %wins, %dns, %dns2, %addr, %mask, %id (alec)
+  - BTS#0000298: improved customers quick searching (alec)
+  - added 'qualification operator' for Customer Search (alec)
+  - lmsd: fixed problems with unescaped chars in SQL queries - added strings
+    escaping for parameters of db_pexec() and db_pquery() functions (alec)
+  - lmsd: configure create config.status script (alec)
+  - lmsd: `make install` moves modules to PREFIX/lms/lib and program to
+    PREFIX/lms/bin, in configuration modules can be set without path or 
+    extension (alec)
+  - force logout after timeout /http-equiv=refresh/ (alec)
+  - fixed access denied window in dynamic popups (alec)
+  - lmsd/dhcp: fixed shared-network option support (alec)
+  - added 'homedir_prefix' option, accounts can have different homedirs (alec)
+  - improved nodes searching (and quicksearch), finds all matching nodes,
+    added qualification operator, removed function SearchNodeList(), added
+    images in Nodes Search interface (alec)
+
+version 1.5.6 Baal (2005-04-24):
+
+  - finished translation of documentation (kondi)
+  - we can use limitations in percents in warnings (chilek)
+  - tickets searching for selected user in userinfobox (chilek)
+  - percentage discount for customer liabilities/assignments (alec)
+  - added dirty support for quotas in accounts (lukasz)
+  - new daemon (alec):
+    * changed name to 'lmsd'
+    * online configuration and management
+    * cron's style work
+    * configuration in database (only, ini files not supported)
+    * rewrited database drivers
+    * database connection options from command line or environment
+    * selected hosts/routers reloading
+    * WARNING: Old daemon not supported in Reload menu!
+  - suspension percentage for assignments can be specified in lms.ini (chilek)
+  - history of userbalace work_in_progress (hunter)
+  - in invoice edition added check that settlement date not conflicts with
+    invoice number, so we can change date only to the same year or month
+    (monthly_numbering) that was before change (alec)
+  - fixed invoices list sorting (alec)
+  - few fixes in database engine (especially in mysql driver), so connect
+    errors should be now displayed by app, not by php itself (lukasz)
+  - on covenants report fixed columns summary and parse errors in eval()
+    functions with polish locale (alec)
+  - BTS#0000323: lms-rtparser: fixed multipart messages charset conversion
+    and added decoding of quoted-printable encoded messages (alec)
+  - added customer ID on Invoices Report (alec)
+  - we don't use capitalize in admininfo.
+    it fixes problem with lastname capitalization (chilek)
+  - we show total assignments with discounts in userassignments and
+    customer lists (chilek)
+  - fixed handling ip addresses from netdevices in lms-mgc (lukasz)
+  - BTS#000327: in lms-reminder added negative values of daylight saving time
+    for time functions acc. to PHP functions (alec)
+  - added balance and tariff summary on customers list printout (alec)
+  - lms-sendinvoices: fixed message and attachement charset/encoding, added 
+    reading of invoice type configuration option from database (alec)
+  - while adding or searching tickets in helpdesk customer ID can be
+    specified instead of selecting customer from the list (alec)
+  - nodes and customers search results (if they are lists) can be displayed 
+    in printer-friendly format (alec)
+  - little (?) layout revolution (inspired by lexx and kondi) (lukasz)
+  - fixed total tax summary on Sale Report (alec)
+  - lms-rtparser: added options autoreply_body and autoreply_subject with
+    translated to english default values (alec)
+  - removed unused function GetNodeByMAC() from LMS class (alec)
+  - changed default tax value to 22% in selection lists (alec)
+  - lms-cutoff: added option 'message', optimized balance calculation (alec)
+  - lms-makeon: added option 'message', optimized balance calculation (alec)
+  - lms-notify: deleted columns header in %last_10_in_a_table (alec)
+  - lms-payments: translated to english default values of options
+    'paytype' and 'comment' (alec)
+  - lms-sendinvoices: added (englished) options 'mail_subject' and 'mail_body',
+    added reading of invoices/number_template setting from database,
+    added "" for recipient and sender names (alec)
+  - lmsd/cutoff: translated to english default value of 'warning' option (alec)
+  - lmsd/payments: translated defaults of 'paytype' and 'comment' options (alec)
+  - fixed (ming) bug in network map causing problems with texts on large maps,
+    optimized time of map generation (alec)
+  - added users IP authorization (alec)
+  - some code cleanup for error_reporting = E_ALL (alec)
+  - locale independent date format on reports / dropped bugy capitalize (alec)
+  - fixed liabilities report (bugy Smarty's math) and added customer ID (alec)
+  - lmsd/traffic: fixed sequence of data while reading log file (alec)
+  - sample/traffic_ipt.sh replaced by sample/traffic_ipt.pl (alec)
+    
+version 1.5.5 Anubis (2005-03-25):
+
+  - fixed empty page printing on invoices when trying to print only 
+    originals or only copies (alec)
+  - fixed encoding conversion of some strings on pdf invoices (peter/alec)
+  - index.php: localization before uiconfig reading, to have proper encoding 
+    in configuration options if we use server_encoding != unicode (alec)
+  - contrib/customer_otherip: changed login.html to customerlogin.html because
+    of conflict with templates/login.html in Smarty cache (alec)
+  - size reduction of LMS main class, some one-time functions moved to 
+    modules i.e. Mailing(), Traffic() (alec)
+  - added basic (without group checking) body of check_ssn() function for 
+    'en' locale (alec)
+  - contrib/formularz_przelewu_wplaty(_2): fixed encoding and bug with empty
+    page (alec)
+  - lms-payments print accounting messages on STDERR (lukasz/alec)
+  - helpdesk: fixed encoding in message contents to UTF-8, added option
+    phpui/helpdesk_sender_name for name of message sender (alec)
+  - fixed bug in userassignmentedit.html when customer has " sign in name (alec)
+  - BTS#0000283: added link 'Clear Account' on Customer Account (alec)
+  - added cash operations import interface (lexx/alec)
+  - sql queries speedup in GetTariff() and GetTariffList() (alec)
+  - "all liabilities suspending" can be edited like other assignments (alec)
+  - BTS#0000292: tariff's avg monthly income don't take into consideration
+    suspended liabilities (alec)
+  - added index on tariffid column in assignments table (alec)
+  - BTS#0000284: user login is unique and can't be reused - changed content
+    of warning message (alec)
+  - added 'in debt', 'deleted' and 'disconnected' filters for mailing (alec) 
+  - contrib/customer_otherip: invoices printing (alec)
+  - fixed floats formatting in AddBalance() for non-english locale (.PaKuD)
+  - fixed month and year in invoice number in 'setcustomer' action of file
+    invoiceedit.php (alec)
+  - BTS#0000305: helpdesk - fixed design in queue info (alec)
+  - database speedup - added indexes: nodes/netdev, rttickets/queueid, cash/time,
+    invoices/cdate, invoicecontents/invoiceid, cashimport/hash (alec)
+  - invoicenew.php, invoiceedit.php: bypassed sessions bug in PHP-4.3.10 (alec)
+  - almsd/notify: changed contents of 'command' option and removed header with
+    column names in last_10_in_a_table (alec)
+  - almsd/tc: fixed uninitialized variable warning (alec)
+  - possibility of removing tickets (chilek)
+  - lms-rtparser: added mail charset detection and conversion to database
+    charset (req. Text::Iconv), changed encoding of confirmation message (alec)
+  - added contrib/coffee_cup (lexx)
+  - added passwd field to nodes record (alec)
+  - we can pay invoices in userbalancebox (chilek)
+  - new session management using database backend, also authorization has been
+    put into separate class (lukasz)
+  - BTS#0000308: added lost customer's groups table while adding new node for 
+    a customer (alec)
+  - added support for dynamic tooltips (lexx)
+  - netdevmap in flash (requires ming) (lexx)
+  - added Finances -> Print -> Covenants Realization Report (alec)  
+  - new layout for menu (lukasz)
+  - ip address selection divided to pages (chilek)
+  - if we find only one customer we will redirect to his info (chilek)
+  - almsd/dhcp,oident,ethers: changed defaults of 'file' and 'command'
+    options (alec)
+  - translated to english almost entire documentation (kondi/alec)
+  - database backups can be restored only on system version according 
+    with database version where backup was created (alec)
+  - added contrib/squid_redirector which extends capabilities of squid_warnings 
+    (enable/disable nodes access to squid), and marking squid_warnings as 
+    obsolete (lexx)
+  - BTS#0000315: remove assignments in customer delete function (alec/WiktorRB)
+  - page headers have been removed (chilek)
+  - redesigned customers list (lexx)
+  - BTS#0000311: fixed cash operation time setting after invoice edition (alec)
+  - mail() -> SendMail(). We use Pear::Mail (chilek)
+  - notifications about new tickets in UI and lms-rtparser (chilek/alec)
+  - proper char encoding in mail notifications (chilek)
+  - added confirm. dialog for generation of new PIN and node's password (alec)
+  - added "Notices" privilage for helpdesk queues (alec) 
+
+version 1.5.4 Ramius (2005-02-16):
+
+  - domyślnym językiem interfejsu użytkownika jest angielski (en), wykonano
+    tłumaczenie na język polski, zmieniono nazewnictwo: użytkownicy -> klienci,
+    administratorzy -> użytkownicy, język jest odczytywany z ustawień
+    przeglądarki, a może być także ustawiony poprzez opcję 'lang', zmieniono
+    kodowanie danych i interfejsu na UTF-8, trwają prace nad tłumaczeniem 
+    dokumentacji (alec/lexx/maniac/chilek i inni)
+  - zmiana opcji 'userlist_pagelimit' na 'customerlist_pagelimit' (alec) 
+  - poprawiony błąd przy usuwaniu opłaty stałej powodujący usunięcie opłaty
+    bez potwierdzenia (alec)
+  - dodana opcja konfiguracyjna (phpui -> lang_debug) która pozwala na 
+    wyświetlanie w popupie brakujących ciągów w tłumaczeniach (lexx)
+  - poprawiony błąd na liście użytkowników wyszukanych powodujący ignorowanie
+    braku potwierdzenia przy rozliczaniu użytkownika (alec)
+  - BTS#0000275: poprawiony błąd w zapytaniu sql podczas wyszukiwania zgłoszeń
+    wg nazwiska zgłaszającego (rejmer)
+  - BTS#0000278: dodane uprawnienie 'zarządzanie sieciami i urządzeniami' oraz
+    wyłączono z uprawnienia 'zarządzanie komputerami' odłączanie/włączanie
+    komputerów (rejmer/alec)
+  - w dokumentacji dodana informacja jak podłączyć lms-rtparser do postfixa
+    przy użyciu procmaila (D.Rejmer)
+  - dodawanie aliasów i domen przeniesiono do osobnych modułów, uprawnienie
+    'tylko odczyt' zezwala na odczyt danych kont/aliasów/domen (alec)
+  - BTS#0000279: na szablonie wysyłania maili poprawiono zamienione miejscami
+    nazwę i email nadawcy (alec)
+  - BTS#0000280: poprawione błędne zaokrąglanie oraz sumowanie ogólnej kwoty
+    podatku na rejestrze sprzedaży (.PaKud/alec)
+  - obsługa gzipowanych kopii zapasowych (kuba)
+  - BTS#0000276: lms-rtparser: jeśli nie zdefiniowano 'mail_from_name' w polu
+    'From:' potwierdzenia wstawiamy nazwę kolejki (rejmer/alec)
+  - BTS#0000282: lms-rtparser: w polu 'Do:' potwierdzenia wstawiamy tylko
+    adres email bez nazwy konta zgłaszającego (rejmer/alec)
+  - BTS#0000274: Nie można przypisać komputerowi adresu gatewaya (alec)
+  - usunięty błąd powodujący złe rozpoznawanie adresu sieci i broadcastu na 
+    liście hostów w danej sieci, jeśli lista ta była na więcej niż jednej
+    stronie (alec)
+  - poprawiony błąd w skrypcie lms-notify oraz modułach almsd notify i ggnotify
+    powodujący pobieranie do %last_10_in_a_table dziesięciu pierwszych a nie
+    ostatnich operacji (alec)
+  - poprawiony błąd w ustawianiu daty wystawienia nowej faktury (alec)
+  - dodano zabezpieczenie przed wystawieniem faktury bez zawartości (alec)
+  - BTS#0000281: poprawiono wyświetlanie listy zadłużonych, które na MySQLu
+    uwzględniało także użytkowników z bilansem równym zero (alec)
+  - zmiana wartości domyślnej opcji invoices/content_type: usunięto definicję
+    charsetu (alec)
+  - numeracja miesięczna faktur: invoices/monthly_numbering (alec)
+  - BTS#0000299: poprawka w funkcji sprawdzającej poprawność MAC'a (lukas)
+  - dodana opcja %PIN do lms-mgc (lukasz)
+  - Terminarz (alec)
+  - zmiana typu kolumny przechowującej kod pocztowy na VARCHAR(10) uwzgl.
+    amerykański format 5+4 (alec)
+  - dodana możliwość wydruku listy komputerów użytkowników zadłużonych (alec)
+  - na liście opcji konfiguracyjnych dodano linki do edycji, usuwania oraz
+    włączania/wyłączania opcji (alec)
+  - dodana możliwość filtrowania listy faktur wg zadanych kryteriów (alec)
+  - w opcji 'contract_template' może podawać kilka plików szablonów umów
+    wraz z opisem, np. "plik.html:Umowa Test, plik2.html:Umowa Standard" (alec)
+  - lms-sendinvoices: dodana opcja --fakedate (alec)
+  - dodano możliwość wydruku listy użytkowników z bilansem na dany dzień (alec)
+  - na bilansie użytkownika oraz bilansie sieci dodano możliwość wydruku 
+    oryginałów/kopii wybranych faktur (alec)
+  - lms-payments (almsd/payments): jednej pozycji na fakturze odpowiada 
+    dokładnie jedno obciążenie, także wtedy gdy pozycja składa się z wielu
+    podpozycji/taryf (alec)
+  - edycja i usuwanie faktur (lexx)
+  - dodano index na kolumnie invoiceid w tabeli cash, przyspieszający niektóre
+    zapytania SQL (alec)
+  - możliwość generowania faktur w PDF (lexx)
+  - dla operacji fakturowanych dodano możliwość powiązywania obciążeń z
+    wpłatami/przedpłatami, co np. pozwala na częściowe rozliczanie faktur (alec)
+  - można edytować opcje sekcji [finances] z poziomu UI (alec)
+  - poprawki w nodescan.php|html - jeśli wyszukujemy komputery z poziomu klienta
+    zostaje wyświetlona kompletna strona informacji o kliencie (alec)
+  - lms-payments: dodano opcję 'comment' ustalającą komentarz do opłaty,
+    dozwolone zmienne: %tariff, %period, %desc (alec)
+
+version 1.5.3 Nirrti (2004-12-16):
+
+  - w polu email przy dodawaniu/edycji użytkownika można wpisać tylko jeden 
+    adres, dodane sprawdzenie poprawności tego adresu (alec)
+  - poprawiona walidacja PINu przy dodawaniu użytkownika (alec)
+  - poprawione sprawdzanie poprawności loginu i domeny konta (alec)
+  - możliwość zmiany opcji konfiguracyjnych z sekcji [phpui] i [invoices]
+    w interfejsie użytkownika (menu Administracja -> Konfiguracja), więcej 
+    w dokumentacji: Rozdział 3.2.5. (alec)
+  - contrib/formularz_przelewu_wplaty: dwa druki na stronie i inne drobne
+    poprawki (J.Krzymin/alec)
+  - poprawki w Mailingu dot. obsługi błędów i kosmetyka interfejsu (alec)
+  - wydruk faktur za dany okres z możliwością wyboru użytkownika (alec)
+  - lms-payments: poprawione działanie opcji --quiet, dodana opcja
+    -f, --fakedate=YYYY/MM/DD (alec/RIP)
+  - usunięty błąd powodujący brak możliwości edycji konta systemowego (alec)
+  - można określić datę wystawienia nowej faktury (alec)
+  - w oknie bilansu użytkownika dodany link 'Wystaw fakturę' (alec)
+  - BTS#0000254: funkcja writesyslog() działa również na OpenBSD (kubatyszko)
+  - edycja zobowiązań użytkownika (alec)
+  - dodana opcja 'to_words_short_version' w sekcji [phpui] określająca format
+    reprezentacji słownej kwot (alec/kubatyszko)
+  - w formularzu przelewu/wpłaty można zdefiniować format reprezentacji słownej 
+    kwoty (alec/kubatyszko)
+  - BTS#0000252: usunięte spacje wiodące w repr. słownej kwot (alec)
+  - filtrowanie listy zgłoszeń Helpdesk wg statusu (alec)
+  - w dokumentacji dodany opis podłączenia lms-rtparser do Exima (P.Górski)
+  - Konta/Aliasy/Domeny 
+	!!! UWAGA: Domeny nie są już trzymane w passwd !!! (alec)
+  - dodany filtr 'on-line' do listy użytkowników (alec)
+  - usunięty błąd w module payments demona, występujący na mysql'u, który
+    powodował niezapisywanie zawartości faktur (alec)
+  - almsd: zmiana w funkcji db_query() dla mysql'a powodująca, że przy pustym
+    resultsecie nie zwracamy teraz NULL'a, tzn. tak jak dla innych baz,
+    czyli po wywołaniu tej funkcji należy pamiętać o sprawdzeniu pola 
+    'nrows' wyniku (alec)
+  - usunięta redefinicja funkcji chkconfig() z customer (chilek)
+  - w userinfo dodany link do listy kont użytkownika (alec)
+  - listy kont i aliasów współdzielą te same filtry (alec)
+  - lms-squid-warnings obsługuje bazy postgres i sqlite (alec)
+  - lms-rtparser: przy nieustawionej opcji 'mail_from' poprawnie wstawiany
+    jest adres kolejki (alec)
+  - BTS#0000257: w sumie opłat miesięcznych użytkowników oraz w średnim zysku
+    miesięcznym taryf nie uwzględniamy zobowiązań zawieszonych (alec)
+  - BTS#0000266: zabezpieczenie przed generowaniem mapy sieci, w której nie ma
+    urządzeń, co powodowało segfaulta Apache'a (alec)
+  - z szablonu faktury usunięta informacja powołująca się na nieaktualne
+    przepisy prawne (alec)
+  - poprawiona walidacja NIPu przy edycji i dodawaniu użytkownika (alec)
+  - contrib/formularz_przelewu_wplaty_2 (lexx)
+  - lms-mgc ignoruje wpis node(x.x.x.x) jeżeli host x.x.x.x nie istnieje
+    (dzwonus/lukasz)
+  - Helpdesk: dodana możliwość wysyłania wiadomości z załącznikiem (alec)
+
+version 1.5.2 Isis (2004-11-25):
+
+  - experymentalny driver do MS SQL Servera (alec)
+  - poprawne tworzenie shared-network w lms-makedhcpconf (alec)
+  - dokumentacja: dodany opis lms-makedhcpconf (alec)
+  - dodane brakujące defaulty do niektórych kolumn w tabeli rtmessages
+    w lms.mysql (alec)
+  - w funkcji odczytującej nazwę hosta (którą następnie widać w nagłówkach 
+    stron) dodano sprawdzenie stałych $_ENV['HOSTNAME'] i $_SERVER[SERVER_NAME']
+    jeśli nie powiedzie się próba odczytania nazwy poprzez `hostname` (alec)
+  - do danych komputera dodano pole 'info' (alec)
+  - lms-mgc: dodana zmienna %INFO zawierająca opis komputera j.w. (alec)
+  - dodana zmienna %info w regułkach modułu hostfile demona almsd (alec)
+  - dokumentacja: uzupełniony opis zmiennych lms-mgc (alec)
+  - w statystykach dodany średni transfer w KB/s (alec)
+  - generowanie PINu podczas edycji/dodawania użytkownika (alec)
+  - poprawka w funkcji szybkiego wyszukiwania komputera uwzględniająca zmianę
+    działania ip2long() w PHP5 (alec)
+  - BTS#0000229: contrib/customer - uwzględniona sytuacja, gdy łączymy się z
+    urządzenia sieciowego (alec)
+  - lms-arping (T.Ciaszczyk/alec)
+  - lms-rtparser: usunięty błąd w działaniu opcji tmp_dir (alec)
+  - pinger.h: usunięty błąd kompilacji z glibc 2.3 (alec)
+  - almsd/cutoff: dodane opcje 'warning' i 'command' (alec)
+  - BTS#0000245: poprawiona godzina w 'data do' na 23:59:59 w wydrukach
+    bilansu finansowego sieci i użytkownika (alec)
+  - contrib/daemon/cbq-init: dodatkowy moduł demona (alec)
+  - dodane sprawdzenie czy zaznaczono użytkowników przy dodawaniu nowej
+    operacji (alec)
+  - poprawki w genfake (lexx)
+  - almsd/cutoff: dodana opcja 'warnings_only' umożliwiająca wykorzystanie
+    tego modułu wyłącznie do włączania ostrzeżeń, gruntowna przebudowa (alec)
+  - contrib/daemon/cutoff2 - ulepszony cutoff dla zobowiązań mies. (alec)
+  - contrib/multiip_patch (alec/Ł.Wojciechowski/M.Adamski)
+  - BTS#0000237: na liście wyboru taryfy w zobowiązaniach użytkownika pokazujemy
+    wartości uprate, upceil, downrate, downceil (alec)
+  - BTS#0000246: na FreeBSD hostname wywołujemy bez opcji -f (alec)
+  - BTS#0000248: zmiana statusu lub ostrzeżenie komputera nie powoduje zmiany
+    administratora "ostatniej modyfikacji" (alec)
+  - w lms-makemacs poprawiona domyślna wartość opcji config_file (alec)
+  - dodany 'Rozdział 9 FAQ' w dokumentacji (alec)
+  - przebudowana struktura menu: Administratorzy, Bazy danych, Witamy!
+    zebrane w jednym 'Administracja' (alec)
+  - poprawki formularzy ułatwiające szybszą obsługę bez użycia myszy (alec)
+  - Konta (lexx/alec)
+  - contrib/daemon/shaper (M.Adamski)
+
+version 1.5.1 Eamon (2004-10-25):
+
+  - przyspieszone wyświetlanie modułu wydruków i innych pobierających listę
+    administratorów (alec)
+  - BTS#0000200 (alec)
+  - poprawki i kosmetyka w contrib/customer_otherip oraz dodany opis do
+    dokumentacji (alec)
+  - optymalizacja wydruku bilansu finansowego (alec)
+  - BTS#0000203: nie można się logować na usunięte konto admina (alec)
+  - usunięty błąd uniemożliwiający otwarcie załącznika do wiadomości rt (alec)
+  - BTS#0000206: poprawione pobieranie baz przy połączeniu https (alec/lexx)
+  - Helpdesk: dodane wpisy do sample/lms.ini, poprawiony błąd przy zmianie
+    właściciela zgłoszenia, w dokumentacji dodana informacja o wymaganych
+    przez rtparser modułach Perla (alec)
+  - w lms-rtparser potwierdzenia wysyła Net::SMTP zamiast sendmaila, 
+    dodane opcje smtp_server, mail_from_name (alec)
+  - usunięty błąd przy odtwarzaniu backupu na postgresie spowodowany 
+    aktualizacją nieistniejących sekwencji (alec)
+  - status online adresów urządzeń w netdevinfo (alec)
+  - poprawiony błąd w zapytaniu sql w lms-notify (alec)
+  - na liście sieci podajemy ilość komputerów online dla każdej sieci (alec/lukas)
+  - statystyki zgłoszeń w welcome.html (alec)
+  - dodana opcja networkhosts_pagelimit, domyślnie pokazujemy 256 hostów
+    w netinfo (alec)
+  - przebudowany i poprawiony lms-notify-sms (alec)
+  - lms-notify: uzupełniona dokumentacja (%phone1, %date_month_name), poprawione 
+    sortowanie %last_10_in_a_table i znak przy kwotach (alec)
+  - możliwość szybkiego wyszukania zgłoszeń o określonych stanach z welcome.html (chilek)
+  - pominięcie usuniętych użytkowników w szybkim wyszukiwaniu (moduł quicksearch) (averne)
+  - możliwość skasowania wiadomości w widoku zgłoszenia (chilek)
+  - poprawiona kwota słownie w contrib/formularz_wpłaty (alec)
+  - lms-rtparser: poprawione/dodane kodowanie nagłówków potwierdzenia (alec)
+  - poprawiony auto-upgrade: w przypadku wystąpienia błędu procedura zostaje
+    przerwana (alec)
+  - poprawiony błąd uniemożliwiający edycję danych grupy użytkowników (alec)
+  - opcja phpui/contract_template lms.ini dla szablonu umowy usera (alec)
+  - lms-rtparser: auto_open - automatyczne otwieranie zamkniętych zgłoszeń (alec)
+  - BTS#0000204: dane o ostatnim logowaniu zalogowanego administratora zawierają
+    informacje z ostatniego logowania, a nie z bieżącej sesji (alec)
+  - po zmianie hasła wyświetlamy ostatni moduł zamiast welcome (alec)
+  - nazwa interfejsu może zawierać ':' i '.' (alec)
+  - naprawione sumowanie w kolumnie 0% w rejestrze sprzedaży (alec)
+  - poprawione błędy w pinger.h uniemożliwiające kompilację na niektórych
+    versionch glibca (alec)
+  - BTS#0000221: dodany monit o potwierdzenie rozliczenia faktury (alec)
+  - usunięte przekierowanie do listy faktur po dodaniu faktury (alec)
+  - połączenia wireless na mapie sieci (alec)
+  - poprawiony błąd w polu 'adres IP' podczas edycji komputera (lukas/alec)
+  - BTS#0000214: rozwiązany problem z brakiem pamięci podczas tworzenia 
+    backupu (alec)
+  - dodany contrib/import, czyli import płatności z pliku txt (alec)
+  
+version 1.5.0 Marduk (2004-09-18):
+
+  - w lms-makedhcpconf hosty są sortowane (alec)
+  - drukowanie zgłoszeń (alec)
+  - BTS#0000192: poprawione wyświetlanie złego urządzenia sieciowego podczas
+    edycji komputera (lexx)
+  - w oknie wyboru adresu IP domyślną siecią jest ta, do której należy
+    edytowany komputer/adres urządzenia (alec/lukas)
+  - na mapie dodana informacja (w postaci różnych ikon) o aktywności
+    urządzeń sieciowych (alec/lexx)
+  - podgląd szczegółów wiadomości Helpdesku (alec)
+  - podczas odpowiadania na zgłoszenie następuje zmiana statusu i właściciela
+    jeśli nie były wcześniej ustawione (alec)
+  - nazwa sieci może zawierać znak '_' (alec)
+  - nazwa grupy może zawierać znak '.' (alec)
+  - dodana obsługa opcji konfig. 'networks' i 'usergroups' w module 'ethers',
+    'dns' i 'dhcp' demona (alec)
+  - poprawione błędne interpretowanie opcji 'networks' w modułach demona
+    gdy nazwa sieci zawierała kropkę (alec)
+  - BTS#0000183: dodany indeks na kolumnie userid w tabeli cash, powodujący
+    znaczne przyspieszenie zapytań sql ze złączeniami tabel cash i users (alec)
+  - w formularzu nowej operacji napisy określające typ operacji uaktywniają
+    odpowiadające im radio-buttony (chilek)
+  - w formularzu nowej operacji zapamiętywany jest na czas sesji typ operacji (chilek)
+  - w UI dodana obsługa PIN dla użytkowników - UWAGA! automatyczny upgrade bazy
+    generuje nowe numery PIN dla wszystkich użytkowników! JEŚLI POSIADASZ 
+    JUŻ NUMERY PIN W BAZIE TO ZOSTANĄ ONE WYGENEROWANE NA NOWO! (lexx)
+  - BTS#0000185: poprawione rozliczanie użytkowników (alec)
+  - możliwość wydrukowania umowy z poziomu UI (lexx)
+  - w demonie można zdefiniować polecenie powłoki, które będzie wykonywane 
+    przed każdym połączeniem z bazą (alec)
+  - w skryptach dodano wyświetlanie błędów w pliku konfiguracyjnym (alec)
+  - w formularzu nowej operacji pokazuje się ilość zaznaczonych użytkowników (chilek)
+  - przyspieszone wyświetlanie listy faktur na MySQL'u (alec) 	 
+  - polecenie 'make daemon' do kompilacji samego demona, bez modułów (alec) 	 
+  - przy starcie almsd w 'background mode' nie następuje przeładowanie (alec)
+  - dodane klawisze szybkiego dostępu w formularzu wyszukiwania użytkownika (S)
+    oraz nowej operacji (W) (chilek)
+  - do demona dodana opcja wiersza poleceń '-i' określająca instancje do
+    przeładowania, nie ma konieczności tworzenia odrębnych plików konfig.
+    dla modułów uruchamianych z crona (alec)
+  - na mapie sieci zwiększony górny margines i usunięte błędy wyst. przy
+    braku podłączonych komputerów (lukas)
+  - w contrib/sqlpanel wyniki poleceń sql przepuszczane są przez funkcje
+    nl2br() i htmlspecialchars() (alec)
+  - na mapie zwiększony do 24 limit urządzeń podłączonych do jednego urządzenia
+    oraz usunięty błąd pokrywających się linków (alec)
+  - lms-rtparser: przebudowany, przetestowany i dodana dokumentacja (alec)
+  - dopracowane wysyłanie wiadomości w Helpdesku (alec)
+  - obsługa załączników w Helpdesku (alec)
+
+version 1.3.6 Osiris (2004-09-01);
+
+  - obciążenia są naliczane według ich wartości, rosnąco - w wypadku jak ktoś
+    ma odliczenie jakieś, zostanie ono naliczone jako pierwsze, przez co nawet
+    przez chwilę saldo nie zejdzie poniżej zera (lukasz)
+  - dodana informacja kiedy dany komputer był ostatnio widziany w sieci (lexx)
+  - teraz na mapie urządzeń sieciowych pokazywana jest lokalizacja urządzenia
+    (lexx)
+  - poprawiony błąd w zapytaniu przy wyszukiwaniu zgłoszeń po temacie (alec)
+  - uprawnienie 'manipulacja finansami' obejmuje także rozliczanie faktur (alec)
+  - BTS#0000180: zliczanie wolnych adresów w sieci nie bierze pod uwagę 
+    zarezerwowanych dla DHCP (lexx)
+  - BTS#0000181: okienko wyboru adresu IP nie pozwala wybrać adresu 
+    zarezerwowanego dla DHCP (lexx)
+  - BTS#0000153: kliknięcie na urządzenie/komputer na mapie urządzeń powoduje
+    przejście do wybranego urządzenia/komputera (lexx)
+  - poprawiona czytelność napisów na mapie urządzeń (lexx)
+  - zawieszanie płatności wybranych zobowiązań użytkownika lub wszystkich 
+    na dany okres (alec)
+  - dodany panel 'Użytkownicy'->'Ostrzeżenia' (alec)
+  - dodany skrypt lms-fping (alec)
+  - BTS#0000052: odłączenie użytkownika poprzez cutoff powoduje automatyczne 
+    owinetkowanie komputerów użytkownika oraz ustawienie wiadomości 
+    administracyjnej (lexx)
+  - poprawiony BTS#0000157: gubienie urządzeń i błędne połączenia 
+    na mapie (alec)
+  - w welcome.html podajemy także ilość komputerów on-line (alec)
+  - BTS#0000187: uzup. brakująca definicja $utsfmt w lms-notify (alec)
+  - BTS#0000189: poprawiony trigger dns2 w formularzu netadd.html (alec)
+  - dodany moduł pinger (szybszy odpowiednik lms-fping) do demona (alec)
+  - w demonie wszystkie komunikaty informacyjne są w DEBUG1 (alec)
+  - usunięte błędy przy allow_call_time_pass_reference=Off w php.ini (alec)
+  - dodane contrib/squid_warnings (lexx)
+  - w dokum. dodany rozdział 'Dodatki' opisujący zawartość /contrib (alec)
+  
+version 1.3.5 Ju (2004-07-30):
+
+  - usunięty błąd w skryptach perlowych, powodujący błędne działanie
+    przy pustej zmiennej konfiguracyjnej 'usergroups' (alec)
+  - domyślnie, w mailingu używamy imienia i e-maila administratora który
+    aktualnie się zalogował jako nadawcy (lukasz)
+  - skończony (?) interfejs www dla systemu RT-Helpdesk (alec)
+  - zaktualizowano pliki do zakładania bazy danych (alec)
+  - w polu szybkiego wyszukiwania można podawać numer zgłoszenia lub
+    nazwisko użytkownika (alec)
+  - w lms-mgc poprawiony błąd w zapytaniu wybierającym dane do htb oraz dodane
+    zmienne %UPCEIL, %DOWNCEIL, %CLIMIT, %PLIMIT (alec)
+  - zmiana typu kolumn statystyk na BIGINT zapobiegająca błędom przy
+    kompaktowaniu jeśli użytkownicy ściągają ponad 2 GB danych dziennie (alec)
+  - BTS#0000168: poprawione działanie zmiennej 'use_current_payday', przy 
+    okazji wreszcie działają error-triggery dla zobowiązań (alec)
+  - BTS#0000171: poprawiona obsługa błędu przy braku wolnych portów 
+    w urządzeniu przy pierwszym podłączeniu komputera (alec)
+  - BTS#0000173: uzupełnione sprawdzanie długości nazwy komputera, urządzeń 
+    sieciowych i ich adresów oraz dodany atrybut maxlength w szablonach (alec)
+  - dodano możliwość nadpisania pojedyńczej reguły w lms-mgc poprzez wpis:
+    node(192.168.1.1) = reguła (lukasz)
+  - dodano pole 'adres do doręczeń' dla danych użytkownika, który (jeśli 
+    zdefiniowano) zastąpi adres użytkownika na fakturze (alec)
+  - w module hostfile demona dodana zmienna '%gw' zamieniana na adres
+    bramy (alec)
+  - w module 'tc' demona można określić politykę generowania klas htb poprzez
+    zmienną 'one_class_per_host', rozbite reguły na kilka opcji konfiguracyjnych
+    osobno dla markowania i htb w obie strony (alec)
+  - w lms-traffic-htbiptlimits dodana obsługa upceil i downceil (alec)
+  - uptime'y zgłoszeń, czyli czas od zgłoszenia do rozwiązania problemu (alec)
+  - poprawna odmiana wyrazów dzień, godzina, minuta w uptime'ach (alec)
+  - dodany filtr 'minimalny uptime' do wyszukiwania zgłoszeń (alec)
+
+version 1.3.4 Terok (2004-07-06):
+
+  - naprawiony combobox ze stawką podatku w 'Rachunku użytkownika' (alec)
+  - jeśli żadna grupa nie istnieje to skrypty biorą pod uwagę wszystkich
+    użytkowników (chilek)
+  - dodane error-triggery w adminpasswd.html (alec)
+  - zapamiętujemy porządek sortowania w statystykach (chilek)
+  - poprawiony BTS#0000137: dodany komunikat o braku wolnych portów w urządzeniu
+    podczas podłączania z nodeinfobox.html (alec)
+  - na listach użytkowników filtr 'wszyscy' wybiera z bazy wszystkich oprócz
+    usuniętych (nie bierze pod uwagę pola status), a nie tylko podłączonych 
+    jak dotychczas (alec)
+  - przy obliczaniu średniego zysku miesięcznego taryfy nie uwzględniamy 
+    użytkowników zainteresowanych i oczekujących - BTS#0000151 (alec)
+  - poprawione opisy instalacji i upgrade'u bazy mysql, z uwagi na brakujące
+    uprawnienia do polecenia ALTER, wszyscy planujący upgrade powinni z konta
+    roota wykonać w mysqlu następujące polecenia: (alec)
+	GRANT select,insert,update,delete,create ON lms.* TO lms@localhost 
+		IDENTIFIED BY 'hasło';
+	FLUSH PRIVILEGES;
+  - na mapie sieci oprócz nazw hostów pokazujemy ich adresy IP oraz
+    (max.4) adresy IP urządzeń sieciowych (alec)
+  - poprawiony błąd na fakturze: BTS#0000154 (alec)
+  - w formularzu dodawania faktury można podawać kwoty z przecinkiem oraz
+    usunięto wiodące zero dla kwot mniejszych od 10 (alec)
+  - rozliczanie użykowników w rozbiciu na stawki VAT (chilek)
+  - możliwość usuwania transakcji w bilansie użytkowników (chilek)
+  - możliwość usuwania transakcji w informacji o użytkowniku (chilek)
+  - poprawka w DBDump() usuwająca błąd występujący podczas odtwarzania kopii
+    bazy danych z wartością NULL ('zw.') w kolumnach taxvalue (alec)
+  - lms-traffic-logiptables nie zapisuje już danych do logu, ale wstawia
+    dane do bazy wprost, nie trzeba uruchamiać lms-traffic (alec)
+  - do demona dodany moduł 'system', dla tych co nie chcą używać sudo dla
+    skryptów perlowych, oczywiście nie tylko (alec)
+  - poprawka w notify i ggnotify dodająca znak minus przy obciążeniu w
+    %last_10_in_a_table (alec)
+  - poprawka linku do listy zadłużonych w welcome.html (alec)
+  - dodany contrib/customer_otherip (hunter)
+  - rozbudowane faktury o dane do htb: upload ceil, download ceil, 
+    connection limit, packet limit (alec)
+  - przepisany moduł 'tc' demona uwzględnia zmiany w taryfach (alec)
+  - poprawka w funkcji mailing, teraz pole from: powinno być dobre (lexx)
+  - podczas usuwania urządzenia sieciowego usuwane są także jego adresy (alec)
+  - poprawione ustawianie sekwencji postgresa podczas odtwarzania kopii
+    bazy danych (alec)
+  - wznowiono prace na systemem RT (Helpdesk) (alec)
+
+version 1.3.3 Sokar (2004-05-05):
+  
+  - naprawione usuwanie pozycji na fakturze (alec) 
+  - w demonie dodana obsługa bazy SQLite (alec)
+  - poprawione zapytanie w lms-traffic-htbiptlimits uwzględniające prawidłowo
+    okresowe assignmenty (alec)
+  - dodana obsługa datefrom i dateto w module 'tc' demona (alec)
+  - dodana obsługa zwolnień z VAT w taryfach i fakturach (chilek)
+  - poprawione błędy w wyglądzie listy faktur, z którymi nie radziła
+    sobie Mozilla (alec)
+  - dodana obsługa stawek VAT w operacjach finansowych - tablica cash
+    pole taxvalue (chilek)
+  - w wydrukach bilansów uzwględniane są stawki VAT (chilek)
+  - w contrib/sqlpanel dodano stronicowanie wyników oraz opcję wydruku (alec)
+  - wybór stawki VAT przy nowej operacji w comboboksie (chilek)
+  - wydruk raportu łącznych przychodów bezrachunkowych (chilek)
+  - wydruk raportu wierzytelności userów (alec)
+  - dodana możliwość opłacania faktur - jeszcze nie w pełni funkcjonalna (chilek)
+  - na fakturze termin płatności może wynosić 0 (alec)
+  - można podać datę opłacenia faktury (chilek)
+  - można rozliczyć wiele faktur (chilek)
+  - sprawdzamy czy faktury są rozliczone testując bilans pozycji faktur (chilek)
+  - w formularzach wyszukiwań pokazywane są ikonki ostrzeżeń (chilek)
+  - rejestr sprzedaży przeniesiony do Taryfy i Finanse -> Wydruki (alec)
+  - wybór stawki VAT w nowej pozycji faktury za pomocą comboboxa (chilek)
+  - wybór stawki VAT w taryfach za pomocą comboboxa (chilek)
+  - dodany formularz zarządzania wiadomościami administracyjnymi (chilek)
+  - grupy użytkowników (chilek/alec)
+  - możliwość wyboru grupy wyświetlanej listy użytkowników (chilek)
+  - możliwość ustalania przynależności do grup w formularzach informacji o
+    użytkowniku i edycji użytkownika (chilek)
+  - możliwość ustalania przynależności do grup w formularzach informacji o
+    komputerze i edycji komputera (chilek)
+  - obsługa grup użytkowników w lms-makedhcpconf, lms-makeoidentconf,
+    lms-makemacs, lms-makehosts (chilek)
+  - naprawione filtrowanie listy userów wg grupy i sieci (alec) 
+  - poprawka w bazie przywracająca możliwość dublowania MAC'ów (alec)
+  - w Mailingu można wybrać grupę użytkowników (alec)
+  - dodane skrypty lms-makewarnings, lms-makemessages (chilek)
+  - dane administratorów usuniętych nie są usuwane z bazy (alec)
+  - wydruki list użytkowników można filtrować wg grupy (alec)
+  - do listy użytkowników dodane filtry 'usunięci', 'odłączeni'
+    i 'zadłużeni', w związku z tym znika menu Użytkownicy->Odłączeni
+    i Użytkownicy->Zadłużeni (alec/chilek)
+  - w wersji demona dla SQLite dodane funkcje UPPER() i LOWER()
+    uwzględniające systemowe locales, dla prawidłowego kapitalizowania
+    polskich znaków diakrytycznych (alec)
+  - poprawiony error-trigger w polu status w usereditbox.html (alec)
+  - poprawione ignorowanie naliczeń o wartości zerowej (lukasz)
+  - poprawiony błąd w almsd, powodujący zwałkę demona na mysql'u, gdy
+    w tabeli timestamps nie ma wpisu '_force' (alec)
+  - przebudowany rozdział 'Interfejs Użytkownika' w dokumentacji (alec)
+
+version 1.3.2 Kinsey (2004-04-03):
+  
+  - przeniesienie warning&messages z contrib do głównej gałęzi
+    dodanie lms-updatewarnings (maniac/alec/chilek)
+  - poprawione błędy w module 'hostfile' demona, dodane zmienne 
+    %domain - zamieniana na nazwę domeny i %net - na nazwę sieci (alec)
+  - w zmiennej 'networks' dla modułów hostfile i oident nie podajemy adresów, 
+    ale listę nazw sieci (alec)
+  - multilanguage? jednak nie (lexx)
+  - rozpoczęto prace nad systemem RT (lukasz)
+  - sporo poprawek kosmetycznych kodu (lukasz)
+  - nareszcie zrobiona obsługa błędów SQL (lukasz/alec)
+  - poprawiony bug występujący na postgresie podczas dodawania usera z pustym
+    numerem gadu-gadu (alec)
+  - poprawione sortowanie listy komputerów wg nazwy właściciela (alec)
+  - dodany interfejs do definiowania filtrów dla wydruków list komputerów
+    i użytkowników (alec)
+  - dodane drukowanie bilansu użytkownika za dany okres (alec)
+  - od teraz, użytkownikom można przypisywać taryfy na dany okres czasu
+    (lukasz)
+  - pola szybkiego dostępu akceptują teraz takie rzeczy jak nazwa, id, adres
+    ip/mac, adres użytkownika, adres email, telefon (lukasz)
+  - małe przyspieszenie funkcji UserStats() (alec)
+  - przebudowa struktury bazy danych: dodane wartości domyślne pól, klucze
+    unikalne i ograniczenia NOT NULL (lukasz/alec)
+  - poprawione obliczanie średniego dochodu miesięcznego dla taryf (alec)
+  - dodane obliczanie ilości aktywnych przypisań taryfy (alec)
+  - poprawione sortowanie list użytkowników wg salda (alec)
+  - poprawione genfake.php: dodane zerowanie auto_increment'ów oraz
+    poprawki związane z ostatnimi zmianami w bazie (alec)
+  - dodano sprawdzenie, czy zaznaczono typ operacji podczas dodawania nowej
+    operacji - BTS#0000122 (alec)
+  - poprawione błędy w modułach hostfile i oident demona powodujące
+    niewykonywanie instancji wyst. po tych modułach (alec)
+  - na liście użytkowników w kolumnie Abonament jest średnie obciążenie 
+    miesięczne użytkownika (alec)
+  - listę użytkowników oraz wydruki można filtrować wg sieci (alec)
+  - w mailingu dodana możliwość wybrania sieci  (alec)
+  - dodany wydruk użytkowników bez przypisanych komputerów (alec)
+  - dodane wydruki bilansu finansowego z możliwością ograniczenia do podanego
+    okresu oraz konkretnego administratora (alec)
+  - dodany contrib/sqlpanel (alec)
+  - BTS#0000131: poprawki w 'Rejestrze sprzedaży' (alec)
+  - SQLite Support (alec)
+  - poprawki w lms-notify zapobiegające błędom na postgresie (alec)
+  - lms-sendinvoices: wysyłanie faktur (lukasz)
+  - w automatycznych fakturach można zdefiniować rodzaj płatności 
+    i termin zapłaty: lms-payments i almsd (alec)
+  
+version 1.3.1 Maybourne (2004-03-04):
+
+  - poprawiony błąd w GetInvoiceContents() powodujący błędne wyświetlanie
+    liczby groszy słownie na fakturze - BTS#0000112 (alec)
+  - poprawione obliczanie kwot na fakturach dla kilku jednostek, błąd
+    powodował także zapisywanie niepoprawnych danych do tabeli 'cash' 
+    podczas dodawania nowej faktury - BTS#0000114 (alec)
+  - multilanguage? może tak (RFD) (lexx)
+  - w almsd, do modułu hostfile dodano nowe opcje konfiguracyjne 'networks'
+    oraz 'skip_dev_ips' (alec)
+  - poprawione błędy w wyrażeniu regularnym w adminadd i adminedit (alec)
+  - poprawka do upgrade'u: taryfy mają okres miesięczny, a nie tygodniowy,
+    poprawki składni sql w UPGRADE.pgsql oraz komentarze w UPGRADE.mysql (alec) 
+  - dodane local_ips i local_dests do lms-traffic-htbiptlimits (lukasz)
+  - koniec z wyszukiwaniem koniecznych upgradów bazy danych w ChangeLogu - 
+    od teraz LMS sam będzie poprawiał bazę danych. Powiedzmy prawie koniec -
+    oto ostatnie konieczne do wykonania zmiany w bazie:
+    MySQL:
+        CREATE TABLE dbinfo (
+	    keytype VARCHAR(255) NOT NULL default '',
+	    keyvalue VARCHAR(255) NOT NULL default '',
+	    PRIMARY KEY  (keytype),
+	    UNIQUE KEY keytype (keytype),KEY keytype_2 (keytype)
+	) TYPE=MyISAM;
+	INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
+    PostgreSQL:
+	CREATE TABLE dbinfo (
+	    keytype VARCHAR(255) DEFAULT '' NOT NULL,
+	    keyvalue VARCHAR(255) DEFAULT '' NOT NULL,
+	    PRIMARY KEY (keytype)
+	);
+	INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
+  - dodany 'Raport sprzedaży' czyli wydruk listy faktur za dany okres (alec)
+
+version 1.3.0 Apophis (2004-02-18):
+
+  - Smarty libs version change 2.5.0 -> 2.6.0 (alec)
+  - added contrib/warn&msg (Rafał Ramocki/Tomasz Chiliński)
+  - another database fix results from BTS#103 (alec)
+    MySQL:
+	ALTER TABLE `users` CHANGE `gguin` `gguin` INT(11) DEFAULT '0';
+    PostgreSQL:
+	UPDATE users SET gguin=0 WHERE gguin IS NULL;
+	ALTER TABLE users UPDATE gguin SET DEFAULT 0;
+	ALTER TABLE users UPDATE gguin SET NOT NULL;
+  - in genfake.php added example payments generation (alec)
+  - tariff and payments quarterly accounting, small systematization in 
+    period column (accounting: 0-weekly, 1-monthly, 2-quarterly, 
+    3-yearly) (alec)
+	UPDATE assignments SET period = 4 WHERE period = 1;
+	UPDATE assignments SET period = 1 WHERE period = 0;
+	UPDATE assignments SET period = 0 WHERE period = 4;
+	UPDATE assignments SET period = 3 WHERE period = 2;
+	UPDATE payments SET period = 4 WHERE period = 1;
+	UPDATE payments SET period = 1 WHERE period = 0;
+	UPDATE payments SET period = 0 WHERE period = 4;
+	UPDATE payments SET period = 3 WHERE period = 2;
+  - default networklist sorting by name (alec)
+  - list of devices for connection is sorted by name (alec)
+  - fixed navigation on invoicelist - BTS#0000104 (alec)
+  - changes in daemon reload method: from 'timestamps' table readed is
+    time and compared with time from previous reload, '_force' record 
+    isn't deleted, so there are no problems with many daemons (lexx/alec)
+  - ethercodes.txt up-to-date (alec)
+  - BTS#0000109: fixes of bugs on BSD systems in loadavg() and hostname() 
+    from Sysinfo.class.php (sfor/alec)
+  - now some MGC section can have 'instances' that he calls other subsections
+    - for example - if we have 5 sections related to the dns (dns1... dns5) -
+    we can build sth like that:
+
+    [mgc:dns]
+    instances = dns1 dns2 dns3 dns4 dns5
+
+    and now we do run of lms-mgc like that:   lms-mgc -i dns
+    not like:    lms-mgc -i "dns1 dns2 dns3 dns4 dns5"
+
+    If section have 'instances' variable, that variable will be respected,
+    and others settings in this section ignored (lukasz)
+  - now you can set time of the finance operations (alec)
+  - fixed e-mails formatting, removed empty lines (lexx)
+
+version 1.1.8 Cronos (2004-02-01):
+
+  - netdevmap uses PNG images (some systems don't support GIF format) (Lexx) 
+  - fixed records accounting on empty lists, BTS#90 (alec)
+  - added userlist sorting by sum of tariffs (alec)
+  - fixed nodelist sorting by owner (alec)
+  - added netdevlist sorting by number of taken ports (alec)
+  - added checkbox 'print form again' in nodeadd (alec)
+  - fixed errornous status setting during adding of nodes (alec)
+  - documentation cleanup - pictures & commit logs removed,
+    so don't be suprise tarball is smaller than 1.1.7 (alec)
+  - added number checking in quick node and user seeking input box (alec)
+  - lms-notify-sms for sms sending. Required gnokii package (hunter)
+  - added 'mailing access' right (alec)
+  - added IP and MAC address attribute for net devices (lexx/alec)
+  - in genfake.php fixed cleanup of database and added net devices and netlinks
+    data generation (alec)
+  - BTS#0000092 fix in GetMACs() (alec)    
+  - added deadline and payment type in invoices
+    (lukasz):
+    MySQL:
+    	ALTER TABLE `invoices` ADD `paytype` VARCHAR(255) DEFAULT '' NOT NULL AFTER `paytime`;
+    PostgreSQL:
+	ALTER TABLE invoices ADD paytype VARCHAR(255);
+	UPDATE invoices SET paytype='';
+	ALTER TABLE invoices ALTER COLUMN paytype ADD NOT NULL; 
+	ALTER TABLE invoices ALTER COLUMN paytype SET DEFAULT '';
+  - 'permanent payments' (alec)
+    MySQL:
+    CREATE TABLE payments (
+	id INT(11) NOT NULL auto_increment,
+	name VARCHAR(255) NOT NULL default '',
+	value DECIMAL(9,2) NOT NULL default '0',
+	creditor VARCHAR(255) NOT NULL default '',
+	period INT(11) NOT NULL default '0',
+	at INT(11) NOT NULL default '0',
+	description text,
+	PRIMARY KEY  (id),
+	UNIQUE KEY id (id),
+	KEY id_2 (id)
+    ) TYPE=MyISAM;
+    PostgreSQL:
+    CREATE SEQUENCE "payments_id_seq";
+    CREATE TABLE payments (
+	id integer DEFAULT nextval('payments_id_seq'::text) NOT NULL,
+	name VARCHAR(255) DEFAULT '' NOT NULL,
+	value NUMERIC(9,2) DEFAULT 0 NOT NULL,
+	creditor VARCHAR(255) DEFAULT '' NOT NULL,
+	period integer DEFAULT 0 NOT NULL,
+	at integer DEFAULT 0 NOT NULL,
+	description text,
+	PRIMARY KEY (id)
+    );
+  - fixed data werification in tariffs: tariff value can be negative,
+    tax value can not (alec)
+  - on users list, exclamation mark instead of light bulb sign if user
+    has no nodes (alec)
+  - fixed network address translation in lms-makeiptables and
+    lms-makeipchains resulting from address data type change (alec)
+  - in perl-script's option 'networks' networks names can be lower case
+    - important for PostgreSQL database, where queries are case-sensitive (alec)
+  - new 'mailing' interface, added e-mail checking and not taking deleted
+    users into account (alec)
+  - in window 'LMS Informations' added DBMS version (alec)
+  - database cosmetics consistent with BTS#000103, or else bug fixes 
+    while backup restoring on later versions of postgres (alec)
+    MySQL:
+	ALTER TABLE `admins` CHANGE `lastlogindate` `lastlogindate` INT(11) DEFAULT '0';
+	ALTER TABLE `admins` CHANGE `failedlogindate` `failedlogindate` INT(11) DEFAULT '0';
+    PostgreSQL:
+	UPDATE admins SET lastlogindate=0 WHERE lastlogindate IS NULL;
+	UPDATE admins SET failedlogindate=0 WHERE failedlogindate IS NULL;	 
+	ALTER TABLE admins UPDATE lastlogindate SET DEFAULT 0;
+	ALTER TABLE admins UPDATE lastlogindate SET NOT NULL;
+	ALTER TABLE admins UPDATE failedlogindate SET DEFAULT 0;
+	ALTER TABLE admins UPDATE failedlogindate SET NOT NULL;
+	
+version 1.1.7 Hathor (2003-12-14):
+
+  - networks address now are type of bigint, for conversions are used
+    INET_NTOA() and INET_ATON() functions, so required higher versions of
+    database (Mysql 3.23.xx, PostgreSQL 7.3.x) (alec):
+    MySQL:
+	UPDATE networks SET address=INET_ATON(address);
+        ALTER TABLE networks CHANGE address address INT(16) UNSIGNED NOT NULL;
+    PostgreSQL:
+        CREATE OR REPLACE FUNCTION inet_ntoa(bigint) RETURNS text AS '
+        SELECT 
+    	    ($1/(256*256*256))::text
+    	    ||''.''||
+	    ($1/(256*256) - $1/(256*256*256)*256)::text
+    	    ||''.''||
+    	    ($1/256 - $1/(256*256)*256)::text
+    	    ||''.''||
+    	    ($1 - $1/256*256)::text;
+	' LANGUAGE SQL;
+	CREATE OR REPLACE FUNCTION inet_aton(text) RETURNS bigint AS '
+	SELECT
+    	    split_part($1,''.'',1)::int8*(256*256*256)+
+    	    split_part($1,''.'',2)::int8*(256*256)+
+    	    split_part($1,''.'',3)::int8*256+
+    	    split_part($1,''.'',4)::int8;
+	' LANGUAGE SQL;
+	ALTER TABLE networks ADD ipaddr bigint;
+        UPDATE networks SET ipaddr = inet_aton(address); 
+        ALTER TABLE networks DROP COLUMN address;
+        ALTER TABLE networks RENAME COLUMN ipaddr to address;
+        ALTER TABLE networks ALTER COLUMN address set NOT NULL;
+
+  - IP address conversion int<->char taken to database, not PHP (alec)
+  - fixed contrib/customer for new construction LMS() and 'initLMS.php'
+    in contrib - example file explains LMS's class initialization (lukasz)
+  - fixed bug in lms-payments, while invoices generation, when pesel field
+    was empty (MaReK/lukasz)
+  - added ownerid sorting on nodes list (alec)
+  - taken to database polish special characters capitalization (alec)
+  - change of monetary columns data type (hunter/alec/lukasz)
+    MySQL:
+	ALTER TABLE cash MODIFY value DECIMAL(9,2);
+	ALTER TABLE tariffs MODIFY value DECIMAL(9,2);
+	ALTER TABLE invoicecontents MODIFY value DECIMAL(9,2);
+	ALTER TABLE invoicecontents MODIFY taxvalue DECIMAL(9,2);
+	ALTER TABLE invoicecontents MODIFY count DECIMAL(9,2);
+	ALTER TABLE tariffs MODIFY taxvalue DECIMAL(9,2);
+    PostgreSQL:    
+	ALTER TABLE cash ADD val numeric(9,2);
+	UPDATE cash SET val=value;
+	ALTER TABLE cash ALTER val SET NOT NULL;
+	ALTER TABLE cash ALTER val SET DEFAULT 0;
+	ALTER TABLE cash DROP COLUMN value;
+	ALTER TABLE cash RENAME val TO value;	
+	ALTER TABLE tariffs ADD val numeric(9,2);
+	ALTER TABLE tariffs ADD taxv numeric(9,2);
+	UPDATE tariffs SET val=value;
+	UPDATE tariffs SET taxv=taxvalue;
+	ALTER TABLE tariffs ALTER val SET NOT NULL;
+	ALTER TABLE tariffs ALTER val SET DEFAULT 0;
+	ALTER TABLE tariffs DROP COLUMN value;
+	ALTER TABLE tariffs RENAME val TO value;	
+	ALTER TABLE tariffs ALTER taxv SET NOT NULL;
+	ALTER TABLE tariffs ALTER taxv SET DEFAULT 0;
+	ALTER TABLE tariffs DROP COLUMN taxvalue;
+	ALTER TABLE tariffs RENAME taxv TO taxvalue;
+	ALTER TABLE invoicecontents ADD val numeric(9,2);
+	ALTER TABLE invoicecontents ADD taxv numeric(9,2);
+	ALTER TABLE invoicecontents ADD cnt numeric(9,2);
+	UPDATE invoicecontents SET val=value;
+	UPDATE invoicecontents SET taxv=taxvalue;
+	UPDATE invoicecontents SET cnt=count;
+	ALTER TABLE invoicecontents ALTER val SET NOT NULL;
+	ALTER TABLE invoicecontents ALTER val SET DEFAULT 0;
+	ALTER TABLE invoicecontents ALTER taxv SET NOT NULL;
+	ALTER TABLE invoicecontents ALTER taxv SET DEFAULT 0;
+	ALTER TABLE invoicecontents ALTER cnt SET NOT NULL;
+	ALTER TABLE invoicecontents ALTER cnt SET DEFAULT 0;
+	ALTER TABLE invoicecontents DROP COLUMN value;
+	ALTER TABLE invoicecontents RENAME val TO value;
+	ALTER TABLE invoicecontents DROP COLUMN taxvalue;
+	ALTER TABLE invoicecontents RENAME taxv TO taxvalue;
+	ALTER TABLE invoicecontents DROP COLUMN count;
+	ALTER TABLE invoicecontents RENAME cnt TO count;	
+  - added possibility to invoicing in PHP-UI (lukasz)
+  - standardized reload for almsd and ui, now almsd reloads with standard 
+    ui settings (reload table isn't needed) (Lexx)
+
+version 1.1.6 Seth (2003-12-08):
+
+  - misprint: http://bts.lms.org.pl/bug_view_page.php?bug_id=0000088
+    (chilek/lukasz)
+  - fixed upgrade module:
+    http://bts.lms.org.pl/bug_view_page.php?bug_id=0000085 (chilek/lukasz)
+  - fixed tariff adding (alec)
+  - bugfix in lms-makearp
+    http://bts.lms.org.pl/bug_view_page.php?bug_id=0000086 (chilek/lukasz)
+  - tariff description can be NULL (alec)
+    MySQL:
+    	ALTER TABLE tariffs CHANGE description description text;
+    PostgreSQL:
+    	ALTER TABLE tariffs ALTER COLUMN description DROP NOT NULL;  
+
+version 1.1.5 Amaonet (2003-12-04):
+
+  - added options for owner and permissions for script files maked
+    with lms-traffic-* (lukasz)
+  - contrib/customer adapted for new database API
+  - added possibility of netdevices and nodes connection/diconnection
+    with other netdevice while editing them (alec)
+  - correction in function ScanNodes() preventing errors while nbtscan
+    programm is missing (alec)
+  - node search by address fixed, text searching by part of address added (alec)
+  - added deleted nodes stats on stat bars and added option for deleting
+    this in database compacting process (alec) 
+  - added possibility of netdevices exchange (lexx)
+  - fixed bugs on private address recognition in scripts and misprint in
+    lms-iptables (lukasz/wojboj)
+  - lms-notify adjusted for new finances (lukasz)
+  - in /daemon directory has become alfa version of programm for config
+    generation and services reloading (alec)
+  - in index.php new config file parsing function, fully compatible 
+    with daemon and partly with lms-mgc (alec)
+  - in lms.pgsql added SQL functions inet_ntoa() i inet_aton() for
+    future applications (alec)
+  - fixed errornous users accounting in welcome screen (alec)
+  - fixed default values in useradd form (alec)
+  - deleting of user on the list not causing userinfo to expose (alec)
+  - invoices are done - now are realy pretty and that require database
+    change (lukasz):
+    MySQL:
+	ALTER TABLE `tariffs` ADD `taxvalue` INT DEFAULT '0' NOT NULL AFTER `value`;
+	ALTER TABLE `tariffs` ADD `sww` VARCHAR(255) DEFAULT '' AFTER `taxvalue`;
+	ALTER TABLE `assignments` ADD `invoice` TINYINT( 1 ) DEFAULT '0' NOT NULL;
+	ALTER TABLE `cash` ADD `invoiceid` INT DEFAULT '0' NOT NULL ;
+    PostgreSQL:
+	ALTER TABLE tariffs ADD taxvalue integer;
+	ALTER TABLE tariffs ALTER taxvalue SET DEFAULT 0;
+	UPDATE tariffs SET taxvalue=0;
+	ALTER TABLE tariffs ALTER taxvalue SET NOT NULL;
+	ALTER TABLE tariffs ADD sww varchar(255);
+	ALTER TABLE tariffs ALTER sww SET DEFAULT NULL;
+	ALTER TABLE assignments ADD invoice smallint;
+	ALTER TABLE assignments ALTER invoice SET DEFAULT 0;
+	UPDATE assignments SET invoice=0;
+	ALTER TABLE assignments ALTER invoice SET NOT NULL;
+	ALTER TABLE cash ADD invoiceid;
+	ALTER TABLE cash ALTER invoiceid SET DEFAULT 0;
+	UPDATE cash SET invoiceid=0;
+	ALTER TABLE cash ALTER invoiceid SET NOT NULL;
+    MySQL:
+	CREATE TABLE invoices (
+    	    id INT NOT NULL AUTO_INCREMENT ,
+    	    number INT NOT NULL ,
+    	    cdate INT NOT NULL ,
+    	    paytime TINYINT( 8 ) NOT NULL ,
+    	    customerid INT NOT NULL ,
+    	    name VARCHAR( 255 ) NOT NULL ,
+    	    address VARCHAR( 255 ) NOT NULL ,
+    	    nip VARCHAR( 16 )DEFAULT '' ,
+    	    zip VARCHAR( 6 ) NOT NULL ,
+    	    city VARCHAR( 32 ) NOT NULL ,
+    	    phone VARCHAR( 255 ) NOT NULL ,
+    	    finished TINYINT( 1 ) NOT NULL DEFAULT '0',
+    	    PRIMARY KEY (id),
+    	    UNIQUE KEY id (id),
+    	    KEY id_2 (id)
+	) TYPE=MyISAM;
+	CREATE TABLE invoicecontents (
+    	    invoiceid INT NOT NULL ,
+    	    value DOUBLE NOT NULL ,
+    	    taxvalue INT NOT NULL ,
+	    sww VARCHAR( 255 ) DEFAULT '',
+    	    content VARCHAR( 16 ) NOT NULL ,
+    	    count INT NOT NULL ,
+	    description VARCHAR( 255 ) NOT NULL ,
+	    tariffid INT NOT NULL
+	);
+    PostgreSQL:
+	CREATE SEQUENCE "invoices_id_seq";
+	CREATE TABLE invoices (
+	    id integer DEFAULT nextval('invoices_id_seq'::text) NOT NULL,
+    	    number integer NOT NULL,
+    	    cdate integer NOT NULL,
+    	    paytime smallint NOT NULL,
+    	    customerid integer NOT NULL,
+    	    name varchar(255) NOT NULL,
+    	    address varchar(255) NOT NULL,
+    	    nip varchar(16) DEFAULT NULL,
+    	    zip varchar(6) NOT NULL,
+    	    city varchar(32) NOT NULL,
+    	    phone varchar(255) NOT NULL,
+    	    finished smallint DEFAULT 0 NOT NULL,
+	    PRIMARY KEY (id)
+	);
+	CREATE TABLE invoicecontents (
+	    invoiceid integer NOT NULL,
+	    value float4 NOT NULL,
+	    taxvalue integer NOT NULL,
+	    sww varchar(255) DEFAULT NULL,
+	    content varchar(16) NOT NULL,
+	    count integer NOT NULL,
+	    description varchar(255) NOT NULL,
+	    tariffid integer NOT NULL
+	);	 
+  - removed %TID and %TVAL from lms-mgc (lukasz)
+  - added PESEL column in user record, database upgrade (lukasz):
+    MySQL:
+	ALTER TABLE `users` ADD `pesel` VARCHAR(11) DEFAULT '' AFTER `nip`;
+	ALTER TABLE `invoices` ADD `pesel` VARCHAR(11) DEFAULT '' AFTER `nip`;
+    PostgreSQL:
+	ALTER TABLE users ADD pesel varchar(11);
+	ALTER TABLE users ALTER pesel SET DEFAULT NULL;
+	ALTER TABLE invoices ADD pesel varchar(11);
+	ALTER TABLE invoices ALTER pesel SET DEFAULT NULL;
+
+    If user has no NIP, then to invoice goes PESEL.
+  - for invoices added place of putting out (lukasz);
+  - terminology change: 'sww' to 'pkwiu' (lukasz);
+    MySQL:
+	ALTER TABLE `tariffs` CHANGE `sww` `pkwiu` VARCHAR( 255 );
+	ALTER TABLE `invoicecontents` CHANGE `sww` `pkwiu` VARCHAR( 255 );
+    PostgreSQL:
+	ALTER TABLE tariffs RENAME sww TO pkwiu;
+	ALTER TABLE invoicecontents RENAME sww TO pkwiu;  
+
+version 1.1.4 Tanith (2003-10-03):
+  
+  - tariff list not accounts deleted users (lukasz)
+  - added new field on network list: interface - very usefull with making
+    iptables/ipchains/htb scripts when we have networks on different 
+    interfaces, in lms-mgc named %IFACE, %DIFACE and %NIFACE,
+    like allways database format upgrade needed (lukasz):
+    MySQL:
+        ALTER TABLE networks ADD interface VARCHAR(8) AFTER mask;
+    PostgreSQL:
+    	ALTER TABLE networks ADD interface VARCHAR(8);
+  - removed misprint causing MySQL's driver looses host informations from
+    lms.ini then allways try to connect with localhost (lukasz)
+  - reload.php used obsolete sqlTSfmt() (lexx/lukasz)
+  - newly added node have access by default (lukasz)
+  - amount of networks on summary was incremented by 2 (lukasz)
+  - source code cosmetics (s/this->ADB->/this->DB->/g and others) (lukasz)
+  - added traffic-stats module (taken from contrib) and bin/lms-traffic, 
+    required table 'stats' creation for them: (alec)
+    MySQL:
+	DROP TABLE IF EXISTS stats;
+	CREATE TABLE stats (
+	    nodeid int(11) NOT NULL DEFAULT '0',
+	    dt int(11) NOT NULL DEFAULT '0',
+	    upload int(11) DEFAULT '0',
+	    download int(11) DEFAULT '0',
+	    PRIMARY KEY (nodeid, dt)
+	) TYPE=MyISAM;
+    PostgreSQL:
+	DROP TABLE stats;
+	CREATE TABLE stats (
+	    nodeid integer DEFAULT 0 NOT NULL,
+	    dt integer DEFAULT 0 NOT NULL,
+	    upload integer DEFAULT 0,
+	    download integer DEFAULT 0,
+	    PRIMARY KEY (nodeid, dt)
+	);    
+  - new documentation (sgml/html/txt) (alec)
+  - bugfix allowing mac address with '-' char writing while node edition - now, 
+    like while adding - changing all '-' for ':' (lukasz)
+  - small change of philosophy in tariffs table - 'NULL' is not set limit, '0'
+    is a limit lack - why? you learn at eny day ;-) (lukasz):
+    MySQL:
+	ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(11); 
+    PostgreSQL:
+	ALTER TABLE tariffs ALTER uprate DROP NOT NULL;
+	ALTER TABLE tariffs ALTER uprate DROP DEFAULT;
+	ALTER TABLE tariffs ALTER downrate DROP NOT NULL;
+	ALTER TABLE tariffs ALTER downrate DROP DEFAULT;
+  - 'small' rewolution in finances, and 'big' database upgrade, but i think
+    you cope with this (lukasz):
+    
+    0) COMPLETELY do database backup.
+    
+    1) Create table 'assignments':
+    MySQL:
+    DROP TABLE IF EXISTS assignments;
+    CREATE TABLE assignments (
+    	id int(11) NOT NULL auto_increment,
+	tariffid int(11) NOT NULL default '0',
+	userid int(11) NOT NULL default '0',
+	period int(11) NOT NULL default '0',
+	at int(11) NOT NULL default '0',
+	PRIMARY KEY  (id),
+	UNIQUE KEY id (id),
+	KEY id_2 (id)
+    ) TYPE=MyISAM;
+    
+    PostgreSQL:
+    DROP SEQUENCE "assignments_id_seq";
+    CREATE SEQUENCE "assignments_id_seq";
+    DROP TABLE assignments;
+    CREATE TABLE assignments (
+    	id integer default nextval('assignments_id_seq'::text) NOT NULL,
+	tariffid integer default 0 NOT NULL,
+	userid integer default 0 NOT NULL,
+	period integer default 0 NOT NULL,
+	at integer default 0 NOT NULL,
+	PRIMARY KEY (id)
+    );
+    2) Run 'upgrade01' module - that means, after login write in url
+    at the end '?m=upgrade01', i.e. 'http://serwer.pl/lms/?m=upgrade01'. 
+    CAUTION! Run that module ONLY one time. If you run them couple of times,
+    you destroy your database.
+
+    3) Now cleanup of useless database columns:
+    MySQL:
+	ALTER TABLE users DROP tariff, DROP payday;
+    PostgreSQL:
+	ALTER TABLE users DROP tariff; ALTER TABLE users DROP payday;	
+
+    4) Write in cron lms-payments for runing everyday at 0:00.
+
+    5) Voila.
+
+  - new script in bin: lms-traffic-logiptables, logs transfers to log
+    accepted by alec's lms-traffic, more info in sample/lms.ini (lukasz)
+  - code optymalization at many places (lukasz)
+  - network devices list, so far stupid and ugly, but working
+    of course needed new table (lexx)
+    MySQL:
+    DROP TABLE IF EXISTS netdevices;
+    CREATE TABLE netdevices (
+        id int(11) NOT NULL auto_increment,
+        name varchar(32) default NULL,
+        description varchar(255) default NULL,
+        producer varchar(64) default NULL,
+        model varchar(32) default NULL,
+        serialnumber varchar(32) default NULL,
+        ports int(10) default NULL,
+        PRIMARY KEY  (id),
+        KEY name (name)
+    ) TYPE=MyISAM;
+
+    PostgreSQL:
+    DROP SEQUENCE "netdevices_id_seq";
+    CREATE SEQUENCE "netdevices_id_seq";
+    DROP TABLE netdevices;
+    CREATE TABLE netdevices (
+        id integer default nextval('netdevices_id_seq'::text) NOT NULL,
+        name varchar(32) default NULL,
+        description varchar(255) default NULL,
+        producer varchar(64) default NULL,
+        model varchar(32) default NULL,
+        serialnumber varchar(32) default NULL,
+        ports integer default NULL,
+        PRIMARY KEY (id)
+    );
+  - netdevices - added 'location' column (lexx)
+    MySql:
+	ALTER TABLE `netdevices` ADD `location` VARCHAR( 255 ) AFTER `name` ;
+    PosgreSQL:
+	ALTER TABLE netdevices ADD COLUMN location varchar(255);
+  - for 'Stats' module added database compacting possibility (alec)
+  - fixed http://bts.lms.org.pl/bug_view_page.php?bug_id=0000072 (lukasz)
+  - at present arp table records '00:00:00:00:00:00' are not ignored, but
+    static records (0x6/PERM) are (lukasz)
+  - still netdev, now we break down the links (Lexx)
+    MySql:
+	CREATE TABLE netlinks (
+	  id int(11) NOT NULL auto_increment,
+	  src int(11) NOT NULL default '0',
+	  dst int(11) NOT NULL default '0',
+	  PRIMARY KEY  (id)
+	) TYPE=MyISAM;
+    PosgreSQL"
+	CREATE SEQUENCE "netlinks_id_seq";
+	CREATE TABLE netlinks (
+	  id integer default nextval('netlinks_id_seq'::text) NOT NULL,
+	  src integer default 0 NOT NULL,
+	  dst integer default 0 NOT NULL,
+	  PRIMARY KEY  (id)
+	);
+  - nodes can be linked to netdevices (Lexx)
+    MySql:
+	ALTER TABLE `nodes` ADD `netdev` INT(11) NOT NULL default '0' AFTER `modid` ;
+    PosgreSQL:
+	ALTER TABLE nodes ADD netdev integer;
+	ALTER TABLE nodes ALTER COLUMN netdev SET default 0;
+	UPDATE nodes SET netdev = 0;
+	ALTER TABLE nodes ALTER COLUMN netdev SET NOT NULL;  	
+  - update 'nodesearch' module (alec)
+  - bugfixes in GetTariff() on postgres (alec)
+  - errors are now popups (lukasz)
+  - new script - bin/lms-traffic-htbiptlimits - for traffic limiting (lukasz)
+  - new files doc/UPGRADE.mysql, doc/UPGRADE.pgsql for database upgrade
+    since 1.0 to 1.1 version (alec)
+  - lms-payments not writing to table 'cash' if load value is zero (lukasz)
+  - changes in docs (lukasz):
+    - removed INSTALL.*
+    - new README and README.html - user manual
+    - cleanup
+  - fixed (I hope so) error handling - now we have tooltips (lukasz)
+	
+version 1.1.3 (2003-08-29):
+
+  - changed users philosophy - now user deletion not delete them really,
+    but only hidding and is possible get them by his ID, hi can by searched,
+    but adding nodes is not possible, on userlist hi is invisible, however
+    in his userinfo is note that hi is deleted. Of course database
+    modification needed: (lukasz)
+    MySQL:
+	ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
+    PostgreSQL:
+	ALTER TABLE users ADD deleted int2;
+	UPDATE users SET deleted=0;
+	ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
+	ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
+    (if you do this on ENUM
+    MySQL:
+ 	ALTER TABLE users CHANGE deleted deleted CHAR(1) DEFAULT 'N' NOT NULL;
+	UPDATE users SET deleted=1 WHERE deleted='Y';
+	UPDATE users SET deleted=0 WHERE deleted='N';
+	ALTER TABLE users CHANGE deleted deleted BOOL DEFAULT '0' NOT NULL;
+    PostgreSQL: the same method like with 'access' column in table 'nodes')
+  - IP address format change, database upgrade: (lukasz):
+    MySQL:
+        UPDATE nodes SET ipaddr=INET_ATON(ipaddr);
+	ALTER TABLE nodes CHANGE ipaddr ipaddr INT(16) UNSIGNED NOT NULL;
+    PostgreSQL:
+	UPDATE nodes SET ipaddr=(split_part(ipaddr,'.',1)::int4*(256^3)+
+				split_part(ipaddr,'.',2)::int4*(256^2)+
+				split_part(ipaddr,'.',3)::int4*256+
+				split_part(ipaddr,'.',4)::int4);
+	ALTER TABLE nodes ADD ipaddr2 BIGINT;
+	UPDATE nodes SET ipaddr2 = ipaddr::text::int8; 
+	ALTER TABLE nodes DROP COLUMN ipaddr;
+	ALTER TABLE nodes RENAME COLUMN ipaddr2 to ipaddr;
+	ALTER TABLE nodes ALTER COLUMN ipaddr set NOT NULL;
+
+  - change of recording method of nodes access - now is not a stupid char, but
+    boolean (that means MySQL try to imitate boolean on tinyint), and
+    another upgrade (lukasz):
+	UPDATE nodes SET access='1' WHERE access='Y';
+	UPDATE nodes SET access='0' WHERE access='N';
+	ALTER TABLE nodes CHANGE access access BOOL NOT NULL DEFAULT '1';
+    and in PostgreSQL columns are type of int2:
+	UPDATE nodes SET access= CASE access WHEN 'Y' THEN '1' ELSE '0' END;
+	ALTER TABLE nodes ADD access2 int2; 
+	UPDATE nodes SET access2 = access::text::int2; 
+	ALTER TABLE nodes DROP COLUMN access;
+	ALTER TABLE nodes RENAME COLUMN access2 TO access;
+	ALTER TABLE nodes ALTER COLUMN access SET NOT NULL;
+	ALTER TABLE nodes ALTER COLUMN access SET DEFAULT 0;
+    additional database improving operations (zalecane):
+    MySQL:
+	ALTER TABLE nodes CHANGE ownerid ownerid INT(11) DEFAULT '0' NOT NULL;
+	ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
+    PostgreSQL:
+	ALTER TABLE nodes ALTER COLUMN ownerid SET DEFAULT '0'; 
+	ALTER TABLE nodes ALTER COLUMN mac SET NOT NULL;
+	
+  - source optimized for big networks printing (lukasz)
+  - transactions while database backup restoring again enabled (lukasz)
+  
+version 1.1.2 (2003-08-24):
+
+  - new substitution (%date_month_name) in mail templates, resolves into
+    current month name, based on locales.
+  - added possibility of custom invoicing (Lexx)
+  - additional option %date_month_name in mailingu templates, solved for
+    actual month name (acc. LC_NUMERIC? hunter)
+  - some changes in docs concerning postgres, lms.pgsql upgrade (alec)
+  - humanization of empty admins table detection - now, when that table is 
+    empty LMS allows adminadd module access (lukasz)
+  - in lms-mgc network address and broadcast are ignored while rules
+    generation (lukasz)
+  - while MAC's selection entries '00:00:00:00:00:00' and 'FF:FF:FF:FF:FF:FF' 
+    are ignored (lukasz)
+  - new toy in /contrib - bandlogger+htblimiter - supporting HTB and 
+    iptables (lukasz)
+  - is done - ADOdb is not required - LMS have own libs for mysql and
+    postgres databases (lukasz)
+  - changed all '<?' (short PHP tags) to '<?php' - that should be at the
+    beginning, but who go to fall into that? (lukasz)
+
+version 1.1.1 (2003-08-09):
+
+  - new possibility of indebted users printing (MichalZ)
+  - added %TID (tariff id) and %TVAL (tariff value) in lms-mgc (lukasz)
+  - removed problems with sorting change on indebted or disconnected 
+    users (lukasz)
+  - Opera browser bugfix (change exit(0) to die) (lukasz)
+  - added possibility of payments day setting, needed SQL change:
+    MySQL: 
+	ALTER TABLE `users` ADD `payday` INT DEFAULT '5' NOT NULL;
+    PostgreSQL: 
+	ALTER TABLE users ADD payday integer;
+	ALTER TABLE users ALTER COLUMN payday SET DEFAULT 0;
+	ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
+    where in place of '5', can be write default payments day (lukasz)
+  - related to upper, not exist lms-eachmonth, now is lms-payments, 
+    which must be run everyday with cron! (lukasz)
+  - source cleanup (lukasz)
+  
+version 1.1.0 (2003-06-23):
+
+  - secondary nameserver support (%DNS2 in lms-mgc); database modification needed:
+    MySQL:	
+	ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns`;
+    PostgreSQL: 
+	ALTER TABLE networks ADD dns2 VARCHAR(16);
+  - if the lms.ini file exists in the same directory as index.php, LMS will use it instead of /etc/lms/lms.ini;
+  - default values for address, city and postal code can now be set for adding users;
+  - new file: ChangeLog.en (warden)
+  - not used table 'options' removed and lms.mysql refreshed (lukasz)
+
+version 1.0.0 (2003-05-18):
+
+  - icons have been changed (Yeah, they are awful, but nobody has done any better)
+  - some documentation. Not much but better than nothing. Any volunteers to write? :-)
+  - uff...
+
+version 1.0.0rc1 (2003-05-17):
+
+  - docs incoming (Lexx)
+  - some cleaning in LMS.class.php (lukasz)
+  - contrib/customers - simple layout for curious lusers. As an effect, the awful (?! -> warden)
+    button on the front page of LMS has disappeared. (lukasz)
+  - different access levels (basic) (lukasz)
+  - lms-notify corrected (lukasz)
+  - add 'useful links' to the greeting page (lukasz)
+  - printing layouts corrected: lists by the actual filter and without it (warden)
+  - added 'scan' option when adding a new node - searches for hosts with nbtscan (kennyGRV/lukasz)
+  - added NIC manufacturer info in nodeinfo box (lukasz)
+  - showing miscalculated last financial operations bug - fixed (lukasz)
+  - some icons have been changed (lukasz)
+  - back redirects fixed (lukasz)
+  - bogon browsers supports (some browsers do referrer rigging when logging out) (lukasz)
+  - host information added on the top of the login page (warden & lukasz)
+  - lms-scripts back in bin/ (lexx & lukasz)
+  - lms-notify finally works.
+  - mail template changed (byko/lukasz)
+  - email schema checking fixed (repcio/lukasz)
+  - a lot of cleaning :-)
+  
+version 1.0pre10 (2003-04-15):
+
+  - poprawki zgodności ze Smarty-2.5.0 (niestety, automatycznie 2.5.0 jest
+    wymagane przez LMS'a)
+  - usunięte zbędne title w liście userów
+  - poprawione wyświetlanie nazwiska usera w popupie od usuwania usera
+  - na stronie powitalnej trochę statystyk
+  - usunięty dosyć poważny błąd w lib/Session.class.php
+  - jak zwykle kosmetyka (literówki i tym podobne)
+  - logosy by Pierzak
+
+version 1.0pre9 'CVS-Has-Been-Crashed-Edition' (2003-04-13):
+  
+  - wymaga Smarty-2.4.2
+  - tooltips
+  - force ssl
+  - przy dodawaniu usera domyślna taryfa to nie ta najdroższa, a ta
+    najczęściej używana
+  - nazwa sieci może już zawierać kropkę
+  - nazwa komputera może zawierać _ (podkreślenie)
+  - sporo kosmetyki (popupy i opisy pól formularzy)
+  - logosy by Pierzak
+
+version 1.0pre8 (2003-03-30):
+
+  - poprawiony bug z edycją użytkownika i traceniem zawartości pola z
+    komentarzem
+  - przeniesiony formularz dodawania sieci do oddzielnej strony
+  - poprawione kilka innych bugów	
+
+version 1.0pre7 (2003-03-24):
+
+  - poprawiony poważny bug w lms-mgc powodujący traktowanie jako
+    prywatnej sieci tylko 192.168.1.0/24 a nie 192.168.0.0/16
+  - zrobiona lista użytkowników odłączonych i zadłużonych
+  - poprawione dodawanie userów (nie dodawali się lub imię nie zostawało
+    zapisywane (BTS: 0000019)
+  - w przypadku odrzucenia danych do dodania użytkownika gubiło się miasto w
+    fromularzu
+  - poprawione templejty tak by LMS był zgodny ze Smarty'm 2.4.2
+
+version 1.0pre6 (2003-03-17):
+
+  - możliwość edycji imienia i nazwiska użytkownika
+  - sporo kosmetyki, poprawek w sortowaniu i nie tylko
+  - SetBalanceZERO w LMS.class.php zeruje saldo
+  - %abonament zmienia się w kwotę abo zapisaną w tariffs.value
+  - usunięte polskie locales, sprawiało to więcej problemów
+    niż pożytku
+  - mały update dokumentacji
+  - dodany katalog contrib z różnymi dodatkami do LMS
+  - dodano lms.spec do contrib/ zgodnego ze specyfikacją PLD
+  - łatka usprawniająca odpalenie LMS w PLD
+  - support do pustych haseł
+  - zrobiony usersearch, nodesearch i parę innych rzeczy ;)
+  - sprawdzenie stanu konta przez usera
+  - częściowo wydruki
+  - dodane ładne cacuśne i słodkie README
+  - poprawiony pagelimiter w liście użytkowników
+  - opcja włączająca sharing mac-addr
+  - automagiczna instalacja domyślnego admina z poziomu pliku lms.mysql
+  - pole "Imię" może być puste
+
+version 1.0pre5 (2003-01-26):
+ 
+  - PLIKI KONFIGURACYJNE PRZENIESIONE DO KATALOGU /etc/lms/ !!!
+  - podział listy użytkowników na strony
+  - poprawiony bug przy dodawaniu nowego usera
+  - Pamiętanie ostatniej wybranej podsieci i ostatniego wpisanego 
+    komentarza do wpłat
+  - przykładowe configi przeniesione do sample
+  - utworzony katalog ze skryptami perlowymi - bin - znadjdują się
+    tam niektóre skrypty z modułu lms-scripts
+  - oddzielny formularz do dodawania nowych operacji finansowych
+  - informacje o taryfie i możliwość jej edycji wreszcie.
+  - poprawione parsowanie wprowadzanych danych w niektórych miejscach
+    poprzez użycie regexpów (dzięki mteg za podsunięcie pomysłu)
+  - dodano nowe pola w tablicy z użytkownikami, aby je wykorzystać i
+    bezproblemowo móc ich używać należy wykonać następujące komendy z
+    poziomu klienta mysql:
+
+    ALTER TABLE `users` ADD `gguin` INT AFTER `phone3`;
+    ALTER TABLE `users` ADD `zip` VARCHAR(6) AFTER `address` ,
+    ADD `city` VARCHAR(32) AFTER `zip`, ADD `nip` varchar(16) AFTER `city`;
+  - dodano opcję do lms-notify:
+      -D, --template-file=/etc/lms/another.template.txt
+    uruchamia ona alternatywny plik template, przydatne przy wysyłaniu
+    upomnienia, etc.
+  - Teraz %b we wzorcu wiadomości rozwija się do - (saldo) (czyli jest to
+    kwota do zapłaty, księgowi nie znają liczb ujemnych :)
+    %date-y %date-m %desc rozwijają się odpowiednio do: aktualnego roku,
+    nazwy miesiąca (set LANG=pl ?) i opisu pakietu z tariffs.
+    %last_10_in_a_table zmienia się w maksymalnie 10 ostatnich operacji na
+    koncie.
+	  
+version 1.0pre4 (2003-01-21):
+
+  - pełne przeportowanie obsługi SQL'a na ADODB
+  - support do MySQL i PostgreSQL
+  - pola uprate i downrate w taryfach. upgrade:
+  
+    ALTER TABLE tariffs ADD uprate INT DEFAULT '0' NOT NULL AFTER
+    value , ADD downrate INT DEFAULT '0' NOT NULL AFTER uprate;
+
+  - poprawka kolumny table na tablename w timestamps. upgrade:
+
+    ALTER TABLE `timestamps` CHANGE `table` `tablename` VARCHAR( 255 ) 
+    NOT NULL
+
+  - lista użytkowników: dodana kwota abonamentu miesięcznego poniżej
+    aktualnego salda użytkownika (Goblin)
+  - lista użytkowników: użytkownik którego komputery są odłączone
+    jest pokazywany na szaro
+  - wyszukiwanie użytkowników;
+  - oddzielny formularz dodawania użytkowników;
+  - wyszukiwanie użytkowników;
+  - możliwość zdefiniowania sposobu reloadu (albo via sql, albo exec
+    jakiejś komendy);
+  - poprawki w dodawaniu taryf;
+  
+version 1.0pre3 (2002-12-27):
+
+  - poprawione pobieranie hostname i uptime (Marcoos)
+  - zmiana typu kolumny value w tabeli cash z float na double
+  - zmiana typu kolumny value w tabeli tariffs z float na double
+  - dodane blokowanie dostępu do aplikacji poza określonymi hostami
+    lub klasami adresowymi
+  - poprawka parsowania ścieżek do katalogów z configa
+
+version 1.0pre2 (2002-12-25):
+
+  - parsowanie configa nie zapisuje odrazu zmiennych odczytanych
+    z ini jako globalnych, a do tablicy $_CONFIG (nie można napisać 
+    niczego poprzez plik ini)
+  - dodane sprawdzanie czy istnieją katalogi backups i templates_c 
+    oraz czy można do nich zapisywać
+  - naprawiony moduł od dodawania taryf
+  - posprzątane w niektórych plikach
+  - poprawiony plik doc/lms.mysql i doc/INSTALL
+
+version 1.0pre1 (2002-12-24):
+
+  - przepisane obiektowo
+  - napisane z wykorzystaniem engine'u template'owego Smarty
+  - dodana opcja mailingu
+  - bardzo fajne sortowanie (tm) :-)
+  - wprowadzone cacheowanie wyników (nawala, ale coś tam działa)
+
+version 0.4:
+
+  - napisana od nowa, całkowicie z wykorzystaniem sesji, oraz
+    paru ułatwień jeżeli chodzi o SQL'a
+  - dodana możliwość definicji podsieci, nie ma już
+    konieczności dłubania w źródłach aby zmienić ustawienia
+    podsieci
+  - serwer jest konfigurowany poprzez demona w perlu, słuchającego
+    na sockecie TCP/IP
+  - rozbudowane sortowanie
+  - dane administratorów są trzymane w bazie danych i nie trzeba
+    ręcznie ustawiać haseł w pliku .htpasswd
+
+version 0.3:
+   
+  - obsługa finansów i rozliczeń użytkowników
+
+version 0.2:
+
+  - obsługa komputerów, generowanie plików od maskarady na iptables i od
+    DHCP
+  - pomoc w wyszukiwaniu mac-adresów poprzez listowanie widocznych adresów w
+    trakcie dodawania
+
+version 0.1:
+
+  - autoryzacja oparta o .htpasswd w serwerze www
+  - prosta baza użytkowników zawierająca dane osobowe oraz status
+    użytkowników
