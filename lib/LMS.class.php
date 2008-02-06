@@ -1647,9 +1647,18 @@ class LMS
 					$item['count'],
 					$item['discount'],
 					$item['name'],
-					$item['tariffid']));
+					$item['tariffid']
+			));
 
-			$this->AddBalance(array('value' => $item['valuebrutto']*$item['count']*-1, 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
+			$this->AddBalance(array(
+				'time' => $cdate,
+				'value' => $item['valuebrutto']*$item['count']*-1,
+				'taxid' => $item['taxid'],
+				'customerid' => $invoice['customer']['id'],
+				'comment' => $item['name'],
+				'docid' => $iid,
+				'itemid'=>$itemid
+			));
 		}
 
 		return $iid;
@@ -1685,7 +1694,8 @@ class LMS
 					$item['count'],
 					$item['discount'],
 					$item['name'],
-					$item['tariffid']));
+					$item['tariffid']
+			));
 			
 			$this->AddBalance(array(
 				'time' => $cdate, 

@@ -12,6 +12,7 @@ version ? (????-??-??):
   - lms-notify-sms: fixed sql query on mysql (alec)
   - fixed 'suspended' filter on customers list (alec)
   - fixed payments accounting from Payments List (alec)
+  - fix: set proper cash.time in AddInvoice() (alec)
   
 version 1.10.2 Roham (2007-12-12):
 
