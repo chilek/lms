@@ -1742,9 +1742,18 @@ class LMS
 					$item['count'],
 					$item['discount'],
 					$item['name'],
-					$item['tariffid']));
+					$item['tariffid']
+			));
 
-			$this->AddBalance(array('value' => $item['valuebrutto']*$item['count']*-1, 'taxid' => $item['taxid'], 'customerid' => $invoice['customer']['id'], 'comment' => $item['name'], 'docid' => $iid, 'itemid'=>$itemid));
+			$this->AddBalance(array(
+				'time' => $cdate,
+				'value' => $item['valuebrutto']*$item['count']*-1,
+				'taxid' => $item['taxid'],
+				'customerid' => $invoice['customer']['id'],
+				'comment' => $item['name'],
+				'docid' => $iid,
+				'itemid'=>$itemid
+			));
 		}
 
 		return $iid;
@@ -1780,7 +1789,8 @@ class LMS
 					$item['count'],
 					$item['discount'],
 					$item['name'],
-					$item['tariffid']));
+					$item['tariffid']
+			));
 			
 			$this->AddBalance(array(
 				'time' => $cdate, 
@@ -3182,7 +3192,6 @@ class LMS
 				else
 					$this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?',
 						array('last_check_for_updates_timestamp'));
-
 
 				$content = unserialize((string)$content);
 				$content['regdata'] = unserialize((string)$content['regdata']);
