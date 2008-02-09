@@ -13,7 +13,9 @@ version ? (????-??-??):
   - fixed 'suspended' filter on customers list (alec)
   - fixed payments accounting from Payments List (alec)
   - fix: set proper cash.time in AddInvoice() (alec)
-  
+  - quicksearch: searching ID columns by '=' not LIKE operator, it's not
+    a bug but isn't working on postgresql 8.3 (alec) 
+
 version 1.10.2 Roham (2007-12-12):
 
   - fix: allow searching strings with '/' sign in quicksearch (alec)
