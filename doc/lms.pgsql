@@ -951,4 +951,8 @@ SELECT c.* FROM customers c
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008012200');
+CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
+SELECT $1::text;
+$$ LANGUAGE SQL IMMUTABLE;
+	
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008020900');

@@ -872,6 +872,7 @@ CREATE TABLE excludedgroups (
 	UNIQUE KEY userid (userid, customergroupid)
 ) TYPE=MyISAM;
 
+DROP FUNCTION IF EXISTS lms_current_user;
 CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
 RETURN @lms_current_user;
 
@@ -883,11 +884,17 @@ CREATE VIEW customersview AS
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 
+DROP FUNCTION IF EXISTS mask2prefix;
 CREATE FUNCTION mask2prefix(mask bigint) RETURNS smallint DETERMINISTIC
 RETURN bit_count(mask);
 
+DROP FUNCTION IF EXISTS broadcast;
 CREATE FUNCTION broadcast(address bigint, mask bigint) RETURNS bigint DETERMINISTIC
 RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 
+DROP FUNCTION IF EXISTS int2txt;
+CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
+RETURN CAST(num AS char(20));
+	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008012200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008020900');
