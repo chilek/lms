@@ -9,6 +9,10 @@ version ? (????-??-??):
   - polish documentation converted to utf8 (alec)
   - added customer ID in footer of heldesk notifications with enabled option
     phpui.helpdesk_customerinfo (alec)
+  - in quicksearch searching ID columns by '=' not LIKE operator (alec)
+  - added int2txt() SQL function designed for postgresql 8.3 compatybility, it
+    needs int-to-text type casting when using LIKE operator with numeric 
+    columns (alec)
 
 version 1.11.2 Neera (2008-01-23):
 

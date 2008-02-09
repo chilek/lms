@@ -73,19 +73,21 @@ switch($mode)
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
 			$candidates = $DB->GetAll('SELECT id, lastname, name, email, address, deleted 
-					    FROM customersview 
-					    WHERE id ?LIKE? \''.$search.'%\' 
-						    OR LOWER(lastname) ?LIKE? LOWER(\'%'.$search.'%\')
-						    OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
-						    OR LOWER(address) ?LIKE? LOWER(\'%'.$search.'%\') 
-						    OR LOWER(email) ?LIKE? LOWER(\'%'.$search.'%\') 
-						    ORDER by deleted, lastname, name, email, address LIMIT 15');
+				FROM customersview 
+				WHERE '.(ereg('^[0-9]+$', $search) ? 'id = '.intval($search).' OR ' : '').' 
+					LOWER(lastname) ?LIKE? LOWER(\'%'.$search.'%\')
+					OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
+					OR LOWER(address) ?LIKE? LOWER(\'%'.$search.'%\') 
+					OR LOWER(email) ?LIKE? LOWER(\'%'.$search.'%\') 
+				ORDER by deleted, lastname, name, email, address 
+				LIMIT 15');
+			
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
 				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '').$row['lastname'].' '.$row['name'].($row['deleted'] ? '</font>' : ''));
-				if (preg_match("~^$search~i",$row['id'])) 	{ $descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']); continue; }
+				if (preg_match("~^$search\$~i",$row['id'])) 	{ $descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']); continue; }
 //				if (preg_match("~$search~i",$row['lastname'])) 	{ $descriptions[$row['id']] = escape_js(trans('Name/Surname:').' '.$row['lastname']); continue; }
 //				if (preg_match("~$search~i",$row['name'])) 	{ $descriptions[$row['id']] = escape_js(trans('First name:').' '.$row['name']); continue; }
 				if (preg_match("~$search~i",$row['address'])) 	{ $descriptions[$row['id']] = escape_js(trans('Address:').' '.$row['address']); continue; }
@@ -119,6 +121,7 @@ switch($mode)
 		$s['city'] = $search;
 		$s['phone'] = $search;
 		$s['email'] = $search;
+
 		$SESSION->save('customersearch', $s);
 		$SESSION->save('cslk', 'OR');
 		
@@ -134,24 +137,25 @@ switch($mode)
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
 			$candidates = $DB->GetAll('SELECT n.id, n.name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, mac 
-				    FROM nodes n
-				    WHERE (n.id ?LIKE? \''.$search.'%\' 
-					    OR LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\') 
-					    OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
-					    OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 
-					    OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\')
-					    ) 
-				    AND NOT EXISTS (
+				FROM nodes n
+				WHERE '.(ereg('^[0-9]+$',$search) ? 'n.id = '.intval($search).' OR ' : '').' 
+					LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\') 
+					OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
+					OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 
+					OR LOWER(mac) ?LIKE? LOWER(\'%'.macformat($search).'%\')
+					) 
+					AND NOT EXISTS (
                     			    SELECT 1 FROM customerassignments a
 			                    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					    WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)
-				    ORDER BY n.name LIMIT 15');
+				ORDER BY n.name LIMIT 15');
+			
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=nodeinfo&id='.$row['id'];
 				$eglible[$row['id']] = escape_js($row['name']);
-				if (preg_match("~^$search~i",$row['id'])) 	{ $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']); continue; }
+				if (preg_match("~^$search\$~i",$row['id'])) 	{ $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']); continue; }
 //				if (preg_match("~$search~i",$row['name'])) 	{ $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']); continue; }
 				if (preg_match("~$search~i",$row['ip'])) 	{ $descriptions[$row['id']] = trans('IP').': '.$row['ip']; continue; }
 				if (preg_match("~$search~i",$row['ip_pub'])) 	{ $descriptions[$row['id']] = trans('IP').': '.$row['ip_pub']; continue; }
@@ -182,6 +186,7 @@ switch($mode)
 		$s['name'] = $search;
 		$s['mac'] = $search;
 		$s['ipaddr'] = $search;
+		
 		$SESSION->save('nodesearch', $s);
 		$SESSION->save('nslk', 'OR');
 
@@ -193,13 +198,23 @@ switch($mode)
 	case 'ticket':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll('SELECT rttickets.id, rttickets.subject, rttickets.requestor, customers.name, customers.lastname FROM rttickets LEFT JOIN customers on rttickets.customerid=customers.id WHERE rttickets.id ?LIKE? \''.$search.'%\' OR lower(rttickets.subject) ?LIKE? lower(\'%'.$search.'%\') OR lower(rttickets.requestor) ?LIKE? lower(\'%'.$search.'%\') OR lower(customers.name) ?LIKE? lower(\''.$search.'%\') OR lower(customers.lastname) ?LIKE? lower(\''.$search.'%\') ORDER BY rttickets.subject, rttickets.id, customers.lastname, customers.name, rttickets.requestor LIMIT 15');
+			$candidates = $DB->GetAll('SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
+				FROM rttickets t
+				LEFT JOIN customersview c on (t.customerid = c.id)
+				WHERE  '.(ereg('^[0-9]+$',$search) ? 't.id = '.intval($search).' OR ' : '').' 
+					lower(t.subject) ?LIKE? lower(\'%'.$search.'%\') 
+					OR lower(t.requestor) ?LIKE? lower(\'%'.$search.'%\') 
+					OR lower(c.name) ?LIKE? lower(\''.$search.'%\') 
+					OR lower(c.lastname) ?LIKE? lower(\''.$search.'%\')
+					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
+					LIMIT 15');
+		
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=rtticketview&id='.$row['id'];
 				$eglible[$row['id']] = escape_js($row['subject']);
-				if (preg_match("~$search~i",$row['id'])) 	{ $descriptions[$row['id']] = trans('Id').': '.$row['id']; continue; }
+				if (preg_match("~^$search\$~i",$row['id'])) 	{ $descriptions[$row['id']] = trans('Id').': '.$row['id']; continue; }
 				if (preg_match("~$search~i",$row['subject'])) 	{ $descriptions[$row['id']] = escape_js(trans('Subject:').' '.$row['subject']); continue; }
 				if (preg_match("~$search~i",$row['requestor'])) { $descriptions[$row['id']] = escape_js(trans('First/last name').': '.preg_replace('/ <.*/','',$row['requestor'])); continue; }
 				if (preg_match("~^$search~i",$row['name'])) 	{ $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['name']); continue; }
