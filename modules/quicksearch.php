@@ -81,7 +81,7 @@ switch($mode)
 					OR LOWER(email) ?LIKE? LOWER(\'%'.$search.'%\') 
 				ORDER by deleted, lastname, name, email, address 
 				LIMIT 15');
-			
+
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
@@ -138,7 +138,7 @@ switch($mode)
 		{
 			$candidates = $DB->GetAll('SELECT n.id, n.name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, mac 
 				FROM nodes n
-				WHERE '.(ereg('^[0-9]+$',$search) ? 'n.id = '.intval($search).' OR ' : '').' 
+				WHERE ('.(ereg('^[0-9]+$',$search) ? 'n.id = '.intval($search).' OR ' : '').' 
 					LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\') 
 					OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
 					OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 

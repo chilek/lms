@@ -26,8 +26,8 @@
 
 $DB->BeginTrans();
 
+$DB->Execute("DROP FUNCTION IF EXISTS int2txt");
 $DB->Execute("
-    DROP FUNCTION IF EXISTS int2txt;
     CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
     RETURN CAST(num AS char(20));
 ");
