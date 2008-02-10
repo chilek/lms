@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.10.3 Vidrine (2008-02-10):
 
   - fixed 'at' checking of yearly assignments when 'at' is empty (alec)
   - BTS#0000713: fixed financial operations mass addition (alec/endrju)
@@ -14,7 +14,7 @@ version ? (????-??-??):
   - fixed payments accounting from Payments List (alec)
   - fix: set proper cash.time in AddInvoice() (alec)
   - quicksearch: searching ID columns by '=' not LIKE operator, it's not
-    a bug but isn't working on postgresql 8.3 (alec) 
+    a bug but it wasn't working on postgresql 8.3 (alec) 
 
 version 1.10.2 Roham (2007-12-12):
 
