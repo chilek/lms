@@ -27,7 +27,7 @@
 if($_GET['is_sure'] == '1') 
 {
 	$AUTH->LogOut();
-	header('Location: ?m=welcome');
+	header('Location: ?');
 } else
 	header('Location: ?m='.$SESSION->get('lastmodule'));
 
