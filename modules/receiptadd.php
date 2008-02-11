@@ -38,7 +38,7 @@ function GetCustomerCovenants($id)
 			WHERE cash.customerid = ? AND d.type IN (?,?) AND d.closed = 0
 			GROUP BY docid, cdate, number, template, reference
 			HAVING SUM(value) < 0
-			ORDER BY cdate DESC LIMIT 10', 'id', array($id, DOC_INVOICE, DOC_CNOTE)))
+			ORDER BY cdate DESC', 'id', array($id, DOC_INVOICE, DOC_CNOTE)))
 	{
 		foreach($invoicelist as $idx => $row)
 		{
@@ -92,7 +92,7 @@ function GetCustomerNotes($id)
 			WHERE cash.customerid = ? AND documents.type = ? AND documents.closed = 0
 			GROUP BY docid, cdate, number, template
 			HAVING SUM(value) > 0
-			ORDER BY cdate DESC LIMIT 10', array($id, DOC_CNOTE)))
+			ORDER BY cdate DESC', array($id, DOC_CNOTE)))
 	{
 		foreach($invoicelist as $idx => $row)
 		{
@@ -829,6 +829,7 @@ switch($receipt['type'])
 $invoicelist = array();
 
 if(isset($list))
+{
 	if($contents)
 		foreach($list as $idx => $row)
 		{
@@ -840,6 +841,8 @@ if(isset($list))
 		}
 	else
 		$invoicelist = $list;
+	$invoicelist = array_slice($invoicelist, 0, 10);
+}
 
 if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
 {
