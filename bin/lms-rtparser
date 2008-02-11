@@ -115,7 +115,7 @@ my $autoreply_from = $ini->val('rt', 'mail_from') || '';
 my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
 my $autoreply_subject = $ini->val('rt', 'autoreply_subject') || "[RT#%tid] Receipt of request '%subject'";
 my $autoreply_body = $ini->val('rt', 'autoreply_body') || '';
-my $autoreply = $ini->val('rt', 'autoreply') || 0;
+my $autoreply = $ini->val('rt', 'autoreply') || 1;
 
 if($smtp_auth && $smtp_auth !~ /LOGIN|PLAIN|CRAM-MD5|NTLM/i)
 {
