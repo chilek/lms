@@ -13,6 +13,7 @@ version ? (????-??-??):
   - added int2txt() SQL function designed for postgresql 8.3 compatybility, it
     needs int-to-text type casting when using LIKE operator with numeric 
     columns (alec)
+  - receiptadd: we always show last 10 REALLY not accounted invoices (chilan)
 
 version 1.11.2 Neera (2008-01-23):
 
