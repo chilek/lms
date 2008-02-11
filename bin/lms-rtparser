@@ -98,7 +98,7 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
-my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost'; # backward copatybility
+my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost'; # backward compatibility
 my $smtp_host = $ini->val('rt', 'smtp_host') || $smtpserver;
 my $smtp_user = $ini->val('rt', 'smtp_user') || '';
 my $smtp_pass = $ini->val('rt', 'smtp_pass') || '';
@@ -115,11 +115,12 @@ my $autoreply_from = $ini->val('rt', 'mail_from') || '';
 my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
 my $autoreply_subject = $ini->val('rt', 'autoreply_subject') || "[RT#%tid] Receipt of request '%subject'";
 my $autoreply_body = $ini->val('rt', 'autoreply_body') || '';
+my $autoreply = $ini->val('rt', 'autoreply') || 0;
 
 if($smtp_auth && $smtp_auth !~ /LOGIN|PLAIN|CRAM-MD5|NTLM/i)
 {
-        print STDERR "Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n";
-        exit 1;
+	print STDERR "Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n";
+	exit 1;
 }
 		
 if(! $autoreply_body)
@@ -310,6 +311,7 @@ if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 }
 
 my $ticket_id;
+my $ticketid;
 my $rt_msgid;
 my $reqcustid = 0;
 my $requserid = 0;
@@ -326,33 +328,45 @@ $toemail =~ s/^.*<(.+\@.+)>$/\1/g;
 my $toemail2 = $mh_cc;
 $toemail2 =~ s/^.*<(.+\@.+)>$/\1/g;
 
-if(! $prev_tid) # generate new ticket if previous not found
+# find queue ID if not specified
+if(!$queue)
 {
-	# find queue ID if not specified
-	if(!$queue)
-	{
-		$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = ? OR email = ?");
-		$dbq->execute($toemail, $toemail2);
-		if(my $row = $dbq->fetchrow_hashref())
-		{
-			$queue = $row->{'id'};
-		}
-	}
-	
-	if(!$queue)
-	{
-		print STDERR "Fatal error: Queue ID not found, exiting.\n";
-		exit 1;
-	}
-
-	# find customerid
-	$dbq = $dbase->prepare("SELECT id FROM customers WHERE email = ?");
-	$dbq->execute($fromemail);
+	$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = ? OR email = ?");
+	$dbq->execute($toemail, $toemail2);
 	if(my $row = $dbq->fetchrow_hashref())
 	{
-		$reqcustid = $row->{'id'};
+		$queue = $row->{'id'};
 	}
+}
 
+if(!$queue)
+{
+	print STDERR "Fatal error: Queue ID not found, exiting.\n";
+	exit 1;
+}
+
+# find customerid
+$dbq = $dbase->prepare("SELECT id FROM customers WHERE email = ?");
+$dbq->execute($fromemail);
+if(my $row = $dbq->fetchrow_hashref())
+{
+	$reqcustid = $row->{'id'};
+}
+
+# get sender e-mail if not specified
+if(!$autoreply_from)
+{
+	$dbq = $dbase->prepare("SELECT email, name FROM rtqueues WHERE id = $queue");
+	$dbq->execute();
+	if(my $row = $dbq->fetchrow_hashref())
+	{
+		$autoreply_from = $row->{'email'};
+		$autoreply_name = $autoreply_name || $row->{'name'};
+	}
+}
+
+if(! $prev_tid) # generate new ticket if previous not found
+{
 	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, customerid, subject, createtime) 
 			VALUES ($queue, ?, $reqcustid, ?, $timestamp)");
 	$dbq->execute($mh_from, $mh_subject);
@@ -375,19 +389,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};	
 
-	# get sender e-mail if not specified
-	if(!$autoreply_from)
-	{
-		$dbq = $dbase->prepare("SELECT email, name FROM rtqueues WHERE id = $queue");
-		$dbq->execute();
-		if(my $row = $dbq->fetchrow_hashref())
-		{
-			$autoreply_from = $row->{'email'};
-			$autoreply_name = $autoreply_name || $row->{'name'};
-		}
-	}
-	
-	my $ticketid = sprintf("%06d", $ticket_id);
+	$ticketid = sprintf("%06d", $ticket_id);
 	$autoreply_subject =~ s/\%tid/$ticketid/g;
 	$autoreply_subject =~ s/\%subject/$mail_mh_subject/g;
 	$autoreply_body =~ s/\%tid/$ticketid/g;
@@ -400,89 +402,40 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$replytoname = encode_mimeword($replytoname,'q','UTF-8');
 	$fromname = encode_mimeword($fromname,'q','UTF-8');
 	
-	if($replytoemail) {
-		$mailto = "$replytoname <$replytoemail>";
-	} else {
-		$mailto = "$fromname <$fromemail>";
-	}
-
-	$Mail::Sender::NO_X_MAILER = 1;
-	$Mail::Sender::SITE_HEADERS = "X-Mailer: LMS/RT v.$_version";
-
-        (new Mail::Sender)->MailMsg ({
-	        smtp => $smtp_host,
-		from => $autoreply_from,
-		auth => $smtp_auth,
-		authid => $smtp_user,
-		authpwd => $smtp_pass,
-		on_errors => undef,
-#		debug_level => 4,
-#		debug => './log.txt',
-		subject => $c_subject,
-		fake_from => "\"$autoreply_name\" <$autoreply_from>",
-		to => $replytoemail || $fromemail,
-		fake_to => $mailto,
-		encoding => '8bit',
-		charset => 'UTF-8',
-		messageid => "<confirm.$ticket_id.$queue.$timestamp\@rtsystem.$hostname>",
-		headers => 
-			"References: $mh_references $mh_msgid\n"
-			."In-Reply-To: $mh_msgid",
-		msg => "$autoreply_body\n",
-	});	
-	
-	if($notify)
+	if($autoreply)
 	{
-		my $body = "$mailbody\n\n$lms_url/?m=rtticketview&id=$ticket_id";
-
-		# find users emails
-		$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights 
-				WHERE users.id = userid AND queueid = $queue 
-				AND email != '' AND (rtrights.rights & 8) = 8");
-		$dbq->execute();
-
-		if($dbq->rows() && $reqcustid && $customerinfo)
-		{
-			my $dbqc = $dbase->prepare("SELECT id, $custname, email, address, zip, city,
-					    (SELECT phone FROM customercontacts WHERE customerid = customers.id 
-						    ORDER BY id LIMIT 1) AS phone
-					    FROM customers WHERE id = $reqcustid");
-			$dbqc->execute();
-			if(my $customer = $dbqc->fetchrow_hashref())
-			{
-				$body .= "\n\n-- \n";
-				$body .= "$customer->{'customername'}\n";
-				$body .= "$customer->{'address'}, $customer->{'zip'} $customer->{'city'}\n";
-				$body .= "$customer->{'phone'}\n";
-				$body .= "$customer->{'email'}\n";
-			}
-			$dbqc->finish();
+		if($replytoemail) {
+			$mailto = "$replytoname <$replytoemail>";
+		} else {
+			$mailto = "$fromname <$fromemail>";
 		}
-		
-		while(my $row = $dbq->fetchrow_hashref())
-		{
-    			(new Mail::Sender)->MailMsg ({
-			        smtp => $smtp_host,
-				from => $autoreply_from,
-				auth => $smtp_auth,
-				authid => $smtp_user,
-				authpwd => $smtp_pass,
-				on_errors => undef,
-#				debug_level => 4,
-#				debug => './log.txt',
-				subject => "[RT#$ticketid] $mail_mh_subject",
-				fake_from => "\"$autoreply_name\" <$autoreply_from>",
-				to => $row->{'email'},
-				fake_to => "\"$row->{'name'}\" <$row->{'email'}>",
-				encoding => '8bit',
-				charset => 'UTF-8',
-				headers => 
-					"References: $mh_references $mh_msgid\n"
-					."In-Reply-To: $mh_msgid",
-				msg => "$body\n",
-			});
-		}
+
+		$Mail::Sender::NO_X_MAILER = 1;
+		$Mail::Sender::SITE_HEADERS = "X-Mailer: LMS/RT v.$_version";
+
+	        (new Mail::Sender)->MailMsg ({
+		        smtp => $smtp_host,
+			from => $autoreply_from,
+			auth => $smtp_auth,
+			authid => $smtp_user,
+			authpwd => $smtp_pass,
+			on_errors => undef,
+#			debug_level => 4,
+#			debug => './log.txt',
+			subject => $c_subject,
+			fake_from => "\"$autoreply_name\" <$autoreply_from>",
+			to => $replytoemail || $fromemail,
+			fake_to => $mailto,
+			encoding => '8bit',
+			charset => 'UTF-8',
+			messageid => "<confirm.$ticket_id.$queue.$timestamp\@rtsystem.$hostname>",
+			headers => 
+				"References: $mh_references $mh_msgid\n"
+				."In-Reply-To: $mh_msgid",
+			msg => "$autoreply_body\n",
+		});	
 	}
+
 }
 else
 {
@@ -519,6 +472,60 @@ else
 	}
 
 	$ticket_id = $prev_tid;
+	$ticketid = sprintf("%06d", $ticket_id);
+}
+
+if($notify)
+{
+	my $body = "$mailbody\n\n$lms_url/?m=rtticketview&id=$ticket_id";
+
+	# find users emails
+	$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights 
+			WHERE users.id = userid AND queueid = $queue 
+			AND email != '' AND (rtrights.rights & 8) = 8");
+	$dbq->execute();
+
+	if($dbq->rows() && $reqcustid && $customerinfo)
+	{
+		my $dbqc = $dbase->prepare("SELECT id, $custname, email, address, zip, city,
+				    (SELECT phone FROM customercontacts WHERE customerid = customers.id 
+					    ORDER BY id LIMIT 1) AS phone
+				    FROM customers WHERE id = $reqcustid");
+		$dbqc->execute();
+		if(my $customer = $dbqc->fetchrow_hashref())
+		{
+			$body .= "\n\n-- \n";
+			$body .= "$customer->{'customername'}\n";
+			$body .= "$customer->{'address'}, $customer->{'zip'} $customer->{'city'}\n";
+			$body .= "$customer->{'phone'}\n";
+			$body .= "$customer->{'email'}\n";
+		}
+		$dbqc->finish();
+	}
+
+	while(my $row = $dbq->fetchrow_hashref())
+	{
+		(new Mail::Sender)->MailMsg ({
+		        smtp => $smtp_host,
+			from => $autoreply_from,
+			auth => $smtp_auth,
+			authid => $smtp_user,
+			authpwd => $smtp_pass,
+			on_errors => undef,
+#			debug_level => 4,
+#			debug => './log.txt',
+			subject => "[RT#$ticketid] $mail_mh_subject",
+			fake_from => "\"$autoreply_name\" <$autoreply_from>",
+			to => $row->{'email'},
+			fake_to => "\"$row->{'name'}\" <$row->{'email'}>",
+			encoding => '8bit',
+			charset => 'UTF-8',
+			headers => 
+				"References: $mh_references $mh_msgid\n"
+				."In-Reply-To: $mh_msgid",
+			msg => "$body\n",
+		});
+	}
 }
 
 if(scalar @attachments && $save_path)
