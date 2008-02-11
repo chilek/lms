@@ -401,7 +401,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$autoreply_name = encode_mimeword($autoreply_name,'q','UTF-8');
 	$replytoname = encode_mimeword($replytoname,'q','UTF-8');
 	$fromname = encode_mimeword($fromname,'q','UTF-8');
-	
+
 	if($autoreply)
 	{
 		if($replytoemail) {
