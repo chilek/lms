@@ -122,7 +122,7 @@ if($smtp_auth && $smtp_auth !~ /LOGIN|PLAIN|CRAM-MD5|NTLM/i)
 	print STDERR "Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n";
 	exit 1;
 }
-		
+
 if(! $autoreply_body)
 {
 	$autoreply_body = "Your request was registered in our system.\n".
