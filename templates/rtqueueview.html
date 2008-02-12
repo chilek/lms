@@ -21,7 +21,10 @@
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="5">
-			<FORM method="GET" action="?m=rtqueueview" name="filter">
+		    <TABLE cellpadding="0" cellspacing="0">
+			<TR>
+			    <TD width="1%" NOWRAP>
+			    <FORM method="GET" action="?m=rtqueueview" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="rtqueueview">
 				<INPUT type="HIDDEN" name="page" value="1">
@@ -48,7 +51,13 @@
 					 <OPTION value="{$users[users].id}"{if $users[users].id == $queuedata.owner} SELECTED{/if}>{$users[users].name|truncate:40:"...":true}</OPTION>
 					{/section}
 				</SELECT>
-			</FORM>
+			    </FORM>
+			    </TD>
+			    <TD width="99%" align="right">
+				<A HREF="?m=rtticketadd&id={$queuedata.id}">{t}New Ticket{/t} <IMG src="img/save.gif" ALT=""></A>
+			    </TD>
+			</TR>
+		    </TABLE>
 		</TD>
 	</TR>		
 	{if $queuedata.total != 0}
@@ -58,11 +67,6 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR class="light">
-		<TD COLSPAN="5" class="fall" ALIGN="right">
-			<A HREF="?m=rtticketadd&id={$queuedata.id}">{t}New Ticket{/t} <IMG src="img/save.gif" ALT=""></A>
-		</TD>
-	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=ticket loop=$queue start=$start max=$pagelimit}
 	<TR class="{cycle}{if $queue[ticket].state == 2} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
