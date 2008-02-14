@@ -5,7 +5,7 @@
 # Bardzo g³upi skrypt do budowania paczek z LMS'em
 #
 
-WORKDIR=`pwd` 
+WORKDIR=`pwd`
 NOTDISTRIB="devel aaa .project modules/core modules/mailing modules/auth modules/traffic modules/users lib/ExecStack.class.php"
 SMARTYVER="2.6.18"
 
