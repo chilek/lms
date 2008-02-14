@@ -3,7 +3,7 @@
 #
 # Pokazuje przez less'a diffy wszystkich plików które zmienione s± i je commituje
 #
-
+ 
 export CVSEDITOR="vim"
 rm -v `find .|grep bak$`
 rm -v `find .|grep "~$"`
