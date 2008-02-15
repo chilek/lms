@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - Aliases List: removed unused sql query (alec)
+
 version 1.10.3 Vidrine (2008-02-10):
 
   - fixed 'at' checking of yearly assignments when 'at' is empty (alec)
