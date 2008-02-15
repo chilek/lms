@@ -3,7 +3,7 @@
 #
 # Pokazuje przez less'a diffy wszystkich plików które zmienione s± i je commituje
 #
-#  Added comment1
+#  Added comment12
 
 export CVSEDITOR="vim"
 rm -v `find .|grep bak$`
