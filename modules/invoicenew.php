@@ -160,6 +160,7 @@ switch($action)
 			if(checkdate($month, $day, $year)) 
 			{
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+				$currmonth = $month;
 			}
 			else
 			{
@@ -298,7 +299,7 @@ $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, date('Y/m', $invoice['cdate'])));
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('newinvoice', isset($_GET['invoice']) ? $_GET['invoice'] : NULL);
 $SMARTY->assign('original', isset($_GET['original']) ? TRUE : FALSE);
