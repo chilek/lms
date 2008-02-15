@@ -3340,7 +3340,7 @@ class LMS
 			ORDER BY value', 'id', array($from, $to));
 	}
 	
-	function GetNumberPlans($doctype=NULL)
+	function GetNumberPlans($doctype=NULL, $cdate=NULL)
 	{
 		if(is_array($doctype))
 			$list = $this->DB->GetAllByKey('
@@ -3359,7 +3359,13 @@ class LMS
 		
 		if($list)
 		{
-			$currmonth = date('n');
+			if($cdate)
+				list($curryear, $currmonth) = split('/', $cdate);
+			else
+			{
+				$curryear = date('Y');
+				$currmonth = date('n');
+			}
 			switch($currmonth)
 			{
 				case 1: case 2: case 3: $startq = 1; break;
@@ -3368,12 +3374,12 @@ class LMS
 				case 10: case 11: case 12: $startq = 10; break;
 			}
 	
-			$yearstart = mktime(0,0,0,1,1);
-			$yearend = mktime(0,0,0,1,1,date('Y')+1);
+			$yearstart = mktime(0,0,0,1,1,$curryear);
+			$yearend = mktime(0,0,0,1,1,$curryear+1);
 			$quarterstart = mktime(0,0,0,$startq,1);
 			$quarterend = mktime(0,0,0,$startq+3,1);
-			$monthstart = mktime(0,0,0,$currmonth,1);
-			$monthend = mktime(0,0,0,$currmonth+1,1);
+			$monthstart = mktime(0,0,0,$currmonth,1,$curryear);
+			$monthend = mktime(0,0,0,$currmonth+1,1,$curryear);
 			$weekstart = mktime(0,0,0,$currmonth,date('j')-strftime('%u')+1);
 			$weekend = mktime(0,0,0,$currmonth,date('j')-strftime('%u')+1+7);
 			$daystart = mktime(0,0,0);

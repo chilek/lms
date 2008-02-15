@@ -14,6 +14,7 @@ version ? (????-??-??):
     needs int-to-text type casting when using LIKE operator with numeric 
     columns (alec)
   - receiptadd: we always show last 10 REALLY not accounted invoices (chilan)
+  - invoicenew: we choose last invoice number according to selected month (chilan)
 
 version 1.11.2 Neera (2008-01-23):
 
