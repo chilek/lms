@@ -91,11 +91,17 @@ elseif(isset($_POST['customeradd']))
 	if($customeradd['address'] == '')
 		$error['address'] = trans('Address required!');
 	
-	if($customeradd['ten'] !='' && !check_ten($customeradd['ten']))
-		$error['ten'] = trans('Incorrect Tax Exempt Number!');
+	if($customeradd['ten'] !='' && !check_ten($customeradd['ten']) && !isset($customeradd['tenwarning']))
+	{
+		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+		$customeradd['tenwarning'] = 1;
+	}
 
-	if($customeradd['ssn'] != '' && !check_ssn($customeradd['ssn']))
-		$error['ssn'] = trans('Incorrect Social Security Number!');
+	if($customeradd['ssn'] != '' && !check_ssn($customeradd['ssn']) && !isset($customeradd['ssnwarning']))
+	{
+		$error['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+		$customeradd['ssnwarning'] = 1;
+	}
 
 	if($customeradd['icn'] != '' && !check_icn($customeradd['icn']))
 		$error['icn'] = trans('Incorrect Identity Card Number!');

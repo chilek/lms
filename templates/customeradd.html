@@ -155,6 +155,9 @@
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
+						{if $customeradd.ssnwarning}
+						<INPUT TYPE="HIDDEN" NAME="customeradd[ssnwarning]" VALUE="1">
+						{/if}
 					</TD>
 				</TR>
 				<TR>
@@ -163,6 +166,9 @@
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
+						{if $customeradd.tenwarning}
+						<INPUT TYPE="HIDDEN" NAME="customeradd[tenwarning]" VALUE="1">
+						{/if}
 					</TD>
 				</TR>
 				<TR>

@@ -58,11 +58,17 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 	if($customerdata['address']=='')
 		$error['address'] = trans('Address required!');
 
-	if($customerdata['ten'] !='' && !check_ten($customerdata['ten']))
-		$error['ten'] = trans('Incorrect Tax Exempt Number!');
+	if($customerdata['ten'] !='' && !check_ten($customerdata['ten']) && !isset($customerdata['tenwarning']))
+	{
+		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+		$tenwarning = 1;
+	}
 
-	if($customerdata['ssn'] != '' && !check_ssn($customerdata['ssn']))
-		$error['ssn'] = trans('Incorrect Social Security Number!');
+	if($customerdata['ssn'] != '' && !check_ssn($customerdata['ssn']) && !isset($customerdata['ssnwarning']))
+	{
+		$error['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+		$ssnwarning = 1;
+	}
 
 	if($customerdata['regon'] != '' && !check_regon($customerdata['regon']))
 		$error['regon'] = trans('Incorrect Business Registration Number!');
@@ -149,6 +155,8 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		$customerinfo['moddateh'] = $olddata['moddateh'];
 		$customerinfo['customername'] = $olddata['customername'];
 		$customerinfo['balance'] = $olddata['balance'];
+		$customerinfo['tenwarning'] = $tenwarning;
+		$customerinfo['ssnwarning'] = $ssnwarning;
 		
 		$SMARTY->assign('error',$error);
 	}
