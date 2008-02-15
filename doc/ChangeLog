@@ -15,6 +15,7 @@ version ? (????-??-??):
     columns (alec)
   - receiptadd: we always show last 10 REALLY not accounted invoices (chilan)
   - invoicenew: we choose last invoice number according to selected month (chilan)
+  - we can set incorrect SSN and TEN for customers if we wish it (chilan)
 
 version 1.11.2 Neera (2008-01-23):
 

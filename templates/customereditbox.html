@@ -147,6 +147,9 @@
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="customerdata[ssn]" VALUE="{$customerinfo.ssn}" SIZE="40" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
+			{if $customerinfo.ssnwarning}
+			<INPUT TYPE="HIDDEN" NAME="customerdata[ssnwarning]" VALUE="1">
+			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -155,6 +158,9 @@
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="customerdata[ten]" VALUE="{$customerinfo.ten}" SIZE="40" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
+			{if $customerinfo.tenwarning}
+			<INPUT TYPE="HIDDEN" NAME="customerdata[tenwarning]" VALUE="1">
+			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
