@@ -35,7 +35,7 @@
 					<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
 					<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
 					{section name=customerlist loop=$customerlist}
-					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true}</OPTION>
+					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:35:"...":true}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}Type:{/t}
@@ -53,13 +53,13 @@
 					<OPTION value="1"{if $listdata.kind eq 1} SELECTED {/if}>{t}expired{/t}</OPTION>
 					<OPTION value="2"{if $listdata.kind eq 2} SELECTED {/if}>{t}active{/t}</OPTION>
 				</SELECT>&nbsp;
-				{t}Domain:{/t}
+				<NOBR>{t}Domain:{/t}
 				<SELECT size="1" name="d" OnChange="document.filter.submit();">
 					<OPTION value=""{if $listdata.domain eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
 					{section name=domainlist loop=$domainlist}
 					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
 					{/section}
-				</SELECT>
+				</SELECT></NOBR>
 			</FORM>
 		</TD>
 	</TR>		
