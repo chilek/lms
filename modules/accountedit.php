@@ -24,27 +24,23 @@
  *  $Id$
  */
 
-function AccountExists($id) 
-{
-	global $DB;
-	return ($DB->GetOne('SELECT id FROM passwd WHERE id = ?', array($id)) ? TRUE : FALSE);
-}
-
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 $option = isset($_GET['op']) ? $_GET['op'] : '';
 
-if($id && !AccountExists($id))
+$account = $DB->GetRow('SELECT p.id, p.ownerid, p.login, p.realname, 
+		p.lastlogin, p.domainid, p.expdate, p.type, p.home, 
+		p.quota_sh, p.quota_mail, p.quota_www, p.quota_ftp, p.quota_sql, '
+		.$DB->Concat('c.lastname', "' '", 'c.name').' 
+		AS customername, d.name AS domain 
+		FROM passwd p
+		JOIN domains d ON (p.domainid = d.id)
+		LEFT JOIN customers c ON (c.id = p.ownerid)
+		WHERE p.id = ?', array($id));
+
+if(!$account)
 {
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$account = $DB->GetRow('SELECT passwd.id AS id, ownerid, login, realname, lastlogin, domainid, 
-			expdate, type, home, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql, '
-			.$DB->Concat('customers.lastname', "' '", 'customers.name').' AS customername 
-			FROM passwd 
-			LEFT JOIN customers ON customers.id = ownerid WHERE passwd.id = ?', array($id));
 
 foreach(array('sh', 'mail', 'www', 'ftp', 'sql') as $type)
 	$quota[$type] = $account['quota_'.$type];
@@ -53,7 +49,7 @@ switch ($option)
 {
     case 'chpasswd':
 	
-	$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login']);
+	$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login'].'@'.$account['domain']);
 	
 	if(isset($_POST['passwd']))
 	{
@@ -67,7 +63,9 @@ switch ($option)
 	
 		if(!$error)
 		{
-			$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', array(crypt($account['passwd1']), $id));
+			$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', 
+				array(crypt($account['passwd1']), $id));
+		
 			$SESSION->redirect('?m=accountlist');
 		}
 	}
@@ -77,7 +75,7 @@ switch ($option)
     
     default:
     
-	$layout['pagetitle'] = trans('Account Edit: $0', $account['login']);
+	$layout['pagetitle'] = trans('Account Edit: $0', $account['login'].'@'.$account['domain']);
     
 	if(isset($_POST['account']))
 	{
@@ -91,10 +89,15 @@ switch ($option)
 		
 		if(!eregi("^[a-z0-9._-]+$", $account['login']))
     			$error['login'] = trans('Login contains forbidden characters!');
+		elseif(!$account['domainid'])
+            		$error['domainid'] = trans('You have to select domain for account!');
 		elseif($account['login'] != $oldlogin)
-			if($LMS->GetAccountId($account['login'], $account['domainid']))
+			if($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?',
+				array($account['login'], $account['domainid'])))
+			{
 				$error['login'] = trans('Account with that login name exists!'); 
-	
+			}
+		
 		if($account['expdate'] == '')
 			$account['expdate'] = 0;
 		else
@@ -108,16 +111,16 @@ switch ($option)
 
 		$account['type'] = array_sum($account['type']);
 
-		if(!$account['domainid'] && (($account['type'] & 2) == 2))
-			$error['domainid'] = trans('E-mail account must contain domain part!');
-
 		if($account['domainid'] && $account['ownerid'])
     			if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
 	            		$error['domainid'] = trans('Selected domain has other owner!');
 						
 		if(!$error)
 		{
-			$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, home = ?, expdate = ?, domainid = ?, type = ?, quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ?, quota_sql = ? WHERE id = ?', 
+			$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, 
+				home = ?, expdate = ?, domainid = ?, type = ?, 
+				quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ?, 
+				quota_sql = ? WHERE id = ?', 
 				array(	$account['ownerid'], 
 					$account['login'],
 					$account['realname'],
@@ -139,6 +142,8 @@ switch ($option)
 	
 	$template = 'accountedit.html';
 }
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('quota', $quota);

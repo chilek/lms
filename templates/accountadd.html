@@ -13,7 +13,6 @@
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
-<P>
 <FORM method="POST" action="?m=accountadd" name="account">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">
@@ -64,7 +63,7 @@
 					<B>{t}Domain:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					<select name="account[domainid]" {tip text="Select domain name (optional)" trigger="domainid"}>
+					<select name="account[domainid]" {tip text="Select domain name" trigger="domainid"}>
 					    <option value="0" {if !$account.domainid}SELECTED{/if}>{t}- select domain -{/t}</option>
 					    {section name=domainlist loop=$domainlist}
 					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id eq $account.domainid}SELECTED{/if}>{$domainlist[domainlist].name}</option>
@@ -171,7 +170,7 @@
 		</TD>
 	</TR>
 </TABLE>
-</FORM></P>
+</FORM>
 <SCRIPT type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['account'].elements['account[expdate]']);

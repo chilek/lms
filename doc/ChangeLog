@@ -16,6 +16,12 @@ version ? (????-??-??):
   - receiptadd: we always show last 10 REALLY not accounted invoices (chilan)
   - invoicenew: we choose last invoice number according to selected month (chilan)
   - we can set incorrect SSN and TEN for customers if we wish it (chilan)
+  - hosting: menu Accounts renamed to Hosting (alec)
+  - hosting: domain for account is required now (alec)
+  - hosting: added possibility to create multi-destination aliases (alec) 
+  - hosting: on Domains List added assigned accounts number (alec)
+  - hosting: improved interface, added info, delete links (alec)
+  - hosting: added domain/account/alias info pages (alec)
 
 version 1.11.2 Neera (2008-01-23):
 

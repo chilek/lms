@@ -35,25 +35,26 @@ function GetDomainList($order='name,asc', $customer='')
 	switch($order)
 	{
 		case 'id':
-			$sqlord = " ORDER BY domains.id $direction";
+			$sqlord = " ORDER BY d.id $direction";
 		break;
 		case 'description':
-			$sqlord = " ORDER BY description $direction";
+			$sqlord = " ORDER BY d.description $direction";
 		break;
 		case 'customer':
 			$sqlord = " ORDER BY customername $direction";
 		break;
 		default:
-			$sqlord = " ORDER BY name $direction";
+			$sqlord = " ORDER BY d.name $direction";
 		break;
 	}
 
-	$list = $DB->GetAll('SELECT domains.id AS id, domains.name AS name, description, ownerid, '
-				.$DB->Concat('lastname', "' '",'customers.name').' AS customername 
-				FROM domains 
-				LEFT JOIN customers ON (ownerid = customers.id) '
-				.($customer != '' ? ' WHERE ownerid = '.$customer : '')
-				.($sqlord != '' ? $sqlord : ''));
+	$list = $DB->GetAll('SELECT d.id AS id, d.name AS name, d.description, 
+		d.ownerid, (SELECT COUNT(*) FROM passwd WHERE domainid = d.id) AS cnt, '
+		.$DB->Concat('lastname', "' '",'c.name').' AS customername 
+		FROM domains d
+		LEFT JOIN customers c ON (d.ownerid = c.id) '
+		.($customer != '' ? ' WHERE d.ownerid = '.$customer : '')
+		.($sqlord != '' ? $sqlord : ''));
 	
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
@@ -87,10 +88,12 @@ $SESSION->save('dlp', $page);
 $layout['pagetitle'] = trans('Domains List');
 
 $domainlist = GetDomainList($o, $c);
+
 $listdata['total'] = $domainlist['total'];
 $listdata['order'] = $domainlist['order'];
 $listdata['direction'] = $domainlist['direction'];
 $listdata['customer'] = $domainlist['customer'];
+
 unset($domainlist['total']);
 unset($domainlist['order']);
 unset($domainlist['direction']);

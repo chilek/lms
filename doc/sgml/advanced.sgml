@@ -493,6 +493,14 @@
                <simplelist>
                     <member>id - serial number</member>
                     <member>login - account name (without domain)</member>
+                    <member>domainid - account serial number</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="aliasassignments">
+               <title>Alias-to-account assignments ('aliasassignments')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>aliasid - alias serial number</member>
                     <member>accountid - account serial number</member>
                </simplelist>
           </sect2>

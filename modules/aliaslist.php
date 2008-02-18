@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAliasList($order='login,asc', $customer=NULL, $kind=NULL, $domain='')
+function GetAliasList($order='login,asc', $customer=NULL, $domain='')
 {
 	global $DB;
 
@@ -35,44 +35,34 @@ function GetAliasList($order='login,asc', $customer=NULL, $kind=NULL, $domain=''
 	switch($order)
 	{
 		case 'id':
-			$sqlord = " ORDER BY aliases.id $direction";
-		break;
-		case 'customername':
-			$sqlord = " ORDER BY customername $direction, aliases.login";
+			$sqlord = " ORDER BY a.id $direction";
 		break;
 		case 'domain':
-			$sqlord = " ORDER BY domain $direction, aliases.login";
-		break;
-		case 'expdate':
-			$sqlord = " ORDER BY expdate $direction, aliases.login";
-		break;
-		case 'account':
-			$sqlord = " ORDER BY passwd.login $direction, aliases.login";
+			$sqlord = " ORDER BY domain $direction, a.login";
 		break;
 		default:
-			$sqlord = " ORDER BY aliases.login $direction, domain";
+			$sqlord = " ORDER BY a.login $direction, domain";
 		break;
 	}
 
-	$list = $DB->GetAll(
-	        'SELECT aliases.id AS id, passwd.id AS aid, passwd.ownerid AS ownerid, 
-		aliases.login AS login, passwd.login AS account, expdate, domains.name AS domain, domainid, '
-		.$DB->Concat('c.lastname', "' '",'c.name').' AS customername 
-		FROM aliases 
-		LEFT JOIN passwd ON accountid = passwd.id
-		LEFT JOIN customers c ON c.id = passwd.ownerid 
-		LEFT JOIN domains ON domains.id = domainid 
+	$list = $DB->GetAll('SELECT a.id, a.login, d.name AS domain, domainid, 
+		(SELECT '.$DB->Concat('p.login', "'@'", 'pd.name').' 
+			FROM passwd p
+			JOIN domains pd ON (p.domainid = pd.id) 
+			WHERE p.id = s.accountid) AS dest,
+		s.cnt
+		FROM aliases a
+		JOIN domains d ON (d.id = a.domainid)
+		JOIN (SELECT COUNT(*) AS cnt, MIN(accountid) AS accountid, aliasid
+			FROM aliasassignments GROUP BY aliasid) s ON (a.id = s.aliasid)
 		WHERE 1=1'
-		.($customer != '' ? ' AND passwd.ownerid = '.$customer : '')
-		.($kind == 1 ? ' AND expdate!= 0 AND expdate < ?NOW?' : '')
-		.($kind == 2 ? ' AND (expdate=0 OR expdate > ?NOW?)' : '')
-		.($domain != '' ? ' AND domainid = '.$domain : '')
+		.($customer != '' ? ' AND d.ownerid = '.$customer : '')
+		.($domain != '' ? ' AND a.domainid = '.$domain : '')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
-	$list['kind'] = $kind;
 	$list['customer'] = $customer;
 	$list['domain'] = $domain;
 	$list['direction'] = $direction;
@@ -92,12 +82,6 @@ else
 	$u = $_GET['u'];
 $SESSION->save('alu', $u);
 
-if(!isset($_GET['k']))
-	$SESSION->restore('alk', $k);
-else
-	$k = $_GET['k'];
-$SESSION->save('alk', $k);
-
 if(!isset($_GET['d']))
 	$SESSION->restore('ald', $d);
 else
@@ -108,20 +92,21 @@ if ($SESSION->is_set('allp') && !isset($_GET['page']))
 	$SESSION->restore('allp', $_GET['page']);
 	    
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($LMS->CONFIG['phpui']['aliaslist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['aliaslist_pagelimit']);
+$pagelimit = (!isset($CONFIG['phpui']['aliaslist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['aliaslist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('allp', $page);
 
 $layout['pagetitle'] = trans('Aliases List');
 
-$aliaslist = GetAliasList($o, $u, $k, $d);
+$aliaslist = GetAliasList($o, $u, $d);
+
 $listdata['total'] = $aliaslist['total'];
 $listdata['order'] = $aliaslist['order'];
 $listdata['direction'] = $aliaslist['direction'];
-$listdata['kind'] = $aliaslist['kind'];
 $listdata['customer'] = $aliaslist['customer'];
 $listdata['domain'] = $aliaslist['domain'];
+
 unset($aliaslist['total']);
 unset($aliaslist['order']);
 unset($aliaslist['kind']);
@@ -138,7 +123,6 @@ $SMARTY->assign('aliaslist', $aliaslist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->assign('accountlist', $DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
 $SMARTY->display('aliaslist.html');
 
 ?>

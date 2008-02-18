@@ -496,9 +496,17 @@
                <simplelist>
                     <member>id - identyfikator rekordu</member>
                     <member>login - nazwa konta (bez domeny)</member>
-                    <member>accountid - identyfikator konta</member>
+                    <member>domainid - identyfikator domeny</member>
                </simplelist>
           </sect2>
+	<sect2 id="aliasassignments">
+		<title>Powi±zania aliasów z kontami ('aliasassignments')</title>
+		<simplelist>
+		<member>id - identyfikator rekordu</member>
+		<member>aliasid - indentyfikator aliasu</member>
+		<member>accountid - identyfikator konta</member>
+		</simplelist>
+        </sect2>
           <sect2 id="stats">
                <title>Statystyki wykorzystania ³±cza ('stats')</title>
                <simplelist>

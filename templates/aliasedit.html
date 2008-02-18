@@ -4,19 +4,19 @@
 <SCRIPT type="text/javascript">
 function addaccount()
 {
-	document.aliasadd.action += '&addaccount=1';
-	document.aliasadd.submit();
+	document.aliasedit.action += '&addaccount=1';
+	document.aliasedit.submit();
 }
 
 function delaccount(id)
 {
-	document.aliasadd.action += '&delaccount=' + id;
-	document.aliasadd.submit();
+	document.aliasedit.action += '&delaccount=' + id;
+	document.aliasedit.submit();
 }
 </SCRIPT>
 {/literal}
 <H1>{$layout.pagetitle}</H1>
-<FORM name="aliasadd" method="POST" action="?m=aliasadd">
+<FORM name="aliasedit" method="POST" action="?m=aliasedit&id={$alias.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="DARK">
@@ -69,16 +69,15 @@ function delaccount(id)
 	</TR>
 	<TR class="LIGHT">
 		<TD colspan="3" class="fbottomu" align="right" nowrap>
-			<A href="javascript: document.aliasadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
-			<A href="?m=aliaslist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
-			<INPUT type="checkbox" name="aliasadd[reuse]" value="ON" class="box light" {if $aliasadd.reuse}checked{/if}> {t}Display this form again, when this alias is saved{/t}
+			<A href="javascript: document.aliasedit.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			<A href="?m=aliaslist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
 <!--//
-document.forms['aliasadd'].elements['alias[login]'].focus();
+document.forms['aliasedit'].elements['alias[login]'].focus();
 //-->
 </SCRIPT>
 {include file="footer.html"}

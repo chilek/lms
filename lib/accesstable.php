@@ -62,7 +62,7 @@ $access['table'][10]['name']        	= trans('Helpdesk (RT) operation');
 $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$';
 
 $access['table'][11]['name']        	= trans('accounts management');
-$access['table'][11]['allow_reg']   	= '^((account|domain|alias)(list|edit|add|del))$';
+$access['table'][11]['allow_reg']   	= '^((account|domain|alias)(list|edit|add|del|info))$';
 
 $access['table'][12]['name']        	= trans('configuration');
 $access['table'][12]['allow_reg']   	= '^((host|config|numberplan|taxrate)(list|edit|add|del|load))$';
