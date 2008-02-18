@@ -41,10 +41,10 @@ $DB->Execute("
 	UPDATE aliases SET domainid = (SELECT domainid FROM passwd WHERE id = accountid);
 
 	INSERT INTO aliasassignments (aliasid, accountid) 
-		SELECT a.id, accountid FROM aliases;
+		SELECT id, accountid FROM aliases;
 	
 	ALTER TABLE aliases DROP accountid;
-	ALTER TABLE aliases ADD UNIQUE INDEX (login, domainid);
+	ALTER TABLE aliases ADD UNIQUE (login, domainid);
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021500', 'dbversion'));
