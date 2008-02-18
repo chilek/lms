@@ -26,26 +26,25 @@
 
 $id = $_GET['id'];
 
-if($id && $_GET['is_sure']=='1')
+$domain = $DB->GetRow('SELECT d.id, d.name, d.ownerid, d.description,
+		(SELECT COUNT(*) FROM passwd WHERE domainid = d.id) AS accountcnt, 
+		(SELECT COUNT(*) FROM aliases WHERE domainid = d.id) AS aliascnt, '
+		.$DB->Concat('lastname', "' '",'c.name').' AS customername
+		FROM domains d
+		LEFT JOIN customers c ON (d.ownerid = c.id)
+		WHERE d.id = ?', array($id));
+
+if(!$domain)
 {
-	$DB->BeginTrans();
-
-	if($DB->Execute('DELETE FROM domains WHERE id = ?', array($id)))
-	{
-		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid IN (
-			SELECT id FROM aliases WHERE domainid = ?)', array($id));
-		$DB->Execute('DELETE FROM aliasassignments WHERE accountid IN (
-			SELECT id FROM passwd WHERE domainid = ?)', array($id));
-		$DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id));
-		// ...aliases and orphaned aliases
-	        $DB->Execute('DELETE FROM aliases WHERE domainid = ? 
-			OR NOT EXISTS (SELECT 1 FROM aliasassignments
-			        WHERE aliasid = aliases.id)', array($id));
-	}
-
-	$DB->CommitTrans();
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-header('Location: ?m=domainlist');
+
+$layout['pagetitle'] = trans('Domain Info: $0', $domain['name']);
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$SMARTY->assign('domain', $domain);
+$SMARTY->display('domaininfo.html');
 
 ?>

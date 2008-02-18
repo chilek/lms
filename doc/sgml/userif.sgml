@@ -706,13 +706,14 @@ user = lms
 password = dbpass
 hosts = localhost
 dbname = lms
-#table = passwd, domains, aliases
-#select_field = CONCAT(passwd.login,'@',domains.name)
-#where_field = CONCAT(aliases.login,'@',domains.name)
-#additional_conditions = AND  passwd.domainid = domains.id AND passwd.id = aliases.accountid
-query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases 
-        WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
-        AND aliases.login = '%u' AND domains.name = '%d' 
+query = SELECT p.login || '@' || pd.name 
+	FROM passwd p
+	JOIN domains pd ON (p.domainid = pd.id)
+	WHERE p.id IN (SELECT aa.accountid 
+		FROM aliases a 
+		JOIN domains ad ON (a.domainid = ad.id)
+		JOIN aliasassignments aa ON (aa.aliasid = a.id)
+    		WHERE a.login = '%u' AND ad.name = '%d') 
 </screen>
 	    </example></para>
 	</sect2>

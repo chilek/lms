@@ -36,28 +36,37 @@ function AccountExists($login, $domain)
 	return ($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
 }
 
-$alias = isset($_POST['alias']) ? $_POST['alias'] : NULL;
+$aliasold = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain
+		FROM aliases a JOIN domains d ON (a.domainid = d.id)
+		WHERE a.id = ?', array(intval($_GET['id'])));
 
-if($alias)
+if(!$aliasold)
 {
+	$SESSION->redirect('?'.$SESSION->get('backto'));
+}
+
+$layout['pagetitle'] = trans('Alias Edit: $0', $aliasold['login'].'@'.$aliasold['domain']);
+
+if(isset($_POST['alias']))
+{
+	$alias = $_POST['alias'];
+	$alias['id'] = $aliasold['id'];
 	$alias['login'] = trim($alias['login']);
 	$alias['accounts'] = $SESSION->get('aliasaccounts');
 
-	if($alias['login']=='' && !$alias['domainid'] && !$alias['accountid'])
-	{
-		$SESSION->redirect('?m=aliaslist');
-	}
-	
 	if($alias['login'] == '')
 		$error['login'] = trans('You have to specify alias name!');
 	elseif(!eregi("^[a-z0-9._-]+$", $alias['login']))
     		$error['login'] = trans('Login contains forbidden characters!');
 	elseif(!$alias['domainid'])
 		$error['domainid'] = trans('You have to select domain for alias!');
-	elseif(AliasExists($alias['login'], $alias['domainid']))
-		$error['login'] = trans('Alias with that login name already exists in that domain!');
-	elseif(AccountExists($alias['login'], $alias['domainid']))
-		$error['login'] = trans('Account with that login name already exists in that domain!');	
+	elseif($alias['login'] != $aliasold['login'] || $alias['domainid'] != $aliasold['domainid'])
+	{
+		if(AliasExists($alias['login'], $alias['domainid']))
+			$error['login'] = trans('Alias with that login name already exists in that domain!');
+		elseif(AccountExists($alias['login'], $alias['domainid']))
+			$error['login'] = trans('Account with that login name already exists in that domain!');
+	}
 	
 	$alias['accounts'] = $SESSION->get('aliasaccounts');
 	
@@ -85,40 +94,32 @@ if($alias)
 	{
 		$DB->BeginTrans();
 		
-		$DB->Execute('INSERT INTO aliases (login, domainid) VALUES (?,?)',
-				    array($alias['login'], $alias['domainid']));
+		$DB->Execute('UPDATE aliases SET login = ?, domainid = ?
+				WHERE id = ?',
+				array($alias['login'], 
+					$alias['domainid'],
+					$alias['id']));
 		
-		$id = $DB->GetLastInsertId('aliases');
+		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?',
+			array($alias['id']));
 		
 		foreach($alias['accounts'] as $account)
 			$DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
-				VALUES(?,?)', array($id, $account['id']));
+				VALUES(?,?)', array($alias['id'], $account['id']));
 		
 		$DB->CommitTrans();
 
 		$SESSION->remove('aliasaccounts');
-		
-		if(!isset($alias['reuse']))
-		{
-			$SESSION->redirect('?m=aliaslist');
-		}
-
-		unset($alias['login']);
-		unset($alias['accounts']);
+		$SESSION->redirect('?m=aliaslist');
 	}
-
 }	
-elseif(!empty($_GET['accountid']))
+else
 {
-	$alias['accountid'] = intval($_GET['accountid']);
-	$alias['domainid'] = $DB->GetOne('SELECT domainid FROM passwd
-			WHERE id = ?', array($alias['accountid']));
-	$alias['accounts'] = array();	
-}
-elseif(!empty($_GET['domainid']))
-{
-	$alias['domainid'] = intval($_GET['domainid']);
-	$alias['accounts'] = array();
+	$alias = $aliasold;
+	$alias['accounts'] = $DB->GetAllByKey('SELECT p.id, p.login, d.name AS domain
+			FROM passwd p JOIN domains d ON (p.domainid = d.id)
+			WHERE p.id IN (SELECT accountid FROM aliasassignments
+				WHERE aliasid = ?)', 'id', array($alias['id'])); 
 }
 
 if(isset($alias['accounts']) && sizeof($alias['accounts']))
@@ -132,8 +133,6 @@ $accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain
 			.(isset($where) ? $where : '')
 			.' ORDER BY login, domains.name');
 
-$layout['pagetitle'] = trans('New Alias');
-
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('aliasaccounts', $alias['accounts']);
 
@@ -141,6 +140,6 @@ $SMARTY->assign('alias', $alias);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('accountlist', $accountlist);
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->display('aliasadd.html');
+$SMARTY->display('aliasedit.html');
 
 ?>

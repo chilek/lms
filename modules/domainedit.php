@@ -43,7 +43,8 @@ if($id && !DomainExists($id))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$domain = $DB->GetRow('SELECT id, name, ownerid, description FROM domains WHERE id = ?', array($id));
+$domain = $DB->GetRow('SELECT id, name, ownerid, description 
+	FROM domains WHERE id = ?', array($id));
 
 $layout['pagetitle'] = trans('Domain Edit: $0', $domain['name']);
 

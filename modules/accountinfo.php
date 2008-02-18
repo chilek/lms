@@ -24,28 +24,26 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$account = $DB->GetRow('SELECT p.id, p.ownerid, p.login, p.realname, 
+		p.lastlogin, p.domainid, p.expdate, p.type, p.home, 
+		p.quota_sh, p.quota_mail, p.quota_www, p.quota_ftp, p.quota_sql, '
+		.$DB->Concat('c.lastname', "' '", 'c.name').' 
+		AS customername, d.name AS domain 
+		FROM passwd p
+		JOIN domains d ON (p.domainid = d.id)
+		LEFT JOIN customers c ON (c.id = p.ownerid)
+		WHERE p.id = ?', array(intval($_GET['id'])));
 
-if($id && $_GET['is_sure']=='1')
+if(!$account)
 {
-	$DB->BeginTrans();
-
-	if($DB->Execute('DELETE FROM domains WHERE id = ?', array($id)))
-	{
-		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid IN (
-			SELECT id FROM aliases WHERE domainid = ?)', array($id));
-		$DB->Execute('DELETE FROM aliasassignments WHERE accountid IN (
-			SELECT id FROM passwd WHERE domainid = ?)', array($id));
-		$DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id));
-		// ...aliases and orphaned aliases
-	        $DB->Execute('DELETE FROM aliases WHERE domainid = ? 
-			OR NOT EXISTS (SELECT 1 FROM aliasassignments
-			        WHERE aliasid = aliases.id)', array($id));
-	}
-
-	$DB->CommitTrans();
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-header('Location: ?m=domainlist');
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    
+$layout['pagetitle'] = trans('Account Info: $0', $account['login'].'@'.$account['domain']);
+
+$SMARTY->assign('account', $account);
+$SMARTY->display('accountinfo.html');
 
 ?>

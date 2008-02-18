@@ -24,28 +24,25 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$alias = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain
+		FROM aliases a JOIN domains d ON (a.domainid = d.id)
+		WHERE a.id = ?', array(intval($_GET['id'])));
 
-if($id && $_GET['is_sure']=='1')
+if(!$alias)
 {
-	$DB->BeginTrans();
-
-	if($DB->Execute('DELETE FROM domains WHERE id = ?', array($id)))
-	{
-		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid IN (
-			SELECT id FROM aliases WHERE domainid = ?)', array($id));
-		$DB->Execute('DELETE FROM aliasassignments WHERE accountid IN (
-			SELECT id FROM passwd WHERE domainid = ?)', array($id));
-		$DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id));
-		// ...aliases and orphaned aliases
-	        $DB->Execute('DELETE FROM aliases WHERE domainid = ? 
-			OR NOT EXISTS (SELECT 1 FROM aliasassignments
-			        WHERE aliasid = aliases.id)', array($id));
-	}
-
-	$DB->CommitTrans();
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-header('Location: ?m=domainlist');
+$alias['accounts'] = $DB->GetAllByKey('SELECT p.id, p.login, d.name AS domain
+		FROM passwd p JOIN domains d ON (p.domainid = d.id)
+		WHERE p.id IN (SELECT accountid FROM aliasassignments
+			WHERE aliasid = ?)', 'id', array($alias['id'])); 
+
+$layout['pagetitle'] = trans('Alias Info: $0', $alias['login'].'@'.$alias['domain']);
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$SMARTY->assign('alias', $alias);
+$SMARTY->display('aliasinfo.html');
 
 ?>

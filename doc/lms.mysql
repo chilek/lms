@@ -607,9 +607,22 @@ DROP TABLE IF EXISTS aliases;
 CREATE TABLE aliases (
     id int(11) NOT NULL auto_increment,
     login varchar(255) NOT NULL DEFAULT '',
-    accountid int(11) NOT NULL DEFAULT '0',
+    domainid int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
-    UNIQUE KEY (login, accountid)
+    UNIQUE KEY (login, domainid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table aliasassignments
+#
+DROP TABLE IF EXISTS aliasassignments;
+CREATE TABLE aliasassignments (
+    id              int(11)         NOT NULL auto_increment,
+    aliasid         int(11)         DEFAULT '0' NOT NULL,
+    accountid       int(11)         DEFAULT '0' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY aliasid (aliasid, accountid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -897,4 +910,4 @@ CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008020900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008021500');

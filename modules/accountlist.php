@@ -35,7 +35,7 @@ function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NU
 	switch($order)
 	{
 		case 'id':
-			$sqlord = " ORDER BY passwd.id $direction";
+			$sqlord = " ORDER BY p.id $direction";
 		break;
 		case 'customername':
 			$sqlord = " ORDER BY customername $direction, login";
@@ -54,19 +54,18 @@ function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NU
 		break;
 	}
 
-	$list = $DB->GetAll(
-	        'SELECT passwd.id AS id, passwd.ownerid AS ownerid, login, lastlogin, 
-			expdate, domains.name AS domain, 
-			type, quota_www, quota_sh, quota_mail, quota_ftp, quota_sql, '
+	$list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin, 
+			p.expdate, d.name AS domain, p.type, 
+			p.quota_www, p.quota_sh, p.quota_mail, p.quota_ftp, p.quota_sql, '
 			.$DB->Concat('c.lastname', "' '",'c.name').' AS customername 
-		FROM passwd 
-		LEFT JOIN customers c ON c.id = passwd.ownerid 
-		LEFT JOIN domains ON domains.id = domainid WHERE 1=1'
-		.($customer != '' ? ' AND passwd.ownerid = '.$customer : '')
-		.($type ? ' AND type & '.$type.' = '.$type : '')
-		.($kind == 1 ? ' AND expdate!= 0 AND expdate < ?NOW?' : '')
-		.($kind == 2 ? ' AND (expdate=0 OR expdate > ?NOW?)' : '')
-		.($domain != '' ? ' AND domainid = '.$domain : '')
+		FROM passwd p
+		LEFT JOIN customers c ON c.id = p.ownerid 
+		LEFT JOIN domains d ON d.id = p.domainid WHERE 1=1'
+		.($customer != '' ? ' AND p.ownerid = '.$customer : '')
+		.($type ? ' AND p.type & '.$type.' = '.$type : '')
+		.($kind == 1 ? ' AND p.expdate!= 0 AND p.expdate < ?NOW?' : '')
+		.($kind == 2 ? ' AND (p.expdate=0 OR p.expdate > ?NOW?)' : '')
+		.($domain != '' ? ' AND p.domainid = '.$domain : '')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	
@@ -115,7 +114,7 @@ if ($SESSION->is_set('alp') && !isset($_GET['page']))
 	$SESSION->restore('alp', $_GET['page']);
 	    
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (!isset($LMS->CONFIG['phpui']['accountlist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['accountlist_pagelimit']);
+$pagelimit = (!isset($CONFIG['phpui']['accountlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['accountlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('alp', $page);
@@ -123,6 +122,7 @@ $SESSION->save('alp', $page);
 $layout['pagetitle'] = trans('Accounts List');
 
 $accountlist = GetAccountList($o, $u, $t, $k, $d);
+
 $listdata['total'] = $accountlist['total'];
 $listdata['order'] = $accountlist['order'];
 $listdata['direction'] = $accountlist['direction'];
@@ -130,6 +130,7 @@ $listdata['type'] = $accountlist['type'];
 $listdata['kind'] = $accountlist['kind'];
 $listdata['customer'] = $accountlist['customer'];
 $listdata['domain'] = $accountlist['domain'];
+
 unset($accountlist['total']);
 unset($accountlist['order']);
 unset($accountlist['type']);

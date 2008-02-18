@@ -637,11 +637,25 @@ DROP SEQUENCE aliases_id_seq;
 CREATE SEQUENCE aliases_id_seq;
 DROP TABLE aliases;
 CREATE TABLE aliases (
-	id integer DEFAULT nextval('aliases_id_seq'::text) NOT NULL,
-	login varchar(255) DEFAULT '' NOT NULL,
-	accountid integer DEFAULT 0 NOT NULL,
+	id 		integer 	DEFAULT nextval('aliases_id_seq'::text) NOT NULL,
+	login 		varchar(255) 	DEFAULT '' NOT NULL,
+	domainid 	integer 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (login, accountid)
+	UNIQUE (login, domainid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "aliasassignments"
+------------------------------------------------------*/
+DROP SEQUENCE aliasassignments_id_seq;
+CREATE SEQUENCE aliasassignments_id_seq;
+DROP TABLE aliasassignments;
+CREATE TABLE aliasassignments (
+	id              integer         DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
+	aliasid         integer         DEFAULT 0 NOT NULL,
+	accountid       integer         DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (aliasid, accountid)
 );
 
 /* ---------------------------------------------------
@@ -955,4 +969,4 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008020900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008021500');

@@ -354,11 +354,11 @@ $menu = array(
 			),
 		),
 
-		'accounts' => array(
-			'name' => trans('Accounts'),
+		'hosting' => array(
+			'name' => trans('Hosting'),
 			'img' =>'account.gif',
 			'link' =>'?m=accountlist',
-			'tip' => trans('Accounts, Domains, Aliases Management'),
+			'tip' => trans('Domains, Accounts, Aliases Management'),
 			'accesskey' =>'a',
 			'prio' => 30,
 			'submenu' => array(

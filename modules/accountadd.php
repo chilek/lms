@@ -50,11 +50,18 @@ if(isset($_POST['account']))
 	
 	$account['type'] = array_sum($account['type']);
 
-	if(!eregi("^[a-z0-9._-]+$", $account['login']))
+	if($account['login'] == '')
+                $error['login'] = trans('You have to specify login!');
+	elseif(!eregi("^[a-z0-9._-]+$", $account['login']))
     		$error['login'] = trans('Login contains forbidden characters!');
-	elseif($LMS->GetAccountId($account['login'], $account['domainid']))
+	elseif(!$account['domainid'])
+                $error['domainid'] = trans('You have to select domain for account!');
+	elseif($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', 
+		array($account['login'], $account['domainid'])))
+	{
 		$error['login'] = trans('Account with that login name exists!');
-	
+	}
+			
 	if($account['passwd1'] != $account['passwd2'])
 		$error['passwd'] = trans('Passwords does not match!');
 	    
@@ -71,9 +78,6 @@ if(isset($_POST['account']))
 		elseif(!$error)
 			$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
 	}
-
-	if(!$account['domainid'] && ($account['type'] & 2) == 2)
-			$error['domainid'] = trans('E-mail account must contain domain part!');
 
 	if($account['domainid'] && $account['ownerid'])
 		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
