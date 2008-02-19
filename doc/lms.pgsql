@@ -609,6 +609,7 @@ CREATE TABLE passwd (
 	quota_www integer	DEFAULT 0 NOT NULL,
 	quota_ftp integer	DEFAULT 0 NOT NULL,
 	quota_sql integer	DEFAULT 0 NOT NULL,
+	mail_forward varchar(255) DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login, domainid)
 );
@@ -969,4 +970,4 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008021500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008021900');

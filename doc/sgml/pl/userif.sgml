@@ -691,9 +691,8 @@ user = lms
 password = has³o
 hosts = localhost
 dbname = lms
-
 # MySQL, PgSQL
-query = SELECT p.login || '@' || pd.name
+query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@' || pd.name END
         FROM passwd p
 	JOIN domains pd ON (p.domainid = pd.id)
 	WHERE p.id IN (SELECT aa.accountid
@@ -701,6 +700,7 @@ query = SELECT p.login || '@' || pd.name
 		JOIN domains ad ON (a.domainid = ad.id)
 		JOIN aliasassignments aa ON (aa.aliasid = a.id)
 		WHERE a.login = '%u' AND ad.name = '%d')
+	OR (p.login = '%u' AND pd.name = '%d')
 </screen>
 	    </example></para>
 		<para>Nastêpny przyk³ad podes³any przez bart'a przedstawia instalacjê i konfiguracjê

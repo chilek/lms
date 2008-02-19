@@ -27,13 +27,14 @@
 $id = intval($_GET['id']);
 $option = isset($_GET['op']) ? $_GET['op'] : '';
 
+// LEFT join with domains for backward compat.
 $account = $DB->GetRow('SELECT p.id, p.ownerid, p.login, p.realname, 
-		p.lastlogin, p.domainid, p.expdate, p.type, p.home, 
+		p.lastlogin, p.domainid, p.expdate, p.type, p.home, mail_forward,
 		p.quota_sh, p.quota_mail, p.quota_www, p.quota_ftp, p.quota_sql, '
 		.$DB->Concat('c.lastname', "' '", 'c.name').' 
 		AS customername, d.name AS domain 
 		FROM passwd p
-		JOIN domains d ON (p.domainid = d.id)
+		LEFT JOIN domains d ON (p.domainid = d.id)
 		LEFT JOIN customers c ON (c.id = p.ownerid)
 		WHERE p.id = ?', array($id));
 
@@ -98,6 +99,9 @@ switch ($option)
 				$error['login'] = trans('Account with that login name exists!'); 
 			}
 		
+		if($account['mail_forward'] != '' && !check_email($account['mail_forward']))
+		        $error['mail_forward'] = trans('Incorrect email!');
+				
 		if($account['expdate'] == '')
 			$account['expdate'] = 0;
 		else
@@ -120,7 +124,7 @@ switch ($option)
 			$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, 
 				home = ?, expdate = ?, domainid = ?, type = ?, 
 				quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ?, 
-				quota_sql = ? WHERE id = ?', 
+				quota_sql = ?, mail_forward = ? WHERE id = ?', 
 				array(	$account['ownerid'], 
 					$account['login'],
 					$account['realname'],
@@ -133,10 +137,11 @@ switch ($option)
 					$quota['www'],
 					$quota['ftp'],
 					$quota['sql'],
+					$account['mail_forward'],
 					$account['id']
 					));
 
-			$SESSION->redirect('?m=accountlist');
+			$SESSION->redirect('?m=accountinfo&id='.$account['id']);
 		}
 	}
 	
