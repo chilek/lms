@@ -17,7 +17,7 @@
 	    <TD width="100%" colspan="3" class="flr">
 		<TABLE width="100%" cellpadding="0">
 		    <TR class="LIGHT">
-			<TD width="50%" valign="top">
+			<TD width="50%" style="vertical-align: top">
 			    <TABLE width="100%" cellpadding="3">
 				<TR>
 				    <TD width="1%">
@@ -42,6 +42,7 @@
 					    {else}<A href="customerinfo&id={$account.ownerid}">{$account.customername}</A>{/if}
 				    </TD>
 				</TR>
+				{if $account.realname}
 				<TR>
 				    <TD width="1%">
 					<img src="img/name.gif" alt="">
@@ -53,6 +54,7 @@
 					{$account.realname}
 				    </TD>
 				</TR>
+				{/if}
 				<TR>
 				    <TD width="1%">
 					<img src="img/home.gif" alt="">
@@ -72,13 +74,26 @@
 					<B>{t}Expiration date:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}
+					{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{else}{t}not expire{/t}{/if}
 				    </TD>
 			    	</TR>
+				{if $account.mail_forward}
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Forward e-mail:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					{$account.mail_forward}
+				    </TD>
+			    	</TR>
+				{/if}
 			    </TR>			    
 			    </TABLE>
 			</TD>
-			<TD width="50%" valign="top">
+			<TD width="50%" style="vertical-align: top">
 			    <TABLE width="100%" cellpadding="3">
 				<TR>
 				    <TD width="1%">

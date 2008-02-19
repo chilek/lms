@@ -61,6 +61,9 @@ if(isset($_POST['account']))
 	{
 		$error['login'] = trans('Account with that login name exists!');
 	}
+	
+	if($account['mail_forward'] != '' && !check_email($account['mail_forward']))
+	        $error['mail_forward'] = trans('Incorrect email!');
 			
 	if($account['passwd1'] != $account['passwd2'])
 		$error['passwd'] = trans('Passwords does not match!');
@@ -85,8 +88,11 @@ if(isset($_POST['account']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type, realname, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->BeginTrans();
+		
+		$DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, 
+				type, realname, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql,
+				mail_forward) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(	$account['ownerid'],
 					$account['login'],
 					crypt($account['passwd1']),
@@ -99,14 +105,19 @@ if(isset($_POST['account']))
 					$quota['mail'],
 					$quota['www'],
 					$quota['ftp'],
-					$quota['sql']
+					$quota['sql'],
+					$account['mail_forward'],
 					));
 
-		$DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($account['login']));
+		$id = $DB->GetLastInsertId('passwd');
+
+		$DB->Execute('UPDATE passwd SET uid = id + 2000 WHERE id = ?', array($id));
+		
+		$DB->CommitTrans();
 		
 		if(!isset($account['reuse']))
 		{
-			$SESSION->redirect('?m=accountlist');
+			$SESSION->redirect('?m=accountinfo&id='.$id);
 		}
 		
 		unset($account['login']);

@@ -22,6 +22,7 @@ version ? (????-??-??):
   - hosting: on Domains List added assigned accounts number (alec)
   - hosting: improved interface, added info, delete links (alec)
   - hosting: added domain/account/alias info pages (alec)
+  - hosting: mail forwarding to external accounts (alec)
 
 version 1.11.2 Neera (2008-01-23):
 

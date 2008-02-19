@@ -1712,7 +1712,7 @@ user = lms
 password = dbpass
 hosts = localhost
 dbname = lms
-query = SELECT p.login || '@' || pd.name
+query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@' || pd.name END
         FROM passwd p
         JOIN domains pd ON (p.domainid = pd.id)
         WHERE p.id IN (SELECT aa.accountid
@@ -1720,6 +1720,7 @@ query = SELECT p.login || '@' || pd.name
                 JOIN domains ad ON (a.domainid = ad.id)
                 JOIN aliasassignments aa ON (aa.aliasid = a.id)
                 WHERE a.login = '%u' AND ad.name = '%d')
+        OR (p.login = '%u' AND pd.name = '%d')
      __________________________________________________________________
 
 3.10. Mailing
@@ -5408,6 +5409,7 @@ Chapter 7. For curious
    quota_www - www space limits
    quota_ftp - ftp space limits
    quota_sql - sql database space limits
+   mail_forward - external account for mail forwarding
      __________________________________________________________________
 
 7.2.31. Domains ('domains')

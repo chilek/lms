@@ -24,27 +24,12 @@
  *  $Id$
  */
 
-// LEFT join with domains for bckward compat.
-$account = $DB->GetRow('SELECT p.id, p.ownerid, p.login, p.realname, 
-		p.lastlogin, p.domainid, p.expdate, p.type, p.home, mail_forward,
-		p.quota_sh, p.quota_mail, p.quota_www, p.quota_ftp, p.quota_sql, '
-		.$DB->Concat('c.lastname', "' '", 'c.name').' 
-		AS customername, d.name AS domain 
-		FROM passwd p
-		LEFT JOIN domains d ON (p.domainid = d.id)
-		LEFT JOIN customers c ON (c.id = p.ownerid)
-		WHERE p.id = ?', array(intval($_GET['id'])));
+$DB->BeginTrans();
 
-if(!$account)
-{
-	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
+$DB->Execute("ALTER TABLE passwd ADD mail_forward varchar(255) NOT NULL DEFAULT ''");
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-    
-$layout['pagetitle'] = trans('Account Info: $0', $account['login'].'@'.$account['domain']);
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021900', 'dbversion'));
 
-$SMARTY->assign('account', $account);
-$SMARTY->display('accountinfo.html');
+$DB->CommitTrans();
 
 ?>
