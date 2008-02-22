@@ -100,7 +100,7 @@ if(isset($_POST['account']))
 	}
 
 	// finally lets check limits
-	if($account['ownerid'] && $account['ownerid'] != $oldowner)
+	if($account['ownerid'])
         {
                 $limits = $LMS->GetHostingLimits($account['ownerid']);
 		
@@ -118,7 +118,8 @@ if(isset($_POST['account']))
 				}
 			}
 			
-			if($oldtype == $account['type']) continue;
+			// skip count checking if type and owner aren't changed
+			if($oldtype == $account['type'] && $account['ownerid'] == $oldowner) continue;
 			
 			// count limit
 			$limitidx = $name.'_limit';
