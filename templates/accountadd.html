@@ -9,6 +9,23 @@
 		var prefix = "{/literal}{$_config.phpui.homedir_prefix}{literal}";
 		document.forms['account'].elements['account[home]'].value = prefix + document.forms['account'].elements['account[login]'].value;
 	}
+	function checklimit(type)
+	{
+		if(document.getElementById(type).checked) {
+			document.forms['account'].elements['quota['+type+']'].style.display = 'none';
+		} else {
+			document.forms['account'].elements['quota['+type+']'].style.display = '';
+		}
+	}
+	function checklimit2(type)
+	{
+		if(document.getElementById(type).checked) {
+			document.forms['account'].elements['quota['+type+']'].style.display = '';
+		} else {
+			document.forms['account'].elements['quota['+type+']'].style.display = 'none';
+		}
+		checkElement(type);
+	}
 {/literal}
 //-->
 </SCRIPT>
@@ -57,7 +74,7 @@
 					<B>{t}Owner:{/t}</B>
 		    		    </TD>
 				    <TD width="98%">
-					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer"}>
+					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer" trigger="ownerid"}>
     					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
 					    {section name=customers loop=$customers}
 					    <OPTION VALUE="{$customers[customers].id}"{if $account.ownerid == $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:" ...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
@@ -109,6 +126,17 @@
 					<input type="text" name="account[mail_forward]" value="{$account.mail_forward}" {tip text="Enter destination e-mail account for redirect" trigger="mail_forward"}>
 				    </TD>
 				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/info.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Description:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<textarea name="account[description]" rows="5" cols="30" {tip text="Enter additional informations (optional)">{$account.description}</textarea>
+				    </TD>
+				</TR>
 			    </TABLE>
 			</TD>
 			<TD width="50%" style="vertical-align: top">
@@ -140,29 +168,44 @@
 					<img src="img/account.gif" alt="">
 				    </TD>
 				    <TD width="1%">
-					<B>{t}Type/Limit:{/t}</B>
+					<B>{t}Type/Quota:{/t}</B>
 				    </TD>
 				    <TD width="98%">
 					    <table width="100%">
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][shell]" value="1" class="box light" {if ($account.type & 1) == 1}CHECKED{/if}> {t}shell{/t}</td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account limits (optional)"}></td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][shell]" value="1" class="box light"{if ($account.type & 1) == 1} CHECKED{/if}> {t}shell{/t}</td>
+							    <td>
+								    &nbsp;<input type="text" size="5" maxlendth="10" name="quota[sh]" value="{$quota.sh}"{if $account.limit.sh} style="display:none"{/if} {tip text="Enter account quota in MB" trigger="quota_sh"}>
+								    <input type="checkbox" value="1" id="sh" name="limit[sh]" onclick="checklimit('sh')"{if $account.limit.sh} CHECKED{/if}><A HREF="javascript:checklimit2('sh');">{t}no limit{/t}</A>
+							    </td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][mail]" value="2" class="box light" {if ($account.type & 2) == 2}CHECKED{/if}> {t}mail{/t}</td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[mail]" value="{$quota.mail}" {tip text="Enter account limits (optional)"}></td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][mail]" value="2" class="box light"{if ($account.type & 2) == 2} CHECKED{/if}> {t}mail{/t}</td>
+							    <td>
+								    &nbsp;<input type="text" size="5" maxlength="10" name="quota[mail]" value="{$quota.mail}"{if $account.limit.mail} style="display:none"{/if} {tip text="Enter account quota in MB" trigger="quota_mail"}>
+								    <input type="checkbox" value="1" id="mail" name="limit[mail]" onclick="checklimit('mail')"{if $account.limit.mail} CHECKED{/if}><A HREF="javascript:checklimit2('mail');">{t}no limit{/t}</A>
+							    </td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][www]" value="4" class="box light" {if ($account.type & 4) == 4}CHECKED{/if}> {t}www{/t}</td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[www]" value="{$quota.www}" {tip text="Enter account limits (optional)"}></td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][www]" value="4" class="box light"{if ($account.type & 4) == 4} CHECKED{/if}> {t}www{/t}</td>
+							    <td>
+								    &nbsp;<input type="text" size="5" maxlength="10" name="quota[www]" value="{$quota.www}" {if $account.limit.www} style="display:none"{/if} {tip text="Enter account quota in MB" trigger="quota_www"}>
+								    <input type="checkbox" value="1" id="www" name="limit[www]" onclick="checklimit('www')"{if $account.limit.www} CHECKED{/if}><A HREF="javascript:checklimit2('www');">{t}no limit{/t}</A>
+							    </td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][ftp]" value="8" class="box light" {if ($account.type & 8) == 8}CHECKED{/if}> {t}ftp{/t}</td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[ftp]" value="{$quota.ftp}" {tip text="Enter account limits (optional)"}></td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][ftp]" value="8" class="box light"{if ($account.type & 8) == 8} CHECKED{/if}> {t}ftp{/t}</td>
+							    <td>
+								    &nbsp;<input type="text" size="5" maxlength="10" name="quota[ftp]" value="{$quota.ftp}" {if $account.limit.ftp} style="display:none"{/if} {tip text="Enter account quota in MB" trigger="quota_ftp"}>
+								    <input type="checkbox" value="1" id="ftp" name="limit[ftp]" onclick="checklimit('ftp')"{if $account.limit.ftp} CHECKED{/if}><A HREF="javascript:checklimit2('ftp');">{t}no limit{/t}</A>
+							    </td>
 						    </tr>
 						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][sql]" value="16" class="box light" {if ($account.type & 16) == 16}CHECKED{/if}> {t}sql{/t}</td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="5" name="quota[sql]" value="{$quota.sql}" {tip text="Enter account limits (optional)"}></td>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][sql]" value="16" class="box light"{if ($account.type & 16) == 16} CHECKED{/if}> {t}sql{/t}</td>
+							    <td>
+								    &nbsp;<input type="text" size="5" maxlength="10" name="quota[sql]" value="{$quota.sql}"{if $account.limit.sql} style="display:none"{/if} {tip text="Enter account quota in MB" trigger="quota_sql"}>
+								    <input type="checkbox" value="1" id="sql" name="limit[sql]" onclick="checklimit('sql')"{if $account.limit.sql} CHECKED{/if}><A HREF="javascript:checklimit2('sql');">{t}no limit{/t}</A>
+							    </td>
 						    </tr>
 					    </table>
 				    </TD>

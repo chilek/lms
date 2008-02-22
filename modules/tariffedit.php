@@ -32,19 +32,22 @@ if(!$LMS->TariffExists($_GET['id']))
 if(isset($_POST['tariff']))
 {
 	$tariff = $_POST['tariff'];
+	$limit = isset($_POST['limit']) ? $_POST['limit'] : array();
 
 	foreach($tariff as $key => $value)
 		$tariff[$key] = trim($value);
 
 	$tariff['value'] = str_replace(',','.',$tariff['value']);
 	
-	if($tariff['uprate'] == '') $tariff['uprate'] = 0;
-	if($tariff['upceil'] == '') $tariff['upceil'] = 0;
-	if($tariff['downrate'] == '') $tariff['downrate'] = 0;
-	if($tariff['downceil'] == '') $tariff['downceil'] = 0;
-	if($tariff['climit'] == '') $tariff['climit'] = 0;
-	if($tariff['plimit'] == '') $tariff['plimit'] = 0;
-	if($tariff['dlimit'] == '') $tariff['dlimit'] = 0;
+	$items = array('uprate', 'downrate', 'upceil', 'downceil', 'climit', 'plimit', 'dlimit');
+	
+	foreach($items as $item)
+	{
+	        if($tariff[$item]=='')
+	                $tariff[$item] = 0;
+	        elseif(!ereg('^[0-9]+$', $tariff[$item]))
+	                $error[$item] = trans('Integer value expected!');
+	}
 
 	if($tariff['name'] == '')
 		$error['name'] = trans('Subscription name required!');
@@ -59,21 +62,6 @@ if(isset($_POST['tariff']))
 	elseif(!(ereg('^[-]?[0-9.,]+$', $tariff['value'])))
 		$error['value'] = trans('Incorrect value!');
 	
-	if(!(ereg("^[0-9]+$", $tariff['uprate'])))
-		$error['uprate'] = trans('Integer value expected!');
-	if(!ereg('^[0-9]+$', $tariff['downrate']))
-		$error['downrate'] = trans('Integer value expected!');
-	if(!(ereg("^[0-9]+$", $tariff['upceil'])))
-		$error['upceil'] = trans('Integer value expected!');
-	if(!ereg('^[0-9]+$', $tariff['downceil']))
-		$error['downceil'] = trans('Integer value expected!');
-	if(!(ereg("^[0-9]+$", $tariff['climit'])))
-		$error['climit'] = trans('Integer value expected!');
-	if(!ereg('^[0-9]+$', $tariff['plimit']))
-		$error['plimit'] = trans('Integer value expected!');
-	if(!ereg('^[0-9]+$', $tariff['dlimit']))
-		$error['dlimit'] = trans('Integer value expected!');
-	
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 10000) && $tariff['uprate'] != 0)
 		$error['uprate'] = trans('This field must be within range 8 - 10000');
 	if(($tariff['downrate'] < 8 || $tariff['downrate'] > 10000) && $tariff['downrate'] != 0)
@@ -86,6 +74,20 @@ if(isset($_POST['tariff']))
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
 
+	$items = array('domain_limit', 'alias_limit',
+                        'sh_limit', 'mail_limit', 'www_limit', 'ftp_limit', 'sql_limit',
+	                'quota_sh_limit', 'quota_mail_limit', 'quota_www_limit',
+	                'quota_ftp_limit', 'quota_sql_limit',
+	);
+										
+	foreach($items as $item)
+	{
+	        if(isset($limit[$item]))
+		        $tariff[$item] = NULL;
+	        elseif(!ereg('^[0-9]+$', $tariff[$item]))
+	                $error[$item] = trans('Integer value expected!');
+	}
+
 	$tariff['id'] = $_GET['id'];
 
 	if(!$error)
@@ -93,7 +95,6 @@ if(isset($_POST['tariff']))
 		$LMS->TariffUpdate($tariff);
 		$SESSION->redirect('?m=tariffinfo&id='.$tariff['id']);
 	}
-
 }
 else
 	$tariff = $LMS->GetTariff($_GET['id']);

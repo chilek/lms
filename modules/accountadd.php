@@ -33,23 +33,28 @@
  *    sql = 16	(0000000000010000)
  */
 
-$layout['pagetitle'] = trans('New Account');
+$types = array(1 => 'sh', 2 => 'mail', 4 => 'www', 8 => 'ftp', 16 => 'sql');
 
 if(isset($_POST['account']))
 {
 	$account = $_POST['account'];
 	$quota = $_POST['quota'];
+	$limit = isset($_POST['limit']) ? $_POST['limit'] : array();
 	
-	foreach($quota as $type => $value)
-		$quota[$type] = sprintf('%d', $value);
+	foreach($account as $key=>$value)
+		if(!is_array($value))
+            		$account[$key] = trim($value);
 
-	if(!($account['login'] || $account['passwd1'] || $account['passwd2']))
+	if(!($account['login'] || $account['domainid'] || $account['passwd1'] || $account['passwd2']))
 	{
 		$SESSION->redirect('?m=accountlist');
 	}
 	
-	$account['type'] = array_sum($account['type']);
-
+	if(isset($account['type']))
+		$account['type'] = array_sum($account['type']);
+	else
+		$error['type'] = true;
+	
 	if($account['login'] == '')
                 $error['login'] = trans('You have to specify login!');
 	elseif(!eregi("^[a-z0-9._-]+$", $account['login']))
@@ -86,13 +91,58 @@ if(isset($_POST['account']))
 		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
 			$error['domainid'] = trans('Selected domain has other owner!');
 
+	foreach($types as $idx => $name)
+        {
+	        if(isset($limit[$name]))
+		        $quota[$name] = NULL;
+		elseif(!ereg('^[0-9]+$', $quota[$name]))
+			$error['quota_'.$name] = trans('Integer value expected!');
+	}
+
+	// finally lets check limits
+	if($account['ownerid'])
+        {
+                $limits = $LMS->GetHostingLimits($account['ownerid']);
+		
+		foreach($types as $idx => $name)
+		{
+			// quota limit
+			$limitidx = 'quota_'.$name.'_limit';
+			if($limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
+			{
+				if(!isset($error['quota_'.$name]) && ($quota[$name] === NULL || $quota[$name] > $limits[$limitidx]))
+				{
+					$error['quota_'.$name] = trans('Exceeded \'$0\' account quota limit of selected customer ($1)!',
+						$name, $limits[$limitidx]);
+					$limit[$name] = 1;
+				}
+			}
+			
+			// count limit
+			$limitidx = $name.'_limit';
+			if($limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
+			{
+	    			if($limits[$limitidx] > 0)
+		            		$cnt = $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?
+						AND (type & ?) = ?', array($account['ownerid'], $idx, $idx));
+
+			        if(!$error && ($limits[$limitidx] == 0 || $limits[$limitidx] <= $cnt))
+				{
+    		                	$error['ownerid'] = trans('Exceeded \'$0\' accounts limit of selected customer ($1)!', 
+							$name, $limits[$limitidx]);
+				}
+			}
+		}
+	}
+
 	if(!$error)
 	{
 		$DB->BeginTrans();
 		
 		$DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, 
 				type, realname, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql,
-				mail_forward) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				mail_forward, description) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(	$account['ownerid'],
 					$account['login'],
 					crypt($account['passwd1']),
@@ -107,6 +157,7 @@ if(isset($_POST['account']))
 					$quota['ftp'],
 					$quota['sql'],
 					$account['mail_forward'],
+					$account['description'],
 					));
 
 		$id = $DB->GetLastInsertId('passwd');
@@ -125,43 +176,55 @@ if(isset($_POST['account']))
 		unset($account['realname']);
 		unset($account['passwd1']);
 		unset($account['passwd2']);
+		unset($account['mail_forward']);
+		unset($account['description']);
 	}
+	
+	$account['limit'] = $limit;
+	
 	$SMARTY->assign('quota', $quota);
 }
 else
 {
+	$quota = array();
+
 	if(isset($_GET['cid']))
 	{
 		$account['ownerid'] = intval($_GET['cid']);
+		$limits = $LMS->GetHostingLimits($account['ownerid']);
+
+		foreach($types as $idx => $name)
+			$quota[$name] = $limits['quota_'.$name.'_limit'];
+	}
+	else
+	{
+		foreach($types as $idx => $name)
+			if(isset($CONFIG['phpui']['quota_'.$name]))
+				$quota[$name] = intval($CONFIG['phpui']['quota_'.$name]);
+			else
+				$quota[$name] = NULL;
 	}
 	
-	$quota = array();
-	if(!empty($CONFIG['phpui']['quota_mail']))
-		$quota['mail'] = $CONFIG['phpui']['quota_mail'];
-	if(!empty($CONFIG['phpui']['quota_sql']))
-		$quota['sql'] = $CONFIG['phpui']['quota_sql'];
-	if(!empty($CONFIG['phpui']['quota_ssh']))
-		$quota['sh'] = $CONFIG['phpui']['quota_ssh'];
-	if(!empty($CONFIG['phpui']['quota_www']))
-		$quota['www'] = $CONFIG['phpui']['quota_www'];
-	if(!empty($CONFIG['phpui']['quota_ftp']))
-		$quota['ftp'] = $CONFIG['phpui']['quota_ftp'];
+	foreach($quota as $idx => $val)
+		if($val === NULL)
+			$account['limit'][$idx] = 1;
 
 	if(!empty($CONFIG['phpui']['account_type']))
-		$account['type'] = $CONFIG['phpui']['account_type'];
+		$account['type'] = intval($CONFIG['phpui']['account_type']);
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$layout['pagetitle'] = trans('New Account');
 
-$domainlist = $DB->GetAll('SELECT id, name FROM domains ORDER BY name');
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!isset($account['type'])) $account['type'] = 32767;
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('quota', $quota);
-$SMARTY->assign('customers', $LMS->GetCustomerNames());
-$SMARTY->assign('domainlist', $domainlist);
 $SMARTY->assign('account', $account);
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
+$SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
+
 $SMARTY->display('accountadd.html');
 
 ?>

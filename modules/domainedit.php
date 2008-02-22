@@ -51,6 +51,8 @@ $layout['pagetitle'] = trans('Domain Edit: $0', $domain['name']);
 if(isset($_POST['domain']))
 {
 	$olddomain = $domain['name'];
+	$oldowner = $domain['ownerid'];
+	
 	$domain = $_POST['domain'];
 	$domain['name'] = trim($domain['name']);
 	$domain['description'] = trim($domain['description']);
@@ -66,6 +68,19 @@ if(isset($_POST['domain']))
 	elseif($olddomain != $domain['name'] && GetDomainIdByName($domain['name']))
 		$error['name'] = trans('Domain with specified name exists!');
 
+	if($domain['ownerid'] && $domain['ownerid'] != $oldowner)
+        {
+		if($limits['domain_limit'] !== NULL)
+                {
+			if($limits['domain_limit'] > 0)
+			        $cnt = $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?',
+		        		array($domainadd['ownerid']));
+		
+			if($limits['domain_limit'] == 0 || $limits['domain_limit'] <= $cnt)
+			        $error['ownerid'] = trans('Exceeded domains limit of selected customer ($0)!', $limits['domain_limit']);
+		}
+	}
+																																																						        }
 	if(!$error)
 	{
 		$DB->Execute('UPDATE domains SET name = ?, ownerid = ?, description = ? WHERE id = ?', 

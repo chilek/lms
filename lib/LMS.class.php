@@ -380,13 +380,15 @@ class LMS
 				WHERE id=?', array($this->AUTH->id, $id));
 		$this->DB->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
 		$this->DB->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
-		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
-		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
+		// nodes
 		$this->DB->Execute('DELETE FROM nodeassignments WHERE nodeid IN (
 				SELECT id FROM nodes WHERE ownerid=?)', array($id));
 		$this->DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid IN (
 				SELECT id FROM nodes WHERE ownerid=?)', array($id));
 		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
+		// hosting
+		$this->DB->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
+		$this->DB->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
 		// Remove Userpanel rights
 		if(!empty($this->CONFIG['directories']['userpanel_dir']))
 			$this->DB->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
@@ -1948,8 +1950,10 @@ class LMS
 	{
 		$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, 
 				taxid, prodid, uprate, downrate, upceil, downceil, climit, 
-				plimit, dlimit, type)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				plimit, dlimit, type, sh_limit, www_limit, mail_limit, sql_limit,
+				ftp_limit, quota_sh_limit, quota_www_limit, quota_mail_limit,
+				quota_sql_limit, quota_ftp_limit, domain_limit, alias_limit)
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
 				array(
 					$tariff['name'],
 					$tariff['description'],
@@ -1964,6 +1968,18 @@ class LMS
 					$tariff['plimit'],
 					$tariff['dlimit'],
 					$tariff['type'],
+					$tariff['sh_limit'],
+					$tariff['www_limit'],
+					$tariff['mail_limit'],
+					$tariff['sql_limit'],
+					$tariff['ftp_limit'],
+					$tariff['quota_sh_limit'],
+					$tariff['quota_www_limit'],
+					$tariff['quota_mail_limit'],
+					$tariff['quota_sql_limit'],
+					$tariff['quota_ftp_limit'],
+					$tariff['domain_limit'],
+					$tariff['alias_limit'],
 				));
 		if ($result)
 			return $this->DB->GetLastInsertID('tariffs');
@@ -1975,7 +1991,10 @@ class LMS
 	{
 		return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, 
 				taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?, 
-				climit=?, plimit=?, dlimit=?, type=? WHERE id=?', 
+				climit=?, plimit=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
+				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?, 
+				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?, 
+				domain_limit=?, alias_limit=?, type=? WHERE id=?', 
 				array($tariff['name'], 
 					$tariff['description'],
 					$tariff['value'],
@@ -1988,6 +2007,18 @@ class LMS
 					$tariff['climit'],
 					$tariff['plimit'],
 					$tariff['dlimit'],
+					$tariff['sh_limit'],
+					$tariff['www_limit'],
+					$tariff['mail_limit'],
+					$tariff['sql_limit'],
+					$tariff['ftp_limit'],
+					$tariff['quota_sh_limit'],
+					$tariff['quota_www_limit'],
+					$tariff['quota_mail_limit'],
+					$tariff['quota_sql_limit'],
+					$tariff['quota_ftp_limit'],
+					$tariff['domain_limit'],
+					$tariff['alias_limit'],
 					$tariff['type'],
 					$tariff['id']
 				));
@@ -2006,12 +2037,10 @@ class LMS
 		if ($network)
 			$net = $this->GetNetworkParams($network);
 
-		$result = $this->DB->GetRow('SELECT tariffs.id AS id, name, tariffs.value AS value, taxid, taxes.label AS tax,
-			taxes.value AS taxvalue, prodid, tariffs.description AS description, uprate, downrate, upceil, downceil, 
-			climit, plimit, dlimit, type
-			FROM tariffs 
-			LEFT JOIN taxes ON (taxid = taxes.id)
-			WHERE tariffs.id=?', array($id));
+		$result = $this->DB->GetRow('SELECT t.*, taxes.label AS tax, taxes.value AS taxvalue
+			FROM tariffs t
+			LEFT JOIN taxes ON (t.taxid = taxes.id)
+			WHERE t.id=?', array($id));
 
 		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt, '
 			.$this->DB->Concat('upper(c.lastname)',"' '",'c.name').' AS customername '
@@ -2059,9 +2088,9 @@ class LMS
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll('SELECT t.id AS id, t.name, t.value AS value, uprate, 
-				downrate, upceil, downceil, climit, plimit, taxid, taxes.value AS taxvalue, 
-				taxes.label AS tax, prodid
+		return $this->DB->GetAll('SELECT t.id, t.name, t.value, uprate, taxid, prodid,
+				downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue, 
+				taxes.label AS tax
 				FROM tariffs t 
 				LEFT JOIN taxes ON t.taxid = taxes.id
 				ORDER BY t.value DESC');
@@ -3072,6 +3101,44 @@ class LMS
 	/*
 	 *  Miscalenous
 	 */
+
+	function GetHostingLimits($customerid)
+	{
+		$result = array('alias_limit' => 0,
+			'domain_limit' => 0,
+			'sh_limit' => 0,
+			'www_limit' => 0,
+			'ftp_limit' => 0,
+			'mail_limit' => 0,
+			'sql_limit' => 0,
+			'quota_sh_limit' => 0,
+			'quota_www_limit' => 0,	
+			'quota_ftp_limit' => 0,	
+			'quota_mail_limit' => 0,
+			'quota_sql_limit' => 0,	
+		);
+		
+		if($limits = $this->DB->GetAll('SELECT alias_limit, domain_limit, sh_limit,
+			www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
+			quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit
+	                FROM tariffs WHERE id IN (SELECT tariffid FROM assignments
+				WHERE customerid = ? AND tariffid != 0
+				AND (dateto > ?NOW? OR dateto = 0)
+				AND (datefrom < ?NOW? OR datefrom = 0))',
+			array($customerid)))
+		{
+		        foreach($limits as $row)
+				foreach($row as $idx => $val)
+		            		if($val === NULL || $result[$idx] === NULL) { 
+						$result[$idx] = NULL; // no limit
+					} 
+		                        else {
+						$result[$idx] += $val;
+					}
+		}
+		
+		return $result;
+	}
 
 	function GetRemoteMACs($host = '127.0.0.1', $port = 1029)
 	{

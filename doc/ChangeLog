@@ -23,6 +23,10 @@ version ? (????-??-??):
   - hosting: improved interface, added info, delete links (alec)
   - hosting: added domain/account/alias info pages (alec)
   - hosting: mail forwarding to external accounts (alec)
+  - hosting: added accounts descriptions (alec)
+  - hosting: account's password change moved to separate module (alec)
+  - hosting: define no quota limit as NULL in database (alec) 
+  - tariffs: added hosting limits definitions (alec) 
 
 version 1.11.2 Neera (2008-01-23):
 

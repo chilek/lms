@@ -25,17 +25,11 @@
  */
 
 $id = intval($_GET['id']);
-$option = isset($_GET['op']) ? $_GET['op'] : '';
 
 // LEFT join with domains for backward compat.
-$account = $DB->GetRow('SELECT p.id, p.ownerid, p.login, p.realname, 
-		p.lastlogin, p.domainid, p.expdate, p.type, p.home, mail_forward,
-		p.quota_sh, p.quota_mail, p.quota_www, p.quota_ftp, p.quota_sql, '
-		.$DB->Concat('c.lastname', "' '", 'c.name').' 
-		AS customername, d.name AS domain 
+$account = $DB->GetRow('SELECT p.*, d.name AS domain 
 		FROM passwd p
 		LEFT JOIN domains d ON (p.domainid = d.id)
-		LEFT JOIN customers c ON (c.id = p.ownerid)
 		WHERE p.id = ?', array($id));
 
 if(!$account)
@@ -43,118 +37,154 @@ if(!$account)
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-foreach(array('sh', 'mail', 'www', 'ftp', 'sql') as $type)
-	$quota[$type] = $account['quota_'.$type];
+$layout['pagetitle'] = trans('Account Edit: $0', $account['login'].'@'.$account['domain']);
 
-switch ($option) 
+$types = array(1 => 'sh', 2 => 'mail', 4 => 'www', 8 => 'ftp', 16 => 'sql');
+
+if(isset($_POST['account']))
 {
-    case 'chpasswd':
+	$oldlogin = $account['login'];
+	$oldowner = $account['ownerid'];
+	$oldtype = $account['type'];
 	
-	$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login'].'@'.$account['domain']);
-	
-	if(isset($_POST['passwd']))
-	{
-		$account['passwd1'] = $_POST['passwd']['passwd'];
-		$account['passwd2'] = $_POST['passwd']['confirm'];
-	
-		if($account['passwd1'] != $account['passwd2'])
-			$error['passwd'] = trans('Passwords does not match!'); 
-		elseif($account['passwd1'] == '') 
-			$error['passwd'] = trans('Empty passwords are not allowed!');
-	
-		if(!$error)
-		{
-			$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', 
-				array(crypt($account['passwd1']), $id));
-		
-			$SESSION->redirect('?m=accountlist');
-		}
-	}
-		
-	$template = 'accountpasswd.html';
-        break;
-    
-    default:
-    
-	$layout['pagetitle'] = trans('Account Edit: $0', $account['login'].'@'.$account['domain']);
-    
-	if(isset($_POST['account']))
-	{
-		$oldlogin = $account['login'];
-		$account = $_POST['account'];
-		$quota = $_POST['quota'];
-		$account['id'] = $id;
-		
-		foreach($quota as $type => $value)
-			$quota[$type] = sprintf('%d', $value);			
-		
-		if(!eregi("^[a-z0-9._-]+$", $account['login']))
-    			$error['login'] = trans('Login contains forbidden characters!');
-		elseif(!$account['domainid'])
-            		$error['domainid'] = trans('You have to select domain for account!');
-		elseif($account['login'] != $oldlogin)
-			if($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?',
-				array($account['login'], $account['domainid'])))
-			{
-				$error['login'] = trans('Account with that login name exists!'); 
-			}
-		
-		if($account['mail_forward'] != '' && !check_email($account['mail_forward']))
-		        $error['mail_forward'] = trans('Incorrect email!');
-				
-		if($account['expdate'] == '')
-			$account['expdate'] = 0;
-		else
-		{
-			$date = explode('/',$account['expdate']);
-			if(!checkdate($date[1],$date[2],$date[0]))
-				$error['expdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-			elseif(!$error)
-				$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
-		}
+	$account = $_POST['account'];
+	$quota = $_POST['quota'];
+	$account['id'] = $id;
 
+	$limit = isset($_POST['limit']) ? $_POST['limit'] : array();
+		
+	foreach($account as $key => $value)
+		if(!is_array($value))
+		        $account[$key] = trim($value);
+
+	if(isset($account['type']))
 		$account['type'] = array_sum($account['type']);
-
-		if($account['domainid'] && $account['ownerid'])
-    			if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
-	            		$error['domainid'] = trans('Selected domain has other owner!');
-						
-		if(!$error)
+	else
+		$error['type'] = true;
+				
+	if(!eregi("^[a-z0-9._-]+$", $account['login']))
+		$error['login'] = trans('Login contains forbidden characters!');
+	elseif(!$account['domainid'])
+    		$error['domainid'] = trans('You have to select domain for account!');
+	elseif($account['login'] != $oldlogin)
+		if($DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?',
+			array($account['login'], $account['domainid'])))
 		{
-			$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, 
-				home = ?, expdate = ?, domainid = ?, type = ?, 
-				quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ?, 
-				quota_sql = ?, mail_forward = ? WHERE id = ?', 
-				array(	$account['ownerid'], 
-					$account['login'],
-					$account['realname'],
-					$account['home'],
-					$account['expdate'],
-					$account['domainid'],
-					$account['type'],
-					$quota['sh'],
-					$quota['mail'],
-					$quota['www'],
-					$quota['ftp'],
-					$quota['sql'],
-					$account['mail_forward'],
-					$account['id']
-					));
+			$error['login'] = trans('Account with that login name exists!'); 
+		}
+	
+	if($account['mail_forward'] != '' && !check_email($account['mail_forward']))
+	        $error['mail_forward'] = trans('Incorrect email!');
+			
+	if($account['expdate'] == '')
+		$account['expdate'] = 0;
+	else
+	{
+		$date = explode('/',$account['expdate']);
+		if(!checkdate($date[1],$date[2],$date[0]))
+			$error['expdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+		elseif(!$error)
+			$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
+	}
 
-			$SESSION->redirect('?m=accountinfo&id='.$account['id']);
+	if($account['domainid'] && $account['ownerid'])
+		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
+        		$error['domainid'] = trans('Selected domain has other owner!');
+
+	foreach($types as $idx => $name)
+        {
+	        if(isset($limit[$name]))
+		        $quota[$name] = NULL;
+		elseif(!ereg('^[0-9]+$', $quota[$name]))
+			$error['quota_'.$name] = trans('Integer value expected!');
+	}
+
+	// finally lets check limits
+	if($account['ownerid'] && $account['ownerid'] != $oldowner)
+        {
+                $limits = $LMS->GetHostingLimits($account['ownerid']);
+		
+		foreach($types as $idx => $name)
+		{
+			// quota limit
+			$limitidx = 'quota_'.$name.'_limit';
+			if($limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
+			{
+				if(!isset($error['quota_'.$name]) && ($quota[$name] === NULL || $quota[$name] > $limits[$limitidx]))
+				{
+					$error['quota_'.$name] = trans('Exceeded \'$0\' account quota limit of selected customer ($1)!',
+						$name, $limits[$limitidx]);
+					$limit[$name] = 1;
+				}
+			}
+			
+			if($oldtype == $account['type']) continue;
+			
+			// count limit
+			$limitidx = $name.'_limit';
+			if($limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
+			{
+	    			if($limits[$limitidx] > 0)
+		            		$cnt = $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?
+						AND (type & ?) = ?', array($account['ownerid'], $idx, $idx));
+
+			        if(!$error && ($limits[$limitidx] == 0 || $limits[$limitidx] <= $cnt))
+				{
+    		                	$error['ownerid'] = trans('Exceeded \'$0\' accounts limit of selected customer ($1)!', 
+							$name, $limits[$limitidx]);
+				}
+			}
 		}
 	}
+						
+	if(!$error)
+	{
+		$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, 
+			home = ?, expdate = ?, domainid = ?, type = ?, 
+			quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ?, 
+			quota_sql = ?, mail_forward = ?, description = ? WHERE id = ?', 
+			array(	$account['ownerid'], 
+				$account['login'],
+				$account['realname'],
+				$account['home'],
+				$account['expdate'],
+				$account['domainid'],
+				$account['type'],
+				$quota['sh'],
+				$quota['mail'],
+				$quota['www'],
+				$quota['ftp'],
+				$quota['sql'],
+				$account['mail_forward'],
+				$account['description'],
+				$account['id']
+		));
+
+		$SESSION->redirect('?m=accountinfo&id='.$account['id']);
+	}
+
+	$account['limit'] = $limit;
 	
-	$template = 'accountedit.html';
+	$SMARTY->assign('error', $error);
+}
+else
+{
+	$quota = array();
+
+	foreach($types as $idx => $name)
+		$quota[$name] = $account['quota_'.$name];
+	
+	foreach($quota as $idx => $val)
+		if($val === NULL)
+			$account['limit'][$idx] = 1;
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('error', $error);
 $SMARTY->assign('quota', $quota);
 $SMARTY->assign('account', $account);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->display($template);
+$SMARTY->display('accountedit.html');
 
 ?>

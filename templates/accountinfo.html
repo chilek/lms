@@ -90,6 +90,25 @@
 				    </TD>
 			    	</TR>
 				{/if}
+				{if $account.description}
+				<TR>
+				    <TD width="1%">
+					<img src="img/info.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Description:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<TABLE WIDTH="100%" CELLPADDING="5">
+					    <TR>
+					        <TD CLASS="fall superlight">
+					            {$account.description|replace:"\n":"<BR>"}
+					        </TD>
+					    </TR>
+					</TABLE>
+				    </TD>
+			    	</TR>
+				{/if}
 			    </TR>			    
 			    </TABLE>
 			</TD>
@@ -100,38 +119,38 @@
 					<img src="img/account.gif" alt="">
 				    </TD>
 				    <TD width="1%">
-					<B>{t}Type/Limit:{/t}</B>
+					<B>{t}Type/Quota:{/t}</B>
 				    </TD>
 				    <TD width="98%">
 					    <table width="100%">
 						    {if ($account.type & 1) == 1}	    
 						    <tr>
 							    <td width="1%" nowrap>{t}shell{/t}</td>
-							    <td>&nbsp;{$account.quota_sh}</td>
+							    <td>&nbsp;{if $account.quota_sh===NULL}{t}no limit{/t}{else}{$account.quota_sh} MB{/if}</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 2) == 2}
 						    <tr>
 							    <td width="1%" nowrap>{t}mail{/t}</td>
-							    <td>&nbsp;{$account.quota_mail}</td>
+							    <td>&nbsp;{if $account.quota_mail===NULL}{t}no limit{/t}{else}{$account.quota_mail} MB{/if}</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 4) == 4}
 						    <tr>
 							    <td width="1%" nowrap>{t}www{/t}</td>
-							    <td>&nbsp;{$account.quota_www}</td>
+							    <td>&nbsp;{if $account.quota_www===NULL}{t}no limit{/t}{else}{$account.quota_www} MB{/if}</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 8) == 8}
 						    <tr>
 							    <td width="1%" nowrap>{t}ftp{/t}</td>
-							    <td>&nbsp;{$account.quota_ftp}</td>
+							    <td>&nbsp;{if $account.quota_ftp===NULL}{t}no limit{/t}{else}{$account.quota_ftp} MB{/if}</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 16) == 16}
 						    <tr>
 							    <td width="1%" nowrap>{t}sql{/t}</td>
-							    <td>&nbsp;{$account.quota_sql}</td>
+							    <td>&nbsp;{if $account.quota_sql===NULL}{t}no limit{/t}{else}{$account.quota_sql} MB{/if}</td>
 						    </tr>
 						    {/if}
 					    </table>

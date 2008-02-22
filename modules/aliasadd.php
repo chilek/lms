@@ -76,9 +76,28 @@ if($alias)
 		}
 	}
 	
-	if(empty($_GET['addaccount']) && empty($_GET['delaccount']) && !sizeof($alias['accounts']))
+	if(empty($_GET['addaccount']) && empty($_GET['delaccount']))
 	{
-		$error['accountid'] = trans('You have to select destination account!');
+		if(!sizeof($alias['accounts']))
+			$error['accountid'] = trans('You have to select destination account!');
+		
+		if($alias['domainid'])
+		{
+			if($ownerid = $DB->GetOne('SELECT ownerid FROM domains WHERE id = ?', array($alias['domainid'])))
+			{
+				$limits = $LMS->GetHostingLimits($ownerid);
+		
+		    		if($limits['alias_limit'] !== NULL)
+				{
+					if($limits['alias_limit'] > 0)
+				    		$cnt = $DB->GetOne('SELECT COUNT(*) FROM aliases WHERE domainid IN (
+							SELECT id FROM domains WHERE ownerid = ?)', array($ownerid));
+				
+					if($limits['alias_limit'] == 0 || $limits['alias_limit'] <= $cnt)
+				    		$error['domainid'] = trans('Exceeded aliases limit of selected customer ($0)!', $limits['alias_limit']);
+            			}
+			}
+		}
 	}
 	
 	if(!$error && empty($_GET['addaccount']) && empty($_GET['delaccount']))
