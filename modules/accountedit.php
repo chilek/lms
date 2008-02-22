@@ -51,8 +51,6 @@ if(isset($_POST['account']))
 	$quota = $_POST['quota'];
 	$account['id'] = $id;
 
-	$limit = isset($_POST['limit']) ? $_POST['limit'] : array();
-		
 	foreach($account as $key => $value)
 		if(!is_array($value))
 		        $account[$key] = trim($value);
@@ -93,9 +91,7 @@ if(isset($_POST['account']))
 
 	foreach($types as $idx => $name)
         {
-	        if(isset($limit[$name]))
-		        $quota[$name] = NULL;
-		elseif(!ereg('^[0-9]+$', $quota[$name]))
+		if(!ereg('^[0-9]+$', $quota[$name]))
 			$error['quota_'.$name] = trans('Integer value expected!');
 	}
 
@@ -108,13 +104,12 @@ if(isset($_POST['account']))
 		{
 			// quota limit
 			$limitidx = 'quota_'.$name.'_limit';
-			if($limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
+			if(!isset($error['quota_'.$name]) && $limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
 			{
-				if(!isset($error['quota_'.$name]) && ($quota[$name] === NULL || $quota[$name] > $limits[$limitidx]))
+				if($quota[$name] > $limits[$limitidx])
 				{
 					$error['quota_'.$name] = trans('Exceeded \'$0\' account quota limit of selected customer ($1)!',
 						$name, $limits[$limitidx]);
-					$limit[$name] = 1;
 				}
 			}
 			
@@ -164,8 +159,6 @@ if(isset($_POST['account']))
 		$SESSION->redirect('?m=accountinfo&id='.$account['id']);
 	}
 
-	$account['limit'] = $limit;
-	
 	$SMARTY->assign('error', $error);
 }
 else
@@ -174,10 +167,6 @@ else
 
 	foreach($types as $idx => $name)
 		$quota[$name] = $account['quota_'.$name];
-	
-	foreach($quota as $idx => $val)
-		if($val === NULL)
-			$account['limit'][$idx] = 1;
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

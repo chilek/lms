@@ -126,31 +126,31 @@
 						    {if ($account.type & 1) == 1}	    
 						    <tr>
 							    <td width="1%" nowrap>{t}shell{/t}</td>
-							    <td>&nbsp;{if $account.quota_sh===NULL}{t}no limit{/t}{else}{$account.quota_sh} MB{/if}</td>
+							    <td>&nbsp;{$account.quota_sh} MB</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 2) == 2}
 						    <tr>
 							    <td width="1%" nowrap>{t}mail{/t}</td>
-							    <td>&nbsp;{if $account.quota_mail===NULL}{t}no limit{/t}{else}{$account.quota_mail} MB{/if}</td>
+							    <td>&nbsp;{$account.quota_mail} MB</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 4) == 4}
 						    <tr>
 							    <td width="1%" nowrap>{t}www{/t}</td>
-							    <td>&nbsp;{if $account.quota_www===NULL}{t}no limit{/t}{else}{$account.quota_www} MB{/if}</td>
+							    <td>&nbsp;{$account.quota_www} MB</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 8) == 8}
 						    <tr>
 							    <td width="1%" nowrap>{t}ftp{/t}</td>
-							    <td>&nbsp;{if $account.quota_ftp===NULL}{t}no limit{/t}{else}{$account.quota_ftp} MB{/if}</td>
+							    <td>&nbsp;{$account.quota_ftp} MB</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 16) == 16}
 						    <tr>
 							    <td width="1%" nowrap>{t}sql{/t}</td>
-							    <td>&nbsp;{if $account.quota_sql===NULL}{t}no limit{/t}{else}{$account.quota_sql} MB{/if}</td>
+							    <td>&nbsp;{$account.quota_sql} MB</td>
 						    </tr>
 						    {/if}
 					    </table>
