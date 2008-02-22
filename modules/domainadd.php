@@ -48,6 +48,21 @@ if(isset($_POST['domainadd']))
 		$error['name'] = trans('Domain name is required!');
 	elseif(GetDomainIdByName($domainadd['name']))
 		$error['name'] = trans('Domain with specified name exists!');
+
+	if($domainadd['ownerid'])
+	{
+		$limits = $LMS->GetHostingLimits($domainadd['ownerid']);
+		
+		if($limits['domain_limit'] !== NULL) 
+		{
+			if($limits['domain_limit'] > 0)
+				$cnt = $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', 
+					array($domainadd['ownerid']));
+
+			if($limits['domain_limit'] == 0 || $limits['domain_limit'] <= $cnt)
+				$error['ownerid'] = trans('Exceeded domains limit of selected customer ($0)!', $limits['domain_limit']);
+		}
+	}
 	
 	if(!$error)
 	{

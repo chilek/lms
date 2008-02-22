@@ -166,6 +166,63 @@
 		</TD>
 	</TR>
 	{/if}
+	<TR CLASS="light">	
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/account.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<TABLE WIDTH="100%" CELLPADDING="0">
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Limit of domains:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.domain_limit===NULL}{t}no limit{/t}{else}{$tariff.domain_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Limit of account aliases:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.alias_limit===NULL}{t}no limit{/t}{else}{$tariff.alias_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Limit of e-mail accounts:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.mail_limit===NULL}{t}no limit{/t}{else}{$tariff.mail_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Limit of shell accounts:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.sh_limit===NULL}{t}no limit{/t}{else}{$tariff.sh_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Limit of www accounts:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.www_limit===NULL}{t}no limit{/t}{else}{$tariff.www_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Limit of ftp accounts:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.ftp_limit===NULL}{t}no limit{/t}{else}{$tariff.ftp_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Limit of sql accounts:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.sql_limit===NULL}{t}no limit{/t}{else}{$tariff.sql_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Quota limit of e-mail account:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.quota_mail_limit===NULL}{t}no limit{/t}{else}{$tariff.quota_mail_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Quota limit of shell account:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.quota_sh_limit===NULL}{t}no limit{/t}{else}{$tariff.quota_sh_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Quota limit of www account:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.quota_www_limit===NULL}{t}no limit{/t}{else}{$tariff.quota_www_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Quota limit of ftp account:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.quota_ftp_limit===NULL}{t}no limit{/t}{else}{$tariff.quota_ftp_limit}{/if}</TD>
+			    </TR>
+			    <TR>
+				    <TD WIDTH="1%" NOWRAP>{t}Quota limit of sql account:{/t}</TD>
+				    <TD width="99%" NOWRAP>{if $tariff.quota_sql_limit===NULL}{t}no limit{/t}{else}{$tariff.quota_sql_limit}{/if}</TD>
+			    </TR>
+			</TABLE>
+		</TD>
+	</TR>
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="2">
 			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>

@@ -23,7 +23,7 @@
 			<B>{t}Owner:{/t}</B>
 		</TD>
 		<TD width="98%"class="fright">
-			<SELECT SIZE="1" NAME="domainadd[ownerid]" {tip text="Select owner or 'SYSTEM DOMAIN' if you don't want to assign it to any customer"}>
+			<SELECT SIZE="1" NAME="domainadd[ownerid]" {tip text="Select owner or 'SYSTEM DOMAIN' if you don't want to assign it to any customer" trigger="ownerid"}>
 				<OPTION VALUE="0"{if !$domainadd.ownerid} SELECTED{/if}>{t}SYSTEM DOMAIN{/t}</OPTION>
 				{section name=customers loop=$customers}
 					<OPTION VALUE="{$customers[customers].id}"{if $domainadd.ownerid == $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:" ...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>

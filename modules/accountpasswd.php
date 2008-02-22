@@ -24,27 +24,43 @@
  *  $Id$
  */
 
-// LEFT join with domains for bckward compat.
-$account = $DB->GetRow('SELECT p.id, p.ownerid, p.login, p.realname, p.description,
-		p.lastlogin, p.domainid, p.expdate, p.type, p.home, p.mail_forward,
-		p.quota_sh, p.quota_mail, p.quota_www, p.quota_ftp, p.quota_sql, '
-		.$DB->Concat('c.lastname', "' '", 'c.name').' 
-		AS customername, d.name AS domain 
+$id = intval($_GET['id']);
+
+// LEFT join with domains for backward compat.
+$account = $DB->GetRow('SELECT p.id, p.login, d.name AS domain 
 		FROM passwd p
 		LEFT JOIN domains d ON (p.domainid = d.id)
-		LEFT JOIN customers c ON (c.id = p.ownerid)
-		WHERE p.id = ?', array(intval($_GET['id'])));
+		WHERE p.id = ?', array($id));
 
 if(!$account)
 {
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
+	
+if(isset($_POST['passwd']))
+{
+	$account['passwd1'] = $_POST['passwd']['passwd'];
+	$account['passwd2'] = $_POST['passwd']['confirm'];
+	
+	if($account['passwd1'] != $account['passwd2'])
+		$error['passwd'] = trans('Passwords does not match!'); 
+	elseif($account['passwd1'] == '') 
+		$error['passwd'] = trans('Empty passwords are not allowed!');
+	
+	if(!$error)
+	{
+		$DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', 
+			array(crypt($account['passwd1']), $id));
+	
+		$SESSION->redirect('?'.$SESSION->get('backto'));
+	}
+}
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-    
-$layout['pagetitle'] = trans('Account Info: $0', $account['login'].'@'.$account['domain']);
-
+$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login'].'@'.$account['domain']);
+		
+$SMARTY->assign('error', $error);
 $SMARTY->assign('account', $account);
-$SMARTY->display('accountinfo.html');
+
+$SMARTY->display('accountpasswd.html');
 
 ?>
