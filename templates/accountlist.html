@@ -87,7 +87,7 @@
 		</TD>
 		<TD align="right" NOWRAP valign="top" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
 			{if ($accountlist[accountlist].type & 1) == 1}*{else}-{/if}/{if ($accountlist[accountlist].type & 2) == 2}*{else}-{/if}/{if ($accountlist[accountlist].type & 4) == 4}*{else}-{/if}/{if ($accountlist[accountlist].type & 8) == 8}*{else}-{/if}/{if ($accountlist[accountlist].type & 16) == 16}*{else}-{/if}<BR>
-			{$accountlist[accountlist].quota_sh|default:"~"}/{$accountlist[accountlist].quota_mail|default:"~"}/{$accountlist[accountlist].quota_www|default:"~"}/{$accountlist[accountlist].quota_ftp|default:"~"}/{$accountlist[accountlist].quota_sql|default:"~"}
+			{$accountlist[accountlist].quota_sh}/{$accountlist[accountlist].quota_mail}/{$accountlist[accountlist].quota_www}/{$accountlist[accountlist].quota_ftp}/{$accountlist[accountlist].quota_sql}
 		</TD>
 		<TD align="right" valign="top" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
 			<nobr>{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</nobr><BR>

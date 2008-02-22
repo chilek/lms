@@ -26,12 +26,6 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("ALTER TABLE passwd CHANGE quota_sh quota_sh int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE passwd CHANGE quota_mail quota_mail int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE passwd CHANGE quota_www quota_www int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE passwd CHANGE quota_sql quota_sql int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE passwd CHANGE quota_ftp quota_ftp int(11) DEFAULT NULL");
-
 $DB->Execute("ALTER TABLE tariffs ADD sh_limit int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE tariffs ADD mail_limit int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE tariffs ADD www_limit int(11) DEFAULT NULL");

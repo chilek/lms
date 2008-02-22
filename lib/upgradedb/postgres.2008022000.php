@@ -27,17 +27,6 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-	ALTER TABLE passwd ALTER quota_sh DROP NOT NULL;
-	ALTER TABLE passwd ALTER quota_sh SET DEFAULT NULL;
-	ALTER TABLE passwd ALTER quota_www DROP NOT NULL;
-	ALTER TABLE passwd ALTER quota_www SET DEFAULT NULL;
-	ALTER TABLE passwd ALTER quota_mail DROP NOT NULL;
-	ALTER TABLE passwd ALTER quota_mail SET DEFAULT NULL;
-	ALTER TABLE passwd ALTER quota_sql DROP NOT NULL;
-	ALTER TABLE passwd ALTER quota_sql SET DEFAULT NULL;
-	ALTER TABLE passwd ALTER quota_ftp DROP NOT NULL;
-	ALTER TABLE passwd ALTER quota_ftp SET DEFAULT NULL;
-
 	ALTER TABLE tariffs ADD sh_limit integer DEFAULT NULL;
 	ALTER TABLE tariffs ADD mail_limit integer DEFAULT NULL;
 	ALTER TABLE tariffs ADD www_limit integer DEFAULT NULL;

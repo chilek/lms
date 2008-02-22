@@ -39,7 +39,6 @@ if(isset($_POST['account']))
 {
 	$account = $_POST['account'];
 	$quota = $_POST['quota'];
-	$limit = isset($_POST['limit']) ? $_POST['limit'] : array();
 	
 	foreach($account as $key=>$value)
 		if(!is_array($value))
@@ -92,12 +91,8 @@ if(isset($_POST['account']))
 			$error['domainid'] = trans('Selected domain has other owner!');
 
 	foreach($types as $idx => $name)
-        {
-	        if(isset($limit[$name]))
-		        $quota[$name] = NULL;
-		elseif(!ereg('^[0-9]+$', $quota[$name]))
-			$error['quota_'.$name] = trans('Integer value expected!');
-	}
+		if(!ereg('^[0-9]+$', $quota[$name]))
+	                $error['quota_'.$name] = trans('Integer value expected!');
 
 	// finally lets check limits
 	if($account['ownerid'])
@@ -108,13 +103,12 @@ if(isset($_POST['account']))
 		{
 			// quota limit
 			$limitidx = 'quota_'.$name.'_limit';
-			if($limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
+			if(!isset($error['quota_'.$name]) && $limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
 			{
-				if(!isset($error['quota_'.$name]) && ($quota[$name] === NULL || $quota[$name] > $limits[$limitidx]))
+				if($quota[$name] > $limits[$limitidx])
 				{
 					$error['quota_'.$name] = trans('Exceeded \'$0\' account quota limit of selected customer ($1)!',
 						$name, $limits[$limitidx]);
-					$limit[$name] = 1;
 				}
 			}
 			
@@ -180,9 +174,7 @@ if(isset($_POST['account']))
 		unset($account['description']);
 	}
 	
-	$account['limit'] = $limit;
-	
-	$SMARTY->assign('quota', $quota);
+	$SMARTY->assign('error', $error);
 }
 else
 {
@@ -194,7 +186,7 @@ else
 		$limits = $LMS->GetHostingLimits($account['ownerid']);
 
 		foreach($types as $idx => $name)
-			$quota[$name] = $limits['quota_'.$name.'_limit'];
+			$quota[$name] = intval($limits['quota_'.$name.'_limit']);
 	}
 	else
 	{
@@ -202,12 +194,8 @@ else
 			if(isset($CONFIG['phpui']['quota_'.$name]))
 				$quota[$name] = intval($CONFIG['phpui']['quota_'.$name]);
 			else
-				$quota[$name] = NULL;
+				$quota[$name] = 0;
 	}
-	
-	foreach($quota as $idx => $val)
-		if($val === NULL)
-			$account['limit'][$idx] = 1;
 
 	if(!empty($CONFIG['phpui']['account_type']))
 		$account['type'] = intval($CONFIG['phpui']['account_type']);
@@ -219,7 +207,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!isset($account['type'])) $account['type'] = 32767;
 
-$SMARTY->assign('error', $error);
 $SMARTY->assign('quota', $quota);
 $SMARTY->assign('account', $account);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
