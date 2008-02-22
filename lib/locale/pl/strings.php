@@ -427,7 +427,7 @@ $_LANG['End of DHCP range:'] = 'Koniec zakresu DHCP :';
 $_LANG['End of DHCP range has to be equal or greater than start!'] = 'Koniec zakresu DHCP musi być równy lub większy niż jego początek!';
 $_LANG['End time must not precede start time!'] = 'Czas zakończenia musi być późniejszy niż czas rozpoczęcia!';
 $_LANG['Enter 4 to 6 digits PIN number (optional)'] = 'Wprowadź 4 do 6-u cyfr numeru PIN (opcjonalnie)';
-$_LANG['Enter account limits (optional)'] = 'Wprowadź limity dla konta (opcjonalnie)';
+$_LANG['Enter account quota in MB'] = 'Wprowadź quotę dla konta w MB';
 $_LANG['Enter account name'] = 'Wprowadź nazwę konta';
 $_LANG['Enter additional informations'] = 'Wprowadź dodatkowe informacje';
 $_LANG['Enter additional informations (optional)'] = 'Wprowadź dodatkowe informacje (opcjonalnie)';
@@ -1928,7 +1928,6 @@ $_LANG['You have to select domain for account!'] = 'Musisz wybrać domenę dla k
 $_LANG['You have to select domain for alias!'] = 'Musisz wybrać domenę dla aliasu!';
 $_LANG['You have to specify login!'] = 'Musisz podać login!';
 $_LANG['no limit'] = 'bez ograniczeń';
-$_LANG['Enter account quota'] = 'Wprowadź limit rozmiaru konta';
 $_LANG['Enter destination e-mail account for redirect'] = 'Wprowadź docelowe konto e-mail przekierowania';
 $_LANG['Enter limit of account aliases'] = 'Wprowadź limit liczby aliasów kont';
 $_LANG['Enter limit of domains'] = 'Wprowadź limit liczby domen';
@@ -1957,5 +1956,9 @@ $_LANG['Quota limit of ftp account:'] = 'Limit rozmiaru konta ftp:';
 $_LANG['Quota limit of shell account:'] = 'Limit rozmiaru konta shellowego:';
 $_LANG['Quota limit of sql account:'] = 'Limit rozmiaru konta sql:';
 $_LANG['Quota limit of www account:'] = 'Limit rozmiaru konta www:';
+$_LANG['Exceeded \'$0\' accounts limit of selected customer ($1)!'] = 'Przekroczony limit liczby kont typu \'$0\' dla wybranego klienta ($1)!';
+$_LANG['Exceeded \'$0\' account quota limit of selected customer ($1)!'] = 'Przekroczony limit rozmiaru konta typu \'$0\' dla wybranego klienta ($1)!';
+$_LANG['Exceeded aliases limit of selected customer ($0)!'] = 'Przekroczony limit liczby aliasów dla wybranego klienta ($0)!';
+$_LANG['Exceeded domains limit of selected customer ($0)!'] = 'Przekroczony limit liczby domen dla wybranego klienta ($0)!';
 
 ?>
