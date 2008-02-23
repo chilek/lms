@@ -32,8 +32,8 @@ $DB->Execute("ALTER TABLE tariffs ADD www_limit int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE tariffs ADD sql_limit int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE tariffs ADD ftp_limit int(11) DEFAULT NULL");
 
-$DB->Execute("ALTER TABLE tariffs ADD qota_sh_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD qota_mail_limit int(11) DEFAULT NULL");
+$DB->Execute("ALTER TABLE tariffs ADD quota_sh_limit int(11) DEFAULT NULL");
+$DB->Execute("ALTER TABLE tariffs ADD quota_mail_limit int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE tariffs ADD quota_www_limit int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE tariffs ADD quota_sql_limit int(11) DEFAULT NULL");
 $DB->Execute("ALTER TABLE tariffs ADD quota_ftp_limit int(11) DEFAULT NULL");
