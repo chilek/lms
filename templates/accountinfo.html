@@ -39,7 +39,7 @@
 		    		    </TD>
 				    <TD width="98%">
     					    {if !$account.ownerid}{t}SYSTEM ACCOUNT{/t}
-					    {else}<A href="customerinfo&id={$account.ownerid}">{$account.customername}</A>{/if}
+					    {else}<A href="?m=customerinfo&id={$account.ownerid}">{$account.customername}</A>{/if}
 				    </TD>
 				</TR>
 				{if $account.realname}
