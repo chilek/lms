@@ -275,6 +275,18 @@
                     <member>climit - limit of concurrent connections</member>
                     <member>plimit - limit of packets per second</member>
                     <member>dlimit - limit of data per time unit</member>
+                    <member>domain_limit - limit of domains</member>
+                    <member>alias_limit - limit of aliases</member>
+                    <member>sh_limit - limit of shell accounts</member>
+                    <member>mail_limit - limit of mail accounts</member>
+                    <member>www_limit - limit of www accounts</member>
+                    <member>ftp_limit - limit of ftp_accounts</member>
+                    <member>sql_limit - limit of sql accounts</member>
+                    <member>quota_sh_limit - quota limit of shell account</member>
+                    <member>quota_mail_limit - quota limit of mail account</member>
+                    <member>quota_wwww_limit - quota limit of www account</member>
+                    <member>quota_ftp_limit - quota limit of ftp account</member>
+                    <member>quota_sql_limit - quota limit of sql account</member>
                     <member>description - description for subscription</member>
                </simplelist>
           </sect2>

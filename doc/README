@@ -665,7 +665,7 @@ password = password_entered_with_lms_user_creation
      * mailing access
      * Helpdesk (RT) administration
      * Helpdesk (RT) operation
-     * accounts management
+     * hosting management
      * configuration
      * networks and devices management
      * timetable management
@@ -1720,7 +1720,7 @@ query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@
                 JOIN domains ad ON (a.domainid = ad.id)
                 JOIN aliasassignments aa ON (aa.aliasid = a.id)
                 WHERE a.login = '%u' AND ad.name = '%d')
-        OR (p.login = '%u' AND pd.name = '%d')
+        OR (p.login = '%u' AND pd.name = '%d' AND type & 2 = 2)
      __________________________________________________________________
 
 3.10. Mailing
@@ -5219,6 +5219,18 @@ Chapter 7. For curious
    climit - limit of concurrent connections
    plimit - limit of packets per second
    dlimit - limit of data per time unit
+   domain_limit - limit of domains
+   alias_limit - limit of aliases
+   sh_limit - limit of shell accounts
+   mail_limit - limit of mail accounts
+   www_limit - limit of www accounts
+   ftp_limit - limit of ftp_accounts
+   sql_limit - limit of sql accounts
+   quota_sh_limit - quota limit of shell account
+   quota_mail_limit - quota limit of mail account
+   quota_wwww_limit - quota limit of www account
+   quota_ftp_limit - quota limit of ftp account
+   quota_sql_limit - quota limit of sql account
    description - description for subscription
      __________________________________________________________________
 

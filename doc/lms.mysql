@@ -464,20 +464,32 @@ CREATE TABLE stats (
 #
 DROP TABLE IF EXISTS tariffs;
 CREATE TABLE tariffs (
-  id int(11) NOT NULL auto_increment,
-  name varchar(255) NOT NULL DEFAULT '',
-  type tinyint NOT NULL DEFAULT '1',
-  value decimal(9,2) NOT NULL DEFAULT '0.00',
-  taxid int(11) NOT NULL DEFAULT '0',
-  prodid varchar(255) NOT NULL DEFAULT '',
-  uprate int(11) NOT NULL DEFAULT '0',
-  upceil int(11) NOT NULL DEFAULT '0',
-  downrate int(11) NOT NULL DEFAULT '0',
-  downceil int(11) NOT NULL DEFAULT '0',
-  climit int(11) NOT NULL DEFAULT '0',
-  plimit int(11) NOT NULL DEFAULT '0',
-  dlimit int(11) NOT NULL DEFAULT '0',
-  description text NOT NULL,
+  id int(11) 		NOT NULL auto_increment,
+  name varchar(255) 	NOT NULL DEFAULT '',
+  type tinyint 		NOT NULL DEFAULT '1',
+  value decimal(9,2) 	NOT NULL DEFAULT '0.00',
+  taxid int(11) 	NOT NULL DEFAULT '0',
+  prodid varchar(255) 	NOT NULL DEFAULT '',
+  uprate int(11) 	NOT NULL DEFAULT '0',
+  upceil int(11) 	NOT NULL DEFAULT '0',
+  downrate int(11) 	NOT NULL DEFAULT '0',
+  downceil int(11) 	NOT NULL DEFAULT '0',
+  climit int(11) 	NOT NULL DEFAULT '0',
+  plimit int(11) 	NOT NULL DEFAULT '0',
+  dlimit int(11) 	NOT NULL DEFAULT '0',
+  domain_limit int(11)  	DEFAULT NULL,
+  alias_limit int(11)		DEFAULT NULL,
+  sh_limit int(11)      	DEFAULT NULL,
+  www_limit int(11)     	DEFAULT NULL,
+  mail_limit int(11)    	DEFAULT NULL,
+  ftp_limit int(11)     	DEFAULT NULL,
+  sql_limit int(11)     	DEFAULT NULL,
+  quota_sh_limit int(11)  	DEFAULT NULL,
+  quota_www_limit int(11) 	DEFAULT NULL,
+  quota_mail_limit int(11) 	DEFAULT NULL,
+  quota_ftp_limit int(11) 	DEFAULT NULL,
+  quota_sql_limit int(11) 	DEFAULT NULL,
+  description text 	NOT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   INDEX type (type)
@@ -911,4 +923,4 @@ CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008021900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008022000');
