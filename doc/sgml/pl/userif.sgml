@@ -700,7 +700,7 @@ query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@
 		JOIN domains ad ON (a.domainid = ad.id)
 		JOIN aliasassignments aa ON (aa.aliasid = a.id)
 		WHERE a.login = '%u' AND ad.name = '%d')
-	OR (p.login = '%u' AND pd.name = '%d')
+	OR (p.login = '%u' AND pd.name = '%d' AND type & 2 = 2)
 </screen>
 	    </example></para>
 		<para>Nastêpny przyk³ad podes³any przez bart'a przedstawia instalacjê i konfiguracjê

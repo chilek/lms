@@ -195,6 +195,18 @@ CREATE TABLE tariffs (
 	climit integer		DEFAULT 0 NOT NULL,
 	plimit integer		DEFAULT 0 NOT NULL,
 	dlimit integer		DEFAULT 0 NOT NULL,
+	domain_limit integer	DEFAULT NULL,
+	alias_limit integer	DEFAULT NULL,
+	sh_limit integer	DEFAULT NULL,
+	www_limit integer	DEFAULT NULL,
+	mail_limit integer	DEFAULT NULL,
+	ftp_limit integer	DEFAULT NULL,
+	sql_limit integer	DEFAULT NULL,
+	quota_sh_limit integer	DEFAULT NULL,
+	quota_www_limit integer	DEFAULT NULL,
+	quota_mail_limit integer DEFAULT NULL,
+	quota_ftp_limit integer	DEFAULT NULL,
+	quota_sql_limit integer	DEFAULT NULL,
 	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name)
@@ -970,4 +982,4 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008021900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008022000');
