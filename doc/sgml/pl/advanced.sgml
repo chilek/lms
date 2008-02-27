@@ -289,7 +289,19 @@
                     <member>climit - limit po³±czeñ</member>
                     <member>plimit - limit pakietów w jednostce czasu</member>
                     <member>plimit - limit danych w jednostce czasu</member>
-                    <member>description - opis</member>
+                    <member>domain_limit - limit liczby domen</member>
+		    <member>alias_limit - limit liczby aliasów</member>
+		    <member>sh_limit - limit liczby kont shellowych</member>
+		    <member>mail_limit - limit liczby kont pocztowych</member>
+		    <member>www_limit - limit liczby kont www</member>
+		    <member>ftp_limit - limit liczby kont ftp</member>
+		    <member>sql_limit - limit liczby kont sql</member>
+		    <member>quota_sh_limit - limit quoty dla konta shellowego</member>
+		    <member>quota_mail_limit - limit quoty dla konta pocztowego</member>
+		    <member>quota_www_limit - limit quoty dla konta www</member>
+		    <member>quota_ftp_limit - limit quoty dla konta ftp</member>
+		    <member>quota_sql_limit - limit quoty dla konta sql</member>
+		    <member>description - opis</member>
                </simplelist>
           </sect2>
         <sect2 id="liabilities">
