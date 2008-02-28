@@ -172,4 +172,53 @@
 		</TD>
 	</TR>
 </TABLE>
+<BR>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD width="99%" class="fleftu" align="left" nowrap="nowrap">
+			<IMG src="img/alias.gif" alt="">
+			<B>{t 0=$account.aliases|@count}Account aliases ($0):{/t}</B>
+		</TD>
+		<TD width="1%" class="frightu" align="right" nowrap>
+		        <A href="?m=aliasadd&accountid={$account.id}">{t}Nowy alias{/t} &raquo;</A>&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" class="fall" colspan="2">
+			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD WIDTH="80%" NOWRAP class="fleftu"><B>{t}Login<!account>{/t}@{t}Domain:{/t}</B></TD>
+					<TD WIDTH="19%" NOWRAP class="fbt">{t}ID:{/t}</TD>
+					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+				</TR>
+				{cycle name=assign values="light,lucid" print=false}
+				{foreach from=$account.aliases item=alias}
+				<TR class="{cycle name=assign}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD WIDTH="80%" NOWRAP OnClick="return self.location.href='?m=aliasinfo&id={$alias.id}'">
+					    <B>{$alias.login}@{$alias.domain}</B>
+					</TD>
+					<TD WIDTH="19%" NOWRAP OnClick="return self.location.href='?m=aliasinfo&id={$alias.id}'">
+					    ({$alias.id|string_format:"%04d"})
+					</TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+					    {assign var=name value="`$alias.login`@`$alias.domain`}
+					    <A href="?m=aliasinfo&id={$alias.id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+					    <A href="?m=aliasedit&id={$alias.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+					    <A href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}" OnClick="return confirmLink(this, '{t 0=$name}Are you sure, you want to delete assignment with alias: \'$0\'?{/t}')"><IMG src="img/eraser.gif" alt="[ {t}Delete assignment{/t} ]" title="[ {t}Delete assignment{/t} ]"></A>
+					    <A href="?m=aliasdel&id={$alias.id}" OnClick="return confirmLink(this, '{t 0=$name}Are you sure, you want to delete alias: \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+					</TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD align="center" WIDTH="100%" colspan="3">
+						<P>&nbsp;</P>
+						<P><B>{t}There are no aliases for that account.{/t}</B></P>
+						<P>&nbsp;</P>
+					</TD>
+				</TR>
+				{/foreach}
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
 {include file="footer.html"}
