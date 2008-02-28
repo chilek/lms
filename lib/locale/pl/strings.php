@@ -1960,5 +1960,10 @@ $_LANG['Exceeded \'$0\' accounts limit of selected customer ($1)!'] = 'Przekrocz
 $_LANG['Exceeded \'$0\' account quota limit of selected customer ($1)!'] = 'Przekroczony limit rozmiaru konta typu \'$0\' dla wybranego klienta ($1)!';
 $_LANG['Exceeded aliases limit of selected customer ($0)!'] = 'Przekroczony limit liczby aliasów dla wybranego klienta ($0)!';
 $_LANG['Exceeded domains limit of selected customer ($0)!'] = 'Przekroczony limit liczby domen dla wybranego klienta ($0)!';
+$_LANG['Account aliases ($0):'] = 'Aliasy tego konta ($0)';
+$_LANG['Are you sure, you want to delete assignment with alias: \\\'$0\\\'?'] = 'Czy jesteś pewien, że chcesz usunąć powiązanie z aliasem: \\\'$0\\\'?';
+$_LANG['Delete assignment'] = 'Usuń powiązanie';
+$_LANG['There are no aliases for that account.'] = 'Brak aliasów do tego konta.';
+$_LANG['New alias'] = 'Nowy alias';
 
 ?>
