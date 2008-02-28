@@ -60,7 +60,7 @@ if(isset($_POST['account']))
 	else
 		$error['type'] = true;
 				
-	if(!eregi("^[a-z0-9._-]+$", $account['login']))
+	if(!ereg("^[a-z0-9._-]+$", $account['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
 	elseif(!$account['domainid'])
     		$error['domainid'] = trans('You have to select domain for account!');

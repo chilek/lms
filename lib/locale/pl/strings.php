@@ -1965,5 +1965,6 @@ $_LANG['Are you sure, you want to delete assignment with alias: \\\'$0\\\'?'] = 
 $_LANG['Delete assignment'] = 'Usuń powiązanie';
 $_LANG['There are no aliases for that account.'] = 'Brak aliasów do tego konta.';
 $_LANG['New alias'] = 'Nowy alias';
+$_LANG['Domain name contains forbidden characters!'] = 'Nazwa domeny zawiera niedozwolone znaki!';
 
 ?>

@@ -29,6 +29,7 @@ version ? (????-??-??):
   - tariffs: added hosting limits definitions (alec)
   - tariffs: increased max rate limit to 100000 (alec) 
   - hosting: added aliases list in account info (alec)
+  - hosting: allow only lowercase in logins/domains (alec)
 
 version 1.11.2 Neera (2008-01-23):
 
