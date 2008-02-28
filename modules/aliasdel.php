@@ -34,6 +34,6 @@ if($id && $_GET['is_sure']=='1')
 	$DB->CommitTrans();
 }
 
-header('Location: ?m=aliaslist');
+$SESSION->redirect('?'.$SESSION->get('backto'));
 
 ?>

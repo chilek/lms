@@ -33,7 +33,7 @@
 		</TD>
 		<TD width="98%" class="fright">
 			{foreach from=$alias.accounts item=account}
-			{$account.login}@{$account.domain}<BR>
+			<A href="?m=accountinfo&id={$account.id}">{$account.login}@{$account.domain}</A><BR>
 			{/foreach}
 		</TD>
 	</TR>

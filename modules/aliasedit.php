@@ -45,6 +45,26 @@ if(!$aliasold)
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
+if(!empty($_GET['delaccount']))
+{
+	$cnt = $DB->GetOne('SELECT COUNT(*) FROM aliasassignments WHERE aliasid = ?', array($aliasold['id']));
+
+	if($cnt < 2)
+	{
+		$DB->BeginTrans();
+	        $DB->Execute('DELETE FROM aliases WHERE id = ?', array($aliasold['id']));
+		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?', array($aliasold['id']));
+		$DB->CommitTrans();		
+	}
+	else
+	{
+		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ? AND accountid = ?',
+			array($aliasold['id'], intval($_GET['delaccount'])));
+	}
+	
+	$SESSION->redirect('?'.$SESSION->get('backto'));
+}
+
 $layout['pagetitle'] = trans('Alias Edit: $0', $aliasold['login'].'@'.$aliasold['domain']);
 
 if(isset($_POST['alias']))
