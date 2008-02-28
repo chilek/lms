@@ -26,7 +26,8 @@ version ? (????-??-??):
   - hosting: added accounts descriptions (alec)
   - hosting: account's password change moved to separate module (alec)
   - hosting: define no quota limit as NULL in database (alec) 
-  - tariffs: added hosting limits definitions (alec) 
+  - tariffs: added hosting limits definitions (alec)
+  - tariffs: increased max rate limit to 100000 (alec) 
 
 version 1.11.2 Neera (2008-01-23):
 
