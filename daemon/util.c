@@ -120,3 +120,4 @@ char * str_upc(const char *s)
     l[ASCIILINESZ] = (char) 0;
     return l;
 }
+

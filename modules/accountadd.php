@@ -56,7 +56,7 @@ if(isset($_POST['account']))
 	
 	if($account['login'] == '')
                 $error['login'] = trans('You have to specify login!');
-	elseif(!eregi("^[a-z0-9._-]+$", $account['login']))
+	elseif(!ereg("^[a-z0-9._-]+$", $account['login']))
     		$error['login'] = trans('Login contains forbidden characters!');
 	elseif(!$account['domainid'])
                 $error['domainid'] = trans('You have to select domain for account!');
