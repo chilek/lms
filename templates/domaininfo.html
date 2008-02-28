@@ -68,6 +68,8 @@
 {/if}
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
+			<A href="?m=accountlist&d={$domain.id}">{t}Accounts{/t} <IMG src="img/account.gif" alt="[ {t}Accounts{/t} ]"></A>
+			<A href="?m=aliaslist&d={$domain.id}">{t}Aliases{/t} <IMG src="img/alias.gif" alt="[ {t}Aliases{/t} ]"></A>
 			<A href="?m=domainedit&id={$domain.id}" accesskey="e">{t}Edit{/t} <img src="img/save.gif" alt=""></A>
 			<A href="?m=domaindel&id={$domain.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that domain and all accounts/aliases in that domain?{/t}');">{t}Delete{/t} <img src="img/delete.gif" alt=""></A>
 			<A href="?m=domainlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A>
