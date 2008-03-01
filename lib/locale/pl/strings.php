@@ -1966,5 +1966,7 @@ $_LANG['Delete assignment'] = 'Usuń powiązanie';
 $_LANG['There are no aliases for that account.'] = 'Brak aliasów do tego konta.';
 $_LANG['New alias'] = 'Nowy alias';
 $_LANG['Domain name contains forbidden characters!'] = 'Nazwa domeny zawiera niedozwolone znaki!';
+$_LANG['month (YYYY/MM)'] = 'miesiąc (RRRR/MM)';
+$_LANG['day (YYYY/MM/DD)'] = 'dzień (RRRR/MM/DD)';
 
 ?>
