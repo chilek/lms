@@ -32,7 +32,7 @@ version ? (????-??-??):
   - hosting: allow only lowercase in logins/domains (alec)
   - fixed download and upload units - we use SI units from now (chilan)
   - optimized compacting traffic data (chilan)
-  - invoices: added filtering by month on the list (alec)
+  - invoices: added filtering by month on the list (Łukasz Rostalski/alec)
 
 version 1.11.2 Neera (2008-01-23):
 
