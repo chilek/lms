@@ -68,6 +68,10 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			case 'cdate':
 				$where = ' AND cdate >= '.$search.' AND cdate < '.($search+86400);
 			break;
+			case 'month':
+				$last = mktime(23,59,59, date('n',$search) + 1, 0, date('Y', $search));
+				$where = ' AND cdate >= '.$search.' AND cdate <= '.$last;
+			break;
 			case 'ten':
 			        $where = ' AND ten = \''.$search.'\'';
 			break;
@@ -187,10 +191,15 @@ if(isset($_POST['group'])) {
 $SESSION->save('ilg', $g);
 $SESSION->save('ilge', $ge);
 
-if($c == 'cdate' && $s)
+if($c == 'cdate' && $s && ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $s))
 {
 	list($year, $month, $day) = explode('/', $s);
 	$s = mktime(0,0,0, $month, $day, $year);
+}
+elseif($c == 'month' && $s && ereg('^[0-9]{4}/[0-9]{2}$', $s))
+{
+	list($year, $month) = explode('/', $s);
+        $s = mktime(0,0,0, $month, 1, $year);
 }
 
 $invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o);
@@ -199,8 +208,10 @@ $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);
 $SESSION->restore('ilge', $listdata['groupexclude']);
+
 $listdata['order'] = $invoicelist['order'];
 $listdata['direction'] = $invoicelist['direction'];
+
 unset($invoicelist['order']);
 unset($invoicelist['direction']);
 
