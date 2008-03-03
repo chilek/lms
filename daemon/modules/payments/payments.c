@@ -227,8 +227,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 			else
 				strcat(enetsql, "UPPER(n.name) = UPPER('");
 			
-			strcat(netsql, enetname);
-			strcat(netsql, "')");
+			strcat(enetsql, enetname);
+			strcat(enetsql, "')");
 		}
 	}
 	free(enetname); free(enetnames);
