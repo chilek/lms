@@ -817,6 +817,24 @@
 				<para>Przyk³ad: <prompt>nodegroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
 			<listitem>
+				<para>excluded_networks</para>
+				<para>Lista nazw sieci, które nie maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+					Domy¶lnie: pusta.</para>
+				<para>Przyk³ad: <prompt>excluded_networks = "lan1 lan2"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>excluded_customergroups</para>
+				<para>Lista nazw grup klientów, które nie maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+					Domy¶lnie: pusta.</para>
+				<para>Przyk³ad: <prompt>excluded_customergroups = "grupa1 grupa2"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>excluded_nodegroups</para>
+				<para>Lista nazw grup komputerów, które nie maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+					Domy¶lnie: pusta.</para>
+				<para>Przyk³ad: <prompt>excluded_nodegroups = "grupa1 grupa2"</prompt></para>
+			</listitem>
+			<listitem>
 			    <para>skip_dev_ips</para>
 			    <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Domy¶lnie: tak</para>
 			    <para>Przyk³ad: <prompt>skip_dev_ips = no</prompt></para>

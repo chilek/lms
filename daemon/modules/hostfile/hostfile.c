@@ -72,11 +72,29 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	FILE *fh;
 	QueryHandle *res;
 	char *query;
-	int i, j, nc=0, ng=2, k=2, n=2;
+	int i, j, nc=0, n=2, en=2, c=2, ec=2, ng=2, eng=2;
 
-	char *netnames = strdup(hm->networks);	
+	struct net *networks = (struct net *) malloc(sizeof(struct net));
+
+	char *nets = strdup("AND EXISTS (SELECT 1 FROM networks net "
+				"WHERE (%nets) "
+	                	"AND ((n.ipaddr > net.address AND n.ipaddr < broadcast(net.address, inet_aton(net.mask))) "
+				"OR (n.ipaddr_pub > net.address AND n.ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
+				")");
+	
+	char *netnames = strdup(hm->networks);
 	char *netname = strdup(netnames);
-	struct net *nets = (struct net *) malloc(sizeof(struct net));
+	char *netsql = strdup("");
+
+	char *enets = strdup("AND NOT EXISTS (SELECT 1 FROM networks net "
+				"WHERE (%nets) "
+	                	"AND ((n.ipaddr > net.address AND n.ipaddr < broadcast(net.address, inet_aton(net.mask))) "
+				"OR (n.ipaddr_pub > net.address AND n.ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
+				")");
+				
+	char *enetnames = strdup(hm->excluded_networks);
+	char *enetname = strdup(enetnames);
+	char *enetsql = strdup("");
 
 	char *groups = strdup("AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
 				"WHERE a.customerid = n.ownerid "
@@ -87,6 +105,15 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *groupname = strdup(groupnames);
 	char *groupsql = strdup("");
 
+	char *egroups = strdup("AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
+				"WHERE a.customerid = ats.customerid "
+				"AND g.id = a.customergroupid "
+				"AND (%groups)) ");
+	
+	char *egroupnames = strdup(hm->excluded_customergroups);
+	char *egroupname = strdup(egroupnames);
+	char *egroupsql = strdup("");
+
 	char *ngroups = strdup("AND EXISTS (SELECT 1 FROM nodegroups g, nodegroupassignments na "
 				"WHERE na.nodeid = n.id "
 				"AND g.id = na.nodegroupid "
@@ -95,10 +122,61 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *ngroupnames = strdup(hm->nodegroups);
 	char *ngroupname = strdup(ngroupnames);
 	char *ngroupsql = strdup("");
+
+	char *engroups = strdup("AND NOT EXISTS (SELECT 1 FROM nodegroups g, nodegroupassignments na "
+				"WHERE na.nodeid = n.id "
+				"AND g.id = na.nodegroupid "
+				"AND (%groups)) ");
 	
-	while( k>1 )
+	char *engroupnames = strdup(hm->excluded_nodegroups);
+	char *engroupname = strdup(engroupnames);
+	char *engroupsql = strdup("");
+
+	while( n>1 )
 	{
-		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
+    		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+
+		if( strlen(netname) )
+		{
+			netsql = realloc(netsql, sizeof(char *) * (strlen(netsql) + strlen(netname) + 30));
+			if(strlen(netsql))
+				strcat(netsql, " OR UPPER(net.name) = UPPER('");
+			else
+				strcat(netsql, "UPPER(net.name) = UPPER('");
+			
+			strcat(netsql, netname);
+			strcat(netsql, "')");
+		}
+	}
+	free(netname); free(netnames);
+	
+	if(strlen(netsql))
+		g->str_replace(&nets, "%nets", netsql);
+
+	while( en>1 )
+	{
+    		en = sscanf(enetnames, "%s %[._a-zA-Z0-9- ]", enetname, enetnames);
+
+		if( strlen(enetname) )
+		{
+			enetsql = realloc(enetsql, sizeof(char *) * (strlen(enetsql) + strlen(enetname) + 30));
+			if(strlen(enetsql))
+				strcat(enetsql, " OR UPPER(net.name) = UPPER('");
+			else
+				strcat(enetsql, "UPPER(net.name) = UPPER('");
+			
+			strcat(enetsql, enetname);
+			strcat(enetsql, "')");
+		}
+	}
+	free(enetname); free(enetnames);
+	
+	if(strlen(enetsql))
+		g->str_replace(&enets, "%nets", enetsql);
+
+	while( c>1 )
+	{
+		c = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
 		{
@@ -116,6 +194,27 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	if(strlen(groupsql))
 		g->str_replace(&groups, "%groups", groupsql);
+
+	while( ec>1 )
+	{
+		ec = sscanf(egroupnames, "%s %[._a-zA-Z0-9- ]", egroupname, egroupnames);
+
+		if( strlen(egroupname) )
+		{
+			egroupsql = realloc(egroupsql, sizeof(char *) * (strlen(egroupsql) + strlen(egroupname) + 30));
+			if(strlen(egroupsql))
+				strcat(egroupsql, " OR UPPER(g.name) = UPPER('");
+			else
+				strcat(egroupsql, "UPPER(g.name) = UPPER('");
+			
+			strcat(egroupsql, egroupname);
+			strcat(egroupsql, "')");
+		}		
+	}		
+	free(egroupname); free(egroupnames);
+
+	if(strlen(egroupsql))
+		g->str_replace(&egroups, "%groups", egroupsql);
 
 	while( ng>1 )
 	{
@@ -138,56 +237,45 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	if(strlen(ngroupsql))
 		g->str_replace(&ngroups, "%groups", ngroupsql);
 
-	while( n>1 )
+	while( eng>1 )
 	{
-		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+		eng = sscanf(engroupnames, "%s %[._a-zA-Z0-9- ]", engroupname, engroupnames);
 
-		if( strlen(netname) )
+		if( strlen(engroupname) )
 		{
-			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, "
-					"interface, gateway, dns, dns2, wins "
-					"FROM networks WHERE UPPER(name)=UPPER('?')",
-					netname);
+			engroupsql = realloc(engroupsql, sizeof(char *) * (strlen(engroupsql) + strlen(engroupname) + 30));
+			if(strlen(engroupsql))
+				strcat(engroupsql, " OR UPPER(g.name) = UPPER('");
+			else
+				strcat(engroupsql, "UPPER(g.name) = UPPER('");
+			
+			strcat(engroupsql, engroupname);
+			strcat(engroupsql, "')");
+		}		
+	}		
+	free(engroupname); free(engroupnames);
 
-			if( g->db_nrows(res) )
-			{
-		    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-				nets[nc].domain = strdup(g->db_get_data(res,0,"domain"));
-				nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
-				nets[nc].gateway = strdup(g->db_get_data(res,0,"gateway"));
-				nets[nc].dns = strdup(g->db_get_data(res,0,"dns"));
-				nets[nc].dns2 = strdup(g->db_get_data(res,0,"dns2"));
-				nets[nc].wins = strdup(g->db_get_data(res,0,"wins"));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
-				nc++;
-			}
-    			g->db_free(&res);
-		}				
-	}
-	free(netname); free(netnames);
+	if(strlen(engroupsql))
+		g->str_replace(&engroups, "%groups", engroupsql);
 
-	if(!nc)
-	{
-		res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, "
+	// all networks data
+	res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, "
 				"interface, gateway, dns, dns2, wins FROM networks");
 
-		for(nc=0; nc<g->db_nrows(res); nc++)
-		{
-			nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
-			nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
-			nets[nc].domain = strdup(g->db_get_data(res,nc,"domain"));
-			nets[nc].interface = strdup(g->db_get_data(res,nc,"interface"));
-			nets[nc].gateway = strdup(g->db_get_data(res,nc,"gateway"));
-			nets[nc].dns = strdup(g->db_get_data(res,nc,"dns"));
-			nets[nc].dns2 = strdup(g->db_get_data(res,nc,"dns2"));
-			nets[nc].wins = strdup(g->db_get_data(res,nc,"wins"));
-			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
-			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
-		}
-		g->db_free(&res);
+	for(nc=0; nc<g->db_nrows(res); nc++)
+	{
+		networks = (struct net*) realloc(networks, (sizeof(struct net) * (nc+1)));
+		networks[nc].name = strdup(g->db_get_data(res,nc,"name"));
+		networks[nc].domain = strdup(g->db_get_data(res,nc,"domain"));
+		networks[nc].interface = strdup(g->db_get_data(res,nc,"interface"));
+		networks[nc].gateway = strdup(g->db_get_data(res,nc,"gateway"));
+		networks[nc].dns = strdup(g->db_get_data(res,nc,"dns"));
+		networks[nc].dns2 = strdup(g->db_get_data(res,nc,"dns2"));
+		networks[nc].wins = strdup(g->db_get_data(res,nc,"wins"));
+		networks[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
+		networks[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
 	}
+	g->db_free(&res);
 
 	fh = fopen(hm->file, "w");
 	if(fh)
@@ -199,18 +287,24 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning, port "
 				"FROM nodes n "
-				"WHERE n.ownerid<>0 %groups %ngroups"
+				"WHERE n.ownerid<>0 "
+				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
 		else
 			query = strdup(
 				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning, port "
 				"FROM nodes n "
-				"WHERE n.ownerid = 0 %groups %ngroups"
+				"WHERE n.ownerid = 0 "
+				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
 			
+		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
+		g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
 		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
-		g->str_replace(&query, "%ngroups", strlen(ngroupsql) ? ngroups : "");	
+		g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");	
+		g->str_replace(&query, "%ngroups", strlen(ngroupsql) ? ngroups : "");
+		g->str_replace(&query, "%engroups", strlen(engroupsql) ? engroups : "");
 
 		res = g->db_query(g->conn, query);
 
@@ -224,73 +318,65 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			inet 		= inet_addr(h.ip);
 			inet_pub 	= inet_addr(h.ip_pub);
 
-			// networks test
+			// network
 			for(j=0; j<nc; j++)
-				if(nets[j].address == (inet & nets[j].mask))
+				if(networks[j].address == (inet & networks[j].mask))
 					break;
-			if( j==nc )
-				for(j=0; j<nc; j++)
-					if(nets[j].address == (inet_pub & nets[j].mask))
-						break;
 
-			if( j!=nc )
+			char *pattern;
+
+			h.access 	= g->db_get_data(res,i,"access");
+		    	h.warning	= g->db_get_data(res,i,"warning");
+			h.name 		= g->db_get_data(res,i,"name");
+			h.info 		= g->db_get_data(res,i,"info");
+			h.passwd 	= g->db_get_data(res,i,"passwd");
+			h.id  		= g->db_get_data(res,i,"id");
+			h.mac 		= g->db_get_data(res,i,"mac");
+			h.port 		= g->db_get_data(res,i,"port");
+			h.net 		= networks[j];
+			// IP's last octet in hex
+            		h.i16 		= strdup(itoha((ntohl(inet) & 0xff)));
+			h.i16_pub 	= strdup(inet_pub ? itoha((ntohl(inet_pub) & 0xff)) : "");
+
+			addrule(g, fh, hm->host_prefix, h);
+
+			if(*h.access == '1')
+				pattern = inet_pub && hm->pub_replace ? hm->grant_pub : hm->grant;
+			else
+				pattern = inet_pub && hm->pub_replace ? hm->deny_pub : hm->deny;
+			
+			if(*h.warning == '1' && hm->warn_replace)
+				pattern = inet_pub ? hm->warn_pub : hm->warn;
+
+			addrule(g, fh, pattern, h);
+
+			if(!hm->warn_replace && *h.warning == '1' && (!hm->pub_replace || !inet_pub))
 			{
-				char *pattern;
-
-				h.access 	= g->db_get_data(res,i,"access");
-			    	h.warning	= g->db_get_data(res,i,"warning");
-				h.name 		= g->db_get_data(res,i,"name");
-				h.info 		= g->db_get_data(res,i,"info");
-				h.passwd 	= g->db_get_data(res,i,"passwd");
-				h.id  		= g->db_get_data(res,i,"id");
-				h.mac 		= g->db_get_data(res,i,"mac");
-				h.port 		= g->db_get_data(res,i,"port");
-				h.net 		= nets[j];
-				// IP's last octet in hex
-                    		h.i16 		= strdup(itoha((ntohl(inet) & 0xff)));
-				h.i16_pub 	= strdup(inet_pub ? itoha((ntohl(inet_pub) & 0xff)) : "");
-
-				addrule(g, fh, hm->host_prefix, h);
-
-				if(*h.access == '1')
-					pattern = ( inet_pub && hm->pub_replace ? hm->grant_pub : hm->grant );
-				else
-					pattern = ( inet_pub && hm->pub_replace ? hm->deny_pub : hm->deny );
-
+				addrule(g, fh, hm->warn, h);
+			}			
+			
+			if(!hm->pub_replace && inet_pub)
+			{
+				pattern = *h.access == '1' ? hm->grant_pub : hm->deny_pub;
 				if(*h.warning == '1' && hm->warn_replace)
-					pattern = ( inet_pub ? hm->warn_pub : hm->warn );
-
+					pattern = hm->warn_pub;
+			
 				addrule(g, fh, pattern, h);
-
-				if(!hm->warn_replace && *h.warning == '1' && (!hm->pub_replace || !inet_pub))
-				{
-					addrule(g, fh, hm->warn, h);
-				}			
-				
-				if(!hm->pub_replace && inet_pub)
-				{
-					pattern = ( *h.access == '1' ? hm->grant_pub : hm->deny_pub );
-
-					if(*h.warning == '1' && hm->warn_replace)
-						pattern = hm->warn_pub;
-
-					addrule(g, fh, pattern, h);
-				}			
-
-				if(!hm->warn_replace && *h.warning == '1' && inet_pub)
-				{
-					addrule(g, fh, hm->warn_pub, h);
-				}			
-
-				addrule(g, fh, hm->host_append, h);
-
-				free(h.i16);
-				free(h.i16_pub);
-			}
+			}			
+			
+			if(!hm->warn_replace && *h.warning == '1' && inet_pub)
+			{
+				addrule(g, fh, hm->warn_pub, h);
+			}			
+			
+			addrule(g, fh, hm->host_append, h);
+			
+			free(h.i16);
+			free(h.i16_pub);
 		}
-	
+
 		fprintf(fh, "%s", hm->append);
-		
+	
 		g->db_free(&res);
 		free(query);
 		fclose(fh);
@@ -305,20 +391,28 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	
 	for(i=0;i<nc;i++)
 	{
-		free(nets[i].name);
-		free(nets[i].domain);	
-		free(nets[i].interface);
-		free(nets[i].gateway);
-		free(nets[i].dns);
-		free(nets[i].dns2);
-		free(nets[i].wins);
+		free(networks[i].name);
+		free(networks[i].domain);	
+		free(networks[i].interface);
+		free(networks[i].gateway);
+		free(networks[i].dns);
+		free(networks[i].dns2);
+		free(networks[i].wins);
 	}
-	free(nets);
+	free(networks);
 	
+	free(nets);
 	free(groups);
-	free(groupsql);
 	free(ngroups);
+	free(enets);
+	free(egroups);
+	free(engroups);
+	free(netsql);
+	free(groupsql);
 	free(ngroupsql);
+	free(enetsql);
+	free(egroupsql);
+	free(engroupsql);
 	
 	free(hm->prefix);
 	free(hm->append);
@@ -335,6 +429,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	free(hm->networks);
 	free(hm->customergroups);
 	free(hm->nodegroups);
+	free(hm->excluded_networks);
+	free(hm->excluded_nodegroups);	
+	free(hm->excluded_customergroups);	
 }
 
 struct hostfile_module * init(GLOBAL *g, MODULE *m)
@@ -373,6 +470,9 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->networks = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "networks", ""));
 	hm->customergroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "customergroups", ""));
 	hm->nodegroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "nodegroups", ""));
+	hm->excluded_networks = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "excluded_networks", ""));
+	hm->excluded_customergroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "excluded_customergroups", ""));
+	hm->excluded_nodegroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "excluded_nodegroups", ""));
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/hostfile] initialized", hm->base.instance);
 #endif

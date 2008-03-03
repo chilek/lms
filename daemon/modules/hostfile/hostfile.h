@@ -11,12 +11,6 @@ struct net
 	unsigned long mask;
 };
 
-struct group
-{
-	char *name;
-	int id;
-};
-
 struct host
 {
 	char *name;
@@ -53,8 +47,11 @@ struct hostfile_module
 	char *file;
 	char *command;
 	char *networks;
+	char *excluded_networks;
 	char *customergroups;
+	char *excluded_customergroups;
 	char *nodegroups;
+	char *excluded_nodegroups;
 
 	int skip_dev_ips;
 	int pub_replace;
