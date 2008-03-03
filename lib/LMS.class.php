@@ -1303,12 +1303,21 @@ class LMS
 	function NodeSet($id, $access=-1)
 	{
 		if($access != -1)
-			return $this->DB->Execute('UPDATE nodes SET access=? WHERE id=?', array(
-					$access ? 1 : 0, $id));
-		elseif($this->DB->GetOne('SELECT access FROM nodes WHERE id=?', array($id)) == 1 )
-			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE id=?', array($id));
+		{
+			if($access)
+				return $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
+					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
+						AND status = 3)', array($id));
+			else
+				return $this->DB->Execute('UPDATE nodes SET access = 0 WHERE id = ?',
+					array($id));
+		}
+		elseif($this->DB->GetOne('SELECT access FROM nodes WHERE id = ?', array($id)) == 1 )
+			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE id = ?', array($id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE id=?', array($id));
+			return $this->DB->Execute('UPDATE nodes SET access = 1 WHERE id = ?
+					AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
+						AND status = 3)', array($id));
 	}
 
 	function NodeSetU($id,$access=FALSE)
