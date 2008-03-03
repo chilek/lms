@@ -699,16 +699,16 @@
                    <para>File footer. Default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</para>
                    <para>Example: <prompt>end = "$IPT -A FORWARD -J REJECT\n"</prompt></para>
                </listitem>
-			   <listitem>
-				   <para>host_begin</para>
-				   <para>Host rule header. Default: ""</para>
-				   <para>Example: <prompt>host_begin = "#%n\n"</prompt></para>
-			   </listitem>
-			   <listitem>
-				   <para>host_end</para>
-				   <para>Host rule footer. Default: ""</para>
-				   <para>Example: <prompt>host_end = "\n"</prompt></para>
-               </listitem>
+			<listitem>
+				<para>host_begin</para>
+				<para>Host rule header. Default: ""</para>
+				<para>Example: <prompt>host_begin = "#%n\n"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>host_end</para>
+				<para>Host rule footer. Default: ""</para>
+				<para>Example: <prompt>host_end = "\n"</prompt></para>
+            		</listitem>
                <listitem>
                    <para>grantedhost</para>
                    <para>Line with rule(s) for connected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
@@ -771,6 +771,24 @@
                    <para>List of node groups names which members should be included in config
                    (case insensitive). Default: empty (all groups).</para>
                    <para>Example: <prompt>nodegroups = "group1 group2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>excluded_networks</para>
+                   <para>List of network names which members should be excluded from config (case
+                   insensitive). Default: empty (none).</para>
+                   <para>Example: <prompt>excluded_networks = "lan3 lan4"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>excluded_customergroups</para>
+                   <para>List of customer groups names which members should be excluded from config
+                   (case insensitive). Default: empty (none).</para>
+                   <para>Example: <prompt>excluded_customergroups = "group1 group2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>excluded_nodegroups</para>
+                   <para>List of node groups names which members should be excluded from config
+                   (case insensitive). Default: empty (none).</para>
+                   <para>Example: <prompt>excluded_nodegroups = "group1 group2"</prompt></para>
                </listitem>
                <listitem>
                    <para>skip_dev_ips</para>

@@ -4052,6 +4052,18 @@ Chapter 6. LMS Daemon
        List of node groups names which members should be included in
        config (case insensitive). Default: empty (all groups).
        Example: nodegroups = "group1 group2"
+     * excluded_networks
+       List of network names which members should be excluded from config
+       (case insensitive). Default: empty (none).
+       Example: excluded_networks = "lan3 lan4"
+     * excluded_customergroups
+       List of customer groups names which members should be excluded from
+       config (case insensitive). Default: empty (none).
+       Example: excluded_customergroups = "group1 group2"
+     * excluded_nodegroups
+       List of node groups names which members should be excluded from
+       config (case insensitive). Default: empty (none).
+       Example: excluded_nodegroups = "group1 group2"
      * skip_dev_ips
        If enabled (yes, true) network devices (devices that does not
        belong to customers) will be ignored (omitted). Default: yes
