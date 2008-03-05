@@ -39,6 +39,7 @@ version ? (????-??-??):
   - helpdesk: improved query speed in requests search (alec)
   - helpdesk: fixed jump from quicksearch to requests searching module (alec)
   - hosting: added accounts searching module and quicksearch input (alec)
+  - lmsd/ewx-stm: added 'excluded_networks' option (alec)
 
 version 1.11.2 Neera (2008-01-23):
 
