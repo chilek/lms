@@ -5,7 +5,7 @@
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
 		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{t}ID:{/t}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/calendar.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{else},asc{/if}">{t}Create time:{/t}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/calendar.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{/if}">{t}Create time:{/t}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="97%">
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>{t}Subject:{/t}</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -99,7 +99,7 @@
 			{/if}
 			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
 			{if $queue[ticket].customerid}
-				{$queue[ticket].customername|escape|truncate:"60":"..."}
+				{$queue[ticket].requestor|escape|truncate:"60":"..."}
 				({$queue[ticket].address})
 			{else}
 				{$queue[ticket].requestor|escape} 

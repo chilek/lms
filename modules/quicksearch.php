@@ -53,16 +53,19 @@ function macformat($mac)
 
 $mode = '';
 
-if(isset($_POST['qscustomer']) && $_POST['qscustomer']) {
+if(!empty($_POST['qscustomer'])) {
 	$mode = 'customer'; 
 	$search = urldecode(trim($_POST['qscustomer']));
-} elseif(isset($_POST['qsnode']) && $_POST['qsnode']) {
+} elseif(!empty($_POST['qsnode'])) {
 	$mode = 'node'; 
 	$search = urldecode(trim($_POST['qsnode']));
-} elseif(isset($_POST['qsticket']) && $_POST['qsticket']) {
+} elseif(!empty($_POST['qsticket'])) {
 	$mode = 'ticket'; 
 	$search = urldecode(trim($_POST['qsticket']));
-} else {
+} elseif(!empty($_POST['qsaccount'])) {
+	$mode = 'account'; 
+	$search = urldecode(trim($_POST['qsaccount']));
+} elseif(!empty($_GET['what'])) {
 	$search = urldecode(trim($_GET['what']));
 	$mode = $_GET['mode'];
 }
@@ -192,7 +195,7 @@ switch($mode)
 
 		$SESSION->remove('nslp');
 
-		$target = '?m=nodesearch&search=1';
+		$target = '?m=nodesearch&s=1';
 	break;
 	
 	case 'ticket':
@@ -236,12 +239,64 @@ switch($mode)
 			$target = '?m=rtticketview&id='.intval($search);
 		else
 		{
-			$SESSION->save('rtsearch', array('name' => $search));
-			$target = '?m=rtsearch&search=1';
+			$SESSION->save('rtsearch', array('name' => $search, 
+					'subject' => $search,
+					'operator' => 'OR'));
+			
+			$target = '?m=rtsearch&s=1';
 		}
+	break;
+
+	case 'account':
+		if(isset($_GET['ajax'])) // support for AutoSuggest
+		{
+			$ac = explode('@', $search);
+		
+			$candidates = $DB->GetAll('(SELECT p.id, p.login, d.name AS domain, 0 AS type 
+					FROM passwd p
+					JOIN domains d ON (p.domainid = d.id)
+					WHERE LOWER(p.login) ?LIKE? LOWER(\'%'.$ac[0].'%\')
+					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? \''.$ac[1].'%\'' : '').'
+					UNION 
+					SELECT a.id, a.login, d.name AS domain, 1 AS type 
+					FROM aliases a
+					JOIN domains d ON (a.domainid = d.id)
+					WHERE LOWER(a.login) ?LIKE? LOWER(\'%'.$ac[0].'%\')
+					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? \''.$ac[1].'%\'' : '').'
+					) ORDER BY login, domain
+					LIMIT 15');
+		
+			$eglible=array(); $actions=array(); $descriptions=array();
+			
+			if ($candidates) foreach($candidates as $idx => $row)
+			{
+				if($row['type'])
+					$actions[$row['id']] = '?m=aliasinfo&id='.$row['id'];
+				else
+					$actions[$row['id']] = '?m=accountinfo&id='.$row['id'];				
+			
+				$eglible[$row['id']] = escape_js($row['login'].'@'.$row['domain']);
+				$descriptions[$row['id']] = '';
+			}
+			header('Content-type: text/plain');
+			if ($eglible) {
+				print preg_replace('/$/',"\");\n","this.eligible = new Array(\"".implode('","',$eglible));
+				print preg_replace('/$/',"\");\n","this.descriptions = new Array(\"".implode('","',$descriptions));
+				print preg_replace('/$/',"\");\n","this.actions = new Array(\"".implode('","',$actions));
+			} else {
+				print "false;\n";
+			}
+			exit;
+		}
+
+		$search['login'] = $ac[0];
+		if(!empty($ac[1])) $search['domain'] = $ac[1];
+
+		$SESSION->save('accountsearch', $search);
+		$target = '?m=accountsearch&s=1';
 	break;
 }
 
-$SESSION->redirect($target ? $target : '?m=welcome');
+$SESSION->redirect(!empty($target) ? $target : '?'.$SESSION->get('backto'));
 
 ?>

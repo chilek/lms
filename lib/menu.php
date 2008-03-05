@@ -398,6 +398,12 @@ $menu = array(
 					'tip' => trans('Add new domain'),
 					'prio' => 60,
 				),
+				array(
+					'name' => trans('Search'),
+					'link' => '?m=accountsearch',
+					'tip' => trans('Allows you to search account'),
+					'prio' => 70,
+				),
 			),					       
 		),
 

@@ -31,17 +31,18 @@ function RTSearch($search, $order='createtime,desc')
 	if(!$order)
 		$order = 'createtime,desc';
 	
-	list($order,$direction) = explode(',',$order);
+	$o = explode(',',$order);
+	$order = $o[0];
 
-	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+	(isset($o[1]) && $o[1] == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
 	switch($order)
 	{
 		case 'ticketid':
-			$sqlord = 'ORDER BY rttickets.id';
+			$sqlord = 'ORDER BY t.id';
 		break;
 		case 'subject':
-			$sqlord = 'ORDER BY rttickets.subject';
+			$sqlord = 'ORDER BY t.subject';
 		break;
 		case 'requestor':
 			$sqlord = 'ORDER BY requestor';
@@ -53,41 +54,52 @@ function RTSearch($search, $order='createtime,desc')
 			$sqlord = 'ORDER BY lastmodified';
 		break;
 		default:
-			$sqlord = 'ORDER BY rttickets.createtime';
+			$sqlord = 'ORDER BY t.createtime';
 		break;
 	}
 
-	$where = '';
-	$where .= (isset($search['owner']) && $search['owner'] ? 'AND owner='.$search['owner'].' '            : '');
-	$where .= (isset($search['customerid']) && $search['customerid'] ? 'AND rttickets.customerid='.$search['customerid'].' '   : '');
-	$where .= (isset($search['subject']) && $search['subject'] ? 'AND rttickets.subject ?LIKE?\'%'.$search['subject'].'%\' '       : '');
-	$where .= (isset($search['state']) && $search['state'] != '' ? 'AND state='.$search['state'].' '            : '');
-	$where .= (isset($search['email']) && $search['email'] ? 'AND requestor ?LIKE? \'%'.$search['email'].'%\' ' : '');
-	$where .= (isset($search['uptime']) && $search['uptime'] ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
-	if(isset($search['queue']) && is_array($search['queue']))
-		$where .= 'AND queueid IN ('.implode(',',$search['queue']).') ';
-	elseif(isset($search['queue']) && $search['queue'])
-		$where .= 'AND queueid='.$search['queue'].' ';
-	
-	if(isset($search['name']) && $search['name'])
-		$where .= 'AND (UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
+	$op = !empty($search['operator']) && $search['operator'] == 'OR' ? $op = ' OR ' : $op = ' AND ';
 
-	if($result = $DB->GetAll('SELECT rttickets.id AS id, rttickets.customerid AS customerid, requestor, rttickets.subject AS subject, state, owner AS ownerid, users.name AS ownername, '.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
-			FROM rttickets 
-			LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
-			LEFT JOIN users ON (owner = users.id) 
-			LEFT JOIN customers ON (rttickets.customerid = customers.id)
-			WHERE 1=1 '
-			.$where 
-			.'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, users.name, rttickets.customerid, customers.lastname, customers.name '
+	if(!empty($search['owner']))
+		$where[] = 'owner='.$search['owner'];
+	if(!empty($search['customerid']))
+		$where[] = 't.customerid='.$search['customerid'];
+	if(!empty($search['subject']))
+		$where[] = 't.subject ?LIKE?\'%'.$search['subject'].'%\'';
+	if(!empty($search['state']))
+		$where[] = 'state='.$search['state'];
+	if(!empty($search['email']))
+		$where[] = 'requestor ?LIKE? \'%'.$search['email'].'%\'';
+	if(!empty($search['uptime']))
+		$where[] = '(resolvetime-t.createtime > '.$search['uptime'].' OR ('.time().'-t.createtime > '.$search['uptime'].' AND resolvetime = 0) )';
+	if(!empty($search['name']))
+		$where[] = '(UPPER(requestor) ?LIKE? UPPER(\'%'.$search['name'].'%\') OR '.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER(\'%'.$search['name'].'%\')) ';
+	if(isset($search['queue']) && is_array($search['queue']))
+		$where[] = 'queueid IN ('.implode(',',$search['queue']).') ';
+	elseif(!empty($search['queue']))
+		$where[] = 'queueid='.$search['queue'].' ';
+	
+	if(isset($where))
+		$where = 'WHERE '.implode($op, $where);
+
+	if($result = $DB->GetAll('SELECT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid, 
+			users.name AS ownername, CASE WHEN customerid = 0 THEN t.requestor ELSE '
+			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
+			END AS requestor, t.requestor AS req, 
+			t.createtime, (SELECT MAX(createtime) FROM rtmessages 
+				WHERE t.id = ticketid) AS lastmodified 
+			FROM rttickets t
+			LEFT JOIN users ON (t.owner = users.id) 
+			LEFT JOIN customers ON (t.customerid = customers.id) '
+			.(isset($where) ? $where : '') 
 			.($sqlord !='' ? $sqlord.' '.$direction:'')))
 	{
 		foreach($result as $idx => $ticket)
 		{
 			if(!$ticket['customerid'])
-				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
+				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
 			else
-				list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
+				list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
 			
 			$result[$idx] = $ticket;
 		}
@@ -104,6 +116,8 @@ $layout['pagetitle'] = trans('Ticket Search');
 
 if(isset($_POST['search']))
 	$search = $_POST['search'];
+elseif(isset($_GET['s']))
+        $SESSION->restore('rtsearch', $search);
 
 if(isset($_GET['id']))
 	$search['customerid'] = $_GET['id'];
@@ -144,8 +158,6 @@ if(isset($search) || isset($_GET['s']))
 	elseif(!$LMS->GetUserRightsRT($AUTH->id, $search['queue']))
 		$error['queue'] = trans('You have no privileges to review this queue!');
 
-	$search = isset($search) ? $search : $SESSION->get('rtsearch');
-	
 	if(!$error)
 	{
 		$queue = RTSearch($search, $o);
@@ -183,7 +195,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-$SMARTY->assign('search', isset($search) ? $search : $SESSION->get('rtsearch'));
+$SMARTY->assign('search', isset($search) ? $search : NULL);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtsearch.html');
 

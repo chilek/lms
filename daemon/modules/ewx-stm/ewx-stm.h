@@ -6,6 +6,7 @@ struct ewx_module
 	MODULE base;
 	
 	char * networks;
+	char * excluded_networks;
 	char * dummy_mac_networks;
 	char * dummy_ip_networks;
 	char * customergroups;

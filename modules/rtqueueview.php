@@ -76,9 +76,10 @@ function GetQueueContents($id, $order='createtime,desc', $state=NULL, $owner=0)
 	}
 
 	if($result = $DB->GetAll(
-		    'SELECT t.id AS id, t.customerid AS customerid, c.address, 
-			    requestor, t.subject AS subject, state, owner AS ownerid, users.name AS ownername, '
-			    .$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername, 
+		    'SELECT t.id, t.customerid, c.address, users.name AS ownername,
+			    t.subject, state, owner AS ownerid, t.requestor AS req,
+			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
+			    .$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' END AS requestor, 
 			    t.createtime AS createtime, u.name AS creatorname,
 			    (SELECT MAX(createtime) FROM rtmessages WHERE ticketid = t.id) AS lastmodified
 		    FROM rttickets t 
@@ -95,9 +96,9 @@ function GetQueueContents($id, $order='createtime,desc', $state=NULL, $owner=0)
 			//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
 			//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 			if(!$ticket['customerid'])
-				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
+				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
 			else
-				list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
+				list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
 			$result[$idx] = $ticket;
 		}
 	}
