@@ -56,19 +56,20 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	int	pathuplink=0, pathdownlink=0;
 	int 	globaluprate=0, globaldownrate=0; 
 	int	maxupceil=0, maxdownceil=0;
-	int 	status, i, j, k=2, n=2, cc=0, sc=0;
+	int 	status, i, j, k=2, n=2, o=2, cc=0, sc=0;
 	int	nc=0, anc=0, mnc=0, inc=0;
-	char 	*errstr;
-	char 	*netnames;
-	char	*netname;
-
+	char 	*errstr, *query;
+	char 	*netnames, *netname;
+	char 	*enets, *enetsql;
+	
 	QueryHandle *res;
 	
-        struct customer *customers = (struct customer *) malloc(sizeof(struct customer));
-        struct net *nets = (struct net *) malloc(sizeof(struct net));
-        struct net *all_nets = (struct net *) malloc(sizeof(struct net));
-        struct net *mac_nets = (struct net *) malloc(sizeof(struct net));
-        struct net *ip_nets = (struct net *) malloc(sizeof(struct net));
+        struct customer *customers;
+        struct channel *channels;
+	struct net *nets;
+        struct net *all_nets;
+        struct net *mac_nets;
+        struct net *ip_nets;
 
 	if(!ewx->path)
 	{
@@ -157,6 +158,12 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	snmp_close(sh);
 
 	// If communication works, we can do the job...
+
+        customers = (struct customer *) malloc(sizeof(struct customer));
+        nets = (struct net *) malloc(sizeof(struct net));
+        all_nets = (struct net *) malloc(sizeof(struct net));
+        mac_nets = (struct net *) malloc(sizeof(struct net));
+        ip_nets = (struct net *) malloc(sizeof(struct net));
 
 	// get all networks params
         res = g->db_pquery(g->conn, "SELECT UPPER(name) AS name, address, INET_ATON(mask) AS mask, interface FROM networks");
@@ -255,17 +262,54 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 	free(netname); free(netnames);
 
+	// excluded networks filter
+	enets = strdup(" AND NOT EXISTS (SELECT 1 FROM networks net "
+			"WHERE (%enets) "
+	                "AND ((n.ipaddr > net.address AND n.ipaddr < broadcast(net.address, inet_aton(net.mask))) "
+			"OR (n.ipaddr_pub > net.address AND n.ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
+			")");
+				
+	netnames = strdup(ewx->excluded_networks);
+	netname = strdup(netnames);
+	enetsql = strdup("");
+			
+	while( o>1 )
+	{
+    		o = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+
+		if( strlen(netname) )
+		{
+			enetsql = realloc(enetsql, sizeof(char *) * (strlen(enetsql) + strlen(netname) + 30));
+			if(strlen(enetsql))
+				strcat(enetsql, " OR UPPER(net.name) = UPPER('");
+			else
+				strcat(enetsql, "UPPER(net.name) = UPPER('");
+			
+			strcat(enetsql, netname);
+			strcat(enetsql, "')");
+		}
+	}
+	free(netname); free(netnames);
+	
+	if(strlen(enetsql))
+		g->str_replace(&enets, "%enets", enetsql);
+
 	// get customers with tariffs rates summaries (ie. channels)
-	res = g->db_query(g->conn, 
-			"SELECT a.customerid AS id, SUM(uprate) AS uprate, SUM(upceil) AS upceil, "
+	query = strdup("SELECT a.customerid AS id, SUM(uprate) AS uprate, SUM(upceil) AS upceil, "
 				"SUM(downrate) AS downrate, SUM(downceil) AS downceil "
 			"FROM assignments a "
 			"LEFT JOIN tariffs ON (a.tariffid = tariffs.id) "
 			"WHERE (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) "
 				"AND EXISTS (SELECT 1 FROM nodeassignments JOIN nodes n ON (n.id = nodeid) " 
-					"WHERE a.id = assignmentid AND n.access = 1) "
-			"GROUP BY a.customerid");
+					"WHERE a.id = assignmentid AND n.access = 1"
+					"%enets)"
+			"GROUP BY a.customerid"
+	);
 
+	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
+	
+	res = g->db_query(g->conn, query);
+	
 	for(i=0; i<g->db_nrows(res); i++) 
 	{	
 		int cid = atoi(g->db_get_data(res,i,"id"));
@@ -288,6 +332,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		}
 	}
 	g->db_free(&res);
+	free(query);
 
 	if(!cc)
 	{
@@ -296,8 +341,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 
 	// hosts
-	res = g->db_query(g->conn, 
-		"SELECT t.downrate, t.downceil, t.uprate, t.upceil, n.mac, n.chkmac, "
+	query = strdup("SELECT t.downrate, t.downceil, t.uprate, t.upceil, n.mac, n.chkmac, "
 			"n.id, n.ownerid, INET_NTOA(n.ipaddr) AS ip, n.halfduplex, cn.cnt " 
 		"FROM nodeassignments na "
 		"JOIN assignments a ON (na.assignmentid = a.id)"
@@ -307,14 +351,20 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		"JOIN ( "
 			"SELECT count(*) AS cnt, assignmentid "
 			"FROM nodeassignments "
-			"LEFT JOIN nodes ON (nodeid = nodes.id) "
-			"WHERE access = 1 "
+			"LEFT JOIN nodes n ON (nodeid = n.id) "
+			"WHERE n.access = 1 "
+			"%enets "
 			"GROUP BY assignmentid "
 			") cn ON (cn.assignmentid = na.assignmentid) "
 		"WHERE "
 			"(a.datefrom <= %NOW% OR a.datefrom = 0) AND (a.dateto >= %NOW% OR a.dateto = 0) "
-			"AND n.access = 1"
+			"AND n.access = 1 "
+			"%enets"
 	);
+
+	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
+
+	res = g->db_query(g->conn,  query);
 
 	// adding hosts to customers array
 	for(i=0; i<g->db_nrows(res); i++)
@@ -424,7 +474,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		maxdownceil = maxdownceil < customers[j].downceil ? customers[j].downceil : maxdownceil;
 	}
 	g->db_free(&res);
-
+	free(query);
+	
 	// path limits checking
 	if(globaluprate>pathuplink || globaldownrate>pathdownlink)
 	{
@@ -439,14 +490,20 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 	// Reading hosts/channels definitions from ewx_stm_* tables
 	// NOTE: to re-create device configuration do DELETE FROM ewx_stm_nodes; DELETE FROM ewx_stm_channels;
-	res = g->db_query(g->conn, "SELECT nodeid, mac, INET_NTOA(ipaddr) AS ip, channelid, halfduplex, "
-					    "n.uprate, n.upceil, n.downrate, n.downceil, customerid, "
-					    "c.upceil AS cupceil, c.downceil AS cdownceil "
-				    "FROM ewx_stm_nodes n "
-				    "LEFT JOIN ewx_stm_channels c ON (c.id = n.channelid) "
-				    );
+	query = strdup("SELECT nodeid, mac, INET_NTOA(ipaddr) AS ip, channelid, halfduplex, "
+				"n.uprate, n.upceil, n.downrate, n.downceil, customerid, "
+				"c.upceil AS cupceil, c.downceil AS cdownceil "
+			"FROM ewx_stm_nodes n "
+			"LEFT JOIN ewx_stm_channels c ON (c.id = n.channelid) "
+			"WHERE 1=1"
+			"%enets"
+	);
 
-        struct channel *channels = (struct channel *) malloc(sizeof(struct channel));
+	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
+
+	res = g->db_query(g->conn, query);
+        
+	channels = (struct channel *) malloc(sizeof(struct channel));
 
 	// Creating current config array
 	for(i=0; i<g->db_nrows(res); i++)
@@ -500,7 +557,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		channels[j].no++;
 	}
 	g->db_free(&res);
-
+	free(query);
+	
 	// Open the session again
 	sh = snmp_open(&session);
 
@@ -686,6 +744,10 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 	snmp_close(sh);
 
+#ifdef DEBUG1
+	syslog(LOG_INFO, "DEBUG: [%s/ewx-stm] reloaded", ewx->base.instance);
+#endif
+
         for(i=0; i<sc; i++)
 	{
 		for(j=0; j<channels[i].no; j++)
@@ -695,6 +757,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		}
 	        free(channels[i].hosts);
 	}
+        free(channels);
+
         for(i=0; i<cc; i++)
 	{
 		for(j=0; j<customers[i].no; j++)
@@ -704,8 +768,6 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		}
 	        free(customers[i].hosts);
 	}
-
-        free(channels);
         free(customers);
 
 	for(i=0;i<nc;i++)
@@ -732,14 +794,14 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 	free(ip_nets);
 		
-#ifdef DEBUG1
-	syslog(LOG_INFO, "DEBUG: [%s/ewx-stm] reloaded", ewx->base.instance);
-#endif
+	free(enets);
+	free(enetsql);
 	free(ewx->community);
 	free(ewx->host);
 	free(ewx->networks);
 	free(ewx->dummy_mac_networks);
 	free(ewx->dummy_ip_networks);
+	free(ewx->excluded_networks);
 }
 
 struct ewx_module * init(GLOBAL *g, MODULE *m)
@@ -759,6 +821,7 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->host = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "snmp_host", ""));
 	ewx->port = g->config_getint(ewx->base.ini, ewx->base.instance, "snmp_port", 161);
 	ewx->networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "networks", ""));
+	ewx->excluded_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "excluded_networks", ""));
 	ewx->dummy_mac_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_mac_networks", ""));
 	ewx->dummy_ip_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_ip_networks", ""));
 

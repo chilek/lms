@@ -35,6 +35,10 @@ version ? (????-??-??):
   - invoices: added filtering by month on the list (Łukasz Rostalski/alec)
   - lmsd/hostfile: added 'excluded_networks', 'excluded_customergroups' and
     'excluded_nodegroups' options (alec)
+  - helpdesk: fixed sorting by requestor on requests list (alec)
+  - helpdesk: improved query speed in requests search (alec)
+  - helpdesk: fixed jump from quicksearch to requests searching module (alec)
+  - hosting: added accounts searching module and quicksearch input (alec)
 
 version 1.11.2 Neera (2008-01-23):
 

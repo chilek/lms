@@ -146,7 +146,7 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('accountlist',$accountlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
+$SMARTY->assign('customerlist',$LMS->GetAllCustomerNames());
 $SMARTY->assign('domainlist',$DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->display('accountlist.html');
 
