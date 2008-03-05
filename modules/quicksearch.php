@@ -248,10 +248,10 @@ switch($mode)
 	break;
 
 	case 'account':
+		$ac = explode('@', $search);
+
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$ac = explode('@', $search);
-		
 			$candidates = $DB->GetAll('(SELECT p.id, p.login, d.name AS domain, 0 AS type 
 					FROM passwd p
 					JOIN domains d ON (p.domainid = d.id)
@@ -288,7 +288,8 @@ switch($mode)
 			}
 			exit;
 		}
-
+		
+		$search = array();
 		$search['login'] = $ac[0];
 		if(!empty($ac[1])) $search['domain'] = $ac[1];
 

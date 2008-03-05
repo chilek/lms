@@ -85,7 +85,7 @@ function GetAccountList($order='login,asc', $search, $customer=NULL, $type=NULL,
 		.$where
 		.($sqlord != '' ? $sqlord : '')
 		);
-	
+
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
 	$list['type'] = $type;
@@ -150,7 +150,7 @@ if ($SESSION->is_set('asp') && !isset($_GET['page']) && !isset($search))
 if(sizeof($search) || isset($_GET['s']))
 {
 	$search = sizeof($search) ? $search : $SESSION->get('accountsearch');
-	
+
 	if(!$error)
 	{
 		$accountlist = GetAccountList($o, $search, $u, $t, $k, $d);
