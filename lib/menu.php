@@ -507,7 +507,7 @@ $menu = array(
 					'prio' => 20,
 				),
 				array(
-					'name' => trans('Searching'),
+					'name' => trans('Search'),
 					'link' => '?m=rtsearch',
 					'tip' => trans('Tickets searching'),
 					'prio' => 30,
