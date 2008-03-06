@@ -805,7 +805,7 @@
               <title>Description</title>
               <para>'Traffic' is an equivalent of 'lms-traffic' Perl script,which loads internet
               link stats to database, from file created by user. That file must have format: host_IP upload
-              download. More informations (including how to make such file) can be found in chapter with
+              download. More information (including how to make such file) can be found in chapter with
               lms-traffic description.</para>
               </sect3>
               <sect3 id="traffic-config">

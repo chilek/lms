@@ -180,7 +180,7 @@ $_MODINFO['traffic'] = array(
 				),
 			'nodetraffic' => array(
 				'description' => array(
-					'en' => 'Stats in node informations window',
+					'en' => 'Stats in node information window',
 					'pl' => 'Statystyki w oknie informacji o komputerze',
 					),
 				'notemplate' => TRUE,

@@ -35,7 +35,7 @@ function plugin($template, $customer)
 
 	$result = '';
 	
-	// read template informations
+	// read template information
 	@include(DOC_DIR.'/templates/'.$template.'/info.php');
 	// call plugin
 	@include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
@@ -136,7 +136,7 @@ if(isset($_POST['document']))
 	elseif($document['templ'])
 	{
 		$result = '';
-		// read template informations
+		// read template information
 		include(DOC_DIR.'/templates/'.$document['templ'].'/info.php');
 		// set some variables (needed in e.g. plugin)
 		$SMARTY->assign_by_ref('document', $document);

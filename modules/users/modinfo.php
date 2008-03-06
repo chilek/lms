@@ -87,7 +87,7 @@ $_MODINFO['users'] = array(
 				),
 			'info' => array(
 				'description' => array(
-				        'en' => 'Viewing users informations',
+				        'en' => 'Viewing users information',
 					'pl' => 'Przeglądanie informacji o użytkownikach',
 					),
 				),

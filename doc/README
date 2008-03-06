@@ -256,7 +256,7 @@ cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot logout
 
 1.4.4. Changelog
 
-   Informations about changes and version history of LMS is included in
+   Information about changes and version history of LMS is included in
    Changelog.
      __________________________________________________________________
 
@@ -1317,7 +1317,7 @@ Chapter 3. User Interface (LMS-UI)
 
    When you enter 'Tariffs List' panel you'll be able to see list of
    liabilities (Tariffs) that might be assigned to your customers, with
-   basic informations about it. When you select and click on liability
+   basic information about it. When you select and click on liability
    you'll move to 'Tariff' module where you're able to edit its parameters
    and exchange customers between available liabilities. In 'Number of
    customers' field you can read number of customers who are assigned to
@@ -1381,7 +1381,7 @@ Chapter 3. User Interface (LMS-UI)
 3.7.9. Cash Registry
 
    Cash register can be divided on many registries like cash1, cash2, main
-   cash, bank, etc. On regirstries list are placed all informations about
+   cash, bank, etc. On regirstries list are placed all information about
    defined registries with actual balance and summary which include only
    registries with not set "Disable summary" option.
 
@@ -1568,7 +1568,7 @@ Chapter 3. User Interface (LMS-UI)
 
 3.9.4. Domains
 
-   You're able to see basic informations about domains on the list. It's
+   You're able to see basic information about domains on the list. It's
    possible to sort this list by any highlighted column name and to filter
    list for given criteria. You can edit domain data by clicking 'Edit'
    icon. Add new domain at the bottom of the list.
@@ -1839,7 +1839,7 @@ links -dump \
 
 3.13.1. Queues List
 
-   Basic informations and request statistics are available on queues list.
+   Basic information and request statistics are available on queues list.
    Select and click on chosen queue to display all tickets belonging to
    it. You can also go to detailed view (including permissions) about
    queue or remove given queue. Removing queue will also remove all
@@ -2124,7 +2124,7 @@ links -dump \
        enabled.
        Example: helpdesk_stats = true
      * helpdesk_customerinfo
-       Adds customer basic informations on ticket view and in
+       Adds customer basic information on ticket view and in
        notifications. Default: enabled.
        Example: helpdesk_customerinfo = false
      * ticketlist_status
@@ -3132,7 +3132,7 @@ endif
        http://localhost/lms/.
        Example: lms_url = https://lms.domain.pl/
      * include_customerinfo
-       Adds basic customer informations in new ticket notification
+       Adds basic customer information in new ticket notification
        footnote. Default: On.
        Example: include_customerinfo = 0
      __________________________________________________________________
@@ -4076,7 +4076,7 @@ Chapter 6. LMS Daemon
 
    'Traffic' is an equivalent of 'lms-traffic' Perl script,which loads
    internet link stats to database, from file created by user. That file
-   must have format: host_IP upload download. More informations (including
+   must have format: host_IP upload download. More information (including
    how to make such file) can be found in chapter with lms-traffic
    description.
      __________________________________________________________________
@@ -4835,7 +4835,7 @@ syslog("message");
        regon - business registration number
        icn - identity card number
        rbe - register of business entities number
-       info - additional informations
+       info - additional information
        message - warning contents
        warning - warning status (status of all customer's nodes summary)
        access - accessibility status (status of all customer's nodes summary)
@@ -4850,7 +4850,7 @@ syslog("message");
        warning - warnings status: enabled/disabled (1/0)
        netdev - device ID, to which is connected
        lastonline - last activity timestamp
-       info - additional informations
+       info - additional information
        message - warning message contents
        mac - MAC address
        passwd - password
@@ -5076,7 +5076,7 @@ Chapter 7. For curious
    regon - business registration number
    rbe - register of business entities
    icn - identity card number
-   info - additional informations
+   info - additional information
    notes - notes
    serviceaddr - correspondence address
    creationdate - record creation date
@@ -5337,7 +5337,7 @@ Chapter 7. For curious
    time - entry timestamp
    value - real cash state value
    snapshot - cash state value
-   description - additional informations
+   description - additional information
      __________________________________________________________________
 
 7.2.24. Documents: invoices, receipts, contracts, etc. ('documents')
@@ -5372,7 +5372,7 @@ Chapter 7. For curious
    filename - document file name
    contenttype - file type
    md5sum - file md5 sum
-   description - additional informations
+   description - additional information
      __________________________________________________________________
 
 7.2.26. Invoices ('invoicecontents')
@@ -5572,7 +5572,7 @@ Chapter 7. For curious
 
    id - identifier
    name - host name
-   description - additional informations
+   description - additional information
    lastreload - last reload date
    reload - reload order
      __________________________________________________________________
@@ -5585,7 +5585,7 @@ Chapter 7. For curious
    module - module file path and name
    crontab - time of reload
    priority - reload priority
-   description - additional informations
+   description - additional information
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
@@ -5595,7 +5595,7 @@ Chapter 7. For curious
    instanceid - instance identifier
    var - option name
    value - option value
-   description - additional informations
+   description - additional information
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
@@ -5721,7 +5721,7 @@ key = "A.L.E.C's LMS Daemon is the best"
             bytes). It's worth to mention, however, that some systems have
             filesystem level, usually at 2 or 4 GB.
           + Number of records:
-            True informations can be obtained, by issuing (in mysql
+            True information can be obtained, by issuing (in mysql
             shell):
 mysql> show table status;
 

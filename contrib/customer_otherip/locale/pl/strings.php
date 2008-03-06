@@ -26,7 +26,7 @@
 
 $_LANG['All payments send on account:'] = 'Wszystkie płatności prosimy przesyłać na konto:';
 $_LANG['Bank:'] = 'Bank:';
-$_LANG['Customer Informations:'] = 'Informacje o kliencie:';
+$_LANG['Customer Information:'] = 'Informacje o kliencie:';
 $_LANG['Customer Logon'] = 'Panel Klienta';
 $_LANG['Customer Logon: $0'] = 'Panel Klienta: $0';
 $_LANG['Errornous data was entered!'] = 'Wprowadzono niepoprawne dane!';

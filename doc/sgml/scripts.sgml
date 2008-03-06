@@ -1198,7 +1198,7 @@ Following parameters are valid:</para>
 		</listitem>
 		<listitem>
 		    <para>include_customerinfo</para>
-		    <para>Adds basic customer informations in new ticket notification footnote.
+		    <para>Adds basic customer information in new ticket notification footnote.
 		    Default: On.</para>
 		    <para>Example:	<prompt>include_customerinfo = 0</prompt></para>
 		</listitem>

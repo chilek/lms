@@ -313,7 +313,7 @@ and balance sheets.</para>
 	    <title>Tariffs List</title>
 	    <para>When you enter 'Tariffs List' panel you'll be able to see list of
 liabilities (Tariffs) that might be assigned to your customers, with basic
-informations about it. When you select and click on liability you'll move to
+information about it. When you select and click on liability you'll move to
 'Tariff' module where you're able to edit its parameters and exchange customers
 between available liabilities. In 'Number of customers'  field you can read
 number of customers who are assigned to it and two numbers in parenthesis: total
@@ -369,7 +369,7 @@ invoices.</para></note></para>
 	<sect2 id="menu-receipts-list">
 	    <title>Cash Registry</title>
 		<para>Cash register can be divided on many registries like cash1, cash2,
-		main cash, bank, etc. On regirstries list are placed all informations about
+		main cash, bank, etc. On regirstries list are placed all information about
 		defined registries with actual balance and summary which include only
 		registries with not set "Disable summary" option.</para>
 		<para>Each registry can have own numbering of cash-in and cash-out
@@ -563,7 +563,7 @@ list.</para>
 	</sect2>
 	<sect2 id="accounts-domains">
 	    <title>Domains</title>
-	    <para>You're able to see basic informations about domains on the
+	    <para>You're able to see basic information about domains on the
 list. It's possible to sort
 this list by any highlighted column name and to filter list for given criteria.
 You can edit domain data by clicking 'Edit' icon. Add new domain at the bottom
@@ -823,7 +823,7 @@ be in one of the states: new, opened, resolved or dead.</para>
 support incoming requests and outgoing comments by your mail server.</para>
 	<sect2 id="menu-helpdesk-list">
 	<title>Queues List</title>
-	    <para>Basic informations and request statistics are available on
+	    <para>Basic information and request statistics are available on
 queues list. Select and click on chosen queue to display all tickets belonging
 to it. You can also go to detailed view (including permissions) about queue or
 remove given queue. Removing queue will also remove all belonging tickets from
@@ -1150,7 +1150,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
     	    </listitem>
     	    <listitem>
         	<para>helpdesk_customerinfo</para>
-        	<para>Adds customer basic informations on ticket view and in notifications.
+        	<para>Adds customer basic information on ticket view and in notifications.
         	Default: enabled.</para>
         	<para>Example:     <prompt>helpdesk_customerinfo = false</prompt></para>
     	    </listitem>

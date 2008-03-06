@@ -29,14 +29,14 @@ $menu = array(
 			'name' => trans('Administration'),
 			'img' =>'users.gif',
 			'link' =>'?m=welcome',
-			'tip' => trans('System informations and management'),
+			'tip' => trans('System information and management'),
 			'accesskey' =>'i',
 			'prio' => 0,
 			'submenu' => array(
 				array(
 					'name' => trans('Info'),
 					'link' =>'?m=welcome',
-					'tip' => trans('Basic system informations'),
+					'tip' => trans('Basic system information'),
 					'prio' => 10,
 				),
 				array(

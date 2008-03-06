@@ -265,7 +265,7 @@ version 1.9.8 Idos (2007-07-12):
     "http://lms/?m=trafficdbcompact&level=low&removeold=1&removedeleted=1
     &loginform[login]=login&loginform[pwd]=pass&override=1" (alec)
   - PIN code field cannot be empty now (alec)
-  - added possibility to search customers by additional informations (alec)
+  - added possibility to search customers by additional information (alec)
   - added 'payments book' type of documents (alec)
   - less memory consumption of Balance Sheet (alec)
   - added todate and fromdate indexes in 'documentcontents' table (alec)
@@ -310,7 +310,7 @@ version 1.9.7 Thalan (2007-05-09):
     list (alec)
   - mailing: added 'not in debt' customers filter (alec)
   - helpdesk: added option 'ticket_template_file' (alec)
-  - helpdesk: added customer informations box in New Ticket page after customer
+  - helpdesk: added customer information box in New Ticket page after customer
     selection and form submit (alec)
   - lms-rtparser: added option 'include_customerinfo' (alec)
   - lmsd/cutoff: added option 'expired_warning', used to set message to customer
@@ -604,7 +604,7 @@ version 1.9.0 Tilgath (2005-12-07):
   - BTS#0000216: now user with 'customers management' or 'nodes management'
     access don't need 'read only' access right (alec)
   - contrib/lms-debtors: added MySQL support (alec)
-  - fixed traffic stats values in node informations (alec)
+  - fixed traffic stats values in node information (alec)
   - added link to customer stats in customer info page (alec)
   - BTS#0000471: fixed 'Tickets' link in customerinfo box (alec)
   - fixed summary on customer search results list (alec)
@@ -651,7 +651,7 @@ version 1.7.5 Shaq-ran <broken version> (2005-11-05):
   - BTS#0000373: lms-notify: added exception handler for mail server 
     connection problems (alec)
   - changed stats units to kbps (alec)
-  - added traffic stats in node informations window (alec)
+  - added traffic stats in node information window (alec)
   - fixed/changed access rights for printing modules (alec)
 
 version 1.7.4 Wraith (2005-10-31):
@@ -1692,7 +1692,7 @@ version 1.1.8 Cronos (2004-02-01):
     - important for PostgreSQL database, where queries are case-sensitive (alec)
   - new 'mailing' interface, added e-mail checking and not taking deleted
     users into account (alec)
-  - in window 'LMS Informations' added DBMS version (alec)
+  - in window 'LMS Information' added DBMS version (alec)
   - database cosmetics consistent with BTS#000103, or else bug fixes 
     while backup restoring on later versions of postgres (alec)
     MySQL:
@@ -1943,7 +1943,7 @@ version 1.1.4 Tanith (2003-10-03):
         ALTER TABLE networks ADD interface VARCHAR(8) AFTER mask;
     PostgreSQL:
     	ALTER TABLE networks ADD interface VARCHAR(8);
-  - removed misprint causing MySQL's driver looses host informations from
+  - removed misprint causing MySQL's driver looses host information from
     lms.ini then allways try to connect with localhost (lukasz)
   - reload.php used obsolete sqlTSfmt() (lexx/lukasz)
   - newly added node have access by default (lukasz)

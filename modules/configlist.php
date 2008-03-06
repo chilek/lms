@@ -252,7 +252,7 @@ function GetConfigList($order='var,asc', $section='')
 				break;					
 
 				case 'helpdesk_customerinfo':
-					$config[$idx]['description'] = trans('Adds customer basic informations on ticket view and in notifications. Default: true');
+					$config[$idx]['description'] = trans('Adds customer basic information on ticket view and in notifications. Default: true');
 				break;					
 
 				case 'ticket_template_file':
