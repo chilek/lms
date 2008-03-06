@@ -40,6 +40,8 @@ version ? (????-??-??):
   - helpdesk: fixed jump from quicksearch to requests searching module (alec)
   - hosting: added accounts searching module and quicksearch input (alec)
   - lmsd/ewx-stm: added 'excluded_networks' option (alec)
+  - helpdesk: added delete and print links on tickets searching results 
+    list (alec)
 
 version 1.11.2 Neera (2008-01-23):
 
