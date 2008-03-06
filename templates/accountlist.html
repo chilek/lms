@@ -22,7 +22,7 @@
 			<A href="?m={$layout.module}{$suffix}&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">{t}Expiration date:{/t}</A>{if $listdata.order eq "expdate"} <IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" align="right" NOWRAP>
-			 <B>{t 0=$listdata.total}Total: $0{/t}</B>
+			 <B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;
 		</TD>
 	</TR>
 	<TR class="DARK">
