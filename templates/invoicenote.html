@@ -27,7 +27,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
-			<B>{t}Main Informations:{/t}</B>
+			<B>{t}Main Information:{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -215,8 +215,8 @@
             		<INPUT type="checkbox" class ="box light" name="copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>&nbsp;
 			<A HREF="?m=invoicelist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
 			{if $error}
-			<A HREF="javascript:alert('{t}There are errors in credit note main informations!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{t}There are errors in credit note main informations!{/t}');">{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>
+			<A HREF="javascript:alert('{t}There are errors in credit note main information!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:alert('{t}There are errors in credit note main information!{/t}');">{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>
 			{else}
 			<A HREF="javascript:document.save.submit()">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:printinvoice()">{t}Save & Print{/t} <IMG src="img/print.gif" alt=""></A>

@@ -109,7 +109,7 @@
 		    <member>regon - business registration number</member>
 		    <member>rbe - register of business entities</member>
 		    <member>icn - identity card number</member>
-                    <member>info - additional informations</member>
+                    <member>info - additional information</member>
 		    <member>notes - notes</member>
                     <member>serviceaddr - correspondence address</member>
                     <member>creationdate - record creation date</member>
@@ -387,7 +387,7 @@
 			<member>time - entry timestamp</member>
 			<member>value - real cash state value</member>
 			<member>snapshot - cash state value</member>
-			<member>description - additional informations</member>
+			<member>description - additional information</member>
 		</simplelist>
           </sect2>
           <sect2 id="documents">
@@ -424,7 +424,7 @@
                     <member>filename - document file name</member>
                     <member>contenttype - file type</member>
                     <member>md5sum - file md5 sum</member>
-		    <member>description - additional informations</member>
+		    <member>description - additional information</member>
                </simplelist>
           </sect2>
           <sect2 id="invoicecontents">
@@ -644,7 +644,7 @@
                <simplelist>
                     <member>id - identifier</member>
                     <member>name - host name</member>
-                    <member>description - additional informations</member>
+                    <member>description - additional information</member>
                     <member>lastreload - last reload date</member>
                     <member>reload - reload order</member>
                </simplelist>
@@ -658,7 +658,7 @@
                     <member>module - module file path and name</member>
                     <member>crontab - time of reload</member>
                     <member>priority - reload priority</member>
-                    <member>description - additional informations</member>
+                    <member>description - additional information</member>
                     <member>disabled - status (enabled/disabled)</member>
                </simplelist>
           </sect2>
@@ -669,7 +669,7 @@
                     <member>instanceid - instance identifier</member>
                     <member>var - option name</member>
                     <member>value - option value</member>
-                    <member>description - additional informations</member>
+                    <member>description - additional information</member>
                     <member>disabled - status (enabled/disabled)</member>
                </simplelist>
           </sect2>
@@ -761,7 +761,7 @@ key = "A.L.E.C's LMS Daemon is the best"
                </listitem>
                <listitem>
                <para>Number of records:</para>
-               <para>True informations can be obtained, by issuing (in mysql shell):</para>
+               <para>True information can be obtained, by issuing (in mysql shell):</para>
                <screen>
 mysql&gt; show table status;
 

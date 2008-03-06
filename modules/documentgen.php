@@ -35,7 +35,7 @@ function plugin($template, $customer)
 
 	$result = '';
 	
-	// read template informations
+	// read template information
 	@include(DOC_DIR.'/templates/'.$template.'/info.php');
 	// call plugin
 	@include(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['plugin'].'.php');
@@ -152,7 +152,7 @@ if(isset($_POST['document']))
 
 		$numtemplate = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
 
-		// read template informations
+		// read template information
 		include(DOC_DIR.'/templates/'.$document['templ'].'/info.php');
 		
 		// run template engine
@@ -267,7 +267,7 @@ if(isset($_POST['document']))
 		if($document['templ'])
 		{
 			$result = '';
-			// read template informations
+			// read template information
 			include(DOC_DIR.'/templates/'.$document['templ'].'/info.php');
 			// set some variables
 			$SMARTY->assign('document', $document);

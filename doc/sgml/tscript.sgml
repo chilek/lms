@@ -501,7 +501,7 @@ syslog("message");
 				<member>regon - business registration number</member>
 				<member>icn - identity card number</member>
 				<member>rbe - register of business entities number</member>
-				<member>info - additional informations</member>
+				<member>info - additional information</member>
 				<member>message - warning contents</member>
 				<member>warning - warning status (status of all customer's nodes summary)</member>
 				<member>access - accessibility status (status of all customer's nodes summary)</member>
@@ -520,7 +520,7 @@ syslog("message");
 				<member>warning - warnings status: enabled/disabled (1/0)</member>
 				<member>netdev - device ID, to which is connected</member>
 				<member>lastonline - last activity timestamp</member>
-				<member>info - additional informations</member>
+				<member>info - additional information</member>
 				<member>message - warning message contents</member>
 				<member>mac - MAC address</member>
 				<member>passwd - password</member>

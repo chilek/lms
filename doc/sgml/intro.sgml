@@ -206,7 +206,7 @@ cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot logout</screen>
           </sect2>
           <sect2 id="history">
                <title>Changelog</title>
-               <para>Informations about changes and version history of LMS is included in 
+               <para>Information about changes and version history of LMS is included in 
                <ulink url="../../ChangeLog">Changelog</ulink>.</para>
           </sect2>
 		<sect2 id="comercial-support">

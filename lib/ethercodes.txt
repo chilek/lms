@@ -920,7 +920,7 @@
 00-03-96:EZ Cast Co., Ltd.
 00-03-97:Watchfront Limited
 00-03-98:WISI
-00-03-99:Dongju Informations & Communications Co., Ltd.
+00-03-99:Dongju Information & Communications Co., Ltd.
 00-03-9A:SiConnect
 00-03-9B:NetChip Technology, Inc.
 00-03-9C:OptiMight Communications, Inc.
@@ -2022,7 +2022,7 @@
 00-07-EB:Cisco Systems Inc.
 00-07-EC:Cisco Systems Inc.
 00-07-ED:Altera Corporation
-00-07-EE:telco Informationssysteme GmbH
+00-07-EE:telco Informationsysteme GmbH
 00-07-EF:Lockheed Martin Tactical Systems
 00-07-F0:Beckett LogiSync LLC
 00-07-F1:TeraBurst Networks Inc.
@@ -2051,7 +2051,7 @@
 00-08-08:PPT Vision, Inc.
 00-08-09:Systemonic AG
 00-08-0A:Espera-Werke GmbH
-00-08-0B:Birka BPA Informationssystem AB
+00-08-0B:Birka BPA Informationsystem AB
 00-08-0C:VDA Elettronica spa
 00-08-0D:Toshiba
 00-08-0E:Motorola, BCS
@@ -2451,7 +2451,7 @@
 00-09-B7:Cisco Systems
 00-09-B8:Entise Systems
 00-09-B9:Action Imaging Solutions
-00-09-BA:MAKU Informationstechik GmbH
+00-09-BA:MAKU Informationtechik GmbH
 00-09-BB:MathStar, Inc.
 00-09-BC:Integrian, Inc.
 00-09-BD:Epygi Technologies, Ltd.
@@ -5102,7 +5102,7 @@
 00-14-14:Jumpnode Systems LLC.
 00-14-15:Intec Automation Inc.
 00-14-16:Scosche Industries, Inc.
-00-14-17:RSE Informations Technologie GmbH
+00-14-17:RSE Information Technologie GmbH
 00-14-18:C4Line
 00-14-19:SIDSA
 00-14-1A:DEICY CORPORATION

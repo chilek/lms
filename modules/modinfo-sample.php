@@ -48,7 +48,7 @@ $_MODINFO['sample'] = array(
 					),
 				'img' => 'users.gif', // image from img directory, that we use in menu
 				'tip' => array( // tiptext
-					'en' => 'Systems informations and management',
+					'en' => 'Systems information and management',
 					'pl' => 'Informacja o systemie i administracja',
 					),
 				),
@@ -129,7 +129,7 @@ $_MODINFO['sample'] = array(
 					'pl' => 'Informacje',
 					),
 				'tip' => array(
-					'en' => 'Basic system informations',
+					'en' => 'Basic system information',
 					'pl' => 'Podstawowe informacje o systemie',
 					),
 				'menu' => 'core_administration',
