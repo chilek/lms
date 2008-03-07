@@ -44,7 +44,7 @@ oid UserAllowedMacAddr[]	= {SNMP_OID_ENTERPRISES,20656,1,2,2,2,1,6,0};
 #define PT_OID_LEN	14
 
 // UsersTableSave
-oid UsersTableSave[]		= {SNMP_OID_ENTERPRISES,20656,1,2,2,2,2};
+oid UsersTableSave[]		= {SNMP_OID_ENTERPRISES,20656,1,2,2,2,2,0};
 
 // Status values
 #define ACTIVE		"1"
