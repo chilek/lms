@@ -3,6 +3,7 @@ $Id$
 version ? (????-??-??):
 
   - Aliases List: removed unused sql query (alec)
+  - BTS#0000732: lmsd/ewx-pt: fixed *TableSave OID (alec)
 
 version 1.10.3 Vidrine (2008-02-10):
 
