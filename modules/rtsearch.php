@@ -39,35 +39,35 @@ function RTSearch($search, $order='createtime,desc')
 	switch($order)
 	{
 		case 'ticketid':
-			$sqlord = 'ORDER BY t.id';
+			$sqlord = ' ORDER BY t.id';
 		break;
 		case 'subject':
-			$sqlord = 'ORDER BY t.subject';
+			$sqlord = ' ORDER BY t.subject';
 		break;
 		case 'requestor':
-			$sqlord = 'ORDER BY requestor';
+			$sqlord = ' ORDER BY requestor';
 		break;
 		case 'owner':
-			$sqlord = 'ORDER BY ownername';
+			$sqlord = ' ORDER BY ownername';
 		break;
 		case 'lastmodified':
-			$sqlord = 'ORDER BY lastmodified';
+			$sqlord = ' ORDER BY lastmodified';
 		break;
 		default:
-			$sqlord = 'ORDER BY t.createtime';
+			$sqlord = ' ORDER BY t.createtime';
 		break;
 	}
 
 	$op = !empty($search['operator']) && $search['operator'] == 'OR' ? $op = ' OR ' : $op = ' AND ';
 
 	if(!empty($search['owner']))
-		$where[] = 'owner='.$search['owner'];
+		$where[] = 'owner = '.$search['owner'];
 	if(!empty($search['customerid']))
-		$where[] = 't.customerid='.$search['customerid'];
+		$where[] = 't.customerid = '.$search['customerid'];
 	if(!empty($search['subject']))
 		$where[] = 't.subject ?LIKE?\'%'.$search['subject'].'%\'';
 	if(!empty($search['state']))
-		$where[] = 'state='.$search['state'];
+		$where[] = 'state = '.$search['state'];
 	if(!empty($search['email']))
 		$where[] = 'requestor ?LIKE? \'%'.$search['email'].'%\'';
 	if(!empty($search['uptime']))
@@ -77,10 +77,10 @@ function RTSearch($search, $order='createtime,desc')
 	if(isset($search['queue']) && is_array($search['queue']))
 		$where[] = 'queueid IN ('.implode(',',$search['queue']).') ';
 	elseif(!empty($search['queue']))
-		$where[] = 'queueid='.$search['queue'].' ';
+		$where[] = 'queueid = '.$search['queue'].' ';
 	
 	if(isset($where))
-		$where = 'WHERE '.implode($op, $where);
+		$where = ' WHERE '.implode($op, $where);
 
 	if($result = $DB->GetAll('SELECT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid, 
 			users.name AS ownername, CASE WHEN customerid = 0 THEN t.requestor ELSE '
@@ -90,7 +90,7 @@ function RTSearch($search, $order='createtime,desc')
 				WHERE t.id = ticketid) AS lastmodified 
 			FROM rttickets t
 			LEFT JOIN users ON (t.owner = users.id) 
-			LEFT JOIN customers ON (t.customerid = customers.id) '
+			LEFT JOIN customers ON (t.customerid = customers.id)'
 			.(isset($where) ? $where : '') 
 			.($sqlord !='' ? $sqlord.' '.$direction:'')))
 	{
