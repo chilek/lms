@@ -195,7 +195,7 @@ switch($mode)
 
 		$SESSION->remove('nslp');
 
-		$target = '?m=nodesearch&s=1';
+		$target = '?m=nodesearch&search';
 	break;
 	
 	case 'ticket':
