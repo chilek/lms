@@ -82,7 +82,7 @@ if(isset($_POST['domain']))
 			        $error['ownerid'] = trans('Exceeded domains limit of selected customer ($0)!', $limits['domain_limit']);
 		}
 	}
-																																																						        }
+
 	if(!$error)
 	{
 		$DB->Execute('UPDATE domains SET name = ?, ownerid = ?, description = ? WHERE id = ?', 
