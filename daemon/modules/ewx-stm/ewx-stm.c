@@ -158,7 +158,6 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	snmp_close(sh);
 
 	// If communication works, we can do the job...
-
         customers = (struct customer *) malloc(sizeof(struct customer));
         nets = (struct net *) malloc(sizeof(struct net));
         all_nets = (struct net *) malloc(sizeof(struct net));
@@ -166,7 +165,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
         ip_nets = (struct net *) malloc(sizeof(struct net));
 
 	// get all networks params
-        res = g->db_pquery(g->conn, "SELECT UPPER(name) AS name, address, INET_ATON(mask) AS mask, interface FROM networks");
+        res = g->db_pquery(g->conn, "SELECT UPPER(name) AS name, address, "
+			"INET_ATON(mask) AS mask, interface FROM networks");
 	
 	for(anc=0; anc<g->db_nrows(res); anc++)
 	{
@@ -179,6 +179,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 																												 
 	netnames = strdup(ewx->networks);
 	netname = strdup(netnames);
+	
 	// get networks for filter if any specified in 'networks' option
 	while( n>1 )
 	{
@@ -204,6 +205,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	n = 2;
 	netnames = strdup(ewx->dummy_mac_networks);
 	netname = strdup(netnames);
+	
 	// get networks for filter if any specified in 'dummy_mac_networks' option
 	while( n>1 )
 	{
@@ -229,6 +231,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	n = 2;
 	netnames = strdup(ewx->dummy_ip_networks);
 	netname = strdup(netnames);
+	
 	// get networks for filter if any specified in 'dummy_ip_networks' option
 	while( n>1 )
 	{
@@ -353,7 +356,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			"FROM nodeassignments "
 			"LEFT JOIN nodes n ON (nodeid = n.id) "
 			"WHERE n.access = 1 "
-			"%enets "
+//			"%enets "
 			"GROUP BY assignmentid "
 			") cn ON (cn.assignmentid = na.assignmentid) "
 		"WHERE "
@@ -417,7 +420,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				if(n != mnc) dummy_mac = 1;
 			}
 			
-			if(!atoi(g->db_get_data(res,i,"chkmac")))
+			if(!dummy_mac && !atoi(g->db_get_data(res,i,"chkmac")))
 			{
 				dummy_mac = 1;
 			}
@@ -495,11 +498,11 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				"c.upceil AS cupceil, c.downceil AS cdownceil "
 			"FROM ewx_stm_nodes n "
 			"LEFT JOIN ewx_stm_channels c ON (c.id = n.channelid) "
-			"WHERE 1=1"
-			"%enets"
+//			"WHERE 1=1"
+//			"%enets"
 	);
 
-	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
+//	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
 
 	res = g->db_query(g->conn, query);
         
