@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - Aliases List: removed unused sql query (alec)
   - BTS#0000732: lmsd/ewx-pt: fixed *TableSave OID (alec)
+  - BTS#0000736: fixed assignment addition when taxid is not set (alec)
 
 version 1.10.3 Vidrine (2008-02-10):
 

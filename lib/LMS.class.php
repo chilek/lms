@@ -1566,7 +1566,7 @@ class LMS
 					    VALUES (?, ?, ?, ?)', 
 					    array($assignmentdata['name'],
 						    $assignmentdata['value'],
-						    $assignmentdata['taxid'],
+						    intval($assignmentdata['taxid']),
 						    $assignmentdata['prodid']
 					    ));
 			$lid = $this->DB->GetLastInsertID('liabilities');
