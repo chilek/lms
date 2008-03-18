@@ -1,22 +1,23 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+{if $layout.module=="domainsearch"}{assign var=suffix value="&s=1"}{/if}
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark">
 		<TD width="1%" class="fleftu" NOWRAP>
-			<IMG src="img/network.gif" alt=""> <A href="?m=domainlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/network.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="center" NOWRAP>
-			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=domainlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/empty.gif" alt="" height="16"><A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP>
-			<IMG src="img/customer.gif" alt=""> <A href="?m=domainlist&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{t}Customer:{/t}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG src="img/customer.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=customer{if $listdata.direction eq "asc" && $listdata.order eq "customer"},desc{/if}">{t}Customer:{/t}</A> {if $listdata.order eq "customer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP>
-		    <A href="?m=domainlist&o=cnt{if $listdata.direction eq "asc" && $listdata.order eq "cnt"},desc{/if}">{t}Accounts:{/t}</A> {if $listdata.order eq "cnt"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		    <A href="?m={$layout.module}{$suffix}&o=cnt{if $listdata.direction eq "asc" && $listdata.order eq "cnt"},desc{/if}">{t}Accounts:{/t}</A> {if $listdata.order eq "cnt"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="95%" class="fbt" NOWRAP>
-			<A href="?m=domainlist&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{t}Description:{/t}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m={$layout.module}{$suffix}&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{t}Description:{/t}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 			<B>{t 0=$listdata.total}Total: $0{/t}</B>
@@ -27,9 +28,10 @@
 		<TABLE cellpadding="0" cellspacing="0">
 		    <TR>
 			<TD width="1%" NOWRAP>
-		        <FORM method="GET" action="?m=domainlist" name="filter">
+		        <FORM method="GET" action="?m={$layout.module}" name="filter">
 			<INPUT type="submit" class="hiddenbtn">
-			<INPUT type="HIDDEN" name="m" value="domainlist">
+			<INPUT type="HIDDEN" name="m" value="{$layout.module}">
+			{if $suffix}<INPUT type="HIDDEN" name="s" value="1">{/if}
 			<INPUT type="HIDDEN" name="page" value="1">
 			<B>{t}Filter:{/t} </B> {t}Owner:{/t}
 			<SELECT size="1" name="c" OnChange="document.filter.submit();">
@@ -50,7 +52,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			{include file="scroller.html" loop=$domainlist}
+			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
@@ -93,7 +95,7 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			{include file="scroller.html" loop=$domainlist}
+			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
