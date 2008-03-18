@@ -97,8 +97,6 @@ function GetAccountList($order='login,asc', $search, $customer=NULL, $type=NULL,
 	return $list;
 }
 
-$layout['pagetitle'] = trans('Account Search');
-
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $search = array();
@@ -178,6 +176,8 @@ if(sizeof($search) || isset($_GET['s']))
 		$SESSION->save('asp', $page);
 		$SESSION->save('accountsearch', $search);
 
+		$layout['pagetitle'] = trans('Account Search Results');
+
 		$SMARTY->assign('listdata',$listdata);
 		$SMARTY->assign('customerlist',$LMS->GetAllCustomerNames());
 		$SMARTY->assign('domainlist',$DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
@@ -191,6 +191,8 @@ if(sizeof($search) || isset($_GET['s']))
 		die;
 	}
 }
+
+$layout['pagetitle'] = trans('Account, Alias, Domain Search');
 
 $SMARTY->assign('customerlist',$LMS->GetAllCustomerNames());
 $SMARTY->assign('search', isset($search) ? $search : $SESSION->get('accountsearch'));

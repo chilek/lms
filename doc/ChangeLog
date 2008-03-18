@@ -42,6 +42,7 @@ version ? (????-??-??):
   - lmsd/ewx-stm: added 'excluded_networks' option (alec)
   - helpdesk: added delete and print links on tickets searching results 
     list (alec)
+  - hosting: added aliases and domains searching modules (alec)
 
 version 1.11.2 Neera (2008-01-23):
 

@@ -1967,14 +1967,19 @@ $_LANG['New alias'] = 'Nowy alias';
 $_LANG['Domain name contains forbidden characters!'] = 'Nazwa domeny zawiera niedozwolone znaki!';
 $_LANG['month (YYYY/MM)'] = 'miesiąc (RRRR/MM)';
 $_LANG['day (YYYY/MM/DD)'] = 'dzień (RRRR/MM/DD)';
-$_LANG['Account Search'] = 'Wyszukiwanie kont';
+$_LANG['Account Search Results'] = 'Wyniki wyszukiwania kont';
 $_LANG['Allows you to search account'] = 'Wyszukiwanie kont';
-$_LANG['Enter account login or it\'s fragment'] = 'Wprowadź login lub jego fragment';
+$_LANG['Enter login or it\'s fragment'] = 'Wprowadź login lub jego fragment';
 $_LANG['Enter account or alias name and press Enter'] = 'Wprowadź nazwę konta lub aliasu i naciśnij Enter';
 $_LANG['Enter domain name or it\'s fragment'] = 'Wprowadź nazwę domeny lub jej fragment';
-$_LANG['Find accounts matching the following search criteria:'] = 'Wyświetl konta pasujące do następujących kryteriów:';
+$_LANG['Find accounts matching the following search criteria:'] = 'Wyświetl konta spełniające następujące kryteria:';
 $_LANG['Select account type'] = 'Wybierz typ konta';
 $_LANG['Select owner'] = 'Wybierz właściciela';
 $_LANG['- all types -'] = '- wszystkie -';
+$_LANG['Account, Alias, Domain Search'] = 'Wyszukiwanie kont, aliasów, domen';
+$_LANG['Alias Search Results'] = 'Wyniki wyszukiwania aliasów';
+$_LANG['Domain Search Results'] = 'Wyniki wyszukiwania domen';
+$_LANG['Find aliases matching the following search criteria:'] = 'Wyświetl aliasy spełniające następujące kryteria';
+$_LANG['Find domain matching the following search criteria:'] = 'Wyświetl domeny spełniające następujące kryteria';
 
 ?>

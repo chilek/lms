@@ -255,14 +255,14 @@ switch($mode)
 			$candidates = $DB->GetAll('(SELECT p.id, p.login, d.name AS domain, 0 AS type 
 					FROM passwd p
 					JOIN domains d ON (p.domainid = d.id)
-					WHERE LOWER(p.login) ?LIKE? LOWER(\'%'.$ac[0].'%\')
-					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? \''.$ac[1].'%\'' : '').'
+					WHERE p.login ?LIKE? LOWER(\'%'.$ac[0].'%\')
+					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? LOWER(\''.$ac[1].'%\')' : '').'
 					UNION 
 					SELECT a.id, a.login, d.name AS domain, 1 AS type 
 					FROM aliases a
 					JOIN domains d ON (a.domainid = d.id)
-					WHERE LOWER(a.login) ?LIKE? LOWER(\'%'.$ac[0].'%\')
-					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? \''.$ac[1].'%\'' : '').'
+					WHERE a.login ?LIKE? LOWER(\'%'.$ac[0].'%\')
+					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? LOWER(\''.$ac[1].'%\')' : '').'
 					) ORDER BY login, domain
 					LIMIT 15');
 		
