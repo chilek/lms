@@ -256,14 +256,14 @@ switch($mode)
 					FROM passwd p
 					JOIN domains d ON (p.domainid = d.id)
 					WHERE p.login ?LIKE? LOWER(\'%'.$ac[0].'%\')
-					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? LOWER(\''.$ac[1].'%\')' : '').'
+					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? LOWER(\''.$ac[1].'%\')' : '').')
 					UNION 
-					SELECT a.id, a.login, d.name AS domain, 1 AS type 
+					(SELECT a.id, a.login, d.name AS domain, 1 AS type 
 					FROM aliases a
 					JOIN domains d ON (a.domainid = d.id)
 					WHERE a.login ?LIKE? LOWER(\'%'.$ac[0].'%\')
-					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? LOWER(\''.$ac[1].'%\')' : '').'
-					) ORDER BY login, domain
+					'.(!empty($ac[1]) ? 'AND d.name ?LIKE? LOWER(\''.$ac[1].'%\')' : '').')
+					ORDER BY login, domain
 					LIMIT 15');
 		
 			$eglible=array(); $actions=array(); $descriptions=array();
