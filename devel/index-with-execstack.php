@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11.2 Neera
+ * LMS version 1.11-cvs
  *
  *  (C) Copyright 2001-2005 LMS Developers
  *
