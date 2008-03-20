@@ -2761,7 +2761,7 @@ class LMS
 	{
 		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id,$id));
 		$this->DB->Execute('UPDATE nodes SET netdev=0, port=0 
-				WHERE netdev=? AND ownerid=0', array($id));
+				WHERE netdev=? AND ownerid>0', array($id));
 	}
 
 	function DeleteNetDev($id)
