@@ -42,14 +42,14 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	$SESSION->restore('ilm', $ilm);
 	$SESSION->remove('ilm');
 
-	if(sizeof($_POST['marks']))
+	if(!empty($_POST['marks']))
 		foreach($_POST['marks'] as $id => $mark)
 			$ilm[$id] = $mark;
 	if(sizeof($ilm))
 		foreach($ilm as $mark)
 			$ids[] = $mark;
 
-	if(!$ids)
+	if(empty($ids))
 	{
 		$SESSION->close();
 		die;
