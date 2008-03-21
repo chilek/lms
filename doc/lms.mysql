@@ -170,7 +170,8 @@ CREATE TABLE documents (
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
-	INDEX customerid (customerid)
+	INDEX customerid (customerid),
+	INDEX closed (closed)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -923,4 +924,4 @@ CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008022000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008032100');

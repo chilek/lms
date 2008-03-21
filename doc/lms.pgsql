@@ -292,6 +292,7 @@ CREATE TABLE documents (
 CREATE INDEX documents_cdate_idx ON documents(cdate);
 CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 CREATE INDEX documents_customerid_idx ON documents(customerid);
+CREATE INDEX documents_closed_idx ON documents(closed);
 
 /* -------------------------------------------------------- 
   Structure of table "documentcontents" 
@@ -982,4 +983,4 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008022000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008032100');
