@@ -44,6 +44,9 @@ version ? (????-??-??):
     list (alec)
   - hosting: added aliases and domains searching modules (alec)
   - optimized not closed invoices list by documents.closed index addition (alec)
+  - lmsd/ewx-stm: added new options 'excluded_dummy_ip_networks' and 
+    'excluded_dummy_mac_networks', options 'dummy_mac_networks', 
+    'dummy_ip_networks' can contains asterisk for all networks selection (alec)
 
 version 1.11.2 Neera (2008-01-23):
 

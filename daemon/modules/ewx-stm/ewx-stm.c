@@ -48,6 +48,17 @@ char * itoa(int i)
 	return string;
 }
 
+int find_asterisk(const char *str)
+{
+	int i, len;
+	
+	for(i=0, len = strlen(str); i<len; i++)
+		if(str[i] == '*')
+			return 1;
+	
+	return 0;
+}
+
 void reload(GLOBAL *g, struct ewx_module *ewx)
 {
 	struct snmp_session 	session, *sh=NULL;
@@ -56,8 +67,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	int	pathuplink=0, pathdownlink=0;
 	int 	globaluprate=0, globaldownrate=0; 
 	int	maxupceil=0, maxdownceil=0;
-	int 	status, i, j, k=2, n=2, o=2, cc=0, sc=0;
-	int	nc=0, anc=0, mnc=0, inc=0;
+	int 	status, i, j, k, n, o, cc=0, sc=0;
+	int	nc=0, anc=0, mnc=0, inc=0, emnc=0, einc=0;
 	char 	*errstr, *query;
 	char 	*netnames, *netname;
 	char 	*enets, *enetsql;
@@ -70,6 +81,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
         struct net *all_nets;
         struct net *mac_nets;
         struct net *ip_nets;
+        struct net *emac_nets;
+        struct net *eip_nets;
 
 	if(!ewx->path)
 	{
@@ -163,6 +176,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
         all_nets = (struct net *) malloc(sizeof(struct net));
         mac_nets = (struct net *) malloc(sizeof(struct net));
         ip_nets = (struct net *) malloc(sizeof(struct net));
+        emac_nets = (struct net *) malloc(sizeof(struct net));
+        eip_nets = (struct net *) malloc(sizeof(struct net));
 
 	// get all networks params
         res = g->db_pquery(g->conn, "SELECT UPPER(name) AS name, address, "
@@ -176,7 +191,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	        all_nets[anc].mask = inet_addr(g->db_get_data(res, anc, "mask"));
 	}
 	g->db_free(&res);
-																												 
+	
+	n = 2;																							 
 	netnames = strdup(ewx->networks);
 	netname = strdup(netnames);
 	
@@ -206,8 +222,20 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	netnames = strdup(ewx->dummy_mac_networks);
 	netname = strdup(netnames);
 	
-	// get networks for filter if any specified in 'dummy_mac_networks' option
-	while( n>1 )
+	// get networks for filter if any specified in 'dummy_mac_networks' 
+	// option, use '*' for all networks
+	if(find_asterisk(ewx->dummy_mac_networks))
+	{
+		for(i=0; i<nc; i++)
+	        {
+			mac_nets = (struct net *) realloc(mac_nets, (sizeof(struct net) * (mnc+1)));
+			mac_nets[mnc].address = nets[i].address;
+			mac_nets[mnc].mask = nets[i].mask;
+			mac_nets[mnc].name = strdup(nets[i].name);
+			mnc++;
+		}
+	}
+	else while( n>1 )
 	{
         	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 	        if(strlen(netname))
@@ -232,8 +260,20 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	netnames = strdup(ewx->dummy_ip_networks);
 	netname = strdup(netnames);
 	
-	// get networks for filter if any specified in 'dummy_ip_networks' option
-	while( n>1 )
+	// get networks for filter if any specified in 'dummy_ip_networks'
+	// option, use '*' for all networks
+	if(find_asterisk(ewx->dummy_ip_networks))
+	{
+		for(i=0; i<nc; i++)
+	        {
+			ip_nets = (struct net *) realloc(ip_nets, (sizeof(struct net) * (inc+1)));
+			ip_nets[inc].address = nets[i].address;
+			ip_nets[inc].mask = nets[i].mask;
+			ip_nets[inc].name = strdup(nets[i].name);
+			inc++;
+		}
+	}
+	else while( n>1 )
 	{
         	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 	        if(strlen(netname))
@@ -265,6 +305,58 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	}
 	free(netname); free(netnames);
 
+	n = 2;
+	netnames = strdup(ewx->excluded_dummy_ip_networks);
+	netname = strdup(netnames);
+	
+	// get networks for filter if any specified in 'excluded_dummy_ip_networks'
+	while( n>1 )
+	{
+        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+	        if(strlen(netname))
+		{
+			for(i=0; i<anc; i++)
+	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                    		break;
+		
+			if(i != anc)
+			{
+				eip_nets = (struct net *) realloc(eip_nets, (sizeof(struct net) * (einc+1)));
+				eip_nets[einc].address = all_nets[i].address;
+				eip_nets[einc].mask = all_nets[i].mask;
+				eip_nets[einc].name = strdup(all_nets[i].name);
+				einc++;
+			}
+		}
+	}
+	free(netname); free(netnames);
+
+	n = 2;
+	netnames = strdup(ewx->excluded_dummy_mac_networks);
+	netname = strdup(netnames);
+	
+	// get networks for filter if any specified in 'excluded_dummy_mac_networks'
+	while( n>1 )
+	{
+        	n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+	        if(strlen(netname))
+		{
+			for(i=0; i<anc; i++)
+	            		if(strcmp(all_nets[i].name, g->str_upc(netname))==0)
+	                    		break;
+		
+			if(i != anc)
+			{
+				emac_nets = (struct net *) realloc(emac_nets, (sizeof(struct net) * (emnc+1)));
+				emac_nets[emnc].address = all_nets[i].address;
+				emac_nets[emnc].mask = all_nets[i].mask;
+				emac_nets[emnc].name = strdup(all_nets[i].name);
+				emnc++;
+			}
+		}
+	}
+	free(netname); free(netnames);
+
 	// excluded networks filter
 	enets = strdup(" AND NOT EXISTS (SELECT 1 FROM networks net "
 			"WHERE (%enets) "
@@ -275,6 +367,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	netnames = strdup(ewx->excluded_networks);
 	netname = strdup(netnames);
 	enetsql = strdup("");
+	o = 2;
 			
 	while( o>1 )
 	{
@@ -419,6 +512,15 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 
 				if(n != mnc) dummy_mac = 1;
 			}
+
+			if(dummy_mac && emnc)
+			{	
+				for(n=0; n<emnc; n++)
+	            			if(emac_nets[n].address == (inet & emac_nets[n].mask))
+						break;
+
+				if(n != emnc) dummy_mac = 0;
+			}
 			
 			if(!dummy_mac && !atoi(g->db_get_data(res,i,"chkmac")))
 			{
@@ -433,6 +535,15 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	                    			break;
 		
 				if(n != inc) dummy_ip = 1;
+			}
+
+			if(dummy_ip && einc && !dummy_mac)
+			{	
+				for(n=0; n<einc; n++)
+	            			if(eip_nets[n].address == (inet & eip_nets[n].mask))
+	                    			break;
+		
+				if(n != einc) dummy_ip = 0;
 			}
 
 			customers[j].hosts = (struct host *) realloc(customers[j].hosts, (sizeof(struct host) * (k+1)));
@@ -796,6 +907,18 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		free(ip_nets[i].name);
 	}
 	free(ip_nets);
+
+	for(i=0;i<emnc;i++)
+        {
+		free(emac_nets[i].name);
+	}
+	free(emac_nets);
+
+	for(i=0;i<einc;i++)
+        {
+		free(eip_nets[i].name);
+	}
+	free(eip_nets);
 		
 	free(enets);
 	free(enetsql);
@@ -805,6 +928,8 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	free(ewx->dummy_mac_networks);
 	free(ewx->dummy_ip_networks);
 	free(ewx->excluded_networks);
+	free(ewx->excluded_dummy_mac_networks);
+	free(ewx->excluded_dummy_ip_networks);
 }
 
 struct ewx_module * init(GLOBAL *g, MODULE *m)
@@ -827,6 +952,8 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->excluded_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "excluded_networks", ""));
 	ewx->dummy_mac_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_mac_networks", ""));
 	ewx->dummy_ip_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_ip_networks", ""));
+	ewx->excluded_dummy_mac_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "excluded_dummy_mac_networks", ""));
+	ewx->excluded_dummy_ip_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "excluded_dummy_ip_networks", ""));
 
 	// node/channel ID's offset, e.g. for testing
 	ewx->offset = g->config_getint(ewx->base.ini, ewx->base.instance, "offset", 0);
