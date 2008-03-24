@@ -5,13 +5,15 @@ struct ewx_module
 {
 	MODULE base;
 	
-	char * networks;
-	char * excluded_networks;
-	char * dummy_mac_networks;
-	char * dummy_ip_networks;
-	char * customergroups;
-	char * community;
-	char * host;
+	char *networks;
+	char *excluded_networks;
+	char *dummy_mac_networks;
+	char *dummy_ip_networks;
+	char *excluded_dummy_mac_networks;
+	char *excluded_dummy_ip_networks;
+	char *customergroups;
+	char *community;
+	char *host;
 	u_short port;
 	int path;
 	int offset;
@@ -34,8 +36,8 @@ struct host
 	int downceil;
 	int halfduplex;
 	int cnt;
-	char * ip;
-	char * mac;
+	char *ip;
+	char *mac;
 };
 
 struct customer

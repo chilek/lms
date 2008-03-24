@@ -39,6 +39,7 @@ define('ACCOUNT_SHELL', 1);
 define('ACCOUNT_MAIL', 2);
 define('ACCOUNT_WWW', 4);
 define('ACCOUNT_FTP', 8);
+define('ACCOUNT_SQL', 16);
 
 // Document types
 $DOCTYPES = array(
