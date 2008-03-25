@@ -47,6 +47,8 @@ version ? (????-??-??):
   - lmsd/ewx-stm: added new options 'excluded_dummy_ip_networks' and 
     'excluded_dummy_mac_networks', options 'dummy_mac_networks', 
     'dummy_ip_networks' can contains asterisk for all networks selection (alec)
+  - removed contrib/bin/lms-sendinvoices.diff as we're using Mail::Sender with
+    smtp auth in lms-sendinvoices (alec)
 
 version 1.11.2 Neera (2008-01-23):
 
