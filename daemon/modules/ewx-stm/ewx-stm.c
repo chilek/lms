@@ -226,12 +226,12 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// option, use '*' for all networks
 	if(find_asterisk(ewx->dummy_mac_networks))
 	{
-		for(i=0; i<nc; i++)
+		for(i=0; i<anc; i++)
 	        {
 			mac_nets = (struct net *) realloc(mac_nets, (sizeof(struct net) * (mnc+1)));
-			mac_nets[mnc].address = nets[i].address;
-			mac_nets[mnc].mask = nets[i].mask;
-			mac_nets[mnc].name = strdup(nets[i].name);
+			mac_nets[mnc].address = all_nets[i].address;
+			mac_nets[mnc].mask = all_nets[i].mask;
+			mac_nets[mnc].name = strdup(all_nets[i].name);
 			mnc++;
 		}
 	}
@@ -264,12 +264,12 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// option, use '*' for all networks
 	if(find_asterisk(ewx->dummy_ip_networks))
 	{
-		for(i=0; i<nc; i++)
+		for(i=0; i<anc; i++)
 	        {
 			ip_nets = (struct net *) realloc(ip_nets, (sizeof(struct net) * (inc+1)));
-			ip_nets[inc].address = nets[i].address;
-			ip_nets[inc].mask = nets[i].mask;
-			ip_nets[inc].name = strdup(nets[i].name);
+			ip_nets[inc].address = all_nets[i].address;
+			ip_nets[inc].mask = all_nets[i].mask;
+			ip_nets[inc].name = strdup(all_nets[i].name);
 			inc++;
 		}
 	}
