@@ -65,8 +65,8 @@ function RTSearch($search, $order='createtime,desc')
 	if(!empty($search['customerid']))
 		$where[] = 't.customerid = '.$search['customerid'];
 	if(!empty($search['subject']))
-		$where[] = 't.subject ?LIKE?\'%'.$search['subject'].'%\'';
-	if(!empty($search['state']) || (isset($search['state']) && $search['state'] == 0))
+		$where[] = 't.subject ?LIKE? \'%'.$search['subject'].'%\'';
+	if(!empty($search['state']) || (isset($search['state']) && $search['state'] == '0'))
 		$where[] = 'state = '.$search['state'];
 	if(!empty($search['email']))
 		$where[] = 'requestor ?LIKE? \'%'.$search['email'].'%\'';
