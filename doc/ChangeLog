@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.11.3 Quetesh (2008-03-26):
 
   - fixed 'suspended' filter on customers list (alec)
   - added option phpui.printer_window which enables onload="window.print()"

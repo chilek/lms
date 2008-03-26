@@ -1628,9 +1628,17 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 						<para>Przyk³ad: <prompt>networks = 'lan1 lan2'</prompt></para>
 					</listitem>
 					<listitem>
+						<para>excluded_networks</para>
+						<para>Lista nazw sieci, które maj± zostaæ pominiête. 
+						Uwaga: po zmianie warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
+						Domy¶lnie: pusta.</para>
+						<para>Przyk³ad: <prompt>excluded_networks = 'lan3 lan4'</prompt></para>
+					</listitem>
+					<listitem>
 						<para>dummy_ip_networks</para>
 						<para>Lista nazw sieci, dla których komputerom zostanie
-						przypisany adres IP 0.0.0.0. Uwaga: po zmianie
+						przypisany adres IP 0.0.0.0. Warto¶æ tej opcji mo¿e zawieraæ 
+						specjalny znak '*', oznaczaj±cy wszystkie sieci. Uwaga: po zmianie
 						warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
 						Domy¶lnie: pusta (¿adna sieæ).</para>
 						<para>Przyk³ad: <prompt>dummy_ip_networks = lan1</prompt></para>
@@ -1638,10 +1646,24 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 					<listitem>
 						<para>dummy_mac_networks</para>
 						<para>Lista nazw sieci, dla których komputerom zostanie
-						przypisany adres MAC 00:00:00:00:00:00. Uwaga: po zmianie
-						warto¶ci tej opcji zalecana jest rekonfiguracja urz±dzenia.
-						Domy¶lnie: pusta (¿adna sieæ).</para>
+						przypisany adres MAC 00:00:00:00:00:00. Warto¶æ tej opcji mo¿e 
+						zawieraæ specjalny znak '*', oznaczaj±cy wszystkie sieci.
+						Uwaga: po zmianie warto¶ci tej opcji zalecana jest rekonfiguracja
+						urz±dzenia. Domy¶lnie: pusta (¿adna sieæ).</para>
 						<para>Przyk³ad: <prompt>dummy_mac_networks = lan1</prompt></para>
+					</listitem>
+					<listitem>
+						<para>excluded_dummy_ip_networks</para>
+						<para>Lista nazw sieci, które zostan± wy³±czone z dzia³ania 
+						opcji dummy_ip_networks, w przypadku u¿ycia w niej znaku '*'.
+						Domy¶lnie: pusta (¿adna sieæ).</para>
+						<para>Przyk³ad: <prompt>excluded_dummy_ip_networks = lan5</prompt></para>
+					</listitem>
+					<listitem>
+						<para>excluded_dummy_mac_networks</para>
+						<para>Lista nazw sieci, które zostan± wy³±czone z dzia³ania 
+						opcji dummy_mac_networks, w przypadku u¿ycia w niej znaku '*'. Domy¶lnie: pusta (¿adna sieæ).</para>
+						<para>Przyk³ad: <prompt>excluded_dummy_mac_networks = lan7</prompt></para>
 					</listitem>
 				</itemizedlist>
 			</sect3>

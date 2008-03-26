@@ -3082,10 +3082,24 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>excluded_networks</P
+><P
+>Lista nazw sieci, które mają zostać pominięte. 
+						Uwaga: po zmianie wartości tej opcji zalecana jest rekonfiguracja urządzenia.
+						Domyślnie: pusta.</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>excluded_networks = 'lan3 lan4'</SAMP
+></P
+></LI
+><LI
+><P
 >dummy_ip_networks</P
 ><P
 >Lista nazw sieci, dla których komputerom zostanie
-						przypisany adres IP 0.0.0.0. Uwaga: po zmianie
+						przypisany adres IP 0.0.0.0. Wartość tej opcji może zawierać 
+						specjalny znak '*', oznaczający wszystkie sieci. Uwaga: po zmianie
 						wartości tej opcji zalecana jest rekonfiguracja urządzenia.
 						Domyślnie: pusta (żadna sieć).</P
 ><P
@@ -3099,13 +3113,39 @@ CLASS="PROMPT"
 >dummy_mac_networks</P
 ><P
 >Lista nazw sieci, dla których komputerom zostanie
-						przypisany adres MAC 00:00:00:00:00:00. Uwaga: po zmianie
-						wartości tej opcji zalecana jest rekonfiguracja urządzenia.
-						Domyślnie: pusta (żadna sieć).</P
+						przypisany adres MAC 00:00:00:00:00:00. Wartość tej opcji może 
+						zawierać specjalny znak '*', oznaczający wszystkie sieci.
+						Uwaga: po zmianie wartości tej opcji zalecana jest rekonfiguracja
+						urządzenia. Domyślnie: pusta (żadna sieć).</P
 ><P
 >Przykład: <SAMP
 CLASS="PROMPT"
 >dummy_mac_networks = lan1</SAMP
+></P
+></LI
+><LI
+><P
+>excluded_dummy_ip_networks</P
+><P
+>Lista nazw sieci, które zostaną wyłączone z działania 
+						opcji dummy_ip_networks, w przypadku użycia w niej znaku '*'.
+						Domyślnie: pusta (żadna sieć).</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>excluded_dummy_ip_networks = lan5</SAMP
+></P
+></LI
+><LI
+><P
+>excluded_dummy_mac_networks</P
+><P
+>Lista nazw sieci, które zostaną wyłączone z działania 
+						opcji dummy_mac_networks, w przypadku użycia w niej znaku '*'. Domyślnie: pusta (żadna sieć).</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>excluded_dummy_mac_networks = lan7</SAMP
 ></P
 ></LI
 ></UL

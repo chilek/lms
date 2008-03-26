@@ -513,8 +513,8 @@ $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &
 
    While server is running you can start with adding database and its
    owner, both named 'lms' and loading database schema:
-$ /usr/local/pgsql/bin/createuser -d -A -P lms
-$ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
+$ /usr/local/pgsql/bin/createuser -DPRS lms
+$ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql
      __________________________________________________________________
 
@@ -5721,8 +5721,7 @@ key = "A.L.E.C's LMS Daemon is the best"
             bytes). It's worth to mention, however, that some systems have
             filesystem level, usually at 2 or 4 GB.
           + Number of records:
-            True information can be obtained, by issuing (in mysql
-            shell):
+            True information can be obtained, by issuing (in mysql shell):
 mysql> show table status;
 
 ...| Avg_row_length | Data_length | Max_data_length | Index_length |
