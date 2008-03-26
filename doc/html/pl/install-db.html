@@ -290,8 +290,8 @@ NAME="INSTALL-PGSQL-DBCREATE"
                której właścicielem będzie użytkownik z loginem 'lms'. 
                <PRE
 CLASS="SCREEN"
->$ /usr/local/pgsql/bin/createuser -d -A -P lms
-$ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
+>$ /usr/local/pgsql/bin/createuser -DPRS lms
+$ /usr/local/pgsql/bin/createdb -E UNICODE -O lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
 >
           </P
