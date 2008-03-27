@@ -73,6 +73,9 @@ if(isset($_POST['account']))
 	
 	if($account['mail_forward'] != '' && !check_email($account['mail_forward']))
 	        $error['mail_forward'] = trans('Incorrect email!');
+
+	if($account['mail_bcc'] != '' && !check_email($account['mail_bcc']))
+	        $error['mail_bcc'] = trans('Incorrect email!');
 			
 	if($account['expdate'] == '')
 		$account['expdate'] = 0;
@@ -138,7 +141,8 @@ if(isset($_POST['account']))
 		$DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, realname=?, 
 			home = ?, expdate = ?, domainid = ?, type = ?, 
 			quota_sh = ?, quota_mail = ?, quota_www = ?, quota_ftp = ?, 
-			quota_sql = ?, mail_forward = ?, description = ? WHERE id = ?', 
+			quota_sql = ?, mail_forward = ?, mail_bcc = ?, description = ?
+			WHERE id = ?', 
 			array(	$account['ownerid'], 
 				$account['login'],
 				$account['realname'],
@@ -152,6 +156,7 @@ if(isset($_POST['account']))
 				$quota['ftp'],
 				$quota['sql'],
 				$account['mail_forward'],
+				$account['mail_bcc'],
 				$account['description'],
 				$account['id']
 		));

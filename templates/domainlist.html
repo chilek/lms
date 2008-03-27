@@ -4,7 +4,7 @@
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark">
-		<TD width="1%" class="fleftu" NOWRAP>
+		<TD width="96%" class="fleftu" NOWRAP>
 			<IMG src="img/network.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="center" NOWRAP>
@@ -16,15 +16,12 @@
 		<TD width="1%" class="fbt" NOWRAP>
 		    <A href="?m={$layout.module}{$suffix}&o=cnt{if $listdata.direction eq "asc" && $listdata.order eq "cnt"},desc{/if}">{t}Accounts:{/t}</A> {if $listdata.order eq "cnt"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="95%" class="fbt" NOWRAP>
-			<A href="?m={$layout.module}{$suffix}&o=description{if $listdata.direction eq "asc" && $listdata.order eq "description"},desc{/if}">{t}Description:{/t}</A> {if $listdata.order eq "description"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
 		<TD width="1%" class="frightu" NOWRAP>
 			<B>{t 0=$listdata.total}Total: $0{/t}</B>
 		</TD>
 	</TR>
 	<TR class="DARK">
-	        <TD class="fall" colspan="6">
+	        <TD class="fall" colspan="5">
 		<TABLE cellpadding="0" cellspacing="0">
 		    <TR>
 			<TD width="1%" NOWRAP>
@@ -51,7 +48,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
-		<TD COLSPAN="6" CLASS="FALL">
+		<TD COLSPAN="5" CLASS="FALL">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</TD>
 	</TR>
@@ -60,7 +57,7 @@
 	{section name=domainlist loop=$domainlist start=$start max=$pagelimit}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" NOWRAP onclick="return self.location.href='?m=domaininfo&id={$domainlist[domainlist].id}'">
-			<IMG src="img/network.gif" alt=""><B> {$domainlist[domainlist].name}</B>
+			<IMG src="img/network.gif" alt=""{if $domainlist[domainlist].description} {tip text=$domainlist[domainlist].description}{/if}><B> {$domainlist[domainlist].name}</B>
 		</TD>
 		<TD align="right" NOWRAP onclick="return self.location.href='?m=domaininfo&id={$domainlist[domainlist].id}'">
 			({$domainlist[domainlist].id|string_format:"%04d"})
@@ -68,14 +65,11 @@
 		<TD align="left" NOWRAP onclick="return self.location.href='?m=domaininfo&id={$domainlist[domainlist].id}'">
 			{if $domainlist[domainlist].ownerid}
 			<IMG src="img/customer.gif" alt=""> 
-			<A href="?m=customerinfo&id={$domainlist[domainlist].ownerid}">{$domainlist[domainlist].customername} ({$domainlist[domainlist].ownerid|string_format:"%04d"})</A>
+			<A href="?m=customerinfo&id={$domainlist[domainlist].ownerid}">{$domainlist[domainlist].customername|truncate:45:"...":true} ({$domainlist[domainlist].ownerid|string_format:"%04d"})</A>
 			{/if}
 		</TD>
 		<TD align="right" onclick="return self.location.href='?m=domaininfo&id={$domainlist[domainlist].id}'">
 			{$domainlist[domainlist].cnt|default:0}
-		</TD>
-		<TD align="left" onclick="return self.location.href='?m=domaininfo&id={$domainlist[domainlist].id}'">
-			{$domainlist[domainlist].description}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
 			<A href="?m=domaininfo&id={$domainlist[domainlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
@@ -85,7 +79,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="6" align="center" class="fall">
+		<TD colspan="5" align="center" class="fall">
 			<p>&nbsp;</p>
 			<p><B>{t}No such domains in database.{/t}</B></p>
 			<p>&nbsp;</p>
@@ -94,7 +88,7 @@
 	{/section}
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
-		<TD COLSPAN="6" CLASS="FALL">
+		<TD COLSPAN="5" CLASS="FALL">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</TD>
 	</TR>
@@ -103,7 +97,7 @@
 		<TD colspan="4" class="fleftu" align="right">
 			<B>{t}Total:{/t} {sum array=$domainlist column="cnt"}</B>	
 		</TD>
-		<TD class="frightu" colspan="2" align="right">
+		<TD class="frightu" align="right" nowrap>
 			<A href="?m=domainadd&cid={$listdata.customer}">{t}New Domain{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>

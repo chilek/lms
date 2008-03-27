@@ -1,5 +1,10 @@
 $Id$
 
+version ? (????-??-??):
+
+  - hosting: removed description column from domains list (alec)
+  - hosting: added BCC (blind carbon copy) address in accounts (alec)
+
 version 1.11.3 Quetesh (2008-03-26):
 
   - fixed 'suspended' filter on customers list (alec)

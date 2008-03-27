@@ -77,19 +77,6 @@
 					{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{else}{t}not expire{/t}{/if}
 				    </TD>
 			    	</TR>
-				{if $account.mail_forward}
-				<TR>
-				    <TD width="1%">
-					<img src="img/forward.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{t}Forward e-mail:{/t}</B>
-				    </TD>
-				    <TD width="98%">
-					{$account.mail_forward}
-				    </TD>
-			    	</TR>
-				{/if}
 				{if $account.description}
 				<TR>
 				    <TD width="1%">
@@ -114,6 +101,32 @@
 			</TD>
 			<TD width="50%" style="vertical-align: top">
 			    <TABLE width="100%" cellpadding="3">
+				{if $account.mail_forward}
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Forward e-mail:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					{$account.mail_forward}
+				    </TD>
+			    	</TR>
+				{/if}
+				{if $account.mail_bcc}
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}BCC e-mail:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					{$account.mail_bcc}
+				    </TD>
+			    	</TR>
+				{/if}
 				<TR>
 				    <TD width="1%">
 					<img src="img/account.gif" alt="">
@@ -126,31 +139,31 @@
 						    {if ($account.type & 1) == 1}	    
 						    <tr>
 							    <td width="1%" nowrap>{t}shell{/t}</td>
-							    <td>&nbsp;{$account.quota_sh} MB</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_sh} MB</td><td width="97%">]</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 2) == 2}
 						    <tr>
 							    <td width="1%" nowrap>{t}mail{/t}</td>
-							    <td>&nbsp;{$account.quota_mail} MB</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_mail} MB</td><td width="97%">]</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 4) == 4}
 						    <tr>
 							    <td width="1%" nowrap>{t}www{/t}</td>
-							    <td>&nbsp;{$account.quota_www} MB</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_www} MB</td><td width="97%">]</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 8) == 8}
 						    <tr>
 							    <td width="1%" nowrap>{t}ftp{/t}</td>
-							    <td>&nbsp;{$account.quota_ftp} MB</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_ftp} MB</td><td width="97%">]</td>
 						    </tr>
 						    {/if}
 						    {if ($account.type & 16) == 16}
 						    <tr>
 							    <td width="1%" nowrap>{t}sql{/t}</td>
-							    <td>&nbsp;{$account.quota_sql} MB</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_sql} MB</td><td width="97%">]</td>
 						    </tr>
 						    {/if}
 					    </table>

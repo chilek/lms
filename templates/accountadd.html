@@ -100,17 +100,6 @@
 				</TR>
 				<TR>
 				    <TD width="1%">
-					<img src="img/forward.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{t}Forward e-mail:{/t}</B>
-				    </TD>
-				    <TD width="98%">
-					<input type="text" name="account[mail_forward]" value="{$account.mail_forward}" {tip text="Enter destination e-mail account for redirect" trigger="mail_forward"}>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD width="1%">
 					<img src="img/info.gif" alt="">
 				    </TD>
 				    <TD width="1%" nowrap>
@@ -132,7 +121,7 @@
 					<B>{t}Password:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="password" name="account[passwd1]" value="{$account.passwd1}" {tip text="Enter password" trigger="passwd"}>
+					<input type="password" name="account[passwd1]" size="25" value="{$account.passwd1}" {tip text="Enter password" trigger="passwd"}>
 				    </TD>
 				</TR>
 				<TR>
@@ -143,7 +132,29 @@
 					<B>{t}Repeat password:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-		    			<input type="password" name="account[passwd2]" value="{$account.passwd2}" {tip text="Enter password again" trigger="passwd"}>
+		    			<input type="password" name="account[passwd2]" size="25" value="{$account.passwd2}" {tip text="Enter password again" trigger="passwd"}>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Forward e-mail:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}BCC e-mail:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
 				    </TD>
 				</TR>
 				<TR>
