@@ -197,11 +197,11 @@ my @networks = split ' ',$networks_list;
 
 if($excluded_networks_list)
 {
-    my @excluded_networks = split ' ', $excluded_networks_list;
-    foreach my $excluded_network (@excluded_networks)
-    {
-	@networks = grep(!/^$excluded_network$/, @networks);
-    }
+	my @excluded_networks = split ' ', $excluded_networks_list;
+	foreach my $excluded_network (@excluded_networks)
+	{
+		@networks = grep(!/^$excluded_network$/, @networks);
+	}
 }
 
 my $inicustomergroups = $customergroups_list;
