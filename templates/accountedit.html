@@ -100,17 +100,6 @@
 			    	</TR>
 				<TR>
 				    <TD width="1%">
-					<img src="img/forward.gif" alt="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{t}Forward e-mail:{/t}</B>
-				    </TD>
-				    <TD width="98%">
-					<input type="text" name="account[mail_forward]" value="{$account.mail_forward}" {tip text="Enter destination e-mail account for redirect" trigger="mail_forward"}>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD width="1%">
 					<img src="img/info.gif" alt="">
 				    </TD>
 				    <TD width="1%" nowrap>
@@ -125,6 +114,28 @@
 			</TD>
 			<TD width="50%" style="vertical-align: top">
 			    <TABLE width="100%" cellpadding="3">
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Forward e-mail:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}BCC e-mail:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
+				    </TD>
+				</TR>
 				<TR>
 				    <TD width="1%">
 					<img src="img/account.gif" alt="">

@@ -68,6 +68,9 @@ if(isset($_POST['account']))
 	
 	if($account['mail_forward'] != '' && !check_email($account['mail_forward']))
 	        $error['mail_forward'] = trans('Incorrect email!');
+
+	if($account['mail_bcc'] != '' && !check_email($account['mail_bcc']))
+	        $error['mail_bcc'] = trans('Incorrect email!');
 			
 	if($account['passwd1'] != $account['passwd2'])
 		$error['passwd'] = trans('Passwords does not match!');
@@ -135,7 +138,7 @@ if(isset($_POST['account']))
 		
 		$DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, 
 				type, realname, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql,
-				mail_forward, description) 
+				mail_forward, mail_bcc, description) 
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(	$account['ownerid'],
 					$account['login'],
@@ -151,6 +154,7 @@ if(isset($_POST['account']))
 					$quota['ftp'],
 					$quota['sql'],
 					$account['mail_forward'],
+					$account['mail_bcc'],
 					$account['description'],
 					));
 

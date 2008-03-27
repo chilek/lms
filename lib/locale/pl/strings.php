@@ -1927,7 +1927,7 @@ $_LANG['You have to select domain for account!'] = 'Musisz wybrać domenę dla k
 $_LANG['You have to select domain for alias!'] = 'Musisz wybrać domenę dla aliasu!';
 $_LANG['You have to specify login!'] = 'Musisz podać login!';
 $_LANG['no limit'] = 'bez ograniczeń';
-$_LANG['Enter destination e-mail account for redirect'] = 'Wprowadź docelowe konto e-mail przekierowania';
+$_LANG['Enter destination e-mail address for redirect (optional)'] = 'Wprowadź docelowy adres e-mail przekierowania (opcionalnie)';
 $_LANG['Enter limit of account aliases'] = 'Wprowadź limit liczby aliasów kont';
 $_LANG['Enter limit of domains'] = 'Wprowadź limit liczby domen';
 $_LANG['Enter limit of e-mail accounts'] = 'Wprowadź limit liczby kont e-mail';
@@ -1981,5 +1981,7 @@ $_LANG['Alias Search Results'] = 'Wyniki wyszukiwania aliasów';
 $_LANG['Domain Search Results'] = 'Wyniki wyszukiwania domen';
 $_LANG['Find aliases matching the following search criteria:'] = 'Wyświetl aliasy spełniające następujące kryteria';
 $_LANG['Find domain matching the following search criteria:'] = 'Wyświetl domeny spełniające następujące kryteria';
+$_LANG['BCC e-mail:'] = 'E-mail BCC:';
+$_LANG['Enter e-mail address for blind carbon copy (optional)'] = 'Wprowadź adres e-mail kopii wiadomości (blind carbon copy) (opcionalnie)';
 
 ?>
