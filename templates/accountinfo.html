@@ -110,7 +110,7 @@
 					<B>{t}Forward e-mail:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					{$account.mail_forward}
+					<a href="mailto:{$account.mail_forward}">{$account.mail_forward}</a>
 				    </TD>
 			    	</TR>
 				{/if}
@@ -123,7 +123,7 @@
 					<B>{t}BCC e-mail:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					{$account.mail_bcc}
+					<a href="mailto:{$account.mail_bcc}">{$account.mail_bcc}</a>
 				    </TD>
 			    	</TR>
 				{/if}

@@ -490,7 +490,8 @@
                     <member>quota_www - www space limits</member>
                     <member>quota_ftp - ftp space limits</member>
 		    <member>quota_sql - sql database space limits</member>
-		    <member>mail_forward - external account for mail forwarding</member>
+		    <member>mail_forward - account for mail forwarding</member>
+		    <member>mail_bcc - account for blind carbon copy mail</member>
                </simplelist>
           </sect2>
           <sect2 id="domains">

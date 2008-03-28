@@ -75,7 +75,7 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="MENU-ACCOUNTS"
+NAME="MENU-HOSTING"
 >3.9. Konta</A
 ></H1
 ><P
@@ -98,7 +98,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-ACCOUNTS"
+NAME="MENU-HOSTING-ACCOUNTS"
 >3.9.1. Konta</A
 ></H2
 ><P
@@ -113,15 +113,14 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-NEW"
+NAME="MENU-HOSTING-NEW-ACCOUNT"
 >3.9.2. Nowe konto</A
 ></H2
 ><P
->Definiując dane konto musisz podać login, hasło i
+>Definiując dane konto musisz podać login, hasło, wybrać domenę,
 	    wybrać typ konta oraz przypisać klienta (lub utworzyć tzw. konto
-	    systemowe). Nazwa domeny jest wymagana tylko dla kont mailowych. Data 
-	    ważności konta jest opcjonalna. Pozostawienie pustego pola z datą 
-	    oznacza, że konto nigdy nie wygasa.</P
+	    systemowe). Data ważności konta jest opcjonalna. Pozostawienie pustego pola z datą 
+	    oznacza, że konto nigdy nie wygasa. </P
 ><P
 >Masz możliwość zdefiniować dowolny katalog domowy użytkownika (konta).
 	    Opcja konfiguracyjna <TT
@@ -142,25 +141,37 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-ALIASES"
+NAME="MENU-HOSTING-ALIASES"
 >3.9.3. Aliasy</A
 ></H2
 ><P
 >Konta (głównie mailowe) mogą posiadać dowolną ilość aliasów.
 	    Administrator serwera pocztowego może przekierować (lokalnie) pocztę
-	    z wszystkich aliasów do jednego kota. Na liście aliasów przedstawione 
+	    z wszystkich aliasów do jednego konta. Na liście aliasów przedstawione 
 	    są podstawowe informacje o nich i o kontach na które aliasy te wskazują.
 	    Możliwe jest dowolne sortowanie listy poprzez kliknięcie nazwy
-	    kolumny oraz filtrowanie wg zadanych kryteriów. Nie ma możliwości
-	    edycji aliasu, należy go usunąć i utworzyć nowy.</P
+	    kolumny oraz filtrowanie wg zadanych kryteriów.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-DOMAINS"
->3.9.4. Domeny</A
+NAME="MENU-HOSTING-NEW-ALIAS"
+>3.9.4. Nowy alias</A
+></H2
+><P
+>Tworząc alias definiujesz dla niego login i domenę oraz cel. Celem może 
+		być jedno lub więcej istniejących kont. Uwaga: aby utworzyć alias do konta,
+		które znajduje się na obcym serwerze należy utworzyć konto i podać adres przekierowania.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-HOSTING-DOMAINS"
+>3.9.5. Domeny</A
 ></H2
 ><P
 >Na liście przedstawione są podstawowe informacje o zdefiniowanych
@@ -172,8 +183,31 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-EXAMPLES"
->3.9.5. Przykłady</A
+NAME="MENU-HOSTING-NEW-DOMAIN"
+>3.9.6. Nowa domena</A
+></H2
+><P
+>Dane domeny zawierają nazwę oraz opis. Domena może zostać przypisana do 
+		klienta.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-HOSTING-SEARCH"
+>3.9.7. Szukaj</A
+></H2
+><P
+>Wyszukiwanie kont, aliasów i domen według zadanych kryteriów.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="HOSTING-EXAMPLES"
+>3.9.8. Przykłady</A
 ></H2
 ><P
 >Poniższy listing zawiera istotne fragmenty pliku konfiguracyjnego
@@ -183,7 +217,7 @@ NAME="ACCOUNTS-EXAMPLES"
 	    <DIV
 CLASS="EXAMPLE"
 ><A
-NAME="ACCOUNTS-E1"
+NAME="HOSTING-E1"
 ></A
 ><P
 ><B
@@ -231,7 +265,7 @@ CLASS="SCREEN"
 	    <DIV
 CLASS="EXAMPLE"
 ><A
-NAME="ACCOUNTS-E2"
+NAME="HOSTING-E2"
 ></A
 ><P
 ><B
@@ -290,11 +324,12 @@ PGSQL_SELECT_CLAUSE SELECT login, \
 # main.cf (Postfix):
 
 virtual_mailbox_base = /var/spool/mail/virtual
-virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
-virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
-virtual_alias_maps = pgsql:/etc/postfix/pgsql_virtual_alias_maps.cf
+virtual_mailbox_domains = pgsql:/etc/postfix/virtual_domains_maps.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/virtual_mailbox_maps.cf
+virtual_alias_maps = pgsql:/etc/postfix/virtual_alias_maps.cf
+recipient_bcc_maps = pgsql:/etc/postfix/recipient_bcc_maps.cf
 
-# pgsql_virtual_domains_maps.cf (Postfix):
+# virtual_domains_maps.cf (Postfix):
 
 user = lms
 password = hasło
@@ -303,7 +338,7 @@ dbname = lms
 #pgSQL i MySQL
 query = SELECT name FROM domains WHERE name = '%s'
 
-# pgsql_virtual_mailbox_maps.cf (Postfix):
+# virtual_mailbox_maps.cf (Postfix):
 
 user = lms
 password = hasło
@@ -323,7 +358,7 @@ query = SELECT domains.name || '/' || login || '/'
         AND type &#38; 2 = 2 
         AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
-# pgsql_virtual_alias_maps.cf (Postfix):
+# virtual_alias_maps.cf (Postfix):
 
 user = lms
 password = hasło
@@ -338,7 +373,22 @@ query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@
 		JOIN domains ad ON (a.domainid = ad.id)
 		JOIN aliasassignments aa ON (aa.aliasid = a.id)
 		WHERE a.login = '%u' AND ad.name = '%d')
-	OR (p.login = '%u' AND pd.name = '%d' AND type &#38; 2 = 2)</PRE
+	OR (p.login = '%u' AND pd.name = '%d' AND type &#38; 2 = 2)
+
+# recipient_bcc_maps.cf (Postfix):
+
+user = lms
+password = hasło
+hosts = localhost
+dbname = lms
+# MySQL, PgSQL
+query = SELECT mail_bcc FROM passwd, domains 
+	WHERE domainid = domains.id
+	        AND login = '%u' AND domains.name = '%d'
+		AND type &#38; 2 = 2
+		AND mail_bcc != ''
+		AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+					</PRE
 ></DIV
 ></P
 ><P

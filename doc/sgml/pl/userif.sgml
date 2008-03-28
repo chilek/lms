@@ -504,7 +504,7 @@
 		</para>
 	</sect2>
 </sect1>
-<sect1 id="menu-accounts">
+<sect1 id="menu-hosting">
 	<title>Konta</title>
 	<para>Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
 	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
@@ -518,7 +518,7 @@
 	SQL nale¿y stosowaæ sumowanie binarne (jak na przyk³adach w dalszej
 	czê¶ci rozdzia³u).</para>
 	<para>Masz tak¿e mo¿liwo¶æ definiowania domen i aliasów.</para>
-	<sect2 id="accounts-accounts">
+	<sect2 id="menu-hosting-accounts">
 	    <title>Konta</title>
 	    <para>Na li¶cie przedstawione s± podstawowe informacje o kontach.
 	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
@@ -526,41 +526,54 @@
 	    danych konta nastêpuje po wybraniu ikony [Edytuj]. U¿ytkownik ma 
 	    tak¿e prawo do zmiany has³a.</para>
 	</sect2>
-	<sect2 id="accounts-new">
+	<sect2 id="menu-hosting-new-account">
 	    <title>Nowe konto</title>
-	    <para>Definiuj±c dane konto musisz podaæ login, has³o i
+	    <para>Definiuj±c dane konto musisz podaæ login, has³o, wybraæ domenê,
 	    wybraæ typ konta oraz przypisaæ klienta (lub utworzyæ tzw. konto
-	    systemowe). Nazwa domeny jest wymagana tylko dla kont mailowych. Data 
-	    wa¿no¶ci konta jest opcjonalna. Pozostawienie pustego pola z dat± 
-	    oznacza, ¿e konto nigdy nie wygasa.</para>
+	    systemowe). Data wa¿no¶ci konta jest opcjonalna. Pozostawienie pustego pola z dat± 
+	    oznacza, ¿e konto nigdy nie wygasa. </para>
 	    <para>Masz mo¿liwo¶æ zdefiniowaæ dowolny katalog domowy u¿ytkownika (konta).
 	    Opcja konfiguracyjna <filename>homedir_prefix</filename> w sekcji 
 	    <emphasis>[phpui]</emphasis> zawiera prefix katalogu domowego, domy¶lnie
 	    ustawiony na warto¶æ "/home/".</para>
 	</sect2>
-	<sect2 id="accounts-aliases">
+	<sect2 id="menu-hosting-aliases">
 	    <title>Aliasy</title>
 	    <para>Konta (g³ównie mailowe) mog± posiadaæ dowoln± ilo¶æ aliasów.
 	    Administrator serwera pocztowego mo¿e przekierowaæ (lokalnie) pocztê
-	    z wszystkich aliasów do jednego kota. Na li¶cie aliasów przedstawione 
+	    z wszystkich aliasów do jednego konta. Na li¶cie aliasów przedstawione 
 	    s± podstawowe informacje o nich i o kontach na które aliasy te wskazuj±.
 	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
-	    kolumny oraz filtrowanie wg zadanych kryteriów. Nie ma mo¿liwo¶ci
-	    edycji aliasu, nale¿y go usun±æ i utworzyæ nowy.</para>
+	    kolumny oraz filtrowanie wg zadanych kryteriów.</para>
 	</sect2>
-	<sect2 id="accounts-domains">
+	<sect2 id="menu-hosting-new-alias">
+		<title>Nowy alias</title>
+		<para>Tworz±c alias definiujesz dla niego login i domenê oraz cel. Celem mo¿e 
+		byæ jedno lub wiêcej istniej±cych kont. Uwaga: aby utworzyæ alias do konta,
+		które znajduje siê na obcym serwerze nale¿y utworzyæ konto i podaæ adres przekierowania.</para>
+	</sect2>
+	<sect2 id="menu-hosting-domains">
 	    <title>Domeny</title>
 	    <para>Na li¶cie przedstawione s± podstawowe informacje o zdefiniowanych
 	    domenach. Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
 	    kolumny. Mo¿liwa jest edycja danych domeny po wybraniu ikony [Edytuj].</para>
 	</sect2>
-	<sect2 id="accounts-examples">
+	<sect2 id="menu-hosting-new-domain">
+		<title>Nowa domena</title>
+		<para>Dane domeny zawieraj± nazwê oraz opis. Domena mo¿e zostaæ przypisana do 
+		klienta.</para>
+	</sect2>
+	<sect2 id="menu-hosting-search">
+		<title>Szukaj</title>
+		<para>Wyszukiwanie kont, aliasów i domen wed³ug zadanych kryteriów.</para>
+	</sect2>
+	<sect2 id="hosting-examples">
 	    <title>Przyk³ady</title>
 	    <para>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
 	    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych
 	    o kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
 	    danych PostgreSQL, w komentarzach podano rozwi±zania dla MySQLa:
-	    <example id="accounts-e1">
+	    <example id="hosting-e1">
 		<title>Konta. Konfiguracja proftpd.</title>
 <screen>
   ServerName	"LMS FTP Server"
@@ -598,7 +611,7 @@
 	    SASL'a z ³at± pozwalaj±c± na to. W komentarzach podano warto¶ci opcji
 	    charakterystycznych dla bazy MySQL. Listing zawiera tylko opcje bezpo¶rednio
 	    zwi±zane z baz± danych:
-	    <example id="accounts-e2">
+	    <example id="hosting-e2">
 		<title>Konta. Konfiguracja serwera pocztowego (postfix+sasl+courier).</title>
 <screen>
 # Plik smtpd.conf (Cyrus-SASL):
@@ -652,11 +665,12 @@ PGSQL_SELECT_CLAUSE SELECT login, \
 # main.cf (Postfix):
 
 virtual_mailbox_base = /var/spool/mail/virtual
-virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
-virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
-virtual_alias_maps = pgsql:/etc/postfix/pgsql_virtual_alias_maps.cf
+virtual_mailbox_domains = pgsql:/etc/postfix/virtual_domains_maps.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/virtual_mailbox_maps.cf
+virtual_alias_maps = pgsql:/etc/postfix/virtual_alias_maps.cf
+recipient_bcc_maps = pgsql:/etc/postfix/recipient_bcc_maps.cf
 
-# pgsql_virtual_domains_maps.cf (Postfix):
+# virtual_domains_maps.cf (Postfix):
 
 user = lms
 password = has³o
@@ -665,7 +679,7 @@ dbname = lms
 #pgSQL i MySQL
 query = SELECT name FROM domains WHERE name = '%s'
 
-# pgsql_virtual_mailbox_maps.cf (Postfix):
+# virtual_mailbox_maps.cf (Postfix):
 
 user = lms
 password = has³o
@@ -685,7 +699,7 @@ query = SELECT domains.name || '/' || login || '/'
         AND type & 2 = 2 
         AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
-# pgsql_virtual_alias_maps.cf (Postfix):
+# virtual_alias_maps.cf (Postfix):
 
 user = lms
 password = has³o
@@ -701,6 +715,21 @@ query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@
 		JOIN aliasassignments aa ON (aa.aliasid = a.id)
 		WHERE a.login = '%u' AND ad.name = '%d')
 	OR (p.login = '%u' AND pd.name = '%d' AND type & 2 = 2)
+
+# recipient_bcc_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+# MySQL, PgSQL
+query = SELECT mail_bcc FROM passwd, domains 
+	WHERE domainid = domains.id
+	        AND login = '%u' AND domains.name = '%d'
+		AND type & 2 = 2
+		AND mail_bcc != ''
+		AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+					
 </screen>
 	    </example></para>
 		<para>Nastêpny przyk³ad podes³any przez bart'a przedstawia instalacjê i konfiguracjê

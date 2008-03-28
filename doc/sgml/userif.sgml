@@ -518,8 +518,8 @@ invoices.</para></note></para>
 		hang).</para></note></para>
 	</sect2>
 </sect1>
-<sect1 id="menu-accounts">
-	<title>Accounts</title>
+<sect1 id="menu-hosting">
+	<title>Hosting</title>
 	<para>It's now possible to manage accounts from your services using LMS.
 This functionality is provided for advanced system administrators, because it
 requires in-depth knowledge of services running on server in order to configure
@@ -532,50 +532,58 @@ database. This means that for recognition of account type you should use binary
 sums in WHERE clauses of your SQL queries (few examples are written
 below).</para>
 	<para>You have also possibility to define domains and aliases.</para>
-	<sect2 id="accounts-accounts">
+	<sect2 id="menu-hosting-accounts">
 	    <title>Accounts</title>
 	    <para>Account list contains basic information about your customer
 accounts. It's possible to sort it by any highlighted column title and to filter
 it for given criteria. You can edit any account clicking 'Edit' icon.
 Administrator (LMS user) is also able to change account passwords.</para>
 	</sect2>
-	<sect2 id="accounts-new">
+	<sect2 id="menu-hosting-new-account">
 	    <title>New Account</title>
 	    <para>To create new account you have to provide its login, password,
-	    choose at least one account type and assign customer to it. Domain name is
-	    optional and you'll need it only if you want to support email accounts.
-	    Expiration date is also optional, leave it empty to make new account valid
-	    forever.</para>
+	    choose domain, at least one account type and assign customer to it.</para>
 	    <para>You can define any home directory for account. Option
 	    <filename>homedir_prefix</filename> from section <emphasis>[phpui]</emphasis>
 	    consists default prefix "/home/".</para>
 	</sect2>
-	<sect2 id="accounts-aliases">
+	<sect2 id="menu-hosting-aliases">
 	    <title>Aliases</title>
 	    <para>Every account (email type mainly) might have any number of
-aliases that is needed. Mail server administrator might redirect mail locally
-from all those aliases to one physical existing account. Basic information about
-alias and accompanying account is provided on the list. It's possible to sort
-this list by any highlighted column name and to filter list for given criteria.
-It's not possible to edit an alias - if it's not desirable anymore you have to
-erase (remove) it and create new if needed. Add new aliases at the bottom of the
-list.</para>
+	    aliases that is needed. Mail server administrator might redirect mail locally
+	    from all those aliases to physical existing account(s). Basic information about
+	    alias and accompanying account is provided on the list. It's possible to sort
+	    this list by any highlighted column name and to filter list for given criteria.</para>
 	</sect2>
-	<sect2 id="accounts-domains">
+	<sect2 id="menu-hosting-new-alias">
+	    <title>New Alias</title>
+	    <para>Creating alias you have to define login, domain and destination account(s).
+	    Destination accounts must exists in LMS. If you need alias for external account, 
+	    you should create an account with redirect address.</para>
+	</sect2>
+	<sect2 id="menu-hosting-domains">
 	    <title>Domains</title>
 	    <para>You're able to see basic information about domains on the
-list. It's possible to sort
-this list by any highlighted column name and to filter list for given criteria.
-You can edit domain data by clicking 'Edit' icon. Add new domain at the bottom
-of the list.</para>
+	    list. It's possible to sort
+	    this list by any highlighted column name and to filter list for given criteria.
+	    You can edit domain data by clicking 'Edit' icon. Add new domain at the bottom
+	    of the list.</para>
 	</sect2>
-	<sect2 id="accounts-examples">
+	<sect2 id="menu-hosting-new-domain">
+	    <title>New Domain</title>
+	    <para>Domain data consist name and description. Domain can be assigned to customer.</para>
+	</sect2>
+	<sect2 id="menu-hosting-search">
+	    <title>Search</title>
+	    <para>You can search for accounts, aliases and domains here by any given criteria.</para>
+	</sect2>
+	<sect2 id="hosting-examples">
 	    <title>Examples</title>
 	    <para>The following section contains fragments of proftpd daemon
 configuration (version 1.2.10) relevant to process of authentication with using
 data available in LMS database. This example contains Postgres configuration and
 optional MySQL configuration in comments, followed by pound (hash) sign.
-	    <example id="accounts-e1">
+	    <example id="hosting-e1">
 		<title>Accounts. Proftpd configuration.</title>
 <screen>
   ServerName	"LMS FTP Server"
@@ -613,7 +621,7 @@ maintained by one uid on server with mail stored in Maildir format.</para>
 because LMS database contains them only in this form. In comments we have
 provided MySQL specific options. Only fragments relevant to database setup are
 shown below:
-	    <example id="accounts-e2">
+	    <example id="hosting-e2">
 		<title>Accounts. Mail server configuration (postfix+sasl+courier).</title>
 <screen>
 # smtpd.conf file (Cyrus-SASL):
@@ -667,11 +675,12 @@ PGSQL_SELECT_CLAUSE SELECT login, \
 # main.cf (Postfix):
 
 virtual_mailbox_base = /var/spool/mail/virtual
-virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
-virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
-virtual_alias_maps = pgsql:/etc/postfix/pgsql_virtual_alias_maps.cf
+virtual_mailbox_domains = pgsql:/etc/postfix/virtual_domains_maps.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/virtual_mailbox_maps.cf
+virtual_alias_maps = pgsql:/etc/postfix/virtual_alias_maps.cf
+recipient_bcc_maps = pgsql:/etc/postfix/recipient_bcc_maps.cf
 
-# pgsql_virtual_domains_maps.cf (Postfix):
+# virtual_domains_maps.cf (Postfix):
 
 user = lms
 password = dbpass
@@ -683,7 +692,7 @@ dbname = lms
 #where_field = name
 query = SELECT name FROM domains WHERE name = '%s'
 
-# pgsql_virtual_mailbox_maps.cf (Postfix):
+# virtual_mailbox_maps.cf (Postfix):
 
 user = lms
 password = dbpass
@@ -700,7 +709,7 @@ query = SELECT domains.name || '/' || login || '/'
         AND type & 2 = 2 
         AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
-# pgsql_virtual_alias_maps.cf (Postfix):
+# virtual_alias_maps.cf (Postfix):
 
 user = lms
 password = dbpass
@@ -715,6 +724,19 @@ query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@
 		JOIN aliasassignments aa ON (aa.aliasid = a.id)
     		WHERE a.login = '%u' AND ad.name = '%d') 
 	OR (p.login = '%u' AND pd.name = '%d' AND type & 2 = 2)
+
+# recipient_bcc_maps.cf (Postfix):
+
+user = lms
+password = dbpass
+hosts = localhost
+dbname = lms
+query = SELECT mail_bcc
+        FROM passwd, domains WHERE domainid = domains.id
+		AND login = '%u' AND domains.name = '%d'
+		AND type & 2 = 2
+		AND mail_bcc != ''
+		AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 </screen>
 	    </example></para>
 	</sect2>
