@@ -180,8 +180,8 @@ HREF="#MENU-DOCUMENTS"
 ></DT
 ><DT
 >3.9. <A
-HREF="#MENU-ACCOUNTS"
->Accounts</A
+HREF="#MENU-HOSTING"
+>Hosting</A
 ></DT
 ><DT
 >3.10. <A
@@ -397,12 +397,12 @@ CLASS="LOT"
 ></DT
 ><DT
 >3-1. <A
-HREF="#ACCOUNTS-E1"
+HREF="#HOSTING-E1"
 >Accounts. Proftpd configuration.</A
 ></DT
 ><DT
 >3-2. <A
-HREF="#ACCOUNTS-E2"
+HREF="#HOSTING-E2"
 >Accounts. Mail server configuration (postfix+sasl+courier).</A
 ></DT
 ><DT
@@ -4328,8 +4328,8 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
-NAME="MENU-ACCOUNTS"
->3.9. Accounts</A
+NAME="MENU-HOSTING"
+>3.9. Hosting</A
 ></H2
 ><P
 >It's now possible to manage accounts from your services using LMS.
@@ -4351,7 +4351,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-ACCOUNTS"
+NAME="MENU-HOSTING-ACCOUNTS"
 >3.9.1. Accounts</A
 ></H3
 ><P
@@ -4365,15 +4365,12 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-NEW"
+NAME="MENU-HOSTING-NEW-ACCOUNT"
 >3.9.2. New Account</A
 ></H3
 ><P
 >To create new account you have to provide its login, password,
-	    choose at least one account type and assign customer to it. Domain name is
-	    optional and you'll need it only if you want to support email accounts.
-	    Expiration date is also optional, leave it empty to make new account valid
-	    forever.</P
+	    choose domain, at least one account type and assign customer to it.</P
 ><P
 >You can define any home directory for account. Option
 	    <TT
@@ -4393,41 +4390,73 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-ALIASES"
+NAME="MENU-HOSTING-ALIASES"
 >3.9.3. Aliases</A
 ></H3
 ><P
 >Every account (email type mainly) might have any number of
-aliases that is needed. Mail server administrator might redirect mail locally
-from all those aliases to one physical existing account. Basic information about
-alias and accompanying account is provided on the list. It's possible to sort
-this list by any highlighted column name and to filter list for given criteria.
-It's not possible to edit an alias - if it's not desirable anymore you have to
-erase (remove) it and create new if needed. Add new aliases at the bottom of the
-list.</P
+	    aliases that is needed. Mail server administrator might redirect mail locally
+	    from all those aliases to physical existing account(s). Basic information about
+	    alias and accompanying account is provided on the list. It's possible to sort
+	    this list by any highlighted column name and to filter list for given criteria.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-DOMAINS"
->3.9.4. Domains</A
+NAME="MENU-HOSTING-NEW-ALIAS"
+>3.9.4. New Alias</A
+></H3
+><P
+>Creating alias you have to define login, domain and destination account(s).
+	    Destination accounts must exists in LMS. If you need alias for external account, 
+	    you should create an account with redirect address.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-HOSTING-DOMAINS"
+>3.9.5. Domains</A
 ></H3
 ><P
 >You're able to see basic information about domains on the
-list. It's possible to sort
-this list by any highlighted column name and to filter list for given criteria.
-You can edit domain data by clicking 'Edit' icon. Add new domain at the bottom
-of the list.</P
+	    list. It's possible to sort
+	    this list by any highlighted column name and to filter list for given criteria.
+	    You can edit domain data by clicking 'Edit' icon. Add new domain at the bottom
+	    of the list.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="ACCOUNTS-EXAMPLES"
->3.9.5. Examples</A
+NAME="MENU-HOSTING-NEW-DOMAIN"
+>3.9.6. New Domain</A
+></H3
+><P
+>Domain data consist name and description. Domain can be assigned to customer.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-HOSTING-SEARCH"
+>3.9.7. Search</A
+></H3
+><P
+>You can search for accounts, aliases and domains here by any given criteria.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="HOSTING-EXAMPLES"
+>3.9.8. Examples</A
 ></H3
 ><P
 >The following section contains fragments of proftpd daemon
@@ -4437,7 +4466,7 @@ optional MySQL configuration in comments, followed by pound (hash) sign.
 	    <DIV
 CLASS="EXAMPLE"
 ><A
-NAME="ACCOUNTS-E1"
+NAME="HOSTING-E1"
 ></A
 ><P
 ><B
@@ -4485,7 +4514,7 @@ shown below:
 	    <DIV
 CLASS="EXAMPLE"
 ><A
-NAME="ACCOUNTS-E2"
+NAME="HOSTING-E2"
 ></A
 ><P
 ><B
@@ -4544,11 +4573,12 @@ PGSQL_SELECT_CLAUSE SELECT login, \
 # main.cf (Postfix):
 
 virtual_mailbox_base = /var/spool/mail/virtual
-virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
-virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
-virtual_alias_maps = pgsql:/etc/postfix/pgsql_virtual_alias_maps.cf
+virtual_mailbox_domains = pgsql:/etc/postfix/virtual_domains_maps.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/virtual_mailbox_maps.cf
+virtual_alias_maps = pgsql:/etc/postfix/virtual_alias_maps.cf
+recipient_bcc_maps = pgsql:/etc/postfix/recipient_bcc_maps.cf
 
-# pgsql_virtual_domains_maps.cf (Postfix):
+# virtual_domains_maps.cf (Postfix):
 
 user = lms
 password = dbpass
@@ -4560,7 +4590,7 @@ dbname = lms
 #where_field = name
 query = SELECT name FROM domains WHERE name = '%s'
 
-# pgsql_virtual_mailbox_maps.cf (Postfix):
+# virtual_mailbox_maps.cf (Postfix):
 
 user = lms
 password = dbpass
@@ -4577,7 +4607,7 @@ query = SELECT domains.name || '/' || login || '/'
         AND type &#38; 2 = 2 
         AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
-# pgsql_virtual_alias_maps.cf (Postfix):
+# virtual_alias_maps.cf (Postfix):
 
 user = lms
 password = dbpass
@@ -4591,7 +4621,20 @@ query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@
 		JOIN domains ad ON (a.domainid = ad.id)
 		JOIN aliasassignments aa ON (aa.aliasid = a.id)
     		WHERE a.login = '%u' AND ad.name = '%d') 
-	OR (p.login = '%u' AND pd.name = '%d' AND type &#38; 2 = 2)</PRE
+	OR (p.login = '%u' AND pd.name = '%d' AND type &#38; 2 = 2)
+
+# recipient_bcc_maps.cf (Postfix):
+
+user = lms
+password = dbpass
+hosts = localhost
+dbname = lms
+query = SELECT mail_bcc
+        FROM passwd, domains WHERE domainid = domains.id
+		AND login = '%u' AND domains.name = '%d'
+		AND type &#38; 2 = 2
+		AND mail_bcc != ''
+		AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))</PRE
 ></DIV
 ></P
 ></DIV
@@ -15502,7 +15545,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->mail_forward - external account for mail forwarding</TD
+>mail_forward - account for mail forwarding</TD
+></TR
+><TR
+><TD
+>mail_bcc - account for blind carbon copy mail</TD
 ></TR
 ></TBODY
 ></TABLE

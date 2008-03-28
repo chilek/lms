@@ -493,7 +493,8 @@
                     <member>quota_www - limit</member>
                     <member>quota_ftp - limit</member>
 		    <member>quota_sql - limit</member>
-		    <member>mail_forward - adres zewnetrznego konta email przekierowania</member>
+		    <member>mail_forward - adres email przekierowania</member>
+		    <member>mail_bcc - adres email kopii BCC</member>
                </simplelist>
           </sect2>
           <sect2 id="domains">

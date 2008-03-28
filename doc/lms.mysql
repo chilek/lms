@@ -593,6 +593,7 @@ CREATE TABLE passwd (
     realname varchar(255) NOT NULL DEFAULT '',
     createtime int(11) NOT NULL DEFAULT 0,
     mail_forward varchar(255) NOT NULL DEFAULT '',
+    mail_bcc varchar(255) NOT NULL DEFAULT '',
     PRIMARY KEY (id),
     UNIQUE KEY (login, domainid),
     INDEX ownerid (ownerid)
@@ -924,4 +925,4 @@ CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008032100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008032700');
