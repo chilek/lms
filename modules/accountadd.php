@@ -139,7 +139,7 @@ if(isset($_POST['account']))
 		$DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, 
 				type, realname, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql,
 				mail_forward, mail_bcc, description) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(	$account['ownerid'],
 					$account['login'],
 					crypt($account['passwd1']),
