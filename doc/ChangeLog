@@ -4,6 +4,13 @@ version ? (????-??-??):
 
   - hosting: removed description column from domains list (alec)
   - hosting: added BCC (blind carbon copy) address in accounts (alec)
+  - DB drivers: in postgresql driver added @-operator and changed 
+    _driver_geterror() and _driver_disconnect() according to other 
+    drivers (alec)
+  - DB drivers: removed server version checking in mysql drivers (alec)
+  - DB drivers: don't die when extension isn't loaded, trigger warning 
+    instead (alec)
+  - stop working when database connection errors occured (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 

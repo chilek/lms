@@ -36,7 +36,11 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function LMSDB_driver_postgres($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
 		if(!extension_loaded('pgsql'))
-			die('PostgreSQL extension not loaded!');
+		{
+			trigger_error('PostgreSQL extension not loaded!', E_USER_WARNING);
+			$this->_loaded = FALSE;
+			return;
+		}
 
 		$this->_version .= ' ('.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).'/'.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
 		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
@@ -55,8 +59,8 @@ class LMSDB_driver_postgres extends LMSDB_common
 			($dbpasswd != '' ? 'password='.$dbpasswd : ''),
 			($dbname != '' ? 'dbname='.$dbname : '')
 		));
-		
-		if($this->_dblink = pg_connect($cstring))
+
+		if($this->_dblink = @pg_connect($cstring))
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
@@ -71,19 +75,23 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function _driver_disconnect()
 	{
-		return pg_close($this->_dblink);
+		$this->_loaded = FALSE;
+		@pg_close($this->_dblink);
 	}
 
 	function _driver_geterror()
 	{
-		return pg_last_error($this->_dblink);
+		if($this->_dblink)
+                        return pg_last_error($this->_dblink);
+                else
+            		return 'We\'re not connected!';
 	}
 	
 	function _driver_execute($query)
 	{
 		$this->_query = $query;
 
-		if($this->_result = pg_query($this->_dblink,$query))
+		if($this->_result = @pg_query($this->_dblink,$query))
 			$this->_error = FALSE;
 		else
 			$this->_error = TRUE;
@@ -93,7 +101,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)
-			return pg_fetch_array($result ? $result : $this->_result,NULL, PGSQL_ASSOC);
+			return @pg_fetch_array($result ? $result : $this->_result,NULL, PGSQL_ASSOC);
 		else
 			return FALSE;
 	}
@@ -101,7 +109,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function _driver_fetchrow_num()
 	{
 		if(! $this->_error)
-			return pg_fetch_array($this->_result,NULL,PGSQL_NUM);
+			return @pg_fetch_array($this->_result,NULL,PGSQL_NUM);
 		else
 			return FALSE;
 	}
@@ -109,7 +117,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function _driver_affected_rows()
 	{
 		if(! $this->_error)
-			return pg_affected_rows($this->_result);
+			return @pg_affected_rows($this->_result);
 		else
 			return FALSE;
 	}
@@ -117,7 +125,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function _driver_num_rows()
 	{
 		if(! $this->_error)
-			return pg_num_rows($this->_result);
+			return @pg_num_rows($this->_result);
 		else
 			return FALSE;
 	}

@@ -36,19 +36,19 @@ class LMSDB_driver_mysqli extends LMSDB_common
 	function LMSDB_driver_mysqli($dbhost, $dbuser, $dbpasswd, $dbname)
 	{
 		if(!extension_loaded('mysqli'))
-		        die('MySQLi extension not loaded!');
+		{
+		        trigger_error('MySQLi extension not loaded!', E_USER_WARNING);
+		        $this->_loaded = FALSE;
+		        return;
+                }
 	
 		$this->_version .= ' ('.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).'/'.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').'-mysqli)';
 		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
-
-		if($this->_dblink)
-			if(version_compare($this->_driver_dbversion(), '5') < 0)
-				die('MySQL version not supported!');
 	}
 	
 	function _driver_dbversion()
 	{
-		return mysqli_get_server_info($this->_dblink);
+		return @mysqli_get_server_info($this->_dblink);
 	}
 
 	function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
@@ -69,7 +69,7 @@ class LMSDB_driver_mysqli extends LMSDB_common
 	function _driver_shutdown()
 	{
 		$this->_loaded = FALSE;
-		// mysqli_close($this->_dblink); - apparently, mysqli_close() is automagicly called after end of the script...
+		@mysqli_close($this->_dblink); // apparently, mysqli_close() is automagicly called after end of the script...
 	}
 	
 	function _driver_geterror()

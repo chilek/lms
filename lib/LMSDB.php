@@ -37,15 +37,19 @@ require_once(LMSDB_DIR.'/LMSDB_common.class.php');
 
 function DBInit($dbtype,$dbhost,$dbuser,$dbpasswd,$dbname)
 {
-	if(! file_exists(LMSDB_DIR.'/LMSDB_driver_'.strtolower($dbtype).'.class.php') )
-		trigger_error('Unable to load driver for "'.$dbtype.'" database!');
+	if(!file_exists(LMSDB_DIR.'/LMSDB_driver_'.strtolower($dbtype).'.class.php') )
+		trigger_error('Unable to load driver for "'.$dbtype.'" database!', E_USER_WARNING);
 	else
 	{
 		require_once(LMSDB_DIR.'/LMSDB_driver_'.strtolower($dbtype).'.class.php');
 		$drvname = 'LMSDB_driver_'.strtolower($dbtype);
 		$DB =& new $drvname($dbhost,$dbuser,$dbpasswd,$dbname);
-		if(! $DB->_loaded)
-			trigger_error('Failed to load driver for "'.$dbtype.'" database: driver doesn\'t seems to be loaded.');
+		
+		if(!$DB->_loaded)
+			trigger_error('Failed to load driver for "'
+				.$dbtype.'" database: driver doesn\'t seems to be loaded.', E_USER_WARNING);
+		elseif(!$DB->_dblink)
+			trigger_error('Unable to connect to database!', E_USER_WARNING);
 		else
 			return $DB;
 	}

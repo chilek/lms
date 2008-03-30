@@ -25,7 +25,7 @@
  */
 
 /*
- * LMSDB - klasa wspólna.
+ * LMSDB - klasa wspÃ³lna.
  */
 
 Class LMSDB_common
@@ -33,13 +33,13 @@ Class LMSDB_common
 	var $_version = '1.11-cvs';
 	var $_revision = '$Revision$';
 	
-	// Driver powinien nadpisaæ t± zmienn± warto¶ci± TRUE, ¿eby
-	// funkcja inicjuj±ca baze danych wiedzia³a ¿e driver siê poprawnie
-	// za³adowa³
+	// Driver powinien nadpisaÄ‡ tÄ… zmiennÄ… wartoÅ›ciÄ… TRUE, Å¼eby
+	// funkcja inicjujÄ…ca baze danych wiedziaÅ‚a Å¼e driver siÄ™ poprawnie
+	// zaÅ‚adowaÅ‚
 	
 	var $_loaded = FALSE;
 
-	// Wewnêtrzne zmienne bazy danych, tj, resource, link, itp.
+	// WewnÄ™trzne zmienne bazy danych, tj, resource, link, itp.
 
 	var $_dbtype = 'NONE';
 	var $_dblink = NULL;
@@ -55,7 +55,7 @@ Class LMSDB_common
 
 	function LMSDB_common()
 	{
-		// zabezpieczmy siê przed inicjowaniem tej klasy samej w sobie
+		// zabezpieczmy siÄ™ przed inicjowaniem tej klasy samej w sobie
 		die();
 	}
 	
@@ -64,8 +64,8 @@ Class LMSDB_common
 		if(method_exists($this, '_driver_shutdown'))
 			register_shutdown_function(array($this, '_driver_shutdown'));
 		
-		// Inicjuje po³±czenie do bazy danych, nie musimy zwracaæ
-		// dblinka na zewn±trz gdy¿ jest to niepotrzebne.
+		// Inicjuje poÅ‚Ä…czenie do bazy danych, nie musimy zwracaÄ‡
+		// dblinka na zewnÄ…trz gdyÅ¼ jest to niepotrzebne.
 		
 		if($this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname))
 			return $this->_dblink;
@@ -231,7 +231,7 @@ Class LMSDB_common
 
 	function _query_parser($query, $inputarray = NULL)
 	{
-		// najpierw sparsujmy wszystkie specjalne meta ¶mieci.
+		// najpierw sparsujmy wszystkie specjalne meta Å›mieci.
 		$query = eregi_replace('\?NOW\?',$this->_driver_now(),$query);
 		$query = eregi_replace('\?LIKE\?',$this->_driver_like(),$query);
 
@@ -254,8 +254,8 @@ Class LMSDB_common
 
 	function _quote_value($input)
 	{
-		// je¿eli baza danych wymaga innego eskejpowania ni¿ to, driver
-		// powinien nadpisaæ t± funkcjê
+		// jeÅ¼eli baza danych wymaga innego eskejpowania niÅ¼ to, driver
+		// powinien nadpisaÄ‡ tÄ… funkcjÄ™
 
 		if($input === NULL)
 			return 'NULL';
@@ -265,8 +265,8 @@ Class LMSDB_common
 			return $input;
 	}
 
-	// Funkcje bezpieczeñstwa, tj. na wypadek gdyby driver ich nie
-	// zdefiniowa³.
+	// Funkcje bezpieczeÅ„stwa, tj. na wypadek gdyby driver ich nie
+	// zdefiniowaÅ‚.
 
 	function _driver_now()
 	{

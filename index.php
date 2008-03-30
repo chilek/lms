@@ -131,6 +131,13 @@ require_once(LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
+if(!$DB)
+{
+	// can't working without database
+	header('HTTP/1.0 503 Service Unavailable');
+	die();
+}
+
 // Enable/disable data encoding conversion
 // Call any of upgrade process before anything else
 
