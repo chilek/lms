@@ -287,7 +287,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning, port "
 				"FROM nodes n "
-				"WHERE n.ownerid<>0 "
+				"WHERE n.ownerid > 0 "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
 		else
@@ -295,7 +295,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning, port "
 				"FROM nodes n "
-				"WHERE n.ownerid = 0 "
+				"WHERE 1 = 1 "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
 			
