@@ -11,6 +11,7 @@ version ? (????-??-??):
   - DB drivers: don't die when extension isn't loaded, trigger warning 
     instead (alec)
   - stop working when database connection errors occured (alec)
+  - lmsd/hostfile: fixed skip_dev_ips (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
