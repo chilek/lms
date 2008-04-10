@@ -121,7 +121,7 @@ function invoice_seller($x,$y)
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Seller:')).'</b>');
     $tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", isset($CONFIG['invoices']['header']) ? $CONFIG['invoices']['header'] : '');
     $tmp = str_replace('\n',"\n",$tmp);
-    $tmp = explode("\n",$tmp);
+    $tmp = preg_split('/\r?\n/', $tmp);
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,$line);
 
     return $y;
@@ -167,12 +167,12 @@ function invoice_address_box($x,$y)
     $invoice_name = $invoice['name'];
     if (strlen($invoice_name)>25) 
         $invoice_name = preg_replace('/(.{25})/',"$1<i>&gt;</i>\n",$invoice_name);
-    $tmp = explode("\n",iconv("UTF-8","ISO-8859-2",$invoice_name));
+    $tmp = preg_split('/\r?\n/', iconv("UTF-8","ISO-8859-2",$invoice_name));
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
 */
     $y = text_wrap($x, $y, 160, $font_size, '<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['name'].'</b>'), 'left');
     if ($invoice['serviceaddr']) {
-	$tmp = explode("\n",iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['serviceaddr']));
+	$tmp = preg_split('/\r?\n/', iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['serviceaddr']));
 	foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,'<b>'.$line.'</b>');
     } else {
 	$y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv('UTF-8','ISO-8859-2//TRANSLIT',$invoice['address']).'</b>');
@@ -762,7 +762,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 	$y = $y - text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Notes:')).'</b>');
 	$tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT",$CONFIG['invoices']['footer']);
 	$tmp = str_replace('\n',"\n",$tmp);
-        $tmp = explode("\n",$tmp);
+        $tmp = preg_split('/\r?\n/', $tmp);
 	foreach ($tmp as $line) $y = text_wrap($x,$y,$width,$font_size,$line,"full");
     }
 }
