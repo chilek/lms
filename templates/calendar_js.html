@@ -108,7 +108,7 @@ function cal_prs_date1 (str_date) {
 	if (!RE_NUM.exec(arr_date[0])) return cal_error ("{/literal}{t 0="'\" + arr_date[0] + \"'"}Invalid year value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
 	if (!arr_date[1]) return cal_error ("{/literal}{t 0="'\" + str_date + \"'"}Invalid date format: $0.\nNo month value can be found.{/t}{literal}");
 	if (!RE_NUM.exec(arr_date[1])) return cal_error ("{/literal}{t 0="'\" + arr_date[1] + \"'"}Invalid month value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
-	if (!arr_date[2]) return cal_error ("{/literal}{t 0="'\" + str_date + \"'"}Invalid date format: $0.\nNo day of month value can be found.{/t}{literal}.");
+	if (!arr_date[2]) return cal_error ("{/literal}{t 0="'\" + str_date + \"'"}Invalid date format: $0.\nNo day of month value can be found.{/t}{literal}");
 	if (!RE_NUM.exec(arr_date[2])) return cal_error ("{/literal}{t 0="'\" + arr_date[2] + \"'"}Invalid day of month value: $0.\nAllowed values are unsigned integers.{/t}{literal}");
 
 	var dt_date = new Date();
