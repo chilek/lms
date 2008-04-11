@@ -127,7 +127,7 @@
 			<B>{t}Total:{/t} {sum array=$accountlist column=quota_sh}/{sum array=$accountlist column=quota_mail}/{sum array=$accountlist column=quota_www}/{sum array=$accountlist column=quota_ftp}/{sum array=$accountlist column=quota_sql}</B>	
 		</TD>
 		<TD class="frightu" colspan="2" align="right">
-			<A href="?m=accountadd&cid={$listdata.customer}">{t}New Account{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=accountadd{if $listdata.customer}&cid={$listdata.customer}{/if}{if $listdata.domain}&did={$listdata.domain}{/if}">{t}New Account{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE></P>
