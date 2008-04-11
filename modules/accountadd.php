@@ -184,7 +184,12 @@ else
 {
 	$quota = array();
 
-	if(isset($_GET['cid']))
+	if(!empty($_GET['did']))
+	{
+		$account['domainid'] = intval($_GET['did']);
+	}
+	
+	if(!empty($_GET['cid']))
 	{
 		$account['ownerid'] = intval($_GET['cid']);
 		$limits = $LMS->GetHostingLimits($account['ownerid']);
