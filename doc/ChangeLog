@@ -15,7 +15,7 @@ version ? (????-??-??):
   - BTS#0000734: fixed problem with \r\n on pdf invoices (alec)
   - hosting: auto-select domain when clicking on New account on accounts list
     after domain filter was used (alec)
-
+ 
 version 1.11.3 Quetesh (2008-03-26):
 
   - fixed 'suspended' filter on customers list (alec)
