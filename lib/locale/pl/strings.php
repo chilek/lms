@@ -385,6 +385,7 @@ $_LANG['Display this form again, when this domain is saved'] = 'Po dodaniu domen
 $_LANG['Display this form again, when this event is saved'] = 'Po utworzeniu zdarzenia wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this node is saved'] = 'Po dodaniu komputera wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this payment is saved'] = 'Po dodaniu płatności wyświetl ten formularz ponownie';
+$_LANG['Display this form again, when this group is saved'] = 'Po dodaniu grupy wyświetl ten formularz ponownie';
 $_LANG['Display tickets matching the following criteria:'] = 'Wyświetl zgłoszenia pasujące do następujących kryteriów';
 $_LANG['DNS servers:'] = 'Serwery DNS:';
 $_LANG['Documentation'] = 'Dokumentacja';
