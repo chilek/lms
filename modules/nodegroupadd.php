@@ -55,8 +55,15 @@ if(isset($_POST['nodegroupadd']))
 					($prio != NULL ? $prio : 1)
 				));
 	
+		if (isset($nodegroupadd['reuse'])) 
+		{
+			unset($nodegroupadd);
+			$nodegroupadd['reuse'] = 1;
+			$SMARTY->assign('nodegroupadd',$nodegroupadd);
+			$SMARTY->display('nodegroupadd.html');
+		} 
+
 		$id = $DB->GetLastInsertID('nodegroups');
-		
 		$SESSION->redirect('?m=nodegrouplist&id='.$id);
 	}
 	
