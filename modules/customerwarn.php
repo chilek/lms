@@ -30,8 +30,8 @@ if(isset($setwarnings['mcustomerid']))
 {
 	$warnon = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
 	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
-	$message = isset($setwarnings['message']) ? $setwarnings['message'] : '';
-	
+	$message = isset($setwarnings['message']) ? $setwarnings['message'] : NULL;
+
 	foreach($setwarnings['mcustomerid'] as $uid)
 	{
 		if($warnon)
@@ -40,14 +40,14 @@ if(isset($setwarnings['mcustomerid']))
 		if($warnoff) 
 			$LMS->NodeSetWarnU($uid, FALSE);
 
-		if($message)
+		if(isset($message))
 			$DB->Execute('UPDATE customers SET message=? WHERE id=?', array($message, $uid));
 	}
 
 	$SESSION->save('warnmessage', $message);
 	$SESSION->save('warnon', $warnon);
 	$SESSION->save('warnoff', $warnoff);
-	
+
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
