@@ -47,6 +47,9 @@ $documents = $LMS->GetDocuments($_GET['id'], 10);
 $taxeslist = $LMS->GetTaxes();
 $allnodegroups = $LMS->GetNodeGroupNames();
 
+if($customerinfo['cutoffstop'] > mktime(0,0,0))
+        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
+		
 if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
 {
         $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes

@@ -1984,5 +1984,9 @@ $_LANG['Find aliases matching the following search criteria:'] = 'Wyświetl alia
 $_LANG['Find domain matching the following search criteria:'] = 'Wyświetl domeny spełniające następujące kryteria';
 $_LANG['BCC e-mail:'] = 'E-mail BCC:';
 $_LANG['Enter e-mail address for blind carbon copy (optional)'] = 'Wprowadź adres e-mail kopii wiadomości (blind carbon copy) (opcionalnie)';
+$_LANG['Actions:'] = 'Akcje:';
+$_LANG['Cutoff suspending:'] = 'Zawieszenie blokowania:';
+$_LANG['Enter warning message contents'] = 'Wprowadź treść ostrzeżenia';
+$_LANG['Select days number of cutoff suspending'] = 'Wybierz ilość dni zawieszenia blokowania';
 
 ?>
