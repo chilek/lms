@@ -45,6 +45,7 @@
 			{/if}
 		</TD>
 	</TR>
+	{if !$unlockedit}
 	<TR class="light">
 		<td width="1%" class="fleft">
 			<nobr><img src="img/cmp.gif" alt=""> <B>{t}Network size:{/t}</B>
@@ -53,6 +54,7 @@
 			{t 0=$network.size}$0 addresses{/t}
 		</TD>
 	</TR>
+	{/if}
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/mac.gif" ALT=""> <B>{t}Interface:{/t}</B>
