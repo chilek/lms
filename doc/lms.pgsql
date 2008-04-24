@@ -104,6 +104,7 @@ CREATE TABLE networks (
 	wins varchar(16) 	DEFAULT '' NOT NULL,
 	dhcpstart varchar(16) 	DEFAULT '' NOT NULL,
 	dhcpend varchar(16) 	DEFAULT '' NOT NULL,
+	disabled smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (address)
