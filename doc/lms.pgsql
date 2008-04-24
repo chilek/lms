@@ -985,4 +985,4 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008032700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008042400');

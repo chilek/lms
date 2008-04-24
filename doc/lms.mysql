@@ -926,4 +926,4 @@ CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008032700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008042400');
