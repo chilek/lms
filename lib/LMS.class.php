@@ -2314,6 +2314,28 @@ class LMS
 		return ($this->DB->GetOne('SELECT * FROM networks WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
+	function NetworkSet($id, $disabled=-1)
+	{
+		if (! $this->NetworkExists($id))
+			return FALSE;
+
+		if($disabled != -1)
+		{
+			if($disabled == 1)
+				return $this->DB->Execute('UPDATE networks SET disabled = 1 WHERE id = ?', 
+					array($id));
+			else
+				return $this->DB->Execute('UPDATE networks SET disabled = 0 WHERE id = ?',
+					array($id));
+		}
+		elseif($this->DB->GetOne('SELECT disabled FROM networks WHERE id = ?', array($id)) == 1 )
+			return $this->DB->Execute('UPDATE networks SET disabled = 0 WHERE id = ?', 
+					array($id));
+		else
+			return $this->DB->Execute('UPDATE networks SET disabled = 1 WHERE id = ?', 
+					array($id));
+	}
+
 	function IsIPFree($ip)
 	{
 		return !($this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
@@ -2398,7 +2420,7 @@ class LMS
 				mask2prefix(inet_aton(mask)) AS prefix,
 				broadcast(address, inet_aton(mask)) AS broadcastlong,
 				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
-				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size,
+				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
 				(SELECT COUNT(*) 
 					FROM nodes 
 					WHERE (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
