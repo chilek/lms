@@ -27,8 +27,9 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=netlist loop=$netlist}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="{cycle}{if $netlist[netlist].disabled == 1} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
+		<A name="{$netlist[netlist].id}">
 			<nobr><IMG src="img/network.gif" ALT=""> <B>{$netlist[netlist].name|truncate:40:"...":true}</B><BR><IMG src="img/ip.gif" ALT=""> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
 		</TD>
 		<TD valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';" width="1%">
@@ -47,9 +48,10 @@
 		</TD>
 		<TD class="fright">
 			<nobr>
+			<A href="?m=netedit&networkset&id={$netlist[netlist].id}"><IMG src="img/{if $netlist[netlist].disabled == 1}no{/if}access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]"></A>
 			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t 0=$netlist[netlist].name|upper}Are you sure, you want to remove network \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Remove{/t} ]" title="[ {t}Remove{/t} ]"></A>
-			<a href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
-			<a href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+			<A href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
