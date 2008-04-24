@@ -262,6 +262,7 @@ CREATE TABLE networks (
   wins varchar(16) NOT NULL DEFAULT '',
   dhcpstart varchar(16) NOT NULL DEFAULT '',
   dhcpend varchar(16) NOT NULL DEFAULT '',
+  disabled smallint NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY address (address)
