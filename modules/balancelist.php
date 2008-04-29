@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
+function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $page=NULL)
 {
 	global $DB;
 
@@ -69,34 +69,27 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = cash.customerid)'
 				.(isset($where) ? $where : '')
+				.(!empty($group['group']) ? 
+					' AND '.(!empty($group['exclude']) ? 'NOT' : '').' EXISTS (
+					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
+					AND customerid = cash.customerid)' : '')
 				.' ORDER BY time, cash.id'))
 	{
 		$userlist = $DB->GetAllByKey('SELECT id, name FROM users','id');
 
-    		if($group['group'])
-		        $customers = $DB->GetAllByKey('SELECT customerid AS id
-					    FROM customerassignments WHERE customergroupid=?',
-					    'id', array($group['group']));
-
 		$balancelist['liability'] = 0;
 		$balancelist['expense'] = 0;
 		$balancelist['income'] = 0;
-
+		if ($page > 0) {
+		    $start =  ($page - 1) * $pagelimit;
+		    $stop = $start + $pagelimit;
+		}
 		$id = 0;
+
 		while($row = $DB->FetchRow($res))
 		{
-			if($group['group'])
-			{
-				if(!$group['exclude'] && !isset($customers[$row['customerid']]))
-					continue;
-				elseif($group['exclude'] && isset($customers[$row['customerid']]))
-					continue;
-			}
-
-			$balancelist[$id] = $row;
 			$balancelist[$id]['user'] = isset($userlist[$row['userid']]['name']) ? $userlist[$row['userid']]['name'] : '';
 			$balancelist[$id]['before'] = isset($balancelist[$id-1]['after']) ? $balancelist[$id-1]['after'] : 0;
-			$balancelist[$id]['value'] = $row['value'];
 
 			if($row['customerid'] && $row['type'] == 0)
 			{
@@ -115,11 +108,25 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL)
 					//expense
 					$balancelist['expense'] += -$row['value'];
 			}
+
+			$balancelist[$id] = array_merge($balancelist[$id], $row);
+
+			// free memory for rows which will not be displayed
+			if($page > 0)
+			{
+				if(($id < $start - 1 || $id > $stop) && isset($balancelist[$id]))
+					$balancelist[$id] = NULL;
+			}
+			elseif(isset($balancelist[$id-$pagelimit]))
+				$balancelist[$id-$pagelimit] = NULL;
+			
 			$id++;
 		}
 	
 		$balancelist['totalval'] = $balancelist['income'] - $balancelist['expense'];
-	
+		$balancelist['page'] = $page > 0 ? $page : ceil($id / $pagelimit);
+		$balancelist['total'] = $id;
+
 		return $balancelist;
 	}
 }
@@ -153,27 +160,29 @@ if($c == 'cdate' && $s)
 	$s = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
 }
 
-$balancelist = GetBalanceList($s, $c, array('group' => $g, 'exclude'=> $ge));
+$pagelimit = $CONFIG['phpui']['balancelist_pagelimit'];
+$page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
+
+$balancelist = GetBalanceList($s, $c, array('group' => $g, 'exclude'=> $ge), $pagelimit, $page);
 
 $listdata['liability'] = $balancelist['liability'];
 $listdata['income'] = $balancelist['income'];
 $listdata['expense'] = $balancelist['expense'];
 $listdata['totalval'] = $balancelist['totalval'];
+$listdata['total'] = $balancelist['total'];
+$page = $balancelist['page'];
+
 unset($balancelist['liability']);
 unset($balancelist['income']);
 unset($balancelist['expense']);
 unset($balancelist['totalval']);
-
-$listdata['total'] = sizeof($balancelist);
+unset($balancelist['total']);
+unset($balancelist['page']);
 
 $SESSION->restore('blc', $listdata['cat']);
 $SESSION->restore('bls', $listdata['search']);
 $SESSION->restore('blg', $listdata['group']);
 $SESSION->restore('blge', $listdata['groupexclude']);
-
-$pagelimit = $CONFIG['phpui']['balancelist_pagelimit'];
-$page = (! isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page'])); 
-$start = ($page - 1) * $pagelimit;
 
 $layout['pagetitle'] = trans('Balance Sheet');
 
@@ -181,7 +190,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('start',$start);
+$SMARTY->assign('start', ($page - 1) * $pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
