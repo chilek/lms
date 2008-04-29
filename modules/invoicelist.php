@@ -211,5 +211,4 @@ $SMARTY->assign('copy', isset($_GET['copy']) ? TRUE : FALSE);
 $SMARTY->assign('duplicate', isset($_GET['duplicate']) ? TRUE : FALSE);
 $SMARTY->display('invoicelist.html');
 
-echo memory_get_peak_usage();
 ?>
