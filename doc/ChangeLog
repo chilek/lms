@@ -19,6 +19,7 @@ version ? (????-??-??):
     messages management as separate actions (alec)
   - Balance Sheet: fixed memory usage problem and increased speed of 
     groups filtering (alec)
+  - Invoices List: increased speed of groups and value filtering (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
