@@ -84,13 +84,20 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			case 'address':
 				$where = ' AND UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\')';
 			break;
+			case 'value':
+				$having = ' HAVING CASE reference WHEN 0 THEN
+					    SUM(a.value*a.count) 
+					    ELSE
+					    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
+					    END = '.str_replace(',','.',f_round($search)).' ';
+			break;
 		}
 	}
         
 	if($cat=='notclosed')
 		$where = ' AND closed = 0';
 
-	if($result = $DB->GetAll('SELECT d.id AS id, number, cdate, type,
+	$result = $DB->GetAll('SELECT d.id AS id, number, cdate, type,
 			d.customerid, name, address, zip, city, template, closed, 
 			CASE reference WHEN 0 THEN
 			    SUM(a.value*a.count) 
@@ -110,44 +117,14 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			WHERE e.customerid IS NULL AND 
 				(type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')'
 			.$where
+			.(!empty($group['group']) ?
+			            ' AND '.(!empty($group['exclude']) ? 'NOT' : '').' EXISTS (
+			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
+			            AND customerid = d.customerid)' : '')
 			.' GROUP BY d.id, number, cdate, d.customerid, 
 			name, address, zip, city, template, closed, type, reference '
-	    		.$sqlord.' '.$direction))
-	{
-		$result1 = array();
-
-		if($search!='' && $cat=='value')
-		{
-			$val = f_round($search);
-
-			foreach($result as $idx => $row)
-			{
-				if($row['value']==$val)
-					$result1[] = $result[$idx];
-			}
-
-			$result = $result1;
-			unset($result1);
-		}
-
-		if($group['group'])
-		{
-			$customers = $DB->GetAllByKey('SELECT customerid AS id
-		        	FROM customerassignments WHERE customergroupid=?', 
-				'id', array($group['group']));
-		
-			foreach($result as $idx => $row)
-			{
-				if(!$group['exclude'] && $customers[$result[$idx]['customerid']])
-					$result1[] = $result[$idx];
-				elseif($group['exclude'] && !$customers[$result[$idx]['customerid']])
-					$result1[] = $result[$idx];
-			}
-
-			$result = $result1;
-			unset($result1);
-		}
-	}
+			.(isset($having) ? $having : '')
+	    		.$sqlord.' '.$direction);
 
 	$result['order'] = $order;
 	$result['direction'] = $direction;
@@ -196,15 +173,10 @@ if($c == 'cdate' && $s && ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $s))
 	list($year, $month, $day) = explode('/', $s);
 	$s = mktime(0,0,0, $month, $day, $year);
 }
-elseif($c == 'month' && $s)
+elseif($c == 'month' && $s && ereg('^[0-9]{4}/[0-9]{2}$', $s))
 {
-	if(ereg('^[0-9]{4}/[0-9]{2}$', $s))
-	{
-		list($year, $month) = explode('/', $s);
-    		$s = mktime(0,0,0, $month, 1, $year);
-	}
-	else
-		$s = '';
+	list($year, $month) = explode('/', $s);
+        $s = mktime(0,0,0, $month, 1, $year);
 }
 
 $invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o);
@@ -239,4 +211,5 @@ $SMARTY->assign('copy', isset($_GET['copy']) ? TRUE : FALSE);
 $SMARTY->assign('duplicate', isset($_GET['duplicate']) ? TRUE : FALSE);
 $SMARTY->display('invoicelist.html');
 
+echo memory_get_peak_usage();
 ?>
