@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
+function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order, $pagelimit=100, $page=NULL)
 {
 	global $DB;
 	
@@ -97,7 +97,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 	if($cat=='notclosed')
 		$where = ' AND closed = 0';
 
-	$result = $DB->GetAll('SELECT d.id AS id, number, cdate, type,
+	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, type,
 			d.customerid, name, address, zip, city, template, closed, 
 			CASE reference WHEN 0 THEN
 			    SUM(a.value*a.count) 
@@ -124,10 +124,35 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 			.' GROUP BY d.id, number, cdate, d.customerid, 
 			name, address, zip, city, template, closed, type, reference '
 			.(isset($having) ? $having : '')
-	    		.$sqlord.' '.$direction);
+	    		.$sqlord.' '.$direction))
+	{
+		if ($page > 0) {
+	                $start =  ($page - 1) * $pagelimit;
+		        $stop = $start + $pagelimit;
+		}
+		$id = 0;
+
+		while($row = $DB->FetchRow($res))
+		{
+			$result[$id] = $row;
+			// free memory for rows which will not be displayed
+	                if($page > 0)
+			{
+			        if(($id < $start || $id > $stop) && isset($result[$id]))
+			                $result[$id] = NULL;
+			}
+			elseif(isset($result[$id-$pagelimit]))
+			                $result[$id-$pagelimit] = NULL;
+
+			$id++;
+		}
+
+		$result['page'] = $page > 0 ? $page : ceil($id / $pagelimit);
+	}
 
 	$result['order'] = $order;
 	$result['direction'] = $direction;
+			
 	return $result;
 }																																																																																																					       
 
@@ -179,7 +204,10 @@ elseif($c == 'month' && $s && ereg('^[0-9]{4}/[0-9]{2}$', $s))
         $s = mktime(0,0,0, $month, 1, $year);
 }
 
-$invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o);
+$pagelimit = $CONFIG['phpui']['invoicelist_pagelimit'];
+$page = !isset($_GET['page']) ? 0 : intval($_GET['page']);
+
+$invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o, $pagelimit, $page);
 
 $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
@@ -188,19 +216,17 @@ $SESSION->restore('ilge', $listdata['groupexclude']);
 
 $listdata['order'] = $invoicelist['order'];
 $listdata['direction'] = $invoicelist['direction'];
+$page = $invoicelist['page'];
 
+unset($invoicelist['page']);
 unset($invoicelist['order']);
 unset($invoicelist['direction']);
 
 $listdata['total'] = sizeof($invoicelist);
 
-$pagelimit = $CONFIG['phpui']['invoicelist_pagelimit'];
-$page = !isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page']);
-$start = ($page - 1) * $pagelimit;
-
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('start',$start);
+$SMARTY->assign('start',($page - 1) * $pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
