@@ -330,7 +330,7 @@ function GetConfigList($order='var,asc', $section='')
 					break;
 					
 					case 'footer':
-						$config[$idx]['description'] = trans('Small font footer will appear at the bottom of page, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123');
+						$config[$idx]['description'] = trans('Small font text appearing in selected (in template) place of the invoice, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123');
 					break;
 					
 					case 'default_author':
