@@ -570,7 +570,9 @@ AddDefaultCharset Off
           </listitem>
           <listitem>
                <para>footer</para>
-               <para>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
+               <para>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona 
+	       na dole faktury (lub w innym, okre¶lonym w szablonie, miejscu), ma³± czcionk±. 
+	       Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
                <para>Przyk³ad: <prompt>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</prompt></para>
           </listitem>
           <listitem>
