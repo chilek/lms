@@ -70,6 +70,14 @@
 			{/if}
 		</TD>
 	</TR>
+        <TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Payment type (cash/transfer/etc):{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="cnote[paytype]" VALUE="{$cnote.paytype}" SIZE="10" {tip text="Enter payment type"}>
+		</TD>
+	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Reason:{/t}</B>

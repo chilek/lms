@@ -54,7 +54,8 @@ if(isset($_GET['id']) && $action=='init')
 	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
 	$cnote['cdate'] = time();
 	$cnote['reason'] = '';
-	
+	$cnote['paytype'] = $invoice['paytype'];
+
 	$t = $invoice['cdate'] + $invoice['paytime']*86400;
 	$deadline = mktime(23, 59, 59, date('m',$t), date('d',$t), date('Y',$t));
 	
@@ -128,6 +129,9 @@ switch($action)
 			elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
 			        $error['number'] = trans('Credit note number $0 already exists!', $cnote['number']);
 		}
+
+		if(!isset($cnote['paytype']) || $cnote['paytype'] == '')
+			$cnote['paytype'] = trans('TRANSFER');
 	break;
 
 	case 'save':
@@ -194,14 +198,14 @@ switch($action)
 					$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 			}
 			
-			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, reference, reason)
-		                	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, serviceaddr, reference, reason)
+		                	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array($cnote['number'],
 				    		$cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
 						DOC_CNOTE,
 		    				$cnote['cdate'],
 			    			$cnote['paytime'],
-						$invoice['paytype'],
+						$cnote['paytype'],
 						$AUTH->id,
 						$invoice['customerid'],
 						$invoice['name'],
@@ -210,6 +214,7 @@ switch($action)
 						$invoice['ssn'],
 						$invoice['zip'],
 						$invoice['city'],
+						$invoice['serviceaddr'],
 						$invoice['id'],
 						$cnote['reason']
 					));

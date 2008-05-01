@@ -21,6 +21,7 @@ version ? (????-??-??):
     groups filtering (alec)
   - Invoices List: fixed big memory usage problem, increased speed of 
     groups and value filtering (alec)
+  - invoicenote: we can change pay type (chilan)
 
 version 1.11.3 Quetesh (2008-03-26):
 
