@@ -33,7 +33,10 @@ if(! $LMS->CustomerExists($customerid))
 
 if(isset($_GET['cutoffstop']))
 {
-	$cutoffstop = mktime(23,59,59,date('m'), date('d') + intval($_GET['cutoffstop']));
+	if(!intval($_GET['cutoffstop']))
+	        $cutoffstop = 0;
+	else
+		$cutoffstop = mktime(23,59,59,date('m'), date('d') + intval($_GET['cutoffstop']));
 	
 	// excluded groups check
 	if(!$DB->GetOne('SELECT 1 FROM customerassignments a
