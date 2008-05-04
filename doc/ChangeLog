@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.10.4 Pyrus (2008-05-04):
 
   - Aliases List: removed unused sql query (alec)
   - BTS#0000732: lmsd/ewx-pt: fixed *TableSave OID (alec)
@@ -8,6 +8,8 @@ version ? (????-??-??):
   - BTS#0000734: fixed problem with \r\n on pdf invoices (alec)
   - Balance Sheet: fixed memory usage problem and increased speed of
     groups filtering (alec)
+  - updated ethernet vendors list (alec)
+  - updated Smarty to 2.6.19 (alec)
 
 version 1.10.3 Vidrine (2008-02-10):
 
