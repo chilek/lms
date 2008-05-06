@@ -164,6 +164,7 @@
                     <member>wins - adres serwera WINS</member>
                     <member>dhcpstart - pocz±tek zakresu DHCP</member>
                     <member>dhcpend - koniec zakresu DHCP</member>
+		    <member>disabled - status sieci: w³±czona/wy³±czona (0/1)</member>
                </simplelist>
           </sect2>
           <sect2 id="netdevices">

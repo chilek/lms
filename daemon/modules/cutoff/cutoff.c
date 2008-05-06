@@ -191,7 +191,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 		free(query);
 	}
-	else
+	else if(c->customerassignments)
 	{
 		// customers without tariffs (or with expired assignments)
 		query = strdup(
@@ -412,6 +412,7 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
 	c->expwarning = strdup(g->config_getstring(c->base.ini, c->base.instance, "expired_warning", "Blocked automatically due to tariff(s) expiration at %time"));
 	c->nodeassignments = g->config_getbool(c->base.ini, c->base.instance, "use_nodeassignments", 0);
+	c->customerassignments = g->config_getbool(c->base.ini, c->base.instance, "use_customerassignments", 1);
 	c->disable_suspended = g->config_getbool(c->base.ini, c->base.instance, "disable_suspended", 0);
 
 	c->checkinvoices = g->config_getbool(c->base.ini, c->base.instance, "check_invoices", 0);

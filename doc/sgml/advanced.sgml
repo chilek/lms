@@ -160,6 +160,7 @@
                     <member>wins - WINS server address</member>
                     <member>dhcpstart - first address of dynamic DHCP range</member>
                     <member>dhcpend - last address of dynamic DHCP range</member>
+                    <member>disabled - disabled/enabled flag (1/0)</member>
                </simplelist>
           </sect2>
           <sect2 id="netdevices">

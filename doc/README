@@ -3888,6 +3888,10 @@ Chapter 6. LMS Daemon
        tariffs assignments. In other way tariffs assignments with
        customers are checked. Default: false.
        Example: use_nodeassignments = true
+     * use_customerassignments
+       You should disable this option only if you don't want to check
+       assignments (or node assignments are used). Default: true.
+       Example: use_customerassignments = false
      * check_invoices
        This option enables additional checking if customer has unpayed
        invoices with deadline date older than date specified in 'deadline'
@@ -5153,6 +5157,7 @@ Chapter 7. For curious
    wins - WINS server address
    dhcpstart - first address of dynamic DHCP range
    dhcpend - last address of dynamic DHCP range
+   disabled - disabled/enabled flag (1/0)
      __________________________________________________________________
 
 7.2.7. Network devices ('netdevices')
