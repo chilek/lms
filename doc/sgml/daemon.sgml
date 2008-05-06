@@ -522,6 +522,12 @@
 		   are checked. Default: false.</para>
                    <para>Example: <prompt>use_nodeassignments = true</prompt></para>
                </listitem>
+               <listitem>
+                   <para>use_customerassignments</para>
+                   <para>You should disable this option only if you don't want to check
+		   assignments (or node assignments are used). Default: true.</para>
+                   <para>Example: <prompt>use_customerassignments = false</prompt></para>
+               </listitem>
 		<listitem>
 			<para>check_invoices</para>
 			<para>This option enables additional checking if customer has
