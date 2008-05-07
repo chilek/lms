@@ -68,7 +68,7 @@ function openWindow(theURL,winName,myWidth,myHeight,isCenter)
 
 function ipchoosewin(formfield,netid,device)
 {
-	okno = openSelectWindow('?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : ''),'chooseip',250,300,'true',formfield)
+	okno = openSelectWindow('?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : ''),'chooseip',350,380,'true',formfield)
 	return false;
 }
 
