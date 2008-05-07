@@ -45,7 +45,7 @@ if(isset($_GET['id']) && $action=='init')
     		$nitem['valuebrutto']	= str_replace(',','.',$item['value']);
 		$nitem['s_valuenetto']	= str_replace(',','.',$item['totalbase']);
     		$nitem['s_valuebrutto']	= str_replace(',','.',$item['total']);
-		$nitem['tax']		= $taxeslist[$item['taxid']]['label'];
+		$nitem['tax']		= isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : 0;
 		$nitem['taxid']		= $item['taxid'];
 		$nitem['itemid']	= $item['itemid'];
 		$invoicecontents[$nitem['itemid']] = $nitem;
