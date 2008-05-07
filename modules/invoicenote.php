@@ -198,8 +198,8 @@ switch($action)
 					$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 			}
 			
-			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, serviceaddr, reference, reason)
-		                	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city, reference, reason)
+		                	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array($cnote['number'],
 				    		$cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
 						DOC_CNOTE,
@@ -214,7 +214,6 @@ switch($action)
 						$invoice['ssn'],
 						$invoice['zip'],
 						$invoice['city'],
-						$invoice['serviceaddr'],
 						$invoice['id'],
 						$cnote['reason']
 					));
