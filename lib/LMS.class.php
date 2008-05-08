@@ -2398,11 +2398,16 @@ class LMS
 				WHERE address = (inet_aton(?) & inet_aton(mask))', array($ipaddr));
 	}
 
-	function GetNetworks()
+	function GetNetworks($with_disabled=true)
 	{
-		return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-			address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix
-			FROM networks ORDER BY name');
+		if ($with_disabled == false)
+			return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix
+				FROM networks WHERE disabled=0 ORDER BY name');
+		else
+			return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix
+				FROM networks ORDER BY name');
 	}
 
 	function GetNetworkParams($id)
