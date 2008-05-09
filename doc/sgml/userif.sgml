@@ -297,9 +297,24 @@ all nodes from one network to another.</para>
 	</sect2>
 	<sect2 id="menu-networks-new">
 	    <title>New Network</title>
-	    <para>Defines a new network. Network needs to have unique name and
-address class, defined by its IP address and netmask. All other data is
-optional.</para>
+	    <para>Defines a new network. Network needs to have unique name and address pool, defined by its IP address and netmask.
+		    All other data is optional.</para>
+	    <para>Physical interfaces, IP aliases and vlans are recognized in below manner:
+<itemizedlist>
+	<listitem>
+		<para><emphasis>Physical interface</emphasis> - example: eth0</para>
+	</listitem>
+	<listitem>
+		<para><emphasis>IP alias</emphasis> - example: eth0:1</para>
+	</listitem>
+	<listitem>
+		<para><emphasis>Vlan interface with VID 19</emphasis> - example: eth0.19</para>
+	</listitem>
+	<listitem>
+		<para><emphasis>First IP alias on vlan interface with VID 19</emphasis> - example: eth0.19:1</para>
+	</listitem>
+	    </itemizedlist>
+</para>
 	</sect2>
  </sect1>
  <sect1 id="menu-finances">
