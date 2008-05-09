@@ -196,15 +196,48 @@ my %customergrouplist;
 my @used_ifaces;
 my $last_iface = '';
 my @if;
+
+# No networks_list in lms.ini, we fill networks_list variable with all networks in database
+if(!$networks_list)
+{
+	my $dbq = $dbase->prepare("SELECT name FROM networks ORDER BY interface");
+	$dbq->execute();
+
+	while (my $row = $dbq->fetchrow_hashref()) 
+	{
+		$networks_list = "$networks_list $row->{'name'}";
+	}	
+}
+
 my @networks = split ' ',$networks_list;
 
+# Check for excluded_networks_list in lms.ini, if it is empty, than get excluded networks from LMSUI.
+# Case 1: excluded_networks_list in lms.ini
 if($excluded_networks_list)
 {
-    my @excluded_networks = split ' ', $excluded_networks_list;
-    foreach my $excluded_network (@excluded_networks)
-    {
-	@networks = grep(!/^$excluded_network$/, @networks);
-    }
+	my @excluded_networks = split ' ', $excluded_networks_list;
+
+	foreach my $excluded_network (@excluded_networks)
+	{
+		@networks = grep(!/^$excluded_network$/, @networks);
+	}
+}
+# Case 2: excluded_networks_list from LMSUI
+else
+{
+	my $dbq = $dbase->prepare("SELECT name FROM networks WHERE disabled=1 ORDER BY interface");
+	$dbq->execute();
+	
+	while (my $row = $dbq->fetchrow_hashref()) 
+	{
+		$excluded_networks_list = "$excluded_networks_list $row->{'name'}";
+	}
+
+	my @excluded_networks = split ' ', $excluded_networks_list;
+	foreach my $excluded_network (@excluded_networks)
+	{
+		@networks = grep(!/^$excluded_network$/, @networks);
+	}
 }
 
 my $dbq = $dbase->prepare("SELECT id, name FROM customergroups");
