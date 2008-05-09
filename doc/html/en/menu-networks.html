@@ -126,9 +126,53 @@ NAME="MENU-NETWORKS-NEW"
 >3.6.2. New Network</A
 ></H2
 ><P
->Defines a new network. Network needs to have unique name and
-address class, defined by its IP address and netmask. All other data is
-optional.</P
+>Defines a new network. Network needs to have unique name and address pool, defined by its IP address and netmask.
+		    All other data is optional.</P
+><P
+>Physical interfaces, IP aliases and vlans are recognized in below manner:
+<UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Physical interface</I
+></SPAN
+> - example: eth0</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>IP alias</I
+></SPAN
+> - example: eth0:1</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Vlan interface with VID 19</I
+></SPAN
+> - example: eth0.19</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>First IP alias on vlan interface with VID 19</I
+></SPAN
+> - example: eth0.19:1</P
+></LI
+></UL
+></P
 ></DIV
 ></DIV
 ><DIV

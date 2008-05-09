@@ -278,8 +278,23 @@
 	</sect2>
 	<sect2 id="menu-networks-new">
 	    <title>Nowa sieæ</title>
-	    <para>Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i klasê adresow±
-	    podaj±c adres IP sieci i maskê. Pozosta³e dane s± opcjonalne.</para>
+	    <para>Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i pulê adresow± podaj±c adres IP sieci i maskê. Pozosta³e dane s± opcjonalne.</para>
+	    <para>Interfejsy fizyczne, aliasy i vlany s± rozpoznawane przez LMS, w sposób podany poni¿ej:
+	    <itemizedlist>
+		    <listitem>
+			    <para><emphasis>Interfejs fizyczny</emphasis> - przyk³ad: eth0</para>
+		    </listitem>
+		    <listitem>
+			    <para><emphasis>Alias</emphasis> - przyk³ad: eth0:1</para>
+		    </listitem>
+		    <listitem>
+			    <para><emphasis>Interfejs vlan o VID 19</emphasis> - przyk³ad: eth0.19</para>
+		    </listitem>
+		    <listitem>
+			    <para><emphasis>Pierwszy alias na interfejsie vlan o VID 19</emphasis> - przyk³ad: eth0.19:1</para>
+		    </listitem>
+	    </itemizedlist>
+    </para>
 	</sect2>
  </sect1>
  <sect1 id="menu-finances">

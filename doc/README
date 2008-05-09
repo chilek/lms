@@ -1301,8 +1301,15 @@ Chapter 3. User Interface (LMS-UI)
 3.6.2. New Network
 
    Defines a new network. Network needs to have unique name and address
-   class, defined by its IP address and netmask. All other data is
+   pool, defined by its IP address and netmask. All other data is
    optional.
+
+   Physical interfaces, IP aliases and vlans are recognized in below
+   manner:
+     * Physical interface - example: eth0
+     * IP alias - example: eth0:1
+     * Vlan interface with VID 19 - example: eth0.19
+     * First IP alias on vlan interface with VID 19 - example: eth0.19:1
      __________________________________________________________________
 
 3.7. Finances
