@@ -245,7 +245,6 @@ while (my $row = $dbq->fetchrow_hashref())
 	if($row->{'interface'})
 	{
 		@if = split('\:',$row->{'interface'});
-		@if = split('\.',$if[0]);
 	}
 	my $iface = $if[0] || '';
 		
