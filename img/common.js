@@ -74,7 +74,7 @@ function ipchoosewin(formfield,netid,device)
 
 function macchoosewin(formfield)
 {
-	okno = openSelectWindow('?m=choosemac','choosemac',250,300,'true',formfield)
+	okno = openSelectWindow('?m=choosemac','choosemac',290,380,'true',formfield)
 	return false;
 }
 
