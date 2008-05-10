@@ -200,7 +200,7 @@ my @if;
 # No networks_list in lms.ini, we fill networks_list variable with all networks in database
 if(!$networks_list)
 {
-	my $dbq = $dbase->prepare("SELECT name FROM networks ORDER BY interface");
+	my $dbq = $dbase->prepare("SELECT name FROM networks ORDER BY interface,name");
 	$dbq->execute();
 
 	while (my $row = $dbq->fetchrow_hashref()) 
@@ -225,7 +225,7 @@ if($excluded_networks_list)
 # Case 2: excluded_networks_list from LMSUI
 else
 {
-	my $dbq = $dbase->prepare("SELECT name FROM networks WHERE disabled=1 ORDER BY interface");
+	my $dbq = $dbase->prepare("SELECT name FROM networks WHERE disabled=1 ORDER BY interface,name");
 	$dbq->execute();
 	
 	while (my $row = $dbq->fetchrow_hashref()) 
@@ -248,7 +248,7 @@ while (my $row = $dbq->fetchrow_hashref())
 }
 $dbq->finish();
 
-$dbq = $dbase->prepare("SELECT id, LOWER(name) AS name, interface, inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY interface");
+$dbq = $dbase->prepare("SELECT id, LOWER(name) AS name, interface, inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY interface,name");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref()) 
 {
