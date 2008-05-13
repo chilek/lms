@@ -171,7 +171,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			}
 			
 			// shared (interface) network ?
-			sscanf(g->db_get_data(res,i,"interface"), "%[a-zA-Z0-9]", iface);
+			sscanf(g->db_get_data(res,i,"interface"), "%[a-zA-Z0-9.]", iface);
 			
 			if( strlen(lastif) && strlen(iface) && strcmp(iface, lastif)!=0 )
 			{
