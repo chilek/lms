@@ -177,53 +177,53 @@ include all networks.</para>
     </listitem>
     <listitem>
      <para>grantednode_priv</para>
-     <para>Adds line for each IP address with 'connected' status in database (parsed only for private address classes).</para>
+     <para>Adds line for each IP address with 'connected' status in database (parsed only for private address pools).</para>
      <para>Example:	<prompt>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
      <para>grantednode_publ</para>
-     <para>Adds line for each IP address with 'connected' status in database (parsed only for public address classes).</para>
+     <para>Adds line for each IP address with 'connected' status in database (parsed only for public address pools).</para>
      <para>Example:	<prompt>grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
      <para>deniednode_priv</para>
-     <para>Adds line for each IP address with 'disconnected' status in database (parsed only for private address classes).</para>
+     <para>Adds line for each IP address with 'disconnected' status in database (parsed only for private address pools).</para>
      <para>Example:	<prompt>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
     </listitem>
     <listitem>
      <para>deniednode_publ</para>
-     <para>Adds line for each IP address with 'disconnected' status in database (parsed only for public address classes).</para>
+     <para>Adds line for each IP address with 'disconnected' status in database (parsed only for public address pools).</para>
      <para>Example:	<prompt>deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
     </listitem>
     <listitem>
      <para>dhcpnode_priv</para>
-     <para>Adds line for each IP address within DHCP dynamic range (parsed only for private address classes).</para>
+     <para>Adds line for each IP address within DHCP dynamic range (parsed only for private address pools).</para>
      <para>Example:	<prompt>dhcpnode_priv = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
      <para>dhcpnode_publ</para>
-     <para>Adds line for each IP address within DHCP dynamic range (parsed only for public address classes).</para>
+     <para>Adds line for each IP address within DHCP dynamic range (parsed only for public address pools).</para>
      <para>Example:	<prompt>dhcpnode_publ = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
      <para>freeip_priv</para>
-     <para>Adds line for each IP address that is not occupied by any computer in database (parsed only for private address classes).</para>
+     <para>Adds line for each IP address that is not occupied by any computer in database (parsed only for private address pools).</para>
      <para>Example:	<prompt>freeip_priv = node unknown (%IP) lock_as_unused;</prompt></para>
     </listitem>
     <listitem>
      <para>freeip_publ</para>
-     <para>Adds line for each IP address that is not occupied by any computer in database (parsed only for public address classes).</para>
+     <para>Adds line for each IP address that is not occupied by any computer in database (parsed only for public address pools).</para>
      <para>Example:	<prompt>freeip_publ = node unknown (%IP) lock_as_unused;</prompt></para>
     </listitem>
     <listitem>
      <para>default_priv</para>
-     <para>Default line, which is inserted when none of grantednode or deniednode matches for given IP address (parsed only for private address classes)</para>
+     <para>Default line, which is inserted when none of grantednode or deniednode matches for given IP address (parsed only for private address pools)</para>
      <para>Example:	<prompt>default_priv = node unknown (%IP) lock_as_intruder;</prompt></para>
      <para><note><para>Mgc automatically detects if given address belongs to private or public network.</para></note></para>
     </listitem>
     <listitem>
      <para>default_publ</para>
-     <para>Default line, which is inserted when none of grantednode or deniednode matches for given IP address (parsed only for public address classes)</para>
+     <para>Default line, which is inserted when none of grantednode or deniednode matches for given IP address (parsed only for public address pools)</para>
      <para>Example:	<prompt>default_publ = node unknown (%IP) lock_as_intruder;</prompt></para>
     </listitem>
     </itemizedlist>

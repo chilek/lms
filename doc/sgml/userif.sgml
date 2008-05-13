@@ -277,9 +277,9 @@ probe hosts availability.</para></note>
  </sect1>
  <sect1 id="menu-networks">
 	<title>IP Networks</title>
-	<para>You can define all your networks here. Network is IP address class
+	<para>You can define all your networks here. Network is IP address pool
 with parameters such as domain, DNSes, default gateway and DHCP pool. If you use
-LMS to manage numerous networks or you use numerous address classes, it's
+LMS to manage numerous networks or you use numerous address pools, it's
 possible to define them here.</para>
 	<sect2 id="menu-networks-list">
 	    <title>List</title>
@@ -973,7 +973,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
     	    <listitem>
             	<para>allow_from  (optional)</para>
 	        <para>List of networks or IP addresses, which have access to LMS. If empty, every IP
-    		address is permitted. You can write here list of addresses or address classes and LMS
+    		address is permitted. You can write here list of addresses or address pools and LMS
             	will dismiss every unwanted user with HTTP 403 error.</para>
             	<para>Example:          <prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
     	    </listitem>
