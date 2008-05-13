@@ -260,9 +260,9 @@
  </sect1>
  <sect1 id="menu-networks">
 	<title>Sieci IP</title>
-	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
+	<para>Tutaj definiujesz dane swojej sieci tj. pulê adresow±, domenê, DNS'y, bramê,
 	zakres DHCP. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ 
-	na podsieci, albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</para>
+	na podsieci, albo korzystasz z ró¿nych pul adresowych tutaj jest to mo¿liwe.</para>
 	<sect2 id="menu-networks-list">
 	    <title>Lista</title>
 	    <para>Lista sieci oprócz podstawowych danych o sieciach zawiera podsumowanie ilo¶ci
@@ -1041,7 +1041,7 @@ links -dump \
 	<listitem>
              <para>allow_from</para>
              <para>Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, 
-            je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
+            je¿eli wpiszemy tutaj listê adresów b±d¼ pul adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
             niechcianego u¿ytkownika.</para>
              <para>Przyk³ad:          <prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
         </listitem>

@@ -212,12 +212,12 @@
     </listitem>
     <listitem>
      <para>dhcpnode_priv</para>
-     <para>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Jest przetwarzana gdy dany adres IP zawiera siê w zakresie DHCP (regu³ka przetwarzana dla adresów prywatnych)</para>
      <para>Przyk³ad:	<prompt>dhcpnode_priv = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
      <para>dhcpnode_publ</para>
-     <para>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów publicznych)</para>
+     <para>Jest przetwarzana gdy dany adres IP zawiera siê w zakresie DHCP (regu³ka przetwarzana dla adresów publicznych)</para>
      <para>Przyk³ad:	<prompt>dhcpnode_publ = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
@@ -234,7 +234,7 @@
      <para>default_priv</para>
      <para>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</para>
      <para>Przyk³ad:	<prompt>default_priv = node unknown (%IP) lock_as_intruder;</prompt></para>
-     <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para></note></para>
+     <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do puli publicznej, a który do prywatnej.</para></note></para>
     </listitem>
     <listitem>
      <para>default_publ</para>
