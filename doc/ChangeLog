@@ -27,6 +27,7 @@ version ? (????-??-??):
   - added "disable network" functionality in LMSUI and lms-makedhcpconf (chilan)
   - added "trivial" vlan support in lms-makedhcpconf (chilan)
   - lmsd/dhcp: added "trivial" vlan support (alec)
+  - tariffs: added possibility to tariff cloning (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
