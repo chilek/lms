@@ -91,8 +91,14 @@ if(isset($_POST['tariff']))
 
 	$SMARTY->assign('error',$error);
 }
+elseif(isset($_GET['id']))
+{
+        $tariff = $DB->GetRow('SELECT * FROM tariffs
+	                WHERE id = ?', array(intval($_GET['id'])));
+}
 else
 {
+
 	$tariff['domain_limit'] = 0;	
 	$tariff['alias_limit'] = 0;	
 	$tariff['sh_limit'] = 0;	

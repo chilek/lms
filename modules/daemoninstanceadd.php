@@ -86,8 +86,7 @@ if($instance)
 		unset($instance['description']);
 	}
 }	
-
-if(isset($_GET['id']))
+elseif(isset($_GET['id']))
 {
 	$instance = $DB->GetRow('SELECT * FROM daemoninstances
 			WHERE id = ?', array(intval($_GET['id'])));
