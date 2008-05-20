@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - don't overwrite invoice's creation time on edit if date wasn't changed (alec)
+
 version 1.10.4 Pyrus (2008-05-04):
 
   - Aliases List: removed unused sql query (alec)

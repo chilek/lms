@@ -135,7 +135,16 @@ switch($action)
 			list($year, $month, $day) = split('/',$invoice['cdate']);
 			if(checkdate($month, $day, $year))
 			{
-				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+				$oldday = date('d', $invoice['oldcdate']);
+			        $oldmonth = date('m', $invoice['oldcdate']);
+				$oldyear = date('Y', $invoice['oldcdate']);
+				
+				if($oldday != $day || $oldmonth != $month || $oldyear != $year)
+				{
+				        $invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+				}
+				else // save hour/min/sec value if date is the same
+				        $invoice['cdate'] = $invoice['oldcdate'];
 			}
 			else
 				$error['cdate'] = trans('Incorrect date format!');
