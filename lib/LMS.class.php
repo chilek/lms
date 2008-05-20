@@ -1777,10 +1777,24 @@ class LMS
 
 		$this->DB->BeginTrans();
 		
-		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['customername'], $invoice['customer']['address'], $invoice['customer']['ten'], $invoice['customer']['ssn'], $invoice['customer']['zip'], $invoice['customer']['city'], $iid));
+		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?,
+				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?',
+				array($cdate, 
+					$invoice['invoice']['paytime'],
+					$invoice['invoice']['paytype'],
+					$invoice['customer']['id'],
+					$invoice['customer']['customername'],
+					$invoice['customer']['address'],
+					$invoice['customer']['ten'],
+					$invoice['customer']['ssn'],
+					$invoice['customer']['zip'],
+					$invoice['customer']['city'],
+					$iid
+				));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
-		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0, customerid = ? WHERE docid = ?', array($invoice['customer']['id'], $iid));
+		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0, customerid = ? WHERE docid = ?',
+				array($invoice['customer']['id'], $iid));
 
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
