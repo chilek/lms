@@ -19,15 +19,15 @@ version ? (????-??-??):
     messages management as separate actions (alec)
   - Balance Sheet: fixed big memory usage problem and increased speed of 
     groups filtering (alec)
-  - Invoices List: fixed big memory usage problem, increased speed of 
-    groups and value filtering (alec)
+  - Invoices List: fixed big memory usage problem, increased speed of filtering
+    by group and by value (alec)
   - invoicenote: we can change pay type (chilan)
   - lmsd/cutoff: added 'use_customerassignments' option (alec)
   - improved page navigation ergonomy in chooseip window (chilan)
   - added "disable network" functionality in LMSUI and lms-makedhcpconf (chilan)
   - added "trivial" vlan support in lms-makedhcpconf (chilan)
   - lmsd/dhcp: added "trivial" vlan support (alec)
-  - tariffs: added possibility to tariff cloning (alec)
+  - tariffs: added possibility to clone tariffs data (alec)
   - don't overwrite invoice's creation time on edit if date wasn't changed (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
