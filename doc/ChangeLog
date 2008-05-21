@@ -29,6 +29,7 @@ version ? (????-??-??):
   - lmsd/dhcp: added "trivial" vlan support (alec)
   - tariffs: added possibility to clone tariffs data (alec)
   - don't overwrite invoice's creation time on edit if date wasn't changed (alec)
+  - invoiceedit: we can copy item content to edit fields clicking mouse button (chilan)
 
 version 1.11.3 Quetesh (2008-03-26):
 

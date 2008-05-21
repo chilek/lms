@@ -57,6 +57,19 @@
 		document.additem.action = "?m=invoiceedit&action=save&print=1" + add;
 		document.additem.submit();
 	}
+
+	function setProduct(name, prodid, count, jm, discount, valuenetto, taxid, valuebrutto)
+	{
+		document.additem.name.value = name;
+		document.additem.prodid.value = prodid;
+		document.additem.count.value = count;
+		document.additem.jm.value = jm;
+		document.additem.discount.value = discount;
+		document.additem.valuenetto.value = valuenetto;
+		document.additem.taxid.value = taxid;
+		document.additem.valuebrutto.value = valuebrutto;
+	}
+
 	{/literal}
 	//-->
 </script>		
@@ -176,7 +189,7 @@
 	{*{counter print=false}*}
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
-	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.2f"}', '{$item.jm}', '{$item.discount|string_format:"%.2f"}', '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label eq $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');">
 		<TD CLASS="fleft" WIDTH="1%">
 			<B>{counter}.</B>
 		</TD>
@@ -244,7 +257,7 @@
 			<B>{counter}.</B>
 		</TD>
 		<TD CLASS="ftop" WIDTH="92%" NOWRAP>
-			<INPUT TYPE="text" NAME="name" SIZE="40"style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
+			<INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
 			<SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
 				<OPTION value="0">-</OPTION>
 				{foreach from=$tariffs item=tariff}
