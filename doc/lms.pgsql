@@ -96,7 +96,7 @@ CREATE TABLE networks (
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	address bigint 		DEFAULT 0 NOT NULL,
 	mask varchar(16) 	DEFAULT '' NOT NULL,
-	interface varchar(8) 	DEFAULT '' NOT NULL, 
+	interface varchar(16) 	DEFAULT '' NOT NULL, 
 	gateway varchar(16) 	DEFAULT '' NOT NULL,
 	dns varchar(16) 	DEFAULT '' NOT NULL,
 	dns2 varchar(16) 	DEFAULT '' NOT NULL,
@@ -985,4 +985,4 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008042400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008052300');

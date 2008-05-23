@@ -255,7 +255,7 @@ CREATE TABLE networks (
   address int(16) unsigned NOT NULL DEFAULT '0',
   mask varchar(16) NOT NULL DEFAULT '',
   gateway varchar(16) NOT NULL DEFAULT '',
-  interface varchar(8) NOT NULL DEFAULT '',
+  interface varchar(16) NOT NULL DEFAULT '',
   dns varchar(16) NOT NULL DEFAULT '',
   dns2 varchar(16) NOT NULL DEFAULT '',
   domain varchar(64) NOT NULL DEFAULT '',
@@ -926,4 +926,4 @@ CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008042400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008052300');
