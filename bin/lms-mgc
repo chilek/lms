@@ -174,7 +174,9 @@ sub instance($)
 	my $header_file = $ini->val("mgc:$instanceno",'header_file') || '';
 	my $header = $ini->val("mgc:$instanceno",'header') || '';
 	my $footer_file = $ini->val("mgc:$instanceno",'footer_file') || '';
-	my $footer = $ini->val("mgc:$instanceno",'footer') || '';			
+	my $footer = $ini->val("mgc:$instanceno",'footer') || '';
+	my $customergroups = $ini->val("mgc:$instanceno", 'customergroups') || '';
+	my $excluded_customergroups = $ini->val("mgc:$instanceno", 'excluded_customergroups') || '';
 	my $networks = $ini->val("mgc:$instanceno", 'networks') || '';
 	my $excluded_networks = $ini->val("mgc:$instanceno", 'excluded_networks') || '';
 	my $dst_networks = $ini->val("mgc:$instanceno", 'dst_networks') || '';
@@ -215,6 +217,34 @@ sub instance($)
 			print "$instance finished with rcode $rcode.\n" unless $quiet;
 		}
 		return 0;
+	}
+
+	my $groups_sql = '';
+
+	if($customergroups)
+	{
+		$customergroups = "UPPER('$customergroups')";
+	        $customergroups =~ s/[ \t]+/\'\),UPPER\(\'/g;
+		$groups_sql .= " WHERE ownerid IN (SELECT DISTINCT a.customerid 
+				FROM customerassignments a 
+				JOIN customergroups g ON (a.customergroupid = g.id)
+				WHERE UPPER(g.name) IN ($customergroups)) ";
+	}
+	if($excluded_customergroups)
+	{
+		$excluded_customergroups = "UPPER('$excluded_customergroups')";
+	        $excluded_customergroups =~ s/[ \t]+/\'\),UPPER\(\'/g;
+		
+		if($groups_sql) {
+			$groups_sql .= 'AND';
+		} else {
+			$groups_sql .= ' WHERE';
+		}
+		
+		$groups_sql .= " ownerid NOT IN (SELECT DISTINCT a.customerid 
+				FROM customerassignments a 
+				JOIN customergroups g ON (a.customergroupid = g.id)
+				WHERE UPPER(g.name) IN ($excluded_customergroups)) ";
 	}
 	
 	my $allnetworks = '';
@@ -480,11 +510,13 @@ sub instance($)
 		my %passlist;
 		my %customerlist;
 		
-		$dbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr, inet_ntoa(ipaddr_pub) AS ipaddr_pub, 
-				mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, 
-				nodes.info AS info, pin, port, $customerq 
-				FROM nodes 
-				LEFT JOIN customers ON nodes.ownerid = customers.id");
+		$dbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr, 
+			inet_ntoa(ipaddr_pub) AS ipaddr_pub, mac, passwd, access, 
+			nodes.id as id, ownerid, nodes.name as name, warning, 
+			nodes.info AS info, pin, port, $customerq 
+			FROM nodes 
+			LEFT JOIN customers ON ownerid = customers.id
+			$groups_sql");
 		$dbq->execute();
 		while (my $row = $dbq->fetchrow_hashref())
 		{

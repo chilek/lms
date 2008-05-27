@@ -118,11 +118,30 @@
      <para><note><para>You should use \n as line separator. You may omit line separator at the end of last line.</para></note></para>
     </listitem>
     <listitem>
+     <para>customergroups</para>
+     <para>>List of (space separated) groups of customers, that should be
+    considered while creating configuration file. If unset, configuration will
+    include all groups.</para>
+     <para>Example:	<prompt>customergroups = group1 group2</prompt></para>
+    </listitem>
+    <listitem>
+     <para>excluded_customergroups</para>
+     <para>>List of (space separated) groups of customers, that should be
+    ommited while creating configuration file.</para>
+     <para>Example:	<prompt>excluded_customergroups = group3 group4</prompt></para>
+    </listitem>
+    <listitem>
      <para>networks</para>
      <para>>List of (space separated) networks, that should be
 considered while creating configuration file. If unset, configuration will
 include all networks.</para>
      <para>Example:	<prompt>networks = cust1-publ cust2-publ cust3-priv</prompt></para>
+    </listitem>
+    <listitem>
+     <para>excluded_networks</para>
+     <para>>List of (space separated) networks, that should be
+    ommited while creating configuration file.</para>
+     <para>Example:	<prompt>excluded_networks = cust4-publ cust5-publ</prompt></para>
     </listitem>
    </itemizedlist>    
    <para>Mgc script now loops for each network and performs the following tasks:</para>
