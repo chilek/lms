@@ -415,6 +415,31 @@ VALIGN="TOP"
 ></LI
 ><LI
 ><P
+>customergroups</P
+><P
+>&#62;List of (space separated) groups of customers, that should be
+    considered while creating configuration file. If unset, configuration will
+    include all groups.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>customergroups = group1 group2</SAMP
+></P
+></LI
+><LI
+><P
+>excluded_customergroups</P
+><P
+>&#62;List of (space separated) groups of customers, that should be
+    ommited while creating configuration file.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>excluded_customergroups = group3 group4</SAMP
+></P
+></LI
+><LI
+><P
 >networks</P
 ><P
 >&#62;List of (space separated) networks, that should be
@@ -424,6 +449,18 @@ include all networks.</P
 >Example:	<SAMP
 CLASS="PROMPT"
 >networks = cust1-publ cust2-publ cust3-priv</SAMP
+></P
+></LI
+><LI
+><P
+>excluded_networks</P
+><P
+>&#62;List of (space separated) networks, that should be
+    ommited while creating configuration file.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>excluded_networks = cust4-publ cust5-publ</SAMP
 ></P
 ></LI
 ></UL

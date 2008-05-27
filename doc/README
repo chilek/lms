@@ -3303,11 +3303,24 @@ Chapter 5. Configuration file generator (lms-mgc)
 
          You should use \n as line separator. You may omit line separator at the
          end of last line.
+     * customergroups
+       >List of (space separated) groups of customers, that should be
+       considered while creating configuration file. If unset,
+       configuration will include all groups.
+       Example: customergroups = group1 group2
+     * excluded_customergroups
+       >List of (space separated) groups of customers, that should be
+       ommited while creating configuration file.
+       Example: excluded_customergroups = group3 group4
      * networks
        >List of (space separated) networks, that should be considered
        while creating configuration file. If unset, configuration will
        include all networks.
        Example: networks = cust1-publ cust2-publ cust3-priv
+     * excluded_networks
+       >List of (space separated) networks, that should be ommited while
+       creating configuration file.
+       Example: excluded_networks = cust4-publ cust5-publ
 
    Mgc script now loops for each network and performs the following tasks:
      * network_header

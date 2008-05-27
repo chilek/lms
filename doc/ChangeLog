@@ -28,11 +28,14 @@ version ? (????-??-??):
   - added "trivial" vlan support in lms-makedhcpconf (chilan)
   - lmsd/dhcp: added "trivial" vlan support (alec)
   - tariffs: added possibility to clone tariffs data (alec)
-  - don't overwrite invoice's creation time on edit if date wasn't changed (alec)
-  - invoiceedit: we can copy item content to edit fields clicking mouse button (chilan)
+  - don't overwrite invoice's creation time on edit if date wasn't 
+    changed (alec)
+  - invoiceedit: we can copy item content to edit fields clicking mouse 
+    button (chilan)
   - lms-reminder: use Mail::Sender with smtp auth (alec)
   - removed english manual in one html file (alec)
   - added polish manual in plain text format (alec)
+  - lms-mgc: added 'customergroups' and 'excluded_customergroups' options (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
