@@ -2036,11 +2036,11 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfrom</P
+>mailfrom (wymagany)</P
 ><P
 >Adres e-mail z którego zostanie wysłany e-mail. Proszę pamiętać, że na 
-	     niektórych MTA (np. exim) konto to musi istnieć w systemie. 
-	     Domyślnie nieustawione.</P
+	    	    niektórych MTA (np. exim) konto to musi istnieć w systemie. 
+	    	    Domyślnie nieustawione.</P
 ><P
 >Przykład:	<SAMP
 CLASS="PROMPT"
@@ -2049,7 +2049,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->mailfname</P
+>mailfname (wymagany)</P
 ><P
 >Nazwa nadawcy maila.</P
 ><P
@@ -2060,13 +2060,47 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->smtp_server</P
+>smtp_host</P
 ><P
->Serwer SMTP, przez który ma zostać wysłana wiadomość. Domyślnie: 127.0.0.1.</P
+>Serwer SMTP, przez który ma zostać wysłana wiadomość. Domyślnie: localhost</P
 ><P
 >Przykład:	<SAMP
 CLASS="PROMPT"
->smtp_server = smtp.mydomain.pl</SAMP
+>smtp_host = smtp.mydomain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth</P
+><P
+>Sposób autoryzacji. Dozwolone wartości: LOGIN, PLAIN, CRAM-MD5, NTLM.
+		    Domyślnie: pusta (brak autoryzacji)</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>smtp_auth = LOGIN</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_user</P
+><P
+>Login do autoryzacji SMTP. Domyślnie: pusty</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>smtp_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_pass</P
+><P
+>Hasło do konta zdefiniowanego w opcji smtp_user. Domyślnie: puste</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>smtp_pass = password</SAMP
 ></P
 ></LI
 ><LI
@@ -2074,8 +2108,8 @@ CLASS="PROMPT"
 >debug_email (opcjonalny)</P
 ><P
 >Adres e-mail do debugowania. Gdy ustawiony, cała poczta zostaje 
-	     wysłana na dany email zamiast do klientów. Przydatne do debugowania 
-	     i sprawdzania czy wszystko działa OK. Domyślnie: nie ustawiony.</P
+	    	    wysłana na dany email zamiast do klientów. Przydatne do debugowania 
+	    	    i sprawdzania czy wszystko działa OK. Domyślnie: nie ustawiony.</P
 ><P
 >Przykład:	<SAMP
 CLASS="PROMPT"

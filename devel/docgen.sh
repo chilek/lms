@@ -31,6 +31,7 @@ generate_txt()
 	if [ $? -ne 0 ]
 		then exit 2
 	fi
+	rm ../README.html
 }
 
 case "$1" in

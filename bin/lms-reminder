@@ -26,9 +26,10 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use Net::SMTP;
 use vars qw($configfile $quiet $help $version);
 use POSIX qw(strftime mktime floor);
+use MIME::QuotedPrint;
+use Mail::Sender;
 
 my $_version = '1.11-cvs';
 
@@ -97,8 +98,12 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $mailfrom = $ini->val('reminder', 'mailfrom') || '';
 my $mailfname = $ini->val('reminder', 'mailfname') || '';
 my $mailsubject = $ini->val('reminder', 'mailsubject') || '';
-my $smtpserver = $ini->val('reminder', 'smtp_server') || '127.0.0.1';
 my $debugemail = $ini->val('reminder', 'debug_email') || '';
+
+my $smtp_host = $ini->val('reminder', 'smtp_host') || 'localhost';
+my $smtp_user = $ini->val('reminder', 'smtp_user') || '';
+my $smtp_pass = $ini->val('reminder', 'smtp_pass') || '';
+my $smtp_auth = $ini->val('reminder', 'smtp_auth') || ''; # 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
 
 if(!$mailfrom)
 {
@@ -118,6 +123,12 @@ if(!$mailsubject)
 	exit 1;
 }
 
+if($smtp_auth && $smtp_auth !~ /LOGIN|PLAIN|CRAM-MD5|NTLM/i)
+{
+        print STDERR "Fatal error: smtp_auth setting not supported! Can't continue, exiting.\n";
+        exit 1;
+}
+
 my $dbase;
 		
 if($dbtype =~ /mysql/)
@@ -135,6 +146,9 @@ else
 	exit 1;
 }
 
+$Mail::Sender::NO_X_MAILER = 1;
+$Mail::Sender::SITE_HEADERS = "X-Mailer: lms-reminder v.$_version";
+
 my $date = mktime(0, 0, 0, strftime("%e",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
 my $day = strftime("%x", 0, 0, 0, strftime("%e",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
 
@@ -144,6 +158,7 @@ while (my $row = $dbq->fetchrow_hashref())
 {
 	my $counter = 0;
 	my $contents = '';
+	my $recipient = $row->{'email'};
 	
 	my $dbqi = $dbase->prepare("SELECT DISTINCT title, description, begintime, endtime,
 			customerid, UPPER(lastname) AS lastname, customers.name AS name, address, city, zip,
@@ -162,6 +177,9 @@ while (my $row = $dbq->fetchrow_hashref())
  	while (my $rowi = $dbqi->fetchrow_hashref())
 	{
 		my $begintime = sprintf("%02d:%02d",floor($rowi->{'begintime'}/100),$rowi->{'begintime'}%100);
+
+		$contents .= "Timetable for today ($day)\n";
+		$contents .= "----------------------------------------------------------------------------\n";
 		$contents .= "Time :\t$begintime";
 		if($rowi->{'endtime'} && $rowi->{'endtime'} != $rowi->{'begintime'})
 		{
@@ -189,34 +207,31 @@ while (my $row = $dbq->fetchrow_hashref())
 		{
 			print STDOUT "$row->{'name'} ($row->{'id'}) - $counter event(s)\n";
 		}
-	
-		my $smtp = Net::SMTP->new("$smtpserver");
-		$smtp->mail("$mailfrom");
 
 		if($debugemail)
 		{
-			$smtp->to($debugemail);
-		}
-		else
-		{
-			$smtp->to($row->{'email'});
+			$recipient = $debugemail;
 		}
 
-		$smtp->data();
-
-		$smtp->datasend("From: $mailfname <$mailfrom>\n");
-		$smtp->datasend("To: $row->{'name'} <$row->{'email'}>\n");
-		$smtp->datasend("Subject: $mailsubject\n");
-    		$smtp->datasend("User-Agent: lms\-reminder v. $_version\n");
-		$smtp->datasend("Content-type: text/plain; charset=UTF-8\n");
-		$smtp->datasend("Mime-Version: 1.0\n");
-		$smtp->datasend("Content-transfer-encoding: 8bit\n");
-		$smtp->datasend("\n");
-		$smtp->datasend("Timetable for today ($day)\n");
-		$smtp->datasend("----------------------------------------------------------------------------\n");
- 		$smtp->datasend("$contents\n");
-		$smtp->dataend();
-		$smtp->quit;
+		(new Mail::Sender)->MailMsg ({
+                	smtp => $smtp_host,
+		        from => $mailfrom,
+			auth => $smtp_auth,
+			authid => $smtp_user,
+			authpwd => $smtp_pass,
+			on_errors => undef,
+			#debug_level => 4,
+			#debug => './log.txt',
+			subject => '=?UTF-8?Q?'.encode_qp($mailsubject, '').'?=',
+			fake_from => $mailfname || $mailfrom,
+			to => $recipient,
+			fake_to => '"=?UTF-8?Q?'.encode_qp($row->{'name'}).'?="'.' <'.$recipient.'>',
+			replyto => $mailfrom,
+			ctype => 'text/plain',
+			encoding => '8bit',
+			charset => 'UTF-8',
+			msg => "$contents\n",
+		}) or print STDERR "Error sending mail: $Mail::Sender::Error\n";
 	}
 }
 
