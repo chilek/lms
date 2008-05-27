@@ -131,11 +131,26 @@
      <para><note><para>Znak \n zosta³ tu u¿yty jako separator linii. Koñcowe \n nie jest 
      wymagane.</para></note></para>
     </listitem>
-    <listitem>
-     <para>networks</para>
-     <para>Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)</para>
-     <para>Przyk³ad:	<prompt>networks = cust1-publ cust2-publ cust3-priv</prompt></para>
-    </listitem>
+	<listitem>
+		<para>customergroups</para>
+		<para>Pozwala ustaliæ które z grup klienckich bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)</para>
+		<para>Przyk³ad:	<prompt>customergroups = grupa1 grupa2</prompt></para>
+	</listitem>
+	<listitem>
+		<para>excluded_customergroups</para>
+		<para>Pozwala ustaliæ które z grup klientów maj± zostaæ wy³±czone z pliku konfiguracyjnego (domy¶lnie ¿adna)</para>
+		<para>Przyk³ad:	<prompt>excluded_customergroups = grupa3 grupa4</prompt></para>
+	</listitem>
+	<listitem>
+		<para>networks</para>
+		<para>Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)</para>
+		<para>Przyk³ad:	<prompt>networks = cust1-publ cust2-publ cust3-priv</prompt></para>
+	</listitem>
+	<listitem>
+		<para>excluded_networks</para>
+		<para>Pozwala ustaliæ które z naszych sieci bêd± wy³±czone z pliku konfiguracyjnego (domy¶lnie ¿adna)</para>
+		<para>Przyk³ad:	<prompt>excluded_networks = cust4-publ cust5-publ</prompt></para>
+	</listitem>
    </itemizedlist>    
    <para>Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce czynno¶ci:</para>
    <itemizedlist>
