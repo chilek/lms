@@ -1276,10 +1276,10 @@ Chapter 3. User Interface (LMS-UI)
 
 3.6. IP Networks
 
-   You can define all your networks here. Network is IP address class with
+   You can define all your networks here. Network is IP address pool with
    parameters such as domain, DNSes, default gateway and DHCP pool. If you
-   use LMS to manage numerous networks or you use numerous address
-   classes, it's possible to define them here.
+   use LMS to manage numerous networks or you use numerous address pools,
+   it's possible to define them here.
      __________________________________________________________________
 
 3.6.1. List
@@ -1997,8 +1997,8 @@ links -dump \
      * allow_from (optional)
        List of networks or IP addresses, which have access to LMS. If
        empty, every IP address is permitted. You can write here list of
-       addresses or address classes and LMS will dismiss every unwanted
-       user with HTTP 403 error.
+       addresses or address pools and LMS will dismiss every unwanted user
+       with HTTP 403 error.
        Example: allow_from = 192.168.0.0/16, 213.25.209.224/27,
        213.241.77.29
      * lang
@@ -3352,40 +3352,40 @@ Chapter 5. Configuration file generator (lms-mgc)
        Example: netdevnode = ??
      * grantednode_priv
        Adds line for each IP address with 'connected' status in database
-       (parsed only for private address classes).
+       (parsed only for private address pools).
        Example: grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;
      * grantednode_publ
        Adds line for each IP address with 'connected' status in database
-       (parsed only for public address classes).
+       (parsed only for public address pools).
        Example: grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;
      * deniednode_priv
        Adds line for each IP address with 'disconnected' status in
-       database (parsed only for private address classes).
+       database (parsed only for private address pools).
        Example: deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;
      * deniednode_publ
        Adds line for each IP address with 'disconnected' status in
-       database (parsed only for public address classes).
+       database (parsed only for public address pools).
        Example: deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;
      * dhcpnode_priv
        Adds line for each IP address within DHCP dynamic range (parsed
-       only for private address classes).
+       only for private address pools).
        Example: dhcpnode_priv = node unknown (%IP) reject;
      * dhcpnode_publ
        Adds line for each IP address within DHCP dynamic range (parsed
-       only for public address classes).
+       only for public address pools).
        Example: dhcpnode_publ = node unknown (%IP) reject;
      * freeip_priv
        Adds line for each IP address that is not occupied by any computer
-       in database (parsed only for private address classes).
+       in database (parsed only for private address pools).
        Example: freeip_priv = node unknown (%IP) lock_as_unused;
      * freeip_publ
        Adds line for each IP address that is not occupied by any computer
-       in database (parsed only for public address classes).
+       in database (parsed only for public address pools).
        Example: freeip_publ = node unknown (%IP) lock_as_unused;
      * default_priv
        Default line, which is inserted when none of grantednode or
        deniednode matches for given IP address (parsed only for private
-       address classes)
+       address pools)
        Example: default_priv = node unknown (%IP) lock_as_intruder;
 
     Note
@@ -3395,7 +3395,7 @@ Chapter 5. Configuration file generator (lms-mgc)
      * default_publ
        Default line, which is inserted when none of grantednode or
        deniednode matches for given IP address (parsed only for public
-       address classes)
+       address pools)
        Example: default_publ = node unknown (%IP) lock_as_intruder;
 
    Mgc now is ready to append final part of the file and execute system

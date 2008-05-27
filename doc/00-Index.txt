@@ -6,8 +6,8 @@ AUTHORS		- LMS authors and contributors
 COPYING		- licence
 COPYRIGHTS	- licence header for php/html/etc files
 ChangeLog	- history of changes
-README		- User Manual
-README.html	- User Manual - one html file version
+README		- User Manual in English
+README.pl	- User Manual in Polish
 lms.mysql	- create database queries for MySQL
 lms.pgsql	- create database queries for PostgreSQL
 

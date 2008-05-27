@@ -29,18 +29,20 @@ generate_html()
 
 generate_txt()
 {
-	jade -t sgml -V nochunks -d lms.dsl index.sgml > ../../README_pl.html
+	jade -t sgml -V nochunks -d lms.dsl index.sgml > ../../README_pl.html.tmp
 	if [ $? -ne 0 ]
 		then exit 1
 	fi
+	iconv --from ISO-8859-2 --to utf-8 < ../../README_pl.html.tmp > ../../README_pl.html
 
-	lynx -dump ../../README_pl.html -display_charset=ISO-8859-2 -raw -nolist -dont_wrap_pre > ../../README_pl
+	lynx -dump -display_charset=utf-8 -raw -nolist -dont_wrap_pre ../../README_pl.html > ../../README.pl
 	if [ $? -ne 0 ]
 		then exit 2
 	fi
 
-	iconv --from latin2 --to utf-8 < ../../README_pl > ../../README_pl.tmp
-	mv -f ../../README_pl.tmp ../../README_pl
+#	mv -f ../../README_pl.tmp ../../README.pl
+	rm ../../README_pl.html.tmp
+	rm ../../README_pl.html
 }
 
 case "$1" in
