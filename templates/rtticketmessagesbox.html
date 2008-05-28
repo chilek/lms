@@ -25,29 +25,32 @@
 			    <B>{t}From:{/t}<BR>{t}Subject:{/t}</B>
 			</TD>
 			<TD width="1%" class="fbt" NOWRAP>
-			    {if $message.customerid}
-				    <A href="?m=customerinfo&id={$message.customerid}">{$message.customername}</A>
-			    {elseif $message.userid}
-				    <A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
-			    {elseif $message.mailfrom}
-				    <A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
-			    {else}
-				    {$ticket.requestor|escape}
-				    {if $ticket.requestoremail}
-					    &lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
-				    {/if}
-			    {/if}
-			    <BR>
-			    {$message.subject|escape}
+				{if $message.customerid}
+					<A href="?m=customerinfo&id={$message.customerid}">{$message.customername}</A>
+				{elseif $message.userid}
+					<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
+				{elseif $message.mailfrom}
+					<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
+				{else}
+					{$ticket.requestor|escape}
+					{if $ticket.requestoremail}
+						&lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
+					{/if}
+				{/if}
+				<BR>
+				{$message.subject|escape}
 			</TD>
 			<TD width="97%" class="fbt" align="right" nowrap>
-			    <A href="?m=rtmessageview&id={$message.id}">{t}Details{/t} <IMG src="img/view.gif" alt=""></A>
-			    {if $ticket.state != 2}
-			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">{t}Answer{/t} <IMG src="img/save.gif" alt=""></A>
-			    {/if}
-			    {if $msgidx > 0}
-			    <A href="?m=rtmessagedel&id={$message.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that message?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
-			    {/if}
+				{if $message.attachment}
+					<A href="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$message.attachment}">{t}Open attachment{/t} <IMG src="img/attach.gif" alt=""></A>
+				{/if}
+				<A href="?m=rtmessageview&id={$message.id}">{t}Details{/t} <IMG src="img/view.gif" alt=""></A>
+				{if $msgidx > 0}
+					<A href="?m=rtmessagedel&id={$message.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that message?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
+				{/if}
+				{if $ticket.state != 2}
+					<A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">{t}Answer{/t} <IMG src="img/forward.gif" alt=""></A>
+				{/if}
 			</TD>
 		    </TR>
 		    <TR class="LIGHT">
@@ -59,21 +62,21 @@
 		{else}
 		    <TR class="DARK">
 			<TD width="1%" class="fbt" ALIGN="RIGHT" nowrap>
-			    <B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
+				<B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 			</TD>
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
-			    <B>{t}From:{/t}</B>
+				<B>{t}From:{/t}</B>
 			</TD>
 			<TD width="1%" class="fbt" NOWRAP>
-			    <A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
+				<A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
 			</TD>
 			<TD width="97%" class="fbt" align="right" nowrap>
-			    <A href="?m=rtnotedel&id={$message.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that note?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
+				<A href="?m=rtnotedel&id={$message.id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that note?{/t}');">{t}Delete{/t} <IMG src="img/delete.gif" alt=""></A>
 			</TD>
 		    </TR>
 		    <TR class="LIGHT">
 			<TD COLSPAN="4" class="fbt superlight blend">
-			    {$message.body|escape|replace:"\n":"<BR>"}
+				{$message.body|escape|replace:"\n":"<BR>"}
 			</TD>
 		    </TR>
 		{counter print=false}
@@ -84,3 +87,4 @@
     </TR>
 </TABLE>
 </P>
+

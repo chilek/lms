@@ -36,6 +36,7 @@ version ? (????-??-??):
   - removed english manual in one html file (alec)
   - added polish manual in plain text format (alec)
   - lms-mgc: added 'customergroups' and 'excluded_customergroups' options (alec)
+  - rtticketview: we can open attachments directly from message list in rtticketview (chilan)
 
 version 1.11.3 Quetesh (2008-03-26):
 
