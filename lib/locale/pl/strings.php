@@ -1988,5 +1988,6 @@ $_LANG['Actions:'] = 'Akcje:';
 $_LANG['Cutoff suspending:'] = 'Zawieszenie blokowania:';
 $_LANG['Enter warning message contents'] = 'Wprowadź treść ostrzeżenia';
 $_LANG['Select days number of cutoff suspending'] = 'Wybierz ilość dni zawieszenia blokowania';
+$_LANG['Open attachment'] = 'Otwórz załącznik';
 
 ?>

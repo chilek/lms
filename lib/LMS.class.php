@@ -3047,19 +3047,20 @@ class LMS
 		$ticket['messages'] = $this->DB->GetAll(
 				'(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
-				    userid, users.name AS username, customerid
+				    userid, users.name AS username, customerid, rtattachments.filename AS attachment
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN users ON (users.id = userid)
+				LEFT JOIN rtattachments ON (rtmessages.id = rtattachments.messageid)
 				WHERE ticketid = ?)
 				UNION
 				(SELECT rtnotes.id AS id, NULL, NULL, body, createtime, NULL,
-				    userid, users.name AS username, NULL
+				    userid, users.name AS username, NULL, NULL
 				FROM rtnotes
 				LEFT JOIN users ON (users.id = userid)
 				WHERE ticketid = ?)
-				ORDER BY createtime ASC', array($id, $id));
-		
+				ORDER BY createtime ASC', array($id, $id)); 
+
 		if(!$ticket['customerid'])
 			list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 		else
