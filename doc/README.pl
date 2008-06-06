@@ -3627,10 +3627,22 @@ Rozdział 5. Generator plików konfiguracyjnych (lms-mgc)
 
                Znak \n został tu użyty jako separator linii. Końcowe \n nie jest
                wymagane.
+     * customergroups
+       Pozwala ustalić które z grup klienckich będą uwzględniane w pliku
+       konfiguracyjnym (domyślnie wszystkie)
+       Przykład: customergroups = grupa1 grupa2
+     * excluded_customergroups
+       Pozwala ustalić które z grup klientów mają zostać wyłączone z pliku
+       konfiguracyjnego (domyślnie żadna)
+       Przykład: excluded_customergroups = grupa3 grupa4
      * networks
        Pozwala ustalić które z naszych sieci będą uwzględniane w pliku
        konfiguracyjnym (domyślnie wszystkie)
        Przykład: networks = cust1-publ cust2-publ cust3-priv
+     * excluded_networks
+       Pozwala ustalić które z naszych sieci będą wyłączone z pliku
+       konfiguracyjnego (domyślnie żadna)
+       Przykład: excluded_networks = cust4-publ cust5-publ
 
    Teraz mgc pobiera kolejne sieci i wykonuje w kółko następujące
    czynności:
@@ -4382,6 +4394,14 @@ Rozdział 6. LMS Daemon
    %wins - adres serwera WINS,
    %i16 - ostatni oktet adresu IP w formacie szesnastkowym,
    %i16pub - ostatni oktet publicznego adresu IP w formacie szesnastkowym.
+   %domainpub - domena sieci publicznej,
+   %netpub - nazwa sieci, do której należy adres publiczny,
+   %ifpub - interfejs sieci publicznej,
+   %addrpub - adres sieci publicznej,
+   %maskpub - maska sieci publicznej,
+   %gwpub - adres bramy w sieci publicznej,
+   %dnspub, %dns2pub - adresy serwerów DNS w sieci publicznej,
+   %winspub - adres serwera WINS w sieci publicznej,
 
    Poniżej opcje udostępniane przez ten moduł:
      * file
