@@ -36,7 +36,11 @@ version ? (????-??-??):
   - removed english manual in one html file (alec)
   - added polish manual in plain text format (alec)
   - lms-mgc: added 'customergroups' and 'excluded_customergroups' options (alec)
-  - rtticketview: we can open attachments directly from message list in rtticketview (chilan)
+  - rtticketview: we can open attachments directly from message list 
+    in rtticketview (chilan)
+  - lmsd/hostfile: added variables %maskpub, %addrpub, %domainpub, %netpub,
+    %ifpub, %gwpub, %dns2pub, %dnspub, %winspub (alec)
+  
 
 version 1.11.3 Quetesh (2008-03-26):
 

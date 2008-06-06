@@ -682,6 +682,14 @@
 			<member>%wins - WINS server address,</member>
 			<member>%i16 - IP's last octet in hex,</member>
 			<member>%i16pub - public IP's last octet in hex.</member>
+			<member>%domainpub - domain name of public network,</member>
+			<member>%netpub - public network name,</member>
+			<member>%gwpub - gateway address of public network,</member>
+			<member>%ifpub - public network's interface,</member>
+			<member>%maskpub - public network mask,</member>
+			<member>%addrpub - public network's address,</member>
+			<member>%dnspub, %dns2pub - DNS server addresses in public network,</member>
+			<member>%winspub - WINS server address in public network,</member>
 			</simplelist>
               This module has following options:</para>
               <itemizedlist>

@@ -25,9 +25,8 @@ struct host
 	char *ip_pub;
 	char *i16;
 	char *i16_pub;
-	unsigned long address;
-	unsigned long mask;
 	struct net net;
+	struct net pubnet;
 };
 
 struct hostfile_module

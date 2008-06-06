@@ -41,8 +41,20 @@ char * itoha(int i)
 
 void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 {
+	unsigned long inet_pub = inet_addr(h.ip_pub);
 	char *s = strdup(rule);
 
+	g->str_replace(&s, "%maskpub", inet_pub ? inet_ntoa(inet_makeaddr(htonl(h.pubnet.mask),0)) : "");
+	g->str_replace(&s, "%addrpub", inet_pub ? inet_ntoa(inet_makeaddr(htonl(h.pubnet.address),0)) : "");
+	g->str_replace(&s, "%domainpub", inet_pub ? h.pubnet.domain : "");
+	g->str_replace(&s, "%netpub", inet_pub ? h.pubnet.name : "");
+	g->str_replace(&s, "%ifpub", inet_pub ? h.pubnet.interface : "");
+	g->str_replace(&s, "%gwpub", inet_pub ? h.pubnet.gateway : "");
+	g->str_replace(&s, "%dns2pub", inet_pub ? h.pubnet.dns2 : "");
+	g->str_replace(&s, "%dnspub", inet_pub ? h.pubnet.dns : "");
+	g->str_replace(&s, "%winspub", inet_pub ? h.pubnet.wins : "");
+	g->str_replace(&s, "%mask", inet_ntoa(inet_makeaddr(htonl(h.net.mask),0)));
+	g->str_replace(&s, "%addr", inet_ntoa(inet_makeaddr(htonl(h.net.address),0)));
 	g->str_replace(&s, "%domain", h.net.domain);
 	g->str_replace(&s, "%net", h.net.name);
 	g->str_replace(&s, "%if", h.net.interface);
@@ -50,8 +62,6 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%dns2", h.net.dns2);
 	g->str_replace(&s, "%dns", h.net.dns);
 	g->str_replace(&s, "%wins", h.net.wins);
-	g->str_replace(&s, "%mask", inet_ntoa(inet_makeaddr(htonl(h.net.mask),0)));
-	g->str_replace(&s, "%addr", inet_ntoa(inet_makeaddr(htonl(h.net.address),0)));
 	g->str_replace(&s, "%info", h.info);
 	g->str_replace(&s, "%ipub", h.ip_pub);
 	g->str_replace(&s, "%id", h.id);
@@ -72,7 +82,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	FILE *fh;
 	QueryHandle *res;
 	char *query;
-	int i, j, nc=0, n=2, en=2, c=2, ec=2, ng=2, eng=2;
+	int i, j, k, nc=0, n=2, en=2, c=2, ec=2, ng=2, eng=2;
 
 	struct net *networks = (struct net *) malloc(sizeof(struct net));
 
@@ -312,18 +322,30 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		{
 			unsigned long inet, inet_pub;
 			struct host h;
+			char *pattern;
 			
 			h.ip 		= g->db_get_data(res,i,"ip");
 			h.ip_pub 	= g->db_get_data(res,i,"ip_pub");
 			inet 		= inet_addr(h.ip);
 			inet_pub 	= inet_addr(h.ip_pub);
 
-			// network
+			// networks
 			for(j=0; j<nc; j++)
 				if(networks[j].address == (inet & networks[j].mask))
 					break;
 
-			char *pattern;
+			h.net 		= networks[j];
+			// initialize pubnet, we'll overwrite it if node has public IP
+			h.pubnet	= networks[j];
+
+			if(inet_pub)
+			{
+				for(k=0; k<nc; k++)
+					if(networks[k].address == (inet_pub & networks[k].mask))
+						break;
+				if(k<nc)
+					h.pubnet = networks[k];
+			}
 
 			h.access 	= g->db_get_data(res,i,"access");
 		    	h.warning	= g->db_get_data(res,i,"warning");
@@ -333,7 +355,6 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			h.id  		= g->db_get_data(res,i,"id");
 			h.mac 		= g->db_get_data(res,i,"mac");
 			h.port 		= g->db_get_data(res,i,"port");
-			h.net 		= networks[j];
 			// IP's last octet in hex
             		h.i16 		= strdup(itoha((ntohl(inet) & 0xff)));
 			h.i16_pub 	= strdup(inet_pub ? itoha((ntohl(inet_pub) & 0xff)) : "");

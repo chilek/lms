@@ -4037,6 +4037,14 @@ Chapter 6. LMS Daemon
    %wins - WINS server address,
    %i16 - IP's last octet in hex,
    %i16pub - public IP's last octet in hex.
+   %domainpub - domain name of public network,
+   %netpub - public network name,
+   %gwpub - gateway address of public network,
+   %ifpub - public network's interface,
+   %maskpub - public network mask,
+   %addrpub - public network's address,
+   %dnspub, %dns2pub - DNS server addresses in public network,
+   %winspub - WINS server address in public network,
    This module has following options:
      * file
        Location of generated file. Default: /tmp/hostfile
