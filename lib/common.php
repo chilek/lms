@@ -573,6 +573,20 @@ function fetch_url($url)
 	return $out;
 }
 
+// quoted-printable encoding
+function qp_encode($string)
+{
+        // ASCII only - don't encode
+        if(!preg_match('#[\x80-\xFF]{1}#', $value))
+        	return $string;
+
+        $encoded = preg_replace('/([\x2C\x3F\x80-\xFF])/e', "'='.sprintf('%02X', ord('\\1'))", $string);
+        // replace spaces with _
+        $encoded = str_replace(' ', '_', $encoded);
+
+        return '=?UTF-8?Q?'.$encoded.'?=';
+}
+
 // escape quotes and backslashes, newlines, etc.
 function escape_js($string)
 {

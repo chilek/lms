@@ -40,7 +40,7 @@ version ? (????-??-??):
     in rtticketview (chilan)
   - lmsd/hostfile: added variables %maskpub, %addrpub, %domainpub, %netpub,
     %ifpub, %gwpub, %dns2pub, %dnspub, %winspub (alec)
-  
+  - encode mail subject with quoted-printable instead of base64 (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
