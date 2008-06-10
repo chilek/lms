@@ -352,7 +352,7 @@
 				<para>excluded_networks</para>
 				<para>Lista nazw sieci, które maj± pominiête. Wielko¶æ liter nie ma znaczenia.
 					Domy¶lnie: pusta (¿adna).</para>
-				<para>Przyk³ad: <prompt>networks = "lan3 lan4"</prompt></para>
+				<para>Przyk³ad: <prompt>excluded_networks = "lan3 lan4"</prompt></para>
 			</listitem>
 			<listitem>
 				<para>customergroups</para>
@@ -592,6 +592,18 @@
 				<para>Lista nazw grup klientów, które maj± byæ pominiête. Wielko¶æ liter nie ma znaczenia. 
 					Domy¶lnie: pusta (¿adna).</para>
 				<para>Przyk³ad: <prompt>excluded_customergroups = "grupa3 grupa4"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>networks</para>
+				<para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+				Domy¶lnie: pusta (wszystkie sieci).</para>
+				<para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+			</listitem>
+			<listitem>
+				<para>excluded_networks</para>
+				<para>Lista nazw sieci, które maj± pominiête. Wielko¶æ liter nie ma znaczenia.
+					Domy¶lnie: pusta (¿adna).</para>
+				<para>Przyk³ad: <prompt>excluded_networks = "lan3 lan4"</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>

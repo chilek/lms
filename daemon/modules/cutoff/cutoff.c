@@ -42,7 +42,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 {
 	QueryHandle *res;
 	char *query;
-	int i, execu=0, execn=0, u=0, n=0, k=2, m=2;
+	int i, execu=0, execn=0, u=0, n=0, x=2, o=2, k=2, m=2;
 	int plimit=0, limit=0;
 	char time_fmt[11];
 	size_t tmax = 11;
@@ -53,6 +53,40 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 	char *group = strdup(itoa(c->nodegroup_only));
 
+	char *nets = strdup(" AND EXISTS (SELECT 1 FROM networks net "
+				"WHERE (%nets) "
+	                        "AND ((ipaddr > net.address AND ipaddr < ("BROADCAST")) "
+				"OR (ipaddr_pub > net.address AND ipaddr_pub < ("BROADCAST"))) "
+				")");
+
+	char *nets_cust = strdup(" AND EXISTS (SELECT 1 FROM nodes n, networks net "
+				"WHERE n.ownerid = c.id "
+				"AND (%nets) "
+	                        "AND ((ipaddr > net.address AND ipaddr < ("BROADCAST")) "
+				"OR (ipaddr_pub > net.address AND ipaddr_pub < ("BROADCAST"))) "
+				")");
+				
+	char *netnames = strdup(c->networks);
+	char *netname = strdup(netnames);
+	char *netsql = strdup("");
+
+	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM networks net "
+				"WHERE (%enets) "
+	                        "AND ((ipaddr > net.address AND ipaddr < ("BROADCAST")) "
+				"OR (ipaddr_pub > net.address AND ipaddr_pub < ("BROADCAST"))) "
+				")");
+
+	char *enets_cust = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes n, networks net "
+				"WHERE n.ownerid = c.id "
+				"AND (%enets) "
+	                        "AND ((ipaddr > net.address AND ipaddr < ("BROADCAST")) "
+				"OR (ipaddr_pub > net.address AND ipaddr_pub < ("BROADCAST"))) "
+				")");
+				
+	char *enetnames = strdup(c->excluded_networks);
+	char *enetname = strdup(enetnames);
+	char *enetsql = strdup("");
+			
 	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
 				"WHERE a.customerid = %ownerid "
 				"AND g.id = a.customergroupid "
@@ -72,6 +106,54 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	char *egroupnames = strdup(c->excluded_customergroups);
 	char *egroupname = strdup(egroupnames);
 	char *egroupsql = strdup("");
+
+	while( x>1 )
+	{
+    		x = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+
+		if( strlen(netname) )
+		{
+			netsql = realloc(netsql, sizeof(char *) * (strlen(netsql) + strlen(netname) + 30));
+			if(strlen(netsql))
+				strcat(netsql, " OR UPPER(net.name) = UPPER('");
+			else
+				strcat(netsql, "UPPER(net.name) = UPPER('");
+			
+			strcat(netsql, netname);
+			strcat(netsql, "')");
+		}
+	}
+	free(netname); free(netnames);
+	
+	if(strlen(netsql))
+	{
+		g->str_replace(&nets, "%nets", netsql);
+		g->str_replace(&nets_cust, "%nets", netsql);
+	}
+	
+	while( o>1 )
+	{
+    		o = sscanf(enetnames, "%s %[._a-zA-Z0-9- ]", enetname, enetnames);
+
+		if( strlen(enetname) )
+		{
+			enetsql = realloc(enetsql, sizeof(char *) * (strlen(enetsql) + strlen(enetname) + 30));
+			if(strlen(enetsql))
+				strcat(enetsql, " OR UPPER(net.name) = UPPER('");
+			else
+				strcat(enetsql, "UPPER(net.name) = UPPER('");
+			
+			strcat(enetsql, enetname);
+			strcat(enetsql, "')");
+		}
+	}
+	free(enetname); free(enetnames);
+	
+	if(strlen(enetsql))
+	{
+		g->str_replace(&enets, "%enets", enetsql);
+		g->str_replace(&enets_cust, "%nets", netsql);
+	}
 
 	while( k>1 )
 	{
@@ -162,11 +244,13 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 						"AND (tariffid != 0 OR liabilityid != 0) "
 						"%suspended"
 				")"
-				"%groups%egroups"
+				"%groups%egroups%nets%enets"
 		);
 
     		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
     		g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
+		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
+		g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
     		g->str_replace(&query, "%suspended", suspended);
     		g->str_replace(&query, "%ownerid", "n.ownerid");
 	
@@ -206,11 +290,13 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 						"AND (tariffid != 0 OR liabilityid != 0) "
 						"%suspended"
 					")"
-				"%groups%egroups"
+				"%groups%egroups%nets%enets"
 		);
 
     		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
     		g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
+		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
+		g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
     		g->str_replace(&query, "%suspended", suspended);
     		g->str_replace(&query, "%ownerid", "c.id");
 
@@ -219,7 +305,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
 			char *customerid = g->db_get_data(res,i,"id");
-		
+
 			n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 WHERE ownerid = ?", customerid);
 
 			execn = 1;
@@ -247,11 +333,13 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 				"AND d.cdate + d.paytime * 86400 + 86400 * ? < %NOW% "
 				"AND c.deleted = 0 "
 				"AND c.cutoffstop < %NOW%"
-				"%groups%egroups"
+				"%groups%egroups%nets%enets"
 		);
 
     		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
     		g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
+		g->str_replace(&query, "%nets", strlen(netsql) ? nets_cust : "");	
+		g->str_replace(&query, "%enets", strlen(enetsql) ? enets_cust : "");	
     		g->str_replace(&query, "%ownerid", "d.customerid");
 
 		res = g->db_pquery(g->conn, query, itoa(c->deadline)); 
@@ -316,7 +404,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 #else
 				"AND balance * -1 > (?/100 * tariff) "
 #endif
-				"%groups%egroups" 
+				"%groups%egroups%nets%enets" 
 		);
 	else
 		query = strdup(
@@ -325,13 +413,15 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			"JOIN cash ON (c.id = cash.customerid) "
 			"WHERE c.deleted = 0 "
 				"AND c.cutoffstop < %NOW% "
-				"%groups%egroups" 
+				"%groups%egroups%nets%enets" 
 			" GROUP BY c.id "
 			"HAVING SUM(cash.value) < ? "
 		);
 
 	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
 	g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
+	g->str_replace(&query, "%nets", strlen(netsql) ? nets_cust : "");	
+	g->str_replace(&query, "%enets", strlen(enetsql) ? enets_cust : "");	
 	g->str_replace(&query, "%ownerid", "c.id");
 
 	if(plimit)
@@ -378,10 +468,11 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	syslog(LOG_INFO, "DEBUG: [%s/cutoff] reloaded", c->base.instance);
 #endif
 	free(group);
-	free(groups);
-	free(egroups);
-	free(groupsql);
-	free(egroupsql);
+	free(groups); free(egroups);
+	free(groupsql);	free(egroupsql);
+	free(nets); free(enets);
+	free(netsql); free(enetsql);
+	free(nets_cust); free(enets_cust);
 	
 	free(c->limit);
 	free(c->warning);
@@ -389,6 +480,8 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	free(c->command);
 	free(c->customergroups);
 	free(c->excluded_customergroups);
+	free(c->networks);
+	free(c->excluded_networks);
 }
 
 struct cutoff_module * init(GLOBAL *g, MODULE *m)
@@ -420,6 +513,8 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 
 	c->customergroups = strdup(g->config_getstring(c->base.ini, c->base.instance, "customergroups", ""));
 	c->excluded_customergroups = strdup(g->config_getstring(c->base.ini, c->base.instance, "excluded_customergroups", ""));
+	c->networks = strdup(g->config_getstring(c->base.ini, c->base.instance, "networks", ""));
+	c->excluded_networks = strdup(g->config_getstring(c->base.ini, c->base.instance, "excluded_networks", ""));
 	
 	c->nodegroup_only = 0;
 	nodegroup = g->config_getstring(c->base.ini, c->base.instance, "setnodegroup_only", "");
