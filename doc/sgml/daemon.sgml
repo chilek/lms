@@ -553,6 +553,16 @@
 			accounting. Default: empty (none).</para>
 			<para>Example: <prompt>excluded_customergroups = "group3 group4"</prompt></para>
         	</listitem>
+		<listitem>
+                	<para>networks</para>
+        		<para>List of network names to get into consideration. Default: empty (all networks).</para>
+    			<para>Example: <prompt>networks = 'lan1 lan2'</prompt></para>
+                </listitem>
+		<listitem>
+                	<para>excluded_networks</para>
+        		<para>List of network names to exclude. Default: empty (none).</para>
+    			<para>Example: <prompt>excluded_networks = 'lan3 lan4'</prompt></para>
+                </listitem>
               </itemizedlist>
               </sect3>
           </sect2>
