@@ -700,6 +700,8 @@
 			<member>%addrpub - public network's address,</member>
 			<member>%dnspub, %dns2pub - DNS server addresses in public network,</member>
 			<member>%winspub - WINS server address in public network,</member>
+			<member>%customer - node owner's name,</member>
+			<member>%cid - node owner's ID,</member>
 			</simplelist>
               This module has following options:</para>
               <itemizedlist>

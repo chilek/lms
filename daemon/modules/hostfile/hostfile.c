@@ -44,6 +44,8 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	unsigned long inet_pub = inet_addr(h.ip_pub);
 	char *s = strdup(rule);
 
+	g->str_replace(&s, "%customer", h.customer);
+	g->str_replace(&s, "%cid", h.cid);
 	g->str_replace(&s, "%maskpub", inet_pub ? inet_ntoa(inet_makeaddr(htonl(h.pubnet.mask),0)) : "");
 	g->str_replace(&s, "%addrpub", inet_pub ? inet_ntoa(inet_makeaddr(htonl(h.pubnet.address),0)) : "");
 	g->str_replace(&s, "%domainpub", inet_pub ? h.pubnet.domain : "");
@@ -294,17 +296,21 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		
 		if(hm->skip_dev_ips)
 			query = strdup(
-				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
-				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning, port "
+				"SELECT n.id, LOWER(n.name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
+				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, n.info, warning, port "
+				"%custcols"
 				"FROM nodes n "
+				"%custjoin"
 				"WHERE n.ownerid > 0 "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
 		else
 			query = strdup(
-				"SELECT n.id, LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
-				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, info, warning, port "
+				"SELECT n.id, LOWER(n.name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
+				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, n.info, warning, port "
+				"%custcols"
 				"FROM nodes n "
+				"%custjoin"
 				"WHERE 1 = 1 "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
@@ -315,7 +321,15 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");	
 		g->str_replace(&query, "%ngroups", strlen(ngroupsql) ? ngroups : "");
 		g->str_replace(&query, "%engroups", strlen(engroupsql) ? engroups : "");
-
+		g->str_replace(&query, "%custjoin", hm->join_customers ? 
+			"LEFT JOIN customers c ON (c.id = n.ownerid) " : "");
+#ifdef USE_PGSQL
+		g->str_replace(&query, "%custcols", hm->join_customers ? 
+			", c.id AS cid, TRIM(UPPER(c.lastname) || ' ' || c.name) AS customer " : "");
+#else
+		g->str_replace(&query, "%custcols", hm->join_customers ? 
+			", c.id AS cid, TRIM(CONCAT(UPPER(c.lastname), ' ', c.name)) AS customer " : "");
+#endif
 		res = g->db_query(g->conn, query);
 
 		for(i=0; i<g->db_nrows(res); i++)
@@ -355,6 +369,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			h.id  		= g->db_get_data(res,i,"id");
 			h.mac 		= g->db_get_data(res,i,"mac");
 			h.port 		= g->db_get_data(res,i,"port");
+		    	h.customer	= g->db_get_data(res,i,"customer");
+			h.cid  		= g->db_get_data(res,i,"cid");
 			// IP's last octet in hex
             		h.i16 		= strdup(itoha((ntohl(inet) & 0xff)));
 			h.i16_pub 	= strdup(inet_pub ? itoha((ntohl(inet_pub) & 0xff)) : "");
@@ -494,6 +510,31 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->excluded_networks = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "excluded_networks", ""));
 	hm->excluded_customergroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "excluded_customergroups", ""));
 	hm->excluded_nodegroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "excluded_nodegroups", ""));
+
+	// looking for %customer or %cid variables, if not found we'll not join 
+	// with customers table 
+	if(strstr(hm->host_prefix, "%customer")!=NULL
+		|| strstr(hm->host_append, "%customer")!=NULL
+		|| strstr(hm->grant, "%customer")!=NULL
+		|| strstr(hm->deny, "%customer")!=NULL 
+		|| strstr(hm->grant_pub, "%customer")!=NULL
+		|| strstr(hm->deny_pub, "%customer")!=NULL
+		|| strstr(hm->warn, "%customer")!=NULL 
+		|| strstr(hm->warn_pub, "%customer")!=NULL
+		|| strstr(hm->host_prefix, "%cid")!=NULL
+		|| strstr(hm->host_append, "%cid")!=NULL
+		|| strstr(hm->grant, "%cid")!=NULL
+		|| strstr(hm->deny, "%cid")!=NULL
+		|| strstr(hm->grant_pub, "%cid")!=NULL
+		|| strstr(hm->deny_pub, "%cid")!=NULL
+		|| strstr(hm->warn, "%cid")!=NULL
+		|| strstr(hm->warn_pub, "%cid")!=NULL)
+	{
+		hm->join_customers = 1;
+	}
+	else
+		hm->join_customers = 0;
+
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/hostfile] initialized", hm->base.instance);
 #endif

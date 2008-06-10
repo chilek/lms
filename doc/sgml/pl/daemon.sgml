@@ -746,6 +746,8 @@
 			<member>%gwpub - adres bramy w sieci publicznej,</member>
 			<member>%dnspub, %dns2pub - adresy serwerów DNS w sieci publicznej,</member>
 			<member>%winspub - adres serwera WINS w sieci publicznej,</member>
+			<member>%customer - nazwa klienta,</member>
+                        <member>%cid - ID klienta</member>
 		    </simplelist></para>
 		    <para>Poni¿ej opcje udostêpniane przez ten modu³:</para>
 		    <itemizedlist>

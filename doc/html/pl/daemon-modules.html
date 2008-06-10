@@ -482,7 +482,7 @@ CLASS="PROMPT"
 ><P
 >Przykład: <SAMP
 CLASS="PROMPT"
->networks = "lan3 lan4"</SAMP
+>excluded_networks = "lan3 lan4"</SAMP
 ></P
 ></LI
 ><LI
@@ -951,6 +951,30 @@ CLASS="PROMPT"
 >excluded_customergroups = "grupa3 grupa4"</SAMP
 ></P
 ></LI
+><LI
+><P
+>networks</P
+><P
+>Lista nazw sieci, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
+				Domyślnie: pusta (wszystkie sieci).</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>networks = "lan1 lan2"</SAMP
+></P
+></LI
+><LI
+><P
+>excluded_networks</P
+><P
+>Lista nazw sieci, które mają pominięte. Wielkość liter nie ma znaczenia.
+					Domyślnie: pusta (żadna).</P
+><P
+>Przykład: <SAMP
+CLASS="PROMPT"
+>excluded_networks = "lan3 lan4"</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ></DIV
@@ -1295,6 +1319,14 @@ BORDER="0"
 ><TR
 ><TD
 >%winspub - adres serwera WINS w sieci publicznej,</TD
+></TR
+><TR
+><TD
+>%customer - nazwa klienta,</TD
+></TR
+><TR
+><TD
+>%cid - ID klienta</TD
 ></TR
 ></TBODY
 ></TABLE

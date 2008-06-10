@@ -21,6 +21,8 @@ struct host
 	char *mac;
 	char *port;
 	char *id;
+	char *cid;
+	char *customer;
 	char *ip;
 	char *ip_pub;
 	char *i16;
@@ -55,4 +57,5 @@ struct hostfile_module
 	int skip_dev_ips;
 	int pub_replace;
 	int warn_replace;
+	int join_customers;
 };
