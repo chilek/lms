@@ -3930,6 +3930,13 @@ Chapter 6. LMS Daemon
        List of excluded customers groups to restrict customers for
        accounting. Default: empty (none).
        Example: excluded_customergroups = "group3 group4"
+     * networks
+       List of network names to get into consideration. Default: empty
+       (all networks).
+       Example: networks = 'lan1 lan2'
+     * excluded_networks
+       List of network names to exclude. Default: empty (none).
+       Example: excluded_networks = 'lan3 lan4'
      __________________________________________________________________
 
 6.2.7. DHCP
@@ -4045,6 +4052,8 @@ Chapter 6. LMS Daemon
    %addrpub - public network's address,
    %dnspub, %dns2pub - DNS server addresses in public network,
    %winspub - WINS server address in public network,
+   %customer - node owner's name,
+   %cid - node owner's ID,
    This module has following options:
      * file
        Location of generated file. Default: /tmp/hostfile

@@ -42,6 +42,7 @@ version ? (????-??-??):
     %ifpub, %gwpub, %dns2pub, %dnspub, %winspub (alec)
   - encode mail subject with quoted-printable instead of base64 (alec)
   - lmsd/cutoff: added 'networks' and 'excluded_networks' options (alec)
+  - lmsd/hostfile: added %customer and %cid variables (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 

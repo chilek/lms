@@ -4106,7 +4106,7 @@ Rozdział 6. LMS Daemon
      * excluded_networks
        Lista nazw sieci, które mają pominięte. Wielkość liter nie ma
        znaczenia. Domyślnie: pusta (żadna).
-       Przykład: networks = "lan3 lan4"
+       Przykład: excluded_networks = "lan3 lan4"
      * customergroups
        Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość
        liter nie ma znaczenia. Domyślnie: pusta (wszystkie grupy).
@@ -4283,6 +4283,14 @@ Rozdział 6. LMS Daemon
        Lista nazw grup klientów, które mają być pominięte. Wielkość liter
        nie ma znaczenia. Domyślnie: pusta (żadna).
        Przykład: excluded_customergroups = "grupa3 grupa4"
+     * networks
+       Lista nazw sieci, które mają być brane pod uwagę. Wielkość liter
+       nie ma znaczenia. Domyślnie: pusta (wszystkie sieci).
+       Przykład: networks = "lan1 lan2"
+     * excluded_networks
+       Lista nazw sieci, które mają pominięte. Wielkość liter nie ma
+       znaczenia. Domyślnie: pusta (żadna).
+       Przykład: excluded_networks = "lan3 lan4"
      __________________________________________________________________
 
 6.2.7. Dhcp
@@ -4402,6 +4410,8 @@ Rozdział 6. LMS Daemon
    %gwpub - adres bramy w sieci publicznej,
    %dnspub, %dns2pub - adresy serwerów DNS w sieci publicznej,
    %winspub - adres serwera WINS w sieci publicznej,
+   %customer - nazwa klienta,
+   %cid - ID klienta
 
    Poniżej opcje udostępniane przez ten moduł:
      * file
