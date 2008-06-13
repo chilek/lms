@@ -1,0 +1,136 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+{literal}
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+	function SelectAllCustomers()
+	{
+		if(document.setrights.customers.checked) 
+			for (var i = 0; i < document.setrights.elements[0].length; i++)
+				document.setrights.elements[0].options[i].selected = true;
+		else
+			for (var i = 0; i < document.setrights.elements[0].length; i++)
+				document.setrights.elements[0].options[i].selected = false;
+	}
+
+	function SelectAllCustomers2()
+	{
+		document.setrights.customers.checked = !document.setrights.customers.checked;
+		SelectAllCustomers();
+	}
+//-->
+</SCRIPT>
+{/literal}
+<H1>{$layout.pagetitle}</H1>
+<TABLE width="100%" cellpadding="3">
+	<TR>
+	<FORM NAME="setdefaultrights" METHOD="POST" ACTION="?m=userpanel&f=submit_rights_default">
+		<TD WIDTH="1%" VALIGN="TOP">
+			<TABLE width="100%" cellpadding="3">
+				<TR CLASS="DARK">
+					<TD CLASS="fall" WIDTH="99%" COLSPAN="3">
+						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{t}Default Userpanel Rights:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="flr" COLSPAN="3" VALIGN="TOP">
+						<TABLE cellpadding="3" cellspacing="0" WIDTH="100%">
+							<TR class="dark">
+								<TD WIDTH="1%" NOWRAP class="fleftu">{t}Module:{/t}</TD>
+								<TD WIDTH="97%" NOWRAP class="fbt">{t}Description:{/t}</TD>
+								<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+							</TR>
+							{cycle values="light,lucid" print=false}
+							{foreach from=$userpanelrights item=right}
+							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+								<TD CLASS="fleft" WIDTH="1%" NOWRAP>{$right.module}</TD>
+								<TD WIDTH="97%" NOWRAP><A HREF="javascript:checkElement('setdefaultrights[{$right.id}]');">{t}{$right.description}{/t}</A></TD>
+								<TD CLASS="fright"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="setdefaultrights[{$right.id}]" ID="setdefaultrights[{$right.id}]" VALUE="{$right.id}"{if $right.setdefault} CHECKED{/if}></TD>
+							</TR>
+							{foreachelse}
+							<TR>
+								<TD class="flr" align="center" WIDTH="100%" colspan="3">
+								<p>&nbsp;</p>
+								<p><B>{t}There are any userpanel rights.{/t}</B></p>
+								<p>&nbsp;</p>
+								</TD>
+							</TR>
+							{/foreach}
+							<TR>
+								<TD CLASS="ftop" COLSPAN="3"></TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="fbottomu" ALIGN="RIGHT" COLSPAN="3">
+						<A HREF="javascript:document.setdefaultrights.submit()" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+					</TD>
+				<TR>
+			</TABLE>
+		</TD>
+	</FORM>
+	</TR>
+	<TR>
+	<FORM NAME="setrights" METHOD="POST" ACTION="?m=userpanel&f=submit_rights">
+		<TD WIDTH="1%" VALIGN="TOP">
+			<TABLE width="100%" cellpadding="3">
+				<TR CLASS="DARK">
+					<TD CLASS="fleftu" WIDTH="1%">
+						<IMG SRC="img/{if $layout.lmsv.2 == 6}user{else}customer{/if}.gif" alt="">&nbsp;<B>{t}Customers:{/t}</B>
+					</TD>
+					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
+						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{t}Userpanel Rights:{/t}</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="fleft">
+						<SELECT size="20" name="setrights[mcustomerid][]" multiple {tip text="Select customers"}>
+							{section name=customerlist loop=$customerlist}
+							<OPTION value="{$customerlist[customerlist].id}">{$customerlist[customerlist].customername|truncate:50:" ..."} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD CLASS="fright" COLSPAN="2" style="vertical-align: top;">
+						<TABLE cellpadding="3" cellspacing="0" WIDTH="100%">
+							<TR class="dark">
+								<TD WIDTH="1%" NOWRAP class="fleftu">{t}Module:{/t}</TD>
+								<TD WIDTH="97%" NOWRAP class="fbt">{t}Description:{/t}</TD>
+								<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+							</TR>
+							{cycle values="light,lucid" print=false}
+							{foreach from=$userpanelrights item=right}
+							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+								<TD CLASS="fleft" WIDTH="1%" NOWRAP>{$right.module}</TD>
+								<TD WIDTH="97%" NOWRAP><A HREF="javascript:checkElement('setrights[rights][{$right.id}]');">{t}{$right.description}{/t}</A></TD>
+								<TD CLASS="fright"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="setrights[rights][{$right.id}]" ID="setrights[rights][{$right.id}]" VALUE="{$right.id}"></TD>
+							</TR>
+							{foreachelse}
+							<TR>
+								<TD class="flr" align="center" WIDTH="100%" colspan="3">
+								<p>&nbsp;</p>
+								<p><B>{t}There are any userpanel rights.{/t}</B></p>
+								<p>&nbsp;</p>
+								</TD>
+							</TR>
+							{/foreach}
+							<TR>
+								<TD CLASS="ftop" COLSPAN="3"></TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="fbl" WIDTH="1%">
+						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{t}Select All{/t}</A></INPUT>
+					</TD>
+					<TD CLASS="fbr" ALIGN="RIGHT" COLSPAN="2">
+						<A HREF="javascript:document.setrights.submit()" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+					</TD>
+				<TR>
+			</TABLE>
+		</TD>
+	</FORM>
+	</TR>
+</TABLE>
+{include file="footer.html"}

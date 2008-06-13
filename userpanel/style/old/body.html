@@ -1,0 +1,25 @@
+<table width="100%" cellspacing="0" cellpadding="0" class="light" style="background-image:url('style/old/keyboard.jpg'); background-repeat:no-repeat;">
+    <tr>
+	<td align="right" style="padding-right:15px;">
+	    <h2><b>LMS Userpanel {$layout.upv}<br />
+	    @ {$layout.hostname}</b></h2>
+	</td>
+    </tr>
+<tr><td>
+<table style="text-align: left; width: 100%; background-image: url(style/old/fill.gif); background-repeat: repeat-x;" cellspacing="0" cellpadding="0">
+    <tr>
+	{foreach from=$modules item=menuitem}
+	<td style="vertical-align: top;" width="1px">
+    	    <img src="style/old/{if $menuitem.selected}button_a_l.gif{else}button_b_l.gif{/if}" alt=""/>
+	</td>
+        <td style="vertical-align: center; background-image: url(style/old/{if $menuitem.selected}button_a.gif{else}button_b.gif{/if}); background-repeat: repeat-x;" width="1px">
+    	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}><b>{$menuitem.name|replace:" ":"&nbsp;"}</b></a>
+        </td>
+        <td style="vertical-align: top;" width="1px">
+    	    <img src="style/old/{if $menuitem.selected}button_a_r.gif{else}button_b_r.gif{/if}" alt=''/>
+        </td>
+	{/foreach}
+	<td>&nbsp;</td>
+    </tr>
+</table>
+</tr></td></table>

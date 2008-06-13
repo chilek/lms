@@ -1,0 +1,167 @@
+<!-- $Id$ -->
+<chapter id="userpanel">
+    <title>Wstêp</title>
+    <sect1 id="userpanel-about">
+		<title>O programie</title>
+		<para>Userpanel jest opart± na szkielecie LMS (i ¶ci¶le z LMS wspó³pracuj±c±)
+		implementacj± tzw. e-boku. Umo¿liwia (albo bêdzie umo¿liwia³) klientom przegl±danie
+		stanu swoich wp³at, zmianê swoich danych osobowych, edycjê w³a¶ciwo¶ci swoich 
+		komputerów, zmianê taryf, zg³aszanie b³êdow oraz
+		awarii do Helpdesku, wydruk faktur oraz formularza przelewu.</para>
+    </sect1>
+    <sect1 id="userpanel-install">
+	<title>Instalacja</title>
+	<sect2 id="installation">
+		<title>Instalacja</title>
+		<para>W lms.ini nale¿y ustawiæ katalog <prompt>sys_dir</prompt> na katalog z LMS-em.
+		Userpanel bêdzie potrzebowa³ bibliotek LMS-a z tego katalogu. Dodatkowo w opcji
+		<prompt>userpanel_dir</prompt> trzeba wskazaæ lokalizacjê Userpanela.</para>
+	</sect2>
+	<sect2 id="install-configuration">
+		<title>Konfiguracja</title>
+		<para>Oprócz opcji dostêpnych dla LMS-UI, Userpanel korzysta z opcji zawartych
+		w sekcji konfiguracyjnej <emphasis>[userpanel]</emphasis> (dostêpnej tak¿e 
+		w pliku <prompt>lms.ini</prompt>).</para>
+	</sect2>
+	<sect2 id="install-modules">
+		<title>Modu³y</title>
+		<para>Modu³y w Userpanelu znajduj± siê w katalogu <prompt>modules</prompt>. 
+		Ich w³±czenie lub wy³±czenie sprowadza siê do usuniêcia b±d¼ skopiowania 
+		odpowiedniego modu³u do tego katalogu.</para>
+	</sect2>
+    </sect1>
+    <sect1 id="userpanel-config">
+	<title>Konfiguracja</title>
+	<para>Konfiguracjê Userpanela umo¿liwia panel konfiguracyjny dostêpny
+	w <emphasis>LMS-UI</emphasis> w menu Userpanel -> Konfiguracja.
+	LMS automatycznie wykrywa
+	instalacjê Userpanela i udostêpnia to menu, je¶li w sekcji <emphasis>
+	[directories]</emphasis> zostanie ustawiona opcja 
+	<prompt>userpanel_dir</prompt>.</para>
+	<para>W g³ównym oknie znajduj± siê podstawowe opcje konfiguracyjne
+	oraz lista (w³±czonych) modu³ów. Klikniêcie na dowolnym rekordzie
+	spowoduje przej¶cie do opcji konfiguracyjnych wybranego modu³u.</para>
+    </sect1>
+    <sect1 id="userpanel-style">
+	<title>Wygl±d (style)</title>
+	<para>Interfejs Userpanela jest tak stworzony, aby umo¿liwiæ
+	³atwe dostosowanie do w³asnych potrzeb i do wygl±du swoich stron
+	internetowych. Nie ma przy tym potrzeby zmiany kodu szablonów.</para>
+	<para>G³ówne pliki z definicjami styli css oraz obrazki
+	umieszczone s± w katalogu <prompt>style</prompt>, w podkatalogach
+	o nazwach odpowiadaj±cych nazwie stylu. Je¿eli w danym stylu nie ma 
+	jakiego¶ pliku, zostanie zastosowany plik ze stylu domy¶lnego - 
+	<prompt>default</prompt>. Oprócz plików obrazków, styli css oraz 
+	skryptów JavaScript styl zawiera równie¿ dwa szablony Smarty, 
+	które definiuj± wygl±d strony wraz z menu g³ównym (<prompt>body.html</prompt>)
+	oraz wygl±d tabelek z nag³ówkami (<prompt>box.html</prompt>).</para>
+	<para>Ka¿dy modu³ posiada w³asny podkatalog <prompt>style</prompt>.
+	Je¿eli w nim system nie odnajdzie danego pliku zostanie u¿yty
+	plik dla danego stylu z g³ównego katalogu <prompt>style</prompt>.</para>
+    </sect1>
+    <sect1 id="userpanel-modules">
+	<title>Modu³y</title>
+	<para>Userpanel posiada budowê modularn±. Ka¿dy modu³, odpowiadaj±cy
+	pozycji w menu, to odrêbny podkatalog katalogu <prompt>modules</prompt>.
+	</para>
+	<sect2 id="module-structure">
+		<title>Struktura modu³u</title>
+		<para>Drzewo katalogów typowego modu³u powinno wygl±daæ
+		nastêpuj±co:
+<screen>
+nazwa_modu³u
+    |---locale
+    |     |---pl
+    |          |---strings.php
+    |---style
+    |     |---default
+    |          |---image.gif
+    |---templates
+    |     |---template1.html
+    |     |---template2.html
+    |---upgradedb
+    |     |---mysql.2005081901.php
+    |     |---postgres.2005081901.php
+    |---configuration.php
+    |---functions.php
+</screen>
+		</para>
+		<para>I kilka s³ów wyja¶nienia:
+		<itemizedlist>
+			<listitem>
+				<para>Katalog <prompt>locale</prompt> zawiera
+				oczywi¶cie odpowiednie locale. W 
+				<prompt>strings.php</prompt> s± tylko
+				t³umaczenia tekstów zwartych w danym module,
+			</para>
+			</listitem>
+			<listitem>
+				<para><prompt>style</prompt> to oczywi¶cie
+				katalog z obrazkami, zawieraj±cy podkatalogi odpowiadaj±ce
+				nazwom styli u¿ywanych w Userpanelu,</para>
+			</listitem>
+			<listitem>
+				<para><prompt>templates</prompt> to
+				szablony Smarty danego modu³u,</para>
+			</listitem>
+			<listitem>
+				<para><prompt>upgradedb</prompt> zawiera pliki
+				auto-upgrade'u bazy danych dla tabel których
+				dany modu³ u¿ywa. Nazwy tabel tworzonych na
+				potrzeby modu³ów powinny zawieraæ prefiks
+				<prompt>up_nazwamodu³u_</prompt>,</para>
+			</listitem>
+			<listitem>
+				<para><prompt>configuration.php</prompt>
+				i <prompt>functions.php</prompt> to dwa wymagane
+				pliki. Ich budowa jest opisana poni¿ej.</para>
+			</listitem>
+		</itemizedlist>
+		</para>
+	</sect2>
+	<sect2 id="module-files">
+		<title>G³ówne pliki</title>
+		<para></para>
+		<sect3 id="module-configuration">
+			<title>configuration.php</title>
+			<para>Ten plik zawiera konfiguracjê danego modu³u, 
+			oraz jest includowany zawsze przy inicjalizacji
+			Userpanela. Typowa zawarto¶æ:
+<screen>
+&lt;?php
+$USERPANEL->AddModule(trans('Help'),      // Nazwa wy¶wietlana
+                    'help',             // Nazwa modu³u (musi byæ taka sama jak nazwa katalogu)
+                    trans('Runs problems solving creator'), // Tip
+                    5,                  // Priorytet
+                    trans('This module shows solving problems creator'), // Opis
+                    2005081901,         // Wersja bazy danych (podobnie jak w  LMS, 
+                                        // zobacz lms/lib/upgradedb.php)
+		    array(		// Pozycje podmenu wywietlane w LMS-UI w menu Userpanel
+		        array(		// (zobacz lib/LMS.menu.php)
+			    'name' => trans('Submenu'),
+			    'link' => '?m=userpanel&amp;module=help',
+			    'tip' => trans('Tooltip'),
+			),
+		    )
+);
+?&gt;
+</screen>
+			</para>
+		</sect3>
+		<sect3 id="module-functions">
+			<title>functions.php</title>
+			<para>Ten plik zawiera funkcje danego modu³u. Podstawow±
+			funkcj± modu³u jest <prompt>module_main()</prompt>.
+			Funkcja ta jest wykonywana jako pierwsza po wywo³aniu
+			modu³u. Je¶li chcemy aby funkcja mog³a byæ wywo³ana z
+			UI, to dodajemy prefiks <prompt>module_</prompt>
+			np. <prompt>module_funkcja1()</prompt>. Funkcja bêdzie
+			dostêpna po wpisaniu url'a:
+			<prompt>http://userpanel/?m=modul&amp;f=funkcja1</prompt>.
+			Funkcja <prompt>module_setup()</prompt> jest wywo³ywana
+			przez panel konfiguracyjny dostêpny z LMSa.
+			</para>
+		</sect3>
+	</sect2>
+    </sect1>
+</chapter>

@@ -964,7 +964,113 @@ CREATE TABLE excludedgroups (
 	PRIMARY KEY (id),
 	UNIQUE (userid, customergroupid)
     );
-    
+
+/* ---------------------------------------------------
+ Structure of table "up_rights" (Userpanel)
+------------------------------------------------------*/
+DROP SEQUENCE up_rights_id_seq;
+CREATE SEQUENCE up_rights_id_seq;
+DROP TABLE up_rights;
+CREATE TABLE up_rights (
+	id integer 		DEFAULT nextval('up_rights_id_seq'::text) NOT NULL,
+        module varchar(255) 	DEFAULT 0 NOT NULL,
+        name varchar(255) 	DEFAULT 0 NOT NULL,
+        description varchar(255) DEFAULT 0,
+	setdefault smallint 	DEFAULT 0,
+	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "up_rights_assignments" (Userpanel)
+------------------------------------------------------*/
+DROP SEQUENCE up_rights_assignments_id_seq;
+CREATE SEQUENCE up_rights_assignments_id_seq;
+DROP TABLE up_rights_assignments;
+CREATE TABLE up_rights_assignments (
+	id integer 		DEFAULT nextval('up_rights_assignments_id_seq'::text) NOT NULL,
+	customerid integer 	DEFAULT 0 NOT NULL,
+        rightid integer 	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (customerid, rightid)
+);	  
+
+/* ---------------------------------------------------
+ Structure of table "up_customers" (Userpanel)
+------------------------------------------------------*/
+DROP SEQUENCE up_customers_id_seq;
+CREATE SEQUENCE up_customers_id_seq;
+DROP TABLE up_customers;
+CREATE TABLE up_customers (
+	id integer 		DEFAULT nextval('up_customers_id_seq'::text) NOT NULL,
+        customerid integer 	DEFAULT 0 NOT NULL,
+	lastlogindate integer 	DEFAULT 0 NOT NULL,
+	lastloginip varchar(16) DEFAULT '' NOT NULL,
+	failedlogindate integer DEFAULT 0 NOT NULL,
+	failedloginip varchar(16) DEFAULT '' NOT NULL,
+	enabled smallint 	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);	  
+
+/* ---------------------------------------------------
+ Structure of table "up_help" (Userpanel)
+------------------------------------------------------*/
+DROP SEQUENCE up_help_id_seq;
+CREATE SEQUENCE up_help_id_seq;
+DROP TABLE up_help;
+CREATE TABLE up_help (
+        id integer 		DEFAULT nextval('up_help_id_seq'::text) NOT NULL,
+	reference integer 	DEFAULT 0 NOT NULL,
+	title varchar(128) 	DEFAULT 0 NOT NULL,
+	body text 		DEFAULT '' NOT NULL,
+	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "up_info_changes" (Userpanel)
+------------------------------------------------------*/
+DROP SEQUENCE up_info_changes_id_seq;
+CREATE SEQUENCE up_info_changes_id_seq;
+DROP TABLE up_info_changes;
+CREATE TABLE up_info_changes (
+	id integer 		DEFAULT nextval('up_info_changes_id_seq'::text) NOT NULL,
+	customerid integer 	DEFAULT 0 NOT NULL,
+	fieldname varchar(255) 	DEFAULT 0 NOT NULL,
+	fieldvalue varchar(255) DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
+
+INSERT INTO uiconfig (section, var, value, description, disabled) 
+	VALUES ('userpanel', 'disable_transferform', '0', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'disable_invoices', '0', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'invoice_duplicate', '0', '', 0);
+INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_tariffname', '1');
+INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_speeds', '1');
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'default_queue', '1', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'default_userid', '0', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'debug_email', '', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'lms_url', '', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'hide_nodesbox', '0', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'logout_url', '', '', 0);
+INSERT INTO uiconfig (section, var, value, description, disabled)
+	VALUES ('userpanel', 'owner_stats', '0', '', 0);
+INSERT INTO up_rights(module, name, description)
+	VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
+INSERT INTO up_rights(module, name, description)
+        VALUES ('info', 'edit_addr', 'Customer can change address information');
+INSERT INTO up_rights(module, name, description, setdefault)
+        VALUES ('info', 'edit_contact_ack', 'Customer can change contact information with admin acknowlegment', 0);
+INSERT INTO up_rights(module, name, description)
+        VALUES ('info', 'edit_contact', 'Customer can change contact information');
+
+
 CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
 SELECT 
 CASE 
@@ -984,5 +1090,6 @@ SELECT c.* FROM customers c
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
+
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008052300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008061300');

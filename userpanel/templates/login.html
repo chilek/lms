@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!--// $Id$ //-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_language}">
+<head>
+  <meta content="text/html; charset={$LANGDEFS.$_language.charset}" http-equiv="content-type" />
+  <title>{t}Virtual Customer Service{/t}</title>
+<link type="text/css" rel="stylesheet" href="{stylefile}" />
+</head>
+<body>
+<div class="login">
+<table style="vertical-align: middle; width:100%; height: 100%; margin:auto">
+    <tr>
+	<td align="center">
+	    <table>
+		<tr>
+		    <td>
+			{img src="logo.jpg" alt=""}
+		    </td>
+		    <td>&nbsp;</td>
+		    <td align="center">
+			{box title="VCS"}
+			<div style="white-space: nowrap; text-align: center;"><b>{t}Virtual Customer Service{/t}</b></div><br/>
+			{if $error}<div style="color:red;text-align: center;"><b>{$error}</b></div>{else}&nbsp;{/if}
+			<br/><br/>
+			<form id="login" method="post" action="{$target}">
+			<table style="height: 100%; width: 100%;">
+			    <tr>
+				<td align="right" style="white-space: nowrap;">
+				    <b>{t}Customer ID:{/t}</b>
+				</td>
+				<td align="left">
+				    <input type="text" name="loginform[login]" style="width: 50pt" />
+				</td>
+			    </tr>
+			    <tr>
+				<td align="right" style="white-space: nowrap;">
+				    <b>{t}PIN:{/t}</b>
+				</td>
+				<td align="left">
+				    <input type="password" name="loginform[pwd]" style="width: 50pt" />
+				</td>
+			    </tr>
+			    <tr>
+				<td colspan="2" align="center">
+				    <br/><input type="submit" name="loginform[submit]" style="font-weight: bold;" value="{t}Login{/t}"/>
+				</td>
+			    </tr>
+			</table>
+			</form>
+			{/box}
+		    </td>
+    		</tr>
+	    </table>
+	    <div class="copyrights"><b>LMS Userpanel {$layout.upv}</b><br/>
+	    {t}This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 2.{/t}<br/>
+	    {t}For more information see{/t} <a href="doc/COPYING">doc/COPYING</a> {t}and{/t} <a href="doc/AUTHORS">doc/AUTHORS</a>
+	    </div>
+	</td>
+    </tr>
+</table>
+<script type="text/javascript">
+<!--
+document.forms['login'].elements['loginform[login]'].focus();
+//-->
+</script>
+</div>
+</body>
+</html>

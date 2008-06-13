@@ -1,0 +1,21 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<table width="100%" cellpadding="10">
+{if !$usernodes.total && $_config.userpanel.hide_nodesbox}
+	<tr>
+		<td valign="top" width="100%">
+			{include file="module:updateuserinfobox.html"}
+		</td>
+	</tr>
+{else}
+	<tr>
+		<td valign="top" width="50%">
+			{include file="module:updateuserinfobox.html"}
+		</td>
+		<td valign="top" width="50%">
+			{include file="module:usernodesbox.html"}
+		</td>
+	</tr>
+{/if}
+</table>
+{include file="footer.html"}

@@ -1,0 +1,14 @@
+<!--// $Id$ //-->
+<div style="width:600px; margin:auto; text-align:center;">
+{box title="Database errors occurred!"}
+<table width="100%" cellpadding="10"><tr>
+<td width="1%">{img src="warning.png" alt="[ Error! ]"}</td>
+<td width="99%">
+{foreach from=$layout.dberrors item=dberror}
+    <b>{t}Query:{/t}</b> {$dberror.query}<br>
+    <b>{t}Error:{/t}</b> {$dberror.error}<br>
+{/foreach}
+</td>
+</tr></table>
+{/box}
+</div>

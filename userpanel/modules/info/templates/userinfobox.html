@@ -1,0 +1,119 @@
+<!--// $Id$ //-->
+{box title="Informations about you"}
+<table width="100%" CELLPADDING="3" class="light">
+{if $fields_changed}
+	<tr>
+		<td width="100%" colspan="3">
+			<CENTER><B><FONT COLOR="red">{t}WARNING! Some fields have been changed and changes must become accepted by admin{/t}</FONT></B></CENTER>
+		</td>
+	</tr>
+{/if}
+	<tr class="dark">
+		<td width="1%">
+			{img src="person.gif" alt=""}
+		</td>
+		<td width="99%" colspan="2">
+			<b>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</b>
+		</td>
+	</tr>
+{if $userinfo.email}
+	<tr>
+		<td width="1%">
+			{img src="mail.gif" alt=""}
+		</td>
+		<td width="99%" colspan="2">
+			{$userinfo.email}
+		</td>
+	</tr>
+{/if}
+	<tr>
+		<td width="1%">
+			{img src="address.gif" alt=""}
+		</td>
+		<td width="99%" colspan="2">
+			{$userinfo.address}<br/>
+			{$userinfo.zip} {$userinfo.city}
+		</td>
+	</tr>
+{if $userinfo.contacts}
+	<tr>
+		<td width="1%">
+			{img src="phone.gif" alt=""}
+		</td>
+		<td width="99%" colspan="2">
+			{foreach from=$userinfo.contacts item=item}
+        			{if $item.phone}{$item.phone}<BR />{/if}
+	        	{/foreach}
+		</td>
+	</tr>
+{/if}
+{if $userinfo.im neq "" && $userinfo.im neq 0}
+	<tr>
+		<td width="1%">
+			{img src="gg.gif" alt=""}
+		</td>
+		<td width="99%" colspan="2">
+			{$userinfo.im}
+		</td>
+	</tr>
+{/if}
+{foreach from=$userinfo.messengers item=item}
+	<tr>
+		<td width="1%">
+			{if $item.type == $smarty.const.IM_GG}
+			{img src="gg.gif" alt=""}
+			{elseif $item.type == $smarty.const.IM_YAHOO}
+			{img src="yahoo.gif" alt=""}
+			{elseif $item.type == $smarty.const.IM_SKYPE}
+			{img src="skype.gif" alt=""}
+			{/if}
+		</td>
+		<td width="99%" colspan="2">
+			{$item.uid}
+		</td>
+	</tr>
+{/foreach}
+{if $userinfo.ten neq ""}
+	<tr>
+		<td width="1%" align="center">
+			<b>{t}TEN{/t}</b>
+		</td>
+		<td width="99%" colspan="2">
+			{$userinfo.ten}
+		</td>
+	</tr>
+{/if}
+{if $userinfo.ssn neq ""}
+	<tr>
+		<td width="1%" align="center">
+			<b>{t}SSN{/t}</b>
+		</td>
+		<td width="99%" colspan="2">
+			{$userinfo.ssn}
+		</td>
+	</tr>
+{/if}
+	<tr>
+		<td width="1%">
+			{img src="cash.gif" alt=""}
+		</td>
+		<td width="1%">
+			<b>{t}Balance:{/t}</b>
+		</td>
+		<td width="98%">
+			{if $userinfo.balance < 0}<font color="red"><b>{$userinfo.balance|money_format}</b></font>{else}{$userinfo.balance|money_format}{/if}
+		</td>
+	</tr>
+	{if $rights.info.edit_addr ||
+	    $rights.info.edit_addr_ack ||
+	    $rights.info.edit_contact ||
+	    $rights.info.edit_contact_ack
+	}
+	<tr>
+		<td width="100%" colspan="3" align="right">
+			<a href="?m=info&amp;f=updateuserform" accesskey="A">{t}Actualize data{/t} {img src="edit.gif" alt="[ Edit ]"}</a>
+		</td>
+	</tr>
+	{/if}
+</table>
+{/box}
