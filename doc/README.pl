@@ -80,7 +80,15 @@ LMS Developers
         8.4. Ostrzeżenia + squid
         8.5. Antywirus
 
-   9. FAQ
+   9. Userpanel
+
+        9.1. O programie
+        9.2. Instalacja
+        9.3. Konfiguracja
+        9.4. Wygląd (style)
+        9.5. Moduły
+
+   10. FAQ
 
    Spis tabel
    4-1. Lista skryptów wykonywalnych
@@ -6648,40 +6656,180 @@ redirect        = http://net-komp.net.pl
        Przykład: message = Wykryto wirusa w dniu %DATE
      __________________________________________________________________
 
-Rozdział 9. FAQ
+Rozdział 9. Userpanel
 
-   9.1. Co zrobić gdy nie generuje się mapa sieci?
-   9.2. Jak dodać dwa komputery z tym samym adresem IP?
-   9.3. Jak dodać dwa komputery z tym samym adresem MAC?
-   9.4. Co oznacza błąd Can't locate Config/IniFiles.pm in @INC ...?
-   9.5. Zrobiłem parę poprawek. Jak mogę dodać je do LMSa?
-   9.6. Która wersja LMSa jest najnowsza, a która najlepsza dla mnie?
-   9.7. Jak wypisać się z listy mailingowej?
-   9.8. Insecure $ENV{BASH_ENV} while running -T switch...
+9.1. O programie
 
-   9.1. Co zrobić gdy nie generuje się mapa sieci?
+   Userpanel jest opartą na szkielecie LMS (i ściśle z LMS współpracującą)
+   implementacją tzw. e-boku. Umożliwia (albo będzie umożliwiał) klientom
+   przeglądanie stanu swoich wpłat, zmianę swoich danych osobowych, edycję
+   właściwości swoich komputerów, zmianę taryf, zgłaszanie błędow oraz
+   awarii do Helpdesku, wydruk faktur oraz formularza przelewu.
+     __________________________________________________________________
+
+9.2. Instalacja
+
+9.2.1. Instalacja
+
+   W lms.ini należy ustawić katalog sys_dir na katalog z LMS-em. Userpanel
+   będzie potrzebował bibliotek LMS-a z tego katalogu. Dodatkowo w opcji
+   userpanel_dir trzeba wskazać lokalizację Userpanela.
+     __________________________________________________________________
+
+9.2.2. Konfiguracja
+
+   Oprócz opcji dostępnych dla LMS-UI, Userpanel korzysta z opcji
+   zawartych w sekcji konfiguracyjnej [userpanel] (dostępnej także w pliku
+   lms.ini).
+     __________________________________________________________________
+
+9.2.3. Moduły
+
+   Moduły w Userpanelu znajdują się w katalogu modules. Ich włączenie lub
+   wyłączenie sprowadza się do usunięcia bądź skopiowania odpowiedniego
+   modułu do tego katalogu.
+     __________________________________________________________________
+
+9.3. Konfiguracja
+
+   Konfigurację Userpanela umożliwia panel konfiguracyjny dostępny w
+   LMS-UI w menu Userpanel -> Konfiguracja. LMS automatycznie wykrywa
+   instalację Userpanela i udostępnia to menu, jeśli w sekcji
+   [directories] zostanie ustawiona opcja userpanel_dir.
+
+   W głównym oknie znajdują się podstawowe opcje konfiguracyjne oraz lista
+   (włączonych) modułów. Kliknięcie na dowolnym rekordzie spowoduje
+   przejście do opcji konfiguracyjnych wybranego modułu.
+     __________________________________________________________________
+
+9.4. Wygląd (style)
+
+   Interfejs Userpanela jest tak stworzony, aby umożliwić łatwe
+   dostosowanie do własnych potrzeb i do wyglądu swoich stron
+   internetowych. Nie ma przy tym potrzeby zmiany kodu szablonów.
+
+   Główne pliki z definicjami styli css oraz obrazki umieszczone są w
+   katalogu style, w podkatalogach o nazwach odpowiadających nazwie stylu.
+   Jeżeli w danym stylu nie ma jakiegoś pliku, zostanie zastosowany plik
+   ze stylu domyślnego - default. Oprócz plików obrazków, styli css oraz
+   skryptów JavaScript styl zawiera również dwa szablony Smarty, które
+   definiują wygląd strony wraz z menu głównym (body.html) oraz wygląd
+   tabelek z nagłówkami (box.html).
+
+   Każdy moduł posiada własny podkatalog style. Jeżeli w nim system nie
+   odnajdzie danego pliku zostanie użyty plik dla danego stylu z głównego
+   katalogu style.
+     __________________________________________________________________
+
+9.5. Moduły
+
+   Userpanel posiada budowę modularną. Każdy moduł, odpowiadający pozycji
+   w menu, to odrębny podkatalog katalogu modules.
+     __________________________________________________________________
+
+9.5.1. Struktura modułu
+
+   Drzewo katalogów typowego modułu powinno wyglądać następująco:
+nazwa_modułu
+    |---locale
+    |     |---pl
+    |          |---strings.php
+    |---style
+    |     |---default
+    |          |---image.gif
+    |---templates
+    |     |---template1.html
+    |     |---template2.html
+    |---upgradedb
+    |     |---mysql.2005081901.php
+    |     |---postgres.2005081901.php
+    |---configuration.php
+    |---functions.php
+
+   I kilka słów wyjaśnienia:
+     * Katalog locale zawiera oczywiście odpowiednie locale. W strings.php
+       są tylko tłumaczenia tekstów zwartych w danym module,
+     * style to oczywiście katalog z obrazkami, zawierający podkatalogi
+       odpowiadające nazwom styli używanych w Userpanelu,
+     * templates to szablony Smarty danego modułu,
+     * upgradedb zawiera pliki auto-upgrade'u bazy danych dla tabel
+       których dany moduł używa. Nazwy tabel tworzonych na potrzeby
+       modułów powinny zawierać prefiks up_nazwamodułu_,
+     * configuration.php i functions.php to dwa wymagane pliki. Ich budowa
+       jest opisana poniżej.
+     __________________________________________________________________
+
+9.5.2. Główne pliki
+     __________________________________________________________________
+
+9.5.2.1. configuration.php
+
+   Ten plik zawiera konfigurację danego modułu, oraz jest includowany
+   zawsze przy inicjalizacji Userpanela. Typowa zawartość:
+<?php
+$USERPANEL->AddModule(trans('Help'),      // Nazwa wyświetlana
+                    'help',             // Nazwa modułu (musi być taka sama jaknazwa katalogu)
+                    trans('Runs problems solving creator'), // Tip
+                    5,                  // Priorytet
+                    trans('This module shows solving problems creator'), // Opis
+                    2005081901,         // Wersja bazy danych (podobnie jak w  LMS,
+                                        // zobacz lms/lib/upgradedb.php)
+                    array(              // Pozycje podmenu wywietlane w LMS-UI w menu Userpanel
+                        array(          // (zobacz lib/LMS.menu.php)
+                            'name' => trans('Submenu'),
+                            'link' => '?m=userpanel&module=help',
+                            'tip' => trans('Tooltip'),
+                        ),
+                    )
+);
+?>
+     __________________________________________________________________
+
+9.5.2.2. functions.php
+
+   Ten plik zawiera funkcje danego modułu. Podstawową funkcją modułu jest
+   module_main(). Funkcja ta jest wykonywana jako pierwsza po wywołaniu
+   modułu. Jeśli chcemy aby funkcja mogła być wywołana z UI, to dodajemy
+   prefiks module_ np. module_funkcja1(). Funkcja będzie dostępna po
+   wpisaniu url'a: http://userpanel/?m=modul&f=funkcja1. Funkcja
+   module_setup() jest wywoływana przez panel konfiguracyjny dostępny z
+   LMSa.
+     __________________________________________________________________
+
+Rozdział 10. FAQ
+
+   10.1. Co zrobić gdy nie generuje się mapa sieci?
+   10.2. Jak dodać dwa komputery z tym samym adresem IP?
+   10.3. Jak dodać dwa komputery z tym samym adresem MAC?
+   10.4. Co oznacza błąd Can't locate Config/IniFiles.pm in @INC ...?
+   10.5. Zrobiłem parę poprawek. Jak mogę dodać je do LMSa?
+   10.6. Która wersja LMSa jest najnowsza, a która najlepsza dla mnie?
+   10.7. Jak wypisać się z listy mailingowej?
+   10.8. Insecure $ENV{BASH_ENV} while running -T switch...
+
+   10.1. Co zrobić gdy nie generuje się mapa sieci?
 
    Pierwsze co należy sprawdzić, to logi serwera www. Najczęściej pomaga
    zwiększenie parametru memory_limit w php.ini.
 
-   9.2. Jak dodać dwa komputery z tym samym adresem IP?
+   10.2. Jak dodać dwa komputery z tym samym adresem IP?
 
    Nie ma takiej możliwości. Co więcej, autorzy nie przewidują takiej
    funkcjonalności w najbliższej przyszłości. Jednak masz jeszcze szansę
    skorzystać z patch'a multiip znajdującego się w contrib.
 
-   9.3. Jak dodać dwa komputery z tym samym adresem MAC?
+   10.3. Jak dodać dwa komputery z tym samym adresem MAC?
 
    A dokumentację przejrzałeś? Do tego służy opcja allow_mac_sharing = 1.
 
-   9.4. Co oznacza błąd Can't locate Config/IniFiles.pm in @INC ...?
+   10.4. Co oznacza błąd Can't locate Config/IniFiles.pm in @INC ...?
 
    Prawdopodobnie nie masz zainstalowanych wymaganych modułów Perla, w tym
    wypadku chodzi o Config::IniFiles. Najwygodniejszym sposobem instalacji
    modułów jest skorzystanie z CPANu w następujący sposób: perl -MCPAN -e
    'install Config::IniFiles'.
 
-   9.5. Zrobiłem parę poprawek. Jak mogę dodać je do LMSa?
+   10.5. Zrobiłem parę poprawek. Jak mogę dodać je do LMSa?
 
    Poprawki najlepiej zgłaszać na listę mailingową. Do wiadomości, z
    krótkim opisem poprawki, należy dołączyć diff'a (najlepiej do aktualnej
@@ -6694,7 +6842,7 @@ $ cvs -z7 diff -uN > /tmp/moja_latka.patch
    jednak powinieneś się dać poznać na liście jako odpowiedzialna i
    kompetentna osoba np. przysyłając poprawki.
 
-   9.6. Która wersja LMSa jest najnowsza, a która najlepsza dla mnie?
+   10.6. Która wersja LMSa jest najnowsza, a która najlepsza dla mnie?
 
    Wersje LMSa są numerowane analogicznie do jądra Linuksa. I tak w
    LMS-x.y.z mamy: x - główny numer wersji, y - jak parzysty to wersja
@@ -6713,13 +6861,13 @@ $ cvs -z7 diff -uN > /tmp/moja_latka.patch
    dostępna jest wersja 1.4.4 oraz 1.6.0rc3 to powinieneś stosować wersję
    1.4.4, do czasu gdy gałąź 1.6 będzie stabilna.
 
-   9.7. Jak wypisać się z listy mailingowej?
+   10.7. Jak wypisać się z listy mailingowej?
 
    Informacja ta jest zawarta w nagłówkach wszystkich wiadomości z listy
    mailingowej. Należy wysłać wiadomość z tematem "unsubscribe" na adres
    lms-request@lists.lms.org.pl.
 
-   9.8. Insecure $ENV{BASH_ENV} while running -T switch...
+   10.8. Insecure $ENV{BASH_ENV} while running -T switch...
 
    Powołany błąd pojawia się podczas uruchamiania skryptów perlowych
    korzystających z zewnętrznych programów na niektórych systemach. Opis
