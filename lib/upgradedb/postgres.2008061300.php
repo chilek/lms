@@ -93,7 +93,7 @@ if (!in_array('up_info_changes', $tables)) $DB->Execute("
     )
 ");
 
-if (empty($versions['up_module_finances']) || $versions['up_module_finances'] < 2005081901)
+if (empty($versions['up_module_finances']) || $versions['up_module_finances']['keyvalue'] < 2005081901)
 {
 	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) 
 		VALUES ('userpanel', 'disable_transferform', '0', '', 0)");
@@ -102,13 +102,13 @@ if (empty($versions['up_module_finances']) || $versions['up_module_finances'] < 
 	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'invoice_duplicate', '0', '', 0)");
 }
-if (empty($versions['up_module_finances']) || $versions['up_module_finances'] < 2005090601)
+if (empty($versions['up_module_finances']) || $versions['up_module_finances']['keyvalue'] < 2005090601)
 {
 	$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_tariffname', '1')");
 	$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_speeds', '1')");
 }
 
-if (empty($versions['up_module_helpdesk']) || $versions['up_module_helpdesk'] < 2005081901)
+if (empty($versions['up_module_helpdesk']) || $versions['up_module_helpdesk']['keyvalue'] < 2005081901)
 {
 	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'default_queue', '1', '', 0)");
@@ -120,7 +120,7 @@ if (empty($versions['up_module_helpdesk']) || $versions['up_module_helpdesk'] < 
 		VALUES ('userpanel', 'lms_url', '', '', 0)");
 }
 
-if (empty($versions['up_module_info']) || $versions['up_module_info'] < 2005091701)
+if (empty($versions['up_module_info']) || $versions['up_module_info']['keyvalue'] < 2005091701)
 {
 	$DB->Execute("INSERT INTO up_rights(module, name, description)
     		VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment')");
@@ -132,19 +132,19 @@ if (empty($versions['up_module_info']) || $versions['up_module_info'] < 20050917
 	        VALUES ('info', 'edit_contact', 'Customer can change contact information')");
 }
 
-if (empty($versions['up_module_info']) || $versions['up_module_info'] < 2006070500)
+if (empty($versions['up_module_info']) || $versions['up_module_info']['keyvalue'] < 2006070500)
 {
 	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'hide_nodesbox', '0', '', 0)");
 }
 
-if (empty($versions['up_module_logout']) || $versions['up_module_logout'] < 2005081901)
+if (empty($versions['up_module_logout']) || $versions['up_module_logout']['keyvalue'] < 2005081901)
 {
 	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'logout_url', '', '', 0)");
 }
 
-if (empty($versions['up_module_stats']) || $versions['up_module_stats'] < 2005081901)
+if (empty($versions['up_module_stats']) || $versions['up_module_stats']['keyvalue'] < 2005081901)
 {
 	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'owner_stats', '0', '', 0)");
