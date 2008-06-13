@@ -1,0 +1,325 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Modules</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.11-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Userpanel"
+HREF="userpanel.html"><LINK
+REL="PREVIOUS"
+TITLE="Graphical themes (styles)"
+HREF="userpanel-style.html"><LINK
+REL="NEXT"
+TITLE="FAQ"
+HREF="faq.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.11-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="userpanel-style.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Userpanel</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USERPANEL-MODULES"
+>9.5. Modules</A
+></H1
+><P
+>Userpanel is built with modularity principle, which means that each module,
+	which represents one menu entry is contained in separate subdirectory of
+	<SAMP
+CLASS="PROMPT"
+>modules</SAMP
+> directory.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MODULE-STRUCTURE"
+>9.5.1. Construction of module</A
+></H2
+><P
+>This graph represents directory structure of typical module:
+<PRE
+CLASS="SCREEN"
+>module_name
+    |---locale
+    |     |---en
+    |          |---strings.php
+    |---style
+    |     |---default
+    |          |---image.gif
+    |---templates
+    |     |---template1.html
+    |     |---template2.html
+    |---upgradedb
+    |     |---mysql.2005081901.php
+    |     |---postgres.2005081901.php
+    |---configuration.php
+    |---functions.php</PRE
+>
+		</P
+><P
+>This requires a few words of explanation:
+		<UL
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>locale</SAMP
+> directory contains
+				appropriate locale, obviously. However
+				<SAMP
+CLASS="PROMPT"
+>strings.php</SAMP
+> file contains only 
+				translation strings used in containing module,
+			</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>style</SAMP
+> is obviously image and css
+				style dir, with subdirectories for each style (graphical
+				theme) installed in Userpanel,</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>templates</SAMP
+> contains
+				Smarty templates for given module,</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>upgradedb</SAMP
+> contains auto-upgrade
+				files for tables being used by module. Table names, for
+				those used exclusively by one module, should contain
+				<SAMP
+CLASS="PROMPT"
+>up_modulename_</SAMP
+> prefix,</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>configuration.php</SAMP
+> and
+				<SAMP
+CLASS="PROMPT"
+>functions.php</SAMP
+> are two files required for
+				each module. They are described in detail later in this
+				document.</P
+></LI
+></UL
+>
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MODULE-FILES"
+>9.5.2. Mandatory files</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="MODULE-CONFIGURATION"
+>9.5.2.1. configuration.php</A
+></H3
+><P
+>This file contains configuration of given module and is
+			always included during Userpanel initialization. Usually it's
+			built as follows:
+<PRE
+CLASS="SCREEN"
+>&lt;?php
+$USERPANEL-&#62;AddModule(trans('Help'),      // Name in menu
+                    'help',             // Module name (must be identical as module dir)
+                    trans('Runs problems solving creator'), // Tip (on menu hover)
+                    5,                  // Priority (lower first)
+                    trans('This module shows solving problems creator'), // Description
+                    2005081901,         // DB version (similar to LMS, see 
+                                        // lms/lib/upgradedb.php)
+		    array(		// Array of submenus im LMS-UI Userpanel menu
+		        array(		// (see lib/LMS.menu.php)
+			    'name' =&#62; trans('Submenu'),
+			    'link' =&#62; '?m=userpanel&amp;module=help',
+			    'tip' =&#62; trans('Tooltip'),
+			),
+		    )
+);
+?&gt;</PRE
+>
+			</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="MODULE-FUNCTIONS"
+>9.5.2.2. functions.php</A
+></H3
+><P
+>This file contains given module functions. There is special
+			function, named <SAMP
+CLASS="PROMPT"
+>module_main()</SAMP
+> executed first when 
+			module is called. If any function is intended to be accessible from
+			Userpanel UI, it should be prefixed with <SAMP
+CLASS="PROMPT"
+>module_</SAMP
+>,
+			ie. <SAMP
+CLASS="PROMPT"
+>module_function1()</SAMP
+>, which will be available
+			from the following URL: 
+			<SAMP
+CLASS="PROMPT"
+>http://userpanel/?m=module&amp;f=function1</SAMP
+>.
+			Function named <SAMP
+CLASS="PROMPT"
+>module_setup()</SAMP
+> is being called
+			from configuration panel of LMS-UI.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="userpanel-style.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Graphical themes (styles)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="userpanel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FAQ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

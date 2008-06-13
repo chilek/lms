@@ -1,0 +1,328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Moduły</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.11-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Userpanel"
+HREF="userpanel.html"><LINK
+REL="PREVIOUS"
+TITLE="Wygląd (style)"
+HREF="userpanel-style.html"><LINK
+REL="NEXT"
+TITLE="FAQ"
+HREF="faq.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=UTF-8"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.11-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="userpanel-style.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 9. Userpanel</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USERPANEL-MODULES"
+>9.5. Moduły</A
+></H1
+><P
+>Userpanel posiada budowę modularną. Każdy moduł, odpowiadający
+	pozycji w menu, to odrębny podkatalog katalogu <SAMP
+CLASS="PROMPT"
+>modules</SAMP
+>.
+	</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MODULE-STRUCTURE"
+>9.5.1. Struktura modułu</A
+></H2
+><P
+>Drzewo katalogów typowego modułu powinno wyglądać
+		następująco:
+<PRE
+CLASS="SCREEN"
+>nazwa_modułu
+    |---locale
+    |     |---pl
+    |          |---strings.php
+    |---style
+    |     |---default
+    |          |---image.gif
+    |---templates
+    |     |---template1.html
+    |     |---template2.html
+    |---upgradedb
+    |     |---mysql.2005081901.php
+    |     |---postgres.2005081901.php
+    |---configuration.php
+    |---functions.php</PRE
+>
+		</P
+><P
+>I kilka słów wyjaśnienia:
+		<UL
+><LI
+><P
+>Katalog <SAMP
+CLASS="PROMPT"
+>locale</SAMP
+> zawiera
+				oczywiście odpowiednie locale. W 
+				<SAMP
+CLASS="PROMPT"
+>strings.php</SAMP
+> są tylko
+				tłumaczenia tekstów zwartych w danym module,
+			</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>style</SAMP
+> to oczywiście
+				katalog z obrazkami, zawierający podkatalogi odpowiadające
+				nazwom styli używanych w Userpanelu,</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>templates</SAMP
+> to
+				szablony Smarty danego modułu,</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>upgradedb</SAMP
+> zawiera pliki
+				auto-upgrade'u bazy danych dla tabel których
+				dany moduł używa. Nazwy tabel tworzonych na
+				potrzeby modułów powinny zawierać prefiks
+				<SAMP
+CLASS="PROMPT"
+>up_nazwamodułu_</SAMP
+>,</P
+></LI
+><LI
+><P
+><SAMP
+CLASS="PROMPT"
+>configuration.php</SAMP
+>
+				i <SAMP
+CLASS="PROMPT"
+>functions.php</SAMP
+> to dwa wymagane
+				pliki. Ich budowa jest opisana poniżej.</P
+></LI
+></UL
+>
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MODULE-FILES"
+>9.5.2. Główne pliki</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="MODULE-CONFIGURATION"
+>9.5.2.1. configuration.php</A
+></H3
+><P
+>Ten plik zawiera konfigurację danego modułu, 
+			oraz jest includowany zawsze przy inicjalizacji
+			Userpanela. Typowa zawartość:
+<PRE
+CLASS="SCREEN"
+>&lt;?php
+$USERPANEL-&#62;AddModule(trans('Help'),      // Nazwa wyświetlana
+                    'help',             // Nazwa modułu (musi być taka sama jak nazwa katalogu)
+                    trans('Runs problems solving creator'), // Tip
+                    5,                  // Priorytet
+                    trans('This module shows solving problems creator'), // Opis
+                    2005081901,         // Wersja bazy danych (podobnie jak w  LMS, 
+                                        // zobacz lms/lib/upgradedb.php)
+		    array(		// Pozycje podmenu wywietlane w LMS-UI w menu Userpanel
+		        array(		// (zobacz lib/LMS.menu.php)
+			    'name' =&#62; trans('Submenu'),
+			    'link' =&#62; '?m=userpanel&amp;module=help',
+			    'tip' =&#62; trans('Tooltip'),
+			),
+		    )
+);
+?&gt;</PRE
+>
+			</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="MODULE-FUNCTIONS"
+>9.5.2.2. functions.php</A
+></H3
+><P
+>Ten plik zawiera funkcje danego modułu. Podstawową
+			funkcją modułu jest <SAMP
+CLASS="PROMPT"
+>module_main()</SAMP
+>.
+			Funkcja ta jest wykonywana jako pierwsza po wywołaniu
+			modułu. Jeśli chcemy aby funkcja mogła być wywołana z
+			UI, to dodajemy prefiks <SAMP
+CLASS="PROMPT"
+>module_</SAMP
+>
+			np. <SAMP
+CLASS="PROMPT"
+>module_funkcja1()</SAMP
+>. Funkcja będzie
+			dostępna po wpisaniu url'a:
+			<SAMP
+CLASS="PROMPT"
+>http://userpanel/?m=modul&amp;f=funkcja1</SAMP
+>.
+			Funkcja <SAMP
+CLASS="PROMPT"
+>module_setup()</SAMP
+> jest wywoływana
+			przez panel konfiguracyjny dostępny z LMSa.
+			</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="userpanel-style.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Wygląd (style)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="userpanel.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FAQ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

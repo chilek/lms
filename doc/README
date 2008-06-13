@@ -79,7 +79,15 @@ LMS Developers
         8.3. SQL Panel
         8.4. Squid redirector
 
-   9. FAQ
+   9. Userpanel
+
+        9.1. About
+        9.2. Installation
+        9.3. Configuration
+        9.4. Graphical themes (styles)
+        9.5. Modules
+
+   10. FAQ
 
    List of Tables
    4-1. Executable scripts list
@@ -5935,36 +5943,181 @@ redirect        = http://net-komp.net.pl
    (img).
      __________________________________________________________________
 
-Chapter 9. FAQ
+Chapter 9. Userpanel
 
-   9.1. My network device map does not show up. What to do?
-   9.2. How to add two computers with the same IP?
-   9.3. How to add two computers with the same MAC?
-   9.4. I see following error: Can't locate Config/IniFiles.pm in @INC
+9.1. About
+
+   Userpanel is automated virtual customer service, based on LMS and using
+   its core features. It enables customers (or it's intended to) to do
+   review their payments, change their personal details or computer
+   properties, modify subscriptions, submit problems, track their requests
+   on Helpdesk and print invoices. It means, it makes a closer contact
+   with their ISP.
+     __________________________________________________________________
+
+9.2. Installation
+
+9.2.1. Installation
+
+   You should define sys_dir directory in lms.ini file pointing to your
+   LMS installation dir, as Userpanel will need LMS libraries located
+   under this directory to run. Additionally you should enter your
+   Userpanel location in userpanel_dir variable.
+     __________________________________________________________________
+
+9.2.2. Configuration
+
+   Userpanel, besides options available to setup in LMS-UI, uses also
+   those enclosed in [userpanel] section (also available in lms.ini file).
+     __________________________________________________________________
+
+9.2.3. Modules
+
+   Userpanel modules are located in modules subdirectory. You can turn it
+   on or off simply by copying module into, or deleting it from this
+   directory, respectively.
+     __________________________________________________________________
+
+9.3. Configuration
+
+   Userpanel configuration is made simple thanks to special configuration
+   panel available in Userpanel -> Configuration menu in LMS-UI. LMS
+   detects Userpanel presence and unhides this menu if userpanel_dir
+   variable has been set in [directories] section of lms.ini file.
+
+   Main window contains global configuration options and list of present
+   (enabled) modules. Choosing any of this will direct you to
+   configuration options screen specific to respective module.
+     __________________________________________________________________
+
+9.4. Graphical themes (styles)
+
+   Userpanel interface is designed to allow its easy adoption to your own
+   needs and to blend into your existing web pages layout. There is no
+   need to modify templates code to achieve this goal.
+
+   All important files, that is css styles definition and images are
+   located in style directory, each style in separate directory,
+   corresponding to its name. If any of the files is missing, the one from
+   the default style will be used instead. Styles directory, besides css,
+   images and Javascript, contains two simple Smarty templates, one
+   containing global page layout with main menu and content of chosen
+   module below (body.html) and one with table layout, used by modules to
+   draw anything inside the box (box.html).
+
+   Each of Userpanel modules can be styled too, as it contains
+   corresponding style directory within its directory structure. If any of
+   the file is missing in specific style, the one from main style
+   directory will be used instead.
+     __________________________________________________________________
+
+9.5. Modules
+
+   Userpanel is built with modularity principle, which means that each
+   module, which represents one menu entry is contained in separate
+   subdirectory of modules directory.
+     __________________________________________________________________
+
+9.5.1. Construction of module
+
+   This graph represents directory structure of typical module:
+module_name
+    |---locale
+    |     |---en
+    |          |---strings.php
+    |---style
+    |     |---default
+    |          |---image.gif
+    |---templates
+    |     |---template1.html
+    |     |---template2.html
+    |---upgradedb
+    |     |---mysql.2005081901.php
+    |     |---postgres.2005081901.php
+    |---configuration.php
+    |---functions.php
+
+   This requires a few words of explanation:
+     * locale directory contains appropriate locale, obviously. However
+       strings.php file contains only translation strings used in
+       containing module,
+     * style is obviously image and css style dir, with subdirectories for
+       each style (graphical theme) installed in Userpanel,
+     * templates contains Smarty templates for given module,
+     * upgradedb contains auto-upgrade files for tables being used by
+       module. Table names, for those used exclusively by one module,
+       should contain up_modulename_ prefix,
+     * configuration.php and functions.php are two files required for each
+       module. They are described in detail later in this document.
+     __________________________________________________________________
+
+9.5.2. Mandatory files
+     __________________________________________________________________
+
+9.5.2.1. configuration.php
+
+   This file contains configuration of given module and is always included
+   during Userpanel initialization. Usually it's built as follows:
+<?php
+$USERPANEL->AddModule(trans('Help'),      // Name in menu
+                    'help',             // Module name (must be identical as module dir)
+                    trans('Runs problems solving creator'), // Tip (on menu hover)
+                    5,                  // Priority (lower first)
+                    trans('This module shows solving problems creator'), // Description
+                    2005081901,         // DB version (similar to LMS, see
+                                        // lms/lib/upgradedb.php)
+                    array(              // Array of submenus im LMS-UI Userpanel menu
+                        array(          // (see lib/LMS.menu.php)
+                            'name' => trans('Submenu'),
+                            'link' => '?m=userpanel&module=help',
+                            'tip' => trans('Tooltip'),
+                        ),
+                    )
+);
+?>
+     __________________________________________________________________
+
+9.5.2.2. functions.php
+
+   This file contains given module functions. There is special function,
+   named module_main() executed first when module is called. If any
+   function is intended to be accessible from Userpanel UI, it should be
+   prefixed with module_, ie. module_function1(), which will be available
+   from the following URL: http://userpanel/?m=module&f=function1.
+   Function named module_setup() is being called from configuration panel
+   of LMS-UI.
+     __________________________________________________________________
+
+Chapter 10. FAQ
+
+   10.1. My network device map does not show up. What to do?
+   10.2. How to add two computers with the same IP?
+   10.3. How to add two computers with the same MAC?
+   10.4. I see following error: Can't locate Config/IniFiles.pm in @INC
           ...What should I do?
 
-   9.5. I make few corrections. Do you accept any patches?
-   9.6. What is current version of LMS, which one i should use?
-   9.7. How to unsubscribe from the mailing list?
-   9.8. Insecure $ENV{BASH_ENV} while running -T switch...
+   10.5. I make few corrections. Do you accept any patches?
+   10.6. What is current version of LMS, which one i should use?
+   10.7. How to unsubscribe from the mailing list?
+   10.8. Insecure $ENV{BASH_ENV} while running -T switch...
 
-   9.1. My network device map does not show up. What to do?
+   10.1. My network device map does not show up. What to do?
 
    First you should check your Web Server logs. Usually it's helpful to
    increase amount of memory PHP may use in memory_limit option of php.ini
    file.
 
-   9.2. How to add two computers with the same IP?
+   10.2. How to add two computers with the same IP?
 
    There is no such possibility. Additionally, authors have no plans for
    such a functionality in near future. However you might try to use
    unofficial patch multiip which could be found in contrib directory.
 
-   9.3. How to add two computers with the same MAC?
+   10.3. How to add two computers with the same MAC?
 
    Check documentation. You probably look for allow_mac_sharing = 1.
 
-   9.4. I see following error: Can't locate Config/IniFiles.pm in @INC
+   10.4. I see following error: Can't locate Config/IniFiles.pm in @INC
    ...What should I do?
 
    It's likely that you don't have required Perl modules installed. In
@@ -5972,7 +6125,7 @@ Chapter 9. FAQ
    install Perl modules is to use CPAN extension, eg. perl -MCPAN -e
    'install Config::IniFiles'.
 
-   9.5. I make few corrections. Do you accept any patches?
+   10.5. I make few corrections. Do you accept any patches?
 
    You should post it to our mailing list. Attach your patches (preferably
    to current cvs version, use unified diff format) along with short
@@ -5985,7 +6138,7 @@ $ cvs -z7 diff -uN > /tmp/my_patch.patch
    stay on the list for a while, that may prove your skills, before asking
    us for cvs account.
 
-   9.6. What is current version of LMS, which one i should use?
+   10.6. What is current version of LMS, which one i should use?
 
    LMS adopts versioning from Linux kernel. Thus, in LMS-x.y.z we have: x
    - major version number, y - stable if number is even, unstable if odd,
@@ -6000,12 +6153,12 @@ $ cvs -z7 diff -uN > /tmp/my_patch.patch
    stable as one could expect. i.e. vestion 1.4.3 should be prefered over
    1.6-rc3. "-RC" are not to be used in production areas.
 
-   9.7. How to unsubscribe from the mailing list?
+   10.7. How to unsubscribe from the mailing list?
 
    Information about it is enclosed in all messages headers. You should
    send "unsubscribe" entitled message to lms-en-request@lists.lms.org.pl.
 
-   9.8. Insecure $ENV{BASH_ENV} while running -T switch...
+   10.8. Insecure $ENV{BASH_ENV} while running -T switch...
 
    Quoted error appears while you run Perl scripts that needs to use
    external programs on some systems. Problem description and possible
