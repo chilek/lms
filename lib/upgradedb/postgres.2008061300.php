@@ -151,7 +151,7 @@ if (empty($versions['up_module_stats']) || $versions['up_module_stats']['keyvalu
 }
 
 $DB->Execute("DELETE FROM dbinfo WHERE keytype ?LIKE? 'up_%'");
-$DB->Execute("INSERT INTO dbinfo(keytype, keyvalue) VALUES('dbversion', '2008061300')");
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008061300', 'dbversion'));
 
 $DB->CommitTrans();
 
