@@ -1,0 +1,25 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="DARK"><TD CLASS="fall"><B>{t}Module Configuration:{/t}</B></TD></TR>
+    <TR CLASS="light"><TD CLASS="fall">
+	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=info&f=submit_setup">
+	<TABLE WIDTH="100%">
+	    <TR>
+		<TD WIDTH="1%" NOWRAP>
+		    <A HREF="javascript:checkElement('hide_nodesbox');">{t}Hide customer nodes box:{/t}</A>
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+		    <INPUT class="box light" type="checkbox" NAME="hide_nodesbox" ID="hide_nodesbox" value="1"{if $hide_nodesbox} checked{/if} {tip text="Don't show customer nodes box if he hasn't any nodes"}>
+    		</TD>
+	    </TR>
+	</TABLE>
+	<p align="right">
+	    <A HREF="?m=userpanel">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	</p>
+	</FORM>
+    </TD></TR>
+</TABLE>
+{include file="footer.html"}

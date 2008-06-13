@@ -1,0 +1,168 @@
+<!-- $Id$ -->
+<chapter id="userpanel">
+	<title>Userpanel</title>
+	<sect1 id="userpanel-about">
+		<title>About</title>
+		<para>Userpanel is automated virtual customer service, based on LMS and using
+		its core features. It enables customers (or it's intended to) to do review
+		their payments, change their personal details or computer properties,
+		modify subscriptions, submit problems, track their requests on Helpdesk
+		and print invoices. It means, it makes a closer contact with their ISP.
+		</para>
+	</sect1>
+	<sect1 id="userpanel-install">
+	<title>Installation</title>
+	<sect2 id="installation">
+		<title>Installation</title>
+		<para>You should define <prompt>sys_dir</prompt> directory in lms.ini
+		file pointing to your LMS installation dir, as Userpanel will need LMS
+		libraries located under this directory to run. Additionally you should
+		enter your Userpanel location in <prompt>userpanel_dir</prompt> variable.
+		</para>
+	</sect2>
+	<sect2 id="install-configuration">
+		<title>Configuration</title>
+		<para>Userpanel, besides options available to setup in LMS-UI, uses also
+		those enclosed in <emphasis>[userpanel]</emphasis> section (also available
+		in <prompt>lms.ini</prompt> file).</para>
+	</sect2>
+	<sect2 id="install-modules">
+		<title>Modules</title>
+		<para>Userpanel modules are located in <prompt>modules</prompt>
+		subdirectory. You can turn it on or off simply by copying module into, or
+		deleting it from this directory, respectively.</para>
+	</sect2>
+    </sect1>	
+    <sect1 id="userpanel-config">
+	<title>Configuration</title>
+	<para>Userpanel configuration is made simple thanks to special configuration 
+	panel available in Userpanel -> Configuration menu
+	in <emphasis>LMS-UI</emphasis>. LMS detects Userpanel presence
+	and unhides this menu if <prompt>userpanel_dir</prompt> variable has been set in
+	<emphasis>[directories]</emphasis> section of lms.ini file.</para>
+	<para>Main window contains global configuration options and list of present
+	(enabled) modules. Choosing any of this will direct you to configuration options
+	screen specific to respective module.</para>
+    </sect1>
+    <sect1 id="userpanel-style">
+	<title>Graphical themes (styles)</title>
+	<para>Userpanel interface is designed to allow its easy adoption to your
+	own needs and to blend into your existing web pages layout. There is no
+	need to modify templates code to achieve this goal.</para>
+	<para>All important files, that is css styles definition and images are
+	located in  <prompt>style</prompt> directory, each style in separate
+	directory, corresponding to its name. If any of the files is missing,
+	the one from the <prompt>default</prompt> style will be used instead.
+	Styles directory, besides css, images and Javascript, contains two
+	simple Smarty templates, one containing global page layout with main menu
+	and content of chosen module below (<prompt>body.html</prompt>) and one
+	with table layout, used by modules to draw anything inside the box
+	(<prompt>box.html</prompt>).</para>
+	<para>Each of Userpanel modules can be styled too, as it contains
+	corresponding <prompt>style</prompt> directory within its directory
+	structure. If any of the file is missing in specific style, the one from
+	main <prompt>style</prompt> directory will be used instead.</para>
+    </sect1>
+    <sect1 id="userpanel-modules">
+	<title>Modules</title>
+	<para>Userpanel is built with modularity principle, which means that each module,
+	which represents one menu entry is contained in separate subdirectory of
+	<prompt>modules</prompt> directory.</para>
+	<sect2 id="module-structure">
+		<title>Construction of module</title>
+		<para>This graph represents directory structure of typical module:
+<screen>
+module_name
+    |---locale
+    |     |---en
+    |          |---strings.php
+    |---style
+    |     |---default
+    |          |---image.gif
+    |---templates
+    |     |---template1.html
+    |     |---template2.html
+    |---upgradedb
+    |     |---mysql.2005081901.php
+    |     |---postgres.2005081901.php
+    |---configuration.php
+    |---functions.php
+</screen>
+		</para>
+		<para>This requires a few words of explanation:
+		<itemizedlist>
+			<listitem>
+				<para><prompt>locale</prompt> directory contains
+				appropriate locale, obviously. However
+				<prompt>strings.php</prompt> file contains only 
+				translation strings used in containing module,
+			</para>
+			</listitem>
+			<listitem>
+				<para><prompt>style</prompt> is obviously image and css
+				style dir, with subdirectories for each style (graphical
+				theme) installed in Userpanel,</para>
+			</listitem>
+			<listitem>
+				<para><prompt>templates</prompt> contains
+				Smarty templates for given module,</para>
+			</listitem>
+			<listitem>
+				<para><prompt>upgradedb</prompt> contains auto-upgrade
+				files for tables being used by module. Table names, for
+				those used exclusively by one module, should contain
+				<prompt>up_modulename_</prompt> prefix,</para>
+			</listitem>
+			<listitem>
+				<para><prompt>configuration.php</prompt> and
+				<prompt>functions.php</prompt> are two files required for
+				each module. They are described in detail later in this
+				document.</para>
+			</listitem>
+		</itemizedlist>
+		</para>
+	</sect2>
+	<sect2 id="module-files">
+		<title>Mandatory files</title>
+		<para></para>
+		<sect3 id="module-configuration">
+			<title>configuration.php</title>
+			<para>This file contains configuration of given module and is
+			always included during Userpanel initialization. Usually it's
+			built as follows:
+<screen>
+&lt;?php
+$USERPANEL->AddModule(trans('Help'),      // Name in menu
+                    'help',             // Module name (must be identical as module dir)
+                    trans('Runs problems solving creator'), // Tip (on menu hover)
+                    5,                  // Priority (lower first)
+                    trans('This module shows solving problems creator'), // Description
+                    2005081901,         // DB version (similar to LMS, see 
+                                        // lms/lib/upgradedb.php)
+		    array(		// Array of submenus im LMS-UI Userpanel menu
+		        array(		// (see lib/LMS.menu.php)
+			    'name' => trans('Submenu'),
+			    'link' => '?m=userpanel&amp;module=help',
+			    'tip' => trans('Tooltip'),
+			),
+		    )
+);
+?&gt;
+</screen>
+			</para>
+		</sect3>
+		<sect3 id="module-functions">
+			<title>functions.php</title>
+			<para>This file contains given module functions. There is special
+			function, named <prompt>module_main()</prompt> executed first when 
+			module is called. If any function is intended to be accessible from
+			Userpanel UI, it should be prefixed with <prompt>module_</prompt>,
+			ie. <prompt>module_function1()</prompt>, which will be available
+			from the following URL: 
+			<prompt>http://userpanel/?m=module&amp;f=function1</prompt>.
+			Function named <prompt>module_setup()</prompt> is being called
+			from configuration panel of LMS-UI.</para>
+		</sect3>
+	</sect2>
+    </sect1>
+</chapter>

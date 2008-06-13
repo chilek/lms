@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 //EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!--// $Id$ //-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_language}"> 
+<head>
+  <meta content="text/html; charset={$LANGDEFS.$_language.charset}" http-equiv="content-type" />
+  <meta http-equiv="refresh" content="{math equation="x+5" x=$_config.phpui.timeout}">
+  <title>{t}Virtual Customer Service{/t}</title>
+<link type="text/css" rel="stylesheet" href="{stylefile}" />
+<script type="text/javascript" language="JavaScript" src="style/default/common.js"></script>
+{if $_config.userpanel.hint neq 'classic' and $_config.userpanel.hint neq 'none'}
+<script type="text/javascript" language="JavaScript" src="style/default/avatar.js"></script>
+</head>
+<body onload="javascript:draginit()">
+<div id="drag" class="drag" style="width:150px; position:absolute; left:350px; top:150px; visibility:hidden;">
+<div id ="hint" style="visibility:hidden; position:relative; top:70px;">
+<img src="style/default/note1.gif" style="vertical-align:bottom;" alt="" />
+<div style="background-image:url('style/default/note2.gif'); padding-left:5px; padding-right:5px; height:60px; text-align:center;">
+<table style="width:100%; height:100%;">
+<tr><td>
+<div id ="hinttext">TipInHere</div>
+</td></tr>
+</table>
+</div><img src="style/default/note3.gif" alt="" style="vertical-align:top; z-index:inherit;">
+</div>
+<img id="avatar" src="style/default/avatar.gif" alt="" style="cursor:move;">
+</div>
+{elseif $_config.userpanel.hint eq 'classic'}
+</head>
+{popup_init src="style/default/overlib.js"}
+{/if}
+{body}
