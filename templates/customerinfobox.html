@@ -236,6 +236,19 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
+                <TD WIDTH="1%">
+		        <IMG SRC="img/cms.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Last login:{/t}<BR>
+		        {t}Last failed login:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {if $customerinfo.up_logins.lastlogindate}{$customerinfo.up_logins.lastlogindate|date_format:"%Y/%m/%d %H:%M"} ({$customerinfo.up_logins.lastloginip}){else}-{/if}<BR>
+			{if $customerinfo.up_logins.failedlogindate}{$customerinfo.up_logins.failedlogindate|date_format:"%Y/%m/%d %H:%M"} ({$customerinfo.up_logins.failedloginip}){else}-{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
