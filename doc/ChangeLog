@@ -44,6 +44,8 @@ version ? (????-??-??):
   - lmsd/cutoff: added 'networks' and 'excluded_networks' options (alec)
   - lmsd/hostfile: added %customer and %cid variables (alec)
   - Userpanel integration (alec)
+  - optimized performance of customerinfoshort module (alec)
+  - in Customer Info added info about last logins to Userpanel (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 

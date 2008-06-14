@@ -449,7 +449,7 @@ class LMS
 		return $this->DB->GetOne('SELECT status FROM customers WHERE id=?', array($id));
 	}
 
-	function GetCustomer($id)
+	function GetCustomer($id, $short=false)
 	{
 		if($result = $this->DB->GetRow('SELECT id, lastname, name, status, email, address, zip, ten, ssn, '
 			.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
@@ -458,16 +458,27 @@ class LMS
 			FROM customers'.(defined('LMS-UI') ? 'view' : '').' 
 			WHERE id = ?', array($id)))
 		{
-			$result['createdby'] = $this->GetUserName($result['creatorid']);
-			$result['modifiedby'] = $this->GetUserName($result['modid']);
-			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
-			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
+			if(!$short)
+			{
+				$result['createdby'] = $this->GetUserName($result['creatorid']);
+				$result['modifiedby'] = $this->GetUserName($result['modid']);
+				$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
+				$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
+				$result['up_logins'] = $this->DB->GetRow('SELECT lastlogindate, lastloginip, 
+					failedlogindate, failedloginip
+		                        FROM up_customers WHERE customerid = ?', array($result['id']));
+			}
+			
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
-			$result['tariffsvalue'] = $this->GetCustomerTariffsValue($result['id']);
 			$result['bankaccount'] = bankaccount($result['id']);
-			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
-			$result['contacts'] = $this->DB->GetAll('SELECT phone, name FROM customercontacts WHERE customerid = ? ORDER BY id', array($result['id']));
-		
+
+			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type 
+					FROM imessengers WHERE customerid = ? ORDER BY type', 'type',
+					array($result['id']));
+			$result['contacts'] = $this->DB->GetAll('SELECT phone, name
+					FROM customercontacts WHERE customerid = ? ORDER BY id',
+					array($result['id']));
+				     
 			return $result;
 		}
 		else
