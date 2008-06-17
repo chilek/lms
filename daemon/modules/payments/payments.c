@@ -44,6 +44,14 @@ char * ftoa(double i)
 	return string;
 }
 
+int is_leap_year(int year)
+{
+	if(year % 4) return 0;
+	if(year % 100) return 1;
+	if(year % 400) return 0;
+	return 1;
+}
+
 char * get_period(struct tm *today, int period, int up_payments)
 {
 	struct tm *t;
@@ -154,13 +162,18 @@ void reload(GLOBAL *g, struct payments_module *p)
 	tt = localtime(&t);
 	strftime(monthday, 	sizeof(monthday), 	"%d", tt);
 	strftime(weekday, 	sizeof(weekday), 	"%u", tt);
-	strftime(yearday, 	sizeof(yearday), 	"%j", tt);
 	strftime(monthname, 	sizeof(monthname), 	"%B", tt);
 	strftime(month, 	sizeof(month), 		"%m", tt);
 	strftime(year, 		sizeof(year), 		"%Y", tt);
 
 	imday = tt->tm_mday;
 	imonth = tt->tm_mon+1;
+
+	// leap year fix
+	if(is_leap_year(tt->tm_year+1900) && tt->tm_yday+1 > 31+28)
+		strncpy(yearday, itoa(tt->tm_yday), sizeof(yearday));
+	else
+		strncpy(yearday, itoa(tt->tm_yday+1), sizeof(yearday));
 
 	switch(imonth) {
 		case 1:
@@ -261,11 +274,17 @@ void reload(GLOBAL *g, struct payments_module *p)
 	today = mktime(tt);
 
 	/****** main payments *******/
-	if( (res = g->db_pquery(g->conn, "SELECT * FROM payments WHERE value <> 0 AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) OR (period="_MONTHLY_" AND at=?) OR (period="_QUARTERLY_" AND at=?) OR (period="_YEARLY_" AND at=?))", weekday, monthday, quarterday, yearday))!= NULL )
+	if( (res = g->db_pquery(g->conn, "SELECT * FROM payments "
+		"WHERE value <> 0 AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) "
+			"OR (period="_MONTHLY_" AND at=?) "
+			"OR (period="_QUARTERLY_" AND at=?) "
+			"OR (period="_YEARLY_" AND at=?))",
+			weekday, monthday, quarterday, yearday))!= NULL )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
-			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, customerid, comment, docid) VALUES (%NOW%, 1, ? * -1, 0, '? / ?', 0)",
+			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, customerid, comment, docid) "
+				"VALUES (%NOW%, 1, ? * -1, 0, '? / ?', 0)",
 					g->db_get_data(res,i,"value"),
 					g->db_get_data(res,i,"name"),
 					g->db_get_data(res,i,"creditor")

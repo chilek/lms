@@ -3,6 +3,8 @@ $Id$
 version ? (????-??-??):
 
   - don't overwrite invoice's creation time on edit if date wasn't changed (alec)
+  - lmsd/payments: fixed leap year bug in annual payments (alec)
+  - lms-payments: fixed leap year bug in annual payments (alec)
 
 version 1.10.4 Pyrus (2008-05-04):
 
