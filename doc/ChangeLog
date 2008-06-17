@@ -6,6 +6,8 @@ version ? (????-??-??):
   - fixed tariff deleting from tariff info page (alec)
   - fixed 'at' checking of yearly assignments when 'at' is empty (alec)
   - BTS#0000734: fixed problem with \r\n on pdf invoices (alec)
+  - lmsd/payments: fixed leap year bug in annual payments (alec)
+  - lms-payments: fixed leap year bug in annual payments (alec)
 
 version 1.8.13 Tessa (2007-10-03):
 

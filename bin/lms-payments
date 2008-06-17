@@ -136,6 +136,15 @@ sub localtime2()
 	}
 }
 
+sub is_leap_year($)
+{
+	my $year = shift;
+        return 0 if $year % 4;
+        return 1 if $year % 100;
+	return 0 if $year % 400;
+	return 1;
+}
+
 use constant YEAR	=> 5;
 use constant QUARTER	=> 4;
 use constant MONTH	=> 3;
@@ -150,6 +159,11 @@ my $dom = sprintf("%d",strftime("%d",localtime2()));
 my $year = strftime("%Y",localtime2());
 my $weekday = strftime("%u",localtime2());
 my $yearday = strftime("%j",localtime2());
+
+# leap year fix
+if(is_leap_year($year) && $yearday > 31+28) {
+	$yearday -= 1;
+}
 
 my $today;
 if($fakedate) {
