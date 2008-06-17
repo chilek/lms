@@ -7,6 +7,7 @@ struct net
 	char *dns;
 	char *dns2;
 	char *wins;
+	char *prefix;
 	unsigned long address;
 	unsigned long mask;
 };
