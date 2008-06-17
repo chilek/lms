@@ -733,6 +733,7 @@
 			<member>%if - interfejs sieci,</member>
 			<member>%addr - adres sieci,</member>
 			<member>%mask - maska sieci,</member>
+			<member>%prefix - maska sieci w postaci prefixu CIDR,</member>
 			<member>%gw - adres bramy,</member>
 			<member>%dns, %dns2 - adresy serwerów DNS,</member>
 			<member>%wins - adres serwera WINS,</member>
@@ -743,6 +744,7 @@
 			<member>%ifpub - interfejs sieci publicznej,</member>
 			<member>%addrpub - adres sieci publicznej,</member>
 			<member>%maskpub - maska sieci publicznej,</member>
+			<member>%prefixpub - maska sieci publicznej w postaci prefixu CIDR,</member>
 			<member>%gwpub - adres bramy w sieci publicznej,</member>
 			<member>%dnspub, %dns2pub - adresy serwerów DNS w sieci publicznej,</member>
 			<member>%winspub - adres serwera WINS w sieci publicznej,</member>

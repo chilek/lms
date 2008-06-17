@@ -47,6 +47,7 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%customer", h.customer);
 	g->str_replace(&s, "%cid", h.cid);
 	g->str_replace(&s, "%maskpub", inet_pub ? inet_ntoa(inet_makeaddr(htonl(h.pubnet.mask),0)) : "");
+	g->str_replace(&s, "%prefixpub", inet_pub ? h.pubnet.prefix : "");
 	g->str_replace(&s, "%addrpub", inet_pub ? inet_ntoa(inet_makeaddr(htonl(h.pubnet.address),0)) : "");
 	g->str_replace(&s, "%domainpub", inet_pub ? h.pubnet.domain : "");
 	g->str_replace(&s, "%netpub", inet_pub ? h.pubnet.name : "");
@@ -55,6 +56,7 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%dns2pub", inet_pub ? h.pubnet.dns2 : "");
 	g->str_replace(&s, "%dnspub", inet_pub ? h.pubnet.dns : "");
 	g->str_replace(&s, "%winspub", inet_pub ? h.pubnet.wins : "");
+	g->str_replace(&s, "%prefix", h.net.prefix);
 	g->str_replace(&s, "%mask", inet_ntoa(inet_makeaddr(htonl(h.net.mask),0)));
 	g->str_replace(&s, "%addr", inet_ntoa(inet_makeaddr(htonl(h.net.address),0)));
 	g->str_replace(&s, "%domain", h.net.domain);
@@ -271,7 +273,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		g->str_replace(&engroups, "%groups", engroupsql);
 
 	// all networks data
-	res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, "
+	res = g->db_query(g->conn, "SELECT name, domain, address, inet_aton(mask) AS mask, "
+				"mask2prefix(inet_aton(mask)) AS prefix, "
 				"interface, gateway, dns, dns2, wins FROM networks");
 
 	for(nc=0; nc<g->db_nrows(res); nc++)
@@ -284,6 +287,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		networks[nc].dns = strdup(g->db_get_data(res,nc,"dns"));
 		networks[nc].dns2 = strdup(g->db_get_data(res,nc,"dns2"));
 		networks[nc].wins = strdup(g->db_get_data(res,nc,"wins"));
+		networks[nc].prefix = strdup(g->db_get_data(res,nc,"prefix"));
 		networks[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
 		networks[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
 	}
@@ -435,6 +439,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		free(networks[i].dns);
 		free(networks[i].dns2);
 		free(networks[i].wins);
+		free(networks[i].prefix);
 	}
 	free(networks);
 	

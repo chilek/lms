@@ -688,6 +688,7 @@
 			<member>%if - network's interface,</member>
 			<member>%mask - network mask,</member>
 			<member>%addr - network's address,</member>
+			<member>%prefix - network mask CIDR-style prefix,</member>
 			<member>%dns, %dns2 - DNS server addresses,</member>
 			<member>%wins - WINS server address,</member>
 			<member>%i16 - IP's last octet in hex,</member>
@@ -698,6 +699,7 @@
 			<member>%ifpub - public network's interface,</member>
 			<member>%maskpub - public network mask,</member>
 			<member>%addrpub - public network's address,</member>
+			<member>%prefixpub - public network mask CIDR-style prefix,</member>
 			<member>%dnspub, %dns2pub - DNS server addresses in public network,</member>
 			<member>%winspub - WINS server address in public network,</member>
 			<member>%customer - node owner's name,</member>
