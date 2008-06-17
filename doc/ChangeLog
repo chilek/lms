@@ -47,6 +47,8 @@ version ? (????-??-??):
   - optimized performance of customerinfoshort module (alec)
   - in Customer Info added info about last logins to Userpanel (alec)
   - lmsd/hostfile: added %prefix and %prefixpub variables (alec)
+  - lmsd/payments: fixed leap year bug in annual payments (alec)
+  - lms-payments: fixed leap year bug in annual payments (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
