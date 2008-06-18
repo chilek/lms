@@ -42,7 +42,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		$count = 0;
 		$ln++;
 
-		if(isset($patterns)) foreach($patterns as $idx => $pattern)
+		if($patterns_cnt) foreach($patterns as $idx => $pattern)
 		{
 			$theline = $line;
 		
@@ -60,7 +60,8 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		// line isn't matching to any pattern
 		if($count == $patterns_cnt)
 		{
-			if(trim($line) != '') $error['lines'][$ln] = $line;
+			if(trim($line) != '') 
+				$error['lines'][$ln] = $patterns_cnt == 1 ? $theline : $line;
 			continue; // go to next line
 		}
 
