@@ -71,7 +71,7 @@
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>{t}Number of customers:{/t}</B></TD>
 				<TD WIDTH="98%">
-				    {$tariff.customerscount} ({$tariff.count},{$tariff.assignmentcount})
+				    {$tariff.customerscount|default:0} ({$tariff.count|default:0},{$tariff.activecount|default:0})
 				</TD>
 			    </TR>
 			    <TR CLASS="light">

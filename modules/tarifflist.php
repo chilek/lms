@@ -58,6 +58,9 @@ function GetTariffList($order='name,asc', $type=NULL)
 		case 'upceil':
 		        $sqlord = ' ORDER BY t.upceil';
 		break;
+		case 'count':
+		        $sqlord = ' ORDER BY customerscount';
+		break;
 		default:
 	                $sqlord = ' ORDER BY t.name';
 		break;
@@ -66,80 +69,70 @@ function GetTariffList($order='name,asc', $type=NULL)
 	$totalincome = 0;
 	$totalcustomers = 0;
 	$totalcount = 0;
-	$totalassignmentcount = 0;
+	$totalactivecount = 0;
 
 	if($tarifflist = $DB->GetAll('SELECT t.id AS id, t.name, t.value AS value, 
 			taxes.label AS tax, taxes.value AS taxvalue, prodid, 
 			t.description AS description, uprate, downrate, 
-			upceil, downceil, climit, plimit
+			upceil, downceil, climit, plimit,
+			a.customerscount, a.count, a.value AS sumval
 			FROM tariffs t 
+			LEFT JOIN (SELECT tariffid, COUNT(*) AS count,
+				COUNT(DISTINCT customerid) AS customerscount,
+				SUM(CASE period 
+					WHEN '.DAILY.' THEN tt.value*30 
+					WHEN '.WEEKLY.' THEN tt.value*4 
+					WHEN '.MONTHLY.' THEN tt.value 
+					WHEN '.QUARTERLY.' THEN tt.value/3 
+					WHEN '.YEARLY.' THEN tt.value/12 END) AS value
+				FROM assignments
+				JOIN tariffs tt ON (tt.id = tariffid)
+				GROUP BY tariffid
+			) a ON (a.tariffid = t.id)
 			LEFT JOIN taxes ON (t.taxid = taxes.id)'
 			.($type ? ' WHERE t.type = '.intval($type) : '')
 			.($sqlord != '' ? $sqlord.' '.$direction : '')))
 	{
-		$assigned = $DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, 
-					SUM(CASE period 
-						WHEN '.DAILY.' THEN t.value*30 
-						WHEN '.WEEKLY.' THEN t.value*4 
-						WHEN '.MONTHLY.' THEN t.value 
-						WHEN '.QUARTERLY.' THEN t.value/3 
-						WHEN '.YEARLY.' THEN t.value/12 END) AS value
-					FROM assignments, tariffs t
-					WHERE tariffid = t.id 
-						AND suspended = 0
-						AND (datefrom <= ?NOW? OR datefrom = 0) 
-						AND (dateto > ?NOW? OR dateto = 0)'
-						.($type ? ' AND t.type = '.intval($type) : '')
-					.' GROUP BY tariffid', 'tariffid');
+		$unactive = $DB->GetAllByKey('SELECT tariffid, COUNT(*) AS count, 
+			SUM(CASE x.period 
+				WHEN '.DAILY.' THEN x.value*30 
+				WHEN '.WEEKLY.' THEN x.value*4 
+				WHEN '.MONTHLY.' THEN x.value 
+				WHEN '.QUARTERLY.' THEN x.value/3 
+				WHEN '.YEARLY.' THEN x.value/12 END) AS value
+			FROM (SELECT a.tariffid, a.period, t.value
+				FROM assignments a 
+				JOIN tariffs t ON (t.id = a.tariffid)
+				WHERE (
+					a.suspended = 1
+				        OR a.datefrom > ?NOW?
+				        OR (a.dateto <= ?NOW? AND a.dateto != 0)
+					OR EXISTS (
+					        SELECT 1 FROM assignments b 
+						WHERE b.customerid = a.customerid 
+							AND liabilityid = 0 AND tariffid = 0
+						        AND (b.datefrom <= ?NOW? OR b.datefrom = 0)
+							AND (b.dateto > ?NOW? OR b.dateto = 0)
+					)
+				)'
+				.($type ? ' AND t.type = '.intval($type) : '')
+			.') x GROUP BY tariffid', 'tariffid');
 
 		foreach($tarifflist as $idx => $row)
 		{
-			$suspended = $DB->GetRow('SELECT COUNT(*) AS count, 
-					SUM(CASE a.period 
-						WHEN '.DAILY.' THEN t.value*30 
-						WHEN '.WEEKLY.' THEN t.value*4 
-						WHEN '.MONTHLY.' THEN t.value 
-						WHEN '.QUARTERLY.' THEN t.value/3 
-						WHEN '.YEARLY.' THEN t.value/12 END) AS value
-					FROM assignments a 
-					LEFT JOIN tariffs t ON (t.id = a.tariffid), assignments b
-					WHERE a.customerid = b.customerid 
-						AND a.tariffid = ? 
-						AND b.tariffid = 0 AND a.suspended = 0
-						AND (b.datefrom <= ?NOW? OR b.datefrom = 0) 
-						AND (b.dateto > ?NOW? OR b.dateto = 0)', 
-						array($row['id']));
-
-			$tarifflist[$idx]['customers'] = $LMS->GetCustomersWithTariff($row['id']);
-			$tarifflist[$idx]['customerscount'] = $DB->GetOne("SELECT COUNT(DISTINCT customerid) FROM assignments WHERE tariffid = ?", array($row['id']));
 			// count of 'active' assignments
-			$tarifflist[$idx]['assignmentcount'] = (isset($assigned[$row['id']]) ? $assigned[$row['id']]['count'] : 0) - $suspended['count'];
+			$tarifflist[$idx]['activecount'] = $row['count'] - (isset($unactive[$row['id']]) ? $unactive[$row['id']]['count'] : 0);
 			// avg monthly income
-			$tarifflist[$idx]['income'] = (isset($assigned[$row['id']]) ? $assigned[$row['id']]['value'] : 0) - $suspended['value'];
+			$tarifflist[$idx]['income'] = $row['sumval'] - (isset($unactive[$row['id']]) ? $unactive[$row['id']]['value'] : 0);
 
 			$totalincome += $tarifflist[$idx]['income'];
-			$totalcustomers += $tarifflist[$idx]['customers'];
-			$totalcount += $tarifflist[$idx]['customerscount'];
-			$totalassignmentcount += $tarifflist[$idx]['assignmentcount'];
+			$totalcount += $tarifflist[$idx]['count'];
+			$totalcustomers += $tarifflist[$idx]['customerscount'];
+			$totalactivecount += $tarifflist[$idx]['activecount'];
 		}
 
 		switch($order)
 		{
-        		case 'count':
-	            		foreach($tarifflist as $idx => $row)
-			        {
-				        $table['idx'][] = $idx;
-				        $table['customerscount'][] = $row['customerscount'];
-				}
-				if(isset($table))
-				{
-					array_multisort($table['customerscount'],($direction == "desc" ? SORT_DESC : SORT_ASC), $table['idx']);
-					foreach($table['idx'] as $idx)
-				                $ntarifflist[] = $tarifflist[$idx];
-	
-					$tarifflist = $ntarifflist;
-				}
-			break;
         		case 'income':
 	            		foreach($tarifflist as $idx => $row)
 			        {
@@ -162,7 +155,7 @@ function GetTariffList($order='name,asc', $type=NULL)
 	$tarifflist['totalincome'] = $totalincome;
 	$tarifflist['totalcustomers'] = $totalcustomers;
 	$tarifflist['totalcount'] = $totalcount;
-	$tarifflist['totalassignmentcount'] = $totalassignmentcount;
+	$tarifflist['totalactivecount'] = $totalactivecount;
 	$tarifflist['type'] = $type;
 	$tarifflist['order'] = $order;
 	$tarifflist['direction'] = $direction;
@@ -188,7 +181,7 @@ $listdata['total'] = $tarifflist['total'];
 $listdata['totalincome'] = $tarifflist['totalincome'];
 $listdata['totalcustomers'] = $tarifflist['totalcustomers'];
 $listdata['totalcount'] = $tarifflist['totalcount'];
-$listdata['totalassignmentcount'] = $tarifflist['totalassignmentcount'];
+$listdata['totalactivecount'] = $tarifflist['totalactivecount'];
 $listdata['type'] = $tarifflist['type'];
 $listdata['order'] = $tarifflist['order'];
 $listdata['direction'] = $tarifflist['direction'];
@@ -197,7 +190,7 @@ unset($tarifflist['total']);
 unset($tarifflist['totalincome']);
 unset($tarifflist['totalcustomers']);
 unset($tarifflist['totalcount']);
-unset($tarifflist['totalassignmentcount']);
+unset($tarifflist['totalactivecount']);
 unset($tarifflist['type']);
 unset($tarifflist['order']);
 unset($tarifflist['direction']);

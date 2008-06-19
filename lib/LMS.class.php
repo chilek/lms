@@ -2085,36 +2085,47 @@ class LMS
 			.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')) ' : '')
 			.'GROUP BY c.id, customername ORDER BY customername', array($id));
 
-		$assigned = $this->DB->GetRow('SELECT COUNT(*) AS count, 
-						    SUM(CASE period 
-							WHEN '.DAILY.' THEN tariffs.value*30 
-							WHEN '.WEEKLY.' THEN tariffs.value*4 
-							WHEN '.MONTHLY.' THEN tariffs.value 
-							WHEN '.QUARTERLY.' THEN tariffs.value/3 
-							WHEN '.YEARLY.' THEN tariffs.value/12 END) AS value
-						FROM assignments, tariffs
-						WHERE tariffid = tariffs.id AND tariffid = ? AND suspended = 0
-						AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
-
-		$suspended = $this->DB->GetRow('SELECT COUNT(*) AS count, 
-						    SUM(CASE a.period 
-							WHEN '.DAILY.' THEN t.value*30 
-							WHEN '.WEEKLY.' THEN t.value*4 
-							WHEN '.MONTHLY.' THEN t.value 
-							WHEN '.QUARTERLY.' THEN t.value/3 
-							WHEN '.YEARLY.' THEN t.value/12 END) AS value
-						FROM assignments a LEFT JOIN tariffs t ON (t.id = a.tariffid), assignments b
-						WHERE a.customerid = b.customerid AND a.tariffid = ? AND b.tariffid = 0 AND a.suspended = 0
-						AND (b.datefrom <= ?NOW? OR b.datefrom = 0) AND (b.dateto > ?NOW? OR b.dateto = 0)', array($id));
+		$unactive = $this->DB->GetRow('SELECT COUNT(*) AS count,
+                        SUM(CASE a.period
+				WHEN '.DAILY.' THEN t.value*30
+				WHEN '.WEEKLY.' THEN t.value*4
+				WHEN '.MONTHLY.' THEN t.value
+				WHEN '.QUARTERLY.' THEN t.value/3
+				WHEN '.YEARLY.' THEN t.value/12 END) AS value
+			FROM assignments a
+			JOIN tariffs t ON (t.id = a.tariffid)
+			WHERE t.id = ? AND (
+			            a.suspended = 1
+			            OR a.datefrom > ?NOW?
+			            OR (a.dateto <= ?NOW? AND a.dateto != 0)
+			            OR EXISTS (
+			                    SELECT 1 FROM assignments b
+					    WHERE b.customerid = a.customerid
+						    AND liabilityid = 0 AND tariffid = 0
+						    AND (b.datefrom <= ?NOW? OR b.datefrom = 0)
+						    AND (b.dateto > ?NOW? OR b.dateto = 0)
+				    )
+			)', array($id));
+		
+		$all = $this->DB->GetRow('SELECT COUNT(*) AS count, 
+			SUM(CASE a.period 
+				WHEN '.DAILY.' THEN t.value*30 
+				WHEN '.WEEKLY.' THEN t.value*4 
+				WHEN '.MONTHLY.' THEN t.value 
+				WHEN '.QUARTERLY.' THEN t.value/3 
+				WHEN '.YEARLY.' THEN t.value/12 END) AS value
+			FROM assignments a
+			JOIN tariffs t ON (t.id = a.tariffid)
+			WHERE tariffid = ?', array($id));
 
 		// count of all customers with that tariff
 		$result['customerscount'] = sizeof($result['customers']);
 		// count of all assignments
-		$result['count'] = $this->GetCustomersWithTariff($id);
+		$result['count'] = $all['count'];
 		// count of 'active' assignments
-		$result['assignmentcount'] =  $assigned['count'] - $suspended['count'];
+		$result['activecount'] =  $all['count'] - $unactive['count'];
 		// avg monthly income (without unactive assignments)
-		$result['totalval'] = $assigned['value'] - $suspended['value'];
+		$result['totalval'] = $all['value'] - $unactive['value'];
 
 		$result['rows'] = ceil($result['customerscount']/2);
 		return $result;
