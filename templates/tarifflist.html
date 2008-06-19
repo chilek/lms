@@ -79,8 +79,9 @@
 			{$tarifflist[tariffs].tax}
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{$tarifflist[tariffs].customerscount} ({$tarifflist[tariffs].customers},{$tarifflist[tariffs].assignmentcount})
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" NOWRAP>
+			{$tarifflist[tariffs].customerscount|default:0}
+			({$tarifflist[tariffs].count|default:0},{$tarifflist[tariffs].activecount|default:0})
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			{$tarifflist[tariffs].income|money_format} 
@@ -108,7 +109,7 @@
 			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{t}Total:{/t}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
-			<B>{$listdata.totalcount}({$listdata.totalcustomers},{$listdata.totalassignmentcount})</B>
+			<B>{$listdata.totalcustomerscount}({$listdata.totalcount},{$listdata.totalactivecount})</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalincome|money_format}</B>

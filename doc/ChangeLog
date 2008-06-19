@@ -49,6 +49,8 @@ version ? (????-??-??):
   - lmsd/hostfile: added %prefix and %prefixpub variables (alec)
   - lmsd/payments: fixed leap year bug in annual payments (alec)
   - lms-payments: fixed leap year bug in annual payments (alec)
+  - optimized performance of tariffs list (alec)
+  - fixed counting of assignments in tariffs list and info (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
