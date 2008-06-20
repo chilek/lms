@@ -24,9 +24,12 @@
  *  $Id$
  */
 
-if(!$LMS->GetCustomersWithTariff($_GET['id']) && $_GET['is_sure']=="1")
+$id = intval($_GET['id']);
+
+if($id && $_GET['is_sure']=="1" && $LMS->TariffExists($id))
 {
-	$LMS->TariffDelete($_GET['id']);	
+	if(!$DB->GetOne('SELECT COUNT(customerid) FROM assignments WHERE tariffid = ?', array($id)))
+		$LMS->TariffDelete($id);	
 }
 
 $SESSION->redirect('?m=tarifflist');
