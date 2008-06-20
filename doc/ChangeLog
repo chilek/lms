@@ -51,6 +51,7 @@ version ? (????-??-??):
   - lms-payments: fixed leap year bug in annual payments (alec)
   - optimized performance of tariffs list (alec)
   - fixed counting of assignments in tariffs list and info (alec)
+  - lmsd/hostfile: added 'share_netdev_pubip' option (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 

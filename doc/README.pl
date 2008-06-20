@@ -4513,6 +4513,12 @@ Rozdział 6. LMS Daemon
        Jeśli ustawiona na tak (yes, true) pominięte zostaną adresy
        urządzeń sieciowych. Domyślnie: tak
        Przykład: skip_dev_ips = no
+     * share_netdev_pubip
+       Włączenie tej opcji (yes, true, 1) spowoduje, że wszystkim adresom
+       urządzenia sieciowego, które nie posiadają zdefiniowanego adresu
+       publicznego zostanie przypisany jeden (ten sam) ze zdefiniowanych
+       dla danego urządzenia adresów publicznych. Domyślnie: nie
+       Przykład: share_netdev_pubip = tak
      __________________________________________________________________
 
 6.2.9. Traffic
