@@ -12,6 +12,12 @@ struct net
 	unsigned long mask;
 };
 
+struct devip
+{
+	int id;
+	char *address;
+};
+
 struct host
 {
 	char *name;
@@ -59,4 +65,5 @@ struct hostfile_module
 	int pub_replace;
 	int warn_replace;
 	int join_customers;
+	int share_netdev_pubip;
 };

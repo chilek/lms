@@ -869,6 +869,14 @@
 			    <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Domy¶lnie: tak</para>
 			    <para>Przyk³ad: <prompt>skip_dev_ips = no</prompt></para>
 			</listitem>
+			<listitem>
+				<para>share_netdev_pubip</para>
+				<para>W³±czenie tej opcji (yes, true, 1) spowoduje, ¿e wszystkim
+				adresom urz±dzenia sieciowego, które nie posiadaj± zdefiniowanego 
+				adresu publicznego zostanie przypisany jeden (ten sam) ze zdefiniowanych 
+				dla danego urz±dzenia adresów publicznych. Domy¶lnie: nie</para>
+				<para>Przyk³ad: <prompt>share_netdev_pubip = tak</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>	    
