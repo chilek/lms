@@ -332,12 +332,6 @@ class LMS
 		}
 	}
 
-	// confusing function name, returns count of tariff assignments, not count of customers with this tariff
-	function GetCustomersWithTariff($id)
-	{
-		return $this->DB->GetOne('SELECT COUNT(customerid) FROM assignments WHERE tariffid = ?', array($id));
-	}
-
 	function CustomerAdd($customeradd)
 	{
 		if($this->DB->Execute('INSERT INTO customers (name, lastname,  
@@ -2060,10 +2054,7 @@ class LMS
 
 	function TariffDelete($id)
 	{
-		 if (!$this->GetCustomersWithTariff($id))
-			return $this->DB->Execute('DELETE FROM tariffs WHERE id=?', array($id));
-		 else
-			return FALSE;
+		return $this->DB->Execute('DELETE FROM tariffs WHERE id=?', array($id));
 	}
 
 	function GetTariff($id, $network=NULL)
