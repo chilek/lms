@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.8.14 Vidrine (2008-06-21):
 
   - fixed document numbers in Customer Info (alec)
   - fixed tariff deleting from tariff info page (alec)
