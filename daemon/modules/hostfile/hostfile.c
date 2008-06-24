@@ -86,15 +86,14 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	FILE *fh;
 	QueryHandle *res;
 	char *query;
-	int i, j, k, nc=0, n=2, en=2, c=2, ec=2, ng=2, eng=2, ni=0;
+	int i, j, k, nc=0, n=2, en=2, c=2, ec=2, ng=2, eng=2;
 
-	struct devip *devips = (struct devip *) malloc(sizeof(struct devip));
 	struct net *networks = (struct net *) malloc(sizeof(struct net));
 
 	char *nets = strdup("AND EXISTS (SELECT 1 FROM networks net "
 				"WHERE (%nets) "
 	                	"AND ((n.ipaddr > net.address AND n.ipaddr < broadcast(net.address, inet_aton(net.mask))) "
-				"OR (n.ipaddr_pub > net.address AND n.ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
+				"OR (%pubip > net.address AND %pubip < broadcast(net.address, inet_aton(net.mask)))) "
 				")");
 	
 	char *netnames = strdup(hm->networks);
@@ -104,7 +103,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *enets = strdup("AND NOT EXISTS (SELECT 1 FROM networks net "
 				"WHERE (%nets) "
 	                	"AND ((n.ipaddr > net.address AND n.ipaddr < broadcast(net.address, inet_aton(net.mask))) "
-				"OR (n.ipaddr_pub > net.address AND n.ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
+				"OR (%pubip > net.address AND %pubip < broadcast(net.address, inet_aton(net.mask)))) "
 				")");
 				
 	char *enetnames = strdup(hm->excluded_networks);
@@ -293,52 +292,40 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		networks[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
 	}
 	g->db_free(&res);
-
-	// create shared public IP array for network devices
-	if(hm->share_netdev_pubip)
-	{
-		res = g->db_query(g->conn, "SELECT netdev, INET_NTOA(MIN(ipaddr_pub)) AS address "
-				"FROM nodes "
-				"WHERE ownerid = 0 AND ipaddr_pub != 0 AND netdev != 0 "
-				"GROUP BY netdev");
-
-		for(ni=0; ni<g->db_nrows(res); ni++)
-		{
-			devips = (struct devip*) realloc(devips, (sizeof(struct devip) * (ni+1)));
-			devips[ni].address = strdup(g->db_get_data(res,ni,"address"));
-			devips[ni].id = atoi(g->db_get_data(res,ni,"netdev"));
-		}
-		g->db_free(&res);
-	}
 	
 	fh = fopen(hm->file, "w");
 	if(fh)
 	{
 		fprintf(fh, "%s", hm->prefix);
 		
-		if(hm->skip_dev_ips)
+		if(hm->share_netdev_pubip && !hm->skip_dev_ips)
 			query = strdup(
 				"SELECT n.id, LOWER(n.name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
-				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, n.info, warning, "
-				"port, netdev, ownerid "
-				"%custcols"
+				"(CASE WHEN n.ipaddr_pub != 0 THEN INET_NTOA(n.ipaddr_pub) "
+					"ELSE INET_NTOA(COALESCE(s.ipaddr_pub, 0)) END) AS ip_pub, " 
+				"port, passwd, access, n.info, warning %custcols"
 				"FROM nodes n "
+				"LEFT JOIN (SELECT netdev, MIN(ipaddr_pub) AS ipaddr_pub "
+					"FROM nodes "
+					"WHERE ownerid = 0 AND ipaddr_pub != 0 AND netdev != 0 "
+					"GROUP BY netdev "
+				") s ON (s.netdev = n.netdev) "
 				"%custjoin"
-				"WHERE n.ownerid > 0 "
+				"WHERE %where "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
 		else
 			query = strdup(
 				"SELECT n.id, LOWER(n.name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
-				"INET_NTOA(ipaddr_pub) AS ip_pub, passwd, access, n.info, warning, "
-				"port, netdev, ownerid "
-				"%custcols"
+				"INET_NTOA(n.ipaddr_pub) AS ip_pub, passwd, access, n.info, warning, "
+				"port %custcols"
 				"FROM nodes n "
 				"%custjoin"
-				"WHERE 1 = 1 "
+				"WHERE %where "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
 			
+		g->str_replace(&query, "%where", hm->skip_dev_ips ? "n.ownerid > 0" : "1=1");	
 		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
 		g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
 		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
@@ -354,6 +341,10 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		g->str_replace(&query, "%custcols", hm->join_customers ? 
 			", c.id AS cid, TRIM(CONCAT(UPPER(c.lastname), ' ', c.name)) AS customer " : "");
 #endif
+		g->str_replace(&query, "%pubip", hm->share_netdev_pubip && !hm->skip_dev_ips ? 
+			"(CASE WHEN n.ipaddr_pub != 0 THEN n.ipaddr_pub "
+				"ELSE COALESCE(s.ipaddr_pub, 0) END)" : "n.ipaddr_pub");
+
 		res = g->db_query(g->conn, query);
 
 		for(i=0; i<g->db_nrows(res); i++)
@@ -376,20 +367,6 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			// initialize pubnet, we'll overwrite it if node has public IP
 			h.pubnet	= networks[j];
 
-			// shared netdev public IPs
-			if(!inet_pub && hm->share_netdev_pubip && !atoi(g->db_get_data(res,i,"ownerid")))
-			{
-				int netdev = atoi(g->db_get_data(res,i,"netdev"));
-
-				for(k=0; k<ni; k++)
-					if(devips[k].id == netdev)
-					{
-						h.ip_pub = devips[k].address;
-						inet_pub = inet_addr(devips[k].address);
-						break;
-					}
-			}
-			
 			if(inet_pub)
 			{
 				for(k=0; k<nc; k++)
@@ -477,12 +454,6 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		free(networks[i].prefix);
 	}
 	free(networks);
-
-	for(i=0;i<ni;i++)
-	{
-		free(devips[i].address);
-	}
-	free(devips);
 
 	free(nets);
 	free(groups);

@@ -12,12 +12,6 @@ struct net
 	unsigned long mask;
 };
 
-struct devip
-{
-	int id;
-	char *address;
-};
-
 struct host
 {
 	char *name;
