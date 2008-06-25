@@ -93,9 +93,6 @@ while (false !== ($filename = readdir($dh)))
 
 $SMARTY->assign_by_ref('menu', $USERPANEL->MODULES);
 
-// Update database
-include(USERPANEL_DIR.'/lib/upgradedb.php');
-
 $module = isset($_GET['module']) ? $_GET['module'] : 'userpanel';
 
 // Execute module
