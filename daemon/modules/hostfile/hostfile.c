@@ -309,7 +309,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					"FROM nodes "
 					"WHERE ownerid = 0 AND ipaddr_pub != 0 AND netdev != 0 "
 					"GROUP BY netdev "
-				") s ON (s.netdev = n.netdev) "
+				") s ON (s.netdev = n.netdev AND n.ownerid = 0) "
 				"%custjoin"
 				"WHERE %where "
 				"%nets %enets %groups %egroups %ngroups %engroups"
