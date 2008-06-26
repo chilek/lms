@@ -385,8 +385,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			h.id  		= g->db_get_data(res,i,"id");
 			h.mac 		= g->db_get_data(res,i,"mac");
 			h.port 		= g->db_get_data(res,i,"port");
-		    	h.customer	= g->db_get_data(res,i,"customer");
-			h.cid  		= g->db_get_data(res,i,"cid");
+			h.customer	= hm->join_customers ? g->db_get_data(res,i,"customer") : "";
+			h.cid  		= hm->join_customers ? g->db_get_data(res,i,"cid") : "0";
 			// IP's last octet in hex
             		h.i16 		= strdup(itoha((ntohl(inet) & 0xff)));
 			h.i16_pub 	= strdup(inet_pub ? itoha((ntohl(inet_pub) & 0xff)) : "");
