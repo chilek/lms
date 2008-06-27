@@ -158,6 +158,9 @@ elseif(isset($_POST['customeradd']))
 		if($customeradd['cutoffstop'])
 			$customeradd['cutoffstop'] = mktime(23,59,59,date('m'), date('d') + $customeradd['cutoffstop']);
 
+		if(!isset($customeradd['consentdate']))
+			$customeradd['consentdate'] = 0;
+		
 		$id = $LMS->CustomerAdd($customeradd);
 
 		if(isset($im) && $id)

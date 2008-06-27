@@ -393,7 +393,8 @@ CREATE TABLE customers (
 	message text		DEFAULT '' NOT NULL,
 	pin integer		DEFAULT 0 NOT NULL,
 	cutoffstop integer	DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)	
+	consentdate integer	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
 );
 
 /* -------------------------------------------------------- 
@@ -1092,4 +1093,4 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008061300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008062400');

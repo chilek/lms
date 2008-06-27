@@ -52,6 +52,8 @@ version ? (????-??-??):
   - optimized performance of tariffs list (alec)
   - fixed counting of assignments in tariffs list and info (alec)
   - lmsd/hostfile: added 'share_netdev_pubip' option (alec)
+  - optimized CustomerStats() and NodeStats() (alec)
+  - in customer data added field for date of consent for data processing (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 

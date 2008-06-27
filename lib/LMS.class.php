@@ -337,9 +337,9 @@ class LMS
 		if($this->DB->Execute('INSERT INTO customers (name, lastname,  
 				    address, zip, city, email, ten, ssn, status, creationdate, 
 				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
-				    icn, cutoffstop) 
+				    icn, cutoffstop, consentdate) 
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    $customeradd['address'], 
@@ -358,7 +358,8 @@ class LMS
 					    $customeradd['regon'],
 					    $customeradd['rbe'],
 					    $customeradd['icn'],
-					    $customeradd['cutoffstop']
+					    $customeradd['cutoffstop'],
+					    $customeradd['consentdate']
 					    )))
 		{
 			return $this->DB->GetLastInsertID('customers');
@@ -395,7 +396,8 @@ class LMS
 		return $this->DB->Execute('UPDATE customers SET status=?, address=?, 
 				zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
-				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, cutoffstop=?
+				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, 
+				cutoffstop=?, consentdate=?
 				WHERE id=?', 
 			array( $customerdata['status'], 
 				$customerdata['address'], 
@@ -416,6 +418,7 @@ class LMS
 				$customerdata['icn'], 
 				$customerdata['rbe'], 
 				$customerdata['cutoffstop'],
+				$customerdata['consentdate'],
 				$customerdata['id'],
 				));
 	}
@@ -448,7 +451,7 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT id, lastname, name, status, email, address, zip, ten, ssn, '
 			.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
 			city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, 
-			message, pin, regon, icn, rbe, cutoffstop
+			message, pin, regon, icn, rbe, cutoffstop, consentdate
 			FROM customers'.(defined('LMS-UI') ? 'view' : '').' 
 			WHERE id = ?', array($id)))
 		{
@@ -458,6 +461,7 @@ class LMS
 				$result['modifiedby'] = $this->GetUserName($result['modid']);
 				$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
 				$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
+				$result['consentdate'] = $result['consentdate'] ? date('Y/m/d',$result['consentdate']) : '';
 				$result['up_logins'] = $this->DB->GetRow('SELECT lastlogindate, lastloginip, 
 					failedlogindate, failedloginip
 		                        FROM up_customers WHERE customerid = ?', array($result['id']));
@@ -885,10 +889,11 @@ class LMS
 
 	function CustomerStats()
 	{
-		$result['total'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE deleted=0');
-		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=3 AND deleted=0');
-		$result['awaiting'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=2 AND deleted=0');
-		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM customersview WHERE status=1 AND deleted=0');
+		$result = $this->DB->GetRow('SELECT COUNT(id) AS total,
+				COUNT(CASE WHEN status = 3 THEN 1 END) AS connected,
+				COUNT(CASE WHEN status = 2 THEN 1 END) AS awaiting,
+				COUNT(CASE WHEN status = 1 THEN 1 END) AS interested
+				FROM customersview WHERE deleted=0');
 
 		$tmp = $this->DB->GetRow('SELECT SUM(a.value)*-1 AS debtvalue, COUNT(*) AS debt 
 				FROM (SELECT SUM(value) AS value 
@@ -1435,9 +1440,12 @@ class LMS
 
 	function NodeStats()
 	{
-		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=1 AND ownerid>0');
-		$result['disconnected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=0 AND ownerid>0');
-		$result['online'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE ?NOW?-lastonline < ? AND ownerid>0', array($this->CONFIG['phpui']['lastonline_limit']));
+		$result = $this->DB->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected, 
+				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
+				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online
+				FROM nodes WHERE ownerid > 0',
+				array($this->CONFIG['phpui']['lastonline_limit']));
+		
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
 	}
