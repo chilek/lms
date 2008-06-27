@@ -207,8 +207,8 @@
 			    <OPTION value="30"{if $customerinfo.cutoffstop==30} selected{/if}>30</OPTION>
 			</SELECT>
 			<BR>
-			{t}Consent for personal data processing:{/t}
-			<INPUT TYPE="checkbox" CLASS="box" NAME="customerdata[consentdate]" VALUE="{$smarty.now}" trigger="consentdate"}{if $customerinfo.consentdate} checked{/if}>
+			<A HREF="javascript:checkElement('chkconsent')">{t}Consent for personal data processing:{/t}</A>
+			<INPUT TYPE="checkbox" CLASS="box" NAME="customerdata[consentdate]" ID="chkconsent" VALUE="{$smarty.now}" trigger="consentdate"}{if $customerinfo.consentdate} checked{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

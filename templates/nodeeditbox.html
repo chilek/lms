@@ -112,8 +112,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2" NOWRAP>
-			<A HREF="javascript:setCheckbox('chkmac')">{t}MAC checking{/t}: </A><INPUT TYPE="checkbox" NAME="nodeedit[chkmac]" ID="chkmac" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
-			<A HREF="javascript:setCheckbox('duplex')">{t}Half duplex{/t}: </A><INPUT TYPE="checkbox" CLASS="box light" VALUE="1" NAME="nodeedit[halfduplex]" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
+			<A HREF="javascript:checkElement('chkmac')">{t}MAC checking{/t}: </A><INPUT TYPE="checkbox" NAME="nodeedit[chkmac]" ID="chkmac" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
+			<A HREF="javascript:checkElement('duplex')">{t}Half duplex{/t}: </A><INPUT TYPE="checkbox" CLASS="box light" VALUE="1" NAME="nodeedit[halfduplex]" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
 	</TR>
                                 	</TABLE>
@@ -185,11 +185,6 @@
 		}
 
 		document.forms['editnode'].elements['nodeedit[passwd]'].value = passwd.join("");
-	}
-
-	function setCheckbox(id)
-	{
-		document.forms['editnode'].elements[id].checked = !document.forms['editnode'].elements[id].checked;
 	}
 //-->
 </SCRIPT>
