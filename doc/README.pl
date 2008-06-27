@@ -4512,7 +4512,12 @@ Rozdział 6. LMS Daemon
      * skip_dev_ips
        Jeśli ustawiona na tak (yes, true) pominięte zostaną adresy
        urządzeń sieciowych. Domyślnie: tak
-       Przykład: skip_dev_ips = no
+       Przykład: skip_dev_ips = nie
+     * skip_host_ips
+       Jeśli ustawiona na tak (yes, true) pominięte zostaną adresy
+       komputerów. Uwaga: włączenie obu opcji 'skip_*_ips' spowoduje ich
+       zignorowanie. Domyślnie: nie
+       Przykład: skip_host_ips = tak
      * share_netdev_pubip
        Włączenie tej opcji (yes, true, 1) spowoduje, że wszystkim adresom
        urządzenia sieciowego, które nie posiadają zdefiniowanego adresu

@@ -324,8 +324,14 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"WHERE %where "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
-			
-		g->str_replace(&query, "%where", hm->skip_dev_ips ? "n.ownerid > 0" : "1=1");	
+		
+		if(hm->skip_dev_ips)	
+			g->str_replace(&query, "%where", "n.ownerid > 0");
+		else if(hm->skip_host_ips)
+			g->str_replace(&query, "%where", "n.ownerid = 0");
+		else
+			g->str_replace(&query, "%where", "1 = 1");
+		
 		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
 		g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
 		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
@@ -517,9 +523,10 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->warn_pub = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "public_warnedhost", hm->warn));
 	hm->warn_replace = g->config_getbool(hm->base.ini, hm->base.instance, "warn_replace", 0);
 
-	hm->skip_dev_ips = g->config_getbool(hm->base.ini, hm->base.instance, "skip_dev_ips", 1);
 	hm->file = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "file", "/tmp/hostfile"));
 	hm->command = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "command", ""));
+	hm->skip_dev_ips = g->config_getbool(hm->base.ini, hm->base.instance, "skip_dev_ips", 1);
+	hm->skip_host_ips = g->config_getbool(hm->base.ini, hm->base.instance, "skip_host_ips", 0);
 
 	hm->networks = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "networks", ""));
 	hm->customergroups = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "customergroups", ""));
@@ -532,7 +539,8 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 
 	// looking for %customer or %cid variables, if not found we'll not join 
 	// with customers table 
-	if(strstr(hm->host_prefix, "%customer")!=NULL
+	if(!hm->skip_host_ips && (
+		strstr(hm->host_prefix, "%customer")!=NULL
 		|| strstr(hm->host_append, "%customer")!=NULL
 		|| strstr(hm->grant, "%customer")!=NULL
 		|| strstr(hm->deny, "%customer")!=NULL 
@@ -547,7 +555,7 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 		|| strstr(hm->grant_pub, "%cid")!=NULL
 		|| strstr(hm->deny_pub, "%cid")!=NULL
 		|| strstr(hm->warn, "%cid")!=NULL
-		|| strstr(hm->warn_pub, "%cid")!=NULL)
+		|| strstr(hm->warn_pub, "%cid")!=NULL))
 	{
 		hm->join_customers = 1;
 	}
