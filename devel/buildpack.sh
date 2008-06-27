@@ -49,8 +49,6 @@ umask 022
 cd $TEMPDIR/$X/
 # ropakowujemy
 tar -xzf lms.tar.gz
-# ustawiamy prawa do plików/katalogów...
-chmod 777 lms/{templates_c,backups,documents}
 # i datę, zepsutą przez ViewCVS
 touch `find . -type d`    
 cd lms
@@ -58,7 +56,7 @@ cd lms
 rm -Rf $NOTDISTRIB
 # podmieniamy numerki wersji
 grep -air '1\.11-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.11-cvs/$LMSVER $CODENAME/g"
-chmod 777 templates_c backups documents
+chmod 777 templates_c backups documents userpanel/templates_c
 cd lib
 #pobieramy Smarty i wlaczamy do paczki LMSa
 wget http://smarty.php.net/distributions/Smarty-$SMARTYVER.tar.gz
