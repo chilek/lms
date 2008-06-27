@@ -128,6 +128,13 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		if($customerdata['cutoffstop'])
 			$customerdata['cutoffstop'] = mktime(23,59,59,date('m'), date('d') + $customerdata['cutoffstop']);
 		
+		$consent = $DB->GetOne('SELECT consentdate FROM customers WHERE id = ?', array($customerdata['id']));
+		
+		if(!isset($customerdata['consentdate']))
+			$customerdata['consentdate'] = 0;
+		elseif($consent)
+			$customerdata['consentdate'] = $consent;
+		
 		$LMS->CustomerUpdate($customerdata);
 		
 		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($customerdata['id']));

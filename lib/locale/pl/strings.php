@@ -593,7 +593,7 @@ $_LANG['full access'] = 'pełny dostęp';
 $_LANG['Gateway:'] = 'Brama:';
 $_LANG['Generate'] = 'Wygeneruj';
 $_LANG['Generate invoice'] = 'Wygeneruj fakturę';
-$_LANG['[ Generate PIN ]'] = '[ Wygeneruj PIN ]';
+$_LANG['Generate PIN'] = 'Wygeneruj PIN';
 $_LANG['Click to generate random password'] = 'Kliknij aby wygenerować losowe hasło';
 $_LANG['Generate random PIN'] = 'Wygeneruj losowy PIN';
 $_LANG['Generating customers...'] = 'Generuję klientów...';
@@ -1989,5 +1989,8 @@ $_LANG['Cutoff suspending:'] = 'Zawieszenie blokowania:';
 $_LANG['Enter warning message contents'] = 'Wprowadź treść ostrzeżenia';
 $_LANG['Select days number of cutoff suspending'] = 'Wybierz ilość dni zawieszenia blokowania';
 $_LANG['Open attachment'] = 'Otwórz załącznik';
+$_LANG['Consent for personal data processing:'] = 'Zgoda na przetwarzanie danych osobowych:';
+$_LANG['no consent'] = 'brak zgody';
+$_LANG['TRANSFER'] = 'PRZELEW';
 
 ?>

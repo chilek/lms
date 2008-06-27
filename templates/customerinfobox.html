@@ -162,16 +162,19 @@
 		</TD>
 	</TR>
 {/if}	
-{if $customerinfo.cutoffstop > $smarty.now}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP CLASS="alert">
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+{if $customerinfo.cutoffstop > $smarty.now}
+			<FONT class="alert">
 			{t 0=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $0{/t}
+			</FONT>
+{/if}
+			{t}Consent for personal data processing:{/t} {if $customerinfo.consentdate}{$customerinfo.consentdate}{else}{t}no consent{/t}{/if}
 		</TD>
 	</TR>
-{/if}	
                                         </TABLE>
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">
