@@ -867,7 +867,12 @@
 			<listitem>
 			    <para>skip_dev_ips</para>
 			    <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Domy¶lnie: tak</para>
-			    <para>Przyk³ad: <prompt>skip_dev_ips = no</prompt></para>
+			    <para>Przyk³ad: <prompt>skip_dev_ips = nie</prompt></para>
+			</listitem>
+			<listitem>
+				<para>skip_host_ips</para>
+				<para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy komputerów. Uwaga: w³±czenie obu opcji 'skip_*_ips' spowoduje ich zignorowanie. Domy¶lnie: nie</para>
+				<para>Przyk³ad: <prompt>skip_host_ips = tak</prompt></para>
 			</listitem>
 			<listitem>
 				<para>share_netdev_pubip</para>

@@ -824,6 +824,11 @@
                    customers) will be ignored (omitted). Default: yes</para>
                    <para>Example: <prompt>skip_dev_ips = no</prompt></para>
                </listitem>
+               <listitem>
+                   <para>skip_host_ips</para>
+                   <para>If enabled (yes, true) hosts IPs (customers nodes) will be ignored (omitted). Default: no</para>
+                   <para>Example: <prompt>skip_host_ips = yes</prompt></para>
+               </listitem>
               </itemizedlist>
               </sect3>
           </sect2>         

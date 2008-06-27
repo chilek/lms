@@ -56,6 +56,7 @@ struct hostfile_module
 	char *excluded_nodegroups;
 
 	int skip_dev_ips;
+	int skip_host_ips;
 	int pub_replace;
 	int warn_replace;
 	int join_customers;
