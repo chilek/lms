@@ -70,7 +70,7 @@
 				{/section}
 			</SELECT>
 			<INPUT name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<INPUT class="box light" type="checkbox" name="nodeedit[linktype]" value="1"{if $nodeinfo.linktype} CHECKED{/if}><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}>
+			<INPUT class="box light" type="checkbox" name="nodeedit[linktype]" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
