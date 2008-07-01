@@ -1992,5 +1992,6 @@ $_LANG['Open attachment'] = 'Otwórz załącznik';
 $_LANG['Consent for personal data processing:'] = 'Zgoda na przetwarzanie danych osobowych:';
 $_LANG['no consent'] = 'brak zgody';
 $_LANG['TRANSFER'] = 'PRZELEW';
+$_LANG['Rows: $0'] = 'Liczba wierszy: $0';
 
 ?>
