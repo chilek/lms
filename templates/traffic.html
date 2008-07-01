@@ -4,7 +4,7 @@
 {if $bars}
 <TABLE WIDTH="100%" ALIGN="center" CELLPADDING="3">
 	<TR>
-		<TD VALIGN="top" WIDTH="50%">
+		<TD style="vertical-align:top" WIDTH="50%">
 			<TABLE WIDTH="100%" CELLPADDING="2">
 				<TR class="DARK">
 					<TD class="FALL" align="center" COLSPAN="2">
@@ -28,7 +28,7 @@
 				</TR>
 			</TABLE>
 		</TD>
-		<TD VALIGN="top" WIDTH="100%">
+		<TD style="vertical-align:top" WIDTH="50%">
 			<TABLE WIDTH="100%" CELLPADDING="2">
 				<TR class="DARK">
 					<TD class="FALL" align="center" COLSPAN="2">
@@ -53,6 +53,9 @@
 			</TABLE>
 		</TD>
 	</TR>
+	{if $smarty.section.download.index_next}
+	<TR><TD WIDTH="100%" COLSPAN="2" ALIGN="center">{t 0= $smarty.section.download.index_next}Rows: $0{/t}</TD></TR>
+	{/if}
 </TABLE>
 {else}
 <FORM NAME="traffic" METHOD="POST" ACTION="?m=traffic&bar=user">

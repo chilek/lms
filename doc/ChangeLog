@@ -56,6 +56,7 @@ version ? (????-??-??):
   - in customer data added field for date of consent for data processing (alec)
   - lmsd/hostfile: added 'skip_host_ips' option (alec)
   - userpanel: added box for data processing agreement (alec)
+  - added rows count in traffic stats page (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
