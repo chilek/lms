@@ -28,13 +28,17 @@ function module_main()
 {
     global $LMS,$SMARTY,$SESSION;
 
+    if(!empty($_GET['consent']))
+	    $LMS->DB->Execute('UPDATE customers SET consentdate = ?NOW? WHERE id = ?',
+		    array($SESSION->id));
+
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
     $balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
 
     $fields_changed = $LMS->DB->GetRow('SELECT id FROM up_info_changes WHERE customerid = ?', 
     	array($SESSION->id));
-    
+
     $SMARTY->assign('userinfo',$userinfo);
     $SMARTY->assign('usernodes',$usernodes);
     $SMARTY->assign('balancelist',$balancelist);
@@ -348,14 +352,19 @@ if(defined('USERPANEL_SETUPMODE'))
 		global $SMARTY, $LMS;
 		
 		$SMARTY->assign('hide_nodesbox', $LMS->CONFIG['userpanel']['hide_nodesbox']);
+		$SMARTY->assign('consent_text', $LMS->CONFIG['userpanel']['data_consent_text']);
     		$SMARTY->display('module:info:setup.html');
         }
 	
 	function module_submit_setup()
 	{
 		global $DB;
-		
-		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'hide_nodesbox\'', array(isset($_POST['hide_nodesbox']) ? 1 : 0));
+
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array(isset($_POST['hide_nodesbox']) ? 1 : 0, 'userpanel', 'hide_nodesbox'));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array($_POST['consent_text'], 'userpanel', 'data_consent_text'));
+
 		header('Location: ?m=userpanel&module=info');
 	}
 }

@@ -70,5 +70,8 @@ $_LANG['Enter tax exempt number'] = 'Wprowadź NIP';
 $_LANG['Enter social security number'] = 'Wprowadź PESEL';
 $_LANG['Hide customer nodes box:'] = 'Ukryj okno komputerów klienta:';
 $_LANG['Don\'t show customer nodes box if he hasn\'t any nodes'] = 'Jeśli klient nie posiada komputerów ukrywa całkowicie okno informacji o komputerach';
+$_LANG['Text of data processing agreement:'] = 'Tekst zgody na przetwarzanie danych:';
+$_LANG['Enter text of agreement for personal data processing'] = 'Wprowadź tekst zgody na przetwarzanie danych osobowych';
+$_LANG['Personal data processing agreement'] = 'Zgoda na przetwarzanie danych osobowych';
 
 ?>

@@ -14,6 +14,14 @@
 		    <INPUT class="box light" type="checkbox" NAME="hide_nodesbox" ID="hide_nodesbox" value="1"{if $hide_nodesbox} checked{/if} {tip text="Don't show customer nodes box if he hasn't any nodes"}>
     		</TD>
 	    </TR>
+	    <TR>
+		<TD WIDTH="1%" NOWRAP>
+		    {t}Text of data processing agreement:{/t}
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+		    <TEXTAREA NAME="consent_text" rows="4" cols="50" {tip text="Enter text of agreement for personal data processing"}>{$consent_text}</TEXTAREA>
+    		</TD>
+	    </TR>
 	</TABLE>
 	<p align="right">
 	    <A HREF="?m=userpanel">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
