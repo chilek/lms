@@ -139,7 +139,10 @@ if(isset($_GET['search']))
 		$SESSION->redirect('?m=customerinfo&id='.$customerlist[0]['id']);
 	}
 	else
+	{
+		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->display('customersearchresults.html');
+	}
 }
 else
 {

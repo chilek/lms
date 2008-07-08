@@ -57,6 +57,8 @@ version ? (????-??-??):
   - lmsd/hostfile: added 'skip_host_ips' option (alec)
   - userpanel: added box for data processing agreement (alec)
   - added rows count in traffic stats page (alec)
+  - customersearchresults: we can add/remove found customers to/from selected
+    customergroup (chilan)
 
 version 1.11.3 Quetesh (2008-03-26):
 
