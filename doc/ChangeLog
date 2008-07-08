@@ -59,6 +59,8 @@ version ? (????-??-??):
   - added rows count in traffic stats page (alec)
   - customersearchresults: we can add/remove found customers to/from selected
     customergroup (chilan)
+  - tarifflist: we can choose customergroup for tariff statistics (chilan)
+  - tarifflist: we pay attention to discounts (chilan)
 
 version 1.11.3 Quetesh (2008-03-26):
 
