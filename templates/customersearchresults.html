@@ -18,6 +18,19 @@
 		}
 		document.setwarnings.submit();
 	}
+
+	function customerGroup(add)
+	{
+		if (add == 1)
+		{
+			document.setwarnings.action = '?m=customergroup&oper=addtogroup';
+		}
+		else
+		{
+			document.setwarnings.action = '?m=customergroup&oper=removefromgroup';
+		}
+		document.setwarnings.submit();
+	}
 -->
 </SCRIPT>
 {/literal}
@@ -126,6 +139,17 @@
 			<A HREF="javascript:setWarnings(1);"><IMG SRC="img/warningon.gif">{t}Enable Warnings for All{/t}</A>&nbsp;
 			<A HREF="javascript:setWarnings(0);"><IMG SRC="img/warningoff.gif">{t}Disable Warnings for All{/t}</A>&nbsp;
 			<A HREF="?m=customerwarn&search=1"><IMG SRC="img/mail.gif">{t}Set Message{/t}</A>
+		</TD>
+	</TR>
+	<TR class="dark">
+		<TD width="100%" class="fall" align="left" COLSPAN="4" nowrap>
+			<A HREF="javascript:customerGroup(1);"><IMG SRC="img/group.gif">{t}Add customers to group{/t}</A>&nbsp;
+			<A HREF="javascript:customerGroup(0);"><IMG SRC="img/group.gif">{t}Remove customers from group{/t}</A>&nbsp;
+			<SELECT SIZE="1" NAME="setwarnings[customergroup]">
+				{section name=customergroups loop=$customergroups}
+				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
+				{/section}
+			</SELECT>
 		</TD>
 	</TR>
 	{/if}
