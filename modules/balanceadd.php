@@ -28,6 +28,7 @@ $addbalance = $_POST['addbalance'];
 
 $addbalance['value'] = str_replace(',','.',$addbalance['value']);
 
+$currenttime = false;
 if(isset($addbalance['time']) && $addbalance['time'] != '' 
 	&& ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$', $addbalance['time'])
 	&& ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $addbalance['time']))
@@ -51,15 +52,25 @@ elseif(isset($addbalance['time']) && $addbalance['time']!='')
 		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
 	}
 	else
+	{
 		// here too. geez, what the matter with you guys? if($user==E_LAME){ we_know_better(); } ???
 		// pls, fix it
 		$addbalance['time'] = time();
+		$currenttime = true;
+	}
 }
 else
+{
 	$addbalance['time'] = time();
+	$currenttime = true;
+}
 
 $SESSION->save('addbc', $addbalance['comment']);
-$SESSION->save('addbt', $addbalance['time']);
+if ($currenttime)
+	$SESSION->remove('addbt');
+else
+	$SESSION->save('addbt', $addbalance['time']);
+
 $SESSION->save('addbv', $addbalance['value']);
 $SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0);
 

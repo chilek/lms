@@ -171,16 +171,16 @@
 				<TR class="light">
 					<TD class="ftop">
 						<INPUT TYPE="hidden" NAME="addbalance[customerid]" VALUE="{$balancelist.customerid}">
-						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="16" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
+						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="16" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();" {if $time}VALUE="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
 					</TD>
 					<TD class="ftop" nowrap>
 						{$layout.logname|truncate:16:"...":true}
 					</TD>
 					<TD class="ftop" colspan="2" nowrap>
-						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>&nbsp;
+						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {if $value}VALUE="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
 						<SELECT SIZE="1" name="addbalance[taxid]" {tip text="Select Tax value"}>
 						{foreach item=tax from=$taxeslist}
-							<OPTION value="{$tax.id}"{if $tax.value==$_config.phpui.default_taxrate} selected{/if}>{$tax.label}</OPTION>
+							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $_config.phpui.default_taxrate)}selected{/if}>{$tax.label}</OPTION>
 						{/foreach}
 						</SELECT>
 					</TD>
@@ -189,7 +189,7 @@
 						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation1" VALUE="1" class="box light" {tip text="Select type of operation"} checked><A HREF="javascript:checkElement('operation1')">{t}income/expense{/t}</a>
 					</TD>
 					<TD class="ftop" colspan="2">
-						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
+						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {if $comment}VALUE="{$comment}"{/if} {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
 				<TR class="light">
