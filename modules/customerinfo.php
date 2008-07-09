@@ -56,6 +56,11 @@ if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_sup
                                         WHERE nodeid = nodes.id AND ownerid = ?', array($_GET['id'])));
 }
 
+$time = $SESSION->get('addbt');
+$value = $SESSION->get('addbv');
+$taxid = $SESSION->get('addbtax');
+$comment = $SESSION->get('addbc');
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Customer Info: $0',$customerinfo['customername']);
@@ -74,6 +79,10 @@ $SMARTY->assign(
 			'documents' => $documents,
 			'taxeslist' => $taxeslist,
 			'expired' => $expired,
+			'time' => $time,
+			'value' => $value,
+			'taxid' => $taxid,
+			'comment' => $comment,
 		     )
 		);
 $SMARTY->display('customerinfo.html');

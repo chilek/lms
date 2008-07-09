@@ -61,6 +61,8 @@ version ? (????-??-??):
     customergroup (chilan)
   - tarifflist: we can choose customergroup for tariff statistics (chilan)
   - tarifflist: we pay attention to discounts (chilan)
+  - we remember all financial operation parameters in balancenew
+    and customerinfo (chilan)
 
 version 1.11.3 Quetesh (2008-03-26):
 
