@@ -103,6 +103,7 @@
                     <member>lastname - nazwa/nazwisko</member>
                     <member>name - imiê</member>
                     <member>status - status (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</member>
+		    <member>type - osobowo¶æ prawna (0-osoba fizyczna, 1-osoba prawna)</member>
                     <member>email - adres poczty internetowej</member>
                     <member>pin - numer pin (uwierzytelnianie)</member>
                     <member>address - adres (ulica, nr domu, nr lokalu)</member>

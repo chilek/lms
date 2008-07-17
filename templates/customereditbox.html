@@ -54,7 +54,16 @@
 				<OPTION VALUE="3"{if $customerinfo.status eq "3"} SELECTED{/if}>{t}connected<!singular>{/t}</OPTION>
 				<OPTION VALUE="2"{if $customerinfo.status eq "2"} SELECTED{/if}>{t}waiting{/t}</OPTION>
 				<OPTION VALUE="1"{if $customerinfo.status eq "1"} SELECTED{/if}>{t}interested<!singular>{/t}</OPTION>
-				</SELECT>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/folder.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+			<INPUT TYPE="radio" CLASS="box" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{t}private person{/t}</A>
+			<INPUT TYPE="radio" CLASS="box" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{t}legal entity{/t}</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
