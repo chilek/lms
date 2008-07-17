@@ -213,7 +213,14 @@ if(isset($_POST['nodeedit']))
 	
 	if($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
-	
+
+	if(!$error)
+	{
+		$LMS->NodeUpdate($nodeedit, ($ownerid != $nodeedit['ownerid']));
+		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
+		die;
+	}
+
 	$nodeinfo['name'] = $nodeedit['name'];
 	$nodeinfo['mac'] = $nodeedit['mac'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
@@ -224,13 +231,6 @@ if(isset($_POST['nodeedit']))
 	$nodeinfo['chkmac'] = $nodeedit['chkmac'];
 	$nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
 	$nodeinfo['port'] = $nodeedit['port'];
-
-	if(!$error)
-	{
-		$LMS->NodeUpdate($nodeedit, ($ownerid != $nodeedit['ownerid']));
-		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
-		die;
-	}
 
 	if($nodeedit['ipaddr_pub']=='0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';

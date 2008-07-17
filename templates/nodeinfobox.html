@@ -116,8 +116,8 @@
 				<OPTION VALUE="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
 				{/section}
 			</SELECT>
-			<INPUT name="port" value="{if $nodedata.port}{$nodedata.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<INPUT class="box light" type="checkbox" name="linktype" id="linktype" value="1"{if $nodedata.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
+			<INPUT name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+			<INPUT class="box light" type="checkbox" name="linktype" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
 			<A HREF="javascript:document.nodelink.submit(); ">{t}Connect{/t} <IMG SRC="img/edit.gif" alt=""></A>
 			{/if}
 			{/if}
