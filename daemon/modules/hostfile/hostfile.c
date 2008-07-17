@@ -56,6 +56,8 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%dns2pub", inet_pub ? h.pubnet.dns2 : "");
 	g->str_replace(&s, "%dnspub", inet_pub ? h.pubnet.dns : "");
 	g->str_replace(&s, "%winspub", inet_pub ? h.pubnet.wins : "");
+	g->str_replace(&s, "%dhcpspub", inet_pub ? h.pubnet.dhcpstart : "");
+	g->str_replace(&s, "%dhcpepub", inet_pub ? h.pubnet.dhcpend : "");
 	g->str_replace(&s, "%prefix", h.net.prefix);
 	g->str_replace(&s, "%mask", inet_ntoa(inet_makeaddr(htonl(h.net.mask),0)));
 	g->str_replace(&s, "%addr", inet_ntoa(inet_makeaddr(htonl(h.net.address),0)));
@@ -66,6 +68,8 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%dns2", h.net.dns2);
 	g->str_replace(&s, "%dns", h.net.dns);
 	g->str_replace(&s, "%wins", h.net.wins);
+	g->str_replace(&s, "%dhcps", h.net.dhcpstart);
+	g->str_replace(&s, "%dhcpe", h.net.dhcpend);
 	g->str_replace(&s, "%info", h.info);
 	g->str_replace(&s, "%ipub", h.ip_pub);
 	g->str_replace(&s, "%id", h.id);
@@ -74,6 +78,7 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%i", h.ip);
 	g->str_replace(&s, "%m", h.mac);
 	g->str_replace(&s, "%n", h.name);
+	g->str_replace(&s, "%l", h.location);
 	g->str_replace(&s, "%port", h.port);
 	g->str_replace(&s, "%p", h.passwd);
 
@@ -274,7 +279,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	// all networks data
 	res = g->db_query(g->conn, "SELECT name, domain, address, inet_aton(mask) AS mask, "
-				"mask2prefix(inet_aton(mask)) AS prefix, "
+				"mask2prefix(inet_aton(mask)) AS prefix, dhcpstart, dhcpend, "
 				"interface, gateway, dns, dns2, wins FROM networks");
 
 	for(nc=0; nc<g->db_nrows(res); nc++)
@@ -288,6 +293,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		networks[nc].dns2 = strdup(g->db_get_data(res,nc,"dns2"));
 		networks[nc].wins = strdup(g->db_get_data(res,nc,"wins"));
 		networks[nc].prefix = strdup(g->db_get_data(res,nc,"prefix"));
+		networks[nc].dhcpstart = strdup(g->db_get_data(res,nc,"dhcpstart"));
+		networks[nc].dhcpend = strdup(g->db_get_data(res,nc,"dhcpend"));
 		networks[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
 		networks[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
 	}
@@ -303,7 +310,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"SELECT n.id, LOWER(n.name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"(CASE WHEN n.ipaddr_pub != 0 THEN INET_NTOA(n.ipaddr_pub) "
 					"ELSE INET_NTOA(COALESCE(s.ipaddr_pub, 0)) END) AS ip_pub, " 
-				"port, passwd, access, n.info, warning %custcols"
+				"port, passwd, access, n.info, warning, location %custcols"
 				"FROM nodes n "
 				"LEFT JOIN (SELECT netdev, MIN(ipaddr_pub) AS ipaddr_pub "
 					"FROM nodes "
@@ -318,7 +325,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			query = strdup(
 				"SELECT n.id, LOWER(n.name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
 				"INET_NTOA(n.ipaddr_pub) AS ip_pub, passwd, access, n.info, warning, "
-				"port %custcols"
+				"port, location %custcols"
 				"FROM nodes n "
 				"%custjoin"
 				"WHERE %where "
@@ -391,6 +398,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			h.id  		= g->db_get_data(res,i,"id");
 			h.mac 		= g->db_get_data(res,i,"mac");
 			h.port 		= g->db_get_data(res,i,"port");
+			h.location 	= g->db_get_data(res,i,"location");
 			h.customer	= hm->join_customers ? g->db_get_data(res,i,"customer") : "";
 			h.cid  		= hm->join_customers ? g->db_get_data(res,i,"cid") : "0";
 			// IP's last octet in hex
@@ -458,6 +466,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		free(networks[i].dns2);
 		free(networks[i].wins);
 		free(networks[i].prefix);
+		free(networks[i].dhcpstart);
+		free(networks[i].dhcpend);
 	}
 	free(networks);
 
