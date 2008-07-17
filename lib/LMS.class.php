@@ -621,6 +621,15 @@ class LMS
 							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
 								WHERE ownerid = c.id AND linktype = '.intval($value).')';
 						break;
+						case 'doctype':
+							$val = explode(':', $value); // <doctype>:<fromdate>:<todate>
+							$searchargs[] = 'EXISTS (SELECT 1 FROM documents
+								WHERE customerid = c.id'
+								.(!empty($val[0]) ? ' AND type = '.intval($val[0]) : '')
+								.(!empty($val[1]) ? ' AND cdate >= '.intval($val[1]) : '')
+								.(!empty($val[2]) ? ' AND cdate <= '.intval($val[2]) : '')
+								.')';
+						break;
 						default:
 							$searchargs[] = "$key ?LIKE? '%$value%'";
 					}
