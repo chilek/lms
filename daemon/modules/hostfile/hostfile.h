@@ -8,6 +8,8 @@ struct net
 	char *dns2;
 	char *wins;
 	char *prefix;
+	char *dhcpstart;
+	char *dhcpend;
 	unsigned long address;
 	unsigned long mask;
 };
@@ -28,6 +30,7 @@ struct host
 	char *ip_pub;
 	char *i16;
 	char *i16_pub;
+	char *location;
 	struct net net;
 	struct net pubnet;
 };

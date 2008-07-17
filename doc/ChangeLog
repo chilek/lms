@@ -63,6 +63,7 @@ version ? (????-??-??):
   - tarifflist: we pay attention to discounts (chilan)
   - we remember all financial operation parameters in balancenew
     and customerinfo (chilan)
+  - lmsd/hostfile: added %l, %dhcps, %dhcpe, %dhcpspub, %dhcpepub (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 

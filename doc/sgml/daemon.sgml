@@ -681,6 +681,7 @@
 			<member>%n - host name,</member>
 			<member>%p - node (computer) password,</member>
 			<member>%port - device's port to which computer is connected,</member>
+			<member>%l - host location,</member>
 			<member>%info - node description,</member>
 			<member>%domain - domain,</member>
 			<member>%net - network name,</member>
@@ -690,6 +691,7 @@
 			<member>%addr - network's address,</member>
 			<member>%prefix - network mask CIDR-style prefix,</member>
 			<member>%dns, %dns2 - DNS server addresses,</member>
+			<member>%dhcps, %dhcpe - start and end of DHCP range,</member>
 			<member>%wins - WINS server address,</member>
 			<member>%i16 - IP's last octet in hex,</member>
 			<member>%i16pub - public IP's last octet in hex.</member>
@@ -701,6 +703,7 @@
 			<member>%addrpub - public network's address,</member>
 			<member>%prefixpub - public network mask CIDR-style prefix,</member>
 			<member>%dnspub, %dns2pub - DNS server addresses in public network,</member>
+			<member>%dhcpspub, %dhcpepub - start and end of DHCP range in public network,</member>
 			<member>%winspub - WINS server address in public network,</member>
 			<member>%customer - node owner's name,</member>
 			<member>%cid - node owner's ID,</member>
