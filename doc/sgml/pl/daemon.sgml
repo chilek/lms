@@ -729,6 +729,7 @@
 			<member>%port - nr portu w urz±dzeniu, do którego jest pod³±czony komputer,</member>
 			<member>%info - opis komputera,</member>
 			<member>%l - lokalizacja komputera,</member>
+			<member>%devl - lokalizacja urz±dzenia, do którego pod³±czony jest komputer,</member>
 			<member>%domain - domena,</member>
 			<member>%net - nazwa sieci, do której nale¿y host,</member>
 			<member>%if - interfejs sieci,</member>

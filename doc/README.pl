@@ -4401,6 +4401,7 @@ Rozdział 6. LMS Daemon
    %port - nr portu w urządzeniu, do którego jest podłączony komputer,
    %info - opis komputera,
    %l - lokalizacja komputera,
+   %devl - lokalizacja urządzenia, do którego podłączony jest komputer,
    %domain - domena,
    %net - nazwa sieci, do której należy host,
    %if - interfejs sieci,

@@ -79,6 +79,7 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%m", h.mac);
 	g->str_replace(&s, "%n", h.name);
 	g->str_replace(&s, "%l", h.location);
+	g->str_replace(&s, "%devl", h.devlocation);
 	g->str_replace(&s, "%port", h.port);
 	g->str_replace(&s, "%p", h.passwd);
 
@@ -307,10 +308,11 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		
 		if(hm->share_netdev_pubip && !hm->skip_dev_ips)
 			query = strdup(
-				"SELECT n.id, LOWER(n.name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
+				"SELECT n.id, LOWER(n.name) AS name, n.mac, INET_NTOA(n.ipaddr) AS ip, "
 				"(CASE WHEN n.ipaddr_pub != 0 THEN INET_NTOA(n.ipaddr_pub) "
 					"ELSE INET_NTOA(COALESCE(s.ipaddr_pub, 0)) END) AS ip_pub, " 
-				"port, passwd, access, n.info, warning, location %custcols"
+				"n.port, n.passwd, n.access, n.info, n.warning, n.location, "
+				"%devloc AS devlocation %custcols"
 				"FROM nodes n "
 				"LEFT JOIN (SELECT netdev, MIN(ipaddr_pub) AS ipaddr_pub "
 					"FROM nodes "
@@ -318,16 +320,18 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					"GROUP BY netdev "
 				") s ON (s.netdev = n.netdev AND n.ownerid = 0) "
 				"%custjoin"
+				"%devjoin"
 				"WHERE %where "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
 		else
 			query = strdup(
-				"SELECT n.id, LOWER(n.name) AS name, mac, INET_NTOA(ipaddr) AS ip, "
-				"INET_NTOA(n.ipaddr_pub) AS ip_pub, passwd, access, n.info, warning, "
-				"port, location %custcols"
+				"SELECT n.id, LOWER(n.name) AS name, n.mac, INET_NTOA(n.ipaddr) AS ip, "
+				"INET_NTOA(n.ipaddr_pub) AS ip_pub, n.passwd, n.access, n.info, n.warning, "
+				"n.port, n.location, %devloc AS devlocation %custcols"
 				"FROM nodes n "
 				"%custjoin"
+				"%devjoin"
 				"WHERE %where "
 				"%nets %enets %groups %egroups %ngroups %engroups"
 				"ORDER BY ipaddr");
@@ -347,6 +351,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		g->str_replace(&query, "%engroups", strlen(engroupsql) ? engroups : "");
 		g->str_replace(&query, "%custjoin", hm->join_customers ? 
 			"LEFT JOIN customers c ON (c.id = n.ownerid) " : "");
+		g->str_replace(&query, "%devjoin", hm->join_devices ? 
+			"LEFT JOIN netdevices d ON (d.id = n.netdev) " : "");
+		g->str_replace(&query, "%devloc", hm->join_devices ? "d.location" : "''");
 #ifdef USE_PGSQL
 		g->str_replace(&query, "%custcols", hm->join_customers ? 
 			", c.id AS cid, TRIM(UPPER(c.lastname) || ' ' || c.name) AS customer " : "");
@@ -399,6 +406,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			h.mac 		= g->db_get_data(res,i,"mac");
 			h.port 		= g->db_get_data(res,i,"port");
 			h.location 	= g->db_get_data(res,i,"location");
+			h.devlocation 	= g->db_get_data(res,i,"devlocation");
 			h.customer	= hm->join_customers ? g->db_get_data(res,i,"customer") : "";
 			h.cid  		= hm->join_customers ? g->db_get_data(res,i,"cid") : "0";
 			// IP's last octet in hex
@@ -571,6 +579,22 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	}
 	else
 		hm->join_customers = 0;
+
+	// looking for %devl variable, if not found we'll not join 
+	// with netdevices table
+	if(	strstr(hm->host_prefix, "%devl")!=NULL
+		|| strstr(hm->host_append, "%devl")!=NULL
+		|| strstr(hm->grant, "%devl")!=NULL
+		|| strstr(hm->deny, "%devl")!=NULL 
+		|| strstr(hm->grant_pub, "%devl")!=NULL
+		|| strstr(hm->deny_pub, "%devl")!=NULL
+		|| strstr(hm->warn, "%devl")!=NULL 
+		|| strstr(hm->warn_pub, "%devl")!=NULL)
+	{
+		hm->join_devices = 1;
+	}
+	else
+		hm->join_devices = 0;
 
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/hostfile] initialized", hm->base.instance);

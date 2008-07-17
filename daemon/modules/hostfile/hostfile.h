@@ -31,6 +31,7 @@ struct host
 	char *i16;
 	char *i16_pub;
 	char *location;
+	char *devlocation;
 	struct net net;
 	struct net pubnet;
 };
@@ -63,5 +64,6 @@ struct hostfile_module
 	int pub_replace;
 	int warn_replace;
 	int join_customers;
+	int join_devices;
 	int share_netdev_pubip;
 };
