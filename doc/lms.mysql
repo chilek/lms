@@ -520,7 +520,8 @@ CREATE TABLE customers (
   id int(11) 		NOT NULL auto_increment,
   lastname varchar(255) NOT NULL DEFAULT '',
   name varchar(255) 	NOT NULL DEFAULT '',
-  status int(11) 	NOT NULL DEFAULT '0',
+  status smallint 	NOT NULL DEFAULT '0',
+  type smallint		NOT NULL DEFAULT '0',
   email varchar(255) 	NOT NULL DEFAULT '',
   address varchar(255) 	NOT NULL DEFAULT '',
   zip varchar(10) 	NOT NULL DEFAULT '',
@@ -994,7 +995,9 @@ CREATE TABLE up_info_changes (
 	fieldvalue varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id)
 ) TYPE=MyISAM;
-						
+		
+INSERT INTO uiconfig (section, var)
+	VALUES ('userpanel', 'data_consent_text');				
 INSERT INTO uiconfig (section, var, value, description, disabled) 
 	VALUES ('userpanel', 'disable_transferform', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
@@ -1027,4 +1030,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'owner_stats', '0', '', 0);
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008062400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008071700');

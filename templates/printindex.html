@@ -36,6 +36,17 @@
 					<TD width="1%">
 					    <TABLE width="100%">
 						<TR>
+						    <TD width="1%" nowrap><IMG src="img/folder.gif" alt=""></TD>
+						    <TD width="1%" nowrap><B>{t}Type:{/t}</B></TD>
+						    <TD width="98%" nowrap>
+							<SELECT size="1" name="type" {tip text="Select personality type"}>
+							    <OPTION value="" SELECTED>{t}- all -{/t}</OPTION>
+			                            	    <OPTION VALUE="0">{t}private person{/t}</OPTION>
+			                            	    <OPTION VALUE="1">{t}legal entity{/t}</OPTION>
+							</SELECT>
+						    </TD>
+						</TR>
+						<TR>
 						    <TD width="1%" nowrap><IMG src="img/network.gif" alt=""></TD>
 						    <TD width="1%" nowrap><B>{t}Network:{/t}</B></TD>
 						    <TD width="98%" nowrap>
@@ -59,7 +70,7 @@
 							</SELECT>
 						    </TD>
 						</TR>
-						<TR>    
+						<TR>
 						    <TD width="1%" nowrap><IMG src="img/nodegroup.gif" alt=""></TD>
 						    <TD width="1%" nowrap><B>{t}Nodes Group:{/t}</B></TD>
 						    <TD width="98%" nowrap>

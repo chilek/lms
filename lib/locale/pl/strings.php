@@ -1995,5 +1995,8 @@ $_LANG['Consent for personal data processing:'] = 'Zgoda na przetwarzanie danych
 $_LANG['no consent'] = 'brak zgody';
 $_LANG['TRANSFER'] = 'PRZELEW';
 $_LANG['Rows: $0'] = 'Liczba wierszy: $0';
+$_LANG['private person'] = 'osoba fizyczna';
+$_LANG['legal entity'] = 'osoba prawna (firma)';
+$_LANG['Select legal personality type'] = 'Wybierz typ osobowości prawnej';
 
 ?>

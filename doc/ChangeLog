@@ -64,7 +64,8 @@ version ? (????-??-??):
   - we remember all financial operation parameters in balancenew
     and customerinfo (chilan)
   - lmsd/hostfile: added %l, %dhcps, %dhcpe, %dhcpspub, %dhcpepub (alec)
-
+  - added customer legal personality type: legal entity/private person (alec)
+  
 version 1.11.3 Quetesh (2008-03-26):
 
   - fixed 'suspended' filter on customers list (alec)

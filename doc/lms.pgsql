@@ -373,6 +373,7 @@ CREATE TABLE customers (
 	lastname varchar(255)	DEFAULT '' NOT NULL,
 	name varchar(255)	DEFAULT '' NOT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
+	type smallint		DEFAULT 0 NOT NULL,
 	email varchar(255) 	DEFAULT '' NOT NULL,
 	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
@@ -1040,6 +1041,8 @@ CREATE TABLE up_info_changes (
 	PRIMARY KEY (id)
 );
 
+INSERT INTO uiconfig (section, var)
+	VALUES ('userpanel', 'data_consent_text');
 INSERT INTO uiconfig (section, var, value, description, disabled) 
 	VALUES ('userpanel', 'disable_transferform', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
@@ -1093,4 +1096,4 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008062400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008071700');

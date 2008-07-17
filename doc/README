@@ -4041,6 +4041,7 @@ Chapter 6. LMS Daemon
    %n - host name,
    %p - node (computer) password,
    %port - device's port to which computer is connected,
+   %l - host location,
    %info - node description,
    %domain - domain,
    %net - network name,
@@ -4050,6 +4051,7 @@ Chapter 6. LMS Daemon
    %addr - network's address,
    %prefix - network mask CIDR-style prefix,
    %dns, %dns2 - DNS server addresses,
+   %dhcps, %dhcpe - start and end of DHCP range,
    %wins - WINS server address,
    %i16 - IP's last octet in hex,
    %i16pub - public IP's last octet in hex.
@@ -4061,6 +4063,7 @@ Chapter 6. LMS Daemon
    %addrpub - public network's address,
    %prefixpub - public network mask CIDR-style prefix,
    %dnspub, %dns2pub - DNS server addresses in public network,
+   %dhcpspub, %dhcpepub - start and end of DHCP range in public network,
    %winspub - WINS server address in public network,
    %customer - node owner's name,
    %cid - node owner's ID,
@@ -5151,6 +5154,7 @@ Chapter 7. For curious
    lastname - last/company name
    name - first name
    status - customer status (3-connected, 2-awaiting, 1-prospect)
+   type - legal personality (0-private person, 1-legal entity)
    email - email address
    pin - pin number (for authentication)
    address - street address (street, apartment, flat, etc)

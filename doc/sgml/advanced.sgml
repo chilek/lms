@@ -99,6 +99,7 @@
                     <member>lastname - last/company name</member>
                     <member>name - first name</member>
                     <member>status - customer status (3-connected, 2-awaiting, 1-prospect)</member>
+                    <member>type - legal personality (0-private person, 1-legal entity)</member>
                     <member>email - email address</member>
                     <member>pin - pin number (for authentication)</member>
                     <member>address - street address (street, apartment, flat, etc)</member>

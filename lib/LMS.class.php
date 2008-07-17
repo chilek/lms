@@ -334,14 +334,15 @@ class LMS
 
 	function CustomerAdd($customeradd)
 	{
-		if($this->DB->Execute('INSERT INTO customers (name, lastname,  
+		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,  
 				    address, zip, city, email, ten, ssn, status, creationdate, 
 				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
 				    icn, cutoffstop, consentdate) 
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
+					    empty($customeradd['type']) ? 0 : 1,
 					    $customeradd['address'], 
 					    $customeradd['zip'], 
 					    $customeradd['city'], 
@@ -393,13 +394,14 @@ class LMS
 
 	function CustomerUpdate($customerdata)
 	{
-		return $this->DB->Execute('UPDATE customers SET status=?, address=?, 
+		return $this->DB->Execute('UPDATE customers SET status=?, type=?, address=?, 
 				zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
 				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, 
 				cutoffstop=?, consentdate=?
 				WHERE id=?', 
 			array( $customerdata['status'], 
+				empty($customerdata['type']) ? 0 : 1,
 				$customerdata['address'], 
 				$customerdata['zip'], 
 				$customerdata['city'], 
@@ -449,7 +451,7 @@ class LMS
 	function GetCustomer($id, $short=false)
 	{
 		if($result = $this->DB->GetRow('SELECT id, lastname, name, status, email, address, zip, ten, ssn, '
-			.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, 
+			.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, type, 
 			city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, 
 			message, pin, regon, icn, rbe, cutoffstop, consentdate
 			FROM customers'.(defined('LMS-UI') ? 'view' : '').' 
@@ -611,6 +613,9 @@ class LMS
 							if(!isset($searchargs['deletedfrom']))
 								$searchargs[] = "moddate <= $value";
 							$deleted = 1;
+						break;
+						case 'type':
+							$searchargs[] = 'type = '.intval($value);
 						break;
 						default:
 							$searchargs[] = "$key ?LIKE? '%$value%'";

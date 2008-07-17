@@ -199,7 +199,7 @@ if(!isset($customeradd['address']) && isset($CONFIG['phpui']['default_address'])
 
 $layout['pagetitle'] = trans('New Customer');
 
-$SMARTY->assign('customeradd',$customeradd);
+$SMARTY->assign('customeradd', $customeradd);
 $SMARTY->assign('error',$error);
 $SMARTY->display('customeradd.html');
 

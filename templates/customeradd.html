@@ -50,11 +50,11 @@
 		<TD width="50%" class="fleft"  style="vertical-align: top;">
 			<TABLE cellpadding="2" cellspacing="0" WIDTH="100%">
 				<TR>
-					<TD width="1%" valign="top">
+					<TD width="1%">
 						{if $customeradd.status eq "3" || !$customeradd.status}<img src="img/customer.gif" alt="">{/if}
 						{if $customeradd.status eq "2"}<img src="img/wait.gif" alt="">{/if}
 						{if $customeradd.status eq "1"}<img src="img/unk.gif" alt="">{/if}
-					</tD>
+					</TD>
 					<TD width="99%">
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
 							<OPTION VALUE="3"{if $customeradd.status eq "3"} SELECTED{/if}><B>{t}connected<!singular>{/t}</B></OPTION>
@@ -62,9 +62,18 @@
 							<OPTION VALUE="1"{if $customeradd.status eq "1"} SELECTED{/if}><B>{t}interested<!singular>{/t}</B></OPTION>
 						</SELECT>
 					</TD>
-				</tr>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="1%">
+						<IMG SRC="img/folder.gif" ALT="">
+					</TD>
+					<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+						<INPUT TYPE="radio" CLASS="box" NAME="customeradd[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customeradd.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{t}private person{/t}</A>
+						<INPUT TYPE="radio" CLASS="box" NAME="customeradd[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{t}legal entity{/t}</A>
+					</TD>
+				</TR>
 				<TR>
-					<TD width="1%" valign="top">
+					<TD width="1%">
 						<IMG src="img/home.gif" alt="">
 					</TD>
 					<TD width="99%" nowrap>
@@ -90,7 +99,7 @@
 					</TD>
 				</TR>
     				<TR>
-					<TD width="1%" valign="top">
+					<TD width="1%">
 						<IMG src="img/phone.gif" alt="">
 					</TD>
 					<TD width="99%" NOWRAP>
@@ -263,3 +272,12 @@
 </SCRIPT>
 {/literal}
 {include file="footer.html"}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/folder.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+			<INPUT TYPE="radio" CLASS="box" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{t}private person{/t}</A>
+			<INPUT TYPE="radio" CLASS="box" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{t}legal entity{/t}</A>
+		</TD>
+	</TR>

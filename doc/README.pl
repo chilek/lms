@@ -4400,6 +4400,7 @@ Rozdział 6. LMS Daemon
    %p - hasło,
    %port - nr portu w urządzeniu, do którego jest podłączony komputer,
    %info - opis komputera,
+   %l - lokalizacja komputera,
    %domain - domena,
    %net - nazwa sieci, do której należy host,
    %if - interfejs sieci,
@@ -4408,6 +4409,7 @@ Rozdział 6. LMS Daemon
    %prefix - maska sieci w postaci prefixu CIDR,
    %gw - adres bramy,
    %dns, %dns2 - adresy serwerów DNS,
+   %dhcps, %dhcpe - początek i koniec zakresu DHCP,
    %wins - adres serwera WINS,
    %i16 - ostatni oktet adresu IP w formacie szesnastkowym,
    %i16pub - ostatni oktet publicznego adresu IP w formacie szesnastkowym.
@@ -4419,6 +4421,8 @@ Rozdział 6. LMS Daemon
    %prefixpub - maska sieci publicznej w postaci prefixu CIDR,
    %gwpub - adres bramy w sieci publicznej,
    %dnspub, %dns2pub - adresy serwerów DNS w sieci publicznej,
+   %dhcpspub, %dhcpepub - początek i koniec zakresu DHCP w sieci
+   publicznej,
    %winspub - adres serwera WINS w sieci publicznej,
    %customer - nazwa klienta,
    %cid - ID klienta
@@ -5800,6 +5804,7 @@ Rozdział 7. Dla dociekliwych
    lastname - nazwa/nazwisko
    name - imię
    status - status (3-podłączony, 2-oczekujący, 1-zainteresowany)
+   type - osobowość prawna (0-osoba fizyczna, 1-osoba prawna)
    email - adres poczty internetowej
    pin - numer pin (uwierzytelnianie)
    address - adres (ulica, nr domu, nr lokalu)
