@@ -63,7 +63,7 @@ version ? (????-??-??):
   - tarifflist: we pay attention to discounts (chilan)
   - we remember all financial operation parameters in balancenew
     and customerinfo (chilan)
-  - lmsd/hostfile: added %l, %dhcps, %dhcpe, %dhcpspub, %dhcpepub (alec)
+  - lmsd/hostfile: added %l, $devl, %dhcps, %dhcpe, %dhcpspub, %dhcpepub (alec)
   - added customer legal personality type: legal entity/private person (alec)
   - added link type and legal personality filters to customers searching
     and printing (alec)
