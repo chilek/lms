@@ -32,6 +32,7 @@ switch($type)
 
 		$date = 0;
 		$search['type'] = $_POST['type'];
+		$search['linktype'] = $_POST['linktype'];
 		
 		if($_POST['day'])
 		{

@@ -65,6 +65,8 @@ version ? (????-??-??):
     and customerinfo (chilan)
   - lmsd/hostfile: added %l, %dhcps, %dhcpe, %dhcpspub, %dhcpepub (alec)
   - added customer legal personality type: legal entity/private person (alec)
+  - added link type and legal personality filters to customers searching
+    and printing (alec)
   
 version 1.11.3 Quetesh (2008-03-26):
 

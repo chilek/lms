@@ -617,6 +617,10 @@ class LMS
 						case 'type':
 							$searchargs[] = 'type = '.intval($value);
 						break;
+						case 'linktype':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM nodes
+								WHERE ownerid = c.id AND linktype = '.intval($value).')';
+						break;
 						default:
 							$searchargs[] = "$key ?LIKE? '%$value%'";
 					}

@@ -1998,5 +1998,8 @@ $_LANG['Rows: $0'] = 'Liczba wierszy: $0';
 $_LANG['private person'] = 'osoba fizyczna';
 $_LANG['legal entity'] = 'osoba prawna (firma)';
 $_LANG['Select legal personality type'] = 'Wybierz typ osobowości prawnej';
+$_LANG['Link type:'] = 'Typ łącza:';
+$_LANG['wire'] = 'przewodowe';
+$_LANG['Select link type'] = 'Wybierz typ łącza';
 
 ?>
