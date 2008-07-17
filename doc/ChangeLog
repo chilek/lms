@@ -67,6 +67,8 @@ version ? (????-??-??):
   - added customer legal personality type: legal entity/private person (alec)
   - added link type and legal personality filters to customers searching
     and printing (alec)
+  - added possibility to print customers with specified dokument type
+    and creation date (alec)
   
 version 1.11.3 Quetesh (2008-03-26):
 

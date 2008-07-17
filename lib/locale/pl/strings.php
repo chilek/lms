@@ -2001,5 +2001,8 @@ $_LANG['Select legal personality type'] = 'Wybierz typ osobowości prawnej';
 $_LANG['Link type:'] = 'Typ łącza:';
 $_LANG['wire'] = 'przewodowe';
 $_LANG['Select link type'] = 'Wybierz typ łącza';
+$_LANG['With document of type:'] = 'Z dokumentem typu:';
+$_LANG['in date:'] = 'z dnia:';
+$_LANG['Legal personality:'] = 'Osobowość prawna:';
 
 ?>

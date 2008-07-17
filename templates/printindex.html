@@ -18,26 +18,26 @@
 		<TD class="flr" width="100%" colspan="2">
 			<TABLE width="100%">
 				<TR>
-					<TD width="1%">
-						<IMG src="img/customer.gif" alt="">
-					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}State:{/t}</B>
-					</TD>
-					<TD width="1%" {tip text="Select customer's group"}>
-						<NOBR><INPUT class="radio light" type="radio" id="connected" name="filter" value="3" CHECKED><A HREF="javascript:checkElement('connected')">{t}connected<!plural>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="disconnected" name="filter" value="5"><A HREF="javascript:checkElement('disconnected')">{t}disconnected<!plural>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="indebt" name="filter" value="6"><A HREF="javascript:checkElement('indebt')">{t}in debt{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="waiting" name="filter" value="2"><A HREF="javascript:checkElement('waiting')">{t}waiting{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="interested" name="filter" value="1"><A HREF="javascript:checkElement('interested')">{t}interested<!plural>{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="wonodes" name="filter" value="-1"><A HREF="javascript:checkElement('wonodes')">{t}without nodes{/t}</a></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="all" name="filter" value="0"><A HREF="javascript:checkElement('all')">{t}all<!customers>{/t}</a></NOBR>
-					</TD>
-					<TD width="1%">
-					    <TABLE width="100%">
+					    <TABLE>
+						<TR>
+						    <TD width="1%"><IMG src="img/customer.gif" alt=""></TD>
+						    <TD width="1%" nowrap><B>{t}State:{/t}</B></TD>
+						    <TD width="98%">
+							<SELECT size="1" name="filter" {tip text="Select customer's group"}>
+							    <OPTION value="0">- {t}all<!customers>{/t} -</OPTION>
+							    <OPTION value="3" CHECKED>{t}connected<!plural>{/t}</OPTION>
+							    <OPTION value="5">{t}disconnected<!plural>{/t}</OPTION>
+							    <OPTION value="6">{t}in debt{/t}</OPTION>
+							    <OPTION value="2">{t}waiting{/t}</OPTION>
+							    <OPTION value="1">{t}interested<!plural>{/t}</OPTION>
+							    <OPTION value="-1">{t}without nodes{/t}</OPTION>
+							</SELECT>
+						    </TD>
+						</TR>
 						<TR>
 						    <TD width="1%" nowrap><IMG src="img/folder.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Type:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{t}Legal personality:{/t}</B></TD>
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="type" {tip text="Select legal personality type"}>
 							    <OPTION value="" SELECTED>{t}- all -{/t}</OPTION>
@@ -52,7 +52,7 @@
 						    <TD width="98%" nowrap>
 							<SELECT size="1" name="linktype" {tip text="Select link type"}>
                             				    <OPTION VALUE="">{t}- all -{/t}</OPTION>
-				                            <OPTION VALUE="0">{t}wire{/t}</OPTION>
+				                    	    <OPTION VALUE="0">{t}wire{/t}</OPTION>
 							    <OPTION VALUE="1">{t}wireless{/t}</OPTION>
 							</SELECT>
 						    </TD>
@@ -90,25 +90,15 @@
         						    {foreach from=$nodegroups item=nodegroup}
 							    <OPTION value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</OPTION>
 	        					    {/foreach}
-							    </SELECT>
+							</SELECT>
 						    </TD>
-						</TR>
-						<TR>    
-						    <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}Balance date:{/t}</B></TD>
-						    <TD width="98%" nowrap>
-							<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						    </TD>
-						</TR>
+					        </TR>
 					    </TABLE>
-					<TD width="1%">
-						<IMG src="img/view.gif" alt="">
 					</TD>
-					<TD width="1%">	
-			    			<B>{t}Sorting:{/t}</B>
-					</TD>
-					<TD width="94%" {tip text="Select sorting direction and criteria"}>
-					    <TABLE width="100%">
+					<TD width="1%"><IMG src="img/view.gif" alt=""></TD>
+					<TD width="1%"><B>{t}Sorting:{/t}</B></TD>
+					<TD width="97%">
+					    <TABLE width="1%" {tip text="Select sorting direction and criteria"}>
 						<TR>
 						    <TD width="100%" nowrap>
 							<SELECT SIZE="1" name="order">
@@ -131,6 +121,34 @@
 					    </TABLE>
 					</TD>
 				</TR>
+				<TR>
+					<TD width="100%" colspan="4">
+					    <TABLE>
+						<TR>
+						    <TD width="1%" nowrap><IMG src="img/calendar.gif" alt=""></TD>
+						    <TD width="1%" nowrap><B>{t}Balance date:{/t}</B></TD>
+						    <TD width="98%" nowrap>
+							<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						    </TD>
+						</TR>
+						<TR>
+						    <TD width="1%" nowrap><IMG src="img/docum.gif" alt=""></TD>
+						    <TD width="99%" colspan="2" nowrap>
+							<B>{t}With document of type:{/t}</B>
+							<SELECT SIZE="1" NAME="doctype" {tip text="Select document type"}>
+							    <OPTION VALUE="0">{t}- all -{/t}</OPTION>
+							    {foreach from=$_DOCTYPES key=key item=item}
+							    <OPTION VALUE="{$key}">{$item}</OPTION>
+							    {/foreach}
+							</SELECT>
+							<B>{t}in date:{/t}</B>
+							{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="docfrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal21.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+							{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="docto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal22.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>	
+						    </TD>
+						</TR>
+					    </TABLE>
+					</TD>
+				</TR>
 			</TABLE>
 		</TD>
 	</TR>
@@ -145,6 +163,10 @@
 <!--
 var cal12 = new calendar(document.printcustomerlist.elements['day']);
 cal12.time_comp = false;
+var cal21 = new calendar(document.printcustomerlist.elements['docfrom']);
+cal21.time_comp = false;
+var cal22 = new calendar(document.printcustomerlist.elements['docto']);
+cal22.time_comp = false;
 //-->
 </SCRIPT>
 </P>
@@ -253,7 +275,7 @@ cal2.time_comp = false;
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
-					<TD width="96%" nowrap>
+					<TD width="99%" nowrap>
 						<B>{t}Period:{/t}</B>&nbsp;
 						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal5.popup();" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal6.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	

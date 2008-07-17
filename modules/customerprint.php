@@ -39,7 +39,28 @@ switch($type)
 			list($year, $month, $day) = split('/',$_POST['day']);
 			$date = mktime(0,0,0,$month,$day+1,$year);
 		}
+
+		if($_POST['docfrom'])
+		{
+			list($year, $month, $day) = split('/', $_POST['docfrom']);
+			$docfrom = mktime(0,0,0,$month,$day,$year);
+		}
+		else
+			$docfrom = 0;
+
+		if($_POST['docto'])
+		{
+			list($year, $month, $day) = split('/', $_POST['docto']);
+			$docto = mktime(23,59,59,$month,$day,$year);
+		}
+		else
+			$docto = 0;
 		
+		if(!empty($_POST['doctype']) || !empty($docfrom) || !empty($docto))
+		{
+			$search['doctype'] = intval($_POST['doctype']).':'.$docfrom.':'.$docto;
+		}
+
 		switch($_POST['filter'])
 		{
 			case 0:
