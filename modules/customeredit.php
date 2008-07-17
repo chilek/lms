@@ -163,7 +163,7 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		$customerinfo['customername'] = $olddata['customername'];
 		$customerinfo['balance'] = $olddata['balance'];
 		$customerinfo['tenwarning'] = $tenwarning;
-		$customerinfo['ssnwarning'] = $ssnwarning;
+		$customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
 		
 		$SMARTY->assign('error',$error);
 	}
