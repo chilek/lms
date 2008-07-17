@@ -39,10 +39,21 @@
 						    <TD width="1%" nowrap><IMG src="img/folder.gif" alt=""></TD>
 						    <TD width="1%" nowrap><B>{t}Type:{/t}</B></TD>
 						    <TD width="98%" nowrap>
-							<SELECT size="1" name="type" {tip text="Select personality type"}>
+							<SELECT size="1" name="type" {tip text="Select legal personality type"}>
 							    <OPTION value="" SELECTED>{t}- all -{/t}</OPTION>
 			                            	    <OPTION VALUE="0">{t}private person{/t}</OPTION>
 			                            	    <OPTION VALUE="1">{t}legal entity{/t}</OPTION>
+							</SELECT>
+						    </TD>
+						</TR>
+						<TR>
+						    <TD width="1%" nowrap><IMG src="img/netdev.gif" alt=""></TD>
+						    <TD width="1%" nowrap><B>{t}Link type:{/t}</B></TD>
+						    <TD width="98%" nowrap>
+							<SELECT size="1" name="linktype" {tip text="Select link type"}>
+                            				    <OPTION VALUE="">{t}- all -{/t}</OPTION>
+				                            <OPTION VALUE="0">{t}wire{/t}</OPTION>
+							    <OPTION VALUE="1">{t}wireless{/t}</OPTION>
 							</SELECT>
 						    </TD>
 						</TR>
