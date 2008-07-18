@@ -6179,6 +6179,7 @@ Rozdział 7. Dla dociekliwych
    quota_sql - limit
    mail_forward - adres email przekierowania
    mail_bcc - adres email kopii BCC
+   description - dodatkowe informacje
      __________________________________________________________________
 
 7.2.31. Domeny ('domains')

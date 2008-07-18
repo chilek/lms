@@ -497,6 +497,7 @@
 		    <member>quota_sql - limit</member>
 		    <member>mail_forward - adres email przekierowania</member>
 		    <member>mail_bcc - adres email kopii BCC</member>
+		    <member>description - dodatkowe informacje</member>
                </simplelist>
           </sect2>
           <sect2 id="domains">

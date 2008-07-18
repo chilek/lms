@@ -494,6 +494,7 @@
 		    <member>quota_sql - sql database space limits</member>
 		    <member>mail_forward - account for mail forwarding</member>
 		    <member>mail_bcc - account for blind carbon copy mail</member>
+		    <member>description - additional information</member>
                </simplelist>
           </sect2>
           <sect2 id="domains">
