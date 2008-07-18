@@ -597,6 +597,7 @@ CREATE TABLE passwd (
     createtime int(11) NOT NULL DEFAULT 0,
     mail_forward varchar(255) NOT NULL DEFAULT '',
     mail_bcc varchar(255) NOT NULL DEFAULT '',
+    description text NOT NULL DEFAULT '',
     PRIMARY KEY (id),
     UNIQUE KEY (login, domainid),
     INDEX ownerid (ownerid)

@@ -627,6 +627,7 @@ CREATE TABLE passwd (
 	quota_sql integer	DEFAULT 0 NOT NULL,
 	mail_forward varchar(255) DEFAULT '' NOT NULL,
 	mail_bcc varchar(255) 	DEFAULT '' NOT NULL,
+	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login, domainid)
 );
