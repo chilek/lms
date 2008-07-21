@@ -54,8 +54,10 @@
 					{/section}
 				</SELECT>
 				{t}Year:{/t}
-				<SELECT name="year" onchange="document.filter.submit();">{assign var=end value=$period.todate|default:$date|date_format:"%Y"}
-					{section name=year loop=$end+2 start=$period.fromdate|default:$date|date_format:"%Y"}
+				<SELECT name="year" onchange="document.filter.submit();">
+					{assign var=start value=$period.fromdate|default:$date|date_format:"%Y"}
+					{assign var=end value=$period.todate|default:$date|date_format:"%Y"}
+					{section name=year loop=$end+2 start=$start}
 					<OPTION value="{$smarty.section.year.index}"{if $smarty.section.year.index==$year} selected{/if}>{$smarty.section.year.index}</option>
 					{/section}
 				</SELECT>

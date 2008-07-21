@@ -62,7 +62,7 @@ if(isset($_POST['event']))
 					$event['customerid']
 					));
 		
-		if($event['userlist'])
+		if(!empty($event['userlist']))
 		{
 			$id = $DB->GetOne('SELECT id FROM events WHERE title=? AND date=? AND begintime=? AND endtime=? AND userid=?',
 				array($event['title'], $date, $event['begintime'], $event['endtime'], $AUTH->id));
