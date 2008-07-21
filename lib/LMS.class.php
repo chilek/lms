@@ -2580,7 +2580,7 @@ class LMS
 		{
 			if(!sizeof($nodes)) break;
 			$ip = array_pop($nodes);
-			if($i==$ip)
+			if($i==$ip || $i==ip2long($network['gateway']))
 				continue;
 			else
 			{
