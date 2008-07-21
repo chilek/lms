@@ -53,7 +53,7 @@ if(isset($_POST['event']))
 		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, userid, private, customerid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $AUTH->id, $event['status'], $event['customerid']));
 		
-		if($event['userlist'])
+		if(!empty($event['userlist']))
 		{
 			$id = $DB->GetOne('SELECT id FROM events WHERE title=? AND date=? AND begintime=? AND endtime=? AND userid=?',
 				array($event['title'], $date, $event['begintime'], $event['endtime'], $AUTH->id));
@@ -63,7 +63,7 @@ if(isset($_POST['event']))
 					VALUES (?, ?)', array($id, $userid));
 		}
 		
-		if(!$event['reuse'])
+		if(!isset($event['reuse']))
 		{
 			$SESSION->redirect('?m=eventlist');
 		}

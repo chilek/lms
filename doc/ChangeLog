@@ -5,6 +5,7 @@ version ? (????-??-??):
   - don't overwrite invoice's creation time on edit if date wasn't changed (alec)
   - lmsd/payments: fixed leap year bug in annual payments (alec)
   - lms-payments: fixed leap year bug in annual payments (alec)
+  - BTS#0000754: fixed year selector in Timetable (alec)
 
 version 1.10.4 Pyrus (2008-05-04):
 

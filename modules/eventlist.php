@@ -122,7 +122,7 @@ for($i=1; $i<$daysnum+1; $i++)
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('edate', sprintf('%04d/%02d/%02d', $year, $month, $day));
 
-$SMARTY->assign('period', $DB->GetRow('SELECT MAX(date) AS fromdate, MIN(date) AS todate FROM events'));
+$SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events'));
 $SMARTY->assign('eventlist',$eventlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('days',$days);
