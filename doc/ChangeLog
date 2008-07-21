@@ -69,7 +69,9 @@ version ? (????-??-??):
     and printing (alec)
   - added possibility to print customers with specified dokument type
     and creation date (alec)
-  
+  - LMS::NetworkCompress(): we check if given ip address is not gateway address
+    (Arkadiusz Chomicki/chilan)
+
 version 1.11.3 Quetesh (2008-03-26):
 
   - fixed 'suspended' filter on customers list (alec)
