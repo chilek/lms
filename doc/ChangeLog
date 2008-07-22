@@ -71,6 +71,7 @@ version ? (????-??-??):
     and creation date (alec)
   - LMS::NetworkCompress(): we check if given ip address is not gateway address
     (Arkadiusz Chomicki/chilan)
+  - ... and is not in dhcp range + don't change gateway address (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 

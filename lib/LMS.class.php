@@ -2571,20 +2571,48 @@ class LMS
 		$network = $this->GetNetworkRecord($id);
 		$address = $network['addresslong'] + $shift;
 		$broadcast = $network['addresslong'] + $network['size'];
-		$gateway = ip2long($network['gateway']);
+		$dhcpstart = ip2long($network['dhcpstart']);
+		$dhcpend = ip2long($network['dhcpend']);
+
+		$specials = array(ip2long($network['gateway']),
+//				ip2long($network['wins']),
+//				ip2long($network['dns']),
+//				ip2long($network['dns2'])
+		);
 
 		foreach($network['nodes']['id'] as $idx => $value)
 			if($value)
 				$nodes[] = $network['nodes']['addresslong'][$idx];
-		rsort($nodes);
 
 		for($i = $address+1; $i < $broadcast; $i++)
 		{
 			if(!sizeof($nodes)) break;
-			$ip = array_pop($nodes);
-			if($i==$ip || $i==$gateway)
+
+			// skip special and dhcp range addresses
+			if(in_array($i, $specials) || ($i >= $dhcpstart && $i <= $dhcpend))
 				continue;
 
+			$ip = array_shift($nodes);
+	
+			if($i == $ip) continue;
+			
+			// don't change assigned special addresses
+			if(in_array($ip, $specials))
+			{
+				array_unshift($nodes, $ip);
+				$size = sizeof($nodes);
+
+				foreach($nodes as $idx => $ip)
+					if(!in_array($ip, $specials))
+					{
+						unset($nodes[$idx]);
+						break;
+					}
+				
+				if($size == sizeof($nodes))
+					break;
+			}
+			
 			if(!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i,$ip)))
 				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i,$ip));
 		}
