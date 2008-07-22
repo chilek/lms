@@ -6,6 +6,8 @@ version ? (????-??-??):
   - lmsd/payments: fixed leap year bug in annual payments (alec)
   - lms-payments: fixed leap year bug in annual payments (alec)
   - BTS#0000754: fixed year selector in Timetable (alec)
+  - LMS::NetworkCompress(): we check if given ip address is not gateway address
+    (Arkadiusz Chomicki/alec)
 
 version 1.10.4 Pyrus (2008-05-04):
 

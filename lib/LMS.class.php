@@ -2421,6 +2421,8 @@ class LMS
 		$network = $this->GetNetworkRecord($id);
 		$address = $network['addresslong'] + $shift;
 		$broadcast = $network['addresslong'] + $network['size'];
+		$gateway = ip2long($network['gateway']);
+		
 		foreach($network['nodes']['id'] as $idx => $value)
 			if($value)
 				$nodes[] = $network['nodes']['addresslong'][$idx];
@@ -2430,13 +2432,11 @@ class LMS
 		{
 			if(!sizeof($nodes)) break;
 			$ip = array_pop($nodes);
-			if($i==$ip)
+			if($i==$ip || $i==$gateway)
 				continue;
-			else
-			{
-				if(!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i,$ip)))
-					$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i,$ip));
-			}
+
+			if(!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i,$ip)))
+				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i,$ip));
 		}
 	}
 
