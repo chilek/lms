@@ -2369,9 +2369,6 @@ class LMS
 
 	function NetworkSet($id, $disabled=-1)
 	{
-		if (! $this->NetworkExists($id))
-			return FALSE;
-
 		if($disabled != -1)
 		{
 			if($disabled == 1)
