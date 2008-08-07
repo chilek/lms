@@ -39,31 +39,35 @@ function smarty_function_tip($args, &$SMARTY)
 	} 
 	else 
 	{
-	    $text = $args['text'];
-    	    if($SMARTY->_tpl_vars['_LANG'][$text])
-	    	    $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
-
-	    if(is_array($args))
-		    foreach($args as $argid => $argval)
-			    $text = str_replace('$'.$argid, $argval, $text);
-
-	    $error = str_replace("'",'\\\'',$SMARTY->_tpl_vars['error'][$args['trigger']]);
-	    $error = str_replace('"','&quot;',$error);
-	    $error = str_replace("\r",'',$error);
-	    $error = str_replace("\n",'<BR>',$error);
-	
-	    $text = str_replace('\'','\\\'',$text);
-	    $text = str_replace('"','&quot;',$text);
-	    $text = str_replace("\r",'',$text);
-	    $text = str_replace("\n",'<BR>',$text);
-	
 	    if($SMARTY->_tpl_vars['error'][$args['trigger']])
+	    {
+		    $error = str_replace("'",'\\\'',$SMARTY->_tpl_vars['error'][$args['trigger']]);
+		    $error = str_replace('"','&quot;',$error);
+		    $error = str_replace("\r",'',$error);
+		    $error = str_replace("\n",'<BR>',$error);
+		    
 		    $result = ' onmouseover="return overlib(\'<b><font color=red>'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
-	    elseif($args['text'] != '')
-		    $result = 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
+		    $result .= $args['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ';
+	    }
+	    elseif($args['text'] != '') 
+	    {
+		    $text = $args['text'];
+    		    if($SMARTY->_tpl_vars['_LANG'][$text])
+	    		    $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
 
-	    $result .= ($SMARTY->_tpl_vars['error'][$args['trigger']] ? ($args['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ') : ($args['bold'] ? ' CLASS="bold" ' : ''));
+		    if(is_array($args))
+			    foreach($args as $argid => $argval)
+				    $text = str_replace('$'.$argid, $argval, $text);
 
+		    $text = str_replace('\'','\\\'',$text);
+		    $text = str_replace('"','&quot;',$text);
+		    $text = str_replace("\r",'',$text);
+		    $text = str_replace("\n",'<BR>',$text);
+
+		    $result .= 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
+		    $result .= $args['bold'] ? ' CLASS="bold" ' : '';
+	    }
+	    
 	    return $result;
 	}
 }

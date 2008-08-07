@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.11.4 Telchak (2008-08-07):
 
   - hosting: removed description column from domains list (alec)
   - hosting: added BCC (blind carbon copy) address in accounts (alec)
@@ -72,6 +72,7 @@ version ? (????-??-??):
   - LMS::NetworkCompress(): we check if given ip address is not gateway address
     (Arkadiusz Chomicki/chilan)
   - ... and is not in dhcp range + don't change gateway address (alec)
+  - added node's last online time in customer's nodes list (alec)
 
 version 1.11.3 Quetesh (2008-03-26):
 
