@@ -356,7 +356,7 @@ Rozdział 2. Instalacja i konfiguracja
 2.2.4. Biblioteka Smarty
 
    LMS-UI do pracy wymaga jeszcze biblioteki Smarty
-   (http://smarty.php.net) w wersji 2.6.0 lub wyższej (unikać wersji
+   (http://www.smarty.net) w wersji 2.6.0 lub wyższej (unikać wersji
    2.6.4).
      __________________________________________________________________
 
