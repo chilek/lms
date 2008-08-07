@@ -73,6 +73,15 @@ function CheckAllN2()
 			{if $customernodes[customernodes].id}
     			<TR class="{cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 			    <TD WIDTH="95%" onClick="return self.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+				{if $customernodes[customernodes].lastonline}
+				    {if ($smarty.now-$customernodes[customernodes].lastonline) > $_config.phpui.lastonline_limit}
+					<img src="img/node_off.gif" ALT="" {tip 0=$customernodes[customernodes].lastonlinedate text="Last online: \$0"}>
+				    {else}
+				        <img src="img/node_on.gif" ALT="" {tip 0="on-line" text="Last online: \$0"}>
+				    {/if}															
+				{else}
+				<img src="img/node_unk.gif" alt="">
+				{/if}	
 				<B>{$customernodes[customernodes].name}</B>
 				{if $customernodes[customernodes].location}<BR>
 				<NOBR>{$customernodes[customernodes].location|truncate:60:"...":true}</NOBR>

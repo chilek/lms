@@ -829,30 +829,42 @@ class LMS
 		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, 
 				inet_ntoa(ipaddr) AS ip, ipaddr_pub, 
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, 
-				warning, info, ownerid, location,
+				warning, info, ownerid, location, lastonline,
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = nodes.id) AS gcount 
 				FROM nodes WHERE ownerid=? 
 				ORDER BY name ASC', array($id)))
 		{
 			// assign network(s) to node record
-			if($networks = $this->GetNetworks())
+			$networks = (array) $this->GetNetworks();
+
+			foreach($result as $idx => $node)
 			{
-				foreach($result as $idx => $node)
+				$delta = time()-$node['lastonline'];
+				if($delta>$this->CONFIG['phpui']['lastonline_limit'])
+				{
+					if($delta>59)
+						$result[$idx]['lastonlinedate'] = trans('$0 ago ($1)', uptimef($delta), date('Y/m/d, H:i',$node['lastonline']));
+					else
+						$result[$idx]['lastonlinedate'] = '('.date('Y/m/d, H:i',$node['lastonline']).')';
+				}
+				else
+					$result[$idx]['lastonlinedate'] = trans('online');
+					
+				foreach($networks as $net)
+					if(isipin($node['ip'], $net['address'], $net['mask']))
+					{
+						$result[$idx]['network'] = $net;
+						break;
+					}
+
+				if($node['ipaddr_pub'])
 					foreach($networks as $net)
-						if(isipin($node['ip'], $net['address'], $net['mask']))
+						if(isipin($node['ip_pub'], $net['address'], $net['mask']))
 						{
-							$result[$idx]['network'] = $net;
+							$result[$idx]['network_pub'] = $net;
 							break;
 						}
-				foreach($result as $idx => $node)
-					if($node['ipaddr_pub'])
-						foreach($networks as $net)
-							if(isipin($node['ip_pub'], $net['address'], $net['mask']))
-							{
-								$result[$idx]['network_pub'] = $net;
-								break;
-							}
 			}
 			
 			$result['total'] = sizeof($result);

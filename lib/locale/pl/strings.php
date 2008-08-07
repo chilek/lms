@@ -765,6 +765,7 @@ $_LANG['Last modified:'] = 'Ostatnia modyfikacja:';
 $_LANG['Last month stats for all networks'] = 'Statystyki z ostatniego miesiąca dla wszystkich sieci';
 $_LANG['last online:'] = 'ostatnio włączony:';
 $_LANG['Last online:'] = 'Ostatnio włączony:';
+$_LANG['Last online: $0'] = 'Ostatnio włączony: $0';
 $_LANG['Last Reload:'] = 'Ostatnie przeładowanie:';
 $_LANG['Last Year'] = 'Ostatni rok';
 $_LANG['Last year stats for all networks'] = 'Statystyki z ostatniego roku dla wszystkich sieci';
