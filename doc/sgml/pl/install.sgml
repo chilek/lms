@@ -63,7 +63,7 @@
          </sect2>
          <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
-             <para><emphasis>LMS-UI</emphasis> do pracy wymaga jeszcze biblioteki Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>)
+             <para><emphasis>LMS-UI</emphasis> do pracy wymaga jeszcze biblioteki Smarty (<ulink url="http://www.smarty.net">http://www.smarty.net</ulink>)
            w wersji 2.6.0 lub wy¿szej (unikaæ wersji 2.6.4).</para>
             </sect2>
             <sect2 id="install-req-perl">

@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - changed Smarty's homepage address to http://www.smarty.net (alec)
+
 version 1.11.4 Telchak (2008-08-07):
 
   - hosting: removed description column from domains list (alec)
