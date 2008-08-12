@@ -149,6 +149,18 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name)
 					VALUES(?, ?, ?)', array($customerdata['id'], $contact['phone'], $contact['name']));
 		
+		if($customerdata['zip'] && $customerdata['stateid'])
+		{
+			$cstate = $DB->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($customerdata['zip']));
+			
+			if($cstate === NULL)
+				$DB->Execute('INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
+					array($customerdata['stateid'], $customerdata['zip']));
+			elseif($cstate != $customerdata['stateid'])
+				$DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?',
+					array($customerdata['stateid'], $customerdata['zip']));
+		}
+		
 		$SESSION->redirect('?m=customerinfo&id='.$customerdata['id']);
 	}
 	else
@@ -162,6 +174,7 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		$customerinfo['moddateh'] = $olddata['moddateh'];
 		$customerinfo['customername'] = $olddata['customername'];
 		$customerinfo['balance'] = $olddata['balance'];
+		$customerinfo['cstate'] = $olddata['cstate'];
 		$customerinfo['tenwarning'] = $tenwarning;
 		$customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
 		
@@ -211,6 +224,7 @@ $SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('documents',$LMS->GetDocuments($_GET['id'], 10));
 $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
+$SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
 $SMARTY->display('customeredit.html');
 

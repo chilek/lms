@@ -398,6 +398,8 @@ CREATE TABLE customers (
 	PRIMARY KEY (id)
 );
 
+CREATE INDEX customers_zip_idx ON customers (zip);
+
 /* -------------------------------------------------------- 
   Structure of table "customergroups" 
 -------------------------------------------------------- */
@@ -962,11 +964,40 @@ CREATE SEQUENCE excludedgroups_id_seq;
 DROP TABLE excludedgroups;
 CREATE TABLE excludedgroups (
 	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
-        customergroupid integer NOT NULL DEFAULT 0,
+	customergroupid integer NOT NULL DEFAULT 0,
 	userid 		integer NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE (userid, customergroupid)
-    );
+);
+
+/* ---------------------------------------------------
+ Structure of table "states"
+------------------------------------------------------*/
+DROP SEQUENCE states_id_seq;
+CREATE SEQUENCE states_id_seq;
+DROP TABLE states;
+CREATE TABLE states (
+    	id 		integer 	DEFAULT nextval('states_id_seq'::text) NOT NULL,
+	name 		varchar(255) 	NOT NULL DEFAULT '',
+	description 	text 		NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
+ Structure of table "zipcodes"
+------------------------------------------------------*/
+DROP SEQUENCE zipcodes_id_seq;
+CREATE SEQUENCES zipcodes_id_seq;
+DROP TABLE zipcodes;
+CREATE TABLE zipcodes (
+    	id 		integer 	DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
+	zip 		varchar(10) 	NOT NULL DEFAULT '',
+	stateid 	integer 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (zip)
+);
+CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
 
 /* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
@@ -1097,4 +1128,4 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008071700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008080800');

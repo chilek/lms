@@ -467,6 +467,13 @@ class LMS
 				$result['up_logins'] = $this->DB->GetRow('SELECT lastlogindate, lastloginip, 
 					failedlogindate, failedloginip
 		                        FROM up_customers WHERE customerid = ?', array($result['id']));
+			
+				if($cstate = $this->DB->GetRow('SELECT s.id, s.name FROM states s, zipcodes
+					WHERE zip = ? AND stateid = s.id', array($result['zip'])))
+				{
+					$result['stateid'] = $cstate['id'];
+					$result['cstate'] = $cstate['name'];
+				}
 			}
 			
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
@@ -629,6 +636,10 @@ class LMS
 								.(!empty($val[1]) ? ' AND cdate >= '.intval($val[1]) : '')
 								.(!empty($val[2]) ? ' AND cdate <= '.intval($val[2]) : '')
 								.')';
+						break;
+						case 'stateid':
+							$searchargs[] = 'EXISTS (SELECT 1 FROM zipcodes z
+								WHERE z.zip = c.zip AND z.stateid = '.intval($value).')';
 						break;
 						default:
 							$searchargs[] = "$key ?LIKE? '%$value%'";
@@ -3706,7 +3717,11 @@ class LMS
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?', 
 				array($start, $end, $doctype, $number, $planid)) ? TRUE : FALSE;
 	}
-	
+
+	function GetCountryStates()
+	{
+		return $this->DB->GetAllByKey('SELECT id, name FROM states ORDER BY name', 'id');
+	}
 }
 
 ?>

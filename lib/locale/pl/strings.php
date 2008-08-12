@@ -1250,7 +1250,7 @@ $_LANG['SSL Enforcing. Setting this option to 1 will effect with that LMS will e
 $_LANG['SSN'] = 'PESEL';
 $_LANG['SSN:'] = 'PESEL:';
 $_LANG['Stamp:'] = 'Pieczęć';
-$_LANG['State:'] = 'Status:';
+$_LANG['State:'] = 'Wojew.:';
 $_LANG['Statistics of Internet Link Usage'] = 'Statystyki użycia łącza internetowego';
 $_LANG['Stats'] = 'Statystyki';
 $_LANG['stats access'] = 'dostęp do statystyk';
@@ -2005,5 +2005,21 @@ $_LANG['Select link type'] = 'Wybierz typ łącza';
 $_LANG['With document of type:'] = 'Z dokumentem typu:';
 $_LANG['in date:'] = 'z dnia:';
 $_LANG['Legal personality:'] = 'Osobowość prawna:';
+$_LANG['Add state'] = 'Dodaj województwo';
+$_LANG['Are you sure, you want to delete state \\\'$0\\\'?'] = 'Czy na pewno chcesz usunąć województwo \\\'$0\\\'?';
+$_LANG['Country States Definitions'] = 'Definicje województw';
+$_LANG['Display this form again, when this state is saved'] = 'wyświetl formularz ponownie po dodaniu województwa';
+$_LANG['Enter state name'] = 'Wprowadź nazwę województwa';
+$_LANG['New State'] = 'Nowe województwo';
+$_LANG['No such states in database.'] = 'Brak województw w bazie danych.';
+$_LANG['Select personality type'] = 'Wybierz typ osobowości prawnej';
+$_LANG['States'] = 'Województwa';
+$_LANG['States List'] = 'Lista województw';
+$_LANG['State Edit: $0'] = 'Edycja województwa: $0';
+$_LANG['State name is required!'] = 'Nazwa województwa jest wymagana!';
+$_LANG['Select country state'] = 'Wybierz województwo';
+$_LANG['Select country state (optional)'] = 'Wybierz województwo (opcjonalnie)';
+$_LANG['- all states -'] = '- wszystkie -';
+$_LANG['Country state:'] = 'Województwo:';
 
 ?>

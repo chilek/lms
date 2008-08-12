@@ -543,7 +543,8 @@ CREATE TABLE customers (
   pin int(6) 		NOT NULL DEFAULT '0',
   cutoffstop int(11) 	NOT NULL DEFAULT '0',
   consentdate int(11)   NOT NULL DEFAULT '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  INDEX zip (zip)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -890,6 +891,33 @@ CREATE TABLE customercontacts (
 	INDEX customerid (customerid),
 	INDEX phone (phone)
 ) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table states
+#
+DROP TABLE IF EXISTS states;
+CREATE TABLE states (
+    	id 		int(11) 	NOT NULL auto_increment,
+	name 		varchar(255) 	NOT NULL DEFAULT '',
+	description 	text 		NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table zipcodes
+#
+DROP TABLE IF EXISTS zipcodes;
+CREATE TABLE zipcodes (
+    	id 		int(11) 	NOT NULL auto_increment,
+	zip 		varchar(10) 	NOT NULL DEFAULT '',
+	stateid 	int(11) 	NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	UNIQUE KEY zip (zip),
+	INDEX stateid (stateid)
+) TYPE=MyISAM;
 											
 # --------------------------------------------------------
 #
@@ -1031,4 +1059,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'owner_stats', '0', '', 0);
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008071700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008080800');

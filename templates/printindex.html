@@ -22,7 +22,7 @@
 					    <TABLE>
 						<TR>
 						    <TD width="1%"><IMG src="img/customer.gif" alt=""></TD>
-						    <TD width="1%" nowrap><B>{t}State:{/t}</B></TD>
+						    <TD width="1%" nowrap><B>{t}Status:{/t}</B></TD>
 						    <TD width="98%">
 							<SELECT size="1" name="filter" {tip text="Select customer's group"}>
 							    <OPTION value="0">- {t}all<!customers>{/t} -</OPTION>
@@ -90,6 +90,18 @@
         						    {foreach from=$nodegroups item=nodegroup}
 							    <OPTION value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"...":true}</OPTION>
 	        					    {/foreach}
+							</SELECT>
+						    </TD>
+					        </TR>
+						<TR>
+						    <TD width="1%" nowrap><IMG src="img/state.gif" alt=""></TD>
+						    <TD width="1%" nowrap><B>{t}Country state:{/t}</B></TD>
+						    <TD width="98%" nowrap>
+							<SELECT NAME="stateid" {tip text="Select country state"}>
+                                    			    <OPTION value="0">{t}- all states -{/t}</OPTION>
+					                    {foreach from=$cstateslist item=item key=key}
+							    <OPTION value="{$key}">{$item.name}</OPTION>
+							    {/foreach}
 							</SELECT>
 						    </TD>
 					        </TR>

@@ -84,6 +84,19 @@
 				<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
 				<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[zip]" id="zip" VALUE="{$customerinfo.zip}" SIZE="10" {tip text="Enter zip code" trigger="zip"}></TD>
 			    </TR>
+			    {if $cstateslist}
+			    <TR>
+			        <TD width="1%" NOWRAP>{t}State:{/t}</TD>
+			        <TD width="99%">
+			            <SELECT NAME="customerdata[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
+			                <OPTION value="0"></OPTION>
+			                {foreach from=$cstateslist item=item key=key}
+			                <OPTION value="{$key}"{if $key==$customerinfo.stateid} SELECTED{/if}>{$item.name}</OPTION>
+			                {/foreach}
+			            </SELECT>
+				</TD>
+			    </TR>
+                            {/if}
 			</TABLE>
 		<script type="text/javascript">
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);

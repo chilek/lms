@@ -153,6 +153,7 @@ else
 	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 	$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
+	$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 	$SMARTY->assign('k', $k);
 	$SMARTY->display('customersearch.html');
 }

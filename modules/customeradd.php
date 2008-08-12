@@ -173,6 +173,18 @@ elseif(isset($_POST['customeradd']))
 				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name)
 					VALUES(?, ?, ?)', array($id, $contact['phone'], $contact['name']));
 
+		if($customeradd['zip'] && $customeradd['stateid'])
+                {
+		        $cstate = $DB->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($customeradd['zip']));
+		
+		        if($cstate === NULL)
+		        	$DB->Execute('INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
+			                array($customeradd['stateid'], $customeradd['zip']));
+			elseif($cstate != $customeradd['stateid'])
+			        $DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?',
+			                array($customeradd['stateid'], $customeradd['zip']));
+                }
+
 		if(!isset($customeradd['reuse']))
 		{
 			$SESSION->redirect('?m=customerinfo&id='.$id);
@@ -199,8 +211,9 @@ if(!isset($customeradd['address']) && isset($CONFIG['phpui']['default_address'])
 
 $layout['pagetitle'] = trans('New Customer');
 
+$SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('customeradd', $customeradd);
-$SMARTY->assign('error',$error);
+$SMARTY->assign('error', $error);
 $SMARTY->display('customeradd.html');
 
 ?>
