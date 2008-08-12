@@ -60,6 +60,10 @@ switch($type)
 		{
 			$search['doctype'] = intval($_POST['doctype']).':'.$docfrom.':'.$docto;
 		}
+		if(!empty($_POST['stateid']))
+		{
+			$search['stateid'] = intval($_POST['stateid']);
+		}
 
 		switch($_POST['filter'])
 		{
@@ -198,6 +202,7 @@ switch($type)
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
+		$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 		$SMARTY->assign('printmenu', 'customer');
 		$SMARTY->display('printindex.html');
 	break;

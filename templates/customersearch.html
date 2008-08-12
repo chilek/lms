@@ -184,7 +184,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/access.gif" width="16" alt=""> <B>{t}State:{/t}</B>
+			<IMG src="img/access.gif" width="16" alt=""> <B>{t}Status:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<SELECT SIZE="1" NAME="s">
@@ -211,6 +211,19 @@
 				<OPTION VALUE="">{t}- all -{/t}</OPTION>
 				<OPTION VALUE="0">{t}private person{/t}</OPTION>
 				<OPTION VALUE="1">{t}legal entity{/t}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/state.gif" alt=""> <B>{t}Country state:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT NAME="search[stateid]" {tip text="Select country state"}>
+		                <OPTION value="0">{t}- all states -{/t}</OPTION>
+			        {foreach from=$cstateslist item=item key=key}
+				<OPTION value="{$key}">{$item.name}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

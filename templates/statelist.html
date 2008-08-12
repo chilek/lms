@@ -1,0 +1,57 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR class="dark">
+		<TD width="1%" class="fleftu" NOWRAP><IMG src="img/state.gif" alt=""> <B>{t}Name:{/t}</B></TD>
+		<TD width="1%" class="fbt" align="right" NOWRAP>{t}ID:{/t}</TD>
+		<TD width="97%" class="fbt" align="left" NOWRAP>{t}Description:{/t}</TD>
+		<TD width="1%" class="frightu" align="right" NOWRAP><a href="?m=stateadd">{t}Add state{/t} <img src="img/save.gif" alt=""></a></TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="4" CLASS="FALL">
+			{include file="scroller.html" loop=$numberplanlist}
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=statelist loop=$statelist}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=stateedit&id={$statelist[statelist].id}';">
+			<IMG src="img/state.gif" alt=""> <B>{$statelist[statelist].name}</B>
+		</TD>
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=stateedit&id={$statelist[statelist].id}';">
+			({$statelist[statelist].id|string_format:"%04d"})
+		</TD>
+		<TD align="left" onClick="return self.location.href='?m=stateedit&id={$statelist[statelist].id}';">
+			{$statelist[statelist].description|replace:"\n":"<BR>"}
+		</TD>
+		<TD class="fright" align="right" NOWRAP>
+			<A href="?m=stateedit&id={$statelist[statelist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			<A href="?m=statedel&id={$statelist[statelist].id}" OnClick="return confirmLink(this, '{t 0=$statelist[statelist].name}Are you sure, you want to delete state \'$0\'?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="4" align="center" class="fall">
+			<p>&nbsp;</p>
+			<p><B>{t}No such states in database.{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="4" CLASS="FALL">
+			{include file="scroller.html" loop=$statelist}
+		</TD>
+	</TR>
+	{/if}
+	<TR class="light">
+		<TD colspan="4" class="fall" align="right">
+			<a href="?m=stateadd">{t}Add state{/t} <img src="img/save.gif" alt=""></a>
+		</TD>
+	</TR>
+</TABLE></P>
+{include file="footer.html"}

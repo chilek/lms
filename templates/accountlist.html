@@ -49,7 +49,7 @@
 					<OPTION value="8"{if $listdata.type eq 8} SELECTED {/if}>{t}ftp{/t}</OPTION>
 					<OPTION value="16"{if $listdata.type eq 16} SELECTED {/if}>{t}sql{/t}</OPTION>
 				</SELECT>&nbsp;
-				{t}State:{/t}
+				{t}Status:{/t}
 				<SELECT size="1" name="k" OnChange="document.filter.submit();">
 					<OPTION value="0"{if !$listdata.kind} SELECTED {/if}>{t}- all -{/t}</OPTION>
 					<OPTION value="1"{if $listdata.kind eq 1} SELECTED {/if}>{t}expired{/t}</OPTION>

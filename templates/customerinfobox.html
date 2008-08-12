@@ -40,6 +40,7 @@
 		<TD WIDTH="99%" COLSPAN="2">
 			{$customerinfo.address}<BR>
 			{$customerinfo.zip} {$customerinfo.city}
+			{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
 		</TD>
 	</TR>
 {if $customerinfo.contacts}

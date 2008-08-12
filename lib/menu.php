@@ -592,16 +592,22 @@ $menu = array(
 					'prio' => 30,
 				),
 				array(
+					'name' => trans('States'),
+					'link' => '?m=statelist',
+					'tip' => trans('Country States Definitions'),
+					'prio' => 40,
+				),
+				array(
 					'name' => trans('Hosts'),
 					'link' => '?m=hostlist',
 					'tip' => trans('List of Hosts'),
-					'prio' => 40,
+					'prio' => 50,
 				),
 				array(
 					'name' => trans('Daemon'),
 					'link' => '?m=daemoninstancelist',
 					'tip' => trans('Daemon(s) Configuration'),
-					'prio' => 50,
+					'prio' => 60,
 				)
 			),
 		),

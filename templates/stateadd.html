@@ -1,0 +1,42 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM method="POST" action="?m=stateadd" name="stateadd">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<IMG src="img/state.gif" alt="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{t}Name:{/t}</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<INPUT name="stateadd[name]" value="{$stateadd.name|escape}" {tip text="Enter state name" trigger="name" bold=1}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA NAME="stateadd[description]" COLS="45" ROWS="4" {tip text="Enter additional information (optional)"}>{$stateadd.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.stateadd.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=statelist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="stateadd[reuse]" value="ON" class="box light" {if $stateadd.reuse}checked{/if}> {t}Display this form again, when this state is saved{/t}
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['stateadd'].elements['stateadd[name]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

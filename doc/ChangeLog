@@ -3,6 +3,9 @@ $Id$
 version ? (????-??-??):
 
   - changed Smarty's homepage address to http://www.smarty.net (alec)
+  - added Configuration -> States and possibility to search customers
+    by country state in Customers/Search and filter them in 
+    Customers/Reports/Customers List (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 
