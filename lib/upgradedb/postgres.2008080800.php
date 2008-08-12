@@ -36,7 +36,7 @@ CREATE TABLE states (
 	UNIQUE (name)
 );
 
-CREATE SEQUENCES zipcodes_id_seq;
+CREATE SEQUENCE zipcodes_id_seq;
 CREATE TABLE zipcodes (
     	id 	integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
 	zip 	varchar(10) NOT NULL DEFAULT '',
