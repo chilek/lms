@@ -81,7 +81,13 @@ if($backid)
 	if($LMS->NodeExists($backid))
 	{
 		$LMS->NodeSwitchWarn($backid);
-		$SESSION->redirect('?'.$SESSION->get('backto').'#'.$backid);
+		if(!empty($_GET['shortlist']))
+		{
+		        header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($backid));
+			die;
+		}
+		else	
+			$SESSION->redirect('?'.$SESSION->get('backto').'#'.$backid);
 	}
 }
 

@@ -99,8 +99,10 @@
 			{/if}
 			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
 			{if $queue[ticket].customerid}
+				<span {tip 0=$queue[ticket].customerid dynpopup='?m=nodelistshort&id=$0' sticky=1}>
 				{$queue[ticket].requestor|escape|truncate:"60":"..."}
 				({$queue[ticket].address})
+				</span>
 			{else}
 				{$queue[ticket].requestor|escape} 
 			{/if}
