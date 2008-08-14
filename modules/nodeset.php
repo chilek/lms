@@ -56,6 +56,11 @@ if(!empty($_POST['marks']))
 	foreach($_POST['marks'] as $id)
 		$LMS->NodeSet($id, isset($_GET['access']) ? 1 : 0);
 
-header('Location: ?'.$SESSION->get('backto').'#'.(isset($backid) ? $backid : ''));
+if(!empty($_GET['shortlist']))
+{
+	header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($id));
+}
+else
+	header('Location: ?'.$SESSION->get('backto').'#'.(isset($backid) ? $backid : ''));
 
 ?>

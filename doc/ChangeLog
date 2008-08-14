@@ -6,6 +6,11 @@ version ? (????-??-??):
   - added Configuration -> States and possibility to search customers
     by country state in Customers/Search and filter them in 
     Customers/Reports/Customers List (alec)
+  - in short customer nodes list added possibility to change node's 
+    warning flag and status (alec)
+  - in short customer nodes list added online status icon 
+    with status title (alec)
+  - helpdesk: in tickets list added short nodes list popup (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 
