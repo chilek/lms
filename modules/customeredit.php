@@ -174,7 +174,7 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		$customerinfo['moddateh'] = $olddata['moddateh'];
 		$customerinfo['customername'] = $olddata['customername'];
 		$customerinfo['balance'] = $olddata['balance'];
-		$customerinfo['cstate'] = $olddata['cstate'];
+		$customerinfo['stateid'] = isset($olddata['stateid']) ? $olddata['stateid'] : 0;
 		$customerinfo['tenwarning'] = $tenwarning;
 		$customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
 		
