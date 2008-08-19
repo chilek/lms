@@ -11,6 +11,7 @@ version ? (????-??-??):
   - in short customer nodes list added online status icon 
     with status title (alec)
   - helpdesk: in tickets list added short nodes list popup (alec)
+  - helpdesk: in ticket view added requestor's nodes list (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 

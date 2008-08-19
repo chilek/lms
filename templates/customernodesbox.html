@@ -150,9 +150,9 @@ function CheckAllN2()
 		</TD>
 	</TR>
 </TABLE>
-{literal}<SCRIPT type="text/javascript">
-        if(getCookie('nodespanel')=='1')
-	{
-	        document.getElementById('nodespanel').style.display = '';
-	}
-</SCRIPT>{/literal}
+<SCRIPT type="text/javascript">
+if(getCookie('nodespanel-{$layout.module}')=='1')
+{literal}{{/literal}
+        document.getElementById('nodespanel-{$layout.module}').style.display = '';
+{literal}}{/literal}
+</SCRIPT>
