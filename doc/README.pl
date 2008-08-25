@@ -179,7 +179,7 @@ Rozdział 1. Wstęp
        Konrad 'kondi' Rzentarzewski
      * Grafika:
 
-       Piotr 'Pierzak' M.
+       Piotr 'Pierzak' Mierzeński
        Grzegorz 'byko' Cichowski
        Kuba 'kflis' Flis
        Łukasz 'Baseciq' Mozer
