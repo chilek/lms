@@ -111,7 +111,7 @@ $others = array(
 			),
 
 		'Pierzak' => array(
-			'realname' => 'Piotr M.',
+			'realname' => 'Piotr Mierzeński',
 			'info' => 'Logo project',
 			),
 		);
