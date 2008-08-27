@@ -12,6 +12,8 @@ version ? (????-??-??):
     with status title (alec)
   - helpdesk: in tickets list added short nodes list popup (alec)
   - helpdesk: in ticket view added requestor's nodes list (alec)
+  - trafficdbcompact: fixed warnings appearing where there are nodes without
+    stats data (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 

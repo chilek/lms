@@ -92,13 +92,14 @@ if(isset($_GET['level']))
 		GROUP BY nodeid, '.$dtdivider.' ORDER BY '.$dtdivider, array($node['id'], $mintime, $maxtime));
 	    $DB->Execute('DELETE FROM stats WHERE nodeid=? AND dt >= ? AND dt <= ?',
 	    	array($node['id'], $mintime, $maxtime));
-	    foreach($data as $record)
-	    {
-		$deleted += $record['count'];
-		if($record['download'] || $record['upload'])
-			$inserted += $DB->Execute('INSERT INTO stats (nodeid, dt, download, upload) VALUES (?, ?, ?, ?)',
-				array($node['id'], $record['maxtime'], $record['upload'], $record['download']));
-	    }
+	    if($data != NULL)
+		    foreach($data as $record)
+		    {
+			$deleted += $record['count'];
+			if($record['download'] || $record['upload'])
+				$inserted += $DB->Execute('INSERT INTO stats (nodeid, dt, download, upload) VALUES (?, ?, ?, ?)',
+					array($node['id'], $record['maxtime'], $record['upload'], $record['download']));
+		    }
 	    $DB->CommitTrans();
 	    echo trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
 	    flush();
