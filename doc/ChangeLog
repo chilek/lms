@@ -14,6 +14,8 @@ version ? (????-??-??):
   - helpdesk: in ticket view added requestor's nodes list (alec)
   - trafficdbcompact: fixed warnings appearing where there are nodes without
     stats data (chilan)
+  - userpanel: added lost helpdeskreply.html template (alec)
+  - lms-sendinvoices: fixed SQL query (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 

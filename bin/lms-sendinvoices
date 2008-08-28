@@ -204,18 +204,17 @@ if($customergroups)
 	$customergroups = "UPPER('$customergroups')";
 	$customergroups =~ s/[ \t]+/\'\),UPPER\(\'/g;
 	$groupwhere = " AND UPPER(customergroups.name) IN ($customergroups)";  
-	$groupjoin = "LEFT JOIN customerassignments ON (documents.customerid = customerassignments.customerid) 
+	$groupjoin = "LEFT JOIN customerassignments ON (d.customerid = customerassignments.customerid) 
 			LEFT JOIN customergroups ON (customerassignments.customergroupid = customergroups.id) ";
 }
 
-$dbq = $dbase->prepare("SELECT documents.id AS id, number, cdate, email, documents.name AS name, 
-				documents.customerid AS customerid, template
-			FROM documents 
-			LEFT JOIN customers ON customers.id = documents.customerid 
-			LEFT JOIN numberplans ON numberplanid = numberplans.id
+$dbq = $dbase->prepare("SELECT d.id, d.number, d.cdate, c.email, d.name, d.customerid, n.template
+			FROM documents d 
+			LEFT JOIN customers c ON (c.id = d.customerid) 
+			LEFT JOIN numberplans n ON (n.id = d.numberplanid)
 			$groupjoin
-			WHERE deleted = 0 AND type = 1 AND email != '' 
-				AND cdate >= $daystart AND cdate <= $dayend
+			WHERE c.deleted = 0 AND d.type = 1 AND c.email != '' 
+				AND d.cdate >= $daystart AND d.cdate <= $dayend
 				$groupwhere");
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
