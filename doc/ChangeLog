@@ -17,6 +17,8 @@ version ? (????-??-??):
   - userpanel: added lost helpdeskreply.html template (alec)
   - lms-sendinvoices: fixed SQL query (alec)
   - customersearch: fixed customer searching while state is unset (chilan)
+  - customerwarn: fixed customer marking when we try to set message
+    after searching customers (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 
