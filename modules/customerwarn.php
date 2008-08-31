@@ -54,11 +54,11 @@ if(isset($setwarnings['mcustomerid']))
 if(isset($_GET['search']))
 {
 	$SESSION->restore('customersearch', $customersearch);
-	$SESSION->restore('uslo', $o);
-	$SESSION->restore('usls', $s);
-	$SESSION->restore('usln', $n);
-	$SESSION->restore('uslg', $g);
-	$SESSION->restore('uslk', $k);
+	$SESSION->restore('cslo', $o);
+	$SESSION->restore('csls', $s);
+	$SESSION->restore('csln', $n);
+	$SESSION->restore('cslg', $g);
+	$SESSION->restore('cslk', $k);
 
 	$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, $customersearch, NULL, $k);
 	
