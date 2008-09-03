@@ -31,6 +31,7 @@
 				<B>{t}Filter:{/t}</B>
 				{t}Queue:{/t}
 				<SELECT size="1" name="id" OnChange="document.filter.submit();">
+					<OPTION value="">- {t}all{/t} -</OPTION>
 					{foreach from=$queues item=q}
 					<OPTION value="{$q.id}"{if $queuedata.id == $q.id} SELECTED{/if}>{$q.name}</OPTION>
 					{/foreach}

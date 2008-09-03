@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetQueueContents($id, $order='createtime,desc', $state=NULL, $owner=0)
+function GetQueueContents($ids, $order='createtime,desc', $state=NULL, $owner=0)
 {
 	global $DB;
 	
@@ -86,7 +86,8 @@ function GetQueueContents($id, $order='createtime,desc', $state=NULL, $owner=0)
 		    LEFT JOIN users ON (owner = users.id)
 		    LEFT JOIN customers c ON (t.customerid = c.id)
 		    LEFT JOIN users u ON (t.creatorid = u.id)
-		    WHERE queueid = ? '
+		    WHERE '
+		    .(is_array($ids) ? 'queueid IN ('.implode(',', $ids).') ' : ($ids != 0 ? 'queueid = '.$ids.' ' : ''))
 		    .$statefilter
 		    .($owner ? ' AND t.owner = '.intval($owner) : '')
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
@@ -112,20 +113,30 @@ function GetQueueContents($id, $order='createtime,desc', $state=NULL, $owner=0)
 	return $result;
 }
 
-if(! $LMS->QueueExists($_GET['id']))
+if(isset($_GET['id']))
+	$queuedata['id'] = ($_GET['id'] == '' ? 0 : $_GET['id']);
+
+if(! $LMS->QueueExists($queuedata['id']) && $queuedata['id'] != 0)
 {
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-$queuedata['id'] = $_GET['id'];
-
-$right = $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']);
-
-if(!$right)
+if($queuedata['id'] != 0)
 {
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
+	$right = $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']);
+
+	if(!$right)
+	{
+		$SMARTY->display('noaccess.html');
+		$SESSION->close();
+		die;
+	}
+}
+else
+{
+	$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array($AUTH->id));
+	if(sizeof($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
+		$queuedata['id'] = $queues;
 }
 
 if(!isset($_GET['o']))
@@ -151,7 +162,7 @@ else
 $SESSION->save('rts', $s);
 
 $layout['pagetitle'] = trans('Tickets List');
-$queue = GetQueueContents($_GET['id'], $o, $s, $owner);
+$queue = GetQueueContents($queuedata['id'], $o, $s, $owner);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

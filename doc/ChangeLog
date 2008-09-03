@@ -19,6 +19,7 @@ version ? (????-??-??):
   - customersearch: fixed customer searching while state is unset (chilan)
   - customerwarn: fixed customer marking when we try to set message
     after searching customers (chilan)
+  - we can filter tickets after coming to tickets list from welcome module (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 
