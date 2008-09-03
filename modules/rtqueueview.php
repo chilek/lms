@@ -66,10 +66,10 @@ function GetQueueContents($ids, $order='createtime,desc', $state=NULL, $owner=0)
 		case '1':
 		case '2':
 		case '3':
-			$statefilter = 'AND state = '.$state;
+			$statefilter = ' AND state = '.$state;
 		break;
 		case '-1':
-			$statefilter = 'AND state != 2';
+			$statefilter = ' AND state != 2';
 		break;
 		default:
 			$statefilter = '';
@@ -86,8 +86,8 @@ function GetQueueContents($ids, $order='createtime,desc', $state=NULL, $owner=0)
 		    LEFT JOIN users ON (owner = users.id)
 		    LEFT JOIN customers c ON (t.customerid = c.id)
 		    LEFT JOIN users u ON (t.creatorid = u.id)
-		    WHERE '
-		    .(is_array($ids) ? 'queueid IN ('.implode(',', $ids).') ' : ($ids != 0 ? 'queueid = '.$ids.' ' : ''))
+		    WHERE 1=1 '
+		    .(is_array($ids) ? ' AND queueid IN ('.implode(',', $ids).')' : ($ids != 0 ? ' AND queueid = '.$ids : ''))
 		    .$statefilter
 		    .($owner ? ' AND t.owner = '.intval($owner) : '')
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
