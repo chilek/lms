@@ -240,6 +240,7 @@ $_LANG['Compacting of database removes non-essential data from database and aver
 $_LANG['Compacting parameters'] = 'Parametry kompaktowania';
 $_LANG['compressed'] = 'skompresowaną';
 $_LANG['Statistics for computer $0 has been removed<BR>'] = 'Dane statystyczne komputera $0 zostały usunięte<BR>';
+$_LANG['Error during deleting data for old computers !<BR>'] = 'Błąd podczas usuwania danych statystycznych usuniętych komputerów !<BR>';
 $_LANG['Computers found:'] = 'Znalezione komputery:';
 $_LANG['Configuration'] = 'Konfiguracja';
 $_LANG['Configuration of Instance: $0/$1'] = 'Konfiguracja instancji: $0/$1';

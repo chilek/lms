@@ -51,19 +51,30 @@ if(isset($_GET['removeold']))
 
 if(isset($_GET['removedeleted']))
 {
-    if($nodes_from_stats = $DB->GetCol('SELECT DISTINCT nodeid FROM stats')) 
-    {
-	$nodes = $DB->GetCol('SELECT id FROM nodes');
-	foreach($nodes_from_stats as $node)
+	if($deleted_nodes = $DB->GetCol("SELECT DISTINCT nodeid FROM stats WHERE nodeid NOT IN ((SELECT id FROM nodes)) ORDER BY nodeid"))
 	{
-	    if(!in_array($node,$nodes))
-		if($DB->Execute('DELETE FROM stats WHERE nodeid = '.$node))
+		$first_record = true;
+
+		foreach($deleted_nodes as $nodeid)
 		{
-		    echo trans('Statistics for computer $0 has been removed<BR>',$node);
-		    flush();
+			if ($first_record)
+			{
+				$deleted_nodes_sql = $nodeid;
+				$first_record = false;
+			}
+			else
+				$deleted_nodes_sql = $deleted_nodes_sql . "," . $nodeid;
 		}
+
+		if($DB->Execute("DELETE FROM stats WHERE nodeid IN ($deleted_nodes_sql)"))
+		{
+			foreach($deleted_nodes as $nodeid)
+				echo trans('Statistics for computer $0 has been removed<BR>',$nodeid);
+		}
+		else
+			echo trans('Error during deleting data for old computers !<BR>');
 	}
-    }
+	flush();
 }
 
 if(isset($_GET['level']))
