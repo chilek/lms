@@ -20,7 +20,7 @@ version ? (????-??-??):
   - customerwarn: fixed customer marking when we try to set message
     after searching customers (chilan)
   - we can filter tickets after coming to tickets list from welcome module (chilan)
-  - improved speed of removedeleted option in trafficdbcompact.php (chilan)
+  - trafficdbcompact: improved speed of removedeleted option (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 
