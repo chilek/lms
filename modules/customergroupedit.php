@@ -33,35 +33,10 @@ if(isset($_POST['customerassignments']))
 {
 	$oper = $_POST['oper'];
 	$customerassignments = $_POST['customerassignments'];
-	
-	if(isset($customerassignments['gmcustomerid']) && $oper=='0')
-	{
-		$assignment['customergroupid'] = $_GET['id'];
-		foreach($customerassignments['gmcustomerid'] as $value)
-		{
-			$assignment['customerid'] = $value;
-			$LMS->CustomerassignmentDelete($assignment);
-		}
-		$SESSION->redirect('?'.$SESSION->get('backto'));
-	}
-
-	if (isset($customerassignments['mcustomerid']) && $oper=='1')
-	{
-		$assignment['customergroupid'] = $_GET['id'];
-		foreach($customerassignments['mcustomerid'] as $value)
-		{
-			$assignment['customerid'] = $value;
-			if(! $LMS->CustomerassignmentExist($assignment['customergroupid'],$value))
-				$LMS->CustomerassignmentAdd($assignment);
-		}
-		$SESSION->redirect('?'.$SESSION->get('backto'));
-	}
-
 	if (isset($customerassignments['membersnetid']) && $oper=='2')
 	{
 		$SESSION->redirect('?'.ereg_replace('&membersnetid=[0-9]+', '', $SESSION->get('backto')).'&membersnetid='.$customerassignments['membersnetid']);
 	}
-
 	if (isset($customerassignments['othersnetid']) && $oper=='3')
 	{
 		$SESSION->redirect('?'.ereg_replace('&othersnetid=[0-9]+', '', $SESSION->get('backto')).'&othersnetid='.$customerassignments['othersnetid']);
