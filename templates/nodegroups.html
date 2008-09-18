@@ -21,7 +21,7 @@
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=nodegroupinfo&id={$nodegroup.id}">{$nodegroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$nodegroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$nodegroup.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you sure, you want to remove node from group?{/t}')" HREF="?m=nodeedit&action=nodegroupdelete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" {tip text="Remove assignment"}></A></TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you sure, you want to remove node from group?{/t}')" HREF="?m=nodegroup&action=delete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" {tip text="Remove assignment"}></A></TD>
 				</TR>
 				{foreachelse}
 				<TR>
@@ -32,7 +32,7 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<FORM METHOD="POST" NAME="nodegroupassignment" ACTION="?m=nodeedit&action=nodegroupadd&id={$nodeinfo.id}">
+				<FORM METHOD="POST" NAME="nodegroupassignment" ACTION="?m=nodegroup&action=add&id={$nodeinfo.id}">
 				<INPUT type="submit" class="hiddenbtn">
 				<TR class="light">
 					<TD COLSPAN="4" CLASS="ftop">

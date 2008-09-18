@@ -33,31 +33,11 @@ if(isset($_POST['nodeassignments']))
 {
 	$oper = $_POST['oper'];
 	$nodeassignments = $_POST['nodeassignments'];
-	
-	if(isset($nodeassignments['gmnodeid']) && $oper=='0')
-	{
-		foreach($nodeassignments['gmnodeid'] as $nodeid)
-		{
-			$DB->Execute('DELETE FROM nodegroupassignments 
-				WHERE nodegroupid = ? AND nodeid = ?', 
-				array($id, $nodeid));
-		}
-		$SESSION->redirect('?'.$SESSION->get('backto'));
-	}
-	elseif (isset($nodeassignments['mnodeid']) && $oper=='1')
-	{
-		foreach($nodeassignments['mnodeid'] as $nodeid)
-		{
-			$DB->Execute('INSERT INTO nodegroupassignments (nodegroupid, nodeid)
-				VALUES (?, ?)', array($id, $nodeid));
-		}
-		$SESSION->redirect('?'.$SESSION->get('backto'));
-	}
-	elseif (isset($nodeassignments['membersnetid']) && $oper=='2')
+	if (isset($nodeassignments['membersnetid']) && $oper=='2')
 	{
 		$SESSION->redirect('?'.ereg_replace('&membersnetid=[0-9]+', '', $SESSION->get('backto')).'&membersnetid='.$nodeassignments['membersnetid']);
 	}
-	elseif (isset($nodeassignments['othersnetid']) && $oper=='3')
+	if (isset($nodeassignments['othersnetid']) && $oper=='3')
 	{
 		$SESSION->redirect('?'.ereg_replace('&othersnetid=[0-9]+', '', $SESSION->get('backto')).'&othersnetid='.$nodeassignments['othersnetid']);
 	}

@@ -21,6 +21,7 @@ version ? (????-??-??):
     after searching customers (chilan)
   - we can filter tickets after coming to tickets list from welcome module (chilan)
   - trafficdbcompact: improved speed of removedeleted option (chilan)
+  - added separate access rights for nodes/customers to groups assignment (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 

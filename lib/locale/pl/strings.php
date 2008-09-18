@@ -2022,5 +2022,7 @@ $_LANG['Select country state'] = 'Wybierz województwo';
 $_LANG['Select country state (optional)'] = 'Wybierz województwo (opcjonalnie)';
 $_LANG['- all states -'] = '- wszystkie -';
 $_LANG['Country state:'] = 'Województwo:';
+$_LANG['customers to groups assignment'] = 'przypisywanie klientów do grup';
+$_LANG['nodes to groups assignment'] = 'przypisywanie komputerów do grup';
 
 ?>

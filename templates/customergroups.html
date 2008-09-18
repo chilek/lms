@@ -21,7 +21,7 @@
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=customergroupinfo&id={$customergroup.id}">{$customergroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$customergroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$customergroup.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you sure, you want to remove customer from group?{/t}')" HREF="?m=customeredit&action=customergroupdelete&customergroupid={$customergroup.id}&id={$customerinfo.id}" {tip text="Remove customer from group"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A></TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you sure, you want to remove customer from group?{/t}')" HREF="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A></TD>
 				</TR>
 				{foreachelse}
 				<TR>
@@ -32,7 +32,7 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<FORM METHOD="POST" NAME="customergroupassignment" ACTION="?m=customeredit&action=customergroupadd&id={$customerinfo.id}">
+				<FORM METHOD="POST" NAME="customergroupassignment" ACTION="?m=customergroup&action=add&id={$customerinfo.id}">
 				<INPUT type="submit" class="hiddenbtn">
 				<TR class="light">
 					<TD COLSPAN="4" CLASS="ftop">

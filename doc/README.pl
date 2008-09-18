@@ -708,6 +708,9 @@ password = hasło_podane_przy_tworzeniu_użytkownika_lms
      * zarządzanie i konfiguracja demona
      * operacje kasowe
      * zarządzanie grupami klientów
+     * zarządzanie grupami komputerów
+     * przypisywanie klientów do grup
+     * przypisywanie komputerów do grup
      * brak dostępu do modyfikacji i zakładania kont użytkowników
      * brak dostępu
 

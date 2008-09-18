@@ -26,24 +26,6 @@
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if(!empty($_POST['marks']) && !empty($_GET['groupid']))
-{
-	foreach($_POST['marks'] as $mark)
-		if($action == 'unsetgroup')
-			$DB->Execute('DELETE FROM nodegroupassignments
-					WHERE nodegroupid = ? AND nodeid = ?',
-					array($_GET['groupid'], $mark));
-		elseif($action == 'setgroup')
-			if(!$DB->GetOne('SELECT 1 FROM nodegroupassignments
-					WHERE nodegroupid = ? AND nodeid = ?',
-					array($_GET['groupid'], $mark)))
-				$DB->Execute('INSERT INTO nodegroupassignments 
-					(nodegroupid, nodeid) VALUES (?, ?)',
-					array($_GET['groupid'], $mark));
-
-	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
-
 if(!$LMS->NodeExists($_GET['id']))
 	if(isset($_GET['ownerid']))
 		header('Location: ?m=customerinfo&id='.$_GET['ownerid']);
@@ -73,17 +55,6 @@ switch($action)
 	case 'duplex':
 		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $_GET['id']));
 		$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
-	break;
-	case 'nodegroupdelete':
-		$DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid=? AND nodegroupid=?',
-				array(intval($_GET['id']), intval($_GET['nodegroupid'])));
-		$SESSION->redirect('?'.$SESSION->get('backto'));
-	break;
-	case 'nodegroupadd':
-		if(!empty($_POST['nodegroupid']))
-			$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
-				VALUES (?, ?)', array(intval($_GET['id']), intval($_POST['nodegroupid'])));
-		$SESSION->redirect('?'.$SESSION->get('backto'));
 	break;
 }
 

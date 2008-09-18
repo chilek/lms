@@ -25,25 +25,15 @@
  */
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
+$exists = $LMS->CustomerExists($_GET['id']);
 
-if($LMS->CustomerExists($_GET['id']) < 0 && $action != 'recover')
+if($exists < 0 && $action != 'recover')
 {
 	$SESSION->redirect('?m=customerinfo&id='.$_GET['id']);
 }
-elseif(! $LMS->CustomerExists($_GET['id']))
+elseif(!$exists)
 {
 	$SESSION->redirect('?m=customerlist');
-}
-elseif($action == 'customergroupdelete')
-{
-	$LMS->CustomerAssignmentDelete(array('customerid' => $_GET['id'], 'customergroupid' => $_GET['customergroupid']));
-	$SESSION->redirect('?m=customerinfo&id='.$_GET['id']);
-}
-elseif($action == 'customergroupadd')
-{
-	if ($LMS->CustomerGroupExists($_POST['customergroupid']))
-		$LMS->CustomerAssignmentAdd(array('customerid' => $_GET['id'], 'customergroupid' => $_POST['customergroupid']));
-	$SESSION->redirect('?m=customerinfo&id='.$_GET['id']);
 }
 elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 {
@@ -210,8 +200,10 @@ $layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);
 
 if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
 {
-        $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
-                                        WHERE nodeid = nodes.id AND ownerid = ?', array($customerinfo['id'])));
+        $SMARTY->assign('ewx_channelid',
+		$DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
+                        WHERE nodeid = nodes.id AND ownerid = ?',
+			array($customerinfo['id'])));
 }
 
 $SMARTY->assign('customernodes',$LMS->GetCustomerNodes($customerinfo['id']));

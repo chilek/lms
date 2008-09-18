@@ -24,10 +24,30 @@
  *  $Id$
  */
 
-$setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
+$action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if(isset($setwarnings['mcustomerid']))
+if($action == 'delete')
 {
+        $LMS->CustomerAssignmentDelete(
+		array('customerid' => intval($_GET['id']),
+			'customergroupid' => $_GET['customergroupid']));
+}
+elseif($action == 'add')
+{
+	$groupid = intval($_POST['customergroupid']);
+	$uid = intval($_GET['id']);
+	
+        if ($LMS->CustomerGroupExists($groupid)
+		&& !$LMS->CustomerassignmentExist($groupid, $uid)
+		 && $LMS->CustomerExists($uid))
+        {
+	        $LMS->CustomerAssignmentAdd(
+			array('customerid' => $uid, 'customergroupid' => $groupid));
+	}
+}
+elseif(!empty($_POST['setwarnings']))
+{
+	$setwarnings = $_POST['setwarnings'];
 	$oper = isset($_GET['oper']) ? $_GET['oper'] : '';
 	$groupid = isset($setwarnings['customergroup']) ? $setwarnings['customergroup'] : 0;
 
@@ -49,8 +69,33 @@ if(isset($setwarnings['mcustomerid']))
 			}
 		}
 	}
-
-	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
+elseif(!empty($_POST['customerassignments']) && $LMS->CustomerGroupExists($_GET['id']))
+{
+	$oper = $_POST['oper'];
+	$customerassignments = $_POST['customerassignments'];
+	
+	if(isset($customerassignments['gmcustomerid']) && $oper=='0')
+	{
+		$assignment['customergroupid'] = $_GET['id'];
+		foreach($customerassignments['gmcustomerid'] as $value)
+		{
+			$assignment['customerid'] = $value;
+			$LMS->CustomerassignmentDelete($assignment);
+		}
+	}
+	elseif (isset($customerassignments['mcustomerid']) && $oper=='1')
+	{
+		$assignment['customergroupid'] = $_GET['id'];
+		foreach($customerassignments['mcustomerid'] as $value)
+		{
+			$assignment['customerid'] = $value;
+			if(! $LMS->CustomerassignmentExist($assignment['customergroupid'],$value))
+				$LMS->CustomerassignmentAdd($assignment);
+		}
+	}
+}
+
+$SESSION->redirect('?'.$SESSION->get('backto'));
 
 ?>
