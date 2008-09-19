@@ -37,12 +37,18 @@ $authors = array(
 		'Baseciq' => array(
 			'realname' => 'Łukasz Jarosław Mozer',
 			'www' => 'www.baseciq.org',
-			'info' => 'inventor & maintainer, PHP, Perl, design, HTML, JavaScript, CSS, images, doc, project\'s WWW'
+			'info' => 'inventor & maintainer, PHP, Perl, design, HTML, JavaScript, CSS, images, doc, website'
 			),
 
-		'chilek' => array(
-			'realname' => 'Tomasz Chiliński',
+		'Ceho' => array(
+			'realname' => 'Grzegorz Chwesewicz',
 			'info' => 'PHP, Perl, HTML, JavaScript',
+			'www' => 'www.chilan.com'
+			),
+
+		'Chilek' => array(
+			'realname' => 'Tomasz Chiliński',
+			'info' => 'PHP, Perl, HTML, JavaScript, C',
 			'www' => 'www.chilan.com'
 			),
 
@@ -52,7 +58,7 @@ $authors = array(
 			),
 
 		'Lexx' => array(
-			'info' => 'PHP, C, doc, project\'s  WWW',
+			'info' => 'PHP, C, doc, website',
 			'www' => 'www.lexx.w.pl',
 			'realname' => 'Marcin Król',
 		     ),
