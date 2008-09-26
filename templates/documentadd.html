@@ -203,7 +203,7 @@
 			<A href="javascript: document.documentadd.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="javascript: print_document();">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
 			<A href="?m=documentlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="document[reuse]" value="ON" class="box light" {if $document.reuse}checked{/if}> {t}Display this form again, when that document is saved{/t}
+			<INPUT type="checkbox" name="document[reuse]" ID="reuse" value="ON" class="box light" {if $document.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when that document is saved{/t}</A>
 		</TD>
 	</TR>
 </TABLE>
