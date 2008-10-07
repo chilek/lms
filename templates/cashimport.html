@@ -113,7 +113,7 @@
 <P><TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fall" width="100%" colspan="2">
-			<B>{t}Errors{/t}</B>
+			<B>{t}Errors and Duplicated Entries{/t}:</B>
 		</TD>
 	</TR>
 	<TR>
@@ -127,7 +127,19 @@
 				{foreach from=$error.lines key=key item=item}
 				<TR class="{cycle name=err}">
 				    <TD>{$key}.</TD>
-				    <TD>{$item}</TD>
+				    <TD>
+				    {if is_array($item)}
+				    <TABLE width="100%" class="red">
+					{if $item.date}<TR><TD width="1%">{t}Date:{/t}</TD><TD width="99%">{$item.date|date_format:"%Y/%m/%d"}</TD></TR>{/if}
+					{if $item.customer}<TR><TD width="1%">{t}Customer:{/t}</TD><TD width="99%">
+					    {$item.customer}{if $item.customerid} ({$item.customerid|string_format:"%04d"}){/if}</TD></TR>{/if}
+					{if $item.value}<TR><TD width="1%">{t}Value:{/t}</TD><TD width="99%">{$item.value|money_format}</TD></TR>{/if}
+					{if $item.comment}<TR><TD width="1%">{t}Description:{/t}</TD><TD width="99%">{$item.comment}</TD></TR>{/if}
+				    </TABLE>
+				    {else}
+				    {$item}
+				    {/if}
+				    </TD>
 				</TR>
 				{/foreach}
 			</TABLE>
