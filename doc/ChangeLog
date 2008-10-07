@@ -23,6 +23,8 @@ version ? (????-??-??):
   - trafficdbcompact: improved speed of removedeleted option (chilan)
   - added separate access rights for nodes/customers to groups assignment (alec)
   - cashimport: display duplicates as errors (alec)
+  - mailing: optimized SQL query, network filter checks public addresses
+    also (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 
