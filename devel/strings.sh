@@ -12,6 +12,7 @@ for FILENAME in `ls ../templates/*.html`
 do
     echo -n "$FILENAME... "
     perl -lne 'print for /text="(.*?[^\\])"/g' $FILENAME >> html_strings
+    perl -lne 'print for /_tip="(.*?[^\\])"/g' $FILENAME >> html_strings
     perl -lne 'print for /\{t[^}]*\}([^{]*)\{\/t}/g' $FILENAME >> html_strings
     echo "done."
 done

@@ -158,6 +158,14 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				$DB->Execute('INSERT INTO cashimport (date, value, customer, 
 					customerid, description, hash) VALUES (?,?,?,?,?,?)',
 					array($time, $value, $customer, $id, $comment, $hash));
+			else
+				$error['lines'][$ln] = array(
+					'customer' => $customer,
+					'customerid' => $id,
+					'date' => $time,
+					'value' => $value,
+					'comment' => $comment
+				);
 		}
 	}
 
