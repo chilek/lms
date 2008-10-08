@@ -71,7 +71,7 @@ function delaccount(id)
 		<TD colspan="3" class="fbottomu" align="right" nowrap>
 			<A href="javascript: document.aliasadd.submit();" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
 			<A href="?m=aliaslist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A><BR>
-			<INPUT type="checkbox" name="alias[reuse]" value="ON" class="box light" {if $aliasadd.reuse}checked{/if}> {t}Display this form again, when this alias is saved{/t}
+			<INPUT type="checkbox" name="alias[reuse]" id="alias[reuse]" value="ON" class="box light" {if $alias.reuse}checked{/if}> <A HREF="javascript:checkElement('alias[reuse]')"> {t}Display this form again, when this alias is saved{/t}</A>
 		</TD>
 	</TR>
 </TABLE>

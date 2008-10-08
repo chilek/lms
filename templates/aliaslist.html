@@ -19,29 +19,40 @@
 			 <B>{t 0=$listdata.total}Total: $0{/t}</B>
 		</TD>
 	</TR>
+	
+	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="4">
-			<FORM method="GET" action="?m={$layout.module}" name="filter">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT type="HIDDEN" name="m" value="{$layout.module}">
-				{if $suffix}<INPUT type="HIDDEN" name="s" value="1">{/if}
-				<INPUT type="HIDDEN" name="page" value="1">
-				<B>{t}Filter:{/t} </B> {t}Domain's owner:{/t}
-				<SELECT size="1" name="u" OnChange="document.filter.submit();">
-					<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
-					<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM DOMAIN{/t}</OPTION>
-					{section name=customerlist loop=$customerlist}
-					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
-					{/section}
-				</SELECT>&nbsp;
-				{t}Domain:{/t}
-				<SELECT size="1" name="d" OnChange="document.filter.submit();">
-					<OPTION value=""{if $listdata.domainid eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
-					{foreach from=$domainlist item=item}
-					    <OPTION value="{$item.id}"{if $item.id eq $listdata.domain} SELECTED{/if}>{$item.name}</OPTION>
-					{/foreach}
-				</SELECT>
-			</FORM>
+			<TABLE cellpadding="0" cellspacing="0">
+		    		<TR>
+					<TD width="1%" NOWRAP>
+		        			<FORM method="GET" action="?m={$layout.module}" name="filter">
+							<INPUT type="submit" class="hiddenbtn">
+							<INPUT type="HIDDEN" name="m" value="{$layout.module}">
+							{if $suffix}<INPUT type="HIDDEN" name="s" value="1">{/if}
+							<INPUT type="HIDDEN" name="page" value="1">
+							<B>{t}Filter:{/t} </B> {t}Domain's owner:{/t}
+							<SELECT size="1" name="u" OnChange="document.filter.submit();">
+								<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
+								<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM DOMAIN{/t}</OPTION>
+								{section name=customerlist loop=$customerlist}
+					    				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
+								{/section}
+							</SELECT>&nbsp;
+							{t}Domain:{/t}
+							<SELECT size="1" name="d" OnChange="document.filter.submit();">
+								<OPTION value=""{if $listdata.domainid eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
+							{foreach from=$domainlist item=item}
+					    			<OPTION value="{$item.id}"{if $item.id eq $listdata.domain} SELECTED{/if}>{$item.name}</OPTION>
+							{/foreach}
+							</SELECT>
+						</FORM>
+					</TD>
+					<TD width="99%" align="right">
+						<A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{t}New Alias{/t} <IMG src="img/save.gif" alt=""></A>
+					</TD>
+		    		</TR>
+			</TABLE>
 		</TD>
 	</TR>		
 	{if $listdata.total != 0}
@@ -64,7 +75,7 @@
 			<IMG src="img/account.gif" alt="">
 			{$aliaslist[aliaslist].dest}{if $aliaslist[aliaslist].cnt>1},...{/if}
 		</TD>
-		<TD class="fright" align="right">
+		<TD class="fright" align="right" NOWRAP>
 			{assign var=alias value="`$aliaslist[aliaslist].login`@`$aliaslist[aliaslist].domain`}
 			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A> 
 			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A> 
