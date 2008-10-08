@@ -25,6 +25,7 @@ version ? (????-??-??):
   - cashimport: display duplicates as errors (alec)
   - mailing: optimized SQL query, network filter checks public addresses
     also (alec)
+  - hosting: ergonomy fixes (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 
