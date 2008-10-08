@@ -267,7 +267,7 @@
 		<TD width="100%" colspan="2" class="fbottomu" align="right">
 			<A href="javascript:document.customeradd.submit();" ACCESSKEY="S">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
 			<A href="?m=customerlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="customeradd[reuse]" value="ON" class="box light" {if $customeradd.reuse}checked{/if}><A HREF="javascript:switchReuse()"> {t}Display this form again, when this customer is saved{/t}</A>
+			<INPUT type="checkbox" name="customeradd[reuse]" id="customeradd[reuse]" value="ON" class="box light" {if $customeradd.reuse}checked{/if}><A HREF="javascript:checkElement('customeradd[reuse]')"> {t}Display this form again, when this customer is saved{/t}</A>
 		</TD>
 	</TR>
 </TABLE>
@@ -275,11 +275,6 @@
 </P>
 {literal}
 <SCRIPT type="text/javascript">
-	function switchReuse()
-	{
-		document.forms['customeradd'].elements['customeradd[reuse]'].checked = !document.forms['customeradd'].elements['customeradd[reuse]'].checked;
-	}
-
 	document.forms['customeradd'].elements['customeradd[lastname]'].focus();
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
 </SCRIPT>
