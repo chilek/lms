@@ -30,7 +30,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.hostadd.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
 			<A href="?m=hostlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="hostadd[reuse]" value="ON" class="box light" {if $hostadd.reuse}checked{/if}> <A HREF="javascript:setReuse()">{t}Display this form again, when this host is saved{/t}</a>
+			<INPUT type="checkbox" name="hostadd[reuse]" id="hostadd[reuse]" value="ON" class="box light" {if $hostadd.reuse}checked{/if}> <A HREF="javascript:checkElement('hostadd[reuse]')">{t}Display this form again, when this host is saved{/t}</a>
 		</TD>
 	</TR>
 </TABLE>
@@ -38,14 +38,6 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['hostadd'].elements['hostadd[name]'].focus();
-
-{literal}
-function setReuse()
-{
-	document.forms['hostadd'].elements['hostadd[reuse]'].checked =
-		!document.forms['hostadd'].elements['hostadd[reuse]'].checked;
-}
-{/literal}
 //-->
 </SCRIPT>
 {include file="footer.html"}
