@@ -26,45 +26,54 @@
 		</TD>
 	</TR>
 	<TR class="DARK">
-		<TD class="fall" colspan="5">
-			<FORM method="GET" action="?m={$layout.module}" name="filter">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT type="HIDDEN" name="m" value="{$layout.module}">
-				{if $suffix}<INPUT type="HIDDEN" name="s" value="1">{/if}
-				<INPUT type="HIDDEN" name="page" value="1">
-				<B>{t}Filter:{/t} </B> {t}Owner:{/t}
-				<SELECT size="1" name="u" OnChange="document.filter.submit();">
-					<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
-					<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
-					{section name=customerlist loop=$customerlist}
-					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:35:"...":true}</OPTION>
-					{/section}
-				</SELECT>&nbsp;
-				{t}Type:{/t}
-				<SELECT size="1" name="t" ONCHANGE="document.filter.submit();">
-					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{t}- all -{/t}</OPTION>
-					<OPTION value="1"{if $listdata.type eq 1} SELECTED {/if}>{t}shell{/t}</OPTION>
-					<OPTION value="2"{if $listdata.type eq 2} SELECTED {/if}>{t}mail{/t}</OPTION>
-					<OPTION value="4"{if $listdata.type eq 4} SELECTED {/if}>{t}www{/t}</OPTION>
-					<OPTION value="8"{if $listdata.type eq 8} SELECTED {/if}>{t}ftp{/t}</OPTION>
-					<OPTION value="16"{if $listdata.type eq 16} SELECTED {/if}>{t}sql{/t}</OPTION>
-				</SELECT>&nbsp;
-				{t}Status:{/t}
-				<SELECT size="1" name="k" OnChange="document.filter.submit();">
-					<OPTION value="0"{if !$listdata.kind} SELECTED {/if}>{t}- all -{/t}</OPTION>
-					<OPTION value="1"{if $listdata.kind eq 1} SELECTED {/if}>{t}expired{/t}</OPTION>
-					<OPTION value="2"{if $listdata.kind eq 2} SELECTED {/if}>{t}active{/t}</OPTION>
-				</SELECT>&nbsp;
-				<NOBR>{t}Domain:{/t}
-				<SELECT size="1" name="d" OnChange="document.filter.submit();">
-					<OPTION value=""{if $listdata.domain eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
-					{section name=domainlist loop=$domainlist}
-					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
-					{/section}
-				</SELECT></NOBR>
-			</FORM>
+	        <TD class="fall" colspan="5">
+			<TABLE cellpadding="0" cellspacing="0">
+				<TR>
+					<TD width="1%" NOWRAP>
+						<FORM method="GET" action="?m={$layout.module}" name="filter">
+							<INPUT type="submit" class="hiddenbtn">
+							<INPUT type="HIDDEN" name="m" value="{$layout.module}">
+							{if $suffix}<INPUT type="HIDDEN" name="s" value="1">{/if}
+							<INPUT type="HIDDEN" name="page" value="1">
+							<B>{t}Filter:{/t} </B> {t}Owner:{/t}
+							<SELECT size="1" name="u" OnChange="document.filter.submit();">
+								<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
+								<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
+								{section name=customerlist loop=$customerlist}
+					    				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:35:"...":true}</OPTION>
+								{/section}
+							</SELECT>&nbsp;
+							{t}Type:{/t}
+							<SELECT size="1" name="t" ONCHANGE="document.filter.submit();">
+								<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{t}- all -{/t}</OPTION>
+								<OPTION value="1"{if $listdata.type eq 1} SELECTED {/if}>{t}shell{/t}</OPTION>
+								<OPTION value="2"{if $listdata.type eq 2} SELECTED {/if}>{t}mail{/t}</OPTION>
+								<OPTION value="4"{if $listdata.type eq 4} SELECTED {/if}>{t}www{/t}</OPTION>
+								<OPTION value="8"{if $listdata.type eq 8} SELECTED {/if}>{t}ftp{/t}</OPTION>
+								<OPTION value="16"{if $listdata.type eq 16} SELECTED {/if}>{t}sql{/t}</OPTION>
+							</SELECT>&nbsp;
+							{t}Status:{/t}
+							<SELECT size="1" name="k" OnChange="document.filter.submit();">
+								<OPTION value="0"{if !$listdata.kind} SELECTED {/if}>{t}- all -{/t}</OPTION>
+								<OPTION value="1"{if $listdata.kind eq 1} SELECTED {/if}>{t}expired{/t}</OPTION>
+								<OPTION value="2"{if $listdata.kind eq 2} SELECTED {/if}>{t}active{/t}</OPTION>
+							</SELECT>&nbsp;
+							<NOBR>{t}Domain:{/t}
+							<SELECT size="1" name="d" OnChange="document.filter.submit();">
+								<OPTION value=""{if $listdata.domain eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
+								{section name=domainlist loop=$domainlist}
+					    				<OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+								{/section}
+							</SELECT></NOBR>
+						</FORM>
+					</TD>
+					<TD width="99%" align="right">
+						<A href="?m=accountadd{if $listdata.customer}&cid={$listdata.customer}{/if}{if $listdata.domain}&did={$listdata.domain}{/if}">{t}New Account{/t} <IMG src="img/save.gif" alt=""></A>
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
-	</TR>		
+	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="5" CLASS="FALL">
