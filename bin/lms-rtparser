@@ -293,7 +293,7 @@ if(my $tmp_body = $entity->parts(0)) #if multipart message, read encoding from f
 } else {
 	$_ = $mailheaders;
 }
-if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
+if(/charset\=\"([a-zA-Z0-9-]*)\"/i || /charset\=([a-zA-Z0-9-]*)/i )
 {
 	my $charset = uc($1);
 
