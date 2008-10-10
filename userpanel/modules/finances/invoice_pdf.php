@@ -318,7 +318,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     for ($i = 1; $i < $v; $i++) $t_justify[$i]="center";
     for ($i = 1; $i < $v; $i++) $t_width[$i] = getWrapTextWidth($font_size,$t_data[$i])+2*$margin+2;
     
-    // tutaj jeszcze trzeba b�dzie sprawdzi� jak� szeroko�� maj� pola w tabelce p��niej
+    // tutaj jeszcze trzeba będzie sprawdzić jaką szerokość mają pola w tabelce później
     if ($invoice['content']) foreach ($invoice['content'] as $item)
     {
 	$v = 2;
@@ -355,7 +355,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 		if(($tt_width[$i]+2*$margin+2)>$t_width[$i]) 
 			$t_width[$i] = $tt_width[$i]+2*$margin+2;
     }
-    // Kolumna 2 b�dzie mia�a rozmiar ustalany dynamicznie
+    // Kolumna druga będzie miała rozmiar ustalany dynamicznie
     $t_width[2] = $width-($t_width[1]+$t_width[3]+$t_width[4]+$t_width[5]+$t_width[6]+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+($invoice['discount'] ? $t_width[11] : 0)+ 2*$margin*($invoice['discount'] ? 11 : 10));
     $y = invoice_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
     $t_justify[11] = $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
@@ -583,7 +583,7 @@ function new_invoice_data($x,$y,$width,$font_size,$margin)
 	    );
     }
     
-    // tutaj jeszcze trzeba b�dzie sprawdzi� jak� szeroko�� maj� pola w tabelce p��niej
+    // tutaj jeszcze trzeba będzie sprawdzić jaką szerokość mają pola w tabelce później
     if ($invoice['content']) foreach ($invoice['content'] as $item)
     {
 	$tt_width['name'] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$item['description']));
