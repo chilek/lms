@@ -52,17 +52,18 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	FILE *fh;
 	QueryHandle *res;
 	int i, j, k=2, n=2, cc=0, nc=0;
-	
+	char *query;
+		
 	struct channel *channels = (struct channel *) malloc(sizeof(struct channel));
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(tc->networks);	
 	char *netname = strdup(netnames);
 
-	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
-				"WHERE a.customerid = as.customerid "
-				"AND g.id = a.customergroupid "
-				"AND (%groups))"
+	char *groups = strdup(" AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca "
+				"WHERE a.customerid = ca.customerid "
+				"AND g.id = ca.customergroupid "
+				"AND (%groups)) "
 				);
 	
 	char *groupnames = strdup(tc->customergroups);
@@ -128,8 +129,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	}
 
 	// nodes
-	res = g->db_pquery(g->conn, 
-		"SELECT t.downrate, t.downceil, t.uprate, t.upceil, t.climit, "
+	query = strdup("SELECT t.downrate, t.downceil, t.uprate, t.upceil, t.climit, "
 			"t.plimit, n.id, n.ownerid, "
 			"n.name, INET_NTOA(n.ipaddr) AS ip, n.mac, "
 			"na.assignmentid, " 
@@ -148,11 +148,14 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			"AND (a.dateto >= %NOW% OR a.dateto = 0) "
 			"AND n.access = 1 "
 			"AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0) "
-			"? "
-		"ORDER BY customer",
-		strlen(groupsql) ? groups : ""
-		);
+			"%groups"
+		"ORDER BY customer");
+	
+	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
 
+	res = g->db_query(g->conn, query);
+	free(query);
+	
 	if(!g->db_nrows(res))
 	{
 	        syslog(LOG_ERR, "[%s/tc-new] Unable to read database or assignments table is empty", tc->base.instance);
