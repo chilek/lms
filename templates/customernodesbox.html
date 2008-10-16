@@ -44,7 +44,7 @@ function CheckAllN2()
 </SCRIPT>{/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel');">
+		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel-{$layout.module}');">
 			<IMG SRC="img/node.gif" alt="">
 			<B><A name="customernodes">{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</A></B>
 			{if $ewx_channelid}
@@ -55,7 +55,7 @@ function CheckAllN2()
 			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=nodeadd&ownerid={$customerinfo.id}">{t}New Node{/t} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
-        <TR id="nodespanel" style="display:none;">
+        <TR id="nodespanel-{$layout.module}" style="display:none;">
 	        <TD WIDTH="100%" colspan="2" class="fall">
 		    <FORM method="post" action="" name="custnodeslist">
 		    <TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
