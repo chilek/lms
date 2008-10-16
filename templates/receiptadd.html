@@ -332,13 +332,13 @@
 							</TR>
 							{cycle values="light,lucid" print=false}
 							{foreach from=$invoicelist item=item}
-							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+							<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" onclick="checkElement('mark'+{$item.id})">
 							        <TD><nobr>{$item.cdate|date_format:"%Y/%m/%d"}</nobr></TD>
 								<TD>{$item.number}</TD>
 							        <TD align="right"><nobr>{$item.value|money_format}</nobr></TD>
 								<TD align="right">
 									{cycle print=false}
-									<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[]" VALUE="{$item.id}" CHECKED>
+									<INPUT class="box {cycle}" TYPE="checkbox" ID="mark{$item.id}" NAME="marks[]" VALUE="{$item.id}">
 								</TD>
 							</TR>
 							{foreachelse}
@@ -352,7 +352,7 @@
 							{/foreach}
 							<TR class="light">
 								<TD CLASS="ftop" colspan="2" nowrap>
-									<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes" CHECKED>
+									<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
 									<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
 								</TD>
 							        <TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>
