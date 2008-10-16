@@ -338,7 +338,7 @@
 							        <TD align="right"><nobr>{$item.value|money_format}</nobr></TD>
 								<TD align="right">
 									{cycle print=false}
-									<INPUT class="box {cycle}" TYPE="checkbox" ID="mark{$item.id}" NAME="marks[]" VALUE="{$item.id}">
+									<INPUT class="box {cycle}" TYPE="checkbox" ID="mark{$item.id}" NAME="marks[]" VALUE="{$item.id}" CHECKED>
 								</TD>
 							</TR>
 							{foreachelse}
@@ -352,7 +352,7 @@
 							{/foreach}
 							<TR class="light">
 								<TD CLASS="ftop" colspan="2" nowrap>
-									<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+									<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes" CHECKED>
 									<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
 								</TD>
 							        <TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>
