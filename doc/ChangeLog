@@ -26,6 +26,7 @@ version ? (????-??-??):
   - mailing: optimized SQL query, network filter checks public addresses
     also (alec)
   - hosting: ergonomy fixes (chilan)
+  - customernodesbox: we remember if nodes box is opened again (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 
