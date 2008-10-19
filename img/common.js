@@ -173,5 +173,14 @@ if (typeof String.prototype.trim == "undefined")
 
 function checkElement(id)
 {
-        document.getElementById(id).checked = !document.getElementById(id).checked;
+	var elem = document.getElementById(id);
+	
+	if (!elem) {
+		var list = document.getElementsByName(id);
+		if (list.length)
+			elem = list[0];
+	}
+	
+	if (elem)
+		elem.checked = !elem.checked;
 }
