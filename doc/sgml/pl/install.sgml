@@ -153,6 +153,13 @@ max_execution_time = 60 ; co najmniej
 memory_limit = 32M ; co najmniej
 </screen>
 	</para>
+	<para>Przed pierwszym uruchomieniem LMSa wymagane jest ustawienie opcji
+		konfiguracyjnych bazy danych i katalogów w pliku <filename>lms.ini</filename>. 
+		Nastêpnie po uruchomieniu <emphasis>LMS-UI</emphasis> zak³adamy konto u¿ytkownika uprzywilejowanego (zaznaczaj±c wszystkie uprawnienia).
+		Po czym mo¿emy przyst±piæ do konfiguracji podstawowej systemu. W menu Konfiguracja -> Interfejs u¿ytkownika ustawiamy podstawowe opcje
+		odnosz±ce siê do <emphasis>LMS-UI</emphasis>. Nastêpnie wymagane jest
+		zdefiniowanie przynajmniej jednej firmy (oddzia³u) oraz wskazane jest
+		zdefiniowanie stawek podatkowych, planów numeracyjnych, województw oraz hostów.</para>
      </sect1>
      <sect1 id="install-locale">
      <title>Lokalizacja</title>
@@ -563,31 +570,10 @@ AddDefaultCharset Off
           faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
           wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
           zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>lmsd</emphasis></para>
-          <para>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
-          opcji w sekcji <emphasis>[invoices]</emphasis> konfiguracji:
+          <para>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych parametrów faktury takich jak nag³ówek, stopka, domy¶lny wystawca,
+	miejsce wystawienia oraz konto bankowe w definicji firmy. Ponadto mamy do dyspozycji
+          opcje sekcji <emphasis>[invoices]</emphasis> konfiguracji:
           <itemizedlist>
-          <listitem>
-               <para>header</para>
-               <para>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
-               <para>Przyk³ad: <prompt>header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</prompt></para>
-          </listitem>
-          <listitem>
-               <para>footer</para>
-               <para>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona 
-	       na dole faktury (lub w innym, okre¶lonym w szablonie, miejscu), ma³± czcionk±. 
-	       Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
-               <para>Przyk³ad: <prompt>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</prompt></para>
-          </listitem>
-          <listitem>
-               <para>default_author</para>
-               <para>Domy¶lna osoba wystawiaj±ca fakturê (dla faktur wystawianych automatycznie). Domy¶lnie: puste</para>
-               <para>Przyk³ad: <prompt>default_author = "specjalista d/s fakturowania"</prompt></para>
-          </listitem>
-          <listitem>
-               <para>cplace</para>
-               <para>Miejsce wystawienia faktury. Domy¶lnie: puste.</para>
-               <para>Przyk³ad: <prompt>cplace = Warszawa</prompt></para>
-          </listitem>
 	  <listitem>
 		<para>print_balance_history</para>
 		<para>Okre¶la czy na fakturze (html) drukowaæ listê operacji finansowych 
@@ -700,22 +686,11 @@ AddDefaultCharset Off
 		    <para>identyfikator naszego wirtualnego rachunku, z³o¿ony z 4 cyfr</para>
 		</listitem>
 	  </itemizedlist>
-	  Gdy mamy potrzebne dane, mo¿emy przej¶æ do konfiguracji LMSa.</para>
-	  <para>W sekcji <emphasis>[finances]</emphasis> ustawiamy:
-	  <itemizedlist>
-		<listitem>
-		    <para>iban</para>
-		    <para>okre¶la czy numer konta na fakturach ma byæ zwyk³y czy generowany automatycznie (0|1)</para>
-		</listitem>
-		<listitem>
-		    <para>account</para>
-		    <para>skrócony numer konta bankowego powsta³y przez po³±czenie numeru rozliczeniowego banku 
-		    z identyfikatorem rachunku, numer ten musi siê sk³adaæ od 8 do 20 cyfr bez spacji i innych 
-		    znaków. Standardem jest podanie 12 cyfr. (numer rozliczeniowy banku-8 oraz Twój nr 
-		    rozliczeniowy-4)</para>
-		</listitem>
-	  </itemizedlist>
-	  Od tej pory je¶li u¿ywamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wp³aty z
+	  Gdy mamy potrzebne dane, definiujemy konto bankowe w
+	  konfiguracji firmy (oddzia³u). System sam rozpozna (na podstawie d³ugo¶ci), 
+	  czy wprowadzono ca³y numer rachunku firmy czy prefiks do p³atno¶ci masowych.
+	  Prefix powinien sk³adaæ siê z 8 do 20 cyfr bez spacji i innych znaków.</para>
+	  <para>Od tej pory je¶li u¿ywamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wp³aty z
 	  menu Finanse -> Wydruki -> Faktury -> Drukuj polecenia przelewu/wp³aty, ka¿dy wydruk bêdzie zawiera³
 	  unikalny numer konta z zawartym ID naszego klienta. ID klienta zostanie dodane na koñcu, oraz
 	  poprzedzone odpowiednia ilo¶ci± zer. Suma kontrolna bêdzie wyliczana automatycznie.

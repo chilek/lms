@@ -54,7 +54,7 @@ if(isset($_GET['id']) && $action=='edit')
 	$invoicecontents[] = $nitem;
 	$SESSION->save('invoicecontents', $invoicecontents);
     }
-    $SESSION->save('invoicecustomer', $LMS->GetCustomer($invoice['customerid']));
+    $SESSION->save('invoicecustomer', $LMS->GetCustomer($invoice['customerid'], true));
     $invoice['oldcdate'] = $invoice['cdate'];
     $SESSION->save('invoice', $invoice);
     $SESSION->save('invoiceid', $invoice['id']);
@@ -155,7 +155,7 @@ switch($action)
 		
 		if(!$error)
 			if($LMS->CustomerExists($invoice['customerid']))
-				$customer = $LMS->GetCustomer($invoice['customerid']);
+				$customer = $LMS->GetCustomer($invoice['customerid'], true);
 	break;
 
 	case 'save':

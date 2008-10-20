@@ -124,6 +124,9 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 			$customerdata['consentdate'] = 0;
 		elseif($consent)
 			$customerdata['consentdate'] = $consent;
+
+		if(!isset($customerdata['divisionid']))
+			$customerdata['divisionid'] = 0;
 		
 		$LMS->CustomerUpdate($customerdata);
 		
@@ -217,6 +220,7 @@ $SMARTY->assign('documents',$LMS->GetDocuments($_GET['id'], 10));
 $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('cstateslist',$LMS->GetCountryStates());
+$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 $SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
 $SMARTY->display('customeredit.html');
 

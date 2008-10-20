@@ -277,6 +277,7 @@ CREATE TABLE documents (
 	cdate integer 		DEFAULT 0 NOT NULL,
 	customerid integer 	DEFAULT 0 NOT NULL,
 	userid integer		DEFAULT 0 NOT NULL,		
+	divisionid integer	DEFAULT 0 NOT NULL,		
     	name varchar(255) 	DEFAULT '' NOT NULL,
     	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
@@ -395,6 +396,7 @@ CREATE TABLE customers (
 	pin integer		DEFAULT 0 NOT NULL,
 	cutoffstop integer	DEFAULT 0 NOT NULL,
 	consentdate integer	DEFAULT 0 NOT NULL,
+	divisionid integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -1000,6 +1002,30 @@ CREATE TABLE zipcodes (
 CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
 
 /* ---------------------------------------------------
+ Structure of table "divisions"
+------------------------------------------------------*/
+DROP SEQUENCE divisions_id_seq;
+CREATE SEQUENCE divisions_id_seq;
+DROP TABLE divisions;
+CREATE TABLE divisions (
+    	id 		integer 	NOT NULL ,
+	shortname 	varchar(255) 	NOT NULL DEFAULT '',
+	name 		text 		NOT NULL DEFAULT '',
+	address		varchar(255) 	NOT NULL DEFAULT '',
+	city		varchar(255) 	NOT NULL DEFAULT '',
+	zip		varchar(255) 	NOT NULL DEFAULT '',
+	account		varchar(48) 	NOT NULL DEFAULT '',
+	inv_header 	text		NOT NULL DEFAULT '',
+	inv_footer 	text		NOT NULL DEFAULT '',
+	inv_author	text		NOT NULL DEFAULT '',
+	inv_cplace	text		NOT NULL DEFAULT '',
+	description 	text		NOT NULL DEFAULT '',
+	status 		smallint 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (shortname)
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE up_rights_id_seq;
@@ -1128,4 +1154,4 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008080800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008102000');

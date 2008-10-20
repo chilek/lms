@@ -67,7 +67,7 @@ switch($action)
 		$invoice['cdate'] = time();
 		$invoice['paytime'] = 14;
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
-			$customer = $LMS->GetCustomer($_GET['customerid']);
+			$customer = $LMS->GetCustomer($_GET['customerid'], true);
 	break;
 
 	case 'additem':
@@ -194,7 +194,7 @@ switch($action)
 		{
 			$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
 			if($LMS->CustomerExists($cid))
-				$customer = $LMS->GetCustomer($cid);
+				$customer = $LMS->GetCustomer($cid, true);
 		}
 	break;
 

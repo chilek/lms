@@ -106,12 +106,6 @@ $pdf->setLineStyle(2);
 
 $id = $pdf->getFirstPageId();
 
-$_NAME = (! $CONFIG['finances']['name'] ? trans('Not set') : $CONFIG['finances']['name']);
-$_SHORT_NAME = (! $CONFIG['finances']['shortname'] ? trans('Not set') : $CONFIG['finances']['shortname']);
-$_ADDRESS = (! $CONFIG['finances']['address'] ? trans('Not set') : $CONFIG['finances']['address']);
-$_ZIP = (! $CONFIG['finances']['zip'] ? trans('Not set') : $CONFIG['finances']['zip']);
-$_CITY = (! $CONFIG['finances']['city'] ? trans('Not set') : $CONFIG['finances']['city']);
-
 $control_lines = 0;
 
 $ids = $DB->GetCol('SELECT id FROM documents d
@@ -136,6 +130,8 @@ if(!$ids)
     die;
 }
 
+$DIVISIONS = $DB->GetAllByKey('SELECT * FROM divisions', 'id');
+										
 $count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
 $i=0;
 
@@ -143,6 +139,18 @@ foreach($ids as $idx => $invoiceid)
 {
     $invoice = $LMS->GetInvoiceContent($invoiceid);
     $invoice['t_number'] = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+
+    if($invoice['divisionid'] && isset($DIVISIONS[$invoice['divisionid']]))
+    {
+	$_NAME = $DIVISIONS[$invoice['divisionid']]['name'];
+	$_SHORT_NAME = $DIVISIONS[$invoice['divisionid']]['shortname'];
+	$_ADDRESS = $DIVISIONS[$invoice['divisionid']]['address'];
+	$_ZIP = $DIVISIONS[$invoice['divisionid']]['zip'];
+	$_CITY = $DIVISIONS[$invoice['divisionid']]['city'];
+    }
+    else
+	$_NAME = $_SHORT_NAME = $_ADDRESS = $_ZIP = $_CITY = '';
+
     main_fill(177,12,0.395);
     main_fill(177,313,0.396);
     simple_fill_mip(5,12,0.395);

@@ -104,8 +104,9 @@ CLASS="EMPHASIS"
 ></SPAN
 ></P
 ><P
->Do poprawnego działania i tworzenia wydruków wymagane jest ustawienie podstawowych 
-          opcji w sekcji <SPAN
+>Do poprawnego działania i tworzenia wydruków wymagane jest ustawienie podstawowych parametrów faktury takich jak nagłówek, stopka, domyślny wystawca,
+	miejsce wystawienia oraz konto bankowe w definicji firmy. Ponadto mamy do dyspozycji
+          opcje sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -113,52 +114,6 @@ CLASS="EMPHASIS"
 ></SPAN
 > konfiguracji:
           <UL
-><LI
-><P
->header</P
-><P
->Dane sprzedawcy. Domyślnie: pusty. Można użyć ciągu "\n" aby oddzielić linie od siebie.</P
-><P
->Przykład: <SAMP
-CLASS="PROMPT"
->header = "SuperNet ISP\nul.Nowa 15\n12-000 Wąchock\n"</SAMP
-></P
-></LI
-><LI
-><P
->footer</P
-><P
->Stopka faktury - np. dane sprzedawcy. Domyślnie: pusta. Stopka zostanie umieszczona 
-	       na dole faktury (lub w innym, określonym w szablonie, miejscu), małą czcionką. 
-	       Podobnie jak i w przypadku opcji header, można użyć ciągu "\n" aby oddzielić linie od siebie.</P
-><P
->Przykład: <SAMP
-CLASS="PROMPT"
->footer = "Blokowa Sieć Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</SAMP
-></P
-></LI
-><LI
-><P
->default_author</P
-><P
->Domyślna osoba wystawiająca fakturę (dla faktur wystawianych automatycznie). Domyślnie: puste</P
-><P
->Przykład: <SAMP
-CLASS="PROMPT"
->default_author = "specjalista d/s fakturowania"</SAMP
-></P
-></LI
-><LI
-><P
->cplace</P
-><P
->Miejsce wystawienia faktury. Domyślnie: puste.</P
-><P
->Przykład: <SAMP
-CLASS="PROMPT"
->cplace = Warszawa</SAMP
-></P
-></LI
 ><LI
 ><P
 >print_balance_history</P
@@ -399,34 +354,12 @@ NAME="INSTALL-INVOICES-IBAN"
 ></LI
 ></UL
 >
-	  Gdy mamy potrzebne dane, możemy przejść do konfiguracji LMSa.</P
+	  Gdy mamy potrzebne dane, definiujemy konto bankowe w
+	  konfiguracji firmy (oddziału). System sam rozpozna (na podstawie długości), 
+	  czy wprowadzono cały numer rachunku firmy czy prefiks do płatności masowych.
+	  Prefix powinien składać się z 8 do 20 cyfr bez spacji i innych znaków.</P
 ><P
->W sekcji <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[finances]</I
-></SPAN
-> ustawiamy:
-	  <UL
-><LI
-><P
->iban</P
-><P
->określa czy numer konta na fakturach ma być zwykły czy generowany automatycznie (0|1)</P
-></LI
-><LI
-><P
->account</P
-><P
->skrócony numer konta bankowego powstały przez połączenie numeru rozliczeniowego banku 
-		    z identyfikatorem rachunku, numer ten musi się składać od 8 do 20 cyfr bez spacji i innych 
-		    znaków. Standardem jest podanie 12 cyfr. (numer rozliczeniowy banku-8 oraz Twój nr 
-		    rozliczeniowy-4)</P
-></LI
-></UL
->
-	  Od tej pory jeśli używamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wpłaty z
+>Od tej pory jeśli używamy faktur PDF z szablonem FT-0100, lub drukujemy bloczki przelewu/wpłaty z
 	  menu Finanse -&#62; Wydruki -&#62; Faktury -&#62; Drukuj polecenia przelewu/wpłaty, każdy wydruk będzie zawierał
 	  unikalny numer konta z zawartym ID naszego klienta. ID klienta zostanie dodane na końcu, oraz
 	  poprzedzone odpowiednia ilością zer. Suma kontrolna będzie wyliczana automatycznie.

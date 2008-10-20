@@ -172,7 +172,7 @@ switch($action)
 
 		if(!isset($error) && $receipt['customerid'] && $LMS->CustomerExists($receipt['customerid']))
 		{
-			$customer = $LMS->GetCustomer($receipt['customerid']);
+			$customer = $LMS->GetCustomer($receipt['customerid'], true);
 			$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
 			if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
 				unset($customer['notes']);
@@ -485,7 +485,7 @@ switch($action)
 
 				if(!isset($error))
 				{
-					$customer = $LMS->GetCustomer($cid);
+					$customer = $LMS->GetCustomer($cid, true);
 					$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
 					if(!isset($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
 						unset($customer['notes']);

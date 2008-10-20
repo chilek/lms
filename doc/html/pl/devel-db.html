@@ -192,6 +192,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>divisionid - identyfikator firmy (oddziału)</TD
+></TR
+><TR
+><TD
 >status - status (3-podłączony, 2-oczekujący, 1-zainteresowany)</TD
 ></TR
 ><TR
@@ -1284,6 +1288,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>divisionid - identyfikator firmy (oddziału)</TD
+></TR
+><TR
+><TD
 >name - nazwa (nazwisko i imię) klienta</TD
 ></TR
 ><TR
@@ -2232,8 +2240,126 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="STATES"
+>7.2.48. Województwa ('states')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa województwa</TD
+></TR
+><TR
+><TD
+>description - informacje dodatkowe</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ZIPCODES"
+>7.2.49. Kody pocztowe ('zipcodes')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>zip -  kod pocztowy</TD
+></TR
+><TR
+><TD
+>stateid - identyfikator województwa</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DIVISIONS"
+>7.2.50. Firmy/Oddziały ('divisions')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>shortname -  nazwa skrócona firmy</TD
+></TR
+><TR
+><TD
+>name - pełna nazwa firmy</TD
+></TR
+><TR
+><TD
+>address - adres</TD
+></TR
+><TR
+><TD
+>zip - kod pocztowy</TD
+></TR
+><TR
+><TD
+>city - miasto</TD
+></TR
+><TR
+><TD
+>account - konto bankowe lub prefiks konta płatności masowych</TD
+></TR
+><TR
+><TD
+>description - informacje dodatkowe</TD
+></TR
+><TR
+><TD
+>status - status blokady (1/0)</TD
+></TR
+><TR
+><TD
+>inv_header - nagłówek faktury</TD
+></TR
+><TR
+><TD
+>inv_footer - stopka faktury</TD
+></TR
+><TR
+><TD
+>inv_author - wystawca faktury</TD
+></TR
+><TR
+><TD
+>inv_cplace - miejsce wystawienia faktury</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DBINFO"
->7.2.48. Informacje o bazie danych ('dbinfo')</A
+>7.2.51. Informacje o bazie danych ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"

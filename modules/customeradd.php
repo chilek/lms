@@ -160,6 +160,8 @@ elseif(isset($_POST['customeradd']))
 
 		if(!isset($customeradd['consentdate']))
 			$customeradd['consentdate'] = 0;
+		if(!isset($customeradd['divisionid']))
+			$customeradd['divisionid'] = 0;
 		
 		$id = $LMS->CustomerAdd($customeradd);
 
@@ -211,7 +213,8 @@ if(!isset($customeradd['address']) && isset($CONFIG['phpui']['default_address'])
 
 $layout['pagetitle'] = trans('New Customer');
 
-$SMARTY->assign('cstateslist',$LMS->GetCountryStates());
+$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
+$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 $SMARTY->assign('customeradd', $customeradd);
 $SMARTY->assign('error', $error);
 $SMARTY->display('customeradd.html');

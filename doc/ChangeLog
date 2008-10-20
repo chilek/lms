@@ -19,7 +19,8 @@ version ? (????-??-??):
   - customersearch: fixed customer searching while state is unset (chilan)
   - customerwarn: fixed customer marking when we try to set message
     after searching customers (chilan)
-  - we can filter tickets after coming to tickets list from welcome module (chilan)
+  - we can filter tickets after coming to tickets list from welcome
+    module (chilan)
   - trafficdbcompact: improved speed of removedeleted option (chilan)
   - added separate access rights for nodes/customers to groups assignment (alec)
   - cashimport: display duplicates as errors (alec)
@@ -27,6 +28,12 @@ version ? (????-??-??):
     also (alec)
   - hosting: ergonomy fixes (chilan)
   - customernodesbox: we remember if nodes box is opened again (chilan)
+  - Companies/Divisions (alec)
+  - per-division configuration - removed [invoices] options: header, footer,
+    cplace, default_author and [finances] option: account (alec)
+  - removed finances/iban option, now mass-payments account is generated 
+    automatic if account is short (8-20 chars) (alec)
+  - performance: optimized LMS::GetCustomer calls using its 2nd argument (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 

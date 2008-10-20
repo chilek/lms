@@ -220,6 +220,7 @@ if(isset($_POST['document']))
 					$gencust['city'] ? $gencust['city'] : '',
 					$gencust['ten'] ? $gencust['ten'] : '',
 					$gencust['ssn'] ? $gencust['ssn'] : '',
+					$gencust['divisionid'],
 					isset($document['closed']) ? 1 : 0
 					));
 		

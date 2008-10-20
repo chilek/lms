@@ -102,6 +102,7 @@
                     <member>id - identyfikator</member>
                     <member>lastname - nazwa/nazwisko</member>
                     <member>name - imiê</member>
+		    <member>divisionid - identyfikator firmy (oddzia³u)</member>
                     <member>status - status (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</member>
 		    <member>type - osobowo¶æ prawna (0-osoba fizyczna, 1-osoba prawna)</member>
                     <member>email - adres poczty internetowej</member>
@@ -408,6 +409,7 @@
                     <member>paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)</member>
                     <member>customerid - identyfikator klienta-nabywcy</member>
 		    <member>userid - identyfikator u¿ytkownika wystawiaj±cego dokument</member>
+		    <member>divisionid - identyfikator firmy (oddzia³u)</member>
                     <member>name - nazwa (nazwisko i imiê) klienta</member>
                     <member>address - adres klienta</member>
                     <member>ten - nip klienta</member>
@@ -680,6 +682,40 @@
                     <member>content - dane</member>
                </simplelist>
           </sect2>
+	<sect2 id="states">
+		<title>Województwa ('states')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>name - nazwa województwa</member>
+			<member>description - informacje dodatkowe</member>
+		</simplelist>
+	</sect2>
+	<sect2 id="zipcodes">
+		<title>Kody pocztowe ('zipcodes')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>zip -  kod pocztowy</member>
+			<member>stateid - identyfikator województwa</member>
+		</simplelist>
+	</sect2>
+	<sect2 id="divisions">
+		<title>Firmy/Oddzia³y ('divisions')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>shortname -  nazwa skrócona firmy</member>
+			<member>name - pe³na nazwa firmy</member>
+			<member>address - adres</member>
+			<member>zip - kod pocztowy</member>
+			<member>city - miasto</member>
+			<member>account - konto bankowe lub prefiks konta p³atno¶ci masowych</member>
+			<member>description - informacje dodatkowe</member>
+			<member>status - status blokady (1/0)</member>
+			<member>inv_header - nag³ówek faktury</member>
+			<member>inv_footer - stopka faktury</member>
+			<member>inv_author - wystawca faktury</member>
+			<member>inv_cplace - miejsce wystawienia faktury</member>
+		</simplelist>
+	</sect2>
           <sect2 id="dbinfo">
                <title>Informacje o bazie danych ('dbinfo')</title>
                <simplelist>

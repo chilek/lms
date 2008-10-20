@@ -154,19 +154,22 @@ Rozdział 1. Wstęp
        Krzysztof 'hunter' Drewicz
        Marcin 'Lexx' Król
        Aleksander A.L.E.C Machniak
-       Tomasz 'chilek' Chiliński
+       Tomasz 'Chilek' Chiliński
        Konrad 'kondi' Rzentarzewski
+       Grzegorz 'Ceho' Chwesewicz
      * Kod C:
 
        Aleksander 'A.L.E.C' Machniak
        Marcin 'Lexx' Król
+       Tomasz 'Chilek' Chiliński
      * Kod Perl:
 
        Łukasz 'Baseciq' Mozer
        Michał 'DziQs' Zapalski
        Maciej 'agaran' Pijanka
        Krzysztof 'hunter' Drewicz
-       Tomasz 'chilek' Chiliński
+       Tomasz 'Chilek' Chiliński
+       Grzegorz 'Ceho' Chwesewicz
      * Design:
 
        Łukasz 'Baseciq' Mozer
@@ -175,8 +178,9 @@ Rozdział 1. Wstęp
        Łukasz 'Baseciq' Mozer
        Paweł 'Bob_R' Czerski
        Paweł 'sickone' Kisiela
-       Tomasz 'chilek' Chiliński
+       Tomasz 'Chilek' Chiliński
        Konrad 'kondi' Rzentarzewski
+       Grzegorz 'Ceho' Chwesewicz
      * Grafika:
 
        Piotr 'Pierzak' Mierzeński
@@ -434,6 +438,16 @@ mbstring.func_overload = 7
 register_globals = off
 max_execution_time = 60 ; co najmniej
 memory_limit = 32M ; co najmniej
+
+   Przed pierwszym uruchomieniem LMSa wymagane jest ustawienie opcji
+   konfiguracyjnych bazy danych i katalogów w pliku lms.ini. Następnie po
+   uruchomieniu LMS-UI zakładamy konto użytkownika uprzywilejowanego
+   (zaznaczając wszystkie uprawnienia). Po czym możemy przystąpić do
+   konfiguracji podstawowej systemu. W menu Konfiguracja -> Interfejs
+   użytkownika ustawiamy podstawowe opcje odnoszące się do LMS-UI.
+   Następnie wymagane jest zdefiniowanie przynajmniej jednej firmy
+   (oddziału) oraz wskazane jest zdefiniowanie stawek podatkowych, planów
+   numeracyjnych, województw oraz hostów.
      __________________________________________________________________
 
 2.4. Lokalizacja
@@ -830,25 +844,9 @@ AddDefaultCharset Off
    faktur do bazy zajmuje się skrypt lms-payments lub demon lmsd
 
    Do poprawnego działania i tworzenia wydruków wymagane jest ustawienie
-   podstawowych opcji w sekcji [invoices] konfiguracji:
-     * header
-       Dane sprzedawcy. Domyślnie: pusty. Można użyć ciągu "\n" aby
-       oddzielić linie od siebie.
-       Przykład: header = "SuperNet ISP\nul.Nowa 15\n12-000 Wąchock\n"
-     * footer
-       Stopka faktury - np. dane sprzedawcy. Domyślnie: pusta. Stopka
-       zostanie umieszczona na dole faktury (lub w innym, określonym w
-       szablonie, miejscu), małą czcionką. Podobnie jak i w przypadku
-       opcji header, można użyć ciągu "\n" aby oddzielić linie od siebie.
-       Przykład: footer = "Blokowa Sieć Komputerowa K-27 w Mielcu,
-       tel.555-23-23, bla bla"
-     * default_author
-       Domyślna osoba wystawiająca fakturę (dla faktur wystawianych
-       automatycznie). Domyślnie: puste
-       Przykład: default_author = "specjalista d/s fakturowania"
-     * cplace
-       Miejsce wystawienia faktury. Domyślnie: puste.
-       Przykład: cplace = Warszawa
+   podstawowych parametrów faktury takich jak nagłówek, stopka, domyślny
+   wystawca, miejsce wystawienia oraz konto bankowe w definicji firmy.
+   Ponadto mamy do dyspozycji opcje sekcji [invoices] konfiguracji:
      * print_balance_history
        Określa czy na fakturze (html) drukować listę operacji finansowych
        na koncie klienta. Domyślnie: nie ustawiona.
@@ -947,18 +945,11 @@ AddDefaultCharset Off
      * Identyfikator rachunku
        identyfikator naszego wirtualnego rachunku, złożony z 4 cyfr
 
-   Gdy mamy potrzebne dane, możemy przejść do konfiguracji LMSa.
-
-   W sekcji [finances] ustawiamy:
-     * iban
-       określa czy numer konta na fakturach ma być zwykły czy generowany
-       automatycznie (0|1)
-     * account
-       skrócony numer konta bankowego powstały przez połączenie numeru
-       rozliczeniowego banku z identyfikatorem rachunku, numer ten musi
-       się składać od 8 do 20 cyfr bez spacji i innych znaków. Standardem
-       jest podanie 12 cyfr. (numer rozliczeniowy banku-8 oraz Twój nr
-       rozliczeniowy-4)
+   Gdy mamy potrzebne dane, definiujemy konto bankowe w konfiguracji firmy
+   (oddziału). System sam rozpozna (na podstawie długości), czy
+   wprowadzono cały numer rachunku firmy czy prefiks do płatności
+   masowych. Prefix powinien składać się z 8 do 20 cyfr bez spacji i
+   innych znaków.
 
    Od tej pory jeśli używamy faktur PDF z szablonem FT-0100, lub drukujemy
    bloczki przelewu/wpłaty z menu Finanse -> Wydruki -> Faktury -> Drukuj
@@ -2294,6 +2285,10 @@ links -dump \
        Limit wyświetlanych pozycji na stronie w liście planów
        numeracyjnych. Domyślnie: 100.
        Przykład: numberplanlist_pagelimit = 10
+     * divisionlist_pagelimit
+       Limit wyświetlanych pozycji na stronie w liście firm. Domyślnie:
+       100.
+       Przykład: divisionlist_pagelimit = 10
      * documentlist_pagelimit
        Limit wyświetlanych pozycji na stronie w liście dokumentów.
        Domyślnie: 100.
@@ -2527,7 +2522,16 @@ links -dump \
    numerowane wg wzorca '%N/LMS/%Y' z okresem rocznym.
      __________________________________________________________________
 
-3.15.4. Hosty
+3.15.4. Firmy (Oddziały)
+
+   Firmy (Oddziały) służą do grupowania klientów. Powinieneś zdefiniować
+   przynajmniej jedną firmę. Masz możliwość podania nazwy skróconej i
+   pełnej firmy, jej adresu, konta bankowego (lub prefiksu konta płatności
+   masowych) oraz danych do fakturowania. Zablokowanie firmy uniemożliwia
+   jej przypisanie do klienta.
+     __________________________________________________________________
+
+3.15.5. Hosty
 
    Tutaj definiuje się hosty które będą współpracowały z LMSem, czyli
    komputery (routery, serwery) pobierające konfigurację z bazy LMSa, na
@@ -2539,7 +2543,7 @@ links -dump \
    u*ixem).
      __________________________________________________________________
 
-3.15.5. Demon
+3.15.6. Demon
 
    Po zdefiniowaniu hostów można rozpocząć konfigurację demona
    lmsd.Konfiguracja jest bardziej szczegółowo opisana w rozdziale
@@ -5807,6 +5811,7 @@ Rozdział 7. Dla dociekliwych
    id - identyfikator
    lastname - nazwa/nazwisko
    name - imię
+   divisionid - identyfikator firmy (oddziału)
    status - status (3-podłączony, 2-oczekujący, 1-zainteresowany)
    type - osobowość prawna (0-osoba fizyczna, 1-osoba prawna)
    email - adres poczty internetowej
@@ -6099,6 +6104,7 @@ Rozdział 7. Dla dociekliwych
    paytype - rodzaj płatności (przelew/gotówka/etc.)
    customerid - identyfikator klienta-nabywcy
    userid - identyfikator użytkownika wystawiającego dokument
+   divisionid - identyfikator firmy (oddziału)
    name - nazwa (nazwisko i imię) klienta
    address - adres klienta
    ten - nip klienta
@@ -6348,7 +6354,38 @@ Rozdział 7. Dla dociekliwych
    content - dane
      __________________________________________________________________
 
-7.2.48. Informacje o bazie danych ('dbinfo')
+7.2.48. Województwa ('states')
+
+   id - identyfikator
+   name - nazwa województwa
+   description - informacje dodatkowe
+     __________________________________________________________________
+
+7.2.49. Kody pocztowe ('zipcodes')
+
+   id - identyfikator
+   zip - kod pocztowy
+   stateid - identyfikator województwa
+     __________________________________________________________________
+
+7.2.50. Firmy/Oddziały ('divisions')
+
+   id - identyfikator
+   shortname - nazwa skrócona firmy
+   name - pełna nazwa firmy
+   address - adres
+   zip - kod pocztowy
+   city - miasto
+   account - konto bankowe lub prefiks konta płatności masowych
+   description - informacje dodatkowe
+   status - status blokady (1/0)
+   inv_header - nagłówek faktury
+   inv_footer - stopka faktury
+   inv_author - wystawca faktury
+   inv_cplace - miejsce wystawienia faktury
+     __________________________________________________________________
+
+7.2.51. Informacje o bazie danych ('dbinfo')
 
    keytype - typ
    keyvalue - wartość

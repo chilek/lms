@@ -50,7 +50,7 @@ function truncate($str, $max=60)
 function main_form($x, $y, $data)
 {
     global $pdf;
-    global $_NAME, $_ADDRESS, $_ZIP, $_CITY, $_ACCOUNT, $_TITLE, $_LMARGIN, $_BMARGIN;
+    global $_TITLE, $_LMARGIN, $_BMARGIN;
     
     $balance = $data['balance'] < 0 ? -$data['balance'] : $data['balance'];
 
@@ -60,15 +60,15 @@ function main_form($x, $y, $data)
     $y += $_BMARGIN;
 
     $y += 275;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',$_NAME));
+    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',$data['d_name']));
     $y -= $lineh;
-    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trim($_ZIP.' '.$_CITY.' '.$_ADDRESS)));
+    $pdf->addtext($x,$y,$font_size,iconv('UTF-8', 'ISO-8859-2',trim($data['d_zip'].' '.$data['d_city'].' '.$data['d_address'])));
     $y -= $lineh;
 //    for($i=0; $i<26; $i++)
 //    {
 //	    $pdf->addtext($x+$i*14.6,$y,$font_size,$_ACCOUNT[$i]);
 //    }
-    $pdf->addtext($x,$y,$font_size,$_ACCOUNT);
+    $pdf->addtext($x,$y,$font_size, bankaccount($data['id']);
     $y -= $lineh;
     $pdf->addtext($x+220,$y,$font_size,sprintf('%.2f',$balance));
     $y -= $lineh;
@@ -88,12 +88,14 @@ $customer = isset($_POST['customer']) ? intval($_POST['customer']) : 0;
 $group = isset($_POST['customergroup']) ? intval($_POST['customergroup']) : 0;
 $exclgroup = isset($_POST['groupexclude']) ? 1 : 0;
 
-$list = $DB->GetAll('SELECT c.id AS id, address, zip, city, '
+$list = $DB->GetAll('SELECT c.id, c.address, c.zip, c.city, 
+	d.name AS d_name, d.address AS d_address, d.zip AS d_zip, d.city AS d_city, '
 	.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,   
 	COALESCE(SUM(value), 0.00) AS balance
 	FROM customersview c 
-	LEFT JOIN cash ON (c.id = cash.customerid) '
-	.'WHERE deleted = 0'
+	LEFT JOIN cash ON (c.id = cash.customerid)
+	LEFT JOIN divisions d ON (d.id = c.divisionid)
+	WHERE deleted = 0'
 	.($customer ? ' AND c.id = '.$customer : '')
 	.($group ?
         ' AND '.($exclgroup ? 'NOT' : '').'
@@ -109,11 +111,6 @@ if(!$list)
     die;
 }
 
-$_NAME = (!isset($CONFIG['finances']['name']) ? trans("Not set") : $CONFIG['finances']['name']);
-$_ADDRESS = (!isset($CONFIG['finances']['address']) ? trans("Not set") : $CONFIG['finances']['address']);
-$_ZIP = (!isset($CONFIG['finances']['zip']) ? trans("Not set") : $CONFIG['finances']['zip']);
-$_CITY = (!isset($CONFIG['finances']['city']) ? trans("Not set") : $CONFIG['finances']['city']);
-$_ACCOUNT = (!isset($CONFIG['finances']['account']) ? '00000000000000000000000000' : $CONFIG['finances']['account']);
 $_TITLE = (!isset($CONFIG['finances']['pay_title']) ? trans("Not set") : $CONFIG['finances']['pay_title']);
 $_LMARGIN = (!isset($CONFIG['finances']['leftmargin']) ? 0 : $CONFIG['finances']['leftmargin']);
 $_BMARGIN = (!isset($CONFIG['finances']['bottommargin']) ? 0 : $CONFIG['finances']['bottommargin']);

@@ -75,7 +75,7 @@ if(isset($_GET['id']))
 	
 	if($receipt['customerid'])
 	{
-		$customer = $LMS->GetCustomer($receipt['customerid']);
+		$customer = $LMS->GetCustomer($receipt['customerid'], true);
     		$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
 		if(empty($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))
                         unset($customer['notes']);
@@ -295,7 +295,7 @@ switch($action)
 		if(!isset($error))
 			if($LMS->CustomerExists(($cid)))
 			{
-				$customer = $LMS->GetCustomer($cid);
+				$customer = $LMS->GetCustomer($cid, true);
 	                        $customer['groups'] = $LMS->CustomergroupGetForCustomer($customer['id']);
 		        	
 				if(empty($CONFIG['receipts']['show_notes']) || !chkconfig($CONFIG['receipts']['show_notes']))

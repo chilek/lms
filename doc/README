@@ -153,19 +153,22 @@ Chapter 1. Intro
        Krzysztof 'hunter' Drewicz
        Marcin 'Lexx' Krol
        Aleksander 'A.L.E.C' Machniak
-       Tomasz 'chilek' Chilinski
+       Tomasz 'Chilek' Chilinski
        Konrad 'kondi' Rzentarzewski
+       Grzegorz 'Ceho' Chwesewicz
      * C Code:
 
        Aleksander 'A.L.E.C' Machniak
        Marcin 'Lexx' Krol
+       Tomasz 'Chilek' Chilinski
      * Perl Code:
 
        Lukasz 'Baseciq' Mozer
        Michal 'DziQs' Zapalski
        Maciej 'agaran' Pijanka
        Krzysztof 'hunter' Drewicz
-       Tomasz 'chilek' Chilinski
+       Tomasz 'Chilek' Chilinski
+       Grzegorz 'Ceho' Chwesewicz
      * Design:
 
        Lukasz 'Baseciq' Mozer
@@ -174,11 +177,12 @@ Chapter 1. Intro
        Lukasz 'Baseciq' Mozer
        Pawel 'Bob_R' Czerski
        Pawel 'sickone' Kisiela
-       Tomasz 'chilek' Chilinski
+       Tomasz 'Chilek' Chilinski
        Konrad 'kondi' Rzentarzewski
+       Grzegorz 'Ceho' Chwesewicz
      * Images:
 
-       Piotr 'Pierzak' Mierzeñski
+       Piotr 'Pierzak' Mierzenski
        Grzegorz 'byko' Cichowski
        Kuba 'kflis' Flis
        Lukasz 'Baseciq' Mozer
@@ -680,6 +684,9 @@ password = password_entered_with_lms_user_creation
      * daemon management and configuration
      * cash operations
      * customers groups management
+     * nodes groups management
+     * customers to groups assignment
+     * nodes to groups assignment
      * users edition and addition forbidden
      * no access
 
@@ -766,25 +773,9 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    contracts with your users. In this case invoices are created by
    lms-payments script or lmsd daemon.
 
-   For proper work of printouts you need to setup custom options in
-   configuration section [invoices]:
-     * header
-       Seller. Can use string "\n" for lines separation. Default: empty.
-       Example: header = "SuperNet ISP\nNew Street 15\n12-000 City\n"
-     * footer
-       Invoice footer - e.g. contact information about seller. Footer will
-       be placed at bottom of an invoice (or in other place defined in
-       template), using small font. Like in header option use "\n" to
-       separate lines. Default: empty
-       Example: footer = "Internet Service Provider K-27, phone 555-23-23,
-       etc."
-     * default_author
-       Invoice expositor name (for auto-generated invoices). Default:
-       empty
-       Example: default_author = "invoicing expert"
-     * cplace
-       Invoice issue location (city). Default: empty.
-       Example: cplace = Warsaw
+   For proper work of printouts you need to define division's invoices
+   data (e.g. header, footer, default expositor, place, bank account) and
+   configure some options in configuration section [invoices]:
      * print_balance_history
        If true on invoice (html) will be printed history of financial
        operations on customer account. Default: not set.
@@ -2074,6 +2065,10 @@ links -dump \
        Limit of records that can be displayed on one page of numbering
        plans list. Default: 100
        Example: numberplanlist_pagelimit = 50
+     * divisionlist_pagelimit
+       Limit of records that can be displayed on one page of divisions
+       list. Default: 100
+       Example: divisionlist_pagelimit = 50
      * documentlist_pagelimit
        Limit of records that can be displayed on one page of documents
        list. Default: 100
@@ -2288,7 +2283,15 @@ links -dump \
         number as of '%N/LMS/%Y' with annual time span.
      __________________________________________________________________
 
-3.15.4. Hosts
+3.15.4. Divisions
+
+   Divisions/Companies are used for customers grouping. You should create
+   at least one division. You can define division's short and long names,
+   address bank account (or mass-payments account prefix) and other data
+   for invoices. Locked division cannot be assigned to customer.
+     __________________________________________________________________
+
+3.15.5. Hosts
 
    This section defines host names of those machines (routers, servers)
    that read its configuration from LMS database and where scripts or lmsd
@@ -2299,7 +2302,7 @@ links -dump \
    of them (assuming they're all u*ix hosts).
      __________________________________________________________________
 
-3.15.5. Daemon
+3.15.6. Daemon
 
    When you create hosts list, you will be able to configure daemon lmsd.
    Daemon configuration is described in appropriate chapter.
@@ -5154,6 +5157,7 @@ Chapter 7. For curious
    id - serial number
    lastname - last/company name
    name - first name
+   divisionid - identifier of company/division
    status - customer status (3-connected, 2-awaiting, 1-prospect)
    type - legal personality (0-private person, 1-legal entity)
    email - email address
@@ -5443,6 +5447,7 @@ Chapter 7. For curious
    paytype - payment method (cash/transfer/etc.)
    customerid - customer (buyer) serial number
    userid - user serial number
+   divisionid - identifier of company/division
    name - name of customer
    address - address of customer
    ssn - SSN of customer
@@ -5692,7 +5697,38 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.48. Database information ('dbinfo')
+7.2.48. States ('states')
+
+   id - identifier
+   name - state name
+   description - additional information
+     __________________________________________________________________
+
+7.2.49. Zip codes ('zipcodes')
+
+   id - identifier
+   zip - zip code
+   stateid - state identifier
+     __________________________________________________________________
+
+7.2.50. Companies/Divisions ('divisions')
+
+   id - identifier
+   shortname - division short name
+   name - division long name
+   address - address
+   zip - zip code
+   city - city
+   account - bank account or mass payments account prefix
+   description - additional information
+   status - lock status (1/0)
+   inv_header - invoice header
+   inv_footer - invoice footer
+   inv_author - invoice default author
+   inv_cplace - invoice creation place
+     __________________________________________________________________
+
+7.2.51. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value

@@ -26,15 +26,18 @@
 
 function bankaccount($id)
 {
+	global $DB;
+	
+	$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+			FROM customers WHERE id = ?)', array($id));
+
 	// This function is for demonstration only, coz US don't support IBAN
-	global $CONFIG;
-	if(isset($CONFIG['finances']['iban']) && chkconfig($CONFIG['finances']['iban']))
+	if(!empty($account) && strlen($account) < 21 && strlen($account) >= 8) // mass-payments IBAN
 	{
 	        $cc = '3028';	// Country code - US
-		$account = 'US'.sprintf('%02d',98-bcmod($CONFIG['finances']['account'].sprintf('%012d',$id).$cc.'00',97)).$CONFIG['finances']['account'].sprintf('%012d', $id);
+		$account = 'US'.sprintf('%02d',98-bcmod($account.sprintf('%012d',$id).$cc.'00',97)).$account.sprintf('%012d', $id);
 	} 
-	else
-		$account = (!isset($CONFIG['finances']['account']) || !$CONFIG['finances']['account'] ? trans('Not set') : $CONFIG['finances']['account']);
+
 	return $account;
 }
 
