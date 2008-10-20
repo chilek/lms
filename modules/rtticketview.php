@@ -52,7 +52,7 @@ if($ticket['customerid'] && isset($CONFIG['phpui']['helpdesk_stats']) && chkconf
 
 if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo']))
 {
-	$customer = $LMS->GetCustomer($ticket['customerid']);
+	$customer = $LMS->GetCustomer($ticket['customerid'], true);
         $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
 
 	if($customer['contacts']) $customer['phone'] = $customer['contacts'][0]['phone'];
@@ -65,7 +65,7 @@ if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
 	$SMARTY->assign('allnodegroups', $allnodegroups);
 }
 
-$layout['pagetitle'] = trans('Ticket Review: $0',sprintf("%06d",$ticket['ticketid']));
+$layout['pagetitle'] = trans('Ticket Review: $0',sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

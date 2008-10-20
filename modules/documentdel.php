@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if($_GET['is_sure']=="1")
+if($_GET['is_sure']=='1')
 {
         if(isset($_POST['marks']))
 	{

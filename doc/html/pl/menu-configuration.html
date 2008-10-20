@@ -415,6 +415,17 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>divisionlist_pagelimit</P
+><P
+>Limit wyświetlanych pozycji na stronie w liście firm. Domyślnie: 100.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>divisionlist_pagelimit = 10</SAMP
+></P
+></LI
+><LI
+><P
 >documentlist_pagelimit</P
 ><P
 >Limit wyświetlanych pozycji na stronie w liście dokumentów. Domyślnie: 100.</P
@@ -1011,8 +1022,24 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="CONFIG-DIVISIONS"
+>3.15.4. Firmy (Oddziały)</A
+></H2
+><P
+>Firmy (Oddziały) służą do grupowania klientów. Powinieneś zdefiniować
+		przynajmniej jedną firmę. Masz możliwość podania nazwy skróconej i pełnej
+		firmy, jej adresu, konta bankowego (lub prefiksu konta płatności masowych) 
+		oraz danych do fakturowania. Zablokowanie firmy uniemożliwia jej przypisanie
+		do klienta. 
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="CONFIG-HOSTS"
->3.15.4. Hosty</A
+>3.15.5. Hosty</A
 ></H2
 ><P
 >Tutaj definiuje się hosty które będą współpracowały
@@ -1041,7 +1068,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-DAEMON"
->3.15.5. Demon</A
+>3.15.6. Demon</A
 ></H2
 ><P
 >Po zdefiniowaniu hostów można rozpocząć konfigurację

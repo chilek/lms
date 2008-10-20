@@ -39,12 +39,12 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template, cdate, numberplanid,
-			title, fromdate, todate, description
-			FROM documents
-			LEFT JOIN documentcontents ON (documents.id = docid)
-			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE documents.id=?', array($_GET['id']));
+$document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template,
+	cdate, numberplanid, title, fromdate, todate, description
+	FROM documents
+	LEFT JOIN documentcontents ON (documents.id = docid)
+	LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+	WHERE documents.id = ?', array($_GET['id']));
 
 if(isset($_POST['document']))
 {

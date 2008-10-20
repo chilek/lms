@@ -65,7 +65,7 @@ $access['table'][11]['name']        	= trans('hosting management');
 $access['table'][11]['allow_reg']   	= '^(accountpasswd|(account|domain|alias)(list|edit|add|del|info|search))$';
 
 $access['table'][12]['name']        	= trans('configuration');
-$access['table'][12]['allow_reg']   	= '^((host|config|numberplan|taxrate|state)(list|edit|add|del|load))$';
+$access['table'][12]['allow_reg']   	= '^((host|config|numberplan|taxrate|state|division)(list|edit|add|del|load))$';
 
 $access['table'][13]['name']        	= trans('networks and devices management');
 $access['table'][13]['allow_reg']   	= '^((net|netdev)(info|list|edit|add|del|cmp|map|remap|search)|choose(mac|ip))$';

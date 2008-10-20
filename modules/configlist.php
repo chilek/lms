@@ -117,6 +117,10 @@ function GetConfigList($order='var,asc', $section='')
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in numbering plans list. Default: 100.');
 				break;
 
+				case 'divisionlist_pagelimit':
+					$config[$idx]['description'] = trans('Limit of records displayed on one page in divisions list. Default: 100.');
+				break;
+
 				case 'documentlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in documents list. Default: 100.');
 				break;

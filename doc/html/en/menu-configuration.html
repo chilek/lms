@@ -412,6 +412,17 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>divisionlist_pagelimit</P
+><P
+>Limit of records that can be displayed on one page of divisions list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>divisionlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
 >documentlist_pagelimit</P
 ><P
 >Limit of records that can be displayed on one page of documents list. Default: 100</P
@@ -986,8 +997,23 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="CONFIG-DIVISIONS"
+>3.15.4. Divisions</A
+></H2
+><P
+>Divisions/Companies are used for customers grouping. You should create
+	    at least one division. You can define division's short and long names, address
+	    bank account (or mass-payments account prefix) and other data for invoices.
+	    Locked division cannot be assigned to customer.
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="CONFIG-HOSTS"
->3.15.4. Hosts</A
+>3.15.5. Hosts</A
 ></H2
 ><P
 >This section defines host names of those machines 
@@ -1015,7 +1041,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-DAEMON"
->3.15.5. Daemon</A
+>3.15.6. Daemon</A
 ></H2
 ><P
 >When you create hosts list, you will be able to configure

@@ -1059,6 +1059,11 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>numberplanlist_pagelimit = 50</prompt></para>
     	    </listitem>
     	    <listitem>
+        	<para>divisionlist_pagelimit</para>
+        	<para>Limit of records that can be displayed on one page of divisions list. Default: 100</para>
+        	<para>Example:     <prompt>divisionlist_pagelimit = 50</prompt></para>
+    	    </listitem>
+    	    <listitem>
         	<para>documentlist_pagelimit</para>
         	<para>Limit of records that can be displayed on one page of documents list. Default: 100</para>
         	<para>Example:     <prompt>documentlist_pagelimit = 50</prompt></para>
@@ -1346,6 +1351,14 @@ registered/unregistered cases) if ticket will be running via email.</para>
 		</para>
 		<para><note><para>If you have no numbering plans defined, each document will 
 		take default number as of '%N/LMS/%Y' with annual time span.</para></note></para>
+	</sect2>
+	<sect2 id="config-divisions">
+	    <title>Divisions</title>
+	    <para>Divisions/Companies are used for customers grouping. You should create
+	    at least one division. You can define division's short and long names, address
+	    bank account (or mass-payments account prefix) and other data for invoices.
+	    Locked division cannot be assigned to customer.
+	    </para>
 	</sect2>
 	<sect2 id="config-hosts">
 	    <title>Hosts</title>

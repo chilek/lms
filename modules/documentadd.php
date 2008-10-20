@@ -190,36 +190,38 @@ if(isset($_POST['document']))
 		
 		$DB->BeginTrans();
 		
-		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, name, address, zip, city, ten, ssn, closed)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				array(	$document['type'],
-					$document['number'],
-					$document['numberplanid'],
-					$time,
-					$document['customerid'],
-					$AUTH->id,
-					trim($customer['lastname'].' '.$customer['name']),
-					$customer['address'] ? $customer['address'] : '',
-					$customer['zip'] ? $customer['zip'] : '',
-					$customer['city'] ? $customer['city'] : '',
-					$customer['ten'] ? $customer['ten'] : '',
-					$customer['ssn'] ? $customer['ssn'] : '',
-					isset($document['closed']) ? 1 : 0
-					));
+		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, 
+			customerid, userid, name, address, zip, city, ten, ssn, divisionid, closed)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array(	$document['type'],
+				$document['number'],
+				$document['numberplanid'],
+				$time,
+				$document['customerid'],
+				$AUTH->id,
+				trim($customer['lastname'].' '.$customer['name']),
+				$customer['address'] ? $customer['address'] : '',
+				$customer['zip'] ? $customer['zip'] : '',
+				$customer['city'] ? $customer['city'] : '',
+				$customer['ten'] ? $customer['ten'] : '',
+				$customer['ssn'] ? $customer['ssn'] : '',
+				$customer['divisionid'],
+				isset($document['closed']) ? 1 : 0
+			));
 		
 		$docid = $DB->GetLastInsertID('documents');
 
 		$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, filename, contenttype, md5sum, description)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-				array(	$docid,
-					$document['title'],
-					$document['fromdate'],
-					$document['todate'],
-					$document['filename'],
-					$document['contenttype'],
-					$document['md5sum'],
-					$document['description']
-					));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+			array(	$docid,
+				$document['title'],
+				$document['fromdate'],
+				$document['todate'],
+				$document['filename'],
+				$document['contenttype'],
+				$document['md5sum'],
+				$document['description']
+			));
 
 		// template post-action
 		if(isset($engine['post-action']) && file_exists(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['post-action'].'.php'))

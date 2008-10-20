@@ -1837,6 +1837,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 
 	echo '<B>'.trans('Clearing database...').'</B><BR>'; flush();
 	$DB->Execute('DELETE FROM nodes');
+	$DB->Execute('DELETE FROM divisions');
 	$DB->Execute('DELETE FROM customers');
 	$DB->Execute('DELETE FROM cash');
 	$DB->Execute('DELETE FROM assignments');
@@ -1853,6 +1854,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	if($CONFIG['database']['type']=='postgres')
 	{
 		$DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
+		$DB->Execute('DROP SEQUENCE "divisions_id_seq"; CREATE SEQUENCE "divisions_id_seq"');
 		$DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
 		$DB->Execute('DROP SEQUENCE "cash_id_seq";  CREATE SEQUENCE "cash_id_seq"');
 		$DB->Execute('DROP SEQUENCE "assignments_id_seq";CREATE SEQUENCE "assignments_id_seq"');
@@ -1866,11 +1868,14 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	elseif($CONFIG['database']['type'] == 'mysql' || $CONFIG['database']['type'] == 'mysqli')
 	{
 		$DB->Execute('ALTER TABLE customers auto_increment=0');
+		$DB->Execute('ALTER TABLE divisions auto_increment=0');
 		$DB->Execute('ALTER TABLE nodes auto_increment=0');
 		$DB->Execute('ALTER TABLE netdevices auto_increment=0');
 		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
 		$DB->Execute('ALTER TABLE taxes auto_increment=0');
 	}
+
+	$DB->Execute('INSERT INTO divisions (name, shortname) VALUES(?,?)', array('default', 'default'));
 
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('tax-free', 0, 0));
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('7%', 7, 1));
@@ -1882,6 +1887,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'uprate' => '64', 'upceil' => '64', 
 			    'downrate' => '128', 'downceil' => '128', 
 			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
+			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
+			    'domain_limit' => 0, 'alias_limit' => 0,
 			    'type' => TARIFF_INTERNET);
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 
@@ -1889,6 +1897,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'uprate' => '128', 'upceil' => '128', 
 			    'downrate' => '256', 'downceil' => '256', 
 			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
+			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
+			    'domain_limit' => 0, 'alias_limit' => 0,
 			    'type' => TARIFF_INTERNET);
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff', 
@@ -1896,6 +1907,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'uprate' => '256', 'upceil' => '256', 
 			    'downrate' => '512', 'downceil' => '512', 
 			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
+			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
+			    'domain_limit' => 0, 'alias_limit' => 0,
 			    'type' => TARIFF_INTERNET);
 	$LMS->TariffAdd($tariffdata);
 
@@ -1948,6 +1962,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['message'] = '';
 		$customeradd['pin'] = mt_rand(10000,99999);
 		$customeradd['cutoffstop'] = 0;
+		$customeradd['divisionid'] = 1;
+		$customeradd['consentdate'] = 0;
 
 		$id = $LMS->CustomerAdd($customeradd);
 		$LMS->AddAssignment(array(
@@ -2005,6 +2021,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			'serialnumber' => ($i*1000000+$i*200000).'-'.($i*11111).'-'.($i*33),
 			'ports' => '16',
 			'purchasetime' => 0,
+			'guaranteeperiod' => NULL,
 			'info' => ''));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
@@ -2045,7 +2062,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$contents['jm'] = trans('pcs.');
 		$contents['name'] = trans('Subscription');
 		
-		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername, id, ssn, address, zip, city, ten FROM customers');
+		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,
+				id, ssn, address, zip, city, ten, divisionid FROM customers');
 					    
 		if($customers)
 			for($n=0; $n<$_GET['i']; $n++)

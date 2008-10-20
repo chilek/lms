@@ -1121,6 +1121,11 @@ links -dump \
             <para>Przyk³ad:     <prompt>numberplanlist_pagelimit = 10</prompt></para>
         </listitem>
         <listitem>
+            <para>divisionlist_pagelimit</para>
+            <para>Limit wy¶wietlanych pozycji na stronie w li¶cie firm. Domy¶lnie: 100.</para>
+            <para>Przyk³ad:     <prompt>divisionlist_pagelimit = 10</prompt></para>
+        </listitem>
+        <listitem>
             <para>documentlist_pagelimit</para>
             <para>Limit wy¶wietlanych pozycji na stronie w li¶cie dokumentów. Domy¶lnie: 100.</para>
             <para>Przyk³ad:     <prompt>documentlist_pagelimit = 10</prompt></para>
@@ -1424,6 +1429,15 @@ links -dump \
 		</para>
 		<para><note><para>Je¿eli w systemie nie zdefiniowano planów numeracyjnych
 		dokumenty bêd± numerowane wg wzorca '%N/LMS/%Y' z okresem rocznym.</para></note></para>
+	</sect2>
+	<sect2 id="config-divisions">
+		<title>Firmy (Oddzia³y)</title>
+		<para>Firmy (Oddzia³y) s³u¿± do grupowania klientów. Powiniene¶ zdefiniowaæ
+		przynajmniej jedn± firmê. Masz mo¿liwo¶æ podania nazwy skróconej i pe³nej
+		firmy, jej adresu, konta bankowego (lub prefiksu konta p³atno¶ci masowych) 
+		oraz danych do fakturowania. Zablokowanie firmy uniemo¿liwia jej przypisanie
+		do klienta. 
+		</para>
 	</sect2>
 	<sect2 id="config-hosts">
 		<title>Hosty</title>

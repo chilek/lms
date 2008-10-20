@@ -98,6 +98,7 @@
                     <member>id - serial number</member>
                     <member>lastname - last/company name</member>
                     <member>name - first name</member>
+                    <member>divisionid - identifier of company/division</member>
                     <member>status - customer status (3-connected, 2-awaiting, 1-prospect)</member>
                     <member>type - legal personality (0-private person, 1-legal entity)</member>
                     <member>email - email address</member>
@@ -405,6 +406,7 @@
                     <member>paytype - payment method (cash/transfer/etc.)</member>
                     <member>customerid - customer (buyer) serial number</member>
 		    <member>userid - user serial number</member>
+                    <member>divisionid - identifier of company/division</member>
                     <member>name - name of customer</member>
                     <member>address - address of customer</member>
                     <member>ssn - SSN of customer</member>
@@ -675,6 +677,40 @@
                     <member>value - option value</member>
                     <member>description - additional information</member>
                     <member>disabled - status (enabled/disabled)</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="states">
+               <title>States ('states')</title>
+               <simplelist>
+                    <member>id - identifier</member>
+                    <member>name - state name</member>
+                    <member>description - additional information</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="zipcodes">
+               <title>Zip codes ('zipcodes')</title>
+               <simplelist>
+                    <member>id - identifier</member>
+                    <member>zip -  zip code</member>
+                    <member>stateid - state identifier</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="divisions">
+               <title>Companies/Divisions ('divisions')</title>
+               <simplelist>
+                    <member>id - identifier</member>
+                    <member>shortname -  division short name</member>
+                    <member>name - division long name</member>
+                    <member>address - address</member>
+                    <member>zip - zip code</member>
+                    <member>city - city</member>
+                    <member>account - bank account or mass payments account prefix</member>
+                    <member>description - additional information</member>
+                    <member>status - lock status (1/0)</member>
+                    <member>inv_header - invoice header</member>
+                    <member>inv_footer - invoice footer</member>
+                    <member>inv_author - invoice default author</member>
+                    <member>inv_cplace - invoice creation place</member>
                </simplelist>
           </sect2>
           <sect2 id="dbinfo">

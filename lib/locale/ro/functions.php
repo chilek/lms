@@ -26,14 +26,17 @@
 
 function bankaccount($id)
 {
-	global $CONFIG;
-	if(isset($CONFIG['finances']['iban']) && chkconfig($CONFIG['finances']['iban']))
+	global $DB;
+	
+	$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+                        FROM customers WHERE id = ?)', array($id));
+	
+	if(!empty($account) && strlen($account) < 21 && strlen($account) >= 8)
 	{
 	        $cc = '3028';	// Country code - RO ?
-		$account = 'RO'.sprintf('%02d',98-bcmod($CONFIG['finances']['account'].sprintf('%08d',$id).$cc.'00',97)).$CONFIG['finances']['account'].sprintf('%012d', $id);
+		$account = 'RO'.sprintf('%02d',98-bcmod($account.sprintf('%08d',$id).$cc.'00',97)).$account.sprintf('%012d', $id);
 	} 
-	else
-		$account = (!isset($CONFIG['finances']['account']) || $CONFIG['finances']['account']=='' ? trans('Not set') : $CONFIG['finances']['account']);
+
 	return $account;
 }
 

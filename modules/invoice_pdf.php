@@ -28,8 +28,7 @@
 
 function invoice_simple_form_fill($x,$y,$scale)  
 {
-    global $pdf,$invoice,$CONFIG;
-    $finances = $CONFIG['finances'];
+    global $pdf,$invoice;
     $pdf->setlinestyle(1);
 
     $pdf->line(7*$scale+$x,724*$scale+$y,7*$scale+$x,694*$scale+$y);
@@ -41,10 +40,16 @@ function invoice_simple_form_fill($x,$y,$scale)
     $pdf->line(370*$scale+$x,197*$scale+$y,370*$scale+$x,227*$scale+$y);
     $pdf->line(370*$scale+$x,197*$scale+$y,340*$scale+$x,197*$scale+$y);
     
-    text_autosize(15*$scale+$x,568*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$finances['shortname']),350*$scale);
-    text_autosize(15*$scale+$x,534*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$finances['address']),350*$scale);
-    text_autosize(15*$scale+$x,500*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$finances['zip']." ".$finances['city']),350*$scale);
-    $tmp = bankaccount($invoice['customerid']);
+    $shortname = $invoice['division_shortname'];
+    $address = $invoice['division_address'];
+    $zip = $invoice['division_zip'];
+    $city = $invoice['division_city'];
+    $account = bankaccount($invoice['customerid']);
+    
+    text_autosize(15*$scale+$x,568*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT", $shortname),350*$scale);
+    text_autosize(15*$scale+$x,534*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT", $address),350*$scale);
+    text_autosize(15*$scale+$x,500*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT", $zip.' '.$city),350*$scale);
+
     //text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, substr($tmp,0,17),350*$scale);
     //text_autosize(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200),350*$scale);
     text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, $tmp,350*$scale);
@@ -52,16 +57,15 @@ function invoice_simple_form_fill($x,$y,$scale)
 
     text_autosize(15*$scale+$x,390*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['name']),350*$scale);
     text_autosize(15*$scale+$x,356*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['address']),350*$scale);
-    text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['zip']." ".$invoice['city']),350*$scale);
+    text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['zip'].' '.$invoice['city']),350*$scale);
 
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Payment for invoice No. $0',$tmp)),350*$scale);
+    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Payment for invoice No. $0', $account)),350*$scale);
 }
 
 function invoice_main_form_fill($x,$y,$scale)	
 {
-    global $pdf,$invoice,$CONFIG;
-    $finances = $CONFIG['finances'];
+    global $pdf,$invoice;
     $pdf->setlinestyle(1);
 
     $pdf->line(7*$scale+$x,724*$scale+$y,7*$scale+$x,694*$scale+$y);
@@ -71,9 +75,15 @@ function invoice_main_form_fill($x,$y,$scale)
     $pdf->line(7*$scale+$x,172*$scale+$y,7*$scale+$x,202*$scale+$y);
     $pdf->line(7*$scale+$x,172*$scale+$y,37*$scale+$x,172*$scale+$y);
 
-    text_autosize(15*$scale+$x,680*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",$finances['name']),950*$scale);
-    text_autosize(15*$scale+$x,617*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",$finances['address']." ".$finances['zip']." ".$finances['city']),950*$scale);
-    text_autosize(15*$scale+$x,555*$scale+$y,30*$scale,bankaccount($invoice['customerid']),950*$scale);
+    $name = $invoice['division_name'];
+    $address = $invoice['division_address'];
+    $zip = $invoice['division_zip'];
+    $city = $invoice['division_city'];
+    $account = bankaccount($invoice['customerid']);
+
+    text_autosize(15*$scale+$x,680*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",$name),950*$scale);
+    text_autosize(15*$scale+$x,617*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",$address." ".$zip." ".$city),950*$scale);
+    text_autosize(15*$scale+$x,555*$scale+$y,30*$scale,$account,950*$scale);
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
     text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
@@ -116,11 +126,10 @@ function invoice_buyer($x,$y)
 
 function invoice_seller($x,$y) 
 {
-    global $pdf,$CONFIG;
+    global $pdf, $invoice;
     $font_size=10;
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Seller:')).'</b>');
-    $tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", isset($CONFIG['invoices']['header']) ? $CONFIG['invoices']['header'] : '');
-    $tmp = str_replace('\n',"\n",$tmp);
+    $tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", $invoice['division_header']);
     $tmp = preg_split('/\r?\n/', $tmp);
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,$line);
 
@@ -129,7 +138,7 @@ function invoice_seller($x,$y)
 
 function invoice_title($x,$y) 
 {
-    global $invoice,$pdf,$CONFIG,$type;
+    global $invoice,$pdf,$type;
     $font_size = 16;
     $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
     if(isset($invoice['invoice']))
@@ -745,9 +754,9 @@ function invoice_to_pay($x,$y)
 
 function invoice_expositor ($x,$y) 
 {
-    global $pdf, $invoice, $CONFIG;
+    global $pdf, $invoice;
     
-    $expositor = isset($invoice['user']) ? $invoice['user'] : (isset($CONFIG['invoices']['default_author']) ? $CONFIG['invoices']['default_author'] : '');
+    $expositor = isset($invoice['user']) ? $invoice['user'] : $invoice['division_author'];
 	    
     $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Expositor:')).' '.iconv("UTF-8","ISO-8859-2//TRANSLIT",$expositor));
     return $y;
@@ -755,13 +764,13 @@ function invoice_expositor ($x,$y)
 
 function invoice_footnote($x, $y, $width, $font_size) 
 {
-    global $pdf, $CONFIG;
-    if(isset($CONFIG['invoices']['footer']) && $CONFIG['invoices']['footer'])
+    global $pdf, $invoice;
+
+    if(!empty($invoice['division_footer']))
     {
 	$y = $y - $pdf->getFontHeight($font_size);
 	$y = $y - text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Notes:')).'</b>');
-	$tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT",$CONFIG['invoices']['footer']);
-	$tmp = str_replace('\n',"\n",$tmp);
+	$tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT", $invoice['division_footer']);
         $tmp = preg_split('/\r?\n/', $tmp);
 	foreach ($tmp as $line) $y = text_wrap($x,$y,$width,$font_size,$line,"full");
     }
@@ -872,7 +881,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
-		
+
 		foreach($which as $type)
 		{
 			$i++;
@@ -917,6 +926,7 @@ elseif(isset($_GET['fetchallinvoices']))
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetCustomerServiceAddress($invoice['customerid']);
+
 		foreach($which as $type)
 		{
 			$i++;

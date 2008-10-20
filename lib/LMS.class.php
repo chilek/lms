@@ -337,9 +337,9 @@ class LMS
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,  
 				    address, zip, city, email, ten, ssn, status, creationdate, 
 				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
-				    icn, cutoffstop, consentdate) 
+				    icn, cutoffstop, consentdate, divisionid) 
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    empty($customeradd['type']) ? 0 : 1,
@@ -360,7 +360,8 @@ class LMS
 					    $customeradd['rbe'],
 					    $customeradd['icn'],
 					    $customeradd['cutoffstop'],
-					    $customeradd['consentdate']
+					    $customeradd['consentdate'],
+					    $customeradd['divisionid'],
 					    )))
 		{
 			return $this->DB->GetLastInsertID('customers');
@@ -398,7 +399,7 @@ class LMS
 				zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
 				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, 
-				cutoffstop=?, consentdate=?
+				cutoffstop=?, consentdate=?, divisionid=?
 				WHERE id=?', 
 			array( $customerdata['status'], 
 				empty($customerdata['type']) ? 0 : 1,
@@ -421,6 +422,7 @@ class LMS
 				$customerdata['rbe'], 
 				$customerdata['cutoffstop'],
 				$customerdata['consentdate'],
+				$customerdata['divisionid'],
 				$customerdata['id'],
 				));
 	}
@@ -450,12 +452,11 @@ class LMS
 
 	function GetCustomer($id, $short=false)
 	{
-		if($result = $this->DB->GetRow('SELECT id, lastname, name, status, email, address, zip, ten, ssn, '
-			.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername, type, 
-			city, info, notes, serviceaddr, creationdate, moddate, creatorid, modid, deleted, 
-			message, pin, regon, icn, rbe, cutoffstop, consentdate
-			FROM customers'.(defined('LMS-UI') ? 'view' : '').' 
-			WHERE id = ?', array($id)))
+		if($result = $this->DB->GetRow('SELECT c.*, '
+			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
+			(SELECT shortname FROM divisions WHERE id = c.divisionid) AS division
+			FROM customers'.(defined('LMS-UI') ? 'view' : '').' c 
+			WHERE c.id = ?', array($id)))
 		{
 			if(!$short)
 			{
@@ -654,7 +655,7 @@ class LMS
 
 		if($customerlist = $this->DB->GetAll(
 				'SELECT c.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, 
-				status, address, zip, city, email, ten, ssn, c.info AS info, message, 
+				status, address, zip, city, email, ten, ssn, c.info AS info, message, c.divisionid,
 				(SELECT COALESCE(SUM(value),0) FROM cash WHERE customerid = c.id '
 					.($time ? ' AND time < '.$time : '').') AS balance
 				FROM customersview c '
@@ -1768,23 +1769,26 @@ class LMS
 		$number = $invoice['invoice']['number'];
 		$type = $invoice['invoice']['type'];
 		
-		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype, userid, customerid, name, address, ten, ssn, zip, city)
-				    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				    array($number, 
-					    $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0, 
-					    $type, 
-					    $cdate, 
-					    $invoice['invoice']['paytime'], 
-					    $invoice['invoice']['paytype'], 
-					    $this->AUTH->id, 
-					    $invoice['customer']['id'], 
-					    $invoice['customer']['customername'], 
-					    $invoice['customer']['address'], 
-					    $invoice['customer']['ten'], 
-					    $invoice['customer']['ssn'], 
-					    $invoice['customer']['zip'], 
-					    $invoice['customer']['city']
-					));
+		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
+			cdate, paytime, paytype, userid, customerid, name, address, 
+			ten, ssn, zip, city, divisionid)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array($number, 
+				$invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0, 
+				$type, 
+				$cdate, 
+				$invoice['invoice']['paytime'], 
+				$invoice['invoice']['paytype'], 
+				$this->AUTH->id, 
+				$invoice['customer']['id'], 
+				$invoice['customer']['customername'], 
+				$invoice['customer']['address'], 
+				$invoice['customer']['ten'], 
+				$invoice['customer']['ssn'], 
+				$invoice['customer']['zip'], 
+				$invoice['customer']['city'],
+				$invoice['customer']['divisionid'],
+			));
 		$iid = $this->DB->GetLastInsertID('documents');
 
 		$itemid=0;
@@ -1796,8 +1800,10 @@ class LMS
 			$item['discount'] = str_replace(',','.',$item['discount']);
 			$item['taxid'] = isset($item['taxid']) ? $item['taxid'] : 0;
 
-			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, discount, description, tariffid) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
+			$this->DB->Execute('INSERT INTO invoicecontents (docid, itemid,
+				value, taxid, prodid, content, count, discount, description, tariffid) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				array(
 					$iid,
 					$itemid,
 					$item['valuebrutto'],
@@ -1832,7 +1838,8 @@ class LMS
 		$this->DB->BeginTrans();
 		
 		$this->DB->Execute('UPDATE documents SET cdate = ?, paytime = ?, paytype = ?, customerid = ?,
-				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ? WHERE id = ?',
+				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?
+				WHERE id = ?',
 				array($cdate, 
 					$invoice['invoice']['paytime'],
 					$invoice['invoice']['paytype'],
@@ -1843,8 +1850,10 @@ class LMS
 					$invoice['customer']['ssn'],
 					$invoice['customer']['zip'],
 					$invoice['customer']['city'],
+					$invoice['customer']['divisionid'],
 					$iid
 				));
+
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
 		$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
 		$this->DB->Execute('UPDATE cash SET docid = 0, itemid = 0, customerid = ? WHERE docid = ?',
@@ -1916,12 +1925,20 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT documents.id AS id, number, name, customerid, userid, address, zip, city, ten, ssn, 
-					    cdate, paytime, paytype, template, numberplanid, closed, reference, reason
-					    FROM documents 
-					    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-					    WHERE documents.id=? AND (type = ? OR type = ?)', 
-					    array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
+		if($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
+				d.userid, d.address, d.zip, d.city, d.ten, d.ssn, d.cdate, d.paytime, 
+				d.paytype, d.numberplanid, d.closed, d.reference, d.reason, d.divisionid,
+				(SELECT name FROM users WHERE id = d.id) AS user, n.template,
+				ds.name AS division_name, ds.shortname AS division_shortname,
+				ds.address AS division_address, ds.zip AS division_zip,
+				ds.city AS division_city, ds.inv_header AS division_header,
+				ds.inv_footer AS division_footer, ds.inv_author AS division_author,
+				ds.inv_cplace AS division_cplace
+				FROM documents d
+				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
+				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', 
+				array($invoiceid, DOC_INVOICE, DOC_CNOTE)))
 		{
 			$result['discount'] = 0;
 			$result['totalbase'] = 0;
@@ -1931,9 +1948,10 @@ class LMS
 			if($result['reference'])
 				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
 			
-			if($result['userid'])
-				$result['user'] = $this->GetUserName($result['userid']);
-
+			if(!$result['division_header'])
+				$result['division_header'] = $result['division_name']."\n"
+					.$result['division_address']."\n".$result['division_zip'].' '.$result['division_city'];
+			
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, 
 						itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, 
 						prodid, content, count, invoicecontents.description AS description, 

@@ -57,6 +57,20 @@
 			</SELECT>
 		</TD>
 	</TR>
+	{if $divisions}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+			<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
+    			{foreach from=$divisions item=item}{if !$item.status || $item.id == $customerinfo.divisionid}
+	    			<OPTION VALUE="{$item.id}"{if $customerinfo.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</
+		        {/if}{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/folder.gif" ALT="">
