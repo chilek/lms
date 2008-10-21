@@ -30,7 +30,7 @@ $DB->Execute("
 
 CREATE SEQUENCE divisions_id_seq;
 CREATE TABLE divisions (
-    	id 		integer NOT NULL ,
+    	id 		integer DEFAULT nextval('divisions_id_seq'::text) NOT NULL ,
 	shortname 	varchar(255) NOT NULL DEFAULT '',
 	name 		text 	NOT NULL DEFAULT '',
 	address		varchar(255) NOT NULL DEFAULT '',
@@ -48,7 +48,7 @@ CREATE TABLE divisions (
 );
 
 ALTER TABLE documents ADD divisionid integer NOT NULL DEFAULT 0;
-UPDATE customers SET divisionid = 1;
+UPDATE documents SET divisionid = 1;
 
 ALTER TABLE customers ADD divisionid integer NOT NULL DEFAULT 0;
 UPDATE customers SET divisionid = 1;
@@ -64,9 +64,8 @@ SELECT c.* FROM customers c
 
 ");
 
-$DB->Execute("INSERT divisions SET shortname = ?, inv_header = ?, inv_footer = ?,
-		inv_author = ?, inv_cplace = ?, name = ?, address = ?,
-		city = ?, zip = ?, account = ?",
+$DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, address, city, zip, account)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	array(!empty($CONFIG['finances']['shortname']) && $CONFIG['finances']['shortname'] != 'finances/shortname' ? $CONFIG['finances']['shortname'] : 'default',
 		!empty($CONFIG['invoices']['header']) ? str_replace("\\n", "\n", $CONFIG['invoices']['header']) : '',
 		!empty($CONFIG['invoices']['footer']) ? str_replace("\\n", "\n", $CONFIG['invoices']['footer']) : '',
