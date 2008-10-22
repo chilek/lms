@@ -57,9 +57,8 @@ $DB->Execute("CREATE VIEW customersview AS
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 										
-$DB->Execute("INSERT divisions SET shortname = ?, inv_header = ?, inv_footer = ?,
-        inv_author = ?, inv_cplace = ?, name = ?, address = ?,
-	city = ?, zip = ?, account = ?",
+$DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
+	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	array(!empty($CONFIG['finances']['shortname']) && $CONFIG['finances']['shortname'] != 'finances/shortname' ? $CONFIG['finances']['shortname'] : 'default',
 	        !empty($CONFIG['invoices']['header']) ? str_replace("\\n", "\n", $CONFIG['invoices']['header']) : '',
 	        !empty($CONFIG['invoices']['footer']) ? str_replace("\\n", "\n", $CONFIG['invoices']['footer']) : '',
