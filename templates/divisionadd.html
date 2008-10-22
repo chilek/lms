@@ -1,0 +1,132 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM method="POST" action="?m=divisionadd" name="division">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<IMG src="img/division.gif" alt="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{t}Name:{/t}</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<INPUT name="division[shortname]" value="{$division.shortname|escape}" size="40" {tip text="Enter division short name" trigger="shortname" bold=1}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/division.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Long name:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}>{$division.name}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/home.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Address:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TABLE width="100%" cellpadding="2" cellspacing="0">
+			    <TR>
+				<TD width="1%" NOWRAP>{t}Address:{/t}</TD>
+				<TD width="99%"><INPUT type="text" size="30" value="{$division.address}" name="division[address]" {tip text="Enter address" trigger="address"}></TD>
+			    </TR>
+			    <TR>
+				<TD width="1%" NOWRAP>{t}City:{/t}</TD>
+				<TD width="99%"><INPUT type="TEXT" size="30" value="{$division.city}" name="division[city]" {tip text="Enter city" trigger="city"}></TD>
+			    </TR>
+			    <TR>
+				<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
+				<TD width="99%"><INPUT type="text" size="10" value="{$division.zip}" name="division[zip]" {tip text="Enter zip code" trigger="zip"}></TD>
+			    </TR>
+			</TABLE>    
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/card.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Bank account:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT type="text" name="division[account]" VALUE="{$division.account}" SIZE="45" {tip text="Enter bank account or mass payments account prefix (optional)" trigger="account"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA NAME="division[description]" COLS="45" ROWS="4" {tip text="Enter additional information (optional)"}>{$division.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/print.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Invoice header:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA NAME="division[inv_header]" COLS="45" ROWS="4" {tip text="Enter invoice header (optional)" trigger="inv_header"}>{$division.inv_header}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/print.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Invoice footer:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA NAME="division[inv_footer]" COLS="45" ROWS="4" {tip text="Enter invoice footer (optional)" trigger="inv_footer"}>{$division.inv_footer}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/print.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Invoice author:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT type="text" name="division[inv_author]" VALUE="{$division.inv_author}" SIZE="45" {tip text="Enter invoices author (optional)" trigger="inv_author"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/print.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Invoice creation place:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<INPUT type="text" name="division[inv_cplace]" VALUE="{$division.inv_cplace}" SIZE="45" {tip text="Enter invoices creation place (optional)" trigger="inv_cplace"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.division.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=divisionlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="division[reuse]" value="ON" class="box light" {if $division.reuse}checked{/if}> <A href="javascript:checkElement('division[reuse]')">{t}Display this form again, when this division is saved{/t}</A>
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['division'].elements['division[shortname]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}
