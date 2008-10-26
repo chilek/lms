@@ -51,12 +51,18 @@ switch($_RELOAD_TYPE)
 					foreach($execlist as $execcmd)
 					{
 						$execcmd = str_replace('%host', $host['name'], $execcmd);
-						echo '<B>'.$execcmd.'</B>';
-						echo '<PRE>';
+						$execcmd_buffer = popen ("$execcmd", "r");
+						echo '<P><B>'.$execcmd.'</B>:</P>';
 						flush();
-						echo passthru($execcmd);
-						flush();
-						echo '</PRE>';
+
+						while(!feof($execcmd_buffer)) 
+						{
+							$output = fread($execcmd_buffer, 1);
+							echo nl2br($output);
+ 							flush();
+							ob_flush();
+						}
+					    pclose($execcmd_buffer);
 					}
 					echo '</TD></TR></TABLE>';
 					
