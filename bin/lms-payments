@@ -288,7 +288,7 @@ my $itemid;
 # let's go, fetch *ALL* assignments in given day
 $dbq = $dbase->prepare("SELECT tariffid, liabilityid, customerid, period, at, suspended, 
 	invoice, tariffs.description AS description, assignments.id AS assignmentid,
-	settlement, datefrom, discount, divisionid, 
+	settlement, datefrom, discount, 
 	(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, 
 	(CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, 
 	(CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, 
@@ -411,7 +411,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			{
 				$itemid = 0;
 				$number++;
-				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten FROM customers WHERE id=$uid");
+				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten, divisionid FROM customers WHERE id=$uid");
 				$udbq->execute();
 				my $urow = $udbq->fetchrow_hashref();
 				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, divisionid, customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
