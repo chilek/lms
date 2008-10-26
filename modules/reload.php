@@ -59,7 +59,7 @@ switch($_RELOAD_TYPE)
 						{
 							$output = fread($execcmd_buffer, 1);
 							echo nl2br($output);
- 							flush();
+							flush();
 							ob_flush();
 						}
 					    pclose($execcmd_buffer);
