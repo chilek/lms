@@ -34,6 +34,7 @@ version ? (????-??-??):
   - removed finances/iban option, now mass-payments account is generated 
     automatic if account is short (8-20 chars) (alec)
   - performance: optimized LMS::GetCustomer calls using its 2nd argument (alec)
+  - reload: we can see live output from reload script (Grzegorz Cichowski)
 
 version 1.11.4 Telchak (2008-08-07):
 
