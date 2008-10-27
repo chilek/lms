@@ -50,6 +50,31 @@
 			</TABLE>    
 		</TD>
 	</TR>
+	<TR class="light">	
+		<TD width="%1" class="fleft">
+			<IMG src="img/serialnumber.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}TEN{/t}</B>
+		</TD>
+		<TD width="99%" class="fright">
+			<INPUT TYPE="text" size="40" value="{$division.ten}" name="division[ten]" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
+			{if $division.tenwarning}
+			<INPUT TYPE="HIDDEN" NAME="division[tenwarning]" VALUE="1">
+			{/if}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="%1" class="fleft">
+			<IMG src="img/serialnumber.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}REGON{/t}</B>
+		</TD>
+		<TD width="99%" class="fright">
+			<INPUT TYPE="text" size="40" value="{$division.regon}" name="division[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+		</TD>
+	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
 			<IMG src="img/card.gif" alt="">

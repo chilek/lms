@@ -55,12 +55,21 @@ if(!empty($_POST['division']))
 	elseif(!check_zip($division['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
 
+	if($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning']))
+	{
+		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+		$division['tenwarning'] = 1;
+	}
+
+	if($division['regon'] != '' && !check_regon($division['regon']))
+		$error['ten'] = trans('Incorrect Business Registration Number!');
+
 	if($division['account'] != '' && (strlen($division['account'])>48 || !ereg('^[0-9]+$', $division['account'])))
 		$error['account'] = trans('Wrong account number!');
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip,
+		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip, ten, regon, 
 			account, inv_header, inv_footer, inv_author, inv_cplace, description) 
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(
@@ -69,6 +78,8 @@ if(!empty($_POST['division']))
 				    $divisionadd['address'],
 				    $divisionadd['city'],
 				    $divisionadd['zip'],
+				    $divisionadd['ten'],
+				    $divisionadd['regon'],
 				    $divisionadd['account'],
 				    $divisionadd['inv_header'],
 				    $divisionadd['inv_footer'],

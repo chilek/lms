@@ -1931,9 +1931,9 @@ class LMS
 				(SELECT name FROM users WHERE id = d.id) AS user, n.template,
 				ds.name AS division_name, ds.shortname AS division_shortname,
 				ds.address AS division_address, ds.zip AS division_zip,
-				ds.city AS division_city, ds.inv_header AS division_header,
-				ds.inv_footer AS division_footer, ds.inv_author AS division_author,
-				ds.inv_cplace AS division_cplace
+				ds.city AS division_city, ds.ten AS division_ten, ds.regon AS division_regon,
+				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
+				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace
 				FROM documents d
 				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -1950,7 +1950,8 @@ class LMS
 			
 			if(!$result['division_header'])
 				$result['division_header'] = $result['division_name']."\n"
-					.$result['division_address']."\n".$result['division_zip'].' '.$result['division_city'];
+					.$result['division_address']."\n".$result['division_zip'].' '.$result['division_city']
+					.($result['division_ten'] != '' ? "\n".trans('TEN').' '.$result['division_ten'] : '');
 			
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, 
 						itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, 

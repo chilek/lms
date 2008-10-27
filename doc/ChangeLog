@@ -35,6 +35,7 @@ version ? (????-??-??):
     automatic if account is short (8-20 chars) (alec)
   - performance: optimized LMS::GetCustomer calls using its 2nd argument (alec)
   - reload: we can see live output from reload script (Grzegorz Cichowski)
+  - divisions: added ten and regon attributes (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 

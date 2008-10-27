@@ -933,6 +933,8 @@ CREATE TABLE divisions (
 	address         varchar(255) 	NOT NULL DEFAULT '',
 	city            varchar(255) 	NOT NULL DEFAULT '',
 	zip             varchar(255) 	NOT NULL DEFAULT '',
+	ten		varchar(16)	NOT NULL DEFAULT '',
+	regon		varchar(255)	NOT NULL DEFAULT '',
 	account         varchar(48) 	NOT NULL DEFAULT '',
 	inv_header      text    	NOT NULL DEFAULT '',
 	inv_footer      text    	NOT NULL DEFAULT '',
