@@ -1353,6 +1353,7 @@ $_LANG['Unit:'] = 'JM:';
 $_LANG['Unitary Net Value:'] = 'Cena jedn. netto:';
 $_LANG['Unknown option. No description.'] = 'Nieznana opcja. Brak opisu.';
 $_LANG['unknown OS ($0)'] = 'nieznany OS ($0)';
+$_LANG['Unresolved:'] = 'Nierozwiązane:';
 $_LANG['Upceil:'] = 'Upceil:';
 $_LANG['Upload'] = 'Upload';
 $_LANG['Upload ceil:'] = 'Upload ceil:';

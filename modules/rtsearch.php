@@ -67,7 +67,12 @@ function RTSearch($search, $order='createtime,desc')
 	if(!empty($search['subject']))
 		$where[] = 't.subject ?LIKE? \'%'.$search['subject'].'%\'';
 	if(!empty($search['state']) || (isset($search['state']) && $search['state'] == '0'))
-		$where[] = 'state = '.$search['state'];
+	{
+		if($search['state'] == '-1')
+			$where[] = 'state != '.RT_RESOLVED;
+		else
+			$where[] = 'state = '.$search['state'];
+	}
 	if(!empty($search['email']))
 		$where[] = 'requestor ?LIKE? \'%'.$search['email'].'%\'';
 	if(!empty($search['uptime']))

@@ -85,6 +85,7 @@
 		<TD WIDTH="99%" CLASS="fright">
 			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
 				<OPTION value="" {if $search.state==""}SELECTED{/if}>{t}- all -{/t}</OPTION>
+				<OPTION value="-1" {if $search.state=="-1"}SELECTED{/if}>{t}not resolved{/t}</OPTION>
 				<OPTION value="0" {if $search.state=="0"}SELECTED{/if}>{t}new{/t}</OPTION>
 				<OPTION value="1" {if $search.state=="1"}SELECTED{/if}>{t}opened{/t}</OPTION>
 				<OPTION value="2" {if $search.state=="2"}SELECTED{/if}>{t}resolved{/t}</OPTION>
