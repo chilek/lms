@@ -80,6 +80,7 @@ switch($type)
 		$customer = intval($_POST['customer']);
 		$queue = intval($_POST['queue']);
 		$status = $_POST['status'];
+		$subject = $_POST['subject'];
 		
 		if($queue)
 			$where[] = 'queueid = '.$queue;
@@ -87,6 +88,8 @@ switch($type)
 			$where[] = 'customerid = '.$customer;
 		if($days)
 			$where[] = 'rttickets.createtime < '.mktime(0, 0, 0, date('n'), date('j')-$days);
+		if($subject != '')
+			$where[] = 'rttickets.subject ?LIKE? \'%'.$subject.'%\'';
 
 		if($status != '')
 		{
@@ -95,7 +98,8 @@ switch($type)
 			else
     				$where[] = 'rttickets.state = '.intval($status);
 		}
-		
+
+
     		$list = $DB->GetAll('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 				    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
 				    .(isset($_POST['extended']) ? ', address, (SELECT phone FROM customercontacts WHERE customerid = customers.id LIMIT 1) AS phone ' : '')
