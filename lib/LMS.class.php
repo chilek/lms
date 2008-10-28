@@ -3088,7 +3088,8 @@ class LMS
 		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN '.RT_NEW.' THEN 1 END) AS new,
 				    COUNT(CASE state WHEN '.RT_OPEN.' THEN 1 END) AS opened,
 				    COUNT(CASE state WHEN '.RT_RESOLVED.' THEN 1 END) AS resolved,
-				    COUNT(CASE state WHEN '.RT_DEAD.' THEN 1 END) AS dead
+				    COUNT(CASE state WHEN '.RT_DEAD.' THEN 1 END) AS dead,
+				    COUNT(CASE WHEN state != '.RT_RESOLVED.' THEN 1 END) AS unresolved
 				    FROM rttickets');
 	}
 

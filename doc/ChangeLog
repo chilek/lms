@@ -37,6 +37,8 @@ version ? (????-??-??):
   - reload: we can see live output from reload script (Grzegorz Cichowski)
   - divisions: added ten and regon attributes (chilan)
   - rtprint: subject field added (chilan)
+  - rtsearch: we can search for unresolved tickets (chilan)
+  - welcome: shortcut to unresolved tickets (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 

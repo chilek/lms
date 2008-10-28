@@ -69,7 +69,7 @@ function GetQueueContents($ids, $order='createtime,desc', $state=NULL, $owner=0)
 			$statefilter = ' AND state = '.$state;
 		break;
 		case '-1':
-			$statefilter = ' AND state != 2';
+			$statefilter = ' AND state != '.RT_RESOLVED;
 		break;
 		default:
 			$statefilter = '';
