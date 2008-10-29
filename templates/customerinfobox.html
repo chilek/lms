@@ -189,7 +189,7 @@
 {if $customerinfo.cutoffstop > $smarty.now}
 			<FONT class="alert">
 			{t 0=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $0{/t}
-			</FONT>
+			</FONT><BR>
 {/if}
 			{t}Consent for personal data processing:{/t} {if $customerinfo.consentdate}{$customerinfo.consentdate}{else}{t}no consent{/t}{/if}
 		</TD>
