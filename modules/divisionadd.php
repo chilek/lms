@@ -71,23 +71,23 @@ if(!empty($_POST['division']))
 	{
 		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip, ten, regon, 
 			account, inv_header, inv_footer, inv_author, inv_cplace, description) 
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(
-				    $divisionadd['name'],
-				    $divisionadd['shortname'],
-				    $divisionadd['address'],
-				    $divisionadd['city'],
-				    $divisionadd['zip'],
-				    $divisionadd['ten'],
-				    $divisionadd['regon'],
-				    $divisionadd['account'],
-				    $divisionadd['inv_header'],
-				    $divisionadd['inv_footer'],
-				    $divisionadd['inv_author'],
-				    $divisionadd['inv_cplace'],
-				    $divisionadd['description'],
+				    $division['name'],
+				    $division['shortname'],
+				    $division['address'],
+				    $division['city'],
+				    $division['zip'],
+				    $division['ten'],
+				    $division['regon'],
+				    $division['account'],
+				    $division['inv_header'],
+				    $division['inv_footer'],
+				    $division['inv_author'],
+				    $division['inv_cplace'],
+				    $division['description'],
 			));
-		
+
 		if(!isset($division['reuse']))
 		{
 			$SESSION->redirect('?m=divisionlist');
