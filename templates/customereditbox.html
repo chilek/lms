@@ -65,7 +65,7 @@
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 			<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
     			{foreach from=$divisions item=item}{if !$item.status || $item.id == $customerinfo.divisionid}
-	    			<OPTION VALUE="{$item.id}"{if $customerinfo.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</
+	    			<OPTION VALUE="{$item.id}"{if $customerinfo.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
 		        {/if}{/foreach}
 			</SELECT>
 		</TD>
