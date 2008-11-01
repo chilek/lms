@@ -251,6 +251,18 @@ while (my $row = $dbq->fetchrow_hashref())
 }
 $dbq->finish();
 
+my %notexpired;
+$dbq = $dbase->prepare("SELECT documents.customerid AS customerid, SUM(invoicecontents.value) AS notexpired 
+		FROM invoicecontents LEFT JOIN documents ON invoicecontents.docid = documents.id 
+		WHERE documents.type = 1 AND cdate + paytime * 86400 > $currtime 
+		GROUP BY documents.customerid ORDER BY documents.customerid");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref())
+{
+	$notexpired{$row->{'customerid'}} = $row->{'notexpired'};
+}
+$dbq->finish();
+
 $dbq = $dbase->prepare("SELECT customers.id AS id, lastname, name, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid GROUP BY customers.id, lastname, name HAVING SUM(cash.value) < 0");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
@@ -284,14 +296,7 @@ while (my $row = $dbq->fetchrow_hashref())
 		{
 			if($invoice_expiration_check)
 			{
-				$sdbq = $dbase->prepare("SELECT SUM(invoicecontents.value) AS notexpired FROM invoicecontents 
-					LEFT JOIN documents ON invoicecontents.docid = documents.id 
-					WHERE documents.type = 1 AND customerid = '$row->{'id'}' AND 
-					cdate + paytime * 86400 > $currtime");
-				$sdbq->execute();
-				$srow = $sdbq->fetchrow_hashref();
-				$sdbq->finish();
-				if(defined($srow->{'notexpired'}) && $srow->{'notexpired'} * -1 <= $balance) { next; }
+				if($notexpired{$row->{'id'}} && $notexpired{$row->{'id'}} * -1 <= $balance) { next; }
 				print STDERR "CID:$row->{'id'}\thas expired invoices.\n" if not $quiet;
 			}
 
