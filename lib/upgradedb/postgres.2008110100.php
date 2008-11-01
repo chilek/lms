@@ -29,6 +29,13 @@ $DB->BeginTrans();
 $DB->Execute("
 	ALTER TABLE customers
 		ADD COLUMN paytime smallint NOT NULL DEFAULT -1
+	DROP VIEW customersview;
+	CREATE VIEW customersview AS
+	SELECT c.* FROM customers c
+	        WHERE NOT EXISTS (
+		SELECT 1 FROM customerassignments a
+			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008110100', 'dbversion'));
