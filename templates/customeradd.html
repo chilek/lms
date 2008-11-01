@@ -233,6 +233,22 @@
 				</TR>
 				<TR>
 					<TD width="1%">
+						<IMG src="img/money.gif" alt="">
+					</TD>
+					<TD width="99%">
+						{t}Deadline:{/t} <SELECT name="customeradd[paytime]" {tip text="Select default deadline in days"} trigger="paytime">
+							<OPTION value="-1" selected>{t}- default -<!paytime>{/t}</OPTION>
+							<OPTION value="0">0</OPTION>
+							<OPTION value="7">7</OPTION>
+							<OPTION value="10">10</OPTION>
+							<OPTION value="14">14</OPTION>
+							<OPTION value="21">21</OPTION>
+							<OPTION value="30">30</OPTION>
+						</SELECT>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%">
 						<IMG src="img/options.gif" alt="">
 					</TD>
 					<TD width="99%">
