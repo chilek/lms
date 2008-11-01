@@ -337,7 +337,7 @@ class LMS
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,  
 				    address, zip, city, email, ten, ssn, status, creationdate, 
 				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
-				    icn, cutoffstop, consentdate, divisionid) 
+				    icn, cutoffstop, consentdate, divisionid, paytime) 
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
@@ -362,6 +362,7 @@ class LMS
 					    $customeradd['cutoffstop'],
 					    $customeradd['consentdate'],
 					    $customeradd['divisionid'],
+					    $customeradd['paytime'],
 					    )))
 		{
 			return $this->DB->GetLastInsertID('customers');
@@ -399,7 +400,7 @@ class LMS
 				zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
 				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, 
-				cutoffstop=?, consentdate=?, divisionid=?
+				cutoffstop=?, consentdate=?, divisionid=?, paytime=? 
 				WHERE id=?', 
 			array( $customerdata['status'], 
 				empty($customerdata['type']) ? 0 : 1,
@@ -423,6 +424,7 @@ class LMS
 				$customerdata['cutoffstop'],
 				$customerdata['consentdate'],
 				$customerdata['divisionid'],
+				$customerdata['paytime'],
 				$customerdata['id'],
 				));
 	}
@@ -655,7 +657,8 @@ class LMS
 
 		if($customerlist = $this->DB->GetAll(
 				'SELECT c.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, 
-				status, address, zip, city, email, ten, ssn, c.info AS info, message, c.divisionid,
+				status, address, zip, city, email, ten, ssn, c.info AS info, message, c.divisionid AS divisionid, 
+				c.paytime AS paytime, 
 				(SELECT COALESCE(SUM(value),0) FROM cash WHERE customerid = c.id '
 					.($time ? ' AND time < '.$time : '').') AS balance
 				FROM customersview c '
