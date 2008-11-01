@@ -153,6 +153,7 @@ my $redir = $ini->val('warnings', 'redirect_address') || '127.0.0.1:80';
 my $ipbin = $ini->val('warnings', 'iptables_binary') || '/sbin/iptables';
 my $chain = $ini->val('warnings', 'chain') || 'WARNINGS';
 my $limit = $ini->val('warnings', 'limit') || '0';
+my $invoice_expiration_check = $ini->val('warnings', 'invoice_expiration_check') || '0';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
@@ -281,6 +282,19 @@ while (my $row = $dbq->fetchrow_hashref())
 		}
 		if((!$plimit && $balance <= $limit) || ($plimit && $balance <= ($limit * -$srow->{'value'}) / 100))
 		{
+			if($invoice_expiration_check)
+			{
+				$sdbq = $dbase->prepare("SELECT SUM(invoicecontents.value) AS notexpired FROM invoicecontents 
+					LEFT JOIN documents ON invoicecontents.docid = documents.id 
+					WHERE documents.type = 1 AND customerid = '$row->{'id'}' AND 
+					cdate + paytime * 86400 > $currtime");
+				$sdbq->execute();
+				$srow = $sdbq->fetchrow_hashref();
+				$sdbq->finish();
+				if(defined($srow->{'notexpired'}) && $srow->{'notexpired'} * -1 <= $balance) { next; }
+				print STDERR "CID:$row->{'id'}\thas expired invoices.\n" if not $quiet;
+			}
+
 			$sdbq = $dbase->prepare("SELECT ipaddr, name FROM nodes WHERE ownerid='$row->{'id'}'");
 			$sdbq->execute();
 			while ($srow = $sdbq->fetchrow_hashref())

@@ -38,6 +38,8 @@ version ? (????-??-??):
   - divisions: added ten and regon attributes (chilan)
   - rtprint: subject field added (chilan)
   - added posibility of setting paytime for customers individually (chilan)
+  - lms-makewarnings: we can check invoice expiration for warned
+    customers (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 
