@@ -545,6 +545,7 @@ CREATE TABLE customers (
   cutoffstop int(11) 	NOT NULL DEFAULT '0',
   consentdate int(11)   NOT NULL DEFAULT '0',
   divisionid int(11)   	NOT NULL DEFAULT '0',
+  paytime tinyint	NOT NULL DEFAULT '-1',
   PRIMARY KEY  (id),
   INDEX zip (zip)
 ) TYPE=MyISAM;

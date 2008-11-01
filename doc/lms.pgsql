@@ -397,6 +397,7 @@ CREATE TABLE customers (
 	cutoffstop integer	DEFAULT 0 NOT NULL,
 	consentdate integer	DEFAULT 0 NOT NULL,
 	divisionid integer	DEFAULT 0 NOT NULL,
+    	paytime smallint 	DEFAULT -1 NOT NULL,
 	PRIMARY KEY (id)
 );
 

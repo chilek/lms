@@ -27,12 +27,11 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-	ALTER TABLE divisions
-		ADD COLUMN ten varchar(16) NOT NULL DEFAULT '',
-		ADD COLUMN regon varchar(255) NOT NULL DEFAULT '';
+	ALTER TABLE customers
+		ADD COLUMN paytime smallint NOT NULL DEFAULT -1
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102700', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008110100', 'dbversion'));
 
 $DB->CommitTrans();
 
