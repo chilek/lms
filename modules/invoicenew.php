@@ -65,12 +65,11 @@ switch($action)
 		// get default invoice's numberplanid and next number
 		$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype=? AND isdefault=1', array(DOC_INVOICE));
 		$invoice['cdate'] = time();
+		$invoice['paytime'] = 14;
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 		{
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
-			if($customer['paytime'] == -1)
-				$invoice['paytime'] = 14;
-			else
+			if($customer['paytime'] != -1)
 				$invoice['paytime'] = $customer['paytime'];
 		}
 	break;
