@@ -225,6 +225,22 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/money.gif" ALT="">
+		</TD>
+		<TD WIDTH="98%" COLSPAN="2">
+			{t}Deadline:{/t} <SELECT name="customerdata[paytime]'" {tip text="Select default deadline in days"} trigger="paytime">
+				<OPTION value="-1"{if $customerinfo.paytime==-1} selected{/if}>{t}- default -<!paytime>{/t}</OPTION>
+				<OPTION value="0"{if $customerinfo.paytime==0} selected{/if}>0</OPTION>
+				<OPTION value="7"{if $customerinfo.paytime==7} selected{/if}>7</OPTION>
+				<OPTION value="10"{if $customerinfo.paytime==10} selected{/if}>10</OPTION>
+				<OPTION value="14"{if $customerinfo.paytime==14} selected{/if}>14</OPTION>
+				<OPTION value="21"{if $customerinfo.paytime==21} selected{/if}>21</OPTION>
+				<OPTION value="30"{if $customerinfo.paytime==30} selected{/if}>30</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
 		<TD width="1%">
 			<IMG src="img/options.gif" alt="">
 		</TD>

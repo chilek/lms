@@ -171,6 +171,14 @@
 		</TD>
 	</TR>
 {/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/money.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{t}Deadline:{/t} {if $customerinfo.paytime eq -1}{t}default<!paytime>{/t}{else}{$customerinfo.paytime}&nbsp;{t}days{/t}{/if}
+		</TD>
+	</TR>
 {if $_config.finances.iban|chkconfig}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">

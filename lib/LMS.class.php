@@ -339,7 +339,7 @@ class LMS
 				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
 				    icn, cutoffstop, consentdate, divisionid, paytime) 
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    empty($customeradd['type']) ? 0 : 1,
