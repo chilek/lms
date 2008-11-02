@@ -531,7 +531,7 @@ function invoice_expositor ($x,$y)
 function invoice_footnote($x, $y, $width, $font_size) 
 {
     global $pdf, $invoice;
-    if (!empty($invoice['division_footer']) {
+    if (!empty($invoice['division_footer'])) {
 	$y = $y - $pdf->getFontHeight($font_size);
 	$y = $y - text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('Notes:')).'</b>');
 	$tmp = iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['division_footer']);
