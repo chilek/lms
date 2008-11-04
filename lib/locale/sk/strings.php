@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11.4 Telchak
+ * LMS version 1.11.4-cvs
  *
  *  (C) Copyright 2001-2008 LMS Developers
  *
