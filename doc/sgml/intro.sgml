@@ -197,7 +197,7 @@
                <title>Newest version</title>
                <para>Newest version of LMS can be downloaded from CVS repository
                utilizing WWW interface at <ULINK
-               URL="http://cvs.lms.org.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">cvs.lms.org.pl</ulink>,
+               URL="http://cvs.lms.org.pl/viewvc/lms.tar.gz?view=tar">here</ulink>,
                or with CVS tools (anonymous access, empty password):</para>
                <screen>
 cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot login
