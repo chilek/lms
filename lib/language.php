@@ -59,6 +59,14 @@ $LANGDEFS = array(
 			'html' => 'en',
 			'money_format' => '$ %01.2f'
 			),
+		'sk' => array(
+			'name' => 'Slovak',
+			'orig' => 'Slovenský',
+			'locale' => 'sk_SK.UTF-8',
+			'charset' => 'UTF-8',
+			'html' => 'sk',
+			'money_format' => '%01.2f EUR'
+			),
 		'ro' => array(
 			'name' => 'Romanian',
 			'orig' => 'Romana',
@@ -87,6 +95,9 @@ foreach ($langs as $val)
 		case 'pl':
 			$_language = 'pl';
     			break 2;
+		case 'sk':
+			$_language = 'sk';
+			break 2;
 		case 'ro':
 			$_language = 'ro';
 			break 2;

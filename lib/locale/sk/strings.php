@@ -866,7 +866,7 @@ $_LANG['Name contains forbidden characters!'] = 'Meno obsahuje zakázané znaky!
 $_LANG['Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.'] = 'Meno odosielanej správy alebo preddefinovanej premennej: "queue" - meno rady, "user" - prihlásený užívateľ. Východzie: nič.';
 $_LANG['Name of product, commodity or service:'] = 'Meno výrobku, tovarú alebo služby:';
 $_LANG['Name of Product, Commodity or Service:'] = 'Meno výrobku, tovarú alebo služby:';
-$_LANG['Name / Producer:'] = 'Meno / Výrobca:'
+$_LANG['Name / Producer:'] = 'Meno / Výrobca:';
 $_LANG['Name/Surname:'] = 'Priezvisko:';
 $_LANG['First/last or Company name'] = 'Meno/Priezvisko alebo Meno spoločnosti';
 $_LANG['First/last or Company name:'] = 'Meno/Priezvisko alebo Meno spoločnosti:';
@@ -2064,7 +2064,3 @@ $_LANG['Wrong account number!'] = 'Zlé číslo účt!';
 $_LANG['Zip code is required!'] = 'PSČ je povinné!';
 
 ?>
-
-
-!DSPAM:4910feef231006491211187!
-
