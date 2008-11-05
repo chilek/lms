@@ -7,7 +7,7 @@
 
 WORKDIR=`pwd` 
 NOTDISTRIB="devel .project modules/core modules/mailing modules/auth modules/traffic modules/users lib/ExecStack.class.php"
-SMARTYVER="2.6.19"
+SMARTYVER="2.6.20"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
@@ -61,7 +61,7 @@ grep -air '1\.10-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.10-cvs/$LM
 chmod 777 templates_c backups documents
 cd lib
 #pobieramy Smarty i wlaczamy do paczki LMSa
-wget http://smarty.php.net/distributions/Smarty-$SMARTYVER.tar.gz
+wget http://www.smarty.net/distributions/Smarty-$SMARTYVER.tar.gz
 tar -xzf Smarty-$SMARTYVER.tar.gz
 mv Smarty-$SMARTYVER/libs/* Smarty/
 mv Smarty-$SMARTYVER/libs/plugins/* Smarty/plugins/

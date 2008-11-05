@@ -8,7 +8,7 @@ SMARTYVER="2.6.18"
 cd ../lib
 # download
 echo -n "Downloading Smarty sources... "
-wget http://smarty.php.net/distributions/Smarty-$SMARTYVER.tar.gz
+wget http://www.smarty.net/distributions/Smarty-$SMARTYVER.tar.gz
 echo "done."
 
 # extracting package

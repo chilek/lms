@@ -327,7 +327,7 @@ Chapter 2. Installation and configuration
 
 2.2.4. Smarty Library
 
-   LMS-UI requires Smarty library (http://smarty.php.net) in version 2.6.0
+   LMS-UI requires Smarty library (http://www.smarty.net) in version 2.6.0
    or higher (don't use 2.6.4 version). Newer versions of Smarty requires
    that you have not enabled "magic_quotes_runtime" (set to Off) option in
    PHP configuration.

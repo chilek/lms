@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.10.5 Neith (2008-11-05):
 
   - don't overwrite invoice's creation time on edit if date wasn't changed (alec)
   - lmsd/payments: fixed leap year bug in annual payments (alec)
@@ -9,6 +9,8 @@ version ? (????-??-??):
   - LMS::NetworkCompress(): we check if given ip address is not gateway address
     (Arkadiusz Chomicki/alec)
   - documentation: fixed link to cvs tarball (alec)
+  - updated ethernet vendors list (alec)
+  - updated Smarty to 2.6.20 (alec)
 
 version 1.10.4 Pyrus (2008-05-04):
 
