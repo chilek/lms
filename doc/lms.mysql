@@ -1087,4 +1087,4 @@ INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'owner_stats', '0', '', 0);
 	
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008102000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008110100');

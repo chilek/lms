@@ -1157,4 +1157,4 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008102000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008110100');
