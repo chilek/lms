@@ -199,7 +199,7 @@
 		<sect2 id="latest">
 			<title>Najnowsza wersja</title>
 			<para>Zawsze aktualn± wersjê LMS mo¿na pobraæ z repozytorium CVS za pomoc±
-			interfejsu www <ULINK URL="http://cvs.lms.org.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">tutaj</ulink>,
+			interfejsu www <ULINK URL="http://cvs.lms.org.pl/viewvc/lms.tar.gz?view=tar">tutaj</ulink>,
 			lub klasycznie (dostêp anonimowy, puste has³o):</para>
 			<screen>
 cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot login
