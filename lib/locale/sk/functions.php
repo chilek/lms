@@ -26,20 +26,21 @@
 
 function bankaccount($id)
 {
-	global $CONFIG;
-	if(isset($CONFIG['finances']['iban']) && chkconfig($CONFIG['finances']['iban']))
+	global $DB;
+
+	$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+			FROM customers WHERE id = ?)', array($id));
+
+        $acclen = strlen($account);
+				
+	if(!empty($account) && $acclen < 17 || $acclen >= 8)
 	{
-		$cc = '2521';	// Kod kraju - Slovensko
-		$acclen = strlen($CONFIG['finances']['account']);
-		
-		if($acclen > 20 && $acclen < 8)
-    			return trans('Invalid account!');
+		$cc = '2820';	// Kod kraju - Slovensko
+		$format = '%0'.(20 - $acclen) .'d';
+		return sprintf('%02d',98-bcmod($account.sprintf($format,$id).$cc.'00',97)).$account.sprintf($format,$id);
+	}
 
-		$format = '%0'.(24 - $acclen) .'d';
-		return sprintf('%02d',98-bcmod($CONFIG['finances']['account'].sprintf($format,$id).$cc.'00',97)).$CONFIG['finances']['account'].sprintf($format,$id);
-	} 
-
-	return (!isset($CONFIG['finances']['account']) ? trans('Not set') : $CONFIG['finances']['account']);
+	return $account;
 }
 		
 function uptimef($ts)
