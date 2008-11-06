@@ -40,7 +40,7 @@ version ? (????-??-??):
   - added posibility of setting paytime for customers individually (chilan)
   - lms-makewarnings: we can check invoice expiration for warned
     customers (chilan)
-  - added Slovakian translation (Robik Pavlik)
+  - added Slovakian translation (Robin Pavlik)
   - better handling of invoices/receipts/docs printouts with window.open (alec)
 
 version 1.11.4 Telchak (2008-08-07):
