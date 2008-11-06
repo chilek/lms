@@ -2,10 +2,12 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $newinvoice}
-<SCRIPT type="text/javascript">window.open('?m=invoice&id={$newinvoice}{if $original}&original=1{/if}{if $copy}&copy=1{/if}');</SCRIPT>
+<SCRIPT type="text/javascript">
+window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}&copy={$newinvoice.copy}');
+</SCRIPT>
 {/if}
 {include file="calendar_js.html"}
-<script language="javascript">
+<script type="text/javascript">
 	<!--
 	function setItem(index)
 	{literal}{{/literal}
@@ -391,7 +393,7 @@
 	</TR>
 	</FORM>
 </TABLE>
-<SCRIPT LANGUAGE="JavaScript">
+<SCRIPT type="text/javascript">
 <!--
 var cal1 = new calendar(document.forms['setcustomer'].elements['invoice[cdate]']);
 cal1.time_comp = false;

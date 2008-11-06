@@ -224,6 +224,12 @@ unset($invoicelist['direction']);
 
 $listdata['total'] = sizeof($invoicelist);
 
+if($invoice = $SESSION->get('invoiceprint'))
+{
+        $SMARTY->assign('invoice', $invoice);
+        $SESSION->remove('invoiceprint');
+}
+
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',($page - 1) * $pagelimit);
@@ -231,10 +237,6 @@ $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
 $SMARTY->assign('invoicelist',$invoicelist);
-$SMARTY->assign('newinvoice', isset($_GET['invoice']) ? $_GET['invoice'] : NULL);
-$SMARTY->assign('original', isset($_GET['original']) ? TRUE : FALSE);
-$SMARTY->assign('copy', isset($_GET['copy']) ? TRUE : FALSE);
-$SMARTY->assign('duplicate', isset($_GET['duplicate']) ? TRUE : FALSE);
 $SMARTY->display('invoicelist.html');
 
 ?>

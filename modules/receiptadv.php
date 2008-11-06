@@ -241,11 +241,11 @@ if(isset($_POST['receipt']))
 		$DB->UnLockTables();				
 		$DB->CommitTrans();
 
-		if(isset($_GET['print']))		
-			header('Location: ?m=receiptlist&receipt='.$rid.(isset($rid2) ? '&receipt2='.$rid2 : '').(isset($_GET['which']) ? '&which='.$_GET['which'] : '').'&regid='.$regid.'#'.$rid);
-		else
-			header('Location: ?m=receiptlist&regid='.$regid.'#'.$rid);
-		die;
+		if(isset($_GET['print']))
+			$SESSION->save('receiptprint', array('receipt' => $rid, 'receipt2' => $rid2,
+                                'which' => (isset($_GET['which']) ? $_GET['which'] : '')));
+
+		$SESSION->redirect('?m=receiptlist&regid='.$regid.'#'.$rid);
 	}
 
 	$SMARTY->assign('error', $error);

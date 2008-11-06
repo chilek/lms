@@ -239,12 +239,11 @@ switch($action)
 			$SESSION->remove('invoicenewerror');
 			
 			if(isset($_GET['print']))
-				$SESSION->redirect('?m=invoicenew&action=init&invoice='.$iid
-					.(isset($_GET['original']) ? '&original=1' : '')
-					.(isset($_GET['copy']) ? '&copy=1' : '')
-					);
-			else
-				$SESSION->redirect('?m=invoicenew&action=init');
+				$SESSION->save('invoiceprint', array('invoice' => $iid,
+					'original' => !empty($_GET['original']) ? 1 : 0,
+					'copy' => !empty($_GET['copy']) ? 1 : 0));
+
+			$SESSION->redirect('?m=invoicenew&action=init');
 		}
 	break;
 }
@@ -260,16 +259,7 @@ $SESSION->save('invoicenewerror', isset($error) ? $error : NULL);
 if($action)
 {
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
-	if($action == 'init')
-	{
-		$SESSION->redirect('?m=invoicenew'
-			.(isset($_GET['invoice']) ? '&invoice='.intval($_GET['invoice']) : '')
-			.(isset($_GET['original']) ? '&original=1' : '')
-			.(isset($_GET['copy']) ? '&copy=1' : '')
-		);
-	}
-	else
-		$SESSION->redirect('?m=invoicenew');
+	$SESSION->redirect('?m=invoicenew');
 }
 
 $covenantlist = array();
@@ -297,6 +287,12 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
         $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
+if($newinvoice = $SESSION->get('invoiceprint'))
+{
+        $SMARTY->assign('newinvoice', $newinvoice);
+        $SESSION->remove('invoiceprint');
+}
+
 $SMARTY->assign('covenantlist', $covenantlist);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
@@ -305,9 +301,6 @@ $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, date('Y/m', $invoice['cdate'])));
 $SMARTY->assign('taxeslist', $taxeslist);
-$SMARTY->assign('newinvoice', isset($_GET['invoice']) ? $_GET['invoice'] : NULL);
-$SMARTY->assign('original', isset($_GET['original']) ? TRUE : FALSE);
-$SMARTY->assign('copy', isset($_GET['copy']) ? TRUE : FALSE);
 $SMARTY->display('invoicenew.html');
 
 ?>

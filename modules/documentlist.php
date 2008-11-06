@@ -109,13 +109,18 @@ $start = ($page - 1) * $pagelimit;
 $layout['pagetitle'] = trans('Documents List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+if($docid = $SESSION->get('documentprint'))
+{
+	$SMARTY->assign('docid', $docid);
+	$SESSION->remove('documentprint');
+}
+
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('documentlist', $documentlist);
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('docid', isset($_GET['docid']) ? $_GET['docid'] : 0);
 $SMARTY->display('documentlist.html');
 
 ?>

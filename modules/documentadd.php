@@ -231,7 +231,10 @@ if(isset($_POST['document']))
 		
 		if(!isset($document['reuse']))
 		{
-			$SESSION->redirect('?m=documentlist&c='.$document['customerid'].(isset($_GET['print']) ? '&docid='.$docid : ''));
+			if(isset($_GET['print']))
+				$SESSION->save('documentprint', $docid);
+			
+			$SESSION->redirect('?m=documentlist&c='.$document['customerid']);
 		}
 		
 		unset($document['title']);

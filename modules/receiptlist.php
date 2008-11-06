@@ -227,10 +227,11 @@ unset($receiptlist['totalexpense']);
 $listdata['total'] = sizeof($receiptlist);
 $listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid=?', array($regid));
 if($from > 0)
-	$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
-						LEFT JOIN documents ON (docid = documents.id AND type = ?) 
-						WHERE cdate < ? AND regid = ?',
-						array(DOC_RECEIPT, $from, $regid));
+	$listdata['startbalance'] = $DB->GetOne(
+		'SELECT SUM(value) FROM receiptcontents
+		LEFT JOIN documents ON (docid = documents.id AND type = ?) 
+		WHERE cdate < ? AND regid = ?',
+		array(DOC_RECEIPT, $from, $regid));
 
 $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] - $listdata['totalexpense'];
 
@@ -245,15 +246,17 @@ $layout['pagetitle'] = trans('Cash Registry: $0', $DB->GetOne('SELECT name FROM 
 
 $SESSION->save('backto', 'm=receiptlist&regid='.$regid);
 
+if($receipt = $SESSION->get('receiptprint'))
+{
+	$SMARTY->assign('receipt', $receipt);
+	$SESSION->remove('receiptprint');
+}
 $SMARTY->assign('logentry', $logentry); 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
-$SMARTY->assign('newreceipt', isset($_GET['receipt']) ? $_GET['receipt'] : NULL);
-$SMARTY->assign('newreceipt2', isset($_GET['receipt2']) ? $_GET['receipt2'] : NULL);
-$SMARTY->assign('which', isset($_GET['which']) ? $_GET['which'] : NULL);
 $SMARTY->assign('receiptlist',$receiptlist);
 $SMARTY->display('receiptlist.html');
 

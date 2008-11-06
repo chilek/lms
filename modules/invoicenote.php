@@ -267,12 +267,11 @@ switch($action)
 			$SESSION->remove('cnoteerror');
 			
 			if(isset($_GET['print']))
-			        $SESSION->redirect('?m=invoicelist&invoice='.$id
-				        .(isset($_GET['original']) ? '&original=1' : '')
-					.(isset($_GET['copy']) ? '&copy=1' : '')
-                        	);
-			else
-                                $SESSION->redirect('?m=invoicelist');
+			        $SESSION->save('invoiceprint', array('invoice' => $id,
+				        'original' => !empty($_GET['original']) ? 1 : 0,
+					'copy' => !empty($_GET['copy']) ? 1 : 0));
+
+                        $SESSION->redirect('?m=invoicelist');
 		}
 	break;
 	
