@@ -477,9 +477,10 @@ switch($action)
 		$SESSION->remove('receiptediterror');
 		
 		if(isset($_GET['print']))
-			$SESSION->redirect('?m=receiptlist&receipt='.$rid.'&which='.$_GET['which'].'&regid='.$receipt['regid'].'#'.$rid);
-		else
-			$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
+			$SESSION->save('receiptprint', array('receipt' => $rid,
+		                'which' => (isset($_GET['which']) ? $_GET['which'] : '')));
+
+		$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
 	break;
 }
 

@@ -167,13 +167,12 @@ switch($action)
 			$LMS->InvoiceUpdate(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 			
 			if(isset($_GET['print']))
-				$SESSION->redirect('?m=invoicelist&invoice='.$invoice['id']
-					.(isset($_GET['original']) ? '&original=1' : '')
-			        	.(isset($_GET['copy']) ? '&copy=1' : '')
-					.(isset($_GET['duplicate']) ? '&duplicate=1' : '')			
-				);
-			else
-				$SESSION->redirect('?m=invoicelist');
+				$SESSION->save('invoiceprint', array('invoice' => $invoice['id'],
+					'original' => !empty($_GET['original']) ? 1 : 0,
+			        	'copy' => !empty($_GET['copy']) ? 1 : 0,
+					'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
+				
+			$SESSION->redirect('?m=invoicelist');
 		}
 	break;
 

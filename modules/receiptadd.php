@@ -696,9 +696,10 @@ switch($action)
 			$SESSION->remove('receiptadderror');
 
 			if(isset($_GET['print']))
-				$SESSION->redirect('?m=receiptlist&receipt='.$rid.(isset($_GET['which']) ? '&which='.$_GET['which'] : '').'&regid='.$receipt['regid'].'#'.$rid);
-			else
-				$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
+				$SESSION->save('receiptprint', array('receipt' => $rid,
+					'which' => (isset($_GET['which']) ? $_GET['which'] : '')));
+
+			$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
 		}
 	break;
 
@@ -791,9 +792,10 @@ switch($action)
 			$SESSION->remove('receiptadderror');
 			
 			if(isset($_GET['print']))
-				$SESSION->redirect('?m=receiptlist&receipt='.$rid.(isset($_GET['which']) ? '&which='.$_GET['which'] : '').'&regid='.$receipt['regid'].'#'.$rid);
-			else
-				$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
+				$SESSION->save('receiptprint', array('receipt' => $rid,
+					'which' => (isset($_GET['which']) ? $_GET['which'] : '')));
+
+			$SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
 		}
 	break;
 
