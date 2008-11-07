@@ -171,14 +171,6 @@
 		</TD>
 	</TR>
 {/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			{t}Deadline:{/t} {if $customerinfo.paytime eq -1}{t}default<!paytime>{/t}{else}{$customerinfo.paytime}&nbsp;{t}days{/t}{/if}
-		</TD>
-	</TR>
 {if $_config.finances.iban|chkconfig}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
@@ -193,15 +185,31 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
+		<TD WIDTH="99%" COLSPAN="2">
+			{t}Deadline:{/t} {if $customerinfo.paytime eq -1}{t}default<!paytime>{/t}{else}{$customerinfo.paytime}&nbsp;{t}days{/t}{/if}
+		</TD>
+	</TR>
 {if $customerinfo.cutoffstop > $smarty.now}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/options.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
 			<FONT class="alert">
 			{t 0=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $0{/t}
-			</FONT><BR>
+			</FONT>
+		</TD>
+	</TR>
 {/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/options.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
 			{t}Consent for personal data processing:{/t} {if $customerinfo.consentdate}{$customerinfo.consentdate}{else}{t}no consent{/t}{/if}
 		</TD>
 	</TR>
+
                                         </TABLE>
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">

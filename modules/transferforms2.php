@@ -111,7 +111,7 @@ if(!$list)
     die;
 }
 
-$_TITLE = (!isset($CONFIG['finances']['pay_title']) ? trans("Not set") : $CONFIG['finances']['pay_title']);
+$_TITLE = (!isset($CONFIG['finances']['pay_title']) ? trans('Not set') : $CONFIG['finances']['pay_title']);
 $_LMARGIN = (!isset($CONFIG['finances']['leftmargin']) ? 0 : $CONFIG['finances']['leftmargin']);
 $_BMARGIN = (!isset($CONFIG['finances']['bottommargin']) ? 0 : $CONFIG['finances']['bottommargin']);
 

@@ -226,11 +226,11 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" ALT="">
+			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2">
 			{t}Deadline:{/t} <SELECT name="customerdata[paytime]'" {tip text="Select default deadline in days"} trigger="paytime">
-				<OPTION value="-1"{if $customerinfo.paytime==-1} selected{/if}>{t}- default -<!paytime>{/t}</OPTION>
+				<OPTION value="-1"{if $customerinfo.paytime==-1} selected{/if}>- {t}default<!paytime>{/t} -</OPTION>
 				<OPTION value="0"{if $customerinfo.paytime==0} selected{/if}>0</OPTION>
 				<OPTION value="7"{if $customerinfo.paytime==7} selected{/if}>7</OPTION>
 				<OPTION value="10"{if $customerinfo.paytime==10} selected{/if}>10</OPTION>
@@ -258,20 +258,15 @@
 			    <OPTION value="21"{if $customerinfo.cutoffstop==21} selected{/if}>21</OPTION>
 			    <OPTION value="30"{if $customerinfo.cutoffstop==30} selected{/if}>30</OPTION>
 			</SELECT>
-			<BR>
-			<A HREF="javascript:checkElement('chkconsent')">{t}Consent for personal data processing:{/t}</A>
-			<INPUT TYPE="checkbox" CLASS="box" NAME="customerdata[consentdate]" ID="chkconsent" VALUE="{$smarty.now}" trigger="consentdate"}{if $customerinfo.consentdate} checked{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" ALT="">
+		<TD width="1%">
+			<IMG src="img/options.gif" alt="">
 		</TD>
-		<TD WIDTH="1%">
-			<B>{t}Balance:{/t}</B>
-		</TD>
-		<TD WIDTH="98%">
-			{if $customerinfo.balance < 0}<FONT CLASS="ALERT">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|money_format}{/if}
+		<TD width="99%" COLSPAN="2">
+			<A HREF="javascript:checkElement('chkconsent')">{t}Consent for personal data processing:{/t}</A>
+			<INPUT TYPE="checkbox" CLASS="box" NAME="customerdata[consentdate]" ID="chkconsent" VALUE="{$smarty.now}"{if $customerinfo.consentdate} checked{/if}>
 		</TD>
 	</TR>
                                     		</TABLE>
@@ -283,7 +278,7 @@
 			<IMG SRC="img/post.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[serviceaddr]" COLS="60" ROWS="5" {tip text="Enter service address (optional)"}>{$customerinfo.serviceaddr|escape}</TEXTAREA>
+			<TEXTAREA NAME="customerdata[serviceaddr]" COLS="60" ROWS="7" {tip text="Enter service address (optional)"}>{$customerinfo.serviceaddr|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -291,7 +286,7 @@
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[info]" COLS="60" ROWS="5" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
+			<TEXTAREA NAME="customerdata[info]" COLS="60" ROWS="7" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -299,7 +294,7 @@
 			<IMG SRC="img/warningon.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[message]" COLS="60" ROWS="5" {tip text="Enter warning message contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
+			<TEXTAREA NAME="customerdata[message]" COLS="60" ROWS="7" {tip text="Enter warning message contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -307,7 +302,16 @@
 			<IMG SRC="img/note.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TEXTAREA NAME="customerdata[notes]" COLS="60" ROWS="5" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
+			<TEXTAREA NAME="customerdata[notes]" COLS="60" ROWS="7" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/money.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%">
+			<B>{t}Balance:{/t}</B>
+			{if $customerinfo.balance < 0}<FONT CLASS="ALERT">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|money_format}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

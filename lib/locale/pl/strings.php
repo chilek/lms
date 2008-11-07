@@ -337,7 +337,6 @@ $_LANG['Dead:'] = 'Martwe:';
 $_LANG['Deadline:'] = 'Termin płatności:';
 $_LANG['Default invoice issuer'] = 'Domyślna osoba tworząca fakturę';
 $_LANG['Default zip code, city, street, used while inserting new customer. Useful if you add majority of customers with the same street.'] = 'Domyślny kod pocztowy, miasto, ulica pod czas dodawania nowego klienta. Przydatne kiedy mamy wielu klientów na tej samej ulicy.';
-$_LANG['- default -<!paytime>'] = 'domyślny';
 $_LANG['default<!paytime>'] = 'domyślny';
 $_LANG['Delete'] = 'Usuń';
 $_LANG['Delete connection'] = 'Usuń połączenie';
@@ -2062,5 +2061,6 @@ $_LANG['Select division'] = 'Wybierz firmę';
 $_LANG['Unlock'] = 'Odblokuj';
 $_LANG['Wrong account number!'] = 'Niepoprawny format konta!';
 $_LANG['Zip code is required!'] = 'Kod pocztowy jest wymagany!';
+$_LANG['Limit of records displayed on one page in divisions list. Default: 100.'] = 'Limit ilości rekordów na liście firm. Domyślnie: 100.';
 
 ?>
