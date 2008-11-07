@@ -233,11 +233,11 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<IMG src="img/money.gif" alt="">
+						<IMG src="img/options.gif" alt="">
 					</TD>
 					<TD width="99%">
 						{t}Deadline:{/t} <SELECT name="customeradd[paytime]" {tip text="Select default deadline in days"} trigger="paytime">
-							<OPTION value="-1" selected>{t}- default -<!paytime>{/t}</OPTION>
+							<OPTION value="-1" selected>- {t}default<!paytime>{/t} -</OPTION>
 							<OPTION value="0">0</OPTION>
 							<OPTION value="7">7</OPTION>
 							<OPTION value="10">10</OPTION>
@@ -265,9 +265,15 @@
 						    <OPTION value="21"{if $customeradd.cutoffstop==21} selected{/if}>21</OPTION>
 						    <OPTION value="30"{if $customeradd.cutoffstop==30} selected{/if}>30</OPTION>
 						</SELECT>
-						<BR>
-						{t}Consent for personal data processing:{/t}
-						<INPUT TYPE="checkbox" CLASS="box" NAME="customeradd[consentdate]" VALUE="{$smarty.now}" trigger="consentdate"}{if $customeradd.consentdate} checked{/if}>
+					</TD>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<IMG src="img/options.gif" alt="">
+					</TD>
+					<TD width="99%">
+						<A HREF="javascript:checkElement('chkconsent')">{t}Consent for personal data processing:{/t}</A>
+						<INPUT TYPE="checkbox" CLASS="box" NAME="customeradd[consentdate]" VALUE="{$smarty.now}" ID="chkconsent"{if $customeradd.consentdate} checked{/if}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -276,19 +282,19 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 		    		<TR>
 			            <TD WIDTH="1%"><IMG src="img/post.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[serviceaddr]" {tip text="Enter service address (optional)"}>{$customeradd.serviceaddr}</TEXTAREA></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="7" cols="60" name="customeradd[serviceaddr]" {tip text="Enter service address (optional)"}>{$customeradd.serviceaddr}</TEXTAREA></TD>
 				</TR>
 		    		<TR>
 			            <TD WIDTH="1%"><IMG src="img/info1.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[info]" {tip text="Enter additional information (optional)"}>{$customeradd.info|escape}</TEXTAREA></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="7" cols="60" name="customeradd[info]" {tip text="Enter additional information (optional)"}>{$customeradd.info|escape}</TEXTAREA></TD>
 		    		</TR>
 				<TR>
 			            <TD WIDTH="1%"><IMG src="img/warningon.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[message]" {tip text="Enter message to customer (optional)"}>{$customeradd.message|escape}</TEXTAREA></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="7" cols="60" name="customeradd[message]" {tip text="Enter message to customer (optional)"}>{$customeradd.message|escape}</TEXTAREA></TD>
 		    		</TR>
 				<TR>
 			            <TD WIDTH="1%"><IMG src="img/note.gif" alt=""></TD>
-				    <TD WIDTH="99%"><TEXTAREA rows="5" cols="60" name="customeradd[notes]" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA></TD>
+				    <TD WIDTH="99%"><TEXTAREA rows="7" cols="60" name="customeradd[notes]" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA></TD>
 				</TR>
 			</TABLE>
 		</TD>
