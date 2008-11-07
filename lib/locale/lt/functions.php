@@ -33,12 +33,12 @@ function bankaccount($id)
 	
 	$acclen = strlen($account);
 	
-	if(!empty($account) && $acclen < 21 && $acclen >= 8)
+	if(!empty($account) && $acclen < 13 && $acclen >= 5)
 	{
-		$cc = '2521';	// Kod kraju - Polska
-		$format = '%0'.(24 - $acclen) .'d';
+		$cc = '2129';	// Country Code - Lithuania
+		$format = '%0'.(16 - $acclen) .'d';
 		return sprintf('%02d',98-bcmod($account.sprintf($format,$id).$cc.'00',97)).$account.sprintf($format,$id);
-	} 
+	}
 
 	return $account;
 }
@@ -58,29 +58,30 @@ function uptimef($ts)
 	{
 		$result = $days;
 		if($days==1)
-			$result .= ' dzień ';
+			$result .= ' diena ';
 		else
-			$result .= ' dni ';
+			$result .= ' dienas ';
 	}
 	if ($hours != 0) 
 	{
 		$result .= $hours;
-		if($hours==1)
-			$result .= ' godzina ';
-		elseif(in_array($hours, array(2,3,4,22,23)))
-			$result .= ' godziny ';
+		if(in_array($hours, array(1,21)))
+			$result .= ' valanda ';
+		elseif(in_array($hours, array(2,3,4,5,6,7,8,9,22,23)))
+			$result .= ' valandas ';
 		else	
-			$result .= ' godzin ';
+			$result .= ' valandu ';
 	}
 	if($min != 0)
 	{
 		$result .= $min;
-		if($min==1)
-			$result .= ' minuta ';
-		elseif(in_array($min, array(2,3,4,22,23,24,32,33,34,42,43,44,52,53,54)))
-			$result .= ' minuty ';
+		if(in_array($min, array(1,21,31,41,51)))
+			$result .= ' minute ';
+		elseif(in_array($min, array(2,3,4,5,6,7,8,9,22,23,24,25,26,27,28,29,32,33,34,35,36,37,38,39,42,43,44,
+				45,46,47,48,49,52,53,54,55,56,57,58,59)))
+			$result .= ' minutes ';
 		else
-			$result .= ' minut ';
+			$result .= ' minučiu ';
 	}
 	return $result;
 }
@@ -104,34 +105,23 @@ function check_ten($ten)
 
 function check_ssn($ssn)
 {
-	// AFAIR This doesn't cover people born after Y2k, they have month+20
-	// Be warned.
 	if (!eregi('^[0-9]{11}$',$ssn))
 		return FALSE;
 	
-	$steps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3);
 	$sum_nb = 0;
-	
-	for ($x = 0; $x < 10; $x++)
-	{
-		$sum_nb += $steps[$x] * $ssn[$x];
-	}
-	
-	$sum_m = 10 - $sum_nb % 10;
-	
-	if ($sum_m == 10)
-		$sum_c = 0;
-	else
-		$sum_c = $sum_m;
-	
-	if ($sum_c == $ssn[10])
+	for($x = 0; $x < 10; $x++)
+		if ($x == 9)
+			$sum_nb = $sum_nb + $ssn[$x] * 1;
+		else
+			$sum_nb = $sum_nb + ($ssn[$x] * ($x + 1));
+	if(($sum_nb % 11) == $ssn[10])
 		return TRUE;
 	return FALSE;
 }
 
 function check_zip($zip)
 {
-	return eregi('^[0-9]{2}-[0-9]{3}$', $zip);
+	return eregi('^[0-9]{5}$', $zip);
 }
 
 function check_gg($im)
@@ -196,87 +186,23 @@ function check_icn($icn)
 
 function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
-	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>
-	// from PEAR package Number_Words-0.3.1
-	// 'short_version' added by alec/kubatyszko
+	// Extracted from lang.lt.php by Piotr Klaban <makler at man dot torun dot pl>
+	// from PEAR package Number_Words-0.15
 	// added leading space trim's by alec
-	
-	if($short_version)
-	{
-	        $patterns[0] = "/0/";
-    		$patterns[1] = "/1/";
-	        $patterns[2] = "/2/";
-    		$patterns[3] = "/3/";
-		$patterns[4] = "/4/";
-	        $patterns[5] = "/5/";
-    		$patterns[6] = "/6/";
-	        $patterns[7] = "/7/";
-    		$patterns[8] = "/8/";
-	        $patterns[9] = "/9/";
-
-    		$replacements[0] = "zer ";
-                $replacements[1] = "jed ";
-		$replacements[2] = "dwa ";
-	        $replacements[3] = "trz ";
-    		$replacements[4] = "czt ";
-    	        $replacements[5] = "pię ";
-	        $replacements[6] = "sze ";
-	        $replacements[7] = "sie ";
-    		$replacements[8] = "osi ";
-		$replacements[9] = "dzi ";
-
-	        return trim(preg_replace($patterns, $replacements, $num));
-	}
 
 	$ret = '';
 	$_sep = ' ';
 	$_minus = 'minus';
-	$_digits = array(0 => 'zero', 'jeden', 'dwa', 'trzy', 'cztery', 'pięć', 'sześć', 'siedem', 'osiem', 'dziewięć');		
+	$_digits = array(0 => 'nulis', 'vienas', 'du', 'trys', 'keturi', 'penki', 'šeši', 'septyni', 'aštuoni', 'devyni');
 	$_exponent = array(
-			0 => array('','',''),
-			3 => array('tysiąc','tysiące','tysięcy'),
-			6 => array('milion','miliony','milionów'),
-			9 => array('miliard','miliardy','miliardów'),
-			12 => array('bilion','biliony','bilionów'),
-			15 => array('biliard','biliardy','biliardów'),
-			18 => array('trylion','tryliony','trylionów'),
-			21 => array('tryliard','tryliardy','tryliardów'),
-			24 => array('kwadrylion','kwadryliony','kwadrylionów'),
-			27 => array('kwadryliard','kwadryliardy','kwadryliardów'),
-			30 => array('kwintylion','kwintyliony','kwintylionów'),
-			33 => array('kwintyliiard','kwintyliardy','kwintyliardów'),
-			36 => array('sekstylion','sekstyliony','sekstylionów'),
-			39 => array('sekstyliard','sekstyliardy','sekstyliardów'),
-			42 => array('septylion','septyliony','septylionów'),
-			45 => array('septyliard','septyliardy','septyliardów'),
-			48 => array('oktylion','oktyliony','oktylionów'),
-			51 => array('oktyliard','oktyliardy','oktyliardów'),
-			54 => array('nonylion','nonyliony','nonylionów'),
-			57 => array('nonyliard','nonyliardy','nonyliardów'),
-			60 => array('decylion','decyliony','decylionów'),
-			63 => array('decyliard','decyliardy','decyliardów'),
-			100 => array('centylion','centyliony','centylionów'),
-			103 => array('centyliard','centyliardy','centyliardów'),
-			120 => array('wicylion','wicylion','wicylion'),
-			123 => array('wicyliard','wicyliardy','wicyliardów'),
-			180 => array('trycylion','trycylion','trycylion'),
-			183 => array('trycyliard','trycyliardy','trycyliardów'),
-			240 => array('kwadragilion','kwadragilion','kwadragilion'),
-			243 => array('kwadragiliard','kwadragiliardy','kwadragiliardów'),
-			300 => array('kwinkwagilion','kwinkwagilion','kwinkwagilion'),
-			303 => array('kwinkwagiliard','kwinkwagiliardy','kwinkwagiliardów'),
-			360 => array('seskwilion','seskwilion','seskwilion'),
-			363 => array('seskwiliard','seskwiliardy','seskwiliardów'),
-			420 => array('septagilion','septagilion','septagilion'),
-			423 => array('septagiliard','septagiliardy','septagiliardów'),
-			480 => array('oktogilion','oktogilion','oktogilion'),
-			483 => array('oktogiliard','oktogiliardy','oktogiliardów'),
-			540 => array('nonagilion','nonagilion','nonagilion'),
-			543 => array('nonagiliard','nonagiliardy','nonagiliardów'),
-			600 => array('centylion','centyliony','centylionów'),
-			603 => array('centyliard','centyliardy','centyliardów'),
-			6000018 => array('milinilitrylion','milinilitryliony','milinilitrylionów')
-	);
+		0 => array(''),
+		3 => array('tūkstantis','tūkstančiai','tūkstančių'),
+		6 => array('milijonas','milijonai','milijonų'),
+		9 => array('bilijonas','bilijonai','bilijonų'),
+		12 => array('trilijonas','trilijonai','trilijonų'),
+		15 => array('kvadrilijonas','kvadrilijonai','kvadrilijonų'),
+		18 => array('kvintilijonas','kvintilijonai','kvintilijonų')
+		);
 
 	if (substr($num, 0, 1) == '-')
 	{
@@ -288,52 +214,39 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 	$num = trim($num);
 	$num = preg_replace('/^0+/','',$num);
 
-	if (strlen($num) > 3)
-	{
+	if (strlen($num) > 3) {
 		$maxp = strlen($num)-1;
 		$curp = $maxp;
-		for ($p = $maxp; $p > 0; --$p)
-		{ // power
-
+		for ($p = $maxp; $p > 0; --$p) { // power
 			// check for highest power
-			if (isset($_exponent[$p]))
-			{ // send substr from $curp to $p
+			if (isset($_exponent[$p])) {
+			// send substr from $curp to $p
 				$snum = substr($num, $maxp - $curp, $curp - $p + 1);
 				$snum = preg_replace('/^0+/','',$snum);
-				if ($snum !== '')
-				{
+				if ($snum !== '') {
 					$cursuffix = $_exponent[$power][count($_exponent[$power])-1];
 					if ($powsuffix != '')
 						$cursuffix .= $_sep . $powsuffix;
-					$ret .= to_words($snum, $p, $cursuffix);
-					$ret .=' ';
+					$ret .= toWords($snum, $p, $cursuffix);
 				}
 				$curp = $p - 1;
 				continue;
 			}
 		}
 		$num = substr($num, $maxp - $curp, $curp - $p + 1);
-		$ret = trim($ret);
 		if ($num == 0)
-		{
 			return $ret;
-		}
 	}
 	elseif ($num == 0 || $num == '')
-	{
-		return $_digits[0];
-	}
+		return $_sep . $_digits[0];
 
 	$h = $t = $d = 0;
 
-	switch(strlen($num))
-	{
+	switch(strlen($num)) {
 		case 3:
 			$h = (int)substr($num,-3,1);
-
 		case 2:
 			$t = (int)substr($num,-2,1);
-
 		case 1:
 			$d = (int)substr($num,-1,1);
 			break;
@@ -342,141 +255,92 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 			break;
 	}
 
-	switch ($h)
-	{
+	if ($h > 1)
+		$ret .= $_sep . $_digits[$h] . $_sep . 'šimtai';
+	elseif ($h)
+		$ret .= $_sep . 'šimtas';
+
+	// ten, twenty etc.
+	switch ($t) {
 		case 9:
-			$ret .= $_sep . 'dziewięćset';
+			$ret .= $_sep . 'devyniasdešimt';
 			break;
-
 		case 8:
-			$ret .= $_sep . 'osiemset';
+			$ret .= $_sep . 'aštuoniasdešimt';
 			break;
-
 		case 7:
-			$ret .= $_sep . 'siedemset';
+			$ret .= $_sep . 'septyniasdešimt';
 			break;
-
 		case 6:
-			$ret .= $_sep . 'sześćset';
+			$ret .= $_sep . 'šešiasdešimt';
 			break;
-
 		case 5:
-			$ret .= $_sep . 'pięćset';
+			$ret .= $_sep . 'penkiasdešimt';
 			break;
-
 		case 4:
-			$ret .= $_sep . 'czterysta';
+			$ret .= $_sep . 'keturiasdešimt';
 			break;
-
 		case 3:
-			$ret .= $_sep . 'trzysta';
+			$ret .= $_sep . 'trisdešimt';
 			break;
-
 		case 2:
-			$ret .= $_sep . 'dwieście';
+			$ret .= $_sep . 'dvidešimt';
 			break;
-
 		case 1:
-			$ret .= $_sep . 'sto';
-			break;
-	}
-	
-	switch ($t)
-	{
-		case 9:
-		case 8:
-		case 7:
-		case 6:
-		case 5:
-			$ret .= $_sep . $_digits[$t] . 'dziesiąt';
-			break;
-
-		case 4:
-			$ret .= $_sep . 'czterdzieści';
-			break;
-
-		case 3:
-			$ret .= $_sep . 'trzydzieści';
-			break;
-
-		case 2:
-			$ret .= $_sep . 'dwadzieścia';
-			break;
-
-		case 1:
-			switch ($d)
-			{
+			switch ($d) {
 				case 0:
-					$ret .= $_sep . 'dziesięć';
+					$ret .= $_sep . 'dešimt';
 					break;
-
 				case 1:
-					$ret .= $_sep . 'jedenaście';
+					$ret .= $_sep . 'vienuolika';
 					break;
-
 				case 2:
+					$ret .= $_sep . 'dvylika';
+					break;
 				case 3:
-				case 7:
-				case 8:
-					$ret .= $_sep . $_digits[$d] . 'naście';
+					$ret .= $_sep . 'trylika';
 					break;
-
 				case 4:
-					$ret .= $_sep . 'czternaście';
+					$ret .= $_sep . 'keturiolika';
 					break;
-
 				case 5:
-					$ret .= $_sep . 'piętnaście';
+					$ret .= $_sep . 'penkiolika';
 					break;
-
 				case 6:
-					$ret .= $_sep . 'szesnaście';
+					$ret .= $_sep . 'šešiolika';
 					break;
-
+				case 7:
+					$ret .= $_sep . 'septyniolika';
+					break;
+				case 8:
+					$ret .= $_sep . 'aštuoniolika';
+					break;
 				case 9:
-					$ret .= $_sep . 'dziewiętnaście';
+					$ret .= $_sep . 'devyniolika';
 					break;
 			}
-			break;
+			break; 
+		}
+
+	if ($t != 1 && $d > 0) { // add digits only in <0>,<1,9> and <21,inf>
+		if ($d > 1 || !$power || $t)
+			$ret .= $_sep . $_digits[$d];
 	}
 
-	if ($t != 1 && $d > 0)
-		$ret .= $_sep . $_digits[$d];
-
-	if ($t == 1)
-		$d = 0;
-
-	if (( $h + $t ) > 0 && $d == 1)
-		$d = 0;
-
-	if ($power > 0)
-	{
+	if ($power > 0) {
 		if (isset($_exponent[$power]))
 			$lev = $_exponent[$power];
-
 		if (!isset($lev) || !is_array($lev))
 			return null;
 
-		switch ($d)
-		{
-			case 1:
-				$suf = $lev[0];
-				break;
-			case 2:
-			case 3:
-			case 4:
-				$suf = $lev[1];
-				break;
-			case 0:
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-				$suf = $lev[2];
-				break;
-		}
-		$ret .= $_sep . $suf;
+		//echo " $t $d  <br>";
+
+		if ($t == 1 || ($t > 0 && $d == 0 ))
+			$ret .= $_sep . $lev[2];
+		elseif ($d > 1)
+			$ret .= $_sep . $lev[1];		
+		else
+			$ret .= $_sep . $lev[0];		
 	}
 
 	if ($powsuffix != '')
