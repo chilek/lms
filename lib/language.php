@@ -51,6 +51,14 @@ $LANGDEFS = array(
 			'html' => 'pl',
 			'money_format' => '%01.2f zł'
 			),
+		'lt' => array(
+			'name' => 'Lithuanian',
+			'orig' => 'Litewski',
+			'locale' => 'lt_LT.UTF-8',
+			'charset' => 'UTF-8',
+			'html' => 'lt',
+			'money_format' => '%01.2f LT'
+			),
 		'en' => array(
 			'name' => 'English',
 			'orig' => 'English',
@@ -94,6 +102,9 @@ foreach ($langs as $val)
 	{
 		case 'pl':
 			$_language = 'pl';
+    			break 2;
+		case 'lt':
+			$_language = 'lt';
     			break 2;
 		case 'sk':
 			$_language = 'sk';
