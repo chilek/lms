@@ -125,6 +125,7 @@
                     <member>deleted - usuniêty z bazy (0/1)</member>
                     <member>message - komunikat do wy¶wietlenia przy w³±czonych ostrze¿eniach</member>
 		    <member>cutoffstop - data, do której blokowanie klientów zad³u¿onych jest wy³±czone</member>
+		    <member>paytime - termin p³atno¶ci faktur</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">
@@ -707,6 +708,8 @@
 			<member>address - adres</member>
 			<member>zip - kod pocztowy</member>
 			<member>city - miasto</member>
+                	<member>ten - numer identyfikacji podatkowej NIP</member>
+			<member>regon - numer REGON</member>
 			<member>account - konto bankowe lub prefiks konta p³atno¶ci masowych</member>
 			<member>description - informacje dodatkowe</member>
 			<member>status - status blokady (1/0)</member>

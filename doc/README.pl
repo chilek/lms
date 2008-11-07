@@ -5835,6 +5835,7 @@ Rozdział 7. Dla dociekliwych
    message - komunikat do wyświetlenia przy włączonych ostrzeżeniach
    cutoffstop - data, do której blokowanie klientów zadłużonych jest
    wyłączone
+   paytime - termin płatności faktur
      __________________________________________________________________
 
 7.2.3. Grupy klientów ('customergroups')
@@ -6376,6 +6377,8 @@ Rozdział 7. Dla dociekliwych
    address - adres
    zip - kod pocztowy
    city - miasto
+   ten - numer identyfikacji podatkowej NIP
+   regon - numer REGON
    account - konto bankowe lub prefiks konta płatności masowych
    description - informacje dodatkowe
    status - status blokady (1/0)

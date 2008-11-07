@@ -121,6 +121,7 @@
                     <member>deleted - if is deleted from database boolean (0/1)</member>
                     <member>message - message to be displayed if warnings enabled</member>
                     <member>cutoffstop - date to which customers cutting off is disabled</member>
+                    <member>paytime - invoices deadline in days</member>
                </simplelist>
           </sect2>
           <sect2 id="customergroups">
@@ -704,6 +705,8 @@
                     <member>address - address</member>
                     <member>zip - zip code</member>
                     <member>city - city</member>
+                    <member>ten - tax exempt number</member>
+		    <member>regon - business registration number</member>
                     <member>account - bank account or mass payments account prefix</member>
                     <member>description - additional information</member>
                     <member>status - lock status (1/0)</member>

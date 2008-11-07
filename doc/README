@@ -259,8 +259,8 @@ Chapter 1. Intro
 1.4.3. Newest version
 
    Newest version of LMS can be downloaded from CVS repository utilizing
-   WWW interface at cvs.lms.org.pl, or with CVS tools (anonymous access,
-   empty password):
+   WWW interface at here, or with CVS tools (anonymous access, empty
+   password):
 cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot login
 cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot co lms
 cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot logout
@@ -5180,6 +5180,7 @@ Chapter 7. For curious
    deleted - if is deleted from database boolean (0/1)
    message - message to be displayed if warnings enabled
    cutoffstop - date to which customers cutting off is disabled
+   paytime - invoices deadline in days
      __________________________________________________________________
 
 7.2.3. Customer groups ('customergroups')
@@ -5719,6 +5720,8 @@ Chapter 7. For curious
    address - address
    zip - zip code
    city - city
+   ten - tax exempt number
+   regon - business registration number
    account - bank account or mass payments account prefix
    description - additional information
    status - lock status (1/0)
