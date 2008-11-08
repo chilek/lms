@@ -88,18 +88,30 @@ function uptimef($ts)
 
 function check_ten($ten)
 {
-	$steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
+	$steps = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4);
 	$sum_nb = 0;
 
-	$ten = str_replace('-', '', $ten);
-	$ten = str_replace(' ', '', $ten);
+	$ten = strtoupper(ereg_replace("[^[:alnum:]\?]", "", $ten));
+	if (!ereg("(^[0-9]{11})([0-9]{1}$|\?{1}$)", $ten, $regs))
+		if (!ereg("(^[0-9]{8})([0-9]{1}$|\?{1}$)", $ten, $regs))
+			return FALSE;
+	$num = $regs[1];
+	$ctr = $regs[2];
+	$len = strlen($num);
 
-	if (strlen($ten) != 10) return FALSE;
+	for ($x = 0; $x < $len; $x++)
+		$sum_nb += $steps[$x] * $num[$x];
+	if ($sum_nb % 11 == 10) {
+		$sum_nb = 0;
+		for ($x = 0; $x < $len; $x++)
+			$sum_nb += $steps[$x + 2] * $num[$x];
+	}
 
-	for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $ten[$x];
-
-	if ($sum_nb % 11 == $ten[9]) return TRUE;
-
+	$sum_nb = $sum_nb % 11;
+	if ($sum_nb == 10)
+		$sum_nb = 0;
+	if ($sum_nb == $ctr)
+		return TRUE;
 	return FALSE;
 }
 
