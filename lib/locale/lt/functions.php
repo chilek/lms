@@ -189,11 +189,9 @@ function check_icn($icn)
 {
 	$icn = str_replace(' ', '', $icn);
 
-	// poprawny format numeru dowodu osobistego to 9 znakow w tym:
-	//    - 2 litery i 7 cyfr lub
-	//    - 3 litery i 6 cyfr
+	// proper format of identity card number - 9 digits
 
-	return preg_match('/^[A-Z]{2}[0-9]{7}$/i', $icn) || preg_match('/^[A-Z]{3}[0-9]{6}$/i', $icn);
+	return preg_match('/^[0-9]{8}$/i', $icn);
 }
 
 function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
