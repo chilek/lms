@@ -56,7 +56,11 @@ $DB->Execute("CREATE VIEW customersview AS
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
-										
+
+if($list = $DB->GetAll("SELECT * FROM uiconfig WHERE section = 'finances' OR section = 'invoices'"))
+        foreach($list as $opt)
+	        $CONFIG[$opt['section']][$opt['var']] = $opt['value'];
+
 $DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
 	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	array(!empty($CONFIG['finances']['shortname']) && $CONFIG['finances']['shortname'] != 'finances/shortname' ? $CONFIG['finances']['shortname'] : 'default',
