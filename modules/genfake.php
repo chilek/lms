@@ -1964,6 +1964,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['cutoffstop'] = 0;
 		$customeradd['divisionid'] = 1;
 		$customeradd['consentdate'] = 0;
+		$customeradd['paytime'] = -1;
 
 		$id = $LMS->CustomerAdd($customeradd);
 		$LMS->AddAssignment(array(
