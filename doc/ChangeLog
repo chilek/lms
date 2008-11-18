@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - BTS#0000773: fix transaction date when input date contains spaces (alec)
+
 version 1.10.5 Neith (2008-11-05):
 
   - don't overwrite invoice's creation time on edit if date wasn't changed (alec)

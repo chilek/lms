@@ -26,6 +26,10 @@
 
 $addbalance = $_POST['addbalance'];
 
+foreach($addbalance as $key=>$value)
+        if(!is_array($value))
+                $addbalance[$key] = trim($value);
+
 $addbalance['value'] = str_replace(',','.',$addbalance['value']);
 
 if(isset($addbalance['time']) && $addbalance['time'] != '' 
