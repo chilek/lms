@@ -1029,6 +1029,25 @@ CREATE TABLE divisions (
 );
 
 /* ---------------------------------------------------
+ Structure of table "voipaccounts"
+------------------------------------------------------*/
+DROP SEQUENCE voipaccounts_id_seq;
+CREATE SEQUENCE voipaccounts_id_seq;
+DROP TABLE voipaccounts;
+CREATE TABLE voipaccounts (
+	id		integer		NOT NULL DEFAULT nextval(('voipaccounts_id_seq'::text)::regclass),
+	ownerid		integer		NOT NULL DEFAULT 0,
+	login		varchar(255)	NOT NULL DEFAULT ''::character varying,
+	passwd		varchar(255)	NOT NULL DEFAULT ''::character varying,
+	phone		varchar(255)	NOT NULL DEFAULT ''::character varying,
+	creationdate	integer		NOT NULL DEFAULT 0,
+	moddate		integer		NOT NULL DEFAULT 0,
+	creatorid	integer		NOT NULL DEFAULT 0,
+	modid		integer		NOT NULL DEFAULT 0,
+	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE up_rights_id_seq;
@@ -1157,4 +1176,4 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008110100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008111900');
