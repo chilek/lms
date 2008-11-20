@@ -2065,6 +2065,8 @@ $_LANG['Limit of records displayed on one page in divisions list. Default: 100.'
 $_LANG['Voip Accounts List'] = 'Lista kont VoIP';
 $_LANG['Phone number:'] = 'Numer telefonu:';
 $_LANG['No such voip accounts in database.'] = 'Brak kont VoIP w bazie.';
+$_LANG['That customer does not own any voip account.'] = 'Klient nie posiada kont VoIP.';
+$_LANG['No such voip accounts matching search criteria.'] = 'Brak kont spełniających zadane kryteria.';
 $_LANG['Find voip accounts matching the following search criteria:'] = 'Znajdź konta VoIP spełniające zadane kryteria:';
 $_LANG['Enter phone number or it\'s fragment'] = 'Wprowadź numer telefonu lub jego fragment';
 $_LANG['Enter password or it\'s fragment'] = 'Wprowadź hasło lub jego fragment';
@@ -2095,4 +2097,5 @@ $_LANG['Are you sure, you want to remove voip account \\\'$0\\\' from database?'
 $_LANG['Delete Voip Account $0'] = 'Usuń konto VoIP: $0';
 $_LANG['Voip Account Info: $0'] = 'Informacje o koncie: $0';
 $_LANG['Voip Account Edit: $0'] = 'Edycja konta VoIP: $0';
+$_LANG['Voip Accounts ($0):'] = 'Konta VoIP ($0)';
 ?>

@@ -1,0 +1,55 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR class="dark hand" onclick="showOrHide('voipaccountspanel');">
+		<TD width="99%" class="fleftu hand">
+			<IMG src="img/phone.gif" alt="">
+			<B><A name="voipaccounts">{t 0=$customervoipaccounts.total|default:"0"}Voip Accounts ($0):{/t}</A></B> 
+		</TD>
+		<TD width="1%" class="frightu" align="right" nowrap>
+			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=voipaccountadd&ownerid={$customerinfo.id}">{t}New Voip Account{/t} &raquo;</A>&nbsp;{/if}
+		</TD>
+	</TR>
+	<TR id="voipaccountspanel" style="display:none;">
+		<TD WIDTH="100%" colspan="2" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Login:{/t}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{t}Password:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Phone number:{/t}</TD>
+					<TD WIDTH="96%" NOWRAP class="fbt">{t}ID:{/t}</TD>
+					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+				</TR>
+				{cycle name=voips values="light,lucid" print=false}
+				{foreach from=$customervoipaccounts.accounts item=voipaccount}
+				<TR class="{cycle name=voips}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=voipaccountinfo&id={$voipaccount.id}">{$voipaccount.login}</A></B></TD>
+					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$voipaccount.passwd}</TD>
+					<TD WIDTH="1%" NOWRAP>{$voipaccount.phone}</TD>
+					<TD WIDTH="96%" NOWRAP>({$voipaccount.id|string_format:"%04d"})</TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+						<A onClick="return confirmLink(this, '{t}Are you sure, you want to remove customer voip account?{/t}')" HREF="?m=voipaccountdel&id={$voipaccount.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" TITLE="[ {t}Delete{/t} ]"></A>
+						<A HREF="?m=voipaccountedit&id={$voipaccount.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" TITLE="[ {t}Edit{/t} ]"></A>
+						<A HREF="?m=voipaccountinfo&id={$voipaccount.id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" TITLE="[ {t}Info{/t} ]"></A>
+					</TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD align="center" WIDTH="100%" colspan="6">
+						<p>&nbsp;</p>
+						<p><B>{t}That customer does not own any voip account.{/t}</B></p>
+						<p>&nbsp;</p>
+					</TD>
+				</TR>
+				{/foreach}
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+{literal}<SCRIPT type="text/javascript">
+<!--
+	if(getCookie('voipaccountspanel')=='1')
+	{
+		document.getElementById('voipaccountspanel').style.display = '';
+	}
+//-->
+</SCRIPT>{/literal}
