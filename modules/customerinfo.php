@@ -42,6 +42,7 @@ $customergroups = $LMS->CustomergroupGetForCustomer($_GET['id']);
 $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($_GET['id']);
 $balancelist = $LMS->GetCustomerBalanceList($_GET['id']);
 $customernodes = $LMS->GetCustomerNodes($_GET['id']);
+$customervoipaccounts = $LMS->GetCustomerVoipAccounts($_GET['id']);
 $tariffs = $LMS->GetTariffs();
 $documents = $LMS->GetDocuments($_GET['id'], 10);
 $taxeslist = $LMS->GetTaxes();
@@ -69,6 +70,7 @@ $customernodes['ownerid'] = $_GET['id'];
 $SMARTY->assign(
 		array(
 			'customernodes' => $customernodes,
+			'customervoipaccounts' => $customervoipaccounts,
 			'balancelist' => $balancelist,
 			'assignments' => $assigments,
 			'customergroups' => $customergroups,

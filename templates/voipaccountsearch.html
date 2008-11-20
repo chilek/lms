@@ -1,0 +1,86 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<SCRIPT language="javaScript">
+{literal}
+<!-- 
+	function PrintList()
+	{
+		document.voipaccountsearch.action = "?m=voipaccountsearch&search=1&print=1";
+		document.voipaccountsearch.target = "_BLANK";
+		document.voipaccountsearch.submit();
+	}
+
+	function Search()
+	{
+		document.voipaccountsearch.action = "?m=voipaccountsearch&search=1";
+		document.voipaccountsearch.target = "";
+		document.voipaccountsearch.submit();
+	}
+
+	function setOperator(id)
+	{
+		document.voipaccountsearch.elements[id].checked = true;
+	}
+
+//-->	
+{/literal}
+</SCRIPT>
+<H1>{$layout.pagetitle}</H1>
+<P>
+<FORM METHOD="POST" ACTION="?m=voipaccountsearch&search" NAME="voipaccountsearch">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT TYPE="hidden" NAME="m" VALUE="voipaccountsearch">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FALL" COLSPAN="2">
+			<B>{t}Find voip accounts matching the following search criteria:{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/node.gif" width="16" alt=""> <B>{t}Login:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[login]" {tip text="Enter login or it's fragment"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/passwd.gif" width="16" alt=""> <B>{t}Password:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[password]" {tip text="Enter password or it's fragment"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/phone.gif" width="16" alt=""> <B>{t}Phone number:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[phone]" {tip text="Enter phone number or it's fragment"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" alt=""> <B>{t}Qualification operator:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator0')"> {t}AND{/t} </A>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><A HREF="javascript:setOperator('operator1')"> {t}OR{/t} </A>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
+			<A href="javascript:Search()" accesskey="s">{t}Search{/t} <IMG SRC="img/search.gif" alt=""></A>
+			<A href="javascript:PrintList()">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['voipaccountsearch'].elements['search[login]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

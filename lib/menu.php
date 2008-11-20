@@ -172,6 +172,34 @@ $menu = array(
 			),
 		),
 
+		'VoIP' => array(
+			'name' => trans('VoIP'),
+			'img' =>'phone.gif',
+			'tip' => trans('VoIP management'),
+			'accesskey' =>'v',
+			'prio' => 11,
+			'submenu' => array(
+				array(
+					'name' => trans('List'),
+					'link' => '?m=voipaccountlist',
+					'tip' => trans('List of Accounts'),
+					'prio' => 10,
+				),
+				array(
+					'name' => trans('New Account'),
+					'link' => '?m=voipaccountadd',
+					'tip' => trans('Allows you to add the new VoIP account'),
+					'prio' => 20,
+				),
+				array(
+					'name' => trans('Search'),
+					'link' => '?m=voipaccountsearch',
+					'tip' => trans('Allows you to search VoIP account'),
+					'prio' => 30,
+				),
+			),
+		),
+
 		'netdevices' => array(
 			'name' => trans('Net Devices'),
 			'img' =>'netdev.gif',

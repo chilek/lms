@@ -225,7 +225,7 @@ class LMS
 		}
 	}
 
-	function GetUserInfo($id) // zwraca pe³ne info o podanym userie
+	function GetUserInfo($id) // zwraca peï¿½ne info o podanym userie
 	{
 		if($userinfo = $this->DB->GetRow('SELECT id, login, name, email, hosts, lastlogindate, 
 				lastloginip, failedlogindate, failedloginip, deleted, position 
@@ -3744,6 +3744,174 @@ class LMS
 	function GetCountryStates()
 	{
 		return $this->DB->GetAllByKey('SELECT id, name FROM states ORDER BY name', 'id');
+	}
+
+	//VoIP functions
+	function GetVoipAccountList($order='login,asc', $search=NULL, $sqlskey='AND')
+	{
+		if($order=='')
+			$order='login,asc';
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+		switch($order)
+		{
+			case 'login':
+				$sqlord = ' ORDER BY voipaccounts.login';
+			break;
+			case 'passwd':
+				$sqlord = ' ORDER BY voipaccounts.passwd';
+			break;
+			case 'phone':
+				$sqlord = ' ORDER BY voipaccounts.phone';
+			break;
+			case 'id':
+				$sqlord = ' ORDER BY voipaccounts.id';
+			break;
+			case 'ownerid':
+				$sqlord = ' ORDER BY ownerid';
+			break;
+			case 'owner':
+				$sqlord = ' ORDER BY owner';
+			break;
+		}
+
+		if(sizeof($search))
+		foreach($search as $idx => $value)
+		{
+			if($value!='')
+			{
+				switch($idx)
+				{
+					case 'login' :
+						$searchargs[] = "voipaccounts.login ?LIKE? '%".$value."%'";
+					break;
+					case 'phone' :
+						$searchargs[] = "voipaccounts.phone ?LIKE? '%".$value."%'";
+					break;
+					case 'password' :
+						$searchargs[] = "voipaccounts.passwd ?LIKE? '%".$value."%'";
+					break;
+					default :
+						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
+				}
+			}
+		}
+
+		if(isset($searchargs))
+			$searchargs = ' AND ('.implode(' '.$sqlskey.' ',$searchargs).')';
+
+		$voipaccountlist =
+			$this->DB->GetAll('SELECT voipaccounts.id AS id, login, passwd, voipaccounts.phone AS phone, ownerid, '
+				.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS owner
+				FROM voipaccounts 
+				JOIN customersview c ON (voipaccounts.ownerid = c.id) '
+				.' WHERE 1=1 '
+				.(isset($searchargs) ? $searchargs : '')
+				.($sqlord != '' ? $sqlord.' '.$direction : ''));
+
+		$voipaccountlist['total'] = sizeof($voipaccountlist);
+		$voipaccountlist['order'] = $order;
+		$voipaccountlist['direction'] = $direction;
+
+		return $voipaccountlist;
+	}
+
+	function VoipAccountAdd($voipaccountdata)
+	{
+		if($this->DB->Execute('INSERT INTO voipaccounts (ownerid, login, passwd, phone, creatorid, creationdate)
+					VALUES (?, ?, ?, ?, ?, ?NOW?)',
+				array($voipaccountdata['ownerid'],
+				    $voipaccountdata['login'],
+				    $voipaccountdata['passwd'],
+				    $voipaccountdata['phone'],
+				    $this->AUTH->id
+				    )))
+		{
+			$id = $this->DB->GetLastInsertID('voipaccounts');
+			return $id;
+		}
+		else
+			return FALSE;
+	}
+	function VoipAccountExists($id)
+	{
+		return ($this->DB->GetOne('SELECT v.id FROM voipaccounts v
+				WHERE v.id = ? AND NOT EXISTS (
+		            		SELECT 1 FROM customerassignments a
+				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = v.ownerid)',
+				array($id)) ? TRUE : FALSE);
+	}
+
+	function GetVoipAccountOwner($id)
+	{
+		return $this->DB->GetOne('SELECT ownerid FROM voipaccounts WHERE id=?', array($id));
+	}
+
+	function GetVoipAccount($id)
+	{
+		if($result = $this->DB->GetRow('SELECT id, ownerid, login, passwd, phone,
+					creationdate, moddate, creatorid, modid
+					FROM voipaccounts WHERE id = ?', array($id)))
+		{
+			$result['createdby'] = $this->GetUserName($result['creatorid']);
+			$result['modifiedby'] = $this->GetUserName($result['modid']);
+			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
+			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
+			$result['owner'] = $this->GetCustomerName($result['ownerid']);
+			return $result;
+		}
+		else
+			return FALSE;
+	}
+
+	function GetVoipAccountIDByLogin($login)
+	{
+		return $this->DB->GetAll('SELECT id FROM voipaccounts WHERE login=?', array($login));
+	}
+
+	function GetVoipAccountIDByPhone($phone)
+	{
+		return $this->DB->GetOne('SELECT id FROM voipaccounts WHERE phone=?', array($phone));
+	}
+
+	function GetVoipAccountLogin($id)
+	{
+		return $this->DB->GetOne('SELECT login FROM voipaccounts WHERE id=?', array($id));
+	}
+
+	function DeleteVoipAccount($id)
+	{
+		$this->DB->BeginTrans();
+		$this->DB->Execute('DELETE FROM voipaccounts WHERE id = ?', array($id));
+		$this->DB->CommitTrans();
+	}
+
+	function VoipAccountUpdate($voipaccountdata)
+	{
+		$this->DB->Execute('UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, 
+				modid=?, ownerid=? WHERE id=?', 
+				array($voipaccountdata['login'],
+				    $voipaccountdata['passwd'],
+				    $voipaccountdata['phone'],
+				    $this->AUTH->id,
+				    $voipaccountdata['ownerid'],
+				    $voipaccountdata['id']
+			    ));
+	}
+
+	function GetCustomerVoipAccounts($id)
+	{
+		if($result['accounts'] = $this->DB->GetAll('SELECT id, login, passwd, phone, ownerid
+				FROM voipaccounts WHERE ownerid=? 
+				ORDER BY login ASC', array($id)))
+		{
+			$result['total'] = sizeof($result['accounts']);
+		}
+		return $result;
 	}
 }
 
