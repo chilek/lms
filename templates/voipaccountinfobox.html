@@ -1,0 +1,61 @@
+<!--// $Id$ //-->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/node.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+			<B>{$voipaccountinfo.login} ({$voipaccountinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FLR" ALIGN="RIGHT">
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/passwd.gif" ALT="{t}Password:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Password:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" NOWRAP>
+			{$voipaccountinfo.passwd}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/phone.gif" ALT="{t}Phone number:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Phone number:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" NOWRAP>
+			{$voipaccountinfo.phone}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Created:{/t}<BR>
+			{t}Modified:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<BR>
+			{if $voipaccountinfo.moddate}{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+				</TABLE>
+	</TABLE>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+			<A HREF="?m=voipaccountedit&id={$voipaccountinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t 0=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$0\' from database?{/t}')">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A HREF="?m=customerinfo&id={$nodeinfo.ownerid}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+		</TD>
+	</TR>	
+</TABLE>

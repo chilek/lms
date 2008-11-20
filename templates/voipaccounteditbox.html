@@ -1,0 +1,82 @@
+<!--// $Id$ //-->
+<FORM NAME="editvoipaccount" METHOD="POST" ACTION="?m=voipaccountedit&id={$voipaccountinfo.id}">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT TYPE="hidden" NAME="voipaccountedit[id]" VALUE="{$voipaccountinfo.id}">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/node.gif" ALT="{t}Login:{/t}">
+		</TD>
+		<TD WIDTH="1%" CLASS="FBT">
+			<B>{t}Login:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHTU">
+			<INPUT TYPE="TEXT" NAME="voipaccountedit[login]" VALUE="{$voipaccountinfo.login}" MAXLENGTH="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
+			<B>({$voipaccountinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/passwd.gif" ALT="{t}Password:{/t}">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Password:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="voipaccountedit[passwd]" VALUE="{$voipaccountinfo.passwd}" {tip text="Enter password" trigger="passwd"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/passwd.gif" ALT="{t}Phone number:{/t}">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Phone number:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="voipaccountedit[phone]" VALUE="{$voipaccountinfo.phone}" {tip text="Enter phone number" trigger="phone"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/customer.gif" ALT="{t}Customer:{/t}">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Customer:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<SELECT SIZE="1" NAME="voipaccountedit[ownerid]" {tip text="Assign voip account to customer"} style="max-width:250px;">
+				{section name=customers loop=$customers}
+				<OPTION VALUE="{$customers[customers].id}"{if $voipaccountinfo.ownerid eq $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{t}Created:{/t}<BR>
+			{t}Modified:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			{$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<BR>
+			{if $voipaccountinfo.moddate}{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+			<A HREF="javascript:document.editvoipaccount.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
+			<A HREF="?m=voipaccountinfo&id={$voipaccountinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>	
+</TABLE>
+</FORM>
+{literal}
+<SCRIPT type="text/javascript">
+<!--
+	document.forms['editvoipaccount'].elements['voipaccountedit[login]'].focus();
+//-->
+</SCRIPT>
+{/literal}

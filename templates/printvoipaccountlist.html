@@ -1,0 +1,68 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="99%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t 0=$layout.logname}Prepared by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
+	<TR>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}No.{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}ID{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}Login<!voipaccounts>{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}Pasword{/t}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
+			{t}Phone{/t}
+		</TD>
+		<TD WIDTH="95%" ALIGN=CENTER CLASS=head>
+			{t}Owner{/t}
+		</TD>
+	</TR>
+	{cycle values="white,grey" print=false}
+	{section name=voipaccountlist loop=$voipaccountlist}
+	<TR class="{cycle}">
+		<TD WIDTH="1%" ALIGN=CENTER>
+			{counter}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER>
+			{$voipaccountlist[voipaccountlist].id|string_format:"%04d"}
+		</TD>
+		<TD WIDTH="1%" ALIGN=RIGHT>
+			<B>{$voipaccountlist[voipaccountlist].login}</B>
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER>
+			{$voipaccountlist[voipaccountlist].passwd}
+		</TD>
+		<TD WIDTH="1%" ALIGN=CENTER>
+			{$voipaccountlist[voipaccountlist].phone}
+		</TD>
+		<TD WIDTH="95%" ALIGN=LEFT>
+			{$voipaccountlist[voipaccountlist].owner}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" COLSPAN="6">
+			<P>&nbsp;</P>
+			<P><B>{t}No such voip accounts in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/section}
+</TABLE>
+{include file="clearfooter.html"}
