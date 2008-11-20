@@ -42,6 +42,7 @@ version ? (????-??-??):
     customers (chilan)
   - added Slovakian translation (Robin Pavlik)
   - better handling of invoices/receipts/docs printouts with window.open (alec)
+  - added support for VoIP accounts
 
 version 1.11.4 Telchak (2008-08-07):
 
