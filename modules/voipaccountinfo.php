@@ -53,28 +53,20 @@ $taxeslist = $LMS->GetTaxes();
 $customernodes = $LMS->GetCustomerNodes($ownerid);
 $customervoipaccounts = $LMS->GetCustomerVoipAccounts($ownerid);
 $allnodegroups = $LMS->GetNodeGroupNames();
-$nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
-$othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
+
+if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
+{
+        $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
+                WHERE nodeid = nodes.id AND ownerid = ?', array($voipaccountdata['ownerid'])));
+}
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto').'&ownerid='.$ownerid);
 
-if($nodeinfo['netdev'] == 0) 
-	$netdevices = $LMS->GetNetDevNames();
-else
-	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
-
-if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
-{
-	$SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes 
-					WHERE nodeid = nodes.id AND ownerid = ?', array($ownerid)));
-}
-
 $layout['pagetitle'] = trans('Voip Account Info: $0',$voipaccountinfo['login']);
 
-$SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('voipaccountinfo',$voipaccountinfo);
@@ -84,8 +76,6 @@ $SMARTY->assign('customervoipaccounts',$customervoipaccounts);
 $SMARTY->assign('customergroups',$customergroups);
 $SMARTY->assign('othercustomergroups',$othercustomergroups);
 $SMARTY->assign('allnodegroups',$allnodegroups);
-$SMARTY->assign('nodegroups',$nodegroups);
-$SMARTY->assign('othernodegroups',$othernodegroups);
 $SMARTY->assign('documents', $documents);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('tariffs',$tariffs);
