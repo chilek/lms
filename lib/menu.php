@@ -174,7 +174,7 @@ $menu = array(
 
 		'VoIP' => array(
 			'name' => trans('VoIP'),
-			'img' =>'phone.gif',
+			'img' =>'voip.gif',
 			'tip' => trans('VoIP management'),
 			'accesskey' =>'v',
 			'prio' => 11,

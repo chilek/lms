@@ -3,25 +3,26 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE cellpadding="3" width="100%">
 	<TR class="dark" {tip text="Click on column name to change sorting order"}>
-		<TD class="fleftu" width="1%" NOWRAP>
-			<img src="img/node.gif" ALT=""> <A href="?m=voipaccountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		<TD class="fleftu" width="96%" NOWRAP>
+			<img src="img/voip.gif" ALT=""> <A href="?m=voipaccountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>{t}Login:{/t}</B></A> {if $listdata.order eq "login"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/customer.gif" ALT=""> <A href="?m=voipaccountlist&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{t}Customer:{/t}</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD Class="fbt" valign="top" width="1%" nowrap>
-			<img src="img/passwd.gif" ALT="" width="1" height="16"><A href="?m=voipaccountlist&o=passwd{if $listdata.direction eq "asc" && $listdata.order eq "passwd"},desc{/if}">{t}Password:{/t}</A> {if $listdata.order eq "passwd"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/phone.gif" ALT="" width="1" height="16"><A href="?m=voipaccountlist&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{t}Phone number:{/t}</A> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		<TD Class="fbt" width="1%" nowrap>
+			<A href="?m=voipaccountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD Class="fbt" width="1%" nowrap>
-			<img src="img/empty.gif" ALT="">&nbsp;<A href="?m=voipaccountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/empty.gif" ALT="">&nbsp;<A href="?m=voipaccountlist&o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">{t}Customer ID:{/t}</A> {if $listdata.order eq "ownerid"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=voipaccountlist&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{t}Phone number:{/t}</A> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD CLASS="frightu" width="97%" align="right">
+		<TD Class="fbt" width="1%" nowrap>
+			<A href="?m=voipaccountlist&o=passwd{if $listdata.direction eq "asc" && $listdata.order eq "passwd"},desc{/if}">{t}Password:{/t}</A> {if $listdata.order eq "passwd"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD CLASS="frightu" width="1%" align="right">
 			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
 		</TD>
 	</TR>
 {*
 	<TR CLASS="DARK">
-		<TD CLASS="fall" colspan="4">
+		<TD CLASS="fall" colspan="5">
 			<P><FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="voipaccountlist">
@@ -40,7 +41,7 @@
 *}
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
-		<TD CLASS="fall" colspan="4">
+		<TD CLASS="fall" colspan="5">
 			{include file="scroller.html" loop=$voipaccountlist}
 		</TD>
 	</TR>
@@ -48,20 +49,21 @@
 	{cycle values="light,lucid" print=false}
 	{section name=voipaccountlist loop=$voipaccountlist start=$start max=$pagelimit}
 	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD width="1%" class="fleft" onClick="return self.location.href='?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}';" nowrap>
-			<img src="img/node.gif" ALT="">
+		<TD width="96%" class="fleft" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" nowrap>
+			<img src="img/voip.gif" ALT="">
 			<B>{$voipaccountlist[voipaccountlist].login}</B><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" {tip 0=$voipaccountlist[voipaccountlist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" {tip 0=$voipaccountlist[voipaccountlist].ownerid dynpopup='?m=customerinfoshort&id=$0'}>{$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</A>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
-			<img src="img/passwd.gif" ALT="">{$voipaccountlist[voipaccountlist].passwd}<BR>
-			<img src="img/phone.gif">{$voipaccountlist[voipaccountlist].phone}
+			({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
-			<img src="img/empty.gif" ALT="" width="1" height="16">({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})<BR>
-			<img src="img/empty.gif" ALT="" width="1" height="16"><font class="blend">({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</font>
+			<B>{$voipaccountlist[voipaccountlist].phone}</B>
 		</TD>
-		<TD width="97%" class="fright" align="right">
+		<TD width="1%" onClick="return self.location.href='?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
+			{$voipaccountlist[voipaccountlist].passwd}
+		</TD>
+		<TD width="1%" class="fright" align="right">
 			<nobr>
 			<a onClick="return confirmLink(this, '{t 0=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$0\' from database?{/t}')" href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
 			<a href="?m=voipaccountedit&id={$voipaccountlist[voipaccountlist].id}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
@@ -72,7 +74,7 @@
 	{if $voipaccountlist[voipaccountlist.index_next].ownerid eq $voipaccountlist[voipaccountlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="4" class="fall" align="center">
+		<TD colspan="5" class="fall" align="center">
 			<p>&nbsp;</p>
 			<p><B>{t}No such voip accounts in database.{/t}</b></p>
 			<p>&nbsp;</p>
@@ -81,7 +83,7 @@
 	{/section}
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
-		<TD CLASS="fall" colspan="4">
+		<TD CLASS="fall" colspan="5">
 			{include file="scroller.html" loop=$voipaccountlist}
 		</TD>
 	</TR>
@@ -92,7 +94,7 @@
 				{t}Total:{/t}<BR>
 			</B>
 		</TD>
-		<TD WIDTH="98%" COLSPAN="2" CLASS="frightu" VALIGN="TOP">
+		<TD WIDTH="98%" COLSPAN="3" CLASS="frightu" VALIGN="TOP">
 			<B>
 				{if $listdata.total}{$listdata.total}{else}0{/if}<BR>
 			</B>
