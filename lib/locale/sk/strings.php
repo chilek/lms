@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11-cvs
+ * LMS version 1.11.4-cvs
  *
  *  (C) Copyright 2001-2008 LMS Developers
  *
@@ -163,7 +163,7 @@ $_LANG['Are you sure, you want to remove node \\\'$0\\\' from database?'] = 'Si 
 $_LANG['Are you sure, you want to remove option \\\'$0\\\' from database?'] = 'Si presvedčený, že chceš odstrániť voľbu \\\'$0\\\' z databazy?';
 $_LANG['Are you sure, you want to remove queue \\\'$0\\\' and all assigned tickets and messages?'] = 'Si presvedčený, že chceš odstrániť radu \\\'$0\\\' a k nej pridelené lístky a správy?';
 $_LANG['Are you sure, you want to remove receipt \\\'$0\\\' from database?'] = 'Si presvedčený, že chceš odstrániť potvrdenku \\\'$0\\\' z databazy?';
-$_LANG['Are you sure, you want to remove that customer from database?\\n\\nIf that customer have any computers, they will be automatically removed from database too, and information about them irreversible losed!'] = 'Si presvedčený, že chceš odobrať tohto zákazníka z databázy?\\n\\nPokial má tento zákazník počítače, tak všetky informácie o nich budu nenávratne odstránené!';
+$_LANG['Are you sure, you want to remove that customer from database?\\n\\nIf that customer have any computers, they will be automatically removed from database too, and informations about them irreversible losed!'] = 'Si presvedčený, že chceš odobrať tohto zákazníka z databázy?\\n\\nPokial má tento zákazník počítače, tak všetky informácie o nich budu nenávratne odstránené!';
 $_LANG['Are you sure, you want to remove this group?'] = 'Si presvedčený, že chceš odstrániť tuto skupinu?';
 $_LANG['Are you sure, you want to remove ticket $0?'] = 'Si presvedčený, že chceš odstrániť lístok $0?';
 $_LANG['Are you sure, you want to reorder that network?'] = 'Si presvedčený, že chceš reorganizovať túto sieť?';
@@ -187,7 +187,7 @@ $_LANG['Balance Sheet'] = 'Bilančný prehlad';
 $_LANG['Balance Sheet ($0 to $1)'] = 'Bilančný prehlad ($0 do $1)';
 $_LANG['Balance Sheet of User: $0 ($1 to $2)'] = 'Bilančný prehlad zákazníka: $0 ($1 do $2)';
 $_LANG['<B>Allows you to logout</B>'] = '<B>Odhlásenie zo systému</B>';
-$_LANG['Basic system information'] = 'Základné systémové informácie';
+$_LANG['Basic system informations'] = 'Základné systémové informácie';
 $_LANG['Begin:'] = 'Začiatok:';
 $_LANG['Start map from:'] = 'Začni mapu od:';
 $_LANG['Begin of DHCP range:'] = 'Začiatok rozsahu DHCP:';
@@ -435,8 +435,8 @@ $_LANG['End time must not precede start time!'] = 'Konečný čas nesmie predch�
 $_LANG['Enter 4 to 6 digits PIN number (optional)'] = 'Vyplňte 4 až 6-ť miestne číslo PIN (nepovinné)';
 $_LANG['Enter account quota in MB'] = 'Prosím, zadajte kvóty na účet v MB ';
 $_LANG['Enter account name'] = 'Vyplňte meno účtu';
-$_LANG['Enter additional information'] = 'Vyplňte doplnkové informácie';
-$_LANG['Enter additional information (optional)'] = 'Vyplňte doplnkové informácie (nepovinné)';
+$_LANG['Enter additional informations'] = 'Vyplňte doplnkové informácie';
+$_LANG['Enter additional informations (optional)'] = 'Vyplňte doplnkové informácie (nepovinné)';
 $_LANG['Enter address'] = 'Vyplňte adresu';
 $_LANG['Enter address name'] = 'Vyplňte meno adresy';
 $_LANG['Enter alias name'] = 'Vyplňte meno aliasu';
@@ -865,7 +865,7 @@ $_LANG['Name contains forbidden characters!'] = 'Meno obsahuje zakázané znaky!
 $_LANG['Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.'] = 'Meno odosielanej správy alebo preddefinovanej premennej: "queue" - meno rady, "user" - prihlásený užívateľ. Východzie: nič.';
 $_LANG['Name of product, commodity or service:'] = 'Meno výrobku, tovarú alebo služby:';
 $_LANG['Name of Product, Commodity or Service:'] = 'Meno výrobku, tovarú alebo služby:';
-$_LANG['Name / Producer:'] = 'Meno / Výrobca:';
+$_LANG['Name / Producer:'] = 'Meno / Výrobca:'
 $_LANG['Name/Surname:'] = 'Priezvisko:';
 $_LANG['First/last or Company name'] = 'Meno/Priezvisko alebo Meno spoločnosti';
 $_LANG['First/last or Company name:'] = 'Meno/Priezvisko alebo Meno spoločnosti:';
@@ -1270,7 +1270,7 @@ $_LANG['\'Last/Company Name\' and \'First Name\' fields cannot be empty!'] = '\'
 $_LANG['Suspend'] = 'Prerušiť';
 $_LANG['Suspending of all liabilities'] = 'Prerušenie všetkých záväzkov';
 $_LANG['SYSTEM ACCOUNT'] = 'SYSTÉMOVÝ ÚČET';
-$_LANG['System information and management'] = 'Systémové informácie a zpráva';
+$_LANG['System informations and management'] = 'Systémové informácie a zpráva';
 $_LANG['System message:'] = 'Systémová správa:';
 $_LANG['System version:'] = 'Verzia systému:';
 $_LANG['Table of financial operations'] = 'Tabuľka peňažných operácií';
@@ -1505,7 +1505,7 @@ $_LANG['Check box to make this plan a default for selected document type'] = 'Za
 $_LANG['Display this form again, when this numbering plan is saved'] = 'Zobraziť tento formulár vždy, keď je tento číslovací plán uložený';
 $_LANG['Enter number template'] = 'Vložte číslo šablóny';
 $_LANG['invoice'] = 'faktúra';
-$_LANG['Main information:'] = 'Hlavné informácie:';
+$_LANG['Main Informations:'] = 'Hlavné informácie:';
 $_LANG['New Numbering Plan'] = 'Nový číslovací plán';
 $_LANG['No such numbering plans in database.'] = 'Zodpovedajúci číslovací plán nieje v databáze.';
 $_LANG['Numbering period is required!'] = 'Číselné obdobie je povinné!';
@@ -1538,7 +1538,7 @@ $_LANG['To repay:'] = 'Splatiť:';
 $_LANG['Credit note date cannot be earlier than invoice date!'] = 'Dátum dobropisu nemôže byť skorší ako dátum faktúry';
 $_LANG['Incorrect date format! Using current date.'] = 'Nesprávny formát dátumu! Použite dnešný dátum.';
 $_LANG['show only credit notes'] = 'zobraziť len dobropisy';
-$_LANG['There are errors in credit note main information!'] = 'V dobropisoch sú chyby!';
+$_LANG['There are errors in credit note main informations!'] = 'V dobropisoch sú chyby!';
 $_LANG['Default document'] = 'Východzí dokument';
 $_LANG['DNS:'] = 'DNS:';
 $_LANG['Mask:'] = 'Maska:';
@@ -1708,7 +1708,7 @@ $_LANG['Documents: list, searching, adding'] = 'Dokumenty: zoznam, vyhladávanie
 $_LANG['List of documents'] = 'Zoznam dokumentov';
 $_LANG['No such documents matching search criteria or list is empty.'] = 'Nenašlo dokumenty zhodne s kritériami vyhladávania alebo je zoznam prázdny.';
 $_LANG['Numbering plan:'] = 'Čislovací plán:';
-$_LANG['Additional information:'] = 'Dodatočné informácie:';
+$_LANG['Additional informations:'] = 'Dodatočné informácie:';
 $_LANG['extended format'] = 'rozšírený formát';
 $_LANG['Page $0 from $1'] = 'Strana $0 z $1';
 $_LANG['Page total:'] = 'Celkom na strane:';
@@ -1798,7 +1798,7 @@ $_LANG['Note body not specified!'] = 'Telo poznámky nebolo špecifikované!';
 $_LANG['Notify users:'] = 'Informuj užívateľa:';
 $_LANG['Note content:'] = 'Obsah poznámky:';
 $_LANG['Resolve ticket:'] = 'Rozpusti lístok:';
-$_LANG['Adds customer basic information on ticket view and in notifications. Default: true'] = 'Pridaj základné informácie zákazníkovi na zobrazenom lístku a v notifikácií. Východzie: pravda';
+$_LANG['Adds customer basic informations on ticket view and in notifications. Default: true'] = 'Pridaj základné informácie zákazníkovi na zobrazenom lístku a v notifikácií. Východzie: pravda';
 $_LANG['Set Message'] = 'Nastav správu';
 $_LANG['not in debt'] = 'bez dlžoby';
 $_LANG['Helpdesk ticket printout template file. Default: rtticketprint.html'] = 'Šablóna protokolu tlače lístku. Východzie: rtticketprint.html';
@@ -2061,5 +2061,45 @@ $_LANG['Select division'] = 'Vyber pobočku';
 $_LANG['Unlock'] = 'Odblokuj';
 $_LANG['Wrong account number!'] = 'Zlé číslo účt!';
 $_LANG['Zip code is required!'] = 'PSČ je povinné!';
-
+$_LANG['Limit of records displayed on one page in divisions list. Default: 100.'] = 'Obmedzenie záznamov zobrazených na jednej stránke, v zozname pobočiek. Východzie: 100.';
+$_LANG['Voip Accounts List'] = 'Zoznam VoIP účtov';
+$_LANG['Phone number:'] = 'Telefón:';
+$_LANG['No such voip accounts in database.'] = 'Žiadne VoIP účty v databáze.';
+$_LANG['That customer does not own any voip account.'] = 'Tento zákazník nemá VoIP účet.';
+$_LANG['No such voip accounts matching search criteria.'] = 'Žiadne účty, ktoré spĺňajú kritériá.';
+$_LANG['Find voip accounts matching the following search criteria:'] = 'Nájdi VoIP účty zodpovedajúce nasledujúcim kritériam:';
+$_LANG['Enter phone number or it\'s fragment'] = 'Prosím, zadajte svoje telefónne číslo alebo jeho časť';
+$_LANG['Enter password or it\'s fragment'] = 'Prosím, zadajte svoje heslo, alebo jeho časť';
+$_LANG['Enter voip account login'] = 'Prosím, zadajte prihlasovacie meno';
+$_LANG['Enter phone number'] = 'Prosím, zadajte svoje telefónne číslo';
+$_LANG['Assign voip account to customer'] = 'Priradiť voip účet k zákazníkovi';
+$_LANG['Display this form again, when this voip account is saved'] = 'Keď pridáte váš názor VoIP tento formulár sa znovu zobrazí';
+$_LANG['List of Accounts'] = 'Zoznam VoIP účtov';
+$_LANG['New Voip Account'] = 'Nový VoIP účet';
+$_LANG['Voip Accounts Search'] = 'Hľadanie VoIP účtov';
+$_LANG['Voip Account Search Results'] = 'Výsledky vyhľadávania VoIP účtov';
+$_LANG['Allows you to add the new VoIP account'] = 'Umožní vám pridať nový VoIP účet';
+$_LANG['Allows you to search VoIP account'] = 'Umožňuje vyhľadávanie VoIP účtov';
+$_LANG['VoIP management'] = 'Správa VoIP';
+$_LANG['Voip account login is required!'] = 'Prihlásiť sa je povinné!';
+$_LANG['Specified login is in use!'] = 'Tento login je v prevádzke!';
+$_LANG['Specified login contains forbidden characters!'] = 'Záznam obsahuje zakázané znaky!';
+$_LANG['Voip account login is too long (max.32 characters)!'] = 'Zadané užívateľské meno je príliš dlhé (max. 32 znakov)!';
+$_LANG['Voip account password is required!'] = 'Heslo je povinné!';
+$_LANG['Voip account password is too long (max.32 characters)!'] = 'Heslo je príliš dlhé (max. 32 znakov)!';
+$_LANG['Specified password contains forbidden characters!'] = 'Heslo, obsahuje zakázané znaky!';
+$_LANG['Voip account phone number is required!'] = 'Číslo je povinné!';
+$_LANG['Voip account phone number is too long (max.32 characters)!'] = 'Zadané telefónne číslo je príliš dlhé (max. 32 znakov)!';
+$_LANG['Specified phone is in use!'] = 'Telefónne číslo sa používa!';
+$_LANG['Specified phone number contains forbidden characters or is too short!'] = 'Zadané telefónne číslo obsahuje zakázané znaky, alebo je príliš krátke!';
+$_LANG['Are you sure, you want to remove voip account \'$0\' from database?'] = 'Ste si istí, že chcete vymazať účet VoIP \'$0\' z databázy?';
+$_LANG['Are you sure, you want to remove voip account \\\'$0\\\' from database?'] = 'Ste si istí, že chcete vymazať účet VoIP \\\'$0\\\' z databázy?';
+$_LANG['Delete Voip Account $0'] = 'Zrušiť účet Voip: $0';
+$_LANG['Voip Account Info: $0'] = 'Informácie o účte: $0';
+$_LANG['Voip Account Edit: $0'] = 'Upraviť účet VoIP: $0';
+$_LANG['Voip Accounts ($0):'] = 'VoIP účty ($0)';
 ?>
+
+
+!DSPAM:49295169198269813612796!
+
