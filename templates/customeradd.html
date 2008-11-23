@@ -316,12 +316,3 @@
 </SCRIPT>
 {/literal}
 {include file="footer.html"}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%">
-			<IMG SRC="img/folder.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			<INPUT TYPE="radio" CLASS="box" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{t}private person{/t}</A>
-			<INPUT TYPE="radio" CLASS="box" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{t}legal entity{/t}</A>
-		</TD>
-	</TR>
