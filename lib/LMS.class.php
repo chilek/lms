@@ -3836,6 +3836,7 @@ class LMS
 		else
 			return FALSE;
 	}
+
 	function VoipAccountExists($id)
 	{
 		return ($this->DB->GetOne('SELECT v.id FROM voipaccounts v
