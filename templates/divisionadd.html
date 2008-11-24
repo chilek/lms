@@ -51,12 +51,10 @@
 				<TD width="1%" NOWRAP>{t}Country:{/t}</TD>
 				<TD width="99%">
 					<SELECT NAME="division[countryid]" {tip text="Select country"} trigger="countryid"}>
-				                <OPTION value="" SELECTED></OPTION>
-				                <OPTION value="Lithuania">{t}Lithuania{/t}</OPTION>
-				                <OPTION value="Poland">{t}Poland{/t}</OPTION>
-				                <OPTION value="Romania">{t}Romania{/t}</OPTION>
-				                <OPTION value="Slovakia">{t}Slovakia{/t}</OPTION>
-				                <OPTION value="USA">{t}USA{/t}</OPTION>
+				                <OPTION value="0"></OPTION>
+						{foreach from=$countries item=item key=key}
+				                <OPTION value="{$key}"{if $key==$division.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
+						{/foreach}
 					</SELECT>
 			    </TR>
 			</TABLE>    

@@ -108,6 +108,7 @@ $layout['pagetitle'] = trans('New Division');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('division', $division);
+$SMARTY->assign('countries', $LMS->GetCountries());
 $SMARTY->assign('error', $error);
 $SMARTY->display('divisionadd.html');
 
