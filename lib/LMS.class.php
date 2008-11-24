@@ -1777,7 +1777,7 @@ class LMS
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, paytime, paytype, userid, customerid, name, address, 
 			ten, ssn, zip, city, countryid, divisionid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array($number, 
 				$invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0, 
 				$type, 
@@ -1937,7 +1937,8 @@ class LMS
 				(SELECT name FROM users WHERE id = d.id) AS user, n.template,
 				ds.name AS division_name, ds.shortname AS division_shortname,
 				ds.address AS division_address, ds.zip AS division_zip,
-				ds.city AS division_city, ds.ten AS division_ten, ds.regon AS division_regon,
+				ds.city AS division_city, ds.countryid AS division_countryid, 
+				ds.ten AS division_ten, ds.regon AS division_regon,
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
 				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace
 				FROM documents d
@@ -1958,6 +1959,9 @@ class LMS
 			if(!$result['division_header'])
 				$result['division_header'] = $result['division_name']."\n"
 					.$result['division_address']."\n".$result['division_zip'].' '.$result['division_city']
+					.($result['division_countryid'] && $result['countryid']
+						&& $result['division_countryid'] != $result['countryid']
+						? "\n".trans($this->GetCountryName($result['division_countryid'])) : '')
 					.($result['division_ten'] != '' ? "\n".trans('TEN').' '.$result['division_ten'] : '');
 			
 			if($result['content'] = $this->DB->GetAll('SELECT invoicecontents.value AS value, 
@@ -3753,6 +3757,11 @@ class LMS
 	function GetCountries()
 	{
 		return $this->DB->GetAllByKey('SELECT id, name FROM countries ORDER BY name', 'id');
+	}
+
+	function GetCountryName($id)
+	{
+		return $this->DB->GetOne('SELECT name FROM countries WHERE id = ?', array($id));
 	}
 
 	//VoIP functions
