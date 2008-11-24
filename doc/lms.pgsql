@@ -282,6 +282,7 @@ CREATE TABLE documents (
     	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
     	city varchar(32) 	DEFAULT '' NOT NULL,
+	countryid integer	DEFAULT 0 NOT NULL,
 	ten varchar(16) 	DEFAULT '' NOT NULL,
 	ssn varchar(11) 	DEFAULT '' NOT NULL,
     	paytime smallint 	DEFAULT 0 NOT NULL,
@@ -379,6 +380,7 @@ CREATE TABLE customers (
 	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
+	countryid integer	DEFAULT 0 NOT NULL,
 	ten varchar(16) 	DEFAULT '' NOT NULL,
 	ssn varchar(11) 	DEFAULT '' NOT NULL,
 	regon varchar(255) 	DEFAULT '' NOT NULL,
@@ -988,6 +990,17 @@ CREATE TABLE states (
 );
 
 /* ---------------------------------------------------
+ Structure of table "countries"
+------------------------------------------------------*/
+CREATE SEQUENCE countries_id_seq;
+CREATE TABLE countries (
+	id      integer DEFAULT nextval('countries_id_seq'::text) NOT NULL,
+	name    varchar(255) NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
  Structure of table "zipcodes"
 ------------------------------------------------------*/
 DROP SEQUENCE zipcodes_id_seq;
@@ -1015,6 +1028,7 @@ CREATE TABLE divisions (
 	address		varchar(255) 	NOT NULL DEFAULT '',
 	city		varchar(255) 	NOT NULL DEFAULT '',
 	zip		varchar(255) 	NOT NULL DEFAULT '',
+	countryid	integer		NOT NULL DEFAULT 0,
 	ten		varchar(16)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	account		varchar(48) 	NOT NULL DEFAULT '',
@@ -1154,6 +1168,11 @@ INSERT INTO up_rights(module, name, description, setdefault)
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_contact', 'Customer can change contact information');
 
+INSERT INTO countries (name) VALUES ('Lithuania');
+INSERT INTO countries (name) VALUES ('Poland');
+INSERT INTO countries (name) VALUES ('Romania');
+INSERT INTO countries (name) VALUES ('Slovakia');
+INSERT INTO countries (name) VALUES ('USA');
 
 CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
 SELECT 

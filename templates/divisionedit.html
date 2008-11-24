@@ -47,6 +47,17 @@
 				<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
 				<TD width="99%"><INPUT type="text" size="10" value="{$division.zip}" name="division[zip]" {tip text="Enter zip code" trigger="zip"}></TD>
 			    </TR>
+			    <TR>
+				<TD width="1%" NOWRAP>{t}Country:{/t}</TD>
+				<TD width="99%">
+					<SELECT NAME="division[countryid]" {tip text="Enter country" trigger="countryid"}>
+						<OPTION value="0"></OPTION>
+						{foreach from=$countries item=item key=key}
+						<OPTION value="{$key}"{if $key==$division.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
+						{/foreach}
+					</SELECT>
+				</TD>
+			    </TR>
 			</TABLE>    
 		</TD>
 	</TR>

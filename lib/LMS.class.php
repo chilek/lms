@@ -335,10 +335,10 @@ class LMS
 	function CustomerAdd($customeradd)
 	{
 		if($this->DB->Execute('INSERT INTO customers (name, lastname, type,  
-				    address, zip, city, email, ten, ssn, status, creationdate, 
+				    address, zip, city, countryid, email, ten, ssn, status, creationdate, 
 				    creatorid, info, notes, serviceaddr, message, pin, regon, rbe, 
 				    icn, cutoffstop, consentdate, divisionid, paytime) 
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				    array(ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
@@ -346,6 +346,7 @@ class LMS
 					    $customeradd['address'], 
 					    $customeradd['zip'], 
 					    $customeradd['city'], 
+					    $customeradd['countryid'], 
 					    $customeradd['email'], 
 					    $customeradd['ten'], 
 					    $customeradd['ssn'], 
@@ -397,7 +398,7 @@ class LMS
 	function CustomerUpdate($customerdata)
 	{
 		return $this->DB->Execute('UPDATE customers SET status=?, type=?, address=?, 
-				zip=?, city=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
+				zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?, 
 				info=?, notes=?, serviceaddr=?, lastname=UPPER(?), name=?, 
 				deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?, 
 				cutoffstop=?, consentdate=?, divisionid=?, paytime=? 
@@ -407,6 +408,7 @@ class LMS
 				$customerdata['address'], 
 				$customerdata['zip'], 
 				$customerdata['city'], 
+				$customerdata['countryid'],
 				$customerdata['email'], 
 				$customerdata['ten'], 
 				$customerdata['ssn'], 
@@ -478,7 +480,7 @@ class LMS
 					$result['cstate'] = $cstate['name'];
 				}
 			}
-			
+			$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id=?', array($result['countryid']));
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
 			$result['bankaccount'] = bankaccount($result['id']);
 
@@ -657,11 +659,11 @@ class LMS
 
 		if($customerlist = $this->DB->GetAll(
 				'SELECT c.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, 
-				status, address, zip, city, email, ten, ssn, c.info AS info, message, c.divisionid AS divisionid, 
-				c.paytime AS paytime, 
+				status, address, zip, city, countryid, countries.name AS country, email, ten, ssn, c.info AS info, 
+				message, c.divisionid, c.paytime AS paytime, 
 				(SELECT COALESCE(SUM(value),0) FROM cash WHERE customerid = c.id '
 					.($time ? ' AND time < '.$time : '').') AS balance
-				FROM customersview c '
+				FROM customersview c LEFT JOIN countries ON c.countryid = countries.id '
 				.($customergroup ? 'LEFT JOIN customerassignments ON (c.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
 				.($state !=0 ? ' AND status = '.$state : '')
@@ -1774,8 +1776,8 @@ class LMS
 		
 		$this->DB->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, paytime, paytype, userid, customerid, name, address, 
-			ten, ssn, zip, city, divisionid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			ten, ssn, zip, city, countryid, divisionid)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array($number, 
 				$invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0, 
 				$type, 
@@ -1790,6 +1792,7 @@ class LMS
 				$invoice['customer']['ssn'], 
 				$invoice['customer']['zip'], 
 				$invoice['customer']['city'],
+				$invoice['customer']['countryid'],
 				$invoice['customer']['divisionid'],
 			));
 		$iid = $this->DB->GetLastInsertID('documents');
@@ -1929,8 +1932,8 @@ class LMS
 	function GetInvoiceContent($invoiceid)
 	{
 		if($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
-				d.userid, d.address, d.zip, d.city, d.ten, d.ssn, d.cdate, d.paytime, 
-				d.paytype, d.numberplanid, d.closed, d.reference, d.reason, d.divisionid,
+				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country, d.ten, d.ssn, 
+				d.cdate, d.paytime, d.paytype, d.numberplanid, d.closed, d.reference, d.reason, d.divisionid, 
 				(SELECT name FROM users WHERE id = d.id) AS user, n.template,
 				ds.name AS division_name, ds.shortname AS division_shortname,
 				ds.address AS division_address, ds.zip AS division_zip,
@@ -1938,6 +1941,7 @@ class LMS
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
 				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace
 				FROM documents d
+				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', 
@@ -3744,6 +3748,11 @@ class LMS
 	function GetCountryStates()
 	{
 		return $this->DB->GetAllByKey('SELECT id, name FROM states ORDER BY name', 'id');
+	}
+
+	function GetCountries()
+	{
+		return $this->DB->GetAllByKey('SELECT id, name FROM countries ORDER BY name', 'id');
 	}
 
 	//VoIP functions

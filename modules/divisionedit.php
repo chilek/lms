@@ -84,7 +84,7 @@ if(!empty($_POST['division']))
 	if(!$error)
 	{
 		$DB->Execute('UPDATE divisions SET name=?, shortname=?, address=?, 
-			city=?, zip=?, ten=?, regon=?, account=?, inv_header=?, 
+			city=?, zip=?, countryid=?, ten=?, regon=?, account=?, inv_header=?, 
 			inv_footer=?, inv_author=?, inv_cplace=?, description=?, status=? 
 			WHERE id=?',
 			array(
@@ -93,6 +93,7 @@ if(!empty($_POST['division']))
 				    $division['address'],
 				    $division['city'],
 				    $division['zip'],
+				    $division['countryid'],
 				    $division['ten'],
 				    $division['regon'],
 				    $division['account'],
@@ -114,6 +115,7 @@ $layout['pagetitle'] = trans('Edit Division: $0', $olddiv['shortname']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('division', !empty($division) ? $division : $olddiv);
+$SMARTY->assign('countries', $LMS->GetCountries());
 $SMARTY->assign('error', $error);
 $SMARTY->display('divisionedit.html');
 

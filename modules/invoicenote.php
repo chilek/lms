@@ -199,8 +199,8 @@ switch($action)
 			}
 			
 			$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, paytime, paytype,
-				userid, customerid, name, address, ten, ssn, zip, city, reference, reason, divisionid)
-		                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid)
+		                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					array($cnote['number'],
 				    		$cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
 						DOC_CNOTE,
@@ -215,6 +215,7 @@ switch($action)
 						$invoice['ssn'],
 						$invoice['zip'],
 						$invoice['city'],
+						$invoice['countryid'],
 						$invoice['id'],
 						$cnote['reason'],
 						$invoice['divisionid'],
