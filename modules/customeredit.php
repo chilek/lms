@@ -156,7 +156,7 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 				$DB->Execute('UPDATE zipcodes SET stateid = ? WHERE zip = ?',
 					array($customerdata['stateid'], $customerdata['zip']));
 		}
-		
+
 		$SESSION->redirect('?m=customerinfo&id='.$customerdata['id']);
 	}
 	else
@@ -224,6 +224,7 @@ $SMARTY->assign('documents',$LMS->GetDocuments($_GET['id'], 10));
 $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('cstateslist',$LMS->GetCountryStates());
+$SMARTY->assign('countrieslist',$LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 $SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
 $SMARTY->display('customeredit.html');

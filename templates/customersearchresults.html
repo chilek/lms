@@ -71,7 +71,7 @@
 	<TR class="{cycle}{if isset($customerlist[customerlist].nodeac) && $customerlist[customerlist].nodeac eq 0} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" class="fleft" valign="top">
 			<IMG src="img/{if $customerlist[customerlist].status eq 1}unk{/if}{if $customerlist[customerlist].status eq 2}wait{/if}{if $customerlist[customerlist].status eq 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" {tip 0=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$0'}><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<FONT class="red">{t}deleted customer{/t}</FONT>){/if}</A><BR>
-			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}
+			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country neq ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>
 			({$customerlist[customerlist].id|string_format:"%04d"})<BR>

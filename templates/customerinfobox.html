@@ -51,6 +51,7 @@
 			{$customerinfo.address}<BR>
 			{$customerinfo.zip} {$customerinfo.city}
 			{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
+			{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
 		</TD>
 	</TR>
 {if $customerinfo.contacts}

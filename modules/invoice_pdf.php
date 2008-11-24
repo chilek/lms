@@ -116,6 +116,8 @@ function invoice_buyer($x,$y)
     $y=text_wrap($x,$y,350,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['name']),'left');
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['address']));
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",$invoice['zip']." ".$invoice['city']));
+    if ($invoice['country'] != '')
+        $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans($invoice['country'])));
     if ($invoice['ten']) 
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2//TRANSLIT",trans('TEN:')).' '.$invoice['ten']);
     else if ($invoice['ssn']) 

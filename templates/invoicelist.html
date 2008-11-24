@@ -166,7 +166,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{$invoice.count}
 		</TD>
 		<TD WIDTH="94%">
-			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}</A>
+			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country neq ""}, {t}{$invoice.country}{/t}{/if}</A>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright">
 			<NOBR>

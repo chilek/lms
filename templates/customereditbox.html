@@ -114,6 +114,17 @@
 				</TD>
 			    </TR>
                             {/if}
+			    <TR>
+			        <TD width="1%" NOWRAP>{t}Country:{/t}</TD>
+			        <TD width="99%">
+			            <SELECT NAME="customerdata[countryid]" {tip text="Select country (optional)" trigger="countryid"}>
+			                <OPTION value="0"></OPTION>
+					{foreach from=$countrieslist item=item key=key}
+			                <OPTION value="{$key}"{if $key==$customerinfo.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
+					{/foreach}
+			            </SELECT>
+				</TD>
+			    </TR>
 			</TABLE>
 		<script type="text/javascript">
 		new AutoSuggest(document.getElementById('customeredit'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);

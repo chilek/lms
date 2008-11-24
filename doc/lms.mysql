@@ -161,6 +161,7 @@ CREATE TABLE documents (
 	address varchar(255) NOT NULL DEFAULT '',
 	zip varchar(10) NOT NULL DEFAULT '',
 	city varchar(32) NOT NULL DEFAULT '',
+	countryid int(11) NOT NULL DEFAULT '0',
 	ten varchar(16) NOT NULL DEFAULT '',
 	ssn varchar(11) NOT NULL DEFAULT '',
 	paytime tinyint NOT NULL DEFAULT '0',
@@ -527,6 +528,7 @@ CREATE TABLE customers (
   address varchar(255) 	NOT NULL DEFAULT '',
   zip varchar(10) 	NOT NULL DEFAULT '',
   city varchar(32) 	NOT NULL DEFAULT '',
+  countryid int(11)	NOT NULL DEFAULT '0',
   ten varchar(16) 	NOT NULL DEFAULT '',
   ssn varchar(11) 	NOT NULL DEFAULT '',
   regon varchar(255) 	NOT NULL DEFAULT '',
@@ -910,6 +912,18 @@ CREATE TABLE states (
 
 # --------------------------------------------------------
 #
+# Structure of table countries
+#
+DROP TABLE IF EXISTS countries;
+CREATE TABLE countries (
+    	id 		int(11) 	NOT NULL auto_increment,
+	name 		varchar(255) 	NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
 # Structure of table zipcodes
 #
 DROP TABLE IF EXISTS zipcodes;
@@ -934,6 +948,7 @@ CREATE TABLE divisions (
 	address         varchar(255) 	NOT NULL DEFAULT '',
 	city            varchar(255) 	NOT NULL DEFAULT '',
 	zip             varchar(255) 	NOT NULL DEFAULT '',
+	countryid	int(11)		NOT NULL DEFAULT '0',
 	ten		varchar(16)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	account         varchar(48) 	NOT NULL DEFAULT '',
@@ -1103,6 +1118,12 @@ INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'logout_url', '', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'owner_stats', '0', '', 0);
-	
+
+INSERT INTO countries (name) VALUES ('Lithuania');
+INSERT INTO countries (name) VALUES ('Poland');
+INSERT INTO countries (name) VALUES ('Romania');
+INSERT INTO countries (name) VALUES ('Slovakia');
+INSERT INTO countries (name) VALUES ('USA');
+
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008111900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008112400');
