@@ -109,8 +109,11 @@ elseif(isset($_POST['customeradd']))
 	if($customeradd['regon'] != '' && !check_regon($customeradd['regon']))
 		$error['regon'] = trans('Incorrect Business Registration Number!');
 		
-	if($customeradd['zip'] !='' && !check_zip($customeradd['zip']))
-		$error['zip'] = trans('Incorrect ZIP code!');
+	if($customeradd['zip'] !='' && !check_zip($customeradd['zip']) && !isset($customeradd['zipwarning']))
+	{
+		$error['zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
+		$customeradd['zipwarning'] = 1;
+	}
 
 	if($customeradd['pin'] == '')
 		$error['pin'] = trans('PIN code is required!');
