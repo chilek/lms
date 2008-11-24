@@ -97,6 +97,9 @@
 			    <TR>
 				<TD width="1%" NOWRAP>{t}Zip:{/t}</TD>
 				<TD width="99%"><INPUT TYPE="TEXT" NAME="customerdata[zip]" id="zip" VALUE="{$customerinfo.zip}" SIZE="10" {tip text="Enter zip code" trigger="zip"}></TD>
+				{if $customerinfo.zipwarning}
+				<INPUT TYPE="HIDDEN" NAME="customerdata[zipwarning]" VALUE="1">
+				{/if}
 			    </TR>
 			    {if $cstateslist}
 			    <TR>

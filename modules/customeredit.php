@@ -66,8 +66,11 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 	if($customerdata['icn'] != '' && !check_icn($customerdata['icn']))
 		$error['icn'] = trans('Incorrect Identity Card Number!');
 
-	if($customerdata['zip'] !='' && !check_zip($customerdata['zip']))
-		$error['zip'] = trans('Incorrect ZIP code!');
+	if($customerdata['zip'] !='' && !check_zip($customerdata['zip']) && !isset($customerdata['zipwarning']))
+	{
+		$error['zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
+		$zipwarning = 1;
+	}
 
 	if($customerdata['email']!='' && !check_email($customerdata['email']))
 		$error['email'] = trans('Incorrect email!');
@@ -168,9 +171,10 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 		$customerinfo['customername'] = $olddata['customername'];
 		$customerinfo['balance'] = $olddata['balance'];
 		$customerinfo['stateid'] = isset($olddata['stateid']) ? $olddata['stateid'] : 0;
-		$customerinfo['tenwarning'] = $tenwarning;
+		$customerinfo['zipwarning'] = empty($zipwarning) ? 0 : 1;
+		$customerinfo['tenwarning'] = empty($tenwarning) ? 0 : 1;
 		$customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
-		
+
 		$SMARTY->assign('error',$error);
 	}
 }

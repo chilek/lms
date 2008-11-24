@@ -686,7 +686,7 @@ $_LANG['Incorrect tax rate percentage value (non-zero value and taxing not check
 $_LANG['Incorrect value!'] = 'Błędna wartość!';
 $_LANG['Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false'] = 'Niepoprawna wartość! Poprawne wartości to: 1|t|true|y|yes|on i 0|n|no|off|false';
 $_LANG['Incorrect WINS server IP address!'] = 'Niepoprawny adres IP serwera WINS!';
-$_LANG['Incorrect ZIP code!'] = 'Niepoprawny kod pocztowy!';
+$_LANG['Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.'] = 'Niepoprawny kod pocztowy! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
 $_LANG['in debt'] = 'zadłużeni';
 $_LANG['Nodes List for Customers In Debt'] = 'Lista komputerów zadłużonych klientów';
 $_LANG['Indebted Customers List $0$1'] = 'Lista klientów zadłużonych $0$1';
