@@ -55,7 +55,7 @@ if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
 	$customer = $LMS->GetCustomer($ticket['customerid'], true);
         $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
 
-	if($customer['contacts']) $customer['phone'] = $customer['contacts'][0]['phone'];
+	if(!empty($customer['contacts'])) $customer['phone'] = $customer['contacts'][0]['phone'];
 
 	$customernodes = $LMS->GetCustomerNodes($ticket['customerid']);
 	$allnodegroups = $LMS->GetNodeGroupNames();
