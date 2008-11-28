@@ -43,9 +43,9 @@
 				{t}Customer:{/t}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
 					<OPTION value="0"{if $listdata.customerid eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
-					{section name=customerlist loop=$customerlist}
-					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customerid} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true}</OPTION>
-					{/section}
+					{foreach from=$customerlist item=customer}
+					    <OPTION value="{$customer.id}"{if $customer.id eq $listdata.customerid} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
+					{/foreach}
 				</SELECT>
 				{t}Month:{/t}
 				<SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}

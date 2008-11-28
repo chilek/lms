@@ -107,9 +107,9 @@
 		</TD>
 		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Assign node to customer" trigger="customer"} style="max-width:250px;">
-				{section name=customers loop=$customers}
-				<OPTION VALUE="{$customers[customers].id}"{if $nodedata.ownerid == $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
-				{/section}
+				{foreach from=$customers item=c}
+				<OPTION VALUE="{$c.id}"{if $nodedata.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

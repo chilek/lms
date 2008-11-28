@@ -45,9 +45,9 @@
 					<TD CLASS="FALL">
 						{t}Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.{/t}<BR><BR>
 						<SELECT size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
-							{section name=customers loop=$customers}
-							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
-							{/section}
+							{foreach from=$customers item=customer}
+							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+							{/foreach}
 						</SELECT><BR>
 						{t}Selected:{/t} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" style="border: 0" class="light" readonly></INPUT>
 					</TD>

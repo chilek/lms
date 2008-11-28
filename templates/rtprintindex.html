@@ -40,9 +40,9 @@
 						{if $customers}
 						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
-							{section name=customers loop=$customers}
-							<OPTION value="{$customers[customers].id}">{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
-							{/section}
+							{foreach from=$customers item=c}
+							<OPTION value="{$c.id}">{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+							{/foreach}
 						</SELECT>
 						{else}
 						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>

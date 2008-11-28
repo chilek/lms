@@ -90,9 +90,9 @@
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[customerid]" {tip text="Select customer (optional)"}>
 				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{t}- select customer -{/t}</OPTION>
-				{section name=customerlist loop=$customerlist}	
-				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id == $event.customerid} SELECTED{/if}>{$customerlist[customerlist].customername}</OPTION>
-				{/section}
+				{foreach from=$customerlist item=customer}	
+				<OPTION value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

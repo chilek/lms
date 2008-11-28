@@ -2105,4 +2105,8 @@ $_LANG['Delete Voip Account $0'] = 'Usuń konto VoIP: $0';
 $_LANG['Voip Account Info: $0'] = 'Informacje o koncie: $0';
 $_LANG['Voip Account Edit: $0'] = 'Edycja konta VoIP: $0';
 $_LANG['Voip Accounts ($0):'] = 'Konta VoIP ($0)';
+$_LANG['<!do>Import'] = 'Importuj';
+$_LANG['Download (CSV)'] = 'Pobierz (CSV)';
+$_LANG['Download all (TXT)'] = 'Pobierz wszystkie (TXT)';
+
 ?>
