@@ -499,15 +499,16 @@ class LMS
 
 	function GetCustomerNames()
 	{
-		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
+		return $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
 				FROM customersview WHERE status > 1 AND deleted = 0 
-				ORDER BY customername');
+				ORDER BY customername', 'id');
 	}
 
 	function GetAllCustomerNames()
 	{
-		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
-				FROM customersview WHERE deleted = 0 ORDER BY customername');
+		return $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS customername 
+				FROM customersview WHERE deleted = 0
+				ORDER BY customername', 'id');
 	}
 
 	function GetCustomerNodesAC($id)

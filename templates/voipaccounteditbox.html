@@ -46,9 +46,9 @@
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<SELECT SIZE="1" NAME="voipaccountedit[ownerid]" {tip text="Assign voip account to customer"} style="max-width:250px;">
-				{section name=customers loop=$customers}
-				<OPTION VALUE="{$customers[customers].id}"{if $voipaccountinfo.ownerid eq $customers[customers].id} SELECTED{/if}>{$customers[customers].customername|truncate:40:"...":true} ({$customers[customers].id|string_format:"%04d"})</OPTION>
-				{/section}
+				{foreach from=$customers item=c}
+				<OPTION VALUE="{$c.id}"{if $voipaccountinfo.ownerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

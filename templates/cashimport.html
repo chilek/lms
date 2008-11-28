@@ -26,6 +26,12 @@
 		document.cashimport.submit();
 	}
 
+	function Save()
+	{
+		document.cashimport.action += '&action=save';
+		document.cashimport.submit();
+	}
+
 	//-->
 </SCRIPT>
 {/literal}
@@ -55,56 +61,75 @@
 			<B>{t}Total:{/t} {$listdata.total}</B>&nbsp;
 		</TD>
 	</TR>
-	{cycle values="light,lucid" print=false}
-	{section name=importlist loop=$importlist}
-	<TR class="{cycle}">
-		<TD CLASS="fleft">
-			{$importlist[importlist].id|string_format:"%04d"}
+	{foreach from=$divisions item=division}{if $division.list}
+	<TR class="DARK">
+		<TD colspan="4" class="fleftu">
+		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
 		</TD>
-		<TD NOWRAP>
-			{$importlist[importlist].date|date_format:"%Y/%m/%d"}
-		</TD>
-		<TD NOWRAP ALIGN="RIGHT">
-			<B>{$importlist[importlist].value|money_format}</B>
-		</TD>
-		<TD ALIGN="LEFT">
-			{$importlist[importlist].customer}
-		</TD>
-		<TD ALIGN="LEFT">
-			{$importlist[importlist].description}
-		</TD>
-		<TD ALIGN="RIGHT" CLASS="fright" COLSPAN="2" NOWRAP>
-			{if !$importlist[importlist].customerid}
-			<SELECT NAME="customer[{$importlist[importlist].id}]" {tip text="Select customer" trigger=$importlist[importlist].id}>
-				<OPTION VALUE="0">{t}- select customer -{/t}</OPTION>
-				{section name=customerlist loop=$customerlist}
-				<OPTION VALUE="{$customerlist[customerlist].id}" {if $customerlist[customerlist].id == $importlist[importlist].customerid}SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
-				{/section}
-			</SELECT>&nbsp;
-			{else}
-			<INPUT TYPE="hidden" NAME="customer[{$importlist[importlist].id}]" VALUE="{$importlist[importlist].customerid}">
-			{/if}
-			{cycle print=false}
-			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$importlist[importlist].id}]" VALUE="{$importlist[importlist].id}">
+		<TD colspan="3" class="frightu" align="right">
+		    <A href="?m=cashimport&action=csv&division={$division.id}">{t}Download (CSV){/t} <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
-	{sectionelse}
+		{cycle values="light,lucid" print=false}
+		{foreach from=$division.list item=item}
+		<TR class="{cycle}">
+		    <TD CLASS="fleft">
+			{$item.id|string_format:"%04d"}
+		    </TD>
+		    <TD NOWRAP>
+			{$item.date|date_format:"%Y/%m/%d"}
+		    </TD>
+		    <TD NOWRAP ALIGN="RIGHT">
+			<B>{$item.value|money_format}</B>
+		    </TD>
+		    <TD ALIGN="LEFT">
+			{if $item.customer}{$item.customer}
+			{elseif $item.customerid}
+			    {assign var=cust value=$item.customerid}
+			    {$customerlist.$cust.customername}
+			{/if}
+		    </TD>
+		    <TD ALIGN="LEFT">
+			{$item.description}
+		    </TD>
+		    <TD ALIGN="RIGHT" CLASS="fright" COLSPAN="2" NOWRAP>
+			{if !$item.customerid}
+			<SELECT NAME="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id}>
+				<OPTION VALUE="0">{t}- select customer -{/t}</OPTION>
+				{foreach from=$customerlist item=customer}
+				<OPTION VALUE="{$customer.id}" {if $customer.id == $item.customerid}SELECTED{/if}>{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>&nbsp;
+			{else}
+			<INPUT TYPE="hidden" NAME="customer[{$item.id}]" VALUE="{$item.customerid}">
+			{/if}
+			{cycle print=false}
+			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
+		</TD>
+	    </TR>
+	    {/foreach}
+	{/if}{/foreach}
+	{if !$listdata.total}
 	<TR>
 		<TD class="fall" ALIGN="center"  COLSPAN="7">
 			<P>&nbsp;</P>
 			<P><B>{t}No cash operations to import.{/t}</B></P>
 			<P>&nbsp;</P>
 		</TD>
-	</TR>	
-	{/section}
+	</TR>
+	{/if}
 	<TR CLASS="dark">
-		<TD CLASS="fleftu" COLSPAN="4">
+		<TD CLASS="fleftu" COLSPAN="3" nowrap>
 			<INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll2();" VALUE="Check All">
 			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
 		</TD>
-		<TD CLASS="frightu" COLSPAN="3" align="right" nowrap>
+		<TD CLASS="fbt" COLSPAN="2" ALIGN="center" nowrap>
+		    <A href="?m=cashimport&action=txt">{t}Download all (TXT){/t} <IMG src="img/save.gif" alt="">
+		</TD>
+		<TD CLASS="frightu" COLSPAN="2" align="right" nowrap>
 			<A HREF="javascript:Delete();">{t}Delete{/t} <IMG src="img/delete.gif" ALT=""></A>
-			<A HREF="javascript:document.cashimport.submit();">{t}Submit{/t} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="javascript:Save();">{t}Save{/t} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="javascript:document.cashimport.submit();">{t}<!do>Import{/t} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

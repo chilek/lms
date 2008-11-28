@@ -54,9 +54,9 @@
 				<B>{t}Filter:{/t} </B> {t}Customer:{/t}
 				<SELECT size="1" name="c" OnChange="document.filter.submit();">
 					<OPTION value="0"{if $listdata.customer eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
-					{section name=customerlist loop=$customerlist}
-					    <OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"...":true}</OPTION>
-					{/section}
+					{foreach from=$customerlist item=customer}
+					<OPTION value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
+					{/foreach}
 				</SELECT>&nbsp;
 				{t}Type:{/t}
 				<SELECT size="1" name="t" ONCHANGE="document.filter.submit();">

@@ -26,11 +26,87 @@
 
 $layout['pagetitle'] = trans('Cash Operations Import');
 
-if(isset($_GET['action']) && $_GET['action'] == 'delete')
+if(isset($_GET['action']) && $_GET['action'] == 'csv')
+{
+	$search = array('"', "\n");
+	$replace = array('""', ' ');
+	
+	if(isset($_GET['division']) && $_GET['division'] != '')
+	{
+		if(intval($_GET['division']))
+			$div = ' AND c.divisionid = '.intval($_GET['division']);
+		else
+			$div = ' AND c.divisionid IS NULL';
+	}
+	else
+		$div = '';
+	
+	$filename = 'import-'.date('Y-m-d').($div ? '-'.intval($_GET['division']) : '').'.csv';
+	
+	header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename='.$filename);
+	header('Pragma: public');
+	
+	if($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
+		i.customerid, c.divisionid, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername
+		FROM cashimport i
+		LEFT JOIN customers c ON (i.customerid = c.id)
+		WHERE i.closed = 0 AND i.value > 0'
+		.$div
+		.' ORDER BY i.date'))
+	{
+		foreach($importlist as $idx => $row)
+		{
+			printf("%s,%s,\"%s\",\"%s\"\r\n", 
+				date('Y-m-d', $row['date']),
+				str_replace(',', '.', $row['value']),
+				str_replace($search, $replace, $row['customername'] ? $row['customername'] : $row['customer']),
+				str_replace($search, $replace, $row['description'])
+			);
+		}
+	}
+	die;
+}
+elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
+{
+	$filename = 'import-'.date('Y-m-d').'.txt';
+	
+	header('Content-Type: text/plain');
+        header('Content-Disposition: attachment; filename='.$filename);
+	header('Pragma: public');
+	
+	if($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
+		i.customerid, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername
+		FROM cashimport i
+		LEFT JOIN customers c ON (i.customerid = c.id)
+		WHERE i.closed = 0 AND i.value > 0'
+		.' ORDER BY i.date'))
+	{
+		foreach($importlist as $idx => $row)
+		{
+			printf("%s\t%s\t%s\t%s\r\n", 
+				date('Y-m-d', $row['date']),
+				str_replace(',', '.', $row['value']),
+				$row['customername'] ? $row['customername'] : $row['customer'],
+				str_replace("\n", ' ', $row['description'])
+			);
+		}
+	}
+	die;
+}
+elseif(isset($_GET['action']) && $_GET['action'] == 'delete')
 {
 	if($marks = $_POST['marks'])
 		foreach($marks as $id)
-			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
+			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?',
+				array($id));
+}
+elseif(isset($_GET['action']) && $_GET['action'] == 'save')
+{
+	if(!empty($_POST['customer']))
+		foreach($_POST['customer'] as $idx => $id) if($id)
+			$DB->Execute('UPDATE cashimport SET customerid = ? WHERE id = ?',
+				array($id, $idx));
 }
 elseif(isset($_POST['marks']))
 {
@@ -56,12 +132,32 @@ elseif(isset($_POST['marks']))
 	}
 }
 
-$importlist = $DB->GetAll('SELECT * FROM cashimport WHERE closed = 0 AND value > 0 ORDER BY id');
-$listdata['total'] = sizeof($importlist);
+$divisions = $DB->GetAllByKey('SELECT id, name FROM divisions ORDER BY name', 'id');
+
+$divisions[0] = array('id' => 0, 'name' => '');
+
+if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
+	FROM cashimport i
+	LEFT JOIN customersview c ON (i.customerid = c.id)
+	WHERE i.closed = 0 AND i.value > 0
+	ORDER BY i.id'))
+{
+	$listdata['total'] = sizeof($importlist);
+
+	foreach($importlist as $idx => $row)
+	{
+		if($row['divisionid'] && isset($divisions[$row['divisionid']]))
+			$divisions[$row['divisionid']]['list'][] = $row;
+		else
+			$divisions[0]['list'][] = $row;
+
+		unset($importlist[$idx]);
+	}
+}
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('importlist', $importlist);
+$SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());

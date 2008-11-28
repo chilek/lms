@@ -44,6 +44,8 @@ version ? (????-??-??):
   - better handling of invoices/receipts/docs printouts with window.open (alec)
   - added support for VoIP accounts (chilan)
   - added country field in customers, divisions and documents (chilan)
+  - cashimport: records grouping by division (alec)
+  - cashimport: imported records downloading in csv and txt format (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 

@@ -35,9 +35,9 @@
 							<SELECT size="1" name="u" OnChange="document.filter.submit();">
 								<OPTION value=""{if $listdata.customer eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
 								<OPTION value="0"{if $listdata.customer eq "0"} SELECTED{/if}>{t}SYSTEM DOMAIN{/t}</OPTION>
-								{section name=customerlist loop=$customerlist}
-					    				<OPTION value="{$customerlist[customerlist].id}"{if $customerlist[customerlist].id eq $listdata.customer} SELECTED{/if}>{$customerlist[customerlist].customername|truncate:40:"..."}</OPTION>
-								{/section}
+								{foreach from=$customerlist item=customer}
+					    				<OPTION value="{$customer.id}"{if $customer.id eq $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"..."}</OPTION>
+								{/foreach}
 							</SELECT>&nbsp;
 							{t}Domain:{/t}
 							<SELECT size="1" name="d" OnChange="document.filter.submit();">
