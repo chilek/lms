@@ -113,12 +113,6 @@ $SESSION->save('ald', $d);
 if ($SESSION->is_set('alp') && !isset($_GET['page']))
 	$SESSION->restore('alp', $_GET['page']);
 	    
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = (!isset($CONFIG['phpui']['accountlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['accountlist_pagelimit']);
-$start = ($page - 1) * $pagelimit;
-
-$SESSION->save('alp', $page);
-
 $layout['pagetitle'] = trans('Accounts List');
 
 $accountlist = GetAccountList($o, $u, $t, $k, $d);
@@ -138,6 +132,12 @@ unset($accountlist['kind']);
 unset($accountlist['customer']);
 unset($accountlist['domain']);
 unset($accountlist['direction']);
+
+$page = (empty($_GET['page']) ? 1 : $_GET['page']);
+$pagelimit = (empty($CONFIG['phpui']['accountlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['accountlist_pagelimit']);
+$start = ($page - 1) * $pagelimit;
+
+$SESSION->save('alp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

@@ -90,12 +90,6 @@ $SESSION->save('ald', $d);
 
 if ($SESSION->is_set('allp') && !isset($_GET['page']))
 	$SESSION->restore('allp', $_GET['page']);
-	    
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($CONFIG['phpui']['aliaslist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['aliaslist_pagelimit']);
-$start = ($page - 1) * $pagelimit;
-
-$SESSION->save('allp', $page);
 
 $layout['pagetitle'] = trans('Aliases List');
 
@@ -113,6 +107,12 @@ unset($aliaslist['kind']);
 unset($aliaslist['customer']);
 unset($aliaslist['domain']);
 unset($aliaslist['direction']);
+	    
+$page = (empty($_GET['page']) ? 1 : $_GET['page']); 
+$pagelimit = (empty($CONFIG['phpui']['aliaslist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['aliaslist_pagelimit']);
+$start = ($page - 1) * $pagelimit;
+
+$SESSION->save('allp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
