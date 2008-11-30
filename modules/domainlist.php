@@ -78,12 +78,6 @@ $SESSION->save('dlc', $c);
 
 if ($SESSION->is_set('dlp') && !isset($_GET['page']))
 	$SESSION->restore('dlp', $_GET['page']);
-	    
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
-$pagelimit = (!isset($CONFIG['phpui']['domainlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['domainlist_pagelimit']);
-$start = ($page - 1) * $pagelimit;
-
-$SESSION->save('dlp', $page);
 
 $layout['pagetitle'] = trans('Domains List');
 
@@ -98,6 +92,12 @@ unset($domainlist['total']);
 unset($domainlist['order']);
 unset($domainlist['direction']);
 unset($domainlist['customer']);
+
+$page = (empty($_GET['page']) ? 1 : $_GET['page']); 
+$pagelimit = (empty($CONFIG['phpui']['domainlist_pagelimit']) ? $listdata['total'] : $CONFIG['phpui']['domainlist_pagelimit']);
+$start = ($page - 1) * $pagelimit;
+
+$SESSION->save('dlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
