@@ -33,8 +33,10 @@ function GetCustomerIDByPhoneAndPIN($phone, $pin)
 		return NULL;
 
 	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers, customercontacts
-	                WHERE customerid = customers.id AND phone=? LIMIT 1', 
+	                WHERE customerid = customers.id AND phone = ?
+			AND deleted = 0 LIMIT 1', 
 			array($phone));
+
 	if ($authinfo['id'] == NULL)
 		return NULL;
 
@@ -51,7 +53,9 @@ function GetCustomerIDByIDAndPIN($id, $pin)
 	if(!ereg('^[0-9]+$', $pin) || !ereg('^[0-9]+$', $id))
 		return NULL;
 
-	$authinfo['id'] = $DB->GetOne('SELECT id from customers WHERE id=?', array($id));
+	$authinfo['id'] = $DB->GetOne('SELECT id from customers
+		WHERE id = ? AND deleted = 0', array($id));
+
 	if ($authinfo['id'] == NULL)
 		return NULL;
 
@@ -67,10 +71,12 @@ function GetCustomerIDByContractAndPIN($contract, $pin)
 	if(!ereg('^[0-9]+$', $pin))
 		return NULL;
 	
-	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers WHERE contract=?', array($contract));
+	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers
+		WHERE contract = ? AND deleted = 0', array($contract));
 
 	if ($authinfo['id'] == NULL)
 		return NULL;
+
 	$authinfo['passwd'] = $DB->GetOne('SELECT pin FROM customers WHERE pin=? AND contract=?', array($pin, $contract));
 
 	return $authinfo;
