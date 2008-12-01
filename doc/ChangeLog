@@ -46,6 +46,7 @@ version ? (????-??-??):
   - added country field in customers, divisions and documents (chilan)
   - cashimport: records grouping by division (alec)
   - cashimport: imported records downloading in csv and txt format (alec)
+  - userpanel: disable access for deleted customers (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 
