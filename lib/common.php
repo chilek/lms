@@ -577,7 +577,7 @@ function fetch_url($url)
 function qp_encode($string)
 {
         // ASCII only - don't encode
-        if(!preg_match('#[\x80-\xFF]{1}#', $value))
+        if(!preg_match('#[\x80-\xFF]{1}#', $string))
         	return $string;
 
         $encoded = preg_replace('/([\x2C\x3F\x80-\xFF])/e', "'='.sprintf('%02X', ord('\\1'))", $string);
