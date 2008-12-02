@@ -48,7 +48,7 @@
 			<IMG src="img/empty.gif" alt="" width="16" height="16"> [{$configlist[configlist].section}]
 		</TD>
 		<TD align="right" valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
-			{$configlist[configlist].value}
+			{$configlist[configlist].value|escape}
 		</TD>
 		<TD valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].description|truncate:400:"..."}
