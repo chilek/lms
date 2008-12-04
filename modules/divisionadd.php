@@ -71,7 +71,7 @@ if(!empty($_POST['division']))
 	{
 		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip, countryid, ten, regon, 
 			account, inv_header, inv_footer, inv_author, inv_cplace, description) 
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(
 				    $division['name'],
 				    $division['shortname'],
