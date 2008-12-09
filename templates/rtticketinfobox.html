@@ -1,13 +1,13 @@
 <!-- $Id$ -->
 <P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
-		<TD width="100%" CLASS="fall">
+		<TD width="100%" CLASS="fall" colspan="3">
 			<IMG src="img/ticket.gif" alt="">
 			<B>{t 0=$ticket.ticketid|string_format:"%06d"}Ticket No. $0{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD width="100%" class="flr">
+		<TD width="100%" class="flr" colspan="3">
 <TABLE width="100%" cellpadding="0">
     <TR>
 	<TD width="50%">
@@ -115,7 +115,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD CLASS="fbottomu" ALIGN="RIGHT">
+		<TD class="flr" ALIGN="RIGHT" colspan="3">
 			{if $ticket.state < 2}
 			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{t}Resolve{/t} <IMG src="img/resolved.gif" alt=""></A>&nbsp;
 			{/if}
@@ -123,6 +123,50 @@
 			<A href="?m=rtticketedit&id={$ticket.ticketid}">{t}Edit{/t} <IMG src="img/edit.gif" alt=""></A>
 			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt=""></A>
 			<A href="?m=rtqueueview&id={$ticket.queueid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" width="1%" align="left" NOWRAP>
+			<TABLE width="100%" cellpadding="3">
+				<TR>
+					<TD width="50%" align="left" NOWRAP>
+						{if $ticket.prev_ticketid neq NULL}
+							<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}"><IMG src="img/prev.gif" alt=""> {t}Previous ticket{/t}</A>
+						{else}
+							<IMG src="img/prev.gif" alt=""> {t}Previous ticket{/t}
+						{/if}
+					</TD>
+					<TD width="50%" align="left" NOWRAP>
+						{if $ticket.next_ticketid neq NULL}
+	    						<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{t}Next ticket{/t} <IMG src="img/next.gif" alt=""></A>
+						{else}
+	    						{t}Next ticket{/t} <IMG src="img/next.gif" alt="">
+						{/if}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD class="fbt" width="98%">
+	    	</TD>
+		<TD class="frightu" width="1%" align="right" NOWRAP>
+	    		<TABLE width="100%" cellpadding="3">
+				<TR>
+					<TD width="50%" align="right" NOWRAP>
+						{if $ticket.prev_ticketid neq NULL}
+							<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}"><IMG src="img/prev.gif" alt=""> {t}Previous ticket{/t}</A>
+						{else}
+							<IMG src="img/prev.gif" alt=""> {t}Previous ticket{/t}
+						{/if}
+					</TD>
+					<TD width="50%" align="right" NOWRAP>
+	    					{if $ticket.next_ticketid neq NULL}
+	    						<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{t}Next ticket{/t} <IMG src="img/next.gif" alt=""></A>
+						{else}
+	    						{t}Next ticket{/t} <IMG src="img/next.gif" alt="">
+						{/if}
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
