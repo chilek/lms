@@ -24,95 +24,6 @@
  *  $Id$
  */
 
-function GetQueueContents($ids, $order='createtime,desc', $state=NULL, $owner=0)
-{
-	global $DB;
-	
-	if(!$order)
-		$order = 'createtime,desc';
-
-	list($order,$direction) = sscanf($order, '%[^,],%s');
-
-	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
-
-	switch($order)
-	{
-		case 'ticketid':
-			$sqlord = ' ORDER BY t.id';
-		break;
-		case 'subject':
-			$sqlord = ' ORDER BY t.subject';
-		break;
-		case 'requestor':
-			$sqlord = ' ORDER BY requestor';
-		break;
-		case 'owner':
-			$sqlord = ' ORDER BY ownername';
-		break;
-		case 'lastmodified':
-			$sqlord = ' ORDER BY lastmodified';
-		break;
-		case 'creator':
-			$sqlord = ' ORDER BY creatorname';
-		break;
-		default:
-			$sqlord = ' ORDER BY t.createtime';
-		break;
-	}
-
-	switch($state)
-	{
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-			$statefilter = ' AND state = '.$state;
-		break;
-		case '-1':
-			$statefilter = ' AND state != '.RT_RESOLVED;
-		break;
-		default:
-			$statefilter = '';
-	}
-
-	if($result = $DB->GetAll(
-		    'SELECT t.id, t.customerid, c.address, users.name AS ownername,
-			    t.subject, state, owner AS ownerid, t.requestor AS req,
-			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
-			    .$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' END AS requestor, 
-			    t.createtime AS createtime, u.name AS creatorname,
-			    (SELECT MAX(createtime) FROM rtmessages WHERE ticketid = t.id) AS lastmodified
-		    FROM rttickets t 
-		    LEFT JOIN users ON (owner = users.id)
-		    LEFT JOIN customers c ON (t.customerid = c.id)
-		    LEFT JOIN users u ON (t.creatorid = u.id)
-		    WHERE 1=1 '
-		    .(is_array($ids) ? ' AND queueid IN ('.implode(',', $ids).')' : ($ids != 0 ? ' AND queueid = '.$ids : ''))
-		    .$statefilter
-		    .($owner ? ' AND t.owner = '.intval($owner) : '')
-		    .($sqlord !='' ? $sqlord.' '.$direction:'')))
-	{
-		foreach($result as $idx => $ticket)
-		{
-			//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
-			//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
-			if(!$ticket['customerid'])
-				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
-			else
-				list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
-			$result[$idx] = $ticket;
-		}
-	}
-
-	$result['total'] = sizeof($result);
-	$result['state'] = $state;
-	$result['order'] = $order;
-	$result['direction'] = $direction;
-	$result['owner'] = $owner;
-
-	return $result;
-}
-
 if(isset($_GET['id']))
 	$queuedata['id'] = ($_GET['id'] == '' ? 0 : $_GET['id']);
 
@@ -162,7 +73,7 @@ else
 $SESSION->save('rts', $s);
 
 $layout['pagetitle'] = trans('Tickets List');
-$queue = GetQueueContents($queuedata['id'], $o, $s, $owner);
+$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $owner);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
