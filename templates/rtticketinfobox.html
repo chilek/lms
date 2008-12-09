@@ -126,47 +126,18 @@
 		</TD>
 	</TR>
 	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="1%" align="left" NOWRAP>
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="50%" align="left" NOWRAP>
-						{if $ticket.prev_ticketid neq NULL}
-							<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}"><IMG src="img/prev.gif" alt=""> {t}Previous ticket{/t}</A>
-						{else}
-							<IMG src="img/prev.gif" alt=""> {t}Previous ticket{/t}
-						{/if}
-					</TD>
-					<TD width="50%" align="left" NOWRAP>
-						{if $ticket.next_ticketid neq NULL}
-	    						<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{t}Next ticket{/t} <IMG src="img/next.gif" alt=""></A>
-						{else}
-	    						{t}Next ticket{/t} <IMG src="img/next.gif" alt="">
-						{/if}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-		<TD class="fbt" width="98%">
-	    	</TD>
-		<TD class="frightu" width="1%" align="right" NOWRAP>
-	    		<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD width="50%" align="right" NOWRAP>
-						{if $ticket.prev_ticketid neq NULL}
-							<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}"><IMG src="img/prev.gif" alt=""> {t}Previous ticket{/t}</A>
-						{else}
-							<IMG src="img/prev.gif" alt=""> {t}Previous ticket{/t}
-						{/if}
-					</TD>
-					<TD width="50%" align="right" NOWRAP>
-	    					{if $ticket.next_ticketid neq NULL}
-	    						<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{t}Next ticket{/t} <IMG src="img/next.gif" alt=""></A>
-						{else}
-	    						{t}Next ticket{/t} <IMG src="img/next.gif" alt="">
-						{/if}
-					</TD>
-				</TR>
-			</TABLE>
+		<TD CLASS="fall" width="100%" align="center" colspan="3" NOWRAP>
+			{if $ticket.prev_ticketid neq NULL}
+				<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}"><B>&laquo;&laquo;&nbsp;</B>{t}Previous ticket{/t}<B>&nbsp;&laquo;&laquo;</B></A>
+			{else}
+				<B>&laquo;&laquo;&nbsp;</B>{t}Previous ticket{/t}<B>&nbsp;&laquo;&laquo;</B>
+			{/if}
+			&nbsp;&nbsp;&nbsp;
+			{if $ticket.next_ticketid neq NULL}
+				<A HREF="?m=rtticketview&id={$ticket.next_ticketid}"><B>&raquo;&raquo;&nbsp;</B>{t}Next ticket{/t}<B>&nbsp;&raquo;&raquo;</B></A>
+			{else}
+				<B>&raquo;&raquo;&nbsp;</B>{t}Next ticket{/t}<B>&nbsp;&raquo;&raquo;</B>
+			{/if}
 		</TD>
 	</TR>
 </TABLE>
