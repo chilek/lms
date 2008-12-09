@@ -3033,7 +3033,6 @@ class LMS
 
 	function GetQueueContents($ids, $order='createtime,desc', $state=NULL, $owner=0)
 	{
-	
 		if(!$order)
 			$order = 'createtime,desc';
 
