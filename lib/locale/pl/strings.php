@@ -2108,5 +2108,7 @@ $_LANG['Voip Accounts ($0):'] = 'Konta VoIP ($0)';
 $_LANG['<!do>Import'] = 'Importuj';
 $_LANG['Download (CSV)'] = 'Pobierz (CSV)';
 $_LANG['Download all (TXT)'] = 'Pobierz wszystkie (TXT)';
+$_LANG['Previous ticket'] = 'Poprzednie zgłoszenie';
+$_LANG['Next ticket'] = 'Następne zgłoszenie';
 
 ?>

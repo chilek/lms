@@ -65,6 +65,20 @@ if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
 	$SMARTY->assign('allnodegroups', $allnodegroups);
 }
 
+$iteration = $LMS->GetQueueContents($ticket[queueid],$order='createtime,desc', $state=-1);
+foreach($iteration as $idx => $element)
+{
+	if (intval($element['id']) == intval($_GET['id']))
+	{
+		$next_ticketid = $iteration[$idx+1]['id'];
+		$prev_ticketid = $iteration[$idx-1]['id'];
+		break;
+	}
+}		
+
+$ticket['next_ticketid'] = $next_ticketid;
+$ticket['prev_ticketid'] = $prev_ticketid;
+
 $layout['pagetitle'] = trans('Ticket Review: $0',sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
