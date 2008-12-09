@@ -47,6 +47,7 @@ version ? (????-??-??):
   - cashimport: records grouping by division (alec)
   - cashimport: imported records downloading in csv and txt format (alec)
   - userpanel: disable access for deleted customers (alec)
+  - rtticketview: we can easily browse through tickets (chilan)
 
 version 1.11.4 Telchak (2008-08-07):
 
