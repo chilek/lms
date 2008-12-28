@@ -54,20 +54,16 @@
 				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
 			    <TD width="1%" align="center">
-			    	    {cycle print=false}
-				    <INPUT class="box {cycle}" type="checkbox" name="queue[users][{$right.id}][1]" value="1" {if $right.rights > 0}CHECKED{/if}>
+				    <INPUT type="checkbox" name="queue[users][{$right.id}][1]" value="1" {if $right.rights > 0}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center">
-				    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="queue[users][{$right.id}][2]" value="2" {if ($right.rights & 2) == 2}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="queue[users][{$right.id}][2]" value="2" {if ($right.rights & 2) == 2}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center">
-				    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="queue[users][{$right.id}][4]" value="4" {if ($right.rights & 4) == 4}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="queue[users][{$right.id}][4]" value="4" {if ($right.rights & 4) == 4}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center" class="fright">
-				    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="queue[users][{$right.id}][8]" value="8" {if ($right.rights & 8) == 8}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="queue[users][{$right.id}][8]" value="8" {if ($right.rights & 8) == 8}CHECKED{/if}>
 			    </TD>
 			</TR>
 			{/foreach}

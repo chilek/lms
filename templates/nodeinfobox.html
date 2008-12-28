@@ -117,7 +117,7 @@
 				{/section}
 			</SELECT>
 			<INPUT name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<INPUT class="box light" type="checkbox" name="linktype" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
+			<INPUT type="checkbox" name="linktype" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
 			<A HREF="javascript:document.nodelink.submit(); ">{t}Connect{/t} <IMG SRC="img/edit.gif" alt=""></A>
 			{/if}
 			{/if}
@@ -132,8 +132,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			<A HREF="javascript:setCheckbox('chkmac')">{t}MAC checking{/t}: </A><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" CLASS="light box"{if $nodeinfo.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
-			<A HREF="javascript:setCheckbox('duplex')">{t}Half duplex{/t}: </A><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" CLASS="light box"{if $nodeinfo.halfduplex} checked{/if} onclick="duplex_change();">
+			<A HREF="javascript:setCheckbox('chkmac')">{t}MAC checking{/t}: </A><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeinfo.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
+			<A HREF="javascript:setCheckbox('duplex')">{t}Half duplex{/t}: </A><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onclick="duplex_change();">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

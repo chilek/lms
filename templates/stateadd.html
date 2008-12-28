@@ -12,7 +12,7 @@
 			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="stateadd[name]" value="{$stateadd.name|escape}" {tip text="Enter state name" trigger="name" bold=1}>
+			<INPUT type="text" name="stateadd[name]" value="{$stateadd.name|escape}" {tip text="Enter state name" trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -30,7 +30,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.stateadd.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=statelist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="stateadd[reuse]" value="ON" class="box light" {if $stateadd.reuse}checked{/if}> {t}Display this form again, when this state is saved{/t}
+			<INPUT type="checkbox" name="stateadd[reuse]" value="ON" {if $stateadd.reuse}checked{/if}> {t}Display this form again, when this state is saved{/t}
 		</TD>
 	</TR>
 </TABLE>

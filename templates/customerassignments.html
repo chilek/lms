@@ -149,9 +149,8 @@
 							<B>{t}Options:{/t}</B>
 						    </TD>
 						    <TD colspan="2">
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice || (!isset($assignment.invoice) && $_config.phpui.use_invoices|chkconfig)}CHECKED{/if}> <A HREF="javascript:setWithInvoice()">{t}with invoice{/t}&nbsp;</a>
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="assignment[settlement]" VALUE="1" {if $assignment.settlement}CHECKED{/if}> <A HREF="javascript:setWithSettlement()">{t}with settlement of first deficient period{/t}</a>
-						
+							<INPUT TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice || (!isset($assignment.invoice) && $_config.phpui.use_invoices|chkconfig)}CHECKED{/if}> <A HREF="javascript:setWithInvoice()">{t}with invoice{/t}&nbsp;</a>
+							<INPUT TYPE="checkbox" NAME="assignment[settlement]" VALUE="1" {if $assignment.settlement}CHECKED{/if}> <A HREF="javascript:setWithSettlement()">{t}with settlement of first deficient period{/t}</a>
 						    </TD>
 						</TR>
 					    </TABLE>

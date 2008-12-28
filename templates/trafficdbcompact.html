@@ -15,9 +15,9 @@
 			<B>{t}Data precision level:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<B><INPUT class="radio light" TYPE="radio" NAME="level" ID="low" VALUE="low" {tip text="Data older than one day will be combined into one day"}><A HREF="javascript:setPrecision('low')">{t}Low{/t}</a></INPUT><BR>
-			   <INPUT class="radio light" TYPE="radio" NAME="level" ID="medium" VALUE="medium" {tip text="Data older than one month will be combined into one day"}><A HREF="javascript:setPrecision('medium')">{t}Medium{/t}</a></INPUT><BR>
-			   <INPUT class="radio light" TYPE="radio" NAME="level" ID="high" VALUE="high" {tip text="Data older than one month will be combined into one hour"}><A HREF="javascript:setPrecision('high')">{t}High{/t}</a></INPUT>
+			<B><INPUT TYPE="radio" NAME="level" ID="low" VALUE="low" {tip text="Data older than one day will be combined into one day"}><A HREF="javascript:setPrecision('low')">{t}Low{/t}</a></INPUT><BR>
+			   <INPUT TYPE="radio" NAME="level" ID="medium" VALUE="medium" {tip text="Data older than one month will be combined into one day"}><A HREF="javascript:setPrecision('medium')">{t}Medium{/t}</a></INPUT><BR>
+			   <INPUT TYPE="radio" NAME="level" ID="high" VALUE="high" {tip text="Data older than one month will be combined into one hour"}><A HREF="javascript:setPrecision('high')">{t}High{/t}</a></INPUT>
 			</B>
 		</TD>
 	</TR>
@@ -25,14 +25,14 @@
 		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option to remove records older than one year"}>
-		    <INPUT CLASS="box light" TYPE="checkbox" NAME="removeold" VALUE="1"><B>&nbsp;<A HREF="javascript:setCheckbox('removeold')">{t}Delete data older than one year{/t}</a></B></INPUT>
+		    <INPUT TYPE="checkbox" NAME="removeold" ID="removeold" VALUE="1"><B>&nbsp;<A HREF="javascript:checkElement('removeold')">{t}Delete data older than one year{/t}</a></B></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
 		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option to remove stats of deleted nodes"} NOWRAP>
-		    <INPUT CLASS="box light" TYPE="checkbox" NAME="removedeleted" VALUE="1"><B>&nbsp;<A HREF="javascript:setCheckbox('removedeleted')">{t}Delete stats of non-existing (deleted) nodes{/t}</a></B></INPUT>
+		    <INPUT TYPE="checkbox" NAME="removedeleted" ID="removedeleted" VALUE="1"><B>&nbsp;<A HREF="javascript:checkElement('removedeleted')">{t}Delete stats of non-existing (deleted) nodes{/t}</a></B></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -48,11 +48,6 @@
 function setPrecision(id)
 {
 	document.trafficdbcompact.elements[id].checked = true;
-}
-
-function setCheckbox(id)
-{
-	document.trafficdbcompact.elements[id].checked = !document.trafficdbcompact.elements[id].checked;
 }
 {/literal}
 //-->

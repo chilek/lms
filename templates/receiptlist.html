@@ -117,7 +117,7 @@
 				<B>{t}Period:{/t}</B>&nbsp;
 				{t}from{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{t}to{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
-				<INPUT type="checkbox" class="box dark" name="advances" value="1"{if $listdata.advances} checked{/if}><A HREF="javascript:setType('advances');">{t}not settled adv. only{/t}</A>&nbsp;
+				<INPUT type="checkbox" name="advances" value="1"{if $listdata.advances} checked{/if}><A HREF="javascript:setType('advances');">{t}not settled adv. only{/t}</A>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>		
@@ -165,8 +165,7 @@
 			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]"></A>
 			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 			<A onClick="return confirmLink(this, '{t 0=$receipt.number}Are you sure, you want to remove receipt \'$0\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-			{cycle print=false}
-			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
+			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -191,11 +190,11 @@
 				<TR>
 					<TD ALIGN="left" nowrap>
 						<A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/printr.gif" ALT="" ></A>&nbsp;
-						<INPUT type="checkbox" class="box dark" name="original" checked> <A HREF="javascript:setType('original');">{t}original{/t}</A>&nbsp;
-						<INPUT type="checkbox" class="box dark" name="copy" checked> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>
+						<INPUT type="checkbox" name="original" checked> <A HREF="javascript:setType('original');">{t}original{/t}</A>&nbsp;
+						<INPUT type="checkbox" name="copy" checked> <A HREF="javascript:setType('copy');">{t}copy{/t}</A>
 					</TD>
 					<TD ALIGN="right">	
-						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>

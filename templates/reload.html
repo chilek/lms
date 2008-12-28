@@ -51,8 +51,7 @@
 						    {elseif $hosts[hosts].reload==0}{t}OK{/t}
 						    {else}{t}unknown{/t}{/if}</TD>
 					<TD>
-						{cycle print=false}
-						<INPUT class="box {cycle}" TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
+						<INPUT TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
 					</TD>
 				</TR>
 				{sectionelse}
@@ -66,7 +65,7 @@
 				{/section}
 				<TR class="light">
 					<TD CLASS="ftop" colspan="2"nowrap>
-						<INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+						<INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
 						<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" colspan="3" nowrap>

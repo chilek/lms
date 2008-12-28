@@ -58,7 +58,7 @@
 	    </TD>
 	    <TD width="1%" nowrap><B>{t}Disabled summary:{/t}</B></TD>
 	    <TD width="98%" class="fright">
-		    <INPUT type="checkbox" name="registry[disabled]" value="1" class="box light"{if $registry.disabled} checked{/if}>
+		    <INPUT type="checkbox" name="registry[disabled]" value="1" {if $registry.disabled} checked{/if}>
 	    </TD>
 	</TR>
 	<TR class="LIGHT">
@@ -92,32 +92,25 @@
 				<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
 			    <TD width="1%" align="center">
-			    	    {cycle print=false}
-				    <INPUT class="box {cycle}" type="checkbox" name="registry[users][{$right.id}][1]" value="1" {if ($right.rights & 1)==1}CHECKED{/if}>
+				    <INPUT type="checkbox" name="registry[users][{$right.id}][1]" value="1" {if ($right.rights & 1)==1}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="registry[users][{$right.id}][2]" value="2" {if ($right.rights & 2)==2}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][2]" value="2" {if ($right.rights & 2)==2}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="registry[users][{$right.id}][4]" value="4" {if ($right.rights & 4)==4}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][4]" value="4" {if ($right.rights & 4)==4}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="registry[users][{$right.id}][8]" value="8" {if ($right.rights & 8)==8}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][8]" value="8" {if ($right.rights & 8)==8}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="registry[users][{$right.id}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="registry[users][{$right.id}][32]" value="32" {if ($right.rights & 32)==32}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][32]" value="32" {if ($right.rights & 32)==32}CHECKED{/if}>
 			    </TD>
 			    <TD width="1%" align="center" class="fright">
-				    {cycle print=false}
-			    	    <INPUT class="box {cycle}" type="checkbox" name="registry[users][{$right.id}][256]" value="256" {if ($right.rights & 256)==256}CHECKED{/if}>
+			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][256]" value="256" {if ($right.rights & 256)==256}CHECKED{/if}>
 			    </TD>
 			</TR>
 			{/foreach}

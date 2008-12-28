@@ -12,7 +12,7 @@
 			<B>{t}Template:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="numberplanedit[template]" value="{$numberplanedit.template|escape}" {tip text="Enter number template" trigger="template" bold=1}>
+			<INPUT type="text" name="numberplanedit[template]" value="{$numberplanedit.template|escape}" {tip text="Enter number template" trigger="template" bold=1}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -53,7 +53,7 @@
 			<B>{t}Default:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" class="box light" name="numberplanedit[isdefault]" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanedit.isdefault!="0"}CHECKED{/if}>
+			<INPUT type="checkbox" name="numberplanedit[isdefault]" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanedit.isdefault!="0"}CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR class="light">

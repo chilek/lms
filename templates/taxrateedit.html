@@ -13,7 +13,7 @@
 			<B>{t}Label:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="taxrateedit[label]" value="{$taxrateedit.label}" size="16" {tip text="Enter tax rate label" trigger="label"}>
+			<INPUT type="text" name="taxrateedit[label]" value="{$taxrateedit.label}" size="16" {tip text="Enter tax rate label" trigger="label"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -24,7 +24,7 @@
 			<B>{t}Value:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="taxrateedit[value]" value="{$taxrateedit.value|string_format:"%.2f"}" size="10" {tip text="Enter percentage value of tax rate" trigger="value"}>
+			<INPUT type="text" name="taxrateedit[value]" value="{$taxrateedit.value|string_format:"%.2f"}" size="10" {tip text="Enter percentage value of tax rate" trigger="value"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -35,7 +35,7 @@
 			<B>{t}Taxing:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" class="box light" name="taxrateedit[taxed]" value="1" {tip text="Select taxing status"}{if $taxrateedit.taxed!="0"}CHECKED{/if}>
+			<INPUT type="checkbox" name="taxrateedit[taxed]" value="1" {tip text="Select taxing status"}{if $taxrateedit.taxed!="0"}CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -46,7 +46,7 @@
 			<B>{t}Binds from date:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="taxrateedit[validfrom]" value="{$taxrateedit.validfrom}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
+			<INPUT type="text" name="taxrateedit[validfrom]" value="{$taxrateedit.validfrom}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -57,7 +57,7 @@
 			<B>{t}Binds to date:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="taxrateedit[validto]" value="{$taxrateedit.validto}" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
+			<INPUT type="text" name="taxrateedit[validto]" value="{$taxrateedit.validto}" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
 		</TD>
 	</TR>
 	<TR class="light">

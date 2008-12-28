@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 {literal}
-<SCRIPT language=JavaScript>
+<SCRIPT type="text/javascript">
 	<!--
 
 	function CheckAll()
@@ -138,8 +138,7 @@
 								<A href="?m=receipt&id={$balancelist.docid[balancelist]}" TARGET="_blank"><IMG SRC="img/printr.gif" ALT="[ {t}Cash receipt{/t} ]" {tip 0=$balancelist.docid[balancelist] dynpopup='?m=number&id=$0'}></A>
 							{/if}
 						{/if}
-						{cycle name=bal print=false}
-						<INPUT class="box {cycle name=bal}" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
+						<INPUT TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
 					</TD>
 				</TR>
 				{sectionelse}
@@ -159,13 +158,13 @@
 						{/if}
 						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
 						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
-						<INPUT type="checkbox" class="box light" name="original" id="inv-original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-original')">{t}original{/t}&nbsp;</a>
-						<INPUT type="checkbox" class="box light" name="copy" id="inv-copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-copy')">{t}copy{/t}</a>
-						<INPUT type="checkbox" class="box light" name="duplicate" id="inv-duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-duplicate')">{t}duplicate{/t}</a>
+						<INPUT type="checkbox" name="original" id="inv-original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-original')">{t}original{/t}&nbsp;</a>
+						<INPUT type="checkbox" name="copy" id="inv-copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-copy')">{t}copy{/t}</a>
+						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-duplicate')">{t}duplicate{/t}</a>
 						</nobr>
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
-						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 				<TR class="light">
@@ -185,8 +184,8 @@
 						</SELECT>
 					</TD>
 					<TD class="ftop" colspan="3" nowrap>
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation0" VALUE="0" class="box light" {tip text="Select type of operation"}><A HREF="javascript:checkElement('operation0')">{t}liability{/t}</a><BR>
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation1" VALUE="1" class="box light" {tip text="Select type of operation"} checked><A HREF="javascript:checkElement('operation1')">{t}income/expense{/t}</a>
+						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation0" VALUE="0" {tip text="Select type of operation"}><A HREF="javascript:checkElement('operation0')">{t}liability{/t}</a><BR>
+						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation1" VALUE="1" {tip text="Select type of operation"} checked><A HREF="javascript:checkElement('operation1')">{t}income/expense{/t}</a>
 					</TD>
 					<TD class="ftop" colspan="2">
 						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {if $comment}VALUE="{$comment}"{/if} {tip text="Enter short description of transaction"}> 

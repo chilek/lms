@@ -36,7 +36,7 @@
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="fall" colspan="8">
-			<P><FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
+			<FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="tarifflist">
 				{*<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">*}
@@ -55,7 +55,7 @@
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
 					{/section}
 				</SELECT>
-			</FORM></P>
+			</FORM>
 		</TD>
 	</TR>		
 	{cycle values="light,lucid" print=false}

@@ -125,7 +125,7 @@
 	<TR class="DARK">
     		<TD class="fall" colspan="10">
 	                <B>{t}Filter:{/t} </B>
-				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
 					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}date (YYYY/MM/DD){/t}</OPTION>
@@ -144,7 +144,7 @@
 					{/section}
 				</SELECT>
 				<NOBR>
-				<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}> <A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
+				<INPUT type="checkbox" name="groupexclude" {if $listdata.groupexclude} CHECKED{/if}><A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 				</NOBR>
 		</TD>
@@ -202,8 +202,7 @@
 				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printr.gif" ALT="[ {t}Cash receipt{/t} ]" {tip 0=$balancelist[balancelist].docid dynpopup='?m=number&id=$0'}></A>
 				{/if}
 			{/if}
-			{cycle print=false}
-			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
+			<INPUT TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
 		</TD>
 	</TR>
 	{sectionelse}
@@ -220,12 +219,12 @@
 			<A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{t}Print invoices{/t} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{t}Print cash receipts{/t} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
-			<INPUT type="checkbox" class="box dark" name="original" id="original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('original')">{t}original{/t}&nbsp;</a>
-			<INPUT type="checkbox" class="box dark" name="copy" id="copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('copy')">{t}copy{/t}</a>
-			<INPUT type="checkbox" class="box dark" name="duplicate"id ="duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('duplicate')">{t}duplicate{/t}</a>
+			<INPUT type="checkbox" name="original" id="original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('original')">{t}original{/t}&nbsp;</a>
+			<INPUT type="checkbox" name="copy" id="copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('copy')">{t}copy{/t}</a>
+			<INPUT type="checkbox" name="duplicate"id ="duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}><A HREF="javascript:checkElement('duplicate')">{t}duplicate{/t}</a>
 		</TD>
 		<TD class="frightu" ALIGN="right" colspan="2">
-			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
 		</TD>
 	</TR>
 	{if $listdata.total != 0}

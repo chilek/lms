@@ -72,6 +72,7 @@ function are_questions($id)
 
 function fetch_questions($id)
 {
+    $table = array();
     if($questions = get_questions($id))
 	foreach ($questions as $question)
 	{
@@ -146,7 +147,7 @@ if (defined('USERPANEL_SETUPMODE'))
 
     function module_add() {
 	global $SMARTY,$_GET;
-	$solution['refid'] = $_GET['refid'];
+	$solution['refid'] = !empty($_GET['refid']) ? $_GET['refid'] : 0;
 	$SMARTY->assign('solution', $solution);
 	$SMARTY->display('module:help:add.html');
     }

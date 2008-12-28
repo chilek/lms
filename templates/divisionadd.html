@@ -12,7 +12,7 @@
 			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="division[shortname]" value="{$division.shortname|escape}" size="40" {tip text="Enter division short name" trigger="shortname" bold=1}>
+			<INPUT type="text" name="division[shortname]" value="{$division.shortname|escape}" size="40" {tip text="Enter division short name" trigger="shortname" bold=1}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -155,7 +155,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.division.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=divisionlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="division[reuse]" value="ON" class="box light" {if $division.reuse}checked{/if}> <A href="javascript:checkElement('division[reuse]')">{t}Display this form again, when this division is saved{/t}</A>
+			<INPUT type="checkbox" name="division[reuse]" value="ON" {if $division.reuse}checked{/if}> <A href="javascript:checkElement('division[reuse]')">{t}Display this form again, when this division is saved{/t}</A>
 		</TD>
 	</TR>
 </TABLE>
