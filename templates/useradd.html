@@ -66,7 +66,7 @@
 		</TD>
 		<TD CLASS="fright" NOWRAP>
 			{section name=acl loop=$accesslist}
-			<INPUT CLASS="box light" TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
+			<INPUT TYPE="checkbox" NAME="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
 			{/section}
 		</TD>
 	</TR>

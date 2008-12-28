@@ -420,19 +420,36 @@ cal7.time_comp = false;
 					    <TABLE width="100%">
 						<TR>
 						    <TD width="1%">
+							<IMG src="img/division.gif" alt="">
+						    </TD>
+						    <TD width="1%" nowrap>
+							<B>{t}Division{/t}:</B>
+						    </TD>
+						    <TD width="98%" colspan="2" nowrap>
+							<SELECT size="1" name="division" {tip text="Select division"}>
+							    <OPTION VALUE="0">- {t}all{/t} -</OPTION>
+                    					{foreach from=$divisions item=item}
+			                            	    <OPTION VALUE="{$item.id}">{$item.shortname}</OPTION>
+							{/foreach}
+							</SELECT>					
+						    </TD>
+						</TR>
+						<TR>
+						    <TD width="1%">
 							<IMG src="img/group.gif" alt="">
 						    </TD>
 						    <TD width="1%" nowrap>
 							<B>{t}Group:{/t}</B>
 						    </TD>
-						    <TD width="98%" nowrap>
-							<SELECT size="1" name="group">
-							    <OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
+						    <TD width="97%" nowrap>
+							<SELECT size="4" name="group[]" MULTIPLE id="invoicereportgroup" {tip text="Select group"}>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoicereport-groupexclude')">{t}exclude group{/t}</a>
+						    </TD>
+						    <TD width="1%" nowrap>
+    							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoicereport-groupexclude')">{t}exclude group{/t}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -442,7 +459,7 @@ cal7.time_comp = false;
 						    <TD width="1%" nowrap>
 							<B>{t}Plan:{/t}</B>
 						    </TD>
-						    <TD width="98%" nowrap>
+						    <TD width="98%" colspan="2" nowrap>
 							<SELECT name="numberplanid" {tip text="Select numbering plan"}>
 							    <OPTION value="0">- {t}all{/t} -</OPTION>
     							    {foreach item=plan from=$numberplans}
@@ -467,7 +484,7 @@ cal7.time_comp = false;
 						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="95%" nowrap>
-						<input type="checkbox" class="box light" name="extended" value="1" id="invoicereport-extended"> <A HREF="javascript:checkElement('invoicereport-extended')">{t}extended format{/t}</a>
+						<input type="checkbox" name="extended" value="1" id="invoicereport-extended"> <A HREF="javascript:checkElement('invoicereport-extended')">{t}extended format{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -486,6 +503,7 @@ var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
 cal8.time_comp = false;
 var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
 cal9.time_comp = false;
+multiselect('invoicereport', 'invoicereportgroup', '{t}- all groups -{/t}');
 //-->
 </SCRIPT>
 </P>
@@ -538,7 +556,7 @@ cal9.time_comp = false;
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('receiptlist-groupexclude')">{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="receiptlist-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('receiptlist-groupexclude')">{t}exclude group{/t}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -567,7 +585,7 @@ cal9.time_comp = false;
 						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="97%" nowrap>
-						<input type="checkbox" class="box light" name="extended" value="1" id="receiptlist-extended"> <A HREF="javascript:checkElement('receiptlist-extended')">{t}extended format{/t}</a>
+						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"> <A HREF="javascript:checkElement('receiptlist-extended')">{t}extended format{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -722,7 +740,7 @@ cal4.time_comp = false;
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoices-groupexclude')">{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('invoices-groupexclude')">{t}exclude group{/t}</a>
 						    </TD>
 						</TR>
 						<TR>
@@ -756,9 +774,9 @@ cal4.time_comp = false;
 						<IMG src="img/info.gif" alt="">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoiceorg" ID="invoiceorg"{if eregi('original',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoiceorg')">{t}original{/t}</a>&nbsp;
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicecopy" ID="invoicecopy"{if eregi('copy',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicecopy')">{t}copy{/t}</a>&nbsp;
-						<INPUT TYPE="checkbox" CLASS="box light" NAME="invoicedup" ID="invoicedup"{if eregi('duplicate',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicedup')">{t}duplicate{/t}</a>
+						<INPUT TYPE="checkbox" NAME="invoiceorg" ID="invoiceorg"{if eregi('original',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoiceorg')">{t}original{/t}</a>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicecopy" ID="invoicecopy"{if eregi('copy',$_config.invoices.default_printpage)}  CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicecopy')">{t}copy{/t}</a>&nbsp;
+						<INPUT TYPE="checkbox" NAME="invoicedup" ID="invoicedup"{if eregi('duplicate',$_config.invoices.default_printpage)} CHECKED{/if}>&nbsp;<A HREF="javascript:checkElement('invoicedup')">{t}duplicate{/t}</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -835,7 +853,7 @@ cal11.time_comp = false;
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 							    {/section}
 							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="printforms-groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('printforms-groupexclude')">{t}exclude group{/t}</a>
+    							<INPUT type="checkbox" name="groupexclude" id="printforms-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><a href="javascript:checkElement('printforms-groupexclude')">{t}exclude group{/t}</a>
 						    </TD>
 						</TR>
 					    </TABLE>

@@ -34,7 +34,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="light">
 		<TD width="100%" CLASS="ftopu">
-			<INPUT type="radio" class="box light" name="receipt[type]" value="return" id="radio_return" onclick="show('tab_return')" checked> <B>{t}return{/t}</B><BR>
+			<INPUT type="radio" name="receipt[type]" value="return" id="radio_return" onclick="show('tab_return')" checked> <B>{t}return{/t}</B><BR>
 			    <TABLE width="100%" id="tab_return" style="margin-left: 40px;{if isset($receipt.type) && $receipt.type!="return"} display: none;{/if}">
 				<TR>
 				    <TD WIDTH="1%" NOWRAP>
@@ -60,7 +60,7 @@
 				    </TD>
 				</TR>
 			    </TABLE>
-			<INPUT type="radio" class="box light" name="receipt[type]" value="settle" id="radio_settle" onclick="show('tab_settle')" {if $receipt.type=="settle"} checked{/if}> <B>{t}settlement{/t}</B><BR>
+			<INPUT type="radio" name="receipt[type]" value="settle" id="radio_settle" onclick="show('tab_settle')" {if $receipt.type=="settle"} checked{/if}> <B>{t}settlement{/t}</B><BR>
 			    <TABLE width="100%" id="tab_settle" style="margin-left: 40px;{if $receipt.type!="settle"} display: none;{/if}">
 				<TR>
 				    <TD WIDTH="1%" NOWRAP>
@@ -126,8 +126,8 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="100%" ALIGN="right" CLASS="fbottomu">
-			<INPUT type="checkbox" class ="box light" name="original" checked> {t}original{/t}&nbsp;
-			<INPUT type="checkbox" class ="box light" name="copy" checked> {t}copy{/t}&nbsp;
+			<INPUT type="checkbox" name="original" checked> {t}original{/t}&nbsp;
+			<INPUT type="checkbox" name="copy" checked> {t}copy{/t}&nbsp;
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			<A HREF="javascript: savereceipt(0);">{t}Save{/t} <IMG SRC="img/save.gif" ALT=""></A>&nbsp;
 			<A HREF="javascript: savereceipt(1);">{t}Save & Print{/t} <IMG SRC="img/print.gif" ALT=""></A>

@@ -81,8 +81,8 @@
 			<B>{t}Options:{/t}</B>
 		</TD>
 		<TD class="fright" width="98%">
-		        <INPUT class="box light" type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignmentedit[invoice]')">{t}with invoice{/t}</a>&nbsp;
-			<INPUT class="box light" type="checkbox" name="assignmentedit[settlement]" value="1" {if $assignmentedit.settlement}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignmentedit[settlement]')">{t}with settlement of first deficient period{/t}</a>
+		        <INPUT type="checkbox" name="assignmentedit[invoice]" value="1" {if $assignmentedit.invoice}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignmentedit[invoice]')">{t}with invoice{/t}</a>&nbsp;
+			<INPUT type="checkbox" name="assignmentedit[settlement]" value="1" {if $assignmentedit.settlement}CHECKED{/if}> <A HREF="javascript:setCheckbox('assignmentedit[settlement]')">{t}with settlement of first deficient period{/t}</a>
 		</TD>
 	</TR>
 {if $customernodes.total}
@@ -101,7 +101,7 @@
 			    {assign var=nodeid value=$customernodes[customernodes].id}
 			    <TR class="light">
 				<TD width="1%">
-				    <INPUT type="checkbox" name="assignmentedit[nodes][{counter}]" value="{$customernodes[customernodes].id}" class="box light"{if $assignmentedit.nodes.$nodeid} checked{/if}>
+				    <INPUT type="checkbox" name="assignmentedit[nodes][{counter}]" value="{$customernodes[customernodes].id}" {if $assignmentedit.nodes.$nodeid} checked{/if}>
 				</TD>
 				<TD width="99%" nowrap>    
 				    <A HREF="javascript:setCheckbox('assignmentedit[nodes][{counter name=counter2}]')"><B>{$customernodes[customernodes].name}</B> ({$customernodes[customernodes].id|string_format:"%04d"}){if $customernodes[customernodes].location} / {$customernodes[customernodes].location|truncate:"60":"...":true}{/if}</a>

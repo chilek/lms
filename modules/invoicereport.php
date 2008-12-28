@@ -51,18 +51,36 @@ $taxeslist = array();
 
 if(!empty($_POST['group']))
 {
+	if(is_array($_POST['group']))
+		$groups = implode(',', $_POST['group']);
+	else
+		$groups = intval($_POST['group']);
+	
 	$groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').' 
 		EXISTS (SELECT 1 FROM customerassignments a
-			WHERE a.customergroupid = '.intval($_POST['group']).'
+			WHERE a.customergroupid IN ('.$groups.')
 			AND a.customerid = d.customerid)';
 
-        $groupname = $DB->GetOne('SELECT name FROM customergroups WHERE id=?', 
-			array(intval($_POST['group'])));
+        $names = $DB->GetAll('SELECT name FROM customergroups WHERE id IN ('.$groups.')');
+	
+	$groupnames = '';
+	foreach($names as $idx => $row)
+		$groupnames .= ($idx ? ', ' : '') . $row['name'];
 	
 	if(isset($_POST['groupexclude']))
-	        $layout['group'] = trans('Group: all excluding $0', $groupname);
+	        $layout['group'] = trans('Group: all excluding $0', $groupnames);
 	else
-	        $layout['group'] = trans('Group: $0', $groupname);
+	        $layout['group'] = trans('Group: $0', $groupnames);
+}
+
+if(!empty($_POST['division']))
+{
+	$divwhere = ' AND d.divisionid '.(isset($_POST['divexclude']) ? '!=' : '=').' '.intval($_POST['division']);
+
+        $divname = $DB->GetOne('SELECT name FROM divisions WHERE id = ?', 
+			array(intval($_POST['division'])));
+	
+        $layout['division'] = $divname;
 }
 
 // we can't simply get documents with SUM(value*count)
@@ -74,6 +92,7 @@ $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count
 	    LEFT JOIN invoicecontents ON docid = d.id 
 	    WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) '
 	    .($_POST['numberplanid'] ? 'AND d.numberplanid = '.intval($_POST['numberplanid']) : '')
+	    .(isset($divwhere) ? $divwhere : '')
 	    .(isset($groupwhere) ? $groupwhere : '')
 	    .' AND NOT EXISTS (
                 	    SELECT 1 FROM customerassignments a

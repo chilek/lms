@@ -22,7 +22,7 @@
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="fall" colspan="4">
-			<P><FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
+			<FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="customerlist">
 				<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">
@@ -61,7 +61,7 @@
 			        	<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 				        {/foreach}
 				</SELECT></NOBR>
-			</FORM></P>
+			</FORM>
 		</TD>
 	</TR>		
 	{if $listdata.total != 0}

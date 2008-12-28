@@ -18,7 +18,7 @@
 			<B>{t}Title:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
+			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -29,8 +29,8 @@
 			<B>{t}Date:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			{t}From:{/t} <INPUT name="event[datefrom]" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			{t}To:{/t} <INPUT name="event[dateto]" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{t}From:{/t} <INPUT type="text" name="event[datefrom]" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{t}To:{/t} <INPUT type="text" name="event[dateto]" size="10" OnCLick="javascript:cal2.popup();" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -41,7 +41,7 @@
 			<B>{t}Description:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="event[description]" size="50" {tip text="Enter additional information"}>
+			<INPUT type="text" name="event[description]" size="50" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -52,7 +52,7 @@
 			<B>{t}Note:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="event[note]" size="50" {tip text="Enter note"}>
+			<INPUT type="text" name="event[note]" size="50" {tip text="Enter note"}>
 		</TD>
 	</TR>
 {*	<TR class="light">
@@ -63,7 +63,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[private]" value="1" class="box light" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {t}private{/t}
+			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {t}private{/t}
 		</TD>
 	</TR>
 *}	<TR class="light">

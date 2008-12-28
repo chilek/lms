@@ -48,6 +48,8 @@ version ? (????-??-??):
   - cashimport: imported records downloading in csv and txt format (alec)
   - userpanel: disable access for deleted customers (alec)
   - rtticketview: we can easily browse through tickets (chilan)
+  - css fixes for Opera and Google Chrome (alec)
+  - invoices report: added miltiple-group filter and division filter (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 

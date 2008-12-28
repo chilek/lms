@@ -76,8 +76,8 @@
 			<IMG SRC="img/folder.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			<INPUT TYPE="radio" CLASS="box" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{t}private person{/t}</A>
-			<INPUT TYPE="radio" CLASS="box" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{t}legal entity{/t}</A>
+			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="0" ID="private" {tip text="Select legal personality type" trigger="type"}{if !$customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('private')">{t}private person{/t}</A>
+			<INPUT TYPE="radio" NAME="customerdata[type]" VALUE="1" ID="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type} CHECKED{/if}><A HREF="javascript:checkElement('company')">{t}legal entity{/t}</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -280,7 +280,7 @@
 		</TD>
 		<TD width="99%" COLSPAN="2">
 			<A HREF="javascript:checkElement('chkconsent')">{t}Consent for personal data processing:{/t}</A>
-			<INPUT TYPE="checkbox" CLASS="box" NAME="customerdata[consentdate]" ID="chkconsent" VALUE="{$smarty.now}"{if $customerinfo.consentdate} checked{/if}>
+			<INPUT TYPE="checkbox" NAME="customerdata[consentdate]" ID="chkconsent" VALUE="{$smarty.now}"{if $customerinfo.consentdate} checked{/if}>
 		</TD>
 	</TR>
                                     		</TABLE>

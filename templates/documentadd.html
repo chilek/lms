@@ -195,7 +195,7 @@
 		</TD>
 		<TD width="1%" nowrap><B>{t}Confirmed:{/t}</B></TD>
 		<TD width="98%" class="fright">
-		        <INPUT type="checkbox" name="document[closed]" value="1" class="box light" {if $document.closed} checked{/if}>
+		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -203,7 +203,7 @@
 			<A href="javascript: document.documentadd.submit();">{t}Submit{/t} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="javascript: print_document();">{t}Print{/t} <IMG SRC="img/print.gif" alt=""></A>
 			<A href="?m=documentlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="document[reuse]" ID="reuse" value="ON" class="box light" {if $document.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when that document is saved{/t}</A>
+			<INPUT type="checkbox" name="document[reuse]" ID="reuse" value="ON" {if $document.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when that document is saved{/t}</A>
 		</TD>
 	</TR>
 </TABLE>

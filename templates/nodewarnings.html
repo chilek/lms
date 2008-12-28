@@ -72,11 +72,11 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbl" WIDTH="1%" nowrap>
-						<INPUT TYPE="checkbox" NAME="nodes" CLASS="box light" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{t}Select All{/t}</A></INPUT>
+						<INPUT TYPE="checkbox" NAME="nodes" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{t}Select All{/t}</A></INPUT>
 					</TD>
 					<TD CLASS="fbottom" ALIGN="left">
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{t}Enable message{/t}</A></INPUT></NOBR>
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{t}Disable message{/t}</A></INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{t}Enable message{/t}</A></INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{t}Disable message{/t}</A></INPUT></NOBR>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT">
 						<A HREF="javascript:document.setwarnings.submit()">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>

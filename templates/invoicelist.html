@@ -111,7 +111,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	<TR class="DARK">
 		<TD class="fall" colspan="7">
 				<B>{t}Filter:{/t} </B> 
-				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
 					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}day (YYYY/MM/DD){/t}</OPTION>
@@ -133,7 +133,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					{/section}
 				</SELECT>
 				<NOBR>
-				<INPUT type="checkbox" name="groupexclude" class="box dark"{if $listdata.groupexclude} CHECKED{/if}> <A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
+				<INPUT type="checkbox" name="groupexclude" {if $listdata.groupexclude} CHECKED{/if}><A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
 				&nbsp;<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 				</NOBR>
 		</TD>
@@ -186,8 +186,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{if $invoice.type == $smarty.const.DOC_CNOTE}
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]"></A>
 			{/if}
-			{cycle print=false}
-			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
+			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 			</NOBR>
 		</TD>
 	</TR>
@@ -214,12 +213,12 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					<TD ALIGN="left">
 						<NOBR><A HREF="javascript:pays();">{t}Check/Uncheck as accounted{/t} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" ALT="" ></A></NOBR>&nbsp;
-						<INPUT type="checkbox" class="box dark" name="original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('original')">{t}original{/t}</a>&nbsp;
-						<INPUT type="checkbox" class="box dark" name="copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('copy')">{t}copy{/t}</a>
-						<INPUT type="checkbox" class="box dark" name="duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('duplicate')">{t}duplicate{/t}</a>
+						<INPUT type="checkbox" name="original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('original')">{t}original{/t}</a>&nbsp;
+						<INPUT type="checkbox" name="copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('copy')">{t}copy{/t}</a>
+						<INPUT type="checkbox" name="duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('duplicate')">{t}duplicate{/t}</a>
 					</TD>
 					<TD ALIGN="right">	
-						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>

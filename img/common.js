@@ -184,3 +184,115 @@ function checkElement(id)
 	if (elem)
 		elem.checked = !elem.checked;
 }
+
+function get_object_pos(obj)
+{
+	// get old select size/position
+	var x = (document.layers) ? obj.x : obj.offsetLeft;
+	var y = (document.layers) ? obj.y : obj.offsetTop;
+
+	// calculate select position
+	var elm = obj.offsetParent;
+	while(elm && elm != null) {
+	        x += elm.offsetLeft;
+		y += elm.offsetTop;
+		elm = elm.offsetParent;
+	}
+
+	return {x:x, y:y};
+}
+
+function multiselect(formid, elemid, def)
+{
+	var old_element = document.getElementById(elemid);
+	var form = document.getElementById(formid);
+	
+	if (!old_element || !form) return;
+
+	// create new multiselect div
+	var new_element = document.createElement('DIV');
+	new_element.className = 'multiselect';
+	new_element.id = elemid;
+	new_element.innerHTML = def ? def : '';
+
+	// save (overlib) popups
+	new_element.onmouseover = old_element.onmouseover;
+	new_element.onmouseout = old_element.onmouseout;
+
+	// replace select with multiselect
+	old_element.parentNode.replaceChild(new_element, old_element);
+
+	// create multiselect list div (hidden)
+	var div = document.createElement('DIV');
+	var iframe = document.createElement('IFRAME');
+	var ul = document.createElement('UL');
+
+	div.className = 'multiselectlayer';
+	div.id = elemid + '-layer';
+	div.style.display = 'none';
+
+	for(var i=0, len=old_element.options.length; i<len; i++)
+	{
+		var li = document.createElement('LI');
+		var box = document.createElement('INPUT');
+		var span = document.createElement('SPAN');
+		
+		box.type = 'checkbox';
+		box.name = old_element.name;
+		box.value = old_element.options[i].value;
+		
+		span.innerHTML = old_element.options[i].text;
+		
+		// add some mouse/key events handlers
+		li.onclick = function() {
+			var box = this.childNodes[0];
+			var selected = this.className.match(/selected/);
+			box.checked = selected ? false : true;
+			
+			if(selected) {
+				removeClass(this, 'selected');
+				if(def) {
+					var xlen = this.parentNode.childNodes.length;
+					for(var x=0; x<xlen; x++)
+						if(this.parentNode.childNodes[x].className.match(/selected/))
+							break;
+					if(x==xlen)
+						new_element.innerHTML = def;
+				}
+			} else {
+				addClass(this, 'selected');
+				new_element.innerHTML = '';
+			}
+		}
+		// TODO: keyboard events
+		
+		// add elements
+		li.appendChild(box);
+		li.appendChild(span);
+		ul.appendChild(li);
+	}	
+	
+	// add list
+	div.appendChild(iframe);
+	div.appendChild(ul);
+	form.appendChild(div);
+
+	// add some mouse/key event handlers
+	new_element.onclick = function() {
+		var list = document.getElementById(this.id + '-layer');
+
+		if(list.style.display == 'none') {
+			var pos = get_object_pos(this);
+
+			list.style.left = pos.x + 'px';
+			list.style.top = this.offsetHeight + pos.y + 'px';
+			list.style.display = 'block';
+			// IE max-height hack
+			if(document.all && list.childNodes[1].offsetHeight > 200)
+				list.childNodes[1].style.height = '200px';
+		} else {
+			list.style.display = 'none';
+		}
+	}
+	// TODO: keyboard events
+}

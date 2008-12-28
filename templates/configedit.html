@@ -12,7 +12,7 @@
 			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
+			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
 			<B>{t}Section:{/t}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
 			    <OPTION value="phpui" {if $config.section eq "phpui"}SELECTED{/if}>phpui</OPTION>
@@ -52,7 +52,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" class="box light" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><A HREF="javascript:switchStatus()"> {t}Off{/t}</A>
+			<INPUT type="checkbox" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><A HREF="javascript:switchStatus()"> {t}Off{/t}</A>
 		</TD>
 	</TR>
 	<TR class="light">

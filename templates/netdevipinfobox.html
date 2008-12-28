@@ -69,8 +69,8 @@
 			<IMG SRC="img/options.gif" ALT="{t}Options:{/t}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" CLASS="light box"{if $nodeipdata.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
-			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" CLASS="light box"{if $nodeipdata.halfduplex} checked{/if} onclick="duplex_change();">
+			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeipdata.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
+			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeipdata.halfduplex} checked{/if} onclick="duplex_change();">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

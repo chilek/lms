@@ -34,7 +34,7 @@
 			<B>{t}Title:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title" bold=1}>
+			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title" bold=1}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -45,7 +45,7 @@
 			<B>{t}Time:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
+			<INPUT type="text" name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
 			{t}Begin:{/t} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
@@ -77,7 +77,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright" nowrap>
-			<INPUT type="checkbox" name="event[private]" value="1" class="box light" {tip text="Select event's status"}{if $event.private}CHECKED{/if}><A HREF="javascript:checkElement('event[private]')"> {t}private{/t}</A>
+			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}><A HREF="javascript:checkElement('event[private]')"> {t}private{/t}</A>
 		</TD>
 	</TR>
 	<TR class="light">

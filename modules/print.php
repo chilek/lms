@@ -722,6 +722,7 @@ switch($type)
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(DOC_INVOICE, DOC_CNOTE)));
 		$SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
+		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 		$SMARTY->assign('printmenu', 'finances');
 		$SMARTY->display('printindex.html');
 	break;

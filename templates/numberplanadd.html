@@ -12,7 +12,7 @@
 			<B>{t}Template:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="numberplanadd[template]" value="{$numberplanadd.template|escape}" {tip text="Enter number template" trigger="template" bold=1}>
+			<INPUT type="text" name="numberplanadd[template]" value="{$numberplanadd.template|escape}" {tip text="Enter number template" trigger="template" bold=1}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -55,14 +55,14 @@
 			<B>{t}Default:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" class="box light" name="numberplanadd[isdefault]" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanadd.isdefault!="0"}CHECKED{/if}>
+			<INPUT type="checkbox" name="numberplanadd[isdefault]" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanadd.isdefault!="0"}CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.numberplanadd.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=numberplanlist">{t}Cancel{/t} <IMG src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="numberplanadd[reuse]" ID="reuse" value="ON" class="box light" {if $numberplanadd.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when this numbering plan is saved{/t}</A>
+			<INPUT type="checkbox" name="numberplanadd[reuse]" ID="reuse" value="ON" {if $numberplanadd.reuse}checked{/if}><A HREF="javascript:checkElement('reuse')"> {t}Display this form again, when this numbering plan is saved{/t}</A>
 		</TD>
 	</TR>
 </TABLE>

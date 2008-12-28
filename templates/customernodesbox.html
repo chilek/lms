@@ -110,8 +110,7 @@ function CheckAllN2()
 				<A HREF="?m=nodeedit&id={$customernodes[customernodes].id}"><IMG SRC="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
 				<A HREF="?m=nodeinfo&id={$customernodes[customernodes].id}"><IMG SRC="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>&nbsp;
 				<A HREF="?m=nodedel&id={$customernodes[customernodes].id}" onClick="return confirmLink(this, '{t 0=$customernodes[customernodes].name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
-				{cycle name=nodes print=false}
-				<INPUT class="box {cycle name=nodes}" TYPE="checkbox" NAME="marks[{$customernodes[customernodes].id}]" VALUE="{$customernodes[customernodes].id}" CHECKED>
+				<INPUT TYPE="checkbox" NAME="marks[{$customernodes[customernodes].id}]" VALUE="{$customernodes[customernodes].id}" CHECKED>
 			    </TD>
 			</TR>
 			{/if}
@@ -142,7 +141,7 @@ function CheckAllN2()
 				{/if}
 			    </TD>
 			    <TD CLASS="ftop" ALIGN="right" COLSPAN="2">
-			        <NOBR><A href="javascript:CheckAllN2();">{t}Check All{/t}</A><INPUT CLASS="box light" TYPE="checkbox" NAME="allbox" onClick="CheckAllN();" VALUE="Check All Boxes" CHECKED></NOBR>
+			        <NOBR><A href="javascript:CheckAllN2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAllN();" VALUE="Check All Boxes" CHECKED></NOBR>
                             </TD>
 			</TR>
 		    </TABLE>

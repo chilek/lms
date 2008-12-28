@@ -40,10 +40,25 @@ H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 H2		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 H3		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 
-INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; border-color: #000000; vertical-align: middle; }
-INPUT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; border-color: #000000; vertical-align: middle; }
-INPUT.box  	{ border-style : none; vertical-align: middle; } 
-INPUT.radio  	{ border-style : none; vertical-align: middle; } 
+INPUT[type="text"],
+INPUT[type="password"],
+INPUT[type="submit"],
+INPUT[type="button"], 
+INPUT[type="file"] { 
+	border: solid 1px black;
+	background-color: #EBE4D6;
+}
+INPUT { /* IE */
+	font-size:  8pt;
+	font-family: Tahoma, Verdana, Arial, Helvetica;
+	vertical-align: middle;
+	border-style: expression(this.type=='checkbox' || this.type=='radio' ? 'none' : 'solid');
+	border-width: expression(this.type=='checkbox' || this.type=='radio' ? '0' : '1px');
+	border-color: expression(this.type=='checkbox' || this.type=='radio' ? '' : 'black');
+	background-color: expression(this.type=='checkbox' || this.type=='radio' ? 'transparent' : '#EBE4D6');
+}
+
+INPUT.alert	{ background-color: #FF9B9B; }
 INPUT.hiddenbtn	{ display : none; } 
 INPUT.blend	{ border-style: solid; border-color: #c0c0c0; border-width: 1px; vertical-align: middle; color: black; }
 INPUT.scroller	{ border-style: solid; border-color: grey; border-width: 1px; vertical-align: middle; background-color: #DFD5BD; }
@@ -57,6 +72,58 @@ SELECT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; 
 BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 0pt; background-color: #DFD5BD; vertical-align: middle; }
 
 IMG		{ vertical-align: middle; border: 0; }
+
+div.multiselect { 
+	font-size:  8pt;
+	font-family: Tahoma, Verdana, Arial, Helvetica;
+	border: solid 1px #888888;
+	vertical-align: middle;
+	padding: 0px 20px 0px 4px;
+	cursor: default;
+	background: url('dropdown.gif') no-repeat right #EBE4D6;
+	height: 16px;
+	width: 90px;
+	overflow: hidden;
+}
+div.multiselectlayer {
+	position: absolute;
+	z-index: 100;
+	overflow: hidden;
+	width: 250px;
+}
+/* iframe hack for IE6 */
+div.multiselectlayer iframe {
+	position: absolute;
+	display: none;
+	display/**/:block;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	filter: mask();
+	width: 3000px;
+	height: 3000px;
+}
+div.multiselectlayer ul {
+	list-style: none;
+	cursor: default;
+	padding: 0;
+	margin: 0;
+	border: solid 1px #888888;
+	white-space: nowrap;
+	max-height: 200px;
+	max-width: 250px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+div.multiselectlayer ul li {
+	padding: 0;
+	margin: 0;
+	background-color: #EBE4D6;
+}
+div.multiselectlayer ul li.selected { background-color: #CEBD9B; }
+div.multiselectlayer ul li:hover { background-color: #DFD5BD; }
+div.multiselectlayer ul li span { padding-left: 3px; }
+div.multiselectlayer ul li input { border: none; }
 
 .click-menu     { width: 150px; padding: 0px 0px; margin-top: 0; margin-bottom: 0; }
 .click-menu .box1       { background-color: #CEBD9B; color: #000000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; white-space: nowrap; }

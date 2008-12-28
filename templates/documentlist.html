@@ -108,8 +108,7 @@
 			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]" title="[ {t}Save{/t} ]"></a>
 			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></a>
 			<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></a>
-			{cycle print=false}
-			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
+			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
 		</TD>
 	
 	</TR>
@@ -140,7 +139,7 @@
 						</NOBR>
 					</TD>
 					<TD ALIGN="right">
-				                <NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+				                <NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				 </TR>
 			</TABLE>

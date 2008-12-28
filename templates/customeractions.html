@@ -48,8 +48,8 @@
 					<TD width="98%">
 					    {t}Warning message:{/t}
 					    <TEXTAREA name="setwarnings[message]" cols="60" rows="5" {tip text="Enter warning message contents"}>{$customerinfo.message|escape}</TEXTAREA>
-					    <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnon]" ID="warnon" onclick="switchbox('warnon');"><A HREF="javascript:checkElement('warnon'); switchbox('warnon')">{t}Enable{/t}</A></INPUT></NOBR>
-					    <NOBR><INPUT TYPE="checkbox" CLASS="box light" NAME="setwarnings[warnoff]" ID="warnoff" onclick="switchbox('warnoff');"><A HREF="javascript:checkElement('warnoff'); switchbox('warnoff')">{t}Disable{/t}</A></INPUT></NOBR>
+					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" onclick="switchbox('warnon');"><A HREF="javascript:checkElement('warnon'); switchbox('warnon')">{t}Enable{/t}</A></INPUT></NOBR>
+					    <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" onclick="switchbox('warnoff');"><A HREF="javascript:checkElement('warnoff'); switchbox('warnoff')">{t}Disable{/t}</A></INPUT></NOBR>
 					</TD>
 					<TD width="1%" NOWRAP align="RIGHT">
 						<A href="javascript: document.warningaction.submit()">{t}Submit{/t} <img src="img/save.gif" alt=""></a>

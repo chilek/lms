@@ -12,7 +12,7 @@
 			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="instance[name]" value="{$instance.name}" {tip text="Enter instance name" trigger="name" bold=1}>
+			<INPUT type="text" name="instance[name]" value="{$instance.name}" {tip text="Enter instance name" trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -39,7 +39,7 @@
 			<B>{t}Module:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT size="50" name="instance[module]" value="{$instance.module}" {tip text="Enter module name and location" trigger="module"}>
+			<INPUT type="text" size="50" name="instance[module]" value="{$instance.module}" {tip text="Enter module name and location" trigger="module"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -50,7 +50,7 @@
 			<B>{t}Crontab:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT size="50" name="instance[crontab]" value="{$instance.crontab}" {tip text="Enter instance crontab (optional)" trigger="crontab"}>
+			<INPUT type="text" size="50" name="instance[crontab]" value="{$instance.crontab}" {tip text="Enter instance crontab (optional)" trigger="crontab"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -61,7 +61,7 @@
 			<B>{t}Priority:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT size="10" name="instance[priority]" value="{$instance.priority}" {tip text="Enter instance reload priority" trigger="priority"}>
+			<INPUT type="text" size="10" name="instance[priority]" value="{$instance.priority}" {tip text="Enter instance reload priority" trigger="priority"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -83,7 +83,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" class="box light" value="1" name="instance[disabled]" {if $instance.disabled}CHECKED{/if} {tip text="You can turn it off"}> {t}Off{/t}
+			<INPUT type="checkbox" value="1" name="instance[disabled]" {if $instance.disabled}CHECKED{/if} {tip text="You can turn it off"}> {t}Off{/t}
 		</TD>
 	</TR>
 	<TR class="light">

@@ -25,7 +25,7 @@
 	</TR>
 	<TR class="DARK">
 		<TD class="fall" colspan="6">
-			<P><FORM method="GET" action="?m=daemoninstancelist" name="filter">
+			<FORM method="GET" action="?m=daemoninstancelist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="daemoninstancelist">
 				<B>{t}Filter:{/t} </B> {t}Host:{/t}
@@ -35,7 +35,7 @@
 					<OPTION value="{$hosts[hosts].id}"{if $hosts[hosts].id eq $hostid} SELECTED{/if}>{$hosts[hosts].name}</OPTION>
 					{/section}
 				</SELECT>
-			</FORM></P>
+			</FORM>
 		</TD>
 	</TR>		
 	{cycle values="light,lucid" print=false}

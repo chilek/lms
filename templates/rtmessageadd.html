@@ -69,7 +69,7 @@
 		        <A HREF="javascript:checkElement('notify');"><B>{t}Notify users:{/t}</B></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="ftr">
-			<INPUT type="checkbox" class="box light" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
+			<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -78,7 +78,7 @@
 		        <A HREF="javascript:checkElement('state');"><B>{t}Resolve ticket:{/t}</B></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT type="checkbox" class="box light" name="message[state]" id="state" value="{$smarty.const.RT_RESOLVED}"{if $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}>
+			<INPUT type="checkbox" name="message[state]" id="state" value="{$smarty.const.RT_RESOLVED}"{if $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR class="light">

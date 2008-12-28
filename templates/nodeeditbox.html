@@ -69,8 +69,8 @@
 				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</OPTION>
 				{/section}
 			</SELECT>
-			<INPUT name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<INPUT class="box light" type="checkbox" name="nodeedit[linktype]" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
+			<INPUT type="text" name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+			<INPUT type="checkbox" name="nodeedit[linktype]" id="linktype" value="1"{if $nodeinfo.linktype} CHECKED{/if}><A HREF="javascript:checkElement('linktype')"><IMG src="img/wireless.gif" alt="{t}wireless{/t}" {tip text="wireless"}></A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -112,8 +112,8 @@
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2" NOWRAP>
-			<A HREF="javascript:checkElement('chkmac')">{t}MAC checking{/t}: </A><INPUT TYPE="checkbox" NAME="nodeedit[chkmac]" ID="chkmac" VALUE="1" CLASS="light box" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
-			<A HREF="javascript:checkElement('duplex')">{t}Half duplex{/t}: </A><INPUT TYPE="checkbox" CLASS="box light" VALUE="1" NAME="nodeedit[halfduplex]" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
+			<A HREF="javascript:checkElement('chkmac')">{t}MAC checking{/t}:</A> <INPUT TYPE="checkbox" NAME="nodeedit[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
+			<A HREF="javascript:checkElement('duplex')">{t}Half duplex{/t}:</A> <INPUT TYPE="checkbox" NAME="nodeedit[halfduplex]" VALUE="1" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
 	</TR>
                                 	</TABLE>

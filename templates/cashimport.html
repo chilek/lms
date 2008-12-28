@@ -103,8 +103,7 @@
 			{else}
 			<INPUT TYPE="hidden" NAME="customer[{$item.id}]" VALUE="{$item.customerid}">
 			{/if}
-			{cycle print=false}
-			<INPUT class="box {cycle}" TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
+			<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
 		</TD>
 	    </TR>
 	    {/foreach}
@@ -120,7 +119,7 @@
 	{/if}
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" COLSPAN="3" nowrap>
-			<INPUT class="box dark" TYPE="checkbox" NAME="allbox" onClick="CheckAll2();" VALUE="Check All">
+			<INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll2();" VALUE="Check All">
 			<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
 		</TD>
 		<TD CLASS="fbt" COLSPAN="2" ALIGN="center" nowrap>

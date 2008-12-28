@@ -2110,5 +2110,6 @@ $_LANG['Download (CSV)'] = 'Pobierz (CSV)';
 $_LANG['Download all (TXT)'] = 'Pobierz wszystkie (TXT)';
 $_LANG['Previous ticket'] = 'Poprzednie zgłoszenie';
 $_LANG['Next ticket'] = 'Następne zgłoszenie';
+$_LANG['Division'] = 'Firma';
 
 ?>

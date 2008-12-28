@@ -12,7 +12,7 @@
 			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="hostadd[name]" value="{$hostadd.name}" {tip text="Enter host name" trigger="name" bold=1}>
+			<INPUT type="text" size="40" name="hostadd[name]" value="{$hostadd.name}" {tip text="Enter host name" trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -30,7 +30,7 @@
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.hostadd.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
 			<A href="?m=hostlist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="hostadd[reuse]" id="hostadd[reuse]" value="ON" class="box light" {if $hostadd.reuse}checked{/if}> <A HREF="javascript:checkElement('hostadd[reuse]')">{t}Display this form again, when this host is saved{/t}</a>
+			<INPUT type="checkbox" name="hostadd[reuse]" id="hostadd[reuse]" value="ON" {if $hostadd.reuse}checked{/if}> <A HREF="javascript:checkElement('hostadd[reuse]')">{t}Display this form again, when this host is saved{/t}</a>
 		</TD>
 	</TR>
 </TABLE>
