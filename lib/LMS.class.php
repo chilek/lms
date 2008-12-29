@@ -1184,7 +1184,7 @@ class LMS
 
 	function GetNodeNameByMAC($mac)
 	{
-		return $this->DB->GetOne('SELECT name FROM nodes WHERE mac=?', array($mac));
+		return $this->DB->GetOne('SELECT name FROM nodes WHERE mac=UPPER(?)', array($mac));
 	}
 
 	function GetNodeIDByIP($ipaddr)
@@ -1195,7 +1195,7 @@ class LMS
 
 	function GetNodeIDByMAC($mac)
 	{
-		return $this->DB->GetOne('SELECT id FROM nodes WHERE mac=?', array($mac));
+		return $this->DB->GetOne('SELECT id FROM nodes WHERE mac=UPPER(?)', array($mac));
 	}
 
 	function GetNodeIDByName($name)
