@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - BTS#0000773: fix transaction date when input date contains spaces (alec)
   - escape config option values on list (alec)
+  - fix: make MAC checking case insensitive (alec)
 
 version 1.10.5 Neith (2008-11-05):
 
