@@ -51,6 +51,7 @@ version ? (????-??-??):
   - css fixes for Opera and Google Chrome (alec)
   - invoices report: added multiple-group filter and division filter (alec)
   - numbering plans per-division(s) (alec)
+  - balance sheet: added division filter (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 

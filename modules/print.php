@@ -127,6 +127,7 @@ switch($type)
 		$to = $_POST['balanceto'];
 		$net = intval($_POST['network']);
 		$group = intval($_POST['customergroup']);
+		$division = intval($_POST['division']);
 
 		// date format 'yyyy/mm/dd'
 		if($from)
@@ -160,6 +161,7 @@ switch($type)
 					.'WHERE time<?'
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
 					.' AND NOT EXISTS (
 			        		SELECT 1 FROM customerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -177,6 +179,7 @@ switch($type)
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
 					.' AND NOT EXISTS (
 			        		SELECT 1 FROM customerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -240,7 +243,9 @@ switch($type)
 			$SMARTY->assign('net', $net['name']);
 		if($group)
 			$SMARTY->assign('group', $DB->GetOne('SELECT name FROM customergroups WHERE id = ?', array($group)));
-		
+		if($division)
+    			$SMARTY->assign('division', $DB->GetOne('SELECT name FROM divisions WHERE id = ?', array($division)));
+								
 		$SMARTY->display('printbalancelist.html');
 	break;
 
