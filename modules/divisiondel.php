@@ -31,6 +31,7 @@ if(isset($_GET['is_sure']) && $_GET['is_sure']==1 && $id)
 	if($DB->GetOne('SELECT COUNT(*) FROM divisions', array($id)) != 1)
 	{
 		$DB->Execute('DELETE FROM divisions WHERE id=?', array($id));
+		$DB->Execute('DELETE FROM numberplanassignments WHERE divisionid=?', array($id));
 	}
 }	
 

@@ -275,12 +275,6 @@ switch($action)
                         $SESSION->redirect('?m=invoicelist');
 		}
 	break;
-	
-	case 'invoicedel':
-	    
-	        $LMS->InvoiceDelete($_GET['id']);
-	        $SESSION->redirect('?m=invoicelist');
-	break;				
 }
 
 $SESSION->save('invoice', $invoice);

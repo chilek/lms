@@ -29,6 +29,7 @@ struct global
 	void (*db_free)(QueryHandle **);
 	int (*db_exec)(ConnHandle *, char *);
 	int (*db_pexec)(ConnHandle *, char *, ...);
+	int (*db_last_insert_id)(ConnHandle *, const char *);
 	int (*db_begin)(ConnHandle *);
 	int (*db_commit)(ConnHandle *);
 	int (*db_abort)(ConnHandle *);

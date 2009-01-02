@@ -24,17 +24,13 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$id = intval($_GET['id']);
 
-if($_GET['is_sure']==1 && $id)
+if($id && $_GET['is_sure'] == '1')
 {
-	if( !$DB->GetOne('SELECT COUNT(*) FROM documents WHERE numberplanid=?', array($id)))
-	{
-		$DB->Execute('DELETE FROM numberplans WHERE id=?', array($id));
-		$DB->Execute('DELETE FROM numberplanassignments WHERE planid=?', array($id));
-	}
-}	
+	$LMS->InvoiceDelete($id);
+}
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$SESSION->redirect('?m=invoicelist');
 
 ?>

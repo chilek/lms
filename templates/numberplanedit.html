@@ -47,6 +47,21 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
+			<IMG src="img/division.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{t}Division{/t}:</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<SELECT name="numberplanedit[divisions][]" multiple size="4" {tip text="Select division(s)" trigger="divisions"}>
+		        {foreach from=$divisions item=item}
+			<OPTION VALUE="{$item.id}"{if in_array($item.id, (array)$numberplanedit.divisions)} SELECTED{/if}>{$item.shortname}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
 			<IMG src="img/empty.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>

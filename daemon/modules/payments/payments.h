@@ -18,6 +18,15 @@ struct payments_module
 	double suspension_percentage;
 };
 
+struct plan
+{
+	int division;
+	int period;
+	int plan;
+	int number;
+};
+
+#define HALFYEARLY 7
 #define CONTINUOUS 6
 #define YEARLY 5
 #define QUARTERLY 4
@@ -26,6 +35,7 @@ struct payments_module
 #define DAILY 1
 #define DISPOSABLE 0
 
+#define _HALFYEARLY_ "7"
 #define _YEARLY_ "5"
 #define _QUARTERLY_ "4"
 #define _MONTHLY_ "3"
@@ -35,6 +45,8 @@ struct payments_module
 
 #ifdef USE_PGSQL
 #define BROADCAST "cast(cast(address as bit(32)) | ~ cast(inet_aton(mask) as bit(32)) as bigint)"
+#define CURRVAL "SELECT currval('')"
 #else
 #define BROADCAST "address | 4294967295>>bit_count(inet_aton(mask))"
+#define LAST_INSERT_ID SELECT LAST_INSERT_ID()
 #endif

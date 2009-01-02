@@ -123,6 +123,9 @@ int db_exec(ConnHandle *, char *);
 /* Preparse and executes UPDATE, INSERT, DELETE query. Returns number of affected rows */
 int db_pexec(ConnHandle *, char *, ...);
 
+/* Gets last insert id. Returns int. */
+int db_last_insert_id(ConnHandle *, const char *);
+
 /* Begin transaction */
 int db_begin(ConnHandle *);
 
