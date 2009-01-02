@@ -29,6 +29,8 @@ $DB->BeginTrans();
 $DB->Execute("
 	ALTER TABLE customers
 		ADD COLUMN paytime smallint NOT NULL DEFAULT -1;
+	UPDATE customers SET paytime = -1;	
+	
 	DROP VIEW customersview;
 	CREATE VIEW customersview AS
 	SELECT c.* FROM customers c

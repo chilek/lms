@@ -27,6 +27,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("ALTER TABLE customers ADD paytime tinyint NOT NULL DEFAULT -1");
+$DB->Execute("UPDATE customers SET paytime = -1");
 
 $DB->Execute("DROP VIEW customersview");
 $DB->Execute("CREATE VIEW customersview AS
