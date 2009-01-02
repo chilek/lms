@@ -63,7 +63,6 @@ switch($action)
     		unset($error);
 
 		// get default invoice's numberplanid and next number
-		$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype=? AND isdefault=1', array(DOC_INVOICE));
 		$invoice['cdate'] = time();
 		$invoice['paytime'] = 14;
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
@@ -71,7 +70,16 @@ switch($action)
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
 			if($customer['paytime'] != -1)
 				$invoice['paytime'] = $customer['paytime'];
+			
+			$invoice['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
+				JOIN numberplanassignments a ON (n.id = numberplanid)
+				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
+				array(DOC_INVOICE, $customer['divisionid']));
 		}
+	
+		if(empty($invoice['numberplanid']))
+			$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
+				WHERE doctype = ? AND isdefault = 1', array(DOC_INVOICE));
 	break;
 
 	case 'additem':

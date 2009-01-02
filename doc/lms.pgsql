@@ -365,6 +365,21 @@ CREATE TABLE numberplans (
 );
 
 /* -------------------------------------------------------- 
+  Structure of table "numberplanassignments" 
+-------------------------------------------------------- */
+DROP SEQUENCE numberplanassignments_id_seq;
+CREATE SEQUENCE numberplanassignments_id_seq;
+DROP TABLE numberplanassignments;
+CREATE TABLE numberplanassignments (
+	id integer DEFAULT nextval('numberplanassignments_id_seq'::text) NOT NULL,
+	planid integer DEFAULT 0 NOT NULL,
+	divisionid integer DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (planid, divisionid)
+);
+CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
+
+/* -------------------------------------------------------- 
   Structure of table "customers" (customers)
 -------------------------------------------------------- */
 DROP SEQUENCE customers_id_seq;
@@ -992,7 +1007,9 @@ CREATE TABLE states (
 /* ---------------------------------------------------
  Structure of table "countries"
 ------------------------------------------------------*/
+DROP SEQUENCE countries_id_seq;
 CREATE SEQUENCE countries_id_seq;
+DROP TABLE countries;
 CREATE TABLE countries (
 	id      integer DEFAULT nextval('countries_id_seq'::text) NOT NULL,
 	name    varchar(255) NOT NULL DEFAULT '',
@@ -1195,4 +1212,4 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008112400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008122900');

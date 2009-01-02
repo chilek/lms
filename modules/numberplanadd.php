@@ -47,8 +47,17 @@ if(sizeof($numberplanadd))
 		$error['period'] = trans('Numbering period is required!');
 	
 	if($numberplanadd['doctype'] && isset($numberplanadd['isdefault']))
-		if($DB->GetOne('SELECT 1 FROM numberplans WHERE doctype=? AND isdefault=1', array($numberplanadd['doctype'])))
+		if($DB->GetOne('SELECT 1 FROM numberplans n
+			WHERE doctype = ? AND isdefault = 1'
+			.(!empty($numberplanadd['divisions']) ? ' AND EXISTS (
+			        SELECT 1 FROM numberplanassignments WHERE planid = n.id
+			        AND divisionid IN ('.implode(',', $numberplanadd['divisions']).'))'
+			: ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
+				WHERE planid = n.id)'),
+			array($numberplanadd['doctype'])))
+		{
 			$error['doctype'] = trans('Selected document type has already defined default plan!');
+		}
 
 	if(!$error)
 	{
@@ -59,11 +68,19 @@ if(sizeof($numberplanadd))
 				    $numberplanadd['period'],
 				    isset($numberplanadd['isdefault']) ? 1 : 0
 				    ));
+	
+		$id = $DB->GetLastInsertID('numberplans');
+	
+		if(!empty($numberplanadd['divisions']))
+	                foreach($numberplanadd['divisions'] as $div)
+		                $DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
+		                	VALUES (?, ?)', array($id, intval($div)));
 		
 		if(!isset($numberplanadd['reuse']))
 		{
 			$SESSION->redirect('?m=numberplanlist');
 		}
+
 		unset($numberplanadd['template']);
 		unset($numberplanadd['period']);
 		unset($numberplanadd['doctype']);
@@ -76,6 +93,7 @@ $layout['pagetitle'] = trans('New Numbering Plan');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanadd', $numberplanadd);
+$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions WHERE status = 0 ORDER BY shortname'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplanadd.html');
 

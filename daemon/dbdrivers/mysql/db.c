@@ -305,6 +305,19 @@ char *db_escape(ConnHandle *c, const char *str)
     return escstr;
 }
 
+/* Gets last insert id. Returns int. */
+int db_last_insert_id(ConnHandle *c, const char *str)
+{
+    int id = 0;
+    QueryHandle *res = db_query(c, "SELECT LAST_INSERT_ID() AS id");
+
+    if(db_nrows(res))
+        id = atoi(db_get_data(res, 0, "id"));
+    db_free(&res);
+
+    return id;
+}
+
 /* Starts transaction */
 int db_begin(ConnHandle *c)
 {

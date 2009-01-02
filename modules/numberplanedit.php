@@ -51,11 +51,22 @@ if(sizeof($numberplanedit))
 		$error['period'] = trans('Numbering period is required!');
 	
 	if($numberplanedit['doctype'] && $numberplanedit['isdefault'])
-		if($DB->GetOne('SELECT 1 FROM numberplans WHERE doctype=? AND isdefault=1 AND id!=?', array($numberplanedit['doctype'], $numberplanedit['id'])))
+		if($DB->GetOne('SELECT 1 FROM numberplans n
+			WHERE doctype = ? AND isdefault = 1 AND n.id != ?'
+			.(!empty($numberplanedit['divisions']) ? ' AND EXISTS (
+				SELECT 1 FROM numberplanassignments WHERE planid = n.id
+				AND divisionid IN ('.implode(',', $numberplanedit['divisions']).'))'
+			: ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
+			        WHERE planid = n.id)'),					
+			array($numberplanedit['doctype'], $numberplanedit['id'])))
+		{
 			$error['doctype'] = trans('Selected document type has already defined default plan!');
-
+		}
+	
 	if(!$error)
 	{
+		$DB->BeginTrans();
+		
 		$DB->Execute('UPDATE numberplans SET template=?, doctype=?, period=?, isdefault=? WHERE id=?',
 			    array(
 				    $numberplanedit['template'],
@@ -63,18 +74,34 @@ if(sizeof($numberplanedit))
 				    $numberplanedit['period'],
 				    $numberplanedit['isdefault'],
 				    $numberplanedit['id']
-				    ));
+			    ));
+		
+		$DB->Execute('DELETE FROM numberplanassignments WHERE planid = ?', array($numberplanedit['id']));
+	
+		if(!empty($numberplanedit['divisions']))
+			foreach($numberplanedit['divisions'] as $div)
+				$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
+					VALUES (?, ?)', array($numberplanedit['id'], intval($div)));
+
+		$DB->CommitTrans();
 		
 		$SESSION->redirect('?m=numberplanlist');
 	}
 	$numberplan = $numberplanedit;
-}	
+}
+else
+	$numberplan['divisions'] = $DB->GetCol('SELECT divisionid
+			FROM numberplanassignments WHERE planid = ?', array($numberplan['id']));
 
 $layout['pagetitle'] = trans('Numbering Plan Edit: $0', $template);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanedit', $numberplan);
+$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions
+		WHERE status = 0 '
+		.(!empty($numberplan['divisions']) ? 'OR id IN ('.implode(',', $numberplan['divisions']).')' : '')
+		.'ORDER BY shortname', array($numberplan['id'])));
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplanedit.html');
 

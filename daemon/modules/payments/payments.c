@@ -81,6 +81,10 @@ char * get_period(struct tm *today, int period, int up_payments)
 				t->tm_mon += 3;
 				t->tm_mday -= 1;
 				break;
+			case HALFYEARLY:
+				t->tm_mon += 6;
+				t->tm_mday -= 1; 
+				break;
 			case YEARLY:
 				t->tm_mon += 12;
 				t->tm_mday -= 1; 
@@ -97,6 +101,10 @@ char * get_period(struct tm *today, int period, int up_payments)
 				break;
 			case QUARTERLY:
 				t->tm_mon -= 3;
+				t->tm_mday += 1;
+				break;
+			case HALFYEARLY:
+				t->tm_mon -= 6;
 				t->tm_mday += 1;
 				break;
 			case YEARLY:
@@ -144,22 +152,113 @@ char * get_diff_period(time_t fromdate, time_t todate)
 	return result;
 }
 
+char * get_num_period_start(struct tm *t, int period)
+{
+	static char res[12];
+	struct tm tt = *t;
+
+	switch(period)
+	{
+		case DAILY:
+		break;
+		case WEEKLY:
+			if (tt.tm_wday)
+				tt.tm_mday -= (tt.tm_wday - 1); // last Monday
+			else
+				tt.tm_mday -= 6;
+			tt.tm_wday = 1;
+		break;
+		case MONTHLY:
+			tt.tm_mday = 1;
+		break;
+		case QUARTERLY:
+			tt.tm_mday = 1;
+			switch(tt.tm_mon)
+			{
+				case 0: case 1: case 2: tt.tm_mon = 0; break;
+				case 3: case 4: case 5: tt.tm_mon = 3; break;
+				case 6: case 7: case 8: tt.tm_mon = 6; break;
+				case 9: case 10: case 11: tt.tm_mon = 9; break;
+			}
+		break;
+		case HALFYEARLY:
+			tt.tm_mday = 1;
+			tt.tm_mon = tt.tm_mon < 6 ? 0 : 6;
+		break;
+		case CONTINUOUS:
+			tt.tm_year = 70; // 1970-01-01
+			tt.tm_mday = 1;
+			tt.tm_mon = 0;
+		break;
+		default: //YEARLY
+			tt.tm_mday = 1;
+			tt.tm_mon = 0; // January
+		break;
+	}
+	strftime(res,	sizeof(res), "%s", &tt);
+	return res;
+}
+
+char * get_num_period_end(struct tm *t, int period)
+{
+	static char res[12];
+	struct tm tt = *t;
+
+	switch(period)
+	{
+		case DAILY:
+			tt.tm_mday++; // tomorrow
+		break;
+		case WEEKLY:
+			if (tt.tm_wday)
+				tt.tm_mday += (8 - tt.tm_wday); // next Monday
+			else
+				tt.tm_mday++;
+		break;
+		case MONTHLY:
+			tt.tm_mday = 1;
+			tt.tm_mon++; // next month
+		break;
+		case QUARTERLY:
+			tt.tm_mday = 1;
+			tt.tm_mon += 3; // first month of next quarter
+		break;
+		case HALFYEARLY:
+			tt.tm_mday = 1;
+			if (tt.tm_mon < 6)
+				tt.tm_mon = 6;
+			else {
+				tt.tm_mon = 0;
+				tt.tm_year += 1;
+			}
+		break;
+		case CONTINUOUS:
+			tt.tm_year = 138; // 2038-01-01
+			tt.tm_mday = 1;
+			tt.tm_mon = 0;
+		break;
+		default: //YEARLY
+			tt.tm_mday = 1;
+			tt.tm_year++; // next year
+		break;
+	}
+	strftime(res, sizeof(res), "%s", &tt);
+	return res;
+}
+
 void reload(GLOBAL *g, struct payments_module *p)
 {
-	QueryHandle *res, *result, *sres;
-	char *insert, *description, *invoiceid;
-	char *d_period, *w_period, *m_period, *q_period, *y_period, *value, *taxid;
-	int i, imonth, imday, today, n=2, k=2, m=2, o=2;
-	int docid=0, last_customerid=0, number=0, exec=0, suspended=0, itemid=0;
+	QueryHandle *res, *result;
+	char *insert, *description, *invoiceid, *value, *taxid;
+	char *d_period, *w_period, *m_period, *q_period, *y_period, *h_period;
+	int i, imonth, imday, today, n=2, k=2, m=2, o=2, pl=0;
+	int docid=0, last_customerid=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
-	char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4];  //odjac jeden?
+	char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4], halfday[4];  //odjac jeden?
 	char monthname[20];
-	char start[12], end[12];
 
-	char *numberplanid = strdup(itoa(p->numberplanid));
-	
 	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n \
 				WHERE ownerid = ats.customerid \
 				AND (%nets) \
@@ -303,6 +402,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 		strncpy(yearday, itoa(tt->tm_yday), sizeof(yearday));
 	else
 		strncpy(yearday, itoa(tt->tm_yday+1), sizeof(yearday));
+	
+	// halfyear 
+	if(imonth > 6)
+		strncpy(halfday, itoa(imday + (imonth - 7) * 100), sizeof(halfday));
+	else
+		strncpy(halfday, itoa(imday + (imonth - 1) * 100), sizeof(halfday));
 
 	switch(imonth) {
 		case 1:
@@ -323,83 +428,16 @@ void reload(GLOBAL *g, struct payments_module *p)
 	}
 
 	y_period = get_period(tt, YEARLY, p->up_payments);
+	h_period = get_period(tt, HALFYEARLY, p->up_payments);
 	q_period = get_period(tt, QUARTERLY, p->up_payments);
 	m_period = get_period(tt, MONTHLY, p->up_payments);
  	w_period = get_period(tt, WEEKLY, p->up_payments);
 	d_period = get_period(tt, DAILY, p->up_payments);
 
-	// and set appropriate time limits to get current invoice number
-	tt->tm_sec = 0;
-	tt->tm_min = 0;
-	tt->tm_hour = 0;
-	tt->tm_mday = 1;
-	tt->tm_mon = imonth-1;
-	tt->tm_year = atoi(year)-1900;
-
-	switch(p->num_period)
-	{
-		case DAILY:
-			tt->tm_mday = imday; // current day
-		break;
-		case WEEKLY:
-			tt->tm_mday = imday - atoi(weekday) + 1; // last Monday
-		break;
-		case MONTHLY:
-		break;
-		case QUARTERLY:
-			switch(tt->tm_mon)
-			{
-				case 0: case 1: case 2: tt->tm_mon = 0; break;
-				case 3: case 4: case 5: tt->tm_mon = 3; break;
-				case 6: case 7: case 8: tt->tm_mon = 6; break;
-				case 9: case 10: case 11: tt->tm_mon = 9; break;
-			}
-		break;
-		case CONTINUOUS:
-			tt->tm_year = 70; // 1970-01-01
-			tt->tm_mday = 1;
-			tt->tm_mon = 0;
-		break;
-		default: //YEARLY
-			tt->tm_mon = 0; // January
-		break;
-	}
-	strftime(start,	sizeof(start), "%s", tt);
-
-	switch(p->num_period)
-	{
-		case DAILY:
-			tt->tm_mday++; // tomorrow
-		break;
-		case WEEKLY:
-			tt->tm_wday += 7; // start of next week
-		break;
-		case MONTHLY:
-			tt->tm_mon++; // next month
-		break;
-		case QUARTERLY:
-			tt->tm_mon += 3; // first month of next quarter
-		break;
-		case CONTINUOUS:
-			tt->tm_year = 138; // 2038-01-01
-			tt->tm_mday = 1;
-			tt->tm_mon = 0;
-		break;
-		default: //YEARLY
-			tt->tm_year++; // next year
-		break;
-	}
-	strftime(end, sizeof(end), "%s", tt);
-
 	// today (for disposable liabilities)
 	tt->tm_sec = 0;
 	tt->tm_min = 0;
 	tt->tm_hour = 0;
-	tt->tm_wday = atoi(weekday);
-	tt->tm_mday = imday;
-	tt->tm_mon = imonth-1;
-	tt->tm_year = atoi(year)-1900;
-	tt->tm_yday = 0;
 	today = mktime(tt);
 
 	/****** main payments *******/
@@ -407,8 +445,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"WHERE value <> 0 AND (period="_DAILY_" OR (period="_WEEKLY_" AND at=?) "
 			"OR (period="_MONTHLY_" AND at=?) "
 			"OR (period="_QUARTERLY_" AND at=?) "
+			"OR (period="_HALFYEARLY_" AND at=?) "
 			"OR (period="_YEARLY_" AND at=?))",
-			weekday, monthday, quarterday, yearday))!= NULL )
+			weekday, monthday, quarterday, halfday, yearday))!= NULL )
 	{
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
@@ -425,7 +464,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 #endif
 	}
 	else 
-		syslog(LOG_ERR, "[%s/payments] Unable to read 'payments' table",p->base.instance);
+		syslog(LOG_ERR, "[%s/payments] Unable to read 'payments' table", p->base.instance);
 
 	/****** customer payments *******/
 	// let's create main query
@@ -447,11 +486,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 			LEFT JOIN customers ON (ats.customerid = customers.id) \
 			WHERE status = 3 AND deleted = 0 \
 			    AND (period="_DAILY_" \
-			    OR (period="_WEEKLY_" AND at=?) \
-			    OR (period="_MONTHLY_" AND at=?) \
-			    OR (period="_QUARTERLY_" AND at=?) \
-			    OR (period="_YEARLY_" AND at=?) \
-			    OR (period="_DISPOSABLE_" AND at=?)) \
+				    OR (period="_WEEKLY_" AND at=?) \
+				    OR (period="_MONTHLY_" AND at=?) \
+				    OR (period="_QUARTERLY_" AND at=?) \
+				    OR (period="_HALFYEARLY_" AND at=?) \
+				    OR (period="_YEARLY_" AND at=?) \
+				    OR (period="_DISPOSABLE_" AND at=?)) \
 			    AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
 			    %nets \
 			    %enets \
@@ -465,18 +505,32 @@ void reload(GLOBAL *g, struct payments_module *p)
 	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
 	g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");	
 		
-	if( (res = g->db_pquery(g->conn, query, weekday, monthday, quarterday, yearday, itoa(today))) != NULL)
+	if( (res = g->db_pquery(g->conn, query, weekday, monthday, quarterday, halfday, yearday, itoa(today))) != NULL)
 	{
+		struct plan *plans = (struct plan *) malloc(sizeof(struct plan));
+		int invoice_number = 0;
+			
 		if( g->db_nrows(res) )
 		{
-			// first get next invoiceid
-			sres = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents \
-				WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", 
-				start, end, numberplanid); 
-	
-			if( g->db_nrows(sres) )
-				number = atoi(g->db_get_data(sres,0,"number"));
-			g->db_free(&sres);
+			if (!p->numberplanid)
+			{
+				// get numbering plans for all divisions
+				result = g->db_query(g->conn, "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid "
+    					"FROM numberplans n "
+	    				"LEFT JOIN numberplanassignments a ON (a.planid = n.id) "
+		    			"WHERE doctype = 1 AND isdefault = 1");
+			
+				for(i=0; i<g->db_nrows(result); i++) 
+				{
+					plans = (struct plan *) realloc(plans, (sizeof(struct plan) * (pl+1)));
+					plans[pl].plan = atoi(g->db_get_data(result, i, "id"));
+					plans[pl].period = atoi(g->db_get_data(result, i, "period"));
+					plans[pl].division = atoi(g->db_get_data(result, i, "divid"));
+					plans[pl].number = 0;
+					pl++;
+    				}
+				g->db_free(&result);
+			}
 		}
 #ifdef DEBUG1
 		else
@@ -499,12 +553,16 @@ void reload(GLOBAL *g, struct payments_module *p)
 			// assignments suspending check
 			if( suspended != uid )
 			{
-				sres = g->db_pquery(g->conn, "SELECT 1 FROM assignments, customers WHERE customerid = customers.id AND tariffid = 0 AND liabilityid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND customerid = ?", g->db_get_data(res,i,"customerid"));
-				if( g->db_nrows(sres) ) 
+				result = g->db_pquery(g->conn, "SELECT 1 FROM assignments, customers "
+					"WHERE customerid = customers.id AND tariffid = 0 AND liabilityid = 0 "
+					"AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) "
+					"AND customerid = ?", g->db_get_data(res,i,"customerid"));
+
+				if( g->db_nrows(result) ) 
 				{
 					suspended = uid;
 				}
-				g->db_free(&sres);
+				g->db_free(&result);
 			}
 
 			if( suspended == uid || s_state )
@@ -516,7 +574,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 			taxid = g->db_get_data(res,i,"taxid");
 
 			// prepare insert to 'cash' table
-			insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
+			insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) "
+				"VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
 			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
 			g->str_replace(&insert, "%value", value);
 			g->str_replace(&insert, "%taxid", taxid);
@@ -532,6 +591,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				case WEEKLY: g->str_replace(&description, "%period", w_period); break;
 				case MONTHLY: g->str_replace(&description, "%period", m_period); break;
 				case QUARTERLY: g->str_replace(&description, "%period", q_period); break;
+				case HALFYEARLY: g->str_replace(&description, "%period", h_period); break;
 				case YEARLY: g->str_replace(&description, "%period", y_period); break;
 			}
 			g->str_replace(&description, "%tariff", g->db_get_data(res,i,"name"));
@@ -542,13 +602,64 @@ void reload(GLOBAL *g, struct payments_module *p)
 			{
 				if( last_customerid != uid ) 
 				{
+					char *divisionid = g->db_get_data(res,i,"divisionid");
+					int divid = atoi(divisionid);
+					int period, number = 0;
+					char *numberplanid;
+					
+					// select numberplan
+					for(n=0; n<pl; n++)
+						if(plans[n].division == divid)
+							break;
+					
+					// numberplan found
+					if(n < pl)
+					{
+						numberplanid = strdup(itoa(plans[n].plan));
+						period = plans[n].period;
+						number = plans[n].number;
+					}
+					else // not found, use default/shared plan
+					{
+						numberplanid = strdup(itoa(p->numberplanid));
+						period = p->num_period;
+						number = invoice_number;
+					}
+					
+					if(!number)
+					{
+						char *start = get_num_period_start(tt, period);
+						char *end = get_num_period_end(tt, period);
+
+						// set invoice number
+						result = g->db_pquery(g->conn, "SELECT MAX(number) AS number FROM documents "
+							"WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", 
+							start, end, numberplanid); 
+	
+						if( g->db_nrows(result) )
+							number = atoi(g->db_get_data(result,0,"number"));
+						g->db_free(&result);
+					}
+
+					++number;
+					
+					if(n < pl)
+					{
+						// update number
+						for(m=0; m<pl; m++)
+							if(plans[m].plan == plans[n].plan)
+								plans[m].number = number;
+					}
+					else
+						invoice_number = number;
+					
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, divisionid, "
 						"customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) "
 						"VALUES (?, ?, 1, ?, ?, '? ?', '?', '?', '?', '?', '?', %NOW%, ?, '?')",
-						itoa(++number),
+						itoa(number),
 						numberplanid,
-						g->db_get_data(res,i,"divisionid"),
+						divisionid,
 						g->db_get_data(res,i,"customerid"),
 						g->db_get_data(res,i,"lastname"),
 						g->db_get_data(res,i,"custname"),
@@ -561,11 +672,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 						p->paytype
 					);
 
-					// ma³e uproszczenie w stosunku do lms-payments
-					result = g->db_query(g->conn, "SELECT MAX(id) AS id FROM documents WHERE type = 1");
-					docid = g->db_nrows(result) ? atoi(g->db_get_data(result,0,"id")) : 0;
-					g->db_free(&result);
+					docid = g->db_last_insert_id(g->conn, "documents");
 					itemid = 0;
+					
+					free(numberplanid);
 				}
 				
 				invoiceid = strdup(itoa(docid));
@@ -632,12 +742,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 					case WEEKLY: 	alldays = 7; break;
 					case MONTHLY: 	alldays = 30; break;
 					case QUARTERLY: alldays = 90; break;
+					case HALFYEARLY: alldays = 182; break;
 					case YEARLY: 	alldays = 365; break;
 				}
 				
 				value = ftoa(diffdays * val/alldays);
-				
-//				printf("%d - %d - %.2f -> %s\n", diffdays, alldays, val, value);
 				
 				description = strdup(p->s_comment);
 				g->str_replace(&description, "%period", get_diff_period(datefrom, today-86400));
@@ -717,10 +826,13 @@ void reload(GLOBAL *g, struct payments_module *p)
     		
 		g->db_free(&res);
 		free(y_period);
+		free(h_period);
 		free(q_period);
 		free(m_period);
 		free(w_period);
 		free(d_period);
+		
+		free(plans);
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/payments] customer payments reloaded", p->base.instance);
 #endif
@@ -745,7 +857,6 @@ void reload(GLOBAL *g, struct payments_module *p)
 	free(groups); free(egroups);
 	free(netsql); free(enetsql);
 	free(groupsql);	free(egroupsql);
-	free(numberplanid);
 	free(p->comment);
 	free(p->s_comment);
 	free(p->deadline);
@@ -776,11 +887,11 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->paytype = strdup(g->config_getstring(p->base.ini, p->base.instance, "paytype", "TRANSFER"));
 	p->up_payments = g->config_getbool(p->base.ini, p->base.instance, "up_payments", 1);
 	p->expiry_days = g->config_getint(p->base.ini, p->base.instance, "expiry_days", 30);
-	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
 	p->networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "networks", ""));
 	p->customergroups = strdup(g->config_getstring(p->base.ini, p->base.instance, "customergroups", ""));
 	p->excluded_customergroups = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_customergroups", ""));
 	p->excluded_networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_networks", ""));
+	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
 	p->num_period = YEARLY;
 	
 	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");
@@ -799,20 +910,6 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 			p->numberplanid = 0;
 
 		g->db_free(&res);
-	}
-	
-	if(!p->numberplanid)
-	{
-		res = g->db_query(g->conn, "SELECT id, period FROM numberplans WHERE doctype=1 AND isdefault=1");
-		if( g->db_nrows(res) )
-		{
-			p->num_period = atoi(g->db_get_data(res, 0, "period"));
-			p->numberplanid = atoi(g->db_get_data(res, 0, "id"));
-		}
-		else
-			p->numberplanid = 0;
-
-    		g->db_free(&res);
 	}
 
 #ifdef DEBUG1

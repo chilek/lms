@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11-cvs
+ * LMS Userpanel version 1.11-cvs
  *
  *  (C) Copyright 2001-2008 LMS Developers
  *
@@ -24,17 +24,22 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$DB->Execute("
+CREATE TABLE numberplanassignments (
+        id int(11) NOT NULL auto_increment,
+	planid int(11) NOT NULL DEFAULT 0,
+	divisionid int(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY planid (planid, divisionid),
+	INDEX divisionid (divisionid)
+) TYPE=MyISAM;
+");
 
-if($_GET['is_sure']==1 && $id)
-{
-	if( !$DB->GetOne('SELECT COUNT(*) FROM documents WHERE numberplanid=?', array($id)))
-	{
-		$DB->Execute('DELETE FROM numberplans WHERE id=?', array($id));
-		$DB->Execute('DELETE FROM numberplanassignments WHERE planid=?', array($id));
-	}
-}	
+if($divs = $DB->GetAll('SELECT id FROM divisions'))
+	foreach($divs as $div)
+		$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
+			SELECT id, ? FROM numberplans', array($div['id']));
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2008122900', 'dbversion'));
 
 ?>

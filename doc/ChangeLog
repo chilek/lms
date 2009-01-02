@@ -49,7 +49,8 @@ version ? (????-??-??):
   - userpanel: disable access for deleted customers (alec)
   - rtticketview: we can easily browse through tickets (chilan)
   - css fixes for Opera and Google Chrome (alec)
-  - invoices report: added miltiple-group filter and division filter (alec)
+  - invoices report: added multiple-group filter and division filter (alec)
+  - numbering plans per-division(s) (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 

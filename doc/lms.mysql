@@ -125,6 +125,20 @@ CREATE TABLE numberplans (
 
 # --------------------------------------------------------
 #
+# Structure of table numberplanassignments
+#
+DROP TABLE IF EXISTS numberplanassignments;
+CREATE TABLE numberplanassignments (
+	id int(11) NOT NULL auto_increment,
+	planid int(11) NOT NULL DEFAULT '0',
+	divisionid int(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	UNIQUE KEY planid (planid, divisionid),
+	INDEX divisionid (divisionid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
 # Structure of table  invoicecontents
 #
 DROP TABLE IF EXISTS invoicecontents;
@@ -1126,4 +1140,4 @@ INSERT INTO countries (name) VALUES ('Slovakia');
 INSERT INTO countries (name) VALUES ('USA');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008112400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008122900');

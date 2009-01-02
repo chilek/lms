@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11-cvs
+ * LMS Userpanel version 1.11-cvs
  *
  *  (C) Copyright 2001-2008 LMS Developers
  *
@@ -24,17 +24,27 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
+$DB->BeginTrans();
 
-if($_GET['is_sure']==1 && $id)
-{
-	if( !$DB->GetOne('SELECT COUNT(*) FROM documents WHERE numberplanid=?', array($id)))
-	{
-		$DB->Execute('DELETE FROM numberplans WHERE id=?', array($id));
-		$DB->Execute('DELETE FROM numberplanassignments WHERE planid=?', array($id));
-	}
-}	
+$DB->Execute("
+CREATE SEQUENCE numberplanassignments_id_seq;
+CREATE TABLE numberplanassignments (
+        id integer DEFAULT nextval('numberplanassignments_id_seq'::text) NOT NULL,
+        planid integer DEFAULT 0 NOT NULL,
+        divisionid integer DEFAULT 0 NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE (planid, divisionid)
+);
+CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
+");
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+if($divs = $DB->GetAll('SELECT id FROM divisions'))
+	foreach($divs as $div)
+		$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
+			SELECT id, ? FROM numberplans', array($div['id']));
+
+$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2008122900', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

@@ -82,6 +82,9 @@ int db_pexec(ConnHandle *, char *, ...);
 /* Escapes a string for use within an SQL command. Returns allocated string */
 char *db_escape(ConnHandle *, const char *);
 
+/* Gets last insert id. Returns int. */
+int db_last_insert_id(ConnHandle *, const char *);
+
 /* Free memory allocated in db_query() and etc */
 void db_free(QueryHandle **);
 

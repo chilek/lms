@@ -102,6 +102,7 @@ int main(int argc, char *argv[], char **envp)
 	g->db_pquery = &db_pquery;
     	g->db_exec = &db_exec;
 	g->db_pexec = &db_pexec;
+	g->db_last_insert_id = &db_last_insert_id;
 	g->db_free = &db_free;
     	g->db_begin = &db_begin;
     	g->db_commit = &db_commit;
