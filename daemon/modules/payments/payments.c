@@ -471,7 +471,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *query = strdup("\
 			SELECT tariffid, liabilityid, customerid, period, at, suspended, invoice, \
 			    UPPER(lastname) AS lastname, customers.name AS custname, address, zip, city, ten, ssn, \
-			    ats.id AS assignmentid, settlement, datefrom, discount, divisionid, \
+			    ats.id AS assignmentid, settlement, datefrom, discount, divisionid, paytime, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.taxid ELSE liabilities.taxid END) AS taxid, \
 			    (CASE liabilityid WHEN 0 THEN tariffs.prodid ELSE liabilities.prodid END) AS prodid, \
@@ -605,7 +605,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					char *divisionid = g->db_get_data(res,i,"divisionid");
 					int divid = atoi(divisionid);
 					int period, number = 0;
-					char *numberplanid;
+					char *numberplanid, *paytime;
 					
 					// select numberplan
 					for(n=0; n<pl; n++)
@@ -653,6 +653,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 					else
 						invoice_number = number;
 					
+					// deadline
+					if(atoi(g->db_get_data(res,i,"paytime")) < 0)
+						paytime = p->deadline;
+					else
+						paytime = g->db_get_data(res,i,"paytime");
+
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, divisionid, "
 						"customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) "
@@ -668,7 +674,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(res,i,"city"),
 						g->db_get_data(res,i,"ten"),
 						g->db_get_data(res,i,"ssn"),
-						p->deadline,
+						paytime,
 						p->paytype
 					);
 
