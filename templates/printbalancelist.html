@@ -7,6 +7,7 @@
 			{if $net}<BR><font class="sdr"><B>{t}Network:{/t} {$net}</B></font>{/if}
 			{if $group}<BR><font class="sdr"><B>{t}Group:{/t} {$group}</B></font>{/if}			
 			{if $division}<BR><font class="sdr"><B>{t}Division{/t}: {$division}</B></font>{/if}			
+			{if $types}<BR><font class="sdr"><B>{t}Type:{/t} {$types}</B></font>{/if}			
 			</P>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
@@ -97,12 +98,8 @@
 		<TD ALIGN="RIGHT" NOWRAP>
 			<B>{$listdata.expense|money_format}</B>
 		</TD>
-		<TD></TD>
-		<TD ALIGN="RIGHT">
-			<B>{t}Balance:{/t}</B>
-		</TD>
-		<TD ALIGN="LEFT" NOWRAP>
-			<B>{$listdata.total|money_format}</B>
+		<TD ALIGN="CENTER" COLSPAN="3" NOWRAP>
+			<B>{t}Balance:{/t} {$listdata.total|money_format}</B>
 		</TD>
 	</TR>
 </TABLE>
