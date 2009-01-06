@@ -65,7 +65,7 @@ if($ticket['customerid'] && chkconfig($CONFIG['phpui']['helpdesk_customerinfo'])
 	$SMARTY->assign('allnodegroups', $allnodegroups);
 }
 
-$iteration = $LMS->GetQueueContents($ticket[queueid],$order='createtime,desc', $state=-1);
+$iteration = $LMS->GetQueueContents($ticket['queueid'], $order='createtime,desc', $state=-1);
 foreach($iteration as $idx => $element)
 {
 	if (intval($element['id']) == intval($_GET['id']))

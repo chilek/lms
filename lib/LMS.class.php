@@ -3097,7 +3097,7 @@ class LMS
 		    .(is_array($ids) ? ' AND queueid IN ('.implode(',', $ids).')' : ($ids != 0 ? ' AND queueid = '.$ids : ''))
 		    .$statefilter
 		    .($owner ? ' AND t.owner = '.intval($owner) : '')
-		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
+		    .($sqlord !='' ? $sqlord.' '.$direction:'')))
 		{
 			foreach($result as $idx => $ticket)
 			{
