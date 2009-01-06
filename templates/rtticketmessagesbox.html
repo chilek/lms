@@ -87,15 +87,15 @@
 	<TR CLASS="dark">
 		<TD CLASS="fall" width="100%" align="center" colspan="3" NOWRAP>
 			{if $ticket.prev_ticketid neq NULL}
-				<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}"><B>&laquo;&laquo;&nbsp;</B>{t}Previous ticket{/t}<B>&nbsp;&laquo;&laquo;</B></A>
+				<A HREF="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{t}Previous ticket{/t}</A>
 			{else}
-				<B>&laquo;&laquo;&nbsp;</B>{t}Previous ticket{/t}<B>&nbsp;&laquo;&laquo;</B>
+				&laquo;&laquo;&laquo;&nbsp;{t}Previous ticket{/t}
 			{/if}
 			&nbsp;&nbsp;&nbsp;
 			{if $ticket.next_ticketid neq NULL}
-				<A HREF="?m=rtticketview&id={$ticket.next_ticketid}"><B>&raquo;&raquo;&nbsp;</B>{t}Next ticket{/t}<B>&nbsp;&raquo;&raquo;</B></A>
+				<A HREF="?m=rtticketview&id={$ticket.next_ticketid}">{t}Next ticket{/t}&nbsp;&raquo;&raquo;&raquo;</A>
 			{else}
-				<B>&raquo;&raquo;&nbsp;</B>{t}Next ticket{/t}<B>&nbsp;&raquo;&raquo;</B>
+				{t}Next ticket{/t}&nbsp;&raquo;&raquo;&raquo;
 			{/if}
 		</TD>
 	</TR>
