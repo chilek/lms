@@ -240,7 +240,7 @@ function multiselect(formid, elemid, def)
 		box.type = 'checkbox';
 		box.name = old_element.name;
 		box.value = old_element.options[i].value;
-		
+
 		span.innerHTML = old_element.options[i].text;
 		
 		// add some mouse/key events handlers

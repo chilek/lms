@@ -264,6 +264,21 @@ cal22.time_comp = false;
 							</SELECT>
 						    </TD>
 						</TR>
+						<TR>
+						    <TD width="1%">
+							<IMG src="img/money.gif" alt="">
+						    </TD>
+						    <TD width="1%" nowrap>
+							<B>{t}Transaction type:{/t}</B>
+						    </TD>
+						    <TD width="98%">
+							<SELECT name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
+							    <OPTION value="1">{t}Liability{/t}</OPTION>
+							    <OPTION value="2">{t}Income{/t}</OPTION>
+							    <OPTION value="3">{t}Expense{/t}</OPTION>
+							</SELECT>
+						    </TD>
+						</TR>
 					    </TABLE>
 					</TD>
 					<TD width="1%">
@@ -291,6 +306,7 @@ var cal1 = new calendar(document.printbalancelist.elements['balancefrom']);
 cal1.time_comp = false;
 var cal2 = new calendar(document.printbalancelist.elements['balanceto']);
 cal2.time_comp = false;
+multiselect('printbalancelist', 'balancelisttype', '{t}- all types -{/t}');
 //-->
 </SCRIPT>
 </P>

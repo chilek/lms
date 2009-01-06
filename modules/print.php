@@ -128,6 +128,7 @@ switch($type)
 		$net = intval($_POST['network']);
 		$group = intval($_POST['customergroup']);
 		$division = intval($_POST['division']);
+		$types = isset($_POST['types']) ? $_POST['types'] : NULL;
 
 		// date format 'yyyy/mm/dd'
 		if($from)
@@ -151,6 +152,28 @@ switch($type)
 			$layout['pagetitle'] = trans('Balance Sheet of User: $0 ($1 to $2)', $LMS->GetUserName($user), ($from ? $from : ''), $to);
 		else
 			$layout['pagetitle'] = trans('Balance Sheet ($0 to $1)', ($from ? $from : ''), $to);
+	
+		if($types)
+		{
+			foreach($types as $tt)
+				switch($tt)
+				{
+					case 1:
+						$typewhere[] = 'c.type = 0';
+						$typetxt[] = trans('Liability');
+					break;
+					case 2:
+						$typewhere[] = '(c.type = 1 AND c.value > 0)';
+						$typetxt[] = trans('Income');
+					break;
+					case 3: // expense
+						$typewhere[] = '(c.type = 1 AND c.value < 0)';
+						$typetxt[] = trans('Expense');
+					break;
+				}
+			
+			$typewhere = ' AND ('.implode(' OR ', $typewhere).')';
+		}
 		
 		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 		
@@ -162,6 +185,7 @@ switch($type)
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
+					.($types ? $typewhere : '')
 					.' AND NOT EXISTS (
 			        		SELECT 1 FROM customerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -180,6 +204,7 @@ switch($type)
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
+					.($types ? $typewhere : '')
 					.' AND NOT EXISTS (
 			        		SELECT 1 FROM customerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -241,6 +266,8 @@ switch($type)
 
 		if($net)
 			$SMARTY->assign('net', $net['name']);
+		if($types)
+			$SMARTY->assign('types', implode(', ', $typetxt));
 		if($group)
 			$SMARTY->assign('group', $DB->GetOne('SELECT name FROM customergroups WHERE id = ?', array($group)));
 		if($division)

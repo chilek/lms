@@ -2112,5 +2112,8 @@ $_LANG['Previous ticket'] = 'Poprzednie zgłoszenie';
 $_LANG['Next ticket'] = 'Następne zgłoszenie';
 $_LANG['Division'] = 'Firma';
 $_LANG['Select division(s)'] = 'Wybierz firmę(y)';
+$_LANG['Transaction type:'] = 'Typ operacji:';
+$_LANG['Select transaction type'] = 'Wybierz typ operacji';
+
 
 ?>
