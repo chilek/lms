@@ -45,35 +45,8 @@ if(isset($_POST['assignmentedit']))
 
 	$period = sprintf('%d',$a['period']);
 
-	if($period < DISPOSABLE || $period > YEARLY)
-		$period = DISPOSABLE;
-
 	switch($period)
 	{
-		case DISPOSABLE:
-			
-			if(isset($a['tariffid']) && $a['tariffid'] != '0')
-			{
-    				$a['dateto'] = 0;
-	            		$a['datefrom'] = 0;
-			}
-		     
-		        if(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $a['at']))
-			{
-				list($y, $m, $d) = split('/', $a['at']);
-				if(checkdate($m, $d, $y))
-				{
-					$at = mktime(0, 0, 0, $m, $d, $y);
-					if($at < mktime(0,0,0))
-						$error['editat'] = trans('Incorrect date!');
-				}
-				else
-					$error['editat'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-			}
-			else
-				$error['editat'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-		break;
-
 		case DAILY:
 			$at = 0;
 		break;
@@ -136,6 +109,33 @@ if(isset($_POST['assignmentedit']))
 			}
 		break;
 
+		case HALFYEARLY:
+			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
+			{
+				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
+			}
+			elseif(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
+			{
+				$d = date('j', time());
+				$m = date('n', time());
+				$a['at'] = $d.'/'.$m;
+			}
+			else
+			{
+				list($d,$m) = split('/',$a['at']);
+			}
+			
+			if(!$error)
+			{
+				if($d>30 || $d<1 || ($d>28 && $m==2))
+					$error['editat'] = trans('This month doesn\'t contain specified number of days');
+				if($m>6 || $m<1)
+					$error['editat'] = trans('Incorrect month number (max.6)!');
+
+				$at = ($m-1) * 100 + $d;
+			}
+		break;
+
 		case YEARLY:
 			if(chkconfig($CONFIG['phpui']['use_current_payday']) && !$a['at'])
 			{
@@ -162,6 +162,31 @@ if(isset($_POST['assignmentedit']))
 				$ttime = mktime(12, 0, 0, $m, $d, 1990);
 				$at = date('z',$ttime) + 1;
 			}
+		break;
+
+		default: // DISPOSABLE
+                        $period = DISPOSABLE;
+			
+			if(isset($a['tariffid']) && $a['tariffid'] != '0')
+			{
+    				$a['dateto'] = 0;
+	            		$a['datefrom'] = 0;
+			}
+		     
+		        if(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $a['at']))
+			{
+				list($y, $m, $d) = split('/', $a['at']);
+				if(checkdate($m, $d, $y))
+				{
+					$at = mktime(0, 0, 0, $m, $d, $y);
+					if($at < mktime(0,0,0))
+						$error['editat'] = trans('Incorrect date!');
+				}
+				else
+					$error['editat'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			}
+			else
+				$error['editat'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 		break;
 	}
 
@@ -275,6 +300,9 @@ else
 	switch($a['period'])
 	{
 		case QUARTERLY:
+			$a['at'] = sprintf('%02d/%02d',$a['at']%100,$a['at']/100+1);
+			break;
+		case HALFYEARLY:
 			$a['at'] = sprintf('%02d/%02d',$a['at']%100,$a['at']/100+1);
 			break;
 		case YEARLY:

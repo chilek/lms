@@ -51,9 +51,6 @@ if($payment)
 
 	$period = sprintf('%d',$payment['period']);
 	
-	if($period < DAILY || $period > YEARLY)
-		$period = MONTHLY;
-
 	switch($period)
 	{
 		case DAILY:
@@ -63,17 +60,6 @@ if($payment)
 			$at = sprintf('%d',$payment['at']);
 			if($at < 1 || $at > 7)
 				$error['at'] = trans('Incorrect day of week (1-7)!');
-		break;
-		case MONTHLY:
-			$at = sprintf('%d',$payment['at']);
-			if($at == 0)
-			{
-				$at = 1 + date('d',time());
-				if($at > 28)
-					$at = 1;
-			}
-			if($at < 1 || $at > 28)
-		    		$error['at'] = trans('Incorrect day of month (1-28)!');
 		break;
 		case QUARTERLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
@@ -89,6 +75,19 @@ if($payment)
 				$at = ($m-1) * 100 + $d;
 			};
 		break;
+		case HALFYEARLY:
+                        if(!eregi('^[0-9]{2}/[0-9]{2}$',$payment['at']) && $payment['at'])
+		                $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+		        else
+		        {
+		                list($d,$m) = split('/',$payment['at']);
+		                if($d>30 || $d<1 || ($d>28 && $m==2))
+		                        $error['at'] = trans('This month doesn\'t contain specified number of days');
+		                if($m>6 || $m<1)
+		                        $error['at'] = trans('Incorrect month number (max.6)!');
+		                $at = ($m-1) * 100 + $d;
+		        }
+		break;
 		case YEARLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
@@ -99,6 +98,18 @@ if($payment)
 				$at = date('z',$ttime) + 1;
 			}
 		break;	
+		default: // MONTHLY
+			$period = MONTHLY;
+			$at = sprintf('%d', $payment['at']);
+			if($at == 0)
+			{
+				$at = 1 + date('d',time());
+				if($at > 28)
+					$at = 1;
+			}
+			if($at < 1 || $at > 28)
+		    		$error['at'] = trans('Incorrect day of month (1-28)!');
+		break;
 	}
 	
 	$payment['period'] = $period;

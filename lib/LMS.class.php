@@ -723,6 +723,13 @@ class LMS
 					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
 						    AND period = '.QUARTERLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
 					    GROUP BY customers.id', 'id');
+			$halfyear = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
+						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
+						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/6 AS value 
+					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
+						    AND period = '.HALFYEARLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
+					    GROUP BY customers.id', 'id');
 			$year = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
 						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
 						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
@@ -749,6 +756,8 @@ class LMS
 					$customerlist[$idx]['tariffvalue'] += round($month[$row['id']]['value'], 2);
 				if(isset($quarter[$row['id']]['value']))
 					$customerlist[$idx]['tariffvalue'] += round($quarter[$row['id']]['value'], 2);
+				if(isset($halfyear[$row['id']]['value']))
+					$customerlist[$idx]['tariffvalue'] += round($halfyear[$row['id']]['value'], 2);
 				if(isset($year[$row['id']]['value']))
 					$customerlist[$idx]['tariffvalue'] += round($year[$row['id']]['value'], 2);
 					
@@ -1667,6 +1676,11 @@ class LMS
 						$row['payday'] = trans('quarterly ($0)', $row['at']);
 						$row['period'] = trans('quarterly');
 					break;
+					case HALFYEARLY:
+						$row['at'] = sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1);
+						$row['payday'] = trans('half-yearly ($0)', $row['at']);
+						$row['period'] = trans('half-yearly');
+					break;
 					case YEARLY:
 						$row['at'] = date('d/m',($row['at']-1)*86400);
 						$row['payday'] = trans('yearly ($0)', $row['at']);
@@ -2163,6 +2177,7 @@ class LMS
 				WHEN '.WEEKLY.' THEN t.value*4
 				WHEN '.MONTHLY.' THEN t.value
 				WHEN '.QUARTERLY.' THEN t.value/3
+				WHEN '.HALFYEARLY.' THEN t.value/6
 				WHEN '.YEARLY.' THEN t.value/12 END) AS value
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
@@ -2185,6 +2200,7 @@ class LMS
 				WHEN '.WEEKLY.' THEN t.value*4 
 				WHEN '.MONTHLY.' THEN t.value 
 				WHEN '.QUARTERLY.' THEN t.value/3 
+				WHEN '.HALFYEARLY.' THEN t.value/6 
 				WHEN '.YEARLY.' THEN t.value/12 END) AS value
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
@@ -2295,6 +2311,9 @@ class LMS
 					case QUARTERLY:
 						$row['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
 					break;
+					case HALFYEARLY:
+						$row['payday'] = trans('half-yearly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
+					break;
 					case YEARLY:
 						$row['payday'] = trans('yearly ($0)', date('d/m',($row['at']-1)*86400));
 					break;
@@ -2325,6 +2344,9 @@ class LMS
 			break;
 			case QUARTERLY:
 				$payment['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1));
+			break;
+			case HALFYEARLY:
+				$payment['payday'] = trans('half-yearly ($0)', sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1));
 			break;
 			case YEARLY:
 				$payment['payday'] = trans('yearly ($0)', date('d/m',($payment['at']-1)*86400));
@@ -3685,14 +3707,16 @@ class LMS
 			}
 			switch($currmonth)
 			{
-				case 1: case 2: case 3: $startq = 1; break;
-				case 4: case 5: case 6: $startq = 4; break;
-				case 7: case 8: case 9: $startq = 7; break;
-				case 10: case 11: case 12: $startq = 10; break;
+				case 1: case 2: case 3: $startq = 1; $starthy = 1; break;
+				case 4: case 5: case 6: $startq = 4; $starthy = 1; break;
+				case 7: case 8: case 9: $startq = 7; $starthy = 7; break;
+				case 10: case 11: case 12: $startq = 10; $starthy = 7; break;
 			}
 	
 			$yearstart = mktime(0,0,0,1,1,$curryear);
 			$yearend = mktime(0,0,0,1,1,$curryear+1);
+			$halfyearstart = mktime(0,0,0,$starthy,1);
+			$halfyearend = mktime(0,0,0,$starthy+3,1);
 			$quarterstart = mktime(0,0,0,$startq,1);
 			$quarterend = mktime(0,0,0,$startq+3,1);
 			$monthstart = mktime(0,0,0,$currmonth,1,$curryear);
@@ -3708,12 +3732,14 @@ class LMS
 					    .($doctype ? 'numberplanid IN ('.implode(',', array_keys($list)).') AND ' : '')
 					    .' cdate >= (CASE period
 						WHEN '.YEARLY.' THEN '.$yearstart.'
+						WHEN '.HALFYEARLY.' THEN '.$halfyearstart.'
 						WHEN '.QUARTERLY.' THEN '.$quarterstart.'
 						WHEN '.MONTHLY.' THEN '.$monthstart.'
 						WHEN '.WEEKLY.' THEN '.$weekstart.'
 						WHEN '.DAILY.' THEN '.$daystart.' ELSE 0 END)
 					    AND cdate < (CASE period
 						WHEN '.YEARLY.' THEN '.$yearend.'
+						WHEN '.HALFYEARLY.' THEN '.$halfyearend.'
 						WHEN '.QUARTERLY.' THEN '.$quarterend.'
 						WHEN '.MONTHLY.' THEN '.$monthend.'
 						WHEN '.WEEKLY.' THEN '.$weekend.'
@@ -3766,6 +3792,16 @@ class LMS
 				}
 				$start = mktime(0, 0, 0, $startq, 1, date('Y',$cdate));
 				$end = mktime(0, 0, 0, $startq+3, 1, date('Y',$cdate));
+			break;
+			case HALFYEARLY:
+				$currmonth = date('n');
+				switch(date('n'))
+				{
+					case 1: case 2: case 3: case 4: case 5: case 6: $startq = 1; break;
+					case 7: case 8: case 9: case 10: case 11: case 12: $startq = 7; break;
+				}
+				$start = mktime(0, 0, 0, $starthy, 1, date('Y',$cdate));
+				$end = mktime(0, 0, 0, $starthy+6, 1, date('Y',$cdate));
 			break;
 			case YEARLY:
 				$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
@@ -3822,6 +3858,16 @@ class LMS
 				}
 				$start = mktime(0, 0, 0, $startq, 1, date('Y',$cdate));
 				$end = mktime(0, 0, 0, $startq+3, 1, date('Y',$cdate));
+			break;
+			case HALFYEARLY:
+				$currmonth = date('n');
+				switch(date('n'))
+				{
+					case 1: case 2: case 3: case 4: case 5: case 6: $startq = 1; break;
+					case 7: case 8: case 9: case 10: case 11: case 12: $startq = 7; break;
+				}
+				$start = mktime(0, 0, 0, $starthy, 1, date('Y',$cdate));
+				$end = mktime(0, 0, 0, $starthy+6, 1, date('Y',$cdate));
 			break;
 			case YEARLY:
 				$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
