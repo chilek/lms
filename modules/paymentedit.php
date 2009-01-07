@@ -53,9 +53,6 @@ if(isset($_POST['payment']))
 
 	$period = sprintf('%d',$payment['period']);
 	
-	if($period < DAILY || $period > YEARLY)
-		$period = MONTHLY;
-
 	switch($period)
 	{
 		case DAILY:
@@ -68,18 +65,6 @@ if(isset($_POST['payment']))
 				$error['at'] = trans('Incorrect day of week (1-7)!');
 		break;
 		
-		case MONTHLY:
-			$at = sprintf('%d',$payment['at']);
-			if($at == 0)
-			{
-				$at = 1 + date('d',time());
-				if($at > 28)
-					$at = 1;
-			}
-			if($at < 1 || $at > 28)
-				$error['at'] = trans('Incorrect day of month (1-28)!');
-		break;
-			
 		case QUARTERLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
@@ -95,6 +80,21 @@ if(isset($_POST['payment']))
 			};
 		break;
 		
+		case HALFYEARLY:
+                        if(!eregi('^[0-9]{2}/[0-9]{2}$',$payment['at']) && $payment['at'])
+		                $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+		        else
+			{
+		                list($d,$m) = split('/',$payment['at']);
+			        
+				if($d>30 || $d<1 || ($d>28 && $m==2))
+			        	$error['at'] = trans('This month doesn\'t contain specified number of days');
+			        if($m>6 || $m<1)
+			        	$error['at'] = trans('Incorrect month number (max.6)!');
+			        $at = ($m-1) * 100 + $d;
+			}
+		break;
+		
 		case YEARLY:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
@@ -104,6 +104,19 @@ if(isset($_POST['payment']))
 				$ttime = mktime(12, 0, 0, $m, $d, 1990);
 				$at = date('z',$ttime) + 1;
 			}
+		break;
+		
+		default: // MONTHLY
+			$period = MONTHLY;
+			$at = sprintf('%d',$payment['at']);
+			if($at == 0)
+			{
+				$at = 1 + date('d',time());
+				if($at > 28)
+					$at = 1;
+			}
+			if($at < 1 || $at > 28)
+				$error['at'] = trans('Incorrect day of month (1-28)!');
 		break;
 	}
 	
@@ -124,8 +137,10 @@ else
 
 	if($payment['period'] == YEARLY)
 		$payment['at'] = date('d/m',($payment['at']-1)*86400);
-	if($payment['period'] == QUARTERLY)
+	elseif($payment['period'] == QUARTERLY)
 		$payment['at'] = sprintf('%02d/%02d',($payment['at']%100),$payment['at']/100+1);
+	elseif($payment['period'] == HALFYEARLY)
+                $payment['at'] = sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1);
 }
 	
 $layout['pagetitle'] = trans('Payment Edit: $0',$payment['name']);

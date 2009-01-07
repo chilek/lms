@@ -68,16 +68,6 @@ define('DOC_ORDER', -4);
 define('DOC_SHEET', -5);
 define('DOC_OTHER', -10);
 
-// Accounting periods
-$PERIODS = array(
-    5	=>	trans('yearly'),
-    4	=>	trans('quarterly'),
-    3	=>	trans('monthly'),
-    2	=>	trans('weekly'),
-    1	=>	trans('daily'),
-    0	=>	trans('disposable')
-);
-
 // Guarantee periods
 $GUARANTEEPERIODS = array(
 -1 => trans('lifetime'),
@@ -100,16 +90,6 @@ $MESSENGERS = array(
     IM_SKYPE => trans('Skype'),
 );
 
-// Numbering periods
-$NUM_PERIODS = array(
-    6	=>	trans('continuously'),
-    5	=>	trans('yearly'),
-    4	=>	trans('quarterly'),
-    3	=>	trans('monthly'),
-    2	=>	trans('weekly'),
-    1	=>	trans('daily'),
-);
-
 define('DISPOSABLE', 0);
 define('DAILY', 1);
 define('WEEKLY', 2);
@@ -117,6 +97,30 @@ define('MONTHLY', 3);
 define('QUARTERLY', 4);
 define('YEARLY', 5);
 define('CONTINUOUS', 6);
+define('HALFYEARLY', 7);
+
+// Accounting periods
+$PERIODS = array(
+    YEARLY	=>	trans('yearly'),
+    HALFYEARLY  =>      trans('half-yearly'),
+    QUARTERLY	=>	trans('quarterly'),
+    MONTHLY	=>	trans('monthly'),
+    WEEKLY	=>	trans('weekly'),
+    DAILY	=>	trans('daily'),
+    DISPOSABLE	=>	trans('disposable')
+);
+
+// Numbering periods
+$NUM_PERIODS = array(
+    CONTINUOUS	=>	trans('continuously'),
+    YEARLY	=>	trans('yearly'),
+    HALFYEARLY	=>	trans('half-yearly'),
+    QUARTERLY	=>	trans('quarterly'),
+    MONTHLY	=>	trans('monthly'),
+    WEEKLY	=>	trans('weekly'),
+    DAILY	=>	trans('daily'),
+);
+
 
 // Tariff types
 $TARIFFTYPES = array(

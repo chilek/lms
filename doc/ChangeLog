@@ -52,6 +52,7 @@ version ? (????-??-??):
   - invoices report: added multiple-group filter and division filter (alec)
   - numbering plans per-division(s) (alec)
   - balance sheet: added division filter and transaction type filter (alec)
+  - half-yearly assignments/numberplans/payments (Grzegorz Cichowski/alec)
 
 version 1.11.4 Telchak (2008-08-07):
 
