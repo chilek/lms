@@ -120,7 +120,7 @@ elseif(isset($_POST['marks']))
 			$import = $DB->GetRow('SELECT * FROM cashimport WHERE id = ?', array($id));
 			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
 			$balance['time'] = $import['date'];
-			$balance['type'] = 3;
+			$balance['type'] = 1;
 			$balance['value'] = $import['value'];
 			$balance['customerid'] = $customers[$id];
 			$balance['comment'] = $import['description'];
