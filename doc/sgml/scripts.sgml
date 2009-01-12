@@ -627,7 +627,7 @@ address pairs from LMS DB. MACs are being fetched in 'stripped' format, such is,
 without colon separators. This type of file might be used with
 <emphasis>iptraf</emphasis> tools.</para>
             <para>Configuration of lms-etherdesc should be set in
-<filename>lms.ini</filename> file, <emphasis>[ethers]</emphasis> section.
+<filename>lms.ini</filename> file, <emphasis>[ether]</emphasis> section.
 Following parameters are valid:</para>
 	    <itemizedlist>
         	<listitem>

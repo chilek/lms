@@ -624,7 +624,7 @@ wins    = 213.25.209.10</screen>
 	    nazwy hostów pobierane z bazy lms'a. Adresy zapisywane s± w formacie 'stripped mac',
 	    czyli bez ":". Tego typu plik wykorzystywany jest przez pakiet <emphasis>iptraf</emphasis>.
 	    </para>
-	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[ethers]</emphasis>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[ether]</emphasis>
 	    w pliku <filename>lms.ini</filename>: </para>
 	    <itemizedlist>
         	<listitem>
