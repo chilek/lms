@@ -6,6 +6,7 @@ version ? (????-??-??):
   - escape config option values on list (alec)
   - fix: make MAC checking case insensitive (alec)
   - cashimport: fix type of imported operations (alec)
+  - BTS#0000779: fix typo in documentation for lms-etherdesc (alec)
 
 version 1.10.5 Neith (2008-11-05):
 

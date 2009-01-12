@@ -2689,7 +2689,7 @@ wins    = 213.25.209.10
    is, without colon separators. This type of file might be used with
    iptraf tools.
 
-   Configuration of lms-etherdesc should be set in lms.ini file, [ethers]
+   Configuration of lms-etherdesc should be set in lms.ini file, [ether]
    section. Following parameters are valid:
      * networks
        List of (space separated) networks, that should be considered while
