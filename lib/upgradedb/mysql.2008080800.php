@@ -3,7 +3,7 @@
 /*
  * LMS Userpanel version 1.11-cvs
  *
- *  (C) Copyright 2001-2008 LMS Developers
+ *  (C) Copyright 2001-2009 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
