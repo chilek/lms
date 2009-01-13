@@ -83,7 +83,7 @@ if(isset($_GET['is_sure']))
 {
 	set_time_limit(0);
 
-	if ($_GET['gz'])
+	if (!empty($_GET['gz']))
 		$LMS->DatabaseCreate(TRUE);
 	else
 		$LMS->DatabaseCreate();
