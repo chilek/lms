@@ -4,7 +4,7 @@ LMS - LAN Management System 1.11-cvs
 
 LMS Developers
 
-   Copyright © 2001-2008 LMS Developers
+   Copyright © 2001-2009 LMS Developers
      __________________________________________________________________
 
    Spis treści
