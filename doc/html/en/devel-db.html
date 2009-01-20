@@ -220,6 +220,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>countryid - country identifier</TD
+></TR
+><TR
+><TD
 >ten - tax exempt number</TD
 ></TR
 ><TR
@@ -1134,8 +1138,34 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="NUMBERPLANASSIGNMENTS"
+>7.2.21. Numbering plans to divisions assignments ('numberplanassignments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>planid - numbering plan identifier</TD
+></TR
+><TR
+><TD
+>divisionid - division identifier</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="CASHREGS"
->7.2.21. Cash registries ('cashregs')</A
+>7.2.22. Cash registries ('cashregs')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1173,7 +1203,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHRIGHTS"
->7.2.22. Cash registries - access rights ('cashrights')</A
+>7.2.23. Cash registries - access rights ('cashrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1203,7 +1233,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASHREGLOG"
->7.2.23. Cash registries - cash history ('cashreglog')</A
+>7.2.24. Cash registries - cash history ('cashreglog')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1245,7 +1275,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTS"
->7.2.24. Documents: invoices, receipts, contracts, etc. ('documents')</A
+>7.2.25. Documents: invoices, receipts, contracts, etc. ('documents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1320,6 +1350,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>countryid - country identifier</TD
+></TR
+><TR
+><TD
 >closed - is document (invoice) closed (accounted)? (0/1)</TD
 ></TR
 ><TR
@@ -1339,7 +1373,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOCUMENTCONTENTS"
->7.2.25. Non-financial documents contents ('documentcontents')</A
+>7.2.26. Non-financial documents contents ('documentcontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1385,7 +1419,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.26. Invoices ('invoicecontents')</A
+>7.2.27. Invoices ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1439,7 +1473,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RECEIPTCONTENTS"
->7.2.27. Cash Receipts ('receiptcontents')</A
+>7.2.28. Cash Receipts ('receiptcontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1473,7 +1507,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="IMESSENGERS"
->7.2.28. Internet Messengers ('imessengers')</A
+>7.2.29. Internet Messengers ('imessengers')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1503,7 +1537,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CUSTOMERCONTACTS"
->7.2.29. Customers contacts ('customer contacts')</A
+>7.2.30. Customers contacts ('customer contacts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1533,7 +1567,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.30. Accounts ('passwd')</A
+>7.2.31. Accounts ('passwd')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1627,7 +1661,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.31. Domains ('domains')</A
+>7.2.32. Domains ('domains')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1653,7 +1687,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.32. Aliases ('aliases')</A
+>7.2.33. Aliases ('aliases')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1679,7 +1713,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASASSIGNMENTS"
->7.2.33. Alias-to-account assignments ('aliasassignments')</A
+>7.2.34. Alias-to-account assignments ('aliasassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1704,8 +1738,58 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="VOIPACCOUNTS"
+>7.2.35. VoIP Accounts ('voipaccounts')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>ownerid - customer identifier</TD
+></TR
+><TR
+><TD
+>login - login</TD
+></TR
+><TR
+><TD
+>passwd - password</TD
+></TR
+><TR
+><TD
+>phone - phone number</TD
+></TR
+><TR
+><TD
+>creationdate - date of account creation</TD
+></TR
+><TR
+><TD
+>moddate - date of last account modification</TD
+></TR
+><TR
+><TD
+>creatorid - creator (user) identifier</TD
+></TR
+><TR
+><TD
+>modid - last change (user) identifier</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="STATS"
->7.2.34. Bandwidth consumption statistics ('stats')</A
+>7.2.36. Bandwidth consumption statistics ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1735,7 +1819,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.35. Helpdesk - Request Tracking ('rtqueues')</A
+>7.2.37. Helpdesk - Request Tracking ('rtqueues')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1765,7 +1849,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.36. Helpdesk - Request Tracking - continued... ('rttickets')</A
+>7.2.38. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1819,7 +1903,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.37. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+>7.2.39. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1881,7 +1965,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.38. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+>7.2.40. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1907,7 +1991,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTNOTES"
->7.2.39. Helpdesk - Request Tracking - continued... ('rtnotes')</A
+>7.2.41. Helpdesk - Request Tracking - continued... ('rtnotes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1941,7 +2025,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.40. Helpdesk - Request Tracking - continued... ('rtrights')</A
+>7.2.42. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1971,7 +2055,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.41. LMS-UI Online Configuration ('uiconfig')</A
+>7.2.43. LMS-UI Online Configuration ('uiconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2009,7 +2093,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTS"
->7.2.42. Timetable - events ('events')</A
+>7.2.44. Timetable - events ('events')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2067,7 +2151,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="EVENTASSIGNMENTS"
->7.2.43. Timetable - assignments ('eventassignments')</A
+>7.2.45. Timetable - assignments ('eventassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2089,7 +2173,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SESSIONS"
->7.2.44. Sessions ('sessions')</A
+>7.2.46. Sessions ('sessions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2127,7 +2211,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="HOSTS"
->7.2.45. Hosts ('hosts')</A
+>7.2.47. Hosts ('hosts')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2161,7 +2245,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONINSTANCES"
->7.2.46. Daemon configuration - instances ('daemoninstances')</A
+>7.2.48. Daemon configuration - instances ('daemoninstances')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2207,7 +2291,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMONCONFIG"
->7.2.47. Daemon configuration - options ('daemonconfig')</A
+>7.2.49. Daemon configuration - options ('daemonconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2245,7 +2329,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATES"
->7.2.48. States ('states')</A
+>7.2.50. States ('states')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2271,7 +2355,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ZIPCODES"
->7.2.49. Zip codes ('zipcodes')</A
+>7.2.51. Zip codes ('zipcodes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2296,8 +2380,30 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="COUNTRIES"
+>7.2.52. Countries ('countries')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>name -  country name</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DIVISIONS"
->7.2.50. Companies/Divisions ('divisions')</A
+>7.2.53. Companies/Divisions ('divisions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -2325,6 +2431,10 @@ BORDER="0"
 ><TR
 ><TD
 >city - city</TD
+></TR
+><TR
+><TD
+>countryid - country identifier</TD
 ></TR
 ><TR
 ><TD
@@ -2371,7 +2481,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.51. Database information ('dbinfo')</A
+>7.2.54. Database information ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"

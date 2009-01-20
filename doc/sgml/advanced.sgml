@@ -106,6 +106,7 @@
                     <member>address - street address (street, apartment, flat, etc)</member>
                     <member>zip - zip code</member>
                     <member>city - location (city)</member>
+		    <member>countryid - country identifier</member>
                     <member>ten - tax exempt number</member>
                     <member>ssn - social security number</member>
 		    <member>regon - business registration number</member>
@@ -362,6 +363,14 @@
                     <member>isdefault - '1' if this plan is default for respondent doctype, else '0'</member>
 		  </simplelist>
 	  </sect2>
+	  <sect2 id="numberplanassignments">
+               <title>Numbering plans to divisions assignments ('numberplanassignments')</title>
+                  <simplelist>
+                    <member>id - serial number</member>
+                    <member>planid - numbering plan identifier</member>
+		    <member>divisionid - division identifier</member>
+		  </simplelist>
+	  </sect2>
 	  <sect2 id="cashregs">
 		  <title>Cash registries ('cashregs')</title>
 		  <simplelist>
@@ -414,6 +423,7 @@
                     <member>ten - Tax Exempt Number of customer</member>
                     <member>zip - zip code of customer</member>
                     <member>city - location of customer</member>
+		    <member>countryid - country identifier</member>
 		    <member>closed - is document (invoice) closed (accounted)? (0/1)</member>
 		    <member>reference - document ID reference</member>
 		    <member>reason - e.g. invoice note reason</member>
@@ -522,6 +532,20 @@
                     <member>id - serial number</member>
                     <member>aliasid - alias serial number</member>
                     <member>accountid - account serial number</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="voipaccounts">
+               <title>VoIP Accounts ('voipaccounts')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>ownerid - customer identifier</member>
+                    <member>login - login</member>
+                    <member>passwd - password</member>
+                    <member>phone - phone number</member>
+                    <member>creationdate - date of account creation</member>
+                    <member>moddate - date of last account modification</member>
+                    <member>creatorid - creator (user) identifier</member>
+                    <member>modid - last change (user) identifier</member>
                </simplelist>
           </sect2>
           <sect2 id="stats">
@@ -696,6 +720,13 @@
                     <member>stateid - state identifier</member>
                </simplelist>
           </sect2>
+          <sect2 id="countries">
+               <title>Countries ('countries')</title>
+               <simplelist>
+                    <member>id - identifier</member>
+                    <member>name -  country name</member>
+               </simplelist>
+          </sect2>
           <sect2 id="divisions">
                <title>Companies/Divisions ('divisions')</title>
                <simplelist>
@@ -705,6 +736,7 @@
                     <member>address - address</member>
                     <member>zip - zip code</member>
                     <member>city - city</member>
+                    <member>countryid - country identifier</member>
                     <member>ten - tax exempt number</member>
 		    <member>regon - business registration number</member>
                     <member>account - bank account or mass payments account prefix</member>
