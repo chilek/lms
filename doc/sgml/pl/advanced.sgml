@@ -110,6 +110,7 @@
                     <member>address - adres (ulica, nr domu, nr lokalu)</member>
                     <member>zip - kod pocztowy</member>
                     <member>city - nazwa miasta</member>
+		    <member>countryid - identyfikator kraju</member>
                     <member>ten - numer identyfikacji podatkowej NIP</member>
                     <member>ssn - numer PESEL</member>
 		    <member>regon - numer REGON</member>
@@ -347,15 +348,15 @@
 		    <member>settlement - rozliczenie okresu niepe³nego (1 - tak, 0 - nie)</member>
                </simplelist>
           </sect2>
-	  <sect2 id="nodeassignments">
-		  <title>Powi±zania komputer-taryfa ('nodeassignments')</title>
-		  <simplelist>
-			  <member>id - identyfikator</member>
-			  <member>assignmentid - identyfikator zobowi±zania</member>
-			  <member>nodeid - identyfikator komputera</member>
-		  </simplelist>
-          </sect2>
-	  <sect2 id="numberplans">
+	<sect2 id="nodeassignments">
+		<title>Powi±zania komputer-taryfa ('nodeassignments')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>assignmentid - identyfikator zobowi±zania</member>
+			<member>nodeid - identyfikator komputera</member>
+		</simplelist>
+        </sect2>
+	<sect2 id="numberplans">
                <title>Plany (szablony) numeracyjne dokumentów ('numberplans')</title>
                   <simplelist>
                     <member>id - identyfikator</member>
@@ -364,6 +365,14 @@
                     <member>doctype - typ dokumentu</member>
                     <member>isdefault - '1' - je¶li dany plan jest domy¶lny dla wybranego typu dokumentów, '0' - je¶li nie</member>
                </simplelist>
+        </sect2>
+	<sect2 id="numberplanassignments">
+		  <title>Powi±zania planów num. z firmami ('numberplanassignments')</title>
+		  <simplelist>
+			<member>id - identyfikator</member>
+			<member>planid - identyfikator planu</member>
+			<member>divisionid - identyfikator firmy</member>
+		  </simplelist>
           </sect2>
 	  <sect2 id="cashregs">
 		<title>Rejestry kasowe ('cashregs')</title>
@@ -417,6 +426,7 @@
                     <member>ssn - PESEL klienta</member>
                     <member>zip - kod pocztowy klienta</member>
                     <member>city - miasto klienta</member>
+		    <member>countryid - identyfikator kraju</member>
 		    <member>closed - czy dokument jest rozliczony? (0/1)</member>
 		    <member>reference - ID dokumentu (np. korygowanej faktury)</member>
 		    <member>reason - np. powód korekty faktury</member>
@@ -527,6 +537,20 @@
 		<member>accountid - identyfikator konta</member>
 		</simplelist>
         </sect2>
+	<sect2 id="voipaccounts">
+		<title>Konta VoIP ('voipaccounts')</title>
+		<simplelist>
+			<member>id - identyfikator rekordu</member>
+			<member>ownerid - identyfikator w³a¶ciciela (klienta)</member>
+			<member>login - login</member>
+			<member>passwd - has³o</member>
+			<member>phone - numer telefonu</member>
+			<member>creationdate - data utworzenia</member>
+			<member>moddate - date ostatniej zmiany</member>
+			<member>creatorid - identyfikator u¿ytkownika</member>
+			<member>modid - identyfikator u¿ytkownika</member>
+		</simplelist>
+	</sect2>
           <sect2 id="stats">
                <title>Statystyki wykorzystania ³±cza ('stats')</title>
                <simplelist>
@@ -699,6 +723,13 @@
 			<member>stateid - identyfikator województwa</member>
 		</simplelist>
 	</sect2>
+	<sect2 id="countries">
+		<title>Kraje ('countries')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>name -  nazwa kraju</member>
+		</simplelist>
+	</sect2>
 	<sect2 id="divisions">
 		<title>Firmy/Oddzia³y ('divisions')</title>
 		<simplelist>
@@ -708,6 +739,7 @@
 			<member>address - adres</member>
 			<member>zip - kod pocztowy</member>
 			<member>city - miasto</member>
+			<member>countryid - identyfikator kraju</member>
                 	<member>ten - numer identyfikacji podatkowej NIP</member>
 			<member>regon - numer REGON</member>
 			<member>account - konto bankowe lub prefiks konta p³atno¶ci masowych</member>
