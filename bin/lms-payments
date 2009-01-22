@@ -444,9 +444,10 @@ while(my $assign = $dbq->fetchrow_hashref())
 		{
 			if($gotinv{$uid} eq 0)
 			{
-				if(!$numbers{$divid})
+				my $plan = $plans{$divid} || 0;
+
+				if(!$numbers{$plan})
 				{
-					my $plan = $plans{$divid} || 0;
 					my %period = get_period($periods{$divid});
 
 					my $dbqn = $dbase->prepare("SELECT MAX(number) AS number FROM documents
@@ -454,13 +455,13 @@ while(my $assign = $dbq->fetchrow_hashref())
 					$dbqn->execute($period{'start'}, $period{'end'}, $plan);
 
 					$row = $dbqn->fetchrow_hashref();
-					$numbers{$divid} = $row->{'number'} || 0;
+					$numbers{$plan} = $row->{'number'} || 0;
 					$plans{$divid} = $plan;
 					$dbqn->finish();
 				}
 				
 				$itemid = 0;
-				$numbers{$divid}++;
+				$numbers{$plan}++;
 				
 				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten, divisionid, paytime
 						FROM customers WHERE id = ?");
@@ -472,13 +473,13 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $idbq = $dbase->prepare("INSERT INTO documents (number, numberplanid, type, divisionid,
 						customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype)
 						VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-				$idbq->execute($numbers{$divid}, $plans{$divid}, $urow->{'divisionid'}, $uid,
+				$idbq->execute($numbers{$plan}, $plan, $urow->{'divisionid'}, $uid,
 						$urow->{'lastname'}.' '.$urow->{'name'}, $urow->{'address'}, $urow->{'zip'},
 						$urow->{'city'}, $urow->{'ten'}, $urow->{'ssn'}, $currtime, $paytime, $paytype);
 
 				$idbq = $dbase->prepare("SELECT id FROM documents
 						WHERE cdate = ? AND number = ? AND type = 1 AND customerid = ?");
-				$idbq->execute($currtime, $numbers{$divid}, $uid);
+				$idbq->execute($currtime, $numbers{$plan}, $uid);
 				my $irow = $idbq->fetchrow_hashref();
 				$gotinv{$uid} = $irow->{'id'};
 				
