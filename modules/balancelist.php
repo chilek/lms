@@ -85,11 +85,12 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 		    $stop = $start + $pagelimit;
 		}
 		$id = 0;
+		$after = 0;
 
 		while($row = $DB->FetchRow($res))
 		{
 			$balancelist[$id]['user'] = isset($userlist[$row['userid']]['name']) ? $userlist[$row['userid']]['name'] : '';
-			$balancelist[$id]['before'] = isset($balancelist[$id-1]['after']) ? $balancelist[$id-1]['after'] : 0;
+			$balancelist[$id]['before'] = $after;
 
 			if($row['customerid'] && $row['type'] == 0)
 			{
@@ -110,6 +111,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 			}
 
 			$balancelist[$id] = array_merge($balancelist[$id], $row);
+			$after = $balancelist[$id]['after'];
 
 			// free memory for rows which will not be displayed
 			if($page > 0)
@@ -119,7 +121,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 			}
 			elseif(isset($balancelist[$id-$pagelimit]))
 				$balancelist[$id-$pagelimit] = NULL;
-			
+
 			$id++;
 		}
 	
