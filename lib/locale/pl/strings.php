@@ -2124,5 +2124,6 @@ $_LANG['Select country (optional)'] = 'Wybierz kraj (opcjonalnie)';
 $_LANG['VoIP'] = 'VoIP';
 $_LANG['Voip account $0 was deleted'] = 'Konto VoIP $0 zostało usunięte';
 $_LANG['Voip account owner is not connected!'] = 'Właściciel konta VoIP nie jest podłaczony!';
+$_LANG['Selected numbering plan doesn\'t match customer\'s division!'] = 'Wybrany plan numeracyjny nie należy do firmy klienta!';
 
 ?>
