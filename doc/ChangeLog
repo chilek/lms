@@ -53,6 +53,8 @@ version ? (????-??-??):
   - numbering plans per-division(s) (alec)
   - balance sheet: added division filter and transaction type filter (alec)
   - half-yearly assignments/numberplans/payments (Grzegorz Cichowski/alec)
+  - BTS#0000777: better and unicode aware function for customers first name
+    capitalisation (alec)
 
 version 1.11.4 Telchak (2008-08-07):
 
