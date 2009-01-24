@@ -340,7 +340,7 @@ class LMS
 				    icn, cutoffstop, consentdate, divisionid, paytime) 
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, 
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-				    array(ucwords($customeradd['name']),  
+				    array(lms_ucwords($customeradd['name']),  
 					    $customeradd['lastname'], 
 					    empty($customeradd['type']) ? 0 : 1,
 					    $customeradd['address'], 
@@ -417,7 +417,7 @@ class LMS
 				$customerdata['notes'],
 				$customerdata['serviceaddr'], 
 				$customerdata['lastname'], 
-				ucwords($customerdata['name']), 
+				lms_ucwords($customerdata['name']), 
 				$customerdata['message'],
 				$customerdata['pin'],
 				$customerdata['regon'], 

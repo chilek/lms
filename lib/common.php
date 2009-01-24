@@ -593,6 +593,17 @@ function escape_js($string)
     	return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
 }
 
+function lms_ucwords($str)
+{
+	$result = array();
+	$arr = preg_split('/\s+/', $str);
+	
+	foreach($arr as $word)
+		$result[] = mb_strlen($word) > 1 ? mb_convert_case($word, MB_CASE_TITLE) : $word;
+	
+	return implode(' ', $result);
+}
+
 function plugin_handle($name)
 {
         global $PLUGINS;
