@@ -40,7 +40,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 }
 
 $document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template,
-	cdate, numberplanid, title, fromdate, todate, description
+	cdate, numberplanid, title, fromdate, todate, description, divisionid
 	FROM documents
 	LEFT JOIN documentcontents ON (documents.id = docid)
 	LEFT JOIN numberplans ON (numberplanid = numberplans.id)
@@ -57,7 +57,13 @@ if(isset($_POST['document']))
 	if(!$documentedit['title'])
 		$error['title'] = trans('Document title is required!');
 
-	if(!$documentedit['number'])
+	// check if selected customer can use selected numberplan
+        if($documentedit['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
+	        WHERE planid = ? AND divisionid = ?', array($documentedit['numberplanid'], $document['divisionid'])))
+	{
+		$error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+	}
+	elseif(!$documentedit['number'])
 	{
 		if($document['numberplanid'] != $documentedit['numberplanid'])
 		{

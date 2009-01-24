@@ -193,6 +193,8 @@ switch($action)
 				$invoice['cdatewarning'] = 1;
 			}
 		}
+		elseif(!$invoice['cdate'])
+			$invoice['cdate'] = time();
 
 		if($invoice['number'])
 		{
@@ -207,6 +209,15 @@ switch($action)
 			$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
 			if($LMS->CustomerExists($cid))
 				$customer = $LMS->GetCustomer($cid, true);
+
+			// finally check if selected customer can use selected numberplan
+			if($invoice['numberplanid'] && isset($customer))
+				if(!$DB->GetOne('SELECT 1 FROM numberplanassignments
+					WHERE planid = ? AND divisionid = ?', array($invoice['numberplanid'], $customer['divisionid'])))
+				{
+					$error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+					unset($customer);
+				}
 		}
 	break;
 

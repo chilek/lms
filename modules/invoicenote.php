@@ -129,6 +129,13 @@ switch($action)
 			elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
 			        $error['number'] = trans('Credit note number $0 already exists!', $cnote['number']);
 		}
+                
+		// finally check if selected customer can use selected numberplan
+		if($cnote['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
+			WHERE planid = ? AND divisionid = ?', array($cnote['numberplanid'], $invoice['divisionid'])))
+		{
+		        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+		}
 
 		if(!isset($cnote['paytype']) || $cnote['paytype'] == '')
 			$cnote['paytype'] = trans('TRANSFER');

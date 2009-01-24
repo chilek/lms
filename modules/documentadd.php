@@ -78,7 +78,17 @@ if(isset($_POST['document']))
 	if(!$document['title'])
 		$error['title'] = trans('Document title is required!');
 
-	if($document['number'] == '')
+
+	// check if selected customer can use selected numberplan
+        if($document['numberplanid'] && $document['customerid']
+	        && !$DB->GetOne('SELECT 1 FROM numberplanassignments
+	                WHERE planid = ? AND divisionid IN (SELECT divisionid
+				FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid'])))
+	{
+	        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+	}
+	// check number
+	elseif($document['number'] == '')
 	{
 		$tmp = $LMS->GetNewDocumentNumber($document['type'], $document['numberplanid']);
 		$document['number'] = $tmp ? $tmp : 0;
