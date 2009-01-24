@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.11.5 Ishkur (2009-01-24):
 
   - changed Smarty's homepage address to http://www.smarty.net (alec)
   - added Configuration -> States and possibility to search customers
