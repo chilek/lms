@@ -38,9 +38,33 @@ if(sizeof($ilm))
 if(sizeof($ids))
 {
 	foreach($ids as $invoiceid)
+	{
+		// add payment
+		if(chkconfig($CONFIG['phpui']['invoice_check_payment'])
+			&& ($cid = $DB->GetOne('SELECT customerid FROM documents
+				WHERE id = ? AND closed = 0', array($invoiceid))))
+		{
+			$value = $DB->GetOne('SELECT CASE reference WHEN 0 THEN SUM(a.value*a.count)
+				ELSE SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count) END
+				FROM documents d
+				JOIN invoicecontents a ON (a.docid = d.id)
+				LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
+				WHERE d.id = ?', array($invoiceid));
+
+			if ($value != 0)
+				$LMS->AddBalance(array(
+					'type' => 1,
+				        'time' => time(),
+					'value' => $value,
+					'customerid' => $cid,
+					'comment' => trans('Accounted'),
+				));
+		}
+
 		$DB->Execute('UPDATE documents SET closed = 
-				    (CASE closed WHEN 0 THEN 1 ELSE 0 END)
-				WHERE id = ?', array($invoiceid));
+			(CASE closed WHEN 0 THEN 1 ELSE 0 END)
+			WHERE id = ?', array($invoiceid));
+	}
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));

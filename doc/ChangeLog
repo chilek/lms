@@ -1,5 +1,10 @@
 $Id$
 
+version ? (????-??-??):
+
+  - added option phpui/invoice_check_payment to add payment operation
+    when checking invoice as payed (alec)
+
 version 1.11.5 Ishkur (2009-01-24):
 
   - changed Smarty's homepage address to http://www.smarty.net (alec)
