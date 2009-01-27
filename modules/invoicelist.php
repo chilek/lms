@@ -79,7 +79,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order, $pagelimi
 				$where = ' AND d.customerid = '.intval($search);
 			break;
 			case 'name':
-				$where = ' AND UPPER(name) ?LIKE? UPPER(\'%'.$search.'%\')';
+				$where = ' AND UPPER(d.name) ?LIKE? UPPER(\'%'.$search.'%\')';
 			break;
 			case 'address':
 				$where = ' AND UPPER(address) ?LIKE? UPPER(\'%'.$search.'%\')';
