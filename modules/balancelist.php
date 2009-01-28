@@ -24,9 +24,11 @@
  *  $Id$
  */
 
-function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $page=NULL)
+function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $page=NULL, $from, $to)
 {
 	global $DB;
+
+	$where = '';
 
 	if($search && $cat)
         {
@@ -56,6 +58,19 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 			break;
 		}
 	}
+	elseif($cat)
+	{
+		switch($cat)
+		{
+			case 'documented': $where = ' AND cash.docid > 0'; break;
+			case 'notdocumented': $where = ' AND cash.docid = 0'; break;
+		}
+	}
+
+	if($from)
+        	$where .= ' AND cash.time >= '.$from;
+	if($to)
+		$where .= ' AND cash.time <= '.$to;
 
 	if($res = $DB->Exec('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
 				cash.customerid AS customerid, comment, docid, cash.type AS type,
@@ -71,7 +86,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 					WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = cash.customerid)
 				WHERE e.customerid IS NULL'
-				.(isset($where) ? $where : '')
+				.$where
 				.(!empty($group['group']) ? 
 					' AND '.(!empty($group['exclude']) ? 'NOT' : '').' EXISTS (
 					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
@@ -165,10 +180,32 @@ if($c == 'cdate' && $s)
 	$s = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
 }
 
+if(!empty($_POST['from']))
+{
+	list($year, $month, $day) = explode('/', $_POST['from']);
+	$from = mktime(0,0,0, $month, $day, $year);
+}
+elseif($SESSION->is_set('blf'))
+	$SESSION->restore('blf', $from);
+else
+	$from = '';
+$SESSION->save('blf', $from);
+
+if(!empty($_POST['to']))
+{
+	list($year, $month, $day) = explode('/', $_POST['to']);
+	$to = mktime(23,59,59, $month, $day, $year);
+}
+elseif($SESSION->is_set('blt'))
+	$SESSION->restore('blt', $to);
+else
+	$to = '';
+$SESSION->save('blt', $to);
+
 $pagelimit = $CONFIG['phpui']['balancelist_pagelimit'];
 $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
 
-$balancelist = GetBalanceList($s, $c, array('group' => $g, 'exclude'=> $ge), $pagelimit, $page);
+$balancelist = GetBalanceList($s, $c, array('group' => $g, 'exclude'=> $ge), $pagelimit, $page, $from, $to);
 
 $listdata['liability'] = $balancelist['liability'];
 $listdata['income'] = $balancelist['income'];
@@ -188,6 +225,8 @@ $SESSION->restore('blc', $listdata['cat']);
 $SESSION->restore('bls', $listdata['search']);
 $SESSION->restore('blg', $listdata['group']);
 $SESSION->restore('blge', $listdata['groupexclude']);
+$SESSION->restore('blf', $listdata['from']);
+$SESSION->restore('blt', $listdata['to']);
 
 $layout['pagetitle'] = trans('Balance Sheet');
 
