@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - added option phpui/invoice_check_payment to add payment operation
     when checking invoice as payed (alec)
+  - balance sheet: added 'with/without document' and date filters (zet/alec)
 
 version 1.11.5 Ishkur (2009-01-24):
 
