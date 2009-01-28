@@ -129,6 +129,7 @@ switch($type)
 		$group = intval($_POST['customergroup']);
 		$division = intval($_POST['division']);
 		$types = isset($_POST['types']) ? $_POST['types'] : NULL;
+		$docs = $_POST['docs'];
 
 		// date format 'yyyy/mm/dd'
 		if($from)
@@ -182,6 +183,7 @@ switch($type)
 					FROM cash c '
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
 					.'WHERE time<?'
+					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
@@ -200,6 +202,7 @@ switch($type)
 					LEFT JOIN taxes ON (taxid = taxes.id) '
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid)  ' : '')
 					.'WHERE time <= ? '
+					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
