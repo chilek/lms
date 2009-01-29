@@ -265,7 +265,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 	        die;
 	}
 	
-	if($_GET['cash'])
+	if(!empty($_GET['cash']))
 	{
 	        foreach($ids as $cashid)
 	                if($rid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND documents.type = 2 AND cash.id = ?', array($cashid)))
@@ -284,6 +284,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 			$type = $_GET['which'];
 		        $i++;
 		        if($i == $count) $receipt['last'] = TRUE;
+			$receipt['first'] = $i > 1 ? FALSE : TRUE;
 			receipt_body();
 		}
 	}
@@ -292,6 +293,7 @@ elseif($receipt = GetReceipt($_GET['id']))
 {
 	$type = isset($_GET['which']) ? $_GET['which'] : '';
 	$receipt['last'] = TRUE;
+	$receipt['first'] = TRUE;
 	receipt_body();
 }
 else
