@@ -88,7 +88,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 		die;
 	}
 								
-	if($_GET['cash'])
+	if(!empty($_GET['cash']))
 	{
 		foreach($ids as $cashid)
 			if($rid = $DB->GetOne('SELECT docid FROM cash, documents WHERE docid = documents.id AND documents.type = 2 AND cash.id = ?', array($cashid)))
@@ -100,7 +100,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 
 	$layout['pagetitle'] = trans('Cash Receipts');
 	$SMARTY->display('receiptheader.html');
-	$SMARTY->assign('type', $_GET['which']);
+	$SMARTY->assign('type', !empty($_GET['which']) ? $_GET['which'] : '');
 	
 	$i = 0;
 	$count = sizeof($ids);
@@ -110,6 +110,7 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks']
 		{
 			$i++;
 		        if($i == $count) $receipt['last'] = TRUE;
+			$receipt['first'] = $i > 1 ? FALSE : TRUE;
 
 			$SMARTY->assign('receipt',$receipt);
 			$SMARTY->display($CONFIG['receipts']['template_file']);
@@ -130,6 +131,7 @@ elseif($receipt = GetReceipt($_GET['id']))
 	$layout['pagetitle'] = trans('Cash Receipt No. $0', $receipt['number']);
 	
 	$receipt['last'] = TRUE;
+	$receipt['first'] = TRUE;
 	$SMARTY->assign('type', isset($_GET['which']) ? $_GET['which'] : NULL);
 	$SMARTY->assign('receipt',$receipt);
 	$SMARTY->display('receiptheader.html');
