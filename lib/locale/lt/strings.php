@@ -528,7 +528,7 @@ $_LANG['Enter password (optional)'] = 'Įveskite slaptažodį  (pasirinktinai)';
 $_LANG['Enter path to file or click \'Browse\' button'] = 'Įveskite takelį prie failo arba paspauskite mygtuką \'Peržiūrėti\'';
 $_LANG['Enter path to file with data to import'] = 'Nurodykite takelį prie failo su duomenimis importui';
 $_LANG['Enter payment type'] = 'Įveskite mokėjimo tipą';
-$_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Įveskite dokumento numerį. Dėmesio! Šio numerio pakeitimas gali būti Pavojingas ! (palikite šį lauką tuščią, kad gautumėte kitą numerį)';;
+$_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Įveskite dokumento numerį. Dėmesio! Šio numerio pakeitimas gali būti Pavojingas ! (palikite šį lauką tuščią, kad gautumėte kitą numerį)';
 $_LANG['Enter zip code'] = 'Įveskite pašto kodą';
 $_LANG['Enter primary DNS address (optional)'] = 'Įveskite pagrindinį DNS adresą (pasirinktinai)';
 $_LANG['Enter producer name (optional)'] = 'Įveskite gamintojo pavadinimą (pasirinktinai)';
@@ -788,19 +788,16 @@ $_LANG['Limit of records displayed on one page in customers list. Default: 100.'
 $_LANG['Limit of records displayed on one page in domains list. Default: 100.'] = 'Įrašų rodomų viename domenų sąrašo puslapyje limitas. Numanoma: 100.';
 $_LANG['Limit of records displayed on one page in invoices list. Default: 100.'] = 'Įrašų rodomų viename faktūrų sąrašo puslapyje limitas. Numanoma: 100.';
 $_LANG['Limit of records displayed on one page in nodes list. Default: 100.'] = 'Įrašų rodomų viename kompiuterių sąrašo puslapyje limitas. Numanoma: 100.';
-$_LANG['Limit of records displayed on one page in cash receipts list. Default: 100.'] = 
-'Įrašų rodomų viename įmokų kvitų  sąrašo puslapyje limitas. Numanoma: 100.';
+$_LANG['Limit of records displayed on one page in cash receipts list. Default: 100.'] = 'Įrašų rodomų viename įmokų kvitų  sąrašo puslapyje limitas. Numanoma: 100.';
 $_LANG['Limit of records displayed on one page in tickets (requests) list. Default: 100.'] = 'Įrašų rodomų viename paraiškų sąrašo puslapyje limitas. Numanoma: 100.';
-$_LANG['Limit of records displayed on one page in UI config options list. Default: 100.'] = 
-'Įrašų rodomų viename konfiguarcijos pasirinkimų sąrašo puslapyje limitas. Numanoma: 100.';
+$_LANG['Limit of records displayed on one page in UI config options list. Default: 100.'] = 'Įrašų rodomų viename konfiguarcijos pasirinkimų sąrašo puslapyje limitas. Numanoma: 100.';
 $_LANG['Limit of records displayed on one page in customer\'s balance. Default: 100.'] = 'Įrašų rodomų viename kliento balanso puslapyje limitas. Numanoma: 100.';
 $_LANG['Limit results to n computers'] = 'Apribok rezultatus iki n kompiuterių';
 $_LANG['Limit results to selected network'] = 'Apribok rezultatus iki pasirinkto tinklo';
 $_LANG['Limit results to selected period'] = 'Apribok rezultatus iki pasirinkto periodo';
 $_LANG['Link to:'] = 'Prirašyk prie:';
 $_LANG['List'] = 'Sąrašas';
-$_LANG['List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.'] =
-'Arpd serverių MAC adresų iš nutolusių tinklų skaitymui sąrašas. Šiame sąraše turi būti IP[:port] pozicijos atskirtos tarpais. Numanomai: tuščia.';
+$_LANG['List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.'] = 'Arpd serverių MAC adresų iš nutolusių tinklų skaitymui sąrašas. Šiame sąraše turi būti IP[:port] pozicijos atskirtos tarpais. Numanomai: tuščia.';
 $_LANG['List of Customers'] = 'Klientų sąrašas';
 $_LANG['List of Customers Groups'] = 'Kompiuterių grupių sąrašas';
 $_LANG['List of Hosts'] = 'Hostų sąrašas';
@@ -1111,8 +1108,7 @@ $_LANG['Register your installation today! ;-)'] = 'Užregistruok savo instaliaci
 $_LANG['Registration ID:'] = 'Registracijos Nr.:';
 $_LANG['Registration info:'] = 'Informacija apie registraciją:';
 $_LANG['Reload'] = 'Perkrovimas';
-$_LANG['Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).'] = 'Perkrovimo tipas. Galimi pasirinkimai: exec – komandos įvykdymas (dažniausiai kokio nors skripto arba kitokios programos naudojant sudo –
-konfigūruojant toliau); sql – įrašo nurodymą į duomenų bazę SQL ( konkretų klausimą sql gali būti taip pat nenurodytas).';
+$_LANG['Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).'] = 'Perkrovimo tipas. Galimi pasirinkimai: exec – komandos įvykdymas (dažniausiai kokio nors skripto arba kitokios programos naudojant sudo – konfigūruojant toliau); sql – įrašo nurodymą į duomenų bazę SQL ( konkretų klausimą sql gali būti taip pat nenurodytas).';
 $_LANG['Remove'] = 'Pašalink';
 $_LANG['Remove customer from group'] = 'Pašalink klientą iš grupės';
 $_LANG['Remove customers from group'] = 'Pašalink klientus iš grupės';

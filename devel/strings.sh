@@ -6,6 +6,39 @@
 #  With 'diff XX' option script will create diff-file with strings which
 #  are missing (not translated) in /lib/locale/XX/strings.php
 #
+#  With 'validate XX' option script will validate /lib/locale/XX/strings.php
+#  file and output badly formatted lines
+
+case "$1" in
+
+    'diff')
+	if [ "$2" == "" ]
+	then	
+	    echo "You must specify locale. Usage: strings.sh diff <locale symbol>"
+	    exit 1; 
+	fi
+	if [ -x ../lib/locale/$2/strings.php ]
+	then
+	    echo "No such file: ../lib/locale/$2/strings.php. Can't diff."
+	    exit 1
+	fi
+	diff=1
+    ;;
+    'validate')
+	if [ "$2" == "" ]
+	then	
+	    echo "You must specify locale. Usage: strings.sh validate <locale symbol>"
+	    exit 1; 
+	fi
+	if [ -x ../lib/locale/$2/strings.php ]
+	then
+	    echo "No such file: ../lib/locale/$2/strings.php Can't validate."
+	    exit 1
+	fi
+	grep '$_LANG' ../lib/locale/$2/strings.php|awk -f strings_validate.awk
+	exit
+    ;;
+esac
 
 echo "Parsing templates"
 for FILENAME in `ls ../templates/*.html`
@@ -73,19 +106,8 @@ echo -e "\n?>" >> strings.php
 rm tmp_strings
 echo "done."
 
-case "$1" in
-
-    'diff')
-	if [ "$2" == "" ]
-	then	
-	    echo "You must specify locale. Usage: strings.sh diff <locale symbol>"
-	    exit 1; 
-	fi
-	if [ -x ../lib/locale/$2/strings.php ]
-	then
-	    echo "No such file: ../lib/locale/$2/strings.php. Can't diff."
-	    exit 1
-	fi
+if [ $diff == 1 ] 
+then
 	echo -n "Creating diff... "
 	# parse new and old strings.php files
 	perl -ne 'print if s/\$_LANG\[\x27(.*?[^\\])\x27\].*/$1/' < strings.php > strings.new
@@ -107,7 +129,4 @@ case "$1" in
 		rm strings.diff
 	fi
 	echo "done. Lines: $DIFFLINESNUM"
-    ;;
-esac
-#!/bin/bash
-
+fi

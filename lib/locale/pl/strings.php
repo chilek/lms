@@ -798,8 +798,7 @@ $_LANG['Limit results to selected network'] = 'Ogranicz wyniki do wybranej sieci
 $_LANG['Limit results to selected period'] = 'Ogranicz wyniki do wybranego okresu';
 $_LANG['Link to:'] = 'Przypisz do:';
 $_LANG['List'] = 'Lista';
-$_LANG['List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.'] =
-'Lista serwerów arpd dla czytania adresów MAC ze zdalnych sieci. Ta lista powinna zawierać pozycje IP[:port] oddzielone spacjami. Domyślnie: pusta.';
+$_LANG['List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.'] = 'Lista serwerów arpd dla czytania adresów MAC ze zdalnych sieci. Ta lista powinna zawierać pozycje IP[:port] oddzielone spacjami. Domyślnie: pusta.';
 $_LANG['List of Customers'] = 'Lista klientów';
 $_LANG['List of Customers Groups'] = 'Lista grup komputerów';
 $_LANG['List of Hosts'] = 'Lista hostów';
