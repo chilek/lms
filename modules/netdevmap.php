@@ -39,7 +39,7 @@ function drawtext($x, $y, $text, $r, $g, $b)
 	if(strtoupper($CONFIG['phpui']['gd_translate_to'])=='ISO-8859-2')
 	{
 		// for Polish diacritical chars
-		$from = array('±','¶','ê','¿','¼','æ','ñ','ó','³','¡','¦','Ê','¯','¬','Æ','Ñ','Ó','£');
+		$from = array('ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½');
 		$to   = array('a','s','e','z','z','c','n','o','l','A','S','E','Z','Z','C','N','O','L');
 		$text = str_replace($from, $to, $text);
 	}
@@ -390,7 +390,14 @@ if($graph == '')
 	}
 	
 	$deviceslist = $DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC');
-	$SMARTY->assign('devicemap', $devicemap);
+	
+	if (isset($devicemap))
+		$SMARTY->assign('devicemap', $devicemap);
+	else
+	{
+		$SMARTY->assign('devicemap', NULL);
+	}
+		
 	$SMARTY->assign('nodemap', $nodemap);
 	$SMARTY->assign('deviceslist', $deviceslist);
 	$SMARTY->assign('start', $start);
