@@ -796,8 +796,7 @@ $_LANG['Limit results to selected network'] = 'Limit výsledkov vo zvolenej siet
 $_LANG['Limit results to selected period'] = 'Limit výsledkov vo zvolenom období';
 $_LANG['Link to:'] = 'Odkaz na:';
 $_LANG['List'] = 'Zoznam';
-$_LANG['List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.'] =
-'Zoznam arpd serverov pre MAC adresy získaný zo vzdialených sietí. Tento zeznam by mal zahrnovať položky v tvare IP[:port] oddelený medzerami. Východzie: prázdný.';
+$_LANG['List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.'] = 'Zoznam arpd serverov pre MAC adresy získaný zo vzdialených sietí. Tento zeznam by mal zahrnovať položky v tvare IP[:port] oddelený medzerami. Východzie: prázdný.';
 $_LANG['List of Customers'] = 'Zoznam zákazníkov';
 $_LANG['List of Customers Groups'] = 'Zoznam skupín zákazníkov';
 $_LANG['List of Hosts'] = 'Zoznam hosťou';
