@@ -6,6 +6,7 @@ version ? (????-??-??):
     when checking invoice as payed (alec)
   - balance sheet: added 'with/without document' and date filters (zet/alec)
   - balance sheet report: added 'with/without document' filter (zet/alec)
+  - updated lithuanian translation (etanetas/chilan)
 
 version 1.11.5 Ishkur (2009-01-24):
 
