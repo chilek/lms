@@ -391,9 +391,7 @@ if($graph == '')
 	
 	$deviceslist = $DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC');
 	
-	$devicemap = !isset($devicemap) ? NULL : $devicemap;
-
-	$SMARTY->assign('devicemap', $devicemap);
+	$SMARTY->assign('devicemap', isset($devicemap) ? $devicemap : NULL);
 	$SMARTY->assign('nodemap', $nodemap);
 	$SMARTY->assign('deviceslist', $deviceslist);
 	$SMARTY->assign('start', $start);

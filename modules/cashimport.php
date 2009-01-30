@@ -157,10 +157,8 @@ if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$listdata = !isset($listdata) ? NULL : $listdata;
-
 $SMARTY->assign('divisions', $divisions);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('listdata', isset($listdata) ? $listdata : NULL);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->display('cashimport.html');
