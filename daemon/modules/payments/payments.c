@@ -249,7 +249,7 @@ char * get_num_period_end(struct tm *t, int period)
 void reload(GLOBAL *g, struct payments_module *p)
 {
 	QueryHandle *res, *result;
-	char *insert, *description, *invoiceid, *value, *taxid;
+	char *insert, *description, *invoiceid, *value, *taxid, *currtime;
 	char *d_period, *w_period, *m_period, *q_period, *y_period, *h_period;
 	int i, imonth, imday, today, n=2, k=2, m=2, o=2, pl=0;
 	int docid=0, last_customerid=0, exec=0, suspended=0, itemid=0;
@@ -394,6 +394,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	strftime(month, 	sizeof(month), 		"%m", tt);
 	strftime(year, 		sizeof(year), 		"%Y", tt);
 
+	currtime = strdup(itoa(t));
 	imday = tt->tm_mday;
 	imonth = tt->tm_mon+1;
 
@@ -452,7 +453,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
 			exec = (g->db_pexec(g->conn, "INSERT INTO cash (time, type, value, customerid, comment, docid) "
-				"VALUES (%NOW%, 1, ? * -1, 0, '? / ?', 0)",
+				"VALUES (?, 1, ? * -1, 0, '? / ?', 0)",
+					currtime,
 					g->db_get_data(res,i,"value"),
 					g->db_get_data(res,i,"name"),
 					g->db_get_data(res,i,"creditor")
@@ -492,7 +494,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				    OR (period="_HALFYEARLY_" AND at=?) \
 				    OR (period="_YEARLY_" AND at=?) \
 				    OR (period="_DISPOSABLE_" AND at=?)) \
-			    AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
+			    AND (datefrom <= ? OR datefrom = 0) AND (dateto >= ? OR dateto = 0) \
 			    %nets \
 			    %enets \
 			    %groups \
@@ -500,12 +502,13 @@ void reload(GLOBAL *g, struct payments_module *p)
 			ORDER BY ats.customerid, invoice DESC, value DESC\
 			");
 			
-	g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");	
-	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
-	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");	
-	g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");	
+	g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");
+	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");
+	g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
+	g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
 		
-	if( (res = g->db_pquery(g->conn, query, weekday, monthday, quarterday, halfday, yearday, itoa(today))) != NULL)
+	if( (res = g->db_pquery(g->conn, query,
+		weekday, monthday, quarterday, halfday, yearday, itoa(today), currtime, currtime)) != NULL)
 	{
 		struct plan *plans = (struct plan *) malloc(sizeof(struct plan));
 		int invoice_number = 0;
@@ -534,7 +537,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		}
 #ifdef DEBUG1
 		else
-			syslog(LOG_INFO, "DEBUG: [%s/payments] Not found customer assignments", p->base.instance);
+			syslog(LOG_INFO, "DEBUG: [%s/payments] Customer assignments not found", p->base.instance);
 #endif		
 		// payments accounting and invoices writing
 		for(i=0; i<g->db_nrows(res); i++) 
@@ -555,8 +558,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 			{
 				result = g->db_pquery(g->conn, "SELECT 1 FROM assignments, customers "
 					"WHERE customerid = customers.id AND tariffid = 0 AND liabilityid = 0 "
-					"AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) "
-					"AND customerid = ?", g->db_get_data(res,i,"customerid"));
+					"AND (datefrom <= ? OR datefrom = 0) AND (dateto >= ? OR dateto = 0) "
+					"AND customerid = ?", currtime, currtime, g->db_get_data(res,i,"customerid"));
 
 				if( g->db_nrows(result) ) 
 				{
@@ -575,7 +578,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 			// prepare insert to 'cash' table
 			insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) "
-				"VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
+				"VALUES (?, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
 			g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
 			g->str_replace(&insert, "%value", value);
 			g->str_replace(&insert, "%taxid", taxid);
@@ -662,7 +665,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					// prepare insert to 'invoices' table
 					g->db_pexec(g->conn, "INSERT INTO documents (number, numberplanid, type, divisionid, "
 						"customerid, name, address, zip, city, ten, ssn, cdate, paytime, paytype) "
-						"VALUES (?, ?, 1, ?, ?, '? ?', '?', '?', '?', '?', '?', %NOW%, ?, '?')",
+						"VALUES (?, ?, 1, ?, ?, '? ?', '?', '?', '?', '?', '?', ?, ?, '?')",
 						itoa(number),
 						numberplanid,
 						divisionid,
@@ -674,6 +677,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_get_data(res,i,"city"),
 						g->db_get_data(res,i,"ten"),
 						g->db_get_data(res,i,"ssn"),
+						currtime,
 						paytime,
 						p->paytype
 					);
@@ -714,7 +718,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					
 					g->str_replace(&insert, "%docid", invoiceid);
 					g->str_replace(&insert, "%itemid", itoa(itemid));
-					exec = g->db_pexec(g->conn, insert, description);
+					exec = g->db_pexec(g->conn, insert, currtime, description);
 				}
 				
 				g->db_free(&result);
@@ -724,7 +728,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			{
 				g->str_replace(&insert, "%docid", "0");
 				g->str_replace(&insert, "%itemid", "0");
-				exec = g->db_pexec(g->conn, insert, description) ? 1 : exec;
+				exec = g->db_pexec(g->conn, insert, currtime, description) ? 1 : exec;
 			}
 
 			free(insert);
@@ -761,7 +765,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 				g->str_replace(&description, "%year", year);
 				
 				// prepare insert to 'cash' table
-				insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) VALUES (%NOW%, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
+				insert = strdup("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) "
+					"VALUES (?, %value * -1, %taxid, %customerid, '?', %docid, %itemid)");
+				
 				g->str_replace(&insert, "%customerid", g->db_get_data(res,i,"customerid"));
 				g->str_replace(&insert, "%value", value);
 				g->str_replace(&insert, "%taxid", taxid);
@@ -804,7 +810,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->str_replace(&insert, "%docid", invoiceid);
 						g->str_replace(&insert, "%itemid", itoa(itemid));
 						g->str_replace(&insert, "%value", value);
-						exec = g->db_pexec(g->conn, insert, description);
+						exec = g->db_pexec(g->conn, insert, currtime, description);
 					}
 				
 					g->db_free(&result);
@@ -815,7 +821,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					g->str_replace(&insert, "%docid", "0");
 					g->str_replace(&insert, "%itemid", "0");
 					g->str_replace(&insert, "%value", value);
-					g->db_pexec(g->conn, insert, description) ? 1 : exec;
+					g->db_pexec(g->conn, insert, currtime, description) ? 1 : exec;
 				}
 				
 				// uncheck settlement flag
@@ -840,7 +846,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		
 		free(plans);
 #ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/payments] customer payments reloaded", p->base.instance);
+		syslog(LOG_INFO, "DEBUG: [%s/payments] Customer payments reloaded", p->base.instance);
 #endif
 	}
 	else 
@@ -849,16 +855,16 @@ void reload(GLOBAL *g, struct payments_module *p)
 	// remove old assignments
 	if(p->expiry_days<0) p->expiry_days *= -1; // number of expiry days can't be negative
 	
-	res = g->db_pquery(g->conn, "SELECT liabilityid AS id FROM assignments WHERE dateto < %NOW% - 86400 * ? AND dateto != 0 AND liabilityid != 0", itoa(p->expiry_days));
-	for(i=0; i<g->db_nrows(res); i++) 
-	{
-		g->db_pexec(g->conn, "DELETE FROM liabilities WHERE id = ?", g->db_get_data(res,i,"id"));
-	}
-	g->db_free(&res);
-	g->db_pexec(g->conn, "DELETE FROM assignments WHERE dateto < %NOW% - 86400 * ? AND dateto != 0 ", itoa(p->expiry_days));
+	g->db_pexec(g->conn, "DELETE FROM liabilities WHERE id IN ("
+		"SELECT liabilityid FROM assignments "
+		"WHERE dateto < ? - 86400 * ? AND dateto != 0 AND liabilityid != 0)",
+		currtime, itoa(p->expiry_days));
+	g->db_pexec(g->conn, "DELETE FROM assignments WHERE dateto < ? - 86400 * ? AND dateto != 0 ",
+		currtime, itoa(p->expiry_days));
 	g->db_pexec(g->conn, "DELETE FROM assignments WHERE at = ?", itoa(today));
 
 	// clean up
+	free(currtime);
 	free(nets); free(enets);
 	free(groups); free(egroups);
 	free(netsql); free(enetsql);
