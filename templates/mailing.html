@@ -40,7 +40,7 @@
 			<B>{t}Recipients:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="98%">
-			{t}Customers:{/t}
+			<NOBR>{t}Status:{/t}
 			<SELECT NAME="mailing[group]" {tip trigger="group" text="Select recipients group"}>
 				<option value="0"{if !$mailing.group} SELECTED{/if}>{t}- all customers -{/t}</option>
 				<option value="3"{if $mailing.group == "3"} SELECTED{/if}>{t}connected<!plural>{/t}</option>
@@ -50,21 +50,34 @@
 				<option value="5"{if $mailing.group == "5"} SELECTED{/if}>{t}disconnected<!plural>{/t}</option>
 				<option value="6"{if $mailing.group == "6"} SELECTED{/if}>{t}in debt{/t}</option>
 				<option value="7"{if $mailing.group == "7"} SELECTED{/if}>{t}not in debt{/t}</option>
-			</SELECT>&nbsp;
-			{t}Network:{/t}
+			</SELECT></NOBR>&nbsp;
+			<NOBR>{t}Network:{/t}
 			<SELECT NAME="mailing[network]" {tip trigger="network" text="Select IP network"}>
 				<option value="0">{t}- all networks -{/t}</option>
 				{section name="networks" loop=$networks}
 				<option value="{$networks[networks].id}"{if $mailing.network == $networks[networks].id} SELECTED{/if}>{$networks[networks].name|truncate:"30":"...":true}</option>
 				{/section}
-			</SELECT>&nbsp;
-			{t}Group:{/t}
+			</SELECT></NOBR>&nbsp;
+			<NOBR>{t}Group:{/t}
 			<SELECT NAME="mailing[customergroup]" {tip trigger="customergroup" text="Select customers group"}>
 				<option value="0">{t}- all groups -{/t}</option>
 				{section name="customergroups" loop=$customergroups}
 				<option value="{$customergroups[customergroups].id}"{if $mailing.customergroup == $customergroups[customergroups].id} SELECTED{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
 				{/section}
-			</SELECT>
+			</SELECT></NOBR>&nbsp;
+			<NOBR>{t}Nodes Group:{/t}
+			<SELECT SIZE="1" NAME="mailing[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
+			        <OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
+				{foreach from=$nodegroups item=nodegroup}
+				<OPTION value="{$nodegroup.id}" {if $mailing.nodegroup eq $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+				{/foreach}
+			</SELECT></NOBR>&nbsp;
+			<NOBR>{t}Link type:{/t}
+                        <SELECT SIZE="1" NAME="mailing[linktype]" {tip trigger="linktype" text="Select link type"}>
+                                <OPTION VALUE="">{t}- all -{/t}</OPTION>
+	                        <OPTION VALUE="0">{t}wire{/t}</OPTION>
+	                        <OPTION VALUE="1">{t}wireless{/t}</OPTION>
+	                </SELECT></NOBR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

@@ -24,9 +24,15 @@
  *  $Id$
  */
 
-function GetEmails($group, $network=NULL, $customergroup=NULL)
+function GetEmails($filter)
 {
 	global $DB, $LMS;
+	
+	$group = $filter['group'];
+	$network = $filter['network'];
+	$customergroup = $filter['customergroup'];
+	$nodegroup = $filter['nodegroup'];
+	$linktype = $filter['linktype'];
 	
 	if($group == 4)
 	{
@@ -56,7 +62,12 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 			(ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 		.($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
-			WHERE customergroupid='.$customergroup.')' : '')
+			WHERE customergroupid = '.intval($customergroup).')' : '')
+		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM nodes
+			JOIN nodegroupassignments ON (nodeid = nodes.id)
+			WHERE nodegroupid = '.intval($nodegroup).')' : '')
+		.($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM nodes
+			WHERE linktype = '.intval($linktype).')' : '')
 		.' ORDER BY customername'))
 	{
 		if($disabled)
@@ -137,19 +148,20 @@ if(isset($_POST['mailing']))
 	if(!$error)
 	{
 		$layout['nomenu'] = TRUE;
-		//$mailing['body'] = textwrap($mailing['body']);
 		$mailing['body'] = wordwrap($mailing['body'],76,"\n");
 		$mailing['body'] = str_replace("\r", '', $mailing['body']);
 		$SMARTY->assign('mailing', $mailing);
 		$SMARTY->display('header.html');
 		
-		$emails = GetEmails($mailing['group'], $mailing['network'], $mailing['customergroup']);
+		$emails = GetEmails($mailing);
 		
 		$SMARTY->assign('recipcount', sizeof($emails));
 		$SMARTY->display('mailingsend.html');
 		
 		if(sizeof($emails))
 		{
+			set_time_limit(0);
+		
 			$files = NULL;
 			if (isset($file))
 			{
@@ -194,7 +206,7 @@ if(isset($_POST['mailing']))
 				}
 				
 				$headers['To'] = '<'.$row['email'].'>';
-				
+
 				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['customername'], $row['email']);
 				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body, $files)."</font><BR>\n";
 			}
@@ -211,6 +223,7 @@ if(isset($_POST['mailing']))
 $SMARTY->assign('error', $error);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
+$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
 $SMARTY->display('mailing.html');
 
