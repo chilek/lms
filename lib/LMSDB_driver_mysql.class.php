@@ -172,12 +172,14 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return TRUE;
 	}
 
-	function _driver_locktables($table)
+	function _driver_locktables($table, $locktype='WRITE')
 	{
+		$locktype = strtoupper($locktype);
+	
 		if(is_array($table))
-			$this->Execute('LOCK TABLES '.implode(', ', $table));
+			$this->Execute('LOCK TABLES '.implode(' '.$locktype.', ', $table).' '.$locktype);
 		else
-			$this->Execute('LOCK TABLES '.$table);		
+			$this->Execute('LOCK TABLES '.$table.' '.$locktype);
 	}
 
 	function _driver_unlocktables()
