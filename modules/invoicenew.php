@@ -33,7 +33,7 @@ function GetCustomerCovenants($customerid)
 	
 	return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.comment, c.taxid, 
 			taxes.label AS tax, c.id AS cashid,
-			ROUND(c.value / (taxes.value+100)*100, 2)*-1 AS net
+			ROUND(c.value / (taxes.value/100+1, 2)*-1 AS net
 			FROM cash c
 			LEFT JOIN taxes ON (c.taxid = taxes.id)
 			WHERE c.customerid = ? AND c.docid = 0 AND c.value < 0
@@ -98,12 +98,12 @@ switch($action)
 			elseif($itemdata['valuebrutto'] != 0)
 			{
 				$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['discount'])/100);
-				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue + 100) * 100, 2);
+				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 2);
 			}
 			
 			// str_replace->f_round here is needed because of bug in some PHP versions
-			$itemdata['s_valuenetto'] = f_round($itemdata['valuenetto'] * $itemdata['count']);
 			$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
+			$itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] /  ($taxvalue / 100 + 1));
 			$itemdata['valuenetto'] = f_round($itemdata['valuenetto']);
 			$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto']);
 			$itemdata['count'] = f_round($itemdata['count']);
@@ -131,8 +131,8 @@ switch($action)
 				$itemdata['count'] = f_round($_POST['l_count'][$id]);
 				$itemdata['valuebrutto'] = f_round((-$cash['value'])/$itemdata['count']);
 				$itemdata['s_valuebrutto'] = f_round(-$cash['value']);
-				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) + 100) * 100, 2);
-				$itemdata['s_valuenetto'] = round($itemdata['s_valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) + 100) * 100, 2);
+				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) / 100 + 1), 2);
+				$itemdata['s_valuenetto'] = round($itemdata['s_valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) / 100 + 1), 2);
 				$itemdata['prodid'] = $_POST['l_prodid'][$id];
 				$itemdata['jm'] = $_POST['l_jm'][$id];
 				$itemdata['posuid'] = (string) (getmicrotime()+$id);
@@ -277,7 +277,7 @@ $SESSION->save('invoicenewerror', isset($error) ? $error : NULL);
 
 if($action)
 {
-	// redirect, ¿eby refreshem nie spierdoliæ faktury
+	// redirect needed because we don't want to destroy contents of invoice in order of page refresh
 	$SESSION->redirect('?m=invoicenew');
 }
 
