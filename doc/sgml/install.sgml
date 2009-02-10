@@ -503,6 +503,34 @@ $access['table'][100]['allow_reg'] = '^invoice$';
 	    i.e. invoices, receipts and non-financial documents i.e. contracts,
 	    protocols and others. Documents can be numbered with numbering plans 
 	    (patterns) defined in menu Configuration - Numbering Plans.</para>
+    <sect2 id="tax-calculation">
+	    <title>Calculation of tax value</title>
+	    <para>Below is presented method used by LMS to calculate tax value. Values of all calculations
+	    are rounded to hundredths.</para>
+	    <para>Unitary price in LMS database is brutto value (including tax).
+		    <itemizedlist>
+			    <listitem>
+				    <para>tax value = (tax rate / 100) + 1</para>
+				    <para>Example: tax rate is 22%</para>
+				    <para>tax value = (22 / 100) + 1 = 1.22</para>
+			    </listitem>
+			    <listitem>
+				    <para>unitary netto price = unitary brutto price / tax value</para>
+				    <para>Example: unitary brutto price of 1 meter of cable is $2.56, tax rate is 22%</para>
+				    <para>unitary netto price = $2.56 / 1,22 = $2.10</para>
+			    </listitem>
+			    <listitem>
+				    <para>total brutto price = unitary brutto price * count</para>
+				    <para>Example: unitary brutto price of 1 meter of cable is $2.56, number of meters is 1366, tax rate is 22%</para>
+				    <para>total brutto price = $2.56 * 1366 m = $3496.96</para>
+			    </listitem>	    
+			    <listitem>
+				    <para>total netto price = total brutto price / tax value</para>
+				    <para>Example: unitary brutto price of 1 meter of cable is $2.56, number of meters is 1366, tax rate is 22%</para>
+				    <para>total netto price = ($2.56 * 1366 m = $3496.96) / 1,22 = $2866.36</para>
+			    </listitem>
+		    </itemizedlist>
+    </sect2>
     <sect2 id="install-invoices">
      <title>Invoices</title>
                 <para>It's possible to issue invoices in either automatic or manual way. Manual

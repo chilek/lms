@@ -564,6 +564,34 @@ AddDefaultCharset Off
 	    np. umów, protoko³ów. Dokumenty mog± byæ numerowane wg wzorców (planów)
 	    numeracyjnych zdefiniowanych przy pomocy menu Konfiguracja - Plany
 	    numeracyjne.</para>
+    <sect2 id="tax-calculation">
+	    <title>Sposób wyliczania podatku VAT</title>
+	    <para>Poni¿ej przedstawiono sposób w jaki wyliczany jest podatek w LMS. Warto¶ci wszystkich dzia³añ 
+	    s± zaokr±glane do dwóch miejsc po przecinku.</para>
+            <para>W bazie LMS cena jednostkowa pozycji fakturowej jest przechowywana jako warto¶æ brutto (z podatkiem).
+	    <itemizedlist>
+	    <listitem>
+		<para>warto¶æ podatku = (stawka podatku / 100) + 1</para>
+		<para>Przyk³ad: stawka podatku VAT to 22%</para>
+		<para>warto¶æ podatku = (22 / 100) + 1 = 1,22</para>
+            </listitem>
+	    <listitem>
+		<para>cena jednostkowa netto = cena jednostkowa brutto / warto¶æ podatku</para>
+		<para>Przyk³ad: cena brutto metra kabla wynosi 2,56 z³, a stawka podatku VAT to 22%</para>
+		<para>cena jednostkowa netto = 2,56 z³ / 1,22 = 2,10 z³</para>
+            </listitem>
+	    <listitem>
+		    <para>sumaryczna cena brutto = cena jednostkowa brutto * ilo¶æ sztuk</para>
+		    <para>Przyk³ad: cena brutto metra kabla wynosi 2,56 z³, ilo¶æ metrów 1366, a stawka podatku VAT to 22%</para>
+		    <para>cena sumaryczna brutto = 2,56 z³ * 1366 m = 3496,96 z³</para>
+            </listitem>	    
+	    <listitem>
+		    <para>cena sumaryczna netto = cena sumaryczna brutto / warto¶æ podatku</para>
+		    <para>Przyk³ad: cena brutto metra kabla wynosi 2,56 z³, ilo¶æ metrów 1366, a stawka podatku VAT to 22%</para>
+		    <para>cena sumaryczna netto = (2,56 z³ * 1366 m = 3496,96 z³) / 1,22 = 2866,36 z³ </para>
+            </listitem>	    
+	    </itemizedlist>
+    </sect2>
     <sect2 id="install-invoices">
      <title>Faktury</title>
           <para>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
