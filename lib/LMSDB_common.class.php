@@ -209,9 +209,9 @@ Class LMSDB_common
 		return $this->_driver_committrans();
 	}
 
-	function LockTables($table)
+	function LockTables($table, $locktype=null)
 	{
-		return $this->_driver_locktables($table);
+		return $this->_driver_locktables($table, $locktype);
 	}
 
 	function UnLockTables()

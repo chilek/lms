@@ -8,6 +8,7 @@ version ? (????-??-??):
   - cashimport: fix type of imported operations (alec)
   - BTS#0000779: fix typo in documentation for lms-etherdesc (alec)
   - BTS#0000781: fix 'after' column calculations on Balance Sheet (alec)
+  - BTS#0000783: fix LOCK TABLES use in mysql drivers (alec)
 
 version 1.10.5 Neith (2008-11-05):
 
