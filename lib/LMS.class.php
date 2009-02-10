@@ -1997,10 +1997,10 @@ class LMS
 						$row['count'] += $result['invoice']['content'][$idx]['count'];
 					}
 					
-					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
-					$result['content'][$idx]['totalbase'] = round($result['content'][$idx]['basevalue'] * $row['count'],2);
-					$result['content'][$idx]['totaltax'] = round(($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'],2);
+					$result['content'][$idx]['basevalue'] = round(($row['value'] / ($row['taxvalue'] /100 + 1)),2);
 					$result['content'][$idx]['total'] = round($row['value'] * $row['count'],2);
+					$result['content'][$idx]['totalbase'] = round(($result['content'][$idx]['total'] / ($row['taxvalue']/100 + 1)),2);
+					$result['content'][$idx]['totaltax'] = round(($result['content'][$idx]['total'] - $result['content'][$idx]['totalbase']),2);
 					$result['content'][$idx]['value'] = $row['value'];
 					$result['content'][$idx]['count'] = $row['count'];
 

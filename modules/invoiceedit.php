@@ -89,12 +89,12 @@ switch($action)
 			elseif($itemdata['valuebrutto'] != 0)
 			{
 			    	$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['discount'])/100);
-				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue + 100) * 100, 2);
+				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1),2);
 			}
 			
 			// str_replace here is needed because of bug in some PHP versions (4.3.10)
-			$itemdata['s_valuenetto'] = str_replace(',','.',$itemdata['valuenetto'] * $itemdata['count']);
 			$itemdata['s_valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto'] * $itemdata['count']);
+			$itemdata['s_valuenetto'] = str_replace(',','.',$itemdata['s_valuebrutto'] / ($taxvalue / 100 + 1));
 			$itemdata['valuenetto'] = str_replace(',','.',$itemdata['valuenetto']);
 			$itemdata['valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto']);
 			$itemdata['count'] = str_replace(',','.',$itemdata['count']);
@@ -187,7 +187,7 @@ $SESSION->save('invoiceediterror', $error);
 
 if($action != '')
 {
-	// redirect, ¿eby refreshem nie spierdoliæ faktury
+	// redirect needed because we don't want to destroy contents of invoice in order of page refresh
 	$SESSION->redirect('?m=invoiceedit');
 }
 
