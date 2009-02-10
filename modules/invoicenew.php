@@ -227,7 +227,7 @@ switch($action)
 		{
 			$DB->BeginTrans();
 			$DB->LockTables('documents');
-			
+print_r($DB); die;
 			if(!$invoice['number'])
 				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
 			else
