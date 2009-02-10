@@ -173,7 +173,8 @@ class LMSDB_driver_postgres extends LMSDB_common
 		return $this->Execute('COMMIT');
 	}
 
-	function _driver_locktables($table)
+	// @todo: locktype
+	function _driver_locktables($table, $locktype=null)
         {
 	        if(is_array($table))
 		        $this->Execute('LOCK '.implode(', ', $table));

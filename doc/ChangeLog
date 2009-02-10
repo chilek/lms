@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.11.6 Olokun (2009-02-10):
 
   - added option phpui/invoice_check_payment to add payment operation
     when checking invoice as payed (alec)
@@ -8,6 +8,8 @@ version ? (????-??-??):
   - balance sheet report: added 'with/without document' filter (zet/alec)
   - updated lithuanian translation (etanetas/chilan)
   - mailing: added link type and node group filters (alec)
+  - BTS#0000783: fix LOCK TABLES use in mysql drivers (alec)
+  - lmsd: fix last_insert_id in postgresql drivers (alec)
 
 version 1.11.5 Ishkur (2009-01-24):
 
