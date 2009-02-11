@@ -279,8 +279,6 @@ switch($action)
 
 			// delete old receipt 
 			$DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
-			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
-			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($receipt['id']));
 		
 			// re-add receipt 
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed)
@@ -298,8 +296,13 @@ switch($action)
 						$customer['city'],
 						$receipt['closed']
 						));
+			$DB->UnLockTables();
 						
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
+
+			// delete old receipt contents
+			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
+			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($receipt['id']));
 			
 			$iid = 0;
 			foreach($contents as $item)
@@ -332,7 +335,6 @@ switch($action)
 						));
 			}
 			
-			$DB->UnLockTables();
 			$DB->CommitTrans();
 		}
 		elseif($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance'))
@@ -342,8 +344,6 @@ switch($action)
 			
 			// delete old receipt 
 			$DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
-			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
-			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($receipt['id']));
 			
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
 			    		VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
@@ -356,8 +356,13 @@ switch($action)
 						$receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 						$receipt['closed']
 					));
+			$DB->UnLockTables();
 						
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
+			
+			// delete old receipt contents
+			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
+			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($receipt['id']));
 			
 			$iid = 0;
 			foreach($contents as $item)
@@ -389,7 +394,6 @@ switch($action)
 					));
 			}
 
-			$DB->UnLockTables();
 			$DB->CommitTrans();
 		}
 		else

@@ -466,7 +466,7 @@ switch($action)
 		if($contents && $customer)
 		{
 			$DB->BeginTrans();
-			$DB->LockTables('documents');
+			$DB->LockTables(array('documents', 'numberplans'));
 		
 			if(!$receipt['number'])
 				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
@@ -495,6 +495,7 @@ switch($action)
 						$customer['zip'],
 						$customer['city']
 						));
+			$DB->UnLockTables();		
 						
 			$rid = $DB->GetOne('SELECT id FROM documents 
 						WHERE type=? AND number=? AND cdate=?', 
@@ -537,7 +538,6 @@ switch($action)
 						$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($ref));
 			}
 
-			$DB->UnLockTables();		
 			$DB->CommitTrans();
 			
 			$print = TRUE;
@@ -545,6 +545,7 @@ switch($action)
 		elseif($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance'))
 		{
 			$DB->BeginTrans();
+			$DB->LockTables(array('documents', 'numberplans'));
 
 			if(!$receipt['number'])
 				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
@@ -570,6 +571,7 @@ switch($action)
 						$receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 						$receipt['o_type'] == 'advance' ? 0 : 1
 						));
+			$DB->UnLockTables();		
 						
 			$rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'])); 
 			

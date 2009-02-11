@@ -148,7 +148,7 @@ if(isset($_POST['receipt']))
 	if(!$error)
 	{
 		$DB->BeginTrans();
-		$DB->LockTables('documents');
+		$DB->LockTables(array('documents', 'numberplans'));
 		
 		if($receipt['type'] == 'return')
 		{
@@ -180,23 +180,6 @@ if(isset($_POST['receipt']))
 						));
 						
 		$rid = $DB->GetLastInsertId('documents');
-			
-		$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-					VALUES(?, 1, ?, ?, ?)', 
-					array($rid, 
-						str_replace(',', '.', $record['value'] * -1), 
-						trans('Advance return').' - '.$titlenumber,
-						$regid
-					));
-
-		$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
-					VALUES(?, 1, ?, 1, ?, ?, ?)', 
-					array($receipt['cdate'],
-						$rid, 
-						str_replace(',', '.', $record['value'] * -1), 
-						trans('Advance return').' - '.$titlenumber,
-						$AUTH->id
-					));
 
 		if($receipt['type'] == 'settle')
 		{
@@ -216,7 +199,29 @@ if(isset($_POST['receipt']))
 						));
 						
 			$rid2 = $DB->GetLastInsertId('documents');
-			
+		}
+
+		$DB->UnLockTables();				
+					
+		$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
+					VALUES(?, 1, ?, ?, ?)', 
+					array($rid, 
+						str_replace(',', '.', $record['value'] * -1), 
+						trans('Advance return').' - '.$titlenumber,
+						$regid
+					));
+
+		$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
+					VALUES(?, 1, ?, 1, ?, ?, ?)', 
+					array($receipt['cdate'],
+						$rid, 
+						str_replace(',', '.', $record['value'] * -1), 
+						trans('Advance return').' - '.$titlenumber,
+						$AUTH->id
+					));
+
+		if($receipt['type'] == 'settle')
+		{
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 					VALUES(?, 1, ?, ?, ?)', 
 					array($rid2, 
@@ -238,7 +243,6 @@ if(isset($_POST['receipt']))
 		// advance status update
 		$DB->Execute('UPDATE documents SET closed = 1 WHERE id = ?', array($record['id']));
 
-		$DB->UnLockTables();				
 		$DB->CommitTrans();
 
 		if(isset($_GET['print']))		

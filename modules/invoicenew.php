@@ -201,7 +201,7 @@ switch($action)
 		if($contents && $customer)
 		{
 			$DB->BeginTrans();
-			$DB->LockTables('documents');
+			$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans'));
 			
 			if(!$invoice['number'])
 				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);

@@ -179,7 +179,7 @@ switch($action)
 				$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 			}
 			
-			$DB->LockTables('documents');
+			$DB->LockTables(array('documents', 'numberplans'));
 			
 			if(!isset($cnote['number']) || !$cnote['number'])
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
