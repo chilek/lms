@@ -148,7 +148,7 @@ if(isset($_POST['receipt']))
 	if(!$error)
 	{
 		$DB->BeginTrans();
-		$DB->LockTables('documents');
+		$DB->LockTables(array('documents', 'numberplans'));
 		
 		if($receipt['type'] == 'return')
 		{
@@ -180,6 +180,28 @@ if(isset($_POST['receipt']))
 						));
 						
 		$rid = $DB->GetLastInsertId('documents');
+
+		if($receipt['type'] == 'settle')
+		{
+			// add cash-out receipt
+			if(!$receipt['out_number'])
+				$receipt['out_number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $record['numberplanid'], $receipt['cdate']);
+
+			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
+					VALUES(?, ?, ?, ?, ?, ?, ?, 1)',
+					array(	DOC_RECEIPT,
+						$receipt['out_number'],
+						isset($receipt['out_extnumber']) ? $receipt['out_extnumber'] : '',
+						$record['numberplanid'],
+						$receipt['cdate'],
+						$AUTH->id,
+						$receipt['name']
+						));
+						
+			$rid2 = $DB->GetLastInsertId('documents');
+		}
+		
+		$DB->UnLockTables();				
 			
 		$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 					VALUES(?, 1, ?, ?, ?)', 
@@ -200,23 +222,6 @@ if(isset($_POST['receipt']))
 
 		if($receipt['type'] == 'settle')
 		{
-			// add cash-out receipt
-			if(!$receipt['out_number'])
-				$receipt['out_number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $record['numberplanid'], $receipt['cdate']);
-
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed)
-					VALUES(?, ?, ?, ?, ?, ?, ?, 1)',
-					array(	DOC_RECEIPT,
-						$receipt['out_number'],
-						isset($receipt['out_extnumber']) ? $receipt['out_extnumber'] : '',
-						$record['numberplanid'],
-						$receipt['cdate'],
-						$AUTH->id,
-						$receipt['name']
-						));
-						
-			$rid2 = $DB->GetLastInsertId('documents');
-			
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 					VALUES(?, 1, ?, ?, ?)', 
 					array($rid2, 
@@ -238,7 +243,6 @@ if(isset($_POST['receipt']))
 		// advance status update
 		$DB->Execute('UPDATE documents SET closed = 1 WHERE id = ?', array($record['id']));
 
-		$DB->UnLockTables();				
 		$DB->CommitTrans();
 
 		if(isset($_GET['print']))

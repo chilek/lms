@@ -190,7 +190,7 @@ switch($action)
 				$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 			}
 			
-			$DB->LockTables('documents');
+			$DB->LockTables(array('documents', 'numberplans'));
 			
 			if(!isset($cnote['number']) || !$cnote['number'])
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
@@ -228,7 +228,8 @@ switch($action)
 						$invoice['divisionid'],
 					));
 																																																							    	
-			$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?', array($cnote['number'],$cnote['cdate'],DOC_CNOTE));
+			$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
+				array($cnote['number'],$cnote['cdate'],DOC_CNOTE));
 
 			$DB->UnLockTables();
 
@@ -265,7 +266,7 @@ switch($action)
 						        $idx
 						));
 			}
-			
+
 			$DB->CommitTrans();
 			
 			$SESSION->remove('invoice');
