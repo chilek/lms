@@ -33,7 +33,7 @@ function GetCustomerCovenants($customerid)
 	
 	return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.comment, c.taxid, 
 			taxes.label AS tax, c.id AS cashid,
-			ROUND(c.value / (taxes.value/100+1, 2)*-1 AS net
+			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net
 			FROM cash c
 			LEFT JOIN taxes ON (c.taxid = taxes.id)
 			WHERE c.customerid = ? AND c.docid = 0 AND c.value < 0
@@ -226,8 +226,8 @@ switch($action)
 		if($contents && $customer)
 		{
 			$DB->BeginTrans();
-			$DB->LockTables('documents');
-print_r($DB); die;
+			$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans'));
+
 			if(!$invoice['number'])
 				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
 			else
@@ -243,8 +243,9 @@ print_r($DB); die;
 				
 			$invoice['type'] = DOC_INVOICE;
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
-		
+
 			// usuwamy wczesniejsze zobowiazania bez faktury
+			// @todo: można to zrobić jednym zapytaniem
 			foreach($contents as $item)
 				if(isset($item['cashid']))
 					$DB->Execute('DELETE FROM cash WHERE id = ?', array($item['cashid']));

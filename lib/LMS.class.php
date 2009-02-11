@@ -1587,6 +1587,7 @@ class LMS
 				$prio++;
 			}
 		}
+		$this->DB->UnLockTables();
 		$this->DB->CommitTrans();
 	}
 
