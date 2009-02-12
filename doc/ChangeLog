@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - fixed calculation of netto value and united tax value calculation method (chilan)
   - re-fixed table locking on mysql (alec)
+  - fixed divisions table definition for postgres (alec)
 
 version 1.11.6 Olokun (2009-02-10):
 
