@@ -835,7 +835,33 @@ AddDefaultCharset Off
    numeracyjne.
      __________________________________________________________________
 
-2.9.1. Faktury
+2.9.1. Sposób wyliczania podatku VAT
+
+   Poniżej przedstawiono sposób w jaki wyliczany jest podatek w LMS.
+   Wartości wszystkich działań są zaokrąglane do dwóch miejsc po
+   przecinku.
+
+   W bazie LMS cena jednostkowa pozycji fakturowej jest przechowywana jako
+   wartość brutto (z podatkiem).
+     * wartość podatku = (stawka podatku / 100) + 1
+       Przykład: stawka podatku VAT to 22%
+       wartość podatku = (22 / 100) + 1 = 1,22
+     * cena jednostkowa netto = cena jednostkowa brutto / wartość podatku
+       Przykład: cena brutto metra kabla wynosi 2,56 zł, a stawka podatku
+       VAT to 22%
+       cena jednostkowa netto = 2,56 zł / 1,22 = 2,10 zł
+     * sumaryczna cena brutto = cena jednostkowa brutto * ilość sztuk
+       Przykład: cena brutto metra kabla wynosi 2,56 zł, ilość metrów
+       1366, a stawka podatku VAT to 22%
+       cena sumaryczna brutto = 2,56 zł * 1366 m = 3496,96 zł
+     * cena sumaryczna netto = cena sumaryczna brutto / wartość podatku
+       Przykład: cena brutto metra kabla wynosi 2,56 zł, ilość metrów
+       1366, a stawka podatku VAT to 22%
+       cena sumaryczna netto = (2,56 zł * 1366 m = 3496,96 zł) / 1,22 =
+       2866,36 zł
+     __________________________________________________________________
+
+2.9.2. Faktury
 
    LMS umożliwia wystawianie faktur automatycznie i ręcznie. Ręczne
    wystawienie faktury jest możliwe z menu 'Nowa faktura' w panelu
@@ -871,7 +897,7 @@ AddDefaultCharset Off
        Przykład: default_printpage = "original"
      __________________________________________________________________
 
-2.9.1.1. HTML
+2.9.2.1. HTML
 
    Przy domyślnych ustawieniach faktury wyświetlane są w formacie html wg
    domyślnego szablonu. W sekcji [invoices] masz do dyspozycji jeszcze
@@ -905,7 +931,7 @@ AddDefaultCharset Off
    nagłówka, czy też adresu na wydruku.
      __________________________________________________________________
 
-2.9.1.2. PDF
+2.9.2.2. PDF
 
    Możliwe jest także tworzenie faktur jako pliki pdf. Przypisanie opcji
    type z sekcji [invoices] wartości 'pdf' spowoduje, że faktury zamiast w
@@ -920,7 +946,7 @@ AddDefaultCharset Off
    html'owych szablonu Smarty.
      __________________________________________________________________
 
-2.9.1.3. Korekty
+2.9.2.3. Korekty
 
    Faktury korygujące korzystają z ustawień dotyczących pozostałych faktur
    z sekcji [invoices]. Domyślny szablon faktury uwzględnia faktury
@@ -933,7 +959,7 @@ AddDefaultCharset Off
        Przykład: cnote_template_file = invoice-mynet.html
      __________________________________________________________________
 
-2.9.1.4. Automatyczne generowanie numeru konta bankowego
+2.9.2.4. Automatyczne generowanie numeru konta bankowego
 
    LMS umożliwia automatyczne generowanie numeru konta bankowego w
    standardzie IBAN zawierającego ID klienta. Funkcja ta może być używana
@@ -959,7 +985,7 @@ AddDefaultCharset Off
    wyliczana automatycznie. Więcej o IBAN w Wikipedii
      __________________________________________________________________
 
-2.9.2. Polecenia przelewu/wpłaty
+2.9.3. Polecenia przelewu/wpłaty
 
    Dane do druków polecenia przelewu brane są z sekcji [finances]
    konfiguracji. Dotyczą zarówno wydruków poleceń przelewu dostępnych w
@@ -974,13 +1000,13 @@ AddDefaultCharset Off
    pay_title - tytuł płatności
      __________________________________________________________________
 
-2.9.3. Dokumenty kasowe (KP/KW)
+2.9.4. Dokumenty kasowe (KP/KW)
 
    Dokumenty kasowe, ze względu na swoją specyfikę, posiadają podobne
    opcje konfiguracyjne jak faktury.
      __________________________________________________________________
 
-2.9.3.1. HTML
+2.9.4.1. HTML
 
    Przy domyślnych ustawieniach dokumenty kasowe wyświetlane są w formacie
    html wg domyślnego szablonu. Dla dowodów wpłaty oraz wypłaty
@@ -1003,7 +1029,7 @@ AddDefaultCharset Off
        Przykład: attachment_name = receipt.xls
      __________________________________________________________________
 
-2.9.3.2. PDF
+2.9.4.2. PDF
 
    Możliwe jest także tworzenie dokumentów kasowych jako plików pdf.
    Przypisanie opcji type z sekcji [receipts] wartości 'pdf' spowoduje, że
@@ -1016,7 +1042,7 @@ AddDefaultCharset Off
    pliku php, a nie tak jak w przypadku html'a szablonu Smarty.
      __________________________________________________________________
 
-2.9.4. Dokumenty pozostałe
+2.9.5. Dokumenty pozostałe
 
    Oprócz dokumentów finansowych w LMSie można przechowywać dokumenty
    takie jak umowy, protokoły, aneksy i inne. Każemu klientowi można

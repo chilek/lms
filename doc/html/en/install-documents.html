@@ -88,8 +88,58 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="TAX-CALCULATION"
+>2.9.1. Calculation of tax value</A
+></H2
+><P
+>Below is presented method used by LMS to calculate tax value. Values of all calculations
+	    are rounded to hundredths.</P
+><P
+>Unitary price in LMS database is brutto value (including tax).
+		    <UL
+><LI
+><P
+>tax value = (tax rate / 100) + 1</P
+><P
+>Example: tax rate is 22%</P
+><P
+>tax value = (22 / 100) + 1 = 1.22</P
+></LI
+><LI
+><P
+>unitary netto price = unitary brutto price / tax value</P
+><P
+>Example: unitary brutto price of 1 meter of cable is $2.56, tax rate is 22%</P
+><P
+>unitary netto price = $2.56 / 1,22 = $2.10</P
+></LI
+><LI
+><P
+>total brutto price = unitary brutto price * count</P
+><P
+>Example: unitary brutto price of 1 meter of cable is $2.56, number of meters is 1366, tax rate is 22%</P
+><P
+>total brutto price = $2.56 * 1366 m = $3496.96</P
+></LI
+><LI
+><P
+>total netto price = total brutto price / tax value</P
+><P
+>Example: unitary brutto price of 1 meter of cable is $2.56, number of meters is 1366, tax rate is 22%</P
+><P
+>total netto price = ($2.56 * 1366 m = $3496.96) / 1,22 = $2866.36</P
+></LI
+></UL
+>
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="INSTALL-INVOICES"
->2.9.1. Invoices</A
+>2.9.2. Invoices</A
 ></H2
 ><P
 >It's possible to issue invoices in either automatic or manual way. Manual
@@ -170,7 +220,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-HTML"
->2.9.1.1. HTML</A
+>2.9.2.1. HTML</A
 ></H3
 ><P
 >Invoices are printed in html format by default
@@ -268,7 +318,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-PDF"
->2.9.1.2. PDF</A
+>2.9.2.2. PDF</A
 ></H3
 ><P
 >It's possible to create invoices as PDF files. Setting option <TT
@@ -305,7 +355,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-IBAN"
->2.9.1.3. Automatic iban account number generation</A
+>2.9.2.3. Automatic iban account number generation</A
 ></H3
 ><P
 >LMS allows for automatic IBAN number generation. As of now it supports fixed lenght of 26 digits 
@@ -325,7 +375,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-INVOICES-CNOTE"
->2.9.1.4. Credit Notes</A
+>2.9.2.4. Credit Notes</A
 ></H3
 ><P
 >Credit notes uses invoices settings from 
@@ -366,7 +416,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-TRANSFERFORMS"
->2.9.2. Transfer forms</A
+>2.9.3. Transfer forms</A
 ></H2
 ><P
 >Transfer forms it's Polish specific feature. Data for payment form printouts 
@@ -419,7 +469,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-RECEIPTS"
->2.9.3. Cash Receipts</A
+>2.9.4. Cash Receipts</A
 ></H2
 ><P
 ></P
@@ -429,7 +479,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-RECEIPTS-HTML"
->2.9.3.1. HTML</A
+>2.9.4.1. HTML</A
 ></H3
 ><P
 >Receipts are printed in html format by default
@@ -496,7 +546,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-RECEIPTS-PDF"
->2.9.3.2. PDF</A
+>2.9.4.2. PDF</A
 ></H3
 ><P
 >It's possible to create receipts as PDF files. Setting option <TT
@@ -529,7 +579,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-DOCUMENTS-OTHER"
->2.9.4. Other documents</A
+>2.9.5. Other documents</A
 ></H2
 ><P
 >Documents support is not limited to invoices. You might store 

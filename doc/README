@@ -765,7 +765,30 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    (patterns) defined in menu Configuration - Numbering Plans.
      __________________________________________________________________
 
-2.9.1. Invoices
+2.9.1. Calculation of tax value
+
+   Below is presented method used by LMS to calculate tax value. Values of
+   all calculations are rounded to hundredths.
+
+   Unitary price in LMS database is brutto value (including tax).
+     * tax value = (tax rate / 100) + 1
+       Example: tax rate is 22%
+       tax value = (22 / 100) + 1 = 1.22
+     * unitary netto price = unitary brutto price / tax value
+       Example: unitary brutto price of 1 meter of cable is $2.56, tax
+       rate is 22%
+       unitary netto price = $2.56 / 1,22 = $2.10
+     * total brutto price = unitary brutto price * count
+       Example: unitary brutto price of 1 meter of cable is $2.56, number
+       of meters is 1366, tax rate is 22%
+       total brutto price = $2.56 * 1366 m = $3496.96
+     * total netto price = total brutto price / tax value
+       Example: unitary brutto price of 1 meter of cable is $2.56, number
+       of meters is 1366, tax rate is 22%
+       total netto price = ($2.56 * 1366 m = $3496.96) / 1,22 = $2866.36
+     __________________________________________________________________
+
+2.9.2. Invoices
 
    It's possible to issue invoices in either automatic or manual way.
    Manual invoices creation is possible in 'New Invoice' module from
@@ -798,7 +821,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
        Example: default_printpage = "original"
      __________________________________________________________________
 
-2.9.1.1. HTML
+2.9.2.1. HTML
 
    Invoices are printed in html format by default using provided template.
    In [invoices] section you can also configure:
@@ -831,7 +854,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
         functions like header and footer or URL printing can be disabled.
      __________________________________________________________________
 
-2.9.1.2. PDF
+2.9.2.2. PDF
 
    It's possible to create invoices as PDF files. Setting option type in
    [invoices] section to 'pdf' will force invoice being created in PDF
@@ -844,7 +867,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    than the one used with html invoices Smarty template.
      __________________________________________________________________
 
-2.9.1.3. Automatic iban account number generation
+2.9.2.3. Automatic iban account number generation
 
    LMS allows for automatic IBAN number generation. As of now it supports
    fixed lenght of 26 digits and 2 letters (letters are set fixed to PL --
@@ -853,7 +876,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    example Cyprus and Hungary also use 26 digits. More on: Wikipedia
      __________________________________________________________________
 
-2.9.1.4. Credit Notes
+2.9.2.4. Credit Notes
 
    Credit notes uses invoices settings from [invoices] section. Default
    invoice template include also credit notes contents, but you have
@@ -865,7 +888,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
        Example: cnote_template_file = invoice-mynet.html
      __________________________________________________________________
 
-2.9.2. Transfer forms
+2.9.3. Transfer forms
 
    Transfer forms it's Polish specific feature. Data for payment form
    printouts is stored in [finances] configuration section. That is:
@@ -878,10 +901,10 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    pay_title - title of payment
      __________________________________________________________________
 
-2.9.3. Cash Receipts
+2.9.4. Cash Receipts
      __________________________________________________________________
 
-2.9.3.1. HTML
+2.9.4.1. HTML
 
    Receipts are printed in html format by default using provided template.
    We chave one printout template for cash-in and cash-out receipts. In
@@ -904,7 +927,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
        Example: attachment_name = receipt.xls
      __________________________________________________________________
 
-2.9.3.2. PDF
+2.9.4.2. PDF
 
    It's possible to create receipts as PDF files. Setting option type in
    [receipts] section to 'pdf' will force document being created in PDF
@@ -916,7 +939,7 @@ $access['table'][100]['allow_reg'] = '^invoice$';
    with html receipts Smarty template.
      __________________________________________________________________
 
-2.9.4. Other documents
+2.9.5. Other documents
 
    Documents support is not limited to invoices. You might store virtually
    any documents you want in LMS, such as contracts, protocols, annexes
