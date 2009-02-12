@@ -1039,7 +1039,7 @@ DROP SEQUENCE divisions_id_seq;
 CREATE SEQUENCE divisions_id_seq;
 DROP TABLE divisions;
 CREATE TABLE divisions (
-    	id 		integer 	NOT NULL ,
+    	id 		integer 	NOT NULL DEFAULT nextval('divisions_id_seq'::text),
 	shortname 	varchar(255) 	NOT NULL DEFAULT '',
 	name 		text 		NOT NULL DEFAULT '',
 	address		varchar(255) 	NOT NULL DEFAULT '',
@@ -1066,11 +1066,11 @@ DROP SEQUENCE voipaccounts_id_seq;
 CREATE SEQUENCE voipaccounts_id_seq;
 DROP TABLE voipaccounts;
 CREATE TABLE voipaccounts (
-	id		integer		NOT NULL DEFAULT nextval(('voipaccounts_id_seq'::text)::regclass),
+	id		integer		NOT NULL DEFAULT nextval('voipaccounts_id_seq'::text),
 	ownerid		integer		NOT NULL DEFAULT 0,
-	login		varchar(255)	NOT NULL DEFAULT ''::character varying,
-	passwd		varchar(255)	NOT NULL DEFAULT ''::character varying,
-	phone		varchar(255)	NOT NULL DEFAULT ''::character varying,
+	login		varchar(255)	NOT NULL DEFAULT '',
+	passwd		varchar(255)	NOT NULL DEFAULT '',
+	phone		varchar(255)	NOT NULL DEFAULT '',
 	creationdate	integer		NOT NULL DEFAULT 0,
 	moddate		integer		NOT NULL DEFAULT 0,
 	creatorid	integer		NOT NULL DEFAULT 0,
