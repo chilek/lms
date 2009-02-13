@@ -12,9 +12,11 @@ if [ ! -e oui.txt ]; then
 fi
 
 grep "(hex)" oui.txt > temp.txt
-awk '{print substr($0,1,8) ":" substr($0,19)}' < temp.txt > ../lib/ethercodes.txt
+iconv --from iso-8859-1 --to utf-8 < temp.txt > out.txt
+awk '{print substr($0,1,8) ":" substr($0,19)}' < out.txt > ../lib/ethercodes.txt
 
 rm -f temp.txt
 rm -f oui.txt
+rm -f out.txt
 
 cvs commit ../lib/ethercodes.txt
