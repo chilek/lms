@@ -33,9 +33,23 @@ poprawnie exportuje np:
 http://www.ispid.com.pl/smabi/ (Dawes, Darmowa Wersja Smabiego),
 stworzyæ kilka plików i metod± prób-i-b³êdów zrobiæ import.
 
+Uwagi:
+CDN nie lub " w nazwach (nazwiska, nazwy firm, us³ug, produktów).
+Numery NIP powinny byæ poprawne (inaczej CDN wyrzuci b³êdy).
+Kwoty z separatorem dziesiêtnym w formacie "Amerykañskim" czyli . a nei ,
+Numeracja dokumentów nie mo¿e byæ bardziej wyrafinowana ni¿ 000001/02/03.
+(NNNNNN/MM/RR).
+
 Zainteresowany tym aby kto¶ to za Ciebie zrobi³?
 Napisz maila na listê z CC: email-dowolnego-developera
 (na pewno uda Ci siê go znale¼æ taki email)
+
+Przyk³ad 1 lini (z programu Dawes):
+
+0.00,SPRZE,09/02/03","09/02/03","","000001/02/09","",2,0,1,0,0,"Aqq","Jan","Kowalski","Zielona","5     ","Nnn","123-45-67-890","0",0,0,0.00,"","",0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,"",0.00,0.00,1,1,"09/02/15",132.98,0,0,0,132.98,0.00,0.00,0.00,"post",0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,22.00,109.00,23.98
+
+
+Opis pliku (ze strony televox)
 
 ID  	LONG  	= 0
 LP 	LONG 	LP w miesi±cu lub roku
