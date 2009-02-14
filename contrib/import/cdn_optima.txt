@@ -1,0 +1,82 @@
+$id: $
+
+http://televox.com.pl/ksi/ksifk.htm
+
+ID  	LONG  	= 0
+LP 	LONG 	LP w miesi±cu lub roku
+GRUPA 	STRING(5) 	grupa rejestru - nazwa rejestru VAT do którego ksiêgowana jest transakcja - wpisywana w programie KSI3 Pro
+ROK 	SHORT 	 
+MIESIAC 	BYTE 	 
+DZIEN 	BYTE 	 
+DATA_WYST 	LONG 	data wystawienia / wp³ywu faktury (ilo¶æ dni kalendarzowych od 28.12.1800 roku
+IK 	STRING(14) 	identyfikator ksiêgowy
+DOKUMENT 	STRING(15) 	numer dokumentu
+KOREKTA_DO 	STRING(15) 	numer transakcji korygowanej
+  	  	 
+TYP 	BYTE 	1 - zakup, 2 - sprzeda¿
+KOREKTA 	BYTE 	0 - transakcja normalna, 1 - korekta
+ZAKUP 	BYTE 	1 - handlowe, 2 - inne, 3 - ¶rodki trwa³e
+ODLICZENIA 	BYTE 	1 - Tak, 2 - Nie, 3 - Warunkowo
+KASA 	BYTE 	1 - z kasy fiskalnej, 0 - normal
+  	  	 
+KON 	STRING(13) 	kod kontrahenta
+K_NAZWA1 	STRING(40) 	I linia nazwy kontrahenta
+K_NAZWA2 	STRING(40) 	II linia nazwy kontrahenta
+K_ADRES1 	STRING(40) 	adres kontrahenta
+K_KODP 	STRING (@P##-###P) 	kod pocztowy kontrahenta
+K_MIASTO 	STRING(30) 	miasto kontrahenta
+NIP 	STRING(15) 	NIP kontrahenta
+KONTO 	STRING(@N03) 	konto ksiêgowe kontrahenta
+FIN 	BYTE 	0 - kontrahent zarejestrowany (firma), 1 - kontrahenta finalny (osoba fizyczna)
+EXPORT 	BYTE 	0 - kraj, 1 - import/export
+  	  	 
+ID_O 	LONG 	id opisu do dekretacji/wzorca
+KOD_O 	STRING(8) 	kod opisu transakcji
+OPIS 	STRING(40) 	opis transakcji
+  	  	 
+NETTO1 	DECIMAL(11,2) 	kwota zwolniona od podatku
+NETTO2 	DECIMAL(11,2) 	kwota ze stawka 0%
+NETTO3 	DECIMAL(11,2) 	kwota ze stawka 7%
+NETTO4 	DECIMAL(11,2) 	kwota ze stawka 22%
+NETTO5 	DECIMAL(11,2) 	netto (VAT zani¿ony)
+NETTO6 	DECIMAL(11,2) 	kwota ze stawka 12%
+NETTO7 	DECIMAL(11,2) 	kwota ze stawka 17%
+VAT3 	DECIMAL(11,2) 	kwota VAT 7%
+VAT4 	DECIMAL(11,2) 	kwota VAT 22%
+VAT5 	DECIMAL(11,2) 	kwota VAT zani¿ona
+VAT6 	DECIMAL(11,2) 	kwota VAT 12%
+VAT7 	DECIMAL(11,2) 	kwota VAT 17%
+ST5 	STRING(3) 	stawka dla VAT'u zani¿onego
+USLUGI 	DECIMAL(11,2) 	kwota us³ug
+PRODUKCJA 	DECIMAL(11,2) 	kwota produkcji
+X1 	DECIMAL(11,2) 	kwota do wykorzystania w KH
+X2 	DECIMAL(11,2) 	kwota do wykorzystania w KH
+X3 	DECIMAL(11,2) 	kwota do wykorzystania w KH
+X4 	DECIMAL(11,2) 	kwota do wykorzystania w KH
+X5 	DECIMAL(11,2) 	kwota do wykorzystania w KH
+  	  	 
+ROZLICZONO 	BYTE 	0 - zap³acono, 1 - zalegle
+PLATNOSC 	BYTE 	1 do 5 formy p³atno¶ci (gotówka, czek, przelew, kredyt, inne)
+TERMIN 	LONG 	termin p³atno¶ci (ilo¶æ dni od 28.12.1800)
+BRUTTO 	DECIMAL(11,2) 	warto¶æ ³±czna brutto (z uwzglêdnieniem zaokr±gleñ)
+ZAPLATA 	DECIMAL(11,2) 	 
+ID_FPP 	LONG 	 
+NR_FPP 	LONG 	Numer firmy
+WARTOSC_Z 	DECIMAL(11,2) 	warto¶æ sprzeda¿y w ¶redniej cenie zakupu
+WARTOSC_S 	DECIMAL(11,2) 	warto¶æ w cenach sprzeda¿y
+VAT_S 	DECIMAL(11,2) 	warto¶æ VAT w cenach sprzeda¿y
+CLO 	DECIMAL(5,2) 	warto¶æ c³a
+AKCYZA 	DECIMAL(5,2) 	podatek akcyzowy
+POD_IMP 	DECIMAL(5,2) 	podatek importowy
+  	  	 
+FLAG1 	BYTE 	200 - zapis korekcyjny
+FLAG2 	BYTE 	pole nadmiarowe
+LINK1 	LONG 	pole nadmiarowe
+KWOTA1 	DECIMAL(11,2) 	pole nadmiarowe
+KWOTA2 	DECIMAL(11,2) 	pole nadmiarowe
+  	  	 
+LINK 	LONG 	zapis - rejestr
+USER 	STRING(4) 	identyfikator operatora
+ODCZYT 	BYTE 	znacznik odczytu z dyskietki
+ZAM 	BYTE 	znacznik zamkniêcia
+TAG 	BYTE 	znacznik rekordu
