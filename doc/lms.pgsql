@@ -891,7 +891,7 @@ DROP TABLE ewx_pt_config;
 CREATE TABLE ewx_pt_config (
     id 		integer 	DEFAULT nextval('ewx_pt_config_id_seq'::text) NOT NULL,
     nodeid 	integer         DEFAULT 0 NOT NULL,
-    name 	varchar(16)     DEFAULT '' NOT NULL,
+    name 	varchar(32)     DEFAULT '' NOT NULL,
     mac 	varchar(20)     DEFAULT '' NOT NULL,
     ipaddr 	bigint          DEFAULT 0 NOT NULL,
     passwd 	varchar(32)     DEFAULT '' NOT NULL,
@@ -1212,4 +1212,4 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2008122900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009021600');
