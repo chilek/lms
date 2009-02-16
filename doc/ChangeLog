@@ -1,5 +1,9 @@
 $Id$
 
+version ? (????-??-??):
+
+  - fixed query fetching invoice's author (alec)
+
 version 1.11.7 Bastet (2009-02-13):
 
   - fixed calculation of netto value and united tax value calculation method (chilan)
