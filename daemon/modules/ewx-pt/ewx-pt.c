@@ -304,11 +304,18 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		{
 			// existing node (something has changed?)
 			int cname = (strcmp(name,oldname)!=0);
-			int cip = (!dummy_ip && (strcmp(oldip, DUMMY_IP)==0 || strcmp(oldip, ip)!=0));
-			int dip = (dummy_ip && strcmp(oldip, DUMMY_IP)!=0);
 			int cpasswd = (strcmp(passwd,oldpasswd)!=0);
-			int cmac = (!dummy_mac && (strcmp(oldmac, DUMMY_MAC)==0 || strcmp(oldmac, mac)!=0));
-			int dmac = (dummy_mac && strcmp(oldmac, DUMMY_MAC)!=0);
+			int cip = 0, dip = 0, cmac = 0, dmac = 0;
+
+                        if (!dummy_ip)
+			        cip = (strcmp(oldip, ip)!=0);
+			else
+			        dip = (strcmp(oldip, DUMMY_IP)!=0);
+			
+			if (!dummy_mac)
+			        cmac = (strcmp(oldmac, mac)!=0);
+			else
+			        dmac = (strcmp(oldmac, DUMMY_MAC)!=0);
 			
 			type = "update";
 
