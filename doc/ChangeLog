@@ -11,6 +11,7 @@ version ? (????-??-??):
   - BTS#0000783: fix LOCK TABLES use in mysql drivers (alec)
   - BTS#0000784: fixed pagesize setting for pdf printouts (alec)
   - fixed ethercodes list encoding (alec)
+  - lmsd/ewx-pt: fixed mac/ip change detection (alec)
 
 version 1.10.5 Neith (2008-11-05):
 
