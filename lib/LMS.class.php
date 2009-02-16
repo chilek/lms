@@ -1951,7 +1951,7 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country, d.ten, d.ssn, 
 				d.cdate, d.paytime, d.paytype, d.numberplanid, d.closed, d.reference, d.reason, d.divisionid, 
-				(SELECT name FROM users WHERE id = d.id) AS user, n.template,
+				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
 				ds.name AS division_name, ds.shortname AS division_shortname,
 				ds.address AS division_address, ds.zip AS division_zip,
 				ds.city AS division_city, ds.countryid AS division_countryid, 
