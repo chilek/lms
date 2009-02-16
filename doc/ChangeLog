@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - fixed query fetching invoice's author (alec)
   - lmsd/ewx-pt: fixed mac/ip change detection (alec)
+  - changed length of ewx_pt_config.name column type to 32 characters (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

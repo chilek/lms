@@ -874,7 +874,7 @@ DROP TABLE IF EXISTS ewx_pt_config;
 CREATE TABLE ewx_pt_config (
         id int(11)              NOT NULL auto_increment,
 	nodeid int(11)          DEFAULT '0' NOT NULL,
-	name varchar(16)        DEFAULT '' NOT NULL,
+	name varchar(32)        DEFAULT '' NOT NULL,
 	mac varchar(20)         DEFAULT '' NOT NULL,
 	ipaddr int(16) unsigned DEFAULT '0' NOT NULL,
 	passwd varchar(32)      DEFAULT '' NOT NULL,
@@ -1140,4 +1140,4 @@ INSERT INTO countries (name) VALUES ('Slovakia');
 INSERT INTO countries (name) VALUES ('USA');
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2008122900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2009021600');
