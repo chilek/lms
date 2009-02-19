@@ -904,8 +904,10 @@ class LMS
 		return $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE customerid=?', array($id));
 	}
 
-	function GetCustomerBalanceList($id, $totime=NULL)
+	function GetCustomerBalanceList($id, $totime=NULL, $direction='ASC')
 	{
+		($direction == 'ASC' || $direction == 'asc') ? $direction == 'ASC' : $direction == 'DESC';
+
 		$saldolist = array();
 		
 		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, cash.type AS type, 
@@ -918,7 +920,7 @@ class LMS
 					LEFT JOIN taxes ON cash.taxid = taxes.id
 					WHERE cash.customerid=? '
 					.($totime ? ' AND time <= '.$totime : '')
-					.' ORDER BY time', array($id)))
+					.' ORDER BY time ' . $direction, array($id)))
 		{
 			$saldolist['balance'] = 0;
 			$saldolist['total'] = 0;
