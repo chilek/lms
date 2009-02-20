@@ -36,11 +36,12 @@ define('START_TIME', microtime());
 define('LMS-UI', true);
 
 // find alternative config files:
-
 if(is_readable('lms.ini'))
 	$CONFIG_FILE = 'lms.ini';
 elseif(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
 	$CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
+elseif(!is_readable($CONFIG_FILE))
+	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
 
 // Parse configuration file
 function lms_parse_ini_file($filename, $process_sections = false) 
