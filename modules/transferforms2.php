@@ -68,7 +68,7 @@ function main_form($x, $y, $data)
 //    {
 //	    $pdf->addtext($x+$i*14.6,$y,$font_size,$_ACCOUNT[$i]);
 //    }
-    $pdf->addtext($x,$y,$font_size, bankaccount($data['id']);
+    $pdf->addtext($x,$y,$font_size, bankaccount($data['id']));
     $y -= $lineh;
     $pdf->addtext($x+220,$y,$font_size,sprintf('%.2f',$balance));
     $y -= $lineh;
