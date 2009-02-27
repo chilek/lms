@@ -12,6 +12,7 @@ struct ewx_module
 	char * dummy_ip_networks;
 	u_short port;
 	int offset;
+	int skip_disabled;
 };
 
 struct net

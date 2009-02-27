@@ -1611,6 +1611,14 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 							Domy¶lnie: pusta (¿adna sieæ).</para>
 						<para>Przyk³ad: <prompt>dummy_mac_networks = lan1</prompt></para>
 					</listitem>
+					<listitem>
+						<para>skip_disabled</para>
+						<para>Wy³±czenie tej opcji spowoduje, ¿e komputery o statusie
+						od³±czony nie bêd± pomijane. Nale¿y j± wy³±czyæ w przypadku gdy
+						chcemy aby zablokowani klienci mieli mo¿liwo¶æ zalogowania siê
+						do Terminatora. Domy¶lnie: w³±czona.</para>
+						<para>Przyk³ad: <prompt>skip_disabled = false</prompt></para>
+					</listitem>
 				</itemizedlist>
 			</sect3>
 		</sect2>
@@ -1711,6 +1719,12 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT										</
 						<para>Lista nazw sieci, które zostan± wy³±czone z dzia³ania 
 						opcji dummy_mac_networks, w przypadku u¿ycia w niej znaku '*'. Domy¶lnie: pusta (¿adna sieæ).</para>
 						<para>Przyk³ad: <prompt>excluded_dummy_mac_networks = lan7</prompt></para>
+					</listitem>
+					<listitem>
+						<para>skip_disabled</para>
+						<para>Przy domy¶lnym ustawieniu tej opcji (true) komputery o statusie
+						'od³±czony' nie s± brane pod uwagê. Domy¶lnie: w³±czona.</para>
+						<para>Przyk³ad: <prompt>skip_disabled = false</prompt></para>
 					</listitem>
 				</itemizedlist>
 			</sect3>

@@ -17,6 +17,7 @@ struct ewx_module
 	u_short port;
 	int path;
 	int offset;
+	int skip_disabled;
 };
 
 struct net
