@@ -5,6 +5,8 @@ version ? (????-??-??):
   - fixed query fetching invoice's author (alec)
   - lmsd/ewx-pt: fixed mac/ip change detection (alec)
   - changed length of ewx_pt_config.name column type to 32 characters (alec)
+  - lmsd: added 'skip_disabled' option in ewx-pt and ewx-stm modules (alec)
+  - BTS:0000787: fixed parse error in transferforms2.php (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

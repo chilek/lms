@@ -397,11 +397,13 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			"LEFT JOIN tariffs ON (a.tariffid = tariffs.id) "
 			"WHERE (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) "
 				"AND EXISTS (SELECT 1 FROM nodeassignments JOIN nodes n ON (n.id = nodeid) " 
-					"WHERE a.id = assignmentid AND n.access = 1"
+					"WHERE a.id = assignmentid"
+					"%disabled"
 					"%enets)"
 			"GROUP BY a.customerid"
 	);
 
+	g->str_replace(&query, "%disabled", ewx->skip_disabled ? " AND n.access = 1" : "");
 	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
 	
 	res = g->db_query(g->conn, query);
@@ -448,16 +450,18 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			"SELECT count(*) AS cnt, assignmentid "
 			"FROM nodeassignments "
 			"LEFT JOIN nodes n ON (nodeid = n.id) "
-			"WHERE n.access = 1 "
+			"WHERE 1=1"
+			"%disabled"
 //			"%enets "
 			"GROUP BY assignmentid "
 			") cn ON (cn.assignmentid = na.assignmentid) "
 		"WHERE "
-			"(a.datefrom <= %NOW% OR a.datefrom = 0) AND (a.dateto >= %NOW% OR a.dateto = 0) "
-			"AND n.access = 1 "
+			"(a.datefrom <= %NOW% OR a.datefrom = 0) AND (a.dateto >= %NOW% OR a.dateto = 0)"
+			"%disabled"
 			"%enets"
 	);
 
+	g->str_replace(&query, "%disabled", ewx->skip_disabled ? " AND n.access = 1" : "");
 	g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");	
 
 	res = g->db_query(g->conn,  query);
@@ -954,7 +958,8 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->dummy_ip_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_ip_networks", ""));
 	ewx->excluded_dummy_mac_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "excluded_dummy_mac_networks", ""));
 	ewx->excluded_dummy_ip_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "excluded_dummy_ip_networks", ""));
-
+	ewx->skip_disabled = g->config_getbool(ewx->base.ini, ewx->base.instance, "skip_disabled", 1);
+	
 	// node/channel ID's offset, e.g. for testing
 	ewx->offset = g->config_getint(ewx->base.ini, ewx->base.instance, "offset", 0);
 

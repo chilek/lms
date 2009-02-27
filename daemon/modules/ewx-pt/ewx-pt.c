@@ -49,6 +49,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	char 	*netnames;
 	char	*netname;
 	char 	*errstr;
+	char	*query;
 
 	QueryHandle *res;
 	
@@ -158,24 +159,30 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 	// NOTE: to re-create terminator's configuration do DELETE FROM ewx_pt_config;
 
 				    // first query: existing nodes with current config for insert, update or delete (if access=0)
-	res = g->db_query(g->conn, "SELECT n.id, n.mac, INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac, "
-					    "e.nodeid, e.mac AS oldmac, INET_NTOA(e.ipaddr) AS oldip, "
-					    "e.name AS oldname, e.passwd AS oldpasswd, n.ipaddr, n.access "
-				    "FROM nodes n "
-				    "LEFT JOIN ewx_pt_config e ON (n.id = e.nodeid) "
-				    // skip disabled nodes when aren't in ewx_pt_config
-				    "WHERE NOT (e.nodeid IS NULL AND n.access = 0) "
-				    // UNION ALL is quicker than just UNION
-				    "UNION ALL "
-				    // second query: nodes existing in config 
-				    // but not existing in nodes table (for delete)
-				    "SELECT n.id, n.mac, INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac, "
-					    "e.nodeid, e.mac AS oldmac, INET_NTOA(e.ipaddr) AS oldip, "
-					    "e.name AS oldname, e.passwd AS oldpasswd, e.ipaddr, n.access "    
-				    "FROM ewx_pt_config e "
-				    "LEFT JOIN nodes n ON (n.id = e.nodeid) "
-				    "WHERE n.id IS NULL"
-				    );
+	query = strdup("SELECT n.id, n.mac, INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac, "
+			"e.nodeid, e.mac AS oldmac, INET_NTOA(e.ipaddr) AS oldip, "
+			"e.name AS oldname, e.passwd AS oldpasswd, n.ipaddr, n.access "
+		"FROM nodes n "
+		"LEFT JOIN ewx_pt_config e ON (n.id = e.nodeid) "
+		// skip disabled nodes when aren't in ewx_pt_config
+		"WHERE NOT (e.nodeid IS NULL%disabled) "
+		// UNION ALL is quicker than just UNION
+		"UNION ALL "
+		// second query: nodes existing in config 
+		// but not existing in nodes table (for delete)
+		"SELECT n.id, n.mac, INET_NTOA(n.ipaddr) AS ip, LOWER(n.name) AS name, n.passwd, n.chkmac, "
+			"e.nodeid, e.mac AS oldmac, INET_NTOA(e.ipaddr) AS oldip, "
+			"e.name AS oldname, e.passwd AS oldpasswd, e.ipaddr, n.access "    
+		"FROM ewx_pt_config e "
+		"LEFT JOIN nodes n ON (n.id = e.nodeid) "
+		"WHERE n.id IS NULL"
+	);
+	
+	g->str_replace(&query, "%disabled", ewx->skip_disabled ? " AND n.access = 0" : "");
+	
+	res = g->db_query(g->conn, query);
+
+	free(query);
 	
 	if(!g->db_nrows(res))
 	{
@@ -522,6 +529,7 @@ struct ewx_module * init(GLOBAL *g, MODULE *m)
 	ewx->port = g->config_getint(ewx->base.ini, ewx->base.instance, "snmp_port", 161);
 	ewx->networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "networks", ""));
 	ewx->offset = g->config_getint(ewx->base.ini, ewx->base.instance, "offset", 0);
+	ewx->skip_disabled = g->config_getbool(ewx->base.ini, ewx->base.instance, "skip_disabled", 1);
 	ewx->dummy_mac_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_mac_networks", ""));
 	ewx->dummy_ip_networks = strdup(g->config_getstring(ewx->base.ini, ewx->base.instance, "dummy_ip_networks", ""));
 #ifdef DEBUG1

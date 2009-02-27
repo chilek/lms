@@ -5146,6 +5146,12 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
        zalecana jest rekonfiguracja urządzenia. Domyślnie: pusta (żadna
        sieć).
        Przykład: dummy_mac_networks = lan1
+     * skip_disabled
+       Wyłączenie tej opcji spowoduje, że komputery o statusie odłączony
+       nie będą pomijane. Należy ją wyłączyć w przypadku gdy chcemy aby
+       zablokowani klienci mieli możliwość zalogowania się do Terminatora.
+       Domyślnie: włączona.
+       Przykład: skip_disabled = false
      __________________________________________________________________
 
 6.2.18. Ewx-stm
@@ -5226,6 +5232,10 @@ $IPT -t filter -I FORWARD -s %i -m limit --limit %plimit/s -j ACCEPT
        dummy_mac_networks, w przypadku użycia w niej znaku '*'. Domyślnie:
        pusta (żadna sieć).
        Przykład: excluded_dummy_mac_networks = lan7
+     * skip_disabled
+       Przy domyślnym ustawieniu tej opcji (true) komputery o statusie
+       'odłączony' nie są brane pod uwagę. Domyślnie: włączona.
+       Przykład: skip_disabled = false
      __________________________________________________________________
 
 6.3. T-Script
