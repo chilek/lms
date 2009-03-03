@@ -398,8 +398,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			"WHERE (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) "
 				"AND EXISTS (SELECT 1 FROM nodeassignments JOIN nodes n ON (n.id = nodeid) " 
 					"WHERE a.id = assignmentid"
-					"%disabled"
-					"%enets)"
+					"%disabled%enets) "
 			"GROUP BY a.customerid"
 	);
 
@@ -451,9 +450,9 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			"FROM nodeassignments "
 			"LEFT JOIN nodes n ON (nodeid = n.id) "
 			"WHERE 1=1"
-			"%disabled"
+			"%disabled "
 //			"%enets "
-			"GROUP BY assignmentid "
+			"GROUP BY assignmentid"
 			") cn ON (cn.assignmentid = na.assignmentid) "
 		"WHERE "
 			"(a.datefrom <= %NOW% OR a.datefrom = 0) AND (a.dateto >= %NOW% OR a.dateto = 0)"
@@ -1367,7 +1366,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 
 //	snmp_add_var(pdu, CustomerNo, STM_OID_LEN, 'i', itoa(h.id));
 	snmp_add_var(pdu, CustomerPathNo, STM_OID_LEN, 'u', itoa(ewx->path));
-	snmp_add_var(pdu, CustomerChannelNo, STM_OID_LEN, 'u', itoa(chid) + ewx->offset);
+	snmp_add_var(pdu, CustomerChannelNo, STM_OID_LEN, 'u', itoa(chid));
 	snmp_add_var(pdu, CustomerIpAddr, STM_OID_LEN, 's', h.ip);
 	snmp_add_var(pdu, CustomerMacAddr, STM_OID_LEN, 's', h.mac);
 	snmp_add_var(pdu, CustomerUpMinSpeed, STM_OID_LEN, 'u', itoa(h.uprate));
