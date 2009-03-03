@@ -1169,7 +1169,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 
 //	snmp_add_var(pdu, CustomerNo, STM_OID_LEN, 'i', itoa(h.id));
 	snmp_add_var(pdu, CustomerPathNo, STM_OID_LEN, 'u', itoa(ewx->path));
-	snmp_add_var(pdu, CustomerChannelNo, STM_OID_LEN, 'u', itoa(chid) + ewx->offset);
+	snmp_add_var(pdu, CustomerChannelNo, STM_OID_LEN, 'u', itoa(chid));
 	snmp_add_var(pdu, CustomerIpAddr, STM_OID_LEN, 's', h.ip);
 	snmp_add_var(pdu, CustomerMacAddr, STM_OID_LEN, 's', h.mac);
 	snmp_add_var(pdu, CustomerUpMinSpeed, STM_OID_LEN, 'u', itoa(h.uprate));

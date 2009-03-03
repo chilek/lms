@@ -12,6 +12,7 @@ version ? (????-??-??):
   - BTS#0000784: fixed pagesize setting for pdf printouts (alec)
   - fixed ethercodes list encoding (alec)
   - lmsd/ewx-pt: fixed mac/ip change detection (alec)
+  - lmsd/ewx-stm: fixed double 'offset' use in add_node function (alec)
 
 version 1.10.5 Neith (2008-11-05):
 
