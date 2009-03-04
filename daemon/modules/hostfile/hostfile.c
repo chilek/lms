@@ -126,7 +126,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *groupsql = strdup("");
 
 	char *egroups = strdup("AND NOT EXISTS (SELECT 1 FROM customergroups g, customerassignments a "
-				"WHERE a.customerid = ats.customerid "
+				"WHERE a.customerid = n.ownerid "
 				"AND g.id = a.customergroupid "
 				"AND (%groups)) ");
 	
