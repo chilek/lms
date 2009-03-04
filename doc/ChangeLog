@@ -7,6 +7,8 @@ version ? (????-??-??):
   - changed length of ewx_pt_config.name column type to 32 characters (alec)
   - lmsd: added 'skip_disabled' option in ewx-pt and ewx-stm modules (alec)
   - BTS:0000787: fixed parse error in transferforms2.php (alec)
+  - lmsd/hostfile: fixed 'excluded_customergroups' option query (alec)
+  - fixed stats compacting (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 
