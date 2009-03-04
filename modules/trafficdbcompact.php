@@ -44,37 +44,20 @@ flush();
 
 if(isset($_GET['removeold']))
 {
-    $yeardeleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60');
-    echo trans('$0 at least one year old records have been removed.<BR>',$yeardeleted);
-    flush();
+    if($deleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60'))
+    {
+	echo trans('$0 at least one year old records have been removed.<BR>', $deleted);
+        flush();
+    }
 }
 
 if(isset($_GET['removedeleted']))
 {
-	if($deleted_nodes = $DB->GetCol("SELECT DISTINCT nodeid FROM stats WHERE nodeid NOT IN ((SELECT id FROM nodes)) ORDER BY nodeid"))
-	{
-		$first_record = true;
-
-		foreach($deleted_nodes as $nodeid)
-		{
-			if ($first_record)
-			{
-				$deleted_nodes_sql = $nodeid;
-				$first_record = false;
-			}
-			else
-				$deleted_nodes_sql = $deleted_nodes_sql . "," . $nodeid;
-		}
-
-		if($DB->Execute("DELETE FROM stats WHERE nodeid IN ($deleted_nodes_sql)"))
-		{
-			foreach($deleted_nodes as $nodeid)
-				echo trans('Statistics for computer $0 has been removed<BR>',$nodeid);
-		}
-		else
-			echo trans('Error during deleting data for old computers !<BR>');
-	}
+    if($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM nodes)'))
+    {
+    	echo trans('$0 records for deleted nodes has been removed.<BR>', $deleted);
 	flush();
+    }
 }
 
 if(isset($_GET['level']))
@@ -82,44 +65,57 @@ if(isset($_GET['level']))
     $time = time();
     switch($_GET['level'])
     {
-	case 'low' : $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
 	case 'medium' : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
 	case 'high' : $period = $time-365*24*60*60; $step = 60*60; break; //month, hour
+	default: $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
     }
+
     if($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats'))
     {
 	$nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
 	foreach($nodes as $node)
 	{
-    	    echo "'".$node['name']."'\t: "; 
 	    $deleted = 0;
 	    $inserted = 0;
-	    $DB->BeginTrans();
 	    $maxtime = $period;
 	    $timeoffset = date('Z');
-	    $dtdivider = '((dt+'.$timeoffset.')/'.$step.')';
-	    $data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload, COUNT(dt) AS count, '.$dtdivider.' AS day, 
-	    	MIN(dt) AS mintime, MAX(dt) AS maxtime FROM stats WHERE nodeid=? AND dt >= ? AND dt < ? 
-		GROUP BY nodeid, '.$dtdivider.' ORDER BY '.$dtdivider, array($node['id'], $mintime, $maxtime));
-	    $DB->Execute('DELETE FROM stats WHERE nodeid=? AND dt >= ? AND dt <= ?',
-	    	array($node['id'], $mintime, $maxtime));
-	    if($data != NULL)
+	    $dtdivider = 'FLOOR((dt+'.$timeoffset.')/'.$step.')';
+	    
+
+	    $data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload,
+			    COUNT(dt) AS count, MIN(dt) AS mintime, MAX(dt) AS maxtime
+		    FROM stats WHERE nodeid = ? AND dt >= ? AND dt < ? 
+		    GROUP BY nodeid, '.$dtdivider, array($node['id'], $mintime, $maxtime));
+
+	    if($data)
+	    {
+		    $DB->BeginTrans();
+
+		    $DB->Execute('DELETE FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?',
+	    		    array($node['id'], $mintime, $maxtime));
+	    
 		    foreach($data as $record)
 		    {
 			$deleted += $record['count'];
 			if($record['download'] || $record['upload'])
-				$inserted += $DB->Execute('INSERT INTO stats (nodeid, dt, download, upload) VALUES (?, ?, ?, ?)',
-					array($node['id'], $record['maxtime'], $record['upload'], $record['download']));
+				$inserted += $DB->Execute('INSERT INTO stats
+					(nodeid, dt, download, upload)
+					VALUES (?, ?, ?, ?)',
+					array($node['id'], $record['maxtime'],
+					$record['upload'], $record['download']));
 		    }
-	    $DB->CommitTrans();
-	    echo trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
-	    flush();
+
+		    $DB->CommitTrans();
+
+		    echo $node['name'].': '.trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
+		    flush();
+	    }
 	}
     }
 }
 
-echo trans('$0 records after compacting.<BR>',$DB->GetOne("SELECT COUNT(*) FROM stats"));
-echo '<P><BR><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
+echo trans('$0 records after compacting.',$DB->GetOne('SELECT COUNT(*) FROM stats'));
+echo '</PRE><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
 flush();
 
 $SMARTY->display('footer.html');

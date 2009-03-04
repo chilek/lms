@@ -27,11 +27,11 @@
 $_LANG['$0 ($1 addresses)'] = '$0 ($1 adresów)';
 $_LANG['$0 addresses'] = '$0 adresów';
 $_LANG['$0 ago ($1)'] = '$0 temu ($1)';
-$_LANG['$0 at least one year old records have been removed.<BR>'] = '$0 rekordy starsze niż rok zostały usunięte.<BR>';
+$_LANG['$0 at least one year old records have been removed.<BR>'] = '$0 rekordów starszych niż rok zostało usuniętych.<BR>';
 $_LANG['$0 dollars $1 cents'] = '$0 złotych $1 groszy';
 $_LANG['$0 months'] = '$0 m-cy';
 $_LANG['$0 of $1 ($2): $3 &lt;$4&gt;'] = '$0 z $1 ($2): $3 &lt;$4&gt;';
-$_LANG['$0 records after compacting.<BR>'] = '$0 rekordów po kompaktowaniu.<BR>';
+$_LANG['$0 records after compacting.'] = '$0 rekordów po kompaktowaniu.';
 $_LANG['$0 records before compacting.<BR>'] = '$0 rekordów przed kompaktowaniem.<BR>';
 $_LANG['$0 - removed, $1 - inserted<BR>'] = '$0 - usuniętych, $1 - dodanych<BR>';
 $_LANG['30 days'] = '30 dni';
@@ -239,8 +239,6 @@ $_LANG['Compacting'] = 'Kompaktowanie';
 $_LANG['Compacting of database removes non-essential data from database and averages existing data. This will decrease number of records in database and reduce results latency, but also decrease stats precision.'] = 'Kompaktowanie bazy danych polega na usunięciu zbędnych danych z bazy oraz uśrednieniu istniejących danych, co spowoduje zmniejszenie ilości rekordów w bazie, a zatem skróci czas oczekiwania na wyniki oraz zmniejszy ich dokładność';
 $_LANG['Compacting parameters'] = 'Parametry kompaktowania';
 $_LANG['compressed'] = 'skompresowaną';
-$_LANG['Statistics for computer $0 has been removed<BR>'] = 'Dane statystyczne komputera $0 zostały usunięte<BR>';
-$_LANG['Error during deleting data for old computers !<BR>'] = 'Błąd podczas usuwania danych statystycznych usuniętych komputerów !<BR>';
 $_LANG['Computers found:'] = 'Znalezione komputery:';
 $_LANG['Configuration'] = 'Konfiguracja';
 $_LANG['Configuration of Instance: $0/$1'] = 'Konfiguracja instancji: $0/$1';
@@ -2126,5 +2124,7 @@ $_LANG['Voip account owner is not connected!'] = 'Właściciel konta VoIP nie je
 $_LANG['Selected numbering plan doesn\'t match customer\'s division!'] = 'Wybrany plan numeracyjny nie należy do firmy klienta!';
 $_LANG['with document'] = 'z dokumentem';
 $_LANG['without document'] = 'bez dokumentu';
+$_LANG['$0 records for deleted nodes has been removed.<BR>'] = '$0 rekordów nieistniejących komputerów zostało usuniętych.<BR>';
+$_LANG['- select category -'] = '- wybierz kategorię -';
 
 ?>
