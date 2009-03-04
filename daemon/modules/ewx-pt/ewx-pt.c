@@ -165,7 +165,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		"FROM nodes n "
 		"LEFT JOIN ewx_pt_config e ON (n.id = e.nodeid) "
 		// skip disabled nodes when aren't in ewx_pt_config
-		"WHERE NOT (e.nodeid IS NULL%disabled) "
+		"%disabled"
 		// UNION ALL is quicker than just UNION
 		"UNION ALL "
 		// second query: nodes existing in config 
@@ -178,7 +178,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		"WHERE n.id IS NULL"
 	);
 	
-	g->str_replace(&query, "%disabled", ewx->skip_disabled ? " AND n.access = 0" : "");
+	g->str_replace(&query, "%disabled", ewx->skip_disabled ? "WHERE NOT (e.nodeid IS NULL AND n.access = 0) " : "");
 	
 	res = g->db_query(g->conn, query);
 
