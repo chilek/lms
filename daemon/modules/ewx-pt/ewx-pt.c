@@ -238,7 +238,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
         	char *oldmac = g->db_get_data(res,i,"oldmac");
         	char *oldname = g->db_get_data(res,i,"oldname");
 		char *oldpasswd = g->db_get_data(res,i,"oldpasswd");
-        	int access = atoi(g->db_get_data(res,i,"access"));
+        	int access = ewx->skip_disabled ? atoi(g->db_get_data(res,i,"access")) : 1;
 
 		int n_id = atoi(id);
 		int n_nodeid = atoi(nodeid);
