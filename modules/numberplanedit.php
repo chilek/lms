@@ -53,9 +53,9 @@ if(sizeof($numberplanedit))
 	if($numberplanedit['doctype'] && $numberplanedit['isdefault'])
 		if($DB->GetOne('SELECT 1 FROM numberplans n
 			WHERE doctype = ? AND isdefault = 1 AND n.id != ?'
-			.(!empty($numberplanedit['divisions']) ? ' AND EXISTS (
+			.(!empty($_POST['selected']) ? ' AND EXISTS (
 				SELECT 1 FROM numberplanassignments WHERE planid = n.id
-				AND divisionid IN ('.implode(',', $numberplanedit['divisions']).'))'
+				AND divisionid IN ('.implode(',', array_keys($_POST['selected'])).'))'
 			: ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
 			        WHERE planid = n.id)'),					
 			array($numberplanedit['doctype'], $numberplanedit['id'])))
@@ -78,30 +78,45 @@ if(sizeof($numberplanedit))
 		
 		$DB->Execute('DELETE FROM numberplanassignments WHERE planid = ?', array($numberplanedit['id']));
 	
-		if(!empty($numberplanedit['divisions']))
-			foreach($numberplanedit['divisions'] as $div)
+		if(!empty($_POST['selected']))
+			foreach($_POST['selected'] as $idx => $name)
 				$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
-					VALUES (?, ?)', array($numberplanedit['id'], intval($div)));
+					VALUES (?, ?)', array($numberplanedit['id'], intval($idx)));
 
 		$DB->CommitTrans();
 		
 		$SESSION->redirect('?m=numberplanlist');
 	}
+	else
+	{
+		$numberplanedit['selected'] = array();
+	        if(isset($_POST['selected']))
+		{
+		        foreach($_POST['selected'] as $idx => $name)
+		        {
+		                $numberplanedit['selected'][$idx]['id'] = $idx;
+		                $numberplanedit['selected'][$idx]['name'] = $name;
+		        }
+		}
+	}
 	$numberplan = $numberplanedit;
 }
 else
-	$numberplan['divisions'] = $DB->GetCol('SELECT divisionid
-			FROM numberplanassignments WHERE planid = ?', array($numberplan['id']));
+{
+	$numberplan['selected'] = $DB->GetAllByKey('SELECT d.id, d.shortname AS name
+		FROM numberplanassignments, divisions d
+		WHERE d.id = divisionid AND planid = ?', 'id', array($numberplan['id']));
+}
 
 $layout['pagetitle'] = trans('Numbering Plan Edit: $0', $template);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanedit', $numberplan);
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions
-		WHERE status = 0 '
-		.(!empty($numberplan['divisions']) ? 'OR id IN ('.implode(',', $numberplan['divisions']).')' : '')
-		.'ORDER BY shortname', array($numberplan['id'])));
+$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name
+		FROM divisions WHERE status = 0 '
+		.(!empty($numberplan['selected']) ? 'OR id IN ('.implode(',', array_keys($numberplan['selected'])).')' : '')
+		.'ORDER BY shortname', 'id', array($numberplan['id'])));
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplanedit.html');
 

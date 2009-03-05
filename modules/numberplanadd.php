@@ -34,7 +34,7 @@ if(sizeof($numberplanadd))
 	{
 		$SESSION->redirect('?m=numberplanlist');
 	}
-	
+
 	if($numberplanadd['template'] == '')
 		$error['template'] = trans('Number template is required!');
 	elseif(!preg_match('/%[1-9]{0,1}N/', $numberplanadd['template']))
@@ -49,9 +49,9 @@ if(sizeof($numberplanadd))
 	if($numberplanadd['doctype'] && isset($numberplanadd['isdefault']))
 		if($DB->GetOne('SELECT 1 FROM numberplans n
 			WHERE doctype = ? AND isdefault = 1'
-			.(!empty($numberplanadd['divisions']) ? ' AND EXISTS (
+			.(!empty($_POST['selected']) ? ' AND EXISTS (
 			        SELECT 1 FROM numberplanassignments WHERE planid = n.id
-			        AND divisionid IN ('.implode(',', $numberplanadd['divisions']).'))'
+			        AND divisionid IN ('.implode(',', array_keys($_POST['selected'])).'))'
 			: ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
 				WHERE planid = n.id)'),
 			array($numberplanadd['doctype'])))
@@ -71,10 +71,10 @@ if(sizeof($numberplanadd))
 	
 		$id = $DB->GetLastInsertID('numberplans');
 	
-		if(!empty($numberplanadd['divisions']))
-	                foreach($numberplanadd['divisions'] as $div)
+		if(!empty($_POST['selected']))
+	                foreach($_POST['selected'] as $idx => $name)
 		                $DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
-		                	VALUES (?, ?)', array($id, intval($div)));
+		                	VALUES (?, ?)', array($id, intval($idx)));
 		
 		if(!isset($numberplanadd['reuse']))
 		{
@@ -86,6 +86,18 @@ if(sizeof($numberplanadd))
 		unset($numberplanadd['doctype']);
 		unset($numberplanadd['isdefault']);
 	}
+	else
+	{
+		$numberplanadd['selected'] = array();
+                if(isset($_POST['selected']))
+		{
+		        foreach($_POST['selected'] as $idx => $name)
+		        {
+		                $numberplanadd['selected'][$idx]['id'] = $idx;
+		                $numberplanadd['selected'][$idx]['name'] = $name;
+		        }
+		}
+	}
 }	
 
 $layout['pagetitle'] = trans('New Numbering Plan');
@@ -93,7 +105,7 @@ $layout['pagetitle'] = trans('New Numbering Plan');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanadd', $numberplanadd);
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions WHERE status = 0 ORDER BY shortname'));
+$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name FROM divisions WHERE status = 0 ORDER BY shortname', 'id'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplanadd.html');
 

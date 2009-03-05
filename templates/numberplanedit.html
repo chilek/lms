@@ -53,11 +53,7 @@
 			<B>{t}Division{/t}:</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<SELECT name="numberplanedit[divisions][]" multiple size="4" {tip text="Select division(s)" trigger="divisions"}>
-		        {foreach from=$divisions item=item}
-			<OPTION VALUE="{$item.id}"{if in_array($item.id, (array)$numberplanedit.divisions)} SELECTED{/if}>{$item.shortname}</OPTION>
-			{/foreach}
-			</SELECT>
+			{include file="multiselect.html" selected=$numberplanedit.selected available_tip="Available<!plural>:" selected_tip="Selected<!plural>:"}
 		</TD>
 	</TR>
 	<TR class="light">
