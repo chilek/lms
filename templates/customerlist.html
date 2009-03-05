@@ -39,22 +39,29 @@
 					<OPTION VALUE="8"{if $listdata.state eq 8} SELECTED{/if}>{t}without group{/t}</OPTION>
 					<OPTION VALUE="9"{if $listdata.state eq 9} SELECTED{/if}>{t}without tariff{/t}</OPTION>
 					<OPTION VALUE="10"{if $listdata.state eq 10} SELECTED{/if}>{t}suspended<!plural>{/t}</OPTION>
-				</SELECT></NOBR>&nbsp;
+				</SELECT></NOBR>
+				<NOBR>{t}Division{/t}:
+				<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
+				        <OPTION VALUE="" {if !$listdata.division} SELECTED {/if}>- {t}all{/t} -</OPTION>
+				        {foreach from=$divisions item=division}
+				        <OPTION VALUE="{$division.id}"{if $listdata.division eq $division.id} SELECTED {/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
+					{/foreach}
+				</SELECT></NOBR>
 				<NOBR>{t}Network:{/t}
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
 					{section name=networks loop=$networks}
 					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 					{/section}
-				</SELECT></NOBR>&nbsp;
+				</SELECT></NOBR>
 				<NOBR>{t}Group:{/t}
 				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 					{section name=customergroups loop=$customergroups}
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 					{/section}
-				</SELECT></NOBR>&nbsp;
-				<NOBR>{t}Nodes Group:{/t}
+				</SELECT></NOBR>
+				<NOBR>{t}Nodes Group:<!short>{/t}
 				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 	        			<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 		        		{foreach from=$nodegroups item=nodegroup}
