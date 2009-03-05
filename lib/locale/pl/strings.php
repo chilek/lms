@@ -936,6 +936,7 @@ $_LANG['Node name is required!'] = 'Nazwa komputera jest wymagana!';
 $_LANG['Node name is too long (max.32 characters)!'] = 'Nazwa komputera jest zbyt długa (maks. 32 znaki)!';
 $_LANG['Node number'] = 'Numer komputera';
 $_LANG['Nodes Group:'] = 'Grupa komputerów:';
+$_LANG['Nodes Group:<!short>'] = 'Grupa komp.:';
 $_LANG['Nodes'] = 'Komputery';
 $_LANG['Nodes:'] = 'Komputery:';
 $_LANG['nodes connection/disconnection'] = 'podłączanie/odłączanie komputerów';

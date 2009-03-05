@@ -530,7 +530,7 @@ class LMS
 			return FALSE;
 	}
 
-	function GetCustomerList($order='customername,asc', $state=NULL, $network=NULL, $customergroup=NULL, $search=NULL, $time=NULL, $sqlskey='AND', $nodegroup=NULL)
+	function GetCustomerList($order='customername,asc', $state=NULL, $network=NULL, $customergroup=NULL, $search=NULL, $time=NULL, $sqlskey='AND', $nodegroup=NULL, $division=NULL)
 	{
 		list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -667,7 +667,8 @@ class LMS
 				FROM customersview c LEFT JOIN countries ON c.countryid = countries.id '
 				.($customergroup ? 'LEFT JOIN customerassignments ON (c.id=customerassignments.customerid) ' : '')
 				.'WHERE deleted = '.$deleted
-				.($state !=0 ? ' AND status = '.$state : '')
+				.($state != 0 ? ' AND c.status = '.intval($state) : '')
+				.($division != 0 ? ' AND c.divisionid = '.intval($division) : '')
 				.($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND 
 							((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
 							OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')

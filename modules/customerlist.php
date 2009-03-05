@@ -57,11 +57,17 @@ if(!isset($_GET['ng']))
 else
         $ng = $_GET['ng'];
 $SESSION->save('clng', $ng);
+
+if(!isset($_GET['d']))
+        $SESSION->restore('cld', $d);
+else
+        $d = $_GET['d'];
+$SESSION->save('cld', $d);
 		
 if (! isset($_GET['page']))
 	$SESSION->restore('clp', $_GET['page']);
 	    
-$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng);
+$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d);
 
 $listdata['total'] = $customerlist['total'];
 $listdata['order'] = $customerlist['order'];
@@ -71,6 +77,7 @@ $listdata['direction'] = $customerlist['direction'];
 $listdata['network'] = $n;
 $listdata['nodegroup'] = $ng;
 $listdata['customergroup'] = $g;
+$listdata['division'] = $d;
 
 $SESSION->restore('cls', $listdata['state']);
 
@@ -92,6 +99,7 @@ $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
+$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('start',$start);
