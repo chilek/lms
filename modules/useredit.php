@@ -123,9 +123,9 @@ foreach($LMS->GetUserInfo($_GET['id']) as $key => $value)
 
 if(!isset($userinfo['selected']))
 	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name 
-					FROM customergroups g, excludedgroups
-	                                WHERE customergroupid = g.id AND userid = ?
-					ORDER BY name', 'id', array($userinfo['id']));
+		FROM customergroups g, excludedgroups
+	        WHERE customergroupid = g.id AND userid = ?
+		ORDER BY name', 'id', array($userinfo['id']));
 
 $layout['pagetitle'] = trans('User Edit: $0', $userinfo['login']);
 

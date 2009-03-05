@@ -2127,5 +2127,7 @@ $_LANG['with document'] = 'z dokumentem';
 $_LANG['without document'] = 'bez dokumentu';
 $_LANG['$0 records for deleted nodes has been removed.<BR>'] = '$0 rekordów nieistniejących komputerów zostało usuniętych.<BR>';
 $_LANG['- select category -'] = '- wybierz kategorię -';
+$_LANG['Available<!plural>:'] = 'Dostępne:';
+$_LANG['Selected<!plural>:'] = 'Wybrane:';
 
 ?>
