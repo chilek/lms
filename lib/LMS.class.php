@@ -3677,7 +3677,7 @@ class LMS
 		$from = $from ? $from : mktime(0,0,0);
 		$to = $to ? $to : mktime(23,59,59);
 
-		return $this->DB->GetAllByKey('SELECT id, value, label FROM taxes
+		return $this->DB->GetAllByKey('SELECT id, value, label, taxed FROM taxes
 			WHERE (validfrom = 0 OR validfrom <= ?)
 			    AND (validto = 0 OR validto >= ?)
 			ORDER BY value', 'id', array($from, $to));
