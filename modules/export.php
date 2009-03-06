@@ -297,6 +297,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 				{
 					$v++;
 					$line = str_replace('%VATP'.$v, form_num($taxes[$id]['value']), $line);
+					$line = str_replace('%TAXED'.$v, form_num($taxes[$id]['taxed']), $line);
 					$line = str_replace('%VAT'.$v, form_num($tax['tax']), $line);
 					$line = str_replace('%NETTO'.$v, form_num($tax['val']), $line);
 					
@@ -308,6 +309,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 					$line = str_replace('%VATP'.$x, '0.00', $line);
 					$line = str_replace('%VAT'.$x, '0.00', $line);
 					$line = str_replace('%NETTO'.$x, '0.00', $line);
+					$line = str_replace('%TAXED'.$x, '0.00', $line);
 				}
 				
 				$line = str_replace('%VAT', form_num($tax_v), $line);

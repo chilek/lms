@@ -70,6 +70,9 @@ $invoice_type = '0'; // typ dokumentu: faktura (zmienna %TYPE)
 %NETTOx - warto¶æ netto
 %VATx - warto¶æ podatku
 
+%TAXEDx - czy dana stawka podatkowa jest zwolniona, w sumie to tylko jedna kombinacja 
+	taxed=1 i VATP=0.00 ma sens, no ale skoro juz jestesmy porzadni to niech tak bedzie
+
 UWAGA: x zastêpujemy cyfr± od 1 do 8, która oznacza kolejn± stawkê, 
        np. %VATP1, %VATP2 itd.
 
