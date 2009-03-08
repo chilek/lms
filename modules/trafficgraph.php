@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+if(!function_exists('imagecreate'))
+	die;
+
 define('GRAPH_HEIGHT', 180);
 define('GRAPH_WIDTH', 500);
 

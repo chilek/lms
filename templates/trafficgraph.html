@@ -7,18 +7,7 @@
 <title>::: LMS :::</title>
 <script type="text/javascript" src="img/autoiframe.js"></script>
 </head>
-<body>
-<table height="{$smarty.const.GRAPH_HEIGHT}" width="{$smarty.const.GRAPH_WIDTH}" id="table">
-    <tr>
-	<td height="{$smarty.const.GRAPH_HEIGHT}" width="{$smarty.const.GRAPH_WIDTH}">
-	    <img src="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}" alt="">
-	</td>
-    </tr>
-</table>
-<script TYPE="text/javascript">
-<!--
-parent.document.getElementById('autoiframe').width = document.getElementById('table').offsetWidth;
-//-->
-</script>
+<body style="text-align: center; margin: 0">
+<img src="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}{if $from}&from={$from}{/if}{if $to}&to={$to}{/if}&ts={$smarty.now}" height="{$smarty.const.GRAPH_HEIGHT}" width="{$smarty.const.GRAPH_WIDTH}" alt="">
 </body>
 </html>
