@@ -2,6 +2,11 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $bars}
+{if ($download || $upload) && function_exists('imagecreate')}
+<P align="center">
+	<IMG src="?m=trafficgraph&bar={$bar}{if $customer}&customer={$customer}{/if}{if $net}&net={$net}{/if}{if $datefrom}&from={$datefrom}{/if}{if $dateto}&to={$dateto}{/if}" alt="{t}Network Statistics{/t}">
+</P>
+{/if}
 <TABLE WIDTH="100%" ALIGN="center" CELLPADDING="3">
 	<TR>
 		<TD style="vertical-align:top" WIDTH="50%">

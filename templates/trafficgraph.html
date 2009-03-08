@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
+<title>::: LMS :::</title>
+<script type="text/javascript" src="img/autoiframe.js"></script>
+</head>
+<body>
+<table height="{$smarty.const.GRAPH_HEIGHT}" width="{$smarty.const.GRAPH_WIDTH}" id="table">
+    <tr>
+	<td height="{$smarty.const.GRAPH_HEIGHT}" width="{$smarty.const.GRAPH_WIDTH}">
+	    <img src="?m=trafficgraph&nodeid={$nodeid}&bar={$bar}" alt="">
+	</td>
+    </tr>
+</table>
+<script TYPE="text/javascript">
+<!--
+parent.document.getElementById('autoiframe').width = document.getElementById('table').offsetWidth;
+//-->
+</script>
+</body>
+</html>
