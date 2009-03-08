@@ -26,15 +26,22 @@
 
 function smarty_function_tip($args, &$SMARTY)
 {
-        $dynpopup = $args['dynpopup'];
-	if ($dynpopup) 
+	if ($popup = $args['dynpopup']) 
 	{
 		if(is_array($args))
 			foreach($args as $argid => $argval)
-				$dynpopup = str_replace('$'.$argid, $argval, $dynpopup);
-		$text = "onmouseover=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;".$dynpopup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15".($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
+				$popup = str_replace('$'.$argid, $argval, $popup);
+		$text = "onmouseover=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;".$popup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,30,OFFSETY,15".($args['sticky'] ? ',STICKY, MOUSEOFF' : '').");\" onmouseout=\"nd();\"";
 //		global $SESSION;
-//		$text = 'onmouseover="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe id=&quot;autoiframe&quot; frameborder=0 scrolling=no width=220 height=150 src=&quot;'.$dynpopup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onmouseout="nd();"';
+//		$text = 'onmouseover="if(getSeconds() < '.$SESSION->timeout.'){ return overlib(\'<iframe id=&quot;autoiframe&quot; frameborder=0 scrolling=no width=220 height=150 src=&quot;'.$popup.'&quot;></iframe>\',HAUTO,VAUTO,OFFSETX,85,OFFSETY,15); }" onmouseout="nd();"';
+		return $text;
+	} 
+	else if ($popup = $args['popup']) 
+	{
+		if(is_array($args))
+			foreach($args as $argid => $argval)
+				$popup = str_replace('$'.$argid, $argval, $popup);
+		$text = " onclick=\"return overlib('<iframe id=&quot;autoiframe&quot; width=100 height=10 frameborder=0 scrolling=no src=&quot;".$popup."&popup=1&quot;></iframe>',HAUTO,VAUTO,OFFSETX,10,OFFSETY,10);\" onmouseout=\"nd();\" ";
 		return $text;
 	} 
 	else 
