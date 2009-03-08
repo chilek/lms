@@ -2129,5 +2129,7 @@ $_LANG['$0 records for deleted nodes has been removed.<BR>'] = '$0 rekordów nie
 $_LANG['- select category -'] = '- wybierz kategorię -';
 $_LANG['Available<!plural>:'] = 'Dostępne:';
 $_LANG['Selected<!plural>:'] = 'Wybrane:';
+$_LANG['AVG:'] = 'ŚREDNIA:';
+$_LANG['LAST:'] = 'OSTATNI:';
 
 ?>
