@@ -21,8 +21,9 @@
 					<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 						<B><A HREF="?m=nodeinfo&id={$download.nodeid[download]}">{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:25:"...":true}{/if}</A></B>
 					</TD>
-					<TD CLASS="fright" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT=""> {$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%d"}&nbsp;kbit/s) 
+					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
+						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" {tip 0=$download.nodeid[download] 1=$bar 2=$datefrom 3=$dateto popup='?m=trafficgraph&nodeid=$0&bar=$1&from=$2&to=$3'}>
+						{$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%d"}&nbsp;kbit/s) 
 					</TD>
 				</TR>
 				{/section}
@@ -45,8 +46,9 @@
 					<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 						<B><A HREF="?m=nodeinfo&id={$upload.nodeid[upload]}">{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:25:"...":true}{/if}</A></B>
 					</TD>
-					<TD CLASS="fright" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT=""> {$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%d"}&nbsp;kbit/s) 
+					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
+						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" {tip 0=$upload.nodeid[upload] 1=$bar 2=$datefrom 3=$dateto popup='?m=trafficgraph&nodeid=$0&bar=$1&from=$2&to=$3'}>
+						{$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%d"}&nbsp;kbit/s) 
 					</TD>
 				</TR>
 				{/section}
