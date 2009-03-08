@@ -50,7 +50,7 @@ $access['table'][6]['name'] 		= trans('nodes management');
 $access['table'][6]['allow_reg']  	= '^(node(add|info|infoshort|list|scan|search|del|edit|print|warn)|choose(mac|ip))$';
 
 $access['table'][7]['name']    	     	= trans('stats access');
-$access['table'][7]['allow_reg']	= '^(traffic|traffic(print))$';
+$access['table'][7]['allow_reg']	= '^(traffic|traffic(print|graph))$';
 
 $access['table'][8]['name']         	= trans('mailing access');
 $access['table'][8]['allow_reg']    	= '^(mailing)$';

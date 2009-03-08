@@ -28,15 +28,8 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 	global $DB, $LMS;
 	
 	// period
-	if (is_array($from))
-		$fromdate = mktime($from['Hour'],$from['Minute'],0,$from['Month'],$from['Day'],$from['Year']);
-	else
-		$fromdate = $from;
-	if (is_array($to))
-		$todate = mktime($to['Hour'],$to['Minute'],0,$to['Month'],$to['Day'],$to['Year']);
-	else
-		$todate = $to;
-
+	$fromdate = $from;
+	$todate = $to;
 	$delta = ($todate-$fromdate) ? ($todate-$fromdate) : 1;
 
 	$dt = "( dt >= $fromdate AND dt < $todate ) ";
@@ -47,7 +40,8 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
 		$params = $LMS->GetNetworkParams($net);
 		$params['address']++;
 		$params['broadcast']--;
-		$net = ' AND (( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].') OR ( ipaddr_pub > '.$params['address'].' AND ipaddr_pub < '.$params['broadcast'].')) ';
+		$net = ' AND (( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].')
+			OR ( ipaddr_pub > '.$params['address'].' AND ipaddr_pub < '.$params['broadcast'].')) ';
 	}
 	else
 		$net = '';
@@ -199,11 +193,22 @@ switch($bar)
 	break;
 
 	case 'user':
-		$traffic = Traffic(
-			isset($_POST['from']) ? $_POST['from'] : time()-(60*60*24),
-			isset($_POST['to']) ? $_POST['to'] : time(),
-			isset($_POST['net']) ? $_POST['net'] : 0,
-			isset($_POST['customerid']) ? $_POST['customerid'] : 0,
+		$from = !empty($_POST['from']) ? $_POST['from'] : time()-(60*60*24);
+		$to = !empty($_POST['to']) ? $_POST['to'] : time();
+		$net = !empty($_POST['net']) ? $_POST['net'] : 0;
+		$customer = !empty($_POST['customerid']) ? $_POST['customerid'] : 0;
+
+		if (is_array($from))
+            		$from = mktime($from['Hour'],$from['Minute'],0,$from['Month'],$from['Day'],$from['Year']);
+	        if (is_array($to))
+	                $to = mktime($to['Hour'],$to['Minute'],0,$to['Month'],$to['Day'],$to['Year']);
+
+		$SMARTY->assign('datefrom', $from);
+		$SMARTY->assign('dateto', $to);
+		$SMARTY->assign('net', $net);
+		$SMARTY->assign('customer', $customer);
+
+		$traffic = Traffic($from, $to, $net, $customer,
 			isset($_POST['order']) ? $_POST['order'] : '',
 			isset($_POST['limit']) ? $_POST['limit'] : 0);
 	break;
@@ -238,7 +243,8 @@ $SMARTY->assign('startyear',$startyear);
 $SMARTY->assign('endtime',$endtime);
 $SMARTY->assign('endyear',$endyear);
 $SMARTY->assign('showips', isset($_POST['showips']) ? TRUE : FALSE);
-$SMARTY->assign('bars',$bars);
+$SMARTY->assign('bars', $bars);
+$SMARTY->assign('bar', $bar);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 $SMARTY->assign('trafficnet', $SESSION->is_set('trafficnet') ? $SESSION->get('trafficnet') : 0);
 $SMARTY->display('traffic.html');

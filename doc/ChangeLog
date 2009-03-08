@@ -11,6 +11,7 @@ version ? (????-??-??):
   - fixed stats compacting (alec)
   - added division filter on Customers List (alec)
   - modified division selector (using multiselect) in numberplans (alec)
+  - added simple traffic graphs (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 
