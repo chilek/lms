@@ -30,6 +30,7 @@ A.blend		{ color: #888888; }
 A:hover		{ text-decoration: underline; color: #336600; }
 TR.blend A	{ color: #888888; }
 TR.alertblend A	{ color: #FA8072; }
+TR.suspended A  { color: #30B6C6; }
 
 P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -151,6 +152,7 @@ div.multiselectlayer ul li input { border: none; }
 .white		{ color: #FFFFFF; }
 .alert		{ color: #FF0000; }
 .alertblend	{ color: #FA8072; }
+.suspended	{ color: #30B6C6; }
 .bold		{ font-weight: bold; }
 
 .pre		{ font-size:  8pt; font-family: Courier, Courier New; }
