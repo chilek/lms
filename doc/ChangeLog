@@ -13,6 +13,8 @@ version ? (????-??-??):
   - modified division selector (using multiselect) in numberplans (alec)
   - added simple traffic graphs (alec)
   - distinct suspended from outdated and future tariffs (chilan)
+  - added Events panel in customer info + small improvements in timetable
+    (Jacek Nowosielski/alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

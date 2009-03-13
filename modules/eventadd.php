@@ -83,6 +83,7 @@ if(isset($_POST['event']))
 }
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
+$event['customerid'] = isset($event['customerid']) ? $event['customerid'] : $_GET['customerid'];
 
 if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
 {
@@ -95,7 +96,11 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $userlist = $LMS->GetUserNames();
 
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_networks']))
+{
+	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+}
+
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('userlistsize', sizeof($userlist));
 $SMARTY->assign('error', $error);

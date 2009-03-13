@@ -2110,7 +2110,6 @@ $_LANG['Download all (TXT)'] = 'Pobierz wszystkie (TXT)';
 $_LANG['Previous ticket'] = 'Poprzednie zgłoszenie';
 $_LANG['Next ticket'] = 'Następne zgłoszenie';
 $_LANG['Division'] = 'Firma';
-$_LANG['Select division(s)'] = 'Wybierz firmę(y)';
 $_LANG['Transaction type:'] = 'Typ operacji:';
 $_LANG['Select transaction type'] = 'Wybierz typ operacji';
 $_LANG['Are you sure, you want to remove customer voip account?'] = 'Czy na pewno chcesz usunąć konto VoIP klienta?';
@@ -2131,5 +2130,11 @@ $_LANG['Available<!plural>:'] = 'Dostępne:';
 $_LANG['Selected<!plural>:'] = 'Wybrane:';
 $_LANG['AVG:'] = 'ŚREDNIA:';
 $_LANG['LAST:'] = 'OSTATNI:';
+$_LANG['MAX:'] = 'MAX:';
+$_LANG['DOWNLOAD'] = 'DOWNLOAD';
+$_LANG['UPLOAD'] = 'UPLOAD';
+$_LANG['Customer Timetable:'] = 'Terminarz klienta:';
+$_LANG['last $0 events'] = 'ostatnie $0 zdarzeń';
+$_LANG['There\'s no events in timetable.'] = 'Brak zdarzeń w kalendarzu.';
 
 ?>
