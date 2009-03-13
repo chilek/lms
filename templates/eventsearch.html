@@ -76,9 +76,9 @@
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[customerid]">
 				<OPTION value="0" SELECTED>{t}- select customer -{/t}</OPTION>
-				{section name=customerlist loop=$customerlist}	
-				<OPTION value="{$customerlist[customerlist].id}">{$customerlist[customerlist].customername}</OPTION>
-				{/section}
+				{foreach from=$customerlist item=customer}	
+				<OPTION value="{$customer.id}">{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

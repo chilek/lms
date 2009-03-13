@@ -3652,12 +3652,12 @@ class LMS
 		if(!$customerid) return NULL;
 		
 		if($list = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, 
-				    description, filename, md5sum, contenttype, template, closed, cdate
-				    FROM documentcontents, documents
-				    LEFT JOIN numberplans ON(numberplanid = numberplans.id)
-				    WHERE documents.id = documentcontents.docid
-				    AND customerid = ?
-				    ORDER BY cdate', array($customerid)))
+			description, filename, md5sum, contenttype, template, closed, cdate
+			FROM documentcontents, documents
+			LEFT JOIN numberplans ON(numberplanid = numberplans.id)
+			WHERE documents.id = documentcontents.docid
+			AND customerid = ?
+			ORDER BY cdate', array($customerid)))
 		{
 			if($limit)
 			{
@@ -3681,6 +3681,59 @@ class LMS
 			WHERE (validfrom = 0 OR validfrom <= ?)
 			    AND (validto = 0 OR validto >= ?)
 			ORDER BY value', 'id', array($from, $to));
+	}
+
+	function EventSearch($search, $order='date,asc', $simple=false)
+	{
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+
+		(strtolower($direction) != 'desc') ? $direction = 'ASC' : $direction = 'DESC';
+
+		switch($order)
+		{
+			default:
+				$sqlord = ' ORDER BY date '.$direction.', begintime '.$direction;
+			break;
+		}
+
+		$list = $this->DB->GetAll(
+			'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
+			.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
+			 FROM events
+			 LEFT JOIN customers ON (customerid = customers.id)
+			 WHERE (private = 0 OR (private = 1 AND userid = ?)) '
+			.($search['datefrom'] ? ' AND date >= '.$search['datefrom'] : '')
+			.($search['dateto'] ? ' AND date <= '.$search['dateto'] : '')
+			.($search['customerid'] ? ' AND customerid = '.$search['customerid'] : '')
+			.($search['title'] ? ' AND title ?LIKE? \'%'.$search['title'].'%\'' : '')
+			.($search['description'] ? ' AND description ?LIKE? \'%'.$search['description'].'%\'' : '')
+			.($search['note'] ? ' AND note ?LIKE? \'%'.$search['note'].'%\'' : '')
+			.$sqlord, array($this->AUTH->id));
+
+		if($list)
+		{
+			foreach($list as $idx => $row)
+			{
+				if(!$simple)
+					$list[$idx]['userlist'] = $this->DB->GetAll('SELECT userid AS id, users.name
+						FROM eventassignments, users
+						WHERE userid = users.id AND eventid = ? ',
+						array($row['id']));
+
+				if($search['userid'] && !empty($list[$idx]['userlist']))
+					foreach($list[$idx]['userlist'] as $user)
+						if($user['id'] == $search['userid'])
+						{
+							$list2[] = $list[$idx];
+							break;
+						}
+			}
+
+			if($search['userid'])
+				return $list2;
+			else
+				return $list;
+		}
 	}
 	
 	function GetNumberPlans($doctype=NULL, $cdate=NULL)

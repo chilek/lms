@@ -47,6 +47,7 @@ $tariffs = $LMS->GetTariffs();
 $documents = $LMS->GetDocuments($_GET['id'], 10);
 $taxeslist = $LMS->GetTaxes();
 $allnodegroups = $LMS->GetNodeGroupNames();
+$eventlist = $LMS->EventSearch(array('customerid' => $_GET['id']), 'date,desc', true);
 
 if($customerinfo['cutoffstop'] > mktime(0,0,0))
         $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
@@ -80,6 +81,7 @@ $SMARTY->assign(
 			'tariffs' => $tariffs,
 			'documents' => $documents,
 			'taxeslist' => $taxeslist,
+			'eventlist' => $eventlist,
 			'expired' => $expired,
 			'time' => $time,
 			'value' => $value,
