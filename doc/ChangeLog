@@ -15,7 +15,10 @@ version ? (????-??-??):
   - distinct suspended from outdated and future tariffs (chilan)
   - added Events panel in customer info + small improvements in timetable
     (Jacek Nowosielski/alec)
-
+  - renamed node/customers "message"/"warning" to "notice" (alec)
+  - renamed menu "Mailing" to "Messages" (alec)
+  - added sent messages history (alec)
+  
 version 1.11.7 Bastet (2009-02-13):
 
   - fixed calculation of netto value and united tax value calculation method (chilan)

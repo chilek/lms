@@ -53,7 +53,7 @@
 						<IMG SRC="img/customer.gif" alt="">&nbsp;<B>{t}Customers:{/t}</B>
 					</TD>
 					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
-						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{t}Warning message:{/t}</B>
+						<IMG SRC="img/mail.gif" alt="">&nbsp;<B>{t}Notice content:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -66,7 +66,7 @@
 					</TD>
 					<TD CLASS="fright" COLSPAN="2">
 						<TABLE CELLPADDING="3">
-							<TD COLSPAN="3" {tip text="Customer warning content"}>
+							<TD COLSPAN="3" {tip text="Customer notice content"}>
 								<TEXTAREA NAME="setwarnings[message]" id="setwarnings[message]" ROWS="20" COLS="75">{$warnmessage}</TEXTAREA>
 							</TD>
 						</TABLE>
@@ -77,8 +77,10 @@
 						<INPUT TYPE="checkbox" NAME="customers" OnClick="javascript:SelectAllCustomers()"><A HREF="javascript:SelectAllCustomers2()">{t}Select All<!masculine>{/t}</A></INPUT>
 					</TD>
 					<TD CLASS="fbottom" ALIGN="left">
-						 <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{t}Enable warnings{/t}</A></INPUT></NOBR>
-						 <NOBR><INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{t}Disable warnings{/t}</A></INPUT></NOBR>
+						 <NOBR>
+						 <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{t}Enable{/t}</A></INPUT>
+						 / <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{t}Disable{/t}</A></INPUT>
+						 </NOBR>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT">
 						<A HREF="javascript:document.setwarnings.submit()" accesskey="s">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>

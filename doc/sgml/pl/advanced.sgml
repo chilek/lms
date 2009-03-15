@@ -751,6 +751,30 @@
 			<member>inv_cplace - miejsce wystawienia faktury</member>
 		</simplelist>
 	</sect2>
+	<sect2 id="messages">
+		<title>Wiadomo¶ci - lista ('messages')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>subject - temat wiadomo¶ci</member>
+			<member>body - tre¶æ wiadomo¶ci</member>
+			<member>cdate - data utworzenia</member>
+			<member>type - typ (1-email, 2-sms)</member>
+			<member>userid - identyfikator nadawcy (u¿ytkownika)</member>
+			<member>sender - nag³ówek 'From' wiadomo¶ci e-mail</member>
+		</simplelist>
+	</sect2>
+	<sect2 id="messagesitems">
+		<title>Wiadomo¶ci - szczegó³y ('messageitems')</title>
+		<simplelist>
+			<member>id - identyfikator</member>
+			<member>messageid - identyfikator wiadomo¶ci</member>
+			<member>customerid - identyfikator odbiorcy (klienta)</member>
+			<member>destination - numer tel./adres e-mail odbiorcy</member>
+			<member>lastdate - data ostatniego przetwarzania (wys³ania lub b³êdu)</member>
+			<member>status - status wysy³ki (zobacz lib/definitions.php)</member>
+			<member>error - komunikat b³êdu</member>
+		</simplelist>
+	</sect2>
           <sect2 id="dbinfo">
                <title>Informacje o bazie danych ('dbinfo')</title>
                <simplelist>

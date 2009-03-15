@@ -144,9 +144,9 @@ and it only contains letters, digits and underscore and minus signs. Groups are
 being used in scripts configuration, and for this reason group names cannot
 contain spaces.</para>
 	</sect2>
-	<sect2 id="menu-customers-messages">
-	    <title>Messages</title>
-            <para>In this module, you're able to write administrative message which
+	<sect2 id="menu-customers-notices">
+	    <title>Notices</title>
+            <para>In this module, you're able to write administrative notice (message) which
             will appear on customers Web browser screen and assign it massively to all
             or majority of your customers (just pick them using selection box on the left).
             It's also possible here to deselect administrative messages massively here.
@@ -205,14 +205,14 @@ assign new computer to it.</para></note></para>
 can enter whole IP, MAC or computer name, or just its fragment and search will
 guess for you.</para>
 	</sect2>
-	<sect2 id="menu-nodes-warnings">
-	    <title>Messages</title>
-		<para>You can write administration message here and it will
+	<sect2 id="menu-nodes-notices">
+	    <title>Notices</title>
+		<para>You can write administration notice (message) here and it will
 appear on customer's Web browser screen. In this module you can select majority or
 all computers and assign them common message. Just choose computers using
 selectbox on the left (computers with message already on will be displayed in
 red). If you only want to assign a message to customer, but don't want to turn it
-on, just write a message and don't select any of 'Enable/Disable message' boxes.
+on, just write a notice and don't select any of 'Enable/Disable' boxes.
 </para>
 	</sect2>	
 	<sect2 id="menu-nodes-reports">
@@ -756,9 +756,9 @@ query = SELECT mail_bcc
 	    </example></para>
 	</sect2>
  </sect1>
- <sect1 id="menu-mailing">
-	<title>Mailing</title>
-	<para>Mailing is component where you can spam groups of your customers
+ <sect1 id="menu-messages">
+	<title>Messages</title>
+	<para>Messages is component where you can spam groups of your customers
 	if you have to communicate something to them. Obviously you need to specify
 	sender name and address, write your message in text box and select appropriate
 	group of recipients. Your attendance can be grouped by status, network or customer
@@ -1117,7 +1117,7 @@ registered/unregistered cases) if ticket will be running via email.</para>
     	    </listitem>
     	    <listitem>
         	<para>debug_email</para>
-        	<para>E-mail address for debugging - messages sent from module 'Mailing' will be delivered
+        	<para>E-mail address for debugging - messages sent from module 'Messages' will be delivered
         	to this address instead of sending them to real users. </para>
         	<para>Example:     <prompt>debug_email = root@localhost</prompt></para>
     	    </listitem>

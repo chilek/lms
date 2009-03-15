@@ -131,12 +131,13 @@
 	    my¶lnika lub podkre¶lenia. Poniewa¿ grupy wykorzystywane s± w skryptach w nazwie
 	    nie mo¿e byæ znaku spacji.</para>
 	</sect2>
-	<sect2 id="menu-customers-messages">
-	    <title>Wiadomo¶ci</title>
-	    <para>Tutaj mo¿na "hurtowo" przypisaæ tre¶æ wiadomo¶ci administracyjnej
-	    klientom, których wybiera siê z listy w lewym oknie. Mo¿liwe jest
-	    tak¿e w³±czenie lub wy³±czenie ostrze¿eñ wszystkim komputerom nale¿±cym
-	    do wybranych klientów.</para>
+	<sect2 id="menu-customers-notices">
+	    <title>Powiadomienia</title>
+	    <para>Tutaj mo¿na "hurtowo" przypisaæ tre¶æ wiadomo¶ci administracyjnej (powiadomienia)
+	    klientom, których wybiera siê z listy w lewym oknie. Tre¶æ przypisuje siê klientom,
+	    natomiast aby wiadomo¶æ zosta³± wy¶wietlona w przegl±darce internetowej na 
+	    komputrerze klienta nale¿y j± w³±czyæ dla wybranych komputerów. W³±czenie jak i wy³±czenie
+	    powiadomieñ wszystkim komputerom nale¿±cym do wybranych klientów jest mo¿liwe w tym miejscu.</para>
 	</sect2>
 	<sect2 id="menu-customers-reports">
 	    <title>Raporty</title>
@@ -191,13 +192,13 @@
 	    <para>Wyszukiwanie komputerów wed³ug zadanych kryteriów. Mo¿esz podaæ 
 	    ca³± lub fragment nazwy komputera oraz jego adresów IP i MAC.</para>
 	</sect2>
-	<sect2 id="menu-nodes-messages">
-	    <title>Wiadomo¶ci</title>
-		<para>Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych dla klientów oraz
-		w³±cza lub wy³±cza komputerom ostrze¿enia. Po lewej stronie znajduje siê lista, na
-		której komputery z w³±czonym ostrze¿eniem zaznaczone s± kolorem czerwonym. Je¶li chcesz
-		tylko zmieniæ/przypisaæ klientom tre¶æ wiadomo¶ci administracyjnej, zaznacz odpowiednie
-		komputery na li¶cie i pozostaw puste pola 'W³±cz ostrze¿enia' oraz 'Wy³±cz ostrze¿enia'.</para>
+	<sect2 id="menu-nodes-notices">
+	    <title>Powiadomienia</title>
+		<para>Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych (powiadomieñ) dla klientów oraz
+		w³±cza lub wy³±cza je wybranym komputerom. Po lewej stronie znajduje siê lista, na
+		której komputery z w³±czonym powiadomieniem zaznaczone s± kolorem czerwonym. Je¶li chcesz
+		tylko zmieniæ/przypisaæ klientom tre¶æ powiadomienia, zaznacz odpowiednie
+		komputery na li¶cie i pozostaw puste pola 'W³±cz' oraz 'Wy³±cz'.</para>
 	</sect2>	
 	<sect2 id="menu-nodes-reports">
 	    <title>Raporty</title>
@@ -805,9 +806,9 @@ MISC_OTHER="-A -x -j"
 	</example></para>
 	</sect2>
  </sect1>
- <sect1 id="menu-mailing">
-	<title>Mailing</title>
-	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
+ <sect1 id="menu-messages">
+	<title>Wiadomo¶ci</title>
+	<para>Wiadomo¶ci, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
 	klientów twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
 	odbiorców, do której zostanie wys³any e-mail. Grupê adresatów mo¿na okre¶liæ
 	wg statusu oraz sieci lub grup klientów do których nale¿±. Je¿eli korzystasz z serwera
@@ -1179,7 +1180,7 @@ links -dump \
         </listitem>
         <listitem>
             <para>debug_email</para>
-            <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
+            <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Wiadomo¶ci' LMS'a, 
             zamiast do w³a¶ciwych klientów.</para>
             <para>Przyk³ad:     <prompt>debug_email = root@localhost</prompt></para>
         </listitem>

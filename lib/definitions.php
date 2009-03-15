@@ -34,6 +34,15 @@ define('RT_DEAD', 3);
 
 $RT_STATES = array(RT_NEW => trans('new'), RT_OPEN => trans('opened'), RT_RESOLVED => trans('resolved'), RT_DEAD => trans('dead'));
 
+// Messages status and type
+define('MSG_NEW', 1);
+define('MSG_SENT', 2);
+define('MSG_ERROR', 3);
+define('MSG_DRAFT', 4);
+
+define('MSG_MAIL', 1);
+define('MSG_SMS', 2);
+
 // Account types
 define('ACCOUNT_SHELL', 1);
 define('ACCOUNT_MAIL', 2);

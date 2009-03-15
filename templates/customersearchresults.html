@@ -102,11 +102,11 @@
 			{if $customerlist[customerlist].warncount}
 				{if $customerlist[customerlist].status eq 3}
 					{if $customerlist[customerlist].nodewarn eq 1}
-						<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="[ {t}Disable Warnings for All{/t} ]" title="[ {t}Disable Warnings for All{/t} ]"></A>
+						<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="[ {t}Disable notices for all{/t} ]" title="[ {t}Disable notices for all{/t} ]"></A>
 					{else}
 						{if $customerlist[customerlist].nodewarn eq 2}
-							<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable Warnings for All{/t} ]" title="[ {t}Disable Warnings for All{/t} ]"></A>
-						{else}<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="[ {t}Enable Warnings for All{/t} ]" title="[ {t}Enable Warnings for All{/t} ]"></A>
+							<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable notices for all{/t} ]" title="[ {t}Disable notices for all{/t} ]"></A>
+						{else}<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="[ {t}Enable notices for all{/t} ]" title="[ {t}Enable notices for all{/t} ]"></A>
 						{/if}
 					{/if}
 				{/if}
@@ -136,15 +136,13 @@
 	</TR>
 	<TR class="dark">
 		<TD width="100%" class="fall" align="left" COLSPAN="4" nowrap>
-			<A HREF="javascript:setWarnings(1);"><IMG SRC="img/warningon.gif">{t}Enable Warnings for All{/t}</A>&nbsp;
-			<A HREF="javascript:setWarnings(0);"><IMG SRC="img/warningoff.gif">{t}Disable Warnings for All{/t}</A>&nbsp;
-			<A HREF="?m=customerwarn&search=1"><IMG SRC="img/mail.gif">{t}Set Message{/t}</A>
+			<IMG SRC="img/warningon.gif"> <A HREF="javascript:setWarnings(1);">{t}Enable{/t}</A> / <A HREF="javascript:setWarnings(0);">{t}Disable{/t}</A>&nbsp;
+			<IMG SRC="img/mail.gif"> <A HREF="?m=customerwarn&search=1">{t}Set notice content{/t}</A>
 		</TD>
 	</TR>
 	<TR class="dark">
 		<TD width="100%" class="fall" align="left" COLSPAN="4" nowrap>
-			<A HREF="javascript:customerGroup(1);"><IMG SRC="img/group.gif">{t}Add customers to group{/t}</A>&nbsp;
-			<A HREF="javascript:customerGroup(0);"><IMG SRC="img/group.gif">{t}Remove customers from group{/t}</A>&nbsp;
+			<IMG SRC="img/group.gif"> <A HREF="javascript:customerGroup(1);">{t}Add{/t}</A> / <A HREF="javascript:customerGroup(0);">{t}Remove Group{/t}</A>:
 			<SELECT SIZE="1" NAME="setwarnings[customergroup]">
 				{section name=customergroups loop=$customergroups}
 				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup eq $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>

@@ -89,9 +89,9 @@
 			<IMG SRC="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[warning]" {tip text="Select node message"}>
-				<OPTION VALUE="1"{if $nodeinfo.warning} SELECTED{/if}>{t}warning on{/t}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.warning} SELECTED{/if}>{t}warning off{/t}</OPTION>
+			<SELECT SIZE="1" NAME="nodeedit[warning]" {tip text="Set notice for node"}>
+				<OPTION VALUE="1"{if $nodeinfo.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeinfo.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>

@@ -1,0 +1,111 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu" nowrap>
+			<A href="?m=messagelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+		</TD>
+		<TD WIDTH="96%" CLASS="fbt" nowrap>
+			<A href="?m=messagelist&o=subject{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{t}Subject:{/t}</A> {if $listdata.order eq "subject"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			<A href="?m=messagelist&o=cnt{if $listdata.direction eq "asc" && $listdata.order eq "cnt"},desc{/if}">{t}Recipients:{/t}</A> {if $listdata.order eq "cnt"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu" nowrap>
+			<B>{t 0=$listdata.total}Total: $0{/t}</B>&nbsp;
+		</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="5" nowrap>
+			<FORM METHOD="POST" NAME="page">
+			<INPUT type="submit" class="hiddenbtn">
+			<B>{t}Filter:{/t} </B> 
+			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+			<SELECT size="1" name="cat">
+				<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
+				<OPTION value="subject"{if $listdata.cat eq "subject"} SELECTED{/if}>{t}subject{/t}</OPTION>
+				<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
+				<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
+				<OPTION value="username"{if $listdata.cat eq "username"} SELECTED{/if}>{t}user name{/t}</OPTION>
+				<OPTION value="userid"{if $listdata.cat eq "userid"} SELECTED{/if}>{t}user ID{/t}</OPTION>
+				<OPTION value="destination"{if $listdata.cat eq "destination"} SELECTED{/if}>{t}destination number/email{/t}</OPTION>
+			</SELECT>&nbsp;
+			{t}Type:{/t}
+			<SELECT size="1" name="type">
+				<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{t}- all types -{/t}</OPTION>
+				<OPTION value="{$smarty.const.MSG_MAIL}"{if $listdata.type == $smarty.const.MSG_MAIL} SELECTED{/if}>{t}email{/t}</OPTION>
+				<OPTION value="{$smarty.const.MSG_SMS}"{if $listdata.type == $smarty.const.MSG_SMS} SELECTED{/if}>{t}sms{/t}</OPTION>
+			</SELECT>&nbsp;
+			{t}Status:{/t}
+			<SELECT size="1" name="status">
+				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{t}- all statuses -{/t}</OPTION>
+				<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{t}waiting<!plural>{/t}</OPTION>
+			{*
+				<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{t}drafts{/t}</OPTION>
+			*}
+				<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{t}sent<!plural>{/t}</OPTION>
+				<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{t}errornous<!plural>{/t}</OPTION>
+			</SELECT>
+			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
+			</FORM>
+		</TD>
+	</TR>		
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="5">
+			{include file="scroller.html" loop=$messagelist scrollerno=1}
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
+	{assign var=message value=$messagelist[messagelist]}
+	<TR class="{cycle}{if $message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
+			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="right" NOWRAP onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
+			{if $message.type == $smarty.const.MSG_SMS}
+			<img src="img/sms.gif" alt="sms">
+			{else}
+			<img src="img/email.gif" alt="email">
+			{/if}
+		</TD>
+		<TD WIDTH="96%" onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
+			{$message.subject}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
+			{$message.cnt|default:0}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
+			<A href="?m=messageinfo&id={$message.id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" title="[ {t}Info{/t} ]"></A>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="5">
+			<P>&nbsp;</P>
+			<P><B>{t}No such messages in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>	
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="5">
+			{include file="scroller.html" loop=$messagelist scrollerno=2}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="dark">
+		<TD WIDTH="2%" CLASS="fleftu" colspan="2" NOWRAP>
+		</TD>
+		<TD CLASS="frightu" COLSPAN="3">
+			<B>{t 0=$listdata.total}Total: $0{/t}</B>
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

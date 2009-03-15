@@ -114,11 +114,11 @@
 			{if $customerlist[customerlist].warncount}
 				{if $customerlist[customerlist].status eq 3}
 					{if $customerlist[customerlist].nodewarn eq 1}
-						<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="[ {t}Disable Warnings for All{/t} ]" title="[ {t}Disable Warnings for All{/t} ]"></A>
+						<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="[ {t}Disable notices for all{/t} ]" title="[ {t}Disable notices for all{/t} ]"></A>
 					{else}
 						{if $customerlist[customerlist].nodewarn eq 2}
-							<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable Warnings for All{/t} ]" title="[ {t}Disable Warnings for All{/t} ]"></A>
-						{else}<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="[ {t}Enable Warnings for All{/t} ]" title="[ {t}Enable Warnings for All{/t} ]"></A>
+							<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {t}Disable notices for all{/t} ]" title="[ {t}Disable notices for all{/t} ]"></A>
+						{else}<A HREF="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="[ {t}Enable notices for all{/t} ]" title="[ {t}Enable notices for all{/t} ]"></A>
 						{/if}
 					{/if}
 				{/if}

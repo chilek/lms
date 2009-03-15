@@ -42,7 +42,7 @@
 				<para>zlib (dla kompresowanych backupów),</para>
 			</listitem>
 			<listitem>
-				<para>gd lub ming (dla mapy sieci),</para>
+				<para>gd i/lub ming (tylko dla mapy sieci),</para>
 			</listitem>
 			<listitem>
 				<para>mysql, mysqli lub pgsql (dla bazy danych),</para>

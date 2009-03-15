@@ -105,9 +105,9 @@ $menu = array(
 					'prio' => 50,
 				),
 				array(
-					'name' => trans('Messages'),
+					'name' => trans('Notices'),
 					'link' =>'?m=customerwarn',
-					'tip' => trans('Allows you to send message to customers'),
+					'tip' => trans('Allows you to send notices to customers'),
 					'prio' => 60,
 				),
 				array(
@@ -158,9 +158,9 @@ $menu = array(
 					'prio' => 50,
 				),
 				array(
-					'name' => trans('Messages'),
+					'name' => trans('Notices'),
 					'link' => '?m=nodewarn',
-					'tip' => trans('Allows you to send message to nodes'),
+					'tip' => trans('Allows you to send notices to customers'),
 					'prio' => 60,
 				),
 				array(
@@ -393,7 +393,7 @@ $menu = array(
 				array(
 					'name' => trans('Accounts'),
 					'link' => '?m=accountlist',
-					'tip' => trans('Accounts in system'),
+					'tip' => trans('List of accounts'),
 					'prio' => 10,
 				),
 				array(
@@ -405,7 +405,7 @@ $menu = array(
 				array(
 					'name' => trans('Aliases'),
 					'link' => '?m=aliaslist',
-					'tip' => trans('Aliases of accounts'),
+					'tip' => trans('List of aliases'),
 					'prio' => 30,
 				),
 				array(
@@ -417,7 +417,7 @@ $menu = array(
 				array(
 					'name' => trans('Domains'),
 					'link' => '?m=domainlist',
-					'tip' => trans('Domains'),
+					'tip' => trans('List of domains'),
 					'prio' => 50,
 				),
 				array(
@@ -429,27 +429,33 @@ $menu = array(
 				array(
 					'name' => trans('Search'),
 					'link' => '?m=accountsearch',
-					'tip' => trans('Allows you to search account'),
+					'tip' => trans('Allows you to search for account, alias, domain'),
 					'prio' => 70,
 				),
 			),					       
 		),
 
-		'mailing' => array(
-			'name' => trans('Mailing'),
+		'messages' => array(
+			'name' => trans('Messages'),
 			'img' =>'mail.gif',
-			'link' =>'?m=mailing',
-			'tip' => trans('Serial Mail'),
+			'link' =>'?m=messageadd',
+			'tip' => trans('Customers messaging'),
 			'accesskey' =>'m',
 			'prio' => 35,
-/*			'submenu' => array(
+			'submenu' => array(
 				array(
-					'name' => trans('Execute mailing'),
-					'link' => '?m=mailing',
-					'tip' => trans('Serial Mail'),
+					'name' => trans('List'),
+					'link' => '?m=messagelist',
+					'tip' => trans('List of sent messages'),
 					'prio' => 10,
 				),
-			),*/
+				array(
+					'name' => trans('New Message'),
+					'link' => '?m=messageadd',
+					'tip' => trans('Allows you to send messages to customers'),
+					'prio' => 20,
+				),
+			),
 		),
 
 		'reload' => array(
