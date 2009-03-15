@@ -95,7 +95,7 @@
 			<IMG SRC="img/warning{if !$nodedata.warning}off{else}on{/if}.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<SELECT SIZE="1" NAME="nodedata[warning]" {tip text="Set message for node"}>
+			<SELECT SIZE="1" NAME="nodedata[warning]" {tip text="Set notice for node"}>
 				<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
 			</SELECT>

@@ -79,7 +79,7 @@ if(isset($_GET['search']))
 	$SMARTY->assign('selected', $selected);
 }
 
-$layout['pagetitle'] = trans('Messages');
+$layout['pagetitle'] = trans('Notices');
 
 $customerlist = $DB->GetAllByKey('SELECT c.id AS id, MAX(warning) AS warning, '.
 		    $DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername 

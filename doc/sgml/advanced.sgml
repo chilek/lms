@@ -748,6 +748,30 @@
                     <member>inv_cplace - invoice creation place</member>
                </simplelist>
           </sect2>
+          <sect2 id="messages">
+               <title>Messages - list ('messages')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>subject - message subject</member>
+                    <member>body - message contents</member>
+                    <member>cdate - creation date</member>
+                    <member>type - type (1-email, 2-sms)</member>
+                    <member>userid - sender (user) identifier</member>
+                    <member>sender - e-mail 'From' header</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="messagesitems">
+               <title>Messages - items ('messageitems')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>messageid - message identifier</member>
+                    <member>customerid - customer identifier</member>
+                    <member>destination - destination (phone num./e-mail)</member>
+                    <member>lastdate - last meaning date</member>
+                    <member>status - sending status (see lib/definitions.php)</member>
+                    <member>error - error message</member>
+               </simplelist>
+          </sect2>
           <sect2 id="dbinfo">
                <title>Database information ('dbinfo')</title>
                <simplelist>

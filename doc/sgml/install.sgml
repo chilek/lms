@@ -39,7 +39,7 @@
 				<para>zlib (for compressed backups),</para>
 			</listitem>
 			<listitem>
-				<para>gd or ming (for network map),</para>
+				<para>gd and/or ming (network map only),</para>
 			</listitem>
 			<listitem>
 				<para>mysql or mysqli or pgsql (for db support),</para>
@@ -420,8 +420,8 @@ password = password_entered_with_lms_user_creation</screen>
         <listitem><para>configuration reload</para></listitem>
         <listitem><para>customers management</para></listitem>
         <listitem><para>nodes management</para></listitem>
-        <listitem><para>stats access</para></listitem>
-        <listitem><para>mailing access</para></listitem>
+        <listitem><para>traffic stats</para></listitem>
+        <listitem><para>messaging (email, sms)</para></listitem>
         <listitem><para>Helpdesk (RT) administration</para></listitem>
         <listitem><para>Helpdesk (RT) operation</para></listitem>
         <listitem><para>hosting management</para></listitem>

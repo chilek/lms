@@ -93,9 +93,10 @@ if($backid)
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Messages');
+$layout['pagetitle'] = trans('Notices');
 
 $nodelist = $LMS->GetNodeList();
+
 unset($nodelist['total']);
 unset($nodelist['order']);
 unset($nodelist['direction']);

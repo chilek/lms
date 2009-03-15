@@ -1,0 +1,19 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<BR>
+<BLOCKQUOTE><H1>{$layout.pagetitle}</H1>
+<P class="txt">
+<B>{t}Sender:{/t}</B> {$message.from} &lt;{$message.sender}&gt;<BR>
+<B>{t}Subject:{/t}</B> {$message.subject}<BR>
+<B>{t}Message:{/t}</B><BR>
+<TABLE CELLPADDING="5">
+        <TR>
+        	<TD CLASS="fall superlight">
+			<PRE>{$message.body}</PRE>
+		</TD>
+	</TR>
+</TABLE>				
+</P>
+{if $recipcount}
+<P class="txt"><B>{t}Sending emails to:{/t}</B><BR>
+{/if}

@@ -1079,6 +1079,46 @@ CREATE TABLE voipaccounts (
 );
 
 /* ---------------------------------------------------
+ Structure of table "messages"
+------------------------------------------------------*/
+DROP SEQUENCE messages_id_seq;
+DROP TABLE messages;
+CREATE SEQUENCE messages_id_seq;
+CREATE TABLE messages (
+        id 	integer 	DEFAULT nextval('messages_id_seq'::text) NOT NULL,
+        subject varchar(255)	DEFAULT '' NOT NULL,
+	body 	text		DEFAULT '' NOT NULL,
+	cdate 	integer		DEFAULT 0 NOT NULL,
+	type 	smallint	DEFAULT 0 NOT NULL,
+	userid 	integer		DEFAULT 0 NOT NULL,
+	sender 	varchar(255) 	DEFAULT NULL,
+        PRIMARY KEY (id)
+);
+
+CREATE INDEX messages_cdate_idx ON messages (cdate, type);
+CREATE INDEX messages_userid_idx ON messages (userid);
+
+/* ---------------------------------------------------
+ Structure of table "messageitems"
+------------------------------------------------------*/
+DROP SEQUENCE messageitems_id_seq;
+DROP TABLE messageitems;
+CREATE SEQUENCE messageitems_id_seq;
+CREATE TABLE messageitems (
+        id 		integer 	DEFAULT nextval('messageitems_id_seq'::text) NOT NULL,
+	messageid 	integer		DEFAULT 0 NOT NULL,
+	customerid 	integer 	DEFAULT 0 NOT NULL,
+	destination 	varchar(255) 	DEFAULT '' NOT NULL,
+	lastdate 	integer		DEFAULT 0 NOT NULL,
+	status 		smallint	DEFAULT 0 NOT NULL,
+	error 		text		DEFAULT NULL, 
+        PRIMARY KEY (id)
+); 
+
+CREATE INDEX messageitems_messageid_idx ON messageitems (messageid);
+CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE up_rights_id_seq;
@@ -1152,6 +1192,32 @@ CREATE TABLE up_info_changes (
 	PRIMARY KEY (id)
 );
 
+/* ---------------------------------------------------
+ Functions and Views
+------------------------------------------------------*/
+CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
+SELECT 
+CASE 
+    WHEN current_setting(''lms.current_user'') = '''' 
+    THEN 0 
+    ELSE current_setting(''lms.current_user'')::integer
+END
+' LANGUAGE SQL;
+
+CREATE VIEW customersview AS
+SELECT c.* FROM customers c
+        WHERE NOT EXISTS (
+	        SELECT 1 FROM customerassignments a
+	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
+
+CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
+SELECT $1::text;
+$$ LANGUAGE SQL IMMUTABLE;
+
+/* ---------------------------------------------------
+ Data records
+------------------------------------------------------*/
 INSERT INTO uiconfig (section, var)
 	VALUES ('userpanel', 'data_consent_text');
 INSERT INTO uiconfig (section, var, value, description, disabled) 
@@ -1191,25 +1257,4 @@ INSERT INTO countries (name) VALUES ('Romania');
 INSERT INTO countries (name) VALUES ('Slovakia');
 INSERT INTO countries (name) VALUES ('USA');
 
-CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
-SELECT 
-CASE 
-    WHEN current_setting(''lms.current_user'') = '''' 
-    THEN 0 
-    ELSE current_setting(''lms.current_user'')::integer
-END
-' LANGUAGE SQL;
-
-CREATE VIEW customersview AS
-SELECT c.* FROM customers c
-        WHERE NOT EXISTS (
-	        SELECT 1 FROM customerassignments a
-	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
-
-CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
-SELECT $1::text;
-$$ LANGUAGE SQL IMMUTABLE;
-
-	
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009021600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009031300');
