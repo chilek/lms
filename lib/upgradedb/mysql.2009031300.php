@@ -26,35 +26,31 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("
-
-CREATE TABLE messages (
+$DB->Execute("CREATE TABLE messages (
         id 	int(11) 	NOT NULL auto_increment,
         subject varchar(255)	DEFAULT '' NOT NULL,
 	body 	text		DEFAULT '' NOT NULL,
-	cdate 	int(11)		DEFAULT '0' NOT NULL,
-	type 	smallint	DEFAULT '0' NOT NULL,
-	userid 	int(11)		DEFAULT '0' NOT NULL,
+	cdate 	int(11)		DEFAULT 0 NOT NULL,
+	type 	smallint	DEFAULT 0 NOT NULL,
+	userid 	int(11)		DEFAULT 0 NOT NULL,
 	sender 	varchar(255) 	DEFAULT NULL,
         PRIMARY KEY (id),
 	INDEX cdate (cdate, type),
 	INDEX userid (userid)
-) TYPE=MyISAM;
+) TYPE=MyISAM");
 
-CREATE TABLE messageitems (
+$DB->Execute("CREATE TABLE messageitems (
         id 		int(11) 	NOT NULL auto_increment,
-	messageid 	int(11)		DEFAULT '0' NOT NULL,
-	customerid 	int(11) 	DEFAULT '0' NOT NULL,
+	messageid 	int(11)		DEFAULT 0 NOT NULL,
+	customerid 	int(11) 	DEFAULT 0 NOT NULL,
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
-	lastdate 	int(11)		DEFAULT '0' NOT NULL,
-	status 		smallint	DEFAULT '0' NOT NULL,
+	lastdate 	int(11)		DEFAULT 0 NOT NULL,
+	status 		smallint	DEFAULT 0 NOT NULL,
 	error 		text		DEFAULT NULL, 
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
 	INDEX customerid (customerid)
-) TYPE=MyISAM; 
-
-");
+) TYPE=MyISAM");
 
 $DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031300', 'dbversion'));
 
