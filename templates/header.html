@@ -16,7 +16,8 @@
 <body{if $warning} onLoad="javascript:alert('{t}Warning! This version of LMS is under development! Remember that it might work unstable and certainly has still many bugs! If you need stability try 1.10 version!{/t}')"{/if}>
 {popup_init src="img/overlib.js"}
 {if $layout.nomenu neq TRUE && !$layout.popup}
-<table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr><td width="1%" class="fall dark" style="vertical-align: top;">
+<div id="pagecontainer">
+    <div id="pageleftbar">
 	<table width="100%">
 		<tr>
 			<td align="center" style="border-bottom-style: dashed; border-bottom-width: 1px;" valign="top">
@@ -61,11 +62,11 @@
 		var clickMenu1 = new ClickShowHideMenu('click-menu1');
 		clickMenu1.init();
 	</script>				
-	</td>
-	<td width="99%" style="padding: 5pt 10pt; vertical-align: top;">
-    	    <div id="autosuggest"><ul></ul></div>
-    	    <form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
-	    <table width="100%" cellpadding="0" cellspacing="0">
+    </div>
+    <div id="pagecontent">
+    	<div id="autosuggest"><ul></ul></div>
+    	<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
+	<table width="100%" cellpadding="0" cellspacing="0">
 		<tr>
 		    <td width="1%" nowrap>
 			{t}Search:{/t}
@@ -90,9 +91,9 @@
 			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
 		    </td>
 		</tr>
-	    </table>
-	    <hr>
-	    </form>
+	</table>
+	<hr>
+	</form>
 <SCRIPT type="text/javascript">
 <!--//
 document.forms['quicksearch'].elements['customerinput'].focus();
