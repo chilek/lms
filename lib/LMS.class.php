@@ -3699,15 +3699,15 @@ class LMS
 		$list = $this->DB->GetAll(
 			'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
 			.$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
-			 FROM events
-			 LEFT JOIN customers ON (customerid = customers.id)
-			 WHERE (private = 0 OR (private = 1 AND userid = ?)) '
-			.($search['datefrom'] ? ' AND date >= '.$search['datefrom'] : '')
-			.($search['dateto'] ? ' AND date <= '.$search['dateto'] : '')
-			.($search['customerid'] ? ' AND customerid = '.$search['customerid'] : '')
-			.($search['title'] ? ' AND title ?LIKE? \'%'.$search['title'].'%\'' : '')
-			.($search['description'] ? ' AND description ?LIKE? \'%'.$search['description'].'%\'' : '')
-			.($search['note'] ? ' AND note ?LIKE? \'%'.$search['note'].'%\'' : '')
+			FROM events
+			LEFT JOIN customers ON (customerid = customers.id)
+			WHERE (private = 0 OR (private = 1 AND userid = ?)) '
+			.(!empty($search['datefrom']) ? ' AND date >= '.$search['datefrom'] : '')
+			.(!empty($search['dateto']) ? ' AND date <= '.$search['dateto'] : '')
+			.(!empty($search['customerid']) ? ' AND customerid = '.$search['customerid'] : '')
+			.(!empty($search['title']) ? ' AND title ?LIKE? \'%'.$search['title'].'%\'' : '')
+			.(!empty($search['description']) ? ' AND description ?LIKE? \'%'.$search['description'].'%\'' : '')
+			.(!empty($search['note']) ? ' AND note ?LIKE? \'%'.$search['note'].'%\'' : '')
 			.$sqlord, array($this->AUTH->id));
 
 		if($list)

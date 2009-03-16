@@ -117,7 +117,7 @@ function GetMessagesList($order='cdate,desc', $search=NULL, $cat=NULL, $type='',
 			GROUP BY i.messageid
 		) x ON (x.messageid = m.id) '
 		.(!empty($userjoin) ? 'JOIN users u ON (u.id = m.userid) ' : '')
-		.$where
+		.(!empty($where) ? $where : '')
     		.$sqlord.' '.$direction);
 
 	$result['type'] = $type;
