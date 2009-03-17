@@ -759,11 +759,7 @@ query = SELECT mail_bcc
  <sect1 id="menu-messages">
 	<title>Messages</title>
 	<para>Messages is component where you can spam groups of your customers
-	if you have to communicate something to them. Obviously you need to specify
-	sender name and address, write your message in text box and select appropriate
-	group of recipients. Your attendance can be grouped by status, network or customer
-	groups. If you use mail server on remote host, you will need to set options
-	smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</para>
+	with email or sms.</para>
 	<para>In message body you can use variables, which will be replaced by
 	customer data:
 	<simplelist>
@@ -773,12 +769,46 @@ query = SELECT mail_bcc
 	    <member><prompt>%pin</prompt> - customer PIN</member>
 	    <member><prompt>%last_10_in_a_table</prompt> - last 10 operations on customer account</member>
 	</simplelist>
+	<note><para>Your server has to support PEAR::Mail for this to
+	send email messages.</para></note>
 	</para>
-	<para><note><para>Your server has to support PEAR::Mail for this to
-work.</para></note>
-	<note><para>It's best to use lms-notify Perl script or notify
-module of <emphasis>lmsd</emphasis> daemon to send emails
-automatically whenever customer is in debt.</para></note></para>
+	<sect2 id="menu-messages-list">
+    	    <title>List</title>
+	    <para>On the list you have a history of sent messages. You can sort them
+	    using filter. Clicking on the message record moves you to information page
+	    with message content and list of recipients. On the list you have 
+	    delivery status of every (sub)message.</para>
+	</sect2>
+	<sect2 id="menu-messages-new">
+    	    <title>New message</title>
+	    <para>To send a message you should specify appropriate
+	    group of recipients, type of message (email/sms). Your attendance can be
+	    grouped by status, network or customer/node groups, etc.</para> 
+	    <para>If you use mail server on remote host, you will need to set options
+	    smtp_host, smtp_port, smtp_username, smtp_password in [mail] section.</para>
+	    <para>Here we've got the list of configuration options for mailing. These options
+	    should be placed in <emphasis>[mail]</emphasis> section.
+    	    <itemizedlist>
+    	    <listitem>
+        	<para>debug_email</para>
+        	<para>E-mail address for debugging - messages sent from module 'Messages' will be delivered
+        	to this address instead of sending them to real users. </para>
+        	<para>Example:     <prompt>debug_email = root@localhost</prompt></para>
+    	    </listitem>
+    	    <listitem>
+        	<para>smtp_host, smtp_port, smtp_username, smtp_password</para>
+        	<para>Parameters for smtp authorization in mailing. Default: 127.0.0.1:25.</para>
+        	<para>Example:     <prompt>smtp_host = mail.domain.pl</prompt></para>
+    	    </listitem>
+    	    <listitem>
+        	<para>smtp_auth_type</para>
+        	<para>Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
+    		will use the best supported method. Default: none.</para>
+        	<para>Example:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
+    	    </listitem>
+	    </itemizedlist>
+	    </para>
+	</sect2>
  </sect1>
  <sect1 id="menu-reload">
 	<title>Reload</title>
@@ -1116,12 +1146,6 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>Example:     <prompt>smarty_debug = 1</prompt></para>
     	    </listitem>
     	    <listitem>
-        	<para>debug_email</para>
-        	<para>E-mail address for debugging - messages sent from module 'Messages' will be delivered
-        	to this address instead of sending them to real users. </para>
-        	<para>Example:     <prompt>debug_email = root@localhost</prompt></para>
-    	    </listitem>
-    	    <listitem>
         	<para>default_zip, default_city, default_address</para>
         	<para>Default zip code, city and street used on "new user" form. Useful when we have many
         	users on the same street.</para>
@@ -1217,17 +1241,6 @@ registered/unregistered cases) if ticket will be running via email.</para>
         	<para>nodepassword_length</para>
         	<para>Length of (auto-generated) node password. Max.32. Default: 16.</para>
         	<para>Example:     <prompt>nodepassword_length = 8</prompt></para>
-    	    </listitem>
-    	    <listitem>
-        	<para>smtp_host, smtp_port, smtp_username, smtp_password</para>
-        	<para>Parameters for smtp authorization in mailing. Default: 127.0.0.1:25.</para>
-        	<para>Example:     <prompt>smtp_host = mail.domain.pl</prompt></para>
-    	    </listitem>
-    	    <listitem>
-        	<para>smtp_auth_type</para>
-        	<para>Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
-    		will use the best supported method. Default: none.</para>
-        	<para>Example:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
     	    </listitem>
     	    <listitem>
         	<para>gd_translate_to</para>

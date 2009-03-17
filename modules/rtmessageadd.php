@@ -143,8 +143,8 @@ if(isset($_POST['message']))
 				&& ($user['email'] || $queue['email'])
 				&& $message['destination'] != $queue['email'])
 			{
-				if(!empty($CONFIG['phpui']['debug_email']))
-					$message['destination'] = $CONFIG['phpui']['debug_email'];
+				if(!empty($CONFIG['mail']['debug_email']))
+					$message['destination'] = $CONFIG['mail']['debug_email'];
 
 				$recipients = $message['destination'];
 				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
@@ -186,8 +186,8 @@ if(isset($_POST['message']))
 		{
 			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
 			
-			if(!empty($CONFIG['phpui']['debug_email']))
-				$message['destination'] = $CONFIG['phpui']['debug_email'];
+			if(!empty($CONFIG['mail']['debug_email']))
+				$message['destination'] = $CONFIG['mail']['debug_email'];
 			if($message['destination']=='') 
 				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];
@@ -280,8 +280,8 @@ if(isset($_POST['message']))
 			{
 				foreach($recipients as $email)
 				{
-					if(!empty($CONFIG['phpui']['debug_email']))
-						$recip = $CONFIG['phpui']['debug_email'];
+					if(!empty($CONFIG['mail']['debug_email']))
+						$recip = $CONFIG['mail']['debug_email'];
 					else
 						$recip = $email;
 					$headers['To'] = '<'.$recip.'>';

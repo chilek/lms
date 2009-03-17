@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Messages</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.11-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Hosting"
+HREF="menu-hosting.html"><LINK
+REL="NEXT"
+TITLE="Reload"
+HREF="menu-reload.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.11-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-hosting.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. User Interface (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-reload.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-MESSAGES"
+>3.10. Messages</A
+></H1
+><P
+>Messages is component where you can spam groups of your customers
+	with email or sms.</P
+><P
+>In message body you can use variables, which will be replaced by
+	customer data:
+	<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%customer</SAMP
+> - name/lastname and forename</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%balance</SAMP
+> - balance value (with sign)</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%cid</SAMP
+> - customer ID</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%pin</SAMP
+> - customer PIN</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%last_10_in_a_table</SAMP
+> - last 10 operations on customer account</TD
+></TR
+></TBODY
+></TABLE
+>
+	</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-MESSAGES-LIST"
+>3.10.1. List</A
+></H2
+><P
+>On the list you have a history of sent messages. You can sort them
+	    using filter. Clicking on the message record moves you to information page
+	    with message content and list of recipients. On the list you have 
+	    delivery status of every (sub)message.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-MESSAGES-NEW"
+>3.10.2. New message</A
+></H2
+><P
+>To send a message you should specify appropriate
+	    group of recipients, type of message (email/sms). Your attendance can be
+	    grouped by status, network or customer/node groups, etc.</P
+><P
+>If you use mail server on remote host, you will need to set options
+	    smtp_host, smtp_port, smtp_username, smtp_password in [mail] section.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Your server has to support PEAR::Mail for this to
+	    send email messages.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	    </P
+><P
+>Here we've got the list of configuration options for mailing. These options
+	    should be placed in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[mail]</I
+></SPAN
+> section.
+    	    <UL
+><LI
+><P
+>debug_email</P
+><P
+>E-mail address for debugging - messages sent from module 'Messages' will be delivered
+        	to this address instead of sending them to real users. </P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>debug_email = root@localhost</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_host, smtp_port, smtp_username, smtp_password</P
+><P
+>Parameters for smtp authorization in mailing. Default: 127.0.0.1:25.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smtp_host = mail.domain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth_type</P
+><P
+>Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
+    		will use the best supported method. Default: none.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smtp_auth_type = DIGEST-MD5</SAMP
+></P
+></LI
+></UL
+>
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-hosting.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-reload.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Hosting</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Reload</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

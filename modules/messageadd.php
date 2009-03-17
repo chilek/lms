@@ -24,21 +24,15 @@
  *  $Id$
  */
 
-function GetRecipients($filter, $type='mail')
+function GetRecipients($filter, $type=MSG_MAIL)
 {
-	global $DB, $LMS;
+	global $DB, $LMS, $CONFIG, $LANGDEFS, $_language;
 	
 	$group = $filter['group'];
 	$network = $filter['network'];
 	$customergroup = $filter['customergroup'];
 	$nodegroup = $filter['nodegroup'];
 	$linktype = $filter['linktype'];
-	
-	switch($type)
-	{
-		case 'sms': $type = 'sms'; break;
-		default: $type = 'mail'; break;
-	}
 	
 	if($group == 4)
 	{
@@ -58,15 +52,32 @@ function GetRecipients($filter, $type='mail')
 	if($network) 
 		$net = $LMS->GetNetworkParams($network);
 	
+	if($type == MSG_SMS)
+	{
+		if ($CONFIG['database']['type'] == 'postgres')
+			$smswhere = "WHERE regexp_replace(phone, '[^0-9]', '') ~ '^([0-9]{2}|0|)"
+				.$LANGDEFS[$_language]['mobile'].'$\'';
+		else
+			$smswhere = "WHERE REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+[0-9]{2}|0)?"
+				.$LANGDEFS[$_language]['mobile'].'$\'';
+	
+		$smstable = 'JOIN (SELECT MIN(phone) AS phone, customerid
+				FROM customercontacts '.$smswhere.'
+				GROUP BY customerid
+			) x ON (x.customerid = c.id)';
+	}
+	
 	$recipients = $DB->GetAll('SELECT c.id, email, pin, '
+		.($type==MSG_SMS ? 'x.phone, ': '')
 		.$DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
 		COALESCE(b.value, 0) AS balance
 		FROM customersview c 
 		LEFT JOIN (
 			SELECT SUM(value) AS value, customerid
 			FROM cash GROUP BY customerid
-		) b ON (b.customerid = c.id)
-		WHERE deleted = '.$deleted
+		) b ON (b.customerid = c.id) '
+		.(!empty($smstable) ? $smstable : '')
+		.'WHERE deleted = '.$deleted
 		.' AND email != \'\''
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
@@ -119,17 +130,29 @@ if(isset($_POST['message']))
 {
 	$message = $_POST['message'];
 
+	$message['type'] = $message['type'] == MSG_MAIL ? MSG_MAIL : MSG_SMS;
 	if($message['group'] < 0 || $message['group'] > 7)
 		$error['group'] = trans('Incorrect customers group!');
 
-	if($message['sender']=='')
-		$error['sender'] = trans('Sender e-mail is required!');
-	elseif(!check_email($message['sender']))
-		$error['sender'] = trans('Specified e-mail is not correct!');
+	if($message['type'] == MSG_MAIL)
+	{
+		$message['body'] = $message['mailbody'];
+	
+		if($message['sender']=='')
+			$error['sender'] = trans('Sender e-mail is required!');
+		elseif(!check_email($message['sender']))
+			$error['sender'] = trans('Specified e-mail is not correct!');
 
-	if($message['from']=='')
-		$error['from'] = trans('Sender name is required!');
-
+		if($message['from']=='')
+			$error['from'] = trans('Sender name is required!');
+	}
+	else
+	{
+		$message['body'] = $message['smsbody'];
+		$message['sender'] = '';
+		$message['from'] = '';
+	}
+	
 	if($message['subject']=='')
 		$error['subject'] = trans('Message subject is required!');
 
@@ -162,7 +185,7 @@ if(isset($_POST['message']))
 
 	if(!$error)
 	{
-		$recipients = GetRecipients($message);
+		$recipients = GetRecipients($message, $message['type']);
 		
 		if(!$recipients)
 			$error['subject'] = trans('Unable to send message. No recipients selected!');
@@ -172,10 +195,11 @@ if(isset($_POST['message']))
 	{	
 		set_time_limit(0);
 
-		$message['body'] = wordwrap($message['body'],76,"\n");
 		$message['body'] = str_replace("\r", '', $message['body']);
 		
-		$layout['nomenu'] = TRUE;
+		if($message['type'] == MSG_MAIL)
+			$message['body'] = wordwrap($message['body'],76,"\n");
+
 		$SMARTY->assign('message', $message);
 		$SMARTY->assign('recipcount', sizeof($recipients));
 		$SMARTY->display('messagesend.html');
@@ -184,18 +208,22 @@ if(isset($_POST['message']))
 
 		$DB->Execute('INSERT INTO messages (type, cdate, subject, body, userid, sender)
 			VALUES (?, ?NOW?, ?, ?, ?, ?)', array(
-				MSG_MAIL,
+				$message['type'],
 				$message['subject'],
 				$message['body'],
 				$AUTH->id,
-				'"'.$message['from'].'" <'.$message['sender'].'>',
+				$message['type']==MSG_MAIL ? '"'.$message['from'].'" <'.$message['sender'].'>' : '',
 			));
 		
 		$msgid = $DB->GetLastInsertID('messages');
 
 		foreach($recipients as $key => $row)
 		{
-			$recipients[$key]['destination'] = !empty($CONFIG['phpui']['debug_email']) ? $CONFIG['phpui']['debug_email'] : $row['email'];
+			if($message['type'] == MSG_MAIL)
+				$recipients[$key]['destination'] = !empty($CONFIG['mail']['debug_email']) ? $CONFIG['mail']['debug_email'] : $row['email'];
+			else
+				$recipients[$key]['destination'] = $row['phone'];
+			
 			$DB->Execute('INSERT INTO messageitems (messageid, customerid,
 				destination, status)
 				VALUES (?, ?, ?, ?)', array(
@@ -208,41 +236,52 @@ if(isset($_POST['message']))
 		
 		$DB->CommitTrans();
 		
-		$files = NULL;
-		if (isset($file))
+		if($message['type'] == MSG_MAIL)
 		{
-			$files[0]['content_type'] = $_FILES['file']['type'];
-			$files[0]['filename'] = $filename;
-			$files[0]['data'] = $file;
-		}
+			$files = NULL;
+			if (isset($file))
+			{
+				$files[0]['content_type'] = $_FILES['file']['type'];
+				$files[0]['filename'] = $filename;
+				$files[0]['data'] = $file;
+			}
 
-		if(!empty($CONFIG['phpui']['debug_email']))
-			echo '<B>'.trans('Warning! Debug mode (using address $0).',$CONFIG['phpui']['debug_email']).'</B><BR>';
+			if(!empty($CONFIG['mail']['debug_email']))
+				echo '<B>'.trans('Warning! Debug mode (using address $0).',$CONFIG['mail']['debug_email']).'</B><BR>';
 			
-		$headers['Date'] = date('r');
-		$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
-		$headers['Subject'] = $message['subject'];
-		$headers['Reply-To'] = $headers['From'];
+			$headers['Date'] = date('r');
+			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
+			$headers['Subject'] = $message['subject'];
+			$headers['Reply-To'] = $headers['From'];
+		}
 			
 		foreach($recipients as $key => $row)
 		{
 			$body = $message['body'];
 				
 			BodyVars($body, $row);
-				
-			$headers['To'] = '<'.$row['destination'].'>';
-
-			echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
-			echo trans('$0 of $1 ($2): $3 &lt;$4&gt;',
-				($key+1),
-				sizeof($recipients),
+			
+			if($message['type'] == MSG_MAIL)
+			{
+				$headers['To'] = '<'.$row['destination'].'>';
+				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> ';
+			}
+			else
+			{
+				$row['destination'] = preg_replace('/[^0-9]/', '', $row['destination']);
+				echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
+			}
+			
+			echo trans('$0 of $1 ($2) $3:', ($key+1), sizeof($recipients),
 				sprintf('%02.1f%%',round((100/sizeof($recipients))*($key+1),1)),
-				$row['customername'],
-				$row['destination']);
-				
+				$row['customername'].' &lt;'.$row['destination'].'&gt;');
 			flush();
-			$error = $LMS->SendMail($row['destination'], $headers, $body, $files);
-				
+			
+			if($message['type'] == MSG_MAIL)
+				$error = $LMS->SendMail($row['destination'], $headers, $body, $files);
+			else
+				$error = $LMS->SendSMS($row['destination'], $body);
+			
 			echo ($error ? " <font color=red>$error</font>" : '[OK]')."<BR>\n";
 
 			$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW?,
@@ -254,9 +293,6 @@ if(isset($_POST['message']))
 					$row['id'],
 				));
 		}
-		
-		echo '<P><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></P>';
-		echo '</BLOCKQUOTE>';
 		
 		$SMARTY->display('footer.html');
 		$SESSION->close();

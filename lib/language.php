@@ -49,7 +49,8 @@ $LANGDEFS = array(
 			'locale' => 'pl_PL.UTF-8',
 			'charset' => 'UTF-8',
 			'html' => 'pl',
-			'money_format' => '%01.2f zł'
+			'money_format' => '%01.2f zł',
+			'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
 			),
 		'lt' => array(
 			'name' => 'Lithuanian',
@@ -57,7 +58,8 @@ $LANGDEFS = array(
 			'locale' => 'lt_LT.UTF-8',
 			'charset' => 'UTF-8',
 			'html' => 'lt',
-			'money_format' => '%01.2f LT'
+			'money_format' => '%01.2f LT',
+			'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
 			),
 		'en' => array(
 			'name' => 'English',
@@ -65,7 +67,8 @@ $LANGDEFS = array(
 			'locale' => 'en_US',
 			'charset' => 'UTF-8',
 			'html' => 'en',
-			'money_format' => '$ %01.2f'
+			'money_format' => '$ %01.2f',
+			'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
 			),
 		'sk' => array(
 			'name' => 'Slovak',
@@ -73,7 +76,8 @@ $LANGDEFS = array(
 			'locale' => 'sk_SK.UTF-8',
 			'charset' => 'UTF-8',
 			'html' => 'sk',
-			'money_format' => '%01.2f EUR'
+			'money_format' => '%01.2f EUR',
+			'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
 			),
 		'ro' => array(
 			'name' => 'Romanian',
@@ -81,7 +85,8 @@ $LANGDEFS = array(
 			'locale' => 'ro_RO.UTF-8',
 			'charset' => 'UTF-8',
 			'html' => 'ro',
-			'money_format' => '%01.2f RON'
+			'money_format' => '%01.2f RON',
+			'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
 			),
 		);
 

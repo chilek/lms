@@ -24,8 +24,11 @@
  *  $Id$
  */
 
+$SESSION->restore('conls', $section);
+
 $DB->BeginTrans();
 
+if(!empty($CONFIG['phpui']) && (!$section || $section = 'phpui'))
 foreach($CONFIG['phpui'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
@@ -55,6 +58,7 @@ foreach($CONFIG['directories'] as $key => $val)
 }
 */
 
+if(!empty($CONFIG['invoices']) && (!$section || $section = 'invoices'))
 foreach($CONFIG['invoices'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
@@ -62,6 +66,7 @@ foreach($CONFIG['invoices'] as $key => $val)
 			);
 }
 
+if(!empty($CONFIG['receipts']) && (!$section || $section = 'receipts'))
 foreach($CONFIG['receipts'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
@@ -69,10 +74,27 @@ foreach($CONFIG['receipts'] as $key => $val)
 			);
 }
 
+if(!empty($CONFIG['finances']) && (!$section || $section = 'finances'))
 foreach($CONFIG['finances'] as $key => $val)
 {
 	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
 			array('finances', $key, $val)
+			);
+}
+
+if(!empty($CONFIG['sms']) && (!$section || $section = 'sms'))
+foreach($CONFIG['sms'] as $key => $val)
+{
+	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+			array('sms', $key, $val)
+			);
+}
+
+if(!empty($CONFIG['mail']) && (!$section || $section = 'mail'))
+foreach($CONFIG['mail'] as $key => $val)
+{
+	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+			array('mail', $key, $val)
 			);
 }
 

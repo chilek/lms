@@ -38,7 +38,7 @@ LMS Developers
         3.7. Finances
         3.8. Documents
         3.9. Hosting
-        3.10. Mailing
+        3.10. Messages
         3.11. Reload
         3.12. Stats
         3.13. Helpdesk
@@ -322,7 +322,7 @@ Chapter 2. Installation and configuration
    (look for "extension" in php.ini or in output of phpinfo function):
      * pcre, posix,
      * zlib (for compressed backups),
-     * gd or ming (for network map),
+     * gd and/or ming (network map only),
      * mysql or mysqli or pgsql (for db support),
      * iconv, mbstring (LMS uses unicode)
      * PEAR::Mail (which require PEAR::Net_SMTP and PEAR::Net_Sockets) for
@@ -673,8 +673,8 @@ password = password_entered_with_lms_user_creation
      * configuration reload
      * customers management
      * nodes management
-     * stats access
-     * mailing access
+     * traffic stats
+     * messaging (email, sms)
      * Helpdesk (RT) administration
      * Helpdesk (RT) operation
      * hosting management
@@ -1156,13 +1156,13 @@ Chapter 3. User Interface (LMS-UI)
    names cannot contain spaces.
      __________________________________________________________________
 
-3.3.6. Messages
+3.3.6. Notices
 
-   In this module, you're able to write administrative message which will
-   appear on customers Web browser screen and assign it massively to all
-   or majority of your customers (just pick them using selection box on
-   the left). It's also possible here to deselect administrative messages
-   massively here.
+   In this module, you're able to write administrative notice (message)
+   which will appear on customers Web browser screen and assign it
+   massively to all or majority of your customers (just pick them using
+   selection box on the left). It's also possible here to deselect
+   administrative messages massively here.
      __________________________________________________________________
 
 3.3.7. Reports
@@ -1218,15 +1218,15 @@ Chapter 3. User Interface (LMS-UI)
    guess for you.
      __________________________________________________________________
 
-3.4.4. Messages
+3.4.4. Notices
 
-   You can write administration message here and it will appear on
-   customer's Web browser screen. In this module you can select majority
-   or all computers and assign them common message. Just choose computers
-   using selectbox on the left (computers with message already on will be
-   displayed in red). If you only want to assign a message to customer,
-   but don't want to turn it on, just write a message and don't select any
-   of 'Enable/Disable message' boxes.
+   You can write administration notice (message) here and it will appear
+   on customer's Web browser screen. In this module you can select
+   majority or all computers and assign them common message. Just choose
+   computers using selectbox on the left (computers with message already
+   on will be displayed in red). If you only want to assign a message to
+   customer, but don't want to turn it on, just write a notice and don't
+   select any of 'Enable/Disable' boxes.
      __________________________________________________________________
 
 3.4.5. Reports
@@ -1782,15 +1782,10 @@ query = SELECT mail_bcc
                 AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
      __________________________________________________________________
 
-3.10. Mailing
+3.10. Messages
 
-   Mailing is component where you can spam groups of your customers if you
-   have to communicate something to them. Obviously you need to specify
-   sender name and address, write your message in text box and select
-   appropriate group of recipients. Your attendance can be grouped by
-   status, network or customer groups. If you use mail server on remote
-   host, you will need to set options smtp_host, smtp_port, smtp_username,
-   smtp_password in [phpui] section.
+   Messages is component where you can spam groups of your customers with
+   email or sms.
 
    In message body you can use variables, which will be replaced by
    customer data:
@@ -1799,14 +1794,44 @@ query = SELECT mail_bcc
    %cid - customer ID
    %pin - customer PIN
    %last_10_in_a_table - last 10 operations on customer account
+     __________________________________________________________________
+
+3.10.1. List
+
+   On the list you have a history of sent messages. You can sort them
+   using filter. Clicking on the message record moves you to information
+   page with message content and list of recipients. On the list you have
+   delivery status of every (sub)message.
+     __________________________________________________________________
+
+3.10.2. New message
+
+   To send a message you should specify appropriate group of recipients,
+   type of message (email/sms). Your attendance can be grouped by status,
+   network or customer/node groups, etc.
+
+   If you use mail server on remote host, you will need to set options
+   smtp_host, smtp_port, smtp_username, smtp_password in [mail] section.
 
    Note
 
-        Your server has to support PEAR::Mail for this to work.
-   Note
+        Your server has to support PEAR::Mail for this to send email messages.
 
-        It's best to use lms-notify Perl script or notify module of lmsd daemon
-        to send emails automatically whenever customer is in debt.
+   Here we've got the list of configuration options for mailing. These
+   options should be placed in [mail] section.
+     * debug_email
+       E-mail address for debugging - messages sent from module 'Messages'
+       will be delivered to this address instead of sending them to real
+       users.
+       Example: debug_email = root@localhost
+     * smtp_host, smtp_port, smtp_username, smtp_password
+       Parameters for smtp authorization in mailing. Default:
+       127.0.0.1:25.
+       Example: smtp_host = mail.domain.pl
+     * smtp_auth_type
+       Smtp authorization method in mailing. By default LMS (exactly
+       PEAR::Net_SMTP) will use the best supported method. Default: none.
+       Example: smtp_auth_type = DIGEST-MD5
      __________________________________________________________________
 
 3.11. Reload
@@ -2134,11 +2159,6 @@ links -dump \
        Enable Smarty debug console. Useful for tracking values passed from
        PHP to Smarty. Default: 0 (off).
        Example: smarty_debug = 1
-     * debug_email
-       E-mail address for debugging - messages sent from module 'Mailing'
-       will be delivered to this address instead of sending them to real
-       users.
-       Example: debug_email = root@localhost
      * default_zip, default_city, default_address
        Default zip code, city and street used on "new user" form. Useful
        when we have many users on the same street.
@@ -2206,14 +2226,6 @@ links -dump \
      * nodepassword_length
        Length of (auto-generated) node password. Max.32. Default: 16.
        Example: nodepassword_length = 8
-     * smtp_host, smtp_port, smtp_username, smtp_password
-       Parameters for smtp authorization in mailing. Default:
-       127.0.0.1:25.
-       Example: smtp_host = mail.domain.pl
-     * smtp_auth_type
-       Smtp authorization method in mailing. By default LMS (exactly
-       PEAR::Net_SMTP) will use the best supported method. Default: none.
-       Example: smtp_auth_type = DIGEST-MD5
      * gd_translate_to
        Charset of data that GD library expects (useful if GD need
        ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default:
@@ -5783,7 +5795,29 @@ Chapter 7. For curious
    inv_cplace - invoice creation place
      __________________________________________________________________
 
-7.2.54. Database information ('dbinfo')
+7.2.54. Messages - list ('messages')
+
+   id - serial number
+   subject - message subject
+   body - message contents
+   cdate - creation date
+   type - type (1-email, 2-sms)
+   userid - sender (user) identifier
+   sender - e-mail 'From' header
+     __________________________________________________________________
+
+7.2.55. Messages - items ('messageitems')
+
+   id - serial number
+   messageid - message identifier
+   customerid - customer identifier
+   destination - destination (phone num./e-mail)
+   lastdate - last meaning date
+   status - sending status (see lib/definitions.php)
+   error - error message
+     __________________________________________________________________
+
+7.2.56. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value

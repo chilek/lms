@@ -1,25 +1,11 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM name="message" method="post" action="?m=messageadd" enctype="multipart/form-data" target="_blank" >
+<FORM name="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 {literal}
 <SCRIPT type="text/javascript">
-	<!--
-	function Send()
-	{
-		
-		if( document.message["message[sender]"].value=="" ||
-		    document.message["message[from]"].value=="" ||
-		    document.message["message[subject]"].value=="" ||
-		    document.message["message[body]"].value=="" ||
-		    !checkaddr(document.message["message[sender]"].value)
-		    )
-			document.message.target="";
-		
-		document.message.submit();
-        }
-	
+<!--
 	function checkaddr(email)
 	{
 		var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
@@ -28,7 +14,23 @@
 		else
 			return 0;
 	}
-	-->
+	function typesel(elem)
+	{
+		if(elem == 'typesms') {
+			document.getElementById('mailbody').style.display = 'none';
+			document.getElementById('mailfrom').style.display = 'none';
+			document.getElementById('mailsender').style.display = 'none';
+			document.getElementById('attachment').style.display = 'none';
+			document.getElementById('smsbody').style.display = 'table-row';
+		} else {
+			document.getElementById('mailbody').style.display = '';
+			document.getElementById('mailfrom').style.display = '';
+			document.getElementById('mailsender').style.display = '';
+			document.getElementById('attachment').style.display = '';
+			document.getElementById('smsbody').style.display = 'none';
+		}
+	}
+-->
 </SCRIPT>
 {/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -82,6 +84,18 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" WIDTH="1%">
+			<IMG SRC="img/mailsms.gif" ALT=""> 
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Type:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT" WIDTH="98%">
+			<INPUT type="radio" NAME="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type != $smarty.const.MSG_SMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><B>{t}email{/t}</B></label>
+			<INPUT type="radio" NAME="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} CHECKED{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><B>{t}sms{/t}</B></label>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT" ID="mailsender"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>
+		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/email.gif" ALT=""> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
@@ -91,7 +105,7 @@
 			<INPUT type="text" NAME="message[sender]" SIZE="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="LIGHT" ID="mailfrom"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
@@ -110,10 +124,10 @@
 			<B>{t}Subject:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="message[subject]" SIZE="80" VALUE="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
+			<INPUT type="text" NAME="message[subject]" SIZE="60" VALUE="{$message.subject}" {tip trigger="subject" text="Enter message subject"}>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="LIGHT" ID="mailbody"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
@@ -121,10 +135,21 @@
 			<B>{t}Message body:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<TEXTAREA NAME="message[body]" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
+			<TEXTAREA NAME="message[mailbody]" COLS="80" ROWS="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="LIGHT" ID="smsbody"{if $message.type != $smarty.const.MSG_SMS} style="display: none"{/if}>
+		<TD CLASS="FLEFT" WIDTH="1%">
+			<IMG SRC="img/edit.gif" ALT=""> 
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Message body:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHT" WIDTH="98%">
+			<TEXTAREA NAME="message[smsbody]" COLS="60" ROWS="10" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT" ID="attachment"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG src="img/attach.gif" alt="">
 		</TD>
@@ -137,7 +162,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			 <A HREF="javascript:Send();" accesskey="s">{t}Send{/t} <IMG SRC="img/save.gif" ALT=""></A>
+			 <A HREF="javascript:document.message.submit();" accesskey="s">{t}Send{/t} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -808,25 +808,61 @@ MISC_OTHER="-A -x -j"
  </sect1>
  <sect1 id="menu-messages">
 	<title>Wiadomo¶ci</title>
-	<para>Wiadomo¶ci, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
-	klientów twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
-	odbiorców, do której zostanie wys³any e-mail. Grupê adresatów mo¿na okre¶liæ
-	wg statusu oraz sieci lub grup klientów do których nale¿±. Je¿eli korzystasz z serwera
-	pocztowego na zdalnym ho¶cie bêdziesz musia³ ustawiæ opcje smtp_host, smtp_port,
-	smtp_username, smtp_password w sekcji [phpui].</para>
+	<para>Wiadomo¶ci to miejsce z którego mo¿esz rozsy³aæ do klientów spam, w postaci
+	wiadomo¶ci e-mail lub sms.</para>
 	<para>W tre¶ci wiadomo¶ci mo¿na u¿ywaæ zmiennych, w miejsce których zostan±
 	podstawione dane w³a¶ciwe dla ka¿dego z klientów:
 	<simplelist>
-	    <member><prompt>%customer</prompt> - nazwisko/nazwa i imiê klienta</member>
-	    <member><prompt>%balance</prompt> - kwota bilansu (ze znakiem)</member>
-	    <member><prompt>%cid</prompt> - ID klienta</member>
-	    <member><prompt>%pin</prompt> - PIN klienta</member>
-	    <member><prompt>%last_10_in_a_table</prompt> - lista ostatnich 10 operacji na koncie klienta</member>
+		<member><prompt>%customer</prompt> - nazwisko/nazwa i imiê klienta</member>
+		<member><prompt>%balance</prompt> - kwota bilansu (ze znakiem)</member>
+		<member><prompt>%cid</prompt> - ID klienta</member>
+		<member><prompt>%pin</prompt> - PIN klienta</member>
+		<member><prompt>%last_10_in_a_table</prompt> - lista ostatnich 10 operacji na koncie klienta</member>
 	</simplelist>
+	<note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia PEAR::Mail dla mailingu.</para></note>
 	</para>
-	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia PEAR::Mail.</para></note>
-	<note><para>Do automatycznego wysy³ania upomnieñ do klientów zalegaj±cych z op³atami mo¿na
-	wykorzystaæ skrypt lms-notify lub modu³ notify demona <emphasis>lmsd</emphasis>.</para></note></para>
+	<sect2 id="menu-messages-list">
+		<title>Lista</title>
+		<para>Lista wiadomo¶ci zawiera historiê wys³anych wiadomo¶ci. Mo¿esz
+		j± dowolnie przeszukiwaæ korzystaj±c z filtra. Klikniêcie wiersza
+		wiadomo¶ci powoduje przej¶cie do strony ze szczegó³owymi informacjami
+		o wiadomo¶ci tj. tre¶ci, nadawcy. Strona ta zawiera równie¿ listê
+		odbiorców wiadomo¶ci wraz ze statusem wysy³ki.</para>
+	</sect2>
+	<sect2 id="menu-messages-new">
+		<title>Nowa wiadomo¶æ</title>
+		<para>Aby wys³aæ wiadomo¶æ nale¿y wybraæ grupê docelow± przy pomocy
+		dostêpnych filtrów okre¶laj±cych status klienta, sieæ, grupê, typ ³±cza, itp. 
+		Nale¿y równie¿ wybraæ typ wiadomo¶ci, podaæ jej temat i tre¶æ.</para>
+		<para>Je¿eli korzystasz z serwera
+		pocztowego na zdalnym ho¶cie bêdziesz musia³ ustawiæ opcje smtp_host, smtp_port,
+		smtp_username, smtp_password w sekcji [mail].</para>
+		<para>Poni¿ej znajduje siê lista opcji konfiguracyjnych zwi±zanych
+		z wysy³aniem wiadomo¶ci pocztowych. Opcje te umieszczone s± w sekcji
+		<emphasis>[mail]</emphasis>
+		<itemizedlist>
+		<listitem>
+			<para>debug_email</para>
+			<para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Wiadomo¶ci' LMS'a, 
+			zamiast do w³a¶ciwych klientów.</para>
+			<para>Przyk³ad:     <prompt>debug_email = root@localhost</prompt></para>
+        	</listitem>
+		<listitem>
+			<para>smtp_host, smtp_port, smtp_username, smtp_password</para>
+			<para>Parametry po³±czenia SMTP. LMS umo¿liwia korzystanie ze
+			zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
+			PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</para>
+			<para>Przyk³ad:     <prompt>smtp_host = poczta.domena.pl</prompt></para>
+		</listitem>
+		<listitem>
+			<para>smtp_auth_type</para>
+			<para>Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domy¶lnych
+			zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</para>
+			<para>Przyk³ad:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
+		</listitem>
+		</itemizedlist>
+		</para>
+	</sect2>
  </sect1>
  <sect1 id="menu-reload">
 	<title>Prze³adowanie</title>
@@ -1179,12 +1215,6 @@ links -dump \
             <para>Przyk³ad:     <prompt>smarty_debug = 1</prompt></para>
         </listitem>
         <listitem>
-            <para>debug_email</para>
-            <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Wiadomo¶ci' LMS'a, 
-            zamiast do w³a¶ciwych klientów.</para>
-            <para>Przyk³ad:     <prompt>debug_email = root@localhost</prompt></para>
-        </listitem>
-        <listitem>
             <para>default_zip, default_city, default_address</para>
             <para>Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
             klienta. Przydatne gdy mamy do wpisania wielu klientów z tej samej ulicy.</para>
@@ -1285,19 +1315,6 @@ links -dump \
             Maksymalnie 32. Domy¶lnie: 16.</para>
             <para>Przyk³ad:     <prompt>nodepassword_length = 8</prompt></para>
         </listitem>
-        <listitem>
-            <para>smtp_host, smtp_port, smtp_username, smtp_password</para>
-            <para>Parametry po³±czenia SMTP. LMS umo¿liwia korzystanie ze
-            zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
-            PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</para>
-            <para>Przyk³ad:     <prompt>smtp_host = poczta.domena.pl</prompt></para>
-        </listitem>
-        <listitem>
-            <para>smtp_auth_type</para>
-            <para>Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domy¶lnych
-            zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</para>
-    	    <para>Przyk³ad:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
-	</listitem>
 	<listitem>
             <para>gd_translate_to</para>
             <para>Kodowanie danych dla biblioteki GD (przydatne je¶li GD wymaga ISO-8859-2 zamiast UTF-8 dla funkcji imagetext). Domy¶lnie: ISO-8859-2.</para>
