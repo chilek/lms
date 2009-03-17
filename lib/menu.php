@@ -437,7 +437,7 @@ $menu = array(
 
 		'messages' => array(
 			'name' => trans('Messages'),
-			'img' =>'mail.gif',
+			'img' =>'mailsms.gif',
 			'link' =>'?m=messageadd',
 			'tip' => trans('Customers messaging'),
 			'accesskey' =>'m',

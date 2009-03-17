@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Wiadomości</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.11-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Interfejs Użytkownika (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Konta"
+HREF="menu-hosting.html"><LINK
+REL="NEXT"
+TITLE="Przeładowanie"
+HREF="menu-reload.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=UTF-8"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.11-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-hosting.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 3. Interfejs Użytkownika (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-reload.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-MESSAGES"
+>3.10. Wiadomości</A
+></H1
+><P
+>Wiadomości to miejsce z którego możesz rozsyłać do klientów spam, w postaci
+	wiadomości e-mail lub sms.</P
+><P
+>W treści wiadomości można używać zmiennych, w miejsce których zostaną
+	podstawione dane właściwe dla każdego z klientów:
+	<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%customer</SAMP
+> - nazwisko/nazwa i imię klienta</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%balance</SAMP
+> - kwota bilansu (ze znakiem)</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%cid</SAMP
+> - ID klienta</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%pin</SAMP
+> - PIN klienta</TD
+></TR
+><TR
+><TD
+><SAMP
+CLASS="PROMPT"
+>%last_10_in_a_table</SAMP
+> - lista ostatnich 10 operacji na koncie klienta</TD
+></TR
+></TBODY
+></TABLE
+>
+	<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Serwer musi być odpowiednio skonfigurowany do użycia PEAR::Mail dla mailingu.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-MESSAGES-LIST"
+>3.10.1. Lista</A
+></H2
+><P
+>Lista wiadomości zawiera historię wysłanych wiadomości. Możesz
+		ją dowolnie przeszukiwać korzystając z filtra. Kliknięcie wiersza
+		wiadomości powoduje przejście do strony ze szczegółowymi informacjami
+		o wiadomości tj. treści, nadawcy. Strona ta zawiera również listę
+		odbiorców wiadomości wraz ze statusem wysyłki.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-MESSAGES-NEW"
+>3.10.2. Nowa wiadomość</A
+></H2
+><P
+>Aby wysłać wiadomość należy wybrać grupę docelową przy pomocy
+		dostępnych filtrów określających status klienta, sieć, grupę, typ łącza, itp. 
+		Należy również wybrać typ wiadomości, podać jej temat i treść.</P
+><P
+>Jeżeli korzystasz z serwera
+		pocztowego na zdalnym hoście będziesz musiał ustawić opcje smtp_host, smtp_port,
+		smtp_username, smtp_password w sekcji [mail].</P
+><P
+>Poniżej znajduje się lista opcji konfiguracyjnych związanych
+		z wysyłaniem wisdomości pocztowych. Opcje te umieszczone są w sekcji
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[mail]</I
+></SPAN
+>
+		<UL
+><LI
+><P
+>debug_email</P
+><P
+>Adres e-mail do debugowania - pod ten adres będą szły wiadomości wysyłane z sekcji 'Wiadomości' LMS'a, 
+			zamiast do właściwych klientów.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>debug_email = root@localhost</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_host, smtp_port, smtp_username, smtp_password</P
+><P
+>Parametry połączenia SMTP. LMS umożliwia korzystanie ze
+			zdalnego serwera pocztowego z autoryzacją, wykorzystując do tego moduł
+			PEAR::Mail. Domyślnie: 127.0.0.1:25.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>smtp_host = poczta.domena.pl</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_auth_type</P
+><P
+>Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domyślnych
+			zostanie użyta najlepsza z dostępnych metod. Domyślnie: nie ustawiona.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>smtp_auth_type = DIGEST-MD5</SAMP
+></P
+></LI
+></UL
+>
+		</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-hosting.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-reload.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Konta</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Przeładowanie</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

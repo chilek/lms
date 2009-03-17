@@ -1257,4 +1257,4 @@ INSERT INTO countries (name) VALUES ('Romania');
 INSERT INTO countries (name) VALUES ('Slovakia');
 INSERT INTO countries (name) VALUES ('USA');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009031300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009031700');

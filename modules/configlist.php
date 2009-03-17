@@ -171,10 +171,6 @@ function GetConfigList($order='var,asc', $section='')
 					$config[$idx]['description'] = trans('Enable Smarty\'s debug console. Useful for tracking values passed from PHP to Smarty. Default: 0 (off).');
 				break;
 				
-				case 'debug_email':
-					$config[$idx]['description'] = trans('E-mail address for debugging - messages from \'Mailing\' module will be sent at this address, instead to real users.');
-				break;
-				
 				case 'arpd_servers':
 					$config[$idx]['description'] = trans('List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.');
 				break;
@@ -222,14 +218,6 @@ function GetConfigList($order='var,asc', $section='')
 				case 'homedir_prefix':
 					$config[$idx]['description'] = trans('Prefix for account home directory. Default: /home/');
 				break;
-
-				case 'smtp_port':
-				case 'smtp_host':
-				case 'smtp_username':
-				case 'smtp_password':
-				case 'smtp_auth_type':
-					$config[$idx]['description'] = trans('SMTP settings.');
-				break;					
 
 				case 'default_taxrate':
 					$config[$idx]['description'] = trans('Value of tax rate which will be selected by default on tax rates lists. Default: 22.0');
@@ -408,6 +396,68 @@ function GetConfigList($order='var,asc', $section='')
 				} //end: var
 			break;
 
+			case 'mail':
+				switch($item['var'])
+				{
+					case 'debug_email':
+						$config[$idx]['description'] = trans('E-mail address for debugging - messages from \'Mailing\' module will be sent at this address, instead to real users.');
+					break;
+					case 'smtp_port':
+					case 'smtp_host':
+					case 'smtp_username':
+					case 'smtp_password':
+					case 'smtp_auth_type':
+						$config[$idx]['description'] = trans('SMTP settings.');
+					break;					
+
+					default:
+						$config[$idx]['description'] = trans('Unknown option. No description.');
+					break;
+
+				} //end: var
+			break;
+			
+			case 'sms':
+				switch($item['var'])
+				{
+					case 'from':
+						$config[$idx]['description'] = trans('Default sender of a text message.');
+					break;
+					
+					case 'service':
+						$config[$idx]['description'] = trans('Default service type for sending text messages.');
+					break;
+					
+					case 'smscenter_type':
+						$config[$idx]['description'] = trans('Type of account you have at smscenter service. LMS will add sender at the end of message, when static type has been set. Correct values are: static and dynamic');
+					break;
+					
+					case 'smscenter_username':
+						$config[$idx]['description'] = trans('Username for smscenter service');
+					break;
+					
+					case 'smscenter_password':
+						$config[$idx]['description'] = trans('Password for smscenter service');
+					break;
+						
+					case 'smscenter_prefix':
+						$config[$idx]['description'] = trans('Country prefix code, needed for number validation. Default: 48');
+					break;
+					
+					case 'smslogindetails_from':
+						$config[$idx]['description'] = trans('Sender name used to send text messages with login details');
+					break;
+					
+					case 'smslogindetails_domain':
+						$config[$idx]['description'] = trans('Domain name, which in conjunction with computer name gives fully qualified username. Example: @network.com gives computer_name@network.com');
+					break;
+									
+					default:
+						$config[$idx]['description'] = trans('Unknown option. No description.');
+					break;
+				} //end: var
+			break;
+			
 			default:
 				$config[$idx]['description'] = trans('Unknown option. No description.');
 			break;

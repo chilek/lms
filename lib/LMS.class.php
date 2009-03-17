@@ -3593,14 +3593,14 @@ class LMS
 		if(!class_exists('Mail'))
 			return trans('Can\'t send message. PEAR::Mail not found!');
 
-		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
-		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
+		$params['host'] = $this->CONFIG['mail']['smtp_host'];
+		$params['port'] = $this->CONFIG['mail']['smtp_port'];
 
-		if ($this->CONFIG['phpui']['smtp_username'])
+		if (!empty($this->CONFIG['mail']['smtp_username']))
 		{
-			$params['auth'] = !empty($this->CONFIG['phpui']['smtp_auth_type']) ? $this->CONFIG['phpui']['smtp_auth_type'] : true;
-			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
-			$params['password'] = $this->CONFIG['phpui']['smtp_password'];
+			$params['auth'] = !empty($this->CONFIG['mail']['smtp_auth_type']) ? $this->CONFIG['mail']['smtp_auth_type'] : true;
+			$params['username'] = $this->CONFIG['mail']['smtp_username'];
+			$params['password'] = $this->CONFIG['mail']['smtp_password'];
 		}
 		else
 			$params['auth'] = false;
@@ -3645,6 +3645,105 @@ class LMS
 			return $error->getMessage();
 		else
 			return "";
+	}
+
+	function SendSMS($number, $message)
+	{
+		if(empty($this->CONFIG['sms']['service']))
+			return trans('SMS "service" not set!');
+		else
+			$service = $this->CONFIG['sms']['service'];
+
+		if(empty($this->CONFIG['sms']['from']))
+			return trans('SMS "from" not set!');
+		else
+			$from = $this->CONFIG['sms']['from'];
+
+		switch($service)
+		{
+			case 'smscenter':
+				if(!function_exists('curl_init'))
+					return trans('Curl extension not loaded!');
+				if(empty($this->CONFIG['sms']['smscenter_username']))
+					return trans('SMSCenter username not set!');
+				if(empty($this->CONFIG['sms']['smscenter_password']))
+					return trans('SMSCenter username not set!');
+				if(strlen($message) > 159 || strlen($message) == 0)
+					return trans('SMS Message too long!');
+
+				$number = preg_replace('/[^0-9]/', '', $number);
+				if(strlen($number) > 16 || strlen($number) < 4)
+					return trans('Wrong phone number format!');
+				
+				$prefix = !empty($this->CONFIG['sms']['smscenter_prefix']) ? $this->CONFIG['sms']['smscenter_prefix'] : '';
+				$type = !empty($this->CONFIG['sms']['smscenter_type']) ? $this->CONFIG['sms']['smscenter_type'] : 'dynamic';
+				$number = (substr_compare($number, $prefix, 0, 2)) ? $prefix . $number : $number;
+				$message .= ($type == 'static') ? "\n\n" . $from : '';
+
+				$args = array (
+					'user'      => $this->CONFIG['sms']['smscenter_username'],
+					'pass'      => $this->CONFIG['sms']['smscenter_password'],
+					'type'      => 'sms',
+					'number'    => $number,
+					'text'      => $message,
+					'from'      => $from
+				);
+			    		
+				$encodedargs = array();
+				foreach (array_keys($args) as $thiskey)
+		    			array_push($encodedargs, urlencode($thiskey) ."=". urlencode($args[$thiskey]));
+				$encodedargs = implode('&', $encodedargs);
+
+		    		$curl = curl_init();
+		    		curl_setopt($curl, CURLOPT_URL, 'http://api.statsms.net/send.php');
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
+				curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+			    
+				$page = curl_exec($curl);
+				if(curl_error($curl))
+					return 'SMS communication error. ' . curl_error($curl);
+
+				$info = curl_getinfo($curl);
+				if($info['http_code'] != '200')
+					return 'SMS communication error. Http code: ' . $info['http_code'];
+
+				curl_close($curl);
+				$smsc = explode(', ', $page);
+				$smsc_result = array();
+
+				foreach ($smsc as $element)
+				{
+					$tmp = explode(': ', $element);
+					array_push($smsc_result, $tmp[1]);
+				}
+
+				switch ($smsc_result[0])
+				{
+					case '002':
+						return null;
+					case '001':
+					        return 'Smscenter error 001, Incorrect login or password';
+    					case '009':
+					        return 'Smscenter error 009, GSM network error (probably wrong prefix number)';
+					case '012':
+					        return 'Smscenter error 012, System error please contact smscenter administrator';
+					case '104':
+					        return 'Smscenter error 104, Incorrect sender field or field empty';
+					case '201':
+					        return 'Smscenter error 201, System error please contact smscenter administrator';
+					case '202':
+					        return 'Smscenter error 202, Unsufficient funds on account to send this text';
+					case '204':
+					        return 'Smscenter error 204, Account blocked';
+					default:
+					        return 'Smscenter error '. $smsc_result[0] . '. Please contact smscenter administrator';
+				}	
+			break;
+			default:
+				return trans('Unknown SMS service!');
+		}
 	}
 
 	function GetDocuments($customerid=NULL, $limit=NULL)

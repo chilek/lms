@@ -18,7 +18,9 @@ version ? (????-??-??):
   - renamed node/customers "message"/"warning" to "notice" (alec)
   - renamed menu "Mailing" to "Messages" (alec)
   - added sent messages history (alec)
-  
+  - added [mail] config section for smtp_* and debug_email options (alec)
+  - SMS messaging (SMSCenter support from Michał Gacek's patch) (alec)
+
 version 1.11.7 Bastet (2009-02-13):
 
   - fixed calculation of netto value and united tax value calculation method (chilan)

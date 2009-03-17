@@ -38,7 +38,7 @@ LMS Developers
         3.7. Finanse
         3.8. Dokumenty
         3.9. Konta
-        3.10. Mailing
+        3.10. Wiadomości
         3.11. Przeładowanie
         3.12. Statystyki
         3.13. Helpdesk
@@ -344,7 +344,7 @@ Rozdział 2. Instalacja i konfiguracja
    wyjście funkcji phpinfo()):
      * pcre, posix,
      * zlib (dla kompresowanych backupów),
-     * gd lub ming (dla mapy sieci),
+     * gd i/lub ming (tylko dla mapy sieci),
      * mysql, mysqli lub pgsql (dla bazy danych),
      * iconv, mbstring
      * PEAR::Mail (wymaga PEAR::Net_SMTP i PEAR::Net_Socket) do mailingu.
@@ -1256,12 +1256,15 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    skryptach w nazwie nie może być znaku spacji.
      __________________________________________________________________
 
-3.3.6. Wiadomości
+3.3.6. Powiadomienia
 
    Tutaj można "hurtowo" przypisać treść wiadomości administracyjnej
-   klientom, których wybiera się z listy w lewym oknie. Możliwe jest także
-   włączenie lub wyłączenie ostrzeżeń wszystkim komputerom należącym do
-   wybranych klientów.
+   (powiadomienia) klientom, których wybiera się z listy w lewym oknie.
+   Treść przypisuje się klientom, natomiast aby wiadomość zostałą
+   wyświetlona w przeglądarce internetowej na komputrerze klienta należy
+   ją włączyć dla wybranych komputerów. Włączenie jak i wyłączenie
+   powiadomień wszystkim komputerom należącym do wybranych klientów jest
+   możliwe w tym miejscu.
      __________________________________________________________________
 
 3.3.7. Raporty
@@ -1320,15 +1323,14 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    lub fragment nazwy komputera oraz jego adresów IP i MAC.
      __________________________________________________________________
 
-3.4.4. Wiadomości
+3.4.4. Powiadomienia
 
-   Tutaj definiuje się treść wiadomości administracyjnych dla klientów
-   oraz włącza lub wyłącza komputerom ostrzeżenia. Po lewej stronie
-   znajduje się lista, na której komputery z włączonym ostrzeżeniem
-   zaznaczone są kolorem czerwonym. Jeśli chcesz tylko zmienić/przypisać
-   klientom treść wiadomości administracyjnej, zaznacz odpowiednie
-   komputery na liście i pozostaw puste pola 'Włącz ostrzeżenia' oraz
-   'Wyłącz ostrzeżenia'.
+   Tutaj definiuje się treść wiadomości administracyjnych (powiadomień)
+   dla klientów oraz włącza lub wyłącza je wybranym komputerom. Po lewej
+   stronie znajduje się lista, na której komputery z włączonym
+   powiadomieniem zaznaczone są kolorem czerwonym. Jeśli chcesz tylko
+   zmienić/przypisać klientom treść powiadomienia, zaznacz odpowiednie
+   komputery na liście i pozostaw puste pola 'Włącz' oraz 'Wyłącz'.
      __________________________________________________________________
 
 3.4.5. Raporty
@@ -1977,15 +1979,10 @@ AUTH="-l mysql:/etc/pureftpd-mysql.conf"
 MISC_OTHER="-A -x -j"
      __________________________________________________________________
 
-3.10. Mailing
+3.10. Wiadomości
 
-   Mailing, czyli Korespondencja Seryjna umożliwia wysyłanie wiadomości do
-   grupy klientów twojej sieci. Podajesz dane nadawcy, treść wiadomości
-   oraz wybierasz grupę odbiorców, do której zostanie wysłany e-mail.
-   Grupę adresatów można określić wg statusu oraz sieci lub grup klientów
-   do których należą. Jeżeli korzystasz z serwera pocztowego na zdalnym
-   hoście będziesz musiał ustawić opcje smtp_host, smtp_port,
-   smtp_username, smtp_password w sekcji [phpui].
+   Wiadomości to miejsce z którego możesz rozsyłać do klientów spam, w
+   postaci wiadomości e-mail lub sms.
 
    W treści wiadomości można używać zmiennych, w miejsce których zostaną
    podstawione dane właściwe dla każdego z klientów:
@@ -1994,15 +1991,50 @@ MISC_OTHER="-A -x -j"
    %cid - ID klienta
    %pin - PIN klienta
    %last_10_in_a_table - lista ostatnich 10 operacji na koncie klienta
-
    Notatka
 
-           Serwer musi być odpowiednio skonfigurowany do użycia PEAR::Mail.
-   Notatka
+           Serwer musi być odpowiednio skonfigurowany do użycia PEAR::Mail dla
+           mailingu.
+     __________________________________________________________________
 
-           Do automatycznego wysyłania upomnień do klientów zalegających z
-           opłatami można wykorzystać skrypt lms-notify lub moduł notify demona
-           lmsd.
+3.10.1. Lista
+
+   Lista wiadomości zawiera historię wysłanych wiadomości. Możesz ją
+   dowolnie przeszukiwać korzystając z filtra. Kliknięcie wiersza
+   wiadomości powoduje przejście do strony ze szczegółowymi informacjami o
+   wiadomości tj. treści, nadawcy. Strona ta zawiera również listę
+   odbiorców wiadomości wraz ze statusem wysyłki.
+     __________________________________________________________________
+
+3.10.2. Nowa wiadomość
+
+   Aby wysłać wiadomość należy wybrać grupę docelową przy pomocy
+   dostępnych filtrów określających status klienta, sieć, grupę, typ
+   łącza, itp. Należy również wybrać typ wiadomości, podać jej temat i
+   treść.
+
+   Jeżeli korzystasz z serwera pocztowego na zdalnym hoście będziesz
+   musiał ustawić opcje smtp_host, smtp_port, smtp_username, smtp_password
+   w sekcji [mail].
+
+   Poniżej znajduje się lista opcji konfiguracyjnych związanych z
+   wysyłaniem wisdomości pocztowych. Opcje te umieszczone są w sekcji
+   [mail]
+     * debug_email
+       Adres e-mail do debugowania - pod ten adres będą szły wiadomości
+       wysyłane z sekcji 'Wiadomości' LMS'a, zamiast do właściwych
+       klientów.
+       Przykład: debug_email = root@localhost
+     * smtp_host, smtp_port, smtp_username, smtp_password
+       Parametry połączenia SMTP. LMS umożliwia korzystanie ze zdalnego
+       serwera pocztowego z autoryzacją, wykorzystując do tego moduł
+       PEAR::Mail. Domyślnie: 127.0.0.1:25.
+       Przykład: smtp_host = poczta.domena.pl
+     * smtp_auth_type
+       Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domyślnych
+       zostanie użyta najlepsza z dostępnych metod. Domyślnie: nie
+       ustawiona.
+       Przykład: smtp_auth_type = DIGEST-MD5
      __________________________________________________________________
 
 3.11. Przeładowanie
@@ -2361,10 +2393,6 @@ links -dump \
        Włączenie konsoli debugowej Smarty-ego, przydatne do śledzenia
        wartości przekazywanych z PHP do Smarty-ego. Domyślnie wyłączone.
        Przykład: smarty_debug = 1
-     * debug_email
-       Adres e-mail do debugowania - pod ten adres będą szły wiadomości
-       wysyłane z sekcji 'Mailing' LMS'a, zamiast do właściwych klientów.
-       Przykład: debug_email = root@localhost
      * default_zip, default_city, default_address
        Domyślny kod pocztowy, miasto, ulica, stosowane podczas wstawiania
        nowego klienta. Przydatne gdy mamy do wpisania wielu klientów z tej
@@ -2437,16 +2465,6 @@ links -dump \
        Domyślna długość hasła (generowanego automatycznie) dla komputera.
        Maksymalnie 32. Domyślnie: 16.
        Przykład: nodepassword_length = 8
-     * smtp_host, smtp_port, smtp_username, smtp_password
-       Parametry połączenia SMTP. LMS umożliwia korzystanie ze zdalnego
-       serwera pocztowego z autoryzacją, wykorzystując do tego moduł
-       PEAR::Mail. Domyślnie: 127.0.0.1:25.
-       Przykład: smtp_host = poczta.domena.pl
-     * smtp_auth_type
-       Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domyślnych
-       zostanie użyta najlepsza z dostępnych metod. Domyślnie: nie
-       ustawiona.
-       Przykład: smtp_auth_type = DIGEST-MD5
      * gd_translate_to
        Kodowanie danych dla biblioteki GD (przydatne jeśli GD wymaga
        ISO-8859-2 zamiast UTF-8 dla funkcji imagetext). Domyślnie:
@@ -6453,7 +6471,29 @@ Rozdział 7. Dla dociekliwych
    inv_cplace - miejsce wystawienia faktury
      __________________________________________________________________
 
-7.2.54. Informacje o bazie danych ('dbinfo')
+7.2.54. Wiadomości - lista ('messages')
+
+   id - identyfikator
+   subject - temat wiadomości
+   body - treść wiadomości
+   cdate - data utworzenia
+   type - typ (1-email, 2-sms)
+   userid - identyfikator nadawcy (użytkownika)
+   sender - nagłówek 'From' wiadomości e-mail
+     __________________________________________________________________
+
+7.2.55. Wiadomości - szczegóły ('messageitems')
+
+   id - identyfikator
+   messageid - identyfikator wiadomości
+   customerid - identyfikator odbiorcy (klienta)
+   destination - numer tel./adres e-mail odbiorcy
+   lastdate - data ostatniego przetwarzania (wysłania lub błędu)
+   status - status wysyłki (zobacz lib/definitions.php)
+   error - komunikat błędu
+     __________________________________________________________________
+
+7.2.56. Informacje o bazie danych ('dbinfo')
 
    keytype - typ
    keyvalue - wartość
