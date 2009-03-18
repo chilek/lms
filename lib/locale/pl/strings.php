@@ -2162,5 +2162,8 @@ $_LANG['SMS Message too long!'] = 'Zbyt długa wiadomość SMS!';
 $_LANG['SMS "service" not set!'] = 'Nie ustawione SMSowe "service"!';
 $_LANG['Unknown SMS service!'] = 'Nierozpoznana usługa SMS!';
 $_LANG['Wrong phone number format!'] = 'Błędny format numeru telefonicznego!';
+$_LANG['SMSTools outgoing directory not exists ($0)!'] = 'Katalog wiadomości wychodzących SMSTools nie istnieje ($0)!';
+$_LANG['Unable to create file $0!'] = 'Nie można utworzyć pliku $0!';
+$_LANG['Unable to write to SMSTools outgoing directory ($0)!'] = 'Nie można zapisywać do katalogu wiadomości wychodzących SMSTools ($0)!';
 
 ?>
