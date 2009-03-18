@@ -3647,7 +3647,7 @@ class LMS
 			return "";
 	}
 
-	function SendSMS($number, $message)
+	function SendSMS($number, $message, $messageid=0)
 	{
 		if(empty($this->CONFIG['sms']['service']))
 			return trans('SMS "service" not set!');
@@ -3658,6 +3658,8 @@ class LMS
 			return trans('SMS "from" not set!');
 		else
 			$from = $this->CONFIG['sms']['from'];
+
+		$number = preg_replace('/[^0-9]/', '', $number);
 
 		switch($service)
 		{
@@ -3671,7 +3673,6 @@ class LMS
 				if(strlen($message) > 159 || strlen($message) == 0)
 					return trans('SMS Message too long!');
 
-				$number = preg_replace('/[^0-9]/', '', $number);
 				if(strlen($number) > 16 || strlen($number) < 4)
 					return trans('Wrong phone number format!');
 				
@@ -3740,6 +3741,25 @@ class LMS
 					default:
 					        return 'Smscenter error '. $smsc_result[0] . '. Please contact smscenter administrator';
 				}	
+			break;
+			case 'smstools':
+				$dir = !empty($this->CONFIG['sms']['smstools_outdir']) ? $this->CONFIG['sms']['smstools_outdir'] : '/var/spool/sms/outgoing';
+
+				if(!file_exists($dir))
+					return trans('SMSTools outgoing directory not exists ($0)!', $dir);
+				if(!is_writable($dir))
+					return trans('Unable to write to SMSTools outgoing directory ($0)!', $dir);
+				
+				$filename = $dir.'/lms-'.$messageid.'-'.$number;
+				$file = sprintf("To: %s\n\n%s", $number, $message);
+				
+				if($fp = fopen($filename, 'w'))
+				{
+					fwrite($fp, $file);
+					fclose($fp);
+				}
+				else
+					return trans('Unable to create file $0!', $filename);
 			break;
 			default:
 				return trans('Unknown SMS service!');

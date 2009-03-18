@@ -280,7 +280,7 @@ if(isset($_POST['message']))
 			if($message['type'] == MSG_MAIL)
 				$error = $LMS->SendMail($row['destination'], $headers, $body, $files);
 			else
-				$error = $LMS->SendSMS($row['destination'], $body);
+				$error = $LMS->SendSMS($row['destination'], $body, $msgid);
 			
 			echo ($error ? " <font color=red>$error</font>" : '[OK]')."<BR>\n";
 
