@@ -282,7 +282,7 @@ if(isset($_POST['message']))
 			else
 				$error = $LMS->SendSMS($row['destination'], $body, $msgid);
 			
-			echo ($error ? " <font color=red>$error</font>" : '[OK]')."<BR>\n";
+			echo ($error ? " <font color=red>$error</font>" : ' [OK]')."<BR>\n";
 
 			$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW?,
 				error = ? WHERE messageid = ? AND customerid = ?',

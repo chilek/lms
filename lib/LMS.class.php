@@ -3751,7 +3751,9 @@ class LMS
 					return trans('Unable to write to SMSTools outgoing directory ($0)!', $dir);
 				
 				$filename = $dir.'/lms-'.$messageid.'-'.$number;
-				$file = sprintf("To: %s\n\n%s", $number, $message);
+				$message = iconv('UTF-8', 'UCS-2//TRANSLIT', $message);
+				
+				$file = sprintf("To: %s\nAlphabet: UCS\nReport: 1\n\n%s", $number, $message);
 				
 				if($fp = fopen($filename, 'w'))
 				{
