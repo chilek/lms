@@ -78,7 +78,7 @@ function GetRecipients($filter, $type=MSG_MAIL)
 		) b ON (b.customerid = c.id) '
 		.(!empty($smstable) ? $smstable : '')
 		.'WHERE deleted = '.$deleted
-		.' AND email != \'\''
+		.($type == MSG_MAIL ? ' AND email != \'\'' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
 			(ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
@@ -97,6 +97,36 @@ function GetRecipients($filter, $type=MSG_MAIL)
 		.' ORDER BY customername');
 
 	return $recipients;
+}
+
+function GetRecipient($customerid, $type=MSG_MAIL)
+{
+	global $DB, $LMS, $CONFIG, $LANGDEFS, $_language;
+	
+	if($type == MSG_SMS)
+	{
+		if ($CONFIG['database']['type'] == 'postgres')
+			$smswhere = " AND regexp_replace(phone, '[^0-9]', '') ~ '^([0-9]{2}|0|)"
+				.$LANGDEFS[$_language]['mobile'].'$\'';
+		else
+			$smswhere = " AND REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+[0-9]{2}|0)?"
+				.$LANGDEFS[$_language]['mobile'].'$\'';
+	
+		$smstable = 'JOIN (SELECT phone, customerid
+				FROM customercontacts 
+				WHERE customerid = '.$customerid . $smswhere
+				.' ORDER BY phone LIMIT 1
+			) x ON (x.customerid = c.id)';
+	}
+	
+	return $DB->GetAll('SELECT c.id, email, pin, '
+		.($type==MSG_SMS ? 'x.phone, ': '')
+		.$DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
+		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
+		FROM customersview c '
+		.(!empty($smstable) ? $smstable : '')
+		.'WHERE c.id = '.$customerid
+		.($type == MSG_MAIL ? ' AND email != \'\'' : ''));
 }
 
 function BodyVars(&$body, $data)
@@ -131,7 +161,8 @@ if(isset($_POST['message']))
 	$message = $_POST['message'];
 
 	$message['type'] = $message['type'] == MSG_MAIL ? MSG_MAIL : MSG_SMS;
-	if($message['group'] < 0 || $message['group'] > 7)
+
+	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 7))
 		$error['group'] = trans('Incorrect customers group!');
 
 	if($message['type'] == MSG_MAIL)
@@ -185,8 +216,11 @@ if(isset($_POST['message']))
 
 	if(!$error)
 	{
-		$recipients = GetRecipients($message, $message['type']);
-		
+		if(empty($message['customerid']))
+			$recipients = GetRecipients($message, $message['type']);
+		else
+			$recipients = GetRecipient($message['customerid'], $message['type']);
+
 		if(!$recipients)
 			$error['subject'] = trans('Unable to send message. No recipients selected!');
 	}
@@ -298,9 +332,25 @@ if(isset($_POST['message']))
 		$SESSION->close();
 		die;
 	}
+	else if (!empty($message['customerid']))
+	{
+		$message['customer'] = $DB->GetOne('SELECT '
+			.$DB->Concat('UPPER(lastname)',"' '",'name').'
+			FROM customersview
+			WHERE id = ?', array($message['customerid']));
+	}
+
+	$SMARTY->assign('error', $error);
+	$SMARTY->assign('message', $message);
+}
+else if (!empty($_GET['customerid']))
+{
+	$message = $DB->GetRow('SELECT id AS customerid, '
+		.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customer
+		FROM customersview
+		WHERE id = ?', array($_GET['customerid']));
 
 	$SMARTY->assign('message', $message);
-	$SMARTY->assign('error', $error);
 }
 
 $SMARTY->assign('networks', $LMS->GetNetworks());

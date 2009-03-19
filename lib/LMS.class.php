@@ -3767,6 +3767,17 @@ class LMS
 				return trans('Unknown SMS service!');
 		}
 	}
+	
+	function GetMessages($customerid, $limit=NULL)
+	{
+		return $this->DB->GetAll('SELECT i.messageid AS id, i.status, i.error,
+		        i.destination, m.subject, m.type, m.cdate
+			FROM messageitems i
+			JOIN messages m ON (m.id = i.messageid)
+			WHERE i.customerid = ?
+			ORDER BY m.cdate DESC'
+			.($limit ? ' LIMIT '.$limit : ''), array($customerid));
+	}
 
 	function GetDocuments($customerid=NULL, $limit=NULL)
 	{
