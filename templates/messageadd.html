@@ -34,6 +34,20 @@
 </SCRIPT>
 {/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
+{if $message.customerid}
+	<TR CLASS="DARK">
+		<TD CLASS="FLEFTU" WIDTH="1%">
+			<IMG SRC="img/customer.gif" ALT=""> 
+		</TD>
+		<TD CLASS="FBT" WIDTH="1%" NOWRAP>
+			<B>{t}Recipient:{/t}</B>
+		</TD>
+		<TD CLASS="FRIGHTU" WIDTH="98%">
+			<B>{$message.customer} ({$message.customerid|string_format:"%04d"})</B>
+			<INPUT type="hidden" name="message[customerid]" value="{$message.customerid}">
+		</TD>
+	</TR>
+{else}
 	<TR CLASS="DARK">
 		<TD CLASS="FLEFTU" WIDTH="1%">
 			<IMG SRC="img/group.gif" ALT=""> 
@@ -98,6 +112,7 @@
 			</TABLE>
 		</TD>
 	</TR>
+{/if}
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" WIDTH="1%">
 			<IMG SRC="img/mailsms.gif" ALT=""> 
@@ -162,7 +177,7 @@
 			<B>{t}Message body:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<TEXTAREA NAME="message[smsbody]" COLS="60" ROWS="10" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
+			<TEXTAREA NAME="message[smsbody]" COLS="60" ROWS="5" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT" ID="attachment"{if $message.type == $smarty.const.MSG_SMS} style="display: none"{/if}>

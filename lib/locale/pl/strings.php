@@ -1531,7 +1531,7 @@ $_LANG['WINS:'] = 'WINS:';
 $_LANG['last $0 documents'] = 'ostatnie $0 dokumentów';
 $_LANG['Last operation:'] = 'Ostatnia operacja:';
 $_LANG['Limit of records displayed on one page in documents list. Default: 100.'] = 'Limit rekordów na jednej stronie listy dokumentów. Domyślnie: 100.';
-$_LANG['All documents'] = 'Wszystkie dokumenty';
+$_LANG['All Documents'] = 'Wszystkie dokumenty';
 $_LANG['Avg. download speed'] = 'Śr. prędkość downloadu';
 $_LANG['Avg. upload speed'] = 'Śr. prędkość uploadu';
 $_LANG['Day'] = 'Dzień';
@@ -2109,7 +2109,7 @@ $_LANG['DOWNLOAD'] = 'DOWNLOAD';
 $_LANG['UPLOAD'] = 'UPLOAD';
 $_LANG['Customer Timetable:'] = 'Terminarz klienta:';
 $_LANG['last $0 events'] = 'ostatnie $0 zdarzeń';
-$_LANG['There\'s no events in timetable.'] = 'Brak zdarzeń w kalendarzu.';
+$_LANG['There are no events in timetable.'] = 'Brak zdarzeń w kalendarzu.';
 $_LANG['Notices'] = 'Powiadomienia';
 $_LANG['Allows you to send notices to customers'] = 'Pozwala wysyłać powiadomienia do klientów';
 $_LANG['Allows you to send messages to customers'] = 'Pozwala wysyłać wiadomości do klientów';
@@ -2165,5 +2165,9 @@ $_LANG['Wrong phone number format!'] = 'Błędny format numeru telefonicznego!';
 $_LANG['SMSTools outgoing directory not exists ($0)!'] = 'Katalog wiadomości wychodzących SMSTools nie istnieje ($0)!';
 $_LANG['Unable to create file $0!'] = 'Nie można utworzyć pliku $0!';
 $_LANG['Unable to write to SMSTools outgoing directory ($0)!'] = 'Nie można zapisywać do katalogu wiadomości wychodzących SMSTools ($0)!';
+$_LANG['All Messages'] = 'Wszystkie wiadomości';
+$_LANG['Customer Messages:'] = 'Wiadomości klienta:';
+$_LANG['last $0 messages'] = 'ostatnie $0 wiadomości';
+$_LANG['There are no messages in database.'] = 'Brak wiadomości w bazie danych.';
 
 ?>

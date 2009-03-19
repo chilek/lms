@@ -225,6 +225,7 @@ $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('countrieslist',$LMS->GetCountries());
+$SMARTY->assign('messagelist', $messagelist = $LMS->GetMessages($_GET['id'], 10));
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
 $SMARTY->assign('eventlist', $LMS->EventSearch(array('customerid'=>$_GET['id']), 'date,desc', true));
 $SMARTY->assign('recover',($action == 'recover' ? 1 : 0));

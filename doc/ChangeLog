@@ -20,6 +20,8 @@ version ? (????-??-??):
   - added sent messages history (alec)
   - added [mail] config section for smtp_* and debug_email options (alec)
   - SMS messaging (SMSCenter support from Michał Gacek's patch) (alec)
+  - added messages list panel in customer info page (alec)
+  - allow to send a message to one customer (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

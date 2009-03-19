@@ -160,6 +160,13 @@ else
 	$SESSION->restore('mlst', $status);
 $SESSION->save('mlst', $status);
 
+if(!empty($_GET['cid']))
+{
+	$s = $_GET['cid'];
+	$c = 'customerid';
+	$o = $t = $status = NULL;
+}
+
 $messagelist = GetMessagesList($o, $s, $c, $t, $status);
 
 $listdata['type'] = $messagelist['type'];
