@@ -3659,7 +3659,11 @@ class LMS
 		else
 			$from = $this->CONFIG['sms']['from'];
 
+		$prefix = !empty($this->CONFIG['sms']['prefix']) ? $this->CONFIG['sms']['prefix'] : '';
+
 		$number = preg_replace('/[^0-9]/', '', $number);
+		$number = preg_replace('/^0+/', '', $number);
+		$number = (substr_compare($number, $prefix, 0, 2)) ? $prefix . $number : $number;
 
 		switch($service)
 		{
@@ -3670,20 +3674,18 @@ class LMS
 					return trans('SMSCenter username not set!');
 				if(empty($this->CONFIG['sms']['smscenter_password']))
 					return trans('SMSCenter username not set!');
+
 				if(strlen($message) > 159 || strlen($message) == 0)
 					return trans('SMS Message too long!');
-
 				if(strlen($number) > 16 || strlen($number) < 4)
 					return trans('Wrong phone number format!');
 				
-				$prefix = !empty($this->CONFIG['sms']['smscenter_prefix']) ? $this->CONFIG['sms']['smscenter_prefix'] : '';
 				$type = !empty($this->CONFIG['sms']['smscenter_type']) ? $this->CONFIG['sms']['smscenter_type'] : 'dynamic';
-				$number = (substr_compare($number, $prefix, 0, 2)) ? $prefix . $number : $number;
 				$message .= ($type == 'static') ? "\n\n" . $from : '';
 
 				$args = array (
-					'user'      => $this->CONFIG['sms']['smscenter_username'],
-					'pass'      => $this->CONFIG['sms']['smscenter_password'],
+					'user'      => $this->CONFIG['sms']['username'],
+					'pass'      => $this->CONFIG['sms']['password'],
 					'type'      => 'sms',
 					'number'    => $number,
 					'text'      => $message,
