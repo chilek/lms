@@ -420,38 +420,30 @@ function GetConfigList($order='var,asc', $section='')
 			case 'sms':
 				switch($item['var'])
 				{
+					case 'service':
+						$config[$idx]['description'] = trans('Default service type for sending text messages.');
+					break;
+
+					case 'prefix':
+						$config[$idx]['description'] = trans('Country prefix code, needed for number validation. Default: 48');
+					break;
+
 					case 'from':
 						$config[$idx]['description'] = trans('Default sender of a text message.');
 					break;
 					
-					case 'service':
-						$config[$idx]['description'] = trans('Default service type for sending text messages.');
+					case 'username':
+						$config[$idx]['description'] = trans('Username for smscenter service');
 					break;
 					
+					case 'password':
+						$config[$idx]['description'] = trans('Password for smscenter service');
+					break;
+						
 					case 'smscenter_type':
 						$config[$idx]['description'] = trans('Type of account you have at smscenter service. LMS will add sender at the end of message, when static type has been set. Correct values are: static and dynamic');
 					break;
 					
-					case 'smscenter_username':
-						$config[$idx]['description'] = trans('Username for smscenter service');
-					break;
-					
-					case 'smscenter_password':
-						$config[$idx]['description'] = trans('Password for smscenter service');
-					break;
-						
-					case 'smscenter_prefix':
-						$config[$idx]['description'] = trans('Country prefix code, needed for number validation. Default: 48');
-					break;
-					
-					case 'smslogindetails_from':
-						$config[$idx]['description'] = trans('Sender name used to send text messages with login details');
-					break;
-					
-					case 'smslogindetails_domain':
-						$config[$idx]['description'] = trans('Domain name, which in conjunction with computer name gives fully qualified username. Example: @network.com gives computer_name@network.com');
-					break;
-									
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;

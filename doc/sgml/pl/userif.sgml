@@ -808,19 +808,8 @@ MISC_OTHER="-A -x -j"
  </sect1>
  <sect1 id="menu-messages">
 	<title>Wiadomo¶ci</title>
-	<para>Wiadomo¶ci to miejsce z którego mo¿esz rozsy³aæ do klientów spam, w postaci
-	wiadomo¶ci e-mail lub sms.</para>
-	<para>W tre¶ci wiadomo¶ci mo¿na u¿ywaæ zmiennych, w miejsce których zostan±
-	podstawione dane w³a¶ciwe dla ka¿dego z klientów:
-	<simplelist>
-		<member><prompt>%customer</prompt> - nazwisko/nazwa i imiê klienta</member>
-		<member><prompt>%balance</prompt> - kwota bilansu (ze znakiem)</member>
-		<member><prompt>%cid</prompt> - ID klienta</member>
-		<member><prompt>%pin</prompt> - PIN klienta</member>
-		<member><prompt>%last_10_in_a_table</prompt> - lista ostatnich 10 operacji na koncie klienta</member>
-	</simplelist>
-	<note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia PEAR::Mail dla mailingu.</para></note>
-	</para>
+	<para>Wiadomo¶ci to miejsce z którego mo¿esz rozsy³aæ do klientów spam w postaci
+	wiadomo¶ci e-mail lub sms. </para>
 	<sect2 id="menu-messages-list">
 		<title>Lista</title>
 		<para>Lista wiadomo¶ci zawiera historiê wys³anych wiadomo¶ci. Mo¿esz
@@ -833,33 +822,91 @@ MISC_OTHER="-A -x -j"
 		<title>Nowa wiadomo¶æ</title>
 		<para>Aby wys³aæ wiadomo¶æ nale¿y wybraæ grupê docelow± przy pomocy
 		dostêpnych filtrów okre¶laj±cych status klienta, sieæ, grupê, typ ³±cza, itp. 
-		Nale¿y równie¿ wybraæ typ wiadomo¶ci, podaæ jej temat i tre¶æ.</para>
-		<para>Je¿eli korzystasz z serwera
-		pocztowego na zdalnym ho¶cie bêdziesz musia³ ustawiæ opcje smtp_host, smtp_port,
-		smtp_username, smtp_password w sekcji [mail].</para>
+		Nale¿y równie¿ wybraæ typ wiadomo¶ci, podaæ jej temat (wymagany równie¿ dla smsów) i tre¶æ.</para>
+		<para>W tre¶ci wiadomo¶ci mo¿na u¿ywaæ zmiennych, w miejsce których zostan±
+		podstawione dane w³a¶ciwe dla ka¿dego z odbiorców:
+		<simplelist>
+			<member><prompt>%customer</prompt> - nazwisko/nazwa i imiê klienta</member>
+			<member><prompt>%balance</prompt> - kwota bilansu (ze znakiem)</member>
+			<member><prompt>%cid</prompt> - ID klienta</member>
+			<member><prompt>%pin</prompt> - PIN klienta</member>
+			<member><prompt>%last_10_in_a_table</prompt> - lista ostatnich 10 operacji na koncie klienta</member>
+		</simplelist>
+		</para>
+	</sect2>
+	<sect2 id="menu-messages-conf">
+		<title>Konfiguracja</title>
+		<para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia PEAR::Mail dla mailingu. 
+		Je¿eli korzystasz z serwera pocztowego na zdalnym ho¶cie bêdziesz musia³ ustawiæ 
+		opcje smtp_host, smtp_port, smtp_username, smtp_password.</para>
 		<para>Poni¿ej znajduje siê lista opcji konfiguracyjnych zwi±zanych
 		z wysy³aniem wiadomo¶ci pocztowych. Opcje te umieszczone s± w sekcji
 		<emphasis>[mail]</emphasis>
 		<itemizedlist>
-		<listitem>
-			<para>debug_email</para>
-			<para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Wiadomo¶ci' LMS'a, 
-			zamiast do w³a¶ciwych klientów.</para>
-			<para>Przyk³ad:     <prompt>debug_email = root@localhost</prompt></para>
-        	</listitem>
-		<listitem>
-			<para>smtp_host, smtp_port, smtp_username, smtp_password</para>
-			<para>Parametry po³±czenia SMTP. LMS umo¿liwia korzystanie ze
-			zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
-			PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</para>
-			<para>Przyk³ad:     <prompt>smtp_host = poczta.domena.pl</prompt></para>
-		</listitem>
-		<listitem>
-			<para>smtp_auth_type</para>
-			<para>Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domy¶lnych
-			zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</para>
-			<para>Przyk³ad:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
-		</listitem>
+			<listitem>
+				<para>debug_email</para>
+				<para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Wiadomo¶ci' LMS'a, 
+				zamiast do w³a¶ciwych klientów.</para>
+				<para>Przyk³ad:     <prompt>debug_email = root@localhost</prompt></para>
+			</listitem>
+			<listitem>
+				<para>smtp_host, smtp_port, smtp_username, smtp_password</para>
+				<para>Parametry po³±czenia SMTP. LMS umo¿liwia korzystanie ze
+				zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
+				PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</para>
+				<para>Przyk³ad:     <prompt>smtp_host = poczta.domena.pl</prompt></para>
+			</listitem>
+			<listitem>
+				<para>smtp_auth_type</para>
+				<para>Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domy¶lnych
+				zostanie u¿yta najlepsza z dostêpnych metod. Domy¶lnie: nie ustawiona.</para>
+				<para>Przyk³ad:     <prompt>smtp_auth_type = DIGEST-MD5</prompt></para>
+			</listitem>
+		</itemizedlist>
+		</para>
+		<para>Konfiguracja wiadomo¶ci SMS jest bardziej rozbudowana. Przede wszystkim 
+		nale¿y zdefiniowaæ z jakiej us³ugi bêdziemy korzystaæ. Czy bêdzie to bramka smsowa,
+		czy jakie¶ oprogramowanie zainstalowane na serwerze (np. gnokii, smstools). Konfiguracji
+		dokonujemy w sekcji <emphasis>[sms]</emphasis>:
+		<itemizedlist>
+			<listitem>
+				<para>service</para>
+				<para>Us³uga u¿ywana do wysy³ania smsów. Dozwolone warto¶ci to 'smstools' i 'smscenter'</para>
+				<para>Przyk³ad:     <prompt>service = smstools</prompt></para>
+			</listitem>
+			<listitem>
+				<para>prefix</para>
+				<para>Telefoniczny prefix kraju. Domy¶lnie: 48 (Polska)</para>
+				<para>Przyk³ad:     <prompt>prefix = 49</prompt></para>
+			</listitem>
+			<listitem>
+				<para>from</para>
+				<para>Nadawca wiadomo¶ci. Domy¶lnie: pusta.</para>
+				<para>Przyk³ad:     <prompt>from = ISP Sp. z o.o.</prompt></para>
+			</listitem>
+			<listitem>
+				<para>username</para>
+				<para>Nazwa u¿ytkownika bramki smsowej. Domy¶lnie: pusta.</para>
+				<para>Przyk³ad:     <prompt>username = isp</prompt></para>
+			</listitem>
+			<listitem>
+				<para>password</para>
+				<para>Has³o do bramki smsowej. Domy¶lnie: puste.</para>
+				<para>Przyk³ad:     <prompt>password = haslo</prompt></para>
+			</listitem>
+			<listitem>
+				<para>smscenter_type</para>
+				<para>Typ konta w us³udze smscenter. Je¶li wybrano 'static' LMS doda nazwê
+				nadawcy na koñcu wiadomo¶ci. Domy¶lnie: dynamic.</para>
+				<para>Przyk³ad:     <prompt>smscenter_type = static</prompt></para>
+			</listitem>
+			<listitem>
+				<para>smstools_outdir</para>
+				<para>Katalog na pliki wiadomo¶ci do wys³ania dla demona smsd z pakietu smstools.
+				Serwer HTTP musi mieæ prawa do zapisu w tym katalogu.
+				Domy¶lnie: /var/spool/sms/outgoing.</para>
+				<para>Przyk³ad:     <prompt>smstools_outdir = /home/smsd/outgoing</prompt></para>
+			</listitem>
 		</itemizedlist>
 		</para>
 	</sect2>
