@@ -1,0 +1,49 @@
+<!--// $Id$ //-->
+{box title="Twoje adresy mailowe"}
+<table width="100%" cellpadding="3" class="light">
+	{if $mailboxes.total > 0}
+	{section name=mailboxes loop=$mailboxes}
+	{if $mailboxes[mailboxes].username}
+	<tr class="dark{if ! $mailboxes[mailboxes].active} blend{/if}">
+		<td width="1%">
+			{if $mailboxes[mailboxes].active}
+				{img src="access.gif" alt="" text="Aktywne"}
+			{else}
+				{img src="noaccess.gif" alt="" text="Nie aktywne"}
+			{/if}
+		<td width="97%" style="white-space: nowrap;">
+			<b>Login/adres: {$mailboxes[mailboxes].username}</b><br/>
+			Quota: {$mailboxes[mailboxes].quota}<br/>
+			Utworzone: {$mailboxes[mailboxes].created}<br>
+			Zmodyfikowane: {$mailboxes[mailboxes].modified}<br>
+		</td>
+		<td width="1%" style="white-space: nowrap;">
+			serwer poczty przychodzącej pop3: <b>pop3.{$mailboxes[mailboxes].domain}</b><br/>
+			serwer poczty przychodzącej imap: <b>imap.{$mailboxes[mailboxes].domain}</b><br/>
+			serwer poczty wychodzącej smtp: <b>smtp.{$mailboxes[mailboxes].domain}</b><br/>
+			<br>
+			Serwer smtp wymaga autoryzacji (login i hasło taki sam jak do pop3/imap)
+		</td>
+		<td width="1%" style="white-space: nowrap;" align="right" valign="bottom">
+			<a href="?m=accounts&f=maildelete&account={$mailboxes[mailboxes].username}">Usuń</a><br>
+			<a href="?m=accounts&f=mailhpasswd&acount={$mailboxes[mailboxes].username}">Zmień hasło</a>
+		</td>
+	</tr>
+	{/if}
+	{/section}
+
+	<tr align="right"><td class="dark" colspan="3" >Razem: {$mailboxes.total}</td>
+	                  <td class="dark">{if $mailboxes.total < $mail_limit}<a href="?m=accounts&f=mailadd">dodaj{/if}</a></td></tr>
+
+	{else}
+	<tr>
+		<td width="100%" colspan="2" align="center">
+			<p>&nbsp;</p>
+			<p><b>{t}Nie posiadasz żadnych kont mailowych.{/t}</b></p>
+			<p>&nbsp;</p>
+		</td>
+	</tr>
+	<tr align="right"><td class="dark" colspan="4"><a href="?m=accounts&f=mailadd">dodaj</a></td></tr>
+	{/if}
+</table>
+{/box}

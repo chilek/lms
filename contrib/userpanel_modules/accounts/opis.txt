@@ -1,0 +1,25 @@
+Moduł napisany przez Pawła Rohde pawel@rohde.pl na podstawie istniejących modułów.
+
+Moduł do userpanela umożliwiający zakładanie, kasowanie, zmianę hasła dla kont wirtualnych dla bazy zgodnej z postfixadminem.
+
+W lms.ini należy dodać wpisy na bazę postfixadmina:
+
+[database]
+
+; mail, postfix, postfixadmin database
+mail_db_type		= mysql
+mail_db_host		= localhost
+mail_db_user		= user
+mail_db_password	= haslo
+mail_db_database	= nazawa_bazy
+
+W bazie postfixadmina należy rozszerzyć tabelę mailbox o pole customerid:
+
+alter table mailbox add customerid int(10) not null default 0;
+
+W lmsie należy dodać dwie zmienne dla userpanela:
+
+insert into uiconfig (section,var,value,description) values ('userpanel','mail_limit','1','Limit kont per abonent');
+insert into uiconfig (section,var,value,description) values ('userpanel','mail_allowed_domains','example.com costam.pl','Lista domen w których mogą założyć konto');
+
+
