@@ -1,0 +1,33 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="DARK"><TD CLASS="fall"><B>{t}Module Configuration:{/t}</B></TD></TR>
+    <TR CLASS="light"><TD CLASS="fall">
+	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=accounts&f=submit_setup">
+	<TABLE WIDTH="100%">
+	    <TR>
+		<TD WIDTH="1%" NOWRAP>
+		    {t}Dozwolone domeny:{/t}
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+		    <INPUT TYPE="TEXT" NAME="mail_allowed_domains" VALUE="{$mail_allowed_domains}" SIZE="100" {tip text="Dozwolone domeny, udostępnione do automatycznego zakładania kont pocztowych."}> 
+    		</TD>
+	    </TR>
+	    <TR>
+		<TD WIDTH="1%" NOWRAP>
+		    {t}Limit kont mailowych dla użytkownika:{/t}
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+		    <INPUT TYPE="TEXT" NAME="mail_limit" VALUE="{$mail_limit}" SIZE="20" {tip text="Limit skrzynek pocztowych"}> 
+    		</TD>
+	    </TR>
+	</TABLE>
+	</FORM>
+	<p align="right">
+	    <A HREF="?m=userpanel">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT=""></A>
+	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+	</p>
+    </TD></TR>
+</TABLE>
+{include file="footer.html"}
