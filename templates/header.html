@@ -84,16 +84,16 @@
 				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('rtinput'),'?m=quicksearch&ajax=1&mode=ticket&what=',1);
 				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('accountinput'),'?m=quicksearch&ajax=1&mode=account&what=',1);
 			</script>
+			{* Enter key submit hack for IE *}
+			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
 		    </td>
 		    <td width="99%" align="right" nowrap>
 			&nbsp;<A href="?m=copyrights">&copy; 2001-2009 LMS Developers</A>
-			{* omijamy problem z dzialaniem klawisza Enter *}
-			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
 		    </td>
 		</tr>
 	</table>
-	<hr>
 	</form>
+	<hr>
 <SCRIPT type="text/javascript">
 <!--//
 document.forms['quicksearch'].elements['customerinput'].focus();

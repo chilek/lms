@@ -79,12 +79,38 @@ NAME="MENU-MESSAGES"
 >3.10. Messages</A
 ></H1
 ><P
->Messages is component where you can spam groups of your customers
-	with email or sms.</P
+>Messages is a component where you can spam groups of your customers
+	with email or sms messages.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-MESSAGES-LIST"
+>3.10.1. List</A
+></H2
+><P
+>On the list you have a history of sent messages. You can sort them
+	    	using filter. Clicking on the message record moves you to information page
+	    	with message content and list of recipients. On the list you have 
+	    	delivery status of every (sub)message.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-MESSAGES-NEW"
+>3.10.2. New message</A
+></H2
+><P
+>To send a message you should specify appropriate
+	    	group of recipients, type of message (email/sms). Your attendance can be
+	    	grouped by status, network or customer/node groups, etc.</P
 ><P
 >In message body you can use variables, which will be replaced by
-	customer data:
-	<TABLE
+	    	customer data:
+	    	<TABLE
 BORDER="0"
 ><TBODY
 ><TR
@@ -125,80 +151,36 @@ CLASS="PROMPT"
 ></TBODY
 ></TABLE
 >
-	</P
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="MENU-MESSAGES-LIST"
->3.10.1. List</A
-></H2
-><P
->On the list you have a history of sent messages. You can sort them
-	    using filter. Clicking on the message record moves you to information page
-	    with message content and list of recipients. On the list you have 
-	    delivery status of every (sub)message.</P
+		</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENU-MESSAGES-NEW"
->3.10.2. New message</A
+NAME="MENU-MESSAGES-CONF"
+>3.10.3. Configuration</A
 ></H2
 ><P
->To send a message you should specify appropriate
-	    group of recipients, type of message (email/sms). Your attendance can be
-	    grouped by status, network or customer/node groups, etc.</P
-><P
->If you use mail server on remote host, you will need to set options
-	    smtp_host, smtp_port, smtp_username, smtp_password in [mail] section.</P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Note"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Your server has to support PEAR::Mail for this to
-	    send email messages.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	    </P
+>Your server has to support PEAR::Mail for this to send email messages.
+		If you use mail server on remote host, you will need to set options
+	    	smtp_host, smtp_port, smtp_username, smtp_password in [mail] section.</P
 ><P
 >Here we've got the list of configuration options for mailing. These options
-	    should be placed in <SPAN
+	    	should be placed in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[mail]</I
 ></SPAN
 > section.
-    	    <UL
+    	    	<UL
 ><LI
 ><P
 >debug_email</P
 ><P
 >E-mail address for debugging - messages sent from module 'Messages' will be delivered
-        	to this address instead of sending them to real users. </P
+        		to this address instead of sending them to real users. </P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -221,7 +203,7 @@ CLASS="PROMPT"
 >smtp_auth_type</P
 ><P
 >Smtp authorization method in mailing. By default LMS (exactly PEAR::Net_SMTP) 
-    		will use the best supported method. Default: none.</P
+    			will use the best supported method. Default: none.</P
 ><P
 >Example:     <SAMP
 CLASS="PROMPT"
@@ -230,7 +212,102 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-	    </P
+	    	</P
+><P
+>SMS configuration is more complex. Forst of all you have to define
+		a service type to use. This could be a SMS gateway or some software installed
+		on LMS server (e.g. gnokii, smstools). For SMS configuration options <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[sms]</I
+></SPAN
+>
+		section is intended:
+		<UL
+><LI
+><P
+>service</P
+><P
+>service type for sending text messages. Supported values: 'smstools' and 'smscenter'.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>service = smstools</SAMP
+></P
+></LI
+><LI
+><P
+>prefix</P
+><P
+>Phone country code. Default: 48 (Poland)</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>prefix = 49</SAMP
+></P
+></LI
+><LI
+><P
+>from</P
+><P
+>Message sender. Default empty.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>from = ISP Co.</SAMP
+></P
+></LI
+><LI
+><P
+>username</P
+><P
+>Username for sms gateway. Default: empty.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>username = isp</SAMP
+></P
+></LI
+><LI
+><P
+>password</P
+><P
+>Password for sms gateway. Default: empty.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>password = haslo</SAMP
+></P
+></LI
+><LI
+><P
+>smscenter_type</P
+><P
+>Type of account you have at smscenter service. LMS will add sender at 
+				the end of message, when static type has been set. 
+				Correct values are: static and dynamic. Default: dynamic.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smscenter_type = static</SAMP
+></P
+></LI
+><LI
+><P
+>smstools_outdir</P
+><P
+>Directory with outgoing message files for smsd (smstools).
+				HTTP server must have a write access to it. Deafault: /var/spool/sms/outgoing.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smstools_outdir = /home/smsd/outgoing</SAMP
+></P
+></LI
+></UL
+>
+		</P
 ></DIV
 ></DIV
 ><DIV

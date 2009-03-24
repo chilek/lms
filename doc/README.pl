@@ -1981,20 +1981,8 @@ MISC_OTHER="-A -x -j"
 
 3.10. Wiadomości
 
-   Wiadomości to miejsce z którego możesz rozsyłać do klientów spam, w
+   Wiadomości to miejsce z którego możesz rozsyłać do klientów spam w
    postaci wiadomości e-mail lub sms.
-
-   W treści wiadomości można używać zmiennych, w miejsce których zostaną
-   podstawione dane właściwe dla każdego z klientów:
-   %customer - nazwisko/nazwa i imię klienta
-   %balance - kwota bilansu (ze znakiem)
-   %cid - ID klienta
-   %pin - PIN klienta
-   %last_10_in_a_table - lista ostatnich 10 operacji na koncie klienta
-   Notatka
-
-           Serwer musi być odpowiednio skonfigurowany do użycia PEAR::Mail dla
-           mailingu.
      __________________________________________________________________
 
 3.10.1. Lista
@@ -2010,15 +1998,27 @@ MISC_OTHER="-A -x -j"
 
    Aby wysłać wiadomość należy wybrać grupę docelową przy pomocy
    dostępnych filtrów określających status klienta, sieć, grupę, typ
-   łącza, itp. Należy również wybrać typ wiadomości, podać jej temat i
-   treść.
+   łącza, itp. Należy również wybrać typ wiadomości, podać jej temat
+   (wymagany również dla smsów) i treść.
 
-   Jeżeli korzystasz z serwera pocztowego na zdalnym hoście będziesz
-   musiał ustawić opcje smtp_host, smtp_port, smtp_username, smtp_password
-   w sekcji [mail].
+   W treści wiadomości można używać zmiennych, w miejsce których zostaną
+   podstawione dane właściwe dla każdego z odbiorców:
+   %customer - nazwisko/nazwa i imię klienta
+   %balance - kwota bilansu (ze znakiem)
+   %cid - ID klienta
+   %pin - PIN klienta
+   %last_10_in_a_table - lista ostatnich 10 operacji na koncie klienta
+     __________________________________________________________________
+
+3.10.3. Konfiguracja
+
+   Serwer musi być odpowiednio skonfigurowany do użycia PEAR::Mail dla
+   mailingu. Jeżeli korzystasz z serwera pocztowego na zdalnym hoście
+   będziesz musiał ustawić opcje smtp_host, smtp_port, smtp_username,
+   smtp_password.
 
    Poniżej znajduje się lista opcji konfiguracyjnych związanych z
-   wysyłaniem wisdomości pocztowych. Opcje te umieszczone są w sekcji
+   wysyłaniem wiadomości pocztowych. Opcje te umieszczone są w sekcji
    [mail]
      * debug_email
        Adres e-mail do debugowania - pod ten adres będą szły wiadomości
@@ -2035,6 +2035,36 @@ MISC_OTHER="-A -x -j"
        zostanie użyta najlepsza z dostępnych metod. Domyślnie: nie
        ustawiona.
        Przykład: smtp_auth_type = DIGEST-MD5
+
+   Konfiguracja wiadomości SMS jest bardziej rozbudowana. Przede wszystkim
+   należy zdefiniować z jakiej usługi będziemy korzystać. Czy będzie to
+   bramka smsowa, czy jakieś oprogramowanie zainstalowane na serwerze (np.
+   gnokii, smstools). Konfiguracji dokonujemy w sekcji [sms]:
+     * service
+       Usługa używana do wysyłania smsów. Dozwolone wartości to 'smstools'
+       i 'smscenter'
+       Przykład: service = smstools
+     * prefix
+       Telefoniczny prefix kraju. Domyślnie: 48 (Polska)
+       Przykład: prefix = 49
+     * from
+       Nadawca wiadomości. Domyślnie: pusta.
+       Przykład: from = ISP Sp. z o.o.
+     * username
+       Nazwa użytkownika bramki smsowej. Domyślnie: pusta.
+       Przykład: username = isp
+     * password
+       Hasło do bramki smsowej. Domyślnie: puste.
+       Przykład: password = haslo
+     * smscenter_type
+       Typ konta w usłudze smscenter. Jeśli wybrano 'static' LMS doda
+       nazwę nadawcy na końcu wiadomości. Domyślnie: dynamic.
+       Przykład: smscenter_type = static
+     * smstools_outdir
+       Katalog na pliki wiadomości do wysłania dla demona smsd z pakietu
+       smstools. Serwer HTTP musi mieć prawa do zapisu w tym katalogu.
+       Domyślnie: /var/spool/sms/outgoing.
+       Przykład: smstools_outdir = /home/smsd/outgoing
      __________________________________________________________________
 
 3.11. Przeładowanie
