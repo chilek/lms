@@ -1784,16 +1784,8 @@ query = SELECT mail_bcc
 
 3.10. Messages
 
-   Messages is component where you can spam groups of your customers with
-   email or sms.
-
-   In message body you can use variables, which will be replaced by
-   customer data:
-   %customer - name/lastname and forename
-   %balance - balance value (with sign)
-   %cid - customer ID
-   %pin - customer PIN
-   %last_10_in_a_table - last 10 operations on customer account
+   Messages is a component where you can spam groups of your customers
+   with email or sms messages.
      __________________________________________________________________
 
 3.10.1. List
@@ -1810,12 +1802,20 @@ query = SELECT mail_bcc
    type of message (email/sms). Your attendance can be grouped by status,
    network or customer/node groups, etc.
 
+   In message body you can use variables, which will be replaced by
+   customer data:
+   %customer - name/lastname and forename
+   %balance - balance value (with sign)
+   %cid - customer ID
+   %pin - customer PIN
+   %last_10_in_a_table - last 10 operations on customer account
+     __________________________________________________________________
+
+3.10.3. Configuration
+
+   Your server has to support PEAR::Mail for this to send email messages.
    If you use mail server on remote host, you will need to set options
    smtp_host, smtp_port, smtp_username, smtp_password in [mail] section.
-
-   Note
-
-        Your server has to support PEAR::Mail for this to send email messages.
 
    Here we've got the list of configuration options for mailing. These
    options should be placed in [mail] section.
@@ -1832,6 +1832,37 @@ query = SELECT mail_bcc
        Smtp authorization method in mailing. By default LMS (exactly
        PEAR::Net_SMTP) will use the best supported method. Default: none.
        Example: smtp_auth_type = DIGEST-MD5
+
+   SMS configuration is more complex. Forst of all you have to define a
+   service type to use. This could be a SMS gateway or some software
+   installed on LMS server (e.g. gnokii, smstools). For SMS configuration
+   options [sms] section is intended:
+     * service
+       service type for sending text messages. Supported values:
+       'smstools' and 'smscenter'.
+       Example: service = smstools
+     * prefix
+       Phone country code. Default: 48 (Poland)
+       Example: prefix = 49
+     * from
+       Message sender. Default empty.
+       Example: from = ISP Co.
+     * username
+       Username for sms gateway. Default: empty.
+       Example: username = isp
+     * password
+       Password for sms gateway. Default: empty.
+       Example: password = haslo
+     * smscenter_type
+       Type of account you have at smscenter service. LMS will add sender
+       at the end of message, when static type has been set. Correct
+       values are: static and dynamic. Default: dynamic.
+       Example: smscenter_type = static
+     * smstools_outdir
+       Directory with outgoing message files for smsd (smstools). HTTP
+       server must have a write access to it. Deafault:
+       /var/spool/sms/outgoing.
+       Example: smstools_outdir = /home/smsd/outgoing
      __________________________________________________________________
 
 3.11. Reload

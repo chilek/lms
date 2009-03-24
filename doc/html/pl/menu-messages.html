@@ -79,12 +79,39 @@ NAME="MENU-MESSAGES"
 >3.10. Wiadomości</A
 ></H1
 ><P
->Wiadomości to miejsce z którego możesz rozsyłać do klientów spam, w postaci
-	wiadomości e-mail lub sms.</P
+>Wiadomości to miejsce z którego możesz rozsyłać do klientów spam w postaci
+	wiadomości e-mail lub sms. </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-MESSAGES-LIST"
+>3.10.1. Lista</A
+></H2
+><P
+>Lista wiadomości zawiera historię wysłanych wiadomości. Możesz
+		ją dowolnie przeszukiwać korzystając z filtra. Kliknięcie wiersza
+		wiadomości powoduje przejście do strony ze szczegółowymi informacjami
+		o wiadomości tj. treści, nadawcy. Strona ta zawiera również listę
+		odbiorców wiadomości wraz ze statusem wysyłki.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-MESSAGES-NEW"
+>3.10.2. Nowa wiadomość</A
+></H2
+><P
+>Aby wysłać wiadomość należy wybrać grupę docelową przy pomocy
+		dostępnych filtrów określających status klienta, sieć, grupę, typ łącza, itp. 
+		Należy również wybrać typ wiadomości, podać jej temat (wymagany również dla smsów) i treść.</P
 ><P
 >W treści wiadomości można używać zmiennych, w miejsce których zostaną
-	podstawione dane właściwe dla każdego z klientów:
-	<TABLE
+		podstawione dane właściwe dla każdego z odbiorców:
+		<TABLE
 BORDER="0"
 ><TBODY
 ><TR
@@ -125,66 +152,23 @@ CLASS="PROMPT"
 ></TBODY
 ></TABLE
 >
-	<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Serwer musi być odpowiednio skonfigurowany do użycia PEAR::Mail dla mailingu.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	</P
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="MENU-MESSAGES-LIST"
->3.10.1. Lista</A
-></H2
-><P
->Lista wiadomości zawiera historię wysłanych wiadomości. Możesz
-		ją dowolnie przeszukiwać korzystając z filtra. Kliknięcie wiersza
-		wiadomości powoduje przejście do strony ze szczegółowymi informacjami
-		o wiadomości tj. treści, nadawcy. Strona ta zawiera również listę
-		odbiorców wiadomości wraz ze statusem wysyłki.</P
+		</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENU-MESSAGES-NEW"
->3.10.2. Nowa wiadomość</A
+NAME="MENU-MESSAGES-CONF"
+>3.10.3. Konfiguracja</A
 ></H2
 ><P
->Aby wysłać wiadomość należy wybrać grupę docelową przy pomocy
-		dostępnych filtrów określających status klienta, sieć, grupę, typ łącza, itp. 
-		Należy również wybrać typ wiadomości, podać jej temat i treść.</P
-><P
->Jeżeli korzystasz z serwera
-		pocztowego na zdalnym hoście będziesz musiał ustawić opcje smtp_host, smtp_port,
-		smtp_username, smtp_password w sekcji [mail].</P
+>Serwer musi być odpowiednio skonfigurowany do użycia PEAR::Mail dla mailingu. 
+		Jeżeli korzystasz z serwera pocztowego na zdalnym hoście będziesz musiał ustawić 
+		opcje smtp_host, smtp_port, smtp_username, smtp_password.</P
 ><P
 >Poniżej znajduje się lista opcji konfiguracyjnych związanych
-		z wysyłaniem wisdomości pocztowych. Opcje te umieszczone są w sekcji
+		z wysyłaniem wiadomości pocztowych. Opcje te umieszczone są w sekcji
 		<SPAN
 CLASS="emphasis"
 ><I
@@ -198,7 +182,7 @@ CLASS="EMPHASIS"
 >debug_email</P
 ><P
 >Adres e-mail do debugowania - pod ten adres będą szły wiadomości wysyłane z sekcji 'Wiadomości' LMS'a, 
-			zamiast do właściwych klientów.</P
+				zamiast do właściwych klientów.</P
 ><P
 >Przykład:     <SAMP
 CLASS="PROMPT"
@@ -210,8 +194,8 @@ CLASS="PROMPT"
 >smtp_host, smtp_port, smtp_username, smtp_password</P
 ><P
 >Parametry połączenia SMTP. LMS umożliwia korzystanie ze
-			zdalnego serwera pocztowego z autoryzacją, wykorzystując do tego moduł
-			PEAR::Mail. Domyślnie: 127.0.0.1:25.</P
+				zdalnego serwera pocztowego z autoryzacją, wykorzystując do tego moduł
+				PEAR::Mail. Domyślnie: 127.0.0.1:25.</P
 ><P
 >Przykład:     <SAMP
 CLASS="PROMPT"
@@ -223,11 +207,106 @@ CLASS="PROMPT"
 >smtp_auth_type</P
 ><P
 >Metoda autoryzacji SMTP w mailingu. Przy ustawieniach domyślnych
-			zostanie użyta najlepsza z dostępnych metod. Domyślnie: nie ustawiona.</P
+				zostanie użyta najlepsza z dostępnych metod. Domyślnie: nie ustawiona.</P
 ><P
 >Przykład:     <SAMP
 CLASS="PROMPT"
 >smtp_auth_type = DIGEST-MD5</SAMP
+></P
+></LI
+></UL
+>
+		</P
+><P
+>Konfiguracja wiadomości SMS jest bardziej rozbudowana. Przede wszystkim 
+		należy zdefiniować z jakiej usługi będziemy korzystać. Czy będzie to bramka smsowa,
+		czy jakieś oprogramowanie zainstalowane na serwerze (np. gnokii, smstools). Konfiguracji
+		dokonujemy w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[sms]</I
+></SPAN
+>:
+		<UL
+><LI
+><P
+>service</P
+><P
+>Usługa używana do wysyłania smsów. Dozwolone wartości to 'smstools' i 'smscenter'</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>service = smstools</SAMP
+></P
+></LI
+><LI
+><P
+>prefix</P
+><P
+>Telefoniczny prefix kraju. Domyślnie: 48 (Polska)</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>prefix = 49</SAMP
+></P
+></LI
+><LI
+><P
+>from</P
+><P
+>Nadawca wiadomości. Domyślnie: pusta.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>from = ISP Sp. z o.o.</SAMP
+></P
+></LI
+><LI
+><P
+>username</P
+><P
+>Nazwa użytkownika bramki smsowej. Domyślnie: pusta.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>username = isp</SAMP
+></P
+></LI
+><LI
+><P
+>password</P
+><P
+>Hasło do bramki smsowej. Domyślnie: puste.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>password = haslo</SAMP
+></P
+></LI
+><LI
+><P
+>smscenter_type</P
+><P
+>Typ konta w usłudze smscenter. Jeśli wybrano 'static' LMS doda nazwę
+				nadawcy na końcu wiadomości. Domyślnie: dynamic.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>smscenter_type = static</SAMP
+></P
+></LI
+><LI
+><P
+>smstools_outdir</P
+><P
+>Katalog na pliki wiadomości do wysłania dla demona smsd z pakietu smstools.
+				Serwer HTTP musi mieć prawa do zapisu w tym katalogu.
+				Domyślnie: /var/spool/sms/outgoing.</P
+><P
+>Przykład:     <SAMP
+CLASS="PROMPT"
+>smstools_outdir = /home/smsd/outgoing</SAMP
 ></P
 ></LI
 ></UL
