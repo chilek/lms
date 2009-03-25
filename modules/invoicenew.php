@@ -168,7 +168,7 @@ switch($action)
 		
 		if($invoice['cdate'])
 		{
-			list($year, $month, $day) = split('/',$invoice['cdate']);
+			list($year, $month, $day) = split('/', $invoice['cdate']);
 			if(checkdate($month, $day, $year)) 
 			{
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);

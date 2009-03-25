@@ -35,10 +35,9 @@ if (!isset($_GET['level']) && !isset($_GET['removeold']) && !isset($_GET['remove
 
 set_time_limit(0);
 
-$layout['nomenu'] =  TRUE;
 $SMARTY->display('header.html');
 
-echo '<BR><BLOCKQUOTE><H1>'.trans('Compacting Database').'</H1><PRE>';
+echo '<H1>'.trans('Compacting Database').'</H1><PRE>';
 echo trans('$0 records before compacting.<BR>',$DB->GetOne('SELECT COUNT(*) FROM stats'));
 flush();
 
@@ -115,7 +114,7 @@ if(isset($_GET['level']))
 }
 
 echo trans('$0 records after compacting.',$DB->GetOne('SELECT COUNT(*) FROM stats'));
-echo '</PRE><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
+echo '</PRE>';
 flush();
 
 $SMARTY->display('footer.html');
