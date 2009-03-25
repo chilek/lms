@@ -39,10 +39,10 @@
 					<TD WIDTH="92%" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">
 						{if $a.tariffid}
 							<A HREF="?m=tariffinfo&id={$a.tariffid}"><B>{$a.name}</B></A>
-							{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
 						{else}
-							{$a.name}{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
+							{$a.name}
 						{/if}
+						{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
 					</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.value|money_format}</TD>
 					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=customerassignmentsedit&id={$a.id}'">{$a.payday}</TD>
