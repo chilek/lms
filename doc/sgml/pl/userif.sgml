@@ -432,6 +432,12 @@
 15.02.2004	Ból Józef	123,45	Op³ata za faktrê LMS/34/2004
 </screen>
 		</para>
+		<para>Podczas zatwierdzania importowanych pozycji mo¿liwe jest w³±czenie
+		automatycznego oznaczania faktur jako rozliczonych, zale¿nie od wielko¶ci wp³aty 
+		(i bilansu klienta). S³u¿y do tego opcja 'cashimport_checkinvoices' z sekcji
+		<emphasis>[finances]</emphasis>. Faktura (oraz jej korekty) oznaczana jest jako
+		rozliczona je¶li wp³ata (z uwzglêdnieniem bilansu klienta) przewy¿sza
+		kwotê obci±¿enia wynikaj±c± z danej faktury.</para>
 	</sect2>
 	<sect2 id="menu-export">
 		<title>Eksport</title>
