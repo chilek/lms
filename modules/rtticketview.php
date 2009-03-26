@@ -70,8 +70,8 @@ foreach($iteration as $idx => $element)
 {
 	if (intval($element['id']) == intval($_GET['id']))
 	{
-		$next_ticketid = $iteration[$idx+1]['id'];
-		$prev_ticketid = $iteration[$idx-1]['id'];
+		$next_ticketid = isset($iteration[$idx+1]) ? $iteration[$idx+1]['id'] : 0;
+		$prev_ticketid = isset($iteration[$idx-1]) ? $iteration[$idx-1]['id'] : 0;
 		break;
 	}
 }		
