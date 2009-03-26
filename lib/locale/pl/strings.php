@@ -2150,8 +2150,6 @@ $_LANG['Type of account you have at smscenter service. LMS will add sender at th
 $_LANG['Username for smscenter service'] = 'Nazwa użytkownika w smscenter';
 $_LANG['Password for smscenter service'] = 'Hasło dla twojego użytkownika w smscenter';
 $_LANG['Country prefix code, needed for number validation. Default: 48'] = 'Prefix krajowy, potrzebny do walidacji numeru telefonu. Domyślnie: 48';
-$_LANG['Sender name used to send text messages with login details'] = 'Nazwa nadawcy używana do przesyłania danych dotyczących logowania';
-$_LANG['Domain name, which in conjunction with computer name gives fully qualified username. Example: @network.com gives computer_name@network.com'] = 'Domena, która wraz z nazwą komputera, tworzy pełną nazwę użytkownika. Przykład: @network.com daje nazwa_komputera@network.com';
 $_LANG['Curl extension not loaded!'] = 'Brak rozszerzenia Curl!';
 $_LANG['Default sender of a text message.'] = 'Domyślny nadawca wiadomości tekstowej.';
 $_LANG['Enter message body'] = 'Wprowadź treść wiadomości';
@@ -2169,5 +2167,6 @@ $_LANG['All Messages'] = 'Wszystkie wiadomości';
 $_LANG['Customer Messages:'] = 'Wiadomości klienta:';
 $_LANG['last $0 messages'] = 'ostatnie $0 wiadomości';
 $_LANG['There are no messages in database.'] = 'Brak wiadomości w bazie danych.';
+$_LANG['Check invoices as accounted when importing cash operations. Default: false'] = 'Automatyczne oznaczanie faktur jako rozliczonych podczas importu operacji kasowych. Domyślnie: wyłączona';
 
 ?>

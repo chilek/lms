@@ -107,8 +107,8 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order, $pagelimi
 			COUNT(a.docid) AS count
 	    		FROM documents d
 			JOIN invoicecontents a ON (a.docid = d.id)
-			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
+			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
 				SELECT DISTINCT a.customerid FROM customerassignments a

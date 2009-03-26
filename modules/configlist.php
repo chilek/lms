@@ -307,6 +307,10 @@ function GetConfigList($order='var,asc', $section='')
 					case 'suspension_percentage':
 						$config[$idx]['description'] = trans('Percentage of suspended liabilities. Default: 0');
 					break;
+
+					case 'cashimport_checkinvoices':
+						$config[$idx]['description'] = trans('Check invoices as accounted when importing cash operations. Default: false');
+					break;
 				
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
