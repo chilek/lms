@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.10.6 Hank (2009-03-27):
 
   - BTS#0000773: fix transaction date when input date contains spaces (alec)
   - escape config option values on list (alec)
