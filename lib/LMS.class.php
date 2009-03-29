@@ -3644,7 +3644,7 @@ class LMS
 		if(PEAR::isError($error))
 			return $error->getMessage();
 		else
-			return "";
+			return MSG_SENT;
 	}
 
 	function SendSMS($number, $message, $messageid=0)
@@ -3742,7 +3742,9 @@ class LMS
 					        return 'Smscenter error 204, Account blocked';
 					default:
 					        return 'Smscenter error '. $smsc_result[0] . '. Please contact smscenter administrator';
-				}	
+				}
+				
+				return MSG_SENT;	
 			break;
 			case 'smstools':
 				$dir = !empty($this->CONFIG['sms']['smstools_outdir']) ? $this->CONFIG['sms']['smstools_outdir'] : '/var/spool/sms/outgoing';
@@ -3764,6 +3766,8 @@ class LMS
 				}
 				else
 					return trans('Unable to create file $0!', $filename);
+		
+				return MSG_NEW;
 			break;
 			default:
 				return trans('Unknown SMS service!');
