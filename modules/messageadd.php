@@ -312,20 +312,28 @@ if(isset($_POST['message']))
 			flush();
 			
 			if($message['type'] == MSG_MAIL)
-				$error = $LMS->SendMail($row['destination'], $headers, $body, $files);
+				$result = $LMS->SendMail($row['destination'], $headers, $body, $files);
 			else
-				$error = $LMS->SendSMS($row['destination'], $body, $msgid);
+				$result = $LMS->SendSMS($row['destination'], $body, $msgid);
 			
-			echo ($error ? " <font color=red>$error</font>" : ' [OK]')."<BR>\n";
+			if (is_string($result))
+				echo " <font color=red>$result</font>";
+			else if ($result == MSG_SENT)
+				echo ' ['.trans('sent').']';
+			else 
+				echo ' ['.trans('added').']';
+			
+			echo "<BR>\n";
 
-			$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW?,
-				error = ? WHERE messageid = ? AND customerid = ?',
-				array(
-					$error ? MSG_ERROR : MSG_SENT,
-					$error ? $error : null,
-					$msgid,
-					$row['id'],
-				));
+			if (!is_int($result) || $result == MSG_SENT)
+				$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+					error = ? WHERE messageid = ? AND customerid = ?',
+					array(
+						is_int($result) ? $result : MSG_ERROR,
+						is_int($result) ? null : $result,
+						$msgid,
+						$row['id'],
+					));
 		}
 		
 		$SMARTY->display('footer.html');
