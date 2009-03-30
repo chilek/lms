@@ -26,6 +26,8 @@ version ? (????-??-??):
     in postfixadmin format (Paweł Rohde)
   - added finances/cashimport_checkinvoices option for auto-checking invoices
     as accounted while importing cash operations (alec)
+  - arp_table_backend configuration option introduced - we can get arp table
+    by external command (chilan)
 
 version 1.11.7 Bastet (2009-02-13):
 

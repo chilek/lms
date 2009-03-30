@@ -2169,5 +2169,6 @@ $_LANG['Customer Messages:'] = 'Wiadomości klienta:';
 $_LANG['last $0 messages'] = 'ostatnie $0 wiadomości';
 $_LANG['There are no messages in database.'] = 'Brak wiadomości w bazie danych.';
 $_LANG['Check invoices as accounted when importing cash operations. Default: false'] = 'Automatyczne oznaczanie faktur jako rozliczonych podczas importu operacji kasowych. Domyślnie: wyłączona';
+$_LANG['Command which returns IP-MAC bindings. Default: internal backend'] = 'Komenda zwracająca powiązania IP-MAC. Domyślnie: obsługa wewnętrzna';
 
 ?>

@@ -266,7 +266,11 @@ function GetConfigList($order='var,asc', $section='')
 				case 'default_assignment_period':
 					$config[$idx]['description'] = trans('Default period value for assignment. Default: 0');
 				break;
-				
+
+				case 'arp_table_backend':
+					$config[$idx]['description'] = trans('Command which returns IP-MAC bindings. Default: internal backend');
+				break;
+
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
 				break;
