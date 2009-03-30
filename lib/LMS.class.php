@@ -3458,47 +3458,60 @@ class LMS
 	function GetMACs()
 	{
 		$result = array();
-		switch(PHP_OS)
+		if ($this->CONFIG['phpui']['arp_table_backend'] != '')
 		{
-			case 'Linux':
-				if(@is_readable('/proc/net/arp'))
-					$file = fopen('/proc/net/arp','r');
-				else
-					break;
-				while(!feof($file))
-				{
-					$line = fgets($file, 4096);
-					$line = eregi_replace("[\t ]+", " ", $line);
-					if(ereg('[0-9]', $line)) // skip header line
+			exec($this->CONFIG['phpui']['arp_table_backend'], $result);
+			foreach($result as $arpline)
+			{
+				list($ip,$mac) = explode(' ',$arpline);
+				$result['mac'][] = $mac;
+				$result['ip'][] = $ip;
+				$result['longip'][] = ip_long($ip);
+				$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+			}
+		}
+		else
+			switch(PHP_OS)
+			{
+				case 'Linux':
+					if(@is_readable('/proc/net/arp'))
+						$file = fopen('/proc/net/arp','r');
+					else
+						break;
+					while(!feof($file))
 					{
-						list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
-						if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00' && check_mac($hwaddr))
+						$line = fgets($file, 4096);
+						$line = eregi_replace("[\t ]+", " ", $line);
+						if(ereg('[0-9]', $line)) // skip header line
 						{
-							$result['mac'][] = $hwaddr;
-							$result['ip'][] = $ip;
-							$result['longip'][] = ip_long($ip);
-							$result['nodename'][] = $this->GetNodeNameByMAC($hwaddr);
+							list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
+							if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00' && check_mac($hwaddr))
+							{
+								$result['mac'][] = $hwaddr;
+								$result['ip'][] = $ip;
+								$result['longip'][] = ip_long($ip);
+								$result['nodename'][] = $this->GetNodeNameByMAC($hwaddr);
+							}
 						}
 					}
-				}
-				fclose($file);
-			break;
-			default:
-				exec('arp -an|grep -v incompl',$result);
-				foreach($result as $arpline)
-				{
-					list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
-					$ip = str_replace('(','',str_replace(')','',$ip));
-					if($perm != "PERM")
+					fclose($file);
+					break;
+				default:
+					exec('arp -an|grep -v incompl',$result);
+					foreach($result as $arpline)
 					{
-						$result['mac'][] = $mac;
-						$result['ip'][] = $ip;
-						$result['longip'][] = ip_long($ip);
-						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+						list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
+						$ip = str_replace('(','',str_replace(')','',$ip));
+						if($perm != "PERM")
+						{
+							$result['mac'][] = $mac;
+							$result['ip'][] = $ip;
+							$result['longip'][] = ip_long($ip);
+							$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+						}
 					}
-				}
-			break;
-		}
+					break;
+			}
 		
 		return $result;
 	}
