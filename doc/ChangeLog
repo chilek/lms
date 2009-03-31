@@ -28,6 +28,9 @@ version ? (????-??-??):
     as accounted while importing cash operations (alec)
   - arp_table_backend configuration option introduced - we can get arp table
     by external command (chilan)
+  - lms-notify-sms: added messages log support, added smstools service support,
+    added options to send notifies about new invoice and paytime overdo,
+    removed smstemplate option, added *_template and *_subject options (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

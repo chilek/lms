@@ -40,7 +40,7 @@
 			</row>
 			<row>
 			<entry><xref linkend="lms-notify-sms"></entry>
-			<entry>Powiadamianie o zaleg³o¶ciach sms'em</entry>
+			<entry>Powiadamianie klientów SMS'em o zaleg³o¶ciach, wystawionych fakturach, przekroczeniu terminu p³atno¶ci</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-cutoff"></entry>
@@ -277,26 +277,69 @@ http://www.naszasiec.pl/</screen></example>
           </sect3>
 	</sect2>
 	<sect2 id="lms-notify-sms" xreflabel="lms-notify-sms">
-	<title>lms-notify-sms</title>
-	  <para>lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
-	  smsów. Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz oprogramowanie,
-	  które nale¿y pobraæ z (<ulink url="http://www.gnokii.org">www.gnokii.org</ulink>)
-	  i zainstalowaæ w systemie.</para>
-	  <para>Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku <filename>lms.ini</filename> 
-	  w sekcji <emphasis>[notify-sms]</emphasis>, a masz do dyspozycji nastêpuj±ce opcje:</para>
-	  <itemizedlist>
-            <listitem>
-	     <para>limit (opcjonalny)</para>
-	     <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do klienta 
-	     zostanie wys³any sms z upomnieniem. Domy¶lnie: 0</para>
-	     <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
-	    </listitem>
-            <listitem>
-	     <para>smstemplate (wymagany)</para>
-	     <para>Szablon wiadomo¶ci. Domy¶lnie: nie ustawione.</para>
-	     <para>Przyk³ad:	<prompt>smstemplate = /etc/lms/smstemplate.txt</prompt></para>
-	    </listitem>
-	  </itemizedlist>
+		<title>lms-notify-sms</title>
+		<para>lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
+		smsów. Obecnie skrypt wspiera dwie us³ugi, smstools oraz gnokii.
+		Wyboru us³ugi dokonuje siê w sekcji <emphasis>[sms]</emphasis>. Skrypt jest 
+		wielofunkcyjny, w³±czenie okre¶lonego zadania nastêpuje poprzez
+		zdefiniowanie lokalizacji pliku z szablonem wiadomo¶ci.</para>
+		<para>Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku 
+		<filename>lms.ini</filename> 
+		w sekcji <emphasis>[notify-sms]</emphasis>, a masz do dyspozycji nastêpuj±ce 
+		opcje:
+		<itemizedlist>
+            	<listitem>
+	     		<para>service (opcjonalny)</para>
+	     		<para>Pozwala na wybranie us³ugi SMS niezale¿nie od tej,
+			któr± podano w sekcji <emphasis>[sms]</emphasis>. Domy¶lnie: pusta</para>
+	     		<para>Przyk³ad:	<prompt>service = smstools</prompt></para>
+	    	</listitem>
+		<listitem>
+			<para>debtors_template (opcjonalny)</para>
+			<para>Lokalizacja pliku z szablonem wiadomo¶ci wysy³anej do 
+				zad³u¿onych klientów. Pozostawienie tej opcji pustej wy³±czy
+				powiadomienia o zad³u¿eniu. Domy¶lnie: pusta</para>
+			<para>Przyk³ad:	<prompt>debtors_template = /etc/lms/debtors.txt</prompt></para>
+		</listitem>
+		<listitem>
+			<para>debtors_subject (opcjonalny)</para>
+			<para>Temat wiadomo¶ci o zad³u¿eniu. Domy¶lnie: 'Debtors notification'</para>
+			<para>Przyk³ad:	<prompt>debtors_subject = 'Powiadomienie o zad³u¿eniu'</prompt></para>
+		</listitem>
+		<listitem>
+			<para>invoices_template (opcjonalny)</para>
+			<para>Lokalizacja pliku z szablonem wiadomo¶ci z informacj± o 
+			wystawieniu faktury. Pod uwagê brane s± faktury wystawione
+			w ci±gu ostatnich 24 godzin od uruchomienia skryptu.			
+			Pozostawienie tej opcji pustej wy³±czy
+			powiadomienia o nowych fakturach. Domy¶lnie: pusta</para>
+			<para>Przyk³ad:	<prompt>invoice_template = /etc/lms/new_invoice.txt</prompt></para>
+		</listitem>
+		<listitem>
+			<para>invoices_subject (opcjonalny)</para>
+			<para>Temat wiadomo¶ci o nowej fakturze. Domy¶lnie: 'New invoice notification'</para>
+			<para>Przyk³ad:	<prompt>invoices_subject = 'Powiadomienie o wystawieniu faktury'</prompt></para>
+		</listitem>
+		<listitem>
+			<para>deadline_template (opcjonalny)</para>
+			<para>Lokalizacja pliku z szablonem wiadomo¶ci wysy³anej do 
+			zad³u¿onych klientów, posiadaj±cych przeterminowane (nierozliczone) faktury. Pozostawienie tej opcji pustej wy³±czy
+			powiadomienia. Domy¶lnie: pusta</para>
+			<para>Przyk³ad:	<prompt>deadline_template = /etc/lms/deadline.txt</prompt></para>
+		</listitem>
+		<listitem>
+			<para>deadline_subject (opcjonalny)</para>
+			<para>Temat wiadomo¶ci o przeterminowanych fakturach. Domy¶lnie: 'Invoice deadline notification'</para>
+			<para>Przyk³ad:	<prompt>deadline_subject = 'Powiadomienie o zaleg³o¶ci'</prompt></para>
+		</listitem>
+		<listitem>
+			<para>limit (opcjonalny)</para>
+			<para>Pozwala na ustalenie limitu bilansu poni¿ej którego do klienta 
+			zostanie wys³any sms z informacj± o zad³u¿eniu. Domy¶lnie: 0</para>
+			<para>Przyk³ad:	<prompt>limit = -20</prompt></para>
+		</listitem>
+	  	</itemizedlist>
+	</para>
 	</sect2> 
 	<sect2 id="lms-cutoff" xreflabel="lms-cutoff">
 	 <title>lms-cutoff</title>

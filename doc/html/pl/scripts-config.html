@@ -357,50 +357,138 @@ NAME="LMS-NOTIFY-SMS"
 ></H2
 ><P
 >lms-notify-sms to odpowiednik lms-notify, służący do wysyłania
-	  smsów. Do wysyłania wiadomości potrzebna jest komórka Nokii oraz oprogramowanie,
-	  które należy pobrać z (<A
-HREF="http://www.gnokii.org"
-TARGET="_top"
->www.gnokii.org</A
->)
-	  i zainstalować w systemie.</P
+		smsów. Obecnie skrypt wspiera dwie usługi, smstools oraz gnokii.
+		Wyboru usługi dokonuje się w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[sms]</I
+></SPAN
+>. Skrypt jest 
+		wielofunkcyjny, włączenie określonego zadania następuje poprzez
+		zdefiniowanie lokalizacji pliku z szablonem wiadomości.</P
 ><P
->Konfigurację dla lms-notify-sms można ustalić w pliku <TT
+>Konfigurację dla lms-notify-sms można ustalić w pliku 
+		<TT
 CLASS="FILENAME"
 >lms.ini</TT
 > 
-	  w sekcji <SPAN
+		w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[notify-sms]</I
 ></SPAN
->, a masz do dyspozycji następujące opcje:</P
-><UL
+>, a masz do dyspozycji następujące 
+		opcje:
+		<UL
+><LI
+><P
+>service (opcjonalny)</P
+><P
+>Pozwala na wybranie usługi SMS niezależnie od tej,
+			którą podano w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[sms]</I
+></SPAN
+>. Domyślnie: pusta</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>service = smstools</SAMP
+></P
+></LI
+><LI
+><P
+>debtors_template (opcjonalny)</P
+><P
+>Lokalizacja pliku z szablonem wiadomości wysyłanej do 
+				zadłużonych klientów. Pozostawienie tej opcji pustej wyłączy
+				powiadomienia o zadłużeniu. Domyślnie: pusta</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>debtors_template = /etc/lms/debtors.txt</SAMP
+></P
+></LI
+><LI
+><P
+>debtors_subject (opcjonalny)</P
+><P
+>Temat wiadomości o zadłużeniu. Domyślnie: 'Debtors notification'</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>debtors_subject = 'Powiadomienie o zadłużeniu'</SAMP
+></P
+></LI
+><LI
+><P
+>invoices_template (opcjonalny)</P
+><P
+>Lokalizacja pliku z szablonem wiadomości z informacją o 
+			wystawieniu faktury. Pod uwagę brane są faktury wystawione
+			w ciągu ostatnich 24 godzin od uruchomienia skryptu.			
+			Pozostawienie tej opcji pustej wyłączy
+			powiadomienia o nowych fakturach. Domyślnie: pusta</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>invoice_template = /etc/lms/new_invoice.txt</SAMP
+></P
+></LI
+><LI
+><P
+>invoices_subject (opcjonalny)</P
+><P
+>Temat wiadomości o nowej fakturze. Domyślnie: 'New invoice notification'</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>invoices_subject = 'Powiadomienie o wystawieniu faktury'</SAMP
+></P
+></LI
+><LI
+><P
+>deadline_template (opcjonalny)</P
+><P
+>Lokalizacja pliku z szablonem wiadomości wysyłanej do 
+			zadłużonych klientów, posiadających przeterminowane (nierozliczone) faktury. Pozostawienie tej opcji pustej wyłączy
+			powiadomienia. Domyślnie: pusta</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>deadline_template = /etc/lms/deadline.txt</SAMP
+></P
+></LI
+><LI
+><P
+>deadline_subject (opcjonalny)</P
+><P
+>Temat wiadomości o przeterminowanych fakturach. Domyślnie: 'Invoice deadline notification'</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>deadline_subject = 'Powiadomienie o zaległości'</SAMP
+></P
+></LI
 ><LI
 ><P
 >limit (opcjonalny)</P
 ><P
 >Pozwala na ustalenie limitu bilansu poniżej którego do klienta 
-	     zostanie wysłany sms z upomnieniem. Domyślnie: 0</P
+			zostanie wysłany sms z informacją o zadłużeniu. Domyślnie: 0</P
 ><P
 >Przykład:	<SAMP
 CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
 ></LI
-><LI
-><P
->smstemplate (wymagany)</P
-><P
->Szablon wiadomości. Domyślnie: nie ustawione.</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->smstemplate = /etc/lms/smstemplate.txt</SAMP
-></P
-></LI
 ></UL
+>
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
