@@ -26,6 +26,7 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
+use Encode;
 use vars qw($configfile $quiet $help $version $debug);
 use POSIX qw(strftime mktime);
 
@@ -176,6 +177,23 @@ if ($script_service) {
 # ------------------------------------------------------------------------------
 # FUNCTIONS
 # ------------------------------------------------------------------------------
+my %equiv = (
+	"\x{017C}" => 'z', "\x{0105}" => 'a', "\x{015B}" => 's', 
+	"\x{0107}" => 'c', "\x{0119}" => 'e', "\x{017A}" => 'z',
+	"\x{0144}" => 'n', "\x{00F3}" => 'o', "\x{0142}" => 'l',
+	"\x{017B}" => 'Z', "\x{0104}" => 'A', "\x{015A}" => 'S',
+	"\x{0106}" => 'C', "\x{0118}" => 'E', "\x{0179}" => 'Z',
+	"\x{0143}" => 'N', "\x{00D3}" => 'O', "\x{0141}" => 'L',
+	# see http://www.perlmonks.org/?node_id=563765 for more
+);
+
+sub asciize
+{
+	my $str = shift;
+	$str =~ s/([^\0-\x7f])/exists($equiv{$1})?$equiv{$1}:"?"/eg;
+	return $str;	
+}
+
 sub parse_data
 {
 	my $data = shift;
@@ -259,9 +277,10 @@ sub send_sms
                         return 'Unable to write to SMSTools outgoing directory ('.$dir.')!';
 		}
                 my $filename = $dir.'/lms-'.$msgid.'-'.$phone;
+		$sms = asciize(decode('utf-8', $sms));
 		
 		open(SMSFILE, ">$filename") or return 'Unable to create file '.$filename.'!';
-		printf(SMSFILE "To: %s\nAlphabet: UCS\nReport: 1\n\n%s", $phone, $sms);
+		printf(SMSFILE "To: %s\n\n%s", $phone, $sms);
 		close(SMSFILE);
 		
 		return 1; #MSG_NEW
@@ -278,7 +297,7 @@ sub send_message
 		(messageid, customerid, destination, status)
 		VALUES (?, ?, ?, ?)");
 	$dbqi->execute($msgid, $cid, $phone, 1);
-
+	
 	my $result = send_sms($phone, $data, $msgid);
 	my $time = mktime(localtime());
 
