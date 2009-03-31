@@ -604,6 +604,20 @@ function lms_ucwords($str)
 	return implode(' ', $result);
 }
 
+// replace national character with ASCII equivalent
+function clear_utf($str)
+{
+	$r = '';
+        $s = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+	for ($i=0, $len=strlen($s); $i<$len; $i++)
+	{
+		$ch1 = $s[$i];
+		$ch2 = mb_substr($str, $i, 1);
+		$r .= $ch1=='?' ? $ch2 : $ch1;
+	}
+	return $r;
+}
+
 function plugin_handle($name)
 {
         global $PLUGINS;

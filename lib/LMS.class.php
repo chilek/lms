@@ -3667,11 +3667,6 @@ class LMS
 		else
 			$service = $this->CONFIG['sms']['service'];
 
-		if(empty($this->CONFIG['sms']['from']))
-			return trans('SMS "from" not set!');
-		else
-			$from = $this->CONFIG['sms']['from'];
-
 		$prefix = !empty($this->CONFIG['sms']['prefix']) ? $this->CONFIG['sms']['prefix'] : '';
 
 		$number = preg_replace('/[^0-9]/', '', $number);
@@ -3687,6 +3682,10 @@ class LMS
 					return trans('SMSCenter username not set!');
 				if(empty($this->CONFIG['sms']['smscenter_password']))
 					return trans('SMSCenter username not set!');
+				if(empty($this->CONFIG['sms']['from']))
+					return trans('SMS "from" not set!');
+				else
+					$from = $this->CONFIG['sms']['from'];
 
 				if(strlen($message) > 159 || strlen($message) == 0)
 					return trans('SMS Message too long!');
@@ -3768,9 +3767,8 @@ class LMS
 					return trans('Unable to write to SMSTools outgoing directory ($0)!', $dir);
 				
 				$filename = $dir.'/lms-'.$messageid.'-'.$number;
-				$message = iconv('UTF-8', 'UCS-2//TRANSLIT', $message);
-				
-				$file = sprintf("To: %s\nAlphabet: UCS\nReport: 1\n\n%s", $number, $message);
+				$message = clear_utf($message);
+				$file = sprintf("To: %s\n\n%s", $number, $message);
 				
 				if($fp = fopen($filename, 'w'))
 				{
