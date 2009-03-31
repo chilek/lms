@@ -161,6 +161,7 @@ open(HOSTSFILE, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.
 
 print HOSTSFILE $cheader."\n";
 
+# No networks_list in lms.ini, we fill networks_list variable with all networks in database
 if(!$networks_list)
 {
 	my $dbq = $dbase->prepare("SELECT name FROM networks");
@@ -173,13 +174,33 @@ if(!$networks_list)
 
 my @networks = split ' ', $networks_list;
 
+# Check for excluded_networks_list in lms.ini, if it is empty, than get excluded networks from LMSUI.
+# Case 1: excluded_networks_list in lms.ini
 if($excluded_networks_list)
 {
-    my @excluded_networks = split ' ', $excluded_networks_list;
-    foreach my $excluded_network (@excluded_networks)
-    {
-	@networks = grep(!/^$excluded_network$/, @networks);
-    }
+        my @excluded_networks = split ' ', $excluded_networks_list;
+
+        foreach my $excluded_network (@excluded_networks)
+        {
+                @networks = grep(!/^$excluded_network$/, @networks);
+        }
+}
+# Case 2: excluded_networks_list from LMSUI
+else
+{
+        my $dbq = $dbase->prepare("SELECT name FROM networks WHERE disabled=1 ORDER BY interface,name");
+        $dbq->execute();
+
+        while (my $row = $dbq->fetchrow_hashref())
+        {
+                $excluded_networks_list = "$excluded_networks_list $row->{'name'}";
+        }
+
+        my @excluded_networks = split ' ', $excluded_networks_list;
+        foreach my $excluded_network (@excluded_networks)
+        {
+                @networks = grep(!/^$excluded_network$/, @networks);
+        }
 }
 
 my $inicustomergroups = $customergroups_list;
