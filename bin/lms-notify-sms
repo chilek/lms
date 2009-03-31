@@ -27,16 +27,14 @@ use DBI;
 use Config::IniFiles;
 use Getopt::Long;
 use vars qw($configfile $quiet $help $version $debug);
-use POSIX qw(strftime);
+use POSIX qw(strftime mktime);
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
 my $_version = '1.11-cvs';
-my $my_template;
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,
-	"--template-file|D=s"	=>	\$my_template,
 	"--quiet|q"		=>	\$quiet,
 	"--help|h"		=>	\$help,
 	"--version|v"		=>	\$version,
@@ -53,7 +51,6 @@ lms-notify-sms, version $_version
 (C) 2001-2009 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
--D, --template-file=/etc/lms/smstemplate.txt	alternate (default in confing file);
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
@@ -100,18 +97,32 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
+# debtors notify
 my $limit = $ini->val('notify-sms', 'limit') || 0;
-my $smsfile = $my_template || $ini->val('notify-sms', 'smstemplate');
+my $debtors_file = $ini->val('notify-sms', 'debtors_template');
+my $debtors_subject = $ini->val('notify-sms', 'debtors_subject') || 'Debtors notification';
+# new invoice notify
+my $invoices_file = $ini->val('notify-sms', 'invoices_template');
+my $invoices_subject = $ini->val('notify-sms', 'invoices_subject') || 'New invoice notification';
+# deadline notify
+my $deadline_file = $ini->val('notify-sms', 'deadline_template');
+my $deadline_subject = $ini->val('notify-sms', 'deadline_subject') || 'Invoice deadline notification';
 
-if(!$smsfile)
+my $script_service = $ini->val('notify-sms', 'service');
+
+if($debtors_file && ! -r $debtors_file)
 {
-	print STDERR "Fatal error: smstemplate in $configfile unset! Can't continue, exiting.\n";
+	print STDERR "Fatal error: unable to read sms template file $debtors_file, exiting!\n";
 	exit 1;
 }
-
-if(! -r $smsfile)
+if($invoices_file && ! -r $invoices_file)
 {
-	print STDERR "Fatal error: unable to read sms template file $smsfile, exiting!\n";
+	print STDERR "Fatal error: unable to read sms template file $invoices_file, exiting!\n";
+	exit 1;
+}
+if($deadline_file && ! -r $deadline_file)
+{
+	print STDERR "Fatal error: unable to read sms template file $deadline_file, exiting!\n";
 	exit 1;
 }
 
@@ -125,17 +136,13 @@ if($dbtype =~ /mysql/)
 	$dbase->do("SET NAMES utf8");
 	$utsfmt = "UNIX_TIMESTAMP()";
 	
-	# for Poland:
-	# 888xxxxxx 880xxxxxx (heyah), 6(0,9)xxxxxxx (plus and era), 50xxxxxxx (idea)
-	# it will also treat as valid numbers begining with: +48, 0, 0-, 0 (space)...
-
-	$regexp = "phone REGEXP '^(\\\\+48|0)?(88[08]|50[0-9]|6[09][0-9])[0-9]{6}\$'";
+	$regexp = "REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+%prefix|0)?(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}\$'";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
-	$regexp = "regexp_replace(phone, '[^0-9]', '') ~ '^(48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$'";
+	$regexp = "regexp_replace(phone, '[^0-9]', '') ~ '^(%prefix|0|)(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}$'";
 }
 else
 {
@@ -143,99 +150,333 @@ else
 	exit 1;
 }
 
-open(MTFILE, "$smsfile");
-my @mtempl = <MTFILE>;
-close MTFILE;
+# ------------------------------------------------------------------------------
+# CONFIGURATION
+# ------------------------------------------------------------------------------
+my %cfg;
+$cfg{'prefix'} = $ini->val('sms', 'prefix') || 48;
+$cfg{'service'} = $ini->val('sms', 'service') || '';
+$cfg{'debug_sms'} = $ini->val('sms', 'debug_sms') || '';
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, lastname, name, SUM(value) AS balance,
-			(SELECT phone FROM customercontacts c 
-				WHERE c.customerid = customers.id AND $regexp
-				LIMIT 1
-			) AS phone
-		FROM customers 
-		LEFT JOIN cash ON (customers.id = cash.customerid)
-		GROUP BY customers.id, pin, lastname, name
-		HAVING SUM(value) < 0"); 
-$dbq->execute();
-while (my $row = $dbq->fetchrow_hashref())
+my $query = $dbase->prepare("SELECT var, value FROM uiconfig WHERE section='sms' AND disabled=0");
+$query->execute();
+while(my $row = $query->fetchrow_hashref())
 {
-	my $balance = $row->{'balance'};
-	if($balance < $limit)
-	{
-		if(!$quiet)
-		{
-			print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
+	$cfg{$row->{'var'}} = $row->{'value'};
+}
+$query->finish();
+
+$cfg{'prefix'} = sprintf("%d", $cfg{'prefix'});
+$regexp =~ s/\%prefix/$cfg{'prefix'}/;
+
+if ($script_service) {
+	$cfg{'service'} = $script_service;
+}
+
+# ------------------------------------------------------------------------------
+# FUNCTIONS
+# ------------------------------------------------------------------------------
+sub parse_data
+{
+	my $data = shift;
+	my $row = shift;
+
+	if ($data =~ /\%b/) {
+		my $amount = -$row->{'balance'};
+		$data =~ s/\%b/$amount/g; 
+	}
+	if ($data =~ /\%date-y/) {
+		my $year = strftime("%Y", localtime());
+		$data =~ s/\%date-y/$year/g; 
+	}
+	if ($data =~ /\%date-m/) {
+		my $month = strftime("%m", localtime());
+		$data =~ s/\%date-m/$month/g;
+	}
+	if ($data =~ /\%date_month_name/) {
+		my $month_name = strftime("%B", localtime());
+		$data =~ s/\%date_month_name/$month_name/g;
+	}
+	if ($data =~ /\%B/) {
+		$data =~ s/\%B/$row->{'balance'}/g;
+	}
+	if ($data =~ /\%saldo/) {
+		$data =~ s/\%saldo/$row->{'balance'}/g;
+	}
+	if ($data =~ /\%pin/) {
+		$data =~ s/\%pin/$row->{'pin'}/g;
+	}
+	if ($data =~ /\%cid/) {
+		$data =~ s/\%cid/$row->{'id'}/g;
+	}
+	if ($data =~ /\%abonament/) {
+		my $saldo_dbq = $dbase->prepare("SELECT SUM(value) AS value
+			FROM assignments, tariffs
+			WHERE tariffid = tariffs.id AND customerid = ?
+				AND (datefrom <= $utsfmt OR datefrom = 0)
+				AND (dateto > $utsfmt OR dateto = 0)
+				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))");
+		$saldo_dbq->execute($row->{'id'});
+		my $ow_s = $saldo_dbq->fetchrow_hashref();
+		$data =~ s/\%abonament/$ow_s->{'value'}/g;
+		$saldo_dbq->finish();
+	}
+# invoices
+	if ($data =~ /\%invoice/) {
+		$data =~ s/\%invoice/$row->{'invoice_number'}/g;
+	}
+	if ($data =~ /\%value/) {
+		$data =~ s/\%value/$row->{'value'}/g;
+	}
+
+	return $data;
+}
+
+sub send_sms
+{
+	my $phone = shift;
+	my $sms = shift;
+	my $msgid = shift;
+
+	$phone =~ s/[^0-9]//g;
+        $phone =~ s/^0+//;
+
+	my $p = substr($phone, 0, 2);
+	if ($p != $cfg{'prefix'}) {
+		$phone = $cfg{'prefix'} . $phone;
+	}
+				
+	if ($cfg{'service'} eq 'gnokii') {
+		system("echo $sms | gnokii --sendsms $phone");
+		return 2; # MSG_SENT
+	} elsif ($cfg{'service'} eq 'smstools') {
+		my $dir = $cfg{'smstools_outdir'} || '/var/spool/sms/outgoing';
+
+		if(! (-e $dir)) {
+                        return 'SMSTools outgoing directory not exists ('.$dir.')!';
+                }
+		if(! (-w $dir)) {
+                        return 'Unable to write to SMSTools outgoing directory ('.$dir.')!';
 		}
+                my $filename = $dir.'/lms-'.$msgid.'-'.$phone;
 		
-		$row->{'phone'} =~ s/[^0-9]//g;
-			
-		if($row->{'phone'})
-		{
-			if(!$quiet)
-			{
-				print STDOUT "Sending sms to $row->{'phone'}\n";
-			}
-			
-			my @desttempl = @mtempl;
-			
-			my $sms_data = "";
-
-			foreach my $line (@desttempl)
-			{
-				$line =~ s/\%B/$balance/g;
-				{ 	
-					my $amount = -$balance;
-					$line =~ s/\%b/$amount/g; 	
-				}
-
-				{ 
-					my $year = strftime( "%Y", localtime());
-					$line =~ s/\%date-y/$year/; 
-				}
-
-				{ 
-					my $month = strftime( "%m", localtime());
-					$line =~ s/\%date-m/$month/; 
-				}
-
-				{
-					my $month_name = strftime ( "%B", localtime()) ; 
-					$line =~ s/\%date_month_name/$month_name/;
-				}
-
-				if ($line =~ /\%saldo/) {
-					$line =~ s/\%saldo/$balance/;
-				}
-
-				if ($line =~ /\%pin/) {
-					$line =~ s/\%pin/$row->{'pin'}/;
-				}
-
-				if ($line =~ /\%cid/) {
-					$line =~ s/\%cid/$row->{'id'}/;
-				}
-
-				if ($line =~ /\%abonament/) {
-					my $saldo_dbq = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND customerid = $row->{'id'}");
-					$saldo_dbq->execute();
-					my $ow_s = $saldo_dbq->fetchrow_hashref();
-					$line =~ s/\%abonament/$ow_s->{'value'}/;
-				}
-			
-				$sms_data .= $line;
-			}
-			
-			if(!$debug) 
-			{
-				system("echo $sms_data | gnokii --sendsms $row->{'phone'}");
-			}
-		}
-		elsif(!$quiet) 
-		{
-				print STDOUT "This customer don't have any sms capable number in database.\n";
-		}
+		open(SMSFILE, ">$filename") or return 'Unable to create file '.$filename.'!';
+		printf(SMSFILE "To: %s\nAlphabet: UCS\nReport: 1\n\n%s", $phone, $sms);
+		close(SMSFILE);
+		
+		return 1; #MSG_NEW
+	} else {
+		return 'Unknown SMS service!';
 	}
 }
 
-$dbq->finish();
+sub send_message
+{
+	my ($msgid, $cid, $phone, $data) = @_;
+
+	my $dbqi = $dbase->prepare("INSERT INTO messageitems
+		(messageid, customerid, destination, status)
+		VALUES (?, ?, ?, ?)");
+	$dbqi->execute($msgid, $cid, $phone, 1);
+
+	my $result = send_sms($phone, $data, $msgid);
+	my $time = mktime(localtime());
+
+	$dbqi = $dbase->prepare("UPDATE messageitems
+		SET status = ?, lastdate = ?, error = ?
+		WHERE messageid = ? AND customerid = ?");
+			
+	if ($result =~ /[^0-9]/) {
+		$dbqi->execute(3, $time, $result, $msgid, $cid);
+	} elsif ($result == 2) { # MSG_SENT
+		$dbqi->execute($result, $time, undef, $msgid, $cid);
+	}
+	$dbqi->finish();
+}
+
+sub create_message
+{
+	my $subject = shift;
+	my $template = shift;
+	my $time = mktime(localtime());
+
+	my $dbqi = $dbase->prepare("INSERT INTO messages
+			(type, cdate, subject, body) VALUES (2, ?, ?, ?)");
+	$dbqi->execute($time, $subject, $template);
+	$dbqi = $dbase->prepare("SELECT id FROM messages
+			WHERE cdate = ? AND type = 2 AND subject = ?");
+	$dbqi->execute($time, $subject);
+	my $msgid = ($dbqi->fetchrow_array)[0];
+	$dbqi->finish();
+
+	return $msgid;
+}
+
+# ------------------------------------------------------------------------
+# ACTIONS
+# ------------------------------------------------------------------------
+# Debtors
+if ($debtors_file)
+{
+	open(SMSFILE, "$debtors_file");
+	my $template = join(' ', <SMSFILE>);
+	close SMSFILE;
+
+	# @TODO: check 'messages' table and don't send notifies to often
+	my $dbq = $dbase->prepare("SELECT c.id, c.pin, c.lastname, c.name,
+			SUM(value) AS balance, x.phone
+		FROM customers c
+		JOIN cash ON (c.id = cash.customerid)
+		JOIN (SELECT MIN(phone) AS phone, customerid
+		        FROM customercontacts
+			WHERE $regexp
+			GROUP BY customerid
+		) x ON (x.customerid = c.id)
+		GROUP BY c.id, c.pin, c.lastname, c.name, x.phone
+		HAVING SUM(value) < $limit");
+	$dbq->execute();
+
+	my $msgid;
+	if ($dbq->rows && !$debug) {
+		$msgid = create_message($debtors_subject, $template);
+	}
+
+	while (my $row = $dbq->fetchrow_hashref())
+	{
+		$row->{'phone'} = $cfg{'debug_sms'} || $row->{'phone'};
+		$row->{'phone'} =~ s/[^0-9]//g;
+
+		if(!$quiet)
+		{
+			printf STDOUT "[debt] %s (%04d): %s\n",
+				$row->{'lastname'}.' '.$row->{'name'}, $row->{'id'}, $row->{'phone'};
+		}
+
+		if(!$debug)
+		{
+			send_message($msgid, $row->{'id'}, $row->{'phone'}, parse_data($template, $row));
+		}
+	}
+	$dbq->finish();
+}
+
+# Invoices created up to 24 hours ago
+if ($invoices_file)
+{
+	open(SMSFILE, "$invoices_file");
+	my $template = join(' ', <SMSFILE>);
+	close SMSFILE;
+
+	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
+		d.number, n.template, d.cdate, d.paytime, x.phone,
+		COALESCE(ca.balance, 0) AS balance, v.value
+		FROM documents d
+		JOIN customers c ON (c.id = d.customerid)
+		JOIN (SELECT MIN(phone) AS phone, customerid
+		        FROM customercontacts
+			WHERE $regexp
+			GROUP BY customerid
+		) x ON (x.customerid = d.customerid)
+		JOIN (SELECT SUM(value) * -1 AS value, docid
+			FROM cash
+			GROUP BY docid
+		) v ON (v.docid = d.id)
+		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+		LEFT JOIN (SELECT SUM(value) AS balance, customerid
+			FROM cash
+			GROUP BY customerid
+		) ca ON (ca.customerid = d.customerid)
+		WHERE d.type = 1
+	        AND d.cdate > $utsfmt - 86400
+		");
+	$dbq->execute();
+
+	my $msgid;
+	if ($dbq->rows && !$debug) {
+		$msgid = create_message($invoices_subject, $template);
+	}
+
+	while (my $row = $dbq->fetchrow_hashref())
+	{
+		$row->{'invoice_number'} = $row->{'template'} || '%N/LMS/%Y';
+		$row->{'invoice_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
+		$row->{'invoice_number'} = strftime($row->{'invoice_number'}, localtime($row->{'cdate'}));
+			
+		$row->{'phone'} = $cfg{'debug_sms'} || $row->{'phone'};
+		$row->{'phone'} =~ s/[^0-9]//g;
+
+		if(!$quiet)
+		{
+			printf STDOUT "[new invoice] %s (%04d) %s: %s\n",
+				$row->{'name'}, $row->{'id'}, $row->{'invoice_number'}, $row->{'phone'};
+		}
+			
+		if(!$debug)
+		{
+			send_message($msgid, $row->{'id'}, $row->{'phone'}, parse_data($template, $row));
+		}
+	}
+	$dbq->finish();
+}
+
+# Invoices (not payed) up to 24 hours after deadline (cdate + paytime)
+if ($deadline_file)
+{
+	open(SMSFILE, "$deadline_file");
+	my $template = join(' ', <SMSFILE>);
+	close SMSFILE;
+
+	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
+		d.number, n.template, d.cdate, d.paytime, x.phone,
+		COALESCE(ca.balance, 0) AS balance, v.value
+		FROM documents d
+		JOIN customers c ON (c.id = d.customerid)
+		JOIN (SELECT MIN(phone) AS phone, customerid
+		        FROM customercontacts
+			WHERE $regexp
+			GROUP BY customerid
+		) x ON (x.customerid = d.customerid)
+		JOIN (SELECT SUM(value) * -1 AS value, docid
+			FROM cash
+			GROUP BY docid
+		) v ON (v.docid = d.id)
+		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+		LEFT JOIN (SELECT SUM(value) AS balance, customerid
+			FROM cash
+			GROUP BY customerid
+		) ca ON (ca.customerid = d.customerid)
+		WHERE d.type = 1 AND d.closed = 0 AND ca.balance < 0
+		AND d.cdate > $utsfmt - ((d.paytime + 1) * 86400)
+		AND d.cdate < $utsfmt - (d.paytime * 86400)
+		");
+	$dbq->execute();
+
+	my $msgid;
+	if ($dbq->rows && !$debug) {
+		$msgid = create_message($deadline_subject, $template);
+	}
+
+	while (my $row = $dbq->fetchrow_hashref())
+	{
+		$row->{'invoice_number'} = $row->{'template'} || '%N/LMS/%Y';
+		$row->{'invoice_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
+		$row->{'invoice_number'} = strftime($row->{'invoice_number'}, localtime($row->{'cdate'}));
+			
+		$row->{'phone'} = $cfg{'debug_sms'} || $row->{'phone'};
+		$row->{'phone'} =~ s/[^0-9]//g;
+
+		if(!$quiet)
+		{
+			printf STDOUT "[deadline] %s (%04d) %s: %s\n",
+				$row->{'name'}, $row->{'id'}, $row->{'invoice_number'}, $row->{'phone'};
+		}
+			
+		if(!$debug)
+		{
+			send_message($msgid, $row->{'id'}, $row->{'phone'}, parse_data($template, $row));
+		}
+	}
+	$dbq->finish();
+}
+
 $dbase->disconnect();

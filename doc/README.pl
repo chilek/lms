@@ -1605,6 +1605,14 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    miały postać następującą:
 23.02.2004      Machniak Aleksander     123,45  Opłata za Internet 04/2004 ID:0013
 15.02.2004      Ból Józef       123,45  Opłata za faktrę LMS/34/2004
+
+   Podczas zatwierdzania importowanych pozycji możliwe jest włączenie
+   automatycznego oznaczania faktur jako rozliczonych, zależnie od
+   wielkości wpłaty (i bilansu klienta). Służy do tego opcja
+   'cashimport_checkinvoices' z sekcji [finances]. Faktura (oraz jej
+   korekty) oznaczana jest jako rozliczona jeśli wpłata (z uwzględnieniem
+   bilansu klienta) przewyższa kwotę obciążenia wynikającą z danej
+   faktury.
      __________________________________________________________________
 
 3.7.12. Eksport
@@ -2652,7 +2660,8 @@ Rozdział 4. Skrypty
    Tabela 4-1. Lista skryptów wykonywalnych
    Nazwa Opis
    lms-notify Korespondencja seryjna do klientów sieci
-   lms-notify-sms Powiadamianie o zaległościach sms'em
+   lms-notify-sms Powiadamianie klientów SMS'em o zaległościach,
+   wystawionych fakturach, przekroczeniu terminu płatności
    lms-cutoff Odłączanie klientów zadłużonych
    lms-etherdesc Generowanie pliku dla iptraf zawierającego pary MAC adres
    - nazwa hosta
@@ -2807,19 +2816,49 @@ http://www.naszasiec.pl/
 4.3.2. lms-notify-sms
 
    lms-notify-sms to odpowiednik lms-notify, służący do wysyłania smsów.
-   Do wysyłania wiadomości potrzebna jest komórka Nokii oraz
-   oprogramowanie, które należy pobrać z (www.gnokii.org) i zainstalować w
-   systemie.
+   Obecnie skrypt wspiera dwie usługi, smstools oraz gnokii. Wyboru usługi
+   dokonuje się w sekcji [sms]. Skrypt jest wielofunkcyjny, włączenie
+   określonego zadania następuje poprzez zdefiniowanie lokalizacji pliku z
+   szablonem wiadomości.
 
    Konfigurację dla lms-notify-sms można ustalić w pliku lms.ini w sekcji
    [notify-sms], a masz do dyspozycji następujące opcje:
+     * service (opcjonalny)
+       Pozwala na wybranie usługi SMS niezależnie od tej, którą podano w
+       sekcji [sms]. Domyślnie: pusta
+       Przykład: service = smstools
+     * debtors_template (opcjonalny)
+       Lokalizacja pliku z szablonem wiadomości wysyłanej do zadłużonych
+       klientów. Pozostawienie tej opcji pustej wyłączy powiadomienia o
+       zadłużeniu. Domyślnie: pusta
+       Przykład: debtors_template = /etc/lms/debtors.txt
+     * debtors_subject (opcjonalny)
+       Temat wiadomości o zadłużeniu. Domyślnie: 'Debtors notification'
+       Przykład: debtors_subject = 'Powiadomienie o zadłużeniu'
+     * invoices_template (opcjonalny)
+       Lokalizacja pliku z szablonem wiadomości z informacją o wystawieniu
+       faktury. Pod uwagę brane są faktury wystawione w ciągu ostatnich 24
+       godzin od uruchomienia skryptu. Pozostawienie tej opcji pustej
+       wyłączy powiadomienia o nowych fakturach. Domyślnie: pusta
+       Przykład: invoice_template = /etc/lms/new_invoice.txt
+     * invoices_subject (opcjonalny)
+       Temat wiadomości o nowej fakturze. Domyślnie: 'New invoice
+       notification'
+       Przykład: invoices_subject = 'Powiadomienie o wystawieniu faktury'
+     * deadline_template (opcjonalny)
+       Lokalizacja pliku z szablonem wiadomości wysyłanej do zadłużonych
+       klientów, posiadających przeterminowane (nierozliczone) faktury.
+       Pozostawienie tej opcji pustej wyłączy powiadomienia. Domyślnie:
+       pusta
+       Przykład: deadline_template = /etc/lms/deadline.txt
+     * deadline_subject (opcjonalny)
+       Temat wiadomości o przeterminowanych fakturach. Domyślnie: 'Invoice
+       deadline notification'
+       Przykład: deadline_subject = 'Powiadomienie o zaległości'
      * limit (opcjonalny)
        Pozwala na ustalenie limitu bilansu poniżej którego do klienta
-       zostanie wysłany sms z upomnieniem. Domyślnie: 0
+       zostanie wysłany sms z informacją o zadłużeniu. Domyślnie: 0
        Przykład: limit = -20
-     * smstemplate (wymagany)
-       Szablon wiadomości. Domyślnie: nie ustawione.
-       Przykład: smstemplate = /etc/lms/smstemplate.txt
      __________________________________________________________________
 
 4.3.3. lms-cutoff
