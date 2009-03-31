@@ -442,10 +442,10 @@ http://www.naszasiec.pl/</screen></example>
 	    <screen>
 -f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</screen>
 	    <para>
-	    <warning><para>Czêstotliwo¶æ zapisywania danych do bazy ustala klient. Ustawienie
-	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
-	    bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
-	    wyników.</para></warning>
+		<warning><para>Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik.
+		Ustawienie jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w
+		bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
+		wyników.</para></warning>
 	    </para>
 	</sect3>
     </sect2>
