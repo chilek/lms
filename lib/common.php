@@ -452,20 +452,20 @@ function get_producer($mac)
 
 function setunits($data)  // for traffic data
 {
-	if ( !($data < (1000*1000*1000)) )
+	if ( $data >= (1024*1024*1024))
 	{
-		$number = $data / (1000*1000*1000);
-		$unit = "GB";
+		$number = $data / (1024*1024*1024);
+		$unit = "GiB";
 	}
-	elseif ( !($data < (1024*1000) ) )
+	elseif ( $data >= (1024*1024))
 	{
-		$number = $data / (1000*1000);
-		$unit = "MB";
+		$number = $data / (1024*1024);
+		$unit = "MiB";
 	} 
 	else
 	{
-		$number = $data / 1000;
-		$unit = "KB";
+		$number = $data / 1024;
+		$unit = "KiB";
 	}
 	return array($number, $unit);
 }
