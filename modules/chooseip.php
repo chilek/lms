@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Select IP address');
 
-$networks = $LMS->GetNetworks(false);
+$networks = $LMS->GetNetworks(true);
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 
