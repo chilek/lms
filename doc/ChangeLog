@@ -32,6 +32,7 @@ version ? (????-??-??):
     added options to send notifies about new invoice and paytime overdo,
     removed smstemplate option, added *_template and *_subject options (alec)
   - lms-makehosts: added support for excluding networks from LMSUI (chilan)
+  - chooseip: show disabled networks on red (chilan)
 
 version 1.11.7 Bastet (2009-02-13):
 

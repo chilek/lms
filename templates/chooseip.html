@@ -61,7 +61,7 @@
 		<td class="fall light" align="center">
 			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
 				{section name=networks loop=$networks}
-				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id eq $netid} SELECTED {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
+				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id eq $netid} SELECTED {/if} {if $networks[networks].disabled eq 1} class="alert" {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
 				{sectionelse}
 				<OPTION VALUE="0">{t}You don't have any IP network.{/t}</OPTION>
 				{/section}

@@ -2533,11 +2533,11 @@ class LMS
 	{
 		if ($with_disabled == false)
 			return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix
+				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
 				FROM networks WHERE disabled=0 ORDER BY name');
 		else
 			return $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix
+				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
 				FROM networks ORDER BY name');
 	}
 
