@@ -37,6 +37,7 @@
                        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid},{$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
+	{if $_config.phpui.public_ip|chkconfig}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip_pub.gif" ALT="">
@@ -48,6 +49,7 @@
                        <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{if $nodeipdata.ip_pub!="0.0.0.0"}{$nodeipdata.ip_pub}{/if}" {tip text="Enter IP address" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]'],{$nodeipdata.netid},{$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/mac.gif" ALT="">
@@ -80,6 +82,10 @@
 		<TD WIDTH="99%" NOWRAP>
 			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}>&nbsp;
 			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
+			{if $_config.phpui.radius|chkconfig}
+			&nbsp;
+			{t}NAS{/t}: <INPUT TYPE="checkbox" NAME="ipadd[nas]" VALUE="1" {tip text="Select NAS on or off" trigger="nas"}{if $nodeipdata.nas} checked{/if}>
+			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

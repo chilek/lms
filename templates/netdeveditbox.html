@@ -75,6 +75,72 @@
 			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdevinfo.location}" {tip text="Enter device location (optional)"}>
 		</TD>
 	</TR>
+{if $_config.phpui.radius|chkconfig}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%"><BR>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Shortname:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="netdev[shortname]" VALUE="{$netdevinfo.shortname}" {tip text="Enter shortname (optional)"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Type:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netdev[nastype]" {tip text="Select type (optional)" trigger="type"}>
+			<OPTION VALUE="0"</OPTION>
+			{foreach from=$nastype item=item key=key}
+			<OPTION VALUE="{$item.name}" {if $item.name==$netdevinfo.nastype} SELECTED{/if}>{$item.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Max clients:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="netdev[clients]" VALUE="{$netdevinfo.clients}" {tip text="Enter max clients (optional)"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Secret:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="netdev[secret]" VALUE="{$netdevinfo.secret}" {tip text="Enter secret (optional)"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Community:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="netdev[community]" VALUE="{$netdevinfo.community}" {tip text="Enter community (optional)"}>
+		</TD>
+	</TR>
+{/if}
                                         </TABLE>
 				</TD>
 			        <TD WIDTH="50%" style="vertical-align:top;">

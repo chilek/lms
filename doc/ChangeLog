@@ -33,6 +33,8 @@ version ? (????-??-??):
     removed smstemplate option, added *_template and *_subject options (alec)
   - lms-makehosts: added support for excluding networks from LMSUI (chilan)
   - chooseip: show disabled networks on red (chilan)
+  - added basic radius support (Robert "CyberM" Konopa/alec)
+  - added options 'radius' and 'public_ip' (Robert "CyberM" Konopa/alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

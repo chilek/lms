@@ -7,12 +7,21 @@
                 else
                         location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=0';
 {literal}}{/literal}
+
         function duplex_change()
 {literal}{{/literal}
                 if(document.getElementById('duplex').checked)
                         location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=1';
                 else
                         location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=0';
+{literal}}{/literal}
+
+        function nas_change()
+{literal}{{/literal}
+                if(document.getElementById('nas').checked)
+                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=1';
+                else
+                        location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=0';
 {literal}}{/literal}
 </SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -71,6 +80,10 @@
 		<TD WIDTH="99%" COLSPAN="2">
 			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeipdata.chkmac} checked{/if} onclick="chkmac_change();">&nbsp;
 			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeipdata.halfduplex} checked{/if} onclick="duplex_change();">
+			{if $_config.phpui.radius|chkconfig}
+			&nbsp;
+			{t}NAS{/t}: <INPUT TYPE="checkbox" NAME="nas" ID="nas" VALUE="1" {if $nodeipdata.nas} checked{/if} onclick="nas_change();">
+			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

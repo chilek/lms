@@ -24,6 +24,7 @@
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
+	{if $_config.phpui.public_ip|chkconfig}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/ip_pub.gif" ALT="{t}Pub. IP address:{/t}">
@@ -32,6 +33,7 @@
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr_pub" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr_pub);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
 			<IMG SRC="img/mac.gif" ALT="{t}MAC address:{/t}">

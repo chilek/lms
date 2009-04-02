@@ -88,6 +88,77 @@
 		</TD>
 	</TR>
 	{/if}
+{if $_config.phpui.radius|chkconfig}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%"><BR>
+		</TD>
+	</TR>
+	{if $netdevinfo.shortname}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Shortname:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.shortname}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.nastype}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Type:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.nastype}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.clients}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Max clients:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.clients}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.secret}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Secret:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.secret}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.community}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Community:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$netdevinfo.community}
+		</TD>
+	</TR>
+	{/if}
+{/if}
 	                        	</TABLE>
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">

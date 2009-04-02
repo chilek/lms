@@ -76,6 +76,67 @@
 			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdev.location}" {tip text="Enter device location (optional)"}>
 		</TD>
 	</TR>
+{if $_config.phpui.radius|chkconfig}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%"><BR>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Shortname:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="netdev[shortname]" VALUE="{$netdev.shortname}" MAXLENGTH="32" {tip trigger="shortname" text="Enter shortname (optional)"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Type:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netdev[nastype]" {tip text="Select type (optional)"}>
+				<OPTION VALUE="0"</OPTION>
+				{foreach from=$nastype item=item key=key}
+				<OPTION VALUE="{$item.name}" {if $item.name==$netdevices.nastype} SELECTED{/if}>{$item.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Max clients:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="netdev[clients]" VALUE="{$netdev.clients}" {tip trigger="clients" text="Enter max clients (optional)"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Secret:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="netdev[secret]" VALUE="{$netdev.secret}" MAXLENGTH="60" {tip text="Enter secret (optional)"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Community:{/t}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="netdev[community]" VALUE="{$netdev.community}" MAXLENGTH="50" {tip text="Enter community (optional)"}>
+		</TD>
+	</TR>
+{/if}
                                         </TABLE>
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">
