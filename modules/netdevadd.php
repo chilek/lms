@@ -28,6 +28,9 @@ if(isset($_POST['netdev']))
 {
 	$netdevdata = $_POST['netdev'];
 
+	if(!ereg('^[0-9]{1,11}$', $netdevdata['clients']))
+		$error['clients'] = trans('Invalid clients format or too long (max.11 characters) !');
+
 	if($netdevdata['ports'] == '')
 		$netdevdata['ports'] = 0;
 	else
@@ -80,6 +83,8 @@ if(isset($_POST['netdev']))
 	$SMARTY->assign('netdev', $netdevdata);
 }
 		
+$SMARTY->assign('nastype', $LMS->GetNAStypes());
+
 $layout['pagetitle'] = trans('New Device');
 
 $SMARTY->display('netdevadd.html');

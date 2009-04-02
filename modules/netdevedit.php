@@ -157,6 +157,10 @@ case 'duplex':
 
         $DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $_GET['ip']));
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id'].'&ip='.$_GET['ip']);
+
+case 'nas':
+	$DB->Execute('UPDATE nodes SET nas=? WHERE id=?', array($_GET['nas'], $_GET['ip']));
+	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id'].'&ip='.$_GET['ip']);
 	
 case 'connect':
 
@@ -344,6 +348,7 @@ case 'formaddip':
 
 	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
 	if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
+	if(!isset($nodeipdata['nas'])) $nodeipdata['nas'] = 0;
 
 	if(!$error)
 	{
@@ -431,6 +436,7 @@ case 'formeditip':
 		
 	if(!isset($nodeipdata['chkmac'])) $nodeipdata['chkmac'] = 0;
 	if(!isset($nodeipdata['halfduplex'])) $nodeipdata['halfduplex'] = 0;
+	if(!isset($nodeipdata['nas'])) $nodeipdata['nas'] = 0;
 	
 	if(!$error)
 	{
@@ -547,6 +553,7 @@ $SMARTY->assign('replacelist',$replacelist);
 $SMARTY->assign('replacelisttotal',$replacelisttotal);
 $SMARTY->assign('devlinktype',$SESSION->get('devlinktype'));
 $SMARTY->assign('nodelinktype',$SESSION->get('nodelinktype'));
+$SMARTY->assign('nastype', $LMS->GetNAStypes());
 
 switch($edit)
 {

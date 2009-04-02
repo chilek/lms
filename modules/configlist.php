@@ -372,6 +372,14 @@ function GetConfigList($order='var,asc', $section='')
 					case 'default_printpage':
 						$config[$idx]['description'] = trans('Coma-separated list of default invoice printout pages. You can use "original", "copy", "duplicate". Default: "original,copy".');
 					break;
+
+					case 'radius':
+						$config[$idx]['description'] = trans('Enable RADIUS support. Default: 1');
+					break;
+					
+					case 'public_ip':
+						$config[$idx]['description'] = trans('Enable public IP address fields. Default: 1');
+					break;
 					
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');

@@ -1160,7 +1160,7 @@ class LMS
 		$this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), 
 				ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, 
 				modid=?, access=?, warning=?, ownerid=?, info=?, 
-				location=?, chkmac=?, halfduplex=?, linktype=?, port=? 
+				location=?, chkmac=?, halfduplex=?, linktype=?, port=?, nas=? 
 				WHERE id=?', 
 				array($nodedata['name'], 
 				    $nodedata['ipaddr_pub'], 
@@ -1178,6 +1178,7 @@ class LMS
 				    $nodedata['halfduplex'],
 				    isset($nodedata['linktype']) ? 1 : 0,
 				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
+				    $nodedata['nas'],
 				    $nodedata['id']
 			    ));
 		
@@ -1245,7 +1246,7 @@ class LMS
 		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
 					ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
 					warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
-					info, location, chkmac, halfduplex, linktype, port
+					info, location, chkmac, halfduplex, linktype, port, nas
 					FROM nodes WHERE id = ?', array($id)))
 		{
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
@@ -2959,13 +2960,12 @@ class LMS
 		$this->DB->Execute('DELETE FROM netdevices WHERE id=?', array($id));
 		$this->DB->CommitTrans();
 	}
-
 	function NetDevAdd($netdevdata)
 	{
 		if($this->DB->Execute('INSERT INTO netdevices (name, location, 
 				description, producer, model, serialnumber, 
-				ports, purchasetime, guaranteeperiod) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				ports, purchasetime, guaranteeperiod, shortname, nastype, clients, secret, community) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array($netdevdata['name'],
 					$netdevdata['location'],
 					$netdevdata['description'],
@@ -2974,7 +2974,12 @@ class LMS
 					$netdevdata['serialnumber'],
 					$netdevdata['ports'],
 					$netdevdata['purchasetime'],
-					$netdevdata['guaranteeperiod']
+					$netdevdata['guaranteeperiod'],
+					$netdevdata['shortname'],
+					$netdevdata['nastype'],
+					$netdevadta['clients'],
+					$netdevdata['secret'],
+					$netdevdata['community']
 		)))
 			return $this->DB->GetLastInsertID('netdevices');
 		else
@@ -2984,7 +2989,8 @@ class LMS
 	function NetDevUpdate($netdevdata)
 	{
 		$this->DB->Execute('UPDATE netdevices SET name=?, location=?, description=?, producer=?, 
-				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=? 
+				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
+				nastype=?, clients=?, secret=?, community=? 
 				WHERE id=?', 
 				array( $netdevdata['name'], 
 					$netdevdata['location'], 
@@ -2995,6 +3001,11 @@ class LMS
 					$netdevdata['ports'], 
 					$netdevdata['purchasetime'], 
 					$netdevdata['guaranteeperiod'], 
+					$netdevdata['shortname'],
+					$netdevdata['nastype'],
+					$netdevdata['clients'],
+					$netdevdata['secret'],
+					$netdevdata['community'],
 					$netdevdata['id']
 				));
 	}
@@ -4106,6 +4117,11 @@ class LMS
 		return $this->DB->GetOne('SELECT name FROM countries WHERE id = ?', array($id));
 	}
 
+	function GetNAStypes()
+	{
+		return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');
+	}
+	
 	//VoIP functions
 	function GetVoipAccountList($order='login,asc', $search=NULL, $sqlskey='AND')
 	{

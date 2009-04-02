@@ -2170,5 +2170,19 @@ $_LANG['last $0 messages'] = 'ostatnie $0 wiadomości';
 $_LANG['There are no messages in database.'] = 'Brak wiadomości w bazie danych.';
 $_LANG['Check invoices as accounted when importing cash operations. Default: false'] = 'Automatyczne oznaczanie faktur jako rozliczonych podczas importu operacji kasowych. Domyślnie: wyłączona';
 $_LANG['Command which returns IP-MAC bindings. Default: internal backend'] = 'Komenda zwracająca powiązania IP-MAC. Domyślnie: obsługa wewnętrzna';
+$_LANG['Shortname:'] = 'Nazwa skrócona:';
+$_LANG['Max clients:'] = 'Ilość klientów:';
+$_LANG['Secret:'] = 'Hasło:';
+$_LANG['Community:'] = 'Community:';
+$_LANG['Enter shortname (optional)'] = 'Podaj nazwę skróconą (opcjonalnie)';
+$_LANG['Select type (optional)'] = 'Wybierz typ (opcjonalnie)';
+$_LANG['Enter max clients (optional)'] = 'Podaj maksymalną liczbę klientów (opcjonalnie)';
+$_LANG['Enter secret (optional)'] = 'Podaj hasło (opcjonalnie)';
+$_LANG['Enter community (optional)'] = 'Podaj community (opcjonalnie)';
+$_LANG['Enable public IP address fields. Default: 1'] = 'Włącza pola adresu publicznego. Domyślnie: włączona';
+$_LANG['Enable RADIUS support. Default: 1'] = 'Włącza wsparcie dla RADIUSa. Domyślnie: włączona';
+$_LANG['Invalid clients format or too long (max.11 characters) !'] = 'Zły format lub zbyt długa wartość (max.11 znaków)!';
+$_LANG['NAS'] = 'NAS';
+$_LANG['Select NAS on or off'] = 'Włącz/wyłącz NAS';
 
 ?>
