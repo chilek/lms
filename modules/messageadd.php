@@ -106,13 +106,19 @@ function GetRecipient($customerid, $type=MSG_MAIL)
 	if($type == MSG_SMS)
 	{
 		if ($CONFIG['database']['type'] == 'postgres')
+		{
+			$field = "regexp_replace(phone, '[^0-9]', '') AS phone";
 			$smswhere = " AND regexp_replace(phone, '[^0-9]', '') ~ '^([0-9]{2}|0|)"
 				.$LANGDEFS[$_language]['mobile'].'$\'';
+		}
 		else
+		{
+			$field = "REPLACE(REPLACE(phone, '-', ''), ' ', '') AS phone";
 			$smswhere = " AND REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+[0-9]{2}|0)?"
 				.$LANGDEFS[$_language]['mobile'].'$\'';
-	
-		$smstable = 'JOIN (SELECT phone, customerid
+		}
+		
+		$smstable = 'JOIN (SELECT '.$field.', customerid
 				FROM customercontacts 
 				WHERE customerid = '.$customerid . $smswhere
 				.' ORDER BY phone LIMIT 1
@@ -250,13 +256,18 @@ if(isset($_POST['message']))
 			));
 		
 		$msgid = $DB->GetLastInsertID('messages');
+		$prefix = !empty($CONFIG['sms']['prefix']) ? $CONFIG['sms']['prefix'] : '';
 
 		foreach($recipients as $key => $row)
 		{
 			if($message['type'] == MSG_MAIL)
 				$recipients[$key]['destination'] = !empty($CONFIG['mail']['debug_email']) ? $CONFIG['mail']['debug_email'] : $row['email'];
-			else
-				$recipients[$key]['destination'] = $row['phone'];
+			else {
+				$number = !empty($CONFIG['mail']['debug_sms']) ? $CONFIG['mail']['debug_sms'] : $row['phone'];
+				$number = preg_replace('/^0+/', '', $number);
+				$number = (substr_compare($number, $prefix, 0, 2)) ? $prefix . $number : $number;
+				$recipients[$key]['destination'] = $number;
+			}
 			
 			$DB->Execute('INSERT INTO messageitems (messageid, customerid,
 				destination, status)
