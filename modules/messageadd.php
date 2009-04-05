@@ -107,18 +107,16 @@ function GetRecipient($customerid, $type=MSG_MAIL)
 	{
 		if ($CONFIG['database']['type'] == 'postgres')
 		{
-			$field = "regexp_replace(phone, '[^0-9]', '') AS phone";
 			$smswhere = " AND regexp_replace(phone, '[^0-9]', '') ~ '^([0-9]{2}|0|)"
 				.$LANGDEFS[$_language]['mobile'].'$\'';
 		}
 		else
 		{
-			$field = "REPLACE(REPLACE(phone, '-', ''), ' ', '') AS phone";
 			$smswhere = " AND REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+[0-9]{2}|0)?"
 				.$LANGDEFS[$_language]['mobile'].'$\'';
 		}
 		
-		$smstable = 'JOIN (SELECT '.$field.', customerid
+		$smstable = 'JOIN (SELECT phone, customerid
 				FROM customercontacts 
 				WHERE customerid = '.$customerid . $smswhere
 				.' ORDER BY phone LIMIT 1
@@ -264,8 +262,11 @@ if(isset($_POST['message']))
 				$recipients[$key]['destination'] = !empty($CONFIG['mail']['debug_email']) ? $CONFIG['mail']['debug_email'] : $row['email'];
 			else {
 				$number = !empty($CONFIG['mail']['debug_sms']) ? $CONFIG['mail']['debug_sms'] : $row['phone'];
+
+				$number = preg_replace('/[^0-9]/', '', $number);
 				$number = preg_replace('/^0+/', '', $number);
 				$number = (substr_compare($number, $prefix, 0, 2)) ? $prefix . $number : $number;
+
 				$recipients[$key]['destination'] = $number;
 			}
 			
