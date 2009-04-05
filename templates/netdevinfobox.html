@@ -89,14 +89,10 @@
 	</TR>
 	{/if}
 {if $_config.phpui.radius|chkconfig}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%"><BR>
-		</TD>
-	</TR>
 	{if $netdevinfo.shortname}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/division.gif" ALT="">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Shortname:{/t}</B>
@@ -109,20 +105,20 @@
 	{if $netdevinfo.nastype}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/division.gif" ALT="">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Type:{/t}</B>
 		</TD>
 		<TD WIDTH="98%">
-		        {$netdevinfo.nastype}
+		        {$netdevinfo.nastypename}
 		</TD>
 	</TR>
 	{/if}
 	{if $netdevinfo.clients}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/division.gif" ALT="">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Max clients:{/t}</B>
@@ -135,7 +131,7 @@
 	{if $netdevinfo.secret}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/division.gif" ALT="">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Secret:{/t}</B>
@@ -148,7 +144,7 @@
 	{if $netdevinfo.community}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
-			<IMG SRC="img/division.gif" ALT="">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Community:{/t}</B>

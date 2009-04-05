@@ -80,11 +80,11 @@
 			<B>{t}Options:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{t}MAC checking{/t}: <INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}>&nbsp;
-			{t}Half duplex{/t}: <INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
+			<A HREF="javascript:checkElement('chkmac')">{t}MAC checking{/t}:</A><INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}>&nbsp;
+			<A HREF="javascript:checkElement('chkduplex')">{t}Half duplex{/t}:</A><INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" ID="chkduplex" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
 			{if $_config.phpui.radius|chkconfig}
 			&nbsp;
-			{t}NAS{/t}: <INPUT TYPE="checkbox" NAME="ipadd[nas]" VALUE="1" {tip text="Select NAS on or off" trigger="nas"}{if $nodeipdata.nas} checked{/if}>
+			<A HREF="javascript:checkElement('chknas')">{t}NAS{/t}:</A><INPUT TYPE="checkbox" NAME="ipadd[nas]" VALUE="1" ID="chknas" {tip text="Select NAS on or off" trigger="nas"}{if $nodeipdata.nas} checked{/if}>
 			{/if}
 		</TD>
 	</TR>
