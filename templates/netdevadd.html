@@ -62,7 +62,7 @@
 			<B>{t}Number of ports:{/t}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdev.ports}" {tip trigger="ports" text="Enter number of ports (optional)"}>
+			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{if $netdev.ports}{$netdev.ports}{/if}" {tip trigger="ports" text="Enter number of ports (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -78,11 +78,8 @@
 	</TR>
 {if $_config.phpui.radius|chkconfig}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%"><BR>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Shortname:{/t}</B>
@@ -93,31 +90,34 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Type:{/t}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<SELECT NAME="netdev[nastype]" {tip text="Select type (optional)"}>
+			<SELECT NAME="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
 				<OPTION VALUE="0"</OPTION>
 				{foreach from=$nastype item=item key=key}
-				<OPTION VALUE="{$item.name}" {if $item.name==$netdevices.nastype} SELECTED{/if}>{$item.name}</OPTION>
+				<OPTION VALUE="{$key}" {if $key==$netdevices.nastype} SELECTED{/if}>{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Max clients:{/t}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="netdev[clients]" VALUE="{$netdev.clients}" {tip trigger="clients" text="Enter max clients (optional)"}>
+			<INPUT TYPE="TEXT" NAME="netdev[clients]" VALUE="{if $netdev.clients}{$netdev.clients}{/if}" {tip trigger="clients" text="Enter max clients (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Secret:{/t}</B>
@@ -128,6 +128,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%">
+			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Community:{/t}</B>

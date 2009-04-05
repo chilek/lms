@@ -472,7 +472,12 @@ if(isset($_POST['netdev']))
 	
 	if($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
 		$error['ports'] = trans('Connected devices number exceeds number of ports!');
-	
+
+	if(empty($netdevdata['clients']))
+                $netdevdata['clients'] = 0;
+	else
+	        $netdevdata['clients'] = intval($netdevdata['clients']);
+						
 	$netdevdata['purchasetime'] = 0;
 	if($netdevdata['purchasedate'] != '')
 	{
@@ -506,7 +511,12 @@ if(isset($_POST['netdev']))
 	{
 		if($netdevdata['guaranteeperiod'] == -1)
 			$netdevdata['guaranteeperiod'] = NULL;
-		
+
+		if(!isset($netdevdata['shortname'])) $netdevdata['shortname'] = '';
+	        if(!isset($netdevdata['secret'])) $netdevdata['secret'] = '';
+	        if(!isset($netdevdata['community'])) $netdevdata['community'] = '';
+	        if(!isset($netdevdata['nastype'])) $netdevdata['nastype'] = 0;
+
 		$LMS->NetDevUpdate($netdevdata);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}

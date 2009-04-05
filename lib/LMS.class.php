@@ -1178,7 +1178,7 @@ class LMS
 				    $nodedata['halfduplex'],
 				    isset($nodedata['linktype']) ? 1 : 0,
 				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-				    $nodedata['nas'],
+				    isset($nodedata['nas']) ? $nodedata['nas'] : 0,
 				    $nodedata['id']
 			    ));
 		
@@ -1438,27 +1438,28 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, 
-					passwd, creatorid, creationdate, access, warning, info, netdev, 
-					linktype, port, location, chkmac, halfduplex) 
-					VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, 
-					?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				array(strtoupper($nodedata['name']),
-				    strtoupper($nodedata['mac']),
-				    $nodedata['ipaddr'],
-				    $nodedata['ipaddr_pub'],
-				    $nodedata['ownerid'],
-				    $nodedata['passwd'],
-				    $this->AUTH->id,
-				    $nodedata['access'],
-				    $nodedata['warning'],
-				    $nodedata['info'],
-				    $nodedata['netdev'],
-				    isset($nodedata['linktype']) ? 1 : 0,
-				    isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-				    $nodedata['location'],
-				    $nodedata['chkmac'],
-				    $nodedata['halfduplex']
-				    )))
+			passwd, creatorid, creationdate, access, warning, info, netdev, 
+			linktype, port, location, chkmac, halfduplex, nas) 
+			VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, 
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array(strtoupper($nodedata['name']),
+				strtoupper($nodedata['mac']),
+				$nodedata['ipaddr'],
+				$nodedata['ipaddr_pub'],
+				$nodedata['ownerid'],
+				$nodedata['passwd'],
+				$this->AUTH->id,
+				$nodedata['access'],
+				$nodedata['warning'],
+				$nodedata['info'],
+				$nodedata['netdev'],
+				isset($nodedata['linktype']) ? 1 : 0,
+				isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
+				$nodedata['location'],
+				$nodedata['chkmac'],
+				$nodedata['halfduplex'],
+				isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+				)))
 		{
 			$id = $this->DB->GetLastInsertID('nodes');
 			
@@ -2932,7 +2933,10 @@ class LMS
 
 	function GetNetDev($id)
 	{
-		$result = $this->DB->GetRow('SELECT * FROM netdevices WHERE id = ?', array($id));
+		$result = $this->DB->GetRow('SELECT d.*, t.name AS nastypename
+			FROM netdevices d
+			LEFT JOIN nastypes t ON (t.id = d.nastype)
+			WHERE d.id = ?', array($id));
 
 		$result['takenports'] = $this->CountNetDevLinks($id);
 
@@ -2964,7 +2968,8 @@ class LMS
 	{
 		if($this->DB->Execute('INSERT INTO netdevices (name, location, 
 				description, producer, model, serialnumber, 
-				ports, purchasetime, guaranteeperiod, shortname, nastype, clients, secret, community) 
+				ports, purchasetime, guaranteeperiod, shortname,
+				nastype, clients, secret, community) 
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array($netdevdata['name'],
 					$netdevdata['location'],
@@ -2977,7 +2982,7 @@ class LMS
 					$netdevdata['guaranteeperiod'],
 					$netdevdata['shortname'],
 					$netdevdata['nastype'],
-					$netdevadta['clients'],
+					$netdevdata['clients'],
 					$netdevdata['secret'],
 					$netdevdata['community']
 		)))

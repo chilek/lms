@@ -28,13 +28,15 @@ if(isset($_POST['netdev']))
 {
 	$netdevdata = $_POST['netdev'];
 
-	if(!ereg('^[0-9]{1,11}$', $netdevdata['clients']))
-		$error['clients'] = trans('Invalid clients format or too long (max.11 characters) !');
-
 	if($netdevdata['ports'] == '')
 		$netdevdata['ports'] = 0;
 	else
 		$netdevdata['ports'] = intval($netdevdata['ports']);
+
+	if(empty($netdevdata['clients']))
+		$netdevdata['clients'] = 0;
+	else
+		$netdevdata['clients'] = intval($netdevdata['clients']);
 			
 	if($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
@@ -75,17 +77,23 @@ if(isset($_POST['netdev']))
 		if($netdevdata['guaranteeperiod'] == -1)
 			$netdevdata['guaranteeperiod'] = NULL;
 		
+		if(!isset($netdevdata['shortname'])) $netdevdata['shortname'] = '';
+                if(!isset($netdevdata['secret'])) $netdevdata['secret'] = '';
+                if(!isset($netdevdata['community'])) $netdevdata['community'] = '';
+                if(!isset($netdevdata['nastype'])) $netdevdata['nastype'] = 0;
+		
 		$netdevid = $LMS->NetDevAdd($netdevdata);
+		print_r($DB); die;
 		$SESSION->redirect('?m=netdevinfo&id='.$netdevid);
         }
 	
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('netdev', $netdevdata);
 }
-		
-$SMARTY->assign('nastype', $LMS->GetNAStypes());
 
 $layout['pagetitle'] = trans('New Device');
+
+$SMARTY->assign('nastype', $LMS->GetNAStypes());
 
 $SMARTY->display('netdevadd.html');
 
