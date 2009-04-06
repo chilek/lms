@@ -107,8 +107,8 @@ if(! -r $configfile)
 my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
-my $networks_list = $ini->val('traffic-htbiptlimits','networks') || '';
-my $excluded_networks_list = $ini->val('traffic-htbiptlimits','excluded_networks') || '';
+my $networks_list = $ini->val('traffic-htbiptlimits', 'networks') || '';
+my $excluded_networks_list = $ini->val('traffic-htbiptlimits', 'excluded_networks') || '';
 my $outfile = $ini->val('traffic-htbiptlimits','outfile') || '/etc/rc.d/rc.limits';
 my $iptables_binary = $ini->val('traffic-htbiptlimits','iptables_binary') || '/usr/sbin/iptables';
 my $tc_binary = $ini->val('traffic-htbiptlimits','tc_binary') || '/sbin/tc';
@@ -153,31 +153,49 @@ else
 	exit 1;
 }
 
-my $allnetworks = "";
-
-my $dbq = $dbase->prepare("SELECT name FROM networks");
-$dbq->execute();
-while (my $row = $dbq->fetchrow_hashref()) {
-        $allnetworks = "$allnetworks $row->{'name'}";
-}
-$dbq->finish();
-	
+# No networks_list in lms.ini, we fill networks_list variable with all networks in database
 if(!$networks_list)
 {
-	$networks_list = $allnetworks;
+	my $dbq = $dbase->prepare("SELECT name FROM networks ORDER BY interface,name");
+	$dbq->execute();
+
+	while (my $row = $dbq->fetchrow_hashref()) 
+	{
+		$networks_list = "$networks_list $row->{'name'}";
+	}	
 }
 
 my @networks = split ' ',$networks_list;
 
+# Check for excluded_networks_list in lms.ini, if it is empty, than get excluded networks from LMSUI.
+# Case 1: excluded_networks_list in lms.ini
 if($excluded_networks_list)
 {
+	my @excluded_networks = split ' ', $excluded_networks_list;
+
+	foreach my $excluded_network (@excluded_networks)
+	{
+		@networks = grep(!/^$excluded_network$/, @networks);
+	}
+}
+# Case 2: excluded_networks_list from LMSUI
+else
+{
+	my $dbq = $dbase->prepare("SELECT name FROM networks WHERE disabled=1 ORDER BY interface,name");
+	$dbq->execute();
+	
+	while (my $row = $dbq->fetchrow_hashref()) 
+	{
+		$excluded_networks_list = "$excluded_networks_list $row->{'name'}";
+	}
+
 	my @excluded_networks = split ' ', $excluded_networks_list;
 	foreach my $excluded_network (@excluded_networks)
 	{
 		@networks = grep(!/^$excluded_network$/, @networks);
 	}
 }
-					
+
 open(OUTFILE, ">$outfile") or die("Fatal error: Unable to write $outfile, exiting.\n");
 
 my @local_ports_list = split(' ',$local_ports);
@@ -284,7 +302,7 @@ foreach my $key (keys %iftable)
 my $iptid = 0;
 my %htbid;
 
-$dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil FROM assignments, customers, tariffs WHERE customers.id = customerid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY customerid");
+my $dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil FROM assignments, customers, tariffs WHERE customers.id = customerid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY customerid");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
