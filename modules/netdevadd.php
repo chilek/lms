@@ -83,7 +83,6 @@ if(isset($_POST['netdev']))
                 if(!isset($netdevdata['nastype'])) $netdevdata['nastype'] = 0;
 		
 		$netdevid = $LMS->NetDevAdd($netdevdata);
-		print_r($DB); die;
 		$SESSION->redirect('?m=netdevinfo&id='.$netdevid);
         }
 	
