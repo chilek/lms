@@ -88,8 +88,11 @@ NAME="LMS-NOTIFY"
 ></H2
 ><P
 >lms-notify jest dobrym sposobem przypominania ludziom o tym że do pracy sieci 
-	  i łącz konieczne są ich pieniążki. Pozwala on na napisanie kilku[-nastu] plików tekstowych i traktowania ich jako szablonów do mailingu. Do wysyłania poczty
-  	został zastosowany moduł Mail::Sender.</P
+		i łącz konieczne są ich pieniążki. Pozwala on na napisanie kilku[-nastu] plików 
+		tekstowych i traktowania ich jako szablonów do mailingu. Skrypt jest 
+		wielofunkcyjny, włączenie określonego zadania następuje poprzez
+		zdefiniowanie lokalizacji pliku z szablonem wiadomości. Do wysyłania poczty
+		został zastosowany moduł Mail::Sender.</P
 ><DIV
 CLASS="SECT3"
 ><H3
@@ -119,7 +122,8 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%abonament - zostanie zastąpione kwotą abonamentu jaka jest do danego klienta przypisana, np. 107</P
+>%abonament - zostanie zastąpione kwotą abonamentu jaka 
+					jest do danego klienta przypisana, np. 107</P
 ></LI
 ><LI
 ><P
@@ -135,11 +139,19 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%cid - ID klienta.</P
+>%cid - ID klienta</P
 ></LI
 ><LI
 ><P
->%last_10_in_a_table - wyciąg ostatnich 10 operacji kasowych na koncie klienta, np.:</P
+>%invoice - numer faktury (tylko w powiadomieniu o fakturze)</P
+></LI
+><LI
+><P
+>%value - wartość brutto na fakturze (tylko w powiadomieniu o fakturze)</P
+></LI
+><LI
+><P
+>%last_10_in_a_table - wyciąg ostatnich 10 operacji kasowych na koncie klienta (tylko wiadomości e-mail), np.:</P
 ></LI
 ></UL
 ><DIV
@@ -193,10 +205,6 @@ Jeżeli chcieliby Państwo uregulować zaległości prosimy o kontakt:
 
 Dział Rozliczeń ASK NaszaSiec
 
-Gerwazy Reguła
-telefon: 0-509031337
-e-mail: gerwazy@staff.naszasiec.pl
-
 Gwidon Mniejważny
 telefon: 0-606666666
 e-mail: gwidonm@naszasiec.pl
@@ -221,7 +229,8 @@ NAME="LMS-NOTIFY-CONFIG"
 >4.3.1.2. Konfiguracja</A
 ></H3
 ><P
->Konfigurację dla lms-notify można ustalić w pliku <TT
+>Konfigurację dla lms-notify można ustalić w pliku 
+			<TT
 CLASS="FILENAME"
 >lms.ini</TT
 > w sekcji <SPAN
@@ -231,41 +240,103 @@ CLASS="EMPHASIS"
 >[notify]</I
 ></SPAN
 >. 
-	   Możesz tam ustawić następujące parametry:</P
+			Możesz tam ustawić następujące parametry, które dotyczą również
+			skryptu <A
+HREF="scripts-config.html#LMS-NOTIFY-SMS"
+>lms-notify-sms</A
+>:</P
 ><UL
 ><LI
 ><P
->limit</P
+>debtors_template (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu, poniżej którego do klienta zostanie wysłany e-mail z upomnieniem. Domyślnie limit = 0</P
+>Lokalizacja pliku z szablonem wiadomości wysyłanej do 
+				zadłużonych klientów. Pozostawienie tej opcji pustej wyłączy
+				powiadomienia o zadłużeniu. Domyślnie: pusta</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>debtors_template = /etc/lms/debtors.txt</SAMP
+></P
+></LI
+><LI
+><P
+>debtors_subject (opcjonalny)</P
+><P
+>Temat wiadomości o zadłużeniu. Domyślnie: 'Debtors notification'</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>debtors_subject = 'Powiadomienie o zadłużeniu'</SAMP
+></P
+></LI
+><LI
+><P
+>invoices_template (opcjonalny)</P
+><P
+>Lokalizacja pliku z szablonem wiadomości z informacją o 
+				wystawieniu faktury. Pod uwagę brane są faktury wystawione
+				w ciągu ostatnich 24 godzin od uruchomienia skryptu.	
+				Pozostawienie tej opcji pustej wyłączy
+				powiadomienia o nowych fakturach. Domyślnie: pusta</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>invoice_template = /etc/lms/new_invoice.txt</SAMP
+></P
+></LI
+><LI
+><P
+>invoices_subject (opcjonalny)</P
+><P
+>Temat wiadomości o nowej fakturze. Domyślnie: 'New invoice notification'</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>invoices_subject = 'Powiadomienie o wystawieniu faktury'</SAMP
+></P
+></LI
+><LI
+><P
+>deadline_template (opcjonalny)</P
+><P
+>Lokalizacja pliku z szablonem wiadomości wysyłanej do 
+				zadłużonych klientów, posiadających przeterminowane 
+				(nierozliczone) faktury. Pozostawienie tej opcji pustej wyłączy
+				powiadomienia. Domyślnie: pusta</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>deadline_template = /etc/lms/deadline.txt</SAMP
+></P
+></LI
+><LI
+><P
+>deadline_subject (opcjonalny)</P
+><P
+>Temat wiadomości o przeterminowanych fakturach. Domyślnie: 'Invoice deadline notification'</P
+><P
+>Przykład:	<SAMP
+CLASS="PROMPT"
+>deadline_subject = 'Powiadomienie o zaległości'</SAMP
+></P
+></LI
+><LI
+><P
+>limit (opcjonalny)</P
+><P
+>Pozwala na ustalenie limitu bilansu poniżej którego do klienta 
+				zostanie wysłana wiadomość z informacją o zadłużeniu. Domyślnie: 0</P
 ><P
 >Przykład:	<SAMP
 CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
 ></LI
-><LI
+></UL
 ><P
->mailsubject (wymagana)</P
-><P
->Pozwala na ustalenie tematu e-maila wysyłanego do klienta. Można używać podstawień znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domyślnie: pusta.</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->mailsubject = Informacje o zaległościach w opłatach za internet</SAMP
-></P
-></LI
-><LI
-><P
->mailtemplate (wymagana)</P
-><P
->Pozwala na wskazanie szablonu wiadomości, która zostanie wysłana do klienta. Więcej o szablonach tutaj. Domyślnie: pusta.</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->mailtemplate = /etc/lms/notifytemplate.txt</SAMP
-></P
-></LI
+>Poniżej przedstawiono opcje dotyczące wyłącznie wiadomości e-mail.</P
+><UL
 ><LI
 ><P
 >mailfrom (wymagana)</P
@@ -304,7 +375,7 @@ CLASS="PROMPT"
 >smtp_auth</P
 ><P
 >Sposób autoryzacji. Dozwolone wartości: LOGIN, PLAIN, CRAM-MD5, NTLM.
-		Domyślnie: pusta (brak autoryzacji)</P
+				Domyślnie: pusta (brak autoryzacji)</P
 ><P
 >Przykład:	<SAMP
 CLASS="PROMPT"
@@ -337,7 +408,10 @@ CLASS="PROMPT"
 ><P
 >debug_email (opcjonalny)</P
 ><P
->Adres e-mail do debugowania. Gdy ustawiony, cała poczta zostaje wysłana na dany email zamiast do klientów. Przydatne do debugowania i sprawdzania czy wszystko działa OK. Domyślnie: nie ustawiony.</P
+>Adres e-mail do debugowania. Gdy ustawiony, cała poczta 
+				zostaje wysłana na dany email zamiast do klientów. Przydatne do 
+				debugowania i sprawdzania czy wszystko działa OK. Domyślnie: 
+				nie ustawiony.</P
 ><P
 >Przykład:	<SAMP
 CLASS="PROMPT"
@@ -356,8 +430,11 @@ NAME="LMS-NOTIFY-SMS"
 >4.3.2. lms-notify-sms</A
 ></H2
 ><P
->lms-notify-sms to odpowiednik lms-notify, służący do wysyłania
-		smsów. Obecnie skrypt wspiera dwie usługi, smstools oraz gnokii.
+>lms-notify-sms to odpowiednik <A
+HREF="scripts-config.html#LMS-NOTIFY"
+>lms-notify</A
+>,
+		służący do wysyłania smsów. Obecnie skrypt wspiera dwie usługi, smstools oraz gnokii.
 		Wyboru usługi dokonuje się w sekcji <SPAN
 CLASS="emphasis"
 ><I
@@ -379,8 +456,11 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[notify-sms]</I
 ></SPAN
->, a masz do dyspozycji następujące 
-		opcje:
+>, oprócz opcji dostępnych w
+		<A
+HREF="scripts-config.html#LMS-NOTIFY"
+>lms-notify</A
+> masz do dyspozycji następujące opcje:
 		<UL
 ><LI
 ><P
@@ -400,95 +480,9 @@ CLASS="PROMPT"
 >service = smstools</SAMP
 ></P
 ></LI
-><LI
-><P
->debtors_template (opcjonalny)</P
-><P
->Lokalizacja pliku z szablonem wiadomości wysyłanej do 
-				zadłużonych klientów. Pozostawienie tej opcji pustej wyłączy
-				powiadomienia o zadłużeniu. Domyślnie: pusta</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->debtors_template = /etc/lms/debtors.txt</SAMP
-></P
-></LI
-><LI
-><P
->debtors_subject (opcjonalny)</P
-><P
->Temat wiadomości o zadłużeniu. Domyślnie: 'Debtors notification'</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->debtors_subject = 'Powiadomienie o zadłużeniu'</SAMP
-></P
-></LI
-><LI
-><P
->invoices_template (opcjonalny)</P
-><P
->Lokalizacja pliku z szablonem wiadomości z informacją o 
-			wystawieniu faktury. Pod uwagę brane są faktury wystawione
-			w ciągu ostatnich 24 godzin od uruchomienia skryptu.			
-			Pozostawienie tej opcji pustej wyłączy
-			powiadomienia o nowych fakturach. Domyślnie: pusta</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->invoice_template = /etc/lms/new_invoice.txt</SAMP
-></P
-></LI
-><LI
-><P
->invoices_subject (opcjonalny)</P
-><P
->Temat wiadomości o nowej fakturze. Domyślnie: 'New invoice notification'</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->invoices_subject = 'Powiadomienie o wystawieniu faktury'</SAMP
-></P
-></LI
-><LI
-><P
->deadline_template (opcjonalny)</P
-><P
->Lokalizacja pliku z szablonem wiadomości wysyłanej do 
-			zadłużonych klientów, posiadających przeterminowane (nierozliczone) faktury. Pozostawienie tej opcji pustej wyłączy
-			powiadomienia. Domyślnie: pusta</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->deadline_template = /etc/lms/deadline.txt</SAMP
-></P
-></LI
-><LI
-><P
->deadline_subject (opcjonalny)</P
-><P
->Temat wiadomości o przeterminowanych fakturach. Domyślnie: 'Invoice deadline notification'</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->deadline_subject = 'Powiadomienie o zaległości'</SAMP
-></P
-></LI
-><LI
-><P
->limit (opcjonalny)</P
-><P
->Pozwala na ustalenie limitu bilansu poniżej którego do klienta 
-			zostanie wysłany sms z informacją o zadłużeniu. Domyślnie: 0</P
-><P
->Przykład:	<SAMP
-CLASS="PROMPT"
->limit = -20</SAMP
-></P
-></LI
 ></UL
 >
-	</P
+		</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -735,7 +729,7 @@ CLASS="FILENAME"
 CLASS="SCREEN"
 >-f=/plik 	położenie i nazwa pliku ze statystykami domyślnie /var/log/traffic.log</PRE
 ><P
->	    <DIV
+>		<DIV
 CLASS="WARNING"
 ><TABLE
 CLASS="WARNING"
@@ -754,10 +748,10 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Częstotliwość zapisywania danych do bazy ustala klient. Ustawienie
-	    jej poniżej 10 minut, może spowodować szybki przyrost ilości rekordów w 
-	    bazie danych, a co za tym idzie zwiększyć czas oczekiwania na wyświetlenie
-	    wyników.</P
+>Częstotliwość zapisywania danych do bazy ustala użytkownik.
+		Ustawienie jej poniżej 10 minut, może spowodować szybki przyrost ilości rekordów w
+		bazie danych, a co za tym idzie zwiększyć czas oczekiwania na wyświetlenie
+		wyników.</P
 ></TD
 ></TR
 ></TABLE

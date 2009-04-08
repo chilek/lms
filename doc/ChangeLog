@@ -35,6 +35,9 @@ version ? (????-??-??):
   - chooseip: show disabled networks on red (chilan)
   - added basic radius support (Robert "CyberM" Konopa/alec)
   - added options 'radius' and 'public_ip' (Robert "CyberM" Konopa/alec)
+  - lms-notify: added messages log support, added options to send notifies
+    about new invoice and paytime overdo, removed mailtemplate and mailsubject
+    option, added *_template and *_subject options (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

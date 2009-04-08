@@ -2659,7 +2659,8 @@ Rozdział 4. Skrypty
 
    Tabela 4-1. Lista skryptów wykonywalnych
    Nazwa Opis
-   lms-notify Korespondencja seryjna do klientów sieci
+   lms-notify Powiadamianie klientów pocztą internetową o zaległościach,
+   wystawionych fakturach, przekroczeniu terminu płatności
    lms-notify-sms Powiadamianie klientów SMS'em o zaległościach,
    wystawionych fakturach, przekroczeniu terminu płatności
    lms-cutoff Odłączanie klientów zadłużonych
@@ -2694,7 +2695,9 @@ Rozdział 4. Skrypty
    lms-notify jest dobrym sposobem przypominania ludziom o tym że do pracy
    sieci i łącz konieczne są ich pieniążki. Pozwala on na napisanie
    kilku[-nastu] plików tekstowych i traktowania ich jako szablonów do
-   mailingu. Do wysyłania poczty został zastosowany moduł Mail::Sender.
+   mailingu. Skrypt jest wielofunkcyjny, włączenie określonego zadania
+   następuje poprzez zdefiniowanie lokalizacji pliku z szablonem
+   wiadomości. Do wysyłania poczty został zastosowany moduł Mail::Sender.
      __________________________________________________________________
 
 4.3.1.1. Szablony
@@ -2711,9 +2714,12 @@ Rozdział 4. Skrypty
      * %b - saldo z zanegowanym znakiem, np. 107
      * %B - saldo z prawdziwym znakiem, np. -107
      * %pin - numer PIN klienta
-     * %cid - ID klienta.
+     * %cid - ID klienta
+     * %invoice - numer faktury (tylko w powiadomieniu o fakturze)
+     * %value - wartość brutto na fakturze (tylko w powiadomieniu o
+       fakturze)
      * %last_10_in_a_table - wyciąg ostatnich 10 operacji kasowych na
-       koncie klienta, np.:
+       koncie klienta (tylko wiadomości e-mail), np.:
 
    Przykład 4-1. Lms-notify: Przykładowy wyciąg 10 ostatnich operacji
    kasowych
@@ -2747,10 +2753,6 @@ Jeżeli chcieliby Państwo uregulować zaległości prosimy o kontakt:
 
 Dział Rozliczeń ASK NaszaSiec
 
-Gerwazy Reguła
-telefon: 0-509031337
-e-mail: gerwazy@staff.naszasiec.pl
-
 Gwidon Mniejważny
 telefon: 0-606666666
 e-mail: gwidonm@naszasiec.pl
@@ -2769,21 +2771,42 @@ http://www.naszasiec.pl/
 4.3.1.2. Konfiguracja
 
    Konfigurację dla lms-notify można ustalić w pliku lms.ini w sekcji
-   [notify]. Możesz tam ustawić następujące parametry:
-     * limit
-       Pozwala na ustalenie limitu bilansu, poniżej którego do klienta
-       zostanie wysłany e-mail z upomnieniem. Domyślnie limit = 0
+   [notify]. Możesz tam ustawić następujące parametry, które dotyczą
+   również skryptu lms-notify-sms:
+     * debtors_template (opcjonalny)
+       Lokalizacja pliku z szablonem wiadomości wysyłanej do zadłużonych
+       klientów. Pozostawienie tej opcji pustej wyłączy powiadomienia o
+       zadłużeniu. Domyślnie: pusta
+       Przykład: debtors_template = /etc/lms/debtors.txt
+     * debtors_subject (opcjonalny)
+       Temat wiadomości o zadłużeniu. Domyślnie: 'Debtors notification'
+       Przykład: debtors_subject = 'Powiadomienie o zadłużeniu'
+     * invoices_template (opcjonalny)
+       Lokalizacja pliku z szablonem wiadomości z informacją o wystawieniu
+       faktury. Pod uwagę brane są faktury wystawione w ciągu ostatnich 24
+       godzin od uruchomienia skryptu. Pozostawienie tej opcji pustej
+       wyłączy powiadomienia o nowych fakturach. Domyślnie: pusta
+       Przykład: invoice_template = /etc/lms/new_invoice.txt
+     * invoices_subject (opcjonalny)
+       Temat wiadomości o nowej fakturze. Domyślnie: 'New invoice
+       notification'
+       Przykład: invoices_subject = 'Powiadomienie o wystawieniu faktury'
+     * deadline_template (opcjonalny)
+       Lokalizacja pliku z szablonem wiadomości wysyłanej do zadłużonych
+       klientów, posiadających przeterminowane (nierozliczone) faktury.
+       Pozostawienie tej opcji pustej wyłączy powiadomienia. Domyślnie:
+       pusta
+       Przykład: deadline_template = /etc/lms/deadline.txt
+     * deadline_subject (opcjonalny)
+       Temat wiadomości o przeterminowanych fakturach. Domyślnie: 'Invoice
+       deadline notification'
+       Przykład: deadline_subject = 'Powiadomienie o zaległości'
+     * limit (opcjonalny)
+       Pozwala na ustalenie limitu bilansu poniżej którego do klienta
+       zostanie wysłana wiadomość z informacją o zadłużeniu. Domyślnie: 0
        Przykład: limit = -20
-     * mailsubject (wymagana)
-       Pozwala na ustalenie tematu e-maila wysyłanego do klienta. Można
-       używać podstawień znanych z szablonów (%B, %b, %date-y, %date-m,
-       %last_10_in_a_table). Domyślnie: pusta.
-       Przykład: mailsubject = Informacje o zaległościach w opłatach za
-       internet
-     * mailtemplate (wymagana)
-       Pozwala na wskazanie szablonu wiadomości, która zostanie wysłana do
-       klienta. Więcej o szablonach tutaj. Domyślnie: pusta.
-       Przykład: mailtemplate = /etc/lms/notifytemplate.txt
+
+   Poniżej przedstawiono opcje dotyczące wyłącznie wiadomości e-mail.
      * mailfrom (wymagana)
        Adres e-mail z którego zostanie wysłany e-mail. Proszę pamiętać, że
        na niektórych MTA (np. exim) konto to musi istnieć w systemie.
@@ -2822,43 +2845,12 @@ http://www.naszasiec.pl/
    szablonem wiadomości.
 
    Konfigurację dla lms-notify-sms można ustalić w pliku lms.ini w sekcji
-   [notify-sms], a masz do dyspozycji następujące opcje:
+   [notify-sms], oprócz opcji dostępnych w lms-notify masz do dyspozycji
+   następujące opcje:
      * service (opcjonalny)
        Pozwala na wybranie usługi SMS niezależnie od tej, którą podano w
        sekcji [sms]. Domyślnie: pusta
        Przykład: service = smstools
-     * debtors_template (opcjonalny)
-       Lokalizacja pliku z szablonem wiadomości wysyłanej do zadłużonych
-       klientów. Pozostawienie tej opcji pustej wyłączy powiadomienia o
-       zadłużeniu. Domyślnie: pusta
-       Przykład: debtors_template = /etc/lms/debtors.txt
-     * debtors_subject (opcjonalny)
-       Temat wiadomości o zadłużeniu. Domyślnie: 'Debtors notification'
-       Przykład: debtors_subject = 'Powiadomienie o zadłużeniu'
-     * invoices_template (opcjonalny)
-       Lokalizacja pliku z szablonem wiadomości z informacją o wystawieniu
-       faktury. Pod uwagę brane są faktury wystawione w ciągu ostatnich 24
-       godzin od uruchomienia skryptu. Pozostawienie tej opcji pustej
-       wyłączy powiadomienia o nowych fakturach. Domyślnie: pusta
-       Przykład: invoice_template = /etc/lms/new_invoice.txt
-     * invoices_subject (opcjonalny)
-       Temat wiadomości o nowej fakturze. Domyślnie: 'New invoice
-       notification'
-       Przykład: invoices_subject = 'Powiadomienie o wystawieniu faktury'
-     * deadline_template (opcjonalny)
-       Lokalizacja pliku z szablonem wiadomości wysyłanej do zadłużonych
-       klientów, posiadających przeterminowane (nierozliczone) faktury.
-       Pozostawienie tej opcji pustej wyłączy powiadomienia. Domyślnie:
-       pusta
-       Przykład: deadline_template = /etc/lms/deadline.txt
-     * deadline_subject (opcjonalny)
-       Temat wiadomości o przeterminowanych fakturach. Domyślnie: 'Invoice
-       deadline notification'
-       Przykład: deadline_subject = 'Powiadomienie o zaległości'
-     * limit (opcjonalny)
-       Pozwala na ustalenie limitu bilansu poniżej którego do klienta
-       zostanie wysłany sms z informacją o zadłużeniu. Domyślnie: 0
-       Przykład: limit = -20
      __________________________________________________________________
 
 4.3.3. lms-cutoff
@@ -2962,8 +2954,8 @@ http://www.naszasiec.pl/
 
    Ostrzeżenie
 
-   Częstotliwość zapisywania danych do bazy ustala klient. Ustawienie jej
-   poniżej 10 minut, może spowodować szybki przyrost ilości rekordów w
+   Częstotliwość zapisywania danych do bazy ustala użytkownik. Ustawienie
+   jej poniżej 10 minut, może spowodować szybki przyrost ilości rekordów w
    bazie danych, a co za tym idzie zwiększyć czas oczekiwania na
    wyświetlenie wyników.
      __________________________________________________________________

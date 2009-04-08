@@ -26,8 +26,8 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use vars qw($configfile $my_template $quiet $help $version);
-use POSIX qw(strftime);
+use vars qw($configfile $quiet $help $version $debug);
+use POSIX qw(strftime mktime);
 use MIME::QuotedPrint;
 use Mail::Sender;
 
@@ -35,10 +35,10 @@ my $_version = '1.11-cvs';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,
-	"--template-file|D=s"	=> 	\$my_template,
 	"--quiet|q"		=>	\$quiet,
 	"--help|h"		=>	\$help,
-	"--version|v"		=>	\$version
+	"--version|v"		=>	\$version,
+	"--debug|d"             =>      \$debug
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -51,10 +51,10 @@ lms-notify, version $_version
 (C) 2001-2009 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
--D, --template-file=/etc/lms/other.template.txt	alternate file with message template;
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
+-d, --debug                     do debugging, don't send anything.
 
 EOF
 	exit 0;
@@ -101,25 +101,20 @@ my $smtp_host = $ini->val('sendinvoices', 'smtp_host') || 'localhost';
 my $smtp_user = $ini->val('sendinvoices', 'smtp_user') || '';
 my $smtp_pass = $ini->val('sendinvoices', 'smtp_pass') || '';
 my $smtp_auth = $ini->val('sendinvoices', 'smtp_auth') || ''; # 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
-
-my $limit = $ini->val('notify', 'limit') || 0;
-my $mtfile = $my_template || $ini->val('notify', 'mailtemplate');
+my $debugemail = $ini->val('notify', 'debug_email') || '';
 my $mailfrom = $ini->val('notify', 'mailfrom') || '';
 my $mailfname = $ini->val('notify', 'mailfname') || '';
-my $mailsubject = $ini->val('notify', 'mailsubject') || '';
-my $debugemail = $ini->val('notify', 'debug_email') || '';
 
-if(!$mtfile)
-{
-	print STDERR "Fatal error: mailtemplate in $configfile unset! Can't continue, exiting.\n";
-	exit 1;
-}
-
-if(! -r $mtfile)
-{
-	print STDERR "Fatal error: unable to read mail template file $mtfile, exiting!\n";
-	exit 1;
-}
+# debtors notify
+my $limit = $ini->val('notify', 'limit') || 0;
+my $debtors_file = $ini->val('notify', 'debtors_template');
+my $debtors_subject = $ini->val('notify', 'debtors_subject') || 'Debtors notification';
+# new invoice notify
+my $invoices_file = $ini->val('notify', 'invoice_template');
+my $invoices_subject = $ini->val('notify', 'invoice_subject') || 'New invoice notification';
+#deadline notify
+my $deadline_file = $ini->val('notify', 'deadline_template');
+my $deadline_subject = $ini->val('notify', 'deadline_subject') || 'Invoice deadline notification';
 
 if(!$mailfrom)
 {
@@ -127,9 +122,19 @@ if(!$mailfrom)
 	exit 1;
 }
 
-if(!$mailsubject)
+if($debtors_file && ! -r $debtors_file)
 {
-	print STDERR "Fatal error: mailsubject unset! Can't continue, exiting.\n";
+	print STDERR "Fatal error: unable to read mail template file $debtors_file, exiting!\n";
+	exit 1;
+}
+if($invoices_file && ! -r $invoices_file)
+{
+	print STDERR "Fatal error: unable to read mail template file $invoices_file, exiting!\n";
+	exit 1;
+}
+if($deadline_file && ! -r $deadline_file)
+{
+	print STDERR "Fatal error: unable to read mail template file $deadline_file, exiting!\n";
 	exit 1;
 }
 
@@ -167,104 +172,90 @@ if($mailfname)
 	$from = '"'.$mailfname.'"'.' <'.$from.'>';
 }
 
-open(MTFILE, "$mtfile");
-my @mtempl = <MTFILE>;
-close MTFILE;
-
 $Mail::Sender::NO_X_MAILER = 1;
 $Mail::Sender::SITE_HEADERS = "X-Mailer: lms-notify v.$_version";
 
-my $dbq = $dbase->prepare("SELECT customers.id AS id, pin, UPPER(lastname) AS lastname, 
-		name, email, SUM(cash.value) AS balance 
-		FROM customers 
-		JOIN cash ON (customers.id = cash.customerid)
-		WHERE deleted = 0 AND email != ''
-		GROUP BY customers.id, pin, lastname, name, email 
-		HAVING SUM(cash.value) < $limit");
-$dbq->execute();
-while (my $row = $dbq->fetchrow_hashref())
+# ------------------------------------------------------------------------------
+# FUNCTIONS
+# ------------------------------------------------------------------------------
+sub parse_data
 {
-	my $balance = $row->{'balance'};
-	my $recipient = $debugemail || $row->{'email'};
+	my $data = shift;
+	my $row = shift;
 
-	if(!$quiet)
-	{
-		print STDOUT "$row->{'lastname'} $row->{'name'} (".sprintf("%04d",$row->{'id'}).")\t$balance\n";
+	if ($data =~ /\%b/) {
+		my $amount = -$row->{'balance'};
+		$data =~ s/\%b/$amount/g; 
 	}
-
-	if(!$quiet)
-	{
-		print STDOUT "Sending e-mail to <$recipient>\n";
+	if ($data =~ /\%date-y/) {
+		my $year = strftime("%Y", localtime());
+		$data =~ s/\%date-y/$year/g; 
 	}
+	if ($data =~ /\%date-m/) {
+		my $month = strftime("%m", localtime());
+		$data =~ s/\%date-m/$month/g;
+	}
+	if ($data =~ /\%date_month_name/) {
+		my $month_name = strftime("%B", localtime());
+		$data =~ s/\%date_month_name/$month_name/g;
+	}
+	if ($data =~ /\%B/) {
+		$data =~ s/\%B/$row->{'balance'}/g;
+	}
+	if ($data =~ /\%saldo/) {
+		$data =~ s/\%saldo/$row->{'balance'}/g;
+	}
+	if ($data =~ /\%pin/) {
+		$data =~ s/\%pin/$row->{'pin'}/g;
+	}
+	if ($data =~ /\%cid/) {
+		$data =~ s/\%cid/$row->{'id'}/g;
+	}
+	if ($data =~ /\%abonament/) {
+		my $saldo_dbq = $dbase->prepare("SELECT SUM(value) AS value
+			FROM assignments, tariffs
+			WHERE tariffid = tariffs.id AND customerid = ?
+				AND (datefrom <= $utsfmt OR datefrom = 0)
+				AND (dateto > $utsfmt OR dateto = 0)
+				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))");
+		$saldo_dbq->execute($row->{'id'});
+		my $ow_s = $saldo_dbq->fetchrow_hashref();
+		$data =~ s/\%abonament/$ow_s->{'value'}/g;
+		$saldo_dbq->finish();
+	}
+	if ($data =~ /\%last_10_in_a_table/ ) {
+		my $last10_dbq = $dbase->prepare("SELECT comment, value, time FROM cash WHERE 
+				customerid = $row->{'id'} ORDER BY time DESC LIMIT 10");
+		# ok, now we are going to rise up system's load
+		$last10_dbq->execute();
+		my $l10 = "-----------+-----------+----------------------------------------------------\n";
+		while (my $row_s = $last10_dbq->fetchrow_hashref())
+		{
+			my $op_time = strftime( "%Y/%m/%d", localtime($row_s->{'time'}));
+			my $op_amount = sprintf("%9.2f", $row_s->{'value'});
+			my $for_what = sprintf("%-52s",$row_s->{'comment'} || '');
 		
-	my @desttempl = @mtempl;
-	my $subject = $mailsubject;
-	my $body = '';
-	my $sender;
-		
-	$subject =~ s/\%B/$balance/g;
-
-	{
-		my $amount = -$balance; $subject =~ s/\%b/$amount/g;
+			$l10 = $l10."$op_time | $op_amount | $for_what \n";
+		}
+		$last10_dbq->finish();
+		$l10 = $l10."-----------+-----------+----------------------------------------------------\n";
+		$data =~ s/\%last_10_in_a_table/$l10/;
 	} 
-		
-	foreach my $line (@desttempl)
-	{
-		{ 	
-			my $amount = sprintf "%.2f", -$balance;
-			$line =~ s/\%b/$amount/g; 	
-		}
-		{ 
-			my $year = strftime( "%Y", localtime());
-			$line =~ s/\%date-y/$year/; 
-		}
-		{
-			my $month = strftime ( "%m", localtime());
-			$line =~ s/\%date-m/$month/;
-		}
-		{
-			my $month_name = strftime ( "%B", localtime());
-			$line =~ s/\%date_month_name/$month_name/;
-		}
-			
-		$line =~ s/\%B/$balance/g;
-		$line =~ s/\%saldo/$row->{'balance'}/;
-		$line =~ s/\%pin/$row->{'pin'}/;
-		$line =~ s/\%cid/$row->{'id'}/;
-
-		if ($line =~ /\%abonament/) {
-			my $saldo_dbq = $dbase->prepare("SELECT sum(value) AS value FROM assignments, tariffs 
-					WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) 
-						AND (dateto > $utsfmt OR dateto = 0) 
-						AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) 
-						AND customerid = $row->{'id'}");
-			$saldo_dbq->execute();
-			my $ow_s = $saldo_dbq->fetchrow_hashref();
-			$saldo_dbq->finish();
-			$line =~ s/\%abonament/$ow_s->{'value'}/;
-		}
-		if ($line =~ /\%last_10_in_a_table/ ) {
-			my $last10_dbq = $dbase->prepare("SELECT comment, value, time FROM cash WHERE 
-					customerid='$row->{'id'}' ORDER BY time DESC LIMIT 10");
-			# ok, now we are going to rise up system's load
-			$last10_dbq->execute();
-			my $l10 = "-----------+-----------+----------------------------------------------------\n";
-			while (my $row_s = $last10_dbq->fetchrow_hashref())
-			{
-				my $op_time = strftime( "%Y/%m/%d", localtime($row_s->{'time'}));
-				my $op_amount = sprintf("%9.2f", $row_s->{'value'});
-				my $for_what = sprintf("%-52s",$row_s->{'comment'} || '');
-														
-				$l10 = $l10."$op_time | $op_amount | $for_what \n";
-			}
-			$last10_dbq->finish();
-			$l10 = $l10."-----------+---------+------------------------------------------------------\n";
-			$line =~ s/\%last_10_in_a_table/$l10/;
-		} 
-		
-		$body = $body.$line;
+# invoices
+	if ($data =~ /\%invoice/) {
+		$data =~ s/\%invoice/$row->{'invoice_number'}/g;
 	}
-	
+	if ($data =~ /\%value/) {
+		$data =~ s/\%value/$row->{'value'}/g;
+	}
+
+	return $data;
+}
+
+sub send_mail
+{
+	my ($rmail, $rname, $subject, $body) = @_;
+		
 	(new Mail::Sender)->MailMsg ({
 	        smtp => $smtp_host,
 		from => $mailfrom,
@@ -276,15 +267,217 @@ while (my $row = $dbq->fetchrow_hashref())
 #		debug => './log.txt',
                 subject => '=?UTF-8?Q?'.encode_qp($subject, '').'?=',
 		fake_from => $from,
-		to => $recipient,
-		fake_to => '"=?UTF-8?Q?'.encode_qp($row->{'name'}.' '.$row->{'lastname'}, '').'?="'.' <'.$recipient.'>',
+		to => $rmail,
+		fake_to => '"=?UTF-8?Q?'.encode_qp($rname, '').'?="'.' <'.$rmail.'>',
 		replyto => $mailfrom,
 		ctype => 'text/plain',
     		encoding => '8bit',
 		charset => 'UTF-8',
 		msg => "$body\n",
-	}) or print STDERR "Error sending mail: $Mail::Sender::Error\n";
+	}) or return $Mail::Sender::Error;
+	
+	return 0;
 }
 
-$dbq->finish();
+sub send_message
+{
+	my ($msgid, $cid, $rmail, $rname, $subject, $body) = @_;
+
+	my $dbqi = $dbase->prepare("INSERT INTO messageitems
+		(messageid, customerid, destination, status)
+		VALUES (?, ?, ?, ?)");
+	$dbqi->execute($msgid, $cid, $rmail, 1);
+	
+	my $result = send_mail($rmail, $rname, $subject, $body);
+	my $time = mktime(localtime());
+
+	$dbqi = $dbase->prepare("UPDATE messageitems
+		SET status = ?, lastdate = ?, error = ?
+		WHERE messageid = ? AND customerid = ?");
+
+	if ($result) {
+		$dbqi->execute(3, $time, $result, $msgid, $cid);
+	} else { # MSG_SENT
+		$dbqi->execute(2, $time, undef, $msgid, $cid);
+	}
+	$dbqi->finish();
+}
+
+sub create_message
+{
+	my $subject = shift;
+	my $template = shift;
+	my $time = mktime(localtime());
+
+	my $dbqi = $dbase->prepare("INSERT INTO messages
+			(type, cdate, subject, body) VALUES (1, ?, ?, ?)");
+	$dbqi->execute($time, $subject, $template);
+	$dbqi = $dbase->prepare("SELECT id FROM messages
+			WHERE cdate = ? AND type = 1 AND subject = ?");
+	$dbqi->execute($time, $subject);
+	my $msgid = ($dbqi->fetchrow_array)[0];
+	$dbqi->finish();
+
+	return $msgid;
+}
+
+# ------------------------------------------------------------------------
+# ACTIONS
+# ------------------------------------------------------------------------
+# Debtors
+if ($debtors_file)
+{
+	open(MAILFILE, "$debtors_file");
+	my $template = join(' ', <MAILFILE>);
+	close MAILFILE;
+
+	# @TODO: check 'messages' table and don't send notifies to often
+	my $dbq = $dbase->prepare("SELECT c.id, c.pin, c.lastname, c.name,
+			SUM(value) AS balance, c.email
+		FROM customers c
+		JOIN cash ON (c.id = cash.customerid)
+		WHERE c.deleted = 0 AND c.email != ''
+		GROUP BY c.id, c.pin, c.lastname, c.name, c.email
+		HAVING SUM(value) < $limit");
+	$dbq->execute();
+
+	my $msgid;
+	if ($dbq->rows && !$debug) {
+		$msgid = create_message($debtors_subject, $template);
+	}
+
+	while (my $row = $dbq->fetchrow_hashref())
+	{
+		my $recipient_name = $row->{'name'}.' '.$row->{'lastname'};
+		my $recipient_mail = $debugemail || $row->{'email'};
+
+		if(!$quiet)
+		{
+			printf STDOUT "[debt] %s (%04d): %s\n",
+				$recipient_name, $row->{'id'}, $recipient_mail;
+		}
+
+		if(!$debug)
+		{
+			send_message($msgid, $row->{'id'}, $recipient_mail, $recipient_name,
+				$debtors_subject, parse_data($template, $row));
+		}
+	}
+	$dbq->finish();
+}
+
+# Invoices created up to 24 hours ago
+if ($invoices_file)
+{
+	open(MAILFILE, "$invoices_file");
+	my $template = join(' ', <MAILFILE>);
+	close MAILFILE;
+
+	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
+		d.number, n.template, d.cdate, d.paytime, c.email,
+		COALESCE(ca.balance, 0) AS balance, v.value
+		FROM documents d
+		JOIN customers c ON (c.id = d.customerid)
+		JOIN (SELECT SUM(value) * -1 AS value, docid
+			FROM cash
+			GROUP BY docid
+		) v ON (v.docid = d.id)
+		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+		LEFT JOIN (SELECT SUM(value) AS balance, customerid
+			FROM cash
+			GROUP BY customerid
+		) ca ON (ca.customerid = d.customerid)
+		WHERE d.type = 1
+	    		AND d.cdate > $utsfmt - 86400
+			AND c.email != ''
+		");
+	$dbq->execute();
+
+	my $msgid;
+	if ($dbq->rows && !$debug) {
+		$msgid = create_message($invoices_subject, $template);
+	}
+
+	while (my $row = $dbq->fetchrow_hashref())
+	{
+		my $recipient_name = $row->{'name'};
+		my $recipient_mail = $debugemail || $row->{'email'};
+
+		$row->{'invoice_number'} = $row->{'template'} || '%N/LMS/%Y';
+		$row->{'invoice_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
+		$row->{'invoice_number'} = strftime($row->{'invoice_number'}, localtime($row->{'cdate'}));
+			
+		if(!$quiet)
+		{
+			printf STDOUT "[new invoice] %s (%04d) %s: %s\n",
+				$row->{'name'}, $row->{'id'}, $row->{'invoice_number'}, $recipient_mail;
+		}
+			
+		if(!$debug)
+		{
+			send_message($msgid, $row->{'id'}, $recipient_mail, $recipient_name,
+				$invoices_subject, parse_data($template, $row));
+		}
+	}
+	$dbq->finish();
+}
+
+# Invoices (not payed) up to 24 hours after deadline (cdate + paytime)
+if ($deadline_file)
+{
+	open(MAILFILE, "$deadline_file");
+	my $template = join(' ', <MAILFILE>);
+	close MAILFILE;
+
+	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
+		d.number, n.template, d.cdate, d.paytime, c.email,
+		COALESCE(ca.balance, 0) AS balance, v.value
+		FROM documents d
+		JOIN (SELECT SUM(value) AS balance, customerid
+			FROM cash
+			GROUP BY customerid
+			HAVING SUM(value) < 0
+		) ca ON (ca.customerid = d.customerid)
+		JOIN customers c ON (c.id = d.customerid)
+		JOIN (SELECT SUM(value) * -1 AS value, docid
+			FROM cash
+			GROUP BY docid
+		) v ON (v.docid = d.id)
+		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+		WHERE d.type = 1 AND d.closed = 0
+			AND c.email != ''
+			AND d.cdate > $utsfmt - ((d.paytime + 1) * 86400)
+			AND d.cdate < $utsfmt - (d.paytime * 86400)
+		");
+	$dbq->execute();
+
+	my $msgid;
+	if ($dbq->rows && !$debug) {
+		$msgid = create_message($deadline_subject, $template);
+	}
+
+	while (my $row = $dbq->fetchrow_hashref())
+	{
+		my $recipient_name = $row->{'name'};
+		my $recipient_mail = $debugemail || $row->{'email'};
+
+		$row->{'invoice_number'} = $row->{'template'} || '%N/LMS/%Y';
+		$row->{'invoice_number'} =~ s/%(\d*)N/sprintf"%0${1}d",$row->{'number'}/e;
+		$row->{'invoice_number'} = strftime($row->{'invoice_number'}, localtime($row->{'cdate'}));
+			
+		if(!$quiet)
+		{
+			printf STDOUT "[deadline] %s (%04d) %s: %s\n",
+				$row->{'name'}, $row->{'id'}, $row->{'invoice_number'}, $recipient_mail;
+		}
+			
+		if(!$debug)
+		{
+			send_message($msgid, $row->{'id'}, $recipient_mail, $recipient_name,
+				$deadline_subject, parse_data($template, $row));
+		}
+	}
+	$dbq->finish();
+}
+
 $dbase->disconnect();

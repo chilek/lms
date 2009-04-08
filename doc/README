@@ -1473,6 +1473,12 @@ Chapter 3. User Interface (LMS-UI)
    input data will be in the following format (tab separated):
 23.02.2004      Machniak Aleksander     123,45  Internet subscription - 04/2004ID:0013
 15.02.2004      Pain Joseph     123,45  Invoice paid - LMS/34/2004
+
+   While import operations are being accepted it's possible to enable
+   auto-accounting of invoices. To do this enable option
+   'cashimport_checkinvoices' in section [finances]. Invoice (and assigned
+   credit notes) is checked when imported payment (taking customer balance
+   into account) is greater than invoice liability.
      __________________________________________________________________
 
 3.7.12. Export
@@ -2401,39 +2407,40 @@ Chapter 4. Scripts
 4.2. List of available scripts
 
    Table 4-1. Executable scripts list
-           Name                                Description
-        lms-notify              Massive mailing for customer notification
-      lms-notify-sms            Notifies customer about his debt with SMS
-        lms-cutoff                 Cutoff of customers who are in debt
-       lms-etherdesc       MAC address - hostname pair file creation for iptraf
-       lms-payments       Accounting subscription fees (periodical) with invoice
-                                                writeouts
-        lms-traffic                 Bandwidth consumption calculation
-  lms-traffic-logiptables             Bandwidth probe with iptables
-        lms-makearp                  ARP table (/etc/ethers) creation
-     lms-makedhcpconf             DHCP server configuration (dhcpd.conf)
-     lms-makeiptables            Configuration of iptables firewall rules
-     lms-makeipchains            Configuration of ipchains firewall rules
-     lms-makeopenbsdpf         Configuration of OpenBSD packet filter rules
-    lms-makeoidentconf                   Configuration of oident
-     lms-sendinvoices             Distribution of invoices to customers
-       lms-makemacs            Firewalling with use of source MAC addresses
-       lms-makehosts                     /etc/hosts file creation
-     lms-makewarnings              Redirect rules for customers in debt
-     lms-makemessages       Redirect rules for customers in debt with warning
-                                                 message
-         lms-fping                          Online nodes scan
-       lms-rtparser                      Helpdesk backend for MUA
+   Name Description
+   lms-notify Massive mailing for customer notification about debt, new
+   invoice, etc.
+   lms-notify-sms SMS Notifications about customers deb, new invoice, etc.
+   lms-cutoff Cutoff of customers who are in debt
+   lms-etherdesc MAC address - hostname pair file creation for iptraf
+   lms-payments Accounting subscription fees (periodical) with invoice
+   writeouts
+   lms-traffic Bandwidth consumption calculation
+   lms-traffic-logiptables Bandwidth probe with iptables
+   lms-makearp ARP table (/etc/ethers) creation
+   lms-makedhcpconf DHCP server configuration (dhcpd.conf)
+   lms-makeiptables Configuration of iptables firewall rules
+   lms-makeipchains Configuration of ipchains firewall rules
+   lms-makeopenbsdpf Configuration of OpenBSD packet filter rules
+   lms-makeoidentconf Configuration of oident
+   lms-sendinvoices Distribution of invoices to customers
+   lms-makemacs Firewalling with use of source MAC addresses
+   lms-makehosts /etc/hosts file creation
+   lms-makewarnings Redirect rules for customers in debt
+   lms-makemessages Redirect rules for customers in debt with warning
+   message
+   lms-fping Online nodes scan
+   lms-rtparser Helpdesk backend for MUA
      __________________________________________________________________
 
 4.3. Description and configuration
 
 4.3.1. lms-notify
 
-   lms-notify is perfect tool to remind your customers that they are
+   lms-notify it's a perfect tool to remind your customers that they are
    actually the ones who cover all your network and WAN links costs. It
    makes you possible to create numerous text templates for various
-   occasions and use them for mailing your customers. For smtp connection
+   occasions and use them for mailing your customers. For SMTP connection
    Mail::Sender module is used.
      __________________________________________________________________
 
@@ -2452,6 +2459,8 @@ Chapter 4. Scripts
      * %B - customer balance with real sign, eg. -107
      * %pin - PIN code of the customer
      * %cid - customer ID
+     * %invoice - invoice number (invoices and deadline notifies only)
+     * %value - invoice value (invoices and deadline notifies only)
      * %last_10_in_a_table - list of last 10 operations on customer's
        account, eg.
 
@@ -2505,19 +2514,36 @@ http://www.bigpro.com/
 4.3.1.2. Configuration
 
    Configuration of lms-notify should be set in lms.ini file, [notify]
-   section. Following parameters are valid:
+   section. Following parameters are valid (also in lms-notify-sms):
+     * debtors_template
+       Lets you setup message template which will be sent to debted
+       customers. Default: none.
+       Example: debtors_template = /etc/lms/debtors_template.txt
+     * debtors_subject
+       Lets you set subject of message to debtors. Default: 'Debtors
+       notification'.
+       Example: debtors_subject = Debt information
+     * invoices_template
+       The message template which will be sent to customers if new invoice
+       is created (in last 24 hours). Default: none.
+       Example: invoices_template = /etc/lms/invoices_template.txt
+     * invoices_subject
+       Subject of 'invoices' message. Default: 'New invoice notification'.
+       Example: invoices_subject = Invoice information
+     * deadline_template
+       Lets you setup message template which will be sent to debted
+       customers when (not payed) invoice reaches paytime. Default: none.
+       Example: deadline_template = /etc/lms/deadline_template.txt
+     * deadline_subject
+       Subject of 'deadline' message. Default: 'Invoice deadline
+       notification'.
+       Example: deadline_subject = Deadline information
      * limit
-       Lets you setup limit of customer debt. Email will be sent below
-       that value. Default: limit = 0
+       Lets you setup limit of customer debt. The message will be sent if
+       customer balance is below that value. Default: limit = 0
        Example: limit = -20
-     * mailsubject (mandatory)
-       Lets you setup subject of email sent. You can use following
-       templates, with meanings identical to those set in email template:
-       %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: none.
-       Example: mailsubject = Debt information
-     * mailtemplate (mandatory)
-       Lets you setup mail template which will be sent. Default: none.
-       Example: mailtemplate = /etc/lms/notifytemplate.txt
+
+   And list of options for mailing only:
      * mailfrom (mandatory)
        Lets you setup email of the sender. Default: none.
        Example: mailfrom = staff@bigpro.com
@@ -2545,19 +2571,16 @@ http://www.bigpro.com/
 
 4.3.2. lms-notify-sms
 
-   lms-notify-sms is similar to lms-notify, but it's intended to send
-   reminders via SMS. You need Nokia cellphone and gnokii software
-   (www.gnokii.org) for this script to work.
+   lms-notify-sms it's a lms-notify equivalent, but it's intended to send
+   reminders via SMS. Actually it supports smstools and gnokii services.
+   Use [sms] section for SMS Service configuration.
 
    Configuration of lms-notify-sms should be set in lms.ini file,
-   [notify-sms] section. Following parameters are valid:
-     * limit
-       Lets you setup limit of customer debt. SMS will be sent below that
-       value. Default: 0
-       Example: limit = -20
-     * smstemplate (mandatory)
-       Message template. Default: not set.
-       Example: smstemplate = /etc/lms/smstemplate.txt
+   [notify-sms] section. Here you can use all lms-notify options plus:
+     * service
+       Allows you to overwrite SMS service option from [sms] section.
+       Default: empty
+       Example: service = smstools
      __________________________________________________________________
 
 4.3.3. lms-cutoff

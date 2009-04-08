@@ -36,7 +36,8 @@
 		    <tbody>
 			<row>
 			<entry><xref linkend="lms-notify"></entry>
-			<entry>Korespondencja seryjna do klientów sieci</entry>
+			<entry>Powiadamianie klientów poczt± internetow± o zaleg³o¶ciach,
+			wystawionych fakturach, przekroczeniu terminu p³atno¶ci</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-notify-sms"></entry>
@@ -127,46 +128,56 @@
     	    <title>Opis i konfiguracja</title>
        <sect2 id="lms-notify" xreflabel="lms-notify">
 	<title>lms-notify</title>
-	  <para>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
-	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych i traktowania ich jako szablonów do mailingu. Do wysy³ania poczty
-  	zosta³ zastosowany modu³ Mail::Sender.</para>
-	 <sect3 id="lms-notify-templates">
-	  <title>Szablony</title>
-	  <para>W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</para>
-	  <itemizedlist>
-	    <listitem>
-	       <para>%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</para>
-	    </listitem>
-	    <listitem>
-	       <para>%date-y - zostanie zast±pione aktualnym rokiem, np. 2003</para>
-	    </listitem>
-	    <listitem>
-	       <para>%date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca, np. marzec</para>
-	    </listitem>
-	    <listitem>
-	       <para>%saldo - zostanie zast±pione aktualnym saldem klienta, np. 535</para>
-	    </listitem>
-	    <listitem>
-	       <para>%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego klienta przypisana, np. 107</para>
-	    </listitem>
-	    <listitem>
-	       <para>%b - saldo z zanegowanym znakiem, np. 107</para>
-	    </listitem>
-	    <listitem>
-	       <para>%B - saldo z prawdziwym znakiem, np. -107</para>
-	    </listitem>
-	    <listitem>
-	       <para>%pin - numer PIN klienta</para>
-	    </listitem>
-	    <listitem>
-	       <para>%cid - ID klienta.</para>
-	    </listitem>
-	    <listitem>
-	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie klienta, np.:</para>
-	    </listitem>
-	  </itemizedlist>
-	  <example id="notify-example">
-	   <title>Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</title>
+		<para>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
+		i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików 
+		tekstowych i traktowania ich jako szablonów do mailingu. Skrypt jest 
+		wielofunkcyjny, w³±czenie okre¶lonego zadania nastêpuje poprzez
+		zdefiniowanie lokalizacji pliku z szablonem wiadomo¶ci. Do wysy³ania poczty
+		zosta³ zastosowany modu³ Mail::Sender.</para>
+		<sect3 id="lms-notify-templates">
+		<title>Szablony</title>
+			<para>W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</para>
+			<itemizedlist>
+				<listitem>
+					<para>%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</para>
+				</listitem>
+				<listitem>
+					<para>%date-y - zostanie zast±pione aktualnym rokiem, np. 2003</para>
+				</listitem>
+				<listitem>
+					<para>%date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca, np. marzec</para>
+				</listitem>
+				<listitem>
+					<para>%saldo - zostanie zast±pione aktualnym saldem klienta, np. 535</para>
+				</listitem>
+				<listitem>
+					<para>%abonament - zostanie zast±pione kwot± abonamentu jaka 
+					jest do danego klienta przypisana, np. 107</para>
+				</listitem>
+				<listitem>
+					<para>%b - saldo z zanegowanym znakiem, np. 107</para>
+				</listitem>
+				<listitem>
+					<para>%B - saldo z prawdziwym znakiem, np. -107</para>
+				</listitem>
+				<listitem>
+					<para>%pin - numer PIN klienta</para>
+				</listitem>
+				<listitem>
+					<para>%cid - ID klienta</para>
+				</listitem>
+				<listitem>
+					<para>%invoice - numer faktury (tylko w powiadomieniu o fakturze)</para>
+				</listitem>
+				<listitem>
+					<para>%value - warto¶æ brutto na fakturze (tylko w powiadomieniu o fakturze)</para>
+				</listitem>
+				<listitem>
+					<para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie klienta (tylko wiadomo¶ci e-mail), np.:</para>
+				</listitem>
+			</itemizedlist>
+		<example id="notify-example">
+		<title>Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</title>
 <screen>
 -----------+------------------------------------------------------+---------
 2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
@@ -178,8 +189,8 @@
 2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
 -----------+------------------------------------------------------+---------
 </screen></example>
-	  <example id="notify-template">
-           <title>Lms-notify: Przyk³ad szablonu</title>
+		<example id="notify-template">
+        	<title>Lms-notify: Przyk³ad szablonu</title>
 <screen>UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
 
 Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
@@ -199,10 +210,6 @@ Je¿eli chcieliby Pañstwo uregulowaæ zaleg³o¶ci prosimy o kontakt:
 
 Dzia³ Rozliczeñ ASK NaszaSiec
 
-Gerwazy Regu³a
-telefon: 0-509031337
-e-mail: gerwazy@staff.naszasiec.pl
-
 Gwidon Mniejwa¿ny
 telefon: 0-606666666
 e-mail: gwidonm@naszasiec.pl
@@ -216,130 +223,124 @@ Data       | Opis                                                 | Warto¶æ
 --
 Amatorska Sieæ Komputerowa NaszaSiec
 http://www.naszasiec.pl/</screen></example>
-          </sect3>
-	  <sect3 id="lms-notify-config">
-	  <title>Konfiguracja</title>
-           <para>Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[notify]</emphasis>. 
-	   Mo¿esz tam ustawiæ nastêpuj±ce parametry:</para>
-	   <itemizedlist>
-            <listitem>
-	     <para>limit</para>
-	     <para>Pozwala na ustalenie limitu bilansu, poni¿ej którego do klienta zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</para>
-	     <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
-	    </listitem>
-            <listitem>
-	     <para>mailsubject (wymagana)</para>
-	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: pusta.</para>
-	     <para>Przyk³ad:	<prompt>mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</prompt></para>
-	    </listitem>
-	    <listitem>
-	     <para>mailtemplate (wymagana)</para>
-	     <para>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do klienta. Wiêcej o szablonach tutaj. Domy¶lnie: pusta.</para>
-	     <para>Przyk³ad:	<prompt>mailtemplate = /etc/lms/notifytemplate.txt</prompt></para>
-            </listitem>
-            <listitem>
-             <para>mailfrom (wymagana)</para>
-             <para>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie: pusta.</para>
-             <para>Przyk³ad:	<prompt>mailfrom = staff@domain.pl</prompt></para>
-            </listitem>
-            <listitem>
-             <para>mailfname</para>
-             <para>Nazwa nadawcy maila. Domy¶lnie: pusta.</para>
-             <para>Przyk³ad:	<prompt>mailfname = Administratorzy</prompt></para>
-            </listitem>
-            <listitem>
-             <para>smtp_host</para>
-             <para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</para>
-             <para>Przyk³ad:	<prompt>smtp_host = smtp.mydomain.pl</prompt></para>
-            </listitem>
-		<listitem>
-		<para>smtp_auth</para>
-		<para>Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
-		Domy¶lnie: pusta (brak autoryzacji)</para>
-		<para>Przyk³ad:	<prompt>smtp_auth = LOGIN</prompt></para>
-		</listitem>
-		<listitem>
-		<para>smtp_user</para>
-		<para>Login do autoryzacji SMTP. Domy¶lnie: pusty</para>
-		<para>Przyk³ad:	<prompt>smtp_user = admin</prompt></para>
-		</listitem>
-		<listitem>
-		<para>smtp_pass</para>
-		<para>Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</para>
-		<para>Przyk³ad:	<prompt>smtp_pass = password</prompt></para>
-		</listitem>
-            <listitem>
-             <para>debug_email (opcjonalny)</para>
-             <para>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do klientów. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</para>
-             <para>Przyk³ad:	<prompt>debug_email = lexx@domain.pl</prompt></para>
-            </listitem>
-          </itemizedlist>
-          </sect3>
+		</sect3>
+		<sect3 id="lms-notify-config">
+		<title>Konfiguracja</title>
+			<para>Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku 
+			<filename>lms.ini</filename> w sekcji <emphasis>[notify]</emphasis>. 
+			Mo¿esz tam ustawiæ nastêpuj±ce parametry, które dotycz± równie¿
+			skryptu <xref linkend="lms-notify-sms">:</para>
+		<itemizedlist>
+			<listitem>
+				<para>debtors_template (opcjonalny)</para>
+				<para>Lokalizacja pliku z szablonem wiadomo¶ci wysy³anej do 
+				zad³u¿onych klientów. Pozostawienie tej opcji pustej wy³±czy
+				powiadomienia o zad³u¿eniu. Domy¶lnie: pusta</para>
+				<para>Przyk³ad:	<prompt>debtors_template = /etc/lms/debtors.txt</prompt></para>
+			</listitem>
+			<listitem>
+				<para>debtors_subject (opcjonalny)</para>
+				<para>Temat wiadomo¶ci o zad³u¿eniu. Domy¶lnie: 'Debtors notification'</para>
+				<para>Przyk³ad:	<prompt>debtors_subject = 'Powiadomienie o zad³u¿eniu'</prompt></para>
+			</listitem>
+			<listitem>
+				<para>invoices_template (opcjonalny)</para>
+				<para>Lokalizacja pliku z szablonem wiadomo¶ci z informacj± o 
+				wystawieniu faktury. Pod uwagê brane s± faktury wystawione
+				w ci±gu ostatnich 24 godzin od uruchomienia skryptu.	
+				Pozostawienie tej opcji pustej wy³±czy
+				powiadomienia o nowych fakturach. Domy¶lnie: pusta</para>
+				<para>Przyk³ad:	<prompt>invoice_template = /etc/lms/new_invoice.txt</prompt></para>
+			</listitem>
+			<listitem>
+				<para>invoices_subject (opcjonalny)</para>
+				<para>Temat wiadomo¶ci o nowej fakturze. Domy¶lnie: 'New invoice notification'</para>
+				<para>Przyk³ad:	<prompt>invoices_subject = 'Powiadomienie o wystawieniu faktury'</prompt></para>
+			</listitem>
+			<listitem>
+				<para>deadline_template (opcjonalny)</para>
+				<para>Lokalizacja pliku z szablonem wiadomo¶ci wysy³anej do 
+				zad³u¿onych klientów, posiadaj±cych przeterminowane 
+				(nierozliczone) faktury. Pozostawienie tej opcji pustej wy³±czy
+				powiadomienia. Domy¶lnie: pusta</para>
+				<para>Przyk³ad:	<prompt>deadline_template = /etc/lms/deadline.txt</prompt></para>
+			</listitem>
+			<listitem>
+				<para>deadline_subject (opcjonalny)</para>
+				<para>Temat wiadomo¶ci o przeterminowanych fakturach. Domy¶lnie: 'Invoice deadline notification'</para>
+				<para>Przyk³ad:	<prompt>deadline_subject = 'Powiadomienie o zaleg³o¶ci'</prompt></para>
+			</listitem>
+			<listitem>
+				<para>limit (opcjonalny)</para>
+				<para>Pozwala na ustalenie limitu bilansu poni¿ej którego do klienta 
+				zostanie wys³ana wiadomo¶æ z informacj± o zad³u¿eniu. Domy¶lnie: 0</para>
+				<para>Przyk³ad:	<prompt>limit = -20</prompt></para>
+			</listitem>
+		</itemizedlist>	
+		<para>Poni¿ej przedstawiono opcje dotycz±ce wy³±cznie wiadomo¶ci e-mail.</para>
+		<itemizedlist>	
+			<listitem>
+				<para>mailfrom (wymagana)</para>
+				<para>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie: pusta.</para>
+				<para>Przyk³ad:	<prompt>mailfrom = staff@domain.pl</prompt></para>
+			</listitem>
+			<listitem>
+				<para>mailfname</para>
+				<para>Nazwa nadawcy maila. Domy¶lnie: pusta.</para>
+				<para>Przyk³ad:	<prompt>mailfname = Administratorzy</prompt></para>
+			</listitem>
+			<listitem>
+				<para>smtp_host</para>
+				<para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: localhost</para>
+				<para>Przyk³ad:	<prompt>smtp_host = smtp.mydomain.pl</prompt></para>
+			</listitem>
+			<listitem>
+				<para>smtp_auth</para>
+				<para>Sposób autoryzacji. Dozwolone warto¶ci: LOGIN, PLAIN, CRAM-MD5, NTLM.
+				Domy¶lnie: pusta (brak autoryzacji)</para>
+				<para>Przyk³ad:	<prompt>smtp_auth = LOGIN</prompt></para>
+			</listitem>
+			<listitem>
+				<para>smtp_user</para>
+				<para>Login do autoryzacji SMTP. Domy¶lnie: pusty</para>
+				<para>Przyk³ad:	<prompt>smtp_user = admin</prompt></para>
+			</listitem>
+			<listitem>
+				<para>smtp_pass</para>
+				<para>Has³o do konta zdefiniowanego w opcji smtp_user. Domy¶lnie: puste</para>
+				<para>Przyk³ad:	<prompt>smtp_pass = password</prompt></para>
+			</listitem>
+			<listitem>
+				<para>debug_email (opcjonalny)</para>
+				<para>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta 
+				zostaje wys³ana na dany email zamiast do klientów. Przydatne do 
+				debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: 
+				nie ustawiony.</para>
+				<para>Przyk³ad:	<prompt>debug_email = lexx@domain.pl</prompt></para>
+			</listitem>
+		</itemizedlist>
+		</sect3>
 	</sect2>
 	<sect2 id="lms-notify-sms" xreflabel="lms-notify-sms">
 		<title>lms-notify-sms</title>
-		<para>lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
-		smsów. Obecnie skrypt wspiera dwie us³ugi, smstools oraz gnokii.
+		<para>lms-notify-sms to odpowiednik <xref linkend="lms-notify">,
+		s³u¿±cy do wysy³ania smsów. Obecnie skrypt wspiera dwie us³ugi, smstools oraz gnokii.
 		Wyboru us³ugi dokonuje siê w sekcji <emphasis>[sms]</emphasis>. Skrypt jest 
 		wielofunkcyjny, w³±czenie okre¶lonego zadania nastêpuje poprzez
 		zdefiniowanie lokalizacji pliku z szablonem wiadomo¶ci.</para>
 		<para>Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku 
 		<filename>lms.ini</filename> 
-		w sekcji <emphasis>[notify-sms]</emphasis>, a masz do dyspozycji nastêpuj±ce 
-		opcje:
+		w sekcji <emphasis>[notify-sms]</emphasis>, oprócz opcji dostêpnych w
+		<xref linkend="lms-notify"> masz do dyspozycji nastêpuj±ce opcje:
 		<itemizedlist>
-            	<listitem>
-	     		<para>service (opcjonalny)</para>
-	     		<para>Pozwala na wybranie us³ugi SMS niezale¿nie od tej,
+		<listitem>
+			<para>service (opcjonalny)</para>
+			<para>Pozwala na wybranie us³ugi SMS niezale¿nie od tej,
 			któr± podano w sekcji <emphasis>[sms]</emphasis>. Domy¶lnie: pusta</para>
-	     		<para>Przyk³ad:	<prompt>service = smstools</prompt></para>
-	    	</listitem>
-		<listitem>
-			<para>debtors_template (opcjonalny)</para>
-			<para>Lokalizacja pliku z szablonem wiadomo¶ci wysy³anej do 
-				zad³u¿onych klientów. Pozostawienie tej opcji pustej wy³±czy
-				powiadomienia o zad³u¿eniu. Domy¶lnie: pusta</para>
-			<para>Przyk³ad:	<prompt>debtors_template = /etc/lms/debtors.txt</prompt></para>
+			<para>Przyk³ad:	<prompt>service = smstools</prompt></para>
 		</listitem>
-		<listitem>
-			<para>debtors_subject (opcjonalny)</para>
-			<para>Temat wiadomo¶ci o zad³u¿eniu. Domy¶lnie: 'Debtors notification'</para>
-			<para>Przyk³ad:	<prompt>debtors_subject = 'Powiadomienie o zad³u¿eniu'</prompt></para>
-		</listitem>
-		<listitem>
-			<para>invoices_template (opcjonalny)</para>
-			<para>Lokalizacja pliku z szablonem wiadomo¶ci z informacj± o 
-			wystawieniu faktury. Pod uwagê brane s± faktury wystawione
-			w ci±gu ostatnich 24 godzin od uruchomienia skryptu.			
-			Pozostawienie tej opcji pustej wy³±czy
-			powiadomienia o nowych fakturach. Domy¶lnie: pusta</para>
-			<para>Przyk³ad:	<prompt>invoice_template = /etc/lms/new_invoice.txt</prompt></para>
-		</listitem>
-		<listitem>
-			<para>invoices_subject (opcjonalny)</para>
-			<para>Temat wiadomo¶ci o nowej fakturze. Domy¶lnie: 'New invoice notification'</para>
-			<para>Przyk³ad:	<prompt>invoices_subject = 'Powiadomienie o wystawieniu faktury'</prompt></para>
-		</listitem>
-		<listitem>
-			<para>deadline_template (opcjonalny)</para>
-			<para>Lokalizacja pliku z szablonem wiadomo¶ci wysy³anej do 
-			zad³u¿onych klientów, posiadaj±cych przeterminowane (nierozliczone) faktury. Pozostawienie tej opcji pustej wy³±czy
-			powiadomienia. Domy¶lnie: pusta</para>
-			<para>Przyk³ad:	<prompt>deadline_template = /etc/lms/deadline.txt</prompt></para>
-		</listitem>
-		<listitem>
-			<para>deadline_subject (opcjonalny)</para>
-			<para>Temat wiadomo¶ci o przeterminowanych fakturach. Domy¶lnie: 'Invoice deadline notification'</para>
-			<para>Przyk³ad:	<prompt>deadline_subject = 'Powiadomienie o zaleg³o¶ci'</prompt></para>
-		</listitem>
-		<listitem>
-			<para>limit (opcjonalny)</para>
-			<para>Pozwala na ustalenie limitu bilansu poni¿ej którego do klienta 
-			zostanie wys³any sms z informacj± o zad³u¿eniu. Domy¶lnie: 0</para>
-			<para>Przyk³ad:	<prompt>limit = -20</prompt></para>
-		</listitem>
-	  	</itemizedlist>
-	</para>
+		</itemizedlist>
+		</para>
 	</sect2> 
 	<sect2 id="lms-cutoff" xreflabel="lms-cutoff">
 	 <title>lms-cutoff</title>
