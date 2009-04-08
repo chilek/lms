@@ -37,11 +37,11 @@ scripts.</para>
 		    <tbody>
 			<row>
 			<entry><xref linkend="lms-notify"></entry>
-			<entry>Massive mailing for customer notification</entry>
+			<entry>Massive mailing for customer notification about debt, new invoice, etc.</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-notify-sms"></entry>
-			<entry>Notifies customer about his debt with SMS</entry>
+			<entry>SMS Notifications about customers deb, new invoice, etc.</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-cutoff"></entry>
@@ -121,49 +121,55 @@ scripts.</para>
        </sect1>
        <sect1 id="scripts-config">
     	    <title>Description and configuration</title>
-       <sect2 id="lms-notify" xreflabel="lms-notify">
+	<sect2 id="lms-notify" xreflabel="lms-notify">
 	<title>lms-notify</title>
-	  <para>lms-notify is perfect tool to remind your customers that they are actually the ones who
-	    cover all your network and WAN links costs. It makes you possible to create numerous text templates
-	    for various occasions and use them for mailing your customers. For smtp connection Mail::Sender 
-	    module is used.</para>
-	 <sect3 id="lms-notify-templates">
-	  <title>Templates</title>
-	  <para>You can use following variables in your templates:</para>
-	  <itemizedlist>
-	    <listitem>
-	       <para>%date-m - will be substituted with current month in numerical form with leading zero, eg. 02</para>
-	    </listitem>
-	    <listitem>
-	       <para>%date-y - will be substituted with current year, eg. 2003</para>
-	    </listitem>
-	    <listitem>
-	       <para>%date_month_name - will be substituted with current month name, eg. March</para>
-	    </listitem>
-	    <listitem>
-	       <para>%saldo - will be substituted with current customer balance, eg. 535</para>
-	    </listitem>
-	    <listitem>
-	       <para>%abonament - will be substituted with customer's subscription fee, eg. 107</para>
-	    </listitem>
-	    <listitem>
-	       <para>%b - customer balance with opposite sign, eg. 107</para>
-	    </listitem>
-	    <listitem>
-	       <para>%B - customer balance with real sign, eg. -107</para>
-	    </listitem>
-	    <listitem>
-	       <para>%pin - PIN code of the customer</para>
-	    </listitem>
-	    <listitem>
-	       <para>%cid - customer ID</para>
-	    </listitem>
-	    <listitem>
-	       <para>%last_10_in_a_table - list of last 10 operations on customer's account, eg.</para>
-	    </listitem>
-	  </itemizedlist>
-	  <example id="notify-example">
-	   <title>Lms-notify: example of last 10 customer's operations</title>
+		<para>lms-notify it's a perfect tool to remind your customers that they are actually the ones who
+    		cover all your network and WAN links costs. It makes you possible to create numerous text templates
+		for various occasions and use them for mailing your customers. For SMTP connection Mail::Sender 
+		module is used.</para>
+		<sect3 id="lms-notify-templates">
+		<title>Templates</title>
+			<para>You can use following variables in your templates:</para>
+			<itemizedlist>
+			<listitem>
+				<para>%date-m - will be substituted with current month in numerical form with leading zero, eg. 02</para>
+			</listitem>
+			<listitem>
+				<para>%date-y - will be substituted with current year, eg. 2003</para>
+			</listitem>
+			<listitem>
+				<para>%date_month_name - will be substituted with current month name, eg. March</para>
+			</listitem>
+			<listitem>
+				<para>%saldo - will be substituted with current customer balance, eg. 535</para>
+		        </listitem>
+			<listitem>
+				<para>%abonament - will be substituted with customer's subscription fee, eg. 107</para>
+			</listitem>
+			<listitem>
+				<para>%b - customer balance with opposite sign, eg. 107</para>
+			</listitem>
+			<listitem>
+				<para>%B - customer balance with real sign, eg. -107</para>
+			</listitem>
+			<listitem>
+				<para>%pin - PIN code of the customer</para>
+			</listitem>
+			<listitem>
+				<para>%cid - customer ID</para>
+			</listitem>
+			<listitem>
+				<para>%invoice - invoice number (invoices and deadline notifies only)</para>
+			</listitem>
+			<listitem>
+				<para>%value - invoice value (invoices and deadline notifies only)</para>
+			</listitem>
+			<listitem>
+	    			<para>%last_10_in_a_table - list of last 10 operations on customer's account, eg.</para>
+			</listitem>
+			</itemizedlist>
+			<example id="notify-example">
+			<title>Lms-notify: example of last 10 customer's operations</title>
 <screen>
 -----------+------------------------------------------------------+---------
 2003-02-02 | Subscription for month 2003/02                       |  107.00
@@ -175,8 +181,8 @@ scripts.</para>
 2003-01-31 | Subscription for month 2003/01                       |  107.00
 -----------+------------------------------------------------------+---------
 </screen></example>
-	  <example id="notify-template">
-           <title>Lms-notify: example of mailing template</title>
+			<example id="notify-template">
+        		<title>Lms-notify: example of mailing template</title>
 <screen>NOTE: This message has been generated automatically.
 
 We kindly remind that you have debt on your internet service provide account 
@@ -210,88 +216,109 @@ Date       | Description                                          | Amount
 --
 Big and Professional Internet Provider, BigPro ISP
 http://www.bigpro.com/</screen></example>
-          </sect3>
-	  <sect3 id="lms-notify-config">
-	  <title>Configuration</title>
-           <para>Configuration of lms-notify should be set in
-<filename>lms.ini</filename> file, <emphasis>[notify]</emphasis> section.
-Following parameters are valid:</para>
-	   <itemizedlist>
-            <listitem>
-	     <para>limit</para>
-	     <para>Lets you setup limit of customer debt. Email will be sent below that value. Default: limit = 0</para>
-	     <para>Example:	<prompt>limit = -20</prompt></para>
-	    </listitem>
-            <listitem>
-	     <para>mailsubject (mandatory)</para>
-	     <para>Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: none.</para>
-	     <para>Example:	<prompt>mailsubject = Debt information</prompt></para>
-	    </listitem>
-	    <listitem>
-	     <para>mailtemplate (mandatory)</para>
-	     <para>Lets you setup mail template which will be sent. Default: none.</para>
-	     <para>Example:	<prompt>mailtemplate = /etc/lms/notifytemplate.txt</prompt></para>
-            </listitem>
-            <listitem>
-             <para>mailfrom (mandatory)</para>
-             <para>Lets you setup email of the sender. Default: none.</para>
-             <para>Example:	<prompt>mailfrom = staff@bigpro.com</prompt></para>
-            </listitem>
-            <listitem>
-             <para>mailfname</para>
-             <para>Sender name. Default: none</para>
-             <para>Example:	<prompt>mailfname = Administrators</prompt></para>
-            </listitem>
-            <listitem>
-             <para>smtp_host</para>
-             <para>SMTP server to be used when sending emails. Default: localhost</para>
-             <para>Example:	<prompt>smtp_host = smtp.bigpro.com</prompt></para>
-            </listitem>
-            <listitem>
-             <para>smtp_auth</para>
-             <para>SMTP authorization type. Allowed values: 
-	     LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</para>
-             <para>Example:	<prompt>smtp_auth = LOGIN</prompt></para>
-            </listitem>
-            <listitem>
-             <para>smtp_user</para>
-             <para>Login for SMTP authorization. Default: none</para>
-             <para>Example:	<prompt>smtp_user = admin</prompt></para>
-            </listitem>
-            <listitem>
-             <para>smtp_pass</para>
-             <para>Password for SMTP authorization. Default: none</para>
-             <para>Example:	<prompt>smtp_pass = password</prompt></para>
-            </listitem>
-            <listitem>
-             <para>debug_email (optional)</para>
-             <para>Email address for debugging. All email will be sent to this address instead of sending to real customers. Default: not set.</para>
-             <para>Example:	<prompt>debug_email = lexx@domain.pl</prompt></para>
-            </listitem>
-          </itemizedlist>
-          </sect3>
+    		</sect3>
+		<sect3 id="lms-notify-config">
+		<title>Configuration</title>
+        		<para>Configuration of lms-notify should be set in
+			<filename>lms.ini</filename> file, <emphasis>[notify]</emphasis> section.
+			Following parameters are valid (also in <xref linkend="lms-notify-sms">):</para>
+			<itemizedlist>
+				<listitem>
+					<para>debtors_template</para>
+					<para>Lets you setup message template which will be sent to debted customers. Default: none.</para>
+					<para>Example:	<prompt>debtors_template = /etc/lms/debtors_template.txt</prompt></para>
+        			</listitem>
+    				<listitem>
+					<para>debtors_subject</para>
+					<para>Lets you set subject of message to debtors. Default: 'Debtors notification'.</para>
+					<para>Example:	<prompt>debtors_subject = Debt information</prompt></para>
+				</listitem>
+				<listitem>
+					<para>invoices_template</para>
+					<para>The message template which will be sent to customers if new invoice is created
+					(in last 24 hours). Default: none.</para>
+					<para>Example:	<prompt>invoices_template = /etc/lms/invoices_template.txt</prompt></para>
+        			</listitem>
+    				<listitem>
+					<para>invoices_subject</para>
+					<para>Subject of 'invoices' message. Default: 'New invoice notification'.</para>
+					<para>Example:	<prompt>invoices_subject = Invoice information</prompt></para>
+				</listitem>
+				<listitem>
+					<para>deadline_template</para>
+					<para>Lets you setup message template which will be sent to debted customers
+					when (not payed) invoice reaches paytime. Default: none.</para>
+					<para>Example:	<prompt>deadline_template = /etc/lms/deadline_template.txt</prompt></para>
+        			</listitem>
+    				<listitem>
+					<para>deadline_subject</para>
+					<para>Subject of 'deadline' message. Default: 'Invoice deadline notification'.</para>
+					<para>Example:	<prompt>deadline_subject = Deadline information</prompt></para>
+				</listitem>
+    				<listitem>
+				        <para>limit</para>
+					<para>Lets you setup limit of customer debt. The message will be sent if
+					customer balance is below that value. Default: limit = 0</para>
+					<para>Example:	<prompt>limit = -20</prompt></para>
+				</listitem>
+			</itemizedlist>
+			<para>And list of options for mailing only:</para>
+			<itemizedlist>
+        			<listitem>
+        				<para>mailfrom (mandatory)</para>
+        				<para>Lets you setup email of the sender. Default: none.</para>
+        				<para>Example:	<prompt>mailfrom = staff@bigpro.com</prompt></para>
+        			</listitem>
+        			<listitem>
+            				<para>mailfname</para>
+        				<para>Sender name. Default: none</para>
+        				<para>Example:	<prompt>mailfname = Administrators</prompt></para>
+        			</listitem>
+        			<listitem>
+        				<para>smtp_host</para>
+        				<para>SMTP server to be used when sending emails. Default: localhost</para>
+        				<para>Example:	<prompt>smtp_host = smtp.bigpro.com</prompt></para>
+        			</listitem>
+        			<listitem>
+        				<para>smtp_auth</para>
+        				<para>SMTP authorization type. Allowed values: 
+					LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</para>
+        				<para>Example:	<prompt>smtp_auth = LOGIN</prompt></para>
+        			</listitem>
+        			<listitem>
+        				<para>smtp_user</para>
+        				<para>Login for SMTP authorization. Default: none</para>
+        				<para>Example:	<prompt>smtp_user = admin</prompt></para>
+        			</listitem>
+        			<listitem>
+        				<para>smtp_pass</para>
+        				<para>Password for SMTP authorization. Default: none</para>
+            				<para>Example:	<prompt>smtp_pass = password</prompt></para>
+        			</listitem>
+        			<listitem>
+        				<para>debug_email (optional)</para>
+        				<para>Email address for debugging. All email will be sent to this address instead of sending to real customers. Default: not set.</para>
+        				<para>Example:	<prompt>debug_email = lexx@domain.pl</prompt></para>
+        			</listitem>
+        		</itemizedlist>
+    		</sect3>
 	</sect2>
 	<sect2 id="lms-notify-sms" xreflabel="lms-notify-sms">
 	<title>lms-notify-sms</title>
-	  <para>lms-notify-sms is similar to lms-notify, but it's intended to
-send reminders via SMS. You need Nokia cellphone and gnokii software (<ulink
-url="http://www.gnokii.org">www.gnokii.org</ulink>) for this script to
-work.</para>
-          <para>Configuration of lms-notify-sms should be set in
-<filename>lms.ini</filename> file, <emphasis>[notify-sms]</emphasis> section.
-Following parameters are valid:</para>
-	  <itemizedlist>
-            <listitem>
-	     <para>limit</para>
-	     <para>Lets you setup limit of customer debt. SMS will be sent below that value. Default: 0</para>
-	     <para>Example:	<prompt>limit = -20</prompt></para>
-	    </listitem>
-            <listitem>
-	     <para>smstemplate (mandatory)</para>
-	     <para>Message template. Default: not set.</para>
-	     <para>Example:	<prompt>smstemplate = /etc/lms/smstemplate.txt</prompt></para>
-	    </listitem>
-	  </itemizedlist>
+		<para>lms-notify-sms it's a <xref linkend="lms-notify"> equivalent, but it's intended to
+		send reminders via SMS. Actually it supports smstools and gnokii services.
+		Use <emphasis>[sms]</emphasis> section for SMS Service configuration.</para>
+        	<para>Configuration of lms-notify-sms should be set in
+		<filename>lms.ini</filename> file, <emphasis>[notify-sms]</emphasis> section.
+		Here you can use all <xref linkend="lms-notify"> options plus:</para>
+		<itemizedlist>
+    			<listitem>
+				<para>service</para>
+				<para>Allows you to overwrite SMS service option from <emphasis>[sms]</emphasis> section.
+				Default: empty</para>
+				<para>Example:	<prompt>service = smstools</prompt></para>
+			</listitem>
+		</itemizedlist>
 	</sect2> 
 	<sect2 id="lms-cutoff" xreflabel="lms-cutoff">
 	 <title>lms-cutoff</title>

@@ -87,10 +87,10 @@ NAME="LMS-NOTIFY"
 >4.3.1. lms-notify</A
 ></H2
 ><P
->lms-notify is perfect tool to remind your customers that they are actually the ones who
-	    cover all your network and WAN links costs. It makes you possible to create numerous text templates
-	    for various occasions and use them for mailing your customers. For smtp connection Mail::Sender 
-	    module is used.</P
+>lms-notify it's a perfect tool to remind your customers that they are actually the ones who
+    		cover all your network and WAN links costs. It makes you possible to create numerous text templates
+		for various occasions and use them for mailing your customers. For SMTP connection Mail::Sender 
+		module is used.</P
 ><DIV
 CLASS="SECT3"
 ><H3
@@ -137,6 +137,14 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ><LI
 ><P
 >%cid - customer ID</P
+></LI
+><LI
+><P
+>%invoice - invoice number (invoices and deadline notifies only)</P
+></LI
+><LI
+><P
+>%value - invoice value (invoices and deadline notifies only)</P
 ></LI
 ><LI
 ><P
@@ -220,7 +228,7 @@ NAME="LMS-NOTIFY-CONFIG"
 ></H3
 ><P
 >Configuration of lms-notify should be set in
-<TT
+			<TT
 CLASS="FILENAME"
 >lms.ini</TT
 > file, <SPAN
@@ -230,41 +238,95 @@ CLASS="EMPHASIS"
 >[notify]</I
 ></SPAN
 > section.
-Following parameters are valid:</P
+			Following parameters are valid (also in <A
+HREF="scripts-config.html#LMS-NOTIFY-SMS"
+>lms-notify-sms</A
+>):</P
 ><UL
+><LI
+><P
+>debtors_template</P
+><P
+>Lets you setup message template which will be sent to debted customers. Default: none.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>debtors_template = /etc/lms/debtors_template.txt</SAMP
+></P
+></LI
+><LI
+><P
+>debtors_subject</P
+><P
+>Lets you set subject of message to debtors. Default: 'Debtors notification'.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>debtors_subject = Debt information</SAMP
+></P
+></LI
+><LI
+><P
+>invoices_template</P
+><P
+>The message template which will be sent to customers if new invoice is created
+					(in last 24 hours). Default: none.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>invoices_template = /etc/lms/invoices_template.txt</SAMP
+></P
+></LI
+><LI
+><P
+>invoices_subject</P
+><P
+>Subject of 'invoices' message. Default: 'New invoice notification'.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>invoices_subject = Invoice information</SAMP
+></P
+></LI
+><LI
+><P
+>deadline_template</P
+><P
+>Lets you setup message template which will be sent to debted customers
+					when (not payed) invoice reaches paytime. Default: none.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>deadline_template = /etc/lms/deadline_template.txt</SAMP
+></P
+></LI
+><LI
+><P
+>deadline_subject</P
+><P
+>Subject of 'deadline' message. Default: 'Invoice deadline notification'.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>deadline_subject = Deadline information</SAMP
+></P
+></LI
 ><LI
 ><P
 >limit</P
 ><P
->Lets you setup limit of customer debt. Email will be sent below that value. Default: limit = 0</P
+>Lets you setup limit of customer debt. The message will be sent if
+					customer balance is below that value. Default: limit = 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
 ></LI
-><LI
+></UL
 ><P
->mailsubject (mandatory)</P
-><P
->Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: none.</P
-><P
->Example:	<SAMP
-CLASS="PROMPT"
->mailsubject = Debt information</SAMP
-></P
-></LI
-><LI
-><P
->mailtemplate (mandatory)</P
-><P
->Lets you setup mail template which will be sent. Default: none.</P
-><P
->Example:	<SAMP
-CLASS="PROMPT"
->mailtemplate = /etc/lms/notifytemplate.txt</SAMP
-></P
-></LI
+>And list of options for mailing only:</P
+><UL
 ><LI
 ><P
 >mailfrom (mandatory)</P
@@ -303,7 +365,7 @@ CLASS="PROMPT"
 >smtp_auth</P
 ><P
 >SMTP authorization type. Allowed values: 
-	     LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
+					LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -355,16 +417,21 @@ NAME="LMS-NOTIFY-SMS"
 >4.3.2. lms-notify-sms</A
 ></H2
 ><P
->lms-notify-sms is similar to lms-notify, but it's intended to
-send reminders via SMS. You need Nokia cellphone and gnokii software (<A
-HREF="http://www.gnokii.org"
-TARGET="_top"
->www.gnokii.org</A
->) for this script to
-work.</P
+>lms-notify-sms it's a <A
+HREF="scripts-config.html#LMS-NOTIFY"
+>lms-notify</A
+> equivalent, but it's intended to
+		send reminders via SMS. Actually it supports smstools and gnokii services.
+		Use <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[sms]</I
+></SPAN
+> section for SMS Service configuration.</P
 ><P
 >Configuration of lms-notify-sms should be set in
-<TT
+		<TT
 CLASS="FILENAME"
 >lms.ini</TT
 > file, <SPAN
@@ -374,28 +441,27 @@ CLASS="EMPHASIS"
 >[notify-sms]</I
 ></SPAN
 > section.
-Following parameters are valid:</P
+		Here you can use all <A
+HREF="scripts-config.html#LMS-NOTIFY"
+>lms-notify</A
+> options plus:</P
 ><UL
 ><LI
 ><P
->limit</P
+>service</P
 ><P
->Lets you setup limit of customer debt. SMS will be sent below that value. Default: 0</P
-><P
->Example:	<SAMP
-CLASS="PROMPT"
->limit = -20</SAMP
-></P
-></LI
-><LI
-><P
->smstemplate (mandatory)</P
-><P
->Message template. Default: not set.</P
+>Allows you to overwrite SMS service option from <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[sms]</I
+></SPAN
+> section.
+				Default: empty</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->smstemplate = /etc/lms/smstemplate.txt</SAMP
+>service = smstools</SAMP
 ></P
 ></LI
 ></UL
