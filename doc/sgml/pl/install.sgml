@@ -555,7 +555,35 @@ AddDefaultCharset Off
     wgraj zawarto¶æ katalogu <filename>/lib</filename> z paczki Smarty. Czynno¶æ
     (wraz z pobraniem biblioteki Smarty) automatycznie wykonuje skrypt
     <filename>/devel/smarty_install.sh</filename>.</para></warning></para>
-
+	<sect2 id="install-upgrade-compat">
+	<title>Zmiany w konfiguracji</title>
+	<para>Poni¿ej znajduje siê lista zmian (oraz numer wersji), które zrywaj± 
+	zgodno¶æ z wcze¶niejszymi wydaniami. Zmiany najcze¶æiej dotycz± usuniêcia
+	jakiej¶ opcji/funkcji, zmiany nazwy opcji konfiguracyjnej, zachowania.</para>
+	<table id="backward-compat">
+	<title>Lista zmian zrywaj±cych zgodno¶æ z wcze¶niejszymi wydaniami</title>
+		<tgroup cols="2" colsep="1" rowsep="1">
+		<colspec COLWIDTH="60">
+		<colspec COLWIDTH="600">
+		<thead>
+			<row>
+				<entry ALIGN="center">Wersja</entry>
+				<entry ALIGN="center">Opis zmiany</entry>
+			</row>
+		</thead>
+		<tbody>
+			<row>
+				<entry ALIGN="center">1.11.8</entry>
+				<entry ALIGN="left"><itemizedlist>
+					<listitem><para>opcje smtp_* i debug_email przeniesiono z sekcji <emphasis>[phpui]</emphasis> do sekcji <emphasis>[mail]</emphasis></para></listitem>
+					<listitem><para>lms-notify: opcjê mailtemplate zast±piono opcj± debtors_template, opcjê mailsubject zast±piono opcj± debtors_subject, usuniêto parametr --template-file (-D)</para></listitem>
+					<listitem><para>lms-notify-sms: opcjê smstemplate zast±piono opcj± debtors_template, usuniêto parametr --template-file (-D)</para></listitem>
+				</itemizedlist></entry>
+			</row>
+		</tbody>
+		</tgroup>
+	</table>
+	</sect2>
     </sect1>
     <sect1 id="install-documents">
 	<title>Dokumenty</title>

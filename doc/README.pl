@@ -91,6 +91,7 @@ LMS Developers
    10. FAQ
 
    Spis tabel
+   2-1. Lista zmian zrywających zgodność z wcześniejszymi wydaniami
    4-1. Lista skryptów wykonywalnych
    6-1. Lista modułów demona lmsd
    7-1. Drzewo katalogów LMS
@@ -824,6 +825,25 @@ AddDefaultCharset Off
    instalację biblioteki Smarty. Do katalogu /lib/Smarty wgraj zawartość
    katalogu /lib z paczki Smarty. Czynność (wraz z pobraniem biblioteki
    Smarty) automatycznie wykonuje skrypt /devel/smarty_install.sh.
+     __________________________________________________________________
+
+2.8.1. Zmiany w konfiguracji
+
+   Poniżej znajduje się lista zmian (oraz numer wersji), które zrywają
+   zgodność z wcześniejszymi wydaniami. Zmiany najcześćiej dotyczą
+   usunięcia jakiejś opcji/funkcji, zmiany nazwy opcji konfiguracyjnej,
+   zachowania.
+
+   Tabela 2-1. Lista zmian zrywających zgodność z wcześniejszymi wydaniami
+   Wersja                               Opis zmiany
+   1.11.8
+            * opcje smtp_* i debug_email przeniesiono z sekcji [phpui] do sekcji
+              [mail]
+            * lms-notify: opcję mailtemplate zastąpiono opcją debtors_template,
+              opcję mailsubject zastąpiono opcją debtors_subject, usunięto
+              parametr --template-file (-D)
+            * lms-notify-sms: opcję smstemplate zastąpiono opcją
+              debtors_template, usunięto parametr --template-file (-D)
      __________________________________________________________________
 
 2.9. Dokumenty
