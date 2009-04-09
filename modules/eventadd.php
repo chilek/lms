@@ -49,6 +49,10 @@ if(isset($_POST['event']))
 	{
 		$date = mktime(0, 0, 0, $month, $day, $year);
 		$event['status'] = isset($event['status']) ? 1 : 0;
+		if (isset($event['customerid']))
+			$event['custid'] = $event['customerid'];
+		if ($event['custid'] == '')
+			$event['custid'] = 0;
 
 		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, userid, private, customerid) 
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
@@ -59,7 +63,7 @@ if(isset($_POST['event']))
 					$event['endtime'], 
 					$AUTH->id, 
 					$event['status'], 
-					$event['customerid']
+					$event['custid']
 					));
 		
 		if(!empty($event['userlist']))
