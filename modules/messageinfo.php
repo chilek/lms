@@ -151,6 +151,7 @@ $listdata['order'] = $itemlist['order'];
 $listdata['direction'] = $itemlist['direction'];
 $listdata['cat'] = $c;
 $listdata['search'] = $s;
+$listdata['id'] = intval($_GET['id']);
 
 unset($itemlist['status']);
 unset($itemlist['order']);
