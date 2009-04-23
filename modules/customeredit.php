@@ -23,7 +23,6 @@
  *
  *  $Id$
  */
-
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $exists = $LMS->CustomerExists($_GET['id']);
 
@@ -191,16 +190,14 @@ else
 		foreach($customerinfo['messengers'] as $idx => $val)
 			$customerinfo['uid'][$idx] = $val['uid'];
 
-	if(!$customerinfo['contacts'])
-	{
-		$customerinfo['contacts'][] = array();
-	}
-	elseif(isset($_POST['customerdata']) && isset($_GET['newcontact']))
+	if(isset($_POST['customerdata']) && isset($_GET['newcontact']))
 	{
     		$customerdata = $_POST['customerdata'];
 		$customerdata['contacts'][] = array();
 		$customerinfo = array_merge($customerinfo, $customerdata);
 	}
+	elseif(empty($customerinfo['contacts']))
+		$customerinfo['contacts'][] = array();
 }
 
 $layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);
