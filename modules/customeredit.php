@@ -159,15 +159,15 @@ else
 		foreach($customerinfo['messengers'] as $idx => $val)
 			$customerinfo['uid'][$idx] = $val['uid'];
 
-	if(!$customerinfo['contacts'])
-		$customerinfo['contacts'][] = array();
-
-	elseif(isset($_POST['customerdata']) && isset($_GET['newcontact']))
+	if(isset($_POST['customerdata']) && isset($_GET['newcontact']))
 	{
     		$customerdata = $_POST['customerdata'];
 		$customerdata['contacts'][] = array();
 		$customerinfo = array_merge($customerinfo, $customerdata);
 	}
+	elseif(!$customerinfo['contacts'])
+		$customerinfo['contacts'][] = array();
+
 }
 
 $layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);
