@@ -33,6 +33,7 @@
 	//-->
 </SCRIPT>
 {/literal}
+{include file="calendar_js.html"}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" NOWRAP class="fleftu"> <A href="?m=documentlist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A>{if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><B>{t}Number:{/t}</B></TD>
@@ -47,7 +48,7 @@
 		    <TABLE width="100%" cellpadding="0">
 			<TR>
 			    <TD width="1%" NOWRAP>
-			<FORM method="GET" action="?m=documentlist" name="filter">
+			    <FORM method="GET" action="?m=documentlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="documentlist">
 				<INPUT type="HIDDEN" name="page" value="1">
@@ -64,8 +65,12 @@
 					{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
 					<OPTION VALUE="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</OPTION>
 					{/if}{/foreach}
-				</SELECT>
-			</FORM>
+				</SELECT>&nbsp;
+				<B>{t}Period:{/t}</B>&nbsp;
+				{t}from{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{t}to{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal2.popup();"  {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+				<A href="javascript: document.filter.submit();">&raquo;&raquo;&raquo;</A>&nbsp;
+			    </FORM>
 			    </TD>
 			    <TD width="99%" align="right" NOWRAP>
 				<A href="?m=documentadd&cid={$listdata.customer}&type={$listdata.type}">{t}New Document{/t}</A> <IMG src="img/save.gif" alt="">
@@ -147,4 +152,12 @@
 	</TR>
 	</FORM>
 </TABLE>
+<SCRIPT type="text/javascript">
+<!--
+var cal1 = new calendar(document.filter.elements['from']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.filter.elements['to']);
+cal2.time_comp = false;
+//-->
+</SCRIPT>
 {include file="footer.html"}
