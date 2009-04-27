@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
+function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0, $to=0)
 {
 	global $DB;
 
@@ -63,6 +63,8 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL)
 			WHERE e.customerid IS NULL '
 			.($customer ? 'AND d.customerid = '.$customer : '')
 			.($type ? ' AND d.type = '.$type : '')
+			.($from ? ' AND d.cdate >= '.$from : '')
+			.($to ? ' AND d.cdate <= '.$to : '')
 			.$sqlord);
 
 	$list['total'] = sizeof($list);
@@ -90,13 +92,45 @@ else
 	$c = $_GET['c'];
 $SESSION->save('doclc', $c);
 
-$documentlist = GetDocumentList($o, $t, $c);
+if(isset($_GET['from']))
+{
+        if($_GET['from'] != '')
+        {
+                list($year, $month, $day) = explode('/', $_GET['from']);
+                $from = mktime(0,0,0, $month, $day, $year);
+        } else
+		$from = 0;
+}
+elseif($SESSION->is_set('doclf'))
+	$SESSION->restore('doclf', $from);
+else
+        $from = 0;
+$SESSION->save('doclf', $from);
+
+if(isset($_GET['to']))
+{
+        if($_GET['to'] != '')
+        {
+                list($year, $month, $day) = explode('/', $_GET['to']);
+                $to = mktime(23,59,59, $month, $day, $year);
+        } else
+		$to = 0;
+}
+elseif($SESSION->is_set('doclt'))
+	$SESSION->restore('doclt', $to);
+else
+        $to = 0;
+$SESSION->save('doclt', $to);
+									
+$documentlist = GetDocumentList($o, $t, $c, $from, $to);
 
 $listdata['total'] = $documentlist['total'];
 $listdata['order'] = $documentlist['order'];
 $listdata['direction'] = $documentlist['direction'];
 $listdata['type'] = $t;
 $listdata['customer'] = $c;
+$listdata['from'] = $from;
+$listdata['to'] = $to;
 
 unset($documentlist['total']);
 unset($documentlist['order']);
