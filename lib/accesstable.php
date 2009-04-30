@@ -91,7 +91,7 @@ $access['table'][19]['allow_reg']	= '^customergroup$';
 $access['table'][20]['name']		= trans('nodes to groups assignment');
 $access['table'][20]['allow_reg']	= '^nodegroup$';
 
-$access['table'][21]['name']		= trans('hide summaries');
+$access['table'][21]['name']		= trans('summaries hiding');
 $access['table'][21]['privillege']	= 'hide_summaries';
 
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
