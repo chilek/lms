@@ -615,6 +615,7 @@ $_LANG['Helpdesk:'] = 'Helpdesk:';
 $_LANG['Helpdesk (RT) administration'] = 'administracja Helpdeskiem (RT)';
 $_LANG['Helpdesk (RT) operation'] = 'obsługa Helpdesku (RT)';
 $_LANG['hide accounted<!plural>'] = 'ukryj rozliczone';
+$_LANG['hide summaries'] = 'ukryj zestawienia';
 $_LANG['High'] = 'Wysoki';
 $_LANG['Homedir:'] = 'Katalog domowy:';
 $_LANG['Host:'] = 'Host:';

@@ -109,6 +109,7 @@
 		</TD>					
 	</TR>
 	<TR>
+		{if !$_config.phpui.hide_summaries|chkconfig}
 		<TD WIDTH="50%" style="vertical-align: top;">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
@@ -193,6 +194,7 @@
 				</TR>
 			</TABLE>
 		</TD>
+		{/if}
 	</TR>
 	<TR>
 		<TD WIDTH="50%" style="vertical-align: top;">
