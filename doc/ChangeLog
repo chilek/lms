@@ -40,6 +40,10 @@ version ? (????-??-??):
     option, added *_template and *_subject options (alec)
   - added creation date filter on documents list (alec)
   - fixed networks selection in customergroup forms (chilan)
+  - added user privilleges framework: you can define privilleges in access table
+    and then use them as $_config.phpui.* in templates (chilan)
+  - hide_summaries privillege introduced. For now it lets us show/hide
+    customer and node summaries (chilan)
 
 version 1.11.7 Bastet (2009-02-13):
 

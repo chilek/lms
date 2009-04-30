@@ -235,16 +235,24 @@ if($AUTH->islogged)
 	{
 		if(eregi($access['allow'], $module))
 			$allow = TRUE;
-		else{
-			$rights = $LMS->GetUserRights($AUTH->id);
-			if($rights)
-				foreach($rights as $level)
+		$rights = $LMS->GetUserRights($AUTH->id);
+		$found_privilleges = FALSE;
+		if($rights)
+			foreach($rights as $level)
+			{
+				if(!$allow)
 					if(isset($access['table'][$level]['deny_reg']) && eregi($access['table'][$level]['deny_reg'], $module))
 						$deny = TRUE;
 					elseif(isset($access['table'][$level]['allow_reg']) && eregi($access['table'][$level]['allow_reg'], $module))
 						$allow = TRUE;
-		}
-
+				if(isset($access['table'][$level]['privillege']))
+				{
+					$CONFIG['phpui'][$access['table'][$level]['privillege']] = TRUE;
+					$found_privilleges = TRUE;
+				}
+			}
+		if($found_privilleges)
+			$SMARTY->assign('_config', $CONFIG);
 		if($allow && ! $deny)
 		{
 			$layout['module'] = $module;
