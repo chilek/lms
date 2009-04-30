@@ -39,6 +39,7 @@ version ? (????-??-??):
     about new invoice and paytime overdo, removed mailtemplate and mailsubject
     option, added *_template and *_subject options (alec)
   - added creation date filter on documents list (alec)
+  - fixed networks selection in customergroup forms (chilan)
 
 version 1.11.7 Bastet (2009-02-13):
 

@@ -94,6 +94,12 @@ elseif(!empty($_POST['customerassignments']) && $LMS->CustomerGroupExists($_GET[
 				$LMS->CustomerassignmentAdd($assignment);
 		}
 	}
+	elseif ($oper=='2' || $oper=='3')
+	{
+		$SESSION->redirect('?'.eregi_replace('&[a-z]*id=[0-9]+', '', $SESSION->get('backto')).'&id='.$_GET['id']
+			.(isset($customerassignments['membersnetid']) ? '&membersnetid='.$customerassignments['membersnetid'] : '')
+			.(isset($customerassignments['othersnetid']) ? '&othersnetid='.$customerassignments['othersnetid'] : ''));
+	}
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
