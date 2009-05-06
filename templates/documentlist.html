@@ -109,7 +109,7 @@
 		<TD WIDTH="1%" NOWRAP><A href="?m=customerinfo&id={$doc.customerid}">{$doc.name|truncate:40:"...":true}</A></TD>
 		<TD WIDTH="95%" onclick="window.open('?m=documentview&id={$doc.docid}');">{$doc.description}</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="RIGHT" NOWRAP>
-			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/view.gif" alt="[ {t}View{/t} ]" title="[ {t}View{/t} ]"></a>
+			<a href="?m=documentview&id={$doc.docid}" target="_blank"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{else}view{/if}.gif" alt="[ {t}View{/t} ]" title="[ {t}View{/t} ]"></a>
 			<a href="?m=documentview&id={$doc.docid}&save=1"><img src="img/save.gif" alt="[ {t}Save{/t} ]" title="[ {t}Save{/t} ]"></a>
 			<a href="?m=documentedit&id={$doc.docid}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></a>
 			<a onclick="return confirmLink(this, '{t}Are you sure, you want to remove that document?{/t}')" HREF="?m=documentdel&id={$doc.docid}"><img src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></a>
