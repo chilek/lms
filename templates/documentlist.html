@@ -21,16 +21,30 @@
 		CheckAll();
 	}
 
-	function DeleteMarked()
+	function delete_docs()
 	{
 		if(! confirm('{/literal}{t}Are you sure, you want to delete selected documents?{/t}{literal}'))
 			return;
 
 		document.page.action="?m=documentdel&is_sure=1";
+        	document.page.target="";
 		document.page.submit();
 	}
 	
-	//-->
+	function print_docs()
+	{
+	    document.page.action="?m=documentview";
+            document.page.target="_blank";
+            document.page.submit();
+	}
+
+	function mark_docs()
+	{
+	    document.page.action="?m=documentedit&action=confirm";
+            document.page.target="";
+            document.page.submit();
+	}
+//-->
 </SCRIPT>
 {/literal}
 {include file="calendar_js.html"}
@@ -139,8 +153,9 @@
 				<TR>
 					<TD ALIGN="left">
 						<NOBR>
-						<A HREF="javascript:document.page.submit();">{t}Confirm{/t} <IMG SRC="img/confirm.gif" ALT=""></A>&nbsp;
-						<A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}"></A>
+						<A HREF="javascript:print_docs();">{t}Print{/t} <IMG SRC="img/print.gif" ALT=""{t}Print{/t}"></A>&nbsp;
+						<A HREF="javascript:mark_docs();">{t}Confirm{/t} <IMG SRC="img/confirm.gif" ALT=""{t}Confirm{/t}"></A>&nbsp;
+						<A HREF="javascript:delete_docs();">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="{t}Delete{/t}"></A>
 						</NOBR>
 					</TD>
 					<TD ALIGN="right">

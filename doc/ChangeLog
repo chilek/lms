@@ -44,6 +44,7 @@ version ? (????-??-??):
     and then use them as $_config.phpui.* in templates (chilan)
   - hide_summaries privillege introduced. For now it lets us show/hide
     customer and node summaries (chilan)
+  - added possibility to print many (text/html) documents from documents list (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

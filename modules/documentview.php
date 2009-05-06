@@ -24,7 +24,47 @@
  *  $Id$
  */
 
-if($doc = $DB->GetRow('SELECT filename, md5sum, contenttype FROM documentcontents WHERE docid = ?', array($_GET['id'])))
+if(sizeof($_POST['marks']))
+{
+	$marks = array();
+        foreach($_POST['marks'] as $id => $mark)
+		$marks[] = intval($mark);
+	 
+        if ($list = $DB->GetAll('SELECT filename, md5sum, contenttype
+		FROM documentcontents WHERE docid IN ('.implode(',', $marks).')'))
+	{
+		$ctype = $list[0]['contenttype'];
+		
+		if (!preg_match('/^text/i', $ctype))
+		{
+			if (sizeof($list))
+				    die('Currently you can only print many documents of type text/html!');
+
+			header('Content-Disposition: attachment; filename='.$list[0]['filename']);
+			header('Pragma: public');
+		}
+		header('Content-Type: '.$ctype);
+		
+		$i = 0;
+		foreach ($list as $doc)
+		{
+			// we can display only documents with the same content type
+			if($doc['contenttype'] != $ctype)
+				continue;
+			
+			$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
+			if(file_exists($filename))
+			{
+				if ($i && preg_match('/html/i', $doc['contenttype']))
+					echo '<div style="page-break-after: always;">&nbsp;</div>';
+				
+				readfile($filename);
+			}
+			$i++;
+		}
+	}
+}
+elseif($doc = $DB->GetRow('SELECT filename, md5sum, contenttype FROM documentcontents WHERE docid = ?', array($_GET['id'])))
 {
 	$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
 	if(file_exists($filename))
