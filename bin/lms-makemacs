@@ -226,7 +226,7 @@ my $inicustomergroups = $customergroups_list;
 
 if(!$customergroups_list)
 {
-	$dbq = $dbase->prepare("SELECT name FROM customergroups");
+	my $dbq = $dbase->prepare("SELECT name FROM customergroups");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$customergroups_list = "$customergroups_list $row->{'name'}";
@@ -240,7 +240,7 @@ my @customergroups = split ' ',$customergroups_list;
 # Build nodes list
 #
 
-$dbq = $dbase->prepare("SELECT id, name FROM customergroups");
+my $dbq = $dbase->prepare("SELECT id, name FROM customergroups");
 $dbq->execute();
 my %customergrouplist;
 
