@@ -63,9 +63,21 @@
 			<B>{t}Access rights:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright" NOWRAP>
-			{section name=acl loop=$accesslist}
-			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
-			{/section}
+			<table width="100%"><tr>
+			    <td width="50%" style="vertical-align: top" nowrap>
+			    {section name=acl loop=$accesslist}
+			    {if $smarty.section.acl.index <= floor(sizeof($accesslist)/2) - 1}
+			    <input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
+			    {/if}
+			    {/section}
+			    </td><td width="50%" style="vertical-align: top" nowrap>
+			    {section name=acl loop=$accesslist}
+			    {if $smarty.section.acl.index > floor(sizeof($accesslist)/2) - 1}
+			    <input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" {if $accesslist[acl].enabled} checked{/if}> <A HREF="javascript:setAcl('acl[{$accesslist[acl].id}]')">{$accesslist[acl].name}</a><BR>
+			    {/if}
+			    {/section}
+			    </td>
+			</tr></table>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
