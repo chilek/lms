@@ -30,7 +30,14 @@ if($_GET['is_sure']=='1')
 	{
 	        foreach($_POST['marks'] as $id => $mark)
 		{
-	    		$md5sum = $DB->GetOne('SELECT md5sum FROM documentcontents WHERE docid = ?', array($id));
+			$md5sum = $DB->GetOne('SELECT c.md5sum FROM documentcontents c
+				JOIN documents d ON (d.id = c.docid)
+				JOIN docrights r ON (r.doctype = d.type)
+				WHERE c.docid = ? AND r.userid = ? AND (r.rights & 16)',
+				array($id, $AUTH->id));
+
+			if (!$md5sum)
+				continue;
 
 			if($DB->GetOne('SELECT COUNT(*) FROM documentcontents WHERE md5sum = ?',array((string)$md5sum))==1)
 			{
@@ -47,8 +54,18 @@ if($_GET['is_sure']=='1')
 	}
 	elseif(isset($_GET['id']))
 	{			
-		$md5sum = $DB->GetOne('SELECT md5sum FROM documentcontents WHERE docid = ?', array($_GET['id']));
+		$md5sum = $DB->GetOne('SELECT c.md5sum FROM documentcontents c
+			JOIN documents d ON (d.id = c.docid)
+			JOIN docrights r ON (r.doctype = d.type)
+			WHERE c.docid = ? AND r.userid = ? AND (r.rights & 16)',
+			array($_GET['id'], $AUTH->id));
 
+		if (!$md5sum)
+		{
+			$SMARTY->display('noaccess.html');
+		        die;
+		}
+		
 		if($DB->GetOne('SELECT COUNT(*) FROM documentcontents WHERE md5sum = ?',array((string)$md5sum))==1)
 		{
 			@unlink(DOC_DIR.'/'.substr($md5sum,0,2).'/'.$md5sum);
@@ -61,8 +78,8 @@ if($_GET['is_sure']=='1')
 	
 		$DB->CommitTrans();
 	}
-		
-	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
+
+$SESSION->redirect('?'.$SESSION->get('backto'));
 	
 ?>

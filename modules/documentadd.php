@@ -267,6 +267,14 @@ else
 	$document['type'] = isset($_GET['type']) ? $_GET['type'] : '';
 }
 
+$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2)', array($AUTH->id));
+
+if(!$rights)
+{
+	$SMARTY->display('noaccess.html');
+	die;
+}
+
 $allnumberplans = array();
 $numberplans = array();
 
@@ -307,6 +315,7 @@ if(!isset($CONFIG['phpui']['big_networks']) || !chkconfig($CONFIG['phpui']['big_
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('docrights', $rights);
 $SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);

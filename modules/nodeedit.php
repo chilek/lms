@@ -59,11 +59,11 @@ switch($action)
 }
 
 $nodeid = intval($_GET['id']);
-$ownerid = $LMS->GetNodeOwner($nodeid);
+$customerid = $LMS->GetNodeOwner($nodeid);
 $nodeinfo = $LMS->GetNode($nodeid);
 
 if(!isset($_GET['ownerid']))
-	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$ownerid);
+	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$customerid);
 else
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 							
@@ -187,7 +187,7 @@ if(isset($_POST['nodeedit']))
 
 	if(!$error)
 	{
-		$LMS->NodeUpdate($nodeedit, ($ownerid != $nodeedit['ownerid']));
+		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
 		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
 		die;
 	}
@@ -207,43 +207,14 @@ if(isset($_POST['nodeedit']))
 		$nodeinfo['ipaddr_pub'] = '';
 }
 
-$customerinfo = $LMS->GetCustomer($ownerid);
-$customers = $LMS->GetCustomerNames();
-$tariffs = $LMS->GetTariffs();
-$assignments = $LMS->GetCustomerAssignments($ownerid);
-$balancelist = $LMS->GetCustomerBalanceList($ownerid);
-$customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
-$othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
-$documents = $LMS->GetDocuments($ownerid, 10);
-$netdevices = $LMS->GetNetDevNames();
-$taxeslist = $LMS->GetTaxes();
-$customernodes = $LMS->GetCustomerNodes($ownerid);
-$nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
-$othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
-$allnodegroups = $LMS->GetNodeGroupNames();
+include(MODULES_DIR.'/customer.inc.php');
 
-if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
-{
-        $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
-                                        WHERE nodeid = nodes.id AND ownerid = ?', array($ownerid)));
-}
-
-$SMARTY->assign('netdevices',$netdevices);
-$SMARTY->assign('balancelist',$balancelist);
-$SMARTY->assign('assignments',$assignments);
-$SMARTY->assign('customernodes',$customernodes);
-$SMARTY->assign('customergroups',$customergroups);
-$SMARTY->assign('othercustomergroups',$othercustomergroups);
-$SMARTY->assign('allnodegroups',$allnodegroups);
-$SMARTY->assign('nodegroups',$nodegroups);
-$SMARTY->assign('othernodegroups',$othernodegroups);
-$SMARTY->assign('tariffs',$tariffs);
+$SMARTY->assign('netdevices', $LMS->GetNetDevNames());
+$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
+$SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('error',$error);
-$SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('nodeinfo',$nodeinfo);
-$SMARTY->assign('customers',$customers);
-$SMARTY->assign('documents', $documents);
-$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('nodeedit.html');
 
 ?>

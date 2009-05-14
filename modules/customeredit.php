@@ -202,32 +202,16 @@ else
 
 $layout['pagetitle'] = trans('Customer Edit: $0',$customerinfo['customername']);
 
-if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
-{
-        $SMARTY->assign('ewx_channelid',
-		$DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
-                        WHERE nodeid = nodes.id AND ownerid = ?',
-			array($customerinfo['id'])));
-}
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('customernodes',$LMS->GetCustomerNodes($customerinfo['id']));
-$SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($customerinfo['id']));
-$SMARTY->assign('tariffs',$LMS->GetTariffs());
-$SMARTY->assign('assignments',$LMS->GetCustomerAssignments($_GET['id']));
-$SMARTY->assign('customergroups',$LMS->CustomergroupGetForCustomer($_GET['id']));
-$SMARTY->assign('othercustomergroups',$LMS->GetGroupNamesWithoutCustomer($_GET['id']));
-$SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('documents',$LMS->GetDocuments($_GET['id'], 10));
+$customerid = $customerinfo['id'];
+include(MODULES_DIR.'/customer.inc.php');
+
 $SMARTY->assign('customerinfo',$customerinfo);
-$SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('countrieslist',$LMS->GetCountries());
-$SMARTY->assign('messagelist', $messagelist = $LMS->GetMessages($_GET['id'], 10));
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
-$SMARTY->assign('eventlist', $LMS->EventSearch(array('customerid'=>$_GET['id']), 'date,desc', true));
 $SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
 $SMARTY->display('customeredit.html');
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 ?>

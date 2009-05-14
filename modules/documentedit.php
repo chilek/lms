@@ -28,14 +28,20 @@ $_DOC_DIR = DOC_DIR;
 
 if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 {
-	if(sizeof($_POST['marks']))
+	if(!empty($_POST['marks']))
 	{
 	        foreach($_POST['marks'] as $id => $mark)
-			$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($mark));
+			$DB->Execute('UPDATE documents SET closed=1 WHERE id=?
+				AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
+					AND r.doctype = documents.type AND (r.rights & 4))',
+				array($mark, $AUTH->id));
 	}
 	else
-		$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($_GET['id']));
-	
+		$DB->Execute('UPDATE documents SET closed=1 WHERE id=?
+			AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
+				AND r.doctype = documents.type AND (r.rights & 4))',
+			array($_GET['id'], $AUTH->id));
+
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
@@ -212,6 +218,17 @@ else
 		$document['todate'] = date('Y/m/d', $document['todate']);
 }
 
+$rights = $DB->GetCol('SELECT doctype FROM docrights
+	WHERE userid = ? AND (rights & 2)', array($AUTH->id));
+
+if(!$rights || !$DB->GetOne('SELECT 1 FROM docrights
+	WHERE userid = ? AND doctype = ? AND (rights & 8)',
+	array($AUTH->id, $document['type'])))
+{
+        $SMARTY->display('noaccess.html');
+        die;
+}
+
 $allnumberplans = array();
 $numberplans = array();
 
@@ -247,6 +264,7 @@ $layout['pagetitle'] = trans('Edit Document: $0', docnumber($document['number'],
 
 //$SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('docrights', $rights);
 $SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('document', $document);

@@ -24,35 +24,36 @@
  *  $Id$
  */
 
-if(!eregi('^[0-9]+$',$_GET['id']))
-{
-	$SESSION->redirect('?m=voipaccountlist');
-}
+$DB->BeginTrans();
 
-if(!$LMS->VoipAccountExists($_GET['id']))
-	if(isset($_GET['ownerid']))
-	{
-		$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
-	}
-	else
-	{
-		$SESSION->redirect('?m=voipaccountlist');
-	}
+$DB->Execute("
 
-$voipaccountid = $_GET['id'];
-$customerid = $LMS->GetVoipAccountOwner($voipaccountid);
-$voipaccountinfo = $LMS->GetVoipAccount($voipaccountid);
+CREATE SEQUENCE docrights_id_seq;
+CREATE TABLE docrights (
+    id          integer         DEFAULT nextval('docrights_id_seq'::text) NOT NULL,
+    userid      integer         DEFAULT 0 NOT NULL,
+    doctype     integer         DEFAULT 0 NOT NULL,
+    rights      integer         DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (userid, doctype)
+);
 
-include(MODULES_DIR.'/customer.inc.php');
+");
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+foreach(array(-1,-2,-3,-4,-5,-6,-7,-8, -9,-10) as $doctype)
+	$DB->Execute("INSERT INTO docrights (userid, doctype, rights)
+		SELECT id, ?, ? FROM users WHERE deleted = 0",
+		array($doctype, 31)); 
+/*
+1 - view
+2 - create
+4 - confirm
+8 - edit
+16 - delete
+*/
 
-if(!isset($_GET['ownerid']))
-	$SESSION->save('backto', $SESSION->get('backto').'&ownerid='.$customerid);
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009051200', 'dbversion'));
 
-$layout['pagetitle'] = trans('Voip Account Info: $0', $voipaccountinfo['login']);
-
-$SMARTY->assign('voipaccountinfo',$voipaccountinfo);
-$SMARTY->display('voipaccountinfo.html');
+$DB->CommitTrans();
 
 ?>

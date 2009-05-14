@@ -379,6 +379,12 @@ $menu = array(
 					'tip' => trans('Documents mass creation'),
 					'prio' => 40,
 				),
+				array(
+					'name' => trans('Access rights'),
+					'link' => '?m=documenttypes',
+					'tip' => trans('Users access rights to documents by type'),
+					'prio' => 50,
+				),
 			),
 		),
 

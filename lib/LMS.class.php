@@ -3816,13 +3816,14 @@ class LMS
 	{
 		if(!$customerid) return NULL;
 		
-		if($list = $this->DB->GetAll('SELECT docid, number, type, title, fromdate, todate, 
-			description, filename, md5sum, contenttype, template, closed, cdate
-			FROM documentcontents, documents
-			LEFT JOIN numberplans ON(numberplanid = numberplans.id)
-			WHERE documents.id = documentcontents.docid
-			AND customerid = ?
-			ORDER BY cdate', array($customerid)))
+		if($list = $this->DB->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate, 
+			c.description, c.filename, c.md5sum, c.contenttype, n.template, d.closed, d.cdate
+			FROM documentcontents c
+			JOIN documents d ON (c.docid = d.id)
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1))
+			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+			WHERE d.customerid = ?
+			ORDER BY cdate', array($this->AUTH->id, $customerid)))
 		{
 			if($limit)
 			{

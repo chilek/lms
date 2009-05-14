@@ -282,6 +282,14 @@ if(isset($_POST['document']))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2)', array($AUTH->id));
+
+if(!$rights)
+{
+        $SMARTY->display('noaccess.html');
+        die;
+}
+
 if(!isset($document['numberplanid']))
 {
 	$document['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype<0 AND isdefault=1 LIMIT 1');
@@ -312,6 +320,7 @@ $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('docrights', $rights);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
 $SMARTY->display('documentgen.html');

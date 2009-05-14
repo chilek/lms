@@ -22,10 +22,14 @@
 				{cycle name=voips values="light,lucid" print=false}
 				{foreach from=$customervoipaccounts.accounts item=voipaccount}
 				<TR class="{cycle name=voips}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD WIDTH="96%" NOWRAP><B><A HREF="?m=voipaccountinfo&id={$voipaccount.id}">{$voipaccount.login}</A></B></TD>
-					<TD WIDTH="1%" NOWRAP>({$voipaccount.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$voipaccount.passwd}</TD>
-					<TD WIDTH="1%" NOWRAP>{$voipaccount.phone}</TD>
+					<TD WIDTH="96%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
+					    <B>{$voipaccount.login}</B></TD>
+					<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
+					    ({$voipaccount.id|string_format:"%04d"})</TD>
+					<TD WIDTH="1%" NOWRAP COLSPAN="2" onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
+					    {$voipaccount.passwd}</TD>
+					<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=voipaccountinfo&id={$voipaccount.id}'">
+					    {$voipaccount.phone}</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 						<A onClick="return confirmLink(this, '{t}Are you sure, you want to remove customer voip account?{/t}')" HREF="?m=voipaccountdel&id={$voipaccount.id}"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" TITLE="[ {t}Delete{/t} ]"></A>
 						<A HREF="?m=voipaccountedit&id={$voipaccount.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" TITLE="[ {t}Edit{/t} ]"></A>

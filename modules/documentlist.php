@@ -26,7 +26,7 @@
 
 function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0, $to=0)
 {
-	global $DB;
+	global $DB, $AUTH;
 
 	if($order=='')
 		$order='cdate,asc';
@@ -54,6 +54,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0
 				filename, md5sum, contenttype, template, d.closed, d.name, d.customerid
                 	FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1))
 		        LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
 			        SELECT DISTINCT a.customerid FROM customerassignments a
@@ -65,7 +66,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0
 			.($type ? ' AND d.type = '.$type : '')
 			.($from ? ' AND d.cdate >= '.$from : '')
 			.($to ? ' AND d.cdate <= '.$to : '')
-			.$sqlord);
+			.$sqlord, array($AUTH->id));
 
 	$list['total'] = sizeof($list);
 	$list['direction'] = $direction;
@@ -141,12 +142,19 @@ $page = !isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_G
 $start = ($page - 1) * $pagelimit;
 
 $layout['pagetitle'] = trans('Documents List');
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if($docid = $SESSION->get('documentprint'))
 {
 	$SMARTY->assign('docid', $docid);
 	$SESSION->remove('documentprint');
+}
+
+if($listdata['total'])
+{
+	$SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
+			FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array($AUTH->id)));
 }
 
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());

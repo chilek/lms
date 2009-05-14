@@ -138,6 +138,7 @@ CREATE TABLE nodes (
 	lastonline integer	DEFAULT 0 NOT NULL,
 	info text		DEFAULT '' NOT NULL,
 	location text		DEFAULT '' NOT NULL,
+	nas smallint 		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr)
@@ -479,6 +480,11 @@ CREATE TABLE netdevices (
 	ports integer 		DEFAULT 0 NOT NULL,
 	purchasetime integer	DEFAULT 0 NOT NULL,
 	guaranteeperiod smallint DEFAULT 0,
+	shortname varchar(32) 	DEFAULT '' NOT NULL,
+	nastype integer 	DEFAULT 0 NOT NULL,
+	clients integer 	DEFAULT 0 NOT NULL,
+	secret varchar(60) 	DEFAULT '' NOT NULL,
+	community varchar(50) 	DEFAULT '' NOT NULL,	
 	PRIMARY KEY (id)
 );
 
@@ -833,6 +839,21 @@ CREATE TABLE daemonconfig (
 );
 
 /* ---------------------------------------------------
+ Structure of table "docrights"
+------------------------------------------------------*/
+DROP SEQUENCE docrights_id_seq;
+CREATE SEQUENCE docrights_id_seq;
+DROP TABLE docrights;
+CREATE TABLE docrights (
+    id          integer         DEFAULT nextval('docrights_id_seq'::text) NOT NULL,
+    userid      integer         DEFAULT 0 NOT NULL,
+    doctype     integer         DEFAULT 0 NOT NULL,
+    rights      integer         DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (userid, doctype)
+);
+
+/* ---------------------------------------------------
  Structure of table "cashrights"
 ------------------------------------------------------*/
 DROP SEQUENCE cashrights_id_seq;
@@ -1119,6 +1140,19 @@ CREATE INDEX messageitems_messageid_idx ON messageitems (messageid);
 CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
 
 /* ---------------------------------------------------
+ Structure of table "nastypes"
+------------------------------------------------------*/
+DROP SEQUENCE nastypes_id_seq;
+CREATE SEQUENCE nastypes_id_seq;
+DROP TABLE nastypes;
+CREATE TABLE nastypes (
+    	id 	integer 	DEFAULT nextval('nastypes_id_seq'::text) NOT NULL,
+	name 	varchar(255) 	NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE up_rights_id_seq;
@@ -1215,6 +1249,13 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
+CREATE VIEW nas AS 
+SELECT n.id, inet_ntoa(n.ipaddr) AS name, d.shortname, d.nastype AS type,
+	d.clients AS ports, d.secret, d.community, d.description 
+	FROM nodes n 
+	JOIN netdevices d ON (n.netdev = d.id) 
+	WHERE n.nas = 1;
+
 /* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
@@ -1226,8 +1267,10 @@ INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'disable_invoices', '0', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'invoice_duplicate', '0', '', 0);
-INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_tariffname', '1');
-INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_speeds', '1');
+INSERT INTO uiconfig (section, var, value)
+	VALUES ('userpanel', 'show_tariffname', '1');
+INSERT INTO uiconfig (section, var, value)
+	VALUES ('userpanel', 'show_speeds', '1');
 INSERT INTO uiconfig (section, var, value, description, disabled)
 	VALUES ('userpanel', 'default_queue', '1', '', 0);
 INSERT INTO uiconfig (section, var, value, description, disabled)
@@ -1257,4 +1300,18 @@ INSERT INTO countries (name) VALUES ('Romania');
 INSERT INTO countries (name) VALUES ('Slovakia');
 INSERT INTO countries (name) VALUES ('USA');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009031700');
+INSERT INTO nastypes (name) VALUES ('mikrotik_snmp');
+INSERT INTO nastypes (name) VALUES ('cisco');
+INSERT INTO nastypes (name) VALUES ('computone');
+INSERT INTO nastypes (name) VALUES ('livingston');
+INSERT INTO nastypes (name) VALUES ('max40xx');
+INSERT INTO nastypes (name) VALUES ('multitech');
+INSERT INTO nastypes (name) VALUES ('netserver');
+INSERT INTO nastypes (name) VALUES ('pathras');
+INSERT INTO nastypes (name) VALUES ('patton');
+INSERT INTO nastypes (name) VALUES ('portslave');
+INSERT INTO nastypes (name) VALUES ('tc');
+INSERT INTO nastypes (name) VALUES ('usrhiper');
+INSERT INTO nastypes (name) VALUES ('other');
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009051200');
