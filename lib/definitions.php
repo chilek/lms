@@ -63,6 +63,8 @@ $DOCTYPES = array(
     -5  =>	trans('customer sheet'), // karta klienta 
     -6  =>	trans('contract termination'),  
     -7  =>	trans('payments book'), // ksiazeczka oplat
+    -8  =>	trans('payment summons'), // wezwanie do zapłaty
+    -9	=>	trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
     -10 =>	trans('other')
 );
 

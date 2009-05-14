@@ -35,30 +35,13 @@ if($LMS->CustomerExists($_GET['id']) == 0)
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;
+$customerid = $_GET['id'];
 
-$customerinfo = $LMS->GetCustomer($_GET['id']);
-$assigments = $LMS->GetCustomerAssignments($_GET['id'], $expired);
-$customergroups = $LMS->CustomergroupGetForCustomer($_GET['id']);
-$othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($_GET['id']);
-$balancelist = $LMS->GetCustomerBalanceList($_GET['id']);
-$customernodes = $LMS->GetCustomerNodes($_GET['id']);
-$customervoipaccounts = $LMS->GetCustomerVoipAccounts($_GET['id']);
-$tariffs = $LMS->GetTariffs();
-$documents = $LMS->GetDocuments($_GET['id'], 10);
-$taxeslist = $LMS->GetTaxes();
-$allnodegroups = $LMS->GetNodeGroupNames();
-$messagelist = $LMS->GetMessages($_GET['id'], 10);
-$eventlist = $LMS->EventSearch(array('customerid' => $_GET['id']), 'date,desc', true);
+include(MODULES_DIR.'/customer.inc.php');
 
 if($customerinfo['cutoffstop'] > mktime(0,0,0))
         $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
 		
-if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
-{
-        $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
-                                        WHERE nodeid = nodes.id AND ownerid = ?', array($_GET['id'])));
-}
-
 $time = $SESSION->get('addbt');
 $value = $SESSION->get('addbv');
 $taxid = $SESSION->get('addbtax');
@@ -68,29 +51,14 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Customer Info: $0',$customerinfo['customername']);
 
-$customernodes['ownerid'] = $_GET['id'];
-$SMARTY->assign(
-		array(
-			'customernodes' => $customernodes,
-			'customervoipaccounts' => $customervoipaccounts,
-			'balancelist' => $balancelist,
-			'assignments' => $assigments,
-			'customergroups' => $customergroups,
-			'allnodegroups' => $allnodegroups,
-			'othercustomergroups' => $othercustomergroups,
-			'customerinfo' => $customerinfo,
-			'tariffs' => $tariffs,
-			'documents' => $documents,
-			'taxeslist' => $taxeslist,
-			'messagelist' => $messagelist,
-			'eventlist' => $eventlist,
-			'expired' => $expired,
-			'time' => $time,
-			'value' => $value,
-			'taxid' => $taxid,
-			'comment' => $comment,
-		     )
-		);
+$SMARTY->assign(array(
+	'expired' => $expired,
+	'time' => $time,
+	'value' => $value,
+	'taxid' => $taxid,
+	'comment' => $comment,
+));
+
 $SMARTY->display('customerinfo.html');
 
 ?>

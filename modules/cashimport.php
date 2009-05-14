@@ -142,8 +142,11 @@ elseif(isset($_POST['marks']))
 					GROUP BY d.id, d.cdate ORDER BY d.cdate',
 					array($customers[$id], DOC_INVOICE)))
 				{
+					foreach($invoices as $inv)
+						$sum += $inv['value'];
+					
 					$bval = $LMS->GetCustomerBalance($customers[$id]);
-					$value = $import['value'] + ($bval > 0 ? $bval : 0);
+					$value = $bval + $import['value'] + $sum;
 
 					foreach($invoices as $inv)
 						if($inv['value'] > $value)
@@ -156,8 +159,6 @@ elseif(isset($_POST['marks']))
 								array($inv['id'], $inv['id']));
 							
 							$value -= $inv['value'];
-							if(!$value)
-								break;
 						}
 				}
 			}

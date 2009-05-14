@@ -180,6 +180,11 @@
                     <member>ports - number of connections available</member>
 		    <member>purchasetime - purchase date</member>
 		    <member>guaranteeperiod - period in months (NULL - lifetime)</member>
+		    <member>shortname - shortname (radius)</member>
+		    <member>nastype - NAS type identifier (radius)</member>
+		    <member>clients - max. number of clients (radius)</member>
+		    <member>secret - password (radius)</member>
+		    <member>community - SNMP community</member>
                </simplelist>
           </sect2>
           <sect2 id="netlinks">
@@ -216,6 +221,7 @@
                     <member>lastonline - last network activity timestamp</member>
                     <member>info - additional information</member>
 		    <member>location - location (address)</member>
+		    <member>nas - NAS flag (1/0)</member>
                </simplelist>
           </sect2>
           <sect2 id="nodegroups">
@@ -233,6 +239,13 @@
                     <member>id - serial number</member>
                     <member>nodegroupid - group serial number</member>
                     <member>nodeid - node serial number</member>
+               </simplelist>
+          </sect2>
+          <sect2 id="nastypes">
+               <title>NAS Device Types ('nastypes')</title>
+               <simplelist>
+                    <member>id - serial number</member>
+                    <member>name - type name</member>
                </simplelist>
           </sect2>
           <sect2 id="cash">
@@ -466,6 +479,14 @@
                     <member>value - amount</member>
                     <member>description - description for receipt item</member>
                </simplelist>
+          </sect2>
+	  <sect2 id="docrights">
+		<title>Documents - access rights ('docrights')</title>
+		<simplelist>
+			<member>userid - user identifier</member>
+			<member>doctype - document type id (see lib/definitions.php)</member>
+			<member>rights - (1-read, 2-create, 3-confirm, 4-edit, 5-delete)</member>
+		</simplelist>
           </sect2>
           <sect2 id="imessengers">
                <title>Internet Messengers ('imessengers')</title>

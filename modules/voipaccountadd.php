@@ -112,24 +112,9 @@ $layout['pagetitle'] = trans('New Voip Account');
 
 $customers = $LMS->GetCustomerNames();
 
-if($voipaccountdata['ownerid'])
+if($customerid = $voipaccountdata['ownerid'])
 {
-	$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($voipaccountdata['ownerid']));
-	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($voipaccountdata['ownerid']));
-	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($voipaccountdata['ownerid']));
-	$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($voipaccountdata['ownerid']));
-	$SMARTY->assign('customervoipaccounts', $LMS->GetCustomerVoipAccounts($voipaccountdata['ownerid']));
-	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($voipaccountdata['ownerid']));
-	$SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
-	$SMARTY->assign('documents', $LMS->GetDocuments($voipaccountdata['ownerid'], 10));
-	$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-	$SMARTY->assign('tariffs', $LMS->GetTariffs());
-
-	if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
-	{
-		$SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
-			WHERE nodeid = nodes.id AND ownerid = ?', array($voipaccountdata['ownerid'])));
-        }
+	include(MODULES_DIR.'/customer.inc.php');
 }
 																				
 $SMARTY->assign('customers', $customers);

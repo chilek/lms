@@ -182,30 +182,13 @@ if(isset($_POST['nodedata']))
 
 $layout['pagetitle'] = trans('New Node');
 
-$customers = $LMS->GetCustomerNames();
-
-if($nodedata['ownerid'])
+if($customerid = $nodedata['ownerid'])
 {
-	$SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($nodedata['ownerid']));
-	$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($nodedata['ownerid']));
-	$SMARTY->assign('customergroups', $LMS->CustomergroupGetForCustomer($nodedata['ownerid']));
-	$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($nodedata['ownerid']));
-	$SMARTY->assign('othercustomergroups', $LMS->GetGroupNamesWithoutCustomer($nodedata['ownerid']));
-	$SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
-	$SMARTY->assign('documents', $LMS->GetDocuments($nodedata['ownerid'], 10));
-	$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-	$SMARTY->assign('tariffs', $LMS->GetTariffs());
-
-	if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
-	{
-    		$SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
-	                                        WHERE nodeid = nodes.id AND ownerid = ?', array($nodedata['ownerid'])));
-	}
+	include(MODULES_DIR.'/customer.inc.php');
 }
 
-$SMARTY->assign('allnodegroups',$LMS->GetNodeGroupNames());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
-$SMARTY->assign('customers', $customers);
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodedata', $nodedata);
 $SMARTY->display('nodeadd.html');

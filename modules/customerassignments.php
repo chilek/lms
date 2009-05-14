@@ -276,22 +276,16 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 	$SMARTY->assign('assignment', $a);
 }
 
-$customerinfo = $LMS->GetCustomer($_GET['id']);
+$customerid = $_GET['id'];
 
-$layout['pagetitle'] = trans('Customer Information: $0',$customerinfo['customername']);
+include(MODULES_DIR.'/customer.inc.php');
 
-$SMARTY->assign('customernodes',$LMS->GetCustomerNodes($customerinfo['id']));
-$SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($customerinfo['id']));
-$SMARTY->assign('tariffs',$LMS->GetTariffs());
-$SMARTY->assign('taxeslist',$LMS->GetTaxes());
-$SMARTY->assign('assignments',$LMS->GetCustomerAssignments($_GET['id']));
-$SMARTY->assign('customergroups',$LMS->CustomergroupGetForCustomer($_GET['id']));
-$SMARTY->assign('othercustomergroups',$LMS->GetGroupNamesWithoutCustomer($_GET['id']));
-$SMARTY->assign('customerinfo',$customerinfo);
+$layout['pagetitle'] = trans('Customer Information: $0', $customerinfo['customername']);
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
 $SMARTY->assign('recover',($_GET['action'] == 'recover' ? 1 : 0));
 $SMARTY->assign('error', $error);
 $SMARTY->display('customerinfo.html');
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 ?>

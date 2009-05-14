@@ -31,11 +31,11 @@ if(!$LMS->VoipAccountExists($_GET['id']))
 		header('Location: ?m=voipaccountlist');
 
 $voipaccountid = intval($_GET['id']);
-$ownerid = $LMS->GetVoipAccountOwner($voipaccountid);
+$customerid = $LMS->GetVoipAccountOwner($voipaccountid);
 $voipaccountinfo = $LMS->GetVoipAccount($voipaccountid);
 
 if(!isset($_GET['ownerid']))
-	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$ownerid);
+	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$customerid);
 else
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 							
@@ -119,41 +119,14 @@ if(isset($_POST['voipaccountedit']))
 	}
 }
 
-$customerinfo = $LMS->GetCustomer($ownerid);
 $customers = $LMS->GetCustomerNames();
-$tariffs = $LMS->GetTariffs();
-$assignments = $LMS->GetCustomerAssignments($ownerid);
-$balancelist = $LMS->GetCustomerBalanceList($ownerid);
-$customergroups = $LMS->CustomergroupGetForCustomer($ownerid);
-$othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($ownerid);
-$documents = $LMS->GetDocuments($ownerid, 10);
-$netdevices = $LMS->GetNetDevNames();
-$taxeslist = $LMS->GetTaxes();
-$customernodes = $LMS->GetCustomerNodes($ownerid);
-$customervoipaccounts = $LMS->GetCustomerVoipAccounts($ownerid);
-$allnodegroups = $LMS->GetNodeGroupNames();
 
-if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_support']))
-{
-        $SMARTY->assign('ewx_channelid', $DB->GetOne('SELECT MAX(channelid) FROM ewx_stm_nodes, nodes
-                                        WHERE nodeid = nodes.id AND ownerid = ?', array($ownerid)));
-}
+include(MODULES_DIR.'/customer.inc.php');
 
-$SMARTY->assign('netdevices',$netdevices);
-$SMARTY->assign('balancelist',$balancelist);
-$SMARTY->assign('assignments',$assignments);
-$SMARTY->assign('customernodes',$customernodes);
 $SMARTY->assign('customervoipaccounts',$customervoipaccounts);
-$SMARTY->assign('customergroups',$customergroups);
-$SMARTY->assign('othercustomergroups',$othercustomergroups);
-$SMARTY->assign('allnodegroups',$allnodegroups);
-$SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('error',$error);
-$SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('voipaccountinfo',$voipaccountinfo);
 $SMARTY->assign('customers',$customers);
-$SMARTY->assign('documents', $documents);
-$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('voipaccountedit.html');
 
 ?>

@@ -2182,8 +2182,19 @@ $_LANG['Enter secret (optional)'] = 'Podaj hasło (opcjonalnie)';
 $_LANG['Enter community (optional)'] = 'Podaj community (opcjonalnie)';
 $_LANG['Enable public IP address fields. Default: 1'] = 'Włącza pola adresu publicznego. Domyślnie: włączona';
 $_LANG['Enable RADIUS support. Default: 1'] = 'Włącza wsparcie dla RADIUSa. Domyślnie: włączona';
-$_LANG['Invalid clients format or too long (max.11 characters) !'] = 'Zły format lub zbyt długa wartość (max.11 znaków)!';
 $_LANG['NAS'] = 'NAS';
 $_LANG['Select NAS on or off'] = 'Włącz/wyłącz NAS';
+$_LANG['Access rights'] = 'Prawa dostępu';
+$_LANG['Creating'] = 'Tworzenie';
+$_LANG['Deleting'] = 'Usuwanie';
+$_LANG['Document Types List'] = 'Lista typów dokumentów';
+$_LANG['Document Type Edit: $0'] = 'Edycja typu dokumentu: $0';
+$_LANG['Editing'] = 'Edycja';
+$_LANG['Confirming'] = 'Zatwierdzanie';
+$_LANG['payment pre-summons'] = 'przedsądowe wezwanie do zapłaty';
+$_LANG['payment summons'] = 'wezwanie do zapłaty';
+$_LANG['There are no defined types in system.'] = 'Brak zdefiniowanych typów w systemie.';
+$_LANG['Users access rights to documents by type'] = 'Uprawnienia do dokumentów wg typu';
+$_LANG['Viewing'] = 'Podgląd';
 
 ?>
