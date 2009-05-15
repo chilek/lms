@@ -525,6 +525,12 @@
 		zawieszenia przegl±darki).</para></note>
 		</para>
 	</sect2>
+	<sect2 id="menu-documents-rights">
+		<title>Prawa dostêpu</title>
+		<para>Tutaj mo¿esz zdefiniowaæ prawa dostêpu (odczyt, tworzenie, 
+		zatwierdzanie, edycja, usuwanie) u¿ytkowników do wybranych typów
+		dokumentów.</para>
+	</sect2>
 </sect1>
 <sect1 id="menu-hosting">
 	<title>Konta</title>
