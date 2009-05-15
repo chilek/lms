@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order, $pagelimit=100, $page=NULL)
+function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL, $order, $pagelimit=100, $page=NULL)
 {
 	global $DB;
 	
@@ -94,7 +94,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order, $pagelimi
 		}
 	}
         
-	if($cat=='notclosed')
+	if($hideclosed)
 		$where = ' AND closed = 0';
 
 	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, type,
@@ -155,7 +155,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order, $pagelimi
 	$result['direction'] = $direction;
 			
 	return $result;
-}																																																																																																					       
+}
 
 $layout['pagetitle'] = trans('Invoices List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -184,6 +184,12 @@ else
 	$SESSION->restore('ilc', $c);
 $SESSION->save('ilc', $c);
 
+if(isset($_POST['search']))
+	$h = isset($_POST['hideclosed']) ? true : false;
+elseif (($h = $SESSION->get('ilh')) === NULL)
+	$h = isset($CONFIG['invoices']['hide_closed']) ? chkconfig($CONFIG['invoices']['hide_closed']) : false;
+$SESSION->save('ilh', $h);
+
 if(isset($_POST['group'])) {
 	$g = $_POST['group'];
 	$ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : NULL;
@@ -208,12 +214,13 @@ elseif($c == 'month' && $s && ereg('^[0-9]{4}/[0-9]{2}$', $s))
 $pagelimit = $CONFIG['phpui']['invoicelist_pagelimit'];
 $page = !isset($_GET['page']) ? 0 : intval($_GET['page']);
 
-$invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o, $pagelimit, $page);
+$invoicelist = GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $h, $o, $pagelimit, $page);
 
 $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);
 $SESSION->restore('ilge', $listdata['groupexclude']);
+$SESSION->restore('ilh', $listdata['hideclosed']);
 
 $listdata['order'] = $invoicelist['order'];
 $listdata['direction'] = $invoicelist['direction'];

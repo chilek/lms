@@ -48,6 +48,7 @@ version ? (????-??-??):
   - added access rights for (non-financial) documents (alec)
   - added 'Confirm' link in Documents List's row (alec)
   - added lithuanian translation of Userpanel (chilan)
+  - added 'hide accounted' checkbox in Invoices List search form (alec)
 
 version 1.11.7 Bastet (2009-02-13):
 

@@ -16,6 +16,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			var e = document.page.elements[i];
 			if (e.name != 'allbox' &&
 			    e.name != 'groupexclude' &&
+			    e.name != 'hideclosed' &&
 			    e.name != 'original' &&
 			    e.name != 'duplicate' &&
 			    e.name != 'copy'
@@ -111,7 +112,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	<TR class="DARK">
 		<TD class="fall" colspan="7">
 				<B>{t}Filter:{/t} </B> 
-				<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
 					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}day (YYYY/MM/DD){/t}</OPTION>
@@ -122,7 +123,6 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
 					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
 					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
-					<OPTION value="notclosed"{if $listdata.cat eq "notclosed"} SELECTED{/if}>{t}hide accounted<!plural>{/t}</OPTION>
 					<OPTION value="cnotes"{if $listdata.cat eq "cnotes"} SELECTED{/if}>{t}show only credit notes{/t}</OPTION>
 				</SELECT>&nbsp;
 				{t}Group:{/t}
@@ -134,6 +134,9 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				</SELECT>
 				<NOBR>
 				<INPUT type="checkbox" name="groupexclude" {if $listdata.groupexclude} CHECKED{/if}><A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
+				</NOBR>
+				<NOBR>
+				<INPUT type="checkbox" name="hideclosed" {if $listdata.hideclosed} CHECKED{/if}><A HREF="javascript:setCheckbox('hideclosed')">{t}hide accounted<!plural>{/t}</a>
 				&nbsp;<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 				</NOBR>
 		</TD>
