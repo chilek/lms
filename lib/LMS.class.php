@@ -3820,7 +3820,7 @@ class LMS
 			c.description, c.filename, c.md5sum, c.contenttype, n.template, d.closed, d.cdate
 			FROM documentcontents c
 			JOIN documents d ON (c.docid = d.id)
-			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1))
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
 			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 			WHERE d.customerid = ?
 			ORDER BY cdate', array($this->AUTH->id, $customerid)))
