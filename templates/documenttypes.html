@@ -1,0 +1,43 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR class="dark">
+		<TD width="99%" class="fleftu" NOWRAP><IMG src="img/docum.gif" alt=""> <B>{t}Name:{/t}</B></TD>
+		<TD width="1%" class="frightu"></TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="2" CLASS="FALL">
+			{include file="scroller.html" loop=$typelist}
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{foreach from=$typelist key=key item=item}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=documenttypeedit&id={$key}';">
+			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
+		</TD>
+		<TD class="fright" align="right" NOWRAP>
+			<A href="?m=documenttypeedit&id={$key}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="2" align="center" class="fall">
+			<p>&nbsp;</p>
+			<p><B>{t}There are no types in database.{/t}</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/foreach}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="2" CLASS="FALL">
+			{include file="scroller.html" loop=$typelist}
+		</TD>
+	</TR>
+	{/if}
+</TABLE></P>
+{include file="footer.html"}
