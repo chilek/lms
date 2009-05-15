@@ -96,11 +96,6 @@ $CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_
 $CONFIG['directories']['userpanel_dir'] = (!isset($CONFIG['directories']['userpanel_dir']) ? getcwd() : $CONFIG['directories']['userpanel_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel_dir'].'/templates_c';
 
-foreach(lms_parse_ini_file($CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
-	foreach($values as $key => $val)
-    		if(! isset($CONFIG[$section][$key]))
-			$CONFIG[$section][$key] = $val;
-
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
 define('USERPANEL_LIB_DIR', USERPANEL_DIR.'/lib/');
 define('USERPANEL_MODULES_DIR', USERPANEL_DIR.'/modules/');
@@ -110,18 +105,19 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 
+// include required files
+
+require_once(USERPANEL_LIB_DIR.'/checkdirs.php');
+require_once(LIB_DIR.'/config.php');
+
+// Initialize database
 $_DBTYPE = $CONFIG['database']['type'];
 $_DBHOST = $CONFIG['database']['host'];
 $_DBUSER = $CONFIG['database']['user'];
 $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
 
-// include required files
-
-require_once(LIB_DIR.'/checkconfig.php');
 require_once(LIB_DIR.'/LMSDB.php');
-
-// Initialize database
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
@@ -167,7 +163,6 @@ require_once(LIB_DIR.'/LMS.class.php');
 $AUTH = NULL;
 $LMS = new LMS($DB, $AUTH, $CONFIG);
 
-require_once(USERPANEL_LIB_DIR.'/checkdirs.php');
 require_once(USERPANEL_LIB_DIR.'/Session.class.php');
 require_once(USERPANEL_LIB_DIR.'/Userpanel.class.php');
 require_once(USERPANEL_LIB_DIR.'/ULMS.class.php');
