@@ -24,44 +24,44 @@
  *  $Id$
  */
 
-$_LANG['Allows you to contact with network administrator'] = 'Leidþia Jums susisiekti su administratoriumi';
+$_LANG['Allows you to contact with network administrator'] = 'LeidÅ¾ia Jums susisiekti su administratoriumi';
 $_LANG['Body:'] = 'Turinys:';
 $_LANG['Cancel'] = 'Panaikink';
-$_LANG['Click icon on the left to see request details'] = 'Paspauskite þenklà kairëje, kad pamatytumëte praðymo turiná';
+$_LANG['Click icon on the left to see request details'] = 'Paspauskite Å¾enklÄ… kairÄ—je, kad pamatytumÄ—te praÅ¡ymo turinÄ¯';
 $_LANG['Date:'] = 'Data:';
 $_LANG['dead'] = 'negyvas';
-$_LANG['Debug email:'] = 'Patikrinimo þinutë:';
-$_LANG['Debug email for new tickets notifications.'] = 'Tikrinimo el. paðto adresas, kuriuo bus siunèiamos þinutës apie naujus praðymus.';
-$_LANG['Default queue:'] = 'Numanoma eilë:';
+$_LANG['Debug email:'] = 'Patikrinimo Å¾inutÄ—:';
+$_LANG['Debug email for new tickets notifications.'] = 'Tikrinimo el. paÅ¡to adresas, kuriuo bus siunÄiamos Å¾inutÄ—s apie naujus praÅ¡ymus.';
+$_LANG['Default queue:'] = 'Numanoma eilÄ—:';
 $_LANG['Default user:'] = 'Numanomas vartotojas:';
 $_LANG['Details'] = 'Smulkmenos';
-$_LANG['Enter request contents'] = 'Ávesk praðymo turiná';
-$_LANG['Enter request subject'] = 'Ávesk praðymo temà';
+$_LANG['Enter request contents'] = 'Ä®vesk praÅ¡ymo turinÄ¯';
+$_LANG['Enter request subject'] = 'Ä®vesk praÅ¡ymo temÄ…';
 $_LANG['From:'] = 'Nuo:';
 $_LANG['Helpdesk'] = 'Pagalbos centras';
-$_LANG['Helpdesk queue for tickets requested in Userpanel'] = 'Pagalbos centro eilë praðymams ið Vratotojo panelës';
+$_LANG['Helpdesk queue for tickets requested in Userpanel'] = 'Pagalbos centro eilÄ— praÅ¡ymams iÅ¡ Vratotojo panelÄ—s';
 $_LANG['Last modified:'] = 'Paskutinis modifikuotas:';
-$_LANG['LMS address needed to build link to new ticket in notification message'] = 'LMS adreso reikia praneðime sukurti saità á naujà praðymà';
+$_LANG['LMS address needed to build link to new ticket in notification message'] = 'LMS adreso reikia praneÅ¡ime sukurti saitÄ… Ä¯ naujÄ… praÅ¡ymÄ…';
 $_LANG['LMS url:'] = 'LMS URL:';
 $_LANG['Module Configuration:'] = 'Modulio konfiguracija:';
 $_LANG['new'] = 'naujas';
-$_LANG['New Request'] = 'Nauja praðymas';
-$_LANG['No such requests in database.'] = 'Duomenø bazëje nëra praðymø.';
+$_LANG['New Request'] = 'Nauja praÅ¡ymas';
+$_LANG['No such requests in database.'] = 'DuomenÅ³ bazÄ—je nÄ—ra praÅ¡ymÅ³.';
 $_LANG['Number:'] = 'Numeris:';
 $_LANG['open'] = 'atviras';
-$_LANG['Request history'] = 'Praðymø istorija';
-$_LANG['Request No. $0'] = 'Praðymas Nr. $0';
-$_LANG['resolved'] = 'iðspræstas';
-$_LANG['- select queue -'] = '- pasirink eilæ -';
-$_LANG['- select user -'] = '- pasirink vartotojà -';
-$_LANG['Sender of new request notifications and his email. If not specified notifications goes from queue address.'] = 'Praneðimø apie naujus praðymus siuntëjas(ir jo el. paðto adresas). Jei nenurodytas bus panaudotas eilës numeris.';
+$_LANG['Request history'] = 'PraÅ¡ymÅ³ istorija';
+$_LANG['Request No. $0'] = 'PraÅ¡ymas Nr. $0';
+$_LANG['resolved'] = 'iÅ¡sprÄ™stas';
+$_LANG['- select queue -'] = '- pasirink eilÄ™ -';
+$_LANG['- select user -'] = '- pasirink vartotojÄ… -';
+$_LANG['Sender of new request notifications and his email. If not specified notifications goes from queue address.'] = 'PraneÅ¡imÅ³ apie naujus praÅ¡ymus siuntÄ—jas(ir jo el. paÅ¡to adresas). Jei nenurodytas bus panaudotas eilÄ—s numeris.';
 $_LANG['Status:'] = 'Statusas:';
 $_LANG['Subject:'] = 'Tema:';
-$_LANG['Submit'] = 'Tæsk';
-$_LANG['[ Submit ]'] = '[ Áraðyk ]';
-$_LANG['This module allows your customers to contact with you'] = 'Ðis modulis leidþia Jûsø klientams susisiekti su Jumis';
-$_LANG['Ticket must have its body!'] = 'Turi nurodyti praðymo turiná!';
-$_LANG['Ticket must have its title!'] = 'Praðymas turi bûti pavadintas!';
-$_LANG['Message'] = 'Þinutë';
+$_LANG['Submit'] = 'TÄ™sk';
+$_LANG['[ Submit ]'] = '[ Ä®raÅ¡yk ]';
+$_LANG['This module allows your customers to contact with you'] = 'Å is modulis leidÅ¾ia JÅ«sÅ³ klientams susisiekti su Jumis';
+$_LANG['Ticket must have its body!'] = 'Turi nurodyti praÅ¡ymo turinÄ¯!';
+$_LANG['Ticket must have its title!'] = 'PraÅ¡ymas turi bÅ«ti pavadintas!';
+$_LANG['Message'] = 'Å½inutÄ—';
 
 ?>

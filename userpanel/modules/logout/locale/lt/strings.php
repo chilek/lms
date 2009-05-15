@@ -29,8 +29,8 @@ $_LANG['Cancel'] = 'Panaikink';
 $_LANG['Logout'] = 'Atsijunk';
 $_LANG['Logout URL:'] = 'Atsijungimo URL:';
 $_LANG['Module Configuration:'] = 'Modulio konfiguracija:';
-$_LANG['Submit'] = 'Tæsk';
-$_LANG['This module allows your customers to logout'] = 'Ðis modulis leidþia Tavo klientui atsijungti';
-$_LANG['When your customer logs out, he will be redirected to this url. If url isn\'t specified, then he will be redirected to Userpanel\'s login screen'] = 'Atsijungiant klientas bus nukreiptas ðiuo adresu. Jei laukas paliekamas tuðèias, bus parodytas Vartotojo panelës prisijungimo langas';
+$_LANG['Submit'] = 'TÄ™sk';
+$_LANG['This module allows your customers to logout'] = 'Å is modulis leidÅ¾ia Tavo klientui atsijungti';
+$_LANG['When your customer logs out, he will be redirected to this url. If url isn\'t specified, then he will be redirected to Userpanel\'s login screen'] = 'Atsijungiant klientas bus nukreiptas Å¡iuo adresu. Jei laukas paliekamas tuÅ¡Äias, bus parodytas Vartotojo panelÄ—s prisijungimo langas';
 
 ?>

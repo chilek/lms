@@ -25,13 +25,13 @@
  */
 
 $_LANG['Modules'] = 'Moduliai';
-$_LANG['Loaded modules'] = 'Uþkrauti moduliai';
-$_LANG['Show informations about modules'] = 'Rodo informacijà apie modulius';
-$_LANG['This module is for showing informations about modules'] = 'Ðis modulis rodo informacijà apie uþkrautus modulius';
-$_LANG['Module'] = 'Modulis‚';
+$_LANG['Loaded modules'] = 'UÅ¾krauti moduliai';
+$_LANG['Show informations about modules'] = 'Rodo informacijÄ… apie modulius';
+$_LANG['This module is for showing informations about modules'] = 'Å is modulis rodo informacijÄ… apie uÅ¾krautus modulius';
+$_LANG['Module'] = 'Modulisâ€š';
 $_LANG['Display name'] = 'Rodomas pavadinimas';
 $_LANG['Prio'] = 'Prioritetas';
-$_LANG['Tip'] = 'Uþuomina';
-$_LANG['Description'] = 'Apraðas';
+$_LANG['Tip'] = 'UÅ¾uomina';
+$_LANG['Description'] = 'ApraÅ¡as';
 
 ?>
