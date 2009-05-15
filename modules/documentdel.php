@@ -33,7 +33,7 @@ if($_GET['is_sure']=='1')
 			$md5sum = $DB->GetOne('SELECT c.md5sum FROM documentcontents c
 				JOIN documents d ON (d.id = c.docid)
 				JOIN docrights r ON (r.doctype = d.type)
-				WHERE c.docid = ? AND r.userid = ? AND (r.rights & 16)',
+				WHERE c.docid = ? AND r.userid = ? AND (r.rights & 16) = 16',
 				array($id, $AUTH->id));
 
 			if (!$md5sum)
@@ -57,7 +57,7 @@ if($_GET['is_sure']=='1')
 		$md5sum = $DB->GetOne('SELECT c.md5sum FROM documentcontents c
 			JOIN documents d ON (d.id = c.docid)
 			JOIN docrights r ON (r.doctype = d.type)
-			WHERE c.docid = ? AND r.userid = ? AND (r.rights & 16)',
+			WHERE c.docid = ? AND r.userid = ? AND (r.rights & 16) = 16',
 			array($_GET['id'], $AUTH->id));
 
 		if (!$md5sum)

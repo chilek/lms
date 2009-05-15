@@ -54,7 +54,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $from=0
 				filename, md5sum, contenttype, template, d.closed, d.name, d.customerid
                 	FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
-			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1))
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
 		        LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
 			        SELECT DISTINCT a.customerid FROM customerassignments a

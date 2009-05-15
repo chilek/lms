@@ -282,7 +282,7 @@ if(isset($_POST['document']))
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2)', array($AUTH->id));
+$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
 
 if(!$rights)
 {

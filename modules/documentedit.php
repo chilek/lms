@@ -33,13 +33,13 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 	        foreach($_POST['marks'] as $id => $mark)
 			$DB->Execute('UPDATE documents SET closed=1 WHERE id=?
 				AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
-					AND r.doctype = documents.type AND (r.rights & 4))',
+					AND r.doctype = documents.type AND (r.rights & 4) = 4)',
 				array($mark, $AUTH->id));
 	}
 	else
 		$DB->Execute('UPDATE documents SET closed=1 WHERE id=?
 			AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
-				AND r.doctype = documents.type AND (r.rights & 4))',
+				AND r.doctype = documents.type AND (r.rights & 4) = 4)',
 			array($_GET['id'], $AUTH->id));
 
 	$SESSION->redirect('?'.$SESSION->get('backto'));
@@ -219,10 +219,10 @@ else
 }
 
 $rights = $DB->GetCol('SELECT doctype FROM docrights
-	WHERE userid = ? AND (rights & 2)', array($AUTH->id));
+	WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
 
 if(!$rights || !$DB->GetOne('SELECT 1 FROM docrights
-	WHERE userid = ? AND doctype = ? AND (rights & 8)',
+	WHERE userid = ? AND doctype = ? AND (rights & 8) = 8',
 	array($AUTH->id, $document['type'])))
 {
         $SMARTY->display('noaccess.html');

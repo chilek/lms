@@ -35,7 +35,7 @@ if(!empty($_POST['marks']))
 		JOIN documents d ON (d.id = c.docid)
 		JOIN docrights r ON (r.doctype = d.type)
 		WHERE c.docid IN ('.implode(',', $marks).')
-			AND r.userid = ? AND (r.rights & 1)', array($AUTH->id)))
+			AND r.userid = ? AND (r.rights & 1) = 1', array($AUTH->id)))
 	{
 		$ctype = $list[0]['contenttype'];
 		
@@ -72,7 +72,7 @@ if(!empty($_POST['marks']))
 	FROM documentcontents c
 	JOIN documents d ON (d.id = c.docid)
 	JOIN docrights r ON (r.doctype = d.type)
-	WHERE c.docid = ? AND r.userid = ? AND (r.rights & 1)', array($_GET['id'], $AUTH->id)))
+	WHERE c.docid = ? AND r.userid = ? AND (r.rights & 1) = 1', array($_GET['id'], $AUTH->id)))
 {
 	$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
 	if(file_exists($filename))
