@@ -24,30 +24,30 @@
  *  $Id$
  */
 
-$_LANG['Add'] = 'Pridëk';
-$_LANG['Add new item'] = 'Pridëk naujà punktà';
-$_LANG['Add new subitem'] = 'Pridëk naujà papunktá';
-$_LANG['Back to beginning'] = 'Gráþk á pradþià';
-$_LANG['Back to previous level'] = 'Gráþk á ankstesná lygá';
+$_LANG['Add'] = 'PridÄ—k';
+$_LANG['Add new item'] = 'PridÄ—k naujÄ… punktÄ…';
+$_LANG['Add new subitem'] = 'PridÄ—k naujÄ… papunktÄ¯';
+$_LANG['Back to beginning'] = 'GrÄ¯Å¾k Ä¯ pradÅ¾iÄ…';
+$_LANG['Back to previous level'] = 'GrÄ¯Å¾k Ä¯ ankstesnÄ¯ lygÄ¯';
 $_LANG['Body:'] = 'Turinys:';
 $_LANG['Cancel'] = 'Panaikink';
 $_LANG['Contact with administrators'] = 'Susiek su administratoriais';
-$_LANG['Delete this item'] = 'Iðtrink ðá punktà';
-$_LANG['Edit item'] = 'Redaguok punktà';
-$_LANG['Edit this item'] = 'Redaguok ðá punktà';
-$_LANG['Enter body'] = 'Ávesk turiná';
-$_LANG['Enter title'] = 'Ávesk pavadinimà';
+$_LANG['Delete this item'] = 'IÅ¡trink Å¡Ä¯ punktÄ…';
+$_LANG['Edit item'] = 'Redaguok punktÄ…';
+$_LANG['Edit this item'] = 'Redaguok Å¡Ä¯ punktÄ…';
+$_LANG['Enter body'] = 'Ä®vesk turinÄ¯';
+$_LANG['Enter title'] = 'Ä®vesk pavadinimÄ…';
 $_LANG['Help'] = 'Pagalba';
 $_LANG['Help Center'] = 'Pagalbos Centras';
 $_LANG['Module Configuration:'] = 'Modulio konfiguracija:';
 $_LANG['Now, you can only select:'] = 'Dabar gali pasirinkti tik:';
-$_LANG['Runs problems solving center'] = 'Paleidþia problemø ðalinimo centrà';
+$_LANG['Runs problems solving center'] = 'PaleidÅ¾ia problemÅ³ Å¡alinimo centrÄ…';
 $_LANG['Select:'] = 'Pasirink:';
-$_LANG['Submit'] = 'Tæsk';
-$_LANG['There is no Help Center tree. Use $0this form$1 to add root item.'] = 'Dar nëra Pagalbos Cnetro struktûros. Pasinaudok ðia forma, kad pridëtum pagrindiná punktà';
-$_LANG['This cannot be empty'] = 'Tai negali bûti tuðèia';
-$_LANG['This module is not configured yet.'] = 'Ðis modulis nëra sukonfiguruotas.';
-$_LANG['This module shows problems solving center'] = 'Ðis modulis parodo problemø sprendimo centrà';
+$_LANG['Submit'] = 'TÄ™sk';
+$_LANG['There is no Help Center tree. Use $0this form$1 to add root item.'] = 'Dar nÄ—ra Pagalbos Cnetro struktÅ«ros. Pasinaudok Å¡ia forma, kad pridÄ—tum pagrindinÄ¯ punktÄ…';
+$_LANG['This cannot be empty'] = 'Tai negali bÅ«ti tuÅ¡Äia';
+$_LANG['This module is not configured yet.'] = 'Å is modulis nÄ—ra sukonfiguruotas.';
+$_LANG['This module shows problems solving center'] = 'Å is modulis parodo problemÅ³ sprendimo centrÄ…';
 $_LANG['Title:'] = 'Pavadinimas:';
 
 ?>

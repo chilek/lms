@@ -26,21 +26,21 @@
 
 $_LANG['All'] = 'Visi';
 $_LANG['Cancel'] = 'Panaikink';
-$_LANG['Display stats for customer nodes only'] = 'Rodyk tik prisijungusio kliento kompiuteriø statistikà';
-$_LANG['Download'] = 'Parsisiøsta';
+$_LANG['Display stats for customer nodes only'] = 'Rodyk tik prisijungusio kliento kompiuteriÅ³ statistikÄ…';
+$_LANG['Download'] = 'ParsisiÅ³sta';
 $_LANG['Filter'] = 'Filtras';
-$_LANG['Last 30 days'] = 'Paskutinës 30 dienø';
-$_LANG['Last day'] = 'Paskutinë diena';
-$_LANG['Last hour'] = 'Paskutinë valanda';
+$_LANG['Last 30 days'] = 'PaskutinÄ—s 30 dienÅ³';
+$_LANG['Last day'] = 'PaskutinÄ— diena';
+$_LANG['Last hour'] = 'PaskutinÄ— valanda';
 $_LANG['Last year'] = 'Paskutiniai metai';
 $_LANG['Module Configuration:'] = 'Modulio konfiguracija:';
 $_LANG['Network Statistics'] = 'Tinklo statistika';
-$_LANG['No such data for selected period.'] = 'Pagal pasirinktà laikotarpá nëra duomenø.';
-$_LANG['Show bandwidth utilization stats'] = 'Parodo ryðio naudojimo statistikà';
+$_LANG['No such data for selected period.'] = 'Pagal pasirinktÄ… laikotarpÄ¯ nÄ—ra duomenÅ³.';
+$_LANG['Show bandwidth utilization stats'] = 'Parodo ryÅ¡io naudojimo statistikÄ…';
 $_LANG['Stats'] = 'Statistika';
-$_LANG['Submit'] = 'Tæsk';
-$_LANG['This module is for showing bandwidth utilization stats'] = 'Ðis modulis rodo ryðio naudojimo statistikà';
-$_LANG['Total:'] = 'Ið viso:';
-$_LANG['Upload'] = 'Iðsiøsta';
+$_LANG['Submit'] = 'TÄ™sk';
+$_LANG['This module is for showing bandwidth utilization stats'] = 'Å is modulis rodo ryÅ¡io naudojimo statistikÄ…';
+$_LANG['Total:'] = 'IÅ¡ viso:';
+$_LANG['Upload'] = 'IÅ¡siÅ³sta';
 
 ?>
