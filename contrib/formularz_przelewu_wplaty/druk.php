@@ -76,20 +76,18 @@ foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
 
-foreach(lms_parse_ini_file($CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
-        foreach($values as $key => $val)
-	        if(! isset($CONFIG[$section][$key]))
-		        $CONFIG[$section][$key] = $val;
-
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
+// Load config defaults
+
+require_once(LIB_DIR.'/config.php');
+
+// Init database
 $_DBTYPE = $CONFIG['database']['type'];
 $_DBHOST = $CONFIG['database']['host'];
 $_DBUSER = $CONFIG['database']['user'];
 $_DBPASS = $CONFIG['database']['password'];
 $_DBNAME = $CONFIG['database']['database'];
-
-// Init database
 
 require_once(LIB_DIR.'/LMSDB.php');
 
