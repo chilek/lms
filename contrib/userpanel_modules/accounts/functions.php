@@ -1,9 +1,9 @@
 <?php
 
 /*
- *  LMS Userpanel version 1.3-cvs
+ *  LMS version 1.11-cvs
  *
- *  (C) Copyright 2004-2007 Userpanel Developers
+ *  (C) Copyright 2001-2009 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
