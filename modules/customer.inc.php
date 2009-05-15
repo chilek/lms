@@ -58,7 +58,7 @@ if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_sup
 }
 
 $SMARTY->assign_by_ref('customernodes', $customernodes);
-$SMARTY->assign_by_ref(	'assigments', $assignments);
+$SMARTY->assign_by_ref('assignments', $assignments);
 $SMARTY->assign_by_ref('customergroups', $customergroups);
 $SMARTY->assign_by_ref('othercustomergroups', $othercustomergroups);
 $SMARTY->assign_by_ref('balancelist', $balancelist);
