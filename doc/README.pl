@@ -1715,6 +1715,13 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
            dokumentów (może to prowadzić do zawieszenia przeglądarki).
      __________________________________________________________________
 
+3.8.4. Prawa dostępu
+
+   Tutaj możesz zdefiniować prawa dostępu (odczyt, tworzenie,
+   zatwierdzanie, edycja, usuwanie) użytkowników do wybranych typów
+   dokumentów.
+     __________________________________________________________________
+
 3.9. Konta
 
    Zarządzanie kontami różnych usług na serwerze jest teraz możliwe.

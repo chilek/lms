@@ -518,8 +518,8 @@ invoices.</para></note></para>
 		<para>List consist basic infos about all documents i.e. number, title
 		type, creation date, obligation dates and customer name. Simple filter
 		let you documents searching by type and/or customer.</para>
-		</sect2>
-		<sect2 id="menu-documents-new">
+	</sect2>
+	<sect2 id="menu-documents-new">
 		<title>New document</title>
 		<para>Documents can be created with templates made accordingly to
 		rules described in section <xref linkend="install-documents-other">. Those can be also
@@ -536,6 +536,11 @@ invoices.</para></note></para>
 		<note><para>For performance reasons is recommended to use templates optimized for
 		generator and to not print many (hundreds) documents (possible browser
 		hang).</para></note></para>
+	</sect2>
+	<sect2 id="menu-documents-rights">
+		<title>Access Rights</title>
+		<para>Here you can define users access for specified actions
+		(read, create, write, confirm, edit, delete) on documents by their types.</para>
 	</sect2>
 </sect1>
 <sect1 id="menu-hosting">

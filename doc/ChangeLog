@@ -47,6 +47,7 @@ version ? (????-??-??):
   - added possibility to print many (text/html) documents from documents list (alec)
   - added access rights for (non-financial) documents (alec)
   - added 'Confirm' link in Documents List's row (alec)
+  - added lithuanian translation of Userpanel (chilan)
 
 version 1.11.7 Bastet (2009-02-13):
 
