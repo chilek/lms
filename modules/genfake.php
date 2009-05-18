@@ -1843,7 +1843,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM assignments');
 	$DB->Execute('DELETE FROM networks');
 	$DB->Execute('DELETE FROM tariffs');
-	$DB->Execute('DELETE FROM payments');	
+	$DB->Execute('DELETE FROM payments');
 	$DB->Execute('DELETE FROM netdevices');
 	$DB->Execute('DELETE FROM netlinks');
 	$DB->Execute('DELETE FROM documents');
@@ -1963,6 +1963,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['pin'] = mt_rand(10000,99999);
 		$customeradd['cutoffstop'] = 0;
 		$customeradd['divisionid'] = 1;
+		$customeradd['countryid'] = 0;
 		$customeradd['consentdate'] = 0;
 		$customeradd['paytime'] = -1;
 
@@ -2023,7 +2024,13 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			'ports' => '16',
 			'purchasetime' => 0,
 			'guaranteeperiod' => NULL,
-			'info' => ''));
+			'info' => '',
+			'shortname' => '',
+			'nastype' => 0,
+			'secret' => '',
+			'community' => '',
+			'clients' => 0,
+		));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
 		{
@@ -2064,7 +2071,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$contents['name'] = trans('Subscription');
 		
 		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,
-				id, ssn, address, zip, city, ten, divisionid FROM customers');
+				id, ssn, address, zip, city, ten, divisionid, countryid FROM customers');
 					    
 		if($customers)
 			for($n=0; $n<$_GET['i']; $n++)
@@ -2082,7 +2089,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 					$LMS->AddInvoice(array('customer' => $c, 'contents' => $cont, 'invoice' => $inv));
 				}
 			}
-	}			
+	}
 
 	echo '<P><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
 	$SMARTY->display('footer.html');
