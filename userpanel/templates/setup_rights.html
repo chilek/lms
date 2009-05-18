@@ -86,9 +86,9 @@
 				<TR CLASS="LIGHT">
 					<TD CLASS="fleft">
 						<SELECT size="20" name="setrights[mcustomerid][]" multiple {tip text="Select customers"}>
-							{section name=customerlist loop=$customerlist}
-							<OPTION value="{$customerlist[customerlist].id}">{$customerlist[customerlist].customername|truncate:50:" ..."} ({$customerlist[customerlist].id|string_format:"%04d"})</OPTION>
-							{/section}
+							{foreach from=$customerlist item=item}
+							<OPTION value="{$item.id}">{$item.customername|truncate:50:" ..."} ({$item.id|string_format:"%04d"})</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 					<TD CLASS="fright" COLSPAN="2" style="vertical-align: top;">
