@@ -184,6 +184,11 @@
                     <member>ports - ilo¶æ portów</member>
 		<member>purchasetime - data zakupu</member>
 		<member>guaranteeperiod - okres gwarancji w miesi±cach (NULL - gwarancja wieczysta)</member>
+		    <member>shortname - nazwa skrócona (radius)</member>
+		    <member>nastype - typ NAS (radius)</member>
+		    <member>clients - liczba klientów (radius)</member>
+		    <member>secret - has³o (radius)</member>
+		    <member>community - community SNMP</member>
 	    </simplelist>
           </sect2>
           <sect2 id="netlinks">
@@ -220,6 +225,7 @@
                     <member>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</member>
                     <member>info - informacje dodatkowe</member>
 		    <member>location - lokalizacja (adres)</member>
+		    <member>nas - flaga NAS (0/1)</member>
                </simplelist>
           </sect2>
 	    <sect2 id="nodegroups">
@@ -237,6 +243,13 @@
 		    <member>id - identyfikator rekordu</member>
 		    <member>nodegroupid - identyfikator grupy</member>
 		    <member>nodeid - identyfikator komputera</member>
+		</simplelist>
+	    </sect2>
+	    <sect2 id="nastypes">
+	        <title>Typy NAS ('nastypes')</title>
+		<simplelist>
+		    <member>id - identyfikator rekordu</member>
+		    <member>name - nazwa typu urz±dzenia</member>
 		</simplelist>
 	    </sect2>
           <sect2 id="cash">
@@ -469,6 +482,14 @@
                     <member>value - kwota pozycji</member>
                     <member>description - opis pozycji</member>
                </simplelist>
+          </sect2>
+	  <sect2 id="docrights">
+                <title>Dokumenty - uprawnienia ('docrights')</title>
+                <simplelist>
+                        <member>userid - identyfikator u¿ytkownika</member>
+                        <member>doctype - id typu dokumentu (zobacz lib/definitions.php)</member>
+                        <member>rights - uprawnienia (1-odczyt, 2-tworzenie, 3-zatwierdzanie, 4-edycja, 5-usuwanie)</member>
+                </simplelist>
           </sect2>
 	<sect2 id="imessengers">
 		<title>Identyfikatory internetowe ('imessengers')</title>
