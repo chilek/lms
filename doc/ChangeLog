@@ -1,6 +1,6 @@
 $Id$
 
-version ? (????-??-??):
+version 1.11.8 Belus (2009-05-19):
 
   - fixed query fetching invoice's author (alec)
   - lmsd/ewx-pt: fixed mac/ip change detection (alec)
