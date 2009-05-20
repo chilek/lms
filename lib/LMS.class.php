@@ -3694,9 +3694,9 @@ class LMS
 			case 'smscenter':
 				if(!function_exists('curl_init'))
 					return trans('Curl extension not loaded!');
-				if(empty($this->CONFIG['sms']['smscenter_username']))
+				if(empty($this->CONFIG['sms']['username']))
 					return trans('SMSCenter username not set!');
-				if(empty($this->CONFIG['sms']['smscenter_password']))
+				if(empty($this->CONFIG['sms']['password']))
 					return trans('SMSCenter username not set!');
 				if(empty($this->CONFIG['sms']['from']))
 					return trans('SMS "from" not set!');
