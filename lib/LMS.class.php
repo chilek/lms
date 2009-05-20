@@ -3753,7 +3753,11 @@ class LMS
 				switch ($smsc_result[0])
 				{
 					case '002':
-						return null;
+					case '003':
+					case '004':
+					case '008':
+					case '011':
+						return MSG_SENT;
 					case '001':
 					        return 'Smscenter error 001, Incorrect login or password';
     					case '009':
@@ -3771,8 +3775,6 @@ class LMS
 					default:
 					        return 'Smscenter error '. $smsc_result[0] . '. Please contact smscenter administrator';
 				}
-				
-				return MSG_SENT;	
 			break;
 			case 'smstools':
 				$dir = !empty($this->CONFIG['sms']['smstools_outdir']) ? $this->CONFIG['sms']['smstools_outdir'] : '/var/spool/sms/outgoing';
