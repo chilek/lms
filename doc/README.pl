@@ -1847,20 +1847,22 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
 # Plik smtpd.conf (Cyrus-SASL):
 
 pwcheck_method: auxprop
-#sql_engine: mysql
-sql_engine: pgsql
+password_format: crypt
+mech_list: login plain
 sql_user: lms
 sql_passwd: hasło
 sql_hostnames: localhost
 sql_database: lms
+# MySQL
+#sql_engine: mysql
 #sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
 #       AND login='%u' AND domains.name ='%r' AND type & 2 = 2
 #       AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+# PostgreSQL
+sql_engine: pgsql
 sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
         AND login='%u' AND domains.name ='%r' AND type & 2 = 2
         AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
-password_format: crypt
-mech_list: login plain
 
 # authpgsqlrc (lub authmysqlrc) (Courier):
 
@@ -1921,8 +1923,7 @@ dbname = lms
 #       FROM passwd, domains WHERE domainid = domains.id
 #       AND login = '%u' AND domains.name = '%d'
 #       AND type & 2 = 2 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
-
-# pgSQL
+# PostgresSQL
 query = SELECT domains.name || '/' || login || '/'
         FROM passwd, domains WHERE domainid = domains.id
         AND login = '%u' AND domains.name = '%d'
@@ -1935,7 +1936,17 @@ user = lms
 password = hasło
 hosts = localhost
 dbname = lms
-# MySQL, PgSQL
+# MySQL
+#query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE CONCAT(p.login, '@', pd.name) END
+#       FROM passwd p
+#       JOIN domains pd ON (p.domainid = pd.id)
+#       WHERE p.id IN (SELECT aa.accountid
+#               FROM aliases a
+#               JOIN domains ad ON (a.domainid = ad.id)
+#               JOIN aliasassignments aa ON (aa.aliasid = a.id)
+#               WHERE a.login = '%u' AND ad.name = '%d')
+#       OR (p.login = '%u' AND pd.name = '%d' AND type & 2 = 2)
+# PostgreSQL
 query = SELECT CASE WHEN mail_forward != '' THEN mail_forward ELSE p.login || '@' || pd.name END
         FROM passwd p
         JOIN domains pd ON (p.domainid = pd.id)
@@ -1952,7 +1963,14 @@ user = lms
 password = hasło
 hosts = localhost
 dbname = lms
-# MySQL, PgSQL
+# MySQL
+#query = SELECT mail_bcc FROM passwd, domains
+#       WHERE domainid = domains.id
+#               AND login = '%u' AND domains.name = '%d'
+#               AND type & 2 = 2
+#               AND mail_bcc != ''
+#               AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+# PostgreSQL
 query = SELECT mail_bcc FROM passwd, domains
         WHERE domainid = domains.id
                 AND login = '%u' AND domains.name = '%d'
