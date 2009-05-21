@@ -1,5 +1,7 @@
 $Id$
 
+  - BTS#0000794: fixed postfix configuration for MySQL (alec)
+
 version 1.11.8 Belus (2009-05-19):
 
   - fixed query fetching invoice's author (alec)

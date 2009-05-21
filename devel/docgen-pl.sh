@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Skrypt s�u�y do tworzenia dokumentacji w r�nych formatach
-# (html, txt) na podstawie �r�d�owych plik�w sgml
+# Skrypt służy do tworzenia dokumentacji w różnych formatach
+# (html, txt) na podstawie źródłowych plików sgml
 #
 # Wymagane programy:
 # -sgml-tools
@@ -61,7 +61,7 @@ case "$1" in
     ;;
         
     *)
-	echo -e "$0: Brak parametru.\nSpos�b u�ycia: docgen.sh html|txt"
+	echo -e "$0: Brak parametru.\nSposób użycia: docgen.sh html|txt|all"
     ;;
 esac
 
