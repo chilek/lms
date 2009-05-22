@@ -34,7 +34,7 @@ if(isset($_POST['tariff']))
 
 	if($tariff['name']=='' && $tariff['description']=='' && $tariff['value']=='')
 	{
-		$SESSION->redirect('Location: ?m=tarifflist');
+		$SESSION->redirect('?m=tarifflist');
 	}
 
 	$tariff['value'] = str_replace(',','.',$tariff['value']);
