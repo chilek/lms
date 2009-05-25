@@ -44,7 +44,7 @@ function invoice_simple_form_fill($x,$y,$scale)
     $address = $invoice['division_address'];
     $zip = $invoice['division_zip'];
     $city = $invoice['division_city'];
-    $account = bankaccount($invoice['customerid']);
+    $account = bankaccount($invoice['customerid'], $invoice['account']);
     
     text_autosize(15*$scale+$x,568*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT", $shortname),350*$scale);
     text_autosize(15*$scale+$x,534*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2//TRANSLIT", $address),350*$scale);
@@ -79,7 +79,7 @@ function invoice_main_form_fill($x,$y,$scale)
     $address = $invoice['division_address'];
     $zip = $invoice['division_zip'];
     $city = $invoice['division_city'];
-    $account = bankaccount($invoice['customerid']);
+    $account = bankaccount($invoice['customerid'], $invoice['account']);
 
     text_autosize(15*$scale+$x,680*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",$name),950*$scale);
     text_autosize(15*$scale+$x,617*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2//TRANSLIT",$address." ".$zip." ".$city),950*$scale);

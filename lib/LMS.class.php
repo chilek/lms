@@ -458,8 +458,9 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT c.*, '
 			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-			(SELECT shortname FROM divisions WHERE id = c.divisionid) AS division
+			d.shortname AS division, d.account
 			FROM customers'.(defined('LMS-UI') ? 'view' : '').' c 
+			LEFT JOIN divisions d ON (d.id = c.divisionid)
 			WHERE c.id = ?', array($id)))
 		{
 			if(!$short)
@@ -482,7 +483,7 @@ class LMS
 			}
 			$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id=?', array($result['countryid']));
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
-			$result['bankaccount'] = bankaccount($result['id']);
+			$result['bankaccount'] = bankaccount($result['id'], $result['account']);
 
 			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type 
 					FROM imessengers WHERE customerid = ? ORDER BY type', 'type',
@@ -1954,13 +1955,14 @@ class LMS
 	function GetInvoiceContent($invoiceid)
 	{
 		if($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
-				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country, d.ten, d.ssn, 
-				d.cdate, d.paytime, d.paytype, d.numberplanid, d.closed, d.reference, d.reason, d.divisionid, 
+				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
+				d.ten, d.ssn, d.cdate, d.paytime, d.paytype, d.numberplanid,
+				d.closed, d.reference, d.reason, d.divisionid, 
 				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
 				ds.name AS division_name, ds.shortname AS division_shortname,
 				ds.address AS division_address, ds.zip AS division_zip,
 				ds.city AS division_city, ds.countryid AS division_countryid, 
-				ds.ten AS division_ten, ds.regon AS division_regon,
+				ds.ten AS division_ten, ds.regon AS division_regon, ds.account,
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
 				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace
 				FROM documents d
