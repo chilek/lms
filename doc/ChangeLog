@@ -2,6 +2,8 @@ $Id$
 
   - BTS#0000794: fixed postfix configuration for MySQL (alec)
   - improved performance of bank account fetching (alec)
+  - added contrib/bin cash-import scripts for BPH, BZ WBK and PEKAO
+    banks (Dariusz Kowalczyk)
 
 version 1.11.8 Belus (2009-05-19):
 
