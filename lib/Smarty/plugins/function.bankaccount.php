@@ -26,7 +26,7 @@
 
 function smarty_function_bankaccount($args, &$SMARTY)
 {
-	return bankaccount($args['id']);
+	return bankaccount($args['id'], $args['account']);
 }
 
 ?>
