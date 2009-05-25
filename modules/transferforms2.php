@@ -68,7 +68,7 @@ function main_form($x, $y, $data)
 //    {
 //	    $pdf->addtext($x+$i*14.6,$y,$font_size,$_ACCOUNT[$i]);
 //    }
-    $pdf->addtext($x,$y,$font_size, bankaccount($data['id']));
+    $pdf->addtext($x,$y,$font_size, bankaccount($data['id'], $data['account']));
     $y -= $lineh;
     $pdf->addtext($x+220,$y,$font_size,sprintf('%.2f',$balance));
     $y -= $lineh;
@@ -88,7 +88,7 @@ $customer = isset($_POST['customer']) ? intval($_POST['customer']) : 0;
 $group = isset($_POST['customergroup']) ? intval($_POST['customergroup']) : 0;
 $exclgroup = isset($_POST['groupexclude']) ? 1 : 0;
 
-$list = $DB->GetAll('SELECT c.id, c.address, c.zip, c.city, 
+$list = $DB->GetAll('SELECT c.id, c.address, c.zip, c.city, d.account, 
 	d.name AS d_name, d.address AS d_address, d.zip AS d_zip, d.city AS d_city, '
 	.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,   
 	COALESCE(SUM(value), 0.00) AS balance

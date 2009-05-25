@@ -24,13 +24,14 @@
  *  $Id$
  */
 
-function bankaccount($id)
+function bankaccount($id, $account=NULL)
 {
 	global $DB;
 
-	$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+	if($account === NULL)
+		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
                         FROM customers WHERE id = ?)', array($id));	
-	
+
 	$acclen = strlen($account);
 	
 	if(!empty($account) && $acclen < 21 && $acclen >= 8)

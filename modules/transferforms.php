@@ -40,7 +40,7 @@ function main_fill($x,$y,$scale)
     }
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2', $_NAME));
     $pdf->addtext(15*$scale+$x,617*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2', $_ADDRESS." ".$_ZIP." ".$_CITY));
-    $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale, bankaccount($invoice['customerid']));
+    $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale, bankaccount($invoice['customerid'], $invoice['account']));
     $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format($invoice['total'],2,',',''));
     $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['name']));
     $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$invoice['address']."; ".$invoice['zip']." ".$invoice['city']));
@@ -64,8 +64,8 @@ function simple_fill_mip($x,$y,$scale)
     $pdf->addtext(15*$scale+$x,560*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_SHORT_NAME));
     $pdf->addtext(15*$scale+$x,525*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_ADDRESS));
     $pdf->addtext(15*$scale+$x,490*$scale+$y,30*$scale, iconv('UTF-8', 'ISO-8859-2',$_ZIP." ".$_CITY));
-    $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid']),0,17));
-    $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid']),18,200));
+    $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid'], $invoice['account']),0,17));
+    $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr(bankaccount($invoice['customerid'], $invoice['account']),18,200));
     $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,'**'.number_format($invoice['total'],2,',','').'**');
     //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,$invoice['name']);
 
