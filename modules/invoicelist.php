@@ -95,7 +95,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 	}
         
 	if($hideclosed)
-		$where = ' AND closed = 0';
+		$where .= ' AND closed = 0';
 
 	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, type,
 			d.customerid, d.name, address, zip, city, countries.name AS country, template, closed, 
@@ -105,14 +105,14 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
 			END AS value, 
 			COUNT(a.docid) AS count
-	    		FROM documents d
+			FROM documents d
 			JOIN invoicecontents a ON (a.docid = d.id)
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
 				SELECT DISTINCT a.customerid FROM customerassignments a
-			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid) 
 			WHERE e.customerid IS NULL AND 
@@ -125,7 +125,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			.' GROUP BY d.id, number, cdate, d.customerid, 
 			d.name, address, zip, city, template, closed, type, reference, countries.name '
 			.(isset($having) ? $having : '')
-	    		.$sqlord.' '.$direction))
+			.$sqlord.' '.$direction))
 	{
 		if ($page > 0) {
 	                $start =  ($page - 1) * $pagelimit;
