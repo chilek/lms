@@ -136,16 +136,16 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		else
 			$time = time();
 			
-		if(isset($pattern['comment_replace']))
+		if(!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 
 		$customer = trim($lastname.' '.$name);
 		$comment = trim($comment);
 		
-		if(isset($pattern['use_line_hash']) && $pattern['use_line_hash'])
-			$hash = md5($theline);
+		if(!empty($pattern['use_line_hash']))
+			$hash = md5($theline.(!empty($pattern['line_idx_hash']) ? $ln : ''));
 		else
-			$hash = md5($time.$value.$customer.$comment);
+			$hash = md5($time.$value.$customer.$comment.(!empty($pattern['line_idx_hash']) ? $ln : ''));
 		
 		if(is_numeric($value))
 		{
