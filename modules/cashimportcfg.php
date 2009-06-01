@@ -54,6 +54,7 @@ $patterns[] = array(
     'modvalue' => 0,		// if not zero do value = value * modvalue
     'use_line_hash' => FALSE,	// create md5 hash for whole import line instead of
 				// time, value, customer name and comment
+    'line_idx_hash' => FALSE,	// include line number into hash data
 );
 
 ?>
