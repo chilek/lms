@@ -25,6 +25,7 @@
  */
 
 $patterns[] = array(
+    'id' => NULL,	// import source identifier (from 'cashsources' table)
     'pattern' => "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/",
     'pid' => 0,		// customer ID position in expression
 			// if zero - we try to search ID by regexp,

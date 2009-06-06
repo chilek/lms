@@ -57,6 +57,16 @@ if(isset($CONFIG['phpui']['ewx_support']) && chkconfig($CONFIG['phpui']['ewx_sup
                 WHERE nodeid = nodes.id AND ownerid = ?', array($customerid)));
 }
 
+$SMARTY->assign(array(
+	'expired' => isset($_GET['expired']) ? $_GET['expired'] : false,
+	'time' => $SESSION->get('addbt'),
+	'value' => $SESSION->get('addbv'),
+	'taxid' => $SESSION->get('addbtax'),
+	'comment' => $SESSION->get('addbc'),
+	'sourceid' => $SESSION->get('addsource'),
+));
+
+$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 $SMARTY->assign_by_ref('customernodes', $customernodes);
 $SMARTY->assign_by_ref('assignments', $assignments);
 $SMARTY->assign_by_ref('customergroups', $customergroups);

@@ -1,0 +1,42 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="POST" action="?m=cashsourceedit&id={$sourceedit.id}" name="sourceedit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<img src="img/isource.gif" alt="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{t}Name:{/t}</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<INPUT type="text" size="40" name="sourceedit[name]" value="{$sourceedit.name}" {tip text="Enter source name" trigger="name" bold=1}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA rows="5" cols="50" name="sourceedit[description]" {tip text="Enter additional information (optional)" trigger="value"}>{$sourceedit.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.sourceedit.submit();" accesskey="s">{t}Submit{/t} <img src="img/save.gif" alt=""></A>
+			<A href="?m=cashsourcelist">{t}Cancel{/t} <img src="img/cancel.gif" alt=""></A><BR>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['sourceedit'].elements['sourceedit[name]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

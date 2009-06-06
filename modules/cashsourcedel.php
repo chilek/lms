@@ -24,27 +24,17 @@
  *  $Id$
  */
 
-if(!eregi("^[0-9]+$",$_GET['id']))
+$id = $_GET['id'];
+
+if($id && $_GET['is_sure']=='1')
 {
-	$SESSION->redirect('?m=customerlist');
+	if (!$DB->GetOne('SELECT 1 FROM cash WHERE sourceid = ?', array($id))
+		&& !$DB->GetOne('SELECT 1 FROM cashimport WHERE sourceid = ?', array($id)))
+	{
+		$DB->Execute('DELETE FROM cashsources WHERE id = ?', array($id));
+	}
 }
 
-if($LMS->CustomerExists($_GET['id']) == 0)
-{
-	$SESSION->redirect('?m=customerlist');
-}
-
-$customerid = $_GET['id'];
-
-include(MODULES_DIR.'/customer.inc.php');
-
-if($customerinfo['cutoffstop'] > mktime(0,0,0))
-        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$layout['pagetitle'] = trans('Customer Info: $0',$customerinfo['customername']);
-
-$SMARTY->display('customerinfo.html');
+header('Location: ?m=cashsourcelist');
 
 ?>

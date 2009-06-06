@@ -125,7 +125,9 @@ elseif(isset($_POST['marks']))
 			$balance['value'] = $import['value'];
 			$balance['customerid'] = $customers[$id];
 			$balance['comment'] = $import['description'];
-
+			$balance['importid'] = $import['id'];
+			$balance['sourceid'] = $import['sourceid'];
+			
 			if($import['value'] > 0 && isset($CONFIG['finances']['cashimport_checkinvoices'])
 				&& chkconfig($CONFIG['finances']['cashimport_checkinvoices']))
 			{
@@ -202,6 +204,7 @@ $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('listdata', isset($listdata) ? $listdata : NULL);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 $SMARTY->display('cashimport.html');
 
 ?>

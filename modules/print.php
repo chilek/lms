@@ -128,6 +128,7 @@ switch($type)
 		$net = intval($_POST['network']);
 		$group = intval($_POST['customergroup']);
 		$division = intval($_POST['division']);
+		$source = intval($_POST['source']);
 		$types = isset($_POST['types']) ? $_POST['types'] : NULL;
 		$docs = $_POST['docs'];
 
@@ -184,6 +185,7 @@ switch($type)
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
 					.'WHERE time<?'
 					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
+					.($source ? ' AND c.sourceid = '.intval($source) : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
@@ -203,6 +205,7 @@ switch($type)
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid)  ' : '')
 					.'WHERE time <= ? '
 					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
+					.($source ? ' AND c.sourceid = '.intval($source) : '')
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
@@ -274,7 +277,9 @@ switch($type)
 		if($group)
 			$SMARTY->assign('group', $DB->GetOne('SELECT name FROM customergroups WHERE id = ?', array($group)));
 		if($division)
-    			$SMARTY->assign('division', $DB->GetOne('SELECT name FROM divisions WHERE id = ?', array($division)));
+			$SMARTY->assign('division', $DB->GetOne('SELECT name FROM divisions WHERE id = ?', array($division)));
+		if($source)
+			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 								
 		$SMARTY->display('printbalancelist.html');
 	break;
@@ -310,6 +315,42 @@ switch($type)
 
 		$SMARTY->assign('incomelist', $incomelist);
 		$SMARTY->display('printincomereport.html');
+	break;
+
+	case 'importlist': /********************************************/
+
+		$from = $_POST['importfrom'];
+		$to = $_POST['importto'];
+		$source = $_POST['source'];
+
+		// date format 'yyyy/mm/dd'
+		list($year, $month, $day) = split('/',$from);
+		$date['from'] = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
+		
+		if($to) {
+			list($year, $month, $day) = split('/',$to);
+			$date['to'] = mktime(23,59,59,$month,$day,$year);
+		} else {
+			$to = date("Y/m/d",time());
+			$date['to'] = mktime(23,59,59); // end of today
+		}
+		
+		$layout['pagetitle'] = trans('Cash Import History ($0)', ($from ? $from.' - ' : '').$to);
+		
+		$importlist = $DB->GetAll('SELECT time, value, customerid, '
+			.$DB->Concat('upper(v.lastname)',"' '",'v.name').' AS customername 
+			FROM cash c
+			JOIN customersview v ON (v.id = c.customerid)
+			WHERE '
+			.($source ? 'c.sourceid = '.intval($source).' AND ' : '')
+			.'c.importid IS NOT NULL
+			ORDER BY time',
+			array($date['from'], $date['to']));
+
+		if ($source)
+			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
+		$SMARTY->assign('importlist', $importlist);
+		$SMARTY->display('printimportlist.html');
 	break;
 
 	case 'invoices': /********************************************/
@@ -351,7 +392,7 @@ switch($type)
 			.(!empty($_POST['numberplan']) ? '&numberplanid='.intval($_POST['numberplan']) : '')
 			.(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
 		);
-	break;	
+	break;
 
 	case 'transferforms': /********************************************/
 	
@@ -758,6 +799,7 @@ switch($type)
 		$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(DOC_INVOICE, DOC_CNOTE)));
 		$SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
 		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
+		$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 		$SMARTY->assign('printmenu', 'finances');
 		$SMARTY->display('printindex.html');
 	break;

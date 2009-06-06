@@ -654,7 +654,13 @@ $menu = array(
 					'link' => '?m=daemoninstancelist',
 					'tip' => trans('Daemon(s) Configuration'),
 					'prio' => 70,
-				)
+				),
+				array(
+					'name' => trans('Import Sources'),
+					'link' => '?m=cashsourcelist',
+					'tip' => trans('List of Cash Import Sources'),
+					'prio' => 80,
+				),
 			),
 		),
 
