@@ -28,7 +28,7 @@ $addbalance = $_POST['addbalance'];
 
 foreach($addbalance as $key=>$value)
 	if(!is_array($value))
-		$addbalance[$key] = trim($value);		
+		$addbalance[$key] = trim($value);
 
 $addbalance['value'] = str_replace(',','.', $addbalance['value']);
 
@@ -80,6 +80,13 @@ $SESSION->save('addbtax', isset($addbalance['taxid']) ? $addbalance['taxid'] : 0
 
 if(!isset($addbalance['type']))
         $addbalance['type'] = 1;
+
+if (!empty($addbalance['sourceid']))
+{
+	if (!$addbalance['type'])
+		$addbalance['sourceid'] = NULL;
+	$SESSION->save('addsource', $addbalance['sourceid']);
+}
 
 if($addbalance['type'] == 0)
 	$addbalance['value'] *= -1;

@@ -186,9 +186,18 @@
 					<TD class="ftop" colspan="3" nowrap>
 						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation0" VALUE="0" {tip text="Select type of operation"}><A HREF="javascript:checkElement('operation0')">{t}liability{/t}</a><BR>
 						<INPUT TYPE="radio" NAME="addbalance[type]" ID="operation1" VALUE="1" {tip text="Select type of operation"} checked><A HREF="javascript:checkElement('operation1')">{t}income/expense{/t}</a>
+						{if $sourcelist}
+						<BR><IMG src="img/isource.gif" alt="">
+						<SELECT name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
+						<OPTION value="0">{t}- none -{/t}</OPTION> 
+						{foreach from=$sourcelist item=item}
+						<OPTION value="{$item.id}"{if $item.id == $sourceid} SELECTED{/if}>{$item.name}</OPTION>
+						{/foreach}
+						</SELECT>
+						{/if}
 					</TD>
 					<TD class="ftop" colspan="2">
-						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {if $comment}VALUE="{$comment}"{/if} {tip text="Enter short description of transaction"}> 
+						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" value="{$comment}" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
 				<TR class="light">

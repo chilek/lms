@@ -2267,18 +2267,21 @@ class LMS
 	{
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
 
-		return $this->DB->Execute('INSERT INTO cash (time, userid, value, type, taxid, customerid, comment, docid, itemid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-					array(isset($addbalance['time']) ? $addbalance['time'] : time(),
-					    isset($addbalance['userid']) ? $addbalance['userid'] : $this->AUTH->id,
-					    $addbalance['value'],
-					    isset($addbalance['type']) ? $addbalance['type'] : 0,
-					    isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
-					    $addbalance['customerid'],
-					    $addbalance['comment'],
-					    isset($addbalance['docid']) ? $addbalance['docid'] : 0,
-					    isset($addbalance['itemid']) ? $addbalance['itemid'] : 0
-					    ));
+		return $this->DB->Execute('INSERT INTO cash (time, userid, value, type, taxid,
+			customerid, comment, docid, itemid, importid, sourceid)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array(isset($addbalance['time']) ? $addbalance['time'] : time(),
+				isset($addbalance['userid']) ? $addbalance['userid'] : $this->AUTH->id,
+				$addbalance['value'],
+				isset($addbalance['type']) ? $addbalance['type'] : 0,
+				isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
+				$addbalance['customerid'],
+				$addbalance['comment'],
+				isset($addbalance['docid']) ? $addbalance['docid'] : 0,
+				isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
+				!empty($addbalance['importid']) ? $addbalance['importid'] : NULL,
+				!empty($addbalance['sourceid']) ? $addbalance['sourceid'] : NULL,
+			));
 	}
 
 	function DelBalance($id)

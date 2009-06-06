@@ -43,7 +43,7 @@ ALTER TABLE netdevices ADD secret varchar(60) NOT NULL DEFAULT '';
 ALTER TABLE netdevices ADD community varchar(50) NOT NULL DEFAULT '';
 
 CREATE VIEW nas AS 
-SELECT no.id, inet_ntoa(no.ipaddr) AS name, nd.shortname, nd.nastype AS type,
+SELECT no.id, inet_ntoa(no.ipaddr) AS nasname, nd.shortname, nd.nastype AS type,
 nd.clients AS ports, nd.secret, nd.community, nd.description 
 FROM nodes no 
 JOIN netdevices nd ON (no.netdev = nd.id) 

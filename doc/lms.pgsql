@@ -79,11 +79,15 @@ CREATE TABLE cash (
 	comment varchar(255) 	DEFAULT '' NOT NULL,
 	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
+	importid integer	DEFAULT NULL,
+	sourceid integer	DEFAULT NULL,
 	PRIMARY KEY (id)
 );
-CREATE INDEX cash_customerid_idx ON cash(customerid);
-CREATE INDEX cash_docid_idx ON cash(docid);
-CREATE INDEX cash_time_idx ON cash(time);
+CREATE INDEX cash_customerid_idx ON cash (customerid);
+CREATE INDEX cash_docid_idx ON cash (docid);
+CREATE INDEX cash_importid_idx ON cash (importid);
+CREATE INDEX cash_sourceid_idx ON cash (sourceid);
+CREATE INDEX cash_time_idx ON cash (time);
 
 /* -------------------------------------------------------- 
   Structure of table "networks" 
@@ -783,11 +787,26 @@ CREATE TABLE cashimport (
     customerid integer 		DEFAULT 0 NOT NULL,
     hash varchar(50) 		DEFAULT '' NOT NULL,
     closed smallint 		DEFAULT 0 NOT NULL,
+    sourceid integer		DEFAULT NULL,
     PRIMARY KEY (id)
 );
 CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 
 /* ---------------------------------------------------
+ Structure of table "cashsources"
+------------------------------------------------------*/
+DROP SEQUENCE cashsources_id_seq;
+CREATE SEQUENCE cashsources_id_seq;
+DROP TABLE cashsources;
+CREATE TABLE cashsources (
+    id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
+    name varchar(32)    DEFAULT '' NOT NULL,
+    description text	DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+* ---------------------------------------------------
  Structure of table "hosts"
 ------------------------------------------------------*/
 DROP SEQUENCE hosts_id_seq;
@@ -1250,7 +1269,7 @@ SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
 CREATE VIEW nas AS 
-SELECT n.id, inet_ntoa(n.ipaddr) AS name, d.shortname, d.nastype AS type,
+SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
 	FROM nodes n 
 	JOIN netdevices d ON (n.netdev = d.id) 
@@ -1314,4 +1333,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009051200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009060200');

@@ -40,7 +40,7 @@ $DB->Execute("ALTER TABLE netdevices ADD secret varchar(60) NOT NULL DEFAULT ''"
 $DB->Execute("ALTER TABLE netdevices ADD community varchar(50) NOT NULL DEFAULT ''");
 
 $DB->Execute("CREATE VIEW nas AS 
-        SELECT no.id, inet_ntoa(no.ipaddr) name, nd.shortname, nd.nastype type,
+        SELECT no.id, inet_ntoa(no.ipaddr) nasname, nd.shortname, nd.nastype type,
 	nd.clients ports, nd.secret, nd.community, nd.description 
         FROM nodes no 
         JOIN netdevices nd ON (no.netdev = nd.id) 

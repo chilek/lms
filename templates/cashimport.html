@@ -3,7 +3,7 @@
 <H1>{$layout.pagetitle}</H1>
 {literal}
 <SCRIPT type="text/javascript">
-	<!--
+<!--
 	function CheckAll()
 	{
 		for (var i=0; i<document.cashimport.elements.length; i++)
@@ -31,8 +31,7 @@
 		document.cashimport.action += '&action=save';
 		document.cashimport.submit();
 	}
-
-	//-->
+//-->
 </SCRIPT>
 {/literal}
 <P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
@@ -176,15 +175,34 @@
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fall" width="100%" colspan="2">
-			<B>{t}Enter path to file with data to import{/t}</B>
+			<B>{t}Import from file{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
-		<TD class="fbl" width="1%" NOWRAP>
+		<TD class="fleft" width="1%" NOWRAP>
 			<IMG src="img/attach.gif" alt="">
-			<B>{t}Import file:{/t} </B><INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+			<B>{t}Import file:{/t} </B>
 		</TD>
-		<TD class="fbr" width="99%" align="right" nowrap>
+		<TD class="fright" width="99%" NOWRAP>
+			<INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fleft" width="1%" NOWRAP>
+			<IMG src="img/isource.gif" alt="">
+			<B>{t}Source:{/t} </B>
+		</TD>
+		<TD class="fright" width="99%" NOWRAP>
+			<SELECT name="source" {tip text="Select import source (optional)" trigger="source"}>
+			<OPTION value="0">{t}- auto -{/t}</OPTION> 
+			{foreach from=$sourcelist item=item}
+			<OPTION value="{$item.id}">{$item.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" colspan="2" width="100%" align="right" nowrap>
 			<A href="javascript: document.parser.submit();">{t}Submit{/t} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>

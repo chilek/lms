@@ -24,27 +24,20 @@
  *  $Id$
  */
 
-if(!eregi("^[0-9]+$",$_GET['id']))
+function GetSourceList()
 {
-	$SESSION->redirect('?m=customerlist');
+	global $DB;
+	$list = $DB->GetAll("SELECT id, name, description FROM cashsources ORDER BY name");
+	return $list;
 }
 
-if($LMS->CustomerExists($_GET['id']) == 0)
-{
-	$SESSION->redirect('?m=customerlist');
-}
+$layout['pagetitle'] = trans('Cash Import Source List');
 
-$customerid = $_GET['id'];
-
-include(MODULES_DIR.'/customer.inc.php');
-
-if($customerinfo['cutoffstop'] > mktime(0,0,0))
-        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
+$sourcelist = GetSourceList();
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Customer Info: $0',$customerinfo['customername']);
-
-$SMARTY->display('customerinfo.html');
+$SMARTY->assign('sourcelist', $sourcelist);
+$SMARTY->display('cashsourcelist.html');
 
 ?>

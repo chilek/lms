@@ -155,10 +155,18 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			}
 		
 			if(!$DB->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash)))
+			{
+				if(!empty($_POST['source']))
+					$sourceid = intval($_POST['source']);
+				elseif(!empty($pattern['id']))
+					$sourceid = intval($pattern['id']);
+				else
+					$sourceid = NULL;
+				
 				$DB->Execute('INSERT INTO cashimport (date, value, customer, 
-					customerid, description, hash) VALUES (?,?,?,?,?,?)',
-					array($time, $value, $customer, $id, $comment, $hash));
-			else
+					customerid, description, hash, sourceid) VALUES (?,?,?,?,?,?,?)',
+					array($time, $value, $customer, $id, $comment, $hash, $sourceid));
+			} else
 				$error['lines'][$ln] = array(
 					'customer' => $customer,
 					'customerid' => $id,
@@ -175,18 +183,20 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 elseif(isset($_FILES['file'])) // upload errors
 	switch($_FILES['file']['error'])
 	{
-		case 1: 			
+		case 1: 
 		case 2: $error['file'] = trans('File is too large.'); break;
 		case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
 		case 4: $error['file'] = trans('Path to file was not specified.'); break;
 		default: $error['file'] = trans('Problem during file upload.'); break;
-	}	
+	}
 
 $layout['pagetitle'] = trans('Cash Operations Import');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
+$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 $SMARTY->display('cashimport.html');
 
 ?>
