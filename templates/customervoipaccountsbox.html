@@ -3,7 +3,7 @@
 	<TR class="dark hand">
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('voipaccountspanel');">
 			<IMG src="img/voip.gif" alt="">
-			<B><A name="voipaccounts">{t 0=$customervoipaccounts.total|default:"0"}Voip Accounts ($0):{/t}</A></B> 
+			<B>{t 0=$customervoipaccounts.total|default:"0"}Voip Accounts ($0):{/t}</B> 
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
 			{if $customerinfo.status neq "1" and ! $customerinfo.deleted}<A HREF="?m=voipaccountadd&ownerid={$customerinfo.id}">{t}New Voip Account{/t} &raquo;</A>&nbsp;{/if}

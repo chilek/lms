@@ -46,7 +46,7 @@ function CheckAllN2()
 	<TR CLASS="DARK">
 		<TD width="99%" class="fleftu hand" onclick="showOrHide('nodespanel-{$layout.module}');">
 			<IMG SRC="img/node.gif" alt="">
-			<B><A name="customernodes">{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</A></B>
+			<B>{t 0=$customernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
 			{if $ewx_channelid}
 			<B class="brown">[{t}Channel:{/t} {$ewx_channelid|string_format:"%05d"}]</B> 
 			{/if}
