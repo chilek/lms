@@ -471,16 +471,11 @@ invoices.</para></note></para>
 	    <itemizedlist>
 		<listitem>
 			<para><emphasis>Balance sheet for your network</emphasis>
-			including financial operations for given period, signed by selected LMS
-			user</para>
+			including financial operations for given period</para>
 		</listitem>
 		<listitem>
-			<para><emphasis>Total invoiceless income</emphasis> for
-			given period</para>
-		</listitem>
-		<listitem>
-			<para><emphasis>Liability report</emphasis> for given day,
-			for all or selected user</para>
+			<para><emphasis>Customer balance sheet</emphasis> for given
+			period.</para>
 		</listitem>
 		<listitem>
 			<para><emphasis>Sale Registry</emphasis>, which consists of
@@ -491,16 +486,24 @@ invoices.</para></note></para>
 			cash receipts for given period and/or given registry and cashier.</para>
 		</listitem>
 		<listitem>
-			<para><emphasis>Customer balance sheet</emphasis> for given
-			period.</para>
-		</listitem>
-		<listitem>
 			<para><emphasis>Invoices</emphasis> for given
 			period or/and selected customer.</para>
 		</listitem>
 		<listitem>
 			<para><emphasis>Transfer forms</emphasis> for selected
 			customer or customers group and given balance limit (only for polish forms).</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Total invoiceless income</emphasis> for
+			given period</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Liability report</emphasis> for given day,
+			for all or selected user</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Cash import history</emphasis> for given
+			period.</para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
@@ -1463,6 +1466,12 @@ registered/unregistered cases) if ticket will be running via email.</para>
 	    <para>When you create hosts list, you will be able to configure
 	    daemon <emphasis>lmsd</emphasis>. Daemon configuration is described
 	    in appropriate chapter.</para>
+	</sect2>
+	<sect2 id="config-sources">
+	    <title>Import sources</title>
+	    <para>It's possible to import customer payments from many sources (banks).
+	    Here you can define its names/description. Then you will able to
+	    select source from the list to add/import payments or some create payments reports.</para>
 	</sect2>
     </sect1>
 </chapter>

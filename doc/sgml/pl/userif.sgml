@@ -459,18 +459,14 @@
 	    <para>Wydruki zestawieñ finansowych obejmuj±:
 	    <itemizedlist>
 		<listitem>
-		    <para><emphasis>Bilans finansowy sieci</emphasis> obejmuj±cy operacje finansowe 
-		    za dany okres z mo¿liwo¶ci± wybrania u¿ytkownika.</para>
+			<para><emphasis>Historia operacji finansowych</emphasis> obejmuj±cy operacje finansowe 
+			za dany okres z mo¿liwo¶ci± u¿ycia rozbudowanego filtra.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>£±czny przychód bezrachunkowy sieci</emphasis> w danym okresie.</para>
+			<para><emphasis>Historia operacji klienta</emphasis> na dany okres.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Raport wierzytelno¶ci</emphasis> na dany dzieñ, dla wszystkich lub 
-		    wybranego klienta.</para>
-		</listitem>
-		<listitem>
-		    <para><emphasis>Rejestr sprzeda¿y</emphasis>, czyli zestawienie faktur na dany okres.</para>
+			<para><emphasis>Rejestr sprzeda¿y</emphasis>, czyli zestawienie faktur na dany okres.</para>
 		</listitem>
 		<listitem>
 			<para><emphasis>Raport kasowy</emphasis>, czyli zestawienie dokumentów
@@ -478,16 +474,24 @@
 			wybranego kasjera.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Bilans klienta</emphasis> na dany okres.</para>
-		</listitem>
-		<listitem>
-		    <para><emphasis>Faktury</emphasis> - wydruk wszystkich lub wybranego klienta za dany okres 
-		    (z wyborem orygina³/kopia) lub wygenerowanie PDFa z danymi potrzebnymi do zadruku standardowych 
-		    dwuodcinkowych formularzy przelewu/wp³aty z potwierdzeniem.</para>
+			<para><emphasis>Faktury</emphasis> - wydruk wszystkich lub wybranego klienta za dany okres 
+			(z wyborem orygina³/kopia) lub wygenerowanie PDFa z danymi potrzebnymi do zadruku standardowych 
+			dwuodcinkowych formularzy przelewu/wp³aty z potwierdzeniem.</para>
 		</listitem>
 		<listitem>
 			<para><emphasis>Formularze przelewu</emphasis> - wydruk PDFa z danymi przeznaczonymi
 			do zadruku standardowych czteroodcinkowych formularzy przelewu/wp³aty.</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>£±czny przychód bezrachunkowy sieci</emphasis> w danym okresie.</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>Raport wierzytelno¶ci</emphasis> na dany dzieñ, dla wszystkich lub 
+		    wybranego klienta.</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Historia importu p³atno¶ci</emphasis> z danego okres
+			z mo¿liwo¶ci± wyboru ¼ród³a importu.</para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
@@ -1549,8 +1553,19 @@ links -dump \
 	<sect2 id="config-daemon">
 		<title>Demon</title>
 		<para>Po zdefiniowaniu hostów mo¿na rozpocz±æ konfiguracjê
-		demona <emphasis>lmsd</emphasis>.Konfiguracja jest bardziej
+		demona <emphasis>lmsd</emphasis>. Konfiguracja jest bardziej
 		szczegó³owo opisana w rozdziale dotycz±cym demona.</para>
+	</sect2>
+	<sect2 id="config-sources">
+		<title>¬ród³a importu</title>
+		<para>Import p³atno¶ci mo¿e odbywaæ siê z wielu ¼róde³ (banków).
+		W tym miejscu definiuje siê ich nazwy, co umo¿liwia pó¼niejsze
+		przeszukiwanie wp³at wg ¼ród³a. ¬ród³o mo¿na ustawiæ równie¿
+                dla wp³at klientów poza importem. Dokonuj±c importu p³atno¶ci
+		masz mo¿liwo¶æ wyboru ¼ród³a. Mo¿liwe jest automatyczne okre¶lenie
+		¼ród³a, w tym celu nale¿y przypisaæ identyfikator ¼ród³a do
+		wzorca w konfiguracji importu.
+		</para>
 	</sect2>
     </sect1>
 </chapter>

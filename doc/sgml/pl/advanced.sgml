@@ -264,6 +264,8 @@
                     <member>customerid - identyfikator klienta ('0' - je¶li nie dotyczy)</member>
                     <member>docid - identyfikator dokumentu (np. faktury) obejmuj±cego dan± operacjê</member>
                     <member>itemid - nr pozycji na fakturze</member>
+		    <member>importid - identyfikator importu</member>
+		    <member>sourceid - identyfikator ¼ród³a importu</member>
                     <member>comment - opis operacji</member>
                </simplelist>
           </sect2>
@@ -277,7 +279,16 @@
                     <member>description - opis operacji</member>
                     <member>customerid - identyfikator klienta</member>
                     <member>hash - unikalny skrót danych operacji</member>
+		    <member>sourceid - identyfikator ¼ród³a importu</member>
                     <member>closed - status operacji</member>
+               </simplelist>
+          </sect2>
+	  <sect2 id="cashsources">
+               <title>¯ród³a importu ('cashsources')</title>
+               <simplelist>
+                    <member>id - identyfikator</member>
+                    <member>name - nazwa</member>
+                    <member>description - opis</member>
                </simplelist>
           </sect2>
           <sect2 id="taxes">
