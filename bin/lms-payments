@@ -541,7 +541,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 		{
 			my $alldays = 1;
 			my $diffdays = sprintf("%d", ($today - $assign->{'datefrom'})/86400);
-			my $period = strftime("%Y/%m/%d", 0, 0, 0, $day - $diffdays, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 0, $day -1, $month - 1, $year - 1900);;
+			my $period = strftime("%Y/%m/%d", 0, 0, 0, $day - $diffdays, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 0, $day - 1, $month - 1, $year - 1900);
 			
 			for ($assign->{'period'})
 	                {
