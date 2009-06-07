@@ -1502,16 +1502,17 @@ Chapter 3. User Interface (LMS-UI)
 
    There are several options for balance sheet printouts:
      * Balance sheet for your network including financial operations for
-       given period, signed by selected LMS user
-     * Total invoiceless income for given period
-     * Liability report for given day, for all or selected user
+       given period
+     * Customer balance sheet for given period.
      * Sale Registry, which consists of invoices for given period.
      * Cash Report, which consists of cash receipts for given period
        and/or given registry and cashier.
-     * Customer balance sheet for given period.
      * Invoices for given period or/and selected customer.
      * Transfer forms for selected customer or customers group and given
        balance limit (only for polish forms).
+     * Total invoiceless income for given period
+     * Liability report for given day, for all or selected user
+     * Cash import history for given period.
      __________________________________________________________________
 
 3.8. Documents
@@ -2401,6 +2402,14 @@ links -dump \
 
    When you create hosts list, you will be able to configure daemon lmsd.
    Daemon configuration is described in appropriate chapter.
+     __________________________________________________________________
+
+3.15.7. Import sources
+
+   It's possible to import customer payments from many sources (banks).
+   Here you can define its names/description. Then you will able to select
+   source from the list to add/import payments or some create payments
+   reports.
      __________________________________________________________________
 
 Chapter 4. Scripts
@@ -5421,6 +5430,8 @@ Chapter 7. For curious
    docid - serial number for document (e.g. invoice) related to this
    operation
    itemid - document item identifier
+   importid - import identifier
+   sourceid - import source identifier
    comment - description of operation
      __________________________________________________________________
 
@@ -5434,10 +5445,18 @@ Chapter 7. For curious
    customerid - customer's serial number
    description - operation description
    hash - unique operation identifier
+   sourceid - import source identifier
    closed - yes (1), if operation was moved to cash table
      __________________________________________________________________
 
-7.2.15. Subscription fees ('tariffs')
+7.2.15. Cash import sources ('cashsources')
+
+   id - serial number
+   name - name
+   description - additional information
+     __________________________________________________________________
+
+7.2.16. Subscription fees ('tariffs')
 
    id - serial number
    name - subscription name
@@ -5467,7 +5486,7 @@ Chapter 7. For curious
    description - description for subscription
      __________________________________________________________________
 
-7.2.16. Custom liabilities ('liabilities')
+7.2.17. Custom liabilities ('liabilities')
 
    id - serial number
    name - liability name/description
@@ -5476,7 +5495,7 @@ Chapter 7. For curious
    prodid - product/service classification number
      __________________________________________________________________
 
-7.2.17. Solid payments ('payments')
+7.2.18. Solid payments ('payments')
 
    id - serial number
    name - name
@@ -5488,7 +5507,7 @@ Chapter 7. For curious
    description - description for payment
      __________________________________________________________________
 
-7.2.18. Financial assignments ('assignments')
+7.2.19. Financial assignments ('assignments')
 
    id - serial number
    tariffid - subscription serial number
@@ -5505,14 +5524,14 @@ Chapter 7. For curious
    settlement - do deficient period settlement? (1 - yes, 0 - no)
      __________________________________________________________________
 
-7.2.19. Nodes-tariffs assignments ('nodeassignments')
+7.2.20. Nodes-tariffs assignments ('nodeassignments')
 
    id - serial number
    assignmentid - financial assignment serial number
    nodeid - node serial number
      __________________________________________________________________
 
-7.2.20. Tax rates ('taxes')
+7.2.21. Tax rates ('taxes')
 
    id - serial number
    value - tax value
@@ -5522,7 +5541,7 @@ Chapter 7. For curious
    validto - binding period end
      __________________________________________________________________
 
-7.2.21. Documents numbering plans ('numberplans')
+7.2.22. Documents numbering plans ('numberplans')
 
    id - serial number
    template - number template (pattern)
@@ -5532,14 +5551,14 @@ Chapter 7. For curious
    '0'
      __________________________________________________________________
 
-7.2.22. Numbering plans to divisions assignments ('numberplanassignments')
+7.2.23. Numbering plans to divisions assignments ('numberplanassignments')
 
    id - serial number
    planid - numbering plan identifier
    divisionid - division identifier
      __________________________________________________________________
 
-7.2.23. Cash registries ('cashregs')
+7.2.24. Cash registries ('cashregs')
 
    id - serial number
    name - registry name
@@ -5549,7 +5568,7 @@ Chapter 7. For curious
    disabled - summary disabling (0/1)
      __________________________________________________________________
 
-7.2.24. Cash registries - access rights ('cashrights')
+7.2.25. Cash registries - access rights ('cashrights')
 
    id - serial number
    regid - registry serial number
@@ -5557,7 +5576,7 @@ Chapter 7. For curious
    rights - (1-read, 2-write, 3-advanced)
      __________________________________________________________________
 
-7.2.25. Cash registries - cash history ('cashreglog')
+7.2.26. Cash registries - cash history ('cashreglog')
 
    id - serial number
    regid - registry serial number
@@ -5568,7 +5587,7 @@ Chapter 7. For curious
    description - additional information
      __________________________________________________________________
 
-7.2.26. Documents: invoices, receipts, contracts, etc. ('documents')
+7.2.27. Documents: invoices, receipts, contracts, etc. ('documents')
 
    id - serial number
    number - document number (%N)
@@ -5593,7 +5612,7 @@ Chapter 7. For curious
    reason - e.g. invoice note reason
      __________________________________________________________________
 
-7.2.27. Non-financial documents contents ('documentcontents')
+7.2.28. Non-financial documents contents ('documentcontents')
 
    docid - document serial number
    title - document title
@@ -5605,7 +5624,7 @@ Chapter 7. For curious
    description - additional information
      __________________________________________________________________
 
-7.2.28. Invoices ('invoicecontents')
+7.2.29. Invoices ('invoicecontents')
 
    docid - invoice serial number
    itemid - invoice item identifier
@@ -5619,7 +5638,7 @@ Chapter 7. For curious
    tariffid - subscription serial number
      __________________________________________________________________
 
-7.2.29. Cash Receipts ('receiptcontents')
+7.2.30. Cash Receipts ('receiptcontents')
 
    docid - receipt serial number
    itemid - receipt item identifier
@@ -5628,14 +5647,14 @@ Chapter 7. For curious
    description - description for receipt item
      __________________________________________________________________
 
-7.2.30. Documents - access rights ('docrights')
+7.2.31. Documents - access rights ('docrights')
 
    userid - user identifier
    doctype - document type id (see lib/definitions.php)
    rights - (1-read, 2-create, 3-confirm, 4-edit, 5-delete)
      __________________________________________________________________
 
-7.2.31. Internet Messengers ('imessengers')
+7.2.32. Internet Messengers ('imessengers')
 
    id - serial number
    customerid - customer serial number
@@ -5643,7 +5662,7 @@ Chapter 7. For curious
    type - messenger type (0-gadu-gadu, 1-yahoo, 2-skype)
      __________________________________________________________________
 
-7.2.32. Customers contacts ('customer contacts')
+7.2.33. Customers contacts ('customer contacts')
 
    id - serial number
    customerid - customer serial number
@@ -5651,7 +5670,7 @@ Chapter 7. For curious
    name - contact name/description
      __________________________________________________________________
 
-7.2.33. Accounts ('passwd')
+7.2.34. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -5675,28 +5694,28 @@ Chapter 7. For curious
    description - additional information
      __________________________________________________________________
 
-7.2.34. Domains ('domains')
+7.2.35. Domains ('domains')
 
    id - serial number
    name - domain name
    description - comments
      __________________________________________________________________
 
-7.2.35. Aliases ('aliases')
+7.2.36. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    domainid - account serial number
      __________________________________________________________________
 
-7.2.36. Alias-to-account assignments ('aliasassignments')
+7.2.37. Alias-to-account assignments ('aliasassignments')
 
    id - serial number
    aliasid - alias serial number
    accountid - account serial number
      __________________________________________________________________
 
-7.2.37. VoIP Accounts ('voipaccounts')
+7.2.38. VoIP Accounts ('voipaccounts')
 
    id - serial number
    ownerid - customer identifier
@@ -5709,7 +5728,7 @@ Chapter 7. For curious
    modid - last change (user) identifier
      __________________________________________________________________
 
-7.2.38. Bandwidth consumption statistics ('stats')
+7.2.39. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -5717,7 +5736,7 @@ Chapter 7. For curious
    download - number of bytes received
      __________________________________________________________________
 
-7.2.39. Helpdesk - Request Tracking ('rtqueues')
+7.2.40. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -5725,7 +5744,7 @@ Chapter 7. For curious
    description - main description for the queue
      __________________________________________________________________
 
-7.2.40. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.41. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -5739,7 +5758,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      __________________________________________________________________
 
-7.2.41. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.42. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -5755,14 +5774,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      __________________________________________________________________
 
-7.2.42. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.43. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      __________________________________________________________________
 
-7.2.43. Helpdesk - Request Tracking - continued... ('rtnotes')
+7.2.44. Helpdesk - Request Tracking - continued... ('rtnotes')
 
    id - serial number
    ticketid - ticket serial number
@@ -5771,7 +5790,7 @@ Chapter 7. For curious
    createtime - date of creation
      __________________________________________________________________
 
-7.2.44. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.45. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -5779,7 +5798,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      __________________________________________________________________
 
-7.2.45. LMS-UI Online Configuration ('uiconfig')
+7.2.46. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -5789,7 +5808,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      __________________________________________________________________
 
-7.2.46. Timetable - events ('events')
+7.2.47. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -5804,13 +5823,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      __________________________________________________________________
 
-7.2.47. Timetable - assignments ('eventassignments')
+7.2.48. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      __________________________________________________________________
 
-7.2.48. Sessions ('sessions')
+7.2.49. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -5820,7 +5839,7 @@ Chapter 7. For curious
    content - data
      __________________________________________________________________
 
-7.2.49. Hosts ('hosts')
+7.2.50. Hosts ('hosts')
 
    id - identifier
    name - host name
@@ -5829,7 +5848,7 @@ Chapter 7. For curious
    reload - reload order
      __________________________________________________________________
 
-7.2.50. Daemon configuration - instances ('daemoninstances')
+7.2.51. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -5841,7 +5860,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.51. Daemon configuration - options ('daemonconfig')
+7.2.52. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -5851,27 +5870,27 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.52. States ('states')
+7.2.53. States ('states')
 
    id - identifier
    name - state name
    description - additional information
      __________________________________________________________________
 
-7.2.53. Zip codes ('zipcodes')
+7.2.54. Zip codes ('zipcodes')
 
    id - identifier
    zip - zip code
    stateid - state identifier
      __________________________________________________________________
 
-7.2.54. Countries ('countries')
+7.2.55. Countries ('countries')
 
    id - identifier
    name - country name
      __________________________________________________________________
 
-7.2.55. Companies/Divisions ('divisions')
+7.2.56. Companies/Divisions ('divisions')
 
    id - identifier
    shortname - division short name
@@ -5891,7 +5910,7 @@ Chapter 7. For curious
    inv_cplace - invoice creation place
      __________________________________________________________________
 
-7.2.56. Messages - list ('messages')
+7.2.57. Messages - list ('messages')
 
    id - serial number
    subject - message subject
@@ -5902,7 +5921,7 @@ Chapter 7. For curious
    sender - e-mail 'From' header
      __________________________________________________________________
 
-7.2.57. Messages - items ('messageitems')
+7.2.58. Messages - items ('messageitems')
 
    id - serial number
    messageid - message identifier
@@ -5913,7 +5932,7 @@ Chapter 7. For curious
    error - error message
      __________________________________________________________________
 
-7.2.58. Database information ('dbinfo')
+7.2.59. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value
