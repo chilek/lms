@@ -494,7 +494,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			
 			if($icrow = $icdbq->fetchrow_hashref())
 			{
-				$itemid = $icrow->{'itemid'};
+				$tmp_itemid = $icrow->{'itemid'};
 				
 				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
 						WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid}
@@ -502,7 +502,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$icdbq->execute($desc);
 
 				$cdbq = $dbase->prepare("UPDATE cash SET value = value+($assign->{'value'}*-1)
-						WHERE docid = $gotinv{$uid} AND itemid = $itemid");
+						WHERE docid = $gotinv{$uid} AND itemid = $tmp_itemid");
 				$cdbq->execute();
 			}
 			else
@@ -581,14 +581,14 @@ while(my $assign = $dbq->fetchrow_hashref())
 			
 				if($icrow = $icdbq->fetchrow_hashref())
 				{
-					$itemid = $icrow->{'itemid'};
+					$tmp_itemid = $icrow->{'itemid'};
 					
 					$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
 							WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=?");
 					$icdbq->execute($sdesc);
 
 					$cdbq = $dbase->prepare("UPDATE cash SET value = value+($value*-1)
-							WHERE docid = $gotinv{$uid} AND itemid = $itemid");
+							WHERE docid = $gotinv{$uid} AND itemid = $tmp_itemid");
 					$cdbq->execute();
 				}
 				else
