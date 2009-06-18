@@ -15,7 +15,7 @@
 </head>
 <body{if $warning} onLoad="javascript:alert('{t}Warning! This version of LMS is under development! Remember that it might work unstable and certainly has still many bugs! If you need stability try 1.10 version!{/t}')"{/if}>
 {popup_init src="img/overlib.js"}
-{if $layout.nomenu neq TRUE && !$layout.popup}
+{if !$layout.popup}
 <div id="pagecontainer">
     <div id="pageleftbar">
 	<table width="100%">

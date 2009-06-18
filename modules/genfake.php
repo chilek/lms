@@ -1831,11 +1831,11 @@ function makemac()
 
 if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 {
-	$layout['nomenu'] = TRUE;
 	$SMARTY->display('header.html');
-	echo '<BLOCKQUOTE><BR><H1>'.trans('Generating random data').'</H1>';
 
-	echo '<B>'.trans('Clearing database...').'</B><BR>'; flush();
+	echo '<H1>'.trans('Generating random data').'</H1>';
+
+	echo '<B>'.trans('Clearing database...').'</B>'; flush();
 	$DB->Execute('DELETE FROM nodes');
 	$DB->Execute('DELETE FROM divisions');
 	$DB->Execute('DELETE FROM customers');
@@ -1881,7 +1881,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('7%', 7, 1));
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('22%', 22, 1));
 
-	echo '<B>'.trans('Generating subscriptions...').'</B><BR>'; flush();
+	echo ' [OK]<BR>';
+	echo '<B>'.trans('Generating subscriptions...').'</B>'; flush();
 	$tariffdata = array( 'name' => 'Lite', 'description' => 'Lite Tariff', 
 			    'value' => '30', 'taxid' => '1', 'prodid' => '', 
 			    'uprate' => '64', 'upceil' => '64', 
@@ -1913,7 +1914,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'type' => TARIFF_INTERNET);
 	$LMS->TariffAdd($tariffdata);
 
-	echo '<B>'.trans('Generating payments...').'</B><BR>'; flush();
+	echo ' [OK]<BR>';
+	echo '<B>'.trans('Generating payments...').'</B>'; flush();
 	$paymentdata = array( 'name' => 'DSL-2048', 'description' => 'Internet Link subscription', 'value' => '200', 'creditor' => 'Internet Super Provider Ltd.', 'period' => MONTHLY, 'at' => '10');
 	$LMS->PaymentAdd($paymentdata);
 	$paymentdata = array( 'name' => 'Server Room', 'description' => 'Rent', 'value' => '300', 'creditor' => 'Residential Cooperative "VIEW"', 'period' => MONTHLY, 'at' => '20');
@@ -1921,12 +1923,14 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$paymentdata = array( 'name' => 'Domain', 'description' => 'Domain "our.net" subscription', 'value' => '150', 'creditor' => 'NASK', 'period' => YEARLY, 'at' => '31');
 	$LMS->PaymentAdd($paymentdata);
 	
-	echo '<B>'.trans('Generating network...').'</B><BR>'; flush();
+	echo ' [OK]<BR>';
+	echo '<B>'.trans('Generating network...').'</B>'; flush();
 	$prefix = ($_GET['l']*2>1024) ? 16 : 22;
 	$netdata = array( 'name' => 'LAN1', 'address' => '192.168.0.0', 'prefix' => $prefix, 'gateway' => '192.168.0.1', 'dns' => '192.168.0.1', 'dns2' => '192.168.3.254', 'domain' => 'ultralan.net', 'wins' => '192.168.0.2', 'dhcpstart' => '192.168.3.230', 'dhcpend' => '192.168.3.253', 'interface' => 'eth0');
 	$LMS->NetworkAdd($netdata);
 
-	echo '<B>'.trans('Generating customers...').'</B><BR>';	flush();
+	echo ' [OK]<BR>';
+	echo '<B>'.trans('Generating customers...').'</B>';	flush();
 	$startip = ip_long('192.168.0.0')+1;
 	$cnt = 0;
 	$lnsize = sizeof($lastnames);
@@ -2006,7 +2010,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$startip ++;
 	}
 	
-	echo '<B>'.trans('Generating network hardware and connections...').'</B><BR>'; flush();
+	echo ' [OK]<BR>';
+	echo '<B>'.trans('Generating network hardware and connections...').'</B>'; flush();
 	$nodes = $DB->GetOne('SELECT count(id) FROM nodes');
 	$sprod = sizeof($producer);
 	$i = 0;
@@ -2052,10 +2057,11 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		if($i>1)
 			$LMS->NetDevLink($i,$i-1);
 	}
+	echo ' [OK]<BR>';
 	
 	if($_GET['i'])
 	{
-		echo '<B>'.trans('Generating invoices...').'</B><BR>'; flush();
+		echo '<B>'.trans('Generating invoices...').'</B>'; flush();
 		
 		if($_GET['i'] > 100) $_GET['i'] = 100;
 		
@@ -2089,9 +2095,10 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 					$LMS->AddInvoice(array('customer' => $c, 'contents' => $cont, 'invoice' => $inv));
 				}
 			}
+	
+		echo ' [OK]';
 	}
 
-	echo '<P><B><A HREF="javascript:window.close();">'.trans('You can close this window now.').'</A></B></BLOCKQUOTE>';
 	$SMARTY->display('footer.html');
 }
 else
