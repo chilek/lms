@@ -104,7 +104,7 @@ switch($action)
 
 		if($cnote['cdate'])
 		{
-			list($year, $month, $day) = split('/',$cnote['cdate']);
+			list($year, $month, $day) = explode('/',$cnote['cdate']);
 			if(checkdate($month, $day, $year))
 			{
 				$cnote['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
@@ -124,7 +124,7 @@ switch($action)
 		
 		if($cnote['number'])
 		{
-			if(!eregi('^[0-9]+$', $cnote['number']))
+			if(!preg_match('/^[0-9]+$/', $cnote['number']))
 			        $error['number'] = trans('Credit note number must be integer!');
 			elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
 			        $error['number'] = trans('Credit note number $0 already exists!', $cnote['number']);
@@ -196,7 +196,7 @@ switch($action)
 				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
 			else
 			{
-				if(!eregi('^[0-9]+$', $cnote['number']))
+				if(!preg_match('/^[0-9]+$/', $cnote['number']))
 				        $error['number'] = trans('Credit note number must be integer!');
 				elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
 				        $error['number'] = trans('Credit note number $0 already exists!', $cnote['number']);

@@ -76,7 +76,7 @@ elseif(isset($_POST['customerdata']) && !isset($_GET['newcontact']))
 
 	if($customerdata['pin'] == '')
 		$error['pin'] = trans('PIN code is required!');
-	elseif(!eregi('^[0-9]{4,6}$',$customerdata['pin']))
+	elseif(!preg_match('/^[0-9]{4,6}$/',$customerdata['pin']))
 		$error['pin'] = trans('Incorrect PIN code!');
 
 	if($customerdata['status'] == 1 && $LMS->GetCustomerNodesNo($customerdata['id'])) 

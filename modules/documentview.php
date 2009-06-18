@@ -79,7 +79,7 @@ if(!empty($_POST['marks']))
 	{	
 		header('Content-Type: '.$doc['contenttype']);
 	
-		if(!eregi('^text', $doc['contenttype']) || !empty($_GET['save']))
+		if(!preg_match('/^text/i', $doc['contenttype']) || !empty($_GET['save']))
 		{
 			header('Content-Disposition: attachment; filename='.$doc['filename']);
 			header('Pragma: public');

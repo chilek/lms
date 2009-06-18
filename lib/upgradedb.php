@@ -36,7 +36,7 @@ function getdir($pwd = './', $pattern = '^.*$')
 	if ($handle = @opendir($pwd))
 	{
 		while (($file = readdir($handle)) !== FALSE)
-			if(ereg($pattern,$file))
+			if(preg_match('/'.$pattern.'/',$file))
 				$files[] = $file;
 		closedir($handle);
 	}
@@ -54,7 +54,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 		if(sizeof($upgradelist))
 			foreach($upgradelist as $upgrade)
 			{
-				$upgradeversion = ereg_replace('^'.$_dbtype.'.([0-9]{10}).php$','\1',$upgrade);
+				$upgradeversion = preg_replace('/^'.$_dbtype.'\.([0-9]{10})\.php$/','\1',$upgrade);
 				
 				if($upgradeversion > $dbversion && $upgradeversion <= DBVERSION)
 					$pendingupgrades[] = $upgradeversion;

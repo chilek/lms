@@ -56,6 +56,7 @@ $DOCTYPES = array(
     2 	=>	trans('cash receipt'),
     3	=>	trans('credit note'), // faktura korygujaca
 //    4	=>	trans('credit memo'), // nota korygujaca
+    5	=>	trans('debit note'), // nota obciazeniowa/debetowa/odsetkowa
     -1	=>	trans('contract'),
     -2	=>	trans('annex'),
     -3	=>	trans('protocol'),
@@ -65,7 +66,7 @@ $DOCTYPES = array(
     -7  =>	trans('payments book'), // ksiazeczka oplat
     -8  =>	trans('payment summons'), // wezwanie do zapłaty
     -9	=>	trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
-    -10 =>	trans('other')
+    -10 =>	trans('other'),
 );
 
 define('DOC_INVOICE', 1);

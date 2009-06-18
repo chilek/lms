@@ -93,13 +93,13 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
 			}
-			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']))
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
-				list($d,$m) = split('/',$a['at']);
+				list($d,$m) = explode('/',$a['at']);
 			}
 			
 			if(!$error)
@@ -114,7 +114,7 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 		break;
 
 		case HALFYEARLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
+			if(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']) && $a['at'])
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
@@ -126,7 +126,7 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 			}
 			else
 			{
-				list($d,$m) = split('/',$a['at']);
+				list($d,$m) = explode('/',$a['at']);
 			}
 			
 			if(!$error)
@@ -147,13 +147,13 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
 			}
-			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']))
 			{
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
-				list($d,$m) = split('/',$a['at']);
+				list($d,$m) = explode('/',$a['at']);
 			}
 			
 			if(!$error)
@@ -177,9 +177,9 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 				$a['datefrom'] = 0;
 			}
 			
-			if(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $a['at']))
+			if(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at']))
 			{
-				list($y, $m, $d) = split('/', $a['at']);
+				list($y, $m, $d) = explode('/', $a['at']);
 				if(checkdate($m, $d, $y))
 				{
 					$at = mktime(0, 0, 0, $m, $d, $y);
@@ -197,9 +197,9 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 
 	if($a['datefrom'] == '')
 		$from = 0;
-	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',$a['datefrom']))
+	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$a['datefrom']))
 	{
-		list($y, $m, $d) = split('/', $a['datefrom']);
+		list($y, $m, $d) = explode('/', $a['datefrom']);
 		if(checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
@@ -210,9 +210,9 @@ if($_GET['action'] == 'add' && isset($_POST['assignment']))
 
 	if($a['dateto'] == '')
 		$to = 0;
-	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',$a['dateto']))
+	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto']))
 	{
-		list($y, $m, $d) = split('/', $a['dateto']);
+		list($y, $m, $d) = explode('/', $a['dateto']);
 		if(checkdate($m, $d, $y))
 			$to = mktime(23, 59, 59, $m, $d, $y);
 		else

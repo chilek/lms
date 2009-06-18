@@ -218,7 +218,7 @@ switch($action)
 		
 		if($receipt['cdate'])
 		{
-			list($year, $month, $day) = split('/',$receipt['cdate']);
+			list($year, $month, $day) = explode('/',$receipt['cdate']);
 			if(checkdate($month, $day, $year)) 
 			{
 				$receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
@@ -252,7 +252,7 @@ switch($action)
 			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 		else
 		{
-			if(!eregi('^[0-9]+$', $receipt['number']))
+			if(!preg_match('/^[0-9]+$/', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
 			elseif($receipt['number']!=$oldnumber)
 				if($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))

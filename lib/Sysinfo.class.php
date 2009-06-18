@@ -58,14 +58,14 @@ class Sysinfo {
 
 		if ($args)
 		{
-			$args_list = split(' ', $args);
+			$args_list = explode(' ', $args);
 			for ($i = 0; $i < count($args_list); $i++)
 			{
 				if ($args_list[$i] == '|')
 				{
 					$cmd = $args_list[$i + 1];
 					$new_cmd = $this->find_program($cmd);
-					$args = ereg_replace("\| $cmd", "| $new_cmd", $args);
+					$args = preg_replace('/\| '.preg_quote($cmd, '/').'/', "| $new_cmd", $args);
 				}
 			}
 		}
@@ -130,14 +130,14 @@ class Sysinfo {
 		{
 			case 'Linux':
 				$fd = fopen('/proc/uptime', 'r');
-				$ar_buf = split(' ', fgets($fd, 4096));
+				$ar_buf = explode(' ', fgets($fd, 4096));
 				fclose($fd);
 				$sys_ticks = trim($ar_buf[0]);
 				$result = uptimef($sys_ticks);
 			break;
 			case 'FreeBSD':
 				$s = explode(' ', $this->bsd_grab_key('kern.boottime'));
-				$a = ereg_replace('{ ', '', $s[3]);
+				$a = str_replace('{ ', '', $s[3]);
 				$sys_ticks = time() - $a;
 				$result = uptimef($sys_ticks);
 			break;
@@ -191,7 +191,7 @@ class Sysinfo {
 			case 'Win32':
 				$result = 'N.A.';
 			default:
-				$who = split('=', execute_program('who', '-q'));
+				$who = explode('=', execute_program('who', '-q'));
 				$result = $who[1];
 			break;
 		}
@@ -207,7 +207,7 @@ class Sysinfo {
 			case 'Linux':
 				if ($fd = fopen('/proc/loadavg', 'r'))
 				{
-					$results = split(' ', fgets($fd, 4096));
+					$results = explode(' ', fgets($fd, 4096));
 					fclose($fd);
 				}
 				else
@@ -218,8 +218,8 @@ class Sysinfo {
 			case 'NetBSD':
 			case 'OpenBSD':			
 				$s = $this->bsd_grab_key('vm.loadavg');
-				$s = ereg_replace('{ ', '', $s);
-				$s = ereg_replace(' }', '', $s);
+				$s = str_replace('{ ', '', $s);
+				$s = str_replace(' }', '', $s);
 				$results = explode(' ', $s);
 			break;
 			default:

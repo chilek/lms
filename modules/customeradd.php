@@ -117,7 +117,7 @@ elseif(isset($_POST['customeradd']))
 
 	if($customeradd['pin'] == '')
 		$error['pin'] = trans('PIN code is required!');
-        elseif(!eregi('^[0-9]{4,6}$',$customeradd['pin']))
+        elseif(!preg_match('/^[0-9]{4,6}$/', $customeradd['pin']))
 	        $error['pin'] = trans('Incorrect PIN code!');
 
 	if($customeradd['email']!='' && !check_email($customeradd['email']))

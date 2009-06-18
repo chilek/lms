@@ -389,7 +389,7 @@ switch($action)
 
 		if(isset($receipt['cdate']) && $receipt['cdate'])
 		{
-			list($year, $month, $day) = split('/',$receipt['cdate']);
+			list($year, $month, $day) = explode('/',$receipt['cdate']);
 			if(checkdate($month, $day, $year)) 
 			{
 				$receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
@@ -418,7 +418,7 @@ switch($action)
 
 		if(isset($receipt['number']) && $receipt['number'])
 		{
-			if(!eregi('^[0-9]+$', $receipt['number']))
+			if(!preg_match('/^[0-9]+$/', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
 				$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
@@ -552,7 +552,7 @@ switch($action)
 				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			else
 			{
-				if(!eregi('^[0-9]+$', $receipt['number']))
+				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
 				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
 					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
@@ -629,7 +629,7 @@ switch($action)
 				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			else
 			{
-				if(!eregi('^[0-9]+$', $receipt['number']))
+				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
 				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
 					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);
@@ -724,7 +724,7 @@ switch($action)
 				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
 			else
 			{
-				if(!eregi('^[0-9]+$', $receipt['number']))
+				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
 				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
 					$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);

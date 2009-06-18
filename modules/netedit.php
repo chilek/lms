@@ -104,15 +104,15 @@ if(isset($_POST['networkdata']))
 		}
 	}
 
-	if($networkdata['interface'] != '' && !eregi('^[a-z0-9:.]+$',$networkdata['interface']))
+	if($networkdata['interface'] != '' && !preg_match('/^[a-z0-9:.]+$/', $networkdata['interface']))
 		$error['interface'] = trans('Incorrect interface name!');
 
 	if($networkdata['name']=='')
 		$error['name'] = trans('Network name is required!');
-	elseif(!eregi('^[._a-z0-9-]+$',$networkdata['name']))
+	elseif(!preg_match('/^[._a-z0-9-]+$/i', $networkdata['name']))
 		$error['name'] = trans('Network name contains forbidden characters!');
 
-	if($networkdata['domain']!='' && !eregi('^[.a-z0-9-]+$',$networkdata['domain']))
+	if($networkdata['domain']!='' && !preg_match('/^[.a-z0-9-]+$/i', $networkdata['domain']))
 		$error['domain'] = trans('Specified domain contains forbidden characters!');
 
 	if($networkdata['dns']!='' && !check_ip($networkdata['dns']))

@@ -97,22 +97,22 @@ function check_ssn($ssn)
 
 function check_zip($zip)
 {
-	return eregi('^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$', $zip);
+	return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
 }
 
 function check_gg($im)
 {
-	return eregi('^[0-9]{0,32}$', $im);
+	return preg_match('/^[0-9]{0,32}$/', $im);
 }
 
 function check_skype($im)
 {
-	return eregi('^[-_.a-z0-9]{0,32}$', $im);
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
 }
 
 function check_yahoo($im)
 {
-	return eregi('^[-_.a-z0-9]{0,32}$', $im);
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
 }
 
 function check_regon($regon) // business registration number

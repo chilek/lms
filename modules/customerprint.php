@@ -36,13 +36,13 @@ switch($type)
 		
 		if($_POST['day'])
 		{
-			list($year, $month, $day) = split('/',$_POST['day']);
+			list($year, $month, $day) = explode('/', $_POST['day']);
 			$date = mktime(0,0,0,$month,$day+1,$year);
 		}
 
 		if($_POST['docfrom'])
 		{
-			list($year, $month, $day) = split('/', $_POST['docfrom']);
+			list($year, $month, $day) = explode('/', $_POST['docfrom']);
 			$docfrom = mktime(0,0,0,$month,$day,$year);
 		}
 		else
@@ -50,7 +50,7 @@ switch($type)
 
 		if($_POST['docto'])
 		{
-			list($year, $month, $day) = split('/', $_POST['docto']);
+			list($year, $month, $day) = explode('/', $_POST['docto']);
 			$docto = mktime(23,59,59,$month,$day,$year);
 		}
 		else
@@ -122,11 +122,11 @@ switch($type)
 		$to = $_POST['to'];
 
 		// date format 'yyyy/mm/dd'	
-		list($year, $month, $day) = split('/',$from);
+		list($year, $month, $day) = explode('/',$from);
 		$date['from'] = mktime(0,0,0,$month,$day,$year);
 
 		if($to) {
-			list($year, $month, $day) = split('/',$to);
+			list($year, $month, $day) = explode('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else { 
 			$to = date('Y/m/d',time());

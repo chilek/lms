@@ -42,12 +42,12 @@ if(sizeof($config))
 		$error['name'] = trans('Option name is required!');
 	elseif(strlen($config['name'])>64)
 		$error['name'] = trans('Option name is too long (max.64 characters)!');
-	elseif(!eregi('^[a-z0-9_-]+$', $config['name']))
+	elseif(!preg_match('/^[a-z0-9_-]+$/', $config['name']))
     		$error['name'] = trans('Option name contains forbidden characters!');
 	elseif($LMS->GetConfigOptionId($config['name'], $config['section']))
 		$error['name'] = trans('Option exists!'); 
 
-	if(!eregi('^[a-z0-9_-]+$', $config['section']) && $config['section']!='')
+	if(!preg_match('/^[a-z0-9_-]+$/', $config['section']) && $config['section']!='')
     		$error['section'] = trans('Section name contains forbidden characters!');
 	    
 	if($config['value']=='')

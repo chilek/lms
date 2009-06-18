@@ -56,7 +56,7 @@ if(isset($_POST['account']))
 	
 	if($account['login'] == '')
                 $error['login'] = trans('You have to specify login!');
-	elseif(!ereg("^[a-z0-9._-]+$", $account['login']))
+	elseif(!preg_match('/^[a-z0-9._-]+$/', $account['login']))
     		$error['login'] = trans('Login contains forbidden characters!');
 	elseif(!$account['domainid'])
                 $error['domainid'] = trans('You have to select domain for account!');
@@ -94,7 +94,7 @@ if(isset($_POST['account']))
 			$error['domainid'] = trans('Selected domain has other owner!');
 
 	foreach($types as $idx => $name)
-		if(!ereg('^[0-9]+$', $quota[$name]))
+		if(!preg_match('/^[0-9]+$/', $quota[$name]))
 	                $error['quota_'.$name] = trans('Integer value expected!');
 
 	// finally lets check limits

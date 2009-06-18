@@ -34,8 +34,8 @@ $addbalance['value'] = str_replace(',','.', $addbalance['value']);
 
 $currenttime = false;
 if(isset($addbalance['time']) && $addbalance['time'] != '' 
-	&& ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$', $addbalance['time'])
-	&& ! ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $addbalance['time']))
+	&& !preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}\s+[0-9]{2}:[0-9]{2}$/', $addbalance['time'])
+	&& !preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $addbalance['time']))
 {
 	// here we should throw error back to user about fucked up date format or something
 	// otherwise mktime invokes error about expected parameters
@@ -43,7 +43,7 @@ if(isset($addbalance['time']) && $addbalance['time'] != ''
 elseif(isset($addbalance['time']) && $addbalance['time']!='')
 {
 	// date format 'yyyy/mm/dd hh:mm'	
-	$date = split(' ', $addbalance['time']);
+	$date = preg_split('/\s+/', $addbalance['time']);
 	if(isset($date[1]))
 		$time = explode(':',$date[1]);
 	else {

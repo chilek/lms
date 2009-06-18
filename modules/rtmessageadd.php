@@ -120,7 +120,7 @@ if(isset($_POST['message']))
 			if(!$message['customerid']) 
 			{
 				$req = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']));
-				$message['mailfrom'] = ereg_replace('^.* <(.+@.+)>','\1', $req);
+				$message['mailfrom'] = preg_replace('/^.* <(.+@.+)>/','\1', $req);
 				if(!check_email($message['mailfrom']))
 					$message['mailfrom'] = '';
 			}
@@ -323,9 +323,9 @@ else
 		$reply = $LMS->GetMessage($_GET['id']); 
 
 		if($reply['replyto'])
-			$message['destination'] = ereg_replace('^.* <(.+@.+)>','\1',$reply['replyto']);
+			$message['destination'] = preg_replace('/^.* <(.+@.+)>/','\1',$reply['replyto']);
 		else 
-			$message['destination'] = ereg_replace('^.* <(.+@.+)>','\1',$reply['mailfrom']);
+			$message['destination'] = preg_replace('/^.* <(.+@.+)>/','\1',$reply['mailfrom']);
 
 		if(!$message['destination'] && !$reply['userid'])
 			$message['destination'] = $LMS->GetCustomerEmail($message['customerid']);
@@ -341,8 +341,8 @@ else
 				$message['body'] .= '> '.$line."\n";
 		}
 	
-		if(!eregi("[RT#[0-9]{6}]", $message['subject'])) 
-			$message['subject'] .= sprintf(" [RT#%06d]",$message['ticketid']); 
+		if(!preg_match('/\[RT#[0-9]{6}\]/i', $message['subject'])) 
+			$message['subject'] .= sprintf(' [RT#%06d]', $message['ticketid']); 
 	}
 }
 

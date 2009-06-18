@@ -49,7 +49,7 @@ if(isset($_GET['nodegroups']))
 	die;
 }
 
-if(!eregi('^[0-9]+$',$_GET['id']))
+if(!preg_match('/^[0-9]+$/',$_GET['id']))
 {
 	$SESSION->redirect('?m=nodelist');
 }

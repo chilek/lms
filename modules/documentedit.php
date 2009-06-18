@@ -79,7 +79,7 @@ if(isset($_POST['document']))
 		else
 			$documentedit['number'] = $document['number'];
 	}
-	elseif(!eregi('^[0-9]+$', $documentedit['number']))
+	elseif(!preg_match('/^[0-9]+$/', $documentedit['number']))
     		$error['number'] = trans('Document number must be an integer!');
 	elseif($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid'])
 	{

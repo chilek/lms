@@ -60,7 +60,7 @@ if(isset($_POST['account']))
 	else
 		$error['type'] = true;
 				
-	if(!ereg("^[a-z0-9._-]+$", $account['login']))
+	if(!preg_match('/^[a-z0-9._-]+$/', $account['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
 	elseif(!$account['domainid'])
     		$error['domainid'] = trans('You have to select domain for account!');
@@ -94,7 +94,7 @@ if(isset($_POST['account']))
 
 	foreach($types as $idx => $name)
         {
-		if(!ereg('^[0-9]+$', $quota[$name]))
+		if(!preg_match('/^[0-9]+$/', $quota[$name]))
 			$error['quota_'.$name] = trans('Integer value expected!');
 	}
 

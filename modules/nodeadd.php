@@ -74,7 +74,7 @@ if(isset($_POST['nodedata']))
 		$error['name'] = trans('Node name is too long (max.32 characters)!');
 	elseif($LMS->GetNodeIDByName($nodedata['name']))
 		$error['name'] = trans('Specified name is in use!');
-	elseif(!eregi('^[_a-z0-9-]+$',$nodedata['name']))
+	elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodedata['name']))
 		$error['name'] = trans('Specified name contains forbidden characters!');		
 
 	if(!$nodedata['ipaddr'])
@@ -133,7 +133,7 @@ if(isset($_POST['nodedata']))
 			$error['netdev'] = trans('No free ports on device!');
 		elseif($nodedata['port'])
 		{
-		        if(!ereg('^[0-9]+$', $nodedata['port']) || $nodedata['port'] > $ports)
+		        if(!preg_match('/^[0-9]+$/', $nodedata['port']) || $nodedata['port'] > $ports)
 		        {
 		                $error['port'] = trans('Incorrect port number!');
 		        }

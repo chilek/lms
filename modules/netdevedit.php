@@ -181,7 +181,7 @@ case 'connect':
 	{
 		if($dev['srcport'])
 		{
-			if(!ereg('^[0-9]+$', $dev['srcport']) || $dev['srcport'] > $ports2)
+			if(!preg_match('/^[0-9]+$/', $dev['srcport']) || $dev['srcport'] > $ports2)
 			{
 				$error['srcport'] = trans('Incorrect port number!');	
 			}
@@ -197,7 +197,7 @@ case 'connect':
 
 		if($dev['dstport'])
 		{
-			if(!ereg('^[0-9]+$', $dev['dstport']) || $dev['dstport'] > $ports1)
+			if(!preg_match('/^[0-9]+$/', $dev['dstport']) || $dev['dstport'] > $ports1)
 			{
 				$error['dstport'] = trans('Incorrect port number!');	
 			}
@@ -237,7 +237,7 @@ case 'connectnode':
 		$error['linknode'] = trans('No free ports on device!');
 	elseif($node['port'])
 	{
-		if(!ereg('^[0-9]+$', $node['port']) || $node['port'] > $ports)
+		if(!preg_match('/^[0-9]+$/', $node['port']) || $node['port'] > $ports)
 		{
 			$error['port'] = trans('Incorrect port number!');	
 		}
@@ -311,7 +311,7 @@ case 'formaddip':
 		$error['ipname'] = trans('Specified name is too long (max.$0 characters)!','32');
 	elseif($LMS->GetNodeIDByName($nodeipdata['name']))
 		$error['ipname'] = trans('Specified name is in use!');
-	elseif(!eregi('^[_a-z0-9-]+$',$nodeipdata['name']))
+	elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
 		$error['ipname'] = trans('Name contains forbidden characters!');
 
 	if($nodeipdata['ipaddr']=='')
@@ -388,7 +388,7 @@ case 'formeditip':
 		$LMS->GetNodeName($_GET['ip'])!=$nodeipdata['name']
 		)
 		$error['ipname'] = trans('Specified name is in use!');
-	elseif(!eregi('^[_a-z0-9-]+$',$nodeipdata['name']))
+	elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
 		$error['ipname'] = trans('Name contains forbidden characters!');	
 
 	if($nodeipdata['ipaddr']=='')
@@ -482,7 +482,7 @@ if(isset($_POST['netdev']))
 	if($netdevdata['purchasedate'] != '')
 	{
 		// date format 'yyyy/mm/dd'
-		if(!ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $netdevdata['purchasedate'])) 
+		if(!preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $netdevdata['purchasedate'])) 
 		{
 			$error['purchasedate'] = trans('Invalid date format!');
 		}

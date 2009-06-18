@@ -38,7 +38,7 @@ if($payment)
 
 	$payment['value'] = str_replace(',','.',$payment['value']);
 
-	if(!(ereg('^[-]?[0-9.,]+$',$payment['value'])))
+	if(!preg_match('/^[-]?[0-9.,]+$/', $payment['value']))
 		$error['value'] = trans('Incorrect value!');
 
 	if($payment['creditor'] == '')
@@ -62,11 +62,11 @@ if($payment)
 				$error['at'] = trans('Incorrect day of week (1-7)!');
 		break;
 		case QUARTERLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
+			if(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
 			else
 			{
-				list($d,$m) = split('/',trim($payment['at']));
+				list($d,$m) = explode('/',trim($payment['at']));
 				if($d>30 || $d<1)
 					$error['at'] = trans('Incorrect day of month (1-30)!');
 				if($m>3 || $m<1)
@@ -76,11 +76,11 @@ if($payment)
 			};
 		break;
 		case HALFYEARLY:
-                        if(!eregi('^[0-9]{2}/[0-9]{2}$',$payment['at']) && $payment['at'])
+                        if(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $payment['at']) && $payment['at'])
 		                $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
 		        else
 		        {
-		                list($d,$m) = split('/',$payment['at']);
+		                list($d,$m) = explode('/',$payment['at']);
 		                if($d>30 || $d<1 || ($d>28 && $m==2))
 		                        $error['at'] = trans('This month doesn\'t contain specified number of days');
 		                if($m>6 || $m<1)
@@ -89,11 +89,11 @@ if($payment)
 		        }
 		break;
 		case YEARLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
+			if(!preg_match('/^[0-9]{2}\/[0-9]{2}$/',trim($payment['at'])))
 				$error['at'] = trans('Incorrect date format!');
 			else
 			{
-				list($d,$m) = split('/',trim($payment['at']));
+				list($d,$m) = explode('/',trim($payment['at']));
 				$ttime = mktime(12, 0, 0, $m, $d, 1990);
 				$at = date('z',$ttime) + 1;
 			}

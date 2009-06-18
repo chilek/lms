@@ -232,8 +232,8 @@ Class LMSDB_common
 	function _query_parser($query, $inputarray = NULL)
 	{
 		// najpierw sparsujmy wszystkie specjalne meta śmieci.
-		$query = eregi_replace('\?NOW\?',$this->_driver_now(),$query);
-		$query = eregi_replace('\?LIKE\?',$this->_driver_like(),$query);
+		$query = preg_replace('/\?NOW\?/i',$this->_driver_now(),$query);
+		$query = preg_replace('/\?LIKE\?/i',$this->_driver_like(),$query);
 
 		if($inputarray)
 		{
