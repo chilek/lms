@@ -2431,13 +2431,13 @@ class LMS
 					$out = split("\n", $res);
 					foreach($out as $line)
 					{
-						list($ipaddr,$name,$null,$login,$mac) = split(':', $line);
+						list($ipaddr,$name,$null,$login,$mac) = explode(':', $line, 5);
 						$row['ipaddr'] = trim($ipaddr);
 						if($row['ipaddr'])
 						{
 							$row['name'] = trim($name);
 							$row['mac'] = str_replace('-', ':', trim($mac));
-							if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
+							if($row['mac'] != "00:00:00:00:00:00" && !$this->GetNodeIDByIP($row['ipaddr']))
 								$result[] = $row;
 						}
 					}
