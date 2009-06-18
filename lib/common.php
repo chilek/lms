@@ -633,7 +633,6 @@ function clearheader()
 	
 	$ExecStack->replaceTemplate('core', 'header', 'core', 'clearheader');
 	//$ExecStack->dropTemplate('core', 'menu');
-	$layout['nomenu'] = TRUE;
 }
 
 /*

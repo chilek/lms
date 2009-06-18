@@ -188,17 +188,11 @@ $AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $CONFIG);
 $LMS->lang = $_language;
 
-// set some template and layout variables
+// Set some template and layout variables
 
-$SMARTY->assign_by_ref('_LANG', $_LANG);
-$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
-$SMARTY->assign_by_ref('_language', $LMS->lang);
-$SMARTY->assign_by_ref('_config',$CONFIG);
-$SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/');
 $SMARTY->template_dir = SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 $SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFIG['phpui']['smarty_debug']) : FALSE);
-require_once(LIB_DIR.'/menu.php');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
@@ -208,14 +202,27 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = '1.11-cvs';
 $layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['dberrors'] =& $DB->errors;
+$layout['popup'] = isset($_GET['popup']) ? true : false;
 
-$SMARTY->assign_by_ref('newmenu', $menu);
 $SMARTY->assign_by_ref('layout', $layout);
+$SMARTY->assign_by_ref('_LANG', $_LANG);
+$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
+$SMARTY->assign_by_ref('_language', $LMS->lang);
+$SMARTY->assign_by_ref('_config',$CONFIG);
+
+$error = NULL; // initialize error variable needed for (almost) all modules
+
+// Load menu
+
+if(!$layout['popup'])
+{
+	require_once(LIB_DIR.'/menu.php');
+	$SMARTY->assign('newmenu', $menu);
+}
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
-$error = NULL; // initialize error variable needed for (almost) all modules
-$layout['popup'] = isset($_GET['popup']) ? true : false;
+// Check privileges and execute modules
 
 if($AUTH->islogged)
 {

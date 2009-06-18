@@ -44,6 +44,7 @@ if(isset($content['newer_version']))
 		$SMARTY->assign('newer_version', $content['newer_version']);
 }
 
+$SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/');
 $SMARTY->assign('regdata', $LMS->GetRegisterData());
 $SMARTY->assign('rtstats', $LMS->RTStats());
 $SMARTY->assign('sysinfo',$SI->get_sysinfo());
