@@ -35,11 +35,11 @@ if(isset($_POST['customerassignments']))
 	$customerassignments = $_POST['customerassignments'];
 	if (isset($customerassignments['membersnetid']) && $oper=='2')
 	{
-		$SESSION->redirect('?'.ereg_replace('&membersnetid=[0-9]+', '', $SESSION->get('backto')).'&membersnetid='.$customerassignments['membersnetid']);
+		$SESSION->redirect('?'.preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->get('backto')).'&membersnetid='.$customerassignments['membersnetid']);
 	}
 	if (isset($customerassignments['othersnetid']) && $oper=='3')
 	{
-		$SESSION->redirect('?'.ereg_replace('&othersnetid=[0-9]+', '', $SESSION->get('backto')).'&othersnetid='.$customerassignments['othersnetid']);
+		$SESSION->redirect('?'.preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->get('backto')).'&othersnetid='.$customerassignments['othersnetid']);
 	}
 }
 
@@ -66,7 +66,7 @@ if(isset($_POST['customergroup']))
 		$error['name'] = trans('Group name is too long!');
 	elseif( ($id = $LMS->CustomergroupGetId($customergroupedit['name'])) && $id != $customergroupedit['id'])
 		$error['name'] = trans('Group with name $0 already exists!',$customergroupedit['name']);
-	elseif(!eregi("^[._a-z0-9-]+$",$customergroupedit['name']))
+	elseif(!preg_match('/^[._a-z0-9-]+$/i', $customergroupedit['name']))
 		$error['name'] = trans('Invalid chars in group name!');
 
 	if(!$error)

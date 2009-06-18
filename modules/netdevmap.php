@@ -357,7 +357,7 @@ if($graph == '')
 			{
 				$celx = $idx - $minx;
 				$cely = $idy - $miny;
-				if(eregi('^n',$device))
+				if(preg_match('/^n/',$device))
 				{
 					$device = str_replace('n','',$device);
 					list($nodeid,$device,$linktype) = explode('.',$device);
@@ -439,7 +439,7 @@ elseif ($graph == 'flash')
 		{
 			$celx = $idx - $minx;
 			$cely = $idy - $miny;
-			if(eregi('^n',$device))
+			if(preg_match('/^n/',$device))
 			{
 				$device = str_replace('n','',$device);
 				list($nodeid,$device,$linktype) = explode('.',$device);
@@ -664,7 +664,7 @@ else
 		{
 			$celx = $idx - $minx;
 			$cely = $idy - $miny;
-			if(eregi('^n',$device))
+			if(preg_match('/^n/',$device))
 			{
 				$device = str_replace('n','',$device);
 				list($nodeid,$device,$linktype) = explode('.',$device);

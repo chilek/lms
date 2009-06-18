@@ -42,7 +42,7 @@ function macformat($mac)
 	}
 	else // other formats eg. cisco xxxx.xxxx.xxxx or parts of addresses
 	{
-		$tmp = eregi_replace('[^0-9a-f]', '', $mac);
+		$tmp = preg_replace('/[^0-9a-f]/i', '', $mac);
 	
 		if(strlen($tmp) == 12) // we've the whole address
 			if(check_mac($tmp)) 

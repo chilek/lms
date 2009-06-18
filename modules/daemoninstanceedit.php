@@ -48,7 +48,7 @@ if(isset($_POST['instance']))
 	if(!$instedit['hostid'])
 		$error['hostid'] = trans('Instance host is required!');
 	
-	if($instedit['crontab'] != '' && !eregi('^[0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+$', $instedit['crontab']))
+	if($instedit['crontab'] != '' && !preg_match('/^[0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+$/', $instedit['crontab']))
 		$error['crontab'] = trans('Incorrect crontab format!');
 	
 	if(!isset($instedit['disabled'])) $instedit['disabled'] = 0;

@@ -41,7 +41,7 @@ class LMS
 		$this->AUTH = &$AUTH;
 		$this->CONFIG = &$CONFIG;
 
-		$this->_revision = eregi_replace('^.Revision: ([0-9.]+).*','\1', $this->_revision);
+		$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
 		$this->_version = $this->_version.' ('.$this->_revision.')';
 	}
 
@@ -282,16 +282,18 @@ class LMS
 
 	function GetUserRights($id)
 	{
-		$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id=?', array($id));
-		if($mask == '')
-			$mask = '1';
+		$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
+
+//		if($mask == '')
+//			$mask = '1';
 		$len = strlen($mask);
 		$bin = '';
 		for($cnt=$len; $cnt > 0; $cnt --)
 			$bin = sprintf('%04b',hexdec($mask[$cnt-1])).$bin;
-		for($cnt=strlen($bin)-1; $cnt >= 0; $cnt --)
+		$len = strlen($bin);
+		for($cnt=$len-1; $cnt >= 0; $cnt --)
 			if($bin[$cnt] == '1')
-				$result[] = strlen($bin) - $cnt -1;
+				$result[] = $len - $cnt -1;
 		return $result;
 	}
 
@@ -2428,7 +2430,7 @@ class LMS
 			{
 				if($res = execute_program('nbtscan','-q -s: '.$network['address'].'/'.$network['prefix']))
 				{
-					$out = split("\n", $res);
+					$out = explode("\n", $res);
 					foreach($out as $line)
 					{
 						list($ipaddr,$name,$null,$login,$mac) = explode(':', $line, 5);
@@ -3148,7 +3150,7 @@ class LMS
 		{
 			foreach($result as $idx => $ticket)
 			{
-				//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
+				//$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
 				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 				if(!$ticket['customerid'])
 					list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
@@ -3320,7 +3322,7 @@ class LMS
 			list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 		else
 			list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
-//		$ticket['requestoremail'] = ereg_replace('^.* <(.+@.+)>$','\1',$ticket['requestor']);
+//		$ticket['requestoremail'] = preg_replace('/^.* <(.+@.+)>$/', '\1',$ticket['requestor']);
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 		$ticket['status'] = $RT_STATES[$ticket['state']];
 		$ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
@@ -3502,10 +3504,10 @@ class LMS
 					while(!feof($file))
 					{
 						$line = fgets($file, 4096);
-						$line = eregi_replace("[\t ]+", " ", $line);
-						if(ereg('[0-9]', $line)) // skip header line
+						$line = preg_replace('/[\t ]+/', ' ', $line);
+						if(preg_match('/[0-9]/', $line)) // skip header line
 						{
-							list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
+							list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = explode(' ',$line);
 							if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00' && check_mac($hwaddr))
 							{
 								$result['mac'][] = $hwaddr;
@@ -3541,7 +3543,7 @@ class LMS
 	{
 		if(!($uiid = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('unique_installation_id'))))
 		{
-			list($usec, $sec) = split(' ', microtime());
+			list($usec, $sec) = explode(' ', microtime());
 			$uiid = md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
 			$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('unique_installation_id', $uiid));
 		}
@@ -3559,7 +3561,7 @@ class LMS
 			$lastcheck = 0;
 		if($lastcheck + $this->CONFIG['phpui']['check_for_updates_period'] < $time)
 		{
-			list($v, ) = split(' ', $this->_version);
+			list($v, ) = explode(' ', $this->_version);
 			
 			if($content = fetch_url('http://register.lms.org.pl/update.php?uiid='.$uiid.'&v='.$v))
 			{
@@ -3929,7 +3931,7 @@ class LMS
 		if($list)
 		{
 			if($cdate)
-				list($curryear, $currmonth) = split('/', $cdate);
+				list($curryear, $currmonth) = explode('/', $cdate);
 			else
 			{
 				$curryear = date('Y');

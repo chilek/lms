@@ -47,7 +47,7 @@ if($instance)
 	if(!$instance['hostid'])
 		$error['hostid'] = trans('Instance host is required!');
 	
-	if($instance['crontab'] != '' && !eregi('^[0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+$', $instance['crontab']))
+	if($instance['crontab'] != '' && !preg_match('/^[0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+$/', $instance['crontab']))
 		$error['crontab'] = trans('Incorrect crontab format!');
 
 	if($instance['priority'] == '')

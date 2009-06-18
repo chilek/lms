@@ -107,7 +107,7 @@ function check_ssn($ssn)
 {
 	// AFAIR This doesn't cover people born after Y2k, they have month+20
 	// Be warned.
-	if (!eregi('^[0-9]{11}$',$ssn))
+	if (!preg_match('/^[0-9]{11}$/', $ssn))
 		return FALSE;
 	
 	$steps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3);
@@ -132,22 +132,22 @@ function check_ssn($ssn)
 
 function check_zip($zip)
 {
-	return eregi('^[0-9]{2}-[0-9]{3}$', $zip);
+	return preg_match('/^[0-9]{2}-[0-9]{3}$/', $zip);
 }
 
 function check_gg($im)
 {
-	return eregi('^[0-9]{0,32}$', $im);  // gadu-gadu ID check
+	return preg_match('/^[0-9]{0,32}$/', $im);  // gadu-gadu ID check
 }
 
 function check_yahoo($im)
 {
-	return eregi('^[-_.a-z0-9]{0,32}$', $im);
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
 }
 
 function check_skype($im)
 {
-	return eregi('^[-_.a-z0-9]{0,32}$', $im);
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
 }
 
 function check_regon($regon)

@@ -70,7 +70,7 @@ class Session {
 
 	function makeSID()
 	{
-		list($usec, $sec) = split(' ', microtime());
+		list($usec, $sec) = explode(' ', microtime());
 		return md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
 	}
 

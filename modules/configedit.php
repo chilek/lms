@@ -58,7 +58,7 @@ if(isset($_POST['config']))
 		$error['var'] = trans('Option name is required!');
 	elseif(strlen($cfg['var'])>64)
 		$error['var'] = trans('Option name is too long (max.64 characters)!');
-	elseif(!eregi('^[a-z0-9_-]+$', $cfg['var']))
+	elseif(!preg_match('/^[a-z0-9_-]+$/', $cfg['var']))
     		$error['var'] = trans('Option name contains forbidden characters!');
 
 	if(($cfg['var']!=$config['var'] || $cfg['section']!=$config['section'])
@@ -66,7 +66,7 @@ if(isset($_POST['config']))
 	)
 		$error['var'] = trans('Option exists!');
 
-	if(!eregi('^[a-z0-9_-]+$', $cfg['section']) && $cfg['section']!='')
+	if(!preg_match('/^[a-z0-9_-]+$/', $cfg['section']) && $cfg['section']!='')
     		$error['section'] = trans('Section name contains forbidden characters!');
 	    
 	if($cfg['value']=='')

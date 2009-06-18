@@ -52,17 +52,16 @@ if(isset($_POST['reglog']))
 
 	if($reglog['value'] == '')
 		$error['value'] = trans('Cash state value is required!');
-	elseif(!(ereg('^[-]?[0-9.,]+$', $reglog['value'])))
+	elseif(!preg_match('/^[-]?[0-9.,]+$/', $reglog['value']))
 	        $error['value'] = trans('Incorrect value!');
 
 	if($reglog['time'])
 	{
-		if(ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$', $reglog['time']))
+		if(preg_match('/^([0-9]{4}\/[0-9]{2}\/[0-9]{2})\s+([0-9]{2}:[0-9]{2})$/', $reglog['time'], $matches))
 		{
 	    		// date format 'yyyy/mm/dd hh:mm'
-			list($date,$time) = split(' ', $reglog['time']);
-			$date = explode('/',$date);
-			$time = explode(':',$time);
+			$date = explode('/', $matches[1]);
+			$time = explode(':', $matches[2]);
 					
 			if(checkdate($date[1],$date[2],(int)$date[0]))
 			{

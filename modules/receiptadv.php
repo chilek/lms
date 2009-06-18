@@ -80,7 +80,7 @@ if(isset($_POST['receipt']))
 
 	if($receipt['cdate'])
 	{
-	        list($year, $month, $day) = split('/',$receipt['cdate']);
+	        list($year, $month, $day) = explode('/',$receipt['cdate']);
 		if(checkdate($month, $day, $year))
 		{
 		        $receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
@@ -120,7 +120,7 @@ if(isset($_POST['receipt']))
 		
 		if($receipt['in_number'])
 		{
-	    		if(!eregi('^[0-9]+$', $receipt['in_number']))
+	    		if(!preg_match('/^[0-9]+$/', $receipt['in_number']))
 	            		$error['in_number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists($receipt['in_number'], DOC_RECEIPT, $in_plan, $receipt['cdate']))
 		    		$error['in_number'] = trans('Receipt number $0 already exists!', $receipt['in_number']);
@@ -128,7 +128,7 @@ if(isset($_POST['receipt']))
 
 		if($receipt['out_number'])
 		{
-	    		if(!eregi('^[0-9]+$', $receipt['out_number']))
+	    		if(!preg_match('/^[0-9]+$/', $receipt['out_number']))
 	            		$error['out_number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists($receipt['out_number'], DOC_RECEIPT, $record['numberplanid'], $receipt['cdate']))
 		    		$error['out_number'] = trans('Receipt number $0 already exists!', $receipt['out_number']);
@@ -138,7 +138,7 @@ if(isset($_POST['receipt']))
 	{	
 		if($receipt['number'])
 		{
-	    		if(!eregi('^[0-9]+$', $receipt['number']))
+	    		if(!preg_match('/^[0-9]+$/', $receipt['number']))
 	            		$error['number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $in_plan, $receipt['cdate']))
 		    		$error['number'] = trans('Receipt number $0 already exists!', $receipt['number']);

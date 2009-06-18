@@ -41,7 +41,7 @@ if($userinfo)
 
 	if($userinfo['login'] == '')
 		$error['login'] = trans('Login can\'t be empty!');
-	elseif(!eregi('^[a-z0-9.-_]+$',$userinfo['login']))
+	elseif(!preg_match('/^[a-z0-9._-]+$/i', $userinfo['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
 	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $_GET['id'])
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
@@ -67,7 +67,7 @@ if($userinfo)
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
-	$userinfo['rights'] = ereg_replace('^[0]*(.*)$','\1',$outmask);
+	$userinfo['rights'] = preg_replace('/^[0]*(.*)$/','\1',$outmask);
 
 	if(!$error)
 	{

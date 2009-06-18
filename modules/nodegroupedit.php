@@ -35,11 +35,11 @@ if(isset($_POST['nodeassignments']))
 	$nodeassignments = $_POST['nodeassignments'];
 	if (isset($nodeassignments['membersnetid']) && $oper=='2')
 	{
-		$SESSION->redirect('?'.ereg_replace('&membersnetid=[0-9]+', '', $SESSION->get('backto')).'&membersnetid='.$nodeassignments['membersnetid']);
+		$SESSION->redirect('?'.preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->get('backto')).'&membersnetid='.$nodeassignments['membersnetid']);
 	}
 	if (isset($nodeassignments['othersnetid']) && $oper=='3')
 	{
-		$SESSION->redirect('?'.ereg_replace('&othersnetid=[0-9]+', '', $SESSION->get('backto')).'&othersnetid='.$nodeassignments['othersnetid']);
+		$SESSION->redirect('?'.preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->get('backto')).'&othersnetid='.$nodeassignments['othersnetid']);
 	}
 }
 
@@ -64,7 +64,7 @@ if(isset($_POST['nodegroup']))
 		$error['name'] = trans('Group name required!');
 	elseif(strlen($nodegroupedit['name']) > 32)
 		$error['name'] = trans('Group name is too long!');
-	elseif(!eregi("^[._a-z0-9-]+$",$nodegroupedit['name']))
+	elseif(!preg_match('/^[._a-z0-9-]+$/i', $nodegroupedit['name']))
 		$error['name'] = trans('Invalid chars in group name!');
 	elseif( $id != $nodegroupedit['id'])
 		$error['name'] = trans('Group with name $0 already exists!',$nodegroupedit['name']);

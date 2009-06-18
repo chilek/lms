@@ -89,13 +89,13 @@ if(isset($_POST['assignmentedit']))
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
 			}
-			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']))
 			{
 				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
-				list($d,$m) = split('/',$a['at']);
+				list($d,$m) = explode('/',$a['at']);
 			}
 			
 			if(!$error)
@@ -110,7 +110,7 @@ if(isset($_POST['assignmentedit']))
 		break;
 
 		case HALFYEARLY:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
+			if(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']) && $a['at'])
 			{
 				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
@@ -122,7 +122,7 @@ if(isset($_POST['assignmentedit']))
 			}
 			else
 			{
-				list($d,$m) = split('/',$a['at']);
+				list($d,$m) = explode('/',$a['at']);
 			}
 			
 			if(!$error)
@@ -143,13 +143,13 @@ if(isset($_POST['assignmentedit']))
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
 			}
-			elseif(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']))
+			elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']))
 			{
 				$error['editat'] = trans('Incorrect date format! Enter date in DD/MM format!');
 			}
 			else
 			{
-				list($d,$m) = split('/',$a['at']);
+				list($d,$m) = explode('/',$a['at']);
 			}
 			
 			if(!$error)
@@ -173,9 +173,9 @@ if(isset($_POST['assignmentedit']))
 	            		$a['datefrom'] = 0;
 			}
 		     
-		        if(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $a['at']))
+		        if(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at']))
 			{
-				list($y, $m, $d) = split('/', $a['at']);
+				list($y, $m, $d) = explode('/', $a['at']);
 				if(checkdate($m, $d, $y))
 				{
 					$at = mktime(0, 0, 0, $m, $d, $y);
@@ -192,9 +192,9 @@ if(isset($_POST['assignmentedit']))
 
 	if($a['datefrom'] == '')
 		$from = 0;
-	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',$a['datefrom']))
+	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['datefrom']))
 	{
-		list($y, $m, $d) = split('/', $a['datefrom']);
+		list($y, $m, $d) = explode('/', $a['datefrom']);
 		if(checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
@@ -205,9 +205,9 @@ if(isset($_POST['assignmentedit']))
 
 	if($a['dateto'] == '')
 		$to = 0;
-	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',$a['dateto']))
+	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto']))
 	{
-		list($y, $m, $d) = split('/', $a['dateto']);
+		list($y, $m, $d) = explode('/', $a['dateto']);
 		if(checkdate($m, $d, $y))
 			$to = mktime(23, 59, 59, $m, $d, $y);
 		else
@@ -238,7 +238,7 @@ if(isset($_POST['assignmentedit']))
 	{
 		if($a['name'] == '')
 			$error['editname'] = trans('Liability name/description is required!');
-		if(!ereg('^[-]?[0-9.,]+$', $a['value']))
+		if(!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
 			$error['editvalue'] = trans('Incorrect value!');
 	}
 

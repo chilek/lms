@@ -42,7 +42,7 @@ function macformat($mac)
 	}
 	else // other formats eg. cisco xxxx.xxxx.xxxx or parts of addresses
 	{
-		$tmp = eregi_replace('[^0-9a-f]', '', $mac);
+		$tmp = preg_replace('/[^0-9a-f]/i', '', $mac);
 	
 		if(strlen($tmp) == 12) // we've the whole address
 			if(check_mac($tmp)) 
@@ -77,7 +77,7 @@ switch($mode)
 		{
 			$candidates = $DB->GetAll('SELECT id, lastname, name, email, address, deleted 
 				FROM customersview 
-				WHERE '.(ereg('^[0-9]+$', $search) ? 'id = '.intval($search).' OR ' : '').' 
+				WHERE '.(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '').' 
 					LOWER(lastname) ?LIKE? LOWER(\'%'.$search.'%\')
 					OR LOWER(name) ?LIKE? LOWER(\'%'.$search.'%\') 
 					OR LOWER(address) ?LIKE? LOWER(\'%'.$search.'%\') 
@@ -141,7 +141,7 @@ switch($mode)
 		{
 			$candidates = $DB->GetAll('SELECT n.id, n.name, INET_NTOA(ipaddr) as ip, INET_NTOA(ipaddr_pub) AS ip_pub, mac 
 				FROM nodes n
-				WHERE ('.(ereg('^[0-9]+$',$search) ? 'n.id = '.intval($search).' OR ' : '').' 
+				WHERE ('.(preg_match('/^[0-9]+$/',$search) ? 'n.id = '.intval($search).' OR ' : '').' 
 					LOWER(n.name) ?LIKE? LOWER(\'%'.$search.'%\') 
 					OR INET_NTOA(ipaddr) ?LIKE? \'%'.$search.'%\' 
 					OR INET_NTOA(ipaddr_pub) ?LIKE? \'%'.$search.'%\' 
@@ -204,7 +204,7 @@ switch($mode)
 			$candidates = $DB->GetAll('SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
 				FROM rttickets t
 				LEFT JOIN customersview c on (t.customerid = c.id)
-				WHERE  '.(ereg('^[0-9]+$',$search) ? 't.id = '.intval($search).' OR ' : '').' 
+				WHERE  '.(preg_match('/^[0-9]+$/',$search) ? 't.id = '.intval($search).' OR ' : '').' 
 					lower(t.subject) ?LIKE? lower(\'%'.$search.'%\') 
 					OR lower(t.requestor) ?LIKE? lower(\'%'.$search.'%\') 
 					OR lower(c.name) ?LIKE? lower(\''.$search.'%\') 

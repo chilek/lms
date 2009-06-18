@@ -45,7 +45,7 @@ if(isset($_POST['tariff']))
 	{
 	        if($tariff[$item]=='')
 	                $tariff[$item] = 0;
-	        elseif(!ereg('^[0-9]+$', $tariff[$item]))
+	        elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 	                $error[$item] = trans('Integer value expected!');
 	}
 
@@ -59,7 +59,7 @@ if(isset($_POST['tariff']))
 	
 	if($tariff['value'] == '')
 		$error['value'] = trans('Value required!');
-	elseif(!(ereg('^[-]?[0-9.,]+$', $tariff['value'])))
+	elseif(!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
 		$error['value'] = trans('Incorrect value!');
 	
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 100000) && $tariff['uprate'] != 0)
@@ -84,7 +84,7 @@ if(isset($_POST['tariff']))
 	{
 	        if(isset($limit[$item]))
 		        $tariff[$item] = NULL;
-	        elseif(!ereg('^[0-9]+$', $tariff[$item]))
+	        elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 	                $error[$item] = trans('Integer value expected!');
 	}
 

@@ -39,7 +39,7 @@ if(isset($_POST['tariff']))
 
 	$tariff['value'] = str_replace(',','.',$tariff['value']);
 
-	if(!(ereg('^[-]?[0-9.,]+$',$tariff['value'])))
+	if(!preg_match('/^[-]?[0-9.,]+$/', $tariff['value']))
 		$error['value'] = trans('Incorrect subscription value!');
 
 	$items = array('uprate', 'downrate', 'upceil', 'downceil', 'climit', 'plimit', 'dlimit');
@@ -48,7 +48,7 @@ if(isset($_POST['tariff']))
 	{
 		if($tariff[$item]=='')
 			$tariff[$item] = 0;
-		elseif(!ereg('^[0-9]+$', $tariff[$item]))
+		elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 			$error[$item] = trans('Integer value expected!');
 	}
 	
@@ -80,7 +80,7 @@ if(isset($_POST['tariff']))
 	{
 		if(isset($limit[$item])) 
 			$tariff[$item] = NULL;
-		elseif(!ereg('^[0-9]+$', $tariff[$item]))
+		elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
 			$error[$item] = trans('Integer value expected!');
 	}
 

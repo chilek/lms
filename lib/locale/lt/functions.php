@@ -92,9 +92,9 @@ function check_ten($ten)
 	$steps = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4);
 	$sum_nb = 0;
 
-	$ten = strtoupper(ereg_replace("[^[:alnum:]\?]", "", $ten));
-	if (!ereg("(^[0-9]{11})([0-9]{1}$|\?{1}$)", $ten, $regs))
-		if (!ereg("(^[0-9]{8})([0-9]{1}$|\?{1}$)", $ten, $regs))
+	$ten = strtoupper(preg_replace('/[^[:alnum:]\?]/', '', $ten));
+	if (!preg_match('/(^[0-9]{11})([0-9]{1}$|\?{1}$)/', $ten, $regs))
+		if (!preg_match('/(^[0-9]{8})([0-9]{1}$|\?{1}$)/', $ten, $regs))
 			return FALSE;
 	$num = $regs[1];
 	$ctr = $regs[2];
@@ -118,7 +118,7 @@ function check_ten($ten)
 
 function check_ssn($ssn)
 {
-	if (!eregi('^[0-9]{11}$',$ssn))
+	if (!preg_match('/^[0-9]{11}$/', $ssn))
 		return FALSE;
 	
 	$sum_nb = 0;
@@ -134,22 +134,22 @@ function check_ssn($ssn)
 
 function check_zip($zip)
 {
-	return eregi('^[0-9]{5}$', $zip);
+	return preg_match('/^[0-9]{5}$/', $zip);
 }
 
 function check_gg($im)
 {
-	return eregi('^[0-9]{0,32}$', $im);  // gadu-gadu ID check
+	return preg_match('/^[0-9]{0,32}$/', $im);  // gadu-gadu ID check
 }
 
 function check_yahoo($im)
 {
-	return eregi('^[-_.a-z0-9]{0,32}$', $im);
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
 }
 
 function check_skype($im)
 {
-	return eregi('^[-_.a-z0-9]{0,32}$', $im);
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
 }
 
 function check_regon($regon)

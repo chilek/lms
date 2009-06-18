@@ -94,7 +94,7 @@ if(isset($_POST['document']))
 		$document['number'] = $tmp ? $tmp : 0;
 		$autonumber = true;
 	}
-	elseif(!eregi('^[0-9]+$', $document['number']))
+	elseif(!preg_match('/^[0-9]+$/', $document['number']))
     		$error['number'] = trans('Document number must be an integer!');
 	elseif($LMS->DocumentExists($document['number'], $document['type'], $document['numberplanid']))
 		$error['number'] = trans('Document with specified number exists!');

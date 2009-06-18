@@ -47,7 +47,7 @@ if(isset($_POST['netdev']))
 	if($netdevdata['purchasedate'] != '') 
 	{
 		// date format 'yyyy/mm/dd'
-		if(!ereg('^[0-9]{4}/[0-9]{2}/[0-9]{2}$', $netdevdata['purchasedate']))
+		if(!preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $netdevdata['purchasedate']))
 		{
 			$error['purchasedate'] = trans('Invalid date format!');
 		}

@@ -49,10 +49,10 @@ if(isset($_POST['netadd']))
 
 	if($netadd['name'] == '')
 		$error['name'] = trans('Network name is required!');
-	elseif(!eregi('^[._a-z0-9-]+$', $netadd['name']))
+	elseif(!preg_match('/^[._a-z0-9-]+$/i', $netadd['name']))
 		$error['name'] = trans('Network name contains forbidden characters!');
 	
-	if($netadd['domain'] != '' && !eregi('^[.a-z0-9-]+$', $netadd['domain']))
+	if($netadd['domain'] != '' && !preg_match('/^[.a-z0-9-]+$/i', $netadd['domain']))
 		$error['domain'] = trans('Specified domain contains forbidden characters!');
 	
 	if(!check_ip($netadd['address']))
@@ -71,7 +71,7 @@ if(isset($_POST['netadd']))
 		}
 	}
 
-	if($netadd['interface'] != '' && !eregi('^[a-z0-9:.]+$', $netadd['interface']))
+	if($netadd['interface'] != '' && !preg_match('/^[a-z0-9:.]+$/i', $netadd['interface']))
 		$error['interface'] = trans('Incorrect interface name!');
 
 	if($netadd['dns'] != '' && !check_ip($netadd['dns']))

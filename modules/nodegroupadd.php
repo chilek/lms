@@ -40,7 +40,7 @@ if(isset($_POST['nodegroupadd']))
 		$error['name'] = trans('Group name required!');
 	elseif(strlen($nodegroupadd['name']) > 32)
 		$error['name'] = trans('Group name is too long!');
-	elseif(!eregi("^[._a-z0-9-]+$",$nodegroupadd['name']))
+	elseif(!preg_match('/^[._a-z0-9-]+$/i', $nodegroupadd['name']))
 		$error['name'] = trans('Invalid chars in group name!');
 	elseif($DB->GetOne('SELECT 1 FROM nodegroups WHERE name = ?', array($nodegroupadd['name'])))
 		$error['name'] = trans('Group with name $0 already exists!',$nodegroupadd['name']);

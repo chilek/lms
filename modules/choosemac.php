@@ -39,7 +39,7 @@ elseif($p == 'main')
 
 	if(isset($CONFIG['phpui']['arpd_servers']) && $CONFIG['phpui']['arpd_servers'])
 	{
-		$servers = explode(' ', eregi_replace("[\t ]+"," ",$CONFIG['phpui']['arpd_servers']));
+		$servers = preg_split('/[\t ]+/', $CONFIG['phpui']['arpd_servers']);
 		foreach($servers as $server)
 		{
 			$res = explode(':', $server);

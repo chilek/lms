@@ -41,7 +41,7 @@ if(sizeof($useradd))
 	
 	if($useradd['login']=='')
 		$error['login'] = trans('Login can\'t be empty!');
-	elseif(!eregi('^[a-z0-9.-_]+$', $useradd['login']))
+	elseif(!preg_match('/^[a-z0-9.-_]+$/i', $useradd['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
 	elseif($LMS->GetUserIDByLogin($useradd['login']))
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
@@ -73,7 +73,7 @@ if(sizeof($useradd))
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
-	$useradd['rights'] = ereg_replace('^[0]*(.*)$','\1',$outmask);
+	$useradd['rights'] = preg_replace('/^[0]*(.*)$/','\1',$outmask);
 
 	if(!$error)
 	{

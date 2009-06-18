@@ -133,7 +133,7 @@ switch($action)
 
 		if($invoice['cdate']) // && !$invoice['cdatewarning'])
 		{
-			list($year, $month, $day) = split('/',$invoice['cdate']);
+			list($year, $month, $day) = explode('/',$invoice['cdate']);
 			if(checkdate($month, $day, $year))
 			{
 				$oldday = date('d', $invoice['oldcdate']);

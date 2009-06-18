@@ -168,7 +168,7 @@ switch($action)
 		
 		if($invoice['cdate'])
 		{
-			list($year, $month, $day) = split('/', $invoice['cdate']);
+			list($year, $month, $day) = explode('/', $invoice['cdate']);
 			if(checkdate($month, $day, $year)) 
 			{
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
@@ -198,7 +198,7 @@ switch($action)
 
 		if($invoice['number'])
 		{
-			if(!eregi('^[0-9]+$', $invoice['number']))
+			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
 			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
 				$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
@@ -232,7 +232,7 @@ switch($action)
 				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
 			else
 			{
-				if(!eregi('^[0-9]+$', $invoice['number']))
+				if(!preg_match('/^[0-9]+$/', $invoice['number']))
 					$error['number'] = trans('Invoice number must be integer!');
 				elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
 					$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);

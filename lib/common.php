@@ -68,7 +68,7 @@ function execute_program ($program, $args = '')
 			{
 				$cmd = $args_list[$i + 1];
 				$new_cmd = find_program($cmd);
-				$args = ereg_replace('\| '.$cmd, '| '.$new_cmd, $args);
+				$args = preg_replace('/\| '.preg_quote($cmd, '/').'/', '| '.$new_cmd, $args);
 			}
 		}
 	}
@@ -229,9 +229,9 @@ function check_mac(&$macaddr)
 	// so $macaddr should contains 12 hex digits, and that's
 	// will be base for our test
 
-	$macaddr = eregi_replace('[^0-9a-f]', '', $macaddr);
+	$macaddr = preg_replace('/[^0-9a-f]/i', '', $macaddr);
 
-	if(! eregi('^[0-9a-f]{12}$', $macaddr))
+	if(!preg_match('/^[0-9a-f]{12}$/i', $macaddr))
 	{
 		// mac address isn't valid, restore it (cause we working on
 		// reference) and return false
@@ -484,7 +484,7 @@ function r_trim($array)
 // config value testers
 function isboolean($value)
 {
-	if(eregi('^(1|y|on|yes|true|tak|t|0|n|no|off|false|nie)$', $value))
+	if(preg_match('/^(1|y|on|yes|true|tak|t|0|n|no|off|false|nie|enabled|disabled)$/i', $value))
 		return TRUE;
 	else
 		return FALSE;

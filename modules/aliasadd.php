@@ -50,7 +50,7 @@ if($alias)
 	
 	if($alias['login'] == '')
 		$error['login'] = trans('You have to specify alias name!');
-	elseif(!ereg("^[a-z0-9._-]+$", $alias['login']))
+	elseif(!preg_match('/^[a-z0-9._-]+$/', $alias['login']))
     		$error['login'] = trans('Login contains forbidden characters!');
 	elseif(!$alias['domainid'])
 		$error['domainid'] = trans('You have to select domain for alias!');

@@ -137,7 +137,7 @@ if(isset($_POST['nodeedit']))
 		$error['name'] = trans('Node name is required!');
 	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByName($nodeedit['name']) != $nodeedit['id'])
 		$error['name'] = trans('Specified name is in use!');
-	elseif(!eregi('^[_a-z0-9-]+$',$nodeedit['name']))
+	elseif(!preg_match('/^[_a-z0-9-]+$/i', $nodeedit['name']))
 		$error['name'] = trans('Specified name contains forbidden characters!');
 	elseif(strlen($nodeedit['name'])>32)
 		$error['name'] = trans('Node name is too long (max.32 characters)!');
@@ -167,7 +167,7 @@ if(isset($_POST['nodeedit']))
 			if(!isset($ports))
 				$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodeedit['netdev']));
 		
-		        if(!ereg('^[0-9]+$', $nodeedit['port']) || $nodeedit['port'] > $ports)
+		        if(!preg_match('/^[0-9]+$/', $nodeedit['port']) || $nodeedit['port'] > $ports)
 		        {
 		                $error['port'] = trans('Incorrect port number!');
 		        }

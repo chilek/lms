@@ -28,9 +28,9 @@ function chkconfig($value, $default = FALSE)
 {
 	if($value == '')
 		return $default;
-	elseif(eregi('^(1|y|on|yes|true|tak|t|enabled)$', $value))
+	elseif(preg_match('/^(1|y|on|yes|true|tak|t|enabled)$/i', $value))
 		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie|disabled)$', $value))
+	elseif(preg_match('/^(0|n|no|off|false|nie|disabled)$/i', $value))
 		return FALSE;
 	else
 		trigger_error('Incorrect option value: '.$value);

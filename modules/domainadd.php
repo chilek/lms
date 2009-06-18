@@ -46,7 +46,7 @@ if(isset($_POST['domainadd']))
 	
 	if($domainadd['name'] == '')
 		$error['name'] = trans('Domain name is required!');
-	elseif(!ereg("^[a-z0-9._-]+$", $domainadd['name']))
+	elseif(!preg_match('/^[a-z0-9._-]+$/', $domainadd['name']))
                 $error['name'] = trans('Domain name contains forbidden characters!');	
 	elseif(GetDomainIdByName($domainadd['name']))
 		$error['name'] = trans('Domain with specified name exists!');
