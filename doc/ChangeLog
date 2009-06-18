@@ -4,6 +4,7 @@ version ? (????-??-??):
 
   - lms-payments: fixed invoice positions numbering which could 
     involve wrong calculations on invoices with many positions (alec)
+  - BTS#0000796: fixed nbtscan use (alec)
 
 version 1.10.6 Hank (2009-03-27):
 
