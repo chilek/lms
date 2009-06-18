@@ -193,8 +193,8 @@ $LMS->lang = $_language;
 $SMARTY->assign_by_ref('_LANG', $_LANG);
 $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
 $SMARTY->assign_by_ref('_language', $LMS->lang);
+$SMARTY->assign_by_ref('_config',$CONFIG);
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/');
-$SMARTY->assign('_config',$CONFIG);
 $SMARTY->template_dir = SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 $SMARTY->debugging = (isset($CONFIG['phpui']['smarty_debug']) ? chkconfig($CONFIG['phpui']['smarty_debug']) : FALSE);
@@ -244,15 +244,10 @@ if($AUTH->islogged)
 					elseif(isset($access['table'][$level]['allow_reg']))
 						$allow = (bool) preg_match('/'.$access['table'][$level]['allow_reg'].'/i', $module);
 				}
-				if(isset($access['table'][$level]['privillege']))
-				{
-					$CONFIG['phpui'][$access['table'][$level]['privillege']] = TRUE;
-					$found_privilleges = TRUE;
-				}
-			}
 
-		if($found_privilleges)
-			$SMARTY->assign('_config', $CONFIG);
+				if(isset($access['table'][$level]['privillege']))
+					$CONFIG['phpui'][$access['table'][$level]['privillege']] = TRUE;
+			}
 
 		if($allow && ! $deny)
 		{
