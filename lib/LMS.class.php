@@ -1966,8 +1966,10 @@ class LMS
 				ds.city AS division_city, ds.countryid AS division_countryid, 
 				ds.ten AS division_ten, ds.regon AS division_regon, ds.account,
 				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
-				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace
+				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
+				c.pin AS customerpin, c.divisionid AS current_divisionid
 				FROM documents d
+				JOIN customers c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -2049,8 +2051,6 @@ class LMS
 			}
 			$result['valuep'] = round( ($result['value'] - floor($result['value'])) * 100);
 
-			$result['customerpin'] = $this->DB->GetOne('SELECT pin FROM customers WHERE id=?', array($result['customerid']));
-			
 			// NOTE: don't waste CPU/mem when printing history is not set:
 			if(chkconfig($this->CONFIG['invoices']['print_balance_history']))
 			{
