@@ -78,6 +78,16 @@
 			<INPUT TYPE="TEXT" NAME="cnote[paytype]" VALUE="{$cnote.paytype}" SIZE="10" {tip text="Enter payment type"}>
 		</TD>
 	</TR>
+	{if $invoice.divisionid != $invoice.current_divisionid}
+        <TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Use current division data:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="checkbox" NAME="cnote[use_current_division]" VALUE="1"{if $cnote.use_current_division} CHECKED{/if} {tip text="Seller data change"}>
+		</TD>
+	</TR>
+	{/if}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<B>{t}Reason:{/t}</B>

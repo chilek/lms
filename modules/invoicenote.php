@@ -64,6 +64,8 @@ if(isset($_GET['id']) && $action=='init')
 	else
 		$cnote['paytime'] = floor(($deadline - $cnote['cdate'])/86400);
     
+	$cnote['use_current_division'] = true;
+
 	$SESSION->save('cnote', $cnote);
 	$SESSION->save('invoice', $invoice);
 	$SESSION->save('invoiceid', $invoice['id']);
@@ -131,8 +133,10 @@ switch($action)
 		}
                 
 		// finally check if selected customer can use selected numberplan
+		$divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
+		
 		if($cnote['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
-			WHERE planid = ? AND divisionid = ?', array($cnote['numberplanid'], $invoice['divisionid'])))
+			WHERE planid = ? AND divisionid = ?', array($cnote['numberplanid'], $divisionid)))
 		{
 		        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
 		}
@@ -225,9 +229,9 @@ switch($action)
 						$invoice['countryid'],
 						$invoice['id'],
 						$cnote['reason'],
-						$invoice['divisionid'],
+						!empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'],
 					));
-																																																							    	
+
 			$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
 				array($cnote['number'],$cnote['cdate'],DOC_CNOTE));
 

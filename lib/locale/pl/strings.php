@@ -2077,7 +2077,7 @@ $_LANG['Are you sure, you want to remove voip account \\\'$0\\\' from database?'
 $_LANG['Delete Voip Account $0'] = 'Usuń konto VoIP: $0';
 $_LANG['Voip Account Info: $0'] = 'Informacje o koncie: $0';
 $_LANG['Voip Account Edit: $0'] = 'Edycja konta VoIP: $0';
-$_LANG['Voip Accounts ($0):'] = 'Konta VoIP ($0)';
+$_LANG['Voip Accounts ($0):'] = 'Konta VoIP ($0):';
 $_LANG['<!do>Import'] = 'Importuj';
 $_LANG['Download (CSV)'] = 'Pobierz (CSV)';
 $_LANG['Download all (TXT)'] = 'Pobierz wszystkie (TXT)';
@@ -2217,5 +2217,7 @@ $_LANG['- all sources -'] = '- wszystkie -';
 $_LANG['- auto -'] = '- automatycznie -';
 $_LANG['- none -'] = '- żadne -';
 $_LANG['There are no types in database.'] = 'Brak typów w bazie danych.';
+$_LANG['Use current division data:'] = 'Zastosuj dane bieżącej firmy (oddziału):';
+$_LANG['Seller data change'] = 'Zmiana danych sprzedawcy';
 
 ?>
