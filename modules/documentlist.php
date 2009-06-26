@@ -102,11 +102,11 @@ if(isset($_GET['from']))
         } else
 		$from = 0;
 }
-elseif($SESSION->is_set('doclf'))
-	$SESSION->restore('doclf', $from);
+elseif($SESSION->is_set('doclfrom'))
+	$SESSION->restore('doclfrom', $from);
 else
         $from = 0;
-$SESSION->save('doclf', $from);
+$SESSION->save('doclfrom', $from);
 
 if(isset($_GET['to']))
 {
@@ -117,12 +117,12 @@ if(isset($_GET['to']))
         } else
 		$to = 0;
 }
-elseif($SESSION->is_set('doclt'))
-	$SESSION->restore('doclt', $to);
+elseif($SESSION->is_set('doclto'))
+	$SESSION->restore('doclto', $to);
 else
         $to = 0;
-$SESSION->save('doclt', $to);
-									
+$SESSION->save('doclto', $to);
+
 $documentlist = GetDocumentList($o, $t, $c, $from, $to);
 
 $listdata['total'] = $documentlist['total'];
