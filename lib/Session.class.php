@@ -142,28 +142,23 @@ class Session {
 	function _restoreSession()
 	{
 		$this->SID = $_COOKIE['SID'];
-		if(
-				$this->DB->GetOne('SELECT id FROM sessions WHERE id = ?', array($this->SID)) &&
-				serialize($this->makeVData()) == $this->DB->GetOne('SELECT vdata FROM sessions WHERE id = ?', array($this->SID)) &&
-				$this->_testSessionTimeout()
-		  )
-		{
-			$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
-			$this->_content = unserialize($this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID)));
-		}
-		else
-			$this->_createSession();
-	}
+		
+		$row = $this->DB->GetRow('SELECT *, ?NOW? AS tt FROM sessions WHERE id = ?', array($this->SID));
 
-	function _testSessionTimeout()
-	{
-		if($this->DB->GetOne('SELECT * FROM sessions WHERE id = ? AND mtime < ?NOW? - ? AND atime < ?NOW? - ?', array($this->SID, $this->timeout, $this->timeout)))
+		if($row && serialize($this->makeVData()) == $row['vdata'])
 		{
+			if (($row['mtime'] < $row['tt'] - $this->timeout) && ($row['atime'] < $row['tt'] - $this->timeout))
+			{
+				$this->_destroySession();
+			} else {
+				$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
+				$this->_content = unserialize($row['content']);
+				return;
+			}
+		} elseif($row)
 			$this->_destroySession();
-			return FALSE;
-		}
-		else
-			return TRUE;
+	
+		$this->_createSession();
 	}
 
 	function _saveSession()
