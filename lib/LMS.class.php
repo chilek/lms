@@ -460,9 +460,10 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT c.*, '
 			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-			d.shortname AS division, d.account
+			d.shortname AS division, d.account, co.name AS country
 			FROM customers'.(defined('LMS-UI') ? 'view' : '').' c 
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
+			LEFT JOIN countries co ON (co.id = c.countryid)
 			WHERE c.id = ?', array($id)))
 		{
 			if(!$short)
@@ -483,7 +484,6 @@ class LMS
 					$result['cstate'] = $cstate['name'];
 				}
 			}
-			$result['country'] = $this->DB->GetOne('SELECT name FROM countries WHERE id=?', array($result['countryid']));
 			$result['balance'] = $this->GetCustomerBalance($result['id']);
 			$result['bankaccount'] = bankaccount($result['id'], $result['account']);
 
@@ -699,80 +699,46 @@ class LMS
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
-			$day = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
-						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
-						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)*30 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
-						    AND period = '.DAILY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
-					    GROUP BY customers.id', 'id');
-			$week = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
-						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
-						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
-						    AND period = '.WEEKLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
-					    GROUP BY customers.id', 'id');
-			$month = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
-						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
-						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END) AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
-						    AND period = '.MONTHLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
-					    GROUP BY customers.id', 'id');
-			$quarter = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
-						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
-						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/3 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
-						    AND period = '.QUARTERLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
-					    GROUP BY customers.id', 'id');
-			$halfyear = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
-						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
-						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/6 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
-						    AND period = '.HALFYEARLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
-					    GROUP BY customers.id', 'id');
-			$year = $this->DB->GetAllByKey('SELECT customers.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
-						    ELSE ((100 - discount) * tariffs.value) / 100 END) 
-						    ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-						    ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)/12 AS value 
-					    FROM assignments, tariffs, customers WHERE customerid = customers.id AND tariffid = tariffs.id AND deleted = 0 
-						    AND period = '.YEARLY.' AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
-					    GROUP BY customers.id', 'id');
+			$tariffs = $this->DB->GetAllByKey('SELECT customers.id AS id, 
+					SUM((CASE suspended
+						WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
+							ELSE ((100 - discount) * tariffs.value) / 100 END) 
+						ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+							ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)
+					* (CASE period
+						WHEN '.YEARLY.' THEN 1/12.0
+						WHEN '.HALFYEARLY.' THEN 1/6.0
+						WHEN '.QUARTERLY.' THEN 1/3.0
+						WHEN '.WEEKLY.' THEN 4
+						WHEN '.DAILY.' THEN 30
+						ELSE 1 END)
+					) AS value 
+					FROM assignments
+					JOIN tariffs ON (tariffs.id = tariffid)
+					JOIN customers ON (customerid = customers.id)
+					WHERE deleted = 0 
+						AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
+					GROUP BY customers.id', 'id');
 
-			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account 
-					    FROM nodes GROUP BY ownerid','id');
-			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount 
-					    FROM nodes GROUP BY ownerid','id');
-			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id
-					    FROM nodes GROUP BY ownerid','id');
-
+			$stats = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account,
+					MAX(lastonline) AS online, SUM(warning) AS warnsum, COUNT(warning) AS warncount 
+					FROM nodes GROUP BY ownerid','id');
+										    
 			foreach($customerlist as $idx => $row)
 			{
-				$customerlist[$idx]['tariffvalue'] = 0;
-				if(isset($day[$row['id']]['value']))
-					$customerlist[$idx]['tariffvalue'] += round($day[$row['id']]['value'], 2);
-				if(isset($week[$row['id']]['value']))
-					$customerlist[$idx]['tariffvalue'] += round($week[$row['id']]['value'], 2);
-				if(isset($month[$row['id']]['value']))
-					$customerlist[$idx]['tariffvalue'] += round($month[$row['id']]['value'], 2);
-				if(isset($quarter[$row['id']]['value']))
-					$customerlist[$idx]['tariffvalue'] += round($quarter[$row['id']]['value'], 2);
-				if(isset($halfyear[$row['id']]['value']))
-					$customerlist[$idx]['tariffvalue'] += round($halfyear[$row['id']]['value'], 2);
-				if(isset($year[$row['id']]['value']))
-					$customerlist[$idx]['tariffvalue'] += round($year[$row['id']]['value'], 2);
+				if(isset($tariffs[$row['id']]['value']))
+					$customerlist[$idx]['tariffvalue'] = round($tariffs[$row['id']]['value'], 2);
+				else
+					$customerlist[$idx]['tariffvalue'] = 0;
 					
-				$customerlist[$idx]['account'] = isset($access[$row['id']]['account']) ? $access[$row['id']]['account'] : 0;
-				$customerlist[$idx]['warncount'] = isset($warning[$row['id']]['warncount']) ? $warning[$row['id']]['warncount'] : 0;
+				$customerlist[$idx]['account'] = isset($stats[$row['id']]['account']) ? $stats[$row['id']]['account'] : 0;
+				$customerlist[$idx]['warncount'] = isset($stats[$row['id']]['warncount']) ? $stats[$row['id']]['warncount'] : 0;
 
 				if($customerlist[$idx]['account']) // if customer have some nodes
 				{
-					if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
+					if($stats[$row['id']]['account'] == $stats[$row['id']]['acsum'])
 						$customerlist[$idx]['nodeac'] = 1; // connected all nodes
-					elseif($access[$row['id']]['acsum'] == 0)
+					elseif($stats[$row['id']]['acsum'] == 0)
 						$customerlist[$idx]['nodeac'] = 0; // disconected all nodes
 					else
 						$customerlist[$idx]['nodeac'] = 2; // some nodes disconneted
@@ -780,15 +746,15 @@ class LMS
 				
 				if($customerlist[$idx]['warncount'])
 				{
-					if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
+					if($stats[$row['id']]['warncount'] == $stats[$row['id']]['warnsum'])
 						$customerlist[$idx]['nodewarn'] = 1;
-					elseif($warning[$row['id']]['warnsum'] == 0)
+					elseif($stats[$row['id']]['warnsum'] == 0)
 						$customerlist[$idx]['nodewarn'] = 0;
 					else
 						$customerlist[$idx]['nodewarn'] = 2;
 				}
 				
-				if(isset($onlines[$row['id']]['online']) && $onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
+				if(isset($stats[$row['id']]['online']) && $stats[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
 					$customerlist[$idx]['online'] = 1;
 				else
 					$customerlist[$idx]['online'] = 0;
@@ -1247,14 +1213,18 @@ class LMS
 	function GetNode($id)
 	{
 		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, 
-					ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
-					warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
-					info, location, chkmac, halfduplex, linktype, port, nas
-					FROM nodes WHERE id = ?', array($id)))
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, 
+			warning, creationdate, moddate, creatorid, modid, netdev, lastonline, 
+			info, location, chkmac, halfduplex, linktype, port, nas
+			FROM nodes WHERE id = ?', array($id)))
 		{
+			$result['owner'] = $this->GetCustomerName($result['ownerid']);
 			$result['createdby'] = $this->GetUserName($result['creatorid']);
 			$result['modifiedby'] = $this->GetUserName($result['modid']);
 			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
+			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
+			$result['producer'] = get_producer($result['mac']);
+
 			$delta = time()-$result['lastonline'];
 			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
 			{
@@ -1265,14 +1235,16 @@ class LMS
 			}
 			else
 				$result['lastonlinedate'] = trans('online');
-			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
-			$result['owner'] = $this->GetCustomerName($result['ownerid']);
-			$result['netid'] = $this->GetNetIDByIP($result['ip']);
-			if($result['netid'])
-				$result['netname'] = $this->GetNetworkName($result['netid']);
-			$result['producer'] = get_producer($result['mac']);
+			
+			if($net = $this->DB->GetRow('SELECT id, name FROM networks
+				WHERE address = (inet_aton(?) & inet_aton(mask))', array($result['ip'])))
+			{
+				$result['netid'] = $net['id'];
+				$result['netname'] = $net['name'];
+			}
+			
 			return $result;
-		}else
+		} else
 			return FALSE;
 	}
 
@@ -1496,11 +1468,11 @@ class LMS
 	function NodeExists($id)
 	{
 		return ($this->DB->GetOne('SELECT n.id FROM nodes n
-				WHERE n.id = ? AND NOT EXISTS (
-		            		SELECT 1 FROM customerassignments a
-				        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)'
-				, array($id)) ? TRUE : FALSE);
+			WHERE n.id = ? AND n.ownerid > 0 AND NOT EXISTS (
+		        	SELECT 1 FROM customerassignments a
+			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)'
+			, array($id)) ? TRUE : FALSE);
 	}
 
 	function NodeStats()
