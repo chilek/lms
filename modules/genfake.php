@@ -2105,7 +2105,7 @@ else
 {
 	$SMARTY->display('header.html');
 	echo '<H1>'.trans('Generating random data').'</H1>';
-	echo '<form method="get" action="?" target="_blank">';
+	echo '<form method="get" action="?">';
 	echo '<input type="hidden" name="m" value="genfake">';
 	echo '<input type="submit" class="hiddenbtn">';
 	echo '<font class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</font><p>';
