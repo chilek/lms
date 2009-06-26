@@ -55,17 +55,11 @@ if(!preg_match('/^[0-9]+$/',$_GET['id']))
 }
 
 if(!$LMS->NodeExists($_GET['id']))
-	if(isset($_GET['ownerid']))
-	{
-		$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
-	}
-	else
-	{
-		$SESSION->redirect('?m=nodelist');
-	}
-elseif($LMS->GetNodeOwner($_GET['id']) == 0)
 {
-	$SESSION->redirect('?m=netdevinfo&id='.$LMS->GetNetDevIDByNode($_GET['id']));
+	if(isset($_GET['ownerid']))
+		$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
+	else
+		$SESSION->redirect('?m=nodelist');
 }
 
 if(isset($_GET['devid']))
@@ -76,10 +70,10 @@ if(isset($_GET['devid']))
 }
 
 $nodeid = $_GET['id'];
-$customerid = $LMS->GetNodeOwner($nodeid);
 $nodeinfo = $LMS->GetNode($nodeid);
 $nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
 $othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);
+$customerid = $nodeinfo['ownerid'];
 
 include(MODULES_DIR.'/customer.inc.php');
 
