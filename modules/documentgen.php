@@ -155,12 +155,6 @@ if(isset($_POST['document']))
 		// read template information
 		include(DOC_DIR.'/templates/'.$document['templ'].'/info.php');
 		
-		// run template engine
-		if(file_exists(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
-			require_once(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
-		else
-			require_once(DOC_DIR.'/templates/default/engine.php');
-
 		foreach($customerlist as $gencust)
 		{
 			if(!is_array($gencust)) continue;
@@ -170,6 +164,7 @@ if(isset($_POST['document']))
 			$output = NULL; // delete output
 			$genresult .= $gencount.'. '.$gencust['customername'].': ';
 			
+			// run template engine
 			if(file_exists(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
 				include(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
 			else
@@ -206,24 +201,24 @@ if(isset($_POST['document']))
 	
 			$DB->BeginTrans();
 		
-			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, name, address, zip, city, ten, ssn, closed)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, divisionid, name, address, zip, city, ten, ssn, closed)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(	$document['type'],
 					$document['number'],
 					$document['numberplanid'],
 					$time,
 					$document['customerid'],
 					$AUTH->id,
+					$gencust['divisionid'],
 					$gencust['customername'],
 					$gencust['address'] ? $gencust['address'] : '',
 					$gencust['zip'] ? $gencust['zip'] : '',
 					$gencust['city'] ? $gencust['city'] : '',
 					$gencust['ten'] ? $gencust['ten'] : '',
 					$gencust['ssn'] ? $gencust['ssn'] : '',
-					$gencust['divisionid'],
-					isset($document['closed']) ? 1 : 0
-					));
-		
+					!empty($document['closed']) ? 1 : 0
+				));
+
 			$docid = $DB->GetLastInsertID('documents');
 
 			$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, filename, contenttype, md5sum, description)
@@ -236,10 +231,10 @@ if(isset($_POST['document']))
 					$document['contenttype'],
 					$document['md5sum'],
 					$document['description']
-					));
+				));
 		
 			$DB->CommitTrans();
-			
+
 			$genresult .= docnumber($document['number'], $numtemplate, $time).'.<br>';
 			$document['number']++;
 
