@@ -1047,6 +1047,7 @@ class LMS
 
 		$result = $this->DB->GetRow('SELECT id, name, description 
 			FROM customergroups WHERE id=?', array($id));
+
 		$result['customers'] = $this->DB->GetAll('SELECT c.id AS id,'
 			.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername 
 			FROM customerassignments, customers c '
@@ -1057,7 +1058,7 @@ class LMS
 			.' GROUP BY c.id, customername ORDER BY customername', array($id));
 
 		$result['customerscount'] = sizeof($result['customers']);
-		$result['count'] = $this->CustomergroupWithCustomerGet($id);
+		$result['count'] = $network ? $this->CustomergroupWithCustomerGet($id) : $result['customerscount'];
 
 		return $result;
 	}
