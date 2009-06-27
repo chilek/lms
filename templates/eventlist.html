@@ -57,7 +57,8 @@
 				<SELECT name="year" onchange="document.filter.submit();">
 					{assign var=start value=$period.fromdate|default:$date|date_format:"%Y"}
 					{assign var=end value=$period.todate|default:$date|date_format:"%Y"}
-					{section name=year loop=$end+2 start=$start}
+					{math assign=end equation="max(x, y)" x=$end y=$smarty.now|date_format:"%Y"}
+					{section name=year loop=$end+1 start=$start}
 					<OPTION value="{$smarty.section.year.index}"{if $smarty.section.year.index==$year} selected{/if}>{$smarty.section.year.index}</option>
 					{/section}
 				</SELECT>
