@@ -233,6 +233,7 @@ if(defined('USERPANEL_SETUPMODE'))
 	function module_changes()
 	{
 		global $layout, $SMARTY, $DB, $LMS;
+
 		$layout['pagetitle'] = trans('Changes affirmation');
 
 		$userchanges = $DB->GetAll('SELECT up_info_changes.id AS changeid, customerid, fieldname, fieldvalue AS newvalue, '.
@@ -284,39 +285,38 @@ if(defined('USERPANEL_SETUPMODE'))
 				$changes = $DB->GetRow('SELECT customerid, fieldname, fieldvalue FROM up_info_changes
 					WHERE id = ?', array($changeid));
 				
-				$customer = $LMS->GetCustomer($changes['customerid']);
-
-				$customer[$changes['fieldname']] = $changes['fieldvalue'];
-
 				if(preg_match('/phone([0-9]+)/', $changes['fieldname'], $matches))
 				{
 					if($matches[1])
 					{
 						if($changes['fieldvalue'])
-							$DB->GetOne('UPDATE customercontacts SET phone = ? WHERE id = ?', array($changes['fieldvalue'], $matches[1]));
+							$DB->Execute('UPDATE customercontacts SET phone = ? WHERE id = ?', array($changes['fieldvalue'], $matches[1]));
 						else
-							$DB->GetOne('DELETE FROM customercontacts WHERE id = ?', array($matches[1]));
+							$DB->Execute('DELETE FROM customercontacts WHERE id = ?', array($matches[1]));
 					}
 					else // new phone
-						$DB->GetOne('INSERT INTO customercontacts (phone, customerid) VALUES(?,?)', array($changes['fieldvalue'], $customer['id']));
+						$DB->Execute('INSERT INTO customercontacts (phone, customerid) VALUES(?,?)', array($changes['fieldvalue'], $changes['customerid']));
 				}
 				else
 				switch($changes['fieldname'])
 				{
 					case 'im':
-						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($customer['id'], IM_GG));
+						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], IM_GG));
 						if($changes['fieldvalue'])
-							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)', array($customer['id'],$changes['fieldvalue'],IM_GG));
+							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)',
+								array($changes['customerid'], $changes['fieldvalue'],IM_GG));
 					break;
 					case 'yahoo':
-						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($customer['id'], IM_YAHOO));
+						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], IM_YAHOO));
 						if($changes['fieldvalue'])
-							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)', array($customer['id'],$changes['fieldvalue'],IM_YAHOO));
+							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)',
+								array($changes['customerid'], $changes['fieldvalue'],IM_YAHOO));
 					break;
 					case 'skype':
-						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($customer['id'], IM_SKYPE));
+						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], IM_SKYPE));
 						if($changes['fieldvalue'])
-							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)', array($customer['id'],$changes['fieldvalue'],IM_SKYPE));
+							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)',
+								array($changes['customerid'], $changes['fieldvalue'],IM_SKYPE));
 					break;
 					case 'name':
 					case 'lastname':
@@ -326,7 +326,8 @@ if(defined('USERPANEL_SETUPMODE'))
 					case 'email':
 					case 'ssn':
 					case 'ten':
-						$DB->Execute('UPDATE customers SET '.$changes['fieldname'].' = ? WHERE id = ?', array($changes['fieldvalue'], $customer['id']));
+						$DB->Execute('UPDATE customers SET '.$changes['fieldname'].' = ? WHERE id = ?',
+							array($changes['fieldvalue'], $changes['customerid']));
 					break;
 				}
 			
