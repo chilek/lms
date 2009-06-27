@@ -32,6 +32,7 @@ class LMS
 	var $DB;			// database object
 	var $AUTH;			// object from Session.class.php (session management)
 	var $CONFIG;			// table including lms.ini options
+	var $cache = array();		// internal cache
 	var $_version = '1.11-cvs';	// class version
 	var $_revision = '$Revision$';
 
@@ -129,6 +130,27 @@ class LMS
 	}
 
 	/*
+	 *  Internal cache
+	 */
+
+	function GetCache($key, $idx=null, $name=null)
+	{
+		if(isset($this->cache[$key]))
+		{
+			if(!$idx)
+				return $this->cache[$key];
+			elseif(isset($this->cache[$key][$idx]))
+			{
+				if(!$name)
+					return $this->cache[$key][$idx];
+				elseif(isset($this->cache[$key][$idx][$name]))
+					return $this->cache[$key][$idx][$name];
+			}
+		}
+		return NULL;
+	}
+
+	/*
 	 *  Users (Useristrators)
 	 */
 
@@ -139,7 +161,18 @@ class LMS
 
 	function GetUserName($id) // returns user name
 	{
-		return $this->DB->GetOne('SELECT name FROM users WHERE id=?', array($id));
+		if (!$id)
+			return NULL;
+
+		if(!($name = $this->GetCache('users', $id, 'name')))
+		{
+			if($this->AUTH->id == $id)
+				$name = $this->AUTH->logname;
+			else
+				$name = $this->DB->GetOne('SELECT name FROM users WHERE id=?', array($id));
+			$this->cache['users'][$id]['name'] = $name;
+		}
+		return $name;
 	}
 
 	function GetUserNames() // returns short list of users
@@ -3143,23 +3176,30 @@ class LMS
 
 	function GetUserRightsRT($user, $queue, $ticket=NULL)
 	{
-		if($queue==0)
-			$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
-
+		if(!$queue && $ticket)
+		{
+			if(!($queue = $this->GetCache('rttickets', $ticket, 'queueid')))
+				$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
+		}
+		
+		if (!$queue)
+			return 0;
+		
 		$rights = $this->DB->GetOne('SELECT rights FROM rtrights WHERE userid=? AND queueid=?',
 			array($user, $queue));
 
 		return ($rights ? $rights : 0);
 	}
 
-	function GetQueueList()
+	function GetQueueList($stats=true)
 	{
 		if($result = $this->DB->GetAll('SELECT id, name, email, description 
 				FROM rtqueues ORDER BY name'))
 		{
-			foreach($result as $idx => $row)
-				foreach($this->GetQueueStats($row['id']) as $sidx => $row)
-					$result[$idx][$sidx] = $row;
+			if($stats)
+				foreach($result as $idx => $row)
+					foreach($this->GetQueueStats($row['id']) as $sidx => $row)
+						$result[$idx][$sidx] = $row;
 		}
 		return $result;
 	}
@@ -3225,7 +3265,9 @@ class LMS
 
 	function TicketExists($id)
 	{
-		return $this->DB->GetOne('SELECT id FROM rttickets WHERE id = ?', array($id));
+		$ticket = $this->DB->GetOne('SELECT * FROM rttickets WHERE id = ?', array($id));
+		$this->cache['rttickets'][$id] = $ticket;
+		return $ticket;
 	}
 
 	function TicketAdd($ticket)
