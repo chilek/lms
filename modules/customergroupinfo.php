@@ -24,16 +24,12 @@
  *  $Id$
  */
 
-if (isset($_GET['id']) && $id = $_GET['id'])
-{
-	if (!$LMS->CustomergroupExists($id))
-	{
-		$SESSION->redirect('?m=customergrouplist');
-	}
-}
+$id = !empty($_GET['id']) ? $_GET['id'] : NULL;
 
-if (!isset($id))
+if (!$id || !$LMS->CustomergroupExists($id))
+{
 	$SESSION->redirect('?m=customergrouplist');
+}
 
 if (isset($_GET['membersnetid']) && $membersnetid = $_GET['membersnetid'])
 {
