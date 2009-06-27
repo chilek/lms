@@ -83,7 +83,7 @@ class Auth {
 			return TRUE;
 		}
 
-		if($this->islogged || $this->VerifyUser())
+		if($this->islogged || ($this->login && $this->VerifyUser()))
 		{
 			$this->SESSION->restore('session_last', $this->last);
 			$this->SESSION->restore('session_lastip', $this->lastip);
@@ -92,10 +92,6 @@ class Auth {
 
 			if(isset($loginform))
 			{
-				$userdata = $this->DB->GetRow('SELECT lastlogindate, lastloginip FROM users WHERE id=?',array($this->id));
-				$this->last = $userdata['lastlogindate'];
-				$this->lastip = $userdata['lastloginip'];
-				
 				$this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
 				writesyslog('User '.$this->login.' logged in.', LOG_INFO);
 			}
@@ -110,12 +106,18 @@ class Auth {
 		{
 			if(isset($loginform))
 			{
-				if(!$this->hostverified)
-					writesyslog('Bad host ('.$this->ip.') for '.$this->login, LOG_WARNING);
-				if(!$this->passverified)
-					writesyslog('Bad password for '.$this->login, LOG_WARNING);
+				if($this->id)
+				{
+					if(!$this->hostverified)
+						writesyslog('Bad host ('.$this->ip.') for '.$this->login, LOG_WARNING);
+					if(!$this->passverified)
+						writesyslog('Bad password for '.$this->login, LOG_WARNING);
 				
-				$this->DB->Execute('UPDATE users SET failedlogindate=?, failedloginip=? WHERE login=?',array(time(), $this->ip, $this->login));
+					$this->DB->Execute('UPDATE users SET failedlogindate=?, failedloginip=? WHERE id = ?',
+						array(time(), $this->ip, $this->id));
+				} else {
+					writesyslog('Unknown login '.$this->login.' from '.$this->ip, LOG_WARNING);			
+				}
 			}
 			$this->LogOut();
 		}
@@ -185,14 +187,20 @@ class Auth {
 	
 	function VerifyUser()
 	{
-		$user = $this->DB->GetRow('SELECT id, name, passwd, hosts FROM users WHERE login=? AND deleted=0', array($this->login));
-
-		$this->logname = $user['name'];
-		$this->id = $user['id'];
+		$this->islogged = false;
+		
+		if($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip
+			FROM users WHERE login=? AND deleted=0', array($this->login)))
+		{
+			$this->logname = $user['name'];
+			$this->id = $user['id'];
+			$this->last = $user['lastlogindate'];
+			$this->lastip = $user['lastloginip'];
 	
-		$this->passverified = $this->VerifyPassword($user['passwd']);
-		$this->hostverified = $this->VerifyHost($user['hosts']);
-		$this->islogged = ($this->passverified && $this->hostverified);
+			$this->passverified = $this->VerifyPassword($user['passwd']);
+			$this->hostverified = $this->VerifyHost($user['hosts']);
+			$this->islogged = ($this->passverified && $this->hostverified);
+		}
 		
 		return $this->islogged;
 	}
