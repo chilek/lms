@@ -83,7 +83,7 @@ class Auth {
 			return TRUE;
 		}
 
-		if($this->islogged || ($this->login && $this->VerifyUser()))
+		if($this->islogged || $this->VerifyUser())
 		{
 			$this->SESSION->restore('session_last', $this->last);
 			$this->SESSION->restore('session_lastip', $this->lastip);
