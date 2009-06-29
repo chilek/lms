@@ -141,10 +141,7 @@ class Auth {
 			return TRUE;
 		else 
 		{
-			if(isset($this->login))
-				$this->error = trans('Wrong password or login.');
-			else
-				$this->error = trans('Please login.');
+			$this->error = trans('Wrong password or login.');
 			return FALSE;
 		}
 	}
@@ -201,6 +198,11 @@ class Auth {
 			$this->hostverified = $this->VerifyHost($user['hosts']);
 			$this->islogged = ($this->passverified && $this->hostverified);
 		}
+		else
+			if(isset($this->login))
+				$this->error = trans('Wrong password or login.');
+			else
+				$this->error = trans('Please login.');
 		
 		return $this->islogged;
 	}
