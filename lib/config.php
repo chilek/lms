@@ -58,6 +58,7 @@ $DEFAULTS = array(
 		'nodelist_pagelimit' => 100,
 		'balancelist_pagelimit' => 100,
 		'invoicelist_pagelimit' => 100,
+		'debitnotelist_pagelimit' => 100,
 		'ticketlist_pagelimit' => 100,
 		'accountlist_pagelimit' => 100,
 		'domainlist_pagelimit' => 100,
@@ -120,6 +121,12 @@ $DEFAULTS = array(
 	),
 	'receipts' => array(
 		'template_file' => 'receipt.html',
+		'content_type' => 'text/html',
+		'type' => 'html',
+		'attachment_name' => '',
+	),
+	'notes' => array(
+		'template_file' => 'note.html',
 		'content_type' => 'text/html',
 		'type' => 'html',
 		'attachment_name' => '',

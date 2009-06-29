@@ -32,13 +32,13 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|nodegroup|account|alias|domain|config|event|taxrate|document|numberplan|state|host|division|message)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number|cashsourcelist)$';
+$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|nodegroup|account|alias|domain|config|event|taxrate|document|numberplan|state|host|division|message)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number|cashsourcelist|invoice|note)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
 
 $access['table'][3]['name']		= trans('finances management');
-$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(cashreg(list|add|edit|del|info))|(invoice|invoice(list|new|edit|del|note|report|paid))|number|export|print|cashimport|cashimportparser|customerassignments|customerassignmentsedit)$';
+$access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list)|(cashreg(list|add|edit|del|info))|(invoice|invoice(list|new|edit|del|note|report|paid))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|customerassignments|customerassignmentsedit)$';
 
 $access['table'][4]['name']    		= trans('configuration reload');
 $access['table'][4]['allow_reg']    	= '^reload$';

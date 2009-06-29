@@ -73,6 +73,7 @@ define('DOC_INVOICE', 1);
 define('DOC_RECEIPT', 2);
 define('DOC_CNOTE', 3);
 //define('DOC_CMEMO', 4);
+define('DOC_DNOTE', 5);
 define('DOC_CONTRACT', -1);
 define('DOC_ANNEX', -2);
 define('DOC_PROTOCOL', -3);
