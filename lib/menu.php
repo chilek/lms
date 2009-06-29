@@ -312,7 +312,19 @@ $menu = array(
 					'name' => trans('New Invoice'),
 					'link' => '?m=invoicenew&action=init',
 					'tip' => trans('Generate invoice'),
+					'prio' => 75,
+				),
+				array(
+					'name' => trans('Debit Notes List'),
+					'link' => '?m=notelist',
+					'tip' => trans('List of debit notes'),
 					'prio' => 80,
+				),
+				array(
+					'name' => trans('New Debit Note'),
+					'link' => '?m=noteadd&action=init',
+					'tip' => trans('Generate debit note'),
+					'prio' => 85,
 				),
 				array(
 					'name' => trans('Cash Registry'),

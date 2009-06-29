@@ -83,7 +83,7 @@ class Auth {
 			return TRUE;
 		}
 
-		if($this->islogged || $this->VerifyUser())
+		if($this->islogged || ($this->login && $this->VerifyUser()))
 		{
 			$this->SESSION->restore('session_last', $this->last);
 			$this->SESSION->restore('session_lastip', $this->lastip);
@@ -119,6 +119,10 @@ class Auth {
 					writesyslog('Unknown login '.$this->login.' from '.$this->ip, LOG_WARNING);			
 				}
 			}
+			
+			if (!$this->error)
+				$this->error = trans('Please login.');
+
 			$this->LogOut();
 		}
 	}
@@ -139,11 +143,9 @@ class Auth {
 	{
 		if(crypt($this->passwd,$dbpasswd)==$dbpasswd)
 			return TRUE;
-		else 
-		{
-			$this->error = trans('Wrong password or login.');
-			return FALSE;
-		}
+	
+		$this->error = trans('Wrong password or login.');
+		return FALSE;	
 	}
 
 	function VerifyHost($hosts = '')
@@ -197,12 +199,9 @@ class Auth {
 			$this->passverified = $this->VerifyPassword($user['passwd']);
 			$this->hostverified = $this->VerifyHost($user['hosts']);
 			$this->islogged = ($this->passverified && $this->hostverified);
+		} else {
+			$this->error = trans('Wrong password or login.');
 		}
-		else
-			if(isset($this->login))
-				$this->error = trans('Wrong password or login.');
-			else
-				$this->error = trans('Please login.');
 		
 		return $this->islogged;
 	}
