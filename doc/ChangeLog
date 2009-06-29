@@ -12,6 +12,8 @@ version ? (????-??-??):
   - added Cash Import History report (alec)
   - BTS#0000796: fixed nbtscan use (alec)
   - POSIX Regex functions (deprecated in PHP-5.3) replaced with PCRE/String (alec)
+  - LMS::GetCache(): fixed serious bug connected with bad assumption that
+    isset() returns false when key is not set (chilan)
 
 version 1.11.8 Belus (2009-05-19):
 

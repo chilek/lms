@@ -135,15 +135,15 @@ class LMS
 
 	function GetCache($key, $idx=null, $name=null)
 	{
-		if(isset($this->cache[$key]))
+		if(array_key_exists($key, $this->cache))
 		{
 			if(!$idx)
 				return $this->cache[$key];
-			elseif(isset($this->cache[$key][$idx]))
+			elseif(is_array($this->cache[$key]) && array_key_exists($idx, $this->cache[$key]))
 			{
 				if(!$name)
 					return $this->cache[$key][$idx];
-				elseif(isset($this->cache[$key][$idx][$name]))
+				elseif(is_array($this->cache[$key][$idx]) && array_key_exists($name, $this->cache[$key][$idx]))
 					return $this->cache[$key][$idx][$name];
 			}
 		}
