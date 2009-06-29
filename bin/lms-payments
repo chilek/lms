@@ -429,7 +429,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			
 			if(my $icrow = $icdbq->fetchrow_hashref())
 			{
-				$tmp_itemid = $icrow->{'itemid'};
+				my $tmp_itemid = $icrow->{'itemid'};
 				
 				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=? AND discount=$assign->{'discount'}");
 				$icdbq->execute($desc);
@@ -504,7 +504,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			
 				if(my $icrow = $icdbq->fetchrow_hashref())
 				{
-					$tmp_itemid = $icrow->{'itemid'};
+					my $tmp_itemid = $icrow->{'itemid'};
 					
 					$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=?");
 					$icdbq->execute($sdesc);
