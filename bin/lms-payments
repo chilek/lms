@@ -300,7 +300,6 @@ my $suspended = 0;
 my $skipped = 0;
 my $tested = 0;
 my $itemid;
-my $tmp_itemid;
 
 # get IDs and periods of default invoices numbering plans
 $dbq = $dbase->prepare("SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid
@@ -495,7 +494,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			
 			if($icrow = $icdbq->fetchrow_hashref())
 			{
-				$tmp_itemid = $icrow->{'itemid'};
+				my $tmp_itemid = $icrow->{'itemid'};
 				
 				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
 						WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid}
@@ -582,7 +581,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			
 				if($icrow = $icdbq->fetchrow_hashref())
 				{
-					$tmp_itemid = $icrow->{'itemid'};
+					my $tmp_itemid = $icrow->{'itemid'};
 					
 					$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
 							WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid} AND description=?");
