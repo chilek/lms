@@ -186,6 +186,8 @@ if($customerid = $nodedata['ownerid'])
 {
 	include(MODULES_DIR.'/customer.inc.php');
 }
+else
+	$SMARTY->assign('allnodegroups', $LMS->GetNodeGroupNames());
 
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
