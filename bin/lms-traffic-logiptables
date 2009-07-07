@@ -180,35 +180,29 @@ my %nodes;
 my %down;
 my %up;
 my $networkswhere = '';
-my @networks = split ' ', $networks_list;
+
+if($networks_list)
+{
+    my @networks = split ' ', $networks_list;
+    my $netwhere = join(',', map('UPPER('.$dbase->quote($_).')', @networks));
+    $networkswhere .= " AND UPPER(net.name) IN ($netwhere)";
+}
 
 if($excluded_networks_list)
 {
-    my @excluded_networks = split ' ', $excluded_networks_list;
-    foreach my $excluded_network (@excluded_networks)
-    {
-	@networks = grep(!/^$excluded_network$/, @networks);
-    }
+    my @networks = split ' ', $excluded_networks_list;
+    my $netwhere = join(',', map('UPPER('.$dbase->quote($_).')', @networks));
+    $networkswhere .= " AND UPPER(net.name) NOT IN ($netwhere)";
 }
 
-foreach my $net (@networks)
-{
-        my $dbq = $dbase->prepare("SELECT INET_ATON(mask) AS mask, address FROM networks WHERE UPPER(name) = UPPER(?)");
-	$dbq->execute($net);
-	while (my $row = $dbq->fetchrow_hashref()) 
-	{
-		if (!$networkswhere)
-		{
-	    		$networkswhere = "WHERE $row->{'address'} = (ipaddr & $row->{'mask'})";
-		}
-		else
-		{
-	    		$networkswhere = "$networkswhere OR $row->{'address'} = (ipaddr & $row->{'mask'})";
-		}
-	}
+if ($networkswhere) {
+	$networkswhere = "JOIN networks net ON (n.ipaddr > net.address
+			AND n.ipaddr < broadcast(net.address, inet_aton(net.mask)))
+		WHERE 1=1 $networkswhere";
 }
 
-my $dbq = $dbase->prepare("SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes $networkswhere ORDER BY ipaddr");
+my $dbq = $dbase->prepare("SELECT n.id, INET_NTOA(n.ipaddr) AS ip
+	FROM nodes n $networkswhere ORDER BY n.ipaddr");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {

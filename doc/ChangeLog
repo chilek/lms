@@ -14,6 +14,7 @@ version ? (????-??-??):
   - POSIX Regex functions (deprecated in PHP-5.3) replaced with PCRE/String (alec)
   - LMS::GetCache(): fixed serious bug connected with bad assumption that
     isset() returns false when key is not set (chilan)
+  - BTS#0000797: fixed excluded_networks in lms-traffic-logiptables (alec)
 
 version 1.11.8 Belus (2009-05-19):
 
