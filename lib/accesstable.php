@@ -47,7 +47,7 @@ $access['table'][5]['name']		= trans('customers management');
 $access['table'][5]['allow_reg']	= '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|documentgen|documentview|nodewarn|choosenode)$';
 
 $access['table'][6]['name'] 		= trans('nodes management');
-$access['table'][6]['allow_reg']  	= '^(node(add|info|infoshort|list|scan|search|del|edit|print|warn)|choose(mac|ip))$';
+$access['table'][6]['allow_reg']  	= '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip))$';
 
 $access['table'][7]['name']    	     	= trans('traffic stats');
 $access['table'][7]['allow_reg']	= '^(traffic|traffic(print|graph))$';
