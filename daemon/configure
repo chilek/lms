@@ -128,15 +128,22 @@ echo -n "OS Type... "
 case `(uname -s || echo unknown) 2>/dev/null` in
   Linux | linux | GNU | GNU/*) 
 	OS="linux"
+	LIBS="-ldl"
 	FLAGS="-DGNU"
 	CFLAGS="-fPIC"
 	echo "Linux";;
   CYGWIN* | Cygwin* | cygwin* )
 	OS="cygwin"
-	LIBS="-lz"
+	LIBS="-lz -ldl"
 	LMSDBIN="lmsd.exe"
 	EXCLUDE="pinger"
 	echo "Cygwin";;
+  FreeBSD )
+	OS="freebsd"
+	LIBS=""
+	CFLAGS="-fPIC"
+	EXCLUDE="pinger"
+	echo "FreeBSD";;
 
   *)
 	CFLAGS="-fPIC"
@@ -148,12 +155,12 @@ esac
 echo -n "Database type..." 
 if test "${with_pgsql+set}" = set
 then
-	LIBS="-lpq -ldl "$LIBS
+	LIBS="-lpq $LIBS"
 	FLAGS="$FLAGS -DUSE_PGSQL"
 	DBDRIVER=pgsql
 	echo " PostgreSQL"
 else
-	LIBS="-lmysqlclient -ldl "$LIBS
+	LIBS="-lmysqlclient $LIBS"
 	FLAGS="$FLAGS -DUSE_MYSQL"
 	DBDRIVER=mysql
 	echo " MySQL"
