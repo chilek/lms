@@ -87,7 +87,8 @@ if(isset($_POST['event']))
 }
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
-$event['customerid'] = isset($event['customerid']) ? $event['customerid'] : $_GET['customerid'];
+if(empty($event['customerid']) && !empty($_GET['customerid']))
+	$event['customerid'] = intval($_GET['customerid']);
 
 if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
 {
