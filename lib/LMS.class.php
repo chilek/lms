@@ -317,16 +317,18 @@ class LMS
 	{
 		$mask = $this->DB->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
 
-//		if($mask == '')
-//			$mask = '1';
 		$len = strlen($mask);
 		$bin = '';
+		$result = array();
+
 		for($cnt=$len; $cnt > 0; $cnt --)
 			$bin = sprintf('%04b',hexdec($mask[$cnt-1])).$bin;
+
 		$len = strlen($bin);
 		for($cnt=$len-1; $cnt >= 0; $cnt --)
 			if($bin[$cnt] == '1')
 				$result[] = $len - $cnt -1;
+
 		return $result;
 	}
 

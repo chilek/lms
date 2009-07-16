@@ -77,8 +77,6 @@ class Auth {
 		elseif($this->DB->GetOne('SELECT COUNT(id) FROM users') == 0)
 		{
 			$this->islogged = TRUE;
-			$this->passwd = 'EMPTY';
-			$this->logname = '';
 			$_GET['m'] = 'useradd';
 			return TRUE;
 		}

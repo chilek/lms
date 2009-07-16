@@ -237,11 +237,9 @@ if($AUTH->islogged)
 	
 	if(file_exists(MODULES_DIR.'/'.$module.'.php'))
 	{
-		$allow = !empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module);
-		$rights = $LMS->GetUserRights($AUTH->id);
-		$found_privilleges = FALSE;
+		$allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
 
-		if($rights)
+		if($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
 			foreach($rights as $level)
 			{
 				if(!$allow)
