@@ -1,0 +1,26 @@
+#!/sbin/runscript
+# Copyright 1999-2006 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header$
+
+opts="${opts} reload"
+
+start() {
+	ebegin "Starting ${SVCNAME}"
+	start-stop-daemon --start --pidfile ${LMSD_PIDFILE} --exec /usr/bin/lmsd -- -h ${LMSD_DBHOST} \
+	    -d ${LMSD_DBNAME} -u ${LMSD_DBUSER} -p ${LMSD_DBPASS} -H ${LMSD_HOSTNAME} -P ${LMSD_PIDFILE} > /dev/null 2>&1
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping ${SVCNAME}"
+	start-stop-daemon --stop  --pidfile /var/run/lmsd.pid
+	eend $?
+}
+
+reload() {
+	einfo "Reloading all modules ${SVCNAME} ..."
+	/usr/bin/lmsd -h ${LMSD_DBHOST} -d ${LMSD_DBNAME} -u ${LMSD_DBUSER} -p ${LMSD_DBPASS} -H ${LMSD_HOSTNAME} -q
+	einfo "Reloaded all modules ${SVCNAME} ..." 
+	eend $?
+}

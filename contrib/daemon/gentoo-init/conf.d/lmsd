@@ -1,0 +1,6 @@
+LMSD_PIDFILE="/var/run/lmsd.pid"
+LMSD_DBHOST="localhost"
+LMSD_DBNAME="lms"
+LMSD_DBUSER="lms"
+LMSD_DBPASS=""
+LMSD_HOSTNAME="Host"
