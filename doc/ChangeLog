@@ -15,6 +15,9 @@ version ? (????-??-??):
   - LMS::GetCache(): fixed serious bug connected with bad assumption that
     isset() returns false when key is not set (chilan)
   - BTS#0000797: fixed excluded_networks in lms-traffic-logiptables (alec)
+  - lmsd: added --pidfile option (Jerzy Kolosowski)
+  - lmsd: fixed sigfault in dns module (Jerzy Kolosowski)
+  - lmsd: fixed bug in str_replace function (Jerzy Kolosowski)
 
 version 1.11.8 Belus (2009-05-19):
 

@@ -41,6 +41,7 @@
 int quit = 0, runall = 0, port = 0, dontfork = 0, ssl = 0;
 char *db, *user, *passwd;
 char host[255], dhost[255];
+char *pidfile = NULL;
 char *command = NULL;
 char *iopt = NULL;
 struct sigaction sa, orig;
@@ -65,6 +66,7 @@ int main(int argc, char *argv[], char **envp)
 	INSTANCE *instances;
 	int fval = 0, i = 0, reload = 0;
 	char *inst, *instance; 
+	FILE *pidf;
 #ifdef CONFIGFILE
 	Config *ini;
 #endif
@@ -144,6 +146,11 @@ int main(int argc, char *argv[], char **envp)
 #ifdef DEBUG1	
 	    			syslog(LOG_INFO, "DEBUG: [lmsd] Daemonize. Forked child %d.", fval);
 #endif
+				if (pidfile != NULL && (pidf = fopen(pidfile, "w")) != NULL)
+				{
+				    fprintf(pidf, "%d", fval);
+				    fclose(pidf);
+				}
             			exit(0); // parent exits
         	}
     	}
@@ -421,6 +428,7 @@ static void parse_command_line(int argc, char **argv)
             { "dbuser", 1, 0, 'u' },
     	    { "dbpass", 1, 0, 'p' },
 	    { "hostname", 1, 0, 'H' },
+    	    { "pidfile", 1, 0, 'P' },
     	    { "command", 2, 0, 'c' },
     	    { "reload", 0, 0, 'q' },
 	    { "reload-all", 0, 0, 'r' },
@@ -433,7 +441,7 @@ static void parse_command_line(int argc, char **argv)
 	
 	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
 	
-	while( (opt = getopt_long(argc, argv, "sqrfvi:h:p:d:u:H:c:", options, &option_index)) != -1 )
+	while( (opt = getopt_long(argc, argv, "sqrfvi:h:p:d:u:H:c:P:", options, &option_index)) != -1 )
 	{
 		switch(opt) 
 		{
@@ -474,6 +482,9 @@ static void parse_command_line(int argc, char **argv)
 		case 'c':
 			command = strdup(optarg);
 			break;
+		case 'P':
+			pidfile = strdup(optarg);
+			break;
         	default:
 			printf("LMS Daemon version 1.11-cvs (%s). Command line options:\n", revision);
         		printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
@@ -482,6 +493,7 @@ static void parse_command_line(int argc, char **argv)
         		printf(" --dbpass -p password\t\tdatabase password (default: '')\n");
         		printf(" --ssl -s\t\t\tuse SSL connection (default: disabled)\n");
         		printf(" --hostname -H daemon_host\thost name where runs daemon (default: `hostname`)\n");
+        		printf(" --pidfile -P pid_file\t\tpidfile where daemon write pid (default: none)\n");
         		printf(" --command -c command\t\tshell command to run before database connecting\n\t\t\t\t(default: empty)\n");
         		printf(" --reload -q \t\t\tdo a reload and quit\n");
 			printf(" --reload-all -r \t\tdo a reload of all instances and quit\n");
