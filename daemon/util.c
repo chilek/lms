@@ -35,37 +35,42 @@ int str_replace(char **string, const char *old, const char *new)
 {
     size_t newLen = strlen(new);
     size_t oldLen = strlen(old);
-    char *buffer = (char*)malloc(strlen(*string) + strlen(*string)*newLen +1); 
-    char *temp, *scan = buffer;
-    int i=0;
 
-    temp = *string;  // remember old string
-   
-    if( buffer == NULL ) 
-	return 0;
+    int n = 0;
+    char* temp = *string;
+    char* last = NULL;
+    char* scan = NULL;
 
-    *scan = 0;
-
-    while(1)
+    while((temp = strstr(temp, old)) != NULL)
     {
-	char *there = strstr(temp, old);
-	if( there == 0 ) {
-	    strcat(scan,temp);
-	    break;
-	} else {
-	    size_t skip = there - temp;
-	    memcpy(scan, temp, skip);
-	    memcpy(scan + skip, new, newLen);
-	    temp = there + oldLen;
-	    scan = scan + skip + newLen;
-	    *scan = 0;
-	    i++;
-	}
+        temp += oldLen;
+        n++;
     }
-    buffer = (char *) realloc(buffer, strlen(buffer)+1);
+
+    char *buffer = (char*)malloc(strlen(*string) + (newLen - oldLen) * n + 1);
+
+    if( buffer == NULL )
+        return 0;
+
+    scan = buffer;
+    temp = *string;
+    last = *string;
+
+    while((temp = strstr(temp, old)) != NULL)
+    {
+        size_t skip = temp - last;
+        memcpy(scan, last, skip);
+        memcpy(scan + skip, new, newLen);
+        temp += oldLen;
+        scan += skip + newLen;
+        last = temp;
+    }
+
+    memcpy(scan, last, (*string) + strlen(*string) - last + 1);
+
     free(*string);  // warning string must be allocated
     *string = buffer;  //return new string
-    return i; 
+    return n;
 }
 
 /* Save value to string (needed i.e. for database routines)*/

@@ -251,7 +251,9 @@ void reload(GLOBAL *g, struct dns_module *dns)
 				if( !domainmatch )
 				{ 
 					// add domain to table
-					domains[dc++] = strdup(name);
+					dc++;
+					domains = realloc(domains, sizeof(char*) * dc);
+					domains[dc - 1] = strdup(name);
 					
 					finfile = dns->fpatterns;
 				}
