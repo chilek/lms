@@ -7,7 +7,7 @@
 
 WORKDIR=`pwd`
 NOTDISTRIB="devel .project modules/core modules/mailing modules/auth modules/traffic modules/users lib/ExecStack.class.php"
-SMARTYVER="2.6.25"
+SMARTYVER="2.6.26"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
@@ -44,7 +44,7 @@ fi
 # pobieramy LMSa
 X=$RANDOM
 mkdir -p $TEMPDIR/$X
-wget --proxy=off "http://cvs.lms.org.pl/viewvc/lms.tar.gz?view=tar&pathrev=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
+wget --proxy=off "http://cvs.lms.org.pl/viewvc/Development/lms/?view=tar&pathrev=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
 umask 022
 cd $TEMPDIR/$X/
 # ropakowujemy
