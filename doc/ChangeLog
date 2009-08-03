@@ -19,6 +19,7 @@ version ? (????-??-??):
   - lmsd: fixed sigfault in dns module (Jerzy Kolosowski)
   - lmsd: fixed bug in str_replace function (Jerzy Kolosowski)
   - contrib/daemon: added Gentoo init scripts (Jerzy Kolosowski)
+  - lms-payments: settlement fix (chilan)
 
 version 1.11.8 Belus (2009-05-19):
 
