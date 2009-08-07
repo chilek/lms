@@ -24,31 +24,17 @@
  *  $Id$
  */
 
-if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber 
-			FROM documents 
-			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE documents.id = ?', array($_GET['id'])))
-{
-	$ntempl = docnumber($doc['number'], $doc['template'], $doc['cdate'], $doc['extnumber']);
+$id = intval($_GET['id']);
 
-	switch($doc['type'])
-	{
-		case DOC_INVOICE:
-			$ntempl = trans('Invoice No. $0',$ntempl);
-		break;
-		case DOC_RECEIPT:
-			$ntempl = trans('Cash Receipt No. $0',$ntempl);
-		break;
-		case DOC_CNOTE:
-			$ntempl = trans('Credit Note No. $0',$ntempl);
-		break;
-		case DOC_DNOTE:
-			$ntempl = trans('Debit Note No. $0',$ntempl);
-		break;
-	}
-	
-	$SMARTY->assign('content', '<NOBR>'.$ntempl.'</NOBR>');
-	$SMARTY->display('dynpopup.html');
+if($id && $_GET['is_sure'] == '1')
+{
+	$DB->BeginTrans();
+        $DB->Execute('DELETE FROM documents WHERE id = ?', array($id));
+	$DB->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($id));
+	$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
+	$DB->CommitTrans();
 }
+
+$SESSION->redirect('?m=notelist');
 
 ?>

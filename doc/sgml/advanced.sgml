@@ -481,6 +481,15 @@
                     <member>tariffid - subscription serial number</member>
                </simplelist>
           </sect2>
+          <sect2 id="debitnotecontents">
+               <title>Debit notes ('debitnotecontents')</title>
+                  <simplelist>
+                    <member>docid - debit note serial number</member>
+                    <member>itemid - debit note item identifier</member>
+                    <member>value - amount</member>
+                    <member>description - description for the note item</member>
+               </simplelist>
+          </sect2>
           <sect2 id="receiptcontents">
                <title>Cash Receipts ('receiptcontents')</title>
                   <simplelist>

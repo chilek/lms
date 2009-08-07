@@ -1,0 +1,229 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{if $newnote}
+<SCRIPT type="text/javascript">
+window.open('?m=note&id={$newnote.id}');
+</SCRIPT>
+{/if}
+{include file="calendar_js.html"}
+<script type="text/javascript">
+{literal}
+	<!--
+	function saveheader()
+	{
+	        if(document.setcustomer.customer)
+	                if(document.setcustomer.customer.value != 0)
+	                        document.setcustomer.customerid.value = document.setcustomer.customer.value;
+	
+	        document.setcustomer.submit();
+	}															
+
+	function CheckAll()
+	{
+		for (var i=0; i<document.additemlist.elements.length; i++)
+		{
+			var e = document.additemlist.elements[i];
+		        if (e.name != 'allbox')
+				e.checked = document.additemlist.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.additemlist.allbox.checked = !document.additemlist.allbox.checked;
+		CheckAll();
+	}
+	
+	function printnote()
+	{
+		document.additem.action="?m=noteadd&action=save&print=1";
+		document.additem.submit();
+        }
+	//-->
+{/literal}
+</script>		
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&action=setcustomer">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
+			<B>{t}Main Information:{/t}</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Debit note number:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="note[number]" VALUE="{$note.number}" SIZE="10" {tip text="Enter note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			{if $numberplanlist}
+			<SELECT name="note[numberplanid]" {tip text="Select numbering plan"}>
+			{foreach item=plan from=$numberplanlist}
+				{assign var=period value=$plan.period}
+				<OPTION value="{$plan.id}"{if $plan.id==$note.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$note.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+			{/foreach}
+			</SELECT>
+			{else}
+				<INPUT type="hidden" name="note[numberplanid]" value="0">
+			{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Settlement date:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			{if $note.cdatewarning}
+			<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
+			{/if}
+		</TD>
+	</TR>
+{*
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Payment type (cash/transfer/etc):{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="note[paytype]" VALUE="{$note.paytype}" SIZE="10" {tip text="Enter payment type"}>
+		</TD>
+	</TR>			
+*}
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>{t}Customer:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			{if $customers}
+			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
+				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
+				{foreach from=$customers item=c}
+				<OPTION VALUE="{$c.id}"{if $c.id eq $customer.id || $note.customerid eq $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>
+			{t}or Customer ID:{/t}
+			{/if}
+			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$note.customerid}{/if}" SIZE="5"{if $customers} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value"{/if} {tip text="Enter customer ID" trigger="customer"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{t}Search{/t}&nbsp;&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
+			<A HREF="javascript: saveheader();">{t}Submit{/t} <IMG SRC="img/save.gif" ALT=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{if $customer}
+<P>
+<TABLE WIDTH="100%" CELLPADDING="3">
+        <TR CLASS="dark">
+                <TD CLASS="fleftu" WIDTH="1%" nowrap>
+                        <IMG SRC="img/customer.gif" ALT=""> <B>{t}Customer:{/t}</B>
+                </TD>
+                <TD CLASS="frightu" WIDTH="99%">
+                        <B>{$customer.customername}</B>
+                        &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
+                        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
+                </TD>
+        </TR>
+</TABLE>
+</P>
+{/if}
+<P>	
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fleftu" WIDTH="1%">
+			<B>{t}No.{/t}</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="97%">
+			{t}Title:{/t}
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{t}Value:{/t}
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%">
+			&nbsp;
+		</TD>
+	</TR>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$contents item=item}
+	<TR class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD CLASS="fleft">
+			<B>{counter}.</B>
+		</TD>
+		<TD>
+			{$item.description}
+		</TD>
+		<TD NOWRAP ALIGN="RIGHT">
+			{$item.value|money_format}
+		</TD>
+		<TD NOWRAP CLASS="fright">
+			<A HREF="?m=noteadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+		</TD>			
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD COLSPAN="4" ALIGN="CENTER" CLASS="flr">
+			<P>&nbsp;</P>
+			<P><B>{t}Debit note have no items. Use form below for items addition.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/foreach}
+	{if $contents}
+	<TR CLASS="light">
+		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD NOWRAP ALIGN="RIGHT" CLASS="fbt">
+			<B>{sum array=$contents column=value string_format="%01.2f"}</B>
+		</TD>
+		<TD CLASS="frightu">
+			&nbsp;
+		</TD>
+	</TR>
+	{/if}
+	<FORM METHOD="POST" ACTION="?m=noteadd&action=additem" NAME="additem">
+	<INPUT type="submit" class="hiddenbtn">
+	<TR CLASS="light">
+		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
+			<B>{counter}.</B>
+		</TD>
+		<TD CLASS="ftop" WIDTH="92%" NOWRAP>
+			<INPUT TYPE="text" NAME="description" SIZE="80" {tip text="Enter description" trigger="description"}>
+		</TD>
+		<TD CLASS="ftop" ALIGN="RIGHT" NOWRAP>
+			<INPUT TYPE="text" NAME="value" SIZE="8" {tip text="Enter value" trigger="value"}>
+		</TD>
+		<TD CLASS="ftr">
+			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD COLSPAN="4" CLASS="fbottomu" ALIGN="RIGHT">
+			<A HREF="?m=notelist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="?m=noteadd&action=init">{t}Clear Contents{/t} <IMG SRC="img/delete.gif" alt=""></A> 
+			{if !$customer}
+			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">{t}Save & Print{/t} <IMG src="img/printd.gif" alt=""></A>
+			{elseif !$contents}
+			<A HREF="javascript:alert('{t}Document has no items!{/t}');">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:alert('{t}Document has no items!{/t}');">{t}Save & Print{/t} <IMG src="img/printd.gif" alt=""></A>
+			{else}
+			<A HREF="?m=noteadd&action=save">{t}Save{/t} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:printnote()">{t}Save & Print{/t} <IMG src="img/printd.gif" alt=""></A>
+			{/if}
+		</TD>
+	</TR>
+	</FORM>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+var cal1 = new calendar(document.forms['setcustomer'].elements['note[cdate]']);
+cal1.time_comp = false;
+document.forms['setcustomer'].elements['note[number]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

@@ -32,7 +32,7 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|customer|customergroup|nodegroup|account|alias|domain|config|event|taxrate|document|numberplan|state|host|division|message)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number|cashsourcelist|invoice|note)$';
+$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|invoice|note|customer|customergroup|nodegroup|account|alias|domain|config|event|taxrate|document|numberplan|state|host|division|message)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number|cashsourcelist)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';

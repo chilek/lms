@@ -1,0 +1,211 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{if $note}
+<SCRIPT type="text/javascript">
+window.open('?m=note&id={$note}');
+</SCRIPT>
+{/if}
+{literal}
+<SCRIPT type="text/javascript">
+	<!--
+	function CheckAll()
+	{
+		for (var i=0; i<document.page.elements.length; i++)
+		{
+			var e = document.page.elements[i];
+			if (e.name != 'allbox' &&
+			    e.name != 'groupexclude' &&
+			    e.name != 'hideclosed'
+			)
+				e.checked = document.page.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.page.allbox.checked = !document.page.allbox.checked;
+		CheckAll();
+	}
+	
+	function pays()
+	{
+		if(! confirm('{/literal}{t}Are you sure, you want to check/uncheck selected debit notes as accounted?{/t}{literal}'))
+			return;
+		document.page.action="?m=notepaid";
+		document.page.target="";
+		document.page.submit();
+	}
+
+	function prints()
+	{
+		document.page.action="?m=note&print=cached";
+		document.page.target="_blank";
+		document.page.submit();
+	}
+
+	function setCheckbox(id)
+	{
+		document.page.elements[id].checked = !document.page.elements[id].checked;
+	}
+
+	function filter()
+	{
+		document.page.action="?m=notelist";
+		document.page.target="";
+		document.page.submit();
+	}
+{/literal}{if $_config.phpui.short_pagescroller|chkconfig}{literal}
+	function pagechange1()
+	{
+		document.page.action="?m=notelist&page=" + document.forms['page'].elements['page1'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+	function pagechange2()
+	{
+		document.page.action="?m=notelist&page=" + document.forms['page'].elements['page2'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+{/literal}{/if}{literal}
+	//-->
+</SCRIPT>
+{/literal}
+<FORM METHOD="POST" NAME="page">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fleftu" WIDTH="1%" nowrap>
+			<A href="?m=notelist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			<A href="?m=notelist&o=cdate{if $listdata.direction eq "asc" && $listdata.order eq "cdate"},desc{/if}">{t}Date:{/t}</A> {if $listdata.order eq "cdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			<A href="?m=notelist&o=number{if $listdata.direction eq "asc" && $listdata.order eq "number"},desc{/if}">{t}Number:{/t}</A> {if $listdata.order eq "number"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			<A href="?m=notelist&o=value{if $listdata.direction eq "asc" && $listdata.order eq "value"},desc{/if}">{t}Value:{/t}</A> {if $listdata.order eq "value"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" nowrap>
+			<A href="?m=notelist&o=count{if $listdata.direction eq "asc" && $listdata.order eq "count"},desc{/if}">{t}Items:{/t}</A> {if $listdata.order eq "count"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="94%" CLASS="fbt" nowrap>
+			<A href="?m=notelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}">{t}For:{/t}</A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu">
+			&nbsp;
+		</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="7">
+				<B>{t}Filter:{/t} </B> 
+				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<SELECT size="1" name="cat">
+					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
+					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}day (YYYY/MM/DD){/t}</OPTION>
+					<OPTION value="month"{if $listdata.cat eq "month"} SELECTED{/if}>{t}month (YYYY/MM){/t}</OPTION>
+					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}number{/t}</OPTION>
+					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{t}value{/t}</OPTION>
+					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
+					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
+					<OPTION value="ten"{if $listdata.cat eq "ten"} SELECTED{/if}>{t}TEN{/t}</OPTION>
+					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
+				</SELECT>&nbsp;
+				{t}Group:{/t}
+				<SELECT size="1" name="group">
+					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{t}- all groups -{/t}</OPTION>
+					{section name="grouplist" loop=$grouplist}
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
+					{/section}
+				</SELECT>
+				<NOBR>
+				<INPUT type="checkbox" name="groupexclude" {if $listdata.groupexclude} CHECKED{/if}><A HREF="javascript:setCheckbox('groupexclude')">{t}exclude group{/t}</a>
+				</NOBR>
+				<NOBR>
+				<INPUT type="checkbox" name="hideclosed" {if $listdata.hideclosed} CHECKED{/if}><A HREF="javascript:setCheckbox('hideclosed')">{t}hide accounted<!plural>{/t}</a>
+				&nbsp;<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
+				</NOBR>
+		</TD>
+	</TR>		
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="7">
+			{include file="scroller.html" loop=$notelist scrollerno=1}
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="light,lucid" print=false}
+	{section name=notelist loop=$notelist start=$start max=$pagelimit}
+	{assign var=note value=$notelist[notelist]}
+	{assign var=noteid value=$note.id}
+	<TR class="{cycle}{if $note.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+		<TD WIDTH="1%" CLASS="fleft">
+			{$note.id|string_format:"%06d"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			{$note.cdate|date_format:"%Y/%m/%d %H:%M"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP align="right">
+			{number number=$note.number template=$note.template time=$note.cdate assign=number}{$number}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$note.value|money_format} 
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$note.count}
+		</TD>
+		<TD WIDTH="94%">
+			<A HREF="?m=customerinfo&id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country neq ""}, {t}{$note.country}{/t}{/if}</A>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright">
+			<NOBR>
+			{if !$note.closed}
+			    <A HREF="?m=noteedit&id={$note.id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" title="[ {t}Edit{/t} ]"></A>
+			    <A onClick="return confirmLink(this, '{t 0=$number}Are you sure, you want to remove debit note \'$0\' from database?{/t}')" HREF="?m=notedel&id={$note.id}"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" title="[ {t}Delete{/t} ]"></A>
+			{/if}
+			<A HREF="?m=note&id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="[ {t}Print{/t} ]" title="[ {t}Print{/t} ]"></A>
+			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if}>
+			</NOBR>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
+			<P>&nbsp;</P>
+			<P><B>{t}No such debit notes in database.{/t}</B></P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>	
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="7">
+			{include file="scroller.html" loop=$notelist scrollerno=2}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="dark">
+		<TD CLASS="fall" COLSPAN="7">
+			<TABLE WIDTH="100%">
+				<TR>
+					<TD ALIGN="left">
+						<NOBR><A HREF="javascript:pays();">{t}Check/Uncheck as accounted{/t} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/printd.gif" ALT="" ></A></NOBR>&nbsp;
+{*
+						<INPUT type="checkbox" name="original"{if eregi('original',$_config.notes.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('original')">{t}original{/t}</a>&nbsp;
+						<INPUT type="checkbox" name="copy"{if eregi('copy',$_config.notes.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('copy')">{t}copy{/t}</a>
+						<INPUT type="checkbox" name="duplicate"{if eregi('duplicate',$_config.notes.default_printpage)} checked{/if}> <A HREF="javascript:setCheckbox('duplicate')">{t}duplicate{/t}</a>
+*}
+					</TD>
+					<TD ALIGN="right">	
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{include file="footer.html"}

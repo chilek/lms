@@ -24,31 +24,25 @@
  *  $Id$
  */
 
-if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber 
-			FROM documents 
-			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE documents.id = ?', array($_GET['id'])))
-{
-	$ntempl = docnumber($doc['number'], $doc['template'], $doc['cdate'], $doc['extnumber']);
+$DB->BeginTrans();
 
-	switch($doc['type'])
-	{
-		case DOC_INVOICE:
-			$ntempl = trans('Invoice No. $0',$ntempl);
-		break;
-		case DOC_RECEIPT:
-			$ntempl = trans('Cash Receipt No. $0',$ntempl);
-		break;
-		case DOC_CNOTE:
-			$ntempl = trans('Credit Note No. $0',$ntempl);
-		break;
-		case DOC_DNOTE:
-			$ntempl = trans('Debit Note No. $0',$ntempl);
-		break;
-	}
-	
-	$SMARTY->assign('content', '<NOBR>'.$ntempl.'</NOBR>');
-	$SMARTY->display('dynpopup.html');
-}
+$DB->Execute("
+
+CREATE SEQUENCE debitnotecontents_id_seq;
+CREATE TABLE debitnotecontents (
+	id integer 		DEFAULT nextval('debitnotecontents_id_seq'::text) NOT NULL,
+        docid integer           DEFAULT 0 NOT NULL,
+	itemid smallint         DEFAULT 0 NOT NULL,
+	value numeric(9,2)      DEFAULT 0 NOT NULL,
+        description text 	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (docid, itemid)
+);
+										
+");
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009062300', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>

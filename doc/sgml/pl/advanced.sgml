@@ -484,6 +484,15 @@
                     <member>tariffid - identyfikator taryfy</member>
                </simplelist>
           </sect2>
+	  <sect2 id="debitnotecontents">
+		  <title>Noty obci±¿eniowe ('debitnotecontents')</title>
+		  <simplelist>
+			  <member>docid - identyfikator noty</member>
+			  <member>itemid - nr pozycji</member>
+			  <member>value - kwota pozycji</member>
+			  <member>description - opis</member>
+		  </simplelist>
+          </sect2>
           <sect2 id="receiptcontents">
                <title>Potwierdzenia wp³aty - KP ('receiptcontents')</title>
                   <simplelist>

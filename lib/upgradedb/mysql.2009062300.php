@@ -24,31 +24,18 @@
  *  $Id$
  */
 
-if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber 
-			FROM documents 
-			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE documents.id = ?', array($_GET['id'])))
-{
-	$ntempl = docnumber($doc['number'], $doc['template'], $doc['cdate'], $doc['extnumber']);
+$DB->Execute("
+    CREATE TABLE debitnotecontents (
+	id int(11) NOT NULL auto_increment,
+	docid int(11) NOT NULL DEFAULT '0',
+	itemid smallint NOT NULL DEFAULT '0',
+        value decimal(9,2) NOT NULL DEFAULT '0.00',
+	description text NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE KEY docid (docid, itemid)
+    ) TYPE=MyISAM;
+");
 
-	switch($doc['type'])
-	{
-		case DOC_INVOICE:
-			$ntempl = trans('Invoice No. $0',$ntempl);
-		break;
-		case DOC_RECEIPT:
-			$ntempl = trans('Cash Receipt No. $0',$ntempl);
-		break;
-		case DOC_CNOTE:
-			$ntempl = trans('Credit Note No. $0',$ntempl);
-		break;
-		case DOC_DNOTE:
-			$ntempl = trans('Debit Note No. $0',$ntempl);
-		break;
-	}
-	
-	$SMARTY->assign('content', '<NOBR>'.$ntempl.'</NOBR>');
-	$SMARTY->display('dynpopup.html');
-}
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009062300', 'dbversion'));
 
 ?>

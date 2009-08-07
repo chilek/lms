@@ -1396,7 +1396,7 @@ Chapter 3. User Interface (LMS-UI)
         also able to write out appropriate invoices.
      __________________________________________________________________
 
-3.7.7. Invoices list
+3.7.7. Invoices List
 
    List of invoices that has been already written out. You're able to
    print (by selecting 'Print' icon) and check as accounted selected
@@ -1408,7 +1408,19 @@ Chapter 3. User Interface (LMS-UI)
    Allows you to issue an invoice for selected customer manually.
      __________________________________________________________________
 
-3.7.9. Cash Registry
+3.7.9. Debit Notes List
+
+   List of debit notes that has been already written out. You're able to
+   print (by selecting 'Print' icon) and check as accounted selected
+   notes.
+     __________________________________________________________________
+
+3.7.10. New Debit Note
+
+   Allows you to issue an debit note for selected customer manually.
+     __________________________________________________________________
+
+3.7.11. Cash Registry
 
    Cash register can be divided on many registries like cash1, cash2, main
    cash, bank, etc. On regirstries list are placed all information about
@@ -1431,7 +1443,7 @@ Chapter 3. User Interface (LMS-UI)
    old receipt and linked operations and insert new ones.
      __________________________________________________________________
 
-3.7.10. New Cash Receipt
+3.7.12. New Cash Receipt
 
    To create new cash document in first place you must specify registry
    and operation type (pay in/pay out), select customer from list or
@@ -1448,7 +1460,7 @@ Chapter 3. User Interface (LMS-UI)
    Configuration.
      __________________________________________________________________
 
-3.7.11. Import
+3.7.13. Import
 
    If you use homebanking, and you're able to get a list of financial
    operations (ie. from bank www or email that they send you), Import
@@ -1481,7 +1493,7 @@ Chapter 3. User Interface (LMS-UI)
    into account) is greater than invoice liability.
      __________________________________________________________________
 
-3.7.12. Export
+3.7.14. Export
 
    Financial data export to external systems rely on generation of text
    files with data fetched according to defined filters. For each document
@@ -1498,7 +1510,7 @@ Chapter 3. User Interface (LMS-UI)
    of cash document.
      __________________________________________________________________
 
-3.7.13. Reports
+3.7.15. Reports
 
    There are several options for balance sheet printouts:
      * Balance sheet for your network including financial operations for
@@ -3732,6 +3744,7 @@ Chapter 6. LMS Daemon
 --hostname -H hostname     host name where daemon runs; name returned by hostname command is taken
                            as default but it can be overwritten; that name mustcorrespond to the
                            one specified in hosts configuration in UI
+--pidfile -P pid_file      pidfile where daemon write pid (default: none)
 --ssl -s                   use SSL connection (default: disabled)
 --command -c command       shell command to execute before every database connection (default: empty)
 --instance -i "instance[ ...]" list of instances to reload; other instances will be ignored
@@ -5638,7 +5651,15 @@ Chapter 7. For curious
    tariffid - subscription serial number
      __________________________________________________________________
 
-7.2.30. Cash Receipts ('receiptcontents')
+7.2.30. Debit notes ('debitnotecontents')
+
+   docid - debit note serial number
+   itemid - debit note item identifier
+   value - amount
+   description - description for the note item
+     __________________________________________________________________
+
+7.2.31. Cash Receipts ('receiptcontents')
 
    docid - receipt serial number
    itemid - receipt item identifier
@@ -5647,14 +5668,14 @@ Chapter 7. For curious
    description - description for receipt item
      __________________________________________________________________
 
-7.2.31. Documents - access rights ('docrights')
+7.2.32. Documents - access rights ('docrights')
 
    userid - user identifier
    doctype - document type id (see lib/definitions.php)
    rights - (1-read, 2-create, 3-confirm, 4-edit, 5-delete)
      __________________________________________________________________
 
-7.2.32. Internet Messengers ('imessengers')
+7.2.33. Internet Messengers ('imessengers')
 
    id - serial number
    customerid - customer serial number
@@ -5662,7 +5683,7 @@ Chapter 7. For curious
    type - messenger type (0-gadu-gadu, 1-yahoo, 2-skype)
      __________________________________________________________________
 
-7.2.33. Customers contacts ('customer contacts')
+7.2.34. Customers contacts ('customer contacts')
 
    id - serial number
    customerid - customer serial number
@@ -5670,7 +5691,7 @@ Chapter 7. For curious
    name - contact name/description
      __________________________________________________________________
 
-7.2.34. Accounts ('passwd')
+7.2.35. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -5694,28 +5715,28 @@ Chapter 7. For curious
    description - additional information
      __________________________________________________________________
 
-7.2.35. Domains ('domains')
+7.2.36. Domains ('domains')
 
    id - serial number
    name - domain name
    description - comments
      __________________________________________________________________
 
-7.2.36. Aliases ('aliases')
+7.2.37. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    domainid - account serial number
      __________________________________________________________________
 
-7.2.37. Alias-to-account assignments ('aliasassignments')
+7.2.38. Alias-to-account assignments ('aliasassignments')
 
    id - serial number
    aliasid - alias serial number
    accountid - account serial number
      __________________________________________________________________
 
-7.2.38. VoIP Accounts ('voipaccounts')
+7.2.39. VoIP Accounts ('voipaccounts')
 
    id - serial number
    ownerid - customer identifier
@@ -5728,7 +5749,7 @@ Chapter 7. For curious
    modid - last change (user) identifier
      __________________________________________________________________
 
-7.2.39. Bandwidth consumption statistics ('stats')
+7.2.40. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -5736,7 +5757,7 @@ Chapter 7. For curious
    download - number of bytes received
      __________________________________________________________________
 
-7.2.40. Helpdesk - Request Tracking ('rtqueues')
+7.2.41. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -5744,7 +5765,7 @@ Chapter 7. For curious
    description - main description for the queue
      __________________________________________________________________
 
-7.2.41. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.42. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -5758,7 +5779,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      __________________________________________________________________
 
-7.2.42. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.43. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -5774,14 +5795,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      __________________________________________________________________
 
-7.2.43. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.44. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      __________________________________________________________________
 
-7.2.44. Helpdesk - Request Tracking - continued... ('rtnotes')
+7.2.45. Helpdesk - Request Tracking - continued... ('rtnotes')
 
    id - serial number
    ticketid - ticket serial number
@@ -5790,7 +5811,7 @@ Chapter 7. For curious
    createtime - date of creation
      __________________________________________________________________
 
-7.2.45. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.46. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -5798,7 +5819,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      __________________________________________________________________
 
-7.2.46. LMS-UI Online Configuration ('uiconfig')
+7.2.47. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -5808,7 +5829,7 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      __________________________________________________________________
 
-7.2.47. Timetable - events ('events')
+7.2.48. Timetable - events ('events')
 
    id - identifier
    title - title
@@ -5823,13 +5844,13 @@ Chapter 7. For curious
    closed - is event closed? (1-yes/0-no)
      __________________________________________________________________
 
-7.2.48. Timetable - assignments ('eventassignments')
+7.2.49. Timetable - assignments ('eventassignments')
 
    eventid - event identifier
    userid - user identifier
      __________________________________________________________________
 
-7.2.49. Sessions ('sessions')
+7.2.50. Sessions ('sessions')
 
    id - session identifier
    ctime - create time
@@ -5839,7 +5860,7 @@ Chapter 7. For curious
    content - data
      __________________________________________________________________
 
-7.2.50. Hosts ('hosts')
+7.2.51. Hosts ('hosts')
 
    id - identifier
    name - host name
@@ -5848,7 +5869,7 @@ Chapter 7. For curious
    reload - reload order
      __________________________________________________________________
 
-7.2.51. Daemon configuration - instances ('daemoninstances')
+7.2.52. Daemon configuration - instances ('daemoninstances')
 
    id - identifier
    name - instance name
@@ -5860,7 +5881,7 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.52. Daemon configuration - options ('daemonconfig')
+7.2.53. Daemon configuration - options ('daemonconfig')
 
    id - identifier
    instanceid - instance identifier
@@ -5870,27 +5891,27 @@ Chapter 7. For curious
    disabled - status (enabled/disabled)
      __________________________________________________________________
 
-7.2.53. States ('states')
+7.2.54. States ('states')
 
    id - identifier
    name - state name
    description - additional information
      __________________________________________________________________
 
-7.2.54. Zip codes ('zipcodes')
+7.2.55. Zip codes ('zipcodes')
 
    id - identifier
    zip - zip code
    stateid - state identifier
      __________________________________________________________________
 
-7.2.55. Countries ('countries')
+7.2.56. Countries ('countries')
 
    id - identifier
    name - country name
      __________________________________________________________________
 
-7.2.56. Companies/Divisions ('divisions')
+7.2.57. Companies/Divisions ('divisions')
 
    id - identifier
    shortname - division short name
@@ -5910,7 +5931,7 @@ Chapter 7. For curious
    inv_cplace - invoice creation place
      __________________________________________________________________
 
-7.2.57. Messages - list ('messages')
+7.2.58. Messages - list ('messages')
 
    id - serial number
    subject - message subject
@@ -5921,7 +5942,7 @@ Chapter 7. For curious
    sender - e-mail 'From' header
      __________________________________________________________________
 
-7.2.58. Messages - items ('messageitems')
+7.2.59. Messages - items ('messageitems')
 
    id - serial number
    messageid - message identifier
@@ -5932,7 +5953,7 @@ Chapter 7. For curious
    error - error message
      __________________________________________________________________
 
-7.2.59. Database information ('dbinfo')
+7.2.60. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value

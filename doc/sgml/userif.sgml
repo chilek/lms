@@ -372,7 +372,7 @@ subscription fees. Those modules are also able to write out appropriate
 invoices.</para></note></para>
 	</sect2>
 	<sect2 id="menu-invoices-list">
-		<title>Invoices list</title>
+		<title>Invoices List</title>
 		<para>List of invoices that has been already written out. You're
 		able to print (by selecting 'Print' icon) and check as accounted selected
 		invoices.</para>
@@ -380,6 +380,16 @@ invoices.</para></note></para>
 	<sect2 id="menu-invoices-new">
 		<title>New Invoice</title>
 		<para>Allows you to issue an invoice for selected customer manually.</para>
+	</sect2>
+	<sect2 id="menu-debitnotes-list">
+		<title>Debit Notes List</title>
+		<para>List of debit notes that has been already written out. You're
+		able to print (by selecting 'Print' icon) and check as accounted selected
+		notes.</para>
+	</sect2>
+	<sect2 id="menu-debitnotes-new">
+		<title>New Debit Note</title>
+		<para>Allows you to issue an debit note for selected customer manually.</para>
 	</sect2>
 	<sect2 id="menu-receipts-list">
 	    <title>Cash Registry</title>

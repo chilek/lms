@@ -1062,7 +1062,31 @@ AddDefaultCharset Off
    pliku php, a nie tak jak w przypadku html'a szablonu Smarty.
      __________________________________________________________________
 
-2.9.5. Dokumenty pozostałe
+2.9.5. Noty obciążeniowe
+
+2.9.5.1. HTML
+
+   Przy domyślnych ustawieniach noty wyświetlane są w formacie html wg
+   domyślnego szablonu. W sekcji [notes] masz do dyspozycji następujące
+   opcje:
+     * template_file
+       Szablon noty, który powinien znajdować się w katalogu templates.
+       Domyślnie: note.html.
+       Przykład: template_file = mytempl/note.html
+     * content_type
+       Content-type dla druku. Jeżeli wpiszesz tutaj
+       'application/octet-stream' to przeglądarka zechce wysłać plik do
+       zapisania na dysku, zamiast go wyświetlić. Przydatne jeśli używasz
+       własnego szablonu, który wygeneruje np.rtf'a lub xls'a. Domyślnie:
+       'text/html'
+       Przykład: content_type = application/octet-stream
+     * attachment_name
+       Można podać nazwę pliku, jako który ma zostać zapisany gotowy
+       wydruk. Domyślnie: pusta.
+       Przykład: attachment_name = receipt.xls
+     __________________________________________________________________
+
+2.9.6. Dokumenty pozostałe
 
    Oprócz dokumentów finansowych w LMSie można przechowywać dokumenty
    takie jak umowy, protokoły, aneksy i inne. Każemu klientowi można
@@ -1537,16 +1561,36 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    Ręczne wystawianie faktury dla wybranego klienta. W pierwszej
    kolejności wybieramy klienta z listy, ustawiamy typ płatności i
    pozostałe dane takie jak termin płatności, data wystawienia, a nawet
-   numer faktury i klikamy 'Wybierz/Zmień klienta'. Następnie możemy
-   dodawać pozycje do faktury. 'Zapisz i drukuj' kończy edycję nowej
-   faktury, zapisuje ją w systemie i wyświetla wydruk faktury w nowym
-   oknie.
+   numer faktury i klikamy 'Zapisz'. Następnie możemy dodawać pozycje do
+   faktury. 'Zapisz i drukuj' kończy edycję nowej faktury, zapisuje ją w
+   systemie i wyświetla wydruk faktury w nowym oknie.
 
    Konfigurację wydruków faktur opisano w rozdziale p.t. Instalacja i
    Konfiguracja.
      __________________________________________________________________
 
-3.7.9. Rejestr kasowy
+3.7.9. Lista not obciążeniowych
+
+   Lista wystawionych not obciążeniowych (debetowych) z możliwością
+   wydruku wybranych (ikona [Drukuj]) oraz oznaczenia ich jako rozliczone.
+   Noty oznaczone jako rozliczone będą na liście wyszarzone. Noty można
+   filtrować wg zadanych kryteriów przy użyciu dostępnego na liście
+   filtra.
+     __________________________________________________________________
+
+3.7.10. Nowa nota obciążeniowa
+
+   Ręczne wystawianie noty dla wybranego klienta. W pierwszej kolejności
+   wybieramy klienta z listy, ustawiamy datę wystawienia oraz numer i
+   klikamy 'Zapisz'. Następnie w tabelce poniżej możemy dodawać pozycje do
+   noty. 'Zapisz i drukuj' kończy edycję nowej noty obciążeniowej,
+   zapisuje ją w systemie i wyświetla wydruk faktury w nowym oknie.
+
+   Konfigurację wydruków not opisano w rozdziale p.t. Instalacja i
+   Konfiguracja.
+     __________________________________________________________________
+
+3.7.11. Rejestr kasowy
 
    Kasę gotówkową można podzielić na rejestry np. kasa1, kasa2, kasa
    główna, bank itp. Na liście rejestrów znajdują się wszystkie informacje
@@ -1582,7 +1626,7 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    związanych z nim operacji oraz wstawienie nowych.
      __________________________________________________________________
 
-3.7.10. Nowy dokument kasowy
+3.7.12. Nowy dokument kasowy
 
    Podczas wystawiania dokumentu kasowego w pierwszej kolejności wybieramy
    rejestr kasowy i typ operacji. Następnie wybieramy z listy klienta lub
@@ -1600,7 +1644,7 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    Instalacja i Konfiguracja.
      __________________________________________________________________
 
-3.7.11. Import
+3.7.13. Import
 
    Import służy do zapisywania operacji finansowych z zewnętrznych
    systemów np. pobranych z banku bezpośrednio ze stron www lub z e-maila.
@@ -1635,7 +1679,7 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    faktury.
      __________________________________________________________________
 
-3.7.12. Eksport
+3.7.14. Eksport
 
    Eksport danych finansowych do systemów zewnętrznych polega na
    generowaniu plików tekstowych zawierających dane pobrane wg
@@ -1654,7 +1698,7 @@ Rozdział 3. Interfejs Użytkownika (LMS-UI)
    pozycja dokumentu kasowego.
      __________________________________________________________________
 
-3.7.13. Raporty
+3.7.15. Raporty
 
    Wydruki zestawień finansowych obejmują:
      * Historia operacji finansowych obejmujący operacje finansowe za dany
@@ -4105,6 +4149,7 @@ Rozdział 6. LMS Daemon
 --hostname -H nazwa_hosta  host, na którym działa demon. Domyślnie przyjmowana jest nazwa
                            zwracana przez komendę hostname, ale można ją nadpisać. Nazwa
                            ta musi zgadzać się z nazwą hosta podaną w konfiguracji hostów
+--pidfile -P pid_file      pidfile where daemon write pid (default: none)
 --ssl -s                   wymusza bezpieczne połączenie z bazą danych (domyślnie: wyłączone)
 --command -c polecenie     polecenie powłoki do wykonania przed każdym połączeniem z bazą
                            tzn. co minutę (domyślnie: puste)
@@ -6346,7 +6391,15 @@ Rozdział 7. Dla dociekliwych
    tariffid - identyfikator taryfy
      __________________________________________________________________
 
-7.2.30. Potwierdzenia wpłaty - KP ('receiptcontents')
+7.2.30. Noty obciążeniowe ('debitnotecontents')
+
+   docid - identyfikator noty
+   itemid - nr pozycji
+   value - kwota pozycji
+   description - opis
+     __________________________________________________________________
+
+7.2.31. Potwierdzenia wpłaty - KP ('receiptcontents')
 
    docid - identyfikator faktury
    itemid - nr pozycji
@@ -6355,7 +6408,7 @@ Rozdział 7. Dla dociekliwych
    description - opis pozycji
      __________________________________________________________________
 
-7.2.31. Dokumenty - uprawnienia ('docrights')
+7.2.32. Dokumenty - uprawnienia ('docrights')
 
    userid - identyfikator użytkownika
    doctype - id typu dokumentu (zobacz lib/definitions.php)
@@ -6363,7 +6416,7 @@ Rozdział 7. Dla dociekliwych
    5-usuwanie)
      __________________________________________________________________
 
-7.2.32. Identyfikatory internetowe ('imessengers')
+7.2.33. Identyfikatory internetowe ('imessengers')
 
    id - identyfikator rekordu
    customerid - identyfikator klienta
@@ -6371,7 +6424,7 @@ Rozdział 7. Dla dociekliwych
    type - typ komunikatora (0-gadu-gadu, 1-yahoo, 2-skype)
      __________________________________________________________________
 
-7.2.33. Kontakty ('customercontacts')
+7.2.34. Kontakty ('customercontacts')
 
    id - identyfikator rekordu
    customerid - identyfikator klienta
@@ -6379,7 +6432,7 @@ Rozdział 7. Dla dociekliwych
    name - nazwa/opis kontaktu
      __________________________________________________________________
 
-7.2.34. Konta ('passwd')
+7.2.35. Konta ('passwd')
 
    id - identyfikator rekordu
    ownerid - identyfikator klienta (0 - konto "systemowe")
@@ -6403,28 +6456,28 @@ Rozdział 7. Dla dociekliwych
    description - dodatkowe informacje
      __________________________________________________________________
 
-7.2.35. Domeny ('domains')
+7.2.36. Domeny ('domains')
 
    id - identyfikator rekordu
    name - nazwa domeny
    description - opis
      __________________________________________________________________
 
-7.2.36. Aliasy ('aliases')
+7.2.37. Aliasy ('aliases')
 
    id - identyfikator rekordu
    login - nazwa konta (bez domeny)
    domainid - identyfikator domeny
      __________________________________________________________________
 
-7.2.37. Powiązania aliasów z kontami ('aliasassignments')
+7.2.38. Powiązania aliasów z kontami ('aliasassignments')
 
    id - identyfikator rekordu
    aliasid - indentyfikator aliasu
    accountid - identyfikator konta
      __________________________________________________________________
 
-7.2.38. Konta VoIP ('voipaccounts')
+7.2.39. Konta VoIP ('voipaccounts')
 
    id - identyfikator rekordu
    ownerid - identyfikator właściciela (klienta)
@@ -6437,7 +6490,7 @@ Rozdział 7. Dla dociekliwych
    modid - identyfikator użytkownika
      __________________________________________________________________
 
-7.2.39. Statystyki wykorzystania łącza ('stats')
+7.2.40. Statystyki wykorzystania łącza ('stats')
 
    nodeid - numer komputera
    dt - znacznik czasu
@@ -6445,7 +6498,7 @@ Rozdział 7. Dla dociekliwych
    download - ilość danych odebranych, w bajtach
      __________________________________________________________________
 
-7.2.40. Helpdesk - kolejki ('rtqueues')
+7.2.41. Helpdesk - kolejki ('rtqueues')
 
    id - identyfikator
    name - nazwa
@@ -6453,7 +6506,7 @@ Rozdział 7. Dla dociekliwych
    description - opis dodatkowy
      __________________________________________________________________
 
-7.2.41. Helpdesk - zgłoszenia ('rttickets')
+7.2.42. Helpdesk - zgłoszenia ('rttickets')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -6467,7 +6520,7 @@ Rozdział 7. Dla dociekliwych
    createtime - data zgłoszenia
      __________________________________________________________________
 
-7.2.42. Helpdesk - wiadomości ('rtmessages')
+7.2.43. Helpdesk - wiadomości ('rtmessages')
 
    id - identyfikator
    ticketid - identyfikator zgłoszenia
@@ -6483,14 +6536,14 @@ Rozdział 7. Dla dociekliwych
    createtime - data utworzenia/wysłania/odebrania
      __________________________________________________________________
 
-7.2.43. Helpdesk - załączniki ('rtattachments')
+7.2.44. Helpdesk - załączniki ('rtattachments')
 
    messageid - identyfikator wiadomości
    filename - nazwa pliku
    contenttype - typ pliku
      __________________________________________________________________
 
-7.2.44. Helpdesk - notatki ('rtnotes')
+7.2.45. Helpdesk - notatki ('rtnotes')
 
    id - identyfikator
    ticketid - identyfikator zgłoszenia
@@ -6499,7 +6552,7 @@ Rozdział 7. Dla dociekliwych
    createtime - data utworzenia
      __________________________________________________________________
 
-7.2.45. Helpdesk - uprawnienia ('rtrights')
+7.2.46. Helpdesk - uprawnienia ('rtrights')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -6507,7 +6560,7 @@ Rozdział 7. Dla dociekliwych
    rights - (1-odczyt, 2-zapis, 3-powiadomienia)
      __________________________________________________________________
 
-7.2.46. Konfiguracja LMS-UI ('uiconfig')
+7.2.47. Konfiguracja LMS-UI ('uiconfig')
 
    id - identyfikator
    section - nazwa sekcji
@@ -6517,7 +6570,7 @@ Rozdział 7. Dla dociekliwych
    disabled - wyłączenie opcji (0-wł., 1-wył.)
      __________________________________________________________________
 
-7.2.47. Terminarz - zdarzenia ('events')
+7.2.48. Terminarz - zdarzenia ('events')
 
    id - identyfikator
    title - tytuł
@@ -6532,13 +6585,13 @@ Rozdział 7. Dla dociekliwych
    closed - status zamknięcia
      __________________________________________________________________
 
-7.2.48. Terminarz - powiązania ('eventassignments')
+7.2.49. Terminarz - powiązania ('eventassignments')
 
    eventid - identyfikator zdarzenia
    userid - identyfikator użytkownika
      __________________________________________________________________
 
-7.2.49. Hosty ('hosts')
+7.2.50. Hosty ('hosts')
 
    id - identyfikator
    name - nazwa hosta
@@ -6547,7 +6600,7 @@ Rozdział 7. Dla dociekliwych
    reload - żądanie przeładowania
      __________________________________________________________________
 
-7.2.50. Konfiguracja demona - instancje ('daemoninstances')
+7.2.51. Konfiguracja demona - instancje ('daemoninstances')
 
    id - identyfikator
    name - nazwa instancji
@@ -6559,7 +6612,7 @@ Rozdział 7. Dla dociekliwych
    disabled - status (włączona/wyłączona)
      __________________________________________________________________
 
-7.2.51. Konfiguracja demona - opcje ('daemonconfig')
+7.2.52. Konfiguracja demona - opcje ('daemonconfig')
 
    id - identyfikator
    instanceid - identyfikator instancji
@@ -6569,7 +6622,7 @@ Rozdział 7. Dla dociekliwych
    disabled - status (włączona/wyłączona)
      __________________________________________________________________
 
-7.2.52. Sesje ('sessions')
+7.2.53. Sesje ('sessions')
 
    id - identyfikator sesji
    ctime - czas utworzenia
@@ -6579,27 +6632,27 @@ Rozdział 7. Dla dociekliwych
    content - dane
      __________________________________________________________________
 
-7.2.53. Województwa ('states')
+7.2.54. Województwa ('states')
 
    id - identyfikator
    name - nazwa województwa
    description - informacje dodatkowe
      __________________________________________________________________
 
-7.2.54. Kody pocztowe ('zipcodes')
+7.2.55. Kody pocztowe ('zipcodes')
 
    id - identyfikator
    zip - kod pocztowy
    stateid - identyfikator województwa
      __________________________________________________________________
 
-7.2.55. Kraje ('countries')
+7.2.56. Kraje ('countries')
 
    id - identyfikator
    name - nazwa kraju
      __________________________________________________________________
 
-7.2.56. Firmy/Oddziały ('divisions')
+7.2.57. Firmy/Oddziały ('divisions')
 
    id - identyfikator
    shortname - nazwa skrócona firmy
@@ -6619,7 +6672,7 @@ Rozdział 7. Dla dociekliwych
    inv_cplace - miejsce wystawienia faktury
      __________________________________________________________________
 
-7.2.57. Wiadomości - lista ('messages')
+7.2.58. Wiadomości - lista ('messages')
 
    id - identyfikator
    subject - temat wiadomości
@@ -6630,7 +6683,7 @@ Rozdział 7. Dla dociekliwych
    sender - nagłówek 'From' wiadomości e-mail
      __________________________________________________________________
 
-7.2.58. Wiadomości - szczegóły ('messageitems')
+7.2.59. Wiadomości - szczegóły ('messageitems')
 
    id - identyfikator
    messageid - identyfikator wiadomości
@@ -6641,7 +6694,7 @@ Rozdział 7. Dla dociekliwych
    error - komunikat błędu
      __________________________________________________________________
 
-7.2.59. Informacje o bazie danych ('dbinfo')
+7.2.60. Informacje o bazie danych ('dbinfo')
 
    keytype - typ
    keyvalue - wartość
