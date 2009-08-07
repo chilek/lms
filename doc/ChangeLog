@@ -22,6 +22,7 @@ version ? (????-??-??):
   - lms-payments: settlement fix (chilan)
   - Debit Notes (alec)
   - added separate access rights for Userpanel and voip accounts (alec)
+  - lmsd/payments: added 'check_invoices' option (alec)
 
 version 1.11.8 Belus (2009-05-19):
 

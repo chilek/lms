@@ -726,6 +726,8 @@ password = hasło_podane_przy_tworzeniu_użytkownika_lms
      * zarządzanie grupami komputerów
      * przypisywanie klientów do grup
      * przypisywanie komputerów do grup
+     * zarządzanie kontami voip
+     * zarządzanie Userpanelem
      * brak dostępu do modyfikacji i zakładania kont użytkowników
      * brak dostępu
 
@@ -4321,6 +4323,10 @@ Rozdział 6. LMS Daemon
      * numberplan
        ID planu numeracyjnego faktur. Domyślnie: 0 (plan domyślny).
        Przykład: numberplan = 0
+     * check_invoices
+       Włącza automatyczne oznaczanie faktur jako rozliczonych dla
+       klientów z bilansem większym równym zero. Domyślnie: wyłączona.
+       Przykład: check_invoices = 1
      * networks
        Lista nazw sieci, które mają być brane pod uwagę. Wielkość liter
        nie ma znaczenia. Domyślnie: pusta (wszystkie sieci).

@@ -344,6 +344,13 @@
 				<para>Przyk³ad: <prompt>numberplan = 0</prompt></para>
 			</listitem>
 			<listitem>
+				<para>check_invoices</para>
+				<para>W³±cza automatyczne oznaczanie faktur jako rozliczonych
+				dla klientów z bilansem wiêkszym równym zero.
+				Domy¶lnie: wy³±czona.</para>
+				<para>Przyk³ad: <prompt>check_invoices = 1</prompt></para>
+			</listitem>
+			<listitem>
 				<para>networks</para>
 				<para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
 				Domy¶lnie: pusta (wszystkie sieci).</para>

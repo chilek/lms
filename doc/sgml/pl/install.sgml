@@ -460,6 +460,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 	<listitem><para>zarz±dzanie grupami komputerów</para></listitem>
 	<listitem><para>przypisywanie klientów do grup</para></listitem>
 	<listitem><para>przypisywanie komputerów do grup</para></listitem>
+	<listitem><para>zarz±dzanie kontami voip</para></listitem>
+	<listitem><para>zarz±dzanie Userpanelem</para></listitem>
 	<listitem><para>brak dostêpu do modyfikacji i zak³adania kont u¿ytkowników</para></listitem>
         <listitem><para>brak dostêpu</para></listitem>
        </itemizedlist>

@@ -15,6 +15,7 @@ struct payments_module
 	int up_payments;
 	int expiry_days;
 	int num_period;
+	int check_invoices;
 	double suspension_percentage;
 };
 

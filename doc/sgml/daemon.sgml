@@ -318,6 +318,12 @@
                    <para>Example: <prompt>numberplan = 1</prompt></para>
                </listitem>
                <listitem>
+                   <para>check_invoices</para>
+                   <para>Enables checking of invoices as accounted for customers with balance
+		   equal or greater than zero. Default: false.</para>
+                   <para>Example: <prompt>check_invoices = 1</prompt></para>
+               </listitem>
+               <listitem>
                    <para>networks</para>
                    <para>List of network names to restrinct customers for accounting.
                    Default: empty (all networks).</para>

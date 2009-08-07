@@ -852,6 +852,34 @@ void reload(GLOBAL *g, struct payments_module *p)
 	else 
 		syslog(LOG_ERR, "[%s/payments] Unable to read tariff assignments", p->base.instance);
 
+	free(query);
+
+	/****** invoices checking *******/
+	if (p->check_invoices)
+	{
+		char *query = strdup(
+			"UPDATE documents SET closed = 1 "
+			"WHERE customerid IN ( "
+			"	SELECT ats.customerid "
+			"	FROM cash ats "
+			"	WHERE ats.time < %NOW% "
+			"	    %nets%enets%groups%egroups "
+			"	GROUP BY ats.customerid "
+			"	HAVING SUM(ats.value) >= 0) "
+			"AND type IN (1, 3, 5) "
+			"AND cdate < %NOW% "
+			"AND closed = 0");
+
+		g->str_replace(&query, "%nets", strlen(netsql) ? nets : "");
+		g->str_replace(&query, "%enets", strlen(enetsql) ? enets : "");
+		g->str_replace(&query, "%groups", strlen(groupsql) ? groups : "");
+		g->str_replace(&query, "%egroups", strlen(egroupsql) ? egroups : "");
+
+		g->db_pexec(g->conn, query);
+
+		free(query);
+	}
+	
 	// remove old assignments
 	if(p->expiry_days<0) p->expiry_days *= -1; // number of expiry days can't be negative
 	
@@ -904,6 +932,7 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->excluded_customergroups = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_customergroups", ""));
 	p->excluded_networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "excluded_networks", ""));
 	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
+	p->check_invoices = g->config_getbool(p->base.ini, p->base.instance, "check_invoices", 0);
 	p->num_period = YEARLY;
 	
 	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");
