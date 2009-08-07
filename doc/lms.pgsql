@@ -355,6 +355,22 @@ CREATE TABLE invoicecontents (
 CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
 
 /* -------------------------------------------------------- 
+  Structure of table "debitnotecontents" 
+-------------------------------------------------------- */
+DROP TABLE debitnotecontents;
+DROP SEQUENCE debitnotecontents_id_seq;
+CREATE SEQUENCE debitnotecontents_id_seq;
+CREATE TABLE debitnotecontents (
+	id integer 		DEFAULT nextval('debitnotecontents_id_seq'::text) NOT NULL,
+        docid integer           DEFAULT 0 NOT NULL,
+	itemid smallint         DEFAULT 0 NOT NULL,
+	value numeric(9,2)      DEFAULT 0 NOT NULL,
+        description text 	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (docid, itemid)
+);
+
+/* -------------------------------------------------------- 
   Structure of table "numberplans" 
 -------------------------------------------------------- */
 DROP SEQUENCE numberplans_id_seq;
@@ -1333,4 +1349,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009060200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009062300');

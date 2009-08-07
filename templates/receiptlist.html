@@ -104,7 +104,7 @@
 	<TR class="DARK">
 		<TD class="fall" colspan="7">
 				<B>{t}Filter:{/t} </B> 
-				<INPUT name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<INPUT name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter -{/t}</OPTION>
 					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}number{/t}</OPTION>

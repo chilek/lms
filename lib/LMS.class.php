@@ -2082,6 +2082,67 @@ class LMS
 			return FALSE;
 	}
 
+	function GetNoteContent($id)
+	{
+		if($result = $this->DB->GetRow('SELECT d.id, d.number, d.name, d.customerid,
+				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
+				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.divisionid, 
+				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
+				ds.name AS division_name, ds.shortname AS division_shortname,
+				ds.address AS division_address, ds.zip AS division_zip,
+				ds.city AS division_city, ds.countryid AS division_countryid, 
+				ds.ten AS division_ten, ds.regon AS division_regon, ds.account,
+				ds.inv_header AS division_header, ds.inv_footer AS division_footer,
+				ds.inv_author AS division_author, ds.inv_cplace AS division_cplace,
+				c.pin AS customerpin, c.divisionid AS current_divisionid
+				FROM documents d
+				JOIN customers c ON (c.id = d.customerid)
+				LEFT JOIN countries cn ON (cn.id = d.countryid)
+				LEFT JOIN divisions ds ON (ds.id = d.divisionid)
+				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				WHERE d.id = ? AND d.type = ?', 
+				array($id, DOC_DNOTE)))
+		{
+			$result['value'] = 0;
+			
+			if(!$result['division_header'])
+				$result['division_header'] = $result['division_name']."\n"
+					.$result['division_address']."\n".$result['division_zip'].' '.$result['division_city']
+					.($result['division_countryid'] && $result['countryid']
+						&& $result['division_countryid'] != $result['countryid']
+						? "\n".trans($this->GetCountryName($result['division_countryid'])) : '')
+					.($result['division_ten'] != '' ? "\n".trans('TEN').' '.$result['division_ten'] : '');
+			
+			if($result['content'] = $this->DB->GetAll('SELECT
+				value, itemid, description 
+				FROM debitnotecontents 
+				WHERE docid=? 
+				ORDER BY itemid', array($id))
+			)
+				foreach($result['content'] as $idx => $row)
+				{
+					$result['content'][$idx]['value'] = $row['value'];
+					$result['value'] += $row['value'];
+				}
+
+			$result['valuep'] = round( ($result['value'] - floor($result['value'])) * 100);
+
+			// NOTE: don't waste CPU/mem when printing history is not set:
+			if(!empty($this->CONFIG['notes']['print_balance_history']) && chkconfig($this->CONFIG['notes']['print_balance_history']))
+			{
+				if(isset($this->CONFIG['notes']['print_balance_history_save']) && chkconfig($this->CONFIG['notes']['print_balance_history_save']))
+					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid'], $result['cdate']);
+				else
+					$result['customerbalancelist'] = $this->GetCustomerBalanceList($result['customerid']);
+				$result['customerbalancelistlimit'] = $this->CONFIG['notes']['print_balance_history_limit'];
+			}
+
+			return $result;
+		}
+		else
+			return FALSE;
+	}
+
 	function GetTariffIDByName($name)
 	{
 		return $this->DB->GetOne('SELECT id FROM tariffs WHERE name=?', array($name));

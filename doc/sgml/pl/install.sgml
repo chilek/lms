@@ -817,6 +817,38 @@ AddDefaultCharset Off
 		wymaga utworzenia pliku php, a nie tak jak w przypadku html'a szablonu Smarty.</para>
         </sect3>
     </sect2>
+    <sect2 id="install-debitnotes">
+	<title>Noty obci±¿eniowe</title>
+	<sect3 id="install-debitnotes-html">
+		<title>HTML</title>
+		<para>Przy domy¶lnych ustawieniach noty wy¶wietlane s± w
+		formacie html wg domy¶lnego szablonu. W sekcji <emphasis>[notes]</emphasis>
+		masz do dyspozycji nastêpuj±ce opcje:
+		<itemizedlist>
+			<listitem>
+				<para>template_file</para>
+				<para>Szablon noty, który powinien znajdowaæ siê w
+				katalogu <filename>templates</filename>. Domy¶lnie: note.html.</para>
+				<para>Przyk³ad: <prompt>template_file = mytempl/note.html</prompt></para>
+			</listitem>
+			<listitem>
+				<para>content_type</para>
+				<para>Content-type dla druku. Je¿eli wpiszesz tutaj 'application/octet-stream'
+				to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+				Przydatne je¶li u¿ywasz w³asnego szablonu, który wygeneruje np.rtf'a lub xls'a.
+				Domy¶lnie: 'text/html'</para>
+				<para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
+			</listitem>
+			<listitem>
+				<para>attachment_name</para>
+				<para>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+				wydruk. Domy¶lnie: pusta.</para>
+				<para>Przyk³ad: <prompt>attachment_name = receipt.xls</prompt></para>
+			</listitem>
+		</itemizedlist>
+		</para>
+        </sect3>
+	</sect2>
     <sect2 id="install-documents-other" xreflabel="Dokumenty pozosta³e">
 	<title>Dokumenty pozosta³e</title>
 		<para>Oprócz dokumentów finansowych w LMSie mo¿na przechowywaæ

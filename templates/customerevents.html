@@ -1,15 +1,15 @@
 <!--// $Id$ //-->
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="DARK">
-        <TD class="fleftu hand" onCLick="showOrHide('eventspanel');">
+    	    <TD width="99%" class="fleftu hand" onCLick="showOrHide('eventspanel');">
                         <IMG src="img/calendar.gif" alt="">
                         <B>{t}Customer Timetable:{/t}</B>
 			{if $limit}
                                 ({t 0=$limit}last $0 events{/t})
                         {/if}
                 </TD>
-                <TD class="frightu" align="right" nowrap>
-			<A href="?m=eventadd&customerid={$customerinfo.id}">{t}New Event{/t} &raquo;</A>
+                <TD width="1%" class="frightu" align="right" nowrap>
+			<A href="?m=eventadd&customerid={$customerinfo.id}">{t}New Event{/t} &raquo;</A>&nbsp;
                 </TD>
         </TR>
 	<TR id="eventspanel"  style="display:none;">

@@ -357,10 +357,27 @@
 		<para>Rêczne wystawianie faktury dla wybranego klienta. W pierwszej kolejno¶ci
 		wybieramy klienta z listy, ustawiamy typ p³atno¶ci i pozosta³e dane takie jak
 		termin p³atno¶ci, data wystawienia, a nawet numer faktury i klikamy 
-		'Wybierz/Zmieñ klienta'. Nastêpnie mo¿emy dodawaæ pozycje do faktury. 
+		'Zapisz'. Nastêpnie mo¿emy dodawaæ pozycje do faktury. 
 		'Zapisz i drukuj' koñczy edycjê nowej faktury, zapisuje j± w systemie
 		i wy¶wietla wydruk faktury w nowym oknie.</para>
 		<para>Konfiguracjê wydruków faktur opisano w rozdziale p.t. 
+		Instalacja i Konfiguracja.</para>
+	</sect2>
+	<sect2 id="menu-debitnotes-list">
+		<title>Lista not obci±¿eniowych</title>
+		<para>Lista wystawionych not obci±¿eniowych (debetowych) z mo¿liwo¶ci± wydruku wybranych (ikona [Drukuj])
+		oraz oznaczenia ich jako rozliczone. Noty oznaczone jako rozliczone bêd± na li¶cie
+		wyszarzone. Noty mo¿na filtrowaæ
+		wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</para>
+	</sect2>
+	<sect2 id="menu-debitnotes-new">
+		<title>Nowa nota obci±¿eniowa</title>
+		<para>Rêczne wystawianie noty dla wybranego klienta. W pierwszej kolejno¶ci
+		wybieramy klienta z listy, ustawiamy datê wystawienia oraz numer i klikamy 
+		'Zapisz'. Nastêpnie w tabelce poni¿ej mo¿emy dodawaæ pozycje do noty. 
+		'Zapisz i drukuj' koñczy edycjê nowej noty obci±¿eniowej, zapisuje j± w systemie
+		i wy¶wietla wydruk faktury w nowym oknie.</para>
+		<para>Konfiguracjê wydruków not opisano w rozdziale p.t. 
 		Instalacja i Konfiguracja.</para>
 	</sect2>
 	<sect2 id="menu-receipts-list">
