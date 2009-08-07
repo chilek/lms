@@ -434,6 +434,8 @@ password = password_entered_with_lms_user_creation</screen>
         <listitem><para>nodes groups management</para></listitem>
 	<listitem><para>customers to groups assignment</para></listitem>
         <listitem><para>nodes to groups assignment</para></listitem>
+        <listitem><para>voip accounts management</para></listitem>
+        <listitem><para>Userpanel management</para></listitem>
         <listitem><para>users edition and addition forbidden</para></listitem>
         <listitem><para>no access</para></listitem>
        </itemizedlist>

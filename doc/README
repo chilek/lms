@@ -687,6 +687,8 @@ password = password_entered_with_lms_user_creation
      * nodes groups management
      * customers to groups assignment
      * nodes to groups assignment
+     * voip accounts management
+     * Userpanel management
      * users edition and addition forbidden
      * no access
 
@@ -3904,6 +3906,10 @@ Chapter 6. LMS Daemon
        ID of invoices numbering plan defined in Configuration -> Numbering
        Plans. Default: 0 (default plan).
        Example: numberplan = 1
+     * check_invoices
+       Enables checking of invoices as accounted for customers with
+       balance equal or greater than zero. Default: false.
+       Example: check_invoices = 1
      * networks
        List of network names to restrinct customers for accounting.
        Default: empty (all networks).
