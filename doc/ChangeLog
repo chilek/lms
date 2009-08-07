@@ -21,6 +21,7 @@ version ? (????-??-??):
   - contrib/daemon: added Gentoo init scripts (Jerzy Kolosowski)
   - lms-payments: settlement fix (chilan)
   - Debit Notes (alec)
+  - added separate access rights for Userpanel and voip accounts (alec)
 
 version 1.11.8 Belus (2009-05-19):
 

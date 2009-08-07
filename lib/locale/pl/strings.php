@@ -2242,5 +2242,7 @@ $_LANG['New Debit Note<!long>'] = 'Nowa nota obciążeniowa';
 $_LANG['Note drawer:'] = 'Wystawca noty:';
 $_LANG['Note recipient:'] = 'Odbiorca noty:';
 $_LANG['No such debit notes in database.'] = 'Brak not obciążeniowych w bazie danych.';
+$_LANG['voip accounts management'] = 'zarządzanie kontami VoIP';
+$_LANG['Userpanel management'] = 'zarządzanie Userpanelem';
 
 ?>
