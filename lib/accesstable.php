@@ -32,7 +32,7 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|invoice|note|customer|customergroup|nodegroup|account|alias|domain|config|event|taxrate|document|numberplan|state|host|division|message)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number|cashsourcelist)$';
+$access['table'][1]['allow_reg']	= '^((user|balance|db|net|node|netdev|tariff|payment|invoice|note|customer|customergroup|nodegroup|account|voipaccount|alias|domain|config|event|taxrate|document|numberplan|state|host|division|message)(list|info|view|search|balance|infoshort)|netdevmap|eventprint|nodelistshort|number|cashsourcelist)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
@@ -93,6 +93,12 @@ $access['table'][20]['allow_reg']	= '^nodegroup$';
 
 $access['table'][21]['name']		= trans('summaries hiding');
 $access['table'][21]['privillege']	= 'hide_summaries';
+
+$access['table'][22]['name']		= trans('voip accounts management');
+$access['table'][22]['allow_reg']	= '^(voipimport|voipaccount(list|search|info|add|del|edit))$';
+
+$access['table'][23]['name']		= trans('Userpanel management');
+$access['table'][23]['allow_reg']	= '^userpanel$';
 
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(user(add|del|edit|passwd))$';
