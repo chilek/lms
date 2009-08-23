@@ -115,7 +115,7 @@ $_CITY = (! $CONFIG['finances']['city'] ? trans('Not set') : $CONFIG['finances']
 $control_lines = 0;
 
 $ids = $DB->GetCol('SELECT id FROM documents d
-        WHERE cdate > ? AND cdate < ? AND type = 1'
+        WHERE cdate >= ? AND cdate <= ? AND type = 1'
         .($_GET['customerid'] ? ' AND customerid = '.$_GET['customerid'] : '')
 	.' AND NOT EXISTS (
                 SELECT 1 FROM customerassignments a
