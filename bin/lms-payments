@@ -487,52 +487,49 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$idbq->finish();
 			}
 
-			if (!$assign->{'settlement'})
+			$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents
+					WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'}
+					AND docid=$gotinv{$uid} AND description=? AND discount=$assign->{'discount'}");
+			$icdbq->execute($desc);
+
+			if($icrow = $icdbq->fetchrow_hashref())
 			{
-				$icdbq = $dbase->prepare("SELECT itemid FROM invoicecontents
-						WHERE tariffid=$assign->{'tariffid'} AND value=$assign->{'value'}
-						AND docid=$gotinv{$uid} AND description=? AND discount=$assign->{'discount'}");
+				my $tmp_itemid = $icrow->{'itemid'};
+
+				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
+						WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid}
+						AND description=? AND discount=$assign->{'discount'}");
 				$icdbq->execute($desc);
 
-				if($icrow = $icdbq->fetchrow_hashref())
-				{
-					my $tmp_itemid = $icrow->{'itemid'};
-
-					$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
-							WHERE tariffid=$assign->{'tariffid'} AND docid=$gotinv{$uid}
-							AND description=? AND discount=$assign->{'discount'}");
-					$icdbq->execute($desc);
-
-					$cdbq = $dbase->prepare("UPDATE cash SET value = value+($assign->{'value'}*-1)
-							WHERE docid = $gotinv{$uid} AND itemid = $tmp_itemid");
-					$cdbq->execute();
-				}
-				else
-				{
-					$itemid++;
-
-					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid,
-							content, count, description, tariffid, itemid, discount)
-							VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'prodid'}',
-							'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
-					$icdbq->execute($desc);
-
-					$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
-							VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
-					$cdbq->execute($desc);
-				}
-
-				$icdbq->finish();
-				print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
+				$cdbq = $dbase->prepare("UPDATE cash SET value = value+($assign->{'value'}*-1)
+						WHERE docid = $gotinv{$uid} AND itemid = $tmp_itemid");
+				$cdbq->execute();
 			}
+			else
+			{
+				$itemid++;
+
+				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (docid, value, taxid, prodid,
+						content, count, description, tariffid, itemid, discount)
+						VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxid'}, '$assign->{'prodid'}',
+						'szt.', 1, ?, $assign->{'tariffid'}, $itemid, $assign->{'discount'})");
+				$icdbq->execute($desc);
+
+				$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
+						VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?, $gotinv{$uid}, $itemid)");
+				$cdbq->execute($desc);
+			}
+
+			$icdbq->finish();
 		}
-		elsif (!$assign->{'settlement'})
+		else
 		{
 			$cdbq = $dbase->prepare("INSERT INTO cash (time, value, taxid, customerid, comment)
 					VALUES ($currtime, $assign->{'value'} * -1, $assign->{'taxid'}, $uid, ?)");
 			$cdbq->execute($desc);
-			print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
 		}
+
+		print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
 
 		if ($assign->{'liabilityid'} && $assign->{'period'} == DISPOSABLE) #remove liability
 		{
