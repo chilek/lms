@@ -870,9 +870,9 @@ if(isset($_GET['print']) && $_GET['print'] == 'cached')
 
 	sort($ids);
 
-	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
-        if(isset($_GET['copy'])) $which[] = trans('COPY');
-        if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+        if(!empty($_GET['copy'])) $which[] = trans('COPY');
+        if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
 
@@ -915,9 +915,9 @@ elseif(isset($_GET['fetchallinvoices']))
 		die;
 	}
 
-	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
-        if(isset($_GET['copy'])) $which[] = trans('COPY');
-        if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+        if(!empty($_GET['copy'])) $which[] = trans('COPY');
+        if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 	
 	if(!sizeof($which)) $which[] = trans('ORIGINAL');
 	
@@ -943,9 +943,9 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 
 	$which = array();
 
-	if(isset($_GET['original'])) $which[] = trans('ORIGINAL');
-        if(isset($_GET['copy'])) $which[] = trans('COPY');
-        if(isset($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+        if(!empty($_GET['copy'])) $which[] = trans('COPY');
+        if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 	
 	if(!sizeof($which))
 	{
