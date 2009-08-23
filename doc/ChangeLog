@@ -25,6 +25,8 @@ version ? (????-??-??):
   - lmsd/payments: added 'check_invoices' option (alec)
   - BTS#0000802: fixed date filter for transfer forms printing of invoices
     created at 00:00 hour (alec)
+  - BTS#0000801: don't forget original/copy setting when printing new
+    invoice (alec)
 
 version 1.11.8 Belus (2009-05-19):
 
