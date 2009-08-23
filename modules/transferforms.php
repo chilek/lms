@@ -109,7 +109,7 @@ $id = $pdf->getFirstPageId();
 $control_lines = 0;
 
 $ids = $DB->GetCol('SELECT id FROM documents d
-        WHERE cdate > ? AND cdate < ? AND type = 1'
+        WHERE cdate >= ? AND cdate <= ? AND type = 1'
 	.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
         .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
 	.(!empty($_GET['groupid']) ?
