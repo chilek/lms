@@ -130,7 +130,7 @@ $_LANG['Are you sure, you want to delete domain: \\\'$0\\\' and all accounts/ali
 $_LANG['Are you sure, you want to delete node $0?'] = 'Jesteś pewien, że chcesz usunąć komputer $0?';
 $_LANG['Are you sure, you want to delete node \\\'$0\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \\\'$0\\\' z bazy danych?';
 $_LANG['Are you sure, you want to delete option \\\'$0\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć opcję \\\'$0\\\' z bazy danych?';
-$_LANG['Are you sure, you want to delete selected operation(s) and/or invoice item(s)?'] = 'Czy na pewno usunąć wybrane operacje i/lub pozycje faktury?';
+$_LANG['Are you sure, you want to delete selected operation(s) and document item(s)?'] = 'Czy na pewno usunąć wybrane operacje wraz z pozycjami dokumentu?';
 $_LANG['Are you sure, you want to delete that connection?'] = 'Jesteś pewien, że chcesz usunąć to połączenie?';
 $_LANG['Are you sure, you want to delete that device?'] = 'Jesteś pewien, że chcesz usunąć to urządzenie?';
 $_LANG['Are you sure, you want to delete that event?'] = 'Jesteś pewien, że chcesz usunąć ten wpis?';
@@ -1117,8 +1117,6 @@ $_LANG['Search'] = 'Szukaj';
 $_LANG['Searching of Events in Timetable'] = 'Szukanie wpisów w kalendarzu';
 $_LANG['Section:'] = 'Sekcja:';
 $_LANG['Section name contains forbidden characters!'] = 'Nazwa sekcji zawiera zabronione znaki!';
-$_LANG['All transactions'] = 'Wszystkie transakcje';
-$_LANG['All invoices'] = 'Wszystkie faktury';
 $_LANG['Select'] = 'Wybierz';
 $_LANG['- select account -'] = '- wybierz konto -';
 $_LANG['Select account'] = 'Wybierz konto';
@@ -2244,5 +2242,13 @@ $_LANG['Note recipient:'] = 'Odbiorca noty:';
 $_LANG['No such debit notes in database.'] = 'Brak not obciążeniowych w bazie danych.';
 $_LANG['voip accounts management'] = 'zarządzanie kontami VoIP';
 $_LANG['Userpanel management'] = 'zarządzanie Userpanelem';
+$_LANG['cash-in receipt'] = 'KP';
+$_LANG['cash-out receipt'] = 'KW';
+$_LANG['cash receipts'] = 'dok. kasowe';
+$_LANG['New document:'] = 'Nowy dokument:';
+$_LANG['Show All:'] = 'Pokaż wszystkie:';
+$_LANG['transactions'] = 'transakcje';
+$_LANG['invoices'] = 'faktury';
+$_LANG['debit notes'] = 'noty obciążeniowe';
 
 ?>

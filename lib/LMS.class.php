@@ -2328,9 +2328,30 @@ class LMS
 		}
 		else
 		{
-			$this->DB->Execute('DELETE FROM receiptcontents WHERE docid=? AND itemid=?', array($docid, $itemid));
+			$this->DB->Execute('DELETE FROM receiptcontents WHERE docid=?', array($docid));
 			$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+			$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
+		}
+	}
+
+	function DebitNoteContentDelete($docid, $itemid=0)
+	{
+		if($itemid)
+		{
+			$this->DB->Execute('DELETE FROM debitnotecontents WHERE docid=? AND itemid=?', array($docid, $itemid));
+
+			if(!$this->DB->GetOne('SELECT COUNT(*) FROM debitnotecontents WHERE docid=?', array($docid)))
+			{
+				// if that was the last item of debit note contents
+				$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+			}
 			$this->DB->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
+		}
+		else
+		{
+			$this->DB->Execute('DELETE FROM debitnotecontents WHERE docid=?', array($docid));
+			$this->DB->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+			$this->DB->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
 		}
 	}
 
@@ -2362,10 +2383,12 @@ class LMS
 					LEFT JOIN documents ON (docid = documents.id)
 					WHERE cash.id=?', array($id));
 
-		if(($row['doctype']==DOC_INVOICE || $row['doctype']==DOC_CNOTE) && $row['cashtype'] = '4' && $row['docid'] && $row['itemid'])
+		if($row['doctype']==DOC_INVOICE || $row['doctype']==DOC_CNOTE)
 			$this->InvoiceContentDelete($row['docid'], $row['itemid']);
-		elseif($row['doctype']=='2' && $row['docid'] && $row['itemid'])
+		elseif($row['doctype']==DOC_RECEIPT)
 			$this->ReceiptContentDelete($row['docid'], $row['itemid']);
+		elseif($row['doctype']==DOC_DNOTE)
+			$this->DebitNoteContentDelete($row['docid'], $row['itemid']);
 		else
 			$this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
 	}
