@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if($_GET['id'])
+if(!empty($_GET['id']))
 {
 	$LMS->DelBalance($_GET['id']);
 }

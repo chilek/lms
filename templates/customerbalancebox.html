@@ -45,7 +45,7 @@
 		document.addbalance.submit();
 	}
 
-	function printi()
+	function print_doc(type)
 	{
 		var add = "";
 		if(document.addbalance.original.checked)
@@ -55,21 +55,34 @@
 		if(document.addbalance.duplicate.checked)
 			add += "&duplicate=1";
 
-		document.addbalance.action="?m=invoice&print=cached&cash=1" + add;
+		document.addbalance.action="?m=" + type + "&print=cached&cash=1" + add;
 		document.addbalance.target="_blank";
 		document.addbalance.submit();
 	}
 
-	function showi()
+	function show_list()
 	{
-		document.addbalance.action="?m=invoicelist";
-		document.addbalance.target="";
+		var type = document.getElementById('showlistselect').value;
+
+		if (type == 'invoice')
+			document.addbalance.action = '?m=invoicelist';
+		else if (type == 'note')
+			document.addbalance.action = '?m=notelist';
+		else
+			return location.href = '?m=customerbalance&id={/literal}{$balancelist.customerid}{literal}';
+
+		document.addbalance.target = '';
 		document.addbalance.submit();
+	}
+
+	function new_doc()
+	{
+		location.href = document.getElementById('newdocselect').value;
 	}
 {/literal}{if $_config.phpui.delete_link_in_customerbalancebox|chkconfig}{literal}
 	function delpos()
 	{ 	 
-		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation(s) and/or invoice item(s)?{/t}{literal}'))
+		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation(s) and document item(s)?{/t}{literal}'))
 		        return;
 	
 	        document.addbalance.action="?m=balancedel";
@@ -92,13 +105,21 @@
 			{/if}
 		</TD>
 		<TD class="frightu" align="right" nowrap>
-			<A href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{t}New Invoice{/t} &raquo;</A>&nbsp;
-			<A href="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{t}New Cash-in Receipt{/t} &raquo;</A>&nbsp;
-			<A href="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{t}New Cash-out Receipt{/t} &raquo;</A>&nbsp;
-			{if $limit}<A href="?m=customerbalance&id={$balancelist.customerid}">{t}All transactions{/t} &raquo;</A>&nbsp;{/if}
+			<A href="javascript: new_doc()">{t}New document:{/t}</A>
+			<SELECT name="newdocument" id="newdocselect">
+				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{t}invoice{/t}</OPTION>
+				<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{t}cash-in receipt{/t}</OPTION>
+				<OPTION value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{t}cash-out receipt{/t}</OPTION>
+				<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{t}debit note{/t}</OPTION>
+			</SELECT>&nbsp;
+			<A href="javascript: show_list()">{t}Show All:{/t}</A>
 			<INPUT type="hidden" name="cat" value="customerid">
 			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
-			<A href="javascript:showi()">{t}All invoices{/t} &raquo;</A>&nbsp;
+			<SELECT name="showlist" id="showlistselect">
+				{if $limit}<OPTION value="list">{t}transactions{/t}</OPTION>{/if}
+				<OPTION value="invoice">{t}invoices{/t}</OPTION>
+				<OPTION value="note">{t}debit notes{/t}</OPTION>
+			</SELECT>
 		</TD>
 	</TR>
 	<TR id="customerbalance">
@@ -151,20 +172,23 @@
 				</TR>
 				{/section}
 				<TR class="light">
-					<TD CLASS="ftop" ALIGN="left" colspan="7">
-						<nobr>
+					<TD CLASS="ftop" ALIGN="left" colspan="9">
+					    <TABLE cellpadding="0" cellspacing="0">
+						<TR><TD width="99%" NOWRAP>
 						{if $_config.phpui.delete_link_in_customerbalancebox|chkconfig}
 						<A href="javascript:delpos();">{t}Delete{/t} <IMG src="img/delete.gif" alt="{t}Delete{/t}"></A>&nbsp;
 						{/if}
-						<A href="javascript:printi();">{t}Print invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
-						<A href="javascript:printr();">{t}Print cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
+						{t}Print{/t}:
+						<A href="javascript:print_doc('invoice');">{t}invoices{/t} <IMG src="img/print.gif" alt=""></A>&nbsp;
+						<A href="javascript:printr();">{t}cash receipts{/t} <IMG src="img/printr.gif" alt=""></A>&nbsp;
+						<A href="javascript:print_doc('note');">{t}debit notes{/t} <IMG src="img/printd.gif" alt=""></A>&nbsp;
 						<INPUT type="checkbox" name="original" id="inv-original"{if eregi('original',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-original')">{t}original{/t}&nbsp;</a>
 						<INPUT type="checkbox" name="copy" id="inv-copy"{if eregi('copy',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-copy')">{t}copy{/t}</a>
 						<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if eregi('duplicate',$_config.invoices.default_printpage)} checked{/if}> <A HREF="javascript:checkElement('inv-duplicate')">{t}duplicate{/t}</a>
-						</nobr>
-					</TD>
-					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
-						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						</TD><TD width="1%" align="right" NOWRAP>
+						<A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+						</TD></TR>
+					    </TABLE>
 					</TD>
 				</TR>
 				<TR class="light">
