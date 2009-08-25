@@ -27,6 +27,9 @@ version ? (????-??-??):
   - BTS#0000801: don't forget original/copy setting when printing new
     invoice (alec)
   - lms_parse_ini_file() replaced by PHP's parse_ini_file() (alec)
+  - optimized GetCustomerList() by moving more operations to DB server (alec)
+  - BTS#0000799: optimized GetCustomerNames() and some other SQL queries
+    with customer name sorting (alec)
 
 version 1.11.8 Belus (2009-05-19):
 

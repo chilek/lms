@@ -408,8 +408,8 @@ CREATE SEQUENCE customers_id_seq;
 DROP TABLE customers;
 CREATE TABLE customers (
 	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
-	lastname varchar(255)	DEFAULT '' NOT NULL,
-	name varchar(255)	DEFAULT '' NOT NULL,
+	lastname varchar(128)	DEFAULT '' NOT NULL,
+	name varchar(128)	DEFAULT '' NOT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
 	email varchar(255) 	DEFAULT '' NOT NULL,
@@ -440,6 +440,7 @@ CREATE TABLE customers (
 );
 
 CREATE INDEX customers_zip_idx ON customers (zip);
+CREATE INDEX customers_lastname_idx ON customers (lastname, name);
 
 /* -------------------------------------------------------- 
   Structure of table "customergroups" 
@@ -1349,4 +1350,4 @@ INSERT INTO nastypes (name) VALUES ('tc');
 INSERT INTO nastypes (name) VALUES ('usrhiper');
 INSERT INTO nastypes (name) VALUES ('other');
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009062300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2009082500');
