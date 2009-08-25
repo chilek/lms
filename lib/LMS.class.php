@@ -585,6 +585,9 @@ class LMS
 			case 'balance':
 				$sqlord = ' ORDER BY balance';
 			break;
+			case 'tariff':
+				$sqlord = ' ORDER BY tariffvalue';
+			break;
 			default:
 				$sqlord = ' ORDER BY customername';
 			break;
@@ -699,14 +702,56 @@ class LMS
 		if($customerlist = $this->DB->GetAll(
 				'SELECT c.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, 
 				status, address, zip, city, countryid, countries.name AS country, email, ten, ssn, c.info AS info, 
-				message, c.divisionid, c.paytime AS paytime, 
-				(SELECT COALESCE(SUM(value),0) FROM cash WHERE customerid = c.id '
-					.($time ? ' AND time < '.$time : '').') AS balance
-				FROM customersview c LEFT JOIN countries ON c.countryid = countries.id '
-				.($customergroup ? 'LEFT JOIN customerassignments ON (c.id=customerassignments.customerid) ' : '')
-				.'WHERE deleted = '.$deleted
-				.($state != 0 ? ' AND c.status = '.intval($state) : '')
-				.($division != 0 ? ' AND c.divisionid = '.intval($division) : '')
+				message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
+				COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
+				(CASE WHEN s.account = s.acsum THEN 1
+					WHEN s.acsum > 0 THEN 2	ELSE 0 END) AS nodeac,
+				(CASE WHEN s.warncount = s.warnsum THEN 1
+					WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn
+				FROM customersview c
+				LEFT JOIN countries ON (c.countryid = countries.id) '
+				.($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
+				.'LEFT JOIN (SELECT
+					SUM(value) AS value, customerid
+					FROM cash'
+					.($time ? ' WHERE time < '.$time : '').'
+					GROUP BY customerid
+				) b ON (b.customerid = c.id)
+				LEFT JOIN (SELECT customerid, 
+					SUM((CASE suspended
+						WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
+							ELSE ((100 - discount) * tariffs.value) / 100 END) 
+						ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
+							ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)
+					* (CASE period
+						WHEN '.YEARLY.' THEN 1/12.0
+						WHEN '.HALFYEARLY.' THEN 1/6.0
+						WHEN '.QUARTERLY.' THEN 1/3.0
+						WHEN '.WEEKLY.' THEN 4
+						WHEN '.DAILY.' THEN 30
+						ELSE 1 END)
+					) AS value 
+					FROM assignments
+					JOIN tariffs ON (tariffs.id = tariffid)
+					WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
+					GROUP BY customerid
+				) t ON (t.customerid = c.id)
+				LEFT JOIN (SELECT ownerid,
+					SUM(access) AS acsum, COUNT(access) AS account,
+					SUM(warning) AS warnsum, COUNT(warning) AS warncount, 
+					(CASE WHEN MAX(lastonline) > ?NOW? - '.intval($this->CONFIG['phpui']['lastonline_limit']).'
+						THEN 1 ELSE 0 END) AS online
+					FROM nodes
+					WHERE ownerid > 0
+					GROUP BY ownerid
+				) s ON (s.ownerid = c.id)
+				WHERE deleted = '.$deleted
+				.($state ? ' AND c.status = '.intval($state) : '')
+				.($division ? ' AND c.divisionid = '.intval($division) : '')
+				.($online ? ' AND s.online = 1' : '')
+				.($indebted ? ' AND b.value < 0' : '')
+				.($disabled ? ' AND (CASE WHEN s.account = s.acsum THEN 1
+					WHEN s.acsum > 0 THEN 2	ELSE 0 END) != 1' : '')
 				.($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND 
 							((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') 
 							OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
@@ -734,118 +779,16 @@ class LMS
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
-			$tariffs = $this->DB->GetAllByKey('SELECT customers.id AS id, 
-					SUM((CASE suspended
-						WHEN 0 THEN (CASE discount WHEN 0 THEN tariffs.value 
-							ELSE ((100 - discount) * tariffs.value) / 100 END) 
-						ELSE (CASE discount WHEN 0 THEN tariffs.value * '.$suspension_percentage.' / 100 
-							ELSE tariffs.value * discount * '.$suspension_percentage.' / 10000 END) END)
-					* (CASE period
-						WHEN '.YEARLY.' THEN 1/12.0
-						WHEN '.HALFYEARLY.' THEN 1/6.0
-						WHEN '.QUARTERLY.' THEN 1/3.0
-						WHEN '.WEEKLY.' THEN 4
-						WHEN '.DAILY.' THEN 30
-						ELSE 1 END)
-					) AS value 
-					FROM assignments
-					JOIN tariffs ON (tariffs.id = tariffid)
-					JOIN customers ON (customerid = customers.id)
-					WHERE deleted = 0 
-						AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) 
-					GROUP BY customers.id', 'id');
-
-			$stats = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account,
-					MAX(lastonline) AS online, SUM(warning) AS warnsum, COUNT(warning) AS warncount 
-					FROM nodes GROUP BY ownerid','id');
-										    
 			foreach($customerlist as $idx => $row)
 			{
-				if(isset($tariffs[$row['id']]['value']))
-					$customerlist[$idx]['tariffvalue'] = round($tariffs[$row['id']]['value'], 2);
-				else
-					$customerlist[$idx]['tariffvalue'] = 0;
-					
-				$customerlist[$idx]['account'] = isset($stats[$row['id']]['account']) ? $stats[$row['id']]['account'] : 0;
-				$customerlist[$idx]['warncount'] = isset($stats[$row['id']]['warncount']) ? $stats[$row['id']]['warncount'] : 0;
-
-				if($customerlist[$idx]['account']) // if customer have some nodes
-				{
-					if($stats[$row['id']]['account'] == $stats[$row['id']]['acsum'])
-						$customerlist[$idx]['nodeac'] = 1; // connected all nodes
-					elseif($stats[$row['id']]['acsum'] == 0)
-						$customerlist[$idx]['nodeac'] = 0; // disconected all nodes
-					else
-						$customerlist[$idx]['nodeac'] = 2; // some nodes disconneted
-				}
-				
-				if($customerlist[$idx]['warncount'])
-				{
-					if($stats[$row['id']]['warncount'] == $stats[$row['id']]['warnsum'])
-						$customerlist[$idx]['nodewarn'] = 1;
-					elseif($stats[$row['id']]['warnsum'] == 0)
-						$customerlist[$idx]['nodewarn'] = 0;
-					else
-						$customerlist[$idx]['nodewarn'] = 2;
-				}
-				
-				if(isset($stats[$row['id']]['online']) && $stats[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
-					$customerlist[$idx]['online'] = 1;
-				else
-					$customerlist[$idx]['online'] = 0;
-
-				if($disabled)
-				{
-					if(!isset($customerlist[$idx]['nodeac']) || $customerlist[$idx]['nodeac'] != 1)
-						$customerlist2[] = $customerlist[$idx];
-					else
-						continue; // skip summary
-				}
-				elseif($online)
-				{
-					if($customerlist[$idx]['online'])
-						$customerlist2[] = $customerlist[$idx];
-					else
-						continue; // skip summary
-				}
-				elseif($indebted)
-				{
-					if($customerlist[$idx]['balance'] < 0)
-						$customerlist2[] = $customerlist[$idx];
-					else
-						continue; // skip summary
-				}
 				// summary
-				if($customerlist[$idx]['balance'] > 0)
-					$over += $customerlist[$idx]['balance'];
-				elseif($customerlist[$idx]['balance'] < 0)
-					$below += $customerlist[$idx]['balance'];
-			}
-
-			if($disabled || $online || $indebted)
-			{
-				$customerlist = isset($customerlist2) ? $customerlist2 : array();
-			}
-		
-			switch($order)
-			{
-				case 'tariff':
-					foreach($customerlist as $idx => $row)
-					{
-						$tarifftable['idx'][] = $idx;
-						$tarifftable['tariffvalue'][] = $row['tariffvalue'];
-					}
-					if(is_array($tarifftable))
-					{
-						array_multisort($tarifftable['tariffvalue'],($direction == "desc" ? SORT_DESC : SORT_ASC),$tarifftable['idx']);
-						foreach($tarifftable['idx'] as $idx)
-							$ncustomerelist[] = $customerlist[$idx];
-					}
-					$customerlist = $ncustomerelist;
-				break;
+				if($row['balance'] > 0)
+					$over += $row['balance'];
+				elseif($row['balance'] < 0)
+					$below += $row['balance'];
 			}
 		}
-		
+
 		$customerlist['total'] = sizeof($customerlist);
 		$customerlist['state'] = $state;
 		$customerlist['order'] = $order;
